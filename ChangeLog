@@ -1,3 +1,16 @@
+2000-09-06  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2816, Home icon doesn't link to changed home directory.
+
+	Now the link is updated both at dekstop launch and whenever
+	the user changed the preference in the Navigation pane of
+	the preferences dialog.
+	
+	* src/file-manager/fm-desktop-icon-view.c: (home_uri_changed),
+	(fm_desktop_icon_view_initialize), (find_and_update_home_link),
+	(place_home_directory), (find_and_rename_trash_link),
+	(remove_old_mount_links):
+
 2000-09-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-title.c: (update_font):

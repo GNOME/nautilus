@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -227,6 +228,16 @@ event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_i
 	//g_message ("event_callback: %d", event->type);
 }
 
+/* Update home link to point to new home uri */
+static void
+home_uri_changed (gpointer user_data)
+{
+	FMDesktopIconView *desktop_icon_view;
+
+	desktop_icon_view = FM_DESKTOP_ICON_VIEW (user_data);
+	place_home_directory (desktop_icon_view);
+}
+
 static void
 fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 {
@@ -270,7 +281,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	/* Create initial mount links */
 	nautilus_volume_monitor_each_mounted_volume (desktop_icon_view->details->volume_monitor, 
 					     	     startup_create_mount_links, desktop_icon_view);
-
+	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "middle_click",
 			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
@@ -300,6 +311,10 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    "volume_unmounted",
 			    volume_unmounted_callback,
 			    desktop_icon_view);
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI, home_uri_changed,
+				  	   desktop_icon_view);
+			    
 }
 
 static void
@@ -561,25 +576,24 @@ mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
 }
 
 static gboolean
-find_home_link (void)
+find_and_update_home_link (void)
 {
 	DIR *current_dir;
-	char *desktop_path;		
 	struct dirent *this_entry;
 	struct stat status;
-	char cwd[PATH_MAX + 1];
-	char *link_path;
+	char *desktop_path, *link_path;
+	char *home_link_name, *home_link_path, *home_dir_uri, *home_uri;
 
 	desktop_path = nautilus_get_desktop_directory ();
 
 	/* Open directory for reading */
 	current_dir = opendir (desktop_path);
 	if (current_dir == NULL) {
+		g_free (desktop_path);
 		return FALSE;
 	}
 
-	/* Save working directory and connect to desktop directory */
-	getcwd (cwd, PATH_MAX + 1);
+	/* Connect to desktop directory */
 	chdir (desktop_path);
 
 	/* Look at all the entries */
@@ -594,6 +608,24 @@ find_home_link (void)
 				/* Check and see if this is a home link */
 				link_path = nautilus_make_path (desktop_path, this_entry->d_name);				
 				if (nautilus_link_is_home_link (link_path)) {
+
+					/* Create the home link */					
+					home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
+					home_link_path = nautilus_make_path (desktop_path, home_link_name);
+					
+					home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+					home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, home_dir_uri);
+
+					/* Make sure URI points to user specified home location */
+					nautilus_link_set_link_uri (home_link_path, home_uri);
+
+					g_free (home_link_path);
+					g_free (home_link_name);
+					g_free (desktop_path);
+					g_free (home_dir_uri);
+					g_free (home_uri);
+					g_free (link_path);
+										  
 					return TRUE;
 				}
 				g_free (link_path);
@@ -602,6 +634,8 @@ find_home_link (void)
 	}
 	
 	closedir (current_dir);
+
+	g_free (desktop_path);
 
 	return FALSE;
 }
@@ -614,11 +648,11 @@ find_home_link (void)
 static void
 place_home_directory (FMDesktopIconView *icon_view)
 {
-	char *desktop_path, *home_link_name, *home_link_path, *home_link_uri, *home_dir_uri;
+	char *desktop_path, *home_link_name, *home_link_path, *home_dir_uri, *home_uri;
 	gboolean made_link;
 
-	/* Check and see if there is a home link already */
-	if (find_home_link ()) {
+	/* Check and see if there is a home link already.  If so, make */
+	if (find_and_update_home_link ()) {
 		return;
 	}
 
@@ -626,21 +660,21 @@ place_home_directory (FMDesktopIconView *icon_view)
 	desktop_path = nautilus_get_desktop_directory ();
 	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
 	home_link_path = nautilus_make_path (desktop_path, home_link_name);
-	home_link_uri = gnome_vfs_get_uri_from_local_path (home_link_path);
 	
 	home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, home_dir_uri);
 	made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", 
-					  home_dir_uri, NAUTILUS_LINK_HOME);
-	g_free (home_dir_uri);
+					  home_uri, NAUTILUS_LINK_HOME);	
 	if (!made_link) {
 		/* FIXME bugzilla.eazel.com 2526: Is a message to the console acceptable here? */
 		g_message ("Unable to create home link");
 	}
-		
-	g_free (home_link_uri);
+	
 	g_free (home_link_path);
 	g_free (home_link_name);
 	g_free (desktop_path);
+	g_free (home_dir_uri);
+	g_free (home_uri);
 }
 
 /* Find a trash link and reset the name to Trash */	
@@ -651,7 +685,6 @@ find_and_rename_trash_link (void)
 	char *desktop_path;		
 	struct dirent *this_entry;
 	struct stat status;
-	char cwd[PATH_MAX + 1];
 	char *link_path;
 
 	desktop_path = nautilus_get_desktop_directory ();
@@ -662,8 +695,7 @@ find_and_rename_trash_link (void)
 		return FALSE;
 	}
 
-	/* Save working directory and connect to desktop directory */
-	getcwd (cwd, PATH_MAX + 1);
+	/* Connect to desktop directory */
 	chdir (desktop_path);
 
 	/* Look at all the entries */
@@ -720,7 +752,6 @@ remove_old_mount_links (void)
 	char *desktop_path;		
 	struct dirent *this_entry;
 	struct stat status;
-	char cwd[PATH_MAX + 1];
 	char *link_path;
 
 	desktop_path = nautilus_get_desktop_directory ();
@@ -731,8 +762,7 @@ remove_old_mount_links (void)
 		return;
 	}
 
-	/* Save working directory and connect to desktop directory */
-	getcwd (cwd, PATH_MAX + 1);
+	/* Connect to desktop directory */
 	chdir (desktop_path);
 
 	/* Look at all the entries */
