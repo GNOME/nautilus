@@ -1,5 +1,20 @@
 2000-11-12  Andy Hertzfeld  <andy@eazel.com>
 
+	fixed bug 3210, trash image fails to appear when defined as
+	emblem, by disallowing new emblems to be defined with the same
+	name as intrinsic ones.  Also, disallowed adding an emblem with
+	the same name as an existing one.
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_destroy), (emblem_keyword_valid),
+	(is_reserved_keyword), (emblem_dialog_clicked),
+	(make_properties_from_directories):
+	maintain a glist of emblem names, and check it when we're adding a
+	new one to make sure it's not already on it.  Put up an error dialog
+	if it already exists.
+	
+2000-11-12  Andy Hertzfeld  <andy@eazel.com>
+
 	fixed bug 3116, add preference for disabling sound preview
 	
 	* libnautilus-extensions/nautilus-global-preferences.h:

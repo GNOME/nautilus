@@ -118,6 +118,8 @@ struct NautilusPropertyBrowserDetails {
 	GtkWidget *color_picker;
 	GtkWidget *color_name;
 	
+	GList *keywords;
+	
 	char *path;
 	char *category;
 	char *dragged_file;
@@ -415,7 +417,9 @@ nautilus_property_browser_destroy (GtkObject *object)
 	g_free (property_browser->details->category);
 	g_free (property_browser->details->dragged_file);
 	g_free (property_browser->details->drag_type);
-	
+
+	nautilus_g_list_free_deep (property_browser->details->keywords);
+		
 	if (property_browser->details->property_chit) {
 		gdk_pixbuf_unref (property_browser->details->property_chit);
 	}
@@ -1267,7 +1271,7 @@ static gboolean
 emblem_keyword_valid (const char *keyword)
 {
 	int index, keyword_length;
-	
+
 	keyword_length = strlen (keyword);
 	for (index = 0; index < keyword_length; index++) {
 		if (!isalnum (keyword[index]) && !isspace (keyword[index])) {
@@ -1279,11 +1283,27 @@ emblem_keyword_valid (const char *keyword)
 }
 
 
+/* check for reserved keywords */
+static gboolean
+is_reserved_keyword (NautilusPropertyBrowser *property_browser, const char *keyword)
+{	
+	/* check intrinsic emblems */
+	if (nautilus_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0)
+		return TRUE;
+	if (nautilus_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ) == 0)
+		return TRUE;
+	if (nautilus_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0)
+		return TRUE;
+	
+	/* see if the keyword already exists */
+	return g_list_find_custom (property_browser->details->keywords, (char*) keyword, (GCompareFunc) nautilus_strcasecmp) != NULL;				
+}
+
 /* here's where we handle clicks in the emblem dialog buttons */
 static void
 emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrowser *property_browser)
 {
-	char *directory_uri;
+	char *directory_uri, *error_string;
 	GnomeVFSResult result;
 	
 	if (which_button == GNOME_OK) {
@@ -1298,7 +1318,11 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		} else if (!emblem_keyword_valid (new_keyword)) {
 			nautilus_error_dialog (_("Sorry, but emblem keywords can only contain letters and numbers."), 
 						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
-		
+		} else if (is_reserved_keyword (property_browser, new_keyword)) {
+			error_string = g_strdup_printf (_("Sorry, but \"%s\" is a reserved keyword"), new_keyword);
+			nautilus_error_dialog (error_string, 
+						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
+			g_free (error_string);
 		} else {		
 			user_directory = nautilus_get_user_directory ();
 
@@ -1612,6 +1636,11 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	} else {
 		index = 0;
 	}
+
+	if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {
+		nautilus_g_list_free_deep (property_browser->details->keywords);	
+		property_browser->details->keywords = NULL;
+	}
 	
 	customization_data = nautilus_customization_data_new (property_browser->details->category,
 							      !property_browser->details->remove_mode,
@@ -1642,6 +1671,14 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 				index -= 1;	
 			}
 		} else if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {		
+			char *keyword, *extension;
+			
+			keyword = g_strdup (object_name);
+			extension = strchr (keyword, '.');
+			if (extension) {
+				*extension = '\0';
+			}
+			property_browser->details->keywords = g_list_prepend (property_browser->details->keywords, keyword);
 			if (nautilus_strcmp (object_name, ERASE_OBJECT_NAME) == 0) {
 				object_position = -1;
 				erase_object = temp_vbox;
