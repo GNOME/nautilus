@@ -3361,6 +3361,7 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 	GList *selected_files;
 	char *file_uri;
 	char *local_file_path;
+	char *quoted_path;
 	char *old_working_dir;
 	char *parameters, *command;
 	
@@ -3370,6 +3371,9 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 	local_file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 	g_assert (local_file_path != NULL);
 	g_free (file_uri);
+
+	quoted_path = nautilus_shell_quote (local_file_path);
+	g_free (local_file_path);
 
 	old_working_dir = change_to_view_directory (launch_parameters->directory_view);
 
@@ -3383,13 +3387,13 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 		 * quotes all parameters as if they are a single parameter. Should add or change API in
 		 * nautilus-program-choosing.c to support multiple parameters.
 		 */
-		command = g_strconcat (local_file_path, " ", parameters, NULL);
+		command = g_strconcat (quoted_path, " ", parameters, NULL);
 		g_free (parameters);
 	} else {
 		/* We pass no parameters in the remote case. It's up to scripts to be smart
 		 * and check the environment variables. 
 		 */
-		command = g_strdup (local_file_path);
+		command = g_strdup (quoted_path);
 	}
 
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
@@ -3400,7 +3404,7 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 	unset_script_environment_variables ();
 	chdir (old_working_dir);		
 	g_free (old_working_dir);
-	g_free (local_file_path);
+	g_free (quoted_path);
 }				    
 
 static void

@@ -1,5 +1,11 @@
 2001-03-20  John Sullivan  <sullivan@eazel.com>
 
+	* src/file-manager/fm-directory-view.c: (run_script_callback):
+	shell-quote the script name. Fixes bug Robin found where scripts
+	with spaces in their names didn't work.
+
+2001-03-20  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
 
 	Finished bug 4875 (design for running arbitrary scripts on
