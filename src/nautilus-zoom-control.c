@@ -1094,7 +1094,9 @@ static void
 nautilus_zoom_control_accessible_initialize (AtkObject *accessible,
                                              gpointer  data)
 {
-	ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+	if (ATK_OBJECT_CLASS (accessible_parent_class)->initialize != NULL) {
+		ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+	}
 	atk_object_set_role (accessible, ATK_ROLE_DIAL);	
 }
 

@@ -5977,7 +5977,9 @@ nautilus_icon_container_accessible_initialize (AtkObject *accessible,
 	NautilusIconContainer *container;
 	NautilusIconContainerAccessiblePrivate *priv;
 
-	ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+	if (ATK_OBJECT_CLASS (accessible_parent_class)->initialize) {
+		ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+	}
 
 	priv = g_new0 (NautilusIconContainerAccessiblePrivate, 1);
 	g_object_set_qdata (G_OBJECT (accessible), 
