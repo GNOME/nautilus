@@ -1,0 +1,124 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* 
+ * Copyright (C) 2000 Eazel, Inc
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Authors: Robey Pointer <robey@eazel.com>
+ *
+ */
+
+#include <config.h>
+#include <gnome.h>
+#include <libtrilobite/libtrilobite.h>
+#include <eazel-softcat.h>
+
+char *arg_server = NULL;
+char *arg_cgi_path = NULL;
+char *arg_username = NULL;
+int arg_debug = 0;
+int arg_by_id = 0;
+int arg_by_provides = 0;
+int arg_retries = 0;
+int arg_delay = 0;
+int arg_verbose = 0;
+
+static const struct poptOption options[] = {
+	{"server", 's', POPT_ARG_STRING, &arg_server, 0, N_("Softcat server to connect to"), "server[:port]"},
+	{"cgi-path", '\0', POPT_ARG_STRING, &arg_cgi_path, 0, N_("Use alternate CGI path"), "path"},
+	{"debug", '\0', POPT_ARG_NONE, &arg_debug, 0, N_("Show debug output"), NULL},
+	{"user", 'u', POPT_ARG_STRING, &arg_username, 0, N_("Connect as a softcat user through ammonite"), "username"},
+	{"retry", 'r', POPT_ARG_INT, &arg_retries, 0, N_("Number of times to try the request"), "times"},
+	{"delay", 'd', POPT_ARG_INT, &arg_delay, 0, N_("Delay between request retries, in usec"), "delay"},
+	{"by-id", 'i', POPT_ARG_NONE, &arg_by_id, 0, N_("Lookup by Eazel package id"), NULL},
+	{"by-provides", 'p', POPT_ARG_NONE, &arg_by_provides, 0, N_("Lookup package that provides a feature/file"), NULL},
+	{"verbose", 'v', POPT_ARG_NONE, &arg_verbose, 0, N_("Show detailed sub-package info"), NULL},
+	{NULL, '\0', 0, NULL, 0}
+};
+
+
+
+int
+main (int argc, char **argv)
+{
+	poptContext popt;
+	EazelSoftCat *softcat;
+	const char *username;
+	PackageData *package;
+	char *name;
+	char *info;
+	GList *package_list;
+	EazelSoftCatError err;
+	int sense_flags = 0;
+
+	gnome_init_with_popt_table ("eazel-test-softcat", "1.0", argc, argv, options, 0, &popt);
+	trilobite_set_log_handler (stdout, G_LOG_DOMAIN);
+	trilobite_set_debug_mode (arg_debug ? TRUE : FALSE);
+
+	package_list = NULL;
+	while ((name = poptGetArg (popt)) != NULL) {
+		package = packagedata_new ();
+		if (arg_by_id) {
+			package->eazel_id = g_strdup (name);
+		} else if (arg_by_provides) {
+			package->provides = g_list_prepend (package->provides, g_strdup (name));
+		} else {
+			package->name = g_strdup (name);
+		}
+		package_list = g_list_prepend (package_list, package);
+	}
+	package_list = g_list_reverse (package_list);
+
+	if (package_list == NULL) {
+		printf ("No packages requested.\n");
+		exit (1);
+	}
+
+	softcat = eazel_softcat_new ();
+	if (arg_server != NULL) {
+		eazel_softcat_set_server (softcat, arg_server);
+	}
+	if (arg_cgi_path != NULL) {
+		eazel_softcat_set_cgi_path (softcat, arg_cgi_path);
+	}
+	if (arg_username != NULL) {
+		eazel_softcat_set_authn (softcat, TRUE, arg_username);
+	}
+	eazel_softcat_set_retry (softcat, arg_retries, arg_delay);
+
+	while (package_list != NULL) {
+		printf ("Contacting softcat server at %s ", eazel_softcat_get_server (softcat));
+		if (eazel_softcat_get_authn (softcat, &username)) {
+			printf ("(user: %s) ", username);
+		}
+		printf ("...\n");
+
+		package = (PackageData *)(package_list->data);
+		err = eazel_softcat_get_info (softcat, package, sense_flags, PACKAGE_FILL_EVERYTHING);
+		if (err != EAZEL_SOFTCAT_SUCCESS) {
+			printf ("FAILED: %s\n\n", eazel_softcat_error_string (err));
+		} else {
+			printf ("\n");
+			info = packagedata_dump (package, arg_verbose ? TRUE : FALSE);
+			printf ("%s\n", info);
+			g_free (info);
+		}
+		package_list = g_list_remove (package_list, package);
+		packagedata_destroy (package, TRUE);
+	}
+
+	return 0;
+}
