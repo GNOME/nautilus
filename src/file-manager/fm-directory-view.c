@@ -5142,7 +5142,6 @@ real_update_paste_menu (FMDirectoryView *view,
 			GList *selection,
 			gint selection_count)
 {
-	selection_count = g_list_length (selection);
 	gboolean can_paste_files_into;
 	gboolean selection_is_read_only;
 	gboolean is_read_only;
