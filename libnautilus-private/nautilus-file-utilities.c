@@ -27,7 +27,6 @@
 
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
 #include <eel/eel-glib-extensions.h>

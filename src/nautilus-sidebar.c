@@ -30,7 +30,6 @@
 #include <config.h>
 #include "nautilus-sidebar.h"
 
-#include "nautilus-link-set-window.h"
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
 
@@ -1282,23 +1281,13 @@ command_button_callback (GtkWidget *button, char *id_str)
 
 /* interpret commands for buttons specified by metadata. Handle some built-in ones explicitly, or fork
    a shell to handle general ones */
-/* for now, we only handle a few built in commands */
+/* for now, we don't have any of these */
 static void
 metadata_button_callback (GtkWidget *button, const char *command_str)
 {
-	GtkWindow *window;
 	NautilusSidebar *sidebar;
-	char *path;
-	
+		
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
-	if (strcmp (command_str, "#linksets") == 0) {
-		window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar)));
-		path = gnome_vfs_get_local_path_from_uri (sidebar->details->uri);
-		if (path != NULL) {
-			nautilus_link_set_toggle_configure_window (path, window);
-			g_free (path);
-		}
-	}
 }
 
 static void

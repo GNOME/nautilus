@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_HORIZONTAL_SPLITTER_H
 #define NAUTILUS_HORIZONTAL_SPLITTER_H
 
-#include "e-hpaned.h"
+#include <gtk/gtkhpaned.h>
 
 G_BEGIN_DECLS
 
@@ -38,12 +38,12 @@ G_BEGIN_DECLS
 typedef struct NautilusHorizontalSplitterDetails NautilusHorizontalSplitterDetails;
 
 typedef struct {
-	EHPaned					parent_slot;
+	GtkHPaned				parent_slot;
 	NautilusHorizontalSplitterDetails	*details;
 } NautilusHorizontalSplitter;
 
 typedef struct {
-	EHPanedClass				parent_slot;
+	GtkHPanedClass				parent_slot;
 } NautilusHorizontalSplitterClass;
 
 /* NautilusHorizontalSplitter public methods */

@@ -601,7 +601,6 @@ nautilus_window_constructed (NautilusWindow *window)
 	GtkWidget *view_as_menu_vbox;
   	int sidebar_width;
 	BonoboControl *location_bar_wrapper;
-	EPaned *panel;
 	CORBA_Environment ev;
 	Bonobo_PropertyBag property_bag;
 	
@@ -683,12 +682,11 @@ nautilus_window_constructed (NautilusWindow *window)
 		set_initial_window_geometry (window);
 	
 		window->content_hbox = nautilus_horizontal_splitter_new ();
-		panel = E_PANED (window->content_hbox);
 		
 		/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
 		/* FIXME bugzilla.gnome.org 41245: No reality check on the value? */
 		sidebar_width = eel_preferences_get_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH);
-		e_paned_set_position (E_PANED (window->content_hbox), sidebar_width);
+		gtk_paned_set_position (GTK_PANED (window->content_hbox), sidebar_width);
 	}
 	gtk_widget_show (window->content_hbox);
 	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
@@ -703,9 +701,9 @@ nautilus_window_constructed (NautilusWindow *window)
 		gtk_widget_show (GTK_WIDGET (window->sidebar));
 		g_signal_connect (G_OBJECT (window->sidebar), "location_changed",
 				    G_CALLBACK (go_to_callback), window);
-		e_paned_pack1 (E_PANED (window->content_hbox),
-			       GTK_WIDGET (window->sidebar),
-			       FALSE, TRUE);
+		gtk_paned_pack1 (GTK_PANED (window->content_hbox),
+				 GTK_WIDGET (window->sidebar),
+				 FALSE, TRUE);
 #if 0
 		bonobo_ui_engine_add_sync (bonobo_window_get_ui_engine (BONOBO_WINDOW (window)),
 					   sidebar_sync);
@@ -1930,13 +1928,13 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 		 * We should use inheritance instead of these special cases
 		 * for the desktop window.
 		 */
-		if (!E_IS_PANED (window->content_hbox)) {
+		if (!GTK_IS_PANED (window->content_hbox)) {
 			gtk_container_add (GTK_CONTAINER (window->content_hbox),
 					   GTK_WIDGET (new_view));
 		} else {
-			e_paned_pack2 (E_PANED (window->content_hbox),
-				       GTK_WIDGET (new_view),
-				       TRUE, TRUE);
+			gtk_paned_pack2 (GTK_PANED (window->content_hbox),
+					 GTK_WIDGET (new_view),
+					 TRUE, TRUE);
 		}
 	}
 
@@ -2071,28 +2069,19 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 	if (window->sidebar == NULL) {
 		return;
 	}
-	gtk_widget_hide (GTK_WIDGET (window->sidebar));
-	if (window->content_hbox != NULL) {
-		e_paned_set_position (E_PANED (window->content_hbox), 0);
-	}
+	nautilus_horizontal_splitter_collapse
+		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 void 
 nautilus_window_show_sidebar (NautilusWindow *window)
 {
-	GtkWidget *widget;
-
 	if (window->sidebar == NULL) {
 		return;
 	}
-	widget = GTK_WIDGET (window->sidebar);
-	gtk_widget_show (widget);
-	if (window->content_hbox != NULL) {
-		e_paned_set_position (E_PANED (window->content_hbox), widget->allocation.width);
-		/* Make sure sidebar is not in collapsed form also */
-		nautilus_horizontal_splitter_expand (NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
-	}
+	nautilus_horizontal_splitter_expand
+		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
@@ -2101,7 +2090,8 @@ nautilus_window_sidebar_showing (NautilusWindow *window)
 {
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), FALSE);
 
-	return window->sidebar != NULL && GTK_WIDGET_VISIBLE (window->sidebar);
+	return GTK_IS_PANED (window->content_hbox)
+		&& gtk_paned_get_position (GTK_PANED (window->content_hbox)) != 0;
 }
 
 void 

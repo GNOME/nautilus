@@ -350,6 +350,7 @@ forget_history_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
 	if (response == GTK_RESPONSE_YES) {
 		nautilus_forget_history ();
 	}
+	gtk_object_destroy (GTK_OBJECT (dialog));
 }
 
 static void
@@ -791,6 +792,8 @@ remove_bookmarks_for_uri_if_yes (GtkDialog *dialog, int response, gpointer callb
 		uri = callback_data;
 		nautilus_bookmark_list_delete_items_with_uri (get_bookmark_list (), uri);
 	}
+
+	gtk_object_destroy (GTK_OBJECT (dialog));
 }
 
 static void

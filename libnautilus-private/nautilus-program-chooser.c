@@ -938,6 +938,7 @@ launch_mime_capplet_on_ok (GtkDialog *dialog, int response, gpointer callback_da
 	if (response == GTK_RESPONSE_OK) {
 		launch_mime_capplet (callback_data);
 	}
+	gtk_object_destroy (GTK_OBJECT (dialog));
 }
 
 static void
@@ -951,13 +952,10 @@ launch_mime_capplet_and_close_dialog (GtkButton *button, gpointer callback_data)
 	file_pair = get_selected_program_file_pair (GTK_DIALOG (callback_data));
 	mime_type = nautilus_file_get_mime_type (file_pair->file);
 	launch_mime_capplet (mime_type);
-
-	/* Don't leave a nested modal dialogs in the wake of switching
-	 * user's attention to the capplet.
-	 */	
-	gtk_dialog_response (GTK_DIALOG (callback_data), GTK_RESPONSE_OK);
 	
 	g_free (mime_type);
+
+	gtk_object_destroy (GTK_OBJECT (callback_data));
 }
 
 static void

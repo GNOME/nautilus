@@ -1,5 +1,44 @@
 2001-11-08  Darin Adler  <darin@bentspoon.com>
 
+	* configure.in:
+	* cut-n-paste-code/widgets/Makefile.am:
+	* cut-n-paste-code/widgets/e-paned:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-horizontal-splitter.c:
+	* libnautilus-private/nautilus-horizontal-splitter.h:
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_set_content_view_widget),
+	(nautilus_window_hide_sidebar), (nautilus_window_show_sidebar),
+	(nautilus_window_sidebar_showing):
+	Remove e-paned.
+	
+	* configure.in:
+	* data/Makefile.am:
+	* data/linksets/
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-file-utilities.c:
+	* libnautilus-private/nautilus-link-set.c:
+	* libnautilus-private/nautilus-link-set.h:
+	* src/Makefile.am:
+	* src/nautilus-link-set-window.c:
+	* src/nautilus-link-set-window.h:
+	* src/nautilus-sidebar.c: (metadata_button_callback):
+	Remove link sets.
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	(launch_mime_capplet_on_ok),
+	(launch_mime_capplet_and_close_dialog):
+	* src/nautilus-window-menus.c: (forget_history_if_yes),
+	(remove_bookmarks_for_uri_if_yes):
+	Destroy dialogs when done, since GtkDialog doesn't do this for us.
+	
+	* src/nautilus-preferences-dialog.c: (preferences_dialog_create):
+	Get rid of close signal handler, since default close handler does
+	the same thing as a delete_event, which is what we want. We still
+	might have to do something fancier on a delete_event.
+	
+2001-11-08  Darin Adler  <darin@bentspoon.com>
+
 	* NEWS: Remove Nautilus 1 news. This file is empty for now.
 	* RENAMING: Add some renaming ideas.
 	* TODO: Add a tiny porting to-do list. I should take that

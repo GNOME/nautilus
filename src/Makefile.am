@@ -6,7 +6,6 @@ bin_PROGRAMS=nautilus
 
 INCLUDES =\
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
 	$(NAUTILUS_SRC_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
@@ -50,7 +49,6 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
-	nautilus-link-set-window.c		\
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
@@ -86,7 +84,6 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
-	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\

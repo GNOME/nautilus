@@ -5,14 +5,12 @@ lib_LTLIBRARIES=libnautilus-private.la
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
-	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned	\
 	$(LIBNAUTILUS_PRIVATE_CFLAGS)			\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
 
 dependency_static_libs = \
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
         $(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
         $(NULL)
 
@@ -112,8 +110,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-link-desktop-file.h \
 	nautilus-link-historical.c \
 	nautilus-link-historical.h \
-	nautilus-link-set.c \
-	nautilus-link-set.h \
 	nautilus-link.c \
 	nautilus-link.h \
 	nautilus-marshal-guts.h \

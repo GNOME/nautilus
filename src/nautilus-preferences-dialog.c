@@ -430,14 +430,6 @@ dialog_button_response_callback (GtkDialog *dialog,
 	gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
-static gboolean
-dialog_close_callback (GtkWidget *dialog,
-		       gpointer user_data)
-{
-	gtk_widget_hide (dialog);
-	return TRUE;
-}
-
 static GtkWidget *
 preferences_dialog_create (void)
 {
@@ -449,14 +441,10 @@ preferences_dialog_create (void)
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "nautilus_preferences", "Nautilus");
 
 	g_signal_connect (G_OBJECT (dialog),
-			    "response",
-			    G_CALLBACK (dialog_button_response_callback),
-			    dialog);
+			  "response",
+			  G_CALLBACK (dialog_button_response_callback),
+			  dialog);
 
-	g_signal_connect (G_OBJECT (dialog),
-			    "close",
-			    G_CALLBACK (dialog_close_callback),
-			    NULL);
 	return dialog;
 }
 
