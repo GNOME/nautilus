@@ -39,6 +39,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mime-type.h>
@@ -53,6 +54,7 @@ struct NautilusIndexPanelDetails {
 	GtkNotebook *notebook;
 	NautilusIndexTabs *index_tabs;
 	NautilusIndexTabs *title_tab;
+	GtkHBox *button_box_centerer;
 	GtkVBox *button_box;
 	gboolean has_buttons;
 	char *uri;
@@ -143,11 +145,17 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 static void
 make_button_box (NautilusIndexPanel *index_panel)
 {
-	index_panel->details->button_box = GTK_VBOX (gtk_vbox_new (TRUE, GNOME_PAD_SMALL));
+	index_panel->details->button_box_centerer = GTK_HBOX (gtk_hbox_new (FALSE, 0));
+	gtk_widget_show (GTK_WIDGET (index_panel->details->button_box_centerer));
+	gtk_box_pack_start_defaults (GTK_BOX (index_panel->details->container),
+			    	     GTK_WIDGET (index_panel->details->button_box_centerer));
+
+	index_panel->details->button_box = GTK_VBOX (nautilus_keep_last_vertical_box_new (GNOME_PAD_SMALL));
 	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->button_box), GNOME_PAD);				
 	gtk_widget_show (GTK_WIDGET (index_panel->details->button_box));
-	gtk_box_pack_start_defaults (GTK_BOX (index_panel->details->container),
-			    	     GTK_WIDGET (index_panel->details->button_box));
+	gtk_box_pack_start (GTK_BOX (index_panel->details->button_box_centerer),
+			    GTK_WIDGET (index_panel->details->button_box),
+			    TRUE, FALSE, 0);
 	index_panel->details->has_buttons = FALSE;
 }
 
@@ -739,6 +747,15 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 		
 		gtk_widget_show (temp_button);
 	}
+
+	/* Catch-all button after all the others. */
+	temp_button = gtk_button_new_with_label (_("Open with ..."));
+	gtk_widget_set_sensitive (temp_button, FALSE);
+	gtk_widget_show (temp_button);
+	gtk_box_pack_start (GTK_BOX (index_panel->details->button_box),
+			    temp_button,
+			    FALSE, FALSE,
+			    0);
 }
 
 /* here's where we set up the command buttons, based on the mime-type of the associated URL */
@@ -756,7 +773,7 @@ nautilus_index_panel_update_buttons (NautilusIndexPanel *index_panel)
 	/* dispose any existing buttons */
 	if (index_panel->details->has_buttons) {
 		gtk_container_remove (GTK_CONTAINER (index_panel->details->container),
-				      GTK_WIDGET (index_panel->details->button_box)); 
+				      GTK_WIDGET (index_panel->details->button_box_centerer)); 
 		make_button_box (index_panel);
 	}
 	

@@ -55,6 +55,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-icon-container.h		\
 	nautilus-icon-factory.h			\
 	nautilus-icon-text-item.h		\
+	nautilus-keep-last-vertical-box.h	\
 	nautilus-link.h				\
 	nautilus-list-column-title.h		\
 	nautilus-list.h                         \
@@ -103,6 +104,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-icon-factory.c			\
 	nautilus-icon-grid.c			\
 	nautilus-icon-text-item.c		\
+	nautilus-keep-last-vertical-box.c	\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-link.c				\
 	nautilus-list-column-title.c		\

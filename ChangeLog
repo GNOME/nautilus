@@ -1,3 +1,27 @@
+2000-05-18  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 598 (Command button layout should account
+	for window height)
+
+	* libnautilus-extensions/nautilus-keep-last-vertical-box.h,
+	* libnautilus-extensions/nautilus-keep-last-vertical-box.c:
+	New files, subclass of GtkVBox that truncates contents to
+	fit, except last item which is always kept. (GtkVBox in the
+	same situation just merrily places its child widgets outside
+	of its allocation.)
+	* libnautilus-extensions/Makefile.am: Build the new files.
+
+	* src/ntl-index-panel.c: 
+	(make_button_box): Use NautilusKeepLastVerticalBox so only
+	as many command buttons appear as fit, and the "Open with ..."
+	button always appears; also embed this box in a GtkHBox to
+	get horizontal sizing the way we want it.
+	(add_command_buttons): Add (not yet active) "Open with ..."
+	button.
+	(nautilus_index_panel_update_buttons): Throw away the
+	GtkHBox containing the button box instead of the button
+	box itself.
+
 2000-05-18  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c: (extract_initial_number),
