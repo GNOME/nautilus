@@ -219,17 +219,33 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	text = g_strdup_printf ( _("File %s already exists. \n"
 		"Would you like to replace it?"), 
 		progress_info->target_name);
-	result = file_operation_alert (xfer_info->parent_view, text, 
-		_("File copy conflict"),
-		_("Replace All"), _("Replace"), _("Skip"));
 
-	switch (result) {
-	case 0:
-		return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL;
-	case 1:
-		return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
-	case 2:
-		return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
+	if (progress_info->duplicate_count == 1) {
+		/* we are going to only get one duplicate alert, don't offer
+		 * Replace All
+		 */
+		result = file_operation_alert (xfer_info->parent_view, text, 
+			_("File copy conflict"),
+			_("Replace"), _("Skip"), NULL);
+		switch (result) {
+		case 0:
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
+		case 1:
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
+		}
+	} else {
+		result = file_operation_alert (xfer_info->parent_view, text, 
+			_("File copy conflict"),
+			_("Replace All"), _("Replace"), _("Skip"));
+
+		switch (result) {
+		case 0:
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL;
+		case 1:
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
+		case 2:
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
+		}
 	}
 
 	return 0;					

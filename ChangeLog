@@ -1,3 +1,10 @@
+2000-04-18  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.c:
+	(handle_xfer_overwrite):
+	Only offer "Replace All" in an overwrite conflict error dialog if
+	there is more than one conflicting item to deal with.
+ 
 2000-04-18  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
