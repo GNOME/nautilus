@@ -716,12 +716,14 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	/* Don't emit a signal if there are no new files. */
 	if (pending_file_info == NULL) {
+		state_changed (directory);
 		return FALSE;
 	}
 
 	/* If we are no longer monitoring, then throw away these. */
 	if (!nautilus_directory_is_file_list_monitored (directory)) {
 		gnome_vfs_file_info_list_free (pending_file_info);
+		state_changed (directory);
 		return FALSE;
 	}
 
@@ -789,7 +791,6 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		(directory->details->files, pending_files);
 
 	state_changed (directory);
-
 	return FALSE;
 }
 

@@ -1,3 +1,11 @@
+2000-06-20  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 1359 (Navigating into empty folder hangs).
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Fixed bug where directories with
+	multiples of 32 files would hang the state machine.
+
 2000-06-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* data/backgrounds/Makefile.am:
