@@ -32,309 +32,317 @@
 #include <parser.h>
 
 typedef struct {
-  const char *name;
-  void (*populate_tree)(HyperbolaDocTree *tree);
+	const char *name;
+	void (*populate_tree) (HyperbolaDocTree * tree);
 } FormatHandler;
 
-static void fmt_man_populate_tree(HyperbolaDocTree *tree);
+static void fmt_man_populate_tree (HyperbolaDocTree * tree);
 
-static void fmt_info_populate_tree(HyperbolaDocTree *tree);
+static void fmt_info_populate_tree (HyperbolaDocTree * tree);
 
 #ifndef ENABLE_SCROLLKEEPER_SUPPORT
-static void fmt_help_populate_tree(HyperbolaDocTree *tree);
+static void fmt_help_populate_tree (HyperbolaDocTree * tree);
 #endif
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
-static void fmt_scrollkeeper_populate_tree(HyperbolaDocTree *tree);
+static void fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree);
 #endif
 
-static void make_treesection(HyperbolaDocTree *tree, char **path);
+static void make_treesection (HyperbolaDocTree * tree, char **path);
 
 static FormatHandler format_handlers[] = {
 #ifndef ENABLE_SCROLLKEEPER_SUPPORT
-  {"help", fmt_help_populate_tree},
+	{"help", fmt_help_populate_tree},
 #endif
-  {"man", fmt_man_populate_tree},
-  {"info", fmt_info_populate_tree},
+	{"man", fmt_man_populate_tree},
+	{"info", fmt_info_populate_tree},
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
-  {"xml", fmt_scrollkeeper_populate_tree},
+	{"xml", fmt_scrollkeeper_populate_tree},
 #endif
-  {NULL, NULL}
+	{NULL, NULL}
 };
 
 static gboolean
-tree_node_destroy(gpointer key, gpointer data, gpointer user_data)
+tree_node_destroy (gpointer key, gpointer data, gpointer user_data)
 {
-  HyperbolaTreeNode *node = data;
+	HyperbolaTreeNode *node = data;
 
-  g_free(node->title);
-  g_free(node->uri);
+	g_free (node->title);
+	g_free (node->uri);
 
-  if(node->children)
-    {
-      g_tree_traverse(node->children, tree_node_destroy, G_IN_ORDER, NULL);
-      g_tree_destroy(node->children);
-    }
+	if (node->children) {
+		g_tree_traverse (node->children, tree_node_destroy,
+				 G_IN_ORDER, NULL);
+		g_tree_destroy (node->children);
+	}
 
-  return FALSE;
+	return FALSE;
 }
 
 static gint
-tree_key_compare(gconstpointer k1, gconstpointer k2)
+tree_key_compare (gconstpointer k1, gconstpointer k2)
 {
-  return g_strcasecmp(k1, k2);
+	return g_strcasecmp (k1, k2);
 }
 
 HyperbolaDocTree *
-hyperbola_doc_tree_new(void)
+hyperbola_doc_tree_new (void)
 {
-  HyperbolaDocTree *retval = g_new0(HyperbolaDocTree, 1);
+	HyperbolaDocTree *retval = g_new0 (HyperbolaDocTree, 1);
 
-  retval->global_by_uri = g_hash_table_new(g_str_hash, g_str_equal);
-  retval->children = g_tree_new(tree_key_compare);
+	retval->global_by_uri = g_hash_table_new (g_str_hash, g_str_equal);
+	retval->children = g_tree_new (tree_key_compare);
 
-  return retval;
+	return retval;
 }
 
 void
-hyperbola_doc_tree_destroy(HyperbolaDocTree *tree)
+hyperbola_doc_tree_destroy (HyperbolaDocTree * tree)
 {
-  g_hash_table_destroy(tree->global_by_uri);
-  g_tree_traverse(tree->children, tree_node_destroy, G_IN_ORDER, NULL);
-  g_tree_destroy(tree->children);
+	g_hash_table_destroy (tree->global_by_uri);
+	g_tree_traverse (tree->children, tree_node_destroy, G_IN_ORDER, NULL);
+	g_tree_destroy (tree->children);
 }
 
 void
-hyperbola_doc_tree_add(HyperbolaDocTree *tree, HyperbolaTreeNodeType type, const char **path,
-		       const char *title, const char *uri)
+hyperbola_doc_tree_add (HyperbolaDocTree * tree, HyperbolaTreeNodeType type,
+			const char **path, const char *title, const char *uri)
 {
-  HyperbolaTreeNode *node = NULL, *newnode;
-  int i;
-  gboolean do_insert = TRUE;
+	HyperbolaTreeNode *node = NULL, *newnode;
+	int i;
+	gboolean do_insert = TRUE;
 
-  if(path && path[0])
-    {
-      node = g_tree_lookup(tree->children, (char *)path[0]);
+	if (path && path[0]) {
+		node = g_tree_lookup (tree->children, (char *) path[0]);
 
-      for(i = 1; node && path[i]; i++)
-	{
-	  if(!node->children)
-	    {
-	      node = NULL;
-	      break;
-	    }
+		for (i = 1; node && path[i]; i++) {
+			if (!node->children) {
+				node = NULL;
+				break;
+			}
 
-	  node = g_tree_lookup(node->children, (char *)path[i]);
+			node =
+				g_tree_lookup (node->children,
+					       (char *) path[i]);
+		}
+
+		if (!node)
+			goto nopath_out;
 	}
 
-      if(!node)
-	goto nopath_out;
-    }
+	newnode = NULL;
+	if (node) {
+		if (node->children)
+			newnode =
+				g_tree_lookup (node->children,
+					       (char *) title);
+	} else
+		newnode = g_tree_lookup (tree->children, (char *) title);
 
-  newnode = NULL;
-  if(node)
-    {
-      if(node->children)
-	newnode = g_tree_lookup(node->children, (char *)title);
-    }
-  else
-    newnode = g_tree_lookup(tree->children, (char *)title);
-
-  if(newnode)
-    {
-      if(newnode->uri)
-	g_hash_table_remove(tree->global_by_uri, newnode->uri);
-      g_tree_remove(node?node->children:tree->children, newnode->title);
-      g_free(newnode->title);
-      g_free(newnode->uri);
-    }
-  else
-    {
-      newnode = g_new0(HyperbolaTreeNode, 1);
-    }
-
-  newnode->type = type;
-  newnode->uri = g_strdup(uri);
-  newnode->title = g_strdup(title);
-  newnode->up = node;
-
-  if(do_insert)
-    {
-      if(newnode->uri)
-	g_hash_table_insert(tree->global_by_uri, newnode->uri, newnode);
-
-      if(node)
-	{
-	  if(!node->children)
-	    node->children = g_tree_new(tree_key_compare);
-	  
-	  g_tree_insert(node->children, newnode->title, newnode);
+	if (newnode) {
+		if (newnode->uri)
+			g_hash_table_remove (tree->global_by_uri,
+					     newnode->uri);
+		g_tree_remove (node ? node->children : tree->children,
+			       newnode->title);
+		g_free (newnode->title);
+		g_free (newnode->uri);
+	} else {
+		newnode = g_new0 (HyperbolaTreeNode, 1);
 	}
-      else
-	g_tree_insert(tree->children, newnode->title, newnode);
-    }
 
-  return;
+	newnode->type = type;
+	newnode->uri = g_strdup (uri);
+	newnode->title = g_strdup (title);
+	newnode->up = node;
 
- nopath_out:
-  g_warning("Couldn't find full path for new node");
+	if (do_insert) {
+		if (newnode->uri)
+			g_hash_table_insert (tree->global_by_uri,
+					     newnode->uri, newnode);
+
+		if (node) {
+			if (!node->children)
+				node->children =
+					g_tree_new (tree_key_compare);
+
+			g_tree_insert (node->children, newnode->title,
+				       newnode);
+		} else
+			g_tree_insert (tree->children, newnode->title,
+				       newnode);
+	}
+
+	return;
+
+      nopath_out:
+	g_warning ("Couldn't find full path for new node");
 }
 
 void
-hyperbola_doc_tree_populate(HyperbolaDocTree *tree)
+hyperbola_doc_tree_populate (HyperbolaDocTree * tree)
 {
-  int i;
-  for(i = 0; format_handlers[i].name; i++)
-    {
-      if(format_handlers[i].populate_tree)
-	format_handlers[i].populate_tree(tree);
-    }
+	int i;
+	for (i = 0; format_handlers[i].name; i++) {
+		if (format_handlers[i].populate_tree)
+			format_handlers[i].populate_tree (tree);
+	}
 }
 
 
 typedef struct {
-  GSList *mappings[128];
+	GSList *mappings[128];
 } TreeInfo;
 
 typedef struct {
-  regex_t regex_comp;
-  char **path;
+	regex_t regex_comp;
+	char **path;
 } ManpageMapping;
 
 static void
-fmt_read_mapping(TreeInfo *ti, const char *srcfile)
+fmt_read_mapping (TreeInfo * ti, const char *srcfile)
 {
-  FILE *fh;
-  char aline[LINE_MAX];
+	FILE *fh;
+	char aline[LINE_MAX];
 
-  fh = fopen(srcfile, "r");
+	fh = fopen (srcfile, "r");
 
-  if(!fh)
-    return;
+	if (!fh)
+		return;
 
-  while(fgets(aline, sizeof(aline), fh))
-    {
-      char **line_pieces;
-      ManpageMapping *new_mapent;
-      int regerr;
-      char real_regbuf[LINE_MAX];
+	while (fgets (aline, sizeof (aline), fh)) {
+		char **line_pieces;
+		ManpageMapping *new_mapent;
+		int regerr;
+		char real_regbuf[LINE_MAX];
 
-      if(aline[0] == '#' || isspace(aline[0]))
-	continue;
+		if (aline[0] == '#' || isspace (aline[0]))
+			continue;
 
-      g_strstrip(aline);
+		g_strstrip (aline);
 
-      line_pieces = g_strsplit(aline, " ", 3);
+		line_pieces = g_strsplit (aline, " ", 3);
 
-      if(!line_pieces
-	 || (!line_pieces[0] || !line_pieces[1] || !line_pieces[2])
-	 || strlen(line_pieces[0]) != 1)
-	{
-	  g_strfreev(line_pieces);
-	  continue;
+		if (!line_pieces
+		    || (!line_pieces[0] || !line_pieces[1] || !line_pieces[2])
+		    || strlen (line_pieces[0]) != 1) {
+			g_strfreev (line_pieces);
+			continue;
+		}
+
+		new_mapent = g_new0 (ManpageMapping, 1);
+
+		g_snprintf (real_regbuf, sizeof (real_regbuf), "^%s$",
+			    line_pieces[1]);
+
+		if (
+		    (regerr =
+		     regcomp (&new_mapent->regex_comp, real_regbuf,
+			      REG_EXTENDED | REG_NOSUB))) {
+			char errbuf[128];
+			regerror (regerr, &new_mapent->regex_comp, errbuf,
+				  sizeof (errbuf));
+			g_warning ("Compilation of regex %s failed: %s",
+				   real_regbuf, errbuf);
+			g_free (new_mapent);
+			continue;
+		}
+
+		new_mapent->path = g_strsplit (line_pieces[2], "/", -1);
+
+		ti->mappings[(int) line_pieces[0][0]] =
+			g_slist_prepend (ti->mappings
+					 [(int) line_pieces[0][0]],
+					 new_mapent);
+
+		g_strfreev (line_pieces);
 	}
 
-      new_mapent = g_new0(ManpageMapping, 1);
-
-      g_snprintf(real_regbuf, sizeof(real_regbuf), "^%s$", line_pieces[1]);
-
-      if((regerr = regcomp(&new_mapent->regex_comp, real_regbuf, REG_EXTENDED|REG_NOSUB)))
-	{
-	  char errbuf[128];
-	  regerror(regerr, &new_mapent->regex_comp, errbuf, sizeof(errbuf));
-	  g_warning("Compilation of regex %s failed: %s", real_regbuf, errbuf);
-	  g_free(new_mapent);
-	  continue;
-	}
-
-      new_mapent->path = g_strsplit(line_pieces[2], "/", -1);
-
-      ti->mappings[(int)line_pieces[0][0]] = g_slist_prepend(ti->mappings[(int)line_pieces[0][0]], new_mapent);
-
-      g_strfreev(line_pieces);
-    }
-
-  fclose(fh);
+	fclose (fh);
 }
 
 static void
-fmt_free_tree_info(HyperbolaDocTree *tree)
+fmt_free_tree_info (HyperbolaDocTree * tree)
 {
-  TreeInfo *tinfo;
-  guint i;
+	TreeInfo *tinfo;
+	guint i;
 
-  tinfo = tree->user_data;
-  if(!tinfo)
-    return;
+	tinfo = tree->user_data;
+	if (!tinfo)
+		return;
 
-  for(i = 0; i < sizeof(tinfo->mappings)/sizeof(tinfo->mappings[0]); i++)
-    {
-      GSList *cur;
+	for (i = 0;
+	     i < sizeof (tinfo->mappings) / sizeof (tinfo->mappings[0]); i++) {
+		GSList *cur;
 
-      for(cur = tinfo->mappings[i]; cur; cur = cur->next)
-	{
-	  ManpageMapping *mapent = cur->data;
-	  regfree(&mapent->regex_comp);
-	  g_strfreev(mapent->path);
-	  g_free(mapent);
+		for (cur = tinfo->mappings[i]; cur; cur = cur->next) {
+			ManpageMapping *mapent = cur->data;
+			regfree (&mapent->regex_comp);
+			g_strfreev (mapent->path);
+			g_free (mapent);
+		}
+
+		g_slist_free (tinfo->mappings[i]);
 	}
 
-      g_slist_free(tinfo->mappings[i]);
-    }
-
-  g_free(tinfo);
-  tree->user_data = NULL;
+	g_free (tinfo);
+	tree->user_data = NULL;
 }
 
 static char **
-fmt_map_entry(HyperbolaDocTree *tree, const char *name, char section)
+fmt_map_entry (HyperbolaDocTree * tree, const char *name, char section)
 {
-  TreeInfo *tinfo;
-  GSList *cur_slist;
+	TreeInfo *tinfo;
+	GSList *cur_slist;
 
-  tinfo = tree->user_data;
-  if(!tinfo)
-    {
-      GList *langlist, *cur;
-      char mapfile[PATH_MAX];
-      const char *tmapfile;
+	tinfo = tree->user_data;
+	if (!tinfo) {
+		GList *langlist, *cur;
+		char mapfile[PATH_MAX];
+		const char *tmapfile;
 
-      tinfo = tree->user_data = g_new0(TreeInfo, 1);
+		tinfo = tree->user_data = g_new0 (TreeInfo, 1);
 
-      /* Because mapping entries are prepended, we have to read the items in reverse order of preference */
+		/* Because mapping entries are prepended, we have to read the items in reverse order of preference */
 
-      tmapfile = HYPERBOLA_DATADIR "/maps/pages.map";
-      fmt_read_mapping(tinfo, g_file_exists(tmapfile)?tmapfile:"pages.map");
+		tmapfile = HYPERBOLA_DATADIR "/maps/pages.map";
+		fmt_read_mapping (tinfo,
+				  g_file_exists (tmapfile) ? tmapfile :
+				  "pages.map");
 
-      for(cur = langlist = g_list_reverse(g_list_copy(gnome_i18n_get_language_list(NULL)));
-	  cur; cur = cur->next)
-	{
-	  g_snprintf(mapfile, sizeof(mapfile),
-		     HYPERBOLA_DATADIR "/maps/pages.map.%s",
-		     (char *)cur->data);
-	  fmt_read_mapping(tinfo, g_file_exists(mapfile)?mapfile:g_basename(mapfile));
+		for (cur = langlist =
+		     g_list_reverse (g_list_copy
+				     (gnome_i18n_get_language_list (NULL)));
+		     cur; cur = cur->next) {
+			g_snprintf (mapfile, sizeof (mapfile),
+				    HYPERBOLA_DATADIR "/maps/pages.map.%s",
+				    (char *) cur->data);
+			fmt_read_mapping (tinfo,
+					  g_file_exists (mapfile) ? mapfile :
+					  g_basename (mapfile));
+		}
+		g_list_free (langlist);
 	}
-      g_list_free(langlist);
-    }
 
-  for(cur_slist = tinfo->mappings[(int)section]; cur_slist; cur_slist = cur_slist->next)
-    {
-      ManpageMapping *mapent = cur_slist->data;
+	for (cur_slist = tinfo->mappings[(int) section]; cur_slist;
+	     cur_slist = cur_slist->next) {
+		ManpageMapping *mapent = cur_slist->data;
 
-      if(!regexec(&mapent->regex_comp, name, 0, NULL, 0))
-	return mapent->path;
-    }
+		if (!regexec (&mapent->regex_comp, name, 0, NULL, 0))
+			return mapent->path;
+	}
 
-  return NULL;
+	return NULL;
 }
 
 /******** Man page format ********/
 
 /* Caller must free this */
 static char *
-extract_secnum_from_filename (const char *filename) {
+extract_secnum_from_filename (const char *filename)
+{
 	char *end_string;
-	
+
 	end_string = strstr (filename, ".gz");
 	if (!end_string) {
 		/* Not a gzipped man file */
@@ -342,96 +350,104 @@ extract_secnum_from_filename (const char *filename) {
 	} else {
 		/* Its a gzipped man file so we need to return the
 		 * secnum */
-		return g_strndup (end_string-2, 2);
+		return g_strndup (end_string - 2, 2);
 	}
-	
+
 }
 
 /* Caller must free this */
 static char *
-man_name_without_suffix (const char *filename) {
+man_name_without_suffix (const char *filename)
+{
 	char *end_string, *new_string, *ptr;
 
 	end_string = strstr (filename, ".gz");
 	if (end_string) {
 		/* e.g. manfile.1.gz  would return manfile */
-		return g_strndup (filename, end_string-filename-2);
+		return g_strndup (filename, end_string - filename - 2);
 	} else {
 		/* e.g. manfile.1 would return manfile */
-		ptr = strrchr(filename, (int)('.'));
+		ptr = strrchr (filename, (int) ('.'));
 		if (ptr == NULL)
-		    new_string =  g_strdup (filename);
+			new_string = g_strdup (filename);
 		else
-		    new_string = g_strndup(filename, ptr-filename);	
-		return new_string;	
+			new_string = g_strndup (filename, ptr - filename);
+		return new_string;
 	}
 }
 
 static void
-fmt_man_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, char **defpath, char secnum)
+fmt_man_populate_tree_for_subdir (HyperbolaDocTree * tree,
+				  const char *basedir, char **defpath,
+				  char secnum)
 {
-  DIR *dirh;
-  struct dirent *dent;
-  char uribuf[128], namebuf[128], titlebuf[128];
-  char **thispath;
+	DIR *dirh;
+	struct dirent *dent;
+	char uribuf[128], namebuf[128], titlebuf[128];
+	char **thispath;
 
-  dirh = opendir(basedir);
-  if(!dirh)
-    return;
+	dirh = opendir (basedir);
+	if (!dirh)
+		return;
 
-  readdir(dirh); /* skip . & .. */
-  readdir(dirh);
+	readdir (dirh);		/* skip . & .. */
+	readdir (dirh);
 
-  while((dent = readdir(dirh)))
-    {
-      char *ctmp;
-      char *manname;
+	while ((dent = readdir (dirh))) {
+		char *ctmp;
+		char *manname;
 
-      if(dent->d_name[0] == '.')
-	      continue;
+		if (dent->d_name[0] == '.')
+			continue;
 
-      ctmp = extract_secnum_from_filename (dent->d_name);
-      if(!ctmp)
-	continue;
+		ctmp = extract_secnum_from_filename (dent->d_name);
+		if (!ctmp)
+			continue;
 
-      if(ctmp[1] != secnum) {
-	      g_free (ctmp);
-	      continue;
-      }
+		if (ctmp[1] != secnum) {
+			g_free (ctmp);
+			continue;
+		}
 
-      manname = man_name_without_suffix (dent->d_name);
-            
-      if (strstr (dent->d_name, ".gz")) {
-	      g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)strlen (manname), manname);
-      } else {
-	    /*  g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)(ctmp - dent->d_name), dent->d_name); */
-	      g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)strlen (manname), manname);
-      }
-      g_free (manname);
-      strcpy(titlebuf, namebuf);
-      strcat(titlebuf, " (man)");
+		manname = man_name_without_suffix (dent->d_name);
 
-      g_snprintf(uribuf, sizeof(uribuf), "man:%s.%c", namebuf, secnum);
+		if (strstr (dent->d_name, ".gz")) {
+			g_snprintf (namebuf, sizeof (namebuf), "%.*s",
+				    (int) strlen (manname), manname);
+		} else {
+			/*  g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)(ctmp - dent->d_name), dent->d_name); */
+			g_snprintf (namebuf, sizeof (namebuf), "%.*s",
+				    (int) strlen (manname), manname);
+		}
+		g_free (manname);
+		strcpy (titlebuf, namebuf);
+		strcat (titlebuf, " (man)");
 
-      thispath = fmt_map_entry(tree, titlebuf, secnum);
+		g_snprintf (uribuf, sizeof (uribuf), "man:%s.%c", namebuf,
+			    secnum);
 
-      if(thispath)
-	make_treesection(tree, thispath);
+		thispath = fmt_map_entry (tree, titlebuf, secnum);
 
-      hyperbola_doc_tree_add(tree, HYP_TREE_NODE_PAGE, (const char **)(thispath?thispath:defpath), titlebuf, uribuf);
-      g_free (ctmp);
-    }
+		if (thispath)
+			make_treesection (tree, thispath);
 
-  closedir(dirh);
+		hyperbola_doc_tree_add (tree, HYP_TREE_NODE_PAGE,
+					(const char **) (thispath ? thispath :
+							 defpath), titlebuf,
+					uribuf);
+		g_free (ctmp);
+	}
+
+	closedir (dirh);
 }
 
 static void
-translate_array(char **array)
+translate_array (char **array)
 {
-  int i;
+	int i;
 
-  for(i = 0; array[i]; i++)
-    array[i] = _(array[i]);
+	for (i = 0; array[i]; i++)
+		array[i] = _(array[i]);
 }
 
 
@@ -476,310 +492,331 @@ translate_array(char **array)
                       working on changes to the kernel)
 ***/
 
-static char *man_path[] = {N_("Manual"), NULL};
-static char *cfg_path[] = {N_("Manual"), N_("System"), N_("Configuration"), N_("Config files"), NULL};
-static char *app_path[] = {N_("Manual"), N_("Applications"), N_("Command Line"), NULL};
-static char *dev_path[] = {N_("Manual"), N_("Development"), N_("APIs"), N_("Miscellaneous"), NULL };
-static char *syscall_path[] = {N_("Manual"), N_("Development"), N_("APIs"), N_("System Calls"), NULL };
+static char *man_path[] = { N_("Manual"), NULL };
+static char *cfg_path[] =
+	{ N_("Manual"), N_("System"), N_("Configuration"), N_("Config files"),
+	NULL
+};
+static char *app_path[] =
+	{ N_("Manual"), N_("Applications"), N_("Command Line"), NULL };
+static char *dev_path[] =
+	{ N_("Manual"), N_("Development"), N_("APIs"), N_("Miscellaneous"),
+	NULL
+};
+static char *syscall_path[] =
+	{ N_("Manual"), N_("Development"), N_("APIs"), N_("System Calls"),
+	NULL
+};
 
 static void
-fmt_man_populate_tree_for_dir(HyperbolaDocTree *tree, const char *basedir)
+fmt_man_populate_tree_for_dir (HyperbolaDocTree * tree, const char *basedir)
 {
-  char cbuf[1024];
+	char cbuf[1024];
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man1", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, app_path, '1');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man1", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, app_path, '1');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man2", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, syscall_path, '2');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man2", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, syscall_path, '2');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man3", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, dev_path, '3');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man3", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, dev_path, '3');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man4", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, man_path, '4');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man4", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, man_path, '4');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man5", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, cfg_path, '5');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man5", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, cfg_path, '5');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man6", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, app_path, '6');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man6", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, app_path, '6');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man7", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, man_path, '7');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man7", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, man_path, '7');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man8", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, app_path, '8');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man8", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, app_path, '8');
 
-  g_snprintf(cbuf, sizeof(cbuf), "%s/man9", basedir);
-  fmt_man_populate_tree_for_subdir(tree, cbuf, man_path, '9');
+	g_snprintf (cbuf, sizeof (cbuf), "%s/man9", basedir);
+	fmt_man_populate_tree_for_subdir (tree, cbuf, man_path, '9');
 }
 
 static void
-make_treesection(HyperbolaDocTree *tree, char **path)
+make_treesection (HyperbolaDocTree * tree, char **path)
 {
-  int i, j;
-  char *tmp_array[20];
+	int i, j;
+	char *tmp_array[20];
 
-  for(i = 0; path[i]; i++)
-    {
-      for(j = 0; j < i; j++)
-	tmp_array[j] = path[j];
-      tmp_array[j] = NULL;
+	for (i = 0; path[i]; i++) {
+		for (j = 0; j < i; j++)
+			tmp_array[j] = path[j];
+		tmp_array[j] = NULL;
 
-      hyperbola_doc_tree_add(tree, HYP_TREE_NODE_FOLDER, (const char **)tmp_array, path[i], NULL);
-    }
+		hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+					(const char **) tmp_array, path[i],
+					NULL);
+	}
 }
 
 static void
-fmt_man_populate_tree(HyperbolaDocTree *tree)
+fmt_man_populate_tree (HyperbolaDocTree * tree)
 {
-  FILE *fh;
-  char aline[1024];
-  char **manpath = NULL;
-  int i;
-  /* Go through all the man pages:
-     1. Determine the places to search (run 'manpath').
-     2. Go through all subdirectories to find individual files.
-     3. For each file, add it onto the tree at the right place.
-  */
+	FILE *fh;
+	char aline[1024];
+	char **manpath = NULL;
+	int i;
+	/* Go through all the man pages:
+	 * 1. Determine the places to search (run 'manpath').
+	 * 2. Go through all subdirectories to find individual files.
+	 * 3. For each file, add it onto the tree at the right place.
+	 */
 
-  translate_array(man_path);
-  translate_array(cfg_path);
-  translate_array(app_path);
-  translate_array(dev_path);
-  translate_array(syscall_path);
+	translate_array (man_path);
+	translate_array (cfg_path);
+	translate_array (app_path);
+	translate_array (dev_path);
+	translate_array (syscall_path);
 
-  make_treesection(tree, man_path);
-  make_treesection(tree, cfg_path);
-  make_treesection(tree, app_path);
-  make_treesection(tree, dev_path);
-  make_treesection(tree, syscall_path);
+	make_treesection (tree, man_path);
+	make_treesection (tree, cfg_path);
+	make_treesection (tree, app_path);
+	make_treesection (tree, dev_path);
+	make_treesection (tree, syscall_path);
 
-  fh = popen("manpath", "r");
-  g_return_if_fail(fh);
+	fh = popen ("manpath", "r");
+	g_return_if_fail (fh);
 
-  if(fgets(aline, sizeof(aline), fh))
-    {
-      g_strstrip(aline);
-      manpath = g_strsplit(aline, ":", -1);
-    }
-  else
-    {
-      g_warning("Couldn't get manpath");
-    }
-  pclose(fh);
+	if (fgets (aline, sizeof (aline), fh)) {
+		g_strstrip (aline);
+		manpath = g_strsplit (aline, ":", -1);
+	} else {
+		g_warning ("Couldn't get manpath");
+	}
+	pclose (fh);
 
-  i = 0;
-  if(manpath)
-    {
-      for(; manpath[i]; i++)
-	fmt_man_populate_tree_for_dir(tree, manpath[i]);
-    }
-  if(!manpath || !manpath[0]) {
-    fmt_man_populate_tree_for_dir (tree, "/usr/man");
-    fmt_man_populate_tree_for_dir (tree, "/usr/share/man");
-  }
+	i = 0;
+	if (manpath) {
+		for (; manpath[i]; i++)
+			fmt_man_populate_tree_for_dir (tree, manpath[i]);
+	}
+	if (!manpath || !manpath[0]) {
+		fmt_man_populate_tree_for_dir (tree, "/usr/man");
+		fmt_man_populate_tree_for_dir (tree, "/usr/share/man");
+	}
 
-  fmt_free_tree_info(tree);
+	fmt_free_tree_info (tree);
 }
 
 /***** info pages *****/
 static void
-fmt_info_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, char **defpath)
+fmt_info_populate_tree_for_subdir (HyperbolaDocTree * tree,
+				   const char *basedir, char **defpath)
 {
-  DIR *dirh;
-  struct dirent *dent;
+	DIR *dirh;
+	struct dirent *dent;
 
-  dirh = opendir(basedir);
-  if(!dirh)
-    return;
+	dirh = opendir (basedir);
+	if (!dirh)
+		return;
 
-  readdir(dirh); /* skip . & .. */
-  readdir(dirh);
+	readdir (dirh);		/* skip . & .. */
+	readdir (dirh);
 
-  while((dent = readdir(dirh)))
-    {
-      char *ctmp = NULL;
-      char **thispath;
-      char uribuf[128], titlebuf[128];
+	while ((dent = readdir (dirh))) {
+		char *ctmp = NULL;
+		char **thispath;
+		char uribuf[128], titlebuf[128];
 
-      if(dent->d_name[0] == '.')
-	continue;
-      
-      do {
-	if(ctmp) *ctmp = '\0';
-	ctmp = strrchr(dent->d_name, '.');
-      } while(ctmp && strcmp(ctmp, ".info"));
+		if (dent->d_name[0] == '.')
+			continue;
 
-      if(!ctmp)
-	continue;
+		do {
+			if (ctmp)
+				*ctmp = '\0';
+			ctmp = strrchr (dent->d_name, '.');
+		} while (ctmp && strcmp (ctmp, ".info"));
 
-      *ctmp = '\0';
+		if (!ctmp)
+			continue;
 
-      strcpy(titlebuf, dent->d_name);
-      strcat(titlebuf, " (info)");
+		*ctmp = '\0';
 
-      g_snprintf(uribuf, sizeof(uribuf), "info:%s", dent->d_name);
+		strcpy (titlebuf, dent->d_name);
+		strcat (titlebuf, " (info)");
 
-      thispath = fmt_map_entry(tree, dent->d_name, '!'); /* Yes, we use the manpage mapping stuff just
-							    because it is easier. */
-								
-      if(thispath)
-	make_treesection(tree, thispath);
+		g_snprintf (uribuf, sizeof (uribuf), "info:%s", dent->d_name);
 
-      hyperbola_doc_tree_add(tree, HYP_TREE_NODE_PAGE, (const char **)(thispath?thispath:defpath), titlebuf, uribuf);
-    }
+		thispath = fmt_map_entry (tree, dent->d_name, '!');	/* Yes, we use the manpage mapping stuff just
+									 * because it is easier. */
 
-  closedir(dirh);
+		if (thispath)
+			make_treesection (tree, thispath);
+
+		hyperbola_doc_tree_add (tree, HYP_TREE_NODE_PAGE,
+					(const char **) (thispath ? thispath :
+							 defpath), titlebuf,
+					uribuf);
+	}
+
+	closedir (dirh);
 
 }
 
 static void
-fmt_info_populate_tree(HyperbolaDocTree *tree)
+fmt_info_populate_tree (HyperbolaDocTree * tree)
 {
-  char *defpath[] = { N_("Info"), NULL };
+	char *defpath[] = { N_("Info"), NULL };
 
-  translate_array(defpath);
-  make_treesection(tree, defpath);
+	translate_array (defpath);
+	make_treesection (tree, defpath);
 
-  fmt_info_populate_tree_for_subdir (tree, "/usr/info", defpath);
-  fmt_info_populate_tree_for_subdir (tree, "/usr/share/info", defpath);
-  if(strcmp(INFODIR, "/usr/info"))
-    fmt_info_populate_tree_for_subdir(tree, INFODIR, defpath);
+	fmt_info_populate_tree_for_subdir (tree, "/usr/info", defpath);
+	fmt_info_populate_tree_for_subdir (tree, "/usr/share/info", defpath);
+	if (strcmp (INFODIR, "/usr/info"))
+		fmt_info_populate_tree_for_subdir (tree, INFODIR, defpath);
 
-  fmt_free_tree_info(tree);
+	fmt_free_tree_info (tree);
 }
 
 /******* help: ******/
 #ifndef ENABLE_SCROLLKEEPER_SUPPORT
 static void
-fmt_help_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname, char **defpath)
+fmt_help_populate_tree_from_subdir (HyperbolaDocTree * tree,
+				    const char *dirname, char **defpath)
 {
-  DIR *dirh;
-  struct dirent *dent;
-  char *subpath[10];
-  int i;
-  GList *langlist;
+	DIR *dirh;
+	struct dirent *dent;
+	char *subpath[10];
+	int i;
+	GList *langlist;
 
-  dirh = opendir(dirname);
+	dirh = opendir (dirname);
 
-  if(!dirh)
-    return;
+	if (!dirh)
+		return;
 
-  readdir(dirh); /* skip . & .. */
-  readdir(dirh);
+	readdir (dirh);		/* skip . & .. */
+	readdir (dirh);
 
-  for(i = 0; defpath[i]; i++)
-    subpath[i] = defpath[i];
-  subpath[i+1] = NULL;
+	for (i = 0; defpath[i]; i++)
+		subpath[i] = defpath[i];
+	subpath[i + 1] = NULL;
 
-  langlist = gnome_i18n_get_language_list(NULL);
+	langlist = gnome_i18n_get_language_list (NULL);
 
-  while((dent = readdir(dirh)))
-    {
-      char afile[PATH_MAX], aline[LINE_MAX], uribuf[128];
-      FILE *fh;
-      GList *cur;
+	while ((dent = readdir (dirh))) {
+		char afile[PATH_MAX], aline[LINE_MAX], uribuf[128];
+		FILE *fh;
+		GList *cur;
 
-      /* first, try to find xml doc... */
-      g_snprintf(afile, sizeof(afile), "%s/%s/C/%s.xml", dirname, dent->d_name, dent->d_name);
-      if(!g_file_exists(afile)) {
+		/* first, try to find xml doc... */
+		g_snprintf (afile, sizeof (afile), "%s/%s/C/%s.xml", dirname,
+			    dent->d_name, dent->d_name);
+		if (!g_file_exists (afile)) {
 
-	/* then, try to find sgml doc... */
-	g_snprintf(afile, sizeof(afile), "%s/%s/C/%s.sgml", dirname, dent->d_name, dent->d_name);
-	if(!g_file_exists(afile)) {
+			/* then, try to find sgml doc... */
+			g_snprintf (afile, sizeof (afile), "%s/%s/C/%s.sgml",
+				    dirname, dent->d_name, dent->d_name);
+			if (!g_file_exists (afile)) {
 
-	  /* last, html... */
-	  g_snprintf(afile, sizeof(afile), "%s/%s/C/index.html", dirname, dent->d_name);
-	  if (!g_file_exists(afile)) {
-	    continue;
-	  }
-	}
-      }
-
-      g_snprintf(uribuf, sizeof(uribuf), "help:%s", dent->d_name);
-
-      hyperbola_doc_tree_add(tree, HYP_TREE_NODE_BOOK, (const char **)defpath, dent->d_name, uribuf);
-
-      subpath[i] = dent->d_name;
-
-      for(cur = langlist; cur; cur = cur->next)
-	{
-	  /* XXX fixme for gnome-libs 2.0 */
-	  g_snprintf(afile, sizeof(afile), "%s/%s/%s/topic.dat", dirname, dent->d_name, (char *)cur->data);
-	  if(g_file_exists(afile))
-	    break;
-	}
-      if(!cur)
-	g_snprintf(afile, sizeof(afile), "%s/%s/C/topic.dat", dirname, dent->d_name);
-
-      fh = fopen(afile, "r");
-      if(!fh)
-	continue;
-
-      while(fgets(aline, sizeof(aline), fh))
-	{
-	  char **pieces;
-
-	  g_strstrip(aline);
-	  if(!aline[0] || aline[0] == '#')
-	    continue;
-
-	  pieces = g_strsplit(aline, " ", 2);
-
-	  if(pieces && pieces[0] && pieces[1])
-	    {
-	      char *ctmp = strrchr(pieces[0], '.'), *ctmp2;
-
-	      if(ctmp && !strcmp(ctmp, ".html"))
-		{
-		  *ctmp = '\0';
-		  ctmp++;
-		}
-	      else
-		ctmp = NULL;
-
-	      g_snprintf(uribuf, sizeof(uribuf), "help:%s/%s", dent->d_name, pieces[0]);
-
-	      if(ctmp)
-		{
-		  ctmp2 = strchr(ctmp, '#');
-		  if(ctmp2)
-		    {
-		      ctmp2++;
-		      strcat(uribuf, "/");
-		      strcat(uribuf, ctmp2);
-		    }
+				/* last, html... */
+				g_snprintf (afile, sizeof (afile),
+					    "%s/%s/C/index.html", dirname,
+					    dent->d_name);
+				if (!g_file_exists (afile)) {
+					continue;
+				}
+			}
 		}
 
-	      hyperbola_doc_tree_add(tree, HYP_TREE_NODE_PAGE, (const char **)subpath, pieces[1], uribuf);
-	    }
-	  g_strfreev(pieces);
+		g_snprintf (uribuf, sizeof (uribuf), "help:%s", dent->d_name);
+
+		hyperbola_doc_tree_add (tree, HYP_TREE_NODE_BOOK,
+					(const char **) defpath, dent->d_name,
+					uribuf);
+
+		subpath[i] = dent->d_name;
+
+		for (cur = langlist; cur; cur = cur->next) {
+			/* XXX fixme for gnome-libs 2.0 */
+			g_snprintf (afile, sizeof (afile),
+				    "%s/%s/%s/topic.dat", dirname,
+				    dent->d_name, (char *) cur->data);
+			if (g_file_exists (afile))
+				break;
+		}
+		if (!cur)
+			g_snprintf (afile, sizeof (afile),
+				    "%s/%s/C/topic.dat", dirname,
+				    dent->d_name);
+
+		fh = fopen (afile, "r");
+		if (!fh)
+			continue;
+
+		while (fgets (aline, sizeof (aline), fh)) {
+			char **pieces;
+
+			g_strstrip (aline);
+			if (!aline[0] || aline[0] == '#')
+				continue;
+
+			pieces = g_strsplit (aline, " ", 2);
+
+			if (pieces && pieces[0] && pieces[1]) {
+				char *ctmp = strrchr (pieces[0], '.'), *ctmp2;
+
+				if (ctmp && !strcmp (ctmp, ".html")) {
+					*ctmp = '\0';
+					ctmp++;
+				} else
+					ctmp = NULL;
+
+				g_snprintf (uribuf, sizeof (uribuf),
+					    "help:%s/%s", dent->d_name,
+					    pieces[0]);
+
+				if (ctmp) {
+					ctmp2 = strchr (ctmp, '#');
+					if (ctmp2) {
+						ctmp2++;
+						strcat (uribuf, "/");
+						strcat (uribuf, ctmp2);
+					}
+				}
+
+				hyperbola_doc_tree_add (tree,
+							HYP_TREE_NODE_PAGE,
+							(const char **)
+							subpath, pieces[1],
+							uribuf);
+			}
+			g_strfreev (pieces);
+		}
+
+		fclose (fh);
 	}
 
-      fclose(fh);
-    }
-
-  closedir(dirh);
+	closedir (dirh);
 }
+
 #endif
 
 #ifndef ENABLE_SCROLLKEEPER_SUPPORT
 static void
-fmt_help_populate_tree(HyperbolaDocTree *tree)
+fmt_help_populate_tree (HyperbolaDocTree * tree)
 {
-  char *app_path[] = {N_("Applications"), NULL};
-  char *dirname;
+	char *app_path[] = { N_("Applications"), NULL };
+	char *dirname;
 
-  translate_array(app_path);
-  make_treesection(tree, app_path);
+	translate_array (app_path);
+	make_treesection (tree, app_path);
 
-  dirname = gnome_datadir_file("gnome/help");
+	dirname = gnome_datadir_file ("gnome/help");
 
-  if(dirname)
-    fmt_help_populate_tree_from_subdir(tree, dirname, app_path);
-  g_free(dirname);
+	if (dirname)
+		fmt_help_populate_tree_from_subdir (tree, dirname, app_path);
+	g_free (dirname);
 }
 #endif
 
@@ -795,28 +832,28 @@ fmt_help_populate_tree(HyperbolaDocTree *tree)
  * a new list.  The new list is created with an extra space to allow
  * for the addition of a further entry in the list.
  */
-static char ** 
-fmt_scrollkeeper_expand_ancestor_list(char **ancestors, int *next_free)
+static char **
+fmt_scrollkeeper_expand_ancestor_list (char **ancestors, int *next_free)
 {
-  int i;
-  char **new_list;
- 
-  /* Find out how many strings are in the list */ 
-  for (i = 0; ancestors[i] != NULL; i++);
-  
-  /* Add space for one more and a NULL to indicate the tail */
-  new_list = g_new0(char*, i + 2);
+	int i;
+	char **new_list;
 
-  /* Just copy the pointers */
-  for (i = 0; ancestors[i] != NULL; i++) {
-    new_list[i] = ancestors[i];
-  }
+	/* Find out how many strings are in the list */
+	for (i = 0; ancestors[i] != NULL; i++);
 
-  new_list[i] = new_list[i+1] = NULL;
+	/* Add space for one more and a NULL to indicate the tail */
+	new_list = g_new0 (char *, i + 2);
 
-  *next_free = i;
-    
-  return new_list;
+	/* Just copy the pointers */
+	for (i = 0; ancestors[i] != NULL; i++) {
+		new_list[i] = ancestors[i];
+	}
+
+	new_list[i] = new_list[i + 1] = NULL;
+
+	*next_free = i;
+
+	return new_list;
 }
 
 
@@ -843,63 +880,68 @@ fmt_scrollkeeper_expand_ancestor_list(char **ancestors, int *next_free)
  *     	          i.e. first, second, third, etc. 
  */
 static void
-fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree *tree, char **ancestors,
-                                     xmlNodePtr node, char *base_uri, 
-				     int this_pos, unsigned int go_deeper)
+fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree * tree, char **ancestors,
+				    xmlNodePtr node, char *base_uri,
+				    int this_pos, unsigned int go_deeper)
 {
-  xmlNodePtr next_child;
-  
-  char **section;
-  char *sect_uri;
-  int  i, pos;
-  
-  char separator[2] = {'\0'};
-  
+	xmlNodePtr next_child;
 
-  next_child = node->childs;
- 
-  /* Set up the positioning information for the HyperbolaDocTree */ 
-  section      = fmt_scrollkeeper_expand_ancestor_list(ancestors, &i);
-  section[i]   = g_strdup_printf("%03d. %s", this_pos, next_child->content);
-  section[i+1] = NULL;
-  
-  /* 
-   * Set the correct separator token.  SGML requires ? but
-   * the other use #
-   */
-  if (!g_strncasecmp ("help", base_uri, 4)) {
-    separator[0] = '?';
-  }
-  else {
-    separator[0] = '#';
-  }
- 
-  sect_uri = g_strconcat(base_uri, separator, 
-		  		xmlGetProp (node, "linkid"), NULL);
+	char **section;
+	char *sect_uri;
+	int i, pos;
 
-  /* Process this node and insert it into the tree */
-  hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER, 
-                            (const char**)ancestors, section[i], sect_uri);
+	char separator[2] = { '\0' };
 
-  
-  /* Process subsections of this node */ 
-  if (go_deeper > 0) {
-    for(pos = 1, next_child = next_child->next; next_child != NULL; 
-                                next_child = next_child->next)
-    {
-      if(!g_strncasecmp (next_child->name, "tocsect", 7)) {
-        fmt_scrollkeeper_parse_toc_section (tree, section, next_child, 
-		      				base_uri, pos, (go_deeper - 1));
-        pos++;
-      }
-    }
-  }
-  
-  g_free (sect_uri);  
-  g_free (section[i]);
-  g_free (section);
-  
-  return;
+
+	next_child = node->childs;
+
+	/* Set up the positioning information for the HyperbolaDocTree */
+	section = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
+	section[i] =
+		g_strdup_printf ("%03d. %s", this_pos, next_child->content);
+	section[i + 1] = NULL;
+
+	/* 
+	 * Set the correct separator token.  SGML requires ? but
+	 * the other use #
+	 */
+	if (!g_strncasecmp ("help", base_uri, 4)) {
+		separator[0] = '?';
+	} else {
+		separator[0] = '#';
+	}
+
+	sect_uri = g_strconcat (base_uri, separator,
+				xmlGetProp (node, "linkid"), NULL);
+
+	/* Process this node and insert it into the tree */
+	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+				(const char **) ancestors, section[i],
+				sect_uri);
+
+
+	/* Process subsections of this node */
+	if (go_deeper > 0) {
+		for (pos = 1, next_child = next_child->next;
+		     next_child != NULL; next_child = next_child->next) {
+			if (!g_strncasecmp (next_child->name, "tocsect", 7)) {
+				fmt_scrollkeeper_parse_toc_section (tree,
+								    section,
+								    next_child,
+								    base_uri,
+								    pos,
+								    (go_deeper
+								     - 1));
+				pos++;
+			}
+		}
+	}
+
+	g_free (sect_uri);
+	g_free (section[i]);
+	g_free (section);
+
+	return;
 }
 
 /*
@@ -925,36 +967,39 @@ fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree *tree, char **ancestors,
  * 			appended to this.
  */
 static void
-fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree *tree, char **ancestors, 
-                                  char *toc_file, char *base_uri)
+fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
+				char *toc_file, char *base_uri)
 {
-  xmlDocPtr toc_doc;
-  xmlNodePtr next_child;
-  
-  int pos;
+	xmlDocPtr toc_doc;
+	xmlNodePtr next_child;
 
-  unsigned int levels_to_process = 5;
-  
-  toc_doc = xmlParseFile (toc_file);
-  
-  if (!toc_doc) {
-      g_warning ("Unable to parse ScrollKeeper TOC XML file:\n\t%s", toc_file); 
-      return;
-  }
- 
-  /* Process the top-level tocsect nodes in the file */ 
-  for (pos = 1, next_child = toc_doc->root->childs; next_child != NULL; 
-       			                         next_child = next_child->next) {
-    if (!g_strncasecmp (next_child->name, "tocsect", 7)) {
-      fmt_scrollkeeper_parse_toc_section (tree, ancestors, next_child, 
-		      				base_uri, pos, levels_to_process);
-      pos++;
-    }
-  }
+	int pos;
 
-  xmlFreeDoc (toc_doc);
+	unsigned int levels_to_process = 5;
 
-  return;
+	toc_doc = xmlParseFile (toc_file);
+
+	if (!toc_doc) {
+		g_warning ("Unable to parse ScrollKeeper TOC XML file:\n\t%s",
+			   toc_file);
+		return;
+	}
+
+	/* Process the top-level tocsect nodes in the file */
+	for (pos = 1, next_child = toc_doc->root->childs; next_child != NULL;
+	     next_child = next_child->next) {
+		if (!g_strncasecmp (next_child->name, "tocsect", 7)) {
+			fmt_scrollkeeper_parse_toc_section (tree, ancestors,
+							    next_child,
+							    base_uri, pos,
+							    levels_to_process);
+			pos++;
+		}
+	}
+
+	xmlFreeDoc (toc_doc);
+
+	return;
 }
 
 
@@ -977,95 +1022,94 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree *tree, char **ancestors,
  * 	node:		The XML node representing the document to be processed.
  */
 static void
-fmt_scrollkeeper_parse_document (HyperbolaDocTree *tree, char **ancestors, 
-					xmlNodePtr node)
+fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
+				 xmlNodePtr node)
 {
-  xmlNodePtr next_child;
-  char **section;
- 
-  FILE *pipe;
-  int  i;
+	xmlNodePtr next_child;
+	char **section;
 
-  char *toc_location;
-  int bytes_read;
-  
-  char *doc_uri;
-  char *doc_data[3] = {NULL};
+	FILE *pipe;
+	int i;
 
+	char *toc_location;
+	int bytes_read;
 
-  toc_location = g_new0(char, 1024);
-
-  next_child = node->childs;
-		
-  /* Obtain info about the document from the XML node describing it*/
-  for ( ; next_child != NULL; next_child = next_child->next) {
-
-      if (!g_strcasecmp (next_child->name, "doctitle")) {
-        doc_data[0] = next_child->childs->content;
-      }
-
-      else if (!g_strcasecmp (next_child->name, "docsource")) {
-        doc_data[1] = next_child->childs->content;
-      }
-        
-      else if (!g_strcasecmp (next_child->name, "docformat")) {
-        doc_data[2] = next_child->childs->content;
-      }
-  }
-
-  /* Expand the ancestor list and append this documents name to it */
-  section      = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
-  section[i]   = doc_data[0];
-  section[i+1] = NULL;
+	char *doc_uri;
+	char *doc_data[3] = { NULL };
 
 
-  /* Decide on the appropriate prefix */
-  if (!g_strcasecmp ("text/html", doc_data[2])) {
-      doc_uri = g_strconcat ("file://", doc_data[1], NULL);
-  }
-  else if (!g_strcasecmp ("text/sgml", doc_data[2])) {
-      doc_uri = g_strconcat ("gnome-help:", doc_data[1], NULL);
-  }
-  else if (!g_strcasecmp ("info", doc_data[2])) {
-      doc_uri = g_strconcat ("info:", doc_data[1], NULL);
-  }
-  else if(!g_strcasecmp ("applications/x-troff", doc_data[2])) {
-      /* Man Pages */
-      doc_uri = g_strconcat ("man:", doc_data[1], NULL);
-  }
-  else { 
-      /* If not a type we deal with then don't do anything else */
-      g_free (section);
-      g_free (toc_location);
-      return;
-  }
- 
-  /* Insert info for this document into the tree */ 
-  hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
-	             	       (const char**)ancestors, doc_data[0], doc_uri);
+	toc_location = g_new0 (char, 1024);
 
-  /* Get the TOC, if there is one, for the document */ 
-  g_snprintf (toc_location, 1024, "scrollkeeper-get-toc-from-docpath %s", 
-		  doc_data[1]);
+	next_child = node->childs;
 
-  pipe = popen (toc_location, "r");
-  bytes_read = fread ((void *)toc_location, sizeof(char), 1024, pipe);
+	/* Obtain info about the document from the XML node describing it */
+	for (; next_child != NULL; next_child = next_child->next) {
 
-  if (bytes_read > 0) {
-    toc_location[bytes_read - 1] = '\0';
+		if (!g_strcasecmp (next_child->name, "doctitle")) {
+			doc_data[0] = next_child->childs->content;
+		}
 
- 
-    /* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
-    if(!pclose(pipe)) {
-       fmt_scrollkeeper_parse_doc_toc (tree, section, toc_location, doc_uri);
-    }
-  }
+		else if (!g_strcasecmp (next_child->name, "docsource")) {
+			doc_data[1] = next_child->childs->content;
+		}
 
-  g_free (toc_location);
-  g_free (doc_uri);
-  g_free (section);
-	
-  return;
+		else if (!g_strcasecmp (next_child->name, "docformat")) {
+			doc_data[2] = next_child->childs->content;
+		}
+	}
+
+	/* Expand the ancestor list and append this documents name to it */
+	section = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
+	section[i] = doc_data[0];
+	section[i + 1] = NULL;
+
+
+	/* Decide on the appropriate prefix */
+	if (!g_strcasecmp ("text/html", doc_data[2])) {
+		doc_uri = g_strconcat ("file://", doc_data[1], NULL);
+	} else if (!g_strcasecmp ("text/sgml", doc_data[2])) {
+		doc_uri = g_strconcat ("gnome-help:", doc_data[1], NULL);
+	} else if (!g_strcasecmp ("info", doc_data[2])) {
+		doc_uri = g_strconcat ("info:", doc_data[1], NULL);
+	} else if (!g_strcasecmp ("applications/x-troff", doc_data[2])) {
+		/* Man Pages */
+		doc_uri = g_strconcat ("man:", doc_data[1], NULL);
+	} else {
+		/* If not a type we deal with then don't do anything else */
+		g_free (section);
+		g_free (toc_location);
+		return;
+	}
+
+	/* Insert info for this document into the tree */
+	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+				(const char **) ancestors, doc_data[0],
+				doc_uri);
+
+	/* Get the TOC, if there is one, for the document */
+	g_snprintf (toc_location, 1024,
+		    "scrollkeeper-get-toc-from-docpath %s", doc_data[1]);
+
+	pipe = popen (toc_location, "r");
+	bytes_read = fread ((void *) toc_location, sizeof (char), 1024, pipe);
+
+	if (bytes_read > 0) {
+		toc_location[bytes_read - 1] = '\0';
+
+
+		/* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
+		if (!pclose (pipe)) {
+			fmt_scrollkeeper_parse_doc_toc (tree, section,
+							toc_location,
+							doc_uri);
+		}
+	}
+
+	g_free (toc_location);
+	g_free (doc_uri);
+	g_free (section);
+
+	return;
 }
 
 
@@ -1085,39 +1129,40 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree *tree, char **ancestors,
  *
  * 	node:		Pointer to the node in the XML file to be orocessed.
  */
-static void 
-fmt_scrollkeeper_parse_section (HyperbolaDocTree *tree, char **ancestors, 
-					xmlNodePtr node)
+static void
+fmt_scrollkeeper_parse_section (HyperbolaDocTree * tree, char **ancestors,
+				xmlNodePtr node)
 {
-  xmlNodePtr next_child;
-  char **section;
-  int i;
-	
-  next_child = node->childs;
-  
-  /* Make space for this level and add the title of this node to the path */
-  section      = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
-  section[i]   = next_child->childs->content;
-  section[i+1] = NULL;
+	xmlNodePtr next_child;
+	char **section;
+	int i;
 
-  /* There is no URI so use this function instead */
-  make_treesection (tree, section);
+	next_child = node->childs;
 
-  for ( ; next_child->next != NULL; next_child = next_child->next) {
+	/* Make space for this level and add the title of this node to the path */
+	section = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
+	section[i] = next_child->childs->content;
+	section[i + 1] = NULL;
 
-      if (!g_strcasecmp (next_child->next->name, "sect")) {
-	fmt_scrollkeeper_parse_section (tree, section, next_child->next);
-      }
-      else if (!g_strcasecmp (next_child->next->name, "doc")) {
-	fmt_scrollkeeper_parse_document (tree, section, next_child->next);  
-      }
-  }
+	/* There is no URI so use this function instead */
+	make_treesection (tree, section);
 
-  /* Don't own the individual pointers so only free the double pointer */
-  g_free (section);
+	for (; next_child->next != NULL; next_child = next_child->next) {
 
-  return;
-}	
+		if (!g_strcasecmp (next_child->next->name, "sect")) {
+			fmt_scrollkeeper_parse_section (tree, section,
+							next_child->next);
+		} else if (!g_strcasecmp (next_child->next->name, "doc")) {
+			fmt_scrollkeeper_parse_document (tree, section,
+							 next_child->next);
+		}
+	}
+
+	/* Don't own the individual pointers so only free the double pointer */
+	g_free (section);
+
+	return;
+}
 
 
 /* 
@@ -1131,26 +1176,26 @@ fmt_scrollkeeper_parse_section (HyperbolaDocTree *tree, char **ancestors,
  * 	defpath:    The position in the tree at which to root additions.
  * 	doc:	    The pointer to the XML Document.  
  */
-static void 
-fmt_scrollkeeper_parse_xml (HyperbolaDocTree *tree, char **defpath, 
-				xmlDocPtr doc)
+static void
+fmt_scrollkeeper_parse_xml (HyperbolaDocTree * tree, char **defpath,
+			    xmlDocPtr doc)
 {
-  xmlNodePtr node;
+	xmlNodePtr node;
 
-  /* Ensure the document is valid and a real ScrollKeeper document */
-  if (!doc->root || !doc->root->name ||
-		  g_strcasecmp (doc->root->name, "ScrollKeeperContentsList")) {
-      g_warning ("Invalid ScrollKeeper XML Contents List!");
-      return;
-  }
-	
-  /* Start parsing the list and add to the tree */	
-  for (node = doc->root->childs; node != NULL; node = node->next) {
-      if (!g_strcasecmp (node->name, "sect"))
-   	fmt_scrollkeeper_parse_section (tree, defpath, node);
-  } 
-		
-  return;	
+	/* Ensure the document is valid and a real ScrollKeeper document */
+	if (!doc->root || !doc->root->name ||
+	    g_strcasecmp (doc->root->name, "ScrollKeeperContentsList")) {
+		g_warning ("Invalid ScrollKeeper XML Contents List!");
+		return;
+	}
+
+	/* Start parsing the list and add to the tree */
+	for (node = doc->root->childs; node != NULL; node = node->next) {
+		if (!g_strcasecmp (node->name, "sect"))
+			fmt_scrollkeeper_parse_section (tree, defpath, node);
+	}
+
+	return;
 }
 
 /* trim empty (the ones that don't have docs in them ) branches from 
@@ -1160,26 +1205,28 @@ fmt_scrollkeeper_parse_xml (HyperbolaDocTree *tree, char **defpath,
    only one child node that is the title of the section then 
    it has to be removed
 */
-static void fmt_scrollkeeper_trim_empty_branches(xmlNodePtr cl_node)
+static void
+fmt_scrollkeeper_trim_empty_branches (xmlNodePtr cl_node)
 {
-    xmlNodePtr node, next;
-    
-    if (cl_node == NULL)
-        return;
-	    
-    for(node = cl_node; node != NULL; node = next)
-    {
-        next = node->next;
-    
-        if (!strcmp(node->name, "sect") && node->childs->next != NULL)
-	    fmt_scrollkeeper_trim_empty_branches(node->childs->next);
-	    
-	if (!strcmp(node->name, "sect") && node->childs->next == NULL)
-	{
-	    xmlUnlinkNode(node);
-	    xmlFreeNode(node);
+	xmlNodePtr node, next;
+
+	if (cl_node == NULL)
+		return;
+
+	for (node = cl_node; node != NULL; node = next) {
+		next = node->next;
+
+		if (!strcmp (node->name, "sect") &&
+		    node->childs->next !=
+		    NULL) fmt_scrollkeeper_trim_empty_branches (node->
+								childs->next);
+
+		if (!strcmp (node->name, "sect") &&
+		    node->childs->next == NULL) {
+			xmlUnlinkNode (node);
+			xmlFreeNode (node);
+		}
 	}
-    }
 }
 
 
@@ -1196,55 +1243,57 @@ static void fmt_scrollkeeper_trim_empty_branches(xmlNodePtr cl_node)
  * 		maintain the list of documentation available.
  */
 static void
-fmt_scrollkeeper_populate_tree (HyperbolaDocTree *tree)
+fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 {
-  xmlDocPtr doc;
-  FILE *pipe;
-  
-  char *xml_location;
-  int bytes_read;
-  
-  char *tree_path[] = {NULL};
+	xmlDocPtr doc;
+	FILE *pipe;
 
-  
-  xml_location = g_new0 (char, 1024);
+	char *xml_location;
+	int bytes_read;
 
-  /* Use g_snprintf here because we don't know how long the location will be */  
-  g_snprintf (xml_location, 1024, "scrollkeeper-get-content-list %s", 
-		  getenv("LANG")); 
+	char *tree_path[] = { NULL };
 
-  pipe = popen (xml_location, "r");
-  bytes_read = fread ((void *)xml_location, sizeof(char), 1024, pipe);
 
-  /* Make sure that we don't end up out-of-bunds */
-  if (bytes_read < 1) {
-    pclose (pipe);
-    g_free (xml_location); 
-    return;
-  }
-  
-  /* Make sure the string is properly terminated */
-  xml_location[bytes_read - 1] = '\0';
+	xml_location = g_new0 (char, 1024);
 
-  /* Exit code of 0 means we got a path back from ScrollKeeper */
-  if (!pclose (pipe)) {
+	/* Use g_snprintf here because we don't know how long the location will be */
+	g_snprintf (xml_location, 1024, "scrollkeeper-get-content-list %s",
+		    getenv ("LANG"));
 
-    doc = xmlParseFile (xml_location); 
-   
-    if (doc) {
-      fmt_scrollkeeper_trim_empty_branches(doc->root->childs);
-      fmt_scrollkeeper_parse_xml (tree, tree_path, doc);
-    }
-    else {
-      g_warning ("Unable to locate ScrollKeeper XML file:\n\t%s", xml_location);
-    }
+	pipe = popen (xml_location, "r");
+	bytes_read = fread ((void *) xml_location, sizeof (char), 1024, pipe);
 
-    xmlFreeDoc (doc);
-  }
-	
-  g_free (xml_location);
-  	
-  return;
+	/* Make sure that we don't end up out-of-bunds */
+	if (bytes_read < 1) {
+		pclose (pipe);
+		g_free (xml_location);
+		return;
+	}
+
+	/* Make sure the string is properly terminated */
+	xml_location[bytes_read - 1] = '\0';
+
+	/* Exit code of 0 means we got a path back from ScrollKeeper */
+	if (!pclose (pipe)) {
+
+		doc = xmlParseFile (xml_location);
+
+		if (doc) {
+			fmt_scrollkeeper_trim_empty_branches (doc->
+							      root->childs);
+			fmt_scrollkeeper_parse_xml (tree, tree_path, doc);
+		} else {
+			g_warning
+				("Unable to locate ScrollKeeper XML file:\n\t%s",
+				 xml_location);
+		}
+
+		xmlFreeDoc (doc);
+	}
+
+	g_free (xml_location);
+
+	return;
 }
 
-#endif  /* ENABLE_SCROLLKEEPER_SUPPORT */
+#endif /* ENABLE_SCROLLKEEPER_SUPPORT */

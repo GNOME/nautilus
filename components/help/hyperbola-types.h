@@ -5,36 +5,36 @@
 #include <stdio.h>
 
 /* Be a URL, for now */
-typedef const char * HyperbolaLocationReference;
+typedef const char *HyperbolaLocationReference;
 
 typedef struct _HyperbolaTreeNode HyperbolaTreeNode;
 
 typedef enum {
-  HYP_TREE_NODE_FOLDER,
-  HYP_TREE_NODE_SECTION,
-  HYP_TREE_NODE_BOOK,
-  HYP_TREE_NODE_PAGE
+	HYP_TREE_NODE_FOLDER,
+	HYP_TREE_NODE_SECTION,
+	HYP_TREE_NODE_BOOK,
+	HYP_TREE_NODE_PAGE
 } HyperbolaTreeNodeType;
 
 struct _HyperbolaTreeNode {
-  HyperbolaTreeNode *up;
+	HyperbolaTreeNode *up;
 
-  HyperbolaTreeNodeType type;
+	HyperbolaTreeNodeType type;
 
-  char *title;
-  char *uri;
+	char *title;
+	char *uri;
 
-  GTree *children; /* By title (relative to parent) */
+	GTree *children;	/* By title (relative to parent) */
 
-  gpointer user_data;
+	gpointer user_data;
 };
 
 typedef struct {
-  GTree *children; /* By title */
+	GTree *children;	/* By title */
 
-  GHashTable *global_by_uri;
+	GHashTable *global_by_uri;
 
-  gpointer user_data;
+	gpointer user_data;
 } HyperbolaDocTree;
 
 #ifndef _

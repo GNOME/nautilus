@@ -1,3 +1,17 @@
+2001-02-04  Maciej Stachowiak  <mjs@eazel.com>
+
+	* indent.sh: Script that calls indent with the right parameters to
+	get a GNOME coding style (Nautilus subvariant).
+
+	* components/help/hyperbola-filefmt.c,
+	components/help/hyperbola-filefmt.h,
+	components/help/hyperbola-main.c,
+	components/help/hyperbola-nav-index.c,
+	components/help/hyperbola-nav-search.c,
+	components/help/hyperbola-nav-tree.c,
+	components/help/hyperbola-nav.h,
+	components/help/hyperbola-types.h: Run indent.sh on these.
+
 2001-02-03  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 6254 ("Display" name for grouping in "Folder Views"
