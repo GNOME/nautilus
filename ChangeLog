@@ -1,6 +1,13 @@
-2001-03-14  Ramiro Estrugo  <ramiro@eazel.com>
+2001-03-14  John Sullivan  <sullivan@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	Fixed bug 7597 (Cut Text's underline accelerator changes
+	to conflict with Copy Text's when a text field is focussed)
+
+	* libnautilus/nautilus-clipboard-ui.xml: Changed _Cut Text
+	to Cut _Text here, to match what it is when no text field
+	is focussed.
+
+2001-03-14  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* helper-scripts/nautilus-restore-settings-to-default.sh:
 	Dont clobber any fonts that the user might have installed in
