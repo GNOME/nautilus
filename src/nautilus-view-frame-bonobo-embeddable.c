@@ -47,6 +47,7 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
                                       CORBA_Environment *ev)
 {
   Bonobo_PersistStream persist;
+  Bonobo_PersistFile persist_file;
 
   if((persist = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistStream:1.0",
                                                      NULL))
@@ -82,6 +83,26 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
           pri.type = Nautilus_PROGRESS_DONE_OK;
           nautilus_view_frame_request_progress_change(view, &pri);
         }
+    }
+  else if ((persist_file = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistFile:1.0", NULL))
+           && !CORBA_Object_is_nil(persist_file, ev) &&
+           !strncmp (real_nav_ctx->actual_uri, "file://", 7))
+    {
+      Nautilus_ProgressRequestInfo pri;
+
+      pri.amount = 0;
+      pri.type = Nautilus_PROGRESS_UNDERWAY;
+      nautilus_view_frame_request_progress_change(view, &pri);
+
+      /* FIXME: `+7' is not suitable for proper character escaping. */
+
+      Bonobo_PersistFile_load
+        (persist_file,
+         real_nav_ctx->actual_uri+7,
+         ev);
+
+      pri.type = Nautilus_PROGRESS_DONE_OK;
+      nautilus_view_frame_request_progress_change(view, &pri);
     }
 }      
 
