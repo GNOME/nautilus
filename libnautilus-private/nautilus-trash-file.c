@@ -78,8 +78,8 @@ static void nautilus_trash_file_init       (gpointer   object,
 static void nautilus_trash_file_class_init (gpointer   klass);
 
 EEL_CLASS_BOILERPLATE (NautilusTrashFile,
-				   nautilus_trash_file,
-				   NAUTILUS_TYPE_FILE)
+		       nautilus_trash_file,
+		       NAUTILUS_TYPE_FILE)
 
 static gboolean
 is_delegated_attribute (const char *attribute)
@@ -292,8 +292,8 @@ add_real_file (NautilusTrashFile *trash,
 
 static void
 trash_callback_remove_file_cover (gpointer key,
-				       gpointer value,
-				       gpointer callback_data)
+				  gpointer value,
+				  gpointer callback_data)
 {
 	trash_callback_remove_file
 		(value, NAUTILUS_FILE (callback_data));
@@ -759,7 +759,7 @@ nautilus_trash_file_init (gpointer object, gpointer klass)
 }
 
 static void
-trash_destroy (GtkObject *object)
+trash_finalize (GObject *object)
 {
 	NautilusTrashFile *trash_file;
 	NautilusTrashDirectory *trash_directory;
@@ -783,19 +783,19 @@ trash_destroy (GtkObject *object)
 
 	nautilus_directory_unref (NAUTILUS_DIRECTORY (trash_directory));
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
 nautilus_trash_file_class_init (gpointer klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	NautilusFileClass *file_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	file_class = NAUTILUS_FILE_CLASS (klass);
 	
-	object_class->destroy = trash_destroy;
+	object_class->finalize = trash_finalize;
 
 	file_class->monitor_add = trash_file_monitor_add;
 	file_class->monitor_remove = trash_file_monitor_remove;

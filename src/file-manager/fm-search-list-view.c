@@ -630,7 +630,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	 * and won't be specific to the search directory. Is that OK? 
 	 */
 
-	g_signal_connect_object (GTK_OBJECT (file), "changed",
+	g_signal_connect_object (G_OBJECT (file), "changed",
 				 G_CALLBACK (fm_directory_view_queue_file_change),
 				 view, G_CONNECT_SWAPPED);
 

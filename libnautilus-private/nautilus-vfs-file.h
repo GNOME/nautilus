@@ -43,7 +43,6 @@ typedef struct NautilusVFSFileDetails NautilusVFSFileDetails;
 
 typedef struct {
 	NautilusFile parent_slot;
-	NautilusVFSFileDetails *details;
 } NautilusVFSFile;
 
 typedef struct {

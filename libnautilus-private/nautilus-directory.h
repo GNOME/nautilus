@@ -61,7 +61,7 @@ typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
 typedef struct
 {
-	GtkObject object;
+	GObject object;
 	NautilusDirectoryDetails *details;
 } NautilusDirectory;
 
@@ -71,7 +71,7 @@ typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
 
 typedef struct
 {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/*** Notification signals for clients to connect to. ***/
 

@@ -74,7 +74,7 @@ static void               set_directory_uri                   (NautilusDirectory
 
 EEL_CLASS_BOILERPLATE (NautilusDirectory,
 		       nautilus_directory,
-		       GTK_TYPE_OBJECT)
+		       G_TYPE_OBJECT)
 
 static void
 nautilus_directory_class_init (NautilusDirectoryClass *klass)
@@ -504,8 +504,6 @@ nautilus_directory_new (const char *uri)
 	} else {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
-	g_object_ref (directory);
-	gtk_object_sink (GTK_OBJECT (directory));
 
 	set_directory_uri (directory, uri);
 

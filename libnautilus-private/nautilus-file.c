@@ -114,7 +114,7 @@ static char *   nautilus_file_get_display_name_collation_key (NautilusFile     *
 
 
 GNOME_CLASS_BOILERPLATE (NautilusFile, nautilus_file,
-			 GtkObject, GTK_TYPE_OBJECT)
+			 GObject, G_TYPE_OBJECT)
 
 static void
 nautilus_file_instance_init (NautilusFile *file)
@@ -138,8 +138,6 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	} else {
 		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	}
-	g_object_ref (file);
-	gtk_object_sink (GTK_OBJECT (file));
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
 	printf("%10p ref'd\n", file);
@@ -253,9 +251,6 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	printf("%10p ref'd\n", file);
 	eazel_dump_stack_trace ("\t", 10);
 #endif
-
-	g_object_ref (file);
-	gtk_object_sink (GTK_OBJECT (file));
 
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;

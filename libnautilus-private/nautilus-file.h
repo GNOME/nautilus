@@ -317,7 +317,7 @@ void                    nautilus_file_dump                              (Nautilu
 typedef struct NautilusFileDetails NautilusFileDetails;
 
 struct NautilusFile {
-	GtkObject parent_slot;
+	GObject parent_slot;
 	NautilusFileDetails *details;
 };
 
@@ -332,7 +332,7 @@ typedef enum {
 } NautilusDateType;
 
 typedef struct {
-	GtkObjectClass parent_slot;
+	GObjectClass parent_slot;
 	
 	/* Called when the file notices any change. */
 	void                  (* changed)                (NautilusFile *file);

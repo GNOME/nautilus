@@ -30,12 +30,8 @@
 #include <eel/eel-gtk-macros.h>
 #include "nautilus-file-private.h"
 
-struct NautilusVFSDirectoryDetails {
-	char dummy; /* ANSI C does not allow empty structs */
-};
-
 static void nautilus_vfs_directory_init       (gpointer   object,
-						     gpointer   klass);
+					       gpointer   klass);
 static void nautilus_vfs_directory_class_init (gpointer   klass);
 
 EEL_CLASS_BOILERPLATE (NautilusVFSDirectory,
@@ -48,20 +44,6 @@ nautilus_vfs_directory_init (gpointer object, gpointer klass)
 	NautilusVFSDirectory *directory;
 
 	directory = NAUTILUS_VFS_DIRECTORY (object);
-
-	directory->details = g_new0 (NautilusVFSDirectoryDetails, 1);
-}
-
-static void
-vfs_destroy (GtkObject *object)
-{
-	NautilusVFSDirectory *directory;
-
-	directory = NAUTILUS_VFS_DIRECTORY (object);
-
-	g_free (directory->details);
-
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean
@@ -172,14 +154,12 @@ vfs_is_not_empty (NautilusDirectory *directory)
 static void
 nautilus_vfs_directory_class_init (gpointer klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	NautilusDirectoryClass *directory_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
 	
-	object_class->destroy = vfs_destroy;
-
 	directory_class->contains_file = vfs_contains_file;
 	directory_class->call_when_ready = vfs_call_when_ready;
 	directory_class->cancel_callback = vfs_cancel_callback;

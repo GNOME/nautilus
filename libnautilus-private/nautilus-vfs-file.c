@@ -30,17 +30,13 @@
 #include "nautilus-file-private.h"
 #include <eel/eel-gtk-macros.h>
 
-struct NautilusVFSFileDetails {
-	char dummy; /* ANSI C does not allow empty structs */
-};
-
 static void nautilus_vfs_file_init       (gpointer   object,
 						gpointer   klass);
 static void nautilus_vfs_file_class_init (gpointer   klass);
 
 EEL_CLASS_BOILERPLATE (NautilusVFSFile,
-			      nautilus_vfs_file,
-			      NAUTILUS_TYPE_FILE)
+		       nautilus_vfs_file,
+		       NAUTILUS_TYPE_FILE)
 
 static void             
 vfs_file_monitor_add (NautilusFile *file,
@@ -239,31 +235,14 @@ nautilus_vfs_file_init (gpointer object, gpointer klass)
 
 	file = NAUTILUS_VFS_FILE (object);
 
-	file->details = g_new0 (NautilusVFSFileDetails, 1);
-}
-
-static void
-vfs_destroy (GtkObject *object)
-{
-	NautilusVFSFile *file;
-
-	file = NAUTILUS_VFS_FILE (object);
-
-	g_free (file->details);
-	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
 nautilus_vfs_file_class_init (gpointer klass)
 {
-	GtkObjectClass *object_class;
 	NautilusFileClass *file_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
 	file_class = NAUTILUS_FILE_CLASS (klass);
-	
-	object_class->destroy = vfs_destroy;
 
 	file_class->monitor_add = vfs_file_monitor_add;
 	file_class->monitor_remove = vfs_file_monitor_remove;

@@ -1,3 +1,35 @@
+2003-03-14  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_new):
+	Make NautilusDirectory a GObject.
+	
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_new_from_relative_uri),
+	(nautilus_file_new_from_info):
+	Make NautilusFile a GObject.
+	
+	* libnautilus-private/nautilus-trash-file.c:
+	(trash_callback_remove_file_cover), (trash_finalize),
+	(nautilus_trash_file_class_init):
+	Convert destroy into finalize.
+	
+	* libnautilus-private/nautilus-vfs-directory.h:
+	* libnautilus-private/nautilus-vfs-directory.c:
+	(nautilus_vfs_directory_init), (nautilus_vfs_directory_class_init):
+	* libnautilus-private/nautilus-vfs-file.c:
+	(nautilus_vfs_file_init), (nautilus_vfs_file_class_init):
+	* libnautilus-private/nautilus-vfs-file.h:
+	Remove unused details fields.
+	
+	* src/file-manager/fm-directory-view.c: (disconnect_handler),
+	(disconnect_directory_handler),
+	(disconnect_directory_as_file_handler):
+	* src/file-manager/fm-search-list-view.c: (real_adding_file):
+	Don't cast NautilusFiles and NautilusDirectories to GtkObjects.
+
 2003-03-13  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "ml" to ALL_LINGUAS.

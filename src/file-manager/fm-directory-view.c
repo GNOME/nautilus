@@ -5529,7 +5529,7 @@ fm_directory_view_merge_menus (FMDirectoryView *view)
 }
 
 static void
-disconnect_handler (GtkObject *object, int *id)
+disconnect_handler (GObject *object, int *id)
 {
 	if (*id != 0) {
 		g_signal_handler_disconnect (object, *id);
@@ -5540,13 +5540,13 @@ disconnect_handler (GtkObject *object, int *id)
 static void
 disconnect_directory_handler (FMDirectoryView *view, int *id)
 {
-	disconnect_handler (GTK_OBJECT (view->details->model), id);
+	disconnect_handler (G_OBJECT (view->details->model), id);
 }
 
 static void
 disconnect_directory_as_file_handler (FMDirectoryView *view, int *id)
 {
-	disconnect_handler (GTK_OBJECT (view->details->directory_as_file), id);
+	disconnect_handler (G_OBJECT (view->details->directory_as_file), id);
 }
 
 static void
