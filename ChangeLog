@@ -1,3 +1,17 @@
+2001-03-12  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize), (extract_items),
+	(rss_read_done_callback):
+	fixed bug that would crash if the downloaded xml was not parsable;
+	also, added support for rss files that keep their payload in the
+	channel object instead of the root object (Wired, Salon, etc).
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(add_annotations_to_file), (got_annotations_callback),
+	(nautilus_annotation_get_annotation):
+	fiddled with some debugging stuff for annotations.
+	
 2001-03-11  Andy Hertzfeld  <andy@eazel.com>
 
 	merged to create post-1_0_7 branch

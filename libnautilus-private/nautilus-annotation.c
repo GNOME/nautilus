@@ -618,7 +618,7 @@ add_annotations_to_file (xmlNodePtr node_ptr, const char *digest)
 	xmlDocSetRootElement (document, node_ptr);
 			
 	/* save the xml tree as a file in the cache area */
-	xmlSaveFile	(digest_path, document);
+	xmlSaveFile (digest_path, document);
 	
 	xmlFreeDoc (document);
 	g_free (digest_path);
@@ -703,6 +703,8 @@ got_annotations_callback (GnomeVFSResult result,
 					
 					/* write the annotation out to our cache area, if necessary */
 					if (annotation_count > 0) {
+						g_message ("got annotation, count is %d", annotation_count);
+						
 						saved_annotation = xmlCopyNode (next_annotation, TRUE);
 						add_annotations_to_file (saved_annotation, digest);
 					}
@@ -843,6 +845,7 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
 	/* there's a digest, so we if we have the annotations for the file cached locally */
 	annotations = look_up_local_annotation (file, digest);
 	if (annotations != NULL) {
+		g_message ("already got local annotation for digest %s", digest);
 		g_free (digest);
 		return annotations;
 	}

@@ -189,7 +189,7 @@ nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 	rss_control->details = g_new0 (NautilusRSSControlDetails, 1);
 
 	/* set up the font */
-	rss_control->details->font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica"));
+	rss_control->details->font = nautilus_scalable_font_get_default_font ();
 	rss_control->details->prelight_index = -1;
 	
 	/* load the bullet used to display the items */
@@ -324,6 +324,43 @@ rss_logo_callback (GnomeVFSResult  error, GdkPixbuf *pixbuf, gpointer callback_d
 	}
 }
 
+/* utility routine to extract items from a node, returning the count of items found */
+static int
+extract_items (NautilusRSSControl *rss_control, xmlNodePtr container_node)
+{
+	RSSItemData *item_parameters;
+	xmlNodePtr current_node, title_node, temp_node;
+	int item_count;
+	char *title, *temp_str;
+	
+	current_node = container_node->childs;
+	item_count = 0;
+	while (current_node != NULL) {
+		if (nautilus_strcmp (current_node->name, "item") == 0) {
+			title_node = nautilus_xml_get_child_by_name (current_node, "title");
+			if (title_node) {
+				item_parameters = (RSSItemData*) g_new0 (RSSItemData, 1);
+
+				title = xmlNodeGetContent (title_node);
+				item_parameters->item_title = g_strdup (title);
+				xmlFree (title);
+				temp_node = nautilus_xml_get_child_by_name (current_node, "link");
+				
+				if (temp_node) {
+					temp_str = xmlNodeGetContent (temp_node);
+					item_parameters->item_url = g_strdup (temp_str);
+					xmlFree (temp_str);
+				}
+				
+				rss_control->details->items = g_list_append (rss_control->details->items, item_parameters);
+				item_count += 1;
+			}
+		}
+		current_node = current_node->next;
+	}
+	return item_count;
+}
+
 /* completion routine invoked when we've loaded the rss file uri.  Parse the xml document, and
  * then extract the various elements that we require */
 
@@ -333,11 +370,11 @@ rss_read_done_callback (GnomeVFSResult result,
 			 char *file_contents,
 			 gpointer callback_data)
 {
-	RSSItemData *item_parameters;
 	xmlDocPtr rss_document;
 	xmlNodePtr image_node, channel_node;
-	xmlNodePtr  current_node, title_node, temp_node, uri_node;
+	xmlNodePtr  current_node, temp_node, uri_node;
 	char *image_uri, *title, *temp_str;
+	int item_count;
 	NautilusRSSControl *rss_control;
 	
 	char *buffer;
@@ -358,6 +395,11 @@ rss_read_done_callback (GnomeVFSResult result,
 	rss_document = xmlParseMemory (buffer, file_size);
 	g_free (buffer);
 
+	/* make sure there wasn't in error parsing the document */
+	if (rss_document == NULL) {
+		return;
+	}
+	
 	/* extract the title and set it */
 	channel_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "channel");
 	if (channel_node != NULL) {		
@@ -384,6 +426,12 @@ rss_read_done_callback (GnomeVFSResult result,
 		
 	/* extract the image uri and, if found, load it asynchronously */
 	image_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "image");
+	
+	/* if we can't find it at the top level, look inside the channel */
+	if (image_node == NULL && channel_node != NULL) {
+		image_node = nautilus_xml_get_child_by_name (channel_node, "image");
+	} 
+	
 	if (image_node != NULL) {		
 		uri_node = nautilus_xml_get_child_by_name (image_node, "url");
 		if (uri_node != NULL) {
@@ -397,28 +445,12 @@ rss_read_done_callback (GnomeVFSResult result,
 			
 	/* extract the items in a loop */
 	nautilus_rss_control_clear_items (rss_control);
-	current_node = rss_document->root->childs;
-	while (current_node != NULL) {
-		if (nautilus_strcmp (current_node->name, "item") == 0) {
-			title_node = nautilus_xml_get_child_by_name (current_node, "title");
-			if (title_node) {
-				item_parameters = (RSSItemData*) g_new0 (RSSItemData, 1);
-
-				title = xmlNodeGetContent (title_node);
-				item_parameters->item_title = g_strdup (title);
-				xmlFree (title);
-				temp_node = nautilus_xml_get_child_by_name (current_node, "link");
-				
-				if (temp_node) {
-					temp_str = xmlNodeGetContent (temp_node);
-					item_parameters->item_url = g_strdup (temp_str);
-					xmlFree (temp_str);
-				}
-				
-				rss_control->details->items = g_list_append (rss_control->details->items, item_parameters);
-			}
-		}
-		current_node = current_node->next;
+	current_node = rss_document->root;
+	item_count = extract_items (rss_control, current_node);
+	
+	/* if we couldn't find any items at the main level, look inside the channel node */
+	if (item_count == 0 && channel_node != NULL) {
+		item_count = extract_items (rss_control, channel_node);
 	}
 		
 	/* we're done, so free everything up */
