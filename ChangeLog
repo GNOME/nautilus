@@ -1,3 +1,21 @@
+2000-12-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw_to_pixbuf):
+	* libnautilus-extensions/nautilus-background.h:
+	Add a new function to draw backgrounds into GdkPixbufs.  Its a
+	simple wrapper around the draw_to_canvas() function.
+
+	Also, small tweaking of the prototypes to match "the style."
+	
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(create_background_pixbuf_from_ancestor):
+	Draw directly into the pixbuf by using
+	nautilus_background_draw_to_pixbuf function instead of drawing to
+	a Pixmap and capturing the bits.
+	
 2000-12-18  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

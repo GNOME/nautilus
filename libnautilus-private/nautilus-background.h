@@ -44,6 +44,7 @@
 #include <gtk/gtkwidget.h>
 
 #include <libgnomeui/gnome-canvas.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct NautilusBackground NautilusBackground;
 typedef struct NautilusBackgroundClass NautilusBackgroundClass;
@@ -69,6 +70,7 @@ typedef enum {
 GtkType                          nautilus_background_get_type                         (void);
 NautilusBackground *             nautilus_background_new                              (void);
 
+
 /* Calls to change a background. */
 void                             nautilus_background_set_color                        (NautilusBackground               *background,
 										       const char                       *color_or_gradient);
@@ -79,8 +81,6 @@ void                             nautilus_background_set_combine_mode           
 										       gboolean                          combine);
 void                             nautilus_background_set_image_placement              (NautilusBackground               *background,
 										       NautilusBackgroundImagePlacement  placement);
-
-
 /* Calls to interrogate the current state of a background. */
 char *                           nautilus_background_get_color                        (NautilusBackground               *background);
 char *                           nautilus_background_get_image_uri                    (NautilusBackground               *background);
@@ -90,58 +90,63 @@ gboolean                         nautilus_background_is_dark                    
 gboolean                         nautilus_background_is_set                           (NautilusBackground               *background);
 gboolean                         nautilus_background_is_loaded                        (NautilusBackground               *background);
 
-
 /* For preping the background to be used in one of the two calls
  * below. Only intended to be called by nautilus_background_canvas_group_update.
  */
-void	nautilus_background_pre_draw	(NautilusBackground				*background,
-									  	 int							 entire_width,
-									  	 int							 entire_height);
-
+void                             nautilus_background_pre_draw                         (NautilusBackground               *background,
+										       int                               entire_width,
+										       int                               entire_height);
 /* For updating the canvas, non-aa case. Note: nautilus_background_pre_draw
  * must have been previously called. Only intended to be called by
  * nautilus_background_canvas_group_draw.
  */
-void	nautilus_background_draw		(NautilusBackground	*background,
-										 GdkDrawable					*drawable,
-										 GdkGC							*gc,
-										 int							 drawable_x,
-										 int							 drawable_y,
-										 int							 drawable_width,
-										 int							 drawable_height);
-
+void                             nautilus_background_draw                             (NautilusBackground               *background,
+										       GdkDrawable                      *drawable,
+										       GdkGC                            *gc,
+										       int                               drawable_x,
+										       int                               drawable_y,
+										       int                               drawable_width,
+										       int                               drawable_height);
 /* For updating the canvas, aa case. Note: nautilus_background_pre_draw
  * must have been previously called. Only intended to be called by
  * nautilus_background_canvas_group_render.
  */
-void	nautilus_background_draw_aa		(NautilusBackground				*background,
-										 GnomeCanvasBuf					*buffer);
-
+void                             nautilus_background_draw_aa                          (NautilusBackground               *background,
+										       GnomeCanvasBuf                   *buffer);
 /* Used to fill a drawable with a background.
  *  - entire_width/height describe the total area the background covers
  *  - drawable_x/y/width/height describe the portion of that area the drawable covers
  */
-void	nautilus_background_draw_to_drawable	(NautilusBackground		*background,
-			  							         GdkDrawable			*drawable,
-										         GdkGC					*gc,
-										         int					 drawable_x,
-										         int					 drawable_y,
-										         int					 drawable_width,
-										         int					 drawable_height,
-										         int					 entire_width,
-										         int					 entire_height);
+void                             nautilus_background_draw_to_drawable                 (NautilusBackground               *background,
+										       GdkDrawable                      *drawable,
+										       GdkGC                            *gc,
+										       int                               drawable_x,
+										       int                               drawable_y,
+										       int                               drawable_width,
+										       int                               drawable_height,
+										       int                               entire_width,
+										       int                               entire_height);
 
 /* Used to fill a drawable with a background.
  *  - entire_width/height describe the total area the background covers
  *  - buffer is a portion of that area
  */
-void	nautilus_background_draw_to_canvas		(NautilusBackground		*background,
-												 GnomeCanvasBuf			*buffer,
-										         int					 entire_width,
-										         int					 entire_height);
-
-
-
+void                             nautilus_background_draw_to_canvas                   (NautilusBackground               *background,
+										       GnomeCanvasBuf                   *buffer,
+										       int                               entire_width,
+										       int                               entire_height);
+/* Used to fill a pixbuf with a background.
+ *  - entire_width/height describe the total area the background covers
+ *  - drawable_x/y/width/height describe the portion of that area the pixbuf covers
+ */
+void                             nautilus_background_draw_to_pixbuf                   (NautilusBackground               *background,
+										       GdkPixbuf                        *pixbuf,
+										       int                               pixbuf_x,
+										       int                               pixbuf_y,
+										       int                               pixbuf_width,
+										       int                               pixbuf_height,
+										       int                               entire_width,
+										       int                               entire_height);
 							       
 /* Handles a dragged color being dropped on a widget to change the background color. */
 void                             nautilus_background_receive_dropped_color            (NautilusBackground               *background,
@@ -150,22 +155,19 @@ void                             nautilus_background_receive_dropped_color      
 										       int                               drop_location_y,
 										       const GtkSelectionData           *dropped_color);
 
-
 /* Handles a special-case image name that means "reset to default background" too. */
 void                             nautilus_background_receive_dropped_background_image (NautilusBackground               *background,
 										       const char                       *image_uri);
 
-
 /* Gets or creates a background so that it's attached to a widget. */
 NautilusBackground *             nautilus_get_widget_background                       (GtkWidget                        *widget);
-
 
 /* Return whether a background has beed attatched to the given widget. */
 gboolean                         nautilus_widget_has_attached_background              (GtkWidget                        *widget);
 
-
 /* Find out if a nautilus background is too complex for GtkStyle, so that we have to draw it ourselves */
 gboolean                         nautilus_background_is_too_complex_for_gtk_style     (NautilusBackground               *background);
+
 
 typedef struct NautilusBackgroundDetails NautilusBackgroundDetails;
 

@@ -529,32 +529,21 @@ create_background_pixbuf_from_ancestor (const NautilusBufferedWidget *buffered_w
 	background_ancestor = nautilus_gtk_widget_find_background_ancestor (widget);
 	
 	if (background_ancestor != NULL) {
-		NautilusBackground	*background;
-		GdkPixmap		*pixmap;
-		
+		NautilusBackground *background;
+
 		background = nautilus_get_widget_background (background_ancestor);
 		g_assert (NAUTILUS_IS_BACKGROUND (background));
-				
-		pixmap = gdk_pixmap_new (widget->window, widget->allocation.width, widget->allocation.height, -1);
-	
-		nautilus_background_draw_to_drawable (background,
-					  pixmap,
-					  buffered_widget->detail->copy_area_gc,
-					  widget->allocation.x, widget->allocation.y,
-					  widget->allocation.width, widget->allocation.height,
-					  background_ancestor->allocation.width, background_ancestor->allocation.height);
-		
-		pixbuf = gdk_pixbuf_get_from_drawable (NULL,
-						       pixmap,
-						       gdk_rgb_get_cmap (),
-						       0,
-						       0,
-						       0,
-						       0,
-						       widget->allocation.width,
-						       widget->allocation.height);
-		
-		gdk_pixmap_unref (pixmap);
+
+		pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, widget->allocation.width, widget->allocation.height);
+
+		nautilus_background_draw_to_pixbuf (background,
+						    pixbuf,
+						    widget->allocation.x,
+						    widget->allocation.y,
+						    widget->allocation.width,
+						    widget->allocation.height,
+						    background_ancestor->allocation.width,
+						    background_ancestor->allocation.height);
 	}
 
 	return pixbuf;

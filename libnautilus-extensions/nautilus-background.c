@@ -832,6 +832,28 @@ nautilus_background_draw_to_drawable (NautilusBackground *background,
 	nautilus_background_draw (background, drawable, gc, drawable_x, drawable_y, drawable_width, drawable_height);
 }
 
+void
+nautilus_background_draw_to_pixbuf (NautilusBackground *background,
+				    GdkPixbuf *pixbuf,
+				    int pixbuf_x,
+				    int pixbuf_y,
+				    int pixbuf_width,
+				    int pixbuf_height,
+				    int entire_width,
+				    int entire_height)
+{
+	GnomeCanvasBuf fake_buffer;
+
+	g_return_if_fail (background != NULL);
+	g_return_if_fail (pixbuf != NULL);
+
+	canvas_buf_from_pixbuf (&fake_buffer, pixbuf, pixbuf_x, pixbuf_y, pixbuf_width, pixbuf_height);
+
+	nautilus_background_draw_to_canvas (background,
+					    &fake_buffer,
+					    entire_width,
+					    entire_height);
+}
 
 /* fill the canvas buffer with a tiled pixbuf */
 static void
