@@ -877,6 +877,74 @@ nautilus_g_hash_table_safe_for_each (GHashTable *hash_table,
 	g_list_free (flattened.values);
 }
 
+
+gboolean
+nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer key, GFreeFunc key_free, GFreeFunc data_free)
+{
+	gpointer key_in_table;
+	gpointer value;
+
+	/* It would sure be nice if we could do this with a single lookup.
+	 */
+	if (g_hash_table_lookup_extended (hash_table, key, &key_in_table, &value)) {
+		g_hash_table_remove (hash_table, key);
+		if (key_free) {
+			key_free (key_in_table);
+		}
+		if (data_free) {
+			data_free (value);
+		}
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+gboolean
+nautilus_g_hash_table_remove_deep (GHashTable *hash_table, gconstpointer key)
+{
+	return nautilus_g_hash_table_remove_deep_custom (hash_table, key, g_free, g_free);
+}
+
+typedef struct {
+	GFreeFunc key_free;
+	GFreeFunc data_free;
+} HashTableFreeFuncs;
+
+static gboolean
+nautilus_g_hash_table_free_deep_helper (gpointer key, gpointer value, gpointer data)
+{
+	HashTableFreeFuncs *free_funcs;
+	free_funcs = (HashTableFreeFuncs *) data;
+	
+	if (free_funcs->key_free) {
+		free_funcs->key_free (key);
+	}
+	if (free_funcs->data_free) {
+		free_funcs->data_free (data);
+	}
+	return TRUE;
+}
+
+void
+nautilus_g_hash_table_free_deep_custom (GHashTable *hash_table, GFreeFunc key_free, GFreeFunc data_free)
+{
+	HashTableFreeFuncs free_funcs;
+
+	if (hash_table != NULL) {
+		free_funcs.key_free = key_free;
+		free_funcs.data_free = data_free;
+		
+		g_hash_table_foreach_remove (hash_table, nautilus_g_hash_table_free_deep_helper, &free_funcs);
+	}
+}
+
+void
+nautilus_g_hash_table_free_deep (GHashTable *hash_table)
+{
+	nautilus_g_hash_table_free_deep_custom (hash_table, g_free, g_free);
+}
+
 /* This is something like the new g_string_append_len function from
  * GLib 2.0, without the ability to deal with NUL character that the
  * GLib 2.0 function has. It's limited in other ways too, so it's

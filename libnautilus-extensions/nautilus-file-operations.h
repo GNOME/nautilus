@@ -30,7 +30,9 @@ void 	nautilus_file_operations_copy_move      (const GList *item_uris,
 						 const GdkPoint *target_item_points,
 						 const char *target_dir,
 						 int copy_action,
-						 GtkWidget *parent_view);
+						 GtkWidget *parent_view,
+						 void (*done_callback) (GHashTable *debuting_uris, gpointer data),
+				    		 gpointer done_callback_data);
 
 void 	nautilus_file_operations_move_to_trash (const GList *item_uris,
 						GtkWidget *parent_view);

@@ -1,3 +1,34 @@
+2000-10-23  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_ok), (sync_xfer_callback),
+	(nautilus_file_operations_copy_move),
+	(nautilus_file_operations_move_to_trash),
+	(nautilus_file_operations_delete), (do_empty_trash):
+	* libnautilus-extensions/nautilus-file-operations.h:
+	Added callback for copy_move operation - to support
+	selecting icons afterward.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_hash_table_remove_deep_custom),
+	(nautilus_g_hash_table_remove_deep),
+	(nautilus_g_hash_table_free_deep_helper),
+	(nautilus_g_hash_table_free_deep_custom),
+	(nautilus_g_hash_table_free_deep):
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	Added misc hash table utilities
+
+	* src/file-manager/fm-directory-view.c: (debuting_uri_data_free),
+	(debuting_uri_add_file_callback), (copy_move_done_data_free),
+	(pre_copy_move_add_file_callback), (pre_copy_move),
+	(copy_move_done_partition_func), (copy_move_done_callback),
+	(fm_directory_view_create_links_for_files),
+	(fm_directory_view_duplicate_selection), (new_folder_done),
+	(fm_directory_view_new_folder),
+	(fm_directory_view_move_copy_items):
+	Hooked up to new copy_move callback. There are still problems,
+	the icons get unselected by someone after they're selected.
+
 2000-10-23  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* README:

@@ -1470,6 +1470,157 @@ zoomable_zoom_to_fit_callback (NautilusZoomable *zoomable, FMDirectoryView *view
 	fm_directory_view_restore_default_zoom_level (view);
 }
 
+typedef struct {
+	GHashTable *debuting_uris;
+	GList	   *added_uris;
+} DebutingUriData;
+
+static void
+debuting_uri_data_free (DebutingUriData *data)
+{
+	if (data != NULL) {
+		nautilus_g_hash_table_free_deep (data->debuting_uris);
+		nautilus_g_list_free_deep (data->added_uris);
+		g_free (data);
+	}
+}
+
+/* This signal handler watch for the arrival of the icons created
+ * as the result of a file operation. Once the last one is detected
+ * it selects and reveals them all.
+ */
+static void
+debuting_uri_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, DebutingUriData *data)
+{
+	char *uri;
+
+	uri = nautilus_file_get_uri (new_file);
+
+	if (nautilus_g_hash_table_remove_deep (data->debuting_uris, uri)) {
+		data->added_uris = g_list_prepend (data->added_uris, uri);
+
+		if (g_hash_table_size (data->debuting_uris) == 0) {
+			fm_directory_view_set_selection (view, data->added_uris);
+			fm_directory_view_reveal_selection (view);
+			gtk_signal_disconnect_by_func (GTK_OBJECT (view), &debuting_uri_add_file_callback, data);
+		}
+	} else {
+		g_free (uri);
+	}
+}
+
+typedef struct {
+	GList		*added_uris;
+	FMDirectoryView *directory_view;
+}CopyMoveDoneData;
+
+static void
+copy_move_done_data_free (CopyMoveDoneData *data)
+{
+	if (data != NULL) {
+		nautilus_g_list_free_deep (data->added_uris);
+		g_free (data);
+	}
+}
+
+static void
+pre_copy_move_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, CopyMoveDoneData *data)
+{
+	data->added_uris = g_list_prepend (data->added_uris, nautilus_file_get_uri (new_file));
+}
+
+/* This needs to be called prior to nautilus_file_operations_copy_move.
+ * It hooks up a signal handler to catch any icons that get added before
+ * the copy_done_callback is invoked. The return value should  be passed
+ * as the data for copy_move_done_callback.
+ */
+static CopyMoveDoneData *
+pre_copy_move (FMDirectoryView *directory_view)
+{
+	CopyMoveDoneData *copy_move_done_data;
+
+	copy_move_done_data = g_new0 (CopyMoveDoneData, 1);
+	copy_move_done_data->directory_view = directory_view;
+
+	/* We need to run after the default handler adds the folder we want to
+	 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
+	 * must use connect_after.
+	 */
+	gtk_signal_connect_full (GTK_OBJECT (directory_view),
+				 "add_file",
+				 pre_copy_move_add_file_callback,
+				 NULL,
+				 copy_move_done_data,
+				 (GtkDestroyNotify) copy_move_done_data_free,
+				 FALSE,
+				 TRUE);
+	return copy_move_done_data;
+}
+
+/* This function is used to pull out any debuting uris that were added
+ * and (as a side effect) remove them from the debuting uri hash table.
+ */
+static gboolean
+copy_move_done_partition_func (gpointer data, gpointer callback_data)
+{
+	return nautilus_g_hash_table_remove_deep ((GHashTable *) callback_data, (char *) data);
+}
+
+/* When this function is invoked, the file operation is over, but all
+ * the icons may not have been added to the directory view yet, so
+ * we can't select them yet.
+ * 
+ * We're passed a hash table of the uri's to look out for, we hook
+ * up a signal handler to await their arrival.
+ */
+static void
+copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
+{
+	FMDirectoryView  *directory_view;
+	CopyMoveDoneData *copy_move_done_data;
+	DebutingUriData  *debuting_uri_data;
+
+	
+	copy_move_done_data = (CopyMoveDoneData *) data;
+	directory_view = copy_move_done_data->directory_view;
+
+	debuting_uri_data = g_new (DebutingUriData, 1);
+	debuting_uri_data->debuting_uris = debuting_uris;
+	debuting_uri_data->added_uris	 = nautilus_g_list_partition (copy_move_done_data->added_uris,
+								      copy_move_done_partition_func,
+								      debuting_uris,
+								      &copy_move_done_data->added_uris);
+								      
+	/* We're passed the same data used by pre_copy_move_add_file_callback, so disconnecting
+	 * it will free data. We've already siphoned off the added_uris we need, and stashed the
+	 * directory_view pointer.
+	 */
+	gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view), &pre_copy_move_add_file_callback, data);
+
+	if (g_hash_table_size (debuting_uris) == 0) {
+		/* on the off-chance that all the icons have already been added ...
+		 */
+		if (debuting_uri_data->added_uris != NULL) {
+			fm_directory_view_set_selection (directory_view, debuting_uri_data->added_uris);
+			fm_directory_view_reveal_selection (directory_view);
+			nautilus_g_list_free_deep (debuting_uri_data->added_uris);
+		}
+	} else {
+		/* We need to run after the default handler adds the folder we want to
+		 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
+		 * must use connect_after.
+		 */
+		gtk_signal_connect_full (GTK_OBJECT (directory_view),
+					 "add_file",
+					 debuting_uri_add_file_callback,
+					 NULL,
+					 debuting_uri_data,
+					 (GtkDestroyNotify) debuting_uri_data_free,
+					 FALSE,
+					 TRUE);
+	}
+}
+
 static gboolean
 display_pending_files (FMDirectoryView *view)
 {
@@ -2045,7 +2196,8 @@ static void
 fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files)
 {
 	GList *uris;
-
+	CopyMoveDoneData *copy_move_done_data;
+	
         g_assert (FM_IS_DIRECTORY_VIEW (view));
         g_assert (files != NULL);
 
@@ -2054,8 +2206,9 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files)
 	g_list_foreach (files, append_uri_one, &uris);    
 
         g_assert (g_list_length (uris) == g_list_length (files));
-        
-	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view));
+
+        copy_move_done_data = pre_copy_move (view);
+	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	nautilus_g_list_free_deep (uris);
 }
 
@@ -2063,6 +2216,7 @@ static void
 fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 {
 	GList *uris;
+	CopyMoveDoneData *copy_move_done_data;
 
         g_assert (FM_IS_DIRECTORY_VIEW (view));
         g_assert (files != NULL);
@@ -2073,7 +2227,8 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 
         g_assert (g_list_length (uris) == g_list_length (files));
         
-	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_COPY, GTK_WIDGET (view));
+        copy_move_done_data = pre_copy_move (view);
+	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_COPY, GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	nautilus_g_list_free_deep (uris);
 }
 
@@ -2430,9 +2585,12 @@ reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, char* 
 }
 
 static void
-new_folder_done (const char *new_folder_uri, FMDirectoryView *directory_view)
+new_folder_done (const char *new_folder_uri, gpointer data)
 {
+	FMDirectoryView *directory_view;
 	RenameLaterParameters *parameters;
+
+	directory_view = (FMDirectoryView *)data;
 
 	/* We need to run after the default handler adds the folder we want to
 	 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
@@ -2440,7 +2598,7 @@ new_folder_done (const char *new_folder_uri, FMDirectoryView *directory_view)
 	 */
 	gtk_signal_connect_full (GTK_OBJECT (directory_view),
 				 "add_file",
-				 &reveal_newly_added_folder,
+				 reveal_newly_added_folder,
 				 NULL,
 				 g_strdup (new_folder_uri),
 				 g_free,
@@ -2477,7 +2635,7 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 	char *parent_uri;
 
 	parent_uri = fm_directory_view_get_uri (directory_view);
-	nautilus_file_operations_new_folder (GTK_WIDGET(directory_view), parent_uri, (void (*)(const char *, gpointer)) new_folder_done, directory_view);
+	nautilus_file_operations_new_folder (GTK_WIDGET(directory_view), parent_uri, new_folder_done, directory_view);
 
 	g_free (parent_uri);
 }
@@ -4173,6 +4331,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 				   FMDirectoryView *view)
 {
 	int index, count;
+	CopyMoveDoneData *copy_move_done_data;
 	
 	if (relative_item_points) {
 		/* add the drop location to the icon offsets */
@@ -4182,9 +4341,11 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 			relative_item_points[index].y += y;
 		}
 	}
+	copy_move_done_data = pre_copy_move (view);
 	nautilus_file_operations_copy_move
 		(item_uris, relative_item_points, 
-		 target_dir, copy_action, GTK_WIDGET (view));
+		 target_dir, copy_action, GTK_WIDGET (view),
+		 copy_move_done_callback, copy_move_done_data);
 }
 
 gboolean

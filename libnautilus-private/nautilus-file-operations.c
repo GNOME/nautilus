@@ -63,6 +63,9 @@ typedef struct {
 	GtkWidget *parent_view;
 	XferKind kind;
 	gboolean show_progress_dialog;
+	void (*done_callback) (GHashTable *debuting_uris, gpointer data);
+	gpointer done_callback_data;
+	GHashTable *debuting_uris;	
 } XferInfo;
 
 /* Struct used to control applying icon positions to 
@@ -325,6 +328,13 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		nautilus_file_changes_consume_changes (TRUE);
 		if (xfer_info->progress_dialog != NULL) {
 			gtk_widget_destroy (xfer_info->progress_dialog);
+		}
+		if (xfer_info->done_callback != NULL) {
+			xfer_info->done_callback (xfer_info->debuting_uris, xfer_info->done_callback_data);
+			/* done_callback now owns (will free) debuting_uris
+			 */
+		} else {
+			nautilus_g_hash_table_free_deep (xfer_info->debuting_uris);
 		}
 		g_free (xfer_info);
 		return TRUE;
@@ -871,15 +881,27 @@ apply_one_position (IconPositionIterator *position_iterator,
 	position_iterator->last_icon_position_index++; 
 }
 
+typedef struct {
+	GHashTable		*debuting_uris;
+	IconPositionIterator	*iterator;
+} SyncXferInfo;
+
 /* Low-level callback, called for every copy engine operation.
  * Generates notifications about new, deleted and moved files.
  */
 static int
 sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 {
+	GHashTable	     *debuting_uris;
 	IconPositionIterator *position_iterator;
 
-	position_iterator = (IconPositionIterator *)data;
+	if (data != NULL) {
+		debuting_uris	  = ((SyncXferInfo *) data)->debuting_uris;
+		position_iterator = ((SyncXferInfo *) data)->iterator;
+	} else {
+		debuting_uris     = NULL;
+		position_iterator = NULL;
+	}
 
 	if (progress_info->status == GNOME_VFS_XFER_PROGRESS_STATUS_OK) {
 		switch (progress_info->phase) {
@@ -894,6 +916,10 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 
 				apply_one_position (position_iterator, progress_info->source_name,
 					progress_info->target_name);
+
+				if (debuting_uris != NULL) {
+					g_hash_table_insert (debuting_uris, g_strdup (progress_info->target_name), NULL);
+				}
 			}
 			nautilus_file_changes_queue_file_added (progress_info->target_name);
 			break;
@@ -906,6 +932,10 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 
 				apply_one_position (position_iterator, progress_info->source_name,
 					progress_info->target_name);
+
+				if (debuting_uris != NULL) {
+					g_hash_table_insert (debuting_uris, g_strdup (progress_info->target_name), NULL);
+				}
 			}
 			nautilus_file_changes_queue_file_moved (progress_info->source_name,
 				progress_info->target_name);
@@ -923,6 +953,9 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 		case GNOME_VFS_XFER_PHASE_COMPLETED:
 			/* done, clean up */
 			icon_position_iterator_free (position_iterator);
+			/* SyncXferInfo doesn't own the debuting_uris hash table - don't free it here.
+			 */
+			g_free (data);
 			break;
 
 		default:
@@ -1009,7 +1042,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				    const GdkPoint *relative_item_points,
 				    const char *target_dir,
 				    int copy_action,
-				    GtkWidget *view)
+				    GtkWidget *view,
+				    void (*done_callback) (GHashTable *debuting_uris, gpointer data),
+				    gpointer done_callback_data)
 {
 	const GList *p;
 	GnomeVFSXferOptions move_options;
@@ -1020,6 +1055,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	GnomeVFSURI *uri;
 
 	XferInfo *xfer_info;
+	SyncXferInfo *sync_xfer_info;
 	GnomeVFSResult result;
 	gboolean same_fs;
 	gboolean is_trash_move;
@@ -1113,7 +1149,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 	
 	/* set up the copy/move parameters */
-	xfer_info = g_new (XferInfo, 1);
+	xfer_info = g_new0 (XferInfo, 1);
 	xfer_info->parent_view = view;
 	xfer_info->progress_dialog = NULL;
 
@@ -1219,13 +1255,20 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
-	
+	xfer_info->done_callback = done_callback;
+	xfer_info->done_callback_data = done_callback_data;
+	xfer_info->debuting_uris = g_hash_table_new (g_str_hash, g_str_equal);
+
+	sync_xfer_info = g_new (SyncXferInfo, 1);
+	sync_xfer_info->iterator = icon_position_iterator;
+	sync_xfer_info->debuting_uris = xfer_info->debuting_uris;
+
 	if (result == GNOME_VFS_OK) {
 		gnome_vfs_async_xfer (&xfer_info->handle, source_uri_list, target_uri_list,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, icon_position_iterator);
+		      		      &sync_xfer_callback, sync_xfer_info);
 	}
 
 	gnome_vfs_uri_list_free (source_uri_list);
@@ -1396,7 +1439,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		g_assert (trash_dir_uri != NULL);
 
 		/* set up the move parameters */
-		xfer_info = g_new (XferInfo, 1);
+		xfer_info = g_new0 (XferInfo, 1);
 		xfer_info->parent_view = parent_view;
 		xfer_info->progress_dialog = NULL;
 
@@ -1444,7 +1487,7 @@ nautilus_file_operations_delete (const GList *item_uris,
 	}
 	uri_list = g_list_reverse (uri_list);
 
-	xfer_info = g_new (XferInfo, 1);
+	xfer_info = g_new0 (XferInfo, 1);
 	xfer_info->parent_view = parent_view;
 	xfer_info->progress_dialog = NULL;
 	xfer_info->show_progress_dialog = TRUE;
@@ -1491,7 +1534,7 @@ do_empty_trash (GtkWidget *parent_view)
 		g_assert (trash_dir_uri != NULL);
 
 		/* set up the move parameters */
-		xfer_info = g_new (XferInfo, 1);
+		xfer_info = g_new0 (XferInfo, 1);
 		xfer_info->parent_view = parent_view;
 		xfer_info->progress_dialog = NULL;
 		xfer_info->show_progress_dialog = TRUE;
