@@ -95,7 +95,8 @@ struct FMPropertiesWindowDetails {
 
 	GtkWidget *icon_image;
 
-	NautilusEntry *name_field;
+	GtkWidget *name_label;
+	GtkWidget *name_field;
 	char *pending_name;
 
 	GtkLabel *directory_contents_title_field;
@@ -203,6 +204,16 @@ static void remove_pending                        (StartupData        *data,
 						   gboolean            cancel_timed_wait,
 						   gboolean            cancel_destroy_handler);
 static void append_extension_pages                (FMPropertiesWindow *window);
+
+static gboolean name_field_focus_out              (NautilusEntry *name_field,
+						   GdkEventFocus *event,
+						   gpointer callback_data);
+static void name_field_activate                   (NautilusEntry *name_field,
+						   gpointer callback_data);
+static GtkLabel *attach_ellipsizing_value_label   (GtkTable *table,
+						   int row,
+						   int column,
+						   const char *initial_text);
 
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
 			 GtkWindow, GTK_TYPE_WINDOW);
@@ -545,12 +556,87 @@ create_image_widget (FMPropertiesWindow *window)
 }
 
 static void
+set_name_field (FMPropertiesWindow *window, const gchar *original_name,
+					 const gchar *name)
+{
+	gboolean new_widget;
+	gboolean use_label;
+
+	/* There are four cases here:
+	 * 1) Changing the text of a label
+	 * 2) Changing the text of an entry
+	 * 3) Creating label (potentially replacing entry)
+	 * 4) Creating entry (potentially replacing label)
+	 */
+	use_label = is_multi_file_window (window) || !nautilus_file_can_rename (get_original_file (window));
+	new_widget = !window->details->name_field || (use_label ? NAUTILUS_IS_ENTRY (window->details->name_field) : GTK_IS_LABEL (window->details->name_field));
+
+	if (new_widget) {
+		if (window->details->name_field) {
+			gtk_widget_destroy (window->details->name_field);
+		}
+
+		if (use_label) {
+			window->details->name_field = GTK_WIDGET (attach_ellipsizing_value_label (window->details->basic_table, 0, VALUE_COLUMN, name));		
+		} else {
+			window->details->name_field = nautilus_entry_new ();
+			gtk_entry_set_text (GTK_ENTRY (window->details->name_field), name);
+			gtk_widget_show (window->details->name_field);
+			gtk_table_attach (window->details->basic_table,
+					  window->details->name_field,
+					  VALUE_COLUMN, 
+					  VALUE_COLUMN + 1,
+					  0, 1,
+					  GTK_FILL, 0,
+					  0, 0);
+			gtk_label_set_mnemonic_widget (GTK_LABEL (window->details->name_label), window->details->name_field);
+			
+			/* FIXME bugzilla.gnome.org 42151:
+			 * With this (and one place elsewhere in this file, not sure which is the
+			 * trouble-causer) code in place, bug 2151 happens (crash on quit). Since
+			 * we've removed Undo from Nautilus for now, I'm just ifdeffing out this
+			 * code rather than trying to fix 2151 now. Note that it might be possible
+			 * to fix 2151 without making Undo actually work, it's just not worth the
+			 * trouble.
+			 */
+#ifdef UNDO_ENABLED
+			/* Set up name field for undo */
+			nautilus_undo_set_up_nautilus_entry_for_undo ( NAUTILUS_ENTRY (window->details->name_field));
+			nautilus_undo_editable_set_undo_key (GTK_EDITABLE (window->details->name_field), TRUE);
+#endif
+
+			g_signal_connect_object (window->details->name_field, "focus_out_event",
+						 G_CALLBACK (name_field_focus_out), window, 0);
+			g_signal_connect_object (window->details->name_field, "activate",
+						 G_CALLBACK (name_field_activate), window, 0);
+		}
+
+		gtk_widget_show (window->details->name_field);
+	}
+	/* Only replace text if the file's name has changed. */ 
+	else if (original_name == NULL || strcmp (original_name, name) != 0) {
+		
+		if (use_label) {
+			gtk_label_set_text (GTK_LABEL (window->details->name_field), name);
+		} else {
+			/* Only reset the text if it's different from what is
+			 * currently showing. This causes minimal ripples (e.g.
+			 * selection change).
+			 */
+			gchar *displayed_name = gtk_editable_get_chars (GTK_EDITABLE (window->details->name_field), 0, -1);
+			if (strcmp (displayed_name, name) != 0) {
+				gtk_entry_set_text (GTK_ENTRY (window->details->name_field), name);
+			}
+			g_free (displayed_name);
+		}
+	}
+}
+
+static void
 update_name_field (FMPropertiesWindow *window)
 {
 	NautilusFile *file;
-	const char *original_name;
-	char *current_name, *displayed_name;
-
+	
 	if (is_multi_file_window (window)) {
 		/* Multifile property dialog, show all names */
 		GString *str;
@@ -576,60 +662,40 @@ update_name_field (FMPropertiesWindow *window)
 				g_free (name);
 			}
 		}
-		gtk_entry_set_text (GTK_ENTRY (window->details->name_field), 
-				    str->str);
+		set_name_field (window, NULL, str->str);
 		g_string_free (str, TRUE);
-
-		gtk_editable_set_editable (GTK_EDITABLE (window->details->name_field), 
-					   FALSE);
 	} else {
-		NautilusFile *file;
+		const char *original_name = NULL;
+		char *current_name;
 
 		file = get_original_file (window);
-			
+
 		if (file == NULL || nautilus_file_is_gone (file)) {
-			gtk_entry_set_text (GTK_ENTRY (window->details->name_field), "");
-			return;
+			current_name = g_strdup ("");
+		} else {
+			current_name = nautilus_file_get_display_name (file);
 		}
 
-		original_name = (const char *) g_object_get_data (G_OBJECT (window->details->name_field),
-								  "original_name");
-		
 		/* If the file name has changed since the original name was stored,
 		 * update the text in the text field, possibly (deliberately) clobbering
 		 * an edit in progress. If the name hasn't changed (but some other
 		 * aspect of the file might have), then don't clobber changes.
 		 */
-		current_name = nautilus_file_get_display_name (file);
+		if (window->details->name_field) {
+			original_name = (const char *) g_object_get_data (G_OBJECT (window->details->name_field), "original_name");
+		}
+
+		set_name_field (window, original_name, current_name);
+
 		if (original_name == NULL || 
 		    eel_strcmp (original_name, current_name) != 0) {
 			g_object_set_data_full (G_OBJECT (window->details->name_field),
 						"original_name",
 						current_name,
 						g_free);
-			
-			/* Only reset the text if it's different from what is
-			 * currently showing. This causes minimal ripples (e.g.
-			 * selection change).
-			 */
-			displayed_name = gtk_editable_get_chars (GTK_EDITABLE (window->details->name_field), 0, -1);
-			if (strcmp (displayed_name, current_name) != 0) {
-				gtk_entry_set_text (GTK_ENTRY (window->details->name_field), current_name);
-			}
-			g_free (displayed_name);
 		} else {
 			g_free (current_name);
 		}
-		
-		/* 
-		 * The UI would look better here if the name were just drawn as
-		 * a plain label in the case where it's not editable, with no
-		 * border at all. That doesn't seem to be possible with GtkEntry,
-		 * so we'd have to swap out the widget to achieve it. I don't
-		 * care enough to change this now.
-		 */
-		gtk_widget_set_sensitive (GTK_WIDGET (window->details->name_field), 
-					  nautilus_file_can_rename (file));
 	}
 }
 
@@ -672,7 +738,7 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 					       result,
 					       GTK_WINDOW (window));
 		if (window->details->name_field != NULL) {
-			name_field_restore_original_name (window->details->name_field);
+			name_field_restore_original_name (NAUTILUS_ENTRY (window->details->name_field));
 		}
 	}
 
@@ -2234,7 +2300,6 @@ create_basic_page (FMPropertiesWindow *window)
 {
 	GtkTable *table;
 	GtkWidget *container;
-	GtkWidget *name_field;
 	GtkWidget *icon_aligner;
 	GtkWidget *icon_pixmap_widget;
 
@@ -2269,55 +2334,25 @@ create_basic_page (FMPropertiesWindow *window)
 
 	/* Name label */
 	if (is_multi_file_window (window)) {
-		name_label = gtk_label_new_with_mnemonic (_("_Names:"));
+		name_label = gtk_label_new_with_mnemonic (_("Names:"));
 	} else {
 		name_label = gtk_label_new_with_mnemonic (_("_Name:"));
 	}
 	eel_gtk_label_make_bold (GTK_LABEL (name_label));
 	gtk_widget_show (name_label);
 	gtk_box_pack_end (GTK_BOX (hbox), name_label, FALSE, FALSE, 0);
+	window->details->name_label = name_label;
 
 	/* Name field */
-	name_field = nautilus_entry_new ();
-	window->details->name_field = NAUTILUS_ENTRY (name_field);
-	gtk_widget_show (name_field);
-	gtk_table_attach (table,
-			  name_field,
-			  VALUE_COLUMN, 
-			  VALUE_COLUMN + 1,
-			  0, 1,
-			  GTK_FILL, 0,
-			  0, 0);
-	gtk_label_set_mnemonic_widget (GTK_LABEL (name_label), name_field);
-
-	/* Update name field initially before hooking up changed signal. */
+	window->details->name_field = NULL;
 	update_name_field (window);
 
-/* FIXME bugzilla.gnome.org 42151:
- * With this (and one place elsewhere in this file, not sure which is the
- * trouble-causer) code in place, bug 2151 happens (crash on quit). Since
- * we've removed Undo from Nautilus for now, I'm just ifdeffing out this
- * code rather than trying to fix 2151 now. Note that it might be possible
- * to fix 2151 without making Undo actually work, it's just not worth the
- * trouble.
- */
-#ifdef UNDO_ENABLED
-	/* Set up name field for undo */
-	nautilus_undo_set_up_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
-	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
-#endif
+	/* Start with name field selected, if it's an entry. */
+	if (NAUTILUS_IS_ENTRY (window->details->name_field)) {
+		nautilus_entry_select_all (NAUTILUS_ENTRY (window->details->name_field));
+		gtk_widget_grab_focus (GTK_WIDGET (window->details->name_field));
+	}
 
-	g_signal_connect_object (name_field, "focus_out_event",
-				 G_CALLBACK (name_field_focus_out), window, 0);                      			    
-	g_signal_connect_object (name_field, "activate",
-				 G_CALLBACK (name_field_activate), window, 0);
-
-        /* Start with name field selected, if it's sensitive. */
-        if (GTK_WIDGET_SENSITIVE (name_field)) {
-		nautilus_entry_select_all (NAUTILUS_ENTRY (name_field));
-	        gtk_widget_grab_focus (GTK_WIDGET (name_field));
-        }
-        
 	if (should_show_file_type (window)) {
 		append_title_value_pair (window,
 					 table, _("Type:"), 
