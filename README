@@ -239,8 +239,8 @@ Mozilla M18 is required for the Mozilla component to build.
 The easiest way to get the Mozilla development libraries, is to use
 Chris Blizzard's Mozilla rpms.  These can be fetched over here:
 
-http://developer.eazel.com/eazel-hacking/updates/mozilla/mozilla-M18-2.i386.rpm
-http://developer.eazel.com/eazel-hacking/updates/mozilla/mozilla-devel-M18-2.i386.rpm
+http://developer.eazel.com/eazel-hacking/updates/mozilla/mozilla-M18-4.i386.rpm
+http://developer.eazel.com/eazel-hacking/updates/mozilla/mozilla-devel-M18-4.i386.rpm
 
 After installing these rpms, you can build nautilus with Mozilla
 support as follows:
@@ -265,15 +265,8 @@ NOTE:   The above command should be issued in one line.  It is split
         into two lines in this document for readability.
 
 
-Before running Nautilus, you need to do some environment setup for the
-Mozilla component:
-
-Using RPMS:
-
-export MOZILLA_FIVE_HOME=/usr/lib/mozilla
-export LD_LIBRARY_PATH=/usr/lib/mozilla:$LD_LIBRARY_PATH
-
-Using Mozilla built in /foo/bar:
+NOTE: If you are building mozilla from source (NOT from the rpm), you
+need to do some environment setup for the Mozilla component:
 
 export MOZILLA_FIVE_HOME=/foo/bar/mozilla/dist/bin
 export LD_LIBRARY_PATH=/foo/bar/mozilla/dist/bin:$LD_LIBRARY_PATH
