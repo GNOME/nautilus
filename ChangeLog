@@ -1,3 +1,18 @@
+2001-03-01  Eric Fischer  <eric@eazel.com>
+
+	reviewed by: Laszlo Kovacs <laszlo.kovacs@sun.com>
+
+	Fixes Bug 7128 (Organization of "Manual" in Help sidebar is bizarre)
+
+	* components/help/hyperbola-filefmt.c:
+	(fmt_man_populate_tree_for_dir):
+	Put man pages in sections corresponding more closely to traditional
+	Unix manual organization.
+
+	(fmt_man_populate_tree):
+	Add translate_array() and make_treesection() calls for the added
+	manual sections.
+
 2001-03-01  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

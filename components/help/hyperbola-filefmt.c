@@ -501,21 +501,20 @@ translate_array (char **array)
                       working on changes to the kernel)
 ***/
 
-static char *man_path[] = { N_("Manual"), NULL };
-static char *cfg_path[] =
-	{ N_("Manual"), N_("System"), N_("Configuration"), N_("Config files"),
-	NULL
-};
-static char *app_path[] =
-	{ N_("Manual"), N_("Applications"), N_("Command Line"), NULL };
-static char *dev_path[] =
-	{ N_("Manual"), N_("Development"), N_("APIs"), N_("Miscellaneous"),
-	NULL
-};
+static char *app_path[] = { N_("Manual"), N_("Applications"), NULL };
 static char *syscall_path[] =
-	{ N_("Manual"), N_("Development"), N_("APIs"), N_("System Calls"),
-	NULL
-};
+	{ N_("Manual"), N_("Development"), N_("System Calls"), NULL };
+static char *libs_path[] =
+	{ N_("Manual"), N_("Development"), N_("Library Functions"), NULL };
+static char *devs_path[] =
+	{ N_("Manual"), N_("Development"), N_("Devices"), NULL };
+static char *cfg_path[] = { N_("Manual"), N_("Configuration Files"), NULL };
+static char *games_path[] = { N_("Manual"), N_("Games"), NULL };
+static char *convs_path[] = { N_("Manual"), N_("Conventions"), NULL };
+static char *sysadm_path[] =
+	{ N_("Manual"), N_("System Administration"), NULL };
+static char *kern_path[] =
+	{ N_("Manual"), N_("Development"), N_("Kernel Routines"), NULL };
 
 static void
 fmt_man_populate_tree_for_dir (HyperbolaDocTree * tree, const char *basedir)
@@ -529,25 +528,25 @@ fmt_man_populate_tree_for_dir (HyperbolaDocTree * tree, const char *basedir)
 	fmt_man_populate_tree_for_subdir (tree, cbuf, syscall_path, '2');
 
 	g_snprintf (cbuf, sizeof (cbuf), "%s/man3", basedir);
-	fmt_man_populate_tree_for_subdir (tree, cbuf, dev_path, '3');
+	fmt_man_populate_tree_for_subdir (tree, cbuf, libs_path, '3');
 
 	g_snprintf (cbuf, sizeof (cbuf), "%s/man4", basedir);
-	fmt_man_populate_tree_for_subdir (tree, cbuf, man_path, '4');
+	fmt_man_populate_tree_for_subdir (tree, cbuf, devs_path, '4');
 
 	g_snprintf (cbuf, sizeof (cbuf), "%s/man5", basedir);
 	fmt_man_populate_tree_for_subdir (tree, cbuf, cfg_path, '5');
 
 	g_snprintf (cbuf, sizeof (cbuf), "%s/man6", basedir);
-	fmt_man_populate_tree_for_subdir (tree, cbuf, app_path, '6');
+	fmt_man_populate_tree_for_subdir (tree, cbuf, games_path, '6');
 
 	g_snprintf (cbuf, sizeof (cbuf), "%s/man7", basedir);
-	fmt_man_populate_tree_for_subdir (tree, cbuf, man_path, '7');
+	fmt_man_populate_tree_for_subdir (tree, cbuf, convs_path, '7');
 
 	g_snprintf (cbuf, sizeof (cbuf), "%s/man8", basedir);
-	fmt_man_populate_tree_for_subdir (tree, cbuf, app_path, '8');
+	fmt_man_populate_tree_for_subdir (tree, cbuf, sysadm_path, '8');
 
 	g_snprintf (cbuf, sizeof (cbuf), "%s/man9", basedir);
-	fmt_man_populate_tree_for_subdir (tree, cbuf, man_path, '9');
+	fmt_man_populate_tree_for_subdir (tree, cbuf, kern_path, '9');
 }
 
 static void
@@ -574,23 +573,25 @@ fmt_man_populate_tree (HyperbolaDocTree * tree)
 	char aline[1024];
 	char **manpath = NULL;
 	int i;
+	char ***p;
+	char **paths[] = {
+		app_path, syscall_path, libs_path, devs_path, cfg_path,
+		games_path, convs_path, sysadm_path, kern_path, NULL
+	};
+
 	/* Go through all the man pages:
 	 * 1. Determine the places to search (run 'manpath').
 	 * 2. Go through all subdirectories to find individual files.
 	 * 3. For each file, add it onto the tree at the right place.
 	 */
 
-	translate_array (man_path);
-	translate_array (cfg_path);
-	translate_array (app_path);
-	translate_array (dev_path);
-	translate_array (syscall_path);
+	for (p = paths; *p; p++) {
+		translate_array (*p);
+	}
 
-	make_treesection (tree, man_path);
-	make_treesection (tree, cfg_path);
-	make_treesection (tree, app_path);
-	make_treesection (tree, dev_path);
-	make_treesection (tree, syscall_path);
+	for (p = paths; *p; p++) {
+		make_treesection (tree, *p);
+	}
 
 	fh = popen ("manpath", "r");
 	g_return_if_fail (fh);
