@@ -812,7 +812,7 @@ flatten_package_tree_depends_foreach (PackageDependency *dep, GList **flattened_
 static void
 flatten_package_tree_foreach (PackageData *package, GList **flattened_list)
 {
-	if (g_list_find (*flattened_list, package) != NULL) {
+	if (g_list_find (*flattened_list, package) == NULL) {
 		/* add it to the flattened list */
 		*flattened_list = g_list_prepend (*flattened_list, package);
 
