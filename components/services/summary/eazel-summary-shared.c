@@ -24,15 +24,22 @@
 #include <config.h>
 
 #include "eazel-summary-shared.h"
+
 #include <gnome.h>
+#include <glib.h>
 #include <ghttp.h>
 #include <gnome-xml/tree.h>
+#include <gnome-xml/parser.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #define USER_AGENT_STRING	"Trilobite"
 
-gboolean remove_summary_xml_file (const char *summary_xml_file);
+/* gboolean remove_summary_xml_file (const char *summary_xml_file); */
+static GList * build_services_glist_from_xml (xmlNodePtr node);
+static GList * build_eazel_news_glist_from_xml (xmlNodePtr node);
+static GList * build_update_news_glist_from_xml (xmlNodePtr node);
 
 
 gboolean
@@ -116,4 +123,70 @@ http_fetch_remote_file (char	*url, const char	*target_file)
 	}
 } /* end http_fetch_remote_file */
 
+static GList *
+build_services_glist_from_xml (xmlNodePtr node)
+{
+	return NULL;
+}
 
+static GList *
+build_eazel_news_glist_from_xml (xmlNodePtr node)
+{
+	return NULL;
+}
+
+static GList *
+build_update_news_glist_from_xml (xmlNodePtr node)
+{
+	return NULL;
+}
+
+
+SummaryData *
+parse_summary_xml_file (const char *summary_xml_file)
+{
+
+	SummaryData	*return_value;
+	xmlDocPtr	doc;
+	xmlNodePtr	base;
+	xmlNodePtr	sections;
+
+	g_return_val_if_fail (summary_xml_file != NULL, NULL);
+
+	doc = xmlParseFile (summary_xml_file);
+
+	return_value = g_new0 (SummaryData, 1);
+
+	base = doc->root;
+
+	if (base == NULL) {
+		xmlFreeDoc (doc);
+		g_warning (_("The summary configuration contains no data!\n"));
+		return NULL;
+	}
+
+	if (g_strcasecmp (base->name, "SUMMARY_DATA")) {
+		g_print (_("Cannot find the SUMMARY_DATA xmlnode!\n"));
+		xmlFreeDoc (doc);
+		g_warning (_("Bailing from the SUMMARY_DATA parse!\n"));
+		return NULL;
+	}
+
+	sections = doc->root->childs;
+
+	if (sections == NULL) {
+		g_print (_("Could not find any summary configuration data!\n"));
+		xmlFreeDoc (doc);
+		g_warning (_("Bailing from summary configuration parse!\n"));
+		return NULL;
+	}
+	while (sections) {
+
+		return_value->services_list = build_services_glist_from_xml (sections);
+		return_value->eazel_news_list = build_eazel_news_glist_from_xml (sections);
+		return_value->update_news_list = build_update_news_glist_from_xml (sections);
+	}
+
+	return return_value;
+
+} /* parse_summary_xml_file */

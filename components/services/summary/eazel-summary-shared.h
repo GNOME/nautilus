@@ -26,9 +26,41 @@
 #include <libnautilus/nautilus-view.h>
 #include <gtk/gtk.h>
 
+typedef struct _ServicesData ServicesData;
+typedef struct _EazelNewsData EazelNewsData;
+typedef struct _UpdateNewsData UpdateNewsData;
+typedef struct _SummaryData SummaryData;
+
+struct _ServicesData {
+	char		*name;
+	char		*icon;
+	char		*button_label;
+	char		*description;
+};
+
+struct _EazelNewsData {
+	char		*name;
+	char		*icon;
+	char		*message;
+};
+
+struct _UpdateNewsData {
+	char		*name;
+	char		*priority;
+	char		*description;
+	char		*icon;
+	char		*install_uri;
+};
+
+struct _SummaryData {
+	GList	*services_list;
+	GList	*eazel_news_list;
+	GList	*update_news_list;
+};
+
 gboolean http_fetch_remote_file (char *uri, const char *target_file);
 
-gboolean parse_summary_configuration (const char *summary_xml_file);
+SummaryData * parse_summary_xml_file (const char *summary_xml_file);
 
 #endif /* EAZEL_SUMMARY_SHARED_H */
 
