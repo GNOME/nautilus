@@ -24,12 +24,12 @@ SUBDIRS = \
 	html \
 	loser \
 	music \
-	rpmview \
 	notes \
 	sample \
 	tree \
 	websearch \
 	$(SERVICE_SUBDIRS) \
+	rpmview \
 	$(RPMVIEW_COMPONENT_SUBDIRS) \
 	$(MOZILLA_COMPONENT_SUBDIRS) \
 	$(NULL)
