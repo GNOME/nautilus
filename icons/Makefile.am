@@ -22,14 +22,16 @@ icon_DATA =\
 	emblem-encrypted.gif \
 	emblem-favorite.svg \
 	emblem-generic.png \
-	emblem-important.gif \
-	emblem-new.gif \
-	emblem-noread.png \
+	emblem-important.svg \
+	emblem-new.svg \
+	emblem-noread.svg \
 	emblem-nowrite.png \
+	emblem-OK.svg \
 	emblem-personal.svg \
 	emblem-remote.gif \
 	emblem-trash.png \
 	emblem-symbolic-link.png \
+	emblem-urgent.svg \
 	emblems.png \
 	expert.png \
 	expert-selected.png \

@@ -6,9 +6,11 @@ emblems_DATA = \
 	confidential.gif \
 	draft.png \
 	favorite.png \
-	important.gif \
-	new.gif \
+	important.png \
+	new.png \
+	OK.png \
 	personal.png \
+	urgent.png \
 	$(NULL)
 
 EXTRA_DIST = $(emblems_DATA)
