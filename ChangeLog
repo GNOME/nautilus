@@ -2,7 +2,9 @@
 
 	* src/ntl-app.c (display_prototype_caveat): Changed to simply use
 	a gnome_warning_dialog instead of a nautilus_simple_dialog. We
-	loose the word wrapping though.
+	loose the word wrapping though. But now the main window loads
+	while the warning is present, plus it's a real GNOME warning box,
+	so be afraid...
 
 	* components/services/time/service/trilobite-eazel-time-service.oafinfo: 
 	* components/services/trilobite/sample/service/trilobite-eazel-sample-service.oafinfo: 
