@@ -41,6 +41,8 @@ void nautilus_run_lib_self_checks (void);
 #define NAUTILUS_LIB_FOR_EACH_SELF_CHECK_FUNCTION(macro) \
 	macro (nautilus_self_check_string) \
 	macro (nautilus_self_check_string_list) \
+	macro (nautilus_self_check_enumeration) \
+	macro (nautilus_self_check_preferences) \
 	macro (nautilus_self_check_scalable_font) \
 	macro (nautilus_self_check_string_map) \
 	macro (nautilus_self_check_glib_extensions) \
@@ -54,7 +56,6 @@ void nautilus_run_lib_self_checks (void);
 	macro (nautilus_self_check_file) \
 	macro (nautilus_self_check_icon_container) \
 	macro (nautilus_self_check_icon_factory) \
-	macro (nautilus_self_check_preference) \
 /* Add new self-check functions to the list above this line. */
 
 /* Generate prototypes for all the functions. */

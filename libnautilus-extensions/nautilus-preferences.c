@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-preferences.h - Preference peek/poke/notify object implementation.
+/* nautilus-preferences.c - Preference peek/poke/notify implementation.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -23,15 +23,14 @@
 */
 
 #include <config.h>
-#include <string.h>
-
 #include "nautilus-preferences.h"
-#include "nautilus-preferences-private.h"
-#include "nautilus-user-level-manager.h"
 
-#include "nautilus-gtk-macros.h"
-#include "nautilus-glib-extensions.h"
+#include "nautilus-gconf-extensions.h"
+#include "nautilus-string-list.h"
 #include "nautilus-string.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-enumeration.h"
+#include "nautilus-lib-self-check-functions.h"
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
@@ -42,339 +41,952 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
- 
-static const char PREFERENCES_GCONF_PATH[] = "/apps/nautilus";
 
-#include <gtk/gtksignal.h>
 
 /*
- * PreferencesHashNode:
+ * PreferencesEntry:
  *
  * A structure to manage preference hash table nodes.
  * Preferences are hash tables.  The hash key is the preference name
  * (a string).  The  hash value is a pointer of the following struct:
  */
 typedef struct {
-	GList	*callback_list;
-	int	gconf_connections[3];
-	char	*name;
-} PreferencesHashNode;
+	char *name;
+	char *description;
+	GList *callback_list;
+	int gconf_connection_id;
+	NautilusEnumeration *enumeration;
+} PreferencesEntry;
 
 /*
- * PreferencesCallbackNode:
+ * PreferencesCallbackEntry:
  *
  * A structure to manage callback lists.  A callback list is a GList.
  * The callback_data in each list node is a pointer to the following 
  * struct:
  */
 typedef struct {
-	NautilusPreferencesCallback	callback_proc;
-	gpointer			callback_data;
-	const PreferencesHashNode	*hash_node;
-} PreferencesCallbackNode;
+	NautilusPreferencesCallback callback;
+	gpointer callback_data;
+} PreferencesCallbackEntry;
 
-/*
- * PreferencesGlobalData
- *
- * A structure to make it easier to grok the usage of global variables
- * in the code below.
- */
-typedef struct {
-	GHashTable	  *preference_table;
-	GConfClient	  *gconf_client;
-	guint		  old_user_level;
 
-} PreferencesGlobalData;
-
-static PreferencesGlobalData GLOBAL = { NULL, NULL, 0 };
-
-/* PreferencesHashNode functions */
-static PreferencesHashNode *    preferences_hash_node_alloc                       (const char                  *name);
-static void                     preferences_hash_node_free                        (PreferencesHashNode         *node);
-static void                     preferences_hash_node_free_func                   (gpointer                     key,
-										   gpointer                     value,
-										   gpointer                     callback_data);
-static void                     preferences_hash_node_check_changes_func          (gpointer                     key,
-										   gpointer                     value,
-										   gpointer                     callback_data);
-
-/* PreferencesCallbackNode functions */
-static PreferencesCallbackNode *preferences_callback_node_alloc                   (NautilusPreferencesCallback  callback_proc,
-										   gpointer                     callback_data,
-										   const PreferencesHashNode   *hash_node);
-static void                     preferences_callback_node_free                    (PreferencesCallbackNode     *node);
-static void                     preferences_callback_node_free_func               (gpointer                     data,
-										   gpointer                     callback_data);
-static void                     preferences_callback_node_invoke_func             (gpointer                     data,
-										   gpointer                     callback_data);
-static void                     preferences_hash_node_add_by_user_level_callbacks (PreferencesHashNode         *node,
-										   NautilusPreferencesCallback  callback_proc,
-										   gpointer                     callback_data);
-static void                     preferences_hash_node_add_callback                (PreferencesHashNode         *node,
-										   NautilusPreferencesCallback  callback_proc,
-										   gpointer                     callback_data);
-static void                     preferences_hash_node_remove_callback             (PreferencesHashNode         *node,
-										   NautilusPreferencesCallback  callback_proc,
-										   gpointer                     callback_data);
-
-/* Private stuff */
-static PreferencesHashNode *    preferences_hash_node_lookup                      (const char                  *name);
-static void                     preferences_register                              (const char                  *name);
-static gboolean                 preferences_initialize_if_needed                  (void);
-static void                     preferences_shutdown                              (void);
-static char *                   preferences_make_make_gconf_key                   (const char                  *preference_name);
-
-/* GConf callbacks */
-static void                     preferences_gconf_by_user_level_callback          (GConfClient                 *client,
-										   guint                        cnxn_id,
-										   GConfEntry                  *value,
-										   gpointer                     user_data);
-static void                     preferences_gconf_callback                        (GConfClient                 *client,
-										   guint                        cnxn_id,
-										   GConfEntry                  *value,
-										   gpointer                     user_data);
-
-/**
- * preferences_hash_node_alloc
- *
- * Allocate a preference hash node.
- * @info: Pointer to info structure to use for the node memebers.
- *
- * Return value: A newly allocated node.
- **/
-static PreferencesHashNode *
-preferences_hash_node_alloc (const char			*name)
+static const char *user_level_names_for_display[] =
 {
-	PreferencesHashNode * node;
-	
-	g_assert (name != NULL);
+	N_("Beginner"),
+	N_("Intermediate"),
+	N_("Advanced")
+};
 
-	node = g_new (PreferencesHashNode, 1);
+static const char *user_level_names_for_storage[] =
+{
+	"novice",
+	"intermediate",
+	"hacker"
+};
 
-	node->name = g_strdup(name);
+static char *       preferences_get_path                            (void);
+static char *       preferences_get_defaults_path                   (void);
+static char *       preferences_get_visibility_path                 (void);
+static char *       preferences_get_user_level_key                  (void);
+static GConfClient *preferences_global_client_get                   (void);
+static void         preferences_global_client_remove_notification   (void);
+static gboolean     preferences_preference_is_internal              (const char               *name);
+static gboolean     preferences_preference_is_user_level            (const char               *name);
+static gboolean     preferences_preference_is_default               (const char               *name);
+static char *       preferences_key_make                            (const char               *name);
+static char *       preferences_key_make_for_getter                 (const char               *name);
+static char *       preferences_key_make_for_default                (const char               *name,
+								     int                       user_level);
+static char *       preferences_key_make_for_default_getter         (const char               *name,
+								     int                       user_level);
+static char *       preferences_key_make_for_visibility             (const char               *name);
+static void         preferences_user_level_changed_notice           (GConfClient              *client,
+								     guint                     connection_id,
+								     GConfEntry               *gconf_entry,
+								     gpointer                  user_data);
+static void         preferences_something_changed_notice            (GConfClient              *client,
+								     guint                     connection_id,
+								     GConfEntry               *gconf_entry,
+								     gpointer                  user_data);
+static void         preferences_global_table_check_changes_function (gpointer                  key,
+								     gpointer                  value,
+								     gpointer                  callback_data);
+static GHashTable  *preferences_global_table_get_global             (void);
+static void         preferences_callback_entry_free                 (PreferencesCallbackEntry *callback_entry);
+static int          preferences_user_level_check_range              (int                       user_level);
 
-	node->callback_list = NULL;
+static int user_level_changed_connection_id = -1;
+static GHashTable *global_table = NULL;
 
-	node->gconf_connections[0] = 0;
-	node->gconf_connections[1] = 0;
-	node->gconf_connections[2] = 0;
-
-	return node;
+static char *
+preferences_get_path (void)
+{
+	return g_strdup ("/apps/nautilus");
 }
 
-/**
- * preferences_hash_node_free
- *
- * Free a preference hash node members along with the node itself.
- * @preferences_hash_node: The node to free.
- **/
-static void
-preferences_hash_node_free (PreferencesHashNode *node)
+static char *
+preferences_get_defaults_path (void)
 {
-	guint i;
+	char *defaults_path;
+	char *path;
+	
+	path = preferences_get_path ();
+	defaults_path = g_strdup_printf ("%s/defaults", path);
+	g_free (path);
+	return defaults_path;
+}
 
-	g_assert (node != NULL);
+static char *
+preferences_get_visibility_path (void)
+{
+	char *visibility_path;
+	char *path;
+	
+	path = preferences_get_path ();
+	visibility_path = g_strdup_printf ("%s/visibility", path);
+	g_free (path);
 
-	/* Remove the gconf notification if its still lingering */
-	for (i = 0; i < 3; i++) 
-	{
-		if (node->gconf_connections[i] != 0)
-		{
-			gconf_client_notify_remove (GLOBAL.gconf_client,
-						    node->gconf_connections[i]);
-			
-			node->gconf_connections[i] = 0;
+	return visibility_path;
+}
+
+static char *
+preferences_get_user_level_key (void)
+{
+	char *user_level_key;
+	char *path;
+
+	path = preferences_get_path ();
+	user_level_key = g_strdup_printf ("%s/user_level", path);
+	g_free (path);
+
+	return user_level_key;
+}
+
+/* If the preference name begind with a "/", we interpret 
+ * it as a straight gconf key. */
+static gboolean
+preferences_preference_is_internal (const char *name)
+{
+	g_return_val_if_fail (name != NULL, FALSE);
+	
+	if (nautilus_str_has_prefix (name, "/")) {
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+static gboolean
+preferences_preference_is_user_level (const char *name)
+{
+	gboolean result;
+	char *user_level_key;
+
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	user_level_key = preferences_get_user_level_key ();
+
+	result = nautilus_str_is_equal (name, user_level_key)
+		|| nautilus_str_is_equal (name, "user_level");
+
+	g_free (user_level_key);
+
+	return result;
+}
+
+static char *
+preferences_key_make (const char *name)
+{
+	char *key;
+	char *path;
+
+	g_return_val_if_fail (name != NULL, NULL);
+	
+	if (!preferences_preference_is_internal (name)) {
+		return g_strdup (name);
+	}
+
+	/* Otherwise, we prefix it with the path */
+	path = preferences_get_path ();
+	key = g_strdup_printf ("%s/%s", path, name);
+	g_free (path);
+
+	return key;
+}
+
+static char *
+preferences_key_make_for_default (const char *name,
+				  int user_level)
+{
+	char *key;
+	char *default_key = NULL;
+	char *defaults_path;
+	char *storage_name;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	user_level = preferences_user_level_check_range (user_level);
+
+	key = preferences_key_make (name);
+	defaults_path = preferences_get_defaults_path ();
+
+	storage_name = nautilus_preferences_get_user_level_name_for_storage (user_level);
+	default_key = g_strdup_printf ("%s/%s%s",
+				       defaults_path,
+				       storage_name,
+				       key);
+	g_free (storage_name);
+	g_free (key);
+	g_free (defaults_path);
+	
+	return default_key;
+}
+
+static char *
+preferences_key_make_for_default_getter (const char *name,
+					 int user_level)
+{
+	char *default_key_for_getter = NULL;
+	gboolean done;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	user_level = preferences_user_level_check_range (user_level);
+
+	done = FALSE;
+	while (!done) {
+		default_key_for_getter = preferences_key_make_for_default (name, user_level);
+		
+		done = (user_level == 0) || (!nautilus_gconf_is_default (default_key_for_getter));
+		
+		if (!done) {
+			g_free (default_key_for_getter);
+			user_level--;
 		}
 	}
 
-	nautilus_g_list_free_deep_custom (node->callback_list,
-					  preferences_callback_node_free_func,
-					  NULL);
+	return default_key_for_getter;
+}
+
+static char *
+preferences_key_make_for_visibility (const char *name)
+{
+	char *default_key;
+	char *key;
+	char *visibility_path;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	key = preferences_key_make (name);
+
+	visibility_path = preferences_get_visibility_path ();
+	default_key = g_strdup_printf ("%s%s", visibility_path, key);
+	g_free (visibility_path);
 	
-	node->callback_list = NULL;
+	return default_key;
+}
 
-	g_free (node->name);
+static void
+preferences_global_client_remove_notification (void)
+{
+	GConfClient *client;
 
-	g_free (node);
+	client = preferences_global_client_get ();
+
+	g_return_if_fail (client != NULL);
+
+	gconf_client_notify_remove (client, user_level_changed_connection_id);
+	user_level_changed_connection_id = -1;
+}
+
+static GConfClient *
+preferences_global_client_get (void)
+{
+	static GConfClient *global_gconf_client = NULL;
+	GError *error = NULL;
+	char *path;
+	char *user_level_key;
+	
+	if (global_gconf_client != NULL) {
+		return global_gconf_client;
+	}
+
+	global_gconf_client = nautilus_gconf_client_get_global ();
+	
+	g_return_val_if_fail (global_gconf_client != NULL, NULL);
+	
+	user_level_key = preferences_get_user_level_key ();
+	error = NULL;
+	user_level_changed_connection_id = gconf_client_notify_add (global_gconf_client,
+								    user_level_key,
+								    preferences_user_level_changed_notice,
+								    NULL,
+								    NULL,
+								    &error);
+	g_free (user_level_key);
+
+	if (nautilus_gconf_handle_error (&error)) {
+		global_gconf_client = NULL;
+		return NULL;
+	}
+
+	path = preferences_get_path ();
+	nautilus_gconf_monitor_directory (path);
+	g_free (path);
+	
+	g_atexit (preferences_global_client_remove_notification);
+
+	return global_gconf_client;
+}
+
+static gboolean
+preferences_preference_is_default (const char *name)
+{
+	gboolean result;
+	char *key;
+	
+	g_return_val_if_fail (name != NULL, FALSE);
+	
+	key = preferences_key_make (name);
+	result = nautilus_gconf_is_default (key);
+	g_free (key);
+
+	return result;
+}
+
+static char *
+preferences_make_user_level_filtered_key (const char *name)
+{
+	char *key;
+	
+	g_return_val_if_fail (name != NULL, NULL);
+
+	if (nautilus_preferences_is_visible (name)) {
+		key = preferences_key_make (name);
+	} else {
+		key = preferences_key_make_for_default (name, nautilus_preferences_get_user_level ());
+	}
+
+	return key;
+}
+
+/* Public preferences functions */
+int
+nautilus_preferences_get_visible_user_level (const char *name)
+{
+  	int result;
+	char *visible_key;
+	
+	g_return_val_if_fail (name != NULL, FALSE);
+	
+	visible_key = preferences_key_make_for_visibility (name);
+	result = nautilus_gconf_get_integer (visible_key);
+	g_free (visible_key);
+
+	return result;
+}
+
+void
+nautilus_preferences_set_visible_user_level (const char *name,
+					     int visible_user_level)
+{
+	char *visible_key;
+	
+	g_return_if_fail (name != NULL);
+	
+	visible_key = preferences_key_make_for_visibility (name);
+	nautilus_gconf_set_integer (visible_key, visible_user_level);
+	g_free (visible_key);
+}
+
+void
+nautilus_preferences_set_boolean (const char *name,
+				  gboolean boolean_value)
+{
+	char *key;
+
+	g_return_if_fail (name != NULL);
+	
+	key = preferences_key_make (name);
+	nautilus_gconf_set_boolean (key, boolean_value);
+	g_free (key);
+}
+
+static char *
+preferences_key_make_for_getter (const char *name)
+{
+	char *key;
+	
+	g_return_val_if_fail (name != NULL, NULL);
+
+	if (preferences_preference_is_default (name)) {
+		key = preferences_key_make_for_default_getter (name, nautilus_preferences_get_user_level ());
+	} else {
+		key = preferences_make_user_level_filtered_key (name);
+	}
+
+	return key;
+}
+
+gboolean
+nautilus_preferences_get_boolean (const char *name)
+{
+ 	gboolean result;
+	char *key;
+	
+	g_return_val_if_fail (name != NULL, FALSE);
+	
+	key = preferences_key_make_for_getter (name);
+	result = nautilus_gconf_get_boolean (key);
+	g_free (key);
+
+	return result;
+}
+
+void
+nautilus_preferences_set_integer (const char *name,
+				  int int_value)
+{
+	char *key;
+
+	g_return_if_fail (name != NULL);
+	
+	key = preferences_key_make (name);
+	nautilus_gconf_set_integer (key, int_value);
+	g_free (key);
+}
+
+int
+nautilus_preferences_get_integer (const char *name)
+{
+ 	int result;
+	char *key;
+
+	g_return_val_if_fail (name != NULL, 0);
+
+	key = preferences_key_make_for_getter (name);
+	result = nautilus_gconf_get_integer (key);
+
+	g_free (key);
+
+	return result;
+}
+
+void
+nautilus_preferences_set (const char *name,
+			  const char *string_value)
+{
+	char *key;
+
+	g_return_if_fail (name != NULL);
+	
+	key = preferences_key_make (name);
+	nautilus_gconf_set_string (key, string_value);
+	g_free (key);
+}
+
+char *
+nautilus_preferences_get (const char *name)
+{
+ 	char *result;
+	char *key;
+	
+	g_return_val_if_fail (name != NULL, NULL);
+
+	key = preferences_key_make_for_getter (name);
+	result = nautilus_gconf_get_string (key);
+	g_free (key);
+
+	if (result == NULL) {
+		result = g_strdup ("");
+	}
+
+	return result;
+}
+
+void
+nautilus_preferences_set_string_list (const char *name,
+				      GSList *string_list_value)
+{
+	char *key;
+
+	g_return_if_fail (name != NULL);
+	
+	key = preferences_key_make (name);
+	nautilus_gconf_set_string_list (key, string_list_value);
+	g_free (key);
+}
+
+GSList *
+nautilus_preferences_get_string_list (const char *name)
+{
+ 	GSList *result;
+	char *key;
+	
+	g_return_val_if_fail (name != NULL, NULL);
+	
+	key = preferences_key_make_for_getter (name);
+	result = nautilus_gconf_get_string_list (key);
+	g_free (key);
+
+	return result;
+}
+
+int
+nautilus_preferences_get_user_level (void)
+{
+	char *key;
+	char *user_level;
+	int result = 0;
+
+	/* This is a little silly, but it is technically possible
+	 * to have different user_level defaults in each user level.
+	 *
+	 * This is a consequence of using gconf to store the user
+	 * level itself.  So, we special case the "user_level" setting
+	 * to always return the default for the first user level.
+	 */
+	if (preferences_preference_is_default ("user_level")) {
+		key = preferences_key_make_for_default ("user_level", 0);
+	} else {
+		key = preferences_key_make ("user_level");
+	}
+
+	user_level = nautilus_gconf_get_string (key);
+	g_free (key);
+
+	if (nautilus_str_is_equal (user_level, "hacker")) {
+		result = 2;
+	} else if (nautilus_str_is_equal (user_level, "intermediate")) {
+		result = 1;
+	} else {
+		result = 0;
+	}
+	
+	return result;
+}
+
+void
+nautilus_preferences_set_user_level (int user_level)
+{
+	char *user_level_key;
+
+	user_level = preferences_user_level_check_range (user_level);
+
+	user_level_key = preferences_get_user_level_key ();
+	nautilus_gconf_set_string (user_level_key, user_level_names_for_storage[user_level]);
+	g_free (user_level_key);
+}
+
+void
+nautilus_preferences_default_set_integer (const char *name,
+					  int user_level,
+					  int int_value)
+{
+	char *default_key;
+
+	g_return_if_fail (name != NULL);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	nautilus_gconf_set_integer (default_key, int_value);
+	g_free (default_key);
+}
+
+int
+nautilus_preferences_default_get_integer (const char *name,
+					  int user_level)
+{
+ 	int result;
+	char *default_key;
+
+	g_return_val_if_fail (name != NULL, 0);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	result = nautilus_gconf_get_integer (default_key);
+	g_free (default_key);
+
+	return result;
+}
+
+void
+nautilus_preferences_default_set_boolean (const char *name,
+					  int user_level,
+					  gboolean boolean_value)
+{
+	char *default_key;
+	
+	g_return_if_fail (name != NULL);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	nautilus_gconf_set_boolean (default_key, boolean_value);
+	g_free (default_key);
+}
+
+gboolean
+nautilus_preferences_default_get_boolean (const char *name,
+					  int user_level)
+{
+ 	gboolean result;
+	char *default_key;
+
+	g_return_val_if_fail (name != NULL, FALSE);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	result = nautilus_gconf_get_boolean (default_key);
+	g_free (default_key);
+
+	return result;
+}
+
+void
+nautilus_preferences_default_set_string (const char *name,
+					 int user_level,
+					 const char *string_value)
+{
+	char *default_key;
+	
+	g_return_if_fail (name != NULL);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	nautilus_gconf_set_string (default_key, string_value);
+	g_free (default_key);
+}
+
+char *
+nautilus_preferences_default_get_string (const char *name,
+					 int user_level)
+{
+ 	char *result;
+	char *default_key;
+
+	g_return_val_if_fail (name != NULL, NULL);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	result = nautilus_gconf_get_string (default_key);
+	g_free (default_key);
+
+	return result;
+}
+
+void
+nautilus_preferences_default_set_string_list (const char *name,
+					      int user_level,
+					      GSList *string_list_value)
+{
+	char *default_key;
+	
+	g_return_if_fail (name != NULL);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	nautilus_gconf_set_string_list (default_key, string_list_value);
+	g_free (default_key);
+}
+
+GSList *
+nautilus_preferences_default_get_string_list (const char *name,
+					      int user_level)
+{
+ 	GSList *result;
+	char *default_key;
+	
+	g_return_val_if_fail (name != NULL, NULL);
+	
+	default_key = preferences_key_make_for_default (name, user_level);
+	result = nautilus_gconf_get_string_list (default_key);
+	g_free (default_key);
+
+	return result;
 }
 
 /**
- * preferences_hash_node_add_by_user_level_callbacks
+ * preferences_callback_entry_invoke_function
  *
- * Add a callback to a pref node.  Callbacks are fired whenever
- * the pref value changes.
- * @preferences_hash_node: The hash node.
- * @callback_proc: The user supplied callback.
- * @callback_data: The user supplied closure.
+ * A function that invokes a callback from the given struct.  It is meant to be fed to 
+ * g_list_foreach ()
+ * @data: The list data privately maintained by the GList.
+ * @callback_data: The callback_data privately maintained by the GList.
  **/
 static void
-preferences_hash_node_add_by_user_level_callbacks (PreferencesHashNode		*node,
-						   NautilusPreferencesCallback	callback_proc,
-						   gpointer			callback_data)
+preferences_callback_entry_invoke_function (gpointer data,
+				     gpointer callback_data)
 {
-	PreferencesCallbackNode	*preferences_callback_node;
-	guint i;
+	PreferencesCallbackEntry *callback_entry;
 
-	g_assert (node != NULL);
-
-	g_assert (callback_proc != NULL);
-
-	preferences_callback_node = preferences_callback_node_alloc (callback_proc, 
-								     callback_data,
-								     node);
+	g_return_if_fail (data != NULL);
 	
-	g_assert (preferences_callback_node != NULL);
+	callback_entry = data;
+
+ 	(* callback_entry->callback) (callback_entry->callback_data);
+}
+
+static void
+preferences_something_changed_notice (GConfClient *client, 
+				  guint connection_id, 
+				  GConfEntry *gconf_entry, 
+				  gpointer user_data)
+{
+	PreferencesEntry *entry;
+	GError *error = NULL;
+	const char *key;
+
+	g_return_if_fail (user_data != NULL);
+	g_return_if_fail (gconf_entry != NULL);
+	g_return_if_fail (gconf_entry->key != NULL);
+	g_return_if_fail (user_data != NULL);
 	
-	node->callback_list = g_list_append (node->callback_list, 
-					     (gpointer) preferences_callback_node);
+	entry = user_data;
+	key = gconf_entry->key;
 
-	/*
-	 * We install only one gconf notification for each preference node.
-	 * Otherwise, we would invoke the installed callbacks more than once
-	 * per registered callback.
-	 */
-	for (i = 0; i < 3; i++) 
-	{
-		if (node->gconf_connections[i] == 0) {
-			char *key;
-			GError *error = NULL;
+	gconf_client_suggest_sync (client, &error);
+	nautilus_gconf_handle_error (&error);
 
-			g_assert (node->name != NULL);
-			g_assert (node->gconf_connections[i] == 0);
-			
-			key = nautilus_user_level_manager_make_gconf_key (node->name, i);
-			g_assert (key);
-
-			node->gconf_connections[i] = gconf_client_notify_add (GLOBAL.gconf_client,
-									      key,
-									      preferences_gconf_by_user_level_callback,
-									      node,
-									      NULL,
-									      &error);
-			if (nautilus_preferences_handle_error (&error)) {
-				node->gconf_connections[i] = 0;
-			}
-			
-			g_free (key);
-		}
+	/* Invoke callbacks for this entry */
+	if (entry->callback_list) {
+		g_list_foreach (entry->callback_list,
+				preferences_callback_entry_invoke_function,
+				NULL);
 	}
 }
 
+static void
+preferences_global_table_check_changes_function (gpointer key,
+						 gpointer value,
+						 gpointer user_data)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (value != NULL);
+
+	entry = value;
+
+	g_return_if_fail (entry->name != NULL);
+
+	/* We dont worry about the 'user_level' itself for recursive reasons */
+	if (preferences_preference_is_user_level (entry->name)) {
+		return;
+	}
+
+	/* FIXME: We need to make sure that the value changed before 
+	 *        invoking the callbacks.
+	 */
+#if 0
+ 	int user_level;
+ 	int visible_user_level;
+ 	user_level = nautilus_preferences_get_user_level ();
+ 	visible_user_level = nautilus_preferences_get_visible_user_level (entry->name);
+#endif
+
+	/* Invoke callbacks for this entry */
+	if (entry->callback_list) {
+		g_list_foreach (entry->callback_list,
+				preferences_callback_entry_invoke_function,
+				NULL);
+	}
+}
+
+static void
+preferences_user_level_changed_notice (GConfClient *client, 
+				       guint connection_id, 
+				       GConfEntry *gconf_entry, 
+				       gpointer user_data)
+{
+	g_return_if_fail (gconf_entry != NULL);
+	g_return_if_fail (gconf_entry->key != NULL);
+	g_return_if_fail (nautilus_str_has_suffix (gconf_entry->key, "user_level"));
+	
+	g_hash_table_foreach (preferences_global_table_get_global (),
+			      preferences_global_table_check_changes_function,
+			      NULL);
+}
+
 /**
- * preferences_hash_node_add_callback
+ * preferences_entry_add_callback
  *
  * Add a callback to a pref node.  Callbacks are fired whenever
  * the pref value changes.
- * @preferences_hash_node: The hash node.
- * @callback_proc: The user supplied callback.
+ * @preferences_entry: The hash node.
+ * @callback: The user supplied callback.
  * @callback_data: The user supplied closure.
  **/
 static void
-preferences_hash_node_add_callback (PreferencesHashNode		*node,
-				    NautilusPreferencesCallback	callback_proc,
-				    gpointer			callback_data)
+preferences_entry_add_callback (PreferencesEntry *entry,
+				NautilusPreferencesCallback callback,
+				gpointer callback_data)
 {
-	PreferencesCallbackNode	*preferences_callback_node;
+	PreferencesCallbackEntry *callback_entry;
 
-	g_assert (node != NULL);
-	g_assert (callback_proc != NULL);
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (callback != NULL);
 
-	preferences_callback_node = preferences_callback_node_alloc (callback_proc, 
-								     callback_data,
-								     node);
+	callback_entry = g_new0 (PreferencesCallbackEntry, 1);
+	callback_entry->callback = callback;
+	callback_entry->callback_data = callback_data;
 	
-	g_assert (preferences_callback_node != NULL);
+	g_return_if_fail (callback_entry != NULL);
 	
-	node->callback_list = g_list_append (node->callback_list, 
-					     (gpointer) preferences_callback_node);
+	entry->callback_list = g_list_append (entry->callback_list, callback_entry);
 
 	/*
-	 * We install only one gconf notification for each preference node.
+	 * We install only one gconf notification for each preference entry.
 	 * Otherwise, we would invoke the installed callbacks more than once
 	 * per registered callback.
 	 */
-	if (node->gconf_connections[0] == 0) {
+	if (entry->gconf_connection_id == 0) {
 		GError *error = NULL;
+		GConfClient *client;
+		char *key;
+		
+		g_return_if_fail (entry->name != NULL);
 
-		g_assert (node->name != NULL);
-		g_assert (node->gconf_connections[0] == 0);
+		client = preferences_global_client_get ();
 
-		node->gconf_connections[0] = gconf_client_notify_add (GLOBAL.gconf_client,
-								      node->name,
-								      preferences_gconf_callback,
-								      node,
-								      NULL,
-								      &error);
-		if (nautilus_preferences_handle_error (&error)) {
-			node->gconf_connections[0] = 0;
+		g_return_if_fail (client != NULL);
+
+		key = preferences_key_make (entry->name);
+
+		entry->gconf_connection_id = gconf_client_notify_add (client,
+								     key,
+								     preferences_something_changed_notice,
+								     entry,
+								     NULL,
+								     &error);
+		if (nautilus_gconf_handle_error (&error)) {
+			entry->gconf_connection_id = 0;
 		}
+
+		g_free (key);
 	}
 }
 
 /**
- * preferences_hash_node_remove_callback
+ * preferences_entry_remove_callback
  *
- * remove a callback from a pref node.  Both the callback and the callback_data must
- * match in order for a callback to be removed from the node.
- * @preferences_hash_node: The hash node.
- * @callback_proc: The user supplied callback.
+ * remove a callback from a pref entry.  Both the callback and the callback_data must
+ * match in order for a callback to be removed from the entry.
+ * @preferences_entry: The hash entry.
+ * @callback: The user supplied callback.
  * @callback_data: The user supplied closure.
  **/
 static void
-preferences_hash_node_remove_callback (PreferencesHashNode		*node,
-				       NautilusPreferencesCallback	callback_proc,
-				       gpointer				callback_data)
+preferences_entry_remove_callback (PreferencesEntry *entry,
+				   NautilusPreferencesCallback callback,
+				   gpointer callback_data)
 {
-	GList		 *new_list;
-	GList		 *iterator;
+	GList *new_list;
+	GList *iterator;
 
-	g_assert (node != NULL);
-
-	g_assert (callback_proc != NULL);
-
-	g_assert (node->callback_list != NULL);
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (entry->callback_list != NULL);
 	
-	new_list = g_list_copy (node->callback_list);
+	new_list = g_list_copy (entry->callback_list);
 	
 	for (iterator = new_list; iterator != NULL; iterator = iterator->next) {
-		PreferencesCallbackNode *callback_info = (PreferencesCallbackNode *) iterator->data;
+		PreferencesCallbackEntry *callback_entry = iterator->data;
 		
-		g_assert (callback_info != NULL);
+		g_return_if_fail (callback_entry != NULL);
 		
-		if (callback_info->callback_proc == callback_proc &&
-		    callback_info->callback_data == callback_data) {
-			node->callback_list = g_list_remove (node->callback_list, 
-							     (gpointer) callback_info);
+		if (callback_entry->callback == callback &&
+		    callback_entry->callback_data == callback_data) {
+			entry->callback_list = g_list_remove (entry->callback_list, 
+							      callback_entry);
 			
-			preferences_callback_node_free (callback_info);
+			preferences_callback_entry_free (callback_entry);
 		}
 	}
 
 	g_list_free (new_list);
 	
 	/*
-	 * If there are no callbacks left in the node, remove the gconf 
+	 * If there are no callbacks left in the entry, remove the gconf 
 	 * notification as well.
 	 */
-	if (node->callback_list == NULL) {
-		guint i;
+	if (entry->callback_list == NULL) {
+		GConfClient *client;
 
-		for (i = 0; i < 3; i++) 
-		{
-			/* we don't assert here. if we had trouble with gconf
-			 * notify addition, this would be 0 */
-			if (node->gconf_connections[i] != 0) {
-				gconf_client_notify_remove (GLOBAL.gconf_client,
-							    node->gconf_connections[i]);
-			}
-			
-			node->gconf_connections[i] = 0;
+		client = preferences_global_client_get ();
+		
+		if (entry->gconf_connection_id != 0) {
+			gconf_client_notify_remove (client, entry->gconf_connection_id);
 		}
+		
+		entry->gconf_connection_id = 0;
 	}
 }
 
 /**
- * preferences_hash_node_free_func
+ * preferences_callback_entry_free
+ *
+ * Free a callback info struct.
+ * @preferences_callback_entry: The struct to free.
+ **/
+static void
+preferences_callback_entry_free (PreferencesCallbackEntry *callback_entry)
+{
+	g_return_if_fail (callback_entry != NULL);
+
+	callback_entry->callback = NULL;
+	callback_entry->callback_data = NULL;
+
+	g_free (callback_entry);
+}
+
+/**
+ * preferences_callback_entry_free_func
+ *
+ * A function that frees a callback info struct.  It is meant to be fed to 
+ * g_list_foreach ()
+ * @data: The list data privately maintained by the GList.
+ * @callback_data: The callback_data privately maintained by the GList.
+ **/
+static void
+preferences_callback_entry_free_func (gpointer	data,
+			       gpointer	callback_data)
+{
+	g_return_if_fail (data != NULL);
+	
+	preferences_callback_entry_free (data);
+}
+
+/**
+ * preferences_entry_free
+ *
+ * Free a preference hash node members along with the node itself.
+ * @preferences_hash_node: The node to free.
+ **/
+static void
+preferences_entry_free (PreferencesEntry *entry)
+{
+	g_return_if_fail (entry != NULL);
+
+	if (entry->gconf_connection_id != 0) {
+		GConfClient *client;
+
+		client = preferences_global_client_get ();
+		g_assert (client != NULL);
+
+		gconf_client_notify_remove (client, entry->gconf_connection_id);
+		entry->gconf_connection_id = 0;
+	}
+	
+	nautilus_g_list_free_deep_custom (entry->callback_list,
+					  preferences_callback_entry_free_func,
+					  NULL);
+	
+	entry->callback_list = NULL;
+
+	g_free (entry->name);
+	g_free (entry->description);
+
+	nautilus_enumeration_free (entry->enumeration);
+
+	g_free (entry);
+}
+
+/**
+ * preferences_entry_free_func
  *
  * A function that frees a pref hash node.  It is meant to be fed to 
  * g_hash_table_foreach ()
@@ -383,722 +995,323 @@ preferences_hash_node_remove_callback (PreferencesHashNode		*node,
  * @callback_data: The callback_data privately maintained by the GHashTable.
  **/
 static void
-preferences_hash_node_free_func (gpointer key,
-				 gpointer value,
-				 gpointer callback_data)
+preferences_entry_free_func (gpointer key,
+		      gpointer value,
+		      gpointer callback_data)
 {
 	g_assert (value != NULL);
 
-	preferences_hash_node_free ((PreferencesHashNode *) value);
+	preferences_entry_free (value);
 }
 
 static void
-preferences_hash_node_check_changes_func (gpointer key,
-					  gpointer value,
-					  gpointer user_data)
+preferences_global_table_free (void)
 {
-	PreferencesHashNode	*node;
-	guint			old_user_level;
-	guint			new_user_level;
-
-	g_assert (value != NULL);
-	
-	node = (PreferencesHashNode *) value;
-
-	/* Ignore preferences that are not coupled to user level */
-	if (nautilus_str_has_prefix (node->name, "/")) {
+	if (global_table == NULL) {
 		return;
 	}
 	
-	old_user_level = GPOINTER_TO_UINT (user_data);
-	new_user_level = nautilus_user_level_manager_get_user_level ();
-
-	if (!nautilus_user_level_manager_compare_preference_between_user_levels (node->name,
-										 old_user_level,
-										 new_user_level)) {
-		/* Invoke callbacks for this node */
-		if (node->callback_list) {
-			g_list_foreach (node->callback_list,
-					preferences_callback_node_invoke_func,
-					(gpointer) NULL);
-		}
-	}
+	g_hash_table_foreach (global_table, preferences_entry_free_func, NULL);
+	g_hash_table_destroy (global_table);
+	global_table = NULL;
 }
 
-/**
- * preferences_callback_node_alloc
- *
- * Allocate a callback info struct from the given values.  PreferencesCallbackNode
- * structures are used as nodes for the callbac_list member of pref hash table
- * nodes.
- * @callback_proc: The callback.
- * @callback_data: The user data.
- * @hash_node: The hash table node this callback belongs to.
- *
- * Return value: A newly allocated node.
- **/
-static PreferencesCallbackNode *
-preferences_callback_node_alloc (NautilusPreferencesCallback	callback_proc,
-				 gpointer			callback_data,
-				 const PreferencesHashNode	*hash_node)
+static GHashTable *
+preferences_global_table_get_global (void)
 {
-	PreferencesCallbackNode *callback_node;
+	if (global_table == NULL) {
+		global_table = g_hash_table_new (g_str_hash, g_str_equal);
+		g_atexit (preferences_global_table_free);
+	}
 	
-	g_assert (callback_proc != NULL);
-
-	callback_node = g_new (PreferencesCallbackNode, 1);
-
-	callback_node->callback_proc = callback_proc;
-	callback_node->callback_data = callback_data;
-	callback_node->hash_node = hash_node;
-
-	return callback_node;
+	return global_table;
 }
 
-/**
- * preferences_callback_node_free
- *
- * Free a callback info struct.
- * @preferences_callback_node: The struct to free.
- **/
-static void
-preferences_callback_node_free (PreferencesCallbackNode *callback_node)
+static PreferencesEntry *
+preferences_global_table_lookup (const char *name)
 {
-	g_assert (callback_node != NULL);
-
-	callback_node->callback_proc = NULL;
-	callback_node->callback_data = NULL;
-
-	g_free (callback_node);
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_global_table_get_global () != NULL, NULL);
+	
+	return g_hash_table_lookup (preferences_global_table_get_global (), name);
 }
 
-/**
- * preferences_callback_node_free_func
- *
- * A function that frees a callback info struct.  It is meant to be fed to 
- * g_list_foreach ()
- * @data: The list data privately maintained by the GList.
- * @callback_data: The callback_data privately maintained by the GList.
- **/
-static void
-preferences_callback_node_free_func (gpointer	data,
-				     gpointer	callback_data)
+static PreferencesEntry *
+preferences_global_table_insert (const char *name)
 {
-	g_assert (data != NULL);
+	PreferencesEntry *entry;
 
-	preferences_callback_node_free ((PreferencesCallbackNode *) data);
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_global_table_get_global () != NULL, NULL);
+	g_return_val_if_fail (preferences_global_table_lookup (name) == NULL, NULL);
+	
+	entry = g_new0 (PreferencesEntry, 1);
+	entry->name = g_strdup (name);
+
+	g_hash_table_insert (preferences_global_table_get_global (), entry->name, entry);
+
+	g_return_val_if_fail (entry == preferences_global_table_lookup (name), NULL);
+
+	return entry;
 }
 
-/**
- * preferences_callback_node_invoke_func
- *
- * A function that invokes a callback from the given struct.  It is meant to be fed to 
- * g_list_foreach ()
- * @data: The list data privately maintained by the GList.
- * @callback_data: The callback_data privately maintained by the GList.
- **/
-static void
-preferences_callback_node_invoke_func (gpointer	data,
-				       gpointer	callback_data)
+static PreferencesEntry *
+preferences_global_table_lookup_or_insert (const char *name)
 {
-	PreferencesCallbackNode	*callback_node;
+	PreferencesEntry *entry;
 
-	callback_node = (PreferencesCallbackNode *) data;
+	g_return_val_if_fail (name != NULL, NULL);
+	
+	entry = preferences_global_table_lookup (name);
 
-	g_assert (callback_node != NULL);
-	g_assert (callback_node->callback_proc != NULL);
-
- 	(* callback_node->callback_proc) (callback_node->callback_data);
-}
-
-static char *
-preferences_make_make_gconf_key (const char *preference_name)
-{
-	if (nautilus_str_has_prefix (preference_name, "/")) {
-		return g_strdup (preference_name);
+	if (entry != NULL) {
+		return entry;
 	}
 
-	return nautilus_user_level_manager_make_current_gconf_key (preference_name);
+	entry = preferences_global_table_insert (name);
+	g_assert (entry != NULL);
+
+	return entry;
 }
 
-static void
-preferences_register (const char			*name)
+void
+nautilus_preferences_add_callback (const char *name,
+				   NautilusPreferencesCallback callback,
+				   gpointer callback_data)
 {
-	PreferencesHashNode *node;
+	PreferencesEntry *entry;
 
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (callback != NULL);
 
-	preferences_initialize_if_needed ();
-	
-	node = preferences_hash_node_lookup (name);
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
 
-	if (node) {
-		g_warning ("the '%s' preference is already registered", name);
-		return;
-	}
-
-	node = preferences_hash_node_alloc (name);
-
-	g_hash_table_insert (GLOBAL.preference_table, (gpointer) name, (gpointer) node);
+	preferences_entry_add_callback (entry, callback, callback_data);
 }
 
-static PreferencesHashNode *
-preferences_hash_node_lookup (const char *name)
+typedef struct
 {
-	gpointer hash_value;
-
-	g_assert (name != NULL);
-
-	preferences_initialize_if_needed ();
-
-	hash_value = g_hash_table_lookup (GLOBAL.preference_table, (gconstpointer) name);
-	
-	return (PreferencesHashNode *) hash_value;
-}
+	char *name;
+	NautilusPreferencesCallback callback;
+	gpointer callback_data;
+} WhileAliveData;
 
 static void
-preferences_gconf_by_user_level_callback (GConfClient	*client, 
-					  guint		connection_id, 
-					  GConfEntry	*entry, 
-					  gpointer	user_data)
+preferences_while_alive_disconnector (GtkObject *object, gpointer callback_data)
 {
-	PreferencesHashNode	*node;
-	const char		*expected_name;
-	char			*expected_key;
-	GError			*error = NULL;
-	const char		*key;
+	WhileAliveData *data;
 
-	g_return_if_fail (user_data != NULL);
+	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (callback_data != NULL);
+
+	data = callback_data;
+
+	nautilus_preferences_remove_callback (data->name,
+					      data->callback,
+					      data->callback_data);
+
+	g_free (data->name);
+	g_free (data);
+}
+
+void
+nautilus_preferences_add_callback_while_alive (const char *name,
+					       NautilusPreferencesCallback callback,
+					       gpointer callback_data,
+					       GtkObject *alive_object)
+{
+	WhileAliveData *data;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (GTK_IS_OBJECT (alive_object));
+
+	data = g_new (WhileAliveData, 1);
+	data->name = g_strdup (name);
+	data->callback = callback;
+	data->callback_data = callback_data;
+
+	nautilus_preferences_add_callback (name, callback, callback_data);
+
+	gtk_signal_connect (alive_object,
+			    "destroy",
+			    GTK_SIGNAL_FUNC (preferences_while_alive_disconnector),
+			    data);
+}
+
+void
+nautilus_preferences_remove_callback (const char *name,
+				      NautilusPreferencesCallback callback,
+				      gpointer callback_data)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (callback != NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+
+	if (entry == NULL) {
+		g_warning ("Trying to remove a callback without adding it first.");
+		return;
+	}
+	
+	preferences_entry_remove_callback (entry, callback, callback_data);
+}
+
+void
+nautilus_preferences_enumeration_insert (const char *name,
+					 const char *entry,
+					 const char *description,
+					 int value)
+{
+	PreferencesEntry *preferences_entry;
+
+	g_return_if_fail (name != NULL);
 	g_return_if_fail (entry != NULL);
-	g_return_if_fail (entry->key != NULL);
 
-	key = entry->key;
+	preferences_entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (preferences_entry != NULL);
 
-	node = (PreferencesHashNode *) user_data;
-
-	expected_name = node->name;
-	g_assert (expected_name != NULL);
-
-	/* 
-	 * This gconf notification was installed with an expected key in mind.
-	 * The expected is not always the key passed into this function.
-	 *
-	 * This happens when the expected key is a namespace, and the key
-	 * that changes is actually beneath that namespace.
-	 *
-	 * For example:
-	 *
-	 * 1. Tell me when "foo/bar" changes.
-	 * 2. "foo/bar/x" or "foo/bar/y" or "foo/bar/z" changes
-	 * 3. I get notified that "foo/bar/{x,y,z}" changed - not "foo/bar"
-	 *
-	 * This makes sense, since it is "foo/bar/{x,y,z}" that indeed changed.
-	 *
-	 * So we can use this mechanism to keep track of changes within a whole
-	 * namespace by comparing the expected_key to the given key.
-	 */
-	expected_key = nautilus_user_level_manager_make_current_gconf_key (expected_name);
-
-	if (strcmp (key, expected_key) != 0) {
-
-		/* The prefix should be the same */
-		if (strncmp (entry->key, expected_key, strlen (expected_key)) != 0) {
-
-			/* FIXME bugzilla.eazel.com 1272: This is triggering the first time the beast runs
-			 * without an existing ~/.gconf directory.
-			 */
-#if 0
- 			g_warning ("preferences_gconf_by_user_level_callback: Wrong prefix!  This indicates a bug.\n");
-#endif
-			g_free (expected_key);
-			return;
-		}
-
-		key = expected_key;
+	if (preferences_entry->enumeration == NULL) {
+		preferences_entry->enumeration = nautilus_enumeration_new ();
 	}
 
-	g_assert (key != NULL);
-	
-	node = preferences_hash_node_lookup (expected_name);
-	
-	g_assert (node != NULL);
-
-	gconf_client_suggest_sync (GLOBAL.gconf_client, &error);
-	nautilus_preferences_handle_error (&error);
-
-	/* Invoke callbacks for this node */
-	if (node->callback_list) {
-		g_list_foreach (node->callback_list,
-				preferences_callback_node_invoke_func,
-				(gpointer) NULL);
-	}
-
-	g_free (expected_key);
-}
-
-static void
-preferences_gconf_callback (GConfClient	*client, 
-			    guint	connection_id, 
-			    GConfEntry	*entry, 
-			    gpointer	user_data)
-{
-	PreferencesHashNode	*node;
-	GError			*error = NULL;
-	const char	        *key;
-
-	g_return_if_fail (user_data != NULL);
-	g_return_if_fail (entry != NULL);
-	g_return_if_fail (entry->key != NULL);
-	
-	node = (PreferencesHashNode *) user_data;
-	g_assert (node != NULL);
-
-	key = entry->key;
-	
-	g_assert (nautilus_str_is_equal (node->name, key));
-
-	gconf_client_suggest_sync (GLOBAL.gconf_client, &error);
-	nautilus_preferences_handle_error (&error);
-
-	/* Invoke callbacks for this node */
-	if (node->callback_list) {
-		g_list_foreach (node->callback_list,
-				preferences_callback_node_invoke_func,
-				(gpointer) NULL);
-	}
-}
-
-static void
-user_level_changed_callback (GtkObject	*user_level_manager,
-			     gpointer	user_data)
-{
-	guint new_user_level;
-
-	new_user_level = nautilus_user_level_manager_get_user_level ();
-
-	g_hash_table_foreach (GLOBAL.preference_table,
-			      preferences_hash_node_check_changes_func,
-			      GUINT_TO_POINTER (GLOBAL.old_user_level));
-
-	GLOBAL.old_user_level = new_user_level;
-}
-
-static gboolean
-preferences_initialize_if_needed (void)
-{
-	GError	  *error = NULL;
-
-	if (GLOBAL.preference_table != NULL && GLOBAL.gconf_client != NULL) {
-		return TRUE;
-	}
-	
-	if (!gconf_is_initialized ()) {
-		char		  *argv[] = { "nautilus", NULL };
-		
-		if (!gconf_init (1, argv, &error)) {
-			g_assert (error != NULL);
-
-			nautilus_preferences_handle_error (&error);
-			
-			return FALSE;
-		}
-	}
-	
-	g_assert (GLOBAL.preference_table == NULL);
-	g_assert (GLOBAL.gconf_client == NULL);
-
-	GLOBAL.preference_table = g_hash_table_new (g_str_hash, g_str_equal);
-
-	g_assert (GLOBAL.preference_table != NULL);
-
- 	GLOBAL.gconf_client = gconf_client_get_default ();
-
-	g_assert (GLOBAL.gconf_client != NULL);
-
-	/* Let gconf know about ~/.gconf/nautilus */
-	gconf_client_add_dir (GLOBAL.gconf_client,
-			      PREFERENCES_GCONF_PATH,
-			      GCONF_CLIENT_PRELOAD_NONE,
-			      &error);
-	nautilus_preferences_handle_error (&error);
-
-	GLOBAL.old_user_level = nautilus_user_level_manager_get_user_level ();
-	
-	/* Register to find out about user level changes */
-	gtk_signal_connect (GTK_OBJECT (nautilus_user_level_manager_get ()),
-			    "user_level_changed",
-			    user_level_changed_callback,
-			    NULL);
-
-	g_atexit (preferences_shutdown);
-
-	return TRUE;
-}
-
-
-/*
- * Public functions
- */
-gboolean
-nautilus_preferences_add_callback (const char			*name,
-				   NautilusPreferencesCallback	callback_proc,
-				   gpointer			callback_data)
-{
-	PreferencesHashNode *node;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (callback_proc != NULL, FALSE);
-
-	preferences_initialize_if_needed ();
-
-	node = preferences_hash_node_lookup (name);
-
-	if (!node) {
-		preferences_register (name);
-		
-		node = preferences_hash_node_lookup (name);
-	}
-
-	g_assert (node != NULL);
-
-	if (node == NULL) {
-		g_warning ("trying to add a callback for an unregistered preference");
-		return FALSE;
-	}
-
-	if (nautilus_str_has_prefix (name, "/")) {
-		preferences_hash_node_add_callback (node, callback_proc, callback_data);
-	}
-	else {
-		preferences_hash_node_add_by_user_level_callbacks (node, callback_proc, callback_data);
-	}
-
-	return TRUE;
-}
-
-gboolean
-nautilus_preferences_remove_callback (const char		   *name,
-				      NautilusPreferencesCallback  callback_proc,
-				      gpointer			   callback_data)
-{
-	PreferencesHashNode *node;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (callback_proc != NULL, FALSE);
-
-	node = preferences_hash_node_lookup (name);
-	if (node == NULL) {
-		g_warning ("trying to remove a callback for an unregistered preference");
-		return FALSE;
-	}
-
-	preferences_hash_node_remove_callback (node, callback_proc, callback_data);
-
-	return TRUE;
-}
-
-void
-nautilus_preferences_set_boolean (const char	*name,
-				  gboolean	boolean_value)
-{
-	GError      *error = NULL;
-	char		*key;
-	gboolean	 old_value;
-
-	g_return_if_fail (name != NULL);
-
-	preferences_initialize_if_needed ();
-	
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	/* Make sure the preference value is indeed different */
-	old_value = gconf_client_get_bool (GLOBAL.gconf_client, key, &error);
-	if (error == NULL
-	    && old_value == boolean_value) {
-		g_free (key);
-		return;
-	}
-	nautilus_preferences_handle_error (&error);
-
-	gconf_client_set_bool (GLOBAL.gconf_client, key, boolean_value, &error);
-	nautilus_preferences_handle_error (&error);
-
-	gconf_client_suggest_sync (GLOBAL.gconf_client, &error);
-	nautilus_preferences_handle_error (&error);
-
-	g_free (key);
-}
-
-gboolean
-nautilus_preferences_get_boolean (const char	*name,
-				  gboolean	default_value)
-{
-	GError      *error = NULL;
-	gboolean         result;
-	char		*key;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-
-	preferences_initialize_if_needed ();
-
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	result = gconf_client_get_bool (GLOBAL.gconf_client, key, &error);
-	if (nautilus_preferences_handle_error (&error)) {
-		result = default_value;
-	}
-
-	g_free (key);
-
-	return result;
-}
-
-
-void
-nautilus_preferences_set_string_list (const char	*name,
-				      GSList            *string_list_value)
-{
-	GError      *error = NULL;
-	char		*key;
-
-	g_return_if_fail (name != NULL);
-
-	preferences_initialize_if_needed ();
-
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	/* FIXME bugzilla.eazel.com 2543: Make sure the preference value is indeed different
-           before setting, like the other functions */
-
-	gconf_client_set_list (GLOBAL.gconf_client, key,
-			       GCONF_VALUE_STRING,
-			       string_list_value,
-			       &error);
-	nautilus_preferences_handle_error (&error);
-
-	gconf_client_suggest_sync (GLOBAL.gconf_client, &error);
-	nautilus_preferences_handle_error (&error);
-
-	g_free (key);
-}
-
-GSList *
-nautilus_preferences_get_string_list (const char	*name)
-{
-	GError      *error = NULL;
-	GSList          *result;
-	char            *key;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-
-	preferences_initialize_if_needed ();
-
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	result = gconf_client_get_list (GLOBAL.gconf_client, key, 
-					GCONF_VALUE_STRING, &error);
-	nautilus_preferences_handle_error (&error);
-
-	g_free (key);
-
-	return result;
-}
-
-
-void
-nautilus_preferences_set_enum (const char    *name,
-			       int           enum_value)
-{
-	GError      *error = NULL;
-	int		 old_value;
-	char		*key;
-
-	g_return_if_fail (name != NULL);
-
-	preferences_initialize_if_needed ();
-
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	/* Make sure the preference value is indeed different */
-	old_value = gconf_client_get_int (GLOBAL.gconf_client, key, &error);
-	if (error == NULL
-	    && old_value == enum_value) {
-		g_free (key);
-		return;
-	}
-	nautilus_preferences_handle_error (&error);
-
-	gconf_client_set_int (GLOBAL.gconf_client, key, enum_value, &error);
-	nautilus_preferences_handle_error (&error);
-
-	gconf_client_suggest_sync (GLOBAL.gconf_client, &error);
-	nautilus_preferences_handle_error (&error);
-
-	g_free (key);
-}
-
-int
-nautilus_preferences_get_enum (const char	*name,
-			       int		default_value)
-{
-	GError      *error = NULL;
-	int              result;
-	char		*key;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-
-	preferences_initialize_if_needed ();
-
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	result = gconf_client_get_int (GLOBAL.gconf_client, key, &error);
-	if (nautilus_preferences_handle_error (&error)) {
-		result = default_value;
-	}
-
-	g_free (key);
-
-	return result;
-}
-
-void
-nautilus_preferences_set (const char *name, 
-			  const char *value)
-{
-	GError      *error = NULL;
-	char		*key;
-
-	g_return_if_fail (name != NULL);
-
-	preferences_initialize_if_needed ();
-
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	/* Make sure the preference value is indeed different */
-	if (value) {
-		char *current_value;
-		int result;
-
-		current_value = gconf_client_get_string (GLOBAL.gconf_client, key, &error);
-		if (nautilus_preferences_handle_error (&error)) {
-			result = ! 0;
-		} else {
-			result = nautilus_strcmp (current_value, value);
-		}
-		
-		if (current_value) {
-			g_free (current_value);
-		}
-
-		if (result == 0) {
-			g_free (key);
-			return;
-		}
-	}
-
-	gconf_client_set_string (GLOBAL.gconf_client, key, value, &error);
-	nautilus_preferences_handle_error (&error);
-
-	gconf_client_suggest_sync (GLOBAL.gconf_client, &error);
-	nautilus_preferences_handle_error (&error);
-
-	g_free (key);
+	nautilus_enumeration_insert (preferences_entry->enumeration, entry, description, value);
 }
 
 char *
-nautilus_preferences_get (const char	*name,
-			  const char	*default_value)
+nautilus_preferences_enumeration_get_nth_entry (const char *name,
+						guint n)
 {
-	GError	*error = NULL;
-	gchar		*value = NULL;
-	char		*key;
+	PreferencesEntry *preferences_entry;
 
-	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, NULL);
 
-	preferences_initialize_if_needed ();
+	preferences_entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (preferences_entry != NULL);
 
-	key = preferences_make_make_gconf_key (name);
-	g_assert (key != NULL);
-
-	value = gconf_client_get_string (GLOBAL.gconf_client, key, &error);
-	if (nautilus_preferences_handle_error (&error)) {
-		/* note: g_free and g_strdup handle NULL correctly */
-		g_free (value);
-		value = g_strdup (default_value);
-	}
-
-	if (!value && default_value) {
-		value = g_strdup (default_value);
-	}
-
-	g_free (key);
-	
-	return value;
+	return nautilus_enumeration_get_nth_entry (preferences_entry->enumeration, n);
 }
 
-static void
-preferences_shutdown (void)
+char *
+nautilus_preferences_enumeration_get_nth_description (const char *name,
+						      guint n)
 {
-	if (GLOBAL.preference_table == NULL && GLOBAL.gconf_client == NULL) {
-		return;
-	}
+	PreferencesEntry *preferences_entry;
 
-	gtk_signal_disconnect_by_func (GTK_OBJECT (nautilus_user_level_manager_get ()),
-				       user_level_changed_callback,
-				       NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	preferences_entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (preferences_entry != NULL);
+
+	return nautilus_enumeration_get_nth_description (preferences_entry->enumeration, n);
+}
+
+int
+nautilus_preferences_enumeration_get_nth_value (const char *name,
+						guint n)
+{
+	PreferencesEntry *preferences_entry;
 	
-	if (GLOBAL.preference_table != NULL) {
-		g_hash_table_foreach (GLOBAL.preference_table,
-				      preferences_hash_node_free_func,
-				      NULL);
-		
-		g_hash_table_destroy (GLOBAL.preference_table);
-		
-		GLOBAL.preference_table = NULL;
-	}
+	g_return_val_if_fail (name != NULL, 0);
+	
+	preferences_entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (preferences_entry != NULL);
 
-	if (GLOBAL.gconf_client != NULL) {
-		gtk_object_unref (GTK_OBJECT (GLOBAL.gconf_client));
+	return nautilus_enumeration_get_nth_value (preferences_entry->enumeration, n);
+}
 
-		GLOBAL.gconf_client = NULL;
-	}
+guint
+nautilus_preferences_enumeration_get_num_entries (const char *name)
+{
+	PreferencesEntry *preferences_entry;
+	
+	g_return_val_if_fail (name != NULL, 0);
+	
+	preferences_entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (preferences_entry != NULL);
 
+	return nautilus_enumeration_get_num_entries (preferences_entry->enumeration);
+}
+
+void
+nautilus_preferences_set_description (const char *name,
+				      const char *description)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (description != NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	g_free (entry->description);
+	entry->description = g_strdup (description);
+}
+
+char *
+nautilus_preferences_get_description (const char *name)
+{
+	PreferencesEntry *entry;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+
+	return g_strdup (entry->description ? entry->description : "");
+}
+
+char *
+nautilus_preferences_get_user_level_name_for_display (int user_level)
+{
+	user_level = preferences_user_level_check_range (user_level);
+	
+	return g_strdup (user_level_names_for_display[user_level]);
+}
+
+char *
+nautilus_preferences_get_user_level_name_for_storage (int user_level)
+{
+	user_level = preferences_user_level_check_range (user_level);
+	
+	return g_strdup (user_level_names_for_storage[user_level]);
+}
+
+static int
+preferences_user_level_check_range (int user_level)
+{
+	user_level = MAX (user_level, 0);
+	user_level = MIN (user_level, 2);
+
+	return user_level;
 }
 
 gboolean
-nautilus_preferences_handle_error (GError **error)
+nautilus_preferences_monitor_directory (const char *directory)
 {
-	static gboolean shown_dialog = FALSE;
-
-	g_return_val_if_fail (error != NULL, FALSE);
-
-	if (*error != NULL) {
-		g_warning (_("GConf error:\n  %s"), (*error)->message);
-		if ( ! shown_dialog) {
-			char *message;
-			GtkWidget *dialog;
-
-			shown_dialog = TRUE;
-
-			message = g_strdup_printf (_("GConf error:\n  %s\n"
-						     "All further errors shown "
-						     "only on terminal"),
-						   (*error)->message);
-
-			dialog = gnome_error_dialog (message);
-		}
-		g_error_free (*error);
-		*error = NULL;
-
-		return TRUE;
-	}
-
-	return FALSE;
+	return nautilus_gconf_monitor_directory (directory);
 }
+
+gboolean
+nautilus_preferences_is_visible (const char *name)
+{
+	int user_level;
+	int visible_user_level;
+
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	user_level = nautilus_preferences_get_user_level ();
+	visible_user_level = nautilus_preferences_get_visible_user_level (name);
+
+	return visible_user_level <= user_level;
+}
+
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+void
+nautilus_self_check_preferences (void)
+{
+}
+#endif /* !NAUTILUS_OMIT_SELF_CHECK */

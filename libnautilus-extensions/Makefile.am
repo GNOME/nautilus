@@ -71,6 +71,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-druid-page-eazel.c		\
 	nautilus-druid.c			\
 	nautilus-entry.c			\
+	nautilus-enumeration.c			\
 	nautilus-file-changes-queue.c		\
 	nautilus-file-operations-progress.c	\
 	nautilus-file-operations.c		\
@@ -78,6 +79,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-file.c				\
 	nautilus-font-factory.c			\
 	nautilus-font-picker.c			\
+	nautilus-gconf-extensions.c		\
 	nautilus-gdk-extensions.c		\
 	nautilus-gdk-font-extensions.c		\
 	nautilus-gdk-pixbuf-extensions.c	\
@@ -106,7 +108,6 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-merged-directory.c		\
 	nautilus-mime-actions.c			\
 	nautilus-password-dialog.c		\
-	nautilus-preference.c			\
 	nautilus-preferences-box.c		\
 	nautilus-preferences-dialog.c		\
 	nautilus-preferences-group.c		\
@@ -136,7 +137,6 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
 	nautilus-undo-signal-handlers.c		\
-	nautilus-user-level-manager.c		\
 	nautilus-vfs-directory.c		\
 	nautilus-vfs-file.c			\
 	nautilus-view-identifier.c		\
@@ -171,6 +171,7 @@ noinst_HEADERS =				\
 	nautilus-druid-page-eazel.h		\
 	nautilus-druid.h			\
 	nautilus-entry.h			\
+	nautilus-enumeration.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-changes-queue.h		\
 	nautilus-file-operations-progress.h 	\
@@ -180,6 +181,7 @@ noinst_HEADERS =				\
 	nautilus-file.h				\
 	nautilus-font-factory.h			\
 	nautilus-font-picker.h			\
+	nautilus-gconf-extensions.h		\
 	nautilus-gdk-extensions.h		\
 	nautilus-gdk-font-extensions.h		\
 	nautilus-gdk-pixbuf-extensions.h	\
@@ -213,7 +215,6 @@ noinst_HEADERS =				\
 	nautilus-metadata.h			\
 	nautilus-mime-actions.h			\
 	nautilus-password-dialog.h		\
-	nautilus-preference.h			\
 	nautilus-preferences-box.h		\
 	nautilus-preferences-dialog.h		\
 	nautilus-preferences-group.h		\
@@ -224,8 +225,9 @@ noinst_HEADERS =				\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\
-	nautilus-scalable-font.h		\
 	nautilus-scalable-font-private.h	\
+	nautilus-scalable-font-private.h	\
+	nautilus-scalable-font.h		\
 	nautilus-search-uri.h			\
 	nautilus-self-checks.h			\
 	nautilus-smooth-widget.h		\
@@ -245,7 +247,6 @@ noinst_HEADERS =				\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
 	nautilus-undo-signal-handlers.h		\
-	nautilus-user-level-manager.h		\
 	nautilus-vfs-directory.h		\
 	nautilus-vfs-file.h			\
 	nautilus-view-identifier.h		\

@@ -587,7 +587,7 @@ open_location (FMDirectoryView *directory_view,
 
 	switch (choice) {
 	case RESPECT_PREFERENCE:
-		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE)) {
+		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
 			nautilus_view_open_location_prefer_existing_window
 				(directory_view->details->nautilus_view, new_uri);
 		} else {
@@ -2639,7 +2639,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* Just Say Yes if the preference says not to confirm. */
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
 		return TRUE;
 	}
 
@@ -3141,8 +3141,7 @@ real_update_menus (FMDirectoryView *view)
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
 	
-	confirm_trash = nautilus_preferences_get_boolean 	
-		(NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE);
+	confirm_trash = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH);
 	selection_contains_special_link = special_link_in_selection (view);
 	can_create_files = fm_directory_view_supports_creating_files (view);
 
@@ -3632,9 +3631,8 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 	 */
 	file_count = g_list_length (files);
 	use_new_window = file_count > 1
-			 ||  nautilus_preferences_get_boolean 
-			 	(NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE);
-
+		||  nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
+	
 	if (!use_new_window || fm_directory_view_confirm_multiple_windows (view, file_count)) {
 		for (node = files; node != NULL; node = node->next) {  	
 			fm_directory_view_activate_file 
@@ -4121,10 +4119,10 @@ filtering_changed_callback (gpointer callback_data)
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
 
 	directory_view->details->show_hidden_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 	
 	directory_view->details->show_backup_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {

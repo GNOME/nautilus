@@ -49,9 +49,10 @@ noinst_PROGRAMS =\
 	test-nautilus-mime-actions-set 	\
 	test-nautilus-password-dialog 	\
 	test-nautilus-pixbuf-tile	\
-	test-nautilus-preferences 	\
 	test-nautilus-smooth-graphics 	\
 	test-nautilus-widgets 		\
+	test-nautilus-preferences-display \
+	test-nautilus-preferences-change \
 	$(NULL)
 
 test_nautilus_async_activation_SOURCES = test-nautilus-async-activation.c
@@ -75,7 +76,8 @@ test_nautilus_mime_actions_SOURCES = test-nautilus-mime-actions.c
 test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c
 test_nautilus_password_dialog_SOURCES = test-nautilus-password-dialog.c
 test_nautilus_pixbuf_tile_SOURCES = test-nautilus-pixbuf-tile.c test.c
-test_nautilus_preferences_SOURCES = test-nautilus-preferences.c
+test_nautilus_preferences_change_SOURCES = test-nautilus-preferences-change.c test.c
+test_nautilus_preferences_display_SOURCES = test-nautilus-preferences-display.c test.c
 test_nautilus_smooth_graphics_SOURCES = test-nautilus-smooth-graphics.c
 test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
 

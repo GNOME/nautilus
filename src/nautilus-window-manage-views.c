@@ -1202,8 +1202,7 @@ position_and_show_window_callback (NautilusFile *file,
         
 	window = NAUTILUS_WINDOW (callback_data);
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					      FALSE)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
 		geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
 		if (geometry_string != NULL) {
@@ -1408,21 +1407,19 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 
 		/* if this is the only window, we don't want to quit, so we redirect it to home */
 		if (just_one_window ()) {
-			char *home_uri, *default_home_uri;
+			char *home_uri;
 			
 			/* the user could have typed in a home directory that doesn't exist,
 			   in which case going home would cause an infinite loop, so we
 			   better test for that */
 			
-			default_home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-			home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);
+			home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 			if (!nautilus_uris_match (home_uri, location)) {	
 				nautilus_window_go_home (NAUTILUS_WINDOW (window));
 			} else {
 				/* the last fallback is to go to a known place that can't be deleted! */
 				nautilus_window_goto_uri (NAUTILUS_WINDOW (window), "file:///");
 			}
-			g_free (default_home_uri);
 			g_free (home_uri);
 		} else {
                 /* Since this is a window, destroying it will also unref it. */

@@ -605,7 +605,7 @@ desktop_changed_callback (gpointer user_data)
 	NautilusApplication *application;
 	
 	application = NAUTILUS_APPLICATION (user_data);
-	if ( nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE)) {
+	if ( nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 		nautilus_application_open_desktop (application);
 	} else {
 		nautilus_application_close_desktop ();

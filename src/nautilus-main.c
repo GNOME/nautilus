@@ -240,7 +240,7 @@ main (int argc, char *argv[])
 	 */
 	nautilus_global_preferences_initialize ();
 
-	start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
+	start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP);
 		
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {

@@ -330,7 +330,7 @@ nautilus_sidebar_sidebar_panel_enabled (const char *panel_iid)
         char *key;
 
 	key = nautilus_sidebar_get_sidebar_panel_key (panel_iid);
-        enabled = nautilus_preferences_get_boolean (key, FALSE);
+        enabled = nautilus_preferences_get_boolean (key);
         g_free (key);
         return enabled;
 }
@@ -384,7 +384,7 @@ toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
 	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_id);
 		
 	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
-	nautilus_preferences_set_boolean (key, !nautilus_preferences_get_boolean (key, FALSE));
+	nautilus_preferences_set_boolean (key, !nautilus_preferences_get_boolean (key));
 	g_free (key); 
 }
 
@@ -1544,8 +1544,7 @@ nautilus_sidebar_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	
 	if (widget->allocation.width != sidebar->details->old_width) {
 		sidebar->details->old_width = widget->allocation.width;
-		/* FIXME: This is not an "enum". */
- 		nautilus_preferences_set_enum (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
-					       widget->allocation.width);
+ 		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
+					      widget->allocation.width);
 	}	
 }

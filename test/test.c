@@ -1,6 +1,7 @@
 #include "test.h"
 
 #include <libart_lgpl/art_rgb.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
 
 void
 test_init (int *argc,
@@ -405,4 +406,103 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 						  GDK_INTERP_NEAREST);
 
 	gdk_pixbuf_unref (tile_pixbuf);
+}
+
+/* Preferences hacks */
+void
+test_text_caption_set_text_for_int_preferences (NautilusTextCaption *text_caption,
+					 const char *name)
+{
+	int int_value;
+	char *text;
+
+	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+	g_return_if_fail (name != NULL);
+	
+	int_value = nautilus_preferences_get_integer (name);
+
+	text = g_strdup_printf ("%d", int_value);
+
+	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (text_caption), text);
+
+	g_free (text);
+}
+
+void
+test_text_caption_set_text_for_string_preferences (NautilusTextCaption *text_caption,
+						   const char *name)
+{
+	char *text;
+
+	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+	g_return_if_fail (name != NULL);
+	
+	text = nautilus_preferences_get (name);
+	
+	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (text_caption), text);
+
+	g_free (text);
+}
+
+void
+test_text_caption_set_text_for_default_int_preferences (NautilusTextCaption *text_caption,
+						 const char *name)
+{
+	int int_value;
+	char *text;
+	
+	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+	g_return_if_fail (name != NULL);
+	
+	int_value = nautilus_preferences_default_get_integer (name, nautilus_preferences_get_user_level ());
+
+	text = g_strdup_printf ("%d", int_value);
+
+	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (text_caption), text);
+
+	g_free (text);
+}
+
+void
+test_text_caption_set_text_for_default_string_preferences (NautilusTextCaption *text_caption,
+							   const char *name)
+{
+	char *text;
+	
+	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+	g_return_if_fail (name != NULL);
+	
+	text = nautilus_preferences_default_get_string (name, nautilus_preferences_get_user_level ());
+
+	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (text_caption), text);
+
+	g_free (text);
+}
+
+int
+test_text_caption_get_text_as_int (const NautilusTextCaption *text_caption)
+{
+	int result = 0;
+	char *text;
+
+	g_return_val_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption), 0);
+
+	text = nautilus_text_caption_get_text (text_caption);
+
+	nautilus_eat_str_to_int (text, &result);
+
+	return result;
+}
+
+void 
+test_window_set_title_with_pid (GtkWindow *window,
+				const char *title)
+{
+	char *tmp;
+	
+	g_return_if_fail (GTK_IS_WINDOW (window));
+
+	tmp = g_strdup_printf ("%d: %s", getpid (), title);
+	gtk_window_set_title (GTK_WINDOW (window), tmp);
+	g_free (tmp);
 }

@@ -124,7 +124,7 @@ smooth_widget_set_is_smooth (GtkWidget *widget, gboolean is_smooth)
 static gboolean
 preferences_get_is_smooth (void)
 {
-	return nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, TRUE);
+	return nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 }
 
 static void

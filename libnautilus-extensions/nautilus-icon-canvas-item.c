@@ -671,10 +671,7 @@ static gboolean
 in_single_click_mode ()
 {
 	/* Perhaps this should be computed elsewhere and passed in. */
-	return nautilus_preferences_get_enum 
-		(NAUTILUS_PREFERENCES_CLICK_POLICY, NAUTILUS_CLICK_POLICY_DOUBLE) == 
-			NAUTILUS_CLICK_POLICY_SINGLE;
-
+	return nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE;
 }
 
 /* Keep these for a bit while we work on performance of draw_or_measure_label_text. */

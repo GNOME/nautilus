@@ -489,11 +489,9 @@ nautilus_window_constructed (NautilusWindow *window)
 		window->content_hbox = nautilus_horizontal_splitter_new ();
 		panel = E_PANED (window->content_hbox);
 		
-		/* FIXME bugzilla.eazel.com 1245: No constant for the default? */
 		/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
 		/* FIXME bugzilla.eazel.com 1245: No reality check on the value? */
-		/* FIXME bugzilla.eazel.com 1245: get_enum? why not get_integer? */
-		sidebar_width = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 148);
+		sidebar_width = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH);
 		e_paned_set_position (E_PANED (window->content_hbox), sidebar_width);
 	}
 	gtk_widget_show (window->content_hbox);
@@ -737,8 +735,7 @@ nautilus_window_close (NautilusWindow *window)
 	 * we're in every-location-in-its-own-window mode. Otherwise it
 	 * would be too apparently random when the stored positions change.
 	 */
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					      FALSE)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
 	        nautilus_window_save_geometry (window);
 	}
 
@@ -1278,7 +1275,7 @@ nautilus_window_go_web_search (NautilusWindow *window)
 
 	nautilus_window_set_search_mode (window, FALSE);
 
-	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI, "");
+	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI);
 	g_assert (search_web_uri != NULL);
 	
 	nautilus_window_goto_uri (window, search_web_uri);
@@ -1288,13 +1285,11 @@ nautilus_window_go_web_search (NautilusWindow *window)
 void
 nautilus_window_go_home (NautilusWindow *window)
 {
-	char *default_home_uri, *home_uri;
+	char *home_uri;
 
 	nautilus_window_set_search_mode (window, FALSE);
 
-	default_home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);
-	g_free (default_home_uri);
+	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 	
 	g_assert (home_uri != NULL);
 	nautilus_window_goto_uri (window, home_uri);
@@ -1758,25 +1753,25 @@ nautilus_window_show (GtkWidget *widget)
 	/* Initially show or hide views based on preferences; once the window is displayed
 	 * these can be controlled on a per-window basis from View menu items. 
 	 */
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR, TRUE)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR)) {
 		nautilus_window_show_tool_bar (window);
 	} else {
 		nautilus_window_hide_tool_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
 		nautilus_window_show_location_bar (window);
 	} else {
 		nautilus_window_hide_location_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
 		nautilus_window_show_status_bar (window);
 	} else {
 		nautilus_window_hide_status_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
 		nautilus_window_show_sidebar (window);
 	} else {
 		nautilus_window_hide_sidebar (window);

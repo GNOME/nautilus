@@ -431,9 +431,7 @@ can_use_public_metafile (NautilusDirectory *directory)
 		return FALSE;
 	}
 
-	preference_value = nautilus_preferences_get_enum
-		(NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA);
 
 	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
@@ -1157,10 +1155,10 @@ get_filter_options_for_directory_count (void)
 	filter_options = GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
 		| GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR;
 	
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE)) {
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES)) {
 		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NODOTFILES;
 	}
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE)) {
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES)) {
 		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES;
 	}
 

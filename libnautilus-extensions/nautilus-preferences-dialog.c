@@ -84,6 +84,7 @@ static void dialog_destroy                         (GtkWidget                *wi
 /* Misc private stuff */
 static void nautilus_preferences_dialog_construct        (NautilusPreferencesDialog      *prefs_dialog,
 						    const gchar              *dialog_title);
+static void user_level_changed_callback (gpointer callback_data);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesDialog, 
@@ -114,6 +115,8 @@ nautilus_preferences_dialog_initialize (NautilusPreferencesDialog * prefs_dialog
 	prefs_dialog->details = g_new (NautilusPreferencesDialogDetails, 1);
 
 	prefs_dialog->details->prefs_box = NULL;
+
+	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, prefs_dialog);
 }
 
 static void
@@ -238,6 +241,8 @@ nautilus_preferences_dialog_destroy(GtkObject* object)
 	
 	prefs_dialog = NAUTILUS_PREFERENCES_DIALOG(object);
 
+	nautilus_preferences_remove_callback ("user_level", user_level_changed_callback, prefs_dialog);
+
 	g_free (prefs_dialog->details);
 
 	/* Chain */
@@ -252,4 +257,20 @@ nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dial
 	g_return_val_if_fail (NAUTILUS_IS_PREFS_DIALOG (prefs_dialog), NULL);
 
 	return prefs_dialog->details->prefs_box;
+}
+
+void
+nautilus_preferences_dialog_update (NautilusPreferencesDialog *preferences_dialog)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (preferences_dialog));
+
+	nautilus_preferences_box_update (NAUTILUS_PREFERENCES_BOX (preferences_dialog->details->prefs_box));
+}
+
+static void
+user_level_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (callback_data));
+
+	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (callback_data));
 }

@@ -48,6 +48,8 @@ struct _NautilusPreferencesGroupDetails
 	GtkWidget	*content_box;
 	GtkWidget	*description_label;
 	gboolean	show_description;
+
+	GList		*items;
 };
 
 static const gint PREFERENCES_GROUP_NOT_FOUND = -1;
@@ -96,6 +98,7 @@ nautilus_preferences_group_initialize (NautilusPreferencesGroup *group)
 	group->details->content_box = NULL;
 	group->details->description_label = NULL;
 	group->details->show_description = FALSE;
+	group->details->items = NULL;
 }
 
 /*
@@ -111,6 +114,7 @@ nautilus_preferences_group_destroy(GtkObject* object)
 	
 	group = NAUTILUS_PREFERENCES_GROUP (object);
 
+	g_list_free (group->details->items);
 	g_free (group->details);
 	
 	/* Chain */
@@ -201,23 +205,16 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
 				     const char				*preference_name,
 				     NautilusPreferencesItemType	item_type)
 {
-	GtkWidget			*item;
-	NautilusPreference		*preference;
+	GtkWidget *item;
 
 	g_return_val_if_fail (group != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), NULL);
 
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
-	preference = nautilus_preference_find_by_name (preference_name);
-
-	g_assert (preference != NULL);
-
-	gtk_object_unref (GTK_OBJECT (preference));
-
-	preference = NULL;
-
 	item = nautilus_preferences_item_new (preference_name, item_type);
+
+	group->details->items = g_list_append (group->details->items, item);
 	
 	gtk_box_pack_start (GTK_BOX (group->details->content_box),
 			    item,
@@ -228,4 +225,46 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
 	gtk_widget_show (item);
 
 	return item;
+}
+
+void
+nautilus_preferences_group_update (NautilusPreferencesGroup *group)
+{
+	GList *iterator;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
+
+	for (iterator = group->details->items; iterator != NULL; iterator = iterator->next) {
+		char *name;
+
+		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (iterator->data));
+
+		if (nautilus_preferences_is_visible (name)) {
+			gtk_widget_show (GTK_WIDGET (iterator->data));
+		} else {
+			gtk_widget_hide (GTK_WIDGET (iterator->data));
+		}
+
+		g_free (name);
+	}
+}
+
+guint
+nautilus_preferences_get_num_visible_items (const NautilusPreferencesGroup *group)
+{
+	guint n = 0;
+	GList *iterator;
+
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), 0);
+
+	for (iterator = group->details->items; iterator != NULL; iterator = iterator->next) {
+		char *name;
+		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (iterator->data));
+		if (nautilus_preferences_is_visible (name)) {
+			n++;
+		}
+		g_free (name);
+	}
+
+	return n;
 }

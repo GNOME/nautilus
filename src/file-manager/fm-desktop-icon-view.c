@@ -790,7 +790,7 @@ update_link_and_delete_copies (gboolean (*is_link_function) (const char *path),
 static void
 update_home_link_and_delete_copies (void)
 {
-	char *desktop_path, *home_link_name, *home_dir_uri, *home_uri;
+	char *desktop_path, *home_link_name, *home_uri;
 
 	desktop_path = nautilus_get_desktop_directory ();
 
@@ -801,9 +801,7 @@ update_home_link_and_delete_copies (void)
 	 */
 	home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
 	
-	home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, home_dir_uri);
-	g_free (home_dir_uri);
+	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 	
 	if (!update_link_and_delete_copies (nautilus_link_local_is_home_link,
 					    home_link_name,
@@ -1086,7 +1084,7 @@ real_update_menus (FMDirectoryView *view)
 		 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
 		 !include_empty_trash);
 	if (include_empty_trash) {
-		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
 			label = g_strdup (_("Empty Trash..."));
 		} else {
 			label = g_strdup (_("Empty Trash"));

@@ -1058,9 +1058,7 @@ nautilus_file_should_get_top_left_text (NautilusFile *file)
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	preference_value = nautilus_preferences_get_enum
-		(NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS, 
-		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS);
 
 	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;

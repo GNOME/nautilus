@@ -323,4 +323,22 @@ nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefs_
 	return item;
 }
 
+void
+nautilus_preferences_pane_update (NautilusPreferencesPane *prefs_pane)
+{
+	GList *iterator;
 
+	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane));
+
+	for (iterator = prefs_pane->details->groups; iterator != NULL; iterator = iterator->next) {
+		NautilusPreferencesGroup *group = NAUTILUS_PREFERENCES_GROUP (iterator->data);
+
+		nautilus_preferences_group_update (group);
+		
+		if (nautilus_preferences_get_num_visible_items (group) == 0) {
+			gtk_widget_hide (GTK_WIDGET (group));
+		} else {
+			gtk_widget_show (GTK_WIDGET (group));
+		}
+	}
+}

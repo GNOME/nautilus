@@ -44,7 +44,7 @@
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-user-level-manager.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <nautilus-main.h>
 #include <netdb.h>
@@ -258,7 +258,7 @@ user_level_selection_changed (GtkWidget *radio_button, gpointer user_data)
 	int user_level = GPOINTER_TO_INT (user_data);
 
 	if (GTK_TOGGLE_BUTTON (radio_button)->active) {
-		nautilus_user_level_manager_set_user_level (user_level);
+		nautilus_preferences_set_user_level (user_level);
 	}
 }
 
@@ -328,7 +328,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 
 	hbox = gtk_hbox_new (FALSE, 0);
 
-	user_level_name = nautilus_user_level_manager_get_user_level_name_for_display (index);
+	user_level_name = nautilus_preferences_get_user_level_name_for_display (index);
 
 	/* Add an "indent" */
 	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
@@ -436,7 +436,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 		 NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 
-	user_level = nautilus_user_level_manager_get_user_level ();
+	user_level = nautilus_preferences_get_user_level ();
 	g_assert (user_level >= NAUTILUS_USER_LEVEL_NOVICE && user_level <= NAUTILUS_USER_LEVEL_HACKER);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_buttons[user_level]), TRUE);
 

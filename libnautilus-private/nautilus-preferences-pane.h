@@ -70,6 +70,7 @@ GtkWidget *nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesP
 							    guint                        n,
 							    const char                  *preference_name,
 							    NautilusPreferencesItemType  item_type);
+void       nautilus_preferences_pane_update                (NautilusPreferencesPane     *prefs_pane);
 
 END_GNOME_DECLS
 

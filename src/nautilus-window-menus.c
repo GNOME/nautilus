@@ -56,7 +56,6 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
-#include <libnautilus-extensions/nautilus-user-level-manager.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
@@ -110,12 +109,9 @@ static void                  add_bookmark_for_current_location             (Naut
 /* User level things */
 static guint                 convert_verb_to_user_level                    (const char       *verb);
 static const char *          convert_user_level_to_path                    (guint             user_level);
-static char *                get_customize_user_level_settings_menu_string (void);
 static void                  update_user_level_menu_items                  (NautilusWindow   *window);
-static char *                get_customize_user_level_string               (void);
 static void                  switch_to_user_level                          (NautilusWindow   *window,
 									    int               new_user_level);
-static void                  update_preferences_dialog_title               (void);
 
 
 #define NAUTILUS_MENU_PATH_USER_LEVEL				"/menu/Preferences"
@@ -480,74 +476,12 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIComponent *component,
 }
 
 static void
-switch_and_show_intermediate_settings_callback (GtkWidget *button, gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_WINDOW (user_data));
-
-	switch_to_user_level (NAUTILUS_WINDOW (user_data), NAUTILUS_USER_LEVEL_INTERMEDIATE);
-	nautilus_global_preferences_show_dialog ();
-}
-
-static void
 user_level_customize_callback (BonoboUIComponent *component, 
 			       gpointer user_data, 
 			       const char *verb)
 {
-	GnomeDialog *dialog;
-	NautilusWindow *window;
-	char *novice_level_name;
-	char *intermediate_level_name;
-	char *expert_level_name;
-	char *prompt;
-	char *dialog_title;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (nautilus_user_level_manager_get_user_level () == NAUTILUS_USER_LEVEL_NOVICE) {
-		novice_level_name = 
-			nautilus_user_level_manager_get_user_level_name_for_display 
-				(NAUTILUS_USER_LEVEL_NOVICE);
-		intermediate_level_name = 
-			nautilus_user_level_manager_get_user_level_name_for_display 
-				(NAUTILUS_USER_LEVEL_INTERMEDIATE);
-		expert_level_name = 
-			nautilus_user_level_manager_get_user_level_name_for_display 
-				(NAUTILUS_USER_LEVEL_HACKER);
-		/* Localizers: This is the message in the dialog that appears if the user chooses "Edit Beginner Settings".
-		 * The first %s is the name of the lowest user level ("Beginner"). The 2nd and 4th %s are the
-		 * names of the middle user level ("Intermediate"). The 3rd %s is the name of the highest user
-		 * level ("Advanced").
-		 */
-		prompt = g_strdup_printf (_("None of the settings for the %s level can be edited. "
-					    "If you want to edit the settings you must choose the %s or %s "
-					    "level. Do you want to switch to the %s level now "
-					    "and edit its settings?"),
-					    novice_level_name,
-					    intermediate_level_name,
-					    expert_level_name,
-					    intermediate_level_name);
-
-		/* Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
-		 * The %s is the name of the middle user level ("Intermediate").
-		 */
-		dialog_title = g_strdup_printf (_("Switch to %s Level?"), intermediate_level_name);
-		dialog = nautilus_yes_no_dialog (prompt,
-						 dialog_title,
-						 _("Switch"),
-						 GNOME_STOCK_BUTTON_CANCEL,
-						 GTK_WINDOW (window));
-		gnome_dialog_button_connect 
-			(dialog, GNOME_OK, switch_and_show_intermediate_settings_callback, window);
-		gnome_dialog_set_default (dialog, GNOME_CANCEL);
-
-		g_free (prompt);
-		g_free (dialog_title);
-		g_free (novice_level_name);
-		g_free (intermediate_level_name);
-		g_free (expert_level_name);
-	} else {
-		nautilus_global_preferences_show_dialog ();
-	}
+	nautilus_global_preferences_set_dialog_title ("Edit Settings");
+	nautilus_global_preferences_show_dialog ();
 }
 
 static void
@@ -709,12 +643,12 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 		return;
 	}
 
-	old_user_level = nautilus_user_level_manager_get_user_level ();
+	old_user_level = nautilus_preferences_get_user_level ();
 	if (new_user_level == old_user_level) {
 		return;
 	}
 
-	nautilus_user_level_manager_set_user_level (new_user_level);
+	nautilus_preferences_set_user_level (new_user_level);
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
@@ -1058,8 +992,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_window_remove_bookmarks_menu_items (window);				
 
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, 
-					       FALSE)) {
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
 		append_static_bookmarks (window, MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
 	}
 
@@ -1126,22 +1059,12 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 /* handler to receive the user_level_changed signal, so we can update the menu and dialog
    when the user level changes */
 static void
-user_level_changed_callback (GtkObject	*user_level_manager,
-			     gpointer	user_data)
+user_level_changed_callback (gpointer callback_data)
 {
-	g_return_if_fail (user_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+	g_return_if_fail (callback_data != NULL);
+	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
 
-	update_user_level_menu_items (NAUTILUS_WINDOW (user_data));
-
-	/* Hide the customize dialog for novice user level */
-	if (nautilus_user_level_manager_get_user_level () == NAUTILUS_USER_LEVEL_NOVICE) {
-		nautilus_global_preferences_hide_dialog ();
-	}
-	/* Otherwise update its title to reflect the user level */
-	else {
-		update_preferences_dialog_title ();
-	}
+	update_user_level_menu_items (NAUTILUS_WINDOW (callback_data));
 }
 
 static void
@@ -1157,7 +1080,7 @@ add_user_level_menu_item (NautilusWindow *window,
 		return;
 	}
 
-	current_user_level = nautilus_user_level_manager_get_user_level ();
+	current_user_level = nautilus_preferences_get_user_level ();
 
 	icon_name = get_user_level_icon_name (user_level, current_user_level == user_level);
 
@@ -1252,13 +1175,11 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	update_user_level_menu_items (window);				  
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
-	/* connect to the user level changed signal, so we can update the menu when the
-	   user level changes */
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_user_level_manager_get ()),
-					"user_level_changed",
-					user_level_changed_callback,
-					window,
-					GTK_OBJECT (window));
+	/* Monitor user level changes so that we can update the user level menu pane */
+	nautilus_preferences_add_callback_while_alive ("user_level",
+						       user_level_changed_callback,
+						       window,
+						       GTK_OBJECT (window));
 
         nautilus_window_initialize_bookmarks_menu (window);
         nautilus_window_initialize_go_menu (window);
@@ -1431,7 +1352,6 @@ schedule_refresh_go_menu (NautilusWindow *window)
 static void
 update_user_level_menu_items (NautilusWindow *window)
 {
-	char *customize_string;
 	int user_level;
 	char *user_level_icon_name;
 	
@@ -1439,22 +1359,13 @@ update_user_level_menu_items (NautilusWindow *window)
         g_assert (NAUTILUS_IS_WINDOW (window));
 
  	/* Update the user radio group to reflect reality */
-	user_level = nautilus_user_level_manager_get_user_level ();
+	user_level = nautilus_preferences_get_user_level ();
 	user_level_icon_name = get_user_level_icon_name (user_level, FALSE);
 
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  NAUTILUS_MENU_PATH_USER_LEVEL,
 				  user_level_icon_name);
 	g_free (user_level_icon_name);
-
-
-	customize_string = get_customize_user_level_settings_menu_string ();
-	g_assert (customize_string != NULL);
-	nautilus_bonobo_set_label (window->details->shell_ui,
-				   NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
-				   customize_string);
-
-	g_free (customize_string);
 }
 
 
@@ -1489,61 +1400,4 @@ convert_user_level_to_path (guint user_level)
 
 	g_assert_not_reached ();
 	return NAUTILUS_MENU_PATH_NOVICE_ITEM;
-}
-
-
-static char *
-get_customize_user_level_string (void)
-{
-	char *user_level_string_for_display;
-	char *title;
-	
-	user_level_string_for_display = 
-		nautilus_user_level_manager_get_user_level_name_for_display 
-			(nautilus_user_level_manager_get_user_level ());
-
-	/* Localizers: This is the title of the user-level settings
-	 * dialog. %s will be replaced with the name of a user level
-	 * ("Beginner", "Intermediate", or "Advanced").
-	 */
-	title = g_strdup_printf (_("Edit %s Settings"), user_level_string_for_display);
-
-	g_free (user_level_string_for_display);
-
-	return title;
-}
-
-static char *
-get_customize_user_level_settings_menu_string (void)
-{
-	char *user_level_string_for_display;
-	char *title;
-	
-	user_level_string_for_display = 
-		nautilus_user_level_manager_get_user_level_name_for_display 
-			(nautilus_user_level_manager_get_user_level ());
-
-	/* Localizers: This is the label for the menu item that brings
-	 * up the user-level settings dialog. %s will be replaced with
-	 * the name of a user level ("Beginner", "Intermediate", or
-	 * "Advanced").
-	 */
-	title = g_strdup_printf (_("Edit %s Settings..."), user_level_string_for_display);
-
-	g_free (user_level_string_for_display);
-
-	return title;
-}
-
-static void
-update_preferences_dialog_title (void)
-{
-	char *dialog_title;
-	
-	dialog_title = get_customize_user_level_string ();
-	g_assert (dialog_title != NULL);
-	
-	nautilus_global_preferences_set_dialog_title (dialog_title);
-
-	g_free (dialog_title);
 }

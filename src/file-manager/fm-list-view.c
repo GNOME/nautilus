@@ -1742,8 +1742,7 @@ fm_list_view_update_click_mode (FMDirectoryView *view)
 	g_assert (FM_IS_LIST_VIEW (view));
 	g_assert (get_list (FM_LIST_VIEW (view)) != NULL);
 
-	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						    NAUTILUS_CLICK_POLICY_DOUBLE);
+	click_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
 
 	nautilus_list_set_single_click_mode (get_list (FM_LIST_VIEW (view)), 
 		click_mode == NAUTILUS_CLICK_POLICY_SINGLE);

@@ -46,7 +46,8 @@
 static GConfClient *preferences_get_global_gconf_client       (void);
 static void         preferences_proxy_sync_mozilla_with_gconf (void);
 
-static const char PROXY_KEY[] = "/system/gnome-vfs/http-proxy";
+static const char PROXY_HOST_KEY[] = "/system/gnome-vfs/http-proxy-host";
+static const char PROXY_PORT_KEY[] = "/system/gnome-vfs/http-proxy-port";
 static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 
@@ -137,23 +138,15 @@ mozilla_gconf_handle_gconf_error (GError **error)
 	return FALSE;
 }
 
-static guint gconf_proxy_changed_connection = 0;
+static guint gconf_proxy_host_changed_connection = 0;
+static guint gconf_proxy_port_changed_connection = 0;
 static guint gconf_use_http_proxy_changed_connection = 0;
 
 static void
-preferneces_proxy_changed_callback (GConfClient* client,
+preferences_proxy_changed_callback (GConfClient* client,
 				    guint cnxn_id,
 				    GConfEntry *entry,
 				    gpointer user_data)
-{
-	preferences_proxy_sync_mozilla_with_gconf ();
-}
-
-static void
-preferences_use_proxy_changed_callback (GConfClient* client,
-					guint cnxn_id,
-					GConfEntry *entry,
-					gpointer user_data)
 {
 	preferences_proxy_sync_mozilla_with_gconf ();
 }
@@ -167,17 +160,25 @@ preferences_add_gconf_proxy_connections (void)
 	gconf_client = preferences_get_global_gconf_client ();
 	g_return_if_fail (GCONF_IS_CLIENT (gconf_client));
 	
-	gconf_proxy_changed_connection = gconf_client_notify_add (gconf_client,
-								  PROXY_KEY,
-								  preferneces_proxy_changed_callback,
-								  NULL,
-								  NULL,
-								  &error);
+	gconf_proxy_host_changed_connection = gconf_client_notify_add (gconf_client,
+								       PROXY_HOST_KEY,
+								       preferences_proxy_changed_callback,
+								       NULL,
+								       NULL,
+								       &error);
+	mozilla_gconf_handle_gconf_error (&error);
+
+	gconf_proxy_port_changed_connection = gconf_client_notify_add (gconf_client,
+								       PROXY_PORT_KEY,
+								       preferences_proxy_changed_callback,
+								       NULL,
+								       NULL,
+								       &error);
 	mozilla_gconf_handle_gconf_error (&error);
 
 	gconf_use_http_proxy_changed_connection = gconf_client_notify_add (gconf_client,
 									   USE_PROXY_KEY,
-									   preferences_use_proxy_changed_callback,
+									   preferences_proxy_changed_callback,
 									   NULL,
 									   NULL,
 									   &error);
@@ -192,8 +193,11 @@ preferences_remove_gconf_proxy_connections (void)
 	gconf_client = preferences_get_global_gconf_client ();
 	g_return_if_fail (GCONF_IS_CLIENT (gconf_client));
 	
-	gconf_client_notify_remove (gconf_client, gconf_proxy_changed_connection);
-	gconf_proxy_changed_connection = 0;
+	gconf_client_notify_remove (gconf_client, gconf_proxy_host_changed_connection);
+	gconf_proxy_host_changed_connection = 0;
+
+	gconf_client_notify_remove (gconf_client, gconf_proxy_port_changed_connection);
+	gconf_proxy_port_changed_connection = 0;
 
 	gconf_client_notify_remove (gconf_client, gconf_use_http_proxy_changed_connection);
 	gconf_use_http_proxy_changed_connection = 0;
@@ -285,31 +289,32 @@ preferences_proxy_sync_mozilla_with_gconf (void)
         g_return_if_fail (GCONF_IS_CLIENT (gconf_client));
 	
 	if (gconf_client_get_bool (gconf_client, USE_PROXY_KEY, &error)) {
-		proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, &error);
-		if (!mozilla_gconf_handle_gconf_error (&error)) {
-			if (proxy_string != NULL) {
-				char *proxy, *port;						
-				port = strchr (proxy_string, ':');
-				if (port != NULL) {
-					proxy = g_strdup (proxy_string);
-					proxy [port - proxy_string] = '\0';
-					port++;							
-					
-					mozilla_preference_set ("network.proxy.http", proxy);
-					mozilla_preference_set_int ("network.proxy.http_port", atoi (port));
-					
-					/* 1, Configure proxy settings manually */
-					mozilla_preference_set_int ("network.proxy.type", 1);
-					
-					g_free (proxy_string);
-					g_free (proxy);
-				}
-			}
+		char *proxy_host = NULL;
+		gboolean proxy_host_success;
+		int proxy_port = 8080;
+		gboolean proxy_port_success;
+
+		error = NULL;
+		proxy_host = gconf_client_get_string (gconf_client, PROXY_HOST_KEY, &error);
+		proxy_host_success = !mozilla_gconf_handle_gconf_error (&error);
+
+		error = NULL;
+		proxy_port = gconf_client_get_int (gconf_client, PROXY_PORT_KEY, &error);
+		proxy_port_success = !mozilla_gconf_handle_gconf_error (&error);
+
+		if (proxy_host_success && proxy_port_success) {
+			mozilla_preference_set ("network.proxy.http", proxy_host);
+			mozilla_preference_set_int ("network.proxy.http_port", proxy_port);
+			
+			/* 1, Configure proxy settings manually */
+			mozilla_preference_set_int ("network.proxy.type", 1);
 		}
+
+		g_free (proxy_host);
+
+		return;
 	}
-	else {
-		/* Default is 3, which conects to internet hosts directly */
-		mozilla_preference_set_int ("network.proxy.type", 3);
-	}
-	
+
+	/* Default is 3, which conects to internet hosts directly */
+	mozilla_preference_set_int ("network.proxy.type", 3);
 }

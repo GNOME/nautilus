@@ -337,8 +337,8 @@ nautilus_preferences_box_add_pane (NautilusPreferencesBox	*prefs_box,
 	info = pane_info_alloc (pane_title);
 
 	prefs_box->details->panes = g_list_append (prefs_box->details->panes, 
-						(gpointer) info);
-
+						   (gpointer) info);
+	
 	info->pane_widget = nautilus_preferences_pane_new (pane_title,
 						     pane_description);
 
@@ -354,4 +354,18 @@ nautilus_preferences_box_add_pane (NautilusPreferencesBox	*prefs_box,
 				    text);
 
 	return info->pane_widget;
+}
+
+void
+nautilus_preferences_box_update (NautilusPreferencesBox	*prefs_box)
+{
+	GList *iterator;
+
+	g_return_if_fail (NAUTILUS_IS_PREFS_BOX (prefs_box));
+	
+	for (iterator = prefs_box->details->panes; iterator != NULL; iterator = iterator->next) {
+		PaneInfo *info = iterator->data;
+
+		nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (info->pane_widget));
+	}
 }

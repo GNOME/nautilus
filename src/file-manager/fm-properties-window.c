@@ -1660,8 +1660,7 @@ create_permissions_page (FMPropertiesWindow *window)
 				_("You are not the owner, so you can't change these permissions."));
 		}
 
-		show_special_flags = nautilus_preferences_get_boolean 
-			(NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS, FALSE);
+		show_special_flags = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS);
 
 		page_table = GTK_TABLE (gtk_table_new (1, COLUMN_COUNT, FALSE));
 		apply_standard_table_padding (page_table);

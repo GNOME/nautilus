@@ -41,7 +41,7 @@ kill_sound_if_necessary (void)
 	pid_t sound_process;
 	
 	/* fetch the sound state */
-	sound_process = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
+	sound_process = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE);
 	/* if there was a sound playing, kill it */
 	if (sound_process > 0) {
 		kill (-sound_process, SIGTERM);
@@ -54,7 +54,7 @@ kill_sound_if_necessary (void)
 void
 nautilus_sound_initialize (void)
 {
- 	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
+ 	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
 }
 
 /* if there is a sound registered, kill it, and register the empty sound */
@@ -65,7 +65,7 @@ nautilus_sound_kill_sound (void)
 	kill_sound_if_necessary ();
 		
 	/* set the process state to quiescent */
- 	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
+ 	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
 }
 
 /* register a new sound process, including kill any old one if necessary */
@@ -76,7 +76,7 @@ nautilus_sound_register_sound (pid_t sound_process)
 	kill_sound_if_necessary ();
 	
 	/* record the new sound process ID */
-	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, sound_process);
+	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, sound_process);
 }
 
 gboolean
@@ -85,7 +85,7 @@ nautilus_sound_can_play_sound (void)
 	int open_result, sound_process;
 
 	/* first see if there's already one in progress; if so, return true */
-	sound_process = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
+	sound_process = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE);
 	if (sound_process > 0) {
 		return TRUE;
 	}

@@ -1,3 +1,325 @@
+2001-01-17  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Lots of bug fixes:
+
+	2848 - User level agnostic config settings have nowhere to live.
+	2654 - Need default values even for non user level preferences.
+	3414 - Show more preferences at higher user levels.
+	3415 - Make preference the same for all levels at which it is not visible
+	3416 - Make preference changes affect all levels at which they are visible
+	4357 - Web search URL setting should be reset upon Nautilus update
+	5160 - Tree view doesnt exist when starting nautilus as a beginner
+	5234 - Sidebar panel preferences are not properly separated among user levels
+	
+	* components/mozilla/mozilla-preferences.cpp:
+	Update for gnome vfs proxy changes.  Proxy host and port are now
+	stored in separate gconf settings.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-enumeration.h:
+	* libnautilus-extensions/nautilus-enumeration.c:
+	(nautilus_enumeration_new), (nautilus_enumeration_free),
+	(nautilus_enumeration_insert),
+	(nautilus_enumeration_get_nth_entry),
+	(nautilus_enumeration_get_nth_description),
+	(nautilus_enumeration_get_nth_value),
+	(nautilus_enumeration_get_num_entries),
+	(nautilus_self_check_enumeration):
+	New files.  An enumeration data structure.
+	
+	* components/tree/nautilus-tree-expansion-state.c:
+	No longer need to give the full path to a gconf setting.
+
+	* components/tree/nautilus-tree-view.c:
+	(filtering_changed_callback), (nautilus_tree_view_initialize):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(can_use_public_metafile),
+	(get_filter_options_for_directory_count):
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(confirm_empty_trash):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_should_get_top_left_text):
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_from_preferences):
+	Update for preferences api changes.
+
+	* libnautilus-extensions/nautilus-gconf-extensions.h:
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	(global_client_free), (nautilus_gconf_client_get_global),
+	(nautilus_gconf_handle_error), (nautilus_gconf_set_boolean),
+	(nautilus_gconf_get_boolean), (nautilus_gconf_set_int),
+	(nautilus_gconf_get_int), (nautilus_gconf_set_string),
+	(nautilus_gconf_get_string), (nautilus_gconf_set_string_list),
+	(nautilus_gconf_get_string_list), (nautilus_gconf_is_default),
+	(nautilus_gconf_monitor_directory):
+	New files.  Useful gconf extensions; make peeking and poking
+	settings a little easier.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_press_event):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(in_single_click_mode):
+	Update for preferences api changes.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(icon_theme_changed_callback),
+	(should_display_image_file_as_itself):
+	Update for preferences api changes.  Also no longer need to define
+	a default theme.
+
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	Add entries for enumeration and preferences.  Remove preference
+	entry.  Note plural vs not.
+	
+	* libnautilus-extensions/nautilus-preference.c:
+	* libnautilus-extensions/nautilus-preference.h:
+	Retire these 2.  No longer use a GtkObject to store each
+	preference.  We simply use the string name instead.
+	
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_add_pane),
+	(nautilus_preferences_box_update):
+	New function.  Should be called when user level changes so that
+	the box updates its panes.
+	
+	* libnautilus-extensions/nautilus-preferences-dialog.h:
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_initialize),
+	(nautilus_preferences_dialog_destroy),
+	(nautilus_preferences_dialog_get_prefs_box),
+	(nautilus_preferences_dialog_update),
+	(user_level_changed_callback):
+	Keep track of user level changes.  
+	New function to update the dialog when user level changes.
+	
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_initialize),
+	(nautilus_preferences_group_destroy),
+	(nautilus_preferences_group_add_item): Collect the group's items
+	in a list.  Update to user a string to represent a preference
+	instead of a GtkObject.  
+	(nautilus_preferences_group_update): New function.  Updates the
+	group's items to respect preferences visibility based on the user
+	level.
+	(nautilus_preferences_get_num_visible_items):  New function.
+	Return the number of currently visible items.
+
+	Collect the group's items in a list.   Update to user a string to
+	represent a preference instead of a GtkObject.  
+	
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_construct), (preferences_item_create_enum),
+	(preferences_item_create_short_enum),
+	(preferences_item_create_boolean),
+	(preferences_item_create_editable_string),
+	(preferences_item_create_integer),
+	(preferences_item_create_font_family),
+	(preferences_item_create_theme),
+	(enum_radio_group_changed_callback),
+	(editable_string_changed_callback), (integer_changed_callback),
+	(nautilus_preferences_item_get_name): 
+	New function to fetch the item's preference name.
+	Add a new kind of preference - INTEGER.  Update for string
+	vs. GtkObject preferences representation changes.  
+
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_update):
+	New function.  Updates the pane's groups to respect preferences
+	visibility based on the user level.
+
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_get_path), (preferences_get_defaults_path),
+	(preferences_get_visibility_path),
+	(preferences_get_user_level_key),
+	(preferences_preference_is_internal),
+	(preferences_preference_is_user_level), (preferences_key_make),
+	(preferences_key_make_for_default),
+	(preferences_key_make_for_default_getter),
+	(preferences_key_make_for_visibility),
+	(preferences_global_client_remove_notification),
+	(preferences_global_client_get),
+	(preferences_preference_is_default),
+	(preferences_make_user_level_filtered_key),
+	(nautilus_preferences_get_visible_user_level),
+	(nautilus_preferences_set_visible_user_level),
+	(nautilus_preferences_set_boolean),
+	(preferences_key_make_for_getter),
+	(nautilus_preferences_get_boolean), (nautilus_preferences_set_int),
+	(nautilus_preferences_get_int), (nautilus_preferences_set),
+	(nautilus_preferences_get), (nautilus_preferences_set_string_list),
+	(nautilus_preferences_get_string_list),
+	(nautilus_preferences_get_user_level),
+	(nautilus_preferences_set_user_level),
+	(nautilus_preferences_default_set_int),
+	(nautilus_preferences_default_get_int),
+	(nautilus_preferences_default_set_boolean),
+	(nautilus_preferences_default_get_boolean),
+	(nautilus_preferences_default_set_string),
+	(nautilus_preferences_default_get_string),
+	(nautilus_preferences_default_set_string_list),
+	(nautilus_preferences_default_get_string_list),
+	(preferences_callback_entry_invoke_function),
+	(preferences_something_changed_notice),
+	(preferences_global_table_check_changes_function),
+	(preferences_user_level_changed_notice),
+	(preferences_entry_add_callback),
+	(preferences_entry_remove_callback),
+	(preferences_callback_entry_free),
+	(preferences_callback_entry_free_func), (preferences_entry_free),
+	(preferences_entry_free_func), (preferences_global_table_free),
+	(preferences_global_table_get_global),
+	(preferences_global_table_lookup),
+	(preferences_global_table_insert),
+	(preferences_global_table_lookup_or_insert),
+	(nautilus_preferences_add_callback),
+	(preferences_while_alive_disconnector),
+	(nautilus_preferences_add_callback_while_alive),
+	(nautilus_preferences_remove_callback),
+	(nautilus_preferences_enumeration_insert),
+	(nautilus_preferences_enumeration_get_nth_entry),
+	(nautilus_preferences_enumeration_get_nth_description),
+	(nautilus_preferences_enumeration_get_nth_value),
+	(nautilus_preferences_enumeration_get_num_entries),
+	(nautilus_preferences_set_description),
+	(nautilus_preferences_get_description),
+	(nautilus_preferences_get_user_level_name_for_display),
+	(nautilus_preferences_get_user_level_name_for_storage),
+	(preferences_user_level_check_range),
+	(nautilus_preferences_monitor_directory),
+	(nautilus_preferences_is_visible),
+	(nautilus_self_check_preferences):
+	Many changes.  Redid to support the preferences system described
+	in bugs 3414, 3415 and 3416.
+	
+	* libnautilus-extensions/nautilus-smooth-widget.c:
+	(preferences_get_is_smooth):
+	* libnautilus-extensions/nautilus-sound.c:
+	(kill_sound_if_necessary), (nautilus_sound_initialize),
+	(nautilus_sound_kill_sound), (nautilus_sound_register_sound),
+	(nautilus_sound_can_play_sound):
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_get_theme), (nautilus_theme_get_theme_data),
+	(nautilus_theme_get_image_path):
+	Update for preferences api changes.
+
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	* libnautilus-extensions/nautilus-user-level-manager.h:
+	Retire.  No longer needed.  User level things are handled in
+	nautilus-preferences.[ch] now.  The current user level design is
+	much simpler and does no require its own GtkObject.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_home_link_and_delete_copies), (real_update_menus):
+	* src/file-manager/fm-directory-view.c: (open_location),
+	(confirm_delete_from_trash), (real_update_menus),
+	(fm_directory_view_activate_files), (filtering_changed_callback):
+	* src/file-manager/fm-icon-text-window.c:
+	(changed_attributes_option_menu_callback),
+	(fm_get_text_attribute_names_preference_or_default):
+	* src/file-manager/fm-icon-view.c: (should_preview_sound),
+	(fm_icon_view_update_click_mode),
+	(fm_icon_view_update_smooth_graphics_mode):
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_update_click_mode):
+	* src/file-manager/fm-properties-window.c:
+	(create_permissions_page):
+	* src/nautilus-application.c: (desktop_changed_callback):
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_get_location):
+	* src/nautilus-first-time-druid.c: (user_level_selection_changed),
+	(make_hbox_user_level_radio_button), (set_up_user_level_page):
+	* src/nautilus-main.c: (main):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_update_contents):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_sidebar_panel_enabled),
+	(toggle_sidebar_panel), (nautilus_sidebar_size_allocate):
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_new),
+	(nautilus_search_uri_to_search_bar_mode):
+	Update for preferences api changes.
+
+	* src/nautilus-window-manage-views.c:
+	(position_and_show_window_callback),
+	(nautilus_window_end_location_change_callback):
+	Update for preferences api changes.  Also, no longer need to pass
+	in a default location to the preferences getter.
+
+	* src/nautilus-window-menus.c: (user_level_customize_callback),
+	(switch_to_user_level), (refresh_bookmarks_menu),
+	(user_level_changed_callback), (add_user_level_menu_item),
+	(nautilus_window_initialize_menus), (update_user_level_menu_items),
+	(convert_user_level_to_path):
+	A lot of simplification.  The "Edit Settings..." menu item no
+	longer changes it wording based on the user level.  We know allow
+	it to edit settings on all user levels, since we have the ability
+	to hide preferences at higher user levels.  No longer need to
+	update the preferences dialog or its title.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_close), (nautilus_window_go_web_search),
+	(nautilus_window_go_home), (nautilus_window_show):
+	Update for preferences api changes.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Update all the preferences defines to not include a full gconf
+	path.  We dont need to do this anymore to get non user level
+	coupled prefernces.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(compare_view_identifiers), (global_preferences_create_dialog),
+	(nautilus_global_preferences_get_enabled_sidebar_panel_view_identif
+	iers), (global_preferences_install_sidebar_panel_defaults),
+	(global_preferences_is_sidebar_panel_enabled),
+	(global_preferences_install_speed_tradeoff_descriptions),
+	(register_proxy_preferences), (global_preferences_register),
+	(global_preferences_install_defaults),
+	(nautilus_global_preferences_set_dialog_title):
+	Lots of changes to support new preferences design.
+
+	Set the WM_CLASS here once instead of everytime the dialog title
+	is changed.  This was causing criticals.
+
+	No longer need to create parallel proxy preferences and map them
+	to the gconf ones.  We can use the gconf ones directly now.
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-preferences-change.c:
+	(user_level_changed_callback), (fruits_changed_callback),
+	(int_picker_changed_callback),
+	(user_level_picker_changed_callback), (picker_new),
+	(user_level_picker_new), (main):
+	* test/test-nautilus-preferences-display.c: (text_caption_update),
+	(user_level_caption_update), (user_level_changed_callback),
+	(green_changed_callback), (yellow_changed_callback),
+	(red_changed_callback), (apple_changed_callback),
+	(orange_changed_callback), (pear_changed_callback), (entry_new),
+	(user_level_frame_new), (colors_frame_new), (fruits_frame_new),
+	(main):
+	* test/test.c: (test_pixbuf_draw_rectangle_tiled),
+	(test_text_caption_set_text_for_int_preferences),
+	(test_text_caption_set_text_for_string_preferences),
+	(test_text_caption_set_text_for_default_int_preferences),
+	(test_text_caption_set_text_for_default_string_preferences),
+	(test_text_caption_get_text_as_int),
+	(test_window_set_title_with_pid):
+	* test/test.h:
+	New tests for preferences changes.
+
+	* test/test-nautilus-preferences.c:
+	Retire old prefs test which didnt really work.
+	
+	* test/test-nautilus-smooth-graphics.c:
+	(smooth_graphics_mode_changed_callback), (main):
+	Update for preferences api changes.
+
 2001-01-17  Andy Hertzfeld  <andy@eazel.com>
 
 	changed the throbber component to use the new translated oaf file

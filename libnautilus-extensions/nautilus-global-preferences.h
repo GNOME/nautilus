@@ -36,13 +36,13 @@ BEGIN_GNOME_DECLS
  */
 
 /* Which theme is active */
-#define NAUTILUS_PREFERENCES_THEME				"/apps/nautilus/preferences/theme"
+#define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
 /* Which text attributes appear beneath icon names */
-#define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"/apps/nautilus/icon_view/captions"
+#define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"icon_view/captions"
 /* How wide the sidebar is (or how wide it will be when expanded) */
-#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/apps/nautilus/preferences/sidebar_width"
+#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 /* Keep track of the sound playing process */
-#define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"/apps/nautilus/preferences/sound_state"
+#define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"preferences/sound_state"
 
 /*
  * The following preferences are coupled to the user level.
@@ -139,7 +139,6 @@ void   nautilus_global_preferences_initialize                                 (v
 void   nautilus_global_preferences_show_dialog                                (void);
 void   nautilus_global_preferences_hide_dialog                                (void);
 void   nautilus_global_preferences_set_dialog_title                           (const char *title);
-void   nautilus_global_preferences_dialog_update                              (void);
 
 /* Sidebar */
 GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);

@@ -2378,8 +2378,8 @@ button_press_event (GtkWidget *widget,
 	last_click_time = current_time;
 
 	/* Ignore double click if we are in single click mode */
-	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						    NAUTILUS_CLICK_POLICY_DOUBLE);						    
+	click_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
+
 	if (click_mode == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {		
 		return TRUE;
 	}

@@ -95,8 +95,6 @@ static const char *icon_file_name_suffixes[] =
 
 #define EMBLEM_NAME_PREFIX              "emblem-"
 
-#define DEFAULT_ICON_THEME		"default"
-
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading
  * to call it that, since we can have any number of entries in the
  * cache if the caller keeps the pixbuf around (we only get rid of
@@ -1108,8 +1106,7 @@ icon_theme_changed_callback (gpointer user_data)
 	/* Consult the user preference and the Nautilus theme. In the
 	 * long run, we sould just get rid of the user preference.
 	 */
-	theme_preference = nautilus_preferences_get
-		(NAUTILUS_PREFERENCES_THEME, DEFAULT_ICON_THEME);
+	theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
 	icon_theme = nautilus_theme_get_theme_data ("icons", "ICON_THEME");
 	
 	set_theme (icon_theme == NULL ? theme_preference : icon_theme);
@@ -1296,9 +1293,7 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 {
 	NautilusSpeedTradeoffValue preference_value;
 	
-	preference_value = nautilus_preferences_get_enum
-		(NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS, 
-		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
 
 	/* see if there's a proxy thumbnail to indicate that thumbnailing
 	 * failed, in which case we shouldn't use the thumbnail.

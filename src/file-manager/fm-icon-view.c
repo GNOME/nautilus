@@ -1409,8 +1409,7 @@ static gboolean
 should_preview_sound (NautilusFile *file) {
 	int preview_mode;
 	
-	preview_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-						    NAUTILUS_SPEED_TRADEOFF_ALWAYS);
+	preview_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND);
 
 	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
@@ -1972,8 +1971,7 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						    NAUTILUS_CLICK_POLICY_DOUBLE);
+	click_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
 
 
 	nautilus_icon_container_set_single_click_mode (icon_container,
@@ -1989,9 +1987,8 @@ fm_icon_view_update_smooth_graphics_mode (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-								 TRUE);
-
+	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	
 	nautilus_icon_container_set_anti_aliased_mode (icon_container, smooth_graphics_mode);
 }
 

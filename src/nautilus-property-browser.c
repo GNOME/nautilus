@@ -2163,7 +2163,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 
 	/* update the title and button */
 
-	show_buttons = nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT, FALSE);
+	show_buttons = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT);
 
 	if (property_browser->details->category == NULL) {
 		nautilus_label_set_text(NAUTILUS_LABEL (property_browser->details->title_label), _("Select A Category:"));

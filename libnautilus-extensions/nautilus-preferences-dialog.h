@@ -58,8 +58,9 @@ struct _NautilusPreferencesDialogClass
 };
 
 GtkType    nautilus_preferences_dialog_get_type      (void);
-GtkWidget* nautilus_preferences_dialog_new           (const gchar         *dialog_title);
+GtkWidget* nautilus_preferences_dialog_new           (const gchar               *dialog_title);
 GtkWidget* nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dialog);
+void       nautilus_preferences_dialog_update        (NautilusPreferencesDialog *prefs_dialog);
 
 END_GNOME_DECLS
 

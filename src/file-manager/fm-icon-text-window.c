@@ -194,7 +194,7 @@ changed_attributes_option_menu_callback (GtkMenuItem *menu_item, gpointer user_d
 	attribute_names_string = g_strjoinv ("|", attribute_names_array);
 
 	nautilus_preferences_set (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
-				  attribute_names_string);
+					 attribute_names_string);
 
 	g_free (attribute_names_string);
 	g_strfreev (attribute_names_array);
@@ -399,8 +399,7 @@ fm_get_text_attribute_names_preference_or_default (void)
 {
 	char *preference;
 
-	preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
-					       DEFAULT_ATTRIBUTE_NAMES);
+	preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_CAPTIONS);
 	if (preference && attribute_names_string_is_good (preference)) {
 		return preference;
 	}

@@ -52,7 +52,7 @@ static xmlDocPtr default_theme_document = NULL;
 char *
 nautilus_theme_get_theme (void)
 {
-	return nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
+	return nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
 }
 
 /* set the current theme */
@@ -142,7 +142,7 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 	/* fetch the current theme name */
 	theme_data = NULL;
 	
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
+	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
 	if (nautilus_strcmp (theme_name, last_theme_name) == 0) {
 		theme_document = last_theme_document;
 	} else {
@@ -278,7 +278,7 @@ nautilus_theme_get_image_path (const char *image_name)
 {
 	char *theme_name, *image_path;
 	
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");	
+	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);	
 	image_path = nautilus_theme_get_image_path_from_theme (image_name, theme_name);	
 	g_free (theme_name);
 	
