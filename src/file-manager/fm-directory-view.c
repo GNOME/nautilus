@@ -6016,9 +6016,13 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			nautilus_launch_show_file
 				(file, fm_directory_view_get_containing_window (view));
 			
-			file_uri = nautilus_file_get_uri (file);
-			egg_recent_model_add (nautilus_recent_get_model (), file_uri);
-			g_free (file_uri);
+			/* We should not add trash and directory uris.*/
+			if ((!nautilus_file_is_in_trash (file)) && 
+			    (!nautilus_file_is_directory (file))) {
+				file_uri = nautilus_file_get_uri (file);
+				egg_recent_model_add (nautilus_recent_get_model (), file_uri);
+				g_free (file_uri);
+			}
 		}
 	}
 
