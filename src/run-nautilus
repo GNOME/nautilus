@@ -18,20 +18,25 @@ fi
 ##
 ## Find out if Nautilus is already running
 ##
-ps ax|awk '{ print $5; }' | grep -w -e  "nautilus$" > /dev/null 2>&1
 
-ps_rv=$?
+if	case "`uname`" in
+		*BSD*)
+			ps -o command | awk '{print $1}'
+		;;
 
-if [ $ps_rv -eq 1 ]
-then
-  ## Do a sanity check on the nautilus RPM
-  nautilus-verify-rpm.sh
-  if [ $? -ne 0 ]
-  then
-    exit 1
-  fi
+		*)
+			ps -o comm -U `whoami`
+		;;
+   	esac |
+   	grep '^nautilus' > /dev/null
+then :
+else
+	if nautilus-verify-rpm.sh
+	then :
+	else
+		echo "$0: nautilus-verify-rpm.sh failed" >&2
+		exit 1
+	fi
 fi
 
-nautilus ${1+"$@"}
-
-exit $?
+exec nautilus ${1+"$@"}
