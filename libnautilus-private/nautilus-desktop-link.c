@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "nautilus-desktop-link.h"
+#include "nautilus-desktop-link-monitor.h"
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-desktop-directory.h"
@@ -188,7 +189,7 @@ nautilus_desktop_link_new_from_volume (GnomeVFSVolume *volume)
 {
 	NautilusDesktopLink *link;
 	GnomeVFSDrive *drive;
-	char *name;
+	char *name, *filename;
 
 	link = NAUTILUS_DESKTOP_LINK (g_object_new (NAUTILUS_TYPE_DESKTOP_LINK, NULL));
 	
@@ -205,15 +206,19 @@ nautilus_desktop_link_new_from_volume (GnomeVFSVolume *volume)
 		name = gnome_vfs_volume_get_display_name (volume);
 	}
 	gnome_vfs_drive_unref (drive);
-	
-	link->details->filename = g_strconcat (name, ".volume", NULL);
+
+	filename = g_strconcat (name, ".volume", NULL);
+	link->details->filename =
+		nautilus_desktop_link_monitor_make_filename_unique (nautilus_desktop_link_monitor_get (),
+								    filename);
+	g_free (filename);
 	g_free (name);
 	
 	link->details->display_name = gnome_vfs_volume_get_display_name (volume);
 	
 	link->details->activation_uri = gnome_vfs_volume_get_activation_uri (volume);
 	link->details->icon = gnome_vfs_volume_get_icon (volume);
-	
+
 	create_icon_file (link);
 
 	return link;

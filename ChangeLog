@@ -1,5 +1,17 @@
 2004-12-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	(destroy_desktop_link_monitor),
+	(nautilus_desktop_link_monitor_get), (volume_file_name_used),
+	(nautilus_desktop_link_monitor_make_filename_unique),
+	(create_volume_link), (nautilus_desktop_link_monitor_init):
+	* libnautilus-private/nautilus-desktop-link-monitor.h:
+	* libnautilus-private/nautilus-desktop-link.c:
+	(nautilus_desktop_link_new_from_volume):
+	Make sure volume filenames are unique (#153888)
+
+2004-12-12  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-clipboard.c (merge_out_clipboard_menu_items):
 	Disconnect from right object.
 

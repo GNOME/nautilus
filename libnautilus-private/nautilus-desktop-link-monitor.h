@@ -57,4 +57,8 @@ void nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *moni
 						NautilusDesktopLink *link,
 						GtkWidget *parent_view);
 
+/* Used by nautilus-desktop-link.c */
+char * nautilus_desktop_link_monitor_make_filename_unique (NautilusDesktopLinkMonitor *monitor,
+							   const char *filename);
+
 #endif /* NAUTILUS_DESKTOP_LINK_MONITOR_H */
