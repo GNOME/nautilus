@@ -412,14 +412,14 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_RESET_BACKGROUND_ENUM:
 		/* Save the data so we can do the actual work on drop. */
 		g_assert (drag_info->selection_data == NULL);
-		drag_info->selection_data = eel_gtk_selection_data_copy_deep (data);
+		drag_info->selection_data = gtk_selection_data_copy (data);
 		break;
 
 	/* Netscape keeps sending us the data, even though we accept the first drag */
 	case NAUTILUS_ICON_DND_URL:
 		if (drag_info->selection_data != NULL) {
-			eel_gtk_selection_data_free_deep (drag_info->selection_data);
-			drag_info->selection_data = eel_gtk_selection_data_copy_deep (data);
+			gtk_selection_data_free (drag_info->selection_data);
+			drag_info->selection_data = gtk_selection_data_copy (data);
 		}
 		break;
 
@@ -1191,7 +1191,7 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	}
 
 	if (dnd_info->drag_info.selection_data != NULL) {
-		eel_gtk_selection_data_free_deep (dnd_info->drag_info.selection_data);
+		gtk_selection_data_free (dnd_info->drag_info.selection_data);
 		dnd_info->drag_info.selection_data = NULL;
 	}
 }

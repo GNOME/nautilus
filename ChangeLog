@@ -1,3 +1,10 @@
+2002-02-19  jacob berkman  <jacob@ximian.com>
+
+	* libnautilus-private/nautilus-icon-dnd.c (drag_data_received_callback): 
+	(nautilus_icon_container_free_drag_data): call
+	gtk_selection_data_copy() and gtk_selection_data_free() rather
+	than the eel versions
+
 2002-02-19  Bastien Nocera  <hadess@hadess.net>
 
 	* libnautilus-private/nautilus-authn-manager.c:
