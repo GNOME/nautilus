@@ -90,9 +90,7 @@ static void          end_renaming_mode                        (NautilusIconConta
 							       gboolean                    commit);
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
-static void          click_policy_changed_callback            (NautilusPreferences        *preferences,
-							       const char                 *name,
-							       gpointer                    user_data);
+static void          click_policy_changed_callback            (gpointer                    user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -3174,21 +3172,16 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 }
 
 static void
-click_policy_changed_callback (NautilusPreferences	*preferences,
-			       const char		*name,
-			       gpointer			user_data)
+click_policy_changed_callback (gpointer user_data)
 {
 	NautilusIconContainer *container;
 
-	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (name != NULL);
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_CLICK_POLICY) == 0);
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (user_data));
 	
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 
 	container->details->single_click_mode =
-		(nautilus_preferences_get_enum (preferences,
+		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
 						NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 }

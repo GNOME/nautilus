@@ -172,9 +172,7 @@ static void           schedule_timeout_display_of_pending_files                 
 static void           unschedule_timeout_display_of_pending_files                 (FMDirectoryView          *view);
 static void           unschedule_display_of_pending_files                         (FMDirectoryView          *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView          *view);
-static void           show_hidden_files_changed_callback                          (NautilusPreferences      *preferences,
-										   const char               *name,
-										   gpointer                  user_data);
+static void           show_hidden_files_changed_callback                          (gpointer                  user_data);
 static void           add_nautilus_file_to_uri_map                                (FMDirectoryView          *preferences,
 										   NautilusFile             *file);
 static void           remove_nautilus_file_from_uri_map                           (FMDirectoryView          *preferences,
@@ -2114,22 +2112,17 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 }
 
 static void
-show_hidden_files_changed_callback (NautilusPreferences	*preferences,
-				    const char		*name,
-				    gpointer		user_data)
+show_hidden_files_changed_callback (gpointer		user_data)
 {
-	FMDirectoryView *directory_view;
-	char *same_uri;
+	FMDirectoryView	*directory_view;
+	char		*same_uri;
 
-	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (name != NULL);
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES) == 0);
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
 	directory_view = FM_DIRECTORY_VIEW (user_data);
 
 	directory_view->details->show_hidden_files = 
-		nautilus_preferences_get_boolean (preferences,
+		nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
 						  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 						  FALSE);
 

@@ -145,9 +145,7 @@ static char *                 get_icon_additional_text_callback                 
 static char *                 get_icon_editable_text_callback                   (NautilusIconContainer  *container,
 										 NautilusFile           *file,
 										 FMIconView             *icon_view);
-static void                   text_attribute_names_changed_callback             (NautilusPreferences    *preferences,
-										 const char             *name,
-										 gpointer                user_data);
+static void                   text_attribute_names_changed_callback             (gpointer                user_data);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
@@ -203,10 +201,10 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
-	nautilus_preferences_add_string_callback (nautilus_preferences_get_global_preferences (),
-						  NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-						  text_attribute_names_changed_callback,
-						  icon_view);
+	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
+					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					   text_attribute_names_changed_callback,
+					   icon_view);
 	
 	icon_container = create_icon_container (icon_view);
 }
@@ -1284,14 +1282,8 @@ get_icon_property_callback (NautilusIconContainer *container,
 }
 
 static void
-text_attribute_names_changed_callback (NautilusPreferences *preferences,
-         			       const char *name,
-         			       gpointer user_data)
+text_attribute_names_changed_callback (gpointer user_data)
 
 {
-	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES) == 0);
-	g_assert (FM_IS_ICON_VIEW (user_data));
-
 	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (user_data)));	
 }

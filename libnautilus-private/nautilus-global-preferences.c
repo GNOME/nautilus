@@ -49,9 +49,7 @@ enum
 static GtkWidget *global_preferences_create_dialog   (void);
 static GtkWidget *global_preferences_get_dialog      (void);
 static void       global_preferences_register_for_ui (NautilusPreferences *preferences);
-static void       user_level_changed_callback        (NautilusPreferences *preferences,
-						      const char          *name,
-						      gpointer             user_data);
+static void       user_level_changed_callback        (gpointer             user_data);
 
 /*
  * Private stuff
@@ -353,22 +351,21 @@ global_preferences_register_for_ui (NautilusPreferences *preferences)
 }
 
 static void
-user_level_changed_callback (NautilusPreferences	*preferences,
-			     const char			*name,
-			     gpointer			user_data)
+user_level_changed_callback (gpointer user_data)
 {
-	gint		user_level;
-	gboolean	show_hidden_files = FALSE;
-	GString		*home_uri_string;
+	NautilusPreferences	*preferences;
+	gint			user_level;
+	char			*home_uri_string;
 
-	const char	*user_top_directory;
+	gboolean		show_hidden_files = FALSE;
+	gboolean		use_real_home = TRUE;
+
+	const char		*user_top_directory;
+
+	preferences = nautilus_preferences_get_global_preferences ();
+
+	g_assert (preferences != NULL);
 	
-	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (name != NULL);
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_USER_LEVEL) == 0);
-
-	home_uri_string = g_string_new ("file://");
-
 	user_level = nautilus_preferences_get_enum (preferences,
 						    NAUTILUS_PREFERENCES_USER_LEVEL,
 						    NAUTILUS_USER_LEVEL_HACKER);
@@ -376,22 +373,19 @@ user_level_changed_callback (NautilusPreferences	*preferences,
 	/* Set some preferences according to the user level */
 	switch (user_level) {
 	case NAUTILUS_USER_LEVEL_NOVICE:
-		user_top_directory = nautilus_user_top_directory ();
-		
-		g_string_append (home_uri_string, user_top_directory);
-
 		show_hidden_files = FALSE;
+		use_real_home = FALSE;
 		break;
 
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE: 
-		g_string_append (home_uri_string, g_get_home_dir ());
 		show_hidden_files = FALSE;
+		use_real_home = TRUE;
 		break;
 		
 	case NAUTILUS_USER_LEVEL_HACKER:
 	default:
-		g_string_append (home_uri_string, g_get_home_dir ());
 		show_hidden_files = TRUE;
+		use_real_home = TRUE;
 		break;
 	}
 
@@ -399,11 +393,21 @@ user_level_changed_callback (NautilusPreferences	*preferences,
 					  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					  show_hidden_files);
 
+	/* FIXME: This call needs to be spanked to conform.  Should return a strduped string */
+	user_top_directory = nautilus_user_top_directory ();
+	
+	if (use_real_home)
+		home_uri_string = g_strdup_printf ("file://%s", g_get_home_dir());
+	else
+		home_uri_string = g_strdup_printf ("file://%s", user_top_directory);
+
+	g_assert (home_uri_string != NULL);
+	
 	nautilus_preferences_set (preferences,
 				  NAUTILUS_PREFERENCES_HOME_URI,
-				  home_uri_string->str);
+				  home_uri_string);
 
-	g_string_free (home_uri_string, TRUE);
+	g_free (home_uri_string);
 }
 
 /*
@@ -453,8 +457,6 @@ nautilus_global_preferences_startup (void)
 						NULL);
 
 	/* Invoke the callback once to make sure stuff is properly setup */
-	user_level_changed_callback (preferences,
-				     NAUTILUS_PREFERENCES_USER_LEVEL,
-				     NULL);
+	user_level_changed_callback (preferences);
 }
 

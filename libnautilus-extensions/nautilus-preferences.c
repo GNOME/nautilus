@@ -450,9 +450,7 @@ pref_callback_info_invoke_func (gpointer	data,
 
 	g_assert (preference_name != NULL);
 
- 	(* pref_callback_info->callback_proc) (preferences,
-					       preference_name,
-					       pref_callback_info->callback_data);
+ 	(* pref_callback_info->callback_proc) (pref_callback_info->callback_data);
 
 	g_free (preference_name);
 }
@@ -839,10 +837,10 @@ nautilus_preferences_add_enum_callback (NautilusPreferences		*preferences,
 }
 
 gboolean
-nautilus_preferences_add_string_callback (NautilusPreferences		*preferences,
-					  const char			*name,
-					  NautilusPreferencesCallback	callback_proc,
-					  gpointer			callback_data)
+nautilus_preferences_add_callback (NautilusPreferences		*preferences,
+				   const char			*name,
+				   NautilusPreferencesCallback	callback_proc,
+				   gpointer			callback_data)
 {
 	PrefHashNode *pref_hash_node;
 

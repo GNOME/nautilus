@@ -186,9 +186,7 @@ typedef struct {
 
 /* forward declarations */
 
-static void                  icon_theme_changed_callback             (NautilusPreferences      *preferences,
-								      const char               *name,
-								      gpointer                  user_data);
+static void                  icon_theme_changed_callback             (gpointer                  user_data);
 static GtkType               nautilus_icon_factory_get_type          (void);
 static void                  nautilus_icon_factory_initialize_class  (NautilusIconFactoryClass *class);
 static void                  nautilus_icon_factory_initialize        (NautilusIconFactory      *factory);
@@ -234,10 +232,10 @@ nautilus_get_current_icon_factory (void)
                 global_icon_factory = nautilus_icon_factory_new (theme_preference);
                 g_free (theme_preference);
 
-		nautilus_preferences_add_string_callback (nautilus_preferences_get_global_preferences (),
-							  NAUTILUS_PREFERENCES_ICON_THEME,
-							  icon_theme_changed_callback,
-							  NULL);	
+		nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
+						   NAUTILUS_PREFERENCES_ICON_THEME,
+						   icon_theme_changed_callback,
+						   NULL);	
 		
         }
         return global_icon_factory;
@@ -637,16 +635,10 @@ get_icon_file_path (const char *name, const char* modifier, guint size_in_pixels
 }
 
 static void
-icon_theme_changed_callback (NautilusPreferences	*preferences,
-         		     const char			*name,
-         		     gpointer			user_data)
+icon_theme_changed_callback (gpointer user_data)
 {
 	char *theme_preference;
 
-	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_THEME) == 0);
-	g_assert (user_data == NULL);
-	
 	theme_preference = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
 						     NAUTILUS_PREFERENCES_ICON_THEME,
 						     DEFAULT_ICON_THEME);

@@ -1,5 +1,35 @@
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences.c,
+	  nautilus-widgets/nautilus-preferences.h:
+
+	Simplify be removing all arguments from callbacks save for the
+	user data.
+
+	(nautilus_preferences_add_string_callback): Rename to
+	nautilus_preferences_add_callback since string preferences are the
+	default.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(user_level_changed_callback): Simplify a bit.  Update for new
+	simple preference callbacks.
+
+	  libnautilus-extensions/nautilus-icon-container.c,
+	  libnautilus-extensions/nautilus-icon-factory.c,
+	  libnautilus-extensions/nautilus-list.c: Update for new simple
+	preference callbacks.
+
+	* src/file-manager/fm-directory-view.c,
+	  src/file-manager/fm-icon-view.c: Update for new simple
+	preference callbacks. 
+
+	  src/file-manager/fm-icon-text-window.c: Update for new
+	simple preference callbacks and removed unecessary usage of
+	icon_view_text_attribute_changed_callback. Use
+	synch_menus_with_preference directly instead.
+	
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	*  nautilus-widgets/nautilus-preferences.c:
 	(nautilus_preferences_get):  If the stored default value is null,
 	is the given on.  Do this only for strings, since integral types

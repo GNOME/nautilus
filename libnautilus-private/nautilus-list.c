@@ -240,9 +240,7 @@ static gboolean row_set_selected                        (NautilusList         *l
 							 gboolean              select);
 static gboolean select_row_unselect_others              (NautilusList         *list,
 							 int                   row_to_select);
-static void     click_policy_changed_callback           (NautilusPreferences  *preferences,
-							 const char           *name,
-							 gpointer              user_data);
+static void     click_policy_changed_callback           (gpointer              user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
 
@@ -2225,21 +2223,16 @@ nautilus_list_clear (GtkCList *clist)
 }
 
 static void
-click_policy_changed_callback (NautilusPreferences	*preferences,
-			       const char		*name,
-			       gpointer			user_data)
+click_policy_changed_callback (gpointer user_data)
 {
 	NautilusList *list;
 
-	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (name != NULL);
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_CLICK_POLICY) == 0);
 	g_assert (NAUTILUS_IS_LIST (user_data));
 	
 	list = NAUTILUS_LIST (user_data);
 
 	list->details->single_click_mode = 
-		(nautilus_preferences_get_enum (preferences,
+		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
 						NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 }
