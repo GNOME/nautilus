@@ -1,3 +1,13 @@
+2001-01-23  Michael Engber  <engber@eazel.com>
+
+	[checkin for engber -ramiro ]
+	
+	reviewed by: George Lebl
+
+	* components/image-viewer/nautilus-image-view.c:
+	(control_destroy_callback), (control_factory_common):
+	image-view was using freed (widget) memory.
+
 2001-01-24  Eskil Olsen  <eskil@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
