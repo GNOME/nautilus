@@ -123,17 +123,19 @@ impl_Nautilus_Undo_Context__get_undo_manager (impl_POA_Nautilus_Undo_Context *se
 	g_assert (NAUTILUS_IS_UNDO_CONTEXT (servant->gtk_object));
 	context = NAUTILUS_UNDO_CONTEXT (servant->gtk_object);
 
-	return NULL;
+	return servant->gtk_object->undo_manager;
 }
 
 /* nautilus_undo_manager_new */
 NautilusUndoContext *
-nautilus_undo_context_new (void)
+nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 {
 	NautilusUndoContext *context;
 	
 	context = gtk_type_new (nautilus_undo_context_get_type ());
 
+	context->undo_manager = undo_manager;
+	
 	return context;
 }
 
@@ -143,6 +145,7 @@ static void
 nautilus_undo_context_initialize (NautilusUndoContext *context)
 {
 	CORBA_Environment ev;	
+	
 	CORBA_exception_init(&ev);
 
 	bonobo_object_construct (BONOBO_OBJECT (context), impl_Nautilus_Undo_Context__create (context, &ev));

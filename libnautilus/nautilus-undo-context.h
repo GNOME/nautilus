@@ -25,6 +25,7 @@
 #ifndef NAUTILUS_UNDO_CONTEXT_H
 #define NAUTILUS_UNDO_CONTEXT_H
 
+#include "nautilus-undo.h"
 
 #define NAUTILUS_TYPE_UNDO_CONTEXT \
 	(nautilus_undo_context_get_type ())
@@ -42,6 +43,7 @@ typedef struct NautilusUndoContextClass NautilusUndoContextClass;
 
 struct NautilusUndoContext {
 	BonoboObject parent;
+	Nautilus_Undo_Manager undo_manager;
 };
 
 struct NautilusUndoContextClass {
@@ -51,8 +53,8 @@ struct NautilusUndoContextClass {
 
 
 /* GtkObject */
-GtkType			nautilus_undo_context_get_type 				 (void);
-NautilusUndoContext 	*nautilus_undo_context_new 				 (void);
+GtkType			nautilus_undo_context_get_type	(void);
+NautilusUndoContext 	*nautilus_undo_context_new 	(Nautilus_Undo_Manager undo_manager);
 
 /* Prototypes */
 

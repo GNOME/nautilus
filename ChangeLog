@@ -1,3 +1,41 @@
+2000-05-23  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus/nautilus-undo-context.c:
+	* libnautilus/nautilus-undo-context.h:
+	(impl_Nautilus_Undo_Context__get_undo_manager),
+	(nautilus_undo_context_new), (nautilus_undo_context_initialize):
+	Additonal work on making the undo context CORBA object.
+	
+	* libnautilus/nautilus-undo-manager.c:
+	* libnautilus/nautilus-undo-manager.h:
+	* libnautilus/nautilus-undo-manager-private.h:
+	(impl_Nautilus_Undo_Manager__undo),
+	(nautilus_undo_manager_initialize),
+	(nautilus_undo_manager_add_transaction),
+	(nautilus_undo_manager_unregister_object),
+	(nautilus_get_undo_manager), (nautilus_attach_undo_manager),
+	Changed APIs to accept and return Nautilus_Undo_Manager CORBA
+	object instead of NautilusUndoManager pointer.
+
+	(nautilus_undo_setup_bonobo_control):
+	Added function stub to be filled later.  This function
+	will attach an undo manager to a bonobo control.
+
+	Removed several functions no longer needed in new design,
+	including nautilus_undo_manager_begin_transaction(),
+	and nautilus_undo_manager_end_transaction().
+	
+	* src/nautilus-window-menus.c: (edit_menu_undo_callback),
+	(nautilus_window_initialize_menus), (update_undo_menu_item):
+	Changed to use modified undo API
+	
+	* src/ntl-app.c: 
+	(nautilus_app_init):
+	Changed to use modified undo API
+	
+	* src/ntl-window.c: (nautilus_window_constructed)
+	Changed to use modified undo API
+
 2000-05-23  Andy Hertzfeld  <andy@eazel.com>
 
 	made a preference for the anti-aliased canvas, and hooked it up so you can

@@ -118,15 +118,18 @@ edit_menu_undo_callback (BonoboUIHandler *ui_handler,
 		  	 gpointer user_data, 
 		  	 const char *path) 
 {
-	NautilusUndoManager *undo_manager;
+	Nautilus_Undo_Manager undo_manager;
+	CORBA_Environment ev;
+
+	CORBA_exception_init(&ev);
 
 	g_assert (NAUTILUS_IS_WINDOW (user_data));
 
 	/* Locate undo manager */
-	undo_manager = nautilus_window_get_undo_manager (NAUTILUS_WINDOW (user_data));
-	if (nautilus_undo_manager_can_undo (undo_manager)) {
-		nautilus_undo_manager_undo (undo_manager);
-	}
+	undo_manager = nautilus_get_undo_manager (GTK_OBJECT (user_data));
+	Nautilus_Undo_Manager_undo (undo_manager, &ev);
+
+	CORBA_exception_free(&ev);
 }
 
 static void
@@ -858,7 +861,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		 update_eazel_theme_menu_item, GTK_OBJECT (window));	
 
 	/* Connect to UndoManager so that we are notified when an undo transcation has occurred */
-	undo_manager = nautilus_window_get_undo_manager (window);
+	undo_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);
 	gtk_signal_connect_object_while_alive
 		(GTK_OBJECT (undo_manager), "undo_transaction_occurred",
 		 update_undo_menu_item, GTK_OBJECT (window));	
@@ -966,7 +969,7 @@ update_undo_menu_item (NautilusWindow *window)
 	
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-	undo_manager = nautilus_window_get_undo_manager (window);
+	undo_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);	
 	if (undo_manager != NULL) {
 		bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, 
         				      	       nautilus_undo_manager_can_undo (undo_manager));

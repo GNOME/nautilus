@@ -474,7 +474,7 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	}
 
 	/* The i-beam should only be drawn at the end of a line of text if that line is the
-	 * only or last line of text in a label.  We subtract one form the x position
+	 * only or last line of text in a label.  We subtract one from the x position
 	 * so the i-beam is not visually jammed against the edge of the bounding rect. */
 	if (cursor == i){
 		int px = x + xpos + offset;

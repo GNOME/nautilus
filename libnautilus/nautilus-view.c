@@ -35,7 +35,8 @@
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-control.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-
+#include <libnautilus/nautilus-undo-context.h>
+#include <libnautilus/nautilus-undo-manager.h>
 
 enum {
   NOTIFY_LOCATION_CHANGE,
@@ -313,14 +314,17 @@ nautilus_view_frame_get_arg (GtkObject      *object,
 static void
 nautilus_view_frame_initialize (NautilusViewFrame *view)
 {
-  CORBA_Environment ev;
-  CORBA_exception_init(&ev);
+	CORBA_Environment ev;
+	
+	CORBA_exception_init(&ev);
 
-  view->private = g_new0 (NautilusViewFramePrivate, 1);
+	view->private = g_new0 (NautilusViewFramePrivate, 1);
 
-  bonobo_object_construct (BONOBO_OBJECT (view), impl_Nautilus_View__create (view, &ev));
+	bonobo_object_construct (BONOBO_OBJECT (view), impl_Nautilus_View__create (view, &ev));
 
-  CORBA_exception_free(&ev);
+	nautilus_undo_setup_bonobo_control (BONOBO_OBJECT (view));
+	
+	CORBA_exception_free(&ev);
 }
 
 NautilusViewFrame *
@@ -360,31 +364,34 @@ nautilus_view_frame_destroy (NautilusViewFrame *view)
 gboolean
 nautilus_view_frame_ensure_view_frame (NautilusViewFrame *view)
 {
-  CORBA_Environment ev;
+	CORBA_Environment ev;
 
-  g_assert (view != NULL);
-  g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	g_assert (view != NULL);
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
 
-  CORBA_exception_init (&ev);
+	CORBA_exception_init (&ev);
 
-  if (CORBA_Object_is_nil (view->private->view_frame, &ev)) {
-    view->private->view_frame = Bonobo_Unknown_query_interface 
-      (bonobo_control_get_control_frame 
-       (BONOBO_CONTROL (nautilus_view_frame_get_bonobo_control (view))),
-       "IDL:Nautilus/ViewFrame:1.0", &ev);
-    if (ev._major != CORBA_NO_EXCEPTION) {
-      view->private->view_frame = CORBA_OBJECT_NIL;
-    }
-  }
+	if (CORBA_Object_is_nil (view->private->view_frame, &ev)) {
+    		view->private->view_frame = Bonobo_Unknown_query_interface 
+			(bonobo_control_get_control_frame 
+       			(BONOBO_CONTROL (nautilus_view_frame_get_bonobo_control (view))),
+       			"IDL:Nautilus/ViewFrame:1.0", &ev);
 
+    		if (ev._major != CORBA_NO_EXCEPTION) {
+      			view->private->view_frame = CORBA_OBJECT_NIL;
+		}
+	}
 
-  if (CORBA_Object_is_nil (view->private->view_frame, &ev)) {
-    CORBA_exception_free (&ev);
-    return FALSE;
-  } else {
-    CORBA_exception_free (&ev);
-    return TRUE;
-  }
+	if (CORBA_Object_is_nil (view->private->view_frame, &ev)) {
+    		CORBA_exception_free (&ev);
+
+    	return FALSE;
+  	} else {
+
+		
+		CORBA_exception_free (&ev);
+		return TRUE;
+	}
 }
 
 void

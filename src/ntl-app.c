@@ -221,17 +221,22 @@ static void
 nautilus_app_init (NautilusApp *app)
 {
 	CORBA_Environment ev;
-	CORBA_Object corba_object;
+	CORBA_Object objref;
+	Nautilus_Undo_Manager undo_manager;
 	
 	CORBA_exception_init (&ev);
 
-	corba_object = impl_Nautilus_Application__create (bonobo_poa (), app, &ev);
+	objref = impl_Nautilus_Application__create (bonobo_poa (), app, &ev);
 	oaf_active_server_register ("OAFIID:ntl_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3",
-				    corba_object);
-	bonobo_object_construct (BONOBO_OBJECT(app), corba_object);
+				    objref);
+	bonobo_object_construct (BONOBO_OBJECT(app), objref);
 
 	/* Init undo manager */
 	app->undo_manager = BONOBO_OBJECT (nautilus_undo_manager_new ());
+	undo_manager = bonobo_object_corba_objref (BONOBO_OBJECT (app->undo_manager));
+	Bonobo_Unknown_ref (undo_manager, &ev);
+
+	nautilus_attach_undo_manager ( GTK_OBJECT (app), undo_manager);
 
 	CORBA_exception_free (&ev);
 }
@@ -342,7 +347,7 @@ NautilusWindow *
 nautilus_app_create_window (NautilusApp *app)
 {
 	NautilusWindow *window;
-
+	
 	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type(), "app", BONOBO_OBJECT(app),
 						  "app_id", "nautilus", NULL));
 	

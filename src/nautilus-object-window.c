@@ -365,13 +365,20 @@ nautilus_window_constructed (NautilusWindow *window)
   	GtkWidget *temp_frame;
   	GnomeDockItemBehavior behavior;
   	int sidebar_width;
-  	NautilusUndoManager *undo_manager;
+	NautilusUndoManager *app_undo_manager;
+  	Nautilus_Undo_Manager undo_manager;
+	CORBA_Environment ev;
+
+  	CORBA_exception_init(&ev);
+
   
   	app = GNOME_APP(window);
 
 	/* Set up undo manager */
-	undo_manager = nautilus_window_get_undo_manager (window);
-	g_assert (undo_manager != NULL);
+	app_undo_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);	
+	g_assert (app_undo_manager != NULL);
+	undo_manager = bonobo_object_corba_objref (BONOBO_OBJECT (app_undo_manager));
+	Bonobo_Unknown_ref (undo_manager, &ev);
 	nautilus_attach_undo_manager (GTK_OBJECT (window), undo_manager);
 
 	/* set up location bar */
@@ -452,6 +459,8 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_back(window, FALSE);
 	nautilus_window_allow_forward(window, FALSE);
 	nautilus_window_allow_stop(window, FALSE);
+
+	CORBA_exception_free(&ev);
 }
 
 static void
@@ -1070,10 +1079,4 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
       
   gtk_widget_queue_resize(window->content_hbox);
   window->content_view = new_view;
-}
-
-NautilusUndoManager *
-nautilus_window_get_undo_manager (NautilusWindow *window)
-{
-  return NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);
 }

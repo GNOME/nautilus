@@ -35,7 +35,6 @@
 struct NautilusUndoManagerDetails {
 	GList *undo_list;
 	GList *redo_list;
-	gboolean transaction_in_progress;
 	gboolean enable_redo;
 	gint queue_depth;
 };

@@ -32,6 +32,9 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-undo.h>
+
 #include "nautilus-undo-manager.h"
 
 enum {
@@ -262,10 +265,14 @@ nautilus_undo_register_full (GList *atoms,
 			     const char *redo_menu_item_name,
 			     const char *redo_menu_item_description)
 {
-	NautilusUndoManager *manager;
+	Nautilus_Undo_Manager manager;
 	NautilusUndoTransaction *transaction;
+	Nautilus_Undo_Transaction undo_transaction;
 	NautilusUndoAtom *atom;
 	GList *p;
+	CORBA_Environment ev;
+
+	CORBA_exception_init(&ev);
 
 	g_return_if_fail (atoms != NULL);
 	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
@@ -281,8 +288,9 @@ nautilus_undo_register_full (GList *atoms,
 		return;
 	}
 
-	transaction = nautilus_undo_manager_begin_transaction
-		(manager, operation_name);
+
+	/* Create an undo transaction */
+	transaction = nautilus_undo_transaction_new (operation_name);
 	for (p = atoms; p != NULL; p = p->next) {
 		atom = p->data;
 
@@ -299,7 +307,12 @@ nautilus_undo_register_full (GList *atoms,
 			(atom->target, "destroy",
 			 GTK_SIGNAL_FUNC (nautilus_undo_unregister), NULL);
 	}
-	nautilus_undo_manager_end_transaction (manager, transaction);
+
+	/* Get CORBA object and add to undo manager */
+	undo_transaction = bonobo_object_corba_objref (BONOBO_OBJECT (transaction));
+	Nautilus_Undo_Manager_append (manager, undo_transaction, &ev);
+
+	CORBA_exception_free(&ev);
 }
 
 /* Cover for forgetting about all undo relating to a particular target. */
@@ -322,17 +335,17 @@ nautilus_undo_unregister (GtkObject *target)
 void
 nautilus_undo (GtkObject *undo_manager_search_start_object)
 {
-	NautilusUndoManager *manager;
+	Nautilus_Undo_Manager manager;
+	CORBA_Environment ev;
+
+  	CORBA_exception_init(&ev);
 
 	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
 
-	/* FIXME: This has to use the CORBA undo so it can work even
-	 * if it's in a different process from the undo manager. That
-	 * will be clear anyway, since the undo manager returned by
-	 * nautilus_get_undo_manager will have to be a CORBA one.
-	 */
 	manager = nautilus_get_undo_manager (undo_manager_search_start_object);
 	if (manager != NULL) {
-		nautilus_undo_manager_undo (manager);
+		Nautilus_Undo_Manager_undo (manager, &ev);
 	}
+
+	CORBA_exception_free(&ev);
 }

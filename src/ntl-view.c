@@ -33,6 +33,8 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
+#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-undo-context.h>
 
 enum {
   REQUEST_LOCATION_CHANGE,
@@ -223,7 +225,7 @@ nautilus_view_get_arg (GtkObject      *object,
 static void
 nautilus_view_init (NautilusView *view)
 {
-  GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);
+	GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);	
 }
 
 static void

@@ -165,7 +165,7 @@ nautilus_undo_transaction_new (const gchar *name)
 }
 
 
-/* Object initialization function for the NautilusUndoManager */
+/* Object initialization function for NautilusUndoTransaction */
 static void 
 nautilus_undo_transaction_initialize (NautilusUndoTransaction *transaction)
 {
