@@ -155,12 +155,13 @@ typedef struct {
         NautilusBookmark *bookmark;
         NautilusWindow *window;
         gboolean prompt_for_removal;
+        guint changed_handler_id;
 } BookmarkHolder;
 
 static BookmarkHolder *
 bookmark_holder_new (NautilusBookmark *bookmark, 
 		     NautilusWindow *window,
-		     gboolean prompt_for_removal)
+		     gboolean is_bookmarks_menu)
 {
 	BookmarkHolder *new_bookmark_holder;
 
@@ -171,7 +172,14 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	 * we're holding onto it (not an issue for window).
 	 */
 	gtk_object_ref (GTK_OBJECT (bookmark));
-	new_bookmark_holder->prompt_for_removal = prompt_for_removal;
+	new_bookmark_holder->prompt_for_removal = is_bookmarks_menu;
+
+	new_bookmark_holder->changed_handler_id = 
+		gtk_signal_connect_object (GTK_OBJECT (bookmark), "changed",
+				   	   is_bookmarks_menu
+				   	   ? schedule_refresh_bookmarks_menu
+				   	   : schedule_refresh_go_menu,
+				   	   GTK_OBJECT (window));
 
 	return new_bookmark_holder;
 }
@@ -179,6 +187,8 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 static void
 bookmark_holder_free (BookmarkHolder *bookmark_holder)
 {
+	gtk_signal_disconnect (GTK_OBJECT (bookmark_holder->bookmark), 
+				       bookmark_holder->changed_handler_id);
 	gtk_object_unref (GTK_OBJECT (bookmark_holder->bookmark));
 	g_free (bookmark_holder);
 }
@@ -910,13 +920,6 @@ append_bookmark_to_menu (NautilusWindow *window,
 	g_free (escaped_path);
 	g_free (verb_name);
 	g_free (display_name);
-
-	/* Let's get notified whenever a bookmark changes. */
-	gtk_signal_connect_object (GTK_OBJECT (bookmark), "changed",
-				   is_bookmarks_menu
-				   ? schedule_refresh_bookmarks_menu
-				   : schedule_refresh_go_menu,
-				   GTK_OBJECT (window));
 }
 
 static char *
@@ -1390,14 +1393,6 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 				   NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE,
 				   label_string);
 	g_free (label_string);
-
-#ifndef UIH
-	/* avoid "unused function" warnings */
-	return;
-
-	bookmark_holder_free (0);
-	show_bogus_bookmark_window (0);
-#endif
 }
 
 static void

@@ -1,3 +1,21 @@
+2000-10-11  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3671 (Crash after closing & opening window)
+
+	A signal handler disconnect got lost in the Bonobo conversion.
+	It was causing a function to be called on a window after the
+	window was destroyed.
+
+	* src/nautilus-window-menus.c: 
+	Add changed_handler_id field to BookmarkHolder.
+	(bookmark_holder_new): Connect signal handler, and set
+	changed_handler_id
+	(bookmark_holder_free): Use changed_handler_id to
+	disconnect signal handler
+	(append_bookmark_to_menu): Remove old signal connection code.
+	(nautilus_window_update_find_menu_item): Deleted unused-function
+	warning avoidance trick now that all functions are used again.
+
 2000-10-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-shell-ui.xml:
