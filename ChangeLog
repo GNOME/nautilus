@@ -1,18 +1,22 @@
 2005-03-22  Alexander Larsson  <alexl@redhat.com>
 
-	reviewed by: <delete if not using a buddy>
+	* src/nautilus-location-entry.c:
+	Minor cleanup from Jaap Haitsma <jaap@haitsma.org>
 
-	* libnautilus-private/nautilus-window-info.c:
-	(nautilus_window_info_show_window):
-	* libnautilus-private/nautilus-window-info.h:
-	* src/file-manager/fm-directory-view.c: (finish_loading):
+2005-03-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-window-info.[ch]:
+	Add nautilus_window_info_show_window call.
+	
+	* src/file-manager/fm-directory-view.c:
 	* src/nautilus-window-manage-views.c:
-	(location_has_really_changed):
-	* src/nautilus-window.c: (nautilus_window_show_window),
-	(nautilus_window_set_viewed_file),
-	(nautilus_window_info_iface_init):
-	* src/nautilus-window.h:
+	* src/nautilus-window.[ch]:
+	Implement and call the new show_window call.
+	This allows us to set up the EelBackground before
+	showing the window, causing less flicker (#169347)
 
+	Patch from Nickolay V. Shmyrev  
+	
 2005-03-16  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

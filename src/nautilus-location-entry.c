@@ -379,11 +379,10 @@ position_and_selection_are_at_end (GtkEditable *editable)
 static void
 editable_event_after_callback (GtkEntry *entry,
 			       GdkEvent *event,
-			       gpointer user_data)
+			       NautilusLocationEntry *location_entry)
 {
 	GtkEditable *editable;
 	GdkEventKey *keyevent;
-	NautilusLocationEntry *location_entry;
 
 	if (event->type != GDK_KEY_PRESS) {
 		return;
@@ -391,7 +390,6 @@ editable_event_after_callback (GtkEntry *entry,
 
 	editable = GTK_EDITABLE (entry);
 	keyevent = (GdkEventKey *)event;
-	location_entry = NAUTILUS_LOCATION_ENTRY (user_data);
 
 	/* After typing the right arrow key we move the selection to
 	 * the end, if we have a valid selection - since this is most
@@ -482,8 +480,8 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 
 	nautilus_entry_set_special_tab_handling (NAUTILUS_ENTRY (entry), TRUE);
 
-	g_signal_connect_object (entry, "event_after",
-				 G_CALLBACK (editable_event_after_callback), entry, 0);
+	g_signal_connect (entry, "event_after",
+		          G_CALLBACK (editable_event_after_callback), entry);
 
 }
 
