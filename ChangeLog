@@ -1,3 +1,45 @@
+2001-04-20  Andy Hertzfeld  <andy@eazel.com>
+
+	first check-in of "news" sidebar view to display news from selected
+	sites that support an rss feed.  It's around 80% completed now, and
+	should be quite usable; I just need to finish the remaining 80%.
+	
+	* components/news/.cvsignore:
+	* components/news/Makefile.am:
+	* components/news/Nautilus_View_news.oaf.in:
+	
+	* components/news/nautilus-news.c: (get_bonobo_properties),
+	(set_bonobo_properties), (do_destroy), (pixbuf_composite),
+	(draw_triangle), (draw_rss_logo_image), (draw_rss_title),
+	(draw_rss_items), (nautilus_news_draw_channel),
+	(nautilus_news_update_display), (nautilus_news_configure_event),
+	(nautilus_news_expose_event), (nautilus_news_set_prelight_index),
+	(go_to_uri), (toggle_open_state), (item_hit_test),
+	(nautilus_news_button_release_event),
+	(nautilus_news_motion_notify_event),
+	(nautilus_news_leave_notify_event), (nautilus_news_set_title),
+	(free_rss_data_item), (free_rss_channel_items), (free_channel),
+	(nautilus_news_free_channel_list), (bool_to_text),
+	(nautilus_news_make_channel_document),
+	(nautilus_news_save_channel_state), (rss_logo_callback),
+	(extract_items), (update_size_and_redraw),
+	(rss_read_done_callback), (nautilus_news_load_channel),
+	(nautilus_news_make_new_channel), (nautilus_news_add_channels),
+	(get_xml_path), (read_channel_list), (check_for_updates),
+	(news_get_indicator_image), (load_xpm_image),
+	(nautilus_news_load_images), (configure_button_clicked),
+	(add_site_button_clicked), (add_site_from_fields),
+	(add_command_buttons), (get_channel_from_name),
+	(check_button_toggled_callback), (nautilus_news_load_location),
+	(add_channel_entry), (add_channels_to_configure_list),
+	(set_up_add_widgets), (set_up_configure_widgets),
+	(set_up_main_widgets), (make_news_view), (main):
+	
+	* components/news/news_bullet.png:
+	* components/news/news_channels.xml:
+	* components/news/pixmaps.h:
+	* configure.in:
+
 2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* ChangeLog: rolled over to ChangeLog-20010420.

@@ -1,0 +1,25 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_news_view_factory:041601" type="exe" location="nautilus-news">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="description" type="string" _value="Factory for news view"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_news_view:041601" type="factory" location="OAFIID:nautilus_news_view_factory:041601">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+		<item value="IDL:Bonobo/Control:1.0"/>
+		<item value="IDL:Nautilus/View:1.0"/>
+	</oaf_attribute>
+	
+	<oaf_attribute name="description" type="string" _value="News sidebar panel fetches and displays RSS feeds"/>
+	<oaf_attribute name="name" type="string" _value="News sidebar panel"/>
+	<oaf_attribute name="nautilus:sidebar_panel_name" type="string" _value="News"/>
+	<oaf_attribute name="nautilus:recommended_uri_schemes" type="stringv">
+		<item value="*"/>
+	</oaf_attribute>
+</oaf_server>
+
+</oaf_info>
