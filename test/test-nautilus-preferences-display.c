@@ -4,6 +4,7 @@
 #include <eel/eel-image-with-background.h>
 #include <eel/eel-text-caption.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 static void
 text_caption_update (EelTextCaption *text_caption,
@@ -242,6 +243,8 @@ main (int argc, char *argv[])
 	GtkWidget *fruits_frame;
 
 	test_init (&argc, &argv);
+
+	nautilus_global_preferences_initialize ();
 
 	window = test_window_new (NULL, 4);
 	test_window_set_title_with_pid (GTK_WINDOW (window), "Preferences Display");
