@@ -37,6 +37,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
@@ -93,17 +94,19 @@ static void tree_select_row_callback            (NautilusCTree         *tree,
 static void size_allocate_callback              (NautilusCTree         *tree,
 						 GtkAllocation         *allocation,
 						 gpointer               data);
-
-
 static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
 						 const char            *uri);
-static void nautilus_tree_view_update_all_icons (NautilusTreeView *view);
+static void nautilus_tree_view_update_all_icons (NautilusTreeView      *view);
 
+static void got_activation_uri_callback         (NautilusFile          *file,
+						 gpointer               callback_data);
+static void cancel_possible_activation          (NautilusTreeView      *view);
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
 static void nautilus_tree_view_destroy          (GtkObject             *object);
+
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view, GTK_TYPE_SCROLLED_WINDOW)
@@ -761,6 +764,8 @@ nautilus_tree_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_TREE_VIEW (object);
 
+	cancel_possible_activation (view);
+
 	if (view->details->pending_idle_id != 0) {
 		gtk_idle_remove (view->details->pending_idle_id);
 	}
@@ -1188,26 +1193,71 @@ ctree_show_node (NautilusCTree *tree,
 
 
 static void
+got_activation_uri_callback (NautilusFile *file,
+			     gpointer callback_data)
+{
+	char *uri;
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	if (file == view->details->activation_uri_wait_file) {
+		uri = nautilus_file_get_activation_uri (file);
+		
+		if (uri != NULL &&
+		    nautilus_strcmp (view->details->current_main_view_uri, uri) != 0 &&
+		    strncmp (uri, "command:", strlen ("command:")) != 0) {
+			nautilus_view_open_location_in_this_window 
+				(NAUTILUS_VIEW (view->details->nautilus_view), uri);
+			g_free (view->details->selected_uri);
+			view->details->selected_uri = g_strdup (uri);
+		}
+		
+		ctree_show_node (NAUTILUS_CTREE (view->details->tree), 
+				 file_to_view_node (view, file));
+		
+		g_free (uri);
+
+		nautilus_file_unref (view->details->activation_uri_wait_file);
+		view->details->activation_uri_wait_file = NULL;
+	}
+}
+
+static void
+cancel_possible_activation (NautilusTreeView *view)
+{
+	if (view->details->activation_uri_wait_file != NULL) {
+		nautilus_file_cancel_call_when_ready 
+			(view->details->activation_uri_wait_file,
+			 got_activation_uri_callback,
+			 view);
+		nautilus_file_unref (view->details->activation_uri_wait_file);
+	}
+
+	view->details->activation_uri_wait_file = NULL;
+}
+
+static void
 tree_select_row_callback (NautilusCTree              *tree,
 			  NautilusCTreeNode          *node,
 			  gint                        column,
 			  NautilusTreeView           *view)
 {
-	char *uri;
-	
-	uri = nautilus_file_get_uri (nautilus_tree_view_node_to_file (view, node));
-	
-	if (uri != NULL &&
-	    nautilus_strcmp (view->details->current_main_view_uri, uri) != 0) {
-		nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view->details->nautilus_view), uri);
-		
-		g_free (view->details->selected_uri);
-		view->details->selected_uri = g_strdup (uri);
-	}
+	GList *attributes;
 
-	ctree_show_node (tree, node);
+	cancel_possible_activation (view);
 
-	g_free (uri);
+	view->details->activation_uri_wait_file = nautilus_tree_view_node_to_file (view,
+										   node);
+	nautilus_file_ref (view->details->activation_uri_wait_file);
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	
+	nautilus_file_call_when_ready (view->details->activation_uri_wait_file,
+				       attributes,
+				       got_activation_uri_callback,
+				       view);
+ 
 }
 
 static NautilusCTreeNode *

@@ -73,6 +73,8 @@ struct NautilusTreeViewDetails {
 
 	gboolean got_first_size_allocate;
 
+	NautilusFile *activation_uri_wait_file;
+
 	NautilusTreeViewDndDetails *dnd;
 };
 

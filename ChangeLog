@@ -1,3 +1,25 @@
+2001-02-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix bug 4678 (Clicking on a Nautilus link file in tree view causes
+	Nautilus cannot handle item type error box).
+	
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_destroy), (got_activation_uri_callback),
+	(cancel_possible_activation), (tree_select_row_callback): Activate
+	activation URI instead of file URI to support Nautilus links
+	properly. If the link resolves to a "command:" URI, however,
+	silently ignore it to avoid giving an ugly error message because
+	per John Sullivan, selecting things in the tree view should not
+	launch apps.
+
+	* components/tree/nautilus-tree-view-private.h: Added
+	activation_uri_wait_file field to details struct.
+
+	* data/top/Computer, data/top/Services: Updated to new nautilus
+	link format.
+
 2001-02-02  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal
