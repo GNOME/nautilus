@@ -31,6 +31,7 @@ typedef struct {
 	char *iid;	      /* Unique ID */
 	char *name;	      /* human-readable name */
 	char *view_as_label;  /* "View as <name>" */
+	char *view_as_label_with_mnemonic;  /* "View as _<name>" */
 	char *viewer_label;   /* "<name> Viewer" */
 } NautilusViewIdentifier;
 

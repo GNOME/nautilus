@@ -1,3 +1,17 @@
+2003-01-14  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-view-identifier.c:
+	(nautilus_view_identifier_new), (nautilus_view_identifier_copy),
+	(nautilus_view_identifier_new_from_bonobo_server_info),
+	(nautilus_view_identifier_free):
+	* libnautilus-private/nautilus-view-identifier.h: Add a 
+	view_as_label_with_mnemonic field to the server file and 
+	NautilusViewIdentifier.
+	* src/nautilus-window.c: (add_view_as_bonobo_menu_item): Use
+	the mnemonics in the view menu.
+	* src/Nautilus_shell.server.in: Add view_as_label_with_mnemonic
+	fields to the Icon and List views.
+
 2003-01-14  David Bordoley <bordoley@msu.edu>
  
  	* src/nautilus-view-frame.c

@@ -1165,7 +1165,7 @@ add_view_as_bonobo_menu_item (NautilusWindow *window,
 		(window->details->shell_ui,
 		 placeholder_path,
 		 index,
-		 identifier->view_as_label,
+		 identifier->view_as_label_with_mnemonic,
 		 "viewers group");
 
 	tip = g_strdup_printf (_("Display this location with \"%s\""),

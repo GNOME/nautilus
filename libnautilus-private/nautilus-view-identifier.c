@@ -37,6 +37,7 @@ static NautilusViewIdentifier *
 nautilus_view_identifier_new (const char *iid,
 			      const char *name,
 			      const char *view_as_label,
+			      const char *view_as_label_with_mnemonic,
 			      const char *label_viewer);
 
 
@@ -45,6 +46,7 @@ NautilusViewIdentifier *
 nautilus_view_identifier_new (const char *iid, 
 			      const char *name,
 			      const char *view_as_label,
+			      const char *view_as_label_with_mnemonic,
 			      const char *viewer_label)
 {
         NautilusViewIdentifier *new_identifier;
@@ -58,6 +60,9 @@ nautilus_view_identifier_new (const char *iid,
 
         new_identifier->view_as_label = view_as_label ? g_strdup (view_as_label) :
 		g_strdup_printf (_("View as %s"), name);
+
+        new_identifier->view_as_label_with_mnemonic = view_as_label_with_mnemonic ? g_strdup (view_as_label_with_mnemonic) 
+		: g_strdup (new_identifier->view_as_label);
 
         new_identifier->viewer_label = view_as_label ? g_strdup (viewer_label) :
 		g_strdup_printf (_("%s Viewer"), name);
@@ -75,6 +80,7 @@ nautilus_view_identifier_copy (const NautilusViewIdentifier *identifier)
 	return nautilus_view_identifier_new (identifier->iid, 
 					     identifier->name, 
 					     identifier->view_as_label,
+					     identifier->view_as_label_with_mnemonic,
 					     identifier->viewer_label);
 }
 
@@ -111,6 +117,7 @@ nautilus_view_identifier_new_from_bonobo_server_info (Bonobo_ServerInfo *server,
 {
         const char *view_as_name;       
         const char *view_as_label;       
+	const char *view_as_label_with_mnemonic;
         const char *viewer_label;       
         GSList *langs;
 
@@ -118,6 +125,7 @@ nautilus_view_identifier_new_from_bonobo_server_info (Bonobo_ServerInfo *server,
 
         view_as_name = bonobo_server_info_prop_lookup (server, name_attribute, langs);
 	view_as_label = bonobo_server_info_prop_lookup (server, "nautilus:view_as_label", langs);
+	view_as_label_with_mnemonic = bonobo_server_info_prop_lookup (server, "nautilus:view_as_label_with_mnemonic", langs);
 	viewer_label = bonobo_server_info_prop_lookup (server, "nautilus:viewer_label", langs);
 
         if (view_as_name == NULL) {
@@ -141,13 +149,17 @@ nautilus_view_identifier_new_from_bonobo_server_info (Bonobo_ServerInfo *server,
 		}
 		
 		new_identifier = nautilus_view_identifier_new (server->iid, display_name,
-							       view_as_label, viewer_label);
+							       view_as_label,
+							       view_as_label_with_mnemonic,
+							       viewer_label);
 		g_free(display_name);
 		return new_identifier;					
 	}
 		
         return nautilus_view_identifier_new (server->iid, view_as_name,
-					     view_as_label, viewer_label);
+					     view_as_label, 
+					     view_as_label_with_mnemonic,
+					     viewer_label);
 }
 
 NautilusViewIdentifier *
@@ -178,6 +190,7 @@ nautilus_view_identifier_free (NautilusViewIdentifier *identifier)
                 g_free (identifier->iid);
                 g_free (identifier->name);
                 g_free (identifier->view_as_label);
+		g_free (identifier->view_as_label_with_mnemonic);
                 g_free (identifier->viewer_label);
                 g_free (identifier);
         }
