@@ -11,7 +11,8 @@ TARGET_DIR=$(SGML_DIR)/$(DOC_MODULE)/$(LANG)/
 install-data-local: 
 	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) 
 	installfiles=`echo $(srcdir)/sgml/*.sgml 		\
-	$(srcdir)/img/*.png`; 					\
+	$(srcdir)/img/*.png					\
+	$(srcdir)/html/*.html`;					\
 	if test "$$installfiles" = '$(srcdir)/sgml/*.sgml'; 	\
 	then echo '-- Nothing to install' ; 			\
 	else 							\

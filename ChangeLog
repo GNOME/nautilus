@@ -1,4 +1,20 @@
-2000-11-05  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+2000-11-05  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 4475, add license to help menu
+	
+	* src/nautilus-shell-ui.xml:
+	added menu item for "Nautilus License"
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_license_callback),
+	(nautilus_window_initialize_menus):
+	added a bonobo verb and a handler to invoke the license document
+	* user-guide/C/Makefile.am:
+	added license.html
+	* user-guide/C/html/.cvsignore:
+	* user-guide/C/html/license.html:
+	added license html file from Bud.
+	
+2000-11-05  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c: (play_status_display),
 	(slider_moved_callback), (slider_release_callback):
