@@ -1,3 +1,29 @@
+2000-07-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_class_initialize),
+	(nautilus_zoom_control_theme_changed), (get_zoom_offset),
+	(draw_number), (draw_zoom_control_image),
+	(nautilus_zoom_control_update_offsets),
+	(nautilus_zoom_control_load_images),
+	(nautilus_zoom_control_button_press_event),
+	(nautilus_zoom_control_size_allocate):
+	made the zoom control work properly with different sets of
+	images by vertically centering the images and adding a
+	number offset fetched from the theme.
+	
+	* icons/arlo/Makefile.am:
+	* icons/arlo/arlo.xml:
+	* icons/increment.png:
+	* icons/decrement.png:
+	* icons/zoom_body.png:
+	zoom control pieces for arlo theme
+	
+	* icons/vector/Makefile.am:
+	* icons/vector/vector.xml:
+	* icons/zoom_body.png:
+	zoom control body from Bud to try out
+	
 2000-07-25  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/docs/install-user-settings:

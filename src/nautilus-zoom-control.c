@@ -61,6 +61,7 @@ struct NautilusZoomControlDetails {
 	double max_zoom_level;
 	GList *preferred_zoom_levels;
 
+	int y_offset;
 	GdkPixbuf *zoom_body_image;
 	GdkPixbuf *zoom_decrement_image;
 	GdkPixbuf *zoom_increment_image;
@@ -80,6 +81,8 @@ static gboolean nautilus_zoom_control_button_press_event (GtkWidget *widget,
 static void	nautilus_zoom_control_load_images	 (NautilusZoomControl *zoom_control);
 static void	nautilus_zoom_control_unload_images	 (NautilusZoomControl *zoom_control);
 static void	nautilus_zoom_control_theme_changed 	 (gpointer user_data);
+static void	nautilus_zoom_control_size_allocate	 (GtkWidget *widget, GtkAllocation *allocation);
+
 
 void            draw_number		                 (GtkWidget *widget, 
 							  GdkRectangle *box);
@@ -128,7 +131,8 @@ nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
 	widget_class->draw = nautilus_zoom_control_draw;
 	widget_class->expose_event = nautilus_zoom_control_expose;
 	widget_class->button_press_event = nautilus_zoom_control_button_press_event;
-
+	widget_class->size_allocate = nautilus_zoom_control_size_allocate;
+	
 	signals[ZOOM_IN] =
 		gtk_signal_new ("zoom_in",
 				GTK_RUN_LAST,
@@ -242,8 +246,26 @@ nautilus_zoom_control_theme_changed (gpointer user_data)
 	NautilusZoomControl *zoom_control;
 
 	zoom_control = NAUTILUS_ZOOM_CONTROL (user_data);
+	gtk_widget_hide (GTK_WIDGET (zoom_control));
 	nautilus_zoom_control_load_images (zoom_control);
-	gtk_widget_queue_draw (GTK_WIDGET (zoom_control)) ;	
+	gtk_widget_show (GTK_WIDGET (zoom_control));	
+}
+
+static int
+get_zoom_offset (const char *property)
+{
+	char *num_str;
+	int result;
+	
+	result = 0;
+	num_str = nautilus_theme_get_theme_data ("zoom_control", property);
+	
+	if (num_str) {
+		result = atoi (num_str);
+		g_free (num_str);
+	}
+
+	return result;
 }
 
 /* draw the current zoom percentage */
@@ -253,7 +275,13 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	GdkFont *label_font;
 	GdkGC* temp_gc; 
 	int x, y, percent; 
-	NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+	int num_v_offset, num_h_offset;
+	NautilusZoomControl *zoom_control;
+	
+	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+	
+	num_v_offset = get_zoom_offset ("NUMBER_V_OFFSET");
+	num_h_offset = get_zoom_offset ("NUMBER_H_OFFSET");
 	
 	label_font = gdk_font_load("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*");
 	temp_gc = gdk_gc_new(widget->window);
@@ -261,8 +289,8 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	percent = floor((100.0 * zoom_control->details->zoom_level) + .5);
 	g_snprintf(buffer, 8, "%d", percent);
 	
-	x = (box->width - gdk_string_width(label_font, buffer)) >> 1;  
-	y = (box->height >> 1) + 1;
+	x = num_h_offset + ((box->width - gdk_string_width(label_font, buffer)) >> 1);  
+	y = zoom_control->details->y_offset + 1 + num_v_offset + (box->height >> 1);
 	
 	gdk_draw_string (widget->window, label_font, temp_gc, x, y, &buffer[0]);
 	gdk_font_unref(label_font);
@@ -293,17 +321,17 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 
 	/* draw the decrement symbol if necessary */
 	if (zoom_control->details->zoom_level > zoom_control->details->min_zoom_level) {
-		draw_pixbuf (zoom_control->details->zoom_decrement_image, widget->window, box->x, box->y);
+		draw_pixbuf (zoom_control->details->zoom_decrement_image, widget->window, box->x, box->y + zoom_control->details->y_offset);
 	}
 	
 	offset = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image) + GAP_WIDTH;
 	/* draw the body image */
-	draw_pixbuf (zoom_control->details->zoom_body_image, widget->window, box->x + offset, box->y);
+	draw_pixbuf (zoom_control->details->zoom_body_image, widget->window, box->x + offset, box->y + zoom_control->details->y_offset);
 	offset += gdk_pixbuf_get_width (zoom_control->details->zoom_body_image) + GAP_WIDTH;
 	
 	/* draw the increment symbol if necessary */
 	if (zoom_control->details->zoom_level < zoom_control->details->max_zoom_level) {
-		draw_pixbuf (zoom_control->details->zoom_increment_image, widget->window, box->x + offset, box->y);
+		draw_pixbuf (zoom_control->details->zoom_increment_image, widget->window, box->x + offset, box->y + zoom_control->details->y_offset);
 	
 	}
 }
@@ -375,6 +403,12 @@ load_themed_image (const char *file_name)
 }
 
 static void
+nautilus_zoom_control_update_offsets (NautilusZoomControl *zoom_control)
+{
+	zoom_control->details->y_offset = (GTK_WIDGET (zoom_control)->allocation.height - gdk_pixbuf_get_height (zoom_control->details->zoom_body_image)) >> 1;
+}
+
+static void
 nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 {
 	nautilus_zoom_control_unload_images (zoom_control);
@@ -382,6 +416,8 @@ nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 	zoom_control->details->zoom_body_image = load_themed_image ("zoom_body.png");
 	zoom_control->details->zoom_decrement_image = load_themed_image ("decrement.png");
 	zoom_control->details->zoom_increment_image = load_themed_image ("increment.png");
+
+	nautilus_zoom_control_update_offsets (zoom_control);
 }
 
 /* routines to create and handle the zoom menu */
@@ -481,6 +517,19 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	 */	  
   
 	return TRUE;
+}
+
+/* handle setting the size */
+static void
+nautilus_zoom_control_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+{
+	NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	
+	widget->allocation.width = get_zoom_width (zoom_control);
+   	widget->allocation.height = allocation->height;
+	nautilus_zoom_control_update_offsets (zoom_control);
 }
 
 void

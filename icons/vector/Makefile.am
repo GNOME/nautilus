@@ -5,6 +5,8 @@ vector_DATA =					\
 	i-directory-accept.svg			\
 	i-regular.svg				\
 	i-regular.xml				\
-	vector.xml
+	vector.xml				\
+	zoom_body.png
+	
 
 EXTRA_DIST = $(vector_DATA)
