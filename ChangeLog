@@ -1,3 +1,40 @@
+2002-03-08  Darin Adler  <darin@bentspoon.com>
+
+	* components/adapter/main.c: (main): Use gdk_get_display, not
+	getenv ("DISPLAY").
+	* components/loser/content/main.c: (main): Ditto.
+	* components/loser/sidebar/main.c: (main): Ditto.
+
+	* components/tree/nautilus-tree-model.c:
+	(stop_monitoring_directory): Rename back from
+	stop_monitoring_directory_without_reporting. This no longer
+	changes the state of "done_loading".
+	(set_done_loading): New, handles a state change in either
+	direction.
+	(done_loading_callback): Moved most of the guts of this into the
+	new set_done_loading.
+	(start_monitoring_directory): Call set_done_loading explicitly.
+	Before, this had to use an idle function, but this is no longer
+	necessary since we use an idle function at the next level up.
+
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(free_factory):
+	* libnautilus-private/nautilus-metafile.c:
+	(corba_register_monitor):
+	* libnautilus-private/nautilus-undo-context.c:
+	(nautilus_undo_context_new), (finalize):
+	* libnautilus/nautilus-undo-transaction.c:
+	(nautilus_undo_transaction_finalize),
+	(nautilus_undo_transaction_add_to_undo_manager):
+	* libnautilus/nautilus-undo.c: (nautilus_undo_share_undo_manager):
+	* libnautilus/nautilus-view.c: (forget_cached_view_frame):
+	* src/nautilus-component-adapter-factory.c: (release_factory):
+	* src/nautilus-view-frame.c: (destroy_view):
+	Clean up code by not bothering with an ev for CORBA_Object_release
+	and CORBA_Object_duplicate.
+
+	* src/nautilus-shell-ui.xml: Remove "Feedback" menu item.
+
 2002-03-08  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-main.c (main): do a bonobo_ui_init,

@@ -68,12 +68,8 @@ unref_factory (NautilusComponentAdapterFactory *factory)
 static void
 release_factory (NautilusComponentAdapterFactory *factory)
 {
-	CORBA_Environment ev;
-	
-	CORBA_exception_init (&ev);
-	CORBA_Object_release (factory->details->corba_factory, &ev);
+	CORBA_Object_release (factory->details->corba_factory, NULL);
 	factory->details->corba_factory = CORBA_OBJECT_NIL;
-	CORBA_exception_free (&ev);
 }
 
 static Nautilus_ComponentAdapterFactory

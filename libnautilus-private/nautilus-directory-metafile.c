@@ -49,11 +49,7 @@ nautilus_directory_use_self_contained_metafile_factory (void)
 static void
 free_factory (void)
 {
-	CORBA_Environment ev;
-
-	CORBA_exception_init (&ev);
-	CORBA_Object_release (factory, &ev);
-	CORBA_exception_free (&ev);
+	CORBA_Object_release (factory, NULL);
 	factory = CORBA_OBJECT_NIL;
 }
 

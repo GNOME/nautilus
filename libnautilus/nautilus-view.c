@@ -382,12 +382,8 @@ update_listener (NautilusView *view)
 static void
 forget_cached_view_frame (NautilusView *view)
 {
-	CORBA_Environment ev;
-
-	CORBA_exception_init (&ev);
-	CORBA_Object_release (view->details->cached_view_frame, &ev);
+	CORBA_Object_release (view->details->cached_view_frame, NULL);
 	view->details->cached_view_frame = CORBA_OBJECT_NIL;
-	CORBA_exception_free (&ev);
 }
 
 static void

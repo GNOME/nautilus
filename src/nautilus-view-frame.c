@@ -170,7 +170,6 @@ static void
 destroy_view (NautilusViewFrame *view)
 {
 	BonoboUIEngine *engine;
-	CORBA_Environment ev;
 
 	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
@@ -179,9 +178,7 @@ destroy_view (NautilusViewFrame *view)
 	g_free (view->details->view_iid);
 	view->details->view_iid = NULL;
 
-	CORBA_exception_init (&ev);
-	CORBA_Object_release (view->details->view, &ev);
-	CORBA_exception_free (&ev);
+	CORBA_Object_release (view->details->view, NULL);
 	view->details->view = CORBA_OBJECT_NIL;
 
 	bonobo_object_unref (view->details->view_frame);

@@ -83,7 +83,8 @@ int main(int argc, char *argv[])
 	
 	nautilus_sidebar_loser_maybe_fail ("post-init");
 
-        registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", getenv ("DISPLAY"));
+        registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa",
+								  gdk_get_display ());
 	factory = bonobo_generic_factory_new ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", 
 					      loser_make_object,
 					      NULL);

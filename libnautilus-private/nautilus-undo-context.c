@@ -47,16 +47,10 @@ impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant servant,
 NautilusUndoContext *
 nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 {
-	CORBA_Environment ev;	
 	NautilusUndoContext *context;
 	
-	CORBA_exception_init (&ev);
-
 	context = NAUTILUS_UNDO_CONTEXT (g_object_new (nautilus_undo_context_get_type (), NULL));
-	context->undo_manager = CORBA_Object_duplicate (undo_manager, &ev);
-	
-  	CORBA_exception_free (&ev);
-
+	context->undo_manager = CORBA_Object_duplicate (undo_manager, NULL);
 	return context;
 }
 
@@ -68,17 +62,13 @@ nautilus_undo_context_instance_init (NautilusUndoContext *context)
 static void
 finalize (GObject *object)
 {
-	CORBA_Environment ev;	
 	NautilusUndoContext *context;
 
-	CORBA_exception_init (&ev);
-
 	context = NAUTILUS_UNDO_CONTEXT (object);
-	CORBA_Object_release (context->undo_manager, &ev);
+
+	CORBA_Object_release (context->undo_manager, NULL);
 	
- 	CORBA_exception_free (&ev);
-	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

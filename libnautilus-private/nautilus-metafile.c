@@ -602,7 +602,8 @@ corba_register_monitor (PortableServer_Servant          servant,
 
 	g_return_if_fail (find_monitor_node (metafile->details->monitors, monitor) == NULL);
 
-	metafile->details->monitors = g_list_prepend (metafile->details->monitors, (gpointer) CORBA_Object_duplicate (monitor, ev));	
+	metafile->details->monitors = g_list_prepend (metafile->details->monitors,
+						      (gpointer) CORBA_Object_duplicate (monitor, ev));	
 
 	async_read_start (metafile);
 }

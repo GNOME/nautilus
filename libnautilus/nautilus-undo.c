@@ -220,16 +220,10 @@ nautilus_undo_share_undo_manager (GObject *destination_object,
 				  GObject *source_object)
 {
 	Nautilus_Undo_Manager manager;
-	CORBA_Environment ev;
 
 	manager = nautilus_undo_get_undo_manager (source_object);
-
-	nautilus_undo_attach_undo_manager
-		(destination_object, manager);
-
-	CORBA_exception_init (&ev);
-	CORBA_Object_release (manager, &ev);
-	CORBA_exception_free (&ev);
+	nautilus_undo_attach_undo_manager (destination_object, manager);
+	CORBA_Object_release (manager, NULL);
 }
 
 /* Locates an undo manager for this bonobo control.

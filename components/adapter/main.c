@@ -105,7 +105,7 @@ main (int argc, char *argv[])
 
 	/* Create the factory. */
 
-	registration_id = bonobo_activation_make_registration_id (META_FACTORY_IID, g_getenv ("DISPLAY"));
+	registration_id = bonobo_activation_make_registration_id (META_FACTORY_IID, gdk_get_display ());
 
 	factory = bonobo_generic_factory_new (registration_id, adapter_factory_make_object, NULL);
 

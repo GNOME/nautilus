@@ -560,11 +560,9 @@ report_dummy_row_contents_changed (NautilusTreeModel *model, TreeNode *parent)
 }
 
 static void
-stop_monitoring_directory_without_reporting (NautilusTreeModel *model, TreeNode *node)
+stop_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 {
 	NautilusDirectory *directory;
-
-	node->done_loading = FALSE;
 
 	if (node->done_loading_id == 0) {
 		g_assert (node->files_added_id == 0);
@@ -586,25 +584,6 @@ stop_monitoring_directory_without_reporting (NautilusTreeModel *model, TreeNode 
 }
 
 static void
-stop_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
-{
-	gboolean had_dummy, has_dummy;
-
-	had_dummy = tree_node_has_dummy_child (node);
-	stop_monitoring_directory_without_reporting (model, node);
-	has_dummy = tree_node_has_dummy_child (node);
-
-	if (had_dummy) {
-		g_assert (has_dummy);
-		report_dummy_row_contents_changed (model, node);
-	} else {
-		if (has_dummy) {
-			report_dummy_row_inserted (model, node);
-		}
-	}
-}
-
-static void
 destroy_children_without_reporting (NautilusTreeModel *model, TreeNode *parent)
 {
 	while (parent->first_child != NULL) {
@@ -616,7 +595,7 @@ static void
 destroy_node_without_reporting (NautilusTreeModel *model, TreeNode *node)
 {
 	abandon_node_ref_count (model, node);
-	stop_monitoring_directory_without_reporting (model, node);
+	stop_monitoring_directory (model, node);
 	node->inserted = FALSE;
 	destroy_children_without_reporting (model, node);
 	g_hash_table_remove (model->details->file_to_node_map, node->file);
@@ -688,7 +667,7 @@ update_node_without_reporting (NautilusTreeModel *model, TreeNode *node)
 	if (node->directory == NULL && nautilus_file_is_directory (node->file)) {
 		node->directory = nautilus_directory_get_for_file (node->file);
 	} else if (node->directory != NULL && !nautilus_file_is_directory (node->file)) {
-		stop_monitoring_directory_without_reporting (model, node);
+		stop_monitoring_directory (model, node);
 		destroy_children (model, node);
 		nautilus_directory_unref (node->directory);
 		node->directory = NULL;
@@ -841,28 +820,42 @@ files_changed_callback (NautilusDirectory *directory,
 }
 
 static void
+set_done_loading (NautilusTreeModel *model, TreeNode *node, gboolean done_loading)
+{
+	gboolean had_dummy;
+
+	if (node == NULL || node->done_loading == done_loading) {
+		return;
+	}
+
+	had_dummy = tree_node_has_dummy_child (node);
+
+	node->done_loading = done_loading;
+
+	if (tree_node_has_dummy_child (node)) {
+		if (had_dummy) {
+			report_dummy_row_contents_changed (model, node);
+		} else {
+			report_dummy_row_inserted (model, node);
+		}
+	} else {
+		if (had_dummy) {
+			report_dummy_row_deleted (model, node);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+}
+
+static void
 done_loading_callback (NautilusDirectory *directory,
 		       NautilusTreeModel *model)
 {
 	NautilusFile *file;
-	TreeNode *node;
 
 	file = nautilus_directory_get_corresponding_file (directory);
-	node = get_node_from_file (model, file);
+	set_done_loading (model, get_node_from_file (model, file), TRUE);
 	nautilus_file_unref (file);
-	if (node == NULL || node->done_loading) {
-		return;
-	}
-
-	g_assert (tree_node_has_dummy_child (node));
-
-	node->done_loading = TRUE;
-
-	if (tree_node_has_dummy_child (node)) {
-		report_dummy_row_contents_changed (model, node);
-	} else {
-		report_dummy_row_deleted (model, node);
-	}
 }
 
 static GList *
@@ -876,28 +869,11 @@ get_tree_monitor_attributes (void)
 	return attrs;
 }
 
-static gboolean
-done_loading_idle_callback (gpointer callback_data)
-{
-	DoneLoadingParameters *p;
-
-	p = callback_data;
-	if (p->directory != NULL && p->model != NULL) {
-		done_loading_callback (p->directory, p->model);
-	}
-	eel_remove_weak_pointer (&p->model);
-	eel_remove_weak_pointer (&p->directory);
-	g_free (p);
-
-	return FALSE;
-}
-
 static void
 start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 {
 	NautilusDirectory *directory;
 	GList *attrs;
-	DoneLoadingParameters *p;
 
 	if (node->done_loading_id != 0) {
 		return;
@@ -925,17 +901,7 @@ start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 					     attrs, files_changed_callback, model);
 	g_list_free (attrs);
 
-	if (nautilus_directory_are_all_files_seen (directory)) {
-		/* Can't just remove the dummy node in here, so we do
-		 * it at idle time.
-		 */
-		p = g_new (DoneLoadingParameters, 1);
-		p->directory = directory;
-		p->model = model;
-		eel_add_weak_pointer (&p->directory);
-		eel_add_weak_pointer (&p->model);
-		g_idle_add (done_loading_idle_callback, p);
-	}
+	set_done_loading (model, node, nautilus_directory_are_all_files_seen (directory));
 }
 
 static int
@@ -1249,7 +1215,7 @@ update_monitoring (NautilusTreeModel *model, TreeNode *node)
 	TreeNode *child;
 
 	if (node->all_children_ref_count == 0) {
-		stop_monitoring_directory_without_reporting (model, node);
+		stop_monitoring_directory (model, node);
 		destroy_children (model, node);
 	} else {
 		for (child = node->first_child; child != NULL; child = child->next) {
@@ -1429,10 +1395,10 @@ nautilus_tree_model_set_show_hidden_files (NautilusTreeModel *model,
 	}
 	model->details->show_hidden_files = show_hidden_files;
 	stop_monitoring (model);
-	schedule_monitoring_update (model);
 	if (!show_hidden_files) {
 		destroy_by_function (model, nautilus_file_is_hidden_file);
 	}
+	schedule_monitoring_update (model);
 }
 
 void
@@ -1448,10 +1414,10 @@ nautilus_tree_model_set_show_backup_files (NautilusTreeModel *model,
 	}
 	model->details->show_backup_files = show_backup_files;
 	stop_monitoring (model);
-	schedule_monitoring_update (model);
 	if (!show_backup_files) {
 		destroy_by_function (model, nautilus_file_is_backup_file);
 	}
+	schedule_monitoring_update (model);
 }
 
 static gboolean
@@ -1473,10 +1439,10 @@ nautilus_tree_model_set_show_only_directories (NautilusTreeModel *model,
 	}
 	model->details->show_only_directories = show_only_directories;
 	stop_monitoring (model);
-	schedule_monitoring_update (model);
 	if (show_only_directories) {
 		destroy_by_function (model, file_is_not_directory);
 	}
+	schedule_monitoring_update (model);
 }
 
 NautilusFile *

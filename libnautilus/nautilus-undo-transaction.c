@@ -154,7 +154,6 @@ static void
 nautilus_undo_transaction_finalize (GObject *object)
 {
 	NautilusUndoTransaction *transaction;
-	CORBA_Environment ev;
 
 	transaction = NAUTILUS_UNDO_TRANSACTION (object);
 	
@@ -167,9 +166,7 @@ nautilus_undo_transaction_finalize (GObject *object)
 	g_free (transaction->redo_menu_item_label);
 	g_free (transaction->redo_menu_item_hint);
 
-	CORBA_exception_init (&ev);
-	CORBA_Object_release (transaction->owner, &ev);
-	CORBA_exception_free (&ev);
+	CORBA_Object_release (transaction->owner, NULL);
 	
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -229,8 +226,7 @@ nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transact
 	CORBA_exception_init (&ev);
 
 	if (!CORBA_Object_is_nil (manager, &ev)) {
-		Nautilus_Undo_Manager_append (
-			manager, BONOBO_OBJREF (transaction), &ev);
+		Nautilus_Undo_Manager_append (manager, BONOBO_OBJREF (transaction), &ev);
 		transaction->owner = CORBA_Object_duplicate (manager, &ev);
 	}
 
