@@ -57,17 +57,17 @@ module Desktop {
 };
 
 module GNOME {
-module Desktop {
+  module Desktop {
 
-        // We subclass Net::Desktop and add our GNOME-specific features
+    // We subclass Net::Desktop and add our GNOME-specific features
         
-        interface Desktop : Net::Desktop {
-                // Add an icon on the desktop for this URI
-                // The URI can be anything gnome-vfs understands
-                void add_link (in string uri);
+    interface Desktop : ::Net::Desktop {
+      // Add an icon on the desktop for this URI
+      // The URI can be anything gnome-vfs understands
+      void add_link (in string uri);
 
                 
-        };
+    };
   
-};
+  };
 };
