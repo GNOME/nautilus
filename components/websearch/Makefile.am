@@ -1,4 +1,4 @@
-k	k	bin_PROGRAMS=ntl-web-search
+bin_PROGRAMS=ntl-web-search
 
 INCLUDES=\
 	-I$(top_srcdir) 			\
