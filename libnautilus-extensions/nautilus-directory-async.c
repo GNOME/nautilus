@@ -195,6 +195,9 @@ metafile_read_done (NautilusDirectory *directory)
 	/* Move over the changes to the metafile that were in the hash table. */
 	nautilus_directory_metafile_apply_pending_changes (directory);
 
+	/* Tell change-watchers that we have update information. */
+	nautilus_directory_emit_metadata_changed (directory);
+
 	/* Let the callers that were waiting for the metafile know. */
 	state_changed (directory);
 }
@@ -588,6 +591,18 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE,
 		 nautilus_str_compare) != NULL;
+
+	/* FIXME: 
+	 * Some file attributes are really pieces of metadata.
+	 * This is a confusing/broken design, since other metadata
+	 * pieces are handled separately from file attributes. There
+	 * are many ways this could be changed, ranging from making
+	 * all metadata pieces have corresponding file attributes, to
+	 * making a single file attribute that means "get all metadata",
+	 * to making metadata keys be acceptable as file attributes
+	 * directly (would need some funky char trick to prevent
+	 * namespace collisions).
+	 */
 	if (!request->metafile) {
 		request->metafile = g_list_find_custom
 			(file_attributes,
@@ -1323,6 +1338,7 @@ is_anyone_waiting_for_metafile (NautilusDirectory *directory)
 {
 	GList *p;
 	ReadyCallback *callback;
+	Monitor *monitor;	
 
 	for (p = directory->details->call_when_ready_list; p != NULL; p = p->next) {
 		callback = p->data;
@@ -1330,6 +1346,13 @@ is_anyone_waiting_for_metafile (NautilusDirectory *directory)
 			return TRUE;
 		}
 	}
+
+	for (p = directory->details->monitor_list; p != NULL; p = p->next) {
+		monitor = p->data;
+		if (monitor->request.metafile) {
+			return TRUE;
+		}
+	}	
 
 	return FALSE;
 }

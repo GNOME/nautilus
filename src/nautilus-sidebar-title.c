@@ -111,9 +111,7 @@ release_file (NautilusSidebarTitle *sidebar_title)
 	}
 
 	if (sidebar_title->details->file != NULL) {
-		if (nautilus_file_is_directory (sidebar_title->details->file)) {
-			nautilus_file_monitor_remove (sidebar_title->details->file, sidebar_title);
-		}
+		nautilus_file_monitor_remove (sidebar_title->details->file, sidebar_title);
 		nautilus_file_unref (sidebar_title->details->file);
 		sidebar_title->details->file = NULL;
 	}
@@ -413,14 +411,18 @@ nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
 						   "changed",
 						   update,
 						   GTK_OBJECT (sidebar_title));
-		/* Monitor the item count so we can update when it is known. */
+
+		/* Monitor the things needed to get the right icon. */
+		attributes = nautilus_icon_factory_get_required_file_attributes ();		
+						   
+		/* Also monitor a directory's item count so we can update when it is known. */
 		if (nautilus_file_is_directory (sidebar_title->details->file)) {
-			attributes = g_list_prepend (NULL,
+			attributes = g_list_prepend (attributes,
 						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-			nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
-						   attributes, FALSE);
-			g_list_free (attributes);
 		}
+		nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
+					   attributes, FALSE);
+		g_list_free (attributes);
 	}
 
 	g_free (sidebar_title->details->requested_text);

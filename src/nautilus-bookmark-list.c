@@ -131,6 +131,52 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	}
 }
 
+static void
+bookmark_in_list_changed_callback (NautilusBookmark *bookmark,
+				   NautilusBookmarkList *bookmarks)
+{
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
+
+	/* Save changes so we'll have the good icon next time. */
+	nautilus_bookmark_list_contents_changed (bookmarks);
+}				   
+				   
+
+static void
+stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
+			  NautilusBookmark *bookmark)
+{
+	gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark), 
+				       bookmark_in_list_changed_callback,
+				       bookmarks);
+}
+
+static void
+stop_monitoring_one (gpointer data, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_BOOKMARK (data));
+	g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
+
+	stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data), 
+				  NAUTILUS_BOOKMARK (data));
+}		  
+
+static void
+insert_bookmark_internal (NautilusBookmarkList *bookmarks,
+			  NautilusBookmark *bookmark,
+			  int index)
+{
+	bookmarks->list = g_list_insert (bookmarks->list, 
+					 bookmark, 
+					 index);
+
+	gtk_signal_connect (GTK_OBJECT (bookmark),
+			    "changed",
+			    bookmark_in_list_changed_callback,
+			    bookmarks);				 
+}
+
 /**
  * nautilus_bookmark_list_append:
  *
@@ -145,8 +191,10 @@ nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
-	bookmarks->list = g_list_append (bookmarks->list, 
-					 nautilus_bookmark_copy (bookmark));
+	insert_bookmark_internal (bookmarks, 
+				  nautilus_bookmark_copy (bookmark), 
+				  -1);
+
 	nautilus_bookmark_list_contents_changed (bookmarks);
 }
 
@@ -188,6 +236,7 @@ nautilus_bookmark_list_contents_changed (NautilusBookmarkList *bookmarks)
 			 signals[CONTENTS_CHANGED]);
 }
 
+
 /**
  * nautilus_bookmark_list_delete_item_at:
  * 
@@ -208,6 +257,7 @@ nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
 	bookmarks->list = g_list_remove_link (bookmarks->list, doomed);
 
 	g_assert (NAUTILUS_IS_BOOKMARK (doomed->data));
+	stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (doomed->data));
 	gtk_object_unref (GTK_OBJECT (doomed->data));
 	
 	g_list_free (doomed);
@@ -238,6 +288,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 
 		if (nautilus_eat_strcmp (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data)), uri) == 0) {
 			bookmarks->list = g_list_remove_link (bookmarks->list, node);
+			stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
 			gtk_object_unref (GTK_OBJECT (node->data));
 			g_list_free (node);
 			list_changed = TRUE;
@@ -295,9 +346,9 @@ nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (index <= g_list_length (bookmarks->list));
 
-	bookmarks->list = g_list_insert (bookmarks->list, 
-					 nautilus_bookmark_copy (new_bookmark), 
-					 index);
+	insert_bookmark_internal (bookmarks, 
+				  nautilus_bookmark_copy (new_bookmark), 
+				  index);
 
 	nautilus_bookmark_list_contents_changed (bookmarks);
 }
@@ -379,11 +430,12 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
-	NautilusBookmark *new_bookmark;
 
 	/* Wipe out old list. */
+	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
 	nautilus_gtk_object_list_free (bookmarks->list);
 	bookmarks->list = NULL;
+	
 
 	/* Read new list from file */
 	doc = xmlParseFile (nautilus_bookmark_list_get_file_path (bookmarks));
@@ -392,8 +444,9 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	     node = node->next) {
 
 		if (strcmp (node->name, "bookmark") == 0) {
-			new_bookmark = make_bookmark_from_node (node);
-			bookmarks->list = g_list_append	(bookmarks->list, new_bookmark);
+			insert_bookmark_internal (bookmarks, 
+						  make_bookmark_from_node (node), 
+						  -1);
 		} else if (strcmp (node->name, "window") == 0) {
 			xmlChar *geometry_string;
 			

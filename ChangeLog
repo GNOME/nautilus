@@ -1,3 +1,41 @@
+2000-06-19  John Sullivan  <sullivan@eazel.com>
+
+	Finished bug 1401 (bookmark icon never updates) and some
+	related issues.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_done): Call emit_metadata_changed so
+	change-watchers will know that new metadata is available.
+	(set_up_request_by_file_attributes): Added FIXME comment
+	about confusion between file attributes and metadata.
+	(is_anyone_waiting_for_metafile): Made it check monitor_list
+	as well as call_when_ready_list.
+	
+	* libnautilus-extensions/nautilus-icon-factory.h,
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_required_file_attributes):
+	New function, returns the list of file attributes needed
+	to get the right icon for a file.
+	(nautilus_icon_factory_is_icon_ready_for_file): Rewrote
+	to call this new function.
+	
+	* src/nautilus-bookmark-list.c:
+	(bookmark_in_list_changed_callback), (stop_monitoring_bookmark),
+	(stop_monitoring_one), (insert_bookmark_internal),
+	(nautilus_bookmark_list_append),
+	(nautilus_bookmark_list_delete_item_at),
+	(nautilus_bookmark_list_delete_items_with_uri),
+	(nautilus_bookmark_list_insert_item),
+	(nautilus_bookmark_list_load_file): Made bookmark list monitor
+	the "changed" signal of all its bookmarks, so it knows to save
+	new improved icons or names to disk.
+	* src/nautilus-sidebar-title.c: 
+	(nautilus_sidebar_title_set_uri): add file monitor in all cases,
+	not just if it's a directory; monitor the attributes needed for
+	getting an icon too. This fixes a bug where a custom icon on the
+	user's home directory wouldn't appear in the sidebar.
+	(release_file): remove file monitor in all cases.
+
 2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c:

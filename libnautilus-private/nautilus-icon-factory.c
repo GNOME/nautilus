@@ -946,6 +946,26 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 }
 
 /**
+ * nautilus_icon_factory_get_required_file_attributes
+ * 
+ * Get the list of file attributes required to obtain a file's icon.
+ * Callers must free this list.
+ */
+GList *
+nautilus_icon_factory_get_required_file_attributes (void)
+{
+	GList *attributes;
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+
+	return attributes;
+}
+
+/**
  * nautilus_icon_factory_is_icon_ready_for_file
  * 
  * Check whether a NautilusFile has enough information to report
@@ -959,12 +979,7 @@ nautilus_icon_factory_is_icon_ready_for_file (NautilusFile *file)
 	GList *attributes;
 	gboolean result;
 
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
-
+	attributes = nautilus_icon_factory_get_required_file_attributes ();
 	result = nautilus_file_check_if_ready (file, attributes);
 	g_list_free (attributes);
 
