@@ -81,6 +81,8 @@ dnl ====================================
 BUILD_MOZILLA_COMPONENT=
 MOZILLA_COMPONENT_CFLAGS=
 MOZILLA_COMPONENT_LDFLAGS=
+MOZILLA_COMPONENT_LIBS=
+MOZILLA_EAZEL_PROTOCOL_HANDLER_LIBS=
 
 _mozilla_lib_place=/usr/lib/mozilla
 _mozilla_include_place=/usr/include/mozilla
@@ -175,16 +177,27 @@ then
 				$_mozilla_nspr_libs \
 				$_mozilla_plc_libs \
 				$_mozilla_plds_libs"
-
+	MOZILLA_PROTOCOL_HANDLER_LIBS="$_mozilla_xpcom_libs \
+				       $_mozilla_nspr_libs \
+				       $_mozilla_plc_libs \
+				       $_mozilla_plds_libs"
 	AC_SUBST(MOZILLA_COMPONENT_CFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LDFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LIBS)
+	AC_SUBST(MOZILLA_EAZEL_PROTOCOL_HANDLER_LIBS)
 else
 	AC_MSG_RESULT(no)
 	found_mozilla=false
 fi
 AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "x$found_mozilla" = "xtrue")
 
+dnl
+dnl The mozilla milestone version checks are very un-scientific.
+dnl They are based on thing that I know changed between milestones,
+dnl but are likely to not be right in the future.  Unfortunately, there
+dnl doesnt seem to be anything in mozilla (such as #define MOZILLA_VERSION) 
+dnl thing that we can check.  -re
+dnl
 if test "x$found_mozilla" = "xtrue"
 then
 	grep -w net_state $_mozilla_include_place/gtkmozembed.h > /dev/null 2>&1
@@ -192,6 +205,14 @@ then
 	if test $? -eq 0
 	then
 		MOZILLA_MILESTONE=17
+
+		echo "grep -w GetName $_mozilla_include_place/nsIRequest.h" > /tmp/loglog
+		grep -w GetName $_mozilla_include_place/nsIRequest.h > /dev/null 2>&1
+
+		if test $? -eq 0
+		then
+			MOZILLA_MILESTONE=18
+		fi
 	else
 		MOZILLA_MILESTONE=16
 	fi
