@@ -343,7 +343,7 @@ nautilus_directory_get (const char *uri)
 	return nautilus_directory_get_internal (uri, TRUE);
 }
 
-static NautilusDirectory *
+NautilusDirectory *
 nautilus_directory_get_existing (const char *uri)
 {
 	return nautilus_directory_get_internal (uri, FALSE);
@@ -940,12 +940,60 @@ nautilus_directory_notify_files_removed (GList *uris)
 }
 
 void
+nautilus_directory_handle_directory_moved (NautilusDirectory *directory,
+					   const char *to_uri)
+{
+	GnomeVFSURI *vfs_uri;
+
+	/* I believe it's impossible for a self-owned file/directory to be
+           moved. But if that did somehow happen, carnage would
+           result. */
+	g_assert (directory->details->as_file == NULL);
+
+	g_hash_table_remove (directories, directory->details->uri);
+
+	g_free (directory->details->uri);
+	directory->details->uri = g_strdup (to_uri);
+
+	if (directory->details->private_metafile_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
+	}
+
+	directory->details->private_metafile_vfs_uri = construct_private_metafile_vfs_uri (to_uri);
+
+	/* FIXME: we also need to rename the private metafile, if it
+           exists, don't we. */
+
+	if (directory->details->vfs_uri != NULL) {
+		gnome_vfs_uri_unref (directory->details->vfs_uri);
+	}
+
+	if (directory->details->public_metafile_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (directory->details->public_metafile_vfs_uri);
+	}
+
+	vfs_uri = gnome_vfs_uri_new (to_uri);
+
+	directory->details->vfs_uri = vfs_uri;
+	directory->details->public_metafile_vfs_uri = vfs_uri == NULL ? NULL
+		: gnome_vfs_uri_append_file_name (vfs_uri, METAFILE_NAME);
+
+
+	g_hash_table_insert (directories,
+			     directory->details->uri,
+			     directory);
+
+	/* FIXME: need to handle updating child directories as well */
+}
+
+void
 nautilus_directory_notify_files_moved (GList *uri_pairs)
 {
 	GList *p;
 	URIPair *pair;
 	NautilusFile *file;
 	NautilusDirectory *old_directory, *new_directory;
+	NautilusDirectory *moved_directory;
 	GHashTable *parent_directories;
 	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
@@ -974,6 +1022,14 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 						 file);
 			collect_parent_directories (parent_directories,
 						    new_directory);
+		}
+
+		/* rename an existing directory */
+		moved_directory = nautilus_directory_get_existing (pair->from_uri);
+		if (moved_directory != NULL) {
+			nautilus_directory_handle_directory_moved (moved_directory, 
+								   pair->to_uri);
+			nautilus_directory_unref (moved_directory);
 		}
 
 		/* Move an existing file. */

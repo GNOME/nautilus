@@ -818,6 +818,10 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 	NautilusFile *existing_file;
 	char *old_relative_uri;
+	char *old_uri;
+	char *new_uri;
+	NautilusDirectory *renamed_directory;
+
 
 	op = callback_data;
 	g_assert (handle == op->handle);
@@ -833,11 +837,21 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 			nautilus_file_mark_gone (existing_file);
 			nautilus_file_changed (existing_file);
 		}
-
+		
+		old_uri = nautilus_file_get_uri (op->file);
 		old_relative_uri = g_strdup (op->file->details->relative_uri);
 		update_info_and_name (op->file, new_info);
 		nautilus_directory_rename_file_metadata
 			(directory, old_relative_uri, op->file->details->relative_uri);
+
+		renamed_directory = nautilus_directory_get_existing (old_uri);
+		if (renamed_directory != NULL) {
+			new_uri = nautilus_file_get_uri (op->file);
+			nautilus_directory_handle_directory_moved (renamed_directory,
+								   new_uri);
+			g_free (new_uri);
+		}
+		g_free (old_uri);
 	}
 	operation_complete (op, result);
 }

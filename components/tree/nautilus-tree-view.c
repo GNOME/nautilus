@@ -23,10 +23,7 @@
  *       Mathieu Lacage <mathieu@eazel.com> (evil dnd code)
  */
 
-/* nautilus-tree-view.c - tree content view
-   component. This component displays a simple label of the URI
-   and demonstrates merging menu items & toolbar buttons. 
-   It should be a good basis for writing out-of-proc content views.
+/* nautilus-tree-view.c - tree sidebar panel
  */
 
 #include <config.h>
@@ -111,8 +108,8 @@ struct NautilusTreeViewDetails {
 
 	NautilusTreeModel *model;
 
-	GHashTable *uri_to_node_map;
-	GHashTable *uri_to_hack_node_map;
+	GHashTable *file_to_node_map;
+	GHashTable *file_to_hack_node_map;
 
 	gboolean show_hidden_files;
 
@@ -139,34 +136,34 @@ static void         notify_node_seen       (NautilusTreeView *view,
 					    NautilusTreeNode *node);
 
 static NautilusCTreeNode *nautilus_tree_view_find_parent_node (NautilusTreeView *view, 
-							  const char       *uri);
+							       NautilusFile     *file);
 
-static gboolean      ctree_is_node_expanded              (NautilusCTree     *ctree,
-							  NautilusCTreeNode *node);
-static NautilusCTreeNode *uri_to_view_node                    (NautilusTreeView *view,
-							  const char *uri);
+static gboolean           ctree_is_node_expanded              (NautilusCTree     *ctree,
+							       NautilusCTreeNode *node);
+static NautilusCTreeNode *file_to_view_node                   (NautilusTreeView *view,
+							       NautilusFile     *file);
 static NautilusCTreeNode *model_node_to_view_node             (NautilusTreeView *view,
-							  NautilusTreeNode *node);
+							       NautilusTreeNode *node);
 
-static char   *view_node_to_uri                    (NautilusTreeView *view,
-							  NautilusCTreeNode *node);
+static NautilusFile      *view_node_to_file                   (NautilusTreeView *view,
+							       NautilusCTreeNode *node);
 
 
-static void reload_node_for_uri                 (NautilusTreeView *view,
-						 const char       *uri);
-static void expand_node_for_uri                 (NautilusTreeView *view,
-						 const char       *uri);
+static void reload_node_for_file                (NautilusTreeView      *view,
+						 NautilusFile          *file);
+static void expand_node_for_file                (NautilusTreeView      *view,
+						 NautilusFile          *file);
 static void tree_load_location_callback         (NautilusView          *nautilus_view,
 						 const char            *location,
 						 NautilusTreeView      *view);
-static void tree_expand_callback                (NautilusCTree              *tree,
-						 NautilusCTreeNode          *node,
+static void tree_expand_callback                (NautilusCTree         *tree,
+						 NautilusCTreeNode     *node,
 						 NautilusTreeView      *view);
-static void tree_collapse_callback              (NautilusCTree              *tree,
-						 NautilusCTreeNode          *node,
+static void tree_collapse_callback              (NautilusCTree         *tree,
+						 NautilusCTreeNode     *node,
 						 NautilusTreeView      *view);
-static void tree_select_row_callback            (NautilusCTree              *tree,
-						 NautilusCTreeNode          *node,
+static void tree_select_row_callback            (NautilusCTree         *tree,
+						 NautilusCTreeNode     *node,
 						 gint                   column,
 						 NautilusTreeView      *view);
 static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
@@ -327,27 +324,27 @@ nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 
 
 static void
-insert_hack_node (NautilusTreeView *view, const char *uri)
+insert_hack_node (NautilusTreeView *view, NautilusFile *file)
 {
  	NautilusCTreeNode *view_node;
 	NautilusCTreeNode *hack_node;
 	char *text[2];
 
 #ifdef DEBUG_TREE
-	printf ("XXX: possibly adding hack node for %s\n", uri);
+	printf ("XXX: possibly adding hack node for %s\n", nautilus_file_get_uri (file));
 #endif
 
-	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
+	hack_node = g_hash_table_lookup (view->details->file_to_hack_node_map, file);
 
 	if (hack_node == NULL) {
 		text[0] = "...HACK...";
 		text[1] = NULL;
 
 #ifdef DEBUG_TREE
-		printf ("XXX: actually adding hack node for %s\n", uri);
+		printf ("XXX: actually adding hack node for %s\n", nautilus_file_get_uri (file));
 #endif
 
-		view_node = uri_to_view_node (view, uri);
+		view_node = file_to_view_node (view, file);
 
 		hack_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
 							view_node, 
@@ -358,31 +355,32 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 							FALSE,
 							FALSE);
 
-		g_assert (g_hash_table_lookup (view->details->uri_to_hack_node_map, uri) == NULL);
-		g_hash_table_insert (view->details->uri_to_hack_node_map, 
-				     g_strdup (uri), hack_node);
+		g_assert (g_hash_table_lookup (view->details->file_to_hack_node_map, file) == NULL);
+		nautilus_file_ref (file);
+		g_hash_table_insert (view->details->file_to_hack_node_map, 
+				     file, hack_node);
 	}
 }
 
 
 static void
-remove_hack_node (NautilusTreeView *view, const char *uri)
+remove_hack_node (NautilusTreeView *view, NautilusFile *file)
 {
 	gpointer key, value;
 	NautilusCTreeNode *hack_node;
 
 #ifdef DEBUG_TREE
-	printf ("XXX: removing hack node for %s\n", uri);
+	printf ("XXX: removing hack node for %s\n", nautilus_file_get_uri (file));
 #endif
 
-	if (g_hash_table_lookup_extended (view->details->uri_to_hack_node_map,
-					  uri, &key, &value)) {
+	if (g_hash_table_lookup_extended (view->details->file_to_hack_node_map,
+					  file, &key, &value)) {
 		hack_node = value;
 
 		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
 					    hack_node);
-		g_hash_table_remove (view->details->uri_to_hack_node_map, uri);
-		g_free (key);
+		g_hash_table_remove (view->details->file_to_hack_node_map, file);
+		nautilus_file_unref (file);
 
 		gtk_clist_thaw (GTK_CLIST (view->details->tree));
 
@@ -394,7 +392,7 @@ remove_hack_node (NautilusTreeView *view, const char *uri)
 
 
 static void
-freeze_if_have_hack_node (NautilusTreeView *view, const char *uri)
+freeze_if_have_hack_node (NautilusTreeView *view, NautilusFile *file)
 {
 	NautilusCTreeNode *hack_node;
 
@@ -402,7 +400,7 @@ freeze_if_have_hack_node (NautilusTreeView *view, const char *uri)
 	puts ("XXX: freezing if hack node");
 #endif
 
-	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
+	hack_node = g_hash_table_lookup (view->details->file_to_hack_node_map, file);
 
 	if (hack_node != NULL) {
 		gtk_clist_freeze (GTK_CLIST (view->details->tree));
@@ -418,7 +416,9 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	NautilusCTreeNode *parent_view_node;
  	NautilusCTreeNode *view_node;
 	NautilusFile *file;
-	char *uri, *parent_uri;
+	NautilusFile *parent_file;
+	char *uri;
+
 	char *text[2];
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
@@ -429,18 +429,16 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 		return;
 	}
 
-	uri = nautilus_tree_node_get_uri (node);
-	
 #ifdef DEBUG_TREE
-	printf ("Inserting URI into tree: %s\n", uri);
+	printf ("Inserting URI into tree: %s\n", nautilus_file_get_uri (file));
 #endif
 
-	parent_view_node = nautilus_tree_view_find_parent_node (view, uri);
+	parent_view_node = nautilus_tree_view_find_parent_node (view, file);
 
 
 #ifdef DEBUG_TREE
 	printf ("parent_view_node 0x%x (%s)\n", (unsigned) parent_view_node, 
-		view_node_to_uri (view, node);
+		nautilus_file_get_uri (view_node_to_file (view, node)));
 #endif
 
 
@@ -472,34 +470,36 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 		
 		
 		nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
-					     view_node,
-					     node);
+						  view_node,
+						  node);
 
-		g_assert (g_hash_table_lookup (view->details->uri_to_node_map, uri) == NULL);
-		g_hash_table_insert (view->details->uri_to_node_map, g_strdup (uri), view_node); 
+		g_assert (g_hash_table_lookup (view->details->file_to_node_map, file) == NULL);
+
+		nautilus_file_ref (file);
+		g_hash_table_insert (view->details->file_to_node_map, file, view_node); 
 		
 		if (nautilus_file_is_directory (file)) {
 			/* Gratuitous hack so node can be expandable w/o
 			   immediately inserting all the real children. */
 
+			uri = nautilus_file_get_uri (file);
 			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
 				nautilus_ctree_expand (NAUTILUS_CTREE (NAUTILUS_CTREE (view->details->tree)),
 						  view_node);
 			} else {
-				insert_hack_node (view, uri);
+				insert_hack_node (view, file);
 			}
+			
+			g_free (uri);
 		}
 	}
 
 	g_free (text[0]);
 
 	if (parent_view_node != NULL) {
-		parent_uri = view_node_to_uri (view, parent_view_node);
-		remove_hack_node (view, parent_uri);
-		g_free (parent_uri);
+		parent_file = view_node_to_file (view, parent_view_node);
+		remove_hack_node (view, parent_file);
 	}
-
-	g_free (uri);
 }
 
 
@@ -507,22 +507,26 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 static void
 nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
-	char *uri;
 	gpointer key, value;
 	NautilusCTreeNode *view_node;
-
+	NautilusFile *file;
+	char *uri;
+	
 	nautilus_tree_model_stop_monitoring_node (view->details->model, node, view);
 
-	uri = nautilus_tree_node_get_uri (node);
+	file = nautilus_tree_node_get_file (node);
 	
-	if (g_hash_table_lookup_extended (view->details->uri_to_node_map,
-					  uri, &key, &value)) {
+	uri = nautilus_file_get_uri (file);
+	
+	if (g_hash_table_lookup_extended (view->details->file_to_node_map,
+					  file, &key, &value)) {
 		view_node = value;
 
 		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
 					    view_node);
-		g_hash_table_remove (view->details->uri_to_node_map, uri);
-		g_free (key);
+		g_hash_table_remove (view->details->file_to_node_map, file);
+		
+		nautilus_file_unref (file);
 	}
 
 	nautilus_tree_expansion_state_remove_node (view->details->expansion_state,
@@ -567,13 +571,11 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	
 	file = nautilus_tree_node_get_file (node);
 
-	uri = nautilus_tree_node_get_uri (node);
-
 	view_node = model_node_to_view_node (view, node);
 
 	if (view_node != NULL) {
 
-		name = nautilus_uri_get_basename (uri);
+		name = nautilus_file_get_name (file);
 	
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
 								    NULL,
@@ -612,25 +614,28 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 #endif	
 
 		if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
+			uri = nautilus_file_get_uri (file);
+
 			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
 				if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
 							     view_node)) {
 					nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
-							  view_node);
+							       view_node);
 				} 
 			} else {
 				if (ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
-								       view_node)) {
+							    view_node)) {
 					nautilus_ctree_collapse (NAUTILUS_CTREE (view->details->tree),
-							    view_node);
+								 view_node);
 				} else {
-					insert_hack_node (view, uri);
+					insert_hack_node (view, file);
 				}
 			}
+
+			g_free (uri);
 		}
 	}
 	
-	g_free (uri);
 }
 
 
@@ -670,7 +675,7 @@ notify_node_seen (NautilusTreeView *view,
 		}
 	}
 
-	uri = nautilus_tree_node_get_uri (node);
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
 	
 	if (nautilus_strcmp (uri, view->details->wait_uri) == 0) {
 		callback = view->details->uri_loaded_or_parent_done_loading;
@@ -715,15 +720,10 @@ nautilus_tree_view_model_node_changed_callback (NautilusTreeModel *model,
 						gpointer           callback_data)
 {
 	NautilusTreeView *view;
-	char *uri;
-
-	uri = nautilus_tree_node_get_uri (node);
 
 #ifdef DEBUG_TREE
 	printf ("XXX: changed %s\n", uri);
 #endif
-
-	g_free (uri);
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
@@ -754,7 +754,6 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 						gpointer           callback_data)
 {
 	NautilusTreeView *view;
-	char *uri;
 
 	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
 	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
@@ -765,11 +764,7 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
-	uri = nautilus_tree_node_get_uri (node);
-
-	remove_hack_node (view, uri);
-
-	g_free (uri);
+	remove_hack_node (view, nautilus_tree_node_get_file (node));
 
 	notify_done_loading (view, node);
 }
@@ -982,8 +977,8 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    GTK_SIGNAL_FUNC (tree_load_location_callback), 
 			    view);
 
-	view->details->uri_to_node_map = g_hash_table_new (g_str_hash, g_str_equal);
-	view->details->uri_to_hack_node_map = g_hash_table_new (g_str_hash, g_str_equal);
+	view->details->file_to_node_map = g_hash_table_new (g_direct_hash, g_direct_equal);
+	view->details->file_to_hack_node_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 	
 	nautilus_tree_view_load_from_filesystem (view);
 
@@ -1016,19 +1011,19 @@ disconnect_model_handlers (NautilusTreeView *view)
 }
 
 static void
-free_uri_to_node_map_entry (gpointer key, gpointer value, gpointer callback_data)
+free_file_to_node_map_entry (gpointer key, gpointer value, gpointer callback_data)
 {
 	g_assert (callback_data == NULL);
 
-	g_free (key);
+	nautilus_file_unref (NAUTILUS_FILE (key));
 }
 
 static void
-free_uri_to_hack_node_map_entry (gpointer key, gpointer value, gpointer callback_data)
+free_file_to_hack_node_map_entry (gpointer key, gpointer value, gpointer callback_data)
 {
 	g_assert (callback_data == NULL);
 
-	g_free (key);
+	nautilus_file_unref (NAUTILUS_FILE (key));
 }
 
 static void
@@ -1038,15 +1033,15 @@ nautilus_tree_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_TREE_VIEW (object);
 
-	g_hash_table_foreach (view->details->uri_to_node_map,
-			      free_uri_to_node_map_entry,
+	g_hash_table_foreach (view->details->file_to_node_map,
+			      free_file_to_node_map_entry,
 			      NULL);
-	g_hash_table_destroy (view->details->uri_to_node_map);
+	g_hash_table_destroy (view->details->file_to_node_map);
 	
-	g_hash_table_foreach (view->details->uri_to_hack_node_map,
-			      free_uri_to_hack_node_map_entry,
+	g_hash_table_foreach (view->details->file_to_hack_node_map,
+			      free_file_to_hack_node_map_entry,
 			      NULL);
-	g_hash_table_destroy (view->details->uri_to_hack_node_map);
+	g_hash_table_destroy (view->details->file_to_hack_node_map);
 	
 	/* you do not need to unref the normal style */
 	if (view->details->dnd->highlight_style != NULL) {
@@ -1083,10 +1078,10 @@ nautilus_tree_view_get_nautilus_view (NautilusTreeView *view)
 
 
 static NautilusCTreeNode *
-uri_to_view_node (NautilusTreeView *view,
-		  const char *uri)
+file_to_view_node (NautilusTreeView *view,
+		   NautilusFile     *file)
 {
-	return g_hash_table_lookup (view->details->uri_to_node_map, uri);
+	return g_hash_table_lookup (view->details->file_to_node_map, file);
 }
 
 
@@ -1095,15 +1090,14 @@ model_node_to_view_node (NautilusTreeView *view,
 			 NautilusTreeNode *node)
 {
 	NautilusCTreeNode *view_node;
-	char *uri;
+	NautilusFile *file;
 
 	if (node == NULL) {
 		return NULL;
 	}
 
-	uri = nautilus_tree_node_get_uri (node);
-	view_node = uri_to_view_node (view, uri);
-	g_free (uri);
+	file = nautilus_tree_node_get_file (node);
+	view_node = file_to_view_node (view, file);
 
 	return view_node;
 }
@@ -1120,12 +1114,11 @@ view_node_to_model_node (NautilusTreeView *view,
 	return tree_node;
 }
 
-static char *
-view_node_to_uri (NautilusTreeView *view,
-		  NautilusCTreeNode *node)
+static NautilusFile *
+view_node_to_file (NautilusTreeView *view,
+		   NautilusCTreeNode *node)
 {
 	NautilusTreeNode *tree_node;
-	char *uri;
 
 	tree_node = view_node_to_model_node (view, node);
 
@@ -1133,9 +1126,7 @@ view_node_to_uri (NautilusTreeView *view,
 		return NULL;
 	}
 
-	uri = nautilus_tree_node_get_uri (tree_node);
-
-	return uri;
+	return nautilus_tree_node_get_file (tree_node);
 }
 
 static GList *
@@ -1216,6 +1207,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	GList *old_sequence;
 	NautilusCTreeNode *view_node;
 	gboolean at_least_one_found;
+	NautilusFile *file;
 
 	at_least_one_found = FALSE;
 	uri = NULL;
@@ -1228,7 +1220,9 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	for (p = view->details->in_progress_select_uris; p != NULL; p = p->next) {
 		uri = (char *) p->data;
 
-		view_node = uri_to_view_node (view, uri);
+		file = nautilus_file_get (uri);
+		view_node = file_to_view_node (view, file);
+		nautilus_file_unref (file);
 
 		if (view_node == NULL) {
 			break;
@@ -1325,11 +1319,14 @@ tree_load_location_callback (NautilusView *nautilus_view,
 
 
 static void
-reload_node_for_uri (NautilusTreeView *view,
-		     const char *uri)
+reload_node_for_file (NautilusTreeView *view,
+		      NautilusFile     *file)
 {
 	GList *p;
 	NautilusTreeNode *node;
+	char *uri;
+
+	uri = nautilus_file_get_uri (file);
 
 	node = nautilus_tree_model_get_node (view->details->model, uri);
 	g_return_if_fail (node != NULL);
@@ -1339,33 +1336,36 @@ reload_node_for_uri (NautilusTreeView *view,
 	for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
 		nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
 	}
+
+	g_free (uri);
 }
 
 static void
-expand_node_for_uri (NautilusTreeView *view,
-		     const char *uri)
+expand_node_for_file (NautilusTreeView *view,
+		      NautilusFile      *file)
 {
+	char *uri;
 
-	freeze_if_have_hack_node (view, uri);
+	freeze_if_have_hack_node (view, file);
 
+	uri = nautilus_file_get_uri (file);
 	nautilus_tree_expansion_state_expand_node (view->details->expansion_state,
 						   uri);
+	g_free (uri);
 
-	reload_node_for_uri (view, uri);
+	reload_node_for_file (view, file);
 }
 
 static void
 tree_expand_callback (NautilusCTree         *ctree,
 		      NautilusCTreeNode     *node,
-		      NautilusTreeView *view)
+		      NautilusTreeView      *view)
 {
-	char *uri;
+	NautilusFile *file;
 
-	uri = view_node_to_uri (view, node);
+	file = view_node_to_file (view, node);
 
-	expand_node_for_uri (view, uri);
-
-	g_free (uri);
+	expand_node_for_file (view, file);
 }
 
 
@@ -1373,21 +1373,18 @@ tree_expand_callback (NautilusCTree         *ctree,
 static void
 tree_collapse_callback (NautilusCTree         *ctree,
 			NautilusCTreeNode     *node,
-			NautilusTreeView *view)
+			NautilusTreeView      *view)
 {
 	char *uri;
-
-	uri = view_node_to_uri (view, node);
-
+	
+	uri = nautilus_file_get_uri (view_node_to_file (view, node));
 	nautilus_tree_expansion_state_collapse_node (view->details->expansion_state,
 						     uri);
-
-	nautilus_tree_model_stop_monitoring_node_recursive (view->details->model,
-							    nautilus_tree_model_get_node (view->details->model,
-											  uri),
-							    view);
-
 	g_free (uri);
+	
+	nautilus_tree_model_stop_monitoring_node_recursive (view->details->model,
+							    view_node_to_model_node (view, node),
+							    view);
 }
 
 
@@ -1401,7 +1398,7 @@ tree_select_row_callback (NautilusCTree              *tree,
 {
 	char *uri;
 	
-	uri = view_node_to_uri (view, node);
+	uri = nautilus_file_get_uri (view_node_to_file (view, node));
 	
 	if (uri != NULL &&
 	    nautilus_strcmp (view->details->selected_uri, uri) != 0) {
@@ -1428,11 +1425,17 @@ nautilus_tree_view_update_all_icons (NautilusTreeView *view)
 
 static NautilusCTreeNode *
 nautilus_tree_view_find_parent_node (NautilusTreeView *view, 
-				     const char *uri)
+				     NautilusFile     *file)
 {
 	NautilusTreeNode *node;
+	char *uri;
 
-	node = nautilus_tree_model_get_node (view->details->model, uri);
+	uri = nautilus_file_get_uri (file);
+
+	node = nautilus_tree_model_get_node (view->details->model, 
+					     nautilus_file_get_uri (file));
+
+	g_free (uri);
 
 	if (node == NULL) {
 		g_print ("You've run into an intermittent tree view bug.\n");
@@ -2192,7 +2195,7 @@ nautilus_tree_view_item_at (NautilusTreeView *tree_view,
 		return NULL;
 	}
 
-	return view_node_to_uri (tree_view, node);
+	return nautilus_file_get_uri (view_node_to_file (tree_view, node));
 }
 
 
@@ -2258,8 +2261,8 @@ nautilus_dump_info (NautilusTreeView *tree_view)
 	retval = NULL;
 	for (tmp = list; tmp != NULL;tmp = tmp->next) {
 		node = (NautilusCTreeNode *) tmp->data;
-		uri = view_node_to_uri (tree_view, 
-					node);
+		uri = nautilus_file_get_uri (view_node_to_file (tree_view, 
+								node));
 		temp = g_strconcat (uri, ", ", retval, NULL);
 		g_free (uri);
 		g_free (retval);
@@ -2574,8 +2577,10 @@ nautilus_tree_view_collapse_all (NautilusTreeView *tree_view,
 #if 0
 			{
 				char *expanded_uri, *current_uri;
-				expanded_uri = view_node_to_uri (tree_view, expanded_node);
-				current_uri = view_node_to_uri (tree_view, current_node);
+				expanded_uri = nautilus_file_get_uri 
+					(view_node_to_file (tree_view, expanded_node));
+				current_uri = nautilus_file_get_uri 
+					(view_node_to_file (tree_view, current_node));
 
 				g_print ("collapsing %s in %s\n", expanded_uri, current_uri);
 				g_free (expanded_uri);

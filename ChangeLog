@@ -1,3 +1,41 @@
+2000-11-02  Maciej Stachowiak  <mjs@eazel.com>
+
+	Believed fix to 4361 and possible progress on 4157.
+	
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_node_has_monitor_clients,
+	nautilus_tree_model_node_begin_monitoring,
+	nautilus_tree_model_node_end_monitoring,
+	nautilus_tree_model_monitor_node,
+	nautilus_tree_model_stop_monitoring_node, report_node_changed):
+	Various restructing.
+
+	* components/tree/nautilus-tree-view.c: (insert_hack_node,
+	remove_hack_node, freeze_if_have_hack_node,
+	nautilus_tree_view_insert_model_node,
+	nautilus_tree_view_remove_model_node,
+	nautilus_tree_view_update_model_node, notify_node_seen,
+	nautilus_tree_view_model_node_changed_callback,
+	nautilus_tree_view_model_done_loading_callback,
+	nautilus_tree_view_initialize, free_file_to_node_map_entry,
+	free_file_to_hack_node_map_entry, nautilus_tree_view_destroy,
+	file_to_view_node, model_node_to_view_node, view_node_to_file,
+	expand_uri_sequence_and_select_end, reload_node_for_file,
+	expand_node_for_file, tree_expand_callback,
+	tree_collapse_callback, tree_select_row_callback,
+	nautilus_tree_view_find_parent_node, nautilus_tree_view_item_at,
+	nautilus_dump_info, nautilus_tree_view_collapse_all): Pass around
+	and store NautilusFile objects rather than URIs, since nodes are
+	tied to a NautilusFile (which can change URI if moved or renamed).
+
+	* libnautilus-extensions/nautilus-directory-private.h,
+	libnautilus-extensions/nautilus-directory.c
+	(nautilus_directory_handle_directory_moved,
+	nautilus_directory_notify_files_moved),
+	libnautilus-extensions/nautilus-file.c (rename_callback): When a
+	directory is moved or renamed, update the NautilusDirectory
+	structure for it to have the correct new URI.
+
 2000-11-02  Darin Adler  <darin@eazel.com>
 
 	* README: Change to reflect the fact that we currently require

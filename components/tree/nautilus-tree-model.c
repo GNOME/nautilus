@@ -365,60 +365,82 @@ nautilus_tree_model_monitor_remove (NautilusTreeModel         *model,
 }
 
 
+static gboolean
+nautilus_tree_model_node_has_monitor_clients (NautilusTreeModel         *model,
+					      NautilusTreeNode          *node)
+{
+	return (node->details->monitor_clients != NULL);
+}
+				 
+static void
+nautilus_tree_model_node_begin_monitoring (NautilusTreeModel         *model,
+					   NautilusTreeNode          *node)
+{
+	GList             *monitor_attributes;
+
+
+	NautilusDirectory *directory;
+	directory = nautilus_tree_node_get_directory (node);
+
+	/* we must connect to signals */
+	
+	node->details->files_added_id = gtk_signal_connect 
+		(GTK_OBJECT (directory),
+		 "files_added",
+		 nautilus_tree_model_directory_files_added_callback,
+		 model);
+	
+	node->details->files_changed_id = gtk_signal_connect 
+		(GTK_OBJECT (directory),
+		 "files_changed",
+		 nautilus_tree_model_directory_files_changed_callback,
+		 model);
+	
+	node->details->done_loading_id = gtk_signal_connect 
+		(GTK_OBJECT (directory),
+		 "done_loading",
+		 nautilus_tree_model_directory_done_loading_callback,
+		 model);
+
+	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+	nautilus_directory_file_monitor_add (directory,
+					     model,
+					     monitor_attributes,
+					     TRUE);
+	g_list_free (monitor_attributes);
+}
+
+static void
+nautilus_tree_model_node_end_monitoring (NautilusTreeModel         *model,
+					 NautilusTreeNode          *node)
+{
+	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_added_id);
+	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_changed_id);
+	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->done_loading_id);
+	
+	nautilus_directory_file_monitor_remove (node->details->directory,
+						model);
+}
+
+
+
 void
 nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 				  NautilusTreeNode          *node,
 				  gconstpointer              client)
 {
-	NautilusDirectory *directory;
-	GList             *monitor_attributes;
-
 	if (!nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
 		report_done_loading (model, node);
 		return;
 	}
 
-	directory = nautilus_tree_node_get_directory (node);
-
-	if (node->details->monitor_clients == NULL) {
-		/* we must connect to signals */
-		
-		node->details->files_added_id = gtk_signal_connect 
-			(GTK_OBJECT (directory),
-			 "files_added",
-			 nautilus_tree_model_directory_files_added_callback,
-			 model);
-		
-		node->details->files_changed_id = gtk_signal_connect 
-			(GTK_OBJECT (directory),
-			 "files_changed",
-			 nautilus_tree_model_directory_files_changed_callback,
-			 model);
-
-		node->details->done_loading_id = gtk_signal_connect 
-			(GTK_OBJECT (directory),
-			 "done_loading",
-			 nautilus_tree_model_directory_done_loading_callback,
-			 model);
+	if (! nautilus_tree_model_node_has_monitor_clients (model, node)) {
+		nautilus_tree_model_node_begin_monitoring (model, node);
 	}
 
-	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-	
-#if 0
-	node->details->provisional_children = node->details->children;
-	g_list_free (node->details->children);
-	node->details->children = NULL;
-#endif
-
-	nautilus_directory_file_monitor_add (directory,
-					     model,
-					     monitor_attributes,
-					     TRUE);
-	
-	g_list_free (monitor_attributes);
-
 	if (! g_list_find (node->details->monitor_clients, (gpointer) client)) {
-		node->details->monitor_clients = g_list_prepend (node->details->monitor_clients, (gpointer) client);
+		node->details->monitor_clients = g_list_prepend (node->details->monitor_clients, 
+								 (gpointer) client);
 	}
 }
 
@@ -438,13 +460,8 @@ nautilus_tree_model_stop_monitoring_node (NautilusTreeModel *model,
 
 	node->details->monitor_clients = g_list_remove (node->details->monitor_clients, (gpointer) client);
 
-	if (node->details->monitor_clients == NULL) {
-		gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_added_id);
-		gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_changed_id);
-		gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->done_loading_id);
-		
-		nautilus_directory_file_monitor_remove (node->details->directory,
-							model);
+	if (!nautilus_tree_model_node_has_monitor_clients (model, node)) {
+		nautilus_tree_model_node_end_monitoring (model, node);
 	}
 }
 
@@ -566,13 +583,14 @@ report_node_changed (NautilusTreeModel *model,
 
 	if (node->details->directory == NULL && nautilus_file_is_directory (node->details->file)) {
 		node->details->directory = nautilus_directory_get (node_uri);
+	
+#if 0
+		if (nautilus_tree_model_node_has_monitor_clients (model, node)) {
+			nautilus_tree_model_node_begin_monitoring (model, node);
+		}
+#endif
 	}
 
-	/* FIXME bugzilla.eazel.com 2414: 
-	 * if the node is no longer a directory, we should free
-           disconnect from it's NautilusDirectory and unref it; need
-           to figure out how to do this safely) */
-	
 	if (g_hash_table_lookup (model->details->file_to_node_map, 
 				 nautilus_tree_node_get_file (node)) == NULL) {
 		/* Actually added, go figure */
@@ -618,6 +636,17 @@ report_node_changed (NautilusTreeModel *model,
 			
 			g_free (node->details->uri);
 			node->details->uri = file_uri;
+			
+#if 0
+			if (node->details->directory != NULL) {
+				/* Stop monitoring the old directory */
+				if (nautilus_tree_model_node_has_monitor_clients (model, node)) {
+					nautilus_tree_model_node_end_monitoring (model, node);
+				}
+				nautilus_directory_unref (node->details->directory);
+				node->details->directory = NULL;
+			}
+#endif
 
 			report_node_changed (model, node);
 

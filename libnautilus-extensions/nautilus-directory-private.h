@@ -107,6 +107,9 @@ struct NautilusDirectoryDetails
 	GList *file_operations_in_progress; /* list of FileOperation * */
 };
 
+
+NautilusDirectory *nautilus_directory_get_existing                    (const char                *uri);
+
 /* async. interface */
 void               nautilus_directory_async_state_changed             (NautilusDirectory         *directory);
 void               nautilus_directory_call_when_ready_internal        (NautilusDirectory         *directory,
@@ -173,6 +176,10 @@ GList *            nautilus_directory_begin_file_name_change          (NautilusD
 void               nautilus_directory_end_file_name_change            (NautilusDirectory         *directory,
 								       NautilusFile              *file,
 								       GList                     *node);
+
+
+void               nautilus_directory_handle_directory_moved          (NautilusDirectory *directory,
+								       const char        *to_uri);
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding              (void);
