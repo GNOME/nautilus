@@ -1,3 +1,41 @@
+2000-08-27  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        Entity support done in the bad evil way! (fixes bug #2200)
+        (we should re-write gnome-db2html2 to use the DOM parser - but this
+        should be filed as another bug - and this code is here until
+        gnome-db2html2 IS written to use the DOM parser)
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        Extend the ElementInfo toc_elements[] table down to the 'TABLE' tag
+        Fixes bug #2361 - It took me an INSANE amount of time for such a
+        simple little FIX. The shitty thing is, I knew the problem when I
+        started but then I decided to 'explore'
+
+        * components/help/converters/gnome-db2html2/gdb3html.[ch]:
+        Include libxml header's (for entity support). Include an
+        xmlParserCtxtPtr in the Context struct
+        (gdb3html_comment), (gdb3html_warning), (gdb3html_error),
+        (gdb3html_characters): Renamed into its own namespace (to avoid clash
+        with libxml header)
+
+        (gdb3html_internalSubset), (gdb3html_isStandalone),
+        (gdb3html_hasInternalSubset), (gdb3html_hasExternalSubset),
+        (gdb3html_resolveEntity), (gdb3html_entityDecl),
+        (gdb3html_notationDecl), (gdb3html_attributeDecl),
+        (gdb3html_elementDecl), (gdb3html_unparsedEntityDecl),
+        (gdb3html_reference), (gdb3html_processingInstruction),
+        (gdb3html_getParameterEntity): New functions (that handle DOM parsing
+        using SAX)
+
+        (cdata_block), (gdb3html_characters), (end_element),
+        (start_element), (start_document), (end_document),
+        (get_entity): Include calls to the DOM SAX handler
+
+        (xml_parse_document): New function to get the xmlDocPtr without
+        spewing warning/error messages all over the place.
+        (parse_file): Initialize the ParserCtxt and substitute entities by
+        default
+
 2000-08-26  Andy Hertzfeld  <andy@eazel.com>
  
 	cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-eazel.c

@@ -3,6 +3,8 @@
 
 #include <parser.h>
 #include <parserInternals.h>
+#include <SAX.h>
+#include <xmlmemory.h>
 #include <glib.h>
 #include <string.h>
 
@@ -140,6 +142,7 @@ struct _Context {
 	gboolean empty_element; /* This is to determine if the element is
 				   empty or not */
 	GSList *footnotes;
+	xmlParserCtxtPtr ParserCtxt;
 };
 
 /* useful structs */

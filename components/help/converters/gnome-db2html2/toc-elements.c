@@ -99,6 +99,11 @@ ElementInfo toc_elements[] = {
 	{ FUNCPARAMS, "funcparams", NULL, NULL, NULL},
 	{ PARAMDEF, "paramdef", NULL, NULL, NULL},
 	{ VOID, "void", NULL, NULL, NULL},
+	{ GUISUBMENU, "guisubmenu", NULL, NULL, NULL},
+	{ INTERFACE, "interface", NULL, NULL, NULL},
+	{ LINK, "link", NULL, NULL, NULL},
+	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
+	{ TABLE, "table", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -342,6 +347,7 @@ toc_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -407,6 +413,7 @@ toc_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 
 	index = find_first_parent (context, element_list);
 
@@ -452,6 +459,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 
 	index = find_first_parent (context, element_list);
 

@@ -1,4 +1,5 @@
 #include <config.h>
+
 #include "gdb3html.h"
 #include "toc-elements.h"
 #include "sect-elements.h"
@@ -125,6 +126,7 @@ find_first_element (Context *context, GSList *args)
 
 	for (ptr = context->stack; ptr; ptr = ptr->next) {
 		for (element_ptr = args; element_ptr; element_ptr = element_ptr->next) {
+//			g_print ("We are comparing %s with %d\n", ((StackElement*) ptr->data)->info->name, GPOINTER_TO_INT (element_ptr->data));
 			if (((StackElement*) ptr->data)->info &&
 			    ((StackElement*) ptr->data)->info->index == GPOINTER_TO_INT (element_ptr->data))
 				return (StackElement *) ptr->data;
@@ -167,21 +169,26 @@ find_element_info (ElementInfo *elements,
 static xmlEntityPtr
 get_entity (Context *context, const char *name)
 {
+	xmlEntityPtr ret;
 #ifdef ERROR_OUTPUT
 	g_print ("in getEntity:%s\n", name);
 #endif
+	ret = getEntity (context->ParserCtxt, name);
 
-	return xmlGetPredefinedEntity (name);
+/*	return xmlGetPredefinedEntity (name); */
+	return (ret);
 }
 
 static void
 start_document (Context *context)
 {
+	startDocument (context->ParserCtxt);
 }
 
 static void
 end_document (Context *context)
 {
+	endDocument (context->ParserCtxt);
 }
 
 static void
@@ -191,6 +198,8 @@ start_element(Context *context,
 {
 	ElementInfo *element;
 	StackElement *stack_el = g_new0 (StackElement, 1);
+	
+	startElement (context->ParserCtxt, name, attrs);
 
 	element = find_element_info (context->elements, name);
 
@@ -215,6 +224,8 @@ end_element (Context *context,
 	StackElement *stack_el;
 	gchar **atrs_ptr;
 
+	endElement (context->ParserCtxt, name);
+	
 	element = find_element_info (context->elements, name);
 	stack_el = (StackElement *) context->stack->data;
 	if (stack_el->info != element) {
@@ -236,11 +247,13 @@ end_element (Context *context,
 }
 
 static void
-characters (Context *context,
-	    const gchar *chars,
-	    int len)
+gdb3html_characters (Context *context,
+		     const gchar *chars,
+	    	     int len)
 {
 	ElementInfo *element;
+	
+	characters (context->ParserCtxt, chars, len);
 
 	if (context->stack == NULL)
 		return;
@@ -252,7 +265,7 @@ characters (Context *context,
 }
 
 static void
-comment (Context *context, const char *msg)
+gdb3html_comment (Context *context, const char *msg)
 {
 #ifdef ERROR_OUTPUT
 	g_log("XML", G_LOG_LEVEL_MESSAGE, "%s", msg);
@@ -260,7 +273,7 @@ comment (Context *context, const char *msg)
 }
 
 static void
-warning (Context *context, const char *msg, ...)
+gdb3html_warning (Context *context, const char *msg, ...)
 {
 	va_list args;
 
@@ -272,7 +285,7 @@ warning (Context *context, const char *msg, ...)
 }
 
 static void
-error (Context *context, const char *msg, ...)
+gdb3html_error (Context *context, const char *msg, ...)
 {
 	va_list args;
 
@@ -301,6 +314,8 @@ cdata_block (Context *context, const xmlChar *value, int len)
 	ElementInfo *element;
 	StackElement *stack_el = g_new0 (StackElement, 1);
 
+	cdataBlock (context->ParserCtxt, value, len);
+
 	element = find_element_info (context->elements, "cdata");
 	stack_el->info = element;
 
@@ -312,40 +327,248 @@ cdata_block (Context *context, const xmlChar *value, int len)
 	context->stack = g_list_remove_link (context->stack, context->stack);
 }
 
+static int
+gdb3html_isStandalone (Context *context)
+{
+	int ret;
+	
+	ret = isStandalone (context->ParserCtxt);
+	return (ret);
+}
+
+static int
+gdb3html_hasInternalSubset (Context *context)
+{
+	int ret;
+	
+	ret = hasInternalSubset (context->ParserCtxt);
+	return (ret);
+}
+
+static int
+gdb3html_hasExternalSubset (Context *context)
+{
+	int ret;
+	
+	ret = hasExternalSubset (context->ParserCtxt);
+	return (ret);
+}
+static void
+gdb3html_internalSubset (Context *context, const xmlChar *name,
+			 const xmlChar *ExternalID, const xmlChar *SystemID)
+{
+	/* This function is copied from SAX.c in libxml so we can 'silence'
+	 * the warning messages */
+	xmlParserCtxtPtr ctxt;
+       
+	ctxt = context->ParserCtxt;
+	
+	xmlCreateIntSubset (ctxt->myDoc, name, ExternalID, SystemID);
+	if (((ExternalID != NULL) || (SystemID != NULL)) &&
+	    (ctxt->validate && ctxt->wellFormed && ctxt->myDoc)) {
+		xmlDtdPtr ret = NULL;
+		xmlParserCtxtPtr dtdCtxt;
+		xmlParserInputPtr input = NULL;
+		xmlCharEncoding enc;
+
+		dtdCtxt = xmlNewParserCtxt();
+		if (dtdCtxt == NULL) {
+			return;
+		}
+
+		/* Ask entity resolve to load it */
+		if ((ctxt->directory != NULL) && (dtdCtxt->directory == NULL)) {
+			dtdCtxt->directory = (char *) xmlStrdup (BAD_CAST ctxt->directory);
+		}
+		if ((dtdCtxt->sax != NULL) && (dtdCtxt->sax->resolveEntity != NULL)) {
+			dtdCtxt->sax->warning = (warningSAXFunc) gdb3html_warning;
+			input = dtdCtxt->sax->resolveEntity (dtdCtxt->userData, ExternalID, SystemID);
+		}
+		if (input == NULL) {
+			xmlFreeParserCtxt (dtdCtxt);
+			return;
+		}
+
+		/* Plug some encoding conversion routines */
+		xmlPushInput (dtdCtxt, input);
+		enc = xmlDetectCharEncoding (dtdCtxt->input->cur);
+		xmlSwitchEncoding (dtdCtxt, enc);
+
+		if (input->filename == NULL) {
+			input->filename = (char *) xmlStrdup (SystemID);
+		}
+		input->line = 1;
+		input->col = 1;
+		input->base = dtdCtxt->input->cur;
+		input->cur = dtdCtxt->input->cur;
+		input->free = NULL;
+
+		/* lets parse the entity knowing it's an external subset */
+		xmlParseExternalSubset (dtdCtxt, ExternalID, SystemID);
+
+		if (dtdCtxt->myDoc != NULL) {
+			if (dtdCtxt->wellFormed) {
+				ret = dtdCtxt->myDoc->intSubset;
+				dtdCtxt->myDoc->intSubset = NULL;
+			} else {
+				ret = NULL;
+			}
+			xmlFreeDoc (dtdCtxt->myDoc);
+			dtdCtxt->myDoc = NULL;
+		}
+		xmlFreeParserCtxt (dtdCtxt);
+
+		ctxt->myDoc->extSubset = ret;
+	}
+}
+		
+static xmlParserInputPtr
+gdb3html_resolveEntity (Context *context, const xmlChar *publicId, const xmlChar *systemId)
+{
+	xmlParserInputPtr ret;
+
+	ret = resolveEntity (context->ParserCtxt, publicId, systemId);
+	return ret;
+}
+
+static void 
+gdb3html_entityDecl (Context *context, const xmlChar *name, int type,
+	 	     const xmlChar *publicId, const xmlChar *systemId, xmlChar *content)
+{
+	entityDecl (context->ParserCtxt, name, type, publicId, systemId, content);
+
+}
+
+static void
+gdb3html_attributeDecl (Context *context, const xmlChar *elem, const xmlChar *name,
+              	        int type, int def, const xmlChar *defaultValue,
+	      	        xmlEnumerationPtr tree)
+{
+    attributeDecl(context->ParserCtxt, elem, name, type, def, defaultValue, tree);
+}
+
+static void
+gdb3html_elementDecl (Context *context, const xmlChar *name, int type,
+	    	      xmlElementContentPtr content)
+{
+    elementDecl(context->ParserCtxt, name, type, content);
+}
+
+static void
+gdb3html_notationDecl (Context *context, const xmlChar *name,
+	     	       const xmlChar *publicId, const xmlChar *systemId)
+{
+    notationDecl(context->ParserCtxt, name, publicId, systemId);
+}
+
+static void
+gdb3html_unparsedEntityDecl (Context *context, const xmlChar *name,
+		    	     const xmlChar *publicId, const xmlChar *systemId,
+		    	     const xmlChar *notationName)
+{
+	unparsedEntityDecl (context->ParserCtxt, name, publicId, systemId, notationName);
+}
+
+static void
+gdb3html_reference (Context *context, const xmlChar *name)
+{
+	reference (context->ParserCtxt, name);
+}
+
+static void
+gdb3html_processingInstruction (Context *context, const xmlChar *target,
+				const xmlChar *data)
+{
+	processingInstruction (context->ParserCtxt, target, data);
+}
+
+static xmlEntityPtr
+gdb3html_getParameterEntity (Context *context, const xmlChar *name)
+{
+	xmlEntityPtr ret;
+
+	ret = getParameterEntity (context->ParserCtxt, name);
+	return ret;
+}
 
 static xmlSAXHandler parser = {
-	NULL,  /* internalSubset */
-	NULL, /* isStandalone */
-	NULL, /* hasInternalSubset */
-	NULL, /* hasExternalSubset */
-	NULL, /* resolveEntity */
+	(internalSubsetSAXFunc) gdb3html_internalSubset,  /* internalSubset */
+	(isStandaloneSAXFunc) gdb3html_isStandalone, /* isStandalone */
+	(hasInternalSubsetSAXFunc) gdb3html_hasInternalSubset, /* hasInternalSubset */
+	(hasExternalSubsetSAXFunc) gdb3html_hasExternalSubset, /* hasExternalSubset */
+	(resolveEntitySAXFunc) gdb3html_resolveEntity, /* resolveEntity */
 	(getEntitySAXFunc) get_entity, /* getEntity */
-	NULL, /* entityDecl */
-	NULL, /* notationDecl */
-	NULL, /* attributeDecl */
-	NULL, /* elementDecl */
-	NULL, /* unparsedEntityDecl */
+	(entityDeclSAXFunc) gdb3html_entityDecl, /* entityDecl */
+	(notationDeclSAXFunc) gdb3html_notationDecl, /* notationDecl */
+	(attributeDeclSAXFunc) gdb3html_attributeDecl, /* attributeDecl */
+	(elementDeclSAXFunc) gdb3html_elementDecl, /* elementDecl */
+	(unparsedEntityDeclSAXFunc) gdb3html_unparsedEntityDecl, /* unparsedEntityDecl */
 	NULL, /* setDocumentLocator */
 	(startDocumentSAXFunc) start_document, /* startDocument */
 	(endDocumentSAXFunc) end_document, /* endDocument */
 	(startElementSAXFunc) start_element, /* startElement */
 	(endElementSAXFunc) end_element, /* endElement */
-	NULL, /* reference */
-	(charactersSAXFunc) characters, /* characters */
+	(referenceSAXFunc) gdb3html_reference, /* reference */
+	(charactersSAXFunc) gdb3html_characters, /* characters */
 	NULL, /* ignorableWhitespace */
-	NULL, /* processingInstruction */
-	(commentSAXFunc) comment, /* comment */
-	(warningSAXFunc) warning, /* warning */
-	(errorSAXFunc) error, /* error */
+	(processingInstructionSAXFunc) gdb3html_processingInstruction, /* processingInstruction */
+	(commentSAXFunc) gdb3html_comment, /* comment */
+	(warningSAXFunc) gdb3html_warning, /* warning */
+	(errorSAXFunc) gdb3html_error, /* error */
 	(fatalErrorSAXFunc) fatal_error, /* fatalError */
-	NULL, /*parameterEntity */
+	(getParameterEntitySAXFunc) gdb3html_getParameterEntity, /*parameterEntity */
 	(cdataBlockSAXFunc) cdata_block
 };
+
+static xmlDocPtr
+xml_parse_document (gchar *filename)
+{
+	/* This function is ripped from parser.c in libxml but slightly
+	 * modified so as not to spew debug warnings all around */
+	xmlDocPtr ret;
+	xmlParserCtxtPtr ctxt;
+	char *directory;
+
+	ctxt = xmlCreateFileParserCtxt(filename);
+	if (ctxt == NULL) {
+		return (NULL);
+	}
+	ctxt->sax = NULL; /* This line specifically stops the warnings */
+
+	if ((ctxt->directory == NULL) && (directory == NULL))
+		directory = xmlParserGetDirectory (filename);
+	if ((ctxt->directory == NULL) && (directory != NULL))
+		ctxt->directory = (char *) xmlStrdup ((xmlChar *) directory);
+
+	xmlParseDocument (ctxt);
+
+	if (ctxt->wellFormed) {
+		ret = ctxt->myDoc;
+	} else {
+		ret = NULL;
+		xmlFreeDoc (ctxt->myDoc);
+		ctxt->myDoc = NULL;
+	}
+	xmlFreeParserCtxt (ctxt);
+	
+	return (ret);
+}
+
 
 static void
 parse_file (gchar *filename, gchar *section)
 {
 	Context *context = g_new0 (Context, 1);
+	
+	context->ParserCtxt = xmlNewParserCtxt ();
+	xmlInitParserCtxt (context->ParserCtxt);
+	context->ParserCtxt->sax = &parser;
+	context->ParserCtxt->validate = 1;
+	/* FIXME: Is the below correct? version needs to be set so as not to
+	 * segfault in starDocument (in SAX.h) */
+	context->ParserCtxt->version = xmlStrdup ("1.0"); 
+	context->ParserCtxt->myDoc = xml_parse_document (filename);
+	xmlSubstituteEntitiesDefault (1);
 
 	if (section) {
 		context->target_section = g_strdup (section);
