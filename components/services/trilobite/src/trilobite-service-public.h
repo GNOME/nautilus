@@ -55,25 +55,37 @@ struct _TrilobiteServiceClass
 	char* (*get_icon_uri)     (TrilobiteService *trilobite);
 	void  (*done)             (TrilobiteService *trilobite);
 	
-	GtkObjectClass *parent_class_ptr;
+	GtkObjectClass *parent_class;
 
 	gpointer poa_servant_init;
 	gpointer poa_servant_fini;
 	POA_Trilobite_Service__vepv *poa_vepv;
 };
 
+struct _POA_GTK_Trilobite_Service {
+	POA_Trilobite_Service poa;
+	TrilobiteService      *gtk;
+}; 
+
+typedef struct _POA_GTK_Trilobite_Service POA_GTK_Trilobite_Service;
+
+#define POA_GTK_TRILOBITE_SERVICE_PTR(obj)  ((POA_GTK_Trilobite_Service*) obj)
+
 typedef struct _TrilobiteServicePrivate TrilobiteServicePrivate;
 
 struct _TrilobiteService
 {
-	GtkObject                parent;
-	POA_Trilobite_Service    service_poa;
-	gpointer                 corba_object;
-	TrilobiteServicePrivate *private;
+	GtkObject                    parent;
+	POA_GTK_Trilobite_Service   *poa_gtk;
+	gpointer                     corba_object;
+	TrilobiteServicePrivate     *private;
 };
 
 GtkType            trilobite_service_get_type            (void);
-TrilobiteService*  trilobite_service_new                 (char *oaf_id);
+TrilobiteService*  trilobite_service_new                 (void);
+void               trilobite_service_activate            (TrilobiteService *trilobite);
+gboolean           trilobite_service_alive               (TrilobiteService *trilobite);
+
 char*              trilobite_service_get_name            (TrilobiteService *trilobite);
 char*              trilobite_service_get_version         (TrilobiteService *trilobite);
 char*              trilobite_service_get_vendor_name     (TrilobiteService *trilobite);
@@ -81,7 +93,7 @@ char*              trilobite_service_get_vendor_url      (TrilobiteService *tril
 char*              trilobite_service_get_url             (TrilobiteService *trilobite);
 char*              trilobite_service_get_icon_uri        (TrilobiteService *trilobite);
 void               trilobite_service_done                (TrilobiteService *trilobite);
-void               trilobite_service_destroy             (GtkObject *trilobite);
+void               trilobite_service_destroy             (TrilobiteService *trilobite);
 
 #ifdef __cplusplus
 }

@@ -35,21 +35,40 @@ PortableServer_POA        poa;
 CORBA_Environment         ev;
 
 int main(int argc, char *argv[]) {
-	TrilobiteService *test_service;
-
+	TrilobiteService *trilobite;
+	PortableServer_POA poa;
+	poptContext ctx;
+	
+	gnome_init ("nautilus-service", "0.1", argc, argv);
 	/* Init the CORBA */
 	CORBA_exception_init (&ev);
-	gnome_init("sample-service", "0.1",argc, argv);
 	orb = oaf_init (argc, argv);
 
+	ctx =
+		poptGetContext ("oaf-empty-server", argc, argv,
+				oaf_popt_options, 0);
+	while (poptGetNextOpt (ctx) >= 0);
+
+	poptFreeContext (ctx);
+
+	poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references (oaf_orb_get (), "RootPOA", &ev);
+
 	/* Create the trilobite test service corba object */
-	test_service = trilobite_service_new("OAFIID:NautilusEazelSampleService:134276");
+	trilobite = trilobite_service_new();
+	if (!trilobite) {
+		g_error ("trilobite === NULL");
+	}
+	trilobite_service_activate (trilobite);
+
+	oaf_active_server_register ("OAFIID:NautilusEazelSampleService:134276", trilobite->corba_object);
+	PortableServer_POAManager_activate (PortableServer_POA__get_the_POAManager (poa, &ev), &ev);
 
 	/* keep it alive... */
-	while(1) {
+	while(trilobite_service_alive (trilobite)) {
 		g_main_iteration(TRUE);
 	}
 
+	trilobite_service_destroy (trilobite);
 
 	/* This is just so that I can check strace ends here */
 	return 42;

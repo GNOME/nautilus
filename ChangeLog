@@ -1,3 +1,28 @@
+2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* components/services/trilobite/sample/service/Makefile.am 
+	* components/services/trilobite/sample/nautilus-view/Makefile.am
+	* components/services/trilobite/sample/command-line/Makefile.am
+	Polishing the makefiles for the sample service build.
+	
+	* components/services/trilobite/src/trilobite-service-private.h: 
+	* components/services/trilobite/src/trilobite-service-public.h: 
+	* components/services/trilobite/src/trilobite-service.c
+	Implemented the rest of the base object get_* methods. Moved the
+	corba activation into a seperate call. Need to look at the
+	destruction and possible use of bonobo for this sucker
+	(bugzilla.eazel.com 8999 & 900). Also did the destroyer so the
+	servers can put themselves down.
+	
+	* components/services/trilobite/sample/service/sample-service-impl.c
+	Implemented the most basic for the sample service. It's useless as
+	an example, since it does not add new features to the trilobite yet.
+	
+	* components/services/trilobite/sample/command-line/main.c
+	Basic cli for the sample service tool. Currently connects to a
+	running nautilus-eazel-sample-service and lists the basic info for
+	it.
+
 2000-05-12  Darin Adler  <darin@eazel.com>
 
 	* Makefile.am: Added the idl directory.

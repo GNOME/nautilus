@@ -29,7 +29,8 @@
 
 struct _TrilobiteServicePrivate {	
 	gboolean destroyed;
-
+	gboolean alive;
+	
 	char *service_name;
 	char *service_version;
 	char *service_vendor_name;

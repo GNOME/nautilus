@@ -1,3 +1,5 @@
+SUBDIR=icons
+
 NULL =
 
 CPPFLAGS =							\
