@@ -28,6 +28,7 @@
 
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-program-choosing.h"
 #include "nautilus-view-identifier.h"
 #include "nautilus-mime-actions.h"
 
@@ -59,6 +60,9 @@
  * bigger or smaller.
  */
 #define PROGRAM_CHOOSER_DEFAULT_HEIGHT	 303
+
+/* Global used to quit dialog & subdialog together. */
+static gboolean quit_program_chooser = FALSE;
 
 static GnomeVFSMimeActionType
 nautilus_program_chooser_get_type (GnomeDialog *program_chooser)
@@ -684,13 +688,35 @@ set_default_for_item (GnomeDialog *program_chooser, NautilusFile *file, gpointer
 }
 
 static void
+launch_mime_capplet (GtkWidget *button, gpointer callback_data)
+{
+	g_assert (GTK_IS_WIDGET (button));
+	g_assert (GNOME_IS_DIALOG (callback_data));
+
+
+	nautilus_launch_application ("nautilus-mime-type-capplet", NULL);
+
+	/* Don't leave a pair of nested modal dialogs in the wake of switching
+	 * user's attention to the capplet; close them up. Can't close the
+	 * parent one until the child one has exited from its run loop, because
+	 * of the way gnome dialogs use their event loops. So set a flag here
+	 * that the parent dialog will check when the child dialog exits.
+	 */
+	quit_program_chooser = TRUE;
+	
+	gnome_dialog_close (GNOME_DIALOG (callback_data));
+}
+
+static void
 run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 {
 	GnomeDialog *program_chooser;
 	NautilusFile *file;
 	GtkCList *clist;
 	GtkWidget *dialog;
-	GtkWidget *frame, *framed_vbox;
+	GtkWidget *radio_buttons_frame, *framed_vbox;
+	GtkWidget *capplet_button_frame, *framed_hbox;
+	GtkWidget *capplet_button, *capption;
 	GtkRadioButton *type_radio_button, *type_default_radio_button, *item_radio_button, *item_default_radio_button, *none_radio_button;
 	GtkRadioButton *old_active_button;
 	char *radio_button_text;
@@ -731,13 +757,13 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	/* Labeled frame to avoid repeating text in each radio button,
 	 * and to look nice.
 	 */
-	frame = gtk_frame_new (row_text);
-	gtk_widget_show (frame);
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), frame, FALSE, FALSE, 0);
+	radio_buttons_frame = gtk_frame_new (row_text);
+	gtk_widget_show (radio_buttons_frame);
+  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), radio_buttons_frame, FALSE, FALSE, 0);
 
   	framed_vbox = gtk_vbox_new (FALSE, GNOME_PAD);
   	gtk_widget_show (framed_vbox);
-  	gtk_container_add (GTK_CONTAINER (frame), framed_vbox);
+  	gtk_container_add (GTK_CONTAINER (radio_buttons_frame), framed_vbox);
   	gtk_container_set_border_width (GTK_CONTAINER (framed_vbox), GNOME_PAD);
 
 
@@ -774,7 +800,6 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	none_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
 
-
 	g_free (file_type);
 	g_free (file_name);
 
@@ -792,6 +817,32 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 		old_active_button = none_radio_button;
 	}
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (old_active_button), TRUE);
+
+	/* Add button to launch mime type editing capplet. */
+	  
+	capplet_button_frame = gtk_frame_new (_("File Types and Programs"));
+	gtk_widget_show (capplet_button_frame);
+  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), capplet_button_frame, FALSE, FALSE, 0);
+
+  	framed_hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+  	gtk_widget_show (framed_hbox);
+  	gtk_container_add (GTK_CONTAINER (capplet_button_frame), framed_hbox);
+  	gtk_container_set_border_width (GTK_CONTAINER (framed_hbox), GNOME_PAD);
+
+	capplet_button = gtk_button_new_with_label (_("Go There"));	 
+	nautilus_gtk_button_set_padding (GTK_BUTTON (capplet_button), GNOME_PAD_SMALL);
+	gtk_signal_connect (GTK_OBJECT (capplet_button),
+			    "clicked",
+			    launch_mime_capplet,
+			    dialog);
+	gtk_widget_show (capplet_button);
+	gtk_box_pack_end (GTK_BOX (framed_hbox), capplet_button, FALSE, FALSE, 0);
+
+	capption = gtk_label_new (_("You can configure which programs are offered "
+				    "for which file types in the Gnome Control Center."));
+	gtk_widget_show (capption);
+	gtk_label_set_line_wrap (GTK_LABEL (capption), TRUE);
+	gtk_box_pack_start (GTK_BOX (framed_hbox), capption, FALSE, FALSE, 0);				    
 
 	/* Buttons close this dialog. */
   	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
@@ -851,6 +902,14 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 			}
 
 			update_selected_item_details (program_chooser);
+		}
+	} else {
+		/* Sub-dialog closed somehow other than OK button. See if the sub-dialog
+		 * set the global to tell this dialog to close also.
+		 */
+		if (quit_program_chooser) {
+			gnome_dialog_close (program_chooser);
+			quit_program_chooser = FALSE;
 		}
 	}
 
