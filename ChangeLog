@@ -1,3 +1,22 @@
+2001-03-06  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 7435 (text view spews complaints whenever a text view is
+	destroyed):
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize): Ref the widget that gets text so
+	that we can notice if it's destroyed.
+	(detach_file): Get rid of unneeded NULL check.
+	(nautilus_text_view_destroy): Unref the widget.
+	(file_read_callback): Don't insert any text if the widget is
+	already destroyed. The widget can be destroyed before the
+	NautilusView object is.
+	(handle_service_menu_item): Add FIXME about sync. I/O.
+	(nautilus_text_view_set_font): Add FIXME about strange font
+	handling.
+
 2001-03-06  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com> 
