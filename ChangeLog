@@ -1,3 +1,23 @@
+2001-01-18  Andy Hertzfeld  <andy@eazel.com>
+
+	backed out the Bonobo component throbber temporarily due
+	to Bonobo problems and restored the old one; hopefully, the
+	new one will come back soon.
+	
+	* src/Makefile.am:
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars):
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_destroy), (nautilus_window_allow_stop):
+	* src/nautilus-window.h:
+
+	fixed bug 5393, custom emblems arent scaling properly, by
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path), (load_pixbuf_svg),
+	(load_specific_icon):
+
 2001-01-18  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -99,8 +99,6 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
-#define EMBLEM_SCALE_FACTOR .75
-
 #define STANDARD_ICON_GRID_WIDTH 145
 
 /* Desktop layout mode defines */
@@ -3646,16 +3644,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		
 	emblem_pixbufs = NULL;
 	
-	/* Since the natural emblem sizes are too large, scale them
-	 * down some. Perhaps the scale amount should be user
-	 * settable.
-	 */
 	icon_size_x = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			   * icon->scale_x * EMBLEM_SCALE_FACTOR,
-			   NAUTILUS_ICON_SIZE_SMALLEST);
+			   * icon->scale_x, NAUTILUS_ICON_SIZE_SMALLEST);
 	icon_size_y = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			   * icon->scale_y * EMBLEM_SCALE_FACTOR,
-			   NAUTILUS_ICON_SIZE_SMALLEST);
+			   * icon->scale_y, NAUTILUS_ICON_SIZE_SMALLEST);
 	for (p = emblem_scalable_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,

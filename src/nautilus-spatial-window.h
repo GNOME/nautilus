@@ -100,7 +100,8 @@ struct NautilusWindow {
         
         /* Widgets to keep track of (for state changes, etc) */      
         GtkWidget *zoom_control;
-        Bonobo_Unknown throbber;
+        /* Bonobo_Unknown throbber; */
+	GtkWidget *throbber;
         
         /* Pending changes */
         NautilusNavigationInfo *pending_ni;

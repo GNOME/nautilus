@@ -36,6 +36,7 @@
 #include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
+#include "nautilus-throbber.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-service-ui.h"
 #include "nautilus-zoom-control.h"
@@ -389,6 +390,7 @@ menu_bar_no_resize_hack (NautilusWindow *window)
 }
 
 /* handle bonobo events from the throbber */
+/*
 static void 
 throbber_location_changed_callback (BonoboListener    *listener,
 		 char              *event_name, 
@@ -402,6 +404,7 @@ throbber_location_changed_callback (BonoboListener    *listener,
 	location = BONOBO_ARG_GET_STRING (arg);
 	nautilus_window_goto_uri (window, location);
 }
+*/
 
 static void
 nautilus_window_constructed (NautilusWindow *window)
@@ -550,6 +553,11 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_initialize_toolbars (window);
 
 	/* watch for throbber location changes, too */
+	/* watch for throbber location changes, too */
+	gtk_signal_connect (GTK_OBJECT (window->throbber), "location_changed",
+			    goto_uri_callback, window);
+	
+	/*
 	if (window->throbber != NULL) {
 		CORBA_Environment ev;
 		Bonobo_PropertyBag property_bag;
@@ -564,6 +572,7 @@ nautilus_window_constructed (NautilusWindow *window)
 		}
 		CORBA_exception_free (&ev);
 	}
+	*/
 	
 	/* Set initial sensitivity of some buttons & menu items 
 	 * now that they're all created.
@@ -689,6 +698,7 @@ nautilus_window_destroy (GtkObject *object)
 	}
 
 	/* get rid of the CORBA objects */
+	/*
 	if (window->throbber != NULL) {
 		CORBA_Environment ev;
 		Bonobo_PropertyBag property_bag;
@@ -704,7 +714,7 @@ nautilus_window_destroy (GtkObject *object)
 		bonobo_object_release_unref (window->throbber, &ev);		
 		CORBA_exception_free (&ev);
 	}
-	
+	*/
 	g_free (window->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
@@ -1343,13 +1353,16 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
+	/*
 	CORBA_Environment ev;
 	Bonobo_PropertyBag property_bag;
-
+	*/
+	
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_STOP, allow);
-	
+
 	if (window->throbber != NULL) {
+		/*
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
 	
@@ -1358,7 +1371,13 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 			bonobo_object_release_unref (property_bag, &ev);	
 		}
 		CORBA_exception_free (&ev);
-		
+		*/
+		if (allow) {
+			nautilus_throbber_start (NAUTILUS_THROBBER (window->throbber));
+		} else {
+			nautilus_throbber_stop (NAUTILUS_THROBBER (window->throbber));
+		}
+	
 	}
 }
 

@@ -94,6 +94,7 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_WEB			"i-web"
 
 #define EMBLEM_NAME_PREFIX              "emblem-"
+#define EMBLEM_SCALE_FACTOR		0.75
 
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading
  * to call it that, since we can have any number of entries in the
@@ -1005,7 +1006,7 @@ get_themed_icon_file_path (const char *theme_name,
 	 * check out the user's home directory, since it might be an emblem
 	 * that they've added there.
 	 */
-	if (path == NULL && nautilus_str_has_prefix (icon_name, "emblem-")) {
+	if (path == NULL && icon_size == NAUTILUS_ICON_SIZE_STANDARD && nautilus_str_has_prefix (icon_name, EMBLEM_NAME_PREFIX)) {
 		for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 			user_directory = nautilus_get_user_directory ();
 			path = g_strdup_printf ("%s/emblems/%s%s", 
@@ -1596,16 +1597,28 @@ get_next_icon_size_to_try (guint target_size, guint *current_size)
 
 /* This loads an SVG image, scaling it to the appropriate size. */
 static GdkPixbuf *
-load_pixbuf_svg (const char *path, guint size_in_pixels)
+load_pixbuf_svg (const char *path, const char *name, guint size_in_pixels)
 {
 	FILE *f;
 	GdkPixbuf *pixbuf;
+	double actual_size_in_pixels;
 	
 	f = fopen (path, "rb");
 	if (f == NULL) {
 		return NULL;
 	}
-	pixbuf = rsvg_render_file (f, ((double) size_in_pixels) / NAUTILUS_ICON_SIZE_STANDARD);
+	
+	/* FIXME: the nominal size of .svg emblems is too large, so we scale it
+	 * down here if the file is an emblem.  This code should be removed
+	 * eventually when we scale all the emblems properly.
+	 */
+	if (nautilus_str_has_prefix (name, EMBLEM_NAME_PREFIX)) {
+		actual_size_in_pixels = size_in_pixels * EMBLEM_SCALE_FACTOR;
+	} else {
+		actual_size_in_pixels = size_in_pixels;
+	}
+	
+	pixbuf = rsvg_render_file (f, (double) (actual_size_in_pixels / NAUTILUS_ICON_SIZE_STANDARD));
 	fclose (f);
 	
 	return pixbuf;
@@ -1699,7 +1712,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	/* Get the icon. */
 	if (path != NULL) {
 		if (path_represents_svg_image (path)) {
-			pixbuf = load_pixbuf_svg (path, size_in_pixels);
+			pixbuf = load_pixbuf_svg (path, scalable_icon->name, size_in_pixels);
 		} else {
 			/* Custom non-svg icons exist at one size.
 			 * Non-custom icons have their size encoded in their path.
