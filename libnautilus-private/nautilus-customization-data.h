@@ -66,6 +66,7 @@ void                       nautilus_customization_data_destroy                  
 
 GdkPixbuf*                 nautilus_customization_make_pattern_chit                 (GdkPixbuf *pattern_tile, 
 										     GdkPixbuf *frame, 
-										     gboolean dragging);
+										     gboolean dragging,
+										     gboolean is_reset);
 
 #endif /* NAUTILUS_CUSTOMIZATION_DATA_H */

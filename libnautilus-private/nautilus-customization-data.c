@@ -28,6 +28,10 @@
 #include <config.h>
 #include <ctype.h>
 
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
+#include <libgnome/gnome-i18n.h>
+
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 
@@ -46,6 +50,7 @@
 #include "nautilus-file-utilities.h"
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-scalable-font.h>
 #include <eel/eel-xml-extensions.h>
 #include <eel/eel-string.h>
 
@@ -152,7 +157,6 @@ nautilus_customization_data_new (const char *customization_name,
 	return data;
 }
 
-
 GnomeVFSResult
 nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
 							  char **emblem_name,
@@ -164,6 +168,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	char *image_file_name, *filtered_name;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *orig_pixbuf;
+	gboolean is_reset_image;
 	
 	g_return_val_if_fail (data != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 	g_return_val_if_fail (emblem_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
@@ -203,13 +208,15 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	image_file_name = get_file_path_for_mode (data,
 						  current_file_info->name);
-	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);
+	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);	
 	g_free (image_file_name);
+
+	is_reset_image = eel_strcmp(current_file_info->name, RESET_IMAGE_NAME) == 0;
 
 	*emblem_name = g_strdup (current_file_info->name);
 	
 	if (!strcmp(data->customization_name, "patterns")) {
-		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE);
+		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE, is_reset_image);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
 								data->maximum_icon_width, 
@@ -334,9 +341,45 @@ get_file_path_for_mode (const NautilusCustomizationData *data,
 	return directory_name;
 }
 
+/* utility to composite localizable text onto the reset pixbuf */
+static void
+add_reset_text (GdkPixbuf *pixbuf)
+{
+	char *reset_text;
+	EelScalableFont *font;
+	EelDimensions title_dimensions;
+	int width, height;
+	int font_size, text_len;
+	int h_offset, v_offset;
+	
+	font = eel_scalable_font_get_default_font ();
+	reset_text = _("reset");
+	text_len = strlen (reset_text);
+
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	
+	font_size = eel_scalable_font_largest_fitting_font_size (font, reset_text, width - 12, 12, 36);
+	title_dimensions = eel_scalable_font_measure_text (font, font_size, reset_text, text_len);
+	
+	/* compute text position, correcting for the imbalanced shadow, etc. */
+	h_offset = ((width - title_dimensions.width) / 2) - 2;
+	v_offset = (((height - 8)/ 2) - title_dimensions.height) / 2;
+	
+	eel_scalable_font_draw_text (font, pixbuf, 
+					  h_offset, v_offset,
+					  eel_gdk_pixbuf_whole_pixbuf,
+					  font_size,
+					  reset_text, text_len,
+					  EEL_RGBA_COLOR_OPAQUE_WHITE,
+					  EEL_OPACITY_FULLY_OPAQUE);
+	
+	gtk_object_unref (GTK_OBJECT (font));
+}
+
 /* utility to make an attractive pattern image by compositing with a frame */
 GdkPixbuf*
-nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *frame, gboolean dragging)
+nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *frame, gboolean dragging, gboolean is_reset)
 {
 	GdkPixbuf *pixbuf, *temp_pixbuf;
 	int frame_width, frame_height;
@@ -361,6 +404,11 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
 	}
 			      
 	gdk_pixbuf_unref (pattern_tile);
+
+	if (is_reset) {
+		add_reset_text (pixbuf);
+	}
+
 	return pixbuf;
 }
 

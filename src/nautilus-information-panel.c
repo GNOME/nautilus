@@ -145,6 +145,7 @@ enum {
 	TARGET_COLOR,
 	TARGET_BGIMAGE,
 	TARGET_KEYWORD,
+	TARGET_BACKGROUND_RESET,
 	TARGET_GNOME_URI_LIST
 };
 
@@ -153,6 +154,7 @@ static GtkTargetEntry target_table[] = {
 	{ "application/x-color", 0, TARGET_COLOR },
 	{ "property/bgimage", 0, TARGET_BGIMAGE },
 	{ "property/keyword", 0, TARGET_KEYWORD },
+	{ "x-special/gnome-reset-background", 0, TARGET_BACKGROUND_RESET },	
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
@@ -337,7 +339,7 @@ reset_background_callback (GtkWidget *menu_item, GtkWidget *sidebar)
 {
 	EelBackground *background;
 
-	background = eel_get_widget_background(sidebar);
+	background = eel_get_widget_background (sidebar);
 	if (background != NULL) { 
 		eel_background_reset (background); 
 	}
@@ -854,6 +856,7 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					 guint info, guint time)
 {
 	NautilusSidebar *sidebar;
+	EelBackground *background;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (widget));
 
@@ -871,6 +874,12 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		if (hit_test (sidebar, x, y) == BACKGROUND_PART)
 			receive_dropped_uri_list (sidebar, x, y, selection_data);
 		break;	
+	case TARGET_BACKGROUND_RESET:
+		background = eel_get_widget_background ( GTK_WIDGET (sidebar));
+		if (background != NULL) { 
+			eel_background_reset (background); 
+		}
+		break;
 	case TARGET_KEYWORD:
 		receive_dropped_keyword (sidebar, x, y, selection_data);
 		break;
