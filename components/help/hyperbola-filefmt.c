@@ -1388,20 +1388,24 @@ static void
 fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 {
 	xmlDocPtr doc;
-	char *locale;
+	GList *node;
 	
 	char *tree_path[] = { NULL };
 
-	locale = getenv ("LANG");
-	if (locale == NULL)
-	    return;
-
-	doc = fmt_scrollkeeper_get_xml_tree_of_locale (locale);
-	if (strcmp(locale, "C") &&
-	    (doc == NULL ||
-	     (doc->root != NULL &&
-	      fmt_scrollkeeper_tree_empty(doc->root->childs))))
-		doc = fmt_scrollkeeper_get_xml_tree_of_locale("C");
+	doc = NULL;
+	for (node = gnome_i18n_get_language_list ("LC_MESSAGES");
+	     node != NULL;
+	     node = node->next) {
+		doc = fmt_scrollkeeper_get_xml_tree_of_locale (node->data);
+		if (doc != NULL) {
+			if (doc->root != NULL && !fmt_scrollkeeper_tree_empty(doc->root->childs)) {
+				break;
+			} else {
+				xmlFreeDoc (doc);
+				doc = NULL;
+			}
+		}
+	}
 		
 	if (doc) {
 		fmt_scrollkeeper_trim_empty_branches (doc->root->childs);
@@ -1608,24 +1612,25 @@ static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
     	xmlDocPtr toplevel_doc;
     	char *toplevel_file;
 	int retval;
-	char *locale;
+	GList* node;
   	
 	toplevel_file = HYPERBOLA_DATADIR "/topleveldocs.xml";
-
-	locale = getenv("LANG");
-	if (locale == NULL)
-		return 0;
 
     	toplevel_doc = xmlParseFile (toplevel_file); 
 	
     	if (toplevel_doc) {
-        	fmt_toplevel_parse_xml_tree(tree, toplevel_doc, locale);
-		if (toplevel_doc->root != NULL &&
-		    toplevel_doc->root->childs != NULL &&
-		    toplevel_doc->root->childs->childs != NULL)
-		    	retval = 1;
-		else
-			retval = 0;
+		retval = 0;
+  		for (node = gnome_i18n_get_language_list ("LC_MESSAGES");
+  		     node != NULL;
+  		     node = node->next) {
+	        	fmt_toplevel_parse_xml_tree(tree, toplevel_doc, node->data);
+			if (toplevel_doc->root != NULL &&
+			    toplevel_doc->root->childs != NULL &&
+			    toplevel_doc->root->childs->childs != NULL) {
+			    	retval = 1;
+			    	break;
+			}
+		}
     	}
     	else {
 		retval = 0;

@@ -1,3 +1,12 @@
+2001-03-02  Michael Engber  <engber@eazel.com>
+
+	reviewed by: George Lebl <jirka@5z.org>
+
+	* components/help/hyperbola-filefmt.c:
+	(fmt_scrollkeeper_populate_tree), (fmt_toplevel_populate_tree):
+	Switch to using gnome_i18n_get_language_list instead of grabbing
+	the language straight from the "LANG" environment variable - 7109.
+
 2001-03-02  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:
@@ -54,7 +63,6 @@
 	nautilus_directory_async_state_changed. These didn't actually
 	cause the bug.
 
->>>>>>> 1.4114
 2001-03-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Seth Nickell  <seth@eazel.com>
