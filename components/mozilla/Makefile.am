@@ -4,7 +4,9 @@ SUBDIRS = eazel-protocol-handler
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\"
+	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
+	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
+	$(NULL)
 
 component_path=$(prefix)/share/nautilus/mozilla-components/libeazel-protocol-handler.so
 

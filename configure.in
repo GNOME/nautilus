@@ -201,14 +201,27 @@ fi
 AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "x$found_mozilla" = "xtrue")
 
 dnl
+dnl EVIL1:
+dnl
 dnl The mozilla milestone version checks are very un-scientific.
 dnl They are based on thing that I know changed between milestones,
 dnl but are likely to not be right in the future.  Unfortunately, there
 dnl doesnt seem to be anything in mozilla (such as #define MOZILLA_VERSION) 
 dnl thing that we can check.  -re
 dnl
+dnl EVIL2:
+dnl
+dnl The DEBUG check is a most evil hack.  The problem im trying to solve
+dnl is that we dont know whether the mozilla binaries we are using are built
+dnl in debug mode or not (DEBUG).  We need to know this so that we set
+dnl appropiate compile flags in the mozilla component.  Otherwise we get 
+dnl undefined symbols.  Specifically, the undefined symbols are some
+dnl destrcutors (nsCOMPtr_base::~nsCOMPtr_base) which are implemented only
+dnl if the debug flag DEBUG is set a certain way.
+dnl
 if test "x$found_mozilla" = "xtrue"
 then
+dnl EVIL1:
 	grep -w net_state $_mozilla_include_place/gtkmozembed.h > /dev/null 2>&1
 
 	if test $? -eq 0
@@ -227,6 +240,23 @@ then
 	fi
 
 	AC_SUBST(MOZILLA_MILESTONE)
+
+dnl EVIL2:
+	_xpcom_lib=$_mozilla_lib_place/libxpcom.so
+	_symbol="nsCOMPtr_base::~nsCOMPtr_base"
+	_num_symbols=`nm $_xpcom_lib 2> /dev/null | wc -l`
+
+	if test $_num_symbols -ne 0
+	then
+		nm --demangle $_xpcom_lib | grep $_symbol > /dev/null 2>&1
+
+		if test $? -eq 1
+		then
+			MOZILLA_COMPONENT_DEBUG_FLAGS="-DDEBUG"
+		fi
+	fi
+
+	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
 fi
 
 dnl ====================================
@@ -600,9 +630,10 @@ case $found_mozilla in
 t*)
 echo "
 Mozilla component	: YES
-   mozilla libraries	: $_mozilla_lib_place
-   mozilla includes	: $_mozilla_include_place
-   MOZILLA_MILESTONE	: $MOZILLA_MILESTONE"
+   mozilla libraries              : $_mozilla_lib_place
+   mozilla includes               : $_mozilla_include_place
+   MOZILLA_MILESTONE              : $MOZILLA_MILESTONE
+   MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
 ;;
 *)
 echo "
