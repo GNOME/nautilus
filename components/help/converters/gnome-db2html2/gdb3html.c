@@ -200,7 +200,11 @@ end_element (Context *context,
 
 	element = find_element_info (context->elements, name);
 	stack_el = (StackElement *) context->stack->data;
-	g_assert (stack_el->info == element);
+//	g_assert (stack_el->info == element);
+	if (stack_el->info == element) {
+		g_print ("<BR><B>ERROR</B> -- INVALID SYNTAX in tag %s<BR>\n", name);
+		return;
+	}
 	if (element && element->end_element_func)
 		(* element->end_element_func) (context, name);
 
