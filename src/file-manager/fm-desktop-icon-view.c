@@ -678,7 +678,6 @@ real_merge_menus (FMDirectoryView *view)
 	FMDesktopIconView *desktop_view;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
-	GtkAction *action;
 	const char *ui;
 
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
@@ -700,12 +699,6 @@ real_merge_menus (FMDirectoryView *view)
 	ui = nautilus_ui_string_get ("nautilus-desktop-icon-view-ui.xml");
 	desktop_view->details->desktop_merge_id =
 		gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
-
-	/* We hide the reset background item on the desktop */
-	action = gtk_ui_manager_get_action (ui_manager,
-					    "/background/After Zoom Items/Background Items/Use Default Background");
-	gtk_action_set_visible (action,
-				FALSE);
 }
 
 static gboolean

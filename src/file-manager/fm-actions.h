@@ -46,7 +46,6 @@
 #define FM_ACTION_TRASH "Trash"
 #define FM_ACTION_DELETE "Delete"
 #define FM_ACTION_SHOW_HIDDEN_FILES "Show Hidden Files"
-#define FM_ACTION_RESET_BACKGROUND "Reset Background"
 #define FM_ACTION_CONNECT_TO_SERVER_LINK "Connect To Server Link"
 #define FM_ACTION_MOUNT_VOLUME "Mount Volume"
 #define FM_ACTION_UNMOUNT_VOLUME "Unmount Volume"

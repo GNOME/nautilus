@@ -347,8 +347,6 @@ static void action_rename_callback                 (GtkAction *action,
 						    gpointer   callback_data);
 static void action_show_hidden_files_callback      (GtkAction *action,
 						    gpointer   callback_data);
-static void action_reset_background_callback       (GtkAction *action,
-						    gpointer   callback_data);
 static void action_paste_files_into_callback       (GtkAction *action,
 						    gpointer   callback_data);
 static void action_connect_to_server_link_callback (GtkAction *action,
@@ -2017,17 +2015,6 @@ done_loading (FMDirectoryView *view)
 	fm_directory_view_end_loading (view);
 
 	view->details->loading = FALSE;
-}
-
-static void
-action_reset_background_callback (GtkAction *action,
-				  gpointer callback_data)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
-	eel_background_reset 
-		(fm_directory_view_get_background 
-			(FM_DIRECTORY_VIEW (callback_data)));
 }
 
 typedef struct {
@@ -5828,10 +5815,6 @@ static GtkActionEntry directory_view_entries[] = {
     N_("Reset View to _Defaults"), NULL,                /* label, accelerator */
     N_("Reset sorting order and zoom level to match preferences for this view"),                   /* tooltip */ 
     G_CALLBACK (action_reset_to_defaults_callback) },
-  { "Reset Background", NULL,                  /* name, stock id */
-    N_("Use _Default Background"), NULL,                /* label, accelerator */
-    N_("Use the default background for this location"),                   /* tooltip */ 
-    G_CALLBACK (action_reset_background_callback) },
   { "Connect To Server Link", NULL,                  /* name, stock id */
     N_("Connect To This Server"), NULL,                /* label, accelerator */
     N_("Make a permanent connection to this server"),                   /* tooltip */ 
@@ -6161,7 +6144,6 @@ real_update_menus (FMDirectoryView *view)
 	gboolean show_open_alternate;
 	gboolean can_open;
 	ActivationAction activation_action;
-	EelBackground *background;
 	GtkAction *action;
 
 	selection = fm_directory_view_get_selection (view);
@@ -6297,13 +6279,6 @@ real_update_menus (FMDirectoryView *view)
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_DUPLICATE);
 	gtk_action_set_sensitive (action, can_duplicate_files);
-
-	background = fm_directory_view_get_background (view);
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_RESET_BACKGROUND);
-	gtk_action_set_sensitive (action, 
-				  background != NULL &&
-				  nautilus_file_background_is_set (background));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_CREATE_LINK);
