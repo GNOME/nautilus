@@ -1,3 +1,12 @@
+2000-08-14  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-shell.c: (display_caveat): Wrapped the
+	image in the caveat dialog in a GtkVBox such that the
+	frame & image will remain unstretched at the top of the
+	dialog if the text gets taller than the image. We might
+	want to take this (trivial & safe) change for the
+	preview release if we end up making the caveat text longer.
+
 2000-08-13  Andy Hertzfeld  <andy@eazel.com>
 
 	added a separate theme selection window and removed theme selection from the

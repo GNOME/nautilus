@@ -151,6 +151,7 @@ display_caveat (GtkWindow *parent_window)
 	GtkWidget *frame;
 	GtkWidget *pixmap;
 	GtkWidget *hbox;
+	GtkWidget *vbox;
 	GtkWidget *text;
 	char *file_name;
 
@@ -167,10 +168,14 @@ display_caveat (GtkWindow *parent_window)
   			    hbox,
   			    FALSE, FALSE, 0);
 
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
+
 	frame = gtk_frame_new (NULL);
 	gtk_widget_show (frame);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
-  	gtk_box_pack_start (GTK_BOX (hbox), frame, FALSE, FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, FALSE, 0);
 	
 	file_name = nautilus_pixmap_file ("About_Image.png");
 	pixmap = gnome_pixmap_new_from_file (file_name);
