@@ -75,7 +75,6 @@ eazel-proxy \
 eazel-proxy-util \
 gnome-vfs-slave \
 hyperbola \
-mpg123 \
 nautilus-adapter \
 nautilus-change-password-view \
 nautilus-content-loser \
@@ -92,7 +91,6 @@ nautilus-sample-service-view \
 nautilus-service-install-view \
 nautilus-service-startup-view \
 nautilus-sidebar-loser \
-nautilus-summary-view \
 nautilus-summary-view \
 nautilus-tree-view \
 trilobite-eazel-install-service  \

@@ -303,11 +303,29 @@ static operand_criterion_item size2_table [] = {
    -------------------------------------------------------
 */
 static operand_criterion_item mod_time2_table [] = {
-        {"updated", 
-         N_("modified after %s"), 
+        {"is today", 
+         N_("modified today"), 
          NULL},
-        {"not_updated", 
-         N_("modified before %s"), 
+        {"is yesterday",
+         N_("modified yesterday"),
+         NULL},
+        {"is",
+         N_("modified on %s"),
+         NULL},
+        {"is_not", 
+         N_("not modified on %s"), 
+         NULL},
+        {"is_before",
+         N_("modified before %s"),
+         NULL},
+        {"is_after",
+         N_("modified after %s"),
+         NULL},
+        {"is_within_a_week_of",
+         N_("modified within a week of %s"),
+         NULL},
+        {"is_within_a_month_of",
+         N_("modified within a month of %s"),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -318,10 +336,10 @@ static operand_criterion_item mod_time2_table [] = {
 */
 
 static operand_criterion_item emblem2_table [] = {
-        { "is_marked_with",
+        { "include",
           N_("marked with \"%s\""),
           NULL},
-        { "is_not_marked_with",
+        { "do_not_include",
           N_("not marked with \"%s\""),
           NULL},
         {NULL, NULL, NULL}
@@ -336,16 +354,16 @@ static operand_criterion_item emblem2_table [] = {
 
 static operand_criterion_item contains2_table [] = {
         {"includes_all_of",
-         N_("with all the words %s"),
+         N_("with all the words \"%s\""),
          NULL},
         {"includes_any_of",
-         N_("containing one of the words %s"),
+         N_("containing one of the words \"%s\""),
          NULL},
         {"does_not_include_all_of",
-         N_("without all the words %s"),
+         N_("without all the words \"%s\""),
          NULL},
         {"does_not_include_any_of",
-         N_("without any of the words %s"),
+         N_("without any of the words \"%s\""),
          NULL},
         {NULL, NULL, NULL},
 };
@@ -376,7 +394,7 @@ static field_criterion_item main_table[] = {
         {"modified",
          N_(""),
          mod_time2_table},
-        {"emblem",
+        {"keywords",
          N_(""),
          emblem2_table},
         {NULL, NULL, NULL}
