@@ -1,3 +1,9 @@
+2004-04-16  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-tree-model.c (fm_tree_model_remove_root_uri):
+	Disconnect changed handler on root node removal. Prevents a crash
+	related to removable media in the treeview (#128219).
+
 2004-04-14  Martin Wehner  <martin.wehner@epost.de>
 
 	* src/nautilus-spatial-window.c (location_menu_item_activated_callback):

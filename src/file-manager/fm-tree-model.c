@@ -1595,6 +1595,7 @@ fm_tree_model_remove_root_uri (FMTreeModel *model, const char *uri)
 		
 		/* destroy the root identifier */
 		root = node->root;
+		g_signal_handler_disconnect (node->file, root->changed_handler_id);
 		destroy_node_without_reporting (model, node);
 		g_hash_table_destroy (root->file_to_node_map);
 		g_free (root);
