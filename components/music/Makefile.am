@@ -1,5 +1,13 @@
 NULL =
 
+if X86_OPTIMIZED
+decode_source = decode_i386.c
+dct64_source  = dct64_i386.c
+else
+decode_source = decode.c
+dct64_source = dct64.c
+endif
+
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
@@ -25,10 +33,8 @@ nautilus_music_view_SOURCES =		        \
 	nautilus-music-view.h			\
 	main.c					\
 	tabinit.c				\
-	dct64_i386.c   				\
 	decode_2to1.c				\
 	decode_4to1.c  				\
-	decode_i386.c  				\
 	decode_ntom.c  				\
 	dxhead.c  				\
 	dxhead.h  				\
@@ -49,7 +55,9 @@ nautilus_music_view_SOURCES =		        \
 	id3_tag.c				\
 	esd-audio.c				\
 	esd-mixer.c				\
-	pixmaps.h
+	pixmaps.h				\
+	$(dct64_source)	 	  		\
+	$(decode_source)
 
 nautilus_music_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\

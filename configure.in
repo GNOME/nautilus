@@ -53,7 +53,12 @@ dnl ====================================
 dnl Check for "RedHat-style" font setup
 AM_CONDITIONAL(TYPE1_FONT_DIR_EXISTS, test -d /usr/share/fonts/default/Type1)
 
-dnl Check for different mount systems
+
+
+dnl ====================================
+dnl = Check for different mount systems
+dnl ====================================
+
 echo "
 Determining mount system properties:
 "
@@ -67,9 +72,23 @@ AC_CHECK_FILES( /proc/mounts, AC_DEFINE(HAVE_PROC_MOUNTS))
 echo "
 "
 
+dnl ====================================
+dnl = Method for changing environment
+dnl ====================================
+
 AC_CHECK_FUNCS( setenv unsetenv putenv )
 
+
 dnl ====================================
+dnl = Use x86 optimized music routines?
+dnl ====================================
+
+_system_is_x86="no"
+
+AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
+
+AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
+
 
 dnl ====================================
 dnl = Optionally build the installer

@@ -36,6 +36,9 @@
 #define         MPG_MD_DUAL_CHANNEL     2
 #define         MPG_MD_MONO             3
 
+/* Pre Shift fo 16 to 8 bit converter table */
+#define AUSHIFT (3)
+
 struct id3v1tag_t {
 	char tag[3]; /* always "TAG": defines ID3v1 tag 128 bytes before EOF */
 	char title[30];

@@ -1,3 +1,34 @@
+2001-02-23  Seth Nickell  <snickell@stanford.edu>
+
+	reviewed by: J Shane Culpepper <pepper@eazel.com>
+
+	Fix problems with playing MP3s on Solaris due to our use of
+	Linux/x86-only code pillaged from mpg123. Continue pillaging
+	from mpg123 to grab their generic decoding code for use when
+	we are on non x86/Linux platforms.
+	
+	* configure.in:
+	* components/music/Makefile.am:
+
+	Check if we are on x86 and only build x86 optimized music
+	components if we are. Otherwise use source & binary compatible
+	generic code.
+	
+	* components/music/decode.c: (mpg123_synth_1to1_8bit),
+	(mpg123_synth_1to1_8bit_mono),
+	(mpg123_synth_1to1_8bit_mono2stereo), (mpg123_synth_1to1_mono),
+	(mpg123_synth_1to1_mono2stereo), (mpg123_synth_1to1):
+
+	Add decode.c as a generic replacement for decode_i386.c when
+	on non-x86 hardware (dct64.c was already there, just not used),
+	filched from mpg123 same as decode_i386.c.
+	
+	* components/music/mpg123.h:
+
+	Add one #define to make decode.c happy.
+
+	Thanks to Niall for nailing this bug :-)
+	
 2001-02-23  Laszlo Kovacs  <laszlo.kovacs@sun.com>
 	* components/help/hyperbola-filefmt.c
 	fixed bug 6866 - crash if the locale is set to NULL
