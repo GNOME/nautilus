@@ -27,6 +27,11 @@
 #include <config.h>
 #include "nautilus-gnome-extensions.h"
 
+#include <gtk/gtkbox.h>
+#include <gtk/gtklabel.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-uidefs.h>
+
 void
 nautilus_gnome_canvas_world_to_window_rectangle (GnomeCanvas *canvas,
 						 const ArtDRect *world_rect,
@@ -177,4 +182,68 @@ nautilus_gnome_canvas_item_get_world_bounds (GnomeCanvasItem *item,
 				       &world_bounds->x1,
 				       &world_bounds->y1);
 	}
+}
+
+static const char **
+convert_varargs_to_name_array (va_list args)
+{
+	GPtrArray *resizeable_array;
+	const char *name;
+	const char **plain_ole_array;
+	
+	resizeable_array = g_ptr_array_new ();
+
+	do {
+		name = va_arg (args, const char *);
+		g_ptr_array_add (resizeable_array, (gpointer) name);
+	} while (name != NULL);
+
+	plain_ole_array = (const char **) resizeable_array->pdata;
+	
+	g_ptr_array_free (resizeable_array, FALSE);
+
+	return plain_ole_array;
+}
+
+int
+nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, ...)
+{
+	va_list button_title_args;
+	const char **button_titles;
+        GtkWidget *dialog;
+        GtkWidget *top_widget;
+        GtkWidget *prompt_widget;
+	
+	/* Create the dialog. */
+	va_start (button_title_args, title);
+	button_titles = convert_varargs_to_name_array (button_title_args);
+	va_end (button_title_args);
+        dialog = gnome_dialog_newv (title, button_titles);
+	g_free (button_titles);
+	
+	/* Allow close. */
+        gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+        gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+	
+	/* Parent it if asked to. */
+        if (parent != NULL) {
+		top_widget = gtk_widget_get_toplevel (parent);
+		if (GTK_IS_WINDOW (top_widget)) {
+			gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (top_widget));
+		}
+	}
+	
+	/* Title it if asked to. */
+	if (text != NULL) {
+		prompt_widget = gtk_label_new (text);
+		gtk_label_set_justify (GTK_LABEL (prompt_widget),
+				       GTK_JUSTIFY_LEFT);
+		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+				    prompt_widget,
+				    TRUE, TRUE, GNOME_PAD);
+	}
+	
+	/* Run it. */
+        gtk_widget_show_all (dialog);
+        return gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 }

@@ -21,8 +21,8 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _XFER_H
-#define _XFER_H
+#ifndef DFOS_XFER_H
+#define DFOS_XFER_H
 
 #include <libgnomevfs/gnome-vfs.h>
 #include "dfos.h"
@@ -47,11 +47,4 @@ void fs_move_to_trash (const GList *item_uris,
 
 void fs_empty_trash (GtkWidget *parent_view);
 
-int file_operation_alert (GtkWidget *parent_view, 
-			  const char *text, 
-			  const char *title,
-			  const char *button_1_text,
-			  const char *button_2_text, 
-			  const char *button_3_text);
-
-#endif /* _XFER_H */
+#endif /* DFOS_XFER_H */

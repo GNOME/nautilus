@@ -191,5 +191,6 @@ char *        nautilus_icon_container_get_icon_uri                (NautilusIconC
 void          nautilus_icon_container_update_icon                 (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
 void          nautilus_icon_container_flush_typeselect_state      (NautilusIconContainer *container);
+gboolean      nautilus_icon_container_has_stored_icon_positions   (NautilusIconContainer *container);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

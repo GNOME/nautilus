@@ -110,7 +110,7 @@ enum {
 	GET_STORED_ICON_POSITION,
 	ICON_POSITION_CHANGED,
 	ICON_TEXT_CHANGED,
-	ICON_TEXT_EDIT_OCCURRED,
+	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
 	SELECTION_CHANGED,	
 	LAST_SIGNAL
@@ -129,33 +129,6 @@ icon_free (NautilusIcon *icon)
 {
 	gtk_object_destroy (GTK_OBJECT (icon->item));
 	g_free (icon);
-}
-
-static NautilusIcon *
-icon_new (NautilusIconContainer *container,
-	  NautilusIconData *data)
-{
-	NautilusIcon *icon;
-	GnomeCanvas *canvas;
-        
-	canvas = GNOME_CANVAS (container);
-	
-	icon = g_new0 (NautilusIcon, 1);
-	
-	icon->scale_x = 1.0;
-	icon->scale_y = 1.0;
-	
-	icon->data = data;
-
- 	icon->item = NAUTILUS_ICON_CANVAS_ITEM
-		(gnome_canvas_item_new (GNOME_CANVAS_GROUP (canvas->root),
-					nautilus_icon_canvas_item_get_type (),
-					NULL));
-	icon->item->user_data = icon;
-
-	nautilus_icon_container_update_icon (container, icon);
-	
-	return icon;
 }
 
 static void
@@ -600,8 +573,7 @@ reload_icon_positions (NautilusIconContainer *container)
 	GList *p, *no_position_icons;
 	NautilusIcon *icon;
 	gboolean have_stored_position;
-	int x, y;
-	double scale_x, scale_y;
+	NautilusIconPosition position;
 
 	g_assert (!container->details->auto_layout);
 
@@ -617,13 +589,10 @@ reload_icon_positions (NautilusIconContainer *container)
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[GET_STORED_ICON_POSITION],
 				 icon->data,
-				 &have_stored_position,
-				 &x,
-				 &y,
-				 &scale_x,
-				 &scale_y);
+				 &position,
+				 &have_stored_position);
 		if (have_stored_position) {
-			icon_set_position (icon, x, y);
+			icon_set_position (icon, position.x, position.y);
 			nautilus_icon_grid_add (container->details->grid, icon);
 		} else {
 			no_position_icons = g_list_prepend (no_position_icons, icon);
@@ -717,6 +686,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 	gboolean emit_signal;
+	NautilusIconPosition position;
 	
 	details = container->details;
 	
@@ -738,8 +708,12 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 	}
 	
 	if (emit_signal) {
+		position.x = x;
+		position.y = y;
+		position.scale_x = scale_x;
+		position.scale_y = scale_y;
 		gtk_signal_emit (GTK_OBJECT (container), signals[ICON_POSITION_CHANGED],
-				 icon->data, x, y, scale_x, scale_y);
+				 icon->data, &position);
 	}
 	
 	if (raise) {
@@ -2232,21 +2206,10 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     icon_position_changed),
-				  nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE,
-				  GTK_TYPE_NONE, 5,
+				  gtk_marshal_NONE__POINTER_POINTER,
+				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_POINTER,
-				  GTK_TYPE_INT,
-				  GTK_TYPE_INT,
-				  GTK_TYPE_DOUBLE,
-				  GTK_TYPE_DOUBLE);
-	signals[ICON_TEXT_EDIT_OCCURRED]
-		= gtk_signal_new ("icon_text_edit_occurred",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
-						     icon_text_edit_occurred),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+				  GTK_TYPE_POINTER);
 	signals[ICON_TEXT_CHANGED]
 		= gtk_signal_new ("icon_text_changed",
 				  GTK_RUN_LAST,
@@ -2336,14 +2299,18 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_stored_icon_position),
-				  nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER,
-				  GTK_TYPE_NONE, 6,
-				  GTK_TYPE_POINTER,
-				  GTK_TYPE_POINTER,
-				  GTK_TYPE_POINTER,
-				  GTK_TYPE_POINTER,
+				  nautilus_gtk_marshal_BOOL__POINTER_POINTER,
+				  GTK_TYPE_BOOL, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
+	signals[LAYOUT_CHANGED]
+		= gtk_signal_new ("layout_changed",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     layout_changed),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -2787,8 +2754,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
 	gboolean have_stored_position;
-	int x, y;
-	double scale_x, scale_y;
+	NautilusIconPosition position;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (data != NULL);
@@ -2796,41 +2762,49 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	details = container->details;
 
 	have_stored_position = FALSE;
-	scale_x = 1.0;
-	scale_y = 1.0;
+	position.scale_x = 1.0;
+	position.scale_y = 1.0;
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[GET_STORED_ICON_POSITION],
 			 data,
-			 &have_stored_position,
-			 &x,
-			 &y,
-			 &scale_x,
-			 &scale_y);
+			 &position,
+			 &have_stored_position);
 
-	icon = icon_new (container, data);
+	icon = g_new0 (NautilusIcon, 1);
+	
+	icon->scale_x = position.scale_x;
+	icon->scale_y = position.scale_y;
 
-	icon->scale_x = scale_x;
-	icon->scale_y = scale_y;
+	icon->data = data;
+
+ 	icon->item = NAUTILUS_ICON_CANVAS_ITEM
+		(gnome_canvas_item_new (GNOME_CANVAS_GROUP (GNOME_CANVAS (container)->root),
+					nautilus_icon_canvas_item_get_type (),
+					NULL));
+	icon->item->user_data = icon;
 
 	if (!details->auto_layout && have_stored_position) {
-		icon_set_position (icon, x, y);
+		icon_set_position (icon, position.x, position.y);
 	} else {
 		auto_position_icon (container, icon);
 	}
 
 	details->icons = g_list_prepend (details->icons, icon);
 
+	nautilus_icon_container_update_icon (container, icon);
+	icon_show (icon);
+	
 	nautilus_icon_canvas_item_update_bounds (icon->item);
 	nautilus_icon_grid_add (details->grid, icon);
-	
+
+	/* Must connect the bounds_changed signal after adding the icon to the
+	 * grid, because it will try to remove/add the icon too.
+	 */
 	gtk_signal_connect (GTK_OBJECT (icon->item), "event",
 			    GTK_SIGNAL_FUNC (item_event_callback), container);
 	gtk_signal_connect (GTK_OBJECT (icon->item), "bounds_changed",
 			    GTK_SIGNAL_FUNC (bounds_changed_callback), container);
 
-	nautilus_icon_container_update_icon (container, icon);
-	icon_show (icon);
-	
 	request_idle (container);
 }
 
@@ -2947,6 +2921,7 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		nautilus_icon_container_update_icon (container, p->data);
 	}
+	relayout (container);
 }
 
 
@@ -3348,6 +3323,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 		reload_icon_positions (container);
 		nautilus_icon_container_freeze_icon_positions (container);
 	}
+	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
 }
 
 /* Switch from automatic to manual layout, freezing all the icons in their
@@ -3357,17 +3333,43 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 void
 nautilus_icon_container_freeze_icon_positions (NautilusIconContainer *container)
 {
+	gboolean changed;
 	GList *p;
 	NautilusIcon *icon;
+	NautilusIconPosition position;
 
+	changed = container->details->auto_layout;
 	container->details->auto_layout = FALSE;
 	
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
+
+		position.x = icon->x;
+		position.y = icon->y;
+		position.scale_x = icon->scale_x;
+		position.scale_y = icon->scale_y;
 		gtk_signal_emit (GTK_OBJECT (container), signals[ICON_POSITION_CHANGED],
-				 icon->data,
-				 (int) icon->x, (int) icon->y,
-				 (double) icon->scale_x, (double) icon->scale_y);
+				 icon->data, &position);
+	}
+
+	if (changed) {
+		gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
+	}
+}
+
+/* Re-sort, switching to automatic layout if it was in manual layout. */
+void
+nautilus_icon_container_sort (NautilusIconContainer *container)
+{
+	gboolean changed;
+
+	changed = !container->details->auto_layout;
+	container->details->auto_layout = TRUE;
+
+	relayout (container);
+
+	if (changed) {
+		gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
 	}
 }
 
@@ -3377,31 +3379,6 @@ nautilus_icon_container_is_auto_layout (NautilusIconContainer *container)
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 
 	return container->details->auto_layout;
-}
-
-#if ! defined (NAUTILUS_OMIT_SELF_CHECK)
-
-static char *
-nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
-				     int start_pointer_x, int start_pointer_y,
-				     int end_pointer_x, int end_pointer_y)
-{
-	StretchState start, current;
-
-	start.icon_x = icon_x;
-	start.icon_y = icon_y;
-	start.icon_size = icon_size;
-	start.pointer_x = start_pointer_x;
-	start.pointer_y = start_pointer_y;
-	current.pointer_x = end_pointer_x;
-	current.pointer_y = end_pointer_y;
-
-	compute_stretch (&start, &current);
-
-	return g_strdup_printf ("%d,%d:%d",
-				current.icon_x,
-				current.icon_y,
-				current.icon_size);
 }
 
 /**
@@ -3458,9 +3435,10 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	details->original_text = g_strdup (editable_text);
 
 	/* Create text renaming widget */	
-	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM (gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
-										 nautilus_icon_text_item_get_type (),
-										 NULL));
+	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM
+		(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
+					nautilus_icon_text_item_get_type (),
+					NULL));
 
 	/* Determine widget position widget in container */
 	font = details->label_font[details->zoom_level];
@@ -3492,7 +3470,6 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 			    container);
 	
 	nautilus_icon_text_item_start_editing (details->rename_widget);
-	
 	nautilus_icon_container_update_icon (container, icon);
 	
 	/* We are in renaming mode */
@@ -3562,6 +3539,55 @@ click_policy_changed_callback (gpointer user_data)
 	container->details->single_click_mode =
 		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
+}
+
+gboolean
+nautilus_icon_container_has_stored_icon_positions (NautilusIconContainer *container)
+{
+	GList *p;
+	NautilusIcon *icon;
+	gboolean have_stored_position;
+	NautilusIconPosition position;
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+
+		have_stored_position = FALSE;
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[GET_STORED_ICON_POSITION],
+				 icon->data,
+				 &position,
+				 &have_stored_position);
+		if (have_stored_position) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+#if ! defined (NAUTILUS_OMIT_SELF_CHECK)
+
+static char *
+nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
+				     int start_pointer_x, int start_pointer_y,
+				     int end_pointer_x, int end_pointer_y)
+{
+	StretchState start, current;
+
+	start.icon_x = icon_x;
+	start.icon_y = icon_y;
+	start.icon_size = icon_size;
+	start.pointer_x = start_pointer_x;
+	start.pointer_y = start_pointer_y;
+	current.pointer_x = end_pointer_x;
+	current.pointer_y = end_pointer_y;
+
+	compute_stretch (&start, &current);
+
+	return g_strdup_printf ("%d,%d:%d",
+				current.icon_x,
+				current.icon_y,
+				current.icon_size);
 }
 
 void

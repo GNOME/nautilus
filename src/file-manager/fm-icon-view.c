@@ -81,6 +81,9 @@ struct FMIconViewDetails
 
 	guint react_to_icon_change_idle_id;
 	gboolean menus_ready;
+
+	/* Workaround for Bonobo bug. */
+	gboolean updating_bonobo_radio_menu_item;
 };
 
 static void
@@ -113,57 +116,53 @@ get_icon_container (FMIconView *icon_view)
 	return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
 }
 
-static void
+static gboolean
 get_stored_icon_position_callback (NautilusIconContainer *container,
 				   NautilusFile *file,
-				   gboolean *position_stored,
-				   int *x,
-				   int *y,
-				   double *scale_x,
-				   double *scale_y,
+				   NautilusIconPosition *position,
 				   FMIconView *icon_view)
 {
 	NautilusDirectory *directory;
 	char *position_string, *scale_string;
-	gboolean scale_good;
+	gboolean position_good, scale_good;
 	char *locale;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (position_stored != NULL);
-	g_assert (x != NULL);
-	g_assert (y != NULL);
-	g_assert (scale_x != NULL);
-	g_assert (scale_y != NULL);
+	g_assert (position != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
 	locale = setlocale (LC_NUMERIC, "C");
 
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
-	position_string = nautilus_file_get_metadata (file, 
-						      NAUTILUS_METADATA_KEY_ICON_POSITION, 
-						      "");
-	*position_stored = sscanf (position_string, " %d , %d %*s", x, y) == 2;
+	position_string = nautilus_file_get_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_POSITION, "");
+	position_good = sscanf (position_string, " %d , %d %*s",
+				&position->x, &position->y) == 2;
 	g_free (position_string);
 
 	/* Get the scale of the icon from the metadata. */
-	scale_string = nautilus_file_get_metadata (file,
-						   NAUTILUS_METADATA_KEY_ICON_SCALE,
-						   "1");
-	scale_good = sscanf (scale_string, " %lf %*s", scale_x) == 1;
+	scale_string = nautilus_file_get_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
+	scale_good = sscanf (scale_string, " %lf %*s",
+			     &position->scale_x) == 1;
 	if (scale_good) {
-		*scale_y = *scale_x;
+		position->scale_y = position->scale_x;
 	} else {
-		scale_good = sscanf (scale_string, " %lf %lf %*s", scale_x, scale_y) == 2;
+		scale_good = sscanf (scale_string, " %lf %lf %*s",
+				     &position->scale_x,
+				     &position->scale_y) == 2;
 		if (!scale_good) {
-			*scale_x = 1.0;
-			*scale_y = 1.0;
+			position->scale_x = 1.0;
+			position->scale_y = 1.0;
 		}
 	}
 	g_free (scale_string);
 
 	setlocale (LC_NUMERIC, locale);
+
+	return position_good;
 }
 
 /**
@@ -427,6 +426,8 @@ update_layout_menus (FMIconView *view)
 		return;
 	}
 
+	/* Workaround for Bonobo bug. */
+	view->details->updating_bonobo_radio_menu_item = TRUE;
 	bonobo_ui_handler_menu_set_radio_state
 		(fm_directory_view_get_bonobo_ui_handler
 		 (FM_DIRECTORY_VIEW (view)),
@@ -435,6 +436,7 @@ update_layout_menus (FMIconView *view)
 		 ? MENU_PATH_AUTO_LAYOUT
 		 : MENU_PATH_MANUAL_LAYOUT,
 		 TRUE);
+	view->details->updating_bonobo_radio_menu_item = FALSE;
 }
 
 static void
@@ -466,9 +468,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
 		 TRUE);
 	nautilus_icon_container_set_auto_layout
-		(get_icon_container (icon_view),
-		 auto_layout);
-	update_layout_menus (icon_view);
+		(get_icon_container (icon_view), auto_layout);
 }
 
 static NautilusZoomLevel
@@ -630,35 +630,44 @@ auto_layout_callback (BonoboUIHandler *handler, gpointer user_data, const char *
 {
 	NautilusIconContainer *container;
 
-	if (!FM_ICON_VIEW (user_data)->details->menus_ready) {
+	/* Workaround for Bonobo bug. */
+	if (FM_ICON_VIEW (user_data)->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
 	container = get_icon_container (FM_ICON_VIEW (user_data));
 	nautilus_icon_container_set_auto_layout (container, TRUE);
-	nautilus_directory_set_boolean_metadata
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (user_data)),
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
-		 TRUE,
-		 TRUE);
 }
 
 static void
-manual_layout_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
+manual_layout_callback (BonoboUIHandler *handler,
+			gpointer user_data,
+			const char *path)
 {
 	NautilusIconContainer *container;
 
-	if (!FM_ICON_VIEW (user_data)->details->menus_ready) {
+	/* Workaround for Bonobo bug. */
+	if (FM_ICON_VIEW (user_data)->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
 	container = get_icon_container (FM_ICON_VIEW (user_data));
 	nautilus_icon_container_set_auto_layout (container, FALSE);
+}
+
+static void
+layout_changed_callback (NautilusIconContainer *container,
+			 FMIconView *icon_view)
+{
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+
 	nautilus_directory_set_boolean_metadata
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (user_data)),
+		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
 		 TRUE,
-		 FALSE);
+		 nautilus_icon_container_is_auto_layout (container));
+	update_layout_menus (icon_view);
 }
 
 static void
@@ -666,19 +675,22 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 {
         GList *selection;
         BonoboUIHandler *ui_handler;
+	FMIconView *icon_view;
 	
         g_assert (FM_IS_ICON_VIEW (view));
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
+	icon_view = FM_ICON_VIEW (view);
+
         selection = fm_directory_view_get_selection (view);
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
-        append_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection,
+        append_bonobo_menu_item (icon_view, ui_handler, selection,
                                  MENU_PATH_STRETCH_ICON,
                                  _("Make the selected icon stretchable"),
                                  (BonoboUIHandlerCallbackFunc) show_stretch_handles_callback, view);
-        append_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection,
+        append_bonobo_menu_item (icon_view, ui_handler, selection,
                                  MENU_PATH_UNSTRETCH_ICONS,
                                  _("Restore each selected icon to its original size"),
                                  (BonoboUIHandlerCallbackFunc) unstretch_icons_callback, view);
@@ -687,7 +699,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
                                               MENU_PATH_AFTER_STRETCH_SEPARATOR,
                                               -1);
 
-        append_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection,
+        append_bonobo_menu_item (icon_view, ui_handler, selection,
                                  MENU_PATH_CUSTOMIZE_ICON_TEXT,
                                  _("Choose which information appears beneath each icon's name"),
                                  (BonoboUIHandlerCallbackFunc) customize_icon_text_callback, view);
@@ -698,6 +710,9 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 
         bonobo_ui_handler_menu_new_radiogroup (ui_handler,
 					       MENU_PATH_LAYOUT_GROUP);
+
+	/* Workaround for Bonobo bug. */
+	icon_view->details->updating_bonobo_radio_menu_item = TRUE;
 	bonobo_ui_handler_menu_new_radioitem (ui_handler,
 					      MENU_PATH_AUTO_LAYOUT,
 					      _("Auto Layout"),
@@ -712,25 +727,28 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 					      -1,
 					      0, 0,
 					      manual_layout_callback, view);
+	icon_view->details->updating_bonobo_radio_menu_item = FALSE;
 
-	/* This menu item needs to go right after the Duplicate item that fm-directory-view places in the File menu */
+	/* This menu item needs to go right after the Duplicate item that
+	 * fm-directory-view places in the File menu.
+	 */
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_RENAME,
                                          _("Rename"),
                                          _("Rename selected item"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler,
+									 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
-                                         0,
-                                         0,
+                                         0, 0,
                                          (BonoboUIHandlerCallbackFunc) rename_icon_callback,
                                          view);
 
         nautilus_file_list_free (selection);
 
-	FM_ICON_VIEW (view)->details->menus_ready = TRUE;
+	icon_view->details->menus_ready = TRUE;
 
-	update_layout_menus (FM_ICON_VIEW (view));
+	update_layout_menus (icon_view);
 }
 
 static void
@@ -819,8 +837,8 @@ icon_container_compare_icons_callback (NautilusIconContainer *container,
 }
 
 static void
-icon_container_selection_changed_callback (NautilusIconContainer *container,
-					   FMIconView *icon_view)
+selection_changed_callback (NautilusIconContainer *container,
+			    FMIconView *icon_view)
 {
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
@@ -870,7 +888,7 @@ fm_icon_view_react_to_icon_change_idle_callback (gpointer data)
 static void
 icon_position_changed_callback (NautilusIconContainer *container,
 				NautilusFile *file,
-				int x, int y, double scale_x, double scale_y,
+				const NautilusIconPosition *position,
 				FMIconView *icon_view)
 {
 	NautilusDirectory *directory;
@@ -900,7 +918,8 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	/* Store the new position of the icon in the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	if (!nautilus_icon_container_is_auto_layout (container)) {
-		position_string = g_strdup_printf ("%d,%d", x, y);
+		position_string = g_strdup_printf ("%d,%d",
+						   position->x, position->y);
 		nautilus_file_set_metadata (file, 
 					    NAUTILUS_METADATA_KEY_ICON_POSITION, 
 					    NULL, 
@@ -911,8 +930,8 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	 * %.2f is not a good format for the scale factor. We'd like it to
 	 * say "2" or "2x" instead of "2.00".
 	 */
-	scale_string_x = g_strdup_printf ("%.2f", scale_x);
-	scale_string_y = g_strdup_printf ("%.2f", scale_y);
+	scale_string_x = g_strdup_printf ("%.2f", position->scale_x);
+	scale_string_y = g_strdup_printf ("%.2f", position->scale_y);
 	if (strcmp (scale_string_x, scale_string_y) == 0) {
 		scale_string = scale_string_x;
 		g_free (scale_string_y);
@@ -1154,7 +1173,7 @@ create_icon_container (FMIconView *icon_view)
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
-			    GTK_SIGNAL_FUNC (icon_container_selection_changed_callback),
+			    GTK_SIGNAL_FUNC (selection_changed_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_images",
@@ -1183,6 +1202,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_stored_icon_position",
 			    GTK_SIGNAL_FUNC (get_stored_icon_position_callback),
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "layout_changed",
+			    GTK_SIGNAL_FUNC (layout_changed_callback),
 			    directory_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));

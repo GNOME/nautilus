@@ -78,6 +78,7 @@ void              nautilus_gtk_style_set_font_by_name   (GtkStyle               
 
 #define nautilus_gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
 #define nautilus_gtk_marshal_NONE__POINTER_STRING_STRING nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_BOOL__POINTER_POINTER nautilus_gtk_marshal_INT__POINTER_POINTER
 #define nautilus_gtk_marshal_INT__POINTER_STRING nautilus_gtk_marshal_INT__POINTER_POINTER
 #define nautilus_gtk_marshal_POINTER__POINTER_STRING_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_POINTER__POINTER_INT_INT_STRING_POINTER nautilus_gtk_marshal_POINTER__POINTER_INT_INT_POINTER_POINTER

@@ -74,4 +74,10 @@ gboolean nautilus_art_irect_hits_irect                        (const ArtIRect  *
 gboolean nautilus_art_irect_contains_irect                    (const ArtIRect  *outer_rect,
 							       const ArtIRect  *inner_rect);
 
+int      nautilus_simple_dialog                               (GtkWidget *parent,
+							       const char *text,
+							       const char *title,
+							       ...);
+							       
+
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

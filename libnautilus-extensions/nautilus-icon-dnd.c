@@ -35,6 +35,9 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
@@ -42,7 +45,6 @@
 #include "nautilus-background.h"
 #include "nautilus-graphic-effects.h"
 
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include "nautilus-icon-private.h"
 
 static int      nautilus_icon_drag_key_callback      (GtkWidget             *widget,
@@ -716,6 +718,38 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 
 }
 
+static gboolean
+confirm_switch_to_manual_layout (NautilusIconContainer *container)
+{
+	const char *message;
+
+	/* FIXME: Use of the word "directory" makes this FMIconView specific.
+	 * Move this into FMIconView so NautilusIconContainer can
+	 * be used for things that are not directories?
+	 */
+	/* FIXME bugzilla.eazel.com 544: The hard-coded newlines in these
+	 * messages are terrible!
+	 */
+	if (nautilus_icon_container_has_stored_icon_positions (container)) {
+		if (nautilus_g_list_exactly_one_item (container->details->dnd_info->selection_list)) {
+			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave this item where you dropped it?\nThis will clobber the stored manual layout.");
+		} else {
+			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave these items where you dropped them?\nThis will clobber the stored manual layout.");
+		}
+	} else {
+		if (nautilus_g_list_exactly_one_item (container->details->dnd_info->selection_list)) {
+			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave this item where you dropped it?");
+		} else {
+			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave these items where you dropped them?");
+		}
+	}
+
+	return nautilus_simple_dialog
+		(GTK_WIDGET (container), message,
+		 _("Switch to Manual Layout?"),
+		 _("Switch"), GNOME_STOCK_BUTTON_CANCEL, NULL) == 0;
+}
+
 static void
 handle_local_move (NautilusIconContainer *container,
 		   double world_x, double world_y)
@@ -725,10 +759,13 @@ handle_local_move (NautilusIconContainer *container,
 	NautilusIcon *icon;
 
 	if (container->details->auto_layout) {
-		g_message ("time to do that auto_layout thing");
+		if (!confirm_switch_to_manual_layout (container)) {
+			return;
+		}
+		nautilus_icon_container_freeze_icon_positions (container);
 	}
 
-	/* handle the simple case -- just change item locations */
+	/* Move and select the icons. */
 	moved_icons = NULL;
 	for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
 		item = p->data;

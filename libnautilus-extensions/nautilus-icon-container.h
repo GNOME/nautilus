@@ -49,46 +49,43 @@ struct NautilusIconContainer {
 	NautilusIconContainerDetails *details;
 };
 
+typedef struct {
+	int x;
+	int y;
+	double scale_x;
+	double scale_y;
+} NautilusIconPosition;
+
 struct NautilusIconContainerClass {
 	GnomeCanvasClass parent_class;
 
+	/* Operations on the container. */
 	int          (* button_press) 	          (NautilusIconContainer *container,
 						   GdkEventButton *event);
+	void         (* context_click_background) (NautilusIconContainer *container);
+
+	/* Operations on icons. */
 	void         (* activate)	  	  (NautilusIconContainer *container,
 						   NautilusIconData *data);
-	
 	void         (* context_click_selection)  (NautilusIconContainer *container);
-	void         (* context_click_background) (NautilusIconContainer *container);
-	
-	void         (* selection_changed) 	  (NautilusIconContainer *container);
+	void	     (* move_copy_items)	  (NautilusIconContainer *container,
+						   GList *item_uris,
+						   const GdkPoint *relative_item_points,
+						   const char *target_uri,
+						   int copy_action,
+						   int x,
+						   int y);
 
-	void         (* icon_position_changed)    (NautilusIconContainer *container,
-						   NautilusIconData *data,
-						   int x, int y,
-						   double scale_x,
-						   double scale_y);
-	
-	void         (* icon_text_changed)        (NautilusIconContainer *container,
-						   NautilusIconData *data,
-						   char *text);
-	
-	void         (* icon_text_edit_occurred)  (NautilusIconContainer *container);
-	
+	/* Queries on the container for subclass/client. */
 	char *	     (* get_container_uri)	  (NautilusIconContainer *container);
-	gboolean     (* can_accept_item)	  (NautilusIconContainer *container,
-						   const NautilusIconData *target_uri, 
-						   const char *item_uri);
 
-	/* Connect to these signals to supply information about icons.
-	 * They are called as needed after the icons are inserted.
-	 */
-	void         (* get_stored_icon_position) (NautilusIconContainer *container,
+	/* Queries on icons for subclass/client. */
+	gboolean     (* can_accept_item)	  (NautilusIconContainer *container,
+						   NautilusIconData *target, 
+						   const char *item_uri);
+	gboolean     (* get_stored_icon_position) (NautilusIconContainer *container,
 						   NautilusIconData *data,
-						   gboolean *position_stored,
-						   int *x,
-						   int *y,
-						   double *scale_x,
-						   double *scale_y);
+						   NautilusIconPosition *position);
 	NautilusScalableIcon *
 	             (* get_icon_images)          (NautilusIconContainer *container,
 						   NautilusIconData *data,
@@ -103,14 +100,18 @@ struct NautilusIconContainerClass {
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
-	
-	void	     (* move_copy_items)	  (NautilusIconContainer *container,
-						   const GList *item_uris,
-						   const GdkPoint *relative_item_points,
-						   const char *target_uri,
-						   int copy_action,
-						   int x,
-						   int y);
+
+	/* Notifications for the whole container. */
+	void         (* selection_changed) 	  (NautilusIconContainer *container);
+	void         (* layout_changed)           (NautilusIconContainer *container);
+
+	/* Notifications for icons. */
+	void         (* icon_position_changed)    (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   const NautilusIconPosition *position);
+	void         (* icon_text_changed)        (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   const char *text);
 };
 
 /* GtkObject */
@@ -131,6 +132,7 @@ void       nautilus_icon_container_request_update_all      (NautilusIconContaine
 gboolean   nautilus_icon_container_is_auto_layout          (NautilusIconContainer *container);
 void       nautilus_icon_container_set_auto_layout         (NautilusIconContainer *container,
 							    gboolean               auto_layout);
+void       nautilus_icon_container_sort                    (NautilusIconContainer *container);
 void       nautilus_icon_container_freeze_icon_positions   (NautilusIconContainer *container);
 
 /* operations on all icons */

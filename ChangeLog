@@ -1,3 +1,56 @@
+2000-05-10  Darin Adler  <darin@eazel.com>
+
+	* components/services/trilobite/src/.cvsignore:
+	Ignore the generated files in this new directory.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(convert_varargs_to_name_array), (nautilus_simple_dialog):
+	Moved simple-dialog function from dfos. It just calls
+	gnome_dialog with the right options.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	Added another marshal function.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(reload_icon_positions), (nautilus_icon_container_move_icon),
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_add),
+	(nautilus_icon_container_request_update_all),
+	(nautilus_icon_container_set_auto_layout),
+	(nautilus_icon_container_freeze_icon_positions),
+	(nautilus_icon_container_sort),
+	(nautilus_icon_container_start_renaming_selected_item):
+	Reorganized signals. Added NautilusIconPosition to simplify
+	the interface for signals that deal with icon position. Removed the
+	now-unused icon_text_edit_occurred signal. Added the layout_changed
+	signal. Added nautilus_icon_container_sort function. Moved some code
+	out of the "omit self check" conditional.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout), (handle_local_move): Added code
+	that switches to manual layout if you move an icon within the window
+	and it's on auto layout.
+	
+	* src/file-manager/dfos-xfer.h:
+	* src/file-manager/dfos-xfer.c: (handle_xfer_vfs_error),
+	(handle_xfer_overwrite), (dfos_xfer): Switch code to use the new
+	nautilus_simple_dialog instead of file_operation_alert, which I
+	removed from here.
+	
+	* src/file-manager/fm-icon-view.c:
+	(get_stored_icon_position_callback), (update_layout_menus),
+	(fm_icon_view_begin_loading), (auto_layout_callback),
+	(manual_layout_callback), (layout_changed_callback),
+	(fm_icon_view_merge_menus), (icon_position_changed_callback),
+	(create_icon_container):
+	Added workaround for Bonobo bug where it calls the radio menu item
+	callback that was making it always use auto layout. Converted to use
+	the updated signal parameters. Added a signal handler to update the
+	layout menu to match the layout when the layout is changed elsewhere.
+
 2000-05-10  John Sullivan  <set EMAIL_ADDRESS environment variable>
 
 	* src/file-manager/fm-properties-window.c: (create_emblems_page):
@@ -51,7 +104,7 @@
 
 2000-05-09  Andy Hertzfeld <andy@eazel.com>
 
-	* src/libnautilus-extensions/nautilus-icon-factory.c:
+	* libnautilus-extensions/nautilus-icon-factory.c:
 	taught the icon factory to look in the user's home directory
 	for user-defined emblem images
 	
@@ -99,7 +152,7 @@
 	I/O when the file is destroyed (we already had the hook).
 	
 	* libnautilus-extensions/nautilus-directory-async.c:
-	(lacks_top_left), 
+	(lacks_top_left):
 	* libnautilus-extensions/nautilus-file-private.h:
 	* libnautilus-extensions/nautilus-file.c:
 	(nautilus_file_contains_text), (nautilus_file_get_top_left_text):

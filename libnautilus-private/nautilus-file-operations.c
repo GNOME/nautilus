@@ -29,8 +29,9 @@
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 
 #include "dfos-xfer.h"
-#include "libnautilus-extensions/nautilus-file-changes-queue.h"
-#include "libnautilus-extensions/nautilus-glib-extensions.h"
+#include <libnautilus-extensions/nautilus-file-changes-queue.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include "fm-directory-view.h"
 
 typedef enum {
@@ -209,9 +210,10 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			"Would you like to continue?"), 
 			gnome_vfs_result_to_string (progress_info->vfs_status),
 			progress_info->source_name);
-		result = file_operation_alert (xfer_info->parent_view, text, 
-			_("File copy error"),
-			_("Skip"), _("Retry"), _("Stop"));
+		result = nautilus_simple_dialog
+			(xfer_info->parent_view, text, 
+			 _("File copy error"),
+			 _("Skip"), _("Retry"), _("Stop"), NULL);
 
 		switch (result) {
 		case 0:
@@ -251,9 +253,10 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		/* we are going to only get one duplicate alert, don't offer
 		 * Replace All
 		 */
-		result = file_operation_alert (xfer_info->parent_view, text, 
-			_("File copy conflict"),
-			_("Replace"), _("Skip"), NULL);
+		result = nautilus_simple_dialog
+			(xfer_info->parent_view, text, 
+			 _("File copy conflict"),
+			 _("Replace"), _("Skip"), NULL);
 		switch (result) {
 		case 0:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
@@ -261,9 +264,10 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		}
 	} else {
-		result = file_operation_alert (xfer_info->parent_view, text, 
-			_("File copy conflict"),
-			_("Replace All"), _("Replace"), _("Skip"));
+		result = nautilus_simple_dialog
+			(xfer_info->parent_view, text, 
+			 _("File copy conflict"),
+			 _("Replace All"), _("Replace"), _("Skip"), NULL);
 
 		switch (result) {
 		case 0:
@@ -401,43 +405,6 @@ dfos_xfer (DFOS *dfos,
 		g_free (message);
 		g_free (xfer_info);
 	}
-}
-
-int
-file_operation_alert (GtkWidget *parent_view, const char *text, 
-			const char *title, const char *button_1_text,
-			const char *button_2_text, const char *button_3_text)
-{
-        GtkWidget *dialog;
-        GtkWidget *prompt_widget;
-        GtkWidget *top_widget;
-
-        /* Don't use GNOME_STOCK_BUTTON_CANCEL because the
-         * red X is confusing in this context.
-         */
-
-        dialog = gnome_dialog_new (title,
-                                   button_1_text,
-                                   button_2_text,
-                                   button_3_text,
-                                   NULL);
-
-        gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-        gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
-
-        top_widget = gtk_widget_get_toplevel (parent_view);
-        g_assert (GTK_IS_WINDOW (top_widget));
-        gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (top_widget));
-
-        prompt_widget = gtk_label_new (text);
-        
-        gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-                            prompt_widget,
-                            TRUE, TRUE, GNOME_PAD);
-
-        gtk_widget_show_all (dialog);
-
-        return gnome_dialog_run (GNOME_DIALOG (dialog));
 }
 
 static void
