@@ -1,6 +1,24 @@
-This is nautilus 2.8.1, the file manager for the Gnome 2 desktop.
+This is nautilus 2.8.2, the file manager for the Gnome 2 desktop.
 
 Major changes since 2.8.1 are:
+* On mime mismatch, allow open with default app as open with
+* On dnd of mozilla link, create desktop file with .desktop ending
+* Delay activation when keyboard navigating in tree sidebar
+* Add open new window menu item in browser mode
+* Fix race condition that made up not alway select the folder
+* Better error message when there is no handler for a file
+* Fix throbber right-alignment with latest bonoboui
+* Alt-up selects the directory you came from
+* Display a frame on DnD hover if accepting
+* Fix off-by-one bug in icon positioning on DnD
+* Make creating new files in list view auto-rename
+* Add the icon text to the DnD icon
+* Add eject to volumes in free sidebar
+* Don't close browser window when the showed path is unmounted
+* Save browser window geometry
+* Handle the new env vars for filesystem charset
+
+Major changes since 2.8.0 are:
 * Update to latest egg-recent
 * Fix memory leaks
 * Clear clipboard after a cut file is pasted

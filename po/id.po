@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-25 08:06+0700\n"
+"POT-Creation-Date: 2004-10-28 17:11+0200\n"
 "PO-Revision-Date: 2004-10-25 08:08+0700\n"
 "Last-Translator: Mohammad DAMT <mdamt@bisnisweb.com>\n"
 "Language-Team: Indonesia <sukarelawan@gnome.linux.or.id>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
@@ -226,13 +226,19 @@ msgid "Software"
 msgstr "Software"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgstr[0] ""
+"<b>Jenis Gambar:</b> %s (%s)\n"
+"<b>Resolusi:</b> %dx%d piksel\n"
+"<b>Jenis Gambar:</b> %s (%s)\n"
+"<b>Resolusi:</b> %dx%d piksel\n"
+msgstr[1] ""
 "<b>Jenis Gambar:</b> %s (%s)\n"
 "<b>Resolusi:</b> %dx%d piksel\n"
 "<b>Jenis Gambar:</b> %s (%s)\n"
@@ -1600,8 +1606,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "The side pane view to show in newly opened windows."
-msgstr ""
-"Tampilan panel sisi yang ditampilkan pada jendela yang baru terbuka."
+msgstr "Tampilan panel sisi yang ditampilkan pada jendela yang baru terbuka."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid ""
@@ -1929,65 +1934,65 @@ msgstr "Maaf, tidak berhasil menyimpan nama emblem Anda"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2965
+#: libnautilus-private/nautilus-file.c:2983
 msgid "today at 00:00:00 PM"
 msgstr "hari ini pada pukul 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2966
+#: libnautilus-private/nautilus-file.c:2984
 #: src/nautilus-file-management-properties.c:493
 msgid "today at %-I:%M:%S %p"
 msgstr "hari ini pada pukul %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2968
+#: libnautilus-private/nautilus-file.c:2986
 msgid "today at 00:00 PM"
 msgstr "hari ini pada pukul 00:00"
 
-#: libnautilus-private/nautilus-file.c:2969
+#: libnautilus-private/nautilus-file.c:2987
 msgid "today at %-I:%M %p"
 msgstr "hari ini pada pukul %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2971
+#: libnautilus-private/nautilus-file.c:2989
 msgid "today, 00:00 PM"
 msgstr "hari ini, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2972
+#: libnautilus-private/nautilus-file.c:2990
 msgid "today, %-I:%M %p"
 msgstr "hari ini, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2974
-#: libnautilus-private/nautilus-file.c:2975
+#: libnautilus-private/nautilus-file.c:2992
+#: libnautilus-private/nautilus-file.c:2993
 msgid "today"
 msgstr "hari ini"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2984
+#: libnautilus-private/nautilus-file.c:3002
 msgid "yesterday at 00:00:00 PM"
 msgstr "kemarin pada pukul 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2985
+#: libnautilus-private/nautilus-file.c:3003
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "kemarin pada pukul %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2987
+#: libnautilus-private/nautilus-file.c:3005
 msgid "yesterday at 00:00 PM"
 msgstr "kemarin pada pukul 00:00"
 
-#: libnautilus-private/nautilus-file.c:2988
+#: libnautilus-private/nautilus-file.c:3006
 msgid "yesterday at %-I:%M %p"
 msgstr "kemarin pada %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2990
+#: libnautilus-private/nautilus-file.c:3008
 msgid "yesterday, 00:00 PM"
 msgstr "kemarin, 00:00 "
 
-#: libnautilus-private/nautilus-file.c:2991
+#: libnautilus-private/nautilus-file.c:3009
 msgid "yesterday, %-I:%M %p"
 msgstr "kemarin, %-H:%M:"
 
-#: libnautilus-private/nautilus-file.c:2993
-#: libnautilus-private/nautilus-file.c:2994
+#: libnautilus-private/nautilus-file.c:3011
+#: libnautilus-private/nautilus-file.c:3012
 msgid "yesterday"
 msgstr "kemarin"
 
@@ -1996,110 +2001,116 @@ msgstr "kemarin"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:3005
+#: libnautilus-private/nautilus-file.c:3023
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Rabu, 00 September 0000 jam 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:3006
+#: libnautilus-private/nautilus-file.c:3024
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y jam %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:3008
+#: libnautilus-private/nautilus-file.c:3026
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Sen, 00 Okt 0000 jam 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:3009
+#: libnautilus-private/nautilus-file.c:3027
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y jam %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:3011
+#: libnautilus-private/nautilus-file.c:3029
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Sen, 00 Okt 0000 jam 00:00"
 
-#: libnautilus-private/nautilus-file.c:3012
+#: libnautilus-private/nautilus-file.c:3030
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y jam %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3014
+#: libnautilus-private/nautilus-file.c:3032
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 Okt 0000 jam 00:00"
 
-#: libnautilus-private/nautilus-file.c:3015
+#: libnautilus-private/nautilus-file.c:3033
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y jam %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3017
+#: libnautilus-private/nautilus-file.c:3035
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 Okt 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:3018
+#: libnautilus-private/nautilus-file.c:3036
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3020
+#: libnautilus-private/nautilus-file.c:3038
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:3021
+#: libnautilus-private/nautilus-file.c:3039
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y. %H:%M"
 
-#: libnautilus-private/nautilus-file.c:3023
+#: libnautilus-private/nautilus-file.c:3041
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:3024
+#: libnautilus-private/nautilus-file.c:3042
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:4315
+#: libnautilus-private/nautilus-file.c:4333
 #: src/file-manager/fm-directory-view.c:1824
-#, c-format
+#, fuzzy, c-format
 msgid "%u item"
-msgstr "%u objek"
+msgid_plural "%u items"
+msgstr[0] "%u objek"
+msgstr[1] "%u objek"
 
-#: libnautilus-private/nautilus-file.c:4316
-#, c-format
+#: libnautilus-private/nautilus-file.c:4334
+#, fuzzy, c-format
 msgid "%u folder"
-msgstr "%u folder"
+msgid_plural "%u folders"
+msgstr[0] "%u folder"
+msgstr[1] "%u folder"
 
-#: libnautilus-private/nautilus-file.c:4317
-#, c-format
+#: libnautilus-private/nautilus-file.c:4335
+#, fuzzy, c-format
 msgid "%u file"
-msgstr "%u berkas"
+msgid_plural "%u files"
+msgstr[0] "%u berkas"
+msgstr[1] "%u berkas"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4642
-#: libnautilus-private/nautilus-file.c:4658
+#: libnautilus-private/nautilus-file.c:4660
+#: libnautilus-private/nautilus-file.c:4676
 msgid "? items"
 msgstr "sejumlah objek"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4648
+#: libnautilus-private/nautilus-file.c:4666
 msgid "? bytes"
 msgstr "sejumlah byte"
 
-#: libnautilus-private/nautilus-file.c:4663
+#: libnautilus-private/nautilus-file.c:4681
 msgid "unknown type"
 msgstr "tipe tidak dikenal"
 
-#: libnautilus-private/nautilus-file.c:4666
+#: libnautilus-private/nautilus-file.c:4684
 msgid "unknown MIME type"
 msgstr "tipe MIME tidak dikenal"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4672
+#: libnautilus-private/nautilus-file.c:4690
 #: src/file-manager/fm-properties-window.c:1204
 msgid "unknown"
 msgstr "tidak diketahui"
 
-#: libnautilus-private/nautilus-file.c:4705
+#: libnautilus-private/nautilus-file.c:4723
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4723
+#: libnautilus-private/nautilus-file.c:4741
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2109,7 +2120,7 @@ msgstr ""
 "Kemungkinan berkas gnome-vfs.keys Anda berada di lokasi yang salah, atau "
 "tidak bisa ditemukan karena alasant tertentu."
 
-#: libnautilus-private/nautilus-file.c:4727
+#: libnautilus-private/nautilus-file.c:4745
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2118,7 +2129,7 @@ msgstr ""
 "Tidak ada deskripsi untuk tipe mime \"%s\" (berkasnya adalah \"%s\"), tolong "
 "beritahukan pada mailing list gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4743
+#: libnautilus-private/nautilus-file.c:4761
 msgid "link"
 msgstr "link"
 
@@ -2127,18 +2138,18 @@ msgstr "link"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: libnautilus-private/nautilus-file.c:4749
+#: libnautilus-private/nautilus-file.c:4767
 #: libnautilus-private/nautilus-file-operations.c:1194
 #, c-format
 msgid "link to %s"
 msgstr "link ke %s"
 
-#: libnautilus-private/nautilus-file.c:4763
+#: libnautilus-private/nautilus-file.c:4781
 msgid "link (broken)"
 msgstr "link (terputus)"
 
-#: libnautilus-private/nautilus-file.c:6191
-#: libnautilus-private/nautilus-global-preferences.c:546
+#: libnautilus-private/nautilus-file.c:6209
+#: libnautilus-private/nautilus-global-preferences.c:550
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
 msgstr "Tong Sampah"
@@ -2802,7 +2813,7 @@ msgid "%ld of %ld"
 msgstr "%ld dari %ld"
 
 #: libnautilus-private/nautilus-file-utilities.c:393
-#: libnautilus-private/nautilus-global-preferences.c:540
+#: libnautilus-private/nautilus-global-preferences.c:544
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:10
 msgid "Computer"
 msgstr "Komputer"
@@ -3032,7 +3043,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: libnautilus-private/nautilus-global-preferences.c:534
+#: libnautilus-private/nautilus-global-preferences.c:538
 #, c-format
 msgid "%s's Home"
 msgstr "Home %s"
@@ -3257,12 +3268,12 @@ msgstr "Membuka %s"
 #: libnautilus-private/nautilus-program-choosing.c:597
 #: libnautilus-private/nautilus-program-choosing.c:605
 #: libnautilus-private/nautilus-program-choosing.c:610
-#: src/nautilus-window-manage-views.c:1366
-#: src/nautilus-window-manage-views.c:1376
-#: src/nautilus-window-manage-views.c:1390
-#: src/nautilus-window-manage-views.c:1398
-#: src/nautilus-window-manage-views.c:1404
-#: src/nautilus-window-manage-views.c:1425
+#: src/nautilus-window-manage-views.c:1400
+#: src/nautilus-window-manage-views.c:1410
+#: src/nautilus-window-manage-views.c:1424
+#: src/nautilus-window-manage-views.c:1432
+#: src/nautilus-window-manage-views.c:1438
+#: src/nautilus-window-manage-views.c:1459
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Nautilus tidak dapat menampilkan \"%s\"."
@@ -3274,24 +3285,24 @@ msgid "There was an error launching the application."
 msgstr "Ada error ketika menjalankan aplikasi."
 
 #: libnautilus-private/nautilus-program-choosing.c:607
-#: src/nautilus-window-manage-views.c:1400
+#: src/nautilus-window-manage-views.c:1434
 msgid "The attempt to log in failed."
 msgstr "Login gagal."
 
 #: libnautilus-private/nautilus-program-choosing.c:612
-#: src/nautilus-window-manage-views.c:1406
+#: src/nautilus-window-manage-views.c:1440
 msgid "Access was denied."
 msgstr "Akses ditolak."
 
 #: libnautilus-private/nautilus-program-choosing.c:617
-#: src/nautilus-window-manage-views.c:1417
+#: src/nautilus-window-manage-views.c:1451
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr ""
 "Tidak dapat menampilkan \"%s\" karena host \"%s\" tidak dapat ditemukan."
 
 #: libnautilus-private/nautilus-program-choosing.c:620
-#: src/nautilus-window-manage-views.c:1420
+#: src/nautilus-window-manage-views.c:1454
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
@@ -3300,7 +3311,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:625
 #: src/nautilus-connect-server-dialog.c:137
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1384
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" bukanlah nama lokasi yang benar."
@@ -3309,19 +3320,19 @@ msgstr "\"%s\" bukanlah nama lokasi yang benar."
 #: libnautilus-private/nautilus-program-choosing.c:635
 #: src/nautilus-connect-server-dialog.c:139
 #: src/nautilus-property-browser.c:1095
-#: src/nautilus-window-manage-views.c:1345
-#: src/nautilus-window-manage-views.c:1353
+#: src/nautilus-window-manage-views.c:1379
+#: src/nautilus-window-manage-views.c:1387
 msgid "Please check the spelling and try again."
 msgstr "Periksa ejaannya dan coba lagi."
 
 #: libnautilus-private/nautilus-program-choosing.c:632
-#: src/nautilus-window-manage-views.c:1342
+#: src/nautilus-window-manage-views.c:1376
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Tidak dapat menemukan \"%s\"."
 
 #: libnautilus-private/nautilus-program-choosing.c:650
-#: src/nautilus-window-manage-views.c:1461
+#: src/nautilus-window-manage-views.c:1495
 msgid "Can't Display Location"
 msgstr "Tidak bisa menampilkan Lokasi"
 
@@ -3422,7 +3433,7 @@ msgstr "Mengubah bagaimana berkas diatur"
 msgid "File Management"
 msgstr "Pengaturan Berkas"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1119
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1220
 msgid "Home Folder"
 msgstr "Folder Home"
 
@@ -3449,18 +3460,22 @@ msgid "Empty Trash"
 msgstr "Kosongkan Tong Sampah"
 
 #: src/file-manager/fm-directory-view.c:535
-#, c-format
+#, fuzzy, c-format
 msgid "Open %d Window?"
-msgstr "Buka %d Jendela?"
+msgid_plural "Open %d Windows?"
+msgstr[0] "Buka %d Jendela?"
+msgstr[1] "Buka %d Jendela?"
 
 #: src/file-manager/fm-directory-view.c:536
 msgid "Are you sure you want to open all files?"
 msgstr "Apa Anda yakin ingin membuka semua berkas?"
 
 #: src/file-manager/fm-directory-view.c:537 src/nautilus-location-bar.c:158
-#, c-format
+#, fuzzy, c-format
 msgid "This will open %d separate window."
-msgstr "Ini akan membuka %d jendela terpisah."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Ini akan membuka %d jendela terpisah."
+msgstr[1] "Ini akan membuka %d jendela terpisah."
 
 #: src/file-manager/fm-directory-view.c:861
 #, c-format
@@ -3468,11 +3483,12 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Apa Anda yakin ingin menghapus \"%s\" secara permanen?"
 
 #: src/file-manager/fm-directory-view.c:865
-#, c-format
+#, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Apa Anda yakin ingin menghapus %d objek ini secara permanen?"
-"Apa Anda yakin ingin menghapus %d objek ini secara permanen?"
+msgstr[0] "Apa Anda yakin ingin menghapus \"%s\" secara permanen?"
+msgstr[1] "Apa Anda yakin ingin menghapus \"%s\" secara permanen?"
 
 #: src/file-manager/fm-directory-view.c:873
 msgid "If you delete an item, it is permanently lost."
@@ -3496,20 +3512,26 @@ msgid "\"%s\" selected"
 msgstr "\"%s\" terpilih"
 
 #: src/file-manager/fm-directory-view.c:1758
-#, c-format
+#, fuzzy, c-format
 msgid "%d folder selected"
-msgstr "%d folder terpilih"
+msgid_plural "%d folders selected"
+msgstr[0] "%d folder terpilih"
+msgstr[1] "%d folder terpilih"
 
 #: src/file-manager/fm-directory-view.c:1768
-#, c-format
+#, fuzzy, c-format
 msgid " (containing %d item)"
-msgstr " (mengandung %d objek)"
+msgid_plural " (containing %d items)"
+msgstr[0] " (mengandung %d objek)"
+msgstr[1] " (mengandung %d objek)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1779
-#, c-format
+#, fuzzy, c-format
 msgid " (containing a total of %d item)"
-msgstr " (total mengandung %d objek)"
+msgid_plural " (containing a total of %d items)"
+msgstr[0] " (total mengandung %d objek)"
+msgstr[1] " (total mengandung %d objek)"
 
 #: src/file-manager/fm-directory-view.c:1795
 #, c-format
@@ -3517,15 +3539,19 @@ msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" dipilih (%s)"
 
 #: src/file-manager/fm-directory-view.c:1799
-#, c-format
+#, fuzzy, c-format
 msgid "%d item selected (%s)"
-msgstr "%d objek terpilih (%s)"
+msgid_plural "%d items selected (%s)"
+msgstr[0] "%d objek terpilih (%s)"
+msgstr[1] "%d objek terpilih (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1807
-#, c-format
+#, fuzzy, c-format
 msgid "%d other item selected (%s)"
-msgstr "%d objek lain terpilih (%s)"
+msgid_plural "%d other items selected (%s)"
+msgstr[0] "%d objek lain terpilih (%s)"
+msgstr[1] "%d objek lain terpilih (%s)"
 
 #: src/file-manager/fm-directory-view.c:1828
 #, c-format
@@ -3598,15 +3624,17 @@ msgstr ""
 "Apakah Anda yakin ingin menghapus \"%s\" secara permanen dari Tong Sampah?"
 
 #: src/file-manager/fm-directory-view.c:3298
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr ""
-"Apakah Anda yakin ingin menghapus %d objek ini secara permanen dari Tong Sampah?"
-"Apakah Anda yakin ingin menghapus %d objek ini secara permanen dari Tong Sampah?"
+msgstr[0] ""
+"Apakah Anda yakin ingin menghapus \"%s\" secara permanen dari Tong Sampah?"
+msgstr[1] ""
+"Apakah Anda yakin ingin menghapus \"%s\" secara permanen dari Tong Sampah?"
 
 #: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
@@ -3748,37 +3776,37 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ukuran dan posisi window saat ini"
 
 #: src/file-manager/fm-directory-view.c:5166
-#: src/file-manager/fm-tree-view.c:821
+#: src/file-manager/fm-tree-view.c:864
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" akan dipindahkan jika Anda memilih perintah Paste Berkas"
 
 #: src/file-manager/fm-directory-view.c:5170
-#: src/file-manager/fm-tree-view.c:825
+#: src/file-manager/fm-tree-view.c:868
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" akan disalin jika Anda memilih perintah Paste Berkas"
 
 #: src/file-manager/fm-directory-view.c:5177
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
-"%d objek ini akan dipindahkan jika Anda memilih perintah Ambil Berkas"
-"%d objek ini akan dipindahkan jika Anda memilih perintah Ambil Berkas"
+msgstr[0] "\"%s\" akan dipindahkan jika Anda memilih perintah Paste Berkas"
+msgstr[1] "\"%s\" akan dipindahkan jika Anda memilih perintah Paste Berkas"
 
 #: src/file-manager/fm-directory-view.c:5184
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
-"%d objek ini akan disalin jika Anda memilih perintah Ambil Berkas"
-"%d objek ini akan disalin jika Anda memilih perintah Ambil Berkas"
+msgstr[0] "\"%s\" akan disalin jika Anda memilih perintah Paste Berkas"
+msgstr[1] "\"%s\" akan disalin jika Anda memilih perintah Paste Berkas"
 
 #: src/file-manager/fm-directory-view.c:5267
-#: src/file-manager/fm-tree-view.c:901
+#: src/file-manager/fm-tree-view.c:944
 msgid "There is nothing on the clipboard to paste."
 msgstr "Clipboard kosong, tidak ada yang bisa dipaste"
 
@@ -3788,10 +3816,12 @@ msgid "Mount Error"
 msgstr "Pemasangan Media Gagal"
 
 #: src/file-manager/fm-directory-view.c:5437
+#: src/file-manager/fm-tree-view.c:1026
 msgid "Eject Error"
 msgstr "Error Saat Mengeluarkan Media"
 
 #: src/file-manager/fm-directory-view.c:5440
+#: src/file-manager/fm-tree-view.c:1029
 msgid "Unmount Error"
 msgstr "Pelepasan Media Gagal"
 
@@ -3809,10 +3839,12 @@ msgid "Link _name:"
 msgstr "_Nama link:"
 
 #: src/file-manager/fm-directory-view.c:5900
+#: src/file-manager/fm-tree-view.c:714
 msgid "E_ject"
 msgstr "_Keluarkan Media"
 
 #: src/file-manager/fm-directory-view.c:5900
+#: src/file-manager/fm-tree-view.c:714
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
 msgstr "_Lepaskan Volume"
@@ -3829,10 +3861,12 @@ msgstr "_Buka"
 
 #. add the "open in new window" menu item
 #: src/file-manager/fm-directory-view.c:6069
-#: src/file-manager/fm-tree-view.c:993
-#, c-format
+#: src/file-manager/fm-tree-view.c:1079
+#, fuzzy, c-format
 msgid "Open in New Window"
-msgstr "Buka dalam Jendela Baru"
+msgid_plural "Open in %d New Windows"
+msgstr[0] "Buka dalam Jendela Baru"
+msgstr[1] "Buka dalam Jendela Baru"
 
 #: src/file-manager/fm-directory-view.c:6076
 msgid "Browse Folder"
@@ -4224,7 +4258,7 @@ msgid "Images Only"
 msgstr "Hanya Gambar"
 
 #: src/file-manager/fm-properties-window.c:919
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1172
 msgid "Properties"
 msgstr "Informasi"
 
@@ -4258,9 +4292,11 @@ msgid "unreadable"
 msgstr "tak terbaca"
 
 #: src/file-manager/fm-properties-window.c:1816
-#, c-format
+#, fuzzy, c-format
 msgid "%d item, with size %s"
-msgstr "%d objek, dengan ukuran %s"
+msgid_plural "%d items, totalling %s"
+msgstr[0] "%d objek, dengan ukuran %s"
+msgstr[1] "%d objek, dengan ukuran %s"
 
 #: src/file-manager/fm-properties-window.c:1825
 msgid "(some contents unreadable)"
@@ -4454,44 +4490,44 @@ msgstr "Buat jendela Pengaturan."
 msgid "Select an icon"
 msgstr "Pilih Ikon"
 
-#: src/file-manager/fm-tree-model.c:1199
+#: src/file-manager/fm-tree-model.c:1200
 msgid "(Empty)"
 msgstr "(Kosong)"
 
-#: src/file-manager/fm-tree-model.c:1199
+#: src/file-manager/fm-tree-model.c:1200
 msgid "Loading..."
 msgstr "Membuka...."
 
-#: src/file-manager/fm-tree-view.c:982
+#: src/file-manager/fm-tree-view.c:1068
 msgid "Open"
 msgstr "Buka"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:1006
+#: src/file-manager/fm-tree-view.c:1092
 msgid "Create Folder"
 msgstr "Buat Folder"
 
-#: src/file-manager/fm-tree-view.c:1022
+#: src/file-manager/fm-tree-view.c:1108
 msgid "Cut Folder"
 msgstr "Comot Folder"
 
-#: src/file-manager/fm-tree-view.c:1036
+#: src/file-manager/fm-tree-view.c:1122
 msgid "Copy Folder"
 msgstr "Salin Folder"
 
-#: src/file-manager/fm-tree-view.c:1050
+#: src/file-manager/fm-tree-view.c:1136
 msgid "Paste Files into Folder"
 msgstr "Masukkan Berkas yang sudah dicomot/salin ke dalam Folder"
 
-#: src/file-manager/fm-tree-view.c:1068
+#: src/file-manager/fm-tree-view.c:1154
 msgid "Move to Trash"
 msgstr "Pindahkan ke Tong Sampah"
 
-#: src/file-manager/fm-tree-view.c:1121
+#: src/file-manager/fm-tree-view.c:1222
 msgid "Filesystem"
 msgstr "Sistem Berkas"
 
-#: src/file-manager/fm-tree-view.c:1123
+#: src/file-manager/fm-tree-view.c:1224
 msgid "Network Neighbourhood"
 msgstr "Tetangga Dalam Jaringan"
 
@@ -5444,9 +5480,11 @@ msgid "Go To:"
 msgstr "Pergi Ke:"
 
 #: src/nautilus-location-bar.c:154
-#, c-format
+#, fuzzy, c-format
 msgid "Do you want to view %d location?"
-msgstr "Apakah Anda ingin menampilkan %d buah lokasi?"
+msgid_plural "Do you want to view %d locations?"
+msgstr[0] "Apakah Anda ingin menampilkan %d buah lokasi?"
+msgstr[1] "Apakah Anda ingin menampilkan %d buah lokasi?"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -6373,25 +6411,25 @@ msgstr "Tampilan Isi"
 msgid "View of the current file or folder"
 msgstr "Tampilan berkas atau folder saat ini"
 
-#: src/nautilus-window-manage-views.c:1369
+#: src/nautilus-window-manage-views.c:1403
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "Nautilus tidak bisa menentukan jenis berkas ini."
 
-#: src/nautilus-window-manage-views.c:1379
+#: src/nautilus-window-manage-views.c:1413
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr ""
 "Nautilus tidak memiliki program pembuka yang mampu menampilkan isi berkas."
 
-#: src/nautilus-window-manage-views.c:1392
+#: src/nautilus-window-manage-views.c:1426
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus tidak dapat membuka %s: lokasi."
 
-#: src/nautilus-window-manage-views.c:1427
+#: src/nautilus-window-manage-views.c:1461
 msgid "Check that your proxy settings are correct."
 msgstr "Periksa apakah setting proxy Anda sudah benar."
 
-#: src/nautilus-window-manage-views.c:1432
+#: src/nautilus-window-manage-views.c:1466
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6400,11 +6438,11 @@ msgstr ""
 "Tidak bisa menampilkan \"%s\", karena Nautilus tidak dapat tersambung dengan "
 "pengatur SMB master."
 
-#: src/nautilus-window-manage-views.c:1435
+#: src/nautilus-window-manage-views.c:1469
 msgid "Check that an SMB server is running in the local network."
 msgstr "Periksa apakah server SMB sedang jalan di jaringan."
 
-#: src/nautilus-window-manage-views.c:1445
+#: src/nautilus-window-manage-views.c:1479
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -6412,7 +6450,7 @@ msgstr ""
 "Pencarian tidak dapat dilakukan sekarang, entah karena Anda tidak punya "
 "indeks, atau karena layanan pencarian tidak dijalankan."
 
-#: src/nautilus-window-manage-views.c:1448
+#: src/nautilus-window-manage-views.c:1482
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -6420,16 +6458,16 @@ msgstr ""
 "Pastikan bahwa Anda sudah mengaktifkan layanan pencarian Medusa, dan jika "
 "Anda tidak punya indeks, pastikan bahwa pengindeks Medusa sudah berjalan."
 
-#: src/nautilus-window-manage-views.c:1450
+#: src/nautilus-window-manage-views.c:1484
 msgid "Searching Unavailable"
 msgstr "Pencarian Tidak Dapat Dilakukan"
 
-#: src/nautilus-window-manage-views.c:1455
+#: src/nautilus-window-manage-views.c:1489
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus tidak dapat menampilkan \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1457
+#: src/nautilus-window-manage-views.c:1491
 msgid "Please select another viewer and try again."
 msgstr "Pilih program pembuka lainnya dan coba lain"
 
@@ -6503,4 +6541,34 @@ msgstr "Server jaringan"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Lihat Server Jaringan Anda di berkas manager Nautilus"
 
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item?Are you "
+#~ "sure you want to permanently delete the %d selected items?"
+#~ msgstr ""
+#~ "Apa Anda yakin ingin menghapus %d objek ini secara permanen?Apa Anda "
+#~ "yakin ingin menghapus %d objek ini secara permanen?"
 
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item from the "
+#~ "trash?Are you sure you want to permanently delete the %d selected items "
+#~ "from the trash?"
+#~ msgstr ""
+#~ "Apakah Anda yakin ingin menghapus %d objek ini secara permanen dari Tong "
+#~ "Sampah?Apakah Anda yakin ingin menghapus %d objek ini secara permanen "
+#~ "dari Tong Sampah?"
+
+#~ msgid ""
+#~ "The %d selected item will be moved if you select the Paste Files "
+#~ "commandThe %d selected items will be moved if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "%d objek ini akan dipindahkan jika Anda memilih perintah Ambil Berkas%d "
+#~ "objek ini akan dipindahkan jika Anda memilih perintah Ambil Berkas"
+
+#~ msgid ""
+#~ "The %d selected item will be copied if you select the Paste Files "
+#~ "commandThe %d selected items will be copied if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "%d objek ini akan disalin jika Anda memilih perintah Ambil Berkas%d objek "
+#~ "ini akan disalin jika Anda memilih perintah Ambil Berkas"
