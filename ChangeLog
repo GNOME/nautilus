@@ -1,3 +1,12 @@
+2001-02-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories):
+	Dont free the object name so soon.  Its needed to determine where
+	to put the reset and erase objects.
+	
 2001-02-12  Rebecca Schulman  <rebecka@eazel.com>
 	Fix bug 6333, that a warning about not finding
 	unindexed files should not be displayed if the

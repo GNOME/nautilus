@@ -1626,10 +1626,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		GtkWidget *property_image;
 
 		property_image = labeled_image_new (object_label, object_pixbuf, object_name, 2, TRUE);
-
-		g_free (object_name);
-		g_free (object_label);
-		gdk_pixbuf_unref (object_pixbuf);
 		
 		if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {		
 			char *keyword;
@@ -1680,6 +1676,10 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		}
 		
 		gtk_widget_show (property_image);
+
+		g_free (object_name);
+		g_free (object_label);
+		gdk_pixbuf_unref (object_pixbuf);
 	}
 
 	property_browser->details->has_local = nautilus_customization_data_private_data_was_displayed (customization_data);	
