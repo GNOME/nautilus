@@ -129,6 +129,8 @@ typedef struct {
 #define ERASE_EMBLEM_FILENAME	"erase.png"
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
+#define STANDARD_EMBLEM_HEIGHT			52
+#define EMBLEM_LABEL_SPACING			2
 
 static void real_destroy                          (GtkObject               *object);
 static void real_finalize                         (GtkObject               *object);
@@ -1615,6 +1617,9 @@ create_emblems_page (FMPropertiesWindow *window)
 		}
 		
 		button = nautilus_labeled_image_check_button_new (label, pixbuf);
+		nautilus_labeled_image_set_fixed_image_height (NAUTILUS_LABELED_IMAGE (GTK_BIN (button)->child), STANDARD_EMBLEM_HEIGHT);
+		nautilus_labeled_image_set_spacing (NAUTILUS_LABELED_IMAGE (GTK_BIN (button)->child), EMBLEM_LABEL_SPACING);
+
 		g_free (label);
 		gdk_pixbuf_unref (pixbuf);
 

@@ -1,3 +1,18 @@
+2001-02-27  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 7019, emblem names not vertically aligned
+	
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_initialize), (is_fixed_height),
+	(labeled_image_get_image_dimensions),
+	(nautilus_labeled_image_get_image_bounds),
+	(nautilus_labeled_image_set_fixed_image_height):
+	* libnautilus-extensions/nautilus-labeled-image.h:
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories),
+	(property_browser_category_button_new):
+
 2001-02-26  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
 
 
