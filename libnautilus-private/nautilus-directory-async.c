@@ -974,9 +974,23 @@ static void
 directory_load_done (NautilusDirectory *directory,
 		     GnomeVFSResult result)
 {
+	GList *node;
+
 	cancel_directory_load (directory);
 	directory->details->directory_loaded = TRUE;
 	directory->details->directory_loaded_sent_notification = FALSE;
+
+	if (result != GNOME_VFS_OK) {
+		/* The load did not complete successfully. This means
+		 * we don't know the status of the files in this directory.
+		 * We clear the unconfirmed bit on each file here so that
+		 * they won't be marked "gone" later -- we don't know enough
+		 * about them to know whether they are really gone.
+		 */
+		for (node = directory->details->files; node != NULL; node = node->next) {
+			NAUTILUS_FILE (node->data)->details->unconfirmed = FALSE;
+		}
+	}
 
 	/* Call the idle function right away. */
 	if (directory->details->dequeue_pending_idle_id != 0) {

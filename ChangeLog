@@ -1,3 +1,19 @@
+2000-10-03  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3379 (crash leaving web page)
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(directory_load_done): When directory load returns an
+	error, clear unconfirmed bit on all files in that directory
+	so they won't be marked gone later.
+
+	Fixed bug 3421 (web page with blank HTML title causes blank
+	title in Nautilus)
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_title_changed_callback): Don't call nautilus_view_set_title
+	if the HTML title is NULL or "".
+
 2000-10-03  Pavel Cisler  <pavel@eazel.com>
 
 	Work on 2036 - drawing glitches in ListView.

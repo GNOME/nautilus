@@ -617,8 +617,10 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	new_title = gtk_moz_embed_get_title (GTK_MOZ_EMBED (view->details->mozilla));
 
-	nautilus_view_set_title (view->details->nautilus_view,
-				 new_title);
+	if (new_title != NULL && strcmp (new_title, "") != 0) {
+		nautilus_view_set_title (view->details->nautilus_view,
+					 new_title);
+	}
 	
 	g_free (new_title);
 }
