@@ -499,6 +499,7 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 	GList *p;
 	int size;
 	ArtDRect point;
+	ArtIRect canvas_point;
 
 	/* build the hit-test rectangle. Base the size on the scale factor to ensure that it is
 	 * non-empty even at the smallest scale factor
@@ -513,12 +514,14 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		NautilusIcon *icon;
 		icon = p->data;
-		if (nautilus_icon_canvas_item_hit_test_rectangle
-			(icon->item, &point)) {
+		
+		nautilus_gnome_canvas_world_to_canvas_rectangle (GNOME_CANVAS_ITEM (icon->item)->canvas, &point, &canvas_point);
+		
+		if (nautilus_icon_canvas_item_hit_test_rectangle (icon->item, &canvas_point)) {
 			return icon;
 		}
 	}
-
+	
 	return NULL;
 }
 

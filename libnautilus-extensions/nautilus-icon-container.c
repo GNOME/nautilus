@@ -1359,24 +1359,33 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 }
 
 /* Implementation of rubberband selection.  */
-
 static void
 rubberband_select (NautilusIconContainer *container,
 		   const ArtDRect *previous_rect,
 		   const ArtDRect *current_rect)
 {
 	GList *p;
-	gboolean selection_changed, is_in;
+	gboolean selection_changed, is_in, canvas_rect_calculated;
 	NautilusIcon *icon;
-		
+	ArtIRect canvas_rect;
+			
 	selection_changed = FALSE;
+	canvas_rect_calculated = FALSE;
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		
-		is_in = nautilus_icon_canvas_item_hit_test_rectangle
-			(icon->item, current_rect);
-
+		if (!canvas_rect_calculated) {
+			/* Only do this calculation once, since all the canvas items
+			 * we are interating are in the same coordinate space
+			 */
+			nautilus_gnome_canvas_world_to_canvas_rectangle
+				(GNOME_CANVAS_ITEM (icon->item)->canvas, current_rect, &canvas_rect);
+			canvas_rect_calculated = TRUE;
+		}
+		
+		is_in = nautilus_icon_canvas_item_hit_test_rectangle (icon->item, &canvas_rect);
+		
 		g_assert (icon->was_selected_before_rubberband == FALSE
 			  || icon->was_selected_before_rubberband == TRUE);
 		selection_changed |= icon_set_selected

@@ -1,3 +1,50 @@
+2001-02-26  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: John Harper <jsh@eazel.com>
+
+	Fixed bug 3898, selection in icon view extremely slow
+	
+	I increased the performance of drag selection of icons in a few ways.
+	First, I avoid unneeded, repeated transforms of coordinates from
+	world coordinates to canvas coordinates.  I also cached three freqeuently
+	calculated dimensions; the icons bounds in canvas coordinates, the icons
+	text bounds and canvas coordinates and the bounding rect of all emblems
+	in canvas coordinates.  Instead of repeatedly calculating these values,
+	have functions refer to the cached values.  In hit_test, I then do a
+	quick intersection check of the drag rect with the cached values before
+	proceeding to the more expensive intersection detection routines.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	(nautilus_icon_canvas_item_set_image), (compute_text_rectangle),
+	(nautilus_icon_canvas_item_draw),
+	(nautilus_icon_canvas_item_render), 
+	(nautilus_icon_canvas_item_bounds), (get_icon_canvas_rectangle),
+	Set up the various places that we need to update our cached items.
+
+	(nautilus_icon_canvas_item_update_bounds):
+	Update our cached values.
+	
+	(hit_test), (hit_test_stretch_handle):
+	Perform quick interesection checks before doing more expensive checks.
+	
+	(nautilus_icon_canvas_item_hit_test_rectangle):
+	Change function to use canvas coordinates. The caller is responsible
+	to do the conversion form world to canvas. This provides a large
+	optimization if this routine is caled in a loop.	
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(rubberband_select):
+	Do transform of drag rect from world coordiantes to canvas canvas
+	coordinates onlty once. There is no need to do this for every canvas
+	item that is visted during list traversal.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_item_at):
+	Call nautilus_icon_canvas_item_hit_test_rectangle() using coordinate
+	converted to canvas coordinates.
+	
 Mon Feb 26 03:00:03 2001  George Lebl <jirka@5z.com>
 
 	Gene Z. Ragan  <gzr@eazel.com> was subjected to this patch and

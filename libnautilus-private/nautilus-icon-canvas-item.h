@@ -83,7 +83,7 @@ void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanv
 
 /* geometry and hit testing */
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem     *item,
-								const ArtDRect             *world_rectangle);
+								const ArtIRect 		   *canvas_rect);
 gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem     *item,
 								const ArtPoint             *world_point);
 void	    nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem	   *item);
