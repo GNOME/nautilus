@@ -946,16 +946,20 @@ static void
 fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
 {
 	NautilusList *list;
-	gboolean smooth_graphics_mode;
+	gboolean smooth_graphics_mode, old_smooth_graphics_mode;
 
 	g_assert (FM_IS_LIST_VIEW (directory_view));
 
 	list = get_list (FM_LIST_VIEW (directory_view));
 	g_assert (list != NULL);
 
+	old_smooth_graphics_mode = nautilus_list_is_anti_aliased (list);
 	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
-	
-	nautilus_list_set_anti_aliased_mode (list, smooth_graphics_mode);
+
+	if (old_smooth_graphics_mode != smooth_graphics_mode) {
+		nautilus_list_set_anti_aliased_mode (list, smooth_graphics_mode);
+		update_icons (FM_LIST_VIEW (directory_view));
+	}
 }
 
 static void
@@ -989,6 +993,8 @@ create_list (FMListView *list_view)
 	g_free (titles);
 
 	clist = NAUTILUS_CLIST (list);
+
+	NAUTILUS_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
 
 	for (i = 0; i < number_of_columns; ++i) {
 		get_column_specification (list_view, i, &column);
@@ -1922,10 +1928,13 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	GdkPixbuf *emblem_pixbuf;
 	int emblem_size;
 	NautilusStringList *emblems_to_ignore;
+	gboolean anti_aliased;
+
+	anti_aliased = nautilus_list_is_anti_aliased (get_list (list_view));
 
 	emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
 		(FM_DIRECTORY_VIEW (list_view));
-	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, FALSE, emblems_to_ignore);
+	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, anti_aliased, emblems_to_ignore);
 	nautilus_string_list_free (emblems_to_ignore);
 	
 	emblem_pixbufs = NULL;
@@ -1936,7 +1945,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 			(p->data, 
 			 emblem_size, emblem_size,
 			 emblem_size, emblem_size,
-			 NULL, FALSE);
+			 NULL, anti_aliased);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);
@@ -1975,7 +1984,8 @@ install_row_images (FMListView *list_view, guint row)
 
 	/* Install the icon for this file. */
 	icon = (nautilus_icon_factory_get_pixbuf_for_file
-		(file, NULL, fm_list_view_get_icon_size (list_view), TRUE));
+		(file, NULL, fm_list_view_get_icon_size (list_view),
+		 nautilus_list_is_anti_aliased (list)));
 	nautilus_list_set_pixbuf (list, row, LIST_VIEW_COLUMN_ICON, icon);
 
 	/* Install any emblems for this file. */

@@ -121,13 +121,6 @@ static void ctree_attach_styles         (NautilusCTree       *ctree,
 static void ctree_detach_styles         (NautilusCTree       *ctree,
 					 NautilusCTreeNode   *node, 
 					 gpointer        data);
-static void get_cell_style              (NautilusCList       *clist,
-					 NautilusCListRow    *clist_row,
-					 gint            state,
-					 gint            column,
-					 GtkStyle      **style,
-					 GdkGC         **fg_gc,
-					 GdkGC         **bg_gc);
 static gint nautilus_ctree_draw_expander     (NautilusCTree       *ctree,
 					      NautilusCTreeRow    *ctree_row,
 					      GtkStyle       *style,
@@ -1113,105 +1106,6 @@ nautilus_ctree_set_prelight (NautilusCTree      *ctree,
 	}
 }
 
-static int
-draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle,
-		  GdkGC *fg_gc, GdkPixbuf *pixbuf, int x, int y)
-{
-	GdkRectangle image_rectangle;
-	GdkRectangle intersect_rectangle;
-
-	if (pixbuf == NULL) {
-		return x;
-	}
-
-	image_rectangle.width = gdk_pixbuf_get_width (pixbuf);
-	image_rectangle.height = gdk_pixbuf_get_height (pixbuf);
-	image_rectangle.x = x;
-	image_rectangle.y = y;
-
-	if (!gdk_rectangle_intersect (clip_rectangle, &image_rectangle, &intersect_rectangle)) {
-		return x;
-	}
-
-	gdk_pixbuf_render_to_drawable_alpha (pixbuf, window,
-					     intersect_rectangle.x - x,
-					     intersect_rectangle.y - y, 
-					     image_rectangle.x, image_rectangle.y, 
-					     intersect_rectangle.width,
-					     intersect_rectangle.height,
-					     GDK_PIXBUF_ALPHA_BILEVEL,
-					     NAUTILUS_STANDARD_ALPHA_THRESHHOLD,
-					     GDK_RGB_DITHER_MAX, 0, 0);
-
-	return x + intersect_rectangle.width;
-}
-
-static void
-get_cell_style (NautilusCList     *clist,
-		NautilusCListRow  *clist_row,
-		gint          state,
-		gint          column,
-		GtkStyle    **style,
-		GdkGC       **fg_gc,
-		GdkGC       **bg_gc)
-{
-  gint fg_state;
-
-  if ((state == GTK_STATE_NORMAL) &&
-      (GTK_WIDGET (clist)->state == GTK_STATE_INSENSITIVE))
-    fg_state = GTK_STATE_INSENSITIVE;
-  else
-    fg_state = state;
-
-  if (clist_row->cell[column].style)
-    {
-      if (style)
-	*style = clist_row->cell[column].style;
-      if (fg_gc)
-	*fg_gc = clist_row->cell[column].style->fg_gc[fg_state];
-      if (bg_gc) {
-	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = clist_row->cell[column].style->bg_gc[state];
-	else
-	  *bg_gc = clist_row->cell[column].style->base_gc[state];
-      }
-    }
-  else if (clist_row->style)
-    {
-      if (style)
-	*style = clist_row->style;
-      if (fg_gc)
-	*fg_gc = clist_row->style->fg_gc[fg_state];
-      if (bg_gc) {
-	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = clist_row->style->bg_gc[state];
-	else
-	  *bg_gc = clist_row->style->base_gc[state];
-      }
-    }
-  else
-    {
-      if (style)
-	*style = GTK_WIDGET (clist)->style;
-      if (fg_gc)
-	*fg_gc = GTK_WIDGET (clist)->style->fg_gc[fg_state];
-      if (bg_gc) {
-	if (state == GTK_STATE_SELECTED)
-	  *bg_gc = GTK_WIDGET (clist)->style->bg_gc[state];
-	else
-	  *bg_gc = GTK_WIDGET (clist)->style->base_gc[state];
-      }
-
-      if (state != GTK_STATE_SELECTED)
-	{
-	  if (fg_gc && clist_row->fg_set)
-	    *fg_gc = clist->fg_gc;
-	  if (bg_gc && clist_row->bg_set)
-	    *bg_gc = clist->bg_gc;
-	}
-    }
-}
-
 static gint
 nautilus_ctree_draw_expander (NautilusCTree *ctree, NautilusCTreeRow *ctree_row, GtkStyle *style,
 			      GdkRectangle *clip_rectangle, gint x)
@@ -1404,8 +1298,9 @@ nautilus_ctree_draw_lines (NautilusCTree     *ctree,
 	      if (!area || gdk_rectangle_intersect (area, &tree_rectangle,
 						    &tc_rectangle))
 		{
-		  get_cell_style (clist, &NAUTILUS_CTREE_ROW (node)->row,
-				  state, column, NULL, NULL, &bg_gc);
+		  nautilus_list_get_cell_style (NAUTILUS_LIST (clist),
+						&NAUTILUS_CTREE_ROW (node)->row,
+						state, row, column, NULL, NULL, &bg_gc, NULL);
 
 		  if (bg_gc == clist->bg_gc)
 		    gdk_gc_set_foreground
@@ -1460,8 +1355,9 @@ nautilus_ctree_draw_lines (NautilusCTree     *ctree,
 		    {
 		      if (parent)
 			{
-			  get_cell_style (clist, &NAUTILUS_CTREE_ROW (parent)->row,
-					  state, column, NULL, NULL, &bg_gc);
+			  nautilus_list_get_cell_style (NAUTILUS_LIST (clist),
+							&NAUTILUS_CTREE_ROW (parent)->row,
+							state, row, column, NULL, NULL, &bg_gc, NULL);
 			  if (bg_gc == clist->bg_gc)
 			    gdk_gc_set_foreground
 			      (clist->bg_gc,
@@ -1487,8 +1383,9 @@ nautilus_ctree_draw_lines (NautilusCTree     *ctree,
 					    tc_rectangle.height);
 		    }
 
-		  get_cell_style (clist, &NAUTILUS_CTREE_ROW (node)->row,
-				  state, column, NULL, NULL, &bg_gc);
+		  nautilus_list_get_cell_style (NAUTILUS_LIST (clist),
+						&NAUTILUS_CTREE_ROW (node)->row,
+						state, row, column, NULL, NULL, &bg_gc, NULL);
 		  if (bg_gc == clist->bg_gc)
 		    gdk_gc_set_foreground
 		      (clist->bg_gc, &NAUTILUS_CTREE_ROW (node)->row.background);
@@ -1555,8 +1452,9 @@ nautilus_ctree_draw_lines (NautilusCTree     *ctree,
 
       xcenter = offset + (justification_factor * ctree->tree_indent / 2);
 
-      get_cell_style (clist, &ctree_row->row, state, column, NULL, NULL,
-		      &bg_gc);
+      nautilus_list_get_cell_style (NAUTILUS_LIST (clist),
+				    &ctree_row->row, state, row, column,
+				    NULL, NULL, &bg_gc, NULL);
       if (bg_gc == clist->bg_gc)
 	gdk_gc_set_foreground (clist->bg_gc, &ctree_row->row.background);
 
@@ -1845,6 +1743,7 @@ draw_row (NautilusCList     *clist,
       GtkStyle *style;
       GdkGC *fg_gc; 
       GdkGC *bg_gc;
+      guint bg_rgb;
 
       gint width;
       gint height;
@@ -1856,7 +1755,8 @@ draw_row (NautilusCList     *clist,
       if (!clist->column[i].visible)
 	continue;
 
-      get_cell_style (clist, clist_row, state, i, &style, &fg_gc, &bg_gc);
+      nautilus_list_get_cell_style (NAUTILUS_LIST (clist), clist_row, state, row, i,
+				    &style, &fg_gc, &bg_gc, &bg_rgb);
 
       /* calculate clipping region */
       clip_rectangle.x = clist->column[i].area.x + clist->hoffset;
@@ -1947,19 +1847,21 @@ draw_row (NautilusCList     *clist,
 	      switch (clist_row->cell[i].type)
 		{
 		case NAUTILUS_CELL_PIXBUF:
-			offset = draw_cell_pixbuf (clist->clist_window, &cell_rectangle, fg_gc,
-						   NAUTILUS_CELL_PIXBUF (clist_row->cell[i])->pixbuf,
-						   offset,
-						   clip_rectangle.y + clist_row->cell[i].vertical +
-						   (clip_rectangle.height - height) / 2);
+			offset = nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist),
+								 clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+								 NAUTILUS_CELL_PIXBUF (clist_row->cell[i])->pixbuf,
+								 offset,
+								 clip_rectangle.y + clist_row->cell[i].vertical +
+								 (clip_rectangle.height - height) / 2);
 		  break;
 		case NAUTILUS_CELL_PIXTEXT:
-			offset = draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
-						   NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf,
-						   offset,
-						   clip_rectangle.y + clist_row->cell[i].vertical +
-						   (clip_rectangle.height - height) / 2);
-
+			offset = nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist),
+								 clist->clist_window, &clip_rectangle, fg_gc, bg_rgb,
+								 NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf,
+								 offset,
+								 clip_rectangle.y + clist_row->cell[i].vertical +
+								 (clip_rectangle.height - height) / 2);
+			
 		  offset += NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 		case NAUTILUS_CELL_TEXT:
 		  row_center_offset = ((clist->row_height -
@@ -2016,7 +1918,7 @@ draw_row (NautilusCList     *clist,
 	offset += clist_row->cell[i].horizontal;
 
       old_offset = offset;
-      {
+      if (height > 0) {
 	      GdkPixbuf *src_pixbuf, *dark_pixbuf;
 
 	      if (((NautilusCListRow *)ctree->dnd_prelighted_row) == clist_row) {
@@ -2029,20 +1931,22 @@ draw_row (NautilusCList     *clist,
 									     0.8 * 255,
 									     0.8 * 255);
 			      if (dark_pixbuf != NULL) {
-				      offset = draw_cell_pixbuf (clist->clist_window, &cell_rectangle, fg_gc,
-							dark_pixbuf, offset,
-							clip_rectangle.y + clist_row->cell[i].vertical +
-							(clip_rectangle.height - height) / 2);
-				      
+				      offset = nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist),
+									       clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+									       dark_pixbuf, offset,
+									       clip_rectangle.y + clist_row->cell[i].vertical +
+									       (clip_rectangle.height - height) / 2);
+
 				      gdk_pixbuf_unref (dark_pixbuf);
 			      }
 		      }					
 	      } else {		
-		      offset = draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
-						 NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf,
-						 offset,
-						 clip_rectangle.y + clist_row->cell[i].vertical +
-						 (clip_rectangle.height - height) / 2);
+		      offset = nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist),
+							       clist->clist_window, &clip_rectangle, fg_gc, bg_rgb,
+							       NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf,
+							       offset,
+							       clip_rectangle.y + clist_row->cell[i].vertical +
+							       (clip_rectangle.height - height) / 2);
 
 
 	      }
@@ -2913,7 +2817,9 @@ cell_size_request (NautilusCList       *clist,
 
 	ctree = NAUTILUS_CTREE (clist);
 
-	get_cell_style (clist, clist_row, GTK_STATE_NORMAL, column, &style, NULL, NULL);
+	nautilus_list_get_cell_style (NAUTILUS_LIST (clist), clist_row,
+				      GTK_STATE_NORMAL, 0, column,
+				      &style, NULL, NULL, NULL);
 
 	switch (clist_row->cell[column].type)
 	{

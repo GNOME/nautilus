@@ -187,7 +187,25 @@ void 	     nautilus_list_get_initial_drag_offset   (NautilusList	      *list,
 
 void	     nautilus_list_set_anti_aliased_mode     (NautilusList	      *list,
 						      gboolean		       anti_aliased_mode);
+gboolean     nautilus_list_is_anti_aliased	     (NautilusList	      *list);
 
+int 	     nautilus_list_draw_cell_pixbuf	     (NautilusList	      *list,
+						      GdkWindow		      *window,
+						      GdkRectangle	      *clip_rectangle,
+						      GdkGC		      *fg_gc,
+						      guint32		       bg_rgb,
+						      GdkPixbuf		      *pixbuf,
+						      int		       x,
+						      int		       y);
+void	     nautilus_list_get_cell_style	     (NautilusList	      *list,
+						      NautilusCListRow	      *row,
+						      int		       state,
+						      int		       row_index,
+						      int		       column_index,
+						      GtkStyle		     **style,
+						      GdkGC		     **fg_gc,
+						      GdkGC		     **bg_gc,
+						      guint32		      *bg_rgb);
 
 #endif /* NAUTILUS_LIST_H */
 

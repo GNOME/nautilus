@@ -91,6 +91,7 @@ static void     forget_unparented_node               (NautilusTreeView      *vie
 static void     insert_unparented_nodes              (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
 static void     expand_uri_sequence_and_select_end   (NautilusTreeView      *view);
+static gboolean is_anti_aliased			     (NautilusTreeView	    *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView,
 				   nautilus_tree_view,
@@ -235,9 +236,11 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 		if (nautilus_tree_view_model_node_to_view_node (view, node) == NULL) {
 
 			closed_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-				(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+				(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS,
+				 is_anti_aliased (view));
 			open_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-				(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+				(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS,
+				 is_anti_aliased (view));
 
 			view->details->inserting_node = TRUE;
 			NAUTILUS_CLIST_UNSET_FLAG (NAUTILUS_CLIST (view->details->tree),
@@ -427,9 +430,11 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 		link_view_node_with_uri (view, view_node, nautilus_file_get_uri (file));
 
 		closed_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-			(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+			(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 is_anti_aliased (view));
 		open_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-			(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+			(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 is_anti_aliased (view));
 
 		name = nautilus_file_get_name (file);
 	
@@ -821,17 +826,48 @@ filtering_changed_callback (gpointer callback_data)
 	}
 }
 
-#if 0
-/* FIXME bugzilla.eazel.com 6820:
- * See the comment below (search for nautilus_clist_set_compare_func)
- * explaining why this is disabled. Basically, it's too slow.
- */
+static void
+update_smooth_graphics_mode (NautilusTreeView *view)
+{
+	gboolean aa_mode, old_aa_mode;
+
+	if (view->details->tree != NULL) {
+		aa_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+		old_aa_mode = is_anti_aliased (view);
+
+		if (old_aa_mode != aa_mode) {
+			nautilus_list_set_anti_aliased_mode (NAUTILUS_LIST (view->details->tree), aa_mode);
+
+			/* FIXME: refetch icons using correct aa mode... */
+		}
+	}
+}
+
+static void
+smooth_graphics_mode_changed_callback (gpointer callback_data)
+{
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	update_smooth_graphics_mode (view);
+}
+
+static gboolean
+is_anti_aliased (NautilusTreeView *view)
+{
+	return nautilus_list_is_anti_aliased (NAUTILUS_LIST (view->details->tree));
+}
+
+static gpointer compare_cached_key, compare_cached_value;
+
 static gint
 ctree_compare_rows (NautilusCList *clist,
 		    gconstpointer  ptr1,
 		    gconstpointer  ptr2)
 {
 	NautilusTreeView *view;
+	NautilusTreeNode *node1, *node2;
 	NautilusFile *file1, *file2;
 	gint result;
 
@@ -843,21 +879,32 @@ ctree_compare_rows (NautilusCList *clist,
 	 */
 	result = -1;
 
-	view = gtk_object_get_data (GTK_OBJECT (clist), "tree_view");
+	/* Avoid fetching the view from the object data more than once
+	 * per sort.
+	 */
+	if (compare_cached_key == clist) {
+		view = compare_cached_value;
+	} else {
+		view = gtk_object_get_data (GTK_OBJECT (clist), "tree_view");
+		compare_cached_key = clist;
+		compare_cached_value = view;
+	}
 	g_assert (view != NULL);
 
 	if (!view->details->inserting_node) {
-		file1 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr1));
-		file2 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr2));
+		node1 = ((NautilusCTreeRow *) ptr1)->row.data;
+		node2 = ((NautilusCTreeRow *) ptr2)->row.data;
+
+		file1 = node1 ? nautilus_tree_node_get_file (node1) : NULL;
+		file2 = node2 ? nautilus_tree_node_get_file (node2) : NULL;
 
 		if (file1 != NULL && file2 != NULL) {
-			result = nautilus_file_compare_for_sort (file1, file2, NAUTILUS_FILE_SORT_BY_NAME);
+			result = nautilus_file_compare_for_sort (file1, file2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE);
 		}
 	}
 
 	return result;
 }
-#endif
 
 static void
 create_tree (NautilusTreeView *view)
@@ -878,7 +925,8 @@ create_tree (NautilusTreeView *view)
 	nautilus_clist_set_auto_sort (NAUTILUS_CLIST (view->details->tree), TRUE);
 	nautilus_clist_set_sort_type (NAUTILUS_CLIST (view->details->tree), GTK_SORT_ASCENDING);
 
-#if 0
+	update_smooth_graphics_mode (view);
+
 	/* FIXME bugzilla.eazel.com 6820:
 	 * Using the NautilusFile comparison function to sort by
 	 * is way too slow when opening large directories (those with
@@ -887,7 +935,6 @@ create_tree (NautilusTreeView *view)
 	 */
 	nautilus_clist_set_compare_func (NAUTILUS_CLIST (view->details->tree),
 					 ctree_compare_rows);
-#endif
 
 	nautilus_clist_set_column_auto_resize (NAUTILUS_CLIST (view->details->tree), 0, TRUE);
 	nautilus_clist_columns_autosize (NAUTILUS_CLIST (view->details->tree));
@@ -927,6 +974,10 @@ create_tree (NautilusTreeView *view)
 					   view);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 					   filtering_changed_callback,
+					   view);
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+					   smooth_graphics_mode_changed_callback, 
 					   view);
 
 	view->details->file_to_node_map = g_hash_table_new (NULL, NULL);
@@ -1061,6 +1112,10 @@ nautilus_tree_view_destroy (GtkObject *object)
 	if (view->details->tree != NULL) {
 		gtk_object_unref (GTK_OBJECT (view->details->change_queue));
 		
+		if (compare_cached_key == view->details->tree) {
+			compare_cached_key = NULL;
+		}
+
 		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 						      filtering_changed_callback,
 						      view);
@@ -1069,6 +1124,10 @@ nautilus_tree_view_destroy (GtkObject *object)
 						      view);
 		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 						      filtering_changed_callback,
+						      view);
+
+		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+						      smooth_graphics_mode_changed_callback,
 						      view);
 		
 		g_hash_table_foreach (view->details->file_to_node_map,
@@ -1090,7 +1149,6 @@ nautilus_tree_view_destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
 	}
 
-		
 	nautilus_gtk_object_list_free (view->details->unparented_tree_nodes);
 	
 	g_free (view->details->current_main_view_uri);

@@ -1,3 +1,63 @@
+2001-03-28  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Re-fixed bug 6820 (directory sort order is different in tree
+	view):
+
+	* components/tree/nautilus-tree-view.c: realized that I can get
+	the tree model node directly from the row's data pointer,
+	there's no need to map the row to a node (which is a linear
+	operation). Also, cache the clist->tree-view mapping to avoid a
+	call to gtk_object_data_get each comparison
+
+	(create_tree): enabled the custom comparison function
+
+
+	Work to share more drawing code between NautilusList and
+	NautilusCTree:
+
+	* libnautilus-extensions/nautilus-ctree.c (get_cell_style,
+	draw_cell_pixbuf): deleted. Use similarly named nautilus_list_
+	functions instead
+
+	(draw_row): only draw the special tree pixbuf if `height > 0'.
+	This fixes a weird clipping bug
+
+	* libnautilus-extensions/nautilus-list.c (get_cell_style,
+	draw_cell_pixbuf): renamed as nautilus_list_X
+	
+
+	Ensure that the list view fetches the correct icons (i.e.
+	special anti-aliased images if the view is in smooth mode)
+
+	* libnautilus-extensions/nautilus-list.c
+	(nautilus_list_is_anti_aliased): new function
+
+	* src/file-manager/fm-list-view.c
+	(fm_list_view_update_smooth_graphics_mode): call update_icons
+	(fm_list_view_get_emblem_pixbufs_for_file, install_row_images):
+	pass the correct aa mode to the icon factory
+
+
+	Draw tree-view icons in smooth mode when appropriate:
+
+	* components/tree/nautilus-tree-view.c
+	(update_smooth_graphics_mode,
+	smooth_graphics_mode_changed_callback): new functions. As yet
+	they don't refetch all icons when the smooth preference
+	changes..
+
+
+	Fixed the bug introduced recently where the tree gets a title
+	bar:
+
+	* libnautilus-extensions/nautilus-list.c
+	(nautilus_list_realize): don't turn on titles
+
+	* src/file-manager/fm-list-view.c (create_list): set the
+	CLIST_SHOW_TITLES flag
+
 2001-03-28  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

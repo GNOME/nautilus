@@ -217,15 +217,6 @@ static int      get_cell_horizontal_start_position      (NautilusCList        *c
 							 NautilusCListRow     *row,
 							 int                   column_index,
 							 int                   content_width);
-static void     get_cell_style                          (NautilusList         *clist,
-							 NautilusCListRow     *row,
-							 int                   state,
-							 int		       row_index,
-							 int                   column_index,
-							 GtkStyle            **style,
-							 GdkGC               **fg_gc,
-							 GdkGC               **bg_gc,
-							 guint32	      *bg_rgb);
 static void     nautilus_list_initialize_class          (NautilusListClass    *class);
 static void     nautilus_list_initialize                (NautilusList         *list);
 static void     nautilus_list_destroy                   (GtkObject            *object);
@@ -541,6 +532,12 @@ nautilus_list_set_anti_aliased_mode (NautilusList *list,
 {
 	list->details->anti_aliased_mode = anti_aliased_mode;
 	gtk_widget_queue_draw (GTK_WIDGET (list));
+}
+
+gboolean
+nautilus_list_is_anti_aliased (NautilusList *list)
+{
+	return list->details->anti_aliased_mode;
 }
 
 
@@ -1108,7 +1105,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 					/* One final test. Check whether the click was in the
 					 * horizontal bounds of the displayed text.
 					 */
-					get_cell_style (list, row, GTK_STATE_NORMAL, row_index, column_index, &style, NULL, NULL, NULL);
+					nautilus_list_get_cell_style (list, row, GTK_STATE_NORMAL, row_index, column_index, &style, NULL, NULL, NULL);
 					text_width = gdk_string_width (style->font, NAUTILUS_CELL_TEXT (row->cell[column_index])->text);
 					text_x = get_cell_horizontal_start_position (clist, row, column_index, text_width);
 					if (event->x >= text_x && event->x <= text_x + text_width) {
@@ -1728,8 +1725,6 @@ nautilus_list_realize (GtkWidget *widget)
         g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, widget);
-	
-	NAUTILUS_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
 }
 
 static void
@@ -1996,10 +1991,10 @@ get_column_background (NautilusList *list, GdkGC **selected, GdkGC **plain)
 	*selected = list->details->cell_selected_lighter_background;
 }
 
-static void
-get_cell_style (NautilusList *list, NautilusCListRow *row,
-		int state, int row_index, int column_index, GtkStyle **style,
-		GdkGC **fg_gc, GdkGC **bg_gc, guint32 *bg_rgb)
+void
+nautilus_list_get_cell_style (NautilusList *list, NautilusCListRow *row,
+			      int state, int row_index, int column_index, GtkStyle **style,
+			      GdkGC **fg_gc, GdkGC **bg_gc, guint32 *bg_rgb)
 {
 	if (style) {
 		*style = GTK_WIDGET (list)->style;
@@ -2064,9 +2059,11 @@ get_cell_style (NautilusList *list, NautilusCListRow *row,
 	}
 }
 
-static int
-draw_cell_pixbuf (NautilusCList *clist, GdkWindow *window, GdkRectangle *clip_rectangle,
-		  GdkGC *fg_gc, guint32 bg_rgb, GdkPixbuf *pixbuf, int x, int y)
+int
+nautilus_list_draw_cell_pixbuf (NautilusList *list, GdkWindow *window,
+				GdkRectangle *clip_rectangle,
+				GdkGC *fg_gc, guint32 bg_rgb,
+				GdkPixbuf *pixbuf, int x, int y)
 {
 	GdkRectangle image_rectangle;
 	GdkRectangle intersect_rectangle;
@@ -2081,7 +2078,7 @@ draw_cell_pixbuf (NautilusCList *clist, GdkWindow *window, GdkRectangle *clip_re
 		return x;
 	}
 
-	if (NAUTILUS_IS_LIST (clist) && NAUTILUS_LIST (clist)->details->anti_aliased_mode) {
+	if (list && nautilus_list_is_anti_aliased (list)) {
 		/* Composite a version of the pixbuf with the background color */
 		composited = gdk_pixbuf_composite_color_simple (pixbuf,
 								image_rectangle.width,
@@ -2217,8 +2214,8 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 		return;
 	}
 
-	get_cell_style (NAUTILUS_LIST(clist), row, row->state, row_index, 
-		column_index, &style, &fg_gc, &bg_gc, &bg_rgb);
+	nautilus_list_get_cell_style (NAUTILUS_LIST(clist), row, row->state, row_index, 
+				      column_index, &style, &fg_gc, &bg_gc, &bg_rgb);
 	nautilus_list_get_cell_rectangle (NAUTILUS_LIST (clist), row_index, column_index, &cell_rectangle);
 	get_cell_greater_rectangle (&cell_rectangle, &erase_rectangle, 
 		column_index == last_column_index (clist));
@@ -2285,30 +2282,30 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 									       0.8 * 255,
 									       0.8 * 255);
 				if (dark_pixbuf != NULL) {
-					draw_cell_pixbuf (clist, clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
-							  dark_pixbuf, offset,
-							  cell_rectangle.y + row->cell[column_index].vertical +
-							  (cell_rectangle.height - height) / 2);
+					nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist), clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+									dark_pixbuf, offset,
+									cell_rectangle.y + row->cell[column_index].vertical +
+									(cell_rectangle.height - height) / 2);
 					
 					gdk_pixbuf_unref (dark_pixbuf);
 				}
 			}					
 		} else {		
-			draw_cell_pixbuf (clist, clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
-					  NAUTILUS_CELL_PIXBUF (row->cell[column_index])->pixbuf,
-					  offset,
-					  cell_rectangle.y + row->cell[column_index].vertical +
-					  (cell_rectangle.height - height) / 2);
+			nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist), clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+							NAUTILUS_CELL_PIXBUF (row->cell[column_index])->pixbuf,
+							offset,
+							cell_rectangle.y + row->cell[column_index].vertical +
+							(cell_rectangle.height - height) / 2);
 		}
 		break;
 	}
 
 	case NAUTILUS_CELL_PIXTEXT:
-		offset = draw_cell_pixbuf (clist, clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
-					   NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixbuf,
-					   offset,
-					   cell_rectangle.y + row->cell[column_index].vertical+
-					   (cell_rectangle.height - height) / 2);
+		offset = nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist), clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+							 NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixbuf,
+							 offset,
+							 cell_rectangle.y + row->cell[column_index].vertical+
+							 (cell_rectangle.height - height) / 2);
 		offset += NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->spacing;
 		/* fall through */
 	case NAUTILUS_CELL_TEXT:
@@ -2375,12 +2372,12 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 
 			height = gdk_pixbuf_get_height (p->data);
 
-	  		offset = draw_cell_pixbuf (clist, clist->clist_window,
-						   &cell_rectangle,
-						   fg_gc, bg_rgb, p->data,
-				  		   offset,
-				 		   cell_rectangle.y + row->cell[column_index].vertical +
-				 		   (cell_rectangle.height - height) / 2);
+	  		offset = nautilus_list_draw_cell_pixbuf (NAUTILUS_LIST (clist), clist->clist_window,
+								 &cell_rectangle,
+								 fg_gc, bg_rgb, p->data,
+								 offset,
+								 cell_rectangle.y + row->cell[column_index].vertical +
+								 (cell_rectangle.height - height) / 2);
 
 			offset += PIXBUF_LIST_SPACING;
 		}
