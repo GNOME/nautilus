@@ -120,6 +120,9 @@ struct NautilusListDetails
 	GdkGC *selection_light_color;
 	GdkGC *selection_medium_color;
 	GdkGC *selection_main_color;
+	GdkGC *text_color;
+	GdkGC *selected_text_color;
+	GdkGC *link_text_color;
 
 	/* Need RGB background values when compositing images */
 	guint32 cell_lighter_background_rgb;
@@ -1547,6 +1550,7 @@ nautilus_list_setup_style_colors (NautilusList *list)
 {
 	guint32 style_background_color;
 	guint32 selection_background_color;
+	GdkColor text_color;
 
 	gdk_rgb_init();
 
@@ -1585,6 +1589,20 @@ nautilus_list_setup_style_colors (NautilusList *list)
 	list->details->selection_light_color_rgb
 	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_light_color, 
 							    selection_background_color, 0.5);
+
+	text_color = GTK_WIDGET (list)->style->fg[GTK_STATE_NORMAL];
+	nautilus_gdk_gc_choose_foreground_color (list->details->text_color, &text_color,
+						 &GTK_WIDGET (list)->style->bg[GTK_STATE_NORMAL]);
+
+	text_color = GTK_WIDGET (list)->style->fg[GTK_STATE_SELECTED];
+	nautilus_gdk_gc_choose_foreground_color (list->details->selected_text_color, &text_color,
+						 &GTK_WIDGET (list)->style->bg[GTK_STATE_SELECTED]);
+
+	text_color.red = 0;
+	text_color.green = 0;
+	text_color.blue = 65535;
+	nautilus_gdk_gc_choose_foreground_color (list->details->link_text_color, &text_color,
+						 &GTK_WIDGET (list)->style->bg[GTK_STATE_NORMAL]);
 }
 
 static void
@@ -1609,6 +1627,9 @@ unref_gcs (NautilusList *list)
 	unref_a_gc (&list->details->selection_light_color);
 	unref_a_gc (&list->details->selection_medium_color);
 	unref_a_gc (&list->details->selection_main_color);
+	unref_a_gc (&list->details->text_color);
+	unref_a_gc (&list->details->selected_text_color);
+	unref_a_gc (&list->details->link_text_color);
 }
 
 static void
@@ -1641,6 +1662,13 @@ make_gcs_and_colors (NautilusList *list)
 		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
 	list->details->selection_main_color = nautilus_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
+
+	list->details->text_color = nautilus_gdk_gc_copy (
+		widget->style->fg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->selected_text_color = nautilus_gdk_gc_copy (
+		widget->style->fg_gc[GTK_STATE_SELECTED], widget->window);
+	list->details->link_text_color = nautilus_gdk_gc_copy (
+		widget->style->fg_gc[GTK_STATE_NORMAL], widget->window);
 
 	nautilus_list_setup_style_colors (list);
 }
@@ -2183,8 +2211,8 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 	GtkStyle *style;
 	GdkGC *fg_gc;
 	GdkGC *bg_gc;
+	GdkGC *text_gc;
 	guint32 bg_rgb;
-	GdkGCValues saved_values;
 
 	GList *p;
 
@@ -2330,17 +2358,19 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 		}
 		baseline = cell_rectangle.y + row_center_offset + row->cell[column_index].vertical;
 
-		gdk_gc_set_clip_rectangle (fg_gc, &cell_rectangle);
-
-		/* For link text cells, draw with blue link-like color and use underline. */
-		if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_LINK_TEXT
-			&& NAUTILUS_LIST (clist)->details->single_click_mode) {
-			if (row->state == GTK_STATE_NORMAL) {
-				gdk_gc_get_values (fg_gc, &saved_values);
-				gdk_rgb_gc_set_foreground (fg_gc, NAUTILUS_RGB_COLOR_BLUE);			
-			}
+		if (row->state != GTK_STATE_NORMAL) {
+			text_gc = NAUTILUS_LIST (clist)->details->selected_text_color;
+		} else if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_LINK_TEXT
+			   && NAUTILUS_LIST (clist)->details->single_click_mode) {
+			/* For link text cells, draw with blue link-like color and use underline. */
+			text_gc = NAUTILUS_LIST (clist)->details->link_text_color;
+		} else {
+			text_gc = NAUTILUS_LIST (clist)->details->text_color;
 		}
-		gdk_draw_string (clist->clist_window, style->font, fg_gc,
+
+		gdk_gc_set_clip_rectangle (text_gc, &cell_rectangle);
+
+		gdk_draw_string (clist->clist_window, style->font, text_gc,
 				 offset,
 				 baseline,
 				 ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_PIXTEXT) ?
@@ -2349,15 +2379,12 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 
 		if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_LINK_TEXT
 			&& NAUTILUS_LIST (clist)->details->single_click_mode) {
-			gdk_draw_line (clist->clist_window, fg_gc,
+			gdk_draw_line (clist->clist_window, text_gc,
 				       offset, baseline + 1,
-				       offset + width, baseline + 1); 
-			/* Revert color change we made a moment ago. */
-			if (row->state == GTK_STATE_NORMAL) {
-				gdk_gc_set_foreground (fg_gc, &saved_values.foreground);
-			}
+				       offset + width, baseline + 1);
 		}
-		gdk_gc_set_clip_rectangle (fg_gc, NULL);
+
+		gdk_gc_set_clip_rectangle (text_gc, NULL);
 		break;
 			
 	case NAUTILUS_CELL_PIXBUF_LIST: {

@@ -558,6 +558,83 @@ nautilus_rgb_shift_color (guint32 color, float shift_by)
 }
 
 /**
+ * nautilus_gdk_color_is_dark:
+ * 
+ * Return true if the given color is `dark'
+ */
+gboolean
+nautilus_gdk_color_is_dark (GdkColor *color)
+{
+	int intensity;
+
+	intensity = (((color->red >> 8) * 77)
+		     + ((color->green >> 8) * 150)
+		     + ((color->blue >> 8) * 28)) >> 8;
+
+	return intensity < 128;
+}
+
+/**
+ * nautilus_gdk_choose_foreground_color:
+ *
+ * Select a foreground color given that BACKGROUND is the background
+ * color. If the PREFERRED color has a high enough contrast with
+ * BACKGROUND, use it, else use one of black or white, depending on
+ * the darkness of BACKGROUND.
+ *
+ * The selected color is stored in PREFERRED.
+ */
+void
+nautilus_gdk_choose_foreground_color (GdkColor *preferred,
+				      GdkColor *background)
+{
+	gboolean preferred_is_dark, background_is_dark;
+
+	preferred_is_dark = nautilus_gdk_color_is_dark (preferred);
+	background_is_dark = nautilus_gdk_color_is_dark (background);
+
+	if (preferred_is_dark == background_is_dark) {
+		/* Colors are too similar, so choose a different fg.
+		 * Currently hardcoded to use either white or black.
+		 */
+		if (preferred_is_dark) {
+			preferred->red = 65535;
+			preferred->green = 65535;
+			preferred->blue = 65535;
+		} else {
+			preferred->red = 0;
+			preferred->green = 0;
+			preferred->blue = 0;
+		}
+	}
+}
+
+/**
+ * nautilus_gdk_gc_choose_foreground_color:
+ *
+ * Use nautilus_gdk_color_choose_foreground_color () to set the
+ * foreground color of GC to something suitable, given that BACKGROUND
+ * will be the background color and PREFERRED is the preferred color.
+ *
+ * Uses GdkRGB to install the color value.
+ */
+void
+nautilus_gdk_gc_choose_foreground_color (GdkGC *gc,
+					 GdkColor *preferred,
+					 GdkColor *background)
+{
+	GdkColor temp;
+	guint32 rgb;
+
+	temp = *preferred;
+	nautilus_gdk_choose_foreground_color (&temp, background);
+	rgb = nautilus_gdk_color_to_rgb (&temp);
+
+	gdk_rgb_init ();
+	gdk_rgb_gc_set_foreground (gc, rgb);
+}
+
+/**
  * nautilus_stipple_bitmap:
  * 
  * Get pointer to singleton 50% stippled bitmap.

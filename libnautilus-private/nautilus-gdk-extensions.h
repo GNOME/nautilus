@@ -122,6 +122,13 @@ void                     nautilus_fill_rectangle_with_color          (GdkDrawabl
 								      const GdkRectangle  *rectangle,
 								      guint32              rgb);
 
+gboolean		nautilus_gdk_color_is_dark		     (GdkColor		  *color);
+void			nautilus_gdk_choose_foreground_color	     (GdkColor		  *preferred,
+								      GdkColor		  *background);
+void			nautilus_gdk_gc_choose_foreground_color	     (GdkGC		  *gc,
+								      GdkColor		  *preferred,
+								      GdkColor		  *background);
+
 /* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
 GdkBitmap *              nautilus_stipple_bitmap                     (void);
 

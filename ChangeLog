@@ -1,3 +1,31 @@
+2001-01-17  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Work to fix bugs 1939 and 4614 -- text in list view is hard to
+	read when the foreground color specified by the gtk theme
+	conflicts with the background colors:
+
+	* libnautilus-extensions/nautilus-gdk-extensions.h,
+	libnautilus-extensions/nautilus-gdk-extensions.c
+	(nautilus_gdk_color_is_dark,
+	nautilus_gdk_choose_foreground_color,
+	nautilus_gdk_gc_choose_foreground_color): new functions, used
+	for testing whether a foreground/background color pair is
+	suitable for drawing text, and if not, choosing a new
+	foreground color
+
+	* libnautilus-extensions/nautilus-list.c (NautilusListDetails):
+	added gc fields: text_color, selected_text_color, link_text_color
+	(unref_gcs, make_gcs_and_colors): handle the new gcs
+
+	(nautilus_list_setup_style_colors): use
+	nautilus_gdk_gc_set_foreground_color () to create the gcs that
+	will be used for drawing text
+
+	(draw_cell): when drawing text cells, don't use the default
+	foreground gc, use one of the specially chosen gcs
+
 2001-01-17  Rebecca Schulman  <rebecka@eazel.com>
 
 	* src/file-manager/nautilus-indexing-info.c:
