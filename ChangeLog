@@ -1,5 +1,26 @@
 2002-05-30  Damon Chaplin  <damon@ximian.com>
 
+	* components/music/nautilus-music-view.c: removed PLAYER_NEXT state,
+	as it wasn't really necessary and was a bit confusing.
+	(selection_changed): updated to make sure we update the displayed
+	song title.
+	(play_status_display): changed the code to move to the next track,
+	as we don't use PLAYER_NEXT any more.
+	(play_current_file): use esdout_can_play() to check if we can connect
+	to esd.
+	(go_to_previous_track): use 3000 instead of 300. (1000 is 1 second,
+	see play_status_display()).
+	(get_player_state): just return the state. Don't call esdout_playing().
+
+	* components/music/esd-audio.c (esdout_can_play): added new function
+	to check if we can connect to esd.
+	(esdout_playing): updated this so it only checks if we are currently
+	playing a track. It doesn't try to connect to esd any more.
+
+	Fixes bug #79231.
+
+2002-05-30  Damon Chaplin  <damon@ximian.com>
+
 	* src/nautilus-bookmarks-window.c: Added support for DnD using
 	GtkTreeView. I added on_row_changed() and on_row_deleted() and removed
 	the old on_row_move(). I also added an extra column to the table to

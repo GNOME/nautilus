@@ -214,6 +214,7 @@ esdout_get_output_time (void)
 	return output_time_offset + (gint) ((bytes * 1000) / ebps);
 }
 
+/* Returns the number of bytes in our buffer still to be sent to esd. */
 gint 
 esdout_used (void)
 {
@@ -223,25 +224,34 @@ esdout_used (void)
 	return buffer_size - (rd_index - wr_index);
 }
 
-gint 
-esdout_playing (void)
+/* Returns TRUE if we can play a track, i.e. we can connect to esd. */
+int
+esdout_can_play (void)
 {
 	int fd;
 	
 	fd = esd_open_sound (hostname);
 	if (fd == -1) {
-		return TRUE;
+		return FALSE;
 	}
 	esd_close (fd);
 	
-	if (!going) {
+	return TRUE;
+}
+
+/* Returns TRUE if we are playing a track, i.e. the thread is still streaming
+   data to esd. */
+int
+esdout_playing (void)
+{
+	/* If our thread is not streaming data to esd, return FALSE. */
+	if (!going)
 		return FALSE;
-	}
-	
-	if (!esdout_used ()) {
+
+	/* If we've run out of data to send, we assume the track is done. */
+	if (esdout_used () == 0)
 		return FALSE;
-	}
-			
+
 	return TRUE;
 }
 

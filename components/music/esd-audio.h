@@ -31,6 +31,7 @@ int 	esdout_open (AFormat fmt, int rate, int nch);
 void 	esdout_set_audio_params (void);
 int 	esdout_get_written_time (void);
 int 	esdout_used (void);
+int	esdout_can_play (void);
 int 	esdout_playing (void);
 int 	esdout_free (void);
 void 	esdout_write (gpointer ptr, int length);

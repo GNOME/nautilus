@@ -85,8 +85,7 @@
 typedef enum {
 	PLAYER_STOPPED,
 	PLAYER_PAUSED,
-	PLAYER_PLAYING,
-	PLAYER_NEXT
+	PLAYER_PLAYING
 } PlayerState;
 
 struct NautilusMusicViewDetails {
@@ -666,25 +665,27 @@ selection_changed (GtkTreeSelection *selection, NautilusMusicView *music_view)
 	GtkTreePath *path;
         GtkTreeIter iter;
         int row;
+        gboolean selected_current_track = FALSE;
 
 	state = get_player_state (music_view);
 	is_playing_or_paused = (state == PLAYER_PLAYING || state == PLAYER_PAUSED);
 
-        gtk_tree_selection_get_selected (selection, NULL, &iter);
-        path = gtk_tree_model_get_path (GTK_TREE_MODEL (music_view->details->list_store), &iter);
-        row = gtk_tree_path_get_indices (path)[0];
-        gtk_tree_path_free (path);
+        if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+                path = gtk_tree_model_get_path (GTK_TREE_MODEL (music_view->details->list_store), &iter);
+                row = gtk_tree_path_get_indices (path)[0];
+                gtk_tree_path_free (path);
+
+                /* If the track selected is currently playing, we'll let it
+                   continue. Otherwise we'll stop any track that is playing. */
+                if (music_view->details->selected_index == row)
+                        selected_current_track = TRUE;
         
-	/* Exit if we are playing and clicked on the row that represents the playing song */
-	if (is_playing_or_paused && (music_view->details->selected_index == row)) {
-		return;
+                music_view_set_selected_song_title (music_view, row);
         }
 
-	if (is_playing_or_paused) {
+	if (is_playing_or_paused && !selected_current_track) {
 		stop_playing_file (music_view);
         }
-        
-        music_view_set_selected_song_title (music_view, row);
 } 
 
 
@@ -1099,10 +1100,14 @@ play_status_display (NautilusMusicView *music_view)
 	status = get_player_state (music_view);
 	is_playing_or_paused = (status == PLAYER_PLAYING) || (status == PLAYER_PAUSED);
 	
-	if (status == PLAYER_NEXT) {
-		stop_playing_file (music_view);
-		go_to_next_track (music_view);
-		return FALSE;
+        /* Check if we've reached the end of the track. If we have, move to
+           the next track. */
+	if (status == PLAYER_PLAYING) {
+                if (!esdout_playing ()) {
+                        stop_playing_file (music_view);
+                        go_to_next_track (music_view);
+                        return FALSE;
+                }
 	}
 		
 	if (music_view->details->last_player_state != status) {
@@ -1185,7 +1190,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 
 	}
 
-	if (esdout_playing ()) {
+	if (!esdout_can_play ()) {
 		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
 					      "Either another program is using or blocking the sound card, "
 					      "or your sound card is not configured properly. Try quitting any "
@@ -1271,7 +1276,7 @@ static void
 go_to_previous_track (NautilusMusicView *music_view)
 {	
 	/* if we're in the first 3 seconds of the song, go to the previous one, otherwise go to the beginning of this track */	
-	if ((esdout_get_output_time () < 300) && (music_view->details->selected_index > 0)) {
+	if ((esdout_get_output_time () < 3000) && (music_view->details->selected_index > 0)) {
 		music_view->details->selected_index -= 1;
 	}
 	
@@ -1940,10 +1945,6 @@ stop_playing_file (NautilusMusicView *music_view)
 static PlayerState
 get_player_state (NautilusMusicView *music_view)
 {
-	if (music_view->details->player_state == PLAYER_PLAYING && !esdout_playing ()) {
-		music_view->details->player_state = PLAYER_NEXT;
-	}
-
 	return music_view->details->player_state;
 }
 
