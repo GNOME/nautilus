@@ -1142,30 +1142,38 @@ global_preferences_use_fast_search_changed_callback (gpointer callback_data)
 			cron_status = nautilus_medusa_check_cron_is_enabled ();
 			switch (cron_status) {
 			case NAUTILUS_CRON_STATUS_OFF:
-				/* Translators: do not translate this text yet; it is still a rough draft. */
-				nautilus_show_info_dialog_with_details (_("File indexing has been turned on for your hard drive.  "
-									  "However, indexing will not take place each night "
-									  "with your current configuration.  You need to "
-									  "start the cron daemon, so that your files will "
-									  "be indexed."),
-				/* Translators: do not translate this text yet; it is still a rough draft. */
+				nautilus_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
+									  "fast search feature. However, indexing "
+									  "currently can't be performed because "
+									  "the program crond, which does "
+									  "nightly tasks on your computer, "
+									  "is turned off. To make sure fast "
+									  "searches can be done, turn crond on."),
 									_("Files May Not Be Indexed"),
-				/* Translators: do not translate this text yet; it is still a rough draft. */
-									_("If crond program is installed on your system, "
-									  "you can turn the cron service on by running "
-									  "the following commands as root:\n"
+									_("If you are running Linux, you can log "
+									  "in as root and type these commands "
+									  "to start cron:\n\n"
 									  "/sbin/chkconfig --level 345 crond on\n"
-									  "/etc/rc.d/init.d/crond start\n"),
+									  "/etc/rc.d/init.d/cron start\n"),
 									NULL);
 				
 				break;
 			case NAUTILUS_CRON_STATUS_UNKNOWN:
-				/* Translators: do not translate this text yet; it is still a rough draft. */
-				nautilus_show_info_dialog (_("In order to index your files each night, the cron "
-							     "program must be active on your system. You should "
-							     "check to be sure this program is running. "),
-							   _("Files May Not Be Indexed"),
-							   NULL);
+				nautilus_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
+									  "fast search feature. However, indexing "
+									  "may not be performed because the "
+									  "program crond, which does nightly "
+									  "tasks on your computer, may be turned "
+									  "off. To make sure fast searches can be "
+									  "done, check to make sure that crond "
+									  "is turned on.\n\n"),
+									_("Files May Not Be Indexed"),
+									_("If you are running Linux, you can log "
+									  "in as root and type these commands "
+									  "to start cron:\n\n"
+									  "/sbin/chkconfig --level 345 crond on\n"
+									  "/etc/rc.d/init.d/cron start\n"),
+									NULL);
 				break;
 			default:
 				break;

@@ -1,3 +1,19 @@
+2001-03-05  Rebecca Schulman  <rebecka@eazel.com>
+	Complete work for 5520, that cron should be running
+	for medusa to work.
+
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_use_fast_search_changed_callback):
+	Change the text to Vera's final copy.
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(back_update_page_callback), (set_up_medusa_page),
+	(next_medusa_page_callback), (set_up_cron_information_page),
+	(nautilus_first_time_druid_show):
+	Change the text to Vera's final copies, make medusa update
+	correctly when medusa is turned on in the first time druid
+
 2001-03-05  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>
@@ -17,6 +33,7 @@
 	Add share/pixmaps/nautilus/crux_eggplant/throbber/*.png
 	to the list of files to be put in the RPM (Bug 7383).
 
+>>>>>>> 1.4166
 2001-03-05  John Harper  <jsh@eazel.com>
 
 	Fixed bug 7402 (Fonts that don't define ` ' cause assertions

@@ -139,6 +139,7 @@ static GtkWidget *draw_desktop_checkbox_widget;
 
 /* `Launch Medusa' globals */
 static gboolean medusa_is_blocked;
+static NautilusCronStatus cron_status;
 static gboolean launch_medusa = TRUE;
 static GtkWidget *enable_medusa_checkbox_widget;
 
@@ -247,6 +248,7 @@ druid_finished (GtkWidget *druid_page)
 
 	/* Do the Medusa config */
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH, launch_medusa);
+	nautilus_medusa_enable_services (launch_medusa);
 	
 	/* Create default services icon on the desktop */
 	desktop_path = nautilus_get_desktop_directory ();
@@ -749,7 +751,7 @@ back_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	/* If we didn't want medusa, or cron is active, don't go "back" to the cron page */
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (enable_medusa_checkbox_widget)) ||
-	    nautilus_medusa_check_cron_is_enabled () == NAUTILUS_CRON_STATUS_ON) {
+	    cron_status == NAUTILUS_CRON_STATUS_ON) {
 		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[LAUNCH_MEDUSA_PAGE]));
 	}
 	else {
@@ -924,13 +926,15 @@ medusa_value_changed (GtkWidget *checkbox, gboolean *value)
 
 /* set up the "Launch Medusa" page, optionally with information about cron */
 static void
-set_up_medusa_page (NautilusDruidPageEazel *page,
-		    gboolean include_cron_information)
+set_up_medusa_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *label;
 	GtkWidget *container, *main_box, *hbox;
 
 	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
+	
+	/* Figure out whether cron is running */
+	cron_status = nautilus_medusa_check_cron_is_enabled ();
 
 	/* allocate a vbox to hold the description and the widgets */
 	main_box = gtk_vbox_new (FALSE, 0);
@@ -941,7 +945,7 @@ set_up_medusa_page (NautilusDruidPageEazel *page,
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = new_body_label (include_cron_information ? 
+	label = new_body_label (cron_status != NAUTILUS_CRON_STATUS_ON ?
 				_("The fast search feature indexes all the items on your hard disk.\n"
 				  "It speeds up searching and allows you to search by file content\n"
 				  "as well as filename, date, and other file properties.  The indexing\n"
@@ -955,7 +959,7 @@ set_up_medusa_page (NautilusDruidPageEazel *page,
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	enable_medusa_checkbox_widget = gtk_check_button_new_with_label (include_cron_information ? 
+	enable_medusa_checkbox_widget = gtk_check_button_new_with_label (cron_status == NAUTILUS_CRON_STATUS_ON ?
 						    _("Enable fast search") :
 						    _("Turn fast search on when cron is enabled"));
 	gtk_box_pack_start (GTK_BOX (main_box), enable_medusa_checkbox_widget, FALSE, FALSE, 0);
@@ -973,7 +977,7 @@ next_medusa_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	/* If we didn't want medusa, or cron is active, continue as normal */
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (enable_medusa_checkbox_widget)) ||
-	    nautilus_medusa_check_cron_is_enabled () == NAUTILUS_CRON_STATUS_ON) {
+	    cron_status == NAUTILUS_CRON_STATUS_ON) {
 		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
 	}
 	else {
@@ -1002,15 +1006,23 @@ set_up_cron_information_page (NautilusDruidPageEazel *page)
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
 	/* Translators: Do not translate this text.  It has not been edited yet, and will be altered shortly. */
-	label = new_body_label (_("Cron is a program that can run nightly tasks on your computer each night.\n"
-				  "You have elected to enable fast searching through nautilus.  In order to have\n"
-				  "an index of your files each night, cron needs to be running.  Turning cron on may\n"
-				  "run many different housekeeping jobs on your computer each evening.\n"
-				  "If you would like to turn on fast indexing by enabling cron, and you are \n"
-				  "running linux, you can run the following\n"
-				  "commands as root now.\n\n"
+	label = new_body_label (cron_status == NAUTILUS_CRON_STATUS_OFF ? 
+				_("Indexing is turned on, enabling the fast search feature. However, indexing\n"
+				  "currently can't be performed because the program crond, which does\n"
+				  "nightly tasks on your computer, is turned off. To make sure fast searches\n"
+				  "can be done, turn crond on.\n\n"
+				  "If you are running Linux, you can log in as root and type these commands \n"
+				  "to start cron:\n\n"
 				  "/sbin/chkconfig --level 345 crond on\n"
-				  "/etc/rc.d/init.d/crond start\n"));
+				  "/etc/rc.d/init.d/cron start\n") :
+				_("Indexing is turned on, enabling the fast search feature. However, indexing\n"
+				  "may not be performed because the program crond, which does nightly tasks\n"
+				  "on your computer, may be turned off. To make sure fast searches can be\n"
+				  "done, check to make sure that crond is turned on.\n\n"
+				  "If you are running Linux, you can log in as root and type these commands\n"
+				  "to start cron:\n\n"
+				  "/sbin/chkconfig --level 345 crond on\n"
+				  "/etc/rc.d/init.d/cron start\n"));
 
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -1172,8 +1184,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 
 	/* set up the `Launch Medusa' page */
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]), _("Fast Searches"));
-	set_up_medusa_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]),
-			    nautilus_medusa_check_cron_is_enabled () != NAUTILUS_CRON_STATUS_ON);
+	set_up_medusa_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]));
 	gtk_signal_connect (GTK_OBJECT (pages[LAUNCH_MEDUSA_PAGE]), "next",
 			    GTK_SIGNAL_FUNC (next_medusa_page_callback),
 			    druid);
