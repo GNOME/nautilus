@@ -1,3 +1,10 @@
+2000-06-30  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/bonobo-stream-vfs.c:
+	(create_bonobo_stream_vfs):
+	A fix to make the setting of the vepv work.  The extern
+	vepv is gone, so we now use the allocator functions.
+
 2000-06-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:

@@ -296,7 +296,8 @@ create_bonobo_stream_vfs (BonoboObject *object)
 	CORBA_Environment ev;
 
 	servant = (POA_Bonobo_Stream *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_stream_vepv;
+	servant->vepv->Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	servant->vepv->Bonobo_Stream_epv = bonobo_stream_get_epv ();
 
 	CORBA_exception_init (&ev);
 
