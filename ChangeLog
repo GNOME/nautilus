@@ -1,3 +1,23 @@
+2000-09-15  Mathieu Lacage  <mathieu@eazel.com>
+
+	fix bug 2874
+	* components/tree/nautilus-tree-view.c: remove color/background/emblem 
+	dnd from the tree view.
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT): add function
+	* libnautilus-extensions/nautilus-gtk-extensions.h: add prototype.
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (nautilus_list_get_drop_action),
+	(nautilus_list_receive_dropped_icons),
+	(nautilus_list_receive_dropped_keyword),
+	(nautilus_list_drag_data_received): add support for keywords by
+	changing the handle_dropped_icons event to handle_dropped_items
+	* libnautilus-extensions/nautilus-list.h: change signal prototype.
+	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons),
+	(fm_list_receive_dropped_keyword), (fm_list_handle_dropped_items),
+	(set_up_list): make it use the right signal and suppport both icon and 
+	keyword drops.
+
 2000-09-15  Arlo Rose  <arlo@eazel.com>
 
 	* icons/knob.png:

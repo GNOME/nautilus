@@ -171,7 +171,7 @@ enum {
 	SELECT_MATCHING_NAME,
 	SELECT_PREVIOUS_NAME,
 	SELECT_NEXT_NAME,
-	HANDLE_DROPPED_ICONS,
+	HANDLE_DROPPED_ITEMS,
 	GET_DRAG_PIXMAP,
 	GET_SORT_COLUMN_INDEX,
 	LAST_SIGNAL
@@ -369,17 +369,18 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusListClass, select_next_name),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-	list_signals[HANDLE_DROPPED_ICONS] =
-		gtk_signal_new ("handle_dropped_icons",
+	list_signals[HANDLE_DROPPED_ITEMS] =
+		gtk_signal_new ("handle_dropped_items",
 				GTK_RUN_FIRST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dropped_icons),
-				nautilus_gtk_marshal_NONE__POINTER_INT_INT_INT,
-				GTK_TYPE_NONE, 4,
+				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dropped_items),
+				nautilus_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT,
+				GTK_TYPE_NONE, 5,
+				GTK_TYPE_INT,
 				GTK_TYPE_POINTER,
 				GTK_TYPE_INT,
 				GTK_TYPE_INT,
-				GTK_TYPE_INT);
+				GTK_TYPE_UINT);
 	list_signals[GET_DRAG_PIXMAP] =
 		gtk_signal_new ("get_drag_pixmap",
 				GTK_RUN_FIRST,
@@ -2853,8 +2854,13 @@ nautilus_list_get_drop_action (NautilusList *list,
 
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
+		*default_action = context->suggested_action;
+		*non_default_action = context->suggested_action;
+		break;
+
 	case NAUTILUS_ICON_DND_KEYWORD:
-	/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in list view? Do we need to support this? */
+		/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in 
+		   list view? Do we need to support this? */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
@@ -2979,8 +2985,9 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 
 static void
 nautilus_list_receive_dropped_icons (NautilusList *list,
-				     GdkDragContext *context, 
-				     int x, int y)
+				     int action,
+				     GtkSelectionData *data,
+				     int x, int y, guint info)
 {
 	NautilusDragInfo *drag_info;
 	GList *	selected_items;
@@ -2990,22 +2997,31 @@ nautilus_list_receive_dropped_icons (NautilusList *list,
 
 	/* Put selection list in local variable and NULL the global one
 	 * so it doesn't get munged in a modal popup-menu event loop
-	 * in the handle_dropped_icons handler.
+	 * in the handle_dropped_item handler.
 	 */
 	selected_items = drag_info->selection_list;
 	drag_info->selection_list = NULL;
-	gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
-			 selected_items, x, y, context->action);			
+	gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ITEMS],
+			 action, selected_items, x, y, info);
 	nautilus_drag_destroy_selection_list (selected_items);
 }
 
 static void
 nautilus_list_receive_dropped_keyword (NautilusList *list,
-				       char *keyword, int x, int y)
+				       int action,
+				       GtkSelectionData *data,
+				       int x, int y,
+				       guint info)
 {
+	GList *emblems;
 
+	emblems = g_list_prepend (NULL, (char *)data->data);
 
+	gtk_signal_emit (GTK_OBJECT (list), 
+			 list_signals[HANDLE_DROPPED_ITEMS],
+			 action, emblems, x, y, info);
 
+	g_list_free (emblems);
 }
 
 
@@ -3048,13 +3064,13 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 			nautilus_list_receive_dropped_icons
 				(NAUTILUS_LIST (list),
-				 context, x, y);
+				 context->action, data, x, y, info);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_URI_LIST:
 			nautilus_list_receive_dropped_icons
 				(NAUTILUS_LIST (list),
-				 context, x, y);
+				 context->action, data, x, y, info);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_COLOR:
@@ -3073,7 +3089,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		case NAUTILUS_ICON_DND_KEYWORD:
 			nautilus_list_receive_dropped_keyword
 				(NAUTILUS_LIST (list),
-				 (char *)data->data, x, y);
+				 context->action, data, x, y, info);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		default:

@@ -253,14 +253,7 @@ static void    nautilus_tree_view_receive_dropped_icons   (NautilusTreeView     
 							   GdkDragContext        *context,
 							   int                    x, 
 							   int                    y);
-static void    nautilus_tree_view_receive_dropped_keyword (NautilusTreeView      *tree_view, 
-							   char                  *keyword, 
-							   int                    x, 
-							   int                    y);
 
-static void  nautilus_tree_view_make_prelight_if_keyword (NautilusTreeView *tree_view, 
-							  int x, 
-							  int y);
 static void  nautilus_tree_view_make_prelight_if_file_operation (NautilusTreeView *tree_view, 
 								 int x, 
 								 int y);
@@ -779,10 +772,7 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 
 static GtkTargetEntry nautilus_tree_view_dnd_target_table[] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
-	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
-	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
-	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR }
+	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST }
 };
 
 
@@ -1492,11 +1482,6 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 									    x, y);
 			break;
 		case NAUTILUS_ICON_DND_KEYWORD:	
-			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), 
-							       x, y, user_data);
-			nautilus_tree_view_make_prelight_if_keyword (NAUTILUS_TREE_VIEW (tree_view), 
-								     x, y);
-			break;
 		case NAUTILUS_ICON_DND_COLOR:
 		case NAUTILUS_ICON_DND_BGIMAGE:	
 		default:
@@ -1580,13 +1565,10 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 		drag_info->selection_list = nautilus_drag_build_selection_list (data);
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
-		break;
 	case NAUTILUS_ICON_DND_BGIMAGE:	
-		break;
 	case NAUTILUS_ICON_DND_KEYWORD:	
-		break;
 	default:
-
+		/* we do not want to support any of the above */
 		break;
 	}
 
@@ -1607,23 +1589,8 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_COLOR:
-			nautilus_background_receive_dropped_color
-				(nautilus_get_widget_background (widget),
-				 widget, x, y, data);
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			break;
 		case NAUTILUS_ICON_DND_BGIMAGE:
-			nautilus_background_receive_dropped_background_image
-				(nautilus_get_widget_background (widget),
-				 (char *)data->data);
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			break;
 		case NAUTILUS_ICON_DND_KEYWORD:
-			nautilus_tree_view_receive_dropped_keyword
-				(NAUTILUS_TREE_VIEW (tree_view),
-				 (char *)data->data, x, y);
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			break;
 		default:
 			gtk_drag_finish (context, FALSE, FALSE, time);
 		}
@@ -1634,10 +1601,8 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 		drag_info->drop_occured = FALSE;
 		drag_info->got_drop_data_type = FALSE;
 	}
-
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_data_received");
-
 }
 
 
@@ -1902,33 +1867,6 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
    helper functions
    -----------------------------------------------------------------------
 */
-
-static void 
-nautilus_tree_view_make_prelight_if_keyword (NautilusTreeView *tree_view, int x, int y)
-{
-	NautilusTreeViewDndDetails *dnd;
-	NautilusCTreeNode *node;
-
-	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
-	dnd = tree_view->details->dnd;
-
-	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
-	if (node == NULL) {
-		return;
-	}
-
-	if (node != dnd->current_prelighted_node 
-	    && dnd->current_prelighted_node != NULL) {
-		nautilus_ctree_node_set_row_style (NAUTILUS_CTREE (tree_view->details->tree), 
-					      dnd->current_prelighted_node,
-					      tree_view->details->dnd->normal_style);
-	}
-	nautilus_ctree_node_set_row_style (NAUTILUS_CTREE (tree_view->details->tree), 
-				      node,
-				      tree_view->details->dnd->highlight_style);
-	dnd->current_prelighted_node = node;
-}
-
 
 static void 
 nautilus_tree_view_make_prelight_if_file_operation (NautilusTreeView *tree_view, 
@@ -2694,7 +2632,7 @@ nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_KEYWORD:	
 	case NAUTILUS_ICON_DND_BGIMAGE:	
-		/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in list view? Do we need to support this? */
+		/* we handle none of the above */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
@@ -2773,29 +2711,4 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 		nautilus_drag_destroy_selection_list (drag_info->selection_list);
 		drag_info->selection_list = NULL;
 	}
-}
-
-/* handle dropped keywords */
-static void
-nautilus_tree_view_receive_dropped_keyword (NautilusTreeView *tree_view, char* keyword, int x, int y)
-{
-
-	NautilusCTreeNode *view_node;
-	NautilusTreeNode *model_node;
-
-	NautilusFile *file;
-	
-	g_assert (keyword != NULL);
-
-	/* find the item we hit with our drop, if any */
-
-	view_node = nautilus_tree_view_tree_node_at (tree_view, x, y);
-	if (view_node == NULL) {
-		return;
-	}
-	model_node = view_node_to_model_node (tree_view, view_node);
-
-	file = nautilus_tree_node_get_file (model_node);
-
-	nautilus_drag_file_receive_dropped_keyword (NAUTILUS_FILE (file), keyword);
 }

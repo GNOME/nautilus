@@ -117,7 +117,7 @@ struct NautilusListClass {
 	void (* select_matching_name) (GtkWidget *widget, const char *);
 	void (* select_previous_name) (GtkWidget *widget);
 	void (* select_next_name) (GtkWidget *widget);
-	void (* handle_dropped_icons) (GtkWidget *widget, GList *icons, int x, int y, int action);
+	void (* handle_dropped_items) (GtkWidget *widget, GdkDragContext *context, GList *items);
 	void (* get_drag_pixmap) (GtkWidget *widget, int row_index, GdkPixmap **pixmap, GdkBitmap **mask);
 	int  (* get_sort_column_index) (void);
 };
