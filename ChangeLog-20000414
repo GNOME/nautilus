@@ -1,5 +1,13 @@
 2000-03-16  Pavel Cisler  <pavel@eazel.com>
 
+	* scr/file-manager/fm-directory-view-list.c
+	(create_flist):
+	The icon column was set to the width of an icon at 100% zoom level.
+	This doesn't work at higher zoom levels and when using Eazel
+	theme icons. For now just make the column resizable again.
+	
+2000-03-16  Pavel Cisler  <pavel@eazel.com>
+
 	First pass on making list column resizing live.
 
 	* libnautilus/Makefile.am
@@ -28,13 +36,13 @@
 	Added new calls that hook up with the mouse tracking code that
 	resize the tracker column.
 
-	* manager/fm-directory-view-list.c
+	* scr/file-manager/fm-directory-view-list.c
 	(get_sort_indicator), (hide_sort_indicator), (show_sort_indicator),
 	(create_flist):
 	Removed code that insert the sort order indicator into the list
 	column - this is now done in the new column title widget.
 	
-	* manager/fm-directory-view-list.c
+	* scr/file-manager/fm-directory-view-list.c
 	(create_flist):
 	Added min and max column width values.
 

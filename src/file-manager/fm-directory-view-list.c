@@ -286,10 +286,15 @@ create_flist (FMDirectoryViewList *list_view)
 	GtkFList *flist;
 	GtkCList *clist;
 
-	/* title setup should allow for columns not being resizable at all,
+	/* FIXME:
+	 * title setup should allow for columns not being resizable at all,
 	 * justification, editable or not, type/format,
 	 * not being usable as a sort order criteria, etc.
 	 * for now just set up name, min, max and current width
+	 * 
+	 * FIXME:
+	 * the icon column should be set to the width of an icon at a given
+	 * zoom level or should be resizable when using nautilus theme icons
 	 */	
 	char *titles[] = {
 		NULL,
@@ -316,7 +321,7 @@ create_flist (FMDirectoryViewList *list_view)
 	};
 
 	guint max_widths[] = {
-		 fm_directory_view_list_get_icon_size (list_view),	/* Icon */
+		300,	/* Icon */
 		300,	/* Name */
 		 80,	/* Size */
 		200,	/* Type */
