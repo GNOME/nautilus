@@ -1,3 +1,38 @@
+2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Glynn Foster  <glynn.foster@ireland.sun.com>
+
+	No significant code changes.  Just adding bug numbers to FIXMEs.
+	The only real code change (which happens to be a commenting out of
+	something) is a workaround for a tinderbox problem.
+	
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_by_family):
+	Bug number for FIXME.
+	
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(nautilus_font_manager_get_default_font),
+	(nautilus_font_manager_get_default_bold_font):
+	Bug number for FIXME.
+	Comment out the SOURCE_DATADIR font hack until it works better.
+	Fixes broken tinderbox checks.  Checks will still run even if not
+	with the optimal setup.  I have an idea how to fix this later
+	using a configure.in hack.  Added FIXME and bug number for this
+	issue.
+	
+	* libnautilus-extensions/nautilus-glyph.c:
+	(nautilus_glyph_draw_to_pixbuf):
+	Bug number for FIXME.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	Bug number for FIXME and reworked FIXME blurb to match bug report.
+
+	(nautilus_icon_container_initialize):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_get_default_font),
+	(nautilus_scalable_font_get_default_bold_font):
+	Bug number for FIXMEs.
+
 2001-03-05  Dan Mueth  <dan@eazel.com>
 
 	Removed Eazel logo from screenshot.

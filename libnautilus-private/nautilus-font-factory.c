@@ -223,7 +223,7 @@ nautilus_font_factory_get_font_by_family (const char *family,
 
 	factory = nautilus_get_current_font_factory ();
 	while (*iter) {
-		/* FIXME bugzilla.eazel.com xxxx: 
+		/* FIXME bugzilla.eazel.com 7347: 
 		 * Its a hack that we check for "-" prefixes in font names.
 		 * We do this in order not to break transalted font families.
 		 */

@@ -300,7 +300,7 @@ nautilus_scalable_font_get_default_font (void)
 	char *default_font_file_name;
 	NautilusScalableFont *default_font;
 
-	/* FIXME bugzilla.eazel.com xxxx:
+	/* FIXME bugzilla.eazel.com 7344:
 	 * Its evil that we have to peek preferences here to
 	 * find the default smooth font, but so it goes.
 	 */
@@ -323,7 +323,7 @@ nautilus_scalable_font_get_default_bold_font (void)
 	char *default_bold_font_file_name;
 	NautilusScalableFont *default_bold_font;
 
-	/* FIXME bugzilla.eazel.com xxxx:
+	/* FIXME bugzilla.eazel.com 7344:
 	 * Its evil that we have to peek preferences here to
 	 * find the default smooth font, but so it goes.
 	 */

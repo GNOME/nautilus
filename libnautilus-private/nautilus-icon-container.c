@@ -3316,7 +3316,11 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
  	/* font table - this isn't exactly proportional, but it looks better than computed */
 	/* FIXME bugzilla.eazel.com 5093: Font name is hard-coded here. */
 	/* FIXME bugzilla.eazel.com 5101: Font size is hard-coded here. */
-	/* FIXME bugzilla.eazel.com xxxx: Fonts marked for localization in disparate places. */
+
+	/* FIXME bugzilla.eazel.com 7345:
+	 * Default font "helvetica" hard coded and marked for translatation in many
+	 * placesFonts hard marked for localization in disparate places.
+	 */
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family (_("helvetica"), 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family (_("helvetica"), 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family (_("helvetica"), 10);

@@ -1059,9 +1059,17 @@ nautilus_font_manager_get_default_font (void)
 {
 	guint i;
 
+	/* FIXME bugzilla.eazel.com 7343:
+	 * We want this to work in the case where nautilus has
+	 * not undergone 'make install'.  In order to do that
+	 * we need to find out our fully qualified pwd - 
+	 * probably using a configure.on NAUTILUS_PWD=`pwd`
+	 * hack of some kind.  For now, commenting this out
+	 * to make checks work in tinderbox again.
+	 */
 	static const char *default_fonts[] = {
 		DEFAULT_FONT_DIRECTORY "/n019003l.pfb",
-		SOURCE_DATADIR "/fonts/urw/n019003l.pfb",
+		/* SOURCE_DATADIR "/fonts/urw/n019003l.pfb", */
 		"/usr/share/fonts/default/Type1/n019003l.pfb",
 		"/usr/X11R6/lib/X11/fonts/Type1/lcdxsr.pfa"
 	};
@@ -1082,7 +1090,8 @@ nautilus_font_manager_get_default_bold_font (void)
 
 	static const char *default_bold_fonts[] = {
 		DEFAULT_FONT_DIRECTORY "/n019004l.pfb",
-		SOURCE_DATADIR "/fonts/urw/n019004l.pfb",
+		"/usr/share/fonts/default/Type1/n019003l.pfb",
+		/* SOURCE_DATADIR "/fonts/urw/n019004l.pfb", */
 	};
 
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (default_bold_fonts); i++) {

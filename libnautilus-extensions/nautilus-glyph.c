@@ -261,7 +261,7 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
 	g_return_if_fail (glyph_is_valid (glyph));
 
-	/* FIXME bugzilla.eazel.com xxxx: We currently dont handle opacities
+	/* FIXME bugzilla.eazel.com 7346: We currently dont handle opacities
 	 * other than 0xFF.
 	 */
 	g_return_if_fail (opacity == NAUTILUS_OPACITY_FULLY_OPAQUE);
