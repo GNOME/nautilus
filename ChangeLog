@@ -1,5 +1,11 @@
 2003-04-23  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-desktop-icon-view.c (volume_ops_callback):
+	Check for file: instead of is_local when verifying a volume desktop file
+	is ok. Fixes bug #98306.
+
+2003-04-23  Alexander Larsson  <alexl@redhat.com>
+
 	Patch from Michael Meeks in bug #87414.
 	
 	* src/nautilus-window.c (nautilus_window_finalize):
