@@ -131,6 +131,7 @@ struct NautilusVolumeMonitorDetails
 static NautilusVolumeMonitor *global_volume_monitor = NULL;
 static const char *floppy_device_path_prefix;
 static const char *noauto_string;
+static gboolean mnttab_exists;
 
 
 /* The NautilusVolumeMonitor signals.  */
@@ -239,6 +240,12 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 		noauto_string = "/vol/";
 	} else {
 		noauto_string = "/dev/fd/";
+	}
+	
+	if (g_file_exists ("/etc/mnttab")) {
+		mnttab_exists = TRUE;
+	} else {
+		mnttab_exists = FALSE;	
 	}
 }
 
@@ -958,13 +965,14 @@ get_current_mount_list (void)
 	char *device_path, *mount_path, *filesystem;
 	const char *separator;
 
-#ifdef SOLARIS_MNT
-	fh = fopen ("/etc/mnttab", "r");
-	separator = "\t";
-#else	
-	fh = fopen ("/proc/mounts", "r");
-	separator = " ";
-#endif
+	if (mnttab_exists) { 
+		fh = fopen ("/etc/mnttab", "r");
+		separator = "\t";
+	} else {
+		fh = fopen ("/proc/mounts", "r");
+		separator = " ";
+	}
+
 	if (fh == NULL) {
 		g_warning ("Unable to open /etc/mnttab or /proc/mounts: %s", strerror (errno));
 		return NULL;

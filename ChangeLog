@@ -1,3 +1,15 @@
+2001-04-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Add a global to track the presence of /etc/mnttab and
+	use that value instead of the improper ifdef that
+	I added last week.  Check the value of this variable
+	and use the result to determine to use mnttab or
+	/proc/mounts.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize_class),
+	(get_current_mount_list):
+
 Sun Apr 15 23:55:21 2001  George Lebl <jirka@5z.com>
 
 	* configure.in, po/cs.po:  Being the nationalistic bastard I am,
