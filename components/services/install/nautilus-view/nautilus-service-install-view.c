@@ -255,9 +255,6 @@ nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
 	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
-	/* Crude fix for 
-	   FIXME bugzilla.eazel.com 3431
-	*/
 	view->details->core_package = FALSE;
 
 	gtk_widget_show (GTK_WIDGET (view));
@@ -776,7 +773,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		   FIXME bugzilla.eazel.com 3431
 		*/	
 		if (pack->name) {		
-			if (strncasecmp (pack->name, "nautilus", 8)==0) {
+			if (g_strncasecmp (pack->name, "nautilus", 8)==0) {
 				view->details->core_package = TRUE;
 			} 
 		}
@@ -856,10 +853,6 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 		char *tmp;
 		GnomeDesktopEntry *dentry = gnome_desktop_entry_load (fname);
 
-		g_message ("DEntry for %s (%s app), location %s", 
-			   dentry->name, dentry->is_kde ? "KDE" : "Gnome",
-			   dentry->location);
-
 		if (dentry->is_kde) {
 			addition = g_strdup_printf (_(" \xB7 %s is in the KDE menu.\n"), dentry->name);
 		} else {
@@ -880,14 +873,18 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 								    dentry->name);
 				}
 			} else {			       
+				/*
 				addition = g_strdup_printf (_(" \xB7 %s in somewhere...\n"), 
 							    dentry->name);
+				*/
 			}
 		}
-		tmp = g_strdup_printf ("%s%s", result, addition);
-		g_free (result);
-		result = tmp;
-		g_free (addition);
+		if (addition) {
+			tmp = g_strdup_printf ("%s%s", result, addition);
+			g_free (result);
+			result = tmp;
+			g_free (addition);
+		}
 	}
 	return result;
 }
@@ -917,18 +914,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	turn_cylon_off (view, success ? 1.0 : 0.0);
 
 	if (success) {
-		/* Crude fix for 
-		   FIXME bugzilla.eazel.com 3431
-		   should go into nautilus_service_install_done, and only by called 
-		   if result==TRUE
-		*/
-		if (view->details->core_package) {
-			message = _("Installation complete!\n"
-				    "A core package of Nautilus has been\n"
-				    "updated, you should restart Nautilus");
-		} else {
-			message = _("Installation complete!");
-		}
+		message = _("Installation complete!");
 	} else if (view->details->cancelled) {
 		message = _("Installation aborted.");
 	} else {
@@ -960,8 +946,28 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		eazel_install_callback_delete_files (cb, &ev);
 		CORBA_exception_free (&ev);
 	}
-
-	nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+	
+	if (view->details->core_package) {
+		message = _("\nA core package of Nautilus has been\n"
+			    "updated, you should restart Nautilus.\n\n"
+			    "Do you wish to do that now ?\n");
+		if (GTK_IS_WINDOW (toplevel)) {
+			dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+								 &answer, GTK_WINDOW (toplevel));
+		} else {
+			dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+		}
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+		
+		if (answer) {
+			if (execlp ("nautilus", "nautilus", "--restart", NULL)==-1) {
+				g_message ("Exec error %s", strerror (errno));
+			}
+		}
+	} else {	       	    
+		nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+	}
 }
 
 

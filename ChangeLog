@@ -1,3 +1,56 @@
+2000-11-01  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (main):
+	Fixed 4331.
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_download_packages),
+	Checked if a toplevel package is a source package
+	(eazel_install_prune_packages_helper),
+	(eazel_install_check_if_depends_on),
+	(eazel_install_do_transaction_fill_hash),
+	(eazel_install_prune_packages), 
+	(eazel_install_ensure_deps),
+	Commented out/changed some debug output
+	(eazel_install_fetch_dependencies),
+	Changed the debug output in case of circular dependency, also
+	added a check for source packages.
+	(eazel_install_start_transaction):
+	Commented out the debug output of the rpm args
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach),
+	Detect source package.
+	(eazel_install_problem_tree_to_case):
+	Removed debug output.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_initialize),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_done),
+	Improved the updating of nautilus from natilus, by actually
+	offering to restart nautilus (and doing it if the user wants to)
+	(nautilus_install_service_locate_menu_entries):
+	If I can't figure out where the desktop files are, don't print
+	"blabla is somewhere..."
+	
+	* nautilus.spec.in:
+	Added usermode >= 1.35 for nautilus-trilobite
+	
+	* po/da.po:
+	* po/no.po:
+	Removed the fatal Control*t translation.
+	
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_trash_delete_menu):
+	Added a comment for the translation teams to not translate
+	Control*t at this point.
+	
+	* src/nautilus-shell.c: (save_window_states):
+	When saving windowstates, replace any window->location that starts
+	with eazel-install: with eazel:, thereby preventing loops when
+	eazel-install: views restart nautilus.
+
 2000-11-01  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (initiate_file_download):

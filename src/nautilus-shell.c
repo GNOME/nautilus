@@ -339,7 +339,22 @@ save_window_states (void)
 		width = GTK_WIDGET (window)->allocation.width;
 		height = GTK_WIDGET (window)->allocation.height;
 
-		window_info = g_strdup_printf ("%dx%d+%d+%d %s", width, height, x, y, window->location); 
+		/* FIXME bugzilla.eazel.com 4375
+		   This hardcoded subst should be parameterized
+		   at some point. This ensures that when eazel-install:nautilus
+		   restarts nautilus, it doesn't go to eazel-install:nautilus but
+		   to eazel: instead */
+		if (g_strncasecmp (window->location, "eazel-install:", 14) == 0) {
+			window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
+						       width, height, 
+						       x, y, 
+						       "eazel:"); 
+		} else {
+			window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
+						       width, height, 
+						       x, y, 
+						       window->location); 
+		}
 		out = g_slist_prepend (out, window_info);
 	}
 

@@ -3352,6 +3352,9 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, GList *selection)
 						 _("Move all selected items to the Trash"));
 		nautilus_bonobo_set_accelerator (view->details->ui, 
 						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+		/* NOTE to translators: DO NOT translate "Control*" part, it is a parsed string
+		   Only change the "t" part to something that makes sense in your language.
+		   This string defines Ctrl-T as "Move all selected items to the Trash" */
 						 _("*Control*t"));
 	}
 	

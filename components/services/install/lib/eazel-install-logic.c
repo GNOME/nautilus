@@ -300,6 +300,13 @@ eazel_install_download_packages (EazelInstall *service,
 				}
 			}
 		}
+
+		if (result) {
+			if (package->source_package) {
+				package->status = PACKAGE_SOURCE_NOT_SUPPORTED;
+				remove_list = g_list_prepend (remove_list, package);
+			}
+		}
 	}
 
 	for (iterator = remove_list; iterator; iterator = g_list_next (iterator)) {
@@ -596,7 +603,7 @@ eazel_install_do_transaction_fill_hash (EazelInstall *service,
 
 		pack = (PackageData*)iterator->data;
 		tmp = g_strdup_printf ("%s", pack->name);
-		trilobite_debug ("adding %s to name_to_package_hash", tmp);
+		/* trilobite_debug ("adding %s to name_to_package_hash", tmp); */
 		g_hash_table_insert (service->private->name_to_package_hash,
 				     tmp,
 				     iterator->data);
@@ -820,6 +827,7 @@ eazel_install_monitor_err_process_pipe (GIOChannel *source,
 #endif /* DEBUG_RPM_OUTPUT */
 #endif
 
+#if 0
 static void
 eazel_install_display_arguments (GList *args) 
 {
@@ -830,6 +838,7 @@ eazel_install_display_arguments (GList *args)
 	}
 	fprintf (stdout, "\n");
 }
+#endif
 
 /* Monitors the subcommand pipe and returns the number of packages installed */
 static gint
@@ -1081,9 +1090,11 @@ eazel_install_start_transaction (EazelInstall *service,
 		} 
 	}
 
+#if 0
 	if (res==0) {	     
 		eazel_install_display_arguments (args);
 	}
+#endif
 #ifdef EAZEL_INSTALL_SLIM
 	if (res == 0) {
 		char **argv;
@@ -1208,7 +1219,7 @@ eazel_install_check_if_depends_on (PackageData *pack,
 		if (nisse == dep) {
 			result = TRUE;
 		} else if (eazel_install_check_if_depends_on (nisse, dep)) {
-			trilobite_debug ("nope, recursing");
+			/* trilobite_debug ("nope, recursing"); */
 			result = TRUE;
 		}
 	}
@@ -1230,15 +1241,19 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 				     PackageData *pack)
 {
 	GList *iterator;
+	char *tmp;
+
 	g_return_if_fail (pack!=NULL);
         /* If already pruned, abort */
 	if (g_list_find (*pruned, pack) || pack->name==NULL) {
 		return;
 	}
-	trilobite_debug (_("Removing package %s-%s-%s (0x%x) %s"), 
-			 pack->name, pack->version, pack->minor,
+	tmp = packagedata_get_readable_name (pack);
+	trilobite_debug (_("Removing package %s (0x%x) %s"), 
+			 tmp,
 			 pack,
 			 pack->toplevel ? "(emit fail)" :"()");
+	g_free (tmp);
 	if (pack->toplevel) {
 		/* We only emit signal for the toplevel packages, 
 		   and only delete them. They _destroy function destroys
@@ -1318,7 +1333,7 @@ eazel_install_prune_packages (EazelInstall *service,
 						     pack);
 		for (iterator = pruned; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack = (PackageData*)iterator->data;
-			trilobite_debug ("%s pruned", pack->name);
+			/* trilobite_debug ("%s pruned", pack->name); */
 			(*packages) = g_list_remove (*packages, pack);
 		};
 	} 
@@ -1604,8 +1619,10 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 		if (g_list_find_custom (*failedpackages,
 					pack,
 					(GCompareFunc)eazel_install_package_compare)) {
-			trilobite_debug ("%s-%s-%s already failed, will not download it's requirements",
-					 pack->name, pack->version, pack->minor);
+			char *tmp;
+			tmp = packagedata_get_readable_name (pack);
+			trilobite_debug ("%s already failed, will not download it's requirements", tmp);
+			g_free (tmp);
 			packagedata_destroy (dep, TRUE);
 			continue;
 		}
@@ -1621,6 +1638,13 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 		packagedata_add_pack_to_soft_depends (pack, dep);
 
 		fetch_result = eazel_install_fetch_package (service, dep);
+
+		if (fetch_result) {
+			if (dep->source_package) {
+				dep->status = PACKAGE_SOURCE_NOT_SUPPORTED;
+				fetch_result = FALSE;
+			}
+		}
 
 		if (fetch_result) {
 			/* If the package we just downloaded was already in packages,
@@ -1649,7 +1673,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 							 evil_package);
 					evil_package->status = PACKAGE_CIRCULAR_DEPENDENCY;
 				} else {
-					trilobite_debug ("I cannot set the funky break list");
+					trilobite_debug ("This is Bad: I cannot set the funky break list");
 				}
 				dep->status = PACKAGE_CIRCULAR_DEPENDENCY;
 				fetch_result = FALSE;
@@ -1692,7 +1716,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 					packagedata_add_pack_to_breaks (evil_package, dep);
 					evil_package->status = PACKAGE_BREAKS_DEPENDENCY;
 				} else {
-					trilobite_debug ("I cannot set the funky break list");
+					trilobite_debug ("This is also Bad: I cannot set the funky break list");
 				}
 				dep->status = PACKAGE_CIRCULAR_DEPENDENCY;
 				fetch_result = FALSE;
@@ -2083,7 +2107,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 			   the new "packages" list */
 			eazel_install_ensure_deps (service, packages, failedpackages);
 		} else {
-			trilobite_debug (_("Dependencies appear ok"));
+			trilobite_debug ("Dependencies still appear ok");
 		}
 
 	}
@@ -2099,8 +2123,6 @@ eazel_install_ensure_deps (EazelInstall *service,
 	*/
 	if (*failedpackages) {
 		GList *iterator;
-
-		trilobite_debug ("failedpackages != NULL");
 
 		for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack;

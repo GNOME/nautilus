@@ -81,7 +81,7 @@ char    *arg_server,
    so stop whining... */
 CORBA_ORB orb;
 CORBA_Environment ev;
-int cli_result = 1;
+int cli_result = 0;
 GList *cases = NULL;
 
 static const struct poptOption options[] = {
@@ -667,9 +667,7 @@ int main(int argc, char *argv[]) {
 		category->name = g_strdup ("files from commandline");
 		category->packages = packages;
 		categories = g_list_prepend (NULL, category);		
-	} else {
-		g_message ("Using remote list ");
-	}
+	} 
 
 	/* Check that we're root and on a redhat system */
 	if (!check_for_redhat ()) {
@@ -735,10 +733,18 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (arg_erase) {
-		eazel_install_callback_uninstall_packages (cb, categories, arg_root, &ev);
+		if (categories == NULL) {
+			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			cli_result = 1;
+		} else {
+			eazel_install_callback_uninstall_packages (cb, categories, arg_root, &ev);
+		}
 	} else if (arg_query) {
 		GList *iterator;
-		for (iterator = strs; iterator; iterator = iterator->next) {
+		if (strs == NULL) {
+			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			cli_result = 1;
+		} else for (iterator = strs; iterator; iterator = iterator->next) {
 			GList *matched_packages;
 			GList *match_it;
 			matched_packages = eazel_install_callback_simple_query (cb, 
@@ -755,7 +761,7 @@ int main(int argc, char *argv[]) {
 					fprintf (stdout, "Name         : %s\n", p->name?p->name:"?"); 
 					fprintf (stdout, "Version      : %s\n", p->version?p->version:"?");
 					fprintf (stdout, "Minor        : %s\n", p->minor?p->minor:"?");
-
+					
 					fprintf (stdout, "Size         : %d\n", p->bytesize);
 					fprintf (stdout, "Arch         : %s\n", p->archtype?p->archtype:"?");
 					fprintf (stdout, "Distribution : %s\n", tmp?tmp:"?");
@@ -775,18 +781,26 @@ int main(int argc, char *argv[]) {
 					fprintf (stdout, "%s %s %50.50s\n", p->name, p->version, p->description);
 				}
 			}
+			cli_result = 0;
 		}
-		cli_result = 0;
 	} else if (arg_revert) {
 		GList *iterator;
-		for (iterator = strs; iterator; iterator = iterator->next) {
+		if (strs == NULL) {
+			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			cli_result = 1;
+		} else for (iterator = strs; iterator; iterator = iterator->next) {
 			eazel_install_callback_revert_transaction (cb, (char*)iterator->data, arg_root, &ev);
 		}
 	} else {
-		eazel_install_callback_install_packages (cb, categories, arg_root, &ev);
+		if (categories == NULL) {
+			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			cli_result = 1;
+		} else {
+			eazel_install_callback_install_packages (cb, categories, arg_root, &ev);
+		}
 	}
 	
-	if (!arg_query) {
+	if (!cli_result && !arg_query) {
 		gtk_main ();
 	}
 

@@ -73,6 +73,8 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_UNKNOWN_STATUS:
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
+		message = g_strdup_printf (_("%s is a source package, which is not yet supported"), 
+					   required);
 		break;
 	case PACKAGE_FILE_CONFLICT:
 		if (required_by && top_name) {
@@ -660,8 +662,6 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 	PackageData *pack_copy;
 
 	P_SANITY (problem);
-
-	g_warning ("eazel_install_problem_tree_to_case");
 
 	data.problem = problem;
 	data.errors = (*output);
