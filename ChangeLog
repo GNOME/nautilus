@@ -1,3 +1,13 @@
+2001-07-20  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.c (nautilus_directory_make_uri_canonical):
+	Make sure that we turn "favorites:///" to "favorites:" to make notification work
+	for both.
+
+	* libnautilus-private/nautilus-monitor.c:
+	Add nasty hacks to support notification in "favorites:". This should really be done
+	by moving notification to gnome-vfs.
+	
 2001-07-19  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_clear):

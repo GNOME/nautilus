@@ -38,6 +38,9 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <string.h>
+
 struct NautilusMonitor {
 	FAMRequest request;
 };
@@ -79,6 +82,18 @@ get_fam_connection (void)
 	return &connection;
 }
 
+static GHashTable * 
+get_uri_hash_table (void)
+{
+	static GHashTable *table;
+
+	if (table == NULL) {
+		table = eel_g_hash_table_new_free_at_exit
+			(NULL, NULL, "nautilus-monitor.c: FAM URI requests");
+	}
+	return table;
+}
+
 static GHashTable *
 get_request_hash_table (void)
 {
@@ -97,6 +112,17 @@ get_event_uri (const FAMEvent *event)
         const char *base_path;
 	char *path, *uri;
 
+	/* For strange uri's like favorites: we do this stupid hack */
+	uri = g_hash_table_lookup (get_uri_hash_table (),
+				   GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&event->fr)));
+	if (uri) {
+		if (event->filename[0] == '/') {
+			return g_strdup (uri);
+		} else {
+			return g_strconcat (uri, "///", event->filename, NULL);
+		}
+        }
+	
         /* FAM doesn't tell us when something is a full path and when
 	 * it's just partial so we have to look and see if it starts
 	 * with a /.
@@ -232,6 +258,25 @@ nautilus_monitor_active (void)
 #endif
 }
 
+char * fixup_local_path (const char *uri_text);
+
+char *
+fixup_local_path (const char *uri_text)
+{
+	GnomeVFSURI *uri = gnome_vfs_uri_new (uri_text);
+	gchar *path = NULL;
+	/* Ugly hack to catch writes to favorites: */
+	
+	uri = gnome_vfs_uri_new (uri_text);
+	if (strcmp (gnome_vfs_uri_get_scheme (uri), "favorites") == 0)
+		path = g_strconcat (g_get_home_dir (),
+				    "/.gnome/apps",
+				    gnome_vfs_uri_get_path (uri),
+				    NULL);
+
+	return path;
+}
+
 NautilusMonitor *
 nautilus_monitor_file (const char *uri)
 {
@@ -241,6 +286,7 @@ nautilus_monitor_file (const char *uri)
         FAMConnection *connection;
         char *path;
 	NautilusMonitor *monitor;
+	gboolean fixed = FALSE;
 
         connection = get_fam_connection ();
 	if (connection == NULL) {
@@ -249,12 +295,24 @@ nautilus_monitor_file (const char *uri)
 
 	path = gnome_vfs_get_local_path_from_uri (uri);
 	if (path == NULL) {
+		path = fixup_local_path (uri);
+		fixed = TRUE;
+	}
+	if (path == NULL) {
 		return NULL;
 	}
         
 	monitor = g_new0 (NautilusMonitor, 1);
 	FAMMonitorFile (connection, path, &monitor->request, NULL);
 
+	if (fixed) {
+		GHashTable *uri_table = get_uri_hash_table ();
+
+		g_hash_table_insert (uri_table,
+				     GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&monitor->request)),
+				     g_strdup (uri));
+	}
+	
 	g_free (path);
 
 	return monitor;
@@ -272,6 +330,7 @@ nautilus_monitor_directory (const char *uri)
         FAMConnection *connection;
         char *path;
 	NautilusMonitor *monitor;
+	gboolean fixed = FALSE;
 
         connection = get_fam_connection ();
 	if (connection == NULL) {
@@ -279,6 +338,10 @@ nautilus_monitor_directory (const char *uri)
 	}
 
 	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path == NULL) {
+		path = fixup_local_path (uri);
+		fixed = TRUE;
+	}
 	if (path == NULL) {
 		return NULL;
 	}
@@ -293,6 +356,15 @@ nautilus_monitor_directory (const char *uri)
 			     GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&monitor->request)),
 			     path);
 
+	if (fixed) {
+		GHashTable *uri_table = get_uri_hash_table ();
+
+		g_hash_table_insert (uri_table,
+				     GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&monitor->request)),
+				     g_strdup (uri));
+	}
+
+	
 	return monitor;
 #endif
 }
@@ -306,6 +378,7 @@ nautilus_monitor_cancel (NautilusMonitor *monitor)
         FAMConnection *connection;
 	int reqnum;
 	char *path;
+	char *uri;
 
 	if (monitor == NULL) {
 		return;
@@ -317,6 +390,13 @@ nautilus_monitor_cancel (NautilusMonitor *monitor)
 	g_hash_table_remove (get_request_hash_table (),
 			     GINT_TO_POINTER (reqnum));
 	g_free (path);
+	uri = g_hash_table_lookup (get_uri_hash_table (),
+				   GINT_TO_POINTER (reqnum));
+	if (uri) {
+		g_hash_table_remove (get_uri_hash_table (),
+				     GINT_TO_POINTER (reqnum));
+		g_free (uri);
+	}
 
         connection = get_fam_connection ();
 	g_return_if_fail (connection != NULL);

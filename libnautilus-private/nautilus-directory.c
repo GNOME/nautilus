@@ -309,7 +309,8 @@ nautilus_directory_make_uri_canonical (const char *uri)
 	 * created. (See bugzilla.eazel.com 3322 for an example.)
 	 */
 	canonical = eel_str_strip_trailing_chr (canonical_maybe_trailing_slash, '/');
-	if (strcmp (canonical, canonical_maybe_trailing_slash) != 0) {
+	if (strcmp (canonical, canonical_maybe_trailing_slash) != 0 &&
+	    strcmp (canonical, "favorites:") != 0) {
 		/* If some trailing '/' were stripped, there's the possibility,
 		 * that we stripped away all the '/' from a uri that has only
 		 * '/' characters. If you change this code, check to make sure
