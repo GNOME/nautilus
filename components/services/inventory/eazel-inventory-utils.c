@@ -48,7 +48,7 @@
 
 #define DIGEST_GCONF_PATH	"/apps/eazel-trilobite/inventory-digest"
 #define DIGEST_GCONF_KEY	"inventory_digest_value"
-
+#define PACKAGE_DB_MTIME_KEY	"package-db-mtime"
 
 static GConfEngine *conf_engine = NULL;
 
@@ -81,6 +81,76 @@ check_gconf_init (void)
 	}
 }
 
+/* return the (optionally cached) software inventory */
+static xmlNodePtr
+get_software_inventory (void) 
+{
+	EazelPackageSystem *package_system;
+	time_t previous_mtime, database_mtime;
+	gboolean regenerate = TRUE;
+	xmlNodePtr result = NULL;
+	xmlDocPtr software_inventory_cache;
+	GError *error;
+	char *cache_path = g_strdup_printf 
+		("%s/.nautilus/software-inventory-cache.xml", 
+		 g_get_home_dir ());
+
+	check_gconf_init ();
+
+	previous_mtime = gconf_engine_get_int (conf_engine, 
+			DIGEST_GCONF_PATH PACKAGE_DB_MTIME_KEY, &error);
+	package_system = eazel_package_system_new (NULL);
+	database_mtime = eazel_package_system_database_mtime (package_system);
+	gtk_object_unref (GTK_OBJECT (package_system));
+
+	if (error == NULL || previous_mtime == 0) {
+		g_print ("database mtime not set.\n");
+		regenerate = TRUE;
+	} else {
+
+		if (database_mtime != previous_mtime) {
+			g_print ("database has changed\n");
+			regenerate = TRUE;
+		} else {
+			g_print ("database hasn't changed\n");
+			regenerate = FALSE;
+		}
+	}
+
+	gconf_engine_set_int (conf_engine, 
+			DIGEST_GCONF_PATH PACKAGE_DB_MTIME_KEY, database_mtime,
+			&error);
+	
+	if (!regenerate) {
+		g_print ("using cached software inventory\n");
+		software_inventory_cache = xmlParseFile (cache_path);
+		if (software_inventory_cache == NULL) {
+			g_print ("couldn't load cache\n");
+			regenerate = TRUE;
+		} else {
+			g_print ("duplicating cache\n");
+			result = xmlCopyNode (software_inventory_cache->root,
+					1);
+			g_print ("freeing cache\n");
+			xmlFreeDoc (software_inventory_cache);
+		}
+	}
+
+	if (regenerate) {
+		g_print ("generating software inventory\n");
+		result = eazel_inventory_collect_software ();
+		software_inventory_cache = xmlNewDoc ("1.0");
+		xmlDocSetRootElement (software_inventory_cache,
+				xmlCopyNode (result, 1));
+		xmlSaveFile (cache_path, software_inventory_cache);
+		xmlFreeDoc (software_inventory_cache);
+	}
+
+	g_print ("returning result (%p)\n", result);
+
+	return result;
+	
+}
 
 /* create the configuration metafile and add package and hardware configuration info to it */
 static xmlDocPtr
@@ -115,7 +185,7 @@ eazel_create_configuration_metafile (void)
 	g_free (time_string);
 	
 	/* add the software info */
-	xmlAddChild (container_node, eazel_inventory_collect_software ());
+	xmlAddChild (container_node, get_software_inventory ());
 
 	/* add the hardware info */
 	xmlAddChild (container_node, eazel_inventory_collect_hardware ());

@@ -67,6 +67,7 @@ typedef gboolean (*EazelPackageSytemVerifyFunc) (EazelPackageSystem*,
 typedef int (*EazelPackageSystemCompareVersionFunc) (EazelPackageSystem*, 
 						     const char *,
 						     const char *);
+typedef time_t (*EazelPackageSystemDatabaseMtimeFunc) (EazelPackageSystem*);
 
 struct _EazelPackageSystemPrivate {	
 	EazelPackageSytemLoadPackageFunc load_package;
@@ -75,6 +76,7 @@ struct _EazelPackageSystemPrivate {
 	EazelPackageSytemUninstallFunc uninstall;
 	EazelPackageSytemVerifyFunc verify;
 	EazelPackageSystemCompareVersionFunc compare_version;
+	EazelPackageSystemDatabaseMtimeFunc database_mtime;
 
 	EazelPackageSystemDebug debug;
 };

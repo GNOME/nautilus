@@ -22,6 +22,7 @@
  */
 
 #include <config.h>
+#include <time.h>
 #include <gnome.h>
 #include <eazel-package-system.h>
 
@@ -31,6 +32,21 @@
 #define PROVIDED_BY_ONLY_ONE "libc.so.6"
 #define OWNED_BY_ONLY_ONE "/bin/sh"
 #define NEEDED_BY_MANY "glibc"
+
+static void
+test_database_mtime (EazelPackageSystem *packsys)
+{
+	time_t mtime = eazel_package_system_database_mtime (packsys);
+	char *tmp;
+
+	if (mtime == 0) {
+		g_message ("Couldn't get package system database mtime.\n");
+	} else {
+		tmp = ctime (&mtime);
+		g_message ("Package system database mtime: %s\n", tmp);
+		g_free (tmp);
+	}
+}
 
 static void
 test_is_installed (EazelPackageSystem *packsys)
@@ -594,6 +610,7 @@ int main(int argc, char *argv[]) {
 
 	eazel_package_system_set_debug (packsys, arg_debug);
 
+	test_database_mtime (packsys);
 	test_is_installed (packsys);
 	test_version_compare (packsys);
 	test_package_load (packsys, filename);

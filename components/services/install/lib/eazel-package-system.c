@@ -354,6 +354,18 @@ eazel_package_system_compare_version (EazelPackageSystem *system,
 	return result;
 }
 
+time_t
+eazel_package_system_database_mtime (EazelPackageSystem *system)
+{
+	time_t result;
+	EPS_SANE_VAL (system, 0);
+	if (system->private->database_mtime == NULL) {
+		return 0;
+	}
+	result = (*system->private->database_mtime) (system);
+	return result;
+}
+
 /******************************************
  The private emitter functions
 *******************************************/

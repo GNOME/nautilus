@@ -97,7 +97,7 @@ eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system,
 }
 
 static int
-eazel_package_system_skeleton_compare_version (EazelPackageSystem *system,
+eazel_package_system_skeleton_compare_version (EazelPackageSystemSkeleton *system,
 					       const char *a,
 					       const char *b)
 {

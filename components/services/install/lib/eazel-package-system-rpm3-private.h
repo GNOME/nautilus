@@ -77,6 +77,7 @@ void eazel_package_system_rpm3_query_requires_feature (EazelPackageSystemRpm3 *s
 						       const gpointer *key,
 						       int detail_level,
 						       GList **result);
+time_t eazel_package_system_rpm3_database_mtime (EazelPackageSystemRpm3 *system);
 
 struct RpmQueryPiggyBag {
 	EazelPackageSystemRpm3 *system;

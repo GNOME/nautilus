@@ -1,3 +1,42 @@
+2001-02-22  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_database_mtime), (main):
+	* components/services/install/lib/eazel-package-system-dpkg.c:
+	(load_package_callback), (query_callback),
+	(eazel_package_system_dpkg_query),
+	(eazel_package_system_dpkg_install),
+	(eazel_package_system_dpkg_compare_version),
+	(eazel_package_system_dpkg_database_mtime),
+	(eazel_package_system_implementation):
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system-rpm3-private
+	.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_database_mtime),
+	(eazel_package_system_implementation):
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_implementation):
+	* components/services/install/lib/eazel-package-system-skeleton.c:
+	(eazel_package_system_skeleton_compare_version):
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_database_mtime):
+	* components/services/install/lib/eazel-package-system.h:
+	Added a function to retrieve the package database modification time.
+
+	* components/services/inventory/eazel-inventory-collect-hardware.c:
+	(eazel_inventory_collect_scsi), (eazel_inventory_collect_hardware):
+	Cleanups, fixes...
+
+	* components/services/inventory/eazel-inventory-utils.c:
+	(get_software_inventory), (eazel_create_configuration_metafile):
+	Cache the software inventory (because the RPM query is slow).
+
+	* user-guide/C/Makefile.am:
+	Build fix for systems without scrollkeeper.
+
 2001-02-22  Mike Fleming  <mfleming@eazel.com>
 
 	Embedded Mozilla User Agent string "Nautilus/1.0PR3" -> "Nautilus/1.0Final"
@@ -345,6 +384,7 @@ Thu Feb 22 04:13:13 2001  George Lebl <jirka@5z.com>
 	downgrade at the same time, since it's perfectly capable of doing
 	that (covering all bases) and it's useful to labs.
 
+>>>>>>> 1.3885
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* icons/druid_header.png:

@@ -158,5 +158,7 @@ gboolean                 eazel_package_system_verify (EazelPackageSystem *packag
 int                  eazel_package_system_compare_version (EazelPackageSystem *package_system, 
 							   const char *a,
 							   const char *b);
+time_t               eazel_package_system_database_mtime (EazelPackageSystem *package_system);
+
 #endif /* EAZEL_PACKAGE_SYSTEM_PUBLIC_H */
 

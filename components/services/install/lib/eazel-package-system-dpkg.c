@@ -28,9 +28,13 @@
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-utils.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define MAX_LINE_LEN 4096
 #define ROOT "su -c "
+#define DPKG_STATUS_FILE "/var/lib/dpkg/status"
 
 typedef struct {
 	char *name;
@@ -196,8 +200,8 @@ load_package_callback (const DebPackage *package,
 {
 	PackageData *pdata = data;
 
-	g_print ("cb: %s\n", package->name);
-	g_print ("cb desc: %s\n", package->description);
+	//g_print ("cb: %s\n", package->name);
+	//g_print ("cb desc: %s\n", package->description);
 	debpackage_fill_packagedata (package, pdata);
 	return TRUE;
 }
@@ -249,15 +253,15 @@ query_callback (const DebPackage *package,
 	struct QueryData *query_data = data;
 	PackageData *pd;
 
-	g_print ("cb: %s\n", package->name);
+	//g_print ("cb: %s\n", package->name);
 
 	if ( (package->status == NULL) ||
 			strcmp (package->status, "install ok installed")) {
 		/* hmm - not actually installed */
-		g_print ("cb discarding\n");
+		//g_print ("cb discarding\n");
 		return TRUE;
 	}
-	g_print ("cb keeping\n");
+	//g_print ("cb keeping\n");
 
 	/* FIXME: umm - actually check that it matches */
 	
@@ -287,7 +291,7 @@ eazel_package_system_dpkg_query (EazelPackageSystemDpkg *system,
 
 	/* FIMXE: lock db! */
 
-	status = fopen ("/var/lib/dpkg/status", "rt");
+	status = fopen (DPKG_STATUS_FILE, "rt");
 
 	if (status == NULL) return NULL;
 
@@ -318,17 +322,13 @@ eazel_package_system_dpkg_install (EazelPackageSystemDpkg *epsystem,
 
 		dpkg_cmd = g_strdup_printf (ROOT "dpkg --unpack %s", 
 				pdata->filename);
-		g_print ("[YAK] running: %s\n", dpkg_cmd);
 		result = system (dpkg_cmd);
-		g_print ("[YAK] result: %d\n", result);
 		g_free (dpkg_cmd);
 
 		/* FIXME: erm - perhaps pop up some kind of zvt???? */
 		dpkg_cmd = g_strdup_printf (ROOT "dpkg --configure %s", 
 				pdata->name);
-		g_print ("[YAK] running: %s\n", dpkg_cmd);
 		result = system (dpkg_cmd);
-		g_print ("[YAK] result: %d\n", result);
 		g_free (dpkg_cmd);
 		g_free (dpkg_cmd);
 
@@ -360,7 +360,7 @@ eazel_package_system_dpkg_verify (EazelPackageSystemDpkg *system,
 }
 
 static int
-eazel_package_system_dpkg_compare_version (EazelPackageSystem *system,
+eazel_package_system_dpkg_compare_version (EazelPackageSystemDpkg *system,
 					   const char *a,
 					   const char *b)
 {
@@ -371,6 +371,23 @@ eazel_package_system_dpkg_compare_version (EazelPackageSystem *system,
 	return 0;
 }
 
+
+/************************************
+ Database mtime implementation
+************************************/
+static time_t
+eazel_package_system_dpkg_database_mtime (EazelPackageSystemDpkg *system)
+{
+	struct stat st;
+
+	if (stat (DPKG_STATUS_FILE, &st) == 0) {
+		return st.st_mtime;
+	} else {
+		return (time_t)0;
+	}
+
+
+}
 
 /*****************************************
   GTK+ object stuff
@@ -472,6 +489,9 @@ eazel_package_system_implementation (GList *dbpaths)
 
 	result->private->compare_version
 		= (EazelPackageSystemCompareVersionFunc)eazel_package_system_dpkg_compare_version;
+
+	result->private->database_mtime
+		= (EazelPackageSystemDatabaseMtimeFunc)eazel_package_system_dpkg_database_mtime;
 
 	return result;
 }

@@ -341,6 +341,9 @@ Host: scsi0 Channel: 00 Id: 04 Lun: 00
 */
 
 	scsi_file = fopen (SCSI_DEVICES_FILE, "rt");
+	if (scsi_file == NULL) {
+		return bus_node;
+	}
 
 	while (!feof (scsi_file) && !ferror (scsi_file)) {
 		fgets (line, MAX_LINE_LEN, scsi_file);
@@ -533,7 +536,7 @@ eazel_inventory_collect_hardware (void) {
 	xmlNodePtr node = xmlNewNode (NULL, "HARDWARE");
 
 	xmlAddChild (node, eazel_inventory_collect_cpu ()); 
-	xmlAddChild (node, eazel_inventory_collect_memory ()); 
+	xmlAddChild (node, eazel_inventory_collect_memory ());
 	xmlAddChild (node, eazel_inventory_collect_pci ()); 
 	xmlAddChild (node, eazel_inventory_collect_ide ()); 
 	xmlAddChild (node, eazel_inventory_collect_usb ()); 

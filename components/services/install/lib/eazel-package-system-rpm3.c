@@ -1814,6 +1814,23 @@ eazel_package_system_rpm3_compare_version (EazelPackageSystem *system,
 	return result;
 }
 
+/************************************
+ Database mtime implementation
+************************************/
+time_t
+eazel_package_system_rpm3_database_mtime (EazelPackageSystemRpm3 *system)
+{
+	struct stat st;
+
+	if (stat (DEFAULT_DB_PATH "/" A_DB_FILE, &st) == 0) {
+		return st.st_mtime;
+	} else {
+		return (time_t)0;
+	}
+
+
+}
+
 /*****************************************
   GTK+ object stuff
 *****************************************/
@@ -1928,6 +1945,8 @@ eazel_package_system_implementation (GList *dbpaths)
 	result->private->verify = (EazelPackageSytemVerifyFunc)eazel_package_system_rpm3_verify;
 	result->private->compare_version = 
 		(EazelPackageSystemCompareVersionFunc)eazel_package_system_rpm3_compare_version;
+	result->private->database_mtime = 
+		(EazelPackageSystemDatabaseMtimeFunc)eazel_package_system_rpm3_database_mtime;
 
 	return result;
 }

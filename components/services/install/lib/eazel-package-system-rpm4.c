@@ -304,6 +304,8 @@ eazel_package_system_implementation (GList *dbpaths)
 	result->private->verify = (EazelPackageSytemVerifyFunc)eazel_package_system_rpm3_verify;
 	result->private->compare_version = 
 		(EazelPackageSystemCompareVersionFunc)eazel_package_system_rpm3_compare_version;
+	result->private->database_mtime = 
+		(EazelPackageSystemDatabaseMtimeFunc)eazel_package_system_rpm3_database_mtime;
 
 	return result;
 }
