@@ -15,17 +15,16 @@ popd && \
 
 make clean && \
 make CFLAGS="-O -Werror -DNO_TEXT_BOX $*" LDFLAGS="-static" DEFINES="-DNAUTILUS_INSTALLER_RELEASE" && \
-gcc -static -O -Werror -o nautilus-installer main.o support.o callbacks.o installer.o \
-../../components/services/install/lib/libeazelinstall_minimal.a \
-../../components/services/trilobite/libtrilobite/libtrilobite_minimal.a \
-../../components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
-../../components/services/trilobite/libtrilobite/trilobite-core-utils.o \
+gcc -static -O -Werror -o nautilus-installer main.o support.o callbacks.o installer.o 	\
+../../components/services/install/lib/libeazelinstall_minimal.a 			\
+../../components/services/trilobite/libtrilobite/libtrilobite_minimal.a 		\
 ../..//libnautilus-extensions/nautilus-druid.o						\
 ../../libnautilus-extensions/nautilus-druid-page-eazel.o				\
--L$GNOME/lib -lgnomecanvaspixbuf -lgdk_pixbuf \
--lgnomeui -lgnome -lart_lgpl \
--lgtk -lgdk -lgmodule -lglib -lgdk_imlib \
--L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE /usr/lib/libesd.a /usr/lib/libaudiofile.a -lghttp \
+-L$GNOME/lib -lgnomecanvaspixbuf -lgdk_pixbuf 						\
+-lgnomeui -lgnome -lart_lgpl 								\
+-lgtk -lgdk -lgmodule -lglib -lgdk_imlib 						\
+-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 					\
+/usr/lib/libesd.a /usr/lib/libaudiofile.a -lghttp 					\
 -L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml 
 
 cp nautilus-installer nautilus-installer-prezip

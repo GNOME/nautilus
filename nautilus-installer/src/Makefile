@@ -173,7 +173,7 @@ nautilus_installer_SOURCES =  	main.c 	support.c support.h 	callbacks.c callback
 
 nautilus_installer_LDFLAGS = -static
 
-nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o			$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o			$(top_builddir)/libnautilus-extensions/nautilus-druid.o							$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o					-L/gnome/lib 	-lgdk_pixbuf		-lgnomecanvaspixbuf 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
+nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a			$(top_builddir)/libnautilus-extensions/nautilus-druid.o							$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o					-L/gnome/lib 	-lgdk_pixbuf		-lgnomecanvaspixbuf 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -189,8 +189,7 @@ nautilus_installer_DEPENDENCIES =  \
 $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
 $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
-$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o \
-$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o \
+$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a \
 $(top_builddir)/libnautilus-extensions/nautilus-druid.o \
 $(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

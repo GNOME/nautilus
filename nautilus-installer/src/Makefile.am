@@ -34,8 +34,7 @@ nautilus_installer_LDADD = 	\
         $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			\
         $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
 	$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a			\
-	$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o		\
-	$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o		\
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a		\
 	$(top_builddir)/libnautilus-extensions/nautilus-druid.o						\
 	$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o				\
 	-L/gnome/lib \

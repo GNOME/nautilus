@@ -1,3 +1,17 @@
+2000-09-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* nautilus-installer/src/Makefile:
+	Just to clear things up : this file is in cvs since it's 
+	not created by configure.in (yet)
+
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/link.sh:
+	makefile/link stroking to make it work after the changes
+	to trilobite-core-utils.
+
+	* libnautilus-adapter/Makefile.am
+	Removed libnautilus.la to fix build
+
 2000-09-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-model.c (report_node_added):
@@ -59,7 +73,7 @@
 	Update for scalable font changes.  Also draw a box around area
 	that is being clipped (or measured) to determine whether things
 	work precisely.
-	
+
 2000-09-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.
