@@ -362,19 +362,6 @@ dnl	-DBONOBO_DISABLE_DEPRECATED
 
 AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
 
-dnl
-dnl disable (broken) hardware view
-dnl
-hw_view=disabled
-AC_ARG_ENABLE(hardware,
-[  --enable-hardware		Enable (broken, Linux only) hardware view],
-hw_view=enabled)
-if test "x`(uname -s) 2>/dev/null`" != "xLinux"; then
-	hw_view=disabled
-fi
-AM_CONDITIONAL(ENABLE_HARDWARE_VIEW, test "$hw_view" = "enabled")
-
-
 dnl libbackground
 PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0 libbonoboui-2.0")
 dnl ==========================================================================
@@ -395,8 +382,6 @@ AC_OUTPUT([
 Makefile
 components/Makefile
 components/adapter/Makefile
-components/hardware/Makefile
-components/hardware/icons/Makefile
 components/history/Makefile
 components/notes/Makefile
 components/text/Makefile
@@ -440,6 +425,5 @@ nautilus-$VERSION:
 	source code location:	${srcdir}
 	compiler:		${CC}
 
-	hardware view:          ${hw_view}
 	profiling support:      ${profiling_support}
 "

@@ -2,7 +2,6 @@ NULL=
 
 SUBDIRS = 					\
 	adapter                                 \
-	hardware 				\
 	history 				\
 	notes 					\
 	text 					\
