@@ -205,6 +205,10 @@ void              nautilus_icon_container_set_auto_layout               (Nautilu
 gboolean          nautilus_icon_container_is_tighter_layout             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_tighter_layout            (NautilusIconContainer  *container,
 									 gboolean                tighter_layout);
+
+gboolean          nautilus_icon_container_is_keep_aligned               (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_keep_aligned              (NautilusIconContainer  *container,
+									 gboolean                keep_aligned);
 void              nautilus_icon_container_set_layout_mode               (NautilusIconContainer  *container,
 									 NautilusIconLayoutMode  mode);
 void              nautilus_icon_container_sort                          (NautilusIconContainer  *container);

@@ -101,9 +101,9 @@
 #define STANDARD_ICON_GRID_WIDTH 155
 
 /* Desktop layout mode defines */
-#define DESKTOP_PAD_HORIZONTAL 	30
+#define DESKTOP_PAD_HORIZONTAL 	10
 #define DESKTOP_PAD_VERTICAL 	10
-#define CELL_SIZE 		20
+#define SNAP_SIZE 		78
 
 /* Value used to protect against icons being dragged outside of the desktop bounds */
 #define DESKTOP_ICON_SAFETY_PAD 10
@@ -116,6 +116,14 @@
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH       20
 #define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT      20
 
+#define SNAP_HORIZONTAL(func,x) ((func ((double)((x) - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE) * SNAP_SIZE) + DESKTOP_PAD_HORIZONTAL)
+#define SNAP_VERTICAL(func, y) ((func ((double)((y) - DESKTOP_PAD_VERTICAL) / SNAP_SIZE) * SNAP_SIZE) + DESKTOP_PAD_VERTICAL)
+
+#define SNAP_NEAREST_HORIZONTAL(x) SNAP_HORIZONTAL (eel_round, x)
+#define SNAP_NEAREST_VERTICAL(y) SNAP_VERTICAL (eel_round, y)
+
+#define SNAP_CEIL_HORIZONTAL(x) SNAP_HORIZONTAL (ceil, x)
+#define SNAP_CEIL_VERTICAL(y) SNAP_VERTICAL (ceil, y)
 
 enum {
 	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
@@ -220,6 +228,15 @@ enum {
 	CLEARED,
 	LAST_SIGNAL
 };
+
+typedef struct {
+	int **icon_grid;
+	int *grid_memory;
+	int num_rows;
+	int num_columns;
+	gboolean tight;
+} PlacementGrid;
+
 static guint signals[LAST_SIGNAL];
 
 /* Functions dealing with NautilusIcons.  */
@@ -335,6 +352,7 @@ static void
 icon_set_size (NautilusIconContainer *container,
 	       NautilusIcon *icon,
 	       guint icon_size,
+	       gboolean snap,
 	       gboolean update_position)
 {
 	guint old_size;
@@ -350,8 +368,8 @@ icon_set_size (NautilusIconContainer *container,
 		(container->details->zoom_level);
 	nautilus_icon_container_move_icon (container, icon,
 					   icon->x, icon->y,
-					   scale, scale,
-					   FALSE, update_position);
+					   scale, scale, FALSE,
+					   snap, update_position);
 }
 
 static void
@@ -398,6 +416,15 @@ icon_toggle_selected (NautilusIconContainer *container,
 	if (icon == container->details->stretch_icon) {
 		container->details->stretch_icon = NULL;
 		nautilus_icon_canvas_item_set_show_stretch_handles (icon->item, FALSE);
+		/* snap the icon if necessary */
+		if (container->details->keep_aligned) {
+			nautilus_icon_container_move_icon (container,
+							   icon,
+							   icon->x, icon->y,
+							   icon->scale_x, icon->scale_y,
+							   FALSE, TRUE, TRUE);
+		}
+		
 		emit_stretch_ended (container, icon);
 	}
 
@@ -1004,150 +1031,313 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	g_array_free (positions, TRUE);
 }
 
-/* Search for available space at location */
-static gboolean
-find_open_grid_space (NautilusIcon *icon, int **icon_grid, int num_rows, 
-		      int num_columns, int row, int column)
-{		      
-	int row_index, column_index;
-	int x1, x2, y1, y2;
-	double width, height;
-	int qwidth, qheight;
+static void
+snap_position (NautilusIconContainer *container,
+	       NautilusIcon *icon,
+	       int *x, int *y)
+{
+	int center_x;
+	int baseline_y;
+	int icon_width;
+	int icon_height;
+	ArtDRect icon_position;
 	
-	/* Get icon dimensions */
-	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
-
-	width = (x2 - x1) + DESKTOP_PAD_HORIZONTAL;
-	height = (y2 - y1) + DESKTOP_PAD_VERTICAL;
-
-	/* Convert to grid coordinates */
-	qwidth = ceil (width / CELL_SIZE);
-	qheight = ceil (height / CELL_SIZE);
-
-	if ((row + qwidth > num_rows) || (column + qheight > num_columns)) {
-		return FALSE;
+	if (*x < DESKTOP_PAD_HORIZONTAL) {
+		*x = DESKTOP_PAD_HORIZONTAL;
 	}
 
-	qwidth += row;	
-	qheight += column;
+	if (*y < DESKTOP_PAD_VERTICAL) {
+		*y = DESKTOP_PAD_VERTICAL;
+	}
+
+	icon_position = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+	icon_width = icon_position.x1 - icon_position.x0;
+	icon_height = icon_position.y1 - icon_position.y0;
 	
-	for (row_index = row; row_index < qwidth; row_index++) {
-		for (column_index = column; column_index < qheight; column_index++) {
-			if (icon_grid [row_index] [column_index] == 1) {
+	center_x = *x + icon_width / 2;
+	*x = SNAP_NEAREST_HORIZONTAL (center_x) - (icon_width / 2);
+
+	/* Find the grid position vertically and place on the proper baseline */
+	baseline_y = *y + icon_height;
+	baseline_y = SNAP_NEAREST_VERTICAL (baseline_y);
+	*y = baseline_y - (icon_position.y1 - icon_position.y0);
+}
+
+static int
+compare_icons_by_position (gconstpointer a, gconstpointer b)
+{
+	NautilusIcon *icon_a, *icon_b;
+	int x1, y1, x2, y2;
+	int center_a;
+	int center_b;
+
+	icon_a = (NautilusIcon*)a;
+	icon_b = (NautilusIcon*)b;
+
+	icon_get_bounding_box (icon_a, &x1, &y1, &x2, &y2);
+	center_a = x1 + (x2 - x1) / 2;
+	icon_get_bounding_box (icon_b, &x1, &y1, &x2, &y2);
+	center_b = x1 + (x2 - x1) / 2;
+
+	return center_a == center_b ?
+		icon_a->y - icon_b->y :
+		center_a - center_b;
+}
+
+static PlacementGrid *
+placement_grid_new (NautilusIconContainer *container, gboolean tight)
+{
+	PlacementGrid *grid;
+	int width, height;
+	int num_columns;
+	int num_rows;
+	int i;
+
+	/* Get container dimensions */
+	width  = GTK_WIDGET (container)->allocation.width /
+		EEL_CANVAS (container)->pixels_per_unit
+		- container->details->left_margin
+		- container->details->right_margin;
+	height = GTK_WIDGET (container)->allocation.height /
+		EEL_CANVAS (container)->pixels_per_unit
+		- container->details->top_margin
+		- container->details->bottom_margin;
+
+	num_columns = width / SNAP_SIZE;
+	num_rows = height / SNAP_SIZE;
+	
+	if (num_columns == 0 || num_rows == 0) {
+		return NULL;
+	}
+
+	grid = g_new0 (PlacementGrid, 1);
+	grid->tight = tight;
+	grid->num_columns = num_columns;
+	grid->num_rows = num_rows;
+
+	grid->grid_memory = g_new0 (int, (num_rows * num_columns));
+	grid->icon_grid = g_new0 (int *, num_columns);
+	
+	for (i = 0; i < num_columns; i++) {
+		grid->icon_grid[i] = grid->grid_memory + (i * num_rows);
+	}
+	
+	return grid;
+}
+
+static void
+placement_grid_free (PlacementGrid *grid)
+{
+	g_free (grid->icon_grid);
+	g_free (grid->grid_memory);
+	g_free (grid);
+}
+
+static gboolean
+placement_grid_position_is_free (PlacementGrid *grid, ArtIRect pos)
+{
+	int x, y;
+	
+	g_return_val_if_fail (pos.x0 >= 0 && pos.x0 < grid->num_columns, TRUE);
+	g_return_val_if_fail (pos.y0 >= 0 && pos.y0 < grid->num_rows, TRUE);
+	g_return_val_if_fail (pos.x1 >= 0 && pos.x1 < grid->num_columns, TRUE);
+	g_return_val_if_fail (pos.y1 >= 0 && pos.y1 < grid->num_rows, TRUE);
+
+	for (x = pos.x0; x <= pos.x1; x++) {
+		for (y = pos.y0; y <= pos.y1; y++) {
+			if (grid->icon_grid[x][y] != 0) {
 				return FALSE;
 			}
 		}
 	}
+
 	return TRUE;
 }
 
-
 static void
-get_best_empty_grid_location (NautilusIcon *icon, int **icon_grid, int num_rows, 
-			      int num_columns, int *x, int *y)
+placement_grid_mark (PlacementGrid *grid, ArtIRect pos)
 {
-	gboolean found_space;
-	int row, column;
+	int x, y;
 	
-	g_assert (icon_grid != NULL);
-	g_assert (x != NULL);
-	g_assert (y != NULL);
+	g_return_if_fail (pos.x0 >= 0 && pos.x0 < grid->num_columns);
+	g_return_if_fail (pos.y0 >= 0 && pos.y0 < grid->num_rows);
+	g_return_if_fail (pos.x1 >= 0 && pos.x1 < grid->num_columns);
+	g_return_if_fail (pos.y1 >= 0 && pos.y1 < grid->num_rows);
 
-	found_space = FALSE;
-	
-	/* Set up default fallback position */
-	*x = num_columns * CELL_SIZE;
-	*y = num_rows * CELL_SIZE;
-
-	/* Find best empty location */
-	for (row = 0; row < num_rows; row++) {
-		for (column = 0; column < num_columns; column++) {
-			found_space = find_open_grid_space (icon, icon_grid, num_rows, 
-							    num_columns, row, column);
-			if (found_space) {				
-				*x = row * CELL_SIZE;
-				*y = column * CELL_SIZE;
-
-				/* Correct for padding */
-				if (*x < DESKTOP_PAD_HORIZONTAL) {
-					*x = DESKTOP_PAD_HORIZONTAL;
-				}
-				if (*y < DESKTOP_PAD_VERTICAL) {
-					*y = DESKTOP_PAD_VERTICAL;
-				}
-				return;
-			}
-		}		
-	}
-}
-
-static void
-mark_icon_location_in_grid (NautilusIcon *icon, int **icon_grid, int num_rows, int num_columns)
-{
-	int x1, x2, y1, y2;
-	double width, height;
-	int qx, qy, qwidth, qheight, qy_index;
-	int grid_width, grid_height;
-
-	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
-
-	width = (x2 - x1) + DESKTOP_PAD_HORIZONTAL;
-	height = (y2 - y1) + DESKTOP_PAD_VERTICAL;
-
-	/* Convert x and y to our quantized grid value */
-	qx = icon->x / CELL_SIZE;
-	qy = icon->y / CELL_SIZE;
-	qwidth = ceil (width / CELL_SIZE);
-	qheight = ceil (height / CELL_SIZE);
-
-	/* Check and correct for edge conditions */
-	grid_width = num_rows;
-	grid_height = num_columns;
-	
-	if ((qx + qwidth) > grid_width) {
-		qwidth = grid_width;  
-	} else {
-		qwidth = qx + qwidth;
-	}
-	if ((qy + qheight) > grid_height) {
-		qheight = grid_height;  
-	} else {
-		qheight = qy + qheight;  
-	}
-	
-	/* Mark location */
-	for (; qx < qwidth; qx++) {		
-		for (qy_index = qy; qy_index < qheight; qy_index++) {
-			icon_grid [qx] [qy_index] = 1;
+	for (x = pos.x0; x <= pos.x1; x++) {
+		for (y = pos.y0; y <= pos.y1; y++) {
+			grid->icon_grid[x][y] = 1;
 		}
-	}	
+	}
 }
 
-static void 
-mark_icon_locations_in_grid (GList *icon_list, int **icon_grid, int num_rows, int num_columns)
+static void
+canvas_position_to_grid_position (PlacementGrid *grid,
+				  ArtIRect canvas_position,
+				  ArtIRect *grid_position)
 {
-	GList *p;
-	NautilusIcon *icon;
-	
-	/* Mark filled grid locations */
-	for (p = icon_list; p != NULL; p = p->next) {
-		icon = p->data;
-		mark_icon_location_in_grid (icon, icon_grid, num_rows, num_columns);
+	/* The first bit of this block will identify all intersections
+	 * that the icon actually crosses.  The second bit will mark
+	 * any intersections that the icon is adjacent to.
+	 * The first causes minimal moving around during a snap, but
+	 * can end up with partially overlapping icons.  The second one won't
+	 * allow any overlapping, but can cause more movement to happen 
+	 * during a snap. */
+	if (grid->tight) {
+		grid_position->x0 = ceil ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);
+		grid_position->y0 = ceil ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
+		grid_position->x1 = floor ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);		
+		grid_position->y1 = floor ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
+	} else {
+		grid_position->x0 = floor ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);
+		grid_position->y0 = floor ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
+		grid_position->x1 = ceil ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);
+		grid_position->y1 = ceil ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
 	}
+
+	grid_position->x0 = CLAMP (grid_position->x0, 0, grid->num_columns - 1);
+	grid_position->y0 = CLAMP (grid_position->y0, 0, grid->num_rows - 1);
+	grid_position->x1 = CLAMP (grid_position->x1, grid_position->x0, grid->num_columns - 1);
+	grid_position->y1 = CLAMP (grid_position->y1, grid_position->y0, grid->num_rows - 1);
+}
+
+static void
+placement_grid_mark_icon (PlacementGrid *grid, NautilusIcon *icon)
+{
+	ArtIRect icon_pos;
+	ArtIRect grid_pos;
+	
+	icon_get_bounding_box (icon, 
+			       &icon_pos.x0, &icon_pos.y0,
+			       &icon_pos.x1, &icon_pos.y1);
+	canvas_position_to_grid_position (grid, 
+					  icon_pos,
+					  &grid_pos);
+	placement_grid_mark (grid, grid_pos);
+}
+
+static void
+find_empty_location (NautilusIconContainer *container,
+		     PlacementGrid *grid,
+		     NautilusIcon *icon,
+		     int start_x,
+		     int start_y,
+		     int *x, 
+		     int *y)
+{
+	double icon_width, icon_height;
+	int canvas_width;
+	int canvas_height;
+	ArtIRect icon_position;
+	ArtDRect pixbuf_rect;
+	gboolean collision;
+
+	/* Get container dimensions */
+	canvas_width  = GTK_WIDGET (container)->allocation.width /
+		EEL_CANVAS (container)->pixels_per_unit
+		- container->details->left_margin
+		- container->details->right_margin;
+	canvas_height = GTK_WIDGET (container)->allocation.height /
+		EEL_CANVAS (container)->pixels_per_unit
+		- container->details->top_margin
+		- container->details->bottom_margin;
+
+	icon_get_bounding_box (icon, 
+			       &icon_position.x0, &icon_position.y0, 
+			       &icon_position.x1, &icon_position.y1);
+	icon_width = icon_position.x1 - icon_position.x0;
+	icon_height = icon_position.y1 - icon_position.y0;
+	
+	pixbuf_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+	
+	/* Start the icon on a grid location */
+	snap_position (container, icon, &start_x, &start_y);
+
+	icon_position.x0 = start_x;
+	icon_position.y0 = start_y;
+	icon_position.x1 = icon_position.x0 + icon_width;
+	icon_position.y1 = icon_position.y0 + icon_height;
+
+	do {
+		ArtIRect grid_position;
+
+		collision = FALSE;
+		
+		canvas_position_to_grid_position (grid,
+						  icon_position,
+						  &grid_position);
+
+		if (!placement_grid_position_is_free (grid, grid_position)) {
+			icon_position.y0 += SNAP_SIZE;
+			icon_position.y1 = icon_position.y0 + icon_width;
+			
+			if (icon_position.y1 + DESKTOP_PAD_VERTICAL > canvas_height) {
+				/* Move to the next column */
+				icon_position.y0 = DESKTOP_PAD_VERTICAL + SNAP_SIZE - (pixbuf_rect.y1 - pixbuf_rect.y0);
+				while (icon_position.y0 < DESKTOP_PAD_VERTICAL) {
+					icon_position.y0 += SNAP_SIZE;
+				}
+				icon_position.y1 = icon_position.y0 + icon_width;
+				
+				icon_position.x0 += SNAP_SIZE;
+				icon_position.x1 = icon_position.x0 + icon_height;
+			}
+				
+			collision = TRUE;
+		}
+	} while (collision && (icon_position.x1 < canvas_width));
+
+	*x = icon_position.x0;
+	*y = icon_position.y0;
+}
+
+static void
+align_icons (NautilusIconContainer *container)
+{
+	GList *unplaced_icons;
+	GList *l;
+	PlacementGrid *grid;
+
+	unplaced_icons = g_list_copy (container->details->icons);
+	
+	unplaced_icons = g_list_sort (unplaced_icons, 
+				      compare_icons_by_position);
+
+	grid = placement_grid_new (container, TRUE);
+
+	if (!grid) {
+		return;
+	}
+
+	for (l = unplaced_icons; l != NULL; l = l->next) {
+		NautilusIcon *icon;
+		int x, y;
+
+		icon = l->data;
+		x = icon->x;
+		y = icon->y;
+
+		find_empty_location (container, grid, 
+				     icon, x, y, &x, &y);
+
+		icon_set_position (icon, x, y);
+
+		placement_grid_mark_icon (grid, icon);
+	}
+
+	g_list_free (unplaced_icons);
+
+	placement_grid_free (grid);
 }
 
 static void
 lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 {
 	GList *p, *placed_icons, *unplaced_icons;
-	int index, total, new_length, placed;
+	int total, new_length, placed;
 	NautilusIcon *icon;
-	int width, height, max_width, icon_width, icon_height;
+	int width, height, max_width, column_width, icon_width, icon_height;
 	int x, y, x1, x2, y1, y2;
-	int *grid_memory;
-	int **icon_grid;
-	int num_rows, num_columns;
-	int row, column;
 	ArtDRect icon_rect;
 
 	/* Get container dimensions */
@@ -1168,6 +1358,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	new_length = g_list_length (icons);
 	placed = total - new_length;
 	if (placed > 0) {
+		PlacementGrid *grid;
 		/* Add only placed icons in list */
 		for (p = container->details->icons; p != NULL; p = p->next) {
 			icon = p->data;
@@ -1181,54 +1372,40 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		}
 		placed_icons = g_list_reverse (placed_icons);
 		unplaced_icons = g_list_reverse (unplaced_icons);
-					
-		/* Allocate grid array */
-		num_rows = width / CELL_SIZE;
-		num_columns = height / CELL_SIZE;
 
-		/* Allocate array memory */
-		grid_memory = malloc (num_rows * num_columns * sizeof (int *));
-		g_assert (grid_memory);
+		grid = placement_grid_new (container, FALSE);
 
-		/* Allocate room for the pointers to the rows */
-		icon_grid = malloc (num_rows * sizeof (int *));
-		g_assert (icon_grid);
-
-		/* Point to array pointers */
-		for (index = 0; index < num_rows; index++) {
-			icon_grid[index] = grid_memory + (index * num_columns);
-		}
-
-		/* Set all grid values to unfilled */
-		for (row = 0; row < num_rows; row++) {
-			for (column = 0; column < num_columns; column++) {
-				icon_grid [row] [column] = 0;
+		if (grid) {
+			for (p = placed_icons; p != NULL; p = p->next) {
+				placement_grid_mark_icon
+					(grid, (NautilusIcon*)p->data);
 			}
+			
+			/* Place unplaced icons in the best locations */
+			for (p = unplaced_icons; p != NULL; p = p->next) {
+				icon = p->data;
+				
+				icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+				icon_get_bounding_box (icon, 
+						       &x1, &y1, &x2, &y2);
+				
+				/* Start the icon in the first column */ 
+				x = DESKTOP_PAD_HORIZONTAL + SNAP_SIZE - ((x2 - x1) / 2);
+				y = DESKTOP_PAD_VERTICAL + SNAP_SIZE - (icon_rect.y1 - icon_rect.y0);
+
+				find_empty_location (container,
+						     grid,
+						     icon,
+						     x, y,
+						     &x, &y);
+				
+				icon_set_position (icon, x, y);
+				placement_grid_mark_icon (grid, icon);
+			}
+
+			placement_grid_free (grid);
 		}
 		
-		/* Mark filled grid locations */
-		mark_icon_locations_in_grid (placed_icons, icon_grid, num_rows, num_columns);
-
-		/* Place unplaced icons in the best locations */
-		for (p = unplaced_icons; p != NULL; p = p->next) {
-			icon = p->data;
-			get_best_empty_grid_location (icon, icon_grid, num_rows, num_columns,
-						      &x, &y);
-
-			icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
-			icon_width = x2 - x1;
-			
-			icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-
-			icon_set_position (icon,
-					   x + (icon_width - (icon_rect.x1 - icon_rect.x0)) / 2, y);
-			/* Add newly placed icon to grid */
-			mark_icon_location_in_grid (icon, icon_grid, num_rows, num_columns);
-		}
-
-		/* Clean up */
-		free (icon_grid);
-		free (grid_memory);
 		g_list_free (placed_icons);
 		g_list_free (unplaced_icons);
 	} else {
@@ -1236,18 +1413,32 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		x = DESKTOP_PAD_HORIZONTAL;
 
 		while (icons != NULL) {
+			int center_x;
+			int baseline;
+			gboolean should_snap;
+			
+			should_snap = !(container->details->tighter_layout && !container->details->keep_aligned);
+			
 			y = DESKTOP_PAD_VERTICAL;
-			max_width = 0;
 
+			max_width = 0;
+			
 			/* Calculate max width for column */
 			for (p = icons; p != NULL; p = p->next) {
 				icon = p->data;
-				
 				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 				
 				icon_width = x2 - x1;
 				icon_height = y2 - y1;
-				
+
+				if (should_snap) {
+					/* Snap the baseline to a grid position */
+					icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+					baseline = y + (icon_rect.y1 - icon_rect.y0);
+					baseline = SNAP_CEIL_VERTICAL (baseline);
+					y = baseline - (icon_rect.y1 - icon_rect.y0);
+				}
+				    
 				/* Check and see if we need to move to a new column */
 				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height) {
 					break;
@@ -1261,6 +1452,15 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 			}
 
 			y = DESKTOP_PAD_VERTICAL;
+
+			center_x = x + max_width / 2;
+			column_width = max_width;
+			if (should_snap) {
+				/* Find the grid column to center on */
+				center_x = SNAP_CEIL_HORIZONTAL (center_x);
+				column_width = (center_x - x) + (max_width / 2);
+			}
+			
 			/* Lay out column */
 			for (p = icons; p != NULL; p = p->next) {
 				icon = p->data;
@@ -1269,15 +1469,21 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 				icon_height = y2 - y1;
 				
 				icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+
+				if (should_snap) {
+					baseline = y + (icon_rect.y1 - icon_rect.y0);
+					baseline = SNAP_CEIL_VERTICAL (baseline);
+					y = baseline - (icon_rect.y1 - icon_rect.y0);
+				}
 				
 				/* Check and see if we need to move to a new column */
 				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height) {
-					x += max_width + DESKTOP_PAD_HORIZONTAL;
+					x += column_width + DESKTOP_PAD_HORIZONTAL;
 					break;
 				}
 				
 				icon_set_position (icon,
-						   x + max_width / 2 - (icon_rect.x1 - icon_rect.x0) / 2,
+						   center_x - (icon_rect.x1 - icon_rect.x0) / 2,
 						   y);
 				
 				y += icon_height + DESKTOP_PAD_VERTICAL;
@@ -1493,6 +1699,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 				   int x, int y,
 				   double scale_x, double scale_y,
 				   gboolean raise,
+				   gboolean snap,
 				   gboolean update_position)
 {
 	NautilusIconContainerDetails *details;
@@ -1507,13 +1714,6 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		end_renaming_mode (container, TRUE);
 	}
 
-	if (!details->auto_layout) {
-		if (x != icon->x || y != icon->y) {
-			icon_set_position (icon, x, y);
-			emit_signal = update_position;
-		}
-	}
-	
 	if (scale_x != icon->scale_x || scale_y != icon->scale_y) {
 		icon->scale_x = scale_x;
 		icon->scale_y = scale_y;
@@ -1522,7 +1722,17 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 			redo_layout (container); 
 			emit_signal = TRUE;
 		}
+	}
 
+	if (!details->auto_layout) {
+		if (details->keep_aligned && snap) {
+			snap_position (container, icon, &x, &y);
+		}
+
+		if (x != icon->x || y != icon->y) {
+			icon_set_position (icon, x, y);
+			emit_signal = update_position;
+		}
 	}
 	
 	if (emit_signal) {
@@ -2598,6 +2808,12 @@ destroy (GtkObject *object)
 		g_source_remove (container->details->stretch_idle_id);
 		container->details->stretch_idle_id = 0;
 	}
+
+        if (container->details->align_idle_id != 0) {
+		g_source_remove (container->details->align_idle_id);
+		container->details->align_idle_id = 0;
+	}
+
        
 	nautilus_icon_container_flush_typeselect_state (container);
 
@@ -2985,7 +3201,7 @@ update_stretch_at_idle (NautilusIconContainer *container)
 			  &world_x, &world_y);
 
 	icon_set_position (icon, world_x, world_y);
-	icon_set_size (container, icon, stretch_state.icon_size, FALSE);
+	icon_set_size (container, icon, stretch_state.icon_size, FALSE, FALSE);
 
 	container->details->stretch_idle_id = 0;
 
@@ -3062,6 +3278,7 @@ undo_stretching (NautilusIconContainer *container)
 	icon_set_size (container,
 		       stretched_icon, 
 		       container->details->stretch_initial_size,
+		       TRUE,
 		       TRUE);
 	
 	container->details->stretch_icon = NULL;				
@@ -5113,7 +5330,7 @@ nautilus_icon_container_unstretch (NautilusIconContainer *container)
 			nautilus_icon_container_move_icon (container, icon,
 							   icon->x, icon->y,
 							   1.0, 1.0,
-							   FALSE, TRUE);
+							   FALSE, TRUE, TRUE);
 		}
 	}
 }
@@ -5251,6 +5468,57 @@ nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
 	}
 }
 
+gboolean
+nautilus_icon_container_is_keep_aligned (NautilusIconContainer *container)
+{
+	return container->details->keep_aligned;
+}
+
+static gboolean
+align_icons_callback (gpointer callback_data)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (callback_data);
+	align_icons (container);
+	container->details->align_idle_id = 0;
+
+	return FALSE;
+}
+
+static void
+unschedule_align_icons (NautilusIconContainer *container)
+{
+        if (container->details->align_idle_id != 0) {
+		g_source_remove (container->details->align_idle_id);
+		container->details->align_idle_id = 0;
+	}
+}
+
+static void
+schedule_align_icons (NautilusIconContainer *container)
+{
+	if (container->details->align_idle_id == 0
+	    && container->details->has_been_allocated) {
+		container->details->align_idle_id = g_idle_add
+			(align_icons_callback, container);
+	}
+}
+
+void
+nautilus_icon_container_set_keep_aligned (NautilusIconContainer *container,
+					  gboolean keep_aligned)
+{
+	if (container->details->keep_aligned != keep_aligned) {
+		container->details->keep_aligned = keep_aligned;
+		
+		if (keep_aligned && !container->details->auto_layout) {
+			schedule_align_icons (container);
+		} else {
+			unschedule_align_icons (container);
+		}
+	}
+}
 
 void
 nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,

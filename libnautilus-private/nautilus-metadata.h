@@ -53,6 +53,7 @@
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT      	"icon_view_tighter_layout"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY          	"icon_view_sort_by"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED    	"icon_view_sort_reversed"
+#define NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED            "icon_view_keep_aligned"
 
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL       	"list_view_zoom_level"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"list_view_sort_column"

@@ -1,3 +1,37 @@
+2003-05-03  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c: (icon_set_size),
+	(icon_toggle_selected), (snap_position),
+	(compare_icons_by_position), (placement_grid_new),
+	(placement_grid_free), (placement_grid_position_is_free),
+	(placement_grid_mark), (canvas_position_to_grid_position),
+	(placement_grid_mark_icon), (find_empty_location), (align_icons),
+	(lay_down_icons_tblr), (nautilus_icon_container_move_icon),
+	(destroy), (update_stretch_at_idle), (undo_stretching),
+	(nautilus_icon_container_unstretch),
+	(nautilus_icon_container_is_keep_aligned), (align_icons_callback),
+	(unschedule_align_icons), (schedule_align_icons),
+	(nautilus_icon_container_set_keep_aligned):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-dnd.c: (handle_local_move):
+	* libnautilus-private/nautilus-icon-private.h:
+	* libnautilus-private/nautilus-metadata.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_class_init), (real_supports_auto_layout),
+	(real_supports_keep_aligned):
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_supports_keep_aligned), (update_layout_menus),
+	(get_default_directory_keep_aligned),
+	(fm_icon_view_get_directory_keep_aligned),
+	(fm_icon_view_set_directory_keep_aligned),
+	(real_supports_keep_aligned), (fm_icon_view_begin_loading),
+	(keep_aligned_state_changed_callback), (fm_icon_view_merge_menus),
+	(fm_icon_view_reset_to_defaults), (fm_icon_view_class_init):
+	* src/file-manager/fm-icon-view.h:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Implemented a "Keep Aligned" mode on the desktop, that snaps icons
+	to a grid.
+
 2003-05-03  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
 
 	* configure.in: Call AC_LIBTOOL_WIN32_DLL which is necessary for

@@ -98,10 +98,12 @@
 #define COMMAND_TIGHTER_LAYOUT 			"/commands/Tighter Layout"
 #define COMMAND_SORT_REVERSED			"/commands/Reversed Order"
 #define COMMAND_CLEAN_UP			"/commands/Clean Up"
+#define COMMAND_KEEP_ALIGNED 			"/commands/Keep Aligned"
 
 #define ID_MANUAL_LAYOUT                        "Manual Layout"
 #define ID_TIGHTER_LAYOUT                       "Tighter Layout"
 #define ID_SORT_REVERSED                        "Reversed Order"
+#define ID_KEEP_ALIGNED 			"Keep Aligned"
 
 typedef struct {
 	NautilusFileSortType sort_type;
@@ -578,6 +580,16 @@ fm_icon_view_supports_auto_layout (FMIconView *view)
 		 supports_auto_layout, (view));
 }
 
+static gboolean
+fm_icon_view_supports_keep_aligned (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, view,
+		 supports_keep_aligned, (view));
+}
+
 static void
 update_layout_menus (FMIconView *view)
 {
@@ -616,6 +628,18 @@ update_layout_menus (FMIconView *view)
 	/* Clean Up is only relevant for manual layout */
 	nautilus_bonobo_set_sensitive
 		(view->details->ui, COMMAND_CLEAN_UP, !is_auto_layout);	
+
+
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    COMMAND_KEEP_ALIGNED, 
+				    !fm_icon_view_supports_keep_aligned (view));
+	
+	nautilus_bonobo_set_toggle_state 
+		(view->details->ui, COMMAND_KEEP_ALIGNED, 
+		 nautilus_icon_container_is_keep_aligned (get_icon_container (view)));
+	
+	nautilus_bonobo_set_sensitive
+		(view->details->ui, COMMAND_KEEP_ALIGNED, !is_auto_layout);
 
 	bonobo_ui_component_thaw (view->details->ui, NULL);
 }
@@ -753,6 +777,41 @@ fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view,
 		 sort_reversed);
 }
 
+static gboolean
+get_default_directory_keep_aligned (void)
+{
+	return TRUE;
+}
+
+static gboolean
+fm_icon_view_get_directory_keep_aligned (FMIconView *icon_view,
+					 NautilusFile *file)
+{
+	if (!fm_icon_view_supports_keep_aligned (icon_view)) {
+		return FALSE;
+	}
+	
+	return  nautilus_file_get_boolean_metadata
+		(file,
+		 NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED,
+		 get_default_directory_keep_aligned ());
+}
+
+static void
+fm_icon_view_set_directory_keep_aligned (FMIconView *icon_view,
+					 NautilusFile *file,
+					 gboolean keep_aligned)
+{
+	if (!fm_icon_view_supports_keep_aligned (icon_view)) {
+		return;
+	}
+
+	nautilus_file_set_boolean_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED,
+		 get_default_directory_keep_aligned (),
+		 keep_aligned);
+}
+
 /* maintainence of auto layout boolean */
 static gboolean default_directory_manual_layout = FALSE;
 
@@ -877,6 +936,14 @@ real_supports_auto_layout (FMIconView *view)
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
 
 	return TRUE;
+}
+
+static gboolean
+real_supports_keep_aligned (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return FALSE;
 }
 
 static gboolean
@@ -1005,6 +1072,9 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	/* Set the sort direction from the metadata. */
 	set_sort_reversed (icon_view, fm_icon_view_get_directory_sort_reversed (icon_view, file));
 
+	nautilus_icon_container_set_keep_aligned
+		(get_icon_container (icon_view), 
+		 fm_icon_view_get_directory_keep_aligned (icon_view, file));
 	nautilus_icon_container_set_tighter_layout
 		(get_icon_container (icon_view), 
 		 fm_icon_view_get_directory_tighter_layout (icon_view, file));
@@ -1287,6 +1357,37 @@ sort_reversed_state_changed_callback (BonoboUIComponent *component,
 }
 
 static void
+keep_aligned_state_changed_callback (BonoboUIComponent *component,
+				     const char        *path,
+				     Bonobo_UIComponent_EventType type,
+				     const char        *state,
+				     gpointer          user_data)
+{
+	FMIconView *icon_view;
+	NautilusFile *file;
+	gboolean keep_aligned;
+
+	g_assert (strcmp (path, ID_KEEP_ALIGNED) == 0);
+
+	icon_view = FM_ICON_VIEW (user_data);
+
+	if (strcmp (state, "") == 0) {
+		/* State goes blank when component is removed; ignore this. */
+		return;
+	}
+
+	keep_aligned = strcmp (state, "1") == 0 ? TRUE : FALSE;
+
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view));
+	fm_icon_view_set_directory_keep_aligned (icon_view,
+						 file,
+						 keep_aligned);
+						      
+	nautilus_icon_container_set_keep_aligned (get_icon_container (icon_view),
+						  keep_aligned);
+}
+
+static void
 switch_to_manual_layout (FMIconView *icon_view)
 {
 	if (!fm_icon_view_using_auto_layout (icon_view)) {
@@ -1393,6 +1494,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	
 	bonobo_ui_component_add_listener (icon_view->details->ui, ID_TIGHTER_LAYOUT, tighter_layout_state_changed_callback, view);
 	bonobo_ui_component_add_listener (icon_view->details->ui, ID_SORT_REVERSED, sort_reversed_state_changed_callback, view);
+	bonobo_ui_component_add_listener (icon_view->details->ui, ID_KEEP_ALIGNED, keep_aligned_state_changed_callback, view);
 	icon_view->details->menus_ready = TRUE;
 
 	bonobo_ui_component_freeze (icon_view->details->ui, NULL);
@@ -1472,6 +1574,8 @@ fm_icon_view_reset_to_defaults (FMDirectoryView *view)
 
 	set_sort_criterion (icon_view, get_sort_criterion_by_sort_type (get_default_sort_order ()));
 	set_sort_reversed (icon_view, get_default_sort_in_reverse_order ());
+	nautilus_icon_container_set_keep_aligned 
+		(icon_container, get_default_directory_keep_aligned ());
 	nautilus_icon_container_set_tighter_layout
 		(icon_container, get_default_directory_tighter_layout ());
 
@@ -2520,6 +2624,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 
 	klass->clean_up = fm_icon_view_real_clean_up;
 	klass->supports_auto_layout = real_supports_auto_layout;
+	klass->supports_keep_aligned = real_supports_keep_aligned;
         klass->get_directory_auto_layout = fm_icon_view_real_get_directory_auto_layout;
         klass->get_directory_sort_by = fm_icon_view_real_get_directory_sort_by;
         klass->get_directory_sort_reversed = fm_icon_view_real_get_directory_sort_reversed;

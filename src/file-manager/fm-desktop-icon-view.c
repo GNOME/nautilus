@@ -121,6 +121,7 @@ static void     volume_unmounted_callback                         (NautilusVolum
 								   FMDesktopIconView      *icon_view);
 static void     update_desktop_directory                          (UpdateType              type);
 static gboolean real_supports_auto_layout                         (FMIconView             *view);
+static gboolean real_supports_keep_aligned                        (FMIconView             *view);
 static void     real_merge_menus                                  (FMDirectoryView        *view);
 static void     real_update_menus                                 (FMDirectoryView        *view);
 static gboolean real_supports_zooming                             (FMDirectoryView        *view);
@@ -300,6 +301,7 @@ fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 	FM_DIRECTORY_VIEW_CLASS (class)->supports_zooming = real_supports_zooming;
 
 	FM_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
+	FM_ICON_VIEW_CLASS (class)->supports_keep_aligned = real_supports_keep_aligned;
 }
 
 static void
@@ -1470,6 +1472,12 @@ real_supports_auto_layout (FMIconView *view)
 	 * fixed-size window.
 	 */
 	return FALSE;
+}
+
+static gboolean
+real_supports_keep_aligned (FMIconView *view)
+{
+	return TRUE;
 }
 
 static gboolean

@@ -177,6 +177,9 @@ struct NautilusIconContainerDetails {
 	/* Idle handler for stretch code */
 	guint stretch_idle_id;
 
+	/* Align idle id */
+	guint align_idle_id;
+
 	/* DnD info. */
 	NautilusIconDndInfo *dnd_info;
 
@@ -215,7 +218,10 @@ struct NautilusIconContainerDetails {
 	/* Layout mode */
 	NautilusIconLayoutMode layout_mode;
 
-	/* Set to TRUE after first allocation has been done */
+	/* Should the container keep icons aligned to a grid */
+	gboolean keep_aligned;
+
+        /* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
 	
 	/* Is the container fixed or resizable */
@@ -252,6 +258,7 @@ void          nautilus_icon_container_move_icon                   (NautilusIconC
 								   double                 scale_x,
 								   double                 scale_y,
 								   gboolean               raise,
+								   gboolean               snap,
 								   gboolean		  update_position);
 void          nautilus_icon_container_select_list_unselect_others (NautilusIconContainer *container,
 								   GList                 *icons);
