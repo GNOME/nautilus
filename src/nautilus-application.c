@@ -511,7 +511,7 @@ nautilus_application_startup (NautilusApplication *application,
 	 * no good. We could probably fix this in some fancier way if
 	 * we could figure out a better lifetime rule.
 	 */
-	if (!kill_shell) {
+	if (!(kill_shell || restart_shell)) {
 		bonobo_object_release_unref (shell, &ev);
 	}
 

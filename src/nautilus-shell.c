@@ -452,8 +452,6 @@ restore_window_states (NautilusShell *shell)
 		gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
 		gtk_widget_set_usize (GTK_WIDGET (window), width, height);
 		display_caveat_first_time (shell, window);
-
-		g_free (window_info);
 	}
 	nautilus_g_list_free_deep (start_state);
 	nautilus_preferences_set_string_list (START_STATE_CONFIG, NULL);

@@ -1,5 +1,18 @@
 2001-02-12  Robey Pointer  <robey@eazel.com>
 
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* src/nautilus-application.c: (nautilus_application_startup):
+
+	Follow --quit's lead and avoid unref'ing to avoid hanging.
+	
+	* src/nautilus-shell.c: (restore_window_states):
+
+	Don't double-free the list elements in the restored window list
+	after restart.
+
+2001-02-12  Robey Pointer  <robey@eazel.com>
+
 	* components/services/install/lib/eazel-install-protocols.c:
 	(gnome_vfs_fetch_remote_file):
 
