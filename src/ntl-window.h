@@ -133,4 +133,7 @@ void nautilus_window_allow_stop (NautilusWindow *window, gboolean allow);
 
 void nautilus_bookmarks_exiting (void);
 
+void Nautilus_NavigationInfo_free (Nautilus_NavigationInfo *ni);
+
+
 #endif

@@ -639,12 +639,14 @@ nautilus_window_get_arg (GtkObject      *object,
   }
 }
 
-static void nautilus_window_destroy (NautilusWindow *window)
+static void 
+nautilus_window_destroy (NautilusWindow *window)
 {
   NautilusWindowClass *klass = NAUTILUS_WINDOW_CLASS(GTK_OBJECT(window)->klass);
 
   g_slist_free(window->meta_views);
-  CORBA_free(window->ni);
+
+  Nautilus_NavigationInfo_free (window->ni);
   CORBA_free(window->si);
   g_slist_foreach(window->back_list, (GFunc)gtk_object_unref, NULL);
   g_slist_foreach(window->forward_list, (GFunc)gtk_object_unref, NULL);

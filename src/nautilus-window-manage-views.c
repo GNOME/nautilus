@@ -179,6 +179,16 @@ Nautilus_NavigationInfo__copy(Nautilus_NavigationInfo *dest_ni, Nautilus_Navigat
   dest_ni->self_originated = CORBA_FALSE;
 }
 
+
+void
+Nautilus_NavigationInfo_free (Nautilus_NavigationInfo *ni)
+{
+  if (ni != NULL) {
+    ni->content_view = CORBA_OBJECT_NIL;
+    CORBA_free(ni);
+  }
+}
+
 /* Handle the changes for the NautilusWindow itself. */
 static void
 nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo *loci)
@@ -255,7 +265,9 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
 
       newni = Nautilus_NavigationInfo__alloc();
       Nautilus_NavigationInfo__copy(newni, &loci->navinfo);
-      CORBA_free(window->ni);
+
+      Nautilus_NavigationInfo_free (window->ni);
+      
       window->ni = newni;
 
       CORBA_free(window->si);
@@ -516,13 +528,13 @@ nautilus_window_load_content_view(NautilusWindow *window,
   else
     new_view = window->content_view;
 
-  if(new_view && NAUTILUS_IS_VIEW(new_view))
+  if(new_view && NAUTILUS_IS_VIEW (new_view))
     {
-      gtk_object_ref(GTK_OBJECT(new_view));
+      gtk_object_ref (GTK_OBJECT (new_view));
+      
+      navinfo->content_view = nautilus_view_get_client_objref (new_view);
 
-      navinfo->content_view = nautilus_view_get_client_objref(new_view);
-
-      nautilus_view_set_active_errors(new_view, TRUE);
+      nautilus_view_set_active_errors (new_view, TRUE);
     }
   else
     new_view = NULL;

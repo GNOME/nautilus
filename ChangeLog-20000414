@@ -1,3 +1,15 @@
+2000-03-05  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-window-msgs.c (nautilus_window_update_internals): Handle
+	freeing of window->ni in a fancier way to avoid double-free
+	problems which were causing crashes after some amount of view
+	switching and navigation. It might leak memory but it's the only
+	obvious way to avoid crashing.	
+	* src/ntl-window.c (nautilus_window_destroy): Likewise to avoid
+	crashing on exit.
+	* src/ntl-window.h (Nautilus_NavigationInfo_free): Prototype this
+	function.
+	
 2000-03-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	* nautilus-clean.sh: Simple shell script to check if any of the
