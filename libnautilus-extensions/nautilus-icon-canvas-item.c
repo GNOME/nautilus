@@ -57,6 +57,9 @@
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
 
+/* The list of characters that cause line breaks can be localized. */
+#define LINE_BREAK_CHARACTERS _(" -_,;.?/&")
+
 /* Private part of the NautilusIconCanvasItem structure. */
 struct NautilusIconCanvasItemDetails {
 	/* The image, text, font. */
@@ -738,10 +741,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			text_piece = " ";
 		}
 		
-		/* The list of characters that cause line breaks can be localized. */
 		icon_text_info = gnome_icon_layout_text
-			(details->font, text_piece, _(" -_,;.?/&"),
-			max_text_width, TRUE);
+			(details->font, text_piece,
+			 LINE_BREAK_CHARACTERS,
+			 max_text_width, TRUE);
 		
 		/* Draw text if we are not in user rename mode */
 		if (drawable != NULL && !details->is_renaming) {
@@ -1310,7 +1313,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		
 		icon_text_layout = nautilus_text_layout_new (details->smooth_font,
 							     details->smooth_font_size,
-							     text_piece, _(" -_,;.?/&"), 
+							     text_piece,
+							     LINE_BREAK_CHARACTERS,
 							     max_text_width, 
 							     TRUE);
 		

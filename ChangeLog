@@ -1,3 +1,22 @@
+2000-09-13  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_string_attribute_with_default),
+	(nautilus_file_get_top_left_text): Unmark strings that are
+	unlikely candidates for localization at the request of one of the
+	translators (menthos).
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), (draw_or_measure_label_text_aa):
+	Move line break characters into a separate string constant, in
+	part to make the comment about why it's localizable appear in the
+	pot file.
+	
+	* src/file-manager/fm-properties-window.c:
+	(directory_contents_value_field_update): Unmark strings that are
+	unlikely candidates for localization at the request of one of the
+	translators (menthos).
+
 2000-09-13  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/nautilus-dependent-shared/icons/Makefile.am:

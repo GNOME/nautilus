@@ -3089,7 +3089,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 				nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
 			}
 			
-			result = g_strdup (count_unreadable ? _("xxx") : _("--"));
+			result = g_strdup (count_unreadable ? "xxx" : "--");
 		} else if (strcmp (attribute_name, "deep_size") == 0
 			   || strcmp (attribute_name, "deep_file_count") == 0
 			   || strcmp (attribute_name, "deep_directory_count") == 0
@@ -3097,9 +3097,9 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 			status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
 			if (status == NAUTILUS_REQUEST_DONE) {
 				/* This means no contents at all were readable */
-				return g_strdup (_("xxx"));
+				return g_strdup ("xxx");
 			}
-			return g_strdup (_("--"));
+			return g_strdup ("--");
 		} else if (strcmp (attribute_name, "type") == 0) {
 			result = g_strdup (_("unknown type"));
 		} else if (strcmp (attribute_name, "mime_type") == 0) {
@@ -3528,7 +3528,7 @@ nautilus_file_get_top_left_text (NautilusFile *file)
 	/* Show " --" in the file until we read the contents in. */
 	if (!file->details->got_top_left_text) {
 		if (nautilus_file_contains_text (file)) {
-			return g_strdup (_(" --"));
+			return g_strdup (" --");
 		}
 		return NULL;
 	}

@@ -895,8 +895,7 @@ directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 			}
 			break;
 		default:
-			text = g_strdup (_("--"));
-						
+			text = g_strdup ("--");
 		}
 	} else {
 		size_string = gnome_vfs_format_file_size_for_display (total_size);
