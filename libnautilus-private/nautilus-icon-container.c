@@ -49,9 +49,9 @@
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
 
-/* Timeout for making the icon currently selected for keyboard operation
- * visible. FIXME: This *must* be higher than the double-click time in GDK,
- * but there is no way to access its value from outside.
+/* Timeout for making the icon currently selected for keyboard operation visible. */
+/* FIXME bugzilla.eazel.com 611: This *must* be higher than the double-click 
+ * time in GDK, but there is no way to access its value from outside.
  */
 #define KEYBOARD_ICON_REVEAL_TIMEOUT 300
 
@@ -157,8 +157,9 @@ icon_new (NautilusIconContainer *container,
 
 	nautilus_icon_container_update_icon (container, icon);
 	
-	/* Enforce a maximum size for new icons by reducing the scale factor as necessary.
-	 * FIXME: This needs to be done again later when the image changes, so it's not
+	/* Enforce a maximum size for new icons by reducing the scale factor as necessary. */
+	/* FIXME bugzilla.eazel.com 621: 
+	 * This needs to be done again later when the image changes, so it's not
 	 * sufficient to just have this check here. Also, this should not be done by
 	 * changing the scale factor because we don't want a persistent change to that.
 	 * I think that the best way to implement this is probably to put something in
@@ -381,7 +382,9 @@ keyboard_icon_reveal_timeout_callback (gpointer data)
 
 	/* Only reveal the icon if it's still the keyboard focus
 	 * or if it's still selected.
-	 * FIXME: Need to unschedule this if the user scrolls explicitly.
+	 */
+	/* FIXME bugzilla.eazel.com 612: 
+	 * Need to unschedule this if the user scrolls explicitly.
 	 */
 	if (icon == container->details->keyboard_focus
 	    || icon->is_selected) {
@@ -521,7 +524,7 @@ set_scroll_region (NautilusIconContainer *container)
 	scroll_width = MAX (content_width, allocation->width);
 	scroll_height = MAX (content_height, allocation->height);
 
-	/* FIXME: Why are we subtracting one from each dimension? */
+	/* FIXME bugzilla.eazel.com 622: Why are we subtracting one from each dimension? */
 	nautilus_gnome_canvas_set_scroll_region (GNOME_CANVAS (container),
 						 x1, y1,
 						 x1 + scroll_width - 1,
@@ -1589,7 +1592,9 @@ nautilus_icon_container_almost_drag (NautilusIconContainer *container,
 		    && elapsed_time < MAX_CLICK_TIME
 		    && ! button_event_modifies_selection (event)) {
 			
-			/* FIXME: This should activate all selected icons, not just one */
+			/* FIXME bugzilla.eazel.com 620: This should activate all 
+			 * selected icons, not just one.
+			 */
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[ACTIVATE],
 					 details->drag_icon->data);
@@ -1765,7 +1770,7 @@ motion_notify_event (GtkWidget *widget,
 							      GDK_ACTION_MOVE 
 #if 0
 	/* 
-	 * FIXME:
+	 * FIXME bugzilla.eazel.com 623:
 	 *
 	 * disable copy operations for now -- the default drop action is
 	 * wrong (should be move, not copy) and the copy engine doesn't
@@ -2048,7 +2053,9 @@ load_font (const char *name)
 {
 	GdkFont *font;
 
-	/* FIXME: Eventually we need a runtime check, but an assert is better than nothing. */
+	/* FIXME bugzilla.eazel.com 40: 
+	 * Eventually we need a runtime check, but an assert is better than nothing. 
+	 */
 	font = gdk_font_load (name);
 	g_assert (font != NULL);
 	return font;
@@ -2095,7 +2102,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
  	/* font table - this isn't exactly proportional, but it looks better than computed */
-        /* FIXME: read font from metadata and/or preferences */
+        /* FIXME bugzilla.eazel.com 619: read font from metadata and/or preferences */
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = load_font ("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = load_font ("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = load_font ("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*");
@@ -2191,7 +2198,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 	}
 
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		/* FIXME this means you cannot drag with right click.
+		/* Note: this means you cannot drag with right click.
 		 * If we decide we want right drags, we will have to
 		 * set up a timeout and emit this signal if the
                  *  timeout expires without movement.
@@ -2213,7 +2220,9 @@ handle_icon_button_press (NautilusIconContainer *container,
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 
-		/* FIXME: This should activate all selected icons, not just one */
+		/* FIXME bugzilla.eazel.com 620: 
+		 * This should activate all selected icons, not just one 
+		 */
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
 				 icon->data);
@@ -2736,7 +2745,8 @@ nautilus_icon_container_set_selection (NautilusIconContainer *container, GList *
 
 	selection_changed = FALSE;
 
-	/* FIXME: Selecting n items in an m-element container is an
+	/* FIXME bugzilla.eazel.com 613: 
+	   Selecting n items in an m-element container is an
 	   O(m*n) task using this algorithm, making it quadratic if
 	   you select them all with this method, which actually
 	   happens if you select all in list view and switch to icon

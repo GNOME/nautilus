@@ -115,7 +115,9 @@ create_selection_shadow (NautilusIconContainer *container,
            we try to be smart and only create the maximum number of rectangles
            that we will need, in the vertical/horizontal directions.  */
 
-	/* FIXME: Does this work properly if the window is scrolled? */
+	/* FIXME bugzilla.eazel.com 624: 
+	 * Does this work properly if the window is scrolled? 
+	 */
 	max_x = GTK_WIDGET (container)->allocation.width;
 	min_x = -max_x;
 
@@ -574,7 +576,7 @@ get_container_uri (const NautilusIconContainer *container)
 static gboolean
 uri_is_parent (const GnomeVFSURI *parent, const GnomeVFSURI *item)
 {
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 625:
 	 * consider making this a gnome-vfs call
 	 */
 
@@ -789,7 +791,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 			source_item_locations = g_new (GdkPoint, count);
 			for (index = 0, p = container->details->dnd_info->selection_list; p != NULL; 
 			     index++, p = p->next) {
-				/* FIXME:
+				/* FIXME bugzilla.eazel.com 626:
 				 * subtract the original click coordinates from each point here
 				 */
 				source_item_locations[index].x = ((DndSelectionItem *)p->data)->icon_x;
@@ -906,7 +908,7 @@ drag_leave_callback (GtkWidget *widget,
  * to allow us to control the drop action based on the modifier
  * key state, drop target and other drag&drop state.
  * 
- * FIXME:
+ * FIXME bugzilla.eazel.com 627:
  */
 
 typedef struct GtkDragDestInfo GtkDragDestInfo;
@@ -1188,7 +1190,7 @@ nautilus_icon_dnd_modifier_based_action ()
 	if ((modifiers & GDK_MOD1_MASK) != 0) {
 		return GDK_ACTION_COPY;
 #if 0
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 628:
 	 * don't know how to do links yet
 	 */
 	 } else if ((modifiers & GDK_CONTROL_MASK) != 0) {
