@@ -28,6 +28,7 @@
 #include "ntl-window-private.h"
 #include "ntl-index-panel.h"
 #include "explorer-location-bar.h"
+#include <libnautilus/nautilus-gtk-extensions.h>
 
 struct _NautilusWindowLoadInfo {
   /* These are the three states of loading in process.
@@ -274,11 +275,14 @@ nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigati
     {
       default_view_index = index;
     }
-    /* FIXME: copy of identifier->iid doesn't get freed */
-    gtk_signal_connect (GTK_OBJECT (menu_item), 
-    		        "activate", 
-    		        GTK_SIGNAL_FUNC (view_menu_switch_views_cb), 
-    		        g_strdup (identifier->iid));
+
+    /* Free copy of string when signal disconnected. */
+    nautilus_gtk_signal_connect_free_data (
+    		GTK_OBJECT (menu_item), 
+    		"activate", 
+    		GTK_SIGNAL_FUNC (view_menu_switch_views_cb), 
+    		g_strdup (identifier->iid));
+    /* Store reference to window in item; no need to free this. */
     gtk_object_set_user_data (GTK_OBJECT (menu_item), window);
     gtk_menu_append (GTK_MENU (new_menu), menu_item);
     gtk_widget_show (menu_item);

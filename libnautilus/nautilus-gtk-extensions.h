@@ -29,6 +29,12 @@
 
 #include <gtk/gtkwindow.h>
 
+guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
+				  	     const gchar *name,
+				  	     GtkSignalFunc func,
+				  	     gpointer data);
+				  	    
 void nautilus_gtk_window_present (GtkWindow *window);
+
 
 #endif /* NAUTILUS_GTK_EXTENSIONS_H */

@@ -1,5 +1,17 @@
 2000-01-11  John Sullivan  <sullivan@eazel.com>
 
+	* libnautilus/nautilus-gtk-extensions.h:
+	* libnautilus/nautilus-gtk-extensions.c:
+	(nautilus_gtk_signal_connect_free_data): New function,
+	convenience wrapper for gtk_signal_connect_full where
+	the destroy-function is g_free() and the other extra
+	values are the defaults.
+	* src/ntl-window-msgs.c: (nautilus_window_load_content_view_menu):
+	Use nautilus_gtk_signal_connect_free_data to avoid leaking the menu item's
+	signal's copy of the iid string. 
+
+2000-01-11  John Sullivan  <sullivan@eazel.com>
+
 	Content view menu now works (can switch between List and Icon views).
 
 	* src/ntl-window-msgs.c:
