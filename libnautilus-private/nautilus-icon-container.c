@@ -4545,6 +4545,9 @@ icon_destroy (NautilusIconContainer *container,
 	if (details->pending_icon_to_reveal == icon) {
 		set_pending_icon_to_reveal (container, NULL);
 	}
+	if (details->stretch_icon == icon) {
+		details->stretch_icon = NULL;
+	}
 
 	if (icon->is_monitored) {
 		nautilus_icon_container_stop_monitor_top_left (container,
