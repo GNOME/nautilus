@@ -1,3 +1,29 @@
+2001-05-10  John Sullivan  <sullivan@eazel.com>
+
+	Made the thumbnail mechanism respect the "PUBLIC_METADATA"
+	preference, so if you change "Make Folder Appearance Details
+	Public" to Never (in Speed Tradeoffs at Advanced user level),
+	thumbnails will always be created in ~/.nautilus/thumbnails,
+	instead of in a .thumbnails subdirectory in each directory.
+	Thanks to Michael Rothwell <rothwell@holly-springs.nc.us> for
+	the idea and a first pass at the code.
+
+	* libnautilus-private/nautilus-thumbnails.h:
+	* libnautilus-private/nautilus-thumbnails.c: 
+	(uri_is_local): 
+	New convenience function, calls gnome_vfs_uri_is_local
+	(prefer_global_thumbnails_location): New function that
+	checks preference value.
+	(make_thumbnail_uri): Call preference-checking function.
+	(first_file_more_recent),
+	(nautilus_thumbnail_has_invalid_thumbnail),
+	(nautilus_get_thumbnail_uri),
+	(nautilus_update_thumbnail_file_renamed_one),
+	(nautilus_update_thumbnail_file_renamed),
+	(nautilus_remove_thumbnail_for_file_one),
+	(nautilus_remove_thumbnail_for_file): Use uri_is_local () to
+	reduce duplicated code; change some parameter names for clarity.
+
 2001-05-10  Darin Adler  <darin@eazel.com>
 
 	* components/help/hyperbola-filefmt.c:

@@ -26,6 +26,7 @@
 #include "nautilus-thumbnails.h"
 
 #include "nautilus-directory-notify.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails-jpeg.h"
@@ -83,27 +84,65 @@ vfs_file_exists (const char *file_uri)
 	return result;
 }
 
+static gboolean
+uri_is_local (const char *uri)
+{
+	gboolean is_local;
+	GnomeVFSURI *vfs_uri;
+
+	vfs_uri = gnome_vfs_uri_new (uri);
+	is_local = gnome_vfs_uri_is_local (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+
+	return is_local;	
+}
+
+static gboolean
+prefer_global_thumbnails_location (const char *image_uri)
+{
+	static int public_metadata_preference;
+	static gboolean public_metadata_preference_registered;
+
+	if (!public_metadata_preference_registered) {
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
+						  &public_metadata_preference);
+		public_metadata_preference_registered = TRUE;
+	}
+
+	if (public_metadata_preference == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return TRUE;
+	}
+
+	if (public_metadata_preference == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return FALSE;
+	}
+
+	g_assert (public_metadata_preference == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	return !uri_is_local (image_uri);
+}
+
 /* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
 
 static char *
 make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use_local_directory,
 		    gboolean anti_aliased, gboolean create_parents_if_needed)
 {
-	GnomeVFSURI  *vfs_uri;
 	char *thumbnail_uri, *thumbnail_path;
 	char *directory_name = g_strdup (image_uri);
 	char *last_slash = strrchr (directory_name, '/');
 	char *dot_pos, *slash_pos;
-	gboolean is_local;
 	
 	*last_slash = '\0';
-
-	vfs_uri = gnome_vfs_uri_new (image_uri);
-	is_local = gnome_vfs_uri_is_local (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);	
 	
-	/* either use the local directory or one in the user's home directory, as selected by the passed in flag */
-	if (use_local_directory && is_local) {
+	/* Either use the local directory or one in the user's home directory, 
+	 * as selected by the passed in flag and possibly overridden by user
+	 * preference.
+	 */
+	/* FIXME: Most callers set use_local_directory to the result of 
+	 * uri_is_local (image_uri), which is then done again in
+	 * prefer_global_thumbnails_location. This should be cleaned up.
+	 */
+	if (use_local_directory && !prefer_global_thumbnails_location (image_uri)) {
 		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", directory_name);
 	} else  {
 		GnomeVFSResult result;
@@ -170,19 +209,12 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 static gboolean
 first_file_more_recent(const char* file_uri, const char* other_file_uri)
 {
-	GnomeVFSURI *vfs_uri, *other_vfs_uri;
-	gboolean more_recent, is_local;
+	gboolean more_recent;
 	
 	GnomeVFSFileInfo *file_info, *other_file_info;
 
 	/* if either file is remote, return FALSE.  Eventually we'll make this async to fix this */
-	vfs_uri = gnome_vfs_uri_new(file_uri);
-	other_vfs_uri = gnome_vfs_uri_new(other_file_uri);
-	is_local = gnome_vfs_uri_is_local (vfs_uri) && gnome_vfs_uri_is_local (other_vfs_uri);
-	gnome_vfs_uri_unref(vfs_uri);
-	gnome_vfs_uri_unref(other_vfs_uri);
-	
-	if (!is_local) {
+	if (!uri_is_local (file_uri) || !uri_is_local (other_file_uri)) {
 		return FALSE;
 	}
 	
@@ -246,17 +278,12 @@ gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file,
 						   gboolean anti_aliased)
 {
 	char *file_uri, *thumbnail_uri, *invalid_thumbnail_uri;
-	GnomeVFSURI *temp_uri;
-	gboolean uri_is_local, is_invalid;
+	gboolean is_invalid;
 	
 	file_uri = nautilus_file_get_uri (file);
 	
-	/* compose the uri for the thumbnail locally */
-	temp_uri = gnome_vfs_uri_new (file_uri);
-	uri_is_local = gnome_vfs_uri_is_local (temp_uri);
-	gnome_vfs_uri_unref (temp_uri);
 	
-	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local, anti_aliased, TRUE);
+	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), anti_aliased, TRUE);
 	invalid_thumbnail_uri = make_invalid_thumbnail_uri (thumbnail_uri);
 	
 	is_invalid = vfs_file_exists (invalid_thumbnail_uri);
@@ -277,22 +304,16 @@ char *
 nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 {
 	GnomeVFSResult result;
-	GnomeVFSURI *temp_uri;
 	char *thumbnail_uri;
 	char *file_uri;
-	gboolean can_write, uri_is_local;
+	gboolean can_write;
 	NautilusFile *destination_file;
 	gboolean local_flag = TRUE;
 	gboolean  remake_thumbnail = FALSE;
 	
 	file_uri = nautilus_file_get_uri (file);
-	
-	/* compose the uri for the thumbnail locally */
-	temp_uri = gnome_vfs_uri_new (file_uri);
-	uri_is_local = gnome_vfs_uri_is_local (temp_uri);
-	gnome_vfs_uri_unref (temp_uri);
-	
-	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local, anti_aliased, TRUE);
+		
+	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), anti_aliased, TRUE);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	
@@ -394,20 +415,17 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 }
 
 static void 
-nautilus_update_thumbnail_file_renamed_one (const char *old_file_name, const char *new_file_name,
+nautilus_update_thumbnail_file_renamed_one (const char *old_file_uri, const char *new_file_uri,
 	gboolean anti_aliased)
 {
-	GnomeVFSURI *uri;
 	gboolean is_local;
 	char *old_thumbnail_uri, *new_thumbnail_uri;
 	
-	uri = gnome_vfs_uri_new (old_file_name);
-	is_local = gnome_vfs_uri_is_local (uri);
-	gnome_vfs_uri_unref (uri);
+	is_local = uri_is_local (old_file_uri);
 	
-	old_thumbnail_uri = make_thumbnail_uri (old_file_name, FALSE, is_local, anti_aliased, FALSE);
+	old_thumbnail_uri = make_thumbnail_uri (old_file_uri, FALSE, is_local, anti_aliased, FALSE);
 	if (old_thumbnail_uri != NULL && vfs_file_exists (old_thumbnail_uri)) {
-		new_thumbnail_uri = make_thumbnail_uri (new_file_name, FALSE, is_local, anti_aliased, FALSE);
+		new_thumbnail_uri = make_thumbnail_uri (new_file_uri, FALSE, is_local, anti_aliased, FALSE);
 
 		g_assert (new_thumbnail_uri != NULL);
 
@@ -421,25 +439,19 @@ nautilus_update_thumbnail_file_renamed_one (const char *old_file_name, const cha
 
 /* update the thumbnail after the thumbnailed file got renamed */
 void 
-nautilus_update_thumbnail_file_renamed (const char *old_file_name, const char *new_file_name)
+nautilus_update_thumbnail_file_renamed (const char *old_file_uri, const char *new_file_uri)
 {
 	/* rename both the AA and non-AA thumbnails, if they exist */
-	nautilus_update_thumbnail_file_renamed_one (old_file_name, new_file_name, FALSE);
-	nautilus_update_thumbnail_file_renamed_one (old_file_name, new_file_name, TRUE);
+	nautilus_update_thumbnail_file_renamed_one (old_file_uri, new_file_uri, FALSE);
+	nautilus_update_thumbnail_file_renamed_one (old_file_uri, new_file_uri, TRUE);
 }
 
 static void 
-nautilus_remove_thumbnail_for_file_one (const char *old_file_name, gboolean anti_aliased)
+nautilus_remove_thumbnail_for_file_one (const char *old_file_uri, gboolean anti_aliased)
 {
-	GnomeVFSURI *uri;
-	gboolean is_local;
 	char *thumbnail_uri;
 	
-	uri = gnome_vfs_uri_new (old_file_name);
-	is_local = gnome_vfs_uri_is_local (uri);
-	gnome_vfs_uri_unref (uri);
-	
-	thumbnail_uri = make_thumbnail_uri (old_file_name, FALSE, is_local, anti_aliased, FALSE);
+	thumbnail_uri = make_thumbnail_uri (old_file_uri, FALSE, uri_is_local (old_file_uri), anti_aliased, FALSE);
 	if (thumbnail_uri != NULL && vfs_file_exists (thumbnail_uri)) {
 		gnome_vfs_unlink (thumbnail_uri);
 	}
@@ -449,11 +461,11 @@ nautilus_remove_thumbnail_for_file_one (const char *old_file_name, gboolean anti
 
 /* remove the thumbnail after the thumbnailed file got deleted */
 void 
-nautilus_remove_thumbnail_for_file (const char *old_file_name)
+nautilus_remove_thumbnail_for_file (const char *old_file_uri)
 {
 	/* remove both the AA and non-AA thumbnails, if they exist */
-	nautilus_remove_thumbnail_for_file_one (old_file_name, FALSE);
-	nautilus_remove_thumbnail_for_file_one (old_file_name, TRUE);
+	nautilus_remove_thumbnail_for_file_one (old_file_uri, FALSE);
+	nautilus_remove_thumbnail_for_file_one (old_file_uri, TRUE);
 }
 
 /* check_for_thumbnails is a utility that checks to see if the current thumbnail task has terminated.

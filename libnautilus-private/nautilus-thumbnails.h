@@ -32,9 +32,9 @@ char *nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased);
 
 gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file, gboolean anti_aliased);
 
-void nautilus_update_thumbnail_file_renamed (const char *old_file_name,
-					     const char *new_file_name);
+void nautilus_update_thumbnail_file_renamed (const char *old_file_uri,
+					     const char *new_file_uri);
 
-void nautilus_remove_thumbnail_for_file (const char *old_file_name);
+void nautilus_remove_thumbnail_for_file (const char *old_file_uri);
 
 #endif /* NAUTILUS_THUMBNAILS_H */
