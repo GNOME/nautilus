@@ -340,7 +340,7 @@ nautilus_view_frame_init (NautilusViewFrame *view)
   CORBA_Environment ev;
   CORBA_exception_init(&ev);
 
-  view->private = g_new (NautilusViewFramePrivate, 1);
+  view->private = g_new0 (NautilusViewFramePrivate, 1);
 
   bonobo_object_construct (BONOBO_OBJECT (view), impl_Nautilus_View__create (view, &ev));
 
@@ -392,14 +392,16 @@ nautilus_view_frame_ensure_view_frame (NautilusViewFrame *view)
 
   CORBA_exception_init (&ev);
 
-  if (CORBA_Object_is_nil (view->private->view_frame, &ev))
+  if (CORBA_Object_is_nil (view->private->view_frame, &ev)) {
     view->private->view_frame = Bonobo_Unknown_query_interface 
       (bonobo_control_get_control_frame 
        (BONOBO_CONTROL (nautilus_view_frame_get_bonobo_control (view))),
        "IDL:Nautilus/ViewFrame:1.0", &ev);
+    if (ev._major != CORBA_NO_EXCEPTION) {
+      view->private->view_frame = CORBA_OBJECT_NIL;
+    }
+  }
 
-  if (ev._major != CORBA_NO_EXCEPTION)
-    view->private->view_frame = CORBA_OBJECT_NIL;
 
   if (CORBA_Object_is_nil (view->private->view_frame, &ev)) {
     CORBA_exception_free (&ev);
@@ -418,6 +420,8 @@ nautilus_view_frame_request_location_change (NautilusViewFrame *view,
 
   g_return_if_fail (view != NULL);
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+  CORBA_exception_init (&ev);
 
   if (nautilus_view_frame_ensure_view_frame (view)) {
     Nautilus_ViewFrame_request_location_change(view->private->view_frame, loc, &ev);

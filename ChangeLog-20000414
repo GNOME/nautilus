@@ -1,3 +1,10 @@
+2000-02-21  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus/ntl-view-frame.c: Fixed crashes introduced in the
+	course of my reorganization - in one case I g_new()'d something
+	that should have been g_new0()'d, in another I forgot to
+	CORBA_exception_init().
+	
 2000-02-21  Andy Hertzfeld <andy@eazel.com>
 
     added document icons to eazel icons theme in 4 sizes
