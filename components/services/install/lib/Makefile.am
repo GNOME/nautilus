@@ -22,11 +22,11 @@ INCLUDES = \
 
 lib_LTLIBRARIES = libeazelinstall.la
 lib_LIBRARIES = libeazelinstall_minimal.a
-noinst_LIBRARIES = libinstall_base.a libinstall_gtk.a
+# noinst_LIBRARIES = libinstall_base.a libinstall_gtk.a hest
 
 noinst_HEADERS = \
-	libeazelinstall.h			\
 	trilobite-eazel-install.h		\
+	libeazelinstall.h			\
 	eazel-install-types.h	 		\
 	eazel-install-corba-types.h	 	\
 	eazel-install-metadata.h		\
@@ -40,7 +40,6 @@ noinst_HEADERS = \
 	$(NULL)
 
 libinstall_base_a_SOURCES =		       	\
-	trilobite-eazel-install.h		\
 	eazel-install-types.c	 		\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
@@ -94,7 +93,7 @@ CORBA_GENERATED =				\
 IDLDIR = $(top_srcdir)/components/services/install/idl
 IDL = $(IDLDIR)/trilobite-eazel-install.idl
 
-$(CORBA_GENERATED): trilobite-eazel-install.h
+$(libinstall_base_a_SOURCES) $(CORBA_GENERATED): trilobite-eazel-install.h
 
 trilobite-eazel-install.h: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(IDLDIR) $(IDL)
