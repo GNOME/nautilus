@@ -162,7 +162,7 @@ glibwww_progress(HTRequest *request, HTAlertOpcode op,
 			long b_read = HTRequest_bodyRead(request);
 			gfloat pcnt = (double)b_read/cl;
 
-			text = g_strdup_printf(_("Read %d%%%% of %l"), (int)pcnt, cl);
+			text = g_strdup_printf(_("Read %d%%%% of %ld"), (int)pcnt, cl);
 			gtk_progress_set_format_string(info->progress, text);
 			g_free(text);
 			gtk_progress_set_activity_mode(info->progress, FALSE);

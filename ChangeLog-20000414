@@ -1,8 +1,15 @@
-2000-01-03  John Sullivan  <sullivan@eazel.com>
+2000-01-03  Darin Adler  <darin@eazel.com>
 
-	* Took out unused local variables. My compiler didn't
-	  notice these because -Wall isn't in our compile flags.
-	  Darin is fixing the compile flags.
+        * configure.in: Added "-Wall -Wno-unused" to list of warnings.
+	It seems to me that at one point we got these from the gnome
+	default warnings, but this seems to have stopped. There's no
+	harm in repeating them in here and it fixes the problem for
+	now, but I'd like to know what happened.
+        * components/html/.cvsignore: Added some generated files.
+	* components/html/gnome-dialogs.c (glibwww_progress):
+	Replaced an incorrect "%l" in a printf format string with
+	the correct "%ld".
+	* libnautilus/.cvsignore: Added some generated files.
 
 2000-01-03  Elliot Lee  <sopwith@redhat.com>
 
