@@ -6,5 +6,6 @@
 extern ElementInfo sect_elements[];
 
 gpointer sect_init_data (void);
+void sect_article_end_element (Context *context, const gchar *name);
 
 #endif

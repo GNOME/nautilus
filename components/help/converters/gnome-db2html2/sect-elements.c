@@ -15,13 +15,12 @@ struct _SectContext {
 	HeaderInfo *header;
 	gchar *prev;
 	gchar *previd;
-	gchar *top;
-	gchar *topid;
 	SectContextState state;
 	/* A list full of GStrings. */
 	GList *footnotes;
 };
 
+static void sect_write_characters (Context *context, const gchar *chars, int len);
 static void sect_sect_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_sect_end_element (Context *context, const gchar *name);
 static void sect_para_start_element (Context *context, const gchar *name, const xmlChar **atrs);
@@ -35,9 +34,12 @@ static void sect_copyright_characters (Context *context, const gchar *chars, int
 static void sect_title_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_title_end_element (Context *context, const gchar *name);
 static void sect_title_characters (Context *context, const gchar *chars, int len);
+static void sect_ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_ulink_end_element (Context *context, const gchar *name);
+static void sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 
 ElementInfo sect_elements[] = {
-	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) article_end_element, NULL},
+	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) sect_article_end_element, NULL},
 	{ BOOK, "book", NULL, NULL, NULL},
 	{ SECTION, "section", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ SECT1, "sect1", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
@@ -62,15 +64,13 @@ ElementInfo sect_elements[] = {
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) sect_copyright_characters},
 	{ TITLE, "title", (startElementSAXFunc) sect_title_start_element, (endElementSAXFunc) sect_title_end_element, (charactersSAXFunc) sect_title_characters },
 	{ SUBTITLE, "subtitle", (startElementSAXFunc) sect_title_start_element, (endElementSAXFunc) sect_title_end_element, (charactersSAXFunc) sect_title_characters },
-	{ ULINK, "ulink", NULL, NULL, NULL},
+	{ ULINK, "ulink", (startElementSAXFunc) sect_ulink_start_element, (endElementSAXFunc) sect_ulink_end_element, (charactersSAXFunc) sect_write_characters},
 	{ XREF, "xref", NULL, NULL, NULL},
-	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
+	{ FOOTNOTE, "footnote", (startElementSAXFunc) sect_footnote_start_element, NULL, NULL},
 	{ FIGURE, "figure", NULL, NULL, NULL},
 	{ GRAPHIC, "graphic", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
-
-
 
 gpointer
 sect_init_data (void)
@@ -79,6 +79,38 @@ sect_init_data (void)
 	retval->header = g_new0 (HeaderInfo, 1);
 	retval->state = LOOKING_FOR_SECT;
 	return (gpointer) retval;
+}
+
+static void
+sect_write_characters (Context *context,
+		      const gchar *chars,
+		      int len)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	write_characters (context, chars, len);
+}
+
+void
+sect_article_end_element (Context *context, const gchar *name)
+{
+	if (context->footnotes) {
+		GSList *list;
+		gint i = 1;
+
+		g_print ("<HR>");
+		g_print ("<H4>Notes:</H4>");
+		g_print ("<TABLE BORDER=\"0\" WIDTH=\"100%%\">\n\n");
+		for (list = context->footnotes; list; list = list->next) {
+			g_print ("<TR><TD ALIGN=\"LEFT\" VALIGN=\"TOP\" WIDTH=\"5%%\">\n");
+			g_print ("<A HREF=\"#HEADNOTE%d\" NAME=\"FOOTNOTE%d\">[%d]</A></TD>\n", i, i, i);
+			g_print ("<TD ALIGN=\"LEFT\" VALIGN=\"TOP\" WIDTH=\"95%%\">\n%s\n</TD></TR>\n", ((GString *)list->data)->str);
+			i++;
+		}
+		g_print ("</TABLE>");
+	}
+	g_print ("</BODY>\n</HEAD>\n");
 }
 
 static void
@@ -159,17 +191,16 @@ sect_para_end_element (Context *context, const gchar *name)
 	};
 }
 
+
 static void
 sect_para_characters (Context *context,
 		      const gchar *chars,
 		      int len)
 {
-	if (IS_IN_SECT (context)) {
-		gchar *temp;
-		temp = g_strndup (chars, len);
-		g_print ("%s", temp);
-		g_free (temp);
-	}
+	if (!IS_IN_SECT (context))
+		return;
+
+	write_characters (context, chars, len);
 }
 
 
@@ -483,19 +514,31 @@ sect_title_characters (Context *context,
 
 
 	if (((SectContext *)context->data)->state == LOOKING_FOR_SECT_TITLE) {
-		SectContext *sect_context = (SectContext *)context->data;
+		StackElement *stack_el;
+
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
+
+		stack_el = find_first_element (context, element_list);
+
 		temp = g_strndup (chars, len);
 
 		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", temp);
 		g_print ("<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
-		if (sect_context->top == NULL)
+		if (stack_el == NULL) 
 			g_print ("<A href=\"%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
 				 context->base_file);
+#if 0
 		else
 			g_print ("<A href=\"%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
 				 context->base_file,
 				 sect_context->topid,
 				 sect_context->top);
+#endif
 		g_print ("<H1>%s</H1>\n", temp);
 		((SectContext *)context->data)->state = IN_SECT;
 		g_free (temp);
@@ -544,3 +587,38 @@ sect_title_characters (Context *context,
 
 	g_slist_free (element_list);
 }
+
+void
+sect_ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	ulink_start_element (context, name, atrs);
+}
+
+
+void
+sect_ulink_end_element (Context *context, const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	ulink_end_element (context, name);
+}
+
+static void
+sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+{
+	GString *footnote;
+	gint i;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	footnote = g_string_new (NULL);
+	context->footnotes = g_slist_append (context->footnotes, footnote);
+	i = g_slist_length (context->footnotes);
+	g_print ("<A NAME=\"HEADNOTE%d\" HREF=\"#FOOTNOTE%d\">[%d]</A>", i, i, i);
+}
+

@@ -19,7 +19,7 @@ static void toc_title_characters (Context *context, const gchar *chars, int len)
 
 
 ElementInfo toc_elements[] = {
-	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) article_end_element, NULL},
+	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, NULL, NULL},
 	{ BOOK, "book", NULL, NULL, NULL},
 	{ SECTION, "section", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ SECT1, "sect1", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
@@ -44,7 +44,7 @@ ElementInfo toc_elements[] = {
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) toc_copyright_characters},
 	{ TITLE, "title", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
 	{ SUBTITLE, "subtitle", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
-	{ ULINK, "ulink", NULL, NULL, NULL},
+	{ ULINK, "ulink", (startElementSAXFunc) ulink_start_element, (endElementSAXFunc) ulink_end_element, (charactersSAXFunc) write_characters},
 	{ XREF, "xref", NULL, NULL, NULL},
 	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
 	{ FIGURE, "figure", NULL, NULL, NULL},
@@ -62,7 +62,6 @@ toc_init_data (void)
 
 	return (gpointer) retval;
 }
-
 
 
 static void
@@ -299,7 +298,7 @@ toc_title_start_element (Context *context,
 		if (context->sect4 > 0) g_print (".%d", context->sect4);
 		if (context->sect5 > 0) g_print (".%d", context->sect5);
 		g_print (".&nbsp;&nbsp;");
-		g_print ("<A href=\"%s#", context->base_file);
+		g_print ("<A href=\"%s?", context->base_file);
 
 		atrs_ptr = (stack_el->atrs);
 		while (atrs_ptr && *atrs_ptr) {

@@ -71,6 +71,8 @@ struct _Context {
 	gint sect3;
 	gint sect4;
 	gint sect5;
+
+	GSList *footnotes;
 };
 
 /* useful structs */
@@ -96,6 +98,8 @@ void article_end_element (Context *context, const gchar *name);
 void artheader_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void para_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void para_end_element (Context *context, const gchar *name);
+void ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void ulink_end_element (Context *context, const gchar *name);
 void write_characters (Context *context, const gchar *chars, int len);
 StackElement *find_first_element (Context *context, GSList *args);
 ElementIndex find_first_parent (Context *context, GSList *args);

@@ -16,6 +16,65 @@ article_end_element (Context *context, const gchar *name)
 }
 
 void
+ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+{
+	gint url_found = FALSE;
+	GSList *list;
+	gchar **atrs_ptr;
+	ElementIndex index;
+
+	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
+	index = find_first_parent (context, list);
+
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (!strcasecmp (*atrs_ptr, "url")) {
+			atrs_ptr++;
+			if (index == UNDEFINED) {
+				g_print ("<A HREF=\"%s\">", *atrs_ptr);
+			} else {
+				GString *footnote;
+				list = g_slist_last (context->footnotes);
+
+				footnote = (GString *) list->data;
+				g_string_append (footnote, "<A HREF=\"");
+				g_string_append (footnote, *atrs_ptr);
+				g_string_append (footnote, "\">");
+			}
+				
+				
+			url_found = TRUE;
+			break;
+		}
+		atrs_ptr += 2;
+	}
+	if (!url_found)
+		g_print ("<A>");
+}
+
+
+void
+ulink_end_element (Context *context, const gchar *name)
+{
+	GSList *list;
+	ElementIndex index;
+
+	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
+	index = find_first_parent (context, list);
+
+	if (index == UNDEFINED) {
+		g_print ("</A>\n");
+	} else {
+		GString *footnote;
+
+		list = g_slist_last (context->footnotes);
+
+		footnote = (GString *) list->data;
+		g_string_append (footnote, "</A>\n");
+	}
+}
+
+void
 artheader_start_element (Context *context, const gchar *name, const xmlChar **atrs)
 {
 	g_print ("<HEAD>\n");
@@ -27,11 +86,25 @@ write_characters (Context *context,
 		  int len)
 {
 	char *temp;
+	GSList *list;
+	ElementIndex index;
 
-	temp = g_strndup (chars, len);
-	g_print ("chars:%s:\n", temp);
-	g_free (temp);
-	
+	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
+	index = find_first_parent (context, list);
+
+	if (index == UNDEFINED) {
+		temp = g_strndup (chars, len);
+		g_print ("%s\n", temp);
+		g_free (temp);
+	} else {
+		GString *footnote;
+
+		list = g_slist_last (context->footnotes);
+		footnote = (GString *) list->data;
+		temp = g_strndup (chars, len);
+		g_string_append (footnote, temp);
+		g_free (temp);
+	}
 }
 
 StackElement *
@@ -246,6 +319,11 @@ parse_file (gchar *filename, gchar *section)
 	if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
 		g_print ("error\n");
 	};
+
+	if (section) {
+		/* WHY IS THIS NECESSARY???? */
+		sect_article_end_element (context, "article");
+	}
 }
 
 int
@@ -260,7 +338,7 @@ main (int argc, char *argv[])
 	}
 
 	for (ptr = argv[1]; *ptr; ptr++){
-		if (*ptr == '#') {
+		if (*ptr == '?') {
 			*ptr = '\000';
 			if (*(ptr + 1))
 				section = ptr + 1;
