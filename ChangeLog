@@ -1,3 +1,15 @@
+2001-04-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text),
+	(nautilus_canvas_note_item_update):
+	tweaked note sizing
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation), (get_emblem_rectangle):
+	made the annotation be positioned properly by using world coordinates
+	instead of canvas coordinates
+	
 2001-04-09  Andy Hertzfeld  <andy@eazel.com>
 
 	removed some unneeded generality from the note item

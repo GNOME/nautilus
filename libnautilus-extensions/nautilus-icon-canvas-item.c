@@ -228,10 +228,10 @@ static void     get_icon_canvas_rectangle                  (NautilusIconCanvasIt
 static void     emblem_layout_reset                        (EmblemLayout                  *layout,
 							    NautilusIconCanvasItem        *icon_item,
 							    const ArtIRect                *icon_rect);
-static gboolean emblem_layout_next                         (EmblemLayout                  *layout,
+static 		gboolean emblem_layout_next                (EmblemLayout                  *layout,
 							    GdkPixbuf                    **emblem_pixbuf,
 							    ArtIRect                      *emblem_rect);
-static void	get_emblem_rectangle 			   (NautilusIconCanvasItem 	  *icon_item,
+static void	get_emblem_rectangle			   (NautilusIconCanvasItem 	  *icon_item,
 					   		    int 			  which_emblem,
 					   		    ArtIRect 			  *rect);
 
@@ -1876,9 +1876,11 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 {
 	uint fill_color, outline_color;
 	double top, left;
-	double delta_x, delta_y;
+	double right, bottom;
 	ArtDRect icon_rect;
 	ArtIRect emblem_rect;
+	int emblem_x, emblem_y;
+	double world_emblem_x, world_emblem_y;
 	int annotation_width;
 	char *note_text;
 	GnomeCanvas *canvas;
@@ -1914,12 +1916,17 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	if (canvas->aa) {
 		get_emblem_rectangle (icon_item, emblem_index, &emblem_rect);
 		annotation_width = icon_item->details->annotation->x2 - icon_item->details->annotation->x1;
-		left = ((emblem_rect.x1 + emblem_rect.x0) / 2) - (annotation_width / 2.0 );
-		top = (emblem_rect.y1 + emblem_rect.y0) / 2;
+
+		emblem_x = (emblem_rect.x0 + emblem_rect.x1) / 2;
+		emblem_y = (emblem_rect.y0 + emblem_rect.y1) / 2;
+		gnome_canvas_c2w (canvas, emblem_x, emblem_y, &world_emblem_x, &world_emblem_y);
 		
-		delta_x = left - icon_item->details->annotation->x1;
-		delta_y = top -  icon_item->details->annotation->y1;
-		gnome_canvas_item_move (icon_item->details->annotation, delta_x, delta_y);
+		left = world_emblem_x - (annotation_width / 2.0 );
+		top = world_emblem_y;
+		right = left + annotation_width;
+		bottom = top + icon_item->details->annotation->y2 - icon_item->details->annotation->y1;
+
+		gnome_canvas_item_set (icon_item->details->annotation, "x1", left, "y1", top, "x2", right, "y2", bottom, NULL);
 	}	
 	
 	gnome_canvas_item_raise_to_top (icon_item->details->annotation);		
@@ -2304,7 +2311,7 @@ get_emblem_rectangle (NautilusIconCanvasItem *icon_item,
 	EmblemLayout emblem_layout;
 	GdkPixbuf *pixbuf;
 	int emblem_index;
-	
+
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_item->details->canvas_rect);
 	emblem_index = 0;
 	

@@ -345,8 +345,8 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 	width = (total_width < ANNOTATION_WIDTH) ? total_width : ANNOTATION_WIDTH;
 	
 	/* add some vertical slop for descenders and incorporate scale factor */
-	note_item->x2 = note_item->x1 + (width / item->canvas->pixels_per_unit);
-	note_item->y2 = note_item->y1 + 4.0 + (height / item->canvas->pixels_per_unit);
+	note_item->x2 = floor (note_item->x1 + (width / item->canvas->pixels_per_unit) + .5);
+	note_item->y2 = floor (note_item->y1 + 4.0 + (height / item->canvas->pixels_per_unit) + .5);
 	
 	
 	update_item_bounding_box (note_item);
@@ -890,7 +890,7 @@ nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSV
 		x1 = note_item->x2;
 		y1 = note_item->y2;
 
-		round_off_amount = item->canvas->pixels_per_unit;
+		round_off_amount = item->canvas->pixels_per_unit / 2;
 		
 		gnome_canvas_item_reset_bounds (item);
 		midpoint = (x1 + x0) / 2;
