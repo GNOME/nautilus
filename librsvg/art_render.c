@@ -2,7 +2,7 @@
 
 #include <libart_lgpl/libart-features.h>
 
-#if LIBART_MAJOR_VERSION == 2 && LIBART_MINOR_VERSION < 2
+#if LIBART_MAJOR_VERSION == 2 && LIBART_MINOR_VERSION < 3
 
 /* Libart_LGPL - library of basic graphic primitives
  * Copyright (C) 2000 Raph Levien
@@ -266,6 +266,7 @@ art_render_choose_clear_callback (ArtRender *render)
     {
       art_die ("art_render_choose_clear_callback: inconsistent render->depth = %d\n",
 	       render->depth);
+      clear_callback = NULL; /* to avoid "may be used uninitialized" warning */
     }
   return clear_callback;
 }

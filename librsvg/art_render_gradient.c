@@ -2,7 +2,7 @@
 
 #include <libart_lgpl/libart-features.h>
 
-#if LIBART_MAJOR_VERSION == 2 && LIBART_MINOR_VERSION < 2
+#if LIBART_MAJOR_VERSION == 2 && LIBART_MINOR_VERSION < 3
 
 /*
  * art_render_gradient.c: Gradient image source for modular rendering.
