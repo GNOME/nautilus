@@ -258,10 +258,16 @@ nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
 static void
 nautilus_service_install_view_destroy (GtkObject *object)
 {
+	NautilusServiceInstallView *view;
+	Trilobite_Eazel_Install	service;
+	CORBA_Environment ev;
 
-	NautilusServiceInstallView	*view;
-	
 	view = NAUTILUS_SERVICE_INSTALL_VIEW (object);
+
+	CORBA_exception_init (&ev);
+	service = eazel_install_callback_corba_objref (view->details->installer);
+	Trilobite_Eazel_Install_stop (service, &ev);
+	CORBA_exception_free (&ev);
 
 	g_free (view->details->uri);
 	g_list_free (view->details->message_left);
@@ -273,12 +279,14 @@ nautilus_service_install_view_destroy (GtkObject *object)
 		trilobite_root_client_unref (GTK_OBJECT (view->details->root_client));
 	}
 
-	eazel_install_callback_unref (GTK_OBJECT (view->details->installer));
+	if (view->details->installer != NULL) {
+		/* this will unref the installer too, which will indirectly cause any ongoing download to abort */
+		eazel_install_callback_unref (GTK_OBJECT (view->details->installer));
+	}
 
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-
 }
 
 NautilusView *
@@ -491,7 +499,7 @@ turn_cylon_off (NautilusServiceInstallView *view, float progress)
 
 /* replace the current progress bar (in the message box) with a centered label saying "Complete!" */
 static void
-current_progress_bar_complete (NautilusServiceInstallView *view)
+current_progress_bar_complete (NautilusServiceInstallView *view, const char *text)
 {
 	GtkWidget *right;
 	GdkFont *font;
@@ -503,8 +511,9 @@ current_progress_bar_complete (NautilusServiceInstallView *view)
 	width = right->allocation.width;
 	height = right->allocation.height;
 	gtk_container_remove (GTK_CONTAINER (view->details->message_box), right);
+	view->details->current_progress_bar = NULL;
 
-	right = gtk_label_new (_("Complete!"));
+	right = gtk_label_new (text);
 	view->details->message_right = g_list_append (view->details->message_right, right);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (right, font);
@@ -523,6 +532,11 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 {
 	char *out;
 	const char *root_name, *tmp;
+
+	if (view->details->installer == NULL) {
+		g_warning ("Got download notice after unref!");
+		return;
+	}
 
 	/* sometimes the "name" is annoyingly the entire path */
 	root_name = name;
@@ -562,16 +576,20 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		g_free (out);
 	} else if (amount == total) {
 		/* done!  turn progress bar into a label */
-		current_progress_bar_complete (view);
+		current_progress_bar_complete (view, _("Complete!"));
 		g_free (view->details->current_rpm);
 		view->details->current_rpm = NULL;
 	} else {
-		gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar),
-					     (float) amount / (float) total);
-
-		/* spin the cylon some more, whee! */
-		spin_cylon (view);
+		/* could be a leftover event, after user hit STOP (in which case, current_progress_bar = NULL) */
+		if (view->details->current_progress_bar != NULL) {
+			gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar),
+						     (float) amount / (float) total);
+			/* spin the cylon some more, whee! */
+			spin_cylon (view);
+		}
 	}
+
+usleep (10000);
 }
 
 
@@ -758,7 +776,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), overall_complete);
 
 	if ((package_progress == package_total) && (package_total > 0)) {
-		current_progress_bar_complete (view);
+		current_progress_bar_complete (view, _("Complete!"));
 	}
 }
 
@@ -947,7 +965,7 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 	}
 
 	gtk_widget_destroy (dialog);
-	gtk_main_iteration ();
+/*	gtk_main_iteration (); */
 
 	if (okay) {
 		view->details->password_attempts++;
@@ -1017,6 +1035,8 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out;
+	int			tries;
+	char			*tmpdir;
 
 	host = g_strdup (INSTALL_HOST);
 	port = INSTALL_PORT;
@@ -1054,10 +1074,27 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	view->details->root_client = set_root_client (eazel_install_callback_bonobo (view->details->installer), view);
 	service = eazel_install_callback_corba_objref (view->details->installer);
 	Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	Trilobite_Eazel_Install__set_tmp_dir (service, "/tmp/eazel-install", &ev);
 	Trilobite_Eazel_Install__set_server (service, host, &ev);
 	Trilobite_Eazel_Install__set_server_port (service, port, &ev);
 	Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
+
+	/* attempt to create a directory we can use */
+#define RANDCHAR ('A' + (rand () % 23))
+	srand (time (NULL));
+	for (tries = 0; tries < 50; tries++) {
+		tmpdir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
+					  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
+					  RANDCHAR, RANDCHAR, (rand () % 1000));
+		if (mkdir (tmpdir, 0700) == 0) {
+			break;
+		}
+		g_free (tmpdir);
+	}
+	if (tries == 50) {
+		g_error (_("Cannot create temporary directory"));
+		go_to_uri (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+	}
+	Trilobite_Eazel_Install__set_tmp_dir (service, tmpdir, &ev);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_downloading), view);
@@ -1121,8 +1158,19 @@ service_install_load_location_callback (NautilusView			*nautilus_view,
 static void
 service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServiceInstallView *view)
 {
+	Trilobite_Eazel_Install	service;
+	CORBA_Environment ev;
+
 	g_assert (nautilus_view == view->details->nautilus_view);
 
-	g_warning (">>> trying to stop!");
-	*(char *)0L = 23;
+	CORBA_exception_init (&ev);
+	service = eazel_install_callback_corba_objref (view->details->installer);
+	Trilobite_Eazel_Install_stop (service, &ev);
+	CORBA_exception_free (&ev);
+
+	show_overall_feedback (view, _("Package download aborted."));
+	turn_cylon_off (view, 0.0);
+	current_progress_bar_complete (view, _("Aborted."));
+
+	view->details->cancelled = TRUE;
 }
