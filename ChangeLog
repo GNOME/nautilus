@@ -1,3 +1,20 @@
+2000-10-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_fetch_uri):
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(check_gconf_init):
+
+	Fix new incompatability with gnome-vfs (EOF is now an "error").
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+
+	Begin the slightly distateful process of adding special-case uri
+	scheme icons to the left panel: make the install view use the RPM
+	package icon.  Eventually we need to generalize the association of
+	icons with uri schemes.
+
 2000-10-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3839 (want Nautilus User Manual menu item)

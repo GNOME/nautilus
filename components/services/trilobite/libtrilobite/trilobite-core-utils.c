@@ -262,7 +262,8 @@ trilobite_fetch_uri (const char *uri_text, char **body, int *length)
 		}
 	}
 
-	if (err != GNOME_VFS_OK) {
+	/* EOF is now an "error" :) */
+	if ((err != GNOME_VFS_OK) && (err != GNOME_VFS_ERROR_EOF)) {
 		g_free (*body);
 		*body = NULL;
 		goto fail;

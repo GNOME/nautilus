@@ -69,7 +69,6 @@ check_gconf_init (void)
 			g_warning ("gconf init error: %s", error->message);
 			g_error_free (error);
 		}
-
 	}
 	if (conf_engine == NULL) {
 		conf_engine = gconf_engine_get_default ();

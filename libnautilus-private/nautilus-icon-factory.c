@@ -82,6 +82,7 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
 #define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
+#define ICON_NAME_INSTALL		"gnome-pack-rpm"
 
 #define ICON_NAME_THUMBNAIL_LOADING     "loading"
 
@@ -724,7 +725,7 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
 	char *mime_type, *uri;
 	const char *icon_name;
-	gboolean is_text_file, use_web_icon;
+	gboolean is_text_file;
 	
 	/* force plain text files to use the generic document icon so we can have the text-in-icons feature;
 		eventually, we want to force other types of text files as well */
@@ -746,13 +747,20 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 		return ICON_NAME_EXECUTABLE;
 	}
 
-	/* if it's an http uri and and html document, use a generic web icon instead of the generic icon  */
+	/* special-case icons based on the uri scheme.  eventually we should generalize this. */
 	uri = nautilus_file_get_uri (file);
-        use_web_icon = nautilus_istr_has_prefix (uri, "http:") && !nautilus_strcmp (mime_type, "text/html");
+	if (nautilus_istr_has_prefix (uri, "http:") && !nautilus_strcmp (mime_type, "text/html")) {
+		icon_name = ICON_NAME_WEB;
+	} else if (nautilus_istr_has_prefix (uri, "eazel-install:")) {
+		icon_name = ICON_NAME_INSTALL;
+	} else {
+		icon_name = ICON_NAME_REGULAR;
+	}
+
         g_free (uri);
         g_free (mime_type);	
 	
-	return use_web_icon ? ICON_NAME_WEB : ICON_NAME_REGULAR;
+	return icon_name;
 }
 
 /* Use the MIME type to get the icon name. */
