@@ -42,7 +42,7 @@ libvfs_help_la_LIBADD  =
 
 
 test_help_method_SOURCES = test-help-method.c
-test_help_method_LDADD = 
+test_help_method_LDADD = $(COMPONENT_LIBS)
 
 
 modulesconfdir=$(sysconfdir)/vfs/modules

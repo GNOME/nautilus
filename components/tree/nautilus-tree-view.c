@@ -785,19 +785,19 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 
 	g_signal_connect (view->details->model,
 			    "node_changed",
-			    nautilus_tree_view_model_node_changed_callback,
+			    G_CALLBACK (nautilus_tree_view_model_node_changed_callback),
 			    view);
 	g_signal_connect (view->details->model,
 			    "node_removed",
-			    nautilus_tree_view_model_node_removed_callback,
+			    G_CALLBACK (nautilus_tree_view_model_node_removed_callback),
 			    view);
 	g_signal_connect (view->details->model,
 			    "node_being_renamed",
-			    nautilus_tree_view_model_node_renamed_callback,
+			    G_CALLBACK (nautilus_tree_view_model_node_renamed_callback),
 			    view);
 	g_signal_connect (view->details->model,
 			    "done_loading_children",
-			    nautilus_tree_view_model_done_loading_callback,
+			    G_CALLBACK (nautilus_tree_view_model_done_loading_callback),
 			    view);
 }
 
@@ -940,10 +940,13 @@ create_tree (NautilusTreeView *view)
 	eel_clist_set_column_auto_resize (EEL_CLIST (view->details->tree), 0, TRUE);
 	eel_clist_columns_autosize (EEL_CLIST (view->details->tree));
 	eel_clist_set_reorderable (EEL_CLIST (view->details->tree), FALSE);
+
+#ifdef GNOME2_CONVERSION_COMPLETE
 	eel_clist_set_row_height (EEL_CLIST (view->details->tree),
 				  MAX (NAUTILUS_ICON_SIZE_FOR_MENUS,
 				       view->details->tree->style->font->ascent
 				       + view->details->tree->style->font->descent));
+#endif
         eel_ctree_set_indent (EEL_CTREE (view->details->tree), 12);
 
 	g_signal_connect (view->details->tree,
@@ -986,11 +989,11 @@ create_tree (NautilusTreeView *view)
 	
 	nautilus_tree_view_load_from_filesystem (view);
 
-	gtk_signal_connect_object_while_alive
-		(nautilus_icon_factory_get (),
-		 "icons_changed",
-		 nautilus_tree_view_update_all_icons,
-		 GTK_OBJECT (view));
+	g_signal_connect_closure_by_id (nautilus_icon_factory_get (),
+			                g_signal_lookup ("icons_changed", G_OBJECT_TYPE (nautilus_icon_factory_get())), 0,
+					g_cclosure_new_object_swap (G_CALLBACK (nautilus_tree_view_update_all_icons), 
+								    G_OBJECT (view)), 
+					FALSE);
 
 	nautilus_tree_view_init_dnd (view);
 
@@ -1063,11 +1066,11 @@ nautilus_tree_view_init (NautilusTreeView *view)
 
 	g_signal_connect (view->details->scrolled_window,
 			    "map",
-			    tree_map_callback,
+			    G_CALLBACK (tree_map_callback),
 			    view);
 	g_signal_connect (view->details->scrolled_window,
 			    "unmap",
-			    tree_unmap_callback,
+			    G_CALLBACK (tree_unmap_callback),
 			    view);
 }
 

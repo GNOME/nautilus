@@ -38,7 +38,10 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
+
+#ifdef GNOME2_CONVERSION_COMPLETE
 #include <ghttp.h>
+#endif
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <gnome.h>
@@ -179,7 +182,7 @@ nautilus_text_view_init (NautilusTextView *text_view)
     	
 	g_signal_connect (text_view, 
 			    "load_location",
-			    text_view_load_location_callback, 
+			    G_CALLBACK (text_view_load_location_callback), 
 			    text_view);
 			    	
 	/* allocate a vbox to contain the text widget */
@@ -223,9 +226,9 @@ nautilus_text_view_init (NautilusTextView *text_view)
 	gtk_container_add (GTK_CONTAINER (text_view->details->container), scrolled_window);
 
 	/* get notified when we are activated so we can merge in our menu items */
-        g_signal_connect (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (text_view))),
+        g_signal_connect (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (text_view)),
                           "activate",
-                          merge_bonobo_menu_items,
+                          G_CALLBACK (merge_bonobo_menu_items),
                           text_view);
 		 	
 	/* finally, we can show everything */	
@@ -393,6 +396,7 @@ nautilus_text_view_update (NautilusTextView *text_view)
 	gnome_vfs_async_open (&text_view->details->file_handle,
 			      uri,
 			      GNOME_VFS_OPEN_READ,
+			      GNOME_VFS_PRIORITY_DEFAULT,
 			      file_opened_callback,
 			      text_view);
         g_free (uri);
@@ -546,8 +550,10 @@ service_menu_item_parameters_new (NautilusTextView *text_view, const char *servi
 }
 
 static void
-service_menu_item_parameters_free (ServiceMenuItemParameters *parameters)
+service_menu_item_parameters_free (gpointer data, GClosure *closure)
 {
+	ServiceMenuItemParameters *parameters = (ServiceMenuItemParameters *) data;
+
 	g_free (parameters->service_template);
 	g_free (parameters->source_mode);
 	g_free (parameters);
@@ -606,9 +612,9 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 			verb_name = nautilus_bonobo_get_numbered_menu_item_command 
 				(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);	
 			bonobo_ui_component_add_verb_full (ui, verb_name,
-							   handle_service_menu_item,
+							   g_cclosure_new (G_CALLBACK (handle_service_menu_item),
 							   parameters,
-							  (GDestroyNotify) service_menu_item_parameters_free);	   
+							   service_menu_item_parameters_free));	   
 			
 			/* initially disable the item unless it's document-based; it will be enabled if there's a selection */
 			verb_path = g_strdup_printf ("/commands/%s", verb_name);
@@ -646,7 +652,7 @@ add_services_to_menu (NautilusTextView *text_view,
 	char *services_uri, *service_xml_path;
 	
 	services_uri = gnome_vfs_get_uri_from_local_path (services_directory);
-	result = gnome_vfs_directory_list_load (&file_list, services_uri, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	result = gnome_vfs_directory_list_load (&file_list, services_uri, GNOME_VFS_FILE_INFO_DEFAULT);
 	
 	if (result != GNOME_VFS_OK) {
 		g_free (services_uri);
@@ -779,7 +785,7 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 		nautilus_text_view_build_service_menu (text_view, control);
 
                 g_signal_connect (bonobo_control_get_ui_component (control),
-                                    "ui_event", handle_ui_event, text_view);
+                                    "ui_event", G_CALLBACK (handle_ui_event), text_view);
                 
 		nautilus_clipboard_set_up_editable_in_control (GTK_EDITABLE (text_view->details->text_display),
 						       		control,

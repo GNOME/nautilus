@@ -5,7 +5,7 @@ bin_PROGRAMS=nautilus-history-view
 INCLUDES=\
 	-I$(top_srcdir) \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(COMPONENT_CFLAGS)
+	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
 LDADD=\

@@ -9,6 +9,7 @@
 #include <libxml/parser.h>
 #include <dirent.h>
 #include <ctype.h>
+#include <eel/eel-string.h>
 #include "hyperbola-nav.h"
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
@@ -769,7 +770,8 @@ hyperbola_navigation_index_show_selected_terms (HyperbolaNavigationIndex *hni)
 {
 	CListCreationInfo cci;
 	MoreCListInfo mci;
-	char *stxt, *tmp_stxt;
+	char *tmp_stxt;
+	const char *stxt;
 	char *ctmp = NULL;
 	int tmp_len;
 	GtkWidget *index_items = NULL;
@@ -787,7 +789,7 @@ hyperbola_navigation_index_show_selected_terms (HyperbolaNavigationIndex *hni)
 		}
 
 
-	stxt = gtk_entry_get_text (GTK_ENTRY (hni->ent));
+	stxt = (char *) gtk_entry_get_text (GTK_ENTRY (hni->ent));
 
 	memset (&cci, 0, sizeof (cci));
 	memset (&mci, 0, sizeof (mci));
@@ -932,7 +934,7 @@ end_document (SAXParseInfo * spi)
 }
 
 static void
-characters (SAXParseInfo * spi, const gchar * chars, int len)
+parse_characters (SAXParseInfo * spi, const gchar * chars, int len)
 {
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 	if (spi->sub_type == NONE ||
@@ -953,7 +955,7 @@ despace (GString * s)
         char *ctmp, *ctmp_s = NULL;
         int i;
 
-        g_assert (s->len == (int) strlen (s->str));
+        g_assert (s->len == (guint) strlen (s->str));
         for (ctmp = s->str, i = s->len; *ctmp; ctmp++, i--) {
                 if (g_ascii_isspace (*ctmp)) {
                         if (*ctmp != ' ')
@@ -1561,7 +1563,7 @@ static xmlSAXHandler sax = {
         (startElementSAXFunc) start_element,    /* startElement */
         (endElementSAXFunc) end_element,        /* endElement */
         NULL,                   /* reference */
-        (charactersSAXFunc) characters, /* characters */
+        (charactersSAXFunc) parse_characters, /* characters */
         NULL,                   /* ignorableWhitespace */
         NULL,                   /* processingInstruction */
         NULL,                   /* comment */
@@ -2044,7 +2046,7 @@ create_index_select_page(HyperbolaNavigationIndex *hni)
 			       G_CALLBACK (hyperbola_navigation_index_OK_button), hni);
 	g_signal_connect(hni->all_button, "clicked",
 			       G_CALLBACK (hyperbola_navigation_index_select_all_button), hni);
-	g_signal_connect(hni->none_button"clicked",
+	g_signal_connect(hni->none_button, "clicked",
 			       G_CALLBACK (hyperbola_navigation_index_select_none_button), hni);
 	g_signal_connect(cancel_button, "clicked",
 			       G_CALLBACK (hyperbola_navigation_index_cancel_button), hni);
@@ -2169,7 +2171,7 @@ show_index_for_selected_terms(GtkToggleButton *all_rbutton,
 	char *tmp;
 	hni->show_all_terms = FALSE;
 	/* check to see if there is text entered in the GtkEntry box */
-	tmp = gtk_entry_get_text (GTK_ENTRY (hni->ent));
+	tmp = (char *) gtk_entry_get_text (GTK_ENTRY (hni->ent));
 	/* only update if the gtkentry box is not empty */
 	if (strcmp(tmp, "")){
 		hyperbola_navigation_index_show_selected_terms(hni);
@@ -2280,9 +2282,9 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 
 	hni->ent = gtk_entry_new();
 	g_signal_connect (hni->ent, "changed",
-				hyperbola_navigation_index_ent_changed, hni);
+				G_CALLBACK (hyperbola_navigation_index_ent_changed), hni);
 	g_signal_connect (hni->ent, "activate",
-				hyperbola_navigation_index_ent_activate, hni);
+				G_CALLBACK (hyperbola_navigation_index_ent_activate), hni);
 	gtk_container_add (GTK_CONTAINER (mid_hbox), hni->ent);
 
 	underlined_label = gtk_label_new("");

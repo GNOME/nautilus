@@ -68,7 +68,9 @@ int
 main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
+#ifdef GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
+#endif
 
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
@@ -93,12 +95,17 @@ main (int argc, char *argv[])
 	bonobo_ui_init ("nautilus-throbber", VERSION, &argc, argv);
 
 	nautilus_global_preferences_init ();   
-	
+
+#ifdef GNOME2_CONVERSION_COMPLETE
 	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_throbber_factory", g_getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new (registration_id, 
+#endif
+	factory = bonobo_generic_factory_new ("OAFIID:nautilus_throbber_factory", 
 						    throbber_make_object,
 						    NULL);
+
+#ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
+#endif
 
 	do {
 		bonobo_main ();

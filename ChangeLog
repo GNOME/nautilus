@@ -1,7 +1,23 @@
+2001-11-12  Thomas Canty  <tommydal@optushome.com.au>
+	* configure.in: Initialise the gnome-vfs-module package,
+	which is required for the help component
+
+  	* components/help/*.[c|am]: Get the help component
+	working.
+
+	* components/text/nautilus-text-view.c: Some work towards
+	getting this file compiling.
+
+	* components/throbber/main.c: register the factory iid 
+	directly.
+
+	* components/tree/*.c: get the tree component compiling 
+	and linking.
+
 2001-11-12  Michael Meeks  <michael@ximian.com>
 
 	* components/throbber/main.c: include string.h
-
+	
 2001-11-10  Thomas Canty  <tommydal@optushome.com.au>
  
  	* Lots of files:
@@ -14,6 +30,7 @@
  
  	* src/nautilus-window-toolbars.c:
  	Re-enable the throbber.
+ 
 
 2001-11-10  Benedikt Roth  <Benedikt.Roth@gmx.net>
  

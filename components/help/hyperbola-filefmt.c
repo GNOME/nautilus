@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <limits.h>
@@ -327,7 +328,7 @@ fmt_map_entry (HyperbolaDocTree * tree, const char *name, char section)
 
 		for (cur = langlist =
 		     g_list_reverse (g_list_copy
-				     (gnome_i18n_get_language_list (NULL)));
+				     ((GList *) gnome_i18n_get_language_list (NULL)));
 		     cur; cur = cur->next) {
 			g_snprintf (mapfile, sizeof (mapfile),
 				    HYPERBOLA_DATADIR "/maps/pages.map.%s",
@@ -1453,7 +1454,7 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 	char *tree_path[] = { NULL };
 
 	doc = NULL;
-	for (node = gnome_i18n_get_language_list ("LC_MESSAGES");
+	for (node = (GList *) gnome_i18n_get_language_list ("LC_MESSAGES");
 	     node != NULL;
 	     node = node->next) {
 		doc = fmt_scrollkeeper_get_xml_tree_of_locale (node->data);
@@ -1769,7 +1770,7 @@ static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
     	toplevel_doc = xmlParseFile (toplevel_file); 
 	
     	if (toplevel_doc != NULL) {
-		locales = gnome_i18n_get_language_list ("LC_MESSAGES");
+		locales = (GList *) gnome_i18n_get_language_list ("LC_MESSAGES");
 		retval = fmt_toplevel_parse_xml_tree (tree, toplevel_doc,
 						      locales);
     	}

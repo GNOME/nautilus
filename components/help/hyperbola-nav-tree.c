@@ -13,6 +13,7 @@
 #include "hyperbola-filefmt.h"
 #include "hyperbola-nav.h"
 #include <ctype.h>
+#include <string.h>
 
 #ifndef ENABLE_SCROLLKEEPER_SUPPORT
 typedef struct {
@@ -263,9 +264,9 @@ make_contents_page(HyperbolaNavigationTree *contents)
 	gtk_clist_set_selection_mode (GTK_CLIST (contents->top_ctree),
 				      GTK_SELECTION_BROWSE);
 	g_signal_connect (contents->top_ctree, "tree_select_row",
-			    hyperbola_navigation_tree_select_row, contents);
+			    G_CALLBACK (hyperbola_navigation_tree_select_row), contents);
 	g_signal_connect (contents->top_ctree, "destroy",
-			    hyperbola_navigation_tree_destroy, contents);
+			    G_CALLBACK (hyperbola_navigation_tree_destroy), contents);
 
 	contents->ctree = gtk_ctree_new (1, 0);
 	gtk_ctree_set_line_style (GTK_CTREE (contents->ctree),
@@ -277,9 +278,9 @@ make_contents_page(HyperbolaNavigationTree *contents)
 	gtk_clist_set_selection_mode (GTK_CLIST (contents->ctree),
 				      GTK_SELECTION_BROWSE);
 	g_signal_connect (contents->ctree, "tree_select_row",
-			    hyperbola_navigation_tree_select_row, contents);
+			    G_CALLBACK (hyperbola_navigation_tree_select_row), contents);
 	g_signal_connect (contents->ctree, "destroy",
-			    hyperbola_navigation_tree_destroy, contents);
+			    G_CALLBACK (hyperbola_navigation_tree_destroy), contents);
 
 	contents->selected_ctree = NULL;
 	contents->selected_node = NULL;
@@ -499,22 +500,22 @@ hyperbola_navigation_tree_new (void)
 	gtk_label_parse_uline(GTK_LABEL(page_label), _("_Index"));
 	
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), index_page, page_label);
-	gtk_signal_connect(GTK_OBJECT(notebook), "switch_page",
-				hyperbola_navigation_notebook_page_changed, index);
+	g_signal_connect(notebook, "switch_page",
+				G_CALLBACK (hyperbola_navigation_notebook_page_changed), index);
 	gtk_widget_show (notebook);
 	g_signal_connect (index->clist, "select_row",
-                            hyperbola_navigation_index_clist_select_row, index);
+                            G_CALLBACK (hyperbola_navigation_index_clist_select_row), index);
 
 	view_frame = nautilus_view_new (notebook);
 	
 	index->index_view_frame = view_frame;	
 	contents->view_frame = view_frame;
 	
-	gtk_signal_connect(GTK_OBJECT(nautilus_view_get_bonobo_control(
+	g_signal_connect((nautilus_view_get_bonobo_control(
 									NAUTILUS_VIEW(view_frame))), "activate",
-				   					merge_items_callback, index);
+				   					G_CALLBACK (merge_items_callback), index);
 	g_signal_connect (contents->view_frame, "load_location",
-			    hyperbola_navigation_tree_load_location, contents);
+			    G_CALLBACK (hyperbola_navigation_tree_load_location), contents);
 
 	return BONOBO_OBJECT (view_frame);
 

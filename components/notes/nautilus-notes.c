@@ -377,8 +377,10 @@ make_notes_view (const char *iid, gpointer callback_data)
 #endif
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (notes->note_text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
+
         background = eel_get_widget_background (notes->note_text_field);
         eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
+
 	g_signal_connect (notes->note_text_field, "focus_out_event",
       	              	    G_CALLBACK (on_text_field_focus_out_event),
                             notes);

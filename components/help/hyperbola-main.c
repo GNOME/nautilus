@@ -30,6 +30,8 @@
 
 #include "hyperbola-nav.h"
 
+#define IID "OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb"
+
 static int object_count = 0;
 
 static void
@@ -89,8 +91,9 @@ int
 main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
+#ifdef GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
-
+#endif
 
 	/* Initialize gettext support */
 #ifdef ENABLE_NLS		/* sadly we need this ifdef because otherwise the following get empty statement warnings */
@@ -130,10 +133,11 @@ main (int argc, char *argv[])
 		 g_getenv ("DISPLAY"));
 #endif
 	factory =
-		bonobo_generic_factory_new (registration_id, make_obj,
+		bonobo_generic_factory_new (IID, make_obj,
 						  NULL);
+#ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
-
+#endif
 
 	do {
 		bonobo_main ();

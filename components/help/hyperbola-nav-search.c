@@ -32,7 +32,9 @@ hyperbola_navigation_search_ent_activate (GtkWidget * ent,
 	GString *query;
 	FILE *fh;
 	char *dir;
-	char *ctmp, *line;
+	char *ctmp; 
+	const char *linetmp;
+	char *line;
 
 	query = g_string_new (NULL);
 
@@ -42,7 +44,8 @@ hyperbola_navigation_search_ent_activate (GtkWidget * ent,
 	dir = gnome_datadir_file ("gnome/help");
 	g_string_sprintf (query, "sgrep -l '");
 
-	line = gtk_entry_get_text (GTK_ENTRY (hns->ent));
+	linetmp = gtk_entry_get_text (GTK_ENTRY (hns->ent));
+	line = g_strdup(linetmp);
 	while ((ctmp = strtok (line, " \t"))) {
 		g_string_sprintfa (query, "%sword(\"%s\")",
 				   line ? "" : " and ", ctmp);
@@ -50,6 +53,7 @@ hyperbola_navigation_search_ent_activate (GtkWidget * ent,
 	}
 	g_string_sprintfa (query, "' %s/*/*/*.sgml", dir);
 	g_free (dir);
+	g_free (line);
 
 	fh = popen (query->str, "r");
 	g_string_free (query, TRUE);

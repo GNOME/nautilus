@@ -29,6 +29,7 @@
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-method.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -204,12 +205,12 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
 	const char *mime_type;
 
 	/* FIXME: This test is no longer necessary since we know the file exists from calling function */
-	if (!g_file_test (file, G_FILE_TEST_ISFILE | G_FILE_TEST_ISLINK)) { 
+	if (!g_file_test (file, G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) { 
 		return FALSE;
 	}
 
 	help_uri->file = file;
-	mime_type = gnome_vfs_get_file_mime_type (file, NULL, FALSE);
+	mime_type = gnome_vfs_mime_type_from_name (file);
         
 	if (g_ascii_strcasecmp (mime_type, "text/sgml") == 0) {
 		help_uri->type = SGML_FILE;
@@ -397,7 +398,7 @@ help_name_to_local_path (const char *old_uri)
 	new_uri_with_extension = NULL;
 	new_uri = NULL;
         
-	language_list = gnome_i18n_get_language_list ("LC_MESSAGES");
+	language_list = (GList *) gnome_i18n_get_language_list ("LC_MESSAGES");
 
 	while (!new_uri_with_extension && language_list) {
 		const char *lang;

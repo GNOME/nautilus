@@ -259,7 +259,7 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 			    G_CALLBACK (nautilus_tree_view_motion_notify), 
 			    NULL);
 	g_signal_connect (view->details->tree, "realize", 
-			    tree_view_realize_callback, view);
+			    G_CALLBACK (tree_view_realize_callback), view);
 }
 
 
@@ -399,7 +399,7 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 
 	for (target = context->targets; target != NULL; target = target->next) {
 		guint dummy_info;
-		GdkAtom target_atom = GPOINTER_TO_UINT (target->data);
+		GdkAtom target_atom = GDK_POINTER_TO_ATOM (target->data);
 
 		if (gtk_target_list_find (nautilus_tree_view_dnd_target_list, 
 					  target_atom,
@@ -800,7 +800,9 @@ nautilus_tree_view_set_dnd_icon (NautilusTreeView *tree_view, GdkDragContext *co
 				      &expanded);
 
 	/* FIXME: We can do better than 10,10 for the hot spot. */
+#ifdef GNOME2_CONVERSION_COMPLETE
 	eel_drag_set_icon_pixbuf (context, pixbuf, 10, 10);
+#endif
 }
 
 

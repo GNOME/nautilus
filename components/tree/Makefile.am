@@ -25,7 +25,6 @@ TREE_VIEW_COMMON_SOURCES =			\
 	nautilus-tree-view-dnd.h		\
 	$(NULL)
 
-
 lib_LTLIBRARIES =			\
 	libnautilus-tree-view.la
 

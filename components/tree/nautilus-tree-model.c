@@ -130,7 +130,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_removed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__POINTER_POINTER,
+			      gtk_marshal_VOID__STRING_STRING,
 		              G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	signals[DONE_LOADING_CHILDREN] =
@@ -161,10 +161,12 @@ destroy_file_hash (GHashTable *hash)
 	if (hash == NULL) {
 		return;
 	}
+#ifdef GNOME2_CONVERSION_COMPLETE
 	eel_g_hash_table_destroy_deep_custom
 		(hash,
 		 (GFunc) nautilus_file_unref, NULL,
 		 NULL, NULL);
+#endif
 }
 
 static void
@@ -324,10 +326,10 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 			report_root_node_if_possible (model);
 		}
 
-		model->details->root_node_changed_signal_id = gtk_signal_connect 
-			(GTK_OBJECT (nautilus_tree_node_get_file (model->details->root_node)),
+		model->details->root_node_changed_signal_id = g_signal_connect 
+			(nautilus_tree_node_get_file (model->details->root_node),
 			 "changed",
-			 nautilus_tree_model_root_node_file_monitor,
+			 G_CALLBACK (nautilus_tree_model_root_node_file_monitor),
 			 model);
 
 		monitor_attributes = nautilus_icon_factory_get_required_file_attributes ();
@@ -439,24 +441,24 @@ nautilus_tree_model_node_begin_monitoring (NautilusTreeModel         *model,
 
 	directory = nautilus_tree_node_get_directory (node);
 
-	node->details->done_loading_id = gtk_signal_connect 
-		(GTK_OBJECT (directory),
+	node->details->done_loading_id = g_signal_connect 
+		(directory,
 		 "done_loading",
-		 nautilus_tree_model_directory_done_loading_callback,
+		 G_CALLBACK (nautilus_tree_model_directory_done_loading_callback),
 		 model);
 
 	nautilus_tree_model_node_begin_monitoring_no_connect (model, node, force_reload);
 
-	node->details->files_added_id = gtk_signal_connect 
-		(GTK_OBJECT (directory),
+	node->details->files_added_id = g_signal_connect 
+		(directory,
 		 "files_added",
-		 nautilus_tree_model_directory_files_changed_callback,
+		 G_CALLBACK (nautilus_tree_model_directory_files_changed_callback),
 		 model);
 	
-	node->details->files_changed_id = gtk_signal_connect 
-		(GTK_OBJECT (directory),
+	node->details->files_changed_id = g_signal_connect 
+		(directory,
 		 "files_changed",
-		 nautilus_tree_model_directory_files_changed_callback,
+		 G_CALLBACK (nautilus_tree_model_directory_files_changed_callback),
 		 model);	
 }
 
