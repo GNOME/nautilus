@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author:  Michael Fleming <mfleming@eazel.com>
+ * Authors:  Michael Fleming <mfleming@eazel.com>
  * Based on nautilus-sample-content-view by Maciej Stachowiak <mjs@eazel.com>
  *
  */
@@ -38,6 +38,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <glade/glade.h>
 
 #include <libtrilobite/libtrilobite.h>
@@ -47,7 +48,13 @@
  *
  */
 
+/* FIXME: no way to save the url once you change it */
+/* FIXME: externally visible time server no longer exists */
+#if 0
 #define DEFAULT_SERVER_URL	"http://eazel24.eazel.com/time.pl"
+#else
+#define DEFAULT_SERVER_URL	"http://testmachine.eazel.com:8888/examples/time/current"
+#endif
 #define DEFAULT_TIME_DIFF	"180"
 
 #define OAFIID_TIME_SERVICE "OAFIID:trilobite_eazel_time_service:13a2dbd9-84f9-4400-bd9e-bb4575b86894"
@@ -66,6 +73,7 @@ struct TrilobiteEazelTimeViewDetails {
 	GtkLabel *	p_status;
 	Trilobite_Eazel_Time service;
 	guint		timeout_slot;
+	TrilobiteRootClient *root_client;
 };
 
 static void trilobite_eazel_time_view_initialize_class (TrilobiteEazelTimeViewClass *klass);
@@ -192,8 +200,11 @@ update_time_display( TrilobiteEazelTimeView *view )
 				set_status_text (view, "Exception: could not get time");
 			}
 		} else {
-			/* time service returns '0' if you're within the max time diff delta */
-			gtk_entry_set_text (GTK_ENTRY(view->details->p_servertime),  ctime( remote_time ? &remote_time : &local_time));
+			/* time service returns 0 if you're within the max time diff delta,
+			 * or the number of seconds you'd need to add to be correct.
+			 */
+			remote_time += local_time;
+			gtk_entry_set_text (GTK_ENTRY(view->details->p_servertime),  ctime (&remote_time));
 		}
 	}
 
@@ -202,6 +213,22 @@ update_time_display( TrilobiteEazelTimeView *view )
 	CORBA_exception_free (&ev);
 
 	return TRUE;
+}
+
+static char *
+trilobite_eazel_time_view_get_password (GtkObject *object, const char *prompt)
+{
+	GtkWidget *dialog;
+	gboolean rv;
+	char *tmp;
+
+	dialog = nautilus_password_dialog_new ("Authenticate Me", prompt, "", TRUE);
+
+	rv = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+	tmp =  nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	gtk_main_iteration ();
+	return tmp;
 }
 
 static void
@@ -260,10 +287,6 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 	) {
 		set_status_text (view, STATUS_ERROR_NO_SERVER);
 		g_warning (STATUS_ERROR_NO_SERVER);
-	}
-	if (p_service) {
-		bonobo_object_unref (BONOBO_OBJECT(p_service));
-		p_service = NULL;
 	}
 
 	/* Initialize service params */
@@ -332,6 +355,17 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 			    GTK_SIGNAL_FUNC (load_location_callback), 
 			    view);
 
+	/* set up callbacks to ask for the root password */
+	view->details->root_client = trilobite_root_client_new ();
+	trilobite_root_client_attach (view->details->root_client, p_service);
+	gtk_signal_connect (GTK_OBJECT (view->details->root_client), "need_password",
+			    GTK_SIGNAL_FUNC (trilobite_eazel_time_view_get_password), NULL);
+
+	if (p_service) {
+		bonobo_object_unref (BONOBO_OBJECT(p_service));
+		p_service = NULL;
+	}
+
 #if 0
 	/* 
 	 * Get notified when our bonobo control is activated so we
@@ -369,6 +403,7 @@ trilobite_eazel_time_view_destroy (GtkObject *object)
 	g_free (view->details->max_time_diff);
 
 	Trilobite_Eazel_Time_unref (view->details->service, NULL);
+	trilobite_root_client_unref (GTK_OBJECT (view->details->root_client));
 
 	gtk_timeout_remove (view->details->timeout_slot);
 
@@ -379,6 +414,7 @@ trilobite_eazel_time_view_destroy (GtkObject *object)
 	CORBA_exception_free (&ev);
 
 }
+
 
 /**
  * trilobite_eazel_time_view_get_nautilus_view:

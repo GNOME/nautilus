@@ -1,3 +1,29 @@
+2000-07-26  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	(update_time_display), (trilobite_eazel_time_view_get_password),
+	(trilobite_eazel_time_view_initialize),
+	(trilobite_eazel_time_view_destroy):
+	* components/services/time/service/Makefile.am:
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(impl_Trilobite_Eazel_Time_Service_set_max_difference),
+	(impl_Trilobite_Eazel_Time_Service_set_time_url),
+	(impl_Trilobite_Eazel_Time_Service_check_time),
+	(impl_Trilobite_Eazel_Time_Service_update_time),
+	(trilobite_eazel_time_service_create_corba_object),
+	(trilobite_eazel_time_service_initialize),
+	(trilobite_eazel_time_service_get_server_time):
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery.c: (trilobite_passwordquery_get_password):
+
+	Make the sample time nautilus-view use the new testmachine url
+	instead of old broken eazel24.  Break time-service of its
+	libnautilus habit and make the nautilus-view do the password
+	dialog instead.  Fix the nautilus-view's misinterpretation of the
+	time-service return value.
+
 2000-07-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-zoom-control.c:

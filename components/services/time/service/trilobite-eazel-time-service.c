@@ -36,8 +36,12 @@
 #include <ghttp.h>
 #include <time.h>
 
-/* This is the parent class pointer */
+/* might wanna make this configable */
+/* # of seconds to wait between bugging the time server again */
+#define TIME_SERVER_CACHE_TIMEOUT	60
 
+
+/* This is the parent class pointer */
 static GtkObjectClass *trilobite_eazel_time_service_parent_class;
 
 /* prototypes */
@@ -61,6 +65,7 @@ impl_Trilobite_Eazel_Time_Service_set_max_difference (impl_POA_Trilobite_Eazel_T
 						      CORBA_Environment *ev) 
 {
 	service->object->private->maxd = maxd;
+	service->object->private->time_obtained = 0;
 }
 
 static void
@@ -72,6 +77,7 @@ impl_Trilobite_Eazel_Time_Service_set_time_url (impl_POA_Trilobite_Eazel_Time_Se
 		g_free (service->object->private->time_url);
 	}
 	service->object->private->time_url = g_strdup (url);
+	service->object->private->time_obtained = 0;
 }
 
 static CORBA_unsigned_long
@@ -86,10 +92,19 @@ impl_Trilobite_Eazel_Time_Service_check_time  (impl_POA_Trilobite_Eazel_Time_Ser
 	local_time = time (NULL);
 	server_time = trilobite_eazel_time_service_get_server_time (service->object, ev);
 
+#if 0
 	g_message ("Local time  : %ld", local_time);
 	g_message ("Server time : %ld", server_time);
 	g_message ("Diff is     : %d", abs (server_time - local_time));
 	g_message ("Allowed d   : %d", service->object->private->maxd);
+#endif
+	if (server_time == 0) {
+		g_warning ("Unable to get server time");
+	} else if (abs (server_time - local_time) > service->object->private->maxd) {
+		g_warning ("Time off by %d, max allowed diff is %d",
+			   abs (server_time - local_time),
+			   service->object->private->maxd);
+	}
 
 	/* If we did not get the time, raise an exception */
 	if (server_time != 0) {
@@ -106,12 +121,10 @@ static void
 impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Service *service,
 						CORBA_Environment *ev) 
 {
-	gboolean get_time;
+	time_t server_time;
 	TrilobiteRootHelper *root_helper;
 	GList *args;
 	char *tmp;
-
-	get_time = FALSE;
 
 	root_helper = gtk_object_get_data (GTK_OBJECT (service->object), "trilobite-root-helper");
 	if (trilobite_root_helper_start (root_helper) != TRILOBITE_ROOT_HELPER_SUCCESS) {
@@ -121,31 +134,12 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 		return;
 	}
 
-	/* if we have the server time, and it's less then 10 minutes old, use it */
-	if (service->object->private->server_time != 0) {
-		if (abs (service->object->private->time_obtained - time (NULL)) > 60*10) {
-			get_time = TRUE;
-		}		     
-	} else {
-		get_time = TRUE;
-	}
-	
-	if (get_time == TRUE) {
-		time_t server_time;
-
-		server_time = trilobite_eazel_time_service_get_server_time (service->object, ev);
-		if (server_time == 0) {
-			return;
-		}
-
-	} else {
-		time_t diff;
-		
-		diff = time (NULL) - service->object->private->time_obtained;
-		service->object->private->server_time += diff;
+	server_time = trilobite_eazel_time_service_get_server_time (service->object, ev);
+	if (server_time == 0) {
+		return;
 	}
 
-	tmp = g_strdup_printf ("%ld", service->object->private->server_time);
+	tmp = g_strdup_printf ("%ld", server_time);
 	args = g_list_prepend (NULL, tmp);
 
 	if (trilobite_root_helper_run (root_helper, TRILOBITE_ROOT_HELPER_RUN_SET_TIME, args, NULL) != TRILOBITE_ROOT_HELPER_SUCCESS) {
@@ -237,11 +231,11 @@ trilobite_eazel_time_service_create_corba_object (BonoboObject *service) {
 	g_assert (TRILOBITE_IS_EAZEL_TIME_SERVICE (service));
 	
 	CORBA_exception_init (&ev);
-	
-	servant = (impl_POA_Trilobite_Eazel_Time_Service*)g_new0 (PortableServer_Servant,1);
-	((POA_Trilobite_Eazel_Time*) servant)->vepv = TRILOBITE_EAZEL_TIME_SERVICE_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
+
+	servant = g_new0 (impl_POA_Trilobite_Eazel_Time_Service, 1);
+	((POA_Trilobite_Eazel_Time *)servant)->vepv = TRILOBITE_EAZEL_TIME_SERVICE_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
 	POA_Trilobite_Eazel_Time__init (servant, &ev);
-	ORBIT_OBJECT_KEY (((POA_Trilobite_Eazel_Time*)servant)->_private)->object = NULL;
+	ORBIT_OBJECT_KEY (((POA_Trilobite_Eazel_Time *)servant)->_private)->object = NULL;
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("Cannot instantiate Trilobite_Eazel_Time corba object");
@@ -418,6 +412,14 @@ trilobite_eazel_time_service_get_server_time (TrilobiteEazelTimeService *service
 					      CORBA_Environment *ev) 
 {
 	time_t result;
+	time_t now;
+
+	now = time (NULL);
+	if ((service->private->time_obtained > 0) &&
+	    (now - service->private->time_obtained < TIME_SERVER_CACHE_TIMEOUT)) {
+		/* don't bug the time server again -- just extrapolate the time */
+		return service->private->server_time + (now - service->private->time_obtained);
+	}
 
 	switch (service->private->method) {
 	case REQUEST_BY_HTTP:
@@ -429,7 +431,9 @@ trilobite_eazel_time_service_get_server_time (TrilobiteEazelTimeService *service
 	};
 
 	service->private->server_time = result;
-	service->private->time_obtained = time (NULL);
+	if (result != 0) {
+		service->private->time_obtained = time (NULL);
+	}
 
 	return result;
 }

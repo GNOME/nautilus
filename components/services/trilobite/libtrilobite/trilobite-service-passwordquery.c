@@ -30,10 +30,7 @@
 #include "trilobite-service.h"
 #include "trilobite-service-passwordquery-public.h"
 #include "trilobite-service-passwordquery-private.h"
-/* FIXME: bugzilla.eazel.com 1624
-   this makes libtrilobite dependent on libnautilus-extensions
-*/
-#include <libnautilus-extensions/nautilus-password-dialog.h>
+
 
 enum {
 	ARG_0,
@@ -315,6 +312,9 @@ trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper,
 				      TrilobitePasswordQuery *trilobite)
 {
 	if (trilobite->private->client == CORBA_OBJECT_NIL) {
+		/* you lose. */
+		return NULL;
+#if 0
 		GtkWidget *dialog;
 		gboolean rv;
 		char *tmp;
@@ -332,6 +332,7 @@ trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper,
 		gtk_widget_destroy (dialog);
 		gtk_main_iteration ();
 		return tmp;
+#endif
 	} else {
 		CORBA_Environment ev;
 		CORBA_char *tmp;
