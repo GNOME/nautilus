@@ -2078,21 +2078,6 @@ add_channels_to_lists (News* news_data)
 	xmlFreeDoc (channel_doc);
 }
 
-/* when the empty message is resized, adjust its wrap width */
-static void
-empty_message_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News *news_data)
-{
-	int wrap_width;
-	
-	wrap_width = allocation->width - 2*EMPTY_MESSAGE_MARGIN;
-	if (wrap_width > 0) {
-                
-#if GNOME2_CONVERSION_COMPLETE
-		eel_label_set_smooth_line_wrap_width (EEL_LABEL (widget), allocation->width - 2*EMPTY_MESSAGE_MARGIN);
-#endif
-	}
-}
-
 /* code-saving utility to allocate a left-justified anti-aliased label */
 static GtkWidget *
 news_label_new (const char *label_text, gboolean title_mode)
@@ -2494,10 +2479,6 @@ make_news_view (const char *iid, void *callback_data)
 
 	/* set up the update timeout */
 	news->timer_task = gtk_timeout_add (10000, check_for_updates, news);
-
-	/* arrange for notification when we're resized */
-
-	g_signal_connect (news->empty_message, "size_allocate", G_CALLBACK (empty_message_size_allocate), news);
 
         gtk_widget_show_all (news->main_container);
 

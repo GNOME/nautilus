@@ -1,3 +1,25 @@
+2002-03-19  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-zoom-control.c (draw_number):
+	use the y_offset to center the number in the
+	allocation, while was possible to 'fix' this
+	centering by other means, it's not going to handle
+	font size or other changes that change the pixel
+	height of this toolbar.
+
+	* libnautilus-private/nautilus.schemas: add the
+	defaults in here to test.
+
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_init): prune old font bits.
+	(set_up_tree_view): handle the font / size
+	using Pango & the cell renderers.
+
+	* components/news/nautilus-news.c
+	(empty_message_size_allocate): remove, no longer
+	neccessary GtkLabel will do the wrapping for us.
+	(make_news_view): upd.
+
 2002-03-18  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-directory-async.c

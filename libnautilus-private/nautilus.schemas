@@ -262,6 +262,33 @@
       </locale>
     </schema>
 
+   <schema>
+      <key>/schemas/apps/nautilus/list-view/font</key>
+      <applyto>/apps/nautilus/list-view/font</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>sans</default>
+      <locale name="C">
+         <short>The default list view font</short>
+         <long>
+	   The default font for use in the list view.
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/list-view/default_zoom_level_font_size</key>
+      <applyto>/apps/nautilus/list-view/default_zoom_level_font_size</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>12</default>
+      <locale name="C">
+         <short>Default zoom font size</short>
+         <long>
+	   The font size at default zoom in the list view.
+         </long>
+      </locale>
+    </schema>
 
   </schemalist>  
 </gconfschemafile>
