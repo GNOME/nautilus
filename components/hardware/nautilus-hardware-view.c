@@ -47,6 +47,7 @@
 #include <eel/eel-string.h>
 #include <libnautilus/libnautilus.h>
 #include <limits.h>
+#include <locale.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -279,37 +280,49 @@ static char *
 get_CPU_description (int nth)
 {
 	char *proc_data;
-        char *model, *speed, *cache_size;
+        char *model, *speed, *cache_size; 
+        char *localized_speed;
 	char *result;
+	char *p;
+ 	struct lconv *l;
 
         proc_data = read_proc_info ("cpuinfo");
 	model = extract_info (proc_data, "model name", nth);
 	speed = extract_info (proc_data, "cpu MHz", nth);
 	cache_size = extract_info (proc_data, "cache size", nth);
 	g_free (proc_data);
-
-        /* FIXME: The MHz value always comes in with a "." as the
-         * radix character. We need to change that to the local one
-         * ("," for many European countries).
-         */
-
-        /* FIXME bugzilla.gnome.org 45298: The KB string that comes
-         * from the proc data is wrong -- "kB" is correct, and we use
-         * "K" for file sizes as of this writing (although we use "MB"
-         * and "GB").
-         */
+        
+  	/* Hack to localize the decimal_point */
+        p = speed == NULL ? NULL : strrchr (speed, '.');
+        if (p == NULL) {
+                localized_speed = g_strdup (speed);
+        } else {
+                *p = '\0';
+                l = localeconv ();
+                localized_speed = g_strconcat (speed, l->decimal_point,
+                                               p + 1, NULL);
+        }
+        
+        /* Remove the " KB" part so that it can be localized */
+        if (cache_size != NULL) {
+                p = strchr (cache_size, ' ');
+                if (p != NULL) {
+                        *p = '\0';
+                }   
+        }  	
         
         if (model == NULL || speed == NULL || cache_size == NULL) {
                 result = NULL;
         } else {
                 result = g_strdup_printf (_("%s CPU\n"
                                             "%s MHz\n"
-                                            "%s cache size"),
-                                          model, speed, cache_size);
+                                            "%s K cache size"),
+                                          model, localized_speed, cache_size);
         }
-
+        
         g_free (model);
         g_free (speed);
+        g_free (localized_speed);
         g_free (cache_size);
 
 	return result;	
