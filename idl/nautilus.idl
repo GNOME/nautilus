@@ -10,10 +10,14 @@ module Nautilus {
   struct NavigationInfo {
     string requested_uri, actual_uri, content_type;
     string referring_uri, actual_referring_uri, referring_content_type;
+
+    Object content_view;
   };
 
   struct SelectionInfo {
     string selected_uri;
+
+    Object content_view;
   };
 
   struct SelectionRequestInfo {

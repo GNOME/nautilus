@@ -18,6 +18,9 @@ static void nautilus_window_close (GtkWidget *widget,
 static void nautilus_window_real_request_location_change (NautilusWindow *window,
 							  Nautilus_NavigationRequestInfo *loc,
 							  GtkWidget *requesting_view);
+static void nautilus_window_real_request_selection_change(NautilusWindow *window,
+							  Nautilus_SelectionRequestInfo *loc,
+							  GtkWidget *requesting_view);
 
 #define CONTENTS_AS_HBOX
 /* six seconds */
@@ -84,6 +87,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
 
   klass->request_location_change = nautilus_window_real_request_location_change;
+  klass->request_selection_change = nautilus_window_real_request_selection_change;
 
   i = 0;
   klass->window_signals[i++] = gtk_signal_new("request_location_change",
@@ -499,10 +503,21 @@ nautilus_window_change_location(NautilusWindow *window,
   signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
 
   /* If we need to load a different IID, do that before sending the location change request */
-  if(strcmp(NAUTILUS_VIEW(window->content_view)->iid, loci->content_iid))
-    nautilus_view_load_client(NAUTILUS_VIEW(window->content_view), loci->content_iid);
+  if(strcmp(NAUTILUS_VIEW(window->content_view)->iid, loci->content_iid)) {
+    NautilusView *new_view;
 
-  gtk_signal_emit(GTK_OBJECT(window->content_view), signum, loci, window->content_view, requesting_view);
+    if(requesting_view == window->content_view)
+      requesting_view = NULL;
+
+    new_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
+    nautilus_view_load_client(new_view, loci->content_iid);
+    nautilus_window_set_content_view(window, new_view);
+  }
+
+  loci->navinfo.content_view = NAUTILUS_VIEW(window->content_view)->view_client;
+
+  if(requesting_view != window->content_view)
+    gtk_signal_emit(GTK_OBJECT(window->content_view), signum, loci);
 
   notfound_views = keep_views = discard_views = NULL;
   for(cur = window->meta_views; cur; cur = cur->next)
@@ -510,9 +525,16 @@ nautilus_window_change_location(NautilusWindow *window,
       NautilusView *view = cur->data;
 
       if(g_slist_find_custom(loci->meta_iids, view->iid, (GCompareFunc)strcmp))
-	gtk_signal_emit(GTK_OBJECT(view), signum, loci, window->content_view, requesting_view);
+	{
+	  if(requesting_view != ((GtkWidget *)view))
+	    gtk_signal_emit(GTK_OBJECT(view), signum, loci);
+	}
       else
-	discard_views = g_slist_prepend(discard_views, view);
+	{
+	  if(((GtkWidget *)view) == requesting_view)
+	    requesting_view = NULL;
+	  discard_views = g_slist_prepend(discard_views, view);
+	}
     }
   for(cur = loci->meta_iids; cur; cur = cur->next)
     {
@@ -528,6 +550,7 @@ nautilus_window_change_location(NautilusWindow *window,
 	  view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL));
 	  nautilus_view_load_client(view, cur->data);
 	  nautilus_window_add_meta_view(window, view);
+	  gtk_signal_emit(GTK_OBJECT(view), signum, loci, window->content_view);
 	}
     }
   for(cur = discard_views; cur; cur = cur->next)
@@ -542,6 +565,29 @@ nautilus_window_change_location(NautilusWindow *window,
   window->actual_current_uri = g_strdup(loci->navinfo.actual_uri);
 
   nautilus_navinfo_free(loci);
+}
+
+static void nautilus_window_real_request_selection_change(NautilusWindow *window,
+							  Nautilus_SelectionRequestInfo *loc,
+							  GtkWidget *requesting_view)
+{
+  GSList *cur;
+  guint signum;
+  Nautilus_SelectionInfo selinfo;
+
+  signum = gtk_signal_lookup("notify_selection_change", nautilus_view_get_type());
+
+  selinfo.selected_uri = loc->selected_uri;
+  selinfo.content_view = NAUTILUS_VIEW(window->content_view)->view_client;
+
+  if(((GtkWidget *)window->content_view) != requesting_view)
+    gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
+
+  for(cur = window->meta_views; cur; cur = cur->next)
+    {
+      if(cur->data != requesting_view)
+	gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
+    }
 }
 
 static void
