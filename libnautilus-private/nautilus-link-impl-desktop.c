@@ -212,7 +212,6 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 {
 	FILE *desktop_file;
 	gchar *path;
-	gchar *file_name;
 	char *uri;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
@@ -223,11 +222,9 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 	g_return_val_if_fail (target_uri != NULL, FALSE);
 
 	path = nautilus_make_path (directory_path, name);
-	file_name = g_strconcat (path, ".desktop", NULL);
-	g_free (path);
-	desktop_file = fopen (file_name, "w");
+	desktop_file = fopen (path, "w");
 	if (desktop_file == NULL) {
-		g_free (file_name);
+		g_free (path);
 		return FALSE;
 	}
 
@@ -243,7 +240,7 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 	/* ... */
 	fclose (desktop_file);
 
-	uri = gnome_vfs_get_uri_from_local_path (file_name);
+	uri = gnome_vfs_get_uri_from_local_path (path);
 	dummy_list.data = uri;
 	dummy_list.next = NULL;
 	dummy_list.prev = NULL;
@@ -264,7 +261,7 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 	}
 
 	g_free (uri);
-	g_free (file_name);
+	g_free (path);
 	return TRUE;
 }
 
@@ -340,7 +337,8 @@ nautilus_link_impl_desktop_local_get_image_uri (const char *path)
 	char *icon_uri;
 	char *local_path, *local_uri;
 	NautilusLinkIconNotificationInfo *info;
-	
+
+	g_print ("in nautilus_link_impl_desktop_local_get_image_uri:%s\n", path);
 	icon_uri = slurp_key_string (path, "X-Nautilus-Icon");
 
 	if (icon_uri == NULL) {
@@ -363,8 +361,10 @@ nautilus_link_impl_desktop_local_get_image_uri (const char *path)
 			icon_uri = NULL;
 		g_free (icon_name);
 
+		g_print ("icon_uri1:%s\n", icon_uri);
 		return icon_uri;
 	}
+	g_print ("icon_uri:%s\n", icon_uri);
 
 	/* if the image is remote, see if we can find it in our local cache */
 	if (eel_is_remote_uri (icon_uri)) {

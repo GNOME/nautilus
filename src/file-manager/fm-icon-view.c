@@ -2685,7 +2685,6 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	
 	container_uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
 	container_path = gnome_vfs_get_local_path_from_uri (container_uri);
-	g_print ("%s:%s\n", container_uri, container_path);
 
 	point.x = x;
 	point.y = y;

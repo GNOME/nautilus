@@ -793,15 +793,12 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 						   gpointer callback_data)
 {
 	char *path;
-	char *desktop;
 
 	path = nautilus_make_path (desktop_directory, TRASH_LINK_NAME);
-	desktop = g_strconcat (path, ".desktop", NULL);
 
-	nautilus_link_local_set_icon (desktop, state ? "trash-empty" : "trash-full");
+	nautilus_link_local_set_icon (path, state ? "trash-empty" : "trash-full");
 
 	g_free (path);
-	g_free (desktop);
 }
 
 static void
@@ -1002,12 +999,9 @@ update_home_link_and_delete_copies (void)
 static void
 update_trash_link_and_delete_copies (void)
 {
-
-	gchar *trash_desktop;
-	trash_desktop = g_strconcat (TRASH_LINK_NAME, ".desktop", NULL);
 	/* Check for trash link */
 	if (!update_link_and_delete_copies (nautilus_link_local_is_trash_link,
-					    trash_desktop,
+					    TRASH_LINK_NAME,
 					    EEL_TRASH_URI)) {
 		nautilus_link_local_create (desktop_directory,
 					    TRASH_LINK_NAME,
@@ -1017,12 +1011,10 @@ update_trash_link_and_delete_copies (void)
 					    NAUTILUS_LINK_TRASH);
 	}
 
-	g_free (trash_desktop);
 	/* Make sure link represents current trash state */
 	fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
 						   	   nautilus_trash_monitor_is_empty (),
 						   	   NULL);
-
 }
 
 static void

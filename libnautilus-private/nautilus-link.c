@@ -47,6 +47,21 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdlib.h>
 
+const char *get_uri_mime_type_full (const gchar *uri_path);
+
+const char *
+get_uri_mime_type_full (const gchar *uri_path)
+{
+	const gchar *retval;
+	GnomeVFSURI *uri;
+
+	uri = gnome_vfs_uri_new (uri_path);
+	retval = gnome_vfs_get_mime_type (uri);
+	gnome_vfs_uri_unref (uri);
+
+	return retval;
+}
+
 gboolean
 nautilus_link_local_create (const char *directory_path,
 			    const char *name,
@@ -71,7 +86,7 @@ nautilus_link_local_set_icon (const char *path, const char *icon_name)
 	const gchar *mime_type;
 	gboolean retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -89,7 +104,7 @@ nautilus_link_local_set_link_uri (const char *path, const char *link_uri)
 	const gchar *mime_type;
 	gboolean retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -108,7 +123,7 @@ nautilus_link_local_set_type (const char *path,
 	const gchar *mime_type;
 	gboolean retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -127,7 +142,7 @@ nautilus_link_local_get_additional_text (const char *path)
 	const gchar *mime_type;
 	gchar *retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = NULL;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -145,7 +160,7 @@ nautilus_link_local_get_image_uri (const char *path)
 	const gchar *mime_type;
 	gchar *retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = NULL;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -164,7 +179,7 @@ nautilus_link_local_get_link_uri (const char *path)
 	const gchar *mime_type;
 	gchar *retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = NULL;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -183,7 +198,7 @@ nautilus_link_local_get_link_type (const char *path)
 	const gchar *mime_type;
  	NautilusLinkType retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = NAUTILUS_LINK_GENERIC;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -202,7 +217,7 @@ nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 //	const gchar *mime_type;
 	gchar *retval;
 
-//	mime_type = gnome_vfs_mime_type_from_name (file_contents);
+//	mime_type = get_uri_mime_type_full (file_contents);
 	retval = NULL;
 
 //	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -220,7 +235,7 @@ nautilus_link_local_is_volume_link (const char *path)
 	const gchar *mime_type;
 	gboolean retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -238,7 +253,7 @@ nautilus_link_local_is_home_link (const char *path)
 	const gchar *mime_type;
 	gboolean retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -256,7 +271,7 @@ nautilus_link_local_is_trash_link (const char *path)
 	const gchar *mime_type;
 	gboolean retval;
 
-	mime_type = gnome_vfs_mime_type_from_name (path);
+	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
