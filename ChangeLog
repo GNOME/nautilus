@@ -1,3 +1,11 @@
+2000-09-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	fixed big 914, icons are sometimes semi-transparent when dragged, by
+	removing the stippled mask code.  Someday we'll get this back as
+	X Windows improves
+	
 2000-09-11  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2317 (Right-click on sidebar uses menu items in

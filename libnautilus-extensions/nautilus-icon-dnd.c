@@ -1095,7 +1095,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	NautilusIconDndInfo *dnd_info;
 	GnomeCanvas *canvas;
 	GdkDragContext *context;
-	GdkPixbuf *pixbuf, *transparent_pixbuf;
+	GdkPixbuf *pixbuf;
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
 	int x_offset, y_offset;
@@ -1126,26 +1126,15 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 
         /* create a pixmap and mask to drag with */
         pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
-        
-	/* unfortunately, X is very slow when using a stippled mask,
-	   so only use the stipple for relatively small pixbufs. */
-	/* FIXME bugzilla.eazel.com 914: Eventually, we may have to
-	 * remove this entirely for UI consistency reasons.
-	 */
-	
-	if (gdk_pixbuf_get_width(pixbuf) * gdk_pixbuf_get_height(pixbuf) < 4096) {
-		transparent_pixbuf = nautilus_make_semi_transparent (pixbuf);
-	} else {
-		gdk_pixbuf_ref (pixbuf);
-		transparent_pixbuf = pixbuf;
-	}
-		
-	gdk_pixbuf_render_pixmap_and_mask (transparent_pixbuf,
+    
+    	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
+	   stippled masks, so we had to remove the code; this comment is left as a memorial
+	   to it, with the hope that we get it back someday as X Windows improves */
+	       
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf,
 					   &pixmap_for_dragged_file,
 					   &mask_for_dragged_file,
 					   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-
-	gdk_pixbuf_unref (transparent_pixbuf);
 	
         /* compute the image's offset */
 	nautilus_icon_canvas_item_get_icon_rectangle
