@@ -1,3 +1,13 @@
+2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view.oafinfo:
+
+	"fix" bug 725 by changing the supported uri types of the rpm view
+	component to be only "file" since it doesnt grok remote uris.
+
+	Having the rpm view grok remote uris would be a cool, feature.  I
+	have resummarized bug 725 to reflect this.
+	
 2000-05-31  Darin Adler  <darin@eazel.com>
 
 	* RENAMING: Small updates.
