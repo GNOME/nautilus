@@ -243,7 +243,12 @@ can_handle_multiple_files (Bonobo_ServerInfo *info)
 	Bonobo_ActivationProperty *prop;
 
 	prop = bonobo_server_info_prop_find (info, "nautilus:can_handle_multiple_files");
-	return prop->v._u.value_boolean;
+
+	if (prop == NULL || prop->v._d != Bonobo_ACTIVATION_P_BOOLEAN) {
+		return FALSE;
+	} else {
+		return prop->v._u.value_boolean;
+	}
 }
 
 static GList *
