@@ -322,6 +322,12 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 			*non_default_action = 0;
 			return;
 		}
+
+		/* Only move to Trash */
+		*default_action = GDK_ACTION_MOVE;
+		*non_default_action = GDK_ACTION_MOVE;
+		return;
+
 	} else if (nautilus_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)) {
 		*default_action = GDK_ACTION_MOVE;
 		*non_default_action = GDK_ACTION_MOVE;

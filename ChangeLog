@@ -1,3 +1,15 @@
+2001-02-27  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed 6959: (Drag local items into Trash -> "You cannot copy items
+		    into the Trash" error)
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	Add a missing setup of the correct default and non-default drag&drop
+	action when the target is "trash:".
+
 2001-02-27  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
