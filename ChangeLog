@@ -1,5 +1,35 @@
 2000-12-15  Robey Pointer  <robey@eazel.com>
 
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/callbacks.c: (ask_to_delete_rpms),
+	(ask_are_you_sure):
+	* nautilus-installer/src/gtk-hackery.c: (log_debug), (gtk_box_nth),
+	(gnome_reply_callback):
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/main.c:
+
+	Factor more stuff out into GTK hackery.  Fix headers to sync up
+	with the better libtrilobite layout and to follow the moving
+	target that is libeazelinstall.
+	
+	* nautilus-installer/src/package-tree.c:
+	(package_customizer_finalize), (package_customizer_unref),
+	(package_customizer_class_initialize),
+	(package_customizer_initialize), (package_customizer_new),
+	(package_customizer_get_type), (package_info_compare),
+	(package_customizer_find_package), (popup_package_dialog),
+	(package_customizer_recompute_bongs), (package_toggled),
+	(package_customizer_fill), (normalize_labels),
+	(package_customizer_set_package_list),
+	(package_customizer_get_widget), (jump_to_package_tree_page):
+	* nautilus-installer/src/package-tree.h:
+
+	Make the package tree into a proper GTK object.
+
+2000-12-15  Robey Pointer  <robey@eazel.com>
+
 	* components/services/install/command-line/eazel-alt-install-corba.
 	c: (main):
 
