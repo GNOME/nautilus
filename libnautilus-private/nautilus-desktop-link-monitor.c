@@ -158,8 +158,9 @@ create_volume_link (NautilusDesktopLinkMonitor *monitor,
 	index = 1;
 
 	unique_name = g_strdup (volume_name);
-	while (volume_name_exists (monitor, volume_name)) {
+	while (volume_name_exists (monitor, unique_name)) {
 		g_free (unique_name);
+		index++;
 		unique_name = g_strdup_printf ("%s (%d)", volume_name, index);
 	}
 

@@ -1,5 +1,10 @@
 2003-05-23  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-desktop-link-monitor.c (create_volume_link):
+	Fix the volume uniquification code.
+	
+2003-05-23  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-icon-view.c (fm_icon_view_screen_changed):
 	Update the per-screen filtering when the view changes screens.
 	This was needed to fix multihead desktops, since the BonoboPlug
