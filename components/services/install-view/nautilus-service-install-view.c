@@ -61,7 +61,7 @@
 #define NEXT_SERVICE_VIEW				"eazel-summary:"
 
 /* this stuff will need to be configurable, once we have a config pane */
-#define INSTALL_HOST	      	"ham.eazel.com"
+#define INSTALL_HOST	      	"services.eazel.com"
 #define INSTALL_PORT		8888
 
 /* This ensures that if the arch is detected as i[3-9]86, the
