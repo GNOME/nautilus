@@ -15,8 +15,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-12-16 00:14+0100\n"
-"PO-Revision-Date: 2000-12-16 00:15+0100\n"
+"POT-Creation-Date: 2000-12-16 02:07+0100\n"
+"PO-Revision-Date: 2000-12-16 02:10+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2519,7 +2519,7 @@ msgstr "Linuxcare"
 msgid "Myplay"
 msgstr "Myplay"
 
-#: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:227
+#: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:234
 #: src/nautilus-window-menus.c:619
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -3650,8 +3650,8 @@ msgid "current theme"
 msgstr "aktuellt tema"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:859
-msgid "Open each item in a new window"
-msgstr "Öppna varje objekt i ett nytt fönster"
+msgid "Open each item in a separate window"
+msgstr "Öppna varje objekt i ett eget fönster"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:866
 msgid "Ask before deleting items from the trash"
@@ -3855,7 +3855,7 @@ msgid "Prefs Box"
 msgstr "Inställningsfönster"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:186
-#: src/nautilus-window.c:866 src/nautilus-window.c:1102
+#: src/nautilus-window.c:865 src/nautilus-window.c:1101
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -6683,20 +6683,34 @@ msgstr "Kunde inte ta bort tema"
 msgid "No description available for the \"%s\" theme"
 msgstr "Ingen beskrivning tillgänglig för temat \"%s\""
 
-#: src/nautilus-window-manage-views.c:621
+#: src/nautilus-window-manage-views.c:628
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Du har inte de rättigheter som krävs för att se \"%s\"."
 
-#: src/nautilus-window-manage-views.c:623
+#: src/nautilus-window-manage-views.c:630
 msgid "Inadequate Permissions"
 msgstr "Otillräckliga rättigheter"
 
-#: src/nautilus-window-manage-views.c:686
+#: src/nautilus-window-manage-views.c:748
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:775
+#: src/nautilus-window-manage-views.c:759
+#, c-format
+msgid ""
+"The %s view encountered an error and can't continue. You can choose another "
+"view or go to a different location."
+msgstr ""
+"%s-vyn råkade ut för ett fel och kan inte fortsätta. Du kan välja en annan "
+"vy eller gå till en annan plats."
+
+#: src/nautilus-window-manage-views.c:770
+#, c-format
+msgid "The %s view encountered an error while starting up."
+msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
+
+#: src/nautilus-window-manage-views.c:870
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -6704,7 +6718,7 @@ msgstr ""
 "En av sidoradspanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr "
 "kan jag inte säga vilken."
 
-#: src/nautilus-window-manage-views.c:779
+#: src/nautilus-window-manage-views.c:874
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -6713,18 +6727,18 @@ msgstr ""
 "Sidoradspanelen %s råkade ut för ett fel och kan inte fortsätta. Om det här "
 "fortsätter att hända kanske du vill stänga av den här panelen."
 
-#: src/nautilus-window-manage-views.c:784
+#: src/nautilus-window-manage-views.c:879
 msgid "Sidebar Panel Failed"
 msgstr "Sidoradspanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1189
+#: src/nautilus-window-manage-views.c:1271
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Kunde inte hitta \"%s\". Var vänlig och kontrollera stavningen och försök "
 "igen."
 
-#: src/nautilus-window-manage-views.c:1195
+#: src/nautilus-window-manage-views.c:1277
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -6732,7 +6746,7 @@ msgstr ""
 "\"%s\" är ingen giltig plats. Var vänlig och kontrollera stavningen och "
 "försök igen."
 
-#: src/nautilus-window-manage-views.c:1209
+#: src/nautilus-window-manage-views.c:1291
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -6741,29 +6755,29 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken filtyp "
 "det är."
 
-#: src/nautilus-window-manage-views.c:1217
+#: src/nautilus-window-manage-views.c:1299
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1229
+#: src/nautilus-window-manage-views.c:1311
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1235
+#: src/nautilus-window-manage-views.c:1317
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1240
+#: src/nautilus-window-manage-views.c:1322
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1245
+#: src/nautilus-window-manage-views.c:1327
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host couldn't be found. Check that your "
@@ -6772,7 +6786,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värden inte kunde hittas. Kontrollera att "
 "dina proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1251
+#: src/nautilus-window-manage-views.c:1333
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -6781,7 +6795,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värdnamnet var tomt. Kontrollera att dina "
 "proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1263
+#: src/nautilus-window-manage-views.c:1345
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -6793,16 +6807,16 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1267
+#: src/nautilus-window-manage-views.c:1349
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1271
+#: src/nautilus-window-manage-views.c:1353
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1284
+#: src/nautilus-window-manage-views.c:1366
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
@@ -6942,22 +6956,22 @@ msgid "Forward"
 msgstr "Framåt"
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1124
+#: src/nautilus-window.c:1123
 msgid "View as Other..."
 msgstr "Visa som annat...."
 
-#: src/nautilus-window.c:1484
+#: src/nautilus-window.c:1483
 msgid "Close"
 msgstr "Stäng"
 
-#: src/nautilus-zoom-control.c:332
+#: src/nautilus-zoom-control.c:528
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 
 #. This is marked for localization in case the % sign is not
 #. * appropriate in some locale. I guess that's unlikely.
 #.
-#: src/nautilus-zoom-control.c:579
+#: src/nautilus-zoom-control.c:587
 msgid "%.0f%%"
 msgstr "%.0f %%"
 
