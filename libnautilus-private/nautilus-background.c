@@ -28,6 +28,7 @@
 #include <gtk/gtksignal.h>
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-background-canvas-group.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-gtk-macros.h"
@@ -201,8 +202,9 @@ draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_
 	affine[5] -= y_offset;
 }
 
+/* fill the canvas buffer with a tiled pixmap */
 static void
-draw_pixbuf_tiled(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
+draw_pixbuf_tiled_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 {
 	int x, y;
 	int start_x, start_y;
@@ -247,14 +249,31 @@ draw_pixbuf_tiled(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 void nautilus_background_draw_aa (NautilusBackground *background,
 				  GnomeCanvasBuf *buffer)
 {
+	char *start_color_spec, *end_color_spec;
+	guint32 start_rgb, end_rgb;
+	gboolean horizontal_gradient;
 	
-	if (background->details->tile_image) {
-		if (!buffer->is_buf) {
-			draw_pixbuf_tiled(background->details->tile_image, buffer);
-			buffer->is_buf = TRUE;
+	if (!buffer->is_buf) {
+		if (background->details->tile_image) {
+			draw_pixbuf_tiled_aa (background->details->tile_image, buffer);
+		} else {
+			start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
+			end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
+			horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
+
+			start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
+			end_rgb = nautilus_parse_rgb_with_white_default (end_color_spec);
+		
+			g_free (start_color_spec);
+			g_free (end_color_spec);
+		
+			if (start_rgb != end_rgb) {
+				nautilus_gnome_canvas_fill_with_gradient(buffer, start_rgb, end_rgb,
+								  horizontal_gradient);
+			} else
+				gnome_canvas_buf_ensure_buf(buffer);
 		}
-	} else {
-		gnome_canvas_buf_ensure_buf(buffer);
+		buffer->is_buf = TRUE;
 	}
 }
 

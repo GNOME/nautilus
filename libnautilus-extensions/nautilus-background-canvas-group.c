@@ -129,8 +129,8 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 static void
 nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 {
-	NautilusBackground *background;
-	
+	NautilusBackground *background;	
+			
 	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
 	if (background != NULL)
 		nautilus_background_draw_aa(background, buffer);

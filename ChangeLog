@@ -1,3 +1,20 @@
+2000-06-06  Andy Hertzfeld  <andy@eazel.com>
+
+	made gradient backgrounds work with the anti-aliased canvas.  This
+	isn't finished yet but will be soon.
+	
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_render):
+	call nautilus_background_draw_aa to draw the background
+	* libnautilus-extensions/nautilus-background.c:
+	(draw_pixbuf_tiled_aa), (nautilus_background_draw_aa):
+	made it call nautilus_gnome_canvas_fill_with_gradient
+	to fill with a gradient background if necessary
+	* libnautilus-extensions/nautilus-gnome-extensions.c,h:
+	(nautilus_gnome_canvas_item_get_world_bounds),
+	(nautilus_gnome_canvas_fill_with_gradient):
+	implemented nautilus_gnome_canvas_fill_with_gradient
+
 2000-06-06  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-preferences.c:

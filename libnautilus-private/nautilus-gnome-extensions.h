@@ -65,6 +65,11 @@ void       nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas    
  */
 void       nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
 
+/* fill a canvas buffer with a gradient background */
+void	   nautilus_gnome_canvas_fill_with_gradient		(GnomeCanvasBuf *buffer,
+								guint32 start_rgb,
+				       				guint32 end_rgb,
+				       				gboolean horizontal);
 /* More functions for ArtIRect and ArtDRect. */
 gboolean   nautilus_art_irect_equal                             (const ArtIRect  *rect_a,
 								 const ArtIRect  *rect_b);
