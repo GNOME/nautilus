@@ -131,7 +131,8 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry,
 	char *home_uri;
 	NautilusWindow *window;
 
-	if (browser_window) {
+	if (browser_window ||
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (shell->details->application,
 									gdk_screen_get_default ());
 		if (uri == NULL) {

@@ -39,6 +39,21 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/preferences/always_use_browser</key>
+      <applyto>/apps/nautilus/preferences/always_use_browser</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Enables the classic Nautilus behavior, where all windows are browsers</short>
+         <long>
+           If set to true, then all Nautilus windows will be browser windows. This is how
+	   Nautilus used to behave before version 2.6, and some people prefer this behavior.
+         </long>
+      </locale>
+    </schema>
+    
+    <schema>
       <key>/schemas/apps/nautilus/preferences/confirm_trash</key>
       <applyto>/apps/nautilus/preferences/confirm_trash</applyto>
       <owner>nautilus</owner>
