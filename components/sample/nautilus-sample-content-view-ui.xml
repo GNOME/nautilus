@@ -1,1 +1,20 @@
-<Root/>
+<Root>
+<menu>
+	<submenu name="File" _label="_File">
+		<placeholder name="File Items Placeholder">
+			<menuitem name="Sample Menu Item" 
+				  _label="_Sample" 
+				  _descr="This is a sample merged menu item"
+			          pixtype="stock" pixname="About"
+				  verb=""/>
+		</placeholder>
+	</submenu>
+</menu>
+<dockitem name="Tool Bar">
+	<toolitem name="Sample Dock Item"
+		  _label="Sample"
+		  _descr="This is a sample merged tool bar button"
+	          pixtype="stock" pixname="About"
+	          verb=""/>
+</dockitem>
+</Root>

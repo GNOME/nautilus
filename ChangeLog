@@ -1,3 +1,16 @@
+2000-10-06  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3517 (Sample component's merged items don't appear)
+	
+	* components/sample/nautilus-sample-content-view-ui.xml:
+	Filled in.
+	* components/sample/nautilus-sample-content-view.c:
+	(bonobo_sample_callback), (sample_merge_bonobo_items_callback):
+	Updated for new API, removed #ifdefs.
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_merge_bonobo_items_callback): Removed unnecessary cast.
+	
 2000-10-06  Andy Hertzfeld  <andy@eazel.com>
 
 	tried to put the right themable icons for the toolbar, but only
