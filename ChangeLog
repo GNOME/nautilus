@@ -1,3 +1,29 @@
+2000-10-24  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (generate_service_entry_row),
+	(generate_eazel_news_entry_row), (generate_update_news_entry_row):
+	lots of layout tweaks to please Arlo; it's still not finished yet
+	since I wasn't able to shrink the news section properly
+	
+	* libnautilus-extensions/nautilus-tabs.c:
+	(nautilus_tabs_initialize), (draw_tab_label), (draw_all_tabs),
+	(nautilus_tabs_prelight_tab), (nautilus_tabs_select_tab):
+	changed font size, text spacing and prelight behaviour as
+	specified by Arlo.
+	
+	* icons/eazel/Back.png:
+	* icons/eazel/Forward.png:
+	* icons/eazel/Home.png:
+	* icons/eazel/Refresh.png:
+	* icons/eazel/Search.png:
+	* icons/eazel/SearchWeb.png: 
+	* icons/eazel/Services.png:
+	* icons/eazel/Stop.png:
+	* icons/eazel/Up.png:
+
+	updated Susan's toolbar icons
+	
 2000-10-24  Arlo Rose  <arlo@eazel.com>
 
 	* components/services/summary/nautilus-view/icons/

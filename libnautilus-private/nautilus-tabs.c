@@ -92,14 +92,7 @@ struct NautilusTabsDetails {
 };
 
 /* constants */
-#define TAB_MARGIN 8
-#define TITLE_TAB_OFFSET 8
-#define NOMINAL_TAB_HEIGHT 18
-#define TAB_H_GAP 8
-#define TAB_TOP_GAP 0
-#define TAB_ROW_V_OFFSET 3
-#define TAB_DEFAULT_LEFT_OFFSET 4
-#define THEMED_TAB_TEXT_V_OFFSET 7
+#define TAB_RIGHT_MARGIN 4
 
 /* signals */
 enum {
@@ -186,7 +179,7 @@ nautilus_tabs_initialize (NautilusTabs *tabs)
 	tabs->details->selected_tab = -1;
 		
 	tabs->details->tab_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
-	tabs->details->font_size = 16;
+	tabs->details->font_size = 14;
 	
 	gray_tab_directory_path = nautilus_theme_get_image_path ("gray_tab_pieces");
 	nautilus_tabs_load_tab_pieces (tabs, gray_tab_directory_path);
@@ -504,7 +497,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 	uint text_color;
 	
 	text_x = x_pos + 1;
-	text_y = 6; /* calculate this to center font in label? */
+	text_y = 7; /* calculate this to center font in label? */
 		
 	nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
@@ -519,9 +512,9 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 		text_color = NAUTILUS_RGB_COLOR_WHITE;
 	} else {
 		if (is_prelit) {
-			text_color = NAUTILUS_RGBA_COLOR_PACK (223, 223, 223, 255);		
+			text_color = NAUTILUS_RGBA_COLOR_PACK (241, 241, 241, 255);		
 		} else {
-			text_color = NAUTILUS_RGBA_COLOR_PACK (191, 191, 191, 255);		
+			text_color = NAUTILUS_RGBA_COLOR_PACK (223, 223, 223, 255);		
 		}
 	}
 	
@@ -609,7 +602,7 @@ draw_all_tabs (NautilusTabs *tabs)
 		if (left_tab->prelit) {
 			left_bumper_piece = TAB_PRELIGHT_LEFT;
 			fill_piece_1 = TAB_PRELIGHT_FILL;
-			/* transition_type_piece = TAB_PRELIGHT_ACTIVE; */
+			transition_type_piece = TAB_PRELIGHT_ACTIVE;
 		} else {
 			left_bumper_piece = TAB_INACTIVE_LEFT;
 			fill_piece_1 = TAB_INACTIVE_FILL;
@@ -635,7 +628,7 @@ draw_all_tabs (NautilusTabs *tabs)
 	x_pos += draw_tab_piece_aa (tabs, tab_pixbuf, x_pos, 0, -1, left_bumper_piece);
 	
 	/* measure the text to determine the first tab's size */
-	name_width = measure_tab_name (tabs, left_tab->tab_text);
+	name_width = measure_tab_name (tabs, left_tab->tab_text) + TAB_RIGHT_MARGIN;
 	
 	/* set up the first tab's rectangle for later hit-testing */
 	left_tab->tab_rect.x = x_pos;
@@ -658,7 +651,7 @@ draw_all_tabs (NautilusTabs *tabs)
 	x_pos += draw_tab_piece_aa (tabs, tab_pixbuf, x_pos, 0, -1, transition_type_piece);
 	/* measure the text to determine the second tab's size */
 	if (right_tab != NULL) {
-		name_width = measure_tab_name (tabs, right_tab->tab_text);
+		name_width = measure_tab_name (tabs, right_tab->tab_text) + TAB_RIGHT_MARGIN;
 	
 		/* adjust position for transition piece - this shouldn't be hardwired */
 		x_pos -= 12;
@@ -831,7 +824,7 @@ nautilus_tabs_remove_tab (NautilusTabs *tabs, const char *name)
 }
 
 /* prelight a tab, from its associated notebook page number, by setting the prelight flag of
-   the proper tab and clearing the others */
+   the proper tab and clearing the others.  Don't allow prelighting of the selected tab */
 static void
 nautilus_tabs_prelight_tab (NautilusTabs *tabs, int which_tab)
 {
@@ -844,7 +837,7 @@ nautilus_tabs_prelight_tab (NautilusTabs *tabs, int which_tab)
 	for (next_tab = tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		TabItem *item = next_tab->data;
 		is_prelit = (item->notebook_page == which_tab);
-		if (item->prelit != is_prelit) {
+		if (item->prelit != is_prelit && (!item->selected || !is_prelit)) {
 			item->prelit = is_prelit;
 			changed = TRUE;
 		}
@@ -875,6 +868,9 @@ nautilus_tabs_select_tab (NautilusTabs *tabs, int which_tab)
 		is_selected = (item->notebook_page == which_tab);
 		if (item->selected != is_selected) {
 			item->selected = is_selected;
+			if (is_selected) {
+				item->prelit = FALSE;
+			}
 			changed = TRUE;
 		}
 	}
