@@ -1,6 +1,6 @@
 <Root>
 <commands>
-	<cmd name="Rename" accel="F2"
+	<cmd name="Rename"
          _label="Rename"
 	 _tip="Rename selected icon"/>
 	<cmd name="Stretch"
@@ -40,19 +40,20 @@
 <menu>
 	<submenu name="File">
 		<placeholder name="File Items Placeholder">
-			<menuitem name="Rename" 
-				  _label="_Rename" 
+			<menuitem name="Rename"
+				  accel="F2"
+				  _label="_Rename"
 				  verb="Rename"/>
 		</placeholder>
 	</submenu>
 	
 	<submenu name="Edit">
 		<placeholder name="Edit Items Placeholder">
-			<menuitem name="Stretch" 
-				  _label="_Stretch Icon" 
+			<menuitem name="Stretch"
+				  _label="_Stretch Icon"
 				  verb="Stretch"/>
-			<menuitem name="Unstretch" 
-				  _label="_Restore Icons' Original Sizes" 
+			<menuitem name="Unstretch"
+				  _label="_Restore Icons' Original Sizes"
 				  verb="Unstretch"/>
 		</placeholder>
 
@@ -61,44 +62,44 @@
 	<submenu name="View">
 		<placeholder name="View Items Placeholder">
 			<submenu name="Lay Out" _label="_Lay Out Items">
-				<menuitem name="Manual Layout" 
-					  _label="_Manually" 
+				<menuitem name="Manual Layout"
+					  _label="_Manually"
 					  type="radio" group="layout group"
 					  id="Manual Layout"/>
 				<placeholder name="Auto Layout" delimit="top">
-					<menuitem name="Sort by Name" 
-						  _label="By _Name" 
+					<menuitem name="Sort by Name"
+						  _label="By _Name"
 						  type="radio" group="layout group"
 						  id="Sort by Name"/>
-					<menuitem name="Sort by Size" 
-						  _label="By _Size" 
+					<menuitem name="Sort by Size"
+						  _label="By _Size"
 						  type="radio" group="layout group"
 						  id="Sort by Size"/>
-					<menuitem name="Sort by Type" 
-						  _label="By _Type" 
+					<menuitem name="Sort by Type"
+						  _label="By _Type"
 						  type="radio" group="layout group"
 						  id="Sort by Type"/>
 					<menuitem name="Sort by Modification Date" 
-						  _label="By Modification _Date" 
+						  _label="By Modification _Date"
 						  type="radio" group="layout group"
 						  id="Sort by Modification Date"/>
-					<menuitem name="Sort by Emblems" 
-						  _label="By _Emblems" 
+					<menuitem name="Sort by Emblems"
+						  _label="By _Emblems"
 						  type="radio" group="layout group"
 						  id="Sort by Emblems"/>
 				</placeholder>
 				<separator/>
-				<menuitem name="Tighter Layout" 
-					  _label="Tighter _Layout" 
+				<menuitem name="Tighter Layout"
+					  _label="Tighter _Layout"
                                           id="Tighter Layout"
                                           type="toggle"/>
-				<menuitem name="Reversed Order" 
-					  _label="Re_versed Order" 
+				<menuitem name="Reversed Order"
+					  _label="Re_versed Order"
                                           id="Reversed Order"
                                           type="toggle"/>
 			</submenu>
-			<menuitem name="Clean Up" 
-				  _label="_Clean Up by Name" 
+			<menuitem name="Clean Up"
+				  _label="_Clean Up by Name"
 				  verb="Clean Up"/>
 		</placeholder>
 		
@@ -109,23 +110,23 @@
 		<placeholder name="Before Zoom Items">
 			<placeholder name="View Items">
 				<submenu name="Lay Out" _label="Lay Out Items" tearoff="0">
-					<menuitem name="Manual Layout" 
+					<menuitem name="Manual Layout"
 						  type="radio" group="context menu layout group"
 						  id="Manual Layout"/>
 					<placeholder name="Auto Layout" delimit="top">
-						<menuitem name="Sort by Name" 
+						<menuitem name="Sort by Name"
 							  type="radio" group="context menu layout group"
 							  id="Sort by Name"/>
-						<menuitem name="Sort by Size" 
+						<menuitem name="Sort by Size"
 							  type="radio" group="context menu layout group"
 							  id="Sort by Size"/>
-						<menuitem name="Sort by Type" 
+						<menuitem name="Sort by Type"
 							  type="radio" group="context menu layout group"
 							  id="Sort by Type"/>
 						<menuitem name="Sort by Modification Date" 
 							  type="radio" group="context menu layout group"
 							  id="Sort by Modification Date"/>
-						<menuitem name="Sort by Emblems" 
+						<menuitem name="Sort by Emblems"
 							  type="radio" group="context menu layout group"
 							  id="Sort by Emblems"/>
 					</placeholder>

@@ -203,6 +203,13 @@ struct NautilusScalableIcon {
 	char *embedded_text;
 };
 
+typedef enum {
+	REQUEST_NORMAL,
+	REQUEST_PICKY_CUSTOM_ONLY,
+	REQUEST_PICKY_BY_NAME_FIRST_CHOICE,
+	REQUEST_PICKY_BY_NAME_SECOND_CHOICE
+} IconRequest;
+
 /* A request for an icon of a particular size. */
 typedef struct {
 	guint nominal_width;
@@ -241,7 +248,7 @@ typedef struct {
 	time_t cache_time;
 
 	/* Type of icon. */
-	gboolean custom;
+	IconRequest request;
 	gboolean scaled;
 	gboolean is_fallback;
 } CacheIcon;
@@ -267,8 +274,7 @@ static gboolean   cache_key_equal                        (gconstpointer         
 							  gconstpointer             b);
 static CacheIcon *get_icon_from_cache                    (NautilusScalableIcon     *scalable_icon,
 							  const IconSizeRequest    *size,
-							  gboolean                  picky,
-							  gboolean                  custom);
+							  IconRequest               type);
 static CacheIcon *load_icon_with_embedded_text           (NautilusScalableIcon     *scalable_icon,
 							  const IconSizeRequest    *size);
 
@@ -418,7 +424,7 @@ mark_icon_not_outstanding (GdkPixbuf *pixbuf, gpointer callback_data)
  
 static CacheIcon *
 cache_icon_new (GdkPixbuf *pixbuf,
-		gboolean custom,
+		IconRequest request,
 		gboolean scaled,
 		const IconDetails *details)
 {
@@ -439,7 +445,7 @@ cache_icon_new (GdkPixbuf *pixbuf,
 	icon = g_new0 (CacheIcon, 1);
 	icon->pixbuf = pixbuf;
 	icon->internal_ref_count = 1;
-	icon->custom = custom;
+	icon->request = request;
 	icon->scaled = scaled;
 	icon->is_fallback = FALSE;
 	
@@ -1878,27 +1884,6 @@ load_named_icon (const char *name,
 	return pixbuf;
 }
 
-static GdkPixbuf *
-load_icon_given_two_names (const char *name_1,
-			   const char *name_2,
-			   const char *modifier,
-			   guint size_in_pixels,
-			   gboolean optimized_for_aa,
-			   IconDetails *details)
-{
-	GdkPixbuf *pixbuf;
-
-	pixbuf = load_named_icon (name_1, modifier,
-				  size_in_pixels, optimized_for_aa,
-				  details);
-	if (pixbuf != NULL || eel_strcmp (name_1, name_2) == 0) {
-		return pixbuf;
-	}
-	return load_named_icon (name_2, modifier,
-				size_in_pixels, optimized_for_aa,
-				details);
-}
-
 static gboolean
 is_generic_icon_name (const char *name)
 {
@@ -1913,19 +1898,19 @@ static CacheIcon *
 load_specific_icon (NautilusScalableIcon *scalable_icon,
 		    guint size_in_pixels,
 		    gboolean optimized_for_aa,
-		    gboolean custom)
+		    IconRequest type)
 {
 	IconDetails details;
 	GdkPixbuf *pixbuf;
 	char *mime_type_icon_name, *path;
-	const char *name_1, *name_2;
+	const char *first_choice_name, *second_choice_name;
 	CacheIcon *icon;
 
 	memset (&details, 0, sizeof (details));
 	pixbuf = NULL;
 
 	/* Get the path. */
-	if (custom) {
+	if (type == REQUEST_PICKY_CUSTOM_ONLY) {
 		/* We don't support custom icons that are not local here. */
 		path = gnome_vfs_get_local_path_from_uri (scalable_icon->uri);
 		pixbuf = load_icon_from_path (path, size_in_pixels, TRUE, FALSE);
@@ -1936,16 +1921,18 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 			mime_type_icon_name = make_icon_name_from_mime_type (scalable_icon->mime_type);
 		}
 		if (is_generic_icon_name (scalable_icon->name)) {
-			name_1 = mime_type_icon_name;
-			name_2 = scalable_icon->name;
+			first_choice_name = mime_type_icon_name;
+			second_choice_name = scalable_icon->name;
 		} else {
-			name_1 = scalable_icon->name;
-			name_2 = mime_type_icon_name;
+			first_choice_name = scalable_icon->name;
+			second_choice_name = mime_type_icon_name;
 		}
-		pixbuf = load_icon_given_two_names
-			(name_1, name_2,
+		pixbuf = load_named_icon
+			((type == REQUEST_PICKY_BY_NAME_FIRST_CHOICE)
+			 ? first_choice_name : second_choice_name,
 			 scalable_icon->modifier,
-			 size_in_pixels, optimized_for_aa, &details);
+			 size_in_pixels,
+			 optimized_for_aa, &details);
 		g_free (mime_type_icon_name);
 	}
 
@@ -1954,7 +1941,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	}
 
 	/* Since we got something, we can create a cache icon. */
-	icon = cache_icon_new (pixbuf, custom, FALSE, &details);
+	icon = cache_icon_new (pixbuf, type, FALSE, &details);
 	get_cache_time (scalable_icon->uri, &icon->cache_time);
 	gdk_pixbuf_unref (pixbuf);
 
@@ -1984,40 +1971,32 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 	guint actual_size;
 	IconSizeRequest size_request;
 	GdkPixbuf *pixbuf;
+	guint i;
+	const IconRequest requests[] = {
+		REQUEST_PICKY_CUSTOM_ONLY,
+		REQUEST_PICKY_BY_NAME_FIRST_CHOICE,
+		REQUEST_PICKY_BY_NAME_SECOND_CHOICE
+	};
 
 	size_request.maximum_width = MAXIMUM_ICON_SIZE * requested_size / NAUTILUS_ZOOM_LEVEL_STANDARD;
 	size_request.maximum_height = size_request.maximum_width;
 	size_request.optimized_for_aa = optimized_for_aa;
 
-	/* First check for a custom image. */
-	actual_size = 0;
-	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
-		size_request.nominal_width = actual_size;
-		size_request.nominal_height = actual_size;
-
-		icon = get_icon_from_cache
-			(scalable_icon, &size_request, TRUE, TRUE);
-		if (icon != NULL) {
-			*actual_size_result = actual_size;
-			return icon;
-		}
-	}
-	
-	/* Next, go for the normal image. */
-	actual_size = 0;
-	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
-		size_request.nominal_width = actual_size;
-		size_request.nominal_height = actual_size;
-
-		icon = get_icon_from_cache
-			(scalable_icon, &size_request, TRUE, FALSE);
-		if (icon != NULL) {
-			*actual_size_result = actual_size;
-			return icon;
+	for (i = 0; i < EEL_N_ELEMENTS (requests); i++) {
+		actual_size = 0;
+		while (get_next_icon_size_to_try (requested_size, &actual_size)) {
+			size_request.nominal_width = actual_size;
+			size_request.nominal_height = actual_size;
+			
+			icon = get_icon_from_cache (scalable_icon, &size_request, requests[i]);
+			if (icon != NULL) {
+				*actual_size_result = actual_size;
+				return icon;
+			}
 		}
 	}
 
-	/* Finally, fall back on the hard-coded image. */
+	/* Fall back on the hard-coded image. */
 	if (fallback_icon != NULL) {
 		cache_icon_ref (fallback_icon);
 	} else {
@@ -2094,7 +2073,7 @@ scale_icon (CacheIcon *icon,
 	}
 	
 	scaled_icon = cache_icon_new (scaled_pixbuf,
-				      icon->custom,
+				      icon->request,
 				      TRUE,
 				      &scaled_details);
 	scaled_icon->is_fallback = icon->is_fallback;
@@ -2257,8 +2236,7 @@ remove_icons_if_file_changed (const char *file_uri, time_t cached_time)
 static CacheIcon *
 get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 		     const IconSizeRequest *size,
-		     gboolean picky,
-		     gboolean custom)
+		     IconRequest type)
 {
 	NautilusIconFactory *factory;
 	GHashTable *hash_table;
@@ -2289,7 +2267,8 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 		/* If we're going to be picky, then don't accept anything
 		 * other than exactly what we are looking for.
 		 */
-		if (picky && (icon->scaled || custom != icon->custom)) {
+		if (type != REQUEST_NORMAL
+		    && (icon->scaled ||	type != icon->request)) {
 			return NULL;
 		}
 
@@ -2305,7 +2284,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 		/* If we're picky, then we want the image only if this exact
 		 * nominal size is available.
 		 */
-		if (picky) {
+		if (type != REQUEST_NORMAL) {
 			g_assert (scalable_icon->embedded_text == NULL);
 
 			/* Actual icons have nominal sizes that are square! */
@@ -2317,7 +2296,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 			icon = load_specific_icon (scalable_icon,
 						   size->nominal_width,
 						   size->optimized_for_aa,
-						   custom);
+						   type);
 			if (icon == NULL) {
 				return NULL;
 			}
@@ -2334,7 +2313,6 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 				icon = scaled_icon;
 			}
 		} else {
-			
 			if (scalable_icon->embedded_text != NULL) {
 				icon = load_icon_with_embedded_text (scalable_icon, size);
 			} else {
@@ -2385,8 +2363,7 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 	size.maximum_width = maximum_width;
 	size.maximum_height = maximum_height;
 	size.optimized_for_aa = optimized_for_aa;
-	icon = get_icon_from_cache (scalable_icon, &size,
-				    FALSE, scalable_icon->uri != NULL);
+	icon = get_icon_from_cache (scalable_icon, &size, REQUEST_NORMAL);
 
 	if (attach_points != NULL) {
 		*attach_points = icon->details.attach_points;
@@ -2660,14 +2637,13 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	
 	/* Get the icon without text. */
 	scalable_icon_without_text = nautilus_scalable_icon_new_from_text_pieces
-		(scalable_icon->uri,
+		(NULL,
 		 scalable_icon->mime_type,
 		 scalable_icon->name,
 		 scalable_icon->modifier,
 		 NULL);
 	icon_without_text = get_icon_from_cache
-		(scalable_icon_without_text, size,
-		 FALSE, FALSE);
+		(scalable_icon_without_text, size, REQUEST_NORMAL);
 	nautilus_scalable_icon_unref (scalable_icon_without_text);
 	
 	/* Create a pixbuf with the text in it. */
@@ -2682,7 +2658,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	details = icon_without_text->details;
 	memset (&details.text_rect, 0, sizeof (details.text_rect));
 	icon_with_text = cache_icon_new (pixbuf_with_text,
-					 icon_without_text->custom,
+					 icon_without_text->request,
 					 icon_without_text->scaled,
 					 &details);
 	icon_with_text->cache_time = icon_without_text->cache_time;
