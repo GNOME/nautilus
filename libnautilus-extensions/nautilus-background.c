@@ -110,7 +110,7 @@ nautilus_background_initialize_class (gpointer klass)
 				0);
 	signals[RESET] =
 		gtk_signal_new ("reset",
-				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
+				GTK_RUN_LAST | GTK_RUN_NO_RECURSE,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
 						   reset),

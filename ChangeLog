@@ -1,3 +1,28 @@
+2000-08-11  Mike Engber  <engber@eazel.com>
+
+	First cut at syncing our desktop background with GNOME's (bug 1047)
+	Still need to handle centered & scaled images + update issues.
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_initialize_class):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_set_desktop),
+	(nautilus_directory_background_is_desktop),
+	(theme_image_path_to_uri),
+	(nautilus_directory_background_get_default_settings),
+	(nautilus_gnome_config_string_match_no_case),
+	(nautilus_directory_background_read_desktop_settings),
+	(nautilus_directory_background_write_desktop_settings),
+	(nautilus_directory_background_write_desktop_default_settings),
+	(nautilus_directory_background_is_set),
+	(background_changed_callback), (directory_changed_callback),
+	(nautilus_directory_background_theme_changed),
+	(background_reset_callback),
+	(nautilus_connect_background_to_directory_metadata),
+	(nautilus_connect_desktop_background_to_directory_metadata):
+	* libnautilus-extensions/nautilus-directory-background.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading):
+
 2000-08-11  John Sullivan  <sullivan@eazel.com>
 
 	Work on 2061 ("Show Properties" on desktop link files
@@ -79,6 +104,7 @@
 
 2000-08-11  John Sullivan  <sullivan@eazel.com>
 
+>>>>>>> 1.1363
 	Fixed bug 1743 (Deleting a file in search results should cause
 	list to update appropriately).
 
