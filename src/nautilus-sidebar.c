@@ -938,17 +938,18 @@ notify_current_sidebar_view (NautilusSidebar *sidebar, const char *property)
 	Bonobo_Control control;
 	GtkWidget *notebook_page;
 	
-	CORBA_exception_init (&ev);
 	notebook_page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
-					  sidebar->details->selected_index);
-
+						   sidebar->details->selected_index);
 	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (notebook_page));	
-	property_bag = Bonobo_Control_getProperties (control, &ev);
-	if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-		bonobo_property_bag_client_set_value_gboolean (property_bag, property, TRUE, &ev);
-		bonobo_object_release_unref (property_bag, &ev);
+	if (control != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+		property_bag = Bonobo_Control_getProperties (control, &ev);
+		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+			bonobo_property_bag_client_set_value_gboolean (property_bag, property, TRUE, &ev);
+			bonobo_object_release_unref (property_bag, NULL);
+		}
+		CORBA_exception_free (&ev);
 	}
-	CORBA_exception_free (&ev);
 }
 
 /* utility to activate the panel corresponding to the passed in index  */

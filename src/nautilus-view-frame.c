@@ -1285,9 +1285,8 @@ Bonobo_Control
 nautilus_view_frame_get_control (NautilusViewFrame *view)
 {
 	if (view->details->control_frame == NULL) {
-		return NULL;
+		return CORBA_OBJECT_NIL;
 	}
-	
 	return bonobo_control_frame_get_control (view->details->control_frame);
 }
 

@@ -1,5 +1,18 @@
 2001-04-24  Darin Adler  <darin@eazel.com>
 
+	Fix bug 8152 (Opening Help sidebar crashes Nautilus):
+	
+	* src/nautilus-sidebar.c: (notify_current_sidebar_view): Add check
+	for NIL control.
+
+	* nautilus-clean.sh: Change egrep args so we get fewer false
+	positives.
+	
+	* src/nautilus-view-frame.c: (nautilus_view_frame_get_control):
+	Formatting tweaks.
+
+2001-04-24  Darin Adler  <darin@eazel.com>
+
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
 
 	Fix bug 7963 (exiting Nautilus [with Ctrl-C for example] leaves
