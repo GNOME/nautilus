@@ -1,3 +1,16 @@
+2001-01-18  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed some damage from the default theme change, including getting
+	the sidebar tabs installed correctly, and making semi-transparent
+	icon selection highlight in aa-mode work properly again.  There are
+	still some more to do to finish this, though.
+	
+	* icons/sidebar_tab_pieces/Makefile.am:
+	install the tabs in the proper place
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_theme_changed):
+	use NAUTILUS_COLOR_RGBA to set up the highlight color
+	
 2001-01-18  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/arlo.xml:

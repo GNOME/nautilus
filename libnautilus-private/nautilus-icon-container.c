@@ -4972,7 +4972,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	highlight_color_str = nautilus_theme_get_theme_data ("directory", "HIGHLIGHT_COLOR_RGBA");
 	
 	if (highlight_color_str == NULL) {
-			container->details->highlight_color = 0x00000066;
+			container->details->highlight_color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 102);
 		} else {
 			container->details->highlight_color = strtoul (highlight_color_str, NULL, 0);
 			g_free (highlight_color_str);

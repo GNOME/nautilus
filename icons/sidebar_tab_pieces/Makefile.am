@@ -1,6 +1,6 @@
 NULL=
 
-eazeltabdir = $(datadir)/pixmaps/nautilus/eazel/sidebar_tab_pieces
+eazeltabdir = $(datadir)/pixmaps/nautilus/sidebar_tab_pieces
 
 eazeltab_DATA = \
 	fill-active.png				\
