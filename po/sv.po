@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-03-01 13:34+0100\n"
-"PO-Revision-Date: 2001-03-01 13:37+0100\n"
+"POT-Creation-Date: 2001-03-01 23:58+0100\n"
+"PO-Revision-Date: 2001-03-02 00:00+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgid "Smooth Graphics"
 msgstr "Mjuk grafik"
 
 #: applets/preferences-applet/nautilus-preferences-applet.c:243
-#: src/nautilus-application.c:638
+#: src/nautilus-application.c:639
 msgid "Quit"
 msgstr "Avsluta"
 
@@ -282,52 +282,61 @@ msgstr "APPENDIX"
 #. **
 #: components/help/hyperbola-filefmt.c:504
 #: components/help/hyperbola-filefmt.c:506
+#: components/help/hyperbola-filefmt.c:508
 #: components/help/hyperbola-filefmt.c:510
+#: components/help/hyperbola-filefmt.c:511
 #: components/help/hyperbola-filefmt.c:512
-#: components/help/hyperbola-filefmt.c:516
+#: components/help/hyperbola-filefmt.c:513
+#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:517
 msgid "Manual"
 msgstr "Manual"
 
-#: components/help/hyperbola-filefmt.c:506
-msgid "System"
-msgstr "System"
-
-#: components/help/hyperbola-filefmt.c:506
-msgid "Configuration"
-msgstr "Konfiguration"
-
-#: components/help/hyperbola-filefmt.c:506
-msgid "Config files"
-msgstr "Konfigurationsfiler"
-
-#: components/help/hyperbola-filefmt.c:510
-#: components/help/hyperbola-filefmt.c:834 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:504
+#: components/help/hyperbola-filefmt.c:835 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Program"
 
+#: components/help/hyperbola-filefmt.c:506
+#: components/help/hyperbola-filefmt.c:508
 #: components/help/hyperbola-filefmt.c:510
-msgid "Command Line"
-msgstr "Kommandorad"
-
-#: components/help/hyperbola-filefmt.c:512
-#: components/help/hyperbola-filefmt.c:516
+#: components/help/hyperbola-filefmt.c:517
 msgid "Development"
 msgstr "Utveckling"
 
-#: components/help/hyperbola-filefmt.c:512
-#: components/help/hyperbola-filefmt.c:516
-msgid "APIs"
-msgstr "Programmeringsgränssnitt"
-
-#: components/help/hyperbola-filefmt.c:512
-msgid "Miscellaneous"
-msgstr "Diverse"
-
-#: components/help/hyperbola-filefmt.c:516
+#: components/help/hyperbola-filefmt.c:506
 msgid "System Calls"
 msgstr "Systemanrop"
 
-#: components/help/hyperbola-filefmt.c:676
+#: components/help/hyperbola-filefmt.c:508
+msgid "Library Functions"
+msgstr "Biblioteksfunktioner"
+
+#: components/help/hyperbola-filefmt.c:510
+msgid "Devices"
+msgstr "Enheter"
+
+#: components/help/hyperbola-filefmt.c:511
+msgid "Configuration Files"
+msgstr "Konfigurationsfiler"
+
+#: components/help/hyperbola-filefmt.c:512
+msgid "Games"
+msgstr "Spel"
+
+#: components/help/hyperbola-filefmt.c:513
+msgid "Conventions"
+msgstr "Konventioner"
+
+#: components/help/hyperbola-filefmt.c:515
+msgid "System Administration"
+msgstr "Systemadministration"
+
+#: components/help/hyperbola-filefmt.c:517
+msgid "Kernel Routines"
+msgstr "Kärnrutiner"
+
+#: components/help/hyperbola-filefmt.c:677
 #: libnautilus-extensions/nautilus-stock-dialogs.c:510
 #: libnautilus-extensions/nautilus-stock-dialogs.c:548
 msgid "Info"
@@ -5543,7 +5552,7 @@ msgstr "GConf-fel"
 #. * when no other font can be found. It must be guaranteed
 #. * to exist, * even in the most limited user environment
 #.
-#: libnautilus-extensions/nautilus-gdk-font-extensions.c:880
+#: libnautilus-extensions/nautilus-gdk-font-extensions.c:905
 msgid "fixed"
 msgstr "fast bredd"
 
@@ -5552,15 +5561,15 @@ msgstr "fast bredd"
 #. * yields -- usually just omitting the AM part is all that's
 #. * needed.
 #.
-#: libnautilus-extensions/nautilus-glib-extensions.c:1359
+#: libnautilus-extensions/nautilus-glib-extensions.c:1364
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1360
+#: libnautilus-extensions/nautilus-glib-extensions.c:1365
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1361
+#: libnautilus-extensions/nautilus-glib-extensions.c:1366
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00"
 
@@ -8094,11 +8103,11 @@ msgstr "Om Nautilus"
 msgid "Authors"
 msgstr "Författare"
 
-#: src/nautilus-application.c:274
+#: src/nautilus-application.c:275
 msgid "Couldn't Create Required Folder"
 msgstr "Kan inte skapa mapp som krävs"
 
-#: src/nautilus-application.c:275
+#: src/nautilus-application.c:276
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -8109,11 +8118,11 @@ msgstr ""
 "Nautilus bör du skapa denna mapp, eller ställa in de rättigheter som krävs "
 "för att Nautilus ska kunna skapa den."
 
-#: src/nautilus-application.c:280
+#: src/nautilus-application.c:281
 msgid "Couldn't Create Required Folders"
 msgstr "Kan inte skapa mappar som krävs"
 
-#: src/nautilus-application.c:281
+#: src/nautilus-application.c:282
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -8140,7 +8149,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:406
+#: src/nautilus-application.c:407
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -8151,7 +8160,7 @@ msgstr ""
 "datorn eller installera om Nautilus."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:412
+#: src/nautilus-application.c:413
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -8192,12 +8201,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:443 src/nautilus-application.c:461
-#: src/nautilus-application.c:468
+#: src/nautilus-application.c:444 src/nautilus-application.c:462
+#: src/nautilus-application.c:469
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:444
+#: src/nautilus-application.c:445
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -8205,7 +8214,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från OAF "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:462
+#: src/nautilus-application.c:463
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -8215,7 +8224,7 @@ msgstr ""
 "den skulle hitta fabriken. Om du dödar oafd och startar om Nautilus kanske "
 "problemet löser sig."
 
-#: src/nautilus-application.c:469
+#: src/nautilus-application.c:470
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -8225,7 +8234,7 @@ msgstr ""
 "den skulle hitta skalobjektet. Om du dödar oafd och startar om Nautilus "
 "kanske problemet löser sig."
 
-#: src/nautilus-application.c:634
+#: src/nautilus-application.c:635
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -8264,16 +8273,16 @@ msgstr "Hitta dem!"
 
 #: src/nautilus-first-time-druid.c:180
 msgid ""
-"Existence of this file indicates that the Nautilus configuration wizard\n"
+"Existence of this file indicates that the Nautilus configuration druid\n"
 "has been presented.\n"
 "\n"
-"You can manually erase this file to present the wizard again.\n"
+"You can manually erase this file to present the druid again.\n"
 "\n"
 msgstr ""
 "Förekomst av denna fil tyder på att Nautilus-konfigurationsguiden har\n"
 "visats.\n"
 "\n"
-"Du kan ta bort denna fil manuellt för att visa guiden igen.\n"
+"Du kan manuellt ta bort denna fil för att visa guiden igen.\n"
 "\n"
 
 #. Note to localizers: this font is used for title text in
@@ -9870,6 +9879,21 @@ msgstr "Framåt"
 #: src/nautilus-zoom-control.c:531
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
+
+#~ msgid "System"
+#~ msgstr "System"
+
+#~ msgid "Config files"
+#~ msgstr "Konfigurationsfiler"
+
+#~ msgid "Command Line"
+#~ msgstr "Kommandorad"
+
+#~ msgid "APIs"
+#~ msgstr "Programmeringsgränssnitt"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Diverse"
 
 #~ msgid "Force install"
 #~ msgstr "Tvinga installation"
