@@ -71,8 +71,11 @@
 #define MENU_PATH_LAY_OUT			"/View/Lay Out"
 #define MENU_PATH_MANUAL_LAYOUT 		"/View/Lay Out/Manual Layout"
 #define MENU_PATH_AUTO_LAYOUT_SEPARATOR 	"/View/Lay Out/AutoLayoutSeparator"
+#define MENU_PATH_TIGHTER_LAYOUT 		"/View/Tighter Layout"
 #define MENU_PATH_CLEAN_UP			"/View/Clean Up"
-#define MENU_PATH_SORT_REVERSED			"/View/Reversed Order"
+#define MENU_PATH_SORT_DIRECTION_RADIO_GROUP 	"/View/SortDirectionRadioGroup"
+#define MENU_PATH_SORT_ASCENDING	   	"/View/Ascending"
+#define MENU_PATH_SORT_DESCENDING	   	"/View/Descending"
 
 /* forward declarations */
 static void 	create_icon_container                    (FMIconView        *icon_view);
@@ -87,6 +90,13 @@ static void 	fm_icon_view_set_zoom_level              (FMIconView        *view,
 static void 	fm_icon_view_update_icon_container_fonts (FMIconView        *icon_view);
 static void 	fm_icon_view_update_click_mode           (FMIconView        *icon_view);
 static void 	fm_icon_view_update_smooth_graphics_mode (FMIconView        *icon_view);
+static gboolean fm_icon_view_get_directory_tighter_layout (FMIconView *icon_view,
+							  NautilusDirectory *directory);
+
+static void	fm_icon_view_set_directory_tighter_layout(FMIconView *icon_view,
+							  NautilusDirectory *directory,
+							  gboolean tighter_layout);
+
 static gboolean set_sort_reversed 			 (FMIconView 	    *icon_view, 
 							  gboolean 	     new_value);
 static void	update_layout_menus 			 (FMIconView 	    *view);
@@ -160,7 +170,7 @@ struct FMIconViewDetails
 	gboolean sort_reversed;
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	gboolean updating_bonobo_marked_menu_item;
+	gboolean updating_bonobo_radio_menu_item;
 };
 
 static void
@@ -335,6 +345,25 @@ clean_up_callback (gpointer ignored, gpointer view)
 	fm_icon_view_clean_up (FM_ICON_VIEW (view));
 }
 
+/* callback to toggle the tighter layout boolean */
+static void
+tighter_layout_callback (gpointer ignored, gpointer view)
+{
+	NautilusIconContainer *icon_container;
+	NautilusDirectory *directory;
+	gboolean is_tighter_layout;
+	
+	if (FM_ICON_VIEW (view)->details->updating_bonobo_radio_menu_item)
+		return;
+	
+	icon_container = get_icon_container (FM_ICON_VIEW (view));
+	directory = NAUTILUS_DIRECTORY (fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)));
+	is_tighter_layout = fm_icon_view_get_directory_tighter_layout (FM_ICON_VIEW (view), directory);
+	
+	fm_icon_view_set_directory_tighter_layout (FM_ICON_VIEW (view), directory, !is_tighter_layout);
+	nautilus_icon_container_set_tighter_layout (icon_container, !is_tighter_layout);
+}
+
 /**
  * Note that this is used both as a Bonobo menu callback and a signal callback.
  * The first parameter is different in these cases, but we just ignore it anyway.
@@ -357,7 +386,8 @@ compute_menu_item_info (FMIconView *view,
 			const char *menu_path,
 			gboolean include_accelerator_underbars,
 			char **return_name,
-			gboolean *sensitive_return)
+			gboolean *sensitive_return,
+			gboolean *toggle_item)
 {
 	NautilusIconContainer *icon_container;
 	char *name, *stripped;
@@ -365,7 +395,8 @@ compute_menu_item_info (FMIconView *view,
 	g_assert (FM_IS_ICON_VIEW (view));
 
 	icon_container = get_icon_container (view);
-
+	*toggle_item = FALSE;
+	
 	if (strcmp (MENU_PATH_STRETCH_ICON, menu_path) == 0) {
                 name = g_strdup (_("_Stretch Icon"));
 		/* Current stretching UI only works on one item at a time, so we'll
@@ -391,6 +422,11 @@ compute_menu_item_info (FMIconView *view,
 	} else if (strcmp (MENU_PATH_CLEAN_UP, menu_path) == 0) {
 		name = g_strdup (_("_Clean Up by Name"));
 		*sensitive_return = TRUE;
+	
+	} else if (strcmp (MENU_PATH_TIGHTER_LAYOUT, menu_path) == 0) {
+		name = g_strdup (_("_Use Tighter Layout"));
+		*sensitive_return = TRUE;
+		*toggle_item = TRUE;
 	} else {
 
 		g_assert_not_reached ();
@@ -415,9 +451,9 @@ insert_one_context_menu_item (FMIconView *view,
 {
 	GtkWidget *menu_item;
 	char *label;
-	gboolean sensitive;
+	gboolean sensitive, toggle_item;
         
-        compute_menu_item_info (view, selection, menu_path, FALSE, &label, &sensitive); 
+        compute_menu_item_info (view, selection, menu_path, FALSE, &label, &sensitive, &toggle_item); 
         menu_item = gtk_menu_item_new_with_label (label);
         g_free (label);
         gtk_widget_set_sensitive (menu_item, sensitive);
@@ -565,16 +601,20 @@ update_layout_menus (FMIconView *view)
 	const char *path;
 	BonoboUIHandler *ui_handler;
 	gboolean is_auto_layout;
-
+	gboolean is_tighter_layout;
+	
 	if (!view->details->menus_ready) {
 		return;
 	}
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	view->details->updating_bonobo_marked_menu_item = TRUE;
+	view->details->updating_bonobo_radio_menu_item = TRUE;
 
 	is_auto_layout = nautilus_icon_container_is_auto_layout 
 		(get_icon_container (view));
+	is_tighter_layout = nautilus_icon_container_is_tighter_layout 
+		(get_icon_container (view));
+	
 	ui_handler = fm_directory_view_get_bonobo_ui_handler 
 		(FM_DIRECTORY_VIEW (view));
 
@@ -586,18 +626,39 @@ update_layout_menus (FMIconView *view)
 	bonobo_ui_handler_menu_set_radio_state (ui_handler, path, TRUE);
 
 	/* Sort order isn't relevant for manual layout. */
+	/* Note that sensitivity must be set before setting which radio
+	 * item is active, or the active state might be changed (Bonobo
+	 * bug)
+	 */
 	bonobo_ui_handler_menu_set_sensitivity
-		(ui_handler, MENU_PATH_SORT_REVERSED, is_auto_layout);
+		(ui_handler, MENU_PATH_SORT_DESCENDING, is_auto_layout);
+	bonobo_ui_handler_menu_set_sensitivity
+		(ui_handler, MENU_PATH_SORT_ASCENDING, is_auto_layout);
 
 	/* Mark sort order. */
-	bonobo_ui_handler_menu_set_toggle_state 
-		(ui_handler, MENU_PATH_SORT_REVERSED, view->details->sort_reversed);
+	if (view->details->sort_reversed) {
+		path = MENU_PATH_SORT_DESCENDING;
+	} else {
+		path = MENU_PATH_SORT_ASCENDING;
+	}
+	bonobo_ui_handler_menu_set_radio_state (ui_handler, path, TRUE);
 
 	/* Clean Up is only relevant for manual layout */
 	bonobo_ui_handler_menu_set_sensitivity
 		(ui_handler, MENU_PATH_CLEAN_UP, !is_auto_layout);	
-		 
-	view->details->updating_bonobo_marked_menu_item = FALSE;
+	
+	/* set the checkmark in the "tighter layout" menu */
+		
+	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, MENU_PATH_TIGHTER_LAYOUT) != is_tighter_layout) {
+		bonobo_ui_handler_menu_set_toggle_state
+			(ui_handler, MENU_PATH_TIGHTER_LAYOUT, is_tighter_layout);	
+	}
+			
+	/* Tighter Layout is only relevant for auto layout */
+	bonobo_ui_handler_menu_set_sensitivity
+		(ui_handler, MENU_PATH_TIGHTER_LAYOUT, is_auto_layout);	
+	 
+	view->details->updating_bonobo_radio_menu_item = FALSE;
 }
 
 
@@ -672,6 +733,8 @@ fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view,
 		 sort_reversed);
 }
 
+/* maintainence of auto layout boolean */
+
 static gboolean
 fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
 					NautilusDirectory *directory)
@@ -705,6 +768,42 @@ fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view,
 	nautilus_directory_set_boolean_metadata
 		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE,
 		 auto_layout);
+}
+/* maintainence of tighter layout boolean */
+
+static gboolean
+fm_icon_view_get_directory_tighter_layout (FMIconView *icon_view,
+					NautilusDirectory *directory)
+{
+	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+				      get_directory_tighter_layout, (icon_view, directory));
+}
+
+static gboolean
+fm_icon_view_real_get_directory_tighter_layout (FMIconView *icon_view,
+					     NautilusDirectory *directory)
+{
+	return nautilus_directory_get_boolean_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT, FALSE);
+}
+
+static void
+fm_icon_view_set_directory_tighter_layout (FMIconView *icon_view,
+					NautilusDirectory *directory,
+					gboolean tighter_layout)
+{
+	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+			       set_directory_tighter_layout, (icon_view, directory, tighter_layout));
+}
+
+static void
+fm_icon_view_real_set_directory_tighter_layout (FMIconView *icon_view,
+					     NautilusDirectory *directory,
+					     gboolean tighter_layout)
+{
+	nautilus_directory_set_boolean_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT, FALSE,
+		 tighter_layout);
 }
 
 static gboolean
@@ -752,6 +851,19 @@ get_sort_criterion_by_menu_path (const char *path)
 	return NULL;
 }
 
+static gboolean
+get_sort_reversed_from_menu_path (const char *path)
+{
+	if (strcmp (path, MENU_PATH_SORT_DESCENDING) == 0) {
+		return TRUE;
+	}
+
+	/* Complain softly about unexpected parameter. */
+	g_return_val_if_fail (strcmp (path, MENU_PATH_SORT_ASCENDING) == 0, FALSE);
+
+	return FALSE;
+}
+
 static void
 fm_icon_view_begin_loading (FMDirectoryView *view)
 {
@@ -760,6 +872,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	NautilusDirectory *directory;
 	int level;
 	char *sort_name;
+	gboolean is_tighter_layout;
 	
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
@@ -791,13 +904,17 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	/* Set the sort direction from the metadata. */
 	set_sort_reversed (icon_view, fm_icon_view_get_directory_sort_reversed (icon_view, directory));
 
-	/* Set the layout mode.
+	/* Set the layout modes.
 	 * We must do this after getting the sort mode,
 	 * because otherwise the layout_changed callback
 	 * might overwrite the sort mode.
 	 */
+	is_tighter_layout = fm_icon_view_get_directory_tighter_layout (icon_view, directory);
 	nautilus_icon_container_set_auto_layout
 		(get_icon_container (icon_view), fm_icon_view_get_directory_auto_layout (icon_view, directory));
+	nautilus_icon_container_set_tighter_layout
+		(get_icon_container (icon_view), is_tighter_layout);
+
 }
 
 static NautilusZoomLevel
@@ -975,17 +1092,26 @@ insert_bonobo_menu_item (FMIconView *view,
                          gpointer callback_data)
 {
         char *label;
-        gboolean sensitive;
+        gboolean sensitive, toggle_item;
 
-        compute_menu_item_info (view, selection, path, TRUE, &label, &sensitive);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler, path, label, hint, 
-		 pos,                            /* Position, -1 means at end */
-		 BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
-		 NULL,                          /* Pixmap data */
-		 0,                             /* Accelerator key */
-		 0,                             /* Modifiers for accelerator */
-		 callback, callback_data);
+        compute_menu_item_info (view, selection, path, TRUE, &label, &sensitive, &toggle_item);
+        if (toggle_item) {
+         	bonobo_ui_handler_menu_new_toggleitem
+			(ui_handler, path, label, hint, 
+		 	pos,                            /* Position, -1 means at end */
+		 	0,                             /* Accelerator key */
+		 	0,                             /* Modifiers for accelerator */
+		 	callback, callback_data);
+        } else {
+        	bonobo_ui_handler_menu_new_item
+			(ui_handler, path, label, hint, 
+		 	pos,                            /* Position, -1 means at end */
+		 	BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
+		 	NULL,                          /* Pixmap data */
+		 	0,                             /* Accelerator key */
+		 	0,                             /* Modifiers for accelerator */
+		 	callback, callback_data);
+        }
         g_free (label);
         bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, sensitive);
 }
@@ -998,7 +1124,7 @@ sort_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
 	icon_view = FM_ICON_VIEW (user_data);
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	if (icon_view->details->updating_bonobo_marked_menu_item) {
+	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
@@ -1015,13 +1141,11 @@ sort_direction_callback (BonoboUIHandler *handler, gpointer user_data, const cha
 	icon_view = FM_ICON_VIEW (user_data);
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	if (icon_view->details->updating_bonobo_marked_menu_item) {
+	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
-	set_sort_reversed (icon_view, 
-			   bonobo_ui_handler_menu_get_toggle_state 
-				(handler, MENU_PATH_SORT_REVERSED));
+	set_sort_reversed (icon_view, get_sort_reversed_from_menu_path (path));
 	nautilus_icon_container_sort (get_icon_container (icon_view));
 
 }
@@ -1036,7 +1160,7 @@ manual_layout_callback (BonoboUIHandler *handler,
 	icon_view = FM_ICON_VIEW (user_data);
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	if (icon_view->details->updating_bonobo_marked_menu_item) {
+	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
@@ -1056,6 +1180,10 @@ layout_changed_callback (NautilusIconContainer *container,
 		(icon_view,
 		 fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
 		 nautilus_icon_container_is_auto_layout (container));
+	fm_icon_view_set_directory_tighter_layout
+		(icon_view,
+		 fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
+		 nautilus_icon_container_is_tighter_layout (container));
 
 	update_layout_menus (icon_view);
 }
@@ -1125,7 +1253,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		 (BonoboUIHandlerCallback) unstretch_icons_callback, view);
 
 	/* Additions to View menu. */
-	icon_view->details->updating_bonobo_marked_menu_item = TRUE;
+	icon_view->details->updating_bonobo_radio_menu_item = TRUE;
 
 	bonobo_ui_handler_menu_new_separator
 		(ui_handler, MENU_PATH_LAYOUT_SEPARATOR, 
@@ -1159,21 +1287,40 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 			 0, 0,
 			 sort_callback, view);
 	}
+ 
+ 	insert_bonobo_menu_item
+		(icon_view, ui_handler, selection,
+		 MENU_PATH_TIGHTER_LAYOUT,
+		 _("Toggle using a tighter layout scheme"),
+		 get_next_position (ui_handler, MENU_PATH_LAY_OUT),
+		 (BonoboUIHandlerCallback) tighter_layout_callback, view);
+       
         insert_bonobo_menu_item
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_CLEAN_UP,
 		 _("Reposition icons to better fit in the window and avoid overlapping"),
-		 get_next_position (ui_handler, MENU_PATH_LAY_OUT),
-		 (BonoboUIHandlerCallback) clean_up_callback, view);
-	bonobo_ui_handler_menu_new_toggleitem
+		 get_next_position (ui_handler, MENU_PATH_TIGHTER_LAYOUT),
+		 (BonoboUIHandlerCallback) clean_up_callback, view); 
+	
+	bonobo_ui_handler_menu_new_radiogroup 
+		(ui_handler, MENU_PATH_SORT_DIRECTION_RADIO_GROUP);
+	bonobo_ui_handler_menu_new_radioitem
 		(ui_handler,
-		 MENU_PATH_SORT_REVERSED,
-		 _("Re_versed Order"),
-		 _("Display icons in the opposite order"),
+		 MENU_PATH_SORT_ASCENDING,
+		 _("_Ascending"),
+		 _("Sort icons from \"smallest\" to \"largest\" according to sort criteria"),
 		 get_next_position (ui_handler, MENU_PATH_CLEAN_UP),
 		 0, 0,
 		 sort_direction_callback, view);
-	icon_view->details->updating_bonobo_marked_menu_item = FALSE;
+	bonobo_ui_handler_menu_new_radioitem
+		(ui_handler,
+		 MENU_PATH_SORT_DESCENDING,
+		 _("Des_cending"),
+		 _("Sort icons from \"largest\" to \"smallest\" according to sort criteria"),
+		 get_next_position (ui_handler, MENU_PATH_SORT_ASCENDING),
+		 0, 0,
+		 sort_direction_callback, view);
+	icon_view->details->updating_bonobo_radio_menu_item = FALSE;
 
 	/* File menu. */
         insert_bonobo_menu_item
@@ -1197,9 +1344,9 @@ update_one_menu_item (FMIconView *view,
 		      const char *menu_path)
 {
 	char *label;
-	gboolean sensitive;
+	gboolean sensitive, toggle_item;
 	
-	compute_menu_item_info (view, selection, menu_path, TRUE, &label, &sensitive);
+	compute_menu_item_info (view, selection, menu_path, TRUE, &label, &sensitive, &toggle_item);
 	bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
 	bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label);
 	g_free (label);
@@ -1753,13 +1900,15 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->smooth_graphics_mode_changed = fm_icon_view_smooth_graphics_mode_changed;
 
 
-	klass->clean_up			   = fm_icon_view_real_clean_up;
-        klass->get_directory_sort_by       = fm_icon_view_real_get_directory_sort_by;
-        klass->set_directory_sort_by       = fm_icon_view_real_set_directory_sort_by;
-        klass->get_directory_sort_reversed = fm_icon_view_real_get_directory_sort_reversed;
-        klass->set_directory_sort_reversed = fm_icon_view_real_set_directory_sort_reversed;
-        klass->get_directory_auto_layout   = fm_icon_view_real_get_directory_auto_layout;
-        klass->set_directory_auto_layout   = fm_icon_view_real_set_directory_auto_layout;
+	klass->clean_up			    = fm_icon_view_real_clean_up;
+        klass->get_directory_sort_by        = fm_icon_view_real_get_directory_sort_by;
+        klass->set_directory_sort_by        = fm_icon_view_real_set_directory_sort_by;
+        klass->get_directory_sort_reversed  = fm_icon_view_real_get_directory_sort_reversed;
+        klass->set_directory_sort_reversed  = fm_icon_view_real_set_directory_sort_reversed;
+        klass->get_directory_auto_layout    = fm_icon_view_real_get_directory_auto_layout;
+        klass->set_directory_auto_layout    = fm_icon_view_real_set_directory_auto_layout;
+        klass->get_directory_tighter_layout = fm_icon_view_real_get_directory_tighter_layout;
+        klass->set_directory_tighter_layout = fm_icon_view_real_set_directory_tighter_layout;
 }
 
 static void

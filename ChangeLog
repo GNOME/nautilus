@@ -1,3 +1,38 @@
+2000-08-26  Andy Hertzfeld  <andy@eazel.com>
+
+	At Bud's request, added a "use tighter layout" option in the view menu, which causes
+	the icon view to use a tighter layout algorithm. It defaults to off.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	(get_icon_space_width), (lay_down_one_line),
+	(lay_down_icons_horizontal),
+	(nautilus_icon_container_set_tighter_layout),
+	(nautilus_icon_container_is_auto_layout),
+	(nautilus_icon_container_is_tighter_layout):
+	added a "tighter layout" boolean; when it's set, don't pad out
+	to the nearest power of two.
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	added a tag for tighter layout in the metadata
+	
+	* src/file-manager/fm-icon-view.c,h: (tighter_layout_callback),
+	(compute_menu_item_info), (insert_one_context_menu_item),
+	(update_layout_menus), (fm_icon_view_get_directory_tighter_layout),
+	(fm_icon_view_real_get_directory_tighter_layout),
+	(fm_icon_view_set_directory_tighter_layout),
+	(fm_icon_view_real_set_directory_tighter_layout),
+	(fm_icon_view_begin_loading),
+	(insert_bonobo_menu_item), (sort_callback),
+	(sort_direction_callback), (manual_layout_callback),
+	(layout_changed_callback), (fm_icon_view_merge_menus),
+	(update_one_menu_item), (fm_icon_view_initialize_class):
+	added a "tighter layout" boolean as an instance variable,
+	added a toggle menu item, and hooked everything up so the
+	menu item toggles the tighter layout state.  It stores it
+	per directory in the metadata.
+
 2000-08-25  Rebecca Schulman  <rebecka@eazel.com>
 
         Fixed bug 2071 to improve the date modified search

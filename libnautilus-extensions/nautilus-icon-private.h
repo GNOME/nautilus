@@ -175,10 +175,11 @@ struct NautilusIconContainerDetails {
 	/* Mode settings. */
 	gboolean single_click_mode;
 	gboolean auto_layout;
-
+	gboolean tighter_layout;
+	
 	/* Layout mode */
 	NautilusIconLayoutMode layout_mode;
-
+	
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;
 };

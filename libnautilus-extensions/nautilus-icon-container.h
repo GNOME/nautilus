@@ -156,6 +156,9 @@ void	   nautilus_icon_container_reveal			 (NautilusIconContainer	 *container,
 gboolean   nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);
 void       nautilus_icon_container_set_auto_layout               (NautilusIconContainer  *container,
 								  gboolean                auto_layout);
+gboolean   nautilus_icon_container_is_tighter_layout             (NautilusIconContainer  *container);
+void       nautilus_icon_container_set_tighter_layout            (NautilusIconContainer  *container,
+								  gboolean                tighter_layout);
 void       nautilus_icon_container_set_layout_mode               (NautilusIconContainer  *container,
 								  NautilusIconLayoutMode  mode);
 void       nautilus_icon_container_sort                          (NautilusIconContainer  *container);

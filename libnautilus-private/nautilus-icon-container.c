@@ -558,12 +558,15 @@ resort (NautilusIconContainer *container)
  * placed in.
  */
 static int
-get_icon_space_width (const ArtDRect *bounds)
+get_icon_space_width (NautilusIconContainer *container, const ArtDRect *bounds)
 {
 	double world_width;
 	int power_of_two_width;
 
 	world_width = ICON_PAD_LEFT + (bounds->x1 - bounds->x0) + ICON_PAD_RIGHT;
+	if (container->details->tighter_layout)
+		return world_width;
+	
 	for (power_of_two_width = ICON_BASE_WIDTH;
 	     power_of_two_width < world_width;
 	     power_of_two_width += power_of_two_width) {
@@ -619,7 +622,7 @@ lay_down_one_line (NautilusIconContainer *container,
 		nautilus_gnome_canvas_item_get_world_bounds
 			(GNOME_CANVAS_ITEM (icon->item), &bounds);
 		nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_bounds);		
-		width = get_icon_space_width (&bounds);
+		width = get_icon_space_width (container, &bounds);
 
 		icon_set_position
 			(icon,
@@ -655,7 +658,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		/* Get the width of the icon. */
 		nautilus_gnome_canvas_item_get_world_bounds
 			(GNOME_CANVAS_ITEM (icon->item), &bounds);
-		space_width = get_icon_space_width (&bounds);
+		space_width = get_icon_space_width (container, &bounds);
 
 		/* If this icon doesn't fit, lay out the line that's queued up. */
 		if (line_start != p && line_width + space_width > canvas_width) {
@@ -3972,6 +3975,26 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 }
 
 
+/* Toggle the tighter layout boolean. */
+void
+nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
+					 	gboolean tighter_layout)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (tighter_layout == FALSE || tighter_layout == TRUE);
+
+	if (container->details->tighter_layout == tighter_layout) {
+		return;
+	}
+
+	container->details->tighter_layout = tighter_layout;
+
+	relayout (container);
+
+	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
+}
+
+
 void
 nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
 					 NautilusIconLayoutMode mode)
@@ -4039,6 +4062,14 @@ nautilus_icon_container_is_auto_layout (NautilusIconContainer *container)
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 
 	return container->details->auto_layout;
+}
+
+gboolean
+nautilus_icon_container_is_tighter_layout (NautilusIconContainer *container)
+{
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+
+	return container->details->tighter_layout;
 }
 
 /**
