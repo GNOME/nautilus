@@ -44,7 +44,6 @@
 #define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
 
 #define METAFILE_READ_CHUNK_SIZE (4 * 1024)
-
 #define TOP_LEFT_TEXT_READ_CHUNK_SIZE (4 * 1024)
 
 struct MetafileReadState {
@@ -107,6 +106,9 @@ empty_close_callback (GnomeVFSAsyncHandle *handle,
 		      GnomeVFSResult result,
 		      gpointer callback_data)
 {
+	if (result != GNOME_VFS_OK) {
+		g_warning ("close failed");
+	}
 	/* Do nothing. */
 }
 
@@ -980,6 +982,7 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 
 	/* Let go of this request. */
 	nautilus_file_unref (directory->details->count_file);
+	directory->details->count_file = NULL;
 	directory->details->count_in_progress = NULL;
 
 	/* Start up the next one. */
@@ -1374,6 +1377,8 @@ start_getting_directory_counts (NautilusDirectory *directory)
 
 		/* The count is not wanted, so stop it. */
 		gnome_vfs_async_cancel (directory->details->count_in_progress);
+		nautilus_file_unref (directory->details->count_file);
+		directory->details->count_file = NULL;
 		directory->details->count_in_progress = NULL;
 	}
 
@@ -1450,7 +1455,6 @@ top_left_read_complete (NautilusDirectory *directory)
 						directory->details->top_left_read_state->bytes_read);
 
 	nautilus_file_changed (directory->details->top_left_read_state->file);
-
 
 	top_left_read_done (directory);
 }
@@ -1563,7 +1567,9 @@ start_getting_top_lefts (NautilusDirectory *directory)
 
 		/* The top left is not wanted, so stop it. */
 		gnome_vfs_async_cancel (directory->details->top_left_read_state->handle);
+		top_left_read_close (directory);
 		g_free (directory->details->top_left_read_state->buffer);
+		nautilus_file_unref (directory->details->top_left_read_state->file);
 		g_free (directory->details->top_left_read_state);
 		directory->details->top_left_read_state = NULL;
 	}

@@ -1,3 +1,19 @@
+2000-05-05  Darin Adler  <darin@eazel.com>
+
+	Fix up the code for cancelling so we don't leave files open and
+	objects around so much. It was getting out of hand.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(empty_close_callback): Give a warning if we ever have a close
+	that fails.
+	(directory_count_callback): For easier debugging, NULL out the
+	file after unref'ing.
+	(start_getting_directory_counts): Unref the file when we cancel
+	a directory count part-way through (leak #1).
+	(start_getting_top_lefts): Close the file when we cancel a top
+	left read part-way through (leak #2). Unref the file when we
+	cancel a top left read part way thorugh (leak #3).
+
 2005-05-05  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:
@@ -7,7 +23,9 @@
 
 	* libnautilus-extensions/nautilus-icon-factory.c:
 	(nautilus_icon_factory_embed_text): The old code assumed that white
-	was == 0xFFFFFF. But that's not always true. Fixed it now.
+	was == 0xFFFFFF. But that's not always true due to bugs (well maybe
+	not bugs but imperfections) in the code that converts 555 to 888 in
+	gdk-pixbuf. Fixed it now.
 
 2000-05-05  Darin Adler  <darin@eazel.com>
 
