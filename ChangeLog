@@ -1,3 +1,13 @@
+2000-06-14  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_drag_data_received): Fixed bug where dropping
+	colors into list view crashed by setting details->data_type and
+	got_drop_data_type.
+	* src/file-manager/fm-icon-view.c: (compute_menu_item_info):
+	Changed menu item title from "Customize Icon Text..." to
+	"Icon Captions...". Not sure if I like this verbless style yet.
+
 2000-06-14  Robin * Slomkowski <rslokow@eazel.com>
 
 	* nautilus.spec.in: added permission so it can run for non-root
