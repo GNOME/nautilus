@@ -535,7 +535,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_initialize_menus (window);
 	nautilus_window_initialize_toolbars (window);
 
-	/* watch for throbber locatoin changes, too */
+	/* watch for throbber location changes, too */
 	gtk_signal_connect (GTK_OBJECT (window->throbber), "location_changed",
 			    goto_uri_callback, window);
 	

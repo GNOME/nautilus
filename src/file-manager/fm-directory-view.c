@@ -136,6 +136,7 @@ struct FMDirectoryViewDetails
 	guint files_added_handler_id;
 	guint files_changed_handler_id;
 	guint load_error_handler_id;
+	guint done_loading_handler_id;
 	guint file_changed_handler_id;
 	
 	GList *pending_files_added;
@@ -1845,16 +1846,7 @@ queue_pending_files (FMDirectoryView *view,
 	if (files != NULL) {
 		nautilus_file_list_ref (files);
 		*pending_list = g_list_concat (*pending_list, filtered_files);
-		
-		/* If we haven't see all the files yet, then we'll wait for the
-		 * timeout to fire. If we have seen all the files, then we'll use
-		 * an idle instead.
-		 */
-		if (nautilus_directory_are_all_files_seen (view->details->model)) {
-			schedule_idle_display_of_pending_files (view);
-		} else {
-			schedule_timeout_display_of_pending_files (view);
-		}
+		schedule_timeout_display_of_pending_files (view);
 	}
 }
 
@@ -1883,6 +1875,17 @@ files_changed_callback (NautilusDirectory *directory,
 	 * one thing, so we need to update menus when files change.
 	 */
 	schedule_update_menus (view);
+}
+
+static void
+done_loading_callback (NautilusDirectory *directory,
+		       gpointer callback_data)
+{
+	FMDirectoryView *view;
+	
+	view = FM_DIRECTORY_VIEW (callback_data);
+	
+	schedule_idle_display_of_pending_files (view);
 }
 
 static void
@@ -3574,6 +3577,11 @@ finish_loading_uri (FMDirectoryView *view)
 		 "files_changed",
 		 files_changed_callback,
 		 view);
+	view->details->done_loading_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model),
+		 "done_loading",
+		 done_loading_callback,
+		 view);
 	view->details->load_error_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model),
 		 "load_error",
@@ -3683,6 +3691,7 @@ disconnect_model_handlers (FMDirectoryView *view)
 	}
 	disconnect_directory_handler (view, &view->details->files_added_handler_id);
 	disconnect_directory_handler (view, &view->details->files_changed_handler_id);
+	disconnect_directory_handler (view, &view->details->done_loading_handler_id);
 	disconnect_directory_handler (view, &view->details->load_error_handler_id);
 	disconnect_directory_as_file_handler (view, &view->details->file_changed_handler_id);
 	nautilus_directory_file_monitor_remove (view->details->model, view);

@@ -1052,7 +1052,9 @@ change_state (NautilusWindow *window,
                 break;
                 
         case LOAD_UNDERWAY: /* We have received an "I am loading" indication from the content view */
+                nautilus_window_allow_stop (window, TRUE); /* for the case where we are "re-underway" */
                 window->cv_progress_initial = TRUE;
+                window->cv_progress_done = FALSE;
                 break;
                 
         case LOAD_DONE: /* The content view is done loading */

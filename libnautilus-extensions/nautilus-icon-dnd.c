@@ -107,9 +107,6 @@ static GtkTargetEntry drop_types [] = {
 };
 
 
-/* special reserved name for the erase emblem */
-#define ERASE_KEYWORD "erase"
-
 static GnomeCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
 			 GList *list)

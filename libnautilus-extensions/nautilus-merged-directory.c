@@ -34,6 +34,7 @@
 
 struct NautilusMergedDirectoryDetails {
 	GList *directories;
+	GList *directories_not_done_loading;
 	GHashTable *callbacks;
 	GHashTable *monitors;
 };
@@ -437,6 +438,17 @@ forward_files_changed_cover (NautilusDirectory *real_directory,
 }
 
 static void
+done_loading_callback (NautilusDirectory *real_directory,
+		       NautilusMergedDirectory *merged)
+{
+	merged->details->directories_not_done_loading = g_list_remove
+		(merged->details->directories_not_done_loading, real_directory);
+	if (merged->details->directories_not_done_loading == NULL) {
+		nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (merged));
+	}
+}
+
+static void
 monitor_add_directory (gpointer key,
 		       gpointer value,
 		       gpointer callback_data)
@@ -467,6 +479,8 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 	nautilus_directory_ref (real_directory);
 	merged->details->directories = g_list_prepend
 		(merged->details->directories, real_directory);
+	merged->details->directories_not_done_loading = g_list_prepend
+		(merged->details->directories_not_done_loading, real_directory);
 
 	/* Connect signals. */
 	gtk_signal_connect (GTK_OBJECT (real_directory),
@@ -477,7 +491,14 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 			    "files_changed",
 			    forward_files_changed_cover,
 			    merged);
-	/* FIXME bugzilla.eazel.com 2540: Hook up the done_loading signal too? */
+	gtk_signal_connect (GTK_OBJECT (real_directory),
+			    "done_loading",
+			    done_loading_callback,
+			    merged);
+
+	/* FIXME: The done_loading part won't work for the case where
+         * we have no directories in our list.
+	 */
 
 	/* Add the directory to any extant monitors. */
 	g_hash_table_foreach (merged->details->monitors,
@@ -532,6 +553,8 @@ nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged
 	/* Remove from our list of directories. */
 	merged->details->directories = g_list_remove
 		(merged->details->directories, real_directory);
+	merged->details->directories_not_done_loading = g_list_remove
+		(merged->details->directories_not_done_loading, real_directory);
 	nautilus_directory_unref (real_directory);
 }
 

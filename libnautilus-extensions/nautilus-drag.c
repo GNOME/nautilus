@@ -581,7 +581,7 @@ nautilus_drag_autoscroll_start (NautilusDragInfo *drag_info,
 void
 nautilus_drag_autoscroll_stop (NautilusDragInfo *drag_info)
 {
-	if (drag_info->auto_scroll_timeout_id) {
+	if (drag_info->auto_scroll_timeout_id != 0) {
 		gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
 		drag_info->auto_scroll_timeout_id = 0;
 	}
@@ -593,10 +593,11 @@ nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
 {
 	GList *keywords, *word;
 
-	g_assert (keyword != NULL);
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (keyword != NULL);
 
 	/* special case the erase emblem */
-	if (!nautilus_strcmp (keyword, ERASE_KEYWORD)) {
+	if (strcmp (keyword, ERASE_KEYWORD) == 0) {
 		keywords = NULL;
 	} else {
 		keywords = nautilus_file_get_keywords (file);
@@ -611,4 +612,5 @@ nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
 	}
 	
 	nautilus_file_set_keywords (file, keywords);
+	nautilus_g_list_free_deep (keywords);
 }

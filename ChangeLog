@@ -1,15 +1,57 @@
+2000-12-07  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 3245 (When an empty folder is visited, the throbbing
+	never stops), bug 2540 (Hook up done_loading signal in
+	NautilusMergedDirectory?), and bug 3067 (throbber doesn't start
+	again if you do a new "underway" call after load is complete).
+
+	* src/file-manager/fm-directory-view.c: (queue_pending_files):
+	Get rid of code that uses nautilus_directory_are_all_files_seen
+	to notice we are done loading.
+	(done_loading_callback): Use done_loading signal to notice we
+	are done loading.
+	(finish_loading_uri): Connect to the done_loading signal.
+	(disconnect_model_handlers): Disconnect from the done_loading
+	signal.
+	
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(done_loading_callback),
+	(nautilus_merged_directory_add_real_directory),
+	(nautilus_merged_directory_remove_real_directory): Add code to
+	track all the trash directories and emit done_loading signals
+	once all of them are done loading.
+	
+	* src/nautilus-window-manage-views.c: (change_state): Turn the
+	stop and the throbber back on when a view re-marks itself
+	underway.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_file_receive_dropped_keyword): Fix storage leak by
+	doing a free_deep on the list of keywords.
+	
+	* libnautilus-extensions/nautilus-file-operations.h:
+	* libnautilus-extensions/nautilus-file-operations.c:
+	Get rid of excess includes.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c: Get rid of unused
+	ERASE_KEYWORD constant.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed): Fix a
+	typo in a comment.
+
 2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	Add header files to Makefile.am to make tinderbox happy.
 
 	* components/music/Makefile.am:
 	* components/music/mp3head.h:
-	Put a header gaurd define in file.
+	Put a header guard define in file.
 
 2000-12-07  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/helper/README:
-
 	Update the eazel-helper README to be more current than July.  Tell
 	readers about the softlinks and tell them that eazel-hacking does
 	this for you now.
@@ -25,10 +67,11 @@
 	bugzilla.eazel.com 3940
 	"DAV: Creating folder in read-only directory does not produce error feedback"
 
-	Added an error dialog for the case where gnome-vfs-xfer reports an error
-	during directory creation.  This case is only commonly encountered in
-	remote filesystems where Nautilus can't check permissions before operations.
-	(Similar behaviour to 3940 applied to FTP as well).
+	Added an error dialog for the case where gnome-vfs-xfer reports an
+	error during directory creation.  This case is only commonly
+	encountered in remote filesystems where Nautilus can't check
+	permissions before operations.  (Similar behaviour to 3940 applied
+	to FTP as well).
 
 2000-12-06  Gene Z. Ragan  <gzr@eazel.com>
 

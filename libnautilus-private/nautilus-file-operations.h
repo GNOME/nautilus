@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_FILE_OPERATIONS_H
 #define NAUTILUS_FILE_OPERATIONS_H
 
-#include <libgnomevfs/gnome-vfs.h>
+#include <gtk/gtkwidget.h>
 
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gpointer    callback_data);
@@ -48,6 +48,5 @@ void  nautilus_file_operations_new_folder              (GtkWidget               
 							gpointer                   done_callback_data);
 void  nautilus_file_operations_delete                  (const GList               *item_uris,
 							GtkWidget                 *parent_view);
-
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

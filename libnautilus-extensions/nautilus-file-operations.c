@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* xfer.c - Bonobo::Desktop::FileOperationService transfer service.
 
    Copyright (C) 1999, 2000 Free Software Foundation
@@ -21,25 +22,28 @@
    Authors: 
    Ettore Perazzoli <ettore@gnu.org> 
    Pavel Cisler <pavel@eazel.com> 
-   */
+ */
 
 #include <config.h>
-
-#include <gnome.h>
-#include <gtk/gtklabel.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-
 #include "nautilus-file-operations.h"
+
 #include "nautilus-file-operations-progress.h"
 #include "nautilus-lib-self-check-functions.h"
+#include <gnome.h>
+#include <gtk/gtklabel.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-result.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
 typedef enum {
 	XFER_MOVE,
@@ -2060,7 +2064,6 @@ test_next_duplicate_name (const char *name, const char *expected_next_name)
 void
 nautilus_self_check_file_operations (void)
 {
-
 	/* test the next duplicate name generator */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(" (copy)"), _(" (another copy)")), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo"), _("foo (copy)")), TRUE);
