@@ -82,6 +82,8 @@
 #include <libnautilus-private/nautilus-bonobo-ui.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
+#include <libnautilus-private/nautilus-module.h>
+#include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -333,11 +335,22 @@ nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
 static void
 nautilus_navigation_window_tear_down_sidebar (NautilusNavigationWindow *window)
 {
+	GList *node, *next;
+	NautilusSidebar *sidebar_panel;
+	
 	g_signal_handlers_disconnect_by_func (window->sidebar,
 					      side_pane_switch_page_callback,
 					      window);
-	
-	nautilus_navigation_window_set_sidebar_panels (window, NULL);
+
+	for (node = window->sidebar_panels; node != NULL; node = next) {
+		next = node->next;
+
+		sidebar_panel = NAUTILUS_SIDEBAR (node->data);
+		
+		nautilus_navigation_window_remove_sidebar_panel (window,
+								 sidebar_panel);
+        }
+
 	gtk_widget_destroy (GTK_WIDGET (window->sidebar));
 	window->sidebar = NULL;
 }
@@ -1060,6 +1073,10 @@ add_sidebar_panels (NautilusNavigationWindow *window)
 {
 	GList *sidebar_list;
 	GtkWidget *current;
+	GList *providers;
+	GList *p;
+	NautilusSidebar *sidebar_panel;
+	NautilusSidebarProvider *provider;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
@@ -1070,6 +1087,20 @@ add_sidebar_panels (NautilusNavigationWindow *window)
 	sidebar_list = nautilus_sidebar_factory_enumerate_sidebars ();
 	nautilus_navigation_window_set_sidebar_panels (window, sidebar_list);
 	eel_g_list_free_deep (sidebar_list);
+
+ 	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_SIDEBAR_PROVIDER);
+
+	
+	for (p = providers; p != NULL; p = p->next) {
+		provider = NAUTILUS_SIDEBAR_PROVIDER (p->data);
+		
+		sidebar_panel = nautilus_sidebar_provider_create (provider,
+								  NAUTILUS_WINDOW_INFO (window));
+		nautilus_navigation_window_add_sidebar_panel (window,
+							      sidebar_panel);
+		
+		g_object_unref (sidebar_panel);
+	}
 	
 	current = nautilus_side_pane_get_current_panel (window->sidebar);
 	set_current_side_panel

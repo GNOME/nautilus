@@ -1,5 +1,17 @@
 2004-11-08  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-sidebar-provider.[ch]:
+	Add new extensions-style sidebar provider interface
+	
+	* src/nautilus-navigation-window.c:
+	Use it.
+	
+	* src/nautilus-notes-viewer.[ch]:
+	Convert notes viewer to new iface
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
 	* src/Makefile.am:
 	* src/nautilus-application.c: (nautilus_application_instance_init):
 	* src/nautilus-notes-sidebar.[ch]:
