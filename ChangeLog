@@ -1,3 +1,11 @@
+2000-09-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_make_selector):
+	fixed bug 2962, default theme doesn't use custom preview icon, by
+	special-casing the default theme, which doesn't have it's own
+	directory.
+	
 2000-09-13  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed a glitch with prelighting and mousedown.
