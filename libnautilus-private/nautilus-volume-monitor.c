@@ -748,6 +748,7 @@ mount_volume_get_name (NautilusVolume *volume)
 		break;
 
 	case NAUTILUS_VOLUME_CDROM:
+	case NAUTILUS_VOLUME_HSFS:
 		mount_volume_get_cdrom_name (volume);
 		break;
 		
@@ -804,6 +805,7 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 		break;
 
 	case NAUTILUS_VOLUME_CDROM:
+	case NAUTILUS_VOLUME_HSFS:
 		mount_volume_activate_cdrom (monitor, volume);
 		break;
 		
@@ -877,8 +879,9 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 
 	switch (volume->type) {
 	case NAUTILUS_VOLUME_CDROM:
+	case NAUTILUS_VOLUME_HSFS:
 		pthread_create (&eject_thread, NULL, eject_device, g_strdup (volume->device_path));
-	break;
+		break;
 		
 	default:
 		break;
@@ -1177,7 +1180,7 @@ get_cdrom_type (const char *vol_dev_path, int* fd)
 	 */
 	new_dev_path = g_string_new (vol_dev_path);
 	new_dev_path = g_string_insert_c (new_dev_path, 9, 'r');
-	*fd = open (new_dev_path.str, O_RDONLY | O_NONBLOCK);
+	*fd = open (new_dev_path->str, O_RDONLY | O_NONBLOCK);
 	g_string_free (new_dev_path, TRUE);
 
 	if (*fd < 0) {

@@ -28,6 +28,7 @@
 
 typedef struct NautilusMonitor NautilusMonitor;
 
+gboolean         nautilus_monitor_active    (void);
 NautilusMonitor *nautilus_monitor_file      (const char      *uri);
 NautilusMonitor *nautilus_monitor_directory (const char      *uri);
 void             nautilus_monitor_cancel    (NautilusMonitor *monitor);

@@ -214,6 +214,16 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 
 #endif /* HAVE_FAM_H */
 
+gboolean
+nautilus_monitor_active (void)
+{
+#ifndef HAVE_FAM_H
+	return FALSE;
+#else
+	return get_fam_connection () != NULL;
+#endif
+}
+
 NautilusMonitor *
 nautilus_monitor_file (const char *uri)
 {

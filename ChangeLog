@@ -1,3 +1,22 @@
+2001-04-19  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-monitor.h:
+	* libnautilus-extensions/nautilus-monitor.c:
+	(nautilus_monitor_active): New function to check if
+	the monitoring is working. We'll use this to decide
+	whether or not to do the "reload the desktop every
+	4 seconds hack" that Miguel is going to check in soon.
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_get_name), (mount_volume_activate),
+	(mount_volume_deactivate), (get_cdrom_type):
+	Fixed some Solaris build problems with patch by
+	Laszlo Peter <Laszlo.Peter@ireland.sun.com>.
+
+	* libnautilus-extensions/nautilus-cdrom-extensions.h:
+	Added missing include needed to build on Solaris
+	from the same patch.
+
 2001-04-19  Christopher James Lahey  <clahey@ximian.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

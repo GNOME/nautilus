@@ -25,6 +25,7 @@
 #ifndef FM_CDROM_EXTENSIONS_H
 #define FM_CDROM_EXTENSIONS_H
 
+#include <sys/types.h>
 
 #ifdef HAVE_SYS_CDIO_H
 
