@@ -267,9 +267,9 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Werror \
 	$CFLAGS"
 
-	for option in -Wsign-promo -Wno-sign-compare; do
+	for option in -Wno-strict-aliasing -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"
-		CFLAGS="$option $CFLAGS"
+		CFLAGS="$CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
 		AC_TRY_COMPILE([], [],
 			has_option=yes,

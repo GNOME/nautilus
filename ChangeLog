@@ -1,3 +1,16 @@
+2003-06-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in:
+        Remove -Wsign-promo and add -Wno-strict-aliasing to the list
+        of options to test for. Fixes the gcc 3.3 aliasing warnings.
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_compare_for_sort_internal):
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_get_icon_size_for_zoom_level):
+	gcc 3.3 doesn't like g_return_val_if_fail (FALSE, ...). 
+	Use g_return_val_if_reached instead.
+
 2003-06-12  Anders Carlsson  <andersca@codefactory.se>
 
 	* configure.in: Remove nonexistant throbber directories.

@@ -1423,7 +1423,7 @@ nautilus_get_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
 	case NAUTILUS_ZOOM_LEVEL_LARGEST:
 		return NAUTILUS_ICON_SIZE_LARGEST;
 	}
-	g_return_val_if_fail (FALSE, NAUTILUS_ICON_SIZE_STANDARD);
+	g_return_val_if_reached (NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 /* Convenience cover for nautilus_icon_factory_get_icon_for_file

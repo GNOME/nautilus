@@ -2015,7 +2015,7 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		}
 		return compare_by_full_path (file_1, file_2);
 	default:
-		g_return_val_if_fail (FALSE, 0);
+		g_return_val_if_reached (0);
 	}
 }
 
