@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus CVS-20000609\n"
-"POT-Creation-Date: 2000-06-09 20:37+0900\n"
-"PO-Revision-Date: 2000-06-10 00:54+0900\n"
+"Project-Id-Version: nautilus CVS-20000611\n"
+"POT-Creation-Date: 2000-06-11 21:07+0900\n"
+"PO-Revision-Date: 2000-06-11 21:14+0900\n"
 "Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -665,6 +665,7 @@ msgid "Could not set URLType from config file!"
 msgstr "設定ファイルから URLType を設定できませんでした!"
 
 #: components/services/install/lib/eazel-install-protocols.c:72
+#: components/services/install/lib/eazel-install-protocols.c:262
 msgid "Could not create an http request !"
 msgstr "HTTP リクエストを作成できませんでした!"
 
@@ -673,6 +674,7 @@ msgid "Invalid uri !"
 msgstr "無効な URI です!"
 
 #: components/services/install/lib/eazel-install-protocols.c:84
+#: components/services/install/lib/eazel-install-protocols.c:272
 msgid "Could not prepare http request !"
 msgstr "HTTP リクエストの準備が出来ませんでした!"
 
@@ -684,9 +686,23 @@ msgstr "非同期モードを取得できませんでした"
 msgid "Could not get request body!"
 msgstr "HTTP リクエストの準備が出来ませんでした!"
 
-#: components/services/install/lib/eazel-install-protocols.c:133
+#: components/services/install/lib/eazel-install-protocols.c:136
 msgid "FTP not supported yet"
 msgstr "FTP はまだサポートしていません"
+
+#: components/services/install/lib/eazel-install-protocols.c:218
+#, c-format
+msgid "Could not get a URL for %s"
+msgstr "%s の URL を取得できませんでした"
+
+#: components/services/install/lib/eazel-install-protocols.c:266
+msgid "Invalid uri"
+msgstr "無効な URI です"
+
+#: components/services/install/lib/eazel-install-protocols.c:280
+#, c-format
+msgid "Could not retrieve a URL for %s"
+msgstr "%s の URL 取り出せませんでした"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:111
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
@@ -698,46 +714,46 @@ msgstr ""
 msgid "Reading the install package list ..."
 msgstr "インストールするパッケージリストを読み込み中..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:230
+#: components/services/install/lib/eazel-install-rpm-glue.c:241
 msgid "Package install successful !"
 msgstr "パッケージのインストールは成功しました!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:232
+#: components/services/install/lib/eazel-install-rpm-glue.c:243
 msgid "Package install failed !"
 msgstr "パッケージのインストールに失敗しました!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:271
+#: components/services/install/lib/eazel-install-rpm-glue.c:282
 msgid "Reading the uninstall package list ..."
 msgstr "アンインストールするパッケージリストを読み込み中..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:334
+#: components/services/install/lib/eazel-install-rpm-glue.c:345
 msgid "Package uninstall failed !"
 msgstr "パッケージのアンインストールに失敗しました!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:626
+#: components/services/install/lib/eazel-install-rpm-glue.c:637
 msgid "Upgrading..."
 msgstr "アップグレード中..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:629
+#: components/services/install/lib/eazel-install-rpm-glue.c:640
 msgid "Installing..."
 msgstr "インストール中..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:703
-#: components/services/install/lib/eazel-install-rpm-glue.c:1031
+#: components/services/install/lib/eazel-install-rpm-glue.c:714
+#: components/services/install/lib/eazel-install-rpm-glue.c:1042
 msgid "Packages database query failed !"
 msgstr "パッケージのインストールに失敗しました!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:714
+#: components/services/install/lib/eazel-install-rpm-glue.c:725
 #, c-format
 msgid "Package %s is not installed"
 msgstr "パッケージ %s はインストールされていません"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:718
+#: components/services/install/lib/eazel-install-rpm-glue.c:729
 #, c-format
 msgid "Error finding index to %s"
 msgstr "%s のインデックス検索中にエラーが発生しました"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:748
+#: components/services/install/lib/eazel-install-rpm-glue.c:759
 msgid "Dependancy check failed."
 msgstr "依存チェックに失敗しました"
 
@@ -749,39 +765,39 @@ msgstr "*** pkg ダンプ開始 ***\n"
 msgid "*** End pkg dump ***\n"
 msgstr "*** pkg ダンプ終了 ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:92
+#: components/services/install/lib/eazel-install-xml-package-list.c:93
 msgid "*** No package nodes! ***\n"
 msgstr "*** パッケージノードがありません! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:94
+#: components/services/install/lib/eazel-install-xml-package-list.c:95
 msgid "*** Bailing from package parse! ***\n"
 msgstr "*** パッケージ構文解析から脱出しました! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:128
+#: components/services/install/lib/eazel-install-xml-package-list.c:129
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** pkg リストファイルはデータを含んでいません! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:133
+#: components/services/install/lib/eazel-install-xml-package-list.c:134
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr "*** xml ノード CATEGORIES を見つけることが出来ません! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:135
+#: components/services/install/lib/eazel-install-xml-package-list.c:136
 msgid "*** Bailing from categories parse! ***\n"
 msgstr "*** カテゴリ構文解析から脱出しました! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:141
+#: components/services/install/lib/eazel-install-xml-package-list.c:142
 msgid "*** No Categories! ***\n"
 msgstr "*** カテゴリがありません! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:143
+#: components/services/install/lib/eazel-install-xml-package-list.c:144
 msgid "*** Bailing from category parse! ***\n"
 msgstr "*** カテゴリ構文解析から脱出しました! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:223
+#: components/services/install/lib/eazel-install-xml-package-list.c:224
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** xml パッケージリストの生成中にエラーが発生しました! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:259
+#: components/services/install/lib/eazel-install-xml-package-list.c:260
 msgid "*** Error reading package list! ***\n"
 msgstr "*** パッケージリストの読み込み中にエラーが発生しました! ***\n"
 
@@ -799,7 +815,7 @@ msgstr "システムクロックを更新する"
 
 #: components/services/time/command-line/main.c:44
 msgid "specify time url"
-msgstr ""
+msgstr "タイムサーバの URL を指定する"
 
 #: components/shell/shell.c:60
 msgid "Could not initialize Bonobo"
@@ -947,24 +963,24 @@ msgstr "手動レイアウトに切替えますか?"
 msgid "Switch"
 msgstr "切替え"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1352
+#: libnautilus-extensions/nautilus-icon-text-item.c:1442
 #: src/file-manager/fm-icon-view.c:1013
 msgid "Rename"
 msgstr "名前変更"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1353
+#: libnautilus-extensions/nautilus-icon-text-item.c:1443
 msgid "Undo Rename"
 msgstr "名前変更を元に戻す"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1354
+#: libnautilus-extensions/nautilus-icon-text-item.c:1444
 msgid "Restore the old name"
 msgstr "古い名前を復元する"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1355
+#: libnautilus-extensions/nautilus-icon-text-item.c:1445
 msgid "Redo Rename"
 msgstr "名前変更の繰り返し"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1356
+#: libnautilus-extensions/nautilus-icon-text-item.c:1446
 msgid "Restore the changed name"
 msgstr "変更した名前を復元する"
 
@@ -1155,7 +1171,7 @@ msgstr "pixmap ファイルを見つけることが出来ませんでした: %s"
 msgid "Couldn't create pixmap from file: %s"
 msgstr "ファイルから pixmap を作成できませんでした: %s"
 
-#: nautilus-widgets/nautilus-preferences-dialog.c:201
+#: libnautilus-extensions/nautilus-preferences-dialog.c:201
 msgid "Prefs Box"
 msgstr "選択ボックス"
 
@@ -1940,11 +1956,11 @@ msgstr "場所"
 msgid "Remove"
 msgstr "削除"
 
-#: src/nautilus-main.c:56
+#: src/nautilus-main.c:55
 msgid "Perform high-speed self-check tests."
 msgstr "高速自己チェックテストを実行する"
 
-#: src/nautilus-main.c:58
+#: src/nautilus-main.c:57
 msgid "Draw background and icons on desktop."
 msgstr "背景とアイコンをデスクトップに描画する"
 
@@ -1972,24 +1988,24 @@ msgstr "Nautilus"
 msgid "Nautilus: %s"
 msgstr "Nautilus: %s"
 
-#: src/nautilus-window-manage-views.c:641
+#: src/nautilus-window-manage-views.c:644
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "あなたには \"%s\" を表示するために必要なパーミッションがありません"
 
-#: src/nautilus-window-manage-views.c:1132
+#: src/nautilus-window-manage-views.c:1135
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "\"%s\" を見つける事が出来ませんでした．綴りをチェックして再試行して下さい"
 
-#: src/nautilus-window-manage-views.c:1136
+#: src/nautilus-window-manage-views.c:1139
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" は有効な場所ではありません．綴りをチェックして再試行して下さい"
 
-#: src/nautilus-window-manage-views.c:1143
+#: src/nautilus-window-manage-views.c:1146
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
@@ -1997,7 +2013,7 @@ msgstr ""
 "\"%s\" を表示できませんでした, だから Nautilus がタイプ \"%s\" "
 "のアイテムを扱うことが出来ません"
 
-#: src/nautilus-window-manage-views.c:1147
+#: src/nautilus-window-manage-views.c:1150
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
@@ -2006,19 +2022,19 @@ msgstr ""
 "はこのタイプのアイテムを扱うことが出来ません"
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1157
+#: src/nautilus-window-manage-views.c:1160
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "\"%s\" を表示できませんでした. だから Nautilus は %s "
 "の場所を扱うことが出来ません"
 
-#: src/nautilus-window-manage-views.c:1168
+#: src/nautilus-window-manage-views.c:1171
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus は \"%s\" を表示できません"
 
-#: src/nautilus-window-manage-views.c:1230
+#: src/nautilus-window-manage-views.c:1233
 msgid "Gathering information"
 msgstr "情報収集"
 
