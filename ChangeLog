@@ -1,5 +1,12 @@
 2002-07-27  Dave Camp  <dave@ximian.com>
 
+	* src/nautilus-sidebar.c:
+	(background_settings_changed_callback): Update the
+	current_background_color, the current_background_image, and
+	is_default_background.
+
+2002-07-27  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/eggtreemultidnd.c: (stop_drag_check),
 	(egg_tree_multi_drag_button_release_event),
 	(egg_tree_multi_drag_button_press_event):  Save the events to be

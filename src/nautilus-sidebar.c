@@ -1184,6 +1184,18 @@ nautilus_sidebar_release_event (GtkWidget *widget, GdkEventButton *event)
 	return TRUE;
 }
 
+static gboolean
+value_different (const char *a, const char *b)
+{
+	if (!a && !b)
+		return FALSE;
+
+	if (!a || !b)
+		return TRUE;
+
+	return strcmp (a, b);
+}
+
 /* Handle the background changed signal by writing out the settings to metadata.
  */
 static void
@@ -1217,6 +1229,18 @@ background_settings_changed_callback (EelBackground *background, NautilusSidebar
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 				    NULL,
 				    image);
+
+	if (value_different (sidebar->details->current_background_color, color)) {
+		g_free (sidebar->details->current_background_color);
+		sidebar->details->current_background_color = g_strdup (color);
+	}
+	
+	if (value_different (sidebar->details->current_background_image, image)) {
+		g_free (sidebar->details->current_background_image);
+		sidebar->details->current_background_image = g_strdup (image);
+	}
+
+	sidebar->details->is_default_background = FALSE;
 
 	g_free (color);
 	g_free (image);
@@ -1519,18 +1543,6 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	} else {
 		gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
 	}
-}
-
-static gboolean
-value_different (const char *a, const char *b)
-{
-	if (!a && !b)
-		return FALSE;
-
-	if (!a || !b)
-		return TRUE;
-
-	return strcmp (a, b);
 }
 
 static void
