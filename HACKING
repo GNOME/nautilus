@@ -8,14 +8,7 @@ the --prefix option to autogen.sh or configure.
 
 Specifically, you will need to:
 
-* Get the gnome.m4 file from gnome-libs HEAD, and and manually copy it
-to your $(prefix)/share/aclocal/gnome directory. 
-
-* Install gnome-xml, ORBit, gnome-print, gtkhtml, gnome-vfs and bonobo
-from CVS, in that order. Make sure to autogen with your selected
-prefix.
-
-* Build and install nautilus into your selected prefix.
+* Install all the needed modules into your selected prefix.
 
 Nautilus currently requires the following modules (built in the given order):
 
@@ -31,9 +24,13 @@ gnome-vfs:	   HEAD
 gdk-pixbuf:	   HEAD
 gnome-print:	   HEAD
 gtkhtml:	   HEAD
+eog:               HEAD
 
 ORBit requires you to install popt-1.5, which can be fetched from:
 
 ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.36.i386.rpm
 
-All patches should go through nautilus-maint@gnome.org
+* Build and install nautilus into your selected prefix.
+
+
+All patches should go through nautilus-list@lists.eazel.com
