@@ -1,3 +1,47 @@
+2000-05-02  Darin Adler  <darin@eazel.com>
+
+	* check-FIXME.pl: Added -print as suggested by Morten Welinder
+	<terra@diku.dk>.
+	* check-config-h.pl: Added -print and fixed broken message as
+	suggested by Morten Welinder <terra@diku.dk>.
+	
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(suffix_is_scalable): Simpler implementation.
+	(get_themed_icon_file_path): Look for size-specific version of
+	even .svg files. Although not so useful, it's not ridiculous to do so.
+	(nautilus_icon_factory_get_icon_for_file): Fixed the twisted logic to
+	be less twisted. Also changed the ".svg" extension check to use the
+	common function suffix_is_scalable.
+	(load_specific_image): Untwist logic here too, and note in the FIXME
+	that both the .svg library and gdk-pixbuf are limiting us to file:
+	URIs, although the gdk-pixbuf case is fixable without redoing the
+	library by just using our utility functions.
+	(load_image_for_scaling): Update for new size request structure which
+	contains maximum sizes as well as nominal ones.
+	(scale_image_and_rectangle), (revise_scale_factors_if_too_big),
+	(scale_image_down_if_too_big): New helper functions for scaling.
+	(load_image_scale_if_necessary): Take the maximum size into account.
+	(get_image_from_cache): Use new size request structure and take the
+	maximum size into account.
+	(nautilus_icon_factory_get_pixbuf_for_icon): Changed to take maximum
+	size parameters and pass them in to the underlying function.
+	(icon_cache_key_hash): Include the maximum size in the hash.
+	(icon_cache_key_equal): Check the maximum size too.
+	(nautilus_icon_factory_get_pixbuf_for_file): Pass new max. size
+	parameters to the nautilus_icon_factory_get_pixbuf_for_icon
+	function.
+
+	* libnautilus-extensions/nautilus-icon-container.c
+	(nautilus_icon_container_update_icon): Pass new max. size
+	parameters to the nautilus_icon_factory_get_pixbuf_for_icon
+	function.
+	
+	* src/file-manager/fm-list-view.c
+	(fm_list_view_get_emblem_pixbufs_for_file): Pass new max. size
+	parameters to the nautilus_icon_factory_get_pixbuf_for_icon
+	function.
+
 2000-05-02  John Sullivan  <sullivan@eazel.com>
 
 	* data/mime/.cvsignore,

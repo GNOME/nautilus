@@ -33,7 +33,7 @@ use strict;
 my %skip_files;
 if (!@ARGV)
   {
-    @ARGV = `find -name '*' -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name 'Entries' \\)`;
+    @ARGV = `find -name '*' -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name 'Entries' \\) -print`;
     %skip_files =
       (
        "./TODO" => 1,

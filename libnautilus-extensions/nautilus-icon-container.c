@@ -2427,11 +2427,17 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	/* Get the corresponding pixbufs for this size. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon, icon_size_x, icon_size_y, &text_rect);
+		(scalable_icon,
+		 icon_size_x, icon_size_y,
+		 G_MAXINT, G_MAXINT,
+		 &text_rect);
 	emblem_pixbufs = NULL;
 	for (p = emblem_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data, icon_size_x, icon_size_y, NULL);
+			(p->data,
+			 icon_size_x, icon_size_y,
+			 G_MAXINT, G_MAXINT,
+			 NULL);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);

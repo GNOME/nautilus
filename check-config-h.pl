@@ -35,10 +35,9 @@ my $edit = 0;
 &GetOptions("edit" => \$edit);
 
 # default to all the files starting from the current directory
-my %skip_files;
 if (!@ARGV)
   {
-    @ARGV = `find -name '*.c'`;
+    @ARGV = `find -name '*.c' -print`;
   }
 
 # locate all of the target lines
@@ -46,7 +45,6 @@ my @missing_files;
 FILE: foreach my $file (@ARGV)
   {
     chomp $file;
-    next if $skip_files{$file};
     open FILE, $file or die "can't open $file";
     while (<FILE>)
       {
@@ -59,7 +57,7 @@ FILE: foreach my $file (@ARGV)
 
 if (@missing_files)
   {
-    print "\n", scalar(@missing_files), " C files don't have bug reports:\n\n";
+    print "\n", scalar(@missing_files), " C files don't have <config.h> includes:\n\n";
     if (!$edit)
       {
         print join("\n", @missing_files), "\n";

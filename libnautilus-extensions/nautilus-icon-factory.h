@@ -100,8 +100,10 @@ GList *               nautilus_icon_factory_get_emblem_icons_for_file    (Nautil
  * text, then the rectangle is (0, 0, 0, 0).
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon  *scalable_icon,
-									  guint                  size_in_pixels_x,
-									  guint                  size_in_pixels_y,
+									  guint                  nominal_size_in_pixels_x,
+									  guint                  nominal_size_in_pixels_y,
+									  guint                  maximum_size_in_pixels_x,
+									  guint                  maximum_size_in_pixels_y,
 									  ArtIRect              *embedded_text_rectangle);
 
 /* Convenience functions for the common case where you want to choose
