@@ -1,3 +1,10 @@
+2000-12-23  John Harper  <jsh@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c
+	(nautilus_gdk_parse_geometry): moved this out of the `! defined
+	(NAUTILUS_OMIT_SELF_CHECK)' preprocessor block where I had
+	inserted it by mistake. Also removed a statement with no effect
+
 2000-12-23  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/hyperbola-filefmt.c:
