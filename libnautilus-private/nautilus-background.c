@@ -978,8 +978,8 @@ nautilus_background_load_image_callback (GnomeVFSResult error,
 		background->details->image_height_unscaled = gdk_pixbuf_get_height (pixbuf);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 	gtk_signal_emit (GTK_OBJECT (background), signals[IMAGE_LOADING_DONE], pixbuf != NULL || background->details->image_uri == NULL);
+	gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 }
 
 static gboolean
@@ -1070,10 +1070,15 @@ nautilus_background_set_image_uri_and_color (NautilusBackground *background, con
 			    "image_loading_done",
 			    GTK_SIGNAL_FUNC (set_image_and_color_image_loading_done_callback),
 			    (gpointer) color);
+			    
+	/* We use nautilus_background_set_image_uri_no_emit because its
+	 * return value (if false) tells us whether or not we need to
+	 * call set_image_and_color_image_loading_done_callback ourselves.
+	 * 
+	 * We rely on SETTINGS_CHANGED being emitted by the call to nautilus_background_set_color
+	 * in set_image_and_color_image_loading_done_callback.
+	 */
 	if (!nautilus_background_set_image_uri_no_emit (background, image_uri)) {
-		/* If the image loading was a no-op, then we have to manually call
-		 * set_image_and_color_image_loading_done_callback. 
-		 */
 		set_image_and_color_image_loading_done_callback (background, TRUE, color);
 	}
 }
@@ -1252,8 +1257,7 @@ nautilus_background_reset (NautilusBackground *background)
 {
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 
-	gtk_signal_emit (GTK_OBJECT (background),
-			 signals[RESET]);
+	gtk_signal_emit (GTK_OBJECT (background), signals[RESET]);
 }
 
 static void

@@ -1,3 +1,15 @@
+2000-11-22  Michael Engber  <engber@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_load_image_callback),
+	(nautilus_background_set_image_uri_and_color),
+	(nautilus_background_reset):
+	* src/nautilus-sidebar.c: (setting_change_metadata_callback),
+	(background_settings_changed_callback):
+	Fixed problem dropping images onto sidebar - bug 4822
+
 2000-11-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:

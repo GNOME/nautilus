@@ -115,6 +115,8 @@ static void     nautilus_sidebar_update_buttons     (NautilusSidebar  *sidebar);
 static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 						     GList            *application_list);
 
+static void	nautilus_sidebar_update_all	    (NautilusSidebar  *sidebar);
+
 /* FIXME bugzilla.eazel.com 1245: hardwired sizes */
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
@@ -985,11 +987,20 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 	return TRUE;
 }
 
+static void
+setting_change_metadata_callback (NautilusFile *file ,gboolean *metadata_changed)
+{
+	*metadata_changed = TRUE;
+}
+
 /* handle the background changed signal by writing out the settings to metadata */
 static void
 background_settings_changed_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
-	char *color_spec, *image;
+	char *image;
+	char *color_spec;
+	gboolean metadata_changed;
+	guint metadata_changed_connection;
 
 	g_assert (NAUTILUS_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_SIDEBAR (sidebar));
@@ -998,6 +1009,19 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 		return;
 	}
 	
+	/* We don't want to respond twice to the 2 metadata changes we're about to
+	 * make. We block the normal signal handler, and install our own.
+	 */
+	 
+	gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),  nautilus_sidebar_update_all, sidebar);
+	metadata_changed_connection = gtk_signal_connect (GTK_OBJECT (sidebar->details->file),
+							  "changed",
+							  setting_change_metadata_callback,
+							  &metadata_changed);
+
+				   
+	metadata_changed = FALSE;
+
 	color_spec = nautilus_background_get_color (background);
 	nautilus_file_set_metadata (sidebar->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
@@ -1009,8 +1033,15 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 	nautilus_file_set_metadata (sidebar->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 				    sidebar->details->default_background_image,
-				    image);	
+				    image);
 	g_free (image);
+
+	gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), metadata_changed_connection);
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),  nautilus_sidebar_update_all, sidebar);
+
+ 	if (metadata_changed) {
+		nautilus_sidebar_update_all (sidebar);
+	}
 }
 
 /* we generally want to ignore the appearance changed signal, but we need it to redraw the
