@@ -174,7 +174,12 @@ nautilus_window_clear_status (gpointer callback_data)
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (callback_data);
-	bonobo_ui_component_set_status (window->details->shell_ui, NULL, NULL);
+
+	/* FIXME bugzilla.eazel.com 3597:
+	 * Should pass "" or NULL here. This didn't work, then did, now doesn't again.
+	 * When this is fixed in Bonobo we should change this line.
+	 */
+	bonobo_ui_component_set_status (window->details->shell_ui, " ", NULL);
 	window->status_bar_clear_id = 0;
 	return FALSE;
 }
@@ -191,6 +196,7 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 		window->status_bar_clear_id = g_timeout_add
 			(STATUS_BAR_CLEAR_TIMEOUT, nautilus_window_clear_status, window);
 	} else {
+		nautilus_window_clear_status (window);
 		window->status_bar_clear_id = 0;
 	}
 }

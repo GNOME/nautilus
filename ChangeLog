@@ -1,3 +1,32 @@
+2000-10-16  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3753 (status bar shows selected items info even
+	after they are deselected)
+
+	* src/nautilus-window.c: 
+	(nautilus_window_clear_status): Reinstate workaround (and
+	associated FIXME) of passing " " to clear the status. This
+	had been fixed in Bonobo but was rebroken some time in the
+	last few days.
+	(nautilus_window_set_status): Call nautilus_window_clear_status
+	when the desired status text is empty or NULL, instead of
+	ignoring the request.
+
+2000-10-16  Matt Bissiri  <bissiri@eecs.umich.edu>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_clist_get_first_selected_row),
+	(nautilus_clist_get_last_selected_row):
+	Now that NautilusList derives from NautilusCList instead of GtkCList,
+	do not call `nautilus_gtk_clist_get_first_selected_row' or
+	`nautilus_gtk_clist_get_last_selected_row'.
+	Instead add implementation using NautilusCList instead of GtkCList.
+	This fixes a bug where up/down/pgup/pgdown keys did not work properly
+	when viewing directory as list.
+	(nautilus_list_get_first_selected_row):
+	To avoid code duplication, replace the body of this function
+	with a call to `nautilus_clist_get_first_selected_row'.
+
 2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-label.c:
