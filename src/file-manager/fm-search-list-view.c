@@ -386,10 +386,8 @@ fm_search_list_view_init (gpointer object,
 
 	nautilus_view = fm_directory_view_get_nautilus_view (directory_view);
 
-	g_signal_connect (nautilus_view,
-			    "load_location",
-			    G_CALLBACK (load_location_callback),
-			    NULL);
+	g_signal_connect (nautilus_view, "load_location",
+			  G_CALLBACK (load_location_callback), NULL);
 }
 
 static void
@@ -632,10 +630,9 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	 * and won't be specific to the search directory. Is that OK? 
 	 */
 
-	g_signal_connect_swapped (GTK_OBJECT (file),
-				  "changed",
-				  G_CALLBACK (fm_directory_view_queue_file_change),
-				  view);
+	g_signal_connect_object (GTK_OBJECT (file), "changed",
+				 G_CALLBACK (fm_directory_view_queue_file_change),
+				 view, G_CONNECT_SWAPPED);
 
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because

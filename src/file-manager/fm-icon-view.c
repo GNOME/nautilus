@@ -46,6 +46,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-desktop-item.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -118,58 +119,25 @@ typedef enum {
 	MENU_ITEM_TYPE_TREE
 } MenuItemType;
 
-/* forward declarations */
-static void                 create_icon_container                              (FMIconView            *icon_view);
-static void                 fm_icon_view_init                            (FMIconView            *icon_view);
-static void                 fm_icon_view_class_init                      (FMIconViewClass       *klass);
-static void                 fm_icon_view_set_directory_sort_by                 (FMIconView            *icon_view,
-										NautilusFile          *file,
-										const char            *sort_by);
-static void                 fm_icon_view_set_zoom_level                        (FMIconView            *view,
-										NautilusZoomLevel      new_level,
-										gboolean               always_set_level);
-gboolean                    fm_icon_view_supports_auto_layout                  (FMIconView            *view);
-static void                 fm_icon_view_update_icon_container_fonts           (FMIconView            *icon_view);
-static void                 fm_icon_view_update_icon_container_font_size_table (FMIconView            *icon_view);
-static void                 fm_icon_view_update_click_mode                     (FMIconView            *icon_view);
-static gboolean             fm_icon_view_using_tighter_layout                  (FMIconView            *icon_view);
-static gboolean             fm_icon_view_get_directory_tighter_layout          (FMIconView            *icon_view,
-										NautilusFile          *file);
-static void                 fm_icon_view_set_directory_tighter_layout          (FMIconView            *icon_view,
-										NautilusFile          *file,
-										gboolean               tighter_layout);
-static gboolean             real_supports_auto_layout                          (FMIconView            *view);
-static const SortCriterion *get_sort_criterion_by_id                           (const char            *id);
-static const SortCriterion *get_sort_criterion_by_sort_type                    (NautilusFileSortType   sort_type);
-static void                 set_sort_criterion_by_id                           (FMIconView            *icon_view,
-										const char            *id);
-static gboolean             set_sort_reversed                                  (FMIconView            *icon_view,
-										gboolean               new_value);
-static void                 switch_to_manual_layout                            (FMIconView            *view);
-static void                 preview_audio                                      (FMIconView            *icon_view,
-										NautilusFile          *file,
-										gboolean               start_flag);
-static void                 update_layout_menus                                (FMIconView            *view);
-static void                 default_sort_in_reverse_order_changed_callback     (gpointer               callback_data);
-static void                 default_sort_order_changed_callback                (gpointer               callback_data);
-static void                 default_use_tighter_layout_changed_callback        (gpointer               callback_data);
-static void                 default_use_manual_layout_changed_callback         (gpointer               callback_data);
-static void                 default_zoom_level_changed_callback                (gpointer               callback_data);
-static void                 default_zoom_level_font_size_changed_callback      (gpointer               callback_data);
-static void                 font_changed_callback                              (gpointer               callback_data);
-static void                 icon_view_handle_uri_list                          (NautilusIconContainer *container,
-										const char            *item_uris,
-										GdkDragAction          action,
-										int                    x,
-										int                    y,
-										FMIconView            *view);
+struct FMIconViewDetails
+{
+	GList *icons_not_positioned;
 
+	guint react_to_icon_change_idle_id;
+	gboolean menus_ready;
 
-static int preview_sound_auto_value;
+	gboolean loading;
 
-EEL_CLASS_BOILERPLATE (FMIconView,
-			      fm_icon_view,
-			      FM_TYPE_DIRECTORY_VIEW)
+	const SortCriterion *sort;
+	gboolean sort_reversed;
+
+	BonoboUIComponent *ui;
+	
+	NautilusAudioPlayerData *audio_player_data;
+	int audio_preview_timeout;
+	NautilusFile *audio_preview_file;
+};
+
 
 /* Note that the first item in this list is the default sort,
  * and that the items show up in the menu in the order they
@@ -213,24 +181,35 @@ static const SortCriterion sort_criteria[] = {
 	}
 };
 
-struct FMIconViewDetails
-{
-	GList *icons_not_positioned;
+static gboolean default_sort_in_reverse_order = FALSE;
+static int preview_sound_auto_value;
 
-	guint react_to_icon_change_idle_id;
-	gboolean menus_ready;
+static void                 fm_icon_view_set_directory_sort_by                 (FMIconView           *icon_view,
+										NautilusFile         *file,
+										const char           *sort_by);
+static void                 fm_icon_view_set_zoom_level                        (FMIconView           *view,
+										NautilusZoomLevel     new_level,
+										gboolean              always_set_level);
+static void                 fm_icon_view_update_icon_container_fonts           (FMIconView           *icon_view);
+static void                 fm_icon_view_update_icon_container_font_size_table (FMIconView           *icon_view);
+static void                 fm_icon_view_update_click_mode                     (FMIconView           *icon_view);
+static void                 fm_icon_view_set_directory_tighter_layout          (FMIconView           *icon_view,
+										NautilusFile         *file,
+										gboolean              tighter_layout);
+static const SortCriterion *get_sort_criterion_by_id                           (const char           *id);
+static const SortCriterion *get_sort_criterion_by_sort_type                    (NautilusFileSortType  sort_type);
+static void                 set_sort_criterion_by_id                           (FMIconView           *icon_view,
+										const char           *id);
+static gboolean             set_sort_reversed                                  (FMIconView           *icon_view,
+										gboolean              new_value);
+static void                 switch_to_manual_layout                            (FMIconView           *view);
+static void                 preview_audio                                      (FMIconView           *icon_view,
+										NautilusFile         *file,
+										gboolean              start_flag);
+static void                 update_layout_menus                                (FMIconView           *view);
 
-	gboolean loading;
-
-	const SortCriterion *sort;
-	gboolean sort_reversed;
-
-	BonoboUIComponent *ui;
-	
-	NautilusAudioPlayerData *audio_player_data;
-	int audio_preview_timeout;
-	NautilusFile *audio_preview_file;
-};
+GNOME_CLASS_BOILERPLATE (FMIconView, fm_icon_view,
+			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
 
 static void
 fm_icon_view_finalize (GObject *object)
@@ -528,6 +507,16 @@ fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 		 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 }
 
+static gboolean
+fm_icon_view_supports_auto_layout (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, view,
+		 supports_auto_layout, (view));
+}
+
 static void
 update_layout_menus (FMIconView *view)
 {
@@ -654,8 +643,6 @@ fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
 		 get_directory_sort_reversed, (icon_view, file));
 }
 
-static gboolean default_sort_in_reverse_order = FALSE;
-
 static gboolean
 get_default_sort_in_reverse_order (void)
 {
@@ -664,7 +651,7 @@ get_default_sort_in_reverse_order (void)
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
 		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-						       &default_sort_in_reverse_order);
+						  &default_sort_in_reverse_order);
 	}
 
 	return default_sort_in_reverse_order;
@@ -734,7 +721,6 @@ fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
 		(FM_ICON_VIEW_CLASS, icon_view,
 		 get_directory_auto_layout, (icon_view, file));
 }
-
 
 static gboolean
 fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view,
@@ -822,16 +808,6 @@ fm_icon_view_real_set_directory_tighter_layout (FMIconView *icon_view,
 		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT,
 		 get_default_directory_tighter_layout (),
 		 tighter_layout);
-}
-
-gboolean
-fm_icon_view_supports_auto_layout (FMIconView *view)
-{
-	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_ICON_VIEW_CLASS, view,
-		 supports_auto_layout, (view));
 }
 
 static gboolean
@@ -1328,8 +1304,8 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	icon_view = FM_ICON_VIEW (view);
 
 	icon_view->details->ui = bonobo_ui_component_new ("Icon View");
-	g_signal_connect (icon_view->details->ui,
-			    "ui_event", G_CALLBACK (handle_ui_event), icon_view);
+	g_signal_connect_object (icon_view->details->ui,
+				 "ui_event", G_CALLBACK (handle_ui_event), icon_view, 0);
 	ui_container = fm_directory_view_get_bonobo_ui_container (view);
 	bonobo_ui_component_set_container (icon_view->details->ui,
 					   ui_container, NULL);
@@ -1697,7 +1673,7 @@ should_preview_sound (NautilusFile *file) {
         
 	client = gconf_client_get_default ();
 	enable_esd = gconf_client_get_bool (client, "/desktop/gnome/sound/enable_esd", NULL);
-	g_object_unref (G_OBJECT (client));
+	g_object_unref (client);
 
 	/* Check gnome config sound preference */
 	if (!enable_esd) {
@@ -2437,97 +2413,59 @@ static void
 create_icon_container (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
-	FMDirectoryView *directory_view;
 
 	icon_container = NAUTILUS_ICON_CONTAINER (nautilus_icon_container_new ());
-	directory_view = FM_DIRECTORY_VIEW (icon_view);
 
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
-	g_signal_connect (icon_container,
-			    "activate",
-			    G_CALLBACK (icon_container_activate_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "band_select_started",
-			    G_CALLBACK (band_select_started_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "band_select_ended",
-			    G_CALLBACK (band_select_ended_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "compare_icons",
-			    G_CALLBACK (icon_container_compare_icons_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "compare_icons_by_name",
-			    G_CALLBACK (icon_container_compare_icons_by_name_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "context_click_selection",
-			    G_CALLBACK (icon_container_context_click_selection_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "context_click_background",
-			    G_CALLBACK (icon_container_context_click_background_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "icon_position_changed",
-			    G_CALLBACK (icon_position_changed_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "icon_text_changed",
-			    G_CALLBACK (fm_icon_view_icon_text_changed_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "selection_changed",
-			    G_CALLBACK (selection_changed_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "get_icon_images",
-			    G_CALLBACK (get_icon_images_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "get_icon_uri",
-			    G_CALLBACK (get_icon_uri_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "get_icon_drop_target_uri",
-			    G_CALLBACK (get_icon_drop_target_uri_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "get_icon_text",
-			    G_CALLBACK (get_icon_text_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "move_copy_items",
-			    G_CALLBACK (icon_view_move_copy_items),
-			    directory_view);
-	g_signal_connect (icon_container,
-			    "get_container_uri",
-			    G_CALLBACK (icon_view_get_container_uri),
-			    directory_view);
-	g_signal_connect (icon_container,
-			    "can_accept_item",
-			    G_CALLBACK (icon_view_can_accept_item),
-			    directory_view);
-	g_signal_connect (icon_container,
-			    "get_stored_icon_position",
-			    G_CALLBACK (get_stored_icon_position_callback),
-			    directory_view);
-	g_signal_connect (icon_container,
-			    "layout_changed",
-			    G_CALLBACK (layout_changed_callback),
-			    directory_view);
-	g_signal_connect (icon_container, "preview",
-			  G_CALLBACK (icon_container_preview_callback), icon_view);
-	g_signal_connect (icon_container, "renaming_icon",
-			  G_CALLBACK (renaming_icon_callback), directory_view);
-	g_signal_connect_swapped (icon_container, "icon_stretch_started",
-				  G_CALLBACK (fm_directory_view_update_menus), directory_view);
-	g_signal_connect_swapped (icon_container, "icon_stretch_ended",
-				  G_CALLBACK (fm_directory_view_update_menus), directory_view);
+	g_signal_connect_object (icon_container, "activate",	
+			 G_CALLBACK (icon_container_activate_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "band_select_started",
+				 G_CALLBACK (band_select_started_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "band_select_ended",
+				 G_CALLBACK (band_select_ended_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "compare_icons",
+				 G_CALLBACK (icon_container_compare_icons_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "compare_icons_by_name",
+				 G_CALLBACK (icon_container_compare_icons_by_name_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "context_click_selection",
+				 G_CALLBACK (icon_container_context_click_selection_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "context_click_background",
+				 G_CALLBACK (icon_container_context_click_background_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_position_changed",
+				 G_CALLBACK (icon_position_changed_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_text_changed",
+				 G_CALLBACK (fm_icon_view_icon_text_changed_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "selection_changed",
+				 G_CALLBACK (selection_changed_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_icon_images",
+				 G_CALLBACK (get_icon_images_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_icon_uri",
+				 G_CALLBACK (get_icon_uri_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_icon_drop_target_uri",
+				 G_CALLBACK (get_icon_drop_target_uri_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_icon_text",
+				 G_CALLBACK (get_icon_text_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "move_copy_items",
+				 G_CALLBACK (icon_view_move_copy_items), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_container_uri",
+				 G_CALLBACK (icon_view_get_container_uri), icon_view, 0);
+	g_signal_connect_object (icon_container, "can_accept_item",
+				 G_CALLBACK (icon_view_can_accept_item), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_stored_icon_position",
+				 G_CALLBACK (get_stored_icon_position_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "layout_changed",
+				 G_CALLBACK (layout_changed_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "preview",
+				 G_CALLBACK (icon_container_preview_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "renaming_icon",
+				 G_CALLBACK (renaming_icon_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_stretch_started",
+				 G_CALLBACK (fm_directory_view_update_menus), icon_view,
+				 G_CONNECT_SWAPPED);
+	g_signal_connect_object (icon_container, "icon_stretch_ended",
+				 G_CALLBACK (fm_directory_view_update_menus), icon_view,
+				 G_CONNECT_SWAPPED);
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));
@@ -2741,10 +2679,9 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 }
 
 static void
-fm_icon_view_init (FMIconView *icon_view)
+fm_icon_view_instance_init (FMIconView *icon_view)
 {
 	static gboolean setup_sound_preview = FALSE;
-	NautilusIconContainer *icon_container;
 
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
@@ -2761,37 +2698,27 @@ fm_icon_view_init (FMIconView *icon_view)
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 						  font_changed_callback, 
-						  icon_view,
-						  G_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 						  default_zoom_level_font_size_changed_callback,
-						  icon_view,
-						  G_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 						  default_sort_order_changed_callback,
-						  icon_view,
-						  G_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 						  default_sort_in_reverse_order_changed_callback,
-						  icon_view,
-						  G_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 						  default_use_tighter_layout_changed_callback,
-						  icon_view,
-						  G_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 						  default_use_manual_layout_changed_callback,
-						  icon_view,
-						  G_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 						  default_zoom_level_changed_callback,
-						  icon_view,
-						  G_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 
-	icon_container = get_icon_container (icon_view);
-	g_signal_connect (icon_container,
-			    "handle_uri_list",
-			    G_CALLBACK (icon_view_handle_uri_list),
-			    icon_view);
+	g_signal_connect_object (get_icon_container (icon_view), "handle_uri_list",
+				 G_CALLBACK (icon_view_handle_uri_list), icon_view, 0);
 
 }

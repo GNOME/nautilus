@@ -669,12 +669,11 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 
 	nautilus_entry_set_special_tab_handling (NAUTILUS_ENTRY (entry), TRUE);
 	
-	g_signal_connect_swapped (entry, "activate",
-				  G_CALLBACK (nautilus_navigation_bar_location_changed),
-				  bar);
-	g_signal_connect (GTK_OBJECT (entry), "event_after",
-			  G_CALLBACK (editable_event_after_callback),
-			  bar);
+	g_signal_connect_object (entry, "activate",
+				 G_CALLBACK (nautilus_navigation_bar_location_changed),
+				 bar, G_CONNECT_SWAPPED);
+	g_signal_connect_object (entry, "event_after",
+				 G_CALLBACK (editable_event_after_callback), bar, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 
@@ -685,9 +684,8 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
 			     drag_types, G_N_ELEMENTS (drag_types),
 			     GDK_ACTION_LINK);
-	g_signal_connect (event_box, "drag_data_get",
-			  G_CALLBACK (drag_data_get_callback),
-			  bar);
+	g_signal_connect_object (event_box, "drag_data_get",
+				 G_CALLBACK (drag_data_get_callback), bar, 0);
 
 	/* Drag dest. */
 	gtk_drag_dest_set (GTK_WIDGET (bar),
@@ -695,8 +693,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 			   drop_types, G_N_ELEMENTS (drop_types),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 	g_signal_connect (bar, "drag_data_received",
-			  G_CALLBACK (drag_data_received_callback),
-			  NULL);
+			  G_CALLBACK (drag_data_received_callback), NULL);
 
 	gtk_widget_show_all (hbox);
 

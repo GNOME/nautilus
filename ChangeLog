@@ -1,3 +1,48 @@
+2002-03-07  Darin Adler  <darin@bentspoon.com>
+
+	* Tons of files:
+	Because lots of recent bugs were due to "signal handler called after
+	object gone" problems, switched many calls of g_signal_connect and
+	g_signal_connect_swapped to use g_signal_connect_object instead.
+	Also did other signal-related cleanup and changed some destroys to
+	finalizes.
+
+	* libnautilus/nautilus-view-standard-main.h:
+	We no longer need to include nautilus-view.h in here. So include it
+	in the files that use this instead.
+
+	Did merges from stable branch:
+
+	2001-10-25  Darin Adler  <darin@bentspoon.com>
+
+        * libnautilus-private/nautilus-directory.c:
+        (call_files_changed_common), (call_files_changed_free_list),
+        (call_files_changed_unref_free_list),
+        (nautilus_directory_notify_files_changed): Move call to
+        nautilus_directory_add_file_to_work_queue into a better
+        bottleneck; now it catches all the notify cases, not just changed.
+        Also tell it to re-get top-left text and link info too when we get
+        a changed notice.
+        
+        * src/file-manager/fm-directory-view.c: (queue_pending_files):
+        Don't use the timeout (and the hysteresis) when queuing files once
+        the initial directory load is complete. Doing this was causing
+        delays processing changes that came in later, which we don't want.
+        
+        * src/nautilus-sidebar-title.c: (item_count_ready), (monitor_add),
+	(update_all), (nautilus_sidebar_title_set_file): Monitor the
+	directory count once we get it the first time. This makes sure
+	that changes in the directory count get reflected in the sidebar
+	without creating a race with the main view to see who calculates
+	it first.
+
+	2001-10-25  Alex Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory.c
+	(nautilus_directory_notify_files_changed): Call
+	nautilus_directory_add_file_to_work_queue() when file_info is
+	invalidated.  Otherwise it will not be read again.
+
 2002-03-07  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-horizontal-splitter.c

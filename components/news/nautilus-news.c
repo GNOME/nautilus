@@ -78,6 +78,7 @@
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 
 #include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 /* property bag getting and setting routines */
@@ -1871,7 +1872,7 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
 		gtk_container_add (GTK_CONTAINER (button_box), button);
 
 		g_signal_connect (button, "clicked",
-		      (GtkSignalFunc) add_site_button_clicked, news_data);
+                                  G_CALLBACK (add_site_button_clicked), news_data);
 	}
 	
 	button = gtk_button_new_from_stock (label);
@@ -1879,7 +1880,7 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
 	gtk_container_add (GTK_CONTAINER (button_box), button);
 
 	g_signal_connect (button, "clicked",
-		      (GtkSignalFunc) configure_button_clicked, news_data);
+                          G_CALLBACK (configure_button_clicked), news_data);
 		      	
 	return frame;
 }
@@ -2003,8 +2004,8 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 	gtk_box_pack_start (GTK_BOX (news_data->checkbox_list), check_button, FALSE, FALSE, 0);
 
 	g_signal_connect (check_button, "toggled",
-      	              	    			G_CALLBACK (check_button_toggled_callback),
-                            			news_data);
+                          G_CALLBACK (check_button_toggled_callback),
+                          news_data);
 
 	/* reorder newly added button so it's sorted by it's name */
 	sort_position = determine_sort_position (news_data->checkbox_list, channel_name);
@@ -2134,7 +2135,7 @@ make_remove_widgets (News *news, GtkWidget *container)
 
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (news->remove_site_list));
         gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
-        g_signal_connect (G_OBJECT (selection), "changed", 
+        g_signal_connect (selection, "changed", 
                           G_CALLBACK (remove_list_selection_changed), news);
 
         renderer = gtk_cell_renderer_text_new ();
@@ -2228,7 +2229,7 @@ make_add_widgets (News *news, GtkWidget *container)
 
 	gtk_container_add (GTK_CONTAINER (button_box), button);
 	g_signal_connect (button, "clicked",
-		(GtkSignalFunc) add_site_from_fields, news);
+                          G_CALLBACK (add_site_from_fields), news);
 }
 
 /* allocate the add/remove location widgets */

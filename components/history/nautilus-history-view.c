@@ -38,6 +38,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-bookmark.h>
+#include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 #define FACTORY_IID	"OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e"
@@ -245,8 +246,8 @@ nautilus_history_view_instance_init (NautilusHistoryView *view)
 		(selection, "changed",
 		 G_CALLBACK (on_selection_changed), view, 0);
 	
-	g_signal_connect (view, "history_changed",
-			  G_CALLBACK (history_changed_callback), view);
+	g_signal_connect_object (view, "history_changed",
+				 G_CALLBACK (history_changed_callback), view, 0);
 
 }
 

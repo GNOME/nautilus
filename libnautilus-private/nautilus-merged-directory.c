@@ -29,8 +29,8 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-macros.h>
 
 struct NautilusMergedDirectoryDetails {
 	GList *directories;
@@ -40,7 +40,6 @@ struct NautilusMergedDirectoryDetails {
 };
 
 typedef struct {
-	/* Basic configuration. */
 	NautilusMergedDirectory *merged;
 	NautilusDirectoryCallback callback;
 	gpointer callback_data;
@@ -68,53 +67,8 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void     nautilus_merged_directory_init       (gpointer                 object,
-							    gpointer                 klass);
-static void     nautilus_merged_directory_class_init (gpointer                 klass);
-static void     remove_all_real_directories                (NautilusMergedDirectory *merged);
-static guint    merged_callback_hash                       (gconstpointer            merged_callback);
-static gboolean merged_callback_equal                      (gconstpointer            merged_callback,
-							    gconstpointer            merged_callback_2);
-
-EEL_CLASS_BOILERPLATE (NautilusMergedDirectory,
-				   nautilus_merged_directory,
-				   NAUTILUS_TYPE_DIRECTORY)
-
-static void
-nautilus_merged_directory_init (gpointer object, gpointer klass)
-{
-	NautilusMergedDirectory *merged;
-
-	merged = NAUTILUS_MERGED_DIRECTORY (object);
-
-	merged->details = g_new0 (NautilusMergedDirectoryDetails, 1);
-	merged->details->callbacks = g_hash_table_new
-		(merged_callback_hash, merged_callback_equal);
-	merged->details->monitors = g_hash_table_new (NULL, NULL);
-}
-
-static void
-merged_destroy (GtkObject *object)
-{
-	NautilusMergedDirectory *merged;
-
-	merged = NAUTILUS_MERGED_DIRECTORY (object);
-
-	remove_all_real_directories (merged);
-
-	if (g_hash_table_size (merged->details->callbacks) != 0) {
-		g_warning ("call_when_ready still pending when merged virtual directory is destroyed");
-	}
-	if (g_hash_table_size (merged->details->monitors) != 0) {
-		g_warning ("file monitor still active when merged virtual directory is destroyed");
-	}
-
-	g_hash_table_destroy (merged->details->callbacks);
-	g_hash_table_destroy (merged->details->monitors);
-	g_free (merged->details);
-
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
+GNOME_CLASS_BOILERPLATE (NautilusMergedDirectory, nautilus_merged_directory,
+			 NautilusDirectory, NAUTILUS_TYPE_DIRECTORY)
 
 static guint
 merged_callback_hash (gconstpointer merged_callback_as_pointer)
@@ -176,8 +130,7 @@ merged_callback_remove_directory (MergedCallback *merged_callback,
 				  NautilusDirectory *directory)
 {
 	merged_callback->non_ready_directories = g_list_remove
-		(merged_callback->non_ready_directories,
-		 directory);
+		(merged_callback->non_ready_directories, directory);
 	merged_callback_check_done (merged_callback);
 }
 
@@ -300,7 +253,7 @@ build_merged_callback_list (NautilusDirectory *directory,
 
 /* Create a monitor on each of the directories in the list. */
 static void
-merged_file_monitor_add (NautilusDirectory *directory,
+merged_monitor_add (NautilusDirectory *directory,
 			 gconstpointer client,
 			 gboolean monitor_hidden_files,
 			 gboolean monitor_backup_files,
@@ -347,14 +300,27 @@ merged_file_monitor_add (NautilusDirectory *directory,
 	nautilus_file_list_free (merged_callback_list);
 }
 
+static void
+merged_monitor_destroy (NautilusMergedDirectory *merged, MergedMonitor *monitor)
+{
+	GList *node;
+
+	/* Call through to the real directory remove calls. */
+	for (node = merged->details->directories; node != NULL; node = node->next) {
+		nautilus_directory_file_monitor_remove (node->data, monitor);
+	}
+
+	eel_g_list_free_deep (monitor->monitor_attributes);
+	g_free (monitor);
+}
+
 /* Remove the monitor from each of the directories in the list. */
 static void
-merged_file_monitor_remove (NautilusDirectory *directory,
-			    gconstpointer client)
+merged_monitor_remove (NautilusDirectory *directory,
+		       gconstpointer client)
 {
 	NautilusMergedDirectory *merged;
 	MergedMonitor *monitor;
-	GList *node;
 	
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 	
@@ -365,14 +331,7 @@ merged_file_monitor_remove (NautilusDirectory *directory,
 	}
 	g_hash_table_remove (merged->details->monitors, client);
 
-	/* Call through to the real directory remove calls. */
-	for (node = merged->details->directories; node != NULL; node = node->next) {
-		nautilus_directory_file_monitor_remove
-			(node->data, monitor);
-	}
-
-	eel_g_list_free_deep (monitor->monitor_attributes);
-	g_free (monitor);
+	merged_monitor_destroy (merged, monitor);
 }
 
 static void
@@ -500,10 +459,8 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 	merged->details->directories_not_done_loading = g_list_prepend
 		(merged->details->directories_not_done_loading, real_directory);
 
-	g_signal_connect (real_directory,
-			    "done_loading",
-			    G_CALLBACK (done_loading_callback),
-			    merged);
+	g_signal_connect_object (real_directory, "done_loading",
+				 G_CALLBACK (done_loading_callback), merged, 0);
 
 	/* FIXME bugzilla.gnome.org 45084: The done_loading part won't work for the case where
          * we have no directories in our list.
@@ -515,14 +472,10 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 			      real_directory);
 	/* FIXME bugzilla.gnome.org 42541: Do we need to add the directory to callbacks too? */
 
-	g_signal_connect (real_directory,
-			    "files_added",
-			    G_CALLBACK (forward_files_added_cover),
-			    merged);
-	g_signal_connect (real_directory,
-			    "files_changed",
-			    G_CALLBACK (forward_files_changed_cover),
-			    merged);
+	g_signal_connect_object (real_directory, "files_added",
+				 G_CALLBACK (forward_files_added_cover), merged, 0);
+	g_signal_connect_object (real_directory, "files_changed",
+				 G_CALLBACK (forward_files_changed_cover), merged, 0);
 }
 
 void
@@ -538,9 +491,7 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 		return;
 	}
 
-	g_signal_emit (merged,
-			 signals[ADD_REAL_DIRECTORY], 0,
-			 real_directory);
+	g_signal_emit (merged, signals[ADD_REAL_DIRECTORY], 0, real_directory);
 }
 
 GList *
@@ -576,19 +527,17 @@ merged_remove_real_directory (NautilusMergedDirectory *merged,
 	g_return_if_fail (g_list_find (merged->details->directories, real_directory) != NULL);
 
 	/* Remove this directory from callbacks and monitors. */
-	eel_g_hash_table_safe_for_each
-		(merged->details->callbacks,
-		 merged_callback_remove_directory_cover,
-		 real_directory);
-	g_hash_table_foreach
-		(merged->details->monitors,
-		 monitor_remove_directory,
-		 real_directory);
+	eel_g_hash_table_safe_for_each (merged->details->callbacks,
+					merged_callback_remove_directory_cover,
+					real_directory);
+	g_hash_table_foreach (merged->details->monitors,
+			      monitor_remove_directory,
+			      real_directory);
 
 	/* Disconnect all the signals. */
-	g_signal_handlers_disconnect_matched (
-		real_directory, G_SIGNAL_MATCH_DATA,
-		0, 0, NULL, NULL, merged);
+	g_signal_handlers_disconnect_matched
+		(real_directory, G_SIGNAL_MATCH_DATA,
+		 0, 0, NULL, NULL, merged);
 
 	/* Remove from our list of directories. */
 	merged->details->directories = g_list_remove
@@ -609,48 +558,79 @@ nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged
 		return;
 	}
 
-	g_signal_emit (merged,
-			 signals[REMOVE_REAL_DIRECTORY], 0,
-			 real_directory);
+	g_signal_emit (merged, signals[REMOVE_REAL_DIRECTORY], 0, real_directory);
 }
 
 static void
-remove_all_real_directories (NautilusMergedDirectory *merged)
+merged_monitor_destroy_cover (gpointer key,
+			      gpointer value,
+			      gpointer callback_data)
 {
-	while (merged->details->directories != NULL) {
-		nautilus_merged_directory_remove_real_directory
-			(merged, merged->details->directories->data);
-	}
+	merged_monitor_destroy (callback_data, value);
 }
 
 static void
-nautilus_merged_directory_class_init (gpointer klass)
+merged_callback_destroy_cover (gpointer key,
+			       gpointer value,
+			       gpointer callback_data)
 {
-	GtkObjectClass *object_class;
+	merged_callback_destroy (value);
+}
+
+static void
+merged_finalize (GObject *object)
+{
+	NautilusMergedDirectory *merged;
+
+	merged = NAUTILUS_MERGED_DIRECTORY (object);
+
+	g_hash_table_foreach (merged->details->monitors,
+			      merged_monitor_destroy_cover, merged);
+	g_hash_table_foreach (merged->details->callbacks,
+			      merged_callback_destroy_cover, NULL);
+
+	g_hash_table_destroy (merged->details->callbacks);
+	g_hash_table_destroy (merged->details->monitors);
+	nautilus_directory_list_free (merged->details->directories);
+	g_list_free (merged->details->directories_not_done_loading);
+	g_free (merged->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+nautilus_merged_directory_instance_init (NautilusMergedDirectory *merged)
+{
+	merged->details = g_new0 (NautilusMergedDirectoryDetails, 1);
+	merged->details->callbacks = g_hash_table_new
+		(merged_callback_hash, merged_callback_equal);
+	merged->details->monitors = g_hash_table_new (NULL, NULL);
+}
+
+static void
+nautilus_merged_directory_class_init (NautilusMergedDirectoryClass *class)
+{
 	NautilusDirectoryClass *directory_class;
-	NautilusMergedDirectoryClass *merged_directory_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
-	merged_directory_class = NAUTILUS_MERGED_DIRECTORY_CLASS (klass);
+	directory_class = NAUTILUS_DIRECTORY_CLASS (class);
 	
-	object_class->destroy = merged_destroy;
+	G_OBJECT_CLASS (class)->finalize = merged_finalize;
 
 	directory_class->contains_file = merged_contains_file;
 	directory_class->call_when_ready = merged_call_when_ready;
 	directory_class->cancel_callback = merged_cancel_callback;
-	directory_class->file_monitor_add = merged_file_monitor_add;
-	directory_class->file_monitor_remove = merged_file_monitor_remove;
+	directory_class->file_monitor_add = merged_monitor_add;
+	directory_class->file_monitor_remove = merged_monitor_remove;
 	directory_class->force_reload = merged_force_reload;
  	directory_class->are_all_files_seen = merged_are_all_files_seen;
 	directory_class->is_not_empty = merged_is_not_empty;
 
-	merged_directory_class->add_real_directory = merged_add_real_directory;
-	merged_directory_class->remove_real_directory = merged_remove_real_directory;
+	class->add_real_directory = merged_add_real_directory;
+	class->remove_real_directory = merged_remove_real_directory;
 
 	signals[ADD_REAL_DIRECTORY] 
 		= g_signal_new ("add_real_directory",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusMergedDirectoryClass, 
 						 add_real_directory),
@@ -659,7 +639,7 @@ nautilus_merged_directory_class_init (gpointer klass)
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[REMOVE_REAL_DIRECTORY] 
 		= g_signal_new ("remove_real_directory",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusMergedDirectoryClass, 
 						 remove_real_directory),

@@ -156,15 +156,16 @@ create_and_set_up_tree_view (FMListView *view)
 	GtkTreeViewColumn *column;
 	
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
-	g_signal_connect (gtk_tree_view_get_selection (view->details->tree_view),
-			  "changed", G_CALLBACK (list_selection_changed_callback), view);
+	g_signal_connect_object (gtk_tree_view_get_selection (view->details->tree_view),
+				 "changed",
+				 G_CALLBACK (list_selection_changed_callback), view, 0);
 
-	g_signal_connect (view->details->tree_view, "row_activated",
-			  G_CALLBACK (list_activate_callback), view);
-	g_signal_connect (view->details->tree_view, "event-after",
-			  G_CALLBACK (event_after_callback), view);
-	g_signal_connect (view->details->tree_view, "button_press_event",
-			  G_CALLBACK (button_press_callback), view);
+	g_signal_connect_object (view->details->tree_view, "row_activated",
+				 G_CALLBACK (list_activate_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "event-after",
+				 G_CALLBACK (event_after_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "button_press_event",
+				 G_CALLBACK (button_press_callback), view, 0);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));

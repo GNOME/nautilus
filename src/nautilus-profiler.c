@@ -197,10 +197,8 @@ dump_dialog_new (const char *title)
 	dump_dialog->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	eel_gtk_window_set_up_close_accelerator 
 		(GTK_WINDOW (dump_dialog->window));
-	g_signal_connect (dump_dialog->window,
-			    "delete_event", 
-			    G_CALLBACK (window_delete_event),
-			    dump_dialog->window);
+	g_signal_connect (dump_dialog->window, "delete_event", 
+			  G_CALLBACK (window_delete_event), dump_dialog->window);
 
 	gtk_widget_set_usize (dump_dialog->window, 700, 700);
 
@@ -214,15 +212,10 @@ dump_dialog_new (const char *title)
 	gtk_widget_set_sensitive (print_button, FALSE);
 	gtk_widget_set_sensitive (save_button, FALSE);
 
-	g_signal_connect (print_button,
-			    "clicked", 
-			    G_CALLBACK (window_print_button_callback),
-			    dump_dialog);
-
-	g_signal_connect (save_button,
-			    "clicked", 
-			    G_CALLBACK (window_save_button_callback),
-			    dump_dialog);
+	g_signal_connect_object (print_button, "clicked", 
+				 G_CALLBACK (window_print_button_callback), dump_dialog, 0);
+	g_signal_connect_object (save_button, "clicked", 
+				 G_CALLBACK (window_save_button_callback), dump_dialog, 0);
 
 	gtk_container_add (GTK_CONTAINER (dump_dialog->window), main_box);
 

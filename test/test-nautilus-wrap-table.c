@@ -40,14 +40,16 @@ main (int argc, char* argv[])
 
 	gtk_widget_show (scroller);
 
+#if 0
 	/* Get rid of default lowered shadow appearance. 
 	 * This must be done after the widget is realized, due to
 	 * an apparent bug in gtk_viewport_set_shadow_type.
 	 */
-// 	g_signal_connect (GTK_BIN (scroller->child), 
-// 			    "realize", 
-// 			    remove_default_viewport_shadow, 
-// 			    NULL);
+ 	g_signal_connect (GTK_BIN (scroller->child), 
+			  "realize", 
+			  remove_default_viewport_shadow, 
+			  NULL);
+#endif
 
 
 	/* Use nautilus_customization to make the emblem widgets */

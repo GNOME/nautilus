@@ -42,6 +42,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 /* FIXME bugzilla.gnome.org 44436: 
@@ -221,10 +222,8 @@ notes_load_metainfo (Notes *notes)
 	
         g_list_free (attributes);
         
-	g_signal_connect (notes->file,
-			    "changed",
-			    G_CALLBACK (load_note_text_from_metadata),
-			    notes);
+	g_signal_connect (notes->file, "changed",
+                          G_CALLBACK (load_note_text_from_metadata), notes);
 }
 
 /* utility to notify event listeners if the notes data actually changed */
@@ -380,11 +379,9 @@ make_notes_view (const char *iid, void *callback_data)
         eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
 	g_signal_connect (notes->note_text_field, "focus_out_event",
-                          G_CALLBACK (on_text_field_focus_out_event),
-                          notes);
+                          G_CALLBACK (on_text_field_focus_out_event), notes);
 	g_signal_connect (notes->text_buffer, "changed",
-                          G_CALLBACK (on_changed),
-                          notes);
+                          G_CALLBACK (on_changed), notes);
      
         gtk_widget_show_all (vbox);
         
@@ -399,7 +396,7 @@ make_notes_view (const char *iid, void *callback_data)
 				 "image indicating that a note is present", 0);
         /* handle events */
         g_signal_connect (notes->view, "load_location",
-                            G_CALLBACK (notes_load_location), notes);
+                          G_CALLBACK (notes_load_location), notes);
         
         /* handle selections */
 #ifdef GNOME2_CONVERSION_COMPLETE

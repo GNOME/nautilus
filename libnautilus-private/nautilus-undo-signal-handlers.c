@@ -80,10 +80,9 @@ nautilus_undo_set_up_nautilus_entry_for_undo (NautilusEntry *entry)
 				data, free_editable_object_data);
 
 	/* Connect to entry signals */
-	g_signal_connect (entry, 
-		    "user_changed",
-		    G_CALLBACK (nautilus_entry_user_changed_callback),
-		    NULL);
+	g_signal_connect (entry, "user_changed",
+			  G_CALLBACK (nautilus_entry_user_changed_callback),
+			  NULL);
 }
 
 void
@@ -95,9 +94,7 @@ nautilus_undo_tear_down_nautilus_entry_for_undo (NautilusEntry *entry)
 
 	/* Disconnect from entry signals */
 	g_signal_handlers_disconnect_by_func
-		(entry, 
-		 G_CALLBACK (nautilus_entry_user_changed_callback),		    
-		 NULL);
+		(entry, G_CALLBACK (nautilus_entry_user_changed_callback), NULL);
 
 }
 
@@ -193,15 +190,10 @@ nautilus_undo_set_up_editable_for_undo (GtkEditable *editable)
 	}
 
 	/* Connect to editable signals */
-	g_signal_connect (editable, 
-		    "insert_text",
-		    G_CALLBACK (editable_insert_text_callback),
-		    NULL);
-	
-	g_signal_connect (editable, 
-		    "delete_text",
-		    G_CALLBACK (editable_delete_text_callback),
-		    NULL);
+	g_signal_connect (editable, "insert_text",
+			  G_CALLBACK (editable_insert_text_callback), NULL);
+	g_signal_connect (editable, "delete_text",
+			  G_CALLBACK (editable_delete_text_callback), NULL);
 
 
 	data = g_new (EditableUndoObjectData, 1);
@@ -218,13 +210,10 @@ nautilus_undo_tear_down_editable_for_undo (GtkEditable *editable)
 	}
 
 	/* Disconnect from entry signals */
-	g_signal_handlers_disconnect_by_func (editable,
-		    G_CALLBACK (editable_insert_text_callback),		    
-		    NULL);
-
-	g_signal_handlers_disconnect_by_func (editable,
-		    G_CALLBACK (editable_delete_text_callback),		    
-		    NULL);
+	g_signal_handlers_disconnect_by_func
+		(editable, G_CALLBACK (editable_insert_text_callback), NULL);
+	g_signal_handlers_disconnect_by_func
+		(editable, G_CALLBACK (editable_delete_text_callback), NULL);
 }
 
 /* restore_editable_from_undo_snapshot_callback
@@ -327,18 +316,15 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 #ifdef UNDO_ENABLED
 	if (value) {
 		/* Connect to entry signals */
-		g_signal_connect (editable, 
-				    "key_press_event",
-				    G_CALLBACK (editable_key_press_event),
-				    NULL);
+		g_signal_connect (editable, "key_press_event",
+				  G_CALLBACK (editable_key_press_event), NULL);
 	} else {
 		/* FIXME bugzilla.gnome.org 45092: Warns if the handler
 		 * is not already connected. We could use object data
 		 * to prevent that little problem.
 		 */
-		gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
-					       G_CALLBACK (editable_key_press_event),		    
-					       NULL);
+		gtk_signal_disconnect_by_func (editable, 
+					       G_CALLBACK (editable_key_press_event), NULL);
 	}
 #endif
 }

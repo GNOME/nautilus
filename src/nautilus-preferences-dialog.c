@@ -535,8 +535,8 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 	/* Have the custom preferences item tell us when its time to update the displayed
 	 * with with the one stored in preferences
 	 */
-	g_signal_connect (item, "custom_update_displayed_value",
-			  G_CALLBACK (update_theme_selector_displayed_value_callback), child);
+	g_signal_connect_object (item, "custom_update_displayed_value",
+				 G_CALLBACK (update_theme_selector_displayed_value_callback), child, 0);
 	update_theme_selector_displayed_value_callback (EEL_PREFERENCES_ITEM (item), child);
 }
 

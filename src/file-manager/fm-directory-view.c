@@ -1148,11 +1148,10 @@ add_directory_to_scripts_directory_list (FMDirectoryView *view,
 
 		g_list_free (attributes);
 
-		g_signal_connect (directory, "files_added",
-				  G_CALLBACK (scripts_added_or_changed_callback), view);
-
-		g_signal_connect (directory, "files_changed",
-				  G_CALLBACK (scripts_added_or_changed_callback), view);
+		g_signal_connect_object (directory, "files_added",
+					 G_CALLBACK (scripts_added_or_changed_callback), view, 0);
+		g_signal_connect_object (directory, "files_changed",
+					 G_CALLBACK (scripts_added_or_changed_callback), view, 0);
 
 		view->details->scripts_directory_list = g_list_append
 			(view->details->scripts_directory_list, directory);
@@ -1228,30 +1227,29 @@ fm_directory_view_init (FMDirectoryView *view)
 	view->details->sort_directories_first = 
 		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
-	g_signal_connect (view->details->nautilus_view,  "stop_loading",
-			  G_CALLBACK (stop_loading_callback), view);
-	g_signal_connect (view->details->nautilus_view, "load_location",
-			  G_CALLBACK (load_location_callback), view);
+	g_signal_connect_object (view->details->nautilus_view,  "stop_loading",
+				 G_CALLBACK (stop_loading_callback), view, 0);
+	g_signal_connect_object (view->details->nautilus_view, "load_location",
+			  G_CALLBACK (load_location_callback), view, 0);
 
-	nautilus_view_set_listener_mask (
-		NAUTILUS_VIEW (view->details->nautilus_view),
-		NAUTILUS_VIEW_LISTEN_SELECTION);
+	nautilus_view_set_listener_mask
+		(NAUTILUS_VIEW (view->details->nautilus_view),
+		 NAUTILUS_VIEW_LISTEN_SELECTION);
 
-	g_signal_connect (view->details->nautilus_view, "selection_changed",
-			  G_CALLBACK (selection_changed_callback), view);
-        g_signal_connect (fm_directory_view_get_bonobo_control (view), "activate",
-			  G_CALLBACK (bonobo_control_activate_callback), view);
-	g_signal_connect (view->details->zoomable, "zoom_in",
-			  G_CALLBACK (zoomable_zoom_in_callback), view);
-	g_signal_connect (view->details->zoomable, "zoom_out", 
-			  G_CALLBACK (zoomable_zoom_out_callback), view);
-	g_signal_connect (view->details->zoomable, "set_zoom_level", 
-			  G_CALLBACK (zoomable_set_zoom_level_callback), view);
-	g_signal_connect (view->details->zoomable, "zoom_to_fit",
-			  G_CALLBACK (zoomable_zoom_to_fit_callback), view);
+	g_signal_connect_object (view->details->nautilus_view, "selection_changed",
+				 G_CALLBACK (selection_changed_callback), view, 0);
+        g_signal_connect_object (fm_directory_view_get_bonobo_control (view), "activate",
+				 G_CALLBACK (bonobo_control_activate_callback), view, 0);
+	g_signal_connect_object (view->details->zoomable, "zoom_in",
+				 G_CALLBACK (zoomable_zoom_in_callback), view, 0);
+	g_signal_connect_object (view->details->zoomable, "zoom_out", 
+				 G_CALLBACK (zoomable_zoom_out_callback), view, 0);
+	g_signal_connect_object (view->details->zoomable, "set_zoom_level", 
+				 G_CALLBACK (zoomable_set_zoom_level_callback), view, 0);
+	g_signal_connect_object (view->details->zoomable, "zoom_to_fit",
+				 G_CALLBACK (zoomable_zoom_to_fit_callback), view, 0);
 	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
-				 G_CALLBACK (fm_directory_view_trash_state_changed_callback),
-				 view, 0);
+				 G_CALLBACK (fm_directory_view_trash_state_changed_callback), view, 0);
 
 	/* React to icon theme changes. */
 	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
@@ -2296,7 +2294,10 @@ queue_pending_files (FMDirectoryView *view,
 
 	*pending_list = g_list_concat (*pending_list,
 				       nautilus_file_list_copy (files));
-	schedule_timeout_display_of_pending_files (view);
+	if (view->details->loading)
+		schedule_timeout_display_of_pending_files (view);
+	else
+		schedule_idle_display_of_pending_files (view);
 }
 
 static void
@@ -4150,10 +4151,9 @@ real_merge_menus (FMDirectoryView *view)
 
 	bonobo_ui_component_add_verb_list_with_data (view->details->ui, verbs, view);
 
-	g_signal_connect_swapped (fm_directory_view_get_background (view),
-				  "settings_changed",
-				  G_CALLBACK (schedule_update_menus),
-				  view);
+	g_signal_connect_object (fm_directory_view_get_background (view), "settings_changed",
+				 G_CALLBACK (schedule_update_menus), G_OBJECT (view),
+				 G_CONNECT_SWAPPED);
 
 	/* Do one-time state changes here; context-dependent ones go in update_menus */
 	if (!fm_directory_view_supports_zooming (view)) {
@@ -4933,10 +4933,8 @@ load_directory (FMDirectoryView *view,
 	g_list_free (attributes);
 
 	view->details->file_changed_handler_id = g_signal_connect
-		(view->details->directory_as_file,
-		 "changed",
-		 G_CALLBACK (file_changed_callback),
-		 view);
+		(view->details->directory_as_file, "changed",
+		 G_CALLBACK (file_changed_callback), view);
 }
 
 static void
@@ -4958,12 +4956,10 @@ finish_loading (FMDirectoryView *view)
 
 	/* Connect handlers to learn about loading progress. */
 	view->details->done_loading_handler_id = g_signal_connect
-		(view->details->model,
-		 "done_loading",
+		(view->details->model, "done_loading",
 		 G_CALLBACK (done_loading_callback), view);
 	view->details->load_error_handler_id = g_signal_connect
-		(view->details->model,
-		 "load_error",
+		(view->details->model, "load_error",
 		 G_CALLBACK (load_error_callback), view);
 
 	/* Monitor the things needed to get the right icon. Also
@@ -4991,12 +4987,10 @@ finish_loading (FMDirectoryView *view)
 	g_list_free (attributes);
 
     	view->details->files_added_handler_id = g_signal_connect
-		(view->details->model,
-		 "files_added",
+		(view->details->model, "files_added",
 		 G_CALLBACK (files_added_callback), view);
 	view->details->files_changed_handler_id = g_signal_connect
-		(view->details->model, 
-		 "files_changed",
+		(view->details->model, "files_changed",
 		 G_CALLBACK (files_changed_callback), view);
 }
 

@@ -248,24 +248,19 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 
 	g_signal_connect (window, "delete_event",
 			  G_CALLBACK (on_window_delete_event), NULL);
-                    	    
 	g_signal_connect (window, "hide",
-			  G_CALLBACK (on_window_hide_event), NULL);
-                    	    
+			  G_CALLBACK (on_window_hide_event), NULL);                    	    
 	g_signal_connect (window, "destroy",
 			  G_CALLBACK (on_window_destroy_event), NULL);
-                    	    
 	g_signal_connect (window, "response",
 			  G_CALLBACK (nautilus_bookmarks_window_response_callback), NULL);
 
 	name_field_changed_signal_id =
 		g_signal_connect (name_field, "changed",
-				  G_CALLBACK (on_name_field_changed),
-				  NULL);
+				  G_CALLBACK (on_name_field_changed), NULL);
                       		    
 	g_signal_connect (name_field, "focus_out_event",
-			  G_CALLBACK (on_text_field_focus_out_event), NULL);
-                            
+			  G_CALLBACK (on_text_field_focus_out_event), NULL);                            
 	g_signal_connect (name_field, "activate",
 			  G_CALLBACK (name_or_uri_field_activate), NULL);
 
@@ -275,10 +270,8 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
                       		    
 	g_signal_connect (uri_field, "focus_out_event",
 			  G_CALLBACK (on_text_field_focus_out_event), NULL);
-              	    	    
 	g_signal_connect (uri_field, "activate",
 			  G_CALLBACK (name_or_uri_field_activate), NULL);
-
 	g_signal_connect (remove_button, "clicked",
 			  G_CALLBACK (on_remove_button_clicked), NULL);
 
@@ -287,8 +280,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 				 G_CALLBACK (repopulate), window,
 				 G_CONNECT_SWAPPED);
                       	    
-	gtk_tree_selection_set_mode (bookmark_selection,
-				     GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_mode (bookmark_selection, GTK_SELECTION_BROWSE);
 	
 	/* Fill in list widget with bookmarks, must be after signals are wired up. */
 	repopulate();

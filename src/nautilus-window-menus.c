@@ -138,11 +138,11 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	new_bookmark_holder->prompt_for_removal = is_bookmarks_menu;
 
 	new_bookmark_holder->changed_handler_id = 
-		g_signal_connect_swapped (bookmark, "appearance_changed",
-					  is_bookmarks_menu
-					  ? G_CALLBACK (schedule_refresh_bookmarks_menu)
-					  : G_CALLBACK (schedule_refresh_go_menu),
-					  window);
+		g_signal_connect_object (bookmark, "appearance_changed",
+					 is_bookmarks_menu
+					 ? G_CALLBACK (schedule_refresh_bookmarks_menu)
+					 : G_CALLBACK (schedule_refresh_go_menu),
+					 window, G_CONNECT_SWAPPED);
 
 	return new_bookmark_holder;
 }
@@ -353,10 +353,8 @@ forget_history_if_confirmed (NautilusWindow *window)
 					 GTK_WINDOW (window));
 	g_free (prompt);					 
 	
-	g_signal_connect (dialog,
-			  "response",
-			  G_CALLBACK (forget_history_if_yes),
-			  NULL);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (forget_history_if_yes), NULL);
 	
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
 }
@@ -1151,8 +1149,8 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
         nautilus_window_update_show_hide_menu_items (window);
 
 	/* Register to catch Bonobo UI events so we can notice View As changes */
-	g_signal_connect (window->details->shell_ui, "ui_event", 
-			  G_CALLBACK (nautilus_window_handle_ui_event_callback), window);
+	g_signal_connect_object (window->details->shell_ui, "ui_event", 
+				 G_CALLBACK (nautilus_window_handle_ui_event_callback), window, 0);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	

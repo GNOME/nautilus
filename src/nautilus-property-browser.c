@@ -355,7 +355,7 @@ nautilus_property_browser_init (GtkObject *object)
 
 	gtk_widget_show(temp_button);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);  
- 	g_signal_connect(temp_button, "clicked", G_CALLBACK (done_button_callback), property_browser);
+ 	g_signal_connect_object (temp_button, "clicked", G_CALLBACK (done_button_callback), property_browser, 0);
   	
   	/* create the "add new" button */
   	property_browser->details->add_button = gtk_button_new ();
@@ -369,8 +369,8 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box),
 			  property_browser->details->add_button, FALSE, FALSE, GNOME_PAD_SMALL);
  	  
- 	g_signal_connect (property_browser->details->add_button, "clicked",
-			    G_CALLBACK (add_new_button_callback), property_browser);
+ 	g_signal_connect_object (property_browser->details->add_button, "clicked",
+				 G_CALLBACK (add_new_button_callback), property_browser, 0);
 	
 	/* now create the "remove" button */
   	property_browser->details->remove_button = gtk_button_new();
@@ -388,10 +388,8 @@ nautilus_property_browser_init (GtkObject *object)
 			  FALSE,
 			  GNOME_PAD_SMALL);
 	
- 	g_signal_connect (property_browser->details->remove_button,
-			    "clicked",
-			    G_CALLBACK (remove_button_callback),
-			    property_browser);
+ 	g_signal_connect_object (property_browser->details->remove_button, "clicked",
+				 G_CALLBACK (remove_button_callback), property_browser, 0);
 
 	/* now create the actual content, with the category pane and the content frame */	
 	
@@ -409,12 +407,9 @@ nautilus_property_browser_init (GtkObject *object)
 				      property_browser);	
 	
 	g_signal_connect (property_browser, "delete_event",
-                    	    G_CALLBACK (nautilus_property_browser_delete_event_callback),
-                    	    NULL);
-
+			  G_CALLBACK (nautilus_property_browser_delete_event_callback), NULL);
 	g_signal_connect (property_browser, "hide",
-                    	    G_CALLBACK (nautilus_property_browser_hide_callback),
-                    	    NULL);
+			  G_CALLBACK (nautilus_property_browser_hide_callback), NULL);
 
 	/* initially, display the top level */
 	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
@@ -1191,8 +1186,8 @@ show_color_selection_window (GtkWidget *widget, gpointer *data)
 	
 	eel_add_weak_pointer (&property_browser->details->dialog);
 
-	g_signal_connect (property_browser->details->dialog, "clicked",
-			  G_CALLBACK (add_color_to_browser), property_browser);
+	g_signal_connect_object (property_browser->details->dialog, "clicked",
+				 G_CALLBACK (add_color_to_browser), property_browser, 0);
 	gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
 	gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
 
@@ -1217,10 +1212,10 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 		
 		eel_add_weak_pointer (&property_browser->details->dialog);
 
-		g_signal_connect (color_dialog->ok_button, "clicked",
-				  G_CALLBACK (show_color_selection_window), property_browser);
-		g_signal_connect_swapped (color_dialog->cancel_button, "clicked",
-					  G_CALLBACK (gtk_widget_destroy), color_dialog);
+		g_signal_connect_object (color_dialog->ok_button, "clicked",
+					 G_CALLBACK (show_color_selection_window), property_browser, 0);
+		g_signal_connect_object (color_dialog->cancel_button, "clicked",
+					 G_CALLBACK (gtk_widget_destroy), color_dialog, G_CONNECT_SWAPPED);
 		gtk_widget_hide(color_dialog->help_button);
 
 		gtk_window_set_position (GTK_WINDOW (color_dialog), GTK_WIN_POS_MOUSE);
@@ -1382,8 +1377,8 @@ add_new_emblem (NautilusPropertyBrowser *property_browser)
 
 		eel_add_weak_pointer (&property_browser->details->dialog);
 
-		g_signal_connect (property_browser->details->dialog, "clicked",
-				  G_CALLBACK (emblem_dialog_clicked), property_browser);
+		g_signal_connect_object (property_browser->details->dialog, "clicked",
+					 G_CALLBACK (emblem_dialog_clicked), property_browser, 0);
 		gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
 		gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
 	}
@@ -1870,11 +1865,9 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 	/* add a signal to handle clicks */
 	g_object_set_data (G_OBJECT(button), "user_data", property_browser);
 	g_signal_connect_data
-		(button,
-		 "clicked",
+		(button, "clicked",
 		 G_CALLBACK (category_clicked_callback),
-		 g_strdup (name),
-		 (GClosureNotify)g_free, 0);
+		 g_strdup (name), (GClosureNotify) g_free, 0);
 }
 
 /* update_contents populates the property browser with information specified by the path and other state variables */
@@ -1919,10 +1912,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	eel_wrap_table_set_y_spacing (EEL_WRAP_TABLE (property_browser->details->content_table),
 					   IMAGE_TABLE_Y_SPACING);
 	
-	g_signal_connect (property_browser->details->content_table,
-			    "child_pressed", 
-			    G_CALLBACK (element_clicked_callback),
-			    property_browser);
+	g_signal_connect_object (property_browser->details->content_table, "child_pressed", 
+				 G_CALLBACK (element_clicked_callback), property_browser, 0);
 
 	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->content_table); 
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_frame), viewport);

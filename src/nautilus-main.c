@@ -99,7 +99,6 @@ eel_gtk_main_quit_all (void)
 static void
 event_loop_unregister (GtkObject *object)
 {
-	g_assert (g_slist_find (event_loop_registrants, object) != NULL);
 	event_loop_registrants = g_slist_remove (event_loop_registrants, object);
 	if (!is_event_loop_needed ()) {
 		eel_gtk_main_quit_all ();

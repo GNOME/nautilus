@@ -217,7 +217,7 @@ void mpg123_file_info_box(char *filename)
 		
 		window = gtk_window_new(GTK_WINDOW_DIALOG);
 		gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
-		g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_widget_destroyed), &window);
+		g_signal_connect(window, "destroy", G_CALLBACK(gtk_widget_destroyed), &window);
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
 		vbox = gtk_vbox_new(FALSE, 10);
@@ -304,18 +304,18 @@ void mpg123_file_info_box(char *filename)
 		gtk_box_pack_start(GTK_BOX(left_vbox), bbox, FALSE, FALSE, 0);
 
 		save = gtk_button_new_with_label(_("Save"));
-		g_signal_connect(G_OBJECT(save), "clicked", G_CALLBACK(save_cb), NULL);
+		g_signal_connect(save, "clicked", G_CALLBACK(save_cb), NULL);
 		GTK_WIDGET_SET_FLAGS(save, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), save, TRUE, TRUE, 0);
 		gtk_widget_grab_default(save);
 
 		remove_id3 = gtk_button_new_with_label(_("Remove ID3"));
-		g_signal_connect(G_OBJECT(remove_id3), "clicked", G_CALLBACK(remove_id3_cb), NULL);
+		g_signal_connect(remove_id3, "clicked", G_CALLBACK(remove_id3_cb), NULL);
 		GTK_WIDGET_SET_FLAGS(remove_id3, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), remove_id3, TRUE, TRUE, 0);
 
 		cancel = gtk_button_new_with_label(_("Cancel"));
-		g_signal_connect_swapped(G_OBJECT(cancel), "clicked", G_CALLBACK(gtk_widget_destroy), G_OBJECT(window));
+		g_signal_connect_object(cancel, "clicked", G_CALLBACK(gtk_widget_destroy), window, G_CONNECT_SWAPPED);
 		GTK_WIDGET_SET_FLAGS(cancel, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), cancel, TRUE, TRUE, 0);
 

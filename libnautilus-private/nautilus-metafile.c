@@ -183,7 +183,7 @@ finalize (GObject *object)
 
 	g_free (metafile->details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static GnomeVFSURI *

@@ -50,9 +50,10 @@ finalize (GObject *object)
 	NautilusMetafileMonitor *monitor;
 
 	monitor = NAUTILUS_METAFILE_MONITOR (object);
+
 	g_free (monitor->details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 NautilusMetafileMonitor *

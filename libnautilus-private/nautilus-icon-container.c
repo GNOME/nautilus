@@ -433,19 +433,19 @@ get_pending_icon_to_reveal (NautilusIconContainer *container)
 static void
 set_pending_icon_to_reveal (NautilusIconContainer *container, NautilusIcon *icon)
 {
-	NautilusIcon *cur_pending;
+	NautilusIcon *old_icon;
 	
-	cur_pending = container->details->pending_icon_to_reveal;
+	old_icon = container->details->pending_icon_to_reveal;
 	
-	if (icon == cur_pending) {
+	if (icon == old_icon) {
 		return;
 	}
 	
-	if (cur_pending != NULL) {
-		g_signal_handlers_disconnect_by_func (
-			cur_pending->item,
-			G_CALLBACK (pending_icon_to_reveal_destroy_callback),
-			container);
+	if (old_icon != NULL) {
+		g_signal_handlers_disconnect_by_func
+			(old_icon->item,
+			 G_CALLBACK (pending_icon_to_reveal_destroy_callback),
+			 container);
 	}
 	
 	if (icon != NULL) {
@@ -3338,7 +3338,7 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 	background = eel_get_widget_background (GTK_WIDGET (container));
 	
 	g_signal_connect_object (background, "appearance_changed",
-				 G_CALLBACK (update_label_color), G_OBJECT (container), 0);
+				 G_CALLBACK (update_label_color), container, 0);
 
 	g_signal_connect (container, "focus-out-event",
 			  G_CALLBACK (handle_focus_out_event), NULL);
@@ -3827,8 +3827,8 @@ finish_adding_icon (NautilusIconContainer *container,
 	nautilus_icon_container_update_icon (container, icon);
 	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
 
-	g_signal_connect (icon->item, "event",
-			  G_CALLBACK (item_event_callback), container);
+	g_signal_connect_object (icon->item, "event",
+				 G_CALLBACK (item_event_callback), container, 0);
 }
 
 static void
@@ -4671,24 +4671,24 @@ get_pending_icon_to_rename (NautilusIconContainer *container)
 static void
 set_pending_icon_to_rename (NautilusIconContainer *container, NautilusIcon *icon)
 {
-	NautilusIcon *cur_pending;
+	NautilusIcon *old_icon;
 	
-	cur_pending = container->details->pending_icon_to_rename;
+	old_icon = container->details->pending_icon_to_rename;
 	
-	if (icon == cur_pending) {
+	if (icon == old_icon) {
 		return;
 	}
 	
-	if (cur_pending != NULL) {
+	if (old_icon != NULL) {
 		g_signal_handlers_disconnect_by_func
-			(cur_pending->item,
+			(old_icon->item,
 			 G_CALLBACK (pending_icon_to_rename_destroy_callback),
 			 container);
 	}
 	
 	if (icon != NULL) {
 		g_signal_connect (icon->item, "destroy",
-				    G_CALLBACK (pending_icon_to_rename_destroy_callback), container);
+				  G_CALLBACK (pending_icon_to_rename_destroy_callback), container);
 	}
 	
 	container->details->pending_icon_to_rename = icon;

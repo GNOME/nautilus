@@ -61,7 +61,7 @@ nautilus_sample_content_view_finalize (GObject *object)
 	g_free (view->details->location);
 	g_free (view->details);
 
-	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (object)->finalize (object);
 }
 
 static void
@@ -199,16 +199,12 @@ nautilus_sample_content_view_instance_init (NautilusSampleContentView *view)
 	
 	nautilus_view_construct (NAUTILUS_VIEW (view), view->details->label);
 	
-	g_signal_connect (view, 
-			  "load_location",
-			  G_CALLBACK (sample_load_location_callback),
-			  NULL);
+	g_signal_connect (view, "load_location",
+			  G_CALLBACK (sample_load_location_callback), NULL);
 
 	/* Get notified when our bonobo control is activated so we can
 	 * merge menu & toolbar items into the shell's UI.
 	 */
-        g_signal_connect (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (view)),
-			  "activate",
-			  G_CALLBACK (sample_merge_bonobo_items_callback),
-			  view);
+        g_signal_connect_object (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (view)), "activate",
+				 G_CALLBACK (sample_merge_bonobo_items_callback), view, 0);
 }

@@ -164,8 +164,8 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 
 	strategy->details->widget = bonobo_control_frame_get_widget (strategy->details->control_frame);
   
-	g_signal_connect (strategy->details->control_frame,
-			    "activate_uri", G_CALLBACK (activate_uri_callback), strategy);
+	g_signal_connect_object (strategy->details->control_frame, "activate_uri",
+				 G_CALLBACK (activate_uri_callback), strategy, 0);
 
 	CORBA_exception_init (&ev);
 	corba_zoomable = Bonobo_Unknown_queryInterface (control,

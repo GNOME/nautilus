@@ -142,12 +142,12 @@ nautilus_application_instance_init (NautilusApplication *application)
 	application->undo_manager = nautilus_undo_manager_new ();
 
 	/* Watch for volume mounts so we can restore open windows */
-	g_signal_connect (nautilus_volume_monitor_get (), "volume_mounted",
-			  G_CALLBACK (volume_mounted_callback), application);
+	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_mounted",
+				 G_CALLBACK (volume_mounted_callback), application, 0);
 
 	/* Watch for volume unmounts so we can close open windows */
-	g_signal_connect (nautilus_volume_monitor_get (), "volume_unmounted",
-			  G_CALLBACK (volume_unmounted_callback), application);
+	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
+				 G_CALLBACK (volume_unmounted_callback), application, 0);
 }
 
 NautilusApplication *
@@ -635,16 +635,14 @@ nautilus_application_create_window (NautilusApplication *application)
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
 	window = NAUTILUS_WINDOW (gtk_widget_new (nautilus_window_get_type (),
-						  "app", G_OBJECT (application),
+						  "app", application,
 						  "app_id", "nautilus", NULL));
 	
-	g_signal_connect (window, 
-			  "delete_event", G_CALLBACK (nautilus_window_delete_event_callback),
-			  NULL);
+	g_signal_connect (window, "delete_event",
+			  G_CALLBACK (nautilus_window_delete_event_callback), NULL);
 
-	g_signal_connect (window,
-			  "destroy", G_CALLBACK (nautilus_application_destroyed_window),
-			  application);
+	g_signal_connect_object (window, "destroy",
+				 G_CALLBACK (nautilus_application_destroyed_window), application, 0);
 
 	nautilus_application_window_list = g_list_prepend (nautilus_application_window_list, window);
 
@@ -874,12 +872,10 @@ init_session (void)
 	client = gnome_master_client ();
 
 	g_signal_connect (client, "save_yourself",
-			    (GtkSignalFunc) save_session,
-			    NULL);
+			  G_CALLBACK (save_session), NULL);
 	
 	g_signal_connect (client, "die",
-			    (GtkSignalFunc) removed_from_session,
-			    NULL);
+			  G_CALLBACK (removed_from_session), NULL);
 	
 	eel_preferences_add_callback
 		(NAUTILUS_PREFERENCES_ADD_TO_SESSION,

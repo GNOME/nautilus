@@ -84,7 +84,6 @@ struct FMDesktopIconViewDetails
 	/* For the desktop rescanning
 	 */
 	gulong delayed_init_signal;
-	gulong done_loading_signal;
 	guint reload_desktop_timeout;
 	gboolean pending_rescan;
 };
@@ -235,16 +234,6 @@ fm_desktop_icon_view_finalize (GObject *object)
 		gtk_timeout_remove (icon_view->details->reload_desktop_timeout);
 	}
 
-	if (icon_view->details->done_loading_signal != 0) {
-		g_signal_handler_disconnect (fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
-					     icon_view->details->done_loading_signal);
-	}
-
-	if (icon_view->details->delayed_init_signal != 0) {
-		g_signal_handler_disconnect (icon_view,
-					     icon_view->details->delayed_init_signal);
-	}
-	
 	/* Delete all of the link files. */
 	delete_all_mount_links ();
 	
@@ -521,10 +510,9 @@ static void
 delayed_init (FMDesktopIconView *desktop_icon_view)
 {
 	/* Keep track of the load time. */
-	desktop_icon_view->details->done_loading_signal = 
-		g_signal_connect (fm_directory_view_get_model (FM_DIRECTORY_VIEW (desktop_icon_view)),
-				  "done_loading",
-				  G_CALLBACK (done_loading), desktop_icon_view);
+	g_signal_connect_object (fm_directory_view_get_model (FM_DIRECTORY_VIEW (desktop_icon_view)),
+				 "done_loading",
+				 G_CALLBACK (done_loading), desktop_icon_view, 0);
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
@@ -560,9 +548,9 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	 * way to keep track of the items on the desktop.
 	 */
 	if (!nautilus_monitor_active ()) {
-		desktop_icon_view->details->delayed_init_signal = g_signal_connect
+		desktop_icon_view->details->delayed_init_signal = g_signal_connect_object
 			(desktop_icon_view, "begin_loading",
-			 G_CALLBACK (delayed_init), desktop_icon_view);
+			 G_CALLBACK (delayed_init), desktop_icon_view, 0);
 	}
 	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
@@ -600,21 +588,16 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 					     	     create_one_mount_link,
 						     desktop_icon_view);
 	
-	g_signal_connect (icon_container, "middle_click",
-			  G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view);
-			    
-	g_signal_connect (icon_container, "compare_icons",
-			  G_CALLBACK (desktop_icons_compare_callback), desktop_icon_view);
-
-	g_signal_connect (desktop_icon_view, "event",
-			  G_CALLBACK (event_callback), desktop_icon_view);
-	
+	g_signal_connect_object (icon_container, "middle_click",
+				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
+	g_signal_connect_object (icon_container, "compare_icons",
+				 G_CALLBACK (desktop_icons_compare_callback), desktop_icon_view, 0);
+	g_signal_connect_object (desktop_icon_view, "event",
+				 G_CALLBACK (event_callback), desktop_icon_view, 0);
 	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
-				 G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback), desktop_icon_view, 0);
-	
+				 G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback), desktop_icon_view, 0);	
 	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), desktop_icon_view, 0);
-	
 	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), desktop_icon_view, 0);
 	

@@ -171,7 +171,7 @@ nautilus_undo_transaction_finalize (GObject *object)
 	CORBA_Object_release (transaction->owner, &ev);
 	CORBA_exception_free (&ev);
 	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 void

@@ -33,7 +33,7 @@
 #ifndef NAUTILUS_VIEW_STANDARD_MAIN_H
 #define NAUTILUS_VIEW_STANDARD_MAIN_H
 
-#include <libnautilus/nautilus-view.h>
+#include <bonobo/bonobo-object.h>
 
 G_BEGIN_DECLS
 

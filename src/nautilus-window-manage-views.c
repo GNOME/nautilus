@@ -599,9 +599,8 @@ update_for_new_location (NautilusWindow *window)
         nautilus_window_set_viewed_file (window, file);
         window->details->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
         nautilus_file_monitor_add (file, &window->details->viewed_file, NULL);
-        g_signal_connect (file, "changed",
-                          G_CALLBACK (viewed_file_changed_callback),
-                          window);
+        g_signal_connect_object (file, "changed",
+                                 G_CALLBACK (viewed_file_changed_callback), window, 0);
         nautilus_file_unref (file);
         
         /* Check if we can go up. */

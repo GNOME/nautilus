@@ -40,8 +40,8 @@ picker_new (const char *name,
 	
 	string_picker = eel_string_picker_new ();
 	eel_caption_set_title_label (EEL_CAPTION (string_picker), name);
-	g_signal_connect (string_picker, "changed", G_CALLBACK (int_picker_changed_callback),
-			    (gpointer) name);
+	g_signal_connect (string_picker, "changed",
+			  G_CALLBACK (int_picker_changed_callback), (gpointer) name);
 	
 	eel_string_picker_set_string_list (EEL_STRING_PICKER (string_picker), entries);
 	eel_string_picker_set_selected_string_index (EEL_STRING_PICKER (string_picker), 

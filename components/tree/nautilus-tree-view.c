@@ -286,14 +286,13 @@ create_tree (NautilusTreeView *view)
 	gtk_container_add (GTK_CONTAINER (view->details->scrolled_window),
 			   GTK_WIDGET (view->details->tree_widget));
 
-	g_signal_connect_swapped (view->details->tree_widget, "row_expanded",
-				  G_CALLBACK (schedule_save_expansion_state_callback), view);
-	g_signal_connect_swapped (view->details->tree_widget, "row_collapsed",
-				  G_CALLBACK (schedule_save_expansion_state_callback), view);
+	g_signal_connect_object (view->details->tree_widget, "row_expanded",
+				 G_CALLBACK (schedule_save_expansion_state_callback), view, G_CONNECT_SWAPPED);
+	g_signal_connect_object (view->details->tree_widget, "row_collapsed",
+				 G_CALLBACK (schedule_save_expansion_state_callback), view, G_CONNECT_SWAPPED);
 
-	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget)),
-			  "changed",
-			  G_CALLBACK (selection_changed_callback), view);
+	g_signal_connect_object (gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget)), "changed",
+				 G_CALLBACK (selection_changed_callback), view, 0);
 }
 
 static void

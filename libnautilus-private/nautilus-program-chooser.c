@@ -1213,15 +1213,12 @@ create_and_set_up_tree_view (NautilusProgramChooser *program_chooser)
 	gtk_tree_view_append_column (GTK_TREE_VIEW (program_chooser->details->tree_view), column);
 
 	/* Update selected item info whenever selection changes. */
-  	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (program_chooser->details->tree_view)),
-			  "changed",
-			  G_CALLBACK (program_list_selection_changed_callback),
-			  program_chooser);
+  	g_signal_connect_object (gtk_tree_view_get_selection (GTK_TREE_VIEW (program_chooser->details->tree_view)),
+				 "changed",
+				 G_CALLBACK (program_list_selection_changed_callback), program_chooser, 0);
 
-	g_signal_connect (program_chooser->details->tree_view,
-			  "row_activated",
-			  G_CALLBACK (tree_view_row_activated_callback),
-			  program_chooser);
+	g_signal_connect_object (program_chooser->details->tree_view, "row_activated",
+				 G_CALLBACK (tree_view_row_activated_callback), program_chooser, 0);
 }
 
 static gboolean
@@ -1252,13 +1249,13 @@ nautilus_program_chooser_finalize (GObject *object)
 	/* Free the ProgramFilePairs */
 	gtk_tree_model_foreach (GTK_TREE_MODEL (program_chooser->details->list_store),
 				tree_model_destroy_program_file_pair, NULL);
-	g_object_unref (G_OBJECT (program_chooser->details->list_store));
+	g_object_unref (program_chooser->details->list_store);
 
 	nautilus_file_unref (program_chooser->details->file);
 
 	g_free (program_chooser->details);
 	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -1361,10 +1358,8 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 
   	change_button = gtk_button_new_with_mnemonic (_("_Modify..."));
 
-	g_signal_connect (change_button,
-			  "clicked",
-			  G_CALLBACK (run_program_configurator_callback),
-			  program_chooser);
+	g_signal_connect_object (change_button, "clicked",
+				 G_CALLBACK (run_program_configurator_callback), program_chooser, 0);
 
   	gtk_widget_show (change_button);
   	gtk_box_pack_end (GTK_BOX (change_button_holder), change_button, TRUE, FALSE, 0);
@@ -1384,10 +1379,8 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 	gtk_box_pack_end (GTK_BOX (capplet_hbox), capplet_button_vbox, FALSE, FALSE, 0);
 	capplet_button = gtk_button_new_with_mnemonic (_("_Go There"));	 
 
-	g_signal_connect (capplet_button,
-			  "clicked",
-			  G_CALLBACK (launch_mime_capplet_and_close_dialog),
-			  program_chooser);
+	g_signal_connect_object (capplet_button, "clicked",
+				 G_CALLBACK (launch_mime_capplet_and_close_dialog), program_chooser, 0);
 	gtk_widget_show (capplet_button);
 	gtk_box_pack_start (GTK_BOX (capplet_button_vbox), capplet_button, TRUE, FALSE, 0);
 

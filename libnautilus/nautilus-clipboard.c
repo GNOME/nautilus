@@ -123,8 +123,8 @@ select_all_callback (BonoboUIComponent *ui,
 
 	source = g_idle_source_new ();
 	g_source_set_callback (source, select_all_idle_callback, editable, NULL);
-	g_signal_connect_swapped (editable, "destroy",
-				  G_CALLBACK (g_source_destroy), source);
+	g_signal_connect_object (editable, "destroy",
+				 G_CALLBACK (g_source_destroy), source, G_CONNECT_SWAPPED);
 	g_source_attach (source, NULL);
 	g_source_unref (source);
 }
@@ -134,11 +134,8 @@ set_menu_item_sensitive (BonoboUIComponent *component,
 			 const char *path,
 			 gboolean sensitive)
 {
-	g_assert (BONOBO_IS_UI_COMPONENT (component));
 	bonobo_ui_component_set_prop (component, path,
-				      "sensitive",
-				      sensitive ? "1" : "0",
-				      NULL);
+				      "sensitive", sensitive ? "1" : "0", NULL);
 	
 }
 
@@ -420,9 +417,7 @@ first_focus_callback (GtkWidget *widget,
 	/* Don't set up the clipboard again on future focus_in's. This
 	 * is one-time work.
 	 */
-	disconnect_set_up_in_control_handlers
-		(GTK_OBJECT (widget),
-		 callback_data);
+	disconnect_set_up_in_control_handlers (GTK_OBJECT (widget), callback_data);
 
 	/* Do the rest of the setup. */
 	nautilus_clipboard_set_up_editable
@@ -437,8 +432,7 @@ static void
 control_destroyed_callback (GtkObject *object,
 			    gpointer callback_data)
 {
-	disconnect_set_up_in_control_handlers
-		(object, callback_data);
+	disconnect_set_up_in_control_handlers (object, callback_data);
 }
 
 void
@@ -464,17 +458,12 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 	/* We'd like to use gtk_signal_connect_while_alive, but it's
 	 * not compatible with gtk_signal_disconnect calls.
 	 */
-	g_object_set_data (G_OBJECT (target),
-			   "Nautilus:shares_selection_changes",
+	g_object_set_data (G_OBJECT (target), "Nautilus:shares_selection_changes",
 			   GINT_TO_POINTER (shares_selection_changes));
-	g_signal_connect (target,
-			  "focus_in_event",
-			  G_CALLBACK (first_focus_callback),
-			  control);
-	g_signal_connect (target,
-			  "destroy",
-			  G_CALLBACK (control_destroyed_callback),
-			  control);
+	g_signal_connect (target, "focus_in_event",
+			  G_CALLBACK (first_focus_callback), control);
+	g_signal_connect (target, "destroy",
+			  G_CALLBACK (control_destroyed_callback), control);
 }
 
 static void

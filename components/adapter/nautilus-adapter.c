@@ -46,10 +46,6 @@ struct NautilusAdapterDetails {
 	NautilusView *nautilus_view;
 	NautilusAdapterEmbedStrategy *embed_strategy;
 	NautilusAdapterLoadStrategy *load_strategy;
-	guint report_load_underway_id;
-	guint report_load_progress_id;
-	guint report_load_complete_id;
-        guint report_load_failed_id;
 };
 
 
@@ -104,15 +100,6 @@ nautilus_adapter_destroy (GtkObject *object)
 	
 	adapter = NAUTILUS_ADAPTER (object);
 
-	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-		adapter->details->report_load_underway_id);
-	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-		adapter->details->report_load_progress_id);
-	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-		adapter->details->report_load_complete_id);
-	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-		adapter->details->report_load_failed_id);
-
 	if (adapter->details->embed_strategy != NULL) {
 		nautilus_adapter_embed_strategy_deactivate (adapter->details->embed_strategy);
 	}
@@ -166,14 +153,10 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	if (zoomable != NULL)
 		bonobo_object_add_interface (BONOBO_OBJECT (control), zoomable);
 
-	g_signal_connect (control, "activate",
-			  G_CALLBACK (nautilus_adapter_activate_callback),
-			  adapter);
-
-	g_signal_connect (adapter->details->embed_strategy, "open_location", 
-			  G_CALLBACK (nautilus_adapter_open_location_callback),
-			  adapter);
-
+	g_signal_connect_object (control, "activate",
+				 G_CALLBACK (nautilus_adapter_activate_callback), adapter, 0);
+	g_signal_connect_object (adapter->details->embed_strategy, "open_location",
+				 G_CALLBACK (nautilus_adapter_open_location_callback), adapter, 0);
 
 	/* Get the class to handle loading this kind of component. */
 	adapter->details->load_strategy = nautilus_adapter_load_strategy_get (component);
@@ -183,40 +166,28 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	}
 
 	/* hook up load strategy signals */
-	adapter->details->report_load_underway_id =
-		g_signal_connect_swapped (GTK_OBJECT (adapter->details->load_strategy),
-					  "report_load_underway",
-					  G_CALLBACK (nautilus_adapter_load_underway_callback),
-					  GTK_OBJECT (adapter));
-	adapter->details->report_load_progress_id =
-		g_signal_connect_swapped (GTK_OBJECT (adapter->details->load_strategy),
-					  "report_load_progress",
-					  G_CALLBACK (nautilus_adapter_load_progress_callback),
-					  GTK_OBJECT (adapter));
-	adapter->details->report_load_complete_id =
-		g_signal_connect_swapped (GTK_OBJECT (adapter->details->load_strategy),
-					  "report_load_complete",
-					  G_CALLBACK (nautilus_adapter_load_complete_callback),
-					  GTK_OBJECT (adapter));
-	adapter->details->report_load_failed_id =
-		g_signal_connect_swapped (GTK_OBJECT (adapter->details->load_strategy),
-					  "report_load_failed",
-					  G_CALLBACK (nautilus_adapter_load_failed_callback),
-					  GTK_OBJECT (adapter));
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_underway",
+				 G_CALLBACK (nautilus_adapter_load_underway_callback),
+				 adapter, G_CONNECT_SWAPPED);
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_progress",
+				 G_CALLBACK (nautilus_adapter_load_progress_callback),
+				 adapter, G_CONNECT_SWAPPED);
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_complete",
+				 G_CALLBACK (nautilus_adapter_load_complete_callback),
+				 adapter, G_CONNECT_SWAPPED);
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_failed",
+				 G_CALLBACK (nautilus_adapter_load_failed_callback),
+				 adapter, G_CONNECT_SWAPPED);
 
 	/* complete the embedding */
 	gtk_container_add (GTK_CONTAINER (bin), 
 			   nautilus_adapter_embed_strategy_get_widget (adapter->details->embed_strategy));
 			   
 	/* hook up view signals. */
-	g_signal_connect (adapter->details->nautilus_view,
-			  "load_location",
-			  G_CALLBACK (nautilus_adapter_load_location_callback),
-			  adapter);
-	g_signal_connect (adapter->details->nautilus_view,
-			  "stop_loading",
-			  G_CALLBACK (nautilus_adapter_stop_loading_callback),
-			  adapter);
+	g_signal_connect_object (adapter->details->nautilus_view, "load_location",
+				 G_CALLBACK (nautilus_adapter_load_location_callback), adapter, 0);
+	g_signal_connect_object (adapter->details->nautilus_view, "stop_loading",
+				 G_CALLBACK (nautilus_adapter_stop_loading_callback), adapter, 0);
 
 	return adapter;
 }

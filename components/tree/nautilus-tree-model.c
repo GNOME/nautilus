@@ -78,7 +78,6 @@ struct NautilusTreeModelDetails {
 	GHashTable *file_to_node_map;
 	
 	TreeNode *root_node;	
-	guint root_node_changed_id;
 	gboolean root_node_parented;
 
 	guint monitoring_update_idle_id;
@@ -1305,9 +1304,8 @@ nautilus_tree_model_set_root_uri (NautilusTreeModel *model, const char *root_uri
 	node = create_node_for_file (model, file);
 	model->details->root_node = node;
 
-	model->details->root_node_changed_id = g_signal_connect
-		(file, "changed",
-		 G_CALLBACK (root_node_file_changed_callback), model);
+	g_signal_connect_object	(file, "changed",
+				 G_CALLBACK (root_node_file_changed_callback), model, 0);
 
 	attrs = get_tree_monitor_attributes ();
 	nautilus_file_monitor_add (file, model, attrs);
@@ -1364,7 +1362,6 @@ nautilus_tree_model_finalize (GObject *object)
 
 	root = model->details->root_node;
 	if (root != NULL) {
-		g_signal_handler_disconnect (root->file, model->details->root_node_changed_id);
 		nautilus_file_monitor_remove (root->file, model);
 		destroy_node_without_reporting (model, root);
 	}

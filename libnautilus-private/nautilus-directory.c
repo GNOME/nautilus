@@ -822,25 +822,34 @@ call_files_added_free_list (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
+call_files_changed_common (NautilusDirectory *directory, GList *file_list)
+{
+	GList *node;
+
+	for (node = file_list; node != NULL; node = node->next) {
+		nautilus_directory_add_file_to_work_queue (directory, node->data);
+	}
+	nautilus_directory_async_state_changed (directory);
+	nautilus_directory_emit_change_signals (directory, file_list);
+}
+
+static void
 call_files_changed_free_list (gpointer key, gpointer value, gpointer user_data)
 {
-	g_assert (NAUTILUS_IS_DIRECTORY (key));
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	nautilus_directory_emit_change_signals (key, value);
+	call_files_changed_common (NAUTILUS_DIRECTORY (key), value);
 	g_list_free (value);
 }
 
 static void
 call_files_changed_unref_free_list (gpointer key, gpointer value, gpointer user_data)
 {
-	g_assert (NAUTILUS_IS_DIRECTORY (key));
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	nautilus_directory_async_state_changed (key);
-	nautilus_directory_emit_change_signals (key, value);
+	call_files_changed_common (NAUTILUS_DIRECTORY (key), value);
 	nautilus_file_list_free (value);
 }
 
@@ -967,10 +976,13 @@ nautilus_directory_notify_files_changed (GList *uris)
 		/* Find the file. */
 		file = nautilus_file_get_existing (uri);
 		if (file != NULL) {
-			/* Tell it to re-get info and emit a changed
-			 * signal.
+			/* Tell it to re-get info now, and later emit
+			 * a changed signal.
 			 */
 			file->details->file_info_is_up_to_date = FALSE;
+			file->details->top_left_text_is_up_to_date = FALSE;
+			file->details->link_info_is_up_to_date = FALSE;
+
 			hash_table_list_prepend (changed_lists,
 						 file->details->directory,
 						 file);

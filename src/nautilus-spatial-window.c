@@ -572,11 +572,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->navigation_bar = nautilus_switchable_navigation_bar_new (window);
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
-	g_signal_connect (window->navigation_bar, "location_changed",
-			    G_CALLBACK (navigation_bar_location_changed_callback), window);
-
-	g_signal_connect (window->navigation_bar, "mode_changed",
-			    G_CALLBACK (navigation_bar_mode_changed_callback), window);
+	g_signal_connect_object (window->navigation_bar, "location_changed",
+				 G_CALLBACK (navigation_bar_location_changed_callback), window, 0);
+	g_signal_connect_object (window->navigation_bar, "mode_changed",
+				 G_CALLBACK (navigation_bar_mode_changed_callback), window, 0);
 
 	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
@@ -600,14 +599,18 @@ nautilus_window_constructed (NautilusWindow *window)
 	 * It gets shown later, if the view-frame contains something zoomable.
 	 */
 	window->zoom_control = nautilus_zoom_control_new ();
-	g_signal_connect_swapped (window->zoom_control, "zoom_in",
-				  G_CALLBACK (nautilus_window_zoom_in), window);
-	g_signal_connect_swapped (window->zoom_control, "zoom_out",
-				  G_CALLBACK (nautilus_window_zoom_out), window);
-	g_signal_connect_swapped (window->zoom_control, "zoom_to_level",
-				  G_CALLBACK (nautilus_window_zoom_to_level), window);
-	g_signal_connect_swapped (window->zoom_control, "zoom_to_fit",
-				  G_CALLBACK (nautilus_window_zoom_to_fit), window);
+	g_signal_connect_object (window->zoom_control, "zoom_in",
+				 G_CALLBACK (nautilus_window_zoom_in),
+				 window, G_CONNECT_SWAPPED);
+	g_signal_connect_object (window->zoom_control, "zoom_out",
+				 G_CALLBACK (nautilus_window_zoom_out),
+				 window, G_CONNECT_SWAPPED);
+	g_signal_connect_object (window->zoom_control, "zoom_to_level",
+				 G_CALLBACK (nautilus_window_zoom_to_level),
+				 window, G_CONNECT_SWAPPED);
+	g_signal_connect_object (window->zoom_control, "zoom_to_fit",
+				 G_CALLBACK (nautilus_window_zoom_to_fit),
+				 window, G_CONNECT_SWAPPED);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
 	gtk_widget_show (location_bar_box);
@@ -626,8 +629,8 @@ nautilus_window_constructed (NautilusWindow *window)
 		/* set up the sidebar */
 		window->sidebar = nautilus_sidebar_new ();
 		gtk_widget_show (GTK_WIDGET (window->sidebar));
-		g_signal_connect (window->sidebar, "location_changed",
-				  G_CALLBACK (go_to_callback), window);
+		g_signal_connect_object (window->sidebar, "location_changed",
+					 G_CALLBACK (go_to_callback), window, 0);
 		gtk_paned_pack1 (GTK_PANED (window->content_hbox),
 				 GTK_WIDGET (window->sidebar),
 				 FALSE, TRUE);
@@ -1045,14 +1048,11 @@ create_view_as_menu_item (NautilusWindow *window,
 	menu_item = gtk_menu_item_new_with_label (menu_label);
 	g_free (menu_label);
 
-	g_signal_connect (menu_item,
-			    "activate",
-			    G_CALLBACK (view_as_menu_switch_views_callback),
-			    window);
+	g_signal_connect_object (menu_item, "activate",
+				 G_CALLBACK (view_as_menu_switch_views_callback),
+				 window, 0);
 
-	g_object_set_data (G_OBJECT (menu_item),
-			     "viewer index",
-			     GINT_TO_POINTER (index));
+	g_object_set_data (G_OBJECT (menu_item), "viewer index", GINT_TO_POINTER (index));
 
 	gtk_widget_show (menu_item);
 
@@ -1382,10 +1382,8 @@ load_view_as_menus_callback (NautilusFile *file,
 
 	/* Add "View as..." extra bonus choice. */
        	menu_item = gtk_menu_item_new_with_label (_("View as..."));
-        g_signal_connect (menu_item,
-        		    "activate",
-        		    G_CALLBACK (view_as_menu_choose_view_callback),
-        		    window);
+        g_signal_connect_object (menu_item, "activate",
+				 G_CALLBACK (view_as_menu_choose_view_callback), window, 0);
        	gtk_widget_show (menu_item);
        	gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 

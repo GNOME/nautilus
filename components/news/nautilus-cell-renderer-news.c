@@ -195,7 +195,7 @@ nautilus_cell_renderer_news_finalize (GObject *object)
 
         g_free (cellnews->priv);
 
-        (* G_OBJECT_CLASS (parent_class)->finalize) (object);
+        G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

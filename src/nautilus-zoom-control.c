@@ -556,9 +556,8 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 					zoom_level == zoom_control->details->zoom_level);
 	
 	g_object_set_data_full (G_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
-	g_signal_connect (menu_item, "activate",
-			    G_CALLBACK (zoom_menu_callback),
-			    zoom_control);
+	g_signal_connect_object (menu_item, "activate",
+				 G_CALLBACK (zoom_menu_callback), zoom_control, 0);
 
   	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);

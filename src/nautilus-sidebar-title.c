@@ -84,16 +84,18 @@ static const char *default_font_name;
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile		*file;
-	guint			file_changed_connection;
+	guint			 file_changed_connection;
+	gboolean                 monitoring_count;
+
 	char			*title_text;
 	GtkWidget		*icon;
 	GtkWidget		*title_label;
 	GtkWidget		*more_info_label;
 	GtkWidget		*emblem_box;
 	GtkWidget		*notes;
-	
-	int			shadow_offset;
-	gboolean		determined_icon;
+
+	int			 shadow_offset;
+	gboolean		 determined_icon;
 };
 
 EEL_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
@@ -129,11 +131,8 @@ realize_callback (NautilusSidebarTitle *sidebar_title)
 
 	g_return_if_fail (background != NULL);
 
-	g_signal_connect_object (background,
-				 "appearance_changed",
-				 G_CALLBACK (appearance_changed_callback),
-				 sidebar_title,
-				 0);
+	g_signal_connect_object (background, "appearance_changed",
+				 G_CALLBACK (appearance_changed_callback), sidebar_title, 0);
 }
 
 static void
@@ -166,7 +165,7 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 
 	/* Register to find out about icon theme changes */
 	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
-				 G_CALLBACK (update_icon), G_OBJECT (sidebar_title), G_CONNECT_SWAPPED);
+				 G_CALLBACK (update_icon), sidebar_title, G_CONNECT_SWAPPED);
 	g_signal_connect (sidebar_title, "realize",
 			  G_CALLBACK (realize_callback), NULL);
 
@@ -707,6 +706,44 @@ nautilus_sidebar_title_set_text (NautilusSidebarTitle *sidebar_title,
 	update_title (sidebar_title);
 }
 
+static gboolean
+item_count_ready (NautilusSidebarTitle *sidebar_title)
+{
+	return sidebar_title->details->file != NULL
+		&& nautilus_file_get_directory_item_count
+		(sidebar_title->details->file, NULL, NULL) != 0;
+}
+
+static void
+monitor_add (NautilusSidebarTitle *sidebar_title)
+{
+	GList *attributes;
+
+	/* Monitor the things needed to get the right icon. Don't
+	 * monitor a directory's item count at first even though the
+	 * "size" attribute is based on that, because the main view
+	 * will get it for us in most cases, and in other cases it's
+	 * OK to not show the size -- if we did monitor it, we'd be in
+	 * a race with the main view and could cause it to have to
+	 * load twice. Once we have a size, though, we want to monitor
+	 * the size to guarantee it stays up to date.
+	 */
+
+	sidebar_title->details->monitoring_count = item_count_ready (sidebar_title);
+
+	attributes = nautilus_icon_factory_get_required_file_attributes ();		
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	if (sidebar_title->details->monitoring_count) {
+		attributes = g_list_prepend (attributes,
+					     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+	}
+
+	nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title, attributes);
+
+	g_list_free (attributes);
+}
+
 static void
 update_all (NautilusSidebarTitle *sidebar_title)
 {
@@ -718,6 +755,12 @@ update_all (NautilusSidebarTitle *sidebar_title)
 	
 	update_emblems (sidebar_title);
 	update_notes (sidebar_title);
+
+	/* Redo monitor once the count is ready. */
+	if (!sidebar_title->details->monitoring_count && item_count_ready (sidebar_title)) {
+		nautilus_file_monitor_remove (sidebar_title->details->file, sidebar_title);
+		monitor_add (sidebar_title);
+	}
 }
 
 void
@@ -725,8 +768,6 @@ nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
 				 NautilusFile *file,
 				 const char *initial_text)
 {
-	GList *attributes;
-
 	if (file != sidebar_title->details->file) {
 		release_file (sidebar_title);
 		sidebar_title->details->file = file;
@@ -736,24 +777,10 @@ nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
 		/* attach file */
 		if (file != NULL) {
 			sidebar_title->details->file_changed_connection =
-				g_signal_connect_swapped (sidebar_title->details->file,
-							  "changed",
-							  G_CALLBACK (update_all),
-							  sidebar_title);
-			
-			/* Monitor the things needed to get the right
-			 * icon. Don't monitor a directory's item
-			 * count even though the "size" attribute is
-			 * based on that, because the main view will
-			 * get it for us in most cases, and in other
-			 * cases it's OK to now show the size.
-			 */
-			attributes = nautilus_icon_factory_get_required_file_attributes ();		
-			attributes = g_list_prepend (attributes,
-						     NAUTILUS_FILE_ATTRIBUTE_METADATA);
-			nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
-						   attributes);
-			g_list_free (attributes);
+				g_signal_connect_object
+					(sidebar_title->details->file, "changed",
+					 G_CALLBACK (update_all), sidebar_title, G_CONNECT_SWAPPED);
+			monitor_add (sidebar_title);
 		}
 	}
 

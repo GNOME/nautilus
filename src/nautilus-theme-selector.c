@@ -55,7 +55,7 @@ struct NautilusThemeSelectorDetails
 	EelImageChooser *remove_theme_selector;
 	GtkWidget *scrolled_window;
 	GtkWidget *remove_scrolled_window;
-	guint theme_selector_changed_connection;
+	gulong remove_theme_selector_changed_connection;
 	GtkWindow *parent_window;
 	guint remove_idle_id;
 };
@@ -191,15 +191,13 @@ install_theme_button_clicked_callback (GtkWidget *button,
 			   THEME_SELECTOR_DATA_KEY,
 			   callback_data);
 	
-	g_signal_connect (GTK_FILE_SELECTION (file_selection_dialog)->ok_button,
-			  "clicked",
-			  G_CALLBACK (file_selection_ok_clicked_callback),
-			  file_selection_dialog);
+	g_signal_connect_object (GTK_FILE_SELECTION (file_selection_dialog)->ok_button, "clicked",
+				 G_CALLBACK (file_selection_ok_clicked_callback),
+				 file_selection_dialog, 0);
 	
-	g_signal_connect (GTK_FILE_SELECTION (file_selection_dialog)->cancel_button,
-			  "clicked",
-			  G_CALLBACK (file_selection_cancel_clicked_callback),
-			  file_selection_dialog);
+	g_signal_connect_object (GTK_FILE_SELECTION (file_selection_dialog)->cancel_button, "clicked",
+				 G_CALLBACK (file_selection_cancel_clicked_callback),
+				 file_selection_dialog, 0);
 
 	gtk_window_set_position (GTK_WINDOW (file_selection_dialog), GTK_WIN_POS_MOUSE);
 	if (theme_selector->details->parent_window != NULL) {
@@ -288,10 +286,10 @@ remove_theme_selector_idle_callback (gpointer callback_data)
 								    theme_to_remove_position));
 
 	g_signal_handler_block (theme_selector->details->remove_theme_selector,
-				theme_selector->details->theme_selector_changed_connection);
+				theme_selector->details->remove_theme_selector_changed_connection);
 	theme_selector_finish_remove (theme_selector);
 	g_signal_handler_unblock (theme_selector->details->remove_theme_selector,
-				  theme_selector->details->theme_selector_changed_connection);
+				  theme_selector->details->remove_theme_selector_changed_connection);
 
 	selected_theme = nautilus_theme_selector_get_selected_theme (theme_selector);
 
@@ -514,22 +512,19 @@ nautilus_theme_selector_instance_init (NautilusThemeSelector *theme_selector)
 	gtk_box_pack_end (GTK_BOX (alignment_box), button_box, FALSE, FALSE, 2);
 
 	theme_selector->details->install_theme_button = gtk_button_new_with_label (_("Add New Theme..."));
-	g_signal_connect (theme_selector->details->install_theme_button,
-			    "clicked",
-			    G_CALLBACK (install_theme_button_clicked_callback),
-			    theme_selector);
+	g_signal_connect_object (theme_selector->details->install_theme_button, "clicked",
+				 G_CALLBACK (install_theme_button_clicked_callback),
+				 theme_selector, 0);
 
 	theme_selector->details->remove_theme_button = gtk_button_new_with_label (_("Remove Theme..."));
-	g_signal_connect (theme_selector->details->remove_theme_button,
-			    "clicked",
-			    G_CALLBACK (remove_theme_button_clicked_callback),
-			    theme_selector);
+	g_signal_connect_object (theme_selector->details->remove_theme_button, "clicked",
+				 G_CALLBACK (remove_theme_button_clicked_callback),
+				 theme_selector, 0);
 
 	theme_selector->details->cancel_remove_button = gtk_button_new_with_label (_("Cancel Remove"));
-	g_signal_connect (theme_selector->details->cancel_remove_button,
-			    "clicked",
-			    G_CALLBACK (cancel_remove_button_clicked_callback),
-			    theme_selector);
+	g_signal_connect_object (theme_selector->details->cancel_remove_button, "clicked",
+				 G_CALLBACK (cancel_remove_button_clicked_callback),
+				 theme_selector, 0);
 
 	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->cancel_remove_button, TRUE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->install_theme_button, TRUE, FALSE, 4);
@@ -557,16 +552,14 @@ nautilus_theme_selector_instance_init (NautilusThemeSelector *theme_selector)
 
 	theme_selector_update_remove_theme_button (theme_selector);
 
-	g_signal_connect (theme_selector->details->theme_selector,
-			    "selection_changed",
-			    G_CALLBACK (theme_selector_changed_callback),
-			    theme_selector);
+	g_signal_connect_object (theme_selector->details->theme_selector, "selection_changed",
+				 G_CALLBACK (theme_selector_changed_callback),
+				 theme_selector, 0);
 
-	theme_selector->details->theme_selector_changed_connection =
-		g_signal_connect (theme_selector->details->remove_theme_selector,
-				    "selection_changed",
-				    G_CALLBACK (remove_theme_selector_changed_callback),
-				    theme_selector);
+	theme_selector->details->remove_theme_selector_changed_connection =
+		g_signal_connect_object (theme_selector->details->remove_theme_selector, "selection_changed",
+					 G_CALLBACK (remove_theme_selector_changed_callback),
+					 theme_selector, 0);
 }
 
 static void

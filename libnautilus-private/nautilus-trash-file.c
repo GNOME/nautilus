@@ -41,9 +41,6 @@
 struct NautilusTrashFileDetails {
 	NautilusTrashDirectory *trash_directory;
 
-	guint add_directory_connection_id;
-	guint remove_directory_connection_id;
-
 	GList *files;
 
 	GHashTable *callbacks;
@@ -284,10 +281,8 @@ add_real_file (NautilusTrashFile *trash,
 	trash->details->files = g_list_prepend
 		(trash->details->files, real_file);
 	
-	g_signal_connect (real_file,
-			    "changed",
-			    G_CALLBACK (real_file_changed_callback),
-			    trash);
+	g_signal_connect_object (real_file, "changed",
+				 G_CALLBACK (real_file_changed_callback), trash, 0);
 
 	/* Add the file to any extant monitors. */
 	g_hash_table_foreach (trash->details->monitors,
@@ -330,8 +325,8 @@ remove_real_file (NautilusTrashFile *trash,
 		 monitor_remove_file,
 		 real_file);
 
-	g_signal_handlers_disconnect_by_func (
-		real_file, G_CALLBACK (real_file_changed_callback), trash);
+	g_signal_handlers_disconnect_by_func
+		(real_file, G_CALLBACK (real_file_changed_callback), trash);
 
 	trash->details->files = g_list_remove
 		(trash->details->files, real_file);
@@ -750,16 +745,10 @@ nautilus_trash_file_init (gpointer object, gpointer klass)
 		(trash_callback_hash, trash_callback_equal);
 	trash_file->details->monitors = g_hash_table_new (NULL, NULL);
 
-	trash_file->details->add_directory_connection_id = g_signal_connect
-		(trash_directory,
-		 "add_real_directory",
-		 G_CALLBACK (add_directory_callback),
-		 trash_file);
-	trash_file->details->remove_directory_connection_id = g_signal_connect
-		(trash_directory,
-		 "remove_real_directory",
-		 G_CALLBACK (remove_directory_callback),
-		 trash_file);
+	g_signal_connect_object (trash_directory, "add_real_directory",
+				 G_CALLBACK (add_directory_callback), trash_file, 0);
+	g_signal_connect_object (trash_directory, "remove_real_directory",
+				 G_CALLBACK (remove_directory_callback), trash_file, 0);
 
 	real_directories = nautilus_merged_directory_get_real_directories
 		(NAUTILUS_MERGED_DIRECTORY (trash_directory));
@@ -786,11 +775,6 @@ trash_destroy (GtkObject *object)
 	if (g_hash_table_size (trash_file->details->monitors) != 0) {
 		g_warning ("file monitor still active when trash virtual file is destroyed");
 	}
-
-	g_signal_handler_disconnect (trash_directory,
-				     trash_file->details->add_directory_connection_id);
-	g_signal_handler_disconnect (trash_directory,
-				     trash_file->details->remove_directory_connection_id);
 
 	g_hash_table_destroy (trash_file->details->callbacks);
 	g_hash_table_destroy (trash_file->details->monitors);

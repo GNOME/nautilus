@@ -280,5 +280,5 @@ nautilus_undo_set_up_bonobo_control (BonoboControl *control)
 
 	set_up_bonobo_control (control);
 	g_signal_connect (control, "set_frame",
-			    G_CALLBACK (set_up_bonobo_control), NULL);
+			  G_CALLBACK (set_up_bonobo_control), NULL);
 }

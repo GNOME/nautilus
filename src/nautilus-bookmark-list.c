@@ -183,19 +183,12 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 			  NautilusBookmark *bookmark,
 			  int index)
 {
-	bookmarks->list = g_list_insert (bookmarks->list, 
-					 bookmark, 
-					 index);
+	bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
-	g_signal_connect (bookmark,
-			    "appearance_changed",
-			    G_CALLBACK (bookmark_in_list_changed_callback),
-			    bookmarks);				 
-
-	g_signal_connect (bookmark,
-			    "contents_changed",
-			    G_CALLBACK (bookmark_in_list_changed_callback),
-			    bookmarks);				 
+	g_signal_connect_object (bookmark, "appearance_changed",
+				 G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
+	g_signal_connect_object (bookmark, "contents_changed",
+				 G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
 }
 
 /**

@@ -30,11 +30,11 @@
 #include "nautilus-trash-monitor.h"
 #include "nautilus-volume-monitor.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 struct NautilusTrashDirectoryDetails {
@@ -49,15 +49,11 @@ typedef struct {
 	NautilusDirectory *real_directory;
 } TrashVolume;
 
-static void     nautilus_trash_directory_init       (gpointer                object,
-							   gpointer                klass);
-static void     nautilus_trash_directory_class_init (gpointer                klass);
-static void	add_volume				  (NautilusTrashDirectory *trash,
-							   NautilusVolume	  *volume);
+static void add_volume (NautilusTrashDirectory *trash,
+			NautilusVolume         *volume);
 
-EEL_CLASS_BOILERPLATE (NautilusTrashDirectory,
-				   nautilus_trash_directory,
-				   NAUTILUS_TYPE_MERGED_DIRECTORY)
+GNOME_CLASS_BOILERPLATE (NautilusTrashDirectory, nautilus_trash_directory,
+			 NautilusMergedDirectory, NAUTILUS_TYPE_MERGED_DIRECTORY)
 
 #define TRASH_SEARCH_TIMED_WAIT_DELAY 20000
 
@@ -68,11 +64,11 @@ find_directory_start (void)
 {
 	if (pending_find_directory_count == 0) {
 		eel_timed_wait_start_with_duration (TRASH_SEARCH_TIMED_WAIT_DELAY,
-							 NULL,
-							 add_volume,
-							 _("Searching Disks"),
-							 _("Nautilus is searching your disks for trash folders."),
-							  NULL);
+						    NULL,
+						    add_volume,
+						    _("Searching Disks"),
+						    _("Nautilus is searching your disks for trash folders."),
+						    NULL);
 	}
 
 	++pending_find_directory_count;
@@ -237,7 +233,7 @@ check_trash_created (NautilusTrashDirectory *trash,
 }
 
 static void
-remove_trash_volume (TrashVolume *trash_volume)
+remove_trash_volume (TrashVolume *trash_volume, gboolean finalizing)
 {
 	g_hash_table_remove (trash_volume->trash->details->volumes,
 			     trash_volume->volume);
@@ -247,14 +243,15 @@ remove_trash_volume (TrashVolume *trash_volume)
 		find_directory_end ();
 	}
 	if (trash_volume->real_directory != NULL) {
-		nautilus_merged_directory_remove_real_directory
-			(NAUTILUS_MERGED_DIRECTORY (trash_volume->trash),
-			 trash_volume->real_directory);
+		if (! finalizing) {
+			nautilus_merged_directory_remove_real_directory
+				(NAUTILUS_MERGED_DIRECTORY (trash_volume->trash),
+				 trash_volume->real_directory);
+		}
 		nautilus_directory_unref (trash_volume->real_directory);
 	}
 	g_free (trash_volume);
 }
-
 
 static void
 remove_volume (NautilusTrashDirectory *trash,
@@ -263,10 +260,9 @@ remove_volume (NautilusTrashDirectory *trash,
 	TrashVolume *trash_volume;
 
 	/* Quick out if don't already know about this volume. */
-	trash_volume = g_hash_table_lookup (trash->details->volumes,
-					    volume);
+	trash_volume = g_hash_table_lookup (trash->details->volumes, volume);
 	if (trash_volume != NULL) {
-		remove_trash_volume (trash_volume);
+		remove_trash_volume (trash_volume, FALSE);
 	}
 }
 
@@ -305,24 +301,19 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor,
 }
 
 static void
-nautilus_trash_directory_init (gpointer object, gpointer klass)
+nautilus_trash_directory_instance_init (NautilusTrashDirectory *trash)
 {
-	NautilusTrashDirectory *trash;
 	NautilusVolumeMonitor *volume_monitor;
-
-	trash = NAUTILUS_TRASH_DIRECTORY (object);
 
 	trash->details = g_new0 (NautilusTrashDirectoryDetails, 1);
 	trash->details->volumes = g_hash_table_new (NULL, NULL);
 
 	volume_monitor = nautilus_volume_monitor_get ();
 
-	g_signal_connect
-		(volume_monitor, "volume_mounted",
-		 G_CALLBACK (volume_mounted_callback), trash);
-	g_signal_connect
-		(volume_monitor, "volume_unmount_started",
-		 G_CALLBACK (volume_unmount_started_callback), trash);
+	g_signal_connect_object (volume_monitor, "volume_mounted",
+				 G_CALLBACK (volume_mounted_callback), trash, 0);
+	g_signal_connect_object (volume_monitor, "volume_unmount_started",
+				 G_CALLBACK (volume_unmount_started_callback), trash, 0);
 }
 
 /* Finish initializing a new NautilusTrashDirectory. We have to do the
@@ -337,15 +328,14 @@ nautilus_trash_directory_finish_initializing (NautilusTrashDirectory *trash)
 	
 	volume_monitor = nautilus_volume_monitor_get ();
 
-	g_signal_connect
-		(nautilus_trash_monitor_get (), "check_trash_directory_added",
-		 G_CALLBACK (check_trash_directory_added_callback), trash);
+	g_signal_connect_object (nautilus_trash_monitor_get (), "check_trash_directory_added",
+				 G_CALLBACK (check_trash_directory_added_callback), trash, 0);
 	nautilus_volume_monitor_each_mounted_volume
 		(volume_monitor, add_one_volume, trash);
 }
 
 static void
-remove_trash_volume_cover (gpointer key, gpointer value, gpointer callback_data)
+remove_trash_volume_finalizing_cover (gpointer key, gpointer value, gpointer callback_data)
 {
 	TrashVolume *trash_volume;
 
@@ -358,29 +348,22 @@ remove_trash_volume_cover (gpointer key, gpointer value, gpointer callback_data)
 	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (trash_volume->trash));
 	g_assert (trash_volume->volume == key);
 
-	remove_trash_volume (trash_volume);
+	remove_trash_volume (trash_volume, TRUE);
 }
 
 static void
-trash_destroy (GtkObject *object)
+trash_finalize (GObject *object)
 {
 	NautilusTrashDirectory *trash;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (object);
 
-	g_signal_handlers_disconnect_matched (
-		nautilus_volume_monitor_get (),
-		G_SIGNAL_MATCH_DATA,
-		0, 0, NULL, NULL, trash);
-
-	eel_g_hash_table_safe_for_each
-		(trash->details->volumes,
-		 remove_trash_volume_cover,
-		 NULL);
+	eel_g_hash_table_safe_for_each (trash->details->volumes,
+					remove_trash_volume_finalizing_cover, NULL);
 	g_hash_table_destroy (trash->details->volumes);
 	g_free (trash->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static char *
@@ -391,16 +374,9 @@ trash_get_name_for_self_as_new_file (NautilusDirectory *directory)
 }
 
 static void
-nautilus_trash_directory_class_init (gpointer klass)
+nautilus_trash_directory_class_init (NautilusTrashDirectoryClass *class)
 {
-	GtkObjectClass *object_class;
-	NautilusDirectoryClass *directory_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
-	
-	object_class->destroy = trash_destroy;
-
-	directory_class->get_name_for_self_as_new_file = trash_get_name_for_self_as_new_file;
+	G_OBJECT_CLASS (class)->finalize = trash_finalize;
+	NAUTILUS_DIRECTORY_CLASS (class)->get_name_for_self_as_new_file = trash_get_name_for_self_as_new_file;
 }
 

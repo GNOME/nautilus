@@ -467,10 +467,9 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	
 	if (bookmark->details->file != NULL) {
-		g_signal_handlers_disconnect_by_func (
-			bookmark->details->file,
-			G_CALLBACK (bookmark_file_changed_callback),
-			bookmark);
+		g_signal_handlers_disconnect_by_func (bookmark->details->file,
+						      G_CALLBACK (bookmark_file_changed_callback),
+						      bookmark);
 		nautilus_file_unref (bookmark->details->file);
 		bookmark->details->file = NULL;
 	}
@@ -494,10 +493,8 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 		bookmark->details->file = nautilus_file_get (bookmark->details->uri);
 		g_assert (!nautilus_file_is_gone (bookmark->details->file));
 
-		g_signal_connect (bookmark->details->file,
-				    "changed",
-				    G_CALLBACK (bookmark_file_changed_callback),
-				    bookmark);
+		g_signal_connect_object (bookmark->details->file, "changed",
+					 G_CALLBACK (bookmark_file_changed_callback), bookmark, 0);
 	}	
 
 	/* Set icon based on available information; don't force network i/o

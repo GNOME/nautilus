@@ -104,10 +104,8 @@ search_bar_criterion_type_changed_callback (GObject *old_criterion_object,
 	new_type = GPOINTER_TO_INT (g_object_get_data (old_criterion_object, "type"));
 	new_criterion = nautilus_search_bar_criterion_new_with_type (new_type, 
 								     bar);
-	g_signal_connect (new_criterion,
-			    "criterion_type_changed",
-			    G_CALLBACK (search_bar_criterion_type_changed_callback),
-			    bar);
+	g_signal_connect_object (new_criterion, "criterion_type_changed",
+				 G_CALLBACK (search_bar_criterion_type_changed_callback), bar, 0);
 	old_criterion_location = g_slist_find (bar->details->search_criteria,
 					       criterion);
 	old_criterion_location->data = new_criterion;
@@ -179,10 +177,8 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	file_name_criterion = nautilus_search_bar_criterion_first_new (bar);
 
-	g_signal_connect (file_name_criterion,
-			    "criterion_type_changed",
-			    G_CALLBACK (search_bar_criterion_type_changed_callback),
-			    bar);
+	g_signal_connect_object (file_name_criterion, "criterion_type_changed",
+				 G_CALLBACK (search_bar_criterion_type_changed_callback), bar, 0);
 	bar->details->search_criteria = g_slist_prepend (NULL,
 							 file_name_criterion);
 
@@ -198,24 +194,21 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	hbox = gtk_hwrap_box_new (FALSE);
 
-	g_signal_connect (hbox,
-			    "need_reallocation",
-			    G_CALLBACK (queue_search_bar_resize_callback),
-			    bar);
+	g_signal_connect_object (hbox, "need_reallocation",
+				 G_CALLBACK (queue_search_bar_resize_callback), bar, 0);
 
 	bar->details->more_options = gtk_button_new_with_label (_("More Options"));
-	g_signal_connect (bar->details->more_options, "clicked",
-			    G_CALLBACK (more_options_callback), bar);
-				
-				
+	g_signal_connect_object (bar->details->more_options, "clicked",
+				 G_CALLBACK (more_options_callback), bar, 0);
+
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox),
 			   bar->details->more_options,
 			   FALSE, FALSE, FALSE, FALSE);
 	gtk_widget_show (bar->details->more_options);
 
 	bar->details->fewer_options = gtk_button_new_with_label (_("Fewer Options"));
-	g_signal_connect (bar->details->fewer_options, "clicked",
-			    G_CALLBACK (fewer_options_callback), bar);
+	g_signal_connect_object (bar->details->fewer_options, "clicked",
+				 G_CALLBACK (fewer_options_callback), bar, 0);
 
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox),
 			   bar->details->fewer_options,
@@ -239,9 +232,9 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 			    1);
 
 	gtk_container_add (GTK_CONTAINER (bar->details->find_them), find_them_box);
-	g_signal_connect_swapped (bar->details->find_them, "clicked",
-				  G_CALLBACK (nautilus_navigation_bar_location_changed),
-				  bar);
+	g_signal_connect_object (bar->details->find_them, "clicked",
+				 G_CALLBACK (nautilus_navigation_bar_location_changed),
+				 bar, G_CONNECT_SWAPPED);
 
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox), 
 			   bar->details->find_them, 
@@ -390,17 +383,14 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 	
 	if (criterion->details->use_value_entry) {
 		/* We want to track whether the entry text is empty or not. */
-		g_signal_connect_swapped (criterion->details->value_entry,
-					  "changed", 
-					  G_CALLBACK (update_find_button_state),
-					  bar);
+		g_signal_connect_object (criterion->details->value_entry, "changed", 
+					 G_CALLBACK (update_find_button_state), bar, G_CONNECT_SWAPPED);
 		
 		/* We want to activate the "Find" button when any entry text is not empty */
 		g_assert (GTK_IS_BUTTON (bar->details->find_them));
-		g_signal_connect_swapped (criterion->details->value_entry,
-					  "activate",
-					  G_CALLBACK (gtk_widget_activate),
-					  bar->details->find_them);
+		g_signal_connect_object (criterion->details->value_entry, "activate",
+					 G_CALLBACK (gtk_widget_activate),
+					 bar->details->find_them, G_CONNECT_SWAPPED);
 	}
 	nautilus_complex_search_bar_queue_resize (bar);
 }
@@ -482,10 +472,8 @@ more_options_callback (GtkObject *object,
 	last_criterion = (NautilusSearchBarCriterion *)((g_slist_last (list))->data);
 	criterion = nautilus_search_bar_criterion_next_new (last_criterion->details->type,
 							    bar);
-	g_signal_connect (criterion,
-			    "criterion_type_changed",
-			    G_CALLBACK (search_bar_criterion_type_changed_callback),
-			    bar);
+	g_signal_connect_object (criterion, "criterion_type_changed",
+				 G_CALLBACK (search_bar_criterion_type_changed_callback), bar, 0);
 	bar->details->search_criteria = g_slist_append (list, criterion);
 
 	nautilus_search_bar_criterion_show (criterion);

@@ -158,10 +158,8 @@ nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
 
 	hardware_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (hardware_view));
 
-	g_signal_connect (hardware_view->details->nautilus_view, 
-			  "load_location",
-			  G_CALLBACK (hardware_view_load_location_callback), 
-			  hardware_view);
+	g_signal_connect_object (hardware_view->details->nautilus_view, "load_location",
+                                 G_CALLBACK (hardware_view_load_location_callback), hardware_view, 0);
 
   	background = eel_get_widget_background (GTK_WIDGET (hardware_view));
   	eel_background_set_color (background, HARDWARE_DEFAULT_BACKGROUND_COLOR);

@@ -233,8 +233,6 @@ nautilus_search_bar_criterion_destroy (GtkObject *object)
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (object);
 
 	/* FIXME bugzilla.gnome.org 42437: need more freeage */
-	g_signal_handlers_disconnect_by_func (nautilus_signaller_get_current (),
-					      G_CALLBACK (emblems_changed_callback), criterion);
 	/*	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
 		nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
 	*/
@@ -297,10 +295,10 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	details->bar = bar;
 	details->box = gtk_hwrap_box_new (FALSE);
 
-	g_signal_connect (details->box, "need_reallocation",
-			  G_CALLBACK (queue_bar_resize_callback), bar);
-	g_signal_connect (nautilus_signaller_get_current (), "emblems_changed",
-			  G_CALLBACK (emblems_changed_callback), criterion);
+	g_signal_connect_object (details->box, "need_reallocation",
+				 G_CALLBACK (queue_bar_resize_callback), bar, 0);
+	g_signal_connect_object (nautilus_signaller_get_current (), "emblems_changed",
+				 G_CALLBACK (emblems_changed_callback), criterion, 0);
 	
 
 	search_criteria_option_menu = gtk_option_menu_new ();
@@ -313,8 +311,8 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		g_free (context_stripped_criteria_title);
 
 		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
-		g_signal_connect (item, "activate",
-				  G_CALLBACK (criterion_type_changed_callback), criterion);
+		g_signal_connect_object (item, "activate",
+					 G_CALLBACK (criterion_type_changed_callback), criterion, 0);
 		gtk_menu_shell_append (GTK_MENU_SHELL (search_criteria_menu),
 				 item);
 		gtk_widget_show (item);
@@ -349,14 +347,12 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		   don't need a date, like "yesterday" */
 		if (details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
 			if (modified_relation_should_show_value (i)) {
-				g_signal_connect (item, "activate",
-						    G_CALLBACK (show_date_widget),
-						    criterion);
+				g_signal_connect_object (item, "activate",
+							 G_CALLBACK (show_date_widget), criterion, 0);
 			}
 			else {
-				g_signal_connect (item, "activate",
-						    G_CALLBACK (hide_date_widget),
-						    criterion);
+				g_signal_connect_object (item, "activate",
+							 G_CALLBACK (hide_date_widget), criterion, 0);
 			}
 		}
 		gtk_menu_shell_append (GTK_MENU_SHELL (relation_menu),
@@ -712,8 +708,8 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 		
 		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
 		
-		g_signal_connect (item, "activate",
-				  G_CALLBACK (criterion_type_changed_callback), criterion);
+		g_signal_connect_object (item, "activate",
+					 G_CALLBACK (criterion_type_changed_callback), criterion, 0);
 		gtk_menu_shell_append (GTK_MENU_SHELL (new_menu),
 				       item);
 		gtk_widget_show (item);

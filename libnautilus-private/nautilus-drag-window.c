@@ -317,13 +317,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 static void
 nautilus_drag_window_destroy (GtkObject *object, gpointer data)
 {
-	NautilusDragWindowDetails *details;
-
-	details = get_details (GTK_WINDOW (object));
-	
 	remove_focus_timeout (GTK_WINDOW (object));
-
-	/* The `details' will be freed automatically */
 }
 
 static void
@@ -388,7 +382,7 @@ nautilus_drag_window_register (GtkWindow *window)
                                 details, g_free);
 
 	g_signal_connect (window, "realize",
-			    G_CALLBACK (nautilus_drag_window_realize), NULL);
+                          G_CALLBACK (nautilus_drag_window_realize), NULL);
 	g_signal_connect (window, "destroy",
-			    G_CALLBACK (nautilus_drag_window_destroy), NULL);
+                          G_CALLBACK (nautilus_drag_window_destroy), NULL);
 }

@@ -448,9 +448,8 @@ nautilus_view_construct_from_bonobo_control (NautilusView *view,
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (control));
 	nautilus_undo_set_up_bonobo_control (control);
 
-	g_signal_connect_object (G_OBJECT (control), "set_frame",
-				 G_CALLBACK (nautilus_view_set_frame_callback),
-				 view, 0);
+	g_signal_connect_object (control, "set_frame",
+				 G_CALLBACK (nautilus_view_set_frame_callback), view, 0);
 
 	return view;
 }
@@ -470,7 +469,7 @@ nautilus_view_finalize (GObject *object)
 
 	g_free (view->details);
 	
-	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

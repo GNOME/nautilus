@@ -69,11 +69,11 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
 {
 	EelBackground *background;
 
-        if ((gboolean) GPOINTER_TO_INT (disconnect_signal)) {
-                g_signal_handlers_disconnect_by_func (
-                        icon_container,
-                        G_CALLBACK (desktop_background_realized),
-                        disconnect_signal);
+        if (GPOINTER_TO_INT (disconnect_signal)) {
+                g_signal_handlers_disconnect_by_func
+                        (icon_container,
+                         G_CALLBACK (desktop_background_realized),
+                         disconnect_signal);
 	}
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
@@ -110,7 +110,8 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	if (GTK_WIDGET_REALIZED (icon_container)) {
 		desktop_background_realized (icon_container, GINT_TO_POINTER (FALSE));
 	} else {
-		g_signal_connect (icon_container, "realize", G_CALLBACK (desktop_background_realized), GINT_TO_POINTER (TRUE));
+		g_signal_connect (icon_container, "realize",
+                                  G_CALLBACK (desktop_background_realized), GINT_TO_POINTER (TRUE));
 	}
 
 	nautilus_file_background_receive_gconf_changes (background); 
@@ -328,7 +329,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 	g_free (default_color);
 	g_free (default_image_uri);
 
-	g_object_unref (G_OBJECT (prefs));
+	g_object_unref (prefs);
 }
 
 static void
@@ -412,7 +413,7 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 	gnome_config_sync ();
 
 	bg_preferences_save (prefs);
-	g_object_unref (G_OBJECT (prefs));
+	g_object_unref (prefs);
 }
 
 static void
@@ -461,10 +462,8 @@ nautilus_file_background_receive_gconf_changes (EelBackground *background)
 
 	g_object_set_data (G_OBJECT (background), "desktop_gconf_notification", GUINT_TO_POINTER (notification_id));
 			
-	g_signal_connect (background,
- 			    "destroy",
-			    G_CALLBACK (desktop_background_destroyed_callback),
-			    NULL);
+	g_signal_connect (background, "destroy",
+                          G_CALLBACK (desktop_background_destroyed_callback), NULL);
 }
 
 /* Create a persistent pixmap. We create a separate display
@@ -559,7 +558,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	GdkPixmap    *pixmap;
 	GdkWindow    *background_window;
 
-        if ((gboolean) GPOINTER_TO_INT (disconnect_signal)) {
+        if (GPOINTER_TO_INT (disconnect_signal)) {
 		g_signal_handlers_disconnect_by_func
                         (background,
                          G_CALLBACK (image_loading_done_callback),
@@ -590,10 +589,9 @@ nautilus_file_update_desktop_pixmaps (EelBackground *background)
 	if (eel_background_is_loaded (background)) {
 		image_loading_done_callback (background, TRUE, GINT_TO_POINTER (FALSE));
 	} else {
-		g_signal_connect (background,
-				    "image_loading_done",
-				    G_CALLBACK (image_loading_done_callback),
-				    GINT_TO_POINTER (TRUE));
+		g_signal_connect (background, "image_loading_done",
+                                  G_CALLBACK (image_loading_done_callback),
+                                  GINT_TO_POINTER (TRUE));
 	}
 }
 
@@ -822,12 +820,11 @@ background_reset_callback (EelBackground *background,
 /* handle the background destroyed signal */
 static void
 background_destroyed_callback (EelBackground *background,
-                               NautilusFile       *file)
+                               NautilusFile *file)
 {
-        g_signal_handlers_disconnect_by_func (
-                file,
-                G_CALLBACK (saved_settings_changed_callback),
-                background);
+        g_signal_handlers_disconnect_by_func
+                (file,
+                 G_CALLBACK (saved_settings_changed_callback), background);
         nautilus_file_monitor_remove (file, background);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
                                          nautilus_file_background_theme_changed,
@@ -857,20 +854,16 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 		g_assert (NAUTILUS_IS_FILE (old_file));
 		g_signal_handlers_disconnect_by_func
                         (background,
-                         G_CALLBACK (background_changed_callback),
-                         old_file);
+                         G_CALLBACK (background_changed_callback), old_file);
 		g_signal_handlers_disconnect_by_func
                         (background,
-                         G_CALLBACK (background_destroyed_callback),
-                         old_file);
+                         G_CALLBACK (background_destroyed_callback), old_file);
 		g_signal_handlers_disconnect_by_func
                         (background,
-                         G_CALLBACK (background_reset_callback),
-                         old_file);
+                         G_CALLBACK (background_reset_callback), old_file);
 		g_signal_handlers_disconnect_by_func
                         (old_file,
-                         G_CALLBACK (saved_settings_changed_callback),
-                         background);
+                         G_CALLBACK (saved_settings_changed_callback), background);
 		nautilus_file_monitor_remove (old_file, background);
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
                                                  nautilus_file_background_theme_changed,
@@ -880,29 +873,19 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 
         /* Attach the new directory. */
         nautilus_file_ref (file);
-        g_object_set_data_full (G_OBJECT (background),
-                                "eel_background_file",
-                                file,
-                                (GtkDestroyNotify) nautilus_file_unref);
+        g_object_set_data_full (G_OBJECT (background), "eel_background_file",
+                                file, (GDestroyNotify) nautilus_file_unref);
 
         /* Connect new signal handlers. */
         if (file != NULL) {
-                g_signal_connect (background,
-                                    "settings_changed",
-                                    G_CALLBACK (background_changed_callback),
-                                    file);
-                g_signal_connect (background,
-                                    "destroy",
-                                    G_CALLBACK (background_destroyed_callback),
-                                    file);
-                g_signal_connect (background,
-				    "reset",
-				    G_CALLBACK (background_reset_callback),
-				    file);
-		g_signal_connect (file,
-                                    "changed",
-                                    G_CALLBACK (saved_settings_changed_callback),
-                                    background);
+                g_signal_connect_object (background, "settings_changed",
+                                         G_CALLBACK (background_changed_callback), file, 0);
+                g_signal_connect_object (background, "destroy",
+                                         G_CALLBACK (background_destroyed_callback), file, 0);
+                g_signal_connect_object (background, "reset",
+                                         G_CALLBACK (background_reset_callback), file, 0);
+		g_signal_connect_object (file, "changed",
+                                         G_CALLBACK (saved_settings_changed_callback), background, 0);
         	
 		/* arrange to receive file metadata */
                 attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);

@@ -168,11 +168,10 @@ nautilus_adapter_control_factory_embed_strategy_new (Bonobo_ControlFactory contr
 	if ((ev._major == CORBA_NO_EXCEPTION) &&
 	    !CORBA_Object_is_nil (control, &ev)) {
 		Bonobo_Zoomable corba_zoomable;
-		strategy->details->client_widget = bonobo_control_frame_get_widget (
-			strategy->details->control_frame);
-		g_signal_connect (strategy->details->control_frame,
-			"activate_uri",
-			G_CALLBACK (activate_uri_callback), strategy);
+		strategy->details->client_widget = bonobo_control_frame_get_widget
+			(strategy->details->control_frame);
+		g_signal_connect_object (strategy->details->control_frame, "activate_uri",
+					 G_CALLBACK (activate_uri_callback), strategy, 0);
 
 		gtk_widget_show (strategy->details->client_widget);
 

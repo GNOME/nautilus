@@ -107,13 +107,11 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 		menu_item = nautilus_bookmark_menu_item_new (NAUTILUS_BOOKMARK (list_link->data));		
 		g_object_set_data (G_OBJECT (menu_item), "user_data", GINT_TO_POINTER (index));
 		gtk_widget_show (GTK_WIDGET (menu_item));
-  		g_signal_connect
-			(menu_item,
-			 "activate",
-			 back
-			 ? G_CALLBACK (activate_back_menu_item_callback)
-			 : G_CALLBACK (activate_forward_menu_item_callback),
-			 window);
+  		g_signal_connect_object (menu_item, "activate",
+					 back
+					 ? G_CALLBACK (activate_back_menu_item_callback)
+					 : G_CALLBACK (activate_forward_menu_item_callback),
+					 window, 0);
 		
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 		list_link = g_list_next (list_link);
@@ -370,14 +368,12 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 	gtk_widget_show (GTK_WIDGET (item));
 
 	button = bonobo_ui_toolbar_button_item_get_button_widget (item);
-	g_signal_connect (button,
-			  "button_press_event",
-			  G_CALLBACK (back_or_forward_button_pressed_callback),
-			  window);
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (back_or_forward_button_clicked_callback),
-			  window);
+	g_signal_connect_object (button, "button_press_event",
+				 G_CALLBACK (back_or_forward_button_pressed_callback),
+				 window, 0);
+	g_signal_connect_object (button, "clicked",
+				 G_CALLBACK (back_or_forward_button_clicked_callback),
+				 window, 0);
 
 	wrapper = bonobo_control_new (GTK_WIDGET (item));
 	pb = bonobo_property_bag_new (

@@ -146,14 +146,10 @@ nautilus_trash_monitor_init (gpointer object, gpointer klass)
 
 	g_list_free (attributes);
 
-    	g_signal_connect_object
-		(trash_directory, "files_added",
-		 G_CALLBACK (nautilus_trash_files_changed_callback),
-		 trash_monitor, 0);
-    	g_signal_connect_object
-		(trash_directory, "files_changed",
-		 G_CALLBACK (nautilus_trash_files_changed_callback),
-		 trash_monitor, 0);
+    	g_signal_connect_object	(trash_directory, "files_added",
+				 G_CALLBACK (nautilus_trash_files_changed_callback), trash_monitor, 0);
+    	g_signal_connect_object	(trash_directory, "files_changed",
+				 G_CALLBACK (nautilus_trash_files_changed_callback), trash_monitor, 0);
 }
 
 static void

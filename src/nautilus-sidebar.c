@@ -84,7 +84,7 @@ struct NautilusSidebarDetails {
 	gboolean has_buttons;
 	char *uri;
 	NautilusFile *file;
-	gulong file_changed_connection;
+	guint file_changed_connection;
 	char *default_background_color;
 	char *default_background_image;
 	int selected_index;
@@ -342,8 +342,6 @@ nautilus_sidebar_finalize (GObject *object)
 	sidebar = NAUTILUS_SIDEBAR (object);
 
 	if (sidebar->details->file != NULL) {
-		g_signal_handler_disconnect (sidebar->details->file, 
-					     sidebar->details->file_changed_connection);
 		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
 		nautilus_file_unref (sidebar->details->file);
 	}
@@ -509,17 +507,13 @@ sidebar_for_each_sidebar_panel (const char *name,
 	gtk_widget_show (menu_item);
 	g_object_set_data (G_OBJECT (menu_item), "user_data", data->sidebar);
 	gtk_menu_shell_append (GTK_MENU_SHELL (data->menu), menu_item);
-	g_signal_connect_data (menu_item,
-			       "activate",
+	g_signal_connect_data (menu_item, "activate",
 			       G_CALLBACK (toggle_sidebar_panel),
-			       g_strdup (iid),
-			       (GClosureNotify)g_free,
-			       0);
+			       g_strdup (iid), (GClosureNotify) g_free, 0);
 
 	g_object_set_data_full (G_OBJECT (menu_item),
 				"nautilus-sidebar/preference-key",
-				g_strdup (preference_key),
-				g_free);
+				g_strdup (preference_key), g_free);
 }
 
 /* utility routine to add a menu item for each potential sidebar panel */
@@ -574,8 +568,8 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
  	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
         gtk_widget_set_sensitive (menu_item, has_background);
-	g_signal_connect (menu_item, "activate",
-			    G_CALLBACK (reset_background_callback), sidebar);
+	g_signal_connect_object (menu_item, "activate",
+				 G_CALLBACK (reset_background_callback), sidebar, 0);
 
 	/* add a separator */
 	menu_item = gtk_menu_item_new ();
@@ -944,8 +938,8 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 
 	gtk_widget_show (label);
 	
-	g_signal_connect (panel, "view_loaded",
-			    G_CALLBACK (view_loaded_callback), sidebar);
+	g_signal_connect_object (panel, "view_loaded",
+				 G_CALLBACK (view_loaded_callback), sidebar, 0);
 	
 	gtk_notebook_append_page (GTK_NOTEBOOK (sidebar->details->notebook),
 				  GTK_WIDGET (panel), label);
@@ -1398,7 +1392,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 	/* Catch-all button after all the others. */
 	temp_button = gtk_button_new_with_label (_("Open with..."));
 	g_signal_connect (temp_button, "clicked",
-			    G_CALLBACK (open_with_callback), NULL);
+			  G_CALLBACK (open_with_callback), NULL);
 	g_object_set_data (G_OBJECT (temp_button), "user_data", sidebar);
 	gtk_widget_show (temp_button);
 	gtk_box_pack_start (GTK_BOX (sidebar->details->button_box),
@@ -1554,14 +1548,10 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	background = eel_get_widget_background (GTK_WIDGET (sidebar));
 	if (!sidebar->details->background_connected) {
 		sidebar->details->background_connected = TRUE;
-		g_signal_connect (background,
-				    "settings_changed",
-				    G_CALLBACK (background_settings_changed_callback),
-				    sidebar);
-		g_signal_connect (background,
-				    "reset",
-				    G_CALLBACK (background_reset_callback),
-				    sidebar);
+		g_signal_connect_object (background,"settings_changed",
+					 G_CALLBACK (background_settings_changed_callback), sidebar, 0);
+		g_signal_connect_object (background, "reset",
+					 G_CALLBACK (background_reset_callback), sidebar, 0);
 	}
 	
 	/* Set up the background color and image from the metadata. */
@@ -1650,7 +1640,6 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	if (sidebar->details->file != NULL) {
 		g_signal_handler_disconnect (sidebar->details->file, 
 					     sidebar->details->file_changed_connection);
-
 		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
 	}
 
@@ -1662,10 +1651,9 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	sidebar->details->file = file;
 	
 	sidebar->details->file_changed_connection =
-		g_signal_connect_swapped (sidebar->details->file,
-					  "changed",
-					  G_CALLBACK (background_metadata_changed_callback),
-					  sidebar);
+		g_signal_connect_object (sidebar->details->file, "changed",
+					 G_CALLBACK (background_metadata_changed_callback),
+					 sidebar, G_CONNECT_SWAPPED);
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	nautilus_file_monitor_add (sidebar->details->file, sidebar, attributes);
