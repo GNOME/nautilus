@@ -614,7 +614,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if (user_id == file->details->info->uid) {
+	if (user_id == (uid_t) file->details->info->uid) {
 		return (file->details->info->permissions & owner_permission) == 0;
 	}
 
@@ -627,13 +627,13 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	 * there be garbage there? What will it do for non-local files?
 	 */
 	if (password_info != NULL
-	    && password_info->pw_gid == file->details->info->gid) {
+	    && password_info->pw_gid == (gid_t) file->details->info->gid) {
 		return (file->details->info->permissions & group_permission) == 0;
 	}
 	/* Check supplementary groups */
 	num_supplementary_groups = getgroups (NGROUPS_MAX, supplementary_groups);
 	for (i = 0; i < num_supplementary_groups; i++) {
-		if (file->details->info->gid == supplementary_groups[i]) {
+		if ((gid_t) file->details->info->gid == supplementary_groups[i]) {
 			return (file->details->info->permissions & group_permission) == 0;
 		}
 	}
@@ -2889,7 +2889,7 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 	user_id = geteuid();
 
 	/* Owner is allowed to set permissions. */
-	if (user_id == file->details->info->uid) {
+	if (user_id == (uid_t) file->details->info->uid) {
 		return TRUE;
 	}
 
@@ -3292,7 +3292,7 @@ nautilus_file_set_owner (NautilusFile *file,
 	 * don't want to send the file-changed signal if nothing
 	 * changed.
 	 */
-	if (new_id == file->details->info->uid) {
+	if (new_id == (uid_t) file->details->info->uid) {
 		(* callback) (file, GNOME_VFS_OK, callback_data);
 		return;
 	}
@@ -3390,7 +3390,7 @@ nautilus_file_get_group_name (NautilusFile *file)
 	 * there be garbage there? What will it do for non-local files?
 	 */
 	/* No need to free result of getgrgid */
-	group_info = getgrgid (file->details->info->gid);
+	group_info = getgrgid ((gid_t) file->details->info->gid);
 
 	if (group_info != NULL) {
 		return g_strdup (group_info->gr_name);
@@ -3431,7 +3431,7 @@ nautilus_file_can_set_group (NautilusFile *file)
 	user_id = geteuid();
 
 	/* Owner is allowed to set group (with restrictions). */
-	if (user_id == file->details->info->uid) {
+	if (user_id == (uid_t) file->details->info->uid) {
 		return TRUE;
 	}
 
@@ -3534,7 +3534,7 @@ nautilus_file_get_settable_group_names (NautilusFile *file)
 	if (user_id == 0) {
 		/* Root is allowed to set group to anything. */
 		result = nautilus_get_group_names_including (NULL);
-	} else if (user_id == file->details->info->uid) {
+	} else if (user_id == (uid_t) file->details->info->uid) {
 		/* Owner is allowed to set group to any that owner is member of. */
 		user_name_string = get_user_name_from_id (user_id);
 		result = nautilus_get_group_names_including (user_name_string);
@@ -3595,7 +3595,7 @@ nautilus_file_set_group (NautilusFile *file,
 		return;		
 	}
 
-	if (new_id == file->details->info->gid) {
+	if (new_id == (gid_t) file->details->info->gid) {
 		(* callback) (file, GNOME_VFS_OK, callback_data);
 		return;
 	}
@@ -5056,7 +5056,7 @@ nautilus_extract_top_left_text (const char *text,
 			if (*in == '\n') {
 				break;
 			}
-			if (isprint (*in)) {
+			if (isprint ((guchar) *in)) {
 				*out++ = *in;
 				i++;
 			}

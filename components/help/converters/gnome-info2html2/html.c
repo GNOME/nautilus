@@ -861,7 +861,7 @@ void write_menu_entry_html( FILE *f, char *p, char *nodefile, char **menu_end )
 	    }
 
 	  for (i=1; i<4; i++)
-	    if (!isspace(*(realend+i)) && *(realend+i) != '\n')
+	    if (!isspace((guchar)*(realend+i)) && *(realend+i) != '\n')
 	      {
 		done = 1;
 		break;

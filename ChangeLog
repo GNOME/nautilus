@@ -1,3 +1,36 @@
+2001-07-11  Darin Adler  <darin@bentspoon.com>
+
+	* components/help/converters/gnome-info2html2/html.c:
+	(write_menu_entry_html):
+	* components/help/converters/gnome-man2html2/gnome-man2html.c:
+	(add_links), (scan_escape), (scan_format), (scan_table),
+	(scan_expression), (scan_request), (scan_troff),
+	(scan_troff_mandoc), (main):
+	* src/nautilus-first-time-druid.c: (load_netscape_proxy_settings):
+	* src/nautilus-property-browser.c: (emblem_keyword_valid):
+	Fix code that was using <ctype.h> functions and passing char's
+	rather than int's (using the standard "cast to unsigned char"
+	trick).
+	
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_denies_access_permission),
+	(nautilus_file_can_set_permissions), (nautilus_file_set_owner),
+	(nautilus_file_get_group_name), (nautilus_file_can_set_group),
+	(nautilus_file_get_settable_group_names),
+	(nautilus_file_set_group):
+	Get rid of the assumption that GnomeVFSFileInfo field types match
+	the platform-specific uid_t and gid_t. This involves doing a few
+	more type casts.
+	(nautilus_extract_top_left_text): Fix a use of isprint on a char
+	rather than an int.
+	
+	* libnautilus-private/nautilus-volume-monitor.c: Added ifdefs so
+	this file can compile for Solaris without warnings.
+	
+	* test/test.c: (test_window_set_title_with_pid): Don't assume that
+	getpid() returns an int. Instead cast it to unsigned long for
+	printing.
+
 2001-07-11  Alex Larsson  <alexl@redhat.com>
 
 	* acconfig.h:

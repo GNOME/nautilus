@@ -311,7 +311,7 @@ test_window_set_title_with_pid (GtkWindow *window,
 	
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
-	tmp = g_strdup_printf ("%d: %s", getpid (), title);
+	tmp = g_strdup_printf ("%lu: %s", (gulong) getpid (), title);
 	gtk_window_set_title (GTK_WINDOW (window), tmp);
 	g_free (tmp);
 }

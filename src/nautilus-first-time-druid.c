@@ -1459,7 +1459,7 @@ load_netscape_proxy_settings (void)
 		} else if ( NULL != (current = strstr (line, "\"network.proxy.http_port\""))) {
 			current += strlen ("\"network.proxy.http_port\"");
 
-			while ( *current && !isdigit(*current)) {
+			while (*current && !isdigit ((guchar) *current)) {
 				current++;
 			}
 
@@ -1473,7 +1473,7 @@ load_netscape_proxy_settings (void)
 			/* Proxy type must equal '1' */
 			current += strlen ("\"network.proxy.type\"");
 
-			while ( *current && !isdigit(*current)) {
+			while (*current && !isdigit ((guchar) *current)) {
 				current++;
 			}
 

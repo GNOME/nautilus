@@ -1252,7 +1252,8 @@ emblem_keyword_valid (const char *keyword)
 
 	keyword_length = strlen (keyword);
 	for (index = 0; index < keyword_length; index++) {
-		if (!isalnum (keyword[index]) && !isspace (keyword[index])) {
+		if (!isalnum ((guchar) keyword[index])
+		    && !isspace ((guchar) keyword[index])) {
 			return FALSE;
 		}
 	}

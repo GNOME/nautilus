@@ -462,6 +462,7 @@ get_removable_volumes (void)
 	return g_list_sort (g_list_reverse (volumes), (GCompareFunc) floppy_sort);
 }
 
+#ifndef SOLARIS_MNT
 
 static gboolean
 volume_is_removable (const NautilusVolume *volume)
@@ -554,6 +555,7 @@ volume_is_read_only (const NautilusVolume *volume)
 	return FALSE;
 }
 
+#endif /* !SOLARIS_MNT */
 
 char *
 nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
