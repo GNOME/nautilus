@@ -1,5 +1,26 @@
 2000-08-03  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Fix bug 1905.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(sidebar_panel_iid_is_in_default_list),
+	(global_preferences_register_sidebar_panels),
+	(global_preferences_register_speed_tradeoff_with_defaults),
+	(global_preferences_register),
+	(nautilus_global_preferences_initialize):
+
+	The problem was that the sidebar loser component was showing up by
+	default.  I added a hard coded list of default sidebar panel
+	iids.  Unfortunately, there is not place to query this list, so
+	for now its builtin to nautilus.  Any sidebar panel that is not on
+	this list will not be on by default.
+
+	I also fixed some dumb localization, naming and documentation
+	things while in the neighborhood.
+	
+2000-08-03  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Fix bugs 1890 and 1902.
 	
 	* libnautilus-extensions/nautilus-global-preferences.c:
