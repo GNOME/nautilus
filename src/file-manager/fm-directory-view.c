@@ -79,6 +79,10 @@ display_selection_info (FMDirectoryView *view,
            we might have to do the same thing in other places as well.  Also,
 	   I am not sure this will be OK for all the languages.  */
 
+	/* FIXME: gnome-vfs has an internal routine that also does this
+	   (gnome_vfs_size_to_string())
+	*/
+	
 	if (size < (GnomeVFSFileSize) 1e3) {
 		if (size == 1)
 			size_string = g_strdup (_("1 byte"));
