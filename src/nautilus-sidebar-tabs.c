@@ -58,7 +58,8 @@ struct _NautilusIndexTabsDetails
 };
 
 /* constants */
-#define tab_indent 1
+#define TAB_INDENT 1
+#define TITLE_TAB_OFFSET 6
 
 /* headers */
 
@@ -232,7 +233,7 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, 
   GdkGCValues saved_values;
   gint text_y_offset, tab_bottom, tab_right;
   /* measure the name and compute the bounding box */
-  gint name_width = gdk_string_width(tab_font, tab_name) - 2*tab_indent;
+  gint name_width = gdk_string_width(tab_font, tab_name) - 2*TAB_INDENT;
   GtkWidget *widget = GTK_WIDGET(index_tabs);
   
   /* FIXME: we must "ellipsize" the name if it doesn't fit, for now, assume it does */
@@ -260,7 +261,7 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, 
 
   text_y_offset = y + (tab_right_edge->art_pixbuf->height >> 1) + 4;  
   gdk_gc_set_foreground (gc, &index_tabs->details->text_color);  
-  gdk_draw_string (widget->window, tab_font, gc, x + tab_right_edge->art_pixbuf->width - tab_indent, text_y_offset, tab_name);
+  gdk_draw_string (widget->window, tab_font, gc, x + tab_right_edge->art_pixbuf->width - TAB_INDENT, text_y_offset, tab_name);
   
   /* draw the top connecting line, in two shades of gray */
   gdk_gc_set_foreground (gc, &index_tabs->details->line_color);  
@@ -270,7 +271,7 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, 
     
   /* draw the left bottom line */
   tab_bottom = y + tab_left_edge->art_pixbuf->height - 2;
-  tab_right = x + tab_left_edge->art_pixbuf->width + name_width + tab_right_edge->art_pixbuf->width - 2*tab_indent - 1;
+  tab_right = x + tab_left_edge->art_pixbuf->width + name_width + tab_right_edge->art_pixbuf->width - 2*TAB_INDENT - 1;
   gdk_gc_set_foreground (gc, &index_tabs->details->line_color);  
   gdk_draw_line(widget->window, gc, tab_right, tab_bottom, index_tabs->details->panel_width, tab_bottom);
 
@@ -294,9 +295,18 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gin
   if (widget->window == NULL)
     return -1;
     
+  if (index_tabs->details->title_mode && !draw_flag)
+    {
+      gint name_width = gdk_string_width(tab_font, index_tabs->details->title) - (2 * TAB_INDENT);
+      gint edge_width =  tab_left_edge->art_pixbuf->width + tab_right_edge->art_pixbuf->width;
+      if ((test_x >= TITLE_TAB_OFFSET) && (test_x < (TITLE_TAB_OFFSET + name_width + edge_width)))
+        return 0;
+      return -1;
+    }
+
   if (draw_flag)
     temp_gc = gdk_gc_new(widget->window); 
-
+    
   /* we must draw two items at a time, drawing the second one first, because the first one overlaps the second */
     
   while (next_tab != NULL)
@@ -315,7 +325,7 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gin
       	draw_one_tab(index_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, FALSE);
       else if ((test_y >= y_pos) && (test_y <= (y_pos + tab_left_edge->art_pixbuf->height)))
         {   
-          gint name_width = gdk_string_width(tab_font, this_item->tab_text) - (2 * tab_indent);
+          gint name_width = gdk_string_width(tab_font, this_item->tab_text) - (2 * TAB_INDENT);
           gint edge_width =  tab_left_edge->art_pixbuf->width + tab_right_edge->art_pixbuf->width;
 	  
 	  if (test_x < (name_width + edge_width))
@@ -375,7 +385,7 @@ nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
       gint x_pos = widget->allocation.x;
       gint y_pos = widget->allocation.y;
       
-      draw_one_tab(index_tabs, temp_gc, index_tabs->details->title, x_pos + 6, y_pos, FALSE);  
+      draw_one_tab(index_tabs, temp_gc, index_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, FALSE);  
       gdk_gc_unref(temp_gc);   
     }
   else

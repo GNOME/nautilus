@@ -303,16 +303,38 @@ nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint wh
   gtk_notebook_set_page(notebook, which_view);
 }
 
+/* utility to deactivate the active metaview */
+static void
+nautilus_index_panel_deactivate_meta_view(NautilusIndexPanel *index_panel)
+{
+  if (index_panel->details->selected_index >= 0)
+    {
+      gtk_widget_hide (index_panel->details->notebook);
+      gtk_container_remove (GTK_CONTAINER (index_panel->details->index_container), index_panel->details->notebook);      
+      
+      gtk_widget_hide (index_panel->details->title_tab);
+      gtk_container_remove (GTK_CONTAINER (index_panel->details->index_container), index_panel->details->title_tab);
+    }
+  
+  index_panel->details->selected_index = -1;
+  nautilus_index_tabs_select_tab(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), -1);
+}
+
 /* hit-test the index tabs and activate if necessary */
 
 static gboolean
 nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
 {
+  gint title_top, title_bottom;
   NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
   NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
+  NautilusIndexTabs *title_tab = NAUTILUS_INDEX_TABS(index_panel->details->title_tab);
   gint rounded_y = floor(event->y + .5);
   
-  /* if the click is in the tabs, tell them about it */
+  if (!USE_NEW_TABS)
+    return FALSE;
+       
+  /* if the click is in the main tabs, tell them about it */
   if (rounded_y >= index_panel->details->index_tabs->allocation.y)
     {
       gint which_tab = nautilus_index_tabs_hit_test(index_tabs, event->x, event->y);
@@ -323,6 +345,23 @@ nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
           gtk_widget_queue_draw(widget);	
 	}
     } 
+  
+  /* also handle clicks in the title tab if necessary */
+  if (index_panel->details->selected_index >= 0)
+    {
+      title_top = index_panel->details->title_tab->allocation.y;
+      title_bottom = title_top + index_panel->details->title_tab->allocation.height;
+      if ((rounded_y >= title_top) && (rounded_y <= title_bottom))
+        {
+          gint which_tab = nautilus_index_tabs_hit_test(title_tab, event->x, event->y);
+          if (which_tab >= 0)
+      	    {
+	    /* the user clicked in the title tab, so deactivate the metaview */
+	    nautilus_index_panel_deactivate_meta_view(index_panel);
+	    }
+    
+        }
+    }
   return TRUE;
 }
 
