@@ -82,7 +82,6 @@ GnomeVFSMimeActionType
 nautilus_mime_get_default_action_type_for_uri (const char *uri)
 {
 	const char *mime_type;
-	GnomeVFSMimeActionType result;
 	NautilusDirectory *directory;
 	char *action_type_string;
 
@@ -101,21 +100,19 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
 		mime_type = get_mime_type_from_uri (uri);
 
 		if (mime_type != NULL) {
-			result = gnome_vfs_mime_get_default_action_type (mime_type);
+			return gnome_vfs_mime_get_default_action_type (mime_type);
 		} else {
 			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
 		}
 	} else {
 		if (strcasecmp (action_type_string, "application") == 0) {
-			result = GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
+			return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
 		} else if (strcasecmp (action_type_string, "component") == 0) {
-			result = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
+			return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
 		} else {
-			result = GNOME_VFS_MIME_ACTION_TYPE_NONE;
+			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
 		}
 	}
-
-	return result;
 }
 
 GnomeVFSMimeAction *
@@ -378,16 +375,18 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	}
 
 	iids = NULL;
+
 	for (p = servers; p != NULL; p = p->next) {
 		component = (OAF_ServerInfo *) p->data;
 
-		iids = g_list_append (iids, component->iid);
+		iids = g_list_prepend (iids, component->iid);
 	}
 
-	iids = nautilus_g_list_partition (iids, (NautilusGPredicateFunc) string_not_in_list, 
-					  metadata_component_remove_ids, &removed);
+	iids = nautilus_g_list_partition
+		(iids, (NautilusGPredicateFunc) string_not_in_list, 
+		 metadata_component_remove_ids, &removed);
 
-	nautilus_g_list_free_deep (removed);
+	g_list_free (removed);
 
 	for (p = metadata_component_add_ids; p != NULL; p = p->next) {
 		if (g_list_find_custom (iids,
@@ -403,7 +402,12 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	/* FIXME: should pass the allowed iids into the query instead */
 	result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
 
-	result = nautilus_g_list_partition (result, (NautilusGPredicateFunc) component_has_id_in_list, iids, &removed);
+	result = nautilus_g_list_partition
+		(result,
+		 (NautilusGPredicateFunc) component_has_id_in_list,
+		 iids, &removed);
+
+	g_list_free (iids);
 
 	gnome_vfs_mime_component_list_free (removed);
 
@@ -632,8 +636,6 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 	nautilus_directory_unref (directory);	
 
 	/* FIXME: need to free normal_short_list, normal_short_list_ids, add_list, remove_list */
-
-
 }
 
 static GList *
@@ -744,7 +746,7 @@ void nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
 
 void
 nautilus_mime_extend_all_applications_for_uri (const char *uri,
-					       GList      *applications)
+					       GList *applications)
 {
 	NautilusDirectory *directory;
 	GList *metadata_application_ids;
@@ -1274,7 +1276,8 @@ nautilus_do_component_query (const char *mime_type,
 }
 
 
-static GList *str_list_difference (GList *a, GList *b)
+static GList *
+str_list_difference (GList *a, GList *b)
 {
 	GList *p;
 	GList *retval;
