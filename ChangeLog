@@ -1,5 +1,30 @@
 2002-04-19  Anders Carlsson  <andersca@gnu.org>
 
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	Remove NAUTILUS_PREFERENCES_CAN_ADD_CONTENT.
+	
+	* src/file-manager/fm-list-view.c: (event_after_callback),
+	(button_release_callback), (create_and_set_up_tree_view):
+	When in single-click mode, activate files on button release
+	instead of button press.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_init),
+	(nautilus_property_browser_destroy),
+	(nautilus_property_browser_new),
+	(nautilus_color_selection_dialog_new), (add_new_pattern),
+	(add_color_to_browser), (show_color_selection_window),
+	(nautilus_property_browser_update_contents):
+	Fix the add and remove dialogs and add a few mnemonics. Fixes
+	#79123.
+	
+	* src/nautilus-sidebar-title.c: (update_title), (update_more_info),
+	(update_emblems), (update_notes):
+	Remove fixed FIXMEs.
+	
+2002-04-19  Anders Carlsson  <andersca@gnu.org>
+
 	* components/throbber/nautilus-throbber.c: (get_bonobo_properties),
 	(set_bonobo_properties), (nautilus_throbber_instance_init),
 	(load_themed_image), (nautilus_throbber_load_images):

@@ -69,9 +69,6 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME      	"/system/gnome-vfs/http-proxy-authorization-user"
 #define NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD     	"/system/gnome-vfs/http-proxy-authorization-password"
 
-/* adding/removing from property browser */
-#define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
-
 /* Content fonts */
 #define NAUTILUS_PREFERENCES_DEFAULT_FONT			"preferences/default_font"
 #define NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE			"preferences/default_font_size"

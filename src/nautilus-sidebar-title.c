@@ -516,7 +516,6 @@ update_title (NautilusSidebarTitle *sidebar_title)
 	label = GTK_LABEL (sidebar_title->details->title_label);
 	text = sidebar_title->details->title_text;
 
-	/* FIXME bugzilla.gnome.org 42500: We could defer showing the title until the icon is ready. */
 	if (eel_strcmp (text, gtk_label_get_text (label)) == 0) {
 		return;
 	}
@@ -581,7 +580,6 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 		info_string = g_string_new (component_info);
 		g_free (component_info);
 	} else {
-		/* FIXME bugzilla.gnome.org 42500: We could defer showing info until the icon is ready. */
 		/* Adding this special case for search results to 
 		   correspond to the fix for bug 2341.  */
 		if (file != NULL && file_is_search_location (file)) {
@@ -638,7 +636,6 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	GList *icons, *p;
 	GdkPixbuf *pixbuf;
 
-	/* FIXME bugzilla.gnome.org 42500: We could defer showing emblems until the icon is ready. */
 	/* exit if we don't have the file yet */
 	if (sidebar_title->details->file == NULL) {
 		return;
@@ -673,8 +670,6 @@ update_notes (NautilusSidebarTitle *sidebar_title)
 {
 	char *text;
 	
-	/* FIXME bugzilla.gnome.org 42500: We could defer showing notes until the icon is ready. */
-
 	text = nautilus_file_get_metadata (sidebar_title->details->file,
 					   NAUTILUS_METADATA_KEY_NOTES,
 					   NULL);

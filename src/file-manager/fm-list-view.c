@@ -128,25 +128,17 @@ static void
 event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_data)
 {
 	FMDirectoryView *view;
-	GList *file_list;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	if (event->type == GDK_BUTTON_PRESS
-	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))) {
-		if (((GdkEventButton *) event)->button == 1
-		    && eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE) {
-			/* Handle single click activation preference. */
-			file_list = fm_list_view_get_selection (view);
-			fm_directory_view_activate_files (view, file_list);
-			nautilus_file_list_free (file_list);
-		} else if (((GdkEventButton *) event)->button == 3) {
-			/* Put up the right kind of menu if we right click in the tree view. */
-			if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
-				fm_directory_view_pop_up_selection_context_menu (view, (GdkEventButton *) event);
-			} else {
-				fm_directory_view_pop_up_background_context_menu (view, (GdkEventButton *) event);
-			}
+	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
+	    && (((GdkEventButton *) event)->button == 3)) {
+		/* Put up the right kind of menu if we right click in the tree view. */
+		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
+			fm_directory_view_pop_up_selection_context_menu (view, (GdkEventButton *) event);
+		} else {
+			fm_directory_view_pop_up_background_context_menu (view, (GdkEventButton *) event);
 		}
 	}
 }
@@ -162,6 +154,26 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	}
 
 	/* Let the default code run in any case; it won't reselect anything. */
+	return FALSE;
+}
+
+static gboolean
+button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
+{
+	FMDirectoryView *view;
+	GList *file_list;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)) &&
+	    event->button == 1 &&
+	    eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE) {
+		/* Handle single click activation preference. */
+		file_list = fm_list_view_get_selection (view);
+		fm_directory_view_activate_files (view, file_list);
+		nautilus_file_list_free (file_list);
+	}
+
 	return FALSE;
 }
 
@@ -227,7 +239,9 @@ create_and_set_up_tree_view (FMListView *view)
 				 G_CALLBACK (event_after_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "button_press_event",
 				 G_CALLBACK (button_press_callback), view, 0);
-
+	g_signal_connect_object (view->details->tree_view, "button_release_event",
+				 G_CALLBACK (button_release_callback), view, 0);
+	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
 	g_object_unref (view->details->model);
