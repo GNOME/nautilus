@@ -1875,7 +1875,6 @@ set_up_configure_widgets (News *news, GtkWidget *container)
 	viewport = gtk_viewport_new (gtk_scrolled_window_get_hadjustment (scrolled_window),
 			  		gtk_scrolled_window_get_vadjustment (scrolled_window));
 	gtk_container_add (GTK_CONTAINER (scrolled_window), viewport);
-	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (viewport), news->checkbox_list);
  	gtk_box_pack_start (GTK_BOX (news->configure_box), GTK_WIDGET (scrolled_window), TRUE, TRUE, 0);
 		

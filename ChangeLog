@@ -1,3 +1,10 @@
+2001-04-23  John Harper  <jsh@eazel.com>
+
+	* components/news/nautilus-news.c (set_up_configure_widgets):
+	don't set the shadow type of the viewport to no shadow. This
+	causes a drawing bug to occur, where vestiges of the checkbox
+	prelight aren't erased
+
 2001-04-23  Darin Adler  <darin@eazel.com>
 
 	Prep for xalf feature. Add name of program to all code that
