@@ -112,7 +112,9 @@ struct _GnomeIconContainerPrivate {
 
 	/* Browser mode setting.  */
 	gboolean browser_mode : 1;
-
+	/* single-click mode setting */
+	gboolean single_click_mode : 1;
+	
 	/* Current icon mode (index into `icon_mode_info[]' -- see
            `gnome-icon-container.c').  */
 	GnomeIconContainerIconMode icon_mode;

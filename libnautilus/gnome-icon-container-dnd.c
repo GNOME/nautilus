@@ -3,7 +3,8 @@
    widget.
 
    Copyright (C) 1999, 2000 Free Software Foundation
-
+   Copyright (C) 2000 Eazel, Inc.
+   
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
@@ -24,11 +25,10 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <gnome.h>
+
 #include "gnome-icon-container-private.h"
-
-#include "gnome-icon-container-dnd.h"
-
-
+#include "gnome-icon-container-dnd.h"
 struct _DndSelectionItem {
 	gchar *uri;
 	gint x, y;
@@ -247,6 +247,7 @@ set_uri_list_selection (GnomeIconContainer *container,
 {
 	GnomeIconContainerPrivate *priv;
 	GList *p;
+	gchar *temp_data;
 	GString *data;
 
 	priv = container->priv;
@@ -267,12 +268,9 @@ set_uri_list_selection (GnomeIconContainer *container,
 		if (! icon->is_selected)
 			continue;
 
-		/* This is lame code, I know.  */
-
-		if (priv->base_uri != NULL)
-			g_string_append (data, priv->base_uri);
-		g_string_append (data, icon->text);
-		g_string_append (data, "\r\n");
+		temp_data = g_strdup_printf ("%s/%s\r\n", priv->base_uri, icon->text);
+		g_string_append(data, temp_data);
+		g_free(temp_data);
 	}
 
 	gtk_selection_data_set (selection_data,
@@ -527,7 +525,7 @@ drag_drop_cb (GtkWidget *widget,
 		gchar *item_directory_uri = extract_directory(item->uri);
 		
 		if (strcmp(item_directory_uri, container->priv->base_uri)) {
-			/* copy files from other directory */
+			/* copy files from other directory, handle this soon */
 			printf("drop from other directory: %s\n", item_directory_uri);
 		}
 		else {
@@ -639,15 +637,18 @@ gnome_icon_container_dnd_fini (GnomeIconContainer *container)
 	g_free (dnd_info);
 }
 
-
 void
 gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 				     GdkDragAction actions,
 				     gint button,
 				     GdkEventMotion *event)
 {
+	GtkArg pixbuf_args[1];
 	GnomeIconContainerDndInfo *dnd_info;
-
+	GdkDragContext *context;
+	GnomeCanvasItem *pixbuf_item;
+	GdkPixbuf* temp_pixbuf;
+	
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -660,11 +661,22 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	dnd_info->start_x = event->x;
 	dnd_info->start_y = event->y;
 
-	gtk_drag_begin (GTK_WIDGET (container),
+	context = gtk_drag_begin (GTK_WIDGET (container),
 			dnd_info->target_list,
 			actions,
 			button,
 			(GdkEvent *) event);
+   
+   /* fetch the pixbuf associated with the icon */
+   pixbuf_item = container->priv->drag_icon->image_item;
+   pixbuf_args[0].name = "GnomeCanvasPixbuf::pixbuf";
+   gtk_object_getv(GTK_OBJECT(pixbuf_item), 1, pixbuf_args);
+   
+   /* render the pixbuf into a pixmap and mask */
+   
+   /* set the image for dragging 
+   gtk_drag_set_icon_pixmap(context, gtk_widget_get_colormap(GTK_WIDGET(container)), pixmap_for_dragged_file, mask_for_dragged_file, 0 , 0);
+   */
 }
 
 void

@@ -74,7 +74,7 @@ static guint signals[LAST_SIGNAL] = { 0 };
 static GdkBitmap *stipple;
 static char stipple_bits[] = { 0x02, 0x01 };
 
-
+
 /* Functions dealing with GnomeIconContainerIcons.  */
 
 static void
@@ -1923,9 +1923,19 @@ button_release_event (GtkWidget *widget,
 						 signals[SELECTION_CHANGED]);
 		}
 
-		if (priv->drag_icon != NULL) {
+		if ((priv->drag_icon != NULL) && (!priv->doing_drag)) {
 			set_kbd_current (container, priv->drag_icon, TRUE);
+
+			/* if single-click mode, activate the icon */
+			if (priv->single_click_mode) {
+			
+			    gtk_signal_emit (GTK_OBJECT (container),
+				 				signals[ACTIVATE],
+				 				priv->drag_icon->text, priv->drag_icon->data);
+			}
+			
 			priv->drag_icon = NULL;
+			return TRUE;		
 		}
 
 		if (priv->doing_drag)
@@ -2144,7 +2154,10 @@ init (GnomeIconContainer *container)
 	priv->drag_x = priv->drag_y = 0;
 	priv->doing_drag = FALSE;
 
+	/* read these from preferences soon */
 	priv->browser_mode = FALSE;
+	priv->single_click_mode = TRUE;
+	
 	priv->browser_mode_selection_timer_tag = -1;
 	priv->browser_mode_selection_icon = NULL;
 
@@ -2332,7 +2345,6 @@ item_event_cb (GnomeCanvasItem *item,
 	}
 }
 
-
 GtkWidget *
 gnome_icon_container_new (void)
 {
@@ -2347,9 +2359,7 @@ gnome_icon_container_new (void)
 	gtk_widget_pop_colormap ();
 
 	return new;
-}
-
-
+}
 guint
 gnome_icon_container_get_type (void)
 {

@@ -1,3 +1,16 @@
+2000-01-16	Andy Hertzfeld <andy@eazel.com>
+
+	*libnautilus/gnome-icon-container-private.h:
+	added "single_click_mode" boolean
+	
+	*libnautilus/gnome-icon-container.h
+	made single-click open optionally work by adding code in button_release_event to activate the icon if appropriate
+	enabled single-click mode by default
+	
+	*libnautilus/gnome-icon-container-dnd.c
+	made dragging to desktop and else work by cleaning up code in set_uri_list_selection
+	did work toward better dragging feedback using an image but didn't finish that yet
+	
 2000-01-15	Andy Hertzfeld <andy@eazel.com>
 
 	*libnautilus/gnome-icon-container-dnd.c:
