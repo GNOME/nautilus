@@ -45,6 +45,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-icons-view-icon-item.h         \
         nautilus-lib-self-check-functions.h	\
 	nautilus-metadata.h			\
+	nautilus-mime-type.h			\
 	nautilus-self-checks.h			\
 	nautilus-string.h			\
 	ntl-content-view-frame.h		\
@@ -72,6 +73,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-icons-controller.c		\
 	nautilus-icons-view-icon-item.c         \
 	nautilus-lib-self-check-functions.c	\
+	nautilus-mime-type.c			\
 	nautilus-self-checks.c			\
 	nautilus-string.c			\
 	ntl-content-view-frame.c		\

@@ -1,3 +1,18 @@
+2000-02-17  Andy Hertzfeld <andy@eazel.com>
+
+	implemented command buttons for the index panel.
+	
+	* libnautilus/nautilus-mime-type.c,h:
+	this is interim code for associating applications with mime-types; we
+	will eventually keep this in OAF or GConf or at least in a file
+	somewhere, but for now it's just scaffolding so we can work on the UI
+	* libnautilus/Makefile.am:
+	make nautilus-mime-type.c,h build
+	* stc/ntl-index-panel.c:
+	added code to call nautilus-mime-types to get relevant commands based
+	on the mime-type, and then generate corresponding buttons in the index
+	panel
+	
 2000-02-17  Darin Adler  <darin@eazel.com>
 
 	Hand tuned icons for multiple resolutions.

@@ -32,6 +32,7 @@
 #include "ntl-meta-view.h"
 #include "nautilus-index-tabs.h"
 #include "nautilus-index-title.h"
+#include "libnautilus/nautilus-mime-type.h"
 
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-background.h>
@@ -48,6 +49,8 @@ struct _NautilusIndexPanelDetails {
 	GtkWidget *notebook;
 	GtkWidget *index_tabs;
 	GtkWidget *title_tab;
+	GtkWidget *button_box;
+	gboolean  has_buttons;
 	char *uri;
 	gint selected_index;
 	NautilusDirectory *directory;
@@ -66,6 +69,8 @@ static void nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragC
 						     guint info, guint time);
 
 static void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* new_uri);
+static void nautilus_index_panel_set_up_buttons (NautilusIndexPanel *index_panel, const char* new_uri);
+static void add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list);
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define INDEX_PANEL_WIDTH 136
@@ -101,6 +106,17 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 
 	widget_class->drag_data_received = nautilus_index_panel_drag_data_received;
 	widget_class->button_press_event = nautilus_index_panel_press_event;
+}
+
+/* utility routine to allocate the box the holds the command buttons */
+static void
+make_button_box(NautilusIndexPanel *index_panel)
+{
+	index_panel->details->button_box = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->button_box), 8);				
+	gtk_widget_show (index_panel->details->button_box);
+	gtk_container_add (GTK_CONTAINER (index_panel->details->index_container), index_panel->details->button_box);
+        index_panel->details->has_buttons = FALSE;
 }
 
 /* initialize the instance's fields, create the necessary subviews, etc. */
@@ -150,7 +166,10 @@ nautilus_index_panel_initialize (GtkObject *object)
 
 	gtk_widget_set_usize (index_panel->details->notebook, INDEX_PANEL_WIDTH, 200);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(index_panel->details->notebook), FALSE);
-	  
+	
+	/* allocate and install the command button container */
+	make_button_box(index_panel);
+		 
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (index_panel),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
@@ -289,6 +308,9 @@ nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint wh
 	nautilus_index_tabs_set_title(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), title);
 	g_free(title);
 	
+	/* hide the buttons, since they look confusing when partially overlapped */
+	gtk_widget_hide(index_panel->details->button_box);
+	
 	gtk_notebook_set_page(notebook, which_view);
 }
 
@@ -301,6 +323,7 @@ nautilus_index_panel_deactivate_meta_view(NautilusIndexPanel *index_panel)
 		gtk_widget_hide (index_panel->details->title_tab);
 	}
 	
+	gtk_widget_show(index_panel->details->button_box);
 	index_panel->details->selected_index = -1;
 	nautilus_index_tabs_select_tab(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), -1);
 }
@@ -342,7 +365,6 @@ nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
 	return TRUE;
 }
 
-
 static void
 nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 {
@@ -359,6 +381,94 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
+}
+
+/* FIXME:  I'm sure there's a better way to do this */
+/* utility to actually execute the button command */
+
+static void
+command_button_cb(GtkMenuItem *item, gchar* command_str)
+{
+  gint result;
+  pid_t button_pid;
+
+  if (!(button_pid = fork())) {
+  	result = system(command_str);
+        exit(0);
+  } 	
+
+}
+
+/* utility routine that allocates the command buttons from the command list */
+
+static void
+add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
+{
+	gchar *command_string, *temp_str;
+	GList *this_item = command_list;
+	GtkWidget *temp_button, *temp_label;
+	
+	while (this_item != NULL)
+	    {
+	        NautilusCommandInfo *info = (NautilusCommandInfo*) this_item->data;
+	        
+		index_panel->details->has_buttons = TRUE;
+		
+	        temp_button = gtk_button_new();		    
+	        temp_label = gtk_label_new(info->display_name);
+	        gtk_widget_show(temp_label);
+		gtk_container_add(GTK_CONTAINER(temp_button), temp_label); 	
+		gtk_box_pack_start(GTK_BOX(index_panel->details->button_box), temp_button, FALSE, TRUE, 2);
+		gtk_button_set_relief(GTK_BUTTON(temp_button), GTK_RELIEF_NORMAL);
+		gtk_widget_set_usize(GTK_WIDGET(temp_button), 80, 20);
+
+		/* FIXME: we must quote the uri in case it has blanks */
+		
+		if (nautilus_has_prefix(index_panel->details->uri, "file://"))
+		  temp_str = index_panel->details->uri + 7;
+		else
+		  temp_str = index_panel->details->uri;
+		command_string = g_strdup_printf(info->command_string, temp_str); 		
+		
+		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (command_button_cb), command_string);
+		gtk_widget_show(temp_button);									
+	  
+	  	this_item = this_item->next;
+	  }	  
+}
+
+/* here's where we set up the command buttons, based on the mime-type of the associated URL */
+/* FIXME:  eventually, we need a way to override/augment the type from info in the metadata */
+
+void
+nautilus_index_panel_set_up_buttons (NautilusIndexPanel *index_panel, const char* new_uri)
+{
+	NautilusFile *file_object;
+	GList *command_list;
+	
+	/* dispose any existing buttons */
+	if (index_panel->details->has_buttons) {
+		gtk_widget_destroy(index_panel->details->button_box); 
+		make_button_box(index_panel);
+	}
+	
+	/* allocate a file object and fetch the associated mime-type */
+	
+	file_object = nautilus_file_get(new_uri);
+	if (file_object) {
+		const gchar* mime_type = nautilus_file_get_mime_type(file_object);
+	
+		/* generate a command list from the mime-type */
+		if (mime_type) {
+			command_list = nautilus_mime_type_get_commands(mime_type);	
+			/* install a button for each command in the list */
+			if (command_list != NULL) {		
+				add_command_buttons(index_panel, command_list);
+			        nautilus_mime_type_dispose_list(command_list);
+			}      
+		}
+	nautilus_file_unref(file_object);	
+	}	
 }
 
 /* this routine populates the index panel with the per-uri information */
@@ -393,12 +503,11 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* n
 	
 	/* tell the title widget about it */
 	nautilus_index_title_set_uri(NAUTILUS_INDEX_TITLE(index_panel->details->index_title), new_uri);
-		
-	/* format and install the type-dependent descriptive info  */
-	
-	/* add the description text, if any.  Try to fetch it from the notes file if none is present */
-	
+			
 	/* add keywords if we got any */				
+
+	/* set up the command buttons */
+	nautilus_index_panel_set_up_buttons(index_panel, new_uri);
 }
 
 /* here is the key routine that populates the index panel with the appropriate information when the uri changes */
