@@ -1,3 +1,37 @@
+2000-08-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed real and potential memory leaks involving
+	nautilus_directory_wait_until_ready.
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_directory_wait_for_metadata): New function,
+	calls _wait_until_ready with no attributes and
+	TRUE for metadata, then frees result. The result as
+	currently implemented will always be NULL in this case
+	but there's no guarantee of that so it's safer to free
+	the result.
+	
+	(nautilus_mime_get_default_action_type_for_uri),
+	(nautilus_mime_get_default_application_for_uri_internal),
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_get_all_applications_for_uri),
+	(nautilus_mime_set_default_action_type_for_uri),
+	(nautilus_mime_set_default_application_for_uri),
+	(nautilus_mime_set_default_component_for_uri),
+	(nautilus_mime_set_short_list_applications_for_uri),
+	(nautilus_mime_set_short_list_components_for_uri),
+	(nautilus_mime_extend_all_applications_for_uri),
+	(nautilus_mime_remove_from_all_applications_for_uri):
+	Use nautilus_directory_wait_for_metadata.
+	
+	(nautilus_mime_get_default_component_for_uri_internal),
+	(nautilus_mime_get_all_components_for_uri): free results
+	of nautilus_directory_wait_until_ready.
+
+	(nautilus_mime_get_short_list_components_for_uri): free
+	results of nautilus_directory_wait_until_ready, also
+	removed extra call to _wait_until_ready.
+
 2000-08-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/html/ntl-web-browser.oafinfo:
