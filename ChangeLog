@@ -1,3 +1,27 @@
+2000-12-20  J Shane Culpepper  <pepper@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* components/services/install/command-line/.cvsignore:
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-test-inventory.c:
+	(main):
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_do_transaction_md5_check):
+	* components/services/install/lib/eazel-inventory-utils.c:
+	(eazel_create_configuration_metafile),
+	(update_gconf_inventory_digest), (eazel_gather_inventory):
+	* components/services/install/lib/eazel-inventory-utils.h:
+	* components/services/trilobite/libtrilobite/trilobite-md5-tools.c:
+	(trilobite_md5_get_digest), (trilobite_md5_get_digest_from_file),
+	(trilobite_md5_get_digest_from_md5_string),
+	(trilobite_md5_get_string_from_md5_digest), (main):
+	* components/services/trilobite/libtrilobite/trilobite-md5-tools.h:
+
+	Adding various fixes to the inventory engine and adding a test program
+	to validate the inventory api.  Fixed the trilobite-md5-tools functions
+	to namespace trilobite correctly.
+
 2000-12-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/Makefile.am:

@@ -813,8 +813,8 @@ eazel_install_do_transaction_md5_check (EazelInstall *service,
 			char pmd5[16];
 			char md5[16];
 
-			md5_get_digest_from_file (pack->filename, md5);
-			md5_get_digest_from_md5_string (pack->md5, pmd5);
+			trilobite_md5_get_digest_from_file (pack->filename, md5);
+			trilobite_md5_get_digest_from_md5_string (pack->md5, pmd5);
 
 			if (memcmp (pmd5, md5, 16) != 0) {
 				g_warning (_("MD5 mismatch, package %s may be compromised"), pack->name);
@@ -822,7 +822,7 @@ eazel_install_do_transaction_md5_check (EazelInstall *service,
 				trilobite_debug ("for package %s version %s", pack->name, pack->version);
 				eazel_install_emit_md5_check_failed (service, 
 								     pack, 
-								     md5_get_string_from_md5_digest (md5));
+								     trilobite_md5_get_string_from_md5_digest (md5));
 				result = FALSE;
 			} else {
 				trilobite_debug ("md5 match on %s", pack->name);

@@ -30,7 +30,6 @@
 #include "eazel-package-system.h"
 
 gboolean eazel_gather_inventory				(void);
-gboolean update_gconf_inventory_digest			(const char		*key,
-							 unsigned char		value[16]);
+gboolean update_gconf_inventory_digest			(unsigned char          value[16]);
 
 #endif /* EAZEL_INVENTORY_UTILS_H */

@@ -314,7 +314,7 @@ md5_transform (guint32 buf[4], const guint32 in[16])
  * the 16 bytes buffer @digest .
  **/
 void
-md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16])
+trilobite_md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16])
 {	
 	MD5Context ctx;
 
@@ -334,7 +334,7 @@ md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16])
  * the 16 bytes buffer @digest .
  **/
 void
-md5_get_digest_from_file (const char *filename, unsigned char digest[16])
+trilobite_md5_get_digest_from_file (const char *filename, unsigned char digest[16])
 {	
 	MD5Context ctx;
 	unsigned char tmp_buf[1024];
@@ -365,12 +365,14 @@ md5_get_digest_from_file (const char *filename, unsigned char digest[16])
 }
 
 void 
-md5_get_digest_from_md5_string (const char *md5string, 
+trilobite_md5_get_digest_from_md5_string (const char *md5string, 
 				guchar pmd5[16])
 {
 	char snippet[3];
 	const char *iterator;
 	int cnt = 0;
+
+	g_return_if_fail (md5string != NULL);
 
 	iterator = md5string;
 	while (cnt<16) {
@@ -389,7 +391,7 @@ md5_get_digest_from_md5_string (const char *md5string,
 }
 
 const char *
-md5_get_string_from_md5_digest (const unsigned char md5[16])
+trilobite_md5_get_string_from_md5_digest (const unsigned char md5[16])
 {
 	static char *str = NULL;
 	int cnt;
@@ -415,7 +417,7 @@ main (int argc, char **argv)
 	unsigned char digest[16];
 	int i;
 
-	md5_get_digest_from_file (argv[1], digest);
+	trilobite_md5_get_digest_from_file (argv[1], digest);
 	for (i = 0; i < 16; i++) {
 		printf ("%02X", digest[i]);
 	}

@@ -41,10 +41,11 @@
 
 #include <libtrilobite/trilobite-md5-tools.h>
 
-#define notDEBUG_pepper	1
+#define notDEBUG_pepper		1
 
 #define DIGEST_GCONF_PATH	"/apps/eazel-trilobite/inventory-digest"
 #define DIGEST_GCONF_KEY	"inventory_digest_value"
+
 
 static GConfEngine *conf_engine = NULL;
 
@@ -311,7 +312,7 @@ eazel_create_configuration_metafile (void)
 	time_string = g_strdup (ctime (&current_time));
 	time_string[strlen(time_string) - 1] = '\0';
 	xmlSetProp (container_node, "computer", host_name);	
-	xmlSetProp (container_node, "date", time_string);
+/*	xmlSetProp (container_node, "date", time_string); */
 	g_free (time_string);
 	
 	/* add the package info */
@@ -386,7 +387,7 @@ get_digest_from_gconf (const char *key)
  */
 
 gboolean
-update_gconf_inventory_digest (const char *key, unsigned char value[16])
+update_gconf_inventory_digest (unsigned char value[16])
 {
 	GError *error;
 	char *full_key;
@@ -398,13 +399,24 @@ update_gconf_inventory_digest (const char *key, unsigned char value[16])
 
 	error = NULL;
 
-	digest_string = md5_get_string_from_md5_digest (value);
+	digest_string = trilobite_md5_get_string_from_md5_digest (value);
 	check_gconf_init ();
-	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, key);
+	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, DIGEST_GCONF_KEY);
 
 	/* convert all spaces to underscores */
 	while ((helper = strchr (full_key, ' ')) != NULL) {
 		*helper = '_';
+	}
+
+#ifdef DEBUG_pepper
+	g_print ("Key: %s Digest: %s\n", full_key, digest_string);
+#endif
+
+	gconf_engine_unset (conf_engine, full_key, &error);
+	if (error != NULL) {
+		g_warning ("Eazel Inventory: gconf could not delete key '%s' : %s",
+			   full_key, error->message);
+		g_error_free (error);
 	}
 
 	gconf_engine_set_string (conf_engine, full_key, digest_string, &error);
@@ -433,6 +445,9 @@ eazel_gather_inventory (void)
 	unsigned char	old_digest[16];
 	char		*digest_string;
 	gboolean	return_val;
+#ifdef DEBUG_pepper
+	const char	*digest_test;
+#endif
 
 	return_val = FALSE;
 
@@ -448,15 +463,16 @@ eazel_gather_inventory (void)
 
 	/* generate a md5 digest of the new file and compare it to the last upload */
 
-	md5_get_digest_from_file (inventory_file_name, md5_digest);
+	trilobite_md5_get_digest_from_file (inventory_file_name, md5_digest);
 #ifdef DEBUG_pepper
-	g_print ("File: %s Digest: %s\n", inventory_file_name, md5_digest);
+	digest_test = trilobite_md5_get_string_from_md5_digest (md5_digest);
+	g_print ("File: %s Digest: %s\n", inventory_file_name, digest_test);
 #endif
 
 	digest_string = get_digest_from_gconf (DIGEST_GCONF_KEY);
-	md5_get_digest_from_md5_string (digest_string, old_digest);
+	trilobite_md5_get_digest_from_md5_string (digest_string, old_digest);
 #ifdef DEBUG_pepper
-	g_print ("Old GConf Digest value: %s\n", old_digest);
+	g_print ("Old GConf Digest value: %s\n", digest_string);
 #endif
 
 	if (memcmp (old_digest, md5_digest, 16) != 0) {
