@@ -440,6 +440,7 @@ then
 		AC_MSG_RESULT([found $RPM_VERSION, yes])
 		AC_DEFINE(HAVE_RPM)  	
 	  	RPM_LIBS="-lrpm -lz $rpm_libs"
+		AC_SUBST(RPM_VERSION)
 		build_rpmview=yes
 		rpmversion="$RPM_VERSION"
 	  else
