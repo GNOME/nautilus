@@ -69,6 +69,9 @@ nautilus_leak_find_symbol_in_map (const NautilusLeakSymbolLookupMap *map,
 		printf ("error looking up address in binary %s\n", map->path);
 		return FALSE;
 	}
+	if (file == NULL || function == NULL) {
+		return FALSE;
+	}
 
 	*function_name = g_strdup (function);
 	*source_file_name = g_strdup (file);

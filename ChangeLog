@@ -1,3 +1,26 @@
+2000-09-20  Darin Adler  <darin@eazel.com>
+
+	* src/Makefile.am:
+	* src/nautilus-view-frame-nautilus-view.c:
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy_client),
+	(nautilus_view_frame_load_client),
+	(nautilus_view_frame_load_location),
+	(nautilus_view_frame_stop_loading),
+	(nautilus_view_frame_selection_changed),
+	(nautilus_view_frame_title_changed):
+	Removed some of the remains of the component_class machinery.
+	NautilusViewFrame now is the frame for a NautilusView only.
+	
+	* src/file-manager/nautilus-indexing-info.c:
+	(nautilus_indexing_info_show_dialog): Fixed a misplaced statement
+	that results in bad code and an uninitialized variable warning.
+	
+	* tools/leak-checker/nautilus-leak-symbol-lookup.c:
+	(nautilus_leak_find_symbol_in_map): Fixed handling of symbols for
+	libraries where the bfd library doesn't find the information.
+
 2000-09-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/i-bookmark.png:

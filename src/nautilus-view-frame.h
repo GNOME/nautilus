@@ -25,16 +25,18 @@
  */
 
 /* nautilus-view-frame.h: Interface of the object representing a data
-   view. */
+ * view. This is actually the widget for the view frame rather than
+ * the view frame itself.
+ */
 
 #ifndef NAUTILUS_VIEW_FRAME_H
 #define NAUTILUS_VIEW_FRAME_H
 
-#include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-ui-handler.h>
-#include <libnautilus/nautilus-view-component.h>
+#include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-view-component.h>
 
 #define NAUTILUS_TYPE_VIEW_FRAME            (nautilus_view_frame_get_type ())
 #define NAUTILUS_VIEW_FRAME(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrame))
@@ -43,7 +45,6 @@
 #define NAUTILUS_IS_VIEW_FRAME_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_VIEW_FRAME))
 
 typedef struct NautilusViewFrameDetails NautilusViewFrameDetails;
-typedef struct NautilusViewComponentType NautilusViewComponentType;
 
 typedef struct {
         NautilusGenerousBin parent;
@@ -53,17 +54,16 @@ typedef struct {
         NautilusUndoManager *undo_manager;
      
         char *iid;
-        
-        BonoboObjectClient *client_object;
-        GtkWidget *client_widget;
-        
+
+        /* The frame itself (from various interface points of view). */
         BonoboObject *view_frame;
         BonoboObject *zoomable_frame;
         BonoboObject *history_frame;
         
+        /* The view inside the (various interfaces). */
+        BonoboObjectClient *client_object;
         Nautilus_Zoomable zoomable;
-        NautilusViewComponentType *component_class;
-        gpointer component_data;
+        GtkWidget *client_widget;
 } NautilusViewFrame;
 
 typedef struct {
@@ -107,7 +107,6 @@ typedef struct {
 	/* Get a CORBA copy of the history list */
 	Nautilus_HistoryList *
              (* get_history_list)	       (NautilusViewFrame *view);
-
 } NautilusViewFrameClass;
 
 GtkType               nautilus_view_frame_get_type                  (void);

@@ -228,7 +228,7 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 {
 	CORBA_Environment ev;
 
-	if (view->component_class == NULL) {
+	if (view->iid == NULL) {
 		return;
 	}
 	
@@ -240,7 +240,7 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	bonobo_object_unref (BONOBO_OBJECT (view->client_object));
 	view->client_object = NULL;
 
-	gtk_container_remove (GTK_CONTAINER(view), view->client_widget);
+	gtk_container_remove (GTK_CONTAINER (view), view->client_widget);
 	view->client_widget = NULL;
 
 	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
@@ -248,16 +248,8 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	}
 	view->zoomable = CORBA_OBJECT_NIL;
 
-	if (view->component_class->destroy != NULL) {
-		view->component_class->destroy (view, &ev);
-	}
-	
 	bonobo_object_unref (view->view_frame);
-
 	view->view_frame = NULL;
-	
-	view->component_class = NULL;
-	view->component_data = NULL;
 	
 	CORBA_exception_free (&ev);
 
@@ -464,45 +456,71 @@ check_if_view_is_gone (gpointer data)
 gboolean /* returns TRUE if successful */
 nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 {
-	CORBA_Object obj;
 	CORBA_Environment ev;
-  	int i;
 	Nautilus_View adapted;
-
+	BonoboObjectClient *component;
+	Bonobo_Control control;
+	BonoboControlFrame *control_frame;
   	
-  	NautilusViewComponentType *component_types[] = {
-    		&nautilus_view_component_type,
-    		NULL
-  	};
-
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	g_return_val_if_fail (view->details->state == VIEW_FRAME_EMPTY, FALSE);
 
+	if (iid == NULL) {
+		return FALSE;
+        }
+
+	component = bonobo_object_activate (iid, 0);
+	if (component == NULL) {
+		return FALSE;
+        }
+
+	/* Either create an adapter or query for the Nautilus:View
+	 * interface. Either way, we don't need to keep the original
+	 * reference around once that happens.
+	 */
+	adapted = nautilus_component_adapter_factory_create_adapter 
+		(nautilus_component_adapter_factory_get (),
+		 component);
+	bonobo_object_unref (BONOBO_OBJECT (component));
+
+	/* Handle case where we don't know how to host this component. */
+  	if (adapted == CORBA_OBJECT_NIL) {
+      		return FALSE;
+    	}
+
 	nautilus_view_frame_destroy_client (view);
 
-	if (iid == NULL) {
-		view->details->state = VIEW_FRAME_FAILED;
-		return FALSE;
-        }
+	/* Store the object away. */
+	view->client_object = bonobo_object_client_from_corba (adapted);
 
-	view->client_object = bonobo_object_activate (iid, 0);
-	if (view->client_object == NULL) {
-		view->details->state = VIEW_FRAME_FAILED;
-		return FALSE;
-        }
-
+	/* Get at our client's interfaces. */
+	control = bonobo_object_query_interface
+		(BONOBO_OBJECT (view->client_object),
+		 "IDL:Bonobo/Control:1.0");
+	g_assert (control != CORBA_OBJECT_NIL);
+	view->zoomable = bonobo_object_query_interface
+		(BONOBO_OBJECT (view->client_object), 
+		 "IDL:Nautilus/Zoomable:1.0");
+	
 	CORBA_exception_init (&ev);
 
 	/* Start with a view frame interface. */
-	view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
+	view->view_frame = impl_Nautilus_ViewFrame__create (view, &ev);
+
+	/* Add a control frame interface. */
+	control_frame = bonobo_control_frame_new (bonobo_object_corba_objref (BONOBO_OBJECT (view->ui_handler)));
+	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
+	                             BONOBO_OBJECT (control_frame));
+	bonobo_control_frame_bind_to_control (control_frame, control);
+	view->client_widget = bonobo_control_frame_get_widget (control_frame);
 
 	/* Add a zoomable frame interface. */
-	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
+	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create (view, &ev);
 	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
 	                             BONOBO_OBJECT (view->zoomable_frame));
 
 	/* Add a history frame interface. */
-	view->history_frame = impl_Nautilus_HistoryFrame__create(view, &ev);
+	view->history_frame = impl_Nautilus_HistoryFrame__create (view, &ev);
 	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
 	                             BONOBO_OBJECT (view->history_frame));
 
@@ -510,50 +528,7 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	nautilus_undo_manager_add_interface
         	(view->undo_manager, BONOBO_OBJECT (view->view_frame));
 	
-	adapted = nautilus_component_adapter_factory_create_adapter 
-		(nautilus_component_adapter_factory_get (),
-		 view->client_object);
-
-	if (adapted != CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (view->client_object));
-		view->client_object = bonobo_object_client_from_corba (adapted);
-	}
-
-
-	/* Get at our client's zoomable interface. */
-	view->zoomable = bonobo_object_query_interface
-		(BONOBO_OBJECT (view->client_object), 
-		 "IDL:Nautilus/Zoomable:1.0");
-	
-
-
-	/* FIXME: we should undo the virtualization since the adapter
-           handles that now. */
-
-	for (i = 0; component_types[i] != NULL && view->component_class == NULL; i++) {
-		obj = Bonobo_Unknown_query_interface
-			(bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
-			 component_types[i]->primary_repoid, &ev);
-		if (ev._major != CORBA_NO_EXCEPTION) {
-        		obj = CORBA_OBJECT_NIL;
-		}
-		if (CORBA_Object_is_nil (obj, &ev)) {
-			continue;
-		}
-
-      		if (component_types[i]->try_load (view, obj, &ev)) {
-        		view->component_class = component_types[i];
-		}
-
-      		bonobo_object_release_unref (obj, &ev);
-    	}
-
-	/* Handle case where we don't know how to host this component. */
-  	if (view->component_class == NULL) {
-      		nautilus_view_frame_destroy_client (view);
-		view->details->state = VIEW_FRAME_FAILED;
-      		return FALSE;
-    	}
+	bonobo_object_release_unref (control, NULL);
 	
 	view->iid = g_strdup (iid);
 
@@ -599,20 +574,18 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 	CORBA_Environment ev;
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	g_return_if_fail (view->component_class != NULL);
 
 	set_up_for_new_location (view);
 	view_frame_wait (view);
 	
-	if (view->component_class->load_location == NULL) {
-		return;
-	}
-
-	CORBA_exception_init (&ev);
 	/* ORBit does a bad job with Nautilus_URI, so it's not const char *. */
-
-	view->component_class->load_location (view, (Nautilus_URI) location, &ev);
-
+	CORBA_exception_init (&ev);
+	Nautilus_View_load_location (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
+				     (Nautilus_URI) location, &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		gtk_object_destroy (GTK_OBJECT (view));
+	}
 	CORBA_exception_free (&ev);
 }
 
@@ -622,14 +595,14 @@ nautilus_view_frame_stop_loading (NautilusViewFrame *view)
 	CORBA_Environment ev;
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	g_return_if_fail (view->component_class != NULL);
 	
-	if (view->component_class->stop_loading == NULL) {
-		return;
-	}
-
 	CORBA_exception_init (&ev);
-	view->component_class->stop_loading (view, &ev);
+	Nautilus_View_stop_loading (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
+				    &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		gtk_object_destroy (GTK_OBJECT (view));
+	}
 	CORBA_exception_free (&ev);
 }
 
@@ -642,16 +615,16 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	CORBA_Environment ev;
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	g_return_if_fail (view->component_class != NULL);
-	
-	if (view->component_class->selection_changed == NULL) {
-		return;
-	}
 	
 	uri_list = nautilus_uri_list_from_g_list (selection);
 	
 	CORBA_exception_init (&ev);
-	view->component_class->selection_changed (view, uri_list, &ev);
+	Nautilus_View_selection_changed (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
+					 uri_list, &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		gtk_object_destroy (GTK_OBJECT (view));
+	}
 	CORBA_exception_free (&ev);
 	
 	CORBA_free (uri_list);
@@ -663,14 +636,14 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view)
 	CORBA_Environment ev;
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	g_return_if_fail (view->component_class != NULL);
-	
-	if (view->component_class->title_changed == NULL) {
-		return;
-	}
 	
 	CORBA_exception_init (&ev);
-	view->component_class->title_changed (view, &ev);
+	Nautilus_View_title_changed (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
+				     &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		gtk_object_destroy (GTK_OBJECT (view));
+	}
 	CORBA_exception_free (&ev);
 }	
 

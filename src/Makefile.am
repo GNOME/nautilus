@@ -118,7 +118,6 @@ nautilus_SOURCES = \
 	nautilus-throbber.c			\
 	nautilus-toolbar.c			\
 	nautilus-view-frame-corba.c		\
-	nautilus-view-frame-nautilus-view.c	\
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-menus.c         	\

@@ -78,16 +78,4 @@ void          nautilus_view_frame_zoom_parameters_changed     (NautilusViewFrame
                                                                double             min_zoom_level,
                                                                double             max_zoom_level);
 
-struct NautilusViewComponentType {
-        const char *primary_repoid;
-        gboolean (* try_load) (NautilusViewFrame *view, CORBA_Object obj, CORBA_Environment *ev);
-        void (* destroy) (NautilusViewFrame *view, CORBA_Environment *ev);
-        void (* load_location) (NautilusViewFrame *view, Nautilus_URI location, CORBA_Environment *ev);
-        void (* stop_loading) (NautilusViewFrame *view, CORBA_Environment *ev);
-        void (* selection_changed) (NautilusViewFrame *view, const Nautilus_URIList *selection, CORBA_Environment *ev);
-        void (* title_changed) (NautilusViewFrame *view, CORBA_Environment *ev);
-};
-
-extern NautilusViewComponentType nautilus_view_component_type;
-
 #endif /* NAUTILUS_VIEW_FRAME_PRIVATE_H */
