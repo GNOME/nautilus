@@ -23,8 +23,10 @@
 */
 
 #include <config.h>
-#include "nautilus-emblem-utils.h"
 
+#include <utime.h>
+#include <stdio.h>
+#include <time.h>
 #include "nautilus-icon-factory.h"
 #include <eel/eel-string.h>
 #include <eel/eel-glib-extensions.h>
@@ -35,7 +37,7 @@
 #include <libgnomeui/gnome-icon-theme.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <gconf/gconf-client.h>
-#include <stdio.h>
+#include "nautilus-emblem-utils.h"
 
 #define EMBLEM_NAME_TRASH   "emblem-trash"
 #define EMBLEM_NAME_SYMLINK "emblem-symbolic-link"
@@ -180,10 +182,12 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 				       GtkWindow *parent_window)
 {
 	GnomeVFSURI *vfs_uri;
-	char *path, *theme, *dir;
+	char *path, *theme, *dir, *stat_dir;
 	FILE *file;
 	GConfClient *client;
 	char *error_string;
+	struct stat stat_buf;
+	struct utimbuf ubuf;
 	
 	g_return_if_fail (pixbuf != NULL);
 
@@ -215,6 +219,8 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 
 	dir = g_strdup_printf ("%s/.icons/%s/48x48/emblems",
 			       g_get_home_dir (), theme);
+	stat_dir = g_strdup_printf ("%s/.icons/%s",
+				    g_get_home_dir (), theme);
 	g_free (theme);
 
 	vfs_uri = gnome_vfs_uri_new (dir);
@@ -231,6 +237,7 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 		eel_show_error_dialog (_("Sorry, unable to save custom emblem."), 
 				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
 		g_free (dir);
+		g_free (stat_dir);
 		g_free (path);
 		return;
 	}
@@ -244,6 +251,7 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 		if (file == NULL) {
 			eel_show_error_dialog (_("Sorry, unable to save custom emblem name."), 
 					       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+			g_free (stat_dir);
 			g_free (dir);
 			return;
 		}
@@ -253,8 +261,16 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 		fflush (file);
 		fclose (file);
 	}
+
+	/* Touch the toplevel dir */
+	if (stat (stat_dir, &stat_buf) == 0) {
+		ubuf.actime = stat_buf.st_atime;
+		ubuf.modtime = time (NULL);
+		utime (stat_dir, &ubuf);
+	}
 	
 	g_free (dir);
+	g_free (stat_dir);
 
 	return;
 }
