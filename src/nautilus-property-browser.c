@@ -622,7 +622,7 @@ nautilus_property_browser_drag_end (GtkWidget *widget, GdkDragContext *context)
 
 /* utility routine to check if the passed-in uri is an image file */
 static gboolean
-ensure_uri_is_image(const char *uri)
+ensure_uri_is_image (const char *uri)
 {	
 	gboolean is_image;
 	GnomeVFSResult result;
@@ -1111,7 +1111,7 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 {
 	gboolean is_image;
 	char *directory_path, *source_file_name, *destination_name;
-	char *path_uri;
+	char *path_uri, *basename;
 	char *user_directory;	
 	char *directory_uri;
 	GnomeVFSResult result;
@@ -1125,9 +1125,21 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 	property_browser->details->dialog = NULL;
 
 	/* fetch the mime type and make sure that the file is an image */
-	path_uri = gnome_vfs_get_uri_from_local_path (path_name);
+	path_uri = gnome_vfs_get_uri_from_local_path (path_name);	
+
+	/* don't allow the user to change the reset image */
+	basename = nautilus_uri_get_basename (path_uri);
+	if (basename && nautilus_strcmp (basename, RESET_IMAGE_NAME) == 0) {
+		nautilus_error_dialog (_("Sorry, but you can't replace the reset image."), _("Not an Image"), NULL);
+		g_free (path_name);
+		g_free (path_uri);
+		g_free (basename);
+		return;
+	}
+		
 	is_image = ensure_uri_is_image(path_uri);
 	g_free(path_uri);	
+	g_free (basename);
 	
 	if (!is_image) {
 		char *message = g_strdup_printf (_("Sorry, but '%s' is not a usable image file!"), path_name);

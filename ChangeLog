@@ -1,3 +1,11 @@
+2001-01-05  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c: (ensure_uri_is_image),
+	(add_pattern_to_browser):
+	fixed bug 5265, you shouldn't be able to replace the reset image
+	in the property browser, by testing for that case and putting up
+	an error dialog instead.
+	
 2001-01-05  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: changed .oafinfo to .oaf
