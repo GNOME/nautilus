@@ -1,3 +1,12 @@
+2004-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-dnd.[ch]:
+	(auto_scroll_timeout_callback), (drag_leave_callback),
+	(drag_highlight_expose), (dnd_highlight_queue_redraw),
+	(start_dnd_highlight), (stop_dnd_highlight),
+	(drag_motion_callback):
+	Display frame when we're accepting a DnD drop.
+
 2004-10-18  Dave Camp  <dave@novell.com>
 
 	* src/file-manager/fm-directory-view.c:

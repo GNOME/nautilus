@@ -36,6 +36,8 @@ typedef struct {
 	/* inherited drag info context */
 	NautilusDragInfo drag_info;
 
+	gboolean highlighted;
+	
 	/* Stipple for drawing icon shadows during DnD.  */
         GdkBitmap *stipple;
 
