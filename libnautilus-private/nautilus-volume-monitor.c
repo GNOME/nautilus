@@ -22,6 +22,8 @@
    Authors: Gene Z. Ragan <gzr@eazel.com>
 */
 
+/*#define MOUNT_AUDIO_CD 1*/
+
 #include <config.h>
 #include "nautilus-volume-monitor.h"
 
@@ -59,6 +61,18 @@
 #endif
 
 #include <mntent.h>
+
+#ifdef MOUNT_AUDIO_CD
+
+#define size16 short
+#define size32 int
+
+#define CD_AUDIO_PATH "/dev/cdrom"
+#define CD_AUDIO_URI "cdda:///dev/cdrom"
+
+#include <cdda_interface.h>
+#include <cdda_paranoia.h>
+#endif
 
 #define CHECK_STATUS_INTERVAL 2000
 
@@ -105,6 +119,10 @@ static gboolean 	mount_volume_add_filesystem 			(NautilusVolume 		*volume);
 static NautilusVolume	*copy_volume					(NautilusVolume             	*volume);									 
 static void		find_volumes 					(NautilusVolumeMonitor 		*monitor);
 static void		free_mount_list 				(GList 				*mount_list);
+#ifdef MOUNT_AUDIO_CD
+static cdrom_drive 	*open_cdda_device 				(GnomeVFSURI 			*uri);
+static gboolean 	locate_audio_cd 				(void);
+#endif
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
 				   nautilus_volume_monitor,
@@ -226,7 +244,7 @@ nautilus_volume_monitor_volume_is_removable (NautilusVolumeMonitor *monitor, con
 		/* Until we have a comprehensive desktop mount strategy and design, 
 		 * we are only showing removable volumes on the desktop.  
 		 */
-		 found_volume = p->data;
+		 found_volume = p->data;		 
 		 if ( strcmp (volume->mount_path, found_volume->mount_path) == 0) {
 			found_one = TRUE;
 		 	break;
@@ -274,6 +292,14 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 			
 	fclose (file);
 	
+#ifdef MOUNT_AUDIO_CD
+	volume = g_new0 (NautilusVolume, 1);
+	volume->device_path = g_strdup ("/dev/cdrom");
+	volume->mount_path = g_strdup ("/dev/cdrom");
+	volume->filesystem = g_strdup ("cdda");
+	volumes = g_list_append (volumes, volume);
+#endif
+
 	/* Move all floppy mounts to top of list */
 	return g_list_sort (g_list_reverse (volumes), (GCompareFunc) floppy_sort);
 }
@@ -312,6 +338,29 @@ nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
 		}
 	}
 	return name;
+}
+
+/* nautilus_volume_monitor_get_target_uri
+ *	
+ * Returns the activation uri of the volume
+ */
+ 
+char *
+nautilus_volume_monitor_get_target_uri (const NautilusVolume *volume)
+{
+	char *uri;
+
+	switch (volume->type) {
+	case NAUTILUS_VOLUME_CDDA:
+		uri = g_strdup_printf ("cdda://%s", volume->mount_path);
+		break;
+		
+	default:
+		uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
+		break;
+	}
+	
+	return uri;
 }
 
 gboolean 
@@ -358,6 +407,31 @@ mount_volume_get_cdrom_name (NautilusVolume *volume)
 		get_iso9660_volume_name (volume, fd);
 		break;
 		
+	default:			
+		break;
+  	}
+	
+	close (fd);
+}
+
+static void
+mount_volume_get_cdda_name (NautilusVolume *volume)
+{
+	volume->volume_name = g_strdup (_("Audio CD"));
+}
+
+
+static void
+mount_volume_activate_cdda (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
+{
+	int fd, disctype;
+
+	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
+
+	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
+	switch (disctype) {
+	case CDS_AUDIO:
+		break;
 	default:			
 		break;
   	}
@@ -422,6 +496,10 @@ static void
 mount_volume_get_name (NautilusVolume *volume)
 {
 	switch (volume->type) {
+	case NAUTILUS_VOLUME_CDDA:
+		mount_volume_get_cdda_name (volume);
+		break;
+
 	case NAUTILUS_VOLUME_CDROM:
 		mount_volume_get_cdrom_name (volume);
 		break;
@@ -467,6 +545,10 @@ static void
 mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
 	switch (volume->type) {
+	case NAUTILUS_VOLUME_CDDA:
+		mount_volume_activate_cdda (monitor, volume);
+		break;
+
 	case NAUTILUS_VOLUME_CDROM:
 		mount_volume_activate_cdrom (monitor, volume);
 		break;
@@ -632,7 +714,20 @@ get_current_mount_list (void)
 			}			
 		}
   	}
-	
+
+#ifdef MOUNT_AUDIO_CD
+	/* CD Audio tricks */
+	if (locate_audio_cd ()) {
+		volume = g_new0 (NautilusVolume, 1);
+		volume->device_path = g_strdup ("/dev/cdrom");
+		volume->mount_path = g_strdup ("/dev/cdrom");
+		volume->filesystem = g_strdup ("cdda");
+		mount_volume_add_filesystem (volume);
+		mount_volume_get_name (volume);
+		current_mounts = g_list_append (current_mounts, volume);		
+	}
+#endif
+
 	fclose (fh);
 	
 	return current_mounts;
@@ -698,7 +793,7 @@ static int
 mount_volumes_check_status (NautilusVolumeMonitor *monitor)
 {
 	verify_current_mount_state (monitor);
-	
+			
 	return TRUE;
 }
 
@@ -831,6 +926,13 @@ static gboolean
 mount_volume_affs_add (NautilusVolume *volume)
 {
 	volume->type = NAUTILUS_VOLUME_AFFS;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_cdda_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_CDDA;
 	return TRUE;
 }
 
@@ -1250,6 +1352,8 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 		mounted = mount_volume_floppy_add (volume);
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
 		mounted = mount_volume_affs_add (volume);
+	} else if (strcmp (volume->filesystem, "cdda") == 0) {		
+		mounted = mount_volume_cdda_add (volume);
 	} else if (strcmp (volume->filesystem, "ext2") == 0) {		
 		mounted = mount_volume_ext2_add (volume);
 	} else if (strcmp (volume->filesystem, "fat") == 0) {		
@@ -1284,3 +1388,74 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 	
 	return mounted;
 }
+
+
+#ifdef MOUNT_AUDIO_CD
+
+static cdrom_drive *
+open_cdda_device (GnomeVFSURI *uri)
+{
+	const char *device_name;
+	cdrom_drive *drive;
+	
+	device_name = gnome_vfs_uri_get_path (uri);
+
+	drive = cdda_identify (device_name, FALSE, NULL);
+	if (drive == NULL) {
+		return NULL;
+	}
+	
+	/* Turn off verbosity */
+	cdda_verbose_set (drive, CDDA_MESSAGE_FORGETIT, CDDA_MESSAGE_FORGETIT);
+
+	/* Open drive */
+	switch (cdda_open (drive)) {
+  		case -2:
+  		case -3:
+  		case -4:
+  		case -5:
+    		//g_message ("Unable to open disc.  Is there an audio CD in the drive?");
+    		return NULL;
+
+  		case -6:
+    		//g_message ("CDDA method could not find a way to read audio from this drive.");
+    		return NULL;
+    			
+  		case 0:
+    		break;
+
+  		default:
+    		//g_message ("Unable to open disc.");
+    		return NULL;
+	}
+	
+	return drive;
+}
+
+static gboolean
+locate_audio_cd (void) {
+	cdrom_drive *drive;
+	GnomeVFSURI *uri;
+	gboolean found_one;
+	
+	g_message ("Squirt");
+	
+	found_one = FALSE;
+		
+	uri = gnome_vfs_uri_new (CD_AUDIO_URI);
+	if (uri == NULL) {
+		return found_one;
+	}
+		
+	drive = open_cdda_device (uri);
+	gnome_vfs_uri_unref (uri);
+	
+	if (drive != NULL) {
+		found_one = TRUE;				
+		cdda_close (drive);
+	}
+		
+	return found_one;
+}
+
+#endif

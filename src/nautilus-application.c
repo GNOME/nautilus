@@ -36,6 +36,7 @@
 #include "nautilus-main.h"
 #include "nautilus-shell-interface.h"
 #include "nautilus-shell.h"
+#include "nautilus-window-private.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <gtk/gtksignal.h>
@@ -43,6 +44,7 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -51,6 +53,7 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <liboaf/liboaf.h>
 
 #define FACTORY_IID	"OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
@@ -72,6 +75,13 @@ static void          nautilus_application_destroy                (GtkObject     
 static gboolean	     check_for_and_run_as_super_user 		 (void);
 static gboolean	     need_to_show_first_time_druid		 (void);
 static void	     desktop_changed_callback 		         (gpointer 		   user_data);
+static void	     volume_mounted_callback 			 (NautilusVolumeMonitor    *monitor,
+								  NautilusVolume 	   *volume,
+			  	 				  NautilusApplication 	   *application);
+static void	     volume_unmounted_callback 			 (NautilusVolumeMonitor    *monitor,
+								  NautilusVolume 	   *volume,
+			  	 				  NautilusApplication 	   *application);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
@@ -177,6 +187,18 @@ nautilus_application_initialize (NautilusApplication *application)
 	
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
+
+	/* Watch for volume mounts so we can restore open windows */
+	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
+			    "volume_mounted",
+			    volume_mounted_callback,
+			    application);
+
+	/* Watch for volume unmounts so we can close open windows */
+	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
+			    "volume_unmounted",
+			    volume_unmounted_callback,
+			    application);
 
 	/* monitor the desktop preference */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
@@ -628,3 +650,61 @@ need_to_show_first_time_druid (void)
 
 	return result;
 }
+
+/* Called whenever a volume is mounted.s
+ * It would also be cool to restore open windows and
+ * position info saved when the volume was unmounted.
+ */
+static void
+volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
+			 NautilusApplication *application)
+{
+}
+
+/* Called whenever a volume is unmounted. Check and see if there are any windows open
+ * displaying contents on the volume. If there are, close them.
+ * It would also be cool to save open window and position info.
+ */
+static void
+volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
+			   NautilusApplication *application)
+{
+	GSList *windows, *index, *close_list;
+	NautilusWindow *window;
+	char *text_uri;
+	const char *path;
+	GnomeVFSURI *uri;
+		
+	close_list = NULL;
+	
+	/* Check and see if any of the open windows are displaying contents from the unmounted volume */
+	windows = nautilus_application_windows ();
+	
+	/* Construct a list of windows to be closed */
+	for (index = windows; index != NULL; index = index->next) {
+		window = (NautilusWindow *)index->data;
+		if (window != NULL) {
+			text_uri = nautilus_file_get_uri (window->details->viewed_file);
+			uri = gnome_vfs_uri_new (text_uri);
+			g_free (text_uri);
+			
+			if (uri != NULL) {
+				path = gnome_vfs_uri_get_path (uri);				
+				if (strlen (path) >= strlen (volume->mount_path)) {
+					if (strncmp (path, volume->mount_path, strlen (volume->mount_path)) == 0) {
+						close_list = g_slist_prepend (close_list, window);
+					}				
+				}
+				gnome_vfs_uri_unref (uri);
+			}
+		}
+	}
+	
+	/* Now close all windows in the close list */
+	for (index = close_list; index != NULL; index = index->next) {
+		nautilus_window_close (NAUTILUS_WINDOW (index->data));
+	}
+	
+	g_slist_free (close_list);
+}
+

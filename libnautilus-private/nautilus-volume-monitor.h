@@ -55,6 +55,7 @@ struct NautilusVolumeMonitorClass {
 
 typedef enum {
 	NAUTILUS_VOLUME_AFFS,
+	NAUTILUS_VOLUME_CDDA, 	
 	NAUTILUS_VOLUME_CDROM, 	
 	NAUTILUS_VOLUME_EXT2,
 	NAUTILUS_VOLUME_FAT,
@@ -107,8 +108,7 @@ void                   	nautilus_volume_monitor_each_mounted_volume        	(Nau
 									  	 NautilusEachVolumeFunction   	function,
 									   	 gpointer               	context);
 GList			*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
-
 void			nautilus_volume_monitor_free_volume             	(NautilusVolume             	*volume);
-
+char 			*nautilus_volume_monitor_get_target_uri 		(const NautilusVolume 		*volume);
 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */

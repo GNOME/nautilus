@@ -49,7 +49,7 @@ struct NautilusWindowDetails
 	BonoboUIToolbarButtonItem *forward_button_item;
 
         /* Current location. */
-        char *title;
+	char *title;
 	NautilusFile *viewed_file;
 };
 

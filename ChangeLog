@@ -1,3 +1,34 @@
+2001-01-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5635, RPM view crashed if click "Install"
+	after unmounting volume containing RPM
+	
+	Fixed bug 5636, Unmounting a volume doesn't close
+	it's associated windows.
+		
+	* src/nautilus-application.c: (nautilus_application_initialize),
+	(volume_mounted_callback), (volume_unmounted_callback):
+	Connect to volume monitor signals.  When a volume is unmounted,
+	examine open window list and close any windows that originate
+	from the volume being unmounted.
+			
+	Add code to mount audio cds on desktop. It is all
+	ifdefed out right now.
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(update_disks_menu):
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_volume_is_removable),
+	(nautilus_volume_monitor_get_removable_volumes),
+	(nautilus_volume_monitor_get_target_uri),
+	(mount_volume_get_cdda_name), (mount_volume_activate_cdda),
+	(mount_volume_get_name), (mount_volume_activate),
+	(get_current_mount_list), (mount_volumes_check_status),
+	(mount_volume_cdda_add), (mount_volume_add_filesystem),
+	(open_cdda_device), (locate_audio_cd):
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+
 2001-01-14  J Shane Culpepper  <pepper@eazel.com>
 
 	* src/nautilus-view-frame.c: (attach_client):

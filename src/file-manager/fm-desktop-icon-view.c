@@ -255,27 +255,33 @@ create_mount_link (FMDesktopIconView *icon_view,
 		return;
 	}
 	
-	/* Get icon type */
-	if (volume->type == NAUTILUS_VOLUME_CDROM) {
-		icon_name = "i-cdrom.png";
-	} else if (volume->type == NAUTILUS_VOLUME_FLOPPY) {
-		icon_name = "i-floppy.png";
-	} else {
-		icon_name = "i-blockdev.png";
-	}
-
 	/* FIXME bugzilla.eazel.com 5412: Design a comprehensive desktop mounting strategy */
 	if (!nautilus_volume_monitor_volume_is_removable (nautilus_volume_monitor_get (), volume)) {
 		return;
 	}
 	
+	/* Get icon type */
+	switch (volume->type) {
+	case NAUTILUS_VOLUME_CDDA:
+	case NAUTILUS_VOLUME_CDROM:
+		icon_name = "i-cdrom.png";
+		break;
+		
+	case NAUTILUS_VOLUME_FLOPPY:
+		icon_name = "i-floppy.png";
+		break;
+		
+	default:
+		icon_name = "i-blockdev.png";
+		break;	
+	}
+
 	desktop_path = nautilus_get_desktop_directory ();
-	target_uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
-	volume_name = nautilus_volume_monitor_get_volume_name (volume);
-	
+	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
+	target_uri =  nautilus_volume_monitor_get_target_uri (volume);
+
 	/* Create link */
-	nautilus_link_local_create (desktop_path, volume_name, icon_name,
-				    target_uri, NAUTILUS_LINK_MOUNT);
+	nautilus_link_local_create (desktop_path, volume_name, icon_name, target_uri, NAUTILUS_LINK_MOUNT);
 				    
 	g_free (desktop_path);
 	g_free (target_uri);
@@ -1002,8 +1008,8 @@ update_disks_menu (FMDesktopIconView *view)
 	     element != NULL; 
 	     element = element->next, ++index) {
 		volume = element->data;
-
-		 /* Determine human-readable name from mount path */
+		
+		/* Determine human-readable name from mount path */
 		name = strrchr (volume->mount_path, '/');
 		if (name != NULL) {
 			name = name + 1;
