@@ -200,11 +200,11 @@ display_caveat (GtkWindow *parent_window)
 	}
 
   	text = nautilus_label_new
-		(_("Thank you for trying out Nautilus Preview Release 2.\n "
+		(_("Thank you for trying out Nautilus Preview Release 2.\n"
 		   "\n"
-		   "Nautilus is still under construction. Some operations may not"
+		   "Nautilus is still under construction. Some operations may not "
 		   "have their intended consequences, so be careful and make "
-		   "sure any important files on your system are backed up.  "
+		   "sure any important files on your system are backed up."
 		   "\n"
 		   "Please visit http://www.eazel.com/feedback.html to provide feedback."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (text), 14);
