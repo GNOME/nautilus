@@ -204,17 +204,19 @@ try_to_expand_path(GtkEditable *editable)
 	GnomeVFSURI *uri;
 	int base_length, current_path_length, offset;
 	const char *base_name;
-	char *current_path, *dir_name, *expand_text;
-	
-	current_path = nautilus_make_uri_from_input(gtk_entry_get_text (GTK_ENTRY (editable)));
-	
+	char *user_location, *current_path, *dir_name, *expand_text;
+
+	user_location = gtk_editable_get_chars (editable, 0, -1);
+ 	
+	current_path = nautilus_make_uri_from_input (user_location);
+
 	if (!nautilus_str_has_prefix(current_path, "file://")) {
 		g_free(current_path);
 		return;
 	}
 
 	current_path_length = strlen(current_path);	
-	offset = current_path_length - strlen(gtk_entry_get_text(GTK_ENTRY (editable)));
+	offset = current_path_length - strlen(user_location);
 
 	uri = gnome_vfs_uri_new(current_path);
 	
@@ -262,7 +264,13 @@ try_to_expand_path(GtkEditable *editable)
 	
 	g_free(dir_name);
 	g_free(current_path);
+	g_free(user_location);
 	gnome_vfs_directory_list_destroy(list);
+	/* FIXME: for purposes of "doing it right" and our own edification we want to
+	   be able to remove the following line...but this will work just fine for now.
+	   The problem is that *some* mysterious piece of the above code seems to affecting
+	   the focus */
+	gtk_widget_grab_focus(GTK_WIDGET(editable));
 }
 
 

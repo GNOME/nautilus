@@ -1,3 +1,15 @@
+2000-06-16  Seth Nickell  <seth@eazel.com>
+
+	* src/nautilus-location-bar.c: (try_to_expand_path):
+	Don't be fooled by the meager function count!
+	This bug was/is a bitch. Added a gtk_widget_grab_focus call to the
+	end of the function because *somewhere* in the above procedure
+	the gtk focus is being fscked with. Will track the actual 
+	problem down later, but this will get it out of our hair so
+	we can test things like unescaping code.
+	Also changed from gtk_entry_get_text to gtk_editable_get_chars
+	as the former is deprecated and Truly Evil (tm).
+	
 2000-06-15  John Sullivan  <sullivan@eazel.com>
 
 	Modernized some NautilusBookmark code that had been written
