@@ -1,3 +1,16 @@
+2000-07-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	*
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (generate_install_form), (create_title_widget),
+	(create_middle_title_widget):
+
+	Fix a bunch of gtk assertions caused by adding widgets to gtkboxes
+	twice.
+
+	Add a middle title widget to separete the progress dislay from the
+	top.
+	
 2000-07-12  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy_client):

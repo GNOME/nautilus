@@ -66,6 +66,8 @@ static void       nautilus_service_install_view_update_from_uri  (NautilusServic
 static void       show_overall_feedback                          (NautilusServiceInstallView		*view,
 								  char					*progress_message);
 static GtkWidget* create_title_widget                            (const char				*title_text);
+static GtkWidget* create_middle_title_widget                     (const char				*left_text,
+								  const char				*right_text);
 static GtkWidget* create_graphic_widget                          (const char				*icon_name,
 								  const char				*background_color_spec,
 								  NautilusGraphicPlacementType		placement);
@@ -80,6 +82,7 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	GdkFont		*font;
 	GtkWidget	*temp_box;
 	GtkWidget	*title;
+	GtkWidget	*middle_title;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -98,7 +101,6 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 	gtk_widget_show (temp_box);
 	view->details->package_name = gtk_label_new (_("Installing \"The Gimp\""));
-	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_name);
 	font = nautilus_font_factory_get_font_from_preferences (20);
 	nautilus_gtk_widget_set_font (view->details->package_name, font);
 	gdk_font_unref (font);
@@ -120,12 +122,16 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 	gtk_widget_show (temp_box);
 	view->details->package_version = gtk_label_new ("Version 1.0.4-1");
-	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_version);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_version, FALSE, FALSE, 2);
 	font = nautilus_font_factory_get_font_from_preferences (14);
 	nautilus_gtk_widget_set_font (view->details->package_version, font);
 	gdk_font_unref (font);
 	gtk_widget_show (view->details->package_version);
+
+	/* Setup the title */
+	middle_title = create_middle_title_widget ("Messages", "Progress");
+        gtk_box_pack_start (GTK_BOX (view->details->form), middle_title, FALSE, FALSE, 0);
+        gtk_widget_show (middle_title);
 
 	/* generate the overall progress bar */
 	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
@@ -140,7 +146,6 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 	gtk_widget_show (temp_box);
 	view->details->overall_feedback_text = gtk_label_new ("");
-	gtk_container_add (GTK_CONTAINER (temp_box), view->details->overall_feedback_text);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->overall_feedback_text, font);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->overall_feedback_text, FALSE, FALSE, 8);
@@ -235,6 +240,62 @@ create_title_widget (const char *title_text)
         gtk_box_pack_start (GTK_BOX (title_hbox), logo_graphic, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (title_hbox), filler_graphic, TRUE, TRUE, 0);
         gtk_box_pack_end (GTK_BOX (title_hbox), text_graphic, FALSE, FALSE, 0);
+
+	return title_hbox;
+}
+
+static GtkWidget*
+create_middle_title_widget (const char *left_text,
+			    const char *right_text)
+{
+        GtkWidget	*title_hbox;
+        GtkWidget	*left_graphic;
+        GtkWidget	*right_graphic;
+        GtkWidget	*filler_graphic;
+	GdkFont		*font;
+	
+	g_assert (left_text != NULL);
+	g_assert (right_text != NULL);
+
+        title_hbox = gtk_hbox_new (FALSE, 0);
+
+	left_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
+					      SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+					      NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+
+	filler_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
+						SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+						NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+
+	right_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
+					       SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+					       NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+
+	font = nautilus_font_factory_get_font_by_family ("helvetica", 18);
+
+	nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (left_graphic), left_text);
+	nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (left_graphic), font);
+
+	nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (left_graphic), 8);
+	nautilus_graphic_set_left_offset (NAUTILUS_GRAPHIC (left_graphic), 8);
+	nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (left_graphic), 1);
+
+	nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (right_graphic), right_text);
+	nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (right_graphic), font);
+
+	nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (right_graphic), 8);
+	nautilus_graphic_set_right_offset (NAUTILUS_GRAPHIC (right_graphic), 8);
+	nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (right_graphic), 1);
+
+	gdk_font_unref (font);
+
+	gtk_widget_show (left_graphic);
+	gtk_widget_show (filler_graphic);
+	gtk_widget_show (right_graphic);
+
+        gtk_box_pack_start (GTK_BOX (title_hbox), left_graphic, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (title_hbox), filler_graphic, TRUE, TRUE, 0);
+        gtk_box_pack_end (GTK_BOX (title_hbox), right_graphic, FALSE, FALSE, 0);
 
 	return title_hbox;
 }
