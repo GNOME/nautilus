@@ -1,3 +1,15 @@
+2000-09-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw_aa),
+	(nautilus_background_set_color_no_emit),
+	(nautilus_background_set_image_uri_no_emit):
+	
+	fixed bug 1899, background customization lost when theme changes,
+	by clearing the color when the an image is set.  Also, fixed
+	bug where color customization wasn't working for the arlo theme,
+	by removing the solid color case in background_draw_aa.
+	
 2000-09-06  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-application.c, src/nautilus-shell.c: Fixed FIXME

@@ -543,7 +543,7 @@ nautilus_background_draw_aa (NautilusBackground *background,
 			start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 			start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
 			g_free (start_color_spec);
-			
+
 			/* set up constants for the loop */
 			horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
 			current_color = nautilus_strchr (background->details->color, '-');
@@ -602,13 +602,10 @@ nautilus_background_draw_aa (NautilusBackground *background,
 				}
 				
 				/* draw the gradient or solid color */		
-				if (start_rgb != end_rgb) {
-					nautilus_gnome_canvas_fill_with_gradient
-						(buffer, current_width, current_height,
-						 start_rgb, end_rgb,
-						 horizontal_gradient);
-				} else
-					gnome_canvas_buf_ensure_buf(buffer);
+				nautilus_gnome_canvas_fill_with_gradient
+					(buffer, current_width, current_height,
+					 start_rgb, end_rgb,
+					 horizontal_gradient);
 			
 				/* set things up for the next time through, if necessary */
 				start_rgb = end_rgb;
@@ -680,6 +677,7 @@ nautilus_background_set_color_no_emit (NautilusBackground *background,
 
 	g_free (background->details->color);
 	background->details->color = g_strdup (color);
+		
 	return TRUE;
 }
 
@@ -760,7 +758,14 @@ nautilus_background_set_image_uri_no_emit (NautilusBackground *background,
 	nautilus_cancel_gdk_pixbuf_load (background->details->load_image_handle);
 	background->details->load_image_handle = NULL;
 
+	/* if we're setting the image, clear the color */
+	if (image_uri != NULL) {
+		g_free (background->details->color);
+		background->details->color = NULL;
+	}
+	
 	g_free (background->details->image_uri);
+
 	
 	if (background->details->image != NULL) {
 		gdk_pixbuf_unref (background->details->image);
