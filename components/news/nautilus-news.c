@@ -1237,8 +1237,6 @@ mark_new_items (RSSChannelData *channel_data, GList *old_items)
 			channel_data->channel_changed = TRUE;
 			nautilus_news_set_news_changed (channel_data->owner, TRUE);
 			changed_count += 1;
-		} else {
-			item_data->new_item = FALSE;	
 		}
 		current_item = current_item->next;
 	}	
@@ -2109,7 +2107,12 @@ add_channels_to_lists (News* news_data)
 static void
 empty_message_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News *news_data)
 {
-	eel_label_set_smooth_line_wrap_width (EEL_LABEL (widget), allocation->width - 2*EMPTY_MESSAGE_MARGIN);
+	int wrap_width;
+	
+	wrap_width = allocation->width - 2*EMPTY_MESSAGE_MARGIN;
+	if (wrap_width > 0) {
+		eel_label_set_smooth_line_wrap_width (EEL_LABEL (widget), allocation->width - 2*EMPTY_MESSAGE_MARGIN);
+	}
 }
 
 /* handle resizing the news display by recalculating our size if necessary */

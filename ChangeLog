@@ -1,3 +1,17 @@
+2001-05-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (mark_new_items),
+	(empty_message_size_allocate):
+	fixed bug where it would inadvertently clear the new flag on items
+	after refetching.
+	
+	fixed bug 8211, criticals when opening the news panel with no
+	selected sites by making sure not to set the wrap width to a
+	negative number.
+	
+	* components/news/news_channels.xml:
+	added some new channels suggested by Joshua K.
+	
 2001-05-01  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* components/news/nautilus-news.c: Marked two strings for translation.
