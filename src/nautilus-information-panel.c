@@ -383,20 +383,22 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 	g_free (color_spec);
 }
 
-/* FIXME:  I'm sure there's a better way to do this */
-/* utility to actually execute the button command */
+/* utility to fork a process to actually execute the button command */
 
 static void
-command_button_cb(GtkMenuItem *item, gchar* command_str)
+command_button_cb(GtkWidget *button, gchar* command_str)
 {
-  gint result;
-  pid_t button_pid;
-
+  pid_t button_pid; 
+  NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL(gtk_object_get_user_data(GTK_OBJECT(button)));
+  gchar *parameter_ptr = index_panel->details->uri;
+    
+  if (nautilus_has_prefix(index_panel->details->uri, "file://"))
+  	parameter_ptr +=  7;
+ 
   if (!(button_pid = fork())) {
-  	result = system(command_str);
+        execlp(command_str, command_str, parameter_ptr, NULL);
         exit(0);
   } 	
-
 }
 
 /* utility routine that allocates the command buttons from the command list */
@@ -431,6 +433,8 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 		command_string = g_strdup_printf(info->command_string, temp_str); 		
 		
 		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (command_button_cb), command_string);
+                gtk_object_set_user_data(GTK_OBJECT(temp_button), index_panel);
+		
 		gtk_widget_show(temp_button);									
 	  
 	  	this_item = this_item->next;
@@ -448,7 +452,7 @@ nautilus_index_panel_set_up_buttons (NautilusIndexPanel *index_panel, const char
 	
 	/* dispose any existing buttons */
 	if (index_panel->details->has_buttons) {
-		gtk_widget_destroy(index_panel->details->button_box); 
+		gtk_container_remove(GTK_CONTAINER(index_panel->details->index_container), index_panel->details->button_box); 
 		make_button_box(index_panel);
 	}
 	

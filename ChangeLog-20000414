@@ -1,5 +1,16 @@
 2000-02-17  Andy Hertzfeld <andy@eazel.com>
 
+	improved index panel command buttons.  There's still a problem with the button box removal, though.
+	
+	* libnautilus/nautilus-mime-type.c:
+	changed how command strings are structured to a simpler scheme with no substitution
+	
+	* src/ntl-index-panel.c:
+	improved the way commands are launched and fixed a bug in the button removal code, but
+	there's still some problems.
+	
+2000-02-17  Andy Hertzfeld <andy@eazel.com>
+
 	implemented command buttons for the index panel.
 	
 	* libnautilus/nautilus-mime-type.c,h:

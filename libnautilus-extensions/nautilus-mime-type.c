@@ -43,10 +43,10 @@ typedef struct {
 /* FIXME:  this should be kept in a file somewhere, possibly using GConf or OAF */
 
 static MimeTypeItem mime_type_table [] = {
-	{ "text", "*",  "Edit with gEdit", "gedit %s" },
-	{ "text", "html", "View with Netscape", "netscape %s" },
-	{ "image", "*", "Edit with GIMP",  "gimp %s" },
-	{ "text", "plain",  "Edit with gnotepad", "gnp %s" }
+	{ "text", "*",  "Edit with gEdit", "gedit" },
+	{ "text", "html", "View with Netscape", "netscape" },
+	{ "image", "*", "Edit with GIMP",  "gimp" },
+	{ "text", "plain",  "Edit with gnotepad", "gnp" }
 };
 
 /* release the storage contained in the passed-in command list */
