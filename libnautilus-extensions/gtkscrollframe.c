@@ -686,7 +686,10 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		guint count = 0;
 
 		do {
-			gint16 possible_new_size;
+                        /* This must be a gint, not a gint16, otherwise we'll get
+                         * overflow below when frame_w or frame_h is zero.
+                         */
+			gint possible_new_size;
 
 			compute_relative_allocation (widget, &relative_allocation);
 

@@ -1,5 +1,10 @@
 1999-12-15  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/gtkscrollframe.c (gtk_scroll_frame_size_allocate):
+        Fixed overflow problem caused by gint16 local variable.
+
+1999-12-15  Darin Adler  <darin@eazel.com>
+
 	* src/ntl-window.c (nautilus_window_constructed):
         Fixed signal handler to point to nautilus_window_goto_url_cb
         instead of nautilus_window_goto_url. This was causing a bad
