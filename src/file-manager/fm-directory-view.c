@@ -299,7 +299,7 @@ display_selection_info (FMDirectoryView *view)
         g_free (msg);
 
 	g_free (size_string);
-	g_free (selection);
+	g_list_free (selection);
 }
 
 
