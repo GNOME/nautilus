@@ -483,8 +483,6 @@ static void
 recompute_bounding_box (NautilusIconCanvasItem *icon_item,
 			double i2w_dx, double i2w_dy)
 {
-	double pixels_per_unit;
-	
 	/* The bounds stored in the item is the same as what get_bounds
 	 * returns, except it's in canvas coordinates instead of the item's
 	 * parent's coordinates.
@@ -499,11 +497,16 @@ recompute_bounding_box (NautilusIconCanvasItem *icon_item,
 				    &top_left.x, &top_left.y,
 				    &bottom_right.x, &bottom_right.y);
 
-	pixels_per_unit = item->canvas->pixels_per_unit;
-	item->x1 = (top_left.x + i2w_dx) * pixels_per_unit;
-	item->y1 = (top_left.y + i2w_dy) * pixels_per_unit;
-	item->x2 = (bottom_right.x + i2w_dx) * pixels_per_unit;
-	item->y2 = (bottom_right.y + i2w_dy) * pixels_per_unit;
+	top_left.x += i2w_dx;
+	top_left.y += i2w_dy;
+	bottom_right.x += i2w_dx;
+	bottom_right.y += i2w_dy;
+	eel_canvas_w2c_d (item->canvas,
+			  top_left.x, top_left.y,
+			  &item->x1, &item->y1);
+	eel_canvas_w2c_d (item->canvas,
+			  bottom_right.x, bottom_right.y,
+			  &item->x2, &item->y2);
 }
 
 static ArtIRect
@@ -1656,16 +1659,16 @@ get_icon_canvas_rectangle (NautilusIconCanvasItem *item,
 			   ArtIRect *rect)
 {
 	GdkPixbuf *pixbuf;
-	double pixels_per_unit;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
 	g_return_if_fail (rect != NULL);
 
-	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+	eel_canvas_w2c (EEL_CANVAS_ITEM (item)->canvas,
+			item->details->x,
+			item->details->y,
+			&rect->x0,
+			&rect->y0);
 	
-	rect->x0 = floor (item->details->x * pixels_per_unit);
-	rect->y0 = floor (item->details->y * pixels_per_unit);
-
 	pixbuf = item->details->pixbuf;
 	
 	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf));

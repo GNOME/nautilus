@@ -4981,8 +4981,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	NautilusIcon *icon;
 	ArtDRect icon_rect;
 	const char *editable_text;
-	double pixels_per_unit;
-	int x, width;
+	int x, y, width;
 
 	/* Check if it already in renaming mode. */
 	details = container->details;
@@ -5035,12 +5034,14 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
 
-	pixels_per_unit = EEL_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit;
-	x = eel_round((icon_rect.x0 + icon_rect.x1) * pixels_per_unit / 2) - width / 2;
+	eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
+			(icon_rect.x0 + icon_rect.x1) / 2,
+			icon_rect.y1,
+			&x, &y);
 
 	gtk_layout_move (GTK_LAYOUT (container),
 			 details->rename_widget,
-			 x, eel_round (icon_rect.y1 * pixels_per_unit));
+			 x - width/2, y);
 	gtk_widget_set_size_request (details->rename_widget,
 				     width, -1);
 	gtk_widget_show (details->rename_widget);
