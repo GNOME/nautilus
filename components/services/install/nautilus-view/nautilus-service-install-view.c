@@ -67,7 +67,8 @@
 #define ASSUME_ix86_IS_i386 
 
 /* send the user here after a completed (success or failure) install */
-#define NEXT_URL	"eazel:"
+#define NEXT_URL_ANONYMOUS	"eazel:"
+#define NEXT_URL 		"eazel-services:/catalog"
 
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
@@ -437,6 +438,7 @@ nautilus_service_install_view_destroy (GtkObject *object)
 	g_hash_table_destroy (view->details->deps);
 	g_list_foreach (view->details->message, (GFunc)install_message_destroy, NULL);
 	g_list_free (view->details->message);
+	g_free (view->details->username);
 
 	if (view->details->root_client) {
 		trilobite_root_client_unref (GTK_OBJECT (view->details->root_client));
@@ -613,37 +615,26 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 	return result;
 }
 
-
-/* don't like cylon mode anymore */
-#if 0
-/* when the overall progress bar is in cylon mode, this will tap it to keep it spinning. */
-static gint
-spin_cylon (NautilusServiceInstallView *view)
-{
-	gfloat val;
-
-	val = gtk_progress_get_value (GTK_PROGRESS (view->details->total_progress_bar));
-	val += 1.0;
-	if (val > 100.0) {
-		val = 0.0;
-	}
-	gtk_progress_set_value (GTK_PROGRESS (view->details->total_progress_bar), val);
-
-	/* in case we're being called as a timer */
-	return TRUE;
-}
-
 static void
-turn_cylon_off (NautilusServiceInstallView *view, float progress)
+update_package_info_display (NautilusServiceInstallView *view, const PackageData *pack, const char *format)
 {
-	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), FALSE);
-	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), progress);
-	if (view->details->cylon_timer) {
-		gtk_timeout_remove (view->details->cylon_timer);
-		view->details->cylon_timer = 0;
+	char *out;
+
+	out = g_strdup_printf (format, pack->name);
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
+	g_free (out);
+
+	if ((pack->description != NULL) && 
+	    (strchr (pack->description, '\n') != NULL)) {
+		nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
+	} else {
+		nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
 	}
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
+	out = g_strdup_printf (_("Version: %s"), pack->version);
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_version), out);
+	g_free (out);
 }
-#endif
 
 /* replace the current progress bar (in the message box) with a centered label saying "Complete!" */
 static void
@@ -663,7 +654,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 {
 	char *out;
 	const char *needed_by;
-	GList *iter;
 	InstallMessage *im = view->details->current_im;
 	float fake_amount;
 
@@ -689,6 +679,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 		g_free (view->details->current_rpm);
 		view->details->current_rpm = g_strdup (pack->name);
 
+#if 0
 		/* figure out if this is a toplevel package, and if so, update the header */
 		for (iter = g_list_first (((CategoryData *)(view->details->categories->data))->packages);
 		     iter != NULL; iter = g_list_next (iter)) {
@@ -698,6 +689,11 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 				nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
 				g_free (out);
 			}
+		}
+#endif
+
+		if (pack->toplevel) {
+			update_package_info_display (view, pack, _("Downloading \"%s\""));
 		}
 
 		/* new progress message and bar */
@@ -1041,20 +1037,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		view->details->current_package = current_package;
 
 		if (pack->toplevel) {
-			/* this package is a main one.  update package info display, now that we know it */
-			out = g_strdup_printf (_("Installing \"%s\""), pack->name);
-			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
-			gtk_widget_queue_draw (view->details->package_name);
-			g_free (out);
-			if (strchr (pack->description, '\n') != NULL) {
-				nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
-			} else {
-				nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
-			}
-			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
-			out = g_strdup_printf (_("Version: %s"), pack->version);
-			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_version), out);
-			g_free (out);
+			update_package_info_display (view, pack, _("Installing \"%s\""));
 		}
 	}
 
@@ -1359,7 +1342,12 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		/* send them to the predetermined "next" url
 		 * -- but only if they haven't set jump-after-install off
 		 */
-		message = g_strdup (NEXT_URL);
+		if (strcasecmp (view->details->username, "anonymous") ==0) {
+			/* send anonymous users elsewhere, so they won't have to login */
+			message = g_strdup (NEXT_URL_ANONYMOUS);
+		} else {
+			message = g_strdup (NEXT_URL);
+		}
 		if (eazel_install_configure_check_jump_after_install (&message)) {
 			nautilus_view_open_location_in_this_window (view->details->nautilus_view, message);
 		}
@@ -1494,7 +1482,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	CategoryData		*category_data;
 	char			*host;
 	int			port;
-	char			*username;
 	GNOME_Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out, *p;
@@ -1508,8 +1495,8 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	} else {
 		port = 80;
 	}
-	username = NULL;
-	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &username));
+	view->details->username = NULL;
+	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &view->details->username));
 
 	if (! view->details->categories) {
 		return;
@@ -1570,8 +1557,8 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	GNOME_Trilobite_Eazel_Install__set_server_port (service, port, &ev);
 	GNOME_Trilobite_Eazel_Install__set_auth (service, set_auth, &ev);
 
-	if (username != NULL) {
-		GNOME_Trilobite_Eazel_Install__set_username (service, username, &ev);
+	if (view->details->username != NULL) {
+		GNOME_Trilobite_Eazel_Install__set_username (service, view->details->username, &ev);
 	}
 	GNOME_Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 

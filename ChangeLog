@@ -1,3 +1,19 @@
+2001-01-25  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_destroy),
+	(update_package_info_display),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_done),
+	(nautilus_service_install_view_update_from_uri):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Send anonymous users to a different url (currently, the summary
+	view) than logged-in users.  Attempt to show package details as
+	early as possible.
+	
 2001-01-25  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: <sullivan@eazel.com>
