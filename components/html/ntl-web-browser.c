@@ -179,13 +179,7 @@ canonicalize_url (const char *in_url, const char *base_url)
 static void
 browser_url_load_done(GtkWidget *htmlw, BrowserInfo *bi)
 {
-  Nautilus_ProgressRequestInfo pri;
-
-  memset(&pri, 0, sizeof(pri));
-
-  pri.type = Nautilus_PROGRESS_DONE_OK;
-  pri.amount = 100.0;
-  nautilus_view_request_progress_change(bi->nautilus_view, &pri);
+  nautilus_view_report_load_complete(bi->nautilus_view);
 }
 
 struct _HTStream {
@@ -358,12 +352,7 @@ browser_vfs_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer data)
 
   if(res != GNOME_VFS_OK)
     {
-      Nautilus_ProgressRequestInfo pri;
-
-      memset(&pri, 0, sizeof(pri));
-      pri.type = Nautilus_PROGRESS_DONE_ERROR;
-      nautilus_view_request_progress_change(vfsh->bi->nautilus_view, &pri);
-
+      nautilus_view_report_load_failed(vfsh->bi->nautilus_view);
       gtk_html_end(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, GTK_HTML_STREAM_ERROR);
       g_free(vfsh);
     }
@@ -446,11 +435,7 @@ browser_set_base_target(GtkWidget *htmlw, const char *base_target_url, BrowserIn
 static void
 browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 {
-  Nautilus_ProgressRequestInfo pri;
   GtkHTMLStream *stream;
-
-  pri.type = Nautilus_PROGRESS_UNDERWAY;
-  pri.amount = 0.0;
 
   HTNet_killAll();
   g_free(bi->base_url);
@@ -471,22 +456,19 @@ browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 
   browser_url_requested(bi->htmlw, url, stream, bi);
 
-  nautilus_view_request_progress_change(bi->nautilus_view, &pri);
+  nautilus_view_report_load_underway(bi->nautilus_view);
 }
 
 static void
 browser_goto_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 {
-  Nautilus_NavigationRequestInfo nri;
   char *real_url;
 
   real_url = canonicalize_url(url, bi->base_target_url);
 
   g_return_if_fail(real_url);
 
-  memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = real_url;
-  nautilus_view_request_location_change(bi->nautilus_view, &nri);
+  nautilus_view_report_location_change(bi->nautilus_view, real_url);
   browser_goto_url_real(htmlw, real_url, bi);
   g_free(real_url);
 }
@@ -494,26 +476,24 @@ browser_goto_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 static void
 browser_select_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 {
-  Nautilus_SelectionRequestInfo si;
-  Nautilus_StatusRequestInfo sri;
-  char *real_url = NULL;
+  GList *list;
+  GList simple_list;
+  char *real_url;
 
-  memset(&si, 0, sizeof(si));
-  memset(&sri, 0, sizeof(sri));
+  list = NULL;
+  real_url = NULL;
   if(url && !bi->prevsel)
     {
-      si.selected_uris._length = 1;
-      sri.status_string = real_url = canonicalize_url(url, bi->base_target_url);
-      si.selected_uris._buffer = &real_url;
-    }
-  else if(!url && bi->prevsel)
-    {
-      si.selected_uris._length = 0;
+      real_url = canonicalize_url(url, bi->base_target_url);
+      simple_list.data = real_url;
+      simple_list.next = NULL;
+      simple_list.prev = NULL;
+      list = &simple_list;
     }
 
-  nautilus_view_request_selection_change(bi->nautilus_view, &si);
-  if(sri.status_string)
-    nautilus_view_request_status_change(bi->nautilus_view, &sri);
+  nautilus_view_report_selection_change(bi->nautilus_view, list);
+  if (real_url != NULL)
+    nautilus_view_report_status(bi->nautilus_view, real_url);
   g_free(real_url);
   bi->prevsel = url?1:0;
 }
@@ -521,7 +501,7 @@ browser_select_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 static void
 browser_title_changed(GtkWidget *htmlw, const char *new_title, BrowserInfo *bi)
 {
-  nautilus_view_request_title_change (bi->nautilus_view, new_title);
+  nautilus_view_set_title(bi->nautilus_view, new_title);
 }
 
 static void
@@ -555,14 +535,11 @@ browser_submit(GtkWidget *htmlw, const char *method, const char *url, const char
 }
 
 static void
-browser_notify_location_change(NautilusView *nautilus_view, 
-			       Nautilus_NavigationInfo *ni, 
-			       BrowserInfo *bi)
+browser_load_location(NautilusView *nautilus_view, 
+		      const char *location,
+		      BrowserInfo *bi)
 {
-  if(ni->self_originated)
-    return;
-
-  browser_goto_url_real(NULL, ni->requested_uri, bi);
+  browser_goto_url_real(NULL, location, bi);
 }
 
 static int object_count = 0;
@@ -605,10 +582,11 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
 
   bi->nautilus_view = nautilus_view_new (wtmp);
 
-  gtk_signal_connect(GTK_OBJECT(bi->nautilus_view), "notify_location_change", browser_notify_location_change,
-		     bi);
+  gtk_signal_connect(GTK_OBJECT(bi->nautilus_view), "load_location",
+		     browser_load_location, bi);
   object_count++;
-  gtk_signal_connect(GTK_OBJECT(bi->nautilus_view), "destroy", browser_do_destroy, NULL);
+  gtk_signal_connect(GTK_OBJECT(bi->nautilus_view), "destroy",
+		     browser_do_destroy, NULL);
 
   return BONOBO_OBJECT (bi->nautilus_view);
 }

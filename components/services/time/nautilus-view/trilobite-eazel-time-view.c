@@ -70,11 +70,10 @@ struct TrilobiteEazelTimeViewDetails {
 
 static void trilobite_eazel_time_view_initialize_class (TrilobiteEazelTimeViewClass *klass);
 static void trilobite_eazel_time_view_initialize       (TrilobiteEazelTimeView      *view);
-static void trilobite_eazel_time_view_destroy          (GtkObject                      *object);
-
-static void sample_notify_location_change_callback        (NautilusView                   *nautilus_view,
-							   Nautilus_NavigationInfo        *navinfo,
-							   TrilobiteEazelTimeView      *view);
+static void trilobite_eazel_time_view_destroy          (GtkObject                   *object);
+static void load_location_callback                     (NautilusView                *nautilus_view,
+							const char                  *location,
+							TrilobiteEazelTimeView      *view);
 
 #if 0
 static void sample_merge_bonobo_items_callback            (BonoboObject                   *control,
@@ -329,8 +328,8 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 	gtk_container_add (GTK_CONTAINER(view), GTK_WIDGET(p_vbox));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (sample_notify_location_change_callback), 
+			    "load_location",
+			    GTK_SIGNAL_FUNC (load_location_callback), 
 			    view);
 
 #if 0
@@ -420,45 +419,15 @@ trilobite_eazel_time_view_load_uri (TrilobiteEazelTimeView *view,
 }
 
 static void
-sample_notify_location_change_callback (NautilusView *nautilus_view, 
-				  	Nautilus_NavigationInfo *navinfo, 
-				  	TrilobiteEazelTimeView *view)
+load_location_callback (NautilusView *nautilus_view, 
+			const char *location,
+			TrilobiteEazelTimeView *view)
 {
-	Nautilus_ProgressRequestInfo request;
-
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
-	memset(&request, 0, sizeof(request));
-	
-	/* 
-	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
-	 * component starts loading, otherwise nautilus will assume it
-	 * failed. In a real component, this will probably happen in
-	 * some sort of callback from whatever loading mechanism it is
-	 * using to load the data; this component loads no data, so it
-	 * gives the progrss update here.  
-	 */
-	
-	request.type = Nautilus_PROGRESS_UNDERWAY;
-	request.amount = 0.0;
-	nautilus_view_request_progress_change (nautilus_view, &request);
-	
-	/* Do the actual load. */
-	trilobite_eazel_time_view_load_uri (view, navinfo->actual_uri);
-	
-	/*
-	 * It's mandatory to send a PROGRESS_DONE_OK message once the
-	 * component is done loading successfully, or
-	 * PROGRESS_DONE_ERROR if it completes unsuccessfully. In a
-	 * real component, this will probably happen in some sort of
-	 * callback from whatever loading mechanism it is using to
-	 * load the data; this component loads no data, so it gives
-	 * the progrss upodate here. 
-	 */
-
-	request.type = Nautilus_PROGRESS_DONE_OK;
-	request.amount = 100.0;
-	nautilus_view_request_progress_change (nautilus_view, &request);
+	nautilus_view_report_load_underway (nautilus_view);
+	trilobite_eazel_time_view_load_uri (view, location);
+	nautilus_view_report_load_complete (nautilus_view);
 }
 
 #if 0

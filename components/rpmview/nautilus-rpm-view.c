@@ -100,23 +100,29 @@ static GtkTargetEntry rpm_dnd_target_table[] = {
 static void nautilus_rpm_view_background_changed     (NautilusRPMView        *rpm_view);
 */
   
-static void nautilus_rpm_view_drag_data_received     (GtkWidget                *widget,
-                                                        GdkDragContext           *context,
-                                                        int                       x,
-                                                        int                       y,
-                                                        GtkSelectionData         *selection_data,
-                                                        guint                     info,
-                                                        guint                     time);
-static void nautilus_rpm_view_initialize_class       (NautilusRPMViewClass   *klass);
-static void nautilus_rpm_view_initialize             (NautilusRPMView        *view);
-static void nautilus_rpm_view_destroy                (GtkObject                *object);
-static void rpm_view_notify_location_change_callback (NautilusView *view,
-                                                        Nautilus_NavigationInfo  *navinfo,
-                                                        NautilusRPMView        *rpm_view);
-static gint check_installed			     (gchar *package_name, gchar *package_version, gchar *package_release);
-static void file_selection_callback		     (GtkCList * clist, int row, int column,
-						      GdkEventButton * event, NautilusRPMView* rpm_view);
-static void go_to_button_callback 		     (GtkWidget * widget, NautilusRPMView *rpm_view);
+static void nautilus_rpm_view_drag_data_received (GtkWidget            *widget,
+                                                  GdkDragContext       *context,
+                                                  int                   x,
+                                                  int                   y,
+                                                  GtkSelectionData     *selection_data,
+                                                  guint                 info,
+                                                  guint                 time);
+static void nautilus_rpm_view_initialize_class   (NautilusRPMViewClass *klass);
+static void nautilus_rpm_view_initialize         (NautilusRPMView      *view);
+static void nautilus_rpm_view_destroy            (GtkObject            *object);
+static void rpm_view_load_location_callback      (NautilusView         *view,
+                                                  const char           *location,
+                                                  NautilusRPMView      *rpm_view);
+static gint check_installed                      (gchar                *package_name,
+                                                  gchar                *package_version,
+                                                  gchar                *package_release);
+static void file_selection_callback              (GtkCList             *clist,
+                                                  int                   row,
+                                                  int                   column,
+                                                  GdkEventButton       *event,
+                                                  NautilusRPMView      *rpm_view);
+static void go_to_button_callback                (GtkWidget            *widget,
+                                                  NautilusRPMView      *rpm_view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
@@ -150,8 +156,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	rpm_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (rpm_view));
 
 	gtk_signal_connect (GTK_OBJECT (rpm_view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (rpm_view_notify_location_change_callback), 
+			    "load_location",
+			    GTK_SIGNAL_FUNC (rpm_view_load_location_callback), 
 			    rpm_view);
 
 	rpm_view->details->current_uri = NULL;
@@ -387,13 +393,10 @@ static void
 go_to_button_callback (GtkWidget * widget, NautilusRPMView *rpm_view)
 {
 	char *path_name;
-	Nautilus_NavigationRequestInfo request;
 	
 	gtk_clist_get_text (GTK_CLIST(rpm_view->details->package_file_list), 
 			    rpm_view->details->selected_file, 0, &path_name);
-	request.requested_uri = path_name;
-	request.new_window_requested = FALSE;
-	nautilus_view_request_location_change(rpm_view->details->nautilus_view, &request);
+	nautilus_view_open_location (rpm_view->details->nautilus_view, path_name);
 }
 
 /* use the package database to see if the passed-in package is installed or not */
@@ -625,27 +628,13 @@ nautilus_rpm_view_load_uri (NautilusRPMView *rpm_view, const char *uri)
 }
 
 static void
-rpm_view_notify_location_change_callback (NautilusView *view, 
-                                          Nautilus_NavigationInfo *navinfo, 
-                                          NautilusRPMView *rpm_view)
+rpm_view_load_location_callback (NautilusView *view, 
+                                 const char *location,
+                                 NautilusRPMView *rpm_view)
 {
-	Nautilus_ProgressRequestInfo progress;
- 
- 	memset(&progress, 0, sizeof(progress));
-
-	/* send required PROGRESS_UNDERWAY signal */
-  
-	progress.type = Nautilus_PROGRESS_UNDERWAY;
-	progress.amount = 0.0;
-	nautilus_view_request_progress_change (rpm_view->details->nautilus_view, &progress);
-
-	/* do the actual work here */
-	nautilus_rpm_view_load_uri (rpm_view, navinfo->actual_uri);
-
-	/* send the required PROGRESS_DONE signal */
-	progress.type = Nautilus_PROGRESS_DONE_OK;
-	progress.amount = 100.0;
-	nautilus_view_request_progress_change (rpm_view->details->nautilus_view, &progress);
+	nautilus_view_report_load_underway (rpm_view->details->nautilus_view);
+	nautilus_rpm_view_load_uri (rpm_view, location);
+	nautilus_view_report_load_complete (rpm_view->details->nautilus_view);
 }
 
 /* handle drag and drop */

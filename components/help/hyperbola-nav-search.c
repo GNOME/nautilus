@@ -128,7 +128,6 @@ hyperbola_navigation_search_ent_activate(GtkWidget *ent, HyperbolaNavigationSear
 static void
 hyperbola_navigation_search_select_row(GtkWidget *clist, gint row, gint column, GdkEvent *event, HyperbolaNavigationSearch *hns)
 {
-  Nautilus_NavigationRequestInfo loc;
   char *uri;
 
   if(!event || event->type != GDK_2BUTTON_PRESS) /* we only care if the user has double-clicked on an item...? */
@@ -137,10 +136,7 @@ hyperbola_navigation_search_select_row(GtkWidget *clist, gint row, gint column, 
   if(gtk_clist_get_text(GTK_CLIST(clist), row, 0, &uri))
     return;
 
-  memset(&loc, 0, sizeof(loc));
-  loc.requested_uri = uri;
-  loc.new_window_requested = FALSE;
-  nautilus_view_request_location_change(hns->nautilus_view, &loc);
+  nautilus_view_open_location (hns->nautilus_view, uri);
 }
 
 BonoboObject *hyperbola_navigation_search_new(void)

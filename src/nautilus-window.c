@@ -73,25 +73,6 @@ static GnomeAppClass *parent_class = NULL;
 /* Other static variables */
 static GSList *history_list = NULL;
 
-/* Stuff for handling the CORBA interface */
-typedef struct {
-	POA_Nautilus_ViewWindow servant;
-	gpointer bonobo_object;
-	
-	NautilusWindow *window;
-} impl_POA_Nautilus_ViewWindow;
-
-/* Implementation functions */
-static const CORBA_char *   impl_Nautilus_ViewWindow__get_current_uri (impl_POA_Nautilus_ViewWindow *servant,
-								       CORBA_Environment            *ev);
-static Nautilus_Application impl_Nautilus_ViewWindow__get_application (impl_POA_Nautilus_ViewWindow *servant,
-								       CORBA_Environment            *ev);
-static void                 impl_Nautilus_ViewWindow_open_uri         (impl_POA_Nautilus_ViewWindow *servant,
-								       CORBA_char                   *uri,
-								       CORBA_Environment            *ev);
-static void                 impl_Nautilus_ViewWindow_close            (impl_POA_Nautilus_ViewWindow *servant,
-								       CORBA_Environment            *ev);
-
 /* Private functions */
 static void               nautilus_window_class_init                    (NautilusWindowClass    *klass);
 static void               nautilus_window_init                          (NautilusWindow         *window);
@@ -117,95 +98,6 @@ static void               window_update_sidebar_panels_from_preferences (Nautilu
 /* Milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
 
-static POA_Nautilus_ViewWindow__epv impl_Nautilus_ViewWindow_epv =
-{
-	NULL,
-	(gpointer) &impl_Nautilus_ViewWindow__get_current_uri,
-	(gpointer) &impl_Nautilus_ViewWindow__get_application,
-	(gpointer) &impl_Nautilus_ViewWindow_open_uri,
-	(gpointer) &impl_Nautilus_ViewWindow_close
-};
-
-static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
-
-static POA_Nautilus_ViewWindow__vepv impl_Nautilus_ViewWindow_vepv =
-{
-	&base_epv,
-	NULL,
-	&impl_Nautilus_ViewWindow_epv
-};
-
-static const CORBA_char *
-impl_Nautilus_ViewWindow__get_current_uri (impl_POA_Nautilus_ViewWindow *servant,
-                                           CORBA_Environment            *ev)
-{
-	return nautilus_window_get_requested_uri (servant->window);
-}
-
-
-static Nautilus_Application
-impl_Nautilus_ViewWindow__get_application (impl_POA_Nautilus_ViewWindow *servant,
-                                           CORBA_Environment            *ev)
-{
-	return CORBA_Object_duplicate(bonobo_object_corba_objref(servant->window->app), ev);
-}
-
-static void
-impl_Nautilus_ViewWindow_open_uri (impl_POA_Nautilus_ViewWindow *servant,
-                                   CORBA_char                   *uri,
-                                   CORBA_Environment            *ev)
-{
-	nautilus_window_goto_uri (servant->window, uri);
-}
-
-static void
-impl_Nautilus_ViewWindow_close (impl_POA_Nautilus_ViewWindow *servant,
-                                CORBA_Environment            *ev)
-{
-	nautilus_window_close (servant->window);
-}
-
-static void
-impl_Nautilus_ViewWindow__destroy(BonoboObject *obj, impl_POA_Nautilus_ViewWindow *servant)
-{
-	PortableServer_ObjectId *objid;
-	CORBA_Environment ev;
-	
-	CORBA_exception_init(&ev);
-	
-	objid = PortableServer_POA_servant_to_id(bonobo_poa(), servant, &ev);
-	PortableServer_POA_deactivate_object(bonobo_poa(), objid, &ev);
-	CORBA_free(objid);
-	obj->servant = NULL;
-	
-	POA_Nautilus_ViewWindow__fini((PortableServer_Servant) servant, &ev);
-	g_free(servant);
-	
-	CORBA_exception_free(&ev);
-}
-
-static BonoboObject *
-impl_Nautilus_ViewWindow__create(NautilusWindow *window)
-{
-	BonoboObject *retval;
-	impl_POA_Nautilus_ViewWindow *newservant;
-	CORBA_Environment ev;
-	
-	CORBA_exception_init(&ev);
-	
-	newservant = g_new0(impl_POA_Nautilus_ViewWindow, 1);
-	newservant->servant.vepv = &impl_Nautilus_ViewWindow_vepv;
-	newservant->window = window;
-	POA_Nautilus_ViewWindow__init((PortableServer_Servant) newservant, &ev);
-	
-	retval = bonobo_object_new_from_servant(newservant);
-	
-	gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_ViewWindow__destroy), newservant);
-	CORBA_exception_free(&ev);
-	
-	return retval;
-}
-	
 GtkType
 nautilus_window_get_type(void)
 {
@@ -264,7 +156,6 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 				 GTK_TYPE_OBJECT,
 				 GTK_ARG_READWRITE,
 				 ARG_CONTENT_VIEW);
-	impl_Nautilus_ViewWindow_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv();
 	
 	widget_class->realize = nautilus_window_realize;
 }
@@ -305,13 +196,7 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
 void
 nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 {
-	Nautilus_NavigationRequestInfo navinfo;
-	
-	memset(&navinfo, 0, sizeof(navinfo));
-	navinfo.requested_uri = (char *)uri;
-	navinfo.new_window_requested = FALSE;
-	
-	nautilus_window_request_location_change (window, &navinfo, NULL);
+	nautilus_window_open_location (window, uri, NULL);
 }
 
 static void
@@ -350,7 +235,7 @@ nautilus_window_constructed (NautilusWindow *window)
   	GnomeDockItemBehavior behavior;
   	int sidebar_width;
 
-  	app = GNOME_APP(window);
+  	app = GNOME_APP (window);
 
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);
@@ -446,10 +331,9 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_add_events (GTK_WIDGET (window->sidebar), GDK_POINTER_MOTION_MASK);
 
 	/* CORBA and Bonobo setup */
-	window->ntl_viewwindow = impl_Nautilus_ViewWindow__create (window);
-	window->uih = bonobo_ui_handler_new ();
-	bonobo_ui_handler_set_app (window->uih, app);
-	bonobo_ui_handler_set_statusbar (window->uih, statusbar);
+	window->ui_handler = bonobo_ui_handler_new ();
+	bonobo_ui_handler_set_app (window->ui_handler, app);
+	bonobo_ui_handler_set_statusbar (window->ui_handler, statusbar);
 
 	/* Create menus and toolbars */
 	nautilus_window_initialize_menus (window);
@@ -463,7 +347,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_stop (window, FALSE);
 
 	/* Set up undo manager */
-	nautilus_undo_share_undo_manager (GTK_OBJECT (window), GTK_OBJECT (window->app));
+	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));
 }
 
 static void
@@ -491,7 +375,7 @@ nautilus_window_set_arg (GtkObject *object,
 		}
 		break;
 	case ARG_APP:
-		window->app = BONOBO_OBJECT(GTK_VALUE_OBJECT(*arg));
+		window->application = NAUTILUS_APPLICATION (GTK_VALUE_OBJECT (*arg));
 		break;
 	case ARG_CONTENT_VIEW:
 		nautilus_window_real_set_content_view (window, (NautilusViewFrame *)GTK_VALUE_OBJECT(*arg));
@@ -511,7 +395,7 @@ nautilus_window_get_arg (GtkObject *object,
 		GTK_VALUE_STRING(*arg) = app->name;
 		break;
 	case ARG_APP:
-		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(NAUTILUS_WINDOW(object)->app);
+		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(NAUTILUS_WINDOW(object)->application);
 		break;
 	case ARG_CONTENT_VIEW:
 		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(((NautilusWindow *)object)->content_view);
@@ -534,8 +418,8 @@ nautilus_window_destroy (NautilusWindow *window)
 
 	nautilus_view_identifier_free (window->content_view_id);
 	
-	CORBA_free (window->ni);
-	CORBA_free (window->si);
+	g_free (window->location);
+	nautilus_g_list_free_deep (window->selection);
 	g_slist_foreach (window->back_list, (GFunc)gtk_object_unref, NULL);
 	g_slist_foreach (window->forward_list, (GFunc)gtk_object_unref, NULL);
 	g_slist_free (window->back_list);
@@ -675,18 +559,18 @@ nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id
         NautilusViewFrame *view;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-        g_return_if_fail (NAUTILUS_WINDOW (window)->ni != NULL);
+        g_return_if_fail (window->location != NULL);
 	g_return_if_fail (id != NULL);
 
-        directory = nautilus_directory_get (window->ni->requested_uri);
+        directory = nautilus_directory_get (window->location);
         g_assert (directory != NULL);
-        nautilus_mime_set_default_component_for_uri (window->ni->requested_uri, 
-        					     id->iid);
+        nautilus_mime_set_default_component_for_uri
+		(window->location, id->iid);
         nautilus_directory_unref (directory);
         
         nautilus_window_allow_stop (window, TRUE);
         
-        view = nautilus_window_load_content_view (window, id, window->ni, NULL);
+        view = nautilus_window_load_content_view (window, id, NULL);
         nautilus_window_set_state_info (window,
                                         (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view,
                                         (NautilusWindowStateItem)0);	
@@ -855,7 +739,7 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 	 */
 	nautilus_window_synch_content_view_menu (window);
 
-        file = nautilus_file_get (window->ni->requested_uri);
+        file = nautilus_file_get (window->location);
         g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	nautilus_choose_component_for_file (file, 
@@ -868,7 +752,7 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 
 void
 nautilus_window_load_content_view_menu (NautilusWindow *window,
-                                        NautilusNavigationInfo *ni)
+					NautilusNavigationInfo *ni)
 {
         GList *p;
         GtkWidget *new_menu;
@@ -948,22 +832,15 @@ nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame 
 void
 nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint distance)
 {
-	Nautilus_NavigationRequestInfo nri;
 	GSList *list;
 	
 	list = back ? window->back_list : window->forward_list;
 	g_assert (g_slist_length (list) > distance);
 	
-	memset(&nri, 0, sizeof(nri));
-	/* FIXME bugzilla.eazel.com 608: 
-	 * Have to cast away the const for nri.requested_uri. This field should be
-	 * declared const. 
-	 */
-	nri.requested_uri = (char *) nautilus_bookmark_get_uri (g_slist_nth_data (list, distance));
-	nri.new_window_requested = FALSE;
-	
 	nautilus_window_begin_location_change
-		(window, &nri, NULL,
+		(window,
+		 nautilus_bookmark_get_uri (g_slist_nth_data (list, distance)),
+		 NULL,
 		 back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
 		 distance);
 }
@@ -980,31 +857,17 @@ nautilus_window_go_forward (NautilusWindow *window)
 	nautilus_window_back_or_forward (window, FALSE, 0);
 }
 
-const char *
-nautilus_window_get_requested_uri (NautilusWindow *window)
-{
-	return window->ni == NULL ? NULL : window->ni->requested_uri;
-}
-
-BonoboUIHandler *
-nautilus_window_get_uih(NautilusWindow *window)
-{
-	return window->uih;
-}
-
 void
 nautilus_window_go_up (NautilusWindow *window)
 {
-	const char *requested_uri;
 	GnomeVFSURI *current_uri;
 	GnomeVFSURI *parent_uri;
 	char *parent_uri_string;
 	
-	requested_uri = nautilus_window_get_requested_uri(window);
-	if (requested_uri == NULL)
+	if (window->location == NULL)
 		return;
 	
-	current_uri = gnome_vfs_uri_new (requested_uri);
+	current_uri = gnome_vfs_uri_new (window->location);
 	parent_uri = gnome_vfs_uri_get_parent (current_uri);
 	gnome_vfs_uri_unref (current_uri);
 	parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
@@ -1033,21 +896,21 @@ void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive(window->back_button, allow); 
-	bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_BACK_ITEM, allow);
+	bonobo_ui_handler_menu_set_sensitivity(window->ui_handler, NAUTILUS_MENU_PATH_BACK_ITEM, allow);
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive(window->forward_button, allow); 
-	bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_FORWARD_ITEM, allow);
+	bonobo_ui_handler_menu_set_sensitivity(window->ui_handler, NAUTILUS_MENU_PATH_FORWARD_ITEM, allow);
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive(window->up_button, allow); 
-	bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UP_ITEM, allow);
+	bonobo_ui_handler_menu_set_sensitivity(window->ui_handler, NAUTILUS_MENU_PATH_UP_ITEM, allow);
 }
 
 void
@@ -1108,88 +971,120 @@ nautilus_get_history_list (void)
 }
 
 static void
-nautilus_window_request_location_change_callback (NautilusViewFrame *view, 
-						  Nautilus_NavigationRequestInfo *info, 
+nautilus_window_open_location_callback (NautilusViewFrame *view,
+					const char *location,
+					NautilusWindow *window)
+{
+	nautilus_window_open_location (window, location, view);
+}
+
+static void
+nautilus_window_open_location_in_new_window_callback (NautilusViewFrame *view,
+						      const char *location,
+						      NautilusWindow *window)
+{
+	nautilus_window_open_location_in_new_window (window, location, view);
+}
+
+static void
+nautilus_window_report_location_change_callback (NautilusViewFrame *view,
+						 const char *location,
+						 NautilusWindow *window)
+{
+	nautilus_window_report_location_change (window, location, view);
+}
+
+static void
+nautilus_window_report_selection_change_callback (NautilusViewFrame *view,
+						  GList *selection,
 						  NautilusWindow *window)
 {
-	nautilus_window_request_location_change(window, info, view);
-}
-
-
-static void
-nautilus_window_request_selection_change_callback (NautilusViewFrame *view, 
-						   Nautilus_SelectionRequestInfo *info, 
-						   NautilusWindow *window)
-{
-	nautilus_window_request_selection_change(window, info, view);
+	nautilus_window_report_selection_change (window, selection, view);
 }
 
 static void
-nautilus_window_request_status_change_callback (NautilusViewFrame *view,
-						Nautilus_StatusRequestInfo *info,
-						NautilusWindow *window)
+nautilus_window_report_status_callback (NautilusViewFrame *view,
+					const char *status,
+					NautilusWindow *window)
 {
-	nautilus_window_request_status_change (window, info, view);  
+	nautilus_window_report_status (window, status, view);
 }
 
 static void
-nautilus_window_request_progress_change_callback (NautilusViewFrame *view,
-						  Nautilus_ProgressRequestInfo *info,
-						  NautilusWindow *window)
+nautilus_window_report_load_underway_callback (NautilusViewFrame *view,
+					       NautilusWindow *window)
 {
-	nautilus_window_request_progress_change (window, info, view);  
+	nautilus_window_report_load_underway (window, view);
 }
 
 static void
-nautilus_window_request_title_change_callback (NautilusViewFrame *view,
-                                               const char *new_title,
-                                               NautilusWindow *window)
+nautilus_window_report_load_progress_callback (NautilusViewFrame *view,
+					       double fraction_done,
+					       NautilusWindow *window)
 {
-	nautilus_window_request_title_change (window, new_title, view);  
+	nautilus_window_report_load_progress (window, fraction_done, view);
+}
+
+static void
+nautilus_window_report_load_complete_callback (NautilusViewFrame *view,
+					       NautilusWindow *window)
+{
+	nautilus_window_report_load_complete (window, view);
+}
+
+static void
+nautilus_window_report_load_failed_callback (NautilusViewFrame *view,
+					     NautilusWindow *window)
+{
+	nautilus_window_report_load_failed (window, view);
+}
+
+static void
+nautilus_window_set_title_callback (NautilusViewFrame *view, 
+				    const char *title,
+				    NautilusWindow *window)
+{
+	nautilus_window_set_title (window, title, view);
 }
 
 void
-nautilus_window_connect_view(NautilusWindow *window, NautilusViewFrame *view)
+nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
 	GtkObject *view_object;
 	
 	view_object = GTK_OBJECT (view);
-	gtk_signal_connect (view_object,
-			    "request_location_change", 
-			    nautilus_window_request_location_change_callback, 
-			    window);
-	gtk_signal_connect (view_object, 
-			    "request_selection_change", 
-			    nautilus_window_request_selection_change_callback, 
-			    window);
-	gtk_signal_connect (view_object, 
-			    "request_status_change", 
-			    nautilus_window_request_status_change_callback, 
-			    window);
-	gtk_signal_connect (view_object, 
-			    "request_progress_change", 
-			    nautilus_window_request_progress_change_callback, 
-			    window);
-	gtk_signal_connect_object (view_object,
-			    	   "destroy",
-			    	   nautilus_window_view_destroyed,
-			    	   GTK_OBJECT (window));
+
+	#define CONNECT(signal) gtk_signal_connect (view_object, #signal, nautilus_window_##signal##_callback, window)
+
+	CONNECT (open_location);
+	CONNECT (open_location_in_new_window);
+	CONNECT (report_location_change);
+	CONNECT (report_selection_change);
+	CONNECT (report_status);
+	CONNECT (report_load_underway);
+	CONNECT (report_load_progress);
+	CONNECT (report_load_complete);
+	CONNECT (report_load_failed);
+	CONNECT (set_title);
+
+	#undef CONNECT
+
+	gtk_signal_connect_object
+		(view_object,
+		 "destroy",
+		 nautilus_window_view_destroyed,
+		 GTK_OBJECT (window));
+	gtk_signal_connect_object
+		(view_object,
+		 "client_gone",
+		 nautilus_window_view_destroyed,
+		 GTK_OBJECT (window));
 }
 
 void
 nautilus_window_connect_content_view (NautilusWindow *window, NautilusViewFrame *view)
 {
-	GtkObject *view_object;
-	
-	/* First connect with NautilusViewFrame signals. */
 	nautilus_window_connect_view (window, NAUTILUS_VIEW_FRAME (view));
-	
-	/* Now connect with NautilusContentViewFrame signals. */
-	view_object = GTK_OBJECT(view);
-	gtk_signal_connect (view_object,
-			    "request_title_change", 
-			    nautilus_window_request_title_change_callback, 
-			    window);
 }
 
 void
@@ -1249,12 +1144,9 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 void
 nautilus_window_reload (NautilusWindow *window)
 {
-	Nautilus_NavigationRequestInfo nri;
-
-	memset(&nri, 0, sizeof(nri));
-	nri.requested_uri = (char *)nautilus_window_get_requested_uri (window);
-	nri.new_window_requested = FALSE;
-	nautilus_window_begin_location_change (window, &nri, NULL, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
+	nautilus_window_begin_location_change
+		(window, window->location, NULL,
+		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
 }
 
 /**
@@ -1359,13 +1251,8 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 		if (sidebar_panel == NULL) {
 			gboolean load_result;
 
-			sidebar_panel = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type(), 
-									     "main_window", 
-									     window, 
-									     NULL));
-			
-			g_assert (sidebar_panel != NULL);
-			
+			sidebar_panel = nautilus_view_frame_new (window->ui_handler,
+								 window->application->undo_manager);
 			nautilus_window_connect_view (window, sidebar_panel);
 			
 			load_result = nautilus_view_frame_load_client (sidebar_panel, identifier->iid);

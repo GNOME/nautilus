@@ -25,6 +25,7 @@
 #ifndef NAUTILUS_DESKTOP_WINDOW_H
 #define NAUTILUS_DESKTOP_WINDOW_H
 
+#include "nautilus-window.h"
 #include "nautilus-application.h"
 
 #define NAUTILUS_TYPE_DESKTOP_WINDOW            (nautilus_desktop_window_get_type())
@@ -44,7 +45,7 @@ typedef struct {
 	NautilusWindowClass parent_spot;
 } NautilusDesktopWindowClass;
 
-GtkType nautilus_desktop_window_get_type (void);
-NautilusDesktopWindow *nautilus_desktop_window_new (NautilusApp *application);
+GtkType                nautilus_desktop_window_get_type (void);
+NautilusDesktopWindow *nautilus_desktop_window_new      (NautilusApplication *application);
 
 #endif /* NAUTILUS_DESKTOP_WINDOW_H */

@@ -125,19 +125,13 @@ file_menu_new_window_callback (BonoboUIHandler *ui_handler,
 			       gpointer user_data, 
 			       const char *path)
 {
-	NautilusWindow *current_mainwin;
-	NautilusWindow *new_mainwin;
+	NautilusWindow *current_window;
+	NautilusWindow *new_window;
 	
-	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
-	
-	current_mainwin = NAUTILUS_WINDOW (user_data);
-	
-	new_mainwin = nautilus_app_create_window (NAUTILUS_APP (current_mainwin->app));
-	
-	nautilus_window_goto_uri (new_mainwin, 
-				  nautilus_window_get_requested_uri (current_mainwin));
-	
-	gtk_widget_show (GTK_WIDGET (new_mainwin));
+	current_window = NAUTILUS_WINDOW (user_data);
+	new_window = nautilus_application_create_window (current_window->application);
+	nautilus_window_goto_uri (new_window, current_window->location);
+	gtk_widget_show (GTK_WIDGET (new_window));
 }
 
 static void
@@ -163,7 +157,7 @@ edit_menu_undo_callback (BonoboUIHandler *ui_handler,
 		  	 const char *path) 
 {
 	nautilus_undo_manager_undo
-		(NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (NAUTILUS_WINDOW (user_data)->app)->undo_manager));
+		(NAUTILUS_WINDOW (user_data)->application->undo_manager);
 }
 
 static void
@@ -171,11 +165,11 @@ edit_menu_cut_callback (BonoboUIHandler *ui_handler,
 		  	gpointer user_data, 
 		  	const char *path) 
 {
-	GtkWindow *main_window;
+	GtkWindow *window;
 
-	main_window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
-		gtk_editable_cut_clipboard (GTK_EDITABLE (main_window->focus_widget));
+	window = GTK_WINDOW (user_data);
+	if (GTK_IS_EDITABLE (window->focus_widget)) {
+		gtk_editable_cut_clipboard (GTK_EDITABLE (window->focus_widget));
 	}
 
 }
@@ -185,11 +179,11 @@ edit_menu_copy_callback (BonoboUIHandler *ui_handler,
 		   	 gpointer user_data,
 		   	 const char *path) 
 {
-	GtkWindow *main_window;
+	GtkWindow *window;
 
-	main_window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
-		gtk_editable_copy_clipboard (GTK_EDITABLE (main_window->focus_widget));
+	window = GTK_WINDOW (user_data);
+	if (GTK_IS_EDITABLE (window->focus_widget)) {
+		gtk_editable_copy_clipboard (GTK_EDITABLE (window->focus_widget));
 	}
 
 }
@@ -200,11 +194,11 @@ edit_menu_paste_callback (BonoboUIHandler *ui_handler,
 		    	  gpointer user_data,
 		    	  const char *path) 
 {
-	GtkWindow *main_window;
+	GtkWindow *window;
 
-	main_window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
-		gtk_editable_paste_clipboard (GTK_EDITABLE (main_window->focus_widget));
+	window = GTK_WINDOW (user_data);
+	if (GTK_IS_EDITABLE (window->focus_widget)) {
+		gtk_editable_paste_clipboard (GTK_EDITABLE (window->focus_widget));
 	}
 
 }
@@ -215,12 +209,12 @@ edit_menu_clear_callback (BonoboUIHandler *ui_handler,
 		    	  gpointer user_data,
 		    	  const char *path) 
 {
-	GtkWindow *main_window;
+	GtkWindow *window;
 
-	main_window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
+	window = GTK_WINDOW (user_data);
+	if (GTK_IS_EDITABLE (window->focus_widget)) {
 		/* A negative index deletes until the end of the string */
-		gtk_editable_delete_text (GTK_EDITABLE (main_window->focus_widget),0, -1);
+		gtk_editable_delete_text (GTK_EDITABLE (window->focus_widget),0, -1);
 	}
 
 }
@@ -479,7 +473,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	 */
 	name = nautilus_str_double_underscores
 		(nautilus_bookmark_get_name (bookmark));
- 	bonobo_ui_handler_menu_new_item (window->uih,
+ 	bonobo_ui_handler_menu_new_item (window->ui_handler,
 					 menu_item_path,
 					 name,
 					 _("Go to the specified location"),
@@ -494,7 +488,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 
 	/* We must use "set_callback" since we have a destroy-notify function. */
 	bonobo_ui_handler_menu_set_callback
-		(window->uih, menu_item_path,
+		(window->ui_handler, menu_item_path,
 		 activate_bookmark_in_menu_item,
 		 bookmark_holder, (GDestroyNotify) bookmark_holder_free);
 }
@@ -519,12 +513,12 @@ clear_appended_bookmark_items (NautilusWindow *window,
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	children = bonobo_ui_handler_menu_get_child_paths (window->uih, menu_path);
+	children = bonobo_ui_handler_menu_get_child_paths (window->ui_handler, menu_path);
 	found_dynamic_items = FALSE;
 
 	for (p = children; p != NULL; p = p->next) {
                 if (found_dynamic_items) {
-                        bonobo_ui_handler_menu_remove (window->uih, p->data);
+                        bonobo_ui_handler_menu_remove (window->ui_handler, p->data);
 		} else if (strcmp ((const char *) p->data, last_static_item_path) == 0) {
 			found_dynamic_items = TRUE;
 		}
@@ -583,7 +577,7 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 	g_return_if_fail(NAUTILUS_IS_WINDOW (window));
 
 	g_assert (strcmp (nautilus_bookmark_get_uri (window->current_location_bookmark), 
-		          nautilus_window_get_requested_uri(window)) == 0);
+		          window->location) == 0);
 	/* Use the first bookmark in the history list rather than creating a new one. */
 	bookmark = window->current_location_bookmark;
 
@@ -657,7 +651,7 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 static void
 append_separator (NautilusWindow *window, const char *separator_path)
 {
-        bonobo_ui_handler_menu_new_separator (window->uih,
+        bonobo_ui_handler_menu_new_separator (window->ui_handler,
                                               separator_path,
                                               -1);
 }
@@ -670,7 +664,7 @@ new_top_level_menu (NautilusWindow *window,
 	/* Note that we don't bother with hints for menu titles.
 	 * We can revisit this anytime if someone thinks they're useful.
 	 */
-	bonobo_ui_handler_menu_new_subtree (window->uih,
+	bonobo_ui_handler_menu_new_subtree (window->ui_handler,
 					    menu_path,
 					    title,
 					    NULL,
@@ -692,7 +686,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 {
         BonoboUIHandler *ui_handler;
 
-        ui_handler = window->uih;
+        ui_handler = window->ui_handler;
         g_assert (ui_handler != NULL);
         
         bonobo_ui_handler_create_menubar (ui_handler);
@@ -997,7 +991,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	/* Connect to undo manager so it will handle the menu item. */
 	nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item
-		(NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager),
+		(window->application->undo_manager,
 		 ui_handler, NAUTILUS_MENU_PATH_UNDO_ITEM,
 		 _("_Undo"), _("Undo the last text change"));
 	
@@ -1120,7 +1114,7 @@ update_user_level_menu_items (NautilusWindow *window)
 	user_level = nautilus_user_level_manager_get_user_level ();
 
  	/* Update the user radio group to reflect reality */
-	bonobo_ui_handler_menu_set_radio_state (window->uih, 
+	bonobo_ui_handler_menu_set_radio_state (window->ui_handler, 
 						convert_user_level_to_menu_path (user_level),
 						TRUE);
 
@@ -1129,13 +1123,13 @@ update_user_level_menu_items (NautilusWindow *window)
 	 * It cant find a bonobo ui handler call to hide a menu item, so make it 
 	 * insensitive for now.
 	 */
-	bonobo_ui_handler_menu_set_sensitivity (window->uih,
+	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
 						NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE,
 						(user_level > 0));
 
 
  	/* Update the "Customize Settings..." item to reflect the user level to customize */
-	bonobo_ui_handler_menu_set_label (window->uih,
+	bonobo_ui_handler_menu_set_label (window->ui_handler,
 					  NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE,
 					  customize_string);
 

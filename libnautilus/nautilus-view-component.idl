@@ -1,101 +1,131 @@
 /* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
-#ifndef _NAUTILUS_VIEW_COMPONENT_IDL_INCLUDED_
-#define _NAUTILUS_VIEW_COMPONENT_IDL_INCLUDED_
+#ifndef NAUTILUS_VIEW_COMPONENT_IDL
+#define NAUTILUS_VIEW_COMPONENT_IDL
 
-#include <gnome-factory.idl>
 #include <Bonobo.idl>
 
 module Nautilus {
-	struct NavigationRequestInfo {
-		string requested_uri;
-		boolean new_window_requested;
-	};
-	
-	struct NavigationInfo {
-		string requested_uri, actual_uri, content_type;
-		string referring_uri, actual_referring_uri, referring_content_type;
-		
-		Object content_view;
-		boolean self_originated;
-	};
-	
-	struct SelectionInfo {
-		sequence<string> selected_uris;
-		
-		Object content_view;
-		boolean self_originated;
-	};
-	
-	struct SelectionRequestInfo {
-		sequence<string> selected_uris;
-	};
-	
-	struct StatusRequestInfo {
-		string status_string;
-	};
-	
-	enum ProgressType { PROGRESS_DONE_OK, PROGRESS_DONE_ERROR, PROGRESS_UNDERWAY };
-	
-	struct ProgressRequestInfo {
-		ProgressType type;
-		double amount;
-	};
-	
+
+	/* URIs are just plain strings, but we use a typedef to make
+	 * the interface definitions clearer.
+	 */
+	typedef string URI;
+	typedef sequence<URI> URIList;
+
+	/* The View interface is used by the Nautilus shell to control
+	 * the view. The view is always a Bonobo::Control, but can
+	 * choose to implement the View interface for additional finer
+	 * control by Nautilus.
+	 */
 	interface View : ::Bonobo::Unknown {
-		void save_state (in string config_path);
-		void load_state (in string config_path);
-		oneway void notify_location_change (in NavigationInfo navinfo);
-		oneway void stop_location_change ();
-		oneway void notify_selection_change (in SelectionInfo selinfo);
+		/* Called to tell the view about location changes.
+		 * Called again with the same parameter to request a
+		 * reload. Not called on the view that reported a
+		 * location change with report_location_change, but is
+		 * called on all other views, and on all views if
+		 * open_location or open_location_in_new_window is
+		 * used.
+		 */
+		oneway void load_location (in URI location);
+		oneway void stop_loading ();
 		
-		oneway void show_properties (); // Requests that the client show its properties
+		/* Called to tell the view about selection changes.
+		 * Like load, it's called on all views except the one
+		 * that calls report_selection_change. If you call
+		 * set_selection instead, it's called on all views,
+		 * even the requesting one.
+		 */
+		oneway void selection_changed (in URIList selection);
 	};
 	
-	interface ViewWindow;
-	
+	/* The ViewFrame interface is used by the view to communicate
+	 * with the Nautilus shell. It's implemented as an interface
+	 * on the Bonobo::ControlFrame for the view.
+	 */
 	interface ViewFrame : ::Bonobo::Unknown {
-		readonly attribute ViewWindow main_window;
-		oneway void request_status_change (in StatusRequestInfo statinfo);
-		oneway void request_location_change (in NavigationRequestInfo navinfo);
-		oneway void request_selection_change (in SelectionRequestInfo selinfo);
-		oneway void request_progress_change (in ProgressRequestInfo proginfo);
-		oneway void request_title_change (in string new_title);
+		/* Called by the view component to change the location
+		 * shown in the window or to open a new window. The
+		 * report version is used when the view has already
+		 * changed its location and would confused by an
+		 * additional load call. It is deprecated, and you
+		 * should use it only if absolutely necessary.
+		 */
+		oneway void open_location (in URI location);
+		oneway void open_location_in_new_window (in URI location);
+		oneway void report_location_change (in URI location);
+
+		/* Called by a view component to announce a change in the
+		 * selection. This selection change will be reported back
+		 * to the original view along with the others.
+		 */
+		oneway void report_selection_change (in URIList selection);
+
+		/* Called by a view component to change the contents
+		 * of the status bar.
+		 */
+		oneway void report_status (in string status);
+
+		/* Called by a view component to give an update about
+		 * progress loading the view for the current
+		 * location. Calling underway repeatedly tells the
+		 * shell that the view is making progress. For views
+		 * that know how far along they are, calling
+		 * report_load_progress (instead of
+		 * report_load_underway) with a number from 0.0 to 1.0
+		 * expresses how much of the total is done. When the
+		 * load is complete or has failed, either
+		 * report_load_failed or report_load_complete
+		 * indicates that.
+		 */
+		oneway void report_load_underway ();
+		oneway void report_load_progress (in double fraction_done);
+		oneway void report_load_complete ();
+		oneway void report_load_failed ();
+
+		/* Called by a view component to change the title. */
+		oneway void set_title (in string new_title);
 	};
 	
-	// typedef sequence<double> ZoomLevelList;
+	/* FIXME: Implement "preferred zoom levels" or delete. */
+	typedef sequence<double> ZoomLevelList;
 	
+	/* The interface for something zoomable. Nautilus looks for
+	 * this interface on Bonobo controls that it uses as views. If
+	 * the interface is present, it shows a control in the toolbar
+	 * for zooming. It's still the component's job to save the
+	 * zoom level.
+	 */
 	interface Zoomable : ::Bonobo::Unknown {
+		/* Set this attribute to make the thing zoom. */
 		attribute double zoom_level;
+
+		/* Information about the type of zooming that's supported. */
 		readonly attribute double min_zoom_level;
 		readonly attribute double max_zoom_level;
 		readonly attribute boolean is_continuous;
+		/* FIXME: Implement "preferred zoom levels" or delete. */
 		// readonly attribute ZoomLevelList preferred_zoom_levels;
 		
+		/* High level operations.
+		 * These can cause a change in the zoom level.
+		 * The zoomable itself must decide what the concepts
+		 * "one level in", "one level out", and "to fit" mean.
+		 */
 		oneway void zoom_in ();
 		oneway void zoom_out ();
+		/* FIXME: Implement "zoom to fit" or delete. */
 		oneway void zoom_to_fit ();
 	};
 	
+	/* A zoomable has the responsibility to look for this
+	 * interface on its Bonobo control frame and call
+	 * zoom_level_changed whenever it changes the zoom level (on
+	 * its own or due to calls from the zoomable interface).
+	 */
 	interface ZoomableFrame : ::Bonobo::Unknown {
-		oneway void notify_zoom_level (in double zoom_level);
-	};
-	
-	interface Application;
-	
-	interface ViewWindow : ::Bonobo::Unknown {
-		readonly attribute string current_uri;
-		readonly attribute Application application;
-		void open_uri (in string uri);
-		void close ();
-	};
-	
-	typedef sequence<ViewWindow> ViewWindowList;
-	
-	interface Application : ::Bonobo::GenericFactory, ::Bonobo::Unknown {
-		readonly attribute ViewWindowList view_windows;
-		ViewWindow new_view_window ();
+		oneway void zoom_level_changed (in double zoom_level);
 	};
 };
 
-#endif /* _NAUTILUS_VIEW_COMPONENT_IDL_INCLUDED_ */
+#endif /* NAUTILUS_VIEW_COMPONENT_IDL */

@@ -207,18 +207,18 @@ setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 	GtkWidget *widget;
 	char *full_name;
 	
-	if (!strcmp(theme_name, "standard"))
-		full_name = g_strdup(icon_name);
+	if (strcmp(theme_name, "standard") == 0)
+		full_name = g_strdup (icon_name);
 	else
-		 full_name = g_strdup_printf("nautilus/%s/%s.png", theme_name, icon_name);
+		full_name = g_strdup_printf ("nautilus/%s/%s.png", theme_name, icon_name);
 	
-	list = gtk_container_children(GTK_CONTAINER(GTK_BIN(button)->child));
-	widget = GTK_WIDGET(list->data);
-	g_list_free(list);
+	list = gtk_container_children (GTK_CONTAINER (GTK_BIN (button)->child));
+	widget = GTK_WIDGET (list->data);
+	g_list_free (list);
 	
-	gnome_stock_set_icon(GNOME_STOCK(widget), full_name);
-	g_free(full_name);
-	gtk_widget_queue_resize(button); 
+	gnome_stock_set_icon (GNOME_STOCK (widget), full_name);
+	g_free (full_name);
+	gtk_widget_queue_resize (button); 
 }
 
 
@@ -255,7 +255,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 
 	gnome_app_set_toolbar (app, GTK_TOOLBAR (toolbar));
 			
-	bonobo_ui_handler_set_toolbar (window->uih, "Main", toolbar);
+	bonobo_ui_handler_set_toolbar (window->ui_handler, "Main", toolbar);
 
 	gtk_signal_connect (GTK_OBJECT (window->back_button),
 	      "button_press_event",
@@ -274,10 +274,11 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 }
  
 void
-nautilus_window_toolbar_remove_theme_callback()
+nautilus_window_toolbar_remove_theme_callback (void)
 {
-nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
-				     (NautilusPreferencesCallback) setup_toolbar_images, NULL);
+	nautilus_preferences_remove_callback
+		(NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
+		 (NautilusPreferencesCallback) setup_toolbar_images, NULL);
 }
  
  

@@ -97,9 +97,9 @@ history_view_update_icons (GtkCList *clist)
 }
 
 static void
-hyperbola_navigation_history_notify_location_change (NautilusView *view,
-						     Nautilus_NavigationInfo *loci,
-						     HistoryView *hview)
+hyperbola_navigation_history_load_location (NautilusView *view,
+                                            const char *location,
+                                            HistoryView *hview)
 {
   char *cols[HISTORY_VIEW_COLUMN_COUNT];
   int new_rownum;
@@ -119,14 +119,14 @@ hyperbola_navigation_history_notify_location_change (NautilusView *view,
    * keeping a parallel mechanism here. That will get us the right
    * short name for different locations.
    */
-  vfs_uri = gnome_vfs_uri_new (loci->requested_uri);
+  vfs_uri = gnome_vfs_uri_new (location);
   if (vfs_uri == NULL) {
-    short_name = g_strdup (loci->requested_uri);
+    short_name = g_strdup (location);
   } else {
     short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
     gnome_vfs_uri_unref (vfs_uri);
   }
-  bookmark = nautilus_bookmark_new (loci->requested_uri, short_name);
+  bookmark = nautilus_bookmark_new (location, short_name);
   g_free (short_name);
 
   
@@ -172,8 +172,6 @@ static void
 hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, GdkEvent *event,
 					HistoryView *hview)
 {
-  Nautilus_NavigationRequestInfo reqi;
-
   if(hview->notify_count > 0)
     return;
 
@@ -188,12 +186,7 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   if(gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL)
     gtk_clist_moveto(clist, row, -1, 0.5, 0.0);
 
-  /* FIXME bugzilla.eazel.com 706:
-   * gotta cast away const because requested_uri isn't defined correctly */
-  reqi.requested_uri = (char *)get_uri_from_row (clist, row);
-  reqi.new_window_requested = FALSE;
-
-  nautilus_view_request_location_change(hview->view, &reqi);
+  nautilus_view_open_location (hview->view, get_uri_from_row (clist, row));
 
   gtk_clist_thaw(clist);
 }
@@ -242,7 +235,8 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   hview->clist = (GtkCList *)clist;
 
   /* handle events */
-  gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
+  gtk_signal_connect(GTK_OBJECT(hview->view), "load_location",
+                     hyperbola_navigation_history_load_location, hview);
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
 
   gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),

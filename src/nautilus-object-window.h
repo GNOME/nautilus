@@ -35,6 +35,8 @@
 #include "nautilus-applicable-views.h"
 #include "nautilus-view-frame.h"
 #include "nautilus-sidebar.h"
+#include "nautilus-application.h"
+#include <bonobo/bonobo-ui-handler.h>
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type())
 #define NAUTILUS_WINDOW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
@@ -42,14 +44,17 @@
 #define NAUTILUS_IS_WINDOW(obj)	        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
 #define NAUTILUS_IS_WINDOW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_WINDOW))
 
-typedef struct _NautilusWindow NautilusWindow;
+#ifndef NAUTILUS_WINDOW_DEFINED
+#define NAUTILUS_WINDOW_DEFINED
+typedef struct NautilusWindow NautilusWindow;
+#endif
 
 typedef struct {
   GnomeAppClass parent_spot;
   GnomeAppClass *parent_class;
 } NautilusWindowClass;
 
-typedef struct _NautilusWindowStateInfo NautilusWindowStateInfo;
+typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;
 
 typedef enum {
   NAUTILUS_LOCATION_CHANGE_STANDARD,
@@ -58,7 +63,7 @@ typedef enum {
   NAUTILUS_LOCATION_CHANGE_RELOAD
 } NautilusLocationChangeType;
 
-struct _NautilusWindow {
+struct NautilusWindow {
   GnomeApp parent_object;
 
   /** UI stuff **/
@@ -69,18 +74,17 @@ struct _NautilusWindow {
   guint statusbar_ctx, statusbar_clear_id;
 
   /** CORBA-related elements **/
-  BonoboObject *ntl_viewwindow;
-  BonoboUIHandler *uih;
-  BonoboObject *app;
-
+  BonoboUIHandler *ui_handler;
+  NautilusApplication *application;
+  
   /* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
   gboolean updating_bonobo_radio_menu_item;
 
   /** State information **/
 
   /* Information about current location/selection */
-  Nautilus_NavigationInfo *ni;
-  Nautilus_SelectionInfo *si;
+  char *location;
+  GList *selection;
   char *requested_title;
   char *default_title;
   
@@ -148,8 +152,6 @@ void             nautilus_window_goto_uri             (NautilusWindow    *window
 void             nautilus_window_go_home              (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
-const char *     nautilus_window_get_requested_uri    (NautilusWindow    *window);
-BonoboUIHandler *nautilus_window_get_uih              (NautilusWindow    *window);
 void             nautilus_window_allow_back           (NautilusWindow    *window,
                                                        gboolean           allow);
 void             nautilus_window_allow_forward        (NautilusWindow    *window,

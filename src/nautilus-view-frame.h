@@ -31,8 +31,10 @@
 #define NAUTILUS_VIEW_FRAME_H
 
 #include <libnautilus-extensions/nautilus-generous-bin.h>
-#include <bonobo.h>
+#include <bonobo/bonobo-object-client.h>
+#include <bonobo/bonobo-ui-handler.h>
 #include <libnautilus/nautilus-view-component.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,9 +50,10 @@ typedef struct NautilusViewComponentType NautilusViewComponentType;
 
 typedef struct {
         NautilusGenerousBin parent;
-        
-        GtkWidget *main_window;
-        
+
+        BonoboUIHandler *ui_handler;
+        NautilusUndoManager *undo_manager;
+     
         char *iid;
         
         BonoboObjectClient *client_object;
@@ -77,68 +80,68 @@ typedef struct {
         /* These signals correspond to the Nautilus::ViewFrame CORBA interface. They
          * are requests that the underlying view may make of the shell via the frame.
          */
-        void (*request_location_change)	 (NautilusViewFrame *view,
-					  Nautilus_NavigationRequestInfo *navinfo);
-        void (*request_selection_change) (NautilusViewFrame *view,
-                                          Nautilus_SelectionRequestInfo *selinfo);
-        void (*request_status_change)    (NautilusViewFrame *view,
-                                          Nautilus_StatusRequestInfo *loc);
-        void (*request_progress_change)  (NautilusViewFrame *view,
-                                          Nautilus_ProgressRequestInfo *loc);
-        void (*request_title_change)     (NautilusViewFrame *view,
-                                          const char *title);
+        void (* open_location)	             (NautilusViewFrame *view,
+                                              const char *location);
+        void (* open_location_in_new_window) (NautilusViewFrame *view,
+                                              const char *location);
+        void (* report_location_change)	     (NautilusViewFrame *view,
+                                              const char *location);
+        void (* report_selection_change)     (NautilusViewFrame *view,
+                                              GList *selection); /* list of char * */
+        void (* report_status)               (NautilusViewFrame *view,
+                                              const char *status);
+        void (* report_load_underway)        (NautilusViewFrame *view);
+        void (* report_load_progress)        (NautilusViewFrame *view,
+                                              double fraction_done);
+        void (* report_load_complete)        (NautilusViewFrame *view);
+        void (* report_load_failed)          (NautilusViewFrame *view);
+        void (* set_title)                   (NautilusViewFrame *view,
+                                              const char *title);
 
         /* Part of Nautilus::ZoomableFrame CORBA interface. */
-        void (*notify_zoom_level)        (NautilusViewFrame *view,
-                                          gdouble       zoom_level);
-        
-        /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
-        void (*view_constructed)         (NautilusViewFrame *view);
-        
-        guint num_construct_args;
-        
-        gpointer servant_init_func, servant_destroy_func, vepv;
-        gpointer zoomable_servant_init_func, zoomable_servant_destroy_func, zoomable_vepv;
+        void (* zoom_level_changed)         (NautilusViewFrame *view,
+                                             double zoom_level);
+
+        /* Error handling for when client goes away. */
+        void (* client_gone)                (NautilusViewFrame *view);
 } NautilusViewFrameClass;
 
-GtkType       nautilus_view_frame_get_type                (void);
-gboolean      nautilus_view_frame_load_client             (NautilusViewFrame       *view,
-                                                           const char              *iid);
-const char *  nautilus_view_frame_get_iid                 (NautilusViewFrame       *view);
-CORBA_Object  nautilus_view_frame_get_client_objref       (NautilusViewFrame       *view);
-BonoboObject *nautilus_view_frame_get_control_frame       (NautilusViewFrame       *view);
-CORBA_Object  nautilus_view_frame_get_objref              (NautilusViewFrame       *view);
+GtkType            nautilus_view_frame_get_type           (void);
+NautilusViewFrame *nautilus_view_frame_new                (BonoboUIHandler     *ui_handler,
+                                                           NautilusUndoManager *undo_manager);
+gboolean           nautilus_view_frame_load_client        (NautilusViewFrame   *view,
+                                                           const char          *iid);
+const char *       nautilus_view_frame_get_iid            (NautilusViewFrame   *view);
+CORBA_Object       nautilus_view_frame_get_client_objref  (NautilusViewFrame   *view);
+BonoboObject *     nautilus_view_frame_get_control_frame  (NautilusViewFrame   *view);
+CORBA_Object       nautilus_view_frame_get_objref         (NautilusViewFrame   *view);
 
 /* These functions correspond to methods of the Nautilus:View CORBAinterface. */
-void          nautilus_view_frame_notify_location_change  (NautilusViewFrame       *view,
-                                                           Nautilus_NavigationInfo *nav_context);
-void          nautilus_view_frame_notify_selection_change (NautilusViewFrame       *view,
-                                                           Nautilus_SelectionInfo  *sel_context);
-void          nautilus_view_frame_load_state              (NautilusViewFrame       *view,
-                                                           const char              *config_path);
-void          nautilus_view_frame_save_state              (NautilusViewFrame       *view,
-                                                           const char              *config_path);
-void          nautilus_view_frame_show_properties         (NautilusViewFrame       *view);
-void          nautilus_view_frame_stop_location_change    (NautilusViewFrame       *view);
-void          nautilus_view_frame_set_active_errors       (NautilusViewFrame       *view,
-                                                           gboolean                 enabled);
-gboolean      nautilus_view_frame_is_zoomable             (NautilusViewFrame       *view);
-gdouble       nautilus_view_frame_get_zoom_level          (NautilusViewFrame       *view);
-void          nautilus_view_frame_set_zoom_level          (NautilusViewFrame       *view,
-                                                           gdouble                  zoom_level);
-gdouble       nautilus_view_frame_get_min_zoom_level      (NautilusViewFrame       *view);
-gdouble       nautilus_view_frame_get_max_zoom_level      (NautilusViewFrame       *view);
-gboolean      nautilus_view_frame_get_is_continuous       (NautilusViewFrame       *view);
-void          nautilus_view_frame_zoom_in                 (NautilusViewFrame       *view);
-void          nautilus_view_frame_zoom_out                (NautilusViewFrame       *view);
-void          nautilus_view_frame_zoom_to_fit             (NautilusViewFrame       *view);
-char *        nautilus_view_frame_get_label               (NautilusViewFrame       *view);
-void          nautilus_view_frame_set_label               (NautilusViewFrame       *view,
-                                                           const char              *label);
-void          nautilus_view_frame_activate                (NautilusViewFrame       *view);
+void               nautilus_view_frame_load_location      (NautilusViewFrame   *view,
+                                                           const char          *location);
+void               nautilus_view_frame_stop_loading       (NautilusViewFrame   *view);
+void               nautilus_view_frame_selection_changed  (NautilusViewFrame   *view,
+                                                           GList               *selection);
 
-/* This is a "protected" operation */
-void          nautilus_view_frame_construct_arg_set       (NautilusViewFrame       *view);
+/* Nautilus:Zoomable */
+gboolean           nautilus_view_frame_is_zoomable        (NautilusViewFrame   *view);
+gdouble            nautilus_view_frame_get_zoom_level     (NautilusViewFrame   *view);
+void               nautilus_view_frame_set_zoom_level     (NautilusViewFrame   *view,
+                                                           double               zoom_level);
+gdouble            nautilus_view_frame_get_min_zoom_level (NautilusViewFrame   *view);
+gdouble            nautilus_view_frame_get_max_zoom_level (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_is_continuous  (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_in            (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_out           (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_to_fit        (NautilusViewFrame   *view);
+
+/* Other. */
+void               nautilus_view_frame_set_active_errors  (NautilusViewFrame   *view,
+                                                           gboolean             enabled);
+char *             nautilus_view_frame_get_label          (NautilusViewFrame   *view);
+void               nautilus_view_frame_set_label          (NautilusViewFrame   *view,
+                                                           const char          *label);
+void               nautilus_view_frame_activate           (NautilusViewFrame   *view);
 
 #ifdef __cplusplus
 }

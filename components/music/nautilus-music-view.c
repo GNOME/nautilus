@@ -144,35 +144,35 @@ static GtkTargetEntry music_dnd_target_table[] = {
 
 #define DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
-static void nautilus_music_view_drag_data_received     (GtkWidget               *widget,
-                                                        GdkDragContext          *context,
-                                                        int                      x,
-                                                        int                      y,
-                                                        GtkSelectionData        *selection_data,
-                                                        guint                    info,
-                                                        guint                    time);
-static void nautilus_music_view_initialize_class       (NautilusMusicViewClass  *klass);
-static void nautilus_music_view_initialize             (NautilusMusicView       *view);
-static void nautilus_music_view_destroy                (GtkObject               *object);
-static void nautilus_music_view_update_from_uri        (NautilusMusicView       *music_view,
-                                                        const char              *uri);
-static void music_view_notify_location_change_callback (NautilusView            *view,
-                                                        Nautilus_NavigationInfo *navinfo,
-                                                        NautilusMusicView       *music_view);
-static void selection_callback                         (GtkCList                *clist,
-                                                        int                      row,
-                                                        int                      column,
-                                                        GdkEventButton          *event,
-                                                        NautilusMusicView       *music_view);
-static void music_view_set_selected_song_title         (NautilusMusicView       *music_view,
-                                                        int                      row);
-static void add_play_controls                          (NautilusMusicView       *music_view);
-static void click_column_callback                      (GtkCList                *clist,
-                                                        gint                     column,
-                                                        NautilusMusicView       *music_view);
-static void go_to_next_track                           (NautilusMusicView       *music_view);
-static void play_current_file                          (NautilusMusicView       *music_view,
-                                                        gboolean                 from_start);
+static void nautilus_music_view_drag_data_received (GtkWidget              *widget,
+                                                    GdkDragContext         *context,
+                                                    int                     x,
+                                                    int                     y,
+                                                    GtkSelectionData       *selection_data,
+                                                    guint                   info,
+                                                    guint                   time);
+static void nautilus_music_view_initialize_class   (NautilusMusicViewClass *klass);
+static void nautilus_music_view_initialize         (NautilusMusicView      *view);
+static void nautilus_music_view_destroy            (GtkObject              *object);
+static void nautilus_music_view_update_from_uri    (NautilusMusicView      *music_view,
+                                                    const char             *uri);
+static void music_view_load_location_callback      (NautilusView           *view,
+                                                    const char             *location,
+                                                    NautilusMusicView      *music_view);
+static void selection_callback                     (GtkCList               *clist,
+                                                    int                     row,
+                                                    int                     column,
+                                                    GdkEventButton         *event,
+                                                    NautilusMusicView      *music_view);
+static void music_view_set_selected_song_title     (NautilusMusicView      *music_view,
+                                                    int                     row);
+static void add_play_controls                      (NautilusMusicView      *music_view);
+static void click_column_callback                  (GtkCList               *clist,
+                                                    gint                    column,
+                                                    NautilusMusicView      *music_view);
+static void go_to_next_track                       (NautilusMusicView      *music_view);
+static void play_current_file                      (NautilusMusicView      *music_view,
+                                                    gboolean                from_start);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView, nautilus_music_view, GTK_TYPE_EVENT_BOX)
 
@@ -203,8 +203,8 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	music_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (music_view));
     	
 	gtk_signal_connect (GTK_OBJECT (music_view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (music_view_notify_location_change_callback), 
+			    "load_location",
+			    GTK_SIGNAL_FUNC (music_view_load_location_callback), 
 			    music_view);
 
 	music_view->details->status_timeout = -1;
@@ -1423,27 +1423,13 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 }
 
 static void
-music_view_notify_location_change_callback (NautilusView *view, 
-                                            Nautilus_NavigationInfo *navinfo, 
-                                            NautilusMusicView *music_view)
+music_view_load_location_callback (NautilusView *view, 
+                                   const char *location,
+                                   NautilusMusicView *music_view)
 {
-	Nautilus_ProgressRequestInfo progress;
-
- 	memset(&progress, 0, sizeof(progress));
-
-	/* send required PROGRESS_UNDERWAY signal */
-  
-	progress.type = Nautilus_PROGRESS_UNDERWAY;
-	progress.amount = 0.0;
-	nautilus_view_request_progress_change (music_view->details->nautilus_view, &progress);
-
-	/* do the actual work here */
-	nautilus_music_view_load_uri (music_view, navinfo->actual_uri);
-
-	/* send the required PROGRESS_DONE signal */
-	progress.type = Nautilus_PROGRESS_DONE_OK;
-	progress.amount = 100.0;
-	nautilus_view_request_progress_change (music_view->details->nautilus_view, &progress);
+        nautilus_view_report_load_underway (music_view->details->nautilus_view);
+	nautilus_music_view_load_uri (music_view, location);
+        nautilus_view_report_load_complete (music_view->details->nautilus_view);
 }
 
 /* handle receiving dropped objects */

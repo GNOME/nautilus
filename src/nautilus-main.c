@@ -41,6 +41,8 @@
 
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <liboaf/liboaf.h>
+#include <bonobo/bonobo-main.h>
+#include <stdlib.h>
 
 int
 main(int argc, char *argv[])
@@ -49,7 +51,7 @@ main(int argc, char *argv[])
 	gboolean manage_desktop;
 	poptContext popt_context;
 	CORBA_ORB orb;
-	NautilusApp *application;
+	NautilusApplication *application;
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		{ "check", '\0', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform high-speed self-check tests."), NULL },
@@ -95,10 +97,10 @@ main(int argc, char *argv[])
 #endif
 	} else {
 		/* Run the nautilus application. */
-		application = NAUTILUS_APP (nautilus_app_new ());
-		nautilus_app_startup (application,
-				      manage_desktop,
-				      poptGetArgs (popt_context));
+		application = nautilus_application_new ();
+		nautilus_application_startup (application,
+					      manage_desktop,
+					      poptGetArgs (popt_context));
 		bonobo_main ();
 		bonobo_object_unref (BONOBO_OBJECT (application));
 	}

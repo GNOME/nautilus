@@ -68,9 +68,9 @@ static void nautilus_service_startup_view_destroy (GtkObject* object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServicesContentView, nautilus_service_startup_view, GTK_TYPE_EVENT_BOX)
 
-static void service_main_notify_location_change_cb (NautilusView* view, 
-                                                    Nautilus_NavigationInfo* navinfo, 
-                                                    NautilusServicesContentView* services);
+static void service_load_location_callback (NautilusView *view, 
+					    const char *location,
+					    NautilusServicesContentView *services);
 static gboolean is_location (char* document_str, const char* place_str);
 
 /* utility routine to go to another uri */
@@ -78,11 +78,7 @@ static gboolean is_location (char* document_str, const char* place_str);
 static void
 go_to_uri(NautilusServicesContentView* view, char* uri)
 {
-
-	Nautilus_NavigationRequestInfo nri;	
-	memset (&nri, 0, sizeof(nri));
- 	nri.requested_uri = uri;
-  	nautilus_view_request_location_change (view->details->nautilus_view, &nri);
+  	nautilus_view_open_location (view->details->nautilus_view, uri);
 }
 
 /* temporary callback to handle the configuration button */    
@@ -767,8 +763,8 @@ nautilus_service_startup_view_initialize (NautilusServicesContentView* view) {
 	view->details = g_new0 (NautilusServicesContentViewDetails, 1);
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (service_main_notify_location_change_cb),
+			    "load_location",
+			    GTK_SIGNAL_FUNC (service_load_location_callback),
 			    view);
 
   	background = nautilus_get_widget_background (GTK_WIDGET (view));
@@ -848,23 +844,11 @@ nautilus_service_startup_view_load_uri (NautilusServicesContentView* view,
 }
 
 static void
-service_main_notify_location_change_cb (NautilusView* view, 
-					Nautilus_NavigationInfo* navinfo, 
-					NautilusServicesContentView* services) {
-
-	Nautilus_ProgressRequestInfo pri;
-	
-	memset (&pri, 0, sizeof (pri));
-	
-	/* we must send a PROGRESS_UNDERWAY message */
-	pri.type = Nautilus_PROGRESS_UNDERWAY;
-	pri.amount = 0.0;
-	nautilus_view_request_progress_change (services->details->nautilus_view, &pri);
-
-	nautilus_service_startup_view_load_uri (services, navinfo->actual_uri);
-	
-	/* likewise, we must send a PROGRESS_DONE message */
-	pri.type = Nautilus_PROGRESS_DONE_OK;
-	pri.amount = 100.0;
-	nautilus_view_request_progress_change (services->details->nautilus_view, &pri);
+service_load_location_callback (NautilusView *view,
+				const char *location,
+				NautilusServicesContentView *services)
+{
+	nautilus_view_report_load_underway (services->details->nautilus_view);
+	nautilus_service_startup_view_load_uri (services, location);
+	nautilus_view_report_load_complete (services->details->nautilus_view);
 }

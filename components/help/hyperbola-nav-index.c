@@ -231,7 +231,6 @@ static void
 hyperbola_navigation_index_select_row(GtkWidget *clist, gint row, gint column, GdkEvent *event, HyperbolaNavigationIndex *hni)
 {
   IndexItem *ii;
-  Nautilus_NavigationRequestInfo loc;
 
   if(!event || event->type != GDK_2BUTTON_PRESS) /* we only care if the user has double-clicked on an item...? */
     return;
@@ -240,10 +239,7 @@ hyperbola_navigation_index_select_row(GtkWidget *clist, gint row, gint column, G
   if(!ii->uri)
     return;
 
-  memset(&loc, 0, sizeof(loc));
-  loc.requested_uri = ii->uri;
-  loc.new_window_requested = FALSE;
-  nautilus_view_request_location_change(hni->view_frame, &loc);
+  nautilus_view_open_location (hni->view_frame, ii->uri);
 }
 
 typedef struct {

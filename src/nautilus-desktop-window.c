@@ -83,7 +83,7 @@ nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
 }
 
 NautilusDesktopWindow *
-nautilus_desktop_window_new (NautilusApp *application)
+nautilus_desktop_window_new (NautilusApplication *application)
 {
 	NautilusDesktopWindow *window;
 	const char *desktop_directory_path;

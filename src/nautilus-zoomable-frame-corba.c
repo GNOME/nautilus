@@ -30,6 +30,8 @@
 #include <config.h>
 #include "nautilus-view-frame-private.h"
 
+#include <bonobo/bonobo-main.h>
+
 typedef struct {
 	POA_Nautilus_ZoomableFrame servant;
 	gpointer bonobo_object;
@@ -37,19 +39,17 @@ typedef struct {
 	NautilusViewFrame *view;
 } impl_POA_Nautilus_ZoomableFrame;
 
-static void impl_Nautilus_ZoomableFrame_notify_zoom_level (impl_POA_Nautilus_ZoomableFrame *servant,
-                                                           CORBA_double                     level,
-                                                           CORBA_Environment               *ev);
-
+static void impl_Nautilus_ZoomableFrame_zoom_level_changed (PortableServer_Servant  servant,
+							    CORBA_double            level,
+							    CORBA_Environment      *ev);
 
 POA_Nautilus_ZoomableFrame__epv impl_Nautilus_ZoomableFrame_epv =
 {
-   NULL,			/* _private */
-   (void(*))&impl_Nautilus_ZoomableFrame_notify_zoom_level,
+   NULL,
+   &impl_Nautilus_ZoomableFrame_zoom_level_changed,
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
-
+static PortableServer_ServantBase__epv base_epv;
 POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv =
 {
    &base_epv,
@@ -58,26 +58,25 @@ POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv =
 };
 
 static void
-impl_Nautilus_ZoomableFrame__destroy (BonoboObject *obj, 
+impl_Nautilus_ZoomableFrame__destroy (BonoboObject *object, 
                                       impl_POA_Nautilus_ZoomableFrame *servant)
 {
-   PortableServer_ObjectId *objid;
+   PortableServer_ObjectId *object_id;
    CORBA_Environment ev;
    NautilusViewFrameClass *klass;
-   void (*servant_destroy_func) (PortableServer_Servant, CORBA_Environment *);
 
    klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (servant->view)->klass);
 
-   CORBA_exception_init(&ev);
+   CORBA_exception_init (&ev);
 
-   objid = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-   PortableServer_POA_deactivate_object (bonobo_poa (), objid, &ev);
-   CORBA_free (objid);
-   obj->servant = NULL;
+   object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
+   PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
+   CORBA_free (object_id);
+   object->servant = NULL;
 
-   servant_destroy_func = klass->zoomable_servant_destroy_func;
-   servant_destroy_func ((PortableServer_Servant) servant, &ev);
+   POA_Nautilus_ZoomableFrame__fini ((PortableServer_Servant) servant, &ev);
    g_free (servant);
+
    CORBA_exception_free (&ev);
 }
 
@@ -88,19 +87,16 @@ impl_Nautilus_ZoomableFrame__create (NautilusViewFrame *view,
    BonoboObject *retval;
    impl_POA_Nautilus_ZoomableFrame *newservant;
    NautilusViewFrameClass *klass;
-   void (*servant_init_func) (PortableServer_Servant, CORBA_Environment *);
 
    klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (view)->klass);
    newservant = g_new0 (impl_POA_Nautilus_ZoomableFrame, 1);
 
-   newservant->servant.vepv = klass->vepv;
+   impl_Nautilus_ZoomableFrame_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv();
 
-   if(!newservant->servant.vepv->Bonobo_Unknown_epv)
-     newservant->servant.vepv->Bonobo_Unknown_epv = bonobo_object_get_epv();
+   newservant->servant.vepv = &impl_Nautilus_ZoomableFrame_vepv;
 
    newservant->view = view;
-   servant_init_func = klass->zoomable_servant_init_func;
-   servant_init_func ((PortableServer_Servant) newservant, ev);
+   POA_Nautilus_ZoomableFrame__init ((PortableServer_Servant) newservant, ev);
 
    retval = bonobo_object_new_from_servant (newservant);
 
@@ -111,9 +107,11 @@ impl_Nautilus_ZoomableFrame__create (NautilusViewFrame *view,
 }
 
 static void
-impl_Nautilus_ZoomableFrame_notify_zoom_level (impl_POA_Nautilus_ZoomableFrame *servant,
-                                               CORBA_double       level,
-                                               CORBA_Environment *ev)
+impl_Nautilus_ZoomableFrame_zoom_level_changed (PortableServer_Servant servant,
+						CORBA_double level,
+						CORBA_Environment *ev)
 {
-  nautilus_view_frame_notify_zoom_level (servant->view, level);
+	nautilus_view_frame_zoom_level_changed
+		(((impl_POA_Nautilus_ZoomableFrame *) servant)->view,
+		 level);
 }

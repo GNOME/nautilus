@@ -29,10 +29,15 @@
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
 #include <libnautilus-extensions/bonobo-stream-vfs.h>
+#include <bonobo/bonobo-container.h>
+#include <bonobo/bonobo-client-site.h>
+#include <bonobo/bonobo-view-frame.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 
 typedef struct {
-  BonoboObject *container, *client_site, *view_frame;
+  BonoboContainer *container;
+  BonoboClientSite *client_site;
+  BonoboViewFrame *view_frame;
 } BonoboSubdocInfo;
 
 static void
@@ -43,9 +48,9 @@ destroy_bonobo_subdoc_view (NautilusViewFrame *view, CORBA_Environment *ev)
 }
 
 static void
-bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
-                                      Nautilus_NavigationInfo *real_nav_ctx,
-                                      CORBA_Environment *ev)
+bonobo_subdoc_load_location (NautilusViewFrame *view,
+                             Nautilus_URI location,
+                             CORBA_Environment *ev)
 {
   Bonobo_PersistStream persist;
   Bonobo_PersistFile persist_file;
@@ -56,17 +61,14 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
   if((persist != NULL) && !CORBA_Object_is_nil(persist, ev))
     {
       BonoboStream *stream;
-      Nautilus_ProgressRequestInfo pri;
       
-      stream = bonobo_stream_vfs_open(real_nav_ctx->actual_uri, Bonobo_Storage_READ);
-      pri.amount = 0;
-      if(stream)
-        pri.type = Nautilus_PROGRESS_UNDERWAY;
+      stream = bonobo_stream_vfs_open(location, Bonobo_Storage_READ);
+      if(stream == NULL)
+        nautilus_view_frame_report_load_failed (view);
       else
-        pri.type = Nautilus_PROGRESS_DONE_ERROR;
-      nautilus_view_frame_request_progress_change(view, &pri);
-      if (stream != NULL)
         {
+          nautilus_view_frame_report_load_underway (view);
+          
           /* FIXME bugzilla.eazel.com 1248: 
            * Dan Winship points out that we should pass the
            * MIME type here to work with new implementers of
@@ -80,19 +82,14 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
              bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
              "", /* MIME type of stream */
              ev);
-          pri.type = Nautilus_PROGRESS_DONE_OK;
-        }
-      else
-        {
-          pri.type = Nautilus_PROGRESS_DONE_ERROR;
+          
+          nautilus_view_frame_report_load_complete (view);
         }
 
       Bonobo_Unknown_unref(persist, ev);
       CORBA_Object_release(persist, ev);
 
-      nautilus_view_frame_request_progress_change(view, &pri);
-
-      if (pri.type == Nautilus_PROGRESS_DONE_OK)
+      if (stream != NULL)
         {
           return;
         }
@@ -113,43 +110,24 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
      even it it's not a file:/// URI.
   */
 
-  local_path = nautilus_get_local_path_from_uri (real_nav_ctx->actual_uri);
+  local_path = nautilus_get_local_path_from_uri (location);
 
-  if ((persist_file != NULL) && !CORBA_Object_is_nil(persist_file, ev)
-      && (local_path != NULL))
+  if (persist_file != NULL
+      && !CORBA_Object_is_nil (persist_file, ev)
+      && local_path != NULL)
     {
-      Nautilus_ProgressRequestInfo pri;
-      int result;
-
-      pri.amount = 0;
-      pri.type = Nautilus_PROGRESS_UNDERWAY;
-      nautilus_view_frame_request_progress_change(view, &pri);
+      nautilus_view_frame_report_load_underway(view);
 
       Bonobo_PersistFile_load(persist_file, local_path, ev);
 
       /* FIXME: Find out whether the loading was successful. */
-      result = 1;
 
       Bonobo_Unknown_unref(persist_file, ev);
       CORBA_Object_release(persist_file, ev);
 
       g_free (local_path);
 
-      if (result)
-        {
-          pri.type = Nautilus_PROGRESS_DONE_OK;
-        }
-      else
-        {
-          pri.type = Nautilus_PROGRESS_DONE_ERROR;
-        }
-
-      nautilus_view_frame_request_progress_change(view, &pri);
-
-      if (pri.type == Nautilus_PROGRESS_DONE_OK)
-        {
-          return;
-        }
+      nautilus_view_frame_report_load_complete(view);
     }
   else
     {
@@ -168,35 +146,32 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
 
       g_free (local_path);
     }
-}      
+}
 
 static gboolean
 bonobo_subdoc_try_load_client(NautilusViewFrame *view, CORBA_Object obj, CORBA_Environment *ev)
 {
   BonoboSubdocInfo *bsi;
-  Bonobo_UIHandler uih = bonobo_object_corba_objref(BONOBO_OBJECT(nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window))));
+  Bonobo_UIHandler uih = bonobo_object_corba_objref(BONOBO_OBJECT(view->ui_handler));
 
 
   view->component_data = bsi = g_new0(BonoboSubdocInfo, 1);
 
-  bsi->container = BONOBO_OBJECT(bonobo_container_new());
+  bsi->container = bonobo_container_new();
       
-  bsi->client_site =
-    BONOBO_OBJECT(bonobo_client_site_new(BONOBO_CONTAINER(bsi->container)));
-  bonobo_client_site_bind_embeddable(BONOBO_CLIENT_SITE(bsi->client_site), view->client_object);
-  bonobo_container_add(BONOBO_CONTAINER(bsi->container), bsi->client_site);
+  bsi->client_site = bonobo_client_site_new(bsi->container);
+  bonobo_client_site_bind_embeddable(bsi->client_site, view->client_object);
+  bonobo_container_add(bsi->container, BONOBO_OBJECT (bsi->client_site));
 
-  bsi->view_frame = BONOBO_OBJECT (bonobo_client_site_new_view (BONOBO_CLIENT_SITE (bsi->client_site), uih));
-
-  g_assert(bsi->view_frame);
+  bsi->view_frame = bonobo_client_site_new_view (bsi->client_site, uih);
 
   bonobo_object_add_interface(BONOBO_OBJECT(bsi->view_frame), view->view_frame);
       
-  view->client_widget = bonobo_view_frame_get_wrapper(BONOBO_VIEW_FRAME(bsi->view_frame));
+  view->client_widget = bonobo_view_frame_get_wrapper(bsi->view_frame);
       
   bonobo_wrapper_set_visibility (BONOBO_WRAPPER (view->client_widget), FALSE);
 
-  bonobo_view_frame_set_covered (BONOBO_VIEW_FRAME (bsi->view_frame), FALSE); 
+  bonobo_view_frame_set_covered (bsi->view_frame, FALSE); 
 
   return TRUE;
 }
@@ -205,11 +180,7 @@ NautilusViewComponentType bonobo_subdoc_component_type = {
   "IDL:Bonobo/Embeddable:1.0",
   &bonobo_subdoc_try_load_client, /* try_load */
   &destroy_bonobo_subdoc_view, /* destroy */
-  NULL, /* save_state */
-  NULL, /* load_state */
-  &bonobo_subdoc_notify_location_change, /* notify_location_change */
-  NULL, /* stop_location_change */
-  NULL, /* notify_selection_change */
-  NULL  /* show_properties */
+  &bonobo_subdoc_load_location, /* load_location */
+  NULL, /* stop_loading */
+  NULL /* selection_changed */
 };
-

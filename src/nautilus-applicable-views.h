@@ -57,7 +57,7 @@ typedef void (*NautilusNavigationCallback) (NautilusNavigationResult result,
                                             gpointer                 callback_data);
 
 struct NautilusNavigationInfo {
-	Nautilus_NavigationInfo navinfo;
+        char *location;
 
 	char *referring_iid;		     		/* iid of content view that we're coming from */
 	NautilusViewIdentifier *initial_content_id;	/* NautilusViewIdentifier for content view that we're going to display */
@@ -72,12 +72,11 @@ struct NautilusNavigationInfo {
         NautilusDirectory *directory;
 };
 
-NautilusNavigationInfo *nautilus_navigation_info_new    (Nautilus_NavigationRequestInfo *request,
-                                                         Nautilus_NavigationInfo        *previous_location,
-                                                         NautilusNavigationCallback      ready_callback,
-                                                         gpointer                        callback_data,
-                                                         const char                     *referring_iid);
-void                    nautilus_navigation_info_cancel (NautilusNavigationInfo         *info);
-void                    nautilus_navigation_info_free   (NautilusNavigationInfo         *info);
+NautilusNavigationInfo *nautilus_navigation_info_new    (const char                 *location,
+                                                         NautilusNavigationCallback  ready_callback,
+                                                         gpointer                    callback_data,
+                                                         const char                 *referring_iid);
+void                    nautilus_navigation_info_cancel (NautilusNavigationInfo     *info);
+void                    nautilus_navigation_info_free   (NautilusNavigationInfo     *info);
 
 #endif

@@ -1,3 +1,208 @@
+2000-06-13  Darin Adler  <darin@eazel.com>
+
+	Renamed and changed around parameters for the basic operations on
+	views to simplify and clarify Nautilus. Later we will be able to
+	clean up the state machine.
+
+	Some "theoretical" stuff may be lost in this process, but we can
+	easily re-add what we really need. The old stuff had many
+	unimplemented placeholders and half-baked ideas.
+
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c:
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_zoomable_ensure_zoomable_frame),
+	(nautilus_zoomable_set_zoom_level):
+	* src/nautilus-applicable-views.c: (got_file_info_callback),
+	(got_metadata_callback), (nautilus_navigation_info_new),
+	(nautilus_navigation_info_free):
+	* src/nautilus-applicable-views.h:
+	* src/nautilus-view-frame-bonobo-control.c:
+	(nautilus_view_frame_activate_uri),
+	(bonobo_control_try_load_client), (bonobo_control_load_location):
+	* src/nautilus-view-frame-bonobo-embeddable.c:
+	(bonobo_subdoc_notify_location_change),
+	(bonobo_subdoc_try_load_client):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame__destroy),
+	(impl_Nautilus_ViewFrame__create),
+	(impl_Nautilus_ViewFrame_open_location),
+	(impl_Nautilus_ViewFrame_open_location_in_new_window),
+	(impl_Nautilus_ViewFrame_report_location_change),
+	(impl_Nautilus_ViewFrame_report_selection_change),
+	(impl_Nautilus_ViewFrame_report_status),
+	(impl_Nautilus_ViewFrame_report_load_underway),
+	(impl_Nautilus_ViewFrame_report_load_progress),
+	(impl_Nautilus_ViewFrame_report_load_complete),
+	(impl_Nautilus_ViewFrame_report_load_failed),
+	(impl_Nautilus_ViewFrame_set_title):
+	* src/nautilus-view-frame-nautilus-view.c:
+	(nautilus_view_try_load_client), (load_location), (stop_loading),
+	(selection_changed):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_destroy_client),
+	(nautilus_view_frame_handle_client_destroy_2),
+	(nautilus_view_frame_new), (nautilus_view_frame_load_client),
+	(nautilus_view_frame_load_location),
+	(nautilus_view_frame_stop_loading),
+	(nautilus_view_frame_selection_changed),
+	(nautilus_view_frame_is_zoomable),
+	(nautilus_view_frame_open_location),
+	(nautilus_view_frame_open_location_in_new_window),
+	(nautilus_view_frame_report_location_change),
+	(nautilus_view_frame_report_selection_change),
+	(nautilus_view_frame_report_status),
+	(nautilus_view_frame_report_load_underway),
+	(nautilus_view_frame_report_load_progress),
+	(nautilus_view_frame_report_load_complete),
+	(nautilus_view_frame_report_load_failed),
+	(nautilus_view_frame_set_title),
+	(nautilus_view_frame_zoom_level_changed):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-zoomable-frame-corba.c:
+	(impl_Nautilus_ZoomableFrame__destroy),
+	(impl_Nautilus_ZoomableFrame__create),
+	(impl_Nautilus_ZoomableFrame_zoom_level_changed):
+	Changed the API and added a ton of comments.
+	
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_initialize),
+	(hardware_view_load_location_callback):
+	* components/help/hyperbola-nav-index.c:
+	(hyperbola_navigation_index_select_row):
+	* components/help/hyperbola-nav-search.c:
+	(hyperbola_navigation_search_select_row):
+	* components/help/hyperbola-nav-tree.c:
+	(hyperbola_navigation_tree_new),
+	(hyperbola_navigation_tree_load_location),
+	(hyperbola_navigation_tree_select_row):
+	* components/history/nautilus-history-view.c:
+	(hyperbola_navigation_history_load_location),
+	(hyperbola_navigation_history_select_row), (make_obj):
+	* components/html/ntl-web-browser.c: (browser_url_load_done),
+	(browser_vfs_callback), (browser_goto_url_real),
+	(browser_goto_url), (browser_select_url), (browser_title_changed),
+	(browser_notify_location_change):
+	* components/loser/content/nautilus-content-loser.c:
+	(nautilus_content_loser_initialize),
+	(loser_load_location_callback):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(nautilus_sidebar_loser_initialize),
+	(loser_load_location_callback):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize),
+	(music_view_load_location_callback):
+	* components/notes/nautilus-notes.c: (notes_load_location),
+	(make_notes_view):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize), (go_to_button_callback),
+	(rpm_view_load_location_callback):
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_initialize),
+	(sample_load_location_callback):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(go_to_uri), (nautilus_service_startup_view_initialize),
+	(service_load_location_callback):
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	(trilobite_eazel_time_view_initialize), (load_location_callback):
+	* components/websearch/ntl-web-search.c: (do_search), (make_obj):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_switch_location),
+	(fm_directory_view_initialize), (display_selection_info),
+	(fm_directory_view_send_selection_change),
+	(load_location_callback), (selection_changed_callback),
+	(stop_loading_callback), (done_loading), (finish_loading_uri):
+	Switch components to use the new API.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	Added a placeholder for a new operation to get the first child of a
+	container. This will be way more efficient than all the code that
+	gets a list of all the children and then looks at the first one.
+	
+	* src/nautilus-application.c: (manufactures), (create_object),
+	(create_factory), (nautilus_application_initialize_class),
+	(nautilus_application_initialize), (nautilus_application_new),
+	(nautilus_application_destroy),
+	(nautilus_application_check_user_directories),
+	(nautilus_application_startup),
+	(nautilus_application_destroy_window), (nautilus_application_quit),
+	(nautilus_application_create_window):
+	* src/nautilus-application.h:
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	* src/nautilus-desktop-window.h:
+	* src/nautilus-main.c: (main):
+	Renamed NautilusApp -> NautilusApplication while changing it around.
+	
+	* libnautilus-extensions/nautilus-undo-manager.h:
+	Add a blank line.
+	
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c: (compare_strings),
+	(nautilus_window_report_selection_change): Changed code so that it
+	won't report the same selection change twice.
+	(nautilus_window_report_status),
+	(nautilus_window_report_load_underway),
+	(nautilus_window_report_load_progress),
+	(nautilus_window_report_load_complete),
+	(nautilus_window_report_load_failed), (compute_default_title),
+	(nautilus_window_set_title), (handle_go_back), (handle_go_forward),
+	(handle_go_elsewhere), (update_up_button),
+	(nautilus_window_update_internals), (nautilus_window_update_view),
+	(nautilus_window_view_destroyed),
+	(nautilus_window_has_really_changed),
+	(nautilus_window_load_sidebar_panel), (open_location),
+	(nautilus_window_open_location),
+	(nautilus_window_open_location_in_new_window),
+	(nautilus_window_report_location_change),
+	(nautilus_window_load_content_view),
+	(nautilus_window_update_state),
+	(nautilus_window_end_location_change_callback),
+	(nautilus_window_begin_location_change): Updated everything for the
+	new API.
+	
+	* src/nautilus-window-menus.c: (file_menu_new_window_callback),
+	(edit_menu_undo_callback), (edit_menu_cut_callback),
+	(edit_menu_copy_callback), (edit_menu_paste_callback),
+	(edit_menu_clear_callback), (append_bookmark_to_menu),
+	(clear_appended_bookmark_items),
+	(nautilus_window_add_bookmark_for_current_location),
+	(append_separator), (new_top_level_menu),
+	(nautilus_window_initialize_menus), (update_user_level_menu_items):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c: (setup_button),
+	(nautilus_window_initialize_toolbars),
+	(nautilus_window_toolbar_remove_theme_callback):
+	* src/nautilus-window.c: (nautilus_window_class_init),
+	(nautilus_window_goto_uri), (nautilus_window_constructed),
+	(nautilus_window_set_arg), (nautilus_window_get_arg),
+	(nautilus_window_destroy), (nautilus_window_switch_views),
+	(view_menu_choose_view_callback),
+	(nautilus_window_load_content_view_menu),
+	(nautilus_window_back_or_forward), (nautilus_window_go_up),
+	(nautilus_window_allow_back), (nautilus_window_allow_forward),
+	(nautilus_window_allow_up),
+	(nautilus_window_open_location_callback),
+	(nautilus_window_open_location_in_new_window_callback),
+	(nautilus_window_report_location_change_callback),
+	(nautilus_window_report_selection_change_callback),
+	(nautilus_window_report_status_callback),
+	(nautilus_window_report_load_underway_callback),
+	(nautilus_window_report_load_progress_callback),
+	(nautilus_window_report_load_complete_callback),
+	(nautilus_window_report_load_failed_callback),
+	(nautilus_window_set_title_callback),
+	(nautilus_window_connect_view),
+	(nautilus_window_connect_content_view), (nautilus_window_reload),
+	(window_update_sidebar_panels_from_preferences):
+	* src/nautilus-window.h:
+	Other changes related to the API switchover.
+	
+	* src/nautilus.oafinfo: Changed the ntl-xx iids to use the work
+	nautilus instead.
+
 2000-06-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/loser/content/nautilus-content-loser.oafinfo,
@@ -191,7 +396,7 @@
 
 2000-06-12  John Sullivan  <sullivan@eazel.com>
 
-	Fixed  bug 692 (Bookmarks for deleted files don't do
+	Fixed bug 692 (Bookmarks for deleted files don't do
 	sensible things)
 
 	* libnautilus-extensions/nautilus-gnome-extensions.h,
@@ -288,7 +493,6 @@
 	Removed duplicated distribution functions.
 	* helper-utilities/authenticate/Makefile.am:
 	Fixed the NULL declaration (removed space)
-	
 
 2000-06-10  J Shane Culpepper  <pepper@eazel.com>
 
@@ -311,15 +515,12 @@
 	* components/services/trilobite/libtrilobite/Makefile.am:
 	* components/services/trilobite/libtrilobite/helixcode-utils.c:
 	* components/services/trilobite/libtrilobite/helixcode-utils.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-distribut
-	ion.c: (determine_turbolinux_version),
+	* components/services/trilobite/libtrilobite/trilobite-core-distribution.c:
+	(determine_turbolinux_version),
 	(determine_mandrake_version), (determine_suse_version),
 	(determine_debian_version), (determine_redhat_version),
 	(trilobite_get_distribution), (trilobite_get_distribution_name):
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-distribut
-	ion.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-distribution.h:
 	As bug 908 said, the helixcode installers way of indentifying
 	distro sucked (Red Hat 6.099999 ?!), so I revamped it and moved
 	the code into trilobite-core-distribution. Only wrote the redhat
@@ -412,7 +613,6 @@
 	* libnautilus-extensions/nautilus-link.c:
 	* libnautilus-extensions/nautilus-password-dialog.c:
 	* libnautilus-extensions/nautilus-preference.c:
-	(nautilus_self_check_preference):
 	* libnautilus-extensions/nautilus-preferences-box.c:
 	* libnautilus-extensions/nautilus-preferences-box.h:
 	* libnautilus-extensions/nautilus-preferences-dialog.c:
@@ -472,7 +672,7 @@
 	* nautilus-widgets/test-nautilus-widgets.c:
 	* nautilus-widgets/test-preferences.c:
 	* src/Makefile.am:
-	* src/nautilus-main.c: (main):
+	* src/nautilus-main.c:
 	* src/nautilus-sidebar.c:
 	* src/nautilus-window-menus.c:
 	* test/Makefile.am:
@@ -501,10 +701,7 @@
 	
 2000-06-09  Mike Fleming  <mfleming@eazel.com>
 
-	*
-	components/services/install/lib/trilobite-eazel-install-service.oaf
-	info:
-
+	* components/services/install/lib/trilobite-eazel-install-service.oafinfo:
 	Eskil should stop putting ":"'s at the end of 
 	"bonobo:supported-uri-schemes" entries
 

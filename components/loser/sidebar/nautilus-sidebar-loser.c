@@ -51,18 +51,15 @@ static void nautilus_sidebar_loser_destroy          (GtkObject                  
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarLoser, nautilus_sidebar_loser, GTK_TYPE_LABEL)
      
-static void loser_notify_location_change_callback        (NautilusView  *nautilus_view, 
-							   Nautilus_NavigationInfo   *navinfo, 
-							   NautilusSidebarLoser *view);
-static void loser_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
-							   gboolean 		      state, 
-							   gpointer 		      user_data);
+static void loser_load_location_callback      (NautilusView         *nautilus_view,
+					       const char           *location,
+					       NautilusSidebarLoser *view);
+static void loser_merge_bonobo_items_callback (BonoboObject         *control,
+					       gboolean              state,
+					       gpointer              user_data);
+static void nautilus_sidebar_loser_fail       (void);
+static void ensure_fail_env                   (void);
 
-
-static void nautilus_sidebar_loser_fail                   (void);
-static void ensure_fail_env                               (void);
-
-     
 static void
 nautilus_sidebar_loser_initialize_class (NautilusSidebarLoserClass *klass)
 {
@@ -83,8 +80,8 @@ nautilus_sidebar_loser_initialize (NautilusSidebarLoser *view)
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (loser_notify_location_change_callback), 
+			    "load_location",
+			    GTK_SIGNAL_FUNC (loser_load_location_callback), 
 			    view);
 
 	/* 
@@ -151,51 +148,39 @@ nautilus_sidebar_loser_load_uri (NautilusSidebarLoser *view,
 }
 
 static void
-loser_notify_location_change_callback (NautilusView  *nautilus_view, 
-				  	Nautilus_NavigationInfo   *navinfo, 
-				  	NautilusSidebarLoser *view)
+loser_load_location_callback (NautilusView  *nautilus_view, 
+			      const char *location,
+			      NautilusSidebarLoser *view)
 {
-	Nautilus_ProgressRequestInfo request;
-
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
-	memset(&request, 0, sizeof(request));
-
 	nautilus_sidebar_loser_maybe_fail ("pre-underway");
 	
-	/* 
-	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
+	/* It's mandatory to send an underway message once the
 	 * component starts loading, otherwise nautilus will assume it
 	 * failed. In a real component, this will probably happen in
 	 * some sort of callback from whatever loading mechanism it is
 	 * using to load the data; this component loads no data, so it
-	 * gives the progrss update here.  
+	 * gives the progress update here.
 	 */
-	
-	request.type = Nautilus_PROGRESS_UNDERWAY;
-	request.amount = 0.0;
-	nautilus_view_request_progress_change (nautilus_view, &request);
+	nautilus_view_report_load_underway (nautilus_view);
 	
 	nautilus_sidebar_loser_maybe_fail ("pre-load");
 
 	/* Do the actual load. */
-	nautilus_sidebar_loser_load_uri (view, navinfo->actual_uri);
+	nautilus_sidebar_loser_load_uri (view, location);
 	
-	/*
-	 * It's mandatory to send a PROGRESS_DONE_OK message once the
+	nautilus_sidebar_loser_maybe_fail ("pre-done");
+
+	/* It's mandatory to call report_load_complete once the
 	 * component is done loading successfully, or
-	 * PROGRESS_DONE_ERROR if it completes unsuccessfully. In a
+	 * report_load_failed if it completes unsuccessfully. In a
 	 * real component, this will probably happen in some sort of
 	 * callback from whatever loading mechanism it is using to
 	 * load the data; this component loads no data, so it gives
-	 * the progrss upodate here. 
+	 * the progress update here.
 	 */
-
-	nautilus_sidebar_loser_maybe_fail ("pre-done");
-
-	request.type = Nautilus_PROGRESS_DONE_OK;
-	request.amount = 100.0;
-	nautilus_view_request_progress_change (nautilus_view, &request);
+	nautilus_view_report_load_complete (nautilus_view);
 
 	nautilus_sidebar_loser_maybe_fail ("post-done");
 }

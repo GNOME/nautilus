@@ -127,7 +127,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 
         if (vfs_result_code == GNOME_VFS_OK || vfs_result_code == GNOME_VFS_ERROR_NOTSUPPORTED
                    || vfs_result_code == GNOME_VFS_ERROR_INVALIDURI) {
-                components = nautilus_mime_get_short_list_components_for_uri (navinfo->navinfo.requested_uri);
+                components = nautilus_mime_get_short_list_components_for_uri (navinfo->location);
         } else {
                 goto out;
         }
@@ -143,7 +143,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 
         gnome_vfs_mime_component_list_free (components);
 
-        default_component = nautilus_mime_get_default_component_for_uri (navinfo->navinfo.requested_uri);
+        default_component = nautilus_mime_get_default_component_for_uri (navinfo->location);
         
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
@@ -165,7 +165,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                 /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
                 if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
                 	/* If the complete list is non-empty, the default shouldn't have been NULL */
-                    	g_assert (!nautilus_mime_has_any_components_for_uri (navinfo->navinfo.requested_uri));
+                    	g_assert (!nautilus_mime_has_any_components_for_uri (navinfo->location));
                         result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
                 }
 
@@ -200,7 +200,7 @@ got_metadata_callback (NautilusDirectory *directory,
         
         info->files = nautilus_file_list_copy (files);
         async_get_file_info_text (&info->ah,
-                                  info->navinfo.requested_uri,
+                                  info->location,
                                   (GNOME_VFS_FILE_INFO_GETMIMETYPE
                                    | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
                                   got_file_info_callback,
@@ -210,8 +210,7 @@ got_metadata_callback (NautilusDirectory *directory,
 /* NautilusNavigationInfo */
 
 NautilusNavigationInfo *
-nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
-                              Nautilus_NavigationInfo *old_info,
+nautilus_navigation_info_new (const char *location,
                               NautilusNavigationCallback notify_when_ready,
                               gpointer notify_data,
                               const char *referring_iid)
@@ -224,16 +223,10 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
         info->callback = notify_when_ready;
         info->callback_data = notify_data;
         
-        if (old_info != NULL) {
-                info->navinfo.referring_uri = old_info->requested_uri;
-                info->navinfo.actual_referring_uri = old_info->actual_uri;
-                info->navinfo.referring_content_type = old_info->content_type;
-        }
-
         info->referring_iid = g_strdup (referring_iid);
-        info->navinfo.requested_uri = g_strdup (nri->requested_uri);
+        info->location = g_strdup (location);
 
-        info->directory = nautilus_directory_get (nri->requested_uri);
+        info->directory = nautilus_directory_get (location);
 
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
@@ -277,9 +270,7 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
 
         nautilus_view_identifier_free (info->initial_content_id);
         g_free (info->referring_iid);
-        g_free (info->navinfo.requested_uri);
-        g_free (info->navinfo.actual_uri);
-        g_free (info->navinfo.content_type);
+        g_free (info->location);
 
         nautilus_directory_unref (info->directory);
         nautilus_file_list_free (info->files);

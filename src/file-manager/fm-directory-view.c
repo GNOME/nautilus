@@ -135,14 +135,14 @@ static void           fm_directory_view_real_update_menus                       
 static GtkMenu *      create_selection_context_menu                               (FMDirectoryView          *view);
 static GtkMenu *      create_background_context_menu                              (FMDirectoryView          *view);
 static BonoboControl *get_bonobo_control                                          (FMDirectoryView          *view);
-static void           stop_location_change_callback                               (NautilusView             *nautilus_view,
-										   FMDirectoryView          *directory_view);
-static void           notify_location_change_callback                             (NautilusView             *nautilus_view,
-										   Nautilus_NavigationInfo  *nav_context,
-										   FMDirectoryView          *directory_view);
-static void           notify_selection_change_callback                            (NautilusView             *nautilus_view,
-										   Nautilus_SelectionInfo   *sel_context,
-										   FMDirectoryView          *directory_view);
+static void           stop_loading_callback                                       (NautilusView          *nautilus_view,
+										   FMDirectoryView       *directory_view);
+static void           load_location_callback                                      (NautilusView          *nautilus_view,
+										   const char            *location,
+										   FMDirectoryView       *directory_view);
+static void           selection_changed_callback                                  (NautilusView          *nautilus_view,
+										   GList                 *selection,
+										   FMDirectoryView       *directory_view);
 static void           open_callback                                               (GtkMenuItem              *item,
 										   GList                    *files);
 static void           open_in_new_window_callback                                 (GtkMenuItem              *item,
@@ -410,17 +410,16 @@ fm_directory_view_switch_location (FMDirectoryView *directory_view,
 				   const char *new_uri, 
 				   gboolean use_new_window)
 {
-	Nautilus_NavigationRequestInfo request;
-
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 	g_assert (new_uri != NULL);
 
-	request.requested_uri = g_strdup (new_uri);
-	request.new_window_requested = use_new_window;
-	nautilus_view_request_location_change (directory_view->details->nautilus_view,
-				       		&request);	
-	
-	g_free (request.requested_uri);
+	if (use_new_window) {
+		nautilus_view_open_location_in_new_window
+			(directory_view->details->nautilus_view, new_uri);
+	} else {
+		nautilus_view_open_location
+			(directory_view->details->nautilus_view, new_uri);
+	}
 }
 
 static void
@@ -441,9 +440,9 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 	 */
 	nautilus_mime_set_default_component_for_uri (new_uri, identifier->iid);
 
-	fm_directory_view_switch_location 
-		(directory_view, new_uri, nautilus_preferences_get_boolean 
-						(NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE));
+	fm_directory_view_switch_location
+		(directory_view, new_uri,
+		 nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE));
 }
 
 static void
@@ -682,16 +681,16 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 		(get_bonobo_control (directory_view), .25, 4.0, FALSE);		
 
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
-			    "stop_location_change",
-			    GTK_SIGNAL_FUNC (stop_location_change_callback),
+			    "stop_loading",
+			    GTK_SIGNAL_FUNC (stop_loading_callback),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (notify_location_change_callback), 
+			    "load_location",
+			    GTK_SIGNAL_FUNC (load_location_callback), 
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
-			    "notify_selection_change",
-			    GTK_SIGNAL_FUNC (notify_selection_change_callback), 
+			    "selection_changed",
+			    GTK_SIGNAL_FUNC (selection_changed_callback), 
 			    directory_view);
 
         gtk_signal_connect (GTK_OBJECT (get_bonobo_control (directory_view)),
@@ -769,7 +768,7 @@ display_selection_info (FMDirectoryView *view)
 	char *non_folder_str;
 	char *folder_count_str;
 	char *folder_item_count_str;
-	Nautilus_StatusRequestInfo request;
+	char *status_string;
 	NautilusFile *file;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -807,8 +806,6 @@ display_selection_info (FMDirectoryView *view)
 	
 	nautilus_file_list_free (selection);
 	
-	memset (&request, 0, sizeof (request));
-
 	/* Break out cases for localization's sake. But note that there are still pieces
 	 * being assembled in a particular order, which may be a problem for some localizers.
 	 */
@@ -866,18 +863,18 @@ display_selection_info (FMDirectoryView *view)
 	}
 
 	if (folder_count == 0 && non_folder_count == 0)	{
-		request.status_string = g_strdup ("");
+		status_string = g_strdup ("");
 	} else if (folder_count == 0) {
-		request.status_string = g_strdup (non_folder_str);
+		status_string = g_strdup (non_folder_str);
 	} else if (non_folder_count == 0) {
-		request.status_string = g_strdup_printf (_("%s%s"), 
-							 folder_count_str, 
-							 folder_item_count_str);
+		status_string = g_strdup_printf (_("%s%s"), 
+						 folder_count_str, 
+						 folder_item_count_str);
 	} else {
-		request.status_string = g_strdup_printf (_("%s%s, %s"), 
-							 folder_count_str, 
-							 folder_item_count_str,
-							 non_folder_str);
+		status_string = g_strdup_printf (_("%s%s, %s"), 
+						 folder_count_str, 
+						 folder_item_count_str,
+						 non_folder_str);
 	}
 
 	g_free (first_item_name);
@@ -885,58 +882,48 @@ display_selection_info (FMDirectoryView *view)
 	g_free (folder_item_count_str);
 	g_free (non_folder_str);
 
-	nautilus_view_request_status_change (view->details->nautilus_view,
-					     &request);
-
-	g_free (request.status_string);
+	nautilus_view_report_status (view->details->nautilus_view,
+				     status_string);
+	g_free (status_string);
 }
 
 static void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
-	Nautilus_SelectionRequestInfo request;
-	GList *selection;
-	GList *p;
-	int i;
-
-	memset (&request, 0, sizeof (request));
+	GList *selection, *uris, *p;
 
 	/* Collect a list of URIs. */
 	selection = fm_directory_view_get_selection (view);
-	request.selected_uris._buffer = g_alloca (g_list_length (selection) * sizeof (char *));
+	uris = NULL;
 	for (p = selection; p != NULL; p = p->next) {
-		request.selected_uris._buffer[request.selected_uris._length++]
-			= nautilus_file_get_uri (p->data);
+		uris = g_list_prepend (uris, nautilus_file_get_uri (p->data));
 	}
 	nautilus_file_list_free (selection);
 
 	/* Send the selection change. */
-	nautilus_view_request_selection_change (view->details->nautilus_view,
-						&request);
+	nautilus_view_report_selection_change (view->details->nautilus_view,
+					       uris);
 
 	/* Free the URIs. */
-	for (i = 0; i < request.selected_uris._length; i++) {
-		g_free (request.selected_uris._buffer[i]);
-	}
+	nautilus_g_list_free_deep (uris);
 }
 
 
 
 static void
-notify_location_change_callback (NautilusView *nautilus_view,
-				 Nautilus_NavigationInfo *navigation_context,
-				 FMDirectoryView *directory_view)
+load_location_callback (NautilusView *nautilus_view,
+			const char *location,
+			FMDirectoryView *directory_view)
 {
-	fm_directory_view_load_uri (directory_view, navigation_context->requested_uri);
+	fm_directory_view_load_uri (directory_view, location);
 }
 
 static void
-notify_selection_change_callback (NautilusView *nautilus_view,
-				  Nautilus_SelectionInfo *selection_context,
-				  FMDirectoryView *directory_view)
+selection_changed_callback (NautilusView *nautilus_view,
+			    GList *selection_uris,
+			    FMDirectoryView *directory_view)
 {
-	int i;
-	GList *selection;
+	GList *selection, *p;
 	NautilusFile *file;
 
 	selection = NULL;
@@ -946,33 +933,31 @@ notify_selection_change_callback (NautilusView *nautilus_view,
 		directory_view->details->pending_uris_selected = NULL;
 	}
 
-	if (!selection_context->self_originated) {
-		if (!directory_view->details->loading) {
-			/* If we aren't still loading, set the selection right now. */
-			for (i = 0; i < selection_context->selected_uris._length; i++) {
-				file = nautilus_file_get (selection_context->selected_uris._buffer[i]);
-				if (file != NULL) {
-					selection = g_list_prepend (selection, file);
-				}
+	if (!directory_view->details->loading) {
+		/* If we aren't still loading, set the selection right now. */
+		for (p = selection_uris; p != NULL; p = p->next) {
+			file = nautilus_file_get (p->data);
+			if (file != NULL) {
+				selection = g_list_prepend (selection, file);
 			}
-			
-			fm_directory_view_set_selection (directory_view, selection);
+		}
+		
+		fm_directory_view_set_selection (directory_view, selection);
 
-			nautilus_file_list_free (selection);
-		} else {
-			/* If we are still loading, add to the list of pending URIs instead. */
-			for (i = 0; i < selection_context->selected_uris._length; i++) {
-				directory_view->details->pending_uris_selected = 
-					g_list_prepend (directory_view->details->pending_uris_selected, 
-							g_strdup (selection_context->selected_uris._buffer[i]));
-			}
+		nautilus_file_list_free (selection);
+	} else {
+		/* If we are still loading, add to the list of pending URIs instead. */
+		for (p = selection_uris; p != NULL; p = p->next) {
+			directory_view->details->pending_uris_selected = 
+				g_list_prepend (directory_view->details->pending_uris_selected, 
+						g_strdup (p->data));
 		}
 	} 
 }
 
 static void
-stop_location_change_callback (NautilusView *nautilus_view,
-			       FMDirectoryView *directory_view)
+stop_loading_callback (NautilusView *nautilus_view,
+		       FMDirectoryView *directory_view)
 {
 	fm_directory_view_stop (directory_view);
 }
@@ -982,18 +967,10 @@ stop_location_change_callback (NautilusView *nautilus_view,
 static void
 done_loading (FMDirectoryView *view)
 {
-	Nautilus_ProgressRequestInfo progress;
-	
 	if (!view->details->loading) {
 		return;
 	}
-
-	memset (&progress, 0, sizeof (progress));
-	progress.amount = 100.0;
-	progress.type = Nautilus_PROGRESS_DONE_OK;
-	nautilus_view_request_progress_change (view->details->nautilus_view,
-					       &progress);
-
+	nautilus_view_report_load_complete (view->details->nautilus_view);
 	view->details->loading = FALSE;
 }
 
@@ -2814,13 +2791,9 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 static void
 finish_loading_uri (FMDirectoryView *view)
 {
-	Nautilus_ProgressRequestInfo progress;
 	GList *attributes;
 
-	memset (&progress, 0, sizeof (progress));
-	progress.type = Nautilus_PROGRESS_UNDERWAY;
-	nautilus_view_request_progress_change (view->details->nautilus_view,
-					       &progress);
+	nautilus_view_report_load_underway (view->details->nautilus_view);
 
 	/* Tell interested parties that we've begun loading this directory now.
 	 * Subclasses use this to know that the new metadata is now available.

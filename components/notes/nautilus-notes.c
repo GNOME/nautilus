@@ -111,14 +111,14 @@ notes_save_metainfo (Notes *notes)
 }
 
 static void
-notes_notify_location_change (NautilusView *view,
-                              Nautilus_NavigationInfo *loci,
-                              Notes *notes)
+notes_load_location (NautilusView *view,
+                     const char *location,
+                     Notes *notes)
 {
-        if (strcmp (notes->uri, loci->requested_uri) != 0) {
+        if (strcmp (notes->uri, location) != 0) {
                 notes_save_metainfo (notes);
                 g_free (notes->uri);
-                notes->uri = g_strdup (loci->requested_uri);
+                notes->uri = g_strdup (location);
                 notes_load_metainfo (notes);
         }
 }
@@ -172,8 +172,8 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         notes_object_count++;
         
         /* handle events */
-        gtk_signal_connect (GTK_OBJECT (notes->view), "notify_location_change",
-                            notes_notify_location_change, notes);
+        gtk_signal_connect (GTK_OBJECT (notes->view), "load_location",
+                            notes_load_location, notes);
         
         /* handle selections */
         nautilus_clipboard_set_up_editable

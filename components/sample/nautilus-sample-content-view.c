@@ -47,8 +47,8 @@ struct NautilusSampleContentViewDetails {
 static void nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass);
 static void nautilus_sample_content_view_initialize       (NautilusSampleContentView      *view);
 static void nautilus_sample_content_view_destroy          (GtkObject                      *object);
-static void sample_notify_location_change_callback        (NautilusView                   *nautilus_view,
-							   Nautilus_NavigationInfo        *navinfo,
+static void sample_load_location_callback                 (NautilusView                   *nautilus_view,
+							   const char                     *location,
 							   NautilusSampleContentView      *view);
 static void sample_merge_bonobo_items_callback            (BonoboObject                   *control,
 							   gboolean                        state,
@@ -76,8 +76,8 @@ nautilus_sample_content_view_initialize (NautilusSampleContentView *view)
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (sample_notify_location_change_callback), 
+			    "load_location",
+			    GTK_SIGNAL_FUNC (sample_load_location_callback), 
 			    view);
 
 	/* 
@@ -143,45 +143,33 @@ nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
 }
 
 static void
-sample_notify_location_change_callback (NautilusView *nautilus_view, 
-				  	Nautilus_NavigationInfo *navinfo, 
-				  	NautilusSampleContentView *view)
+sample_load_location_callback (NautilusView *nautilus_view, 
+			       const char *location,
+			       NautilusSampleContentView *view)
 {
-	Nautilus_ProgressRequestInfo request;
-
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
-	memset(&request, 0, sizeof(request));
-	
-	/* 
-	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
+	/* It's mandatory to send an underway message once the
 	 * component starts loading, otherwise nautilus will assume it
 	 * failed. In a real component, this will probably happen in
 	 * some sort of callback from whatever loading mechanism it is
 	 * using to load the data; this component loads no data, so it
-	 * gives the progrss update here.  
+	 * gives the progress update here.
 	 */
-	
-	request.type = Nautilus_PROGRESS_UNDERWAY;
-	request.amount = 0.0;
-	nautilus_view_request_progress_change (nautilus_view, &request);
+	nautilus_view_report_load_underway (nautilus_view);
 	
 	/* Do the actual load. */
-	nautilus_sample_content_view_load_uri (view, navinfo->actual_uri);
+	nautilus_sample_content_view_load_uri (view, location);
 	
-	/*
-	 * It's mandatory to send a PROGRESS_DONE_OK message once the
+	/* It's mandatory to call report_load_complete once the
 	 * component is done loading successfully, or
-	 * PROGRESS_DONE_ERROR if it completes unsuccessfully. In a
+	 * report_load_failed if it completes unsuccessfully. In a
 	 * real component, this will probably happen in some sort of
 	 * callback from whatever loading mechanism it is using to
 	 * load the data; this component loads no data, so it gives
-	 * the progrss upodate here. 
+	 * the progress update here.
 	 */
-
-	request.type = Nautilus_PROGRESS_DONE_OK;
-	request.amount = 100.0;
-	nautilus_view_request_progress_change (nautilus_view, &request);
+	nautilus_view_report_load_complete (nautilus_view);
 }
 
 static void

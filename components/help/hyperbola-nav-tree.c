@@ -18,9 +18,9 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 GtkCTreeNode *node,
 						 gint column,
 						 HyperbolaNavigationTree *view);
-static void hyperbola_navigation_tree_notify_location_change (NautilusView *view_frame,
-							      Nautilus_NavigationInfo *navi,
-							      HyperbolaNavigationTree *hview);
+static void hyperbola_navigation_tree_load_location (NautilusView *view_frame,
+						     const char *location_uri,
+						     HyperbolaNavigationTree *hview);
 
 typedef struct {
   HyperbolaNavigationTree *view;
@@ -92,17 +92,17 @@ hyperbola_navigation_tree_new(void)
   gtk_widget_show(wtmp);
 
   view->view_frame = nautilus_view_new (wtmp);
-  gtk_signal_connect (GTK_OBJECT(view->view_frame), "notify_location_change", 
-		      hyperbola_navigation_tree_notify_location_change,
+  gtk_signal_connect (GTK_OBJECT(view->view_frame), "load_location", 
+		      hyperbola_navigation_tree_load_location,
 		      view);
 
   return BONOBO_OBJECT (view->view_frame);
 }
 
 static void
-hyperbola_navigation_tree_notify_location_change (NautilusView *view_frame,
-						  Nautilus_NavigationInfo *navi,
-						  HyperbolaNavigationTree *hview)
+hyperbola_navigation_tree_load_location (NautilusView *view_frame,
+					 const char *location_uri,
+					 HyperbolaNavigationTree *hview)
 {
   HyperbolaTreeNode *tnode;
 
@@ -111,7 +111,7 @@ hyperbola_navigation_tree_notify_location_change (NautilusView *view_frame,
 
   hview->notify_count++;
 
-  tnode = g_hash_table_lookup(hview->doc_tree->global_by_uri, navi->requested_uri);
+  tnode = g_hash_table_lookup(hview->doc_tree->global_by_uri, location_uri);
 
   if(tnode)
     gtk_ctree_select(GTK_CTREE(hview->ctree), tnode->user_data);
@@ -123,7 +123,6 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
 						 gint column, HyperbolaNavigationTree *view)
 {
   HyperbolaTreeNode *tnode;
-  Nautilus_NavigationRequestInfo nri;
 
   if(view->notify_count > 0)
     return;
@@ -135,10 +134,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
 
   view->notify_count++;
 
-  memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = tnode->uri;
-  nri.new_window_requested = FALSE;
-  nautilus_view_request_location_change(view->view_frame, &nri);
+  nautilus_view_open_location (view->view_frame, tnode->uri);
 
   view->notify_count--;
 }

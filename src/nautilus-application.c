@@ -27,11 +27,10 @@
 #include <config.h>
 #include "nautilus-application.h"
 
-#include <libnautilus/libnautilus.h>
 #include <bonobo.h>
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
-#include <libgnomevfs/gnome-vfs-init.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -42,226 +41,128 @@
 #include "nautilus-desktop-window.h"
 
 typedef struct {
-	POA_Nautilus_Application servant;
- 	NautilusApp *app;
-
-	Nautilus_ViewWindowList attr_view_windows;
+	POA_Bonobo_GenericFactory servant;
+ 	NautilusApplication *bonobo_object;
 } impl_POA_Nautilus_Application;
 
-static Nautilus_ViewWindowList *
-impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application* servant,
-                                            CORBA_Environment * ev);
-static Nautilus_ViewWindow
-impl_Nautilus_Application_new_view_window(impl_POA_Nautilus_Application *servant,
-                                          CORBA_Environment * ev);
-static CORBA_boolean
-impl_Nautilus_Application_supports(impl_POA_Nautilus_Application * servant,
-				   CORBA_char *obj_iid,
-				   CORBA_Environment * ev);
-static CORBA_Object
-impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
-                                        CORBA_char *obj_iid,
-					GNOME_stringlist * params,
-					CORBA_Environment * ev);
-static POA_Nautilus_Application__epv impl_Nautilus_Application_epv = {
-	NULL,			/* _private */
-	(gpointer) &impl_Nautilus_Application__get_view_windows,
-	(gpointer) &impl_Nautilus_Application_new_view_window
+static CORBA_boolean manufactures                                (PortableServer_Servant    servant,
+								  const CORBA_char         *iid,
+								  CORBA_Environment        *ev);
+static CORBA_Object  create_object                               (PortableServer_Servant    servant,
+								  const CORBA_char         *iid,
+								  const Bonobo_stringlist  *params,
+								  CORBA_Environment        *ev);
+static void          nautilus_application_initialize             (NautilusApplication      *application);
+static void          nautilus_application_initialize_class       (NautilusApplicationClass *klass);
+static void          nautilus_application_destroy                (GtkObject                *object);
+static void          nautilus_application_check_user_directories (NautilusApplication      *application);
 
-};
-static POA_Bonobo_GenericFactory__epv impl_Nautilus_Application_Bonobo_GenericFactory_epv = {
-	NULL,			/* _private */
-	(gpointer) &impl_Nautilus_Application_supports,
-	(gpointer) &impl_Nautilus_Application_create_object
-};
-static PortableServer_ServantBase__epv impl_Nautilus_Application_base_epv = {
-	NULL,			/* _private data */
-	NULL,			/* finalize routine */
-	NULL,			/* default_POA routine */
-};
-static POA_Nautilus_Application__vepv impl_Nautilus_Application_vepv = {
-	&impl_Nautilus_Application_base_epv,
-	&impl_Nautilus_Application_Bonobo_GenericFactory_epv,
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
+
+static POA_Bonobo_GenericFactory__epv factory_epv = {
 	NULL,
-	&impl_Nautilus_Application_epv,
+	&manufactures,
+	&create_object
+};
+static PortableServer_ServantBase__epv base_epv;
+static POA_Bonobo_GenericFactory__vepv vepv = {
+	&base_epv,
+	&factory_epv
 };
 
-static Nautilus_ViewWindowList *
-impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application *servant,
-                                            CORBA_Environment * ev)
-{
-	Nautilus_ViewWindowList *retval;
-	int i;
-	GSList *ltmp;
-
-	retval = Nautilus_ViewWindowList__alloc ();
-	retval->_length = g_slist_length (servant->app->windows);
-
-	retval->_buffer = CORBA_sequence_Nautilus_ViewWindow_allocbuf (retval->_length);
-	for(i = 0, ltmp = servant->app->windows; ltmp; ltmp = ltmp->next, i++) {
-		CORBA_Object obj;
-		obj = bonobo_object_corba_objref(NAUTILUS_WINDOW(ltmp->data)->ntl_viewwindow);
-		retval->_buffer[i] = CORBA_Object_duplicate(obj, ev);
-	}
-
-	CORBA_sequence_set_release (retval, CORBA_TRUE);
-
-	return retval;
-}
-
-
-static Nautilus_ViewWindow
-impl_Nautilus_Application_new_view_window (impl_POA_Nautilus_Application *servant,
-					   CORBA_Environment * ev)
-{
-	NautilusWindow *win;
-
-	win = nautilus_app_create_window (servant->app);
-	return CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (win)), ev);
-}
-
 static CORBA_boolean
-impl_Nautilus_Application_supports (impl_POA_Nautilus_Application * servant,
-				    CORBA_char * obj_iid,
-				    CORBA_Environment * ev)
+manufactures (PortableServer_Servant servant,
+	      const CORBA_char *iid,
+	      CORBA_Environment *ev)
 {
-	return strcmp(obj_iid, "OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058") == 0
-		|| strcmp(obj_iid, "OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c") == 0
-		|| strcmp(obj_iid, "OAFIID:ntl_window:88e8b2e4-b627-4221-b566-5ba32185c88d") == 0;
+	return strcmp (iid, "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058") == 0
+		|| strcmp (iid, "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c") == 0;
 }
 
 static CORBA_Object
-impl_Nautilus_Application_create_object (impl_POA_Nautilus_Application *servant,
-					 CORBA_char *obj_iid,
-					 GNOME_stringlist * params,
-					 CORBA_Environment * ev)
+create_object (PortableServer_Servant servant,
+	       const CORBA_char *iid,
+	       const Bonobo_stringlist *params,
+	       CORBA_Environment *ev)
 {
-	FMDirectoryView *dir_view;
+	FMDirectoryView *directory_view;
 	NautilusView *view;
 
-	if (!impl_Nautilus_Application_supports (servant, obj_iid, ev)) {
-		return CORBA_OBJECT_NIL;
-	}
-        
-	if (strcmp (obj_iid, "OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058") == 0) {
-		dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
-	} else if (strcmp (obj_iid, "OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c") == 0) {
-		dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
-	} else if (strcmp (obj_iid,"OAFIID:ntl_window:88e8b2e4-b627-4221-b566-5ba32185c88d") == 0) {
-		return impl_Nautilus_Application_new_view_window (servant, ev);
+	if (strcmp (iid, "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058") == 0) {
+		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
+	} else if (strcmp (iid, "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c") == 0) {
+		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
 	} else {
 		return CORBA_OBJECT_NIL;
 	}
         
-	view = fm_directory_view_get_nautilus_view (dir_view);
+	view = fm_directory_view_get_nautilus_view (directory_view);
 	return CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (view)), ev);
 }
 
-
 static CORBA_Object
-impl_Nautilus_Application__create(PortableServer_POA poa,
-                                  NautilusApp *app,
-				  CORBA_Environment * ev)
+create_factory (PortableServer_POA poa,
+		NautilusApplication *bonobo_object,
+		CORBA_Environment *ev)
 {
-	impl_POA_Nautilus_Application *newservant;
+	impl_POA_Nautilus_Application *servant;
 
-	newservant = g_new0(impl_POA_Nautilus_Application, 1);
-	newservant->servant.vepv = &impl_Nautilus_Application_vepv;
-	newservant->servant.vepv->Bonobo_Unknown_epv = NAUTILUS_APP_CLASS(GTK_OBJECT(app)->klass)->unknown_epv;
-	POA_Nautilus_Application__init((PortableServer_Servant) newservant, ev);
-	return bonobo_object_activate_servant(BONOBO_OBJECT(app), newservant);
-}
-
-static void nautilus_app_init              (NautilusApp      *app);
-static void nautilus_app_class_init        (NautilusAppClass *klass);
-static void nautilus_app_destroy           (GtkObject        *object);
-static void nautilus_app_check_user_directories (NautilusApp      *app);
-
-static GtkObjectClass *app_parent_class = NULL;
-
-GtkType
-nautilus_app_get_type (void)
-{
-	static GtkType App_type = 0;
-
-	if (!App_type)
-	{
-		static const GtkTypeInfo App_info =
-		{
-			"NautilusApp",
-			sizeof (NautilusApp),
-			sizeof (NautilusAppClass),
-			(GtkClassInitFunc) nautilus_app_class_init,
-			(GtkObjectInitFunc) nautilus_app_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-      		};
-
-		App_type = gtk_type_unique (bonobo_object_get_type (), &App_info);
-	}
-
-	return App_type;
+	servant = g_new0 (impl_POA_Nautilus_Application, 1);
+	servant->servant.vepv = &vepv;
+	POA_Bonobo_GenericFactory__init ((PortableServer_Servant) servant, ev);
+	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
 
 static void
-nautilus_app_class_init (NautilusAppClass *klass)
+nautilus_application_initialize_class (NautilusApplicationClass *klass)
 {
-	GtkObjectClass *object_class;
-
-	klass->unknown_epv = bonobo_object_get_epv();
-
-	object_class = (GtkObjectClass*) klass;
-	object_class->destroy = nautilus_app_destroy;
-
-	app_parent_class = gtk_type_class (gtk_object_get_type ());
+	GTK_OBJECT_CLASS (klass)->destroy = nautilus_application_destroy;
 }
 
 static void
-nautilus_app_init (NautilusApp *app)
+nautilus_application_initialize (NautilusApplication *application)
 {
 	CORBA_Environment ev;
-	CORBA_Object objref;
+	CORBA_Object corba_object;
+	OAF_RegistrationResult result;
 	
 	CORBA_exception_init (&ev);
 
-	objref = impl_Nautilus_Application__create (bonobo_poa (), app, &ev);
-	oaf_active_server_register ("OAFIID:ntl_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3",
-				    objref);
-	bonobo_object_construct (BONOBO_OBJECT(app), objref);
+	corba_object = create_factory (bonobo_poa (), application, &ev);
+	result = oaf_active_server_register ("OAFIID:nautilus_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3",
+					     corba_object);
+	/* FIXME: Report this error somehow. */
+	g_assert (result == OAF_REG_SUCCESS);
+	bonobo_object_construct (BONOBO_OBJECT (application), corba_object);
 
 	/* Create an undo manager */
-	app->undo_manager = BONOBO_OBJECT (nautilus_undo_manager_new ());
-
-	/* Attach undo manager to application so windows can use share_undo_manager. */
-	nautilus_undo_manager_attach (NAUTILUS_UNDO_MANAGER (app->undo_manager),
-				      GTK_OBJECT (app));
+	application->undo_manager = nautilus_undo_manager_new ();
 
 	CORBA_exception_free (&ev);
 }
 
-GtkObject *
-nautilus_app_new (void)
+NautilusApplication *
+nautilus_application_new (void)
 {
-	return gtk_object_new (nautilus_app_get_type (), NULL);
+	return NAUTILUS_APPLICATION (gtk_object_new (nautilus_application_get_type (), NULL));
 }
 
 static void
-nautilus_app_destroy (GtkObject *object)
+nautilus_application_destroy (GtkObject *object)
 {
-	/* Shut down preferences.  This is needed so that the global
-	 * preferences object and all its allocations are freed.  Not
+	/* Shut down preferences. This is needed so that the global
+	 * preferences object and all its allocations are freed. Not
 	 * calling this function would have NOT cause the user to lose
 	 * preferences.  The only effect would be to leak those
 	 * objects - which would be collected at exit() time anyway,
-	 * but it adds noice to memory profile tool runs.
+	 * but it adds noise to memory profile tool runs.
 	 */
 	nautilus_global_preferences_shutdown ();
 
 	nautilus_bookmarks_exiting ();
-	GTK_OBJECT_CLASS(app_parent_class)->destroy (object);
-}
 
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
 
 static void
 display_caveat (GtkWindow *parent_window)
@@ -324,15 +225,14 @@ display_caveat (GtkWindow *parent_window)
 }
 
 static void
-nautilus_app_check_user_directories (NautilusApp *app)
+nautilus_application_check_user_directories (NautilusApplication *application)
 {
 	const char		*user_directory;
 	const char		*user_main_directory;
 	const char		*desktop_directory;
 	NautilusStringList	*dir_list;
 	
-	g_assert (app != NULL);
-	g_assert (NAUTILUS_IS_APP (app));
+	g_assert (NAUTILUS_IS_APPLICATION (application));
 
 	user_directory = nautilus_get_user_directory ();
 	user_main_directory = nautilus_get_user_main_directory ();
@@ -377,9 +277,9 @@ nautilus_app_check_user_directories (NautilusApp *app)
 }
 
 void
-nautilus_app_startup (NautilusApp *app,
-		      gboolean manage_desktop,
-		      const char *urls[])
+nautilus_application_startup (NautilusApplication *application,
+			      gboolean manage_desktop,
+			      const char *urls[])
 {
 	const char **p;
 	NautilusWindow *window;
@@ -388,18 +288,18 @@ nautilus_app_startup (NautilusApp *app,
 	/* Check the user's ~/.nautilus directories and post warnings if there
 	 * are problems
 	 */
-	nautilus_app_check_user_directories (app);
+	nautilus_application_check_user_directories (application);
 
 	/* Set up the desktop. */
 	if (manage_desktop) {
-		gtk_widget_show (GTK_WIDGET (nautilus_desktop_window_new (app)));
+		gtk_widget_show (GTK_WIDGET (nautilus_desktop_window_new (application)));
 	}
 
   	/* Create the other windows. */
 	first_window = NULL;
 	if (urls != NULL) {
 		for (p = urls; *p != NULL; p++) {
-			window = nautilus_app_create_window (app);
+			window = nautilus_application_create_window (application);
 			nautilus_window_goto_uri (window, *p);
 			if (first_window == NULL) {
 				first_window = window;
@@ -411,7 +311,7 @@ nautilus_app_startup (NautilusApp *app,
 	 * a way to get rid of the desktop.
 	 */
 	if (/* !manage_desktop && */ first_window == NULL) {
-		first_window = nautilus_app_create_window (app);
+		first_window = nautilus_application_create_window (application);
 		nautilus_window_go_home (first_window);
 	}
 
@@ -430,37 +330,40 @@ nautilus_app_startup (NautilusApp *app,
 }
 
 static void
-nautilus_app_destroy_window (GtkObject *obj, NautilusApp *app)
+nautilus_application_destroy_window (GtkObject *obj, NautilusApplication *application)
 {
-	app->windows = g_slist_remove (app->windows, obj);
-	if (app->windows == NULL) {
-  		nautilus_app_quit();
+	application->windows = g_slist_remove (application->windows, obj);
+	if (application->windows == NULL) {
+  		nautilus_application_quit();
 	}
 }
 
 void 
-nautilus_app_quit (void)
+nautilus_application_quit (void)
 {
 	gtk_main_quit ();
 }
 
 NautilusWindow *
-nautilus_app_create_window (NautilusApp *app)
+nautilus_application_create_window (NautilusApplication *application)
 {
 	NautilusWindow *window;
+
+	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
 	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type (),
-						  "app", BONOBO_OBJECT (app),
+						  "app", GTK_OBJECT (application),
 						  "app_id", "nautilus", NULL));
-	
 	gtk_signal_connect (GTK_OBJECT (window),
-			    "destroy", nautilus_app_destroy_window, app);
+			    "destroy", nautilus_application_destroy_window,
+			    application);
+
+	application->windows = g_slist_prepend (application->windows, window);
 
 	/* Do not yet show the window. It will be shown later on if it can
 	 * successfully display its initial URI. Otherwise it will be destroyed
 	 * without ever having seen the light of day.
 	 */
-	app->windows = g_slist_prepend (app->windows, window);
 
 	return window;
 }

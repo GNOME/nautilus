@@ -29,20 +29,35 @@
 
 #include "nautilus-window.h"
 
-void nautilus_window_request_location_change  (NautilusWindow                 *window,
-                                               Nautilus_NavigationRequestInfo *loc,
-                                               NautilusViewFrame              *requesting_view);
-void nautilus_window_request_selection_change (NautilusWindow                 *window,
-                                               Nautilus_SelectionRequestInfo  *loc,
-                                               NautilusViewFrame              *requesting_view);
-void nautilus_window_request_status_change    (NautilusWindow                 *window,
-                                               Nautilus_StatusRequestInfo     *loc,
-                                               NautilusViewFrame              *requesting_view);
-void nautilus_window_request_progress_change  (NautilusWindow                 *window,
-                                               Nautilus_ProgressRequestInfo   *loc,
-                                               NautilusViewFrame              *requesting_view);
-void nautilus_window_request_title_change     (NautilusWindow                 *window,
-                                               const char                     *new_title,
-                                               NautilusViewFrame              *requesting_view);
+void               nautilus_window_open_location               (NautilusWindow          *window,
+                                                                const char              *location,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_open_location_in_new_window (NautilusWindow          *window,
+                                                                const char              *location,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_report_location_change      (NautilusWindow          *window,
+                                                                const char              *location,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_report_selection_change     (NautilusWindow          *window,
+                                                                GList                   *selection,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_report_status               (NautilusWindow          *window,
+                                                                const char              *status,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_report_load_underway        (NautilusWindow          *window,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_report_load_progress        (NautilusWindow          *window,
+                                                                double                   fraction_done,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_report_load_complete        (NautilusWindow          *window,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_report_load_failed          (NautilusWindow          *window,
+                                                                NautilusViewFrame       *view);
+void               nautilus_window_set_title                   (NautilusWindow          *window,
+                                                                const char              *new_title,
+                                                                NautilusViewFrame       *view);
+NautilusViewFrame *nautilus_window_load_content_view           (NautilusWindow          *window,
+                                                                NautilusViewIdentifier  *id,
+                                                                NautilusViewFrame      **requesting_view);
 
-#endif /* NTL_WINDOW_MSGS_H */
+#endif /* NAUTILUS_WINDOW_MANAGE_VIEWS_H */

@@ -67,6 +67,7 @@ void                 nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (N
 /* Attach the undo manager to a Gtk object so that object and the widgets inside it can participate in undo. */
 void                 nautilus_undo_manager_attach                             (NautilusUndoManager *manager,
 									       GtkObject           *object);
+
 /* Attach the undo manager to a Bonobo object so another component can find it. */
 void                 nautilus_undo_manager_add_interface                      (NautilusUndoManager *manager,
 									       BonoboObject        *object);

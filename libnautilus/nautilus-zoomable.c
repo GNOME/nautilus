@@ -414,7 +414,6 @@ nautilus_zoomable_ensure_zoomable_frame (NautilusZoomable *view)
 {
 	CORBA_Environment ev;
 	
-	g_assert (view != NULL);
 	g_assert (NAUTILUS_IS_ZOOMABLE (view));
 	
 	CORBA_exception_init (&ev);
@@ -441,11 +440,10 @@ nautilus_zoomable_ensure_zoomable_frame (NautilusZoomable *view)
 
 void
 nautilus_zoomable_set_zoom_level (NautilusZoomable *view,
-				  gdouble           zoom_level)
+				  double zoom_level)
 {
 	CORBA_Environment ev;
 	
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (NAUTILUS_IS_ZOOMABLE (view));
 	
 	CORBA_exception_init (&ev);
@@ -453,7 +451,7 @@ nautilus_zoomable_set_zoom_level (NautilusZoomable *view,
 	view->details->zoom_level = zoom_level;
 	
 	if (nautilus_zoomable_ensure_zoomable_frame (view)) {
-		Nautilus_ZoomableFrame_notify_zoom_level (view->details->zoomable_frame, zoom_level, &ev);
+		Nautilus_ZoomableFrame_zoom_level_changed (view->details->zoomable_frame, zoom_level, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
 			CORBA_Object_release (view->details->zoomable_frame, &ev);
 			view->details->zoomable_frame = CORBA_OBJECT_NIL;

@@ -58,21 +58,11 @@ typedef struct {
 static int object_count = 0;
 
 static void
-web_search_notify_location_change (NautilusView *view,
-                                   Nautilus_NavigationInfo *loci,
-                                   WebSearchView *hview)
-{
-}
-
-static void
 do_search(GtkWidget *widget, WebSearchView *hview)
 {
-  Nautilus_NavigationRequestInfo nri;
   char uri[PATH_MAX], real_query[PATH_MAX], *ctmp;
   int i, j;
   EngineInfo *ei;
-
-  memset(&nri, 0, sizeof(nri));
 
   ctmp = gtk_entry_get_text(GTK_ENTRY(hview->ent_params));
   g_return_if_fail(ctmp);
@@ -93,10 +83,8 @@ do_search(GtkWidget *widget, WebSearchView *hview)
     }
   real_query[j] = '\0';
   g_snprintf(uri, sizeof(uri), "%s%s%s", ei->url_head?ei->url_head:"", real_query, ei->url_tail?ei->url_tail:"");
-  nri.requested_uri = uri;
-  nri.new_window_requested = FALSE;
 
-  nautilus_view_request_location_change(hview->view, &nri);
+  nautilus_view_open_location(hview->view, uri);
 }
 
 static void
@@ -218,9 +206,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_signal_connect(GTK_OBJECT (hview->view), "destroy", do_destroy, NULL);
   object_count++;
 
-  /* handle events */
-  gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", web_search_notify_location_change, hview);
-  
   /* handle selections */
   nautilus_clipboard_set_up_editable (GTK_EDITABLE (hview->ent_params),
                                        nautilus_view_get_bonobo_control (hview->view));

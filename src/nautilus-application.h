@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* ntl-app.h
+/* nautilus-application.h
  * Copyright (C) 2000 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,39 +22,44 @@
 #ifndef NAUTILUS_APPLICATION_H
 #define NAUTILUS_APPLICATION_H
 
-#include "nautilus-window.h"
+#include <bonobo/bonobo-object.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
-#define NAUTILUS_TYPE_APP	     (nautilus_app_get_type ())
-#define NAUTILUS_APP(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_APP, NautilusApp))
-#define NAUTILUS_APP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_APP, NautilusAppClass))
-#define NAUTILUS_IS_APP(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_APP))
-#define NAUTILUS_IS_APP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_APP))
+#define NAUTILUS_TYPE_APPLICATION	     (nautilus_application_get_type ())
+#define NAUTILUS_APPLICATION(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplication))
+#define NAUTILUS_APPLICATION_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_APPLICATION, NautilusApplicationClass))
+#define NAUTILUS_IS_APPLICATION(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_APPLICATION))
+#define NAUTILUS_IS_APPLICATION_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_APPLICATION))
 
+#ifndef NAUTILUS_WINDOW_DEFINED
+#define NAUTILUS_WINDOW_DEFINED
+typedef struct NautilusWindow NautilusWindow;
+#endif
 
 typedef struct {
 	BonoboObject parent;
 	GSList *windows;
-	BonoboObject *undo_manager;
-} NautilusApp;
+	NautilusUndoManager *undo_manager;
+} NautilusApplication;
 
 typedef struct {
 	BonoboObjectClass parent_class;
 	gpointer servant;
 	gpointer unknown_epv;
-} NautilusAppClass;
+} NautilusApplicationClass;
 
-GtkType         nautilus_app_get_type      (void);
-GtkObject *     nautilus_app_new           (void);
-void            nautilus_app_startup       (NautilusApp *app,
-					    gboolean     manage_desktop,
-					    const char  *urls[]);
-NautilusWindow *nautilus_app_create_window (NautilusApp *app);
-void            nautilus_app_quit          (void);
+GtkType              nautilus_application_get_type      (void);
+NautilusApplication *nautilus_application_new           (void);
+void                 nautilus_application_startup       (NautilusApplication *application,
+							 gboolean             manage_desktop,
+							 const char          *urls[]);
+NautilusWindow *     nautilus_application_create_window (NautilusApplication *application);
+void                 nautilus_application_quit          (void);
 
 #ifdef __cplusplus
 }
