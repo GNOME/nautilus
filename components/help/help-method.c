@@ -196,7 +196,8 @@ static gboolean
 convert_file_to_uri (HelpURI *help_uri, char *file)
 {
 	const char *mime_type;
-	
+
+	/* FIXME: This test is no longer necessary since we know the file exists from calling function */
 	if (!g_file_test (file, G_FILE_TEST_ISFILE | G_FILE_TEST_ISLINK)) { 
 		return FALSE;
 	}
@@ -233,7 +234,6 @@ transform_file (const char *old_uri,
 	HelpURI *help_uri;
 	char *p;
 	char *base, *new_uri;
-	char *old_help;
 
 	help_uri = help_uri_new ();
 
@@ -258,10 +258,9 @@ transform_file (const char *old_uri,
 
         /* Call the passed in function to compute the URI. */
 	new_uri = (* compute_uri_function) (base);
-	old_help = old_help_file (base);
         g_free (base);
 	
-        if ((new_uri == NULL) && old_help == NULL) {
+        if (new_uri == NULL) {
 		/* there is no SGML/XML or old HTML help path */
                 help_uri_free (help_uri);
                 return NULL;
@@ -272,15 +271,8 @@ transform_file (const char *old_uri,
 		return help_uri;
 	}
 
-	/* The previous URI failed - use the old_help (HTML) */
-	if (convert_file_to_uri (help_uri, old_help)) {
-		g_free (new_uri);
-		return help_uri;
-	}
-
         /* Failed, so return. */
 	g_free (new_uri);
-	g_free (old_help);
         help_uri_free (help_uri);
 	return NULL;
 }
@@ -390,11 +382,18 @@ find_help_file (const char *old_uri)
 	
 			new_uri_with_extension = g_strconcat (new_uri, ".sgml", NULL);
 			if (!g_file_exists (new_uri_with_extension)) {
-				/* SGML file doesn't exist - go to next language */
+				/* SGML file doesn't exist - fallback to SGML */
 				g_free (new_uri_with_extension);
-				new_uri_with_extension = NULL;
-				g_free (new_uri);
-				new_uri = NULL;
+
+				new_uri_with_extension = old_help_file (old_uri);
+				if (!g_file_exists (new_uri_with_extension)) {
+					/* HTML file doesn't exist - next language */
+					
+					g_free (new_uri_with_extension);
+					new_uri_with_extension = NULL;
+					g_free (new_uri);
+					new_uri = NULL;
+				}
 			}
 		}
 
@@ -460,7 +459,8 @@ file_in_info_path (const char *file)
         /* Check some hardcoded locations. */
         if (strncmp (file, "/usr/info/", strlen ("/usr/info/")) == 0 ||
             strncmp (file, "/usr/local/info/", strlen ("/usr/local/info/")) ||
-            strncmp (file, "/usr/local/info/", strlen ("/usr/gnome/info/"))) {
+            strncmp (file, "/usr/gnome/info/", strlen ("/usr/gnome/info/")) ||
+	    strncmp (file, "/usr/share/info/", strlen ("/usr/share/info/"))) {
                 return TRUE;
         }
 
