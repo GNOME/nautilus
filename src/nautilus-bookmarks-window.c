@@ -29,15 +29,15 @@
  * more than one bookmark-editing window, these would be struct or
  * class fields. 
  */
-static gint		     bookmarklist_changed_signalID;
-static NautilusBookmarklist *bookmarks = NULL;
-static GtkWidget	    *bookmark_list_widget = NULL; /* awkward name to distinguish from NautilusBookmarklist */
+static int		     bookmark_list_changed_signalID;
+static NautilusBookmarkList *bookmarks = NULL;
+static GtkWidget	    *bookmark_list_widget = NULL; /* awkward name to distinguish from NautilusBookmarkList */
 static GtkWidget	    *name_field = NULL;
-static gint		     name_field_changed_signalID;
+static int		     name_field_changed_signalID;
 static GtkWidget	    *remove_button = NULL;
 static gboolean		     text_changed = FALSE;
 static GtkWidget	    *uri_field = NULL;
-static gint		     uri_field_changed_signalID;
+static int		     uri_field_changed_signalID;
 
 
 /* forward declarations */
@@ -46,17 +46,17 @@ static guint	get_selected_row	      (void);
 static gboolean get_selection_exists 	      (void);
 static void	nautilus_bookmarks_window_restore_geometry
 					      (GtkWidget *window);
-static void	on_bookmarklist_changed       (NautilusBookmarklist *, 
+static void	on_bookmark_list_changed       (NautilusBookmarkList *, 
 					       gpointer user_data);
 static void	on_name_field_changed 	      (GtkEditable *, gpointer user_data);
 static void	on_remove_button_clicked      (GtkButton *, gpointer user_data);
 static void	on_row_move 		      (GtkCList *,
-	     				       gint old_row,
-	     				       gint new_row,
+	     				       int old_row,
+	     				       int new_row,
 	     				       gpointer user_data);
 static void	on_select_row 		      (GtkCList	*,
-	       				       gint row,
-	       				       gint column,
+	       				       int row,
+	       				       int column,
 	       				       GdkEventButton *,
 	       				       gpointer user_data);
 static gboolean	on_text_field_focus_out_event (GtkWidget *, 
@@ -96,12 +96,12 @@ static void	repopulate		      (void);
  * create_bookmarks_window:
  * 
  * Create a new bookmark-editing window. 
- * @list: The NautilusBookmarklist that this window will edit.
+ * @list: The NautilusBookmarkList that this window will edit.
  *
  * Return value: A pointer to the new window.
  **/
 GtkWidget *
-create_bookmarks_window(NautilusBookmarklist *list)
+create_bookmarks_window(NautilusBookmarkList *list)
 {
 	GtkWidget *window;
 	GtkWidget *content_area;
@@ -198,9 +198,9 @@ create_bookmarks_window(NautilusBookmarklist *list)
 
 	/* Wire up all the signals. */
 
-	bookmarklist_changed_signalID =
+	bookmark_list_changed_signalID =
 		gtk_signal_connect (GTK_OBJECT(bookmarks), "contents_changed",
-				    GTK_SIGNAL_FUNC(on_bookmarklist_changed),
+				    GTK_SIGNAL_FUNC(on_bookmark_list_changed),
 				    NULL);
 				    
 	gtk_signal_connect (GTK_OBJECT(bookmark_list_widget), "row_move",
@@ -257,9 +257,9 @@ create_bookmarks_window(NautilusBookmarklist *list)
 static const NautilusBookmark *
 get_selected_bookmark ()
 {
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARKLIST(bookmarks), NULL);
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK_LIST(bookmarks), NULL);
 
-	return nautilus_bookmarklist_item_at(bookmarks, get_selected_row());
+	return nautilus_bookmark_list_item_at(bookmarks, get_selected_row());
 }
 
 static guint
@@ -279,7 +279,7 @@ get_selection_exists ()
 }
 
 static void
-install_bookmark_icon (const NautilusBookmark *bookmark, gint row)
+install_bookmark_icon (const NautilusBookmark *bookmark, int row)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *bitmap;
@@ -302,16 +302,16 @@ install_bookmark_icon (const NautilusBookmark *bookmark, gint row)
 static void
 nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 {
-	const gchar *window_geometry;
+	const char *window_geometry;
 	
 	g_return_if_fail (GTK_IS_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
-	window_geometry = nautilus_bookmarklist_get_window_geometry(bookmarks);
+	window_geometry = nautilus_bookmark_list_get_window_geometry(bookmarks);
 
 	if (window_geometry != NULL) 
 	{	
-		gint left, top, width, height;
+		int left, top, width, height;
 
 		if (gnome_parse_geometry (window_geometry, &left, &top, &width, &height))
 		{
@@ -358,26 +358,26 @@ void
 nautilus_bookmarks_window_save_geometry (GtkWidget *window)
 {
 	g_return_if_fail (GTK_IS_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
 	/* Don't bother if window is already closed */
 	if (GTK_WIDGET_VISIBLE (window))
 	{
-		gchar *geometry_string;
+		char *geometry_string;
 		
 		geometry_string = gnome_geometry_string(window->window);	
-		nautilus_bookmarklist_set_window_geometry (bookmarks, geometry_string);
+		nautilus_bookmark_list_set_window_geometry (bookmarks, geometry_string);
 		g_free (geometry_string);
 	}
 }
 
 static void
-on_bookmarklist_changed(NautilusBookmarklist *bookmarks, gpointer data)
+on_bookmark_list_changed (NautilusBookmarkList *bookmarks, gpointer data)
 {
-	g_return_if_fail(NAUTILUS_IS_BOOKMARKLIST(bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
 	/* maybe add logic here or in repopulate to save/restore selection */
-	repopulate();
+	repopulate ();
 }
 
 static void
@@ -409,10 +409,10 @@ on_remove_button_clicked (GtkButton *button,
 	 * back to the top.
 	 */
 	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
-				 bookmarklist_changed_signalID);
-	nautilus_bookmarklist_delete_item_at(bookmarks, get_selected_row());
+				 bookmark_list_changed_signalID);
+	nautilus_bookmark_list_delete_item_at(bookmarks, get_selected_row());
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
-				   bookmarklist_changed_signalID);
+				   bookmark_list_changed_signalID);
 
 	gtk_clist_remove(GTK_CLIST(bookmark_list_widget), get_selected_row());
 }
@@ -420,32 +420,32 @@ on_remove_button_clicked (GtkButton *button,
 
 static void
 on_row_move (GtkCList *clist,
-	     gint      old_row,
-	     gint      new_row,
+	     int      old_row,
+	     int      new_row,
 	     gpointer  user_data)
 {
 	NautilusBookmark *bookmark;
 
 	bookmark = nautilus_bookmark_copy(
-		nautilus_bookmarklist_item_at(bookmarks, old_row));
+		nautilus_bookmark_list_item_at(bookmarks, old_row));
 
 	/* turn off list updating 'cuz otherwise the list-reordering code runs
 	 * after repopulate(), thus reordering the correctly-ordered list.
 	 */
 	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
-				 bookmarklist_changed_signalID);
-	nautilus_bookmarklist_delete_item_at(bookmarks, old_row);
-	nautilus_bookmarklist_insert_item(bookmarks, bookmark, new_row);
+				 bookmark_list_changed_signalID);
+	nautilus_bookmark_list_delete_item_at(bookmarks, old_row);
+	nautilus_bookmark_list_insert_item(bookmarks, bookmark, new_row);
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
-				   bookmarklist_changed_signalID);
+				   bookmark_list_changed_signalID);
 
 	gtk_object_destroy(GTK_OBJECT(bookmark));
 }
 
 static void
 on_select_row (GtkCList	       *clist,
-	       gint		row,
-	       gint	 	column,
+	       int		row,
+	       int	 	column,
 	       GdkEventButton  *event,
 	       gpointer		user_data)
 {
@@ -463,34 +463,33 @@ on_select_row (GtkCList	       *clist,
 
 
 static gboolean
-on_text_field_focus_out_event (GtkWidget     *widget,
-			      GdkEventFocus *event,
-			      gpointer       user_data)
+on_text_field_focus_out_event (GtkWidget *widget,
+			       GdkEventFocus *event,
+			       gpointer user_data)
 {
-	if (text_changed)
-	{
+	if (text_changed) {
 		NautilusBookmark *bookmark;
-		guint		  selected_row;
+		guint selected_row;
 
-		g_assert(GTK_IS_ENTRY(name_field));
-		g_assert(GTK_IS_ENTRY(uri_field));
+		g_assert (GTK_IS_ENTRY (name_field));
+		g_assert (GTK_IS_ENTRY (uri_field));
 
-		bookmark = nautilus_bookmark_new_with_name (
-			gtk_entry_get_text(GTK_ENTRY(uri_field)),
-			gtk_entry_get_text(GTK_ENTRY(name_field)));
-		selected_row = get_selected_row();
+		bookmark = nautilus_bookmark_new_with_name
+			(gtk_entry_get_text (GTK_ENTRY (uri_field)),
+			 gtk_entry_get_text (GTK_ENTRY (name_field)));
+		selected_row = get_selected_row ();
 
 		/* turn off list updating 'cuz otherwise the list-reordering code runs
 		 * after repopulate(), thus reordering the correctly-ordered list.
 		 */
-		gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
-					 bookmarklist_changed_signalID);
-		nautilus_bookmarklist_delete_item_at(bookmarks, selected_row);
-		nautilus_bookmarklist_insert_item(bookmarks, bookmark, selected_row);
-		gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
-					   bookmarklist_changed_signalID);
+		gtk_signal_handler_block (GTK_OBJECT (bookmarks), 
+					  bookmark_list_changed_signalID);
+		nautilus_bookmark_list_delete_item_at (bookmarks, selected_row);
+		nautilus_bookmark_list_insert_item (bookmarks, bookmark, selected_row);
+		gtk_signal_handler_unblock (GTK_OBJECT (bookmarks), 
+					    bookmark_list_changed_signalID);
 
-		gtk_object_destroy(GTK_OBJECT(bookmark));
+		gtk_object_destroy (GTK_OBJECT (bookmark));
 	}
 	
 	return FALSE;
@@ -499,7 +498,7 @@ on_text_field_focus_out_event (GtkWidget     *widget,
 
 static void
 on_uri_field_changed (GtkEditable *editable,
-		      gpointer     user_data)
+		      gpointer user_data)
 {
 	/* Remember that user has changed text so we 
 	 * update real bookmark later. 
@@ -510,13 +509,13 @@ on_uri_field_changed (GtkEditable *editable,
 
 static gboolean
 on_window_delete_event (GtkWidget *widget,
-			GdkEvent  *event,
-			gpointer   user_data)
+			GdkEvent *event,
+			gpointer user_data)
 {
 	nautilus_bookmarks_window_save_geometry (widget);
 	 
 	/* Hide but don't destroy */
-	gtk_widget_hide(widget);
+	gtk_widget_hide (widget);
 
 	/* Seems odd to restore the geometry just after saving it,
 	 * and when the window is hidden, but this insures that
@@ -529,60 +528,57 @@ on_window_delete_event (GtkWidget *widget,
 }
 
 static void
-repopulate ()
+repopulate (void)
 {
 	GtkCList *clist;
-	guint	  index;
-	gboolean  selection_exists;
+	guint index;
+	gboolean selection_exists;
 
-	g_assert(GTK_IS_CLIST(bookmark_list_widget));
-	g_assert(NAUTILUS_IS_BOOKMARKLIST(bookmarks));
+	g_assert (GTK_IS_CLIST (bookmark_list_widget));
+	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	
-	clist = GTK_CLIST(bookmark_list_widget);
+	clist = GTK_CLIST (bookmark_list_widget);
 
 	/* Freeze while mucking with content so it's not flashy */
-	gtk_clist_freeze(clist);
+	gtk_clist_freeze (clist);
 	    
 	/* Empty the list. */
-	gtk_clist_clear(clist);
+	gtk_clist_clear (clist);
 	   
 	/* Fill the list in with the bookmark names. */
-	for (index = 0; index < nautilus_bookmarklist_length(bookmarks); ++index)
-	{
-		gchar *text[BOOKMARK_LIST_COLUMN_COUNT];
+	for (index = 0; index < nautilus_bookmark_list_length(bookmarks); ++index) {
+		char *text[BOOKMARK_LIST_COLUMN_COUNT];
 		const NautilusBookmark *bookmark;
-		gint new_row;
+		int new_row;
 
-		bookmark = nautilus_bookmarklist_item_at(bookmarks, index);
+		bookmark = nautilus_bookmark_list_item_at(bookmarks, index);
 		text[BOOKMARK_LIST_COLUMN_ICON] = NULL;
 		text[BOOKMARK_LIST_COLUMN_NAME] = 
-			(gchar *)nautilus_bookmark_get_name(bookmark);
-		new_row = gtk_clist_append(clist, text);
+			(char *)nautilus_bookmark_get_name (bookmark);
+		new_row = gtk_clist_append (clist, text);
 		install_bookmark_icon (bookmark, new_row);
 	}
-	    
+	
 	/* Set the sensitivity of widgets that require a selection */
 	selection_exists = get_selection_exists();
-	gtk_widget_set_sensitive(remove_button, selection_exists);
-	gtk_widget_set_sensitive(name_field, selection_exists);
-	gtk_widget_set_sensitive(uri_field, selection_exists);
+	gtk_widget_set_sensitive (remove_button, selection_exists);
+	gtk_widget_set_sensitive (name_field, selection_exists);
+	gtk_widget_set_sensitive (uri_field, selection_exists);
 	    
-	if (!selection_exists)
-	{
+	if (!selection_exists) {
 		/* Block signals to avoid modifying non-existent selected item. */
-		gtk_signal_handler_block(GTK_OBJECT(name_field), 
-					 name_field_changed_signalID);
-		gtk_entry_set_text(GTK_ENTRY(name_field), "");
-		gtk_signal_handler_unblock(GTK_OBJECT(name_field), 
-					   name_field_changed_signalID);
+		gtk_signal_handler_block (GTK_OBJECT (name_field), 
+					  name_field_changed_signalID);
+		gtk_entry_set_text (GTK_ENTRY (name_field), "");
+		gtk_signal_handler_unblock (GTK_OBJECT (name_field), 
+					    name_field_changed_signalID);
 
-		gtk_signal_handler_block(GTK_OBJECT(uri_field), 
-					 uri_field_changed_signalID);
-		gtk_entry_set_text(GTK_ENTRY(uri_field), "");
-		gtk_signal_handler_unblock(GTK_OBJECT(uri_field), 
-					   uri_field_changed_signalID);
+		gtk_signal_handler_block (GTK_OBJECT (uri_field), 
+					  uri_field_changed_signalID);
+		gtk_entry_set_text (GTK_ENTRY (uri_field), "");
+		gtk_signal_handler_unblock (GTK_OBJECT (uri_field), 
+					    uri_field_changed_signalID);
 	}
 	  
-	gtk_clist_thaw(GTK_CLIST(bookmark_list_widget));
+	gtk_clist_thaw (GTK_CLIST (bookmark_list_widget));
 }
-

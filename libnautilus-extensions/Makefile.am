@@ -28,7 +28,6 @@ BUILT_SOURCES=$(nautilus_idl_sources)
 libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	bonobo-stream-vfs.h			\
-	gdk-extensions.h			\
 	gnome-icon-container.h			\
 	gtkflist.h				\
 	gtkscrollframe.h			\
@@ -41,6 +40,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-directory.h			\
 	nautilus-file-utilities.h		\
 	nautilus-file.h				\
+	nautilus-gdk-extensions.h		\
 	nautilus-glib-extensions.h		\
 	nautilus-global-preferences.h		\
 	nautilus-gnome-extensions.h		\
@@ -62,7 +62,6 @@ libnautilusinclude_HEADERS=			\
 
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	bonobo-stream-vfs.c			\
-	gdk-extensions.c			\
 	gnome-icon-container.c			\
 	gnome-icon-container-dnd.c		\
 	gnome-icon-container-grid.c		\
@@ -78,6 +77,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-directory.c			\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
+	nautilus-gdk-extensions.c		\
 	nautilus-glib-extensions.c		\
 	nautilus-global-preferences.c		\
 	nautilus-gnome-extensions.c		\

@@ -1,6 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-   gdk-extensions.c: Graphics routines to augment what's in gdk.
+/* nautilus-gdk-extensions.c: Graphics routines to augment what's in gdk.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -23,7 +23,7 @@
 */
 
 #include <config.h>
-#include "gdk-extensions.h"
+#include "nautilus-gdk-extensions.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nautilus-lib-self-check-functions.h"

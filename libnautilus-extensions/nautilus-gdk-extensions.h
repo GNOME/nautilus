@@ -1,6 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-   gdk-extensions.h: Graphics routines to augment what's in gdk.
+/* nautilus-gdk-extensions.h: Graphics routines to augment what's in gdk.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -22,10 +22,10 @@
    Authors: Darin Adler <darin@eazel.com>
 */
 
-#ifndef GDK_EXTENSIONS_H
-#define GDK_EXTENSIONS_H
+#ifndef NAUTILUS_GDK_EXTENSIONS_H
+#define NAUTILUS_GDK_EXTENSIONS_H
 
-#include <gdk/gdk.h>
+#include <gdk/gdktypes.h>
 
 /* A gradient spec. is a string that contains a specifier for either a
    color or a gradient. If the string has a "-" in it, then it's a gradient.
@@ -89,4 +89,4 @@ void     nautilus_gdk_pixbuf_list_ref                (GList              *pixbuf
 void     nautilus_gdk_pixbuf_list_unref              (GList              *pixbuf_list);
 void     nautilus_gdk_pixbuf_list_free               (GList              *pixbuf_list);
 
-#endif /* GDK_EXTENSIONS_H */
+#endif /* NAUTILUS_GDK_EXTENSIONS_H */

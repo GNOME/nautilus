@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-bookmarklist.c - implementation of centralized list of bookmarks.
+/* nautilus-bookmark-list.c - implementation of centralized list of bookmarks.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -23,7 +23,11 @@
 */
 
 #include <config.h>
-#include "nautilus-bookmarklist.h"
+#include "nautilus-bookmark-list.h"
+
+#include <stdlib.h>
+
+#include <gtk/gtksignal.h>
 
 #include <libnautilus/nautilus-file-utilities.h>
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -38,26 +42,23 @@ enum {
 	LAST_SIGNAL
 };
 
-
 /* forward declarations */
-static void        append_bookmark_node                (gpointer              list_element,
-							gpointer              user_data);
-static void        destroy_bookmark                    (gpointer              list_element,
-							gpointer              user_data);
-static const char *nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks);
-static void        nautilus_bookmarklist_load_file     (NautilusBookmarklist *bookmarks);
-static void        nautilus_bookmarklist_save_file     (NautilusBookmarklist *bookmarks);
-static void        set_window_geometry_internal        (const char           *string);
+static void        append_bookmark_node                 (gpointer              list_element,
+							 gpointer              user_data);
+static void        destroy_bookmark                     (gpointer              list_element,
+							 gpointer              user_data);
+static const char *nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks);
+static void        nautilus_bookmark_list_load_file     (NautilusBookmarkList *bookmarks);
+static void        nautilus_bookmark_list_save_file     (NautilusBookmarkList *bookmarks);
+static void        set_window_geometry_internal         (const char           *string);
 
-
 static guint signals[LAST_SIGNAL];
 static char *window_geometry;
 
-
 /* Initialization.  */
 
 static void
-nautilus_bookmarklist_initialize_class (NautilusBookmarklistClass *class)
+nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
 {
 	GtkObjectClass *object_class;
 
@@ -67,7 +68,7 @@ nautilus_bookmarklist_initialize_class (NautilusBookmarklistClass *class)
 		gtk_signal_new ("contents_changed",
 				GTK_RUN_FIRST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarklistClass, 
+				GTK_SIGNAL_OFFSET (NautilusBookmarkListClass, 
 						   contents_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
@@ -78,12 +79,12 @@ nautilus_bookmarklist_initialize_class (NautilusBookmarklistClass *class)
 }
 
 static void
-nautilus_bookmarklist_initialize (NautilusBookmarklist *bookmarks)
+nautilus_bookmark_list_initialize (NautilusBookmarkList *bookmarks)
 {
-	nautilus_bookmarklist_load_file (bookmarks);
+	nautilus_bookmark_list_load_file (bookmarks);
 }
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmarklist, nautilus_bookmarklist, GTK_TYPE_OBJECT)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
 
 
 /**
@@ -125,38 +126,38 @@ destroy_bookmark (gpointer data, gpointer user_data)
 }
 
 /**
- * nautilus_bookmarklist_append:
+ * nautilus_bookmark_list_append:
  *
- * Append a bookmark to a bookmarklist.
- * @bookmarks: NautilusBookmarklist to append to.
+ * Append a bookmark to a bookmark list.
+ * @bookmarks: NautilusBookmarkList to append to.
  * @bookmark: Bookmark to append a copy of.
  **/
 void
-nautilus_bookmarklist_append (NautilusBookmarklist *bookmarks, 
+nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks, 
 			      const NautilusBookmark *bookmark)
 {
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
 	bookmarks->list = g_list_append (bookmarks->list, 
 					 nautilus_bookmark_copy (bookmark));
-	nautilus_bookmarklist_contents_changed (bookmarks);
+	nautilus_bookmark_list_contents_changed (bookmarks);
 }
 
 /**
- * nautilus_bookmarklist_contains:
+ * nautilus_bookmark_list_contains:
  *
  * Check whether a bookmark with matching name and url is already in the list.
- * @bookmarks: NautilusBookmarklist to check contents of.
+ * @bookmarks: NautilusBookmarkList to check contents of.
  * @bookmark: NautilusBookmark to match against.
  * 
  * Return value: TRUE if matching bookmark is in list, FALSE otherwise
  **/
 gboolean
-nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks, 
+nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks, 
 				const NautilusBookmark *bookmark)
 {
-	g_return_val_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
 
 	return g_list_find_custom (bookmarks->list, 
@@ -166,35 +167,35 @@ nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks,
 }
 
 /**
- * nautilus_bookmarklist_contents_changed:
+ * nautilus_bookmark_list_contents_changed:
  * 
- * Save the bookmarklist to disk, and emit the contents_changed signal.
- * @bookmarks: NautilusBookmarklist whose contents have been modified.
+ * Save the bookmark list to disk, and emit the contents_changed signal.
+ * @bookmarks: NautilusBookmarkList whose contents have been modified.
  **/ 
 void
-nautilus_bookmarklist_contents_changed (NautilusBookmarklist *bookmarks)
+nautilus_bookmark_list_contents_changed (NautilusBookmarkList *bookmarks)
 {
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
-	nautilus_bookmarklist_save_file (bookmarks);
+	nautilus_bookmark_list_save_file (bookmarks);
 	gtk_signal_emit (GTK_OBJECT (bookmarks), 
 			 signals[CONTENTS_CHANGED]);
 }
 
 /**
- * nautilus_bookmarklist_delete_item_at:
+ * nautilus_bookmark_list_delete_item_at:
  * 
  * Delete the bookmark at the specified position.
  * @bookmarks: the list of bookmarks.
  * @index: index, must be less than length of list.
  **/
 void			
-nautilus_bookmarklist_delete_item_at (NautilusBookmarklist *bookmarks, 
+nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks, 
 				      guint index)
 {
 	GList *doomed;
 
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (index < g_list_length (bookmarks->list));
 
 	doomed = g_list_nth (bookmarks->list, index);
@@ -205,11 +206,11 @@ nautilus_bookmarklist_delete_item_at (NautilusBookmarklist *bookmarks,
 	
 	g_list_free (doomed);
 	
-	nautilus_bookmarklist_contents_changed (bookmarks);
+	nautilus_bookmark_list_contents_changed (bookmarks);
 }
 
 static const char *
-nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks)
+nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks)
 {
 	/* currently hardwired */
 
@@ -223,23 +224,23 @@ nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks)
 }
 
 /**
- * nautilus_bookmarklist_get_window_geometry:
+ * nautilus_bookmark_list_get_window_geometry:
  * 
- * Get a string representing the bookmarklist's window's geometry.
- * This is the value set earlier by nautilus_bookmarklist_set_window_geometry.
+ * Get a string representing the bookmark_list's window's geometry.
+ * This is the value set earlier by nautilus_bookmark_list_set_window_geometry.
  * @bookmarks: the list of bookmarks associated with the window.
  * Return value: string representation of window's geometry, suitable for
  * passing to gnome_parse_geometry(), or NULL if
- * no window geometry has yet been saved for this bookmarklist.
+ * no window geometry has yet been saved for this bookmark list.
  **/
 const char *
-nautilus_bookmarklist_get_window_geometry (NautilusBookmarklist *bookmarks)
+nautilus_bookmark_list_get_window_geometry (NautilusBookmarkList *bookmarks)
 {
 	return window_geometry;
 }
 
 /**
- * nautilus_bookmarklist_insert_item:
+ * nautilus_bookmark_list_insert_item:
  * 
  * Insert a bookmark at a specified position.
  * @bookmarks: the list of bookmarks.
@@ -247,22 +248,22 @@ nautilus_bookmarklist_get_window_geometry (NautilusBookmarklist *bookmarks)
  * @new_bookmark: the bookmark to insert a copy of.
  **/
 void			
-nautilus_bookmarklist_insert_item (NautilusBookmarklist *bookmarks,
-				   const NautilusBookmark* new_bookmark,
-				   guint index)
+nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
+				    const NautilusBookmark* new_bookmark,
+				    guint index)
 {
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (index <= g_list_length (bookmarks->list));
 
 	bookmarks->list = g_list_insert (bookmarks->list, 
 					 nautilus_bookmark_copy (new_bookmark), 
 					 index);
 
-	nautilus_bookmarklist_contents_changed (bookmarks);
+	nautilus_bookmark_list_contents_changed (bookmarks);
 }
 
 /**
- * nautilus_bookmarklist_item_at:
+ * nautilus_bookmark_list_item_at:
  * 
  * Get the bookmark at the specified position.
  * @bookmarks: the list of bookmarks.
@@ -271,16 +272,16 @@ nautilus_bookmarklist_insert_item (NautilusBookmarklist *bookmarks,
  * Return value: the bookmark at position @index in @bookmarks.
  **/
 const NautilusBookmark *
-nautilus_bookmarklist_item_at (NautilusBookmarklist *bookmarks, guint index)
+nautilus_bookmark_list_item_at (NautilusBookmarkList *bookmarks, guint index)
 {
-	g_return_val_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
 	g_return_val_if_fail (index < g_list_length (bookmarks->list), NULL);
 
 	return NAUTILUS_BOOKMARK (g_list_nth_data (bookmarks->list, index));
 }
 
 /**
- * nautilus_bookmarklist_length:
+ * nautilus_bookmark_list_length:
  * 
  * Get the number of bookmarks in the list.
  * @bookmarks: the list of bookmarks.
@@ -288,21 +289,21 @@ nautilus_bookmarklist_item_at (NautilusBookmarklist *bookmarks, guint index)
  * Return value: the length of the bookmark list.
  **/
 guint
-nautilus_bookmarklist_length (NautilusBookmarklist *bookmarks)
+nautilus_bookmark_list_length (NautilusBookmarkList *bookmarks)
 {
-	g_return_val_if_fail (NAUTILUS_IS_BOOKMARKLIST(bookmarks), 0);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST(bookmarks), 0);
 
 	return g_list_length (bookmarks->list);
 }
 
 /**
- * nautilus_bookmarklist_load_file:
+ * nautilus_bookmark_list_load_file:
  * 
  * Reads bookmarks from file, clobbering contents in memory.
  * @bookmarks: the list of bookmarks to fill with file contents.
  **/
 static void
-nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
+nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
@@ -313,7 +314,7 @@ nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
 	bookmarks->list = NULL;
 
 	/* Read new list from file */
-	doc = xmlParseFile (nautilus_bookmarklist_get_file_path (bookmarks));
+	doc = xmlParseFile (nautilus_bookmark_list_get_file_path (bookmarks));
 	for (node = nautilus_xml_get_root_children (doc);
 	     node != NULL;
 	     node = node->next) {
@@ -345,26 +346,26 @@ nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
 }
 
 /**
- * nautilus_bookmarklist_new:
+ * nautilus_bookmark_list_new:
  * 
- * Create a new bookmarklist, with contents read from disk.
+ * Create a new bookmark_list, with contents read from disk.
  * 
  * Return value: A pointer to the new widget.
  **/
-NautilusBookmarklist *
-nautilus_bookmarklist_new (void)
+NautilusBookmarkList *
+nautilus_bookmark_list_new (void)
 {
-	return gtk_type_new (NAUTILUS_TYPE_BOOKMARKLIST);
+	return gtk_type_new (NAUTILUS_TYPE_BOOKMARK_LIST);
 }
 
 /**
- * nautilus_bookmarklist_save_file:
+ * nautilus_bookmark_list_save_file:
  * 
  * Save bookmarks to disk.
  * @bookmarks: the list of bookmarks to save.
  **/
 static void
-nautilus_bookmarklist_save_file (NautilusBookmarklist *bookmarks)
+nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 {
 	xmlDocPtr doc;
 	xmlNodePtr root, node;
@@ -382,12 +383,12 @@ nautilus_bookmarklist_save_file (NautilusBookmarklist *bookmarks)
 	/* save bookmarks */
 	g_list_foreach (bookmarks->list, append_bookmark_node, root);
 
-	xmlSaveFile (nautilus_bookmarklist_get_file_path (bookmarks), doc);
+	xmlSaveFile (nautilus_bookmark_list_get_file_path (bookmarks), doc);
 	xmlFreeDoc (doc);
 }
 
 /**
- * nautilus_bookmarklist_set_window_geometry:
+ * nautilus_bookmark_list_set_window_geometry:
  * 
  * Set a bookmarks window's geometry (position & size), in string form. This is
  * stored to disk by this class, and can be retrieved later in
@@ -396,15 +397,15 @@ nautilus_bookmarklist_save_file (NautilusBookmarklist *bookmarks)
  * @geometry: the new window geometry string.
  **/
 void
-nautilus_bookmarklist_set_window_geometry (NautilusBookmarklist *bookmarks,
-					const char *geometry)
+nautilus_bookmark_list_set_window_geometry (NautilusBookmarkList *bookmarks,
+					    const char *geometry)
 {
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (geometry != NULL);
 
 	set_window_geometry_internal (geometry);
 
-	nautilus_bookmarklist_save_file(bookmarks);
+	nautilus_bookmark_list_save_file(bookmarks);
 }
 
 static void

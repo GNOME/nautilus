@@ -35,7 +35,7 @@
 #include "gnome-icon-container-private.h"
 #include "nautilus-string.h"
 #include "nautilus-glib-extensions.h"
-#include "gdk-extensions.h"
+#include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gnome-extensions.h"
 

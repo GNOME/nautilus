@@ -34,7 +34,7 @@
 #include "nautilus.h"
 #include "ntl-window-private.h"
 #include "ntl-index-panel.h"
-#include "explorer-location-bar.h"
+#include "nautilus-location-bar.h"
 #include <libnautilus/nautilus-bookmark.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-metadata.h>
@@ -64,7 +64,7 @@ nautilus_window_progress_indicate(NautilusWindow *window, ProgressType type, dou
       /* If it was an error loading a URI that had been dragged to the location bar, we might
          need to reset the URI */
       the_uri = window->ni?window->ni->requested_uri:"";
-      explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
+      nautilus_location_bar_set_location(NAUTILUS_LOCATION_BAR(window->ent_uri),
                                            the_uri);
     }
 }
@@ -285,8 +285,8 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
   nautilus_window_allow_back(window, window->back_list != NULL);
   nautilus_window_allow_forward(window, window->forward_list != NULL);
   
-  explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
-				       window->ni->requested_uri);
+  nautilus_location_bar_set_location(NAUTILUS_LOCATION_BAR(window->ent_uri),
+                                     window->ni->requested_uri);
   nautilus_index_panel_set_uri (NAUTILUS_INDEX_PANEL (window->index_panel), window->ni->requested_uri);
 
   nautilus_window_refresh_title (window);

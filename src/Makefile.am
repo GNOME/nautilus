@@ -27,12 +27,12 @@ LDADD =\
 	$(NULL)
 
 nautilus_SOURCES =\
-	explorer-location-bar.c         \
-	explorer-location-bar.h		\
-	nautilus-bookmarklist.c		\
-	nautilus-bookmarklist.h		\
+	nautilus-bookmark-list.c	\
+	nautilus-bookmark-list.h	\
 	nautilus-bookmarks-window.c	\
 	nautilus-bookmarks-window.h	\
+	nautilus-location-bar.c         \
+	nautilus-location-bar.h		\
 	nautilus-signaller.c		\
 	nautilus-signaller.h		\
 	nautilus-zoom-control.c		\

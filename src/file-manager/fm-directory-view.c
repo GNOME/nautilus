@@ -154,15 +154,15 @@ static void           schedule_timeout_display_of_pending_files                 
 static void           unschedule_timeout_display_of_pending_files                 (FMDirectoryView         *view);
 static void           unschedule_display_of_pending_files                         (FMDirectoryView         *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView         *view);
-static void           user_level_changed_callback                                 (const GtkObject         *prefs,
-										   const gchar             *pref_name,
-										   GtkFundamentalType       pref_type,
-										   gconstpointer            pref_value,
+static void           user_level_changed_callback                                 (NautilusPreferences     *preferences,
+										   const char              *name,
+										   NautilusPreferencesType  type,
+										   gconstpointer            value,
 										   gpointer                 user_data);
-static void           use_new_window_changed_callback                             (const GtkObject         *prefs,
-										   const gchar             *pref_name,
-										   GtkFundamentalType       pref_type,
-										   gconstpointer            pref_value,
+static void           use_new_window_changed_callback                             (NautilusPreferences     *preferences,
+										   const char              *name,
+										   NautilusPreferencesType  type,
+										   gconstpointer            value,
 										   gpointer                 user_data);
 
 
@@ -419,7 +419,7 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
 					   NAUTILUS_PREFERENCES_USER_LEVEL,
 					   user_level_changed_callback,
-					   (gpointer) directory_view);
+					   directory_view);
 
 	directory_view->details->use_new_window =
 		nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
@@ -428,7 +428,7 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
 					   NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 					   use_new_window_changed_callback,
-					   (gpointer) directory_view);	
+					   directory_view);	
 }
 
 static void
@@ -441,11 +441,11 @@ fm_directory_view_destroy (GtkObject *object)
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
 					      NAUTILUS_PREFERENCES_USER_LEVEL,
 					      user_level_changed_callback,
-					      (gpointer) view);
+					      view);
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
 					      NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 					      use_new_window_changed_callback,
-					      (gpointer) view);
+					      view);
 	
 	if (view->details->model != NULL) {
 		disconnect_model_handlers (view);
@@ -1849,47 +1849,46 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 }
 
 static void
-use_new_window_changed_callback (const GtkObject         *prefs,
-			         const gchar             *pref_name,
-			         GtkFundamentalType       pref_type,
-			         gconstpointer            pref_value,
-			         gpointer                 user_data)
+use_new_window_changed_callback (NautilusPreferences *preferences,
+			         const char *name,
+			         NautilusPreferencesType type,
+			         gconstpointer value,
+			         gpointer user_data)
 {
-	FMDirectoryView * directory_view = FM_DIRECTORY_VIEW (user_data);
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW) == 0);
+	g_assert (type == NAUTILUS_PREFERENCE_BOOLEAN);
+	g_assert (GPOINTER_TO_INT (value) == FALSE || GPOINTER_TO_INT (value) == TRUE);
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
-	g_assert (directory_view != NULL);
-	g_assert (prefs != NULL);
-	g_assert (pref_name != NULL);
-
-	directory_view->details->use_new_window = GPOINTER_TO_INT (pref_value);
+	FM_DIRECTORY_VIEW (user_data)->details->use_new_window = GPOINTER_TO_INT (value);
 }
 
 static void
-user_level_changed_callback (const GtkObject         *prefs,
-			     const gchar             *pref_name,
-			     GtkFundamentalType       pref_type,
-			     gconstpointer            pref_value,
-			     gpointer                 user_data)
+user_level_changed_callback (NautilusPreferences *preferences,
+			     const char *name,
+			     NautilusPreferencesType type,
+			     gconstpointer value,
+			     gpointer user_data)
 {
-	FMDirectoryView * directory_view = FM_DIRECTORY_VIEW (user_data);
+	FMDirectoryView *directory_view;
+	char *same_uri;
 
-	g_assert (directory_view != NULL);
-	g_assert (prefs != NULL);
-	g_assert (pref_name != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_USER_LEVEL) == 0);
+	g_assert (type == NAUTILUS_PREFERENCE_BOOLEAN);
+	g_assert (GPOINTER_TO_INT (value) == FALSE || GPOINTER_TO_INT (value) == TRUE);
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
-	directory_view->details->user_level = GPOINTER_TO_INT (pref_value);
+	directory_view = FM_DIRECTORY_VIEW (user_data);
 
-	/* Reload the current uri so that the filtering changes take place */
-	if (directory_view->details->model != NULL)
-	{
-		char * same_uri;
+	directory_view->details->user_level = GPOINTER_TO_INT (value);
 
+	/* Reload the current uri so that the filtering changes take place. */
+	if (directory_view->details->model != NULL) {
 		same_uri = nautilus_directory_get_uri (directory_view->details->model);
-
 		g_assert (same_uri != NULL);
-
 		fm_directory_view_load_uri (directory_view, same_uri);
-
 		g_free (same_uri);
 	}
 }

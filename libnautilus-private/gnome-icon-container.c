@@ -34,8 +34,8 @@
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
-#include "gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"

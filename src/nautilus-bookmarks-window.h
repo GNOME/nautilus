@@ -23,12 +23,12 @@
 */
 
 #ifndef NAUTILUS_BOOKMARKS_WINDOW_H
-#define NAUTILUS_BOOKMARKS_WINDOW_H 1
+#define NAUTILUS_BOOKMARKS_WINDOW_H
 
 #include <gnome.h>
-#include "nautilus-bookmarklist.h"
+#include "nautilus-bookmark-list.h"
 
-GtkWidget	*create_bookmarks_window (NautilusBookmarklist *bookmarks);
-void		 nautilus_bookmarks_window_save_geometry (GtkWidget *window);
+GtkWidget *create_bookmarks_window                 (NautilusBookmarkList *bookmarks);
+void       nautilus_bookmarks_window_save_geometry (GtkWidget            *window);
 
 #endif /* NAUTILUS_BOOKMARKS_WINDOW_H */

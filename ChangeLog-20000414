@@ -1,3 +1,48 @@
+2000-03-16  Darin Adler  <darin@eazel.com>
+
+	Did some of the renamings that were queued in RENAMING.
+
+	* libnautilus/Makefile.am:
+	* libnautilus/gdk-extensions.c:
+	* libnautilus/gdk-extensions.h:
+	* libnautilus/nautilus-gdk-extensions.c:
+	* libnautilus/nautilus-gdk-extensions.h:
+	* libnautilus/gnome-icon-container.c:
+	* libnautilus/nautilus-background.c:
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	Renamed gdk-extensions to add the nautilus- prefix and changed
+	all includers.
+
+	* src/Makefile.am:
+	* src/explorer-location-bar.c:
+	* src/explorer-location-bar.h:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-location-bar.h:
+	* src/ntl-window-msgs.c:
+	* src/ntl-window.c:
+	Renamed ExplorerLocationBar to NautilusLocationBar.
+
+	* src/Makefile.am:
+	* src/nautilus-bookmarklist.c:
+	* src/nautilus-bookmarklist.h:
+	* src/nautilus-bookmark-list.c:
+	* src/nautilus-bookmark-list.h:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-bookmarks-window.h:
+	* src/nautilus-window-menus.c:
+	Renamed NautilusBookmarklist to NautilusBookmarkList.
+
+	* RENAMING: Marked items done and added some new ones.
+
+	* nautilus-widgets/nautilus-preferences-item.c:
+	* nautilus-widgets/nautilus-preferences.c:
+	* nautilus-widgets/test-nautilus-widgets.c:
+	* libnautilus/nautilus-icon-factory.c:
+	* src/file-manager/fm-directory-view-icons.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-text-window.c:
+	Cleaned up the interface to NautilusPreferences a bit.
+
 2000-03-16  John Sullivan  <sullivan@eazel.com>
 
 	Fixes for a couple of preferences bugs Darin and I ran into

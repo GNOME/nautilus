@@ -212,16 +212,15 @@ create_dummy_prefs (void)
 	dummy_prefs = nautilus_preferences_new ("dummy");
 
 	/* Register the static prefs */
-	for (i = 0; i < 3; i++)
-	{
-		nautilus_preferences_register_from_info (NAUTILUS_PREFS (dummy_prefs),
-						   &prefs_global_static_pref_info[i]);
+	for (i = 0; i < 3; i++)	{
+		nautilus_preferences_register_from_info (NAUTILUS_PREFERENCES (dummy_prefs),
+							 &prefs_global_static_pref_info[i]);
 	}
 
 
-	nautilus_preferences_set_enum (NAUTILUS_PREFS (dummy_prefs),
-				 "user_level",
-				 2);
+	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (dummy_prefs),
+				       "user_level",
+				       2);
 
 	return dummy_prefs;
 }

@@ -26,7 +26,7 @@
 #include "nautilus-background.h"
 
 #include <gtk/gtksignal.h>
-#include "gdk-extensions.h"
+#include "nautilus-gdk-extensions.h"
 #include "nautilus-background-canvas-group.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-gtk-macros.h"

@@ -23,7 +23,7 @@
    Author: John Sullivan <sullivan@eazel.com>
 */
 
-#include "nautilus-bookmarklist.h"
+#include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
 #include "ntl-app.h"
@@ -47,8 +47,8 @@ static void                  append_separator_to_menu            (NautilusWindow
 static void                  clear_appended_bookmark_items       (NautilusWindow *window, 
                                                                   const char *menu_path, 
                                                                   const char *last_static_item_path);
-static NautilusBookmarklist *get_bookmark_list                   ();
-static GtkWidget            *get_bookmarks_window                ();
+static NautilusBookmarkList *get_bookmark_list                   (void);
+static GtkWidget            *get_bookmarks_window                (void);
 static void                  nautilus_window_about_cb            (GtkWidget *widget,
                                                                   NautilusWindow *window);
 static void                  debug_menu_show_color_picker_cb     (GtkWidget *widget, 
@@ -98,7 +98,7 @@ static void
 file_menu_exit_cb (GtkWidget *widget,
                    gpointer data)
 {
-  gtk_main_quit();
+	gtk_main_quit ();
 }
 
 static void
@@ -398,20 +398,20 @@ clear_appended_bookmark_items (NautilusWindow *window,
 	g_list_free (children);
 }
 
-static NautilusBookmarklist *
-get_bookmark_list ()
+static NautilusBookmarkList *
+get_bookmark_list (void)
 {
-        static NautilusBookmarklist *bookmarks = NULL;
+        static NautilusBookmarkList *bookmarks = NULL;
 
         if (bookmarks == NULL) {
-                bookmarks = nautilus_bookmarklist_new ();
+                bookmarks = nautilus_bookmark_list_new ();
         }
 
         return bookmarks;
 }
 
 static GtkWidget *
-get_bookmarks_window ()
+get_bookmarks_window (void)
 {
 	static GtkWidget *bookmarks_window = NULL;
 	if (bookmarks_window == NULL)
@@ -429,7 +429,7 @@ get_bookmarks_window ()
  * Called when application exits; don't call from anywhere else.
  **/
 void
-nautilus_bookmarks_exiting ()
+nautilus_bookmarks_exiting (void)
 {
 	nautilus_bookmarks_window_save_geometry (get_bookmarks_window ());
 }
@@ -489,9 +489,8 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 
 	bookmark = nautilus_bookmark_new (nautilus_window_get_requested_uri(window));
 
-	if (!nautilus_bookmarklist_contains (get_bookmark_list (), bookmark))
-	{
-		nautilus_bookmarklist_append (get_bookmark_list (), bookmark);
+	if (!nautilus_bookmark_list_contains (get_bookmark_list (), bookmark)) {
+		nautilus_bookmark_list_append (get_bookmark_list (), bookmark);
 	}
 	gtk_object_destroy(GTK_OBJECT(bookmark));
 }
@@ -610,7 +609,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 static void
 refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
 {
-        NautilusBookmarklist *bookmarks;
+        NautilusBookmarkList *bookmarks;
 	guint 	bookmark_count;
 	guint	index;
 	
@@ -621,7 +620,7 @@ refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
 	/* Remove old set of bookmarks. */
 	clear_appended_bookmark_items (window, "/Bookmarks", "/Bookmarks/Edit Bookmarks...");
 
-	bookmark_count = nautilus_bookmarklist_length (bookmarks);
+	bookmark_count = nautilus_bookmark_list_length (bookmarks);
 
         /* Add separator before bookmarks, unless there are no bookmarks. */
         if (bookmark_count > 0) {
@@ -635,7 +634,7 @@ refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
 
 		path = g_strdup_printf ("/Bookmarks/Bookmark%d", index);
 		append_bookmark_to_menu (window, 
-		                         nautilus_bookmarklist_item_at (bookmarks, index), 
+		                         nautilus_bookmark_list_item_at (bookmarks, index), 
 		                         path); 
                 g_free (path);
 	}	
@@ -690,4 +689,3 @@ update_eazel_theme_menu_item (NautilusWindow *window)
 								      NAUTILUS_PREFERENCES_ICON_THEME), 
 				     "eazel") == 0);
 }
-

@@ -96,7 +96,7 @@ set_preference_string (char *new_value) {
 }
 
 static void
-synch_menus_with_preference ()
+synch_menus_with_preference (void)
 {
 	int menu_index;
 	char **text_array;
@@ -125,18 +125,20 @@ synch_menus_with_preference ()
 }
 
 static void
-preference_changed_callback (const GtkObject *prefs,
-         		     const gchar                 *pref_name,
-         		     GtkFundamentalType           pref_type,
-         		     gconstpointer                pref_value,
-         		     gpointer                	    user_data)
+preference_changed_callback (NautilusPreferences *preferences,
+         		     const char *name,
+         		     NautilusPreferencesType type,
+         		     gconstpointer value,
+         		     gpointer user_data)
 
 {
-	g_assert (user_data != NULL);
-	g_assert (prefs != NULL);
-	g_assert (pref_name != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES) == 0);
+	g_assert (type == NAUTILUS_PREFERENCE_STRING);
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
 
-	set_preference_string (g_strdup ((char *)pref_value));
+	set_preference_string (g_strdup ((char *) value));
 	synch_menus_with_preference ();
 }
 
@@ -282,7 +284,7 @@ create_icon_text_window (void)
 	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
 					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					   preference_changed_callback,
-					   (gpointer) window);	
+					   NULL);
 	
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
@@ -351,12 +353,12 @@ fm_icon_text_window_delete_event_cb (GtkWidget *widget,
 
 static void
 fm_icon_text_window_destroy_cb (GtkObject *object,
-				gpointer   user_data)
+				gpointer user_data)
 {
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
 					      NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					      preference_changed_callback,
-					      user_data);
+					      NULL);
 }
 
 /**

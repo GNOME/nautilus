@@ -246,7 +246,7 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 	item->details->prefs = prefs;
 	item->details->pref_name = g_strdup (pref_name);
 
-	pref_info = nautilus_preferences_get_pref_info (NAUTILUS_PREFS (item->details->prefs),
+	pref_info = nautilus_preferences_get_pref_info (NAUTILUS_PREFERENCES (item->details->prefs),
 							item->details->pref_name);
 	
 	g_assert (pref_info != NULL);
@@ -297,11 +297,11 @@ preferences_item_create_enum (NautilusPreferencesItem		*item,
 
 	item->details->child = nautilus_radio_button_group_new ();
 		
-	enum_info = (NautilusPreferencesEnumData *) pref_info->type_data;
+	enum_info = (NautilusPreferencesEnumData *) pref_info->data;
 	
 	g_assert (enum_info != NULL);
 
-	value = nautilus_preferences_get_enum (NAUTILUS_PREFS (item->details->prefs),
+	value = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES (item->details->prefs),
 					       item->details->pref_name);
 	
 	for (i = 0; i < enum_info->num_entries; i++)
@@ -334,11 +334,11 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
 	g_assert (item->details->prefs != NULL);
 	g_assert (item->details->pref_name != NULL);
 
-	g_assert (pref_info->pref_description != NULL);
+	g_assert (pref_info->description != NULL);
 
-	item->details->child = gtk_check_button_new_with_label (pref_info->pref_description);
+	item->details->child = gtk_check_button_new_with_label (pref_info->description);
 
-	value = nautilus_preferences_get_boolean (NAUTILUS_PREFS (item->details->prefs),
+	value = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES (item->details->prefs),
 						  item->details->pref_name);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (item->details->child), value);
@@ -381,7 +381,7 @@ enum_radio_group_changed_cb (GtkWidget *buttons, GtkWidget * button, gpointer us
 
 	i = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (buttons));
 
-	nautilus_preferences_set_enum (NAUTILUS_PREFS (item->details->prefs),
+	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (item->details->prefs),
 				       item->details->pref_name,
 				       i);
 }
@@ -396,7 +396,7 @@ boolean_button_toggled_cb (GtkWidget *button, gpointer user_data)
 
 	active_state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 
-	nautilus_preferences_set_boolean (NAUTILUS_PREFS (item->details->prefs),
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES (item->details->prefs),
 					  item->details->pref_name,
 					  active_state);
 }

@@ -26,15 +26,16 @@
  */
 /* ntl-window.c: Implementation of the main window object */
 
-#include "config.h"
+#include <config.h>
+#include "ntl-window-private.h"
+
 #include <gnome.h>
 #include <math.h>
 #include "nautilus.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
-#include "explorer-location-bar.h"
+#include "nautilus-location-bar.h"
 #include "ntl-index-panel.h"
-#include "ntl-window-private.h"
 #include "ntl-miniicon.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
@@ -504,7 +505,7 @@ nautilus_window_constructed(NautilusWindow *window)
   location_bar_box = gtk_hbox_new(FALSE, GNOME_PAD);
   gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
 
-  window->ent_uri = explorer_location_bar_new();
+  window->ent_uri = nautilus_location_bar_new();
   gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
                      nautilus_window_goto_uri_cb, window);
   gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD_SMALL);

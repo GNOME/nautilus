@@ -125,10 +125,10 @@ static char *                get_icon_property_cb                               
 											   NautilusFile                *icon_data,
 											   const char                  *property_name,
 											   FMDirectoryViewIcons        *icon_view);
-static void                  text_attribute_names_changed_callback                        (const GtkObject             *prefs,
-			         							   const gchar                 *pref_name,
-			         							   GtkFundamentalType           pref_type,
-			         							   gconstpointer            	pref_value,
+static void                  text_attribute_names_changed_callback                        (NautilusPreferences         *preferences,
+			         							   const char                  *name,
+			         							   NautilusPreferencesType      type,
+			         							   gconstpointer            	value,
 			         							   gpointer                 	user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
@@ -190,7 +190,7 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *icon_view)
 	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
 					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					   text_attribute_names_changed_callback,
-					   (gpointer) icon_view);	
+					   icon_view);	
 
 	icon_container = create_icon_container (icon_view);
 }
@@ -205,7 +205,7 @@ fm_directory_view_icons_destroy (GtkObject *object)
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
 					      NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					      text_attribute_names_changed_callback,
-					      (gpointer) icon_view);
+					      icon_view);
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
                 gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
@@ -1085,23 +1085,25 @@ get_icon_property_cb (GnomeIconContainer *container,
 }
 
 static void
-text_attribute_names_changed_callback (const GtkObject *prefs,
-         			       const gchar                 *pref_name,
-         			       GtkFundamentalType           pref_type,
-         			       gconstpointer                pref_value,
-         			       gpointer                	    user_data)
+text_attribute_names_changed_callback (NautilusPreferences *preferences,
+         			       const char *name,
+				       NautilusPreferencesType type,
+         			       gconstpointer value,
+         			       gpointer user_data)
 
 {
-	FMDirectoryViewIcons * icon_view;
+	FMDirectoryViewIcons *icon_view;
 
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES) == 0);
+	g_assert (type == NAUTILUS_PREFERENCE_STRING);
+	g_assert (value != NULL);
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (user_data));
-	g_assert (prefs != NULL);
-	g_assert (pref_name != NULL);
 
 	icon_view = FM_DIRECTORY_VIEW_ICONS (user_data);
 
 	g_free (icon_view->details->text_attribute_names);
-	icon_view->details->text_attribute_names = g_strdup ((char *)pref_value);
+	icon_view->details->text_attribute_names = g_strdup ((char *) value);
 
 	gnome_icon_container_request_update_all (get_icon_container (icon_view));	
 }

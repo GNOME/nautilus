@@ -139,7 +139,6 @@ typedef struct {
 	
 	/* id of timeout task for making thumbnails */
 	int timeout_task_id;
-
 } NautilusIconFactory;
 
 typedef struct {
@@ -180,18 +179,18 @@ typedef struct {
 
 /* forward declarations */
 
-static void		     icon_theme_changed_callback 	     (const GtkObject  	       *prefs,
-         		     					      const gchar              *pref_name,
-         		     					      GtkFundamentalType        pref_type,
-         		     					      gconstpointer             pref_value,
-         		     					      gpointer                	user_data);
+static void                  icon_theme_changed_callback             (NautilusPreferences      *preferences,
+								      const char               *name,
+								      NautilusPreferencesType   type,
+								      gconstpointer             value,
+								      gpointer                  user_data);
 static GtkType               nautilus_icon_factory_get_type          (void);
 static void                  nautilus_icon_factory_initialize_class  (NautilusIconFactoryClass *class);
 static void                  nautilus_icon_factory_initialize        (NautilusIconFactory      *factory);
 static NautilusIconFactory * nautilus_get_current_icon_factory       (void);
 static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFile             *file);
 static NautilusIconFactory * nautilus_icon_factory_new               (const char               *theme_name);
-void 			     nautilus_icon_factory_set_theme 	     (const char               *theme_name);
+static void                  nautilus_icon_factory_set_theme         (const char               *theme_name);
 static NautilusScalableIcon *nautilus_scalable_icon_get              (const char               *uri,
 								      const char               *name);
 static guint                 nautilus_scalable_icon_hash             (gconstpointer             p);
@@ -235,7 +234,7 @@ nautilus_get_current_icon_factory (void)
 		nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
 						   NAUTILUS_PREFERENCES_ICON_THEME,
 						   icon_theme_changed_callback,
-						   (gpointer) global_icon_factory);	
+						   NULL);	
 
         }
         return global_icon_factory;
@@ -326,7 +325,7 @@ nautilus_icon_factory_destroy (NautilusIconFactory *factory)
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
 					      NAUTILUS_PREFERENCES_ICON_THEME,
 					      icon_theme_changed_callback,
-					      (gpointer) factory);
+					      NULL);
 
         nautilus_icon_factory_clear ();
         g_hash_table_destroy (factory->icon_cache);
@@ -584,21 +583,19 @@ get_icon_file_path (const char *name, guint size_in_pixels, ArtIRect *text_rect)
 }
 
 static void
-icon_theme_changed_callback (const GtkObject *prefs,
-         		     const gchar *pref_name,
-         		     GtkFundamentalType pref_type,
-         		     gconstpointer pref_value,
+icon_theme_changed_callback (NautilusPreferences *preferences,
+         		     const char *name,
+         		     GtkFundamentalType type,
+         		     gconstpointer value,
          		     gpointer user_data)
 {
-	NautilusIconFactory *icon_factory;
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_THEME) == 0);
+	g_assert (type == NAUTILUS_PREFERENCE_STRING);
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
 
-	g_assert (user_data != NULL);
-	g_assert (prefs != NULL);
-	g_assert (pref_name != NULL);
-
-	icon_factory = (NautilusIconFactory *)user_data;
-
-	nautilus_icon_factory_set_theme ((char *)pref_value);
+	nautilus_icon_factory_set_theme ((char *) value);
 }
 
 /* Get or create a scalable icon. */
