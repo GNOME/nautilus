@@ -231,7 +231,7 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 		return;
 	}
 
-	if (result != GNOME_VFS_OK) {
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
 		pixbuf = NULL;
 	} else {
 		pixbuf = gdk_pixbuf_loader_get_pixbuf (handle->loader);
