@@ -33,8 +33,6 @@ nautilus_SOURCES =\
 	nautilus-bookmarklist.h		\
 	nautilus-bookmarks-window.c	\
 	nautilus-bookmarks-window.h	\
-	nautilus-global-preferences.c	\
-	nautilus-global-preferences.h	\
 	nautilus-signaller.c		\
 	nautilus-signaller.h		\
 	nautilus-zoom-control.c		\

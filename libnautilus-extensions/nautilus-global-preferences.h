@@ -30,9 +30,19 @@
 
 BEGIN_GNOME_DECLS
 
-#define NAUTILUS_PREFS_WINDOW_ALWAYS_NEW	"/nautilus/prefs/window_always_new"
-#define NAUTILUS_PREFS_WINDOW_SEARCH_EXISTING	"/nautilus/prefs/window_search_existing"
-#define NAUTILUS_PREFS_USER_LEVEL		"/nautilus/prefs/user_level"
+/* User level */
+#define NAUTILUS_GLOBAL_PREFERENCES_USER_LEVEL			"/nautilus/prefs/user_level"
+
+/* Window options */
+#define NAUTILUS_GLOBAL_PREFERENCES_WINDOW_ALWAYS_NEW		"/nautilus/prefs/window_always_new"
+#define NAUTILUS_GLOBAL_PREFERENCES_WINDOW_SEARCH_EXISTING	"/nautilus/prefs/window_search_existing"
+
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS	"/nautilus/prefs/metaviews::ntl_notes_view"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS	"/nautilus/prefs/metaviews::hyperbola_navigation_tree"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX		"/nautilus/prefs/metaviews::hyperbola_navigation_index"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH	"/nautilus/prefs/metaviews::hyperbola_navigation_search"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY		"/nautilus/prefs/metaviews::ntl_history_view"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH		"/nautilus/prefs/metaviews::ntl_websearch_view"
 
 enum
 {
@@ -42,9 +52,9 @@ enum
 	NAUTILUS_USER_LEVEL_ETTORE
 };
 
-void           nautilus_prefs_global_shutdown    (void);
-void           nautilus_prefs_global_show_dialog (void);
-NautilusPrefs *nautilus_prefs_global_get_prefs   (void);
+void nautilus_global_preferences_shutdown    (void);
+void nautilus_global_preferences_initialize  (void);
+void nautilus_global_preferences_show_dialog (void);
 
 BEGIN_GNOME_DECLS
 

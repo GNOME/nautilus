@@ -1,3 +1,5 @@
+NULL=
+
 lib_LTLIBRARIES=libnautilus.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
@@ -25,21 +27,21 @@ BUILT_SOURCES=$(nautilus_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
-	libnautilus.h				\
 	bonobo-stream-vfs.h			\
 	gdk-extensions.h			\
 	gnome-icon-container.h			\
 	gtkflist.h				\
 	gtkscrollframe.h			\
-	nautilus.h				\
+	libnautilus.h				\
 	nautilus-alloc.h			\
 	nautilus-background.h			\
 	nautilus-bookmark.h			\
 	nautilus-debug.h			\
 	nautilus-directory.h			\
-	nautilus-file.h				\
 	nautilus-file-utilities.h		\
+	nautilus-file.h				\
 	nautilus-glib-extensions.h		\
+	nautilus-global-preferences.h		\
 	nautilus-gnome-extensions.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-icon-factory.h			\
@@ -49,9 +51,11 @@ libnautilusinclude_HEADERS=			\
 	nautilus-self-checks.h			\
 	nautilus-string.h			\
 	nautilus-zoomable.h			\
+	nautilus.h				\
 	ntl-content-view-frame.h		\
 	ntl-meta-view-frame.h			\
-	ntl-view-frame.h
+	ntl-view-frame.h			\
+	$(NULL)
 
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	bonobo-stream-vfs.c			\
@@ -60,16 +64,17 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gnome-icon-container.c			\
 	gtkflist.c				\
 	gtkscrollframe.c			\
-	nautilus-background.c			\
 	nautilus-background-canvas-group.c	\
+	nautilus-background.c			\
 	nautilus-bookmark.c			\
 	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
 	nautilus-default-file-icon.h		\
 	nautilus-directory.c			\
-	nautilus-file.c				\
 	nautilus-file-utilities.c		\
+	nautilus-file.c				\
 	nautilus-glib-extensions.c		\
+	nautilus-global-preferences.c		\
 	nautilus-gnome-extensions.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-icon-factory.c			\
@@ -82,7 +87,8 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	ntl-content-view-frame.c		\
 	ntl-meta-view-frame.c			\
 	ntl-view-frame.c			\
-	$(fsextension_idl_sources)
+	$(fsextension_idl_sources)		\
+	$(NULL)
 
 $(nautilus_idl_sources): nautilus_idl_stamp
 $(fsextension_idl_sources): fsextension_idl_stamp
