@@ -73,11 +73,14 @@
 #include <math.h>
 #include <src/nautilus-application.h>
 
+
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 #define SILENT_WINDOW_OPEN_LIMIT	5
 
 #define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
 #define DUPLICATE_VERTICAL_ICON_OFFSET   30
+
+#define NAUTILUS_COMMAND_SPECIFIER "command:"
 
 /* Paths to use when referring to bonobo menu items. */
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
@@ -3466,7 +3469,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
 	gboolean performed_special_handling;
-
+	
 	parameters = callback_data;
 
 	nautilus_timed_wait_stop (cancel_activate_callback, parameters);
@@ -3484,7 +3487,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	if (nautilus_file_is_broken_symbolic_link (file)) {
 		report_broken_symbolic_link (view, file);
 		performed_special_handling = TRUE;
-	} else if (nautilus_istr_has_prefix (uri, "command:")) {
+	} else if (nautilus_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
 		/* don't allow command execution from remote uris to partially mitigate
 		 * the security risk of executing arbitrary commands. */	
 		if (!nautilus_file_is_local (file)) {
@@ -3495,10 +3498,9 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			/* as an additional security precaution, we only execute commands without
 			 * any parameters, which is enforced by using fork/execlp instead of system
 			 */
-			if (fork () == 0) {
-				command = uri + 8;
-				execlp (command, command, NULL);
-			}
+			g_assert (strncmp (uri, NAUTILUS_COMMAND_SPECIFIER, sizeof (NAUTILUS_COMMAND_SPECIFIER) - 1) == 0);
+			command = uri + sizeof (NAUTILUS_COMMAND_SPECIFIER) - 1;
+			nautilus_gnome_shell_execute (command);
 			performed_special_handling = TRUE;
 		}
 	} else if (file_is_launchable (file)) {

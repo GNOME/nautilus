@@ -116,4 +116,9 @@ void       nautilus_gnome_open_terminal                                 (const c
 gboolean   nautilus_gnome_stock_set_icon_or_register                    (GnomeStock      *stock,
 									 const char      *icon);
 
+/* Execute a command. To be used in place of the exec family commands. This function
+ * protects against creating zombie processes.
+*/
+int 	   nautilus_gnome_shell_execute 				 (const char 	 *command);
+
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

@@ -441,8 +441,8 @@ max_open_files (void)
 	return files;
 }
 
-static int 
-nautilus_gnome_terminal_shell_execute (const char *command)
+int 
+nautilus_gnome_shell_execute (const char *command)
 {
 	struct sigaction ignore, save_intr, save_quit, save_stop;
 	int status, i;
@@ -562,18 +562,18 @@ nautilus_gnome_open_terminal (const char *command)
 			command_line = g_strconcat (terminal_path, " -e ", command, NULL);
 		}
 		
-		nautilus_gnome_terminal_shell_execute (command_line);
+		nautilus_gnome_shell_execute (command_line);
 		g_free (command_line);
 	} else {
 	        if (using_gnome_terminal) {
 			terminal_flags = " --login";
 			terminal_path_with_flags = g_strconcat (terminal_path, terminal_flags,  NULL);
-		        nautilus_gnome_terminal_shell_execute (terminal_path_with_flags);
+		        nautilus_gnome_shell_execute (terminal_path_with_flags);
 		        g_free (terminal_path_with_flags);
 		} else {
 			terminal_flags = " -ls";
 			terminal_path_with_flags = g_strconcat (terminal_path, terminal_flags, NULL);
-			nautilus_gnome_terminal_shell_execute (terminal_path_with_flags);
+			nautilus_gnome_shell_execute (terminal_path_with_flags);
 		}
 	}
 

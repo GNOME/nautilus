@@ -1,3 +1,22 @@
+2001-01-25  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+	
+	Fixed bug 6002, programs run from Nautilus Link files leave zombie processes
+
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	(nautilus_gnome_shell_execute):
+	Rename function and make it available to outside callers
+	
+	(nautilus_gnome_open_terminal):
+	Rename function calls to nautilus_gnome_shell_execute
+	
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	Call nautilus_gnome_shell_execute instaed of calling forking
+	and calling exec.  Using nautilus_gnome_shell_execute does the
+	right thing and avoids creating zombie processes.
+
 2001-01-25  John Harper  <jsh@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
