@@ -100,8 +100,13 @@ is_nfs_filesystem (const char *uri)
 	local_path = gnome_vfs_get_local_path_from_uri (uri);
 
 	if (statfs (local_path, &sb) < 0) {
-		g_warning ("Could not statfs %s: %s",
-			   local_path, strerror (errno));
+		/* For some reason, we try to thumbnail files that
+		 * don't exist when you throw something away;
+		 * so silently ignore the error in that case.
+		 */
+		if (errno != EEXIST)
+			g_warning ("Could not statfs %s: %s",
+				   local_path, strerror (errno));
 	} else {
 		retval = (sb.f_type == NFS_SUPER_MAGIC);
 	}
