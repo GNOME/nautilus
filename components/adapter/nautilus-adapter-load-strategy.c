@@ -33,7 +33,9 @@
 #include "nautilus-adapter-load-strategy.h"
 #include "nautilus-adapter-stream-load-strategy.h"
 #include "nautilus-adapter-file-load-strategy.h"
+#if GNOME2_CONVERSION_COMPLETE
 #include "nautilus-adapter-progressive-load-strategy.h"
+#endif
 
 #include <gtk/gtkobject.h>
 #include <eel/eel-gtk-macros.h>
@@ -89,7 +91,7 @@ nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrategyClass *kla
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_progress),
 		              NULL, NULL,
-		              eel_marshal_VOID__DOUBLE,
+		              g_cclosure_marshal_VOID__DOUBLE,
 		              G_TYPE_NONE, 1, G_TYPE_DOUBLE);
 	signals[REPORT_LOAD_COMPLETE] =
 		g_signal_new ("report_load_complete",
@@ -133,11 +135,14 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component)
 {
 	Bonobo_PersistStream persist_stream;
 	Bonobo_PersistFile persist_file;
+#if GNOME2_CONVERSION_COMPLETE
 	Bonobo_ProgressiveDataSink progressive_data_sink;
+#endif
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
 
+#if GNOME2_CONVERSION_COMPLETE
 	progressive_data_sink = Bonobo_Unknown_queryInterface (component,
 							       "IDL:Bonobo/ProgressiveDataSink:1.0", &ev);
 	
@@ -148,7 +153,7 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component)
 		return nautilus_adapter_progressive_load_strategy_new (progressive_data_sink);
 	}
 
-
+#endif
 	persist_stream = Bonobo_Unknown_queryInterface (component,
 							"IDL:Bonobo/PersistStream:1.0", &ev);
 	

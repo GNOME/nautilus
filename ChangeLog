@@ -1,3 +1,75 @@
+2002-01-04  Dave Camp  <dave@ximian.com>
+
+	* components/adapter/nautilus-zoomable-proxy.c
+	(nautilus_zoomable_prozy_init_epv): Renamed from
+	nautilus_get_modified_bonobo_zoomable_epv and changed to
+	initialize a passed in epv rather than allocating a new one.
+	(nautilus_zoomable_proxy_destroy): 
+	(nautilus_zoomable_proxy_finalize): 
+	(nautilus_zoomable_proxy_class_init): 
+	(nautilus_zoomable_proxy_get): 
+	(nautilus_zoomable_proxy_get_type): Derive from BonoboObject rather
+	than BonoboZoomable, as this object fully implements the Zoomable
+	interface. 
+
+	* components/adapter/nautilus-adapter.c (nautilus_adapter_new): 
+	Replaced gtk_signal_connect_object with g_signal_connect_swapped,
+	cast callbacks to G_CALLBACK, and use a weak reference rather than
+	a "destroy" handler.
+	(nautilus_adapter_activate_callback): Pass NULL as the opt_ev
+	parameter to bonobo_control_get_remote_ui_container().
+
+	* components/adapter/nautilus-adapter-stream-load-strategy.c
+	(nautilus_adapter_stream_load_strategy_load_location): The
+	bonobo-stream-vfs code was moved to the VFS moniker in gnome-vfs,
+	so use it here.
+
+	* components/adapter/nautilus-adapter-load-strategy.c
+	(nautilus_adapter_load_strategy_class_init): replaced
+	eel_marshal_VOID__DOUBLE with g_cclosure_marshal_VOID__DOUBLE.
+	(nautilus_adapter_load_strategy_get): Disabled the progressive
+	data sink code using GNOME2_CONVERSION_COMPLETE.
+
+	* components/adapter/nautilus-adapter-factory-server.c (nautilus_adapter_factory_server_class_init): 
+	(nautilus_adapter_factory_server_init):
+	(nautilus_adapter_factory_server_finalize):
+	(adapter_object_destroyed):
+	(impl_Nautilus_ComponentAdapterFactory_create_adapter):
+	(nautilus_adapter_factory_server_get_type): Changed to the new
+	style of deriving from BonoboObject.
+	(impl_Nautilus_ComponentAdapterFactory_create_adapter): Use a weak
+	reference to the adapter view rather than connecting to "destroy".
+	
+	* components/adapter/nautilus-adapter-embed-strategy.c (nautilus_adapter_embed_strategy_class_init): Fixed the argument type lists for the
+	activate and open_location signals.
+	(nautilus_adapter_embed_strategy_get): Disable use of the embeddable
+	embed strategy using GNOME2_CONVERSION_COMPLETE.
+
+	* components/adapter/nautilus-adapter-control-embed-strategy.c
+	(nautilus_adapter_control_embed_strategy_new): Pass NULL for the
+	opt_ev parameter of bonobo_control_frame_bind_to_control().
+
+	* components/adapter/main.c (main): Replaced initialization
+	functions with bonobo_ui_init, and put an #ifdef
+	GNOME2_CONVERSION_COMPLETE around
+	gnome_client_disable_master_connect().
+	(adapter_factory_make_object): Use a weak reference rather than a
+	destroy signal handler.
+	(adapter_factory_object_weak_notify): Moved here from
+	adapter_factory_object_destroy, use bonobo_main_quit() rather than
+	gtk_main_quit().
+
+	* components/adapter/Makefile.am: Removed
+	nautilus-adapter-progressive-load-strategy.[ch], and moved
+	nautilus-adapter-embeddable-embed-strategy.[ch] out of the build,
+	removed bonobo-stream-vfs.[ch] replaced
+	NAUTILUS_PRIVATE_CFLAGS/LIBS with COMPONENT_CFLAGS/LIBS.
+
+	* src/nautilus-component-adapter-factory.c: Removed
+	no-longer-necessary #if GNOME2_CONVERSION_COMPLETE lines.
+	(activate_factory): Replaced BonoboObjectClient code with a call to
+	bonobo_get_object().
+
 2002-01-04  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* configure.in: Add esound cflags to CORE_CFLAGS,

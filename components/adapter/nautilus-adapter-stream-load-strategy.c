@@ -31,8 +31,10 @@
 #include <config.h>
 
 #include "nautilus-adapter-stream-load-strategy.h"
-#include "bonobo-stream-vfs.h"
 
+#include <bonobo/bonobo-stream.h>
+#include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-exception.h>
 #include <gtk/gtkobject.h>
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
@@ -117,8 +119,9 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 						     const char                  *uri)
 {
 	NautilusAdapterStreamLoadStrategy *strategy;
-	BonoboStream *stream;
+	Bonobo_Stream stream;
 	CORBA_Environment ev;
+	char *moniker_str;
 
 	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (abstract_strategy);
 	g_object_ref (strategy);
@@ -127,9 +130,11 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 
 	nautilus_adapter_load_strategy_report_load_underway (abstract_strategy);
 	
-	stream = bonobo_stream_vfs_open (uri, Bonobo_Storage_READ);
+	moniker_str = g_strconcat ("vfs:", uri, NULL);
+	stream = bonobo_get_object (moniker_str, "IDL:Bonobo/Stream:1.0", &ev);
+	g_free (moniker_str);
 
-	if (stream == NULL) {
+	if (BONOBO_EX (&ev) || CORBA_Object_is_nil (stream, &ev)) {
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 	} else {
 		/* FIXME bugzilla.gnome.org 41248: 
@@ -143,11 +148,11 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 
 		Bonobo_PersistStream_load
 			(strategy->details->persist_stream,
-			 bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
+			 stream,
 			 "", /* MIME type of stream */
 			 &ev);
 
-		bonobo_object_unref (BONOBO_OBJECT (stream));
+		bonobo_object_release_unref (stream, &ev);
 
 		if (ev._major == CORBA_NO_EXCEPTION) {
 			nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);

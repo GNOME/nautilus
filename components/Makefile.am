@@ -1,6 +1,7 @@
 NULL=
 
 SUBDIRS = 					\
+	adapter                                 \
 	history 				\
 	image-viewer 				\
 	music					\
@@ -12,7 +13,6 @@ SUBDIRS = 					\
 	$(NULL)
 
 XXX=
-	adapter 				\
 	hardware 				\
 	loser 					\
 	text 					\

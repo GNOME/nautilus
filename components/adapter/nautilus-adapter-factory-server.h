@@ -28,14 +28,15 @@
 #ifndef NAUTILUS_ADAPTER_FACTORY_SERVER_H
 #define NAUTILUS_ADAPTER_FACTORY_SERVER_H
 
+#include <libnautilus-adapter/nautilus-adapter-factory.h>
 #include <gtk/gtklabel.h>
 #include <libnautilus/nautilus-view.h>
 
 #define NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER	     (nautilus_adapter_factory_server_get_type ())
-#define NAUTILUS_ADAPTER_FACTORY_SERVER(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NautilusAdapterFactoryServer))
-#define NAUTILUS_ADAPTER_FACTORY_SERVER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NautilusAdapterFactoryServerClass))
-#define NAUTILUS_IS_ADAPTER_FACTORY_SERVER(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER))
-#define NAUTILUS_IS_ADAPTER_FACTORY_SERVER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER))
+#define NAUTILUS_ADAPTER_FACTORY_SERVER(obj)	        (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NautilusAdapterFactoryServer))
+#define NAUTILUS_ADAPTER_FACTORY_SERVER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NautilusAdapterFactoryServerClass))
+#define NAUTILUS_IS_ADAPTER_FACTORY_SERVER(obj)	        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER))
+#define NAUTILUS_IS_ADAPTER_FACTORY_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER))
 
 typedef struct {
 	BonoboObject parent;
@@ -43,10 +44,12 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent;
+	
+	POA_Nautilus_ComponentAdapterFactory__epv epv;
 } NautilusAdapterFactoryServerClass;
 
-/* GtkObject support */
-GtkType       nautilus_adapter_factory_server_get_type          (void);
+/* GObject support */
+GType       nautilus_adapter_factory_server_get_type          (void);
 
 
 #endif /* NAUTILUS_ADAPTER_FACTORY_SERVER_H */

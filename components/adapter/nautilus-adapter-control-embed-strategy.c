@@ -38,6 +38,7 @@
 #include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
 #include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-control-frame.h>
 
 
 struct NautilusAdapterControlEmbedStrategyDetails {
@@ -162,7 +163,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 
 	strategy->details->control_frame = bonobo_control_frame_new (ui_container);
 
-	bonobo_control_frame_bind_to_control (strategy->details->control_frame, control);
+	bonobo_control_frame_bind_to_control (strategy->details->control_frame, control, NULL);
 
 	strategy->details->widget = bonobo_control_frame_get_widget (strategy->details->control_frame);
   

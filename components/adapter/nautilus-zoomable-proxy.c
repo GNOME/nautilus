@@ -27,20 +27,11 @@
 
 #undef ZOOMABLE_DEBUG
 
-static BonoboZoomableClass		*nautilus_zoomable_proxy_parent_class;
-static NautilusZoomableProxyClass	*nautilus_zoomable_proxy_class;
+static BonoboObjectClass		*nautilus_zoomable_proxy_parent_class;
 
 struct _NautilusZoomableProxyPrivate {
 	Bonobo_Zoomable remote_zoomable;
 };
-
-typedef struct {
-	POA_Bonobo_Zoomable		 servant;
-	
-	NautilusZoomableProxy		*gtk_object;
-} impl_POA_Bonobo_Zoomable;
-
-static POA_Bonobo_Zoomable__vepv nautilus_zoomable_proxy_vepv;
 
 static inline NautilusZoomableProxy *
 nautilus_zoomable_proxy_from_servant (PortableServer_Servant servant)
@@ -195,13 +186,9 @@ impl_Nautilus_ZoomableProxy_setFrame (PortableServer_Servant  servant,
 }
 
 
-static POA_Bonobo_Zoomable__epv *
-nautilus_get_modified_bonobo_zoomable_epv (void)
+static void
+nautilus_zoomable_proxy_init_epv (POA_Bonobo_Zoomable__epv *epv)
 {
-	POA_Bonobo_Zoomable__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_Zoomable__epv, 1);
-
 	epv->_get_level = impl_Nautilus_ZoomableProxy__get_level;
 	epv->_get_minLevel = impl_Nautilus_ZoomableProxy__get_minLevel;
 	epv->_get_maxLevel = impl_Nautilus_ZoomableProxy__get_maxLevel;
@@ -218,21 +205,10 @@ nautilus_get_modified_bonobo_zoomable_epv (void)
 
 	epv->setLevel = impl_Nautilus_ZoomableProxy_setLevel;
 	epv->setFrame = impl_Nautilus_ZoomableProxy_setFrame;
-	
-	return epv;
 }
 
 static void
-init_zoomable_proxy_corba_class (void)
-{
-	/* The VEPV */
-	nautilus_zoomable_proxy_vepv.Bonobo_Unknown_epv         = bonobo_object_get_epv ();
-	nautilus_zoomable_proxy_vepv.Bonobo_Zoomable_epv        = nautilus_get_modified_bonobo_zoomable_epv ();
-}
-
-
-static void
-nautilus_zoomable_proxy_destroy (GtkObject *object)
+nautilus_zoomable_proxy_destroy (BonoboObject *object)
 {
 	NautilusZoomableProxy *proxy;
 
@@ -245,11 +221,11 @@ nautilus_zoomable_proxy_destroy (GtkObject *object)
 		bonobo_object_release_unref (proxy->priv->remote_zoomable, NULL);
 	proxy->priv->remote_zoomable = CORBA_OBJECT_NIL;
 
-	GTK_OBJECT_CLASS (nautilus_zoomable_proxy_parent_class)->destroy (object);
+	BONOBO_OBJECT_CLASS (nautilus_zoomable_proxy_parent_class)->destroy (BONOBO_OBJECT (object));
 }
 
 static void
-nautilus_zoomable_proxy_finalize (GtkObject *object)
+nautilus_zoomable_proxy_finalize (GObject *object)
 {
 	NautilusZoomableProxy *proxy;
 
@@ -261,23 +237,25 @@ nautilus_zoomable_proxy_finalize (GtkObject *object)
 	g_free (proxy->priv);
 	proxy->priv = NULL;
 
-	GTK_OBJECT_CLASS (nautilus_zoomable_proxy_parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_zoomable_proxy_parent_class)->finalize (object);
 }
 
 static void
 nautilus_zoomable_proxy_class_init (NautilusZoomableProxyClass *klass)
 {
-	GtkObjectClass *object_class;
-	
-	object_class = (GtkObjectClass *) klass;
-	
-	nautilus_zoomable_proxy_parent_class = gtk_type_class (bonobo_zoomable_get_type ());
-	nautilus_zoomable_proxy_class = klass;
+	GObjectClass *object_class;
+	BonoboObjectClass *bonobo_object_class;
 
-	object_class->destroy = nautilus_zoomable_proxy_destroy;
+	object_class = (GObjectClass *) klass;
+	bonobo_object_class = (BonoboObjectClass *)klass;
+	
+	nautilus_zoomable_proxy_parent_class = 
+		g_type_class_peek_parent (klass);
+	
+	bonobo_object_class->destroy = nautilus_zoomable_proxy_destroy;
 	object_class->finalize = nautilus_zoomable_proxy_finalize;
 
-	init_zoomable_proxy_corba_class ();
+	nautilus_zoomable_proxy_init_epv (&klass->epv);
 }
 
 static void
@@ -291,67 +269,44 @@ nautilus_zoomable_proxy_init (NautilusZoomableProxy *proxy)
  *
  * Returns: the GtkType for a NautilusZoomableProxy object.
  */
-GtkType
+GType
 nautilus_zoomable_proxy_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 
 	if (!type) {
-		GtkTypeInfo info = {
-			"NautilusZoomableProxy",
-			sizeof (NautilusZoomableProxy),
+		GTypeInfo info = {
 			sizeof (NautilusZoomableProxyClass),
-			(GtkClassInitFunc) nautilus_zoomable_proxy_class_init,
-			(GtkObjectInitFunc) nautilus_zoomable_proxy_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc) nautilus_zoomable_proxy_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (NautilusZoomableProxy),
+			0, /* n_preallocs */
+			(GInstanceInitFunc) nautilus_zoomable_proxy_init
 		};
 
-		type = gtk_type_unique (bonobo_zoomable_get_type (), &info);
+		type = bonobo_type_unique 
+			(BONOBO_TYPE_OBJECT,
+			 POA_Bonobo_Zoomable__init, NULL, 
+			 G_STRUCT_OFFSET (NautilusZoomableProxyClass, epv),
+			 &info, "NautilusZoomableProxy");
 	}
 
 	return type;
 }
 
-static Bonobo_Zoomable
-nautilus_zoomable_proxy_corba_object_create (BonoboObject *object)
-{
-	POA_Bonobo_Zoomable *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Bonobo_Zoomable *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &nautilus_zoomable_proxy_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_Bonobo_Zoomable__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION){
-                g_free (servant);
-		CORBA_exception_free (&ev);
-                return CORBA_OBJECT_NIL;
-        }
-
-	CORBA_exception_free (&ev);
-	return (Bonobo_Zoomable) bonobo_object_activate_servant (object, servant);
-}
-
-
 BonoboObject *
 nautilus_zoomable_proxy_get (Bonobo_Zoomable remote_zoomable)
 {
 	NautilusZoomableProxy *proxy;
-	Bonobo_Zoomable corba_zoomable;
 
 	g_return_val_if_fail (remote_zoomable != CORBA_OBJECT_NIL, NULL);
 
-	proxy = gtk_type_new (nautilus_zoomable_proxy_get_type ());
+	proxy = g_object_new (nautilus_zoomable_proxy_get_type (), NULL);
 
 	proxy->priv->remote_zoomable = bonobo_object_dup_ref (remote_zoomable, NULL);
-
-	corba_zoomable = nautilus_zoomable_proxy_corba_object_create (BONOBO_OBJECT (proxy));
-
-	bonobo_zoomable_construct (BONOBO_ZOOMABLE (proxy), corba_zoomable);
 
 	return BONOBO_OBJECT (proxy);
 }

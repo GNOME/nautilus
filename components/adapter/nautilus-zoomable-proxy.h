@@ -28,26 +28,28 @@
 #include <bonobo/bonobo-zoomable.h>
 
 #define NAUTILUS_ZOOMABLE_PROXY_TYPE		(nautilus_zoomable_proxy_get_type ())
-#define NAUTILUS_ZOOMABLE_PROXY(o)		(GTK_CHECK_CAST ((o), NAUTILUS_ZOOMABLE_PROXY_TYPE, NautilusZoomableProxy))
-#define NAUTILUS_ZOOMABLE_PROXY_CLASS(k)	(GTK_CHECK_CLASS_CAST((k), NAUTILUS_ZOOMABLE_PROXY_TYPE, NautilusZoomableProxyClass))
-#define NAUTILUS_IS_ZOOMABLE_PROXY(o)		(GTK_CHECK_TYPE ((o), NAUTILUS_ZOOMABLE_PROXY_TYPE))
-#define NAUTILUS_S_ZOOMABLE_PROXY_CLASS(k)	(GTK_CHECK_CLASS_TYPE ((k), NAUTILUS_ZOOMABLE_PROXY_TYPE))
+#define NAUTILUS_ZOOMABLE_PROXY(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_ZOOMABLE_PROXY_TYPE, NautilusZoomableProxy))
+#define NAUTILUS_ZOOMABLE_PROXY_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_ZOOMABLE_PROXY_TYPE, NautilusZoomableProxyClass))
+#define NAUTILUS_IS_ZOOMABLE_PROXY(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_ZOOMABLE_PROXY_TYPE))
+#define NAUTILUS_S_ZOOMABLE_PROXY_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_ZOOMABLE_PROXY_TYPE))
 
 typedef struct _NautilusZoomableProxy		NautilusZoomableProxy;
 typedef struct _NautilusZoomableProxyPrivate	NautilusZoomableProxyPrivate;
 typedef struct _NautilusZoomableProxyClass	NautilusZoomableProxyClass;
 
 struct _NautilusZoomableProxy {
-        BonoboZoomable		zoomable;
+        BonoboObject parent;
 
 	NautilusZoomableProxyPrivate *priv;
 };
 
 struct _NautilusZoomableProxyClass {
-	BonoboZoomableClass	parent;
+	BonoboObjectClass	parent;
+
+	POA_Bonobo_Zoomable__epv epv;
 };
 
-GtkType		 nautilus_zoomable_proxy_get_type	(void);
+GType		 nautilus_zoomable_proxy_get_type	(void);
 
 BonoboObject	*nautilus_zoomable_proxy_get		(Bonobo_Zoomable corba_zoomable);
 

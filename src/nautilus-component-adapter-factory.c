@@ -29,6 +29,7 @@
 #include <config.h>
 #include "nautilus-component-adapter-factory.h"
 
+#include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-object.h>
 #include <eel/eel-gtk-macros.h>
@@ -50,20 +51,10 @@ EEL_CLASS_BOILERPLATE (NautilusComponentAdapterFactory,
 			      GTK_TYPE_OBJECT)
 
 
-#if GNOME2_CONVERSION_COMPLETE
 static void
 activate_factory (NautilusComponentAdapterFactory *factory)
 {
-	BonoboObjectClient *object_client;
-
-	object_client = bonobo_object_activate (NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID, 0);
-	if (object_client == NULL) {
-		return;
-	}
-
-	factory->details->corba_factory = bonobo_object_query_interface 
-		(BONOBO_OBJECT (object_client), "IDL:Nautilus/ComponentAdapterFactory:1.0");
-	bonobo_object_unref (BONOBO_OBJECT (object_client));
+	factory->details->corba_factory = bonobo_get_object (NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID, "IDL:Nautilus/ComponentAdapterFactory:1.0", NULL);
 }
 
 static void
@@ -75,8 +66,6 @@ unref_factory (NautilusComponentAdapterFactory *factory)
 	Bonobo_Unknown_unref (factory->details->corba_factory, &ev);
 	CORBA_exception_free (&ev);
 }
-#endif
-
 
 static void
 release_factory (NautilusComponentAdapterFactory *factory)
@@ -89,7 +78,6 @@ release_factory (NautilusComponentAdapterFactory *factory)
 	CORBA_exception_free (&ev);
 }
 
-#ifdef GNOME2_CONVERSION_COMPLETE
 static Nautilus_ComponentAdapterFactory
 get_corba_factory (NautilusComponentAdapterFactory *factory)
 {
@@ -117,7 +105,6 @@ get_corba_factory (NautilusComponentAdapterFactory *factory)
 	}
 	return result;
 }
-#endif
 
 static void
 nautilus_component_adapter_factory_init (NautilusComponentAdapterFactory *factory)
@@ -180,9 +167,7 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 {
 	Nautilus_View nautilus_view;
 	Bonobo_Control bonobo_control;
-#ifdef GNOME2_CONVERSION_COMPLETE
 	Nautilus_ComponentAdapterFactory corba_factory;
-#endif
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
@@ -209,7 +194,6 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 		}
 	} else {
 		nautilus_view = CORBA_OBJECT_NIL;
-#ifdef GNOME2_CONVERSION_COMPLETE
 		/* No View interface, we must adapt the object */
 
 		corba_factory = get_corba_factory (factory);
@@ -219,7 +203,6 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 			nautilus_view = CORBA_OBJECT_NIL;
 		}
 		bonobo_object_release_unref (corba_factory, NULL);
-#endif
 	}
 
 	CORBA_exception_free (&ev);

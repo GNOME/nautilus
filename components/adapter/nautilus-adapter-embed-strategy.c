@@ -72,7 +72,7 @@ nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *k
 		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
 		              NULL, NULL,
 		              gtk_marshal_VOID__POINTER,
-		              G_TYPE_POINTER, 0);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[DEACTIVATE] =
 		g_signal_new ("deactivate",
 		              G_TYPE_FROM_CLASS (object_class),
@@ -88,7 +88,7 @@ nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *k
 		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, open_location),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__STRING,
-		              G_TYPE_STRING, 0);
+		              G_TYPE_NONE, 1, G_TYPE_STRING);
 	
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_widget);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_zoomable);
@@ -103,7 +103,9 @@ NautilusAdapterEmbedStrategy *
 nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 {
 	Bonobo_Control    control;
+#if GNOME2_CONVERSION_COMPLETE
 	Bonobo_Embeddable embeddable;
+#endif
 	CORBA_Environment ev;
 	NautilusAdapterEmbedStrategy *strategy;
 
@@ -119,6 +121,7 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 		bonobo_object_release_unref (control, NULL);
 	}
 	
+#if GNOME2_CONVERSION_COMPLETE
 	if (strategy != NULL) {
 		embeddable = Bonobo_Unknown_queryInterface
 			(component, "IDL:Bonobo/Embeddable:1.0", &ev);
@@ -128,6 +131,7 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 			bonobo_object_release_unref (embeddable, NULL);
 		}
 	}
+#endif
 
 	CORBA_exception_free (&ev);
 

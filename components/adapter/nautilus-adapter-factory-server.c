@@ -44,34 +44,27 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant    
 						      const Bonobo_Unknown             component,
 						      CORBA_Environment               *ev);
 
-static void
-impl_Nautilus_ComponentAdapterFactory__destroy       (BonoboObject                    *object, 
-						      PortableServer_Servant           servant);
-
-static Nautilus_ComponentAdapterFactory
-impl_Nautilus_ComponentAdapterFactory__create        (NautilusAdapterFactoryServer    *bonobo_object,
-						      CORBA_Environment               *ev);
-
-
 static void nautilus_adapter_factory_server_class_init (NautilusAdapterFactoryServerClass *klass);
 static void nautilus_adapter_factory_server_init       (NautilusAdapterFactoryServer      *server);
-static void nautilus_adapter_factory_server_destroy          (GtkObject                      *object);
+static void nautilus_adapter_factory_server_finalize   (GObject                           *object);
 
+static BonoboObjectClass *parent_class;
 
-EEL_CLASS_BOILERPLATE (NautilusAdapterFactoryServer,
-		       nautilus_adapter_factory_server,
-		       BONOBO_OBJECT_TYPE)
      
 static void
 nautilus_adapter_factory_server_class_init (NautilusAdapterFactoryServerClass *klass)
 {
-	GtkObjectClass *object_class;
-	
+	GObjectClass *object_class;
+	POA_Nautilus_ComponentAdapterFactory__epv *epv = &klass->epv;
+
 	g_assert (NAUTILUS_IS_ADAPTER_FACTORY_SERVER_CLASS (klass));
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	
-	object_class->destroy = nautilus_adapter_factory_server_destroy;
+	parent_class = g_type_class_peek_parent (klass);
+
+	epv->create_adapter = impl_Nautilus_ComponentAdapterFactory_create_adapter;
+
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = nautilus_adapter_factory_server_finalize;
 }
 
 static void
@@ -83,21 +76,18 @@ nautilus_adapter_factory_server_init (NautilusAdapterFactoryServer *server)
 	
 	g_assert (NAUTILUS_IS_ADAPTER_FACTORY_SERVER (server));
 
-	bonobo_object_construct
-		(BONOBO_OBJECT (server),
-		 impl_Nautilus_ComponentAdapterFactory__create (server, &ev));
-	
 	CORBA_exception_free (&ev);
 }
 
 static void
-nautilus_adapter_factory_server_destroy (GtkObject *object)
+nautilus_adapter_factory_server_finalize (GObject *object)
 {
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
-adapter_object_destroyed (GtkObject *adapter, NautilusAdapterFactoryServer *server)
+adapter_object_weak_notify (gpointer server,
+			    GObject *adapter)
 {
 	bonobo_object_unref (BONOBO_OBJECT (server));
 }
@@ -108,65 +98,55 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 						      const Bonobo_Unknown    component,
 						      CORBA_Environment      *ev)
 {
-	impl_POA_Nautilus_ComponentAdapterFactory *factory_servant;
+	NautilusAdapterFactoryServer *factory_servant;
 	NautilusAdapter *adapter;
 	NautilusView *adapter_view;
 
-	factory_servant = (impl_POA_Nautilus_ComponentAdapterFactory *) servant;
-
+	factory_servant = NAUTILUS_ADAPTER_FACTORY_SERVER (bonobo_object (servant));
 	adapter = nautilus_adapter_new (component);
 
 	if (adapter == NULL) {
 		return CORBA_OBJECT_NIL;
 	} else {
-		bonobo_object_ref (BONOBO_OBJECT (factory_servant->bonobo_object));
+		bonobo_object_ref (BONOBO_OBJECT (factory_servant));
 
 		adapter_view = nautilus_adapter_get_nautilus_view (adapter);
+		g_object_weak_ref (G_OBJECT (adapter_view), 
+				   adapter_object_weak_notify,
+				   factory_servant);
 		
-		g_signal_connect (adapter_view, "destroy",
-				    adapter_object_destroyed, factory_servant->bonobo_object);
-
-		return CORBA_Object_duplicate
-			(bonobo_object_corba_objref (BONOBO_OBJECT (adapter_view)), ev);
+		return CORBA_Object_duplicate (BONOBO_OBJREF (adapter_view),
+					       ev);
 	}
 }
 
-static void
-impl_Nautilus_ComponentAdapterFactory__destroy (BonoboObject           *object, 
-						PortableServer_Servant  servant)
+GType
+nautilus_adapter_factory_server_get_type (void)
 {
-	PortableServer_ObjectId *object_id;
-	CORBA_Environment ev;
+	static GType type = 0;
 	
-	CORBA_exception_init (&ev);
+	if (!type) {
+		GTypeInfo info = {
+			sizeof (NautilusAdapterFactoryServerClass),
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc)nautilus_adapter_factory_server_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (NautilusAdapterFactoryServer),
+			0, /* n_preallocs */
+			(GInstanceInitFunc)nautilus_adapter_factory_server_init
+		};
+		
+		type = bonobo_type_unique 
+			(BONOBO_OBJECT_TYPE,
+			 POA_Nautilus_ComponentAdapterFactory__init, NULL,
+			 G_STRUCT_OFFSET (NautilusAdapterFactoryServerClass, 
+					  epv),
+			 &info, "NautilusAdapterFactoryServer");
+	}
 	
-	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
-	CORBA_free (object_id);
-
-	object->servant = NULL;
-	
-	POA_Nautilus_ComponentAdapterFactory__fini (servant, &ev);
-	g_free (servant);
-
-	CORBA_exception_free (&ev);
+	return type; 
 }
 
-static Nautilus_ComponentAdapterFactory
-impl_Nautilus_ComponentAdapterFactory__create (NautilusAdapterFactoryServer *bonobo_object,
-					       CORBA_Environment            *ev)
-{
-	impl_POA_Nautilus_ComponentAdapterFactory *servant;
-	
-	impl_Nautilus_ComponentAdapterFactory_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 
-	servant = g_new0 (impl_POA_Nautilus_ComponentAdapterFactory, 1);
-	servant->servant.vepv = &impl_Nautilus_ComponentAdapterFactory_vepv;
-	POA_Nautilus_ComponentAdapterFactory__init ((PortableServer_Servant) servant, ev);
-
-	g_signal_connect (bonobo_object, "destroy",
-			    G_CALLBACK (impl_Nautilus_ComponentAdapterFactory__destroy), servant);
-	
-	servant->bonobo_object = bonobo_object;
-	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
-}
