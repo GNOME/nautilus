@@ -642,7 +642,8 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 {
 	GdkPixbuf *pixbuf, *orig_pixbuf;
 	char *image_file_name;
-
+	gboolean is_reset;
+	
 	image_file_name = g_strdup_printf ("%s/%s/%s",
 					   NAUTILUS_DATADIR,
 					   property_browser->details->category,
@@ -664,8 +665,10 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 	
 	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);
 	
+	is_reset = eel_strcmp (file_name, RESET_IMAGE_NAME) == 0;
+	
 	if (!strcmp(property_browser->details->category, "patterns")) {
-		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, property_browser->details->property_chit, TRUE);
+		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, property_browser->details->property_chit, TRUE, is_reset);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 		gdk_pixbuf_unref (orig_pixbuf);
@@ -710,7 +713,7 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 	
 	return nautilus_customization_make_pattern_chit (color_square, 
 							    property_browser->details->property_chit,
-							    trim_edges);	
+							    trim_edges, FALSE);	
 }
 
 /* this callback handles button presses on the category widget. It maintains the active state */
@@ -1747,7 +1750,7 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 
 	reset_image_file_name = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "patterns", RESET_IMAGE_NAME);
 	reset_pixbuf = gdk_pixbuf_new_from_file (reset_image_file_name);
-	reset_chit = nautilus_customization_make_pattern_chit (reset_pixbuf, property_browser->details->property_chit, FALSE);
+	reset_chit = nautilus_customization_make_pattern_chit (reset_pixbuf, property_browser->details->property_chit, FALSE, TRUE);
 	
 	g_free (reset_image_file_name);
 

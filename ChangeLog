@@ -1,5 +1,28 @@
 2001-07-20  Andy Hertzfeld  <andy@differnet.com>
 
+	fixed problem that the reset property was not localizable, since
+	it used an image that contained text.  Fixed, by removing the
+	text from the image and compositing it on the fly, from a localizable
+	string.
+	
+	* data/patterns/reset.png:
+	new version of reset tile without text.
+	
+	* libnautilus-private/nautilus-customization-data.c:
+	(nautilus_customization_data_get_next_element_for_display),
+	(add_reset_text), (nautilus_customization_make_pattern_chit):
+	composite the reset text on the fly when necessary
+	
+	* libnautilus-private/nautilus-customization-data.h:
+	added a parameter to make_pattern_chit to tell it to draw
+	the reset text when necessary
+	
+	* src/nautilus-property-browser.c: (make_drag_image),
+	(make_color_drag_image), (add_reset_property):
+	set the reset parameter properly when calling make_pattern_chit.
+	
+2001-07-20  Andy Hertzfeld  <andy@differnet.com>
+
 	removed the bad hack of attributing special meaning to the
 	"reset.png" filename; instead, use a newly defined drop type of
 	"x-special/gnome-reset-background".
