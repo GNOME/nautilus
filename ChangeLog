@@ -1,3 +1,12 @@
+2000-11-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get):
+	fix bug where newly added reset coupon in the colors section
+	of the property browser wasn't working on the sidebar.  Fixed
+	by making sure it issues a uri to a valid image in
+	drag_data_get.
+	
 2000-11-09 Elliot Lee <sopwith@redhat.com>
 
 	* configure.in: Fix freetype2 detection

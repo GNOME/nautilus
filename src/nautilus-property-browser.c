@@ -499,6 +499,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 					 guint32 time)
 {
 	char  *image_file_name, *image_file_uri;
+	gboolean is_reset;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(widget);
 	
 	g_return_if_fail (widget != NULL);
@@ -510,6 +511,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		   probably select the behavior from properties in the category xml definition,
 		   but for now we hardwire it to the drag_type */
 		
+		is_reset = FALSE;
 		if (!strcmp(property_browser->details->drag_type, "property/keyword")) {
 			char* keyword_str = strip_extension(property_browser->details->dragged_file);
 		        gtk_selection_data_set(selection_data, selection_data->target, 8, keyword_str, strlen(keyword_str));
@@ -527,16 +529,19 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 				colorArray[1] = color.green;
 				colorArray[2] = color.blue;
 				colorArray[3] = 0xffff;
-						
+				
 				gtk_selection_data_set(selection_data,
 				selection_data->target, 16, (const char *) &colorArray[0], 8);
 				return;	
+			} else {
+				is_reset = TRUE;
 			}
+
 		}
 		
 		image_file_name = g_strdup_printf ("%s/%s/%s",
 						   NAUTILUS_DATADIR,
-						   property_browser->details->category,
+						   is_reset ? "backgrounds" : property_browser->details->category,
 						   property_browser->details->dragged_file);
 		
 		if (!g_file_exists (image_file_name)) {
