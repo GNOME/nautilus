@@ -5,6 +5,6 @@ nautilus-clean.sh -q
 killall oafd > /dev/null 2>&1
 killall gconfd > /dev/null 2>&1
 
-nautilus
+nautilus ${1+"$@"}
 
 nautilus-clean.sh -q
