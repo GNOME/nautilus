@@ -62,6 +62,9 @@ bonobo_subdoc_notify_location_change(NautilusViewFrame *view, Nautilus_Navigatio
       nautilus_view_frame_request_progress_change(view, &pri);
       if(stream)
         {
+          /* FIXME: The empty string parameter is supposed to represent the MIME
+           * type, according to Dan Winship who changed this API on 5/26/00.
+           */
           Bonobo_PersistStream_load (persist,
                                      (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
                                      "",
