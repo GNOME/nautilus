@@ -1,3 +1,12 @@
+2000-08-22  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1570, Undo of typing when renaming says
+	"Undo Rename"
+	
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(register_rename_undo):
+	Changed "Rename" to "Typing"
+
 2000-08-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-metadata.c:

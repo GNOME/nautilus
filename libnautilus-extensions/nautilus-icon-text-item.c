@@ -1485,9 +1485,9 @@ register_rename_undo (NautilusIconTextItem *item)
 		 g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->entry))),
 		 (GDestroyNotify) g_free,
 		 _("Rename"),
-		 _("Undo Rename"),
+		 _("Undo Typing"),
 		 _("Restore the old name"),
-		 _("Redo Rename"),
+		 _("Redo Typing"),
 		 _("Restore the changed name"));
 }
 
