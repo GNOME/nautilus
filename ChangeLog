@@ -1,3 +1,10 @@
+2000-12-05  Michael Engber  <engber@eazel.com>
+
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(update_sidebar_panels_from_preferences):
+	Keep the desktop from creating sidebar panels (it still
+	has the sidebar) - bug 2603.
+
 2000-12-05  Rebecca Schulman  <rebecka@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

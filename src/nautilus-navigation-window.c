@@ -501,6 +501,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
+	/* FIXME bugzilla.eazel.com 1243: 
+	 * We should use inheritance instead of these special cases
+	 * for the desktop window.
+	 */
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    LOCATION_BAR_PATH, TRUE);
@@ -1546,6 +1550,14 @@ update_sidebar_panels_from_preferences (NautilusWindow *window)
 	GList *identifier_list;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* FIXME bugzilla.eazel.com 1243: 
+	 * We should use inheritance instead of these special cases
+	 * for the desktop window.
+	 */
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		return;
+	}
 
 	/* Obtain list of enabled view identifiers */
 	identifier_list = nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
