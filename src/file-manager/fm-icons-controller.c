@@ -27,16 +27,15 @@
 #include "fm-icons-controller.h"
 
 #include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-icon-factory.h>
 
-static void       fm_icons_controller_initialize_class (FMIconsControllerClass  *klass);
-static void       fm_icons_controller_initialize       (FMIconsController       *controller);
-static GdkPixbuf *fm_icons_controller_get_icon_image   (NautilusIconsController *controller,
-							NautilusControllerIcon  *icon);
-static char *     fm_icons_controller_get_icon_text    (NautilusIconsController *controller,
-							NautilusControllerIcon  *icon);
-static char *     fm_icons_controller_get_icon_uri     (NautilusIconsController *controller,
-							NautilusControllerIcon  *icon);
+static void                  fm_icons_controller_initialize_class (FMIconsControllerClass  *klass);
+static void                  fm_icons_controller_initialize       (FMIconsController       *controller);
+static NautilusScalableIcon *fm_icons_controller_get_icon_image   (NautilusIconsController *controller,
+								   NautilusControllerIcon  *icon);
+static char *                fm_icons_controller_get_icon_text    (NautilusIconsController *controller,
+								   NautilusControllerIcon  *icon);
+static char *                fm_icons_controller_get_icon_uri     (NautilusIconsController *controller,
+								   NautilusControllerIcon  *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconsController, fm_icons_controller, NAUTILUS_TYPE_ICONS_CONTROLLER)
 
@@ -70,25 +69,12 @@ fm_icons_controller_new (FMDirectoryViewIcons *icons)
 	return controller;
 }
 
-static GdkPixbuf *
+static NautilusScalableIcon *
 fm_icons_controller_get_icon_image (NautilusIconsController *controller,
 				    NautilusControllerIcon *icon)
 {
-	/* Get the appropriate image for the file. For the moment,
-	 * we always use the standard size of icons.
-	 */
-
-	NautilusScalableIcon *scalable_icon;
-	GdkPixbuf *pixbuf;
-
-	scalable_icon = nautilus_icon_factory_get_icon_for_file
-		(NAUTILUS_FILE (icon));
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon,
-		 NAUTILUS_ICON_SIZE_STANDARD);
-	nautilus_scalable_icon_unref (scalable_icon);
-
-	return pixbuf;
+	/* Get the appropriate image for the file. */
+	return nautilus_icon_factory_get_icon_for_file (NAUTILUS_FILE (icon));
 }
 
 static char *
@@ -100,21 +86,19 @@ fm_icons_controller_get_icon_text (NautilusIconsController *controller,
 	char *result;
 	int index;
 
-	attribute_names = fm_directory_view_icons_get_icon_text_attribute_names (
-		FM_ICONS_CONTROLLER (controller)->icons);
+	attribute_names = fm_directory_view_icons_get_icon_text_attribute_names
+		(FM_ICONS_CONTROLLER (controller)->icons);
 	text_array = g_strsplit (attribute_names, "|", 0);
 	g_free (attribute_names);
 
-	index = 0;
-	while (text_array[index] != NULL)
+	for (index = 0; text_array[index] != NULL; index++)
 	{
-		char * attribute_string;
+		char *attribute_string;
 
-		attribute_string = 
-			nautilus_file_get_string_attribute (NAUTILUS_FILE (icon), 
-							    text_array[index]);
-
-		/* unknown attributes get turned into blank lines (also note that
+		attribute_string = nautilus_file_get_string_attribute
+			(NAUTILUS_FILE (icon), text_array[index]);
+		
+		/* Unknown attributes get turned into blank lines (also note that
 		 * leaving a NULL in text_array would cause it to be incompletely
 		 * freed).
 		 */
@@ -124,8 +108,6 @@ fm_icons_controller_get_icon_text (NautilusIconsController *controller,
 		/* Replace each attribute name in the array with its string value */
 		g_free (text_array[index]);
 		text_array[index] = attribute_string;
-
-		++index;
 	}
 
 	result = g_strjoinv ("\n", text_array);

@@ -81,4 +81,7 @@ void     nautilus_interpolate_color                  (gdouble             ratio,
 						      const GdkColor     *end_color,
 						      GdkColor           *interpolated_color);
 
+gboolean nautilus_gdk_font_equal                     (GdkFont            *font_a_null_allowed,
+						      GdkFont            *font_b_null_allowed);
+
 #endif /* GDK_EXTENSIONS_H */

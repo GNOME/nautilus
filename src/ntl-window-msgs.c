@@ -874,7 +874,8 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 
  errout:
   nautilus_window_allow_stop(window, FALSE);
-  nautilus_navinfo_free(navi);
+  if (navi != NULL)
+    nautilus_navinfo_free(navi);
   window->is_back = FALSE;
   nautilus_window_progress_indicate(window, PROGRESS_ERROR, 0, errmsg);
 }

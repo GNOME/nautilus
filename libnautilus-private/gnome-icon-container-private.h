@@ -28,20 +28,20 @@
 #include "gnome-icon-container.h"
 #include "gnome-icon-container-dnd.h"
 #include "nautilus-icon-factory.h"
-#include <libgnomeui/gnome-icon-item.h>
+#include "nautilus-icons-view-icon-item.h"
 
 /* An Icon.  */
 
 typedef struct {
 	/* Canvas item for the icon. */
-	GnomeCanvasItem *item;
+	NautilusIconsViewIconItem *item;
 
 	/* X/Y coordinates and size.  We could use the GnomeCanvasItem
          * functions, but this is a lot faster
 	 */
-	gdouble x, y;
+	double x, y;
         
-	/* Whether this item is selected (i.e. highlighted) for operation. */
+	/* Whether this item is selected for operation. */
 	gboolean is_selected : 1;
 
 	/* Whether this item is selected for keyboard navigation. */
@@ -89,7 +89,7 @@ typedef struct {
 typedef struct {
 	gboolean active;
 
-	gdouble start_x, start_y;
+	double start_x, start_y;
 
 	GnomeCanvasItem *selection_rectangle;
 	guint timer_id;

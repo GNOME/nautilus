@@ -28,6 +28,7 @@
 
 #include <gtk/gtkobject.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include "nautilus-icon-factory.h"
 
 /* NautilusIconsController is an abstract class that describes the
    interface that a NautilusIconsView (currently named GnomeIconContainer)
@@ -54,15 +55,15 @@ typedef struct NautilusControllerIconDummy NautilusControllerIcon;
 	((NautilusControllerIcon *)(icon))
 
 /* Basic GtkObject requirements. */
-GtkType    nautilus_icons_controller_get_type       (void);
+GtkType               nautilus_icons_controller_get_type       (void);
 
 /* Icon operations. */
-GdkPixbuf *nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
-						     NautilusControllerIcon  *icon);
-char *     nautilus_icons_controller_get_icon_text  (NautilusIconsController *controller,
-						     NautilusControllerIcon  *icon);
-char *     nautilus_icons_controller_get_icon_uri   (NautilusIconsController *controller,
-						     NautilusControllerIcon  *icon);
+NautilusScalableIcon *nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
+								NautilusControllerIcon  *icon);
+char *                nautilus_icons_controller_get_icon_text  (NautilusIconsController *controller,
+								NautilusControllerIcon  *icon);
+char *                nautilus_icons_controller_get_icon_uri   (NautilusIconsController *controller,
+								NautilusControllerIcon  *icon);
 
 struct _NautilusIconsController
 {
@@ -73,12 +74,12 @@ struct _NautilusIconsControllerClass
 {
 	GtkObjectClass parent_class;
 
-	GdkPixbuf * (*get_icon_image) (NautilusIconsController *controller,
-				       NautilusControllerIcon  *icon);
-	char *      (* get_icon_text) (NautilusIconsController *controller,
-				       NautilusControllerIcon  *icon);
-	char *       (* get_icon_uri) (NautilusIconsController *controller,
-				       NautilusControllerIcon  *icon);
+	NautilusScalableIcon * (*get_icon_image) (NautilusIconsController *controller,
+				                  NautilusControllerIcon  *icon);
+	char *                 (* get_icon_text) (NautilusIconsController *controller,
+						  NautilusControllerIcon  *icon);
+	char *                 (* get_icon_uri)  (NautilusIconsController *controller,
+						  NautilusControllerIcon  *icon);
 };
 
 #endif /* NAUTILUS_ICONS_CONTROLLER_H */

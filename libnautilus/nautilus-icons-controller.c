@@ -50,7 +50,7 @@ nautilus_icons_controller_initialize (NautilusIconsController *controller)
 {
 }
 
-GdkPixbuf *
+NautilusScalableIcon *
 nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
 					  NautilusControllerIcon *icon)
 {

@@ -393,6 +393,24 @@ nautilus_gdk_color_parse_with_white_default (const char *color_spec,
 	}
 }
 
+/**
+ * nautilus_gdk_font_equal
+ * @font_a_null_allowed: A font or NULL.
+ * @font_b_null_allowed: A font or NULL.
+ *
+ * Calls gdk_font_equal, unless one of the fonts is NULL.
+ */
+gboolean
+nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
+			 GdkFont *font_b_null_allowed)
+{
+	if (font_a_null_allowed == NULL)
+		return font_b_null_allowed == NULL;
+	if (font_b_null_allowed == NULL)
+		return FALSE;
+	return gdk_font_equal (font_a_null_allowed, font_b_null_allowed);
+}
+
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static char *
