@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2004-02-12 12:22+0100\n"
-"PO-Revision-Date: 2004-02-12 12:23+0100\n"
+"POT-Creation-Date: 2004-02-15 17:04+0100\n"
+"PO-Revision-Date: 2004-02-15 17:04+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2494,6 +2494,8 @@ msgstr "Du kan inte kopiera denna papperskorgsmapp."
 #: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
+"En papperskorgsmapp används för lagring av objekt som flyttats till "
+"papperskorgen."
 
 #: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
@@ -2610,41 +2612,41 @@ msgstr "Tömmer papperskorgen"
 msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömning av papperskorgen..."
 
-#: libnautilus-private/nautilus-file-operations.c:2529
+#: libnautilus-private/nautilus-file-operations.c:2534
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Är du säker att du vill tömma alla objekt i papperskorgen?"
 
-#: libnautilus-private/nautilus-file-operations.c:2543
+#: libnautilus-private/nautilus-file-operations.c:2548
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Om du tömmer papperskorgen kommer objekten att tas bort permanent."
 
-#: libnautilus-private/nautilus-file-operations.c:2555
+#: libnautilus-private/nautilus-file-operations.c:2560
 msgid "_Empty"
 msgstr "_Töm"
 
-#: libnautilus-private/nautilus-file-utilities.c:368
+#: libnautilus-private/nautilus-file-utilities.c:369
 #: libnautilus-private/nautilus-global-preferences.c:523
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
 msgid "Computer"
 msgstr "Dator"
 
-#: libnautilus-private/nautilus-file-utilities.c:370
+#: libnautilus-private/nautilus-file-utilities.c:371
 msgid "Network"
 msgstr "Nätverk"
 
-#: libnautilus-private/nautilus-file-utilities.c:372
+#: libnautilus-private/nautilus-file-utilities.c:373
 msgid "Fonts"
 msgstr "Typsnitt"
 
-#: libnautilus-private/nautilus-file-utilities.c:374
+#: libnautilus-private/nautilus-file-utilities.c:375
 msgid "Themes"
 msgstr "Teman"
 
-#: libnautilus-private/nautilus-file-utilities.c:376
+#: libnautilus-private/nautilus-file-utilities.c:377
 msgid "CD Creator"
 msgstr "Cd-skapare"
 
-#: libnautilus-private/nautilus-file-utilities.c:378
+#: libnautilus-private/nautilus-file-utilities.c:379
 msgid "Windows Network"
 msgstr "Windows-nätverk"
 
@@ -2865,7 +2867,7 @@ msgstr "länk"
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
-#: libnautilus-private/nautilus-file.c:6016
+#: libnautilus-private/nautilus-file.c:6058
 #: libnautilus-private/nautilus-global-preferences.c:529
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -3228,8 +3230,8 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"Om du vill använda snabbsökningar kan redigera filen %s som root. Genom att "
-"sätta enabled-flaggan till \"yes\" aktiverar du medusa-tjänsterna.\n"
+"Om du vill aktivera snabbsökningar kan du redigera filen %s som root. Genom "
+"att sätta enabled-flaggan till \"yes\" aktiverar du medusa-tjänsterna.\n"
 "För att starta indexering och söktjänster omedelbart bör du även köra "
 "följande kommandon som root:\n"
 "\n"
@@ -3713,7 +3715,6 @@ msgstr "[Objekt ]med ägar-UID \"%s\""
 msgid "[Items ]with owner UID other than \"%s\""
 msgstr "[Objekt ]med annat ägar-UID än \"%s\""
 
-# SUN CHANGED MESSAGE
 #: libnautilus-private/nautilus-search-uri.c:308
 #, c-format
 msgid "[Items ]larger than %s bytes"
@@ -4679,78 +4680,78 @@ msgstr "Byter namn på \"%s\" till \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Avbryt namnbyte?"
 
-#: src/file-manager/fm-icon-view.c:161
+#: src/file-manager/fm-icon-view.c:159
 msgid "by _Name"
 msgstr "efter _namn"
 
-#: src/file-manager/fm-icon-view.c:162
+#: src/file-manager/fm-icon-view.c:160
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by name in rows"
 msgstr "Sortera ikoner i rader efter namn"
 
-#: src/file-manager/fm-icon-view.c:168
+#: src/file-manager/fm-icon-view.c:166
 msgid "by _Size"
 msgstr "efter _storlek"
 
-#: src/file-manager/fm-icon-view.c:169
+#: src/file-manager/fm-icon-view.c:167
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by size in rows"
 msgstr "Sortera ikoner i rader efter storlek"
 
-#: src/file-manager/fm-icon-view.c:175
+#: src/file-manager/fm-icon-view.c:173
 msgid "by _Type"
 msgstr "efter _typ"
 
-#: src/file-manager/fm-icon-view.c:176
+#: src/file-manager/fm-icon-view.c:174
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by type in rows"
 msgstr "Sortera ikoner i rader efter typ"
 
-#: src/file-manager/fm-icon-view.c:182
+#: src/file-manager/fm-icon-view.c:180
 msgid "by Modification _Date"
 msgstr "efter modifierings_datum"
 
-#: src/file-manager/fm-icon-view.c:183
+#: src/file-manager/fm-icon-view.c:181
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Sortera ikoner i rader efter modifieringsdatum"
 
-#: src/file-manager/fm-icon-view.c:189
+#: src/file-manager/fm-icon-view.c:187
 msgid "by _Emblems"
 msgstr "efter _emblem"
 
-#: src/file-manager/fm-icon-view.c:190
+#: src/file-manager/fm-icon-view.c:188
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Sortera ikoner i rader efter emblem"
 
-#: src/file-manager/fm-icon-view.c:1632
+#: src/file-manager/fm-icon-view.c:1641
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "_Återställ ikonernas originalstorlekar"
 
-#: src/file-manager/fm-icon-view.c:1633
+#: src/file-manager/fm-icon-view.c:1642
 msgid "Restore Icon's Original Si_ze"
 msgstr "_Återställ ikonens originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1996
+#: src/file-manager/fm-icon-view.c:2005
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
+#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
 msgid "Drag and drop is not supported."
 msgstr "Dra och släpp stöds inte."
 
-#: src/file-manager/fm-icon-view.c:2580
+#: src/file-manager/fm-icon-view.c:2589
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
+#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
 msgid "Drag and Drop Error"
 msgstr "Fel med dra och släpp"
 
-#: src/file-manager/fm-icon-view.c:2604
+#: src/file-manager/fm-icon-view.c:2613
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
@@ -4838,11 +4839,11 @@ msgid "unreadable"
 msgstr "oläsbar"
 
 #: src/file-manager/fm-properties-window.c:1759
-#, fuzzy, c-format
+#, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
-msgstr[0] "1 objekt, med storleken %s"
-msgstr[1] "1 objekt, med storleken %s"
+msgstr[0] "%d objekt, med storleken %s"
+msgstr[1] "%d objekt, med totalt %s"
 
 #: src/file-manager/fm-properties-window.c:1768
 msgid "(some contents unreadable)"
@@ -5197,51 +5198,44 @@ msgid "Indexed Searches Are Not Available"
 msgstr "Indexerade sökningar är inte tillgängliga"
 
 #: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
 "index is available right now."
 msgstr ""
-"För att göra en innehållssökning måste Sök ha tillgång till ett index med "
-"filerna på ditt system. Sök kan inte komma åt ditt index just nu. "
+"För att göra en snabbsökning måste Sök ha tillgång till ett index med "
+"filerna på ditt system. Inget index är tillgängligt just nu."
 
 #: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  No index is available right now."
 msgstr ""
 "För att göra en innehållssökning måste Sök ha tillgång till ett index med "
-"filerna på ditt system. Sök kan inte komma åt ditt index just nu. "
+"filerna på ditt system. Inget index är tillgängligt just nu."
 
 #: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, searches will take several "
 "minutes."
 msgstr ""
-"För att göra en snabbsökning måste Sök ha tillgång till ett index med "
-"filerna på ditt system. Inget index är tillgängligt just nu. Du kan skapa "
-"ett index genom att köra \"medusa-indexd\" som root på kommandoraden. Innan "
-"ett fullständigt index har skapats kommer sökningar att ta flera minuter."
+"Du kan skapa ett index genom att köra \"medusa-indexd\" som root på "
+"kommandoraden. Innan ett fullständigt index har skapats kommer sökningar att "
+"ta flera minuter."
 
 #: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, content searches cannot be "
 "performed."
 msgstr ""
-"För att göra en innehållssökning måste Sök ha tillgång till ett index med "
-"innehållet på ditt system. Inget index är tillgängligt just nu. Du kan skapa "
-"ett index genom att köra \"medusa-indexd\" som root på kommandoraden. Innan "
-"ett fullständigt index har skapats kan inga innehållssökningar göras."
+"Du kan skapa ett index genom att köra \"medusa-indexd\" som root på "
+"kommandoraden. Innan ett fullständigt index har skapats kan inga "
+"innehållssökningar göras."
 
 #: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
 msgid "Fast searches are not enabled on your computer."
-msgstr "Snabbsökningar är inte påslagna på din dator"
+msgstr "Snabbsökningar är inte aktiverade på din dator."
 
 #: src/file-manager/fm-search-list-view.c:330
 msgid ""
@@ -5254,9 +5248,8 @@ msgstr ""
 "så inget index är tillgängligt."
 
 #: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
 msgid "Fast Searches Not Enabled"
-msgstr "Snabbsökningar är inte tillgängliga"
+msgstr "Snabbsökningar är inte aktiverade"
 
 #: src/file-manager/fm-search-list-view.c:513
 msgid "Where"
@@ -5310,24 +5303,20 @@ msgid "Create Folder"
 msgstr "Skapa mapp"
 
 #: src/file-manager/fm-tree-view.c:989
-#, fuzzy
 msgid "Cut Folder"
-msgstr "Skapa mapp"
+msgstr "Klipp ut mapp"
 
 #: src/file-manager/fm-tree-view.c:1003
-#, fuzzy
 msgid "Copy Folder"
-msgstr "Kopiera filer"
+msgstr "Kopiera mapp"
 
 #: src/file-manager/fm-tree-view.c:1017
-#, fuzzy
 msgid "Paste Files into Folder"
-msgstr "Klistra _in filer i mapp"
+msgstr "Klistra in filer i mapp"
 
 #: src/file-manager/fm-tree-view.c:1035
-#, fuzzy
 msgid "Move to Trash"
-msgstr "Flytta till _papperskorgen"
+msgstr "Flytta till papperskorgen"
 
 #: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
@@ -5391,18 +5380,16 @@ msgid "Choose another application with which to open the selected item"
 msgstr "Välj ett annat program att öppna det markerade objektet med"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
-#, fuzzy
 msgid "Create _Document"
-msgstr "Skapa _mapp"
+msgstr "Skapa _dokument"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Folder"
 msgstr "Skapa _mapp"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
-#, fuzzy
 msgid "Create a new empty file inside this folder"
-msgstr "Skapa en ny tom mapp inuti denna mapp"
+msgstr "Skapa en ny tom fil inuti denna mapp"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Create a new empty folder inside this folder"
@@ -5441,9 +5428,8 @@ msgid "Medi_a Properties"
 msgstr "Medi_aegenskaper"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
-#, fuzzy
 msgid "Mount the selected volume"
-msgstr "Avmontera den valda volymen"
+msgstr "Montera den valda volymen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid ""
@@ -5462,21 +5448,19 @@ msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "No templates Installed"
-msgstr ""
+msgstr "Inga mallar är installerade"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open Wit_h"
 msgstr "Ö_ppna med"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
-#, fuzzy
 msgid "Open each selected item in a navigation window"
-msgstr "Öppna varje markerat objekt i ett nytt fönster"
+msgstr "Öppna varje markerat objekt i ett navigeringsfönster"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
-#, fuzzy
 msgid "Open in Navigation Window"
-msgstr "Öppna _i nytt fönster"
+msgstr "Öppna i navigeringsfönster"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:29
 msgid "Open the selected item in this window"
@@ -5523,18 +5507,16 @@ msgid "Select _All Files"
 msgstr "_Markera alla filer"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
-#, fuzzy
 msgid "Select _Pattern"
-msgstr "Markera _inget"
+msgstr "Markera _mönster"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Select all items in this window"
 msgstr "Markera alla objekt i detta fönster"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#, fuzzy
 msgid "Select items in this window matching a given pattern"
-msgstr "Markera alla objekt i detta fönster"
+msgstr "Markera objekt i detta fönster som matchar ett givet mönster"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Show media properties for the selected volume"
@@ -5556,19 +5538,18 @@ msgstr "Använd standardbakgrunden för denna plats"
 msgid "View or modify the properties of each selected item"
 msgstr "Visa eller ändra egenskaperna på varje markerat objekt"
 
+# Tom eller töm?
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
-#, fuzzy
 msgid "_Empty File"
-msgstr "_Kopiera fil"
+msgstr "_Tom fil"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Format"
 msgstr "_Formatera"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
-#, fuzzy
 msgid "_Mount Volume"
-msgstr "_Avmontera volym"
+msgstr "_Montera volym"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "_Open"
@@ -5682,17 +5663,18 @@ msgid "Indexing is %d%% complete."
 msgstr "Indexering är %d%% klar."
 
 #: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
+#, c-format
 msgid "Your files were last indexed at %s."
-msgstr "Dina filer indexerades senast %s"
+msgstr "Dina filer indexerades senast %s."
 
+# BUGG! Varför det extra blanksteget?
 #: src/file-manager/nautilus-indexing-info.c:170
 msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast. "
 msgstr ""
-"En gång om dagen indexeras dina filer och innehållet i dem så att det ska gå "
-"snabbt att söka."
+"En gång om dagen indexeras dina filer och textinnehållet i dem så att det "
+"ska gå snabbt att söka. "
 
 #: src/file-manager/nautilus-indexing-info.c:172
 #: src/file-manager/nautilus-indexing-info.c:200
@@ -5700,17 +5682,15 @@ msgid "Indexing Status"
 msgstr "Indexeringsstatus"
 
 #: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
 msgid "Your files are currently being indexed."
-msgstr "Dina filer indexerades senast %s"
+msgstr "Dina filer håller på att indexeras."
 
 #: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
 msgid ""
 "Once a day your files and text content are indexed so your searches are fast."
 msgstr ""
-"En gång om dagen indexeras dina filer och innehållet i dem så att det ska gå "
-"snabbt att söka."
+"En gång om dagen indexeras dina filer och textinnehållet i dem så att det "
+"ska gå snabbt att söka."
 
 #: src/file-manager/nautilus-indexing-info.c:257
 msgid "There is no index of your files right now."
@@ -5722,13 +5702,13 @@ msgid ""
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
 msgstr ""
-"När snabbsökning är påslaget skapar Sök ett index för att snabba upp "
-"sökningar. Snabbsökning är inte påslaget på din dator, så du har inget index "
-"just nu."
+"När snabbsökning är aktiverat skapar Sök ett index för att snabba upp "
+"sökningar. Snabbsökning är inte aktiverat på din dator, så du har inget "
+"index just nu."
 
 #: src/file-manager/nautilus-indexing-info.c:262
 msgid "No Index of Files"
-msgstr ""
+msgstr "Inget index över filer"
 
 #: src/file-manager/nautilus-indexing-info.c:299
 msgid "Sorry, but the medusa search service is not available."
@@ -5736,20 +5716,19 @@ msgstr "Tyvärr, söktjänsten medusa är inte tillgänglig."
 
 #: src/file-manager/nautilus-indexing-info.c:300
 msgid "Please verify medusa has been setup correctly."
-msgstr ""
+msgstr "Kontrollera att medusa har konfigurerats korrekt."
 
 #: src/file-manager/nautilus-indexing-info.c:315
 msgid "%I:%M %p, %x"
 msgstr "%x %H.%M"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
-#, fuzzy
 msgid "Select the columns visible in this folder"
-msgstr "Skapa en ny tom mapp inuti denna mapp"
+msgstr "Välj de kolumner som ska vara synliga i denna mapp"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
-msgstr ""
+msgstr "Synliga _kolumner..."
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:1
 msgid "Reveal each selected item in its original folder"
@@ -5776,18 +5755,16 @@ msgid "Couldn't Create Required Folder"
 msgstr "Kan inte skapa mapp som krävs"
 
 #: src/nautilus-application.c:265
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "Nautilus kunde inte skapa katalogen %s."
+msgstr "Nautilus kunde inte skapa den nödvändiga mappen \"%s\"."
 
 #: src/nautilus-application.c:267
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"Nautilus kunde inte skapa den nödvändiga mappen \"%s\". Innan du kör "
-"Nautilus bör du skapa denna mapp, eller ställa in de nödvändiga "
+"Innan du kör Nautilus bör du skapa denna mapp, eller ställa in de nödvändiga "
 "rättigheterna för att Nautilus ska kunna skapa den."
 
 #: src/nautilus-application.c:270
@@ -5795,20 +5772,15 @@ msgid "Couldn't Create Required Folders"
 msgstr "Kan inte skapa mappar som krävs"
 
 #: src/nautilus-application.c:271
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus could not create the following required folders: %s."
-msgstr "Nautilus kunde inte skapa katalogen %s."
+msgstr "Nautilus kunde inte skapa följande nödvändiga mappar: %s."
 
 #: src/nautilus-application.c:273
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"Nautilus kunde inte skapa följande nödvändiga mappar:\n"
-"\n"
-"%s\n"
-"\n"
 "Innan du kör Nautilus bör du skapa dessa mappar, eller ställa in de "
 "nödvändiga rättigheterna för att Nautilus ska kunna skapa dem."
 
@@ -5819,19 +5791,18 @@ msgstr "Länk till gammalt skrivbord"
 #: src/nautilus-application.c:357
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
+"En länk med namnet \"Länk till gammalt skrivbord\" har skapats på "
+"skrivbordet."
 
 #: src/nautilus-application.c:358
-#, fuzzy
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
-"Platsen för skrivbordskatalogen har ändrats i GNOME 2.4. En länk med namnet "
-"\"Länk till gammalt skrivbord\" har skapats på skrivbordet. Du kan öppna "
-"denna för att flytta över de filer du vill ha och sedan ta bort länken."
+"Platsen för skrivbordskatalogen har ändrats i GNOME 2.4. Du kan öppna länken "
+"för att flytta över de filer du vill ha och sedan ta bort länken."
 
 #: src/nautilus-application.c:360
-#, fuzzy
 msgid "Migrated Old Desktop"
 msgstr "Migrerat gammalt skrivbord"
 
@@ -5981,65 +5952,57 @@ msgstr "Hitta dem!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
-msgstr ""
+msgstr "Du måste ange namnet på servern."
 
 #: src/nautilus-connect-server-dialog.c:87
 msgid "Please enter a name and try again."
-msgstr ""
+msgstr "Ange ett namn och försök igen."
 
 #: src/nautilus-connect-server-dialog.c:88
 #: src/nautilus-connect-server-dialog.c:104
-#, fuzzy
 msgid "Can't Connect to Server"
-msgstr "Kan inte flytta in i sig själv"
+msgstr "Kan inte ansluta till servern"
 
 #: src/nautilus-connect-server-dialog.c:101
 #: src/nautilus-window-manage-views.c:1255
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is not a valid location."
-msgstr "är inte en giltig blockenhet"
+msgstr "\"%s\" är inte en giltig plats."
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
 #: src/nautilus-window-manage-views.c:1250
 #: src/nautilus-window-manage-views.c:1258
-#, fuzzy
 msgid "Please check the spelling and try again."
-msgstr "Kunde inte hitta \"%s\". Kontrollera stavningen och försök igen."
+msgstr "Kontrollera stavningen och försök igen."
 
 #: src/nautilus-connect-server-dialog.c:177
-#, fuzzy
 msgid "Connect to Server"
-msgstr "Nätverksservrar"
+msgstr "Anslut till server"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _name:"
-msgstr "_Namn på webbplats:"
+msgstr "Länk_namn:"
 
 #: src/nautilus-connect-server-dialog.c:210
-#, fuzzy
 msgid "_Location (URL):"
-msgstr "_Plats:"
+msgstr "_Plats (URL):"
 
 #: src/nautilus-connect-server-dialog.c:231
-#, fuzzy
 msgid "Example:"
-msgstr "Exempel"
+msgstr "Exempel:"
 
 #: src/nautilus-connect-server-dialog.c:248
-#, fuzzy
 msgid "C_onnect"
-msgstr "Anslut"
+msgstr "_Anslut"
 
 #: src/nautilus-desktop-window.c:356
 msgid "Desktop"
 msgstr "Skrivbord"
 
 #: src/nautilus-file-management-properties.c:307
-#, fuzzy
 msgid "None"
-msgstr "inget"
+msgstr "Inget"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
@@ -6082,9 +6045,8 @@ msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">Standardalternativ för ikonvyn</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
-#, fuzzy
 msgid "<span weight=\"bold\">List Columns</span>"
-msgstr "<span weight=\"bold\">Mappar</span>"
+msgstr "<span weight=\"bold\">Listkolumner</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">List View Defaults</span>"
@@ -6131,9 +6093,8 @@ msgstr ""
 "information visas när du zoomar in närmare."
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "Choose the order of information to appear in the list view."
-msgstr "Välj den information som visas under varje ikons namn"
+msgstr "Välj den sortering av information som ska användas i listvyn."
 
 #: src/nautilus-file-management-properties.glade.h:47
 msgid "Count _number of items:"
@@ -6157,7 +6118,7 @@ msgstr "Ikonrubriker"
 
 #: src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
-msgstr ""
+msgstr "Listkolumner"
 
 #: src/nautilus-file-management-properties.glade.h:55
 msgid "Local Files Only"
@@ -6288,18 +6249,12 @@ msgstr ""
 "Du kan manuellt ta bort denna fil för att visa guiden igen.\n"
 
 #: src/nautilus-information-panel.c:506
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time."
-msgstr ""
-"Du kan inte tilldela mer än en anpassad ikon åt gången! Dra endast en bild "
-"för att ställa in en anpassad ikon."
+msgstr "Du kan inte tilldela mer än en anpassad ikon åt gången."
 
 #: src/nautilus-information-panel.c:535
-#, fuzzy
 msgid "You can only use images as custom icons."
-msgstr ""
-"Filen som du släppte är inte lokal. Du kan endast använda lokala bilder som "
-"anpassade ikoner."
+msgstr "Du kan endast använda lokala bilder som anpassade ikoner."
 
 #: src/nautilus-information-panel.c:882
 #, c-format
@@ -6312,14 +6267,10 @@ msgid "Open with..."
 msgstr "Öppna med..."
 
 #: src/nautilus-information-panel.c:993
-#, fuzzy
 msgid "Unable to launch the cd burner application."
-msgstr ""
-"Kan inte starta cd-brännarprogrammet:\n"
-"%s"
+msgstr "Kan inte starta cd-brännarprogrammet."
 
 #: src/nautilus-information-panel.c:994
-#, fuzzy
 msgid "Can't Launch CD Burner"
 msgstr "Kan inte starta cd-brännare"
 
@@ -6338,20 +6289,19 @@ msgid "Go To:"
 msgstr "Gå till:"
 
 #: src/nautilus-location-bar.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Vill du se dessa %d platser i separata fönster?"
-msgstr[1] "Vill du se dessa %d platser i separata fönster?"
+msgstr[0] "Vill du se en plats?"
+msgstr[1] "Vill du se %d platser?"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
 msgstr "Visa i flera fönster?"
 
 #: src/nautilus-location-dialog.c:137
-#, fuzzy
 msgid "Open Location"
-msgstr "Kan inte öppna plats"
+msgstr "Öppna plats"
 
 #: src/nautilus-location-dialog.c:147
 msgid "_Location:"
@@ -6383,7 +6333,7 @@ msgstr ""
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
-msgstr ""
+msgstr "öppna ett bläddrarfönster."
 
 #: src/nautilus-main.c:199
 msgid "Quit Nautilus."
@@ -6427,16 +6377,12 @@ msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
 #. * implemented this feature so I could use this joke.
 #.
 #: src/nautilus-navigation-window-menus.c:186
-#, fuzzy
 msgid "Are you sure you want to forget history?"
-msgstr "Är du säker att du vill ta bort \"%s\" permanent?"
+msgstr "Är du säker på att du vill glömma historien?"
 
 #: src/nautilus-navigation-window-menus.c:187
-#, fuzzy
 msgid "If you do, you will be doomed to repeat it."
-msgstr ""
-"Är du säker på att du vill glömma historien? I så fall kommer du att vara "
-"dömd att återupprepa den."
+msgstr "I så fall kommer du att vara dömd att återupprepa den."
 
 #: src/nautilus-navigation-window-menus.c:189
 msgid "Are you sure you want to clear the list of locations you have visited?"
@@ -6445,25 +6391,22 @@ msgstr ""
 
 #: src/nautilus-navigation-window-menus.c:191
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr ""
+msgstr "Om du tömmer listan över platser kommer de att tas bort permanent."
 
 #: src/nautilus-navigation-window-menus.c:197
 msgid "Clear History"
 msgstr "Töm historik"
 
 #: src/nautilus-navigation-window-menus.c:426
-#, fuzzy
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
-msgstr ""
-"Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
-"från din lista?"
+msgstr "Vill du ta bort alla bokmärken med denna plats från din lista?"
 
 #: src/nautilus-navigation-window-menus.c:428
-#, fuzzy, c-format
+#, c-format
 msgid "The location \"%s\" does not exist."
-msgstr "Platsen \"%s\" finns inte längre."
+msgstr "Platsen \"%s\" finns inte."
 
 #: src/nautilus-navigation-window-menus.c:431
 msgid "Bookmark for Nonexistent Location"
@@ -6502,14 +6445,13 @@ msgid "Close _All Windows"
 msgstr "Stäng _alla fönster"
 
 #: src/nautilus-navigation-window-ui.xml.h:8
-#, fuzzy
 msgid "Close all Navigation windows"
-msgstr "Stäng alla Nautilus-fönster"
+msgstr "Stäng alla navigeringsfönster"
 
 #: src/nautilus-navigation-window-ui.xml.h:10
 #: src/nautilus-spatial-window-ui.xml.h:4
 msgid "Connect to _Server..."
-msgstr ""
+msgstr "Anslut till _server..."
 
 #: src/nautilus-navigation-window-ui.xml.h:11
 msgid "Display a window that allows editing the bookmarks in this menu"
@@ -6525,9 +6467,8 @@ msgstr "Framåt"
 
 #: src/nautilus-navigation-window-ui.xml.h:14
 #: src/nautilus-spatial-window-ui.xml.h:6
-#, fuzzy
 msgid "Go to templates folder"
-msgstr "Gå till papperskorgsmappen"
+msgstr "Gå till mallmappen"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
 msgid "Go to the next visited location"
@@ -6588,9 +6529,8 @@ msgstr "_Töm historik"
 
 #: src/nautilus-navigation-window-ui.xml.h:29
 #: src/nautilus-spatial-window-ui.xml.h:12
-#, fuzzy
 msgid "_Computer"
-msgstr "Dator"
+msgstr "_Dator"
 
 #: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Edit Bookmarks"
@@ -6619,9 +6559,8 @@ msgstr "Sido_panel"
 
 #: src/nautilus-navigation-window-ui.xml.h:36
 #: src/nautilus-spatial-window-ui.xml.h:15
-#, fuzzy
 msgid "_Templates"
-msgstr "_Times"
+msgstr "_Mallar"
 
 #: src/nautilus-navigation-window-ui.xml.h:37
 #: src/nautilus-spatial-window-ui.xml.h:16
@@ -6646,35 +6585,28 @@ msgid "View as..."
 msgstr "Visa som..."
 
 #: src/nautilus-navigation-window.c:733
-#, fuzzy, c-format
+#, c-format
 msgid "File Browser: %s"
-msgstr "Filägare:"
+msgstr "Filbläddrare: %s"
 
 #: src/nautilus-navigation-window.c:1117
-#, fuzzy
 msgid "One of the side panels encountered an error and can't continue."
-msgstr ""
-"En av sidopanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr kan "
-"jag inte avgöra vilken."
+msgstr "En av sidopanelerna råkade ut för ett fel och kan inte fortsätta."
 
 #: src/nautilus-navigation-window.c:1118
 msgid "Unfortunately I couldn't tell which one."
-msgstr ""
+msgstr "Tyvärr kunde jag inte avgöra vilken."
 
 #: src/nautilus-navigation-window.c:1121
-#, fuzzy, c-format
+#, c-format
 msgid "The %s side panel encountered an error and can't continue."
-msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
+msgstr "Sidopanelen %s råkade ut för ett fel och kan inte fortsätta."
 
 #: src/nautilus-navigation-window.c:1122
-#, fuzzy
 msgid "If this keeps happening, you might want to turn this panel off."
-msgstr ""
-"Sidopanelen %s råkade ut för ett fel och kan inte fortsätta. Om detta "
-"fortsätter att hända kanske du vill stänga av denna panel."
+msgstr "Om detta fortsätter att hända kanske du vill stänga av denna panel."
 
 #: src/nautilus-navigation-window.c:1125
-#, fuzzy
 msgid "Side Panel Failed"
 msgstr "Sidopanel misslyckades"
 
@@ -6719,9 +6651,9 @@ msgstr "Tyvärr, mönstret %s kunde inte tas bort."
 #: src/nautilus-property-browser.c:915
 msgid "Check that you have permission to delete the pattern."
 msgstr ""
+"Kontrollera att du har de rättigheter som krävs för att ta bort mönstret."
 
 #: src/nautilus-property-browser.c:916
-#, fuzzy
 msgid "Couldn't Delete Pattern"
 msgstr "Kunde inte ta bort mönster"
 
@@ -6733,9 +6665,9 @@ msgstr "Tyvärr, emblemet %s kunde inte tas bort."
 #: src/nautilus-property-browser.c:945
 msgid "Check that you have permission to delete the emblem."
 msgstr ""
+"Kontrollera att du har de rättigheter som krävs för att ta bort emblemet."
 
 #: src/nautilus-property-browser.c:946
-#, fuzzy
 msgid "Couldn't Delete Emblem"
 msgstr "Kunde inte ta bort emblem"
 
@@ -6761,13 +6693,11 @@ msgstr "Välj en bildfil för det nya emblemet:"
 msgid "Create a New Color:"
 msgstr "Skapa en ny färg:"
 
-# SUN CHANGED MESSAGE
 #. make the name label and field
 #: src/nautilus-property-browser.c:1057
 msgid "Color _name:"
 msgstr "Färg_namn:"
 
-# SUN CHANGED MESSAGE
 #: src/nautilus-property-browser.c:1073
 msgid "Color _value:"
 msgstr "Färg_värde:"
@@ -6783,10 +6713,9 @@ msgstr "Tyvärr, du angav inte ett giltigt filnamn."
 
 #: src/nautilus-property-browser.c:1109
 msgid "Please try again."
-msgstr ""
+msgstr "Försök igen."
 
 #: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
-#, fuzzy
 msgid "Couldn't Install Pattern"
 msgstr "Kunde inte installera mönster"
 
@@ -6796,7 +6725,7 @@ msgstr "Tyvärr, du kan inte ersätta återställningsbilden."
 
 #: src/nautilus-property-browser.c:1123
 msgid "Reset is a special image that cannot be deleted."
-msgstr ""
+msgstr "Återställ är en speciell bild som inte kan tas bort."
 
 #: src/nautilus-property-browser.c:1124 src/nautilus-property-browser.c:1328
 #: src/nautilus-property-browser.c:1344
@@ -6814,14 +6743,13 @@ msgstr "Välj en bildfil att lägga till som mönster"
 
 #: src/nautilus-property-browser.c:1236
 msgid "The color cannot be installed."
-msgstr ""
+msgstr "Färgen kan inte installeras."
 
 #: src/nautilus-property-browser.c:1237
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
 
 #: src/nautilus-property-browser.c:1238
-#, fuzzy
 msgid "Couldn't Install Color"
 msgstr "Kunde inte installera färg"
 
@@ -6830,14 +6758,13 @@ msgid "Select a color to add"
 msgstr "Välj en färg att lägga till"
 
 #: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
-#, fuzzy
 msgid "The file is not an image."
-msgstr "Filen \"%s\" verkar inte vara en giltig bild."
+msgstr "Filen är inte en bild."
 
 #: src/nautilus-property-browser.c:2051
 msgid "Select a Category:"
@@ -7111,9 +7038,8 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Välj en vy för den aktuella platsen, eller modifiera vyerna"
 
 #: src/nautilus-shell-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder"
-msgstr "Stäng sidopanelen"
+msgstr "Stäng denna mapp"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7215,9 +7141,8 @@ msgid "_CD Creator"
 msgstr "_Cd-skapare"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "Stäng"
+msgstr "S_täng"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
@@ -7281,49 +7206,40 @@ msgid "Show %s"
 msgstr "Visa %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:1
-#, fuzzy
 msgid "CD _Creator"
 msgstr "_Cd-skapare"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Close P_arent Folders"
-msgstr "Stäng _alla fönster"
+msgstr "Stäng _föräldermappar"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder's parents"
-msgstr "Stäng sidopanelen"
+msgstr "Stäng föräldrarna till denna mapp"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
-#, fuzzy
 msgid "Go to Computer"
-msgstr "Dator"
+msgstr "Gå till datorn"
 
 #: src/nautilus-spatial-window-ui.xml.h:7
-#, fuzzy
 msgid "Go to the CD Creator"
-msgstr "Gå till papperskorgsmappen"
+msgstr "Gå till cd-skaparen"
 
 #: src/nautilus-spatial-window-ui.xml.h:9
-#, fuzzy
 msgid "Open _Location..."
-msgstr "_Plats..."
+msgstr "Öppna _plats..."
 
 #: src/nautilus-spatial-window-ui.xml.h:10
-#, fuzzy
 msgid "Open _Parent"
-msgstr "Öppna _terminalfönster"
+msgstr "Öppna _förälder"
 
 #: src/nautilus-spatial-window-ui.xml.h:11
-#, fuzzy
 msgid "Open the parent folder"
-msgstr "[Objekt som är ]mappar"
+msgstr "Öppna föräldermappen"
 
 #: src/nautilus-spatial-window-ui.xml.h:14
-#, fuzzy
 msgid "_Places"
-msgstr "_Mönster"
+msgstr "_Platser"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
@@ -7343,23 +7259,20 @@ msgstr "den aktuella markeringen"
 
 #: src/nautilus-view-frame.c:622
 msgid "the type of window the view is embedded in"
-msgstr ""
+msgstr "typen av fönster som vyn är inbäddad i"
 
 #: src/nautilus-window-manage-views.c:822
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
 #: src/nautilus-window-manage-views.c:833
-#, fuzzy, c-format
+#, c-format
 msgid "The %s view encountered an error and can't continue."
-msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
+msgstr "%s-vyn råkade ut för ett fel och kan inte fortsätta."
 
 #: src/nautilus-window-manage-views.c:834
-#, fuzzy
 msgid "You can choose another view or go to a different location."
-msgstr ""
-"%s-vyn råkade ut för ett fel och kan inte fortsätta. Du kan välja en annan "
-"vy eller gå till en annan plats."
+msgstr "Du kan välja en annan vy eller gå till en annan plats."
 
 #: src/nautilus-window-manage-views.c:844
 #, c-format
@@ -7367,9 +7280,8 @@ msgid "The %s view encountered an error while starting up."
 msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
 
 #: src/nautilus-window-manage-views.c:845
-#, fuzzy
 msgid "The location cannot be displayed with this viewer."
-msgstr "Den NautilusApplication som är associerad med detta fönster."
+msgstr "Platsen kan inte visas med denna visare."
 
 #: src/nautilus-window-manage-views.c:992
 msgid "Content View"
@@ -7380,9 +7292,9 @@ msgid "View of the current file or folder"
 msgstr "Vy med aktuell fil eller mapp"
 
 #: src/nautilus-window-manage-views.c:1247
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't find \"%s\"."
-msgstr "Kunde inte läsa in %s"
+msgstr "Kunde inte hitta \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/nautilus-window-manage-views.c:1271
@@ -7391,91 +7303,76 @@ msgstr "Kunde inte läsa in %s"
 #: src/nautilus-window-manage-views.c:1303
 #: src/nautilus-window-manage-views.c:1309
 #: src/nautilus-window-manage-views.c:1329
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\"."
-msgstr "Kunde inte läsa in %s"
+msgstr "Kunde inte visa \"%s\"."
 
 #: src/nautilus-window-manage-views.c:1274
-#, fuzzy
 msgid "Nautilus cannot determine what type of file it is."
-msgstr ""
-"Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken typ av "
-"fil det är."
+msgstr "Nautilus kan inte fastställa vilken typ av fil det är."
 
 #: src/nautilus-window-manage-views.c:1284
-#, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the file."
-msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
+msgstr "Nautilus har ingen installerad visare som kan visa filen."
 
 #: src/nautilus-window-manage-views.c:1297
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus cannot handle %s: locations."
-msgstr ""
-"Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
+msgstr "Nautilus kan inte hantera %s:-platser."
 
 #: src/nautilus-window-manage-views.c:1305
-#, fuzzy
 msgid "The attempt to log in failed."
-msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
+msgstr "Inloggningsförsöket misslyckades."
 
 #: src/nautilus-window-manage-views.c:1311
 msgid "Access was denied."
-msgstr ""
+msgstr "Åtkomst nekades."
 
 #: src/nautilus-window-manage-views.c:1321
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
+msgstr "Kunde inte visa \"%s\", eftersom värden \"%s\" inte kunde hittas."
 
 #: src/nautilus-window-manage-views.c:1324
-#, fuzzy
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
-"Kunde inte visa \"%s\", eftersom värden \"%s\" inte kunde hittas.  "
 "Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
 "stämmer."
 
 #: src/nautilus-window-manage-views.c:1331
-#, fuzzy
 msgid "Check that your proxy settings are correct."
-msgstr ""
-"Kunde inte visa \"%s\". Kontrollera att dina proxyserverinställningar "
-"stämmer."
+msgstr "Kontrollera att dina proxyserverinställningar stämmer."
 
+# Osäker.
 #: src/nautilus-window-manage-views.c:1336
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr ""
-"Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
+"Kunde inte visa \"%s\", eftersom Nautilus inte kan kontakta SMB-"
+"huvudbläddraren."
 
 #: src/nautilus-window-manage-views.c:1339
 msgid "Check that an SMB server is running in the local network."
-msgstr ""
+msgstr "Kontrollera att en SMB-server körs på det lokala nätverket."
 
 #: src/nautilus-window-manage-views.c:1349
-#, fuzzy
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr ""
 "Sökning är inte tillgänglig just nu, antingen beroende på att du inte har "
-"något index, eller att söktjänsten inte kör. Försäkra dig om att du har "
-"startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
-"index."
+"något index, eller att söktjänsten inte kör."
 
 #: src/nautilus-window-manage-views.c:1352
-#, fuzzy
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
 msgstr ""
-"Sökning är inte tillgänglig just nu, antingen beroende på att du inte har "
-"något index, eller att söktjänsten inte kör. Försäkra dig om att du har "
-"startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
-"index."
+"Försäkra dig om att du har startat Medusa-söktjänsten och att Medusa-"
+"indexeraren kör om du inte har ett index."
 
 #: src/nautilus-window-manage-views.c:1354
 msgid "Searching Unavailable"
@@ -7488,7 +7385,7 @@ msgstr "Nautilus kan inte visa \"%s\"."
 
 #: src/nautilus-window-manage-views.c:1361
 msgid "Please select another viewer and try again."
-msgstr ""
+msgstr "Välj en annan visare och försök igen."
 
 #: src/nautilus-window-manage-views.c:1365
 msgid "Can't Display Location"
@@ -7539,19 +7436,19 @@ msgstr "Gå framåt ett antal sidor"
 msgid "Display this location with \"%s\""
 msgstr "Visa denna plats med \"%s\""
 
-#: src/nautilus-window.c:1606
+#: src/nautilus-window.c:1578
 msgid "Application ID"
 msgstr "Program-id"
 
-#: src/nautilus-window.c:1607
+#: src/nautilus-window.c:1579
 msgid "The application ID of the window."
 msgstr "Program-id för fönstret."
 
-#: src/nautilus-window.c:1613
+#: src/nautilus-window.c:1585
 msgid "Application"
 msgstr "Program"
 
-#: src/nautilus-window.c:1614
+#: src/nautilus-window.c:1586
 msgid "The NautilusApplication associated with this window."
 msgstr "Den NautilusApplication som är associerad med detta fönster."
 
@@ -7586,6 +7483,75 @@ msgstr "Nätverksservrar"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
+
+#~ msgid "Reset"
+#~ msgstr "Återställ"
+
+#~ msgid "_Reset"
+#~ msgstr "_Återställ"
+
+#~ msgid "Visible Columns..."
+#~ msgstr "Synliga kolumner..."
+
+#~ msgid "Visible Columns"
+#~ msgstr "Synliga kolumner"
+
+#~ msgid "Visible _Columns"
+#~ msgstr "Synliga _kolumner"
+
+#~ msgid "Visible columns"
+#~ msgstr "Synliga kolumner"
+
+#~ msgid "Link name"
+#~ msgstr "Länknamn"
+
+#~ msgid "Link name:"
+#~ msgstr "Länknamn:"
+
+#~ msgid "Link _name"
+#~ msgstr "Länk_namn"
+
+#~ msgid "Location"
+#~ msgstr "Plats"
+
+#~ msgid "Example"
+#~ msgstr "Exempel"
+
+#~ msgid "Connect"
+#~ msgstr "Anslut"
+
+#~ msgid "List columns"
+#~ msgstr "Listkolumner"
+
+#~ msgid "Open a browser window"
+#~ msgstr "Öppna ett bläddrarfönster"
+
+#~ msgid "Connect to Server..."
+#~ msgstr "Anslut till server..."
+
+#~ msgid "Connect to server"
+#~ msgstr "Anslut till server"
+
+#~ msgid "Connect to _Server"
+#~ msgstr "Anslut till _server"
+
+#~ msgid "_Template"
+#~ msgstr "_Mall"
+
+#~ msgid "Templates"
+#~ msgstr "Mallar"
+
+#~ msgid "Template"
+#~ msgstr "Mall"
+
+#~ msgid "File Browser"
+#~ msgstr "Filbläddrare"
+
+#~ msgid "Close"
+#~ msgstr "Stäng"
+
+#~ msgid "Go to the Computer"
+#~ msgstr "Gå till datorn"
 
 #~ msgid "Create document from template \"%s\""
 #~ msgstr "Skapa dokument från mallen \"%s\""
@@ -7878,9 +7844,8 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 #~ msgid "A _Viewer..."
 #~ msgstr "En _visare..."
 
-#, fuzzy
 #~ msgid "Open in %d New Windows"
-#~ msgstr "Öppna _i %d nya fönster"
+#~ msgstr "Öppna i %d nya fönster"
 
 #~ msgid "%d items, totalling %s"
 #~ msgstr "%d objekt, totalt %s"
@@ -8172,9 +8137,8 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 #~ msgid "file icon"
 #~ msgstr "filikon"
 
-#, fuzzy
 #~ msgid "Name:"
-#~ msgstr "_Namn:"
+#~ msgstr "Namn:"
 
 #~ msgid "Unknown"
 #~ msgstr "Okänd"
