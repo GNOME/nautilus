@@ -181,6 +181,7 @@ static const SortCriterion sort_criteria[] = {
 
 static gboolean default_sort_in_reverse_order = FALSE;
 static int preview_sound_auto_value;
+static gboolean gnome_esd_enabled_auto_value;
 
 static void                 fm_icon_view_set_directory_sort_by                 (FMIconView           *icon_view,
 										NautilusFile         *file,
@@ -1656,17 +1657,10 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 }
 
 static gboolean
-should_preview_sound (NautilusFile *file) {
-
-	GConfClient *client;
-	gboolean enable_esd = FALSE;
-        
-	client = gconf_client_get_default ();
-	enable_esd = gconf_client_get_bool (client, "/desktop/gnome/sound/enable_esd", NULL);
-	g_object_unref (client);
-
+should_preview_sound (NautilusFile *file)
+{
 	/* Check gnome config sound preference */
-	if (!enable_esd) {
+	if (!gnome_esd_enabled_auto_value) {
 		return FALSE;
 	}
 
@@ -2684,6 +2678,11 @@ fm_icon_view_instance_init (FMIconView *icon_view)
 	if (!setup_sound_preview) {
 		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 					       &preview_sound_auto_value);
+
+		eel_preferences_monitor_directory ("/desktop/gnome/sound");
+		eel_preferences_add_auto_boolean ("/desktop/gnome/sound/enable_esd",
+						  &gnome_esd_enabled_auto_value);
+		
 		setup_sound_preview = TRUE;
 	}
 

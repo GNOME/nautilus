@@ -1,3 +1,9 @@
+2002-03-22  Havoc Pennington  <hp@pobox.com>
+
+	* src/file-manager/fm-icon-view.c (should_preview_sound): set up
+	an auto variable for the /desktop/gnome/sound/enable_esd setting,
+	to avoid remote gconf query on every icon mouseover.
+
 2002-03-22  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-properties-window.c: (create_emblems_page):
