@@ -31,4 +31,5 @@ INCLUDES = \
 
 EXTRA_DIST = \
 	eazel-helper.security.in \
+	eazel-helper.pam \
 	$(NULL)
