@@ -207,7 +207,9 @@ nautilus_background_draw (NautilusBackground *background,
 		buffer.rect.x1 = rectangle->x + rectangle->width;
 		buffer.rect.y1 = rectangle->y + rectangle->height;
 		buffer.bg_color = 0xFFFFFFFF;
-
+		buffer.is_buf = FALSE;
+		buffer.is_bg = FALSE;
+		
 		/* invoke the anti-aliased code to do the work */
 		nautilus_background_draw_aa (background, &buffer, rectangle->width, rectangle->height);
 		

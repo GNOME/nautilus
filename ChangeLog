@@ -1,3 +1,11 @@
+2000-06-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw):
+	fixed bug where the combine mode implemented last night wasn't
+	working for normal drawables by setting the fake CanvasBuf flags
+	properly.  Now the sidebar in the arlo theme is working.
+	
 2000-06-30  Fatih Demir	<kabalak@gmx.net>
 	
 	* acconfig.h: Added masses of undefs for the wrapping
