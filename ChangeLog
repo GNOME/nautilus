@@ -1,5 +1,31 @@
 2000-06-28  John Sullivan  <sullivan@eazel.com>
 
+	Made the view-failure-handling code only execute
+	when a view fails, instead of also executing during
+	a normal quit. This is a starting point for putting
+	some UI at the failure.
+
+	* src/nautilus-window.c: 
+	(nautilus_window_disconnect_view): New function to disconnect
+	the signal handlers on a view that were established in
+	nautilus_window_connect_view.
+	(view_disconnect): foreach-style wrapper for _disconnect_view.
+	(nautilus_window_destroy): Call _disconnect_view on each
+	sidebar panel, and on the content view.
+	(nautilus_window_connect_view): Added comment and updated
+	for a name change.
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_view_failed): Renamed from
+	"nautilus_window_view_destroyed" since it's (now) only
+	called in the case of a failure.
+	(nautilus_window_has_really_changed): Call _disconnect_view.
+	(nautilus_window_load_content_view): Replaced 
+	_connect_content_view with _connect_view.
+	* src/nautilus-window-private.h: updated prototypes to match
+	previously-mentioned changes.
+
+2000-06-28  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_set_uri),
 	* src/nautilus-sidebar.c: (nautilus_sidebar_update_info): Added
 	a couple of NULL uri checks to get us cleanly past the case where

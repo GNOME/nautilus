@@ -458,7 +458,7 @@ nautilus_window_update_view (NautilusWindow *window,
 }
 
 void
-nautilus_window_view_destroyed (NautilusWindow *window, NautilusViewFrame *view)
+nautilus_window_view_failed (NautilusWindow *window, NautilusViewFrame *view)
 {
         nautilus_window_set_state_info
                 (window,
@@ -479,8 +479,7 @@ nautilus_window_has_really_changed(NautilusWindow *window)
         
         if (window->new_content_view) {
                 if (!GTK_WIDGET (window->new_content_view)->parent) {
-                        if(window->content_view)
-                                gtk_signal_disconnect_by_func(GTK_OBJECT(window->content_view), nautilus_window_view_destroyed, window);
+                	nautilus_window_disconnect_view (window, window->content_view);
                         nautilus_window_set_content_view(window, window->new_content_view);
                 }
                 gtk_object_unref(GTK_OBJECT(window->new_content_view));
@@ -724,7 +723,7 @@ nautilus_window_load_content_view (NautilusWindow *window,
                 
                 new_view = nautilus_view_frame_new (window->ui_handler,
                                                     window->application->undo_manager);
-                nautilus_window_connect_content_view (window, new_view);
+                nautilus_window_connect_view (window, new_view);
                 
                 if (!nautilus_view_frame_load_client (new_view, id->iid)) {
                         gtk_widget_unref (GTK_WIDGET(new_view));

@@ -451,6 +451,16 @@ nautilus_window_get_arg (GtkObject *object,
 	}
 }
 
+static void
+view_disconnect (gpointer data, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_WINDOW (user_data));
+	g_assert (NAUTILUS_IS_VIEW_FRAME (data));
+
+	nautilus_window_disconnect_view (NAUTILUS_WINDOW (user_data),
+					 NAUTILUS_VIEW_FRAME (data));
+}
+
 static void 
 nautilus_window_destroy (NautilusWindow *window)
 {
@@ -465,8 +475,14 @@ nautilus_window_destroy (NautilusWindow *window)
 	nautilus_window_remove_go_menu_callback (window);
 	nautilus_window_toolbar_remove_theme_callback();
 
+	/* Disconnect view signals here so they don't trigger when
+	 * views are destroyed normally.
+	 */
+	g_list_foreach (window->sidebar_panels, view_disconnect, window);
 	g_list_free (window->sidebar_panels);
 
+	nautilus_window_disconnect_view (window, window->content_view);
+	
 	nautilus_view_identifier_free (window->content_view_id);
 	
 	g_free (window->location);
@@ -1168,22 +1184,38 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 
 	#undef CONNECT
 
+	/* Can't use connect_object_while_alive here, because
+	 * elsewhere disconnect_by_function is used to disconnect the
+	 * switched-out content view's signal, and disconnect_by_function
+	 * doesn't completely clean up after connect_object_while_alive,
+	 * leading to assertion failures later on.
+	 */
 	gtk_signal_connect_object
 		(view_object,
 		 "destroy",
-		 nautilus_window_view_destroyed,
+		 nautilus_window_view_failed,
 		 GTK_OBJECT (window));
 	gtk_signal_connect_object
 		(view_object,
 		 "client_gone",
-		 nautilus_window_view_destroyed,
+		 nautilus_window_view_failed,
 		 GTK_OBJECT (window));
 }
 
 void
-nautilus_window_connect_content_view (NautilusWindow *window, NautilusViewFrame *view)
+nautilus_window_disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
-	nautilus_window_connect_view (window, NAUTILUS_VIEW_FRAME (view));
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	if (view == NULL) {
+		return;
+	}
+
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	gtk_signal_disconnect_by_func (GTK_OBJECT(view), 
+				       nautilus_window_view_failed, 
+				       window);
 }
 
 void

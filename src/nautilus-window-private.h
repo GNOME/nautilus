@@ -35,11 +35,11 @@ void                 nautilus_window_back_or_forward                   (Nautilus
 									guint                       distance);
 void                 nautilus_window_load_content_view_menu            (NautilusWindow             *window);
 void                 nautilus_window_synch_content_view_menu           (NautilusWindow             *window);
-void                 nautilus_window_connect_content_view              (NautilusWindow             *window,
-									NautilusViewFrame          *view);
 void                 nautilus_window_connect_view                      (NautilusWindow             *window,
 									NautilusViewFrame          *view);
-void                 nautilus_window_view_destroyed                    (NautilusWindow             *window,
+void		     nautilus_window_disconnect_view		       (NautilusWindow		   *window,
+									NautilusViewFrame	   *view);
+void                 nautilus_window_view_failed                       (NautilusWindow             *window,
 									NautilusViewFrame          *view);
 void                 nautilus_send_history_list_changed                (void);
 void                 nautilus_add_to_history_list                      (NautilusBookmark           *bookmark);
