@@ -84,7 +84,7 @@ ElementInfo sect_elements[] = {
 	{ PARAMDEF, "paramdef", (startElementSAXFunc) sect_paramdef_start_element, NULL, (charactersSAXFunc) sect_write_characters},
 	{ VOID, "void", (startElementSAXFunc) sect_void_start_element, NULL, NULL },
 	{ GUISUBMENU, "guisubmenu", (startElementSAXFunc) sect_menu_start_element, (endElementSAXFunc) sect_menu_end_element, (charactersSAXFunc) sect_write_characters},
-	{ INTERFACE, "interface", (startElementSAXFunc) sect_interface_start_element, (endElementSAXFunc) sect_interface_end_element, (charactersSAXFunc) sect_write_characters},
+	{ INTERFACE, "interface", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ LINK, "link", (startElementSAXFunc) sect_link_start_element, (endElementSAXFunc) sect_link_end_element, (charactersSAXFunc) sect_write_characters},
 	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
@@ -921,27 +921,6 @@ sect_graphic_start_element (Context *context,
 }
 
 void
-sect_interface_start_element (Context *context,
-				   const char *name,
-				   const xmlChar **atrs)
-{
-	if (!IS_IN_SECT (context))
-		return;
-
-	sect_print (context, "<SPAN CLASS=\"INTERFACE\">");
-}
-
-void 
-sect_interface_end_element (Context *context,
-				 const char *name)
-{
-	if (!IS_IN_SECT (context))
-		return;
-
-	sect_print (context, "</SPAN>");
-}
-
-void
 sect_em_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -994,14 +973,6 @@ sect_menu_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 	
-/*	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA)); */
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (MENUCHOICE));
 
 	index = find_first_parent (context, element_list);

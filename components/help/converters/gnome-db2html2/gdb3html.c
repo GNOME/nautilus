@@ -165,7 +165,7 @@ find_element_info (ElementInfo *elements,
 /* our callbacks for the xmlSAXHandler */
 
 static xmlEntityPtr
-get_entity (Context *context, const gchar *name)
+get_entity (Context *context, const char *name)
 {
 #ifdef ERROR_OUTPUT
 	g_print ("in getEntity:%s\n", name);

@@ -230,6 +230,13 @@ transform_file (const char *old_uri,
 		return help_uri;
 	}
 
+	new_uri_with_extension = g_strconcat (new_uri, ".xml", NULL);
+	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {
+		g_free (new_uri);
+		return help_uri;
+	}
+	g_free(new_uri_with_extension);
+
 	/* Try with an sgml extension. */
 	new_uri_with_extension = g_strconcat (new_uri, ".sgml", NULL);
 	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {

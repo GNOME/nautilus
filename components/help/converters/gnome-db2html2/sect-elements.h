@@ -96,8 +96,6 @@ void sect_funcparams_end_element (Context *context, const gchar *name);
 void sect_paramdef_start_element (Context *context, const gchar *chars, int len);
 void sect_parameter_characters (Context *context, const gchar *chars, int len);
 void sect_void_start_element (Context *context, const gchar *chars, int len);
-void sect_interface_start_element (Context *context, const char *name, const xmlChar **atrs);
-void sect_interface_end_element (Context *context, const char *name);
 void sect_link_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_link_end_element (Context *context, const char *name);
 void sect_menu_start_element (Context *context, const char *name, const xmlChar **atrs);
