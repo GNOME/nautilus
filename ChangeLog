@@ -1,5 +1,45 @@
 2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(nautilus_global_preferences_startup):
+	* nautilus-widgets/nautilus-preferences.c:
+	(preferences_hash_node_alloc), (preferences_hash_node_free),
+	(preferences_hash_node_add_callback),
+	(preferences_hash_node_remove_callback),
+	(preferences_hash_node_free_func),
+	(preferneces_callback_node_alloc),
+	(preferneces_callback_node_free),
+	(preferneces_callback_node_free_func),
+	(preferneces_callback_node_invoke_func), (preferences_register),
+	(nautilus_preferences_get_preference),
+	(nautilus_preferences_set_info), (set_default_value_if_needed),
+	(nautilus_preferences_enum_add_entry),
+	(preferences_hash_node_lookup),
+	(preferences_hash_node_lookup_with_registration),
+	(preferences_gconf_callback),
+	(nautilus_preferences_add_boolean_callback),
+	(nautilus_preferences_add_enum_callback),
+	(nautilus_preferences_add_callback),
+	(nautilus_preferences_remove_callback),
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_get_boolean),
+	(nautilus_preferences_set_enum), (nautilus_preferences_get_enum),
+	(nautilus_preferences_set), (nautilus_preferences_get),
+	(nautilus_preferences_initialize),
+	(nautilus_preferences_is_initialized),
+	(nautilus_preferences_shutdown):
+	* nautilus-widgets/nautilus-preferences.h:
+	* nautilus-widgets/test-nautilus-preferences.c: (main):
+
+	Cleanup preferences to make the code easier to modify.  Name
+	things more consistently.  Put global variables in a struct to
+	make then clearly distiguishable from local ones.  
+
+	Also, add change the initialize api to be fed the number of user
+	levels and their names.  More on this later.
+	
+2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/history/nautilus-history-view.c: (main):
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(nautilus_global_preferences_startup):

@@ -27,9 +27,25 @@ static const char FRUIT_PREFERENCE[] = "/a/very/fruity/path";
 int
 main (int argc, char * argv[])
 {
+	NautilusStringList	*user_level_names;
+	gboolean		result;
+
 	gnome_init ("foo", "bar", argc, argv);
 
-	nautilus_preferences_initialize (argc, argv);
+	user_level_names = nautilus_string_list_new ();
+	nautilus_string_list_insert (user_level_names, "novice");
+	nautilus_string_list_insert (user_level_names, "intermediate");
+	nautilus_string_list_insert (user_level_names, "hacker");
+
+	/* Initialize preferences */
+	result = nautilus_preferences_initialize (argc,
+						  argv,
+						  nautilus_string_list_get_length (user_level_names),
+						  user_level_names);
+
+	nautilus_string_list_free (user_level_names);
+
+	g_assert (result);
 
 	register_global_preferences ();
 
