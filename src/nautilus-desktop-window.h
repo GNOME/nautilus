@@ -22,3 +22,26 @@
    Authors: Darin Adler <darin@eazel.com>
 */
 
+#ifndef NAUTILUS_DESKTOP_WINDOW_H
+#define NAUTILUS_DESKTOP_WINDOW_H
+
+#include "ntl-app.h"
+
+#define NAUTILUS_TYPE_DESKTOP_WINDOW            (nautilus_desktop_window_get_type())
+#define NAUTILUS_DESKTOP_WINDOW(object)         (GTK_CHECK_CAST ((object), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindow))
+#define NAUTILUS_DESKTOP_WINDOW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindowClass))
+#define NAUTILUS_IS_DESKTOP_WINDOW(object)      (GTK_CHECK_TYPE ((object), NAUTILUS_TYPE_DESKTOP_WINDOW))
+#define NAUTILUS_IS_DESKTOP_WINDOW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_WINDOW))
+
+typedef struct {
+	NautilusWindowClass parent_spot;
+} NautilusDesktopWindowClass;
+
+typedef struct {
+	NautilusWindow parent_spot;
+} NautilusDesktopWindow;
+
+GtkType nautilus_desktop_window_get_type (void);
+NautilusDesktopWindow *nautilus_desktop_window_new (NautilusApp *application);
+
+#endif /* NAUTILUS_DESKTOP_WINDOW_H */

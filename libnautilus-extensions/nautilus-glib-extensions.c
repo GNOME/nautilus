@@ -565,7 +565,7 @@ nautilus_self_check_glib_extensions (void)
 	GList *expected_failed;
 	GList *actual_passed;
 	GList *actual_failed;
-
+	gint64 time1, time2;
 
 	check_tm_to_g_date (0);			/* lower limit */
 	check_tm_to_g_date ((time_t) -1);	/* upper limit */
@@ -578,41 +578,42 @@ nautilus_self_check_glib_extensions (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strv_find (strv, "five"), -1);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strv_find (strv, ""), -1);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strv_find (strv, "o"), -1);
+	g_strfreev (strv);
 
 	/* nautilus_get_system_time */
-	NAUTILUS_CHECK_BOOLEAN_RESULT ((nautilus_get_system_time () - nautilus_get_system_time ()) > -1000LL, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT ((nautilus_get_system_time () - nautilus_get_system_time ()) < 0LL, TRUE);
-
-	g_strfreev (strv);
+	time1 = nautilus_get_system_time ();
+	time2 = nautilus_get_system_time ();
+	NAUTILUS_CHECK_BOOLEAN_RESULT (time1 - time2 > -1000, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (time1 - time2 <= 0, TRUE);
 
 	/* nautilus_g_str_list_equal */
 
 	/* We g_strdup because identical string constants can be shared. */
 
 	compare_list_1 = NULL;
-	compare_list_1 = g_list_append (list_to_partition, g_strdup ("Apple"));
-	compare_list_1 = g_list_append (list_to_partition, g_strdup ("zebra"));
-	compare_list_1 = g_list_append (list_to_partition, g_strdup ("!@#!@$#@$!"));
+	compare_list_1 = g_list_append (compare_list_1, g_strdup ("Apple"));
+	compare_list_1 = g_list_append (compare_list_1, g_strdup ("zebra"));
+	compare_list_1 = g_list_append (compare_list_1, g_strdup ("!@#!@$#@$!"));
 
 	compare_list_2 = NULL;
-	compare_list_2 = g_list_append (list_to_partition, g_strdup ("Apple"));
-	compare_list_2 = g_list_append (list_to_partition, g_strdup ("zebra"));
-	compare_list_2 = g_list_append (list_to_partition, g_strdup ("!@#!@$#@$!"));
+	compare_list_2 = g_list_append (compare_list_2, g_strdup ("Apple"));
+	compare_list_2 = g_list_append (compare_list_2, g_strdup ("zebra"));
+	compare_list_2 = g_list_append (compare_list_2, g_strdup ("!@#!@$#@$!"));
 
 	compare_list_3 = NULL;
-	compare_list_3 = g_list_append (list_to_partition, g_strdup ("Apple"));
-	compare_list_3 = g_list_append (list_to_partition, g_strdup ("zebra"));
+	compare_list_3 = g_list_append (compare_list_3, g_strdup ("Apple"));
+	compare_list_3 = g_list_append (compare_list_3, g_strdup ("zebra"));
 
 	compare_list_4 = NULL;
-	compare_list_4 = g_list_append (list_to_partition, g_strdup ("Apple"));
-	compare_list_4 = g_list_append (list_to_partition, g_strdup ("zebra"));
-	compare_list_4 = g_list_append (list_to_partition, g_strdup ("!@#!@$#@$!"));
-	compare_list_4 = g_list_append (list_to_partition, g_strdup ("foobar"));
+	compare_list_4 = g_list_append (compare_list_4, g_strdup ("Apple"));
+	compare_list_4 = g_list_append (compare_list_4, g_strdup ("zebra"));
+	compare_list_4 = g_list_append (compare_list_4, g_strdup ("!@#!@$#@$!"));
+	compare_list_4 = g_list_append (compare_list_4, g_strdup ("foobar"));
 
 	compare_list_5 = NULL;
-	compare_list_5 = g_list_append (list_to_partition, g_strdup ("Apple"));
-	compare_list_5 = g_list_append (list_to_partition, g_strdup ("zzzzzebraaaaaa"));
-	compare_list_5 = g_list_append (list_to_partition, g_strdup ("!@#!@$#@$!"));
+	compare_list_5 = g_list_append (compare_list_5, g_strdup ("Apple"));
+	compare_list_5 = g_list_append (compare_list_5, g_strdup ("zzzzzebraaaaaa"));
+	compare_list_5 = g_list_append (compare_list_5, g_strdup ("!@#!@$#@$!"));
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_g_str_list_equal (compare_list_1, compare_list_2), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_g_str_list_equal (compare_list_1, compare_list_3), FALSE);
@@ -635,25 +636,26 @@ nautilus_self_check_glib_extensions (void)
 	list_to_partition = g_list_append (list_to_partition, "Range Rover");
 	
 	expected_passed = NULL;
-	expected_passed = g_list_append (list_to_partition, "Cadillac");
-	expected_passed = g_list_append (list_to_partition, "Ford");
+	expected_passed = g_list_append (expected_passed, "Cadillac");
+	expected_passed = g_list_append (expected_passed, "Ford");
 
 	expected_failed = NULL;
-	expected_failed = g_list_append (list_to_partition, "Pontiac");
-	expected_failed = g_list_append (list_to_partition, "Range Rover");
+	expected_failed = g_list_append (expected_failed, "Pontiac");
+	expected_failed = g_list_append (expected_failed, "Range Rover");
 	
 	actual_passed = nautilus_g_list_partition (list_to_partition, 
-						  (NautilusGPredicateFunc) nautilus_test_predicate,
-						  "m",
-						  &actual_failed);
+						   (NautilusGPredicateFunc) nautilus_test_predicate,
+						   "m",
+						   &actual_failed);
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_g_str_list_equal (expected_passed, actual_passed), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_g_str_list_equal (expected_failed, actual_failed), TRUE);
 
-	nautilus_g_list_free_deep (expected_passed);
-	nautilus_g_list_free_deep (actual_passed);
-	nautilus_g_list_free_deep (expected_failed);
-	nautilus_g_list_free_deep (actual_failed);
+	g_list_free (list_to_partition);
+	g_list_free (expected_passed);
+	g_list_free (actual_passed);
+	g_list_free (expected_failed);
+	g_list_free (actual_failed);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

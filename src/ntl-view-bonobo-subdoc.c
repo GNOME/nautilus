@@ -42,7 +42,9 @@ destroy_bonobo_subdoc_view (NautilusViewFrame *view, CORBA_Environment *ev)
 }
 
 static void
-bonobo_subdoc_notify_location_change(NautilusViewFrame *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
+bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
+                                      Nautilus_NavigationInfo *real_nav_ctx,
+                                      CORBA_Environment *ev)
 {
   Bonobo_PersistStream persist;
 
@@ -60,15 +62,20 @@ bonobo_subdoc_notify_location_change(NautilusViewFrame *view, Nautilus_Navigatio
       else
         pri.type = Nautilus_PROGRESS_DONE_ERROR;
       nautilus_view_frame_request_progress_change(view, &pri);
-      if(stream)
+      if (stream != NULL)
         {
-          /* FIXME: The empty string parameter is supposed to represent the MIME
-           * type, according to Dan Winship who changed this API on 5/26/00.
+          /* FIXME: Dan Winship points out that we should pass the
+           * MIME type here to work with new implementers of
+           * PersistStream that pay attention to the MIME type. It
+           * doesn't matter right now, but we should fix it
+           * eventually. Currently, we don't store the MIME type, but
+           * it should be easy to keep it around and pass it in here.
            */
-          Bonobo_PersistStream_load (persist,
-                                     (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-                                     "",
-                                     ev);
+          Bonobo_PersistStream_load
+            (persist,
+             bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
+             "", /* MIME type of stream */
+             ev);
           Bonobo_Unknown_unref(persist, ev);
           CORBA_Object_release(persist, ev);
           pri.type = Nautilus_PROGRESS_DONE_OK;

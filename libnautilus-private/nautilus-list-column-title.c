@@ -747,9 +747,10 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 		if (column_title->details->last_tracking_x != mouse_x) {
 			/* mouse did move horizontally since last time */
 			column_title->details->last_tracking_x = mouse_x;
-			(NAUTILUS_LIST_CLASS (NAUTILUS_KLASS (parent_list)))->
-				column_resize_track (parent_list, 
-					column_title->details->tracking_column_resize);
+			NAUTILUS_INVOKE_METHOD
+				(NAUTILUS_LIST_CLASS, parent_list,
+				 column_resize_track,
+				 (parent_list, column_title->details->tracking_column_resize));
 			title_update_needed = TRUE;
 		}
 	} else {
@@ -848,8 +849,10 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 			gtk_widget_set_state (widget, GTK_STATE_NORMAL);
 
 			/* start column resize tracking */
-			(NAUTILUS_LIST_CLASS (NAUTILUS_KLASS (parent_list)))->
-				column_resize_track_start (parent_list, resized_column);
+			NAUTILUS_INVOKE_METHOD
+				(NAUTILUS_LIST_CLASS, parent_list,
+				 column_resize_track_start,
+				 (parent_list, resized_column));
 
 			return FALSE;
 		}
@@ -903,9 +906,10 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 	if (column_title->details->tracking_column_resize != -1) {
 			
 		/* end column resize tracking */
-		(NAUTILUS_LIST_CLASS (NAUTILUS_KLASS (parent_list)))->
-			column_resize_track_end (parent_list, 
-						 column_title->details->tracking_column_resize);
+		NAUTILUS_INVOKE_METHOD
+			(NAUTILUS_LIST_CLASS, parent_list,
+			 column_resize_track_end,
+			 (parent_list, column_title->details->tracking_column_resize));
 		column_title->details->tracking_column_resize = -1;
 
 	} else if (column_title->details->tracking_column_press != -1) {

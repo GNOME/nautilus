@@ -48,7 +48,7 @@ int
 main(int argc, char *argv[])
 {
 	gboolean perform_self_check;
-	gboolean show_desktop;
+	gboolean handle_desktop;
 	poptContext popt_context;
 	CORBA_ORB orb;
 	gboolean preferences_initialized;
@@ -58,7 +58,7 @@ main(int argc, char *argv[])
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		{ "check", '\0', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform high-speed self-check tests."), NULL },
 #endif
-		{ "desktop", '\0', POPT_ARG_NONE, &show_desktop, 0, N_("Draw background and icons on desktop."), NULL },
+		{ "desktop", '\0', POPT_ARG_NONE, &handle_desktop, 0, N_("Draw background and icons on desktop."), NULL },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -80,7 +80,7 @@ main(int argc, char *argv[])
 	
 	/* Initialize the services that we use. */
 	perform_self_check = FALSE;
-	show_desktop = FALSE;
+	handle_desktop = FALSE;
         gnome_init_with_popt_table ("nautilus", VERSION, argc, argv, options, 0, &popt_context);
 	g_thread_init (NULL);
 	orb = oaf_init (argc, argv);
@@ -106,7 +106,9 @@ main(int argc, char *argv[])
 		/* Run the nautilus application. */
 		application = NAUTILUS_APP (nautilus_app_new ());
 		args = poptGetArgs (popt_context);
-		nautilus_app_startup (application, args == NULL ? NULL : args[0]);
+		nautilus_app_startup (application,
+				      args == NULL ? NULL : args[0],
+				      handle_desktop);
 		bonobo_main ();
 		bonobo_object_unref (BONOBO_OBJECT (application));
 	}

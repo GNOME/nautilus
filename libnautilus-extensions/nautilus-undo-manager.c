@@ -325,6 +325,7 @@ nautilus_undo_manager_add_transaction (NautilusUndoManager *manager,
 	g_return_if_fail (transaction != CORBA_OBJECT_NIL);
 
 	CORBA_exception_init (&ev);
+
 	/* Check and see if we are over our queue limit */
 	length = g_list_length (manager->details->undo_list);
 	if (length >= manager->details->queue_depth) {
@@ -579,6 +580,7 @@ undo_manager_unref (gpointer manager)
 
 	CORBA_exception_init (&ev);
 	Nautilus_Undo_Manager_unref (manager, &ev);
+	CORBA_Object_release (manager, &ev);
 	CORBA_exception_free (&ev);
 }
 
@@ -587,6 +589,7 @@ nautilus_attach_undo_manager (GtkObject *object,
 			      Nautilus_Undo_Manager manager)
 {
 	CORBA_Environment ev;
+	Nautilus_Undo_Manager stored_manager;
 
 	g_return_if_fail (GTK_IS_OBJECT (object));
 
@@ -597,10 +600,12 @@ nautilus_attach_undo_manager (GtkObject *object,
 
 	CORBA_exception_init (&ev);
 	Nautilus_Undo_Manager_ref (manager, &ev);
+	stored_manager = CORBA_Object_duplicate (manager, &ev);
 	CORBA_exception_free (&ev);
+
 	gtk_object_set_data_full
 		(object, "Nautilus undo",
-		 manager, undo_manager_unref);
+		 stored_manager, undo_manager_unref);
 }
 
 /* This is useful because nautilus_get_undo_manager will be
@@ -610,9 +615,16 @@ void
 nautilus_share_undo_manager (GtkObject *destination_object,
 			     GtkObject *source_object)
 {
+	Nautilus_Undo_Manager manager;
+	CORBA_Environment ev;
+
+	manager = nautilus_get_undo_manager (source_object);
 	nautilus_attach_undo_manager
-		(destination_object,
-		 nautilus_get_undo_manager (source_object));
+		(destination_object, manager);
+
+	CORBA_exception_init (&ev);
+	CORBA_Object_release (manager, &ev);
+	CORBA_exception_free (&ev);
 }
 
 /* Locates an undo manager for this bonobo control.
@@ -633,21 +645,26 @@ set_up_bonobo_control (BonoboControl *control)
 
 	manager = CORBA_OBJECT_NIL;
 
+	CORBA_exception_init (&ev);
+
 	/* Find the undo manager. */
 	control_frame = bonobo_control_get_control_frame (control);
-	if (control_frame != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
+	if (!CORBA_Object_is_nil (control_frame, &ev)) {
 		undo_context = Bonobo_Control_query_interface
 			(control_frame, "IDL:Nautilus/Undo/Context:1.0", &ev);
-		if (undo_context != CORBA_OBJECT_NIL) {
+		if (!CORBA_Object_is_nil (undo_context, &ev)) {
 			manager = Nautilus_Undo_Context__get_undo_manager (undo_context, &ev);
 		}
-		CORBA_exception_free (&ev);
+		CORBA_Object_release (undo_context, &ev);
 	}
+	CORBA_Object_release (control_frame, &ev);
 
 	/* Attach the undo manager to the widget, or detach the old one. */
 	widget = bonobo_control_get_widget (control);
 	nautilus_attach_undo_manager (GTK_OBJECT (widget), manager);
+	CORBA_Object_release (manager, &ev);
+
+	CORBA_exception_free (&ev);
 }
 
 void

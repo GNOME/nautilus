@@ -501,10 +501,7 @@ nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel,
 	
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook),
 					  GTK_WIDGET (meta_view));
-	if (page_num < 0) {
-		g_warning ("nautilus_index_panel_remove_meta_view: page_num '%d' for meta_view is bogus.\n", page_num);
-		return;
-	}
+	g_return_if_fail (page_num >= 0);
 
 	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->notebook),
 				  page_num);

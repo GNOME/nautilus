@@ -48,13 +48,15 @@ classes and other data types
 ----------------------------
 *IndexPanel* -> *Sidebar*
 *MetaView* -> *SidebarPanel*
-GtkScrollFrame -> NautilusScrollFrame
 NavigationRequestInfo -> NavigationRequest
 NavigationInfo -> Location
 SelectionInfo -> Selection
 SelectionRequestInfo -> SelectionRequest
 StatusRequestInfo -> Status (or StatusRequest)
+NautilusApp -> NautilusApplication
 
 --------------
 function names
 --------------
+nautilus_index_panel_add_meta_view -> nautilus_sidebar_add_panel
+nautilus_index_panel_remove_meta_view -> nautilus_sidebar_remove_panel

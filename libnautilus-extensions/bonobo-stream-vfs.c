@@ -316,6 +316,7 @@ bonobo_stream_create (GnomeVFSHandle *fd)
 {
 	BonoboStreamVFS *stream_vfs;
 	Bonobo_Stream corba_stream;
+	CORBA_Environment ev;
 
 	stream_vfs = gtk_type_new (bonobo_stream_vfs_get_type ());
 	if (stream_vfs == NULL)
@@ -326,10 +327,15 @@ bonobo_stream_create (GnomeVFSHandle *fd)
 	corba_stream = create_bonobo_stream_vfs (
 		BONOBO_OBJECT (stream_vfs));
 
-	if (corba_stream == CORBA_OBJECT_NIL){
-		gtk_object_destroy (GTK_OBJECT (stream_vfs));
+	CORBA_exception_init (&ev);
+
+	if (CORBA_Object_is_nil (corba_stream, &ev)){
+		gtk_object_unref (GTK_OBJECT (stream_vfs));
+		CORBA_exception_free (&ev);
 		return NULL;
 	}
+	
+	CORBA_exception_free (&ev);
 
 	return bonobo_stream_vfs_construct (stream_vfs, corba_stream);
 }

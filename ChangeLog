@@ -1,3 +1,72 @@
+2000-05-26  Darin Adler  <darin@eazel.com>
+
+	A little more desktop window work.
+
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_initialize_class),
+	(nautilus_desktop_window_initialize),
+	(nautilus_desktop_window_new):
+	* src/nautilus-desktop-window.h:
+	* src/ntl-app.c: (nautilus_app_startup), (nautilus_app_quit),
+	(nautilus_app_create_window):
+	* src/ntl-app.h:
+	* src/ntl-main.c: (main):
+	Made a desktop window that's created when you start the program
+	if you pass the --desktop option. At the moment it's a normal
+	window and not set up to take over the desktop.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_self_check_glib_extensions): Fixed some broken self-
+	checks. Now we have one really broken self-check in the
+	nautilus-directory.c file. I might turn that one off soon so we
+	can at least run the others.
+	
+	* libnautilus-extensions/nautilus-gtk-macros.h:
+	Changed how some of the macros work. Few of these macros were used
+	in Nautilus. I hope they aren't used in the Mozilla component,
+	because then I broke it.
+	
+	* libnautilus-extensions/nautilus-list-column-title.c:
+	(nautilus_list_column_title_motion),
+	(nautilus_list_column_title_button_press),
+	(nautilus_list_column_title_button_release):
+	Updated to use NAUTILUS_INVOKE_METHOD instead of NAUTILUS_KLASS,
+	because I renamed it to NAUTILUS_CLASS and had to change these
+	anyway.
+	
+	A little sweep for code that should be using
+	CORBA_Object_is_nil instead of direct compares with
+	CORBA_OBJECT_NIL.
+	
+	* components/html/main.c: (url_requested_cb):
+	* libnautilus-extensions/bonobo-stream-vfs.c:
+	(bonobo_stream_create):
+	* libnautilus/nautilus-undo-manager.c:
+	(set_up_bonobo_control):
+	* libnautilus/nautilus-undoable.c: (nautilus_undo_register_full),
+	(nautilus_undo_unregister), (nautilus_undo):
+	* src/file-manager/dfos.c: (dfos_new):
+	Switch to use CORBA_Object_is_nil.
+
+	* libnautilus/nautilus-undo-manager.c: (undo_manager_unref),
+	(nautilus_attach_undo_manager), (nautilus_share_undo_manager),
+	(set_up_bonobo_control):
+	Do some missing duplicate and release calls.
+	
+	* libnautilus/nautilus-undoable.c: (nautilus_undo_unregister):
+	Fix a place where we'd keep a reference to a freed list.
+	Change O(n^2) walk of list by index to O(n) walk by pointer.
+	
+	* src/ntl-index-panel.c: (nautilus_index_panel_remove_meta_view):
+	Changed g_warning to a g_return_if_fail, which was designed for
+	cases just like this one.
+	
+	* src/ntl-view-bonobo-subdoc.c:
+	(bonobo_subdoc_notify_location_change):
+	Put in a better version of the FIXME.
+
+	* RENAMING: More updates.
+
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Add support for toggling sidebar panels on the fly via the
@@ -48,7 +117,6 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/ntl-index-panel.c: (nautilus_index_panel_remove_meta_view):
-
 	Remove the tab associated with meta view as well.  Add a warning
 	for the case when the page_num is bogus.  Perhaps this should be
 	an assertion.  But at least this way it wont fail silently.

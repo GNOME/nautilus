@@ -37,18 +37,23 @@ DFOS *
 dfos_new (void)
 {
 	GNOME_Desktop_FileOperationService corba_objref;
-	DFOS *new;
+	DFOS *dfos;
+	CORBA_Environment ev;
 
-	new = g_new (DFOS, 1);
-	corba_objref = dfos_corba_init (new);
-	if (corba_objref == CORBA_OBJECT_NIL) {
-		g_free (new);
-		return NULL;
+	CORBA_exception_init (&ev);
+
+	dfos = g_new (DFOS, 1);
+	corba_objref = dfos_corba_init (dfos);
+	if (CORBA_Object_is_nil (corba_objref, &ev)) {
+		g_free (dfos);
+		dfos = NULL;
+	} else {
+		dfos->corba_objref = corba_objref;
 	}
 
-	new->corba_objref = corba_objref;
+	CORBA_exception_free (&ev);
 
-	return new;
+	return dfos;
 }
 
 void

@@ -25,3 +25,45 @@
 #include <config.h>
 #include "nautilus-desktop-window.h"
 
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+
+static void nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass);
+static void nautilus_desktop_window_initialize       (NautilusDesktopWindow      *window);
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
+
+static void
+nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
+{
+}
+
+static void
+nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
+{
+}
+
+NautilusDesktopWindow *
+nautilus_desktop_window_new (NautilusApp *application)
+{
+	NautilusDesktopWindow *window;
+
+	window = NAUTILUS_DESKTOP_WINDOW
+		(gtk_object_new (nautilus_desktop_window_get_type(),
+				 "app", application,
+				 "app_id", "nautilus",
+				 NULL));
+
+	gtk_widget_show (GTK_WIDGET (window));
+
+	/* behind all otehr windows */
+	/* no decorations? */
+	/* other stuff cribbed from Havoc's code */
+	/* always use icon view */
+	/* no/hidden status bar */
+	/* no/hidden location bar */
+	/* no/hidden toolbars */
+	/* no/hidden menus */
+	/* no/hidden sidebar */
+
+	return window;
+}

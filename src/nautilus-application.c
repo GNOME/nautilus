@@ -37,6 +37,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-undo-manager.h>
 #include <liboaf/liboaf.h>
+#include "nautilus-desktop-window.h"
 
 typedef struct {
 	POA_Nautilus_Application servant;
@@ -329,21 +330,27 @@ display_caveat (GtkWindow *parent_window)
 }
 
 void
-nautilus_app_startup(NautilusApp *app, const char *initial_url)
+nautilus_app_startup (NautilusApp *app,
+		      const char *initial_url,
+		      gboolean handle_desktop)
 {
-	NautilusWindow *mainwin;
+	NautilusWindow *window;
+
+	if (handle_desktop) {
+		gtk_widget_show (GTK_WIDGET (nautilus_desktop_window_new (app)));
+	}
 
   	/* Set default configuration */
-  	mainwin = nautilus_app_create_window (app);
+  	window = nautilus_app_create_window (app);
   	bonobo_activate ();
-  	nautilus_window_set_initial_state (mainwin, initial_url);
+  	nautilus_window_set_initial_state (window, initial_url);
 
 	/* Show the "not ready for prime time" dialog after this
 	 * window appears, so it's on top.
 	 */
 	if (getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
-	  	gtk_signal_connect (GTK_OBJECT (mainwin), "show",
-	  			    display_caveat, mainwin);
+	  	gtk_signal_connect (GTK_OBJECT (window), "show",
+	  			    display_caveat, window);
   	}
 }
 
@@ -357,7 +364,8 @@ nautilus_app_destroy_window (GtkObject *obj, NautilusApp *app)
 }
 
 /* FIXME: If we are really going to use this, it should probably be
- * moved to the gnome vfs public interface.
+ * moved to the gnome vfs public interface (which would change its
+ * name to not include "debug").
  */
 extern int gnome_vfs_debug_get_thread_count (void);
 int quit_counter_hack;
@@ -391,7 +399,8 @@ nautilus_app_real_quit (void *unused)
 void 
 nautilus_app_quit (void)
 {
-	quit_counter_hack = 20;
+	quit_counter_hack = 20; /* 20 * 1/5 second == 4 seconds */
+
 	/* wait for gnome vfs slave threads to go away before quitting */
 	gtk_idle_add ((GtkFunction)nautilus_app_real_quit, NULL);
 }
@@ -401,7 +410,8 @@ nautilus_app_create_window (NautilusApp *app)
 {
 	NautilusWindow *window;
 	
-	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type(), "app", BONOBO_OBJECT(app),
+	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type(),
+						  "app", BONOBO_OBJECT(app),
 						  "app_id", "nautilus", NULL));
 	
 	gtk_signal_connect (GTK_OBJECT (window),

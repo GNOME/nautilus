@@ -30,7 +30,7 @@
    Since this is boilerplate, it's better not to repeat it over and over again.
    Called like this:
 
-       NAUTILUS_DEFINE_CLASS_BOILERPLATE(NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
+       NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
    The parent_class_type parameter is guaranteed to be evaluated only once
    so it can be an expression, even an expression that contains a function call.
@@ -78,8 +78,6 @@ class_name_in_function_format##_get_type (void) \
 	? 0 \
 	: ((* parent_class_cast_macro (parent_class)->signal) parameters)
 
-
-
 #ifndef G_DISABLE_ASSERT
 
 /* Define a signal that is not implemented by this class but must be 
@@ -110,47 +108,31 @@ class_name_in_function_format##_unimplemented_##signal (void) \
 	g_warning ("failed to override signal " #class_name_in_function_format "->" #signal); \
 }
 
-#else
+#else /* G_DISABLE_ASSERT */
 
 #define NAUTILUS_DEFINE_MUST_OVERRIDE_SIGNAL(class_cast_macro, class_pointer, class_name_in_function_format, signal)
 #define NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(class_name_in_function_format, signal)
 
 #endif /* G_DISABLE_ASSERT */
 
+/* Access the class for a given object. */
+#define NAUTILUS_CLASS(object) (GTK_OBJECT (object)->klass)
 
-/*
- * Access the class for a given object
- */
-#define NAUTILUS_KLASS(obj)			\
-(GTK_OBJECT (obj)->klass)
+/* Access a method. */
+#define NAUTILUS_ACCESS_METHOD(class_cast_macro, object, method)			\
+(class_cast_macro (NAUTILUS_CLASS (object))->method)
 
-/*
- * Invoke a method for a given object
- */
-#define NAUTILUS_INVOKE_METHOD(obj, gtk_type, structure, method)			\
-(*(GTK_CHECK_CLASS_CAST ((NAUTILUS_KLASS (obj)), gtk_type, structure)) -> method)
+/* Invoke a method for a given object. */
+#define NAUTILUS_INVOKE_METHOD(class_cast_macro, object, method, parameters)		\
+((* NAUTILUS_ACCESS_METHOD (class_cast_macro, object, method)) parameters)
 
-/*
- * Access a method.
- */
-#define NAUTILUS_ACCESS_METHOD(obj, gtk_type, structure, method)			\
-((GTK_CHECK_CLASS_CAST ((NAUTILUS_KLASS (obj)), gtk_type, structure)) -> method)
+/* Assert the non-nullness of a method for a given object. */
+#define NAUTILUS_ASSERT_METHOD(class_cast_macro, object, method)			\
+g_assert (NAUTILUS_ACCESS_METHOD (class_cast_macro, object, method) != NULL)
 
-/*
- * Assert the non-nullness of a method for a given object
- */
-#ifndef G_DISABLE_ASSERT
-#define NAUTILUS_ASSERT_METHOD(obj, gtk_type, structure, method)			\
-g_assert (((GTK_CHECK_CLASS_CAST ((NAUTILUS_KLASS (obj)), gtk_type, structure)) -> method) != NULL)
-#else
-#define NAUTILUS_ASSERT_METHOD(obj, gtk_type, structure, method)
-#endif
-
-/*
- * Invoke a method if it aint null.
- */
-#define NAUTILUS_INVOKE_METHOD_IF(obj, gtk_type, structure, method)	\
-if (NAUTILUS_ACCESS_METHOD (obj, gtk_type, structure, method))		\
-	NAUTILUS_INVOKE_METHOD (obj, gtk_type, structure, method)
+/* Invoke a method if it ain't null. */
+#define NAUTILUS_INVOKE_METHOD_IF(class_cast_macro, object, method, parameters) 	\
+(NAUTILUS_ACCESS_METHOD (class_cast_macro, object, method) ? 0 :			\
+	NAUTILUS_INVOKE_METHOD (class_cast_macro, object, method, parameters))
 
 #endif /* NAUTILUS_GTK_MACROS_H */

@@ -280,7 +280,7 @@ url_requested_cb (GtkHTML *html,
 		CORBA_exception_free (&ev);
 		return;
 	}
-	if (loader == CORBA_OBJECT_NIL) {
+	if (CORBA_Object_is_nil (loader, &ev)) {
 		g_warning ("Our client site does not support Bonobo::ProgressiveLoader!");
 		CORBA_exception_free (&ev);
 		return;
