@@ -261,9 +261,29 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (uri);
 
+	if (vfs_uri != NULL) {
+		file_name_escaped = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+		file_name = gnome_vfs_unescape_string (file_name_escaped, NULL);
+		g_free (file_name_escaped);
+
+		/* Couldn't parse a name out of the URI: the URI must be bogus,
+		 * so we'll treat it like the case where gnome_vfs_uri couldn't
+		 * even create a URI.
+		 */
+		if (nautilus_str_is_empty (file_name_escaped)) {
+			gnome_vfs_uri_unref (vfs_uri);
+			vfs_uri = NULL;
+		}
+	}
+
 	/* Make VFS version of directory URI. */
-	directory_vfs_uri = vfs_uri == NULL ? NULL
-		: gnome_vfs_uri_get_parent (vfs_uri);
+	if (vfs_uri == NULL) {
+		directory_vfs_uri = NULL;
+	} else {
+		directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
+		gnome_vfs_uri_unref (vfs_uri);
+	}
+
 	self_owned = directory_vfs_uri == NULL;
 	if (self_owned) {
 		/* Use the item itself if we have no parent. */
@@ -288,11 +308,6 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 		} else {
 			file_name = nautilus_directory_get_name_for_self_as_new_file (directory);
 		}
-	} else {
-		file_name_escaped = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-		gnome_vfs_uri_unref (vfs_uri);
-		file_name = gnome_vfs_unescape_string (file_name_escaped, NULL);
-		g_free (file_name_escaped);
 	}
 
 	/* Check to see if it's a file that's already known. */

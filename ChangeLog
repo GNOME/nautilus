@@ -1,12 +1,17 @@
 2000-09-25  John Sullivan  <sullivan@eazel.com>
 
-	* src/nautilus-applicable-views.c:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal):
 	(get_nautilus_navigation_result_from_gnome_vfs_result):
 	Fixed problem I ran into while debugging something else.
 	When gnome_vfs_uri_extract_short_name returned NULL from
 	a URI like "http://foo:", this routine got into trouble.
 	Rearranged code to check for the no-short-name case
 	earlier and fall back to the mystery-uri handling.
+
+	* src/nautilus-applicable-views.c:
+	Changed a g_message to a g_warning so people will tell
+	me about problems even more often.
 
 2000-09-25  Andy Hertzfeld  <andy@eazel.com>
 
