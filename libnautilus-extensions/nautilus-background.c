@@ -509,6 +509,30 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 	gtk_style_unref (style);
 }
 
+/**
+ * nautilus_background_is_set:
+ * 
+ * Check whether the background's color or image has been set.
+ */
+gboolean
+nautilus_background_is_set (NautilusBackground *background)
+{
+	return background->details->color != NULL ||
+	       background->details->tile_image_uri != NULL;
+}
+
+/**
+ * nautilus_background_reset:
+ * 
+ * Forget any color or image that has been set previously.
+ */
+void
+nautilus_background_reset (NautilusBackground *background)
+{
+	nautilus_background_set_color (background, NULL);
+	nautilus_background_set_tile_image_uri (background, NULL);
+}
+
 static void
 nautilus_background_set_up_canvas (GtkWidget *widget)
 {

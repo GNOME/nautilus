@@ -67,10 +67,12 @@ void                nautilus_background_set_color             (NautilusBackgroun
 							       const char             *color_or_gradient);
 void                nautilus_background_set_tile_image_uri    (NautilusBackground     *background,
 							       const char             *image_uri);
+void		    nautilus_background_reset		      (NautilusBackground     *background);							       
 
 /* Calls to interrogate the current state of a background. */
 char *              nautilus_background_get_color             (NautilusBackground     *background);
 char *              nautilus_background_get_tile_image_uri    (NautilusBackground     *background);
+gboolean	    nautilus_background_is_set 		      (NautilusBackground     *background);
 
 /* Explicitly fills a rectangle with a background. */
 void                nautilus_background_draw                  (NautilusBackground     *background,
