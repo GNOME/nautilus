@@ -1,11 +1,11 @@
-[nautilus_service_main_content_view_factory]
+[nautilus_service_startup_view_factory]
 type=exe
 repo_id=IDL:GNOME/GenericFactory:1.0
-description=Nautilus services main view factory
-location_info=nautilus-service-main-content-view
+description=Nautilus services startup view factory
+location_info=nautilus-service-startup-view
 
-[nautilus_service_main_content_view]
+[nautilus_service_startup_view]
 type=factory
 repo_id=IDL:GNOME/Control:1.0 IDL:Nautilus/ContentView:1.0 IDL:Nautilus/View:1.0
-description=Nautilus services main view component
-location_info=nautilus_service_main_content_view_factory
+description=Nautilus services startup view component
+location_info=nautilus_service_startup_view_factory
