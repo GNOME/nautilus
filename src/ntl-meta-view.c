@@ -27,7 +27,7 @@
 #include "ntl-meta-view.h"
 #include <gtk/gtksignal.h>
 
-static PortableServer_ServantBase__epv base_epv = { NULL};
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 static POA_Nautilus_MetaViewFrame__epv impl_Nautilus_MetaViewFrame_epv = {
   NULL
@@ -58,7 +58,10 @@ nautilus_meta_view_get_type(void)
 	sizeof(NautilusMetaView),
 	sizeof(NautilusMetaViewClass),
 	(GtkClassInitFunc) nautilus_meta_view_class_init,
-	(GtkObjectInitFunc) nautilus_meta_view_init
+	(GtkObjectInitFunc) nautilus_meta_view_init,
+        NULL,
+        NULL,
+        NULL
       };
 
       view_type = gtk_type_unique (nautilus_view_get_type(), &view_info);
