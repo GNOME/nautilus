@@ -52,7 +52,7 @@ void                 nautilus_window_initialize_toolbars               (Nautilus
 void                 nautilus_window_go_back                           (NautilusWindow             *window);
 void                 nautilus_window_go_forward                        (NautilusWindow             *window);
 void                 nautilus_window_go_up                             (NautilusWindow             *window);
-void                 nautilus_window_toolbar_remove_theme_callback     (void);
+void                 nautilus_window_toolbar_remove_theme_callback     (NautilusWindow             *window);
 NautilusUndoManager *nautilus_window_get_undo_manager                  (NautilusWindow             *window);
 void                 nautilus_window_begin_location_change             (NautilusWindow             *window,
 									const char                 *location,
