@@ -1,3 +1,61 @@
+2000-12-15  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (main):
+
+	Remove check for redhat.
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	* components/services/install/lib/eazel-install-metadata.c:
+	* components/services/install/lib/eazel-install-object.c:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (parse_category), (osd_parse_provides),
+	(osd_parse_implementation), (osd_parse_softpkg),
+	(eazel_install_packagelist_parse):
+	* components/services/install/lib/eazel-softcat.c:
+	* components/services/install/server/main.c: (main):
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(parse_a_service), (parse_a_eazel_news_item),
+	(parse_a_update_news_item):
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(trilobite_eazel_time_service_initialize_load_config):
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	* components/services/trilobite/libtrilobite/helixcode-utils.h:
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	* components/services/trilobite/libtrilobite/makefile.staticlib.in:
+	* components/services/trilobite/libtrilobite/trilobite-core-messagi
+	ng.c: (trilobite_add_log), (trilobite_close_log),
+	(trilobite_debug), (trilobite_set_debug_mode),
+	(trilobite_set_log_handler):
+	* components/services/trilobite/libtrilobite/trilobite-core-messagi
+	ng.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-network
+	.c: (trilobite_xml_get_string), (trilobite_open_uri),
+	(trilobite_fetch_uri), (trilobite_fetch_uri_to_file):
+	* components/services/trilobite/libtrilobite/trilobite-core-network
+	.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_init), (trilobite_setenv):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	* components/services/trilobite/libtrilobite/trilobite-service-priv
+	ate.h:
+	* components/services/trilobite/sample/command-line/main.c: (main):
+	* components/services/trilobite/sample/service/main.c: (main):
+
+	Clean up libtrilobite: move network and XML related funcs into
+	-network.c and logging stuff into -messaging.c, where they were
+	intended to be all along I guess.  Fix header include lines from
+	other files to match the new locations.  Ditch the archaic
+	helixcode stuff.
+	
+	* components/services/install/lib/makefile.staticlib.in:
+
+	Fix staticlibs to add new trilobite files and to follow the MD5
+	funcs to their new home.
+	
 2000-12-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
