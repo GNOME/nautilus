@@ -1,3 +1,16 @@
+2000-11-15  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by:  George Lebl  <jirka@5z.com>
+
+	* components/loser/README: Added missing `crash' mode to docs.
+
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy_client,
+	nautilus_view_frame_handle_client_destroy,
+	nautilus_view_frame_handle_client_gone, check_if_view_is_gone):
+	Added calls to `bonobo_window_deregister_dead_components' to clean
+	up menus and toolbars from dead components, fixing Nautilus bug
+	1740.
+
 2000-11-15  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

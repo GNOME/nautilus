@@ -240,6 +240,8 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 
 	CORBA_exception_free (&ev);
 
+	bonobo_window_deregister_dead_components (view->details->ui_container->win);
+
 	if (view->details->check_if_view_is_gone_timeout_id != 0) {
 		g_source_remove (view->details->check_if_view_is_gone_timeout_id);
 		view->details->check_if_view_is_gone_timeout_id = 0;
@@ -504,6 +506,7 @@ nautilus_view_frame_handle_client_destroy (GtkWidget *widget,
 					   NautilusViewFrame *view)
 {
 	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	bonobo_window_deregister_dead_components (view->details->ui_container->win);
 	view_frame_failed (view);
 }
 
@@ -514,6 +517,7 @@ nautilus_view_frame_handle_client_gone (GtkObject *object,
 					NautilusViewFrame *view)
 {
 	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	bonobo_window_deregister_dead_components (view->details->ui_container->win);
 	view_frame_failed (view);
 }
 
@@ -544,6 +548,7 @@ check_if_view_is_gone (gpointer data)
 	ok = TRUE;
 	if (CORBA_Object_non_existent (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)), &ev)) {
 		view->details->check_if_view_is_gone_timeout_id = 0;
+		bonobo_window_deregister_dead_components (view->details->ui_container->win);
 		view_frame_failed (view);
 		ok = FALSE;
 	}
