@@ -577,9 +577,10 @@ draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag
 		if (x_pos > (widget->allocation.x + widget->allocation.width - 48)) {
 			/* wrap to the next line */
 			x_pos = widget->allocation.x + sidebar_tabs->details->tab_left_offset;     
-			y_pos -= TAB_HEIGHT; 
-			if (!is_themed)
-				y_pos -= TAB_ROW_V_OFFSET;
+			if (is_themed)
+				y_pos -= sidebar_tabs->details->piece_offsets[TAB_NORMAL_LEFT].height;
+			else
+				y_pos -= TAB_HEIGHT + TAB_ROW_V_OFFSET;
 			first_flag = TRUE;
 			if ((next_tab != NULL) && ((next_tab->next != NULL) || this_item->visible)) {
 				total_height += TAB_HEIGHT;

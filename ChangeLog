@@ -1,5 +1,14 @@
 2000-07-03  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-sidebar-tabs.c: (draw_or_hit_test_all_tabs):
+	fixed bug where themed tabs weren't stacking correctly.  Fixed by
+	using the actual tab height instead of the constant used by the
+	default.
+	* icons/arlo/sidebar_tab_pieces.png:
+	replaced with newer version that has a background and edge piece.
+	
+2000-07-03  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-sidebar-title.c:
 	(nautilus_sidebar_title_initialize),
 	(nautilus_sidebar_title_destroy), (nautilus_sidebar_title_new),
