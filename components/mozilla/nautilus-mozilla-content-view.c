@@ -40,18 +40,18 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 
-/* A NautilusContentViewFrame's private information. */
+/* A NautilusContentView's private information. */
 struct _NautilusMozillaContentViewDetail {
 	char				 *uri;
 	GtkWidget			 *mozilla;
-	NautilusContentViewFrame	 *view_frame;
+	NautilusContentView	         *nautilus_view;
 	GdkCursor			 *busy_cursor;
 };
 
 static void  nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
 static void  nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
 static void  nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
-static void  mozilla_notify_location_change_callback        (NautilusContentViewFrame        *view_frame,
+static void  mozilla_notify_location_change_callback        (NautilusContentView             *nautilus_view,
 							     Nautilus_NavigationInfo         *navinfo,
 							     NautilusMozillaContentView      *view);
 static void  mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
@@ -161,9 +161,9 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 
 	gtk_widget_show (view->detail->mozilla);
 	
-	view->detail->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (view));
+	view->detail->nautilus_view = nautilus_content_view_new (GTK_WIDGET (view));
 	
-	gtk_signal_connect (GTK_OBJECT (view->detail->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (view->detail->nautilus_view), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (mozilla_notify_location_change_callback), 
 			    view);
@@ -172,8 +172,8 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	 * Get notified when our bonobo control is activated so we
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_frame_get_bonobo_control
-					(NAUTILUS_VIEW_FRAME (view->detail->view_frame))),
+        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
+					(NAUTILUS_VIEW (view->detail->nautilus_view))),
                             "activate",
                             mozilla_merge_bonobo_items_callback,
                             view);
@@ -188,7 +188,7 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->detail->view_frame));
+	bonobo_object_unref (BONOBO_OBJECT (view->detail->nautilus_view));
 
 	if (view->detail->uri) {
 		g_free (view->detail->uri);
@@ -205,24 +205,24 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 }
 
 /**
- * nautilus_mozilla_content_view_get_view_frame:
+ * nautilus_mozilla_content_view_get_nautilus_view:
  *
- * Return the NautilusViewFrame object associated with this view; this
+ * Return the NautilusView object associated with this view; this
  * is needed to export the view via CORBA/Bonobo.
- * @view: NautilusMozillaContentView to get the view_frame from..
+ * @view: NautilusMozillaContentView to get the nautilus_view from..
  * 
  **/
-NautilusContentViewFrame *
-nautilus_mozilla_content_view_get_view_frame (NautilusMozillaContentView *view)
+NautilusContentView *
+nautilus_mozilla_content_view_get_nautilus_view (NautilusMozillaContentView *view)
 {
-	return view->detail->view_frame;
+	return view->detail->nautilus_view;
 }
 
 /**
  * nautilus_mozilla_content_view_load_uri:
  *
  * Load the resource pointed to by the specified URI.
- * @view: NautilusMozillaContentView to get the view_frame from.
+ * @view: NautilusMozillaContentView to get the nautilus_view from.
  * 
  **/
 void
@@ -278,7 +278,7 @@ mozilla_content_view_request_progress_change (NautilusMozillaContentView	*view,
 	progress_request.type = progress_type;
 	progress_request.amount = progress_amount;
 
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view->detail->view_frame),
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (view->detail->nautilus_view),
 						     &progress_request);
 }
 
@@ -301,7 +301,7 @@ mozilla_content_view_request_location_change (NautilusMozillaContentView	*view,
 	
 	navigation_request.requested_uri = hacked_uri;
 	
-	nautilus_view_frame_request_location_change (NAUTILUS_VIEW_FRAME (view->detail->view_frame), 
+	nautilus_view_request_location_change (NAUTILUS_VIEW (view->detail->nautilus_view), 
 						     &navigation_request);
 
 	g_free (hacked_uri);
@@ -351,11 +351,11 @@ mozilla_content_view_clear_busy_cursor (NautilusMozillaContentView *view)
 }
 
 static void
-mozilla_notify_location_change_callback (NautilusContentViewFrame	*view_frame, 
+mozilla_notify_location_change_callback (NautilusContentView     	*nautilus_view, 
 					 Nautilus_NavigationInfo	*navinfo, 
 					 NautilusMozillaContentView	*view)
 {
-	g_assert (view_frame == view->detail->view_frame);
+	g_assert (nautilus_view == view->detail->nautilus_view);
 	
 	g_assert (navinfo != NULL);
 	if (navinfo->self_originated) {
@@ -495,7 +495,7 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	new_title = gtk_moz_embed_get_title (GTK_MOZ_EMBED (view->detail->mozilla));
 
-	nautilus_content_view_frame_request_title_change (NAUTILUS_CONTENT_VIEW_FRAME (view->detail->view_frame),
+	nautilus_content_view_request_title_change (NAUTILUS_CONTENT_VIEW (view->detail->nautilus_view),
 							  new_title);
 	
 	g_free (new_title);
@@ -650,8 +650,8 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	status_request.status_string = link_message;
 	
-	nautilus_view_frame_request_status_change (NAUTILUS_VIEW_FRAME (view->detail->view_frame),
-						   &status_request);
+	nautilus_view_request_status_change (NAUTILUS_VIEW (view->detail->nautilus_view),
+					     &status_request);
 	g_free (link_message);
 }
 

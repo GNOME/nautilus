@@ -52,7 +52,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 		     void *closure)
 {
 	NautilusMozillaContentView *view;
-	NautilusViewFrame *view_frame;
+	NautilusView *nautilus_view;
 
 	if (strcmp (goad_id, "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1")) {
 		return NULL;
@@ -62,7 +62,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 
 	object_count++;
 
-	view_frame = NAUTILUS_VIEW_FRAME (nautilus_mozilla_content_view_get_view_frame (view));
+	nautilus_view = NAUTILUS_VIEW (nautilus_mozilla_content_view_get_nautilus_view (view));
 
 	gtk_signal_connect (GTK_OBJECT (view_frame), "destroy", mozilla_object_destroyed, NULL);
 
