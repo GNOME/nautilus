@@ -26,11 +26,14 @@
 #include "fm-list-model.h"
 
 #include <string.h>
+#include <eel/eel-gtk-macros.h>
 #include <gtk/gtktreednd.h>
 #include <gtk/gtktreesortable.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 
 #define G_SLIST(x) ((GSList *) x)
+
+static GObjectClass *parent_class;
 
 struct FMListModelDetails {
 	GSList *files;
@@ -750,6 +753,12 @@ fm_list_model_init (FMListModel *model)
 static void
 fm_list_model_class_init (FMListModelClass *klass)
 {
+	GObjectClass *object_class;
+
+	object_class = (GObjectClass *)klass;
+	parent_class = g_type_class_peek_parent (klass);
+
+	object_class->finalize = fm_list_model_finalize;
 }
 
 static void
