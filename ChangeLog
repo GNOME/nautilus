@@ -1,5 +1,16 @@
 2001-04-12  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_new_file): Get rid of the +1
+	I added here. I was actually working around a gnome-vfs bug with
+	this (even though I didn't know it) and now I've fixed the bug.
+
+	* src/file-manager/fm-directory-view.c: (debuting_uri_data_free):
+	Fixed another g_free problem I introduced that was causing a core
+	dump on quit.
+
+2001-04-12  Darin Adler  <darin@eazel.com>
+
 	* src/file-manager/fm-directory-view.c:
 	Damn! Checked in too fast without thinking. This should make it
 	compile again.

@@ -359,7 +359,7 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 			(EEL_ELLIPSIZING_LABEL (progress->details->item_name),
 			 item_name);
 
-		progress_count = g_strdup_printf (_("%ld of %ld"), file_index + 1, 
+		progress_count = g_strdup_printf (_("%ld of %ld"), file_index, 
 						  progress->details->files_total);
 		gtk_label_set_text (GTK_LABEL (progress->details->progress_count_label), progress_count);
 		g_free (progress_count);

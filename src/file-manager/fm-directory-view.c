@@ -1665,7 +1665,8 @@ typedef struct {
 static void
 debuting_uri_data_free (DebutingUriData *data)
 {
-	eel_g_hash_table_destroy_deep (data->debuting_uris);
+	eel_g_hash_table_destroy_deep_custom
+		(data->debuting_uris, (GFunc) g_free, NULL, NULL, NULL);
 	nautilus_file_list_free (data->added_files);
 	g_free (data);
 }
