@@ -451,6 +451,8 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	gboolean is_installed;
 	FD_t file_descriptor;
 	gint *integer_ptr;
+        char *summary;
+        char *description;
 #ifdef EAZEL_SERVICES
         PackageData *pack;
 #endif
@@ -490,12 +492,6 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                         case RPMTAG_RELEASE:
                                 temp_release = g_strdup(data_ptr);
                                 break;
-                        case RPMTAG_SUMMARY:
-                                gtk_label_set (GTK_LABEL (rpm_view->details->package_summary), data_ptr+4);
-                                break;
-                        case RPMTAG_DESCRIPTION:
-                                gtk_label_set (GTK_LABEL (rpm_view->details->package_description), data_ptr+4);
-                                break;
                         case RPMTAG_SIZE:
                                 temp_str = gnome_vfs_format_file_size_for_display (*integer_ptr);
                                 gtk_label_set (GTK_LABEL (rpm_view->details->package_size), temp_str);
@@ -527,9 +523,18 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                         case RPMTAG_XPM:
                                 break;
 			}
-			
+			free (data_ptr);
 		}
 		
+                /* Getting these using the traversal gives leading garbage, due to differing rpm versions
+                   and suckiness in rpmlib (bugzilla.eazel.com #1657) */
+                headerGetEntry (header_info, RPMTAG_DESCRIPTION, NULL, (void**)&description, NULL);
+                headerGetEntry (header_info, RPMTAG_SUMMARY, NULL, (void**)&summary, NULL);
+                gtk_label_set (GTK_LABEL (rpm_view->details->package_description), description );
+                gtk_label_set (GTK_LABEL (rpm_view->details->package_summary), summary );
+                /* FIXME:
+                   Should they be freed ? */
+
 		if (temp_version) {
 			temp_str = g_strdup_printf (_("version %s-%s"), temp_version, temp_release);
 			gtk_label_set (GTK_LABEL (rpm_view->details->package_release), temp_str);				 
