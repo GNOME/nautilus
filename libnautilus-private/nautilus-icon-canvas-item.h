@@ -80,6 +80,10 @@ const char *nautilus_icon_canvas_item_get_editable_text        (NautilusIconCanv
 void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanvasItem     *icon_item,
 								gboolean                    state);
 
+GtkWidget * nautilus_icon_canvas_item_get_control 	       (NautilusIconCanvasItem 	   *icon_item);
+void	    nautilus_icon_canvas_item_set_control	       (NautilusIconCanvasItem	   *icon_item,
+								GtkWidget *control);
+
 
 /* geometry and hit testing */
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem     *item,

@@ -12,7 +12,6 @@ endif
 SUBDIRS =			\
 	data 			\
 	icons 			\
-	intl 			\
 	cut-n-paste-code 	\
 	librsvg 		\
 	libnautilus 		\

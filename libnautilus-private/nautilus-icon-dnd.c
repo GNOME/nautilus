@@ -1278,11 +1278,12 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 
 
         /* create a pixmap and mask to drag with */
-        pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
-    
+     
     	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
 	   stippled masks, so we had to remove the code; this comment is left as a memorial
 	   to it, with the hope that we get it back someday as X Windows improves */
+
+	pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
 	
         /* compute the image's offset */
 	nautilus_icon_canvas_item_get_icon_rectangle

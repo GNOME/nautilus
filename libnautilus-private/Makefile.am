@@ -63,6 +63,7 @@ nautilus_metafile_server_idl_sources =		\
 
 libnautilus_extensions_la_SOURCES = 		\
 	$(nautilus_metafile_server_idl_sources)	\
+	nautilus-annotation.c			\
 	nautilus-art-extensions.c		\
 	nautilus-art-gtk-extensions.c		\
 	nautilus-audio-player.c			\
@@ -70,6 +71,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
 	nautilus-bookmark.c			\
+	nautilus-canvas-note-item.c		\
 	nautilus-caption-table.c		\
 	nautilus-caption.c			\
 	nautilus-clickable-image.c		\
@@ -178,6 +180,7 @@ libnautilus_extensions_la_SOURCES = 		\
 
 # Everything is private for now
 noinst_HEADERS =				\
+	nautilus-annotation.h			\
 	nautilus-art-extensions.h		\
 	nautilus-art-gtk-extensions.h		\
 	nautilus-audio-player.h			\
@@ -185,6 +188,7 @@ noinst_HEADERS =				\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
 	nautilus-bookmark.h			\
+	nautilus-canvas-note-item.h		\
 	nautilus-caption-table.h		\
 	nautilus-caption.h			\
 	nautilus-cdrom-extensions.h		\

@@ -196,6 +196,7 @@ void              nautilus_drag_set_icon_pixbuf                        (GdkDragC
 #define nautilus_gtk_marshal_POINTER__POINTER_STRING_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__NONE nautilus_gtk_marshal_POINTER__NONE
 #define nautilus_gtk_marshal_STRING__POINTER nautilus_gtk_marshal_POINTER__POINTER
+#define nautilus_gtk_marshal_STRING__POINTER_INT nautilus_gtk_marshal_POINTER__POINTER_INT
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
@@ -278,6 +279,10 @@ void nautilus_gtk_marshal_POINTER__INT                                          
 										 gpointer       func_data,
 										 GtkArg        *args);
 void nautilus_gtk_marshal_POINTER__POINTER                                      (GtkObject     *object,
+										 GtkSignalFunc  func,
+										 gpointer       func_data,
+										 GtkArg        *args);
+void nautilus_gtk_marshal_POINTER__POINTER_INT	                                (GtkObject     *object,
 										 GtkSignalFunc  func,
 										 gpointer       func_data,
 										 GtkArg        *args);

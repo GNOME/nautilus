@@ -438,6 +438,14 @@ global_preferences_install_defaults (void)
 							     preference_defaults[i].visible_user_level);
 	}
 
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+	
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+
 	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
 	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
 	

@@ -1024,7 +1024,7 @@ nautilus_get_user_main_directory (void)
 		/* If this fails to create the directory, nautilus_application_startup will
 		 * notice and refuse to launch.
 		 */
-							
+		
 		/* install the default link sets */
 		nautilus_link_set_install (user_main_directory, "apps");
 		nautilus_link_set_install (user_main_directory, "home");

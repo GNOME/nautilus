@@ -3,6 +3,9 @@
 	<cmd name="Rename"
          _label="Rename"
 	 _tip="Rename selected icon"/>
+	<cmd name="Annotate"
+         _label="Add Annotation..."
+	 _tip="Add an annotation to this file"/>	
 	<cmd name="Icon Text"
          _label="Icon Captions..."
 	 _tip="Choose which information appears beneath each icon's name"/>
@@ -153,6 +156,7 @@
 	<popup name="selection">
 		<placeholder name="File Actions">
 			<menuitem name="Rename" verb="Rename"/>
+			<menuitem name="Annotate" verb="Annotate"/>
 		</placeholder>
 		<placeholder name="Icon Appearance Items">
 			<menuitem name="Stretch" verb="Stretch"/>
