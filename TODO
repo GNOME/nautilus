@@ -6,6 +6,11 @@ Infrastructure
 . Actions/file operations in general
 . Figure out how to provide clean and separate abstractions for data
   transfer and presentation (views handle both right now).
+. Sometimes a navigation request needs extra data besides a URI to be
+  a complete specification of a document. For instance, an http URI also
+  requires a method (GET or POST) to be specified, and in the case of
+  POST an arbitrary number of additional key-value pairs. Figure out a
+  way to support this right.
 
 
 Components
