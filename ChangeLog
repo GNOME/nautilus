@@ -1,3 +1,37 @@
+2001-01-24  Maciej Stachowiak  <mjs@eazel.com>
+
+	Merging Mike Fleming's partial fix for 5968 from branch. This
+	updates all the user agent strings in Nautilus.
+
+	2001-01-24  Mike Fleming  <mfleming@eazel.com>
+
+	        reviewed by: <robey@eazel.com>
+
+		User-Agent Changes for PR3
+
+		"Trilobite/" --> "Trilobite/0.2.0"
+		"Nautilus/1.0" (in the Mozilla User-Agent) --> "Nautilus/1.0PR3"
+
+		* components/mozilla/nautilus-mozilla-content-view.c:
+		(mozilla_content_view_one_time_happenings):
+		* components/services/install/lib/eazel-install-protocols.c:
+		(http_fetch_remote_file),
+		(eazel_install_fetch_definitive_package_info):
+		* components/services/install/lib/eazel-softcat.c:
+		(eazel_softcat_get_info):
+		* components/services/inventory/eazel-inventory-service.c:
+		(impl_Trilobite_Eazel_Inventory_upload):
+		* components/services/trilobite/libtrilobite/Makefile.am:
+		* components/services/trilobite/libtrilobite/trilobite-core-network
+		-slim.c: (trilobite_fetch_uri):
+		* components/services/trilobite/libtrilobite/trilobite-core-network
+		.c: (trilobite_open_uri):
+		* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+		: (trilobite_get_useragent_string):
+		* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+		:
+
+	
 2001-01-25  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/command-line/.cvsignore:

@@ -108,7 +108,7 @@ trilobite_fetch_uri (const char *uri_text, char **body, int *length)
 
 	if (result) {
 		ghttp_set_header (request, http_hdr_Connection, "close");
-		ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
+		ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (NULL));
 	}
 
         if (result && (ghttp_prepare (request) != 0)) {

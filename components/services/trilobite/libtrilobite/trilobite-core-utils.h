@@ -61,8 +61,7 @@ void trilobite_main (void);
 void trilobite_main_quit (void);
 #endif /* TRILOBITE_SLIM  */
 
-const char *trilobite_get_useragent_string (gboolean version, 
-					    char *suffix);
+const char *trilobite_get_useragent_string (char *suffix);
 const char *trilobite_get_config_dir_string (void);
 gboolean trilobite_setenv (const char *name, const char *value, gboolean overwrite);
 
