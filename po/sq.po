@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-21 15:32+0100\n"
-"PO-Revision-Date: 2004-02-21 15:37+0100\n"
+"POT-Creation-Date: 2004-02-24 11:11+0100\n"
+"PO-Revision-Date: 2004-02-24 11:14+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -47,16 +47,16 @@ msgstr "Simbolet"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
 msgid "Nautilus Emblem side pane"
-msgstr "Paneli anësor i simboleve të Nautilus"
+msgstr "Paneli anësor i emblemave të Nautilus"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
 msgid "Nautilus Emblem view"
-msgstr "Paraqitje sipas simboleve të Nautilus"
+msgstr "Paraqitje sipas emblemave të Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:203
 #, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "E pamundur heqja e simbolit me emrin '%s'."
+msgstr "E pamundur heqja e emblemës me emrin '%s'."
 
 #: components/emblem/nautilus-emblem-view.c:204
 msgid ""
@@ -66,12 +66,12 @@ msgstr "Shkaku mund të jetë që simboli është i përhershëm, pra jo i kriju
 
 #: components/emblem/nautilus-emblem-view.c:205
 msgid "Couldn't Remove Emblem"
-msgstr "E pamundur heqja e simbolit"
+msgstr "E pamundur heqja e emblemës"
 
 #: components/emblem/nautilus-emblem-view.c:239
 #, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "I pamundur riemërtimi i simbolit me emrin '%s'."
+msgstr "I pamundur riemërtimi i emblemës me emrin '%s'."
 
 #: components/emblem/nautilus-emblem-view.c:240
 msgid ""
@@ -81,7 +81,7 @@ msgstr "Shkaku mund të jetë që simboli është i përhershëm, pra jo i kriju
 
 #: components/emblem/nautilus-emblem-view.c:241
 msgid "Couldn't Rename Emblem"
-msgstr "I pamundur riemërtimi i simbolit"
+msgstr "I pamundur riemërtimi i emblemës"
 
 #: components/emblem/nautilus-emblem-view.c:260
 msgid "Rename Emblem"
@@ -1187,7 +1187,9 @@ msgstr "Shfaq flags 'specialë' tek dialogu i pronësive"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr "Aktivon sjelljen e zakonshme të Nautilus, ku të gjitha dritaret janë shfletues"
+msgstr ""
+"Aktivon sjelljen e zakonshme të Nautilus, ku të gjitha dritaret janë "
+"shfletues"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1326,9 +1328,9 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
-"Nëse zgjidhet, atëhere të gjitha dritaret e Nautilus do të jenë shfletues. Kjo "
-"është sjellja e Nautilus për versionet para versionit 2.6, dhe shumë përdorues "
-"e preferojnë akoma këtë menyrë funksionimi."
+"Nëse zgjidhet, atëhere të gjitha dritaret e Nautilus do të jenë shfletues. "
+"Kjo është sjellja e Nautilus për versionet para versionit 2.6, dhe shumë "
+"përdorues e preferojnë akoma këtë menyrë funksionimi."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1370,7 +1372,9 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr "Nëse e vërtetë, një ikonë që lidh me kartelën home do të vendoset në desktop."
+msgstr ""
+"Nëse e vërtetë, një ikonë që lidh me kartelën \"shtëpi\" do të vendoset në "
+"desktop."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
@@ -1433,7 +1437,7 @@ msgstr "Lista e përshkrimeve të mundëshme tek ikonat"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Maximum handled files in a folder"
-msgstr "Numri maksimum i files të manazhueshëm në një kartelë"
+msgstr "Numri maksimum i files të trajtueshëm në një kartelë"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum image size for thumbnailing"
@@ -1449,11 +1453,11 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Nautilus handles drawing the desktop"
-msgstr "Përdor Nautilus për të vizatuar desktop-in"
+msgstr "Përdor Nautilus për të vizatuar hapësirën e punës"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Nautilus uses the users home folder as the desktop"
-msgstr "Nautilus përdor kartelën home të përdoruesit si desktop"
+msgstr "Nautilus përdor kartelën \"shtëpi\" të përdoruesit si desktop"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Only show folders in the tree sidebar"
@@ -1590,7 +1594,7 @@ msgid ""
 "desktop."
 msgstr ""
 "Ky emër mund të zgjidhet nëse dëshiron një emër të personalizuar për ikonën "
-"e home në desktop."
+"e shtëpisë në desktop."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid ""
@@ -1686,6 +1690,26 @@ msgstr "Nëse duhet të shfaqë files e padukshëm"
 msgid "Width of the side pane"
 msgstr "Gjërësia e panelit anësor"
 
+#: libnautilus-private/nautilus-column-chooser.c:365
+msgid "Move _Up"
+msgstr "Lëviz _Sipër"
+
+#: libnautilus-private/nautilus-column-chooser.c:374
+msgid "Move _Down"
+msgstr "Lëviz _Poshtë"
+
+#: libnautilus-private/nautilus-column-chooser.c:383
+msgid "_Show"
+msgstr "_Shfaq"
+
+#: libnautilus-private/nautilus-column-chooser.c:393
+msgid "_Hide"
+msgstr "_Fshih"
+
+#: libnautilus-private/nautilus-column-chooser.c:406
+msgid "_Use Default"
+msgstr "_Përdor të prezgjedhurin"
+
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
 msgstr "Emri dhe ikona e file."
@@ -1752,7 +1776,7 @@ msgstr "Të drejtat e file."
 
 #: libnautilus-private/nautilus-column-utilities.c:105
 msgid "Octal Permissions"
-msgstr "Të drejtat tetore"
+msgstr "Të drejtat oktale"
 
 #: libnautilus-private/nautilus-column-utilities.c:106
 msgid "The permissions of the file, in octal notation."
@@ -1842,7 +1866,7 @@ msgstr "I pamundur instalimi i emblemës"
 #: libnautilus-private/nautilus-emblem-utils.c:203
 msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
-"Më vjen keq, por fjalëkyçi i simbolit mund të përmbajë vetëm gërma, hapsira "
+"Më vjen keq, por fjalëkyçi i emblemës mund të përmbajë vetëm gërma, hapësira "
 "dhe numra."
 
 #. this really should never happen, as a user has no idea
@@ -1860,15 +1884,15 @@ msgstr "Ju lutem zgjidhni një emër tjetër për emblemën."
 
 #: libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Couldn't install emblem"
-msgstr "I pamundur instalimi i simbolit"
+msgstr "I pamundur instalimi i emblemës"
 
 #: libnautilus-private/nautilus-emblem-utils.c:258
 msgid "Sorry, unable to save custom emblem."
-msgstr "Më vjen keq, i pamundur shpëtimi i simbolit të krijuar."
+msgstr "Më vjen keq, e pamundur ruajtja e emblemës së krijuar."
 
 #: libnautilus-private/nautilus-emblem-utils.c:275
 msgid "Sorry, unable to save custom emblem name."
-msgstr "Më vjen keq, i pamundur shpëtimi i emrit të simbolit të krijuar."
+msgstr "Më vjen keq, e pamundur ruajtja e emrit të emblemës së krijuar."
 
 #: libnautilus-private/nautilus-file-operations-progress.c:457
 #, c-format
@@ -2144,7 +2168,7 @@ msgstr "Zëvendëso _Gjithçka"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4707
+#: libnautilus-private/nautilus-file.c:4714
 #, c-format
 msgid "link to %s"
 msgstr "lidhje me %s"
@@ -2539,7 +2563,7 @@ msgstr "Krijuesi i CD"
 
 #: libnautilus-private/nautilus-file-utilities.c:379
 msgid "Windows Network"
-msgstr "Rrjet Windows"
+msgstr "Rrjeti Windows"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -2556,64 +2580,64 @@ msgstr "Rrjet Windows"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2915
+#: libnautilus-private/nautilus-file.c:2922
 msgid "today at 00:00:00 PM"
 msgstr "sot në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2916
+#: libnautilus-private/nautilus-file.c:2923
 msgid "today at %-I:%M:%S %p"
 msgstr "sot në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2918
+#: libnautilus-private/nautilus-file.c:2925
 msgid "today at 00:00 PM"
 msgstr "sot në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2919
+#: libnautilus-private/nautilus-file.c:2926
 msgid "today at %-I:%M %p"
 msgstr "sot më %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2921
+#: libnautilus-private/nautilus-file.c:2928
 msgid "today, 00:00 PM"
 msgstr "sot, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2922
+#: libnautilus-private/nautilus-file.c:2929
 msgid "today, %-I:%M %p"
 msgstr "sot, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2924
-#: libnautilus-private/nautilus-file.c:2925
+#: libnautilus-private/nautilus-file.c:2931
+#: libnautilus-private/nautilus-file.c:2932
 msgid "today"
 msgstr "sot"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2934
+#: libnautilus-private/nautilus-file.c:2941
 msgid "yesterday at 00:00:00 PM"
 msgstr "dje në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2935
+#: libnautilus-private/nautilus-file.c:2942
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dje në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2937
+#: libnautilus-private/nautilus-file.c:2944
 msgid "yesterday at 00:00 PM"
 msgstr "dje në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2938
+#: libnautilus-private/nautilus-file.c:2945
 msgid "yesterday at %-I:%M %p"
 msgstr "dje më %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2940
+#: libnautilus-private/nautilus-file.c:2947
 msgid "yesterday, 00:00 PM"
 msgstr "dje, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2941
+#: libnautilus-private/nautilus-file.c:2948
 msgid "yesterday, %-I:%M %p"
 msgstr "dje, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2943
-#: libnautilus-private/nautilus-file.c:2944
+#: libnautilus-private/nautilus-file.c:2950
+#: libnautilus-private/nautilus-file.c:2951
 msgid "yesterday"
 msgstr "dje"
 
@@ -2622,63 +2646,63 @@ msgstr "dje"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2955
+#: libnautilus-private/nautilus-file.c:2962
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Të mërkurën, 00 Shtator 0000 në orën 00:00:00 MD"
 
-#: libnautilus-private/nautilus-file.c:2956
+#: libnautilus-private/nautilus-file.c:2963
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A, %-d %B %Y alle %-H:%M:%S"
+msgstr "%A, %-d %B %Y në orën %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2958
+#: libnautilus-private/nautilus-file.c:2965
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Hën, 00 Tet 0000 në 00:00:00 MD"
 
-#: libnautilus-private/nautilus-file.c:2959
+#: libnautilus-private/nautilus-file.c:2966
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2961
+#: libnautilus-private/nautilus-file.c:2968
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Hën, 00 Tet në 00:00 MD"
 
-#: libnautilus-private/nautilus-file.c:2962
+#: libnautilus-private/nautilus-file.c:2969
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y në %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2964
+#: libnautilus-private/nautilus-file.c:2971
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 Tet 0000 në orën 00:00 MD"
 
-#: libnautilus-private/nautilus-file.c:2965
+#: libnautilus-private/nautilus-file.c:2972
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y në %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2967
+#: libnautilus-private/nautilus-file.c:2974
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 Tet 0000, 00:00 MD"
 
-#: libnautilus-private/nautilus-file.c:2968
+#: libnautilus-private/nautilus-file.c:2975
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2970
+#: libnautilus-private/nautilus-file.c:2977
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 MD"
 
-#: libnautilus-private/nautilus-file.c:2971
+#: libnautilus-private/nautilus-file.c:2978
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2973
+#: libnautilus-private/nautilus-file.c:2980
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2974
+#: libnautilus-private/nautilus-file.c:2981
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:4282
+#: libnautilus-private/nautilus-file.c:4289
 #: src/file-manager/fm-directory-view.c:1806
 #, c-format
 msgid "%u item"
@@ -2686,14 +2710,14 @@ msgid_plural "%u items"
 msgstr[0] "%u objekt"
 msgstr[1] "%u objekte"
 
-#: libnautilus-private/nautilus-file.c:4283
+#: libnautilus-private/nautilus-file.c:4290
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "%u kartelë"
 msgstr[1] "%u kartela"
 
-#: libnautilus-private/nautilus-file.c:4284
+#: libnautilus-private/nautilus-file.c:4291
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2701,37 +2725,37 @@ msgstr[0] "%u file"
 msgstr[1] "%u files"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4609
-#: libnautilus-private/nautilus-file.c:4625
+#: libnautilus-private/nautilus-file.c:4616
+#: libnautilus-private/nautilus-file.c:4632
 msgid "? items"
 msgstr "? objekte"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4615
+#: libnautilus-private/nautilus-file.c:4622
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4630
+#: libnautilus-private/nautilus-file.c:4637
 msgid "unknown type"
 msgstr "lloj i panjohur"
 
-#: libnautilus-private/nautilus-file.c:4633
+#: libnautilus-private/nautilus-file.c:4640
 msgid "unknown MIME type"
 msgstr "lloj MIME i panjohur"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4639
+#: libnautilus-private/nautilus-file.c:4646
 #: src/file-manager/fm-properties-window.c:1147
 msgid "unknown"
 msgstr "nuk njihet"
 
-#: libnautilus-private/nautilus-file.c:4671
+#: libnautilus-private/nautilus-file.c:4678
 msgid "program"
 msgstr "programi"
 
-#: libnautilus-private/nautilus-file.c:4683
+#: libnautilus-private/nautilus-file.c:4690
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2741,7 +2765,7 @@ msgstr ""
 "që ndoshta file juaj gnome-vfs.keys ndodhet në një pozicion të gabuar ose "
 "nuk arrin të gjehet për ndonjë arsye tjetër."
 
-#: libnautilus-private/nautilus-file.c:4687
+#: libnautilus-private/nautilus-file.c:4694
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2750,15 +2774,15 @@ msgstr ""
 "Nuk u gjet asnjë përshkrim për llojin mime \"%s\" (file është \"%s\"), ju "
 "lutem lajmëroni mailing list të gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4701
+#: libnautilus-private/nautilus-file.c:4708
 msgid "link"
 msgstr "lidhje"
 
-#: libnautilus-private/nautilus-file.c:4721
+#: libnautilus-private/nautilus-file.c:4728
 msgid "link (broken)"
 msgstr "lidhje (e shkëputur)"
 
-#: libnautilus-private/nautilus-file.c:6058
+#: libnautilus-private/nautilus-file.c:6138
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2919,7 +2943,7 @@ msgstr "Sipas datës së ndryshimit"
 #: libnautilus-private/nautilus-global-preferences.c:190
 #: src/nautilus-file-management-properties.glade.h:40
 msgid "By Emblems"
-msgstr "Sipas simbolit"
+msgstr "Sipas emblemës"
 
 #: libnautilus-private/nautilus-global-preferences.c:195
 msgid "8"
@@ -3067,8 +3091,8 @@ msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
-"Dëshironi të kaloni tek rregullimi i personalizuar dhe t'a lini objektin atje "
-"ku e keni zvarritur? Kjo gjë do të anullojë rregullimin e memorizuar."
+"Dëshironi të kaloni tek rregullimi i personalizuar dhe t'a lini objektin "
+"atje ku e keni zvarritur? Kjo gjë do të anullojë rregullimin e memorizuar."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
@@ -3090,8 +3114,8 @@ msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
 msgstr ""
-"Dëshironi të kaloni tek rregullimi i personalizuar dhe t'a lini objektin atje "
-"ku e keni zvarritur?"
+"Dëshironi të kaloni tek rregullimi i personalizuar dhe t'a lini objektin "
+"atje ku e keni zvarritur?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
 msgid ""
@@ -3143,10 +3167,10 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Medusa, programi që kryen kërkimet, nuk u gjet tek sistemi juaj.  "
-"Nëqoftëse e keni kompiluar nautilus vetë ju, do t'ju duhet të instaloni një "
-"kopje të medusa dhe rikompiloni nautilus.  (Një kopje të Medusa mund t'a "
-"shkarkoni nga ftp://ftp.gnome.org)\n"
+"Medusa, programi që kryen kërkimet, nuk u gjet tek sistemi juaj.  Nëqoftëse "
+"e keni kompiluar nautilus vetë ju, do t'ju duhet të instaloni një kopje të "
+"medusa dhe rikompiloni nautilus.  (Një kopje të Medusa mund t'a shkarkoni "
+"nga ftp://ftp.gnome.org)\n"
 "Nëse jeni duke përdorur një version të paketuar të Nautilus, kërkimi i "
 "shpejtë nuk është në dispozicion.\n"
 
@@ -3374,8 +3398,8 @@ msgid ""
 "file type now?"
 msgstr ""
 "Ju mund të konfiguroni GNOME që t'i shoqërojë këtij lloji file një shikues "
-"apo program tjetër. Dëshironi të shoqëroni një program apo shikues me "
-"këtë lloj file tani?"
+"apo program tjetër. Dëshironi të shoqëroni një program apo shikues me këtë "
+"lloj file tani?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
 msgid "_Associate Action"
@@ -3784,15 +3808,15 @@ msgstr "Pa_stro Tekstin"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
 msgid "Cut Text"
-msgstr "Prite tekstin"
+msgstr "Preje tekstin"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:4
 msgid "Cut _Text"
-msgstr "Prite _Tekstin"
+msgstr "Preje _Tekstin"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:5
 msgid "Cut the selected text to the clipboard"
-msgstr "Prite tekstin e zgjedhur tek shënimet"
+msgstr "Preje tekstin e zgjedhur tek shënimet"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:6
 msgid "Paste the text stored on the clipboard"
@@ -3876,7 +3900,7 @@ msgstr "Fabrika e Nautilus"
 
 #: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a scrollable list"
-msgstr "Komponues i organizuesit të file që shfaq një listë rrëshqitëse"
+msgstr "Komponent i organizuesit të file që shfaq një listë rrëshqitëse"
 
 #: src/Nautilus_shell.server.in.h:10
 msgid ""
@@ -3889,12 +3913,14 @@ msgstr ""
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr ""
-"Komponues i organizuesit të file Nautilus që shfaq një hapësirë dy-përmasore për "
-"ikonat"
+"Komponues i organizuesit të file Nautilus që shfaq një hapësirë dy-përmasore "
+"për ikonat"
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr "Komponenti i organizuesit të file Nautilus që shfaq ikonat në hapësirë e punës"
+msgstr ""
+"Komponenti i organizuesit të file Nautilus që shfaq ikonat në hapësirë e "
+"punës"
 
 #: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager desktop icon view"
@@ -4002,7 +4028,7 @@ msgstr "Të eleminoj përgjithmonë \"%s\"?"
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "Jeni i sigurt që dëshiron të eleminosh përgjithmonë %d elementin e zgjedhur?"
-msgstr[1] "Jeni i sigurt që dëshiron të eleminosh përgjithmonë %d elementet e zgjedhur?"
+msgstr[1] "Jeni i sigurt që dëshiron të eleminosh përgjithmonë %d elementët e zgjedhur?"
 
 #: src/file-manager/fm-directory-view.c:897
 msgid "If you delete an item, it is permanently lost."
@@ -4065,7 +4091,7 @@ msgstr[1] "%d objekte të zgjedhur (%s)"
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d objekt tjetër i zgjedhur (%s)"
-msgstr[1] "%d objekte të tjerë të zgjedhur (%s)"
+msgstr[1] "%d objekte të tjetë të zgjedhur (%s)"
 
 #: src/file-manager/fm-directory-view.c:1810
 #, c-format
@@ -4256,7 +4282,7 @@ msgstr[0] ""
 "%d element i zgjedhur do të lëvizet nëqoftëse zgjidhni komandën \"Ngjit files"
 "\""
 msgstr[1] ""
-"%d elementët e zgjedhur do të lëvizen nëqoftëse zgjidhni komandën \"Ngjit files"
+"%d elementët  zgjedhur do të lëvizen nëqoftëse zgjidhni komandën \"Ngjit files"
 "\""
 
 #: src/file-manager/fm-directory-view.c:4645
@@ -4267,7 +4293,7 @@ msgstr[0] ""
 "%d element i zgjedhur do të kopjohet nëqoftëse zgjidhni komandën \"Ngjit "
 "files\"."
 msgstr[1] ""
-"%d elementë të zgjedhur do të kopjohen nëqoftëse zgjidhni komandën \"Ngjit "
+"%d elementët e zgjedhur do të kopjohen nëqoftëse zgjidhni komandën \"Ngjit "
 "files\"."
 
 #: src/file-manager/fm-directory-view.c:4727
@@ -4611,7 +4637,7 @@ msgstr "sipas _Simboleve"
 #: src/file-manager/fm-icon-view.c:190
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by emblems in rows"
-msgstr "Mban ikonat në rresht sipas simboleve"
+msgstr "Mban ikonat në rresht sipas emblemave"
 
 #: src/file-manager/fm-icon-view.c:1632
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
@@ -6225,8 +6251,8 @@ msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr ""
-"Nuk organizon hapësirën e punës (duke shpërfillur preferimet tek dritarja "
-"e dialogut të rregullimeve)."
+"Nuk organizon hapësirën e punës (duke shpërfillur preferimet tek dritarja e "
+"dialogut të rregullimeve)."
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
@@ -7188,7 +7214,9 @@ msgstr "Nuk arrij të shfaq \"%s\", pasi është e pamundur gjetja e host \"%s\"
 
 #: src/nautilus-window-manage-views.c:1335
 msgid "Check that the spelling is correct and that your proxy settings are correct."
-msgstr "Sigurohu që është shkruar si duhet dhe që konfigurimi i proxy të jetë korrekt. "
+msgstr ""
+"Sigurohu që është shkruar si duhet dhe që konfigurimi i proxy të jetë "
+"korrekt. "
 
 #: src/nautilus-window-manage-views.c:1342
 msgid "Check that your proxy settings are correct."
