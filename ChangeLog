@@ -1,3 +1,16 @@
+2000-07-31  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 1034 and 1460, which were really the same bug: icon text
+	gets drawn when it shouldn't be when icons are scaled.  This also
+	made the icon text rectangles wrong at different scale factors.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path), (load_specific_image),
+	(scale_image_and_rectangle), (load_image_with_embedded_text):
+	scale_image_and_rectangle used the icon width for the text
+	rectangle width, which was wrong - fixed by computing them
+	separately.  Also, some small clean-ups.
+	
 2000-07-31  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-mounting.c:

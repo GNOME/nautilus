@@ -643,14 +643,15 @@ get_themed_icon_file_path (const char *theme_name,
 
 		doc = xmlParseFile (xml_path);
 		g_free (xml_path);
-
+		
 		size_as_string = g_strdup_printf ("%u", icon_size);
 		node = nautilus_xml_get_root_child_by_name_and_property
 			(doc, "ICON", "SIZE", size_as_string);
 		g_free (size_as_string);
 
-		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");
+		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");		
 		if (property != NULL) {
+			
 			if (sscanf (property,
 				    " %d , %d , %d , %d %*s",
 				    &parsed_rect.x0,
@@ -1524,6 +1525,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 					   size_in_pixels,
 					   text_rect,
 					   scalable_icon->aa_mode);
+					   		
 		if (path == NULL) {
 			return NULL;
 		}
@@ -1622,6 +1624,7 @@ scale_image_and_rectangle (GdkPixbuf *image,
 			   double scale_y)
 {
 	int width, height;
+	int rect_width, rect_height;
 	GdkPixbuf *scaled_image;
 
 	width = gdk_pixbuf_get_width (image);
@@ -1642,14 +1645,17 @@ scale_image_and_rectangle (GdkPixbuf *image,
 		height = 1;
 	}
 
+	rect_width = (rectangle->x1 - rectangle->x0) * scale_x;
+	rect_height = (rectangle->y1 - rectangle->y0) * scale_y;
+	
 	scaled_image = gdk_pixbuf_scale_simple
 		(image, width, height, GDK_INTERP_BILINEAR);
 	gdk_pixbuf_unref (image);
 
 	rectangle->x0 *= scale_x;
 	rectangle->y0 *= scale_y;
-	rectangle->x1 = rectangle->x0 + width;
-	rectangle->y1 = rectangle->y0 + height;
+	rectangle->x1 = rectangle->x0 + rect_width;
+	rectangle->y1 = rectangle->y0 + rect_height;
 
 	return scaled_image;
 }
@@ -2154,7 +2160,7 @@ load_image_with_embedded_text (NautilusScalableIcon *scalable_icon,
 		(scalable_icon_without_text, size,
 		 FALSE, FALSE, &text_rect);
 	nautilus_scalable_icon_unref (scalable_icon_without_text);
-
+	
 	pixbuf = embed_text (pixbuf_without_text,
 			     &text_rect,
 			     scalable_icon->embedded_text);
