@@ -1,3 +1,47 @@
+2000-10-06  John Sullivan  <sullivan@eazel.com>
+
+	Finished bug 3496 (labels in menu items never change)
+	Finished bug 3495 (menu item sensitivity never changes)
+
+	I think I have fixed all outstanding code that was setting
+	the sensitivity and label text of menu items, except for
+	cut/copy/paste (which is commented out) and undo, which
+	has its own bug report. If you run across any others, 
+	please write up new bugs.
+
+	* src/file-manager/fm-directory-view.c: 
+	(insert_bonobo_menu_item),
+	(insert_bonobo_menu_subtree): Removed unnecessary (and
+	#ifdeffed-out) calls to bonobo_ui_handler_set_sensitivity.
+	(fm_directory_view_real_merge_menus): Removed unnecessary
+	call to fm_directory_view_update_menus.
+	* src/file-manager/fm-icon-view.c: 
+	Updated menu path #defines that I needed to use later.
+	(update_layout_menus): Move set_sensitive calls out of #ifdef,
+	and modernize them.
+	(insert_bonobo_menu_item) removed unnecessary (and
+	#ifdeffed-out) call to bonobo_ui_handler_set_sensitivity
+	(fm_icon_view_merge_menus): Took out code that's been
+	modernized elsewhere; 
+	(update_one_menu_item),	(fm_icon_view_update_menus): 
+	removed #ifdefs, and modernized.
+	* src/file-manager/fm-search-list-view.c: 
+	(update_reveal_item): New helper function
+	(real_merge_menus): #ifdefs removed
+	(real_update_menus): Now calls helper function, #ifdefs removed
+	
+	* src/file-manager/nautilus-search-list-view-ui.xml: Couldn't
+	resist improving a menu title
+	
+	* src/nautilus-window-manage-views.c: (load_content_view):
+	modernize code setting initial zoom menu items sensitivity.
+	
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu),
+	(create_menu_item_from_node),
+	(nautilus_window_initialize_bookmarks_menu): Added more 
+	parameter checking because I saw an unreproducible
+	parameter-failure crash a few levels deep.
+
 2000-10-06  Rebecca Schulman  <rebecka@eazel.com>
 	* libnautilus-extensions/nautilus-directory-async.c:
 	* libnautilus-extensions/nautilus-directory-private.h:

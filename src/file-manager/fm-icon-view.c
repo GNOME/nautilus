@@ -44,6 +44,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -67,18 +68,15 @@
 #include <unistd.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
-#define MENU_PATH_RENAME 			"/File/Rename"
-#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/Edit/Icon Text"
-#define MENU_PATH_STRETCH_ICON 			"/Edit/Stretch"
-#define MENU_PATH_UNSTRETCH_ICONS 		"/Edit/Unstretch"
-#define MENU_PATH_LAYOUT_SEPARATOR 		"/View/LayoutSeparator"
+#define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
+#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/menu/Edit/Global Edit Items Placeholder/Icon Text"
+#define MENU_PATH_STRETCH_ICON 			"/menu/Edit/Edit Items Placeholder/Stretch"
+#define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
 #define MENU_PATH_LAY_OUT			"/View/Lay Out"
-#define MENU_PATH_MANUAL_LAYOUT 		"/View/Lay Out/Manual Layout"
-#define MENU_PATH_AUTO_LAYOUT_SEPARATOR 	"/View/Lay Out/AutoLayoutSeparator"
-#define MENU_PATH_LAYOUT_OPTIONS_SEPARATOR	"/View/Lay Out/LayoutOptionsSeparator"
-#define MENU_PATH_TIGHTER_LAYOUT 		"/View/Lay Out/Tighter Layout"
-#define MENU_PATH_SORT_REVERSED			"/View/Lay Out/Reversed Order"
-#define MENU_PATH_CLEAN_UP			"/View/Clean Up"
+#define MENU_PATH_MANUAL_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Manual Layout"
+#define MENU_PATH_TIGHTER_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Tighter Layout"
+#define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Lay Out/Reversed Order"
+#define MENU_PATH_CLEAN_UP			"/menu/View/View Items Placeholder/Clean Up"
 
 /* forward declarations */
 static void 	create_icon_container                    (FMIconView        *icon_view);
@@ -860,28 +858,26 @@ update_layout_menus (FMIconView *view)
 		bonobo_ui_handler_menu_set_toggle_state
 			(ui_handler, MENU_PATH_SORT_REVERSED, view->details->sort_reversed);	
 				
-		/* Sort order isn't relevant for manual layout. */
-		bonobo_ui_handler_menu_set_sensitivity
-			(ui_handler, MENU_PATH_SORT_REVERSED, is_auto_layout);
-
 		/* Set the checkmark for the "tighter layout" item */
 		bonobo_ui_handler_menu_set_toggle_state
 			(ui_handler, MENU_PATH_TIGHTER_LAYOUT, fm_icon_view_using_tighter_layout (view));	
 				
-		/* Tighter Layout is only relevant for auto layout */
-		bonobo_ui_handler_menu_set_sensitivity
-			(ui_handler, MENU_PATH_TIGHTER_LAYOUT, is_auto_layout);	
 #endif
+
+		/* Sort order isn't relevant for manual layout. */
+		nautilus_bonobo_set_sensitive
+			(view->details->ui, MENU_PATH_SORT_REVERSED, is_auto_layout);
+
+		/* Tighter Layout is only relevant for auto layout */
+		nautilus_bonobo_set_sensitive
+			(view->details->ui, MENU_PATH_TIGHTER_LAYOUT, is_auto_layout);	
 		 
 		view->details->updating_toggle_menu_item = FALSE;
 	}
 
-#ifdef UIH
 	/* Clean Up is only relevant for manual layout */
-	bonobo_ui_handler_menu_set_sensitivity
-		(ui_handler, MENU_PATH_CLEAN_UP, !is_auto_layout);	
-#endif
-
+	nautilus_bonobo_set_sensitive
+		(view->details->ui, MENU_PATH_CLEAN_UP, !is_auto_layout);	
 }
 
 
@@ -1402,7 +1398,6 @@ insert_bonobo_menu_item (FMIconView *view,
 	}
         
         g_free (label);
-        bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, sensitive);
 }
 
 #endif /* UIH */
@@ -1519,9 +1514,6 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 {
         GList *selection;
 	FMIconView *icon_view;
-#ifdef UIH
-	int i;
-#endif
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Rename", (BonoboUIVerbFn)rename_icon_callback),
 		BONOBO_UI_VERB ("Icon Text", (BonoboUIVerbFn)customize_icon_text_callback),
@@ -1558,34 +1550,9 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
         selection = fm_directory_view_get_selection (view);
 
 #ifdef UIH
-	/* Edit menu. */
-        insert_bonobo_menu_item
-		(icon_view, ui_handler, selection,
-		 MENU_PATH_CUSTOMIZE_ICON_TEXT,
-		 _("Choose which information appears beneath each icon's name"),
-		 get_next_position (ui_handler, NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER),
-		 (BonoboUIHandlerCallback) customize_icon_text_callback, view);
-        insert_bonobo_menu_item
-		(icon_view, ui_handler, selection,
-		 MENU_PATH_STRETCH_ICON,
-		 _("Make the selected icon stretchable"),
-		 get_next_position (ui_handler, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER),
-		 (BonoboUIHandlerCallback) show_stretch_handles_callback, view);
-        insert_bonobo_menu_item
-		(icon_view, ui_handler, selection,
-		 MENU_PATH_UNSTRETCH_ICONS,
-		 _("Restore each selected icon to its original size"),
-		 get_next_position (ui_handler, MENU_PATH_STRETCH_ICON),
-		 (BonoboUIHandlerCallback) unstretch_icons_callback, view);
-
-	/* Additions to View menu. */
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo/GTK menu bug. */
 	icon_view->details->updating_toggle_menu_item = TRUE;
-
-	bonobo_ui_handler_menu_new_separator
-		(ui_handler, MENU_PATH_LAYOUT_SEPARATOR, 
-		 get_next_position (ui_handler, NAUTILUS_MENU_PATH_VIEW_ITEMS_PLACEHOLDER));
 
 	if (fm_icon_view_supports_auto_layout) {
 		insert_bonobo_menu_item
@@ -1633,21 +1600,6 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 
 	}
 
-        insert_bonobo_menu_item
-		(icon_view, ui_handler, selection,
-		 MENU_PATH_CLEAN_UP,
-		 _("Reposition icons to better fit in the window and avoid overlapping"),
-		 get_next_position (ui_handler, MENU_PATH_LAY_OUT),
-		 (BonoboUIHandlerCallback) clean_up_callback, view);
-	icon_view->details->updating_toggle_menu_item = FALSE;
-
-	/* File menu. */
-        insert_bonobo_menu_item
-		(icon_view, ui_handler, selection,
-		 MENU_PATH_RENAME,
-		 _("Rename selected item"),
-		 get_next_position (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE),
-		 (BonoboUIHandlerCallback) rename_icon_callback, view);
 #endif /* UIH */
 
         nautilus_file_list_free (selection);
@@ -1657,11 +1609,8 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	update_layout_menus (icon_view);
 }
 
-#ifdef UIH
-
 static void
 update_one_menu_item (FMIconView *view, 
-		      BonoboUIHandler *ui_handler,
 		      GList *selection,
 		      const char *menu_path)
 {
@@ -1669,12 +1618,10 @@ update_one_menu_item (FMIconView *view,
 	gboolean sensitive;
 	
 	compute_menu_item_info (view, selection, menu_path, TRUE, &label, &sensitive, NULL);
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
-	bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label);
+	nautilus_bonobo_set_sensitive (view->details->ui, menu_path, sensitive);
+	nautilus_bonobo_set_label (view->details->ui, menu_path, label);
 	g_free (label);
 }
-
-#endif
 
 static void
 fm_icon_view_update_menus (FMDirectoryView *view)
@@ -1685,14 +1632,12 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 
         selection = fm_directory_view_get_selection (view);
 
-#ifdef UIH
-	update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
+	update_one_menu_item (FM_ICON_VIEW (view), selection, 
 			      MENU_PATH_STRETCH_ICON);
-        update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
+        update_one_menu_item (FM_ICON_VIEW (view), selection, 
 			      MENU_PATH_UNSTRETCH_ICONS);
-        update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
+        update_one_menu_item (FM_ICON_VIEW (view), selection, 
 			      MENU_PATH_RENAME);
-#endif
 	
 	nautilus_file_list_free (selection);
 }

@@ -865,6 +865,9 @@ append_bookmark_to_menu (NautilusWindow *window,
 #endif
 	char *raw_name, *display_name, *truncated_name;
 
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
@@ -966,6 +969,8 @@ create_menu_item_from_node (NautilusWindow *window,
 	char *index_as_string;
 	char *item_path;
 	char *sub_item_path;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
 	
 	index_as_string = g_strdup_printf ("item_%d", index);
 #ifdef UIH
@@ -1242,6 +1247,8 @@ nautilus_window_disable_keyboard_navigation_for_menus (NautilusWindow *window)
 static void 
 nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 {
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
 	/* Construct the initial set of bookmarks. */
 	refresh_bookmarks_menu (window);
 

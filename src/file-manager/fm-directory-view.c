@@ -3022,7 +3022,6 @@ insert_bonobo_menu_item (FMDirectoryView *view,
 		 ac_mods,                       /* Modifiers for accelerator */
 		 callback, callback_data);
         g_free (label);
-        bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, sensitive);
 }
 
 static void
@@ -3047,7 +3046,6 @@ insert_bonobo_menu_subtree (FMDirectoryView *view,
 		 accelerator_key,               /* Accelerator key */
 		 ac_mods);                      /* Modifiers for accelerator */
         g_free (label);
-        bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, sensitive);
 }
 
 static void
@@ -3284,8 +3282,6 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 						     "nautilus-directory-view-ui.xml",
 						     "nautilus");
 	bonobo_ui_component_add_verb_list_with_data (view->details->ui, verbs, view);
-
-	fm_directory_view_update_menus (view);
 
 	gtk_signal_connect_object (GTK_OBJECT (fm_directory_view_get_background (view)),
 			    	   "settings_changed",

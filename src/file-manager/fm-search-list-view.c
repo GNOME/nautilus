@@ -33,6 +33,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -50,8 +51,8 @@
 #include "../nautilus-search-bar-criterion.h"
 
 /* Paths to use when creating & referring to Bonobo menu items */
-#define MENU_PATH_INDEXING_INFO			"/File/Indexing Info..."
-#define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/File/Reveal"
+#define MENU_PATH_INDEXING_INFO			"/menu/File/General Status Placeholder/Indexing Info"
+#define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/menu/File/Open Placeholder/Reveal"
 
 struct FMSearchListViewDetails {
 	BonoboUIComponent *ui;
@@ -454,15 +455,32 @@ real_file_still_belongs (FMListView *view, NautilusFile *file)
 }
 
 static void
+update_reveal_item (FMSearchListView *view)
+{
+	GList *selected_files;
+	char *name;
+	gboolean sensitive;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	selected_files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+
+	compute_reveal_item_name_and_sensitivity 
+		(selected_files, TRUE, &name, &sensitive);
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       MENU_PATH_REVEAL_IN_NEW_WINDOW, 
+				       sensitive);
+	nautilus_bonobo_set_label (view->details->ui, MENU_PATH_REVEAL_IN_NEW_WINDOW, name);
+
+	g_free (name);
+
+        nautilus_file_list_free (selected_files);
+}
+
+static void
 real_merge_menus (FMDirectoryView *view)
 {
 	FMSearchListView *search_view;
-	GList *selected_files;
-#ifdef UIH
-	char *name;
-	gboolean sensitive;
-	int position;
-#endif
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Indexing Info", indexing_info_callback),
 		BONOBO_UI_VERB ("Reveal", (BonoboUIVerbFn)reveal_selected_items_callback),
@@ -481,45 +499,6 @@ real_merge_menus (FMDirectoryView *view)
 			       "nautilus-search-list-view-ui.xml",
 			       "nautilus");
 	bonobo_ui_component_add_verb_list_with_data (search_view->details->ui, verbs, view);
-
-	selected_files = fm_directory_view_get_selection (view);
-
-#ifdef UIH
-	/* Indexing Info.. goes right after the Show Properties item that
-	 * fm-directory-view places in the File menu.
-	 */
-	position = bonobo_ui_handler_menu_get_pos
-		(ui_handler,
-		 FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) + 1,
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
-		 MENU_PATH_INDEXING_INFO,
-		 _("Indexing Info..."),
-		 _("Show indexing info dialog"),
-		 position,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL, 0, 0,
-		 (BonoboUIHandlerCallback) indexing_info_callback, NULL);
-
-
-	compute_reveal_item_name_and_sensitivity (selected_files, TRUE, &name, &sensitive);
-
-	bonobo_ui_handler_menu_new_item (
-		ui_handler,
-		MENU_PATH_REVEAL_IN_NEW_WINDOW, name,
-		_("Reveal each selected item in its original folder"),
-		bonobo_ui_handler_menu_get_pos 
-			(ui_handler, 
-			 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) + 1, 
-		BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
-		0, 0,
-		(BonoboUIHandlerCallback) reveal_selected_items_callback, view);
-	g_free (name);
-	bonobo_ui_handler_menu_set_sensitivity 
-		(ui_handler, MENU_PATH_REVEAL_IN_NEW_WINDOW, sensitive);
-#endif
-
-        nautilus_file_list_free (selected_files);
 }
 
 static gboolean
@@ -555,30 +534,11 @@ real_supports_properties (FMDirectoryView *view)
 static void
 real_update_menus (FMDirectoryView *view)
 {
-	GList *selected_files;
-#ifdef UIH
-	char *name;
-	gboolean sensitive;
-#endif
-
-	g_assert (FM_IS_LIST_VIEW (view));
+	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
-	selected_files = fm_directory_view_get_selection (view);
-
-#ifdef UIH
-	compute_reveal_item_name_and_sensitivity 
-		(selected_files, TRUE, &name, &sensitive);
-        bonobo_ui_handler_menu_set_sensitivity 
-        	(ui_handler, MENU_PATH_REVEAL_IN_NEW_WINDOW, sensitive);
-        bonobo_ui_handler_menu_set_label 
-        	(ui_handler, MENU_PATH_REVEAL_IN_NEW_WINDOW, name);
-
-	g_free (name);
-#endif
-
-        nautilus_file_list_free (selected_files);
+	update_reveal_item (FM_SEARCH_LIST_VIEW (view));
 }
 
 /**
