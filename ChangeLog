@@ -1,5 +1,12 @@
 2004-01-06  Alexander Larsson <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-operations.c:
+	Don't translate duplication tests to avoid wasting
+	translator time. My guess is that nobody was running 
+	make check in different locales anyway.
+	
+2004-01-06  Alexander Larsson <alexl@redhat.com>
+
 	* test/test.h: 
 	Remove eel-string-picker.h
 
