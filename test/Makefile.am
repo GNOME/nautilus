@@ -75,3 +75,4 @@ libleakcheck.so: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-lea
 
 install: libleakcheck.so
 	cp -f libleakcheck.so $(DESTDIR)$(libdir)
+

@@ -209,12 +209,16 @@ detect_reentry (void *parent_caller)
 		 * that is near the parent_caller -- the start address
 		 * of the calling function.
 		 * We are using two arbitrary numbers here - 5 should be a "deep enough"
-		 * check to detect the recursion, 512 bytes should be a large enough distance
+		 * check to detect the recursion, 0x40 bytes should be a large enough distance
 		 * from the start of the malloc call to the point where the old malloc call is
 		 * being called.
+		 * FIXME: this the value 0x40 works well only with certain function sizes, optimization levels,
+		 * etc. need a more robust way of doing this. One way might be adding stuffing into the 
+		 * __libc_* calls that is never executed but makes the funcitons longer. We could
+		 * then up the value without the danger of hitting the next function
 		 */
 		if (stack_frame->return_address >= parent_caller
-			&& stack_frame->return_address < (void *)((char *)parent_caller + 0x100)) {
+			&& stack_frame->return_address < (void *)((char *)parent_caller + 0x40)) {
 			/* printf("detected reentry at level %d\n", count); */
 			return TRUE;
 		}
@@ -237,7 +241,7 @@ nautilus_leak_record_malloc (void *ptr, size_t size)
 	void *trace_array [TRACE_ARRAY_MAX];
 	NautilusHashEntry *element;
 
-/*	printf("new block %p, %d\n", ptr, size); */
+	/* printf("new block %p, %d\n", ptr, size); */
 
 	if (!nautilus_leak_check_leaks)
 		return;
@@ -271,7 +275,7 @@ nautilus_leak_record_realloc (void *old_ptr, void *new_ptr, size_t size)
 	void *trace_array [TRACE_ARRAY_MAX];
 	NautilusHashEntry *element;
 
-/*	printf("reallocing block %p, %d was %p\n", new_ptr, size, old_ptr); */
+	/* printf("reallocing block %p, %d was %p\n", new_ptr, size, old_ptr); */
 
 	if (!nautilus_leak_check_leaks)
 		return;
@@ -312,7 +316,7 @@ nautilus_leak_record_realloc (void *old_ptr, void *new_ptr, size_t size)
 static void
 nautilus_leak_record_free (void *ptr)
 {
-/*	printf("freeing block %p\n", ptr); */
+	/* printf("freeing block %p\n", ptr); */
 	if (!nautilus_leak_check_leaks)
 		return;
 
@@ -356,36 +360,46 @@ enum {
 static int startup_fallback_memory_index = 0;
 static char startup_fallback_memory [STARTUP_FALLBACK_MEMORY_SIZE];
 
+/* If our malloc hook is not installed yet - for instance when we are being
+ * called from the initialize_if_needed routine. We have to fall back on 
+ * returning a chunk of static memory to carry us through the initialization.
+ */
+static void *
+allocate_temporary_fallback_memory (ssize_t size)
+{
+	void *result;
+
+	/* align to natural word boundary */
+	size = (size + sizeof(void *) - 1 ) & ~(sizeof(void *) - 1);
+	if (size + startup_fallback_memory_index 
+		> STARTUP_FALLBACK_MEMORY_SIZE) {
+		g_warning ("trying to allocate to much space during startup");
+		return NULL;
+	}
+	result = &startup_fallback_memory [startup_fallback_memory_index];
+	startup_fallback_memory_index += size;
+
+	return result;
+}
+
 void *
 __libc_malloc (size_t size)
 {
 	void *result;
 
 	nautilus_leak_initialize_if_needed ();
-	if (real_malloc == NULL) {
-		/* Our malloc hook is not installed yet - we are being
-		 * called from the initialize_if_needed routine. We
-		 * have to fall back on returning a chunk of static
-		 * memory to carry us through the initialization
-		 */
-	
-		/* align to natural word boundary */
-		size = (size + sizeof(void *) - 1 ) & ~(sizeof(void *) - 1);
-		if (size + startup_fallback_memory_index 
-			> STARTUP_FALLBACK_MEMORY_SIZE) {
-			g_warning ("trying to allocate to much space during startup");
-			return NULL;
-		}
-		result = &startup_fallback_memory [startup_fallback_memory_index];
-		startup_fallback_memory_index += size;
 
-		return result;
+	if (real_malloc == NULL) {
+		return allocate_temporary_fallback_memory (size);
 	}
+
 	result = (*real_malloc) (size);
 
 	if (result != NULL) {
-		if (detect_reentry(&__libc_malloc)) {
-			printf("avoiding reentry in __libc_malloc\n");
+		if (detect_reentry(&__libc_malloc) 
+			|| detect_reentry(&__libc_realloc)
+			|| detect_reentry(&__libc_memalign)) {
+			/* printf("avoiding reentry in __libc_malloc, block %p\n", result); */
 		} else {
 			nautilus_leak_record_malloc (result, size);
 		}
@@ -404,7 +418,7 @@ __libc_memalign (size_t boundary, size_t size)
 
 	if (result != NULL) {
 		if (detect_reentry(&__libc_memalign)) {
-			printf("avoiding reentry in __libc_memalign\n");
+			/* printf("avoiding reentry in __libc_memalign, block %p\n", result); */
 		} else {
 			nautilus_leak_record_malloc (result, size);
 		}
@@ -444,7 +458,8 @@ __libc_realloc (void *ptr, size_t size)
 	result = (*real_realloc) (ptr, size);	
 
 	if (detect_reentry(&__libc_realloc)) {
-		printf("avoiding reentry in __libc_realloc\n");
+		/* printf("avoiding reentry in __libc_realloc, block %p, old block %p\n", 
+			result, ptr); */
 	} else {
 		if (result != NULL && ptr == NULL) {
 			/* we are allocating a new block */
@@ -469,48 +484,24 @@ __libc_free (void *ptr)
 		return;
  	}
  	if (ptr != NULL) {
-		nautilus_leak_record_free (ptr);
+		if (detect_reentry(&__libc_realloc)) {
+			/* printf("avoiding reentry in __libc_free, block %p\n", ptr); */
+		} else {
+			nautilus_leak_record_free (ptr);
+		}
 	}
 
 	(real_free) (ptr);
 }
 
-void *
-malloc (size_t size)
-{
-	return __libc_malloc (size);
-}
-
-void *
-realloc (void *ptr, size_t size)
-{
-	return __libc_realloc (ptr, size);
-}
-
-void *
-memalign (size_t boundary, size_t size)
-{
-	return __libc_memalign (boundary, size);
-}
-
-void *
-calloc (size_t nmemb, size_t size)
-{
-	return __libc_calloc (nmemb, size);
-}
-
-void
-free (void *ptr)
-{
-	__libc_free (ptr);
-}
-
+/* We try to keep a lot of code in between __libc_free and malloc to make
+ * the reentry detection that depends on call address proximity work.
+ */
 typedef struct {
 	int max_count;
 	int counter;
 	int stack_print_depth;
 } PrintOneLeakParams;
-
 
 /* we don't care if printf, etc. allocates (as long as it doesn't leak)
  * because by now we have a snapshot of the leaks at the time of 
@@ -593,6 +584,36 @@ nautilus_leak_checker_init (const char *path)
 	app_path = path;
 }
 
+void *
+malloc (size_t size)
+{
+	return __libc_malloc (size);
+}
+
+void *
+realloc (void *ptr, size_t size)
+{
+	return __libc_realloc (ptr, size);
+}
+
+void *
+memalign (size_t boundary, size_t size)
+{
+	return __libc_memalign (boundary, size);
+}
+
+void *
+calloc (size_t nmemb, size_t size)
+{
+	return __libc_calloc (nmemb, size);
+}
+
+void
+free (void *ptr)
+{
+	__libc_free (ptr);
+}
+
 #endif
 
 #ifdef LEAK_CHECK_TESTING
@@ -642,25 +663,25 @@ leak_mem (void)
 int
 main (int argc, char **argv)
 {
-//	void *non_leak;
-//	void *leak;
+	void *non_leak;
+	void *leak;
 	int i;
 
 	nautilus_leak_checker_init (*argv);
 
-//	non_leak = g_malloc(100);
-//	leak = g_malloc(200);
+	non_leak = g_malloc(100);
+	leak = g_malloc(200);
 //	g_assert(non_leak != NULL);
-//	non_leak = g_realloc(non_leak, 1000);
+	non_leak = g_realloc(non_leak, 1000);
 //	g_assert(non_leak != NULL);
-//	non_leak = g_realloc(non_leak, 10000);
+	non_leak = g_realloc(non_leak, 10000);
 //	leak = g_malloc(200);
 //	non_leak = g_realloc(non_leak, 100000);
 //	leak = g_malloc(200);
 //	g_assert(non_leak != NULL);
-//	g_free(non_leak);
+	g_free(non_leak);
 //
-//	non_leak = calloc(1, 100);
+	non_leak = calloc(1, 100);
 //	g_assert(non_leak != NULL);
 //	g_free(non_leak);
 //	leak = g_malloc(200);
@@ -669,7 +690,7 @@ main (int argc, char **argv)
 //	g_assert(non_leak != NULL);
 //	g_free(non_leak);
 //	leak = g_malloc(200);
-//	leak = memalign(16, 100);
+	leak = memalign(16, 100);
 //	leak = memalign(16, 100);
 //	leak = memalign(16, 100);
 //	leak = memalign(16, 100);
@@ -692,5 +713,6 @@ main (int argc, char **argv)
 
 	return 0;
 }
+
 
 #endif
