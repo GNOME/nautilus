@@ -1084,7 +1084,8 @@ update_user_level_menu_items (NautilusWindow *window)
 						convert_user_level_to_menu_path (user_level),
 						TRUE);
 
-	/* FIXME: We want to hide the customize button for the novice user level.
+	/* FIXME bugzilla.eazel.com 1247: 
+	 * We want to hide the customize button for the novice user level.
 	 * It cant find a bonobo ui handler call to hide a menu item, so make it 
 	 * insensitive for now.
 	 */

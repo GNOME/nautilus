@@ -58,7 +58,8 @@
 #include <ctype.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 
-/* FIXME: We should use inheritance instead of these special cases
+/* FIXME bugzilla.eazel.com 1243: 
+ * We should use inheritance instead of these special cases
  * for the desktop window.
  */
 #include "nautilus-desktop-window.h"
@@ -396,7 +397,8 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->statusbar_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (statusbar),
 							      "IhateGtkStatusbar");
 	
-	/* FIXME: We should use inheritance instead of these special cases
+	/* FIXME bugzilla.eazel.com 1243: 
+	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
@@ -405,15 +407,15 @@ nautilus_window_constructed (NautilusWindow *window)
 		/* set up window contents and policy */	
 		gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 
-		/* FIXME: Hard-wired size here? */
+		/* FIXME bugzilla.eazel.com 1244: Hard-wired size here? */
 		gtk_window_set_default_size (GTK_WINDOW (window), 650, 400);
 
 		window->content_hbox = gtk_hpaned_new ();
 
-		/* FIXME: No constant for the default? */
-		/* FIXME: Saved in pixels instead of in %? */
-		/* FIXME: No reality check on the value? */
-		/* FIXME: get_enum? why not get_integer? */
+		/* FIXME bugzilla.eazel.com 1245: No constant for the default? */
+		/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
+		/* FIXME bugzilla.eazel.com 1245: No reality check on the value? */
+		/* FIXME bugzilla.eazel.com 1245: get_enum? why not get_integer? */
 		sidebar_width = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 148);
 		gtk_paned_set_position (GTK_PANED (window->content_hbox), sidebar_width);
 	}
@@ -431,7 +433,8 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
 			    nautilus_window_goto_uri_callback, window);
 	
-	/* FIXME: We should use inheritance instead of these special cases
+	/* FIXME bugzilla.eazel.com 1243: 
+	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
         if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
@@ -441,7 +444,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show_all (window->content_hbox);
 	
 	/* enable mouse tracking for the index panel */
-	/* FIXME: How about the sidebar doing this for itself. */
+	/* FIXME bugzilla.eazel.com 1246: How about the sidebar doing this for itself. */
 	gtk_widget_add_events (GTK_WIDGET (window->sidebar), GDK_POINTER_MOTION_MASK);
 
 	/* CORBA and Bonobo setup */
@@ -1218,7 +1221,8 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 		
 		nautilus_view_frame_activate (new_view); 
 		
-		/* FIXME: We should use inheritance instead of these special cases
+		/* FIXME bugzilla.eazel.com 1243: 
+		 * We should use inheritance instead of these special cases
 		 * for the desktop window.
 		 */
 		if (!GTK_IS_PANED (window->content_hbox)) {
@@ -1231,7 +1235,8 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 		}
 	}
 
-	/* FIXME: Why is this needed? We just removed and added a new
+	/* FIXME bugzilla.eazel.com 1242: 
+	 * Why is this needed? We just removed and added a new
 	 * view above? The content_hbox should be able to take care of
 	 * itself.
 	 */

@@ -457,11 +457,6 @@ trilobite_service_get_type (void)
 	return trilobite_service_type;
 }
 
-/*
-  FIXME bugzilla.eazel.com 854:
-  determine whether we want to set the name/version/whatnot in the _new(...) call
-  or using _set_name(...) calls.
- */
 TrilobiteService*
 trilobite_service_new() 
 {

@@ -347,7 +347,6 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 
 
 /* handle a row being selected in the list view by playing the corresponding song */
-/* FIXME bugzilla.eazel.com 721: xmms shouldn't be hardwired */
 static void 
 selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event, NautilusMusicView* music_view)
 {
