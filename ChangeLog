@@ -1,3 +1,10 @@
+2002-03-05  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(get_image_cache_view): impl.
+	(cache_icon_new): add the icon to the cache view.
+	(cache_icon_unref): destroy the icon's view widget.
+
 2002-03-04 John Fleck <jfleck@inkstain.net>
 
 	* help/Makefile.am

@@ -61,6 +61,15 @@
 #include <stdio.h>
 #include <string.h>
 
+#undef IMAGE_CACHE_DEBUG
+
+#ifdef IMAGE_CACHE_DEBUG
+#  include <gtk/gtkwindow.h>
+#  include <gtk/gtkscrolledwindow.h>
+#  include <eel/eel-image-table.h>
+#  include <eel/eel-labeled-image.h>
+#endif
+
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
 #define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
 #define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
@@ -217,6 +226,9 @@ typedef struct {
 	IconRequest request;
 	gboolean scaled;
 	gboolean is_fallback;
+#ifdef IMAGE_CACHE_DEBUG
+	GtkWidget *image;
+#endif
 } CacheIcon;
 
 static CacheIcon *fallback_icon;
@@ -387,6 +399,37 @@ cache_key_destroy (CacheKey *key)
 	g_free (key);
 }
 
+#ifdef IMAGE_CACHE_DEBUG
+static GtkContainer *
+get_image_cache_view (void)
+{
+	static GtkWidget *view = NULL;
+
+	if (!view) {
+		GtkWidget *window;
+		GtkWidget *scroll;
+
+		window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_default_size (
+			GTK_WINDOW (window), 800, 600);
+		gtk_window_set_title (GTK_WINDOW (window),
+				      "Debug icon cache display");
+		scroll = gtk_scrolled_window_new (NULL, NULL);
+		gtk_scrolled_window_set_policy (
+			GTK_SCROLLED_WINDOW (scroll),
+			GTK_POLICY_ALWAYS,
+			GTK_POLICY_ALWAYS);
+		view = eel_image_table_new (FALSE);
+		gtk_scrolled_window_add_with_viewport (
+			GTK_SCROLLED_WINDOW (scroll), view);
+		gtk_container_add (GTK_CONTAINER (window), scroll);
+		gtk_widget_show_all (window);
+	}
+
+	return GTK_CONTAINER (view);
+}
+#endif
+
 static CacheIcon *
 cache_icon_new (GdkPixbuf *pixbuf,
 		IconRequest request,
@@ -416,8 +459,16 @@ cache_icon_new (GdkPixbuf *pixbuf,
 		icon->details = *details;
 	}
 
+#ifdef IMAGE_CACHE_DEBUG
+	icon->image = eel_labeled_image_new (
+		"cache image", icon->pixbuf);
+	gtk_widget_show (icon->image);
+	gtk_container_add (get_image_cache_view (), icon->image);
+#endif
+
 	/* Put it into the hash table. */
 	g_hash_table_insert (factory->cache_icons, pixbuf, icon);
+
 	return icon;
 }
 
@@ -486,6 +537,10 @@ cache_icon_unref (CacheIcon *icon)
 	g_hash_table_remove (factory->cache_icons, icon->pixbuf);
 
 	g_object_unref (icon->pixbuf);
+
+#ifdef IMAGE_CACHE_DEBUG
+	gtk_widget_destroy (icon->image);
+#endif
 
 	g_free (icon);
 }
