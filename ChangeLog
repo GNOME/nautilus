@@ -1,3 +1,15 @@
+2000-10-31  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* applets/launcher/Makefile.am:
+	* applets/launcher/nautilus-icon-applet.c:
+	* applets/launcher/nautilus-launcher-applet.c: (create_pixbufs),
+	(applet_change_pixel_size), (image_enter_event),
+	(image_leave_event), (get_root_window), (root_window_set_busy),
+	(root_window_set_not_busy), (image_button_press_event), (main):
+	* nautilus.spec.in:
+	Rename the launcher applet from 'nautilus-icon-applet' to
+	'nautilus-launcher-applet'.
+	
 2000-10-31  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-protocols.c:
