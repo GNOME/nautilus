@@ -3,12 +3,13 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 1.0.2
-  Last modified: April 12, 2001
+  Version: 1.0.3
+  Last modified: May 1, 2001
   This document is maintained by Eazel Inc.
   Maintainers: 
                Eazel Inc.
                Dan Mueth <dan@eazel.com>
+  Originally written by Vera Horiuchi for Eazel Inc.
   Translators:
                (translators put your name and email here)
 -->
@@ -20,19 +21,12 @@
 
  <bookinfo>
   <title>Nautilus User Manual</title>
-  <edition>v1.0.2</edition>
+  <edition>v1.0.3</edition>
   <authorgroup>
-   <author>
-    <firstname>Vera</firstname>
-    <surname>Horiuchi</surname>
-    <authorblurb>
-     <para>
-      <email>
-       vera@eazel.com
-      </email>
-     </para>
-    </authorblurb>
-   </author>
+
+   <!-- Vera belongs first here, but gnome-db2html2 reverses the
+         order, so I'm reversing them here for now. -->
+
    <author>
     <firstname>Dan</firstname>
     <surname>Mueth</surname>
@@ -44,6 +38,19 @@
      </para>
     </authorblurb>
    </author>
+
+   <author>
+    <firstname>Vera</firstname>
+    <surname>Horiuchi</surname>
+    <authorblurb>
+     <para>
+      <email>
+       vera@eazel.com
+      </email>
+     </para>
+    </authorblurb>
+   </author>
+
   </authorgroup>
 
   <copyright>
@@ -64,7 +71,7 @@
    <para>
     Permission is granted to copy, distribute and/or modify this document
     under the terms of the <ulink type="help"
-    url="gnome-help:gnufdl"><citetitle>GNU Free Documentation
+    url="gnome-help:fdl"><citetitle>GNU Free Documentation
     License</citetitle></ulink>, Version 1.1 or any later version
     published by the Free Software Foundation with no Invariant Sections,
     no Front-Cover Texts, and no Back-Cover Texts.
@@ -83,7 +90,7 @@
 
   <!-- this is the version of manual, not application --> 
   <releaseinfo>
-   This is version 1.0.2 of the Nautilus User's Manual.
+   This is version 1.0.3 of the Nautilus User's Manual.
   </releaseinfo>
 
  </bookinfo>
@@ -99,7 +106,7 @@
   <para>
    Nautilus is a core component of the GNOME desktop
    environment. Nautilus provides an easy way to view, manage, and
-   customize your own files and folders, as well as browse the Web.
+   customize your files and folders, as well as browse the Web.
   </para>
 
   <para>
@@ -222,7 +229,7 @@
 
    <para>
     The status bar contains information about menu items. To see an
-    explanation for a menu item, point to it and read the status bar
+    description of a menu item, point to it and read the status bar
     text.
    </para>
 
@@ -259,14 +266,14 @@
 
       <listitem>
        <para>
-        Open the preferences menu (shown below) and choose
-        Preferences.
+        Open the Preferences menu (shown below) and choose
+        Edit Preferences.
        </para>
       </listitem>
 
       <listitem>
        <para>
-        In the Desktop section, select "Use Nautilus to draw the
+        Choose Windows & Desktop and select "Use Nautilus to draw the
         desktop."
        </para>
       </listitem>
