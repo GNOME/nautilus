@@ -26,6 +26,7 @@
 */
 
 #include <config.h>
+#include <math.h>
 #include "nautilus-icon-container.h"
 
 #include "nautilus-global-preferences.h"
@@ -51,7 +52,6 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 

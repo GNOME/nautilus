@@ -29,6 +29,7 @@
  */
 
 #include <config.h>
+#include <math.h>
 #include "nautilus-property-browser.h"
 
 #include "nautilus-signaller.h"
@@ -85,7 +86,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-theme.h>
-#include <math.h>
 #include <atk/atkrelationset.h>
 
 /* property types */
@@ -210,7 +210,7 @@ static void     element_clicked_callback                        (GtkWidget      
 #define ERASE_OBJECT_NAME "erase.png"
 
 enum {
-	PROPERTY_TYPE,
+	PROPERTY_TYPE
 };
 
 static GtkTargetEntry drag_types[] = {

@@ -28,6 +28,7 @@
 
 
 #include <config.h>
+#include <math.h>
 #include "nautilus-icon-dnd.h"
 
 #include "nautilus-file-dnd.h"
@@ -56,7 +57,6 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 

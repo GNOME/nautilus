@@ -85,7 +85,7 @@ main (int argc, char *argv[])
 	eel_preferences_set_emergency_fallback_integer ("fruits/orange", 2);
 	eel_preferences_set_emergency_fallback_integer ("fruits/pear", 3);
 
-	//sleep (10);
+	/* sleep (10); */
 
 	window = test_window_new (NULL, 4);
 	test_window_set_title_with_pid (GTK_WINDOW (window), "Preferences Change");

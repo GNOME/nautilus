@@ -28,6 +28,7 @@
  */
 
 #include <config.h>
+#include <math.h>
 #include "fm-directory-view.h"
 
 #include "fm-error-reporting.h"
@@ -83,7 +84,6 @@
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <math.h>
 #include <unistd.h>
 
 /* The list view receives files from the directory model in chunks, to

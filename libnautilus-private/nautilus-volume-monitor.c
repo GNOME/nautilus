@@ -65,6 +65,17 @@
 #include <fstab.h>
 #endif
 
+#if defined(HAVE_SYS_MNTCTL_H) && defined(HAVE_SYS_VMOUNT_H) && defined(HAVE_SYS_VFS_H)
+
+#include <sys/mntctl.h>
+#include <sys/vfs.h>
+#include <sys/vmount.h>
+#include <fshelp.h>
+
+#define AIX_MNT 1
+
+#endif /* HAVE_SYS_MNTCTL_H && HAVE_SYS_VMOUNT_H && HAVE_SYS_VFS_H*/
+
 #ifdef HAVE_MNTENT_H
 #include <mntent.h>
 #define MOUNT_TABLE_PATH _PATH_MNTTAB
@@ -72,6 +83,8 @@
 #define SOLARIS_MNT 1
 #include <sys/mnttab.h>
 #define MOUNT_TABLE_PATH "/etc/mnttab"
+#elif defined (AIX_MNT)
+#define MOUNT_TABLE_PATH "/etc/filesystems"
 #else
 /* FIXME: How does this help anything? */
 #define MOUNT_TABLE_PATH ""
@@ -142,6 +155,13 @@ typedef struct mnttab MountTableEntry;
 #elif defined (HAVE_GETMNTINFO)
 typedef struct statfs MountTableEntry;
 #define MOUNT_TABLE_ENTRY_TYPE(ent) ((ent)->f_fstypename)
+#elif defined(AIX_MNT)
+typedef struct {
+        char mnt_mount[PATH_MAX];
+        char mnt_special[PATH_MAX];
+        char mnt_fstype[16];
+        char mnt_options[128];
+} MountTableEntry;
 #else
 typedef struct mntent MountTableEntry;
 #define MOUNT_TABLE_ENTRY_TYPE(ent) ((ent)->mnt_type)
@@ -513,6 +533,124 @@ has_removable_mntent_options (MountTableEntry *ent)
 
 #endif
 
+#if defined(AIX_MNT)
+
+/*
+ * functions to parse /etc/filesystems
+ *
+ */
+
+/* aix_fsprop_getc
+ *
+ * read character, ignoring comments (begin with '*', end with '\n'
+ */
+static int
+aix_fs_getc (FILE *fd)
+{
+	int c;
+
+	while ((c = getc (fd)) == '*') {
+		while (((c = getc (fd)) != '\n') && (c != EOF)) {
+		}
+	}
+}
+
+/* aix_fs_ignorespace
+ *
+ * eat all continuous spaces in a file
+ *
+ */
+
+static int
+aix_fs_ignorespace (FILE *fd)
+{
+	int c;
+	
+	while ((c = aix_fs_getc (fd)) != EOF) {
+		if (!g_ascii_isspace (c)) {
+			ungetc (c,fd);
+			return c;
+		}
+	}
+
+        return EOF;
+}
+
+/* aix_fs_getword
+ *
+ * read one word from file
+ */
+
+static int
+aix_fs_getword (FILE *fd, char *word)
+{
+	int c;
+
+	aix_fs_ignorespace (fd);
+
+	while (((c = aix_fs_getc (fd)) != EOF) && !g_ascii_isspace (c))	{
+		if (c == '"') {
+			while (((c = aix_fs_getc (fd)) != EOF) && (c != '"')) {
+				*word++ = c;
+			}
+		} else {
+			*word++ = c;
+		}
+	}
+	*word = 0;
+
+	return c;
+}
+
+/* aix_fs_get
+ *
+ * read mount points properties
+ */
+
+static int
+aix_fs_get (FILE *fd, MountTableEntry *prop)
+{
+	static char word[PATH_MAX] = { 0 };
+	char value[PATH_MAX];
+
+	/* read stanza */
+
+	if (word[0] == 0) {
+		if (aix_fs_getword (fd, word) == EOF)
+			return EOF;
+	}
+
+	word[strlen(word) - 1] = 0;
+	strcpy (prop->mnt_mount, word);
+
+	/* read attributes and value */
+
+	while (aix_fs_getword (fd, word) != EOF) {
+		/* test if is attribute or new stanza */
+
+		if (word[strlen(word) - 1] == ':') {
+			return 0;
+		}
+
+		/* read "=" */
+		aix_fs_getword (fd, value);
+
+		/* read value */
+		aix_fs_getword (fd, value);
+
+		if (strcmp (word, "dev") == 0) {
+			strcpy (prop->mnt_special, value);
+		} else if (strcmp (word, "vfs") == 0) {
+			strcpy (prop->mnt_fstype, value);
+		} else if (strcmp (word, "options") == 0) {
+			strcpy(prop->mnt_options, value);
+		}
+	}
+
+	return 0;
+}
+#endif
+
 /* get_removable_volumes
  *	
  * Returns a list a device paths.
@@ -527,7 +665,7 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 	MountTableEntry *ent;
 	NautilusVolume *volume;
 	char * fs_opt;
-#ifdef HAVE_SYS_MNTTAB_H
+#if defined(HAVE_SYS_MNTTAB_H) || defined(AIX_MNT)
         MountTableEntry ent_storage;
 #endif
 #ifdef HAVE_GETMNTINFO
@@ -556,7 +694,17 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 		return NULL;
 	}
 	
-#ifdef HAVE_SYS_MNTTAB_H
+#if defined(AIX_MNT)
+        ent = &ent_storage;
+	while (!aix_fs_get (file, ent)) {
+		if (strcmp ("cdrfs", ent->mnt_fstype) == 0) {
+			volume = create_volume (ent->mnt_special, ent->mnt_mount);
+			volume->is_removable = TRUE;
+			volumes = finish_creating_volume_and_prepend
+				(monitor, volume, ent->mnt_fstype, volumes);
+		}
+	}
+#elif defined(HAVE_SYS_MNTTAB_H)
         ent = &ent_storage;
 	while (! getmntent (file, ent)) {
 		if (eel_str_has_prefix (ent->mnt_special, noauto_string)) {
@@ -963,7 +1111,86 @@ build_volume_list_delta (GList *list_one, GList *list_two)
 
 
 
-#ifdef SOLARIS_MNT
+#ifdef AIX_MNT
+ 
+static GList *
+get_mount_list (NautilusVolumeMonitor *monitor)
+{
+	struct vfs_ent *fs_info;
+	struct vmount *vmount_info;
+	int vmount_number;
+	unsigned int vmount_size;
+	int current;
+	char *device;
+	char *mount;
+	char* fstype;
+	int is_removable;
+	int is_readonly;
+
+	NautilusVolume *volume;
+	GList *volumes = NULL;
+
+	if (mntctl (MCTL_QUERY, sizeof (vmount_size), &vmount_size) != 0) {
+		g_warning ("Unable to know the number of mounted volumes\n");
+
+		return NULL;
+	}
+
+	vmount_info = (struct vmount*)g_malloc (vmount_size);
+	if (vmount_info == NULL) {
+		g_warning ("Unable to allocate memory\n");
+		return NULL;
+	}
+
+	vmount_number = mntctl (MCTL_QUERY, vmount_size, vmount_info);
+
+	if (vmount_info->vmt_revision != VMT_REVISION) {
+		g_warning ("Bad vmount structure revision number, want %d, got %d\n", VMT_REVISION, vmount_info->vmt_revision);
+	}
+
+	if (vmount_number < 0) {
+		g_warning ("Unable to recover mounted volumes information\n");
+
+		g_free (vmount_info);
+		return NULL;
+	}
+
+	while (vmount_number > 0) {
+		device = vmt2dataptr (vmount_info, VMT_OBJECT);
+		mount = vmt2dataptr (vmount_info, VMT_STUB);
+		is_removable = (vmount_info->vmt_flags & MNT_REMOVABLE) ? 1 : 0;
+		is_readonly = (vmount_info->vmt_flags & MNT_READONLY) ? 1 : 0;
+
+		fs_info = getvfsbytype (vmount_info->vmt_gfstype);
+
+		if (fs_info == NULL) {
+			g_warning ("Unknown FS type !\n");
+			fstype = "???";
+		} else {
+			fstype = fs_info->vfsent_name;
+		}
+
+		volume = create_volume (device, mount);
+		volume->is_removable = is_removable;
+		volume->is_read_only = is_readonly;
+
+		volumes = finish_creating_volume_and_prepend
+				(monitor, volume, fstype, volumes);
+
+		/* next entry */
+
+		vmount_info = (struct vmount *)( (char*)vmount_info 
+						+ vmount_info->vmt_length);
+		vmount_number--;
+	}
+	
+	
+	g_free (vmount_info);
+
+        return volumes;
+}
+
+#elif defined(SOLARIS_MNT)
 
 static GList *
 get_mount_list (NautilusVolumeMonitor *monitor) 
@@ -992,7 +1219,7 @@ get_mount_list (NautilusVolumeMonitor *monitor)
         return volumes;
 }
 
-#else /* !SOLARIS_MNT */
+#else /* !AIX_MNT && !SOLARIS_MNT */
 
 static gboolean
 option_list_has_option (const char *optlist,
@@ -1214,10 +1441,7 @@ mount_volumes_check_status (NautilusVolumeMonitor *monitor)
 static int
 get_cdrom_type (const char *vol_dev_path, int* fd)
 {
-#ifndef SOLARIS_MNT
-	*fd = open (vol_dev_path, O_RDONLY|O_NONBLOCK);
-	return ioctl (*fd, CDROM_DISC_STATUS, CDSL_CURRENT);
-#else
+#ifdef SOLARIS_MNT	
 	GString *new_dev_path;
 	struct cdrom_tocentry entry;
 	struct cdrom_tochdr header;
@@ -1254,6 +1478,11 @@ get_cdrom_type (const char *vol_dev_path, int* fd)
 	}
 
 	return type;
+#elif defined(AIX_MNT)
+	return CDS_NO_INFO;
+#else
+	*fd = open (vol_dev_path, O_RDONLY|O_NONBLOCK);
+	return ioctl (*fd, CDROM_DISC_STATUS, CDSL_CURRENT);
 #endif
 }
 
@@ -1768,8 +1997,8 @@ load_additional_mount_list_info (GList *volume_list)
 	for (node = volume_list; node != NULL; node = node->next) {
 		volume = node->data;
 		
-#ifndef SOLARIS_MNT
-		/* These are set up by get_current_mount_list for Solaris. */
+#if !defined(SOLARIS_MNT) && !defined(AIX_MNT)
+		/* These are set up by get_current_mount_list for Solaris&AIX.*/
 		volume->is_removable = volume_is_removable (volume);
 #endif
 		if (volume->volume_name == NULL) {

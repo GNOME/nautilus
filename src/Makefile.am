@@ -35,6 +35,7 @@ LDADD =\
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(CORE_LIBS) \
+	$(POPT_LIBS) \
 	$(NULL)
 
 @INTLTOOL_DESKTOP_RULE@

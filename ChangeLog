@@ -1,3 +1,45 @@
+2003-04-23  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Look for popt and some aix headers
+	
+	* components/hardware/Nautilus_View_hardware.server.in.in:
+	Fix up LIBEXECDIR reference
+	
+	* components/history/nautilus-history-view.c:
+	* components/notes/nautilus-notes.c:
+	* components/throbber/nautilus-throbber.c:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-program-chooser.c:
+	* libnautilus-private/nautilus-volume-monitor.h:
+	* src/nautilus-applicable-views.h:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-sidebar-title.c:
+	* src/file-manager/fm-directory-view.c:
+	* test/test-nautilus-preferences-change.c: (main):
+	* test/test.c: (test_quit):
+	Fix c++ comments and commas at end of enums.
+	Move math.h includes to top.
+	
+	* data/Makefile.am:
+	Remove duplicate definitions
+	
+	* libnautilus-adapter/Makefile.am:
+	* libnautilus-private/Makefile.am:
+	* libnautilus/Makefile.am:
+	Add correct libs
+	
+	* libnautilus-private/nautilus-file-private.h:
+	Bitfields can't be enums.
+	
+	* libnautilus-private/nautilus-volume-monitor.c:
+	Implement AIX support.
+	
+	* src/Makefile.am:
+	Add POPT_FLAGS
+
 2003-04-16  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-information-panel.c: (burn_cd_callback),

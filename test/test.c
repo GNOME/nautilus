@@ -16,7 +16,7 @@ test_init (int *argc,
 int
 test_quit (int exit_code)
 {
-	//gnome_vfs_shutdown ();
+        /* gnome_vfs_shutdown (); */
 
 	if (gtk_main_level () > 0) {
 		gtk_main_quit ();

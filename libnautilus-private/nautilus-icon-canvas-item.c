@@ -23,6 +23,7 @@
  */
 
 #include <config.h>
+#include <math.h>
 #include "nautilus-icon-canvas-item.h"
 
 #include "nautilus-file-utilities.h"
@@ -51,7 +52,6 @@
 #include <atk/atkimage.h>
 #include <atk/atkcomponent.h>
 #include <atk/atknoopobject.h>
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -118,7 +118,7 @@ enum {
 	PROP_ADDITIONAL_TEXT,
     	PROP_HIGHLIGHTED_FOR_SELECTION,
     	PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
-    	PROP_HIGHLIGHTED_FOR_DROP,
+    	PROP_HIGHLIGHTED_FOR_DROP
 };
 
 typedef enum {

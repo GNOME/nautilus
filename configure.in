@@ -106,6 +106,15 @@ AC_SUBST(ENABLE_PROFILER)
 AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
 
 dnl ==========================================================================
+dnl Check for popt
+    
+AC_CHECK_LIB(popt, poptGetArg, POPT_LIBS=-lpopt,
+        [AC_CHECK_HEADER(popt.h, , AC_MSG_ERROR([[
+*** Couldn't find popt. Please download and install from
+*** ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/ and try again.]]))])
+AC_SUBST(POPT_LIBS)
+	
+dnl ==========================================================================
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
@@ -117,8 +126,8 @@ AC_SUBST(ORBIT_IDL)
 dnl ==========================================================================
 
 AC_CHECK_FUNCS(setmntent endmntent hasmntopt getmntinfo)
-AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h)
-
+AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h sys/mntctl.h sys/vfs.h sys/vmount.h)
+			      
 dnl ==========================================================================
 
 AC_CHECK_FUNCS(setenv unsetenv putenv)

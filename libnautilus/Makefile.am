@@ -14,6 +14,8 @@ libnautilus_la_LDFLAGS=\
 	-version-info 2:0:0 \
 	$(NULL)
 
+libnautilus_la_LIBADD = @ALL_LIBS@
+
 nautilus_view_component_idl_sources =		\
 	nautilus-view-component-stubs.c		\
 	nautilus-view-component-skels.c		\

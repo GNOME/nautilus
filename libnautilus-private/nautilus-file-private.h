@@ -111,7 +111,7 @@ struct NautilusFileDetails
 	eel_boolean_bit directory_count_failed        : 1;
 	eel_boolean_bit directory_count_is_up_to_date : 1;
 
-	NautilusRequestStatus deep_counts_status      : 2;
+	eel_boolean_bit deep_counts_status      : 2; /* NautilusRequestStatus */
 	/* no deep_counts_are_up_to_date field; since we expose
            intermediate values for this attribute, we do actually
            forget it rather than invalidating. */

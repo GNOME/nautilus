@@ -26,8 +26,6 @@ starthere_DATA= 	applications.desktop	\
 			serverconfig.desktop	\
 			$(NULL)
 
-DESKTOP_FILES=$(DESKTOP_IN_FILES:.in=)
-
 nautilusdatadir = $(datadir)/nautilus
 
 nautilusdata_DATA = \

@@ -12,6 +12,8 @@ libnautilus_adapter_la_LDFLAGS= \
 	-version-info 2:0:0	\
 	$(NULL)
 
+libnautilus_adapter_la_LIBADD= @ALL_LIBS@ ../libnautilus/libnautilus.la
+
 nautilus_adapter_factory_idl_sources =	        \
 	nautilus-adapter-factory-stubs.c	\
 	nautilus-adapter-factory-skels.c	\

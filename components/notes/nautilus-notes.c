@@ -59,7 +59,7 @@
 /* property bag getting and setting routines */
 enum {
 	TAB_IMAGE,
-	NOTES_URI,
+	NOTES_URI
 };
 
 typedef struct {

@@ -25,6 +25,7 @@
 /* This is the sidebar title widget, which is the title part of the sidebar. */
 
 #include <config.h>
+#include <math.h>
 #include "nautilus-sidebar-title.h"
 
 #include "nautilus-window.h"
@@ -53,7 +54,6 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-search-uri.h>
 #include <libnautilus-private/nautilus-theme.h>
-#include <math.h>
 #include <string.h>
 #include <stdlib.h>
 

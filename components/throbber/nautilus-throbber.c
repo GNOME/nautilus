@@ -26,6 +26,8 @@
  */
 
 #include <config.h>
+#include <math.h>
+
 #include "nautilus-throbber.h"
 
 #include <bonobo/bonobo-ui-toolbar-item.h>
@@ -45,7 +47,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-theme.h>
-#include <math.h>
 
 #define THROBBER_DEFAULT_TIMEOUT 100	/* Milliseconds Per Frame */
 
