@@ -135,7 +135,10 @@ static const char *nautilus_file_background_peek_theme_source (NautilusBackgroun
 static GdkWindow *
 nautilus_background_get_desktop_background_window (NautilusBackground *background)
 {
-	return GTK_LAYOUT (gtk_object_get_data (GTK_OBJECT (background), "icon_container"))->bin_window;
+	gpointer layout;
+
+	layout = gtk_object_get_data (GTK_OBJECT (background), "icon_container");
+	return layout != NULL ? GTK_LAYOUT (layout)->bin_window : NULL;
 }
 
 /* utility routine to handle mapping local image files in themes to a uri */
@@ -673,7 +676,8 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 	int	      height;
 	GdkGC        *gc;
 	GdkPixmap    *pixmap;
-	
+	GdkWindow    *background_window;
+
         if ((gboolean) GPOINTER_TO_INT (disconnect_signal)) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
 					       GTK_SIGNAL_FUNC (image_loading_done_callback),
@@ -690,7 +694,10 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 
 	set_root_pixmap (pixmap);
 
-	gdk_window_set_back_pixmap (nautilus_background_get_desktop_background_window (background), pixmap, FALSE);
+	background_window = nautilus_background_get_desktop_background_window (background);
+	if (background_window != NULL) {
+		gdk_window_set_back_pixmap (background_window, pixmap, FALSE);
+	}
 
 	/* We'd like to simply unref pixmap here, but due to a bug in gdk's handling of
 	 * foreign pixmaps, we can't - it would free the X resource.

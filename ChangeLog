@@ -1,3 +1,18 @@
+2001-03-05  John Harper  <jsh@eazel.com>
+
+	reviewed & checked in by: Darin Adler <darin@eazel.com>
+
+        Fix bug 7389 (crash when starting nautilus):
+
+        * libnautilus-extensions/nautilus-directory-background.c
+        (nautilus_background_get_desktop_background_window): check if
+        the `icon_container' object data (a GtkLayout widget) is
+        non-null before dereferencing it
+
+        (image_loading_done_callback): only pass result of
+        nautilus_background_get_desktop_background_window to
+        gdk_window_set_back_pixmap if it's non-null
+
 2001-03-05  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Robin * Slomkowski  <rslomkow@eazel.com>
