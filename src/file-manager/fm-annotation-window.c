@@ -84,7 +84,7 @@ static FMAnnotationWindow* create_annotation_window
 						  (NautilusFile		   *file,
 						   FMDirectoryView	   *directroy_view);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMAnnotationWindow, fm_annotation_window, GTK_TYPE_WINDOW)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMAnnotationWindow, fm_annotation_window, GNOME_TYPE_DIALOG)
 
 static void
 fm_annotation_window_initialize_class (FMAnnotationWindowClass *class)
@@ -252,7 +252,8 @@ static FMAnnotationWindow *
 create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 {
 	FMAnnotationWindow *window;
-	GtkWidget *hbox, *content_box;
+	GtkWidget *hbox;
+	GtkBox *content_box;
 	GtkWidget *label;
 	GtkWidget *table;
 	char *file_name, *title;
@@ -266,10 +267,12 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_annotation", "Nautilus");
 
-	/* allocate a vbox to hold the contents of the annotation window */
-	content_box = gtk_vbox_new (FALSE, GNOME_PAD);
-	gtk_container_add (GTK_CONTAINER (window), content_box);
-	
+	/* add the buttons */
+	gnome_dialog_append_buttons  (GNOME_DIALOG (window), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+
+	/* get the container box of the dialog */
+	content_box = GTK_BOX (GNOME_DIALOG (window)->vbox);
+
 	/* allocate an hbox to hold the icon and the title */
 	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
 	gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, GNOME_PAD);
@@ -294,9 +297,9 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	/* at first, there is only one hardwired type, so just add it here */
 	window->details->text_field = gtk_text_new (NULL, NULL);
         
-        font = nautilus_font_factory_get_font_from_preferences (12);
-        nautilus_gtk_widget_set_font (window->details->text_field, font);
-        gdk_font_unref (font);
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (window->details->text_field, font);
+	gdk_font_unref (font);
 
         gtk_text_set_editable (GTK_TEXT (window->details->text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (content_box), window->details->text_field, TRUE, TRUE, 0);	

@@ -29,6 +29,7 @@
 #include "fm-directory-view.h"
 
 #include <gtk/gtkwindow.h>
+#include <libgnomeui/gnome-dialog.h>
 #include <libnautilus-extensions/nautilus-file.h>
 
 typedef struct FMAnnotationWindow FMAnnotationWindow;
@@ -47,12 +48,12 @@ typedef struct FMAnnotationWindow FMAnnotationWindow;
 typedef struct FMAnnotationWindowDetails FMAnnotationWindowDetails;
 
 struct FMAnnotationWindow {
-	GtkWindow window;
+	GnomeDialog dialog;
 	FMAnnotationWindowDetails *details;	
 };
 
 struct FMAnnotationWindowClass {
-	GtkWindowClass parent_class;
+	GnomeDialogClass parent_class;
 };
 
 typedef struct FMAnnotationWindowClass FMAnnotationWindowClass;
