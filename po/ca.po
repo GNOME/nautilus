@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-06-12 13:04+0200\n"
-"PO-Revision-Date: 2003-06-12 13:06+0200\n"
+"POT-Creation-Date: 2003-06-28 17:50+0200\n"
+"PO-Revision-Date: 2003-06-28 17:53+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -156,7 +156,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "El fitxer arrossegat no pareix ser una imatge vàlida."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1728
+#: src/nautilus-property-browser.c:1730
 msgid "Erase"
 msgstr "Esborrar"
 
@@ -387,13 +387,25 @@ msgstr "Vista de l'arbre del Nautilus"
 msgid "Tree"
 msgstr "Arbre"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1135
 msgid "(Empty)"
 msgstr "(Buit)"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1135
 msgid "Loading..."
 msgstr "S'està carregant..."
+
+#: components/tree/nautilus-tree-view.c:503 nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Carpeta Inici"
+
+#: components/tree/nautilus-tree-view.c:505
+msgid "Filesystem"
+msgstr "Sistema de fitxers"
+
+#: components/tree/nautilus-tree-view.c:507
+msgid "Network Neighbourhood"
+msgstr "Entorn de xarxa"
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
@@ -1260,7 +1272,7 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then nautilus will use the user's home directory as the "
-"desktop. If it is false, then it will use ~/.gnome-desktop as the desktop."
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
 "Si és vertader, nautilus utilitzarà el directori personal de l'usuari com a "
 "escriptori. Si és fals, utilitzarà ~/Desktop com l'escriptori."
@@ -1321,7 +1333,9 @@ msgstr ""
 msgid ""
 "If true, labels will be placed beside icons icons rather than underneath "
 "them."
-msgstr "Si és veritat, les etiquetes es ficaran al costat de les icones en comptes de sota d'elles."
+msgstr ""
+"Si és veritat, les etiquetes es ficaran al costat de les icones en comptes "
+"de sota d'elles."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid "If true, new windows will use manual layout by default."
@@ -1739,7 +1753,7 @@ msgstr "reinicia"
 msgid "on the desktop"
 msgstr "a l'escriptori"
 
-#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+#: libnautilus-private/nautilus-desktop-link-monitor.c:102
 msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
@@ -1747,12 +1761,12 @@ msgstr ""
 "No podeu suprimir una icona de volum. Si voleu ejectar el volum, si us plau, "
 "utilitzeu «Ejecta» al menú del botó dret del volum."
 
-#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#: libnautilus-private/nautilus-desktop-link-monitor.c:105
 msgid "Can't delete volume"
 msgstr "No es pot suprimir el volum"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-file.c:5589
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -2196,7 +2210,7 @@ msgstr "Reemplaça-ho tot"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4410
+#: libnautilus-private/nautilus-file.c:4419
 #, c-format
 msgid "link to %s"
 msgstr "enllaç a %s"
@@ -2522,8 +2536,8 @@ msgid "Preparing to Empty the Trash..."
 msgstr "S'està preparant per a buidar la paperera..."
 
 #: libnautilus-private/nautilus-file-operations.c:2263
-#: src/file-manager/fm-desktop-icon-view.c:979
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+#: src/file-manager/fm-desktop-icon-view.c:987
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Empty Trash"
 msgstr "Buida la paperera"
 
@@ -2816,64 +2830,64 @@ msgstr "foo (124a còpia).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2649
+#: libnautilus-private/nautilus-file.c:2658
 msgid "today at 00:00:00 PM"
 msgstr "avuí a les 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2650
+#: libnautilus-private/nautilus-file.c:2659
 msgid "today at %-I:%M:%S %p"
 msgstr "avuí a les %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2652
+#: libnautilus-private/nautilus-file.c:2661
 msgid "today at 00:00 PM"
 msgstr "avuí a les %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2653
+#: libnautilus-private/nautilus-file.c:2662
 msgid "today at %-I:%M %p"
 msgstr "avuí a les %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2655
+#: libnautilus-private/nautilus-file.c:2664
 msgid "today, 00:00 PM"
 msgstr "avuí, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2656
+#: libnautilus-private/nautilus-file.c:2665
 msgid "today, %-I:%M %p"
 msgstr "avuí, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2658
-#: libnautilus-private/nautilus-file.c:2659
+#: libnautilus-private/nautilus-file.c:2667
+#: libnautilus-private/nautilus-file.c:2668
 msgid "today"
 msgstr "avuí"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2668
+#: libnautilus-private/nautilus-file.c:2677
 msgid "yesterday at 00:00:00 PM"
 msgstr "ahir a les 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2669
+#: libnautilus-private/nautilus-file.c:2678
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ahir a les %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2671
+#: libnautilus-private/nautilus-file.c:2680
 msgid "yesterday at 00:00 PM"
 msgstr "ahir a les 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2672
+#: libnautilus-private/nautilus-file.c:2681
 msgid "yesterday at %-I:%M %p"
 msgstr "ahir a les %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2674
+#: libnautilus-private/nautilus-file.c:2683
 msgid "yesterday, 00:00 PM"
 msgstr "ahir, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2675
+#: libnautilus-private/nautilus-file.c:2684
 msgid "yesterday, %-I:%M %p"
 msgstr "ahir, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2677
-#: libnautilus-private/nautilus-file.c:2678
+#: libnautilus-private/nautilus-file.c:2686
+#: libnautilus-private/nautilus-file.c:2687
 msgid "yesterday"
 msgstr "ahir"
 
@@ -2882,133 +2896,133 @@ msgstr "ahir"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2689
+#: libnautilus-private/nautilus-file.c:2698
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Dimecres, 00 de Setembre del 0000 a les 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2690
+#: libnautilus-private/nautilus-file.c:2699
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %d de %B del %Y a les %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2692
+#: libnautilus-private/nautilus-file.c:2701
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Dl, 00 d'Oct del 0000 a les 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2693
+#: libnautilus-private/nautilus-file.c:2702
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y a les %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2695
+#: libnautilus-private/nautilus-file.c:2704
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Dl, 00 d'Oct del 0000 a les 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2696
+#: libnautilus-private/nautilus-file.c:2705
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y a les %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2698
+#: libnautilus-private/nautilus-file.c:2707
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 d'Oct del 0000 a les 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2699
+#: libnautilus-private/nautilus-file.c:2708
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y a les %I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2701
+#: libnautilus-private/nautilus-file.c:2710
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 d'Oct del 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2702
+#: libnautilus-private/nautilus-file.c:2711
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y %I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2704
+#: libnautilus-private/nautilus-file.c:2713
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2705
+#: libnautilus-private/nautilus-file.c:2714
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2707
+#: libnautilus-private/nautilus-file.c:2716
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2708
+#: libnautilus-private/nautilus-file.c:2717
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3990
+#: libnautilus-private/nautilus-file.c:3999
 msgid "0 items"
 msgstr "0 elements"
 
-#: libnautilus-private/nautilus-file.c:3990
+#: libnautilus-private/nautilus-file.c:3999
 msgid "0 folders"
 msgstr "0 carpetes"
 
-#: libnautilus-private/nautilus-file.c:3991
+#: libnautilus-private/nautilus-file.c:4000
 msgid "0 files"
 msgstr "0 fitxers"
 
-#: libnautilus-private/nautilus-file.c:3995
+#: libnautilus-private/nautilus-file.c:4004
 msgid "1 item"
 msgstr "1 element"
 
-#: libnautilus-private/nautilus-file.c:3995
+#: libnautilus-private/nautilus-file.c:4004
 msgid "1 folder"
 msgstr "1 carpeta"
 
-#: libnautilus-private/nautilus-file.c:3996
+#: libnautilus-private/nautilus-file.c:4005
 msgid "1 file"
 msgstr "1 fitxer"
 
-#: libnautilus-private/nautilus-file.c:3999
+#: libnautilus-private/nautilus-file.c:4008
 #, c-format
 msgid "%u items"
 msgstr "%u elements"
 
-#: libnautilus-private/nautilus-file.c:3999
+#: libnautilus-private/nautilus-file.c:4008
 #, c-format
 msgid "%u folders"
 msgstr "%u carpetes"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4009
 #, c-format
 msgid "%u files"
 msgstr "%u fitxers"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4312
-#: libnautilus-private/nautilus-file.c:4328
+#: libnautilus-private/nautilus-file.c:4321
+#: libnautilus-private/nautilus-file.c:4337
 msgid "? items"
 msgstr "? elements"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4318
+#: libnautilus-private/nautilus-file.c:4327
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4333
+#: libnautilus-private/nautilus-file.c:4342
 msgid "unknown type"
 msgstr "tipus desconegut"
 
-#: libnautilus-private/nautilus-file.c:4336
+#: libnautilus-private/nautilus-file.c:4345
 msgid "unknown MIME type"
 msgstr "tipus de MIME desconegut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4342
+#: libnautilus-private/nautilus-file.c:4351
 #: src/file-manager/fm-properties-window.c:1126
 msgid "unknown"
 msgstr "desconegut"
 
-#: libnautilus-private/nautilus-file.c:4374
+#: libnautilus-private/nautilus-file.c:4383
 msgid "program"
 msgstr "programa"
 
-#: libnautilus-private/nautilus-file.c:4386
+#: libnautilus-private/nautilus-file.c:4395
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3018,7 +3032,7 @@ msgstr ""
 "probablement significa que el fitxer gnome-vfs.keys no està en el lloc "
 "correcte o no es troba per alguna altra raó."
 
-#: libnautilus-private/nautilus-file.c:4390
+#: libnautilus-private/nautilus-file.c:4399
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3027,11 +3041,11 @@ msgstr ""
 "No s'ha trobat la descripció del tipus mime \"%s\" (el fitxer és \"%s\"), "
 "informeu-ne si us plau a la llista de correu del gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4404
+#: libnautilus-private/nautilus-file.c:4413
 msgid "link"
 msgstr "enllaç"
 
-#: libnautilus-private/nautilus-file.c:4424
+#: libnautilus-private/nautilus-file.c:4433
 msgid "link (broken)"
 msgstr "enllaç (trencat)"
 
@@ -3139,7 +3153,7 @@ msgid "Display _files when they are clicked"
 msgstr "Mostra els _fitxers quan se'ls faci clic"
 
 #: libnautilus-private/nautilus-global-preferences.c:158
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:65
 msgid "_Ask each time"
 msgstr "Pregunt_a cada vegada"
 
@@ -3232,17 +3246,17 @@ msgid "24"
 msgstr "24"
 
 #: libnautilus-private/nautilus-global-preferences.c:216
-#: src/nautilus-file-management-properties.glade.h:84
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "size"
 msgstr "mida"
 
 #: libnautilus-private/nautilus-global-preferences.c:217
-#: src/nautilus-file-management-properties.glade.h:85
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "type"
 msgstr "tipus"
 
 #: libnautilus-private/nautilus-global-preferences.c:218
-#: src/nautilus-file-management-properties.glade.h:78
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "date modified"
 msgstr "data de modificació"
 
@@ -3251,27 +3265,27 @@ msgid "date changed"
 msgstr "data de canvi"
 
 #: libnautilus-private/nautilus-global-preferences.c:220
-#: src/nautilus-file-management-properties.glade.h:77
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "date accessed"
 msgstr "data d'accés"
 
 #: libnautilus-private/nautilus-global-preferences.c:221
-#: src/nautilus-file-management-properties.glade.h:82
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "owner"
 msgstr "propietari"
 
 #: libnautilus-private/nautilus-global-preferences.c:222
-#: src/nautilus-file-management-properties.glade.h:79
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "group"
 msgstr "grup"
 
 #: libnautilus-private/nautilus-global-preferences.c:223
-#: src/nautilus-file-management-properties.glade.h:83
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "permissions"
 msgstr "permisos"
 
 #: libnautilus-private/nautilus-global-preferences.c:224
-#: src/nautilus-file-management-properties.glade.h:81
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "octal permissions"
 msgstr "permisos en octal"
 
@@ -3281,7 +3295,7 @@ msgid "MIME type"
 msgstr "Tipus MIME"
 
 #: libnautilus-private/nautilus-global-preferences.c:226
-#: src/nautilus-file-management-properties.glade.h:80
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "none"
 msgstr "cap"
 
@@ -3298,47 +3312,47 @@ msgstr "cap"
 msgid "%s's Home"
 msgstr "Directori de l'usuari %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2092
+#: libnautilus-private/nautilus-icon-canvas-item.c:2108
 msgid "file icon"
 msgstr "icona d'arxiu"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2465
+#: libnautilus-private/nautilus-icon-canvas-item.c:2481
 msgid "editable text"
 msgstr "text editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2466
+#: libnautilus-private/nautilus-icon-canvas-item.c:2482
 msgid "the editable label"
 msgstr "la etiqueta editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2473
+#: libnautilus-private/nautilus-icon-canvas-item.c:2489
 msgid "additional text"
 msgstr "text addicional"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2474
+#: libnautilus-private/nautilus-icon-canvas-item.c:2490
 msgid "some more text"
 msgstr "una mica més de text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2481
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "highlighted for selection"
 msgstr "ressaltat per sel·lecció"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2482
+#: libnautilus-private/nautilus-icon-canvas-item.c:2498
 msgid "whether we are highlighted for a selection"
 msgstr "si estem o no remarcats per una sel·lecció"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2489
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "highlighted as keyboard focus"
 msgstr "ressaltats per focus de teclat"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2490
+#: libnautilus-private/nautilus-icon-canvas-item.c:2506
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "si estem o no remarcats per tenir el focus tel teclat"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2498
+#: libnautilus-private/nautilus-icon-canvas-item.c:2514
 msgid "highlighted for drop"
 msgstr "remarcat per soltar"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2499
+#: libnautilus-private/nautilus-icon-canvas-item.c:2515
 msgid "whether we are highlighted for a D&D drop"
 msgstr "si estem o no remarcats per un Arrastrar &i Soltar"
 
@@ -4124,38 +4138,38 @@ msgid "Unknown"
 msgstr "Desconegut"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:958
+#: libnautilus-private/nautilus-volume-monitor.c:1004
 msgid "Floppy"
 msgstr "Disquet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:959
-#: libnautilus-private/nautilus-volume-monitor.c:988
+#: libnautilus-private/nautilus-volume-monitor.c:1005
+#: libnautilus-private/nautilus-volume-monitor.c:1034
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:960
+#: libnautilus-private/nautilus-volume-monitor.c:1006
 msgid "Zip Drive"
 msgstr "Unitat Zip"
 
-#: libnautilus-private/nautilus-volume-monitor.c:975
-#: libnautilus-private/nautilus-volume-monitor.c:1019
+#: libnautilus-private/nautilus-volume-monitor.c:1021
+#: libnautilus-private/nautilus-volume-monitor.c:1065
 msgid "Audio CD"
 msgstr "Àudio CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1010
+#: libnautilus-private/nautilus-volume-monitor.c:1056
 msgid "Root Volume"
 msgstr "Volum arrel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1689
+#: libnautilus-private/nautilus-volume-monitor.c:1735
 msgid "Mount Error"
 msgstr "S'ha produït un error de muntatge"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1689
+#: libnautilus-private/nautilus-volume-monitor.c:1735
 msgid "Unmount Error"
 msgstr "S'ha produït un error de desmuntatge"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1762
+#: libnautilus-private/nautilus-volume-monitor.c:1808
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4164,7 +4178,7 @@ msgstr ""
 "capdisquet en la unitat."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1766
+#: libnautilus-private/nautilus-volume-monitor.c:1812
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4172,7 +4186,7 @@ msgstr ""
 "Nautilus no ha pogut muntar el volum. Probablement no hi ha cap medi en el "
 "dispositiu."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1772
+#: libnautilus-private/nautilus-volume-monitor.c:1818
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4180,7 +4194,7 @@ msgstr ""
 "Nautilus no ha pogut muntar la unitat de disquet. El disquet probablement "
 "està en un format que no es pot muntar."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1775
+#: libnautilus-private/nautilus-volume-monitor.c:1821
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4188,20 +4202,20 @@ msgstr ""
 "Nautilus no ha pogut muntar el volum seleccionat. El volum probablement està "
 "en un format que no es pot muntar."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1780
+#: libnautilus-private/nautilus-volume-monitor.c:1826
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus no ha pogut muntar la unitat de disquet seleccionada."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1782
+#: libnautilus-private/nautilus-volume-monitor.c:1828
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus no ha pogut muntar el volum seleccionat."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1787
+#: libnautilus-private/nautilus-volume-monitor.c:1833
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus no ha pogut desmuntar el volum seleccionat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1992
+#: libnautilus-private/nautilus-volume-monitor.c:2038
 msgid "ISO 9660 Volume"
 msgstr "Volum ISO 9660"
 
@@ -4248,10 +4262,6 @@ msgstr "Canvia com es gestionen els fitxers"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Gestió de fitxers"
-
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Carpeta Inici"
 
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
@@ -4362,104 +4372,104 @@ msgstr "Visualitza com a _icones"
 msgid "View as _List"
 msgstr "Visualitza com _llista"
 
-#: src/file-manager/fm-desktop-icon-view.c:573
+#: src/file-manager/fm-desktop-icon-view.c:574
 msgid "Background"
 msgstr "Segon pla"
 
-#: src/file-manager/fm-desktop-icon-view.c:743
+#: src/file-manager/fm-desktop-icon-view.c:744
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Error a l'executar el programa d'utilitat «%s»: %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:997
+#: src/file-manager/fm-desktop-icon-view.c:1005
 msgid "E_ject"
 msgstr "E_jecta"
 
-#: src/file-manager/fm-desktop-icon-view.c:1097
+#: src/file-manager/fm-desktop-icon-view.c:1105
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "Desm_unta el volum"
 
-#: src/file-manager/fm-directory-view.c:491
+#: src/file-manager/fm-directory-view.c:493
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "Això obrirà %d finestres separades. Esteu segur que voleu això?"
 
-#: src/file-manager/fm-directory-view.c:493
+#: src/file-manager/fm-directory-view.c:495
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Obre en %d finestres"
 
-#: src/file-manager/fm-directory-view.c:846
+#: src/file-manager/fm-directory-view.c:848
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Esteu segur que voleu eliminar permanentment l'element \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:850
+#: src/file-manager/fm-directory-view.c:852
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "Segur que voleu eliminar permanentment els %d elements seleccionats?"
 
-#: src/file-manager/fm-directory-view.c:856
+#: src/file-manager/fm-directory-view.c:858
 msgid "Delete?"
 msgstr "Voleu suprimir?"
 
-#: src/file-manager/fm-directory-view.c:1539
+#: src/file-manager/fm-directory-view.c:1541
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seleccionat"
 
-#: src/file-manager/fm-directory-view.c:1541
+#: src/file-manager/fm-directory-view.c:1543
 msgid "1 folder selected"
 msgstr "1 directori seleccionat"
 
-#: src/file-manager/fm-directory-view.c:1544
+#: src/file-manager/fm-directory-view.c:1546
 #, c-format
 msgid "%d folders selected"
 msgstr "%d directoris seleccionats"
 
-#: src/file-manager/fm-directory-view.c:1551
+#: src/file-manager/fm-directory-view.c:1553
 msgid " (containing 0 items)"
 msgstr " (contenint 0 elements)"
 
-#: src/file-manager/fm-directory-view.c:1553
+#: src/file-manager/fm-directory-view.c:1555
 msgid " (containing 1 item)"
 msgstr " (contenint 1 element)"
 
-#: src/file-manager/fm-directory-view.c:1555
+#: src/file-manager/fm-directory-view.c:1557
 #, c-format
 msgid " (containing %d items)"
 msgstr " (contenint %d elements)"
 
-#: src/file-manager/fm-directory-view.c:1562
+#: src/file-manager/fm-directory-view.c:1564
 msgid " (containing a total of 0 items)"
 msgstr " (contenint un total de 0 elements)"
 
-#: src/file-manager/fm-directory-view.c:1564
+#: src/file-manager/fm-directory-view.c:1566
 msgid " (containing a total of 1 item)"
 msgstr " (contenint un total d'1 element)"
 
-#: src/file-manager/fm-directory-view.c:1566
+#: src/file-manager/fm-directory-view.c:1568
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (contenint un total de %d elements)"
 
-#: src/file-manager/fm-directory-view.c:1579
+#: src/file-manager/fm-directory-view.c:1581
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" seleccionat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1583
+#: src/file-manager/fm-directory-view.c:1585
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d elements seleccionats (%s)"
 
-#: src/file-manager/fm-directory-view.c:1590
+#: src/file-manager/fm-directory-view.c:1592
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 altre element seleccionat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1593
+#: src/file-manager/fm-directory-view.c:1595
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "altres %d elements seleccionats (%s)"
@@ -4471,7 +4481,7 @@ msgstr "altres %d elements seleccionats (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1622
+#: src/file-manager/fm-directory-view.c:1624
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4480,7 +4490,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1747
+#: src/file-manager/fm-directory-view.c:1749
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4489,17 +4499,17 @@ msgstr ""
 "La carpeta \"%s\" conté més fitxers dels que el Nautilus pot manegar. Alguns "
 "fitxers no es visualitzaran."
 
-#: src/file-manager/fm-directory-view.c:1754
+#: src/file-manager/fm-directory-view.c:1756
 msgid "Too Many Files"
 msgstr "Massa fitxers"
 
-#: src/file-manager/fm-directory-view.c:3048
+#: src/file-manager/fm-directory-view.c:3050
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "\"%s\" no es pot moure a la paperera. Voleu suprimir-lo immediatament?"
 
-#: src/file-manager/fm-directory-view.c:3053
+#: src/file-manager/fm-directory-view.c:3055
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4508,7 +4518,7 @@ msgstr ""
 "Els %d elements seleccionats no es poden moure a la paperera. Voleu suprimir-"
 "los immediatament?"
 
-#: src/file-manager/fm-directory-view.c:3057
+#: src/file-manager/fm-directory-view.c:3059
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4517,16 +4527,16 @@ msgstr ""
 "%d dels elements seleccionats no es poden moure a la paperera. Voleu "
 "suprimir aquests %d elements immediatament?"
 
-#: src/file-manager/fm-directory-view.c:3065
+#: src/file-manager/fm-directory-view.c:3067
 msgid "Delete Immediately?"
 msgstr "Voleu suprimir immediatament?"
 
-#: src/file-manager/fm-directory-view.c:3097
+#: src/file-manager/fm-directory-view.c:3099
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Esteu segur de que voleu suprimir permanentment \"%s\" de la paperera?"
 
-#: src/file-manager/fm-directory-view.c:3101
+#: src/file-manager/fm-directory-view.c:3103
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4535,49 +4545,49 @@ msgstr ""
 "Esteu segur de que voleu suprimir permanentment els %d elements seleccionats "
 "de la paperera?"
 
-#: src/file-manager/fm-directory-view.c:3107
+#: src/file-manager/fm-directory-view.c:3109
 msgid "Delete From Trash?"
 msgstr "Suprimeixo des de la paperera?"
 
-#: src/file-manager/fm-directory-view.c:3385
-#: src/file-manager/fm-directory-view.c:3427
+#: src/file-manager/fm-directory-view.c:3387
+#: src/file-manager/fm-directory-view.c:3429
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Utilitza \"%s\" per obrir l'element seleccionat"
 
-#: src/file-manager/fm-directory-view.c:3508
-#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#: src/file-manager/fm-directory-view.c:3510
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Other _Application..."
 msgstr "Una altra _aplicació...."
 
-#: src/file-manager/fm-directory-view.c:3508
+#: src/file-manager/fm-directory-view.c:3510
 msgid "An _Application..."
 msgstr "Una _aplicació...."
 
-#: src/file-manager/fm-directory-view.c:3513
-#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+#: src/file-manager/fm-directory-view.c:3515
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
 msgstr "Un altre _visualitzador..."
 
-#: src/file-manager/fm-directory-view.c:3513
+#: src/file-manager/fm-directory-view.c:3515
 msgid "A _Viewer..."
 msgstr "Un _visualitzador..."
 
-#: src/file-manager/fm-directory-view.c:3595
+#: src/file-manager/fm-directory-view.c:3597
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "No s'ha pogut completar l'acció especificada: %s"
 
-#: src/file-manager/fm-directory-view.c:3619
+#: src/file-manager/fm-directory-view.c:3621
 msgid "Could not complete specified action."
 msgstr "No s'ha pogut completar l'acció especificada."
 
-#: src/file-manager/fm-directory-view.c:4121
+#: src/file-manager/fm-directory-view.c:4123
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Executa \"%s\" sobre qualsevol element seleccionat"
 
-#: src/file-manager/fm-directory-view.c:4329
+#: src/file-manager/fm-directory-view.c:4340
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4587,11 +4597,11 @@ msgstr ""
 "seqüències. La seqüència escollida des del menú s'executarà amb cada un dels "
 "elements escollits com a entrada."
 
-#: src/file-manager/fm-directory-view.c:4332
+#: src/file-manager/fm-directory-view.c:4343
 msgid "About Scripts"
 msgstr "Quant a seqüències"
 
-#: src/file-manager/fm-directory-view.c:4333
+#: src/file-manager/fm-directory-view.c:4344
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4633,17 +4643,17 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: posició i mida de la finestra actual"
 
-#: src/file-manager/fm-directory-view.c:4454
+#: src/file-manager/fm-directory-view.c:4465
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" es mourà si seleccioneu l'ordre enganxar fitxers"
 
-#: src/file-manager/fm-directory-view.c:4458
+#: src/file-manager/fm-directory-view.c:4469
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" es copiarà si seleccioneu l'ordre enganxar fitxers"
 
-#: src/file-manager/fm-directory-view.c:4465
+#: src/file-manager/fm-directory-view.c:4476
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4651,7 +4661,7 @@ msgstr ""
 "Els %d elements seleccionats es mouran si seleccioneu l'ordre enganxar "
 "fitxers"
 
-#: src/file-manager/fm-directory-view.c:4469
+#: src/file-manager/fm-directory-view.c:4480
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -4659,81 +4669,81 @@ msgstr ""
 "Els %d elements seleccionats es copiaran si seleccioneu l'ordre enganxar "
 "fitxers"
 
-#: src/file-manager/fm-directory-view.c:4554
+#: src/file-manager/fm-directory-view.c:4559
 msgid "There is nothing on the clipboard to paste."
 msgstr "No hi ha res al porta-retalls per enganxar."
 
-#: src/file-manager/fm-directory-view.c:4738
+#: src/file-manager/fm-directory-view.c:4816
 msgid "Open _in This Window"
 msgstr "Obre _en aquesta Finestra"
 
-#: src/file-manager/fm-directory-view.c:4741
-#: src/file-manager/nautilus-directory-view-ui.xml.h:20
+#: src/file-manager/fm-directory-view.c:4819
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open _in New Window"
 msgstr "Obre en una nova f_inestra"
 
-#: src/file-manager/fm-directory-view.c:4743
+#: src/file-manager/fm-directory-view.c:4821
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Obre _en %d _noves finestres"
 
-#: src/file-manager/fm-directory-view.c:4761
+#: src/file-manager/fm-directory-view.c:4839
 msgid "_Delete from Trash"
 msgstr "_Suprimeix de la paperera"
 
-#: src/file-manager/fm-directory-view.c:4763
+#: src/file-manager/fm-directory-view.c:4841
 msgid "Delete all selected items permanently"
 msgstr "Suprimeix tots els elements seleccionats permanentment"
 
-#: src/file-manager/fm-directory-view.c:4766
-#: src/file-manager/fm-directory-view.c:5041
-#: src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/file-manager/fm-directory-view.c:4844
+#: src/file-manager/fm-directory-view.c:5125
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Mo_ve to Trash"
 msgstr "Mo_u a la paperera"
 
-#: src/file-manager/fm-directory-view.c:4768
-#: src/file-manager/nautilus-directory-view-ui.xml.h:16
+#: src/file-manager/fm-directory-view.c:4846
+#: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move each selected item to the Trash"
 msgstr "Mou cada element seleccionat a la Paperera"
 
-#: src/file-manager/fm-directory-view.c:4792
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/fm-directory-view.c:4870
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Delete"
 msgstr "_Suprimeix"
 
-#: src/file-manager/fm-directory-view.c:4812
+#: src/file-manager/fm-directory-view.c:4890
 msgid "Ma_ke Links"
 msgstr "Crea _enllaços"
 
-#: src/file-manager/fm-directory-view.c:4813
-#: src/file-manager/nautilus-directory-view-ui.xml.h:14
+#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Ma_ke Link"
 msgstr "Crea un _enllaç"
 
-#: src/file-manager/fm-directory-view.c:4826
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/fm-directory-view.c:4904
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Empty Trash"
 msgstr "_Buida la paperera"
 
-#: src/file-manager/fm-directory-view.c:4839
+#: src/file-manager/fm-directory-view.c:4917
 msgid "Cu_t File"
 msgstr "Re_talla el fitxer"
 
-#: src/file-manager/fm-directory-view.c:4840
-#: src/file-manager/nautilus-directory-view-ui.xml.h:7
+#: src/file-manager/fm-directory-view.c:4918
+#: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Cu_t Files"
 msgstr "Re_talla els fitxer"
 
-#: src/file-manager/fm-directory-view.c:4849
+#: src/file-manager/fm-directory-view.c:4927
 msgid "_Copy File"
 msgstr "_Còpia el fitxer"
 
-#: src/file-manager/fm-directory-view.c:4850
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/fm-directory-view.c:4928
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Copy Files"
 msgstr "_Còpia els fitxers"
 
-#: src/file-manager/fm-directory-view.c:5032
+#: src/file-manager/fm-directory-view.c:5116
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4741,7 +4751,7 @@ msgstr ""
 "Aquest enllaç no es pot usar, perquè no té cap destinació. Voleu moure "
 "aquest enllaç a la paperera?"
 
-#: src/file-manager/fm-directory-view.c:5035
+#: src/file-manager/fm-directory-view.c:5119
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4750,11 +4760,11 @@ msgstr ""
 "Aquest enllaç no es pot utilitzar, perquè el seu objectiu «%s» no existeix. "
 "Voleu moure aquest enllaç a la paperera?"
 
-#: src/file-manager/fm-directory-view.c:5041
+#: src/file-manager/fm-directory-view.c:5125
 msgid "Broken Link"
 msgstr "Enllaç trencat"
 
-#: src/file-manager/fm-directory-view.c:5098
+#: src/file-manager/fm-directory-view.c:5182
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4763,28 +4773,28 @@ msgstr ""
 "\"%s\" és un fitxer de text executable. Voleu executar-lo o visualitzar-ne "
 "el contingut?"
 
-#: src/file-manager/fm-directory-view.c:5104
+#: src/file-manager/fm-directory-view.c:5188
 msgid "Run or Display?"
 msgstr "Voleu executar-lo o visualitzar-lo?"
 
-#: src/file-manager/fm-directory-view.c:5105
+#: src/file-manager/fm-directory-view.c:5189
 msgid "_Display"
 msgstr "_Mostra"
 
-#: src/file-manager/fm-directory-view.c:5106
+#: src/file-manager/fm-directory-view.c:5190
 msgid "Run in _Terminal"
 msgstr "Executa en un _terminal"
 
-#: src/file-manager/fm-directory-view.c:5109
+#: src/file-manager/fm-directory-view.c:5193
 msgid "_Run"
 msgstr "E_xecuta"
 
-#: src/file-manager/fm-directory-view.c:5312
+#: src/file-manager/fm-directory-view.c:5396
 #, c-format
 msgid "Opening \"%s\""
 msgstr "S'està obrint \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5318
+#: src/file-manager/fm-directory-view.c:5402
 msgid "Cancel Open?"
 msgstr "Cancel·lar obrir?"
 
@@ -4920,74 +4930,74 @@ msgstr "S'està reanomenant \"%s\" a \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Cancel·lo reanomenar?"
 
-#: src/file-manager/fm-icon-view.c:157
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Name"
 msgstr "per _nom"
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by name in rows"
 msgstr "Mantingues les icones ordenades per nom en files"
 
-#: src/file-manager/fm-icon-view.c:164
+#: src/file-manager/fm-icon-view.c:168
 msgid "by _Size"
 msgstr "per _mida"
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by size in rows"
 msgstr "Mantingues les icones ordenades per mida en files"
 
-#: src/file-manager/fm-icon-view.c:171
+#: src/file-manager/fm-icon-view.c:175
 msgid "by _Type"
 msgstr "per _tipus"
 
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:176
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by type in rows"
 msgstr "Mantenir les icones ordenades per tipus en files"
 
-#: src/file-manager/fm-icon-view.c:178
+#: src/file-manager/fm-icon-view.c:182
 msgid "by Modification _Date"
 msgstr "per _data de modificació"
 
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Mantingues les icones ordenades per data de modificació en files"
 
-#: src/file-manager/fm-icon-view.c:185
+#: src/file-manager/fm-icon-view.c:189
 msgid "by _Emblems"
 msgstr "per _distintius"
 
-#: src/file-manager/fm-icon-view.c:186
+#: src/file-manager/fm-icon-view.c:190
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Mantingues les icones ordenades per distintius en files"
 
-#: src/file-manager/fm-icon-view.c:1594
+#: src/file-manager/fm-icon-view.c:1605
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "Restaura les icones a la _mida original"
 
-#: src/file-manager/fm-icon-view.c:1595
+#: src/file-manager/fm-icon-view.c:1606
 msgid "Restore Icon's Original Si_ze"
 msgstr "Restaura la icona a la _mida original"
 
-#: src/file-manager/fm-icon-view.c:1932
+#: src/file-manager/fm-icon-view.c:1943
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "s'està apuntant a \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2511
+#: src/file-manager/fm-icon-view.c:2522
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Només es pot arrossegar i deixar en sistemes de fitxers locals."
 
-#: src/file-manager/fm-icon-view.c:2512 src/file-manager/fm-icon-view.c:2531
+#: src/file-manager/fm-icon-view.c:2523 src/file-manager/fm-icon-view.c:2542
 msgid "Drag and Drop error"
 msgstr "Error d'arrossegar i deixar"
 
-#: src/file-manager/fm-icon-view.c:2530
+#: src/file-manager/fm-icon-view.c:2541
 msgid "An invalid drag type was used."
 msgstr "S'ha utilitzat un tipus d'arrossegament no vàlid."
 
@@ -5264,8 +5274,8 @@ msgstr "No s'han pogut determinar els permisos del fitxer seleccionat."
 
 #: src/file-manager/fm-properties-window.c:3257
 #: src/nautilus-bookmarks-window.c:146
-#: src/nautilus-file-management-properties.c:239
-#: src/nautilus-property-browser.c:1444 src/nautilus-window-menus.c:769
+#: src/nautilus-file-management-properties.c:237
+#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:769
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5520,39 +5530,39 @@ msgid "Change Desktop _Background"
 msgstr "Canvia el _fons de l'escriptori"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
-#: src/file-manager/nautilus-directory-view-ui.xml.h:5
+#: src/file-manager/nautilus-directory-view-ui.xml.h:4
+msgid "Create L_auncher"
+msgstr "Crea una nova llenç_adora"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
+#: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Create a new launcher"
 msgstr "Crea una nova llençadora"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
-#: src/file-manager/nautilus-directory-view-ui.xml.h:9
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Delete all items in the Trash"
 msgstr "Suprimeix tots els elements de la paperera"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Dis_ks"
 msgstr "Dis_cos"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
 msgid "Format the selected volume"
 msgstr "Formata el volum seleccionat"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
 msgid "Medi_a Properties"
 msgstr "Propietats del med_i"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
 msgid "Mount or unmount disks"
 msgstr "Munta o desmunta discos"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#: src/file-manager/nautilus-directory-view-ui.xml.h:18
-msgid "New L_auncher"
-msgstr "Crea una nova llenç_adora"
-
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
-msgid "New T_erminal"
-msgstr "Nou t_erminal"
+msgid "Open T_erminal"
+msgstr "Obre un t_erminal"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
 msgid "Open a new GNOME terminal window"
@@ -5583,7 +5593,7 @@ msgstr "Desmunta el volum seleccionat"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
-#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
 #: src/nautilus-information-panel.c:349
 msgid "Use _Default Background"
 msgstr "Utilitza el fons per _defecte"
@@ -5608,126 +5618,136 @@ msgstr "Trieu una altra aplicació amb la què obrir l'element seleccionat"
 msgid "Choose another viewer with which to view the selected item"
 msgstr "Trieu un altre visualitzador amb el què veure l'element seleccionat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:5
+msgid "Create _Folder"
+msgstr "Crea una _carpeta"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:6
 msgid "Create a new empty folder inside this folder"
 msgstr "Crea una nova carpeta buida dins d'aquesta carpeta"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:6
+#: src/file-manager/nautilus-directory-view-ui.xml.h:8
 msgid "Create a symbolic link for each selected item"
 msgstr "Crea un enllaç simbòlic per a cada element seleccionat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:8
+#: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "D_uplicate"
 msgstr "D_uplica"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:10
+#: src/file-manager/nautilus-directory-view-ui.xml.h:12
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Suprimeix cada element seleccionat, sense moure'ls a la paperera"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:11
+#: src/file-manager/nautilus-directory-view-ui.xml.h:13
 msgid "Duplicate each selected item"
 msgstr "Duplica cada element seleccionat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:12
+#: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Edit Launcher"
 msgstr "Edita la llençadora"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:13
+#: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Edit the launcher information"
 msgstr "Edita la informació de la llençadora"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:17
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Mou o còpia els fitxers prèviament seleccionats mitjançant l'ordre Retalla "
 "fitxers o Còpia fitxers"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command "
+"into the selected folder"
+msgstr "Mou o còpia els fitxers prèviament seleccionats mitjançant l'ordre Retalla fitxers o Còpia fitxers a la carpeta seleccionada"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Open Wit_h"
 msgstr "Obre am_b"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Open each selected item in a new window"
 msgstr "Obre cada element seleccionat en una nova finestra"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Open the selected item in this window"
 msgstr "Obre l'element seleccionat en aquest finestra"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr ""
 "Prepara els fitxers seleccionats per ser copiats amb una ordre Enganxa "
 "fitxers"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:26
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr ""
 "Prepara els fitxers seleccionats per ser moguts amb una ordre Enganxa fitxers"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
 msgid "Rename selected item"
 msgstr "Reanomena l'element seleccionat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Reset View to _Defaults"
 msgstr "Reinicia la vista al valor pre_determinat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "Reinicia l'ordenació i el nivell de zoom  "
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "Executa o gestiona les seqüències des de ~/Nautilus/scripts"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Select _All Files"
 msgstr "Selecciona _tots els fitxers"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
 msgid "Select all items in this window"
 msgstr "Selecciona tots els elements d'aquesta finestra"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr ""
 "Mostra la carpeta que conté les seqüències que apareixen en aquest menú"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Use the default background for this location"
 msgstr "Utilitza el fons per defecte per a aquesta ubicació"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "View or modify the properties of each selected item"
 msgstr "Visualitza o modifica les propietats de cada element seleccionat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
-msgid "_New Folder"
-msgstr "_Nova carpeta"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "_Open"
 msgstr "_Obre"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "_Open Scripts Folder"
 msgstr "_Obre la carpeta de seqüències"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "_Paste Files"
 msgstr "_Enganxa els fitxers"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+msgid "_Paste Files Into Folder"
+msgstr "_Enganxa els fitxers a la carpeta"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "_Properties"
 msgstr "_Propietats"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "_Rename..."
 msgstr "_Reanomena..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "_Scripts"
 msgstr "_Seqüències"
 
@@ -6214,58 +6234,50 @@ msgid "Sort _folders before files"
 msgstr "Ordena les car_petes abans que els fitxers"
 
 #: src/nautilus-file-management-properties.glade.h:62
-msgid "Sort in _reverse"
-msgstr "Ordena en ordre inve_rs"
-
-#: src/nautilus-file-management-properties.glade.h:63
-msgid "Use _manual layout"
-msgstr "Utilitza un format _manual"
-
-#: src/nautilus-file-management-properties.glade.h:64
 msgid "View _new folders using:"
 msgstr "Visualitza les _noves carpetes amb:"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "Views"
 msgstr "Vistes"
 
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "_Arrange items:"
 msgstr "Org_anitza els elements:"
 
-#: src/nautilus-file-management-properties.glade.h:68
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "_Default zoom level:"
 msgstr "Nivell de zoom pre_determinat:"
 
-#: src/nautilus-file-management-properties.glade.h:69
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "_Double click to activate items"
 msgstr "_Doble clic per a activar els elements"
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
 msgstr "_Només per a fitxers més petits que:"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Open activated item in a new window"
 msgstr "_Obre cada element activat en una nova finestra"
 
-#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Run executable text files when they are clicked"
 msgstr "E_xecuta els fitxers de text executables quan se'ls faci clic"
 
-#: src/nautilus-file-management-properties.glade.h:73
+#: src/nautilus-file-management-properties.glade.h:71
 msgid "_Single click to activate items"
 msgstr "Només un _clic per a activar els elements"
 
-#: src/nautilus-file-management-properties.glade.h:74
+#: src/nautilus-file-management-properties.glade.h:72
 msgid "_Text beside icons"
 msgstr "_Text al costat de les icones"
 
-#: src/nautilus-file-management-properties.glade.h:75
+#: src/nautilus-file-management-properties.glade.h:73
 msgid "_Use compact layout"
 msgstr "_Utilitza un format compacte"
 
-#: src/nautilus-file-management-properties.glade.h:76
+#: src/nautilus-file-management-properties.glade.h:74
 msgid "_View executable text files when they are clicked"
 msgstr "_Mostra els fitxers de text executables quan se'ls faci clic"
 
@@ -6507,59 +6519,59 @@ msgstr "Seleccioneu un color per a afegir"
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "'%s' no és un fitxer d'imatge utilitzable!"
 
-#: src/nautilus-property-browser.c:2037
+#: src/nautilus-property-browser.c:2039
 msgid "Select a Category:"
 msgstr "Seleccioneu una categoria:"
 
-#: src/nautilus-property-browser.c:2046
+#: src/nautilus-property-browser.c:2048
 msgid "C_ancel Remove"
 msgstr "C_ancel·la eliminar"
 
-#: src/nautilus-property-browser.c:2052
+#: src/nautilus-property-browser.c:2054
 msgid "_Add a New Pattern..."
 msgstr "_Afegeix un nou patró..."
 
-#: src/nautilus-property-browser.c:2055
+#: src/nautilus-property-browser.c:2057
 msgid "_Add a New Color..."
 msgstr "_Afegeix un nou color..."
 
-#: src/nautilus-property-browser.c:2058
+#: src/nautilus-property-browser.c:2060
 msgid "_Add a New Emblem..."
 msgstr "_Afegeix un nou distintiu..."
 
-#: src/nautilus-property-browser.c:2081
+#: src/nautilus-property-browser.c:2083
 msgid "Click on a pattern to remove it"
 msgstr "Feu clic en un patró per a eliminar-lo"
 
-#: src/nautilus-property-browser.c:2084
+#: src/nautilus-property-browser.c:2086
 msgid "Click on a color to remove it"
 msgstr "Feu clic sobre un color per a eliminar-lo"
 
-#: src/nautilus-property-browser.c:2087
+#: src/nautilus-property-browser.c:2089
 msgid "Click on an emblem to remove it"
 msgstr "Feu clic sobre un distintiu per a eliminar-lo"
 
-#: src/nautilus-property-browser.c:2096
+#: src/nautilus-property-browser.c:2098
 msgid "Patterns:"
 msgstr "Patrons:"
 
-#: src/nautilus-property-browser.c:2099
+#: src/nautilus-property-browser.c:2101
 msgid "Colors:"
 msgstr "Colors:"
 
-#: src/nautilus-property-browser.c:2102
+#: src/nautilus-property-browser.c:2104
 msgid "Emblems:"
 msgstr "Distintius:"
 
-#: src/nautilus-property-browser.c:2122
+#: src/nautilus-property-browser.c:2124
 msgid "_Remove a Pattern..."
 msgstr "_Elimina un patró..."
 
-#: src/nautilus-property-browser.c:2125
+#: src/nautilus-property-browser.c:2127
 msgid "_Remove a Color..."
 msgstr "_Elimina un color..."
 
-#: src/nautilus-property-browser.c:2128
+#: src/nautilus-property-browser.c:2130
 msgid "_Remove an Emblem..."
 msgstr "_Elimina un distintiu..."
 
@@ -6883,12 +6895,12 @@ msgid "Location _Bar"
 msgstr "_Barra d'ubicació"
 
 #: src/nautilus-shell-ui.xml.h:31
-msgid "New _Window"
-msgstr "Nova _finestra"
-
-#: src/nautilus-shell-ui.xml.h:32
 msgid "Normal Si_ze"
 msgstr "_Mida normal"
+
+#: src/nautilus-shell-ui.xml.h:32
+msgid "Open New _Window"
+msgstr "Obre una nova _finestra"
 
 #: src/nautilus-shell-ui.xml.h:33
 msgid "Open another Nautilus window for the displayed location"
@@ -7443,6 +7455,18 @@ msgstr "Servidors de xarxa"
 msgid "View your network servers in the Nautilus file manager"
 msgstr ""
 "Visualitza els vostres servidors de xarxa en el gestor de fitxers Nautilus"
+
+#~ msgid "_New Folder"
+#~ msgstr "_Nova carpeta"
+
+#~ msgid "Sort in _reverse"
+#~ msgstr "Ordena en ordre inve_rs"
+
+#~ msgid "Use _manual layout"
+#~ msgstr "Utilitza un format _manual"
+
+#~ msgid "New _Window"
+#~ msgstr "Nova _finestra"
 
 #~ msgid "Your HTTP Proxy requires you to log in.\n"
 #~ msgstr "El teu Proxy d'HTTP requereix que t'identifiquis.\n"
@@ -8617,9 +8641,6 @@ msgstr ""
 
 #~ msgid "Open With"
 #~ msgstr "Obre amb"
-
-#~ msgid "Open in New Window"
-#~ msgstr "Obre en una nova finestra"
 
 #~ msgid "Other Viewer..."
 #~ msgstr "Un altre visualitzador..."
@@ -9810,9 +9831,6 @@ msgstr ""
 #~ msgid "_Nautilus Themes..."
 #~ msgstr "Temes del _Nautilus"
 
-#~ msgid "System"
-#~ msgstr "Sistema"
-
 #~ msgid "Config files"
 #~ msgstr "Fitxers de configuració"
 
@@ -10841,9 +10859,6 @@ msgstr ""
 
 #~ msgid "Where:"
 #~ msgstr "On:"
-
-#~ msgid "New _Folder"
-#~ msgstr "Nova Carpeta"
 
 #~ msgid "_Open in New Window"
 #~ msgstr "Obre en una _Nova Finestra"
