@@ -215,28 +215,19 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 				      NautilusSwitchableNavigationBarMode mode,
 				      NautilusWindow *window)
 {
-	gboolean new_toggle_state;
-
 	nautilus_window_update_find_menu_item (window);
 
 	window->details->updating_bonobo_state = TRUE;
-	switch (mode) {
-	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
-		new_toggle_state = FALSE;
-		break;
-	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
-		new_toggle_state = TRUE;
-		break;
-	default:
-		g_assert_not_reached ();
-	}
+	g_assert (mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION 
+		|| mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
+
 	/* FIXME: bugzilla.eazel.com 3590:
 	 * We shouldn't need a separate command for the toggle button and menu item.
 	 * This is a Bonobo design flaw, explained in the bug report.
 	 */
 	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
 					  NAUTILUS_COMMAND_TOGGLE_FIND_MODE_WITH_STATE,
-					  new_toggle_state);
+					  mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
 	 
 	window->details->updating_bonobo_state = FALSE;
 }
