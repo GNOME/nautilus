@@ -164,6 +164,7 @@ static guint signals[LAST_SIGNAL];
 
 
 static int cached_thumbnail_limit;
+static int show_image_thumbs;
 
 /* forward declarations */
 
@@ -172,6 +173,7 @@ static void       nautilus_icon_factory_class_init       (NautilusIconFactoryCla
 static void       nautilus_icon_factory_instance_init    (NautilusIconFactory      *factory);
 static void       nautilus_icon_factory_finalize         (GObject                  *object);
 static void       thumbnail_limit_changed_callback       (gpointer                  user_data);
+static void       show_thumbnails_changed_callback       (gpointer                  user_data);
 static void       mime_type_data_changed_callback        (GnomeVFSMIMEMonitor	   *monitor,
 							  gpointer                  user_data);
 static guint      cache_key_hash                         (gconstpointer             p);
@@ -202,6 +204,9 @@ destroy_icon_factory (void)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 					 thumbnail_limit_changed_callback,
 					 NULL);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+					 show_thumbnails_changed_callback,
+					 NULL);
 	g_object_unref (global_icon_factory);
 }
 
@@ -218,6 +223,11 @@ get_icon_factory (void)
 		thumbnail_limit_changed_callback (NULL);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 					      thumbnail_limit_changed_callback,
+					      NULL);
+
+		show_thumbnails_changed_callback (NULL);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+					      show_thumbnails_changed_callback,
 					      NULL);
 
 		g_signal_connect (gnome_vfs_mime_monitor_get (),
@@ -648,6 +658,16 @@ thumbnail_limit_changed_callback (gpointer user_data)
 			 signals[ICONS_CHANGED], 0);
 }
 
+static void
+show_thumbnails_changed_callback (gpointer user_data)
+{
+	show_image_thumbs = eel_preferences_get_enum (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
+
+	nautilus_icon_factory_clear ();
+	g_signal_emit (global_icon_factory,
+		       signals[ICONS_CHANGED], 0);
+}
+
 static void       
 mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_data)
 {
@@ -695,6 +715,26 @@ image_uri_to_name_or_uri (const char *image_uri)
 	return NULL;
 }
 
+static gboolean
+should_show_thumbnail (NautilusFile *file)
+{
+	if (nautilus_file_get_size (file) >
+	    (unsigned int)cached_thumbnail_limit) {
+		return FALSE;
+	}
+	
+	if (show_image_thumbs == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return TRUE;
+	} else if (show_image_thumbs == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return FALSE;
+	} else {
+		/* only local files */
+		return nautilus_file_is_local (file);
+	}
+
+	return FALSE;
+}
+
 /* key routine to get the icon for a file */
 char *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
@@ -703,6 +743,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	NautilusIconFactory *factory;
 	GnomeIconLookupResultFlags lookup_result;
 	GnomeVFSFileInfo *file_info;
+	GnomeThumbnailFactory *thumb_factory;
+	gboolean show_thumb;
 
 	if (file == NULL) {
 		return NULL;
@@ -731,9 +773,17 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	mime_type = nautilus_file_get_mime_type (file);
 	
 	file_info = nautilus_file_peek_vfs_file_info (file);
-		
+	
+	show_thumb = should_show_thumbnail (file);	
+	
+	if (show_thumb) {
+		thumb_factory = factory->thumbnail_factory;
+	} else {
+		thumb_factory = NULL;
+	}
+	
 	icon_name = gnome_icon_lookup (factory->icon_theme,
-				       factory->thumbnail_factory,
+				       thumb_factory,
 				       file_uri,
 				       custom_icon,
 				       nautilus_file_peek_vfs_file_info (file),
@@ -745,7 +795,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 
 	/* Create thumbnails if we can, and if the looked up icon isn't a thumbnail
 	   or an absolute pathname (custom icon or image as itself) */
-	if (!(lookup_result & GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL) &&
+	if (show_thumb &&
+	    !(lookup_result & GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL) &&
 	    icon_name[0] != '/' && file_info &&
 	    gnome_thumbnail_factory_can_thumbnail (factory->thumbnail_factory,
 						   file_uri,
@@ -993,7 +1044,7 @@ load_pixbuf_svg (const char *path,
 	if (pixbuf == NULL) {
 		return NULL;
 	}
-	
+
 	if (icon_data != NULL) {
 		width = gdk_pixbuf_get_width (pixbuf);
 		height = gdk_pixbuf_get_height (pixbuf);

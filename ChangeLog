@@ -1,3 +1,13 @@
+2002-12-09  James Willcox  <jwillcox@gnome.org>
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(destroy_icon_factory), (get_icon_factory),
+	(show_thumbnails_changed_callback), (should_show_thumbnail),
+	(nautilus_icon_factory_get_icon_for_file):
+
+	Respond properly to prefs regarding when to show thumbnails.
+	Fixes #96644.
+
 2002-12-09  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_self_check_file):
