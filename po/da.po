@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-02-22 20:14+0100\n"
+"POT-Creation-Date: 2001-02-28 17:08-0800\n"
 "PO-Revision-Date: 2001-02-21 22:50+01:00\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -103,7 +103,7 @@ msgstr "Isenkramsvisning"
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:5
 #, fuzzy
 msgid "View as Hardware"
-msgstr "Isenkram"
+msgstr "Vis som isenkram"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:6
 msgid "hardware view"
@@ -410,7 +410,7 @@ msgstr "Fabrik for Nautilus billedviser"
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:7
 #, fuzzy
 msgid "View as Image"
-msgstr "Vis som %s"
+msgstr "Vis som billed"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -474,7 +474,7 @@ msgstr "Nautilus indholdsvisning som fejlede ved kommando"
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
 #, fuzzy
 msgid "View as Content Loser"
-msgstr "Dræb indholdstaber"
+msgstr "Vis som indholdstaber"
 
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
@@ -881,7 +881,7 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:845
+#: components/mozilla/nautilus-mozilla-content-view.c:809
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but nautilus does not support the opening of new windows by "
@@ -890,7 +890,7 @@ msgid ""
 "Try viewing the page in a different web browser, such as Mozilla or Netscape."
 msgstr ""
 
-#: components/mozilla/nautilus-mozilla-content-view.c:846
+#: components/mozilla/nautilus-mozilla-content-view.c:810
 #, fuzzy
 msgid "Nautilus Mozilla View Warning"
 msgstr "Nautilus billedviser"
@@ -918,7 +918,7 @@ msgstr "Mozilla indholdsvisningskomponentfabrik"
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
 #, fuzzy
 msgid "View as Web Page"
-msgstr "Netside"
+msgstr "Vis som netside"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
 msgid "Web Page"
@@ -1669,7 +1669,7 @@ msgstr "Fabrik for musik-visning"
 #: components/music/Nautilus_View_music.oaf.in.h:6
 #, fuzzy
 msgid "View as Music"
-msgstr "Vis som %s"
+msgstr "Vis som musik"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
@@ -1701,84 +1701,98 @@ msgstr "Mislykkedes ved %s"
 msgid "Checking \"%s\" (%ld/%ld)"
 msgstr "Tjekker '%s' (%ld/%ld)"
 
-#: components/rpmview/nautilus-rpm-view.c:122
+#: components/rpmview/nautilus-rpm-view.c:118
 msgid "Package Contents"
 msgstr "Pakkeindhold"
 
 #. allocate the name field
-#: components/rpmview/nautilus-rpm-view.c:169
+#: components/rpmview/nautilus-rpm-view.c:165
 msgid "Package Title"
 msgstr "Pakketitel"
 
-#: components/rpmview/nautilus-rpm-view.c:190
+#: components/rpmview/nautilus-rpm-view.c:186
 #, fuzzy
 msgid "Installed Size: "
 msgstr "Installeret den:"
 
-#: components/rpmview/nautilus-rpm-view.c:196
+#: components/rpmview/nautilus-rpm-view.c:192
 msgid "<size>"
 msgstr "<størrelse>"
 
-#: components/rpmview/nautilus-rpm-view.c:202
+#: components/rpmview/nautilus-rpm-view.c:198
 msgid "Install Date: "
 msgstr "Installeret den:"
 
-#: components/rpmview/nautilus-rpm-view.c:208
-#: components/rpmview/nautilus-rpm-view.c:220
-#: components/rpmview/nautilus-rpm-view.c:232
-#: components/rpmview/nautilus-rpm-view.c:244
-#: components/rpmview/nautilus-rpm-view.c:256
+#: components/rpmview/nautilus-rpm-view.c:204
+#: components/rpmview/nautilus-rpm-view.c:216
+#: components/rpmview/nautilus-rpm-view.c:228
+#: components/rpmview/nautilus-rpm-view.c:240
+#: components/rpmview/nautilus-rpm-view.c:252
 msgid "<unknown>"
 msgstr "<ukendt>"
 
-#: components/rpmview/nautilus-rpm-view.c:214
+#: components/rpmview/nautilus-rpm-view.c:210
 msgid "License: "
 msgstr "Licens:"
 
-#: components/rpmview/nautilus-rpm-view.c:226
+#: components/rpmview/nautilus-rpm-view.c:222
 msgid "Build Date: "
 msgstr "Byggedato:"
 
-#: components/rpmview/nautilus-rpm-view.c:238
+#: components/rpmview/nautilus-rpm-view.c:234
 msgid "Distribution: "
 msgstr "Distribution:"
 
-#: components/rpmview/nautilus-rpm-view.c:250
+#: components/rpmview/nautilus-rpm-view.c:246
 msgid "Vendor: "
 msgstr "Ophav:"
 
-#: components/rpmview/nautilus-rpm-view.c:283
+#: components/rpmview/nautilus-rpm-view.c:279
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:1
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:2
 #: components/services/summary/nautilus-summary-view.c:122
 msgid "Install"
 msgstr "Installér"
 
-#: components/rpmview/nautilus-rpm-view.c:299
+#: components/rpmview/nautilus-rpm-view.c:295
 msgid "Update"
 msgstr "Opdatér"
 
-#: components/rpmview/nautilus-rpm-view.c:308
+#: components/rpmview/nautilus-rpm-view.c:304
 msgid "Uninstall"
 msgstr "Afinstallér"
 
-#: components/rpmview/nautilus-rpm-view.c:324
+#: components/rpmview/nautilus-rpm-view.c:320
 msgid "Verify"
 msgstr "Efterprøv"
 
-#: components/rpmview/nautilus-rpm-view.c:375
+#: components/rpmview/nautilus-rpm-view.c:372
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: components/rpmview/nautilus-rpm-view.c:570
+#: components/rpmview/nautilus-rpm-view.c:567
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Pakkens indhold: %d filer"
 
-#: components/rpmview/nautilus-rpm-view.c:576
+#: components/rpmview/nautilus-rpm-view.c:573
 #, c-format
 msgid "Package \"%s\" "
 msgstr "Pakke \"%s\" "
+
+#: components/rpmview/nautilus-rpm-view.c:616
+#, fuzzy
+msgid "This package is currently installed"
+msgstr ""
+"Disse pakker er på vej til at blive afinstalleret:\n"
+"\n"
+
+#: components/rpmview/nautilus-rpm-view.c:619
+#, fuzzy
+msgid "This package is currently not installed"
+msgstr ""
+"Disse pakker er på vej til at blive afinstalleret:\n"
+"\n"
 
 #: components/rpmview/nautilus-rpm-view.c:762
 msgid "Verification completed, package ok."
@@ -1868,7 +1882,7 @@ msgstr "Fabrik for RPM-visning"
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:6
 #, fuzzy
 msgid "View as Package"
-msgstr "Vis som andet"
+msgstr "Vis som pakke"
 
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:7
 msgid "rpm view"
@@ -1942,7 +1956,7 @@ msgstr "Prøve-indholdsvisningskomponentfabrik"
 #: components/sample/Nautilus_View_sample.oaf.in.h:7
 #, fuzzy
 msgid "View as Sample"
-msgstr "Vis som %s"
+msgstr "Vis som prøve"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:107
 msgid "Set the default answer to continue, also default delete to Yes"
@@ -2130,7 +2144,7 @@ msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr ""
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:454
-msgid "Unnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
+msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr ""
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:462
@@ -2155,68 +2169,67 @@ msgstr "Denne pakke er allerede installeret."
 
 #. I18N note: \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:625
-#: components/services/install/command-line/eazel-alt-install-corba.c:627
 #, c-format
 msgid "\t· Problem : %s\n"
 msgstr ""
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:636
+#: components/services/install/command-line/eazel-alt-install-corba.c:634
 #, c-format
 msgid "\t· Action : %s\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:679
+#: components/services/install/command-line/eazel-alt-install-corba.c:677
 #, fuzzy
 msgid "Cancelling operation\n"
 msgstr "Gyldige operationer:"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:690
+#: components/services/install/command-line/eazel-alt-install-corba.c:688
 #, fuzzy, c-format
 msgid "About to install a total of %d packages, %dKB\n"
 msgstr "På vej til at afinstallere %d pakker, %d Kb\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:694
+#: components/services/install/command-line/eazel-alt-install-corba.c:692
 #, fuzzy, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
 msgstr "På vej til at installere %d pakker, %d Kb\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:698
+#: components/services/install/command-line/eazel-alt-install-corba.c:696
 #, fuzzy, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
 msgstr "På vej til at forkaste %d pakker, %d Kb\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:713
+#: components/services/install/command-line/eazel-alt-install-corba.c:711
 #, c-format
 msgid "\t· %s and it's dependencies\n"
 msgstr ""
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:716
+#: components/services/install/command-line/eazel-alt-install-corba.c:714
 #, c-format
 msgid "\t· %s\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:738
+#: components/services/install/command-line/eazel-alt-install-corba.c:736
 #, fuzzy, c-format
 msgid "Dependency : %s needs %s\n"
 msgstr "Afhængighedstjek: Pakke %s behøver %s"
 
 #. I18N note: %s is a package name
-#: components/services/install/command-line/eazel-alt-install-corba.c:756
+#: components/services/install/command-line/eazel-alt-install-corba.c:754
 #, c-format
 msgid "Package %s failed md5 check!\n"
 msgstr ""
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:758
+#: components/services/install/command-line/eazel-alt-install-corba.c:756
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
 msgstr ""
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:760
+#: components/services/install/command-line/eazel-alt-install-corba.c:758
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
 msgstr ""
@@ -2226,15 +2239,15 @@ msgstr ""
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:826
+#: components/services/install/command-line/eazel-alt-install-corba.c:824
 msgid "Continue? (y/n) "
 msgstr ""
 
 #. I18N note: y is the letter for the word Yes. This is
 #. used in the response for a yes/no questions. Your translation
 #. must be 1 character only.
-#: components/services/install/command-line/eazel-alt-install-corba.c:837
-#: components/services/install/command-line/eazel-alt-install-corba.c:879
+#: components/services/install/command-line/eazel-alt-install-corba.c:835
+#: components/services/install/command-line/eazel-alt-install-corba.c:877
 #, fuzzy
 msgid "y"
 msgstr "ved"
@@ -2244,87 +2257,87 @@ msgstr "ved"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:867
+#: components/services/install/command-line/eazel-alt-install-corba.c:865
 msgid "Should I delete the RPM files? (y/n) "
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:899
+#: components/services/install/command-line/eazel-alt-install-corba.c:897
 #, fuzzy
 msgid "Operation ok\n"
 msgstr "National folkemusik"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:901
+#: components/services/install/command-line/eazel-alt-install-corba.c:899
 #, fuzzy
 msgid "Operation failed\n"
 msgstr "Installation mislykkedes!"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1018
+#: components/services/install/command-line/eazel-alt-install-corba.c:1016
 #, fuzzy
 msgid "Installing"
 msgstr "Installér"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1027
+#: components/services/install/command-line/eazel-alt-install-corba.c:1025
 #, fuzzy
 msgid "Uninstalling"
 msgstr "Afinstallér"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1042
+#: components/services/install/command-line/eazel-alt-install-corba.c:1040
 msgid "Only one operation at a time please."
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1047
-#: components/services/install/command-line/eazel-alt-install-corba.c:1055
-#: components/services/install/command-line/eazel-alt-install-corba.c:1099
-#: components/services/install/command-line/eazel-alt-install-corba.c:1106
+#: components/services/install/command-line/eazel-alt-install-corba.c:1045
+#: components/services/install/command-line/eazel-alt-install-corba.c:1053
+#: components/services/install/command-line/eazel-alt-install-corba.c:1097
+#: components/services/install/command-line/eazel-alt-install-corba.c:1104
 #, c-format
 msgid "%s: --help for usage\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1071
+#: components/services/install/command-line/eazel-alt-install-corba.c:1069
 #, c-format
 msgid "Name         : %s\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1072
+#: components/services/install/command-line/eazel-alt-install-corba.c:1070
 #, fuzzy, c-format
 msgid "Version      : %s\n"
 msgstr "Version: %s"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1073
+#: components/services/install/command-line/eazel-alt-install-corba.c:1071
 #, c-format
 msgid "Minor        : %s\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1075
+#: components/services/install/command-line/eazel-alt-install-corba.c:1073
 #, c-format
 msgid "Size         : %d\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1076
+#: components/services/install/command-line/eazel-alt-install-corba.c:1074
 #, c-format
 msgid "Arch         : %s\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1077
+#: components/services/install/command-line/eazel-alt-install-corba.c:1075
 #, fuzzy, c-format
 msgid "Distribution : %s\n"
 msgstr "Distribution:"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1078
+#: components/services/install/command-line/eazel-alt-install-corba.c:1076
 #, fuzzy, c-format
 msgid "Description  : %s\n"
 msgstr "Beskrivelse"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1080
+#: components/services/install/command-line/eazel-alt-install-corba.c:1078
 #, fuzzy, c-format
 msgid "Install root : %s\n"
 msgstr "Installér både %s og %s"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1083
+#: components/services/install/command-line/eazel-alt-install-corba.c:1081
 msgid "Provides     : \n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1125
+#: components/services/install/command-line/eazel-alt-install-corba.c:1123
 #, c-format
 msgid "exit code %d\n"
 msgstr ""
@@ -2381,79 +2394,79 @@ msgstr "benyt kontrollérfunktion (til fejlretning)"
 msgid "Show detailed sub-package info"
 msgstr "Vis detaljeret underpakke-info"
 
-#: components/services/install/lib/eazel-install-logic2.c:140
+#: components/services/install/lib/eazel-install-logic2.c:143
 msgid "Failed to lock the downloaded file"
 msgstr "Låsning af den hentede fil mislykkedes"
 
-#: components/services/install/lib/eazel-install-logic2.c:157
+#: components/services/install/lib/eazel-install-logic2.c:160
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5 uoverensstemmelse, pakke %s kan være beskadiget"
 
-#: components/services/install/lib/eazel-install-logic2.c:173
+#: components/services/install/lib/eazel-install-logic2.c:176
 #, fuzzy, c-format
 msgid "No MD5 available for %s"
 msgstr "Ingen beskrivelse tilstede for '%s' temaet"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:357
+#: components/services/install/lib/eazel-install-logic2.c:360
 #, fuzzy, c-format
 msgid "%s is ok"
 msgstr "Er dette i orden?"
 
-#: components/services/install/lib/eazel-install-logic2.c:462
+#: components/services/install/lib/eazel-install-logic2.c:466
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s version %s-%s er allerede installeret"
 
-#: components/services/install/lib/eazel-install-logic2.c:466
+#: components/services/install/lib/eazel-install-logic2.c:470
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s version %s er allerede installeret"
 
-#: components/services/install/lib/eazel-install-logic2.c:475
-#: components/services/install/lib/eazel-install-logic2.c:480
+#: components/services/install/lib/eazel-install-logic2.c:479
+#: components/services/install/lib/eazel-install-logic2.c:484
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s opgraderinger fra version %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:489
+#: components/services/install/lib/eazel-install-logic2.c:493
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s nedgraderinger fra version %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:494
+#: components/services/install/lib/eazel-install-logic2.c:498
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra version %s til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:547
+#: components/services/install/lib/eazel-install-logic2.c:551
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s installerer version %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:552
+#: components/services/install/lib/eazel-install-logic2.c:556
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerer version %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:624
+#: components/services/install/lib/eazel-install-logic2.c:628
 #, fuzzy, c-format
 msgid "Loading package info from file %s"
 msgstr "Henter information om pakke ..."
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:996
 #, fuzzy
 msgid "ok"
 msgstr "Rock"
 
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:996
 msgid "not ok"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:1156
+#: components/services/install/lib/eazel-install-logic2.c:1160
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr ""
@@ -2461,102 +2474,102 @@ msgstr ""
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1715
+#: components/services/install/lib/eazel-install-logic2.c:1721
 #, fuzzy, c-format
 msgid "%s is related to %s"
 msgstr "\"%s\" valgt (%s)"
 
-#: components/services/install/lib/eazel-install-logic2.c:1769
+#: components/services/install/lib/eazel-install-logic2.c:1775
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:1786
+#: components/services/install/lib/eazel-install-logic2.c:1791
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:1793
+#: components/services/install/lib/eazel-install-logic2.c:1798
 #, c-format
 msgid "could not revive %s"
 msgstr "Kunne ikke forny %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1929
+#: components/services/install/lib/eazel-install-logic2.c:1934
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:1950
+#: components/services/install/lib/eazel-install-logic2.c:1955
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:1968
+#: components/services/install/lib/eazel-install-logic2.c:1973
 #, fuzzy, c-format
 msgid "(there were %d other conflicts)"
 msgstr "Men der er filkonflikter"
 
-#: components/services/install/lib/eazel-install-logic2.c:2063
+#: components/services/install/lib/eazel-install-logic2.c:2068
 #, fuzzy, c-format
 msgid "file conflict checking %s"
 msgstr "%s havde en fil i konflikt med %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2111
+#: components/services/install/lib/eazel-install-logic2.c:2105
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2121
+#: components/services/install/lib/eazel-install-logic2.c:2115
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2211
+#: components/services/install/lib/eazel-install-logic2.c:2205
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2277
+#: components/services/install/lib/eazel-install-logic2.c:2273
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2355
+#: components/services/install/lib/eazel-install-logic2.c:2351
 #, fuzzy, c-format
 msgid "downloading %d packages"
 msgstr "Henter pakker"
 
-#: components/services/install/lib/eazel-install-logic2.c:2620
+#: components/services/install/lib/eazel-install-logic2.c:2616
 #, fuzzy, c-format
 msgid "will upgrade %s"
 msgstr "Tillad opgraderinger"
 
-#: components/services/install/lib/eazel-install-logic2.c:2623
+#: components/services/install/lib/eazel-install-logic2.c:2619
 #, fuzzy, c-format
 msgid "will downgrade %s"
 msgstr "Tillad nedgraderinger"
 
-#: components/services/install/lib/eazel-install-logic2.c:2626
+#: components/services/install/lib/eazel-install-logic2.c:2622
 #, fuzzy, c-format
 msgid "will install %s"
 msgstr "Installerer \"%s\""
 
-#: components/services/install/lib/eazel-install-logic2.c:2629
+#: components/services/install/lib/eazel-install-logic2.c:2625
 #, fuzzy, c-format
 msgid "will uninstall %s"
 msgstr "Afinstallér"
 
-#: components/services/install/lib/eazel-install-logic2.c:2712
+#: components/services/install/lib/eazel-install-logic2.c:2708
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er afhængig af %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2876
+#: components/services/install/lib/eazel-install-logic2.c:2872
 #, fuzzy, c-format
 msgid "failed %s"
 msgstr "Mislykkedes ved %s"
@@ -2892,32 +2905,32 @@ msgstr "*** Osd xml indeholder ingen data! ***\n"
 msgid "*** Bailing from osd parse! ***\n"
 msgstr "*** Stopper osd-fortolking! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:976
+#: components/services/install/lib/eazel-install-xml-package-list.c:990
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunne ikke fortolke xml (længde %d)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:755
+#: components/services/install/lib/eazel-package-system-rpm3.c:763
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Åbnede pakkedatabase i %s"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:760
+#: components/services/install/lib/eazel-package-system-rpm3.c:768
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Åbning af pakkedatabase i %s mislykkedes!"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:793
+#: components/services/install/lib/eazel-package-system-rpm3.c:801
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Lukker db for %s (åben)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:798
+#: components/services/install/lib/eazel-package-system-rpm3.c:806
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Lukker db for %s (ikke åben)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:1099
+#: components/services/install/lib/eazel-package-system-rpm3.c:1137
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan ikke åbne %s"
@@ -3010,7 +3023,7 @@ msgstr "Installeringstjeneste-visningskomponentfabrik"
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:7
 #, fuzzy
 msgid "View as Install"
-msgstr "Nem installering"
+msgstr "Vis som installering"
 
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:1
 msgid "Factory for the install service"
@@ -3068,7 +3081,7 @@ msgstr "Nautilus systembeholdningsvisning"
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:7
 #, fuzzy
 msgid "View as System Inventory"
-msgstr "Systembeholdning"
+msgstr "Vis som systembeholdning"
 
 #. Setup the title
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:153
@@ -3200,7 +3213,7 @@ msgstr "Nautilus log på tjeneste-visningskomponentfabrik"
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:7
 #, fuzzy
 msgid "View as Change Password"
-msgstr "Ændr adgangskode"
+msgstr "Vis som ændr adgangskode"
 
 #: components/services/nautilus-dependent-shared/eazel-services-extensions.c:295
 msgid "Unknown Date"
@@ -3281,7 +3294,7 @@ msgid "Your user name or password were not correct.  Please try again."
 msgstr "Dit brugernavn eller din adgangskode er ugyldig. Prøv venligst igen."
 
 #: components/services/summary/nautilus-summary-view.c:116
-#: libnautilus-extensions/nautilus-program-chooser.c:1337
+#: libnautilus-extensions/nautilus-program-chooser.c:1361
 msgid "Go There"
 msgstr "Gå der til"
 
@@ -3459,7 +3472,7 @@ msgstr "Talvisning:"
 #: components/services/summary/Nautilus_View_services-summary.oaf.in.h:7
 #, fuzzy
 msgid "View as Summary"
-msgstr "Vis som andet"
+msgstr "Vis som oversigt"
 
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:130
 #, c-format
@@ -3499,7 +3512,7 @@ msgstr "Nautilus opstartsvisningsfabrik"
 #: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:6
 #, fuzzy
 msgid "View as Service"
-msgstr "Vis som andet"
+msgstr "Vis som tjeneste"
 
 #: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:7
 msgid "eazel sample service view"
@@ -3578,7 +3591,7 @@ msgstr "Tekstvisningsfabrik"
 #: components/text/Nautilus_View_text.oaf.in.h:6
 #, fuzzy
 msgid "View as Text"
-msgstr "Vis som %s"
+msgstr "Vis som tekst"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -4228,22 +4241,22 @@ msgstr "Sierra"
 msgid "Uses manila folders and gray-green backgrounds."
 msgstr "Bruger manila-foldere og grågrønne baggrunde."
 
-#: libnautilus-extensions/nautilus-drag.c:483
+#: libnautilus-extensions/nautilus-drag.c:489
 #, fuzzy
 msgid "_Move here"
 msgstr "Gå der til"
 
-#: libnautilus-extensions/nautilus-drag.c:484
+#: libnautilus-extensions/nautilus-drag.c:490
 #, fuzzy
 msgid "_Copy here"
 msgstr "_Indsæt tekst"
 
-#: libnautilus-extensions/nautilus-drag.c:485
+#: libnautilus-extensions/nautilus-drag.c:491
 #, fuzzy
 msgid "_Link here"
 msgstr "Henvisningssæt"
 
-#: libnautilus-extensions/nautilus-drag.c:487
+#: libnautilus-extensions/nautilus-drag.c:493
 #: src/file-manager/fm-directory-view.c:3503
 msgid "Cancel"
 msgstr "Annullér"
@@ -5723,147 +5736,147 @@ msgstr "Avanceret"
 msgid "Prefs Box"
 msgstr "Indstillingsboks"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:218
+#: libnautilus-extensions/nautilus-program-chooser.c:226
 msgid "not in menu"
 msgstr "ikke i menu"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:221
+#: libnautilus-extensions/nautilus-program-chooser.c:229
 msgid "in menu for this file"
 msgstr "i menuen for denne fil"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:224
-#: libnautilus-extensions/nautilus-program-chooser.c:227
+#: libnautilus-extensions/nautilus-program-chooser.c:232
+#: libnautilus-extensions/nautilus-program-chooser.c:235
 #, c-format
 msgid "in menu for \"%s\""
 msgstr "i menuen for '%s'"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:230
+#: libnautilus-extensions/nautilus-program-chooser.c:238
 msgid "default for this file"
 msgstr "standard for denne fil"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:233
-#: libnautilus-extensions/nautilus-program-chooser.c:236
+#: libnautilus-extensions/nautilus-program-chooser.c:241
+#: libnautilus-extensions/nautilus-program-chooser.c:244
 #, c-format
 msgid "default for \"%s\""
 msgstr "forvalgt for \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:265
+#: libnautilus-extensions/nautilus-program-chooser.c:289
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
 msgstr "Er ikke i menuen for \"%s\"-punkter."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:268
+#: libnautilus-extensions/nautilus-program-chooser.c:292
 #, c-format
 msgid "Is in the menu for \"%s\"."
 msgstr "Er i menuen for '%s'."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:271
+#: libnautilus-extensions/nautilus-program-chooser.c:295
 #, c-format
 msgid "Is in the menu for \"%s\" items."
 msgstr "Er i menuen for \"%s\"-punkter."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:274
+#: libnautilus-extensions/nautilus-program-chooser.c:298
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
 msgstr "Er i menuen for alle \"%s\"-punkter."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:277
+#: libnautilus-extensions/nautilus-program-chooser.c:301
 #, c-format
 msgid "Is the default for \"%s\"."
 msgstr "Er forvalgt for \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:280
+#: libnautilus-extensions/nautilus-program-chooser.c:304
 #, c-format
 msgid "Is the default for \"%s\" items."
 msgstr "Er forvalgt for \"%s\"-punkter."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:283
+#: libnautilus-extensions/nautilus-program-chooser.c:307
 #, c-format
 msgid "Is the default for all \"%s\" items."
 msgstr "Er forvalgt for alle \"%s\"-punkter."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:969
+#: libnautilus-extensions/nautilus-program-chooser.c:993
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Ændr '%s'"
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:994
+#: libnautilus-extensions/nautilus-program-chooser.c:1018
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "Inkludér i menuen for \"%s\"-punkter."
 
 #. Radio button for setting default for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:1001
+#: libnautilus-extensions/nautilus-program-chooser.c:1025
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Er i menuen for alle \"%s\"-punkter."
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1008
+#: libnautilus-extensions/nautilus-program-chooser.c:1032
 #, c-format
 msgid "Include in the menu just for \"%s\""
 msgstr "Inkludér i menuen kun for \"%s\""
 
 #. Radio button for setting default for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1014
+#: libnautilus-extensions/nautilus-program-chooser.c:1038
 #, c-format
 msgid "Use as default just for \"%s\""
 msgstr "Brug som forvalgt kun for \"%s\""
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1021
+#: libnautilus-extensions/nautilus-program-chooser.c:1045
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Inkludér ikke i menuen for \"%s\"-punkter."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1185
+#: libnautilus-extensions/nautilus-program-chooser.c:1209
 #: src/file-manager/fm-list-view.c:2122
 #: src/file-manager/fm-search-list-view.c:545
 #: src/nautilus-bookmarks-window.c:164
 msgid "Name"
 msgstr "Navn"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1188
+#: libnautilus-extensions/nautilus-program-chooser.c:1212
 msgid "Status"
 msgstr "Status"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1236
+#: libnautilus-extensions/nautilus-program-chooser.c:1260
 msgid "Open with Other"
 msgstr "Åbn med andet"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1237
+#: libnautilus-extensions/nautilus-program-chooser.c:1261
 #, c-format
 msgid "Choose an application with which to open \"%s\"."
 msgstr "Vælg en anvendelse som skal bruges til at åbne '%s'."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1241
+#: libnautilus-extensions/nautilus-program-chooser.c:1265
 msgid "View as Other"
 msgstr "Vis som andet"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1242
+#: libnautilus-extensions/nautilus-program-chooser.c:1266
 #, c-format
 msgid "Choose a view for \"%s\"."
 msgstr "Vælg en visning for \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1249
+#: libnautilus-extensions/nautilus-program-chooser.c:1273
 msgid "Choose"
 msgstr "Vælg"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1251
+#: libnautilus-extensions/nautilus-program-chooser.c:1275
 msgid "Done"
 msgstr "Færdig"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1314
+#: libnautilus-extensions/nautilus-program-chooser.c:1338
 msgid "Modify..."
 msgstr "Ændr..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-extensions/nautilus-program-chooser.c:1325
+#: libnautilus-extensions/nautilus-program-chooser.c:1349
 msgid "File Types and Programs"
 msgstr "Filtyper og programmer"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1346
+#: libnautilus-extensions/nautilus-program-chooser.c:1370
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
@@ -7736,9 +7749,28 @@ msgstr "Forfattere"
 msgid "Couldn't Create Required Folder"
 msgstr "Kan ikke oprette krævet mappe"
 
-#: src/nautilus-application.c:279
+#: src/nautilus-application.c:275
+#, c-format
+msgid ""
+"Nautilus could not create the required folder \"%s\". Before running "
+"Nautilus, please create this folder, or set permissions such that Nautilus "
+"can create it."
+msgstr ""
+
+#: src/nautilus-application.c:280
 msgid "Couldn't Create Required Folders"
 msgstr "Kan ikke oprette krævede mapper"
+
+#: src/nautilus-application.c:281
+#, c-format
+msgid ""
+"Nautilus could not create the following required folders:\n"
+"\n"
+"%s\n"
+"\n"
+"Before running Nautilus, please create these folders, or set permissions "
+"such that Nautilus can create them."
+msgstr ""
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -7750,7 +7782,7 @@ msgstr "Kan ikke oprette krævede mapper"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:404
+#: src/nautilus-application.c:406
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -7758,7 +7790,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:410
+#: src/nautilus-application.c:412
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
@@ -7799,12 +7831,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:441 src/nautilus-application.c:459
-#: src/nautilus-application.c:466
+#: src/nautilus-application.c:443 src/nautilus-application.c:461
+#: src/nautilus-application.c:468
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke bruges nu pga. en uventet fejl."
 
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -7812,7 +7844,7 @@ msgstr ""
 "Nautilus kan ikke bruges nu, pga en uventet fejl fra OAF ved forsøg på at "
 "registrere serveren for filhåndteringsvisning."
 
-#: src/nautilus-application.c:460
+#: src/nautilus-application.c:462
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -7822,7 +7854,7 @@ msgstr ""
 "finde fabrikken. At dræbe oafd og genstarte Nautilus kan måske løse "
 "problemet."
 
-#: src/nautilus-application.c:467
+#: src/nautilus-application.c:469
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -7832,7 +7864,7 @@ msgstr ""
 "finde skalobjektet. At dræbe oafd og genstarte Nautilus kan måske løse "
 "problemet."
 
-#: src/nautilus-application.c:632
+#: src/nautilus-application.c:634
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -7844,7 +7876,7 @@ msgstr ""
 "Du kan, som root, ødelægge dit system hvis du ikke er forsigtig, og\n"
 "Nautilus vil ikke hindre dig."
 
-#: src/nautilus-application.c:636
+#: src/nautilus-application.c:638
 msgid "Quit"
 msgstr "Afslut"
 
@@ -8669,12 +8701,12 @@ msgstr "Søgeliste"
 #: src/Nautilus_shell.oaf.in.h:20
 #, fuzzy
 msgid "View as Icons"
-msgstr "Vis som %s"
+msgstr "Vis som ikoner"
 
 #: src/Nautilus_shell.oaf.in.h:21
 #, fuzzy
 msgid "View as List"
-msgstr "Vis som %s"
+msgstr "Vis som liste"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid " Advanced"
@@ -9198,12 +9230,17 @@ msgstr "Kunne ikke fjerne tema"
 msgid "No description available for the \"%s\" theme"
 msgstr "Ingen beskrivelse tilstede for '%s' temaet"
 
+#: src/nautilus-window.c:582
+#, fuzzy
+msgid "View as ..."
+msgstr "Vis som andet..."
+
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1252
+#: src/nautilus-window.c:1276
 msgid "View as Other..."
 msgstr "Vis som andet..."
 
-#: src/nautilus-window.c:1635
+#: src/nautilus-window.c:1677
 msgid "Close"
 msgstr "Luk"
 
@@ -9217,11 +9254,11 @@ msgstr "Luk"
 msgid "Preview Release %s: %s"
 msgstr "Forpræmiere %s: %s"
 
-#: src/nautilus-window-manage-views.c:798
+#: src/nautilus-window-manage-views.c:812
 msgid "View Failed"
 msgstr "Visning mislykkedes"
 
-#: src/nautilus-window-manage-views.c:809
+#: src/nautilus-window-manage-views.c:823
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -9230,12 +9267,12 @@ msgstr ""
 "Visningen %s blev udsat for en fejl og kan ikke fortsætte. Du kan vælge en "
 "anden visning eller gå til et andet sted."
 
-#: src/nautilus-window-manage-views.c:820
+#: src/nautilus-window-manage-views.c:834
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s visningen blev udsat for en fejl ved opstart."
 
-#: src/nautilus-window-manage-views.c:979
+#: src/nautilus-window-manage-views.c:993
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -9243,7 +9280,7 @@ msgstr ""
 "Et af sidepanelerne blev udsat for en fejl og kan ikke fortsætte. "
 "Beklageligvis kan jeg ikke sige hvilket panel dette gælder."
 
-#: src/nautilus-window-manage-views.c:983
+#: src/nautilus-window-manage-views.c:997
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -9252,22 +9289,22 @@ msgstr ""
 "Sidepanelet %s blev udsat for en fejl og kan ikke fortsætte. Hvis dette "
 "fortsætter, kan du slå dette panel fra."
 
-#: src/nautilus-window-manage-views.c:988
+#: src/nautilus-window-manage-views.c:1002
 msgid "Sidebar Panel Failed"
 msgstr "Sidelinjepanel mislykkedes"
 
-#: src/nautilus-window-manage-views.c:1203
+#: src/nautilus-window-manage-views.c:1217
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Kunne ikke finde \"%s\". Tjek venligst stavningen og prøv igen."
 
-#: src/nautilus-window-manage-views.c:1209
+#: src/nautilus-window-manage-views.c:1223
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" er ikke et gyldigt sted. Tjek venligst stavningen og prøv igen."
 
-#: src/nautilus-window-manage-views.c:1223
+#: src/nautilus-window-manage-views.c:1237
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -9276,28 +9313,28 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi Nautilus ikke kan finde ud af hvilken filtype "
 "det er."
 
-#: src/nautilus-window-manage-views.c:1231
+#: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installeret fremviser der kan vise '%s'."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1243
+#: src/nautilus-window-manage-views.c:1257
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr "Kunne ikke vise \"%s\", fordi Nautilus ikke kan behandle %s: steder."
 
-#: src/nautilus-window-manage-views.c:1249
+#: src/nautilus-window-manage-views.c:1263
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunne ikke vise \"%s\", fordi pålogningsforsøget fejlede."
 
-#: src/nautilus-window-manage-views.c:1254
+#: src/nautilus-window-manage-views.c:1268
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunne ikke vise \"%s\", fordi adgang blev nægtet."
 
-#: src/nautilus-window-manage-views.c:1265
+#: src/nautilus-window-manage-views.c:1279
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -9306,7 +9343,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi værten \"%s\" ikke blev fundet. Tjek at "
 "stavningen og  proxy-indstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1273
+#: src/nautilus-window-manage-views.c:1287
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -9315,7 +9352,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi værtsnavnet var tomt. Tjek at "
 "proxy-indstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1285
+#: src/nautilus-window-manage-views.c:1299
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -9326,16 +9363,16 @@ msgstr ""
 "søgetjenesten ikke kører. Vær sikker på at du har startet Medusa "
 "søgetjenesten, og hvis du ikke har et indeks, at MEDUSA indekseren kører."
 
-#: src/nautilus-window-manage-views.c:1289
+#: src/nautilus-window-manage-views.c:1303
 msgid "Searching Unavailable"
 msgstr "Søgning ikke tilgængelig"
 
-#: src/nautilus-window-manage-views.c:1293
+#: src/nautilus-window-manage-views.c:1307
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise '%s'."
 
-#: src/nautilus-window-manage-views.c:1298
+#: src/nautilus-window-manage-views.c:1312
 msgid "Can't Display Location"
 msgstr "Kan ikke vise lokation"
 
@@ -9751,13 +9788,6 @@ msgstr "%d%%"
 #~ "\n"
 #~ msgstr ""
 #~ "Disse pakker er på vej til at blive hentet og installeret:\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "These packages are about to be uninstalled:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Disse pakker er på vej til at blive afinstalleret:\n"
 #~ "\n"
 
 #~ msgid ""
