@@ -533,7 +533,7 @@ build_joined_string (GList *list, const char *prefix, const char *separator, con
 		g_string_append (string, list->data);
 		for (node = list->next; node != NULL; node = node->next) {
 			g_string_append (string, separator);
-			g_string_append (string, list->data);
+			g_string_append (string, node->data);
 		}
 	}
 	g_string_append (string, suffix);
@@ -544,7 +544,7 @@ build_joined_string (GList *list, const char *prefix, const char *separator, con
 }
 
 GList *
-nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
+nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 {
 	char *mime_type;
 	char *uri_scheme;
@@ -620,7 +620,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 		result = NULL;
 	} else {
 		iids = g_list_reverse (iids);
-		extra_sort_conditions[0] = build_joined_string (iids, "prefer_by_list_order (iid, ['", "','", "'])'");
+		extra_sort_conditions[0] = build_joined_string (iids, "prefer_by_list_order (iid, ['", "','", "'])");
 		extra_sort_conditions[1] = NULL;
 		extra_requirements = build_joined_string (iids, "has (['", "','", "'], iid)");
 		result = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
@@ -1572,16 +1572,12 @@ nautilus_do_component_query (const char        *mime_type,
                 query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);
         }
 
-#ifdef DEBUG_MJS
-        printf ("query: \"%s\"\n", query);
-#endif
-
 	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);
 
 	CORBA_exception_init (&ev);
 
 	oaf_result = oaf_query (query, all_sort_criteria, &ev);
-		
+	
 	g_free (all_sort_criteria);
 	g_free (query);
 

@@ -93,7 +93,7 @@
 
 /* dock items */
 #define LOCATION_BAR_PATH	"/Location Bar"
-#define TOOLBAR_PATH           "/Toolbar"
+#define TOOLBAR_PATH            "/Toolbar"
 #define STATUS_BAR_PATH         "/status"
 #define MENU_BAR_PATH           "/menu"
 

@@ -1,5 +1,20 @@
 2001-06-01  Darin Adler  <darin@bentspoon.com>
 
+	Fixed mistakes in my MIME type change from yesterday.
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(build_joined_string): Correct variable so we build the string
+	from all the elements in the list, not just the first element
+	repeated over and over again.
+	(nautilus_mime_get_short_list_components_for_file): Remove stray
+	single-quote character so we build a legal query. The queries were
+	all failing due to this typo.
+
+	* src/nautilus-window.c: Spacing tweak.
+	* NEWS: Remove lack-of-tinderbox lament.
+
+2001-06-01  Darin Adler  <darin@bentspoon.com>
+
 	Integrated revised version of patch by zilch.am@home.se to fix
 	problems typing characters with values > 127 on some systems.
 
