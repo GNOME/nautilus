@@ -83,6 +83,10 @@ struct NautilusFileDetails
 	char *custom_icon;
 	char *activation_uri;
 
+	/* The guessed (extension-based) mime type.  This is saved for
+	 * comparison vs. the slow mime type upon activation */
+	char *guessed_mime_type;
+
 	/* The following is for file operations in progress. Since
 	 * there are normally only a few of these, we can move them to
 	 * a separate hash table or something if required to keep the

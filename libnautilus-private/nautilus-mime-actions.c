@@ -447,7 +447,6 @@ nautilus_mime_is_default_component_for_file_user_chosen (NautilusFile      *file
 	return user_chosen;
 }
 
-
 GList *
 nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 {
@@ -467,6 +466,105 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 	mime_type = nautilus_file_get_mime_type (file);
 	result = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
+
+	/* First remove applications that cannot support this location */
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+	g_assert (uri_scheme != NULL);
+	result = eel_g_list_partition (result, application_supports_uri_scheme,
+					    uri_scheme, &removed);
+	gnome_vfs_mime_application_list_free (removed);
+	g_free (uri_scheme);
+	
+	metadata_application_add_ids = nautilus_file_get_metadata_list 
+		(file,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+	metadata_application_remove_ids = nautilus_file_get_metadata_list 
+		(file,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+
+
+	result = eel_g_list_partition (result, (EelPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
+				       metadata_application_remove_ids, &removed);
+	
+	gnome_vfs_mime_application_list_free (removed);
+
+	result = g_list_reverse (result);
+	for (p = metadata_application_add_ids; p != NULL; p = p->next) {
+		if (g_list_find_custom (result,
+					p->data,
+					(GCompareFunc) gnome_vfs_mime_application_has_id) == NULL &&
+		    g_list_find_custom (metadata_application_remove_ids,
+					p->data,
+					(GCompareFunc) strcmp) == NULL) {
+			application = gnome_vfs_application_registry_get_mime_application (p->data);
+			if (application != NULL) {
+				result = g_list_prepend (result, application);
+			}
+		}
+	}
+	result = g_list_reverse (result);
+
+	eel_g_list_free_deep (metadata_application_add_ids);
+	eel_g_list_free_deep (metadata_application_remove_ids);
+
+	return result;
+}
+
+static GList *
+get_open_with_mime_applications (NautilusFile *file)
+{
+	char *guessed_mime_type;
+	char *mime_type;
+	GList *result;
+
+	guessed_mime_type = nautilus_file_get_guessed_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
+
+	result = gnome_vfs_mime_get_short_list_applications (mime_type);
+
+	if (strcmp (guessed_mime_type, mime_type) != 0) {
+		GList *result_2;
+		GList *l;
+
+		result_2 = gnome_vfs_mime_get_short_list_applications (guessed_mime_type);
+		for (l = result_2; l != NULL; l = l->next) {
+			if (!g_list_find_custom (result,
+						 ((GnomeVFSMimeApplication*)l->data)->id,
+						 (GCompareFunc) gnome_vfs_mime_application_has_id)) {
+				result = g_list_prepend (result, l->data);
+			}
+		}
+		g_list_free (result_2);
+	}
+
+	g_free (mime_type);
+	g_free (guessed_mime_type);
+	
+	return result;
+}
+
+/* Get a list of applications for the Open With menu.  This is 
+ * different than nautilus_mime_get_short_list_applications_for_file()
+ * because this function will merge the lists of the fast and slow
+ * mime types for the file */
+GList *
+nautilus_mime_get_open_with_applications_for_file (NautilusFile      *file)
+{
+	char *uri_scheme;
+	GList *result;
+	GList *removed;
+	GList *metadata_application_add_ids;
+	GList *metadata_application_remove_ids;
+	GList *p;
+	GnomeVFSMimeApplication *application;
+
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
+
+	result = get_open_with_mime_applications (file);
 
 	/* First remove applications that cannot support this location */
 	uri_scheme = nautilus_file_get_uri_scheme (file);
@@ -796,6 +894,26 @@ nautilus_mime_get_all_components_for_file_extended (NautilusFile *file,
 	return info_list;
 }
 
+static NautilusFileAttributes 
+nautilus_mime_actions_get_popup_file_attributes (void)
+{
+	return NAUTILUS_FILE_ATTRIBUTE_VOLUMES |
+		NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE;
+}
+
+static gboolean
+nautilus_mime_actions_check_if_popup_attributes_ready (NautilusFile *file)
+{
+	NautilusFileAttributes attributes;
+	gboolean ready;
+
+	attributes = nautilus_mime_actions_get_popup_file_attributes ();
+	ready = nautilus_file_check_if_ready (file, attributes);
+
+	return ready;
+}
+
 GList *
 nautilus_mime_get_popup_components_for_file (NautilusFile *file)
 {
@@ -805,7 +923,7 @@ nautilus_mime_get_popup_components_for_file (NautilusFile *file)
 	GList *item_mime_types;
 	GList *info_list;
 
-	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+	if (!nautilus_mime_actions_check_if_popup_attributes_ready (file)) {
 		return NULL;
 	}
 

@@ -3718,7 +3718,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		
 		uri = nautilus_file_get_uri (file);
 		
-		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
+		applications = nautilus_mime_get_open_with_applications_for_file (NAUTILUS_FILE (selection->data));
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
 			any_applications = TRUE;
 			add_application_to_bonobo_menu (view, node->data, file, index);
@@ -3744,6 +3744,141 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 				       sensitive);
 }
 
+static GList *
+get_all_extension_menu_items (GtkWidget *window,
+			      GList *selection)
+{
+	GList *items;
+	GList *providers;
+	GList *l;
+	
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+		
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_file_items (provider,
+								    window,
+								    selection);
+		items = g_list_concat (items, file_items);		
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
+}
+
+typedef struct 
+{
+	NautilusMenuItem *item;
+	FMDirectoryView *view;
+	GList *selection;
+} ExtensionActionCallbackData;
+
+static void
+extension_action_callback_data_free (ExtensionActionCallbackData *data)
+{
+	g_object_unref (data->item);
+	nautilus_file_list_free (data->selection);
+	
+	g_free (data);
+}
+
+static void
+extension_action_slow_mime_types_ready_callback (GList *selection, 
+						 gpointer callback_data)
+{
+	ExtensionActionCallbackData *data;
+	char *item_name;
+	gboolean is_valid;
+	GList *l;
+	GList *items;
+
+	data = callback_data;
+
+	/* Make sure the selected menu item is valid for the final sniffed
+	 * mime type */
+	g_object_get (data->item, "name", &item_name, NULL);
+	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (data->view)), 
+					      data->selection);
+	
+	is_valid = FALSE;
+	for (l = items; l != NULL; l = l->next) {
+		char *name;
+		
+		g_object_get (l->data, "name", &name, NULL);
+		
+		if (strcmp (name, item_name)) {
+			is_valid = TRUE;
+			g_free (name);
+			break;
+		}
+		g_free (name);
+	}
+
+	for (l = items; l != NULL; l = l->next) {
+		g_object_unref (l->data);
+	}
+	g_list_free (items);
+	
+	g_free (item_name);
+
+	if (is_valid) {
+		nautilus_menu_item_activate (data->item);
+	}
+}
+
+static void
+extension_action_callback (BonoboUIComponent *component,
+			   gpointer callback_data, const char *path)
+{
+	ExtensionActionCallbackData *data;
+
+	data = callback_data;
+
+	nautilus_file_list_call_when_ready
+		(data->selection,
+		 NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
+		 extension_action_slow_mime_types_ready_callback,
+		 callback_data);
+}
+
+static void
+add_extension_command_for_files (FMDirectoryView *view, 
+				 NautilusMenuItem *item,
+				 GList *files)
+{
+	char *xml;
+	char *name;
+	ExtensionActionCallbackData *data;
+	GClosure *closure;
+
+	xml = nautilus_bonobo_get_extension_item_command_xml (item);
+
+	bonobo_ui_component_set (view->details->ui, "/commands", xml, NULL);
+
+	g_free (xml);
+
+	g_object_get (G_OBJECT (item), "name", &name, NULL);
+
+	data = g_new0 (ExtensionActionCallbackData, 1);
+	data->item = g_object_ref (item);
+	data->view = view;
+	data->selection = nautilus_file_list_copy (files);
+
+	closure = g_cclosure_new
+		(G_CALLBACK (extension_action_callback),
+		 data,
+		 (GClosureNotify)extension_action_callback_data_free);
+	
+	bonobo_ui_component_add_verb_full (view->details->ui, name, closure);
+	
+	g_free (name);
+}
+
 static void
 add_extension_menu_items (FMDirectoryView *view,
 			  GList *files,
@@ -3755,8 +3890,7 @@ add_extension_menu_items (FMDirectoryView *view,
 		
 		item = NAUTILUS_MENU_ITEM (l->data);
 		
-		nautilus_bonobo_add_extension_item_command (view->details->ui,
-							    item);
+		add_extension_command_for_files (view, item, files);
 		
 		nautilus_bonobo_add_extension_item (view->details->ui,
 						    FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS,
@@ -3808,32 +3942,6 @@ get_unique_files (GList *selection)
 	return g_list_reverse (result);
 }
 
-static GList *
-get_all_extension_menu_items (GtkWidget *window,
-			      GList *selection)
-{
-	GList *items;
-	GList *providers;
-	GList *l;
-	
-	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-	items = NULL;
-
-	for (l = providers; l != NULL; l = l->next) {
-		NautilusMenuProvider *provider;
-		GList *file_items;
-		
-		provider = NAUTILUS_MENU_PROVIDER (l->data);
-		file_items = nautilus_menu_provider_get_file_items (provider,
-								    window,
-								    selection);
-		items = g_list_concat (items, file_items);		
-	}
-
-	nautilus_module_extension_list_free (providers);
-
-	return items;
-}
 
 static void
 reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
@@ -5769,7 +5877,6 @@ can_use_component_for_file (FMDirectoryView *view,
 		nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_NAVIGATION);
 }
 
-
 static void
 activate_callback (NautilusFile *file, gpointer callback_data)
 {
@@ -5940,8 +6047,9 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 	
 	/* get the parameters for the actual file */	
 	attributes = nautilus_mime_actions_get_minimum_file_attributes () | 
-			NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE |
-			NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+		NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
 
 	parameters->file = actual_file;
 	parameters->callback = activate_callback;

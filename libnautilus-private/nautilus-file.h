@@ -78,6 +78,8 @@ typedef enum {
 
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);
+typedef void (*NautilusFileListCallback)      (GList         *file_list,
+				               gpointer       callback_data);
 typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       GnomeVFSResult result,
 					       gpointer       callback_data);
@@ -135,6 +137,7 @@ char *                  nautilus_file_get_parent_uri                    (Nautilu
 char *                  nautilus_file_get_parent_uri_for_display        (NautilusFile                   *file);
 GnomeVFSFileSize        nautilus_file_get_size                          (NautilusFile                   *file);
 GnomeVFSFileType        nautilus_file_get_file_type                     (NautilusFile                   *file);
+char *                  nautilus_file_get_guessed_mime_type             (NautilusFile                   *file);
 char *                  nautilus_file_get_mime_type                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_mime_type                      (NautilusFile                   *file,
 									 const char                     *mime_type);
@@ -332,6 +335,10 @@ void                    nautilus_file_list_unref                        (GList  
 void                    nautilus_file_list_free                         (GList                          *file_list);
 GList *                 nautilus_file_list_copy                         (GList                          *file_list);
 GList *			nautilus_file_list_sort_by_display_name		(GList				*file_list);
+void                    nautilus_file_list_call_when_ready              (GList                          *file_list,
+									 NautilusFileAttributes          attributes,
+									 NautilusFileListCallback        callback,
+									 gpointer                        callback_data);
 
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);

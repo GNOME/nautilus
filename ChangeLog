@@ -1,3 +1,35 @@
+2004-02-23  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-file.c: (finalize),
+	(update_info_internal), (nautilus_file_get_guessed_mime_type):
+	Save the guessed mime type when the sniffed mime type is read.
+	
+	(file_list_file_ready_callback):
+	(nautilus_file_list_call_when_ready): New function.
+
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_get_extension_item_command_xml),
+	(nautilus_bonobo_add_extension_item_command): 
+	* libnautilus-private/nautilus-bonobo-extensions.h:
+	* libnautilus-private/nautilus-mime-actions.c:
+	(get_open_with_mime_applications),
+	(nautilus_mime_get_open_with_applications_for_file),
+	(nautilus_mime_actions_get_popup_file_attributes),
+	(nautilus_mime_actions_check_if_popup_attributes_ready),
+	(nautilus_mime_get_popup_components_for_file):
+	* libnautilus-private/nautilus-mime-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_open_with_menu), (get_all_extension_menu_items),
+	(extension_action_callback_data_free),
+	(extension_action_slow_mime_types_ready_callback),
+	(extension_action_callback), (add_extension_command_for_files),
+	(add_extension_menu_items),
+	(activate_activation_uri_ready_callback): Don't invoke 
+	extension menu items that don't apply to the sniffed mime
+	type.
+
 2004-02-22  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "en_CA" to ALL_LINGUAS.

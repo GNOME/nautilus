@@ -490,6 +490,7 @@ finalize (GObject *object)
 	g_free (file->details->relative_uri);
 	g_free (file->details->cached_display_name);
 	g_free (file->details->display_name_collation_key);
+	g_free (file->details->guessed_mime_type);
 	if (file->details->info != NULL) {
 		gnome_vfs_file_info_unref (file->details->info);
 	}
@@ -1421,6 +1422,12 @@ update_info_internal (NautilusFile *file,
 
 	file->details->file_info_is_up_to_date = TRUE;
 	file->details->got_slow_mime_type = info_has_slow_mime;
+
+	if (!info_has_slow_mime || file->details->guessed_mime_type == NULL) {
+		g_free (file->details->guessed_mime_type);
+		file->details->guessed_mime_type = g_strdup (info->mime_type);
+	}
+
 	if (file->details->info != NULL
 	    && gnome_vfs_file_info_matches (file->details->info, info)) {
 		return FALSE;
@@ -4468,7 +4475,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
  * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where",
- * "link_target", "volume", "free_space".
+ * "link_target", "volume", "free_space"
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -4769,6 +4776,27 @@ nautilus_file_get_mime_type (NautilusFile *file)
 		if (file->details->info != NULL
 		    && file->details->info->mime_type != NULL) {
 			return g_strdup (file->details->info->mime_type);
+		}
+	}
+	return g_strdup (GNOME_VFS_MIME_TYPE_UNKNOWN);
+}
+
+/**
+ * nautilus_file_get_guessed_mime_type
+ * 
+ * Return the mime type that was guessed based on the extension.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: The mime type.
+ * 
+ **/
+char *
+nautilus_file_get_guessed_mime_type (NautilusFile *file)
+{
+	if (file != NULL) {
+		g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+		if (file->details->guessed_mime_type != NULL) {
+			return g_strdup (file->details->guessed_mime_type);
 		}
 	}
 	return g_strdup (GNOME_VFS_MIME_TYPE_UNKNOWN);
@@ -5769,6 +5797,58 @@ GList *
 nautilus_file_list_sort_by_display_name (GList *list)
 {
 	return g_list_sort (list, compare_by_display_name_cover);
+}
+
+typedef struct 
+{
+	GList *file_list;
+	GList *remaining_files;
+	NautilusFileListCallback callback;
+	gpointer callback_data;
+} FileListReadyData;
+
+static void
+file_list_file_ready_callback (NautilusFile *file,
+			       gpointer user_data)
+{
+	FileListReadyData *data;
+	
+	data = user_data;
+	data->remaining_files = g_list_remove (data->remaining_files, file);
+	
+	if (data->remaining_files == NULL) {
+		if (data->callback) {
+			(*data->callback) (data->file_list, data->callback_data);
+		}
+		
+		nautilus_file_list_free (data->file_list);
+		g_free (data);
+	}
+}
+
+void
+nautilus_file_list_call_when_ready (GList *file_list,
+				    NautilusFileAttributes attributes,
+				    NautilusFileListCallback callback,
+				    gpointer callback_data)
+{
+	GList *l;
+	FileListReadyData *data;
+	
+	g_return_if_fail (file_list != NULL);
+
+	data = g_new0 (FileListReadyData, 1);
+	data->file_list = nautilus_file_list_copy (file_list);
+	data->remaining_files = g_list_copy (file_list);
+	data->callback = callback;
+	data->callback_data = callback_data;
+	
+	for (l = file_list; l != NULL; l = l->next) {
+		nautilus_file_call_when_ready (NAUTILUS_FILE (l->data),
+					       attributes,
+					       file_list_file_ready_callback,
+					       data);
+	}
 }
 
 static char *

@@ -40,6 +40,7 @@ gboolean                 nautilus_mime_is_default_application_for_file_user_chos
 Bonobo_ServerInfo *      nautilus_mime_get_default_component_for_file              (NautilusFile           *file);
 gboolean                 nautilus_mime_is_default_component_for_file_user_chosen   (NautilusFile           *file);
 GList *                  nautilus_mime_get_short_list_applications_for_file        (NautilusFile           *file);
+GList *                  nautilus_mime_get_open_with_applications_for_file         (NautilusFile           *file);
 GList *                  nautilus_mime_get_short_list_components_for_file          (NautilusFile           *file);
 GList *                  nautilus_mime_get_all_applications_for_file               (NautilusFile           *file);
 GList *                  nautilus_mime_get_all_components_for_file                 (NautilusFile           *file);

@@ -534,33 +534,45 @@ extension_action_callback (BonoboUIComponent *component,
 	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
 }
 
-void
-nautilus_bonobo_add_extension_item_command (BonoboUIComponent *ui,
-					    NautilusMenuItem *item)
+char *
+nautilus_bonobo_get_extension_item_command_xml (NautilusMenuItem *item)
 {
-	GString *ui_xml;
-	GClosure *closure;
 	char *name;
 	char *label;
 	char *tip;
-	char *sensitive;
-
-	ui_xml = g_string_new ("<Root><commands>");
+	gboolean sensitive;
+	char *xml;
 
 	g_object_get (G_OBJECT (item), 
 		      "name", &name, "label", &label, 
 		      "tip", &tip, "sensitive", &sensitive,
 		      NULL);
 
-	g_string_append_printf (ui_xml, 
-				"<cmd name=\"%s\" label=\"%s\" tip=\"%s\" sensitive=\"%s\"/>", 
-				name, label, tip, sensitive ? "1" : "0");
+	xml = g_strdup_printf ("<cmd name=\"%s\" label=\"%s\" tip=\"%s\" sensitive=\"%s\"/>", 
+			       name, label, tip, sensitive ? "1" : "0");
 
-	ui_xml = g_string_append (ui_xml, "</commands></Root>");
-	
-	bonobo_ui_component_set (ui, "/", ui_xml->str, NULL);
-	g_string_free (ui_xml, TRUE);
+	g_free (name);
+	g_free (label);
+	g_free (tip);
 
+	return xml;
+}
+
+void
+nautilus_bonobo_add_extension_item_command (BonoboUIComponent *ui,
+					    NautilusMenuItem *item)
+{
+	char *xml;
+	char *name;
+	GClosure *closure;
+
+	xml = nautilus_bonobo_get_extension_item_command_xml (item);
+
+	bonobo_ui_component_set (ui, "/commands", xml, NULL);
+
+	g_free (xml);
+
+	g_object_get (G_OBJECT (item), "name", &name, NULL);
 
 	closure = g_cclosure_new
 		(G_CALLBACK (extension_action_callback),
@@ -570,8 +582,6 @@ nautilus_bonobo_add_extension_item_command (BonoboUIComponent *ui,
 	bonobo_ui_component_add_verb_full (ui, name, closure);
 
 	g_free (name);
-	g_free (label);
-	g_free (tip);
 }
 
 void 

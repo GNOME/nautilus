@@ -107,6 +107,8 @@ void                            nautilus_bonobo_set_icon                        
 										    const char                       *icon_relative_path);
 void                            nautilus_bonobo_add_extension_item_command          (BonoboUIComponent                *ui,
 										     NautilusMenuItem                 *item);
+char                            *nautilus_bonobo_get_extension_item_command_xml     (NautilusMenuItem *item);
+
 void                            nautilus_bonobo_add_extension_item                 (BonoboUIComponent                *ui,
 										    const char                       *path,
 										    NautilusMenuItem                 *item);
