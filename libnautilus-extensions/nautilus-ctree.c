@@ -744,13 +744,14 @@ nautilus_ctree_event (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 					}				
 				} else if (tree->prelight_node != NULL) {
 					/* End prelighting of last expander */
+					old_node = tree->prelight_node;
 					tree->prelight_node = NULL;
-					nautilus_ctree_draw_node (tree, node);
+					nautilus_ctree_draw_node (tree, old_node);
 				}
 			}
 		}
 	}
-
+	
 	return FALSE;
 }
 
@@ -1160,11 +1161,13 @@ nautilus_ctree_draw_expander (NautilusCTree *ctree, NautilusCTreeRow *ctree_row,
 		gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
 	} else {
 		node = nautilus_ctree_find_node_ptr (ctree, ctree_row);
-		if (node != NULL && node == ctree->prelight_node) {
-			/* Draw prelight state */
-			gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
-		} else {
-			gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], TRUE, points, 3);
+		if (node != NULL) {
+			if (node == ctree->prelight_node) {
+				/* Draw prelight state */
+				gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
+			} else {
+				gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], TRUE, points, 3);
+			}
 		}
 	}
 	
