@@ -198,8 +198,8 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	
 	table = GTK_TABLE(gtk_table_new(2, 3, FALSE));
 
-	/* account name */
-  	temp_widget = gtk_label_new("Account Name: ");
+	/* email address */
+  	temp_widget = gtk_label_new("Your E-mail Address: ");
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 0,1, 0,1, GTK_FILL, GTK_FILL, 2,2);
   	gtk_widget_show(temp_widget);
@@ -208,13 +208,14 @@ static void setup_signup_form(NautilusServicesContentView *view)
   	gtk_widget_show(view->details->account_name);
 
 	/* password */
-  	temp_widget = gtk_label_new("Account Password: ");
+  	temp_widget = gtk_label_new("Your Password: ");
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 0,1, 1,2, GTK_FILL, GTK_FILL, 2,2);
   	gtk_widget_show(temp_widget);
   	view->details->account_password = gtk_entry_new_with_max_length(20);
   	gtk_table_attach(table, view->details->account_password, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4,4);
-  	gtk_widget_show(view->details->account_password);
+  	gtk_entry_set_visibility(GTK_ENTRY(view->details->account_password), FALSE);
+	gtk_widget_show(view->details->account_password);
 
 	/* confirm password */
   	temp_widget = gtk_label_new("Confirm Password: ");
@@ -223,7 +224,8 @@ static void setup_signup_form(NautilusServicesContentView *view)
   	gtk_widget_show(temp_widget);
   	view->details->confirm_password = gtk_entry_new_with_max_length(20);
   	gtk_table_attach(table, view->details->confirm_password, 1, 2, 2,3, GTK_FILL, GTK_FILL, 4,4);
-  	gtk_widget_show(view->details->confirm_password);
+   	gtk_entry_set_visibility(GTK_ENTRY(view->details->confirm_password), FALSE);
+ 	gtk_widget_show(view->details->confirm_password);
 	
 	/* insert the table */
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET(table), 0, 0, 4);	
@@ -241,6 +243,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 
 	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
 			    GTK_SIGNAL_FUNC (register_button_cb), view);	
+	gtk_widget_set_sensitive(config_button, FALSE);
 	gtk_widget_show (config_button);
 
 	/* now allocate the decline button */
