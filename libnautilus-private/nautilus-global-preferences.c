@@ -97,7 +97,7 @@ global_preferences_install_descriptions (void)
 	
 	/* Click activation type */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      _("Click policy"));
+					      _("Click behavior"));
 	
 	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						 _("single"),
@@ -203,7 +203,7 @@ global_preferences_install_descriptions (void)
 					      _("Show special flags in Properties window"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-					      _("Show only folders in tree sidebar panel"));
+					      _("Show only folders (no files) in Tree sidebar panel"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 					      _("Can add Content"));
@@ -599,7 +599,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Display"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Show/Hide Options"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 3,
