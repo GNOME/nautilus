@@ -1024,7 +1024,7 @@ am_i_logged_in (NautilusSummaryView	*view)
 {
 	CORBA_Environment	ev;
 	EazelProxy_User		*user;
-	gboolean		rv;
+	gboolean		rv = FALSE;
 
 	CORBA_exception_init (&ev);
 
@@ -1036,7 +1036,7 @@ am_i_logged_in (NautilusSummaryView	*view)
 
 		if (CORBA_NO_EXCEPTION != ev._major) {
 			g_message ("No default user!");
-			rv =  FALSE;
+			rv = FALSE;
 		}
 		else {
 			g_message ("Default user found!");
