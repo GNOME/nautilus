@@ -2,6 +2,16 @@
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 
+	Fixed bug where selecting the first item in a list view, then
+	hitting Shift-TAB would always trigger an assertion
+
+	* src/file-manager/fm-list-view.c
+	(select_previous_next_common): deleted the bogus assertion
+
+2001-01-18  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
 	Fix bug 5666 (dragging to directory in the tree view always
 	crashes)
 

@@ -512,7 +512,6 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
  		array_row_index = array->len - 1;
  	}
 
-	g_assert (array_row_index);
 	select_row_common (widget, array, array_row_index);
 
 	g_ptr_array_free (array, TRUE);
