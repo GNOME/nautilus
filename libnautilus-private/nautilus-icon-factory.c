@@ -683,7 +683,6 @@ char *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 {
  	char *custom_uri, *file_uri, *icon_name, *mime_type, *custom_icon;
- 	gboolean is_local;
 	NautilusIconFactory *factory;
 	GnomeIconLookupResultFlags lookup_result;
 	GnomeVFSFileInfo *file_info;
@@ -704,7 +703,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
  	g_free (custom_uri);
 
 	file_uri = nautilus_file_get_uri (file);
-	is_local = nautilus_file_is_local (file);
 	mime_type = nautilus_file_get_mime_type (file);
 	
 	file_info = nautilus_file_peek_vfs_file_info (file);
@@ -840,21 +838,22 @@ nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file,
 	char *icon;
 	gboolean file_is_trash;
 
-	/* Leave out the trash emblem for the trash itself, since
-	 * putting a trash emblem on a trash icon is gilding the
-	 * lily.
-	 */
-	uri = nautilus_file_get_uri (file);
-	file_is_trash = strcmp (uri, EEL_TRASH_URI) == 0;
-	g_free (uri);
-
 	icons = NULL;
 
 	emblem_names = nautilus_file_get_emblem_names (file);
 	for (node = emblem_names; node != NULL; node = node->next) {
 		name = node->data;
-		if (file_is_trash && strcmp (name, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
-			continue;
+		if (strcmp (name, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
+			/* Leave out the trash emblem for the trash itself, since
+			 * putting a trash emblem on a trash icon is gilding the
+			 * lily.
+			 */
+			uri = nautilus_file_get_uri (file);
+			file_is_trash = strcmp (uri, EEL_TRASH_URI) == 0;
+			g_free (uri);
+			if (file_is_trash) {
+				continue;
+			}
 		}
 		if (eel_string_list_contains (exclude, name)) {
 			continue;
