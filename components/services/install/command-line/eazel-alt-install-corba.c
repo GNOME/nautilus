@@ -378,6 +378,9 @@ tree_helper_helper(EazelInstallCallback *service,
 
 	if (IS_PACKAGEDATA (iterator->data)) {
 		pack = PACKAGEDATA (iterator->data);
+	} else if (IS_PACKAGEBREAKS (iterator->data)) {
+		PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
+		pack = packagebreaks_get_package (breakage);
 	} else {
 		PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
 		pack = dep->package;
@@ -427,7 +430,7 @@ tree_helper (EazelInstallCallback *service,
 		 packagedata_modstatus_enum_to_str (pd->modify_status));
 	g_free (readable_name);
 
-	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {		
+	for (iterator = pd->depends; iterator; iterator = iterator->next) {		
 		char *tmp;
 		tmp = g_strdup ("-d-");
 		tree_helper_helper (service, indent, tmp, indent_level, iterator, 

@@ -42,26 +42,44 @@
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 static int report_all = 0;
+static int package_total_allocs = 0, package_max = 0;
 static int package_allocs = 0;
-static int category_allocs = 0;
-static gboolean at_exit_registered = FALSE;
 GList *packages_allocated = NULL;
 
-static void 
+static int packagebreaks_allocs = 0;
+static int category_allocs = 0;
+
+static gboolean at_exit_registered = FALSE;
+
+ static void 
 at_exit_package_data_info (void) 
 {
-	GList *iterator;
 	if (packages_allocated == NULL) {
 		trilobite_debug ("All packagedata structures deallocated");
+		trilobite_debug ("Total of %d allocs, max at once was %d", package_total_allocs, package_max);
 	} else {
-		trilobite_debug ("Fordømt! Some packagedata structures were not deallocated");
+		GList *iterator;
+		trilobite_debug ("Fordømt! %d packagedata structures were leaked", g_list_length (packages_allocated));
+		trilobite_debug ("Total of %d allocs, max at once was %d", package_total_allocs, package_max);
 		for (iterator = packages_allocated; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack = PACKAGEDATA (iterator->data);
 			trilobite_debug ("package %p (%s) not deallocated", pack, pack->name);
 		}
+		trilobite_debug ("Don't report this as a bug if you're running from CVS or hourly builds");
+	}
+	if (category_allocs) {
+		trilobite_debug ("Fordømt! %d categorydata structures were leaked", category_allocs);
+	}
+	if (packagebreaks_allocs) {
+		trilobite_debug ("Fordømt! %d packagebreaks structures were leaked", packagebreaks_allocs);
 	}
 }
 #endif /* DEBUG_PACKAGE_ALLOCS */
+
+static GtkObjectClass *packagedata_parent_class;
+static GtkObjectClass *packagebreaks_parent_class;
+static PackageBreaksClass *packagefileconflict_parent_class;
+static PackageBreaksClass *packagefeaturemissing_parent_class;
 
 const char *
 eazel_install_protocol_as_string (URLType protocol) 
@@ -88,7 +106,7 @@ categorydata_new (void)
 	result = g_new0 (CategoryData, 1);
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs ++;
-	if (report_all) trilobite_debug ("category_allocs inced to %d (0x%p)", category_allocs, result);
+	if (report_all) trilobite_debug ("category_allocs inced to %d (%p)", category_allocs, result);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 	result->name = NULL;
 	result->description = NULL;
@@ -139,7 +157,7 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs --;
-	if (report_all) trilobite_debug ("category_allocs = %d (0x%p) %s", category_allocs, cd, cd ? cd->name: "?");
+	if (report_all) trilobite_debug ("category_allocs = %d (%p) %s", category_allocs, cd, cd ? cd->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	g_return_if_fail (cd != NULL);
@@ -247,17 +265,17 @@ packagedata_finalize (GtkObject *obj)
 	if (report_all) {
 		if (pack) {
 			if (pack->name) {
-				trilobite_debug ("package_allocs = %d (0x%p) %s", 
+				trilobite_debug ("package_allocs decreased to %d (%p) %s", 
 						 package_allocs, pack,pack->name);
 			} else if (pack->provides) {
-				trilobite_debug ("package_allocs = %d (0x%p) providing %s", 
+				trilobite_debug ("package_allocs decreased to %d (%p) providing %s", 
 						 package_allocs, pack,
 						 (char*)pack->provides->data);
 			} else {
-				trilobite_debug ("package_allocs = %d (0x%p) ?", package_allocs, pack);
+				trilobite_debug ("package_allocs decreased to %d (%p) ?", package_allocs, pack);
 			}
 		} else {
-			trilobite_debug ("package_allocs = %d (0x%p) ??", package_allocs, pack);
+			trilobite_debug ("package_allocs decreased to %d (%p) ??", package_allocs, pack);
 		}
 	}
 	packages_allocated = g_list_remove (packages_allocated, pack);
@@ -321,6 +339,10 @@ packagedata_finalize (GtkObject *obj)
 #endif /* HAVE_RPM_30 */
 		pack->packsys_struc = NULL;
 	}
+
+	if (packagedata_parent_class->finalize) {
+		packagedata_parent_class->finalize (obj);
+	}
 }
 
 static void
@@ -328,8 +350,12 @@ packagedata_class_initialize (PackageDataClass *klass)
 {
 	GtkObjectClass *object_class;
 
+	packagedata_parent_class = gtk_type_class (gtk_object_get_type ());
+
 	object_class = (GtkObjectClass*)klass;
 	object_class->finalize = packagedata_finalize;
+
+	klass->finalize = packagedata_finalize;
 }
 
 static void
@@ -340,7 +366,9 @@ packagedata_initialize (PackageData *package) {
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs ++;
-	if (report_all) trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, package);
+	package_total_allocs ++;
+	if (package_allocs > package_max) { package_max = package_allocs; }
+	if (report_all) trilobite_debug ("package_allocs increased to %d (%p)", package_allocs, package);
 	if (!at_exit_registered) {
 		atexit (&at_exit_package_data_info);
 		at_exit_registered = TRUE;
@@ -647,16 +675,16 @@ packagedata_get_readable_name (const PackageData *pack)
 	} else if ((pack->name != NULL) && (pack->version != NULL)) {
 		/* This is a hack to shorten EazelSourceSnapshot names
 		   into the build date/time */
-		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->minor, ".200") != NULL) {
+		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->minor, "200") != NULL) {
 			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 					 "Sep", "Oct", "Nov", "Dec"};
 			char *temp, *temp2;
 			int mo, da, ho, mi;
 			/* this crap is too long to display ! */
 			temp = g_strdup (pack->minor);
-			temp2 = strstr (temp, ".200");
+			temp2 = strstr (temp, "200");
 			strcpy (temp2, "ESS");
-			temp2 += strlen (".200x");
+			temp2 += strlen ("200x");
 			sscanf (temp2, "%2d%2d%2d%2d", &mo, &da, &ho, &mi);
 			result = g_strdup_printf ("%s of %d %s, %02d:%02d", 
 						  pack->name,
@@ -1471,17 +1499,31 @@ static void
 packagebreaks_finalize (GtkObject *obj)
 {
 	PackageBreaks *breaks = PACKAGEBREAKS (obj);
+
+#ifdef DEBUG_PACKAGE_ALLOCS
+	packagebreaks_allocs --;
+	if (report_all) trilobite_debug ("packagebreaks_allocs decreased to %d (%p)", 
+					 packagebreaks_allocs, obj);
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
 	gtk_object_unref (GTK_OBJECT (breaks->__package));
-	trilobite_debug ("I'm DYING! %p", obj);
+
+	if (packagebreaks_parent_class->finalize) {
+		packagebreaks_parent_class->finalize (obj);
+	}
 }
 
 static void
 packagebreaks_class_initialize (PackageBreaksClass *klass)
 {
 	GtkObjectClass *object_class;
-	
+
+	packagebreaks_parent_class = gtk_type_class (gtk_object_get_type ());
+
 	object_class = (GtkObjectClass*)klass;
 	object_class->finalize = packagebreaks_finalize;
+
+	klass->finalize = packagebreaks_finalize;
 }
 
 static void
@@ -1490,6 +1532,12 @@ packagebreaks_initialize (PackageBreaks *breaks)
 	g_assert (breaks);
 	g_assert (IS_PACKAGEBREAKS (breaks));
 	breaks->__package = NULL;
+
+#ifdef DEBUG_PACKAGE_ALLOCS
+	packagebreaks_allocs ++;
+	if (report_all) trilobite_debug ("packagebreaks_allocs increased to %d (%p)", 
+					 packagebreaks_allocs, breaks);
+#endif /* DEBUG_PACKAGE_ALLOCS */
 }
 
 GtkType
@@ -1557,15 +1605,23 @@ packagefileconflict_finalize (GtkObject *obj)
 {
 	PackageFileConflict *conflict = PACKAGEFILECONFLICT (obj);
 	g_list_foreach (conflict->files, (GFunc)g_free, NULL);
+
+	if (packagefileconflict_parent_class->finalize) {
+		packagefileconflict_parent_class->finalize (obj);
+	}
 }
 
 static void
 packagefileconflict_class_initialize (PackageFileConflictClass *klass)
 {
 	GtkObjectClass *object_class;
-	
+
+	packagefileconflict_parent_class = gtk_type_class (packagebreaks_get_type ());
+
 	object_class = (GtkObjectClass*)klass;
 	object_class->finalize = packagefileconflict_finalize;
+
+	klass->finalize = packagedata_finalize;
 }
 
 static void
@@ -1624,6 +1680,10 @@ packagefeaturemissing_finalize (GtkObject *obj)
 {
 	PackageFeatureMissing *conflict = PACKAGEFEATUREMISSING (obj);
 	g_list_foreach (conflict->features, (GFunc)g_free, NULL);
+
+	if (packagefeaturemissing_parent_class->finalize) {
+		packagefeaturemissing_parent_class->finalize (obj);
+	}
 }
 
 static void
@@ -1631,8 +1691,12 @@ packagefeaturemissing_class_initialize (PackageFeatureMissingClass *klass)
 {
 	GtkObjectClass *object_class;
 	
+	packagefeaturemissing_parent_class = gtk_type_class (packagebreaks_get_type ());
+
 	object_class = (GtkObjectClass*)klass;
 	object_class->finalize = packagefeaturemissing_finalize;
+
+	klass->finalize = packagedata_finalize;
 }
 
 static void

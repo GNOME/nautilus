@@ -191,6 +191,7 @@ impl_install_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], (PackageData *)(packages->data));
 	}
 	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+	g_list_free (packages);
 }
 
 static void 

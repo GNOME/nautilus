@@ -106,7 +106,7 @@ eazel_package_system_rpm4_query_impl (EazelPackageSystemRpm4 *system,
 						pack, 
 						(GCompareFunc)eazel_install_package_compare)!=NULL) {
 				info (system, "%s already in set", pack->name);
-				packagedata_destroy (pack, TRUE);
+				gtk_object_unref (GTK_OBJECT (pack));
 			} else {
 				(*result) = g_list_prepend (*result, pack);
 			}

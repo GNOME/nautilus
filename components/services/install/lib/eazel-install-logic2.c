@@ -46,6 +46,9 @@
 #define EI2_DEBUG 0xff
 #define PATCH_FOR_SOFTCAT_BUG 1
 #define MUST_HAVE PACKAGE_FILL_NO_DIRS_IN_PROVIDES
+#define UPDATE_MUST_HAVE PACKAGE_FILL_NO_DEPENDENCIES|PACKAGE_FILL_NO_TEXT|PACKAGE_FILL_NO_DIRS_IN_PROVIDES
+#define OWNS_MUST_HAVE PACKAGE_FILL_NO_DEPENDENCIES|PACKAGE_FILL_NO_TEXT|PACKAGE_FILL_NO_DIRS_IN_PROVIDES
+#define MODIFY_MUST_HAVE PACKAGE_FILL_NO_DEPENDENCIES|PACKAGE_FILL_NO_TEXT|PACKAGE_FILL_NO_DIRS_IN_PROVIDES
 
 enum {
 	DEPENDENCY_OK = 1,
@@ -261,7 +264,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 							service->private->cur_root,
 							pack->name,
 							EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-							PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
+							MODIFY_MUST_HAVE);
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
@@ -453,7 +456,7 @@ get_softcat_info (EazelInstall *service,
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
 
-	if ((*package)->fillflag & MUST_HAVE) {
+	if ((*package)->fillflag == MUST_HAVE) {
 		/* Package is already filled */
 		result = SOFTCAT_HIT_OK;
 	} else {
@@ -463,6 +466,8 @@ get_softcat_info (EazelInstall *service,
 				PackageData *loaded_package;
 #if EI2_DEBUG & 0x4
 				trilobite_debug ("%p %s load from disk", *package, (*package)->name);
+#else
+				g_message ("Loading package info from %s", (*package)->filename);
 #endif		
 				loaded_package = eazel_package_system_load_package (service->private->package_system,
 										    *package,
@@ -656,6 +661,7 @@ is_satisfied (EazelInstall *service,
 	char *key;
 	int previous_check_state = 0;
 	char *sense_str;
+	gboolean result = FALSE;
 
 	g_assert (dep);
 	g_assert (IS_PACKAGEDEPENDENCY (dep));
@@ -672,7 +678,7 @@ is_satisfied (EazelInstall *service,
 				 dep->package, dep->package->name);
 		trilobite_debug ("\t -> already filled, must be ok");
 #else
-		g_message ("checking dependency for %s (already checked)", 
+		g_message ("\t(cached) : %s", 
 			   dep->package->name);
 #endif
 		
@@ -684,14 +690,9 @@ is_satisfied (EazelInstall *service,
 	trilobite_debug ("is_satisfied? %p %s %s %s", 
 			 dep->package, dep->package->name, sense_str,
 			 (dep->version != NULL ? dep->version : ""));
-#else
-	g_message ("checking dependency %s %s %s", 
-		   dep->package->name, sense_str,
-		   (dep->version != NULL ? dep->version : ""));
 #endif
 	key = g_strdup_printf ("%s/%s/%s", dep->package->name, sense_str,
 			       (dep->version != NULL ? dep->version : ""));
-	g_free (sense_str);
 
 	if (key != NULL) {
 		previous_check_state = GPOINTER_TO_INT (g_hash_table_lookup (service->private->dep_ok_hash, key));
@@ -701,19 +702,17 @@ is_satisfied (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("\t--> dep hash ok");
 #endif
-		return TRUE;
+		result = TRUE;
 		break;
 	}
 	case DEPENDENCY_NOT_OK: {
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("\t--> dep hash failed");
 #endif
-		return FALSE;
+		result = FALSE;
 		break;
 	}
-	default: {
-		gboolean result = FALSE;
-		
+	default: {				
 		if (dep->version) {
 			if (eazel_package_system_is_installed (service->private->package_system,
 							       service->private->cur_root,
@@ -748,26 +747,29 @@ is_satisfied (EazelInstall *service,
 		if (result) {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t--> feature is satisfied");
-#else
-			g_message ("\tok");
 #endif
 			g_hash_table_insert (service->private->dep_ok_hash, 
 					     key,
 					     GINT_TO_POINTER (DEPENDENCY_OK));
-			return TRUE;
 		} else {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t--> feature not satisfied");
-#else
-			g_message ("\tnot ok");
 #endif
 			g_hash_table_insert (service->private->dep_ok_hash, 
 					     key,
 					     GINT_TO_POINTER (DEPENDENCY_NOT_OK));
-			return FALSE;
 		}
 	}
 	}
+
+#if ~EI2_DEBUG & 0x4	
+	g_message ("\t%8.8s : %s %s %s", 
+		   result ? "ok" : "NOT ok",
+		   dep->package->name, sense_str,
+		   (dep->version != NULL ? dep->version : ""));
+#endif
+	g_free (sense_str);
+	return result;
 }
 
 gboolean
@@ -785,7 +787,9 @@ is_satisfied_features (EazelInstall *service,
 
 	features = package->features;
 
+#if EI2_DEBUG & 0x4
 	trilobite_debug ("\t -> is_satisfied_features %d features", g_list_length (features));
+#endif
 
 	for (iterator = features; iterator && result; iterator = g_list_next (iterator)) {
 		GList *query_result;
@@ -846,6 +850,8 @@ check_dependencies_foreach (PackageData *package,
 
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("check deps for %p %s", package, package->name);
+#else
+	g_message ("Checking dependencies for %s", package->name);
 #endif
 
 	for (iterator = package->depends; iterator; iterator = g_list_next (iterator)) {
@@ -860,7 +866,11 @@ check_dependencies_foreach (PackageData *package,
 	for (iterator = remove; iterator; iterator = g_list_next (iterator)) {
 		PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
 		package->depends = g_list_remove (package->depends, dep);
-		trilobite_debug ("removing %p %s from %p %s", dep->package, dep->package->name, package, package->name);
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("removing %p %s from %p %s", 
+				 dep->package, dep->package->name, 
+				 package, package->name);
+#endif
 		packagedependency_destroy (dep);
 	}
 	g_list_free (remove);
@@ -948,7 +958,7 @@ check_tree_helper (EazelInstall *service,
 				if (eazel_softcat_available_update (service->private->softcat,
 								    pack_broken,
 								    &pack_update,
-								    MUST_HAVE)) {
+								    UPDATE_MUST_HAVE)) {
 					if (check_update_for_no_more_file_conflicts (conflict, pack_update)) {
 #if EI2_DEBUG & 0x4
 						trilobite_debug ("adding %s to packages to be installed", 
@@ -969,9 +979,11 @@ check_tree_helper (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 						trilobite_debug ("%s still has conflict", pack_update->name);
 #else
-						g_message ("available update to %s does not solves conflict",
-							   pack_update->name);
+						g_message ("available update to %s (%s-%s) does not solves conflict",
+							   pack_update->name,
+							   pack_update->version, pack_update->minor);
 #endif
+						gtk_object_unref (GTK_OBJECT (pack_update));
 					}
 				}
 			}
@@ -1057,7 +1069,7 @@ add_file_conflict (PackageData *pack,
 		packagebreaks_set_package (PACKAGEBREAKS (conflict), broken);
 		conflict->files = g_list_prepend (conflict->files, g_strdup (filename));
 		packagedata_add_to_breaks (pack, PACKAGEBREAKS (conflict));
-		//gtk_object_unref (GTK_OBJECT (conflict));
+		gtk_object_unref (GTK_OBJECT (conflict));
 	}
 }
 
@@ -1261,7 +1273,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 							     service->private->cur_root,
 							     filename,
 							     EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
-							     PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
+							     OWNS_MUST_HAVE);
 			/* No need to check packages that we modify */	
 			packagedata_list_prune (&owners, pack->modifies, TRUE, TRUE);
 
@@ -1360,6 +1372,8 @@ check_feature_consistency (EazelInstall *service,
 
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("checking %s", pack->name);
+#else
+		g_message ("checking feature consistency of %s", pack->name);
 #endif
 
 		for (modify_it = pack->modifies; modify_it; modify_it = g_list_next (modify_it)) {
@@ -1398,6 +1412,11 @@ check_feature_consistency (EazelInstall *service,
 								 pack_broken, pack_broken->name,
 								 pack, pack->name,
 								 pack_modified, pack_modified->name);
+#else
+						g_message ("feature missing : %s breaks, if %s is installed (feature %s would be lost",
+							   pack_broken->name,
+							   pack->name,
+							   feature);
 #endif
 						pack_broken->status = PACKAGE_DEPENDENCY_FAIL;
 						pack->status = PACKAGE_BREAKS_DEPENDENCY;

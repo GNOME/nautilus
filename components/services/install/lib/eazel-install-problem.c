@@ -60,6 +60,47 @@ eazel_install_problem_debug_attempts (int *key,
 #endif
 
 static void
+get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachData *data)
+{
+	PackageData *previous_pack = NULL;
+	const char *package_broken_name;
+	GList **errors = &(data->errors);
+
+	if (data->path) {
+		previous_pack = (PackageData*)(data->path->data);
+	}
+
+	package_broken_name = packagebreaks_get_package (breakage)->name;
+
+	if (IS_PACKAGEFILECONFLICT (breakage)) {
+		PackageFileConflict *conflict = PACKAGEFILECONFLICT (breakage);
+		GList *iterator;
+		char *message;
+
+		message = g_strdup_printf ("Conflict between %s and %s", 
+					   previous_pack->name,
+					   package_broken_name);
+		(*errors) = g_list_append (*errors, message);
+
+		for (iterator = conflict->files; iterator; iterator = g_list_next (iterator)) {
+			char *message;
+			message = g_strdup_printf ("file : %s", (char*)iterator->data);
+			(*errors) = g_list_append (*errors, message);
+		}
+	} else if (IS_PACKAGEFEATUREMISSING (breakage)) {
+		PackageFeatureMissing *missing = PACKAGEFEATUREMISSING (breakage);
+		missing = NULL;
+	} else {
+		char *message;
+		
+		message = g_strdup_printf ("Fuckup between %s and %s", 
+					   previous_pack->name,
+					   package_broken_name);
+		(*errors) = g_list_append (*errors, message);
+	}
+}
+
+static void
 get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
 	char *message = NULL;
@@ -192,7 +233,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_messages_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_messages_foreach, data);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_messages_foreach, data);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_messages_breaks_foreach, data);
 
 	/* Pop the currect pack from the path */
 	data->path = g_list_remove (data->path, pack);
@@ -561,6 +602,10 @@ add_cascade_remove (EazelInstallProblem *problem,
 	}
 }
 
+static void
+get_detailed_cases_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachData *data)
+{
+}
 
 /* 
    FIXME bugzilla.eazel.com
@@ -592,12 +637,6 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		g_message ("%s:%d", __FILE__, __LINE__);
-		if ((pack->name!= NULL) && previous_pack && (strcmp (pack->name, previous_pack->name) != 0)) {
-			add_update_case (data->problem, pack, TRUE, &(data->errors)); 
-		} else {
-			g_warning ("%s:%d : oops", __FILE__,__LINE__);
-		}
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
 		if (pack->soft_depends) {
@@ -635,7 +674,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_cases_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_cases_foreach, data);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_cases_foreach, data);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_cases_breaks_foreach, data);
 
 	/* Pop the currect pack from the path */
 	data->path = g_list_remove (data->path, pack);

@@ -1,3 +1,63 @@
+2001-02-02  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (tree_helper_helper), (tree_helper):
+	Added check for PackageBreaks iterators.
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_install_failed):
+	Leakfix, freeing the list given to the signal handler after
+	handling.
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(empty_hash_table),
+	(packagedata_tree_from_corba_packagedatastructlist):
+	Leakfix, now correctly frees the contents of the md5_hashtable and
+	unrefs the proper objects.
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(eazel_install_check_existing_packages), (get_softcat_info),
+	(is_satisfied), (is_satisfied_features),	
+	(check_dependencies_foreach), (check_tree_helper),
+	(add_file_conflict),
+	(check_conflicts_against_already_installed_packages),
+	(check_feature_consistency):
+	Proper fillflags for some EazelPackageSystem calls.
+	Nicer log-output when debug is off.
+	Leak fix, the PackageBreaks "objects".
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_breaks_foreach),
+	(get_detailed_messages_foreach),
+	(get_detailed_cases_breaks_foreach), (get_detailed_cases_foreach):
+	Updated for the new PackageBreaks "objects".
+	
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_rpm4_query_impl):
+	s/packagedata_destroy/gtk_object_unref/
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(at_exit_package_data_info), (categorydata_new),
+	(categorydata_destroy_foreach), (packagedata_finalize),
+	(packagedata_class_initialize), (packagedata_initialize),
+	(packagedata_get_readable_name), (packagebreaks_finalize),
+	(packagebreaks_class_initialize), (packagebreaks_initialize),
+	(packagefileconflict_finalize),
+	(packagefileconflict_class_initialize),
+	(packagefeaturemissing_finalize),
+	(packagefeaturemissing_class_initialize):
+	Finally got the destroy crap working for the PackageBreak
+	"objects".
+	More leakcheck stuff for various structures.
+	Again, fixed get_reabable_name.
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	Added finalizes to the "objects".
+	Removed packagedata_destroy prototype.
+	
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	Cleanup and possible tinderbox fix.
+	
 2001-02-02  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-corba-types.c:

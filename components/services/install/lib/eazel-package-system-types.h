@@ -169,6 +169,7 @@ typedef struct _PackageDataClass PackageDataClass;
 
 struct _PackageDataClass {
 	GtkObjectClass parent_class;
+	void (*finalize) (GtkObject *obj);
 };
 
 struct _PackageData {
@@ -266,8 +267,6 @@ char *packagedata_get_readable_name (const PackageData *pack);
    from a given package, real meanign name[-version-[release]] string */
 char *packagedata_get_name (const PackageData *pack);
 
-void packagedata_destroy (PackageData *pd, gboolean deep);
-
 int packagedata_hash_equal (PackageData *a, PackageData *b);
 
 GList *flatten_packagedata_dependency_tree (GList *packages);
@@ -318,6 +317,7 @@ typedef struct _PackageBreaksClass PackageBreaksClass;
 
 struct _PackageBreaksClass {
 	GtkObjectClass parent_class;
+	void (*finalize) (GtkObject *obj);
 };
 
 struct _PackageBreaks {
@@ -341,6 +341,7 @@ typedef struct _PackageFileConflictClass PackageFileConflictClass;
 
 struct _PackageFileConflictClass {
 	PackageBreaksClass parent_class;
+	void (*finalize) (GtkObject *obj);
 };
 
 struct _PackageFileConflict {
@@ -362,6 +363,7 @@ typedef struct _PackageFeatureMissingClass PackageFeatureMissingClass;
 
 struct _PackageFeatureMissingClass {
 	PackageBreaksClass parent_class;
+	void (*finalize) (GtkObject *obj);
 };
 
 struct _PackageFeatureMissing {

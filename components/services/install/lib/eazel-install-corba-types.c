@@ -23,6 +23,7 @@
 
 #include "eazel-install-corba-types.h"
 #include "eazel-softcat.h"
+#include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-core-distribution.h>
 
 static GList*
@@ -421,6 +422,15 @@ packagedata_list_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 	return result;
 }
 
+static gboolean
+empty_hash_table (char *key,
+		  PackageData *pack,
+		  gpointer unused)
+{
+	gtk_object_unref (GTK_OBJECT (pack));
+	return TRUE;
+}
+
 /* inflate a corba package list into a full-blown package tree (really a
  * directed graph), by converting the soft MD5 pointers into physical ones.
  */
@@ -519,10 +529,14 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
 		pack = PACKAGEDATA (iter->data);
 		if (pack->toplevel) {
+			gtk_object_ref (GTK_OBJECT (pack));
 			outlist = g_list_prepend (outlist, pack);
 		}
 	}
 	g_list_free (packlist);
+
+	g_hash_table_foreach_remove (md5_table, (GHRFunc)empty_hash_table, NULL);
+	g_hash_table_destroy (md5_table);
 
 	return outlist;
 }

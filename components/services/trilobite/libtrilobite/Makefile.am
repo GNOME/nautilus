@@ -101,10 +101,7 @@ CLEANFILES= $(TRILOBITE_CORBA_GENERATED) idl_stamp
 
 trilobite-service.c: trilobite-service.h
 
-EXTRA_DIST = \
-	trilobite-service-passwordquery-private.h	\
-	trilobite-root-client-private.h		\
-	trilobite-service-private.h		\
-	trilobite-service-private.h		\
+EXTRA_DIST = 				\
+	trilobite-core-network-slim.c	\
 	$(NULL)
 
