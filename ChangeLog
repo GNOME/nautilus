@@ -1,5 +1,15 @@
 2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences.c:
+	(nautilus_preferences_initialize):
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	* nautilus-widgets/nautilus-user-level-manager.h:
+	No longer need to retrieve the gconf_client from the user level
+	manager.  The bug preventing multiple clients has been fixed in
+	gconf.	
+
+2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_create_dialog),
 	(global_preferences_close_dialog_callback),

@@ -930,7 +930,13 @@ nautilus_preferences_initialize (int argc, char **argv)
 
 	g_assert (GLOBAL.preference_table != NULL);
 
- 	GLOBAL.gconf_client = GCONF_CLIENT (nautilus_user_level_manager_get_gconf_client ());
+ 	GLOBAL.gconf_client = gconf_client_new ();
+
+	/* Let gconf know about ~/.gconf/nautilus */
+	gconf_client_add_dir (GLOBAL.gconf_client,
+			      PREFERENCES_GCONF_PATH,
+			      GCONF_CLIENT_PRELOAD_RECURSIVE,
+			      NULL);
 
 	g_assert (GLOBAL.gconf_client != NULL);
 

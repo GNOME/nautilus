@@ -328,18 +328,6 @@ nautilus_user_level_manager_get_user_level_names (void)
 	return nautilus_string_list_new_from_string_list (manager->user_level_names);
 }
 
-GtkObject*
-nautilus_user_level_manager_get_gconf_client (void)
-{
-	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
-
-	g_assert (manager->gconf_client != NULL);
-
-	gtk_object_ref (GTK_OBJECT (manager->gconf_client));
-
-	return GTK_OBJECT (manager->gconf_client);
-}
-
 char *
 nautilus_user_level_manager_make_gconf_key (const char *preference_name,
 					    int user_level)
