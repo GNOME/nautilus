@@ -29,6 +29,7 @@
 #include <gtk/gtkmarshal.h>
 #include <liboaf/liboaf.h>
 
+#include "trilobite-service.h"
 #include "trilobite-service-public.h"
 #include "trilobite-service-private.h"
 
@@ -124,7 +125,7 @@ gtk_marshal_POINTER__NONE (GtkObject * object,
   GTK+ object stuff
 *****************************************/
 
-static void
+void
 trilobite_service_destroy (GtkObject *object)
 {
 	TrilobiteService *trilobite;
@@ -138,8 +139,12 @@ trilobite_service_destroy (GtkObject *object)
 
 	trilobite = TRILOBITE_SERVICE (object);
 
-	if (TRILOBITE_SERVICE_CLASS (trilobite)->parent_class->destroy != NULL) {
-		TRILOBITE_SERVICE_CLASS (trilobite)->parent_class->destroy (object);
+	if (trilobite->private->destroyed==TRUE) {
+		return;
+	}
+
+	if (TRILOBITE_SERVICE_CLASS (trilobite)->parent_class_ptr->destroy != NULL) {
+		TRILOBITE_SERVICE_CLASS (trilobite)->parent_class_ptr->destroy (object);
 	}
 
 	CORBA_exception_init(&ev);
@@ -152,6 +157,8 @@ trilobite_service_destroy (GtkObject *object)
 	poa_servant_fini ((PortableServer_Servant) trilobite, &ev);
 	g_free (trilobite);
 	CORBA_exception_free(&ev);
+
+	trilobite->private->destroyed = TRUE;
 }
 
 
@@ -167,7 +174,7 @@ trilobite_service_class_initialize (TrilobiteServiceClass *klass)
 	object_class->get_arg = trilobite_service_get_arg;
 	*/
 
-	klass->parent_class = gtk_type_class (gtk_object_get_type ());
+	klass->parent_class_ptr = gtk_type_class (gtk_object_get_type ());
 	klass->poa_servant_init = POA_Trilobite_Service__init;
 	klass->poa_servant_fini = POA_Trilobite_Service__fini;
 	klass->poa_vepv = &impl_Trilobite_Service_vepv;
@@ -190,9 +197,11 @@ static Trilobite_Service
 trilobite_service_corba_initialization (TrilobiteService *trilobite)
 {
 	Trilobite_Service result;
+	PortableServer_ObjectId objid = {0, sizeof("trilobite-service"), "trilobite-service" };
 	PortableServer_POA poa;
 	CORBA_Environment ev;
 	void (*poa_servant_init) (PortableServer_Servant servant, CORBA_Environment *ev);
+
 	g_assert (trilobite != NULL);
 	g_assert (TRILOBITE_IS_SERVICE (trilobite));
 
@@ -200,10 +209,13 @@ trilobite_service_corba_initialization (TrilobiteService *trilobite)
 	poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references (oaf_orb_get (), "RootPOA", &ev);
 
 	poa_servant_init = TRILOBITE_SERVICE_CLASS (GTK_OBJECT(trilobite)->klass)->poa_servant_init;
-	poa_servant_init ((PortableServer_Servant)trilobite, &ev);
-	CORBA_free (PortableServer_POA_activate_object (poa, trilobite, &ev));
+	poa_servant_init ((PortableServer_Servant)&trilobite->service_poa, &ev);
+	CORBA_free (PortableServer_POA_activate_object (poa, &trilobite->service_poa, &ev));
 
-	result = (Trilobite_Service)PortableServer_POA_servant_to_reference (poa, trilobite, &ev);
+	trilobite->service_poa.vepv = TRILOBITE_SERVICE_CLASS (GTK_OBJECT(trilobite)->klass)->poa_vepv;
+
+	PortableServer_POA_activate_object_with_id (poa, &objid, &trilobite->service_poa, &ev);
+	result = (Trilobite_Service)PortableServer_POA_servant_to_reference (poa, &trilobite->service_poa, &ev);
 	CORBA_exception_free (&ev);
 
 	return result;
@@ -224,20 +236,18 @@ trilobite_service_initialize (TrilobiteService *trilobite)
 	trilobite->private->service_vendor_url = g_strdup ("http://www.dev.null");
 	trilobite->private->service_url = g_strdup ("http://www.dev.null");
 	trilobite->private->service_icon_uri = g_strdup ("file://dev/random");
+
+	trilobite->private->destroyed = FALSE;
 	
 	trilobite->corba_object = trilobite_service_corba_initialization (trilobite);
 }
 
-/*
-  Returns a GtkType for the trilobiteservice.
-  At first call trilobite_service_type is 0, and then
-  it is set, so next call will just return the generated
-  GtkType.
- */
 GtkType
 trilobite_service_get_type (void)
 {
 	static GtkType trilobite_service_type = 0;
+
+	g_message("into trilobite_service_get_type");
 
 	/* First time it's called ? */
 	if (!trilobite_service_type)
@@ -273,7 +283,7 @@ trilobite_service_new(char *oaf_id)
 	PortableServer_POA poa;
 	TrilobiteService *service;
 
-	service = TRILOBITE_SERVICE (gtk_object_new (TRILOBITE_TYPE_SERVICE, NULL));
+	service = TRILOBITE_SERVICE (gtk_type_new (TRILOBITE_TYPE_SERVICE));
 
 	CORBA_exception_init(&ev);
 	poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references (oaf_orb_get (), "RootPOA", &ev);

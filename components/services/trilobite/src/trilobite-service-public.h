@@ -29,7 +29,6 @@
 #define TRILOBITE_SERVICE_H
 
 #include <gtk/gtkobject.h>
-#include "trilobite-service.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,6 +45,8 @@ typedef struct _TrilobiteServiceClass TrilobiteServiceClass;
 
 struct _TrilobiteServiceClass 
 {
+	GtkObjectClass parent_class_placeholder;
+
 	char* (*get_name)         (TrilobiteService *trilobite);
 	char* (*get_version)      (TrilobiteService *trilobite);
 	char* (*get_vendor_name)  (TrilobiteService *trilobite);
@@ -54,20 +55,20 @@ struct _TrilobiteServiceClass
 	char* (*get_icon_uri)     (TrilobiteService *trilobite);
 	void  (*done)             (TrilobiteService *trilobite);
 	
-	GtkObjectClass *parent_class;
+	GtkObjectClass *parent_class_ptr;
 
 	gpointer poa_servant_init;
 	gpointer poa_servant_fini;
-	gpointer poa_vepv;
+	POA_Trilobite_Service__vepv *poa_vepv;
 };
 
 typedef struct _TrilobiteServicePrivate TrilobiteServicePrivate;
 
 struct _TrilobiteService
 {
-	POA_Trilobite_Service    service_poa;
-	Trilobite_Service        corba_object;
 	GtkObject                parent;
+	POA_Trilobite_Service    service_poa;
+	gpointer                 corba_object;
 	TrilobiteServicePrivate *private;
 };
 
@@ -79,7 +80,8 @@ char*              trilobite_service_get_vendor_name     (TrilobiteService *tril
 char*              trilobite_service_get_vendor_url      (TrilobiteService *trilobite);
 char*              trilobite_service_get_url             (TrilobiteService *trilobite);
 char*              trilobite_service_get_icon_uri        (TrilobiteService *trilobite);
-char*              trilobite_service_done                (TrilobiteService *trilobite);
+void               trilobite_service_done                (TrilobiteService *trilobite);
+void               trilobite_service_destroy             (GtkObject *trilobite);
 
 #ifdef __cplusplus
 }

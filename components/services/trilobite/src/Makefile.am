@@ -4,7 +4,7 @@ lib_LTLIBRARIES=libtrilobited.la
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"lib-trilobite-d\"
+	-DG_LOG_DOMAIN=\"lib-trilobited\"
 
 INCLUDES = \
 	-I$(top_srcdir) \

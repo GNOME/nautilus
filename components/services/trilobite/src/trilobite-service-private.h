@@ -28,6 +28,8 @@
 #define TRILOBITE_SERVICE_PRIVATE_H
 
 struct _TrilobiteServicePrivate {	
+	gboolean destroyed;
+
 	char *service_name;
 	char *service_version;
 	char *service_vendor_name;
