@@ -1,3 +1,19 @@
+2000-01-04  John Sullivan  <sullivan@eazel.com>
+
+	After talking with Sopwith and Darin, removed
+	my changes from earlier today. The current framework
+	handles bogus URIs better than I thought, though still
+	with some known problems. I can't implement the bookmarks
+	part until the problems are fixed. And the new functions
+	don't seem to be required in any case.
+	* libnautilus/nautilus-uri-utilities.c: removed file
+	* libnautilus/nautilus-uri-utilities.h: removed file
+	* libnautilus/Makefile.am: removed these two files
+	from the build, and removed GnomeVFS
+	* src/ntl-window.c: removed #include for nautilus-uri-utilitie.h.
+	Sopwith had removed the call from (nautilus_window_goto_uri_cb)
+	earlier (without a ChangeLog entry).
+
 2000-01-04  Darin Adler  <darin@eazel.com>
 
 	* src/Makefile.am, src/check-nautilus,

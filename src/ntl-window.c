@@ -26,7 +26,6 @@
 
 #include "config.h"
 #include <gnome.h>
-#include "libnautilus/nautilus-uri-utilities.h"
 #include "nautilus.h"
 #include "nautilus-bookmarks-menu.h"
 #include "explorer-location-bar.h"
