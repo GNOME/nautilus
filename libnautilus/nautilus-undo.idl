@@ -50,7 +50,7 @@ module Nautilus {
 			 */
 			readonly attribute MenuItem undo_description;
 			readonly attribute MenuItem redo_description;
-			readonly attribute string base_description;
+			readonly attribute string operation_name;
 
 			/* Here's how you actually perform an undo.
 			 * Once it's performed, calling this again is

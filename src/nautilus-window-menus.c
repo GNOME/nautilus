@@ -1053,14 +1053,37 @@ update_eazel_theme_menu_item (NautilusWindow *window)
 static void 
 update_undo_menu_item (NautilusWindow *window)
 {
-	NautilusUndoManager *undo_manager;
+	NautilusUndoManager *local_manager;
+	Nautilus_Undo_Manager undo_transaction;
+	Nautilus_Undo_MenuItem *menu_item;
+	gboolean update;
+	CORBA_Environment ev;
 	
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-	undo_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);	
-	if (undo_manager != NULL) {
-		bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, 
-        				      	       nautilus_undo_manager_can_undo (undo_manager));
+	local_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);	
+	if (local_manager != NULL) {
+		update = nautilus_undo_manager_can_undo (local_manager);
+		
+		bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, update);
+
+		if (update) {
+			/* Get undo transaction name */
+			CORBA_exception_init(&ev);
+						
+			undo_transaction = nautilus_undo_manager_get_current_undo_transaction (local_manager);
+			menu_item = Nautilus_Undo_Transaction__get_undo_description (undo_transaction, &ev);
+			
+			bonobo_ui_handler_menu_set_label (window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, menu_item->name);
+
+			CORBA_free (menu_item);
+			
+			CORBA_exception_free(&ev);
+		}
+		else {
+			bonobo_ui_handler_menu_set_label (window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, _("Undo"));
+		}
+		
 	} else {
 		bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, 
         				      	       FALSE);

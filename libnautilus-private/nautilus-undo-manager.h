@@ -58,7 +58,7 @@ struct NautilusUndoManagerClass {
 
 /* GtkObject */
 GtkType               nautilus_undo_manager_get_type          (void);
-NautilusUndoManager 	*nautilus_undo_manager_new               (void);
+NautilusUndoManager 	*nautilus_undo_manager_new            (void);
 
 /* Prototypes */
 gboolean              nautilus_undo_manager_can_undo          (NautilusUndoManager   *manager);
@@ -77,6 +77,10 @@ Nautilus_Undo_Manager nautilus_get_undo_manager               (GtkObject        
 
 void		      nautilus_undo_manager_stash_global_undo (Nautilus_Undo_Manager undo_manager);
 Nautilus_Undo_Manager nautilus_undo_manager_get_global_undo   (void);
+
+
+Nautilus_Undo_Transaction nautilus_undo_manager_get_current_undo_transaction   (NautilusUndoManager   *manager);
+
 
 
 #endif

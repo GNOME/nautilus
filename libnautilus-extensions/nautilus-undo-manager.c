@@ -400,6 +400,32 @@ nautilus_undo_manager_forget_transaction (NautilusUndoManager *manager,
 }
 
 
+Nautilus_Undo_Transaction
+nautilus_undo_manager_get_current_undo_transaction (NautilusUndoManager *manager)
+{
+	GList *last_in_list;
+	CORBA_Object undo_transaction;
+	CORBA_Environment ev;
+
+  	CORBA_exception_init (&ev);
+
+	/* Verify we have a transaction to be undone */
+	if (manager->details->undo_list == NULL) {
+		g_warning ("NautilusUndoManager has no undo transaction in the queue.");
+		return NULL;
+	}
+
+	/* Pop last transaction off undo list */
+	last_in_list = g_list_last (manager->details->undo_list);
+	g_assert (last_in_list != NULL);
+	undo_transaction = last_in_list->data;
+
+	return undo_transaction;
+	
+	CORBA_exception_free (&ev);
+}
+
+
 gboolean
 nautilus_undo_manager_can_undo (NautilusUndoManager *manager)
 {	

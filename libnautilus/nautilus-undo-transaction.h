@@ -46,7 +46,11 @@ typedef struct NautilusUndoTransactionClass NautilusUndoTransactionClass;
 	
 struct NautilusUndoTransaction {
 	BonoboObject parent;
-	gchar *name;
+	char *operation_name;
+	char *undo_menu_item_name;
+	char *undo_menu_item_description;
+	char *redo_menu_item_name;
+	char *redo_menu_item_description;
 	GList *transaction_list;
 };
 
@@ -56,11 +60,13 @@ struct NautilusUndoTransactionClass {
 };
 
 GtkType			nautilus_undo_transaction_get_type 	  (void);
-NautilusUndoTransaction *nautilus_undo_transaction_new		  (const gchar *name);
-
+NautilusUndoTransaction *nautilus_undo_transaction_new 		  (const char *operation_name, 
+								   const char *undo_menu_item_name,
+			       					   const char *undo_menu_item_description, 
+			       					   const char *redo_menu_item_name,
+			       					   const char *redo_menu_item_description);
 gboolean		nautilus_undo_transaction_add_undoable	  (NautilusUndoTransaction *transaction, 
 								   NautilusUndoable *undoable);
-const gchar 		*nautilus_undo_transaction_get_name	  (NautilusUndoTransaction *transaction);
 gboolean		nautilus_undo_transaction_contains_object (NautilusUndoTransaction *transaction,
 								   GtkObject *object);
 #endif

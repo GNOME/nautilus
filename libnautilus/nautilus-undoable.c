@@ -299,7 +299,10 @@ nautilus_undo_register_full (GList *atoms,
 	}
 
 	/* Create an undo transaction */
-	transaction = nautilus_undo_transaction_new (operation_name);
+	transaction = nautilus_undo_transaction_new (operation_name, undo_menu_item_name,
+						     undo_menu_item_description, 
+						     redo_menu_item_name,
+						     redo_menu_item_description);
 	for (p = atoms; p != NULL; p = p->next) {
 		atom = p->data;
 

@@ -1,3 +1,31 @@
+2000-06-01  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus/nautilus-undo-manager.c:
+	* libnautilus/nautilus-undo-manager.h:
+	(nautilus_undo_manager_get_current_undo_transaction):
+	New call to be used internally to get the current undo transaction.
+	An example of this call being used is in the menu code that displays
+	the current undo operation name.
+	
+	* libnautilus/nautilus-undo-transaction.c:
+	(impl_Nautilus_Undo_Transaction__get_undo_description),
+	(impl_Nautilus_Undo_Transaction__get_redo_description),
+	(impl_Nautilus_Undo_Transaction__get_operation_name),
+	(impl_Nautilus_Undo_Transaction__undo),
+	Added actual functionlality to these calls.  They now
+	work as advertised.
+
+	(nautilus_undo_transaction_new),
+	Made changed needed to actually use the operation
+	name and description that is passed in.
+
+	(nautilus_undo_transaction_destroy),
+	Clean up stored operation name and description strings.
+
+	* src/nautilus-window-menus.c: 
+	(update_undo_menu_item):
+	The undo operation name is now displayed in the menu item.
+
 2000-06-01  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-drag.h:

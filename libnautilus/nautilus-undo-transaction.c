@@ -53,7 +53,7 @@ static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_undo_descript
 							 					 CORBA_Environment *ev);
 static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_redo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
 							 					 CORBA_Environment *ev);
-static CORBA_char *impl_Nautilus_Undo_Transaction__get_base_description 			(impl_POA_Nautilus_Undo_Transaction  *servant,
+static CORBA_char *impl_Nautilus_Undo_Transaction__get_operation_name 			(impl_POA_Nautilus_Undo_Transaction  *servant,
 							 					 CORBA_Environment *ev);
 static void impl_Nautilus_Undo_Transaction__undo 						(impl_POA_Nautilus_Undo_Transaction  *servant,
 							 					 CORBA_Environment *ev);
@@ -67,7 +67,7 @@ POA_Nautilus_Undo_Transaction__epv libnautilus_Nautilus_Undo_Transaction_epv =
 
 	(gpointer) &impl_Nautilus_Undo_Transaction__get_undo_description,
 	(gpointer) &impl_Nautilus_Undo_Transaction__get_redo_description,
-	(gpointer) &impl_Nautilus_Undo_Transaction__get_base_description,
+	(gpointer) &impl_Nautilus_Undo_Transaction__get_operation_name,
 	(gpointer) &impl_Nautilus_Undo_Transaction__undo
 };
 
@@ -128,38 +128,95 @@ impl_Nautilus_Undo_Transaction__create (NautilusUndoTransaction *transaction, CO
 }
 
 
-static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_undo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
+static Nautilus_Undo_MenuItem *
+impl_Nautilus_Undo_Transaction__get_undo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
 							 					 CORBA_Environment *ev)
 {
-	return NULL;
+	Nautilus_Undo_MenuItem *item;
+	NautilusUndoTransaction *transaction;
+
+	CORBA_exception_init(ev);
+
+	transaction = servant->undo_transaction;
+	
+	item = ORBit_alloc (sizeof (Nautilus_Undo_MenuItem), NULL, NULL);
+
+     	item->name = ORBit_alloc (strlen (transaction->undo_menu_item_name) * sizeof (CORBA_char), NULL, NULL);
+	strcpy (item->name, transaction->undo_menu_item_name);
+
+     	item->description = ORBit_alloc (strlen (transaction->undo_menu_item_description) * sizeof (CORBA_char), NULL, NULL);
+	strcpy (item->description, transaction->undo_menu_item_description);
+     	
+	CORBA_exception_free(ev);
+	
+	return item;
 }
 							 				
-static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_redo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
+static Nautilus_Undo_MenuItem *
+impl_Nautilus_Undo_Transaction__get_redo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
 							 					 CORBA_Environment *ev)
 {
-	return NULL;
+	Nautilus_Undo_MenuItem *item;
+	NautilusUndoTransaction *transaction;
+
+	CORBA_exception_init(ev);
+
+	transaction = servant->undo_transaction;
+	
+	item = ORBit_alloc (sizeof (Nautilus_Undo_MenuItem), NULL, NULL);
+
+     	item->name = ORBit_alloc (strlen (transaction->redo_menu_item_name) * sizeof (CORBA_char), NULL, NULL);
+	strcpy (item->name, transaction->redo_menu_item_name);
+
+     	item->description = ORBit_alloc (strlen (transaction->redo_menu_item_description) * sizeof (CORBA_char), NULL, NULL);
+	strcpy (item->description, transaction->redo_menu_item_description);
+     	
+	CORBA_exception_free(ev);
+	
+	return item;
+
 }
 							 					 
-static CORBA_char *impl_Nautilus_Undo_Transaction__get_base_description (impl_POA_Nautilus_Undo_Transaction  *servant,
+static CORBA_char *
+impl_Nautilus_Undo_Transaction__get_operation_name (impl_POA_Nautilus_Undo_Transaction  *servant,
 							 		 CORBA_Environment *ev)
 {
-	return NULL;
+	NautilusUndoTransaction *transaction;
+	CORBA_char *operation_name;
+	
+	CORBA_exception_init(ev);
+
+	transaction = servant->undo_transaction;
+	
+    	operation_name = ORBit_alloc (strlen (transaction->operation_name) * sizeof (CORBA_char), NULL, NULL);
+	strcpy (operation_name, transaction->operation_name);
+     	
+	CORBA_exception_free(ev);
+	
+	return operation_name;
 }
 							 					 
-static void impl_Nautilus_Undo_Transaction__undo (impl_POA_Nautilus_Undo_Transaction  *servant, CORBA_Environment *ev)
+static void 
+impl_Nautilus_Undo_Transaction__undo (impl_POA_Nautilus_Undo_Transaction  *servant, CORBA_Environment *ev)
 {
 	nautilus_undo_transaction_undo (servant->undo_transaction);
 }							 					 
 
 /* nautilus_undo_transaction_new */
 NautilusUndoTransaction *
-nautilus_undo_transaction_new (const gchar *name)
+nautilus_undo_transaction_new (const char *operation_name, const char *undo_menu_item_name,
+			       const char *undo_menu_item_description, const char *redo_menu_item_name,
+			       const char *redo_menu_item_description)
 {
 	NautilusUndoTransaction *transaction;
 
 	transaction = gtk_type_new (nautilus_undo_transaction_get_type ());
 	
-	transaction->name = g_strdup(name);
+	transaction->operation_name = g_strdup (operation_name);
+	transaction->undo_menu_item_name = g_strdup (undo_menu_item_name);
+	transaction->undo_menu_item_description = g_strdup (undo_menu_item_description);
+	transaction->redo_menu_item_name = g_strdup (redo_menu_item_name);
+	transaction->redo_menu_item_description = g_strdup (redo_menu_item_description);
 
 	return transaction;
 }
@@ -194,7 +251,11 @@ nautilus_undo_transaction_destroy (GtkObject *object)
 	/* Empty list */
 	g_list_free(transaction->transaction_list);
 
-	g_free(transaction->name);
+	g_free(transaction->operation_name);
+	g_free(transaction->undo_menu_item_name);
+	g_free(transaction->undo_menu_item_description);
+	g_free(transaction->redo_menu_item_name);
+	g_free(transaction->redo_menu_item_description);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -260,19 +321,6 @@ nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 			nautilus_undoable_restore_from_undo_snapshot (undoable);
 		}
 	}
-}
-
-
-/* nautilus_undo_transaction_contains_object 
- * 
- * Return name of requested transaction 
- */
-const gchar *
-nautilus_undo_transaction_get_name (NautilusUndoTransaction *transaction)
-{
-	g_return_val_if_fail(transaction != NULL, NULL);
-	
-	return transaction->name;
 }
 
 
