@@ -223,19 +223,19 @@ typedef struct
 {
 	EazelServicesFooter *footer;
 	int index;
-} ButtonPressData;
+} ButtonReleaseData;
 
 static gint
-footer_item_button_press_event (GtkWidget *widget,
+footer_item_button_release_event (GtkWidget *widget,
 				GdkEventButton *event,
 				gpointer client_data)
 {
-	ButtonPressData	*data;
+	ButtonReleaseData	*data;
 
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (widget), TRUE);
 	g_return_val_if_fail (client_data != NULL, TRUE);
 
-	data = (ButtonPressData *) client_data;
+	data = (ButtonReleaseData *) client_data;
 
 	g_return_val_if_fail (EAZEL_SERVICES_IS_FOOTER (data->footer), TRUE);
 	
@@ -332,7 +332,7 @@ footer_item_new (EazelServicesFooter *footer,
 	GtkWidget *left;
 	GtkWidget *label;
  	GtkWidget *right;
-	ButtonPressData *data;
+	ButtonReleaseData *data;
 
 	g_return_val_if_fail (EAZEL_SERVICES_IS_FOOTER (footer), NULL);
 	g_return_val_if_fail (text != NULL, NULL);
@@ -366,11 +366,11 @@ footer_item_new (EazelServicesFooter *footer,
 	
 	gtk_widget_show (label);
 
-	data = g_new (ButtonPressData, 1);
+	data = g_new (ButtonReleaseData, 1);
 	data->index = index;
 	data->footer = footer;
 
-	gtk_signal_connect (GTK_OBJECT (event_box), "button_press_event", GTK_SIGNAL_FUNC (footer_item_button_press_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "button_release_event", GTK_SIGNAL_FUNC (footer_item_button_release_event), data);
 	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (free_data_callback), data);
 
 	label_add_prelighting (NAUTILUS_LABEL (label), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
