@@ -103,6 +103,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-undo-signal-handlers.c		\
 	nautilus-user-level-manager.c		\
 	nautilus-view-identifier.c		\
+	nautilus-volume-monitor.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)
 

@@ -1,3 +1,61 @@
+2000-08-02  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1866, Turn volume mounting code into an object.
+
+	Monitor now emits a signal, volume_mounted, when a mount occurs.
+	
+	Removed the old fm-desktop-mounting files and added
+	new nautilus-volume-monitor files.
+	
+	* libnautilus-extensions/Makefile.am:
+	* src/file-manager/Makefile.am:
+	Added new files and removed old ones.
+	
+	* libnautilus-extensions/nautilus-cdrom-extensions.h:
+	New file
+	
+	* libnautilus-extensions/nautilus-iso9660.h:
+	New file
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	New file
+	(nautilus_volume_monitor_initialize),
+	(nautilus_volume_monitor_initialize_class),
+	(nautilus_volume_monitor_destroy), (nautilus_volume_monitor_get),
+	(floppy_sort), (fm_desktop_get_removable_volume_list),
+	(nautilus_volume_monitor_volume_is_mounted),
+	(mount_device_is_mounted), (mount_device_cdrom_set_state),
+	(mount_device_floppy_set_state), (mount_device_ext2_set_state),
+	(mount_device_set_state), (device_set_state_empty),
+	(mount_device_mount), (mount_device_activate_cdrom),
+	(mount_device_activate_floppy), (mount_device_activate_ext2),
+	(mount_device_activate), (eject_cdrom), (mount_device_deactivate),
+	(mount_device_do_nothing), (mount_device_check_change),
+	(mount_devices_update_is_mounted), (mount_devices_check_status),
+	(check_permissions), (mount_device_floppy_add),
+	(mount_device_ext2_add), (cdrom_ioctl_frenzy),
+	(mount_device_iso9660_add), (mount_device_add_aliases),
+	(add_mount_device), (mntent_is_removable_fs), (mntent_has_option),
+	(nautilus_volume_monitor_find_mount_devices),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(remove_mount_link), (free_device_info), (get_iso9660_volume_name),
+	(get_ext2_volume_name), (get_floppy_volume_name):
+
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	New file
+	
+	* src/file-manager/fm-cdrom-extensions.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_initialize),
+	(fm_desktop_icon_view_create_background_context_menu_items),
+	(fm_desktop_icon_view_trash_state_changed_callback),
+	(mount_unmount_removable), (place_home_directory):
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/file-manager/fm-desktop-mounting.c:
+	* src/file-manager/fm-desktop-mounting.h:
+	* src/file-manager/iso9660.h:
+	All old files that have been removed from build.
+
 2000-08-02  Arlo Rose  <arlo@eazel.com>
 	
         * icons/eazel/Back.png:

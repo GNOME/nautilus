@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* fm-desktop-mounting.c - Desktop volume mounting routines.
+/* nautilus-volume-monitor.c - Desktop volume mounting routines.
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -23,12 +23,6 @@
 */
 
 #include <config.h>
-#include "fm-desktop-mounting.h"
-
-#include "fm-cdrom-extensions.h"
-#include "fm-desktop-icon-view.h"
-#include "fm-icon-view.h"
-#include "iso9660.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -38,15 +32,27 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <mntent.h>
+#include <libnautilus-extensions/nautilus-cdrom-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-private.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-iso9660.h>
 #include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-volume-monitor.h>
+
+#include <parser.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <xmlmemory.h>
+
 
 /* FIXME: Remove messages when this code is done. */
 #define MESSAGE g_message
+
+NautilusVolumeMonitor *global_volume_monitor = NULL;
 
 const char * const state_names[] = { 
 	"ACTIVE", 
@@ -61,21 +67,102 @@ const char * const type_names[] = {
 	"OTHER" 
 };
 
+/* The NautilusVolumeMonitor signals.  */
+enum {
+	VOLUME_MOUNTED,
+	LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL];
 
-static void     remove_mount_link                                         (DeviceInfo             *device);								  
-static void     get_iso9660_volume_name                                   (DeviceInfo             *device);
-static void     get_ext2_volume_name                                      (DeviceInfo             *device);
-static void     get_floppy_volume_name                                    (DeviceInfo             *device);
-static void     mount_device_mount                                        (FMDesktopIconView      *view,
-									   DeviceInfo             *device);
-static gboolean mount_device_is_mounted                                   (DeviceInfo             *device);
-static void	mount_device_activate 					  (FMDesktopIconView 	  *view, 
-									   DeviceInfo 		  *device);
-static void     mount_device_deactivate                                   (FMDesktopIconView      *icon_view,
-									   DeviceInfo             *device);
-static void     mount_device_activate_floppy                              (FMDesktopIconView      *view,
-									   DeviceInfo             *device);
-static gboolean	mntent_is_removable_fs					  (struct mntent 	  *ent);
+static void	nautilus_volume_monitor_initialize 			(NautilusVolumeMonitor 		*desktop_mounter);
+static void	nautilus_volume_monitor_initialize_class 		(NautilusVolumeMonitorClass 	*klass);
+static void	nautilus_volume_monitor_destroy 			(GtkObject 			*object);
+static void     remove_mount_link                                     	(DeviceInfo             	*device);								  
+static void     get_iso9660_volume_name                              	(DeviceInfo             	*device);
+static void     get_ext2_volume_name                               	(DeviceInfo             	*device);
+static void     get_floppy_volume_name                           	(DeviceInfo             	*device);
+static void     mount_device_mount                               	(NautilusVolumeMonitor      	*view,
+									 DeviceInfo             	*device);
+static gboolean mount_device_is_mounted                       		(DeviceInfo             	*device);
+static void	mount_device_activate 					(NautilusVolumeMonitor 	  	*view, 
+									 DeviceInfo 		  	*device);
+static void     mount_device_deactivate                               	(NautilusVolumeMonitor      	*monitor,
+									 DeviceInfo             	*device);
+static void     mount_device_activate_floppy                          	(NautilusVolumeMonitor      	*view,
+									 DeviceInfo             	*device);
+static gboolean	mntent_is_removable_fs					(struct mntent 	  		*ent);
+static void	free_device_info             				(DeviceInfo             	*device,
+						 	 	 	 NautilusVolumeMonitor      	*monitor);
+
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor, nautilus_volume_monitor, GTK_TYPE_OBJECT)
+
+static void
+nautilus_volume_monitor_initialize (NautilusVolumeMonitor *monitor)
+{
+	/* Set up details */
+	monitor->details = g_new0 (NautilusVolumeMonitorDetails, 1);	
+	monitor->details->devices_by_fsname = g_hash_table_new (g_str_hash, g_str_equal);
+	monitor->details->devices = NULL;
+}
+
+static void
+nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
+{
+	GtkObjectClass		*object_class;
+
+	object_class		= GTK_OBJECT_CLASS (klass);
+
+	object_class->destroy = nautilus_volume_monitor_destroy;
+
+	signals[VOLUME_MOUNTED] 
+		= gtk_signal_new ("volume_mounted",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+						     volume_mounted),
+				  nautilus_gtk_marshal_STRING__NONE,
+				  GTK_TYPE_STRING, 0);
+}
+
+static void
+nautilus_volume_monitor_destroy (GtkObject *object)
+{
+	NautilusVolumeMonitor *monitor;
+
+	monitor = NAUTILUS_VOLUME_MONITOR (object);
+
+	/* Remove timer function */
+	gtk_timeout_remove (monitor->details->mount_device_timer_id);
+		
+	/* Clean up other device info */
+	g_list_foreach (monitor->details->devices, (GFunc)free_device_info, monitor);
+
+	/* Remove timer function */
+	gtk_timeout_remove (monitor->details->mount_device_timer_id);
+	
+	/* Clean up details */	 
+	g_hash_table_destroy (monitor->details->devices_by_fsname);
+	g_list_free (monitor->details->devices);
+	g_free (monitor->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+/* Return the global instance of the NautilusVolumeMonitor.  Create one
+ * if we have not done so already
+ */
+NautilusVolumeMonitor *
+nautilus_volume_monitor_get (void)
+{
+	if (global_volume_monitor == NULL) {
+		global_volume_monitor = NAUTILUS_VOLUME_MONITOR
+					(gtk_object_new (nautilus_volume_monitor_get_type(),
+					 NULL));
+	}
+
+	return global_volume_monitor;
+}
 
 static int
 floppy_sort (const char *name_1, const char *name_2) 
@@ -119,58 +206,8 @@ fm_desktop_get_removable_volume_list (void)
   	return list;	
 }
 
-void
-fm_desktop_mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
-{
-	gboolean is_mounted, found_device;
-	char *mount_point;
-	char *argv[3];
-	GList *element;
-	DeviceInfo *device;
-	int exec_err;
-	
-	is_mounted = FALSE;
-	found_device = FALSE;
-	device = NULL;
-	
-	/* Locate our mount point data */
-	mount_point = gtk_object_get_data (GTK_OBJECT (item), "mount_point");
-	if (mount_point != NULL) {
-		/* Locate DeviceInfo for mount point */
-		for (element = icon_view->details->devices; element != NULL; element = element->next) {
-			device = element->data;
-			if (strcmp (mount_point, device->mount_path) == 0) {
-				found_device = TRUE;
-				break;
-			}
-		}
-				
-		/* Get mount state and then decide to mount/unmount the volume */
-		if (found_device) {
-			is_mounted = fm_desktop_volume_is_mounted (mount_point);
-			argv[1] = mount_point;
-			argv[2] = NULL;
-
-			if (is_mounted) {
-				/* Unount */
-				argv[0] = "/bin/umount";
-				exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
-				is_mounted = FALSE;
-			} else {
-				/* Mount */
-				argv[0] = "/bin/mount";
-				exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
-				is_mounted = TRUE;
-			}
-		}
-	}
-	
-	/* Set the check state of menu item even thought the user may not see it */
-	gtk_check_menu_item_set_active (item, is_mounted);
-}
-
 gboolean
-fm_desktop_volume_is_mounted (const char *mount_point)
+nautilus_volume_monitor_volume_is_mounted (const char *mount_point)
 {
 	FILE *fh;
 	char line[PATH_MAX * 3];
@@ -201,7 +238,7 @@ mount_device_is_mounted (DeviceInfo *device)
 }
 
 static void
-mount_device_cdrom_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_cdrom_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 	if (device->device_fd < 0) {
 		device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
@@ -246,10 +283,10 @@ mount_device_cdrom_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 
 
 static void
-mount_device_floppy_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_floppy_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 	/* If the floppy is not in mtab, then we set it to empty */
-	if (fm_desktop_volume_is_mounted (device->mount_path)) {
+	if (nautilus_volume_monitor_volume_is_mounted (device->mount_path)) {
 		device->state = STATE_ACTIVE;
 	} else {
 		device->state = STATE_EMPTY;
@@ -257,25 +294,25 @@ mount_device_floppy_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 }
 
 static void
-mount_device_ext2_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_ext2_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 	device->state = STATE_ACTIVE;
 }
 
 static void
-mount_device_set_state (DeviceInfo *device, FMDesktopIconView *icon_view)
+mount_device_set_state (DeviceInfo *device, NautilusVolumeMonitor *monitor)
 {
 	switch (device->type) {
 		case DEVICE_CDROM:
-			mount_device_cdrom_set_state (icon_view, device);
+			mount_device_cdrom_set_state (monitor, device);
 			break;
 
 		case DEVICE_FLOPPY:
-			mount_device_floppy_set_state (icon_view, device);
+			mount_device_floppy_set_state (monitor, device);
 			break;
 
 		case DEVICE_EXT2:
-			mount_device_ext2_set_state (icon_view, device);
+			mount_device_ext2_set_state (monitor, device);
 			break;
 	
 		default:
@@ -284,21 +321,18 @@ mount_device_set_state (DeviceInfo *device, FMDesktopIconView *icon_view)
 }
 
 static void
-device_set_state_empty (DeviceInfo *device, FMDesktopIconView *icon_view)
+device_set_state_empty (DeviceInfo *device, NautilusVolumeMonitor *monitor)
 {
 	device->state = STATE_EMPTY;
 }
 
 static void
-mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
+mount_device_mount (NautilusVolumeMonitor *view, DeviceInfo *device)
 {
 	char *target_uri, *desktop_path;
 	const char *icon_name;
-	NautilusIconContainer *container;
 	gboolean result;
 	int index;
-
-	container = NAUTILUS_ICON_CONTAINER (GTK_BIN (view)->child);
 
 	desktop_path = nautilus_get_desktop_directory ();
 	target_uri = nautilus_get_uri_from_local_path (device->mount_path);
@@ -354,7 +388,7 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 }
 
 static void
-mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_activate_cdrom (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 	int disctype;
 
@@ -375,7 +409,7 @@ mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
   		case CDS_MIXED:
 			/* Get volume name */
 			get_iso9660_volume_name (device);
-			mount_device_mount (icon_view, device);
+			mount_device_mount (monitor, device);
 			break;
 
 		default:
@@ -390,7 +424,7 @@ mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
 }
 
 static void
-mount_device_activate_floppy (FMDesktopIconView *view, DeviceInfo *device)
+mount_device_activate_floppy (NautilusVolumeMonitor *view, DeviceInfo *device)
 {
 	/* Get volume name */
 	get_floppy_volume_name (device);
@@ -399,7 +433,7 @@ mount_device_activate_floppy (FMDesktopIconView *view, DeviceInfo *device)
 }
 
 static void
-mount_device_activate_ext2 (FMDesktopIconView *view, DeviceInfo *device)
+mount_device_activate_ext2 (NautilusVolumeMonitor *view, DeviceInfo *device)
 {
 	/* Get volume name */
 	get_ext2_volume_name (device);
@@ -407,28 +441,32 @@ mount_device_activate_ext2 (FMDesktopIconView *view, DeviceInfo *device)
 	mount_device_mount (view, device);
 }
 
-typedef void (* ChangeDeviceInfoFunction) (FMDesktopIconView *view, DeviceInfo *device);
+typedef void (* ChangeDeviceInfoFunction) (NautilusVolumeMonitor *view, DeviceInfo *device);
 
 static void
-mount_device_activate (FMDesktopIconView *view, DeviceInfo *device)
+mount_device_activate (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 	switch (device->type) {
 		case DEVICE_CDROM:
-			mount_device_activate_cdrom (view, device);
+			mount_device_activate_cdrom (monitor, device);
 			break;
 			
 		case DEVICE_FLOPPY:
-			mount_device_activate_floppy (view, device);
+			mount_device_activate_floppy (monitor, device);
 			break;
 			
 		case DEVICE_EXT2:
-			mount_device_activate_ext2 (view, device);
+			mount_device_activate_ext2 (monitor, device);
 			break;
 			
 		default:
 			g_assert_not_reached ();
 			break;
 	}
+
+	gtk_signal_emit (GTK_OBJECT (monitor),
+			 signals[VOLUME_MOUNTED],
+			 &device->mount_path);
 }
 
 
@@ -453,7 +491,7 @@ eject_cdrom (DeviceInfo *device)
 }
 
 static void
-mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_deactivate (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 	GList dummy_list;
 	
@@ -477,7 +515,7 @@ mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 }
 
 static void
-mount_device_do_nothing (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_do_nothing (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 }
 
@@ -494,18 +532,18 @@ mount_device_check_change (gpointer data, gpointer callback_data)
 	};	
 
 	DeviceInfo *device;
-	FMDesktopIconView *icon_view;
+	NautilusVolumeMonitor *monitor;
 	DeviceState old_state;
 	ChangeDeviceInfoFunction f;
 
 	g_assert (data != NULL);
 
 	device = data;
-	icon_view = FM_DESKTOP_ICON_VIEW (callback_data);
+	monitor = NAUTILUS_VOLUME_MONITOR (callback_data);
 
   	old_state = device->state;
 
-  	mount_device_set_state (device, icon_view);
+  	mount_device_set_state (device, monitor);
 
   	if (old_state != device->state) {
     		f = state_transitions[device->state][old_state];
@@ -513,12 +551,12 @@ mount_device_check_change (gpointer data, gpointer callback_data)
     		MESSAGE ("State on %s changed from %s to %s, running %p",
 			   device->fsname, state_names[old_state], state_names[device->state], f);
 			
-		(* f) (icon_view, device);
+		(* f) (monitor, device);
   	}
 }
 
 static void
-mount_devices_update_is_mounted (FMDesktopIconView *icon_view)
+mount_devices_update_is_mounted (NautilusVolumeMonitor *monitor)
 {
 	FILE *fh;
 	char line[PATH_MAX * 3], mntpoint[PATH_MAX], devname[PATH_MAX];
@@ -526,7 +564,7 @@ mount_devices_update_is_mounted (FMDesktopIconView *icon_view)
 	DeviceInfo *device;
 
 	/* Toggle mount state to off and then recheck in mtab. */
-	for (element = icon_view->details->devices; element != NULL; element = element->next) {
+	for (element = monitor->details->devices; element != NULL; element = element->next) {
 		device = element->data;
 		device->is_mounted = FALSE;
 	}
@@ -539,7 +577,7 @@ mount_devices_update_is_mounted (FMDesktopIconView *icon_view)
 
 	while (fgets (line, sizeof(line), fh)) {
 		sscanf(line, "%s %s", devname, mntpoint);
-    		device = g_hash_table_lookup (icon_view->details->devices_by_fsname, devname);
+    		device = g_hash_table_lookup (monitor->details->devices_by_fsname, devname);
 
     		if(device) {
       			device->is_mounted = TRUE;
@@ -550,13 +588,13 @@ mount_devices_update_is_mounted (FMDesktopIconView *icon_view)
 }
 
 static gint
-mount_devices_check_status (FMDesktopIconView *icon_view)
+mount_devices_check_status (NautilusVolumeMonitor *monitor)
 {
-	mount_devices_update_is_mounted (icon_view);
+	mount_devices_update_is_mounted (monitor);
 
-	g_list_foreach (icon_view->details->devices,
+	g_list_foreach (monitor->details->devices,
 			mount_device_check_change,
-			icon_view);
+			monitor);
 	
 	return TRUE;
 }
@@ -597,7 +635,7 @@ check_permissions (gchar *filename, int mode)
 }
 
 static gboolean
-mount_device_floppy_add (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_floppy_add (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {
 	device->mount_type 	= g_strdup ("floppy");
 	device->type 		= DEVICE_FLOPPY;
@@ -640,7 +678,7 @@ cdrom_ioctl_frenzy (int fd)
 
 
 static gboolean
-mount_device_iso9660_add (FMDesktopIconView *icon_view, DeviceInfo *device)
+mount_device_iso9660_add (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {		
 	device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
 	if(device->device_fd < 0) {
@@ -665,12 +703,12 @@ mount_device_iso9660_add (FMDesktopIconView *icon_view, DeviceInfo *device)
 
 /* This is here because mtab lists devices by their symlink-followed names rather than what is listed in fstab. *sigh* */
 static void
-mount_device_add_aliases (FMDesktopIconView *icon_view, const char *alias, DeviceInfo *device)
+mount_device_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, DeviceInfo *device)
 {
 	char buf[PATH_MAX];
 	int buflen;
 
-	g_hash_table_insert (icon_view->details->devices_by_fsname, (gpointer)alias, device);
+	g_hash_table_insert (monitor->details->devices_by_fsname, (gpointer)alias, device);
 
 	buflen = readlink (alias, buf, sizeof(buf));
 	if(buflen < 1) {
@@ -688,12 +726,12 @@ mount_device_add_aliases (FMDesktopIconView *icon_view, const char *alias, Devic
     		strcpy(buf, buf2);
 	}
 
-	mount_device_add_aliases (icon_view, g_strdup(buf), device);
+	mount_device_add_aliases (monitor, g_strdup(buf), device);
 }
 
 
 static void
-add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
+add_mount_device (NautilusVolumeMonitor *monitor, struct mntent *ent)
 {
 	DeviceInfo *newdev = NULL;
 	gboolean mounted;
@@ -710,9 +748,9 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 	mounted = FALSE;
 	
 	if (strcmp (ent->mnt_type, MOUNT_TYPE_ISO9660) == 0) {		
-    		mounted = mount_device_iso9660_add (icon_view, newdev); 
+    		mounted = mount_device_iso9660_add (monitor, newdev); 
 	} else if (strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd")) == 0) {		
-		mounted = mount_device_floppy_add (icon_view, newdev);
+		mounted = mount_device_floppy_add (monitor, newdev);
 	} else if (strcmp (ent->mnt_type, MOUNT_TYPE_EXT2) == 0) {		
 		mounted = mount_device_ext2_add (newdev);
 	} else {
@@ -721,8 +759,8 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 	}
 	
 	if (mounted) {
-		icon_view->details->devices = g_list_append (icon_view->details->devices, newdev);
-		mount_device_add_aliases (icon_view, newdev->fsname, newdev);		
+		monitor->details->devices = g_list_append (monitor->details->devices, newdev);
+		mount_device_add_aliases (monitor, newdev->fsname, newdev);		
 		MESSAGE ("Device %s came through (type %s)", newdev->fsname, type_names[newdev->type]);
 	} else {
 		close (newdev->device_fd);
@@ -770,12 +808,12 @@ mntent_has_option(const char *optlist, const char *option)
 #endif
 
 void
-fm_desktop_find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)
+nautilus_volume_monitor_find_mount_devices (NautilusVolumeMonitor *monitor)
 {
 	FILE *mef;
 	struct mntent *ent;
 
-	mef = setmntent (fstab_path, "r");
+	mef = setmntent (_PATH_MNTTAB, "r");
 	g_return_if_fail (mef);
 
 	while ((ent = getmntent (mef))) {
@@ -794,20 +832,65 @@ fm_desktop_find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_p
 		}
 #endif
 		/* Add it to our list of mount points */
-		add_mount_device (icon_view, ent);
+		add_mount_device (monitor, ent);
 	}
 
 
   	endmntent (mef);
 
-	g_list_foreach (icon_view->details->devices, (GFunc) mount_device_set_state, icon_view);
+	g_list_foreach (monitor->details->devices, (GFunc) mount_device_set_state, monitor);
 
 	/* Manually set state of all volumes to empty so we update */
-	g_list_foreach (icon_view->details->devices, (GFunc) device_set_state_empty, icon_view);
+	g_list_foreach (monitor->details->devices, (GFunc) device_set_state_empty, monitor);
 
 	/* Add a timer function to check for status change in mounted devices */
-	icon_view->details->mount_device_timer_id = 
-		gtk_timeout_add (CHECK_INTERVAL, (GtkFunction) mount_devices_check_status, icon_view);
+	monitor->details->mount_device_timer_id = 
+		gtk_timeout_add (CHECK_INTERVAL, (GtkFunction) mount_devices_check_status, monitor);
+}
+
+
+gboolean
+nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor, const char *mount_point)
+{
+	gboolean is_mounted, found_device;
+	char *argv[3];
+	GList *element;
+	DeviceInfo *device;
+	int exec_err;
+	
+	is_mounted = FALSE;
+	found_device = FALSE;
+	device = NULL;
+	
+	/* Locate DeviceInfo for mount point */
+	for (element = monitor->details->devices; element != NULL; element = element->next) {
+		device = element->data;
+		if (strcmp (mount_point, device->mount_path) == 0) {
+			found_device = TRUE;
+			break;
+		}
+	}
+			
+	/* Get mount state and then decide to mount/unmount the volume */
+	if (found_device) {
+		is_mounted = nautilus_volume_monitor_volume_is_mounted (mount_point);
+		argv[1] = (char *)mount_point;
+		argv[2] = NULL;
+
+		if (is_mounted) {
+			/* Unount */
+			argv[0] = "/bin/umount";
+			exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
+			is_mounted = FALSE;
+		} else {
+			/* Mount */
+			argv[0] = "/bin/mount";
+			exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
+			is_mounted = TRUE;
+		}
+	}
+
+	return is_mounted;
 }
 
 
@@ -827,16 +910,8 @@ remove_mount_link (DeviceInfo *device)
 	}
 }
 
-
-void
-fm_desktop_remove_mount_links (DeviceInfo *device, FMDesktopIconView *icon_view)
-{
-	remove_mount_link (device);
-}
-
-
-void
-fm_desktop_free_device_info (DeviceInfo *device, FMDesktopIconView *icon_view)
+static void
+free_device_info (DeviceInfo *device, NautilusVolumeMonitor *monitor)
 {
 
 	if (device->device_fd != -1) {
@@ -899,40 +974,4 @@ static void
 get_floppy_volume_name (DeviceInfo *device)
 {
 	device->volume_name = g_strdup ("Floppy");
-}
-
-/* fm_dekstop_place_home_directory
- * 
- * Add an icon representing the user's home directory on the desktop.
- * Create if necessary
- */
-void
-fm_desktop_place_home_directory (FMDesktopIconView *icon_view)
-{
-	char *desktop_path, *home_link_name, *home_link_path, *home_link_uri, *home_dir_uri;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo info;
-	
-	desktop_path = nautilus_get_desktop_directory ();
-	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
-	home_link_path = nautilus_make_path (desktop_path, home_link_name);
-	home_link_uri = nautilus_get_uri_from_local_path (home_link_path);
-	
-	result = gnome_vfs_get_file_info (home_link_uri, &info, 0);
-	if (result != GNOME_VFS_OK) {
-		/* FIXME: Maybe we should only create if the error was "not found". */
-		/* There was no link file.  Create it and add it to the desktop view */		
-		home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
-		result = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
-		g_free (home_dir_uri);
-		if (result != GNOME_VFS_OK) {
-			/* FIXME: Is a message to the console acceptable here? */
-			MESSAGE ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
-		}
-	}
-	
-	g_free (home_link_uri);
-	g_free (home_link_path);
-	g_free (home_link_name);
-	g_free (desktop_path);
 }

@@ -26,6 +26,7 @@
 #define FM_DESKSTOP_ICON_VIEW_H
 
 #include "fm-icon-view.h"
+#include <libnautilus-extensions/nautilus-volume-monitor.h>
 
 typedef struct FMDesktopIconView FMDesktopIconView;
 typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
@@ -48,10 +49,9 @@ struct FMDesktopIconViewClass {
 
 struct FMDesktopIconViewDetails
 {
-	GHashTable *devices_by_fsname;
-	GList *devices;
-	guint mount_device_timer_id;
+	NautilusVolumeMonitor *volume_monitor;
 };
+
 
 
 /* GtkObject support */

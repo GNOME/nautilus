@@ -25,8 +25,6 @@
 
 #include <config.h>
 #include "fm-desktop-icon-view.h"
-
-#include "fm-desktop-mounting.h"
 #include "fm-icon-view.h"
 
 #include <fcntl.h>
@@ -39,6 +37,7 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <mntent.h>
 #include <unistd.h>
 
@@ -67,6 +66,10 @@ static void     fm_desktop_icon_view_set_directory_auto_layout            (FMIco
 static void	fm_desktop_icon_view_trash_state_changed_callback 	  (NautilusTrashMonitor   *trash,
 									   gboolean 		   state,
 									   gpointer		   callback_data);
+
+static void	mount_unmount_removable 				  (GtkCheckMenuItem 	   *item, 
+									   FMDesktopIconView 	   *icon_view);
+static void	place_home_directory 					  (FMDesktopIconView 	   *icon_view);
 									   
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
 
@@ -86,19 +89,9 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
 
-	/* Remove timer function */
-	gtk_timeout_remove (icon_view->details->mount_device_timer_id);
-
-	/* Remove mount link files */
-	g_list_foreach (icon_view->details->devices, (GFunc)fm_desktop_remove_mount_links, icon_view);
-	
-	/* Clean up other device info */
-	g_list_foreach (icon_view->details->devices, (GFunc)fm_desktop_free_device_info, icon_view);
-	
 	/* Clean up details */	 
-	g_hash_table_destroy (icon_view->details->devices_by_fsname);
-	g_list_free (icon_view->details->devices);
 	g_free (icon_view->details);
+
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -175,11 +168,10 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	/* Set up details */
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
-	desktop_icon_view->details->devices_by_fsname = g_hash_table_new (g_str_hash, g_str_equal);
-	desktop_icon_view->details->devices = NULL;
+	desktop_icon_view->details->volume_monitor = nautilus_volume_monitor_get ();
 
 	/* Setup home directory link */
-	fm_desktop_place_home_directory (desktop_icon_view);
+	place_home_directory (desktop_icon_view);
 	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "middle_click",
@@ -192,7 +184,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    desktop_icon_view);
 
 	/* Check for mountable devices */
-	fm_desktop_find_mount_devices (desktop_icon_view, _PATH_MNTTAB);
+	nautilus_volume_monitor_find_mount_devices (desktop_icon_view->details->volume_monitor);
 }
 
 static void
@@ -253,7 +245,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 			}
 			
 			/* Add check mark if volume is mounted */
-			active = fm_desktop_volume_is_mounted (element->data);
+			active = nautilus_volume_monitor_volume_is_mounted (element->data);
 			gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (check_menu_item), TRUE);
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (check_menu_item), active);
 			
@@ -263,7 +255,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 			
 			gtk_signal_connect (GTK_OBJECT (check_menu_item),
 			    "activate",
-			     GTK_SIGNAL_FUNC (fm_desktop_mount_unmount_removable),
+			     GTK_SIGNAL_FUNC (mount_unmount_removable),
 			     FM_DESKTOP_ICON_VIEW (view));
 			     			
 			gtk_menu_append (sub_menu, check_menu_item);
@@ -325,4 +317,59 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 
 	g_free (path);
 	g_free (desktop_directory_path);
+}
+
+static void
+mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
+{
+	gboolean is_mounted;
+	char *mount_point;
+	
+	is_mounted = FALSE;
+	
+	/* Locate our mount point data */
+	mount_point = gtk_object_get_data (GTK_OBJECT (item), "mount_point");
+	if (mount_point != NULL) {
+		is_mounted = nautilus_volume_monitor_mount_unmount_removable 
+				(icon_view->details->volume_monitor, mount_point); 
+	}
+	
+	/* Set the check state of menu item even thought the user may not see it */
+	gtk_check_menu_item_set_active (item, is_mounted);
+}
+
+/* fm_desktop_place_home_directory
+ * 
+ * Add an icon representing the user's home directory on the desktop.
+ * Create if necessary
+ */
+static void
+place_home_directory (FMDesktopIconView *icon_view)
+{
+	char *desktop_path, *home_link_name, *home_link_path, *home_link_uri, *home_dir_uri;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo info;
+	
+	desktop_path = nautilus_get_desktop_directory ();
+	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
+	home_link_path = nautilus_make_path (desktop_path, home_link_name);
+	home_link_uri = nautilus_get_uri_from_local_path (home_link_path);
+	
+	result = gnome_vfs_get_file_info (home_link_uri, &info, 0);
+	if (result != GNOME_VFS_OK) {
+		/* FIXME: Maybe we should only create if the error was "not found". */
+		/* There was no link file.  Create it and add it to the desktop view */		
+		home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
+		result = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
+		g_free (home_dir_uri);
+		if (result != GNOME_VFS_OK) {
+			/* FIXME: Is a message to the console acceptable here? */
+			g_message ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
+		}
+	}
+	
+	g_free (home_link_uri);
+	g_free (home_link_path);
+	g_free (home_link_name);
+	g_free (desktop_path);
 }

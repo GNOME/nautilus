@@ -28,7 +28,6 @@ libnautilus_file_manager_la_SOURCES=	\
 	dfos-xfer.c			\
 	dfos.c				\
 	fm-desktop-icon-view.c		\
-	fm-desktop-mounting.c		\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
 	fm-icon-text-window.c		\
