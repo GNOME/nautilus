@@ -1,5 +1,12 @@
 2000-09-13  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-zoom-control.c: (draw_number):
+	fixed bug 2181, number in zoom control is left justified at first.
+	Fixed by using the widget->allocation.width in the centering
+	calculation, instead of the passed-in box width.
+	
+2000-09-13  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-window-manage-views.c:
 	(nautilus_window_has_really_changed):
 	Temporarily disabled sidebar panels so that Nautilus doesn't crash

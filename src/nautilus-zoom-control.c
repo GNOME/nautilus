@@ -295,8 +295,8 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	percent = floor((100.0 * zoom_control->details->zoom_level) + .5);
 	g_snprintf(buffer, 8, "%d", percent);
 
-	y = 1 + num_v_offset + (box->height >> 1);
-	x = num_h_offset + ((box->width - char_width * strlen(buffer)) >> 1);  
+	y = 1 + num_v_offset + (widget->allocation.height >> 1);
+	x = num_h_offset + ((widget->allocation.width - char_width * strlen(buffer)) >> 1);  
 	
 	temp_gc = gdk_gc_new(widget->window);
 	
@@ -326,7 +326,7 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	} else {
 		label_font = gdk_font_load("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*");
 				
-		x = num_h_offset + ((box->width - gdk_string_width(label_font, buffer)) >> 1);  
+		x = num_h_offset + ((widget->allocation.width - gdk_string_width(label_font, buffer)) >> 1);  
 		
 		gdk_draw_string (widget->window, label_font, temp_gc, x, y, &buffer[0]);
 		gdk_font_unref(label_font);
