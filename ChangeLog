@@ -1,5 +1,12 @@
 2000-07-27  Josh Barrow  <linuxfan@ionet.net>
 
+	Minor change in nautilus-clean.sh so that it will kill 
+	both gconfd and gconfd-0.6.  This is so that people that
+	haven't upgraded to the latest, greatest gconf won't 
+	have problems.
+
+2000-07-27  Josh Barrow  <linuxfan@ionet.net>
+
 	Changed the nautilus-clean.sh script to match the name of
 	the new gconf daemon.  (gconfd-0.6)
 
