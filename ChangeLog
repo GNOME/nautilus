@@ -1,3 +1,16 @@
+2000-06-20  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1428 (Back button crashes in bookmark code)
+
+	* src/nautilus-window-menus.c: 
+	(bookmark_holder_new),
+	(bookmark_holder_free): Replaced comment that says
+	"bookmark here is unreffed, if this causes problem
+	we can ref it someday" with ref/unref pair, now that
+	we've found a case where it caused a problem. Going
+	Back unrefs the bookmark for the current location before
+	this go-menu code does its thing.
+
 2000-06-20  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:

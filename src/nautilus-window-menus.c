@@ -93,6 +93,10 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	new_bookmark_holder = g_new (BookmarkHolder, 1);
 	new_bookmark_holder->window = window;
 	new_bookmark_holder->bookmark = bookmark;
+	/* Ref the bookmark because it might be unreffed away while 
+	 * we're holding onto it (not an issue for window).
+	 */
+	gtk_object_ref (GTK_OBJECT (bookmark));
 	new_bookmark_holder->in_bookmarks_menu = in_bookmarks_menu;
 
 	return new_bookmark_holder;
@@ -101,11 +105,7 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 static void
 bookmark_holder_free (BookmarkHolder *bookmark_holder)
 {
-	/* The bookmark and window are just passed around unreffed,
-	 * so all we need to do is free the struct. If this turns out
-	 * to be inadequate we can change bookmark_holder_new
-	 * and _free later.
-	 */
+	gtk_object_unref (GTK_OBJECT (bookmark_holder->bookmark));
 	g_free (bookmark_holder);
 }
 
