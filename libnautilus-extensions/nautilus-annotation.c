@@ -1043,15 +1043,19 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	char *digest;
 	char *annotations;
 	char *info_str;
+	char *annotation_path;
 	time_t date_stamp;
 	xmlDocPtr xml_document;
 	xmlNodePtr root_node, node;
+	gboolean has_annotation, has_new_annotation;
 	
 	/* we can't handle directories yet, so just return.  */
 	if (nautilus_file_is_directory (file)) {
 		return;
 	}
 
+	has_new_annotation = annotation_text != NULL && strlen (annotation_text) > 0;
+	
 	/* fetch the local annotation, if one exists */
 	digest = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_FILE_DIGEST, NULL);
 	
@@ -1066,9 +1070,35 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 		
 	/* there's a digest, so we if we have the annotations for the file cached locally */
 	annotations = look_up_local_annotation (file, digest);
+	has_annotation = annotations != NULL && strlen (annotations) > 0;
 	
-	/* no annotation exists, so create the initial xml document from scratch */
-	if (annotations == NULL || strlen (annotations) == 0) {
+	/* handle the case of no annotation, by removing it if necessary */
+	if (!has_new_annotation) {
+		if (has_annotation) {
+			/* delete the annotation */
+			annotation_path = get_annotation_path (digest);
+			unlink (annotation_path);
+			
+			/* set the info to indicate no notes available */
+			time (&date_stamp);
+			info_str = g_strdup_printf ("%lu:%d", date_stamp, 0); 
+			nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL, info_str);
+			g_free (info_str);
+
+			nautilus_file_emit_changed (file);
+
+			g_free (annotation_path);
+		}
+		
+		g_free (digest);
+		g_free (annotations);
+		return;
+	}
+	
+	/* there is a new annotation, bu tno current annotation exists, so create the
+	 * initial xml document from scratch
+	 */
+	if (!has_annotation) {
 		xml_document = xmlNewDoc ("1.0");
 		/* create the header node, with the digest attribute */
 		root_node = xmlNewDocNode (xml_document, NULL, "annotations", NULL);

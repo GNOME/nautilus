@@ -1883,7 +1883,7 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	left = icon_rect.x0 + 8.0;
 	top = icon_rect.y0 + 8.0;
 		
-	fill_color = 0xDDDD99E0;
+	fill_color = 0xFFFF75E5;
 	outline_color = 0x000000FF;
 	
 	canvas = GNOME_CANVAS_ITEM (icon_item)->canvas;
