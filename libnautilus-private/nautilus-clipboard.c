@@ -290,7 +290,7 @@ merge_out_clipboard_menu_items (GObject *widget_as_object,
 		target_data->merge_id = 0;
 	}
 
-	g_signal_handlers_disconnect_matched (widget_as_object,
+	g_signal_handlers_disconnect_matched (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
 					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL,
 					      G_CALLBACK (owner_change_callback),
