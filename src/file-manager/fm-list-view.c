@@ -276,14 +276,16 @@ fm_list_view_compare_rows (GtkCList *clist,
 	row1 = (GtkCListRow *) ptr1;
 	row2 = (GtkCListRow *) ptr2;
 
-	file1 = NAUTILUS_FILE (row1->data);
-	file2 = NAUTILUS_FILE (row2->data);
-
 	/* All of our rows have a NautilusFile in the row data. Therefore if
 	 * the row data is NULL it must be a row that's being added, and hasn't
 	 * had a chance to have its row data set yet. Use our special hack-o-rama
 	 * static variable for that case.
 	 */
+	
+	/* Don't do a type check here because these things may be NULL */
+	file1 = (NautilusFile *) (row1->data);
+	file2 = (NautilusFile *) (row2->data);
+
 	g_assert (file1 != NULL || file2 != NULL);
 	if (file1 == NULL) {
 		file1 = gtk_object_get_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY);
@@ -849,6 +851,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, file);
 	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
 	new_row = gtk_clist_append (clist, text);
+
 	gtk_clist_set_row_data (clist, new_row, file);
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
 

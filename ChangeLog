@@ -1,3 +1,10 @@
+2000-08-04  Rebecca Schulman  <rebecka@eazel.com>
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_compare_rows),
+	(add_to_list):
+	Fixed irritating cast == NULL messages that appeared by
+	the ton in the list view.  
+
 2000-08-03  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Fix bug 1903
