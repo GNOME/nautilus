@@ -630,6 +630,7 @@ nautilus_volume_monitor_get_target_uri (const NautilusVolume *volume)
 	case NAUTILUS_VOLUME_MINIX:
 	case NAUTILUS_VOLUME_MSDOS:
 	case NAUTILUS_VOLUME_NFS:
+	case NAUTILUS_VOLUME_PROC:
 	case NAUTILUS_VOLUME_REISER:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
@@ -673,6 +674,7 @@ nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
 	case NAUTILUS_VOLUME_HSFS:
 	case NAUTILUS_VOLUME_MINIX:
 	case NAUTILUS_VOLUME_MSDOS:
+	case NAUTILUS_VOLUME_PROC:
 	case NAUTILUS_VOLUME_UDF:
 	case NAUTILUS_VOLUME_UNSDOS:
 	case NAUTILUS_VOLUME_XENIX:
@@ -793,6 +795,7 @@ mount_volume_make_name (NautilusVolume *volume)
 	case NAUTILUS_VOLUME_AUTO:
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_MINIX:
+	case NAUTILUS_VOLUME_PROC:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
 	case NAUTILUS_VOLUME_UNSDOS:
@@ -857,6 +860,7 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	case NAUTILUS_VOLUME_MINIX:
 	case NAUTILUS_VOLUME_MSDOS:
 	case NAUTILUS_VOLUME_NFS:
+	case NAUTILUS_VOLUME_PROC:
 	case NAUTILUS_VOLUME_REISER:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
@@ -1325,7 +1329,7 @@ mount_volume_nfs_add (NautilusVolume *volume)
 static gboolean
 mount_volume_proc_add (NautilusVolume *volume)
 {
-	volume->volume_type = NAUTILUS_VOLUME_EXT2;
+	volume->volume_type = NAUTILUS_VOLUME_PROC;
 	return TRUE;
 }
 

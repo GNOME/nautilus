@@ -1,3 +1,11 @@
+2001-07-02  Cody Russell  <bratsche@gnome.org>
+
+	* libnautilus-private/nautilus-volume-monitor.[ch]: Added
+	NAUTILUS_VOLUME_PROC.
+	nautilus_volume_monitor_should_integrate_trash() now returns
+	FALSE for this volume type.  This solves the broken trash can
+	on XFS (and probably other non-ext2) filesystems.
+
 2001-07-01  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
 	* libnautilus-private/nautilus-global-preferences.c: added
