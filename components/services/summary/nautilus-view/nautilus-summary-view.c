@@ -218,28 +218,32 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* Build the first column with static data for now */
 	view->details->services_icon_name = g_strdup_printf ("vault-service-icon.png");
-	view->details->services_description_body = g_strdup_printf ("Vault Service:\n Your remote file storage");
+	view->details->services_description_header = g_strdup_printf ("Internet File Storage");
+	view->details->services_description_body = g_strdup_printf ("Your remote file storage area.\nLast accesed 6/30/00 at 16:32:01");
 	view->details->services_goto_label = g_strdup_printf ("   Go to Vault!   ");
 	view->details->services_redirect = g_strdup_printf ("http://www.eazel.com/services.html");
 	generate_service_entry_row (view, 1);
 
 	/* Build the second column with static data for now */
 	view->details->services_icon_name = g_strdup_printf ("softcat-service-icon.png");
-	view->details->services_description_body = g_strdup_printf ("Eazel's software catalog:\n Look for the latest software here!");
+	view->details->services_description_header = g_strdup_printf ("Eazel's Software Catalog");
+	view->details->services_description_body = g_strdup_printf ("Look for the latest software here!\nLast accessed 8/31/00 at 05:04:44");
 	view->details->services_goto_label = g_strdup_printf (" Go to SoftCat! ");
 	view->details->services_redirect = g_strdup_printf ("http://www.eazel.com/register.html");
 	generate_service_entry_row (view, 2);
 
 	/* Build the third column with static data for now */
 	view->details->services_icon_name = g_strdup_printf ("inventory-service-icon.png");
-	view->details->services_description_body = g_strdup_printf ("Inventory Sync Service:\n Update your inventory now!");
+	view->details->services_description_header = g_strdup_printf ("Inventory Sync Service");
+	view->details->services_description_body = g_strdup_printf ("Update your inventory now!\nYou have not sent your inventory\nto storage yet!");
 	view->details->services_goto_label = g_strdup_printf ("Go to Inventory View");
 	view->details->services_redirect = g_strdup_printf ("eazel-inventory:");
 	generate_service_entry_row (view, 3);
 
 	/* Build the fourth column with static data for now */
 	view->details->services_icon_name = g_strdup_printf ("time-sync-service-icon.png");
-	view->details->services_description_body = g_strdup_printf ("Time Sync Service:\n Update your clock now!");
+	view->details->services_description_header = g_strdup_printf ("Time Sync Service");
+	view->details->services_description_body = g_strdup_printf ("Update your clock now!");
 	view->details->services_goto_label = g_strdup_printf ("  Sync time now!  ");
 	view->details->services_redirect = g_strdup_printf ("http://nautilus.eazel.com");
 	generate_service_entry_row (view, 4);
@@ -449,6 +453,9 @@ generate_summary_form (NautilusSummaryView	*view)
 static void
 generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 {
+	GtkWidget	*temp_vbox;
+	GtkWidget	*temp_hbox;
+
 	/* Generate first column with service icon */
 	view->details->services_icon_container = gtk_hbox_new (TRUE, 4);
 	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_BACKGROUND_COLOR);
@@ -459,10 +466,30 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->services_icon_container);
 
 	/* Generate second Column with service title and summary */
+	temp_vbox = gtk_vbox_new (FALSE, 0);
+	/* Header */
+	temp_hbox = gtk_hbox_new (TRUE, 0);
+	view->details->services_description_header_widget = nautilus_label_new (view->details->services_description_header);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_header_widget), 12);
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->services_description_header_widget),
+						 "helvetica",
+						 "bold",
+						 NULL,
+						 NULL);
+	gtk_widget_show (view->details->services_description_header_widget);
+	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->services_description_header_widget);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
+	gtk_widget_show (temp_hbox);
+	/* Body */
+	temp_hbox = gtk_hbox_new (FALSE, 0);
 	view->details->services_description_body_widget = nautilus_label_new (view->details->services_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_body_widget), 12);
-	gtk_table_attach (view->details->services_table, view->details->services_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->services_description_body_widget);
+	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->services_description_body_widget);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
+	gtk_widget_show (temp_hbox);
+
+	gtk_table_attach (view->details->services_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
 
 	/* Add the redirect button to the third column */
 	view->details->services_button_container = gtk_hbox_new (TRUE, 0);
