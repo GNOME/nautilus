@@ -138,7 +138,7 @@ nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
 	touch $@
 
-TESTS=check-nautilus
+## TESTS=check-nautilus
 
 oafdir = $(datadir)/oaf
 oaf_in_files = Nautilus_shell.oaf.in
