@@ -18,6 +18,7 @@ libnautilusinclude_HEADERS=			\
 	gtkflist.h				\
 	gtkscrollframe.h			\
 	nautilus.h				\
+	nautilus-file-utilities.h		\
 	ntl-content-view-client.h		\
 	ntl-meta-view-client.h			\
 	ntl-view-client.h
@@ -29,6 +30,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gnome-icon-container.c			\
 	gtkflist.c				\
 	gtkscrollframe.c			\
+	nautilus-file-utilities.c		\
 	ntl-content-view-client.c		\
 	ntl-meta-view-client.c			\
 	ntl-view-client.c			\

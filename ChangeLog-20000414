@@ -1,3 +1,15 @@
+2000-01-03  John Sullivan  <sullivan@eazel.com>
+
+	Started new file for file-related utilities in Nautilus.
+
+	* libnautilus/nautilus-file-utilities.h : new file
+	* libnautilus/nautilus-file-utilities.c : new file
+	* libnautilus/Makefile.am : added these two new files to the build.
+
+ 	* src/nautilus_bookmarklist.c:
+ 	  (nautilus_bookmarklist_get_file_path): Deployed
+ 	  nautilus_make_path() and nautilus_user_directory()
+
 2000-01-03  Darin Adler  <darin@eazel.com>
 
         * configure.in: Added "-Wall -Wno-unused" to list of warnings.
@@ -10,6 +22,13 @@
 	Replaced an incorrect "%l" in a printf format string with
 	the correct "%ld".
 	* libnautilus/.cvsignore: Added some generated files.
+
+2000-01-03  John Sullivan  <sullivan@eazel.com>
+
+ 	* src/nautilus_bookmarklist.c:
+ 	  (nautilus_bookmarklist_save_file): Took out unused local 
+ 	  variables. My compiler didn't notice these because -Wall
+ 	  isn't in our compile flags. Darin is fixing the compile flags.
 
 2000-01-03  Elliot Lee  <sopwith@redhat.com>
 
