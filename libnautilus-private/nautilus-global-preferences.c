@@ -45,7 +45,9 @@
 #define PREFERENCES_SORT_ORDER_MANUALLY 100
 
 /* Path for gnome-vfs preferences */
-static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
+static const char *EXTRA_MONITOR_PATHS[] = { "/system/gnome-vfs",
+					     "/desktop/gnome/file-views",
+					     NULL };
 
 /* Forward declarations */
 static void     global_preferences_install_defaults      (void);
@@ -53,6 +55,7 @@ static void     global_preferences_register_enumerations (void);
 static gpointer default_font_callback                    (void);
 static gpointer default_home_location_callback           (void);
 static gpointer default_default_folder_viewer_callback	 (void);
+static void     import_old_preferences_if_needed         (void);
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -62,6 +65,35 @@ typedef enum
 	PREFERENCE_STRING,
 	PREFERENCE_STRING_LIST
 } PreferenceType;
+
+
+/* values for tracking the current preferences version so when
+   key names are changed Nautilus can import the old preferences */
+
+#define PREFERENCES_VERSION                    "preferences_version"
+#define PREFERENCES_CURRENT_VERSION            2
+
+typedef struct 
+{
+	const char *new_key;
+	const char *old_key;
+} PreferenceImportType;
+
+/* format is { NEW_KEY, KEY_TO_IMPORT_FROM } */
+static PreferenceImportType OLD_PREFERENCES_TO_IMPORT[] = { 
+	{ NAUTILUS_PREFERENCES_THEME, 
+	  "/apps/nautilus/preferences/theme", 
+	},
+	{ NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, 
+	  "/apps/nautilus/preferences/show_hidden_files", 
+	}, 
+	{ NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, 
+	  "/apps/nautilus/preferences/show_backup_files", 
+	},
+	{ NULL }
+};
+
+
 
 /* Enumerations used to qualify some INTEGER preferences */
 static EelEnumerationEntry speed_tradeoff_enum_entries[] = {
@@ -809,10 +841,50 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
 	}
 }
 
+
+static void
+import_old_preferences_if_needed (void)
+{
+	int i;
+	int current_preferences_version;
+	PreferenceImportType *to_import;
+	GConfClient *client;
+	GConfValue *value;
+	GError *error;
+
+	current_preferences_version = eel_preferences_get_integer (PREFERENCES_VERSION);
+
+	if (current_preferences_version == PREFERENCES_CURRENT_VERSION) {
+		return;
+	}
+	
+	eel_preferences_set_integer (PREFERENCES_VERSION, PREFERENCES_CURRENT_VERSION);
+	
+	client = gconf_client_get_default ();
+
+	/* generic updater, works when values have only moved */
+	for (i=0; OLD_PREFERENCES_TO_IMPORT[i].new_key != NULL; i++) {
+		to_import = & (OLD_PREFERENCES_TO_IMPORT[i]);
+
+		error = NULL;
+		value = gconf_client_get (client, to_import->old_key, &error);
+
+		if ((error == NULL) && (value != NULL)) {
+			gconf_client_set (client, to_import->new_key, value, NULL);
+		} else {
+			if (error != NULL) {
+				g_error_free (error);
+			}
+		}
+	}
+}
+
+
 void
 nautilus_global_preferences_init (void)
 {
 	static gboolean initialized = FALSE;
+	int i;
 
 	if (initialized) {
 		return;
@@ -822,13 +894,17 @@ nautilus_global_preferences_init (void)
 
 	eel_preferences_init ("/apps/nautilus");
 
+	import_old_preferences_if_needed ();
+	
 	/* Install defaults */
 	global_preferences_install_defaults ();
 
 	global_preferences_register_enumerations ();	
-	
-	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
-	eel_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
+
+	/* Add monitors for any other GConf paths we have keys in */
+	for (i=0; EXTRA_MONITOR_PATHS[i] != NULL; i++) {
+		eel_preferences_monitor_directory (EXTRA_MONITOR_PATHS[i]);
+	}
 
 	/* Set up storage for values accessed in this file */
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 

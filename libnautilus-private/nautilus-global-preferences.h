@@ -31,7 +31,7 @@
 G_BEGIN_DECLS
 
 /* Which theme is active */
-#define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
+#define NAUTILUS_PREFERENCES_THEME				"/desktop/gnome/file-views/icon_theme"
 
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
@@ -51,8 +51,8 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "preferences/desktop_is_home_dir"
 
 /* Display  */
-#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
-#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"preferences/show_backup_files"
+#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file-views/show_hidden_files"
+#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"/desktop/gnome/file-views/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
 
 /* Sidebar panels  */

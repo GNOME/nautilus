@@ -1,3 +1,19 @@
+2002-01-28  Seth Nickell  <snickell@stanford.edu>
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	(import_old_preferences_if_needed),
+	(nautilus_global_preferences_init):
+
+	Add a function for moving preference values (if they exist)
+	from their old location to their new location, if it
+	hasn't already been done.
+	
+	* libnautilus-private/nautilus-global-preferences.h:
+
+	Change the location/name of THEME, SHOW_HIDDEN_FILES and
+	SHOW_BACKUP_FILES so other file viewers in GNOME can smoothly
+	access them.
+
 2002-01-28  Anders Carlsson  <andersca@gnu.org>
 
 	* components/throbber/main.c (main): Call gnome_program_init.
@@ -234,6 +250,7 @@
 	* icons/default/Makefile.am (SUBDIRS): remove since automake
 	doesn't like an empty SUBDIRS
 
+>>>>>>> 1.4957
 2002-01-22  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-icon-factory.c:
