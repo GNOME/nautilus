@@ -1,3 +1,14 @@
+2000-09-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1649 (keyboard focus stays in location bar when
+	you click in icon or list view)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_press_event): grab the focus
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_button_press): grab the focus
+
 2000-09-12  Gene Z. Ragan  <gzr@eazel.com>
 
 	More work on bug 1595

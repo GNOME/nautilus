@@ -854,6 +854,11 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	clist = GTK_CLIST (widget);
 	retval = FALSE;
 
+	if (!GTK_WIDGET_HAS_FOCUS (widget)) {
+		gtk_widget_grab_focus (widget);
+	}
+
+
 	/* Forget the typeahead state. */
 	nautilus_list_flush_typeselect_state (list);
 

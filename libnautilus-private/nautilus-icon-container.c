@@ -2092,6 +2092,10 @@ button_press_event (GtkWidget *widget,
 	static gint64 last_click_time = 0;
 	static gint click_count = 0;
 	
+  	if (!GTK_WIDGET_HAS_FOCUS (widget)) {
+    		gtk_widget_grab_focus (widget);
+    	}
+
 	/* Determine click count */
 	current_time = nautilus_get_system_time ();
 	if (current_time - last_click_time < DOUBLE_CLICK_TIME) {
