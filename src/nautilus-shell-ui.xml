@@ -93,17 +93,17 @@
 		<separator/>
 -->
 
-		<menuitem name="Cut" 
+		<menuitem name="Cut"
 			  _label="Cut _Text"
-			  pixtype="stock" pixname="gtk-cut" 
+			  pixtype="stock" pixname="gtk-cut"
 			  verb="Cut"/>
-		<menuitem name="Copy" 
+		<menuitem name="Copy"
 			  _label="_Copy Text"
-			  pixtype="stock" pixname="gtk-copy" 
+			  pixtype="stock" pixname="gtk-copy"
 			  verb="Copy"/>
-		<menuitem name="Paste" 
+		<menuitem name="Paste"
 			  _label="_Paste Text"
-			  pixtype="stock" pixname="gtk-paste" 
+			  pixtype="stock" pixname="gtk-paste"
 			  verb="Paste"/>
 		<menuitem name="Clear"
 			  _label="C_lear Text"
@@ -135,10 +135,11 @@
 	</submenu>
 
 	<submenu name="View" _label="_View">
-		<menuitem name="Reload" 
-			  _label="_Refresh" 
+		<menuitem name="Reload"
+			  _label="_Refresh"
 			  _tip="Display the latest contents of the current location"
 			  accel="*Control*r"
+			  pixtype="stock" pixname="refresh"
 			  verb="Reload"/>
 
 		<placeholder name="Show Hide Placeholder" delimit="top">
@@ -163,14 +164,17 @@
 		<placeholder name="View Items Placeholder" delimit="top"/>
 		
 		<placeholder name="Zoom Items Placeholder" delimit="top">
-			<menuitem name="Zoom In" 
+			<menuitem name="Zoom In"
 				  _label="Zoom _In" accel="*Control*plus"
+				  pixtype="stock" pixname="zoom-in"
 				  verb="Zoom In"/>
-			<menuitem name="Zoom Out" 
+			<menuitem name="Zoom Out"
 				  _label="Zoom _Out" accel="*Control*minus"
+				  pixtype="stock" pixname="zoom-out"
 				  verb="Zoom Out"/>
-			<menuitem name="Zoom Normal" 
-				  _label="_Normal Size" 
+			<menuitem name="Zoom Normal"
+				  _label="_Normal Size"
+				  pixtype="stock" pixname="zoom-100"
 				  verb="Zoom Normal"/>
 		</placeholder>
 		<placeholder name="View Choices">
@@ -254,8 +258,8 @@
 	</submenu>
 
 	<submenu name="Help" _label="_Help">
-		<menuitem name="Nautilus Manual" 
-			  _label="Nautilus User _Manual" 
+		<menuitem name="Nautilus Manual"
+			  _label="Nautilus User _Manual"
 			  _tip="Display on-line help for Nautilus"
 			  verb="Nautilus Manual"/>
 		<menuitem name="Nautilus Quick Reference" 
@@ -272,9 +276,10 @@
 			  _tip="Mailing list where you can send feedback about Nautilus"
 			  verb="Nautilus Feedback"/>
 		<separator/>
-		<menuitem name="About Nautilus" 
-			  _label="_About Nautilus..." 
+		<menuitem name="About Nautilus"
+			  _label="_About Nautilus..."
 			  _tip="Display credits for the creators of Nautilus"
+			  pixtype="stock" pixname="about"
 			  verb="About Nautilus"/>
 	</submenu>
 </menu>
