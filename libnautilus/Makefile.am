@@ -35,8 +35,7 @@ nautilus_distributed_undo_idl_sources =	\
 
 BUILT_SOURCES = \
 	$(nautilus_view_component_idl_sources)	\
-	$(nautilus_distributed_undo_idl_sources)\
-	$(ui_msgs)
+	$(nautilus_distributed_undo_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
 
@@ -66,6 +65,7 @@ libnautilus_la_SOURCES=					\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
+
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
@@ -79,25 +79,20 @@ CLEANFILES = \
 	$(nautilus_view_component_idl_sources)		\
 	nautilus_view_component_idl_stamp		\
 	$(nautilus_distributed_undo_idl_sources)	\
-	nautilus_distributed_undo_idl_stamp             \
-	$(ui_msgs)
+	nautilus_distributed_undo_idl_stamp             
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = \
 	nautilus-clipboard-ui.xml	\
 	$(NULL)
 
-ui_msgs = \
-	nautilus-clipboard-ui.xml.h
-	
 nautilus-clipboard-ui.xml.h: $(srcdir)/nautilus-clipboard-ui.xml
 	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-clipboard-ui.xml >	\
 	nautilus-clipboard-ui.xml.h
-	
+
 EXTRA_DIST = \
 	$(ui_DATA)			\
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
-	$(ui_msgs)			\
 	$(NULL)
 

@@ -20,12 +20,12 @@ oaf_DATA = nautilus-content-loser.oafinfo
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-content-loser-ui.xml
-ui_msgs = nautilus-content-loser-ui.xml.h
+ui_msgs = nautilus-content-loser-ui.xml
 
 nautilus-content-loser-ui.xml.h: $(srcdir)/nautilus-content-loser-ui.xml
 	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-content-loser-ui.xml >	\
 	nautilus-content-loser-ui.xml.h
-	
+
 bin_PROGRAMS =					\
 	nautilus-content-loser
 

@@ -43,7 +43,7 @@ nautilus_shell_interface_idl_sources =		\
 	nautilus-shell-interface.h		\
 	nautilus-shell-interface-common.c
 
-BUILT_SOURCES = $(nautilus_shell_interface_idl_sources) $(ui_msgs)
+BUILT_SOURCES = $(nautilus_shell_interface_idl_sources) 
 
 if ENABLE_PROFILER
 profiler_headers = nautilus-profiler.h
@@ -150,9 +150,6 @@ ui_DATA = 					\
 	nautilus-service-ui.xml			\
 	nautilus-shell-ui.xml			\
 	$(NULL)
-ui_msgs =					\
-	nautilus-shell-ui.xml.h			\
-	$(NULL)
 
 nautilus-shell-ui.xml.h: nautilus-shell-ui.xml
 	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-shell-ui.xml >	\
@@ -161,7 +158,6 @@ nautilus-shell-ui.xml.h: nautilus-shell-ui.xml
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
 	nautilus_shell_interface_idl_stamp	\
-	$(ui_msgs)
 	$(NULL)
 
 EXTRA_DIST = \
@@ -170,7 +166,6 @@ EXTRA_DIST = \
 	$(oaf_DATA)				\
 	run-nautilus				\
 	$(ui_DATA)				\
-	$(ui_msgs)				\
 	$(NULL)
 
 install-data-hook: run-nautilus
