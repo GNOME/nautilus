@@ -30,7 +30,7 @@
 
 static gboolean supress_out_of_bounds_warning;
 
-struct NautilusStringList
+struct _NautilusStringList
 {
 	GList *strings;
 };

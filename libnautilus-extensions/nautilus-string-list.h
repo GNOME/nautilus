@@ -28,7 +28,7 @@
 #include <glib.h>
 
 /* Opaque type declaration. */
-typedef struct NautilusStringList NautilusStringList;
+typedef struct _NautilusStringList NautilusStringList;
 
 /* Construct an empty string list. */
 NautilusStringList *nautilus_string_list_new                  (void);
