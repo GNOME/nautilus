@@ -1,3 +1,9 @@
+2000-06-07  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-window.c: (chose_component_callback):
+	Moved a g_return_if_fail so that it doesn't trigger erroneously
+	when the window is closing.
+
 2000-06-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

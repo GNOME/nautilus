@@ -821,9 +821,12 @@ nautilus_window_synch_content_view_menu (NautilusWindow *window)
 static void
 chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_data)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
-
 	if (identifier != NULL) {
+		/* Only check callback_data if identifier is not NULL, because the
+		 * callback_data might be garbage if (for example) the program is
+		 * exiting when this dialog is up.
+		 */
+		g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
 		nautilus_window_switch_views (NAUTILUS_WINDOW (callback_data), identifier);
 	}
 }
