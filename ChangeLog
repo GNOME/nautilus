@@ -1,5 +1,28 @@
 2002-01-03  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(start_rubberbanding):
+	Use GnomeCanvasRect instead of EelCanvasRect. We can redo the
+	EelCanvasRect optimization if we want to, but it should really
+	be put into libgnomecanvas.
+	
+	* components/music/common.c:
+	* components/music/nautilus-music-view.c:
+	* libnautilus-private/nautilus-customization-data.c:
+	* libnautilus-private/nautilus-desktop-file-loader.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-file.c:
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-window.c:
+	Remove lots of unneeded includes, including all cases of
+	including the locale-sensitive <ctype.h>.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-global-preferences.c:
 	(nautilus_global_preferences_init):
 	* libnautilus-private/nautilus-sidebar-functions.c:

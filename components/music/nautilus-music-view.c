@@ -30,13 +30,7 @@
 #include "mp3head.h"
 #include "mpg123.h"
 #include "pixmaps.h"
-
 #include <eel/eel-background.h>
-#include <libnautilus-private/nautilus-directory-background.h>
-#include <libnautilus-private/nautilus-directory-notify.h>
-#include <libnautilus-private/nautilus-file-attributes.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -46,29 +40,27 @@
 #include <eel/eel-image.h>
 #include <eel/eel-list.h>
 #include <eel/eel-preferences.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-font-factory.h>
-
-#include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-sound.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-string.h>
-#include <libnautilus/libnautilus.h>
-
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <esd.h>
+#include <fcntl.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkadjustment.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkeventbox.h>
-#include <esd.h>
-
+#include <gtk/gtksignal.h>
+#include <libnautilus-private/nautilus-directory-background.h>
+#include <libnautilus-private/nautilus-directory-notify.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-font-factory.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-sound.h>
+#include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <limits.h>
 
 #define SCALED_IMAGE_WIDTH	108
 #define SCALED_IMAGE_HEIGHT 	108

@@ -32,7 +32,6 @@
 #include "nautilus-property-browser.h"
 
 #include "nautilus-signaller.h"
-#include <ctype.h>
 #include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>

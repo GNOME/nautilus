@@ -30,7 +30,6 @@
 #include <X11/Xatom.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkmain.h>
-#include <ctype.h>
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>

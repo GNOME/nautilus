@@ -34,9 +34,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-marshal.h"
 #include "nautilus-theme.h"
-#include <ctype.h>
 #include <eel/eel-background.h>
-#include <eel/eel-canvas-rect.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -45,6 +43,7 @@
 #include <eel/eel-marshal.h>
 #include <eel/eel-string.h>
 #include <libgnomecanvas/gnome-canvas-pixbuf.h>
+#include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtklayout.h>
 #include <gtk/gtkmain.h>
@@ -1567,7 +1566,7 @@ start_rubberbanding (NautilusIconContainer *container,
 		band_info->selection_rectangle = gnome_canvas_item_new
 			(gnome_canvas_root
 			 (GNOME_CANVAS (container)),
-			 eel_canvas_rect_get_type (),
+			 GNOME_TYPE_CANVAS_RECT,
 			 "x1", band_info->start_x,
 			 "y1", band_info->start_y,
 			 "x2", band_info->start_x,
@@ -1586,7 +1585,7 @@ start_rubberbanding (NautilusIconContainer *container,
 		band_info->selection_rectangle = gnome_canvas_item_new
 			(gnome_canvas_root
 			 (GNOME_CANVAS (container)),
-			 eel_canvas_rect_get_type (),
+			 GNOME_TYPE_CANVAS_RECT,
 			 "x1", band_info->start_x,
 			 "y1", band_info->start_y,
 			 "x2", band_info->start_x,

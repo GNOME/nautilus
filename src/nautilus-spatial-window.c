@@ -42,7 +42,6 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-ui-util.h>
-#include <ctype.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-generous-bin.h>

@@ -35,7 +35,6 @@
 #include "nautilus-link.h"
 #include "nautilus-search-uri.h"
 #include <eel/eel-string.h>
-#include <ctype.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <gtk/gtkmain.h>

@@ -28,7 +28,6 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include <bonobo/bonobo-ui-util.h>
-#include <ctype.h>
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>

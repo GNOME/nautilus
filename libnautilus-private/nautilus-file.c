@@ -38,7 +38,6 @@
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
-#include <ctype.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>

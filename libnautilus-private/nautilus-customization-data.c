@@ -26,22 +26,8 @@
    names and imges */
 
 #include <config.h>
-#include <ctype.h>
-
-#include <libgnome/gnome-util.h>
-#include <libgnome/gnome-i18n.h>
-
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-
-#include <glib.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtk.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "nautilus-customization-data.h"
+
 #include "nautilus-file-utilities.h"
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-extensions.h>
@@ -50,6 +36,17 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <glib.h>
+#include <gtk/gtk.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs-directory.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef enum {
 	READ_PUBLIC_CUSTOMIZATIONS,

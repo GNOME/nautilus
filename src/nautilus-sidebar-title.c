@@ -32,7 +32,6 @@
 
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-property-bag-client.h>
-#include <ctype.h>
 #include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-font-extensions.h>
