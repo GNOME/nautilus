@@ -31,6 +31,7 @@
 
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-gdk-font-extensions.h>
 #include <glib.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbox.h>
@@ -241,7 +242,7 @@ dump_dialog_show (const char *dump_data, const char *title)
 	gtk_text_forward_delete (GTK_TEXT (dump_dialog->scrolled_text->text),
 				 gtk_text_get_length (GTK_TEXT (dump_dialog->scrolled_text->text)));
 	
-	font = gdk_fontset_load (_("fixed"));
+	font = eel_gdk_font_get_fixed ();
 
 	gtk_text_freeze (GTK_TEXT (dump_dialog->scrolled_text->text));
 
