@@ -47,6 +47,12 @@ GdkFont *nautilus_gdk_font_get_fixed           (void);
 char *   nautilus_string_ellipsize_start       (const char *original,
 						GdkFont    *font,
 						int         length);
+char *	 nautilus_string_ellipsize_end	       (const char *string,
+						GdkFont    *font,
+						int 	   width);
+char *	 nautilus_string_ellipsize_middle      (const char *string,
+						GdkFont    *font,
+						int 	   width);
 char *   nautilus_gdk_font_xlfd_string_new     (const char *foundry,
 						const char *family,
 						const char *weight,

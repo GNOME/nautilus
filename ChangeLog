@@ -1,3 +1,28 @@
+2001-03-29  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_string_ellipsize_start):
+	Rework to only measure one character width at a time when zeroing
+	in on the right width.
+
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_string_ellipsize_end),
+	(nautilus_string_ellipsize_middle),
+	* libnautilus-extensions/nautilus-gdk-font-extensions.h:
+	
+	Add nautilus_string_ellipsize_middle and nautilus_string_ellipsize_end.
+	
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_self_check_ellipsize),
+	(nautilus_self_check_ellipsize_start),
+	(nautilus_self_check_ellipsize_middle),
+	(nautilus_self_check_ellipsize_end),
+	(nautilus_self_check_gdk_font_extensions):
+
+	Add test cases for the new calls.
+
 2001-03-29  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-background-canvas-group.c:

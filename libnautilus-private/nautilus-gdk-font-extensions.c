@@ -62,6 +62,8 @@
 /* Indicates a xlfd wildcard: * */
 #define XLFD_WILDCARD_VALUE			-2
 
+#define ELLIPSIS "..."
+
 /* Font functions that could be public */
 static NautilusStringList *      font_list_fonts                          (const char               *pattern);
 static const NautilusStringList *font_list_fonts_cached                   (const char               *pattern,
@@ -655,14 +657,121 @@ char *
 nautilus_string_ellipsize_start (const char *string, GdkFont *font, int width)
 {
 	int truncate_offset;
+	int resulting_width;
 
-	if (gdk_string_width (font, string) <= (int) width) {
+	resulting_width = gdk_string_width (font, string);
+	if (resulting_width <= width) {
 		/* String is already short enough. */
 		return g_strdup (string);
 	}
 	
 	/* Account for the width of the ellipsis. */
-	width -= gdk_string_width (font, "...");
+	width -= gdk_string_width (font, ELLIPSIS);
+	
+
+	if (width < 0) {
+		/* No room even for a an ellipsis. */
+		return g_strdup ("");
+	}
+	
+	g_assert (strlen (string) > 0);
+
+	/* We rely on the fact that GdkFont does not use kerning and that
+	 * gdk_string_width ("foo") + gdk_string_width ("bar") ==
+	 * gdk_string_width ("foobar")
+	 */
+        for (truncate_offset = 1; ; truncate_offset++) {
+        	if (string[truncate_offset] == '\0') {
+			break;
+        	}
+
+        	resulting_width -= gdk_char_width (font, string[truncate_offset - 1]);
+
+        	if (resulting_width <= width) {
+			break;
+        	}
+        }
+
+	return g_strconcat (ELLIPSIS, string + truncate_offset, NULL);
+}
+
+/**
+ * nautilus_string_ellipsize_end:
+ * 
+ * @string: A a string to be ellipsized.
+ * @font: A a font used to measure the resulting string width.
+ * @width: Desired maximum width in points.
+ * Returns: A truncated string at most @width points long.
+ * 
+ * Truncates a string, removing characters from the end and 
+ * replacing them with "..." 
+ * 
+ */
+char *
+nautilus_string_ellipsize_end (const char *string, GdkFont *font, int width)
+{
+	int truncated_length;
+	char *result;
+	int resulting_width;
+
+	resulting_width = gdk_string_width (font, string);
+	if (resulting_width <= width) {
+		/* String is already short enough. */
+		return g_strdup (string);
+	}
+	
+	/* Account for the width of the ellipsis. */
+	width -= gdk_string_width (font, ELLIPSIS);
+	
+
+	if (width < 0) {
+		/* No room even for a an ellipsis. */
+		return g_strdup ("");
+	}
+	
+        for (truncated_length = strlen (string) - 1; truncated_length > 0; truncated_length--) {
+        	resulting_width -= gdk_char_width (font, string[truncated_length]);
+        	if (resulting_width <= width) {
+			break;
+        	}
+        }
+	
+	result = g_malloc (truncated_length + strlen (ELLIPSIS) + 1);
+	memcpy (result, string, truncated_length);
+	strcpy (result + truncated_length, ELLIPSIS);
+
+	return result;
+}
+
+/**
+ * nautilus_string_ellipsize_middle:
+ * 
+ * @string: A a string to be ellipsized.
+ * @font: A a font used to measure the resulting string width.
+ * @width: Desired maximum width in points.
+ * Returns: A truncated string at most @width points long.
+ * 
+ * Truncates a string, removing characters from the middle and 
+ * replacing them with "..." 
+ * 
+ */
+char *
+nautilus_string_ellipsize_middle (const char *string, GdkFont *font, int width)
+{
+	int original_length;
+	int starting_fragment_length;
+	int ending_fragment_offset;
+	int resulting_width;
+	char *result;
+
+	resulting_width = gdk_string_width (font, string);
+	if (resulting_width <= width) {
+		/* String is already short enough. */
+		return g_strdup (string);
+	}
+	
+	/* Account for the width of the ellipsis. */
+	width -= gdk_string_width (font, ELLIPSIS);
 	
 
 	if (width < 0) {
@@ -670,24 +779,53 @@ nautilus_string_ellipsize_start (const char *string, GdkFont *font, int width)
 		return g_strdup ("");
 	}
 
-	/* We could have the following optimization here:
-	 * check if the desired width and original width are considerably different,
-	 * if so, use a binary stride to figure out the resulting string truncation
-	 * offset.
-	 * For now we assume that we are only truncating by a small number of 
-	 * characters, in which a linear scan is faster
+	/* Split the original string into two halves */
+	original_length = strlen (string);
+	
+	g_assert (original_length > 0);
+	
+	starting_fragment_length = original_length / 2;
+	ending_fragment_offset = starting_fragment_length + 1;
+	
+	/* Shave off a character at a time from the first and the second half
+	 * until we can fit
 	 */
-        for (truncate_offset = 0; ; truncate_offset++) {
-        	if (string[truncate_offset] == '\0') {
-			break;
-        	}
-        	
-        	if (gdk_string_width (font, string + truncate_offset) <= (int) width) {
-			break;
-        	}
-        }
+	resulting_width -= gdk_char_width (font, string[ending_fragment_offset - 1]);
+	
+	/* depending on whether the original string length is odd or even, start by
+	 * shaving off the characters from the starting or ending fragment
+	 */
+	switch (original_length % 2) {
+	        while (TRUE) {
+	case 0:
+			if (resulting_width <= width) {
+				break;
+			}
+			g_assert (starting_fragment_length > 0 || ending_fragment_offset < original_length);
+			if (starting_fragment_length > 0) {
+				starting_fragment_length--;
+			}
+			resulting_width -= gdk_char_width (font, string[starting_fragment_length]);
+	case 1:
+			if (resulting_width <= width) {
+				break;
+			}
+			g_assert (starting_fragment_length > 0 || ending_fragment_offset < original_length);
+			if (ending_fragment_offset < original_length) {
+				ending_fragment_offset++;
+			}
+			resulting_width -= gdk_char_width (font, string[ending_fragment_offset - 1]);
+	        }
+	}
+	
+	/* patch the two fragments together with an ellipsis */
+	result = g_malloc (starting_fragment_length + (original_length - ending_fragment_offset)
+		+ strlen (ELLIPSIS) + 1);
+	memcpy (result, string, starting_fragment_length);
+	strcpy (result + starting_fragment_length, ELLIPSIS);
+	strcpy (result + starting_fragment_length + strlen (ELLIPSIS), string + ending_fragment_offset);
 
-	return g_strdup_printf ("...%s", string + truncate_offset);
+	return result;
 }
 
 /* Private font things */
@@ -1281,6 +1419,13 @@ compare_xlfd_by_size_in_pixels (gconstpointer string_a,
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
+
+typedef enum {
+	NAUTILUS_ELLIPSIZE_START,
+	NAUTILUS_ELLIPSIZE_MIDDLE,
+	NAUTILUS_ELLIPSIZE_END
+} NautilusEllipsizeMode;
+
 /* Testing string truncation is tough because we do not know what font/
  * font metrics to expect on a given system. To work around this we use
  * a substring of the original, measure it's length using the given font, 
@@ -1288,11 +1433,12 @@ compare_xlfd_by_size_in_pixels (gconstpointer string_a,
  * The result should then be the substring prepended with a "..."
  */
 static char *
-nautilus_self_check_ellipsize_start (const char *string, const char *truncate_to_length_string)
+nautilus_self_check_ellipsize (const char *string, const char *truncate_to_length_string, NautilusEllipsizeMode mode)
 {
 	GdkFont *font;
 	int truncation_length;
 	char *result;
+
 
 	/* any old font will do */
 	font = nautilus_gdk_font_get_fixed ();
@@ -1300,13 +1446,45 @@ nautilus_self_check_ellipsize_start (const char *string, const char *truncate_to
 
 	/* measure the length we want to truncate to */
 	truncation_length = gdk_string_width (font, truncate_to_length_string);
-	truncation_length += gdk_string_width (font, "...");
+	truncation_length += gdk_string_width (font, ELLIPSIS);
 
-	result = nautilus_string_ellipsize_start (string, font, truncation_length);
+	switch (mode) {
+		case NAUTILUS_ELLIPSIZE_START:
+			result = nautilus_string_ellipsize_start (string, font, truncation_length);
+			break;
+		case NAUTILUS_ELLIPSIZE_MIDDLE:
+			result = nautilus_string_ellipsize_middle (string, font, truncation_length);
+			break;
+		case NAUTILUS_ELLIPSIZE_END:
+			result = nautilus_string_ellipsize_end (string, font, truncation_length);
+			break;
+		default:
+			g_assert_not_reached ();
+			result = NULL;
+			break;
+	};
 	
 	gdk_font_unref (font);
 
 	return result;
+}
+
+static char *
+nautilus_self_check_ellipsize_start (const char *string, const char *truncate_to_length_string)
+{
+	return nautilus_self_check_ellipsize (string, truncate_to_length_string, NAUTILUS_ELLIPSIZE_START);
+}
+
+static char *
+nautilus_self_check_ellipsize_middle (const char *string, const char *truncate_to_length_string)
+{
+	return nautilus_self_check_ellipsize (string, truncate_to_length_string, NAUTILUS_ELLIPSIZE_MIDDLE);
+}
+
+static char *
+nautilus_self_check_ellipsize_end (const char *string, const char *truncate_to_length_string)
+{
+	return nautilus_self_check_ellipsize (string, truncate_to_length_string, NAUTILUS_ELLIPSIZE_END);
 }
 
 void
@@ -1330,6 +1508,37 @@ nautilus_self_check_gdk_font_extensions (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_start ("test", font, 0), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_start ("test", font, gdk_string_width (font, "...") - 1), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_start ("test", font, gdk_string_width (font, "...")), "...");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("012345678", "0123456789"), "012345678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("012345678", "012345678"), "012345678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("012345678", "01278"), "012...78");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("012345678", "0178"), "01...78");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("012345678", "018"), "01...8");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("012345678", "08"), "0...8");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("012345678", "0"), "0...");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("0123456789", "0123456789"), "0123456789");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("0123456789", "012789"), "012...789");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("0123456789", "01289"), "012...89");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("0123456789", "0189"), "01...89");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("0123456789", "019"), "01...9");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("0123456789", "09"), "0...9");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_middle ("0123456789", "0"), "0...");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_middle ("", font, 100), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_middle ("test", font, 0), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_middle ("test", font, gdk_string_width (font, "...") - 1), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_middle ("test", font, gdk_string_width (font, "...")), "...");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_end ("012345678", "0123456789"), "012345678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_end ("012345678", "012345678"), "012345678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_end ("012345678", "01234"), "01234...");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_end ("012345678", "0123"), "0123...");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_end ("012345678", "012"), "012...");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_end ("012345678", "01"), "01...");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_end ("012345678", "0"), "0...");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_end ("", font, 100), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_end ("test", font, 0), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_end ("test", font, gdk_string_width (font, "...") - 1), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_end ("test", font, gdk_string_width (font, "...")), "...");
 
 	gdk_font_unref (font);
 
