@@ -1,3 +1,13 @@
+2000-10-12  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 3578 (Mozilla component lacks tool bar button)
+
+	* components/mozilla/nautilus-mozilla-ui.xml:
+	Turn on the XML for the tool bar.
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_set_content_view): Took out dead code.
+
 2000-10-12  J Shane Culpepper  <pepper@eazel.com>
 
 	* nautilus.spec.in:

@@ -1438,9 +1438,6 @@ nautilus_window_set_content_view (NautilusWindow *window, NautilusViewIdentifier
         g_return_if_fail (window->location != NULL);
 	g_return_if_fail (id != NULL);
 
-        if (window->content_view != NULL) {
-        }
-
         directory = nautilus_directory_get (window->location);
 	file = nautilus_file_get (window->location);
 	g_assert (directory != NULL);
