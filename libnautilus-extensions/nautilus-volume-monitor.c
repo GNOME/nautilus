@@ -213,9 +213,28 @@ floppy_sort (const NautilusVolume *volume1, const NautilusVolume *volume2)
 }
 
 gboolean		
-nautilus_volume_monitor_volume_is_removable (const NautilusVolume *volume)
+nautilus_volume_monitor_volume_is_removable (NautilusVolumeMonitor *monitor, const NautilusVolume *volume)
 {
-	return volume->is_removable;
+	GList *disk_list, *p;
+	gboolean found_one;
+	NautilusVolume *found_volume;
+	
+	found_one = FALSE;
+
+	disk_list = nautilus_volume_monitor_get_removable_volumes (nautilus_volume_monitor_get ());
+	for (p = disk_list; p != NULL; p = p->next) {
+		/* Until we have a comprehensive desktop mount strategy and design, 
+		 * we are only showing removable volumes on the desktop.  
+		 */
+		 found_volume = p->data;
+		 if ( strcmp (volume->mount_path, found_volume->mount_path) == 0) {
+			found_one = TRUE;
+		 	break;
+		 }
+	}
+	g_list_free (disk_list);
+
+	return found_one;
 }
 
 /* nautilus_volume_monitor_get_removable_volumes

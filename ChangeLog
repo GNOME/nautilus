@@ -1,6 +1,20 @@
-2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
+2001-01-05  Gene Z. Ragan  <gzr@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	* components/music/nautilus-music-view.c: (selection_callback),
+	(value_changed_callback), (nautilus_music_view_load_uri):
+	Fixed a bug introduced when all widgets are being shown 
+	when a URI is loaded.  This includes both the on and off
+	states of the play and pause controls.  Update control
+	state right after the control are shown to correct this.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(nautilus_volume_monitor_volume_is_removable):
+
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+	More work on detecting is a volume is removable or not.
+	
+2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
 
 	* nautilus.spec.in: Correct names of .oaf files.
 
@@ -130,7 +144,7 @@ Fri Jan 05 20:28:43 2001  George Lebl <jirka@5z.com>
 
 2001-01-05  Gene Z. Ragan  <gzr@eazel.com>
 	
-	My previous change dealing with dekstop mounts was a bit too
+	My previous change dealing with desktop mounts was a bit too
 	overzealous.  Removable volumes now appear on the desktop
 	when mounted.
 	

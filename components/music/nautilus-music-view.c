@@ -472,7 +472,7 @@ selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event,
         }
         
         /* Redraw to fix lame bug GtkCList has with setting the wrong GC */
-        gtk_widget_queue_draw (GTK_WIDGET (clist));
+        //gtk_widget_queue_draw (GTK_WIDGET (clist));
 } 
 
 
@@ -480,7 +480,7 @@ static void
 value_changed_callback (GtkAdjustment *adjustment, GtkCList *clist)
 {
         /* Redraw to fix lame bug GtkCList has with setting the wrong GC */
- 	gtk_widget_queue_draw (GTK_WIDGET (clist));
+ 	//gtk_widget_queue_draw (GTK_WIDGET (clist));
 }
 
 
@@ -1887,6 +1887,9 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 	
 	/* show all the widgets now, since they weren't shown during initialization */
 	gtk_widget_show_all (GTK_WIDGET (music_view));
+
+	update_play_controls_status (music_view, get_player_state (music_view));
+
 }
 
 static void

@@ -246,12 +246,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 {
 	char *desktop_path, *target_uri, *volume_name;
 	const char *icon_name;
-	GList *disk_list, *p;
-	gboolean found_one;
-	NautilusVolume *found_volume;
-	
-	found_one = FALSE;
-	
+
 	if (volume_in_black_list (icon_view, volume)) {
 		return;
 	}
@@ -265,24 +260,11 @@ create_mount_link (FMDesktopIconView *icon_view,
 		icon_name = "i-blockdev.png";
 	}
 
-	/* FIXME bugzilla.eazel.com 5412: Design a comprehensive desktop mounting strategy */	
-	disk_list = nautilus_volume_monitor_get_removable_volumes (nautilus_volume_monitor_get ());
-	for (p = disk_list; p != NULL; p = p->next) {
-		/* Until we have a comprehensive desktop mount strategy and design, 
-		 * we are only showing removable volumes on the desktop.  
-		 */
-		 found_volume = p->data;
-		 if ( strcmp (volume->mount_path, found_volume->mount_path) == 0) {
-			found_one = TRUE;
-		 	break;
-		 }
-	}
-	g_list_free (disk_list);
-	
-	if (!found_one) {		
+	/* FIXME bugzilla.eazel.com 5412: Design a comprehensive desktop mounting strategy */
+	if (!nautilus_volume_monitor_volume_is_removable (nautilus_volume_monitor_get (), volume)) {
 		return;
 	}
-
+	
 	desktop_path = nautilus_get_desktop_directory ();
 	target_uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);
