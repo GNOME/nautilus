@@ -152,6 +152,12 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 	object_class->set_arg = nautilus_window_set_arg;
 	
 	widget_class = (GtkWidgetClass*) klass;
+
+	/* FIXME bugzilla.eazel.com 1580
+	 * The parent_class field in the NautilusWindowClass is redundant
+	 * given that we have static parent_class variable. One or the other
+	 * should go. Since the static is usually our practice the field should go.
+	 */
 	klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
 	
 	gtk_object_add_arg_type ("NautilusWindow::app_id",
