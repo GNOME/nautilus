@@ -99,21 +99,21 @@ static NautilusPreferencesInfo global_preferences_static_info[] =
 	{
 		NAUTILUS_PREFERENCES_USER_LEVEL,
 		"User Level",
-		GTK_TYPE_ENUM,
+		NAUTILUS_PREFERENCE_ENUM,
 		(gconstpointer) NAUTILUS_USER_LEVEL_HACKER,
 		(gpointer) &global_preferences_user_level_data
 	},
 	{
 		NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 		"Create new window for each new page",
-		GTK_TYPE_BOOL,
+		NAUTILUS_PREFERENCE_BOOLEAN,
 		FALSE,
 		NULL
 	},
 	{
 		NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING,
 		"Do not open more than one window with the same page",
-		GTK_TYPE_BOOL,
+		NAUTILUS_PREFERENCE_BOOLEAN,
 		FALSE,
 		NULL
 	},
@@ -179,7 +179,7 @@ global_preferences_create_check_group (GtkWidget   *pane,
 
 		item = nautilus_preferences_item_new (GTK_OBJECT (nautilus_preferences_get_global_preferences ()),
 						      pref_names[i],
-						      NAUTILUS_PREFERENCES_ITEM_BOOL);
+						      NAUTILUS_PREFERENCE_BOOLEAN);
 
 		nautilus_preferences_group_add (NAUTILUS_PREFERENCES_GROUP (group),
 						item);
@@ -206,7 +206,7 @@ global_prefernces_create_enum_group (GtkWidget	*pane,
 
 	item = nautilus_preferences_item_new (GTK_OBJECT (nautilus_preferences_get_global_preferences ()),
 					      pref_name,
-					      NAUTILUS_PREFERENCES_ITEM_ENUM);
+					      NAUTILUS_PREFERENCE_ENUM);
 	
 	
 	nautilus_preferences_group_add (NAUTILUS_PREFERENCES_GROUP (group), item);
@@ -250,42 +250,42 @@ global_preferences_register_dynamic (NautilusPreferences *prefs)
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
 						   "History View",
-						   GTK_TYPE_BOOL,
+						   NAUTILUS_PREFERENCE_BOOLEAN,
 						   FALSE,
 						   NULL);
-
+	
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
 						   "Web Search View",
-						   GTK_TYPE_BOOL,
+						   NAUTILUS_PREFERENCE_BOOLEAN,
 						   FALSE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
 						   "Annotations",
-						   GTK_TYPE_BOOL,
+						   NAUTILUS_PREFERENCE_BOOLEAN,
 						   FALSE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
 						   "Help Contents",
-						   GTK_TYPE_BOOL,
+						   NAUTILUS_PREFERENCE_BOOLEAN,
 						   FALSE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
 						   "Help Index",
-						   GTK_TYPE_BOOL,
+						   NAUTILUS_PREFERENCE_BOOLEAN,
 						   FALSE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
 						   "Help Search",
-						   GTK_TYPE_BOOL,
+						   NAUTILUS_PREFERENCE_BOOLEAN,
 						   FALSE,
 						   NULL);
 }
