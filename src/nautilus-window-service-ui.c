@@ -63,7 +63,7 @@ goto_online_storage (BonoboUIComponent *component,
 	logged_in = ammonite_am_i_logged_in (user_control);
 
 	if (!logged_in) {
-		url = g_strdup ("eazel-services://anonymous/services");
+		url = g_strdup ("eazel:");
 	} else {
 		user_name = ammonite_who_is_logged_in (user_control);
 		url = g_strdup_printf ("eazel-services:/~%s", user_name);
