@@ -171,7 +171,7 @@ static void
 icon_free (NautilusIcon *icon)
 {
 	/* Destroy this canvas item; the parent will unref it. */
-	gtk_widget_destroy (GTK_WIDGET (icon->item));
+	gtk_object_destroy (GTK_OBJECT (icon->item));
 	g_free (icon);
 }
 
@@ -1380,7 +1380,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 
 	/* Destroy this canvas item; the parent will unref it. */
 	gnome_canvas_item_ungrab (band_info->selection_rectangle, event->time);
-	gtk_widget_destroy (GTK_WIDGET (band_info->selection_rectangle));
+	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
 
 
@@ -2067,7 +2067,7 @@ destroy (GtkObject *object)
 	}
 	if (container->details->rubberband_info.selection_rectangle != NULL) {
 		/* Destroy this canvas item; the parent will unref it. */
-		gtk_widget_destroy (GTK_WIDGET (container->details->rubberband_info.selection_rectangle));
+		gtk_object_destroy (GTK_OBJECT (container->details->rubberband_info.selection_rectangle));
 	}
 
         if (container->details->idle_id != 0) {

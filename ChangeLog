@@ -1,5 +1,11 @@
 2000-10-17  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-container.c: (icon_free),
+	(stop_rubberbanding), (destroy): Oops. Canvas items are not
+	widgets, although they ref. count in a similar way.
+
+2000-10-17  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c:
 	(async_job_wake_up): Fix reentrancy problem.
 
