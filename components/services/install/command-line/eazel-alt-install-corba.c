@@ -270,7 +270,7 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 
 static void 
 eazel_download_progress_signal (EazelInstallCallback *service, 
-				const char *name,
+				const PackageData *pack,
 				int amount, 
 				int total,
 				char *title) 
@@ -283,10 +283,12 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 	time_t diff;
 	static float ks=0;
 
+	g_assert (pack->name != NULL);
+
 	downloaded_files = TRUE;
 
 	if (amount==0) {
-		fprintf (stdout, "Downloading %s...", name);
+		fprintf (stdout, "Downloading %s...", pack->name);
 		t = time (NULL);
 		old_pct = pct = 0;
 	} else if (amount != total ) {
@@ -300,24 +302,24 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 					old_pct = pct;
 				}
 				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%% %.1f Kb/s     \r", 
-					 name,
+					 pack->name,
 					 amount, total, pct,
 					 ks);
 			} else {
 				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%%", 
-					 name,
+					 pack->name,
 					 amount, total, pct);
 			}
 		}
 	} else if (amount == total && total!=0) {
 		if (arg_no_pct==0) {
 			fprintf (stdout, "\rDownloading %s... (%d/%d) %.1f Kb/s Done      \n",
-				 name,
+				 pack->name,
 				 amount, total, 
 				 ks);
 		} else {
 			fprintf (stdout, "Downloading %s... %3.1f KB/s Done\n", 
-				 name, ks);
+				 pack->name, ks);
 		}
 	}
 	fflush (stdout);
@@ -360,10 +362,11 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 
 static void
 download_failed (EazelInstallCallback *service, 
-		 const char *name,
+		 const PackageData *pack,
 		 gpointer unused)
 {
-	fprintf (stdout, "Download of %s FAILED\n", name);
+	g_assert (pack->name != NULL);
+	fprintf (stdout, "Download of %s FAILED\n", pack->name);
 }
 
 /* This is ridiculous... */
@@ -455,7 +458,7 @@ tree_helper (EazelInstallCallback *service,
 
 static void
 something_failed (EazelInstallCallback *service,
-		const PackageData *pd,
+		  const PackageData *pd,
 		  EazelInstallProblem *problem,
 		  gboolean uninstall)
 {

@@ -1,3 +1,57 @@
+2001-01-22  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_download_progress), (impl_download_failed):
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_fetch_remote_package_list),
+	(eazel_install_emit_download_progress),
+	(eazel_install_emit_download_progress_default),
+	(eazel_install_emit_download_failed),
+	(eazel_install_emit_download_failed_default):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (ftp_fetch_remote_file),
+	(gnome_vfs_xfer_callback), (gnome_vfs_fetch_remote_file),
+	(local_fetch_remote_file), (eazel_install_fetch_file),
+	(eazel_install_fetch_package):
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-public.h:
+
+	Change the download_progress and download_failed signals to pass a
+	PackageData struct (and not a char*) just like every other signal,
+	now that we can do that.  Fix a missing bytesize fill-in in one of
+	the corba conversion functions.  Also, make the non-slim build use
+	the file-rename trick from the bootstrap installer, to ensure that
+	uncompleted downloads are never treated like valid package files.
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_download_progress_signal),
+	(nautilus_rpm_view_download_failed):
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_download_progress_signal), (download_failed),
+	(something_failed):
+
+	Fix rpm view and command-line install to use the new download
+	signal signatures.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_downloading),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_download_failed),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_done),
+	(nautilus_service_install_view_update_from_uri):
+
+	Use the new download signal signatures to draw a nifty progress
+	bar for the overall download (where 90% of most users' time will
+	be spent in this view).  Scale the progress bar to match the
+	package files' expected sizes (softcat bug to be fixed in 1.0).
+	Leave the throbber on during the downloads so they can be
+	aborted.  Don't offer to erase rpms if the package was already
+	installed (and therefore not downloaded).
+
 2001-01-22  Arlo Rose  <arlo@eazel.com>
 
 	A whole mess of files checked in to add a new color variation

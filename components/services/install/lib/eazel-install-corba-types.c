@@ -79,7 +79,6 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	corbapack->version = pack->version ? CORBA_string_dup (pack->version) : CORBA_string_dup ("");
 	corbapack->archtype = pack->archtype ? CORBA_string_dup (pack->archtype) : CORBA_string_dup ("");
 	corbapack->filename = pack->filename ? CORBA_string_dup (pack->filename) : CORBA_string_dup ("");
-	corbapack->toplevel = pack->toplevel;
 
 	corbapack->install_root = pack->install_root ? CORBA_string_dup (pack->install_root) : CORBA_string_dup ("");
 	corbapack->md5 = pack->md5 ? CORBA_string_dup (pack->md5) : CORBA_string_dup ("");
@@ -100,6 +99,8 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	corbapack->release = pack->minor ? CORBA_string_dup (pack->minor) : CORBA_string_dup ("");
 	corbapack->summary = pack->summary ? CORBA_string_dup (pack->summary) : CORBA_string_dup ("");
 	corbapack->description = pack->description ? CORBA_string_dup (pack->description) : CORBA_string_dup ("");
+	corbapack->bytesize = pack->bytesize;
+	corbapack->toplevel = pack->toplevel;
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:

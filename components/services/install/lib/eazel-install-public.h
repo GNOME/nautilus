@@ -73,7 +73,7 @@ struct _EazelInstallClass
 	BonoboObjectClass parent_class;
 #endif /* EAZEL_INSTALL_NO_CORBA */
 	/* signal prototypes */
-	void (*download_progress) (EazelInstall *service, const char *file, int amount, int total);
+	void (*download_progress) (EazelInstall *service, const PackageData *package, int amount, int total);
 
 	gboolean (*preflight_check) (EazelInstall *service, 
 				     GList *packages,
@@ -89,7 +89,7 @@ struct _EazelInstallClass
 	/* 
 	   if the set URLType is PROTOCOL_HTTP, info is a HTTPError struc 
 	*/
-	void (*download_failed) (EazelInstall *service, const char *name);
+	void (*download_failed) (EazelInstall *service, const PackageData *package);
 	/*
 	  if RPM_FAIL is RPM_SRC_NOT_SUPPORTED, info is NULL
 	                 RPM_DEP_FAIL, info is a GSList of required packages (PackageData objects)
@@ -150,14 +150,14 @@ void eazel_install_emit_install_progress          (EazelInstall *service,
 						   int package_num, int num_packages, 
 						   int package_size_completed, int package_size_total,
 						   int total_size_completed, int total_size);
-void eazel_install_emit_download_progress         (EazelInstall *service, 
-						   const char *name,
+void eazel_install_emit_download_progress         (EazelInstall *service,
+						   const PackageData *package,
 						   int amount, 
 						   int total);
 gboolean eazel_install_emit_preflight_check     (EazelInstall *service, 
 						 GList *packages);
 void eazel_install_emit_download_failed           (EazelInstall *service, 
-						   const char *name);
+						   const PackageData *package);
 void eazel_install_emit_md5_check_failed          (EazelInstall *service, 
 						   const PackageData *pd,
 						   const char *actual_md5);

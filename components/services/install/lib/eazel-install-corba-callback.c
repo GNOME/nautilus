@@ -70,12 +70,16 @@ typedef struct {
 
 static void
 impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-			const char *name,
+			const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
 			const CORBA_long amount,
 			const CORBA_long total,
 			CORBA_Environment * ev)
 {
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_PROGRESS], name, amount, total);
+	PackageData *pack;
+
+	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_PROGRESS], pack, amount, total);
+	packagedata_destroy (pack, TRUE);
 }
 
 static CORBA_boolean
@@ -113,10 +117,14 @@ impl_preflight_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 
 static void
 impl_download_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		      const char *name,
+		      const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
 		      CORBA_Environment * ev)
 {
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_FAILED], name);
+	PackageData *pack;
+
+	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_FAILED], pack);
+	packagedata_destroy (pack, TRUE);
 }
 
 static void 

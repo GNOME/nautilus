@@ -498,7 +498,7 @@ create_package (char *name, int local_file)
  * 	package-name [ "?version=" version ] ( ";" package-name [ "?version=" version ] )*
  *
  * eazel-install:xfig
- * eazel-install://anonymous@freeamp
+ * eazel-install://anonymous@/freeamp
  * eazel-install://example.com:8888/nautilus?version=1.0;xpdf;sephiroth?version=0.4
  */
 /* returns TRUE if a hostname was parsed from the uri */
@@ -654,28 +654,26 @@ current_progress_bar_complete (NautilusServiceInstallView *view, const char *tex
 
 
 static void
-nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name, int amount, int total,
+nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageData *pack, int amount, int total,
 				      NautilusServiceInstallView *view)
 {
 	char *out;
-	const char *root_name, *tmp, *needed_by;
+	const char *needed_by;
 	GList *iter;
 	InstallMessage *im = view->details->current_im;
+	float fake_amount;
 
 	if (view->details->installer == NULL) {
 		g_warning ("Got download notice after unref!");
 		return;
 	}
 
-	/* sometimes the "name" is annoyingly the entire path */
-	root_name = name;
-	while ((tmp = strchr (root_name, '/')) != NULL) {
-		root_name = tmp+1;
-	}
+	/* install lib better damn well know the name of the package by the time we download it! */
+	g_assert (pack->name != NULL);
 
 	if (amount == 0) {
 		/* could be a redundant zero-trigger for the same rpm... */
-		if (view->details->current_rpm && (strcmp (view->details->current_rpm, root_name) == 0)) {
+		if (view->details->current_rpm && (strcmp (view->details->current_rpm, pack->name) == 0)) {
 			/* spin_cylon (view); */
 			return;
 		}
@@ -684,38 +682,35 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 			gtk_timeout_remove (view->details->cylon_timer);
 			view->details->cylon_timer = 0;
 		}
-		turn_cylon_off (view, 0.0);
 
 		g_free (view->details->current_rpm);
-		view->details->current_rpm = g_strdup (root_name);
-
-		show_overall_feedback (view, " ");
+		view->details->current_rpm = g_strdup (pack->name);
 
 		/* figure out if this is a toplevel package, and if so, update the header */
 		for (iter = g_list_first (((CategoryData *)(view->details->categories->data))->packages);
 		     iter != NULL; iter = g_list_next (iter)) {
-			PackageData *pack = (PackageData *)(iter->data);
-			if ((pack->name != NULL) && (strcmp (pack->name, name) == 0)) {
-				out = g_strdup_printf (_("Downloading \"%s\""), name);
+			PackageData *pack2 = (PackageData *)(iter->data);
+			if ((pack2->name != NULL) && (strcmp (pack2->name, pack->name) == 0)) {
+				out = g_strdup_printf (_("Downloading \"%s\""), pack->name);
 				nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
 				g_free (out);
 			}
 		}
 
 		/* new progress message and bar */
-		im = view->details->current_im = install_message_new (view, root_name);
+		im = view->details->current_im = install_message_new (view, pack->name);
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 0.0);
 		out = g_strdup_printf (_("0K of %dK"), total/1024);
 		nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
 		g_free (out);
 		view->details->last_k = 0;
 
-		needed_by = g_hash_table_lookup (view->details->deps, root_name);
+		needed_by = g_hash_table_lookup (view->details->deps, pack->name);
 		if (needed_by != NULL) {
 			out = g_strdup_printf (_("The package \"%s\" needs \"%s\" to run.\nI'm now attempting to download it."),
-					       needed_by, root_name);
+					       needed_by, pack->name);
 		} else {
-			out = g_strdup_printf (_("I'm attempting to download package \"%s\"."), root_name);
+			out = g_strdup_printf (_("I'm attempting to download package \"%s\"."), pack->name);
 		}
 		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
 		g_free (out);
@@ -723,12 +718,12 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		/* done! */
 		current_progress_bar_complete (view, _("Complete"));
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 1.0);
-		needed_by = g_hash_table_lookup (view->details->deps, root_name);
+		needed_by = g_hash_table_lookup (view->details->deps, pack->name);
 		if (needed_by != NULL) {
 			out = g_strdup_printf (_("The package \"%s\" needs \"%s\" to run.\nI've downloaded it successfully."),
-					       needed_by, root_name);
+					       needed_by, pack->name);
 		} else {
-			out = g_strdup_printf (_("I've successfully downloaded package \"%s\"."), root_name);
+			out = g_strdup_printf (_("I've successfully downloaded package \"%s\"."), pack->name);
 		}
 		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
 		g_free (out);
@@ -736,13 +731,11 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		view->details->current_rpm = NULL;
 		view->details->current_im = NULL;
 		/* update downloaded bytes */
-		view->details->download_bytes_sofar += total;
-#if 0
+		view->details->download_bytes_sofar += pack->bytesize;
 		/* not until we get an rpm size */
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar),
 					     (float) view->details->download_bytes_sofar /
 					     (float) view->details->download_bytes_total);
-#endif
 	} else {
 		/* could be a leftover event, after user hit STOP (in which case, current_im = NULL) */
 		if ((im != NULL) && (im->progress_bar != NULL)) {
@@ -755,6 +748,16 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 				view->details->last_k = (amount/1024);
 			}
 		}
+
+		/* so, for PR3, we are given a "size" field in the softcat XML which is actually 
+		 * the size of the decompressed files.  so this little hocus-pocus scales the
+		 * actual size (which we know once we start downloading the file) to match the   
+		 * previously-assumed size
+		 */
+		fake_amount = (float)amount * (float)pack->bytesize / (float)total;
+		gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar),
+					     ((float) view->details->download_bytes_sofar + fake_amount) /
+					     (float) view->details->download_bytes_total);
 	}
 }
 
@@ -854,8 +857,6 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	char *out;
 	unsigned long total_k;
 
-	/* no longer "loading" anything */
-	nautilus_view_report_load_complete (view->details->nautilus_view);
 	/* turn off the cylon and show "real" progress */
 	turn_cylon_off (view, 0.0);
 
@@ -920,9 +921,9 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	}
 
 	if (g_list_length (package_list) == 1) {
-		out = g_strdup (_("Preparing to download 1 package"));
+		out = g_strdup (_("Downloading 1 package"));
 	} else {
-		out = g_strdup_printf (_("Preparing to download %d packages"), g_list_length (package_list));
+		out = g_strdup_printf (_("Downloading %d packages"), g_list_length (package_list));
 	}
 	show_overall_feedback (view, out);
 	g_free (out);
@@ -934,17 +935,19 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 
 
 static void
-nautilus_service_install_download_failed (EazelInstallCallback *cb, const char *name,
+nautilus_service_install_download_failed (EazelInstallCallback *cb, const PackageData *pack,
 					  NautilusServiceInstallView *view)
 {
-	char *out;
+	char *out, *tmp;
 
 	turn_cylon_off (view, 0.0);
 
 	/* no longer "loading" anything */
 	nautilus_view_report_load_complete (view->details->nautilus_view);
 
-	out = g_strdup_printf (_("Download of package \"%s\" failed!"), name);
+	tmp = packagedata_get_readable_name (pack);
+	out = g_strdup_printf (_("Download of package \"%s\" failed!"), tmp);
+	g_free (tmp);
 	if (view->details->current_im != NULL) {
 		nautilus_label_set_text (NAUTILUS_LABEL (view->details->current_im->label), out);
 	}
@@ -992,6 +995,9 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 
 	im = view->details->current_im;
 	if (current_package != view->details->current_package) {
+		/* no longer "loading" anything */
+		nautilus_view_report_load_complete (view->details->nautilus_view);
+
 		/* starting a new package -- create new progress indicator */
 		out = g_strdup_printf (_("Installing package %d of %d"), current_package, total_packages);
 		show_overall_feedback (view, out);
@@ -1287,7 +1293,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 			real_message = g_strdup_printf (_("%s\n%s\nErase the leftover RPM files?"), 
 							message,
 							nautilus_install_service_locate_menu_entries (view));
-		} else if (view->details->cancelled_before_downloads) {
+		} else if (view->details->cancelled_before_downloads || view->details->already_installed) {
 			real_message = g_strdup (message);
 			question_dialog = FALSE;
 		} else {
@@ -1567,8 +1573,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	}
 	GNOME_Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
-	/* attempt to create a directory we can use */
-
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_downloading), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_failed",
@@ -1589,7 +1593,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	CORBA_exception_free (&ev);
 
-	show_overall_feedback (view, _("Contacting software catalog ..."));
+	show_overall_feedback (view, _("Contacting the software catalog ..."));
 
 	/* might take a while... cylon a bit */
 	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), TRUE);

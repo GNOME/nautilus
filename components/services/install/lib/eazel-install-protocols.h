@@ -34,7 +34,8 @@
 gboolean eazel_install_fetch_file (EazelInstall *service,
 				   char *url, 
 				   const char *file_to_report,
-				   const char *target_file);
+				   const char *target_file,
+				   const PackageData *package);
 
 gboolean eazel_install_fetch_package (EazelInstall *service,
 				      PackageData *package);

@@ -114,16 +114,16 @@ static BonoboObjectClass *eazel_install_parent_class;
 void eazel_install_emit_install_progress_default (EazelInstall *service,
 						  const PackageData *pack,
 						  int, int, int, int, int, int);
-void  eazel_install_emit_download_progress_default (EazelInstall *service, 
-						    const char *name,
-						  int amount,
-						  int total);
+void  eazel_install_emit_download_progress_default (EazelInstall *service,
+						    const PackageData *package,
+						    int amount,
+						    int total);
 gboolean  eazel_install_emit_preflight_check_default (EazelInstall *service, 
 						      GList *packages,
 						      int total_bytes,
 						      int total_packages);
-void  eazel_install_emit_download_failed_default (EazelInstall *service, 
-						  const char *name);
+void  eazel_install_emit_download_failed_default (EazelInstall *service,
+						  const PackageData *package);
 void eazel_install_emit_md5_check_failed_default (EazelInstall *service,
 						  const PackageData *pack,
 						  const char *actual_md5);
@@ -882,17 +882,13 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 			       eazel_install_get_server_port (service),
 			       eazel_install_get_package_list_storage_path (service)[0]=='/'?"":"/",
 			       eazel_install_get_package_list_storage_path (service));
-#ifdef EAZEL_INSTALL_SLIM
 	destination = g_strdup (eazel_install_get_package_list (service));
-#else /*  EAZEL_INSTALL_SLIM */
-	destination = g_strdup_printf ("file://%s",
-				       eazel_install_get_package_list (service));
-#endif /*  EAZEL_INSTALL_SLIM */
 	
 	retval = eazel_install_fetch_file (service, 
 					   url, 
 					   "package list", 
-					   destination);
+					   destination,
+					   NULL);
 
 	if (!retval) {
 		g_warning (_("Unable to retrieve package-list.xml!\n"));
@@ -1285,17 +1281,17 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 
 void 
 eazel_install_emit_download_progress (EazelInstall *service, 
-				      const char *name,
+				      const PackageData *pack,
 				      int amount, 
 				      int total)
 {
 	EAZEL_INSTALL_SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], name, amount, total);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], pack, amount, total);
 }
 
 void 
 eazel_install_emit_download_progress_default (EazelInstall *service, 
-					      const char *name,
+					      const PackageData *pack,
 					      int amount, 
 					      int total)
 {
@@ -1304,11 +1300,14 @@ eazel_install_emit_download_progress_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		GNOME_Trilobite_Eazel_InstallCallback_download_progress (service->callback, name, amount, total, &ev);	
+		GNOME_Trilobite_Eazel_PackageDataStruct *package;
+		package = corba_packagedatastruct_from_packagedata (pack);
+		GNOME_Trilobite_Eazel_InstallCallback_download_progress (service->callback, package, amount, total, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
 			/* user has aborted us and gone home -- tell VFS to STOP! */
 			service->private->cancel_download = TRUE;
 		}
+		CORBA_free (package);
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -1408,22 +1407,29 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 
 void 
 eazel_install_emit_download_failed (EazelInstall *service, 
-				    const char *name)
+				    const PackageData *pack)
 {
 	EAZEL_INSTALL_SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], pack);
 }
 
 void 
 eazel_install_emit_download_failed_default (EazelInstall *service, 
-					    const char *name)
+					    const PackageData *pack)
 {
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		GNOME_Trilobite_Eazel_InstallCallback_download_failed (service->callback, name, &ev);	
+		GNOME_Trilobite_Eazel_PackageDataStruct *package;
+		package = corba_packagedatastruct_from_packagedata (pack);
+		GNOME_Trilobite_Eazel_InstallCallback_download_failed (service->callback, package, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			/* user has aborted us and gone home -- tell VFS to STOP! */
+			service->private->cancel_download = TRUE;
+		}
+		CORBA_free (package);
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */

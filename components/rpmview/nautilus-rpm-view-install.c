@@ -36,7 +36,7 @@
 
 static void 
 nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service, 
-					    const char *name,
+					    const PackageData *pack,
 					    int amount, 
 					    int total,
 					    NautilusRPMView *rpm_view) 
@@ -88,10 +88,11 @@ nautilus_rpm_view_install_progress_signal (EazelInstallCallback *service,
 
 static void
 nautilus_rpm_view_download_failed (EazelInstallCallback *service, 
-				   const char *name,
+				   const PackageData *pack,
 				   NautilusRPMView *rpm_view)
 {
-	trilobite_debug ("Download of %s FAILED", name);
+	g_assert (pack->name != NULL);
+	trilobite_debug ("Download of %s FAILED", pack->name);
 }
 
 static void

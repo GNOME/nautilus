@@ -115,7 +115,7 @@ module Trilobite {
 		interface InstallCallback : Bonobo::Unknown {
 			/* Called during download of a file */
 			/* make it 2-way so that it will process incoming corba calls */
-			void download_progress (in string file, in long amount, in long total);
+			void download_progress (in PackageDataStruct package, in long amount, in long total);
 
 			/* Called when dependency check is being handled */
 			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
@@ -143,7 +143,7 @@ module Trilobite {
 
 			/* Called whenever a package (un)install fails
 			*/
-			void download_failed (in string file);
+			void download_failed (in PackageDataStruct package);
 			/* FIXME bugzilla.eazel.com 1542:
 			   This is what they should be, but orbit-idl's lack of
 			   recursive structures, forces us to encode the structures

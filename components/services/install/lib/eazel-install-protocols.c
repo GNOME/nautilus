@@ -55,13 +55,14 @@
 
 typedef struct {
 	EazelInstall *service;
-	const char *file_to_report;
+	const PackageData *package;
 } gnome_vfs_callback_struct;
 
 typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj, 
 						       char *url,
 						       const char *file_to_report,
-						       const char *target_file);
+						       const char *target_file,
+						       const PackageData *package);
 
 
 #ifdef EAZEL_INSTALL_SLIM	       
@@ -69,21 +70,25 @@ typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj,
 gboolean http_fetch_remote_file (EazelInstall *service,
 				 char *url, 
 				 const char *file_to_report,
-				 const char* target_file);
+				 const char* target_file,
+				 const PackageData *package);
 gboolean ftp_fetch_remote_file (EazelInstall *service,
 				char *url, 
 				const char *file_to_report,
-				const char* target_file);
+				const char* target_file,
+				const PackageData *package);
 #else /* EAZEL_INSTALL_SLIM */
 gboolean  gnome_vfs_fetch_remote_file (EazelInstall *service, 
 				       char *url, 
 				       const char *file_to_report, 
-				       const char *target_file);
+				       const char *target_file,
+				       const PackageData *package);
 #endif /* EAZEL_INSTALL_SLIM */
 gboolean local_fetch_remote_file (EazelInstall *service,
 				  char *url, 
 				  const char *file_to_report,
-				  const char* target_file);
+				  const char* target_file,
+				  const PackageData *package);
 
 
 #ifdef EAZEL_INSTALL_SLIM
@@ -91,7 +96,8 @@ gboolean
 http_fetch_remote_file (EazelInstall *service,
 			char *url, 
 			const char *file_to_report,
-			const char* target_file) 
+			const char* target_file,
+			const PackageData *package) 
 {
         int length, get_failed;
         ghttp_request* request;
@@ -159,13 +165,13 @@ http_fetch_remote_file (EazelInstall *service,
 		total_bytes = curStat.bytes_total;
 		/* Ensure first emit is with amount==0 */
 		if (first_emit && total_bytes > 0) {
-			eazel_install_emit_download_progress (service, report, 0, total_bytes);
+			eazel_install_emit_download_progress (service, package, 0, total_bytes);
 			first_emit = FALSE;
 		}
 		/* And that amount==0 & amount==total only occurs once */
 		if (curStat.bytes_read!=0 && (curStat.bytes_read != curStat.bytes_total)) {
 			eazel_install_emit_download_progress (service, 
-							      report,
+							      package,
 							      curStat.bytes_read, 
 							      curStat.bytes_total);
 		}
@@ -194,7 +200,7 @@ http_fetch_remote_file (EazelInstall *service,
 		g_main_iteration (FALSE);
         }
 	/* Last emit amount==total */
-	eazel_install_emit_download_progress (service, report, total_bytes, total_bytes);		
+	eazel_install_emit_download_progress (service, package, total_bytes, total_bytes);
 
         if (ghttp_status_code (request) != 200) {
                 g_warning (_("HTTP error: %d %s"), ghttp_status_code (request),
@@ -244,7 +250,8 @@ gboolean
 ftp_fetch_remote_file (EazelInstall *service,
 		       char *url, 
 		       const char *file_to_report,
-		       const char* target_file) 
+		       const char* target_file,
+		       const PackageData *package)
 {
 	trilobite_debug (_("Downloading %s..."), url);
 	trilobite_debug (_("FTP not supported yet"));
@@ -261,7 +268,7 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 	static gboolean initial_emit;
 	static gboolean last_emit;
 	EazelInstall *service = cbstruct->service;
-	const char *file_to_report = cbstruct->file_to_report;
+	const PackageData *package = cbstruct->package;
 
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
@@ -296,19 +303,19 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 		case GNOME_VFS_XFER_PHASE_COPYING:
 			if (initial_emit && info->file_size>0) {
 				initial_emit = FALSE;
-				eazel_install_emit_download_progress (service, 
-								      file_to_report ? file_to_report : info->source_name,
+				eazel_install_emit_download_progress (service,
+								      package,
 								      0,
 								      info->file_size);
 			} else if (!last_emit && info->bytes_copied == info->file_size) {
 				last_emit = TRUE;
 				eazel_install_emit_download_progress (service, 
-								      file_to_report ? file_to_report : info->source_name,
+								      package,
 								      info->file_size,
 								      info->file_size);
 			} else if (info->bytes_copied > 0) {
 				eazel_install_emit_download_progress (service, 
-								      file_to_report ? file_to_report : info->source_name,
+								      package,
 								      info->bytes_copied,
 								      info->file_size);
 
@@ -337,7 +344,7 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			if (!last_emit) {
 				last_emit = TRUE;
 				eazel_install_emit_download_progress (service, 
-								      file_to_report ? file_to_report : info->source_name,
+								      package,
 								      info->file_size,
 								      info->file_size);
 			}
@@ -362,22 +369,21 @@ gboolean
 gnome_vfs_fetch_remote_file (EazelInstall *service, 
 			     char *url, 
 			     const char *file_to_report, 
-			     const char *target_file)
+			     const char *target_file,
+			     const PackageData *package)
 {
 	GnomeVFSResult result;
 	GnomeVFSXferOptions xfer_options = 0;
 	GnomeVFSURI *src_uri;
 	GnomeVFSURI *dest_uri;
 	char *t_file;
+	char *target_file_premove;
 	gnome_vfs_callback_struct *cbstruct;
 
-	/* Ensure the target_file has a protocol://,
-	   if not, prefix a file:// */
-	if (strstr (target_file, "://")==NULL) {
-		t_file = g_strdup_printf ("file://%s", target_file);
-	} else {
-		t_file = g_strdup (target_file);
-	}
+	target_file_premove = g_strdup_printf ("%s~", target_file);
+
+	/* this will always be a file: uri */
+	t_file = g_strdup_printf ("file://%s", target_file_premove);
 
 	trilobite_debug ("gnome_vfs_xfer_uri ( %s %s )", url, t_file);
 	
@@ -388,14 +394,14 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 		gnome_vfs_uri_set_host_name (src_uri, "localhost");
 	}
 	
-	dest_uri = gnome_vfs_uri_new (t_file);
+	dest_uri = gnome_vfs_uri_new (target_file_premove);
 	g_assert (dest_uri != NULL);
 	
 	/* Setup the userdata for the callback, I need both the
 	   service object to emit signals too, and the filename to report */
 	cbstruct = g_new0 (gnome_vfs_callback_struct, 1);
 	cbstruct->service = service;
-	cbstruct->file_to_report = file_to_report;
+	cbstruct->package = package;
 
 	/* Execute the gnome_vfs copy */
 	service->private->cancel_download = FALSE;
@@ -408,7 +414,8 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 
 	if (result==GNOME_VFS_OK) {
 		chmod (target_file, 0600);
-		trilobite_debug ("File download successfull");
+		trilobite_debug ("File download successful");
+		rename (target_file_premove, target_file);
 	} else {
 		trilobite_debug ("File download failed");
 		if (result == GNOME_VFS_ERROR_BAD_PARAMETERS) {
@@ -418,7 +425,7 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 			trilobite_debug ("download was cancelled from afar");
 		}
 	}
- 
+
 	/* Free the various stuff */
 	g_free (t_file);
 	g_free (cbstruct);
@@ -435,7 +442,8 @@ gboolean
 local_fetch_remote_file (EazelInstall *service,
 			 char *url, 
 			 const char *file_to_report,
-			 const char* target_file) 
+			 const char* target_file,
+			 const PackageData *package)
 {
 	gboolean result;
 	const char *report;
@@ -447,8 +455,8 @@ local_fetch_remote_file (EazelInstall *service,
 		struct stat sbuf;
 		stat (target_file, &sbuf);
 		/* Emit bogus download progress */
-		eazel_install_emit_download_progress (service, report,            0, sbuf.st_size);
-		eazel_install_emit_download_progress (service, report, sbuf.st_size, sbuf.st_size);
+		eazel_install_emit_download_progress (service, package,            0, sbuf.st_size);
+		eazel_install_emit_download_progress (service, package, sbuf.st_size, sbuf.st_size);
 		result = TRUE;
 	} 
 	return result;
@@ -516,7 +524,8 @@ gboolean
 eazel_install_fetch_file (EazelInstall *service,
 			  char *url, 
 			  const char *file_to_report,
-			  const char* target_file) 
+			  const char* target_file,
+			  const PackageData *package)
 {
 	gboolean result;
 	GList *iter;
@@ -549,21 +558,21 @@ eazel_install_fetch_file (EazelInstall *service,
 		struct stat buf;
 		stat (target_file, &buf);
 		trilobite_debug ("%s already present, not downloading", target_file);
-		eazel_install_emit_download_progress (service, file_to_report, 0, buf.st_size);
-		eazel_install_emit_download_progress (service, file_to_report, buf.st_size, buf.st_size);
+		eazel_install_emit_download_progress (service, package, 0, buf.st_size);
+		eazel_install_emit_download_progress (service, package, buf.st_size, buf.st_size);
 		result = TRUE;
 	} else {
 		result = (func_table [eazel_install_get_protocol (service)])((gpointer)service, 
 									     url, 
 									     file_to_report, 
-									     target_file);
+									     target_file,
+									     package);
 	}
  	
 	if (!result) {
 		g_warning (_("Failed to retrieve %s!"), 
 			   file_to_report ? file_to_report : g_basename (target_file));
-		eazel_install_emit_download_failed (service, 
-						    file_to_report ? file_to_report : g_basename (target_file));
+		eazel_install_emit_download_failed (service, package);
 	} 
 
 	return result;
@@ -629,7 +638,7 @@ eazel_install_fetch_package (EazelInstall *service,
 		targetname = g_strdup_printf ("%s/%s",
 					      eazel_install_get_tmp_dir (service),
 					      filename_from_url (url));
-		result = eazel_install_fetch_file (service, url, package->name, targetname);
+		result = eazel_install_fetch_file (service, url, package->name, targetname, package);
 		if (result) {
 			package = eazel_package_system_load_package (service->private->package_system,
 								     package, 
