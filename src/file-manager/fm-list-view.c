@@ -554,7 +554,8 @@ fm_list_receive_dropped_icons (NautilusList *list,
 		    && !nautilus_drag_can_accept_items (target_item, drop_data)) {
 			target_item = NULL;
 		}
-		
+
+		list_view_uri = fm_directory_view_get_uri (directory_view);
 		if (target_item != NULL 
 		    && !nautilus_drag_items_local (list_view_uri, drop_data)) {
 			
@@ -572,8 +573,8 @@ fm_list_receive_dropped_icons (NautilusList *list,
 				/* start the copy */
 			fm_directory_view_move_copy_items (source_uris, NULL,
 							   target_item_uri, action, x, y, directory_view);
-			
 		}
+		g_free (list_view_uri);
 	}
 	
 	g_free (target_item_uri);
