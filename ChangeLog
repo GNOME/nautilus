@@ -1,4 +1,4 @@
-2000-04-29  Pavel Cisler  <pavel@eazel.com>
+2000-05-01  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-changes-queue.c:
 	(nautilus_file_changes_consume_changes):
@@ -18,7 +18,7 @@
 	information while emptying the trash and moving files to
 	trash.
 	
-2000-04-29  Ramiro Estrugo  <ramiro@eazel.com>
+2000-05-01  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-gconf.c,
 	  src/nautilus-gconf.h: Retired.  Not used or needed no more.
@@ -28,84 +28,84 @@
 	* check-config-h.pl: Wrote a script to check for files that forget
 	to include <config.h> and optionally edit to add it.
 	
-        * src/nautilus-zoom-control.c (set_zoom_level): Fixed the bug
+	* src/nautilus-zoom-control.c (set_zoom_level): Fixed the bug
 	number in a FIXME.
 
-        * docs/style-guide.html: Added one more tip.
+	* docs/style-guide.html: Added one more tip.
 
-        * check-FIXME.pl: Use my newfound Perl knowledge to spruce it up.
+	* check-FIXME.pl: Use my newfound Perl knowledge to spruce it up.
 
-        * components/help/converters/gnome-db2html2/gdb3html.c:
-        * components/help/converters/gnome-db2html2/sect-elements.c:
-        * components/help/converters/gnome-db2html2/sect-preparse.c:
-        * components/help/converters/gnome-db2html2/toc-elements.c:
-        * components/help/converters/gnome-info2html2/html.c:
-        * components/help/converters/gnome-info2html2/main.c:
-        * components/help/converters/gnome-info2html2/parse.c:
-        * components/help/converters/gnome-info2html2/utils.c:
-        * components/help/converters/gnome-man2html2/gnome-man2html.c:
-        * components/help/hyperbola-filefmt.c:
-        * components/help/hyperbola-nav-index.c:
-        * components/help/hyperbola-nav-search.c:
-        * components/help/hyperbola-nav-tree.c:
-        * components/html/glibwww-callbacks.c:
-        * components/html/glibwww-init.c:
-        * components/html/glibwww-trans.c:
-        * components/html/gnome-dialogs.c:
-        * components/html/ntl-web-browser.c:
-        * components/services/install/eazel-install-metadata.c:
-        * components/services/install/eazel-install-protocols.c:
-        * components/services/install/eazel-install-rpm-glue.c:
-        * components/services/install/eazel-install-tests.c:
-        * components/services/install/eazel-install-utils.c:
-        * components/services/install/eazel-install-xml-package-list.c:
-        * components/services/install/eazel-install.c:
-        * components/services/install/helixcode-install-utils.c:
-        * components/services/startup/eazel-register.c:
-        * components/websearch/ntl-web-search.c:
-        * helper-utilities/authenticate/nautilus-authenticate-fork.c:
-        * helper-utilities/authenticate/nautilus-authenticate-pam.c:
-        * helper-utilities/authenticate/nautilus-authenticate.c:
-        * libnautilus-extensions/nautilus-bonobo-extensions.c:
-        * libnautilus-extensions/nautilus-file-utilities.c:
-        * libnautilus-extensions/nautilus-glib-extensions.c:
-        * libnautilus-extensions/nautilus-link.c:
-        * libnautilus-extensions/nautilus-mime-type.c:
-        * libnautilus-extensions/nautilus-undo-transaction.c:
-        * librsvg/art_rgba.c:
-        * librsvg/art_rgba_svp.c:
-        * librsvg/rsvg-bpath-util.c:
-        * librsvg/rsvg-path.c:
-        * librsvg/rsvg.c:
-        * librsvg/test-rsvg.c:
-        * nautilus-widgets/nautilus-caption-table.c:
-        * nautilus-widgets/nautilus-password-dialog.c:
-        * nautilus-widgets/nautilus-preferences-box.c:
-        * nautilus-widgets/nautilus-preferences-dialog.c:
-        * nautilus-widgets/nautilus-preferences-group.c:
-        * nautilus-widgets/nautilus-preferences-item.c:
-        * nautilus-widgets/nautilus-preferences-pane.c:
-        * nautilus-widgets/nautilus-radio-button-group.c:
-        * nautilus-widgets/test-nautilus-widgets.c:
-        * nautilus-widgets/test-preferences.c:
-        * src/file-manager/desktop-item.c:
-        * src/file-manager/desktop-layout.c:
-        * src/file-manager/desktop-menu.c:
-        * src/nautilus-bookmarks-window.c:
-        * src/nautilus-gconf.c:
+	* components/help/converters/gnome-db2html2/gdb3html.c:
+	* components/help/converters/gnome-db2html2/sect-elements.c:
+	* components/help/converters/gnome-db2html2/sect-preparse.c:
+	* components/help/converters/gnome-db2html2/toc-elements.c:
+	* components/help/converters/gnome-info2html2/html.c:
+	* components/help/converters/gnome-info2html2/main.c:
+	* components/help/converters/gnome-info2html2/parse.c:
+	* components/help/converters/gnome-info2html2/utils.c:
+	* components/help/converters/gnome-man2html2/gnome-man2html.c:
+	* components/help/hyperbola-filefmt.c:
+	* components/help/hyperbola-nav-index.c:
+	* components/help/hyperbola-nav-search.c:
+	* components/help/hyperbola-nav-tree.c:
+	* components/html/glibwww-callbacks.c:
+	* components/html/glibwww-init.c:
+	* components/html/glibwww-trans.c:
+	* components/html/gnome-dialogs.c:
+	* components/html/ntl-web-browser.c:
+	* components/services/install/eazel-install-metadata.c:
+	* components/services/install/eazel-install-protocols.c:
+	* components/services/install/eazel-install-rpm-glue.c:
+	* components/services/install/eazel-install-tests.c:
+	* components/services/install/eazel-install-utils.c:
+	* components/services/install/eazel-install-xml-package-list.c:
+	* components/services/install/eazel-install.c:
+	* components/services/install/helixcode-install-utils.c:
+	* components/services/startup/eazel-register.c:
+	* components/websearch/ntl-web-search.c:
+	* helper-utilities/authenticate/nautilus-authenticate-fork.c:
+	* helper-utilities/authenticate/nautilus-authenticate-pam.c:
+	* helper-utilities/authenticate/nautilus-authenticate.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-mime-type.c:
+	* libnautilus-extensions/nautilus-undo-transaction.c:
+	* librsvg/art_rgba.c:
+	* librsvg/art_rgba_svp.c:
+	* librsvg/rsvg-bpath-util.c:
+	* librsvg/rsvg-path.c:
+	* librsvg/rsvg.c:
+	* librsvg/test-rsvg.c:
+	* nautilus-widgets/nautilus-caption-table.c:
+	* nautilus-widgets/nautilus-password-dialog.c:
+	* nautilus-widgets/nautilus-preferences-box.c:
+	* nautilus-widgets/nautilus-preferences-dialog.c:
+	* nautilus-widgets/nautilus-preferences-group.c:
+	* nautilus-widgets/nautilus-preferences-item.c:
+	* nautilus-widgets/nautilus-preferences-pane.c:
+	* nautilus-widgets/nautilus-radio-button-group.c:
+	* nautilus-widgets/test-nautilus-widgets.c:
+	* nautilus-widgets/test-preferences.c:
+	* src/file-manager/desktop-item.c:
+	* src/file-manager/desktop-layout.c:
+	* src/file-manager/desktop-menu.c:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-gconf.c:
 	* src/nautilus-window-menus.c:
-        * src/nautilus-window-toolbars.c:
+	* src/nautilus-window-toolbars.c:
 	* src/nautilus-zoom-control.c
-        * src/nautilus-zoomable-frame-svr.c:
-        * src/ntl-app.c:
-        * src/ntl-content-view.c:
-        * src/ntl-main.c:
-        * src/ntl-meta-view.c:
-        * src/ntl-miniicon.c:
-        * src/ntl-uri-map.c:
-        * src/ntl-view-frame-svr.c:
-        * src/ntl-view.c:
-        * src/ntl-window-state.c:
+	* src/nautilus-zoomable-frame-svr.c:
+	* src/ntl-app.c:
+	* src/ntl-content-view.c:
+	* src/ntl-main.c:
+	* src/ntl-meta-view.c:
+	* src/ntl-miniicon.c:
+	* src/ntl-uri-map.c:
+	* src/ntl-view-frame-svr.c:
+	* src/ntl-view.c:
+	* src/ntl-window-state.c:
 	Added includes of <config.h>.
 
 2000-05-01  Gene Z. Ragan  <gzr@eazel.com>
@@ -174,10 +174,10 @@
 
 2000-05-01  Darin Adler  <darin@eazel.com>
 
-        * HACKING: Added option for eog. (Sorry Maciej, I had done it
+	* HACKING: Added option for eog. (Sorry Maciej, I had done it
 	before I got your mail.)
-        * src/ntl-uri-map.c (make_oaf_query_with_known_mime_type),
-        (make_oaf_query_with_uri_scheme_only): Improved comments and
+	* src/ntl-uri-map.c (make_oaf_query_with_known_mime_type),
+	(make_oaf_query_with_uri_scheme_only): Improved comments and
 	formatting a little big more. (Sorry again, Maciej. You can
 	merge it however you want!)
 
@@ -190,26 +190,26 @@
 
 	Another cut at icon positioning. Still much tweaking needed.
 
-        * libnautilus-extensions/nautilus-icon-canvas-item.c
-        (nautilus_icon_canvas_item_bounds): Got rid of "slop".
-        * libnautilus-extensions/nautilus-icon-grid.c
-        (get_icon_size_power_from_bounds), (get_icon_size_power):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_bounds): Got rid of "slop".
+	* libnautilus-extensions/nautilus-icon-grid.c
+	(get_icon_size_power_from_bounds), (get_icon_size_power):
 	Get more grid space per icon now that slop is gone.
-        (nautilus_icon_grid_add): Base grid space occupied on the size of
+	(nautilus_icon_grid_add): Base grid space occupied on the size of
 	the icon, not the side of the grid.
 	(nautilus_icon_grid_get_position): Position icons horizontally
 	centered in the space, but vertically at the top.
 
 	Made the OAF queries more readable as I discussed with Maciej.
 	
-        * src/ntl-uri-map.c (extract_prefix_add_suffix),
-        (mime_type_get_supertype), (uri_string_get_scheme):
+	* src/ntl-uri-map.c (extract_prefix_add_suffix),
+	(mime_type_get_supertype), (uri_string_get_scheme):
 	Make special-purpose string routines use common function instead.
 	We must not optimize this kind of thing for speed, but rather for
 	ease of reading the code.  This can be whittled down a little more
 	and put into nautilus-string.h
-        (make_oaf_query_with_known_mime_type),
-        (make_oaf_query_with_uri_scheme_only):
+	(make_oaf_query_with_known_mime_type),
+	(make_oaf_query_with_uri_scheme_only):
 	Reformatted and commented the OAF queries so they are easy to read.
 
 2000-04-30  Darin Adler  <darin@eazel.com>
@@ -643,13 +643,13 @@
 
 2000-04-27  Joe Shaw <joe@helixcode.com>
 
-        * components/rpmview/nautilus-rpm-view.c
-        (nautilus_rpm_view_update_from_uri): Changed call of fdValidb
-        to checking to ensure that file_descriptor != NULL. fdValid was
-        removed from RPM 3.0.4 and this bit of code provides the same
-        functionality. It'll build on 3.0.4-based systems now (like Red   
-        Hat 6.2). Bad Red Hat for breaking reverse compatibility on a
-        minor upgrade.
+	* components/rpmview/nautilus-rpm-view.c
+	(nautilus_rpm_view_update_from_uri): Changed call of fdValidb
+	to checking to ensure that file_descriptor != NULL. fdValid was
+	removed from RPM 3.0.4 and this bit of code provides the same
+	functionality. It'll build on 3.0.4-based systems now (like Red   
+	Hat 6.2). Bad Red Hat for breaking reverse compatibility on a
+	minor upgrade.
 
 2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
 
@@ -1089,15 +1089,15 @@
 
 2000-04-26  J. Shane Culpepper  <pepper@eazel.com>
 
-        * components/services/install/eazel-install-lib.h
-        * components/services/install/eazel-install-lib-xml.c
-        * components/services/install/eazel-install-lib-xml.h
-        * components/services/install/eazel-install-lib-rpm.c
-        * components/services/install/eazel-install-lib-rpm.h
-        * components/services/install/eazel-install-lib-debug.c
-        * components/services/install/eazel-install-lib-debug.h
-        * components/services/install/eazel-install-lib-util.h
-        * components/services/install/eazel-install-lib-util.c
+	* components/services/install/eazel-install-lib.h
+	* components/services/install/eazel-install-lib-xml.c
+	* components/services/install/eazel-install-lib-xml.h
+	* components/services/install/eazel-install-lib-rpm.c
+	* components/services/install/eazel-install-lib-rpm.h
+	* components/services/install/eazel-install-lib-debug.c
+	* components/services/install/eazel-install-lib-debug.h
+	* components/services/install/eazel-install-lib-util.h
+	* components/services/install/eazel-install-lib-util.c
 
 	Removing current installer in order to checkin the new structure
 
@@ -1247,15 +1247,15 @@
 
 2000-04-25  J. Shane Culpepper  <pepper@eazel.com>
 
-        * components/services/install/eazel-install.c
-        * components/services/install/eazel-install-lib.h
-        * components/services/install/eazel-install-lib-xml.c
-        * components/services/install/eazel-install-lib-rpm.c
-        * components/services/install/eazel-install-lib-debug.c
+	* components/services/install/eazel-install.c
+	* components/services/install/eazel-install-lib.h
+	* components/services/install/eazel-install-lib-xml.c
+	* components/services/install/eazel-install-lib-rpm.c
+	* components/services/install/eazel-install-lib-debug.c
 
-        Added command line otions to set remote server and local download
-        directory.  Did more cleaning and testing of the automatic http
-        download options.
+	Added command line otions to set remote server and local download
+	directory.  Did more cleaning and testing of the automatic http
+	download options.
 
 2000-04-25  John Sullivan  <sullivan@eazel.com>
 
@@ -2233,7 +2233,7 @@
 2000-04-18 Shane Culpepper <pepper@eazel.com>
 
 	* components/services/install/eazel-install-lib-rpm.c - fixing the
-          segfault in rpmInstall.
+	  segfault in rpmInstall.
 
 2000-04-18  John Sullivan  <sullivan@eazel.com>
 
@@ -3010,7 +3010,7 @@
 	
 2000-04-14 Rebecca Schulman <rebecka@eazel.com>
 
-        Bookmarks with '_' characters display
+	Bookmarks with '_' characters display
 	correctly now on menus
 	
 	* libnautilus-extensions/nautilus-string.c
@@ -3054,7 +3054,7 @@
 
 2000-04-14 Rebecca Schulman <rebecka@eazel.com>
 	
-        Bookmarks with '_' characters display
+	Bookmarks with '_' characters display
 	correctly now on menus
 	
 	* libnautilus-extensions/nautilus-string.c
