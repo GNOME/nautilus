@@ -42,9 +42,11 @@ public:
 		{
 			name = "";
 
-			//char buffer[256];
-			//sprintf(buffer, "[%x] ", address);
-			//name = buffer;
+#if 1
+			char buffer[256];
+			sprintf(buffer, "x/i 0x%x ", address);
+			name = buffer;
+#endif
 
 			string function_name;
 			get_function_at_address (app_path.c_str(), 
