@@ -69,7 +69,7 @@ is_known_mime_type (const char *mime_type)
 		return FALSE;
 	}
 	
-	if (strcasecmp (mime_type, "GNOME_VFS_MIME_TYPE_UNKNOWN") == 0) {
+	if (g_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0) {
 		return FALSE;
 	}
 	
@@ -150,9 +150,9 @@ nautilus_mime_get_default_action_type_for_file (NautilusFile *file)
 		g_free (mime_type);
 		return action_type;
 	} else {
-		if (strcasecmp (action_type_string, "application") == 0) {
+		if (g_strcasecmp (action_type_string, "application") == 0) {
 			return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
-		} else if (strcasecmp (action_type_string, "component") == 0) {
+		} else if (g_strcasecmp (action_type_string, "component") == 0) {
 			return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
 		} else {
 			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
@@ -1711,7 +1711,7 @@ application_supports_uri_scheme (gpointer data,
 
 	/* The default supported uri scheme is "file" */
 	if (application->supported_uri_schemes == NULL
-	    && strcasecmp ((const char *) uri_scheme, "file") == 0) {
+	    && g_strcasecmp ((const char *) uri_scheme, "file") == 0) {
 		return TRUE;
 	}
 	return g_list_find_custom (application->supported_uri_schemes,

@@ -1,3 +1,11 @@
+2001-05-04  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(is_known_mime_type): Fix mistake where we put quotes
+	around GNOME_VFS_MIME_TYPE_UNKNOWN. Use g_strcasecmp.
+	(nautilus_mime_get_default_action_type_for_file),
+	(application_supports_uri_scheme): Use g_strcasecmp.
+
 2001-05-04  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
 	* configure.in: upped version required of eel to 1.0 and
