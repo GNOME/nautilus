@@ -811,18 +811,25 @@ nautilus_mime_get_all_components_for_file (NautilusFile *file)
 }
 
 gboolean
-nautilus_mime_has_any_components_for_file (NautilusFile      *file)
+nautilus_mime_has_any_components_for_file_extended (NautilusFile *file,
+						    char *extra_reqs)
 {
 	GList *list;
 	gboolean result;
 
-	list = nautilus_mime_get_all_components_for_file (file);
+	list = nautilus_mime_get_all_components_for_file_extended (file,
+								   extra_reqs);
 	result = list != NULL;
 	gnome_vfs_mime_component_list_free (list);
 
 	return result;
 }
 
+gboolean
+nautilus_mime_has_any_components_for_file (NautilusFile *file)
+{
+	return nautilus_mime_has_any_components_for_file_extended (file, NULL);
+}
 
 static GList *
 mime_get_all_components_for_uri_scheme (const char *uri_scheme)

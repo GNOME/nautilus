@@ -433,7 +433,7 @@ repopulate_program_list (NautilusProgramChooser *program_chooser)
 	gchar *program_name, *status_text;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	
+
 	type = program_chooser->details->action_type;
 
 	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
@@ -441,7 +441,7 @@ repopulate_program_list (NautilusProgramChooser *program_chooser)
 	
 
 	programs = type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
-		? nautilus_mime_get_all_components_for_file (program_chooser->details->file)
+		? nautilus_mime_get_all_components_for_file_extended (program_chooser->details->file, "(NOT nautilus:property_page_name.defined)")
 		: nautilus_mime_get_all_applications_for_file (program_chooser->details->file);
 
 	list_store = program_chooser->details->list_store;

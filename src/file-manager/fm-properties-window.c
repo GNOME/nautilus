@@ -134,6 +134,12 @@ typedef struct {
 	FMDirectoryView *directory_view;
 } StartupData;
 
+typedef struct {
+	FMPropertiesWindow *window;
+	GtkWidget *vbox;
+	char *view_name;
+} ActivationData;
+
 
 /* drag and drop definitions */
 
@@ -169,6 +175,8 @@ static void remove_pending_file                   (StartupData             *data
 						   gboolean                 cancel_call_when_ready,
 						   gboolean                 cancel_timed_wait,
 						   gboolean                 cancel_destroy_handler);
+
+static void append_bonobo_pages                   (FMPropertiesWindow *window);
 
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
 			 GtkDialog, GTK_TYPE_DIALOG)
@@ -619,7 +627,35 @@ update_properties_window_title (GtkWindow *window, NautilusFile *file)
 }
 
 static void
-properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
+clear_bonobo_pages (FMPropertiesWindow *window)
+{
+	int i;
+	int num_pages;
+	GtkWidget *page;
+
+	num_pages = gtk_notebook_get_n_pages
+				(GTK_NOTEBOOK (window->details->notebook));
+				 
+	for (i=0; i <  num_pages; i++) {
+		page = gtk_notebook_get_nth_page
+				(GTK_NOTEBOOK (window->details->notebook), i);
+
+		if (g_object_get_data (G_OBJECT (page), "is-bonobo-page")) {
+			gtk_notebook_remove_page
+				(GTK_NOTEBOOK (window->details->notebook), i);
+		}
+	}
+}
+
+static void
+refresh_bonobo_pages (FMPropertiesWindow *window)
+{
+	clear_bonobo_pages (window);
+	append_bonobo_pages (window);	
+}
+
+static void
+properties_window_file_changed_callback (FMPropertiesWindow *window, NautilusFile *file)
 {
 	g_assert (GTK_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -627,7 +663,26 @@ properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
 	if (nautilus_file_is_gone (file)) {
 		gtk_widget_destroy (GTK_WIDGET (window));
 	} else {
-		update_properties_window_title (window, file);
+		char *orig_mime_type;
+		char *new_mime_type;
+
+		orig_mime_type = nautilus_file_get_mime_type
+						(window->details->target_file);
+		nautilus_file_unref (window->details->target_file);
+
+		window->details->target_file = nautilus_file_ref (file);
+
+		update_properties_window_title (GTK_WINDOW (window), file);
+
+		new_mime_type = nautilus_file_get_mime_type
+						(window->details->target_file);
+
+		if (strcmp (orig_mime_type, new_mime_type) == 0) {
+			refresh_bonobo_pages (window);
+		}
+
+		g_free (orig_mime_type);
+		g_free (new_mime_type);
 	}
 }
 
@@ -2108,28 +2163,80 @@ create_permissions_page (FMPropertiesWindow *window)
 }
 
 static GtkWidget *
-bonobo_page_error_message (NautilusViewIdentifier *view_id,
-			   CORBA_Environment *ev)
+bonobo_page_error_message (const char *view_name,
+			   const char *msg)
 {
 	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *image;
-	char *msg;
 
 	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
 	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR,
 					  GTK_ICON_SIZE_DIALOG);
 
-	msg = g_strdup_printf ("There was an error while trying to create the view named `%s':  %s", view_id->name, CORBA_exception_id (ev));
+	msg = g_strdup_printf ("There was an error while trying to create the view named `%s':  %s", view_name, msg);
 	label = gtk_label_new (msg);
-	g_free (msg);
 
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show_all (hbox);
 
 	return hbox;
+}
+
+static void
+bonobo_page_activate_callback (CORBA_Object obj,
+			       const char *error_reason,
+			       gpointer user_data)
+{
+	ActivationData *data;
+	FMPropertiesWindow *window;
+	GtkWidget *widget;
+	CORBA_Environment ev;
+
+	data = (ActivationData *)user_data;
+	window = data->window;
+
+	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (window));
+
+	CORBA_exception_init (&ev);
+	widget = NULL;
+
+	if (obj != CORBA_OBJECT_NIL) {
+		Bonobo_Control control;
+		Nautilus_View view;
+		char *uri;
+		
+		control = Bonobo_Unknown_queryInterface
+				(obj, "IDL:Bonobo/Control:1.0", &ev);
+
+		view = Bonobo_Unknown_queryInterface
+				(control, "IDL:Nautilus/View:1.0", &ev);
+
+		uri = nautilus_file_get_uri (window->details->target_file);
+
+		Nautilus_View_load_location (view, uri, &ev);
+		
+		if (!BONOBO_EX (&ev)) {
+			widget = bonobo_widget_new_control_from_objref
+						(control, CORBA_OBJECT_NIL);
+		}
+
+		g_free (uri);
+	}
+
+	if (widget == NULL) {
+		widget = bonobo_page_error_message (data->view_name,
+						    error_reason);
+	}
+
+	gtk_container_add (GTK_CONTAINER (data->vbox), widget);
+	gtk_widget_show (widget);
+
+	g_free (data->view_name);
+	g_free (data);
 }
 
 static void
@@ -2149,54 +2256,28 @@ append_bonobo_pages (FMPropertiesWindow *window)
 	while (l != NULL) {
 		NautilusViewIdentifier *view_id;
 		Bonobo_ServerInfo *server;
-		GtkWidget *vbox, *widget;
-		Bonobo_Unknown obj;
-
-		widget = NULL;
+		ActivationData *data;
+		GtkWidget *vbox;
 
 		server = l->data;
 		l = l->next;
 
 		view_id = nautilus_view_identifier_new_from_property_page (server);
-
-		obj = bonobo_activation_activate_from_id (view_id->iid,
-							  0, NULL, &ev);
-
-		if (!BONOBO_EX (&ev)) {
-			Bonobo_Control control;
-			Nautilus_View view;
-			char *uri;
-			
-			control = Bonobo_Unknown_queryInterface
-					(obj, "IDL:Bonobo/Control:1.0", &ev);
-
-			view = Bonobo_Unknown_queryInterface
-					(control, "IDL:Nautilus/View:1.0", &ev);
-
-			uri = nautilus_file_get_uri
-				(window->details->target_file);
-
-			Nautilus_View_load_location (view, uri, &ev);
-			
-			if (!BONOBO_EX (&ev)) {
-				widget = bonobo_widget_new_control_from_objref
-						(control, CORBA_OBJECT_NIL);
-			}
-
-			g_free (uri);
-		}
-
-		if (widget == NULL) {
-			widget = bonobo_page_error_message (view_id, &ev);
-		}
-		
-
 		vbox = create_page_with_vbox (window->details->notebook,
 					      view_id->name);
-		gtk_container_add (GTK_CONTAINER (vbox), widget);
-		gtk_widget_show_all (vbox);
-		
-		nautilus_view_identifier_free (view_id);
+
+		/* just a tag...the value doesn't matter */
+		g_object_set_data (G_OBJECT (vbox), "is-bonobo-page",
+				  vbox);
+
+		data = g_new (ActivationData, 1);
+		data->window = window;
+		data->vbox = vbox;
+		data->view_name = g_strdup (view_id->name);
+
+		bonobo_activation_activate_from_id_async (view_id->iid,
+					0, bonobo_page_activate_callback,
+					data, &ev);
 	}
 
 }

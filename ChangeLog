@@ -1,3 +1,24 @@
+2002-10-25  James Willcox  <jwillcox@gnome.org>
+
+	* components/notes/Nautilus_View_notes.server.in.in:
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_has_any_components_for_file_extended),
+	(nautilus_mime_has_any_components_for_file):
+	* libnautilus-private/nautilus-mime-actions.h:
+	* libnautilus-private/nautilus-program-chooser.c:
+	(repopulate_program_list):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(choose_component_callback):
+	* src/file-manager/fm-properties-window.c: (clear_bonobo_pages),
+	(refresh_bonobo_pages), (properties_window_file_changed_callback),
+	(bonobo_page_error_message), (bonobo_page_activate_callback),
+	(append_bonobo_pages):
+
+	* Activate the bonobo property pages asynchronously
+	* Hide the bonobo property pages from the component chooser
+	* Slightly modify the notes sidebar to also work as a property page
+	* Handle changes in the file type (add/remove pages)
+
 2002-10-24  Dennis M. Cranston  <dennis_cranston@yahoo.com>
 
 	* src/file-manager/fm-properties-window.[ch]:
