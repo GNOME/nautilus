@@ -329,13 +329,14 @@ static void
 fm_directory_view_chose_component_callback (NautilusViewIdentifier *identifier, 
 					    gpointer callback_data)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_return_if_fail (NAUTILUS_IS_FILE (callback_data));
 
 	if (identifier != NULL) {
-		/* FIXME: Need to implement switching location & url. */
+		/* FIXME bugzilla.eazel.com 1053: 
+		 * Need a way to view a location with a specified viewer. 
+		 */
+		g_message ("Doh! Not yet implemented (bugzilla.eazel.com 1053)");
 	}
-
-	nautilus_view_identifier_free (identifier);
 }
 
 static void
@@ -364,7 +365,7 @@ choose_component (FMDirectoryView *view,
 		(file,
 		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
 		 fm_directory_view_chose_component_callback,
-		 view);
+		 file);
 }
 
 static void
@@ -2103,7 +2104,9 @@ insert_bonobo_menu_subtree (BonoboUIHandler *ui_handler,
 
 static void
 add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
-				const char *label)
+				const char *label,
+				BonoboUIHandlerCallbackFunc callback,
+				gpointer callback_data)
 {
 	char *path;
 	
@@ -2115,28 +2118,91 @@ add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 		(ui_handler, path, label, NULL,
 		 -1, BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
 		 0, 0,
-		 NULL, NULL);
+		 callback, callback_data);
 	g_free (path);
-}				
+}
+
+typedef struct {
+	GnomeVFSMimeApplication *application;
+	char *file_uri;
+} ApplicationLaunchParameters;
+
+static void
+bonobo_launch_application_callback (BonoboUIHandler *ui_handler, 
+				    gpointer user_data, 
+				    const char *path)
+{
+	ApplicationLaunchParameters *launch_parameters;
+
+	launch_parameters = (ApplicationLaunchParameters *)user_data;
+
+	nautilus_launch_application (launch_parameters->application->command,
+				     launch_parameters->file_uri);
+}				    
 
 static void
 add_application_to_bonobo_menu (BonoboUIHandler *ui_handler, 
 				GnomeVFSMimeApplication *application, 
 				const char *uri)
 {
-	/* FIXME: Need to pass application and uri somehow to callback */
-	add_open_with_bonobo_menu_item (ui_handler, application->name);
+	ApplicationLaunchParameters *launch_parameters;
+
+	/* FIXME bugzilla.eazel.com 1072: This struct is never freed; 
+	 * need a version of Bonobo menu item setup that takes a 
+	 * DestroyNotify type function.
+	 */
+	launch_parameters = g_new0 (ApplicationLaunchParameters, 1);
+	launch_parameters->application = 
+		gnome_vfs_mime_application_copy (application);
+	launch_parameters->file_uri = g_strdup (uri);	
+	
+	add_open_with_bonobo_menu_item (ui_handler, 
+					application->name,
+					bonobo_launch_application_callback,
+					launch_parameters);
 }
+
+typedef struct {
+	NautilusViewIdentifier *identifier;
+	char *file_uri;
+} ViewerLaunchParameters;
+
+static void
+bonobo_open_location_with_viewer_callback (BonoboUIHandler *ui_handler, 
+				    	   gpointer user_data, 
+				    	   const char *path)
+{
+	ViewerLaunchParameters *launch_parameters;
+
+	launch_parameters = (ViewerLaunchParameters *)user_data;
+
+	/* FIXME bugzilla.eazel.com 1053: 
+	 * Need a way to view a location with a specified viewer. 
+	 */
+	g_message ("Doh! Not yet implemented (bugzilla.eazel.com 1053)");
+}				    
 
 static void
 add_component_to_bonobo_menu (BonoboUIHandler *ui_handler, 
-			      NautilusViewIdentifier *identifier, 
+			      OAF_ServerInfo *component, 
 			      const char *uri)
 {
-	/* FIXME: Need to pass identifier and uri somehow to callback */
-	add_open_with_bonobo_menu_item (ui_handler, identifier->name);
-}
+	ViewerLaunchParameters *launch_parameters;
 
+	/* FIXME bugzilla.eazel.com 1072: This struct is never freed; 
+	 * need a version of Bonobo menu item setup that takes a 
+	 * DestroyNotify type function.
+	 */
+	launch_parameters = g_new0 (ViewerLaunchParameters, 1);
+	launch_parameters->identifier = 
+		nautilus_view_identifier_new_from_content_view (component);
+	launch_parameters->file_uri = g_strdup (uri);	
+
+	add_open_with_bonobo_menu_item (ui_handler, 
+					launch_parameters->identifier->name, 
+					bonobo_open_location_with_viewer_callback, 
+					launch_parameters);
+}
 
 static void
 reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
@@ -2194,9 +2260,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 			add_application_to_bonobo_menu (ui_handler, node->data, uri);
 		}
 
-		/* FIXME: Need to free list, but API not yet existent:
-		 * gnome_vfs_mime_application_list_free (applications); 
-		 */
+		gnome_vfs_mime_application_list_free (applications); 
 
 		insert_bonobo_menu_item 
 			(ui_handler, selection,
@@ -2217,9 +2281,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 			add_component_to_bonobo_menu (ui_handler, node->data, uri);
 		}
 
-		/* FIXME: Need to free list, but API not yet existent:
-		 * gnome_vfs_mime_component_list_free (components); 
-		 */
+		gnome_vfs_mime_component_list_free (components); 
 
 		insert_bonobo_menu_item 
 			(ui_handler, selection,

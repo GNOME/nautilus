@@ -1,3 +1,24 @@
+2000-05-31  John Sullivan  <sullivan@eazel.com>
+
+	More incremental work to use the new mime-handling API.
+
+	* src/file-manager/fm-directory-view.c:
+	(add_open_with_bonobo_menu_item): Now takes callback
+	and callback data and uses them for menu item construction.
+	(bonobo_launch_application_callback),
+	(add_application_to_bonobo_menu),
+	(bonobo_open_location_with_viewer_callback),
+	(add_component_to_bonobo_menu): Pass along structs containing
+	info necessary to launch app or switch viewers. Tragically
+	these are leaked due to the lack of DestroyNotify mechanism
+	in Bonobo (bug written).
+	(reset_bonobo_open_with_menu): Uncomment out list-freeing
+	lines now that API is in place.
+	(fm_directory_view_chose_component_callback),
+	(choose_component): Pass NautilusFile instead of view so we
+	can get at the uri in the future when we have API for
+	switching locations with specified viewer.
+
 2000-05-31  Andy Hertzfeld  <andy@eazel.com>
 
 	first checkin for link-sets, which are still incomplete and
