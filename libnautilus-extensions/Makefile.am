@@ -31,6 +31,12 @@ dependency_static_libs = \
 	$(top_builddir)/librsvg/librsvg.la \
 	$(NULL)
 
+if HAVE_CDDA
+CDDALIBADD = -lcdda_paranoia -lcdda_interface
+else
+CDDALIBADD =
+endif
+
 libnautilus_extensions_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
 	$(BONOBO_PRINT_LIBS) 		\
@@ -46,10 +52,9 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(OAF_LIBS) 			\
 	$(VFS_LIBS) 			\
 	$(XML_LIBS) 			\
-	-lcdda_paranoia			\
-	-lcdda_interface 		\
+	$(CDDALIBADD)			\
 	$(NULL)
-	
+
 nautilus_metafile_server_idl_sources =		\
 	nautilus-metafile-server-stubs.c	\
 	nautilus-metafile-server-skels.c	\
