@@ -1,5 +1,11 @@
 2000-04-19  Shane Culpepper  <pepper@eazel.com>
 	
+	* components/services/install/eazel-install-lib-rpm.c
+	Fixed Uninstall to work as advertised.  Uninstall will also skip
+	source packages now since they are not stored in the rpmdb.
+
+2000-04-19  Shane Culpepper  <pepper@eazel.com>
+	
 	* components/services/install/eazel-install-lib-xml.c
 	* components/services/install/eazel-install-lib-debug.c
 	* components/services/install/eazel-install-lib-rpm.c

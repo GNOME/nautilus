@@ -147,25 +147,33 @@ uninstall_packages (InstallOptions* iopts) {
 			int retval;
 
 			retval = 0;
-			
-			tmpbuf = g_strdup_printf ("%s/%s-%s-%s", iopts->rpm_storage_dir,
-												     pack->name,
-												     pack->version,
-													 pack->minor);
-            pkg[0] = tmpbuf;
-			pkg[1] = NULL;
-			g_print ("Uninstalling %s\n", pack->summary);
-			retval = rpmErase ("/", pkg, uninstallFlags, interfaceFlags);
+			if (g_strcasecmp (pack->archtype, "src") != 0) {
 
-			if (retval == 0) {
-				g_print ("Package uninstall successful !\n");
-				rv = TRUE;
+				tmpbuf = g_strdup_printf ("%s-%s-%s", pack->name,
+													  pack->version,
+													  pack->minor);
+            	pkg[0] = tmpbuf;
+				pkg[1] = NULL;
+				g_print ("Uninstalling %s\n", pack->summary);
+				retval = rpmErase ("/", pkg, uninstallFlags, interfaceFlags);
+
+				if (retval == 0) {
+					g_print ("Package uninstall successful !\n");
+					rv = TRUE;
+				}
+				else {
+					g_print ("Package uninstall failed !\n");
+					rv = FALSE;
+				}
+				g_free(tmpbuf);
 			}
 			else {
-				g_print ("Package uninstall failed !\n");
-				rv = FALSE;
-			}
-			g_free(tmpbuf);
+				tmpbuf = g_strdup_printf ("%s-%s-%s", pack->name,
+													  pack->version,
+													  pack->minor);
+  				g_print ("%s seems to be a source package.  Skipping ...\n", tmpbuf);
+  				g_free(tmpbuf);
+  			}
 			t = t->next;
 		}
 		categories = categories->next;
