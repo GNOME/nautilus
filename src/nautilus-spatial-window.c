@@ -449,9 +449,6 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_forward (window, FALSE);
 	nautilus_window_allow_stop (window, FALSE);
 
-	/* Set up clipboard */
-	nautilus_clipboard_set_up_host_ui_handler (window->ui_handler);
-
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));	
 }

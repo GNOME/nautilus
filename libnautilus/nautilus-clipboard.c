@@ -95,7 +95,7 @@ add_menu_item (BonoboUIHandler *ui_handler,
 		 BONOBO_UI_HANDLER_PIXMAP_NONE, NULL, 0, 0,
 		 callback, callback_data);
 }
-
+/*
 static void
 set_paste_sensitive_if_clipboard_contains_data (BonoboUIHandler *ui_handler)
 {
@@ -108,7 +108,7 @@ set_paste_sensitive_if_clipboard_contains_data (BonoboUIHandler *ui_handler)
 						NAUTILUS_MENU_PATH_PASTE_ITEM,
 						clipboard_contains_data);
 }
-
+*/
 static void
 add_menu_items_callback (GtkWidget *widget,
 			 GdkEventAny *event,
@@ -145,19 +145,6 @@ add_menu_items_callback (GtkWidget *widget,
 		       _("C_lear Text"),
 		       _("Removes the selected text without putting it on the clipboard"),
 		       clear_callback, widget);
-	/* Always make the menus sensitive when they are not seen */
-       	bonobo_ui_handler_menu_set_sensitivity (local_ui_handler,
-						NAUTILUS_MENU_PATH_CUT_ITEM,
-						TRUE);
-	bonobo_ui_handler_menu_set_sensitivity (local_ui_handler,
-						NAUTILUS_MENU_PATH_COPY_ITEM,
-						TRUE);
-	bonobo_ui_handler_menu_set_sensitivity (local_ui_handler,
-						NAUTILUS_MENU_PATH_CLEAR_ITEM,
-						TRUE);
-	bonobo_ui_handler_menu_set_sensitivity (local_ui_handler,
-						NAUTILUS_MENU_PATH_PASTE_ITEM,
-						TRUE);
 
 }
 
@@ -182,6 +169,7 @@ remove_menu_items_callback (GtkWidget *widget,
 				       NAUTILUS_MENU_PATH_CLEAR_ITEM);
 }
 
+/*
 static void
 set_clipboard_menu_items_sensitive (BonoboUIHandler *ui_handler)
 {
@@ -222,63 +210,13 @@ set_clipboard_menu_items_insensitive (BonoboUIHandler *ui_handler,
 							FALSE);
 	}
 }
-
-static void
-menu_activated_callback (GtkWidget *widget,
-			 GdkEventAny *event, 
-			 gpointer data)
-{
-	GtkWidget *top_level;
-	GtkWidget *focus_widget;
-	GtkEditable *editable;
-	BonoboUIHandler *ui_handler;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	ui_handler = BONOBO_UI_HANDLER (data);
-	g_return_if_fail (BONOBO_IS_UI_HANDLER (ui_handler));
-
-	/* FIXME: Getting to the window won't work for out of process
-	 * components. For that case, looking at the editable that was
-	 * passed when the signal was hooked up would be best. But this
-	 * whole approach doesn't seem to work.
-	 */
-	top_level = gtk_widget_get_toplevel (widget);
-	if (GTK_IS_WINDOW (top_level)) {
-		focus_widget = GTK_WINDOW (top_level)->focus_widget;
-	} else {
-		focus_widget = NULL;
-	}
-	if (GTK_IS_EDITABLE (focus_widget)) {
-		editable = GTK_EDITABLE (focus_widget);
-		if (editable->selection_start_pos != editable->selection_end_pos) {
-			set_clipboard_menu_items_sensitive (ui_handler);
-		} else {
-			set_clipboard_menu_items_insensitive (ui_handler, TRUE);
-		}
-	} else {
-		set_clipboard_menu_items_insensitive (ui_handler, FALSE);
-	}
-}
-
-static void
-menu_deactivated_callback (GtkWidget *widget,
-			   gpointer data)
-{
-	BonoboUIHandler *ui_handler;
-
-	g_return_if_fail (BONOBO_IS_UI_HANDLER (data));
-	
-	ui_handler = BONOBO_UI_HANDLER (data);
-
-	set_clipboard_menu_items_sensitive (ui_handler);
-}
+*/
 
 void
 nautilus_clipboard_set_up_editable_from_bonobo_control (GtkEditable *target,
 							BonoboControl *control)
 {
 	BonoboUIHandler *ui_handler;
-	GtkWidget *menu_bar;	
 
 	g_return_if_fail (GTK_IS_EDITABLE (target));
 	g_return_if_fail (BONOBO_IS_CONTROL (control));
@@ -296,41 +234,5 @@ nautilus_clipboard_set_up_editable_from_bonobo_control (GtkEditable *target,
 		 GTK_SIGNAL_FUNC (remove_menu_items_callback),
 		 control, GTK_OBJECT (control));
 
-	/* FIXME: Getting the menu bar won't work across processes, so
-	 * this returns NULL for all out-of-process components. So it
-	 * doesn't work at all.
-	 */
-	menu_bar = bonobo_ui_handler_get_menubar (ui_handler);
-	if (menu_bar != NULL) {
-		gtk_signal_connect_while_alive 
-			(GTK_OBJECT (menu_bar),
-			 "enter_notify_event",
-			 menu_activated_callback,
-			 ui_handler, GTK_OBJECT (ui_handler));
-		gtk_signal_connect_while_alive 
-			(GTK_OBJECT (menu_bar),
-			 "deactivate",
-			 menu_deactivated_callback,
-			 ui_handler, GTK_OBJECT (ui_handler));
-	}
-
 }
 
-void
-nautilus_clipboard_set_up_host_ui_handler (BonoboUIHandler *ui_handler)
-{
-	GtkWidget *menu_bar;
-
-	g_return_if_fail (BONOBO_IS_UI_HANDLER (ui_handler));
-
-	/* FIXME: This approach of setting up menus at menu bar entry time won't work for torn off menus. */
-	menu_bar = bonobo_ui_handler_get_menubar (ui_handler);
-	gtk_signal_connect (GTK_OBJECT (menu_bar),
-			    "enter_notify_event",
-			    menu_activated_callback,
-			    ui_handler);
-	gtk_signal_connect (GTK_OBJECT (menu_bar),
-			    "deactivate",
-			    menu_deactivated_callback,
-			    ui_handler);
-}
