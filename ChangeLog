@@ -1,5 +1,12 @@
 2000-08-02  Seth Nickell  <seth@eazel.com>
 
+	* src/file-manager/dfos-xfer.c: (get_duplicate_lettering),
+	(handle_xfer_duplicate), (fs_xfer):
+	Make file copies use "another" "4th" etc rather than numbers.
+	Add support for creating symbolic links.
+
+2000-08-02  Seth Nickell  <seth@eazel.com>
+
 	* libnautilus-extensions/nautilus-file-utilities.c:
 	(nautilus_make_uri_from_input):
 	Add escaping code to the location bar.

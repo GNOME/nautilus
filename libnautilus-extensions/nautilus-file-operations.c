@@ -41,7 +41,8 @@ typedef enum {
 	XFER_DUPLICATE,
 	XFER_MOVE_TO_TRASH,
 	XFER_EMPTY_TRASH,
-	XFER_DELETE
+	XFER_DELETE,
+	XFER_LINK
 } XferKind;
 
 typedef struct XferInfo {
@@ -441,21 +442,63 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	return 0;					
 }
 
+static char*
+get_duplicate_lettering (int count) 
+{
+	if (count > 20) {
+		switch (count % 10) {
+		case 1: return g_strdup_printf ("%d1st", count / 10);
+		case 2: return g_strdup_printf ("%d2nd", count / 10);
+		case 3: return g_strdup_printf ("%d3rd", count / 10);
+		default: return g_strdup_printf ("%dth", count);
+		}
+	} else {
+		switch (count) {
+		case 1: return g_strdup ("");
+		case 2: return g_strdup ("another");
+		case 3: return g_strdup ("3rd");
+		default: return g_strdup_printf ("%dth", count);
+		}
+	}
+}
+
 static int
 handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 		       XferInfo *xfer_info)
 {
 	char *old_name = progress_info->duplicate_name;
+	char *hold_number;
 
-	if (progress_info->duplicate_count < 2) {
-		progress_info->duplicate_name = g_strdup_printf ("%s (copy)", 
-			progress_info->duplicate_name);
-	} else {
-		progress_info->duplicate_name = g_strdup_printf ("%s (copy %d)", 
-			progress_info->duplicate_name,
-			progress_info->duplicate_count);
+	switch (xfer_info->kind) {
+
+	case XFER_LINK:
+		if (progress_info->duplicate_count < 2) {
+			progress_info->duplicate_name = g_strdup_printf ("link to %s",
+									 progress_info->duplicate_name);
+		} else {
+			hold_number = get_duplicate_lettering (progress_info->duplicate_count);
+			progress_info->duplicate_name = g_strdup_printf ("%s link to %s",
+									 hold_number,
+									 progress_info->duplicate_name);
+			g_free (hold_number);
+		}
+		break;
+
+	case XFER_COPY:
+		if (progress_info->duplicate_count < 2) {
+			progress_info->duplicate_name = g_strdup_printf ("%s (copy)", 
+									 progress_info->duplicate_name);
+		} else {
+			hold_number = get_duplicate_lettering (progress_info->duplicate_count);
+			progress_info->duplicate_name = g_strdup_printf ("%s (%s copy)", 
+									 progress_info->duplicate_name,
+									 hold_number);
+			g_free (hold_number);
+		}
+		break;
+	default:
 	}
-	
+
 	g_free (old_name);
 
 	return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
@@ -560,7 +603,7 @@ dfos_xfer (DFOS *dfos,
 		g_free (xfer_info);
 	}
 }
-
+	
 static void
 get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
 	GList **item_names)
@@ -610,7 +653,7 @@ fs_xfer (const GList *item_uris,
 	gboolean same_fs;
 	
 	g_assert (item_uris != NULL);
-	
+
 	item_names = NULL;
 	source_dir_uri = NULL;
 	trash_dir_uri = NULL;
@@ -632,10 +675,14 @@ fs_xfer (const GList *item_uris,
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 
 	if (gnome_vfs_uri_equal (target_dir_uri, source_dir_uri)) {
-		g_assert (copy_action == GDK_ACTION_COPY);
+		g_assert (copy_action != GDK_ACTION_MOVE);
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
-	} else if (copy_action == GDK_ACTION_MOVE) {
+	}
+
+	if (copy_action == GDK_ACTION_MOVE) {
 		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
+	} else if (copy_action == GDK_ACTION_LINK) {
+		move_options |= GNOME_VFS_XFER_LINK_ITEMS;
 	}
 
 	same_fs = TRUE;
@@ -662,6 +709,16 @@ fs_xfer (const GList *item_uris,
 		 */
 		xfer_info->show_progress_dialog = 
 			!same_fs || g_list_length ((GList *)item_uris) > 20;
+	} else if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) {
+		xfer_info->operation_title = _("Creating a link to files");
+		xfer_info->action_verb =_("linked");
+		xfer_info->progress_verb =_("linking");
+		xfer_info->preparation_name = _("Preparing to Create Links...");
+		xfer_info->cleanup_name = _("Finishing linking...");
+
+		xfer_info->kind = XFER_LINK;
+		xfer_info->show_progress_dialog =
+			g_list_length ((GList *)item_uris) > 20;
 	} else {
 		xfer_info->operation_title = _("Copying files");
 		xfer_info->action_verb =_("copied");
@@ -713,7 +770,8 @@ fs_xfer (const GList *item_uris,
 			 * (We would get a file system error if we proceeded but it is nicer to
 			 * detect and report it at this level)
 			 */
-			if (!bail && (gnome_vfs_uri_equal (uri, target_dir_uri)
+			if ( ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0) && 
+			     !bail && (gnome_vfs_uri_equal (uri, target_dir_uri)
 				|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
 				nautilus_simple_dialog (view, 
 					((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
