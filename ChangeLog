@@ -1,5 +1,19 @@
 2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(text_layout_free_row), (nautilus_text_layout_free),
+	(nautilus_text_layout_new), (nautilus_text_layout_paint):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	Add text layout functions copied from
+	libgnomeui/gnome-icon-text.[ch] and modified to work with
+	NautilusScalalbleFont and GdkPixbuf instead of GdkFont and
+	GdkDrawable.
+
+	* test/test-nautilus-font.c: (main):
+	Add text layout test.
+	
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
 	Make the empty line height 1/2 of the font size to cram more stuff
 	into the embedded text.

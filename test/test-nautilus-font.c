@@ -256,6 +256,64 @@ main (int argc, char* argv[])
 					  GREEN,
 					  255);
 
+	{
+		NautilusTextLayout *text_info;
+		const guint max_text_width = 100;
+		const char *separators = " -_,;.?/&";
+		const char *text = "This is a long piece of text!-This is the second piece-Now we have the third piece-And finally the fourth piece";
+		const guint font_size = 14;
+		ArtIRect layout_area;
+		
+		text_info = nautilus_text_layout_new (font,
+						      font_size,
+						      text,
+						      separators,
+						      max_text_width, 
+						      TRUE);
+		g_assert (text_info != NULL);
+		
+		layout_area.x0 = 20;
+		layout_area.y0 = 550;
+		layout_area.x1 = layout_area.x0 + max_text_width;
+		layout_area.y1 = layout_area.y0 + 130;
+
+		draw_rectangle_around (pixbuf, &layout_area, RED);
+		
+		nautilus_text_layout_paint (text_info,
+					    pixbuf,
+					    layout_area.x0, 
+					    layout_area.y0, 
+					    GTK_JUSTIFY_LEFT,
+					    BLACK);
+		
+		layout_area.x0 += (max_text_width + 20);
+		layout_area.x1 += (max_text_width + 20);
+
+		draw_rectangle_around (pixbuf, &layout_area, RED);
+		
+		nautilus_text_layout_paint (text_info,
+					    pixbuf,
+					    layout_area.x0, 
+					    layout_area.y0, 
+					    GTK_JUSTIFY_CENTER,
+					    BLACK);
+		
+		
+		layout_area.x0 += (max_text_width + 20);
+		layout_area.x1 += (max_text_width + 20);
+		
+		draw_rectangle_around (pixbuf, &layout_area, RED);
+		
+		nautilus_text_layout_paint (text_info,
+					    pixbuf,
+					    layout_area.x0, 
+					    layout_area.y0, 
+					    GTK_JUSTIFY_RIGHT,
+					    BLACK);
+		
+		nautilus_text_layout_free (text_info);
+	}
+
 	nautilus_gdk_pixbuf_save_to_file (pixbuf, "font_test.png");
 
 	g_print ("saving test png file to font_test.png\n");
@@ -264,11 +322,3 @@ main (int argc, char* argv[])
 
 	return 0;
 }
-
-#if 0
-icon_text_info = nautilus_icon_layout_text (details->smooth_font,
-							    details->smooth_font_size,
-							    text_piece, _(" -_,;.?/&"), 
-							    max_text_width, 
-							    TRUE);
-#endif
