@@ -1,3 +1,12 @@
+2000-11-24  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/help-method.c:
+        (old_help_file): Removed
+        (find_help_file): Change this code to make it more consistant and
+        clear. I think it also made it go from O(n^2) to O(n) for the case
+        of HTML files (even though in practice this may not mean much since n
+        is small). Anyway, this is a better fix for bug #4724
+
 2000-11-23  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	Preliminary glossary supports.

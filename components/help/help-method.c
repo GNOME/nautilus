@@ -55,8 +55,6 @@ typedef struct {
 
 
 static gboolean file_in_info_path (const char *file);
-static char *old_help_file (const char *old_uri);
-
 
 /* This is a copy of nautilus_shell_quote. The best thing to do is to
  * use the one on GNOME for GNOME 2.0, but we could also move this
@@ -329,24 +327,6 @@ file_from_path (const char *path)
 	}
 }
 
-static char *
-old_help_file (const char *old_uri) 
-{
-	char *base_name, *new_uri;
-
-	new_uri = NULL;
-	base_name = file_from_path (old_uri);
-	if (base_name == NULL || base_name[0] == '\0') {
-		g_free (base_name);
-		return NULL;
-	}
-
-	new_uri = gnome_help_file_path (base_name, "index.html");
-	g_free (base_name);
-
-	return new_uri;
-}
-
 /* If the help file exists returns the appropriate PATH (taking locale into account)
  * otherwise it returns NULL */
 static char *
@@ -355,6 +335,7 @@ find_help_file (const char *old_uri)
         char *base_name, *new_uri, *buf;
 	GList *language_list;
 	char *new_uri_with_extension;
+	char *old_help;
 
         base_name = file_from_path (old_uri);
         if (base_name == NULL || base_name[0] == '\0') {
@@ -367,12 +348,13 @@ find_help_file (const char *old_uri)
 	
 	language_list = gnome_i18n_get_language_list ("LC_MESSAGES");
 
-	while (!new_uri && language_list) {
+	while (!new_uri_with_extension && language_list) {
 		const char *lang;
 
 		lang = language_list->data;
 		buf = g_strdup_printf ("gnome/help/%s/%s/%s", base_name, lang, old_uri);
 		new_uri = gnome_unconditional_datadir_file (buf);
+		g_free (buf);
 
 		new_uri_with_extension = g_strconcat (new_uri, ".xml", NULL);
 		/* FIXME: Should we use g_file_test instead? */
@@ -385,21 +367,21 @@ find_help_file (const char *old_uri)
 				/* SGML file doesn't exist - fallback to SGML */
 				g_free (new_uri_with_extension);
 
-				new_uri_with_extension = old_help_file (old_uri);
+				old_help = g_strdup_printf ("gnome/help/%s/%s/index.html", base_name, lang);
+				new_uri_with_extension = gnome_unconditional_datadir_file (old_help);
+				g_free (old_help);
+				
 				if (!g_file_exists (new_uri_with_extension)) {
 					/* HTML file doesn't exist - next language */
-					
 					g_free (new_uri_with_extension);
 					new_uri_with_extension = NULL;
-					g_free (new_uri);
-					new_uri = NULL;
 				}
 			}
 		}
-
+		g_free (new_uri);
+		new_uri = NULL;
 		language_list = language_list->next;
 	}
-	g_free (new_uri);
 	return new_uri_with_extension;			
 }
 
