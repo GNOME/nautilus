@@ -10,6 +10,7 @@ CPPFLAGS =					    	    	\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	-I$(top_srcdir)/components/services/trilobite \
 	$(GCONF_CFLAGS)     	    	    	\
 	$(GNOMEUI_CFLAGS)   	    	    	\
 	$(GNOME_CFLAGS) 	    	    	\
