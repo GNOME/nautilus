@@ -1,3 +1,45 @@
+2001-01-31  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	Fix 5324 (Should get rid of stack-based GnomeVFSFileInfo)
+
+	* components/adapter/bonobo-stream-vfs.c: (vfs_get_info):
+	Nuked some unused code that contained gnome_vfs_file_info_init.
+	
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	(nautilus_adapter_progressive_load_strategy_load_location):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(path_represents_svg_image), (get_cache_time):
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(first_file_more_recent):
+	* src/nautilus-window-menus.c: (get_static_bookmarks_file_path):
+	Get rid of gnome_vfs_file_info_init.
+	Replace all instances of stack-based GnomeVFSFileInfo
+	structures, replace all calls to gnome_vfs_file_info_init
+	with gnome_vfs_file_info_new.
+	Replace most calls to gnome_vfs_file_info_clear with
+	gnome_vfs_file_info_unref.
+
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(has_image_file):
+	Rework to use gnome_vfs_uri_exists instead of trying to get
+	file info.
+
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	(nautilus_adapter_progressive_load_strategy_load_location):
+	Fixed a bug where file info fields were being used after a
+	gnome_vfs_file_info_clear call
+
+
+	Fix 6146 ("Duplicate File" reports "You cannot copy a file
+		   over itself")
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move):
+	Make copying iside the same directory while the
+	GNOME_VFS_XFER_USE_UNIQUE_NAMES move_option is set legal.
+
 2001-01-31  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

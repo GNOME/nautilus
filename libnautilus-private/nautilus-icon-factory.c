@@ -1628,7 +1628,7 @@ static gboolean
 path_represents_svg_image (const char *path) 
 {
 	char *uri;
-	GnomeVFSFileInfo file_info;
+	GnomeVFSFileInfo *file_info;
 	gboolean is_svg;
 
 	/* Sync. file I/O is OK here because this is used only for installed
@@ -1637,11 +1637,11 @@ path_represents_svg_image (const char *path)
 	 */
 
 	uri = gnome_vfs_get_uri_from_local_path (path);
-	gnome_vfs_file_info_init (&file_info);
-	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
+	file_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (uri, file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
 	g_free (uri);
-	is_svg = nautilus_strcmp (file_info.mime_type, "image/svg") == 0;
-	gnome_vfs_file_info_clear (&file_info);
+	is_svg = nautilus_strcmp (file_info->mime_type, "image/svg") == 0;
+	gnome_vfs_file_info_unref (file_info);
 
 	return is_svg;
 }
@@ -1651,7 +1651,7 @@ static GnomeVFSResult
 get_cache_time (const char *file_uri, time_t *cache_time)
 {
 	GnomeVFSURI *vfs_uri;
-	GnomeVFSFileInfo file_info;
+	GnomeVFSFileInfo *file_info;
 	GnomeVFSResult result;
 	gboolean is_local;
 
@@ -1671,12 +1671,12 @@ get_cache_time (const char *file_uri, time_t *cache_time)
 	}
 	
 	/* Gather the info and then compare modification times. */
-	gnome_vfs_file_info_init (&file_info);
-	result = gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	if (result == GNOME_VFS_OK) {
-		*cache_time = file_info.mtime;
+		*cache_time = file_info->mtime;
 	}
-	gnome_vfs_file_info_clear (&file_info);
+	gnome_vfs_file_info_unref (file_info);
 
 	return result;
 }

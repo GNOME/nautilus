@@ -219,13 +219,14 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 							  const char                  *uri)
 {
 	NautilusAdapterProgressiveLoadStrategy *strategy;
-	GnomeVFSFileInfo  file_info;
+	GnomeVFSFileInfo *file_info;
 	GnomeVFSHandle   *handle;
 	GnomeVFSResult    result;
 	GnomeVFSFileSize  bytes_read;
 	Bonobo_ProgressiveDataSink_iobuf *iobuf;
 	CORBA_octet *data;
 	CORBA_Environment ev;
+	GnomeVFSFileSize size;
 
 	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (abstract_strategy);
 
@@ -280,13 +281,17 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	CHECK_IF_STOPPED;
 
-	gnome_vfs_file_info_init (&file_info);
-	result = gnome_vfs_get_file_info_from_handle (handle, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
-	gnome_vfs_file_info_clear (&file_info);
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info_from_handle (handle, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	size = 0;
+	if (result == GNOME_VFS_OK && (file_info->valid_fields | GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
+		size = file_info->size;
+	}
+	gnome_vfs_file_info_unref (file_info);
 
-	if (result == GNOME_VFS_OK && file_info.valid_fields | GNOME_VFS_FILE_INFO_FIELDS_SIZE) {
+	if (size > 0) {
 		Bonobo_ProgressiveDataSink_setSize (strategy->details->progressive_data_sink, 
-						     (long) file_info.size, &ev);
+						    (long) size, &ev);
 		CHECK_IF_STOPPED;
 	}
 		

@@ -542,32 +542,30 @@ static const char *icon_file_name_suffixes[] =
 static gboolean
 has_image_file(const char *directory_uri, const char *dir_name, const char *required_file)
 {
-	char *temp_str, *base_uri;
+	char *temp_str, *base_uri_string;
 	guint index;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *file_info;
+	gboolean result;
+	GnomeVFSURI *base_uri, *uri;
 	
-	file_info = gnome_vfs_file_info_new ();
+	temp_str = nautilus_make_path (directory_uri, dir_name);
+	base_uri_string = nautilus_make_path (temp_str, required_file);
+	base_uri = gnome_vfs_uri_new (base_uri_string);
+	g_free (temp_str);
+	g_free (base_uri_string);
 	
-	temp_str = nautilus_make_path(directory_uri, dir_name);
-	base_uri = nautilus_make_path(temp_str, required_file);
-	g_free(temp_str);
-	
+	result = FALSE;
 	for (index = 0; index < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); index++) {
-		temp_str = g_strconcat (base_uri, icon_file_name_suffixes[index], NULL);
-		gnome_vfs_file_info_init (file_info);
-		result = gnome_vfs_get_file_info (temp_str, file_info, 0);
-		g_free(temp_str);
-		if (result == GNOME_VFS_OK) {
-			g_free(base_uri);
-			gnome_vfs_file_info_unref (file_info);
-			return TRUE;	
-		}
+		uri = gnome_vfs_uri_append_string (base_uri, icon_file_name_suffixes[index]);
+		result = gnome_vfs_uri_exists (uri);
+		gnome_vfs_uri_unref (uri);
+		if (result) {
+			break;
+		}		
 	}
 	
-	gnome_vfs_file_info_unref (file_info);
-	g_free(base_uri);
-	return FALSE;
+	gnome_vfs_uri_unref (base_uri);
+	g_free (base_uri);
+	return result;
 }
 
 /* add available icon themes to the theme list by iterating through the

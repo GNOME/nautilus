@@ -1903,7 +1903,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
 			}
-			if (gnome_vfs_uri_is_parent (target_dir_uri, uri, FALSE)) {
+			if (((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0
+					|| (move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0
+					|| (move_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0)
+				&& gnome_vfs_uri_is_parent (target_dir_uri, uri, FALSE)) {
 				nautilus_run_simple_dialog
 					(parent_view, 
 					 FALSE,

@@ -819,7 +819,8 @@ get_static_bookmarks_file_path (void)
 	char *update_uri, *built_in_uri;
 	char *user_directory_path;
 	gboolean update_exists, built_in_exists;
-	GnomeVFSFileInfo update_info, built_in_info;
+	GnomeVFSFileInfo *update_info, *built_in_info;
+	char *result;
 	
 	/* see if there is a static bookmarks file in the updates directory and get its mod-date */
 	user_directory_path = nautilus_get_user_directory ();
@@ -851,23 +852,28 @@ get_static_bookmarks_file_path (void)
 	
 	/* both files exist, so use the one with the most recent mod-date */
 	update_uri = gnome_vfs_get_local_path_from_uri (update_xml_file_path);
-	gnome_vfs_file_info_init (&update_info);
-	gnome_vfs_get_file_info (update_uri, &update_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	update_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (update_uri, update_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	g_free (update_uri);
 	
 	built_in_uri = gnome_vfs_get_local_path_from_uri (built_in_xml_file_path);
-	gnome_vfs_file_info_init (&built_in_info);
-	gnome_vfs_get_file_info (built_in_uri, &built_in_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	built_in_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (built_in_uri, built_in_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	g_free (built_in_uri);
 
 	/* see which is most recent */
-	if (update_info.mtime > built_in_info.mtime) {
+	if (update_info->mtime <= built_in_info->mtime) {
+		result = built_in_xml_file_path;
+		g_free (update_xml_file_path);
+	} else {
+		result = update_xml_file_path;
 		g_free (built_in_xml_file_path);
-		return update_xml_file_path;
-	} 
-		
-	g_free (update_xml_file_path);
-	return built_in_xml_file_path;
+	}
+
+	gnome_vfs_file_info_unref (update_info);
+	gnome_vfs_file_info_unref (built_in_info);
+	
+	return result;
 }
 
 static void

@@ -61,32 +61,6 @@ vfs_get_info (BonoboStream *stream,
 	g_warning ("BonoboStreamVFS:get_info not implemented");
         CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
                              ex_Bonobo_Stream_IOError, NULL);
-	
-	/* The following code could be useful for as a start for
-	 * writing get_info.
-	 */
-#if 0
-	BonoboStreamVFS *stream_vfs;
-	GnomeVFSFileInfo file_info;
-	CORBA_long size;
-
-	stream_vfs = BONOBO_STREAM_VFS (stream);
-	gnome_vfs_file_info_init (&file_info);
-
-	if (gnome_vfs_get_file_info_from_handle (stream_vfs->details->handle, 
-						 &file_info, 
-						 GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
-		return 0;
-	}
-
-	/* FIXME bugzilla.eazel.com 4397: Will munge >31-bit file
-	 * sizes, which can happen in gnome-vfs.  
-	 */
-	size = file_info.size;
-	gnome_vfs_file_info_clear (&file_info);
-
-	return size;
-#endif
 
 	return NULL;
 }

@@ -170,7 +170,7 @@ first_file_more_recent(const char* file_uri, const char* other_file_uri)
 	GnomeVFSURI *vfs_uri, *other_vfs_uri;
 	gboolean more_recent, is_local;
 	
-	GnomeVFSFileInfo file_info, other_file_info;
+	GnomeVFSFileInfo *file_info, *other_file_info;
 
 	/* if either file is remote, return FALSE.  Eventually we'll make this async to fix this */
 	vfs_uri = gnome_vfs_uri_new(file_uri);
@@ -184,16 +184,16 @@ first_file_more_recent(const char* file_uri, const char* other_file_uri)
 	}
 	
 	/* gather the info and then compare modification times */
-	gnome_vfs_file_info_init (&file_info);
-	gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	file_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	
-	gnome_vfs_file_info_init (&other_file_info);
-	gnome_vfs_get_file_info (other_file_uri, &other_file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	other_file_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (other_file_uri, other_file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 
-	more_recent = file_info.mtime > other_file_info.mtime;
+	more_recent = file_info->mtime > other_file_info->mtime;
 
-	gnome_vfs_file_info_clear (&file_info);
-	gnome_vfs_file_info_clear (&other_file_info);
+	gnome_vfs_file_info_unref (file_info);
+	gnome_vfs_file_info_unref (other_file_info);
 
 	return more_recent;
 }
