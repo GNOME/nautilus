@@ -1,3 +1,10 @@
+2004-06-09  Dave Camp  <dave@novell.com>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(get_next_duplicate_name): Try to convert from the locale
+	if G_BROKEN_FILENAMES isn't set and the filename isn't valid
+	utf8.
+
 2004-06-08  Dave Camp  <dave@novell.com>
 
 	* src/file-manager/fm-list-view.c (fm_list_view_dispose): NULL
