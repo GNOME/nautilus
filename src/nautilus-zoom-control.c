@@ -121,7 +121,7 @@ static GType nautilus_zoom_control_accessible_get_type (void);
 #define NUM_ACTIONS ((int)G_N_ELEMENTS (nautilus_zoom_control_accessible_action_names))
 
 GNOME_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control,
-			 GtkEventBox, GTK_TYPE_EVENT_BOX)
+			 EelInputEventBox, EEL_TYPE_INPUT_EVENT_BOX)
 
 static void
 nautilus_zoom_control_finalize (GObject *object)
@@ -154,7 +154,6 @@ static void
 nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 {
 	GTK_WIDGET_SET_FLAGS (zoom_control, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS (zoom_control, GTK_NO_WINDOW);
 
 	gtk_widget_add_events (GTK_WIDGET (zoom_control), 
 			       GDK_BUTTON_PRESS_MASK
@@ -371,7 +370,8 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
 	g_return_val_if_fail (widget != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget), FALSE);
 
-	box.x = 0; box.y = 0;
+	box.x = widget->allocation.x;
+	box.y = widget->allocation.y;
 	box.width = widget->allocation.width;
 	box.height = widget->allocation.height;
 
@@ -1130,7 +1130,7 @@ nautilus_zoom_control_accessible_get_type (void)
 		
 		type = eel_accessibility_create_derived_type
 			("NautilusZoomControlAccessible",
-			 GTK_TYPE_EVENT_BOX,
+			 EEL_TYPE_INPUT_EVENT_BOX,
 			 nautilus_zoom_control_accessible_class_init);
 		
  		g_type_add_interface_static (type, ATK_TYPE_ACTION,

@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_ZOOM_CONTROL_H
 #define NAUTILUS_ZOOM_CONTROL_H
 
-#include <gtk/gtkeventbox.h>
+#include <eel/eel-input-event-box.h>
 
 #define NAUTILUS_TYPE_ZOOM_CONTROL	      (nautilus_zoom_control_get_type ())
 #define NAUTILUS_ZOOM_CONTROL(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControl))
@@ -41,12 +41,12 @@ typedef struct NautilusZoomControlClass NautilusZoomControlClass;
 typedef struct NautilusZoomControlDetails NautilusZoomControlDetails;
 
 struct NautilusZoomControl {
-	GtkEventBox parent;
+	EelInputEventBox parent;
 	NautilusZoomControlDetails *details;
 };
 
 struct NautilusZoomControlClass {
-	GtkEventBoxClass parent_class;
+	EelInputEventBoxClass parent_class;
 	
 	void (*zoom_in)		(NautilusZoomControl *control);
 	void (*zoom_out) 	(NautilusZoomControl *control);
