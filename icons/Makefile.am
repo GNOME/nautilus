@@ -7,7 +7,6 @@ SUBDIRS =\
 	gnome \
 	sierra \
 	tahoe \
-	throbber \
 	$(NULL)
 
 icondir = $(datadir)/pixmaps/nautilus
@@ -18,20 +17,16 @@ icon_DATA =\
 	backgrounds.png \
 	chit_frame.png \
 	colors.png \
-	decrement.png \
 	emblems.png \
-	increment.png \
 	knob.png \
 	nautilus-desktop.png \
 	nautilus-launch-icon.png \
 	nautilus-mini-logo.png \
 	nautilus-server-connect.png \
 	note-indicator.png \
-	number_strip.png \
 	side_bar_image.png \
 	text-selection-frame.png \
 	thumbnail_frame.png \
-	zoom_body.png \
 	erase.png \
 	$(NULL)
 
