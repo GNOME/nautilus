@@ -2105,9 +2105,10 @@ process_new_files (FMDirectoryView *view)
 					nautilus_file_ref (file);
 					old_added_files = g_list_prepend (old_added_files, file);
 				}
-			} else {
+			} else if (fm_directory_view_should_show_file(view, file)) {
 				nautilus_file_ref (file);
-				old_changed_files = g_list_prepend (old_changed_files, file);
+				old_changed_files = g_list_prepend 
+					(old_changed_files, file);
 			}
 		}
 	}

@@ -1,5 +1,10 @@
 2002-05-30  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-directory-view.c (process_new_files): Don't
+	add files to old_changed_files if they are not shown.
+
+2002-05-30  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-application.c (set_session_restart): Don't set the
 	restart command here.
 	(save_session): Implemented.
