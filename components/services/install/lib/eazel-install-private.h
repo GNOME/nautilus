@@ -43,6 +43,10 @@ struct _EazelInstallPrivate {
 	int problem_filters; 
 	char *transaction_dir;
 
+	gboolean ssl_rename; /* If true, rename the hosts part in all urls to 
+				localhost. This is to make stuff work
+				with ssl tunneling */
+
 	/* This holds the files that were downloaded */
 	GList *downloaded_files;
 

@@ -1,3 +1,101 @@
+2000-10-08  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(get_detailed_errors_foreach),
+	(nautilus_rpm_view_dependency_check):
+	Updated for the extra package status field.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line), (tree_helper), (dep_check):
+	Code to set the ssl_rename flag.
+	Better output for dep_check (uses provides).
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added the ssl_rename field and the WOULD_BE_LOST package status.
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_string_sequence_to_glist),
+	(g_list_to_corba_string_sequence),
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	Fixed 3460, transfers package->provides now.
+	
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install__set_silent), (impl_Eazel_Install__get_silent),
+	(impl_Eazel_Install__set_test_mode),
+	(impl_Eazel_Install__get_test_mode),
+	(impl_Eazel_Install__set_force), (impl_Eazel_Install__get_force),
+	(impl_Eazel_Install__set_update), (impl_Eazel_Install__get_update),
+	(impl_Eazel_Install__set_downgrade),
+	(impl_Eazel_Install__get_downgrade),
+	(impl_Eazel_Install__get_tmp_dir),
+	(impl_Eazel_Install__set_ssl_rename),
+	(impl_Eazel_Install__get_ssl_rename),
+	(impl_Eazel_Install__set_server), (impl_Eazel_Install__get_server),
+	(impl_Eazel_Install__get_server_port),
+	(impl_Eazel_Install__set_log_file),
+	(impl_Eazel_Install__get_log_file),
+	(impl_Eazel_Install__set_package_list),
+	(impl_Eazel_Install__get_package_list), (eazel_install_get_epv):
+	Fixed indentation and cut'n'paste typeerror. Plus added the
+	ssl_rename field.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_dependency_check_default):
+	Removed the hack since 3460 is fixed.
+	
+	* components/services/install/lib/eazel-install-private.h:
+	Added the ssl_rename field.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_fetch_remote_file), 
+	Do the ssl_renaming. If ssl_rename is set, the hostname in the
+	source uri is replaced with "localhost". This allows you to use
+	ssh tunneling to use development services from home.
+	(eazel_install_fetch_package),
+	Fixed bug 2584. Checks version and name of downloaded
+	package. Uses rpmvercmp.
+	(get_search_url_for_package):
+	s/flag/flags/
+	
+	* components/services/install/lib/eazel-install-public.h:
+	ssl_rename functions.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_do_transaction_all_files_check),
+	(eazel_install_start_transaction),
+	Partially fixed 3460. I need to fail packages that do not pass.
+	(eazel_install_requirement_dep_compare),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_dependencies),
+	Fixed the weird case eli & robey came across, were the faulty
+	nautilus dependencies caused gconf 0.8 to be installed over 0.9
+	which is still needed.
+	Now the package which is installed gets the WOULD_BE_LOST status
+	and install_failed emittet.
+	(eazel_install_do_file_conflict_check),
+	Removed comments.
+	(eazel_install_ensure_deps), 
+	Added more comments and fixed the removal of failedpackages after
+	do_dependency_check.
+	
+	(eazel_uninstall_upward_traverse):
+	Fixed an uninstall bug I came acrosss.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_status_enum_to_str),
+	(packagedata_status_str_to_enum):
+	Handles the WOULD_BE_LOST enum.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	The WOULD_BE_LOST enum
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_download_progress), (get_detailed_errors_foreach),
+	(eazel_installer_add_category):
+	Fixed output.
+
 2000-10-08  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

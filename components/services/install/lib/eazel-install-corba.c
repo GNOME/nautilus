@@ -155,75 +155,75 @@ impl_Eazel_Install__get_verbose (impl_POA_Trilobite_Eazel_Install *servant,
 
 static void
 impl_Eazel_Install__set_silent (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_boolean value,
-				 CORBA_Environment *ev)
+				const CORBA_boolean value,
+				CORBA_Environment *ev)
 {
 	eazel_install_set_silent (servant->object, value);
 }
 
 static CORBA_boolean
 impl_Eazel_Install__get_silent (impl_POA_Trilobite_Eazel_Install *servant,
-				 CORBA_Environment *ev)
+				CORBA_Environment *ev)
 {
 	return eazel_install_get_silent (servant->object);
 }
 
 static void
 impl_Eazel_Install__set_test_mode (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_boolean value,
-				 CORBA_Environment *ev)
+				   const CORBA_boolean value,
+				   CORBA_Environment *ev)
 {
 	eazel_install_set_test (servant->object, value);
 }
 
 static CORBA_boolean
 impl_Eazel_Install__get_test_mode (impl_POA_Trilobite_Eazel_Install *servant,
-				 CORBA_Environment *ev)
+				   CORBA_Environment *ev)
 {
 	return eazel_install_get_test (servant->object);
 }
 
 static void
 impl_Eazel_Install__set_force (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_boolean value,
-				 CORBA_Environment *ev)
+			       const CORBA_boolean value,
+			       CORBA_Environment *ev)
 {
 	eazel_install_set_force (servant->object, value);
 }
 
 static CORBA_boolean
 impl_Eazel_Install__get_force (impl_POA_Trilobite_Eazel_Install *servant,
-				 CORBA_Environment *ev)
+			       CORBA_Environment *ev)
 {
 	return eazel_install_get_force (servant->object);
 }
 
 static void
 impl_Eazel_Install__set_update (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_boolean value,
-				 CORBA_Environment *ev)
+				const CORBA_boolean value,
+				CORBA_Environment *ev)
 {
 	eazel_install_set_update (servant->object, value);
 }
 
 static CORBA_boolean
 impl_Eazel_Install__get_update (impl_POA_Trilobite_Eazel_Install *servant,
-				 CORBA_Environment *ev)
+				CORBA_Environment *ev)
 {
 	return eazel_install_get_update (servant->object);
 }
 
 static void
 impl_Eazel_Install__set_downgrade (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_boolean value,
-				 CORBA_Environment *ev)
+				   const CORBA_boolean value,
+				   CORBA_Environment *ev)
 {
 	eazel_install_set_downgrade (servant->object, value);
 }
 
 static CORBA_boolean
 impl_Eazel_Install__get_downgrade (impl_POA_Trilobite_Eazel_Install *servant,
-				 CORBA_Environment *ev)
+				   CORBA_Environment *ev)
 {
 	return eazel_install_get_downgrade (servant->object);
 }
@@ -239,16 +239,31 @@ impl_Eazel_Install__set_tmp_dir (impl_POA_Trilobite_Eazel_Install *servant,
 
 static CORBA_char*
 impl_Eazel_Install__get_tmp_dir (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_char *value,
 				 CORBA_Environment *ev)
 {
 	return eazel_install_get_tmp_dir (servant->object);
 }
 
 static void
+impl_Eazel_Install__set_ssl_rename (impl_POA_Trilobite_Eazel_Install *servant,
+				    const CORBA_boolean value,
+				    CORBA_Environment *ev)
+{
+	eazel_install_set_ssl_rename (servant->object, value);
+}
+
+
+static CORBA_boolean
+impl_Eazel_Install__get_ssl_rename (impl_POA_Trilobite_Eazel_Install *servant,
+				    CORBA_Environment *ev)
+{
+	return eazel_install_get_ssl_rename (servant->object);
+}
+
+static void
 impl_Eazel_Install__set_server (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_char *value,
-				 CORBA_Environment *ev)
+				const CORBA_char *value,
+				CORBA_Environment *ev)
 {
 	eazel_install_set_server (servant->object, value);
 }
@@ -256,8 +271,7 @@ impl_Eazel_Install__set_server (impl_POA_Trilobite_Eazel_Install *servant,
 
 static CORBA_char*
 impl_Eazel_Install__get_server (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_char *value,
-				 CORBA_Environment *ev)
+				CORBA_Environment *ev)
 {
 	return eazel_install_get_server (servant->object);
 }
@@ -273,7 +287,6 @@ impl_Eazel_Install__set_server_port (impl_POA_Trilobite_Eazel_Install *servant,
 
 static CORBA_long
 impl_Eazel_Install__get_server_port (impl_POA_Trilobite_Eazel_Install *servant,
-				     const CORBA_char *value,
 				     CORBA_Environment *ev)
 {
 	return eazel_install_get_server_port (servant->object);
@@ -281,8 +294,8 @@ impl_Eazel_Install__get_server_port (impl_POA_Trilobite_Eazel_Install *servant,
 
 static void
 impl_Eazel_Install__set_log_file (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_char *value,
-				 CORBA_Environment *ev)
+				  const CORBA_char *value,
+				  CORBA_Environment *ev)
 {
 	eazel_install_open_log (servant->object, value);
 }
@@ -290,16 +303,15 @@ impl_Eazel_Install__set_log_file (impl_POA_Trilobite_Eazel_Install *servant,
 
 static CORBA_char*
 impl_Eazel_Install__get_log_file (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_char *value,
-				 CORBA_Environment *ev)
+				  CORBA_Environment *ev)
 {
 	return servant->object->private->logfilename;
 }
 
 static void
 impl_Eazel_Install__set_package_list (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_char *value,
-				 CORBA_Environment *ev)
+				      const CORBA_char *value,
+				      CORBA_Environment *ev)
 {
 	eazel_install_set_package_list (servant->object, value);
 }
@@ -307,8 +319,7 @@ impl_Eazel_Install__set_package_list (impl_POA_Trilobite_Eazel_Install *servant,
 
 static CORBA_char*
 impl_Eazel_Install__get_package_list (impl_POA_Trilobite_Eazel_Install *servant,
-				 const CORBA_char *value,
-				 CORBA_Environment *ev)
+				      CORBA_Environment *ev)
 {
 	return eazel_install_get_package_list (servant->object); 
 }
@@ -425,6 +436,9 @@ eazel_install_get_epv ()
 
 	epv->_set_tmp_dir = (gpointer)&impl_Eazel_Install__set_tmp_dir;
 	epv->_get_tmp_dir = (gpointer)&impl_Eazel_Install__get_tmp_dir;
+
+	epv->_set_ssl_rename = (gpointer)&impl_Eazel_Install__set_ssl_rename;
+	epv->_get_ssl_rename = (gpointer)&impl_Eazel_Install__get_ssl_rename;
 
 	epv->simple_query = (gpointer)&impl_Eazel_Install_simple_query;
 

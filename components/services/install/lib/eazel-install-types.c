@@ -515,6 +515,9 @@ packagedata_status_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_ALREADY_INSTALLED:
 		result = g_strdup ("ALREADY_INSTALLED");
 		break;
+	case PACKAGE_WOULD_BE_LOST:
+		result = g_strdup ("WOULD_BE_LOST");
+		break;
 	default:
 		g_assert_not_reached ();
 	}
@@ -538,6 +541,7 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
 	else if (strcmp (st, "ALREADY_INSTALLED")==0) { result = PACKAGE_ALREADY_INSTALLED; } 
+	else if (strcmp (st, "WOULD_BE_LOST")==0) { result = PACKAGE_WOULD_BE_LOST; } 
 	else { g_assert_not_reached (); result = PACKAGE_UNKNOWN_STATUS; };
 
 	return result;

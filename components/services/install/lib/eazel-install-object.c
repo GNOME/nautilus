@@ -1278,11 +1278,12 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 		corbaneeds = corba_packagedatastruct_from_packagedata (needs);
 
 		/* FIXME: bugzilla.eazel.com 3460
-		   once 3460 is fixed, remove this hack */
+		   once 3460 is fixed, remove this hack 
 		if (needs->name == NULL && needs->provides) {
 			CORBA_free (corbaneeds->name);
 			corbaneeds->name = CORBA_string_dup (needs->provides->data);
 		}
+		*/
 
 		Trilobite_Eazel_InstallCallback_dependency_check (service->callback, 
 								  corbapack, 
@@ -1393,6 +1394,8 @@ ei_mutator_impl (problem_filters, int, problem_filters);
 
 ei_mutator_impl (package_system, int, package_system);
 
+ei_mutator_impl (ssl_rename, gboolean, ssl_rename);
+
 ei_access_impl (verbose, gboolean, iopts->mode_verbose, FALSE);
 ei_access_impl (silent, gboolean, iopts->mode_silent, FALSE);
 ei_access_impl (debug, gboolean, iopts->mode_debug, FALSE);
@@ -1419,6 +1422,8 @@ ei_access_impl (interface_flags, int, interface_flags, 0);
 ei_access_impl (problem_filters, int, problem_filters, 0);
 
 ei_access_impl (package_system, int, package_system, 0);
+
+ei_access_impl (ssl_rename, gboolean, ssl_rename, FALSE);
 
 void eazel_install_set_root_dirs (EazelInstall *service,
 				  const GList *new_roots) 

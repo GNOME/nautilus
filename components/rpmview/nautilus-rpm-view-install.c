@@ -120,6 +120,9 @@ get_detailed_errors_foreach (const PackageData *pack, GString *message)
 	case PACKAGE_ALREADY_INSTALLED:
 		g_string_sprintfa (message, _("%s was already installed\n"), pack->name);
 		break;
+	case PACKAGE_WOULD_BE_LOST:
+		g_string_sprintfa (message, _("%s would be deleted but is needed\n"), pack->name);
+		break;
 	case PACKAGE_RESOLVED:
 		break;
 	}
@@ -179,7 +182,25 @@ nautilus_rpm_view_dependency_check (EazelInstallCallback *service,
 				    const PackageData *needs,
 				    NautilusRPMView *rpm_view) 
 {
-	g_message ("DEBUG: Doing dependency check for %s - need %s\n", package->name, needs->name);
+	if (needs->name && needs->version) {
+		g_message ("Doing dependency check for %s-%s - need %s-%s\n", 
+			 package->name, package->version,
+			 needs->name, needs->version);
+	} else if (needs->name) {
+		g_message ("Doing dependency check for %s-%s - need %s\n", 
+			 package->name, package->version,
+			 needs->name);
+	} else if (needs->provides) {
+		GList *iterator;
+		g_message ("Doing dependency check for %s-%s - need :", 
+			 package->name, package->version);
+		for (iterator = needs->provides; iterator; iterator = g_list_next (iterator)) {
+			g_message ("- %s", (char*)iterator->data);
+		}
+	} else {
+		g_message ("Doing dependency check for %s-%s - needs something, but I don't know what it was...\n", 
+			   package->name, package->version);
+	}
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 }
 

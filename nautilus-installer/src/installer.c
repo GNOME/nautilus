@@ -599,6 +599,7 @@ eazel_install_progress (EazelInstall *service,
 		LOG_DEBUG (("\n"));
 	}
 
+/*
 	if (installer_debug) {
 		float pct;
 		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
@@ -608,16 +609,16 @@ eazel_install_progress (EazelInstall *service,
 			    total_size_completed, total_size, 
 			    pct));
 	}
+	if (amount == total) {
+		LOG_DEBUG (("\n"));
+	}
+*/
 
 	gtk_progress_set_value (GTK_PROGRESS (progressbar), 
 				(float)(amount/1024 > total/1024 ? total/1024 : amount/1024));
 	percent = (double)(total_size_completed * 50.0) / (total_size ? total_size : 0.1);
 	percent += 50.0;
 	gtk_progress_set_value (GTK_PROGRESS (progress_overall), percent);
-
-	if (amount == total) {
-		LOG_DEBUG (("\n"));
-	}
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
@@ -654,12 +655,14 @@ eazel_download_progress (EazelInstall *service,
 		installer->last_KB = 0;
 	}
 
+/*
 	if (installer_debug) {
 		float pct;
 		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
 		LOG_DEBUG (("DOWNLOAD Progress - %s - %d %d %% %f\r", 
 			    name?name:"(null)", amount, total, pct));
 	}
+*/
 
 	gtk_progress_set_value (GTK_PROGRESS (progress_single), (float)amount);
 	gtk_progress_set_value (GTK_PROGRESS (progress_overall), (float)(installer->total_bytes_downloaded + amount));
@@ -685,6 +688,18 @@ static void
 get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 {
 	char *message = NULL;
+	char *required;
+
+	required = pack->name;
+	if (required == NULL) {
+		required = pack->eazel_id;
+	}
+	if (required == NULL) {
+		required = pack->provides->data;
+	}
+	if (required == NULL) {
+		required = "another package";
+	}
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
@@ -702,17 +717,17 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 		}
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		message = g_strdup_printf (_("%s would break other installed packages"), pack->name);
+		message = g_strdup_printf (_("%s would break other installed packages"), required);
 		break;
 	case PACKAGE_INVALID:
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		message = g_strdup_printf (_("%s is needed, but could not be found"), pack->name);
+		message = g_strdup_printf (_("%s is needed, but could not be found"), required);
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
-		message = g_strdup_printf (_("%s was already installed"), pack->name);
+		message = g_strdup_printf (_("%s was already installed"), required);
 		break;
 	case PACKAGE_RESOLVED:
 		break;
@@ -1035,34 +1050,6 @@ eazel_installer_add_category (EazelInstaller *installer,
 			    GTK_SIGNAL_FUNC (toggle_button_toggled),
 			    installer);
 }
-
-#if 0
-static void
-make_dirs ()
-{
-	int retval;
-	if (! g_file_test (EAZEL_SERVICES_DIR, G_FILE_TEST_ISDIR)) {
-		if (! g_file_test (EAZEL_SERVICES_DIR_HOME, G_FILE_TEST_ISDIR)) {
-			retval = mkdir (EAZEL_SERVICES_DIR_HOME, 0755);		       
-			if (retval < 0) {
-				if (errno != EEXIST) {
-					g_error (_("*** Could not create services directory (%s)! ***\n"), 
-						 EAZEL_SERVICES_DIR_HOME);
-				}
-			}
-		}
-
-		retval = mkdir (EAZEL_SERVICES_DIR, 0755);
-		if (retval < 0) {
-			if (errno != EEXIST) {
-				g_error (_("*** Could not create services directory (%s)! ***\n"), 
-					 EAZEL_SERVICES_DIR);
-			}
-		}
-	}
-}
-#endif
-
 
 static gboolean
 check_system (EazelInstaller *installer)

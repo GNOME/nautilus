@@ -66,6 +66,7 @@ enum _PackageSystemStatus {
 	PACKAGE_CANNOT_OPEN,
 	PACKAGE_PARTLY_RESOLVED,
 	PACKAGE_ALREADY_INSTALLED,
+	PACKAGE_WOULD_BE_LOST,
 	PACKAGE_RESOLVED
 };
 /* Methods to convert enum to/from char* val. The returned

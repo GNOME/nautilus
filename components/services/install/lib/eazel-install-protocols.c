@@ -34,6 +34,8 @@
 #include <sys/utsname.h>
 #include <errno.h>
 
+#include <rpm/misc.h>
+
 #include <libtrilobite/trilobite-core-utils.h>
 
 #ifndef EAZEL_INSTALL_SLIM
@@ -352,6 +354,10 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	
 	src_uri = gnome_vfs_uri_new (url);
 	g_assert (src_uri != NULL);
+	if (eazel_install_get_ssl_rename (service)) {
+		trilobite_debug ("ssl renaming %s to localhost", gnome_vfs_uri_get_host_name (src_uri));
+		gnome_vfs_uri_set_host_name (src_uri, "localhost");
+	}
 	
 	dest_uri = gnome_vfs_uri_new (t_file);
 	g_assert (dest_uri != NULL);
@@ -510,13 +516,12 @@ gboolean
 eazel_install_fetch_package (EazelInstall *service, 
 			     PackageData* package) 
 {
-	gboolean result;
-	char* url;
-	char* targetname;
+	gboolean result = FALSE;
+	char* url = NULL;
+	char* targetname = NULL;
+	char *name = g_strdup (package->name);
+	char *version = g_strdup (package->version);
 
-	result = FALSE;
-	url = NULL;
-	
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
@@ -558,16 +563,34 @@ eazel_install_fetch_package (EazelInstall *service,
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (result) {
 			packagedata_fill_from_file (package, targetname); 
-			trilobite_debug ("%s resolved", package->name);
-		} else {
-			g_warning (_("File download failed"));
-			unlink (targetname);
-		}
-
-		g_free (targetname);
+			if (name) {
+				if (strcmp (name, package->name)) {
+					g_warning (_("Downloaded package does not have the correct name"));
+					g_warning (_("Package %s should have had name %s"), 
+						   package->name, name);
+					result = FALSE;
+				}
+			}
+			if (version) {
+				if (rpmvercmp (package->version, version)<0) {
+					g_warning (_("Downloaded package does not have the correct version"));
+					g_warning (_("Package %s had version %s and not %s"), 
+						   package->name, package->version, version);
+					result = FALSE;
+				}
+			}
+		} 
 	}
 	
+	if (result) {
+		trilobite_debug ("%s resolved", package->name);
+	} else {	
+		g_warning (_("File download failed"));
+		unlink (targetname);
+	} 
+	g_free (targetname);
 	g_free (url);
+
 	return result;
 }
 
@@ -817,7 +840,7 @@ char* get_search_url_for_package (EazelInstall *service,
 		/* FIXME bugzilla.eazel.com 3482
 		   support other flags then 8 */
 		if (pack->version) {
-			add_to_url (&url, "&flag=", "8");
+			add_to_url (&url, "&flags=", "8");
 		}
 		if (pack->distribution.name != DISTRO_UNKNOWN) {
 			dist = pack->distribution;

@@ -266,6 +266,8 @@ ei_mutator_decl (problem_filters, int);
 
 ei_mutator_decl (package_system, int);
 
+ei_mutator_decl (ssl_rename, gboolean);
+
 ei_access_decl (verbose, gboolean);
 ei_access_decl (silent, gboolean);
 ei_access_decl (debug, gboolean);
@@ -292,6 +294,8 @@ ei_access_decl (interface_flags, int);
 ei_access_decl (problem_filters, int);
 
 ei_access_decl (package_system, int);
+
+ei_access_decl (ssl_rename, gboolean);
 
 #ifdef __cplusplus
 }

@@ -65,6 +65,7 @@ int     arg_dry_run,
 	arg_erase,
 	arg_query,
 	arg_revert,
+	arg_ssl_rename,
 	arg_verbose;
 char    *arg_server,
 	*arg_config_file,
@@ -91,6 +92,7 @@ static const struct poptOption options[] = {
 	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
+	{"ssl_rename", 's', POPT_ARG_NONE, &arg_ssl_rename, 0, N_("Perform ssl renaming"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp)"), NULL},
 	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
@@ -148,6 +150,11 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	if (arg_server) {
 		Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
 		check_ev ("set_server");
+	}
+
+	if (arg_ssl_rename) {
+		Trilobite_Eazel_Install__set_ssl_rename (service, TRUE, &ev);
+		check_ev ("set_ssl_rename");
 	}
 
 #define RANDCHAR ('A' + (rand () % 23))
@@ -312,12 +319,12 @@ tree_helper (EazelInstallCallback *service,
 
 	switch (pd->status) {
 	case PACKAGE_DEPENDENCY_FAIL:
-		fprintf (stdout, "%s%s%s, which FAILED\n", 
+		fprintf (stdout, "%s%s%s, which had dependency failure(s)\n", 
 			 indent,  indent_type, 
 			 rpmname_from_packagedata (pd));
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		fprintf (stdout, "%s%s%s,which was NOT FOUND\n", 
+		fprintf (stdout, "%s%s%s,which was not found\n", 
 			 indent,  indent_type,
 			 rpmname_from_packagedata (pd));
 		break;		
@@ -333,6 +340,11 @@ tree_helper (EazelInstallCallback *service,
 		break;
 	case PACKAGE_FILE_CONFLICT:
 		fprintf (stdout, "%s%s%s, which has file conflict\n", 
+			 indent,  indent_type,
+			 rpmname_from_packagedata (pd));
+		break;
+	case PACKAGE_WOULD_BE_LOST:
+		fprintf (stdout, "%s%s%s, package would be removed\n", 
 			 indent,  indent_type,
 			 rpmname_from_packagedata (pd));
 		break;
@@ -417,9 +429,26 @@ dep_check (EazelInstallCallback *service,
 	   const PackageData *needs,
 	   gpointer unused) 
 {
-	fprintf (stdout, "Doing dependency check for %s-%s - need %s-%s\n", 
-		 package->name, package->version,
-		 needs->name, needs->version);
+	if (needs->name && needs->version) {
+		fprintf (stdout, "Doing dependency check for %s-%s - need %s-%s\n", 
+			 package->name, package->version,
+			 needs->name, needs->version);
+	} else if (needs->name) {
+		fprintf (stdout, "Doing dependency check for %s-%s - need %s\n", 
+			 package->name, package->version,
+			 needs->name);
+	} else if (needs->provides) {
+		GList *iterator;
+		fprintf (stdout, "Doing dependency check for %s-%s - need", 
+			 package->name, package->version);
+		for (iterator = needs->provides; iterator; iterator = g_list_next (iterator)) {
+			fprintf (stdout, " %s", (char*)iterator->data);
+		}
+		fprintf (stdout, "\n");
+	} else {
+		fprintf (stdout, "Doing dependency check for %s-%s - needs something, but I don't know what it was...\n", 
+			 package->name, package->version);
+	}
 }
 
 static void

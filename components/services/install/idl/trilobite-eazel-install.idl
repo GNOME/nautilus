@@ -23,7 +23,8 @@ module Trilobite {
 			CANNOT_OPEN,          /* bad: cannot open/fetch/imagine this file */
 			PARTLY_RESOLVED,      /* perhaps: the immediate deps where ok, check all in PackageDataStruct.soft/hard_depends */
 			RESOLVED,             /* good: all deps ok */
-			ALREADY_INSTALLED     /* medium: you don't get to install it, but then again... */
+			ALREADY_INSTALLED,    /* medium: you don't get to install it, but then again... */
+			WOULD_BE_LOST         /* medium: this package got lost */
 		};
 		
 		enum ProtocolEnum {
@@ -51,6 +52,9 @@ module Trilobite {
 			/* or set this you want to install a local file and
 			   still use eg. protocol HTTP to do dep stuff */
 			string filename;
+			/*
+			  Or this if you want to use a eazel package id */
+			string eazel_id;
 
 			/*
 			  Eazel:Install::install ()
@@ -93,7 +97,8 @@ module Trilobite {
 			sequence <PackageDataStruct> soft_depends;
 			sequence <PackageDataStruct> hard_depends;
 			sequence <PackageDataStruct> breaks;
-			*/			
+			*/	
+			sequence <string> provides;
 		};		
 		typedef sequence <PackageDataStruct> PackageDataStructList;
 
@@ -169,6 +174,8 @@ module Trilobite {
 			attribute string tmp_dir;   /* directory to store tmp files in (/tmp/eazel-install) */
 
 			attribute ProtocolEnum protocol; /* */
+			
+			attribute boolean ssl_rename;
 			
 			/* Install/uninstall using the packagelist from the server */
 			oneway void install (in string packagelist, in InstallCallback cb);

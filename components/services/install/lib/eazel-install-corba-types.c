@@ -24,6 +24,34 @@
 #include "eazel-install-corba-types.h"
 #include <libtrilobite/trilobite-core-distribution.h>
 
+static GList*
+corba_string_sequence_to_glist (CORBA_sequence_CORBA_string provides) {
+	GList *result = NULL;
+	int iterator;
+
+	for (iterator = 0; iterator < provides._length; iterator++) {
+		result = g_list_prepend (result, g_strdup (provides._buffer[iterator]));
+	}
+	
+	return result;
+}
+
+static CORBA_sequence_CORBA_string
+g_list_to_corba_string_sequence (GList *provides) {
+	CORBA_sequence_CORBA_string result;
+	GList *iterator;
+	int i = 0;
+
+	result._length = g_list_length (provides);
+	result._buffer = CORBA_sequence_CORBA_string_allocbuf (result._length);
+	for (iterator = provides; iterator; iterator = g_list_next (iterator)) {
+		result._buffer[i] = CORBA_string_dup ((char*)iterator->data);
+		i++;
+	}
+
+	return result;
+}
+
 Trilobite_Eazel_PackageDataStructList
 corba_packagedatastructlist_from_packagedata_list (GList *packages)
 {
@@ -48,6 +76,7 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 
 	corbapack = Trilobite_Eazel_PackageDataStruct__alloc ();
 	corbapack->name = pack->name ? CORBA_string_dup (pack->name) : CORBA_string_dup ("");
+	corbapack->eazel_id = pack->eazel_id ? CORBA_string_dup (pack->eazel_id) : CORBA_string_dup ("");
 	corbapack->version = pack->version ? CORBA_string_dup (pack->version) : CORBA_string_dup ("");
 	corbapack->archtype = pack->archtype ? CORBA_string_dup (pack->archtype) : CORBA_string_dup ("");
 	corbapack->filename = pack->filename ? CORBA_string_dup (pack->filename) : CORBA_string_dup ("");
@@ -103,6 +132,16 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	case PACKAGE_ALREADY_INSTALLED:
 		corbapack->status = Trilobite_Eazel_ALREADY_INSTALLED;
 		break;
+	case PACKAGE_WOULD_BE_LOST:
+		corbapack->status = Trilobite_Eazel_WOULD_BE_LOST;
+		break;
+	}
+
+	if (pack->provides) {
+		corbapack->provides = g_list_to_corba_string_sequence (pack->provides);
+	} else {
+		corbapack->provides._length = 0;
+		corbapack->provides._buffer = 0;
 	}
 /*
   FIXME bugzilla.eazel.com 1542:
@@ -149,6 +188,7 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	
 	pack = packagedata_new();
 	pack->name = strlen (corbapack.name) ? g_strdup (corbapack.name) : NULL;
+	pack->eazel_id = strlen (corbapack.eazel_id) ? g_strdup (corbapack.eazel_id) : NULL;
 	pack->version = strlen (corbapack.version) ? g_strdup (corbapack.version) : NULL;
 	pack->minor = strlen (corbapack.release) ? g_strdup (corbapack.release) : NULL;
 	pack->archtype = strlen (corbapack.archtype) ? g_strdup (corbapack.archtype) : NULL;
@@ -163,6 +203,12 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	pack->distribution.name = trilobite_get_distribution_enum (corbapack.distribution.name, FALSE);
 	pack->distribution.version_major = corbapack.distribution.major;
 	pack->distribution.version_minor = corbapack.distribution.minor;
+
+	if (corbapack.provides._length > 0) {
+		pack->provides = corba_string_sequence_to_glist (corbapack.provides);
+	} else {
+		pack->provides = NULL;
+	}
 	
 	switch (corbapack.status) {
 	case Trilobite_Eazel_UNKNOWN_STATUS:
@@ -191,6 +237,9 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 		break;
 	case Trilobite_Eazel_ALREADY_INSTALLED:
 		pack->status = PACKAGE_ALREADY_INSTALLED;
+		break;
+	case Trilobite_Eazel_WOULD_BE_LOST:
+		pack->status = PACKAGE_WOULD_BE_LOST;
 		break;
 	case Trilobite_Eazel_RESOLVED:
 		pack->status = PACKAGE_RESOLVED;
