@@ -9,11 +9,11 @@ noinst_PROGRAMS =\
 noinst_LTLIBRARIES = librsvg.la
 
 INCLUDES = \
-	-I$(top_srcdir)/cut-n-paste-code \
 	$(GNOME_CFLAGS) \
 	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(XML_CFLAGS) \
+	$(FREETYPE2_CFLAGS) \
 	$(WERROR) \
 	-D_REENTRANT \
 	$(NULL)
@@ -55,25 +55,25 @@ test_ft_gtk_SOURCES = test-ft-gtk.c
 
 test_rsvg_LDADD =\
 	librsvg.la \
-	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(XML_LIBS) \
+	$(FREETYPE2_LIBS) \
 	$(NULL)
 
 test_ft_LDADD =\
 	librsvg.la \
-	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(XML_LIBS) \
+	$(FREETYPE2_LIBS) \
 	$(NULL)
 
 test_ft_gtk_LDADD =\
 	librsvg.la \
-	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(XML_LIBS) \
+	$(FREETYPE2_LIBS) \
 	$(NULL)
 
