@@ -1,3 +1,10 @@
+2001-04-20  Seth Nickell  <snickell@stanford.edu>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* src/nautilus-application.c: (desktop_location_changed_callback):
+	Fix the condition of assertions when toggling the desktop directory 
+	location if the desktop window is not being displayed.
+	
 2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-preferences-dialog.c:

@@ -693,9 +693,12 @@ static void
 desktop_location_changed_callback (gpointer user_data)
 {
 	NautilusDesktopWindow *desktop_window;
-	desktop_window = NAUTILUS_DESKTOP_WINDOW (user_data);
 
-	nautilus_desktop_window_update_directory (desktop_window);
+	if (user_data != NULL && NAUTILUS_IS_DESKTOP_WINDOW (user_data)) {
+		desktop_window = NAUTILUS_DESKTOP_WINDOW (user_data);
+
+		nautilus_desktop_window_update_directory (desktop_window);
+	}
 }
 
 /* callback for showing or hiding the desktop based on the user's preference */
