@@ -1845,7 +1845,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  gtk_marshal_NONE__POINTER_POINTER,
 				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_POINTER,
-				  GTK_TYPE_STRING);				  
+				  GTK_TYPE_STRING);
 	signals[GET_ICON_IMAGES]
 		= gtk_signal_new ("get_icon_images",
 				  GTK_RUN_LAST,
@@ -1896,37 +1896,37 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_STRING);
 	signals[MOVE_COPY_ITEMS] 
 		= gtk_signal_new ("move_copy_items",
-       				 GTK_RUN_LAST,
-                    		 object_class->type,
-                    		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
-                    		 		    move_copy_items),
-		    		 nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT,
-		    		 GTK_TYPE_NONE, 6, 
-		    		 GTK_TYPE_POINTER, 
-		    		 GTK_TYPE_POINTER, 
-		    		 GTK_TYPE_POINTER, 
-		    		 GTK_TYPE_INT, 
-		    		 GTK_TYPE_INT, 
-		    		 GTK_TYPE_INT);
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+						     move_copy_items),
+				  nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT,
+				  GTK_TYPE_NONE, 6,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT,
+				  GTK_TYPE_INT,
+				  GTK_TYPE_INT);
 	signals[GET_CONTAINER_URI] 
 		= gtk_signal_new ("get_container_uri",
-       				 GTK_RUN_LAST,
-                    		 object_class->type,
-                    		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
                     		 		    get_container_uri),
-		    		 nautilus_gtk_marshal_STRING__NONE,
-		    		 GTK_TYPE_STRING, 0);
+				  nautilus_gtk_marshal_STRING__NONE,
+				  GTK_TYPE_STRING, 0);
 	signals[CAN_ACCEPT_ITEM] 
 		= gtk_signal_new ("can_accept_item",
-       				 GTK_RUN_LAST,
-                    		 object_class->type,
-                    		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
-                    		 		    can_accept_item),
-						nautilus_gtk_marshal_INT__POINTER_STRING,
-						GTK_TYPE_INT, 2,
-						GTK_TYPE_POINTER,
-						GTK_TYPE_STRING);
-						
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+						     can_accept_item),
+				  nautilus_gtk_marshal_INT__POINTER_STRING,
+				  GTK_TYPE_INT, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_STRING);
+	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	/* GtkWidget class.  */
@@ -2328,12 +2328,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_scalable_icon_unref (scalable_icon);
 	nautilus_scalable_icon_list_free (emblem_icons);
 
-	/* Get both editable and static icon text */
+	/* Get both editable and non-editable icon text */
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[GET_ICON_EDITABLE_TEXT],
 			 icon->data,
 			 &editable_text);
-
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[GET_ICON_ADDITIONAL_TEXT],
 			 icon->data,
@@ -2929,6 +2928,23 @@ nautilus_icon_container_get_icon_uri (NautilusIconContainer *container,
 	return uri;
 }
 
+void
+nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
+					 gboolean auto_layout)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->auto_layout = auto_layout;
+}
+
+gboolean
+nautilus_icon_container_is_auto_layout (NautilusIconContainer *container)
+{
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+
+	return container->details->auto_layout;
+}
+
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static char *
@@ -2997,14 +3013,12 @@ nautilus_icon_container_show_rename_widget (NautilusIconContainer *container)
 	font = details->label_font[details->zoom_level];
 	
 	nautilus_icon_text_item_configure (details->rename_widget, 
-									text_rect.x0,						/* x 		*/ 
-									text_rect.y0, 						/* y 		*/
-									(text_rect.x1 - text_rect.x0) + 4, 	/* width 	*/
-									font,
-									editable_text,	/* text */
-									1);
-	
-
+					   text_rect.x0,	/* x 		*/ 
+					   text_rect.y0, 	/* y 		*/
+					   (text_rect.x1 - text_rect.x0) + 4, 	/* width 	*/
+					   font,
+					   editable_text,	/* text */
+					   1);
 	
 	/* Set up the signals */
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",

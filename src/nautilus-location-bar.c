@@ -103,8 +103,8 @@ drag_data_received_cb (GtkWidget *widget,
 	}
 
 	/* FIXME: When more than one URI is dragged here, should we make windows? */
-	if (g_list_length (names) > 1) {
-		g_warning ("FIXME: Should we make more windows?");
+	if (nautilus_g_list_more_than_one_item (names)) {
+		g_warning ("Should we make more windows?");
 	}
 
 	nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (widget),

@@ -91,6 +91,10 @@ struct NautilusIconContainerClass {
 	char *  	       (* get_icon_property)        (NautilusIconContainer *container,
 							     NautilusIconData *data,
 							     const char *property_name);
+	int                    (* compare_icons)            (NautilusIconContainer *container,
+							     NautilusIconData *icon_a,
+							     NautilusIconData *icon_b);
+
 	void		       (* move_copy_items)	    (NautilusIconContainer 	*container,
 							     const GList 		*item_uris,
 							     const GdkPoint 		*relative_item_points,
@@ -120,23 +124,24 @@ void       nautilus_icon_container_request_update          (NautilusIconContaine
 							    NautilusIconData      *data);
 void       nautilus_icon_container_request_update_all      (NautilusIconContainer *container);
 
+/* control the layout */
+gboolean   nautilus_icon_container_is_auto_layout          (NautilusIconContainer *container);
+void       nautilus_icon_container_set_auto_layout         (NautilusIconContainer *container,
+							    gboolean               auto_layout);
+
 /* operations on all icons */
-void       nautilus_icon_container_relayout                (NautilusIconContainer *view);
-void       nautilus_icon_container_line_up                 (NautilusIconContainer *view);
 void       nautilus_icon_container_unselect_all            (NautilusIconContainer *view);
 void       nautilus_icon_container_select_all              (NautilusIconContainer *view);
 
 /* operations on the selection */
 GList     *nautilus_icon_container_get_selection           (NautilusIconContainer *view);
-void       nautilus_icon_container_set_selection           (NautilusIconContainer *view, GList *selection);
+void       nautilus_icon_container_set_selection           (NautilusIconContainer *view,
+							    GList                 *selection);
 gboolean   nautilus_icon_container_has_stretch_handles     (NautilusIconContainer *container);
 gboolean   nautilus_icon_container_is_stretched            (NautilusIconContainer *container);
 void       nautilus_icon_container_show_stretch_handles    (NautilusIconContainer *container);
 void       nautilus_icon_container_unstretch               (NautilusIconContainer *container);
-
-void	   	nautilus_icon_container_show_rename_widget 	   (NautilusIconContainer *container);
-
-
+void       nautilus_icon_container_show_rename_widget      (NautilusIconContainer *container);
 
 /* options */
 int        nautilus_icon_container_get_zoom_level          (NautilusIconContainer *view);
@@ -144,6 +149,5 @@ void       nautilus_icon_container_set_zoom_level          (NautilusIconContaine
 							    int                    new_zoom_level);
 void       nautilus_icon_container_enable_linger_selection (NautilusIconContainer *view,
 							    gboolean               enable);
-
 
 #endif

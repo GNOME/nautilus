@@ -76,6 +76,34 @@ nautilus_strdup_strftime (const char *format, struct tm *time_pieces)
 }
 
 /**
+ * nautilus_g_list_exactly_one_item
+ *
+ * Like g_list_length (list) == 1, only O(1) instead of O(n).
+ * @list: List.
+ *
+ * Return value: TRUE if the list has exactly one item.
+ **/
+gboolean
+nautilus_g_list_exactly_one_item (GList *list)
+{
+	return list != NULL && list->next == NULL;
+}
+
+/**
+ * nautilus_g_list_more_than_one_item
+ *
+ * Like g_list_length (list) > 1, only O(1) instead of O(n).
+ * @list: List.
+ *
+ * Return value: TRUE if the list has more than one item.
+ **/
+gboolean
+nautilus_g_list_more_than_one_item (GList *list)
+{
+	return list != NULL && list->next != NULL;
+}
+
+/**
  * nautilus_g_list_equal
  *
  * Compares two lists to see if they are equal.

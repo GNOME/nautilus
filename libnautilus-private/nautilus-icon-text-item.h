@@ -7,8 +7,8 @@
  *          Federico Mena <federico@gimp.org>
  */
 
-#ifndef _NAUTILUS_ICON_TEXT_ITEM_H_
-#define _NAUTILUS_ICON_TEXT_ITEM_H_
+#ifndef NAUTILUS_ICON_TEXT_ITEM_H
+#define NAUTILUS_ICON_TEXT_ITEM_H
 
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkentry.h>
@@ -59,41 +59,33 @@ typedef struct {
 	GnomeCanvasItemClass parent_class;
 
 	/* Signals we emit */
-	int  (* text_changed)      (NautilusIconTextItem *iti);
-	void (* height_changed)    (NautilusIconTextItem *iti);
-	void (* width_changed)     (NautilusIconTextItem *iti);
-	void (* editing_started)   (NautilusIconTextItem *iti);
-	void (* editing_stopped)   (NautilusIconTextItem *iti);
-	void (* selection_started) (NautilusIconTextItem *iti);
-	void (* selection_stopped) (NautilusIconTextItem *iti);
+	int  (* text_changed)      (NautilusIconTextItem *item);
+	void (* height_changed)    (NautilusIconTextItem *item);
+	void (* width_changed)     (NautilusIconTextItem *item);
+	void (* editing_started)   (NautilusIconTextItem *item);
+	void (* editing_stopped)   (NautilusIconTextItem *item);
+	void (* selection_started) (NautilusIconTextItem *item);
+	void (* selection_stopped) (NautilusIconTextItem *item);
 } NautilusIconTextItemClass;
 
 GtkType  nautilus_icon_text_item_get_type      (void);
+void     nautilus_icon_text_item_configure     (NautilusIconTextItem *item,
+						int                   x,
+						int                   y,
+						int                   width,
+						GdkFont              *font,
+						const char           *text,
+						gboolean              is_static);
+void     nautilus_icon_text_item_setxy         (NautilusIconTextItem *item,
+						int                   x,
+						int                   y);
+void     nautilus_icon_text_item_select        (NautilusIconTextItem *item,
+						int                   sel);
+void     nautilus_icon_text_item_set_text      (NautilusIconTextItem *item,
+						const char           *text);
+char    *nautilus_icon_text_item_get_text      (NautilusIconTextItem *item);
+void     nautilus_icon_text_item_start_editing (NautilusIconTextItem *item);
+void     nautilus_icon_text_item_stop_editing  (NautilusIconTextItem *item,
+						gboolean              accept);
 
-void     nautilus_icon_text_item_configure     (NautilusIconTextItem *iti,
-					     int                x,
-					     int                y,
-					     int                width,
-					     GdkFont            *font,
-					     const char        *text,
-						 gboolean           is_static);
-
-void     nautilus_icon_text_item_setxy         (NautilusIconTextItem *iti,
-					     int                x,
-					     int                y);
-
-void     nautilus_icon_text_item_select        (NautilusIconTextItem *iti,
-					     int                sel);
-
-void	 nautilus_icon_text_item_set_text 		(NautilusIconTextItem *iti, 
-											const char *text);
-
-
-char    *nautilus_icon_text_item_get_text      (NautilusIconTextItem *iti);
-
-void     nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti);
-void     nautilus_icon_text_item_stop_editing  (NautilusIconTextItem *iti,
-					     gboolean           accept);
-
-#endif /* _NAUTILUS_ICON_TEXT_ITEM_H_ */
-
+#endif /* NAUTILUS_ICON_TEXT_ITEM_H */

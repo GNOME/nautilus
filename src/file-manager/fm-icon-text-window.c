@@ -42,16 +42,15 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
-static void 	ensure_unique_attributes 	    (int 	menu_index);
+static void     ensure_unique_attributes            (int        menu_index);
 static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,
-				  		     GdkEvent  *event,
-				  		     gpointer   user_data);
-static void     fm_icon_text_window_destroy_cb 	    (GtkObject *object,
+						     GdkEvent  *event,
+						     gpointer   user_data);
+static void     fm_icon_text_window_destroy_cb      (GtkObject *object,
 						     gpointer   user_data);
 
-
-#define PIECES_COUNT	4
-#define MENU_COUNT	(PIECES_COUNT - 1)
+#define PIECES_COUNT	3
+#define MENU_COUNT	(PIECES_COUNT)
 
 static GtkOptionMenu *option_menus[MENU_COUNT];
 
@@ -81,47 +80,90 @@ static char * attribute_labels[] = {
 	NULL
 };
 
+#define ATTRIBUTE_NAMES_DEFAULT "size|date_modified|type"
+
 static int
 get_attribute_index_from_option_menu (GtkOptionMenu *option_menu)
 {
 	g_assert (GTK_IS_OPTION_MENU (option_menu));
-	return GPOINTER_TO_INT (gtk_object_get_user_data (
-		GTK_OBJECT (option_menu->menu_item)));
+	return GPOINTER_TO_INT (gtk_object_get_user_data
+				(GTK_OBJECT (option_menu->menu_item)));
+}
+
+static gboolean
+attribute_names_string_is_good (const char *string)
+{
+	char **text_array;
+	int i, j, string_index;
+	int index_array[MENU_COUNT];
+	
+	text_array = g_strsplit (string, "|", MENU_COUNT + 1);
+
+	for (i = 0; i < MENU_COUNT; ++i) {
+		/* Check for too few attributes. */
+		if (text_array[i] == NULL) {
+			break;
+		}
+
+		/* Check for unknown attributes. */
+		string_index = nautilus_g_strv_find (attribute_names, text_array[i]);
+		if (string_index < 0) {
+			break;
+		}
+
+		/* Check for repeated attributes. */
+		for (j = 0; j < i; j++) {
+			if (index_array[j] == string_index) {
+				goto bad;
+			}
+		}
+
+		/* Remember this one for later. */
+		index_array[i] = string_index;
+	}
+ bad:
+
+	g_strfreev (text_array);
+
+	/* It is good only if the entire for loop executed to completion. */
+	return i == MENU_COUNT;
 }
 
 static char *attribute_names_preference = NULL;
 
 static void
-set_preference_string (char *new_value) {
+set_preference_string (const char *new_value)
+{
+	g_assert (attribute_names_string_is_good (new_value));
 	g_free (attribute_names_preference);
-	attribute_names_preference = new_value;
+	attribute_names_preference = g_strdup (new_value);
 }
 
 static void
 synch_menus_with_preference (void)
 {
-	int i;
+	char *preference;
+	int i, string_index;
 	char **text_array;
 
 	if (attribute_names_preference == NULL) {
-		set_preference_string (nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
-						       	   	        NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES));
-
+		preference = nautilus_preferences_get_string
+			(nautilus_preferences_get_global_preferences (),
+			 NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
+		if (attribute_names_string_is_good (preference)) {
+			set_preference_string (preference);
+		} else {
+			set_preference_string (ATTRIBUTE_NAMES_DEFAULT);
+		}
 	}
 
 	text_array = g_strsplit (attribute_names_preference, "|", 0);
 	
 	for (i = 0; i < MENU_COUNT; ++i) {
-		int string_index;
-
-		/* Note that text_array includes initial "name" entry that's
-		 * skipped in the menu, so option_menus[i] corresponds to
-		 * text_array[i+1]
-		 */
-		g_assert (text_array[i+1] != NULL);
-		string_index = nautilus_g_strv_find (attribute_names, text_array[i+1]);
+		g_assert (text_array[i] != NULL);
+		string_index = nautilus_g_strv_find (attribute_names, text_array[i]);
 		g_assert (string_index >= 0);
-	  	gtk_option_menu_set_history (option_menus[i], string_index);
+		gtk_option_menu_set_history (option_menus[i], string_index);
 	}
 
 	g_strfreev (text_array);
@@ -139,7 +181,7 @@ preference_changed_callback (NautilusPreferences *preferences,
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	set_preference_string (g_strdup ((char *) value));
+	set_preference_string (value);
 	synch_menus_with_preference ();
 }
 
@@ -151,7 +193,6 @@ get_chosen_attribute_name (GtkOptionMenu *option_menu)
 	g_assert (GTK_IS_OPTION_MENU (option_menu));
 
 	attribute_index = get_attribute_index_from_option_menu (option_menu);
-
 	return g_strdup (attribute_names[attribute_index]);
 }
 
@@ -164,19 +205,15 @@ changed_attributes_option_menu_cb (GtkMenuItem *menu_item, gpointer user_data)
 	int index;
 	
 	which_menu = GPOINTER_TO_INT (user_data);
-  	attribute_names_array = g_new0 (gchar*, PIECES_COUNT + 1);
+  	attribute_names_array = g_new0 (char *, PIECES_COUNT + 1);
 
 	/* Check whether just-changed item matches any others. If so,
 	 * change the other one to the first unused attribute.
 	 */
 	ensure_unique_attributes (which_menu);
 	
-	/* Always start with the name. */
-	attribute_names_array[0] = g_strdup ("name");
-
-	for (index = 0; index < MENU_COUNT; ++index)
-	{
-		attribute_names_array[index+1] = 
+	for (index = 0; index < MENU_COUNT; ++index) {
+		attribute_names_array[index] = 
 			get_chosen_attribute_name (option_menus[index]);
 	}
 
@@ -214,20 +251,19 @@ create_attributes_option_menu (int menu_number)
 		gtk_container_add (GTK_CONTAINER (menu_item), accel_label);
 		gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (accel_label), menu_item);
 		gtk_widget_show (accel_label);
-
 		
 		/* Store index in item as the way to get from item back to attribute name */
 		gtk_object_set_user_data (GTK_OBJECT (menu_item), GINT_TO_POINTER (index));
 		gtk_widget_show (menu_item);
 		gtk_menu_append (GTK_MENU (menu), menu_item);
+
 		/* Wire all the menu items to the same callback. If any item is
 		 * changed, the attribute text will be recomputed from scratch.
 		 */
 	  	gtk_signal_connect (GTK_OBJECT (menu_item),
-	  			      "activate",
-	  			      changed_attributes_option_menu_cb,
-	  			      GINT_TO_POINTER (menu_number));
-		
+				    "activate",
+				    changed_attributes_option_menu_cb,
+				    GINT_TO_POINTER (menu_number));
 	}
   	  	
   	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
@@ -235,7 +271,7 @@ create_attributes_option_menu (int menu_number)
 	return GTK_OPTION_MENU (option_menu);
 }
 
-static GtkWidget*
+static GtkWidget *
 create_icon_text_window (void)
 {
   	GtkWidget *window;
@@ -277,7 +313,6 @@ create_icon_text_window (void)
 	{
 		option_menus[index] = create_attributes_option_menu (index);
 	  	gtk_box_pack_start (GTK_BOX (menus_vbox), GTK_WIDGET (option_menus[index]), FALSE, FALSE, 0);
-		
 	}
 
 	synch_menus_with_preference ();
@@ -317,18 +352,16 @@ ensure_unique_attributes (int chosen_menu)
 {
 	int i;
 	int chosen_value;
+	int new_value;
 
 	chosen_value = get_attribute_index_from_option_menu (option_menus[chosen_menu]);
-
-	for (i = 0; i < MENU_COUNT; ++i)
-	{
+	
+	for (i = 0; i < MENU_COUNT; ++i) {
 		if (i == chosen_menu) {
 			continue;
 		}
-
+		
 		if (chosen_value == get_attribute_index_from_option_menu (option_menus[i])) {
-			int new_value;
-			
 			/* Another item already had this value; change that other item */
 			for (new_value = 0; is_in_chosen_values (new_value); ++new_value) {
 			}

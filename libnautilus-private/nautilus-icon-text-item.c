@@ -9,12 +9,14 @@
  * FIXME: Provide a ref-count fontname caching like thing.
  */
 
+#include <config.h>
+#include "nautilus-icon-text-item.h"
+
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
-#include "nautilus-icon-text-item.h"
 
 
 /* Margins used to display the information */
@@ -32,7 +34,6 @@
 #define ITI(x)       NAUTILUS_ICON_TEXT_ITEM (x)
 #define ITI_CLASS(x) NAUTILUS_ICON_TEXT_ITEM_CLASS (x)
 #define IS_ITI(x)    NAUTILUS_IS_ICON_TEXT_ITEM (x)
-
 
 typedef NautilusIconTextItem Iti;
 

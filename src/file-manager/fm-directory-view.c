@@ -305,7 +305,7 @@ bonobo_menu_open_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char
         /* UI should have prevented this from being called unless exactly
          * one item is selected.
          */
-        g_assert (g_list_length(selection) == 1);
+        g_assert (nautilus_g_list_exactly_one_item (selection));
 
 	fm_directory_view_activate_file_internal (view, 
 	                                  	  NAUTILUS_FILE (selection->data), 
@@ -1443,7 +1443,7 @@ open_cb (GtkMenuItem *item, GList *files)
 {
 	FMDirectoryView *directory_view;
 
-	g_assert (g_list_length (files) == 1);
+	g_assert (nautilus_g_list_exactly_one_item (files));
 	g_assert (NAUTILUS_IS_FILE (files->data));
 
 	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));

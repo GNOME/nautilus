@@ -96,9 +96,6 @@ typedef enum {
 typedef struct NautilusIconGrid NautilusIconGrid;
 
 struct NautilusIconContainerDetails {
-	/* single-click mode setting */
-	gboolean single_click_mode;
-	
 	/* List of icons. */
 	GList *icons;
 
@@ -163,6 +160,10 @@ struct NautilusIconContainerDetails {
 	 */
 	Axis arrow_key_axis;
 	int arrow_key_start;
+
+	/* Mode settings. */
+	gboolean single_click_mode;
+	gboolean auto_layout;
 };
 
 /* Private functions shared by mutiple files. */
