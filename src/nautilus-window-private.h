@@ -21,7 +21,7 @@ typedef enum {
 /* FIXME: Need to migrate window fields into here. */
 struct NautilusWindowDetails
 {
-	guint refresh_bookmarks_menu_idle_id;
+	guint refresh_dynamic_bookmarks_idle_id;
 	guint refresh_go_menu_idle_id;
 
 	char *last_static_bookmark_path;

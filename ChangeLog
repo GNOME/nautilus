@@ -1,3 +1,40 @@
+2000-07-28  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1795 (Allow hiding of the pre-canned bookmarks)
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	#define NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS
+	
+	* src/nautilus-bookmarks-window.c: 
+	(create_bookmarks_window): Put "Include built-in bookmarks in menu"
+	checkbox into Edit Bookmarks window; wire it up.
+	(synch_built_in_bookmarks_preference_and_checkbox): New function
+	that checks the state of the preference against the state of
+	the checkbox and updates one to match the other if necessary.
+	(update_built_in_bookmarks_preference_to_match_checkbox),
+	(update_built_in_bookmarks_checkbox_to_match_preference): New
+	functions, covers for synch_... that lean one way or the other.
+	
+	* src/nautilus-window-private.h: Renamed field in Details from
+	"refresh_bookmarks_menu_idle_id" to "refresh_dynamic_bookmarks_idle_id"
+	for clarity since it no longer refreshes all bookmarks.
+
+	* src/nautilus-window-menus.c: 
+	(append_bookmark_to_menu), (remove_bookmarks_after), 
+	(nautilus_window_remove_bookmarks_menu_callback),
+	(refresh_dynamic_bookmarks),
+	(refresh_dynamic_bookmarks_idle_callback),
+	(schedule_refresh_dynamic_bookmarks), (refresh_go_menu):
+	Renamed functions and variables to clarify which ones affect
+	all bookmarks and which ones affect only the dynamic bookmarks.
+	(append_dynamic_bookmarks): New function, extracted from 
+	refresh_dynamic_bookmarks so it can be also called elsewhere.
+	(refresh_all_bookmarks): New function, clears away all bookmarks
+	before replacing the static (optionally, based on preference)
+	and dynamic (always) ones.
+	(nautilus_window_initialize_bookmarks_menu): refresh all bookmarks
+	and wire up to notice preference changes.
+
 2000-07-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain),
