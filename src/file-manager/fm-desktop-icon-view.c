@@ -101,6 +101,8 @@ typedef struct {
 static void     fm_desktop_icon_view_init                   (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_class_init             (FMDesktopIconViewClass *klass);
 static void     default_zoom_level_changed                        (gpointer                user_data);
+static void     removable_volumes_changed_callback                (NautilusVolumeMonitor  *monitor,
+                                                                   FMDesktopIconView      *icon_view);
 static gboolean real_supports_auto_layout                         (FMIconView             *view);
 static gboolean real_supports_keep_aligned                        (FMIconView             *view);
 static gboolean real_supports_labels_beside_icons                 (FMIconView             *view);
@@ -520,6 +522,9 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
 	g_signal_connect_object (icon_container, "middle_click",
 				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
+	g_signal_connect_object (nautilus_volume_monitor_get (), "removable_volumes_changed",
+	                         G_CALLBACK (removable_volumes_changed_callback),
+	                         desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "realize",
 				 G_CALLBACK (realized_callback), desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "unrealize",
@@ -838,6 +843,13 @@ volume_link_device_type (FMDirectoryView *view)
 	return NAUTILUS_DEVICE_UNKNOWN;
 }
 
+static void
+removable_volumes_changed_callback (NautilusVolumeMonitor *monitor,
+				    FMDesktopIconView *icon_view)
+{
+	update_disks_menu (icon_view);
+}
+
 static MountParameters *
 mount_parameters_new (FMDesktopIconView *view, const char *mount_path)
 {
@@ -892,7 +904,7 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 		 parameters->mount_path,
 		 mount, !mount);
 	update_disks_menu (parameters->view);
-}	       
+}
 
 /* Fill in the context menu with an item for each disk that is or could be mounted */
 static void

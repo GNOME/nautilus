@@ -1,3 +1,19 @@
+2003-07-07  Alexander Larsson  <alexl@redhat.co,>
+
+        Patch from XD2.
+	
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(update_removable_volumes), (fstab_monitor_callback),
+	(nautilus_volume_monitor_init),
+	(nautilus_volume_monitor_class_init),
+	(nautilus_volume_monitor_dispose), (floppy_sort):
+	* libnautilus-private/nautilus-volume-monitor.h:
+	Monitor fstab
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_init), (removable_volumes_changed_callback),
+	(mount_or_unmount_removable_volume):
+	Update disks menu when removable disks change.
+
 2003-07-07  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-link-desktop-file.c (nautilus_link_desktop_file_get_link_icon_from_desktop):

@@ -55,6 +55,8 @@ struct NautilusVolumeMonitorClass {
 				   	 const NautilusVolume	*volume);
 	void (* volume_unmounted) 	(NautilusVolumeMonitor	*monitor,
 				   	 const NautilusVolume	*volume);
+
+	void (* removable_volumes_changed) (NautilusVolumeMonitor *monitor);
 };
 
 typedef enum {
