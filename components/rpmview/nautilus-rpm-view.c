@@ -134,7 +134,7 @@ static void
 nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 {
   	NautilusBackground *background;
-	GtkWidget *temp_box, *temp_title_box, *temp_widget;
+	GtkWidget *temp_box, *temp_widget;
 	GtkTable *table;
   	static gchar *list_headers[] = { N_("Package Contents") };
 	GdkFont *font;
@@ -160,21 +160,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	rpm_view->details->package_container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
 	gtk_container_add (GTK_CONTAINER (rpm_view), GTK_WIDGET (rpm_view->details->package_container));
 	gtk_widget_show (GTK_WIDGET (rpm_view->details->package_container));
-	
-	/* allocate a box to hold the title */
-	
-	temp_box = gtk_hbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_container), temp_box);
-	gtk_widget_show (temp_box);
-	
-	/* allocate the package icon widget */
-	
-	/* allocate a vbox to hold the title info */
-	
-	temp_title_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (temp_box), temp_title_box);
-	gtk_widget_show (temp_title_box);
-	
+		
 	/* allocate the name field */
 	
 	rpm_view->details->package_title = gtk_label_new (_("Package Title"));
@@ -183,38 +169,26 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	nautilus_gtk_widget_set_font (rpm_view->details->package_title, font);
         gdk_font_unref (font);
 
-	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_title, 0, 0, 0);	
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_title, FALSE,
+				FALSE, 0);	
 	gtk_widget_show (rpm_view->details->package_title);
 	
 	/* allocate the release-version field */
 	
 	rpm_view->details->package_release = gtk_label_new ("1.0-1");
-	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_release, 0, 0, 0);	
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_release,
+				 FALSE, FALSE, 0);	
 	gtk_widget_show (rpm_view->details->package_release);
 	
 	/* allocate the summary field */
 	
 	rpm_view->details->package_summary = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_summary, 0, 0, 0);	
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_summary,
+				 FALSE, FALSE, 0);	
   	gtk_label_set_line_wrap(GTK_LABEL(rpm_view->details->package_summary), TRUE);
 	
 	gtk_widget_show (rpm_view->details->package_summary);
-	
-	/* allocate an hbox to hold the optional package logo and the song list */
-	
-	/*
-	rpm_box = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_box, 0, 0, 2);	
-	gtk_widget_show (rpm_box);
-	*/
-	/* allocate a placeholder widget for the package logo, but don't show it yet */
-  	/*
-  	file_name = gnome_pixmap_file ("nautilus/i-directory.png");
-  	rpm_view->details->package_image = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-	gtk_box_pack_start(GTK_BOX(rpm_box), rpm_view->details->package_image, 0, 0, 0);		
-  	g_free (file_name);
-	*/
-	
+		
 	/* allocate a table to hold the fields of information */
 	
 	table = GTK_TABLE(gtk_table_new(4, 4, FALSE));
@@ -278,20 +252,21 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	/* insert the data table */
 	
 	temp_widget = gtk_hseparator_new();	
-	gtk_box_pack_start (GTK_BOX (temp_title_box),temp_widget, 0, 0, 2);	
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container),temp_widget, FALSE, FALSE, 2);	
 	gtk_widget_show (temp_widget);
 	
-	gtk_box_pack_start (GTK_BOX (temp_title_box), GTK_WIDGET(table), 0, 0, 2);	
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), GTK_WIDGET(table), FALSE, FALSE, 2);	
 	gtk_widget_show (GTK_WIDGET(table));
 	
 	/* make the install message and button area  */
 	
 	temp_box = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX (temp_title_box), temp_box, 0, 0, 8);	
+	gtk_box_pack_start(GTK_BOX (rpm_view->details->package_container), temp_box, FALSE, FALSE, 8);	
 	gtk_widget_show(temp_box);
 	
 	rpm_view->details->package_installed_message = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_installed_message, 0, 0, 2);		
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_installed_message,
+				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_installed_message);
 	
 	/* install button */
@@ -299,7 +274,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	temp_widget = gtk_label_new (_("Install"));
 	gtk_widget_show (temp_widget);
 	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_install_button), temp_widget); 	
-	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_install_button, 0, 0, 2);		
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_install_button,
+				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_install_button);
 	
 	/* update button */
@@ -307,7 +283,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	temp_widget = gtk_label_new (_("Update"));
 	gtk_widget_show (temp_widget);
 	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_update_button), temp_widget); 	
-	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_update_button, 0, 0, 2);		
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_update_button,
+				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_update_button);
 	
 	/* uninstall button */
@@ -315,7 +292,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	temp_widget = gtk_label_new (_("Uninstall"));
 	gtk_widget_show (temp_widget);
 	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_uninstall_button), temp_widget); 	
-	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_uninstall_button, 0, 0, 2);		
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_uninstall_button,
+				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_uninstall_button);
 	
 	/* add the list of files contained in the package */
@@ -323,18 +301,18 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	temp_widget = gtk_scrolled_window_new(NULL, NULL);
   	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(temp_widget),
 				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-   	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, 0, 0, 8);	
+   	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, TRUE, TRUE, 0);	
   	gtk_widget_show(temp_widget);
  
   	rpm_view->details->package_file_list = gtk_clist_new_with_titles(1, list_headers);
-  	gtk_widget_set_usize(rpm_view->details->package_file_list, -1, 104);
   	gtk_clist_column_titles_passive(GTK_CLIST(rpm_view->details->package_file_list));
   	gtk_container_add (GTK_CONTAINER (temp_widget), rpm_view->details->package_file_list);	
   	gtk_widget_show(rpm_view->details->package_file_list);
 	
 	/* add the description */
 	rpm_view->details->package_description = gtk_label_new (_("Description"));
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_description, 0, 0, 8);	
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_description,
+				FALSE, FALSE, 8);	
 	gtk_widget_show (rpm_view->details->package_description);
 	
 	/* prepare ourselves to receive dropped objects */
@@ -403,7 +381,6 @@ check_installed(gchar *package_name, gchar *package_version, gchar *package_rele
 	  	headerGetEntry(header, RPMTAG_VERSION, NULL, (void **) &version_ptr, NULL);
 	  	headerGetEntry(header, RPMTAG_RELEASE, NULL, (void **) &release_ptr, NULL);
 	  	
-		g_message("name %s, version %s, release %s", package_name, version_ptr, release_ptr);
 	  	if (!strcmp(version_ptr, package_version) && !strcmp(release_ptr, package_release))
 	  		result = 1;
 	  	headerFree(header);
