@@ -554,7 +554,7 @@ mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoi
 
         if (state) {
 		/* Load the UI from the XML file. */
-		ui_component = nautilus_view_set_up_ui (NAUTILUS_VIEW (view),
+		ui_component = nautilus_view_set_up_ui (NAUTILUS_VIEW (view->details->nautilus_view),
 							DATADIR,
 							"nautilus-mozilla-ui.xml",
 							"nautilus-mozilla");
