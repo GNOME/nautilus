@@ -1082,7 +1082,7 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	if (icon_item->details->is_prelit) {
 		temp_pixbuf = nautilus_create_spotlight_pixbuf (icon_item->details->pixbuf);
 		
-		/* FIXME: This hard-wired image is inappropriate to
+		/* FIXME bugzilla.eazel.com 2471: This hard-wired image is inappropriate to
 		 * this level of code, which shouldn't know that the
 		 * preview is audio, nor should it have an icon
 		 * hard-wired in.
@@ -1204,7 +1204,8 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	}
 	
 	if (icon_item->details->is_renaming) {
-		/* FIXME: Why is it OK to leave text_height and
+		/* FIXME bugzilla.eazel.com 2472: 
+		 * Why is it OK to leave text_height and
 		 * text_width alone in this code path?
 		 */
 		return;
@@ -1339,7 +1340,8 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (!icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = TRUE;
 			gnome_canvas_item_request_update (item);
-			/* FIXME: We should emit our own signal here,
+			/* FIXME bugzilla.eazel.com 2473: 
+			 * We should emit our own signal here,
 			 * not one from the container; it could hook
 			 * up to that signal and emit one of its
 			 * own. Doing it this way hard-codes what
@@ -1361,7 +1363,8 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			 * higlighted for drop. The latter gets turned on
 			 * by the drag&drop motion callback.
 			 */
-			/* FIXME: We should emit our own signal here,
+			/* FIXME bugzilla.eazel.com 2473: 
+			 * We should emit our own signal here,
 			 * not one from the containe; it could hook up
 			 * to that signal and emit one of its
 			 * ownr. Doing it this way hard-codes what

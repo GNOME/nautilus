@@ -353,7 +353,8 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 
 	/* Delete old shadow if any. */
 	if (dnd_info->shadow != NULL) {
-		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+		/* FIXME bugzilla.eazel.com 2484: 
+		 * Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
 	}
 
@@ -514,7 +515,8 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 		return;
 	}
 
-	/* FIXME: This does not belong in the icon code.
+	/* FIXME bugzilla.eazel.com 2485: 
+	 * This does not belong in the icon code.
 	 * It has to be in the file manager.
 	 * The icon code has no right to deal with the file directly.
 	 * But luckily there's no issue of not getting a file object,
@@ -610,7 +612,7 @@ auto_scroll_timeout_callback (gpointer data)
 
 	/* Adjust the scroll delta to the proper acceleration values depending on how far
 	 * into the sroll margins we are.
-	 * FIXME:
+	 * FIXME bugzilla.eazel.com 2486:
 	 * we could use an exponential acceleration factor here for better feel
 	 */
 	if (x_scroll_delta != 0) {
@@ -825,7 +827,8 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
   	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
 
-	/* FIXME: These "can_accept_items" tests need to be done by
+	/* FIXME bugzilla.eazel.com 2485: 
+	 * These "can_accept_items" tests need to be done by
 	 * the icon view, not here. This file is not supposed to know
 	 * that the target is a file.
 	 */
@@ -995,7 +998,8 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	/* Find the item we hit with our drop, if any. */
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
-	/* FIXME: These "can_accept_items" tests need to be done by
+	/* FIXME bugzilla.eazel.com 2485: 
+	 * These "can_accept_items" tests need to be done by
 	 * the icon view, not here. This file is not supposed to know
 	 * that the target is a file.
 	 */
@@ -1099,7 +1103,8 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 
 	stop_auto_scroll (container);
 	if (container->details->dnd_info->shadow != NULL) {
-		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+		/* FIXME bugzilla.eazel.com 2484: 
+		 * Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (container->details->dnd_info->shadow));
 	}
 

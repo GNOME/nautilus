@@ -162,7 +162,7 @@ static char stipple_bits[] = { 0x02, 0x01 };
 static void
 icon_free (NautilusIcon *icon)
 {
-	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+	/* FIXME bugzilla.eazel.com 2481: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (icon->item));
 	g_free (icon);
 }
@@ -461,7 +461,7 @@ get_all_icon_bounds (NautilusIconContainer *container,
 		     double *x1, double *y1,
 		     double *x2, double *y2)
 {
-	/* FIXME: Do we have to do something about the rubberband
+	/* FIXME bugzilla.eazel.com 2477: Do we have to do something about the rubberband
 	 * here? Any other non-icon items?
 	 */
 	gnome_canvas_item_get_bounds
@@ -921,7 +921,8 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	/* These modes are special. We freeze all of our positions
 	 * after we do the layout.
 	 */
-	/* FIXME: This should not be tied to the direction of layout.
+	/* FIXME bugzilla.eazel.com 2478: 
+	 * This should not be tied to the direction of layout.
 	 * It should be a separate switch.
 	 */
 	nautilus_icon_container_freeze_icon_positions (container);
@@ -939,7 +940,8 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 		
 	case NAUTILUS_ICON_LAYOUT_T_B_L_R:
 	case NAUTILUS_ICON_LAYOUT_T_B_R_L:
-		/* FIXME: Need to handle T_B_R_L differently. */
+		/* FIXME bugzilla.eazel.com 2479: 
+		 * Need to handle T_B_R_L differently. */
 		lay_down_icons_tblr (container, icons);
 		break;
 		
@@ -1089,7 +1091,8 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		icon_raise (icon);
 	}
 
-	/* FIXME: Handling of the scroll region is inconsistent here. In
+	/* FIXME bugzilla.eazel.com 2474: 
+	 * Handling of the scroll region is inconsistent here. In
 	 * the scale-changing case, relayout is called, which updates the
 	 * scroll region appropriately. In other cases, it's up to the
 	 * caller to make sure the scroll region is updated. This could
@@ -1323,7 +1326,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 	band_info->active = FALSE;
 
 	gnome_canvas_item_ungrab (band_info->selection_rectangle, event->time);
-	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+	/* FIXME bugzilla.eazel.com 2475: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
 }
@@ -1996,7 +1999,7 @@ destroy (GtkObject *object)
 		gtk_timeout_remove (container->details->rubberband_info.timer_id);
 	}
 	if (container->details->rubberband_info.selection_rectangle != NULL) {
-		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+		/* FIXME bugzilla.eazel.com 2475: Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (container->details->rubberband_info.selection_rectangle));
 	}
 
@@ -4193,7 +4196,7 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
 
 	/* Destroy renaming widget */
-	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+	/* FIXME bugzilla.eazel.com 2480: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
 	container->details->rename_widget = NULL;
 

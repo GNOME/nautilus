@@ -236,7 +236,7 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		sidebar = GTK_WIDGET (sidebar)->parent;
 		background = nautilus_get_widget_background (sidebar);
 		
-		/* FIXME: for now, both the title and info colors are the same */
+		/* FIXME bugzilla.eazel.com 2496: for now, both the title and info colors are the same */
 		if (nautilus_background_is_dark (background)) {
 			sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
 			sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
@@ -320,14 +320,14 @@ update_font (NautilusSidebarTitle *sidebar_title)
 		 * factory and be failsafe if the given font is not found.
 		 */
 		
-		/* FIXME: Where does the "4" come from? */
+		/* FIXME bugzilla.eazel.com 2497: Where does the "4" come from? */
 		label_font = nautilus_get_largest_fitting_font
 			(sidebar_title->details->title_text,
 			 GTK_WIDGET (sidebar_title)->allocation.width - 4,
 			 "-adobe-helvetica-bold-r-normal-*-%d-*-*-*-*-*-*-*");
 		
 		nautilus_gtk_widget_set_font (sidebar_title->details->normal_title_label, label_font);
-		/* FIXME: Is there a font leak here? */
+		/* FIXME bugzilla.eazel.com 2499: Is there a font leak here? */
 	}
 }
 
@@ -335,7 +335,7 @@ update_font (NautilusSidebarTitle *sidebar_title)
 static void
 update_title (NautilusSidebarTitle *sidebar_title)
 {
-	/* FIXME: We could defer showing the title until the icon is ready. */
+	/* FIXME bugzilla.eazel.com 2500: We could defer showing the title until the icon is ready. */
 
 	if (sidebar_title->details->smooth_graphics) {
 		nautilus_label_set_text (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
@@ -371,7 +371,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 
 	file = sidebar_title->details->file;
 	
-	/* FIXME: We could defer showing info until the icon is ready. */
+	/* FIXME bugzilla.eazel.com 2500: We could defer showing info until the icon is ready. */
 
 	info_string = g_string_new (NULL);
 	type_string = nautilus_file_get_string_attribute (file, "type");
@@ -419,7 +419,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	GList *icons, *p;
 	GdkPixbuf *pixbuf;
 
-	/* FIXME: We could defer showing emblems until the icon is ready. */
+	/* FIXME bugzilla.eazel.com 2500: We could defer showing emblems until the icon is ready. */
 
 	/* First, deallocate any existing ones */
 	gtk_container_foreach (GTK_CONTAINER (sidebar_title->details->emblem_box),
@@ -450,7 +450,7 @@ update_notes (NautilusSidebarTitle *sidebar_title)
 {
 	char *text;
 	
-	/* FIXME: We could defer showing notes until the icon is ready. */
+	/* FIXME bugzilla.eazel.com 2500: We could defer showing notes until the icon is ready. */
 
 	text = nautilus_file_get_metadata (sidebar_title->details->file,
 					   NAUTILUS_METADATA_KEY_NOTES,

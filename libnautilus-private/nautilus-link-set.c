@@ -51,7 +51,8 @@ link_set_path_name (const char *directory_path, const char *name)
 {
 	const char *path_start;
 
-	/* FIXME: This hack is unacceptable. Either it's a URI and the
+	/* FIXME bugzilla.eazel.com 2488: 
+	 * This hack is unacceptable. Either it's a URI and the
 	 * file:// must be removed with the function that does that,
 	 * or it's a path, and there's no reason to remove the prefix.
 	 */
@@ -117,7 +118,9 @@ get_link_set_document(const char *link_set_name)
 static char *
 expand_uri (const char *uri)
 {
-	/* FIXME: This turns "~x" into "HOME", which is bad. */
+	/* FIXME bugzilla.eazel.com 2487: 
+	 * This turns "~x" into "HOME", which is bad. 
+	 */
 	if (uri[0] == '~') {
 		return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	}

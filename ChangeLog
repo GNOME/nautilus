@@ -1,3 +1,30 @@
+2000-08-28  John Sullivan  <sullivan@eazel.com>
+
+	Added more bug numbers to FIXMEs. 94 to go.
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c: (map_pixbuf),
+	(draw_label_text_aa), (nautilus_icon_canvas_item_event):
+	* libnautilus-extensions/nautilus-icon-container.c: (icon_free),
+	(get_all_icon_bounds), (lay_down_icons_tblr), (lay_down_icons),
+	(nautilus_icon_container_move_icon), (stop_rubberbanding),
+	(destroy), (hide_rename_widget):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_dropped_icon_feedback),
+	(receive_dropped_keyword), (auto_scroll_timeout_callback),
+	(nautilus_icon_container_find_drop_target),
+	(nautilus_icon_dnd_update_drop_target), (nautilus_icon_dnd_fini):
+	* libnautilus-extensions/nautilus-link-set.c: (link_set_path_name),
+	(expand_uri):
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_get_root_property),
+	(nautilus_link_get_additional_text), (make_local_path),
+	(nautilus_link_get_image_uri), (nautilus_link_get_link_uri),
+	(nautilus_link_get_link_type):
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_select_text_color), (update_font),
+	(update_title), (update_more_info), (update_emblems),
+	(update_notes):
+
 2000-08-28  Michael Engber  <engber@eazel.com>
 	
 	The three zooming related items no longer appear in

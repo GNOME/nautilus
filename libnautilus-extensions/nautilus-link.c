@@ -239,13 +239,13 @@ nautilus_link_get_root_property (const char *link_file_uri,
 		return NULL;
 	}
 	
-	/* FIXME: Works only with local link files. */
+	/* FIXME bugzilla.eazel.com 2489: Works only with local link files. */
 	path = gnome_vfs_get_local_path_from_uri (link_file_uri);
 	if (path == NULL) {
 		return NULL;
 	}
 
-	/* FIXME: Sync. I/O. */
+	/* FIXME bugzilla.eazel.com 2490: Sync. I/O. */
 	doc = xmlParseFile (path);
 	g_free (path);
 	property = xml_get_root_property (doc, key);
@@ -257,7 +257,7 @@ nautilus_link_get_root_property (const char *link_file_uri,
 char *
 nautilus_link_get_additional_text (const char *link_file_uri)
 {
-	/* FIXME: This interface requires sync. I/O. */
+	/* FIXME bugzilla.eazel.com 2490: This interface requires sync. I/O. */
 	return nautilus_link_get_root_property
 		(link_file_uri, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
 }
@@ -274,10 +274,10 @@ make_local_path (const char *image_uri)
 	 * still should unescape.
 	 */
 	unescaped_uri = gnome_vfs_unescape_string (image_uri, "/");
-	/* FIXME: Why should we unescape? The above can return NULL for
+	/* FIXME bugzilla.eazel.com 2492: Why should we unescape? The above can return NULL for
 	 * URIs with slashes in it and other cases like that.
 	 */
-	/* FIXME: Why the +7 below? This seems totally wrong. */
+	/* FIXME bugzilla.eazel.com 2493: Why the +7 below? This seems totally wrong. */
 	escaped_uri = nautilus_str_escape_slashes (unescaped_uri + 7);		
 	g_free (unescaped_uri);
 	
@@ -287,7 +287,7 @@ make_local_path (const char *image_uri)
 		 NULL);
 
 	/* We must create the directory if it doesn't exist. */
-	/* FIXME: Is it OK to ignore the error here? */
+	/* FIXME bugzilla.eazel.com 2494: Is it OK to ignore the error here? */
 	gnome_vfs_make_directory (local_directory_path, REMOTE_ICON_DIR_PERMISSIONS);
 
 	local_file_path = nautilus_make_path (local_directory_path, escaped_uri);
@@ -359,7 +359,7 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 		return NULL;
 	}
 	
-	/* FIXME: Works only with local URIs. */
+	/* FIXME bugzilla.eazel.com 2489: Works only with local URIs. */
 	path = gnome_vfs_get_local_path_from_uri (link_file_uri);
 	if (path == NULL) {
 		return NULL;
@@ -398,7 +398,7 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 char *
 nautilus_link_get_link_uri (const char *link_file_uri)
 {
-	/* FIXME: This interface requires sync. I/O. */
+	/* FIXME bugzilla.eazel.com 2490: This interface requires sync. I/O. */
 	return nautilus_link_get_root_property
 		(link_file_uri, "LINK");
 }
@@ -407,13 +407,13 @@ nautilus_link_get_link_uri (const char *link_file_uri)
 char *
 nautilus_link_get_link_type (const char *path)
 {
-	/* FIXME: This interface requires sync. I/O. */
+	/* FIXME bugzilla.eazel.com 2490: This interface requires sync. I/O. */
 	return nautilus_link_get_root_property
 		(path, "NAUTILUS_LINK");
 }
 
-/* FIXME: Caller has to know to pass in a file with a NULL character at
- * the end.
+/* FIXME bugzilla.eazel.com 2495: 
+ * Caller has to know to pass in a file with a NULL character at the end.
  */
 char *
 nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
