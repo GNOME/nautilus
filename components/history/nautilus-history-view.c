@@ -29,6 +29,7 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <nautilus-widgets/nautilus-preferences.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -268,6 +269,11 @@ int main(int argc, char *argv[])
                              argc, argv,
                              oaf_popt_options, 0, NULL); 
   orb = oaf_init (argc, argv);
+
+  /* FIXME: Need better error reporting if this fails.  BUT, is it too
+   * early to post a dialog here ? */
+  g_assert (nautilus_preferences_init (argc, argv));
+        
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
   gnome_vfs_init ();
 

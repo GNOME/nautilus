@@ -1,5 +1,11 @@
 2000-04-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/history/ntl-history-view.c:
+	Call nautilus_preferences_init to make sure gconf is in business
+	before we call it.
+
+2000-04-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Switched us to use gconf instead of gnome_config.  There is still
 	lots of crufty preferences code that can be simplified a lot,
 	since gconf does a lot of work for us.
