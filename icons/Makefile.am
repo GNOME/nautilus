@@ -18,6 +18,7 @@ icon_DATA =\
 	emblem-certified.gif \
 	emblem-changed.gif \
 	emblem-confidential.gif \
+	emblem-distinguised.svg \
 	emblem-draft.svg \
 	emblem-encrypted.gif \
 	emblem-favorite.svg \
@@ -26,6 +27,7 @@ icon_DATA =\
 	emblem-new.svg \
 	emblem-noread.svg \
 	emblem-nowrite.png \
+	emblem-ohno.svg \
 	emblem-OK.svg \
 	emblem-personal.svg \
 	emblem-remote.gif \
