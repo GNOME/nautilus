@@ -1,3 +1,15 @@
+2001-09-05  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-authn-manager.c:
+	(construct_password_dialog,
+	present_authentication_dialog_blocking, mark_callback_completed,
+	authentication_dialog_button_clicked,
+	present_authentication_dialog_nonblocking,
+	vfs_async_authentication_callback, vfs_authentication_callback,
+	nautilus_authentication_manager_initialize): Converted to use the
+	new module callback API. Use async callbacks instead of our own
+	mechanism to achieve the same effect.
+
 2001-09-04  Alex Larsson  <alexl@redhat.com>
 	
 	Merge some stuff from the redhat-outstanding-patches branch
