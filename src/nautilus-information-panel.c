@@ -735,7 +735,7 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 	} else {
 		keywords = g_list_remove_link (keywords, word);
 		g_free (word->data);
-		g_list_free (word);
+		g_list_free_1 (word);
 	}
 
 	nautilus_file_set_keywords (file, keywords);

@@ -1,3 +1,84 @@
+2000-09-22  Darin Adler  <darin@eazel.com>
+
+	Storage leak fixes. Today I concentrated on leaks that happen
+	when you change views from Icon to List View and back.
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node): Unref a pixmap and bitmap,
+	free a string.
+	(nautilus_tree_view_update_model_node): Unref a pixmap and bitmap,
+	free a string.
+	(notify_node_seen): Free a string.
+	(nautilus_tree_view_uri_to_name): Removed extra g_strdup.
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(free_hash_tables_at_exit): Free a list.
+	* libnautilus-extensions/nautilus-list.c: (draw_cell): Skip the
+	excess work of re-getting the pixmap and bitmap, not using them,
+	and leaking them.
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_hash_node_remove_callback): Free a list.
+	* src/file-manager/fm-directory-view.c: (queue_pending_files):
+	Free a list.
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+	Free a string in all code paths (was freed in some before).
+	* src/file-manager/fm-list-view.c: (add_to_list): Free the column
+	text in a way that works even though some columns have NULL.
+	(install_row_images): Unref a pixmap and bitmap.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(destroy_global_rsvg_ft_context),
+	(initialize_global_stuff_if_needed): Free the rsvg_ft font cache
+	at exit.
+	* libnautilus-extensions/nautilus-theme.c: (free_last_theme),
+	(nautilus_theme_get_theme_data): Free the cached theme XML
+	document at exit.
+	
+	* components/help/converters/gnome-db2html2/gdb3html.c:
+	(remove_head), (start_element), (end_element), (cdata_block):
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_for_each_postorder),
+	(nautilus_tree_model_monitor_add):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(remove_monitor_link), (dequeue_pending_idle_callback),
+	(remove_callback_link_keep_data), (remove_callback_link):
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_file_receive_dropped_keyword):
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_get_change):
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(check_for_thumbnails):
+	* src/file-manager/fm-properties-window.c:
+	(property_button_toggled):
+	* src/nautilus-window-manage-views.c: (handle_go_back),
+	(handle_go_forward):
+	* src/nautilus-window.c: (nautilus_add_to_history_list):
+	Fixed a bunch of callers of g_list_remove_link to also free the
+	removed link. This seems to be an error-prone API from glib.
+	About half of the callers had it wrong.
+	
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_delete_item_at),
+	(nautilus_bookmark_list_delete_items_with_uri):
+	* src/nautilus-sidebar.c: (receive_dropped_keyword):
+	Changed to use g_list_free_1 for clarity.
+	
+	* src/nautilus-location-bar.c: Coding style tweaks.
+	
+	* src/nautilus-main.c: (main): Run the self-checks a second time
+	if they succeed the first time. More thorough check this way (make
+	sure the test works even after it's been run once), and better to
+	notice one-time vs. per-test leaks.
+	
+	* tools/leak-checker/nautilus-leak-checker.c: (g_slist_alloc),
+	(g_slist_free), (g_slist_free_1), (g_mem_chunk_new),
+	(g_mem_chunk_destroy), (g_mem_chunk_alloc), (g_mem_chunk_alloc0),
+	(g_mem_chunk_free), (g_mem_chunk_clean), (g_mem_chunk_reset),
+	(g_mem_chunk_print): Made the GSList and GMemChunk code dumb down
+	when using the leak checker.
+
+	* tools/leak-checker/nautilus-leak-checker.c: Added more symbols
+	of "known to leak" functions so we can see the real leakers.
+
 2000-09-22  Michael Engber  <engber@eazel.com>
 
 	horizontal & vertical desktop gradient settings were

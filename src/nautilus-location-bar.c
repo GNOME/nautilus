@@ -33,29 +33,23 @@
 #include "nautilus-location-bar.h"
 
 #include "nautilus-window.h"
-
-#include <string.h>
-
-#include <gtk/gtksignal.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkeventbox.h>
-#include <libgnomevfs/gnome-vfs.h>
-
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-mime.h>
 #include <libgnome/gnome-i18n.h>
-
+#include <libgnome/gnome-mime.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
-
+#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-entry.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <stdio.h>
+#include <string.h>
 
 #define NAUTILUS_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"
@@ -88,7 +82,9 @@ static void  nautilus_location_bar_initialize_class (NautilusLocationBarClass *c
 static void  nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
 static void  nautilus_location_bar_update_label     (NautilusLocationBar      *bar);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar, nautilus_location_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar,
+				   nautilus_location_bar,
+				   NAUTILUS_TYPE_NAVIGATION_BAR)
 
 static NautilusWindow *
 nautilus_location_bar_get_window (GtkWidget *widget)
@@ -206,14 +202,15 @@ static char *
 accumulate_name(char *full_name, char *candidate_name)
 {
 	char *result_name, *str1, *str2;
+
 	if (full_name == NULL)
-		result_name = g_strdup(candidate_name);
+		result_name = g_strdup (candidate_name);
 	else {
 		result_name = full_name;
-		if (!nautilus_str_has_prefix(full_name, candidate_name)) {
+		if (!nautilus_str_has_prefix (full_name, candidate_name)) {
 			str1 = full_name;
 			str2 = candidate_name;
-			while ((*str1++ == *str2++)) {};	
+			while ((*str1++ == *str2++)) { }
 			*--str1 = '\0';
 		}
 	}
@@ -226,7 +223,7 @@ accumulate_name(char *full_name, char *candidate_name)
   find something, add it to the entry */
   
 static void
-try_to_expand_path(GtkEditable *editable)
+try_to_expand_path (GtkEditable *editable)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
@@ -246,9 +243,10 @@ try_to_expand_path(GtkEditable *editable)
 	user_location = gtk_editable_get_chars (editable, 0, -1);
 	
 	/* if it's just '~' or '~/', don't expand because slash shouldn't be appended */
-	if (!nautilus_strcmp (user_location, "~") || !nautilus_strcmp (user_location, "~/") ) {
+	if (nautilus_strcmp (user_location, "~") == 0
+	    || nautilus_strcmp (user_location, "~/") == 0) {
 		return;
-	}	
+	}
 	current_path = nautilus_make_uri_from_input (user_location);
 
 	if (!nautilus_istr_has_prefix (current_path, "file://")) {
@@ -276,12 +274,12 @@ try_to_expand_path(GtkEditable *editable)
 	/* get file info for the directory */
 
 	result = gnome_vfs_directory_list_load (&list, dir_name,
-					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+						GNOME_VFS_FILE_INFO_DEFAULT, NULL);
 	if (result != GNOME_VFS_OK) {
 		g_free (dir_name);
 		g_free (base_name);
-		gnome_vfs_uri_unref(uri);
-		g_free(current_path);
+		gnome_vfs_uri_unref (uri);
+		g_free (current_path);
 		return;
 	}
 
@@ -313,7 +311,7 @@ try_to_expand_path(GtkEditable *editable)
 	
 	g_free (dir_name);
 	g_free (base_name);
-	g_free( current_path);
+	g_free (current_path);
 	g_free (user_location);
 	gnome_vfs_directory_list_destroy (list);
 }
@@ -408,10 +406,8 @@ destroy (GtkObject *object)
 
 	bar = NAUTILUS_LOCATION_BAR (object);
 	
-	if (bar->last_location) {
-		g_free (bar->last_location);
-	}
-	
+	g_free (bar->last_location);
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -544,7 +540,6 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
  * but not garunteed.
  *
  **/
-
 static char *
 nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar) 
 {
@@ -560,12 +555,11 @@ nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar)
 }
 	       
 /**
-* nautilus_location_bar_update_label
-*
-* if the text in the entry matches the uri, set the label to "location", otherwise use "goto"
-*
-**/
-
+ * nautilus_location_bar_update_label
+ *
+ * if the text in the entry matches the uri, set the label to "location", otherwise use "goto"
+ *
+ **/
 static void
 nautilus_location_bar_update_label (NautilusLocationBar *bar)
 {
@@ -576,11 +570,8 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	
 	if (nautilus_uris_match (bar->last_location, current_location)) {
 		gtk_label_set_text (GTK_LABEL (bar->label), _("Location:"));
-		
 	} else {		 
 		gtk_label_set_text (GTK_LABEL (bar->label), _("   Go To:"));
-
 	}	
 	g_free (current_location);
 }
-

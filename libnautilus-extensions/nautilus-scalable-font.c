@@ -1353,30 +1353,27 @@ static const char * global_default_font_path[] =
 
 /* 'atexit' destructors for global stuff */
 static void
+destroy_global_rsvg_ft_context (void)
+{
+	rsvg_ft_ctx_done (global_rsvg_ft_context);
+}
+
+static void
 default_font_at_exit_destructor (void)
 {
-	if (global_default_font != NULL) {
-		gtk_object_unref (GTK_OBJECT (global_default_font));
-		global_default_font = NULL;
-	}
+	gtk_object_unref (GTK_OBJECT (global_default_font));
 }
 
 static void
 font_family_table_at_exit_destructor (void)
 {
-	if (global_font_family_table != NULL) {
-		font_family_table_free (global_font_family_table);
-		global_font_family_table = NULL;
-	}
+	font_family_table_free (global_font_family_table);
 }
 
 static void
 font_family_string_map_at_exit_destructor (void)
 {
-	if (global_family_string_map != NULL) {
-		nautilus_string_map_free (global_family_string_map);
-		global_family_string_map = NULL;
-	}
+	nautilus_string_map_free (global_family_string_map);
 }
 
 static void
@@ -1387,6 +1384,7 @@ initialize_global_stuff_if_needed (void)
 	/* Initialize the rsvg font context shared by all fonts */
 	if (global_rsvg_ft_context == NULL) {
 		global_rsvg_ft_context = rsvg_ft_ctx_new ();
+		g_atexit (destroy_global_rsvg_ft_context);
 	}
 
 	/* Initialize the global font table */

@@ -816,6 +816,8 @@ free_hash_tables_at_exit (void)
 		g_free (hash_table_to_free->display_name);
 		g_free (hash_table_to_free);
 	}
+	g_list_free (hash_tables_to_free_at_exit);
+	hash_tables_to_free_at_exit = NULL;
 }
 
 GHashTable *

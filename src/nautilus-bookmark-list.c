@@ -282,7 +282,7 @@ nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
 	stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (doomed->data));
 	gtk_object_unref (GTK_OBJECT (doomed->data));
 	
-	g_list_free (doomed);
+	g_list_free_1 (doomed);
 	
 	nautilus_bookmark_list_contents_changed (bookmarks);
 }
@@ -314,7 +314,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 			bookmarks->list = g_list_remove_link (bookmarks->list, node);
 			stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
 			gtk_object_unref (GTK_OBJECT (node->data));
-			g_list_free (node);
+			g_list_free_1 (node);
 			list_changed = TRUE;
 		}
 		g_free (bookmark_uri);

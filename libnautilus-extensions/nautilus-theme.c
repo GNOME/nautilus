@@ -93,10 +93,19 @@ load_theme_document (const char * theme_name)
 	}
 	
 	/* load and parse the theme file */
-	theme_document = xmlParseFile(theme_path);
-	g_free(theme_path);
+	theme_document = xmlParseFile (theme_path);
+	g_free (theme_path);
 
 	return theme_document;
+}
+
+static void
+free_last_theme (void)
+{
+	if (last_theme_document != NULL) {
+		xmlFreeDoc (last_theme_document);
+	}
+	g_free (last_theme_name);
 }
 
 /* fetch data from the current theme.  Cache the last theme file as a parsed xml document */
@@ -117,15 +126,14 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 		theme_document = last_theme_document;
 	} else {
 		/* release the old saved data, since the theme changed */
-		if (last_theme_document)
-			xmlFreeDoc (last_theme_document);
-		g_free (last_theme_name);
+		free_last_theme ();
 		
 		last_theme_name = g_strdup (theme_name);
 		last_theme_document = load_theme_document (theme_name);
 		theme_document = last_theme_document;
+		g_atexit (free_last_theme);
 	}			
-		
+	
 	if (theme_document != NULL) {
 		/* fetch the resource node */			
 		resource_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (theme_document), resource_name);

@@ -1637,7 +1637,7 @@ queue_pending_files (FMDirectoryView *view,
 		     GList *files,
 		     GList **pending_list)
 {
-	GList *filtered_files = NULL;
+	GList *filtered_files;
 	GList *files_iterator;
 	NautilusFile *file;
 	char * name;
@@ -1649,6 +1649,8 @@ queue_pending_files (FMDirectoryView *view,
 		view->details->show_backup_files = FALSE;
 	}
 	
+	filtered_files = NULL;
+
 	/* Filter out hidden files if needed */
 	if (!view->details->show_hidden_files || !view->details->show_backup_files) {
 		/* FIXME bugzilla.eazel.com 653: 
@@ -1698,6 +1700,8 @@ queue_pending_files (FMDirectoryView *view,
 			schedule_timeout_display_of_pending_files (view);
 		}
 	}
+
+	g_list_free (filtered_files);
 }
 
 static void

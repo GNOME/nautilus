@@ -1226,8 +1226,9 @@ nautilus_add_to_history_list (NautilusBookmark *bookmark)
 	
 	/* Remove any older entry for this same item. There can be at most 1. */
 	if (found_link != NULL) {
-		gtk_object_unref (found_link->data);
 		history_list = g_list_remove_link (history_list, found_link);
+		gtk_object_unref (found_link->data);
+		g_list_free_1 (found_link);
 	}
 
 	/* New item goes first. */

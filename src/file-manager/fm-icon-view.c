@@ -2096,14 +2096,14 @@ get_icon_text_callback (NautilusIconContainer *container,
 	}
 	
 	/* Handle link files specially. */
-	actual_uri = nautilus_file_get_uri (file);
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
+		actual_uri = nautilus_file_get_uri (file);
 		path = gnome_vfs_get_local_path_from_uri (actual_uri);
+		g_free (actual_uri);
 		if (path != NULL) {
 			*additional_text = nautilus_link_local_get_additional_text (path);
 			g_free (path);
-			g_free (actual_uri);
 			return;
 		}
 	}

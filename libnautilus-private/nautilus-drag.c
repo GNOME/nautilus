@@ -558,7 +558,7 @@ nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
 		} else {
 			keywords = g_list_remove_link (keywords, word);
 			g_free (word->data);
-			g_list_free (word);
+			g_list_free_1 (word);
 		}
 	}
 	

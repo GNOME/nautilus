@@ -214,7 +214,7 @@ nautilus_tree_model_for_each_postorder (NautilusTreeModel  *model,
 					gpointer                   callback_data)
 {
 	NautilusTreeNode *current_node;
-	GList *reporting_queue;
+	GList *reporting_queue, *link;
 
 	if (model->details->root_node_reported) {
 		reporting_queue = g_list_prepend (NULL, model->details->root_node);
@@ -225,7 +225,10 @@ nautilus_tree_model_for_each_postorder (NautilusTreeModel  *model,
 			if (nautilus_tree_node_get_children (current_node) == NULL) {
 				NautilusDirectory *tmp;
 
-				reporting_queue = g_list_remove_link (reporting_queue, reporting_queue);
+				link = reporting_queue;
+				reporting_queue = g_list_remove_link (reporting_queue, link);
+				g_list_free_1 (link);
+				
 				
 #ifdef DEBUG_TREE
 				printf ("XXX unrefing: %s\n", nautilus_tree_node_get_uri
@@ -276,7 +279,7 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 				 gpointer                   callback_data)
 {
 	NautilusTreeNode *current_node;
-	GList *reporting_queue;
+	GList *reporting_queue, *link;
 	GList *monitor_attributes;
 	
 	reporting_queue = NULL;
@@ -314,7 +317,10 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 
 		while (reporting_queue != NULL) {
 			current_node = (NautilusTreeNode *) reporting_queue->data;
-			reporting_queue = g_list_remove_link (reporting_queue, reporting_queue);
+
+			link = reporting_queue;
+			reporting_queue = g_list_remove_link (reporting_queue, link);
+			g_list_free_1 (link);
 
 			(*initial_nodes_callback) (model, current_node, callback_data);
 

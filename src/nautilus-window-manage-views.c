@@ -339,6 +339,7 @@ static void
 handle_go_back (NautilusWindow *window, const char *location)
 {
         guint i;
+        GList *link;        
 
         /* Going back. Move items from the back list to the forward list. */
         g_assert (g_list_length (window->back_list) > window->location_change_distance);
@@ -358,22 +359,24 @@ handle_go_back (NautilusWindow *window, const char *location)
                                 
         /* Move extra links from Back to Forward list */
         for (i = 0; i < window->location_change_distance; ++i) {
-                NautilusBookmark *bookmark;
-                
-                bookmark = window->back_list->data;
-                window->back_list = g_list_remove_link (window->back_list, window->back_list);
-                window->forward_list = g_list_prepend (window->forward_list, bookmark);
+                link = window->back_list;
+                window->back_list = g_list_remove_link (window->back_list, link);
+                g_list_free_1 (link);
+                window->forward_list = g_list_prepend (window->forward_list, link->data);
         }
         
         /* One bookmark falls out of back/forward lists and becomes viewed location */
-        gtk_object_unref (window->back_list->data);
-        window->back_list = g_list_remove_link (window->back_list, window->back_list);
+        link = window->back_list;
+        window->back_list = g_list_remove_link (window->back_list, link);
+        gtk_object_unref (GTK_OBJECT (link->data));
+        g_list_free_1 (link);
 }
 
 static void
 handle_go_forward (NautilusWindow *window, const char *location)
 {
         guint i;
+        GList *link;
 
         /* Going forward. Move items from the forward list to the back list. */
         g_assert (g_list_length (window->forward_list) > window->location_change_distance);
@@ -393,16 +396,17 @@ handle_go_forward (NautilusWindow *window, const char *location)
         
         /* Move extra links from Forward to Back list */
         for (i = 0; i < window->location_change_distance; ++i) {
-                NautilusBookmark *bookmark;
-                
-                bookmark = window->forward_list->data;
-                window->forward_list = g_list_remove_link (window->forward_list, window->forward_list);
-                window->back_list = g_list_prepend (window->back_list, bookmark);
+                link = window->forward_list;
+                window->forward_list = g_list_remove_link (window->forward_list, link);
+                window->back_list = g_list_prepend (window->back_list, link->data);
+                g_list_free_1 (link);
         }
         
         /* One bookmark falls out of back/forward lists and becomes viewed location */
-        gtk_object_unref (window->forward_list->data);
-        window->forward_list = g_list_remove_link (window->forward_list, window->forward_list);
+        link = window->forward_list;
+        window->forward_list = g_list_remove_link (window->forward_list, link);
+        gtk_object_unref (GTK_OBJECT (link->data));
+        g_list_free_1 (link);
 }
 
 static void

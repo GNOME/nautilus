@@ -345,6 +345,7 @@ check_for_thumbnails (void)
 	NautilusThumbnailInfo *info;
 	GList *stop_element;
 	GList *next_thumbnail;
+	GList *head;
 	NautilusFile *file;
 
 	for (next_thumbnail = thumbnails;
@@ -369,7 +370,9 @@ check_for_thumbnails (void)
 				info = (NautilusThumbnailInfo *) thumbnails->data;
 				g_free (info->thumbnail_uri);
 				g_free (info);
-				thumbnails = g_list_remove_link (thumbnails, thumbnails);
+				head = thumbnails;
+				thumbnails = g_list_remove_link (thumbnails, head);
+				g_list_free_1 (head);
 			}
 			return TRUE;
 		}

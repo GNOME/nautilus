@@ -460,6 +460,10 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 						   pixmap, mask, pixmap, mask,
 						   FALSE,
 						   FALSE);
+
+		gdk_pixmap_unref (pixmap);
+		gdk_bitmap_unref (mask);
+		
 		
 		nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
 					     view_node,
@@ -485,6 +489,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	if (parent_view_node != NULL) {
 		remove_hack_node (view, view_node_to_uri (view, parent_view_node));
 	}
+
+	g_free (uri);
 }
 
 
@@ -572,6 +578,11 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 					    TREE_SPACING,
 					    pixmap,
 					    mask);
+
+		gdk_pixmap_unref (pixmap);
+		gdk_bitmap_unref (mask);
+
+		g_free (name);
 		
 #if 0
 		/* FIXME bugzilla.eazel.com 2421: 
@@ -605,9 +616,9 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 				}
 			}
 		}
-	} else {
-		g_free (uri);
 	}
+	
+	g_free (uri);
 }
 
 
@@ -657,6 +668,8 @@ notify_node_seen (NautilusTreeView *view,
 
 		(*callback) (view);
 	}
+	
+	g_free (uri);
 }
 
 
@@ -1375,7 +1388,7 @@ nautilus_tree_view_uri_to_name (const char *uri)
 	char *name;
 	
 	gnome_vfs_uri = gnome_vfs_uri_new (uri);
-	name = g_strdup (gnome_vfs_uri_extract_short_path_name (gnome_vfs_uri));
+	name = gnome_vfs_uri_extract_short_path_name (gnome_vfs_uri);
 	gnome_vfs_uri_unref (gnome_vfs_uri);
 
 	return name;

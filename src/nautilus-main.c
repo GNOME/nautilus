@@ -215,7 +215,10 @@ main (int argc, char *argv[])
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		/* Run the checks for nautilus and libnautilus. */
+		/* Run the checks for nautilus and libnautilus (each twice). */
+		nautilus_run_self_checks ();
+		nautilus_run_lib_self_checks ();
+		nautilus_exit_if_self_checks_failed ();
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
 		nautilus_exit_if_self_checks_failed ();
@@ -234,7 +237,7 @@ main (int argc, char *argv[])
 		bonobo_object_unref (BONOBO_OBJECT (application));
 	}
 
-	poptFreeContext(popt_context);
+	poptFreeContext (popt_context);
 	gnome_vfs_shutdown ();
 
 	/* If told to restart, exec() myself again. This is used when

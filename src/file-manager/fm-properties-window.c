@@ -439,9 +439,11 @@ property_button_toggled (GtkToggleButton *button)
 	} else {
 		if (word != NULL) {
 			keywords = g_list_remove_link (keywords, word);
+			nautilus_g_list_free_deep (word);
 		}
 	}
 	nautilus_file_set_keywords (file, keywords);
+	nautilus_g_list_free_deep (keywords);
 }
 
 static void

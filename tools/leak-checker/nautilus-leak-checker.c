@@ -26,6 +26,7 @@
 
 #include "nautilus-leak-checker.h"
 /* included first, defines following switch*/
+
 #if LEAK_CHECKER
 
 #include <malloc.h>
@@ -65,9 +66,14 @@ static const char * const known_leakers[] = {
 	"__bindtextdomain",
 	"__pthread_initialize_manager",
 	"__textdomain",
+	"_nl_find_domain",
 	"bonobo_init",
-	"client_parse_func",
-	"client_save_yourself_callback",
+	"client_parse_func", /* gnome-libs */
+	"client_save_yourself_callback", /* gnome-libs */
+	"g_18n_get_language_list",
+	"g_data_initialize",
+	"g_data_set_internal", /* no easy way to make it not cache blocks */
+	"g_dataset_id_set_data_full", /* no easy way to make it not cache blocks */
 	"g_get_any_init",
 	"g_hash_node_new",
 	"g_log_set_handler",
@@ -76,9 +82,13 @@ static const char * const known_leakers[] = {
 	"gconf_postinit",
 	"gnome_add_gtk_arg_callback",
 	"gnome_client_init",
+	"gnome_i18n_get_language_list",
 	"gnome_init_cb",
+	"gnome_vfs_add_module_to_hash_table",
+	"gnome_vfs_application_registry_init",
 	"gnome_vfs_backend_loadinit",
 	"gnome_vfs_init",
+	"gnomelib_init",
 	"gtk_init",
 	"gtk_rc_init",
 	"gtk_rc_parse",
@@ -89,9 +99,12 @@ static const char * const known_leakers[] = {
 	"gtk_type_unique",
 	"load_module",
 	"mbtowc",
+	"oaf_existing_set",
 	"oaf_init",
 	"pthread_initialize",
+	"register_client", /* gconf */
 	"setlocale",
+	"stock_pixmaps", /* gnome-libs */
 	"tzset_internal",
 };
 
@@ -755,14 +768,14 @@ free (void *ptr)
 	__libc_free (ptr);
 }
 
-/* Version that uses normal allocation, not mem. chunks. */
+/* Version that frees right away instead of keeping a pool. */
 GList *
 g_list_alloc (void)
 {
 	return g_new0 (GList, 1);
 }
 
-/* Version that uses normal allocation, not mem. chunks. */
+/* Version that frees right away instead of keeping a pool. */
 void
 g_list_free (GList *list)
 {
@@ -783,7 +796,35 @@ g_list_free_1 (GList *list)
 	g_free (list);
 }
 
+/* Version that frees right away instead of keeping a pool. */
+GSList *
+g_slist_alloc (void)
+{
+	return g_new0 (GSList, 1);
+}
+
+/* Version that frees right away instead of keeping a pool. */
+void
+g_slist_free (GSList *list)
+{
+	GSList *node, *next;
+
+	node = list;
+	while (node != NULL) {
+		next = node->next;
+		g_free (node);
+		node = next;
+	}
+}
+
 /* Version that uses normal allocation, not mem. chunks. */
+void
+g_slist_free_1 (GSList *list)
+{
+	g_free (list);
+}
+
+/* Version that frees right away instead of keeping a pool. */
 GNode *
 g_node_new (gpointer data)
 {
@@ -794,7 +835,7 @@ g_node_new (gpointer data)
 	return node;
 }
 
-/* Version that uses normal allocation, not mem. chunks. */
+/* Version that frees right away instead of keeping a pool. */
 static void
 g_nodes_free (GNode *root)
 {
@@ -809,7 +850,7 @@ g_nodes_free (GNode *root)
 	}
 }
 
-/* Version that uses normal allocation, not mem. chunks. */
+/* Version that frees right away instead of keeping a pool. */
 void
 g_node_destroy (GNode *root)
 {
@@ -822,7 +863,104 @@ g_node_destroy (GNode *root)
 	g_nodes_free (root);
 }
 
-#endif
+/* Header on each chunk-allocated block. */
+typedef struct BlockHeader BlockHeader;
+struct BlockHeader {
+	BlockHeader *next;
+	BlockHeader *prev;
+};
+
+/* Our version of GMemChunk. */
+struct _GMemChunk {
+	gint atom_size;
+	BlockHeader head;
+};
+
+/* Version that uses malloc and doesn't bother with chunking. */
+GMemChunk *
+g_mem_chunk_new (gchar *name,
+		 gint atom_size,
+		 gulong area_size,
+		 gint type)
+{
+	GMemChunk *mem_chunk;
+
+	mem_chunk = g_new0 (GMemChunk, 1);
+	mem_chunk->atom_size = atom_size;
+	mem_chunk->head.next = &mem_chunk->head;
+	mem_chunk->head.prev = &mem_chunk->head;
+	return mem_chunk;
+}
+
+/* Version that uses malloc and doesn't bother with chunking. */
+void
+g_mem_chunk_destroy (GMemChunk *mem_chunk)
+{
+	g_mem_chunk_reset (mem_chunk);
+	g_free (mem_chunk);
+}
+
+/* Version that uses malloc and doesn't bother with chunking. */
+gpointer
+g_mem_chunk_alloc (GMemChunk *mem_chunk)
+{
+	BlockHeader *header, *next;
+
+	header = g_malloc (sizeof (BlockHeader) + mem_chunk->atom_size);
+	next = mem_chunk->head.next;
+	header->next = next;
+	header->prev = &mem_chunk->head;
+	mem_chunk->head.next = header;
+	next->prev = header;
+	return header + 1;
+}
+
+/* Version that uses malloc and doesn't bother with chunking. */
+gpointer
+g_mem_chunk_alloc0 (GMemChunk *mem_chunk)
+{
+	gpointer block;
+
+	block = g_mem_chunk_alloc (mem_chunk);
+	memset (block, 0, mem_chunk->atom_size);
+	return block;
+}
+
+/* Version that uses malloc and doesn't bother with chunking. */
+void
+g_mem_chunk_free (GMemChunk *mem_chunk,
+		  gpointer mem)
+{
+	BlockHeader *header;
+
+	header = ((BlockHeader *) mem) - 1;
+	header->next->prev = header->prev;
+	header->prev->next = header->next;
+	g_free (header);
+}
+
+/* Version that uses malloc and doesn't bother with chunking. */
+void
+g_mem_chunk_clean (GMemChunk *mem_chunk)
+{
+}
+
+/* Version that uses malloc and doesn't bother with chunking. */
+void
+g_mem_chunk_reset (GMemChunk *mem_chunk)
+{
+	while (mem_chunk->head.next != &mem_chunk->head) {
+		g_mem_chunk_free (mem_chunk, mem_chunk->head.next + 1);
+	}
+}
+
+/* Version that uses malloc and doesn't bother with chunking. */
+void
+g_mem_chunk_print (GMemChunk *mem_chunk)
+{
+}
+
+#endif /* LEAK_CHECKER */
 
 #ifdef LEAK_CHECK_TESTING
 /* normally disabled */

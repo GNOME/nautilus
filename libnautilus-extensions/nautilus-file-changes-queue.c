@@ -260,6 +260,7 @@ nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
 		result = queue->tail->data;
 		queue->head = g_list_remove_link (queue->head,
 						  queue->tail);
+		g_list_free_1 (queue->tail);
 		queue->tail = new_tail;
 	}
 

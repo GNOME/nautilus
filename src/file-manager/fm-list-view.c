@@ -900,7 +900,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 
 	/* One extra slot so it's NULL-terminated */
 	number_of_columns = get_number_of_columns (list_view);
-	text = g_new0 (char *, number_of_columns + 1);
+	text = g_new0 (char *, number_of_columns);
 	for (column = 0; column < number_of_columns; ++column) {
 		/* No text in icon and emblem columns. */
 		if (column != LIST_VIEW_COLUMN_ICON
@@ -928,7 +928,11 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 
 	install_row_images (list_view, new_row);
 
-	g_strfreev (text);
+	/* Free the column text. */
+	for (column = 0; column < number_of_columns; ++column) {
+		g_free (text[column]);
+	}
+	g_free (text);
 
 	return new_row;
 }
@@ -1534,6 +1538,8 @@ install_row_images (FMListView *list_view, guint row)
 		 fm_list_view_get_icon_size (list_view),
 		 &pixmap, &bitmap);
 	gtk_clist_set_pixmap (clist, row, LIST_VIEW_COLUMN_ICON, pixmap, bitmap);
+	gdk_pixmap_unref (pixmap);
+	gdk_bitmap_unref (bitmap);
 
 	/* Install any emblems for this file. */
 	nautilus_list_set_pixbuf_list (list, row, LIST_VIEW_COLUMN_EMBLEMS, 

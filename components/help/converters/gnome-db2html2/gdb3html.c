@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 #include <config.h>
 
 #include "gdb3html.h"
@@ -222,6 +224,17 @@ end_document (Context *context)
 	endDocument (context->ParserCtxt);
 }
 
+static GList *
+remove_head (GList *list)
+{
+	GList *head;
+
+	head = list;
+	list = g_list_remove_link (list, head);
+	g_list_free_1 (head);
+	return list;
+}
+
 static void
 start_element(Context *context,
 	      const gchar *name,
@@ -241,9 +254,9 @@ start_element(Context *context,
 	if (element && element->start_element_func)
 		(* element->start_element_func) (context, name, attrs);
 	if (!g_strcasecmp (name, "xref")) {
-		context->stack = g_list_remove_link (context->stack, context->stack);
+		context->stack = remove_head (context->stack);
 	} else if (!g_strcasecmp (name, "void")) {
-		context->stack = g_list_remove_link (context->stack, context->stack);
+		context->stack = remove_head (context->stack);
 	}
 }
 
@@ -266,7 +279,7 @@ end_element (Context *context,
 	if (element && element->end_element_func)
 		(* element->end_element_func) (context, name);
 
-	context->stack = g_list_remove_link (context->stack, context->stack);
+	context->stack = remove_head (context->stack);
 
 	atrs_ptr = stack_el->atrs;
 	while (atrs_ptr && *atrs_ptr) {
@@ -355,7 +368,7 @@ cdata_block (Context *context, const xmlChar *value, int len)
 	if (element && element->characters_func)
 		(* element->characters_func) (context, value, len);
 
-	context->stack = g_list_remove_link (context->stack, context->stack);
+	context->stack = remove_head (context->stack);
 }
 
 static int

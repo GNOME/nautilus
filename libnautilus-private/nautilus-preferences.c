@@ -353,6 +353,8 @@ preferences_hash_node_remove_callback (PreferencesHashNode		*node,
 			preferences_callback_node_free (callback_info);
 		}
 	}
+
+	g_list_free (new_list);
 	
 	/*
 	 * If there are no callbacks left in the node, remove the gconf 

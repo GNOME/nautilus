@@ -695,14 +695,14 @@ find_monitor (NautilusDirectory *directory,
 
 static void
 remove_monitor_link (NautilusDirectory *directory,
-			  GList *link)
+		     GList *link)
 {
-	directory->details->monitor_list =
-		g_list_remove_link (directory->details->monitor_list, link);
 	if (link != NULL) {
+		directory->details->monitor_list =
+			g_list_remove_link (directory->details->monitor_list, link);
 		g_free (link->data);
+		g_list_free_1 (link);
 	}
-	g_list_free (link);
 }
 
 static void
@@ -897,7 +897,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 				file->details->is_gone = TRUE;
 				directory->details->files = g_list_remove_link
 					(directory->details->files, p);
-				g_list_free (p);
+				g_list_free_1 (p);
 
 				if (!nautilus_directory_is_file_list_monitored (directory)) {
 					nautilus_file_ref (file);
@@ -1174,17 +1174,15 @@ remove_callback_link_keep_data (NautilusDirectory *directory,
 {
 	directory->details->call_when_ready_list = g_list_remove_link
 		(directory->details->call_when_ready_list, link);
-	g_list_free (link);
+	g_list_free_1 (link);
 }
 
 static void
 remove_callback_link (NautilusDirectory *directory,
 		      GList *link)
 {
-	directory->details->call_when_ready_list = g_list_remove_link
-		(directory->details->call_when_ready_list, link);
 	g_free (link->data);
-	g_list_free (link);
+	remove_callback_link_keep_data (directory, link);
 }
 
 void
