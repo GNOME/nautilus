@@ -1,3 +1,11 @@
+2000-04-26  Andy Hertzfeld <andy@eazel.com>
+
+	* src/ntl-index-panel.c:
+	made dropping images on the index panel set the background tile to
+	the dropped image.  There's an underlying bug in nautilus-background
+	that prevents it from drawing unless a gradient background has been
+	previously set up; Darin or I will fix that soon.
+	
 2000-04-26  John Sullivan  <sullivan@eazel.com>
 
 	More FIXME-to-bug work.

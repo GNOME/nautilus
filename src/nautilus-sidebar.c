@@ -282,12 +282,17 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 	exactly_one = uris[0] != NULL && uris[1] == NULL;
 
 	/* FIXME bugzilla.eazel.com 602: set keywords by drag-and-drop */
-	/* FIXME bugzilla.eazel.com 603: handle background images soon */
 	/* FIXME bugzilla.eazel.com 604: handle files by setting the location to the file */
 	
 	switch (hit_test (index_panel, x, y)) {
 	case NO_PART:
 	case BACKGROUND_PART:
+		if (exactly_one && uri_is_local_image (uris[0])) {
+			nautilus_background_set_tile_image_uri
+			(nautilus_get_widget_background (GTK_WIDGET (index_panel)),
+		 	uris[0]);
+		}
+		break;
 	case TABS_PART:
 	case TITLE_TAB_PART:
 		break;
@@ -597,19 +602,28 @@ static void
 nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 {
 	NautilusBackground *background;
-	char *color_spec;
+	char *color_spec, *image;
 	
 	if (index_panel->details->directory == NULL) {
 		return;
 	}
 	
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
+	
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (index_panel->details->directory,
 					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
+
+	image = nautilus_background_get_tile_image_uri (background);
+	nautilus_directory_set_metadata (index_panel->details->directory,
+					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+					 NULL,
+					 image);
+	g_free (image);
+
 }
 
 /* utility to fork a process to actually execute the button command */
@@ -727,7 +741,8 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 	NautilusDirectory *directory;
 	NautilusBackground *background;
 	char *background_color, *color_spec;
-
+	char *background_image;
+	
 	directory = nautilus_directory_get (index_panel->details->uri);
 	nautilus_directory_unref (index_panel->details->directory);
 	index_panel->details->directory = directory;
@@ -749,6 +764,13 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 	nautilus_background_set_color (background, background_color);
 	g_free (background_color);
 	
+	/* set up the background image in a similar fashion */
+	
+	background_image = nautilus_directory_get_metadata (directory,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+							    NULL);
+	nautilus_background_set_tile_image_uri (background, background_image);
+	g_free (background_image);
 	
 	/* set up the color for the tabs */
 	color_spec = nautilus_directory_get_metadata (directory,
