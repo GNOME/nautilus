@@ -1,6 +1,7 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+#include <zlib.h>
 #include "data.h"
 
 #define READ_OK    1
@@ -17,9 +18,10 @@ int parse_note_ref( char *line, char **refname, char **reffile,
                      char **refnode, char **end_of_link,
 		     int span_lines);
 
-int read_node_contents( FILE *f, NODE *node );
-int read_node (FILE *f, char *line, NODE *node);
+int read_node_contents( gzFile f, NODE *node );
+int read_node (gzFile f, char *line, NODE *node);
 
 int is_a_hdr_line (char *r);
+extern int num_files_left;
 
 #endif /* PARSE_H  */
