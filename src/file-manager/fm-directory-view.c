@@ -738,9 +738,6 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 
 	g_assert(entries_read <= ENTRIES_PER_CB);
 
-	FM_DEBUG (("Entering function, %d entries read: %s",
-		   entries_read, gnome_vfs_result_to_string (result)));
-
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	if (view->directory_list == NULL) {
@@ -774,9 +771,6 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 			= gnome_vfs_directory_list_get_position (list);
 
 	view->entries_to_display += entries_read;
-	g_message("%d new entries makes %d total (%d real total)",
-		  entries_read, view->entries_to_display,
-		  g_list_length(view->current_position));
 
 	if (result == GNOME_VFS_ERROR_EOF) {
 		display_pending_entries (view);
