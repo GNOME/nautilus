@@ -733,6 +733,10 @@ nautilus_ctree_event (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 
 		/* Get node that we are over */
 		row = gtk_clist_get_selection_info (clist, motion->x, motion->y, &press_row, &press_column);
+		if (row <= 0) {
+			return FALSE;
+		}
+		
 		ctree_row = ROW_ELEMENT (clist, press_row)->data;
 		if (ctree_row == NULL) {
 			return FALSE;

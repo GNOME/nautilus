@@ -1,3 +1,10 @@
+2000-09-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed a crashing bug in the preligting code.
+	
+	* libnautilus-extensions/nautilus-ctree.c: (nautilus_ctree_event):
+	Check for 0 when getting selected row.
+	
 2000-09-14  John Sullivan  <sullivan@eazel.com>
 
 	Fixed unreported bug where the built-in bookmarks never
