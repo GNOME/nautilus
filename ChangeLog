@@ -1,3 +1,16 @@
+2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	The following two NautilusDirectory fixes fix bugzilla.eazel.com
+	bug 2894:
+	
+	* libnautilus-extensions/nautilus-directory-async.c
+	(request_is_satisfied): Check for
+	directory_loaded_set_notification as well as directory_loaded.
+
+	(nautilus_directory_stop_monitoring_file_list): When we dump the
+	file list, we also need to indicate that the directory is no
+	longer loaded.
+
 2000-09-20  Darin Adler  <darin@eazel.com>
 
 	* src/Makefile.am:

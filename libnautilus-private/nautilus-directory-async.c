@@ -1475,7 +1475,8 @@ request_is_satisfied (NautilusDirectory *directory,
 		return FALSE;
 	}
 
-	if (request->file_list && !directory->details->directory_loaded) {
+	if (request->file_list && !(directory->details->directory_loaded &&
+				    directory->details->directory_loaded_sent_notification)) {
 		return FALSE;
 	}
 
@@ -1657,6 +1658,8 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 	directory->details->file_list_monitored = FALSE;
 	cancel_directory_load (directory);
 	nautilus_file_list_unref (directory->details->files);
+
+	directory->details->directory_loaded = FALSE;
 }
 
 static NautilusFile *
