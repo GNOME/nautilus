@@ -152,6 +152,7 @@ void write_node_link_html( FILE *f, char *nodefile, char *refname, char *ref )
 }
 
 /* write out top of a new html file */
+#if 0
 void write_html_header( FILE *f, char *filename, char *nodename)
 {
   fprintf(f,"<!DOCTYPE HTML PUBLIC \"-//W3C/DTD HTML 3.2//EN\">\n");
@@ -162,6 +163,7 @@ void write_html_header( FILE *f, char *filename, char *nodename)
   fprintf(f,"</HEAD>\n");
   fprintf(f,"<!-- conversion of file \"%s\", node \"%s\" -->\n",work_filename, work_node);
 }
+#endif
 
 /* start of everything after html header */
 void start_html_content( FILE *f )
@@ -273,6 +275,7 @@ void dump_html_for_node( NODE *node )
     }
 #endif
 
+  /* hack - just dump to stdout for now */
   f = stdout;
 
   /* see if this is THE dir node */
@@ -284,11 +287,15 @@ void dump_html_for_node( NODE *node )
       make_Top_link( destdir, destfile );
 #endif
 
+#if 0
   /* do the html header first */
   write_html_header( f, node->filename, node->nodename );
+#endif
 
+#if 0
   /* now for the body */
   start_html_content( f );
+#endif
 
   /* make an anchor */
   escaped_nodename = escape_html_chars( node->nodename );
@@ -549,7 +556,9 @@ void dump_html_for_node( NODE *node )
   else if (body_open)
     close_body_text_html( f );
 
+#if 0
   fprintf(f,"</BODY>\n</HTML>\n");
+#endif
 
   /* clean up */
 #if 0

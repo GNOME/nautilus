@@ -57,6 +57,9 @@ if (!be_quiet)
 
   }
 
+  /* hack, just send to stdout for now */
+  fprintf(stdout, "<BODY><HTML>\n");
+
   /* big loop to identify sections of info files */
   /* NEW PLAN - format on the fly */
   /* No need to store all nodes, etc since we let web server */
@@ -92,7 +95,7 @@ if (!be_quiet)
 	/* now lets make some html */
 	/* first make sure the subdir for this info file exists */
 	dump_html_for_node( node );
-	/*	free_node(node); */
+
 	if (node)
 	  {
 	    if ( node->contents )
@@ -104,5 +107,6 @@ if (!be_quiet)
     else
       continue;
   }
+  fprintf(stdout, "</BODY></HTML>\n");
   return 0;
 }
