@@ -1,5 +1,20 @@
 2000-10-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_font_family):
+	Remove the fixed font from the list of available fonts.  Its a bad
+	one to use because it crashes the SideBar sometimes.  The problem
+	is that the fixed font doesnt support the "find the largest
+	fitting font" game that the SideBar plays for long strings.
+
+	Its kinda lame to fix the bug by yanking the font, but we have
+	many font improvements planned for after PR2 which will render
+	this issue irrelevant.
+
+	Fixes bug 2256.
+	
+2000-10-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* librsvg/rsvg-ft.c: (rsvg_ft_measure_or_render_string),
 	(rsvg_ft_render_string), (rsvg_ft_measure_string):
 	* librsvg/rsvg-ft.h:

@@ -474,7 +474,6 @@ preferences_item_create_font_family (NautilusPreferencesItem	*item,
 	nautilus_string_list_insert (font_list, "times");
 	nautilus_string_list_insert (font_list, "courier");
 	nautilus_string_list_insert (font_list, "lucida");
-	nautilus_string_list_insert (font_list, "fixed");
 
 	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), font_list);
 
