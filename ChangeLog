@@ -1,3 +1,18 @@
+2000-06-13  Seth Nickell  <seth@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display):
+	Fix stupid bug that clipped the inital '/' in many cases
+	caused by a #define.
+	* src/nautilus-location-bar.c: (drag_data_received_callback),
+	(drag_data_get_callback)
+	Add calls to nautilus_make_uri_from_input rather than reading
+	the input "raw" out of the location box.
+	(try_to_expand_path):
+	Add calls to nautilus_make_uri_from_input and make sure that
+	selection allignments etc are appropriate between actual uri
+	being completed and the user's display.
+
 2000-06-13  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug mjs noticed where the Properties window tended

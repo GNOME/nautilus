@@ -92,6 +92,7 @@ drag_data_received_callback (GtkWidget *widget,
 		             guint32 time)
 {
 	GList *names;
+	gchar *uri;
 
 	g_assert (NAUTILUS_IS_LOCATION_BAR (widget));
 	g_assert (data != NULL);
@@ -111,15 +112,18 @@ drag_data_received_callback (GtkWidget *widget,
 		g_warning ("Should we make more windows?");
 	}
 
+	uri = nautilus_make_uri_from_input (gtk_entry_get_text (GTK_ENTRY (NAUTILUS_LOCATION_BAR (widget)->entry)));
+
 	nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (widget),
 					    names->data);
 	gtk_signal_emit (GTK_OBJECT (widget),
 			 signals[LOCATION_CHANGED],
-			 gtk_entry_get_text (GTK_ENTRY (NAUTILUS_LOCATION_BAR (widget)->entry)));
+			 uri);
 
 	gnome_uri_list_free_strings (names);
 
 	gtk_drag_finish (context, TRUE, FALSE, time);
+	g_free (uri);
 }
 
 static void
@@ -133,7 +137,7 @@ drag_data_get_callback (GtkWidget *widget,
 
 	g_assert (selection_data != NULL);
 
-	entry_text = gtk_entry_get_text (NAUTILUS_LOCATION_BAR (widget->parent)->entry);
+	entry_text = nautilus_make_uri_from_input (gtk_entry_get_text (NAUTILUS_LOCATION_BAR (widget->parent)->entry));
 	
 	switch (info) {
 	case NAUTILUS_DND_URI_LIST:
@@ -147,6 +151,7 @@ drag_data_get_callback (GtkWidget *widget,
 	default:
 		g_assert_not_reached ();
 	}
+	g_free (entry_text);
 }
 
 static void
@@ -197,18 +202,19 @@ try_to_expand_path(GtkEditable *editable)
 	GnomeVFSFileInfo *current_file_info;
 	GnomeVFSDirectoryList *list;
 	GnomeVFSURI *uri;
-	int base_length, current_path_length;
+	int base_length, current_path_length, offset;
 	const char *base_name;
 	char *current_path, *dir_name, *expand_text;
 	
-	current_path = gtk_entry_get_text (GTK_ENTRY (editable));
+	current_path = nautilus_make_uri_from_input(gtk_entry_get_text (GTK_ENTRY (editable)));
 	
-	if (current_path == NULL) 
+	if (!nautilus_str_has_prefix(current_path, "file://")) {
+		g_free(current_path);
 		return;
-	
-	current_path_length = strlen(current_path);		
-	if (!nautilus_str_has_prefix(current_path, "file://"))
-		return;
+	}
+
+	current_path_length = strlen(current_path);	
+	offset = current_path_length - strlen(gtk_entry_get_text(GTK_ENTRY (editable)));
 
 	uri = gnome_vfs_uri_new(current_path);
 	
@@ -217,6 +223,7 @@ try_to_expand_path(GtkEditable *editable)
 		base_length = strlen(base_name);
 	else {
 		gnome_vfs_uri_unref(uri);
+		g_free(current_path);
 		return;	
 	}
 		
@@ -229,6 +236,7 @@ try_to_expand_path(GtkEditable *editable)
 	if (result != GNOME_VFS_OK) {
 		g_free(dir_name);
 		gnome_vfs_uri_unref(uri);
+		g_free(current_path);
 		return;
 	}
 
@@ -247,12 +255,13 @@ try_to_expand_path(GtkEditable *editable)
 	/* if we've got something, add it to the entry */	
 	if (expand_text && !nautilus_str_has_suffix(current_path, expand_text)) {
 		gtk_entry_append_text (GTK_ENTRY(editable), expand_text + base_length);
- 		gtk_entry_select_region(GTK_ENTRY(editable), current_path_length,
-					current_path_length + strlen(expand_text) - base_length);
+ 		gtk_entry_select_region(GTK_ENTRY(editable), current_path_length - offset,
+					current_path_length + strlen(expand_text) - base_length - offset);
 		g_free (expand_text);
 	}
 	
 	g_free(dir_name);
+	g_free(current_path);
 	gnome_vfs_directory_list_destroy(list);
 }
 
