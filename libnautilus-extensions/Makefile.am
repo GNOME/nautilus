@@ -54,6 +54,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-glib-extensions.c		\
 	nautilus-global-preferences.c		\
 	nautilus-gnome-extensions.c		\
+	nautilus-graphic.c			\
 	nautilus-graphic-effects.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-horizontal-splitter.c		\
@@ -129,6 +130,7 @@ noinst_HEADERS =				\
 	nautilus-global-preferences.h		\
 	nautilus-gnome-extensions.h		\
 	nautilus-graphic-effects.h		\
+	nautilus-graphic.h			\
 	nautilus-gtk-extensions.h		\
 	nautilus-gtk-macros.h			\
 	nautilus-horizontal-splitter.h		\
