@@ -417,12 +417,13 @@ then
 
 	  RPM_VERSION=`rpm --version | awk '{ print $3; }'`
 
-	  AC_MSG_CHECKING(rpm version >= 3.0.4)
-
 	  _found_valid_rpm="no"
+	  rpm_needed=3.0.*
+
+	  AC_MSG_CHECKING(rpm version = $rpm_needed)
 
 	  case $RPM_VERSION in
-	    3.0.*)
+	    $rpm_needed)
 	      _found_valid_rpm="yes"
 	    ;;
 
@@ -434,19 +435,18 @@ then
 		AC_MSG_RESULT([found $RPM_VERSION, yes])
 		AC_DEFINE(HAVE_RPM)  	
 	  	RPM_LIBS="-lrpm -lz $rpm_libs"
+		build_rpmview=yes
 	  else
-		AC_MSG_ERROR([
-	*** RPM 3.0.4 required
-	*** $RPM_VERSION found
-	*** configure with --disable-eazel-services to get around this
-	])
+		AC_MSG_RESULT([hmf...])
+		AC_MSG_WARN([RPM $rpm_needed required, $RPM_VERSION found])
+		build_rpmview=no
 	  fi
 	fi
 	AC_SUBST(RPM_LIBS)
 else
 	build_rpmview=no
 fi
-AM_CONDITIONAL(BUILD_RPMVIEW_COMPONENT, test "x$build_rpmview" = "xyes")
+AM_CONDITIONAL(BUILD_RPM_COMPONENTS, test "x$build_rpmview" = "xyes")
 
 dnl ====================================
 dnl = End rpmview checks
