@@ -1,3 +1,9 @@
+2002-07-02  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-application.c (set_session_restart): Set the
+	restart style to RESTART_IF_RUNNING instead of RESTART_NEVER when
+	restart is FALSE.
+
 2002-07-01  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-window-menus.c: (forget_history_if_confirmed):

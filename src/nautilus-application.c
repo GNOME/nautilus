@@ -947,7 +947,7 @@ set_session_restart (GnomeClient *client, gboolean restart)
 		/* Don't respawn in debug mode */
 		gnome_client_set_restart_style (client, GNOME_RESTART_IMMEDIATELY);
 	} else {
-		gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
+		gnome_client_set_restart_style (client, GNOME_RESTART_IF_RUNNING);
 	}
 }
 
