@@ -52,8 +52,8 @@ static void nautilus_window_real_request_status_change(NautilusWindow *window,
                                                        GtkWidget *requesting_view);
 
 #define CONTENTS_AS_HBOX
-/* six seconds */
-#define STATUSBAR_CLEAR_TIMEOUT 6000
+/* milliseconds */
+#define STATUSBAR_CLEAR_TIMEOUT 5000
 
 GtkType
 nautilus_window_get_type(void)
@@ -175,9 +175,12 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
 }
 
 static void
-gtk_option_menu_do_resize(GtkWidget *widget, GtkAllocation *size_alloc, GtkWidget *optmenu)
+gtk_option_menu_do_resize(GtkWidget *widget, GtkWidget *child, GtkWidget *optmenu)
 {
-  gtk_widget_set_usize(optmenu, size_alloc->width, -1);
+  GtkRequisition req;
+  gtk_widget_size_request(widget, &req);
+
+  gtk_widget_set_usize(optmenu, req.width, -1);
 }
 
 static void
@@ -211,7 +214,10 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_widget_show(window->option_cvtype);
   window->menu_cvtype = gtk_menu_new();
   gtk_option_menu_set_menu(GTK_OPTION_MENU(window->option_cvtype), window->menu_cvtype);
-  gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "size_allocate",
+  gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "add",
+                                 GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
+                                 GTK_OBJECT(window->option_cvtype));
+  gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "remove",
                                  GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
                                  GTK_OBJECT(window->option_cvtype));
   wtmp = gtk_menu_item_new_with_label(_("View as blank space"));
@@ -310,6 +316,13 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_paned_pack2(GTK_PANED(window->content_hbox), window->meta_notebook, TRUE, TRUE);
 #endif
   gtk_widget_show_all(window->content_hbox);
+
+
+  window->ent_url = gtk_entry_new();
+  gnome_app_add_docked(app, window->ent_url, "url-entry",
+                       GNOME_DOCK_ITEM_BEH_LOCKED|GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
+                       GNOME_DOCK_TOP, 1, 0, 0);
+  gtk_widget_show(window->ent_url);
 }
 
 static void

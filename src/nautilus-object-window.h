@@ -64,7 +64,7 @@ struct _NautilusWindow {
   GSList *meta_views;
 
   GtkWidget *meta_notebook, *content_hbox, *btn_back, *btn_fwd;
-  GtkWidget *option_cvtype, *menu_cvtype;
+  GtkWidget *option_cvtype, *menu_cvtype, *ent_url;
 
   NautilusLocationReference current_uri, actual_current_uri;
   char *current_content_type;
