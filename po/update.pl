@@ -13,9 +13,10 @@
 #  used within.
 
 
-$VERSION = "1.5beta1";
-$LANG    = $ARGV[0];
-$PACKAGE  = "nautilus";
+my $VERSION = "1.5beta3";
+my $LANG    = $ARGV[0];
+my $PACKAGE = "nautilus";
+my %HEADERS = ();
 $| = 1;
 
 
@@ -95,7 +96,7 @@ sub Help{
 sub Maintain{
     $a="find ../ -print | egrep '.*\\.(c|y|cc|c++|h|gob)' ";
 
-    open(BUF2, "POTFILES.in") || die "update.pl:  there's not POTFILES.in!!!\n";
+    open(BUF2, "POTFILES.in") || die "update.pl:  there's no POTFILES.in!!!\n";
     
     print "Searching for missing _(\" \") entries...\n";
     
@@ -104,14 +105,14 @@ sub Maintain{
     @buf1_1 = <BUF1>;
     @buf1_2 = <BUF2>;
 
-    if (-s "POTFILES.ignore"){
-        open FILE, "POTFILES.ignore";
+    if (-s ".potignore"){
+        open FILE, ".potignore";
         while (<FILE>) {
             if ($_=~/^[^#]/o){
                 push @bup, $_;
             }
         }
-        print "Found POTFILES.ignore: Ignoring files...\n";
+        print "Found .potignore: Ignoring files...\n";
         @buf1_2 = (@bup, @buf1_2);
     }
 
@@ -140,11 +141,11 @@ sub Maintain{
        }
 
     if(@result){
-        open OUT, ">POTFILES.in.missing";
+        open OUT, ">missing";
         print OUT @result;
-        print "\nHere are the results:\n\n", @result, "\n";
-        print "The file POTFILES.in.missing has been placed in the current directory.\n";
-        print "Files supposed to be ignored should be placed in POTFILES.ignore\n";
+        print "\nHere is the result:\n\n", @result, "\n";
+        print "The file \"missing\" has been placed in the current directory.\n";
+        print "Files supposed to be ignored should be placed in \".potignore\"\n";
     }
     else{
         print "\nWell, it's all perfect! Congratulation!\n";
@@ -157,25 +158,29 @@ sub InvalidOption{
 }
  
 sub GenHeaders{
-	
+
     if(-s "ui-extract.pl"){
+
     print "Found ui-extract.pl script\nRunning ui-extract...\n";
+
     open FILE, "<POTFILES.in";
     while (<FILE>) {
        if ($_=~ /(.*)(\.xml\.h)/o){
-          $filename = "$1\.xml";
-          $xmlfiles="\.\/ui-extract.pl --update ../$filename";
+          $filename = "\.\./$1\.xml";
+	  $HEADERS{"$filename\.h"} = [];
+          $xmlfiles="\.\/ui-extract.pl --update $filename";
           system($xmlfiles);
           }
       
        elsif ($_=~ /(.*)(\.glade\.h)/o){
-          $filename = "$1\.glade";
-          $xmlfiles="\.\/ui-extract.pl --update ../$filename";
+          $filename = "\.\./$1\.glade";
+	  $HEADERS{"$filename\.h"} = [];
+          $xmlfiles="\.\/ui-extract.pl --update $filename";
           system($xmlfiles);  
        }
     }
-        
     close FILE;
+    system("touch .headerlock");
 }}
 
 
@@ -192,12 +197,25 @@ sub GeneratePot{
     system($GETTEXT);
     system($GTEST);
     print "Wrote $PACKAGE.pot\n";
+
+    if(-e ".headerlock"){
+    unlink(".headerlock");
+
+    print "Removing generated header (.h) files...";
+
+    foreach my $HEADER (sort keys %HEADERS) {
+    unlink($HEADER);
+    }
+
+    print "done\n";
+
+    }
 }
 
 sub Merging{
 
     if ($ARGV[1]){
-        $LANG   = $ARGV[1];
+        $LANG   = $ARGV[1]; 
     } else {
 	$LANG   = $ARGV[0];
     }
@@ -206,9 +224,9 @@ sub Merging{
         print "Merging $LANG.po with $PACKAGE.pot...";
     }
 
-    $d="cp $LANG.po $LANG.po.old && msgmerge $LANG.po.old $PACKAGE.pot -o $LANG.po";
+    $MERGE="cp $LANG.po $LANG.po.old && msgmerge $LANG.po.old $PACKAGE.pot -o $LANG.po";
 
-    system($d);
+    system($MERGE);
     
     if ($ARGV[0] ne "--dist" && $ARGV[0] ne "-D") {
         print "\n\n";
@@ -219,7 +237,7 @@ sub Merging{
 }
 
 sub NotExisting{
-    print "update.pl:  sorry $LANG.po does not exist!\n";
+    print "update.pl:  sorry, $LANG.po does not exist!\n";
     print "Try `update.pl --help' for more information.\n";    
     exit;
 }
