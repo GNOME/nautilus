@@ -1826,13 +1826,19 @@ size_allocate (GtkWidget *widget,
 	if (visible_width == 0)
 		visible_width = 1;
 
+#if 1
+	grid->visible_width = MAX(visible_width, grid->width);
+	grid->height = MAX(visible_height, grid->height);
+	gnome_icon_container_relayout(container);
+#else
 	if (visible_width > grid->width || visible_height > grid->height)
 		icon_grid_resize (grid,
 				  MAX (visible_width, grid->width),
 				  MAX (visible_height, grid->height));
 
-	icon_grid_resize(grid, visible_width, visible_height);
+	/* icon_grid_resize(grid, visible_width, visible_height); */
 	/*	icon_grid_set_visible_width (grid, visible_width); */
+#endif
 
 	set_scroll_region (container);
 }
