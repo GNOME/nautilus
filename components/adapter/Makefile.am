@@ -11,6 +11,7 @@ INCLUDES =					\
 	$(GNOMEUI_CFLAGS)			\
 	$(BONOBOX_CFLAGS)			\
 	$(OAF_CFLAGS)				\
+	$(VFS_CFLAGS)				\
 	$(XML_CFLAGS)				\
 	-D_REENTRANT				\
 	$(NULL)
