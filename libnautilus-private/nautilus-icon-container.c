@@ -3723,11 +3723,12 @@ handle_icon_button_press (NautilusIconContainer *container,
 	}
 	if (event->type == GDK_2BUTTON_PRESS &&
 	    event->button == DRAG_BUTTON) {
-		if (icon == details->double_click_icon[1]) {
-			/* Double clicking does not trigger a D&D action. */
-			details->drag_button = 0;
-			details->drag_icon = NULL;
-			
+		/* Double clicking does not trigger a D&D action. */
+		details->drag_button = 0;
+		details->drag_icon = NULL;
+		
+		if (icon == details->double_click_icon[1] &&
+		    !button_event_modifies_selection (event)) {
 			activate_selected_items (container);
 		}
 		return TRUE;
