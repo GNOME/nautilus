@@ -311,7 +311,7 @@ selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event
 	/* fork off a task to play the sound file */
 	
 	/* this will soon be an optional choice */
-	if (FALSE) {
+	if (TRUE) {
 	} else {
 		if (!(play_pid = fork())) {
 			execlp ("xmms", "xmms", song_name + 7, NULL);
@@ -746,29 +746,26 @@ sort_song_list(NautilusMusicView *music_view, GList* song_list)
 
 static void play_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
-        char *song_name;
-	g_message("play button clicked");
-	
+	char *song_name;	
 	song_name =  gtk_clist_get_row_data(GTK_CLIST(music_view->details->song_list),
 						music_view->details->selected_index);
 	
 	if (song_name == NULL) {
 		return;
 	}
-	/*
-	start_playing_file(song_name);
-	*/
+	
+	start_playing_file(song_name + 7, TRUE);
+
 }
 
 static void stop_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
 	stop_playing_file();
-	g_message("stop button clicked");
 }
 
 static void pause_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
-	g_message("pause button clicked");
+	pause_playing_file();
 }
 
 static void prev_button_callback (GtkWidget * widget, NautilusMusicView *music_view)

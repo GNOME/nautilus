@@ -25,6 +25,6 @@
 
 /* header file for the mpg123 handler for playing mp3 files */
 
-void start_playing_file(gchar* filename);
-void stop_playing_file();
-void do_mpg123_pause();
+void start_playing_file (gchar* filename, gboolean start_from_beginning);
+void stop_playing_file (void);
+void pause_playing_file (void);

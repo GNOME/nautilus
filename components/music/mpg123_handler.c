@@ -34,6 +34,8 @@
 #include <gtk/gtk.h>
 #include <gdk_imlib.h>
 
+#include "mpg123_handler.h"
+
 #define	STATUS_STOP 0
 #define	STATUS_PAUSE 1
 #define	STATUS_PLAY 2
@@ -90,13 +92,12 @@ gint	mpg123_8bit = FALSE;
 gint	mpg123_device_enable = FALSE;
 gchar	*mpg123_device = NULL;
 
-gint debug_mode = 1;
+gint debug_mode = 0;
 gint new_song = 0;
 gint mpg123_status;
 
 static gint mp3_pid;
 static void sigchld_handler(int);
-static gint playback_speed;
 
 static FILE *mpgpipe = NULL;
 static gint mypipe[2];
@@ -106,10 +107,6 @@ static gint signal_timeout_id = 0;
 static gint mpg123_version = MPG123_VER_0_59O;
 
 /* headers */
-
-void start_playing_file(gchar* filename);
-void stop_playing_file(void);
-void do_mpg123_pause(void);
 
 static void parse_header_info();
 static void parse_frame_info();
@@ -158,13 +155,13 @@ if (debug_mode) putchar('V');
 			mpg123_version = MPG123_VER_0_59O;
 		else if (strcmp(s, "0.59p") == 0)
 			mpg123_version = MPG123_VER_0_59O;
-		else if (strcmp(s, "0.59r") == 0)
+		else if ((strcmp(s, "0.59q") == 0) || (strcmp(s, "0.59r") == 0))
 			mpg123_version = MPG123_VER_0_59Q;
 		else
 			{
 			mpg123_version = MPG123_VER_UNKNOWN;
 			printf("unknown version of mpg123, assuming" MPG123_VER_STRING "compatible\n");
-			printf("(GQmpeg requires mpg123 0.59o or later)\n");
+			printf("(Nautilus requires mpg123 0.59o or later)\n");
 			}
 		if (debug_mode) printf("mpg123 version detected: %d\n", mpg123_version);
 		}
@@ -623,7 +620,7 @@ static gint read_data()
 	return TRUE;
 }
 
-void start_playing_file(gchar* filename)
+void start_playing_file(gchar* filename, gboolean start_from_beginning)
 {
 	pid_t frk_pid;
 	gchar cmd_arguments[16][512];
@@ -632,6 +629,9 @@ void start_playing_file(gchar* filename)
 
 	if (mpg123_status == STATUS_PLAY) return;
 
+	if (start_from_beginning)
+		frames = 0;
+		
 	/* create all command line arguments */
 
 	strcpy(cmd_arguments[cmd_cnt],"mpg123");
@@ -704,40 +704,6 @@ void start_playing_file(gchar* filename)
 		cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
 		cmd_cnt++;
 		}
-
-	if (playback_speed != 50)
-		{
-		gint numerator_value = 1;
-		gint denominator_value = 1;
-		
-		if (playback_speed < 50)
-			{
-			numerator_value = 4 + ((playback_speed * 12) / 50);
-			denominator_value = 16;
-			}
-		else
-			{
-			numerator_value = 16 + (((playback_speed - 50) * 48) / 50);
-			denominator_value = 16;
-			}
-		
-		
-		strcpy(cmd_arguments[cmd_cnt],"-d");
-		cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
-		cmd_cnt++;
-		
-		sprintf(cmd_arguments[cmd_cnt],"%d", numerator_value);
-		cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
-		cmd_cnt++;
-		
-		strcpy(cmd_arguments[cmd_cnt],"-h");
-		cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
-		cmd_cnt++;
-		
-		sprintf(cmd_arguments[cmd_cnt],"%d", denominator_value);
-		cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
-		cmd_cnt++;
-		}
 		
 	strcpy(song_name_data, filename);
 	song_path = &song_name_data[0];
@@ -795,7 +761,7 @@ void start_playing_file(gchar* filename)
 	signal_timeout_id = gtk_timeout_add(150,(GtkFunction) read_data,NULL);
 }
 
-void stop_playing_file()
+void stop_playing_file ()
 {
 	pid_t child;
 	gint  status_result;
@@ -815,7 +781,7 @@ void stop_playing_file()
     mpg123_status = STATUS_STOP;
 }
 
-void do_mpg123_pause()
+void pause_playing_file ()
 {
 	if (mpg123_status == STATUS_STOP) return;
 	
@@ -826,7 +792,7 @@ void do_mpg123_pause()
 		}
 	else
 		{
-		start_playing_file(song_path);
+		start_playing_file(song_path, FALSE);
 		}		
 
 }
