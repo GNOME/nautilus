@@ -273,3 +273,25 @@ register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 }
 
+/* here is the callback to handle service tab selection */
+void
+service_tab_selected_callback (GtkWidget		*widget,
+				int			which_tab,
+				NautilusSummaryView	*view)
+{
+
+	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->services_notebook), which_tab);
+
+}
+
+/* here is the callback to handle updates tab selection */
+void
+updates_tab_selected_callback (GtkWidget		*widget,
+				int			which_tab,
+				NautilusSummaryView	*view)
+{
+
+	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->updates_notebook), which_tab);
+
+}
+

@@ -65,6 +65,7 @@
 #include "nautilus-summary-callbacks.h"
 #include "nautilus-summary-menu-items.h"
 #include "nautilus-summary-dialogs.h"
+#include "nautilus-summary-footer.h"
 #include "nautilus-summary-view-private.h"
 
 #define notDEBUG_TEST	1
@@ -92,19 +93,10 @@ static void     goto_service_cb                        (GtkWidget               
 							ServicesButtonCallbackData *cbdata);
 static void     goto_update_cb                         (GtkWidget                  *button,
 							ServicesButtonCallbackData *cbdata);
-static void     service_tab_selected_callback          (GtkWidget                  *widget,
-							int                         which_tab,
-							NautilusSummaryView        *view);
-static void     updates_tab_selected_callback          (GtkWidget                  *widget,
-							int                         which_tab,
-							NautilusSummaryView        *view);
-static void     footer_item_clicked_callback           (GtkWidget                  *widget,
-							int                         index,
-							gpointer                    callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
-static const char *footer_online_items[] = 
+static const char *footer_online_items[] =
 {
 	N_("Register"),
 	N_("Login"),
@@ -112,7 +104,7 @@ static const char *footer_online_items[] =
 	N_("Privacy Statement")
 };
 
-static const char *footer_offline_items[] = 
+static const char *footer_offline_items[] =
 {
 	N_("Account Preferences"),
 	N_("Logout"),
@@ -950,62 +942,3 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 
 }
 
-/* here is the callback to handle service tab selection */
-static void
-service_tab_selected_callback (GtkWidget *widget,
-		   int which_tab,
-		   NautilusSummaryView	*view)
-{
-	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->services_notebook), which_tab);
-}
-
-/* here is the callback to handle updates tab selection */
-static void
-updates_tab_selected_callback (GtkWidget *widget,
-		   int which_tab,
-		   NautilusSummaryView	*view)
-{
-	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->updates_notebook), which_tab);
-}
-
-static void
-footer_item_clicked_callback (GtkWidget *widget, int index, gpointer callback_data)
-{
-	NautilusSummaryView *view;
-
-	g_return_if_fail (NAUTILUS_IS_SUMMARY_VIEW (callback_data));
-	g_return_if_fail (index >= FOOTER_REGISTER_OR_PREFERENCES);
-	g_return_if_fail (index <= FOOTER_PRIVACY_STATEMENT);
-
-	view = NAUTILUS_SUMMARY_VIEW (callback_data);
-
-	switch (index) {
-	case FOOTER_REGISTER_OR_PREFERENCES:
-		if (!view->details->logged_in) {
-			register_button_cb (NULL, view);
-		} else {
-			preferences_button_cb (NULL, view);
-		}
-		break;
-
-	case FOOTER_LOGIN_OR_LOGOUT:
-		if (!view->details->logged_in) {
-			generate_login_dialog (view);
-		} else {
-			logout_button_cb (NULL, view);
-		}
-		break;
-
-	case FOOTER_TERMS_OF_USER:
-		nautilus_view_open_location (view->details->nautilus_view, SUMMARY_TERMS_OF_USE_URI);
-		break;
-
-	case FOOTER_PRIVACY_STATEMENT:
-		nautilus_view_open_location (view->details->nautilus_view, SUMMARY_PRIVACY_STATEMENT_URI);
-		break;
-
-	default:
-		g_assert_not_reached ();
-		break;
-	}
-}

@@ -20,28 +20,12 @@
  * Authors: J Shane Culpepper
  */
 
-#ifndef NAUTILUS_SUMMARY_CALLBACKS_H
-#define NAUTILUS_SUMMARY_CALLBACKS_H
+#ifndef NAUTILUS_SUMMARY_FOOTER_H
+#define NAUTILUS_SUMMARY_FOOTER_H
 
-void	login_button_cb				(GtkWidget			*button,
-						 NautilusSummaryView		*view);
-void	preferences_button_cb			(GtkWidget			*button,
-						 NautilusSummaryView		*view);
-void	logout_button_cb			(GtkWidget			*button,
-						 NautilusSummaryView		*view);
-void	register_button_cb			(GtkWidget			*button,
-						 NautilusSummaryView		*view);
-void	forgot_password_button_cb		(GtkWidget			*button,
-						 NautilusSummaryView		*view);
-gint	logged_in_callback			(gpointer			raw);
-gint	logged_out_callback			(gpointer			raw);
-void	service_tab_selected_callback		(GtkWidget			*widget,
-						 int				which_tab,
-						 NautilusSummaryView		*view);
-void	updates_tab_selected_callback		(GtkWidget			*widget,
-						 int				which_tab,
-						 NautilusSummaryView		*view);
+void	footer_item_clicked_callback	(GtkWidget	*widget,
+					 int		index,
+					 gpointer	callback_data);
 
-
-#endif /* NAUTILUS_SUMMARY_CALLBACKS_H */
+#endif /* NAUTILUS_SUMMARY_FOOTER_H */
 

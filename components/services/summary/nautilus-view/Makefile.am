@@ -34,6 +34,8 @@ nautilus_summary_view_SOURCES =						\
 	nautilus-summary-menu-items.c					\
 	nautilus-summary-dialogs.h					\
 	nautilus-summary-dialogs.c					\
+	nautilus-summary-footer.h					\
+	nautilus-summary-footer.c					\
 	nautilus-summary-view.h						\
 	nautilus-summary-view.c		    				\
 	main.c								\
