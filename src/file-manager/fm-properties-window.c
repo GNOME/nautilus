@@ -68,7 +68,12 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-undo.h>
+#include <libnautilus/nautilus-view.h>
+#include <bonobo/bonobo-widget.h>
+#include <bonobo/bonobo-exception.h>
 #include <string.h>
 
 static GHashTable *windows;
@@ -2101,6 +2106,100 @@ create_permissions_page (FMPropertiesWindow *window)
 	}
 }
 
+static GtkWidget *
+bonobo_page_error_message (NautilusViewIdentifier *view_id,
+			   CORBA_Environment *ev)
+{
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *image;
+	char *msg;
+
+	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR,
+					  GTK_ICON_SIZE_DIALOG);
+
+	msg = g_strdup_printf ("There was an error while trying to create the view named `%s':  %s", view_id->name, CORBA_exception_id (ev));
+	label = gtk_label_new (msg);
+	g_free (msg);
+
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	return hbox;
+}
+
+static void
+append_bonobo_pages (FMPropertiesWindow *window)
+{
+	GList *components, *l;
+	CORBA_Environment ev;
+
+	/* find all the property page views for this file */
+	components = nautilus_mime_get_all_components_for_file_extended
+		(window->details->target_file,
+		 "nautilus:property_page_name.defined()");
+	
+	CORBA_exception_init (&ev);
+
+	l = components;
+	while (l != NULL) {
+		NautilusViewIdentifier *view_id;
+		Bonobo_ServerInfo *server;
+		GtkWidget *vbox, *widget;
+		Bonobo_Unknown obj;
+
+		widget = NULL;
+
+		server = l->data;
+		l = l->next;
+
+		view_id = nautilus_view_identifier_new_from_property_page (server);
+
+		obj = bonobo_activation_activate_from_id (view_id->iid,
+							  0, NULL, &ev);
+
+		if (!BONOBO_EX (&ev)) {
+			Bonobo_Control control;
+			Nautilus_View view;
+			char *uri;
+			
+			control = Bonobo_Unknown_queryInterface
+					(obj, "IDL:Bonobo/Control:1.0", &ev);
+
+			view = Bonobo_Unknown_queryInterface
+					(control, "IDL:Nautilus/View:1.0", &ev);
+
+			uri = nautilus_file_get_uri
+				(window->details->target_file);
+
+			Nautilus_View_load_location (view, uri, &ev);
+			
+			if (!BONOBO_EX (&ev)) {
+				widget = bonobo_widget_new_control_from_objref
+						(control, CORBA_OBJECT_NIL);
+			}
+
+			g_free (uri);
+		}
+
+		if (widget == NULL) {
+			widget = bonobo_page_error_message (view_id, &ev);
+		}
+		
+
+		vbox = create_page_with_vbox (window->details->notebook,
+					      view_id->name);
+		gtk_container_add (GTK_CONTAINER (vbox), widget);
+		gtk_widget_show_all (vbox);
+		
+		nautilus_view_identifier_free (view_id);
+	}
+
+}
+
 static gboolean
 should_show_emblems (FMPropertiesWindow *window) 
 {
@@ -2222,6 +2321,9 @@ create_properties_window (StartupData *startup_data)
 	if (should_show_permissions (window)) {
 		create_permissions_page (window);
 	}
+
+	/* append pages from available views */
+	append_bonobo_pages (window);
 	
 	/* Create box for close button. */
 	hbox = gtk_hbutton_box_new ();

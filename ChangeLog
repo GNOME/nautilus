@@ -1,3 +1,23 @@
+2002-10-24  Alexander Larsson  <alexl@redhat.com>
+
+	* components/Makefile.am:
+	* components/image_properties/.cvsignore:
+	* components/image_properties/Makefile.am:
+	* components/image_properties/Nautilus_View_image_properties.server.in.in:
+	* components/image_properties/libmain.c: 
+	* components/image_properties/nautilus-image-properties-view.[ch]:
+	* configure.in:
+
+	Implement image properties page
+	
+	Patch from James Willcox  <jwillcox@gnome.org>
+	
+	* libnautilus-private/nautilus-mime-actions.[ch]:
+	Add nautilus_mime_get_all_components_for_file_extended
+	
+	* src/file-manager/fm-properties-window.c:
+	Plug-in property pages.
+
 2002-10-24 Stephen Browne <stephen.browne@sun.com>
 
 	* libnautilus-private/nautilus-file-operations.c:

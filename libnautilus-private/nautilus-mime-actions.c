@@ -767,7 +767,8 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 
 
 GList *
-nautilus_mime_get_all_components_for_file (NautilusFile *file)
+nautilus_mime_get_all_components_for_file_extended (NautilusFile *file,
+						    char *extra_reqs)
 {
 	char *mime_type;
 	char *uri_scheme;
@@ -789,8 +790,10 @@ nautilus_mime_get_all_components_for_file (NautilusFile *file)
 		item_mime_types = NULL;
 	}
 
-	info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
-						 explicit_iids, NULL, NULL);
+	info_list = nautilus_do_component_query (mime_type, uri_scheme,
+						 item_mime_types, FALSE,
+						 explicit_iids, NULL,
+						 extra_reqs);
 	
 	eel_g_list_free_deep (explicit_iids);
 	eel_g_list_free_deep (item_mime_types);
@@ -799,6 +802,12 @@ nautilus_mime_get_all_components_for_file (NautilusFile *file)
 	g_free (mime_type);
 
 	return info_list;
+}
+
+GList *
+nautilus_mime_get_all_components_for_file (NautilusFile *file)
+{
+	return nautilus_mime_get_all_components_for_file_extended (file, NULL);
 }
 
 gboolean

@@ -12,6 +12,7 @@ SUBDIRS = 					\
 	throbber 				\
 	tree 					\
 	emblem					\
+	image_properties			\
 	$(NULL)
 
 
