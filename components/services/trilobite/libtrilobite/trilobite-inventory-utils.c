@@ -35,7 +35,6 @@
 #include <gnome-xml/entities.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
-#include <libnautilus-extensions/nautilus-string.h>
 #include "trilobite-inventory-utils.h"
 
 static void	add_package_info	(xmlDocPtr 	configuration_metafile);
@@ -47,6 +46,8 @@ static void	add_info		(xmlNodePtr 	node_ptr,
 					 const char	*field_name);
 static void	add_io_info		(xmlNodePtr	node_ptr,
 					 char		*io_data);
+static gboolean str_has_prefix		(const char	*haystack,
+					 const char	*needle);
 
 /* add package data from the package database to the passed in xml document */
 
@@ -165,7 +166,7 @@ add_info (xmlNodePtr	node_ptr, char	*data, const char	*tag, const char	*field_na
 	for (index = 0; index < 32; index++) {
 		if (info_array[index] == NULL)
 			break;
-		if (nautilus_str_has_prefix (info_array[index], field_name)) {
+		if (str_has_prefix (info_array[index], field_name)) {
 			field_data = info_array[index] + strlen(field_name);
 			field_data = strchr (field_data, ':') + 1;
 			field_data = g_strchug (field_data);
@@ -307,3 +308,23 @@ trilobite_create_configuration_metafile (void)
 	
 	return configuration_metafile;
 }
+
+static gboolean
+str_has_prefix (const char *haystack, const char *needle)
+{
+	const char *h, *n;
+
+	/* Eat one character at a time. */
+	h = haystack == NULL ? "" : haystack;
+	n = needle == NULL ? "" : needle;
+	do {
+		if (*n == '\0') {
+			return TRUE;
+		}
+		if (*h == '\0') {
+			return FALSE;
+		}
+	} while (*h++ == *n++);
+	return FALSE;
+}
+
