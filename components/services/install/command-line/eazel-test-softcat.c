@@ -143,7 +143,7 @@ main (int argc, char **argv)
 			printf ("(user: %s) ", username);
 		}
 		printf ("...\n");
-		eazel_softcat_set_packages_pr_query (softcat, arg_funk);
+		eazel_softcat_set_packages_per_query (softcat, arg_funk);
 		eazel_softcat_get_info_plural (softcat, package_list, 
 					       &out, &err,
 					       sense_flags, PACKAGE_FILL_EVERYTHING);
