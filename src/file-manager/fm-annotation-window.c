@@ -75,6 +75,7 @@ struct FMAnnotationWindowDetails {
 	GtkWidget *file_icon;
 	GtkLabel  *file_title;	
 	GtkWidget *text_field;
+	char	  *access_mode;
 };
 
 
@@ -101,6 +102,9 @@ fm_annotation_window_initialize (FMAnnotationWindow *window)
 {
 	window->details = g_new0 (FMAnnotationWindowDetails, 1);
 	window->details->file = NULL;
+	
+	/* default to local access only */
+	window->details->access_mode = g_strdup ("local");
 }
 
 static void
@@ -112,6 +116,7 @@ real_destroy (GtkObject *object)
 
 	nautilus_file_unref (window->details->file);
 	
+	g_free (window->details->access_mode);
 	g_free (window->details);
 	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
@@ -194,6 +199,39 @@ update_annotation_window_title (GtkWindow *window, NautilusFile *file)
 	g_free (title);
 }
 
+/* callback for access menu items */
+static void
+set_access_mode (GtkWidget *menu_item, const char* access_mode)
+{
+	FMAnnotationWindow *window;
+	window = FM_ANNOTATION_WINDOW (gtk_object_get_user_data (GTK_OBJECT (menu_item)));
+	g_free (window->details->access_mode);
+	window->details->access_mode = g_strdup (access_mode);
+}
+
+/* utility to create and append an access menu item */
+static void
+add_access_menu_item (FMAnnotationWindow *window, GtkWidget *access_menu, const char *menu_label, const char *id)
+{
+	GtkWidget *menu_item;
+	
+	menu_item = gtk_menu_item_new_with_label (menu_label);
+        gtk_widget_show (menu_item);
+        gtk_menu_append (GTK_MENU (access_menu), menu_item);      
+
+	gtk_object_set_user_data (GTK_OBJECT (menu_item), window);
+
+	gtk_signal_connect_full (GTK_OBJECT (menu_item),
+				 "activate",
+				 GTK_SIGNAL_FUNC (set_access_mode),
+				 NULL,
+				 g_strdup (id),
+				 g_free,
+				 FALSE,
+				 FALSE);
+
+}
+
 /* create the option table for the annotation window */
 static GtkWidget *
 create_options_table (FMAnnotationWindow *window)
@@ -236,15 +274,12 @@ create_options_table (FMAnnotationWindow *window)
 	gtk_table_attach(GTK_TABLE(table), access_menu_vbox, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
 
 	new_menu = gtk_menu_new ();
-	menu_item = gtk_menu_item_new_with_label (_("keep local"));
         gtk_widget_show (new_menu);
-        gtk_widget_show (menu_item);
-        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+
+	add_access_menu_item (window, new_menu, _("local only"), "local");	     
         gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), new_menu);
 
-	menu_item = gtk_menu_item_new_with_label (_("share globally"));
-        gtk_menu_append (GTK_MENU (new_menu), menu_item);
-
+	add_access_menu_item (window, new_menu, _("share globally"), "global");
 	return table;
 }
 
@@ -259,12 +294,11 @@ annotation_clicked_callback (GtkWidget *dialog, int which_button, gpointer user_
 	
 	if (which_button == GNOME_OK) {
 		notes_text = gtk_editable_get_chars (GTK_EDITABLE (window->details->text_field), 0 , -1);
-		
-		/* type and access fields hard-wired for now */
+		/* type field is hard-wired for now */
 		nautilus_annotation_add_annotation (window->details->file,
 						    "text",
 						    notes_text,
-						    "local"); 
+						    window->details->access_mode); 
 		g_free (notes_text);
 	}
 	gtk_widget_destroy (dialog);
@@ -290,11 +324,11 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
-	gnome_dialog_set_default( GNOME_DIALOG (window), GNOME_OK);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_annotation", "Nautilus");
 
 	/* add the buttons */
 	gnome_dialog_append_buttons  (GNOME_DIALOG (window), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	gnome_dialog_set_default( GNOME_DIALOG (window), GNOME_OK);
 
 	gtk_signal_connect (GTK_OBJECT (window), "clicked", (GtkSignalFunc) annotation_clicked_callback, NULL);
 
@@ -355,7 +389,12 @@ fm_annotation_window_present (NautilusFile *file, FMDirectoryView *directory_vie
 {
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (directory_view));
-	
+
+	if (nautilus_file_is_directory (file)) {
+		eel_show_error_dialog (_("Sorry, but you currently can't add an annotation to a directory."), _("Can't annotate directory"), NULL);
+		return;
+	}
+		
 	create_annotation_window (file, directory_view);
 }
 

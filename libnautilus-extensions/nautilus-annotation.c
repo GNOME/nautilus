@@ -1035,6 +1035,13 @@ int	nautilus_annotation_has_annotation (NautilusFile *file)
 	return 0;
 }
 
+/* send the local annotations associated with the passed-in digest to the server */
+static void
+nautilus_annotation_send_to_server (const char *digest)
+{
+	g_message ("sending annotations for %s to server", digest);
+}
+
 /* add an annotation to a file */
 void	nautilus_annotation_add_annotation (NautilusFile *file,
 					    const char *annotation_type,
@@ -1138,7 +1145,10 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	nautilus_file_emit_changed (file);
 	
 	/* if the access is global, send it to the server */
-
+	if (eel_strcmp (access, "global") == 0) {
+		nautilus_annotation_send_to_server (digest);
+	}
+	
 	/* clean up and we're done */
 	xmlFreeDoc (xml_document);
 	g_free (digest);

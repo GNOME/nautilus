@@ -1,3 +1,19 @@
+2001-04-06  Andy Hertzfeld  <andy@eazel.com>
+
+	started implementation of optionally sending annotations to the
+	server.  Also, put up error when the user tries to annotate
+	a directory
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	
+	* src/file-manager/fm-annotation-window.c:
+	(fm_annotation_window_initialize), (real_destroy),
+	(set_access_mode), (add_access_menu_item), (create_options_table),
+	(annotation_clicked_callback), (create_annotation_window),
+	(fm_annotation_window_present):
+
 2001-04-05  Andy Hertzfeld  <andy@eazel.com>
 
 	merged with HEAD to create the post-1_0_10 branch
