@@ -95,6 +95,7 @@ trilobite-eazel-time-view \
 nautilus-sample-service-view \
 eazel-proxy \
 eazel-proxy-util \
+mpg123 \
 "
 
 if [ "$extreme" = "yes" ]
