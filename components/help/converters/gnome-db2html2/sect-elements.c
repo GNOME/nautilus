@@ -1521,7 +1521,7 @@ sect_table_with_border_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 	
-	sect_print (context, "<TABLE BORDER=\"1\"\n");
+	sect_print (context, "<TABLE BORDER=\"1\">\n");
 	
 	sect_context->table_count++;
 }
