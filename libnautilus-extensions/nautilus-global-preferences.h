@@ -41,7 +41,7 @@ BEGIN_GNOME_DECLS
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"/apps/nautilus/icon_view/captions"
 /* Are built-in bookmarks showing or not? */
-#define NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS		"/apps/nautilus/preferences/show_built_in_bookmarks"
+#define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"/apps/nautilus/preferences/hide_built_in_bookmarks"
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/apps/nautilus/preferences/sidebar_width"
 

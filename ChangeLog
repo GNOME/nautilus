@@ -1,3 +1,28 @@
+2000-09-14  John Sullivan  <sullivan@eazel.com>
+
+	Fixed unreported bug where the built-in bookmarks never
+	displayed the first time after visiting any directory, 
+	and reversed sense of the preference to avoid problems
+	with defaults not working for global preferences.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Changed preference from NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS
+	to NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window),
+	(synch_built_in_bookmarks_preference_and_checkbox): Updated
+	for reversed preference.
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu),
+	(refresh_bookmarks_menu),
+	(nautilus_window_initialize_bookmarks_menu),
+	(nautilus_window_remove_bookmarks_menu_callback),
+	(refresh_bookmarks_menu_idle_callback),
+	(schedule_refresh_bookmarks_menu): Updated for reversed
+	preference. Also, deleted refresh_dynamic_bookmarks, which
+	was broken (removed but didn't replace built-in bookmarks),
+	and renamed *dynamic_bookmarks* -> *bookmarks_menu* to parallel
+	names for go_menu calls.
+
 2000-09-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1984, Crash when closing a window after undo operation

@@ -110,9 +110,9 @@ static void                  remove_bookmarks_after	                    (Nautilu
 									     const char             *last_static_item_path);
 static NautilusBookmarkList *get_bookmark_list                              (void);
 static void                  refresh_go_menu                   		    (NautilusWindow         *window);
-static void                  refresh_dynamic_bookmarks            	    (NautilusWindow         *window);
+static void                  refresh_bookmarks_menu            	    	    (NautilusWindow         *window);
 static void		     schedule_refresh_go_menu 		    	    (NautilusWindow 	    *window);
-static void		     schedule_refresh_dynamic_bookmarks 	    (NautilusWindow 	    *window);
+static void		     schedule_refresh_bookmarks_menu 	    	    (NautilusWindow 	    *window);
 static void                  edit_bookmarks                                 (NautilusWindow         *window);
 
 
@@ -887,7 +887,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	/* Let's get notified whenever a bookmark changes. */
 	gtk_signal_connect_object (GTK_OBJECT (bookmark), "changed",
 				   is_bookmarks_menu
-				   ? schedule_refresh_dynamic_bookmarks
+				   ? schedule_refresh_bookmarks_menu
 				   : schedule_refresh_go_menu,
 				   GTK_OBJECT (window));
 }
@@ -1126,12 +1126,15 @@ edit_bookmarks (NautilusWindow *window)
 }
 
 static void
-refresh_all_bookmarks (NautilusWindow *window)
+refresh_bookmarks_menu (NautilusWindow *window)
 {
+	/* Unregister any pending call to this function. */
+	nautilus_window_remove_bookmarks_menu_callback (window);
+
 	nautilus_window_remove_bookmarks_menu_items (window);				
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS, 
-					      TRUE)) {
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, 
+					       FALSE)) {
 		append_static_bookmarks (window, NAUTILUS_MENU_PATH_BOOKMARKS_MENU);
 	}
 
@@ -1211,25 +1214,25 @@ static void
 nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 {
 	/* Construct the initial set of bookmarks. */
-	refresh_all_bookmarks (window);
+	refresh_bookmarks_menu (window);
 
 	/* Recreate static & dynamic part of menu if preference about
 	 * showing static bookmarks changes.
 	 */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS,
-					   (NautilusPreferencesCallback)refresh_all_bookmarks,
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
+					   (NautilusPreferencesCallback)refresh_bookmarks_menu,
 					   window);
 		
 	/* Recreate dynamic part of menu if bookmark list changes */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (get_bookmark_list ()),
 			                       "contents_changed",
-			                       schedule_refresh_dynamic_bookmarks,
+			                       schedule_refresh_bookmarks_menu,
 			   	               GTK_OBJECT (window));
 
 	/* Recreate static & dynamic parts of menu if icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       refresh_all_bookmarks,
+					       schedule_refresh_bookmarks_menu,
 					       GTK_OBJECT (window));
 }
 
@@ -1823,9 +1826,9 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 void
 nautilus_window_remove_bookmarks_menu_callback (NautilusWindow *window)
 {
-        if (window->details->refresh_dynamic_bookmarks_idle_id != 0) {
-                gtk_idle_remove (window->details->refresh_dynamic_bookmarks_idle_id);
-		window->details->refresh_dynamic_bookmarks_idle_id = 0;
+        if (window->details->refresh_bookmarks_menu_idle_id != 0) {
+                gtk_idle_remove (window->details->refresh_bookmarks_menu_idle_id);
+		window->details->refresh_bookmarks_menu_idle_id = 0;
         }
 }
 
@@ -1903,43 +1906,25 @@ append_dynamic_bookmarks (NautilusWindow *window)
 	}	
 }
 
-/**
- * refresh_dynamic_bookmarks:
- * 
- * Refresh user's list of bookmarks at end of Bookmarks menu to match centralized list.
- * @window: The NautilusWindow whose Bookmarks menu will be refreshed.
- **/
-static void
-refresh_dynamic_bookmarks (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	/* Unregister any pending call to this function. */
-	nautilus_window_remove_bookmarks_menu_callback (window);
-
-	nautilus_window_remove_bookmarks_menu_items (window);
-	append_dynamic_bookmarks (window);
-}
-
 static gboolean
-refresh_dynamic_bookmarks_idle_callback (gpointer data)
+refresh_bookmarks_menu_idle_callback (gpointer data)
 {
 	g_assert (NAUTILUS_IS_WINDOW (data));
 
-	refresh_dynamic_bookmarks (NAUTILUS_WINDOW (data));
+	refresh_bookmarks_menu (NAUTILUS_WINDOW (data));
 
         /* Don't call this again (unless rescheduled) */
         return FALSE;
 }
 
 static void
-schedule_refresh_dynamic_bookmarks (NautilusWindow *window)
+schedule_refresh_bookmarks_menu (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	if (window->details->refresh_dynamic_bookmarks_idle_id == 0) {
-                window->details->refresh_dynamic_bookmarks_idle_id
-                        = gtk_idle_add (refresh_dynamic_bookmarks_idle_callback,
+	if (window->details->refresh_bookmarks_menu_idle_id == 0) {
+                window->details->refresh_bookmarks_menu_idle_id
+                        = gtk_idle_add (refresh_bookmarks_menu_idle_callback,
                                         window);
 	}	
 }

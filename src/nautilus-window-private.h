@@ -45,7 +45,7 @@ typedef enum {
 /* FIXME bugzilla.eazel.com 2575: Need to migrate window fields into here. */
 struct NautilusWindowDetails
 {
-	guint refresh_dynamic_bookmarks_idle_id;
+	guint refresh_bookmarks_menu_idle_id;
 	guint refresh_go_menu_idle_id;
 };
 

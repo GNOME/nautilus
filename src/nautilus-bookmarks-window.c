@@ -208,7 +208,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	gtk_box_pack_end (GTK_BOX (right_side), show_static_checkbox, FALSE, FALSE, 0);
 
 	update_built_in_bookmarks_checkbox_to_match_preference (GTK_CHECK_BUTTON (show_static_checkbox));
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS,
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 					   update_built_in_bookmarks_checkbox_to_match_preference,
 					   show_static_checkbox);
 
@@ -673,8 +673,8 @@ synch_built_in_bookmarks_preference_and_checkbox (GtkCheckButton *checkbox, gboo
 
 	g_assert (GTK_IS_CHECK_BUTTON (checkbox));
 
-	preference_setting = nautilus_preferences_get_boolean 
-		(NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS, TRUE);
+	preference_setting = !nautilus_preferences_get_boolean 
+		(NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, FALSE);
 
 	checkbox_setting = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
 
@@ -684,7 +684,7 @@ synch_built_in_bookmarks_preference_and_checkbox (GtkCheckButton *checkbox, gboo
 
 	if (trust_checkbox) {
 		nautilus_preferences_set_boolean
-			(NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS, checkbox_setting);
+			(NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, !checkbox_setting);
 	} else {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), preference_setting);
 	}
