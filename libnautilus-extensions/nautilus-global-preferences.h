@@ -53,8 +53,8 @@ BEGIN_GNOME_DECLS
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
 
-/* use anti-aliased canvas */
-#define NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS		"preferences/anti_aliased_canvas"
+/* Smooth graphics mode (smoother but slower) */
+#define NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE		"preferences/smooth_graphics_mode"
 
 /* Display views */
 #define NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR			"preferences/display_toolbar"

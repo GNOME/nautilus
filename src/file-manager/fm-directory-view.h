@@ -237,7 +237,7 @@ struct FMDirectoryViewClass {
 	void	(* image_display_policy_changed)(FMDirectoryView *view);
 	void	(* font_family_changed)		(FMDirectoryView *view);
 	void	(* click_policy_changed)	(FMDirectoryView *view);
-	void	(* anti_aliased_mode_changed)	(FMDirectoryView *view);
+	void	(* smooth_graphics_mode_changed)(FMDirectoryView *view);
 };
 
 /* GtkObject support */

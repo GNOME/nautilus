@@ -190,7 +190,7 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 0,
-							 NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+							 NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Fonts"));
@@ -651,7 +651,7 @@ global_preferences_register (void)
 	global_preferences_register_sidebar_panels ();
 
 	/* Appearance options */
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 							   _("Use smoother (but slower) graphics"),
 							   TRUE,
 							   TRUE,

@@ -1,5 +1,27 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog), (global_preferences_register):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* src/file-manager/fm-directory-view.c:
+	(smooth_graphics_mode_changed_callback),
+	(fm_directory_view_initialize), (fm_directory_view_destroy):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (get_icon_images_callback),
+	(fm_icon_view_smooth_graphics_mode_changed),
+	(fm_icon_view_initialize_class),
+	(fm_icon_view_update_smooth_graphics_mode),
+	(create_icon_container):
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_destroy),
+	(smooth_graphics_mode_changed_callback):
+
+	Changed "anti_aliased_mode" to "smooth_graphics_mode" cause it
+	much smoother.
+	
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-label.c:
 	(nautilus_label_initialize), (nautilus_label_size_request),
 	(render_buffer_pixbuf), (nautilus_label_set_text),

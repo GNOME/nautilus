@@ -810,7 +810,7 @@ click_policy_changed_callback (gpointer callback_data)
 }
 
 static void
-anti_aliased_mode_changed_callback (gpointer callback_data)
+smooth_graphics_mode_changed_callback (gpointer callback_data)
 {
 	FMDirectoryView *view;
 
@@ -818,7 +818,7 @@ anti_aliased_mode_changed_callback (gpointer callback_data)
 
 	NAUTILUS_CALL_VIRTUAL
 		(FM_DIRECTORY_VIEW_CLASS, view,
-		 anti_aliased_mode_changed, (view));
+		 smooth_graphics_mode_changed, (view));
 }
 
 static double fm_directory_view_preferred_zoom_levels[] = {
@@ -929,8 +929,8 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 					   directory_view);
 	
 	/* Keep track of changes in graphics trade offs */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
-					   anti_aliased_mode_changed_callback, 
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+					   smooth_graphics_mode_changed_callback, 
 					   directory_view);
 }
 
@@ -975,8 +975,8 @@ fm_directory_view_destroy (GtkObject *object)
 					      click_policy_changed_callback,
 					      view);
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-					      anti_aliased_mode_changed_callback,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+					      smooth_graphics_mode_changed_callback,
 					      view);
 
 	if (view->details->model != NULL) {

@@ -77,15 +77,15 @@
 #define MENU_PATH_RENAME 			"/File/Rename"
 
 /* forward declarations */
-static void create_icon_container                       (FMIconView        *icon_view);
-static void fm_icon_view_initialize                     (FMIconView        *icon_view);
-static void fm_icon_view_initialize_class               (FMIconViewClass   *klass);
-static void fm_icon_view_set_zoom_level                 (FMIconView        *view,
-							 NautilusZoomLevel  new_level,
-							 gboolean           always_set_level);
-static void fm_icon_view_update_icon_container_fonts    (FMIconView        *icon_view);
-static void fm_icon_view_update_click_mode              (FMIconView        *icon_view);
-static void fm_icon_view_update_anti_aliased_mode       (FMIconView        *icon_view);
+static void create_icon_container                    (FMIconView        *icon_view);
+static void fm_icon_view_initialize                  (FMIconView        *icon_view);
+static void fm_icon_view_initialize_class            (FMIconViewClass   *klass);
+static void fm_icon_view_set_zoom_level              (FMIconView        *view,
+						      NautilusZoomLevel  new_level,
+						      gboolean           always_set_level);
+static void fm_icon_view_update_icon_container_fonts (FMIconView        *icon_view);
+static void fm_icon_view_update_click_mode           (FMIconView        *icon_view);
+static void fm_icon_view_update_smooth_graphics_mode (FMIconView        *icon_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -1498,21 +1498,21 @@ get_icon_images_callback (NautilusIconContainer *container,
 			  GList **emblem_icons,
 			  FMIconView *icon_view)
 {
-	gboolean anti_aliased;
+	gboolean smooth_graphics;
 	NautilusStringList *emblems_to_ignore;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	anti_aliased = nautilus_icon_container_get_anti_aliased_mode (container);
+	smooth_graphics = nautilus_icon_container_get_anti_aliased_mode (container);
 	if (emblem_icons != NULL) {
 		emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
 			(FM_DIRECTORY_VIEW (icon_view));
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, anti_aliased, emblems_to_ignore);
+		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, smooth_graphics, emblems_to_ignore);
 		nautilus_string_list_free (emblems_to_ignore);
 	}
-	return nautilus_icon_factory_get_icon_for_file (file, modifier, anti_aliased);
+	return nautilus_icon_factory_get_icon_for_file (file, modifier, smooth_graphics);
 }
 
 static char *
@@ -1645,11 +1645,11 @@ fm_icon_view_click_policy_changed (FMDirectoryView *directory_view)
 }
 
 static void
-fm_icon_view_anti_aliased_mode_changed (FMDirectoryView *directory_view)
+fm_icon_view_smooth_graphics_mode_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	fm_icon_view_update_anti_aliased_mode (FM_ICON_VIEW (directory_view));
+	fm_icon_view_update_smooth_graphics_mode (FM_ICON_VIEW (directory_view));
 }
 
 /* GtkObject methods. */
@@ -1690,7 +1690,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->image_display_policy_changed = fm_icon_view_image_display_policy_changed;
         fm_directory_view_class->font_family_changed = fm_icon_view_font_family_changed;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
-        fm_directory_view_class->anti_aliased_mode_changed = fm_icon_view_anti_aliased_mode_changed;
+        fm_directory_view_class->smooth_graphics_mode_changed = fm_icon_view_smooth_graphics_mode_changed;
 
 
         klass->get_directory_sort_by       = fm_icon_view_real_get_directory_sort_by;
@@ -1784,18 +1784,18 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 }
 
 static void
-fm_icon_view_update_anti_aliased_mode (FMIconView *icon_view)
+fm_icon_view_update_smooth_graphics_mode (FMIconView *icon_view)
 {
 	NautilusIconContainer	*icon_container;
-	gboolean		anti_aliased_mode;
+	gboolean		smooth_graphics_mode;
 
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	anti_aliased_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-							      TRUE);
+	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+								 TRUE);
 
-	nautilus_icon_container_set_anti_aliased_mode (icon_container, anti_aliased_mode);
+	nautilus_icon_container_set_anti_aliased_mode (icon_container, smooth_graphics_mode);
 }
 
 static void
@@ -1879,7 +1879,7 @@ create_icon_container (FMIconView *icon_view)
 
 	fm_icon_view_update_icon_container_fonts (icon_view);
 	fm_icon_view_update_click_mode (icon_view);
-	fm_icon_view_update_anti_aliased_mode (icon_view);
+	fm_icon_view_update_smooth_graphics_mode (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }

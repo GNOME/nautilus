@@ -61,7 +61,7 @@ static void nautilus_sidebar_title_theme_changed       (gpointer                
 static void update_icon                                (NautilusSidebarTitle      *sidebar_title);
 static void sidebar_create_smooth_components_if_needed (NautilusSidebarTitle      *sidebar_title);
 static void sidebar_create_normal_components_if_needed (NautilusSidebarTitle      *sidebar_title);
-static void anti_aliased_mode_changed_callback         (gpointer                   callback_data);
+static void smooth_graphics_mode_changed_callback         (gpointer                   callback_data);
 
 
 struct NautilusSidebarTitleDetails {
@@ -142,9 +142,9 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
 
 	/* Keep track of changes in graphics trade offs */
-	anti_aliased_mode_changed_callback (sidebar_title);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
-					   anti_aliased_mode_changed_callback, 
+	smooth_graphics_mode_changed_callback (sidebar_title);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+					   smooth_graphics_mode_changed_callback, 
 					   sidebar_title);
 
 	/* set up the label colors according to the theme, and get notified of changes */
@@ -184,7 +184,7 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 	g_free (sidebar_title->details);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, anti_aliased_mode_changed_callback, sidebar_title);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, smooth_graphics_mode_changed_callback, sidebar_title);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -666,7 +666,7 @@ sidebar_create_normal_components_if_needed (NautilusSidebarTitle *sidebar_title)
 }
 
 static void
-anti_aliased_mode_changed_callback (gpointer callback_data)
+smooth_graphics_mode_changed_callback (gpointer callback_data)
 {
 	NautilusSidebarTitle *sidebar_title;
 
@@ -674,7 +674,7 @@ anti_aliased_mode_changed_callback (gpointer callback_data)
 
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
 
-	sidebar_title->details->smooth_graphics = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+	sidebar_title->details->smooth_graphics = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 										    TRUE);
 
 	if (sidebar_title->details->smooth_graphics) {
