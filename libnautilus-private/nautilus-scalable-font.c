@@ -32,6 +32,7 @@
 #include "nautilus-string.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-string-map.h"
 
 #include <librsvg/rsvg-ft.h>
 
@@ -71,14 +72,21 @@ struct _NautilusScalableFontDetail
 static GHashTable		*global_font_family_table = NULL;
 static RsvgFTCtx		*global_rsvg_ft_context = NULL;
 static NautilusScalableFont	*global_default_font = NULL;
+static NautilusStringMap	*global_family_string_map = NULL;
 
 static const RsvgFTFontHandle UNDEFINED_FONT_HANDLE = -1;
 
 /* GtkObjectClass methods */
-static void nautilus_scalable_font_initialize_class (NautilusScalableFontClass *font_class);
-static void nautilus_scalable_font_initialize       (NautilusScalableFont      *font);
-static void nautilus_scalable_font_destroy          (GtkObject                 *object);
-static void initialize_global_stuff_if_needed       (void);
+static void nautilus_scalable_font_initialize_class   (NautilusScalableFontClass *font_class);
+static void nautilus_scalable_font_initialize         (NautilusScalableFont      *font);
+static void nautilus_scalable_font_destroy            (GtkObject                 *object);
+static void initialize_global_stuff_if_needed         (void);
+
+
+/* 'atexit' destructors for global stuff */
+static void default_font_at_exit_destructor           (void);
+static void font_family_table_at_exit_destructor      (void);
+static void font_family_string_map_at_exit_destructor (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusScalableFont, nautilus_scalable_font, GTK_TYPE_OBJECT)
 
@@ -187,7 +195,7 @@ parse_font_description_file (const char		*directory,
 		return FALSE;
 	}
 
-	tokenized_list = nautilus_string_list_new_from_tokens (fonts_dir_content, "\n", TRUE);
+	tokenized_list = nautilus_string_list_new_from_tokens (fonts_dir_content, "\n", FALSE);
 	g_free (fonts_dir_content);
 
 	if (tokenized_list == NULL) {
@@ -203,8 +211,8 @@ parse_font_description_file (const char		*directory,
 		return FALSE;
 	}
 
-	*font_pfb_list_out = nautilus_string_list_new (TRUE);
-	*font_xfld_list_out = nautilus_string_list_new (TRUE);
+	*font_pfb_list_out = nautilus_string_list_new (FALSE);
+	*font_xfld_list_out = nautilus_string_list_new (FALSE);
 
 	for (i = 0; i < count; i++) {
 		char *line = nautilus_string_list_nth (tokenized_list, i + 1);
@@ -306,6 +314,7 @@ font_family_new (const char *family)
 	entry = g_new (FontFamilyEntry, 1);
 	
 	entry->family = g_strdup (family);
+	g_strdown (entry->family);
 	entry->fonts = NULL;
 
 	return entry;
@@ -429,15 +438,18 @@ font_family_table_add_fonts (GHashTable *font_family_table, const char *font_pat
 
 	g_return_if_fail (font_family_table != NULL);
 	g_return_if_fail (font_path != NULL);
-	g_return_if_fail (g_file_exists (font_path));
+
+	if (!g_file_exists (font_path)) {
+		return;
+	}
 
 	if (!parse_font_description_file (font_path, &font_pfb_list, &font_xfld_list)) {
-		g_warning ("Dude, could not find no stikin fonts in %s", font_path);
 		return;
 	}
 
 	if (nautilus_string_list_get_length (font_pfb_list) != nautilus_string_list_get_length (font_xfld_list)) {
-		g_warning ("Dude, something got fucked");
+		nautilus_string_list_free (font_pfb_list);
+		nautilus_string_list_free (font_xfld_list);
 		return;
 	}
 
@@ -461,10 +473,11 @@ font_family_table_add_fonts (GHashTable *font_family_table, const char *font_pat
 		xfld = nautilus_string_list_nth (font_xfld_list, i);
 		g_assert (xfld != NULL);
 
-		tokenized_xfld = nautilus_string_list_new_from_tokens (xfld, "-", TRUE);
+		tokenized_xfld = nautilus_string_list_new_from_tokens (xfld, "-", FALSE);
 		
 		foundry = nautilus_string_list_nth (tokenized_xfld, 1);
 		family = nautilus_string_list_nth (tokenized_xfld, 2);
+		g_strdown (family);
 		weight = nautilus_string_list_nth (tokenized_xfld, 3);
 		slant = nautilus_string_list_nth (tokenized_xfld, 4);
 		set_width = nautilus_string_list_nth (tokenized_xfld, 5);
@@ -498,6 +511,34 @@ font_family_table_add_fonts (GHashTable *font_family_table, const char *font_pat
 	nautilus_string_list_free (font_xfld_list);
 }
 
+static NautilusStringMap *
+font_family_string_map_new (void)
+{
+	NautilusStringMap *map;
+
+	map = nautilus_string_map_new (FALSE);
+
+	/*
+	 * The idea behind the family map here is that users of NautilusScalableFont
+	 * dont need to know what the exact name of the font is.
+	 *
+	 * For example, old urw fonts use the name 'helvetica', but newer ones use
+	 * 'numbus sans l'
+	 *
+	 * So, we a map for 'helvetica' to 'nimbus sans l' if needed.
+	 *
+	 * Of course, specifying the font by its exact name will continue to work.
+	 */
+	if (font_family_lookup (global_font_family_table, "nimbus sans l")) {
+		nautilus_string_map_add (map, "nimbus sans l", "helvetica");
+	}
+	else if (font_family_lookup (global_font_family_table, "helvetica")) {
+		nautilus_string_map_add (map, "helvetica", "nimbus sans l");
+	}
+
+	return map;
+}
+
 /* Public NautilusScalableFont methods */
 GtkObject*
 nautilus_scalable_font_new (const char	*family,
@@ -513,6 +554,18 @@ nautilus_scalable_font_new (const char	*family,
 	initialize_global_stuff_if_needed ();
 
 	family_entry = font_family_lookup (global_font_family_table, family);
+
+	/* If the family entry was not found, try a mapped family name */
+	if (family_entry == NULL) {
+		char *mapped_family;
+
+		mapped_family = nautilus_string_map_lookup (global_family_string_map, family);
+
+		if (mapped_family != NULL) {
+			family_entry = font_family_lookup (global_font_family_table, mapped_family);
+			g_free (mapped_family);
+		}
+	}
 
 	if (family_entry == NULL) {
 		g_warning ("There is no such font: %s", family);
@@ -663,7 +716,7 @@ nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont  *f
  		return font_sizes[num_font_sizes - 1];
  	}
 
-	tokenized_string = nautilus_string_list_new_from_tokens (text, "\n", TRUE);
+	tokenized_string = nautilus_string_list_new_from_tokens (text, "\n", FALSE);
 	longest_string = nautilus_string_list_get_longest_string (tokenized_string);
 	g_assert (longest_string != NULL);
 	nautilus_string_list_free (tokenized_string);
@@ -873,20 +926,11 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 	}
 }
 
-static void
-default_font_at_exit_destructor (void)
-{
-	if (global_default_font != NULL) {
-		gtk_object_unref (GTK_OBJECT (global_default_font));
-		global_default_font = NULL;
-	}
-}
-
 NautilusScalableFont *
 nautilus_scalable_font_get_default_font (void)
 {
 	if (global_default_font == NULL) {
-		global_default_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("Nimbus Sans L", NULL, NULL, NULL));
+		global_default_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL));
 		g_assert (global_default_font != NULL);
 		g_atexit (default_font_at_exit_destructor);
 	}
@@ -928,7 +972,7 @@ font_family_table_get_family_list (GHashTable *font_family_table)
 
 	g_return_val_if_fail (font_family_table != NULL, NULL);
 
-	list = nautilus_string_list_new (TRUE);
+	list = nautilus_string_list_new (FALSE);
 	
 	g_hash_table_foreach (font_family_table, font_family_table_for_each_append, list);
 
@@ -951,15 +995,6 @@ font_family_table_free (GHashTable *font_family_table)
 	g_hash_table_foreach (font_family_table, font_family_table_for_each_free, NULL);
 
 	g_hash_table_destroy (font_family_table);
-}
-
-static void
-font_family_table_at_exit_destructor (void)
-{
-	if (global_font_family_table != NULL) {
-		font_family_table_free (global_font_family_table);
-		global_font_family_table = NULL;
-	}
 }
 
 gboolean
@@ -996,15 +1031,15 @@ nautilus_scalable_font_query_font (const char		*family,
 	}
 
 	if (weights_out != NULL) {
-		*weights_out = nautilus_string_list_new (TRUE);
+		*weights_out = nautilus_string_list_new (FALSE);
 	}
 
 	if (slants_out != NULL) {
-		*slants_out = nautilus_string_list_new (TRUE);
+		*slants_out = nautilus_string_list_new (FALSE);
 	}
 
 	if (set_widths_out != NULL) {
-		*set_widths_out = nautilus_string_list_new (TRUE);
+		*set_widths_out = nautilus_string_list_new (FALSE);
 	}
 
 	for (iterator = family_entry->fonts; iterator != NULL; iterator = iterator->next) {
@@ -1035,6 +1070,34 @@ static const char * global_default_font_path[] =
 };
 #endif
 
+/* 'atexit' destructors for global stuff */
+static void
+default_font_at_exit_destructor (void)
+{
+	if (global_default_font != NULL) {
+		gtk_object_unref (GTK_OBJECT (global_default_font));
+		global_default_font = NULL;
+	}
+}
+
+static void
+font_family_table_at_exit_destructor (void)
+{
+	if (global_font_family_table != NULL) {
+		font_family_table_free (global_font_family_table);
+		global_font_family_table = NULL;
+	}
+}
+
+static void
+font_family_string_map_at_exit_destructor (void)
+{
+	if (global_family_string_map != NULL) {
+		nautilus_string_map_free (global_family_string_map);
+		global_family_string_map = NULL;
+	}
+}
+
 static void
 initialize_global_stuff_if_needed (void)
 {
@@ -1052,5 +1115,11 @@ initialize_global_stuff_if_needed (void)
 		font_family_table_add_fonts (global_font_family_table, "/usr/share/fonts/default/Type1");
 
 		g_atexit (font_family_table_at_exit_destructor);
+	}
+
+	if (global_family_string_map == NULL) {
+		global_family_string_map = font_family_string_map_new ();
+
+		g_atexit (font_family_string_map_at_exit_destructor);
 	}
 }
