@@ -71,7 +71,7 @@ nautilus_gtk_button_auto_click (GtkButton *button)
 	gtk_button_pressed (button);
 	button->in_button = FALSE;
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 2562:
 	 * Nothing is preventing other events from occuring between
 	 * now and when this timeout function fires, which means in
 	 * theory the user could click on a different row or otherwise
@@ -357,7 +357,7 @@ nautilus_popup_menu_position_func (GtkMenu   *menu,
 	g_assert (offset != NULL);
 
 	/*
-	 * FIXME: The cast from gint16 might cause problems.  
+	 * FIXME bugzilla.eazel.com 2561: The cast from gint16 might cause problems.  
 	 * Unfortunately, GdkPoint uses gint16.
 	 */
 	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);

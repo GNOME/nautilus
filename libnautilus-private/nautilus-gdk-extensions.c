@@ -730,7 +730,7 @@ nautilus_gdk_font_get_bold (const GdkFont *plain_font)
 		scanner = strchr (scanner, '-');
 		g_assert (scanner != NULL);
 
-		/* FIXME:
+		/* FIXME bugzilla.eazel.com 2558:
 		 * some fonts have demibold, etc. instead. We should be able to figure out
 		 * which they are and use them here.
 		 */

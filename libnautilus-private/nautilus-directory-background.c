@@ -772,7 +772,8 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                     background);
         	
 		/* arrange to receive directory metadata */
-                /* FIXME: This says we want to monitor the file
+                /* FIXME bugzilla.eazel.com 2551: 
+                 * This says we want to monitor the file
                  * metadata, and it has the side effect of monitoring
                  * the file list. We want to monitor the directory
                  * metadata, which would not mean monitoring the file

@@ -55,7 +55,7 @@
  */
 #define KEYBOARD_ROW_REVEAL_TIMEOUT 300
 
-/* FIXME: This constant and much of the code surrounding its use was copied from
+/* FIXME bugzilla.eazel.com 2573: This constant and much of the code surrounding its use was copied from
  * nautilus-icon-container; they should share code instead.
  */
 #define CONTEXT_MENU_TIMEOUT_INTERVAL 500
@@ -777,7 +777,8 @@ show_context_menu_callback (void *cast_to_list)
 
 	list = NAUTILUS_LIST (cast_to_list);
 
-	/* FIXME: Need to handle case where button has already been released,
+	/* FIXME bugzilla.eazel.com 2574: 
+	 * Need to handle case where button has already been released,
 	 * a la NautilusIconContainer code?
 	 */
 
@@ -2734,9 +2735,9 @@ nautilus_list_get_drop_action (NautilusList *list,
 			       int *default_action,
 			       int *non_default_action)
 {
-	/* FIXME: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
 
-	/* FIXME: These must be initialized or drag_data_received will never be called.
+	/* FIXME bugzilla.eazel.com 2570: These must be initialized or drag_data_received will never be called.
 	 * I don't understand why this is the case. */
 	if (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON) {
 		*default_action = GDK_ACTION_ASK;
@@ -2758,7 +2759,7 @@ nautilus_list_get_drop_action (NautilusList *list,
 			*non_default_action = 0;
 			return;
 		}
-		/* FIXME:
+		/* FIXME bugzilla.eazel.com 2571:
 		 * compute the drop action default and non-default values here based on
 		 * the drag selection and drop target
 		 */
@@ -2772,7 +2773,7 @@ nautilus_list_get_drop_action (NautilusList *list,
 		break;
 
 	case NAUTILUS_ICON_DND_COLOR:
-	/* FIXME: Doesn't handle dropped keywords in list view? Do we need to support this? */
+	/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in list view? Do we need to support this? */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;

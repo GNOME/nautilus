@@ -136,7 +136,8 @@ nautilus_font_picker_initialize (NautilusFontPicker *font_picker)
 
 	nautilus_string_list_sort (family_list);
 	
-	/* FIXME: Need to deal with possiblity of there being no fonts */
+	/* FIXME bugzilla.eazel.com 2557: 
+	 * Need to deal with possiblity of there being no fonts */
 	g_assert (family_list != NULL);
 
 	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (font_picker->detail->family_picker),

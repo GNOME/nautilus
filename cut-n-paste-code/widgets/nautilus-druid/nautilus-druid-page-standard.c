@@ -151,7 +151,7 @@ nautilus_druid_page_standard_init (NautilusDruidPageStandard *druid_page_standar
 	gtk_rc_style_ref (rc_style);
 	gtk_widget_modify_style (druid_page_standard->_priv->right_bar, rc_style);
 
-	/* FIXME: can I just ref the old style? */
+	/* FIXME bugzilla.eazel.com 2552: can I just ref the old style? */
 	rc_style = gtk_rc_style_new ();
 	rc_style->bg[GTK_STATE_NORMAL].red = 6400;
 	rc_style->bg[GTK_STATE_NORMAL].green = 6400;

@@ -122,13 +122,13 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 			
 	background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
 	if (background != NULL) {
-		/* FIXME: Don't we want to draw the background for the size of the window
+		/* FIXME bugzilla.eazel.com 2548: Don't we want to draw the background for the size of the window
 		 * rather than the whole canvas? This won't work right for gradients, will it?
 		 */
 		gnome_canvas_get_scroll_region (GNOME_CANVAS(item->canvas),
 						&left, &top, &right, &bottom);
 
-		/* FIXME: Icons can go past bounds? News to me! (Darin)
+		/* FIXME bugzilla.eazel.com 2549: Icons can go past bounds? News to me! (Darin)
 		 * This slop value of 24 must die.
 		 */
 		entire_width = right - left + 24; /* add some slop since icons can go past bounds */
@@ -136,7 +136,7 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 
 		nautilus_background_draw_aa (background, buffer, entire_width, entire_height);
 
-		/* FIXME: Shouldn't nautilus_background_draw_aa do these? */
+		/* FIXME bugzilla.eazel.com 2550: Shouldn't nautilus_background_draw_aa do these? */
 		buffer->is_bg = FALSE;
 		buffer->is_buf = TRUE;
 	}

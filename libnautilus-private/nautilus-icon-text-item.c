@@ -417,7 +417,7 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	sgc = style->fg_gc [GTK_STATE_SELECTED];
 	bsgc = style->bg_gc [GTK_STATE_SELECTED];
 
-	/* FIXME: Get these values from prefs when they are saved there */
+	/* FIXME bugzilla.eazel.com 2568: Get these values from prefs when they are saved there */
 	gdk_color_parse ("rgb:00/00/00", &highlight_background_color);
 	gdk_color_parse ("rgb:FF/FF/FF", &highlight_text_color);
 	gdk_color_parse ("rgb:FF/FF/FF", &fill_color);

@@ -280,7 +280,7 @@ nautilus_druid_size_request (GtkWidget *widget,
 
 	temp_width += border * 2;
 	temp_height += GNOME_PAD_SMALL;
-	/* FIXME. do we need to do something with the buttons requisition? */
+	/* FIXME bugzilla.eazel.com 2553: do we need to do something with the buttons requisition? */
 	temp_width = temp_width * 17/4  + GNOME_PAD_SMALL * 3;
 
 	/* pick which is bigger, the buttons, or the NautilusDruidPages */
@@ -585,7 +585,7 @@ nautilus_druid_next_callback (GtkWidget *button, NautilusDruid *druid)
 			return;
 
 		/* Make sure that we have a next list item */
-		/* FIXME: we want to find the next VISIBLE one... */
+		/* FIXME bugzilla.eazel.com 2554: we want to find the next VISIBLE one... */
 		list = g_list_find (druid->_priv->children, druid->_priv->current);
 		g_return_if_fail (list->next != NULL);
 		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (list->next->data));

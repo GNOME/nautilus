@@ -508,14 +508,14 @@ handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 {
 	switch (xfer_info->kind) {
 	case XFER_LINK:
-		/* FIXME: We overwrite the old name here. Is this a storage leak? */
+		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. Is this a storage leak? */
 		progress_info->duplicate_name = get_link_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
 		break;
 
 	case XFER_COPY:
-		/* FIXME: We overwrite the old name here. Is this a storage leak? */
+		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. Is this a storage leak? */
 		progress_info->duplicate_name = get_duplicate_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);

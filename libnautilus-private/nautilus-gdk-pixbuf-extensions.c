@@ -610,7 +610,7 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 	gdk_gc_set_font (gc, (GdkFont *) font);
 	line = text;
 
-	/* FIXME bugzilla.eazel.com xxxx:
+	/* FIXME bugzilla.eazel.com 2559:
 	 * The iteration code should work with strings that dont have 
 	 * new lines.  Its broken right now for single line strings.  The 
 	 * (y + font->ascent) <= height test always fails and no text is drawn.

@@ -92,7 +92,7 @@ truncate_string_from_start (const char *string, GdkFont *font, guint length)
 	}
 	
 	if (!dotdotdot) {
-		/* FIXME:
+		/* FIXME bugzilla.eazel.com 2555:
 		 * This value needs to get updated if a font changes while Nautilus is running
 		 */
 		dotdotdot = gdk_string_width (font, "...");

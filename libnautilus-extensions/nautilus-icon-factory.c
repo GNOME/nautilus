@@ -1046,10 +1046,10 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	/* Handle nautilus link xml files, which may specify their own image */	
 	icon_name = NULL;
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME: This does sync. I/O. */
+		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O. */
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {
-			/* FIXME: Lame hack. We only support file:// URIs? */
+			/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file:// URIs? */
 			if (nautilus_istr_has_prefix (image_uri, "file://")) {
 				if (uri == NULL) {
 					uri = image_uri;
@@ -1277,7 +1277,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 }
 
 /* utility routine that takes two uris and returns true if the first file has been modified later than the second */
-/* FIXME: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
+/* FIXME bugzilla.eazel.com 2565: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
 static gboolean
 first_file_more_recent(const char* file_uri, const char* other_file_uri)
 {
@@ -1883,7 +1883,7 @@ mark_recently_used (NautilusCircularList *node)
 	if (file_uri == NULL)
 		return TRUE;
 		
-	/* FIXME: if the URI is remote, assume it's valid to avoid delay of testing.  Eventually we'll make this async to fix this */
+	/* FIXME bugzilla.eazel.com 2566: if the URI is remote, assume it's valid to avoid delay of testing.  Eventually we'll make this async to fix this */
 	vfs_uri = gnome_vfs_uri_new(file_uri);
 	is_local = gnome_vfs_uri_is_local (vfs_uri);
 	gnome_vfs_uri_unref(vfs_uri);	
@@ -2406,7 +2406,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 				gdk_pixbuf_unref (full_size_image);
 				
 				/* embed the content image in the frame */
-				/* FIXME: the offset numbers are dependent on the frame image - we need to make them adjustable */
+				/* FIXME bugzilla.eazel.com 2567: the offset numbers are dependent on the frame image - we need to make them adjustable */
 				framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame, 3, 3, 6, 6);
 				
 				gdk_pixbuf_unref (scaled_image);

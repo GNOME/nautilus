@@ -240,7 +240,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	/* FIXME: This title phrase needs improvement. */
+	/* FIXME bugzilla.eazel.com 2560: This title phrase needs improvement. */
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Make Directory Appearance Details Public"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
