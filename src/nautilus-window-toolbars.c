@@ -3,7 +3,7 @@
 /*
  * Nautilus
  *
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -33,21 +33,28 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include <bonobo.h>
+#include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktogglebutton.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-app-helper.h>
-#include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-preferences.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-theme.h>
+
+/* FIXME bugzilla.eazel.com 1243: 
+ * We should use inheritance instead of these special cases
+ * for the desktop window.
+ */
+#include "nautilus-desktop-window.h"
 
 static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
@@ -383,16 +390,30 @@ void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
 	CORBA_Environment ev;
+	char *exception_as_text;
+
 	CORBA_exception_init (&ev);
-	window->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
-	
-	
-	if (BONOBO_EX (&ev)) {
-		char *txt;
-		g_warning ("Throbber Activation exception '%s'",
-			   (txt = bonobo_exception_get_text (&ev)));
-		g_free (txt);
-		window->throbber = CORBA_OBJECT_NIL;
+
+	/* FIXME bugzilla.eazel.com 1243: 
+	 * We should use inheritance instead of these special cases
+	 * for the desktop window.
+	 */
+	/* It's important not to create a throbber that will never get
+	 * an X window, because the code to make the throbber go away
+	 * when Nautilus crashes or is killed relies on the X
+	 * window. One way to do this would be to create the throbber
+	 * at realize time, but another way is to special-case the
+	 * desktop window.
+	 */
+	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		window->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
+		if (BONOBO_EX (&ev)) {
+			exception_as_text = bonobo_exception_get_text (&ev);
+			g_warning ("Throbber Activation exception '%s'",
+				   exception_as_text);
+			g_free (exception_as_text);
+			window->throbber = CORBA_OBJECT_NIL;
+		}
 	}
 
 	nautilus_window_ui_freeze (window);

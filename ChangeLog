@@ -1,3 +1,35 @@
+2001-04-24  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug where theme selector would not show themes when the theme
+	directory is a symlink.
+	
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_destroy): Small code cleanup.
+	(vfs_file_exists): Pass GNOME_VFS_FILE_INFO_FOLLOW_LINKS.
+	(populate_list_with_themes_from_directory): Pass
+	GNOME_VFS_FILE_INFO_FOLLOW_LINKS.
+
+	More work on making components go away if Nautilus is prematurely
+	terminated.
+
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars): Don't create a throbber for
+	the desktop, since it doesn't get killed reliably since it never
+	gets an X window.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_destroy), (nautilus_window_allow_stop): Do some
+	minor cleanup of throbber code.
+
+	* nautilus-clean.sh: Add an option to just display the processes
+	and not kill them. Useful for me when I'm writing code that's
+	designed to make the processes go away. Also remove the gconfd
+	saved state file if we kill gconfd (only nautilus-clean.sh -x) for
+	maximum cleanliness (but also maximum unhappiness for any
+	remaining gconf clients).
+	
 2001-04-24  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -20,7 +52,7 @@
 	* src/nautilus-first-time-druid.c:
 	(nautilus_first_time_druid_show):
 	Remove extra argument to update_draw_desktop_checkbox_state()
-	which was delcared as () (instead of (void)) before the last
+	which was declared as () (instead of (void)) before the last
 	change and so the build broke.
 	
 2001-04-23  Darin Adler  <darin@eazel.com>

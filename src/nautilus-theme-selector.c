@@ -3,7 +3,7 @@
 /*
  * Nautilus
  *
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,34 +80,30 @@ struct NautilusThemeSelectorDetails {
 	gboolean handling_theme_change;
 };
 
-static void  nautilus_theme_selector_initialize_class (GtkObjectClass          *object_klass);
-static void  nautilus_theme_selector_initialize       (GtkObject               *object);
-static void  nautilus_theme_selector_destroy          (GtkObject               *object);
-
-static void  add_new_theme_button_callback                  (GtkWidget               *widget,
-						       NautilusThemeSelector *theme_selector);
-static void  remove_button_callback                   (GtkWidget               *widget,
-						       NautilusThemeSelector *theme_selector);
-static gboolean nautilus_theme_selector_delete_event_callback (GtkWidget *widget,
-							GdkEvent  *event,
-							gpointer   user_data);
-
-static void  nautilus_theme_selector_theme_changed	(gpointer user_data);
-static void  populate_list_with_themes 			(NautilusThemeSelector *theme_selector);
-
-static void  theme_select_row_callback			(GtkCList              *clist,
-							 int                    row,
-							 int                    column,
-							 GdkEventButton        *event,
-							 NautilusThemeSelector *theme_selector); 
-static void  theme_style_set_callback			(GtkWidget             *widget, 
-							 GtkStyle              *previous_style,
-							 NautilusThemeSelector *theme_selector); 
-
-static void  exit_remove_mode 				(NautilusThemeSelector *theme_selector);
-static void  set_help_label				(NautilusThemeSelector *theme_selector,
-							 gboolean remove_mode);
-							 
+static void     nautilus_theme_selector_initialize_class      (GtkObjectClass        *object_klass);
+static void     nautilus_theme_selector_initialize            (GtkObject             *object);
+static void     nautilus_theme_selector_destroy               (GtkObject             *object);
+static void     add_new_theme_button_callback                 (GtkWidget             *widget,
+							       NautilusThemeSelector *theme_selector);
+static void     remove_button_callback                        (GtkWidget             *widget,
+							       NautilusThemeSelector *theme_selector);
+static gboolean nautilus_theme_selector_delete_event_callback (GtkWidget             *widget,
+							       GdkEvent              *event,
+							       gpointer               user_data);
+static void     nautilus_theme_selector_theme_changed         (gpointer               user_data);
+static void     populate_list_with_themes                     (NautilusThemeSelector *theme_selector);
+static void     theme_select_row_callback                     (GtkCList              *clist,
+							       int                    row,
+							       int                    column,
+							       GdkEventButton        *event,
+							       NautilusThemeSelector *theme_selector); 
+static void     theme_style_set_callback                      (GtkWidget             *widget,
+							       GtkStyle              *previous_style,
+							       NautilusThemeSelector *theme_selector); 
+static void     exit_remove_mode                              (NautilusThemeSelector *theme_selector);
+static void     set_help_label                                (NautilusThemeSelector *theme_selector,
+							       gboolean               remove_mode);
+			 
 #define THEME_SELECTOR_WIDTH  460
 #define THEME_SELECTOR_HEIGHT 264
 
@@ -287,8 +283,9 @@ nautilus_theme_selector_destroy (GtkObject *object)
 					      nautilus_theme_selector_theme_changed,
 					      theme_selector);
 
-	if (object == GTK_OBJECT (main_theme_selector))
+	if (theme_selector == main_theme_selector) {
 		main_theme_selector = NULL;
+	}
 		
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
@@ -318,7 +315,8 @@ nautilus_theme_selector_show (void)
 	} else {
 		eel_gtk_window_present (GTK_WINDOW (main_theme_selector));
 	}	
-	gtk_clist_moveto (GTK_CLIST(main_theme_selector->details->theme_list), main_theme_selector ->details->selected_row, 0, 0.0, 0.0);		
+	gtk_clist_moveto (GTK_CLIST (main_theme_selector->details->theme_list),
+			  main_theme_selector->details->selected_row, 0, 0.0, 0.0);		
 }
 
 static gboolean
@@ -601,7 +599,8 @@ vfs_file_exists (const char *file_uri)
 	GnomeVFSFileInfo *file_info;
 	
 	file_info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (file_uri, file_info, 0);
+	result = gnome_vfs_get_file_info (file_uri, file_info,
+					  GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	gnome_vfs_file_info_unref (file_info);
 
 	return result == GNOME_VFS_OK;
@@ -822,7 +821,8 @@ populate_list_with_themes_from_directory (NautilusThemeSelector *theme_selector,
 	selected_index = -1;
 				
 	result = gnome_vfs_directory_list_load (&list, directory_uri,
-					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+						GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+						NULL);
 	if (result != GNOME_VFS_OK) {
 		return -1;
 	}

@@ -19,6 +19,9 @@ then
     elif [ "$arg" = "-x" ]
     then
 	extreme=yes
+    elif [ "$arg" = "-n" ]
+    then
+	nokill=yes
     elif [ "$arg" = "-m" ]
     then
 	medusa=yes
@@ -127,11 +130,15 @@ for NAME in $AUX_PROGS; do
 	fi
 	echo_unless_quiet "$NAME: $COUNT"
 
-	if [ "$quiet" != "yes" ]
-	then
-	    $killcmd "$NAME"
-	else
-	    $killcmd "$NAME" > /dev/null 2>&1
+	if [ "$nokill" != "yes" ]; then
+	    if [ "$quiet" != "yes" ]; then
+		$killcmd "$NAME"
+	    else
+	        $killcmd "$NAME" > /dev/null 2>&1
+	    fi
+	    if [ "$NAME" == "gconfd-1" ]; then
+		rm -f "$HOME/.gconfd/saved_state"
+	    fi
 	fi
     fi
 done
@@ -147,5 +154,3 @@ if [ "$medusa" = "yes" ]; then
 	medusa-restart
     fi
 fi
-
-

@@ -809,7 +809,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->details->ui_pending_initialize_menus_part_2 = TRUE;
 
 	/* watch for throbber location changes, too */
-	if (window->throbber != NULL) {
+	if (window->throbber != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
@@ -817,7 +817,7 @@ nautilus_window_constructed (NautilusWindow *window)
 				bonobo_event_source_client_add_listener
 				(property_bag, throbber_location_change_request_callback, 
 				 "Bonobo/Property:change:location", NULL, window); 
-			bonobo_object_release_unref (property_bag, &ev);	
+			bonobo_object_release_unref (property_bag, NULL);	
 		}
 		CORBA_exception_free (&ev);
 	}
@@ -960,7 +960,7 @@ nautilus_window_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
 	}
 
-	if (window->throbber != NULL) {
+	if (window->throbber != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
@@ -968,11 +968,11 @@ nautilus_window_destroy (GtkObject *object)
 				(property_bag,
 				 window->details->throbber_location_change_request_listener_id,
 				 &ev);
-			bonobo_object_release_unref (property_bag, &ev);	
+			bonobo_object_release_unref (property_bag, NULL);	
 		}
-
-		bonobo_object_release_unref (window->throbber, &ev);		
 		CORBA_exception_free (&ev);
+
+		bonobo_object_release_unref (window->throbber, NULL);
 	}
 	if (window->details->location_change_at_idle_id != 0) {
 		gtk_idle_remove (window->details->location_change_at_idle_id);
@@ -1757,12 +1757,12 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_STOP, allow);
 
-	if (window->throbber != NULL) {
+	if (window->throbber != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
 			bonobo_property_bag_client_set_value_gboolean (property_bag, "throbbing", allow, &ev);
-			bonobo_object_release_unref (property_bag, &ev);
+			bonobo_object_release_unref (property_bag, NULL);
 		}
 		CORBA_exception_free (&ev);
 	}
