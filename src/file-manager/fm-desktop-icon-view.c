@@ -219,7 +219,6 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 static void
 create_mount_link (const NautilusVolume *volume)
 {
-	gboolean result;
 	char *desktop_path, *target_uri, *icon_name, *volume_name;
 
 	/* Get icon type */
@@ -693,7 +692,6 @@ static void
 place_home_directory (FMDesktopIconView *icon_view)
 {
 	char *desktop_path, *home_link_name, *home_link_path, *home_dir_uri, *home_uri;
-	gboolean made_link;
 
 	/* Check and see if there is a home link already.  If so, make */
 	if (find_and_update_home_link ()) {
