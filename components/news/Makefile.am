@@ -14,7 +14,7 @@ INCLUDES=\
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 

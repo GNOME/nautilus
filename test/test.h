@@ -23,7 +23,7 @@
 #include <eel/eel-label.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 
 #include <eel/eel-text-caption.h>
 #include <eel/eel-string-picker.h>

@@ -3,7 +3,7 @@
 #include <gtk/gtk.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-init.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 static void
 button_toggled (GtkWidget *button,

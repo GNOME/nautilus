@@ -23,7 +23,7 @@
 #ifndef NAUTILUS_METAFILE_FACTORY_H
 #define NAUTILUS_METAFILE_FACTORY_H
 
-#include <libnautilus-extensions/nautilus-metafile-server.h>
+#include <libnautilus-private/nautilus-metafile-server.h>
 
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-xobject.h>

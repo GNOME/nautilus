@@ -37,9 +37,9 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
-#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-private/nautilus-directory.h>
 #include <eel/eel-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-uri.h>
+#include <libnautilus-private/nautilus-search-uri.h>
 #include <eel/eel-string.h>
 #include <stdio.h>
 

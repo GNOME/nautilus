@@ -40,14 +40,14 @@
 #include <libmedusa/medusa-unindexed-search.h>
 #include <libmedusa/medusa-index-progress.h>
 #endif
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus-extensions/nautilus-file-attributes.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-medusa-support.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-medusa-support.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-uri.h>
+#include <libnautilus-private/nautilus-search-uri.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 

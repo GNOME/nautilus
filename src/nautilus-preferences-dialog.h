@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_PREFERENCES_DIALOG_H
 #define NAUTILUS_PREFERENCES_DIALOG_H
 
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 BEGIN_GNOME_DECLS
 

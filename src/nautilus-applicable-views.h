@@ -32,7 +32,7 @@
 #ifndef NAUTILUS_APPLICABLE_VIEWS_H
 #define NAUTILUS_APPLICABLE_VIEWS_H
 
-#include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 
 typedef struct NautilusDetermineViewHandle NautilusDetermineViewHandle;
 

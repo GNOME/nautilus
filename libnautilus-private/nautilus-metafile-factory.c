@@ -25,7 +25,7 @@
 #include "nautilus-metafile.h"
 
 #include <eel/eel-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include "nautilus-bonobo-extensions.h"
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 struct NautilusMetafileFactoryDetails {

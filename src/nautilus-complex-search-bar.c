@@ -42,11 +42,11 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <widgets/gimphwrapbox/gtkhwrapbox.h>
 
 struct NautilusComplexSearchBarDetails {

@@ -34,11 +34,11 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkvbox.h>
-#include <libnautilus-extensions/nautilus-file-attributes.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-font-factory.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
@@ -46,7 +46,7 @@
  * Undo not working in notes-view.
  */
 #if 0
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #endif
 
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"

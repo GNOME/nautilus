@@ -27,7 +27,7 @@
 
 #include <libgnomeui/gnome-dialog.h>
 #include <gtk/gtkhbox.h>
-#include <libnautilus-extensions/nautilus-preferences-pane.h>
+#include <libnautilus-private/nautilus-preferences-pane.h>
 
 BEGIN_GNOME_DECLS
 

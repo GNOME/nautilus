@@ -27,7 +27,7 @@
 #include <gtk/gtkwidget.h>
 #include "nautilus-file.h"
 #include <eel/eel-background.h>
-#include "libnautilus-extensions/nautilus-icon-container.h"
+#include "libnautilus-private/nautilus-icon-container.h"
 
 void nautilus_connect_background_to_file_metadata         (GtkWidget         *widget,
                                                            NautilusFile      *file);

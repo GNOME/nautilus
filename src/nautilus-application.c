@@ -56,13 +56,13 @@
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-metafile-factory.h>
-#include <libnautilus-extensions/nautilus-sound.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
-#include <libnautilus-extensions/nautilus-volume-monitor.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-metafile-factory.h>
+#include <libnautilus-private/nautilus-sound.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-volume-monitor.h>
 #include <liboaf/liboaf.h>
 
 #define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"

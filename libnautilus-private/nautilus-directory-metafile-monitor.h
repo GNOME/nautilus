@@ -27,7 +27,7 @@
 
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-xobject.h>
-#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-private/nautilus-directory.h>
 
 #define NAUTILUS_TYPE_METAFILE_MONITOR	          (nautilus_metafile_monitor_get_type ())
 #define NAUTILUS_METAFILE_MONITOR(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE_MONITOR, NautilusMetafileMonitor))

@@ -33,12 +33,12 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-clipboard.h>
-#include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-private/nautilus-entry.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-uri.h>
+#include <libnautilus-private/nautilus-search-uri.h>
 #include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <stdio.h>
 
 struct NautilusSimpleSearchBarDetails {

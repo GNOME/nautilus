@@ -27,8 +27,8 @@
 
 #include <gtk/gtkframe.h>
 
-#include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-preferences-item.h>
+#include <libnautilus-private/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-preferences-item.h>
 
 BEGIN_GNOME_DECLS
 

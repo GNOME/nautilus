@@ -29,7 +29,7 @@
 #define NAUTILUS_LINK_SET_WINDOW_H
 
 #include <glib.h>
-#include <libnautilus-extensions/nautilus-link-set.h>
+#include <libnautilus-private/nautilus-link-set.h>
 #include <gtk/gtkwindow.h>
 
 GtkWindow	*nautilus_link_set_configure_window (const char *directory_path, 

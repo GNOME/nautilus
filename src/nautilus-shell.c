@@ -39,12 +39,12 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-label.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>

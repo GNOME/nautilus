@@ -28,7 +28,7 @@
 
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include "nautilus-bonobo-extensions.h"
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 struct NautilusMetafileMonitorDetails {

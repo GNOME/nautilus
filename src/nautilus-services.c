@@ -25,7 +25,7 @@
 #include <config.h>
 #include "nautilus-services.h"
 
-#include <libnautilus-extensions/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-mime-actions.h>
 #ifdef HAVE_AMMONITE
 #include <libtrilobite/libammonite.h>
 #include <bonobo/bonobo-main.h>

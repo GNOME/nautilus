@@ -33,8 +33,8 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <eel/eel-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include "nautilus-global-preferences.h"
+#include "nautilus-undo-signal-handlers.h"
 #include <orb/orbit.h>
 
 struct NautilusEntryDetails {

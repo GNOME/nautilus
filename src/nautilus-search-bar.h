@@ -36,7 +36,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
 
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 #define NAUTILUS_TYPE_SEARCH_BAR (nautilus_search_bar_get_type ())
 #define NAUTILUS_SEARCH_BAR(obj) \

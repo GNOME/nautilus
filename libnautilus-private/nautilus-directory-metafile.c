@@ -27,9 +27,9 @@
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-private.h"
 
-#include <libnautilus-extensions/nautilus-metafile-factory.h>
-#include <libnautilus-extensions/nautilus-directory-metafile-monitor.h>
-#include <libnautilus-extensions/nautilus-metafile-server.h>
+#include "nautilus-metafile-factory.h"
+#include "nautilus-directory-metafile-monitor.h"
+#include "nautilus-metafile-server.h"
 #include <eel/eel-string.h>
 #include <liboaf/liboaf.h>
 #include <stdio.h>

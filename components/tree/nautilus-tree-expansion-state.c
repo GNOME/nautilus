@@ -29,7 +29,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-preferences.h>
 
 struct NautilusTreeExpansionStateDetails {
 	GHashTable *table;

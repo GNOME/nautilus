@@ -58,19 +58,19 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-file-dnd.h>
-#include <libnautilus-extensions/nautilus-file-operations.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-program-choosing.h>
-#include <libnautilus-extensions/nautilus-sidebar-functions.h>
-#include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-trash-monitor.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file-dnd.h>
+#include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-keep-last-vertical-box.h>
+#include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-program-choosing.h>
+#include <libnautilus-private/nautilus-sidebar-functions.h>
+#include <libnautilus-private/nautilus-theme.h>
+#include <libnautilus-private/nautilus-trash-monitor.h>
 #include <math.h>
 
 struct NautilusSidebarDetails {

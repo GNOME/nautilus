@@ -29,7 +29,7 @@
 
 #include "nautilus-complex-search-bar.h"
 #include <gtk/gtkeventbox.h>
-#include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-private/nautilus-entry.h>
 
 
 typedef enum {

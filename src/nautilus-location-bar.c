@@ -50,7 +50,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <stdio.h>
 #include <string.h>

@@ -25,7 +25,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <bonobo/bonobo-widget.h>
 #include <bonobo/bonobo-main.h>
 #include <liboaf/oaf-mainloop.h>

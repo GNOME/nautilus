@@ -42,11 +42,11 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-druid-page-eazel.h>
-#include <libnautilus-extensions/nautilus-druid.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-private/nautilus-druid-page-eazel.h>
+#include <libnautilus-private/nautilus-druid.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-link.h>
 #include <nautilus-main.h>
 #include <netdb.h>
 #include <signal.h>

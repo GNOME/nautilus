@@ -29,7 +29,7 @@
 #include "nautilus-tree-node-private.h"
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <stdio.h>

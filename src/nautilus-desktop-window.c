@@ -35,8 +35,8 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-link.h>
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 

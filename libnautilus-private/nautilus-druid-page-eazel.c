@@ -38,7 +38,7 @@
 #include "nautilus-druid.h"
 #include <libgnome/gnome-i18n.h>
 
-#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include "nautilus-file-utilities.h"
 
 struct NautilusDruidPageEazelDetails
 {

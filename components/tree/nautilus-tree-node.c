@@ -27,8 +27,8 @@
 #include "nautilus-tree-node.h"
 
 #include "nautilus-tree-node-private.h"
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-gtk-macros.h>
 
 

@@ -61,7 +61,7 @@
 
 /*
  * The following dialog widgetry code cut-n-pasted from libnautilus-extension.
- * The reason why we dont use libnautilus-extensions is that we dont want to
+ * The reason why we dont use libnautilus-private is that we dont want to
  * incur its dependencies, especially libnautilus and thus libbonobo.
  */
 static void find_message_label_callback (GtkWidget *widget,

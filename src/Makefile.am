@@ -20,7 +20,7 @@ LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
+	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(AMMONITE_LIBS) \
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)

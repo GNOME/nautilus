@@ -34,10 +34,10 @@
 
 #include <gtk/gtksignal.h>
 
-#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 

@@ -26,9 +26,9 @@
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-theme-selector.h"
 
-#include "libnautilus-extensions/nautilus-global-preferences.h"
-#include "libnautilus-extensions/nautilus-preferences-box.h"
-#include "libnautilus-extensions/nautilus-sidebar-functions.h"
+#include "libnautilus-private/nautilus-global-preferences.h"
+#include "libnautilus-private/nautilus-preferences-box.h"
+#include "libnautilus-private/nautilus-sidebar-functions.h"
 #include <eel/eel-gtk-extensions.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>

@@ -33,9 +33,9 @@
 #include "nautilus-applicable-views.h"
 
 #include <libgnomevfs/gnome-vfs-result.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 
 struct NautilusDetermineViewHandle {
         NautilusDetermineViewHandle **early_completion_hook;

@@ -27,7 +27,7 @@
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-mime-actions.h>
 #include <stdio.h>
 
 static gboolean ready = FALSE;

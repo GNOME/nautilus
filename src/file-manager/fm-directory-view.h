@@ -33,10 +33,10 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwindow.h>
 #include <eel/eel-background.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-icon-container.h>
-#include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-icon-container.h>
+#include <libnautilus-private/nautilus-link.h>
 #include <eel/eel-string-list.h>
 #include <libnautilus/nautilus-view.h>
 

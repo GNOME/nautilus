@@ -42,12 +42,12 @@
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-directory-background.h>
-#include <libnautilus-extensions/nautilus-file-dnd.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-directory-background.h>
+#include <libnautilus-private/nautilus-file-dnd.h>
+#include <libnautilus-private/nautilus-font-factory.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-metadata.h>
 
 struct FMListViewDetails {
 	int sort_column;

@@ -36,8 +36,8 @@
 #include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-zoomable-frame.h>
-#include <libnautilus-extensions/nautilus-generous-bin.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-generous-bin.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view-component.h>
 
 #define NAUTILUS_TYPE_VIEW_FRAME            (nautilus_view_frame_get_type ())

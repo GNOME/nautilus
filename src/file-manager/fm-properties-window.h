@@ -29,7 +29,7 @@
 #include "fm-directory-view.h"
 
 #include <gtk/gtkwindow.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-file.h>
 
 typedef struct FMPropertiesWindow FMPropertiesWindow;
 

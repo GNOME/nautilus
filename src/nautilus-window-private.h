@@ -32,7 +32,7 @@
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-ui-toolbar-button-item.h>
-#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-private/nautilus-directory.h>
 
 typedef enum {
         NAUTILUS_LOCATION_CHANGE_STANDARD,

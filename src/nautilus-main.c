@@ -44,10 +44,10 @@
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-lib-self-check-functions.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-self-checks.h>
-#include <libnautilus-extensions/nautilus-directory-metafile.h>
+#include <libnautilus-private/nautilus-directory-metafile.h>
 #include <liboaf/liboaf.h>
 #include <popt.h>
 #include <stdlib.h>
@@ -258,7 +258,7 @@ main (int argc, char *argv[])
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		/* Run the checks (each twice) for nautilus and libnautilus-extensions. */
+		/* Run the checks (each twice) for nautilus and libnautilus-private. */
 
 		nautilus_directory_use_self_contained_metafile_factory ();
 

@@ -30,7 +30,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-result.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
 

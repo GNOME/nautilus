@@ -37,8 +37,8 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-label.h>
-#include <libnautilus-extensions/nautilus-medusa-support.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-medusa-support.h>
+#include <libnautilus-private/nautilus-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 
 #ifdef HAVE_MEDUSA

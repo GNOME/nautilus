@@ -39,10 +39,10 @@
 #include <bonobo/bonobo-zoomable.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-idle-queue.h>
 #include <libnautilus/nautilus-view.h>

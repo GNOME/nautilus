@@ -33,8 +33,8 @@
 #include <eel/eel-gtk-macros.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <libnautilus-extensions/nautilus-bookmark.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-bookmark.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 #define FACTORY_IID	"OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e"

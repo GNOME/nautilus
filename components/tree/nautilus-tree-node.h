@@ -28,8 +28,8 @@
 
 #include <gtk/gtkobject.h>
 #include <glib.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file.h>
 
 typedef struct NautilusTreeNode NautilusTreeNode;
 typedef struct NautilusTreeNodeClass NautilusTreeNodeClass;

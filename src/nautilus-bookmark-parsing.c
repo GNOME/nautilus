@@ -30,7 +30,7 @@
 
 #include <eel/eel-xml-extensions.h>
 #include <gnome-xml/xmlmemory.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <stdlib.h>
 
 NautilusBookmark *

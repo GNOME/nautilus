@@ -28,7 +28,7 @@
 #define NAUTILUS_APPLICATION_H
 
 #include <bonobo/bonobo-object.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:nautilus_file_manager_desktop_icon_view:8d8121b1-0f1e-400b-bf0d-5b0f4555f5e1"
 

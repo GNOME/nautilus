@@ -28,10 +28,10 @@
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
 #include <libnautilus/nautilus-undo.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <gnome.h>
 
 

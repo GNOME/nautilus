@@ -3,8 +3,8 @@
 #include <eel/eel-image.h>
 #include <eel/eel-image-with-background.h>
 #include <eel/eel-text-caption.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 static void
 text_caption_update (EelTextCaption *text_caption,

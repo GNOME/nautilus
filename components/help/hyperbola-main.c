@@ -25,7 +25,7 @@
 #include <bonobo.h>
 #include <eel/eel-debug.h>
 #include <gnome.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <liboaf/liboaf.h>
 
 #include "hyperbola-nav.h"

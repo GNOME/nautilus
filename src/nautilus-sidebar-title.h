@@ -30,7 +30,7 @@
 #define NAUTILUS_SIDEBAR_TITLE_H
 
 #include <gtk/gtkvbox.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_TYPE_SIDEBAR_TITLE	       (nautilus_sidebar_title_get_type ())
 #define NAUTILUS_SIDEBAR_TITLE(obj)	       (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitle))

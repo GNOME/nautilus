@@ -43,10 +43,10 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-theme.h>
 
 enum {
 	ZOOM_IN,

@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_NAVIGATION_BAR_H
 #define NAUTILUS_NAVIGATION_BAR_H
 
-#include <libnautilus-extensions/nautilus-generous-bin.h>
+#include <libnautilus-private/nautilus-generous-bin.h>
 
 #define NAUTILUS_TYPE_NAVIGATION_BAR (nautilus_navigation_bar_get_type ())
 #define NAUTILUS_NAVIGATION_BAR(obj) \

@@ -24,7 +24,7 @@
 
 #include <glib.h>
 #include <gdk/gdk.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-file.h>
 
 typedef struct {
 	char *from_uri;

@@ -6,7 +6,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus/libnautilus.h>
 
 #include "hyperbola-nav.h"

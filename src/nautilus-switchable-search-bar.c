@@ -38,8 +38,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-macros.h>
 
 static void		     real_activate				     (NautilusNavigationBar	       *bar);

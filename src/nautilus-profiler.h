@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_PROFILER_H
 #define NAUTILUS_PROFILER_H
 
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
 
 void nautilus_profiler_bonobo_ui_reset_callback  (BonoboUIComponent *component,
 						  gpointer           user_data,

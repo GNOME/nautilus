@@ -3,8 +3,8 @@
 #include <eel/eel-wrap-table.h>
 #include <eel/eel-viewport.h>
 #include <eel/eel-labeled-image.h>
-#include <libnautilus-extensions/nautilus-customization-data.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-customization-data.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 
 int 
 main (int argc, char* argv[])

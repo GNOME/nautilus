@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_COMPLEX_SEARCH_BAR_H
 #define NAUTILUS_COMPLEX_SEARCH_BAR_H
 
-#include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-private/nautilus-entry.h>
 
 #include "nautilus-search-bar.h"
 #include "nautilus-window.h"

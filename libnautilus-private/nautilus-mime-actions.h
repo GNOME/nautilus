@@ -27,7 +27,7 @@
 
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-file.h>
 
 
 GList                   *nautilus_mime_actions_get_minimum_file_attributes         (void);

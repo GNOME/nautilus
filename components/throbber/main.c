@@ -27,7 +27,7 @@
 
 #include <eel/eel-debug.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 static int object_count = 0;
 

@@ -29,7 +29,7 @@
 
 #include "nautilus-music-view.h"
 #include <libnautilus/nautilus-view-standard-main.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-debug.h>
 
 #define FACTORY_IID     "OAFIID:nautilus_music_view_factory:1be0c129-87cd-4daa-9d3a-94397de9bce2"

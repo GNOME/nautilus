@@ -525,7 +525,7 @@ view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 	CORBA_exception_free (ev);
 }
 
-/* Can't use the one in libnautilus-extensions. */
+/* Can't use the one in libnautilus-private. */
 static GList *
 str_list_copy (GList *original)
 {

@@ -25,7 +25,7 @@
             Darin Adler <darin@eazel.com>
 */
 
-/* FIXME: This file copied intactly from libnautilus-extensions
+/* FIXME: This file copied intactly from libnautilus-private
  * to circuvent licensing issue with Mozilla component.  In
  * future, when nautilus-extensions is split into public libraries,
  * we can lose this file and use the extensions directly

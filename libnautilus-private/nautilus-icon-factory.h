@@ -27,7 +27,7 @@
 #define NAUTILUS_ICON_FACTORY_H
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-string-list.h>
 #include <gtk/gtkobject.h>
 

@@ -31,8 +31,8 @@
 
 #include <bonobo/bonobo-win.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-bookmark.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-private/nautilus-bookmark.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 #include "nautilus-applicable-views.h"
 #include "nautilus-view-frame.h"
 #include "nautilus-sidebar.h"

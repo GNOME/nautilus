@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_UNDO_SIGNAL_HANDLERS_H
 #define NAUTILUS_UNDO_SIGNAL_HANDLERS_H
 
-#include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-private/nautilus-entry.h>
 
 void nautilus_undo_set_up_nautilus_entry_for_undo 	(NautilusEntry	*entry);
 void nautilus_undo_tear_down_nautilus_entry_for_undo 	(NautilusEntry	*entry);

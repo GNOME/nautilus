@@ -28,7 +28,7 @@
 #include <config.h>
 
 #include "nautilus-text-view.h"
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 #include <eel/eel-debug.h>
 

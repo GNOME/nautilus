@@ -1,7 +1,7 @@
 #include "test.h"
 
 #include <libart_lgpl/art_rgb.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-preferences.h>
 
 void
 test_init (int *argc,

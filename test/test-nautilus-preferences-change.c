@@ -3,8 +3,8 @@
 #include <eel/eel-image.h>
 #include <eel/eel-image-with-background.h>
 #include <eel/eel-string-picker.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 #include <unistd.h>
 

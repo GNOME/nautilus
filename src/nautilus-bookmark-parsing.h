@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_BOOKMARK_PARSING_H
 #define NAUTILUS_BOOKMARK_PARSING_H
 
-#include <libnautilus-extensions/nautilus-bookmark.h>
+#include <libnautilus-private/nautilus-bookmark.h>
 #include <gnome-xml/tree.h>
 
 NautilusBookmark *nautilus_bookmark_new_from_node (xmlNodePtr node);
