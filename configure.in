@@ -386,10 +386,23 @@ AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=true],
 if test "x$build_rpmview" = "xtrue" ; then
 dnl FIXME
 dnl Ideally I should check for rpm and where it is
-  REQUIREDRPM="3.0.4"
-  RPMSTRING=`rpm --version`
-  AC_MSG_CHECKING(rpm version = $REQUIREDRPM)
-  if test "x$RPMSTRING" = "xRPM version $REQUIREDRPM"; then
+
+  RPM_VERSION=`rpm --version | awk '{ print $3; }'`
+
+  AC_MSG_CHECKING(rpm version >= 3.0.4)
+
+  _found_valid_rpm="no"
+
+  case $RPM_VERSION in
+    3.0.4|3.0.5)
+      _found_valid_rpm="yes"
+    ;;
+
+    *)
+  esac
+
+  if test "$_found_valid_rpm" = "yes"
+  then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(HAVE_RPM)  	
   	RPM_LIBS="-lrpm -lz $rpm_libs -ldb"
