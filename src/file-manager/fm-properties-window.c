@@ -417,7 +417,8 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 	 * aspect of the file might have), then don't clobber changes.
 	 */
 	current_name = nautilus_file_get_display_name (file);
-	if (eel_strcmp (original_name, current_name) != 0) {
+	if (original_name == NULL || 
+	    eel_strcmp (original_name, current_name) != 0) {
 		g_object_set_data_full (G_OBJECT (name_field),
 					"original_name",
 					current_name,
