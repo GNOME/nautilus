@@ -558,7 +558,6 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 
 	return info_list;
 }
-
 gboolean
 nautilus_mime_has_any_components_for_uri (const char *uri)
 {
@@ -571,7 +570,6 @@ nautilus_mime_has_any_components_for_uri (const char *uri)
 
 	return result;
 }
-
 
 void
 nautilus_mime_set_default_action_type_for_uri (const char             *uri,
@@ -1345,7 +1343,7 @@ get_mime_type_from_uri (const char *text_uri)
 
 	type = NULL;
 
-	/* FIXME bugzilla.eazel.com 1271: 
+	/* FIXME bugzilla.eazel.com 1263: 
 	   A better way would be to get this info using
 	   NautilusFile or NautilusDirectory or something, having
 	   previously ensured that the info has been computed
@@ -1374,3 +1372,4 @@ get_mime_type_from_uri (const char *text_uri)
 
 	return type;
 }
+
