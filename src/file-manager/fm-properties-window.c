@@ -3282,7 +3282,22 @@ file_changed_callback (NautilusFile *file, gpointer user_data)
 static gboolean
 should_show_open_with (FMPropertiesWindow *window)
 {
-	return !is_multi_file_window (window);
+	NautilusFile *file;
+	
+	if (is_multi_file_window (window)) {
+		return FALSE;
+	}
+
+	/* Don't show open with tab for desktop special icons (trash, etc)
+	 * or desktop files. We don't get the open-with menu for these anyway.
+	 */
+	file = get_original_file (window);
+	if (file == NULL ||
+	    NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
+	    nautilus_file_is_nautilus_link (file)) {
+		return FALSE;
+	}
+	return TRUE;
 }
 
 static void
