@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-06-03 11:35+0200\n"
+"POT-Creation-Date: 2002-06-03 17:40-0400\n"
 "PO-Revision-Date: 2002-06-03 11:36+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -5113,47 +5113,47 @@ msgstr "efter _emblem"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Sortera ikoner i rader efter emblem"
 
-#: src/file-manager/fm-icon-view.c:1295
+#: src/file-manager/fm-icon-view.c:1384
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "Restore Icons' _Original Sizes"
 msgstr "Återställ ikoners _originalstorlekar"
 
-#: src/file-manager/fm-icon-view.c:1296
+#: src/file-manager/fm-icon-view.c:1385
 msgid "Restore Icon's _Original Size"
 msgstr "Återställ ikonens _originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1631
+#: src/file-manager/fm-icon-view.c:1720
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2165
+#: src/file-manager/fm-icon-view.c:2256
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: src/file-manager/fm-icon-view.c:2166 src/file-manager/fm-icon-view.c:2185
+#: src/file-manager/fm-icon-view.c:2257 src/file-manager/fm-icon-view.c:2276
 msgid "Drag and Drop error"
 msgstr "Fel med dra och släpp"
 
-#: src/file-manager/fm-icon-view.c:2184
+#: src/file-manager/fm-icon-view.c:2275
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
-#: src/file-manager/fm-list-view.c:324
+#: src/file-manager/fm-list-view.c:327
 msgid "File name"
 msgstr "Filnamn"
 
-#: src/file-manager/fm-list-view.c:346
+#: src/file-manager/fm-list-view.c:349
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Storlek"
 
-#: src/file-manager/fm-list-view.c:357
+#: src/file-manager/fm-list-view.c:360
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:368
+#: src/file-manager/fm-list-view.c:371
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -7368,11 +7368,11 @@ msgstr "bläddringshistoriken"
 msgid "the current selection"
 msgstr "den aktuella markeringen"
 
-#: src/nautilus-window-manage-views.c:808
+#: src/nautilus-window-manage-views.c:805
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:819
+#: src/nautilus-window-manage-views.c:816
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7381,12 +7381,12 @@ msgstr ""
 "%s-vyn råkade ut för ett fel och kan inte fortsätta. Du kan välja en annan "
 "vy eller gå till en annan plats."
 
-#: src/nautilus-window-manage-views.c:830
+#: src/nautilus-window-manage-views.c:827
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
 
-#: src/nautilus-window-manage-views.c:1007
+#: src/nautilus-window-manage-views.c:1004
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -7394,7 +7394,7 @@ msgstr ""
 "En av sidopanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr kan "
 "jag inte avgöra vilken."
 
-#: src/nautilus-window-manage-views.c:1011
+#: src/nautilus-window-manage-views.c:1008
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -7403,22 +7403,22 @@ msgstr ""
 "Sidopanelen %s råkade ut för ett fel och kan inte fortsätta. Om detta "
 "fortsätter att hända kanske du vill stänga av denna panel."
 
-#: src/nautilus-window-manage-views.c:1016
+#: src/nautilus-window-manage-views.c:1013
 msgid "Sidebar Panel Failed"
 msgstr "Sidopanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1230
+#: src/nautilus-window-manage-views.c:1227
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Kunde inte hitta \"%s\". Kontrollera stavningen och försök igen."
 
-#: src/nautilus-window-manage-views.c:1236
+#: src/nautilus-window-manage-views.c:1233
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" är ingen giltig plats. Kontrollera stavningen och försök igen."
 
-#: src/nautilus-window-manage-views.c:1250
+#: src/nautilus-window-manage-views.c:1247
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7427,29 +7427,29 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken filtyp "
 "det är."
 
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1255
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1270
+#: src/nautilus-window-manage-views.c:1267
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1276
+#: src/nautilus-window-manage-views.c:1273
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1281
+#: src/nautilus-window-manage-views.c:1278
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1292
+#: src/nautilus-window-manage-views.c:1289
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7459,7 +7459,7 @@ msgstr ""
 "Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
 "stämmer."
 
-#: src/nautilus-window-manage-views.c:1300
+#: src/nautilus-window-manage-views.c:1297
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -7468,7 +7468,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värdnamnet var tomt. Kontrollera att dina "
 "proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1312
+#: src/nautilus-window-manage-views.c:1309
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7480,11 +7480,11 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1316
+#: src/nautilus-window-manage-views.c:1313
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1323
+#: src/nautilus-window-manage-views.c:1320
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7495,12 +7495,12 @@ msgstr ""
 "huvudbläddraren.\n"
 "Kontrollera att det finns en SMB-server körande på det lokala nätverket."
 
-#: src/nautilus-window-manage-views.c:1331
+#: src/nautilus-window-manage-views.c:1328
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1333
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 

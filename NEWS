@@ -1,8 +1,48 @@
-This is nautilus 1.1.19, an interim version in the process of
-porting nautilus from the Gnome 1 platform to the Gnome 2 platform.
+This is nautilus 1.1.19. The file manager for the Gnome 2 desktop.
 
-A later release will document the changes since Gnome 1.
+Major changes since 1.0.x are:
 
-The port is still underway, and many aspects of the program
-are quite rough. Please send feedback to the Nautilus
-mailing list at nautilus-list@eazel.com.
+* Port to Gtk+ 2 and the Gnome 2 platform.
+
+* Major performance improvements.
+
+* Userlevels are removed.
+
+* Lots of small UI changes in order to comply with the Gnome 2 Human
+  Interface Guidelines.
+
+* Preferences dialog has been trimmed down.
+
+* Anti-aliased mode has been removed. If you want anti-aliased text,
+  you need to use the Gtk+ 2 anti-aliased text mode.
+
+* New emblems added to the default set of emblems.
+
+* Support for editing vfolder menus using nautilus.
+
+* Made most normal component in-process.
+
+* Accessibility support.
+
+* Drop support for public metadata.
+
+* The news was sidebar disabled/removed
+
+* Image view component removed, we now use Eye of Gnome.
+
+* Bugfixes
+
+
+Minor new features:
+
+* Drop-shadow for text on the desktop
+
+* Alt-drag image and pick set-as-background
+
+* New progress dialog window-icon shows progress visually.
+
+* You can use Alt-left/right/up/down to navigate the icon view using
+  the keyboard.
+
+* Ability to easily create launchers on the desktop.
+
