@@ -105,6 +105,20 @@ goto_software_catalog (BonoboUIComponent *component,
 }
 
 static void
+goto_services_support (BonoboUIComponent *component, 
+		       gpointer callback_data, 
+		       const char *verb)
+{
+	/* FIXME bugzilla.eazel.com 4805:
+	 * Change this url to "http://services.eazel.com/support" when
+	 * that is available.
+	 */
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
+				  "http://gegl2089.test.eazel.com/support");
+
+}
+
+static void
 detach_service_ui (GtkObject *object,
 		   gpointer callback_data)
 {
@@ -124,6 +138,7 @@ nautilus_window_install_service_ui (NautilusWindow *window)
 		BONOBO_UI_VERB ("Eazel Services", goto_services_summary),
 		BONOBO_UI_VERB ("Online Storage", goto_online_storage),
 		BONOBO_UI_VERB ("Software Catalog", goto_software_catalog),
+		BONOBO_UI_VERB ("Services Support", goto_services_support),
 		BONOBO_UI_VERB_END
 	};
 

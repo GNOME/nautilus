@@ -1,3 +1,23 @@
+2000-10-27  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 4085 for now (need Support menu item in Services menu)
+
+	The URL will have to be updated again later, as the bug report says.
+
+	* src/nautilus-service-ui.xml: Added Support menu item at end, made
+	underline accelerators unique
+	* components/services/summary/nautilus-view/nautilus-summary-view-u
+	i.xml: tweaked wording and made underline accelerators unique
+
+	* components/services/summary/nautilus-view/nautilus-summary-view-u
+	i.xml.h:
+	* src/nautilus-service-ui.xml.h: These guys changed.
+
+	* src/nautilus-window-service-ui.c: 
+	(goto_services_support): New function, goes to magic URI.
+	(nautilus_window_install_service_ui): add verb to connect menu item
+	to function.
+
 2000-10-27  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
