@@ -67,12 +67,12 @@ libnautilus_la_SOURCES=					\
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	$(prefix)/bin/orbit-idl -I${datadir}/idl $(srcdir)/nautilus-view-component.idl
+	$(ORBIT_IDL) -I${datadir}/idl -I/opt/gnome/share/idl $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
 $(nautilus_undo_idl_sources): nautilus_undo_idl_stamp
 nautilus_undo_idl_stamp: nautilus-undo.idl
-	$(prefix)/bin/orbit-idl -I${datadir}/idl $(srcdir)/nautilus-undo.idl
+	$(ORBIT_IDL) -I${datadir}/idl -I/opt/gnome/share/idl $(srcdir)/nautilus-undo.idl
 	touch nautilus_undo_idl_stamp
 
 CLEANFILES = \

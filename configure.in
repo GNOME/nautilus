@@ -39,6 +39,9 @@ if test "$GCC" = "yes"; then
 fi
 AC_SUBST(WERROR)
 
+dnl ORBit
+AM_PATH_ORBIT
+
 dnl 
 EAZEL_SERVICES=
 AC_ARG_ENABLE(eazel-services,
