@@ -481,19 +481,24 @@ menu_popup_pos (GtkMenu   *menu,
 static void
 location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *window)
 {
-	GtkWidget *popup, *menu_item;
+	GtkWidget *popup, *menu_item, *first_item;
 	GnomeVFSURI *uri;
 	char *name;
 	GMainLoop *loop;
 
+	
 	g_return_if_fail (window->details->location != NULL);
 
 	popup = gtk_menu_new ();
-	
+	first_item = NULL;
 	uri = gnome_vfs_uri_ref (window->details->location);
 	while (uri != NULL) {
 		name = nautilus_get_uri_shortname_for_display (uri);
 		menu_item = gtk_image_menu_item_new_with_label (name);
+		if (first_item == NULL) {
+			first_item = menu_item;
+		}
+		
 		g_free (name);
 		gtk_widget_show (menu_item);
 		g_signal_connect (menu_item, "activate",
@@ -515,6 +520,7 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 
 	gtk_grab_add (popup);
 	gtk_menu_popup (GTK_MENU (popup), NULL, NULL, menu_popup_pos, widget, 1, GDK_CURRENT_TIME);
+	gtk_menu_shell_select_item (GTK_MENU_SHELL (popup), first_item);
 	g_main_loop_run (loop);
 	gtk_grab_remove (popup);
 	g_main_loop_unref (loop);

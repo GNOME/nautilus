@@ -57,6 +57,7 @@
 #define MINIMUM_TIME_UP    1000
 
 #define SHOW_TIMEOUT	   1200
+#define TIME_REMAINING_TIMEOUT 1000
 
 static GdkPixbuf *empty_jar_pixbuf, *full_jar_pixbuf;
 
@@ -99,6 +100,10 @@ struct NautilusFileOperationsProgressDetails {
 	guint delayed_close_timeout_id;
 	guint delayed_show_timeout_id;
 
+	/* system time (microseconds) when first file transfer began */
+	gint64 first_transfer_time;
+	guint time_remaining_timeout_id;
+	
 	int progress_jar_position;
 };
 
@@ -208,6 +213,11 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 	if (progress->details->delayed_show_timeout_id != 0) {
 		g_source_remove (progress->details->delayed_show_timeout_id);
 		progress->details->delayed_show_timeout_id = 0;
+	}
+
+	if (progress->details->time_remaining_timeout_id != 0) {
+		g_source_remove (progress->details->time_remaining_timeout_id);
+		progress->details->time_remaining_timeout_id = 0;
 	}
 	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
@@ -355,6 +365,49 @@ nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClas
 }
 
 static gboolean
+time_remaining_callback (gpointer callback_data)
+{
+	int elapsed_time;
+	int transfer_rate;
+	int time_remaining;
+	char *str;
+	NautilusFileOperationsProgress *progress;
+	
+	progress = NAUTILUS_FILE_OPERATIONS_PROGRESS (callback_data);
+	
+	elapsed_time = (eel_get_system_time () - progress->details->first_transfer_time) / 1000000;
+
+	if (elapsed_time == 0) {
+		progress->details->time_remaining_timeout_id =
+			g_timeout_add (TIME_REMAINING_TIMEOUT, time_remaining_callback, progress);
+		
+		return FALSE;
+	}
+	
+	transfer_rate = progress->details->bytes_copied / elapsed_time;
+
+	time_remaining = (progress->details->bytes_total -
+			  progress->details->bytes_copied) / transfer_rate;
+
+	if (time_remaining >= 3600) {
+		str = g_strdup_printf (_("(%d:%02d:%d Remaining)"), 
+				       time_remaining / 3600, time_remaining / 60, time_remaining % 60);
+	}
+	else {
+		str = g_strdup_printf (_("(%d:%02d Remaining)"), 
+				       time_remaining / 60, time_remaining % 60);
+	}
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), str);
+	
+	g_free (str);
+
+	progress->details->time_remaining_timeout_id =
+		g_timeout_add (TIME_REMAINING_TIMEOUT, time_remaining_callback, progress);
+	
+	return FALSE;
+}
+
+static gboolean
 delayed_show_callback (gpointer callback_data)
 {
 	NautilusFileOperationsProgress *progress;
@@ -469,6 +522,10 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 			set_text_unescaped_trimmed 
 				(EEL_ELLIPSIZING_LABEL (progress->details->to_path_label), to_path);
 		}
+
+		if (progress->details->first_transfer_time == 0) {
+			progress->details->first_transfer_time = eel_get_system_time ();
+		}
 	}
 
 	nautilus_file_operations_progress_update (progress);
@@ -497,6 +554,15 @@ nautilus_file_operations_progress_update_sizes (NautilusFileOperationsProgress *
 
 	progress->details->bytes_copied = bytes_done;
 
+
+	if (progress->details->time_remaining_timeout_id == 0) {
+		/* The first time we wait five times as long before
+		 * starting to show the time remaining */
+		progress->details->time_remaining_timeout_id =
+				g_timeout_add (TIME_REMAINING_TIMEOUT * 5, time_remaining_callback, progress);
+
+	}
+	
 	nautilus_file_operations_progress_update (progress);
 }
 
