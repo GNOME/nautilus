@@ -4,6 +4,7 @@ INCLUDES = \
 	-DG_LOG_DOMAIN=\"NautilusErrorDialog\" \
 	-I$(top_srcdir) \
 	$(GNOMEUI_CFLAGS) \
+        -DVERSION="\"$(VERSION)\"" \
 	$(NULL)
 
 bin_PROGRAMS = nautilus-error-dialog
