@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-03-02 18:07+0100\n"
+"POT-Creation-Date: 2003-03-08 12:06+0100\n"
 "PO-Revision-Date: 2003-01-14 21:10+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -155,6 +155,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "Przeciągnięty plik nie jest poprawnym obrazem."
 
 #: components/emblem/nautilus-emblem-view.c:1 data/browser.xml.h:1
+#: src/nautilus-property-browser.c:1
 msgid "Erase"
 msgstr "Wyczyść"
 
@@ -315,7 +316,6 @@ msgid "Text Viewer"
 msgstr "Przeglądarka tekstowa"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
-#: components/text/nautilus-text-view-ui.xml.h:1
 msgid "Text view"
 msgstr "Widok tekstowy"
 
@@ -328,60 +328,12 @@ msgid "View as Text"
 msgstr "Wyświetlanie jako Tekst"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "F_onts"
-msgstr "_Czcionki"
+msgid "Copy Text"
+msgstr "Skopiuj tekst"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Lucida"
-msgstr "Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Services"
-msgstr "Usługi"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Use the Courier Font"
-msgstr "Wykorzystuje czcionkę Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Use the Fixed Font"
-msgstr "Wykorzystuje czcionkę Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Use the GTK System Font"
-msgstr "Wykorzystuje systemową czcionkę GTK"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Use the Helvetica Font"
-msgstr "Wykorzystuje czcionkę Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Use the Lucida Font"
-msgstr "Wykorzystuje czcionkę Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Use the Times Font"
-msgstr "Wykorzystuje czcionkę Times"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "_Courier"
-msgstr "_Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "_Fixed"
-msgstr "_Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "_GTK System Font"
-msgstr "Czcionka systemowa _GTK"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "_Helvetica"
-msgstr "_Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "_Times"
-msgstr "_Times"
+msgid "Copy selected text to the clipboard"
+msgstr "Kopiuje zaznaczony tekst do schowka"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -6715,6 +6667,48 @@ msgstr "Serwery sieciowe"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Wyświetla serwery sieciowe przy użyciu menedżera plików - Nautilusa"
 
+#~ msgid "F_onts"
+#~ msgstr "_Czcionki"
+
+#~ msgid "Lucida"
+#~ msgstr "Lucida"
+
+#~ msgid "Services"
+#~ msgstr "Usługi"
+
+#~ msgid "Use the Courier Font"
+#~ msgstr "Wykorzystuje czcionkę Courier"
+
+#~ msgid "Use the Fixed Font"
+#~ msgstr "Wykorzystuje czcionkę Fixed"
+
+#~ msgid "Use the GTK System Font"
+#~ msgstr "Wykorzystuje systemową czcionkę GTK"
+
+#~ msgid "Use the Helvetica Font"
+#~ msgstr "Wykorzystuje czcionkę Helvetica"
+
+#~ msgid "Use the Lucida Font"
+#~ msgstr "Wykorzystuje czcionkę Lucida"
+
+#~ msgid "Use the Times Font"
+#~ msgstr "Wykorzystuje czcionkę Times"
+
+#~ msgid "_Courier"
+#~ msgstr "_Courier"
+
+#~ msgid "_Fixed"
+#~ msgstr "_Fixed"
+
+#~ msgid "_GTK System Font"
+#~ msgstr "Czcionka systemowa _GTK"
+
+#~ msgid "_Helvetica"
+#~ msgstr "_Helvetica"
+
+#~ msgid "_Times"
+#~ msgstr "_Times"
+
 #~ msgid "Content Loser"
 #~ msgstr "Ginący proces zawartości"
 
@@ -7388,9 +7382,6 @@ msgstr "Wyświetla serwery sieciowe przy użyciu menedżera plików - Nautilusa"
 
 #~ msgid "Clear Text"
 #~ msgstr "Wyczyść tekst"
-
-#~ msgid "Copy Text"
-#~ msgstr "Skopiuj tekst"
 
 #~ msgid "Paste Text"
 #~ msgstr "Wklej tekst"
