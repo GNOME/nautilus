@@ -1,3 +1,17 @@
+2000-08-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_select_text_color),
+	(nautilus_sidebar_title_theme_changed),
+	(sidebar_create_smooth_components_if_needed):
+	added a drop shadow to the sidebar labels, controllable by the
+	current theme
+	* icons/arlo/arlo.xml:
+	added a drop shadow offset to the arlo theme
+	* libnautilus-extensions/nautilus-label.h:
+	fixed a cut-n-paste error in the set_drop_shadow_offset call, by
+	changing the parameter from "alpha" to "offset"
+	
 2000-08-28  Darin Adler  <darin@eazel.com>
 
 	* src/file-manager/fm-directory-view.c: (display_pending_files):

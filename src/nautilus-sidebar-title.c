@@ -86,6 +86,7 @@ struct NautilusSidebarTitleDetails {
 	GtkWidget		*emblem_box;
 	GtkWidget		*notes;
 
+	int			shadow_offset;
 	gboolean		smooth_graphics;
 };
 
@@ -229,6 +230,7 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 	GtkWidget *widget, *sidebar;
 	NautilusBackground *background;
 	char *sidebar_title_color, *sidebar_info_title_color;
+	char *sidebar_title_shadow_color;
 	
 	widget = GTK_WIDGET (sidebar_title);
 	sidebar = widget->parent;
@@ -240,17 +242,33 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		if (nautilus_background_is_dark (background)) {
 			sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
 			sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+			sidebar_title_shadow_color = g_strdup("rgb:0000/0000/0000");
+		
 		} else {
 			sidebar_title_color = g_strdup("rgb:0000/0000/0000");
 			sidebar_info_title_color = g_strdup("rgb:0000/0000/0000");
+			sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
 		}
 
 		if (sidebar_title->details->smooth_graphics) {
 			nautilus_label_set_text_color (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
 						       nautilus_parse_rgb_with_white_default (sidebar_title_color));
 			
+			nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
+						       nautilus_parse_rgb_with_white_default (sidebar_title_shadow_color));
+			
+			nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label)
+						       ,sidebar_title->details->shadow_offset);
+
 			nautilus_label_set_text_color (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label),
 						       nautilus_parse_rgb_with_white_default (sidebar_info_title_color));
+			
+			nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label),
+						       nautilus_parse_rgb_with_white_default (sidebar_title_shadow_color));
+			
+			nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label)
+						       ,sidebar_title->details->shadow_offset);
+
 		}
 		else {
 			set_widget_color (sidebar_title->details->normal_title_label, sidebar_title_color);
@@ -259,6 +277,7 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 	
 		g_free (sidebar_title_color);	
 		g_free (sidebar_info_title_color);	
+		g_free (sidebar_title_shadow_color);
 	}
 }
 
@@ -266,9 +285,19 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 static void
 nautilus_sidebar_title_theme_changed (gpointer user_data)
 {
+	char *shadow_offset_str;
 	NautilusSidebarTitle *sidebar_title;	
-	
+
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (user_data);		
+	
+	shadow_offset_str = nautilus_theme_get_theme_data ("sidebar", "SHADOW_OFFSET");
+	if (shadow_offset_str) {
+		sidebar_title->details->shadow_offset = atoi (shadow_offset_str);	
+		g_free (shadow_offset_str);
+	} else {
+		sidebar_title->details->shadow_offset = 0;	
+	}
+	
 	nautilus_sidebar_title_select_text_color (sidebar_title);
 }
 
@@ -572,7 +601,7 @@ sidebar_create_smooth_components_if_needed (NautilusSidebarTitle *sidebar_title)
 		
 		nautilus_label_set_font (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
 					 sidebar_title->details->smooth_title_label_font);
-
+		
 		gtk_box_pack_start (GTK_BOX (sidebar_title->details->label_box), sidebar_title->details->smooth_title_label, 0, 0, 0);
 	}
 

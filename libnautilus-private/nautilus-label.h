@@ -99,7 +99,7 @@ void                  nautilus_label_set_line_offset          (NautilusLabel    
 							       guint                 alpha);
 guint                 nautilus_label_get_line_offset          (const NautilusLabel  *label);
 void                  nautilus_label_set_drop_shadow_offset   (NautilusLabel        *label,
-							       guint                 alpha);
+							       guint                 offset);
 guint                 nautilus_label_get_drop_shadow_offset   (const NautilusLabel  *label);
 void                  nautilus_label_set_drop_shadow_color    (NautilusLabel        *label,
 							       guint32               color);
