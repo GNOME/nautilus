@@ -119,33 +119,32 @@ enum {
 	 */
 };
 
-static void          activate_selected_items                  (NautilusIconContainer      *container);
-static void          nautilus_icon_container_class_init (NautilusIconContainerClass *class);
-static void          nautilus_icon_container_init       (NautilusIconContainer      *container);
-static void	     nautilus_icon_container_theme_changed    (gpointer		 	  user_data);
-
-static void          compute_stretch                          (StretchState               *start,
-							       StretchState               *current);
-static NautilusIcon *get_first_selected_icon                  (NautilusIconContainer      *container);
-static NautilusIcon *get_nth_selected_icon                    (NautilusIconContainer      *container,
-							       int                         index);
-static gboolean      has_multiple_selection                   (NautilusIconContainer      *container);
-static void          icon_destroy                             (NautilusIconContainer      *container,
-							       NautilusIcon               *icon);
-static void          end_renaming_mode                        (NautilusIconContainer      *container,
-							       gboolean                    commit);
-static NautilusIcon *get_icon_being_renamed 		      (NautilusIconContainer 	  *container);
-static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
-static void          update_label_color                       (EelBackground         *background,
-							       NautilusIconContainer      *icon_container);
-static void	     icon_get_bounding_box 		      (NautilusIcon 		  *icon,
-							       int 			  *x1_return, 
-							       int 			  *y1_return,
-		       					       int 			  *x2_return, 
-		       					       int 			  *y2_return);
-static gboolean	     is_renaming	      		      (NautilusIconContainer	  *container);
-static gboolean	     is_renaming_pending		      (NautilusIconContainer	  *container);
-static void	     process_pending_icon_to_rename	      (NautilusIconContainer	  *container);
+static void          activate_selected_items               (NautilusIconContainer      *container);
+static void          nautilus_icon_container_class_init    (NautilusIconContainerClass *class);
+static void          nautilus_icon_container_init          (NautilusIconContainer      *container);
+static void          nautilus_icon_container_theme_changed (gpointer                    user_data);
+static void          compute_stretch                       (StretchState               *start,
+							    StretchState               *current);
+static NautilusIcon *get_first_selected_icon               (NautilusIconContainer      *container);
+static NautilusIcon *get_nth_selected_icon                 (NautilusIconContainer      *container,
+							    int                         index);
+static gboolean      has_multiple_selection                (NautilusIconContainer      *container);
+static void          icon_destroy                          (NautilusIconContainer      *container,
+							    NautilusIcon               *icon);
+static void          end_renaming_mode                     (NautilusIconContainer      *container,
+							    gboolean                    commit);
+static NautilusIcon *get_icon_being_renamed                (NautilusIconContainer      *container);
+static void          finish_adding_new_icons               (NautilusIconContainer      *container);
+static void          update_label_color                    (EelBackground              *background,
+							    NautilusIconContainer      *icon_container);
+static void          icon_get_bounding_box                 (NautilusIcon               *icon,
+							    int                        *x1_return,
+							    int                        *y1_return,
+							    int                        *x2_return,
+							    int                        *y2_return);
+static gboolean      is_renaming                           (NautilusIconContainer      *container);
+static gboolean      is_renaming_pending                   (NautilusIconContainer      *container);
+static void          process_pending_icon_to_rename        (NautilusIconContainer      *container);
 
 static int click_policy_auto_value;
 
@@ -2301,19 +2300,14 @@ destroy (GtkObject *object)
 
         if (container->details->idle_id != 0) {
 		gtk_idle_remove (container->details->idle_id);
+		container->details->idle_id = 0;
 	}
 
 	if (container->details->stretch_idle_id != 0) {
 		gtk_idle_remove (container->details->stretch_idle_id);
+		container->details->stretch_idle_id = 0;
 	}
        
-	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
-	 * The NautilusIconContainer class should simply provide calls to set the colors.
-	 */
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					 nautilus_icon_container_theme_changed,
-					 container);
-	
 	nautilus_icon_container_flush_typeselect_state (container);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
@@ -2327,6 +2321,14 @@ finalize (GObject *object)
 
 	details = NAUTILUS_ICON_CONTAINER (object)->details;
 
+	/* FIXME: The code to extract colors from the theme should be
+	 * in FMDirectoryView, not here. The NautilusIconContainer
+	 * class should simply provide calls to set the colors.
+	 */
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					 nautilus_icon_container_theme_changed,
+					 object);
+	
         for (i = 0; i < G_N_ELEMENTS (details->label_font); i++) {
        		if (details->label_font[i] != NULL)
         		gdk_font_unref (details->label_font[i]);
@@ -3401,12 +3403,15 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	g_signal_connect (container, "focus-out-event",
 			    G_CALLBACK (handle_focus_out_event), NULL);	
 
-	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
-	 * The NautilusIconContainer class should simply provide calls to set the colors.
+	/* FIXME: The code to extract colors from the theme should be
+	 * in FMDirectoryView, not here. The NautilusIconContainer
+	 * class should simply provide calls to set the colors.
 	 */
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_icon_container_theme_changed, container);	
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+				      nautilus_icon_container_theme_changed,
+				      container);	
 }
 
 typedef struct {
@@ -3564,7 +3569,6 @@ item_event_callback (GnomeCanvasItem *item,
 			/* Stop the event from being passed along further. Returning
 			 * TRUE ain't enough. 
 			 */
-    			gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
 			return TRUE;
 		}
 		return FALSE;
@@ -3599,6 +3603,10 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	details = container->details;
+
+	if (details->icons == NULL) {
+		return;
+	}
 
 	end_renaming_mode (container, TRUE);
 	

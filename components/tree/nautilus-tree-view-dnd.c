@@ -376,11 +376,6 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 								non_default_action);
 	gdk_drag_status (context, resulting_action, time);
 
-
-
-	/* make sure no one will ever get this event except us */
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
-				      "drag_motion");
 	return TRUE;
 }
 
@@ -429,8 +424,6 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 	dnd->drag_info->drop_occured = TRUE;
 	get_data_on_first_target_we_support (widget, context, time);
 
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
-				      "drag_drop");
 	return TRUE;
 }
 
@@ -551,7 +544,7 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 						    event->y, 
 						    &press_row, &press_column);
 	if (on_row == 0) {
-		gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-press-event");
+		gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button_press_event");
 		return FALSE;
 	}
 
@@ -591,8 +584,6 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 		}
 	}
 
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-press-event");
-	
 	return TRUE;
 }
 
@@ -672,8 +663,6 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 		}
 	}
 
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-release-event");
-
 	return TRUE;
 
 }
@@ -720,8 +709,6 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 
 		}
 	} 
-
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "motion-notify-event");
 
 	return TRUE;
 }

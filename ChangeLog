@@ -1,5 +1,25 @@
 2002-01-08  Darin Adler  <darin@bentspoon.com>
 
+	* TODO: Mention bad looking text.
+
+	* libnautilus-private/nautilus-icon-container.c: (destroy),
+	(finalize), (nautilus_icon_container_init), (item_event_callback),
+	(nautilus_icon_container_clear):
+	Various fixes to make destroy on a NautilusIconContainer work.
+
+	* components/tree/nautilus-tree-view-dnd.c:
+	(nautilus_tree_view_drag_motion), (nautilus_tree_view_drag_drop),
+	(nautilus_tree_view_button_press),
+	(nautilus_tree_view_button_release),
+	(nautilus_tree_view_motion_notify):
+	* libnautilus-private/nautilus-undo-signal-handlers.c:
+	(editable_key_press_event):
+	* src/nautilus-bookmarks-window.c: (handle_close_accelerator):
+	Remove unneeded stop_emit-type calls, now that the signal machinery
+	understands that TRUE means to stop emitting in some cases.
+
+2002-01-08  Darin Adler  <darin@bentspoon.com>
+
 	* .cvsignore:
 	* Makefile.am:
 	* nautilus-help.desktop.in: Remove.

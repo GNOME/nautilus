@@ -636,7 +636,6 @@ handle_close_accelerator (GtkWindow *window,
 
 	if (eel_gtk_window_event_is_close_accelerator (window, event)) {		
 		gtk_widget_hide (GTK_WIDGET (window));
-		gtk_signal_emit_stop_by_name (GTK_OBJECT (window), "key_press_event");
 		return TRUE;
 	}
 

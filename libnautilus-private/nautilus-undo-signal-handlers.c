@@ -300,8 +300,6 @@ editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer us
 	case 'z':
 		if ((event->state & GDK_CONTROL_MASK) != 0) {
 			nautilus_undo (GTK_OBJECT (editable));
-			gtk_signal_emit_stop_by_name (GTK_OBJECT (editable),
-						      "key_press_event");
 			return TRUE;
 		}
 		break;
