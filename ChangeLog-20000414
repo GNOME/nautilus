@@ -1,3 +1,12 @@
+2000-03-31  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus/nautilus-icon-container.c:
+	(motion_nofity_event):
+	Disable copy as a drag&drop operation for now. The current
+	copy engine doesn't handle conflicts properly yet and can
+	erase your files.
+
+
 2000-03-31  Darin Adler  <darin@eazel.com>
 
 	Fixed a bug that Pavel reported where he got a crash in
