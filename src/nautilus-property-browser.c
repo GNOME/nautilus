@@ -1404,18 +1404,18 @@ make_property_tile (NautilusPropertyBrowser *property_browser, GtkWidget *pixmap
 	background = nautilus_get_widget_background (GTK_WIDGET (event_box));
 	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
 
-	gtk_widget_show (pixmap_widget);
-	gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
-	gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
-
 	if (label != NULL) {
 		nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);		
 		nautilus_buffered_widget_set_background_color
 			(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_RGB_COLOR_WHITE);		
 
-			gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
+			gtk_box_pack_end (GTK_BOX(temp_vbox), label, FALSE, FALSE, 2);
 			gtk_widget_show(label);
 	}
+
+	gtk_widget_show (pixmap_widget);
+	gtk_container_add (GTK_CONTAINER(event_box), pixmap_widget);
+	gtk_box_pack_end (GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
 	
 	gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
 	gtk_signal_connect_full

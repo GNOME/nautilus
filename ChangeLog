@@ -1,3 +1,15 @@
+2000-10-05  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* data/top/.nautilus-metafile.xml:
+	* data/top/About.html:
+	* data/top/Makefile.am:
+	fixed bug 3412, about.html in novice home directory misaligned
+	with audience, by deleting it
+	
+	* src/nautilus-property-browser.c: (make_property_tile):
+	improved property browser item layout by making the labels
+	line up in the table.
+	
 2000-10-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-profiler.c:
