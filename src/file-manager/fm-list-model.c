@@ -172,10 +172,9 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	FMListModel *model;
 	NautilusFile *file;
 	char *str;
-	GdkPixbuf *icon, *tmp;
+	GdkPixbuf *icon;
 	int icon_size;
 	NautilusZoomLevel zoom_level;
-	int width, height;
 	char *modifier;
 	GList *emblem_icons;
 	NautilusFile *parent_file;
@@ -229,16 +228,8 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			modifier = "visiting";
 		}
 		
-		icon = nautilus_icon_factory_get_pixbuf_for_file (file, modifier, icon_size);
+		icon = nautilus_icon_factory_get_pixbuf_for_file_force_size (file, modifier, icon_size);
 
-		height = gdk_pixbuf_get_height (icon);
-		if (height > icon_size) {
-			width = gdk_pixbuf_get_width (icon) * icon_size / height;
-			height = icon_size;
-			tmp = gdk_pixbuf_scale_simple (icon, width, height, GDK_INTERP_BILINEAR);
-			g_object_unref (icon);
-			icon = tmp;
-		}
 		g_value_set_object (value, icon);
 		g_object_unref (icon);
 		break;
@@ -265,18 +256,11 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 		if (emblem_icons != NULL) {
 			zoom_level = fm_list_model_get_zoom_level_from_emblem_column_id (column);
 			icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
-			icon = nautilus_icon_factory_get_pixbuf_for_icon (emblem_icons->data, NULL, icon_size,
-									  NULL, NULL, FALSE, NULL);
+			icon = nautilus_icon_factory_get_pixbuf_for_icon_force_size (
+				emblem_icons->data, NULL, icon_size,
+				NULL, NULL, FALSE, NULL);
 			eel_g_list_free_deep (emblem_icons);
 	
-			height = gdk_pixbuf_get_height (icon);
-			if (height > icon_size) {
-				width = gdk_pixbuf_get_width (icon) * icon_size / height;
-				height = icon_size;
-				tmp = gdk_pixbuf_scale_simple (icon, width, height, GDK_INTERP_BILINEAR);
-				g_object_unref (icon);
-				icon = tmp;
-			}
 			g_value_set_object (value, icon);
 			g_object_unref (icon);
 		}

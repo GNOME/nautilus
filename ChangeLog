@@ -1,3 +1,17 @@
+2004-03-31  Alexander Larsson  <alexl@redhat.com>
+
+        Based on patch from Soeren Sandmann:
+	
+	* libnautilus-private/nautilus-file.c: (get_description):
+	Only warn once per mimetype with no description.
+	
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	Add force_size option to force the nominal size.
+	
+	* src/file-manager/fm-list-model.c:
+	* src/file-manager/fm-tree-model.c:
+	Use force_size to avoid constantly scaling things.
+
 2004-03-31  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "af" to ALL_LINGUAS.

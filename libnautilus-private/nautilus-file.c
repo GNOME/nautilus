@@ -4701,10 +4701,21 @@ get_description (NautilusFile *file)
 			     "probably means that your gnome-vfs.keys file is in the wrong place "
 			     "or isn't being found for some other reason."));
 	} else {
-		g_warning (_("No description found for mime type \"%s\" (file is \"%s\"), "
-			     "please tell the gnome-vfs mailing list."),
-			   mime_type,
-			   file->details->relative_uri);
+		static GHashTable *warned = NULL;
+
+		if (warned == NULL) {
+			warned = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+			eel_debug_call_at_shutdown_with_data ((GFreeFunc)g_hash_table_destroy, warned);
+		}
+
+		if (!g_hash_table_lookup (warned, mime_type)) {
+			g_warning (_("No description found for mime type \"%s\" (file is \"%s\"), "
+				     "please tell the gnome-vfs mailing list."),
+				   mime_type,
+				   file->details->relative_uri);
+
+			g_hash_table_insert (warned, g_strdup (mime_type), GINT_TO_POINTER (1));
+		}
 	}
 	return mime_type;
 }
