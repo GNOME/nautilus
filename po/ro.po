@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.0\n"
-"POT-Creation-Date: 2002-08-14 10:54+0200\n"
+"POT-Creation-Date: 2002-09-13 20:23-0400\n"
 "PO-Revision-Date: 2002-08-27 21:56+0200\n"
 "Last-Translator: Marius Andreiana <mandreiana@yahoo.com>\n"
 "Language-Team: Română <ro@li.org>\n"
@@ -861,7 +861,7 @@ msgid "Synthpop"
 msgstr "Synthpop"
 
 #: components/music/nautilus-music-view.c:296
-#: libnautilus-private/nautilus-volume-monitor.c:678
+#: libnautilus-private/nautilus-volume-monitor.c:676
 msgid "Unknown"
 msgstr "Necunoscut"
 
@@ -3127,7 +3127,7 @@ msgid "link (broken)"
 msgstr ""
 
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:373
+#: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Gunoi"
@@ -3352,54 +3352,63 @@ msgstr "tip MIME"
 msgid "none"
 msgstr "nimic"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1846
+#: libnautilus-private/nautilus-icon-canvas-item.c:1870
 msgid "file icon"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1993
+#: libnautilus-private/nautilus-icon-canvas-item.c:2017
 #, fuzzy
 msgid "editable text"
 msgstr "text editabil"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1994
+#: libnautilus-private/nautilus-icon-canvas-item.c:2018
 msgid "the editable label"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2001
+#: libnautilus-private/nautilus-icon-canvas-item.c:2025
 msgid "additional text"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2002
+#: libnautilus-private/nautilus-icon-canvas-item.c:2026
 msgid "some more text"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2009
+#: libnautilus-private/nautilus-icon-canvas-item.c:2033
 msgid "highlighted for selection"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2010
+#: libnautilus-private/nautilus-icon-canvas-item.c:2034
 msgid "whether we are highlighted for a selection"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2017
+#: libnautilus-private/nautilus-icon-canvas-item.c:2041
 msgid "highlighted as keyboard focus"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2018
+#: libnautilus-private/nautilus-icon-canvas-item.c:2042
 msgid "whether we are highlighted to render keyboard focus"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2026
+#: libnautilus-private/nautilus-icon-canvas-item.c:2050
 msgid "highlighted for drop"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2027
+#: libnautilus-private/nautilus-icon-canvas-item.c:2051
 msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:1616
+#: libnautilus-private/nautilus-icon-container.c:1635
 msgid "The selection rectangle"
 msgstr "Dreptunghiul de selecţie"
+
+#: libnautilus-private/nautilus-icon-container.c:3414
+#, fuzzy
+msgid "Frame Text"
+msgstr "Copiază text"
+
+#: libnautilus-private/nautilus-icon-container.c:3415
+msgid "Draw a frame around unselected text"
+msgstr ""
 
 #: libnautilus-private/nautilus-icon-dnd.c:625
 msgid ""
@@ -4016,38 +4025,38 @@ msgid "%s Viewer"
 msgstr "vizualizator %s"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:785
+#: libnautilus-private/nautilus-volume-monitor.c:803
 msgid "Floppy"
 msgstr "Dischetă"
 
-#: libnautilus-private/nautilus-volume-monitor.c:786
-#: libnautilus-private/nautilus-volume-monitor.c:815
+#: libnautilus-private/nautilus-volume-monitor.c:804
+#: libnautilus-private/nautilus-volume-monitor.c:833
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:787
+#: libnautilus-private/nautilus-volume-monitor.c:805
 msgid "Zip Drive"
 msgstr "Drive zip"
 
-#: libnautilus-private/nautilus-volume-monitor.c:802
-#: libnautilus-private/nautilus-volume-monitor.c:846
+#: libnautilus-private/nautilus-volume-monitor.c:820
+#: libnautilus-private/nautilus-volume-monitor.c:864
 msgid "Audio CD"
 msgstr "CD audio"
 
-#: libnautilus-private/nautilus-volume-monitor.c:837
+#: libnautilus-private/nautilus-volume-monitor.c:855
 msgid "Root Volume"
 msgstr "Volum root"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1432
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Mount Error"
 msgstr "Eroare la montare"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1432
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Unmount Error"
 msgstr "Eroare la demontare"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1505
+#: libnautilus-private/nautilus-volume-monitor.c:1526
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4056,7 +4065,7 @@ msgstr ""
 "înăuntru."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1509
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4064,7 +4073,7 @@ msgstr ""
 "Nautilus nu a putut monta volumul. Probabil nu se află nici un mediu "
 "înăuntru."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1515
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4072,7 +4081,7 @@ msgstr ""
 "Nautilus nu a putut monta discheta. Probabil discheta este într-un format "
 "care nu poate fi montat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1518
+#: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4080,20 +4089,20 @@ msgstr ""
 "Nautilus nu a putut monta volumul selectat. Probabil volumul este într-un "
 "format care nu poate fi montat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus nu a putut monta discheta selectat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1525
+#: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus nu a putut monta volumul selectat."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1530
+#: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus nu a putut demonta volumul selectat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1735
+#: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
 msgstr "Volum ISO 9660"
 
@@ -5706,11 +5715,11 @@ msgstr ""
 msgid "Show status of indexing used when searching"
 msgstr ""
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
 msgstr "Nu s-a putut crea dosarul cerut"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:219
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5718,11 +5727,11 @@ msgid ""
 "can create it."
 msgstr ""
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
 msgstr "Nu s-au putut crea dosarele cerute"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5743,7 +5752,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:443
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5751,7 +5760,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:448
+#: src/nautilus-application.c:449
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5780,25 +5789,25 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:478 src/nautilus-application.c:496
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:479 src/nautilus-application.c:497
+#: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:480
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:498
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:505
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -7102,8 +7111,8 @@ msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
-"Nautilus este un shell grafic pentru GNOME ce uşurează managementul fişierelor"
-"şi sistemului dvs."
+"Nautilus este un shell grafic pentru GNOME ce uşurează managementul "
+"fişierelorşi sistemului dvs."
 
 #: src/nautilus-window-menus.c:728
 #, c-format

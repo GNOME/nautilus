@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.0.4\n"
-"POT-Creation-Date: 2002-08-28 18:10+0200\n"
-"PO-Revision-Date: 2002-08-18 06:25+0200\n"
+"POT-Creation-Date: 2002-09-13 20:23-0400\n"
+"PO-Revision-Date: 2002-09-11 19:55+0200\n"
 "Last-Translator: Pier Luigi Fiorini <plfiorini@supereva.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -372,7 +372,7 @@ msgstr "Pranks"
 
 #: components/music/mpg123.c:35
 msgid "Soundtrack"
-msgstr "Traccia audio"
+msgstr "Colonna sonora"
 
 #: components/music/mpg123.c:36
 msgid "Euro-Techno"
@@ -3255,7 +3255,7 @@ msgid "link (broken)"
 msgstr "collegamento (interrotto)"
 
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:377
+#: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Cestino"
@@ -4228,11 +4228,11 @@ msgstr "CD audio"
 msgid "Root Volume"
 msgstr "Volume root"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Mount Error"
 msgstr "Errore di mount"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Unmount Error"
 msgstr "Errore smontando"
 
@@ -4241,7 +4241,7 @@ msgstr "Errore smontando"
 # ma anche con altri medoti. Dire che Nautilus non ce l'ha fatta
 # e' dare la colpa al programma.
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1526
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4250,14 +4250,14 @@ msgstr ""
 "dischetto."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1527
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr ""
 "Impossibile montare il volume. Probabilmente non c'è niente nella periferica."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4265,7 +4265,7 @@ msgstr ""
 "Impossibilie montare l'unità  del dischetto. Il dischetto è probabilmente in "
 "un formato che non può essere montato."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1536
+#: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4273,20 +4273,20 @@ msgstr ""
 "Impossibile montare il volume selezionato. Il volume è probabilmente in un "
 "formato che non può essere montato."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1541
+#: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Impossibile montare il dischetto selezionato."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1543
+#: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Impossibile montare il volume selezionato."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1548
+#: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Impossibile smontare il volume selezionato."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1753
+#: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
 msgstr "Volume ISO 9660"
 
@@ -5594,7 +5594,7 @@ msgstr "Troppe corrispondenze"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
 msgid "Change Desktop _Background"
-msgstr "Ca_mbia sfondo desktop"
+msgstr "I_mposta sfondo desktop"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
@@ -5629,7 +5629,7 @@ msgstr "Nuova icona di _avvio"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 msgid "New T_erminal"
-msgstr "Nuovo _terminale"
+msgstr "Nuovo t_erminale"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
 msgid "Open a new GNOME terminal window"
@@ -5974,11 +5974,11 @@ msgstr "Mostra stato di _indicizzazione"
 msgid "Show status of indexing used when searching"
 msgstr "Mostra lo stato dell'indicizzazione usata durante la ricerca"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
 msgstr "Impossibile creare la cartella richiesta"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:219
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5989,11 +5989,11 @@ msgstr ""
 "Nautilus, creare la cartella, o impostare i permessi in modo che Nautilus "
 "possa crearla."
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
 msgstr "Impossibile creare le cartelle richieste"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -6020,7 +6020,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:443
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6031,7 +6031,7 @@ msgstr ""
 "riavviare il computer o reinstallare Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:448
+#: src/nautilus-application.c:449
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6079,12 +6079,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:478 src/nautilus-application.c:496
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:479 src/nautilus-application.c:497
+#: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus non può essere usato ora, per via di un errore inatteso."
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:480
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6093,7 +6093,7 @@ msgstr ""
 "durante il tentativo di registrazione del server per la vista del file "
 "manager."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:498
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6103,7 +6103,7 @@ msgstr ""
 "durante il tentativo di localizzazione della fabbrica. Uccidere oafd e "
 "riavviando Nautilus può aiutare a risolvere il problema."
 
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:505
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -7015,7 +7015,7 @@ msgstr "Apre un'altra finestra di Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:33
 msgid "Prefere_nces"
-msgstr "_Impostazioni"
+msgstr "I_mpostazioni"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "Reload"
@@ -7079,7 +7079,7 @@ msgstr "Vedi come..."
 
 #: src/nautilus-shell-ui.xml.h:50
 msgid "Zoom _In"
-msgstr "Zoom _avanti"
+msgstr "_Zoom avanti"
 
 #: src/nautilus-shell-ui.xml.h:51
 msgid "Zoom _Out"
@@ -7133,7 +7133,7 @@ msgstr "_Avanti"
 
 #: src/nautilus-shell-ui.xml.h:66
 msgid "_Go"
-msgstr "_Vai"
+msgstr "Va_i"
 
 #: src/nautilus-shell-ui.xml.h:67
 msgid "_Help"
