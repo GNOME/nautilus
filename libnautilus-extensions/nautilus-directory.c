@@ -979,26 +979,26 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 			collect_parent_directories (parent_directories, new_directory);
 
-			/* Point the file at the new directory.
-			 * We already have a ref to it from the get_parent_directory
-			 * function so we don't have to ref. We do have to unref
-			 * the old directory, but we better not do that before
-			 * the code below runs.
-			 */
-			file->details->directory = new_directory;
-
 			/* If the file is moving between directories,
 			 * there is more to do.
 			 */
 			if (new_directory != old_directory) {
-				/* Remove from old directory. */
-				nautilus_directory_remove_file (old_directory, file);
-
 				/* Update the name. */
 				name = nautilus_uri_get_basename (pair->to_uri);
 				nautilus_file_update_name (file, name);
 				g_free (name);
 				
+				/* Remove from old directory. */
+				nautilus_directory_remove_file (old_directory, file);
+
+				/* Point the file at the new
+				 * directory. We already have a ref to
+				 * it from the get_parent_directory
+				 * function so we don't have to ref.
+				 */
+				/* FIXME: Doesn't update the link hash table. */
+				file->details->directory = new_directory;
+
 				/* Add to new directory. */
 				nautilus_directory_add_file (new_directory, file);
 				

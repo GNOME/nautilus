@@ -257,6 +257,7 @@ nautilus_view_frame_destroy (GtkObject *object)
 
 	g_free (frame->details->title);
 	g_free (frame->details->label);
+	g_free (frame->details->activation_iid);
 	g_free (frame->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));

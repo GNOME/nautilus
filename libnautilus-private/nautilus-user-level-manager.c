@@ -259,7 +259,7 @@ user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 		}
 	}
 	
-	if (!value) {
+	if (value == NULL) {
 		value = gconf_value_new (GCONF_VALUE_STRING);
 		
 		gconf_value_set_string (value, DEFAULT_USER_LEVEL_NAMES_FOR_STORAGE[DEFAULT_USER_LEVEL]);

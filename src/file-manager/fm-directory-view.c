@@ -3960,8 +3960,6 @@ load_directory (FMDirectoryView *view,
 		nautilus_directory_get_corresponding_file (directory);
 	nautilus_file_unref (old_file);
 
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-
 	view->details->force_reload = force_reload;
 
 	/* FIXME: In theory, we also need to monitor here (as well as

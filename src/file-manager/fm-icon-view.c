@@ -506,14 +506,16 @@ compute_menu_item_info (FMIconView *view,
 		 * desensitize the menu item if that's not the case.
 		 */
         	sensitive = nautilus_g_list_exactly_one_item (selection)
-			&& !nautilus_icon_container_has_stretch_handles (icon_container);
+			&& (icon_container != NULL
+			    && !nautilus_icon_container_has_stretch_handles (icon_container));
 	} else if (strcmp (MENU_PATH_UNSTRETCH_ICONS, menu_path) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
                         name = g_strdup (_("_Restore Icons' Original Sizes"));
                 } else {
                         name = g_strdup (_("_Restore Icon's Original Size"));
                 }
-        	sensitive = nautilus_icon_container_is_stretched (icon_container);
+        	sensitive = icon_container != NULL
+			&& nautilus_icon_container_is_stretched (icon_container);
 	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
                 name = g_strdup (_("_Icon Captions..."));
 	} else if (strcmp (MENU_PATH_RENAME, menu_path) == 0) {

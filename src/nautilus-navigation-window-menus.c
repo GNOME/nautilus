@@ -169,7 +169,7 @@ static void
 bookmark_holder_free (BookmarkHolder *bookmark_holder)
 {
 	gtk_signal_disconnect (GTK_OBJECT (bookmark_holder->bookmark), 
-				       bookmark_holder->changed_handler_id);
+			       bookmark_holder->changed_handler_id);
 	gtk_object_unref (GTK_OBJECT (bookmark_holder->bookmark));
 	g_free (bookmark_holder);
 }
@@ -846,6 +846,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	/* Create menu item with pixbuf */
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 	nautilus_bonobo_add_menu_item (window->details->shell_ui, unique_id, menu_item_path, display_name, pixbuf);
+	gdk_pixbuf_unref (pixbuf);
 	
 	/* Add the status tip */
 	escaped_id = gnome_vfs_escape_string (unique_id);	

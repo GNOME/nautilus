@@ -1,3 +1,26 @@
+2000-10-26  Darin Adler  <darin@eazel.com>
+
+	Fix bug 3998 (Move to Trash crashes Nautilus if item with that
+	name already in trash).
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved): Change the sequence so
+	that the renaming doesn't try to update the file hash twice.
+	
+	* src/file-manager/fm-icon-view.c: (compute_menu_item_info):
+	Handle NULL icon container case. This case happened to Will while
+	testing.
+	
+	* src/file-manager/fm-directory-view.c: (load_directory): Fix
+	GList leak.
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy): Fix
+	string leak.
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu): Fix
+	GdkPixbuf ref. leak.
+
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	(user_level_set_default_if_needed): Tiny coding style change.
+	
 2000-10-26  Rebecca Schulman  <rebecka@eazel.com>
 
 	* nautilus.spec.in:  Moved the spec file entry
