@@ -32,6 +32,8 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#include <gtkmozembed.h>
+
 
 #include <gconf/gconf.h>
 
@@ -43,23 +45,52 @@
 
 #define nopeDEBUG_mfleming 1
 
+#ifdef DEBUG_mfleming
+#define DEBUG_MSG(x)	g_print x;
+#else
+#define DEBUG_MSG(x)	;
+#endif
+
+/* Hold the process for a half hour after the last mozilla component has
+ * been freed
+ */ 
+#define MOZILLA_QUIT_TIMEOUT_DELAY (30 * 60 * 1000)
+
 static int object_count = 0;
+static guint quit_timeout_id = 0;
+static gboolean quit_timeout_pending = FALSE;
+
+static guint /*GtkFunction*/
+mozilla_process_delayed_exit (gpointer data)
+{
+	DEBUG_MSG (("mozilla_object_delayed_exit\n"));
+
+	if (object_count == 0) {
+		DEBUG_MSG (("mozilla_object_delayed_exit: object count 0, exiting\n"));
+
+		gtk_moz_embed_pop_startup();
+
+		gtk_main_quit();
+	}
+	return FALSE;
+}
 
 static void
 mozilla_object_destroyed (GtkObject *obj)
 {
 	object_count--;
 
-#ifdef DEBUG_mfleming
-	g_print ("mozilla_object_destroyed\n");
-#endif
+	DEBUG_MSG (("mozilla_object_destroyed\n"));
+	
+	if (object_count == 0) {
+		DEBUG_MSG (("mozilla_object_destroyed: 0 objects remaining, scheduling quit\n"));
 
-	if (object_count <= 0) {
-#ifdef DEBUG_mfleming
-	g_print ("...final mozilla_object_destroyed, quiting\n");
-#endif
+		if (quit_timeout_pending) {
+			gtk_timeout_remove (quit_timeout_id);
+		}
 
-		gtk_main_quit ();
+		quit_timeout_pending = TRUE;
+		quit_timeout_id = gtk_timeout_add (MOZILLA_QUIT_TIMEOUT_DELAY, (GtkFunction) mozilla_process_delayed_exit, NULL);
 	}
 }
 
@@ -74,9 +105,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 		return NULL;
 	}
 
-#ifdef DEBUG_mfleming
-	g_print ("+mozilla_make_object\n");
-#endif
+	DEBUG_MSG (("+mozilla_make_object\n"));
 
 	object_count++;
 
@@ -84,9 +113,13 @@ mozilla_make_object (BonoboGenericFactory *factory,
 
 	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy", mozilla_object_destroyed, NULL);
 
-#ifdef DEBUG_mfleming
-	g_print ("-mozilla_make_object\n");
-#endif
+	/* Remove any pending quit-timeout callback */
+	if (quit_timeout_pending) {
+		gtk_timeout_remove (quit_timeout_id);
+	}
+	quit_timeout_pending = FALSE;
+
+	DEBUG_MSG (("-mozilla_make_object\n"));
 
 	return BONOBO_OBJECT (bonobo_object);
 }
@@ -108,9 +141,7 @@ main (int argc, char *argv[])
 	GError *error_gconf = NULL;
 	char *fake_argv[] = { "nautilus-mozilla-content-view", NULL };
 
-#ifdef DEBUG_mfleming
-	g_print ("nautilus-mozilla-content-view: starting...\n");
-#endif
+	DEBUG_MSG (("nautilus-mozilla-content-view: starting...\n"));
 
 	if (argc == 2 && 0 == strcmp (argv[1], "--self-test")) {
 		gboolean success;
@@ -151,9 +182,14 @@ main (int argc, char *argv[])
 	ammonite_init ((PortableServer_POA) bonobo_poa);
 #endif
 
-#ifdef DEBUG_mfleming
-	g_print ("nautilus-mozilla-content-view: OAF registration complete.\n");
-#endif
+	/* We want the XPCOM runtime to stick around longer than
+	 * the lifetime of a gtkembedmoz widget.
+	 * The corresponding pop_startup is in mozilla_process_delayed_exit
+	 * above
+	 */
+	gtk_moz_embed_push_startup ();
+
+	DEBUG_MSG (("nautilus-mozilla-content-view: OAF registration complete.\n"));
 
 	do {
 		bonobo_main ();

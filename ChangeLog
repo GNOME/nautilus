@@ -1,3 +1,15 @@
+2001-02-08  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* components/mozilla/main.c: (mozilla_process_delayed_exit),
+	(mozilla_object_destroyed), (mozilla_make_object), (main):
+
+	Bug 6328 -- Mozilla processes are now kept around for 30
+	minutes after last used, so that re-activation is much faster.
+	Navigating to and from web pages in Nautilus is much less agonizing
+	now.
+
 2001-02-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
