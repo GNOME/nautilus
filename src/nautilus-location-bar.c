@@ -384,8 +384,7 @@ try_to_expand_path (NautilusLocationBar *bar)
 	if (*tilde_expand_name == '~') {
 		gtk_entry_set_text (GTK_ENTRY (editable), gnome_vfs_expand_initial_tilde (tilde_expand_name));
 	}
-	g_free (tilde_expand_name);
-	
+
 	g_free (dir_name);
 	g_free (base_name);
 	g_free (current_path);
