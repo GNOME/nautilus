@@ -1,3 +1,11 @@
+2000-05-17  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-list-view.c: (create_list):
+	Fixed bug 357 (Text not vertically centered when starting
+	up in List View): Wait until after "map" signal before
+	setting row height, to work around bug/design flaw in
+	GtkCList.
+
 2000-05-17  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.h:

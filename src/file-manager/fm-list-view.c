@@ -596,8 +596,16 @@ create_list (FMListView *list_view)
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 
-	/* Make height tall enough for icons to look good */
-	fm_list_view_reset_row_height (list_view);
+	/* Make height tall enough for icons to look good.
+	 * This must be done after the list widget is realized, due to
+	 * a bug/design flaw in gtk_clist_set_row_height. Connecting to
+	 * the "realize" signal is slightly too early, so we connect to
+	 * "map".
+	 */
+	gtk_signal_connect (GTK_OBJECT (list_view),
+			    "map",
+			    fm_list_view_reset_row_height,
+			    NULL);
 
 	gtk_widget_show (GTK_WIDGET (list));
 
