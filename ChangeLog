@@ -1,3 +1,10 @@
+2001-02-02  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed a small bug where I was assuming a value would be valid
+	when it could be NULL. Now I check for NULL.
+	
+	* src/nautilus-application.c: (volume_unmounted_callback):
+
 2001-02-02  Brett Neely  <brett@eazel.com>
 
 	reviewed by: Eric Fischer  <eric@eazel.com>

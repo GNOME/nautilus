@@ -704,7 +704,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 	/* Construct a list of windows to be closed */
 	for (index = windows; index != NULL; index = index->next) {
 		window = (NautilusWindow *)index->data;
-		if (window != NULL) {
+		if (window != NULL && window->details->viewed_file != NULL) {
 			text_uri = nautilus_file_get_uri (window->details->viewed_file);
 			uri = gnome_vfs_uri_new (text_uri);
 			g_free (text_uri);
