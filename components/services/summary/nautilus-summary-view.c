@@ -1181,9 +1181,10 @@ set_dialog_parent (NautilusSummaryView *view, GnomeDialog *dialog)
 	g_assert (GNOME_IS_DIALOG (dialog));
 
 	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
-	g_assert (parent_window != NULL);
-
-	gnome_dialog_set_parent (dialog, GTK_WINDOW (parent_window));
+	/* this can sometimes be null */
+	if (parent_window != NULL) {
+		gnome_dialog_set_parent (dialog, GTK_WINDOW (parent_window));
+	}
 }
 
 static void

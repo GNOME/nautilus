@@ -1,3 +1,11 @@
+2000-11-01  Robey Pointer  <robey@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (set_dialog_parent):
+
+	Fix corner case where dialog won't be parented if services are
+	down.
+
 2000-11-01  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-window-service-ui.c: (goto_services_support):
