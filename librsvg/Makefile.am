@@ -46,7 +46,7 @@ librsvg_la_SOURCES =\
 	$(NULL)
 
 test_rsvg_SOURCES = test-rsvg.c
-test_ft_SOURCES = test-rsvg.c
+test_ft_SOURCES = test-ft.c
 
 test_rsvg_LDADD =\
 	librsvg.la \
