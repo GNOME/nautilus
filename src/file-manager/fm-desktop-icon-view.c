@@ -786,7 +786,7 @@ fm_desktop_icon_view_supports_uri (const char *uri,
 			   GnomeVFSFileType file_type,
 			   const char *mime_type)
 {
-	if (g_str_has_prefix (uri, "x-nautilus-desktop:")) {
+	if (g_str_has_prefix (uri, EEL_DESKTOP_URI)) {
 		return TRUE;
 	}
 
