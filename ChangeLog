@@ -1,3 +1,25 @@
+2000-05-19  Gene Z. Ragan  <gzr@eazel.com>
+	
+	* libnautilus/nautilus-undo-context.c:
+	* libnautilus/nautilus-undo-context.h:
+	(impl_Nautilus_Undo_Context__destroy),
+	(impl_Nautilus_Undo_Context__create),
+	(impl_Nautilus_Undo_Context__get_undo_manager),
+	(nautilus_undo_context_new), (nautilus_undo_context_initialize),
+	(nautilus_undo_context_initialize_class), (destroy):
+	GTK and CORBA object that acts as interface to an undo manager.
+	
+	* libnautilus/Makefile.am:
+	Added entries for new NautilusUndoContext files. 
+	
+	* libnautilus/nautilus-undo-manager.c:		
+	(impl_Nautilus_Undo_Manager__forget), (nautilus_undo_manager_undo),
+	(nautilus_undo_manager_unregister_object),
+	(get_current_transaction_name), (free_undo_manager_list_data),
+	(prune_undo_manager_list):
+	Removed all references to NautilusUndoTransaction and changed them to use
+	the Nautilus_Undo_Transaction CORBA object instead.
+
 2000-05-19  Darin Adler  <darin@eazel.com>
 
 	* components/services/trilobite/sample/command-line/.cvsignore:

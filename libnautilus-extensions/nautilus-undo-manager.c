@@ -152,8 +152,11 @@ impl_Nautilus_Undo_Manager__forget (impl_POA_Nautilus_Undo_Manager *servant,
 			            const Nautilus_Undo_Transaction transaction,
 				    CORBA_Environment *ev)
 {
-}
+	NautilusUndoManager *manager;
 
+	g_assert (NAUTILUS_IS_UNDO_MANAGER (servant->gtk_object));
+	manager = NAUTILUS_UNDO_MANAGER (servant->gtk_object);
+}
 
 /* nautilus_undo_manager_new */
 NautilusUndoManager *
@@ -300,7 +303,8 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 		/* nautilus_undo_manager_add_redo_transaction (undo_transaction); */
 	} else {
 		/* Purge transaction */
-		bonobo_object_unref (BONOBO_OBJECT (undo_transaction));
+		Bonobo_Unknown_unref (undo_transaction, &ev);
+		CORBA_Object_release (undo_transaction, &ev);
 	}
 
 	/* Fire off signal informing that an undo transaction has occurred */
@@ -388,10 +392,13 @@ gboolean
 nautilus_undo_manager_unregister_object (GtkObject *object)
 {
 	NautilusUndoManager *manager;
-	NautilusUndoTransaction *transaction;
+	Nautilus_Undo_Transaction transaction;
 	gboolean success;
 	GList *list;
 	int index, length;
+	CORBA_Environment ev;
+
+  	CORBA_exception_init(&ev);
 
 	/* FIXME: We can't get a pointer to the actual undo manager, so this
 	 * needs to work through the CORBA interface to the undo manager.
@@ -411,13 +418,17 @@ nautilus_undo_manager_unregister_object (GtkObject *object)
 		list = g_list_nth (manager->details->undo_list, index);
 		if (list) {
 			transaction = list->data;
-			if (nautilus_undo_transaction_contains_object (transaction, object)) {
+			/* FIXME: We need a way to do this */
+			/*if (nautilus_undo_transaction_contains_object (transaction, object)) {
 				manager->details->undo_list =
 					g_list_remove (manager->details->undo_list, transaction);
-				bonobo_object_unref (BONOBO_OBJECT (transaction));
+					
+				Bonobo_Unknown_unref (transaction, &ev);
+				CORBA_Object_release (transaction, &ev);
+			
 				index--;
 				success = TRUE;
-			}
+			}*/
 		}
 	}
 
@@ -427,13 +438,19 @@ nautilus_undo_manager_unregister_object (GtkObject *object)
 		list = g_list_nth (manager->details->redo_list, index);
 		if (list) {
 			transaction = list->data;
+			/* FIXME: We need a way to do this */
+			/*
 			if (nautilus_undo_transaction_contains_object(transaction, object)) {
 				manager->details->redo_list =
 					g_list_remove (manager->details->redo_list, transaction);
-				bonobo_object_unref (BONOBO_OBJECT (transaction));
+
+				Bonobo_Unknown_unref (transaction, &ev);
+				CORBA_Object_release (transaction, &ev);
+
 				index--;
 				success = TRUE;
 			}
+			*/
 		}
 	}
 
@@ -481,8 +498,9 @@ nautilus_undo_manager_can_redo (NautilusUndoManager *manager)
 static const gchar *
 get_current_transaction_name (GList *list)
 {
-	NautilusUndoTransaction *transaction;
+	Nautilus_Undo_Transaction transaction;
 	const gchar *transaction_name;
+	CORBA_Environment ev;
 		
 	/* Check for NULL list */
 	if (list == NULL) {
@@ -503,13 +521,17 @@ get_current_transaction_name (GList *list)
 		g_warning("Unable to get current transaction name due to NULL transaction in list.");
 		return NULL;
 	}
-	
+			
 	/* Check for valid transaction name */
-	transaction_name = nautilus_undo_transaction_get_name(transaction);
+	CORBA_exception_init(&ev);
+	transaction_name = Nautilus_Undo_Transaction__get_base_description (transaction, &ev);
+
 	if ( transaction_name == NULL) {
 		g_warning("Current transaction name is NULL.");
 		return NULL;
 	}
+
+	CORBA_exception_free(&ev);
 
 	return transaction_name;
 }
@@ -617,7 +639,10 @@ static GList *
 free_undo_manager_list_data (GList *list)
 {
 	int length, index;
-	NautilusUndoTransaction *transaction;
+	Nautilus_Undo_Transaction transaction;
+	CORBA_Environment ev;
+
+	CORBA_exception_init(&ev);
 
 	length = g_list_length (list);		
 	for (index = 0; index < length; index++) {
@@ -625,9 +650,13 @@ free_undo_manager_list_data (GList *list)
 		if (list) {
 			transaction = list->data;
 			list = g_list_remove (list, transaction);
-			bonobo_object_unref (BONOBO_OBJECT (transaction));
+
+			Bonobo_Unknown_unref (transaction, &ev);
+			CORBA_Object_release (transaction, &ev);
 		}
 	}
+
+	CORBA_exception_free(&ev);
 
 	return list;
 }
@@ -642,16 +671,23 @@ static GList *
 prune_undo_manager_list (GList *list, gint items)
 {
 	gint index;
-	NautilusUndoTransaction *transaction;
-	
+	Nautilus_Undo_Transaction transaction;
+	CORBA_Environment ev;
+
+	CORBA_exception_init(&ev);
+
 	for (index = 0; index < items; index++) {
 		list = g_list_first (list);
 		if (list) {
 			transaction = list->data;
 			list = g_list_remove (list, transaction);
-			bonobo_object_unref (BONOBO_OBJECT (transaction));
+
+			Bonobo_Unknown_unref (transaction, &ev);
+			CORBA_Object_release (transaction, &ev);
 		}
 	}
+
+	CORBA_exception_free(&ev);
 
 	return list;
 }

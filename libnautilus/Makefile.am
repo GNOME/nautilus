@@ -47,10 +47,11 @@ libnautilusinclude_HEADERS=			\
 	nautilus-meta-view-frame.h		\
 	nautilus-view-component.h		\
 	nautilus-view-frame.h			\
-	nautilus-zoomable.h			\
+	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
 	nautilus-undo-transaction.h		\
 	nautilus-undoable.h			\
+	nautilus-zoomable.h			\
 	$(NULL)
 
 libnautilus_la_SOURCES=					\
@@ -62,10 +63,11 @@ libnautilus_la_SOURCES=					\
 	nautilus-content-view-frame.c			\
 	nautilus-meta-view-frame.c			\
 	nautilus-view-frame.c				\
-	nautilus-zoomable.c				\
+	nautilus-undo-context.c				\
 	nautilus-undo-manager.c				\
 	nautilus-undo-transaction.c			\
 	nautilus-undoable.c				\
+	nautilus-zoomable.c				\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
