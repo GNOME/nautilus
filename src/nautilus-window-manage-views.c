@@ -1235,11 +1235,13 @@ position_and_show_window_callback (NautilusDirectory *directory,
 					      FALSE)) {
 		geometry_string = nautilus_directory_get_metadata 
 			(directory, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
-		nautilus_gtk_window_set_initial_geometry_from_string 
-			(GTK_WINDOW (window), 
-			 geometry_string,
-			 NAUTILUS_WINDOW_MIN_WIDTH, 
-			 NAUTILUS_WINDOW_MIN_HEIGHT);
+		if (geometry_string != NULL) {
+			nautilus_gtk_window_set_initial_geometry_from_string 
+				(GTK_WINDOW (window), 
+				 geometry_string,
+				 NAUTILUS_WINDOW_MIN_WIDTH, 
+				 NAUTILUS_WINDOW_MIN_HEIGHT);
+		}
 		g_free (geometry_string);
 	}
 

@@ -1,5 +1,11 @@
 2000-09-25  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-window-manage-views.c:
+	(position_and_show_window_callback): Needed a NULL check
+	for saved geometry.
+
+2000-09-25  John Sullivan  <sullivan@eazel.com>
+
 	* components/tree/nautilus-tree-view.c:
 	(nautilus_tree_view_insert_model_node),
 	(nautilus_tree_view_update_model_node): Check for NULL
