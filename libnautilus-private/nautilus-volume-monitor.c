@@ -1766,7 +1766,11 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	gboolean ok;
 	const char *name;
 	struct stat statbuf;
-	
+
+	if (stat (volume->mount_path, &statbuf) == 0) {
+		volume->device = statbuf.st_dev;
+	}
+
 	volume->file_system_type = g_hash_table_lookup
 		(monitor->details->file_system_table, file_system_type_name);
 
@@ -1800,10 +1804,6 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 
 	if (!ok) {
 		return FALSE;
-	}
-
-	if (stat (volume->mount_path, &statbuf) == 0) {
-		volume->device = statbuf.st_dev;
 	}
 
 	/* Identify device type */

@@ -1,3 +1,11 @@
+2002-06-27  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c
+	(finish_creating_volume): Save the volume device earlier, since
+	nfs and smbfs file systems were causing the function to return
+	before the device was being saved.  This fixes a bug where the
+	"Unmount Volume" menu item wasn't working on nfs and smbfs mounts.
+
 2002-06-26  Mark McLoughlin  <mark@skynet.ie>
 
 	* src/file-manager/fm-desktop-icon-view.c:
