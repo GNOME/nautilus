@@ -56,7 +56,8 @@ egg_screen_exec_display_string (GdkScreen *screen)
 	g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
 
 	if (gdk_screen_get_default () == screen)
-		return g_strdup (gdk_display_get_name (
+		return g_strdup_printf ("DISPLAY=%s",
+				gdk_display_get_name (
 					gdk_screen_get_display (screen)));
 
 	old_display = gdk_display_get_name (gdk_screen_get_display (screen));
