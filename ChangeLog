@@ -1,3 +1,23 @@
+2001-03-01  Rebecca Schulman  <rebecka@eazel.com>
+	Some leak checks that showed up on the top of the
+	leak checker profile. (bugzilla.eazel.com 7253)
+	These changes reduce leakage in a short session
+	by 100,000 bytes
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_get_user_level):
+	Remove leak of a string every time we checked user level
+	* libnautilus-extensions/nautilus-smooth-text-layout.c:
+	(nautilus_smooth_text_layout_destroy),
+	(smooth_text_layout_clear_lines):
+	Remove a leak of the text and some other characters every time
+	we created and used a text layout object, which was about 6000
+	times for a short run for me
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	Stop strdup'ing a string where we would have leaked the original.
+
 2001-03-01  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Robin * Slomkowski  <rslomkow@eazel.com>

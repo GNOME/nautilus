@@ -554,7 +554,7 @@ modify_volume_name_for_display (NautilusVolume *volume)
 	
 	/* Save pretty name back into volume info */
 	g_free (volume->volume_name);
-	volume->volume_name = g_strdup (name);
+	volume->volume_name = name;
 }
 
 /* nautilus_volume_monitor_get_target_uri

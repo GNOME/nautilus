@@ -181,6 +181,10 @@ nautilus_smooth_text_layout_destroy (GtkObject *object)
 	smooth_text_layout = NAUTILUS_SMOOTH_TEXT_LAYOUT (object);
 
 	smooth_text_layout_clear_lines (smooth_text_layout);
+	/* FIXME: it seems like we should unref the font here. */
+	g_free (smooth_text_layout->details->line_break_characters);
+	g_free (smooth_text_layout->details->text);
+
 	g_free (smooth_text_layout->details);
 
 	/* Chain destroy */
@@ -203,6 +207,7 @@ smooth_text_layout_clear_lines (NautilusSmoothTextLayout *smooth_text_layout)
 	smooth_text_layout->details->empty_line_height = UNDEFINED_DIMENSION;
 	smooth_text_layout->details->line_wrap_width = UNDEFINED_DIMENSION;
 	smooth_text_layout->details->total_line_height = UNDEFINED_DIMENSION;
+
 }
 
 static void

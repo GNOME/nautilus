@@ -582,6 +582,7 @@ nautilus_preferences_get_user_level (void)
 		result = 0;
 	}
 	
+	g_free (user_level);
 	return result;
 }
 
