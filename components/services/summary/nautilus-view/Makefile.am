@@ -1,4 +1,4 @@
-NULL =
+include $(top_srcdir)/Makefile.shared
 
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"					\
@@ -19,12 +19,11 @@ INCLUDES =								\
 	$(NULL)
 
 oafdir = $(datadir)/oaf
-
-oaf_DATA =								\
-	nautilus-summary-view.oafinfo
+oaf_DATA = nautilus-summary-view.oafinfo
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-summary-view-ui.xml
+ui_msgs = nautilus-summary-view-ui.xml.h
 
 bin_PROGRAMS =								\
 	nautilus-summary-view
@@ -51,3 +50,5 @@ nautilus_summary_view_LDADD =						\
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+BUILT_SOURCES = $(ui_msgs)
+CLEANFILES = $(ui_msgs)

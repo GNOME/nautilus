@@ -1,4 +1,4 @@
-NULL=
+include $(top_srcdir)/Makefile.shared
 
 lib_LTLIBRARIES=libnautilus.la
 
@@ -75,19 +75,14 @@ uidir = $(datadir)/gnome/ui
 ui_DATA = \
 	nautilus-clipboard-ui.xml	\
 	$(NULL)
-
 ui_msgs = \
-	nautilus-clipboard-ui.xml.h
-
-nautilus-clipboard-ui.xml.h: $(srcdir)/nautilus-clipboard-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-clipboard-ui.xml >	\
-	nautilus-clipboard-ui.xml.h
+	nautilus-clipboard-ui.xml.h	\
+	$(NULL)
 
 EXTRA_DIST = \
 	$(ui_DATA)			\
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
-	$(ui_msgs)			\
 	$(NULL)
 
 BUILT_SOURCES = \
@@ -103,4 +98,3 @@ CLEANFILES = \
 	nautilus_distributed_undo_idl_stamp             \
 	$(ui_msgs)					\
 	$(NULL)
-

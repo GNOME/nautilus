@@ -26,13 +26,9 @@
 /* nautilus-applicable-views.h: Interface for mapping a location
    change request to a set of views and actual URL to be loaded. */
 
-#ifndef NAUTILUS_URI_MAP_H
-#define NAUTILUS_URI_MAP_H
+#ifndef NAUTILUS_APPLICABLE_VIEWS_H
+#define NAUTILUS_APPLICABLE_VIEWS_H
 
-#include <glib.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libnautilus/nautilus-view-component.h>
-#include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 
 typedef struct NautilusNavigationInfo NautilusNavigationInfo;
@@ -62,27 +58,12 @@ typedef void (*NautilusNavigationCallback) (NautilusNavigationResult result,
                                             NautilusNavigationInfo  *info,
                                             gpointer                 callback_data);
 
-struct NautilusNavigationInfo {
-        char *location;
+NautilusNavigationInfo *nautilus_navigation_info_new                    (const char                 *location,
+                                                                         NautilusNavigationCallback  ready_callback,
+                                                                         gpointer                    callback_data);
+void                    nautilus_navigation_info_cancel                 (NautilusNavigationInfo     *info);
+void                    nautilus_navigation_info_free                   (NautilusNavigationInfo     *info);
+char *                  nautilus_navigation_info_get_location           (NautilusNavigationInfo     *info);
+NautilusViewIdentifier *nautilus_navigation_info_get_initial_content_id (NautilusNavigationInfo     *info);
 
-	char *referring_iid;		     		/* iid of content view that we're coming from */
-	NautilusViewIdentifier *initial_content_id;	/* NautilusViewIdentifier for content view that we're going to display */
-        GList *files;                        		/* NautilusFile's for files in the dir, if it is one. */
-        GList *explicit_iids;                		/* IIDs explicitly mentioned in the metafile. */
-
-	/* internal usage */
-	NautilusNavigationCallback callback;
-	gpointer callback_data;
-	GnomeVFSAsyncHandle *ah;
-        NautilusDirectory *directory;
-        NautilusFile *file;
-};
-
-NautilusNavigationInfo *nautilus_navigation_info_new    (const char                 *location,
-                                                         NautilusNavigationCallback  ready_callback,
-                                                         gpointer                    callback_data,
-                                                         const char                 *referring_iid);
-void                    nautilus_navigation_info_cancel (NautilusNavigationInfo     *info);
-void                    nautilus_navigation_info_free   (NautilusNavigationInfo     *info);
-
-#endif
+#endif /* NAUTILUS_APPLICABLE_VIEWS_H */

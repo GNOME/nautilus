@@ -1,4 +1,4 @@
-NULL=
+include $(top_srcdir)/Makefile.shared
 
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"			\
@@ -22,10 +22,6 @@ uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-content-loser-ui.xml
 ui_msgs = nautilus-content-loser-ui.xml.h
 
-nautilus-content-loser-ui.xml.h: $(srcdir)/nautilus-content-loser-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-content-loser-ui.xml >	\
-	nautilus-content-loser-ui.xml.h
-
 bin_PROGRAMS =					\
 	nautilus-content-loser
 
@@ -43,9 +39,6 @@ nautilus_content_loser_LDADD =			\
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
-
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
 CLEANFILES = $(ui_msgs)
-
 BUILT_SOURCES = $(ui_msgs)
-

@@ -1,4 +1,4 @@
-NULL=
+include $(top_srcdir)/Makefile.shared
 
 SUBDIRS=file-manager
 
@@ -134,9 +134,9 @@ nautilus_SOURCES = \
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
-nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
-	touch nautilus_shell_interface_idl_stamp
+nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
+	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) nautilus-shell-interface.idl
+	touch $@
 
 TESTS=check-nautilus
 
@@ -148,11 +148,10 @@ ui_DATA = 					\
 	nautilus-service-ui.xml			\
 	nautilus-shell-ui.xml			\
 	$(NULL)
-ui_msgs = nautilus-shell-ui.xml.h
-
-nautilus-shell-ui.xml.h: nautilus-shell-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-shell-ui.xml >	\
-	nautilus-shell-ui.xml.h
+ui_msgs =					\
+	nautilus-service-ui.xml.h		\
+	nautilus-shell-ui.xml.h			\
+	$(NULL)
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -166,7 +165,6 @@ EXTRA_DIST = \
 	$(oaf_DATA)				\
 	run-nautilus				\
 	$(ui_DATA)				\
-	$(ui_msgs)				\
 	$(NULL)
 
 BUILT_SOURCES = $(nautilus_shell_interface_idl_sources) \
@@ -176,8 +174,8 @@ BUILT_SOURCES = $(nautilus_shell_interface_idl_sources) \
 install-data-hook: run-nautilus
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
 	@list='run-nautilus'; for p in $$list; do\
-	  if test -f $(srcdir)/$$p; then \
+	  if test -f $$p; then \
 	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p"; \
-	    $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p; \
+	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
 	done

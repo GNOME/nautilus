@@ -7,7 +7,7 @@
 %define sysconfdir	/etc
 
 Name:		%name
-Summary:	Nautilus is an open-source file manager and graphical shell.
+Summary:	Nautilus is a free file manager and graphical shell.
 Version: 	%ver
 Release: 	%rel
 Copyright: 	GPL
@@ -38,7 +38,7 @@ the early stages of development. It will become an integral part of the
 GNOME desktop environment when it is finished.
 
 %package devel
-Summary:	Libraries and include files for developing nautilus components
+Summary:	Libraries and include files for developing Nautilus components
 Group:		Development/Libraries
 Requires:	%name = %{PACKAGE_VERSION}
 
@@ -55,13 +55,13 @@ Requires:       %name = %{PACKAGE_VERSION}
 Requires:	ammonite >= 0.1
 
 %package extras
-Summary:	extra goodies to use nautilus
+Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
 Requires:	xpdf >= 0.90
 Requires:	mpg123 >= 0.59
 
 %package suggested
-Summary:	Nautilus and usefull components
+Summary:	Nautilus and a suggested set of components
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
 Requires:	%name-mozilla = %{PACKAGE_VERSION}

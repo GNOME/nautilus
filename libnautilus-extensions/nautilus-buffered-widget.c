@@ -66,7 +66,7 @@ struct _NautilusBufferedWidgetDetail
 	GdkPixbuf		*tile_pixbuf;
 	int			horizontal_offset;	
 	int			vertical_offset;	
-	guint			background_appearance_changed_connection;
+	guint			background_appearance_changed_connected;
 	NautilusBackgroundType	background_type;
 	guint32			background_color;
 };
@@ -143,14 +143,8 @@ nautilus_buffered_widget_initialize (NautilusBufferedWidget *buffered_widget)
 
 	GTK_WIDGET_SET_FLAGS (buffered_widget, GTK_NO_WINDOW);
 
-	buffered_widget->detail = g_new (NautilusBufferedWidgetDetail, 1);
+	buffered_widget->detail = g_new0 (NautilusBufferedWidgetDetail, 1);
 
-	buffered_widget->detail->copy_area_gc = NULL;
-	buffered_widget->detail->buffer_pixbuf = NULL;
-	buffered_widget->detail->tile_pixbuf = NULL;
-	buffered_widget->detail->horizontal_offset = 0;
-	buffered_widget->detail->vertical_offset = 0;
-	buffered_widget->detail->background_appearance_changed_connection = 0;
 	buffered_widget->detail->background_type = NAUTILUS_BACKGROUND_ANCESTOR_OR_NONE;
 	buffered_widget->detail->background_color = NAUTILUS_RGB_COLOR_WHITE;
 }
@@ -635,26 +629,27 @@ static void
 connect_to_background_if_needed (NautilusBufferedWidget	*buffered_widget)
 {
 	GtkWidget *background_ancestor;
-
+	NautilusBackground *background;
+	
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
 
-	if (buffered_widget->detail->background_appearance_changed_connection != 0) {
+	if (buffered_widget->detail->background_appearance_changed_connected) {
 		return;
 	}
 
 	background_ancestor = nautilus_gtk_widget_find_background_ancestor (GTK_WIDGET (buffered_widget));
 
 	if (background_ancestor != NULL) {
-		NautilusBackground *background;
-		
 		background = nautilus_get_widget_background (background_ancestor);
 		g_assert (NAUTILUS_IS_BACKGROUND (background));
 		
-		buffered_widget->detail->background_appearance_changed_connection = 
-			gtk_signal_connect (GTK_OBJECT (background),
-					    "appearance_changed",
-					    background_appearance_changed_callback,
-					    GTK_OBJECT (buffered_widget));
+		gtk_signal_connect_while_alive (GTK_OBJECT (background),
+						"appearance_changed",
+						background_appearance_changed_callback,
+						buffered_widget,
+						GTK_OBJECT (buffered_widget));
+
+		buffered_widget->detail->background_appearance_changed_connected = TRUE;
 	}
 }
 

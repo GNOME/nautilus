@@ -503,10 +503,10 @@ viewed_file_changed_callback (NautilusWindow *window)
 static void
 nautilus_window_update_internals (NautilusWindow *window)
 {
-        const char *new_location;
+        char *new_location;
         
         if (window->pending_ni != NULL) {
-                new_location = window->pending_ni->location;
+                new_location = nautilus_navigation_info_get_location (window->pending_ni);
                 
                 /* Maintain history lists. */
                 if (window->location_change_type != NAUTILUS_LOCATION_CHANGE_RELOAD) {
@@ -526,7 +526,7 @@ nautilus_window_update_internals (NautilusWindow *window)
                 
                 /* Set the new location. */
                 g_free (window->location);
-                window->location = g_strdup (new_location);
+                window->location = new_location;
 
                 /* Create a NautilusFile for this location, so we can
                  * check if it goes away.
@@ -659,13 +659,6 @@ handle_unreadable_location (NautilusWindow *window, const char *uri)
 	 * a stat first.
 	 */
 	file = nautilus_file_get (uri);
-
-	/* Can't make file object; can't check permissions; can't determine
-	 * whether file is readable so return FALSE.
-	 */
-	if (file == NULL) {
-		return FALSE;
-	}
 
 	unreadable = !nautilus_file_can_read (file);
 
@@ -921,22 +914,25 @@ cancel_location_change (NautilusWindow *window)
 static void
 load_view_for_new_location (NautilusWindow *window)
 {
-        window->new_content_view = load_content_view
-                (window, window->pending_ni->initial_content_id);
+        NautilusViewIdentifier *content_id;
+
+        content_id = nautilus_navigation_info_get_initial_content_id (window->pending_ni);
+        window->new_content_view = load_content_view (window, content_id);
+        nautilus_view_identifier_free (content_id);
 }
 
 static void
 set_view_location_and_selection (NautilusWindow *window)
 {
-        const char *location;
+        char *location;
         GList *selection, *node;
         
         if (window->pending_ni != NULL) {
-                location = window->pending_ni->location;
+                location = nautilus_navigation_info_get_location (window->pending_ni);
                 selection = window->pending_selection;
         } else {
                 g_assert (window->pending_selection == NULL);
-                location = window->location;
+                location = g_strdup (window->location);
                 selection = window->selection;
         }
         
@@ -957,6 +953,8 @@ set_view_location_and_selection (NautilusWindow *window)
         
         nautilus_g_list_free_deep (window->pending_selection);
         window->pending_selection = NULL;
+
+        g_free (location);
 }
 
 static gboolean
@@ -1088,7 +1086,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                         
                 case NAVINFO_RECEIVED: /* The information needed for a location change to continue has been received */
                         x_message (("NAVINFO_RECEIVED"));
-                        window->pending_ni = va_arg(args, NautilusNavigationInfo*);
+                        window->pending_ni = va_arg(args, NautilusNavigationInfo *);
                         window->cancel_tag = NULL;
                         break;
 
@@ -1185,19 +1183,16 @@ position_and_show_window_callback (NautilusFile *file,
 	}
 
 	gtk_widget_show (GTK_WIDGET (window));
-	
-	/* This directory object was reffed for this callback */
-	nautilus_file_unref (file);
 }                       			     
 
 static void
 nautilus_window_end_location_change_callback (NautilusNavigationResult result_code,
-                                              NautilusNavigationInfo *navi,
+                                              NautilusNavigationInfo *navigation_info,
                                               gpointer data)
 {
         NautilusWindow *window;
         NautilusFile *file;
-        const char *requested_uri;
+        char *location;
         char *full_uri_for_display;
         char *uri_for_display;
         char *error_message;
@@ -1207,21 +1202,22 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
  	GnomeDialog *dialog;
         GList *attributes;
        
-        g_assert (navi != NULL);
+        g_assert (navigation_info != NULL);
         
         window = NAUTILUS_WINDOW (data);
         window->location_change_end_reached = TRUE;
-        
+
         if (result_code == NAUTILUS_NAVIGATION_RESULT_OK) {
                 /* Navigation successful. */
-                window->cancel_tag = navi;
+                window->cancel_tag = navigation_info;
 
 		/* If the window is not yet showing (as is the case for nascent
 		 * windows), position and show it only after we've got the
 		 * metadata (since position info is stored there).
 		 */
                 if (!GTK_WIDGET_VISIBLE (window)) {
-	                file = nautilus_file_get (navi->location);
+                        location = nautilus_navigation_info_get_location (navigation_info);
+	                file = nautilus_file_get (location);
 
                         attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 			nautilus_file_call_when_ready (file,
@@ -1229,23 +1225,27 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                                        position_and_show_window_callback,
                                                        window);
                         g_list_free (attributes);
+
+                        nautilus_file_unref (file);
+                        g_free (location);
                 }
-						
+                
                 nautilus_window_set_state_info
                         (window, 
-                         (NautilusWindowStateItem) NAVINFO_RECEIVED, navi, 
+                         (NautilusWindowStateItem) NAVINFO_RECEIVED, navigation_info, 
                          (NautilusWindowStateItem) 0);
                 return;
         }
         
         /* Some sort of failure occurred. How 'bout we tell the user? */
-        requested_uri = navi->location;
-        full_uri_for_display = nautilus_format_uri_for_display (requested_uri);
+        location = nautilus_navigation_info_get_location (navigation_info);
+        full_uri_for_display = nautilus_format_uri_for_display (location);
 	/* Truncate the URI so it doesn't get insanely wide. Note that even
 	 * though the dialog uses wrapped text, if the URI doesn't contain
 	 * white space then the text-wrapping code is too stupid to wrap it.
 	 */
-        uri_for_display = nautilus_str_middle_truncate (full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
+        uri_for_display = nautilus_str_middle_truncate
+                (full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
 	g_free (full_uri_for_display);
 
 	dialog_title = NULL;
@@ -1269,15 +1269,9 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * permissions instantly here. We might need to wait for
                  * a stat first.
                  */
-        	file = nautilus_file_get (requested_uri);
-                /* FIXME: nautilus_file_get never returns NULL, what
-                   is the code below trying to do? */
-        	if (file == NULL) {
-                        type_string = NULL;
-                } else {
-        		type_string = nautilus_file_get_string_attribute (file, "type");
-			nautilus_file_unref (file);
-                }
+        	file = nautilus_file_get (location);
+                type_string = nautilus_file_get_string_attribute (file, "type");
+                nautilus_file_unref (file);
                 if (type_string == NULL) {
 	                error_message = g_strdup_printf
                                 (_("Couldn't display \"%s\", because Nautilus cannot handle items of this unknown type."),
@@ -1294,7 +1288,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 /* Can't create a vfs_uri and get the method from that, because 
                  * gnome_vfs_uri_new might return NULL.
                  */
-                scheme_string = nautilus_str_get_prefix (requested_uri, ":");
+                scheme_string = nautilus_str_get_prefix (location, ":");
                 g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
                 error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle %s: locations."),
                                                  uri_for_display, scheme_string);
@@ -1324,7 +1318,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 		break;
 
 	case NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE:
-		if (nautilus_is_search_uri (requested_uri)) {
+		if (nautilus_is_search_uri (location)) {
 			/* FIXME bugzilla.eazel.com 2458: Need to give
                          * the user better advice about what to do
                          * here.
@@ -1342,12 +1336,12 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                                  uri_for_display);
         }
         
-        if (navi != NULL) {
+        if (navigation_info != NULL) {
                 if (window->cancel_tag != NULL) {
-                        g_assert (window->cancel_tag == navi);
+                        g_assert (window->cancel_tag == navigation_info);
                         window->cancel_tag = NULL;
                 }
-                nautilus_navigation_info_free (navi);
+                nautilus_navigation_info_free (navigation_info);
         }
         
         if (dialog_title == NULL) {
@@ -1387,6 +1381,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 	g_free (dialog_title);
 	g_free (uri_for_display);
         g_free (error_message);
+        g_free (location);
 }
 
 /*
@@ -1405,7 +1400,6 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                                        NautilusLocationChangeType type,
                                        guint distance)
 {
-        const char *current_iid;
         NautilusNavigationInfo *navigation_info;
         
         g_assert (NAUTILUS_IS_WINDOW (window));
@@ -1424,11 +1418,6 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         
         nautilus_window_allow_stop (window, TRUE);
         
-        current_iid = NULL;
-        if (window->content_view != NULL) {
-                current_iid = nautilus_view_frame_get_iid (window->content_view);
-        }
-        
         /* If we just set the cancel tag in the obvious way here we run into
          * a problem where the cancel tag is set to point to bogus data, because
          * the navigation info is freed by the callback before _new returns.
@@ -1439,8 +1428,7 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         navigation_info = nautilus_navigation_info_new
                 (location,
                  nautilus_window_end_location_change_callback,
-                 window,
-                 current_iid);
+                 window);
         if (!window->location_change_end_reached) {
                 window->cancel_tag = navigation_info;
         }
@@ -1481,7 +1469,6 @@ nautilus_window_set_content_view (NautilusWindow *window, NautilusViewIdentifier
 	g_return_if_fail (id != NULL);
 
 	file = nautilus_file_get (window->location);
-	g_assert (file != NULL);
         nautilus_mime_set_default_component_for_file
 		(file, id->iid);
         nautilus_file_unref (file);

@@ -1,4 +1,4 @@
-NULL = 
+include $(top_srcdir)/Makefile.shared
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
@@ -62,12 +62,6 @@ ui_msgs = \
 	nautilus-mozilla-ui.xml.h \
 	$(NULL)
 
-nautilus-mozilla-ui.xml.h: $(srcdir)/nautilus-mozilla-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-mozilla-ui.xml >	\
-	nautilus-mozilla-ui.xml.h
-
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
-
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
 BUILT_SOURCES = $(ui_msgs)
-
 CLEANFILES = $(ui_msgs)

@@ -34,25 +34,30 @@
 #include <config.h>
 #include "nautilus-applicable-views.h"
 
+#include <ctype.h>
+#include <dirent.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
-
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-async-ops.h>
-
-#include <sys/types.h>
-#include <dirent.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <limits.h>
-#include <ctype.h>
 #include <string.h>
+#include <sys/types.h>
 
+struct NautilusNavigationInfo {
+	NautilusNavigationCallback callback;
+	gpointer callback_data;
+        NautilusFile *file;
+	NautilusViewIdentifier *initial_content_id;
+	GnomeVFSAsyncHandle *handle;
+};
 
 static NautilusNavigationResult
 get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_result)
@@ -98,17 +103,17 @@ got_file_info_callback (NautilusFile *file,
                         gpointer data)
 {
         GnomeVFSResult vfs_result_code;
-        NautilusNavigationInfo *navinfo;
+        NautilusNavigationInfo *info;
         NautilusNavigationResult result_code;
         NautilusViewIdentifier *default_id;
         OAF_ServerInfo *default_component;
 
-        navinfo = (NautilusNavigationInfo *) data;
+        info = (NautilusNavigationInfo *) data;
 
-        g_assert (navinfo->file == file);
+        g_assert (info->file == file);
         result_code = NAUTILUS_NAVIGATION_RESULT_UNDEFINED;
 	default_id = NULL;
-        navinfo->ah = NULL;
+        info->handle = NULL;
         
         /* Get the result. */
         vfs_result_code = nautilus_file_get_file_info_result (file);
@@ -119,7 +124,7 @@ got_file_info_callback (NautilusFile *file,
                 goto out;
         }
 
-        default_component = nautilus_mime_get_default_component_for_file (navinfo->file);
+        default_component = nautilus_mime_get_default_component_for_file (info->file);
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
                 CORBA_free (default_component);
@@ -137,7 +142,7 @@ got_file_info_callback (NautilusFile *file,
                 /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
                 if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
                 	/* If the complete list is non-empty, the default shouldn't have been NULL */
-                    	g_assert (!nautilus_mime_has_any_components_for_file (navinfo->file));
+                    	g_assert (!nautilus_mime_has_any_components_for_file (info->file));
                         result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
                 }
 
@@ -148,13 +153,13 @@ got_file_info_callback (NautilusFile *file,
         }
                
         g_assert (default_id != NULL);
-	navinfo->initial_content_id = nautilus_view_identifier_copy (default_id);
+	info->initial_content_id = nautilus_view_identifier_copy (default_id);
         
  out:
  	if (result_code == NAUTILUS_NAVIGATION_RESULT_UNDEFINED) {
                 result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
  	}
-        (* (navinfo->callback)) (result_code, navinfo, navinfo->callback_data);
+        (* info->callback) (result_code, info, info->callback_data);
 }
 
         
@@ -164,8 +169,7 @@ got_file_info_callback (NautilusFile *file,
 NautilusNavigationInfo *
 nautilus_navigation_info_new (const char *location,
                               NautilusNavigationCallback notify_when_ready,
-                              gpointer notify_data,
-                              const char *referring_iid)
+                              gpointer notify_data)
 {
         NautilusNavigationInfo *info;
         GList *attributes;
@@ -175,10 +179,6 @@ nautilus_navigation_info_new (const char *location,
         info->callback = notify_when_ready;
         info->callback_data = notify_data;
         
-        info->referring_iid = g_strdup (referring_iid);
-        info->location = g_strdup (location);
-
-        info->directory = nautilus_directory_get (location);
         info->file = nautilus_file_get (location);
 
         /* Arrange for all the file attributes we will need. */
@@ -199,9 +199,9 @@ nautilus_navigation_info_cancel (NautilusNavigationInfo *info)
 {
         g_return_if_fail (info != NULL);
 
-        if (info->ah != NULL) {
-                gnome_vfs_async_cancel (info->ah);
-                info->ah = NULL;
+        if (info->handle != NULL) {
+                gnome_vfs_async_cancel (info->handle);
+                info->handle = NULL;
         }
 
         nautilus_file_cancel_call_when_ready
@@ -217,15 +217,20 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         
         nautilus_navigation_info_cancel (info);
 
-        nautilus_g_list_free_deep (info->explicit_iids);
-
-        nautilus_view_identifier_free (info->initial_content_id);
-        g_free (info->referring_iid);
-        g_free (info->location);
-
-        nautilus_directory_unref (info->directory);
         nautilus_file_unref (info->file);
+        nautilus_view_identifier_free (info->initial_content_id);
 
         g_free (info);
 }
 
+char *
+nautilus_navigation_info_get_location (NautilusNavigationInfo *info)
+{
+        return nautilus_file_get_uri (info->file);
+}
+
+NautilusViewIdentifier *
+nautilus_navigation_info_get_initial_content_id (NautilusNavigationInfo *info)
+{
+        return nautilus_view_identifier_copy (info->initial_content_id);
+}

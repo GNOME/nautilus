@@ -1,4 +1,4 @@
-NULL =
+include $(top_srcdir)/Makefile.shared
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
@@ -41,4 +41,3 @@ eazel_install_SOURCES = 		\
 eazel_gen_xml_SOURCES = 	\
 	eazel-gen-xml.c         \
 	$(NULL)                
-

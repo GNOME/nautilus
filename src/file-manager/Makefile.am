@@ -1,4 +1,4 @@
-NULL = 
+include $(top_srcdir)/Makefile.shared
 
 noinst_LTLIBRARIES=libnautilus-file-manager.la
 
@@ -55,17 +55,6 @@ ui_msgs = nautilus-directory-view-ui.xml.h	\
 	nautilus-icon-view-ui.xml.h		\
 	nautilus-search-list-view-ui.xml.h	\
 	$(NULL)
-
-nautilus-directory-view-ui.xml.h: $(srcdir)/nautilus-directory-view-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-directory-view-ui.xml >	\
-	nautilus-directory-view-ui.xml.h
-nautilus-icon-view-ui.xml.h: $(srcdir)/nautilus-icon-view-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-icon-view-ui.xml >	\
-	nautilus-icon-view-ui.xml.h
-nautilus-search-list-view-ui.xml.h: $(srcdir)/nautilus-search-list-view-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-search-list-view-ui.xml >\
-	nautilus-search-list-view-ui.xml.h
-
 
 EXTRA_DIST = $(ui_DATA) $(ui_msgs)
 

@@ -1,3 +1,5 @@
+include $(top_srcdir)/Makefile.shared
+
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Test\"	\
@@ -19,10 +21,6 @@ uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-sidebar-loser-ui.xml
 ui_msgs = nautilus-sidebar-loser-ui.xml.h
 
-nautilus-sidebar-loser-ui.xml.h: $(srcdir)/nautilus-sidebar-loser-ui.xml
-	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-sidebar-loser-ui.xml >	\
-	nautilus-sidebar-loser-ui.xml.h
-
 bin_PROGRAMS =					\
 	nautilus-sidebar-loser
 
@@ -40,11 +38,6 @@ nautilus_sidebar_loser_LDADD =			\
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)
 
-
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
-
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
 CLEANFILES = $(ui_msgs)
-
 BUILT_SOURCES = $(ui_msgs)
-
-

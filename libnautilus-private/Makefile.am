@@ -1,4 +1,4 @@
-NULL=
+include $(top_srcdir)/Makefile.shared
 
 lib_LTLIBRARIES=libnautilus-extensions.la
 
@@ -226,6 +226,5 @@ noinst_HEADERS =				\
 	nautilus-wait-until-ready.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
-
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
