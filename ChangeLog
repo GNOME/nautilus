@@ -1,3 +1,25 @@
+2001-01-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 5831 - Clipping problems in summary view draing scrollable
+	labels.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-viewport.c:
+	(nautilus_viewport_initialize_class),
+	(nautilus_viewport_initialize), (nautilus_viewport_draw),
+	(nautilus_viewport_paint), (nautilus_viewport_new):
+	* libnautilus-extensions/nautilus-viewport.h:
+	New files.  A sublcass of GtkViewport that takes into account the
+	width and height of the widget style xthickness and ythickness
+	when painting.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form):
+	Use NautilusViewport instead of GtkViewport to avoid clipping
+	problems when painting labels inside scrollable viewports.
+
 2001-01-22  Josh Barrow  <josh@eazel.com>
 
 	* icons/crux_eggplant/.cvsignore:
