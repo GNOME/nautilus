@@ -1,5 +1,17 @@
 2001-03-02  Eskil Heyn Olsen  <eskil@eazel.com>
 
+	written by: Robey Pointer  <robey@eazel.com>
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	This is a patch to debug output only.
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_dump_tree_helper), (packagedata_dump_tree_int),
+	(packagedata_dump_tree):
+	Don't log dependencies for broken packages in debug output.
+
+2001-03-02  Eskil Heyn Olsen  <eskil@eazel.com>
+
 	reviewed by: Robey Pointer  <robey@eazel.com> who sez "that's
 	nice..."
 

@@ -1318,7 +1318,7 @@ eazel_install_gtk_marshal_BOOL__ENUM_POINTER (GtkObject * object,
 /* useful debugging tool: dump out a concise package tree, with dep/modifies chains shown */
 
 static void packagedata_dump_tree_int (GString *out, PackageData *pd, gchar *indent, gchar *indent_type,
-				       int indent_level, GList **seen);
+				       int indent_level, gboolean show_deps, GList **seen);
 
 static void
 packagedata_dump_tree_helper (GString *out,
@@ -1365,7 +1365,8 @@ packagedata_dump_tree_helper (GString *out,
 		indent3 = g_strdup_printf ("%s-%c- ", 
 					   more ? "" : "\\",
 					   indent_type);
-		packagedata_dump_tree_int (out, pack, indent2, indent3, more ? 4 : 5, seen);
+		packagedata_dump_tree_int (out, pack, indent2, indent3, more ? 4 : 5,
+					   (indent_type == 'b' ? FALSE : TRUE), seen);
 		g_free (indent2);
 		g_free (indent3);
 		(*seen) = g_list_prepend (*seen, iterator);
@@ -1379,6 +1380,7 @@ packagedata_dump_tree_int (GString *out,
 			   gchar *indent,
 			   gchar *indent_type,
 			   int indent_level,
+			   gboolean show_deps,
 			   GList **seen)
 {
 	char *readable_name;
@@ -1429,8 +1431,10 @@ packagedata_dump_tree_int (GString *out,
 	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
 		packagedata_dump_tree_helper (out, indent, 'b', indent_level, iterator, pd->depends, seen);
 	}
-	for (iterator = pd->depends; iterator; iterator = iterator->next) {		
-		packagedata_dump_tree_helper (out, indent, 'd', indent_level, iterator, NULL, seen);
+	if (show_deps) {
+		for (iterator = pd->depends; iterator; iterator = iterator->next) {		
+			packagedata_dump_tree_helper (out, indent, 'd', indent_level, iterator, NULL, seen);
+		}
 	}
 }
 
@@ -1444,7 +1448,7 @@ packagedata_dump_tree (const GList *packlist, int indent_level)
 
 	out = g_string_new ("");
 	for (iter = g_list_first ((GList *)packlist); iter != NULL; iter = g_list_next (iter)) {
-		packagedata_dump_tree_int (out, PACKAGEDATA (iter->data), "", "", indent_level, &seen);
+		packagedata_dump_tree_int (out, PACKAGEDATA (iter->data), "", "", indent_level, TRUE, &seen);
 	}
 	g_list_free (seen);
 	outstr = out->str;
