@@ -1,3 +1,15 @@
+2000-09-05  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_install_packages):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_init):
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_start):
+
+	Fix bug 2684 that would cause an occasional crash if running as
+	root (freeing a password that had never been collected).
+
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

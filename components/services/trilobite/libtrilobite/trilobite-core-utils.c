@@ -317,6 +317,11 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 	/* for future reference:
 	 * possible to avoid gtk_init (which requires X) by using gtk_type_init(), gtk_signal_init()
 	 * according to george.
+	 * gtk_type_init ();
+	 * gnomelib_init ("trilobite-eazel-install-service-factory", "0.1");
+	 * gnomelib_register_popt_table (oaf_popt_options, "Trilobite-Eazel-Install-Server");
+	 * orb = oaf_init (argc, argv);
+	 * gnomelib_parse_args (argc, argv, 0);
 	 */
 	gnome_init_with_popt_table (service_name, version_name, argc, argv, oaf_popt_options, 0, NULL);
 	orb = oaf_init (argc, argv);

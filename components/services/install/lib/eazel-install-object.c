@@ -693,7 +693,7 @@ eazel_install_install_packages (EazelInstall *service,
 	if (!g_file_exists (eazel_install_get_tmp_dir (service))) {
 		create_temporary_directory (eazel_install_get_tmp_dir (service));
 	}
-	
+
 	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
 		char *tmp;
 		tmp = g_strdup_printf ("%s/package-list.xml", eazel_install_get_tmp_dir (service));
@@ -716,11 +716,11 @@ eazel_install_install_packages (EazelInstall *service,
 		GList *iterator;
 		PackageData *top_pack, *sub_pack;
 
-		g_message ("*** deleting the package files");
+		trilobite_debug ("deleting the package files");
 		for (iterator = g_list_first (service->private->downloaded_files); iterator;
 		     iterator = g_list_next (iterator)) {
 			char *filename = (char*)iterator->data;
-			g_message ("*** file '%s'", filename);
+			trilobite_debug ("deleting file '%s'", filename);
 			if (unlink (filename) != 0) {
 				g_warning ("unable to delete file %s !", filename);
 			}

@@ -345,6 +345,7 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 	g_return_val_if_fail (root_helper != NULL, FALSE);
 	g_return_val_if_fail (TRILOBITE_IS_ROOT_HELPER (root_helper), FALSE);
 
+	password = NULL;
 	if (root_helper->state == TRILOBITE_ROOT_HELPER_STATE_CONNECTED) {
 		/* already connected, dude. */
 		return TRILOBITE_ROOT_HELPER_SUCCESS;
@@ -374,7 +375,6 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 
 		/* now emit a signal and get the password */
 		trilobite_debug ("roothelper: asking for password");
-		password = NULL;
 		gtk_signal_emit (GTK_OBJECT (root_helper), root_helper_signals[NEED_PASSWORD], &password);
 		if (password == NULL) {
 			/* bummer.  nobody caught the signal. */
