@@ -46,6 +46,7 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-core-security-manager.h	\
 	trilobite-core-tests.h			\
 	trilobite-core-utils.h			\
+	trilobite-root-helper.h			\
 	helixcode-utils.h			\
 	$(NULL)
 
@@ -63,6 +64,7 @@ libtrilobite_la_SOURCES =			\
 	trilobite-core-security-manager.c	\
 	trilobite-core-tests.c			\
 	trilobite-core-utils.c			\
+	trilobite-root-helper.c			\
 	helixcode-utils.c			\
 	$(NULL)
 

@@ -40,6 +40,7 @@
 #include <libtrilobite/trilobite-core-security-manager.h>
 #include <libtrilobite/trilobite-core-metadata-manager.h>
 #include <libtrilobite/trilobite-core-tests.h>
+#include <libtrilobite/trilobite-root-helper.h>
 #include <libtrilobite/helixcode-utils.h>
 
 #endif /* __LIBTRILOBITE_H__ */

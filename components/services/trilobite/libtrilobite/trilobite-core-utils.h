@@ -30,5 +30,7 @@
 #ifndef TRILOBITE_CORE_UTILS_H
 #define TRILOBITE_CORE_UTILS_H
 
+int trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdout_fd, int *stderr_fd);
+
 #endif /* TRILOBITE_CORE_UTILS_H */
 
