@@ -47,13 +47,24 @@
 #define IDE_DRIVE_CAPACITY IDE_DRIVE_DIR "capacity"
 #define IDE_DRIVE_MODEL    IDE_DRIVE_DIR "model"
 
-#define MAX_LINE_LEN 4096
+#define USB_DEVICES_FILE "/proc/bus/usb/devices"
+
+#define SCSI_DEVICES_FILE "/proc/scsi/devices"
+#define SCSI_DEVICE_START "Host: scsi%d Channel: %2d Id: %2d Lun: %2d"
+#define SCSI_DEVICE_START_COUNT 4
+#define SCSI_VENDOR_STRING "  Vendor: "
+#define SCSI_MODEL_STRING "Model: "
+#define SCSI_REV_STRING "Rev: "
+
+#define SCSI_TYPE_STRING "  Type:   "
+
+#define MAX_LINE_LEN 4095 /* i386 page - 1 */
 
 static void
 add_device_property (xmlNodePtr device_node, const char *key, 
 		const char *value) {
 	xmlNodePtr property;
-
+	
 	property = xmlNewChild (device_node, NULL, "PROPERTY", value);
 	xmlSetProp (property, "NAME", key);
 }
@@ -66,14 +77,14 @@ eazel_inventory_collect_pci (void) {
 	char line[MAX_LINE_LEN+1];
 	xmlNodePtr bus_node, device_node;
 
+	bus_node = xmlNewNode (NULL, "BUS");
+	xmlSetProp (bus_node, "TYPE", "PCI");
+
 	pci_file = fopen (PCI_DEVICES_FILE, "r");
 
 	if (pci_file == NULL) {
-		return NULL;
+		return bus_node;
 	}
-
-	bus_node = xmlNewNode (NULL, "BUS");
-	xmlSetProp (bus_node, "TYPE", "PCI");
 
 	while (!feof (pci_file) && !ferror (pci_file)) {
 		fgets (line, MAX_LINE_LEN, pci_file);
@@ -88,7 +99,24 @@ eazel_inventory_collect_pci (void) {
 		add_device_property (device_node, "BusNumber", bus_number);
 	}
 
+	fclose (pci_file);
+
 	return bus_node;
+}
+
+static void
+remove_trailing_whitespace (char *buffer) 
+{
+	int i;
+
+	g_return_if_fail (buffer != NULL);
+
+	i = strlen (buffer) - 1;
+
+	while ( (i >= 0) && isspace (buffer[i])) {
+		buffer[i] = '\0';
+		i--;
+	}
 }
 
 static char *
@@ -117,12 +145,7 @@ ide_get_value (int bus, char drive, const char *key) {
 		return NULL;
 	}
 
-	/* remove trailing whitespace */
-	i--;
-	while ( (i >= 0) && isspace (line[i])) {
-		line[i] = '\0';
-		i--;
-	}
+	remove_trailing_whitespace (line);
 
 	return g_strdup (line);
 }
@@ -213,6 +236,171 @@ eazel_inventory_collect_ide (void) {
 
 	return bus_node;
 }
+
+/* collect information about devices on the USB bus */
+static xmlNodePtr
+eazel_inventory_collect_usb (void) {
+	FILE *usb_file;
+	char line[MAX_LINE_LEN+1], *name, *value;
+	char vendor[5], prodid[5], revision[6];
+	xmlNodePtr bus_node, device_node;
+
+	bus_node = xmlNewNode (NULL, "BUS");
+	xmlSetProp (bus_node, "TYPE", "USB");
+
+	usb_file = fopen (USB_DEVICES_FILE, "rt");
+	if (usb_file == NULL) {
+		return bus_node;
+	}
+
+	device_node = NULL;
+
+	while (!feof (usb_file) && !ferror (usb_file)) {
+		if (fgets (line, MAX_LINE_LEN, usb_file) == NULL) {
+			break;
+		}
+		switch (line[0]) {
+			case 'T':
+				if (device_node) {
+					xmlAddChild (bus_node, device_node);
+				}
+				device_node = xmlNewNode (NULL, "DEVICE");
+				break;
+			case 'S':
+				remove_trailing_whitespace (line);
+				if (strlen (line) < 5) {
+					break;
+				}
+				name = line+4;
+				value = strchr (name, '=');
+				if (value) {
+					*value = '\0';
+					value++;
+					add_device_property (device_node, 
+							name, value);
+				}
+				break;
+			case 'P':
+				if (sscanf (line+4, 
+					"Vendor=%4s ProdID=%4s Rev=%5s",
+					vendor, prodid, revision)
+						!= 3) {
+					break;
+				}
+				add_device_property (device_node, "Vendor-ID",
+						vendor);
+				add_device_property (device_node, "Device-ID",
+						prodid);
+				add_device_property (device_node, "Revision",
+						revision);
+				break;
+			case	'I':
+				name = strstr (line+4, "Cls=");
+				if (name) {
+					value = name+4;
+					if (strlen (value) >= 2) {
+						*(value+2) = '\0';
+						add_device_property 
+							(device_node, "Class",
+							 value);
+					}
+				}
+		}
+	}
+	fclose (usb_file);
+
+	if (device_node) {
+		xmlAddChild (bus_node, device_node);
+	}
+
+	return bus_node;
+}
+
+/* collect information about devices on the SCSI bus */
+static xmlNodePtr
+eazel_inventory_collect_scsi (void) {
+	xmlNodePtr bus_node, device_node;
+	FILE *scsi_file;
+	char line[MAX_LINE_LEN+1];
+	char *scsi_vendor, *scsi_model, *scsi_rev, *scsi_type;
+	int scsi_host, scsi_channel, scsi_id, scsi_lun;
+
+	bus_node = xmlNewNode (NULL, "BUS");
+	xmlSetProp (bus_node, "TYPE", "SCSI");
+	device_node = NULL;
+
+
+/*
+Attached devices: 
+Host: scsi0 Channel: 00 Id: 00 Lun: 00
+  Vendor: SEAGATE  Model: ST15150W         Rev: 0023
+  Type:   Direct-Access                    ANSI SCSI revision: 02
+Host: scsi0 Channel: 00 Id: 04 Lun: 00
+  Vendor: MATSHITA Model: CD-R   CW-7502   Rev: 4.16
+  Type:   CD-ROM                           ANSI SCSI revision: 02
+*/
+
+	scsi_file = fopen (SCSI_DEVICES_FILE, "rt");
+
+	while (!feof (scsi_file) && !ferror (scsi_file)) {
+		fgets (line, MAX_LINE_LEN, scsi_file);
+		if (sscanf (line, SCSI_DEVICE_START, &scsi_host, 
+					&scsi_channel, &scsi_id, 
+					&scsi_lun) ==
+				SCSI_DEVICE_START_COUNT) {
+			printf ("device start\n");
+			if (device_node) {
+				xmlAddChild (bus_node, device_node);
+			}
+			device_node = xmlNewNode (NULL, "DEVICE");
+			/* FIXME: do we want to upload host, channel, id and
+			 * lun info? */
+		} else if (!strncmp (line, SCSI_VENDOR_STRING, 
+					strlen (SCSI_VENDOR_STRING))) {
+			printf ("vendorline\n");
+			scsi_vendor = line + strlen (SCSI_VENDOR_STRING);
+			scsi_model = strstr (scsi_vendor, SCSI_MODEL_STRING);
+			if (scsi_model) {
+				*scsi_model = '\0';
+				remove_trailing_whitespace (scsi_vendor);
+				add_device_property (device_node, "Vendor", 
+						scsi_vendor);
+				scsi_model += strlen (SCSI_MODEL_STRING);
+				scsi_rev = strstr (scsi_model, SCSI_REV_STRING);
+				if(scsi_rev) {
+					*scsi_rev = '\0';
+					remove_trailing_whitespace 
+						(scsi_model);
+					add_device_property (device_node, 
+							"Model", scsi_model);
+					scsi_rev += strlen (SCSI_REV_STRING);
+					add_device_property (device_node, 
+							"Revision", scsi_rev);
+					remove_trailing_whitespace 
+						(scsi_rev);
+				}
+			}
+		} else if (!strncmp (line, SCSI_TYPE_STRING,
+					strlen (SCSI_TYPE_STRING))) {
+			printf ("typeline\n");
+			scsi_type = line + strlen (SCSI_TYPE_STRING);
+			if (strlen (scsi_type) > 20) {
+				scsi_type[20] = '\0';
+			}
+			remove_trailing_whitespace (scsi_type);
+			add_device_property (device_node, "Type", scsi_type);
+		}
+	}
+
+	fclose (scsi_file);
+
+	if (device_node) {
+		xmlAddChild (bus_node, device_node);
+	}
+
+	return bus_node;
+}
+
 
 /* ripped straight out of libnautilus-extensions because we didn't want the
  * dependency for one small function
@@ -348,6 +536,8 @@ eazel_inventory_collect_hardware (void) {
 	xmlAddChild (node, eazel_inventory_collect_memory ()); 
 	xmlAddChild (node, eazel_inventory_collect_pci ()); 
 	xmlAddChild (node, eazel_inventory_collect_ide ()); 
+	xmlAddChild (node, eazel_inventory_collect_usb ()); 
+	xmlAddChild (node, eazel_inventory_collect_scsi ()); 
 
 	return node;
 }

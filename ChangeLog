@@ -1,3 +1,16 @@
+2001-02-07  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* components/services/inventory/eazel-inventory-collect-hardware.c:
+	(add_device_property), (eazel_inventory_collect_pci),
+	(remove_trailing_whitespace), (ide_get_value),
+	Separated whitespace removal into a separate function.
+
+	(eazel_inventory_collect_usb), (eazel_inventory_collect_scsi),
+	(eazel_inventory_collect_hardware):
+	Added USB and SCSI bus scanning. Bugs: 5094, 6285.
+
 2001-02-07  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: John Sullivan  <sullivan@eazel.com>
