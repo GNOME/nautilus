@@ -1,5 +1,22 @@
 2002-02-28  Darin Adler  <darin@bentspoon.com>
 
+	* components/notes/nautilus-notes.c: (do_destroy): Remove some
+	GNOME2_CONVERSION_COMPLETE code.
+
+	* src/nautilus-theme-selector.h:
+	* src/nautilus-theme-selector.c:
+	(remove_theme_selector_idle_callback): New.
+	(remove_theme_selector_changed_callback): Schedule the remove to be done
+	at idle time, since GtkTreeView can't handle changes to the tree from
+	inside the selection changed signal.
+	(theme_selector_finalize): Cancel idle if it's still around.
+	(for_each_theme_callback), (theme_selector_populate_list),
+	(theme_selector_update_selected_theme_from_preferences),
+	(nautilus_theme_selector_get_selected_theme): Return NULL rather
+	than emitting a g_warning when no theme is selected.
+
+2002-02-28  Darin Adler  <darin@bentspoon.com>
+
 	* src/file-manager/fm-directory-view.c: (add_numbered_menu_item):
 	Escape the path too, not just the menu item name, because the path
 	contains other menu item names.

@@ -57,7 +57,14 @@ struct NautilusThemeSelectorDetails
 	GtkWidget *remove_scrolled_window;
 	guint theme_selector_changed_connection;
 	GtkWindow *parent_window;
+	guint remove_idle_id;
 };
+
+typedef struct
+{
+	EelImageChooser *image_chooser;
+	gboolean include_builtin;
+} ForEachThemeData;
 
 enum
 {
@@ -65,7 +72,7 @@ enum
 	LAST_SIGNAL
 };
 
-static guint theme_selector_signals[LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
 static void theme_selector_populate_list                          (EelImageChooser       *image_chooser,
 								   GtkWidget             *scrolled_window,
@@ -101,8 +108,6 @@ static void
 theme_selector_update_help_label (NautilusThemeSelector *theme_selector,
 				  gboolean removing)
 {
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
-
 	if (removing) {
 		gtk_label_set_text (GTK_LABEL (theme_selector->details->help_label),
 				    _("Click on a theme to remove it."));
@@ -121,14 +126,8 @@ file_selection_ok_clicked_callback (GtkWidget *button,
 	NautilusThemeInstallResult result;
 	char *message;
 
-	g_return_if_fail (GTK_IS_BUTTON (button));
-	g_return_if_fail (GTK_IS_FILE_SELECTION (callback_data));
-
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (g_object_get_data (G_OBJECT (callback_data),
-									   THEME_SELECTOR_DATA_KEY)));
-
 	theme_selector = NAUTILUS_THEME_SELECTOR (g_object_get_data (G_OBJECT (callback_data),
-								       THEME_SELECTOR_DATA_KEY));
+								     THEME_SELECTOR_DATA_KEY));
 	
 	selected_path = gtk_file_selection_get_filename (GTK_FILE_SELECTION (callback_data));
 
@@ -168,17 +167,14 @@ file_selection_ok_clicked_callback (GtkWidget *button,
 		break;
 	}
 
-	gtk_widget_destroy (GTK_WIDGET (callback_data));
+	gtk_object_destroy (GTK_OBJECT (callback_data));
 }
 
 static void
 file_selection_cancel_clicked_callback (GtkWidget *button,
 					gpointer callback_data)
 {
-	g_return_if_fail (GTK_IS_BUTTON (button));
-	g_return_if_fail (GTK_IS_FILE_SELECTION (callback_data));
-
-	gtk_widget_destroy (GTK_WIDGET (callback_data));
+	gtk_object_destroy (GTK_OBJECT (callback_data));
 }
 
 static void
@@ -187,9 +183,6 @@ install_theme_button_clicked_callback (GtkWidget *button,
 {
 	NautilusThemeSelector *theme_selector;
 	GtkWidget *file_selection_dialog;
-
-	g_return_if_fail (GTK_IS_BUTTON (button));
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (callback_data));
 
 	theme_selector = NAUTILUS_THEME_SELECTOR (callback_data);
 	file_selection_dialog = gtk_file_selection_new (_("Select a theme folder to add as a new theme:"));
@@ -254,18 +247,14 @@ theme_selector_finish_remove (NautilusThemeSelector *theme_selector)
 }
 
 static gboolean
-theme_selector_has_user_themes (const NautilusThemeSelector *theme_selector)
+theme_selector_has_user_themes (NautilusThemeSelector *theme_selector)
 {
-	g_return_val_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector), FALSE);
-
 	return eel_image_chooser_get_num_rows (theme_selector->details->remove_theme_selector) > 0;
 }
 
 static void
 theme_selector_update_remove_theme_button (NautilusThemeSelector *theme_selector)
 {
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
-
 	eel_gtk_widget_set_shown (theme_selector->details->remove_theme_button,
 				  theme_selector_has_user_themes (theme_selector));
 }	
@@ -274,33 +263,11 @@ static void
 cancel_remove_button_clicked_callback (GtkWidget *button,
 				       gpointer callback_data)
 {
-	g_return_if_fail (GTK_IS_BUTTON (button));
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (callback_data));
-
 	theme_selector_finish_remove (NAUTILUS_THEME_SELECTOR (callback_data));
 }
 
-static char *
-theme_selector_get_selected_theme (const NautilusThemeSelector *theme_selector)
-{
-	int selected_row_position;
-	gpointer row_data;
-
-	g_return_val_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector), NULL);
-	
-	selected_row_position = eel_image_chooser_get_selected_row (theme_selector->details->theme_selector);
-	g_return_val_if_fail (selected_row_position != -1, NULL);
-	
-	row_data = eel_image_chooser_get_row_data (theme_selector->details->theme_selector,
-						   selected_row_position);
-	g_return_val_if_fail (row_data != NULL, NULL);
-	
-	return g_strdup (row_data);
-}
-
-static void
-remove_theme_selector_changed_callback (EelImageChooser *image_chooser,
-					gpointer callback_data)
+static gboolean
+remove_theme_selector_idle_callback (gpointer callback_data)
 {
 	NautilusThemeSelector *theme_selector;
 	int theme_to_remove_position;
@@ -308,15 +275,17 @@ remove_theme_selector_changed_callback (EelImageChooser *image_chooser,
 	char *selected_theme;
 	GnomeVFSResult remove_result;
 
-	g_return_if_fail (EEL_IS_IMAGE_CHOOSER (image_chooser));
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (callback_data));
-	
 	theme_selector = NAUTILUS_THEME_SELECTOR (callback_data);
-	
-	theme_to_remove_position = eel_image_chooser_get_selected_row (image_chooser);
-	g_return_if_fail (theme_to_remove_position != -1);
 
-	theme_to_remove = g_strdup ((const char *)eel_image_chooser_get_row_data (image_chooser, theme_to_remove_position));
+	theme_selector->details->remove_idle_id = 0;
+	
+	theme_to_remove_position = eel_image_chooser_get_selected_row (theme_selector->details->remove_theme_selector);
+	if (theme_to_remove_position < 0) {
+		return FALSE;
+	}
+
+	theme_to_remove = g_strdup (eel_image_chooser_get_row_data (theme_selector->details->remove_theme_selector,
+								    theme_to_remove_position));
 
 	g_signal_handler_block (theme_selector->details->remove_theme_selector,
 				theme_selector->details->theme_selector_changed_connection);
@@ -324,19 +293,15 @@ remove_theme_selector_changed_callback (EelImageChooser *image_chooser,
 	g_signal_handler_unblock (theme_selector->details->remove_theme_selector,
 				  theme_selector->details->theme_selector_changed_connection);
 
-	selected_theme = theme_selector_get_selected_theme (theme_selector);
-	g_return_if_fail (selected_theme != NULL);
+	selected_theme = nautilus_theme_selector_get_selected_theme (theme_selector);
 
 	/* Don't allow the current theme to be deleted */
 	if (eel_str_is_equal (selected_theme, theme_to_remove)) {
-		eel_image_chooser_set_selected_row (theme_selector->details->remove_theme_selector, -1);
-		g_free (selected_theme);
-		g_free (theme_to_remove);
 		eel_show_error_dialog (_("Sorry, but you can't remove the current theme. "
 					 "Please change to another theme before removing this one."),
 				       _("Can't delete current theme"),
 				       theme_selector->details->parent_window);
-		return;
+		goto done;
 	}
 
 	remove_result = nautilus_theme_remove_user_theme (theme_to_remove);
@@ -359,49 +324,47 @@ remove_theme_selector_changed_callback (EelImageChooser *image_chooser,
 	/* Update the showing state of the remove button */
 	theme_selector_update_remove_theme_button (theme_selector);
 
+ done:
 	g_free (selected_theme);
 	g_free (theme_to_remove);
+
+	return FALSE;
+}
+
+static void
+remove_theme_selector_changed_callback (EelImageChooser *image_chooser,
+					gpointer callback_data)
+{
+	NautilusThemeSelector *theme_selector;
+
+	theme_selector = NAUTILUS_THEME_SELECTOR (callback_data);
+	if (theme_selector->details->remove_idle_id == 0) {
+		theme_selector->details->remove_idle_id = g_idle_add
+			(remove_theme_selector_idle_callback, theme_selector);
+	}
 }
 
 static void
 theme_selector_changed_callback (EelImageChooser *image_chooser,
 				 gpointer callback_data)
 {
-	int selected_row_position;
-
-	g_return_if_fail (EEL_IS_IMAGE_CHOOSER (image_chooser));
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (callback_data));
-	
-	image_chooser = EEL_IMAGE_CHOOSER (image_chooser);
-	
-	selected_row_position = eel_image_chooser_get_selected_row (image_chooser);
-	
-	g_signal_emit (callback_data,
-		       theme_selector_signals[THEME_CHANGED], 0);
+	g_signal_emit (callback_data, signals[THEME_CHANGED], 0);
 }
 
-/* GtkObjectClass methods */
 static void
 theme_selector_finalize (GObject *object)
 {
 	NautilusThemeSelector *theme_selector;
 	
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (object));
-	
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
-	theme_selector->details->theme_selector_changed_connection = 0;
 
+	if (theme_selector->details->remove_idle_id != 0) {
+		g_source_remove (theme_selector->details->remove_idle_id);
+	}
 	g_free (theme_selector->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
-
-/* Private stuff */
-typedef struct
-{
-	EelImageChooser *image_chooser;
-	gboolean include_builtin;
-} ForEachThemeData;
 
 static void
 for_each_theme_callback (const char *name,
@@ -414,15 +377,7 @@ for_each_theme_callback (const char *name,
 {
 	ForEachThemeData *data;
 
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (display_name != NULL);
-	g_return_if_fail (description != NULL);
-	g_return_if_fail (preview_pixbuf != NULL);
-	g_return_if_fail (callback_data != NULL);
-
 	data = callback_data;
-	g_return_if_fail (EEL_IS_IMAGE_CHOOSER (data->image_chooser));
 
 	if (!data->include_builtin && builtin) {
 		return;
@@ -443,9 +398,6 @@ theme_selector_populate_list (EelImageChooser *image_chooser,
 {
 	ForEachThemeData data;
 
-	g_return_if_fail (EEL_IS_IMAGE_CHOOSER (image_chooser));
-	g_return_if_fail (GTK_IS_SCROLLED_WINDOW (scrolled_window));
-
 	eel_image_chooser_clear (image_chooser);
 
 	data.image_chooser = image_chooser;
@@ -464,8 +416,6 @@ theme_selector_update_selected_theme_from_preferences (NautilusThemeSelector *th
 {
 	char *theme_name;
 	
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
-
 	theme_name = eel_preferences_get (NAUTILUS_PREFERENCES_THEME);
 	nautilus_theme_selector_set_selected_theme (theme_selector, theme_name);
 	g_free (theme_name);
@@ -474,7 +424,6 @@ theme_selector_update_selected_theme_from_preferences (NautilusThemeSelector *th
 						      theme_selector->details->scrolled_window);
 }
 
-/* NautilusThemeSelector public methods */
 GtkWidget *
 nautilus_theme_selector_new (void)
 {
@@ -482,7 +431,7 @@ nautilus_theme_selector_new (void)
 }
 
 char *
-nautilus_theme_selector_get_selected_theme (const NautilusThemeSelector *theme_selector)
+nautilus_theme_selector_get_selected_theme (NautilusThemeSelector *theme_selector)
 {
 	const char *theme_name;
 	int selected_row_position;
@@ -490,7 +439,10 @@ nautilus_theme_selector_get_selected_theme (const NautilusThemeSelector *theme_s
 	g_return_val_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector), NULL);
 	
 	selected_row_position = eel_image_chooser_get_selected_row (theme_selector->details->theme_selector);
-	g_return_val_if_fail (selected_row_position != -1, g_strdup (DEFAULT_THEME_NAME));
+	if (selected_row_position < 0) {
+		return NULL;
+	}
+
 	theme_name = eel_image_chooser_get_row_data (theme_selector->details->theme_selector,
 						     selected_row_position);
 	
@@ -505,6 +457,7 @@ nautilus_theme_selector_set_selected_theme (NautilusThemeSelector *theme_selecto
 	const char *theme_name;
 
 	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
+	g_return_if_fail (new_theme_name != NULL);
 
 	for (i = 0; i < eel_image_chooser_get_num_rows (theme_selector->details->theme_selector); i++) {
 		theme_name = eel_image_chooser_get_row_data (theme_selector->details->theme_selector, i);
@@ -513,7 +466,7 @@ nautilus_theme_selector_set_selected_theme (NautilusThemeSelector *theme_selecto
 			eel_image_chooser_set_selected_row (theme_selector->details->theme_selector, i);
 			eel_scrolled_image_chooser_show_selected_row (theme_selector->details->theme_selector,
 								      theme_selector->details->scrolled_window);
-			break;
+			return;
 		}
 	}
 }
@@ -527,7 +480,6 @@ nautilus_theme_selector_set_parent_window (NautilusThemeSelector *theme_selector
 
 	theme_selector->details->parent_window = parent_window;
 }
-
 
 static void
 nautilus_theme_selector_instance_init (NautilusThemeSelector *theme_selector)
@@ -622,8 +574,7 @@ nautilus_theme_selector_class_init (NautilusThemeSelectorClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = theme_selector_finalize;
 
-	/* Signals */
-	theme_selector_signals[THEME_CHANGED] = g_signal_new
+	signals[THEME_CHANGED] = g_signal_new
 		("theme_changed",
 		 G_TYPE_FROM_CLASS (class),
 		 G_SIGNAL_RUN_LAST,

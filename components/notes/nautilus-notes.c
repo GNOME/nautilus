@@ -334,19 +334,6 @@ on_changed (GtkEditable *editable, Notes *notes)
 static void
 do_destroy (GtkObject *obj, Notes *notes)
 {
-#ifdef GNOME2_CONVERSION_COMPLETE
-	/* If the widget is being destroyed first, make sure the bonobo object
-	 * that owns it is not destroyed half-way through the widget destroy
-	 * process by reffing the bonobo object and only unreffing it at idle
-	 * time. If the bonobo object is being destroyed first, then don't do
-	 * this because it exposes a bonobo bug.
-	 */
-	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (notes->view))) {
-		bonobo_object_ref (notes->view);
-		bonobo_object_idle_unref (notes->view);
-        }
-#endif
-	
         done_with_file (notes);
         g_free (notes->uri);
         g_free (notes->previous_saved_text);
