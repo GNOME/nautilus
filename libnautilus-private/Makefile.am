@@ -226,12 +226,14 @@ EXTRA_DIST = 				\
 	$(fsattributes_DATA)		\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
+	$(schema_in_files)              \
 	$(NULL)
 
 CLEANFILES = \
 	$(nautilus_metafile_server_idl_sources)		\
 	nautilus_metafile_server_idl_stamp		\
 	$(marshal_sources)				\
+	$(schema_DATA)			                \
 	$(NULL)
 
 dist-hook:
