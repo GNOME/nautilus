@@ -1,3 +1,17 @@
+2000-11-09  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3776, Crash when trying to drag URL .desktop
+	file to desktop
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(receive_dropped_uri_list):	
+	Bail out is URI list is NULL
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_view_create_nautilus_links):
+	Handle special cases. Create a NautilusLink in cases
+	that a GnomeVFS symbolic link will not work.
+
 2000-11-09  Mathieu Lacage  <mathieu@eazel.com>
 
 	Fix bug 4619. fdl of nautilus collides with help from gnome-core.

@@ -605,7 +605,9 @@ receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, int 
 	char **argv;
 	int i;
 	
-	g_assert (uri_list != NULL);
+	if (uri_list == NULL) {
+		return;
+	}
 
 	files = gnome_uri_list_extract_filenames (uri_list);
 	argc = g_list_length (files);

@@ -653,48 +653,92 @@ icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *
 	CallbackData *info;
 	GnomeVFSAsyncHandle *handle;
 	int index;
+	gboolean make_nautilus_link;
 	
 	if (item_uris == NULL) {
 		return;
 	}
 
+	make_nautilus_link = FALSE;
 	program_path = NULL;
 	
 	desktop_path = nautilus_get_desktop_directory ();
 
+	/* Iterate through all of the URIs in the list */
 	for (element = item_uris, index = 0; element != NULL; element = element->next, index++) {
 		entry = gnome_desktop_entry_load ((char *)element->data);
 		if (entry != NULL) {
-
-			link_path = g_strdup_printf ("%s/%s", desktop_path, entry->name);			
-			link_uri = gnome_vfs_get_uri_from_local_path (link_path);
-
 			/* Verify that have an actual path */			
 			if (entry->exec[index][0] != '/') {
 				program_path = gnome_is_program_in_path(entry->exec[index]);
-				target_uri = gnome_vfs_get_uri_from_local_path (program_path);
-				g_free (program_path);
-				program_path = NULL;
+				if (program_path != NULL) {
+					target_uri = gnome_vfs_get_uri_from_local_path (program_path);
+					g_free (program_path);
+					program_path = NULL;
+				} else {
+					/* We may have a link or other unknown url here.  Assign it to the target uri */
+					target_uri = g_strdup (entry->exec[index]);
+					make_nautilus_link = TRUE;
+				}
 			} else {
+				/* Create a URI path from the entry's executable local path */
 				target_uri = gnome_vfs_get_uri_from_local_path (entry->exec[index]);
 			}
-								
-			uri = gnome_vfs_uri_new (target_uri);
 
-			/* Create symbolic link */
-			info = g_malloc (sizeof (CallbackData));
-			info->uri = link_uri;			
-			info->target_uri = target_uri;
-			info->expected_result = GNOME_VFS_OK;
-			info->point.x = x;
-			info->point.y = y;
-			info->entry = entry;
-			
-			gnome_vfs_async_create_symbolic_link (&handle, gnome_vfs_uri_new (link_path), 
-							      target_uri, create_link_callback, info);
+			if (target_uri != NULL) {
+				if (make_nautilus_link) {
+					/* We just punt and create a NautilusLink if we have determined
+					 * that the data will not be valid for a GnomeVFS symbolic link. */
+					char *link_name = NULL;
+					char *last_slash = strrchr (target_uri, '/');
+					
+					if (last_slash != NULL) {
+						/* Make sure that the string contains more that the final slash */
+						if (strlen (last_slash) > 1) {
+							link_name = g_strdup_printf ("%s %s", _("Link to"), last_slash + 1);
+						} else {
+							link_name = g_strdup (_("Link to Unknown"));
+						}
+					} else {
+						link_name = g_strdup_printf ("%s %s", _("Link to"), target_uri);
+					}
+
+					if (link_name != NULL) {
+						char *icon_name;
+						if (entry->icon != NULL) {
+							icon_name = g_strdup (entry->icon);
+						} else {
+							icon_name = g_strdup ("gnome-unknown.png");
+						}
+						nautilus_link_local_create (desktop_path, link_name, icon_name, 
+								    	    target_uri, NAUTILUS_LINK_GENERIC);
+						g_free (link_name);
+					}
+					g_free (target_uri);
+				} else {	
+					/* Create an actual GnomeVFS symbolic link. */						
+					uri = gnome_vfs_uri_new (target_uri);
+					if (uri != NULL) {
+						link_path = g_strdup_printf ("%s/%s", desktop_path, entry->name);			
+						link_uri = gnome_vfs_get_uri_from_local_path (link_path);
+
+						/* Create symbolic link */
+						info = g_malloc (sizeof (CallbackData));
+						info->uri = link_uri;			
+						info->target_uri = target_uri;
+						info->expected_result = GNOME_VFS_OK;
+						info->point.x = x;
+						info->point.y = y;
+						info->entry = entry;
 						
-			g_free (link_path);
-			gnome_vfs_uri_unref (uri);
+						gnome_vfs_async_create_symbolic_link (&handle, gnome_vfs_uri_new (link_path), 
+										      target_uri, create_link_callback, info);
+															
+						g_free (link_path);
+						gnome_vfs_uri_unref (uri);
+					}
+				}				
+			}
 		}
 	}
 
