@@ -2,6 +2,7 @@
 /* gnome-icon-container-private.h
 
    Copyright (C) 1999, 2000 Free Software Foundation
+   Copyright (C) 2000 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -26,6 +27,7 @@
 
 #include "gnome-icon-container.h"
 #include "gnome-icon-container-dnd.h"
+#include <libgnomeui/gnome-icon-item.h>
 
 /* An Icon.  */
 
@@ -62,7 +64,7 @@ struct _GnomeIconContainerIcon {
 	/* Whether this item was selected before rubberbanding.  */
 	gboolean was_selected_before_rubberband : 1;
 
-	gpointer data;
+	NautilusControllerIcon *data;
 };
 typedef struct _GnomeIconContainerIcon GnomeIconContainerIcon;
 
@@ -107,25 +109,19 @@ struct _GnomeIconContainerRubberbandInfo {
 typedef struct _GnomeIconContainerRubberbandInfo GnomeIconContainerRubberbandInfo;
 
 struct _GnomeIconContainerDetails {
-	/* Base URI for Drag & Drop.  */
-	gchar *base_uri;
+	NautilusIconsController *controller;
 
-	/* Browser mode setting.  */
-	gboolean browser_mode : 1;
+	/* linger selection mode setting. */
+	gboolean linger_selection_mode : 1;
+
 	/* single-click mode setting */
 	gboolean single_click_mode : 1;
 	
-	/* Current icon mode (index into `icon_mode_info[]' -- see
-           `gnome-icon-container.c').  */
-	GnomeIconContainerIconMode icon_mode;
-
 	/* Size of the container.  */
 	guint width, height;
 
 	/* List of icons.  */
 	GList *icons;
-
-	/* Total number of icons.  */
 	guint num_icons;
 
 	/* The grid.  */
@@ -142,19 +138,19 @@ struct _GnomeIconContainerDetails {
 	/* Current icon for keyboard navigation.  */
 	GnomeIconContainerIcon *kbd_current;
 
-	/* Rubberbanding status.  */
+	/* Rubberbanding status. */
 	GnomeIconContainerRubberbandInfo rubberband_info;
 
 	/* Timeout used to make a selected icon fully visible after a short
            period of time.  (The timeout is needed to make sure
            double-clicking still works.)  */
-	gint kbd_icon_visibility_timer_tag;
+	int kbd_icon_visibility_timer_tag;
 
         /* the time the mouse button went down in milliseconds */
         guint32 button_down_time;
         
 	/* Position of the pointer during the last click.  */
-	gint drag_x, drag_y;
+	int drag_x, drag_y;
 
 	/* Button currently pressed, possibly for dragging.  */
 	guint drag_button;
@@ -166,58 +162,35 @@ struct _GnomeIconContainerDetails {
 	gboolean doing_drag;
 
 	/* Drag offset.  */
-	gint drag_x_offset, drag_y_offset;
+	int drag_x_offset, drag_y_offset;
 
 	/* Idle ID.  */
 	guint idle_id;
 
 	/* Timeout for selection in browser mode.  */
-	gint browser_mode_selection_timer_tag;
+	int linger_selection_mode_timer_tag;
 
 	/* Icon to be selected at timeout in browser mode.  */
-	GnomeIconContainerIcon *browser_mode_selection_icon;
+	GnomeIconContainerIcon *linger_selection_mode_icon;
 
 	/* DnD info.  */
 	GnomeIconContainerDndInfo *dnd_info;
 };
 
-
-/* Definition of the available icon container modes.  */
-struct _GnomeIconContainerIconModeInfo {
-	guint icon_width;
-	guint icon_height;
+/* Layout and icon size constants.
+   These will change based on the zoom level eventually, so they
+   should probably become function calls instead of macros.
+*/
 
-	guint cell_width;
-	guint cell_height;
+#define GNOME_ICON_CONTAINER_CELL_WIDTH(container)     80
+#define GNOME_ICON_CONTAINER_CELL_HEIGHT(container)    80
 
-	guint cell_spacing;
+#define GNOME_ICON_CONTAINER_CELL_SPACING(container)    4
 
-	guint icon_xoffset;
-	guint icon_yoffset;
-};
-typedef struct _GnomeIconContainerIconModeInfo GnomeIconContainerIconModeInfo;
+#define GNOME_ICON_CONTAINER_ICON_X_OFFSET(container)  12
+#define GNOME_ICON_CONTAINER_ICON_Y_OFFSET(container)  28
 
-extern GnomeIconContainerIconModeInfo gnome_icon_container_icon_mode_info[];
-
-#define GNOME_ICON_CONTAINER_ICON_WIDTH(container) \
-	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_width
-
-#define GNOME_ICON_CONTAINER_ICON_HEIGHT(container) \
-	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_height
-
-#define GNOME_ICON_CONTAINER_CELL_WIDTH(container) \
-	gnome_icon_container_icon_mode_info[container->details->icon_mode].cell_width
-
-#define GNOME_ICON_CONTAINER_CELL_HEIGHT(container) \
-	gnome_icon_container_icon_mode_info[container->details->icon_mode].cell_height
-
-#define GNOME_ICON_CONTAINER_CELL_SPACING(container) \
-	gnome_icon_container_icon_mode_info[container->details->icon_mode].cell_spacing
-
-#define GNOME_ICON_CONTAINER_ICON_XOFFSET(container) \
-	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_xoffset
-
-#define GNOME_ICON_CONTAINER_ICON_YOFFSET(container) \
-	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_yoffset
+#define GNOME_ICON_CONTAINER_ICON_WIDTH(container)     48
+#define GNOME_ICON_CONTAINER_ICON_HEIGHT(container)    48
 
 #endif /* GNOME_ICON_CONTAINER_PRIVATE_H */

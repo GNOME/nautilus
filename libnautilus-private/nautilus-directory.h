@@ -60,6 +60,8 @@ typedef struct _NautilusDirectoryClass NautilusDirectoryClass;
 typedef struct _NautilusFile NautilusFile;
 typedef GList NautilusFileList;
 
+#define NAUTILUS_FILE(file) ((NautilusFile *)(file))
+
 typedef void (*NautilusFileListCallback) (NautilusDirectory *directory,
 					  NautilusFileList  *files,
 					  gpointer           data);
@@ -73,7 +75,6 @@ GtkType            nautilus_directory_get_type            (void);
    If two windows are viewing the same uri, the directory object is shared.
 */
 NautilusDirectory *nautilus_directory_get                 (const char               *uri);
-
 char *             nautilus_directory_get_uri             (NautilusDirectory        *directory);
 
 /* Simple preliminary interface for getting and setting metadata. */
@@ -103,35 +104,39 @@ gboolean           nautilus_directory_is_ready_for_layout (NautilusDirectory    
 /* Temporary interface for NautilusFile while we are phasing it in. */
 NautilusFile *     nautilus_directory_new_file            (NautilusDirectory        *directory,
 							   GnomeVFSFileInfo         *info);
-GnomeVFSFileInfo * nautilus_file_get_info                 (NautilusFile             *file);
 
 /* Basic operations on file objects. */
 void               nautilus_file_ref                      (NautilusFile             *file);
 void               nautilus_file_unref                    (NautilusFile             *file);
+
+/* Basic attributes for file objects. */
 char *             nautilus_file_get_name                 (NautilusFile             *file);
-char *		   nautilus_file_get_uri                  (NautilusFile             *file);
+char *             nautilus_file_get_uri                  (NautilusFile             *file);
+GnomeVFSFileSize   nautilus_file_get_size                 (NautilusFile             *file);
+GnomeVFSFileType   nautilus_file_get_type                 (NautilusFile             *file);
+const char *	   nautilus_file_get_mime_type            (NautilusFile             *file);
+gboolean           nautilus_file_is_symbolic_link	  (NautilusFile             *file);
+gboolean           nautilus_file_is_executable            (NautilusFile             *file);
 
-/* Utility functions for formatting file-related information.
- * FIXME: Probably these should be moved to some appropriate place in libnautilus.
- */
-char *                   nautilus_file_get_date_as_string           (NautilusFile            *file);
-char *                   nautilus_file_get_size_as_string           (NautilusFile            *file);
-char *                   nautilus_file_get_type_as_string           (NautilusFile            *file);
-
-/* Return true if this file has already been deleted.
-   This object will be unref'd after sending the files_removed signal,
-   but it could hang around longer if someone ref'd it.
-*/
-gboolean           nautilus_file_is_gone                  (NautilusFile             *file);
-
-/* Simple preliminary interface for getting and setting metadata. */
-char *             nautilus_file_get_metadata        	  (NautilusFile             *file,
+/* Simple getting and setting top-level metadata. */
+char *             nautilus_file_get_metadata             (NautilusFile             *file,
 							   const char               *tag,
 							   const char               *default_metadata);
 void               nautilus_file_set_metadata             (NautilusFile             *file,
 							   const char               *tag,
 							   const char               *default_metadata,
 							   const char               *metadata);
+
+/* Utility functions for formatting file-related information. */
+char *             nautilus_file_get_date_as_string       (NautilusFile             *file);
+char *             nautilus_file_get_size_as_string       (NautilusFile             *file);
+char *             nautilus_file_get_type_as_string       (NautilusFile             *file);
+
+/* Return true if this file has already been deleted.
+   This object will be unref'd after sending the files_removed signal,
+   but it could hang around longer if someone ref'd it.
+*/
+gboolean           nautilus_file_is_gone                  (NautilusFile             *file);
 
 typedef struct _NautilusDirectoryDetails NautilusDirectoryDetails;
 

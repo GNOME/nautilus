@@ -246,8 +246,9 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 	}
 
 	if (result == GNOME_VFS_OK) {
-		char *buffer = g_alloca(size+1);
+		char *buffer;
 
+		buffer = g_alloca(size);
 		result = gnome_vfs_read (metafile_handle, buffer, size, &actual_size);
 		buffer[size] = '\0';
 		directory->details->metafile_tree = xmlParseMemory (buffer, actual_size);
@@ -831,14 +832,6 @@ nautilus_file_get_uri (NautilusFile *file)
 	return uri_text;
 }
 
-GnomeVFSFileInfo *
-nautilus_file_get_info (NautilusFile *file)
-{
-	g_return_val_if_fail (file != NULL, NULL);
-
-	return file->info;
-}
-
 /**
  * nautilus_file_get_date_as_string:
  * 
@@ -866,6 +859,23 @@ nautilus_file_get_date_as_string (NautilusFile *file)
 	 * string that you're not supposed to free.
 	 */
 	return g_strdup (ctime (&file->info->mtime));
+}
+
+/**
+ * nautilus_file_get_size
+ * 
+ * Get the file size.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Size in bytes.
+ * 
+ **/
+GnomeVFSFileSize
+nautilus_file_get_size (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, 0);
+
+	return file->info->size;
 }
 
 /**
@@ -911,6 +921,76 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 		return g_strdup (_("directory"));
 
 	return g_strdup (file->info->mime_type);
+}
+
+/**
+ * nautilus_file_get_type
+ * 
+ * Return this file's type.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: The type.
+ * 
+ **/
+GnomeVFSFileType
+nautilus_file_get_type (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, FALSE);
+
+	return file->info->type;
+}
+
+/**
+ * nautilus_file_get_mime_type
+ * 
+ * Return this file's mime type.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: The mime type.
+ * 
+ **/
+const char *
+nautilus_file_get_mime_type (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, FALSE);
+
+	return file->info->mime_type;
+}
+
+/**
+ * nautilus_file_is_symbolic_link
+ * 
+ * Check if this file is a symbolic link.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: True if the file is a symbolic link.
+ * 
+ **/
+gboolean
+nautilus_file_is_symbolic_link (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, FALSE);
+
+	return GNOME_VFS_FILE_INFO_SYMLINK (file->info);
+}
+
+/**
+ * nautilus_file_is_executable
+ * 
+ * Check if this file is executable at all.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: True if any of the execute bits are set.
+ * 
+ **/
+gboolean
+nautilus_file_is_executable (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, FALSE);
+
+	return (file->info->flags & (GNOME_VFS_PERM_USER_EXEC
+				     | GNOME_VFS_PERM_GROUP_EXEC
+				     | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

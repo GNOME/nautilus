@@ -77,8 +77,8 @@ struct _FMDirectoryViewDetails
 /* forward declarations */
 static gint display_selection_info_idle_cb 	(gpointer data);
 static void display_selection_info 		(FMDirectoryView *view);
-static void fm_directory_view_initialize_class	(gpointer klass);
-static void fm_directory_view_initialize 	(gpointer object, gpointer klass);
+static void fm_directory_view_initialize_class	(FMDirectoryViewClass *klass);
+static void fm_directory_view_initialize 	(FMDirectoryView *view);
 static void fm_directory_view_destroy 		(GtkObject *object);
 static void stop_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 FMDirectoryView *directory_view);
@@ -92,7 +92,7 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 
 static void
-fm_directory_view_initialize_class (gpointer klass)
+fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -136,54 +136,39 @@ fm_directory_view_initialize_class (gpointer klass)
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
 
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
-					      klass,
-					      fm_directory_view,
-					      add_entry);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
-					      klass,
-					      fm_directory_view,
-					      clear);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
-					      klass,
-					      fm_directory_view,
-					      get_selection);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_entry);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 }
 
 static void
-fm_directory_view_initialize (gpointer object, gpointer klass)
+fm_directory_view_initialize (FMDirectoryView *directory_view)
 {
-	FMDirectoryView *directory_view;
-
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (object));
-
-	directory_view = FM_DIRECTORY_VIEW (object);
-
 	directory_view->details = g_new0 (FMDirectoryViewDetails, 1);
 
 #if 0
-	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME(directory_view),
+	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME (directory_view),
 				     GTK_POLICY_AUTOMATIC,
 				     GTK_POLICY_AUTOMATIC);
-	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME(directory_view), GTK_SHADOW_IN);
+	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME (directory_view), GTK_SHADOW_IN);
 #else
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(directory_view),
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (directory_view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW(directory_view), NULL);
-	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW(directory_view), NULL);
+	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
+	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
 
 #endif
 
 	directory_view->details->view_frame = NAUTILUS_CONTENT_VIEW_FRAME
 		(gtk_widget_new (nautilus_content_view_frame_get_type(), NULL));
 
-	gtk_signal_connect (GTK_OBJECT(directory_view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
 			    "stop_location_change",
 			    GTK_SIGNAL_FUNC (stop_location_change_cb),
 			    directory_view);
 
-	gtk_signal_connect (GTK_OBJECT(directory_view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (notify_location_change_cb), 
 			    directory_view);
@@ -250,7 +235,7 @@ display_selection_info (FMDirectoryView *view)
 
 		file = p->data;
 		count++;
-		size += nautilus_file_get_info (file)->size;
+		size += nautilus_file_get_size (file);
 		if (first_item_name == NULL)
 			first_item_name = nautilus_file_get_name (file);
 	}

@@ -31,6 +31,10 @@
 #include "gnome-icon-container-private.h"
 #include "gnome-icon-container-dnd.h"
 
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
 #include "nautilus-gtk-macros.h"
@@ -43,9 +47,10 @@
    but there is no way to access its value from outside.  */
 #define KBD_ICON_VISIBILITY_TIMEOUT 300
 
-/* Timeout for selecting an icon in "browser mode" (i.e. by just placing the
-   pointer over the icon, without pressing any button).  */
-#define BROWSER_MODE_SELECTION_TIMEOUT 800
+/* Timeout for selecting an icon in "linger-select" mode (i.e. by just placing the
+   pointer over the icon, without pressing any button).
+*/
+#define LINGER_SELECTION_MODE_TIMEOUT 800
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
 #define MAX_CLICK_TIME 1500
@@ -56,17 +61,7 @@ static void gnome_icon_container_initialize (GnomeIconContainer *container);
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
 
-/* WARNING: Keep this in sync with the `GnomeIconContainerIconMode' enum in
-   `gnome-icon-container.h'.  */
-GnomeIconContainerIconModeInfo gnome_icon_container_icon_mode_info[] = {
-	{ 48, 48, 80, 80, 4, 12, 28 }, /* GNOME_ICON_CONTAINER_NORMAL_ICONS */
-	{ 24, 24, 100, 40, 4, 16, 16 } /* GNOME_ICON_CONTAINER_SMALL_ICONS */
-};
 
-#define NUM_ICON_MODES (sizeof (gnome_icon_container_icon_mode_info) \
-			/ sizeof (*gnome_icon_container_icon_mode_info))
-
-
 /* The GnomeIconContainer signals.  */
 enum _GnomeIconContainerSignalNumber {
 	SELECTION_CHANGED,
@@ -97,36 +92,16 @@ static void
 icon_configure (GnomeIconContainerIcon *icon,
 		GnomeIconContainer *container)
 {
-	switch (container->details->icon_mode) {
-	case GNOME_ICON_CONTAINER_NORMAL_ICONS:
-		gnome_icon_text_item_configure
-			(icon->text_item,
-			 GNOME_ICON_CONTAINER_CELL_SPACING (container),
-			 GNOME_ICON_CONTAINER_ICON_HEIGHT (container),
-			 (GNOME_ICON_CONTAINER_CELL_WIDTH (container)
-			  - 2 * GNOME_ICON_CONTAINER_CELL_SPACING (container)),
-			 NULL,
-			 icon->text,
-			 TRUE,
-			 TRUE);
-		break;
-	case GNOME_ICON_CONTAINER_SMALL_ICONS:
-		gnome_icon_text_item_configure
-			(icon->text_item,
-			 (GNOME_ICON_CONTAINER_ICON_WIDTH (container)
-			  + GNOME_ICON_CONTAINER_CELL_SPACING (container)),
-			 GNOME_ICON_CONTAINER_CELL_HEIGHT (container) / 2,
-			 (GNOME_ICON_CONTAINER_CELL_WIDTH (container)
-			  - 2 * GNOME_ICON_CONTAINER_CELL_SPACING (container)
-			  - GNOME_ICON_CONTAINER_ICON_WIDTH (container)),
-			 NULL,
-			 icon->text,
-			 TRUE,
-			 TRUE);
-		break;
-	default:
-		g_warning ("Unknown icon mode %d.", container->details->icon_mode);
-	}
+	gnome_icon_text_item_configure
+		(icon->text_item,
+		 GNOME_ICON_CONTAINER_CELL_SPACING (container),
+		 GNOME_ICON_CONTAINER_ICON_HEIGHT (container),
+		 (GNOME_ICON_CONTAINER_CELL_WIDTH (container)
+		  - 2 * GNOME_ICON_CONTAINER_CELL_SPACING (container)),
+		 NULL,
+		 icon->text,
+		 TRUE,
+		 TRUE);
 
 	gnome_canvas_item_set
 		(GNOME_CANVAS_ITEM (icon->image_item),
@@ -138,7 +113,7 @@ icon_configure (GnomeIconContainerIcon *icon,
 static GnomeIconContainerIcon *
 icon_new (GnomeIconContainer *container,
 	  const gchar *text,
-	  gpointer data)
+	  NautilusControllerIcon *data)
 {
 	GnomeCanvas *canvas;
 	GnomeIconContainerDetails *details;
@@ -147,12 +122,9 @@ icon_new (GnomeIconContainer *container,
 	canvas = GNOME_CANVAS (container);
 	details = container->details;
 
-	new = g_new (GnomeIconContainerIcon, 1);
-
-	new->is_selected = FALSE;
-	new->is_current = FALSE;
+	new = g_new0 (GnomeIconContainerIcon, 1);
+	
 	new->layout_done = TRUE;
-	new->was_selected_before_rubberband = FALSE;
 
 	new->data = data;
 	new->text = g_strdup (text); /* FIXME */
@@ -161,8 +133,6 @@ icon_new (GnomeIconContainer *container,
 					(GNOME_CANVAS_GROUP (canvas->root),
 					 gnome_canvas_group_get_type (),
 					 NULL));
-
-	new->image_item = NULL;
 
 	new->text_item
 		= GNOME_ICON_TEXT_ITEM (gnome_canvas_item_new
@@ -178,17 +148,20 @@ icon_new (GnomeIconContainer *container,
 
 static GnomeIconContainerIcon *
 icon_new_pixbuf (GnomeIconContainer *container,
-		GdkPixbuf *image,
-		const gchar *text,
-		gpointer data)
+		 NautilusControllerIcon *data)
 {
 	GnomeIconContainerDetails *details;
+	char *name;
 	GnomeIconContainerIcon *new;
+	GdkPixbuf *image;
 
 	details = container->details;
 
-	new = icon_new (container, text, data);
+	name = nautilus_icons_controller_get_icon_name (details->controller, data);
+	new = icon_new (container, name, data);
+	g_free (name);
 
+	image = nautilus_icons_controller_get_icon_image (details->controller, data);
 	new->image_item
 		= gnome_canvas_item_new (new->item,
 					 gnome_canvas_pixbuf_get_type (),
@@ -221,32 +194,19 @@ icon_position (GnomeIconContainerIcon *icon,
 	icon->x = x;
 	icon->y = y;
 
-	/* ???  Canvas bug ???  It should be enough to do this once in
-           `icon-configure()', but it does not work.  */
-
-	switch (container->details->icon_mode) {
-	case GNOME_ICON_CONTAINER_NORMAL_ICONS:
-		gnome_icon_text_item_setxy
-			(icon->text_item,
-			 GNOME_ICON_CONTAINER_CELL_SPACING (container),
-			 (GNOME_ICON_CONTAINER_ICON_HEIGHT (container)
-			  + GNOME_ICON_CONTAINER_CELL_SPACING (container) + 2));
-		break;
-	case GNOME_ICON_CONTAINER_SMALL_ICONS:
-		gnome_icon_text_item_setxy
-			(icon->text_item,
-			 (GNOME_ICON_CONTAINER_ICON_WIDTH (container)
-			  + GNOME_ICON_CONTAINER_CELL_SPACING (container)),
-			 GNOME_ICON_CONTAINER_CELL_SPACING (container));
-		break;
-	default:
-		g_warning ("Unknown icon mode %d.", container->details->icon_mode);
-	}
+	/* FIXME: Canvas bug?  It should be enough to do the following once in
+           `icon-configure()', but it does not work.
+	*/
+	gnome_icon_text_item_setxy
+		(icon->text_item,
+		 GNOME_ICON_CONTAINER_CELL_SPACING (container),
+		 (GNOME_ICON_CONTAINER_ICON_HEIGHT (container)
+		  + GNOME_ICON_CONTAINER_CELL_SPACING (container) + 2));
 	
 	gnome_canvas_item_set
 		(icon->image_item,
-		 "x", (gdouble) GNOME_ICON_CONTAINER_ICON_XOFFSET (container),
-		 "y", (gdouble) GNOME_ICON_CONTAINER_ICON_YOFFSET (container),
+		 "x", (gdouble) GNOME_ICON_CONTAINER_ICON_X_OFFSET (container),
+		 "y", (gdouble) GNOME_ICON_CONTAINER_ICON_Y_OFFSET (container),
 		 NULL);
 
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
@@ -1046,7 +1006,7 @@ idle_handler (gpointer data)
 	if (details->icons != NULL && details->kbd_current == NULL)
 		set_kbd_current (container, find_first (container), FALSE);
 
-	container->details->idle_id = 0;
+	details->idle_id = 0;
 
 	GDK_THREADS_LEAVE ();
 
@@ -1177,47 +1137,7 @@ move_icon (GnomeIconContainer *container,
 	icon_position (icon, container, x, y);
 
 	gtk_signal_emit (GTK_OBJECT (container), signals[ICON_MOVED],
-			 icon->text, icon->data, x, y);
-}
-
-static void
-change_icon_mode (GnomeIconContainer *container,
-		  GnomeIconContainerIconMode mode)
-{
-	GnomeIconContainerIconModeInfo *old_mode_info;
-	GnomeIconContainerIconModeInfo *new_mode_info;
-	GnomeIconContainerDetails *details;
-	GList *p;
-	gdouble x_factor, y_factor;
-	
-	details = container->details;
-	if (mode == details->icon_mode)
-		return;
-
-	old_mode_info = gnome_icon_container_icon_mode_info + details->icon_mode;
-	new_mode_info = gnome_icon_container_icon_mode_info + mode;
-
-	details->icon_mode = mode;
-
-	x_factor = ((gdouble) new_mode_info->cell_width
-		    / (gdouble) old_mode_info->cell_width);
-	y_factor = ((gdouble) new_mode_info->cell_height
-		    / (gdouble) old_mode_info->cell_height);
-
-	for (p = details->icons; p != NULL; p = p->next) {
-		GnomeIconContainerIcon *icon;
-
-		icon = p->data;
-
-		icon_configure (icon, container);
-		icon_position (icon, container,
-			       icon->x * x_factor, icon->y * y_factor);
-	}
-
-	add_idle (container);
-
-	if (details->kbd_current != NULL)
-		set_kbd_current (container, details->kbd_current, TRUE);
+			 icon->data, x, y);
 }
 
 
@@ -1804,13 +1724,15 @@ destroy (GtkObject *object)
 
 	container = GNOME_ICON_CONTAINER (object);
 
-	icon_grid_destroy (container->details->grid);
-
 	gnome_icon_container_dnd_fini (container);
 
-	g_free (container->details->base_uri);
-
+	icon_grid_destroy (container->details->grid);
 	g_hash_table_destroy (container->details->canvas_item_to_icon);
+	unschedule_kbd_icon_visibility (container);
+	if (container->details->idle_id != 0)
+		gtk_idle_remove (container->details->idle_id);
+	if (container->details->linger_selection_mode_timer_tag != -1)
+		gtk_timeout_remove (container->details->linger_selection_mode_timer_tag);
 
 	g_free (container->details);
 
@@ -1850,7 +1772,6 @@ size_allocate (GtkWidget *widget,
 
 	if (visible_width == 0)
 		visible_width = 1;
-
 
 #if 0
 	grid->visible_width = visible_width;
@@ -1968,8 +1889,8 @@ button_release_event (GtkWidget *widget,
 
 			    /* FIXME: This should activate all selected icons, not just one */
 			    gtk_signal_emit (GTK_OBJECT (container),
-				 				signals[ACTIVATE],
-				 				details->drag_icon->text, details->drag_icon->data);
+					     signals[ACTIVATE],
+					     details->drag_icon->data);
 			}
 			
 			details->drag_icon = NULL;
@@ -2119,9 +2040,8 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
 						     activate),
-				  gtk_marshal_NONE__POINTER_POINTER,
-				  GTK_TYPE_NONE, 2,
-				  GTK_TYPE_STRING,
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[CONTEXT_CLICK_ICON]
 		= gtk_signal_new ("context_click_icon",
@@ -2129,9 +2049,8 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
 						     context_click_icon),
-				  gtk_marshal_NONE__POINTER_POINTER,
-				  GTK_TYPE_NONE, 2,
-				  GTK_TYPE_STRING,
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[CONTEXT_CLICK_BACKGROUND]
 		= gtk_signal_new ("context_click_background",
@@ -2147,9 +2066,8 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
 						     icon_moved),
-				  gtk_marshal_NONE__POINTER_POINTER_INT_INT,
-				  GTK_TYPE_NONE, 4,
-				  GTK_TYPE_STRING,
+				  gtk_marshal_NONE__POINTER_INT_INT,
+				  GTK_TYPE_NONE, 3,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT);
@@ -2177,16 +2095,7 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 {
 	GnomeIconContainerDetails *details;
 
-	details = g_new (GnomeIconContainerDetails, 1);
-
-	details->base_uri = NULL;
-
-	details->width = details->height = 0;
-
-	details->icons = NULL;
-	details->num_icons = 0;
-
-	details->icon_mode = GNOME_ICON_CONTAINER_NORMAL_ICONS;
+	details = g_new0 (GnomeIconContainerDetails, 1);
 
 	details->grid = icon_grid_new ();
 
@@ -2202,22 +2111,12 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 					 NULL);
 	gnome_canvas_item_hide (details->kbd_navigation_rectangle);
 
-	details->kbd_current = NULL;
-	details->rubberband_info.active = FALSE;
 	details->kbd_icon_visibility_timer_tag = -1;
-	details->idle_id = 0;
+	details->linger_selection_mode_timer_tag = -1;
 
-	details->drag_button = 0;
-	details->drag_icon = NULL;
-	details->drag_x = details->drag_y = 0;
-	details->doing_drag = FALSE;
-
-	/* read these from preferences soon */
-	details->browser_mode = FALSE;
+	/* FIXME: Read these from preferences. */
+	details->linger_selection_mode = FALSE;
 	details->single_click_mode = TRUE;
-	
-	details->browser_mode_selection_timer_tag = -1;
-	details->browser_mode_selection_icon = NULL;
 
 	container->details = details;
 
@@ -2231,9 +2130,9 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
 /* GnomeIconContainerIcon event handling.  */
 
-/* Selection in browser mode.  */
+/* Selection in linger selection mode.  */
 static gint
-browser_select_timeout_cb (gpointer data)
+linger_select_timeout_cb (gpointer data)
 {
 	GnomeIconContainer *container;
 	GnomeIconContainerDetails *details;
@@ -2244,7 +2143,7 @@ browser_select_timeout_cb (gpointer data)
 
 	container = GNOME_ICON_CONTAINER (data);
 	details = container->details;
-	icon = details->browser_mode_selection_icon;
+	icon = details->linger_selection_mode_icon;
 
 	selection_changed = unselect_all (container);
 	selection_changed |= select_icon (container, icon, TRUE);
@@ -2288,7 +2187,7 @@ handle_icon_button_press (GnomeIconContainer *container,
 
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[CONTEXT_CLICK_ICON],
-				 icon->text, icon->data);
+				 icon->data);
 
 		return TRUE;
 	}
@@ -2318,7 +2217,7 @@ handle_icon_button_press (GnomeIconContainer *container,
 		/* FIXME: This should activate all selected icons, not just one */
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
-				 icon->text, icon->data);
+				 icon->data);
 
 		return TRUE;
 	}
@@ -2344,17 +2243,17 @@ handle_icon_enter_notify (GnomeIconContainer *container,
 	GnomeIconContainerDetails *details;
 
 	details = container->details;
-	if (! details->browser_mode)
+	if (! details->linger_selection_mode)
 		return FALSE;
 
-	if (details->browser_mode_selection_timer_tag != -1)
-		gtk_timeout_remove (details->browser_mode_selection_timer_tag);
+	if (details->linger_selection_mode_timer_tag != -1)
+		gtk_timeout_remove (details->linger_selection_mode_timer_tag);
 
-	details->browser_mode_selection_timer_tag
-		= gtk_timeout_add (BROWSER_MODE_SELECTION_TIMEOUT,
-				   browser_select_timeout_cb, container);
+	details->linger_selection_mode_timer_tag
+		= gtk_timeout_add (LINGER_SELECTION_MODE_TIMEOUT,
+				   linger_select_timeout_cb, container);
 
-	details->browser_mode_selection_icon = icon;
+	details->linger_selection_mode_icon = icon;
 
 	return TRUE;
 }
@@ -2367,11 +2266,11 @@ handle_icon_leave_notify (GnomeIconContainer *container,
 	GnomeIconContainerDetails *details;
 
 	details = container->details;
-	if (! details->browser_mode)
+	if (! details->linger_selection_mode)
 		return FALSE;
 
-	if (details->browser_mode_selection_timer_tag != -1)
-		gtk_timeout_remove (details->browser_mode_selection_timer_tag);
+	if (details->linger_selection_mode_timer_tag != -1)
+		gtk_timeout_remove (details->linger_selection_mode_timer_tag);
 
 	return TRUE;
 }
@@ -2405,7 +2304,7 @@ item_event_cb (GnomeCanvasItem *item,
 }
 
 GtkWidget *
-gnome_icon_container_new (void)
+gnome_icon_container_new (NautilusIconsController *controller)
 {
 	GtkWidget *new;
 
@@ -2416,6 +2315,8 @@ gnome_icon_container_new (void)
 
 	gtk_widget_pop_visual ();
 	gtk_widget_pop_colormap ();
+
+	GNOME_ICON_CONTAINER (new)->details->controller = controller;
 
 	return new;
 }
@@ -2441,30 +2342,6 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 	unset_kbd_current (container);
 }
 
-
-void
-gnome_icon_container_set_icon_mode (GnomeIconContainer *container,
-				    GnomeIconContainerIconMode mode)
-{
-	g_return_if_fail (container != NULL);
-
-	if (mode >= NUM_ICON_MODES) {
-		g_warning ("Unknown icon mode %d", mode);
-		return;
-	}
-
-	change_icon_mode (container, mode);
-}
-
-GnomeIconContainerIconMode
-gnome_icon_container_get_icon_mode (GnomeIconContainer *container)
-{
-	g_return_val_if_fail (container != NULL, GNOME_ICON_CONTAINER_NORMAL_ICONS);
-
-	return container->details->icon_mode;
-}
-
-
 static void
 setup_icon_in_container (GnomeIconContainer *container,
 			 GnomeIconContainerIcon *icon)
@@ -2484,27 +2361,24 @@ setup_icon_in_container (GnomeIconContainer *container,
 }
 
 void
-gnome_icon_container_add_pixbuf (GnomeIconContainer *container,
-				 GdkPixbuf *image,
-				 const gchar *text,
-				 gint x, gint y,
-				 gpointer data)
+gnome_icon_container_add (GnomeIconContainer *container,
+			  NautilusControllerIcon *data,
+			  int x, int y)
 {
 	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *new_icon;
 	guint grid_x, grid_y;
 
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
-	g_return_if_fail (image != NULL);
-	g_return_if_fail (text != NULL);
+	g_return_if_fail (data != NULL);
 
 	details = container->details;
 
-	new_icon = icon_new_pixbuf (container, image, text, data);
+	new_icon = icon_new_pixbuf (container, data);
 	icon_position (new_icon, container, x, y);
 
 	world_to_grid (container, x, y, &grid_x, &grid_y);
-	icon_grid_add (container->details->grid, new_icon, grid_x, grid_y);
+	icon_grid_add (details->grid, new_icon, grid_x, grid_y);
 
 	if (x % GNOME_ICON_CONTAINER_CELL_WIDTH (container) > 0)
 		icon_grid_add (details->grid, new_icon, grid_x + 1, grid_y);
@@ -2520,30 +2394,25 @@ gnome_icon_container_add_pixbuf (GnomeIconContainer *container,
 }
 
 /**
- * gnome_icon_container_add_pixbuf_auto:
+ * gnome_icon_container_add_auto:
  * @container: A GnomeIconContainer
- * @image: Image of the icon to add
- * @text: Caption
- * @data: Icon-specific data
+ * @data: Icon from the controller.
  * 
  * Add @image with caption @text and data @data to @container, in the first
  * empty spot available.
  **/
 void
-gnome_icon_container_add_pixbuf_auto (GnomeIconContainer *container,
-				      GdkPixbuf *image,
-				      const gchar *text,
-				      gpointer data)
+gnome_icon_container_add_auto (GnomeIconContainer *container,
+			       NautilusControllerIcon *data)
 {
 	GnomeIconContainerIcon *new_icon;
 	guint grid_x, grid_y;
 	gint x, y;
 
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
-	g_return_if_fail (image != NULL);
-	g_return_if_fail (text != NULL);
+	g_return_if_fail (data != NULL);
 
-	new_icon = icon_new_pixbuf (container, image, text, data);
+	new_icon = icon_new_pixbuf (container, data);
 
 	icon_grid_add_auto (container->details->grid, new_icon, &grid_x, &grid_y);
 	grid_to_world (container, grid_x, grid_y, &x, &y);
@@ -2920,27 +2789,6 @@ gnome_icon_container_unselect_all (GnomeIconContainer *container)
 	if (selection_changed)
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[SELECTION_CHANGED]);
-}
-
-/**
- * gnome_icon_container_set_base_uri:
- * @container: An icon container widget.
- * @base_uri: A base URI.
- * 
- * Set the base URI for drag & drop operations.
- **/
-void
-gnome_icon_container_set_base_uri (GnomeIconContainer *container,
-				   const gchar *base_uri)
-{
-	GnomeIconContainerDetails *details;
-
-	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
-
-	details = container->details;
-
-	g_free (details->base_uri);
-	details->base_uri = g_strdup (base_uri);
 }
 
 /**

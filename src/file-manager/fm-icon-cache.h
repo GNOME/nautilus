@@ -23,10 +23,9 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-directory.h>
-#include <glib.h>
 
 /* Names for Nautilus's different zoom levels, from tiniest items to largest items */
-enum _NautilusZoomLevel {
+typedef enum {
 	NAUTILUS_ZOOM_LEVEL_SMALLEST,
 	NAUTILUS_ZOOM_LEVEL_SMALLER,
 	NAUTILUS_ZOOM_LEVEL_SMALL,
@@ -34,8 +33,7 @@ enum _NautilusZoomLevel {
 	NAUTILUS_ZOOM_LEVEL_LARGE,
 	NAUTILUS_ZOOM_LEVEL_LARGER,
 	NAUTILUS_ZOOM_LEVEL_LARGEST
-};
-typedef enum _NautilusZoomLevel NautilusZoomLevel;
+} NautilusZoomLevel;
 
 /* Nominal icon sizes for each Nautilus zoom level.
  * This scheme assumes that icons are designed to
@@ -49,22 +47,20 @@ typedef enum _NautilusZoomLevel NautilusZoomLevel;
 #define NAUTILUS_ICON_SIZE_STANDARD	48
 #define NAUTILUS_ICON_SIZE_LARGE	64
 #define NAUTILUS_ICON_SIZE_LARGER	96
-#define NAUTILUS_ICON_SIZE_LARGEST	144
+#define NAUTILUS_ICON_SIZE_LARGEST     144
 
 typedef struct _FMIconCache FMIconCache;
 
-FMIconCache *fm_icon_cache_new       	       (const char       *theme_name);
-void         fm_icon_cache_destroy   	       (FMIconCache      *fmic);
-void         fm_icon_cache_set_theme 	       (FMIconCache      *fmic,
-                                      		const char       *theme_name);
-/* Ownership of a refcount in this pixbuf comes with the deal */
-GdkPixbuf *  fm_icon_cache_get_icon_for_file   (FMIconCache      *fmic,
-                                      		NautilusFile     *file,
-                                      		guint		  size_in_pixels);
+FMIconCache *fm_icon_cache_new               (const char   *theme_name);
+void         fm_icon_cache_destroy           (FMIconCache  *factory);
+void         fm_icon_cache_set_theme         (FMIconCache  *factory,
+                                              const char   *theme_name);
+FMIconCache *fm_get_current_icon_cache       (void);
 
-FMIconCache* fm_get_current_icon_cache         (void);
+/* Ownership of a ref. count in this pixbuf comes with the deal */
+GdkPixbuf *  fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
+                                              NautilusFile *file,
+                                              guint         size_in_pixels);
 
 #endif
-
-
 

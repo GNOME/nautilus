@@ -28,13 +28,17 @@
 
 #include "fm-directory-view-icons.h"
 
+#include "fm-icons-controller.h"
 #include "fm-icon-cache.h"
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-string.h>
-#include <libnautilus/nautilus-background.h>
 
 #include <ctype.h>
 #include <errno.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtksignal.h>
+#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-string.h>
+#include <libnautilus/nautilus-background.h>
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
@@ -51,7 +55,6 @@ static GtkMenu *create_item_context_menu         (FMDirectoryViewIcons *director
 static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *icon_view);
 static void display_icons_not_already_positioned (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
-						   const char *icon_name,
 						   NautilusFile *icon_data,
 						   int x, int y,
 						   FMDirectoryViewIcons *icon_view);
@@ -71,18 +74,17 @@ static void fm_directory_view_icons_initialize   (FMDirectoryViewIcons *icon_vie
 static void fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass);
 static GnomeIconContainer *get_icon_container 	 (FMDirectoryViewIcons *icon_view);
 static void icon_container_activate_cb 		 (GnomeIconContainer *container,
-						  const gchar *icon_name,
 						  NautilusFile *icon_data,
 						  FMDirectoryViewIcons *icon_view);
 static void icon_container_selection_changed_cb  (GnomeIconContainer *container,
 						  FMDirectoryViewIcons *icon_view);
+
 static void icon_container_context_click_icon_cb (GnomeIconContainer *container,
 						  const gchar *name,
 						  gpointer icon_data,
 						  gpointer data);
 static void icon_container_context_click_background_cb (GnomeIconContainer *container,
 							gpointer data);
-static void set_up_base_uri			 (FMDirectoryViewIcons *icon_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
@@ -132,8 +134,6 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *directory_view_icons)
 		create_background_context_menu (directory_view_icons);
 
 	icon_container = create_icon_container (directory_view_icons);
-	gnome_icon_container_set_icon_mode
-		(icon_container, GNOME_ICON_CONTAINER_NORMAL_ICONS);
 }
 
 static void
@@ -204,8 +204,11 @@ static GnomeIconContainer *
 create_icon_container (FMDirectoryViewIcons *icon_view)
 {
 	GnomeIconContainer *icon_container;
+	FMIconsController *controller;
+
+	controller = fm_icons_controller_new (icon_view);
 	
-	icon_container = GNOME_ICON_CONTAINER (gnome_icon_container_new ());
+	icon_container = GNOME_ICON_CONTAINER (gnome_icon_container_new (NAUTILUS_ICONS_CONTROLLER (controller)));
 	
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
@@ -265,8 +268,6 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 	char *position_string;
 	gboolean position_good;
 	int x, y;
-	GdkPixbuf *image;
-	char *name;
 
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
@@ -280,33 +281,16 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 		return;
 	}
 
-	/* Get the appropriate image and name for the file. For the moment,
-	 * we always use the standard size of icons.
-	 */
-	image = fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache (), 		
-						 file,
-						 NAUTILUS_ICON_SIZE_STANDARD);
-	name = nautilus_file_get_name (file);
-	gnome_icon_container_add_pixbuf (get_icon_container (icon_view),
-					 image, name, x, y, file);
-	g_free (name);
+	gnome_icon_container_add (get_icon_container (icon_view),
+				  NAUTILUS_CONTROLLER_ICON (file), x, y);
 }
 
 static void
 add_icon_at_free_position (FMDirectoryViewIcons *icon_view,
 			   NautilusFile *file)
 {
-	GdkPixbuf *image;
-	char *name;
-
-	/* Get the appropriate image and name for the file. */
-	image = fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache (), 		
-						 file,
-						 NAUTILUS_ICON_SIZE_STANDARD);
-	name = nautilus_file_get_name (file);
-	gnome_icon_container_add_pixbuf_auto (get_icon_container (icon_view),
-					      image, name, file);
-	g_free (name);
+	gnome_icon_container_add_auto (get_icon_container (icon_view),
+				       NAUTILUS_CONTROLLER_ICON (file));
 }
 
 static void
@@ -320,24 +304,6 @@ display_icons_not_already_positioned (FMDirectoryViewIcons *view)
 
 	g_list_free (view->details->icons_not_positioned);
 	view->details->icons_not_positioned = NULL;
-}
-
-/* Set up the base URI for Drag & Drop operations.  */
-static void
-set_up_base_uri (FMDirectoryViewIcons *icon_view)
-{
-	char *txt_uri;
-
-	g_return_if_fail (get_icon_container(icon_view) != NULL);
-
-	txt_uri = nautilus_directory_get_uri
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)));
-	if (txt_uri == NULL)
-		return;
-
-	gnome_icon_container_set_base_uri (get_icon_container (icon_view), txt_uri);
-
-	g_free (txt_uri);
 }
 
 static void
@@ -377,7 +343,6 @@ fm_directory_view_icons_done_adding_entries (FMDirectoryView *view)
 static void
 fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 {
-	set_up_base_uri (FM_DIRECTORY_VIEW_ICONS (view));
 }
 
 static GList *
@@ -405,7 +370,6 @@ fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *icon_view)
 
 static void
 icon_container_activate_cb (GnomeIconContainer *container,
-			    const gchar *name,
 			    NautilusFile *file,
 			    FMDirectoryViewIcons *icon_view)
 {
@@ -487,7 +451,6 @@ fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 
 static void
 fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
-				       const char *name,
 				       NautilusFile *file,
 				       int x, int y,
 				       FMDirectoryViewIcons *icon_view)

@@ -1,18 +1,151 @@
+2000-01-21  Darin Adler  <darin@eazel.com>
+
+	Added a controller object that lets GnomeIconContainer
+	ask questions and perform actions, even though only the
+	FMDirectoryViewIcons knows how to answer the questions
+	and perform the actions.
+
+	Replaced use of nautilus_file_get_info with specific
+	accessors for various file info.
+
+	* libnautilus/Makefile.am:
+	libnautilus/nautilus-icons-controller.h:
+	libnautilus/nautilus-icons-controller.c:
+	libnautilus/gnome-icon-container-private.h:
+	libnautilus/gnome-icon-container.h:
+	libnautilus/gnome-icon-container.c:
+	(icon_new_pixbuf):
+	(gnome_icon_container_new):
+	(gnome_icon_container_add):
+	(gnome_icon_container_add_auto):
+	Added NautilusIconsController, an interface provided so that the
+	file manager can connect the icons up with the file code. This is
+	all so we can keep the view/controller separation. This eliminates
+	the need to pass around the icon name all the time, so the signals
+	have changed to not take the icon name as a parameter.
+
+	* src/file-manager/Makefile.am:
+	src/file-manager/fm-icons-controller.c:
+	src/file-manager/fm-icons-controller.h:
+	Added FMIconsController, the actual controller used by the file
+	manager instance of GnomeIconContainer.
+	src/file-manager/fm-directory-view-icons.c:
+	(create_icon_container):
+	(add_icon_if_already_positioned):
+	(add_icon_at_free_position):
+	(icon_container_activate_cb):
+	(fm_directory_view_icons_icon_moved_cb):
+	Create and use the FMIconController.
+
+	* libnautilus/gnome-icon-container-private.h:
+	libnautilus/gnome-icon-container-dnd.c:
+	(set_gnome_icon_list_selection):
+	(set_uri_list_selection):
+	libnautilus/gnome-icon-container.c:
+	(gnome_icon_container_set_base_uri):
+	src/file-manager/fm-directory-view-icons.c:
+	(set_up_base_uri):
+	(fm_directory_view_icons_begin_loading):
+	Get rid of the old base_uri technique for handling drags. Instead
+	the icon controller supplies URIs for icons when requested.
+
+	* RENAMING: Proposed that we use NautilusIconsView as the new name
+	for GnomeIconContainer instead of NautilusIconContainer.
+
+	* libnautilus/gnome-icon-container-private.h:
+	libnautilus/gnome-icon-container.h:
+	libnautilus/gnome-icon-container.c:
+	(gnome_icon_container_initialize):
+	(handle_icon_enter_notify):
+	(handle_icon_leave_notify):
+	Renamed browser mode to linger selection mode.
+
+	* libnautilus/gnome-icon-container-private.h:
+	libnautilus/gnome-icon-container.h:
+	libnautilus/gnome-icon-container.c:
+	(icon_configure):
+	(icon_position):
+	(change_icon_mode):
+	(gnome_icon_container_initialize):
+	(gnome_icon_container_set_icon_mode):
+	(gnome_icon_container_get_icon_mode):
+	src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_initialize):
+	Got rid of icon mode, since we won't be using it.
+
+	* libnautilus/gnome-icon-container-dnd.c:
+	(get_gnome_icon_list_selection):
+	Changed geometry parsing so it will not ignore extra characters
+	after the numeric geometry.
+	(gnome_icon_container_receive_dropped_icons):
+	The code here tried to work when dragging icons between windows,
+	but the implementation was actually only good within the same
+	window, so I modified it to check for that case.
+
+	* libnautilus/gnome-icon-container-dnd.c:
+	(create_selection_shadow):
+	(set_gnome_icon_list_selection):
+	libnautilus/gnome-icon-container.c:
+	(icon_position):
+	Renamed GNOME_ICON_CONTAINER_ICON_XOFFSET to
+	GNOME_ICON_CONTAINER_ICON_X_OFFSET and
+	GNOME_ICON_CONTAINER_ICON_YOFFSET to
+	GNOME_ICON_CONTAINER_ICON_Y_OFFSET. We use an underscore between
+	words in identifiers.
+
+	* libnautilus/gnome-icon-container.c:
+	(destroy):
+	Added code to remove timeouts and idles when the container is
+	destroyed.
+
+	* libnautilus/nautilus-directory.h:
+	libnautilus/nautilus-directory.c:
+	(nautilus_file_get_info):
+	Get rid of the direct call to get GnomeVFSFileInfo. All info is
+	accessed through individual functions.
+	(nautilus_file_get_size):
+	(nautilus_file_get_type):
+	(nautilus_file_get_mime_type):
+	(nautilus_file_is_executable):
+	(nautilus_file_is_symbolic_link):
+	Added new accessor functions as needed.
+	src/file-manager/fm-directory-view.c:
+	(display_selection_info):
+	src/file-manager/fm-icon-cache.c:
+	(fm_icon_cache_get_icon_set_for_file):
+	(fm_icon_cache_get_icon_for_file):
+	Change code to use the accessors instead of get_info.
+	
+	* libnautilus/nautilus-gtk-macros.h:
+	(NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL):
+	Changed macro to take a class pointer of the right type instead
+	of taking both a casting macro name and a class pointer.
+	src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class):
+	Changed existing uses of macro to match.
+
+	* src/file-manager/Makefile.am:
+	src/file-manager/fm-icon-cache.c:
+	src/file-manager/fm-default-file-icon.h:
+	src/file-manager/fm-default-file-icon.c:
+	Moved the default icon into its own file.
+
 2000-01-24  John Sullivan <sullivan@eazel.com>
 
 	* libnautilus/gnome-icon-container.c:
 	(button_event_modifies_selection): New function, encapsulates idea
 	of which button events modify the selection. Formerly this was
 	done in several places and the answer was "those with the Control
-	key down". Now the answer is "those with the Control or Shift key down"
-	to match list view (and traditional, i.e. Mac) behavior more closely.
-	(button_press_event), (button_release_event), (handle_icon_button_press):
-	Deployed button_event_modifies_selection.
-	(button_release_event): Check whether modifying selection and don't
-	activate on single-click if so.
+	key down". Now the answer is "those with the Control or Shift key
+	down" to match list view (and traditional, i.e. Mac) behavior more
+	closely.
+	(button_press_event), (button_release_event),
+	(handle_icon_button_press): Deployed
+	button_event_modifies_selection.
+	(button_release_event): Check whether modifying selection and
+	don't activate on single-click if so.
 	(kbd_move_to): Just added comment.
 	
-
 2000-01-22  Havoc Pennington  <hp@pobox.com>
 
 	* configure.in: check for libwww
@@ -38,7 +171,6 @@
 	* configure.in: Look for gnomecanvaspixbuf properly (via
 	gnome-config)
 	
-
 2000-01-21  John Sullivan <sullivan@eazel.com>
 
 	* src/ntl-window.c: Move Preferences item to Edit menu, its
@@ -80,8 +212,10 @@
 	* src/file-manager/fm-directory-view-list.c:
 	(struct _FMDirectoryViewListDetails): Add icon_size field.
 	(fm_directory_view_list_initialize): Initialize icon_size field.
-	(create_flist): Determine icon column width and row height from icon size. 		(add_to_flist): Change parameters to take FMDirectoryViewList instead of
-	GtkFList, and remove FMIconCache parameter. Now calls install_icon.
+	(create_flist): Determine icon column width and row height from icon size.
+ 	(add_to_flist): Change parameters to take FMDirectoryViewList
+	instead of GtkFList, and remove FMIconCache parameter. Now calls
+	install_icon.
 	(fm_directory_view_list_add_entry): Update add_to_flist parameters.
 	(install_icon): New function, gets an appropriately-sized icon for
 	a NautilusFile and puts it into icon column in list.
@@ -89,13 +223,16 @@
 2000-01-21  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window.[ch], src/ntl-window-msgs.c,
-	src/ntl-window-private.h: Add a specific flag to indicate reload, and make use of it.
+	  src/ntl-window-private.h: Add a specific flag to indicate reload,
+	  and make use of it.
 
 	* libnautilus/nautilus-directory.c: Allocate an extra byte in the
 	  buffer, for safety's sake.
 	* src/ntl-window-msgs.c: Fix back/fwd buttons.
-	* src/ntl-window-msgs.c: Remove debugging printouts, and display error dialogs.
-	* src/ntl-window-msgs.c, src/ntl-window.h: Fix the bug that was causing list view to be blank.
+	* src/ntl-window-msgs.c: Remove debugging printouts, and display
+	  error dialogs.
+	* src/ntl-window-msgs.c, src/ntl-window.h: Fix the bug that was
+	  causing list view to be blank.
 
 2000-01-21  Darin Adler  <darin@eazel.com>
 

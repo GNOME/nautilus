@@ -27,8 +27,7 @@ dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService-common.c
 
 ntl_file_manager_SOURCES=		\
-	fm-icon-cache.c			\
-	fm-icon-cache.h			\
+	$(dfos_corba_srcs)		\
 	dfos-corba.c			\
 	dfos-corba.h			\
 	dfos-xfer-progress-dialog.c	\
@@ -37,13 +36,18 @@ ntl_file_manager_SOURCES=		\
 	dfos-xfer.h			\
 	dfos.c				\
 	dfos.h				\
-	$(dfos_corba_srcs)		\
-	fm-directory-view.h		\
-	fm-directory-view.c		\
-	fm-directory-view-icons.h	\
 	fm-directory-view-icons.c	\
-	fm-directory-view-list.h	\
+	fm-directory-view-icons.h	\
 	fm-directory-view-list.c	\
+	fm-directory-view-list.h	\
+	fm-directory-view.c		\
+	fm-directory-view.h		\
+	fm-default-file-icon.c		\
+	fm-default-file-icon.h		\
+	fm-icon-cache.c			\
+	fm-icon-cache.h			\
+	fm-icons-controller.c		\
+	fm-icons-controller.h		\
 	fm-main.c
 
 # noinst_PROGRAMS=gnome-desktop

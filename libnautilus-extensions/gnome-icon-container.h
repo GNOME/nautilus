@@ -2,6 +2,7 @@
 /* gnome-icon-container.h - Icon container widget.
 
    Copyright (C) 1999, 2000 Free Software Foundation
+   Copyright (C) 2000 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -24,14 +25,8 @@
 #ifndef _GNOME_ICON_CONTAINER_H
 #define _GNOME_ICON_CONTAINER_H
 
-#include <libgnomeui/libgnomeui.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-
-enum _GnomeIconContainerIconMode {
-	GNOME_ICON_CONTAINER_NORMAL_ICONS,
-	GNOME_ICON_CONTAINER_SMALL_ICONS
-};
-typedef enum _GnomeIconContainerIconMode GnomeIconContainerIconMode;
+#include <libgnomeui/gnome-canvas.h>
+#include "nautilus-icons-controller.h"
 
 typedef struct _GnomeIconContainer GnomeIconContainer;
 typedef struct _GnomeIconContainerClass GnomeIconContainerClass;
@@ -46,12 +41,6 @@ typedef struct _GnomeIconContainerDetails GnomeIconContainerDetails;
 	GTK_CHECK_TYPE (obj, gnome_icon_container_get_type ())
 
 
-typedef gint (* GnomeIconContainerSortFunc) (const gchar *name_a,
-					     gpointer data_a,
-					     const gchar *name_b,
-					     gpointer data_b,
-					     gpointer user_data);
-
 struct _GnomeIconContainer {
 	GnomeCanvas canvas;
 	GnomeIconContainerDetails *details;
@@ -60,83 +49,48 @@ struct _GnomeIconContainer {
 struct _GnomeIconContainerClass {
 	GnomeCanvasClass parent_class;
 
-	void (* selection_changed) 	(GnomeIconContainer *container);
-	gint (* button_press) 		(GnomeIconContainer *container,
-					 GdkEventButton *event);
-	void (* activate)		(GnomeIconContainer *container,
-					 const gchar *icon_name,
-					 gpointer icon_data);
+	void (* selection_changed) 	  (GnomeIconContainer *container);
+	int  (* button_press) 		  (GnomeIconContainer *container,
+					   GdkEventButton *event);
+	void (* activate)	  	  (GnomeIconContainer *container,
+					   NautilusControllerIcon *icon);
 
-	void (* context_click_icon)	(GnomeIconContainer *container,
-					 const gchar *icon_name,
-					 gpointer icon_data);
+	void (* context_click_icon)	  (GnomeIconContainer *container,
+					   NautilusControllerIcon *icon);
 
 	void (* context_click_background) (GnomeIconContainer *container);
 
-	void (* icon_moved)		(GnomeIconContainer *container,
-					 const gchar *icon_name,
-					 gpointer icon_data,
-					 int x, int y);
+	void (* icon_moved)		  (GnomeIconContainer *container,
+					   NautilusControllerIcon *icon,
+					   int x, int y);
 };
 
 
-guint		 gnome_icon_container_get_type	(void);
+guint      gnome_icon_container_get_type                (void);
+GtkWidget *gnome_icon_container_new                     (NautilusIconsController *controller);
 
-GtkWidget	*gnome_icon_container_new	(void);
+void       gnome_icon_container_enable_linger_selection (GnomeIconContainer      *view,
+							 gboolean                 enable);
 
-void		 gnome_icon_container_clear	(GnomeIconContainer *view);
+void       gnome_icon_container_clear                   (GnomeIconContainer      *view);
+void       gnome_icon_container_add                     (GnomeIconContainer      *view,
+							 NautilusControllerIcon  *icon,
+							 gint                     x,
+							 gint                     y);
+void       gnome_icon_container_add_auto                (GnomeIconContainer      *view,
+							 NautilusControllerIcon  *icon);
 
-void		 gnome_icon_container_set_icon_mode
-						(GnomeIconContainer *view,
-						 GnomeIconContainerIconMode mode);
+void       gnome_icon_container_relayout                (GnomeIconContainer      *view);
+void       gnome_icon_container_line_up                 (GnomeIconContainer      *view);
 
-GnomeIconContainerIconMode
-		 gnome_icon_container_get_icon_mode
-						(GnomeIconContainer *view);
+GList *    gnome_icon_container_get_selection           (GnomeIconContainer      *view);
 
-void		 gnome_icon_container_set_editable
-						(GnomeIconContainer *view,
-						  gboolean is_editable);
-gboolean	 gnome_icon_container_get_editable
-						(GnomeIconContainer *view);
- 
-void		 gnome_icon_container_add_pixbuf (GnomeIconContainer *view,
-						  GdkPixbuf *image,
-						  const gchar *text,
-						  gint x, gint y,
-						  gpointer data);
+void       gnome_icon_container_unselect_all            (GnomeIconContainer      *view);
+void       gnome_icon_container_select_all              (GnomeIconContainer      *view);
 
-void		 gnome_icon_container_add_pixbuf_auto
-						 (GnomeIconContainer *view,
-						  GdkPixbuf *image,
-						  const gchar *text,
-						  gpointer data);
- 
-gpointer	 gnome_icon_container_get_icon_data
-						 (GnomeIconContainer *view,
-						  const gchar *text);
-
-void		 gnome_icon_container_relayout	 (GnomeIconContainer *view);
-void		 gnome_icon_container_line_up	 (GnomeIconContainer *view);
-GList 		*gnome_icon_container_get_selection
-						 (GnomeIconContainer *view);
-
-void		 gnome_icon_container_unselect_all
-						 (GnomeIconContainer *view);
-void		 gnome_icon_container_select_all (GnomeIconContainer *view);
-
-void		 gnome_icon_container_enable_browser_mode
-						 (GnomeIconContainer *view,
-						  gboolean enable);
-
-void		 gnome_icon_container_set_base_uri
-						 (GnomeIconContainer *container,
-						  const gchar *base_uri);
-
-void		 gnome_icon_container_xlate_selected
-						(GnomeIconContainer *container,
-						 gint amount_x,
-						 gint amount_y,
-						 gboolean raise);
+void       gnome_icon_container_xlate_selected          (GnomeIconContainer      *container,
+							 int                      delta_x,
+							 int                      delta_y,
+							 gboolean                 raise);
 
 #endif

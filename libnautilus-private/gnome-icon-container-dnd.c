@@ -33,6 +33,11 @@
 #include "nautilus-background.h"
 #include "nautilus-gtk-extensions.h"
 
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include <string.h>
+#include <stdio.h>
+#include <gtk/gtksignal.h>
+
 
 
 struct _DndSelectionItem {
@@ -219,28 +224,25 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 	data = g_string_new (NULL);
 	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
-		gchar *s;
-		gint x, y;
+		char *uri;
+		char *s;
+		int x, y;
 
 		icon = p->data;
-		if (! icon->is_selected)
+		if (!icon->is_selected)
 			continue;
 
 		x = (gint) (icon->x - x_offset);
 		y = (gint) (icon->y - y_offset);
 
-		x += (GNOME_ICON_CONTAINER_ICON_XOFFSET (container)
+		x += (GNOME_ICON_CONTAINER_ICON_X_OFFSET (container)
 		      - GNOME_ICON_CONTAINER_ICON_WIDTH (container) / 2);
-		y += (GNOME_ICON_CONTAINER_ICON_YOFFSET (container)
+		y += (GNOME_ICON_CONTAINER_ICON_Y_OFFSET (container)
 		      - GNOME_ICON_CONTAINER_ICON_HEIGHT (container) / 2);
 
-		if (details->base_uri != NULL)
-			s = g_strdup_printf ("%s/%s\r%d:%d\r\n",
-					     details->base_uri, icon->text,
-					     x, y);
-		else
-			s = g_strdup_printf ("%s\r%d:%d\r\n",
-					     icon->text, x, y);
+		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
+		s = g_strdup_printf ("%s\r%d:%d\r\n", uri, x, y);
+		g_free (uri);
 
 		g_string_append (data, s);
 		g_free (s);
@@ -278,12 +280,13 @@ set_uri_list_selection (GnomeIconContainer *container,
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
-		if (! icon->is_selected)
+		if (!icon->is_selected)
 			continue;
 
-		temp_data = g_strdup_printf ("%s/%s\r\n", details->base_uri, icon->text);
-		g_string_append(data, temp_data);
-		g_free(temp_data);
+		temp_data = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
+		g_string_append (data, temp_data);
+		g_string_append (data, "\r\n");
+		g_free (temp_data);
 	}
 
 	gtk_selection_data_set (selection_data,
@@ -381,7 +384,7 @@ get_gnome_icon_list_selection (GnomeIconContainer *container,
 
 		/* 2: Decode geometry information.  */
 
-		if (sscanf (p, "%d:%d", &item->x, &item->y) != 2)
+		if (sscanf (p, "%d:%d%*s", &item->x, &item->y) != 2)
 			g_warning ("Invalid special/x-gnome-icon-list data received: "
 				   "invalid geometry specification.");
 
@@ -534,35 +537,17 @@ drag_end_cb (GtkWidget *widget,
 	dnd_info->selection_list = NULL;
 }
 
-/* utility routine to extract the directory from an item_uri (which may have geometry info attached) */
-
-static gchar*
-extract_directory(const gchar* item_uri)
-{
-	gchar *last_slash;
-	gchar *temp_str = strdup(item_uri);
-	gchar *geom_ptr = strchr(temp_str, '\r');
-
-	/* strip geometry info if present */
-	if  (geom_ptr) {
-		*geom_ptr = '\0';
-	}
-	
-	last_slash = strrchr(temp_str, '/');
-	if (last_slash)
-		*last_slash = '\0';
-	
-	return temp_str;	
-}
+/* Utility routine to extract the directory from an item_uri
+   (which may have geometry info attached).
+*/
 
 static void
 gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
-						GdkDragContext *context,
-						int x, int y)
+					    GdkDragContext *context,
+					    int x, int y)
 {
 	GnomeIconContainerDndInfo *dnd_info;
 	DndSelectionItem *item;
-	char *item_directory_uri;
 
 	dnd_info = container->details->dnd_info;
 	
@@ -570,27 +555,37 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 		return;
 
 	item = dnd_info->selection_list->data;
-	item_directory_uri = extract_directory(item->uri);
-	
-	if (strcmp(item_directory_uri, container->details->base_uri) != 0) {
-		g_warning ("not implemented: drop from other directory: %s", item_directory_uri);
-	} else {
-		/* copy files in same directory */
+
+	/* Move files in same window.
+
+	   FIXME: This won't work between windows for two reasons.
+
+	   First, we have to figure out whether we need to actually
+	   move or copy some files. For directory views this is based
+	   on the URIs, but that should be done by the controller, not
+	   here in the view.
+	   
+	   Second, the start_x and start_y values are only good for
+	   this window. To make dragging between multiple windows work,
+	   we need to communicate the offset between the mouse and the
+	   corner of the selection along with the other selection info
+	   so we can position the icons correctly in the window they
+	   are dropped in. The geometry that's currently included along
+	   with the selection is not sufficient.
+	*/
+	if (context->source_window != context->dest_window)
+		g_warning ("moving files between windows is not yet implemented");
+	if (context->action == GDK_ACTION_MOVE) {
+		double world_x, world_y;
 		
-		if (context->action == GDK_ACTION_MOVE) {
-			double world_x, world_y;
-			
-			gnome_canvas_window_to_world (GNOME_CANVAS (container),
-							      x, y, &world_x, &world_y);
-			
-			gnome_icon_container_xlate_selected (container,
-							     world_x - dnd_info->start_x,
-							     world_y - dnd_info->start_y,
-							     TRUE);
-		}
+		gnome_canvas_window_to_world (GNOME_CANVAS (container),
+					      x, y, &world_x, &world_y);
+		
+		gnome_icon_container_xlate_selected (container,
+						     world_x - dnd_info->start_x,
+						     world_y - dnd_info->start_y,
+						     TRUE);
 	}
-	
-	g_free(item_directory_uri);
 	
 	destroy_selection_list (dnd_info->selection_list);
 	dnd_info->selection_list = NULL;
@@ -749,7 +744,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 
 	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
-
+	
 	/* Notice that the event is already in world coordinates, because of
            the way the canvas handles events! */
 	dnd_info->start_x = event->x;

@@ -28,6 +28,8 @@
 
 #include "gnome-icon-container.h"
 
+#include <gtk/gtkdnd.h>
+
 typedef struct _GnomeIconContainerDndInfo GnomeIconContainerDndInfo;
 typedef enum _GnomeIconContainerDndTargetType GnomeIconContainerDndTargetType;
 
