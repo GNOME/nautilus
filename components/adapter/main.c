@@ -73,11 +73,6 @@ adapter_factory_make_object (BonoboGenericFactory *factory,
 		return NULL;
 	}
 
-	/* Create the view. The way this sample is set up, we create a
-	 * widget which makes the NautilusView object as part of it's
-	 * initialization. This is a bit backwards as it's the view
-	 * that owns the widget.
-	 */
 	adapter = NAUTILUS_ADAPTER_FACTORY_SERVER (gtk_object_new (NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NULL));
 
 	/* Connect a handler that will get us out of the main loop

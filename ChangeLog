@@ -1,4 +1,35 @@
+2000-10-31  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 4144 (Extra Services menu items installed by Summary
+	view never go away). The problem was actually with the factory
+	code from the sample. I had fixed it a while back, but not before
+	people cloned the broken sample code.
+	
+	* components/adapter/nautilus-adapter-factory-server.c:
+	(impl_Nautilus_ComponentAdapterFactory_create_adapter):
+	* components/hardware/main.c: (hardware_view_make_object):
+	* components/music/main.c: (music_view_make_object):
+	* components/rpmview/main.c: (rpm_view_make_object):
+	* components/services/install/nautilus-view/main.c:
+	(service_install_make_object):
+	* components/services/inventory/nautilus-view/main.c:
+	(inventory_make_object):
+	* components/services/login/nautilus-view/main.c:
+	(change_password_make_object):
+	* components/services/summary/nautilus-view/main.c:
+	(summary_make_object):
+	* components/tree/libmain.c: (tree_shlib_make_object):
+	* components/tree/main.c: (tree_exe_make_object):
+	Connect the destroy handler to the NautilusView object rather than
+	to the widget. If you connect to the widget, the handler gets
+	called too early and the control doesn't get properly destroyed,
+	leaving the UI component behind, and causing the bug.
+
+	* components/adapter/main.c: (adapter_factory_make_object): Got
+	rid of incorrect comment.
+	
 2000-10-31  J Shane Culpepper  <pepper@eazel.com>
+	
 	Fixing one more.
 
 2000-10-31  J Shane Culpepper  <pepper@eazel.com>

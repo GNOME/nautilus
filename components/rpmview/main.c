@@ -58,9 +58,10 @@ rpm_view_make_object (BonoboGenericFactory *factory,
 
 	object_count++;
 
-	gtk_signal_connect (GTK_OBJECT (rpm_view), "destroy", rpm_view_object_destroyed, NULL);
-
 	nautilus_view = nautilus_rpm_view_get_nautilus_view (rpm_view);
+
+	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", rpm_view_object_destroyed, NULL);
+
 	return BONOBO_OBJECT (nautilus_view);
 }
 

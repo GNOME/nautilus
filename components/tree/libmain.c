@@ -62,13 +62,13 @@ tree_shlib_make_object (PortableServer_POA poa,
 
 	view = NAUTILUS_TREE_VIEW (gtk_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_shlib_object_destroyed, NULL);
+	nautilus_view = nautilus_tree_view_get_nautilus_view (view);
+
+	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", tree_shlib_object_destroyed, NULL);
 
 	gtk_object_set_user_data (GTK_OBJECT (view), impl_ptr);
 
 	oaf_plugin_use (poa, impl_ptr);
-
-	nautilus_view = nautilus_tree_view_get_nautilus_view (view);
 
 	return CORBA_Object_duplicate (bonobo_object_corba_objref 
 				       (BONOBO_OBJECT (nautilus_view)), ev);

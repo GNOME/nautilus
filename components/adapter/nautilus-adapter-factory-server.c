@@ -138,6 +138,7 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 {
 	impl_POA_Nautilus_ComponentAdapterFactory *factory_servant;
 	NautilusAdapter *adapter;
+	NautilusView *adapter_view;
 
 	factory_servant = (impl_POA_Nautilus_ComponentAdapterFactory *) servant;
 
@@ -147,13 +148,14 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 		return CORBA_OBJECT_NIL;
 	} else {
 		bonobo_object_ref (BONOBO_OBJECT (factory_servant->bonobo_object));
+
+		adapter_view = nautilus_adapter_get_nautilus_view (adapter);
 		
-		gtk_signal_connect (GTK_OBJECT (adapter), "destroy",
+		gtk_signal_connect (GTK_OBJECT (adapter_view), "destroy",
 				    adapter_object_destroyed, factory_servant->bonobo_object);
 
-		return CORBA_Object_duplicate 
-			(bonobo_object_corba_objref 
-			 (BONOBO_OBJECT (nautilus_adapter_get_nautilus_view (adapter))), ev);
+		return CORBA_Object_duplicate
+			(bonobo_object_corba_objref (BONOBO_OBJECT (adapter_view)), ev);
 	}
 }
 

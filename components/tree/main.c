@@ -68,7 +68,7 @@ tree_exe_make_object (BonoboGenericFactory *factory,
 
 	nautilus_view = nautilus_tree_view_get_nautilus_view (view);
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_exe_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", tree_exe_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (nautilus_view);
 }

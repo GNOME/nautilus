@@ -58,10 +58,10 @@ change_password_make_object (BonoboGenericFactory	*factory,
 
 	object_count++;
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", change_password_object_destroyed, NULL);
-
 	nautilus_view = nautilus_change_password_view_get_nautilus_view (view);
 	
+	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", change_password_object_destroyed, NULL);
+
 	printf ("Returning new object %p\n", nautilus_view);
 
 	return BONOBO_OBJECT (nautilus_view);
