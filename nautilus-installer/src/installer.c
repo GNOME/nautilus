@@ -97,12 +97,11 @@ typedef struct {
  			  "        http://nautilus.eazel.com/faq.html\n" \
 			  "Once you have resolved the problem, please restart the installer.")
 #define ERROR_TITLE	_("An error has occurred")
-#define RETRY_LABEL	_("The installer was not able to complete the installation of the\n" \
-			  "Nautilus file manager.  This might be because some of the packages\n" \
-			  "on your system need to be upgraded at the same time as Nautilus.\n" \
-			  "The following packages would be broken by Nautilus:")
-#define RETRY_LABEL_2	_("Would you like to try to upgrade these packages, too?")
-#define RETRY_TITLE	_("Bogus things are going down")
+#define RETRY_LABEL	_("An installation problem has been encountered, but we think we can\n" \
+			  "fix it.  We would like to try the following actions, but since there\n" \
+			  "are items involved that might be important to you, we thought we'd\n" \
+			  "check first.")
+#define RETRY_TITLE	_("Just so you know...")
 #define FINISHED_TITLE	_("Congratulations!")
 
 #define NAUTILUS_INSTALLER_RELEASE
@@ -483,8 +482,8 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char 
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (error_page));
 }
 
-static void
-start_over (GtkWidget *button, EazelInstaller *installer)
+static gboolean
+start_over (GnomeDruidPage *druid_page, GnomeDruid *druid, EazelInstaller *installer)
 {
 	GtkWidget *install_page;
 	CategoryData *category;
@@ -493,7 +492,7 @@ start_over (GtkWidget *button, EazelInstaller *installer)
 	DistributionInfo distro;
 	GList *iter, *iter2;
 
-	printf ("JES-- start over\n");
+	LOG_DEBUG (("JES: start over\n"));
 
 	/* figure out current arch */
 	arch = NULL;
@@ -536,6 +535,7 @@ start_over (GtkWidget *button, EazelInstaller *installer)
 	g_list_free (installer->failure_info);
 	installer->failure_info = NULL;
 
+#ifdef ROBEYS_PARANOID_DEBUG_OUTPUT
 	printf ("##########  NEW PACKAGE LIST  ##########\n");
 	for (iter = g_list_first (installer->categories); iter != NULL; iter = g_list_next (iter)) {
 		category = (CategoryData *)(iter->data);
@@ -543,15 +543,19 @@ start_over (GtkWidget *button, EazelInstaller *installer)
 		dump_packages (category->packages);
 	}
 	printf ("##########  END OF LIST  ##########\n");
+#endif
+
 	install_page = gtk_object_get_data (GTK_OBJECT (installer->window), "install_page");
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (install_page));
+	return TRUE;	/* yes, i handled the page change */
 }
 
-static void
-dont_start_over (GtkWidget *button, EazelInstaller *installer)
+static gboolean
+dont_start_over (GnomeDruidPage *druid_page, GnomeDruid *druid, EazelInstaller *installer)
 {
-	printf ("NE-- dont start over\n");
+	LOG_DEBUG (("NE: give up\n"));
 	jump_to_error_page (installer, installer->failure_info, ERROR_LABEL, ERROR_LABEL_2);
+	return TRUE;	/* go to error page instead of cancelling */
 }
 
 /* give the user an opportunity to retry the install, with new info */
@@ -564,7 +568,6 @@ jump_to_retry_page (EazelInstaller *installer)
 	GtkWidget *pixmap;
 	GtkWidget *title;
 	GtkWidget *label;
-	GtkWidget *button;
 	GList *iter;
 	char *temp;
 
@@ -618,6 +621,7 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 15);
 
+#if 0
 	label = gtk_label_new (RETRY_LABEL_2);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
@@ -640,9 +644,16 @@ jump_to_retry_page (EazelInstaller *installer)
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+#endif
 
 	gtk_signal_connect (GTK_OBJECT (retry_page), "prepare",
-			    GTK_SIGNAL_FUNC (prep_lock),
+			    GTK_SIGNAL_FUNC (prep_retry),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (retry_page), "next",
+			    GTK_SIGNAL_FUNC (start_over),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (retry_page), "cancel",
+			    GTK_SIGNAL_FUNC (dont_start_over),
 			    installer);
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (retry_page));
 }

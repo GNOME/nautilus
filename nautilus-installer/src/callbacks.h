@@ -54,7 +54,7 @@ prep_finish                           (GnomeDruidPage  *gnomedruidpage,
 				       GtkWidget *druid,
 				       EazelInstaller  *installer);
 void
-prep_lock                             (GnomeDruidPage  *gnomedruidpage,
+prep_retry                            (GnomeDruidPage  *gnomedruidpage,
 				       GtkWidget *druid,
 				       EazelInstaller  *installer);
 

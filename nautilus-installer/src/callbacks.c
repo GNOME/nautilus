@@ -106,9 +106,9 @@ prep_finish (GnomeDruidPage  *gnomedruidpage,
 }
 
 void
-prep_lock (GnomeDruidPage *gnomedruidpage,
-	   GtkWidget *druid,
-	   EazelInstaller *installer)
+prep_retry (GnomeDruidPage *gnomedruidpage,
+	    GtkWidget *druid,
+	    EazelInstaller *installer)
 {
-	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), FALSE, FALSE, TRUE);
+	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), FALSE, TRUE, TRUE);
 }
