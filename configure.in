@@ -923,6 +923,7 @@ AC_ARG_ENABLE(more-warnings,
 [  --enable-more-warnings  Maximum compiler warnings],
 set_more_warnings="$enableval",[
 if test -f $srcdir/CVSVERSION; then
+	is_cvs_version=true
 	set_more_warnings=yes
 else
 	set_more_warnings=no
@@ -958,6 +959,21 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 else
 	AC_MSG_RESULT(no)
 fi
+
+dnl
+dnl Define the build message (used in the Nautilus about box)
+dnl CVSVERSION overrides
+dnl
+
+NAUTILUS_BUILD_MESSAGE=""
+AC_ARG_WITH(build-message, [  --with-build-message=MESSAGE		Build (about box) message], NAUTILUS_BUILD_MESSAGE=$withval)
+
+if test -n "$is_cvs_version"
+then
+	NAUTILUS_BUILD_MESSAGE="Development Build"
+fi
+
+AC_DEFINE_UNQUOTED(NAUTILUS_BUILD_MESSAGE, "$NAUTILUS_BUILD_MESSAGE")
 
 
 dnl
@@ -1160,6 +1176,8 @@ echo
 dnl <= Snapshot things =>
 echo "
 EAZEL_BUILD_TIMESTAMP   : $EAZEL_BUILD_TIMESTAMP"
+echo "
+NAUTILUS_BUILD_MESSAGE  : $NAUTILUS_BUILD_MESSAGE"
 echo
 
 echo "

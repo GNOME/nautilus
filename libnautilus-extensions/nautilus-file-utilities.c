@@ -1669,6 +1669,16 @@ nautilus_get_build_time_stamp (void)
 #endif
 }
 
+char *
+nautilus_get_build_message (void)
+{
+#ifdef NAUTILUS_BUILD_MESSAGE
+	return g_strdup (NAUTILUS_BUILD_MESSAGE);
+#else
+	return NULL;
+#endif
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

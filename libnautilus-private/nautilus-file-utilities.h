@@ -135,6 +135,11 @@ GnomeVFSResult          nautilus_make_directory_and_parents        (GnomeVFSURI 
  */
 char *                  nautilus_get_build_time_stamp              (void);
 
+/* Returns the "build message", which provides some information on build
+ * context.  May return NULL.
+ */
+char *			nautilus_get_build_message		   (void);
+
 /* Return an allocated file name that is guranteed to be unique. */
 char *                  nautilus_unique_temporary_file_name        (void);
 char *                  nautilus_find_file_in_gnome_path           (char                      *file);
