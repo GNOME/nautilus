@@ -107,6 +107,7 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*services_goto_label_widget;
 	char		*services_goto_label;
 	char		*services_redirects[500];
+	gboolean	services_button_enabled;
 
 	/* Login Frame Widgets */
 	GtkWidget	*username_label;
@@ -191,6 +192,7 @@ static void	goto_update_cb				(GtkWidget			*button,
 static void	register_button_cb			(GtkWidget			*button,
 							 NautilusSummaryView		*view);
 static gboolean	am_i_logged_in				(NautilusSummaryView		*view);
+static char*	who_is_logged_in			(NautilusSummaryView		*view);
 static gint	logged_in_callback			(gpointer			raw);
 static gint	logged_out_callback			(gpointer			raw);
 
@@ -377,6 +379,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	else {
 		char	*title_string;
 
+		view->details->user_name = who_is_logged_in (view);
 		title_string = g_strdup_printf ("Welcome Back %s!", view->details->user_name);
 		title = create_services_title_widget (title_string);
 		g_free (title_string);
@@ -423,6 +426,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->services_description_header = service_node->description_header;
 		view->details->services_description_body = service_node->description;
 		view->details->services_goto_label = service_node->button_label;
+		view->details->services_button_enabled = service_node->enabled;
 		view->details->services_redirects[view->details->current_service_row - 1] = service_node->uri;
 		generate_service_entry_row (view, view->details->current_service_row);
 
@@ -744,6 +748,11 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->services_redirects[view->details->current_service_row - 1];
 	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), cbdata);
+
+	if (view->details->services_button_enabled == FALSE) {
+		gtk_widget_set_sensitive (view->details->services_goto_button, FALSE);
+	}
+
 	gtk_widget_show (view->details->services_goto_button);
 	gtk_table_attach (view->details->services_table, view->details->services_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
 	gtk_widget_show (view->details->services_button_container);
@@ -1039,6 +1048,36 @@ am_i_logged_in (NautilusSummaryView	*view)
 	CORBA_exception_free (&ev);
 	return rv;
 } /* end am_i_logged_in */
+
+static char*
+who_is_logged_in (NautilusSummaryView	*view)
+{
+	CORBA_Environment	ev;
+	EazelProxy_User		*user;
+	char			*rv;
+
+	CORBA_exception_init (&ev);
+
+	if (CORBA_OBJECT_NIL != view->details->user_control) {
+		/* Get list of currently active users */
+
+		user = EazelProxy_UserControl_get_default_user (
+			view->details->user_control, &ev);
+
+		if (CORBA_NO_EXCEPTION != ev._major) {
+			g_message ("No default user!");
+			rv =  NULL;
+		}
+		else {
+			g_message ("Default user found!");
+			rv = user->user_name;
+			CORBA_free (user);
+		}
+	}
+
+	CORBA_exception_free (&ev);
+	return rv;
+} /* end who_is_logged_in */
 
 static gint
 logged_in_callback (gpointer	raw)
