@@ -40,6 +40,8 @@
 #define TIMED_WAIT_STANDARD_DURATION 2000
 #define TIMED_WAIT_MIN_TIME_UP 3000
 
+#define TIMED_WAIT_MINIMUM_DIALOG_WIDTH 300
+
 typedef struct {
 	NautilusCancelCallback cancel_callback;
 	gpointer callback_data;
@@ -186,6 +188,14 @@ timed_wait_callback (gpointer callback_data)
 	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title,
 						 wait->cancel_callback != NULL ? GNOME_STOCK_BUTTON_CANCEL : NULL,
 						 NULL));
+	/* The contents are often very small, causing tiny little
+	 * dialogs with their titles clipped if you just let gtk
+	 * sizing do its thing. This enforces a minimum width to
+	 * make it more likely that the title won't be clipped.
+	 */
+	gtk_widget_set_usize (GTK_WIDGET (dialog),
+			      TIMED_WAIT_MINIMUM_DIALOG_WIDTH,
+			      -1);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "dialog", "Nautilus");
 	add_label_to_dialog (dialog, wait->wait_message);
 	gnome_dialog_set_close (dialog, TRUE);

@@ -1,3 +1,14 @@
+2001-02-09  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 6343 (timed-wait dialog is too narrow, often
+	clipping dialog title)
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_callback): Enforced a minimum width for timed-wait
+	windows. They look better now, and don't clip the titles
+	except with extremely long titles, for which the title-writer
+	should be flogged.
+
 2001-02-09  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 6453, Gnome VFS_CRITICAL received when dragging
