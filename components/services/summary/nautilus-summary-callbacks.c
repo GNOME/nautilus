@@ -100,7 +100,7 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 		view->details->current_attempt = initial;
 	} else if (info && ( info->code == EAZELPROXY_AUTHN_FAIL_USER_NOT_ACTIVATED)) {
 		/* FIXME we really should use the services alert icon here, eh? */
-		nautilus_summary_login_failure_dialog (view, _("Your Eazel Service User Account has not yet been activated.\n\n"
+		nautilus_summary_login_failure_dialog (view, _("Your Eazel Services account has not yet been activated.  "
 			    "You cannot log into Eazel Services until you have activated your account.\n\n"
 			    "Please check your email for activation instructions."));
 		view->details->attempt_number = 0;
@@ -115,15 +115,25 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 		/* Most likely error: bad username or password */
 
 		view->details->attempt_number++;
+
+		/* FIXME it would be best to display an error dialog
+		 * explaining the problem and offering at least an "I forgot
+		 * my password" button (and possibly a "Register" button as well)
+		 * In any vase, the dialog that's here is insufficient
+		 */
+
+#if 0
 		if (view->details->attempt_number > 0 && view->details->attempt_number < 5) {
+#endif
 			view->details->current_attempt = retry;
 			generate_login_dialog (view);
+#if 0
 		} else {
 			nautilus_summary_login_failure_dialog (view, _("We're sorry, but your name and password are still not recognized."));
 			view->details->attempt_number = 0;
 			view->details->current_attempt = initial;
 		}
-
+#endif
 	}
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
