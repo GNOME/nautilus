@@ -183,6 +183,8 @@ char *installer_tmpdir = "/tmp";
 char *installer_homedir = NULL;
 
 static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
+static gboolean start_over_callback (GnomeDruidPage *druid_page, GnomeDruid *druid, EazelInstaller *installer);
+
 static GtkObjectClass *eazel_installer_parent_class;
 
 
@@ -279,7 +281,7 @@ add_padding_to_box (GtkWidget *box, int pad_x, int pad_y)
 }
 
 static GtkWidget*
-create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
+create_what_to_do_page (EazelInstaller *installer)
 {
 	GtkWidget *what_to_do_page;
 	GtkWidget *vbox;
@@ -288,18 +290,19 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 
 	what_to_do_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER, 
 								   "", "", NULL, NULL,
-								   create_pixmap (GTK_WIDGET (window), bootstrap_background));
+								   create_pixmap (GTK_WIDGET (installer->window),
+										  bootstrap_background));
 
 	gtk_widget_set_name (what_to_do_page, "what_to_do_page");
 	gtk_widget_ref (what_to_do_page);
-	gtk_object_set_data_full (GTK_OBJECT (window), "what_to_do_page", what_to_do_page,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "what_to_do_page", what_to_do_page,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show_all (what_to_do_page);
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (what_to_do_page));
+	gnome_druid_append_page (GNOME_DRUID (installer->druid), GNOME_DRUID_PAGE (what_to_do_page));
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_ref (vbox);
-	gtk_object_set_data_full (GTK_OBJECT (window), "vbox3", vbox, (GtkDestroyNotify) gtk_widget_unref);
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "vbox3", vbox, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (vbox);
 	gtk_widget_set_uposition (vbox, CONTENT_X, CONTENT_Y);
 
@@ -307,7 +310,8 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (title);
 	gtk_widget_ref (title);
-	gtk_object_set_data_full (GTK_OBJECT (window), "spice-girls", title, (GtkDestroyNotify) gtk_widget_unref);
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "spice-girls", title,
+				  (GtkDestroyNotify) gtk_widget_unref);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
@@ -316,11 +320,18 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (what_to_do_page), vbox);
 
+	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "next",
+			    GTK_SIGNAL_FUNC (start_over_callback),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "prepare",
+			    GTK_SIGNAL_FUNC (check_if_next_okay),
+			    installer);
+
 	return what_to_do_page;
 }
 
 static GtkWidget*
-create_install_page (GtkWidget *druid, GtkWidget *window)
+create_install_page (EazelInstaller *installer)
 {
 	GtkWidget *install_page;
 	GtkWidget *vbox;
@@ -340,19 +351,20 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 								NULL,
 								NULL,
 								NULL,
-								create_pixmap (GTK_WIDGET (window), bootstrap_background));
+								create_pixmap (GTK_WIDGET (installer->window),
+									       bootstrap_background));
 	gtk_widget_set_name (install_page, "install_page");
 	gtk_widget_ref (install_page);
-	gtk_object_set_data_full (GTK_OBJECT (window), "install_page", install_page,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "install_page", install_page,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show_all (install_page);
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (install_page));
+	gnome_druid_append_page (GNOME_DRUID (installer->druid), GNOME_DRUID_PAGE (install_page));
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_set_name (vbox, "install/vbox");
 	gtk_widget_set_uposition (vbox, CONTENT_X, CONTENT_Y);
 	gtk_widget_ref (vbox);
-	gtk_object_set_data_full (GTK_OBJECT (window), "vbox", vbox,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "vbox", vbox,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (vbox);
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (install_page),
@@ -370,7 +382,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_set_name (wait_label, "label_top");
 	gtk_label_set_justify (GTK_LABEL (wait_label), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (wait_label);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_top", wait_label,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "label_top", wait_label,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (wait_label);
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -382,7 +394,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_set_name (download_label, "header_single");
 	gtk_label_set_justify (GTK_LABEL (download_label), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (download_label);
-	gtk_object_set_data_full (GTK_OBJECT (window), "header_single", download_label,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "header_single", download_label,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (download_label);
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -393,7 +405,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	progressbar1 = gtk_progress_bar_new ();
 	gtk_widget_set_name (progressbar1, "progressbar_single");
 	gtk_widget_ref (progressbar1);
-	gtk_object_set_data_full (GTK_OBJECT (window), "progressbar_single", progressbar1,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "progressbar_single", progressbar1,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (progressbar1);
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -406,7 +418,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_set_name (label_single, "download_label");
 	gtk_label_set_justify (GTK_LABEL (label_single), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (label_single);
-	gtk_object_set_data_full (GTK_OBJECT (window), "download_label", label_single,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "download_label", label_single,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (label_single);
 
@@ -414,14 +426,14 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_set_name (label_single_2, "download_label_2");
 	gtk_label_set_justify (GTK_LABEL (label_single_2), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (label_single_2);
-	gtk_object_set_data_full (GTK_OBJECT (window), "download_label_2", label_single_2,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "download_label_2", label_single_2,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (label_single_2);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_name (hbox, "hbox_label_single");
 	gtk_widget_ref (hbox);
-	gtk_object_set_data_full (GTK_OBJECT (window), "hbox_label_single", label_single,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "hbox_label_single", label_single,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	add_padding_to_box (hbox, 50, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label_single, FALSE, FALSE, 0);
@@ -442,7 +454,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	progressbar2 = gtk_progress_bar_new ();
 	gtk_widget_set_name (progressbar2, "progressbar_overall");
 	gtk_widget_ref (progressbar2);
-	gtk_object_set_data_full (GTK_OBJECT (window), "progressbar_overall", progressbar2,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "progressbar_overall", progressbar2,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (progressbar2);
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -455,13 +467,20 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_set_name (label_overall, "label_overall");
 	gtk_label_set_justify (GTK_LABEL (label_overall), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (label_overall);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label_overall", label_overall,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "label_overall", label_overall,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (label_overall);
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label_overall, FALSE, FALSE, 50);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox,  FALSE, FALSE, 0);
+
+	gtk_signal_connect (GTK_OBJECT (install_page), "finish",
+			    GTK_SIGNAL_FUNC (druid_finish),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (install_page), "prepare",
+			    GTK_SIGNAL_FUNC (prep_install),
+			    installer);
 
 	return install_page;
 }
@@ -820,10 +839,8 @@ static GtkWidget*
 create_window (EazelInstaller *installer)
 {
 	GtkWidget *window;
-	GtkWidget *install_page;
 	GtkWidget *druid;
 	GtkWidget *start_page;
-	GtkWidget *what_to_do_page;
 	char *window_title;
 	int x, y;
 
@@ -863,27 +880,11 @@ create_window (EazelInstaller *installer)
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
 	gnome_druid_set_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
 
-	what_to_do_page = create_what_to_do_page (druid, window);
-	install_page = create_install_page (druid, window);
-
-	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "next",
-			    GTK_SIGNAL_FUNC (start_over_callback),
-			    installer);
-
 	gtk_signal_connect (GTK_OBJECT (druid), "cancel",
 			    GTK_SIGNAL_FUNC (druid_cancel),
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (druid), "destroy",
 			    GTK_SIGNAL_FUNC (druid_delete),
-			    installer);
-	gtk_signal_connect (GTK_OBJECT (install_page), "finish",
-			    GTK_SIGNAL_FUNC (druid_finish),
-			    installer);
-	gtk_signal_connect (GTK_OBJECT (install_page), "prepare",
-			    GTK_SIGNAL_FUNC (prep_install),
-			    installer);
-	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "prepare",
-			    GTK_SIGNAL_FUNC (check_if_next_okay),
 			    installer);
 
 	return window;
@@ -1068,6 +1069,11 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 
 	log_debug ("error tree traversal begins.");
 
+	if (eazel_install_failed_because_of_disk_full (installer->service)) {
+		installer->failure_info = g_list_prepend (installer->failure_info,
+							  _("You've run out of disk space!"));
+	}
+
 	data.installer = installer;
 	data.path = NULL;
 	non_const_pack = packagedata_copy (pack, TRUE);
@@ -1111,8 +1117,11 @@ download_failed (EazelInstall *service,
 		 EazelInstaller *installer)
 {
 	char *temp;
-	temp = g_strdup_printf (_("Download of %s failed"), name);
-	installer->failure_info = g_list_append (installer->failure_info, temp);
+
+	if (! eazel_install_failed_because_of_disk_full (service)) {
+		temp = g_strdup_printf (_("Download of %s failed"), name);
+		installer->failure_info = g_list_append (installer->failure_info, temp);
+	}
 	log_debug ("Download FAILED for %s", name);
 }
 
@@ -1133,13 +1142,20 @@ eazel_install_preflight (EazelInstall *service,
 	char *temp;
 	int total_mb;
 
-	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "donwload_label");
+	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
 	label_single_2 = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label_2");
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	label_top = gtk_object_get_data (GTK_OBJECT (installer->window), "label_top");
 	progress_single = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_single");
 	progress_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_overall");
 	header_single = gtk_object_get_data (GTK_OBJECT (installer->window), "header_single");
+	g_assert (label_single != NULL);
+	g_assert (label_single_2 != NULL);
+	g_assert (label_overall != NULL);
+	g_assert (label_top != NULL);
+	g_assert (progress_single != NULL);
+	g_assert (progress_overall != NULL);
+	g_assert (header_single != NULL);
 
 	/* please wait for blah blah. */
 	gtk_label_set_text (GTK_LABEL (label_top), text_labels [WAIT_LABEL_2]);
@@ -1219,10 +1235,12 @@ install_done (EazelInstall *service,
 	if (result == FALSE) {
 		/* will call jump_to_error_page later */
 		if (installer->problems == NULL) {
-			if (installer->got_dep_check) {
-				temp = g_strdup (_("The RPM installer gave an unexpected error"));
-			} else if (!installer->failure_info) {
-				temp = g_strdup (_("Eazel's servers are temporarily out of service"));
+			if (! installer->failure_info) {
+				if (installer->got_dep_check) {
+					temp = g_strdup (_("The RPM installer gave an unexpected error"));
+				} else {
+					temp = g_strdup (_("Eazel's servers are temporarily out of service"));
+				}
 			}
 			if (temp) {
 				installer->failure_info = g_list_append (installer->failure_info, temp);
@@ -1949,6 +1967,11 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	installer = EAZEL_INSTALLER (object);
 
+	/* we have to start SOMEWHERE.  several errors could occur between now and when we finally get the
+	 * error texts from the server -- so let's just use some common-sense defaults till then.
+	 */
+	eazel_installer_set_default_texts (installer);
+
 	tmpdir = find_old_tmpdir ();
 	if (tmpdir == NULL) {
 		/* attempt to create a directory we can use */
@@ -1984,10 +2007,10 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	package_destination = g_strdup_printf ("%s/%s", installer->tmpdir, PACKAGE_LIST);
 
-	eazel_installer_setup_texts (installer, tmpdir);
+	/* make druid */
 	installer->window = create_window (installer);
-
 	gtk_widget_show (installer->window);
+
 	if (! check_system (installer)) {
 		return;
 	}
@@ -2020,10 +2043,6 @@ eazel_installer_initialize (EazelInstaller *object) {
 					       "transaction_dir", installer_tmpdir,
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
-
-	if (installer_package==NULL) {
-		more_check_system (installer);
-	}
 
 	installer->problem = eazel_install_problem_new ();
 	
@@ -2066,6 +2085,16 @@ eazel_installer_initialize (EazelInstaller *object) {
 	if (! eazel_install_get_depends (installer, tmpdir)) {
 		/* already posted error */
 		return;
+	}
+
+	eazel_installer_setup_texts (installer, tmpdir);
+
+	/* now that we have text from the server, build up the other pages */
+	create_what_to_do_page (installer);
+	create_install_page (installer);
+
+	if (installer_package==NULL) {
+		more_check_system (installer);
 	}
 
 	if (installer_package==NULL) {
