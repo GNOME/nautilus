@@ -1,3 +1,18 @@
+2000-03-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	Icon stretching is now persistent in the metafile, patch from Seth
+	Nickell <snickell@stanford.edu>:
+	
+	* libnautilus/gnome-icon-container.c, gnome-icon-container.h,
+	gnome-icon-container-dnd.c: Add xscale and yscale arguments to
+	"icon_moved" signal to allow more unified handling of geometry
+	changes.  
+	* libnautilus/nautilus-metadata.h: Add definition of
+	ICON_VIEW_SCALE_METADATA_KEY.
+	* src/file-manager/fm-directory-view-icons.c: Save the stretch
+	factor to the metafile when stretching and restore it when loading
+	the directory.	
+	
 2000-03-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	* HACKING: Updated build instructions and list to send patches to.
