@@ -58,6 +58,7 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-extensions/nautilus-image.h>
 
 #include <string.h>
 
@@ -171,49 +172,63 @@ add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
   	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, GNOME_PAD_BIG);
 }		   
 
-static void
-get_pixmap_and_mask_for_properties_window (NautilusFile *file,
-					   GdkPixmap **pixmap_return,
-					   GdkBitmap **mask_return)
+static GdkPixbuf *
+get_pixbuf_for_properties_window (NautilusFile *file)
 {
-	GdkPixbuf *pixbuf;
+	g_assert (NAUTILUS_IS_FILE (file));
+	
+	return nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD, TRUE);
+}
+
+static void
+update_properties_window_icon (NautilusImage *image)
+{
+	GdkPixbuf	*pixbuf;
+	NautilusFile	*file;
+
+	g_assert (NAUTILUS_IS_IMAGE (image));
+
+	file = gtk_object_get_data (GTK_OBJECT (image), "nautilus_file");
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD, FALSE);
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	pixbuf = get_pixbuf_for_properties_window (file);
+
+	nautilus_image_set_pixbuf (image, pixbuf);
+	
 	gdk_pixbuf_unref (pixbuf);
 }
 
-static void
-update_properties_window_icon (GtkPixmap *pixmap_widget)
-{
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	NautilusFile *file;
-
-	g_assert (GTK_IS_PIXMAP (pixmap_widget));
-
-	file = gtk_object_get_data (GTK_OBJECT (pixmap_widget), "nautilus_file");
-
-	g_assert (NAUTILUS_IS_FILE (file));
-
-	get_pixmap_and_mask_for_properties_window (file, &pixmap, &mask);
-	gtk_pixmap_set (pixmap_widget, pixmap, mask);
-}
-
 static GtkWidget *
-create_pixmap_widget_for_file (NautilusFile *file)
+create_image_widget_for_file (NautilusFile *file)
 {
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	GtkWidget *widget;
+	gboolean	smooth_graphics;
+ 	GtkWidget	*image;
+	GdkPixbuf	*pixbuf;
+	
+	pixbuf = get_pixbuf_for_properties_window (file);
+	
+	image = nautilus_image_new ();
 
-	get_pixmap_and_mask_for_properties_window (file, &pixmap, &mask);
-	widget = gtk_pixmap_new (pixmap, mask);
+	/* Set the alpha mode of the image according to the SMOOTH_GRAPHICS preference.
+	 * Note that we dont keep track of changes in this preference to update the 
+	 * alpha more of the image.  There really is no need for this since the properties 
+	 * dialog always gets recreated.
+	 */
+	smooth_graphics = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, TRUE);
+
+	if (smooth_graphics) {
+		nautilus_image_set_alpha_mode (NAUTILUS_IMAGE (image), NAUTILUS_IMAGE_FULL_ALPHA);
+	} else {
+		nautilus_image_set_alpha_mode (NAUTILUS_IMAGE (image), NAUTILUS_IMAGE_THRESHOLD_ALPHA);
+	}
+
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
+
+	gdk_pixbuf_unref (pixbuf);
 
 	nautilus_file_ref (file);
-	gtk_object_set_data_full (GTK_OBJECT (widget),
+	gtk_object_set_data_full (GTK_OBJECT (image),
 				  "nautilus_file",
 				  file,
 				  (GtkDestroyNotify) nautilus_file_unref);
@@ -222,14 +237,14 @@ create_pixmap_widget_for_file (NautilusFile *file)
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
 					       update_properties_window_icon,
-					       GTK_OBJECT (widget));
+					       GTK_OBJECT (image));
 
 	/* Name changes can also change icon (since name is determined by MIME type) */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
 					       update_properties_window_icon,
-					       GTK_OBJECT (widget));
-	return widget;
+					       GTK_OBJECT (image));
+	return image;
 }
 
 static void
@@ -1065,7 +1080,8 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 					NULL);
 
 	/* Icon pixmap */
-	icon_pixmap_widget = create_pixmap_widget_for_file (file);
+// 	icon_pixmap_widget = create_pixmap_widget_for_file (file);
+	icon_pixmap_widget = create_image_widget_for_file (file);
 	gtk_widget_show (icon_pixmap_widget);
 	gtk_table_attach_defaults (GTK_TABLE (table),
 				   icon_pixmap_widget,

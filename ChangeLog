@@ -1,5 +1,32 @@
 2000-08-28  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Complete task 1511.  Icons not AA in properties dialog.
+	
+	* src/file-manager/fm-properties-window.c:
+	(get_pixbuf_for_properties_window),
+	(update_properties_window_icon), (create_image_widget_for_file),
+	(create_basic_page):
+	Use NautilusImage instead of GtkPixmap so that if the
+	SMOOTH_GRAPHICS preference is true, the icon will display using
+	alpha compositing.
+	
+2000-08-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(nautilus_buffered_widget_initialize),
+	(nautilus_buffered_widget_realize),
+	(nautilus_buffered_widget_draw),
+	(background_appearance_changed_callback),
+	(connect_to_background_if_needed):
+	Delay the connection to the NautilusBackground until its time to
+	redraw the widget.  Only make this connection if an ancestor
+	widget with an attatched NautilusBackground exists.
+
+	This allows subclasses to be used on both widgets with and without
+	NautilusBackgrounds attatched.
+	
+2000-08-28  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-label.c:
 	(nautilus_label_set_font_from_components):
 	* libnautilus-extensions/nautilus-label.h:
