@@ -7,7 +7,7 @@
 
 
 # Add any new auxiliary programs here.
-AUX_PROGS="hyperbola ntl-history-view ntl-notes ntl-web-search ntl-web-browser nautilus-sample-content-view bonobo-text-plain bonobo-image-generic gnome-vfs-slave";
+AUX_PROGS="hyperbola ntl-history-view ntl-notes ntl-web-search ntl-web-browser nautilus-sample-content-view bonobo-text-plain bonobo-image-generic gnome-vfs-slave nautilus-service-startup-view";
 
 unset FOUND_ANY;
 
