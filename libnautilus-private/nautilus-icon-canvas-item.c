@@ -51,6 +51,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-theme.h"
+#include "nautilus-text-layout.h"
 
 /* Comment this out if the new smooth fonts code give you problems
  * This isnt meant to be permanent.  Its just a precaution.
