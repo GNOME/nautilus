@@ -415,6 +415,7 @@ nautilus_view_activate_uri(GnomeControlFrame *frame, const char *uri, gboolean r
   nautilus_view_request_location_change(view, &nri);
 }
 
+void
 nautilus_view_load_client(NautilusView *view, const char *iid)
 {
   GnomeControlFrame *frame;
@@ -445,20 +446,6 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
   gtk_widget_show(view->client);
   gtk_container_add(GTK_CONTAINER(view), view->client);
   CORBA_exception_free(&ev);
-}
-
-void
-nautilus_view_use_client               (NautilusView              *view,
-                                        GNOME_Control              ctl)
-{
-  nautilus_view_handle_client(view, NULL, ctl);
-}
-
-void
-nautilus_view_load_client(NautilusView              *view,
-			  const char *               iid)
-{
-  nautilus_view_handle_client(view, iid, CORBA_OBJECT_NIL);
 }
 
 static void
