@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2002-05-06 13:56-0400\n"
-"PO-Revision-Date: 2002-04-29 15:49+0200\n"
+"POT-Creation-Date: 2002-05-07 16:20+0200\n"
+"PO-Revision-Date: 2002-05-07 16:21+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1966,6 +1966,14 @@ msgstr "Tahoe"
 #: icons/tahoe/tahoe.xml.h:2
 msgid "This theme uses photo-realistic folders."
 msgstr "Dette temaet bruker fotorealistiske mapper."
+
+#: libbackground/preview-file-selection.c:193
+msgid "Can't find an hbox, using a normal file selection"
+msgstr "Kan ikke finne en hbox, bruker vanlig filutvalg"
+
+#: libbackground/preview-file-selection.c:198
+msgid "Preview"
+msgstr "Forhåndsvis"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -5623,20 +5631,17 @@ msgid "Unmount Volume"
 msgstr "Avmonter volum"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
-#, fuzzy
 msgid "Unmount Volume Conditionally"
 msgstr "Betinget avmontering av volum"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
-#, fuzzy
 msgid "Use Default Background"
-msgstr "Nulltill skrivebordsbakgrunn"
+msgstr "Bruk forvalgt bakgrunn"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
-#, fuzzy
 msgid "Use the default desktop background"
-msgstr "Nulltill skrivebordsbakgrunn"
+msgstr "Bruk forvalgt skrivebordsbakgrunn"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5816,9 +5821,8 @@ msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Vis mappen som inneholder skriptene som vises i denne menyen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:55
-#, fuzzy
 msgid "Use the default background for this location"
-msgstr "Åpne et nytt Nautilus-vindu for vist lokasjon"
+msgstr "Bruk forvalgt bakgrunn for denne lokasjonen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "View or modify the properties of each selected item"
@@ -6958,9 +6962,8 @@ msgid "Close this window"
 msgstr "Lukk dette vinduet"
 
 #: src/nautilus-shell-ui.xml.h:13
-#, fuzzy
 msgid "Display Nautilus help"
-msgstr "Nautilus skall"
+msgstr "Vis hjelp for Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:14
 msgid "Display a window that allows editing the bookmarks in this menu"
@@ -7008,7 +7011,7 @@ msgstr "Gå til forrige besøkte lokasjon"
 
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Go up one level"
-msgstr ""
+msgstr "Gå opp ett nivå"
 
 #: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-menus.c:472
 msgid "Hide Location _Bar"
@@ -7043,9 +7046,8 @@ msgid "Open another Nautilus window for the displayed location"
 msgstr "Åpne et nytt Nautilus-vindu for vist lokasjon"
 
 #: src/nautilus-shell-ui.xml.h:34
-#, fuzzy
 msgid "P_references"
-msgstr "Brukervalg"
+msgstr "B_rukervalg"
 
 #: src/nautilus-shell-ui.xml.h:35
 msgid "Reload"
@@ -7067,11 +7069,11 @@ msgstr "Søk etter filer på denne datamaskinen"
 msgid "Show the contents at the normal size"
 msgstr "Vis innholdet i normal størrelse"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:41 src/nautilus-zoom-control.c:108
 msgid "Show the contents in less detail"
 msgstr "Vis innholdet med mindre grad av detaljer"
 
-#: src/nautilus-shell-ui.xml.h:42
+#: src/nautilus-shell-ui.xml.h:42 src/nautilus-zoom-control.c:107
 msgid "Show the contents in more detail"
 msgstr "Vis innhold med større grad av detaljer"
 
@@ -7101,11 +7103,11 @@ msgstr "Opp"
 msgid "View as..."
 msgstr "Vis som..."
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:50 src/nautilus-zoom-control.c:95
 msgid "Zoom In"
 msgstr "Zoom inn"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:51 src/nautilus-zoom-control.c:96
 msgid "Zoom Out"
 msgstr "Zoom ut"
 
@@ -7118,9 +7120,8 @@ msgid "Zoom _Out"
 msgstr "Zoom _ut"
 
 #: src/nautilus-shell-ui.xml.h:54
-#, fuzzy
 msgid "_About Nautilus"
-msgstr "_Om Nautilus..."
+msgstr "_Om Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:55
 msgid "_Add Bookmark"
@@ -7147,18 +7148,16 @@ msgid "_Close Window"
 msgstr "_Lukk vindu"
 
 #: src/nautilus-shell-ui.xml.h:61
-#, fuzzy
 msgid "_Contents"
-msgstr "Innhold:"
+msgstr "_Innhold"
 
 #: src/nautilus-shell-ui.xml.h:63
 msgid "_Edit"
 msgstr "_Rediger"
 
 #: src/nautilus-shell-ui.xml.h:64
-#, fuzzy
 msgid "_Edit Bookmarks"
-msgstr "R_ediger bokmerker..."
+msgstr "R_ediger bokmerker"
 
 #: src/nautilus-shell-ui.xml.h:66
 msgid "_Find"
@@ -7595,93 +7594,18 @@ msgstr "Applikasjon"
 msgid "The NautilusApplication associated with this window."
 msgstr "NautilusApplication assosiert med dette vinduet."
 
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "Kan ikke finne en hbox. Bruker vanlig filutvalg"
+#: src/nautilus-zoom-control.c:97
+msgid "Zoom to Fit"
+msgstr "Tilpasset zoom"
 
-#~ msgid "Preview"
-#~ msgstr "Forhåndsvis"
+#: src/nautilus-zoom-control.c:109
+msgid "Try to fit in window"
+msgstr "Prøv å tilpass vinduet"
 
-#~ msgid "Remove any custom pattern or color from the desktop background"
-#~ msgstr ""
-#~ "Fjern ethvert egendefinert mønster eller farge fra skrivebordsbakgrunnen"
+#: src/nautilus-zoom-control.c:1082
+msgid "Zoom"
+msgstr "Zoom"
 
-#~ msgid ""
-#~ "Remove any custom pattern or color from the background of this location"
-#~ msgstr ""
-#~ "Fjern ethvert egendefinert mønster eller farge fra bakgrunnen for denne "
-#~ "plasseringen"
-
-#~ msgid "Display on-line help for Nautilus"
-#~ msgstr "Vis hjelp for Nautilus"
-
-#~ msgid "Display quick reference pages for Nautilus"
-#~ msgstr "Vis hurtigreferansesider for Nautilus"
-
-#~ msgid "Go up to the location that contains the displayed location"
-#~ msgstr "Gå til lokasjonen som inneholder den viste lokasjonen"
-
-#~ msgid "Nautilus Quick _Reference"
-#~ msgstr "Nautilus hurtig_referanse"
-
-#~ msgid "Nautilus User _Manual"
-#~ msgstr "Nautilus bruker_håndbok"
-
-#~ msgid "P_references..."
-#~ msgstr "B_rukervalg..."
-
-#~ msgid "Server Configuration"
-#~ msgstr "Tjenerkonfigurasjon"
-
-#~ msgid "R_emove Custom Images"
-#~ msgstr "Fje_rn egendefinerte bilder"
-
-#~ msgid "R_emove Custom Image"
-#~ msgstr "Fj_ern egendefinert bilde"
-
-#~ msgid "Remove Custom Images"
-#~ msgstr "Fjern egendefinerte bilder"
-
-#~ msgid "Reset View to Match _Preferences"
-#~ msgstr "Sett visning til å være lik _brukervalg"
-
-#~ msgid "Refresh"
-#~ msgstr "Oppdater"
-
-#~ msgid "_Refresh"
-#~ msgstr "Oppf_risk"
-
-#~ msgid "Reset View to Match Preferences"
-#~ msgstr "Sett visning lik brukervalg"
-
-#~ msgid "Lay Out Items"
-#~ msgstr "Plasser oppføringer"
-
-#~ msgid "_Lay Out Items"
-#~ msgstr "P_lasser oppføringer"
-
-#~ msgid "Lay Out Items:"
-#~ msgstr "Plasser oppføringer:"
-
-#~ msgid "Windows & Desktop"
-#~ msgstr "Vinduer og skrivebord"
-
-#~ msgid "Preview Release %s: %s"
-#~ msgstr "Preview versjon %s: %s"
-
-#~ msgid "Sorry, but %s is too large for Nautilus to load all of it."
-#~ msgstr "Beklager, men %s er for stor til at Nautilus kan lese inn alt."
-
-#~ msgid "File too large"
-#~ msgstr "Filen er for stor"
-
-#~ msgid "Keyboard Shortcuts"
-#~ msgstr "Tastatursnarveier"
-
-#~ msgid "Use Emacs-style keyboard shortcuts in text fields"
-#~ msgstr "Bruk emacs-lignende tastatursnarveier i tekstfelt"
-
-#~ msgid "Display release notes for Nautilus"
-#~ msgstr "Vis versjonsnotis for Nautilus"
-
-#~ msgid "Nautilus Release _Notes"
-#~ msgstr "Nautilus versjons_notis"
+#: src/nautilus-zoom-control.c:1088
+msgid "Set the zoom level of the current view"
+msgstr "Sett zoom-nivå for aktiv visning"
