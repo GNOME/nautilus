@@ -64,6 +64,7 @@ struct _EazelInstaller
 	GList *dont_show;
 
 	GList *failure_info;		/* GList<char *> */
+	char *tmpdir;
 
 	gboolean debug, output;
 	gboolean test;
@@ -81,7 +82,7 @@ void               eazel_installer_do_install (EazelInstaller *installer,
 #define DEBUG
 
 #ifdef DEBUG
-#define LOG_DEBUG(x) g_message x
+#define LOG_DEBUG(x) do { if (installer_debug) { printf x; fflush (stdout); } } while (0)
 #else
 #define LOG_DEBUG(x)
 #endif

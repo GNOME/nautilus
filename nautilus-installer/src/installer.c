@@ -55,7 +55,7 @@
 #define EAZEL_SERVICES_DIR_HOME "/var/eazel"
 #define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
 
-#define HOSTNAME "testmachine.eazel.com"
+#define HOSTNAME "services.eazel.com"
 #define PORT_NUMBER 80
 #define CGI_PATH "/catalog/find"
 #define TMP_DIR "/tmp/eazel-install"
@@ -88,9 +88,9 @@
 			  "please be patient.")
 #define ERROR_LABEL	_("The installer was not able to complete the installation of the\n" \
 			  "Nautilus file manager.  Here's why:")
+#define ERROR_TITLE	_("An error has occurred")
 
 int installer_debug = 0;
-int installer_output = 0;
 int installer_test = 0;
 int installer_force = 0;
 int installer_local = 0;
@@ -104,6 +104,20 @@ static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstall
 
 static GtkObjectClass *eazel_installer_parent_class;
 
+static void
+get_pixmap_x_y (char **xpmdata, int *x, int *y)
+{
+	char *ptr;
+
+	ptr = strchr (xpmdata[0], ' ');
+	if (ptr == NULL) {
+		*x = *y = 0;
+		return;
+	}
+	*x = atoi (xpmdata[0]);
+	*y = atoi (ptr);
+}
+
 static GdkPixbuf*
 create_pixmap (GtkWidget *widget,
 	       char **xpmdata)
@@ -114,12 +128,7 @@ create_pixmap (GtkWidget *widget,
 	GdkPixbuf *pixbuf;
 	int x, y;
 
-	{ 
-		char *ptr;
-		ptr = strchr (xpmdata[0], ' ');
-		x = atoi (xpmdata[0]);
-		y = atoi (ptr);
-	}
+	get_pixmap_x_y (xpmdata, &x, &y);
 
 	colormap = gtk_widget_get_colormap (widget);
 	
@@ -182,10 +191,7 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	GtkWidget *hbox;
 
 	what_to_do_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER, 
-								   "",
-								   NULL,
-								   NULL,
-								   NULL,
+								   "", "", NULL, NULL,
 								   create_pixmap (GTK_WIDGET (window), bootstrap_background));
 
 	gtk_widget_set_name (what_to_do_page, "what_to_do_page");
@@ -404,7 +410,7 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text)
 	gtk_widget_show (vbox);
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (error_page), vbox);
 
-	title = gtk_label_new_with_font (_("An error has occurred"), FONT_TITLE);
+	title = gtk_label_new_with_font (ERROR_TITLE, FONT_TITLE);
 	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (title);
 	pixmap = create_pixmap_widget (error_page, error_symbol);
@@ -506,11 +512,15 @@ create_window (EazelInstaller *installer)
 	GtkWidget *start_page;
 	GtkWidget *what_to_do_page;
 	GtkWidget *install_page;
+	int x, y;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
 	gtk_widget_set_name (window, "window");
 	gtk_object_set_data (GTK_OBJECT (window), "window", window);
-	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus install tool"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus Installer"));
+	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, TRUE);
+	get_pixmap_x_y (bootstrap_background, &x, &y);
+	gtk_widget_set_usize (window, x, y+45);
 
 	druid = nautilus_druid_new ();
 	gtk_widget_set_name (druid, "druid");
@@ -543,6 +553,9 @@ create_window (EazelInstaller *installer)
 
 	gtk_signal_connect (GTK_OBJECT (druid), "cancel",
 			    GTK_SIGNAL_FUNC (druid_cancel),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (druid), "destroy",
+			    GTK_SIGNAL_FUNC (druid_delete),
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (install_page), "finish",
 			    GTK_SIGNAL_FUNC (druid_finish),
@@ -583,19 +596,17 @@ eazel_install_progress (EazelInstall *service,
 
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
 
-		if (installer_output) {
-			fprintf (stdout, "\n");
-		}
+		LOG_DEBUG (("\n"));
 	}
 
-	if (installer_output) {
+	if (installer_debug) {
 		float pct;
 		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
-		fprintf (stdout, "Install Progress - %s - %d %d (%d %d) %% %f\r", 
-			 package->name?package->name:"(null)", 
-			 amount, total, 
-			 total_size_completed, total_size, 
-			 pct);
+		LOG_DEBUG (("Install Progress - %s - %d %d (%d %d) %% %f\r", 
+			    package->name?package->name:"(null)", 
+			    amount, total, 
+			    total_size_completed, total_size, 
+			    pct));
 	}
 
 	gtk_progress_set_value (GTK_PROGRESS (progressbar), 
@@ -604,9 +615,8 @@ eazel_install_progress (EazelInstall *service,
 	percent += 50.0;
 	gtk_progress_set_value (GTK_PROGRESS (progress_overall), percent);
 
-	fflush (stdout);
-	if ((amount == total) && installer_output) {
-		fprintf (stdout, "\n");
+	if (amount == total) {
+		LOG_DEBUG (("\n"));
 	}
 
 	while (gtk_events_pending ()) {
@@ -644,12 +654,11 @@ eazel_download_progress (EazelInstall *service,
 		installer->last_KB = 0;
 	}
 
-	if (installer_output) {
+	if (installer_debug) {
 		float pct;
 		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
-		fprintf (stdout, "DOWNLOAD Progress - %s - %d %d %% %f\r", 
-			 name?name:"(null)", amount, total, pct); 
-		fflush (stdout);
+		LOG_DEBUG (("DOWNLOAD Progress - %s - %d %d %% %f\r", 
+			    name?name:"(null)", amount, total, pct));
 	}
 
 	gtk_progress_set_value (GTK_PROGRESS (progress_single), (float)amount);
@@ -686,7 +695,11 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 		message = g_strdup_printf (_("%s had a file conflict"), pack->name);
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		message = g_strdup_printf (_("%s would not work anymore"), pack->name);
+		if (! pack->soft_depends && ! pack->hard_depends) {
+			/* only add this message if it's not going to be explained by a lower dependency */
+			/* (avoids redundant info like "nautilus would not work anymore" -- DUH) */
+			message = g_strdup_printf (_("%s would not work anymore"), pack->name);
+		}
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
 		message = g_strdup_printf (_("%s would break other installed packages"), pack->name);
@@ -754,9 +767,8 @@ download_failed (EazelInstall *service,
 
 	temp = g_strdup_printf (_("Download of %s failed"), name);
 	installer->failure_info = g_list_append (installer->failure_info, temp);
-	g_free (temp);
 
-	LOG_DEBUG (("Download FAILED for %s", name));
+	LOG_DEBUG (("Download FAILED for %s\n", name));
 }
 
 static gboolean
@@ -803,9 +815,7 @@ eazel_install_preflight (EazelInstall *service,
 		temp = g_strdup_printf (_("Installing %d packages (%d MB)"), num_packages, total_mb);
 	}
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
-	if (installer_output) {
-		fprintf (stdout, "PREFLIGHT: %s\n", temp);
-	}
+	LOG_DEBUG (("PREFLIGHT: %s\n", temp));
 	g_free (temp);
 
 	while (gtk_events_pending ()) {
@@ -828,9 +838,7 @@ eazel_install_dep_check (EazelInstall *service,
 	temp = g_strdup_printf ("%s is required by %s", needs->name, pack->name);
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
 
-	if (installer_output) {
-		fprintf (stdout, "DEP CHECK : %s\n", temp);
-	}
+	LOG_DEBUG (("DEP CHECK : %s\n", temp));
 
 	g_free (temp);
 
@@ -843,9 +851,7 @@ static gboolean
 eazel_install_delete_files (EazelInstall *service,
 			    EazelInstaller *installer) 
 {
-	if (installer_output) {
-		fprintf (stdout, "Deleting rpm's\n");
-	}
+	LOG_DEBUG (("Deleting rpm's\n"));
 	return TRUE ;
 }
 
@@ -854,14 +860,16 @@ install_done (EazelInstall *service,
 	      gboolean result,
 	      EazelInstaller *installer)
 {
-	LOG_DEBUG (("Done, result is %s", result ? "good" : "evil"));
+	char *temp;
+
+	LOG_DEBUG (("Done, result is %s\n", result ? "good" : "evil"));
 	if (result) {
 		gnome_druid_set_page (installer->druid, installer->finish_good);
 	} else {
 		/* will call jump_to_error_page later */
 		if (installer->failure_info == NULL) {
-			installer->failure_info = g_list_append (installer->failure_info,
-								 _("Couldn't download or install the packages"));
+			temp = g_strdup (_("Couldn't download or install the packages"));
+			installer->failure_info = g_list_append (installer->failure_info, temp);
 		}
 	}
 }
@@ -879,7 +887,7 @@ check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installe
 		category = (CategoryData *)(iter->data);
 		button = (GtkWidget *) gtk_object_get_data (GTK_OBJECT (installer->window), category->name);
 		if (button == NULL) {
-			LOG_DEBUG (("Invalid button for '%s'!", category->name));
+			LOG_DEBUG (("Invalid button for '%s'!\n", category->name));
 		} else {
 			if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
 				pressed++;
@@ -927,7 +935,7 @@ toggle_button_toggled (GtkToggleButton *button,
 	GList *iterator;
 	GList *item;
 
-	LOG_DEBUG (("%s toggled to %s", gtk_widget_get_name (GTK_WIDGET (button)),
+	LOG_DEBUG (("%s toggled to %s\n", gtk_widget_get_name (GTK_WIDGET (button)),
 		    button->active ? "ACTIVE" : "deactivated"));
 
 	item = g_list_find_custom (installer->categories, gtk_widget_get_name (GTK_WIDGET (button)),
@@ -1057,7 +1065,7 @@ check_system (EazelInstaller *installer)
 	/* This codes tells Eskil that he's an idiot if he runs it on his own machine
 	   without the testflag, since it hoses the system.
 	   It rouhgly translates into "fuck off". */
-	LOG_DEBUG (("host = %s", ub.nodename));
+	LOG_DEBUG (("host = %s\n", ub.nodename));
 	if (!installer_test && g_strncasecmp (ub.nodename, "toothgnasher", 12)==0) {
 		GnomeDialog *d;
 
@@ -1145,7 +1153,7 @@ eazel_installer_do_install (EazelInstaller *installer,
 	if (installer->failure_info != NULL) {
 		if (installer->debug) {
 			for (iter = g_list_first (installer->failure_info); iter != NULL; iter = g_list_next (iter)) {
-				fprintf (stdout, "ERROR : %s\n", (char *)(iter->data));
+				LOG_DEBUG (("ERROR : %s\n", (char *)(iter->data)));
 			}
 		}
 		jump_to_error_page (installer, installer->failure_info, ERROR_LABEL);
@@ -1162,7 +1170,7 @@ eazel_installer_finalize (GtkObject *object)
 {
 	EazelInstaller *installer;
 
-	LOG_DEBUG (("eazel_installer_finalize"));
+	LOG_DEBUG (("eazel_installer_finalize\n"));
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALLER (object));
@@ -1177,6 +1185,7 @@ eazel_installer_finalize (GtkObject *object)
 	g_list_foreach (installer->categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (installer->categories);
 	eazel_install_unref (GTK_OBJECT (installer->service));
+	g_free (installer->tmpdir);
 
 	/* Call parents destroy */
 	if (GTK_OBJECT_CLASS (eazel_installer_parent_class)->finalize) {
@@ -1220,6 +1229,7 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 		if (! attempt_http_proxy_autoconfigure () ||
 		    ! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
 			jump_to_error_page (installer, NULL, ERROR_NEED_TO_SET_PROXY);
+			rmdir (installer->tmpdir);
 			return FALSE;
 		}
 	}
@@ -1246,7 +1256,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 	installer = EAZEL_INSTALLER (object);
 
 	/* attempt to create a directory we can use */
-#define RANDCHAR ('@' + (rand () % 31))
+#define RANDCHAR ('A' + (rand () % 23))
 	srand (time (NULL));
 	for (tries = 0; tries < 50; tries++) {
 		tmpdir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
@@ -1263,9 +1273,9 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	package_destination = g_strdup_printf ("%s/package-list.xml", tmpdir);
 
+	installer->tmpdir = tmpdir;
 	installer->test = installer_test;
 	installer->debug = installer_debug;
-	installer->output = installer_output;
 
 	installer->must_have_categories = NULL;
 	installer->implicit_must_have = NULL;
@@ -1343,7 +1353,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 			    GTK_SIGNAL_FUNC (install_done), 
 			    installer);
 
-	if (!installer->debug) {
+	if (!installer->debug && 0) {
 		char *log;
 		log = g_strdup_printf ("%s/installer.log", tmpdir);
 		eazel_install_open_log (installer->service, log);
@@ -1383,7 +1393,6 @@ eazel_installer_initialize (EazelInstaller *object) {
 	}
 
 	g_free (package_destination);
-	g_free (tmpdir);
 
 	if (splash_text != NULL) {
 		start_page = gtk_object_get_data (GTK_OBJECT (installer->window), "start_page");
@@ -1434,7 +1443,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 			    GTK_SIGNAL_FUNC (druid_finish),
 			    installer);
 
-	gnome_druid_set_buttons_sensitive (installer->druid, TRUE, TRUE, TRUE);
+	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, TRUE, TRUE);
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();

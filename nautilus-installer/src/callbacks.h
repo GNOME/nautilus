@@ -34,6 +34,8 @@ extern "C" {
 void
 druid_cancel                           (GnomeDruid      *gnomedruid,
 					EazelInstaller  *installer);
+void
+druid_delete (GtkWidget *widget, GdkEvent *event, EazelInstaller *installer);
 
 void
 druid_finish                           (GnomeDruidPage  *gnomedruidpage,

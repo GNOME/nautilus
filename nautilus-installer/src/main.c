@@ -42,15 +42,16 @@ extern char* installer_local;
 extern char* installer_cgi_path;
 
 static const struct poptOption options[] = {
-	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show confusing debug output"), NULL},
-	{"output", 'd', POPT_ARG_NONE, &installer_output, 0 , N_("Show debug output"), NULL},
-	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test run"), NULL},
+	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
+	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test the installer without actually installing packages"), NULL},
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
-	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local, specify xml file to yse"), NULL},
-	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify server"), NULL},
+	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local, specify XML file to use"), NULL},
+	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify Eazel installation server"), NULL},
+#if 0
 	{"nohelix", '\0', POPT_ARG_NONE, &installer_no_helix, 0, N_("Assume no-helix"), NULL},
-	{"port", '\0', POPT_ARG_INT, &installer_server_port, 0 , N_("Set port numer (80)"), NULL},
-	{"cgi-path", '\0', POPT_ARG_STRING, &installer_cgi_path, 0, N_("Specify CGI path"), NULL},
+#endif
+	{"port", '\0', POPT_ARG_INT, &installer_server_port, 0 , N_("Set port number for Eazel installation server (default: 80)"), NULL},
+	{"cgi-path", '\0', POPT_ARG_STRING, &installer_cgi_path, 0, N_("Specify CGI path for Eazel installation server"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 

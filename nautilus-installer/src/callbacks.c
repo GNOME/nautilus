@@ -39,6 +39,13 @@ druid_cancel (GnomeDruid      *gnomedruid,
 }
 
 
+void
+druid_delete (GtkWidget *widget, GdkEvent *event, EazelInstaller *installer)
+{
+	exit (1);
+}
+
+
 gboolean
 begin_install (EazelInstaller  *installer)
 {
