@@ -70,9 +70,13 @@ nautilus_tree_node_destroy (GtkObject *object)
 
 	node = NAUTILUS_TREE_NODE (object);
 
+	if (node->details->children != NULL) {
+		g_warning ("Destroyed tree node still has children");
+		nautilus_tree_node_remove_children (node);
+	}
+
 	nautilus_directory_unref (node->details->directory);
 	nautilus_file_unref (node->details->file);
-	g_list_free (node->details->children);
 	g_free (node->details->uri);
 	g_free (node->details);
 
@@ -146,4 +150,19 @@ nautilus_tree_node_remove_from_parent (NautilusTreeNode *node)
 			(node->details->parent->details->children, node);
 		node->details->parent = NULL;
 	}
+}
+
+void
+nautilus_tree_node_remove_children (NautilusTreeNode *node)
+{
+	GList *p;
+	NautilusTreeNode *child;
+
+	for (p = node->details->children; p != NULL; p = p->next) {
+		child = p->data;
+		child->details->parent = NULL;
+	}
+
+	g_list_free (node->details->children);
+	node->details->children = NULL;
 }

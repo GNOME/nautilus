@@ -47,6 +47,7 @@
 
 #include <stdio.h>
 
+#define DEBUG_TREE 1
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
@@ -126,6 +127,42 @@ nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass)
 }
 
 
+static void
+unlink_view_node_from_uri (NautilusTreeView *view,
+			   NautilusCTreeNode *view_node)
+{
+	gpointer orig_key, value;
+
+	if (g_hash_table_lookup_extended (view->details->view_node_to_uri_map,
+					  view_node, &orig_key, &value)) {
+		g_hash_table_remove (view->details->view_node_to_uri_map, view_node);
+		g_free (value);
+	}
+}
+
+/* URI will be g_free'd eventually */
+static void
+link_view_node_with_uri (NautilusTreeView *view,
+			 NautilusCTreeNode *view_node,
+			 const char *uri)
+{
+	unlink_view_node_from_uri (view, view_node);
+	g_hash_table_insert (view->details->view_node_to_uri_map,
+			     view_node, (gpointer) uri);
+}
+
+/* Returned string is only valid until next link or unlink of VIEW-NODE */
+static const char *
+map_view_node_to_uri (NautilusTreeView *view,
+		      NautilusCTreeNode *view_node)
+{
+	gpointer value = g_hash_table_lookup (view->details->view_node_to_uri_map,
+					      view_node);
+	g_assert (value != NULL);
+	return value;
+}
+
+
 static gboolean
 nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 				     NautilusFile *file)
@@ -135,6 +172,50 @@ nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 					    view->details->show_backup_files) &&
 		 (view->details->show_non_directories || 
 		  nautilus_file_is_directory (file)));
+}
+
+/* This is different to the should_skip function above, in that it
+ * also searches all parent files of URI. It will return true iff
+ * URI may be shown in the tree view display. Note that URI may
+ * not exist when this is called.
+ */
+static gboolean
+nautilus_tree_view_would_include_uri (NautilusTreeView *view,
+				      const char *uri)
+{
+	char *copy, *component;
+
+	/* The tree view currently only ever shows `file:' URIs */
+
+	if (!nautilus_str_has_prefix (uri, "file:")) {
+		return FALSE;
+	}
+
+	if (!view->details->show_hidden_files
+	    || !view->details->show_backup_files) {
+		copy = g_strdup (uri);
+		while (1) {
+			component = strrchr (copy, '/');
+			if (component != NULL) {
+				if ((!view->details->show_hidden_files
+				     && nautilus_file_name_matches_hidden_pattern (component + 1))
+				    || (!view->details->show_backup_files
+					&& nautilus_file_name_matches_backup_pattern (component + 1))) {
+					/* Don't show this file */
+					g_free (copy);
+					return FALSE;
+				} else {
+					/* Chop the bottom-most component from the uri */
+					*component = 0;
+				}
+			} else {
+				break;
+			}
+		}
+		g_free (copy);
+	}
+
+	return TRUE;
 }
 
 static void
@@ -166,7 +247,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 #ifdef DEBUG_TREE
 	printf ("parent_view_node 0x%x (%s)\n", (unsigned) parent_view_node, 
-		nautilus_file_get_uri (nautilus_tree_view_node_to_file (view, node)));
+		nautilus_file_get_uri (nautilus_tree_view_node_to_file (view, parent_view_node)));
 #endif
 
 
@@ -213,9 +294,10 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 		nautilus_file_ref (file);
 		g_hash_table_insert (view->details->file_to_node_map, file, view_node); 
 		
+		uri = nautilus_file_get_uri (file);
+		link_view_node_with_uri (view, view_node, uri);
+
 		if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
-			uri = nautilus_file_get_uri (file);
-			
 			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
 				if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
 							     view_node)) {
@@ -229,8 +311,6 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 								 view_node);
 				}
 			}
-
-			g_free (uri);
 		}
 	} else {
 		nautilus_tree_view_update_model_node (view, node);
@@ -246,17 +326,15 @@ forget_view_node (NautilusTreeView *view,
 		  NautilusCTreeNode *view_node)
 {
 	NautilusFile *file;
-	char *uri;
 
 	file = nautilus_tree_view_node_to_file (view, view_node);
 
-	uri = nautilus_file_get_uri (file);
-	nautilus_tree_expansion_state_remove_node
-		(view->details->expansion_state, uri);
-	g_free (uri);
+	g_message ("forgetting %s", nautilus_file_get_uri (file));
 
 	g_hash_table_remove (view->details->file_to_node_map, file);
 	nautilus_file_unref (file);
+
+	unlink_view_node_from_uri (view, view_node);
 }
 
 static void
@@ -279,6 +357,7 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 {
 	NautilusCTreeNode *view_node;
 	NautilusFile *file;
+	const char *uri;
 
 	file = nautilus_tree_node_get_file (node);
 
@@ -289,6 +368,17 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 
  	view_node = nautilus_tree_view_model_node_to_view_node (view, node);
  	if (view_node != NULL) {
+		/* The URI associated with FILE may have been renamed by now,
+		 * so using nautilus_file_get_uri () is no good (since it would
+		 * give the new name, not the old name). Hence the extra hash
+		 * table mapping view nodes to URIs..
+		 *
+		 * Note that it would be better to remove the expansion
+		 * state of the children, but that breaks renaming..
+		 */
+		 uri = map_view_node_to_uri (view, view_node);
+		 nautilus_tree_expansion_state_remove_node (view->details->expansion_state, uri);
+
 		forget_view_node_and_children (view, view_node);
  		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
  					    view_node);
@@ -350,6 +440,8 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	if (view_node != NULL) {
 		name = nautilus_file_get_name (file);
 	
+		link_view_node_with_uri (view, view_node, nautilus_file_get_uri (file));
+
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
 								    NULL,
 								    NAUTILUS_ICON_SIZE_FOR_MENUS,
@@ -574,20 +666,21 @@ nautilus_tree_view_model_node_renamed_callback (NautilusTreeModel *model,
 						const char 	  *new_uri,
 						gpointer           callback_data)
 {
-    NautilusTreeView *view;
+	NautilusTreeView *view;
 
-    /* Propagate the expansion state of the old name to the new name */
+	/* Propagate the expansion state of the old name to the new name */
 
-    view = NAUTILUS_TREE_VIEW (callback_data);
+	view = NAUTILUS_TREE_VIEW (callback_data);
 
+	if (nautilus_tree_view_would_include_uri (view, new_uri)) {
+		if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, old_uri)) {
+			nautilus_tree_expansion_state_expand_node (view->details->expansion_state, new_uri);
+		} else {
+			nautilus_tree_expansion_state_collapse_node (view->details->expansion_state, new_uri);
+		}
+	}
 
-    if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, old_uri)) {
-	    nautilus_tree_expansion_state_expand_node (view->details->expansion_state, new_uri);
-    } else {
-	    nautilus_tree_expansion_state_collapse_node (view->details->expansion_state, new_uri);
-    }
-
-    nautilus_tree_expansion_state_remove_node (view->details->expansion_state, old_uri);
+	nautilus_tree_expansion_state_remove_node (view->details->expansion_state, old_uri);
 }
 
 static void
@@ -691,8 +784,11 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 	gtk_clist_set_sort_type (GTK_CLIST (view->details->tree), GTK_SORT_ASCENDING);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (view->details->tree), 0, TRUE);
 	gtk_clist_columns_autosize (GTK_CLIST (view->details->tree));
-
 	gtk_clist_set_reorderable (GTK_CLIST (view->details->tree), FALSE);
+	gtk_clist_set_row_height (GTK_CLIST (view->details->tree),
+				  MAX (NAUTILUS_ICON_SIZE_FOR_MENUS,
+				       view->details->tree->style->font->ascent
+				       + view->details->tree->style->font->descent));
 
 	gtk_signal_connect (GTK_OBJECT (view->details->tree),
 			    "tree_expand",
@@ -748,6 +844,7 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    view);
 
 	view->details->file_to_node_map = g_hash_table_new (NULL, NULL);
+	view->details->view_node_to_uri_map = g_hash_table_new (NULL, NULL);
 	
 	nautilus_tree_view_load_from_filesystem (view);
 
@@ -788,6 +885,12 @@ free_file_to_node_map_entry (gpointer key, gpointer value, gpointer callback_dat
 }
 
 static void
+free_view_node_to_uri_map_entry (gpointer key, gpointer value, gpointer callback_data)
+{
+	g_free (value);			/* the URI */
+}
+
+static void
 nautilus_tree_view_destroy (GtkObject *object)
 {
 	NautilusTreeView *view;
@@ -817,6 +920,11 @@ nautilus_tree_view_destroy (GtkObject *object)
 			      NULL);
 	g_hash_table_destroy (view->details->file_to_node_map);
 	
+	g_hash_table_foreach (view->details->view_node_to_uri_map,
+			      free_view_node_to_uri_map_entry,
+			      NULL);
+	g_hash_table_destroy (view->details->view_node_to_uri_map);
+
 	nautilus_tree_view_free_dnd (view);
 
 	disconnect_model_handlers (view);

@@ -1776,22 +1776,6 @@ nautilus_file_compare_name (NautilusFile *file,
 }
 
 gboolean
-nautilus_file_name_matches_hidden_pattern (const char *name_or_relative_uri)
-{
-	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
-
-	return name_or_relative_uri[0] == '.';
-}
-
-gboolean
-nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
-{
-	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
-
-	return nautilus_str_has_suffix (name_or_relative_uri, "~");
-}
-
-gboolean
 nautilus_file_is_hidden_file (NautilusFile *file)
 {
 	return nautilus_file_name_matches_hidden_pattern

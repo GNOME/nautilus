@@ -710,7 +710,7 @@ report_node_changed (NautilusTreeModel *model,
 					 signals[NODE_BEING_RENAMED],
 					 node->details->uri, file_uri);
 
-			report_node_removed_internal (model, node, FALSE);
+			report_node_removed (model, node);
 
 			g_free (node->details->uri);
 			node->details->uri = file_uri;
@@ -754,6 +754,8 @@ report_node_removed_internal (NautilusTreeModel *model,
 		if (parent_node != NULL) {
 			nautilus_tree_node_remove_from_parent (node);
 		}
+
+		nautilus_tree_node_remove_children (node);
 
 		g_hash_table_remove (model->details->file_to_node_map, 
 				     nautilus_tree_node_get_file (node));
@@ -823,8 +825,19 @@ nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *
 			uri = nautilus_file_get_uri (file);
 			g_free (uri);
 		} else {
-			if (!nautilus_directory_contains_file (directory, file)
-			    || nautilus_file_is_gone (file)) {
+			if (nautilus_file_is_gone (file)) {
+				report_node_removed (model, node);
+			} else if (!nautilus_directory_contains_file (directory, file)) {
+				/* Let the view propagate the expansion state */
+				uri = nautilus_file_get_uri (file);
+				gtk_signal_emit (GTK_OBJECT (model),
+						 signals[NODE_BEING_RENAMED],
+						 node->details->uri, uri);
+				g_free (uri);
+
+				/* then remove the node - the added callback will get invoked
+				 * after this function returns
+				 */
 				report_node_removed (model, node);
 			} else {			
 				report_node_changed (model, node);

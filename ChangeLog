@@ -1,3 +1,113 @@
+2001-02-20  John Harper  <jsh@eazel.com>
+
+	reviewed by Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug where a renamed node in the tree view doesn't get
+	resorted:
+
+	* libnautilus-extensions/nautilus-ctree.c (set_node_info): if
+	the ctree is in auto-sort mode, sort the branch containing the
+	changed node
+
+
+	Fixed a crash in the tree view when expanding nodes that have
+	been moved across directories:
+
+	* components/tree/nautilus-tree-node.c
+	(nautilus_tree_node_remove_children): new function, unparents
+	all children of the given node
+
+	(nautilus_tree_node_destroy): emit a warning if the list of
+	children is non-null (then call remove_children). Ideally the
+	remove_children function should get called before the final
+	unref of a directory node
+
+	* components/tree/nautilus-tree-model.c
+	(report_node_removed_internal): call
+	nautilus_tree_node_remove_children before unref'ing the node
+
+
+	Mostly fixed bug where expansion state hash table accumulates
+	cruft over time (e.g. directories that no longer exist or got
+	moved to locations where they can never be displayed):
+
+	* components/tree/nautilus-tree-view.h
+	(NautilusTreeViewDetails): added `view_node_to_uri_map' hash
+	table. This is used to map view nodes to the URIs we believe
+	they are displaying. This is necessary since by the time we
+	find out about changes to nodes, the names of the underlying
+	NautilusFile objects have often already been changed
+
+	* components/tree/nautilus-tree-view.c
+	(unlink_view_node_from_uri, link_view_node_with_uri,
+	map_view_node_to_uri): functions accessing the new hash table
+
+	(nautilus_tree_view_would_include_file): new function, returns
+	true iff the given file may possibly appear in the tree view.
+	Climbs through all parents of the file to do this
+
+	(nautilus_tree_view_model_node_renamed_callback): only
+	propagates the expansion state if the would_include function
+	indicates that the new URI of the file would be included in the
+	tree view
+
+	* components/tree/nautilus-tree-model.c (report_node_changed):
+	no need to suppress the `node_removed' signal when renaming the
+	node (now that the view always deletes the expansion state of
+	the correct URI)
+
+	* libnautilus-extensions/nautilus-file.c,
+	libnautilus-extensions/nautilus-file-private.h, 
+	libnautilus-extensions/nautilus-file-utilities.c, 
+	libnautilus-extensions/nautilus-file-utilities.h
+	(nautilus_file_name_matches_hidden_pattern,
+	nautilus_file_name_matches_backup_pattern): moved these
+	functions from being private in nautilus-file to being public
+	in nautilus-file-utilities
+
+
+	Fixed tree view bug where moving nodes across directories still
+	loses the expansion state: 
+
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_directory_files_changed_callback):
+	separated the cases of the file being deleted and it being
+	moved across directories. In the move case emit the
+	`being_renamed' signal so the expansion state gets propagated
+
+	(nautilus_tree_view_remove_model_node, forget_view_node): moved
+	the code to delete the expansion state from forget_view_node to
+	nautilus_tree_view_remove_model_node - avoids deleting
+	expansion state of nodes that will later be renamed. It may
+	leave non-existent directories in the expansion state, but this
+	is a lesser bug than losing the expansion state totally. Also,
+	use the map_view_node_to_uri function to find the URI whose
+	expansion state needs to be removed
+
+
+	Fixed the bug where tree view icons often got chopped at top
+	and bottom when they're drawn (if the icon height is greater
+	than the font height). This means that fewer rows may fit in
+	the same vertical space, but visually it's (imho) a huge
+	improvement (I think this is bug 6085):
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_initialize): call gtk_clist_set_row_height
+	with the maximum of the font height and the icon height
+
+	* libnautilus-extensions/nautilus-ctree.c (draw_row): always
+	calculate row_center_offset locally, and do it in such a way
+	that the text really is in the center of the row!
+
+
+	Fixed bug 5165 - repeatedly expanding and collapsing an empty
+	directory doesn't change how the node's icon is drawn after the
+	first expansion:
+
+	* libnautilus-extensions/nautilus-ctree.c (real_tree_expand,
+	real_tree_collapse): before returning, call tree_draw_node on
+	the node that changed state
+
 2001-02-20  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/Makefile.am:

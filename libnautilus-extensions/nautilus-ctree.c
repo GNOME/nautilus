@@ -1978,13 +1978,10 @@ draw_row (GtkCList     *clist,
 
 		  offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 		case GTK_CELL_TEXT:
-		  if (style != GTK_WIDGET (clist)->style)
-		    row_center_offset = (((clist->row_height -
-					   style->font->ascent -
-					   style->font->descent - 1) / 2) +
-					 1.5 + style->font->ascent);
-		  else
-		    row_center_offset = clist->row_center_offset;
+		  row_center_offset = ((clist->row_height -
+					(style->font->ascent
+					 + style->font->descent)) / 2
+					 + style->font->ascent);
 
 		  gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
 		  gdk_draw_string
@@ -2099,13 +2096,11 @@ draw_row (GtkCList     *clist,
 		offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 	    }
 
-	  if (style != GTK_WIDGET (clist)->style)
-	    row_center_offset = (((clist->row_height - style->font->ascent -
-				   style->font->descent - 1) / 2) +
-				 1.5 + style->font->ascent);
-	  else
-	    row_center_offset = clist->row_center_offset;
-	  
+	  row_center_offset = ((clist->row_height -
+				(style->font->ascent
+				 + style->font->descent)) / 2
+			       + style->font->ascent);
+
 	  gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
 	  gdk_draw_string (clist->clist_window, style->font, fg_gc, offset,
 			   row_rectangle.y + row_center_offset +
@@ -2784,6 +2779,8 @@ real_tree_expand (NautilusCTree     *ctree,
     /* resize tree_column if needed */
     column_auto_resize (clist, &NAUTILUS_CTREE_ROW (node)->row, ctree->tree_column,
 			requisition.width);
+
+  tree_draw_node (ctree, node);
 }
 
 static void 
@@ -2899,6 +2896,7 @@ real_tree_collapse (NautilusCTree     *ctree,
     column_auto_resize (clist, &NAUTILUS_CTREE_ROW (node)->row, ctree->tree_column,
 			requisition.width);
     
+  tree_draw_node (ctree, node);
 }
 
 static void
@@ -3208,6 +3206,12 @@ set_node_info (NautilusCTree     *ctree,
   else 
     nautilus_ctree_node_set_pixtext (ctree, node, ctree->tree_column,
 				text, spacing, pixmap_closed, mask_closed);
+
+  if (GTK_CLIST_AUTO_SORT (GTK_CLIST (ctree))
+      && NAUTILUS_CTREE_ROW (node)->parent != NULL)
+    {
+      nautilus_ctree_sort_node (ctree, NAUTILUS_CTREE_ROW (node)->parent);
+    }
 }
 
 static void

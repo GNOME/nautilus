@@ -52,6 +52,7 @@ struct NautilusTreeViewDetails {
 	NautilusTreeModel *model;
 
 	GHashTable *file_to_node_map;
+	GHashTable *view_node_to_uri_map;
 
 	gboolean show_hidden_files;
 	gboolean show_backup_files;

@@ -56,6 +56,10 @@ char *                  nautilus_uri_get_scheme               (const char       
 char *			nautilus_uri_make_full_from_relative  (const char 		 *base_uri,
 							       const char 		 *uri);
 
+/* Recognizing special file names. */
+gboolean		nautilus_file_name_matches_hidden_pattern (const char            *name_or_relative_uri);
+gboolean		nautilus_file_name_matches_backup_pattern (const char            *name_or_relative_uri);
+
 
 /* FIXME bugzilla.eazel.com 2424: 
  * This is the same as gnome-libs g_concat_dir_and_file except

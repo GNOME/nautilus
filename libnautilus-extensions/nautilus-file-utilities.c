@@ -819,8 +819,8 @@ uris_match (const char *uri_1, const char *uri_2, gboolean ignore_fragments)
 	g_free (canonical_2);
 	
 	return result;
-
 }
+
 gboolean
 nautilus_uris_match (const char *uri_1, const char *uri_2)
 {
@@ -833,6 +833,21 @@ nautilus_uris_match_ignore_fragments (const char *uri_1, const char *uri_2)
 	return uris_match (uri_1, uri_2, TRUE);
 }
 
+gboolean
+nautilus_file_name_matches_hidden_pattern (const char *name_or_relative_uri)
+{
+	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
+
+	return name_or_relative_uri[0] == '.';
+}
+
+gboolean
+nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
+{
+	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
+
+	return nautilus_str_has_suffix (name_or_relative_uri, "~");
+}
 
 /**
  * nautilus_make_path:
