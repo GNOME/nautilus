@@ -67,6 +67,7 @@ if (!grep /$product/, ( "nautilus", "gnome-vfs", "medusa", "oaf")) {
 
 my $bugzilla_query_bug_url = "http://bugzilla.eazel.com/buglist.cgi?";
 
+$product =~ s/\-/\+/g;
 my @cgi_options = ("bug_status=NEW",
 		   "bug_status=ASSIGNED",
 		   "bug_status=REOPENED",
