@@ -1,3 +1,28 @@
+2000-06-21  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_read_entire_file), (read_entire_file_close_callback),
+	(read_entire_file_close), (read_entire_file_succeeded),
+	(read_entire_file_failed), (read_entire_file_read_callback),
+	(read_entire_file_read_chunk), (read_entire_file_open_callback),
+	(nautilus_read_entire_file_async),
+	(nautilus_read_entire_file_cancel): Made new read-entire-file call
+	with sync. and async. versions since Andy needs it.
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_metafile_read), (metafile_read_done),
+	(metafile_read_failed), (metafile_read_done_callback),
+	(metafile_read_start), (nautilus_directory_request_read_metafile):
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy):
+	Changed the metafile reading to use the new stuff.
+	
+	* components/services/install/command-line/.cvsignore:
+	* components/services/install/server/.cvsignore:
+	Ignore a few new generated files.
+	
 2000-06-21  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/Makefile.am:
@@ -11,9 +36,7 @@
 2000-06-21  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/server/main.c:
-	(trilobite_service_factory_destroy),
 	Forgot this, better commit it before Ramiro kills me.
-	(eazel_install_service_factory), (main):
 	* components/services/trilobite/sample/command-line/main.c: (main):
 	Darins patch reg. unref.
 	
@@ -31,8 +54,7 @@
 	Added the server directory.
 	
 	* components/services/install/command-line/Makefile.am:
-	*
-	components/services/install/command-line/eazel-alt-install-corba.c:
+	* components/services/install/command-line/eazel-alt-install-corba.c:
 	(set_parameters_from_command_line),
 	(eazel_download_progress_signal), (eazel_install_progress_signal),
 	(download_failed), (install_failed), (dep_check), (create_package),
@@ -121,13 +143,9 @@
 	* components/services/install/lib/eazel-install-types.c:
 	(rpmfilename_from_packagedata):
 	* components/services/install/lib/eazel-install-types.h:
-	*
-	components/services/install/lib/trilobite-eazel-install-service.oaf
-	info:
+	* components/services/install/lib/trilobite-eazel-install-service.oafinfo:
 	* components/services/install/server/Makefile.am:
-	*
-	components/services/install/server/trilobite-eazel-install-service.
-	oafinfo:
+	* components/services/install/server/trilobite-eazel-install-service.oafinfo:
 	Added a load of stuff to make the install service a corba
 	service. There are corba/c converters in
 	eazel-install-corba-types, moved a load of the corba magic into
@@ -140,13 +158,9 @@
 	(trilobite_eazel_time_service_initialize):
 	Changed the default url to the new testmachine. 
 	
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-distribut
-	ion.c: (trilobite_get_distribution_name),
-	(trilobite_get_distribution_enum):
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-distribut
-	ion.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-distribution.c:
+	(trilobite_get_distribution_name), (trilobite_get_distribution_enum):
+	* components/services/trilobite/libtrilobite/trilobite-core-distribution.h:
 	Added call to get the distro enum from the generated string. Used
 	for the corbafication of libinstall.
 	

@@ -31,8 +31,8 @@
 #include <tree.h>
 
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 
-typedef struct MetafileReadState MetafileReadState;
 typedef struct MetafileWriteState MetafileWriteState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
 
@@ -54,7 +54,7 @@ struct NautilusDirectoryDetails
 
 	/* State for reading and writing metadata. */
 	gboolean use_alternate_metafile;
-	MetafileReadState *metafile_read_state;
+	NautilusReadFileHandle *metafile_read_handle;
 	guint write_metafile_idle_id;
 	MetafileWriteState *metafile_write_state;
 

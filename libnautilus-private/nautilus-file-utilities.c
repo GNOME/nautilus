@@ -33,10 +33,10 @@
 #include "nautilus-file.h"
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
-
-
 #include "nautilus-string.h"
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
@@ -47,6 +47,19 @@
 #define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
 
 #define DEFAULT_SCHEME "file://"
+
+#define READ_CHUNK_SIZE 8192
+
+struct NautilusReadFileHandle {
+	GnomeVFSAsyncHandle *handle;
+	NautilusReadFileCallback callback;
+	gpointer callback_data;
+	gboolean is_open;
+	char *buffer;
+	int bytes_read;
+};
+
+static void read_entire_file_read_chunk (NautilusReadFileHandle *handle);
 
 /**
  * nautilus_format_uri_for_display:
@@ -355,4 +368,225 @@ nautilus_pixmap_file (const char *partial_path)
 		g_free (path);
 		return NULL;
 	}
+}
+
+GnomeVFSResult
+nautilus_read_entire_file (const char *uri,
+			   int *file_size,
+			   char **file_contents)
+{
+	GnomeVFSResult result;
+	GnomeVFSHandle *handle;
+	char *buffer;
+	int total_bytes_read;
+	GnomeVFSFileSize bytes_read;
+
+	*file_size = 0;
+	*file_contents = NULL;
+
+	/* Open the file. */
+	result = gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_READ);
+	if (result != GNOME_VFS_OK) {
+		return result;
+	}
+
+	/* Read the whole thing. */
+	buffer = NULL;
+	total_bytes_read = 0;
+	do {
+		buffer = g_realloc (buffer, total_bytes_read + READ_CHUNK_SIZE);
+		result = gnome_vfs_read (handle,
+					 buffer + total_bytes_read,
+					 READ_CHUNK_SIZE,
+					 &bytes_read);
+		if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
+			g_free (buffer);
+			return result;
+		}
+
+		/* Check for overflow. */
+		if (total_bytes_read + bytes_read < total_bytes_read) {
+			g_free (buffer);
+			return GNOME_VFS_ERROR_TOO_BIG;
+		}
+
+		total_bytes_read += bytes_read;
+	} while (result == GNOME_VFS_OK);
+
+	/* Close the file. */
+	result = gnome_vfs_close (handle);
+	if (result != GNOME_VFS_OK) {
+		g_free (buffer);
+		return result;
+	}
+
+	/* Return the file. */
+	*file_size = total_bytes_read;
+	*file_contents = g_realloc (buffer, total_bytes_read);
+	return GNOME_VFS_OK;
+}
+
+/* When close is complete, there's no more work to do. */
+static void
+read_entire_file_close_callback (GnomeVFSAsyncHandle *handle,
+				 GnomeVFSResult result,
+				 gpointer callback_data)
+{
+	if (result != GNOME_VFS_OK) {
+		g_warning ("close failed -- this should never happen");
+	}
+}
+
+/* Do a close if it's needed.
+ * Be sure to get this right, or we have extra threads hanging around.
+ */
+static void
+read_entire_file_close (NautilusReadFileHandle *read_handle)
+{
+	if (read_handle->is_open) {
+		gnome_vfs_async_close (read_handle->handle,
+				       read_entire_file_close_callback,
+				       NULL);
+		read_handle->is_open = FALSE;
+	}
+}
+
+/* Close the file and then tell the caller we succeeded, handing off
+ * the buffer to the caller.
+ */
+static void
+read_entire_file_succeeded (NautilusReadFileHandle *read_handle)
+{
+	read_entire_file_close (read_handle);
+	
+	/* Reallocate the buffer to the exact size since it might be
+	 * around for a while.
+	 */
+	(* read_handle->callback) (GNOME_VFS_OK,
+				   read_handle->bytes_read,
+				   g_realloc (read_handle->buffer,
+					      read_handle->bytes_read),
+				   read_handle->callback_data);
+
+	g_free (read_handle);
+}
+
+/* Tell the caller we failed. */
+static void
+read_entire_file_failed (NautilusReadFileHandle *read_handle, GnomeVFSResult result)
+{
+	read_entire_file_close (read_handle);
+	g_free (read_handle->buffer);
+	
+	(* read_handle->callback) (result, 0, NULL, read_handle->callback_data);
+	g_free (read_handle);
+}
+
+/* A read is complete, so we might or might not be done. */
+static void
+read_entire_file_read_callback (GnomeVFSAsyncHandle *handle,
+				GnomeVFSResult result,
+				gpointer buffer,
+				GnomeVFSFileSize bytes_requested,
+				GnomeVFSFileSize bytes_read,
+				gpointer callback_data)
+{
+	NautilusReadFileHandle *read_handle;
+
+	/* Do a few reality checks. */
+	g_assert (bytes_requested == READ_CHUNK_SIZE);
+	read_handle = callback_data;
+	g_assert (read_handle->handle == handle);
+	g_assert (read_handle->buffer + read_handle->bytes_read == buffer);
+	g_assert (bytes_read <= bytes_requested);
+
+	/* Check for a failure. */
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
+		read_entire_file_failed (read_handle, result);
+		return;
+	}
+
+	/* Check for the extremely unlikely case where the file size overflows. */
+	if (read_handle->bytes_read + bytes_read < read_handle->bytes_read) {
+		read_entire_file_failed (read_handle, GNOME_VFS_ERROR_TOO_BIG);
+		return;
+	}
+
+	/* Bump the size. */
+	read_handle->bytes_read += bytes_read;
+
+	/* Read more unless we are at the end of the file. */
+	if (bytes_read != 0 && result == GNOME_VFS_OK) {
+		read_entire_file_read_chunk (read_handle);
+		return;
+	}
+
+	/* If at the end of the file, we win! */
+	read_entire_file_succeeded (read_handle);
+}
+
+/* Start reading a chunk. */
+static void
+read_entire_file_read_chunk (NautilusReadFileHandle *handle)
+{
+	handle->buffer = g_realloc (handle->buffer, handle->bytes_read + READ_CHUNK_SIZE);
+	gnome_vfs_async_read (handle->handle,
+			      handle->buffer + handle->bytes_read,
+			      READ_CHUNK_SIZE,
+			      read_entire_file_read_callback,
+			      handle);
+}
+
+/* Once the open is finished, read a first chunk. */
+static void
+read_entire_file_open_callback (GnomeVFSAsyncHandle *handle,
+				GnomeVFSResult result,
+				gpointer callback_data)
+{
+	NautilusReadFileHandle *read_handle;
+	
+	read_handle = callback_data;
+	g_assert (read_handle->handle == handle);
+
+	/* Handle the failure case. */
+	if (result != GNOME_VFS_OK) {
+		read_entire_file_failed (read_handle, result);
+		return;
+	}
+
+	/* Handle success by reading the first chunk. */
+	read_handle->is_open = TRUE;
+	read_entire_file_read_chunk (read_handle);
+}
+
+/* Set up the read handle and start reading. */
+NautilusReadFileHandle *
+nautilus_read_entire_file_async (const char *uri,
+				 NautilusReadFileCallback callback,
+				 gpointer callback_data)
+{
+	NautilusReadFileHandle *handle;
+
+	handle = g_new0 (NautilusReadFileHandle, 1);
+
+	handle->callback = callback;
+	handle->callback_data = callback_data;
+
+	gnome_vfs_async_open (&handle->handle,
+			      uri,
+			      GNOME_VFS_OPEN_READ,
+			      read_entire_file_open_callback,
+			      handle);
+
+	return handle;
+}
+
+/* Stop the presses! */
+void
+nautilus_read_entire_file_cancel (NautilusReadFileHandle *handle)
+{
+	gnome_vfs_async_cancel (handle->handle);
+	read_entire_file_close (handle);
+	g_free (handle->buffer);
+	g_free (handle);
 }

@@ -147,7 +147,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	g_assert (directory->details->metafile_write_state == NULL);
 	nautilus_directory_cancel (directory);
-	g_assert (directory->details->metafile_read_state == NULL);
+	g_assert (directory->details->metafile_read_handle == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->top_left_read_state == NULL);
 

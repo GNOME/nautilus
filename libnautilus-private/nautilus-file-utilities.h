@@ -27,7 +27,10 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 
-typedef void (* NautilusReadFileCallback) (int file_size, char *file_contents, gpointer callback_data);
+typedef void (* NautilusReadFileCallback) (GnomeVFSResult result,
+					   GnomeVFSFileSize file_size,
+					   char *file_contents,
+					   gpointer callback_data);
 typedef struct NautilusReadFileHandle NautilusReadFileHandle;
 
 char *                  nautilus_format_uri_for_display  (const char                *uri);
