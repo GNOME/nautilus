@@ -92,79 +92,6 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
         }
 }
 
-/* GCompareFunc-style function for checking whether a given string matches
- * the iid of a NautilusViewIdentifier. Returns 0 if there is a match.
- */
-static int
-check_iid (gconstpointer a, gconstpointer b)
-{
-	NautilusViewIdentifier *identifier;
-	char *string;
-        
-	identifier = (NautilusViewIdentifier *)a;
-	string = (char *)b;
-        
-	return strcmp (identifier->iid, string) != 0;
-}
-
-/**
- * set_initial_content_id:
- * 
- * Sets the NautilusViewIdentifier that will determine which content view to use when
- * a URI is displayed.
- * 
- * @navinfo: The NautilusNavigationInfo representing the URI that's about
- * to be displayed.
- * @fallback_value: The NautilusViewIdentifier to use for the content view if no better
- * one can be determined.
- */
-static void
-set_initial_content_id (NautilusNavigationInfo *navinfo,
-			NautilusViewIdentifier *default_id)
-{
-	NautilusViewIdentifier *new_id;
-	GList *node;
-
-	g_assert (default_id != NULL);
-
-	new_id = NULL;
-
-	/* NOTE: Darin doesn't like the unpredictability of this three-choice system.
-	 * He'd prefer a global setting and perhaps an explicit location-specific
-	 * setting that doesn't affect any other locations. Maybe we should change
-	 * this to work that way.
-	 */
-
-	/* Use the user-chosen default for this uri if there is one */
-	if (nautilus_mime_is_default_component_for_uri_user_chosen 
-	    (navinfo->navinfo.requested_uri)) {
-	    	new_id = default_id;
-	} else {
-		/* Prefer the viewer used in the referring location to
-		 * the default for this type, but only if it's in the
-		 * preferred list for this file.
-		 */
-		if (navinfo->referring_iid != NULL) {
-			node = g_list_find_custom (navinfo->content_identifiers,
-                                                navinfo->referring_iid, check_iid);
-                        if (node != NULL) {
-				new_id = node->data;
-			}
-		}
-
-		/* The referring viewer was nonexistent or not in this
-		 * file's preferred list, so use the default for this type.
-		 */
-		if (new_id == NULL) {
-			new_id = default_id;
-		}
-	}
-
-	g_assert (new_id != NULL);
-	
-	navinfo->initial_content_id = nautilus_view_identifier_copy (new_id);
-}
-
 static void
 got_file_info_callback (GnomeVFSAsyncHandle *ah,
                         GList *result_list,
@@ -252,8 +179,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
          * the initial one.
          */
         g_assert (default_id != NULL);
-        set_initial_content_id (navinfo, default_id);
-        nautilus_view_identifier_free (default_id);
+	navinfo->initial_content_id = nautilus_view_identifier_copy (default_id);
         
  out:
  	if (result_code == NAUTILUS_NAVIGATION_RESULT_UNDEFINED) {

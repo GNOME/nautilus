@@ -31,6 +31,7 @@
 GnomeVFSMimeActionType   nautilus_mime_get_default_action_type_for_uri       (const char             *uri);
 GnomeVFSMimeAction      *nautilus_mime_get_default_action_for_uri            (const char             *uri);
 GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_uri       (const char             *uri);
+gboolean		 nautilus_mime_is_default_application_for_uri_user_chosen (const char          *uri);
 OAF_ServerInfo          *nautilus_mime_get_default_component_for_uri         (const char             *uri);
 gboolean		 nautilus_mime_is_default_component_for_uri_user_chosen (const char          *uri);
 GList                   *nautilus_mime_get_short_list_applications_for_uri   (const char             *uri);

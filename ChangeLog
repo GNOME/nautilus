@@ -1,3 +1,44 @@
+2000-06-12  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1006 (Should be able to set default
+	viewer/application from "View/Open with Other" dialog)
+
+	* libnautilus-extensions/nautilus-mime-actions.h,
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_is_default_application_for_uri_user_chosen):
+	New public function, analogous to the component version
+	that already existed.
+	(nautilus_mime_get_default_application_for_uri_internal):
+	New private function used to implement the public function.
+	(nautilus_mime_get_default_application_for_uri):
+	Now calls the _internal version.
+	(nautilus_mime_is_default_component_for_uri_user_chosen):
+	Fixed a leak I noticed in here.
+	(nautilus_mime_set_default_application_for_uri),
+	(nautilus_mime_set_default_component_for_uri): Set the default
+	action type if it's unspecified.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(is_application_default_for_type), (is_component_default_for_type),
+	(is_application_default_for_uri), (is_component_default_for_uri),
+	(is_default_for_file_type), (is_default_for_file),
+	(remove_default_for_type), (remove_default_for_item), 
+	(set_default_for_type),	(set_default_for_item): New helper
+	functions to check and set default program.	
+	(update_selected_item_details), 
+	(run_program_configurator_callback): Modify UI for
+	"View as" dialog and "Modify <program>" subdialog to include
+	setting default program for type or file. Various other
+	tweaks.
+	
+	* src/nautilus-applicable-views.c: 
+	(got_file_info_callback): Eliminated the logic about preferring
+	the viewer from the previous location over the default viewer.
+	Now that the UI lets users easily specify the default viewer
+	per type and file, preferring the previous viewer over the
+	user-specified default made no sense.
+	(check_iid), (set_initial_content_id): Removed these functions.
+
 2000-06-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-link-set.c,h:

@@ -154,13 +154,16 @@ nautilus_mime_get_default_action_for_uri (const char *uri)
 }
 
 
-GnomeVFSMimeApplication *
-nautilus_mime_get_default_application_for_uri (const char *uri)
+static GnomeVFSMimeApplication *
+nautilus_mime_get_default_application_for_uri_internal (const char *uri, gboolean *user_chosen)
 {
 	char *mime_type;
 	GnomeVFSMimeApplication *result;
 	NautilusDirectory *directory;
 	char *default_application_string;
+	gboolean used_user_chosen_info;
+
+	used_user_chosen_info = TRUE;
 
 	directory = nautilus_directory_get (uri);
 
@@ -185,12 +188,44 @@ nautilus_mime_get_default_application_for_uri (const char *uri)
 			result = NULL;
 		}
 		g_free (mime_type);
+		used_user_chosen_info = FALSE;
 	} else {
 		result = gnome_vfs_mime_application_new_from_id (default_application_string);
 	}
 
+	if (user_chosen != NULL) {
+		*user_chosen = used_user_chosen_info;
+	}
+
 	return result;
 }
+
+GnomeVFSMimeApplication *
+nautilus_mime_get_default_application_for_uri (const char *uri)
+{
+	return nautilus_mime_get_default_application_for_uri_internal (uri, NULL);
+}
+
+gboolean
+nautilus_mime_is_default_application_for_uri_user_chosen (const char *uri)
+{
+	GnomeVFSMimeApplication *application;
+	gboolean user_chosen;
+
+	application = nautilus_mime_get_default_application_for_uri_internal (uri, &user_chosen);
+
+	/* Doesn't count as user chosen if the user-specified data is bogus and doesn't
+	 * result in an actual application.
+	 */
+	if (application == NULL) {
+		return FALSE;
+	}
+
+	gnome_vfs_mime_application_free (application);
+	 
+	return user_chosen;
+}
+
 
 static OAF_ServerInfo *
 nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean *user_chosen)
@@ -313,7 +348,13 @@ nautilus_mime_is_default_component_for_uri_user_chosen (const char *uri)
 	/* Doesn't count as user chosen if the user-specified data is bogus and doesn't
 	 * result in an actual component.
 	 */
-	return user_chosen && component != NULL;
+	if (component == NULL) {
+		return FALSE;
+	}
+
+	CORBA_free (component);
+	 
+	return user_chosen;
 }
 
 
@@ -618,6 +659,12 @@ nautilus_mime_set_default_application_for_uri (const char *uri,
 	nautilus_directory_set_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL, application_id);
 	nautilus_directory_unref (directory);
+
+	/* If there's no default action type, set it to match this. */
+	if (application_id != NULL && 
+	    nautilus_mime_get_default_action_type_for_uri (uri) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
+		nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
+	}
 }
 
 
@@ -633,6 +680,12 @@ nautilus_mime_set_default_component_for_uri (const char *uri,
 	nautilus_directory_set_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL, component_iid);
 	nautilus_directory_unref (directory);
+
+	/* If there's no default action type, set it to match this. */
+	if (component_iid != NULL && 
+	    nautilus_mime_get_default_action_type_for_uri (uri) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
+		nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+	}
 }
 
 
