@@ -1,5 +1,19 @@
 2003-06-08  Dave Camp  <dave@ximian.com>
 
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_finalize),
+	(nautilus_zoom_control_button_press_event), (zoom_out_clicked),
+	(zoom_in_clicked), (set_label_size), (label_style_set_callback),
+	(nautilus_zoom_control_instance_init), (nautilus_zoom_control_new),
+	(nautilus_zoom_control_redraw), (create_zoom_menu),
+	(nautilus_zoom_control_set_zoom_level),
+	(nautilus_zoom_control_set_parameters),
+	(nautilus_zoom_control_class_init),
+	(nautilus_zoom_control_accessible_get_type):
+	* src/nautilus-zoom-control.h: New zoom control using stock 
+	widgets.  Patch from Iain Holmes <iain@prettypeople.org>. 
+
+2003-06-08  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-properties-window.h:
 	* libnautilus-private/nautilus-mime-actions.c:
 	(has_server_info_in_list), (server_info_list_intersection),

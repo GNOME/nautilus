@@ -37,6 +37,7 @@
 #include <gtk/gtkaccessible.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkradiomenuitem.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtkbindings.h>
 #include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-macros.h>
@@ -57,31 +58,18 @@ enum {
 	LAST_SIGNAL
 };
 
-typedef enum {
-	PRELIGHT_NONE,
-	PRELIGHT_MINUS,
-	PRELIGHT_CENTER,
-	PRELIGHT_PLUS
-} PrelightMode;
-
-#define	GAP_WIDTH 2
-
 struct NautilusZoomControlDetails {
+	GtkWidget *zoom_in;
+	GtkWidget *zoom_out;
+	GtkWidget *zoom_event;
+	GtkWidget *zoom_label;
+	
 	float zoom_level;
 	float min_zoom_level;	 
 	float max_zoom_level;
 	gboolean has_min_zoom_level;
 	gboolean has_max_zoom_level;
 	GList *preferred_zoom_levels;
-
-	int y_offset;
-	GdkPixbuf *zoom_body_image;
-	GdkPixbuf *zoom_decrement_image;
-	GdkPixbuf *zoom_increment_image;
-	GdkPixbuf *number_strip;
-	PrelightMode prelight_mode;
-
-	PangoLayout *layout;
 
 	gboolean marking_menu_items;
 };
@@ -109,9 +97,7 @@ static const char *nautilus_zoom_control_accessible_action_descriptions[] = {
 	N_("Try to fit in window"),
 };
 
-static void nautilus_zoom_control_load_images   (NautilusZoomControl      *zoom_control);
-static void nautilus_zoom_control_unload_images (NautilusZoomControl      *zoom_control);
-static void nautilus_zoom_control_theme_changed (gpointer                  user_data);
+static GtkMenu *create_zoom_menu (NautilusZoomControl *zoom_control);
 
 static GType nautilus_zoom_control_accessible_get_type (void);
 
@@ -121,382 +107,182 @@ static GType nautilus_zoom_control_accessible_get_type (void);
 #define NUM_ACTIONS ((int)G_N_ELEMENTS (nautilus_zoom_control_accessible_action_names))
 
 GNOME_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control,
-			 EelInputEventBox, EEL_TYPE_INPUT_EVENT_BOX)
+			 GtkHBox, GTK_TYPE_HBOX)
 
 static void
 nautilus_zoom_control_finalize (GObject *object)
 {
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					 nautilus_zoom_control_theme_changed,
-					 object);
-
-	nautilus_zoom_control_unload_images (NAUTILUS_ZOOM_CONTROL (object));
-
 	eel_g_list_free_deep (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
 	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static int
-get_zoom_width (NautilusZoomControl *zoom_control)
+/* handle button presses */
+static gboolean
+nautilus_zoom_control_button_press_event (GtkWidget *widget,
+					  GdkEventButton *event,
+					  NautilusZoomControl *zoom_control)
 {
-	int total_width;
-	total_width = gdk_pixbuf_get_width (zoom_control->details->zoom_increment_image);
-	total_width += GAP_WIDTH;
-	total_width += gdk_pixbuf_get_width (zoom_control->details->zoom_body_image);
-	total_width += GAP_WIDTH;
-	total_width += gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image);
-	return total_width;
+	if (event->type != GDK_BUTTON_PRESS) {
+		return FALSE;
+	}
+
+	gtk_widget_grab_focus (widget);
+
+	/* check for the context menu button and handle by creating and showing the menu */
+	if (event->button == CONTEXTUAL_MENU_BUTTON) {
+		eel_pop_up_context_menu (create_zoom_menu (zoom_control),
+					 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					 event);
+		return TRUE;
+	}
+
+	/* We don't change our state (to reflect the new zoom) here.
+	   The zoomable will call back with the new level.
+	   Actually, the callback goes to the viewframe containing the
+	   zoomable which, in turn, emits zoom_level_changed,
+	   which someone (e.g. nautilus_window) picks up and handles by
+	   calling into is - nautilus_zoom_control_set_zoom_level.
+	*/
+
+	return TRUE;
 }
+
+static void
+zoom_out_clicked (GtkButton *button,
+		  NautilusZoomControl *zoom_control)
+{
+	if (nautilus_zoom_control_can_zoom_out (zoom_control)) {
+		g_signal_emit (G_OBJECT (zoom_control), signals[ZOOM_OUT], 0);
+	}
+}
+
+static void
+zoom_in_clicked (GtkButton *button,
+		 NautilusZoomControl *zoom_control)
+{
+	if (nautilus_zoom_control_can_zoom_in (zoom_control)) {
+		g_signal_emit (G_OBJECT (zoom_control), signals[ZOOM_IN], 0);
+	}
+}
+
+static void
+set_label_size (NautilusZoomControl *zoom_control)
+{
+	const char *text;
+	PangoLayout *layout;
+	int width;
+	int height;
+	
+	text = gtk_label_get_text (GTK_LABEL (zoom_control->details->zoom_label));
+	layout = gtk_label_get_layout (GTK_LABEL (zoom_control->details->zoom_label));
+	pango_layout_set_text (layout, "100%", -1);
+	pango_layout_get_pixel_size (layout, &width, &height);
+	gtk_widget_set_size_request (zoom_control->details->zoom_label, width, height);
+	gtk_label_set_text (GTK_LABEL (zoom_control->details->zoom_label), 
+			    text);
+}
+
+static void
+label_style_set_callback (GtkWidget *label,
+			  GtkStyle *style,
+			  gpointer user_data)
+{
+	set_label_size (NAUTILUS_ZOOM_CONTROL (user_data));
+}		  
 
 static void
 nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 {
-	GTK_WIDGET_SET_FLAGS (zoom_control, GTK_CAN_FOCUS);
-
-	gtk_widget_add_events (GTK_WIDGET (zoom_control), 
-			       GDK_BUTTON_PRESS_MASK
-			       | GDK_BUTTON_RELEASE_MASK
-			       | GDK_POINTER_MOTION_MASK);
+	GtkWidget *image;
 	
 	zoom_control->details = g_new0 (NautilusZoomControlDetails, 1);
-	
+
 	zoom_control->details->zoom_level = 1.0;
 	zoom_control->details->min_zoom_level = 0.0;
 	zoom_control->details->max_zoom_level = 2.0;
 	zoom_control->details->has_min_zoom_level = TRUE;
 	zoom_control->details->has_max_zoom_level = TRUE;
 
-	nautilus_zoom_control_load_images (zoom_control);
-	
-	gtk_widget_set_size_request (GTK_WIDGET (zoom_control),
-				     get_zoom_width (zoom_control), -1);
+	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_OUT, GTK_ICON_SIZE_MENU);
+	zoom_control->details->zoom_out = gtk_button_new ();
+	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_out),
+			       GTK_RELIEF_NONE);
+	g_signal_connect (G_OBJECT (zoom_control->details->zoom_out),
+			  "clicked", G_CALLBACK (zoom_out_clicked),
+			  zoom_control);
+	gtk_container_add (GTK_CONTAINER (zoom_control->details->zoom_out), image);
+	gtk_box_pack_start (GTK_BOX (zoom_control),
+			    zoom_control->details->zoom_out, FALSE, FALSE, 0);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-				      nautilus_zoom_control_theme_changed,
-				      zoom_control);
+	zoom_control->details->zoom_event = gtk_event_box_new ();
+	g_signal_connect (G_OBJECT (zoom_control->details->zoom_event),
+			  "button-press-event",
+			  G_CALLBACK (nautilus_zoom_control_button_press_event),
+			  zoom_control);
+	GTK_WIDGET_SET_FLAGS (zoom_control->details->zoom_event, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS (zoom_control->details->zoom_event, GTK_NO_WINDOW);
+
+	gtk_widget_add_events (GTK_WIDGET (zoom_control->details->zoom_event),
+			       GDK_BUTTON_PRESS_MASK
+			       | GDK_BUTTON_RELEASE_MASK
+			       | GDK_POINTER_MOTION_MASK);
+
+	zoom_control->details->zoom_label = gtk_label_new ("100%");
+	g_signal_connect (zoom_control->details->zoom_label,
+			  "style_set",
+			  G_CALLBACK (label_style_set_callback),
+			  zoom_control);
+	set_label_size (zoom_control);
+	
+	gtk_container_add (GTK_CONTAINER (zoom_control->details->zoom_event), zoom_control->details->zoom_label);
+
+	gtk_box_pack_start (GTK_BOX (zoom_control),
+			    zoom_control->details->zoom_event, TRUE, TRUE, 0);
+
+	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_IN, GTK_ICON_SIZE_MENU);
+	zoom_control->details->zoom_in = gtk_button_new ();
+	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_in),
+			       GTK_RELIEF_NONE);
+	g_signal_connect (G_OBJECT (zoom_control->details->zoom_in),
+			  "clicked", G_CALLBACK (zoom_in_clicked),
+			  zoom_control);
+
+	gtk_container_add (GTK_CONTAINER (zoom_control->details->zoom_in), image);
+	gtk_box_pack_start (GTK_BOX (zoom_control),
+			    zoom_control->details->zoom_in, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (zoom_control->details->zoom_out);
+	gtk_widget_show_all (zoom_control->details->zoom_event);
+	gtk_widget_show_all (zoom_control->details->zoom_in);
 }
 
-/* allocate a new zoom control */
+/* Allocate a new zoom control */
 GtkWidget *
 nautilus_zoom_control_new (void)
 {
 	return gtk_widget_new (nautilus_zoom_control_get_type (), NULL);
 }
 
-/* handler for handling theme changes */
 static void
-nautilus_zoom_control_theme_changed (gpointer user_data)
+nautilus_zoom_control_redraw (NautilusZoomControl *zoom_control)
 {
-	NautilusZoomControl *zoom_control;
-
-	zoom_control = NAUTILUS_ZOOM_CONTROL (user_data);
-	gtk_widget_hide (GTK_WIDGET (zoom_control));
-	nautilus_zoom_control_load_images (zoom_control);
-	gtk_widget_show (GTK_WIDGET (zoom_control));	
-}
-
-static int
-get_zoom_offset (const char *property)
-{
+	int percent;
 	char *num_str;
-	int result;
-	
-	result = 0;
-	num_str = nautilus_theme_get_theme_data ("zoom_control", property);
-	if (num_str != NULL) {
-		result = atoi (num_str);
-		g_free (num_str);
-	}
 
-	return result;
-}
+	gtk_widget_set_sensitive (zoom_control->details->zoom_in,
+				  nautilus_zoom_control_can_zoom_in (zoom_control));
+	gtk_widget_set_sensitive (zoom_control->details->zoom_out,
+				  nautilus_zoom_control_can_zoom_out (zoom_control));
 
-/* draw the current zoom percentage, using a custom number strip if one is available, or
-   using the ordinary text routines otherwise */
-static void
-draw_number (GtkWidget *widget, GdkRectangle *box)
-{
-	char buffer[8];
-	char *cur_char;
-	int x, y, percent; 
-	int char_height, char_width, char_offset;
-	int num_v_offset, num_h_offset;
-	NautilusZoomControl *zoom_control;
-	GdkPixbuf *number_pixbuf;
-	PangoRectangle logical_rect;
-
-	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
-	
-	num_v_offset = get_zoom_offset ("number_v_2_offset");
-	num_h_offset = get_zoom_offset ("number_h_offset");
-		
 	percent = floor ((100.0 * zoom_control->details->zoom_level) + .5);
-	g_snprintf (buffer, 8, "%d", percent);
-	
-	if (zoom_control->details->number_strip != NULL) {
-		number_pixbuf = zoom_control->details->number_strip;
-		if (zoom_control->details->prelight_mode == PRELIGHT_CENTER) {
-			number_pixbuf = eel_create_spotlight_pixbuf (number_pixbuf);
-		}
-		
-		char_width = get_zoom_offset ("digit_width");
-		if (char_width <= 0) {
-			char_width = gdk_pixbuf_get_width (number_pixbuf) / 10;
-		}
-		char_height = gdk_pixbuf_get_height (number_pixbuf);
-
-		x = box->x + num_h_offset + ((box->width - char_width * strlen (buffer)) >> 1);  
-		y = box->y + num_v_offset + ((box->height - char_height) >> 1);
-
-		cur_char = &buffer[0];		
-		while (*cur_char) {
-			char_offset = (*cur_char++ - '0') * char_width;
-			gdk_draw_pixbuf (widget->window,
-					 NULL,
-					 number_pixbuf,
-					 char_offset, 0, x, y,
-					 char_width,
-					 char_height,
-					 GDK_RGB_DITHER_MAX,
-					 0, 0);
-			x += char_width;
-		}
-	
-		if (number_pixbuf != zoom_control->details->number_strip) {
-			g_object_unref (number_pixbuf);
-		}
-	} else {
-		pango_layout_set_text (zoom_control->details->layout, buffer, -1);
-		pango_layout_get_pixel_extents (zoom_control->details->layout, NULL, &logical_rect);
-
-		x = box->x + num_h_offset + (box->width - logical_rect.width)  / 2;
-		y = box->y + num_v_offset + (box->height - logical_rect.height) / 2;
-
-		gtk_paint_layout (widget->style,
-				  widget->window,
-				  GTK_WIDGET_STATE (widget),
-				  FALSE,
-				  box,
-				  widget,
-				  "zoom_control",
-				  x, y,
-				  zoom_control->details->layout);
-	}
+	num_str = g_strdup_printf ("%d%%", percent);
+	gtk_label_set_text (GTK_LABEL (zoom_control->details->zoom_label), num_str);
+	g_free (num_str);
 }
-
-/* utilities to simplify drawing */
-static void
-draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
-{
-	gdk_draw_pixbuf (drawable, NULL, pixbuf, 0, 0, x, y,
-			 gdk_pixbuf_get_width (pixbuf),
-			 gdk_pixbuf_get_height (pixbuf),
-			 GDK_RGB_DITHER_MAX,
-			 0, 0);
-}
-
-static void
-draw_pixbuf_with_prelight (NautilusZoomControl *zoom_control, GdkPixbuf *pixbuf, int x_pos, int y_pos, PrelightMode mode)
-{
-	GdkPixbuf *temp_pixbuf;
-	temp_pixbuf = pixbuf;
-	if (zoom_control->details->prelight_mode == mode) {
-		temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
-	}
-	draw_pixbuf (temp_pixbuf, GTK_WIDGET (zoom_control)->window, x_pos, y_pos + zoom_control->details->y_offset);
-	if (pixbuf != temp_pixbuf) {
-		g_object_unref (temp_pixbuf);
-	}
-
-}
-
-/* draw the zoom control image into the passed-in rectangle */
-
-static void
-draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
-{
-	NautilusZoomControl *zoom_control;
-	int offset, width, height;
-		
-	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
-
-	/* draw the decrement symbol if necessary, complete with prelighting */
-	if (nautilus_zoom_control_can_zoom_out (zoom_control)) {
-		draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_decrement_image,
-					   box->x, box->y, PRELIGHT_MINUS);
-	} else {
-		width  = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image);
-		height = gdk_pixbuf_get_height (zoom_control->details->zoom_decrement_image);		
-		
-		/* Clear the symbol area to get the default widget background */
-		gdk_window_clear_area (widget->window,
-				       box->x,
-				       box->y + zoom_control->details->y_offset,
-				       width,
-				       height);
-	}
 	
-	offset = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image) + GAP_WIDTH;
-	/* draw the body image, prelighting if necessary */
-	draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_body_image,
-				   box->x + offset, box->y, PRELIGHT_CENTER);
-	
-	offset += gdk_pixbuf_get_width (zoom_control->details->zoom_body_image) + GAP_WIDTH;
-	
-	/* draw the increment symbol if necessary, complete with prelighting */
-	if (nautilus_zoom_control_can_zoom_in (zoom_control)) {
-		draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_increment_image,
-					   box->x + offset, box->y, PRELIGHT_PLUS);
-	} else {
-		width  = gdk_pixbuf_get_width (zoom_control->details->zoom_increment_image);
-		height = gdk_pixbuf_get_height (zoom_control->details->zoom_increment_image);		
-
-		/* Clear the symbol area to get the default widget background */
-		gdk_window_clear_area (widget->window,
-				       box->x + offset,
-				       box->y + zoom_control->details->y_offset,
-				       width,
-				       height);
-	}
-}
-
-/* handle expose events */
-
-static int
-nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
-{
-	GdkRectangle box;
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget), FALSE);
-
-	box.x = widget->allocation.x;
-	box.y = widget->allocation.y;
-	box.width = widget->allocation.width;
-	box.height = widget->allocation.height;
-
-	draw_zoom_control_image (widget, &box);	
-	draw_number (widget, &box);
-	
-	if (GTK_WIDGET_HAS_FOCUS (widget)) {
-		gtk_paint_focus (widget->style,
-				 widget->window,
-				 GTK_WIDGET_STATE (widget),
-				 &event->area,
-				 widget,
-				 "nautilus-zoom-control",
-				 box.x, box.y,
-				 box.width, box.height);
-	}		 
-
-	return FALSE;
-}
-
-/* set the prelight mode and redraw as necessary */
-static void
-nautilus_zoom_control_set_prelight_mode (NautilusZoomControl *zoom_control, PrelightMode mode)
-{
-	if (mode != zoom_control->details->prelight_mode) {
-		zoom_control->details->prelight_mode = mode;		
-		gtk_widget_queue_draw (GTK_WIDGET (zoom_control));	
-	}
-	
-}
-
-/* routines to load the images used to draw the control */
-
-/* load or reload the images from the current theme */
-
-static void
-nautilus_zoom_control_unload_images (NautilusZoomControl *zoom_control)
-{
-	if (zoom_control->details->zoom_body_image) {
-		g_object_unref (zoom_control->details->zoom_body_image);
-		zoom_control->details->zoom_body_image = NULL;
-	}
-	
-	if (zoom_control->details->zoom_decrement_image) {
-		g_object_unref (zoom_control->details->zoom_decrement_image);
-		zoom_control->details->zoom_decrement_image = NULL;
-	}
-	
-	if (zoom_control->details->zoom_increment_image) {
-		g_object_unref (zoom_control->details->zoom_increment_image);
-		zoom_control->details->zoom_increment_image = NULL;
-	}
-
-	if (zoom_control->details->number_strip != NULL) {
-		g_object_unref (zoom_control->details->number_strip);
-		zoom_control->details->number_strip = NULL;
-	}
-
-	if (zoom_control->details->layout != NULL) {
-		g_object_unref (zoom_control->details->layout);
-		zoom_control->details->layout = NULL;
-	}
-}
-
-static GdkPixbuf*
-load_themed_image (const char *file_name)
-{
-	GdkPixbuf *pixbuf;
-	char *image_path;
-	
-	image_path = nautilus_theme_get_image_path (file_name);
-	if (image_path) {
-		pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
-		g_free (image_path);
-		return pixbuf;
-	}
-	return NULL;
-}
-
-static void
-nautilus_zoom_control_update_offsets (NautilusZoomControl *zoom_control)
-{
-	zoom_control->details->y_offset = (
-		GTK_WIDGET (zoom_control)->allocation.height -
-		gdk_pixbuf_get_height (zoom_control->details->zoom_body_image)) >> 1;
-}
-
-static void
-nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
-{
-	PangoContext *context;
-	PangoFontDescription *font_desc;
-	char *font_name;
-
-	nautilus_zoom_control_unload_images (zoom_control);
-
-	zoom_control->details->zoom_body_image = load_themed_image ("zoom_body.png");
-	zoom_control->details->zoom_decrement_image = load_themed_image ("decrement.png");
-	zoom_control->details->zoom_increment_image = load_themed_image ("increment.png");
-
-	zoom_control->details->number_strip = load_themed_image ("number_strip.png");
-
-	if (zoom_control->details->number_strip == NULL) {
-		context = gtk_widget_get_pango_context (GTK_WIDGET (zoom_control));
-		zoom_control->details->layout = pango_layout_new (context);
-		
-		font_name = nautilus_theme_get_theme_data ("zoom", "font_name");
-		if (font_name == NULL) {
-			font_name = g_strdup ("Mono 9");
-		}
-
-		font_desc = pango_font_description_from_string (font_name);
-		if (font_desc != NULL) {
-			pango_layout_set_font_description (zoom_control->details->layout,
-							   font_desc);
-		}
-
-		pango_font_description_free (font_desc);
-		g_free (font_name);
-	}
-
-	nautilus_zoom_control_update_offsets (zoom_control);
-}
-
 /* routines to create and handle the zoom menu */
 
 static void
@@ -597,63 +383,6 @@ create_zoom_menu (NautilusZoomControl *zoom_control)
 	
 	return menu;  
 }
-  
-/* handle button presses */
-
-static gboolean
-nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *event)
-{
-	NautilusZoomControl *zoom_control;
-	int width, center;
-	
-	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
-
-	if (event->type != GDK_BUTTON_PRESS) {
-		return FALSE;
-	}
-
-	gtk_widget_grab_focus (widget);
-
-	/* check for the context menu button and handle by creating and showing the menu */  
-	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		eel_pop_up_context_menu (create_zoom_menu (zoom_control), 
-					 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT, 
-					 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT, 
-					 event);
-		return TRUE;
- 	}
-	
-	width = widget->allocation.width;
-	center = width >> 1;
-	if ((event->x < (width / 3)) && nautilus_zoom_control_can_zoom_out (zoom_control)) {
-		g_signal_emit (widget, signals[ZOOM_OUT], 0);			
-	} else if ((event->x > ((2 * width) / 3)) && nautilus_zoom_control_can_zoom_in (zoom_control)) {
-		g_signal_emit (widget, signals[ZOOM_IN], 0);			
-	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
-		g_signal_emit (widget, signals[ZOOM_TO_FIT], 0);			
-	}
-
-	/* We don't change our state (to reflect the new zoom) here. The zoomable will
-	 * call back with the new level. Actually, the callback goes to the view-frame
-	 * containing the zoomable which, in turn, emits zoom_level_changed, which
-	 * someone (e.g. nautilus_window) picks up and handles by calling into us -
-	 * nautilus_zoom_control_set_zoom_level.
-	 */	  
-  
-	return TRUE;
-}
-
-/* handle setting the prelight mode */
-
-/* handle enter, leave and motion events to maintain the prelight state */
-
-static gboolean
-nautilus_zoom_control_leave_notify (GtkWidget *widget,
-			 	    GdkEventCrossing *event)
-{
-	nautilus_zoom_control_set_prelight_mode (NAUTILUS_ZOOM_CONTROL (widget), PRELIGHT_NONE);
-  	return FALSE;
-}
 
 static AtkObject *
 nautilus_zoom_control_get_accessible (GtkWidget *widget)
@@ -670,52 +399,6 @@ nautilus_zoom_control_get_accessible (GtkWidget *widget)
 		(nautilus_zoom_control_accessible_get_type (), NULL);
 	
 	return eel_accessibility_set_atk_object_return (widget, accessible);
-}
-
-static gboolean
-nautilus_zoom_control_motion_notify (GtkWidget *widget, GdkEventMotion *event)
-{
-	int x, y, x_offset;
-	int width, center;
-	NautilusZoomControl *zoom_control;
-	PrelightMode mode;
-	
-	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
-	
-	gtk_widget_get_pointer (widget, &x, &y);
-	
-	x_offset = x ;
-	width = widget->allocation.width;
-	center = width >> 1;
-
-	mode = PRELIGHT_NONE;
-	if ((x_offset < (width / 3)) && nautilus_zoom_control_can_zoom_out (zoom_control)) {
-		mode = PRELIGHT_MINUS;		
-	} else if ((x_offset > ((2 * width) / 3)) && nautilus_zoom_control_can_zoom_in (zoom_control)) {
-		mode = PRELIGHT_PLUS;
-	} else if ((x_offset >= (center - (width >> 3))) && (x_offset <= (center + (width >> 3)))) {
-		mode = PRELIGHT_CENTER;
-	}
-
-	nautilus_zoom_control_set_prelight_mode (zoom_control, mode);
-	
-	return FALSE;
-}
-
-
-/* handle setting the size */
-static void
-nautilus_zoom_control_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
-{
-	NautilusZoomControl *zoom_control;
-
-	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
-
-	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
-	
-	widget->allocation.width = get_zoom_width (zoom_control);
-   	widget->allocation.height = allocation->height;
-	nautilus_zoom_control_update_offsets (zoom_control);
 }
 
 static void
@@ -742,7 +425,7 @@ void
 nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, float zoom_level)
 {
 	zoom_control->details->zoom_level = zoom_level;
-	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
+	nautilus_zoom_control_redraw (zoom_control);
 }
 
 void
@@ -763,7 +446,7 @@ nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
 	eel_g_list_free_deep (zoom_control->details->preferred_zoom_levels);
 	zoom_control->details->preferred_zoom_levels = zoom_levels;
 
-	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
+	nautilus_zoom_control_redraw (zoom_control);
 }
 
 float
@@ -852,11 +535,6 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	
-	widget_class->button_press_event = nautilus_zoom_control_button_press_event;
-	widget_class->expose_event = nautilus_zoom_control_expose;
-	widget_class->motion_notify_event = nautilus_zoom_control_motion_notify;
-	widget_class->size_allocate = nautilus_zoom_control_size_allocate;
-  	widget_class->leave_notify_event = nautilus_zoom_control_leave_notify;
 	widget_class->get_accessible = nautilus_zoom_control_get_accessible;
 	widget_class->scroll_event = nautilus_zoom_control_scroll_event;
 	
@@ -1162,7 +840,7 @@ nautilus_zoom_control_accessible_get_type (void)
 		
 		type = eel_accessibility_create_derived_type
 			("NautilusZoomControlAccessible",
-			 EEL_TYPE_INPUT_EVENT_BOX,
+			 GTK_TYPE_HBOX,
 			 nautilus_zoom_control_accessible_class_init);
 		
  		g_type_add_interface_static (type, ATK_TYPE_ACTION,
