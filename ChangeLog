@@ -1,5 +1,12 @@
 2001-05-04  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* configure.in:
+	No need to set gconf flags here since eel will have already done so.
+	
+	* nautilus.spec.in:
+	Change the BuildRequires entries for eel and librsvg to be
+	eel-devel and librsvg-devel.
+	
 	* libnautilus-private/nautilus-dateedit-extensions.c:
 	* libnautilus-private/nautilus-dateedit-extensions.h:
 	* libnautilus-private/nautilus-generous-bin.c:
@@ -17,6 +24,67 @@
 	* libnautilus-private/nautilus-preferences.c:
 	* libnautilus-private/nautilus-preferences.h:
 	Moved to Eel.
+	
+	* applets/preferences-applet/nautilus-preferences-applet.c:
+	* components/adapter/nautilus-adapter.c:
+	* components/news/nautilus-news.c:
+	* components/text/nautilus-text-view.c:
+	* components/throbber/nautilus-throbber.c:
+	* components/tree/nautilus-tree-expansion-state.c:
+	* components/tree/nautilus-tree-view.c:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory-background.c:
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-entry.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-file-utilities.c:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-font-factory.c:
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-factory.c:
+	* libnautilus-private/nautilus-lib-self-check-functions.h:
+	* libnautilus-private/nautilus-link-set.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-sidebar-functions.c:
+	* libnautilus-private/nautilus-sound.c:
+	* libnautilus-private/nautilus-theme.c:
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/nautilus-indexing-info.c:
+	* src/nautilus-application.c:
+	* src/nautilus-first-time-druid.c:
+	* src/nautilus-link-set-window.c:
+	* src/nautilus-main.c:
+	* src/nautilus-navigation-bar.c:
+	* src/nautilus-navigation-bar.h:
+	* src/nautilus-preferences-dialog.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-search-bar-criterion.c:
+	* src/nautilus-shell.c:
+	* src/nautilus-sidebar-tabs.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-sidebar.c:
+	* src/nautilus-switchable-search-bar.c:
+	* src/nautilus-theme-selector.c:
+	* src/nautilus-view-frame.c:
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-toolbars.c:
+	* src/nautilus-window.c:
+	* src/nautilus-zoom-control.c:
+	* test/test-nautilus-preferences-change.c:
+	* test/test-nautilus-preferences-display.c:
+	* test/test-nautilus-smooth-graphics.c:
+	* test/test.c:
+	Update for latest round of stuff moving into Eel.
 	
 2001-05-03  Andy Hertzfeld  <andy@eazel.com>
 
