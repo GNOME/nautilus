@@ -106,7 +106,7 @@ libeazelpackagesystem_skeleton_la_SOURCES = 	\
 	$(NULL)
 
 
-if COMPILE_RPM_40
+if COMPILE_RPM_30
 
 # libeazelpackagesystem-rpm3
 libeazelpackagesystem_rpm3_la_SOURCES = 	\
