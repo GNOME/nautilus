@@ -6,6 +6,8 @@ INCLUDES = -I. -I$(srcdir) \
 	-I$(top_builddir) \
 	-I$(includedir) \
 	$(GNOME_CFLAGS) \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(APPLETS_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
@@ -20,6 +22,8 @@ nautilus_preferences_applet_SOURCES =\
 nautilus_preferences_applet_LDADD =	\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(APPLETS_LIBS) \
 	$(NULL)
 
