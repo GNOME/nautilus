@@ -89,6 +89,7 @@ install_icon (GtkCList *clist, gint row)
 	NautilusBookmark *bookmark;
 
 	bookmark = get_bookmark_from_row (clist, row);
+	
 	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
 		  				    NAUTILUS_ICON_SIZE_SMALLER,
 						    &pixmap,
@@ -108,7 +109,7 @@ static void
 history_view_update_icons (GtkCList *clist)
 {
 	int row;
-
+		
 	for (row = 0; row < clist->rows; ++row) {
 		install_icon (clist, row);
 	}
@@ -151,6 +152,7 @@ history_load_location (NautilusView *view,
 
 	/* Populate with data from main history list */	
 	history = get_history_list (hview);
+	
 	for (i = 0; i < history->list._length; i++) {
 		item = &history->list._buffer[i];		
 		bookmark = nautilus_bookmark_new (item->location, item->title);
@@ -235,7 +237,7 @@ do_destroy(GtkObject *obj, HistoryView *hview)
 
 
 static BonoboObject *
-make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
+make_obj (BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
 	GtkWidget *wtmp;
 	GtkCList *clist;

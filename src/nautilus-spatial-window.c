@@ -1136,7 +1136,9 @@ nautilus_window_get_history_list_callback (NautilusViewFrame *view,
 
 	history = Nautilus_History__alloc ();
 	list = &history->list;
-	history->position = 0; /* FIXME */
+
+	/* Set the the index in the list of the location of the current page */
+	history->position = nautilus_window_get_base_page_index (window); 
 
 	list->_length = length;
 	list->_maximum = length;
@@ -1531,4 +1533,31 @@ nautilus_window_show_statusbar (NautilusWindow *window)
 	if (app->statusbar != NULL) {
 		gtk_widget_show (GTK_WIDGET (app->statusbar)->parent);
 	}	
+}
+
+/**
+ * nautilus_window_get_base_page_index:
+ * @window:	Window to get index from
+ *
+ * Returns the index of the base page in the history list.
+ * Base page is not the currently displayed page, but the page
+ * that acts as the base from which the back and forward commands
+ * navigate from.
+ */
+gint 
+nautilus_window_get_base_page_index (NautilusWindow *window)
+{
+	gint forward_count;
+	
+	forward_count = g_slist_length (window->forward_list); 
+
+	/* If forward is empty, the base it at the top of the list */
+	if (forward_count == 0) {
+		return 0;
+	}
+
+	/* The forward count indicate the relative postion of the base page
+	 * in the history list
+	 */ 
+	return forward_count;
 }

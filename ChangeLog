@@ -1,3 +1,18 @@
+2000-07-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	* components/history/nautilus-history-view.c: (install_icon),
+	(history_view_update_icons), (history_load_location), (make_obj):
+	Added code to check for position of current page in list.
+	
+	* src/nautilus-window.c:
+	* src/nautilus-window.h:
+	(nautilus_window_get_base_page_index):
+	New function to return the index of the base page in the
+	history list.
+	
+	(nautilus_window_get_history_list_callback),
+	Set position field of returned list info using new function above.
+	
 2000-07-13  Darin Adler  <darin@eazel.com>
 
 	My apologies to all who read the cvs commits list that have
