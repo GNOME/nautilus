@@ -181,4 +181,8 @@ noinst_HEADERS =				\
 	nautilus-user-level-manager.h		\
 	nautilus-view-identifier.h		\
 	nautilus-xml-extensions.h		\
+	nautilus-cdrom-extensions.h		\
+	nautilus-iso9660.h			\
+	nautilus-search-bar-criterion-private.h	\
+	nautilus-volume-monitor.h		\
 	$(NULL)
