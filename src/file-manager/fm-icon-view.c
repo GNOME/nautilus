@@ -72,9 +72,7 @@
 #define MENU_PATH_MANUAL_LAYOUT 		"/View/Lay Out/Manual Layout"
 #define MENU_PATH_AUTO_LAYOUT_SEPARATOR 	"/View/Lay Out/AutoLayoutSeparator"
 #define MENU_PATH_CLEAN_UP			"/View/Clean Up"
-#define MENU_PATH_SORT_DIRECTION_RADIO_GROUP 	"/View/SortDirectionRadioGroup"
-#define MENU_PATH_SORT_ASCENDING	   	"/View/Ascending"
-#define MENU_PATH_SORT_DESCENDING	   	"/View/Descending"
+#define MENU_PATH_SORT_REVERSED			"/View/Reversed Order"
 
 /* forward declarations */
 static void 	create_icon_container                    (FMIconView        *icon_view);
@@ -162,7 +160,7 @@ struct FMIconViewDetails
 	gboolean sort_reversed;
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	gboolean updating_bonobo_radio_menu_item;
+	gboolean updating_bonobo_marked_menu_item;
 };
 
 static void
@@ -573,7 +571,7 @@ update_layout_menus (FMIconView *view)
 	}
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	view->details->updating_bonobo_radio_menu_item = TRUE;
+	view->details->updating_bonobo_marked_menu_item = TRUE;
 
 	is_auto_layout = nautilus_icon_container_is_auto_layout 
 		(get_icon_container (view));
@@ -588,28 +586,18 @@ update_layout_menus (FMIconView *view)
 	bonobo_ui_handler_menu_set_radio_state (ui_handler, path, TRUE);
 
 	/* Sort order isn't relevant for manual layout. */
-	/* Note that sensitivity must be set before setting which radio
-	 * item is active, or the active state might be changed (Bonobo
-	 * bug)
-	 */
 	bonobo_ui_handler_menu_set_sensitivity
-		(ui_handler, MENU_PATH_SORT_DESCENDING, is_auto_layout);
-	bonobo_ui_handler_menu_set_sensitivity
-		(ui_handler, MENU_PATH_SORT_ASCENDING, is_auto_layout);
+		(ui_handler, MENU_PATH_SORT_REVERSED, is_auto_layout);
 
 	/* Mark sort order. */
-	if (view->details->sort_reversed) {
-		path = MENU_PATH_SORT_DESCENDING;
-	} else {
-		path = MENU_PATH_SORT_ASCENDING;
-	}
-	bonobo_ui_handler_menu_set_radio_state (ui_handler, path, TRUE);
+	bonobo_ui_handler_menu_set_toggle_state 
+		(ui_handler, MENU_PATH_SORT_REVERSED, view->details->sort_reversed);
 
 	/* Clean Up is only relevant for manual layout */
 	bonobo_ui_handler_menu_set_sensitivity
 		(ui_handler, MENU_PATH_CLEAN_UP, !is_auto_layout);	
 		 
-	view->details->updating_bonobo_radio_menu_item = FALSE;
+	view->details->updating_bonobo_marked_menu_item = FALSE;
 }
 
 
@@ -762,19 +750,6 @@ get_sort_criterion_by_menu_path (const char *path)
 		}
 	}
 	return NULL;
-}
-
-static gboolean
-get_sort_reversed_from_menu_path (const char *path)
-{
-	if (strcmp (path, MENU_PATH_SORT_DESCENDING) == 0) {
-		return TRUE;
-	}
-
-	/* Complain softly about unexpected parameter. */
-	g_return_val_if_fail (strcmp (path, MENU_PATH_SORT_ASCENDING) == 0, FALSE);
-
-	return FALSE;
 }
 
 static void
@@ -1023,7 +998,7 @@ sort_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
 	icon_view = FM_ICON_VIEW (user_data);
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	if (icon_view->details->updating_bonobo_radio_menu_item) {
+	if (icon_view->details->updating_bonobo_marked_menu_item) {
 		return;
 	}
 
@@ -1040,11 +1015,13 @@ sort_direction_callback (BonoboUIHandler *handler, gpointer user_data, const cha
 	icon_view = FM_ICON_VIEW (user_data);
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	if (icon_view->details->updating_bonobo_radio_menu_item) {
+	if (icon_view->details->updating_bonobo_marked_menu_item) {
 		return;
 	}
 
-	set_sort_reversed (icon_view, get_sort_reversed_from_menu_path (path));
+	set_sort_reversed (icon_view, 
+			   bonobo_ui_handler_menu_get_toggle_state 
+				(handler, MENU_PATH_SORT_REVERSED));
 	nautilus_icon_container_sort (get_icon_container (icon_view));
 
 }
@@ -1059,7 +1036,7 @@ manual_layout_callback (BonoboUIHandler *handler,
 	icon_view = FM_ICON_VIEW (user_data);
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-	if (icon_view->details->updating_bonobo_radio_menu_item) {
+	if (icon_view->details->updating_bonobo_marked_menu_item) {
 		return;
 	}
 
@@ -1148,7 +1125,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		 (BonoboUIHandlerCallback) unstretch_icons_callback, view);
 
 	/* Additions to View menu. */
-	icon_view->details->updating_bonobo_radio_menu_item = TRUE;
+	icon_view->details->updating_bonobo_marked_menu_item = TRUE;
 
 	bonobo_ui_handler_menu_new_separator
 		(ui_handler, MENU_PATH_LAYOUT_SEPARATOR, 
@@ -1188,25 +1165,15 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		 _("Reposition icons to better fit in the window and avoid overlapping"),
 		 get_next_position (ui_handler, MENU_PATH_LAY_OUT),
 		 (BonoboUIHandlerCallback) clean_up_callback, view);
-	bonobo_ui_handler_menu_new_radiogroup 
-		(ui_handler, MENU_PATH_SORT_DIRECTION_RADIO_GROUP);
-	bonobo_ui_handler_menu_new_radioitem
+	bonobo_ui_handler_menu_new_toggleitem
 		(ui_handler,
-		 MENU_PATH_SORT_ASCENDING,
-		 _("_Ascending"),
-		 _("Sort icons from \"smallest\" to \"largest\" according to sort criteria"),
+		 MENU_PATH_SORT_REVERSED,
+		 _("Re_versed Order"),
+		 _("Display icons in the opposite order"),
 		 get_next_position (ui_handler, MENU_PATH_CLEAN_UP),
 		 0, 0,
 		 sort_direction_callback, view);
-	bonobo_ui_handler_menu_new_radioitem
-		(ui_handler,
-		 MENU_PATH_SORT_DESCENDING,
-		 _("Des_cending"),
-		 _("Sort icons from \"largest\" to \"smallest\" according to sort criteria"),
-		 get_next_position (ui_handler, MENU_PATH_SORT_ASCENDING),
-		 0, 0,
-		 sort_direction_callback, view);
-	icon_view->details->updating_bonobo_radio_menu_item = FALSE;
+	icon_view->details->updating_bonobo_marked_menu_item = FALSE;
 
 	/* File menu. */
         insert_bonobo_menu_item

@@ -1110,9 +1110,9 @@ static int
 nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *file_2)
 {
 	/* Sort order:
-	 *   Directories with unkown # of items
-	 *   Directories with 0 items
 	 *   Directories with n items
+	 *   Directories with 0 items
+	 *   Directories with unknown # of items
 	 *   All files.
 	 * The files are sorted by size in a separate pass.
 	 */
@@ -1145,29 +1145,29 @@ nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *f
 								&count_unreadable_2);
 
 	if (!count_known_1 && count_known_2) {
-		return -1;
+		return +1;
 	}
 	if (count_known_1 && !count_known_2) {
-		return +1;
+		return -1;
 	}
 
 	if (!count_known_1 && !count_known_2) {
-		/* Put unknowable before simply unknown. */
+		/* Put unknowable after simply unknown. */
 		if (count_unreadable_1 && !count_unreadable_2) {
-			return -1;
+			return +1;
 		}
 
 		if (!count_unreadable_1 && count_unreadable_2) {
-			return +1;
+			return -1;
 		}
 
 		return 0;
 	}
 
-	if (item_count_1 < item_count_2) {
+	if (item_count_1 > item_count_2) {
 		return -1;
 	}
-	if (item_count_2 < item_count_1) {
+	if (item_count_2 > item_count_1) {
 		return +1;
 	}
 

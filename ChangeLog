@@ -1,3 +1,23 @@
+2000-08-25  John Sullivan  <sullivan@eazel.com>
+
+	Made sorting by size put big ones first, to match
+	common sense. (Date now puts recent ones first by
+	the same reasoning.) Changed "Ascending/Descending"
+	pair of items to single "Reversed Order" item so
+	it isn't making any promises about order.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_compare_directories_by_size): Reverse
+	the logic for directory ordering.
+	* src/file-manager/fm-icon-view.c: 
+	Changed Details field from updating_bonobo_radio_menu_item
+	to updating_bonobo_marked_menu_item since it now covers one
+	toggle item also.
+	(update_layout_menus), (sort_callback), (sort_direction_callback),
+	(manual_layout_callback), (fm_icon_view_merge_menus): Changed
+	all the code dealing with "Ascending/Descending" radio-item pair
+	to deal with single "Reversed Order" toggle item instead.
+
 2000-08-24  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/converters/gnome-db2html2/sect-elements.c:
@@ -577,7 +597,6 @@ Fri Aug 25 02:17:17 2000  George Lebl <jirka@5z.com>
 	(nautilus_window_show_location_bar),
 	(nautilus_window_hide_tool_bar), (nautilus_window_show_tool_bar):
 	Use new code-sharing functions.
-
 	(nautilus_window_location_bar_showing),
 	(nautilus_window_tool_bar_showing), 
 	(nautilus_window_sidebar_showing),
