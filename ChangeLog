@@ -1,3 +1,25 @@
+2000-07-08  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/inventory/nautilus-view/Makefile.am:
+	* components/services/inventory/nautilus-view/main.c: (main):
+	*
+	components/services/inventory/nautilus-view/nautilus-inventory-view
+	.oafinfo:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/main.c: (main):
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/startup/nautilus-view/icons/Makefile.am:
+	* components/services/startup/nautilus-view/main.c: (main):
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/main.c: (main):
+	*
+	components/services/summary/nautilus-view/nautilus-summary-view.oaf
+	info:
+
+	Fixing oafinfo files based on Darin's suggestion and cleaning up main
+	functions to use locale and remove old corba call that is no longer
+	needed.
+
 2000-07-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/server/.cvsignore:

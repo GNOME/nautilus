@@ -6,6 +6,7 @@ icon_DATA =					\
 	config-gather.png			\
 	register.png				\
 	eazel-cloud-logo.png			\
+	startup-logo.png			\
 	service-watch.png			\
 	$(NULL)
 

@@ -70,10 +70,12 @@ main (int argc, char *argv[]) {
 
 	BonoboGenericFactory	*factory;
 	CORBA_ORB		orb;
-	CORBA_Environment	ev;
-	
-	CORBA_exception_init (&ev);
-	
+
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
         gnome_init_with_popt_table ("nautilus-login-view", VERSION, 
                                     argc, argv,
                                     oaf_popt_options, 0, NULL);
