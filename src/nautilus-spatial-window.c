@@ -312,7 +312,7 @@ static void
 nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
-  GtkWidget *location_bar_box, *wtmp, *statusbar;
+  GtkWidget *location_bar_box, *statusbar;
   GtkMenuBar *menubar;
   GtkToolbar *toolbar;
   GtkAccelGroup *ag;
