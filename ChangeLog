@@ -1,3 +1,18 @@
+2000-06-07  Pavel  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_get):
+	Added missing unrefs to three exit places. 
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_type_for_uri),
+	(nautilus_mime_get_default_application_for_uri),
+	(nautilus_mime_get_default_component_for_uri_internal),
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_set_short_list_applications_for_uri),
+	(nautilus_mime_set_short_list_components_for_uri),
+	(nautilus_do_component_query):
+	Fixed a ton of leaked mime type strings.
+
 2000-06-07  Andy Hertzfeld  <andy@eazel.com>
 
 	more work on gradient backgrounds in anti-aliased mode; vertical ones are

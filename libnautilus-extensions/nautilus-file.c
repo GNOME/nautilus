@@ -170,6 +170,7 @@ nautilus_file_get (const char *uri)
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (uri);
 	if (vfs_uri == NULL) {
+		gnome_vfs_file_info_unref (file_info);
 		return NULL;
 	}
 
@@ -177,6 +178,7 @@ nautilus_file_get (const char *uri)
 	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 	if (directory_vfs_uri == NULL) {
+		gnome_vfs_file_info_unref (file_info);
 		return NULL;
 	}
 
@@ -189,6 +191,7 @@ nautilus_file_get (const char *uri)
 	directory = nautilus_directory_get (directory_uri);
 	g_free (directory_uri);
 	if (directory == NULL) {
+		gnome_vfs_file_info_unref (file_info);
 		return NULL;
 	}
 

@@ -76,7 +76,7 @@ static char *get_mime_type_from_uri (const char
 GnomeVFSMimeActionType
 nautilus_mime_get_default_action_type_for_uri (const char *uri)
 {
-	const char *mime_type;
+	char *mime_type;
 	NautilusDirectory *directory;
 	char *action_type_string;
 
@@ -101,6 +101,8 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
 		} else {
 			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
 		}
+
+		g_free (mime_type);
 	} else {
 		if (strcasecmp (action_type_string, "application") == 0) {
 			return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
@@ -152,7 +154,7 @@ nautilus_mime_get_default_action_for_uri (const char *uri)
 GnomeVFSMimeApplication *
 nautilus_mime_get_default_application_for_uri (const char *uri)
 {
-	const char *mime_type;
+	char *mime_type;
 	GnomeVFSMimeApplication *result;
 	NautilusDirectory *directory;
 	char *default_application_string;
@@ -179,6 +181,7 @@ nautilus_mime_get_default_application_for_uri (const char *uri)
 		} else {
 			result = NULL;
 		}
+		g_free (mime_type);
 	} else {
 		result = gnome_vfs_mime_application_new_from_id (default_application_string);
 	}
@@ -193,7 +196,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	OAF_ServerInfo *mime_default; 
 	NautilusDirectory *directory;
 	char *default_component_string;
-	const char *mime_type;
+	char *mime_type;
 	char *uri_scheme;
 	GList *files;
 	GList *attributes;
@@ -273,6 +276,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 		server = NULL;
 	}
 
+	g_free (mime_type);
 	g_free (default_component_string);
 
 	CORBA_exception_free (&ev);
@@ -280,7 +284,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	if (user_chosen != NULL) {
 		*user_chosen = used_user_chosen_info;
 	}
-	
+
 	return server;
 }
 
@@ -338,6 +342,8 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 		result = NULL;
 	}
 
+	g_free (mime_type);
+
 	result = nautilus_g_list_partition (result, (NautilusGPredicateFunc) gnome_vfs_mime_application_has_id_not_in_list, 
 					    metadata_application_remove_ids, &removed);
 
@@ -358,7 +364,6 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 		}
 	}
 
-	g_free (mime_type);
 	CORBA_exception_free (&ev);
 
 	/* FIXME bugzilla.eazel.com 1266: should sort alphabetically by name or something */
@@ -621,6 +626,8 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 		normal_short_list = NULL;
 	}
 
+	g_free (mime_type);
+
 	normal_short_list_ids = NULL;
 	for (p = normal_short_list; p != NULL; p = p->next) {
 		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((GnomeVFSMimeApplication *) p->data)->id);
@@ -667,6 +674,8 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 		normal_short_list = NULL;
 	}
 
+	g_free (mime_type);
+	
 	normal_short_list_ids = NULL;
 	for (p = normal_short_list; p != NULL; p = p->next) {
 		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((OAF_ServerInfo *) p->data)->iid);
@@ -1245,6 +1254,7 @@ nautilus_do_component_query (const char *mime_type,
 	} else {
 		oaf_result = oaf_query (query, nautilus_sort_criteria, ev);		
 	}
+	g_free (query);
 
 	retval = NULL;
 
