@@ -1,3 +1,16 @@
+2000-06-01  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(add_component_to_gtk_menu), 
+	(add_component_to_bonobo_menu): Call viewers "xxx Viewer"
+	in "Open With" submenu.
+	(add_open_with_bonobo_menu_item): Use the double-underscore
+	trick to avoid getting underlined characters in program names.
+	* src/nautilus-window.c: (chose_component_callback):
+	Don't destroy identifier here; caller handles that. Now the
+	View as Other choice in the option menu works, with one bug:
+	the option menu label isn't updated properly.
+
 2000-06-01  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c:

@@ -739,10 +739,9 @@ chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_
 
 	if (identifier != NULL) {
 		/* FIXME: Need to add menu item for new identifier to "View as" menu. */
+		/* FIXME: After switching, option menu doesn't synch to new value. */
 		nautilus_window_switch_views (NAUTILUS_WINDOW (callback_data), identifier->iid);
 	}
-
-	nautilus_view_identifier_free (identifier);
 }
 
 static void

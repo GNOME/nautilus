@@ -1942,12 +1942,15 @@ add_component_to_gtk_menu (GtkMenu *menu,
 {
 	GtkWidget *menu_item;
 	NautilusViewIdentifier *identifier;
+	char *label;
 
 	g_assert (GTK_IS_MENU (menu));
 
 	identifier = nautilus_view_identifier_new_from_content_view (component);
 
-	menu_item = gtk_menu_item_new_with_label (identifier->name);
+	label = g_strdup_printf ("%s Viewer", identifier->name);
+	menu_item = gtk_menu_item_new_with_label (label);
+	g_free (label);
 
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
 				  "identifier",
@@ -2110,16 +2113,19 @@ add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 				gpointer callback_data)
 {
 	char *path;
-	
+	char *escaped_label;
+
+	escaped_label = nautilus_str_double_underscores (label);
 	path = bonobo_ui_handler_build_path 
 		(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
 		 label,
 		 NULL);
 	bonobo_ui_handler_menu_new_item
-		(ui_handler, path, label, NULL,
+		(ui_handler, path, escaped_label, NULL,
 		 -1, BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
 		 0, 0,
 		 callback, callback_data);
+	g_free (escaped_label);
 	g_free (path);
 }
 
@@ -2189,6 +2195,7 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 			      const char *uri)
 {
 	ViewerLaunchParameters *launch_parameters;
+	char *label;
 
 	/* FIXME bugzilla.eazel.com 1072: This struct is never freed; 
 	 * need a version of Bonobo menu item setup that takes a 
@@ -2199,10 +2206,12 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 		nautilus_view_identifier_new_from_content_view (component);
 	launch_parameters->file_uri = g_strdup (uri);	
 
+	label = g_strdup_printf ("%s Viewer", launch_parameters->identifier->name);
 	add_open_with_bonobo_menu_item (ui_handler, 
-					launch_parameters->identifier->name, 
+					label, 
 					bonobo_open_location_with_viewer_callback, 
 					launch_parameters);
+	g_free (label);
 }
 
 static void
