@@ -1,11 +1,11 @@
 
 #include <config.h>
 
-#include "nautilus-caption-table.h"
-#include "nautilus-password-dialog.h"
-#include "nautilus-radio-button-group.h"
-#include "nautilus-string-picker.h"
-#include "nautilus-text-caption.h"
+#include <libnautilus-extensions/nautilus-caption-table.h>
+#include <libnautilus-extensions/nautilus-password-dialog.h>
+#include <libnautilus-extensions/nautilus-radio-button-group.h>
+#include <libnautilus-extensions/nautilus-string-picker.h>
+#include <libnautilus-extensions/nautilus-text-caption.h>
 
 #include <gtk/gtk.h>
 

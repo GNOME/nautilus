@@ -51,6 +51,11 @@ void *(* real_memalign) (size_t boundary, size_t size);
 void *(* real_realloc) (void *ptr, size_t size);
 void *(* real_calloc) (void *ptr, size_t size);
 void (* real_free) (void *ptr);
+int  (* real_start_main) (int (*main) (int, char **, char **), int argc, 
+			  char **argv, void (*init) (void), void (*fini) (void), 
+			  void (*rtld_fini) (void), void *stack_end);
+
+
 
 const char *app_path;
 
@@ -146,6 +151,7 @@ nautilus_leak_initialize (void)
 	real_free = dlsym (RTLD_NEXT, "__libc_free");
 	real_memalign = dlsym (RTLD_NEXT, "__libc_memalign");
 	real_calloc = dlsym (RTLD_NEXT, "__libc_calloc");
+	real_start_main = dlsym (RTLD_NEXT, "__libc_start_main");
 
 	nautilus_leak_hooks_initialized = TRUE;
 	nautilus_leak_check_leaks = TRUE;
@@ -504,6 +510,20 @@ __libc_free (void *ptr)
 	(real_free) (ptr);
 }
 
+int
+__libc_start_main (int (*main) (int, char **, char **), int argc, 
+		   char **argv, void (*init) (void), void (*fini) (void), 
+		   void (*rtld_fini) (void), void *stack_end)
+{
+	nautilus_leak_initialize_if_needed ();
+
+	nautilus_leak_checker_init (argv[0]);
+
+	printf ("once\n");
+
+	return real_start_main (main, argc, argv, init, fini,  rtld_fini, stack_end);
+}
+
 /* We try to keep a lot of code in between __libc_free and malloc to make
  * the reentry detection that depends on call address proximity work.
  */
@@ -587,6 +607,13 @@ nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
 	nautilus_leak_print_symbol_cleanup ();
 }
 
+static void
+print_leaks_at_exit (void)
+{
+	/* If leak checking, dump all the outstanding allocations just before exiting. */
+	nautilus_leak_print_leaks (8, 15, 40, TRUE);
+}
+
 void 
 nautilus_leak_checker_init (const char *path)
 {
@@ -595,6 +622,8 @@ nautilus_leak_checker_init (const char *path)
 	 */
 	printf("setting up the leakchecker for %s\n", path);
 	app_path = path;
+
+	g_atexit (print_leaks_at_exit);
 }
 
 void *

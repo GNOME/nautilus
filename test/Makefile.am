@@ -30,14 +30,20 @@ LDADD =\
 	$(XML_LIBS) \
 	$(NULL)
 
-noinst_PROGRAMS =				\
-	test-nautilus-mime-actions		\
-	test-nautilus-mime-actions-set		\
+noinst_PROGRAMS =\
+	test-nautilus-mime-actions \
+	test-nautilus-mime-actions-set \
+	test-nautilus-widgets \
+	test-nautilus-preferences \
 	$(NULL)
 
 test_nautilus_mime_actions_SOURCES = test-nautilus-mime-actions.c
 
 test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c
+
+test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
+
+test_nautilus_preferences_SOURCES = test-nautilus-preferences.c
 
 #libleakcheck_la_SOURCES =    		\
 #	nautilus-leak-checker.c		\

@@ -1,5 +1,26 @@
 2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/test-nautilus-preferences.c:
+	* libnautilus-extensions/test-nautilus-widgets.c:
+	* libnautilus-extensions/test-preferences.c:
+	Moved widgets and preferences test to nautilus/test.
+	
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-preferences.c: (main),
+	(test_preferences_item), (test_preferences_group),
+	(create_enum_item), (register_global_preferences):
+	* test/test-nautilus-widgets.c: (main), (test_radio_group),
+	(test_caption_table), (test_string_picker), (test_text_caption),
+	(test_authenticate_boink_callback),
+	(string_picker_changed_callback), (text_caption_changed_callback),
+	(test_password_dialog), (test_radio_changed_callback),
+	(test_caption_table_activate_callback):
+	Ressurect my widgets/preferences test over here.  They got whacked
+	in the nautilus-widgets -> libnautilus-extensions renamings.
+	
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory.c:
 	(construct_alternate_metafile_uri):
 	* libnautilus-extensions/nautilus-file-utilities.c:
