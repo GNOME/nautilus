@@ -961,6 +961,7 @@ selection_is_image_file (GList *selection_list)
 	mime_type = gnome_vfs_get_mime_type (selected_item->uri);
 
 	result = (g_ascii_strcasecmp (mime_type, "image/svg") != 0 &&
+		  g_ascii_strcasecmp (mime_type, "image/svg+xml") != 0 &&
 		  eel_istr_has_prefix (mime_type, "image/"));
 	
 	g_free (mime_type);
