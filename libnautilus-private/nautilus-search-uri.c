@@ -192,7 +192,7 @@ struct _value_criterion_item {
 	char *translation;
         /* this field is there only to make the 3 structures similar enough 
            so that you can safely cast between them it is a kind of evil hack 
-           but i like it. It is waranteed to be always NULL. */
+           but i like it. It is guaranteed to be always NULL. */
 	value_criterion_table items; 
 };
 
@@ -507,13 +507,7 @@ get_translated_criterion (const GSList *criterion)
  * get_first_criterion_prefix:
  * @criterion: The GSList whose data field points to the criterion GSList.
  *
- * calculates the "whose", "who" or "which" prefix for a given criterion.
- * FIXME bugzilla.eazel.com 2440: it is an ugly hack I added after arlo asked me to:
- * it is likely to be a pain for translations. I need to modify the data struct 
- * for  this to work cleanly.
- *
- * return value: the translated prefix.
- */
+ * calculates the prefix for a given criterion */
 static char *
 get_first_criterion_prefix (GSList *criterion) 
 {
