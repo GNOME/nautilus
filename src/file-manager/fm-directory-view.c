@@ -142,6 +142,8 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
 
+#define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER      "/popups/background/Before Zoom Items/Scripts/Scripts Placeholder"
+
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/popups/selection/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Open With/Viewers Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Scripts/Scripts Placeholder"
@@ -3638,10 +3640,11 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 
 static void
 add_script_to_script_menus (FMDirectoryView *directory_view,
-			  NautilusFile *file,
-			  int index,
-			  const char *menu_path,
-			  const char *popup_path)
+			    NautilusFile *file,
+			    int index,
+			    const char *menu_path,
+			    const char *popup_path, 
+			    const char *popup_bg_path)
 {
 	ScriptLaunchParameters *launch_parameters;
 	char *tip;
@@ -3677,6 +3680,15 @@ add_script_to_script_menus (FMDirectoryView *directory_view,
 				run_script_callback,
 				launch_parameters,
 				NULL);
+	add_numbered_menu_item (directory_view->details->ui,
+				popup_bg_path,
+				name,
+				tip,
+				index,
+				pixbuf,
+				run_script_callback,
+				launch_parameters,
+				NULL);
 
 	g_object_unref (pixbuf);
 	g_free (name);
@@ -3687,7 +3699,8 @@ static void
 add_submenu_to_script_menus (FMDirectoryView *directory_view,
 			     NautilusFile *file,
 			     const char *menu_path,
-			     const char *popup_path)
+			     const char *popup_path,
+			     const char *popup_bg_path)
 {
 	char *name;
 	GdkPixbuf *pixbuf;
@@ -3697,6 +3710,7 @@ add_submenu_to_script_menus (FMDirectoryView *directory_view,
 		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
 	add_submenu (directory_view->details->ui, menu_path, name, pixbuf);
 	add_submenu (directory_view->details->ui, popup_path, name, pixbuf);
+	add_submenu (directory_view->details->ui, popup_bg_path, name, pixbuf);
 	g_object_unref (pixbuf);
 	g_free (name);
 }
@@ -3728,19 +3742,22 @@ directory_belongs_in_scripts_menu (const char *uri)
 static gboolean
 update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *directory)
 {
-	char *menu_path, *popup_path;
+	char *menu_path, *popup_path, *popup_bg_path;
 	GList *file_list, *filtered, *node;
 	gboolean any_scripts;
 	NautilusFile *file;
 	NautilusDirectory *dir;
 	char *uri;
 	int i;
-
+	
 	uri = nautilus_directory_get_uri (directory);
 	menu_path = g_strconcat (FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER,
 				 uri + scripts_directory_uri_length,
 				 NULL);
 	popup_path = g_strconcat (FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER,
+				  uri + scripts_directory_uri_length,
+				  NULL);
+	popup_bg_path = g_strconcat (FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER,
 				  uri + scripts_directory_uri_length,
 				  NULL);
 	g_free (uri);
@@ -3757,7 +3774,7 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 		file = node->data;
 
 		if (file_is_launchable (file)) {
-			add_script_to_script_menus (view, file, i++, menu_path, popup_path);
+			add_script_to_script_menus (view, file, i++, menu_path, popup_path, popup_bg_path);
 			any_scripts = TRUE;
 		} else if (nautilus_file_is_directory (file)) {
 			uri = nautilus_file_get_uri (file);
@@ -3766,7 +3783,7 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 				add_directory_to_scripts_directory_list (view, dir);
 				nautilus_directory_unref (dir);
 
-				add_submenu_to_script_menus (view, file, menu_path, popup_path);
+				add_submenu_to_script_menus (view, file, menu_path, popup_path, popup_bg_path);
 
 				any_scripts = TRUE;
 			}
@@ -3777,6 +3794,7 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 	nautilus_file_list_free (file_list);
 
 	g_free (popup_path);
+	g_free (popup_bg_path);
 	g_free (menu_path);
 
 	return any_scripts;

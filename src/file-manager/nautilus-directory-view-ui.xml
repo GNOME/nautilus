@@ -184,6 +184,14 @@
 			<placeholder name="New Items">
 				<menuitem name="New Folder" verb="New Folder"/>
 			</placeholder>
+                        <submenu name="Scripts"
+				 _label="Scripts"
+				 _tip="Run or manage scripts from ~/Nautilus/scripts"
+				 tearoff="0">
+				 <placeholder name="Scripts Placeholder" delimit="none"/>
+				 <separator name="After Scripts"/>
+				 <menuitem name="Open Scripts Folder" verb="Open Scripts Folder"/>
+			</submenu>
 			<placeholder name="View Items" delimit="top"/>
 			<placeholder name="File Clipboard Actions" delimit="top">
 				<menuitem name="Cut Files" verb="Cut Files"/>

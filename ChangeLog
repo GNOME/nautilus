@@ -1,5 +1,15 @@
 2002-03-01  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(add_script_to_script_menus), (add_submenu_to_script_menus),
+	(update_directory_in_scripts_menu):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Patch from Gaute Lindkvist <lindkvis@stud.ntnu.no> that adds
+	the script menu to the background right-click menu, not just the one
+	you get when you click on an object.
+
+2002-03-01  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-link-historical.c:
 	(local_set_root_property): Check for NULL before calling xmlParseFile.
 
