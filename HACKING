@@ -14,20 +14,20 @@ Nautilus currently requires the following modules (built in the given order):
 
 glib:		   glib-1-2
 gtk+:		   gtk-1-2
-gnome-libs:	   gnome-libs-1-0
-libglade:	   HEAD
 gnome-xml:	   LIB_XML_1_X
-ORBit:		   HEAD
+ORBit:		   orbit-stable-0-5
+gnome-libs:	   gnome-libs-1-0
+gdk-pixbuf:	   HEAD (with --enable-canvas-pixbuf)
 bonobo:		   HEAD
 gnome-vfs:	   HEAD
-gdk-pixbuf:	   HEAD
+libglade:	   HEAD
 gnome-print:	   HEAD
 gtkhtml:	   HEAD
 eog:               HEAD
 
 ORBit requires you to install popt-1.5, which can be fetched from:
 
-ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.36.i386.rpm
+	ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.36.i386.rpm
 
 * Build and install nautilus into your selected prefix.
 
