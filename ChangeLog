@@ -1,3 +1,12 @@
+2000-11-03  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	Patched in from HEAD
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(add_to_url):
+	Last fix broke the magic static link of the installer, this will
+	fix.
+
 2000-11-03  Mathieu Lacage  <mathieu@eazel.com>
 
 	Fix list view dnd on branch. (patch from HEAD)
