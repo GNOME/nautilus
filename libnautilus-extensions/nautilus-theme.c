@@ -53,18 +53,18 @@ static xmlDocPtr default_theme_document = NULL;
 
 /* return the current theme by asking the preferences machinery */
 char *
-nautilus_theme_get_theme(void)
+nautilus_theme_get_theme (void)
 {
 	return nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
 }
 
 /* set the current theme */
 void
-nautilus_theme_set_theme(const char *new_theme)
+nautilus_theme_set_theme (const char *new_theme)
 {
 	char *old_theme;
 	
-	old_theme = nautilus_theme_get_theme();
+	old_theme = nautilus_theme_get_theme ();
 	if (nautilus_strcmp (old_theme, new_theme)) {
 		nautilus_preferences_set (NAUTILUS_PREFERENCES_THEME, new_theme);
 	}
@@ -157,7 +157,7 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 	
 	if (theme_document != NULL) {
 		/* fetch the resource node */			
-		resource_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (theme_document), resource_name);
+		resource_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (theme_document), resource_name);
 		if (resource_node) {		
 			temp_str = xmlGetProp(resource_node, property_name);
 			if (temp_str) {

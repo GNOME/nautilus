@@ -3610,7 +3610,7 @@ nautilus_ctree_new_with_titles (gint         columns,
 	g_return_val_if_fail (columns > 0, NULL);
 	g_return_val_if_fail (tree_column >= 0 && tree_column < columns, NULL);
 
-	widget = gtk_type_new (NAUTILUS_TYPE_CTREE);
+	widget = GTK_WIDGET (gtk_type_new (NAUTILUS_TYPE_CTREE));
 	nautilus_ctree_construct (NAUTILUS_CTREE (widget), columns, tree_column, titles);
 
 	return widget;

@@ -1539,7 +1539,9 @@ install_row_images (FMListView *list_view, guint row)
 		 &pixmap, &bitmap);
 	gtk_clist_set_pixmap (clist, row, LIST_VIEW_COLUMN_ICON, pixmap, bitmap);
 	gdk_pixmap_unref (pixmap);
-	gdk_bitmap_unref (bitmap);
+	if (bitmap != NULL) {
+		gdk_bitmap_unref (bitmap);
+	}
 
 	/* Install any emblems for this file. */
 	nautilus_list_set_pixbuf_list (list, row, LIST_VIEW_COLUMN_EMBLEMS, 

@@ -375,14 +375,16 @@ trilobite_eazel_time_service_get_type() {
   The _new method simply builds the service
   using gtk_object_new
 */
-TrilobiteEazelTimeService*
-trilobite_eazel_time_service_new()
+TrilobiteEazelTimeService *
+trilobite_eazel_time_service_new (void)
 {
 	TrilobiteEazelTimeService *service;
 
 	/* g_message ("in trilobite_eazel_time_service_new"); */
 	
 	service = TRILOBITE_EAZEL_TIME_SERVICE (gtk_object_new (TRILOBITE_TYPE_EAZEL_TIME_SERVICE, NULL));
+	gtk_object_ref (GTK_OBJECT (service));
+	gtk_object_sink (GTK_OBJECT (service));
 	
 	return service;
 }

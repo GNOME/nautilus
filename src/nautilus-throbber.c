@@ -171,11 +171,10 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 }
 
 /* allocate a new throbber */
-GtkWidget*
-nautilus_throbber_new ()
+GtkWidget *
+nautilus_throbber_new (void)
 {
-	NautilusThrobber *throbber = gtk_type_new (nautilus_throbber_get_type ());
-	return GTK_WIDGET (throbber);
+	return gtk_widget_new (nautilus_throbber_get_type (), NULL);
 }
 
 /* handler for handling theme changes */

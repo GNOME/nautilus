@@ -155,14 +155,10 @@ option_menu_activate_callback (GtkWidget *menu_item, gpointer callback_data)
 /*
  * NautilusStringPicker public methods
  */
-GtkWidget*
+GtkWidget *
 nautilus_string_picker_new (void)
 {
-	NautilusStringPicker *string_picker;
-
-	string_picker = gtk_type_new (nautilus_string_picker_get_type ());
-	
-	return GTK_WIDGET (string_picker);
+	return gtk_widget_new (nautilus_string_picker_get_type (), NULL);
 }
 
 /**

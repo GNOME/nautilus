@@ -162,9 +162,14 @@ nautilus_tree_expansion_state_destroy (GtkObject *object)
 
 
 NautilusTreeExpansionState *
-nautilus_tree_expansion_state_new ()
+nautilus_tree_expansion_state_new (void)
 {
-	return NAUTILUS_TREE_EXPANSION_STATE (gtk_type_new (NAUTILUS_TYPE_TREE_EXPANSION_STATE));
+	NautilusTreeExpansionState *state;
+
+	state = NAUTILUS_TREE_EXPANSION_STATE (gtk_object_new (NAUTILUS_TYPE_TREE_EXPANSION_STATE, NULL));
+	gtk_object_ref (GTK_OBJECT (state));
+	gtk_object_sink (GTK_OBJECT (state));
+	return state;
 }
 
 

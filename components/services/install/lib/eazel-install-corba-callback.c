@@ -468,7 +468,8 @@ eazel_install_callback_initialize (EazelInstallCallback *service) {
 }
 
 GtkType
-eazel_install_callback_get_type() {
+eazel_install_callback_get_type (void)
+{
 	static GtkType service_type = 0;
 
 	/* g_message ("into eazel_install_callback_get_type");  */
@@ -494,8 +495,8 @@ eazel_install_callback_get_type() {
 	return service_type;
 }
 
-EazelInstallCallback*
-eazel_install_callback_new()
+EazelInstallCallback *
+eazel_install_callback_new (void)
 {
 	EazelInstallCallback *service;
 

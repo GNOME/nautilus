@@ -32,8 +32,9 @@
 #include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
-enum 
-{
+static NautilusSignaller *global_signaller = NULL;
+
+enum {
 	HISTORY_LIST_CHANGED,
 	EMBLEMS_CHANGED,
 	LAST_SIGNAL
@@ -42,9 +43,12 @@ enum
 static guint nautilus_signaller_signals[LAST_SIGNAL];
 
 static void nautilus_signaller_initialize_class (gpointer klass);
-static void nautilus_signaller_initialize (gpointer object, gpointer klass);
+static void nautilus_signaller_initialize       (gpointer object,
+						 gpointer klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSignaller, nautilus_signaller, GTK_TYPE_OBJECT)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSignaller,
+				   nautilus_signaller,
+				   GTK_TYPE_OBJECT)
 
 static void
 nautilus_signaller_initialize_class (gpointer klass)
@@ -76,14 +80,20 @@ nautilus_signaller_initialize (gpointer object, gpointer klass)
 	/* placeholder to allow use of boilerplate macro */
 }
 
+static void
+unref_global_signaller (void)
+{
+	gtk_object_unref (GTK_OBJECT (global_signaller));
+}
+
 NautilusSignaller *
 nautilus_signaller_get_current (void)
 {
-	static NautilusSignaller *global_signaller = NULL;
-
-	if (global_signaller == NULL)
-	{
-		global_signaller = gtk_type_new (NAUTILUS_TYPE_SIGNALLER);
+	if (global_signaller == NULL) {
+		global_signaller = NAUTILUS_SIGNALLER (gtk_object_new (NAUTILUS_TYPE_SIGNALLER, NULL));
+		gtk_object_ref (GTK_OBJECT (global_signaller));
+		gtk_object_sink (GTK_OBJECT (global_signaller));
+		g_atexit (unref_global_signaller);
 	}
 
 	return global_signaller;

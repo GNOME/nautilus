@@ -3150,7 +3150,7 @@ nautilus_list_new_with_titles (int columns, const char * const *titles)
 {
 	NautilusList *list;
 
-	list = gtk_type_new (nautilus_list_get_type ());
+	list = NAUTILUS_LIST (gtk_type_new (nautilus_list_get_type ()));
 	gtk_clist_construct (GTK_CLIST (list), columns, NULL);
 	if (titles) {
 		GtkCList *clist;

@@ -123,7 +123,9 @@ nautilus_file_new_from_name (NautilusDirectory *directory,
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (name[0] != '\0', NULL);
 
-	file = gtk_type_new (NAUTILUS_TYPE_FILE);
+	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_FILE, NULL));
+	gtk_object_ref (GTK_OBJECT (file));
+	gtk_object_sink (GTK_OBJECT (file));
 
 	nautilus_directory_ref (directory);
 
@@ -228,7 +230,9 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	g_return_val_if_fail (info != NULL, NULL);
 
-	file = gtk_type_new (NAUTILUS_TYPE_FILE);
+	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_FILE, NULL));
+	gtk_object_ref (GTK_OBJECT (file));
+	gtk_object_sink (GTK_OBJECT (file));
 
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;

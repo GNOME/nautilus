@@ -210,7 +210,7 @@ caption_table_activate_callback (GtkWidget *widget, gint entry, gpointer callbac
 }
 
 /* Public NautilusPasswordDialog methods */
-GtkWidget*
+GtkWidget *
 nautilus_password_dialog_new (const char	*dialog_title,
 			      const char	*message,
 			      const char	*username,
@@ -219,7 +219,7 @@ nautilus_password_dialog_new (const char	*dialog_title,
 {
 	NautilusPasswordDialog *password_dialog;
 
-	password_dialog = gtk_type_new (nautilus_password_dialog_get_type ());
+	password_dialog = NAUTILUS_PASSWORD_DIALOG (gtk_widget_new (nautilus_password_dialog_get_type (), NULL));
 
 	gnome_dialog_constructv (GNOME_DIALOG (password_dialog), dialog_title, stock_buttons);
 

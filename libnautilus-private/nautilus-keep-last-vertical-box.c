@@ -70,7 +70,7 @@ nautilus_keep_last_vertical_box_new (gint spacing)
 {
 	NautilusKeepLastVerticalBox *box;
 
-	box = gtk_type_new (nautilus_keep_last_vertical_box_get_type ());
+	box = NAUTILUS_KEEP_LAST_VERTICAL_BOX (gtk_widget_new (nautilus_keep_last_vertical_box_get_type (), NULL));
 
 	GTK_BOX (box)->spacing = spacing;
 

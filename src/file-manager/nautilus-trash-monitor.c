@@ -158,7 +158,10 @@ nautilus_trash_monitor_get (void)
 {
 	if (nautilus_trash_monitor == NULL) {
 		/* not running yet, start it up */
-		nautilus_trash_monitor = gtk_type_new (NAUTILUS_TYPE_TRASH_MONITOR);
+		nautilus_trash_monitor = NAUTILUS_TRASH_MONITOR
+			(gtk_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
+		gtk_object_ref (GTK_OBJECT (nautilus_trash_monitor));
+		gtk_object_sink (GTK_OBJECT (nautilus_trash_monitor));
 		g_atexit (unref_trash_monitor);
 	}
 

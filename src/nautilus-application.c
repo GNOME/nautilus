@@ -182,7 +182,12 @@ nautilus_application_initialize (NautilusApplication *application)
 NautilusApplication *
 nautilus_application_new (void)
 {
-	return NAUTILUS_APPLICATION (gtk_object_new (nautilus_application_get_type (), NULL));
+	NautilusApplication *application;
+
+	application = NAUTILUS_APPLICATION (gtk_object_new (nautilus_application_get_type (), NULL));
+	gtk_object_ref (GTK_OBJECT (application));
+	gtk_object_sink (GTK_OBJECT (application));
+	return application;
 }
 
 static void
@@ -488,10 +493,10 @@ nautilus_application_create_window (NautilusApplication *application)
 
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
-	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type (),
+	window = NAUTILUS_WINDOW (gtk_widget_new (nautilus_window_get_type (),
 						  "app", GTK_OBJECT (application),
 						  "app_id", "nautilus", NULL));
-
+	
 	gtk_signal_connect (GTK_OBJECT (window), 
 			    "delete_event", GTK_SIGNAL_FUNC (nautilus_window_delete_event_callback),
                     	    NULL);

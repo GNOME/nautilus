@@ -235,7 +235,7 @@ nautilus_background_set_image_placement (NautilusBackground *background,
 NautilusBackground *
 nautilus_background_new (void)
 {
-	return NAUTILUS_BACKGROUND (gtk_type_new (NAUTILUS_TYPE_BACKGROUND));
+	return NAUTILUS_BACKGROUND (gtk_object_new (NAUTILUS_TYPE_BACKGROUND, NULL));
 }
  
 static void
@@ -1079,10 +1079,10 @@ nautilus_get_widget_background (GtkWidget *widget)
 
 	/* Store the background in the widget's data. */
 	background = nautilus_background_new ();
-	gtk_object_set_data_full (GTK_OBJECT (widget), "nautilus_background",
-				  background, (GtkDestroyNotify) gtk_object_unref);
 	gtk_object_ref (GTK_OBJECT (background));
 	gtk_object_sink (GTK_OBJECT (background));
+	gtk_object_set_data_full (GTK_OBJECT (widget), "nautilus_background",
+				  background, (GtkDestroyNotify) gtk_object_unref);
 
 	/* Arrange to get the signal whenever the background changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (background),

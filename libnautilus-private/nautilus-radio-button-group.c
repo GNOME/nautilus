@@ -201,7 +201,8 @@ nautilus_radio_button_group_new (gboolean is_horizontal)
 {
 	NautilusRadioButtonGroup *button_group;
 
-	button_group = gtk_type_new (nautilus_radio_button_group_get_type ());
+	button_group = NAUTILUS_RADIO_BUTTON_GROUP
+		(gtk_widget_new (nautilus_radio_button_group_get_type (), NULL));
 	button_group->details->horizontal = is_horizontal;
 	
 	return GTK_WIDGET (button_group);

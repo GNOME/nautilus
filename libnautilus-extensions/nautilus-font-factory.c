@@ -23,14 +23,24 @@
 */
 
 #include <config.h>
-
 #include "nautilus-font-factory.h"
+
+#include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
-#include "nautilus-global-preferences.h"
-
-#include <unistd.h>
 #include <pthread.h>
+#include <unistd.h>
+
+#define NAUTILUS_TYPE_FONT_FACTORY \
+	(nautilus_font_factory_get_type ())
+#define NAUTILUS_FONT_FACTORY(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_FONT_FACTORY, NautilusFontFactory))
+#define NAUTILUS_FONT_FACTORY_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_FONT_FACTORY, NautilusFontFactoryClass))
+#define NAUTILUS_IS_FONT_FACTORY(obj) \
+	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_FONT_FACTORY))
+#define NAUTILUS_IS_FONT_FACTORY_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_FONT_FACTORY))
 
 /* The font factory */
 typedef struct {
@@ -49,36 +59,33 @@ typedef struct {
 	GdkFont		*font;
 } FontHashNode;
 
-static GtkType              nautilus_font_factory_get_type         (void);
-static void                 nautilus_font_factory_initialize_class (NautilusFontFactoryClass *class);
-static void                 nautilus_font_factory_initialize       (NautilusFontFactory      *factory);
-static NautilusFontFactory *nautilus_get_current_font_factory      (void);
-static NautilusFontFactory *nautilus_font_factory_new              (void);
-static char *               make_font_name_string                  (const char               *foundry,
-								    const char               *familiy,
-								    const char               *weight,
-								    const char               *slant,
-								    const char               *set_width,
-								    const char               *add_style,
-								    guint                     size_in_pixels);
-static FontHashNode *       font_hash_node_alloc                   (const char               *name);
-static FontHashNode *       font_hash_node_lookup                  (const char               *name);
-static FontHashNode *       font_hash_node_lookup_with_insertion   (const char               *name);
+static GdkFont *fixed_font;
+static NautilusFontFactory *global_font_factory = NULL;
 
-#if 0
-static void                     font_hash_node_free                     (FontHashNode         *node);
-#endif
+static GtkType nautilus_font_factory_get_type         (void);
+static void    nautilus_font_factory_initialize_class (NautilusFontFactoryClass *class);
+static void    nautilus_font_factory_initialize       (NautilusFontFactory      *factory);
+static void    destroy                                (GtkObject                *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFontFactory, nautilus_font_factory, GTK_TYPE_OBJECT)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFontFactory,
+				   nautilus_font_factory,
+				   GTK_TYPE_OBJECT)
+
+static void
+unref_global_font_factory (void)
+{
+	gtk_object_unref (GTK_OBJECT (global_font_factory));
+}
 
 /* Return a pointer to the single global font factory. */
 static NautilusFontFactory *
 nautilus_get_current_font_factory (void)
 {
-        static NautilusFontFactory *global_font_factory = NULL;
-
         if (global_font_factory == NULL) {
-                global_font_factory = nautilus_font_factory_new ();
+		global_font_factory = NAUTILUS_FONT_FACTORY (gtk_object_new (nautilus_font_factory_get_type (), NULL));
+		gtk_object_ref (GTK_OBJECT (global_font_factory));
+		gtk_object_sink (GTK_OBJECT (global_font_factory));
+		g_atexit (unref_global_font_factory);
         }
 
         return global_font_factory;
@@ -88,17 +95,6 @@ GtkObject *
 nautilus_font_factory_get (void)
 {
 	return GTK_OBJECT (nautilus_get_current_font_factory ());
-}
-
-/* Create the font factory. */
-static NautilusFontFactory *
-nautilus_font_factory_new (void)
-{
-        NautilusFontFactory *factory;
-        
-        factory = (NautilusFontFactory *) gtk_object_new (nautilus_font_factory_get_type (), NULL);
-
-        return factory;
 }
 
 static void
@@ -113,79 +109,91 @@ nautilus_font_factory_initialize_class (NautilusFontFactoryClass *class)
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
+	object_class->destroy = destroy;
 }
 
 static FontHashNode *
 font_hash_node_alloc (const char *name)
 {
-	FontHashNode * node;
+	FontHashNode *node;
 	
 	g_assert (name != NULL);
 
-	node = g_new (FontHashNode, 1);
-
+	node = g_new0 (FontHashNode, 1);
 	node->name = g_strdup (name);
-
-	node->font = NULL;
 
 	return node;
 }
 
-#if 0
 static void
 font_hash_node_free (FontHashNode *node)
 {
 	g_assert (node != NULL);
 
 	g_free (node->name);
+	gdk_font_unref (node->font);
 
 	g_free (node);
 }
-#endif
+
+static void
+free_one_hash_node (gpointer key, gpointer value, gpointer callback_data)
+{
+	FontHashNode *node;
+
+	g_assert (key != NULL);
+	g_assert (value != NULL);
+	g_assert (callback_data == NULL);
+
+	node = value;
+
+	g_assert (node->name == key);
+
+	font_hash_node_free (node);
+}
+
+static void
+destroy (GtkObject *object)
+{
+	NautilusFontFactory *factory;
+
+	factory = NAUTILUS_FONT_FACTORY (object);
+
+	g_hash_table_foreach (factory->fonts, free_one_hash_node, NULL);
+	g_hash_table_destroy (factory->fonts);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
 
 static FontHashNode *
 font_hash_node_lookup (const char *name)
 {
-	static NautilusFontFactory *factory;
-
-	gpointer hash_value;
+	NautilusFontFactory *factory;
 	
 	g_assert (name != NULL);
 
 	factory = nautilus_get_current_font_factory ();
-	g_assert (factory != NULL);
-
-	hash_value = g_hash_table_lookup (factory->fonts, (gconstpointer) name);
-	
-	return (FontHashNode *) hash_value;
+	return (FontHashNode *) g_hash_table_lookup (factory->fonts, name);
 }
 
 static FontHashNode *
 font_hash_node_lookup_with_insertion (const char *name)
 {
-	static NautilusFontFactory *factory;
-
-	FontHashNode *node = NULL;
+	NautilusFontFactory *factory;
+	FontHashNode *node;
+	GdkFont *font;
 
 	g_assert (name != NULL);
 
 	factory = nautilus_get_current_font_factory ();
-	g_assert (factory != NULL);
-
-
 	node = font_hash_node_lookup (name);
 
 	if (node == NULL) {
-		GdkFont *font;
-		
 		font = gdk_font_load (name);
 		
 		if (font != NULL) {
 			node = font_hash_node_alloc (name);
 			node->font = font;
-			
-			gdk_font_ref (node->font);
-
 			g_hash_table_insert (factory->fonts, node->name, node);
 		}
 	}
@@ -195,7 +203,7 @@ font_hash_node_lookup_with_insertion (const char *name)
 
 static char *
 make_font_name_string (const char *foundry,
-		       const char *familiy,
+		       const char *family,
 		       const char *weight,
 		       const char *slant,
 		       const char *set_width,
@@ -229,7 +237,7 @@ make_font_name_string (const char *foundry,
 				       |  |  |  |  |  |  |  |  |  |  |  |  |  +------------- char_set_encoding */
 	font_name = g_strdup_printf ("-%s-%s-%s-%s-%s-%s-%d-%s-%s-%s-%s-%s-%s-%s",
 				     foundry,
-				     familiy,
+				     family,
 				     weight,
 				     slant,
 				     set_width,
@@ -251,8 +259,8 @@ GdkFont *
 nautilus_font_factory_get_font_by_family (const char *family,
 					  guint       size_in_pixels)
 {
-	static NautilusFontFactory *factory;
-	GdkFont *font = NULL;
+	NautilusFontFactory *factory;
+	GdkFont *font;
 	FontHashNode *node;
 	char *font_name;
 
@@ -260,8 +268,6 @@ nautilus_font_factory_get_font_by_family (const char *family,
 	g_return_val_if_fail (size_in_pixels > 0, NULL);
 
 	factory = nautilus_get_current_font_factory ();
-	g_assert (factory != NULL);
-
 	font_name = make_font_name_string ("*", 
 					   family,
 					   "medium",
@@ -270,18 +276,13 @@ nautilus_font_factory_get_font_by_family (const char *family,
 					   "*",
 					   size_in_pixels);
 
-	g_assert (font_name != NULL);
-
 	node = font_hash_node_lookup_with_insertion (font_name);
 
 	if (node != NULL) {
-		g_assert (node->font);
-
+		g_assert (node->font != NULL);
 		font = node->font;
-
 		gdk_font_ref (font);
-	}
-	else {
+	} else {
 		font = nautilus_font_factory_get_fallback_font ();
 	}
 
@@ -305,16 +306,21 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 	return font;
 }
 
+static void
+unref_fixed_font (void)
+{
+	gdk_font_unref (fixed_font);
+}
+
 GdkFont *
 nautilus_font_factory_get_fallback_font (void)
 {
-	static GdkFont *fixed_font;
-
 	if (fixed_font == NULL) {
 		fixed_font = gdk_font_load ("fixed");
 		g_assert (fixed_font != NULL);
-		gdk_font_ref (fixed_font);
+		g_atexit (unref_fixed_font);
 	}
 
+	gdk_font_ref (fixed_font);
 	return fixed_font;
 }

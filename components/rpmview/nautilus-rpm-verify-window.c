@@ -170,13 +170,13 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 }
 
 /* allocate a new rpm_verify_window dialog */
-GtkWidget*
+GtkWidget *
 nautilus_rpm_verify_window_new (const char *package_name)
 {
 	char *title_string;
 	NautilusRPMVerifyWindow *rpm_verify_window;
 	
-	rpm_verify_window = gtk_type_new (nautilus_rpm_verify_window_get_type ());
+	rpm_verify_window = NAUTILUS_RPM_VERIFY_WINDOW (gtk_widget_new (nautilus_rpm_verify_window_get_type (), NULL));
 	
 	/* set up the window title */
 	title_string = g_strdup_printf (_("Verifying %s..."), package_name);

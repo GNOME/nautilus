@@ -346,7 +346,7 @@ bonobo_stream_create (GnomeVFSHandle *fd)
 	Bonobo_Stream corba_stream;
 	CORBA_Environment ev;
 
-	stream_vfs = gtk_type_new (bonobo_stream_vfs_get_type ());
+	stream_vfs = BONOBO_STREAM_VFS (gtk_object_new (bonobo_stream_vfs_get_type (), NULL));
 	
 	stream_vfs->fd = fd;
 	

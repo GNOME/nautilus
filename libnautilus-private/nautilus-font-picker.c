@@ -391,14 +391,10 @@ set_width_picker_changed_callback (GtkWidget *string_picker, gpointer user_data)
 /*
  * NautilusFontPicker public methods
  */
-GtkWidget*
+GtkWidget *
 nautilus_font_picker_new (void)
 {
-	NautilusFontPicker *font_picker;
-
-	font_picker = gtk_type_new (nautilus_font_picker_get_type ());
-	
-	return GTK_WIDGET (font_picker);
+	return gtk_widget_new (nautilus_font_picker_get_type (), NULL);
 }
 
 void

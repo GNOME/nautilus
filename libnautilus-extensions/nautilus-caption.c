@@ -140,14 +140,10 @@ update_title (NautilusCaption	*caption)
 /*
  * NautilusCaption public methods
  */
-GtkWidget*
+GtkWidget *
 nautilus_caption_new (void)
 {
-	NautilusCaption *caption;
-
-	caption = gtk_type_new (nautilus_caption_get_type ());
-	
-	return GTK_WIDGET (caption);
+	return gtk_widget_new (nautilus_caption_get_type (), NULL);
 }
 
 /**

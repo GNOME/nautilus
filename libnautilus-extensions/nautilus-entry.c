@@ -102,10 +102,10 @@ nautilus_entry_initialize (NautilusEntry *entry)
 	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
 }
 
-GtkWidget*
+GtkWidget *
 nautilus_entry_new (void)
 {
-  return GTK_WIDGET (gtk_type_new (NAUTILUS_TYPE_ENTRY));
+	return gtk_widget_new (NAUTILUS_TYPE_ENTRY, NULL);
 }
 
 static void 

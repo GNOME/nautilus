@@ -118,10 +118,13 @@ nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 	
 	CORBA_exception_init (&ev);
 
-	context = gtk_type_new (nautilus_undo_context_get_type ());
+	context = NAUTILUS_UNDO_CONTEXT (gtk_object_new (nautilus_undo_context_get_type (), NULL));
 	context->undo_manager = CORBA_Object_duplicate (undo_manager, &ev);
 	
   	CORBA_exception_free (&ev);
+
+	gtk_object_ref (GTK_OBJECT (context));
+	gtk_object_sink (GTK_OBJECT (context));
 
 	return context;
 }

@@ -119,7 +119,9 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control   control,
 {
 	NautilusAdapterControlEmbedStrategy *strategy;
 
-	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (gtk_type_new (NAUTILUS_TYPE_ADAPTER_CONTROL_EMBED_STRATEGY));
+	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (gtk_object_new (NAUTILUS_TYPE_ADAPTER_CONTROL_EMBED_STRATEGY, NULL));
+	gtk_object_ref (GTK_OBJECT (strategy));
+	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->control = control;
 	strategy->details->control_frame = bonobo_control_frame_new(uih);

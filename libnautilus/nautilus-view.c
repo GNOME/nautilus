@@ -282,7 +282,7 @@ nautilus_view_new_from_bonobo_control (BonoboControl *control)
 {
 	NautilusView *view;
 	
-	view = NAUTILUS_VIEW (gtk_type_new (NAUTILUS_TYPE_VIEW));
+	view = NAUTILUS_VIEW (gtk_object_new (NAUTILUS_TYPE_VIEW, NULL));
 	view->details->control = control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (control));
 	nautilus_undo_set_up_bonobo_control (control);

@@ -415,10 +415,10 @@ nautilus_image_paint (NautilusImage		*image,
 }
 
 /* Public NautilusImage */
-GtkWidget*
+GtkWidget *
 nautilus_image_new (void)
 {
-	return GTK_WIDGET (gtk_type_new (nautilus_image_get_type ()));
+	return gtk_widget_new (nautilus_image_get_type (), NULL);
 }
 
 void

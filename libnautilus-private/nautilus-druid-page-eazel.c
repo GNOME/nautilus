@@ -448,7 +448,9 @@ nautilus_druid_page_eazel_size_request(GtkWidget           *widget,
 GtkWidget *
 nautilus_druid_page_eazel_new (NautilusDruidPageEazelPosition position)
 {
-	NautilusDruidPageEazel *page = gtk_type_new (nautilus_druid_page_eazel_get_type ());
+	NautilusDruidPageEazel *page;
+
+	page = NAUTILUS_DRUID_PAGE_EAZEL (gtk_widget_new (nautilus_druid_page_eazel_get_type (), NULL));
 
 	page->position = position;
 	page->title = g_strdup ("");
@@ -480,7 +482,9 @@ nautilus_druid_page_eazel_new_with_vals (NautilusDruidPageEazelPosition position
 					 GdkPixbuf *sidebar_image,
 					 GdkPixbuf *background_image)
 {
-	NautilusDruidPageEazel *page = gtk_type_new (nautilus_druid_page_eazel_get_type ());
+	NautilusDruidPageEazel *page;
+
+	page = NAUTILUS_DRUID_PAGE_EAZEL (gtk_widget_new (nautilus_druid_page_eazel_get_type (), NULL));
 
 	page->position = position;
 	page->title = g_strdup (title ? title : "");

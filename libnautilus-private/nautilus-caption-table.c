@@ -306,13 +306,15 @@ entry_activate (GtkWidget *widget, gpointer data)
 GtkWidget*
 nautilus_caption_table_new (guint num_rows)
 {
-	GtkWidget *widget = GTK_WIDGET (gtk_type_new (nautilus_caption_table_get_type()));
+	GtkWidget *widget;
 
-	if (num_rows == 0)
+	if (num_rows == 0) {
 		num_rows = 1;
+	}
 
-	nautilus_caption_table_resize (NAUTILUS_CAPTION_TABLE(widget), num_rows);
+	widget = gtk_widget_new (nautilus_caption_table_get_type(), NULL);
 
+	nautilus_caption_table_resize (NAUTILUS_CAPTION_TABLE (widget), num_rows);
 	gtk_table_set_col_spacing (GTK_TABLE (widget), 0, 10);
 
 	return widget;

@@ -214,7 +214,7 @@ prefs_pane_construct (NautilusPreferencesPane	*prefs_pane,
 /*
  * NautilusPreferencesPane public methods
  */
-GtkWidget*
+GtkWidget *
 nautilus_preferences_pane_new (const gchar *pane_title,
 			       const gchar *pane_description)
 {
@@ -223,7 +223,8 @@ nautilus_preferences_pane_new (const gchar *pane_title,
 	g_return_val_if_fail (pane_title != NULL, NULL);
 	g_return_val_if_fail (pane_description != NULL, NULL);
 
-	prefs_pane = gtk_type_new (nautilus_preferences_pane_get_type ());
+	prefs_pane = NAUTILUS_PREFERENCES_PANE
+		(gtk_widget_new (nautilus_preferences_pane_get_type (), NULL));
 
 	prefs_pane_construct (prefs_pane, pane_title, pane_description);
 

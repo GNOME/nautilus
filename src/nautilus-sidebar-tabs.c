@@ -262,10 +262,10 @@ nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
 	sidebar_tabs->details->title_prelit = FALSE;
 }
 
-GtkWidget*
+GtkWidget *
 nautilus_sidebar_tabs_new (void)
 {
-	return GTK_WIDGET (gtk_type_new (nautilus_sidebar_tabs_get_type ()));
+	return gtk_widget_new (nautilus_sidebar_tabs_get_type (), NULL);
 }
 
 /* utility to destroy all the storage used by a tab item */

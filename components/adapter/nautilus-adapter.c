@@ -135,7 +135,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 	CORBA_exception_init (&ev);
 
-	adapter = NAUTILUS_ADAPTER (gtk_type_new (NAUTILUS_TYPE_ADAPTER));
+	adapter = NAUTILUS_ADAPTER (gtk_object_new (NAUTILUS_TYPE_ADAPTER, NULL));
 
 
 	/* Set up a few wrapper framework details */

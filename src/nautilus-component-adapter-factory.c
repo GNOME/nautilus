@@ -37,8 +37,7 @@
 
 #define NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID "OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4"
 
-struct NautilusComponentAdapterFactoryDetails
-{
+struct NautilusComponentAdapterFactoryDetails {
 	Nautilus_ComponentAdapterFactory corba_factory;
 };
 
@@ -58,7 +57,6 @@ nautilus_component_adapter_factory_initialize_class  (NautilusComponentAdapterFa
 	
 	object_class = (GtkObjectClass*) klass;
 	object_class->destroy = nautilus_component_adapter_factory_destroy;
-
 }
 
 static void
@@ -68,40 +66,27 @@ nautilus_component_adapter_factory_initialize (NautilusComponentAdapterFactory *
 
 	factory->details = g_new0 (NautilusComponentAdapterFactoryDetails, 1);
 
-	/* FIXME: what if activation fails? Is it valid for an
-           initialize function to fail, and if so, how should it do
-           so?? */
-
 	object_client = bonobo_object_activate (NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID, 0);
-
-
-	/* FIXME: what if this query fails? Is it valid for an
-           initialize function to fail, and if so, how should it do
-           so?? */
-
 	if (object_client != NULL) {
 		factory->details->corba_factory = bonobo_object_query_interface 
 			(BONOBO_OBJECT (object_client), "IDL:Nautilus/ComponentAdapterFactory:1.0");
-
-		/* FIXME: Do we want a gtk_object_unref or a bonobo_object_unref? */
 		bonobo_object_unref (BONOBO_OBJECT (object_client)); 
 	}
+
+	/* FIXME: Since corba_factory could now be NULL, what do we do in that case? */
 }
 
 
 static void
 nautilus_component_adapter_factory_destroy (GtkObject *object)
 {
-	CORBA_Environment ev;
 	NautilusComponentAdapterFactory *factory;
 
 	factory = NAUTILUS_COMPONENT_ADAPTER_FACTORY (object);
 
-	CORBA_exception_init (&ev);
-	if (factory->details->corba_factory != NULL) {
-		Bonobo_Unknown_unref (factory->details->corba_factory, &ev);
+	if (factory->details->corba_factory != CORBA_OBJECT_NIL) {
+		bonobo_object_release_unref (factory->details->corba_factory, NULL);
 	}
-	CORBA_exception_free (&ev);
 
 	g_free (factory->details);
 }
@@ -113,25 +98,23 @@ static NautilusComponentAdapterFactory *global_component_adapter_factory = NULL;
 static void
 component_adapter_factory_at_exit_destructor (void)
 {
-	if (global_component_adapter_factory != NULL) {
-		gtk_object_unref (GTK_OBJECT (global_component_adapter_factory));
-	}
+	gtk_object_unref (GTK_OBJECT (global_component_adapter_factory));
 }
 
 
 NautilusComponentAdapterFactory *
 nautilus_component_adapter_factory_get (void)
 {
-
 	if (global_component_adapter_factory == NULL) {
-		global_component_adapter_factory = gtk_type_new (NAUTILUS_TYPE_COMPONENT_ADAPTER_FACTORY);
+		global_component_adapter_factory = NAUTILUS_COMPONENT_ADAPTER_FACTORY
+			(gtk_object_new (NAUTILUS_TYPE_COMPONENT_ADAPTER_FACTORY, NULL));
+		gtk_object_ref (GTK_OBJECT (global_component_adapter_factory));
+		gtk_object_sink (GTK_OBJECT (global_component_adapter_factory));
 
-		/* FIXME: is it OK to destroy CORBA objects in an atexit handler? */
 		g_atexit (component_adapter_factory_at_exit_destructor);
 	}
 
 	return global_component_adapter_factory;
-
 }
 
 Nautilus_View

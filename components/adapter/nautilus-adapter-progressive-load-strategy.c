@@ -108,7 +108,9 @@ nautilus_adapter_progressive_load_strategy_new (Bonobo_ProgressiveDataSink  prog
 {
 	NautilusAdapterProgressiveLoadStrategy *strategy;
 
-	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (gtk_type_new (NAUTILUS_TYPE_ADAPTER_PROGRESSIVE_LOAD_STRATEGY));
+	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (gtk_object_new (NAUTILUS_TYPE_ADAPTER_PROGRESSIVE_LOAD_STRATEGY, NULL));
+	gtk_object_ref (GTK_OBJECT (strategy));
+	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->progressive_data_sink = progressive_data_sink;
 	strategy->details->nautilus_view = view;

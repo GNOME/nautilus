@@ -152,14 +152,10 @@ entry_changed_callback (GtkWidget *entry, gpointer user_data)
 /*
  * NautilusTextCaption public methods
  */
-GtkWidget*
+GtkWidget *
 nautilus_text_caption_new (void)
 {
-	NautilusTextCaption *text_caption;
-
-	text_caption = gtk_type_new (nautilus_text_caption_get_type ());
-	
-	return GTK_WIDGET (text_caption);
+	return gtk_widget_new (nautilus_text_caption_get_type (), NULL);
 }
 
 /**

@@ -452,12 +452,12 @@ label_recompute_line_geometries (NautilusLabel *label)
 }
 
 /* Public NautilusLabel */
-GtkWidget*
+GtkWidget *
 nautilus_label_new (const char *text)
 {
 	NautilusLabel *label;
 	
-	label = NAUTILUS_LABEL (gtk_type_new (nautilus_label_get_type ()));
+	label = NAUTILUS_LABEL (gtk_widget_new (nautilus_label_get_type (), NULL));
 
 	nautilus_label_set_text (label, text);
 	

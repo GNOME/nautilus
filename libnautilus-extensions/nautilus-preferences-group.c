@@ -181,14 +181,15 @@ preferences_group_construct (NautilusPreferencesGroup *group,
 /*
  * NautilusPreferencesGroup public methods
  */
-GtkWidget*
+GtkWidget *
 nautilus_preferences_group_new (const gchar *title)
 {
 	NautilusPreferencesGroup *group;
 
 	g_return_val_if_fail (title != NULL, NULL);
 
-	group = gtk_type_new (nautilus_preferences_group_get_type ());
+	group = NAUTILUS_PREFERENCES_GROUP
+		(gtk_widget_new (nautilus_preferences_group_get_type (), NULL));
 
 	preferences_group_construct (group, title);
 	

@@ -359,8 +359,9 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 						   FALSE,
 						   FALSE);
 
+		g_assert (g_hash_table_lookup (view->details->uri_to_hack_node_map, uri) == NULL);
 		g_hash_table_insert (view->details->uri_to_hack_node_map, 
-				     (char *) uri, hack_node);
+				     g_strdup (uri), hack_node);
 	}
 }
 
@@ -368,21 +369,24 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 static void
 remove_hack_node (NautilusTreeView *view, const char *uri)
 {
+	gpointer key, value;
 	NautilusCTreeNode *hack_node;
 
 #ifdef DEBUG_TREE
 	printf ("XXX: removing hack node for %s\n", uri);
 #endif
 
-	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
-       
-	if (hack_node != NULL) {
-		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
-				       hack_node);
+	if (g_hash_table_lookup_extended (view->details->uri_to_hack_node_map,
+					  uri, &key, &value)) {
+		hack_node = value;
 
+		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
+					    hack_node);
 		g_hash_table_remove (view->details->uri_to_hack_node_map, uri);
+		g_free (key);
 
 		gtk_clist_thaw (GTK_CLIST (view->details->tree));
+
 #ifdef DEBUG_TREE
 		printf ("XXX: actually thawing (%d)\n", GTK_CLIST (view->details->tree)->freeze_count);
 #endif
@@ -472,7 +476,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 					     view_node,
 					     node);
 
-		g_hash_table_insert (view->details->uri_to_node_map, uri, view_node); 
+		g_assert (g_hash_table_lookup (view->details->uri_to_node_map, uri) == NULL);
+		g_hash_table_insert (view->details->uri_to_node_map, g_strdup (uri), view_node); 
 		
 		if (nautilus_file_is_directory (file)) {
 			/* Gratuitous hack so node can be expandable w/o
@@ -501,21 +506,22 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 static void
 nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
-	NautilusCTreeNode *view_node;
 	char *uri;
+	gpointer key, value;
+	NautilusCTreeNode *view_node;
 
 	nautilus_tree_model_stop_monitoring_node (view->details->model, node, view);
 
 	uri = nautilus_tree_node_get_uri (node);
 	
-	view_node = model_node_to_view_node (view, node); 
-	
-	if (view_node != NULL) {
+	if (g_hash_table_lookup_extended (view->details->uri_to_node_map,
+					  uri, &key, &value)) {
+		view_node = value;
+
 		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
-				       view_node);
-		
-		/* FIXME bugzilla.eazel.com 2420: free the original key */
-		g_hash_table_remove (view->details->uri_to_node_map, uri); 
+					    view_node);
+		g_hash_table_remove (view->details->uri_to_node_map, uri);
+		g_free (key);
 	}
 
 	nautilus_tree_expansion_state_remove_node (view->details->expansion_state,

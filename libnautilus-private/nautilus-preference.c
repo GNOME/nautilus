@@ -302,12 +302,11 @@ nautilus_preference_new_from_type (const char			*name,
 
 	g_return_val_if_fail (name != NULL, NULL);
 	
-	preference = gtk_type_new (nautilus_preference_get_type ());
-
-	g_assert (preference != NULL );
+	preference = NAUTILUS_PREFERENCE (gtk_object_new (nautilus_preference_get_type (), NULL));
+	gtk_object_ref (GTK_OBJECT (preference));
+	gtk_object_sink (GTK_OBJECT (preference));
 
 	preference->detail->name = g_strdup (name);
-
 	preference->detail->type = type;
 
 	preference_allocate_type_info (preference);

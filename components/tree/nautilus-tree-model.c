@@ -177,7 +177,9 @@ nautilus_tree_model_new (const char *root_uri)
 {
 	NautilusTreeModel *model;
 
-	model = NAUTILUS_TREE_MODEL (gtk_type_new (NAUTILUS_TYPE_TREE_MODEL));
+	model = NAUTILUS_TREE_MODEL (gtk_object_new (NAUTILUS_TYPE_TREE_MODEL, NULL));
+	gtk_object_ref (GTK_OBJECT (model));
+	gtk_object_sink (GTK_OBJECT (model));
 
 	nautilus_tree_model_set_root_uri (model, root_uri);
 

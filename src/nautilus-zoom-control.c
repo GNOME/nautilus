@@ -235,11 +235,10 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 }
 
 /* allocate a new zoom control */
-GtkWidget*
-nautilus_zoom_control_new ()
+GtkWidget *
+nautilus_zoom_control_new (void)
 {
-	NautilusZoomControl *zoom_control = gtk_type_new (nautilus_zoom_control_get_type ());
-	return GTK_WIDGET (zoom_control);
+	return gtk_widget_new (nautilus_zoom_control_get_type (), NULL);
 }
 
 /* handler for handling theme changes */
@@ -620,16 +619,10 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	
 	/* check for the context menu button and handle by creating and showing the menu */  
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		GtkMenu *zoom_menu = create_zoom_menu (widget);
-		
-		gtk_object_ref (GTK_OBJECT (zoom_menu));
-		gtk_object_sink (GTK_OBJECT (zoom_menu));
-		
-		nautilus_pop_up_context_menu (zoom_menu, 
+		nautilus_pop_up_context_menu (create_zoom_menu (widget), 
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
 					      CONTEXTUAL_MENU_BUTTON);
-		gtk_object_unref (GTK_OBJECT (zoom_menu));
 		return TRUE;	  
  	}
 	

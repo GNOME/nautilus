@@ -146,7 +146,7 @@ nautilus_shell_new (NautilusApplication *application)
 {
 	NautilusShell *shell;
 
-	shell = gtk_type_new (NAUTILUS_TYPE_SHELL);
+	shell = NAUTILUS_SHELL (gtk_object_new (NAUTILUS_TYPE_SHELL, NULL));
 	shell->details->application = application;
 	return shell;
 }

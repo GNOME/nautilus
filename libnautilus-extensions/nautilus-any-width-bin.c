@@ -46,14 +46,10 @@ nautilus_any_width_bin_initialize (NautilusAnyWidthBin *bin)
 {
 }
 
-GtkWidget*
+GtkWidget *
 nautilus_any_width_bin_new (void)
 {
-	NautilusAnyWidthBin *bin;
-
-	bin = gtk_type_new (nautilus_any_width_bin_get_type ());
-	
-	return GTK_WIDGET (bin);
+	return gtk_widget_new (nautilus_any_width_bin_get_type (), NULL);
 }
 
 static void

@@ -610,17 +610,19 @@ eazel_install_get_type() {
 	return service_type;
 }
 
-EazelInstall*
-eazel_install_new()
+EazelInstall *
+eazel_install_new (void)
 {
 	EazelInstall *service;
 
 	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL, NULL));
+	gtk_object_ref (GTK_OBJECT (service));
+	gtk_object_sink (GTK_OBJECT (service));
 	
 	return service;
 }
 
-EazelInstall*
+EazelInstall *
 eazel_install_new_with_config (void)
 {
 	EazelInstall *service;
@@ -653,6 +655,8 @@ eazel_install_new_with_config (void)
 						 "server_port", topts->port_number,
 						 "cgi_path", topts->cgi_path,
 						 NULL));
+	gtk_object_ref (GTK_OBJECT (service));
+	gtk_object_sink (GTK_OBJECT (service));
 
 	transferoptions_destroy (topts);
 	installoptions_destroy (iopts);

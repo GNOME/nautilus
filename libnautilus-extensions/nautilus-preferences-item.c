@@ -627,7 +627,8 @@ nautilus_preferences_item_new (const gchar			*preference_name,
 
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
-	item = gtk_type_new (nautilus_preferences_item_get_type ());
+	item = NAUTILUS_PREFERENCES_ITEM
+		(gtk_widget_new (nautilus_preferences_item_get_type (), NULL));
 
 	/* Cast away the constness so that the preferences object can be
 	 * refed in this object. */

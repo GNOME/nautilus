@@ -464,7 +464,13 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 NautilusBookmarkList *
 nautilus_bookmark_list_new (void)
 {
-	return gtk_type_new (NAUTILUS_TYPE_BOOKMARK_LIST);
+	NautilusBookmarkList *list;
+
+	list = NAUTILUS_BOOKMARK_LIST (gtk_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
+	gtk_object_ref (GTK_OBJECT (list));
+	gtk_object_sink (GTK_OBJECT (list));
+
+	return list;
 }
 
 /**

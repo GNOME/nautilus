@@ -312,7 +312,8 @@ nautilus_preferences_box_new (const gchar *box_title)
 {
 	NautilusPreferencesBox *prefs_box;
 
-	prefs_box = gtk_type_new (nautilus_preferences_box_get_type ());
+	prefs_box = NAUTILUS_PREFERENCES_BOX
+		(gtk_widget_new (nautilus_preferences_box_get_type (), NULL));
 
 	prefs_box_construct (prefs_box);
 

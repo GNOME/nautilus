@@ -437,7 +437,7 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 	/* add a separator */
 	menu_item = gtk_menu_item_new ();
 	gtk_widget_show (menu_item);
-	gtk_menu_append (GTK_MENU(menu), menu_item);
+	gtk_menu_append (GTK_MENU (menu), menu_item);
 	
 	/* add the sidebar panels */
 	nautilus_sidebar_add_panel_items(sidebar, menu);
@@ -448,7 +448,7 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 NautilusSidebar *
 nautilus_sidebar_new (void)
 {
-	return NAUTILUS_SIDEBAR (gtk_type_new (nautilus_sidebar_get_type ()));
+	return NAUTILUS_SIDEBAR (gtk_widget_new (nautilus_sidebar_get_type (), NULL));
 }
 
 /* utility routine to handle mapping local file names to a uri */

@@ -200,5 +200,5 @@ nautilus_druid_size_allocate (GtkWidget *widget,
 GtkWidget *
 nautilus_druid_new (void)
 {
-	return (GtkWidget *)gtk_type_new (NAUTILUS_TYPE_DRUID);
+	return gtk_widget_new (NAUTILUS_TYPE_DRUID, NULL);
 }

@@ -2488,6 +2488,7 @@ no_items_showing (FMDirectoryView *directory_view)
 	
 	/* This can happen when it's too early to tell. */
 	if (!nautilus_file_is_directory (directory_as_file)) {
+		nautilus_file_unref (directory_as_file);
 		return FALSE;
 	}
 

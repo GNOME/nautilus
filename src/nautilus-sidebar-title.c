@@ -196,7 +196,7 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 GtkWidget *
 nautilus_sidebar_title_new (void)
 {
-	return GTK_WIDGET (gtk_type_new (nautilus_sidebar_title_get_type ()));
+	return gtk_widget_new (nautilus_sidebar_title_get_type (), NULL);
 }
 
 /* utility to set up the style of a widget to have a particular color */

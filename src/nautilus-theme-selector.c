@@ -301,7 +301,7 @@ NautilusThemeSelector *
 nautilus_theme_selector_new (void)
 {
 	NautilusThemeSelector *browser = NAUTILUS_THEME_SELECTOR
-		(gtk_type_new (nautilus_theme_selector_get_type ()));
+		(gtk_widget_new (nautilus_theme_selector_get_type (), NULL));
 	
 	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
   	gtk_window_set_policy (GTK_WINDOW(browser), TRUE, TRUE, FALSE);
@@ -659,7 +659,7 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	/* set up the theme logo image */ 
 	gtk_clist_set_pixmap (GTK_CLIST(theme_selector->details->theme_list), theme_index, 0, pixmap , mask);
 	gtk_clist_set_row_data (GTK_CLIST(theme_selector->details->theme_list),
-					 theme_index, g_strdup(theme_name ));
+					 theme_index, g_strdup (theme_name));
 	
 	/* set up the fonts for the theme name and description */
 	
@@ -667,7 +667,9 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	set_preferred_font_for_cell (theme_selector, theme_index, 2, 10);
 		
 	gdk_pixmap_unref (pixmap);
-	gdk_bitmap_unref (mask);
+	if (mask != NULL) {
+		gdk_bitmap_unref (mask);
+	}
 }
 
 /* utility routine to populate by iterating through the passed-in directory */

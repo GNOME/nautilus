@@ -353,10 +353,12 @@ nautilus_directory_new (const char *uri)
 	g_assert (uri != NULL);
 
 	if (nautilus_uri_is_trash (uri)) {
-		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_TRASH_DIRECTORY));
+		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
 	} else {
-		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_VFS_DIRECTORY));
+		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
+	gtk_object_ref (GTK_OBJECT (directory));
+	gtk_object_sink (GTK_OBJECT (directory));
 
 	directory->details->uri = g_strdup (uri);
 	directory->details->private_metafile_vfs_uri = construct_private_metafile_vfs_uri (uri);

@@ -183,7 +183,7 @@ nautilus_about_initialize (NautilusAbout *about)
 }
 
 /* allocate a new about dialog */
-GtkWidget*
+GtkWidget *
 nautilus_about_new (const char	*title,
 		    const char	*version,
 		    const char	*copyright,
@@ -193,7 +193,7 @@ nautilus_about_new (const char	*title,
 {
 	NautilusAbout *about;
 	
-	about = gtk_type_new (nautilus_about_get_type ());
+	about = NAUTILUS_ABOUT (gtk_widget_new (nautilus_about_get_type (), NULL));
 	
 	/* draw the info onto the pixbuf, once and for all */
 	nautilus_about_draw_info (about, title, version, copyright, authors, comments, timestamp);

@@ -96,7 +96,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	char *desktop_directory_uri;
 
 	window = NAUTILUS_DESKTOP_WINDOW
-		(gtk_object_new (nautilus_desktop_window_get_type(),
+		(gtk_widget_new (nautilus_desktop_window_get_type(),
 				 "app", application,
 				 "app_id", "nautilus",
 				 NULL));

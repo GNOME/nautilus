@@ -297,7 +297,7 @@ nautilus_view_frame_new (BonoboUIHandler *ui_handler,
 {
 	NautilusViewFrame *view_frame;
 	
-	view_frame = NAUTILUS_VIEW_FRAME (gtk_object_new (nautilus_view_frame_get_type (), NULL));
+	view_frame = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type (), NULL));
 	
 	view_frame->ui_handler = ui_handler;
 	view_frame->undo_manager = undo_manager;

@@ -111,11 +111,7 @@ e_hpaned_init (EHPaned *hpaned)
 GtkWidget *
 e_hpaned_new (void)
 {
-  EHPaned *hpaned;
-
-  hpaned = gtk_type_new (E_TYPE_HPANED);
-
-  return GTK_WIDGET (hpaned);
+  return gtk_widget_new (E_TYPE_HPANED, NULL);
 }
 
 static void

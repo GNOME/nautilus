@@ -396,8 +396,10 @@ nautilus_property_browser_destroy (GtkObject *object)
 NautilusPropertyBrowser *
 nautilus_property_browser_new (void)
 {
-	NautilusPropertyBrowser *browser = NAUTILUS_PROPERTY_BROWSER
-		(gtk_type_new (nautilus_property_browser_get_type ()));
+	NautilusPropertyBrowser *browser;
+
+	browser = NAUTILUS_PROPERTY_BROWSER
+		(gtk_widget_new (nautilus_property_browser_get_type (), NULL));
 	
 	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
   	gtk_window_set_policy (GTK_WINDOW(browser), TRUE, TRUE, FALSE);

@@ -274,7 +274,7 @@ nautilus_file_operations_progress_new (const char *title,
 	GtkWidget *widget;
 	NautilusFileOperationsProgress *dialog;
 
-	widget = gtk_type_new (nautilus_file_operations_progress_get_type ());
+	widget = gtk_widget_new (nautilus_file_operations_progress_get_type (), NULL);
 	dialog = NAUTILUS_FILE_OPERATIONS_PROGRESS (widget);
 
 	nautilus_file_operations_progress_set_operation_string (dialog, operation_string);

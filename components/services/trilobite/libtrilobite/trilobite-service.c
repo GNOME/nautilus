@@ -475,7 +475,7 @@ trilobite_service_new()
 
 	/* g_message ("in trilobite_service_new"); */
 
-	trilobite = TRILOBITE_SERVICE (gtk_type_new (TRILOBITE_TYPE_SERVICE));
+	trilobite = TRILOBITE_SERVICE (gtk_object_new (TRILOBITE_TYPE_SERVICE, NULL));
 
 	if (trilobite == NULL) {
 		g_warning ("Could not create a TrilobiteService*");

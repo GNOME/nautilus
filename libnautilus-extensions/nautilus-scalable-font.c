@@ -595,7 +595,9 @@ nautilus_scalable_font_new (const char	*family,
 		 __FUNCTION__, family, weight, slant, set_width, font_entry->font_handle);
 #endif
 	
-	font = NAUTILUS_SCALABLE_FONT (gtk_type_new (nautilus_scalable_font_get_type ()));
+	font = NAUTILUS_SCALABLE_FONT (gtk_object_new (nautilus_scalable_font_get_type (), NULL));
+	gtk_object_ref (GTK_OBJECT (font));
+	gtk_object_sink (GTK_OBJECT (font));
 	
 	font->detail->font_handle = font_entry->font_handle;
 

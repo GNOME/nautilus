@@ -177,7 +177,9 @@ nautilus_undo_transaction_new (const char *operation_name,
 {
 	NautilusUndoTransaction *transaction;
 
-	transaction = gtk_type_new (nautilus_undo_transaction_get_type ());
+	transaction = NAUTILUS_UNDO_TRANSACTION (gtk_object_new (nautilus_undo_transaction_get_type (), NULL));
+	gtk_object_ref (GTK_OBJECT (transaction));
+	gtk_object_sink (GTK_OBJECT (transaction));
 	
 	transaction->operation_name = g_strdup (operation_name);
 	transaction->undo_menu_item_label = g_strdup (undo_menu_item_label);

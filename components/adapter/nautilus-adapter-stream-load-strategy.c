@@ -104,7 +104,9 @@ nautilus_adapter_stream_load_strategy_new (Bonobo_PersistStream  persist_stream,
 {
 	NautilusAdapterStreamLoadStrategy *strategy;
 
-	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (gtk_type_new (NAUTILUS_TYPE_ADAPTER_STREAM_LOAD_STRATEGY));
+	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (gtk_object_new (NAUTILUS_TYPE_ADAPTER_STREAM_LOAD_STRATEGY, NULL));
+	gtk_object_ref (GTK_OBJECT (strategy));
+	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->persist_stream = persist_stream;
 	strategy->details->nautilus_view  = view;

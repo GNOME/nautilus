@@ -211,12 +211,13 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 	gtk_widget_show (prefs_dialog->details->prefs_box);
 }
 
-GtkWidget*
+GtkWidget *
 nautilus_preferences_dialog_new (const gchar *dialog_title)
 {
 	NautilusPreferencesDialog *prefs_dialog;
 
-	prefs_dialog = gtk_type_new (nautilus_preferences_dialog_get_type ());
+	prefs_dialog = NAUTILUS_PREFERENCES_DIALOG
+		(gtk_widget_new (nautilus_preferences_dialog_get_type (), NULL));
 
 	nautilus_preferences_dialog_construct (prefs_dialog, dialog_title);
 

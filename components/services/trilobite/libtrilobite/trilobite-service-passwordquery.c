@@ -282,14 +282,14 @@ trilobite_passwordquery_get_type (void)
 	return trilobite_passwordquery_type;
 }
 
-TrilobitePasswordQuery*
-trilobite_passwordquery_new() 
+TrilobitePasswordQuery *
+trilobite_passwordquery_new (void) 
 {
 	TrilobitePasswordQuery *trilobite;
 
 	/* g_message ("in trilobite_passwordquery_new"); */
 
-	trilobite = TRILOBITE_PASSWORDQUERY (gtk_type_new (TRILOBITE_TYPE_PASSWORDQUERY));
+	trilobite = TRILOBITE_PASSWORDQUERY (gtk_object_new (TRILOBITE_TYPE_PASSWORDQUERY, NULL));
 
 	if (trilobite == NULL) {
 		g_warning ("Could not create a TrilobitePasswordQuery*");

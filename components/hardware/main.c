@@ -44,8 +44,8 @@ hardware_view_object_destroyed(GtkObject *obj)
 
 static BonoboObject *
 hardware_view_make_object (BonoboGenericFactory *factory, 
-		    const char *goad_id, 
-		    void *closure)
+			   const char *goad_id, 
+			   void *closure)
 {
 	NautilusHardwareView *hardware_view;
 

@@ -479,7 +479,9 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 {
 	NautilusBookmark *new_bookmark;
 
-	new_bookmark = gtk_type_new (NAUTILUS_TYPE_BOOKMARK);
+	new_bookmark = NAUTILUS_BOOKMARK (gtk_object_new (NAUTILUS_TYPE_BOOKMARK, NULL));
+	gtk_object_ref (GTK_OBJECT (new_bookmark));
+	gtk_object_sink (GTK_OBJECT (new_bookmark));
 
 	new_bookmark->details->name = g_strdup (name);
 	new_bookmark->details->uri = g_strdup (uri);

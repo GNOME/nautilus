@@ -155,7 +155,8 @@ nautilus_list_column_title_initialize_class (gpointer klass)
 NautilusListColumnTitle *
 nautilus_list_column_title_new (void)
 {
-	return gtk_type_new (nautilus_list_column_title_get_type ());
+	return NAUTILUS_LIST_COLUMN_TITLE
+		(gtk_widget_new (nautilus_list_column_title_get_type (), NULL));
 }
 
 static void
@@ -234,16 +235,16 @@ nautilus_list_column_title_finalize (GtkObject *object)
 	if (column_title->details->up_indicator_pixmap != NULL) {
 		gdk_pixmap_unref (column_title->details->up_indicator_pixmap);
 		column_title->details->up_indicator_pixmap = NULL;
-
-		g_assert (column_title->details->up_indicator_mask != NULL);
+	}
+	if (column_title->details->up_indicator_mask != NULL) {
 		gdk_bitmap_unref (column_title->details->up_indicator_mask);
 		column_title->details->up_indicator_mask = NULL;
 	}
 	if (column_title->details->down_indicator_pixmap != NULL) {
 		gdk_pixmap_unref (column_title->details->down_indicator_pixmap);
 		column_title->details->down_indicator_pixmap = NULL;
-
-		g_assert (column_title->details->down_indicator_mask != NULL);
+	}
+	if (column_title->details->down_indicator_mask != NULL) {
 		gdk_bitmap_unref (column_title->details->down_indicator_mask);
 		column_title->details->down_indicator_mask = NULL;
 	}

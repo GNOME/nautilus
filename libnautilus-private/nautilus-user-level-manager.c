@@ -136,6 +136,8 @@ user_level_manager_new (void)
 	}
 
         manager = NAUTILUS_USER_LEVEL_MANAGER (gtk_object_new (nautilus_user_level_manager_get_type (), NULL));
+	gtk_object_ref (GTK_OBJECT (manager));
+	gtk_object_sink (GTK_OBJECT (manager));
 
 	manager->gconf_client = gconf_client_get_default ();
 

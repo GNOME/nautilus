@@ -276,6 +276,8 @@ get_icon_factory (void)
         if (global_icon_factory == NULL) {
 		global_icon_factory = NAUTILUS_ICON_FACTORY
 			(gtk_object_new (nautilus_icon_factory_get_type (), NULL));
+		gtk_object_ref (GTK_OBJECT (global_icon_factory));
+		gtk_object_sink (GTK_OBJECT (global_icon_factory));
 
 		/* Update to match the theme. */
 		icon_theme_changed_callback (NULL);

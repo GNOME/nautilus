@@ -286,7 +286,7 @@ toggle_splitter_position (NautilusHorizontalSplitter *splitter)
 GtkWidget *
 nautilus_horizontal_splitter_new (void)
 {
-	return GTK_WIDGET (gtk_type_new (nautilus_horizontal_splitter_get_type ()));
+	return gtk_widget_new (nautilus_horizontal_splitter_get_type (), NULL);
 }
 
 /* handle mouse downs by remembering the position and the time */

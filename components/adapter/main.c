@@ -39,8 +39,6 @@
 #include <libgnomevfs/gnome-vfs-init.h>
 
 #define META_FACTORY_IID "OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f"
-
-
 #define FACTORY_OBJECT_IID    "OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4"
 
 static int object_count = 0;
@@ -80,7 +78,6 @@ adapter_factory_make_object (BonoboGenericFactory *factory,
 	 * that owns the widget.
 	 */
 	adapter = NAUTILUS_ADAPTER_FACTORY_SERVER (gtk_object_new (NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NULL));
-
 
 	/* Connect a handler that will get us out of the main loop
          * when there are no more objects outstanding.

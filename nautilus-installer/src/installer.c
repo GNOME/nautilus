@@ -115,7 +115,7 @@ create_pixmap (GtkWidget *widget,
 							   NULL, 
 							   (gchar**)xpmdata); 
 	
-	g_assert (gdkpixmap);
+	g_assert (gdkpixmap != NULL);
 
 	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
 					       gdkpixmap,
@@ -124,7 +124,9 @@ create_pixmap (GtkWidget *widget,
 					       x, y);
 
 	gdk_pixmap_unref (gdkpixmap);   
-	gdk_bitmap_unref (mask);   
+	if (mask != NULL) {
+		gdk_bitmap_unref (mask);
+	}
 
 	return pixbuf;     
 }
@@ -1259,8 +1261,8 @@ eazel_installer_get_type() {
   The _new method simply builds the service
   using gtk_object_new
 */
-EazelInstaller*
-eazel_installer_new()
+EazelInstaller *
+eazel_installer_new (void)
 {
 	EazelInstaller *installer;
 

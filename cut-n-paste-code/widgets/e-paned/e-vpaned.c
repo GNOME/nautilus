@@ -111,11 +111,7 @@ e_vpaned_init (EVPaned *vpaned)
 GtkWidget *
 e_vpaned_new (void)
 {
-  EVPaned *vpaned;
-
-  vpaned = gtk_type_new (E_TYPE_VPANED);
-
-  return GTK_WIDGET (vpaned);
+  return gtk_widget_new (E_TYPE_VPANED, NULL);
 }
 
 static void
