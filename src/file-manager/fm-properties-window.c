@@ -42,6 +42,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkhbbox.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkimage.h>
 #include <gtk/gtklabel.h>
@@ -50,6 +51,7 @@
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
@@ -2156,6 +2158,9 @@ create_properties_window (StartupData *startup_data)
 {
 	FMPropertiesWindow *window;
 	GList *attributes;
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *button;
 
 	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
 
@@ -2194,11 +2199,17 @@ create_properties_window (StartupData *startup_data)
 					 G_CALLBACK (properties_window_file_changed_callback),
 					 window, G_CONNECT_SWAPPED);
 
+	/* Create box for notebook and button box. */
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (window), 
+			   GTK_WIDGET (vbox));
+
 	/* Create the notebook tabs. */
 	window->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
 	gtk_widget_show (GTK_WIDGET (window->details->notebook));
-	gtk_container_add (GTK_CONTAINER (window), 
-			   GTK_WIDGET (window->details->notebook));
+	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (window->details->notebook),
+			    TRUE, TRUE, 0);
 
 	/* Create the pages. */
 	create_basic_page (window);
@@ -2210,6 +2221,23 @@ create_properties_window (StartupData *startup_data)
 	if (should_show_permissions (window)) {
 		create_permissions_page (window);
 	}
+	
+	/* Create box for close button. */
+	hbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (hbox),
+			    FALSE, TRUE, 5);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox),
+				   GTK_BUTTONBOX_END);  
+
+	/* Create close button. */
+	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+ 	gtk_widget_show (button);
+	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button),
+			    FALSE, TRUE, 0);
+	g_signal_connect_swapped (button, "clicked",
+				  G_CALLBACK (gtk_widget_destroy),
+				  window);
 
 	return window;
 }
