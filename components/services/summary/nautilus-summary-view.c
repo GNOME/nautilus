@@ -167,12 +167,12 @@ update_header (NautilusSummaryView *view)
 	if (view->details->logged_in) {
 		g_free (view->details->user_name);
 		view->details->user_name = ammonite_get_default_user_username ();
-		text = g_strdup_printf (_("Welcome, %s!"), view->details->user_name);
+		text = g_strdup_printf (_("Eazel Services - Welcome, %s!"), view->details->user_name);
 		eazel_services_header_set_left_text (EAZEL_SERVICES_HEADER (view->details->header), text);
 		g_free (text);
 	} else {
 		eazel_services_header_set_left_text (EAZEL_SERVICES_HEADER (view->details->header),
-						     _("You are not logged in"));
+						     _("Eazel Services - You are not logged in"));
 	}
 }
 
@@ -380,7 +380,7 @@ generate_eazel_news_entry_row  (NautilusSummaryView *view,
 						  NULL,
 						  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 						  MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
-	gtk_widget_show (icon);
+	/* gtk_widget_show (icon); */
 	gtk_box_pack_start (GTK_BOX (icon_box), icon, FALSE, FALSE, 2);
 
 	/* generate second box with bold type date and the actual contents */
@@ -390,7 +390,7 @@ generate_eazel_news_entry_row  (NautilusSummaryView *view,
 
 	/* Date */
 	date_label = summary_view_item_header_label_new (news_node->date);
-	gtk_widget_show (date_label);
+	/* gtk_widget_show (date_label); */
 
 	gtk_box_pack_start (GTK_BOX (item_vbox), date_label, FALSE, FALSE, 2);
 
