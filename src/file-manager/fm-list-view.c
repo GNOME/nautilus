@@ -141,7 +141,8 @@ static void              fm_list_view_done_adding_files           (FMDirectoryVi
 static void              fm_list_view_select_all                  (FMDirectoryView    *view);
 static void              fm_list_view_set_selection               (FMDirectoryView    *view, GList *selection);
 static void              fm_list_view_set_zoom_level              (FMListView         *list_view,
-								   NautilusZoomLevel   new_level);
+								   NautilusZoomLevel   new_level,
+			    					   gboolean            always_report_new_level);
 static void              fm_list_view_sort_items                  (FMListView         *list_view,
 								   int                 column,
 								   gboolean            reversed);
@@ -852,7 +853,7 @@ fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 				 NAUTILUS_ZOOM_LEVEL_LARGEST);
 	}
 
-	fm_list_view_set_zoom_level (list_view, new_level);
+	fm_list_view_set_zoom_level (list_view, new_level, FALSE);
 }
 
 static void
@@ -864,7 +865,7 @@ fm_list_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 
 	list_view = FM_LIST_VIEW (view);
 
-	fm_list_view_set_zoom_level (list_view, zoom_level);
+	fm_list_view_set_zoom_level (list_view, zoom_level, FALSE);
 }
 
 static void
@@ -877,7 +878,7 @@ fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
 	list_view = FM_LIST_VIEW (view);
 
 	/* The list view is using NAUTILUS_ZOOM_LEVEL_SMALLER as default */
-	fm_list_view_set_zoom_level (list_view, NAUTILUS_ZOOM_LEVEL_SMALLER);
+	fm_list_view_set_zoom_level (list_view, NAUTILUS_ZOOM_LEVEL_SMALLER, FALSE);
 }
 
 static gboolean 
@@ -944,7 +945,8 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 		nautilus_directory_get_integer_metadata (
 			directory, 
 			NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-			list_view->details->default_zoom_level));
+			list_view->details->default_zoom_level),
+		TRUE);
 
 	fm_list_view_sort_items (
 		list_view,
@@ -1071,7 +1073,8 @@ fm_list_view_get_zoom_level (FMListView *list_view)
 
 static void
 fm_list_view_set_zoom_level (FMListView *list_view,
-			     NautilusZoomLevel new_level)
+			     NautilusZoomLevel new_level,
+			     gboolean always_report_new_level)
 {
 	GtkCList *clist;
 	int row;
@@ -1082,6 +1085,9 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
 	if (new_level == fm_list_view_get_zoom_level (list_view)) {
+		if (always_report_new_level) {
+			fm_directory_view_report_zoom_level_changed(&list_view->parent, new_level);
+		}
 		return;
 	}
 	
@@ -1091,6 +1097,8 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
 		 list_view->details->default_zoom_level,
 		 new_level);
+		 
+	fm_directory_view_report_zoom_level_changed(&list_view->parent, new_level);
 
 	/* Reset default to new level; this way any change in zoom level
 	 * will "stick" until the user visits a directory that had its zoom
