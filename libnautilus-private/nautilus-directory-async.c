@@ -2782,6 +2782,12 @@ link_info_done (NautilusDirectory *directory,
 	nautilus_directory_async_state_changed (directory);
 }
 
+static gboolean
+should_read_link_info_sync (NautilusFile *file)
+{
+	return (nautilus_file_is_local (file) &&
+		!nautilus_file_is_directory (file));
+}
 
 static void
 link_info_read_done (NautilusDirectory *directory,
@@ -2799,7 +2805,10 @@ link_info_read_done (NautilusDirectory *directory,
 	link_info_done (directory, file, uri, name, icon);
 	nautilus_file_changed (file);
 	nautilus_file_unref (file);
-	async_job_end (directory, "link info");
+
+	if (!should_read_link_info_sync (file)) {
+		async_job_end (directory, "link info");
+	}
 }
 
 
@@ -2908,7 +2917,10 @@ link_info_start (NautilusDirectory *directory,
 {
 	char *uri, *dot_directory_uri = NULL;
 	gboolean nautilus_style_link, is_directory;
-
+	int file_size;
+	char *file_contents;
+	GnomeVFSResult result;
+	
 	if (directory->details->link_info_read_state != NULL) {
 		return;
 	}
@@ -2932,6 +2944,16 @@ link_info_start (NautilusDirectory *directory,
 	/* If it's not a link we are done. If it is, we need to read it. */
 	if (!(nautilus_style_link || (is_directory && dot_directory_uri != NULL) )) {
 		link_info_done (directory, file, NULL, NULL, NULL);
+	} else if (should_read_link_info_sync (file)) {
+		directory->details->link_info_read_state = g_new0 (LinkInfoReadState, 1);
+		directory->details->link_info_read_state->file = file;
+
+		result = eel_read_entire_file (uri, &file_size, &file_contents);
+		link_info_nautilus_link_read_callback (result, file_size, file_contents, directory);
+
+		/* We don't have to free file_contents here
+		 * because it's done in the callback function
+		 */
 	} else {
 		if (!async_job_start (directory, "link info")) {
 			g_free (dot_directory_uri);

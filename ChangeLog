@@ -1,3 +1,11 @@
+2002-04-22  Anders Carlsson  <andersca@gnu.org>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(should_read_link_info_sync), (link_info_read_done),
+	(link_info_start):
+	Read .desktop files sync if they're local. This speeds
+	up loading directories that have .desktop files in them.
+	
 2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-directory-background.c
