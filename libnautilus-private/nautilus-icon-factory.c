@@ -374,6 +374,8 @@ nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
 	
 	factory->fallback_icon = cache_icon_new (pixbuf, NULL, 1.0, 1.0);
 
+	g_object_unref(pixbuf);
+
 	factory->image_mime_types = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < G_N_ELEMENTS (types); i++) {
 		g_hash_table_insert (factory->image_mime_types,
@@ -1187,7 +1189,7 @@ create_normal_cache_icon (const char *icon,
 		 *        before the extension */
 		if (stat (icon, &statbuf) == 0 &&
 		    S_ISREG (statbuf.st_mode)) {
-			filename = g_strdup (icon);
+			filename = icon;
 			mtime = statbuf.st_mtime;
 		}
 	} else {

@@ -197,6 +197,7 @@ load_module_dir (const char *dirname)
 							     name, 
 							     NULL);
 				nautilus_module_load_file (filename);
+				g_free (filename);
 			}
 		}
 
