@@ -619,12 +619,14 @@ Bonobo_RegistrationResult
 nautilus_bonobo_activation_register_for_display (const char    *iid,
 						 Bonobo_Unknown ref)
 {
-	char *real_iid;
+	const char *display_name;
+	GSList *reg_env ;
 	Bonobo_RegistrationResult result;
-
-	real_iid = eel_bonobo_make_registration_id (iid);
-	result = bonobo_activation_active_server_register (real_iid, ref);
-	g_free (real_iid);
-
+	
+	display_name = gdk_display_get_name (gdk_display_get_default());
+	reg_env = bonobo_activation_registration_env_set (NULL,
+							  "DISPLAY", display_name);
+	result = bonobo_activation_register_active_server (iid, ref, reg_env);
+	bonobo_activation_registration_env_free (reg_env);
 	return result;
 }
