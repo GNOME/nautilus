@@ -38,7 +38,7 @@ extern "C" {
 #define EAZEL_INSTALL_CALLBACK(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_INSTALL_CALLBACK, EazelInstallCallback))
 #define EAZEL_INSTALL_CALLBACK_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_INSTALL_CALLBACK, EazelInstallCallbackClass))
 #define IS_EAZEL_INSTALL_CALLBACK(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL_CALLBACK))
-#define IS_EAZEL_INSTALL_CALLBACK_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((obj), TYPE_EAZEL_INSTALL_CALLBACK))
+#define IS_EAZEL_INSTALL_CALLBACK_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL_CALLBACK))
 
 typedef struct _EazelInstallCallback EazelInstallCallback;
 typedef struct _EazelInstallCallbackClass EazelInstallCallbackClass;

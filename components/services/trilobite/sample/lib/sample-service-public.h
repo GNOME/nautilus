@@ -35,7 +35,7 @@ extern "C" {
 #define SAMPLE_SERVICE(obj)                          (GTK_CHECK_CAST ((obj), SAMPLE_TYPE_SERVICE, SampleService))
 #define SAMPLE_SERVICE_CLASS(klass)                  (GTK_CHECK_CLASS_CAST ((klass), SAMPLE_TYPE_SERVICE, SampleServiceClass))
 #define SAMPLE_IS_SERVICE(obj)                       (GTK_CHECK_TYPE ((obj), SAMPLE_TYPE_SERVICE))
-#define SAMPLE_IS_SERVICE_CLASS(klass)               (GTK_CHECK_CLASS_TYPE ((obj), SAMPLE_TYPE_SERVICE))
+#define SAMPLE_IS_SERVICE_CLASS(klass)               (GTK_CHECK_CLASS_TYPE ((klass), SAMPLE_TYPE_SERVICE))
 	
 typedef struct _SampleService SampleService;
 typedef struct _SampleServiceClass SampleServiceClass;

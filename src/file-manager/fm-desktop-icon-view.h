@@ -34,7 +34,7 @@ typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
 #define FM_DESKSTOP_ICON_VIEW(obj)		(GTK_CHECK_CAST ((obj), FM_TYPE_DESKSTOP_ICON_VIEW, FMDesktopIconView))
 #define FM_DESKSTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_DESKSTOP_ICON_VIEW, FMDesktopIconViewClass))
 #define FM_IS_DESKSTOP_ICON_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_DESKSTOP_ICON_VIEW))
-#define FM_IS_DESKSTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DESKSTOP_ICON_VIEW))
+#define FM_IS_DESKSTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_DESKSTOP_ICON_VIEW))
 
 typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
 

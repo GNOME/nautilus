@@ -34,9 +34,9 @@ typedef struct NautilusMozillaContentViewClass NautilusMozillaContentViewClass;
 
 #define NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW	      (nautilus_mozilla_content_view_get_type ())
 #define NAUTILUS_MOZILLA_CONTENT_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NautilusMozillaContentView))
-#define NAUTILUS_MOZILLA_CONTENT_VIEW_CLASS(klass)     (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NautilusMozillaContentViewClass))
+#define NAUTILUS_MOZILLA_CONTENT_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NautilusMozillaContentViewClass))
 #define NAUTILUS_IS_MOZILLA_CONTENT_VIEW(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW))
-#define NAUTILUS_IS_MOZILLA_CONTENT_VIEW_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW))
+#define NAUTILUS_IS_MOZILLA_CONTENT_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW))
 
 typedef struct NautilusMozillaContentViewDetails NautilusMozillaContentViewDetails;
 

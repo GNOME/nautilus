@@ -25,18 +25,13 @@
 #include <bonobo/bonobo-object.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:nautilus_file_manager_desktop_icon_view:8d8121b1-0f1e-400b-bf0d-5b0f4555f5e1"
 
 #define NAUTILUS_TYPE_APPLICATION	     (nautilus_application_get_type ())
 #define NAUTILUS_APPLICATION(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplication))
 #define NAUTILUS_APPLICATION_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_APPLICATION, NautilusApplicationClass))
 #define NAUTILUS_IS_APPLICATION(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_APPLICATION))
-#define NAUTILUS_IS_APPLICATION_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_APPLICATION))
+#define NAUTILUS_IS_APPLICATION_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_APPLICATION))
 
 #ifndef NAUTILUS_WINDOW_DEFINED
 #define NAUTILUS_WINDOW_DEFINED
@@ -52,8 +47,6 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_class;
-	gpointer servant;
-	gpointer unknown_epv;
 } NautilusApplicationClass;
 
 GtkType              nautilus_application_get_type      (void);
@@ -63,9 +56,5 @@ gboolean             nautilus_application_startup       (NautilusApplication *ap
 							 const char          *urls[]);
 NautilusWindow *     nautilus_application_create_window (NautilusApplication *application);
 void                 nautilus_application_quit          (void);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 #endif /* NAUTILUS_APPLICATION_H */

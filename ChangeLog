@@ -1,3 +1,52 @@
+2000-07-13  Darin Adler  <darin@eazel.com>
+
+	My apologies to all who read the cvs commits list that have
+	suffered from my "spam" in the past (due to my use of emacs cvs
+	mode to commit).  I will never use emacs cvs mode again so you
+	will see each of my commits only once!
+
+	* src/file-manager/fm-error-reporting.c:
+	(rename_callback_data_free), (rename_callback),
+	(cancel_rename_callback), (fm_rename_file):
+	Finished the 1/2 done code for renaming.
+
+	* src/nautilus-main.c: (main): Removed the call to bonobo_shutdown
+	since Michael decided he won't do it this way any more.
+	
+	* src/nautilus-window.c: (nautilus_window_destroy): Added code
+	to unref the UI handler to fix a leak.
+
+	* components/hardware/nautilus-hardware-view.h:
+	* components/loser/content/nautilus-content-loser.h:
+	* components/loser/sidebar/nautilus-sidebar-loser.h:
+	* components/mozilla/nautilus-mozilla-content-view.h:
+	* components/music/nautilus-music-view.h:
+	* components/rpmview/nautilus-rpm-view.h:
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/nautilus-view/nautilus-service-install-view.h:
+	* components/services/inventory/nautilus-view/nautilus-inventory-view.h:
+	* components/services/login/nautilus-view/nautilus-login-view.h:
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view.h:
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.h:
+	* components/services/time/service/trilobite-eazel-time-service-public.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.h:
+	* components/services/trilobite/libtrilobite/trilobite-service-passwordquery-public.h:
+	* components/services/trilobite/libtrilobite/trilobite-service-public.h:
+	* components/services/trilobite/sample/lib/sample-service-public.h:
+	* components/tree/nautilus-tree-view.h:
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-zoomable.h:
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.h:
+	* src/file-manager/fm-list-view.h:
+	* src/nautilus-application.h:
+	* src/nautilus-shell.h:
+	* src/nautilus-view-frame.h:
+	Fixed a copied and pasted typo.
+	
 2000-07-13  Pavel Cisler <pavel@eazel.com>
 
 	* src/file-manager/dfos-xfer.c: (handle_xfer_ok):
@@ -6,9 +55,8 @@
 
 2000-07-13  J Shane Culpepper  <pepper@eazel.com>
 
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form):
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form):
 	Adding layout fixes to the install widget to match changes in the
 	baranch.
 
@@ -38,19 +86,12 @@
 2000-07-12  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-client-pr
-	ivate.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-client-pu
-	blic.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-client.c:
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
-	*
-	components/services/trilobite/libtrilobite/trilobite-service-passwo
-	rdquery.c: (impl_Trilobite_PasswordQuery_set_query_client),
+	* components/services/trilobite/libtrilobite/trilobite-root-client-private.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-client-public.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	* components/services/trilobite/libtrilobite/trilobite-service-passwordquery.c:
+	(impl_Trilobite_PasswordQuery_set_query_client),
 	(trilobite_passwordquery_destroy),
 	(trilobite_passwordquery_get_password):
 	* components/services/trilobite/sample/command-line/main.c:
@@ -68,9 +109,8 @@
 
 2000-07-12  Ramiro Estrugo  <ramiro@eazel.com>
 
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form), (create_title_widget),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form), (create_title_widget),
 	(create_middle_title_widget):
 
 	Fix a bunch of gtk assertions caused by adding widgets to gtkboxes

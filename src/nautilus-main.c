@@ -156,7 +156,6 @@ main (int argc, char *argv[])
 		bonobo_object_unref (BONOBO_OBJECT (application));
 	}
 
-	bonobo_shutdown ();
 	gnome_vfs_shutdown ();
 
 	return EXIT_SUCCESS;

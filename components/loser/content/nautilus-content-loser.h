@@ -38,7 +38,7 @@ typedef struct NautilusContentLoserClass NautilusContentLoserClass;
 #define NAUTILUS_CONTENT_LOSER(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_LOSER, NautilusContentLoser))
 #define NAUTILUS_CONTENT_LOSER_CLASS(klass)     (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONTENT_LOSER, NautilusContentLoserClass))
 #define NAUTILUS_IS_CONTENT_LOSER(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_LOSER))
-#define NAUTILUS_IS_CONTENT_LOSER_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_CONTENT_LOSER))
+#define NAUTILUS_IS_CONTENT_LOSER_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CONTENT_LOSER))
 
 typedef struct NautilusContentLoserDetails NautilusContentLoserDetails;
 

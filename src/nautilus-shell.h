@@ -38,7 +38,7 @@ extern "C" {
 #define NAUTILUS_SHELL(obj)	       (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SHELL, NautilusShell))
 #define NAUTILUS_SHELL_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SHELL, NautilusShellClass))
 #define NAUTILUS_IS_SHELL(obj)	       (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SHELL))
-#define NAUTILUS_IS_SHELL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SHELL))
+#define NAUTILUS_IS_SHELL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SHELL))
 
 typedef struct NautilusShellDetails NautilusShellDetails;
 

@@ -142,6 +142,17 @@ typedef struct {
 static void cancel_rename_callback (gpointer callback_data);
 
 static void
+rename_callback_data_free (RenameCallbackData *data)
+{
+	g_assert (NAUTILUS_IS_FILE (data->file));
+	g_assert (data->new_name != NULL);
+
+	nautilus_file_unref (data->file);
+	g_free (data->new_name);
+	g_free (data);
+}
+
+static void
 rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
 	RenameCallbackData *data;
@@ -160,8 +171,8 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 	/* If rename failed, notify the user. */
 	fm_report_error_renaming_file (file, data->new_name, result);
 
-	g_free (data->new_name);
-	g_free (data);
+	/* Done with the callback data. */
+	rename_callback_data_free (data);
 }
 
 static void
@@ -176,14 +187,19 @@ cancel_rename_callback (gpointer callback_data)
 	g_assert (NAUTILUS_IS_FILE (data->file));
 	g_assert (data->new_name != NULL);
 
+	/* Cancel the renaming. */
 	nautilus_file_cancel (data->file, rename_callback, callback_data);
+
+	/* Done with the callback data. */
+	rename_callback_data_free (data);
 }
 
 void
 fm_rename_file (NautilusFile *file,
 		const char *new_name)
 {
-	char *new_name_dup, *old_name, *wait_message;
+	RenameCallbackData *data;
+	char *old_name, *wait_message;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
@@ -195,11 +211,14 @@ fm_rename_file (NautilusFile *file,
 	g_free (old_name);
 
 	/* Start the rename. */
-	new_name_dup = g_strdup (new_name);
-	nautilus_file_rename (file, new_name_dup,
-			      rename_callback, new_name_dup);
+	data = g_new (RenameCallbackData, 1);
+	nautilus_file_ref (file);
+	data->file = file;
+	data->new_name = g_strdup (new_name);
+	nautilus_file_rename (file, new_name,
+			      rename_callback, data);
 	nautilus_timed_wait_start (cancel_rename_callback,
-				   new_name_dup,
+				   data,
 				   _("Cancel Rename?"),
 				   wait_message,
 				   NULL); /* FIXME: Parent this? */

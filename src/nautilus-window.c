@@ -233,7 +233,6 @@ zoom_to_fit_callback (NautilusZoomControl *zoom_control,
 	}
 }
 
-
 static void
 nautilus_window_constructed (NautilusWindow *window)
 {
@@ -445,7 +444,7 @@ nautilus_window_destroy (GtkObject *object)
 	g_list_free (window->sidebar_panels);
 
 	nautilus_window_disconnect_view (window, window->content_view);
-	
+
 	nautilus_view_identifier_free (window->content_view_id);
 	
 	g_free (window->location);
@@ -458,12 +457,15 @@ nautilus_window_destroy (GtkObject *object)
 	if (window->statusbar_clear_id != 0) {
 		g_source_remove (window->statusbar_clear_id);
 	}
-
 	if (window->action_tag != 0) {
 		g_source_remove (window->action_tag);
 	}
-	
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
+
+	if (window->ui_handler != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (window->ui_handler));
+	}
 }
 
 void
@@ -938,28 +940,31 @@ nautilus_window_go_home (NautilusWindow *window)
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive(window->back_button, allow); 
-	bonobo_ui_handler_menu_set_sensitivity(window->ui_handler, NAUTILUS_MENU_PATH_BACK_ITEM, allow);
+	gtk_widget_set_sensitive (window->back_button, allow); 
+	bonobo_ui_handler_menu_set_sensitivity
+		(window->ui_handler, NAUTILUS_MENU_PATH_BACK_ITEM, allow);
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive(window->forward_button, allow); 
-	bonobo_ui_handler_menu_set_sensitivity(window->ui_handler, NAUTILUS_MENU_PATH_FORWARD_ITEM, allow);
+	gtk_widget_set_sensitive (window->forward_button, allow); 
+	bonobo_ui_handler_menu_set_sensitivity
+		(window->ui_handler, NAUTILUS_MENU_PATH_FORWARD_ITEM, allow);
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive(window->up_button, allow); 
-	bonobo_ui_handler_menu_set_sensitivity(window->ui_handler, NAUTILUS_MENU_PATH_UP_ITEM, allow);
+	gtk_widget_set_sensitive (window->up_button, allow); 
+	bonobo_ui_handler_menu_set_sensitivity
+		(window->ui_handler, NAUTILUS_MENU_PATH_UP_ITEM, allow);
 }
 
 void
 nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive(window->reload_button, allow); 
+	gtk_widget_set_sensitive (window->reload_button, allow); 
 }
 
 void

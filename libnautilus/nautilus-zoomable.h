@@ -40,7 +40,7 @@ extern "C" {
 #define NAUTILUS_ZOOMABLE(obj)		  (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ZOOMABLE, NautilusZoomable))
 #define NAUTILUS_ZOOMABLE_CLASS(klass)	  (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ZOOMABLE, NautilusZoomableClass))
 #define NAUTILUS_IS_ZOOMABLE(obj)	  (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ZOOMABLE))
-#define NAUTILUS_IS_ZOOMABLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_ZOOMABLE))
+#define NAUTILUS_IS_ZOOMABLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ZOOMABLE))
 
 typedef struct NautilusZoomable NautilusZoomable;
 typedef struct NautilusZoomableClass NautilusZoomableClass;

@@ -38,7 +38,7 @@ typedef struct NautilusSidebarLoserClass NautilusSidebarLoserClass;
 #define NAUTILUS_SIDEBAR_LOSER(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR_LOSER, NautilusSidebarLoser))
 #define NAUTILUS_SIDEBAR_LOSER_CLASS(klass)     (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR_LOSER, NautilusSidebarLoserClass))
 #define NAUTILUS_IS_SIDEBAR_LOSER(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR_LOSER))
-#define NAUTILUS_IS_SIDEBAR_LOSER_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR_LOSER))
+#define NAUTILUS_IS_SIDEBAR_LOSER_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR_LOSER))
 
 typedef struct NautilusSidebarLoserDetails NautilusSidebarLoserDetails;
 

@@ -33,7 +33,7 @@ typedef struct _NautilusLoginViewClass NautilusLoginViewClass;
 #define NAUTILUS_LOGIN_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_LOGIN_VIEW, NautilusLoginView))
 #define NAUTILUS_LOGIN_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_LOGIN_VIEW, NautilusLoginViewClass))
 #define NAUTILUS_IS_LOGIN_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_LOGIN_VIEW))
-#define NAUTILUS_IS_LOGIN_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_LOGIN_VIEW))
+#define NAUTILUS_IS_LOGIN_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_LOGIN_VIEW))
 
 typedef struct _NautilusLoginViewDetails NautilusLoginViewDetails;
 

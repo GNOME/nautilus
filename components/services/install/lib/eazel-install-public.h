@@ -46,7 +46,7 @@ extern "C" {
 #define EAZEL_INSTALL(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_INSTALL, EazelInstall))
 #define EAZEL_INSTALL_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_INSTALL, EazelInstallClass))
 #define IS_EAZEL_INSTALL(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL))
-#define IS_EAZEL_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((obj), TYPE_EAZEL_INSTALL))
+#define IS_EAZEL_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL))
 
 typedef enum {
 	EAZEL_INSTALL_USE_RPM

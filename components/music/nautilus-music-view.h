@@ -32,11 +32,11 @@
 typedef struct _NautilusMusicView      NautilusMusicView;
 typedef struct _NautilusMusicViewClass NautilusMusicViewClass;
 
-#define NAUTILUS_TYPE_MUSIC_VIEW	(nautilus_music_view_get_type ())
-#define NAUTILUS_MUSIC_VIEW(obj)	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_MUSIC_VIEW, NautilusMusicView))
-#define NAUTILUS_MUSIC_VIEW_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MUSIC_VIEW, NautilusMusicViewClass))
-#define NAUTILUS_IS_MUSIC_VIEW(obj)	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_MUSIC_VIEW))
-#define NAUTILUS_IS_MUSIC_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_MUSIC_VIEW))
+#define NAUTILUS_TYPE_MUSIC_VIEW	    (nautilus_music_view_get_type ())
+#define NAUTILUS_MUSIC_VIEW(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_MUSIC_VIEW, NautilusMusicView))
+#define NAUTILUS_MUSIC_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MUSIC_VIEW, NautilusMusicViewClass))
+#define NAUTILUS_IS_MUSIC_VIEW(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_MUSIC_VIEW))
+#define NAUTILUS_IS_MUSIC_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_MUSIC_VIEW))
 
 typedef struct _NautilusMusicViewDetails NautilusMusicViewDetails;
 

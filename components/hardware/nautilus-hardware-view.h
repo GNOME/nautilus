@@ -36,7 +36,7 @@ typedef struct _NautilusHardwareViewClass NautilusHardwareViewClass;
 #define NAUTILUS_HARDWARE_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HARDWARE_VIEW, NautilusHardwareView))
 #define NAUTILUS_HARDWARE_VIEW_CLASS(klass) 	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_HARDWARE_VIEW, NautilusHardwareViewClass))
 #define NAUTILUS_IS_HARDWARE_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_HARDWARE_VIEW))
-#define NAUTILUS_IS_HARDWARE_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_HARDWARE_VIEW))
+#define NAUTILUS_IS_HARDWARE_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_HARDWARE_VIEW))
 
 typedef struct _NautilusHardwareViewDetails NautilusHardwareViewDetails;
 

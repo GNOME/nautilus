@@ -39,7 +39,7 @@ extern "C" {
 #define TRILOBITE_PASSWORDQUERY(obj)           (GTK_CHECK_CAST ((obj), TRILOBITE_TYPE_PASSWORDQUERY, TrilobitePasswordQuery))
 #define TRILOBITE_PASSWORDQUERY_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TRILOBITE_TYPE_PASSWORDQUERY, TrilobitePasswordQueryClass))
 #define TRILOBITE_IS_PASSWORDQUERY(obj)        (GTK_CHECK_TYPE ((obj), TRILOBITE_TYPE_PASSWORDQUERY))
-#define TRILOBITE_IS_PASSWORDQUERY_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((obj), TRILOBITE_TYPE_PASSWORDQUERY))
+#define TRILOBITE_IS_PASSWORDQUERY_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TRILOBITE_TYPE_PASSWORDQUERY))
 	
 typedef struct _TrilobitePasswordQuery TrilobitePasswordQuery;
 typedef struct _TrilobitePasswordQueryClass TrilobitePasswordQueryClass;

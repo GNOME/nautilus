@@ -31,11 +31,11 @@
 typedef struct NautilusRPMView      NautilusRPMView;
 typedef struct NautilusRPMViewClass NautilusRPMViewClass;
 
-#define NAUTILUS_TYPE_RPM_VIEW	(nautilus_rpm_view_get_type ())
-#define NAUTILUS_RPM_VIEW(obj)	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_RPM_VIEW, NautilusRPMView))
-#define NAUTILUS_RPM_VIEW_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_RPM_VIEW, NautilusRPMViewClass))
-#define NAUTILUS_IS_RPM_VIEW(obj)	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_RPM_VIEW))
-#define NAUTILUS_IS_RPM_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_RPM_VIEW))
+#define NAUTILUS_TYPE_RPM_VIEW	          (nautilus_rpm_view_get_type ())
+#define NAUTILUS_RPM_VIEW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_RPM_VIEW, NautilusRPMView))
+#define NAUTILUS_RPM_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_RPM_VIEW, NautilusRPMViewClass))
+#define NAUTILUS_IS_RPM_VIEW(obj)	  (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_RPM_VIEW))
+#define NAUTILUS_IS_RPM_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_RPM_VIEW))
 
 typedef struct NautilusRPMViewDetails NautilusRPMViewDetails;
 

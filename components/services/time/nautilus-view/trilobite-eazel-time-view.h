@@ -32,11 +32,11 @@
 #define OAFIID_TRILOBITE_EAZEL_TIME_VIEW "OAFIID:trilobite_eazel_time_view:de32d812-af19-4359-9902-42318e0089b3"
 #define OAFIID_TRILOBITE_EAZEL_TIME_VIEW_FACTORY "OAFIID:trilobite_eazel_time_view_factory:9797487c-08f7-4ef1-9981-0c4b36df220b"
 
-#define TRILOBITE_TYPE_EAZEL_TIME_VIEW	     (trilobite_eazel_time_view_get_type ())
-#define TRILOBITE_EAZEL_TIME_VIEW(obj)	     (GTK_CHECK_CAST ((obj), TRILOBITE_TYPE_EAZEL_TIME_VIEW, TrilobiteEazelTimeView))
+#define TRILOBITE_TYPE_EAZEL_TIME_VIEW	          (trilobite_eazel_time_view_get_type ())
+#define TRILOBITE_EAZEL_TIME_VIEW(obj)	          (GTK_CHECK_CAST ((obj), TRILOBITE_TYPE_EAZEL_TIME_VIEW, TrilobiteEazelTimeView))
 #define TRILOBITE_EAZEL_TIME_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), TRILOBITE_TYPE_EAZEL_TIME_VIEW, TrilobiteEazelTimeViewClass))
-#define TRILOBITE_IS_EAZEL_TIME_VIEW(obj)	     (GTK_CHECK_TYPE ((obj), TRILOBITE_TYPE_EAZEL_TIME_VIEW))
-#define TRILOBITE_IS_EAZEL_TIME_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), TRILOBITE_TYPE_EAZEL_TIME_VIEW))
+#define TRILOBITE_IS_EAZEL_TIME_VIEW(obj)	  (GTK_CHECK_TYPE ((obj), TRILOBITE_TYPE_EAZEL_TIME_VIEW))
+#define TRILOBITE_IS_EAZEL_TIME_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), TRILOBITE_TYPE_EAZEL_TIME_VIEW))
 
 typedef struct TrilobiteEazelTimeViewDetails TrilobiteEazelTimeViewDetails;
 

@@ -33,7 +33,7 @@ typedef struct _NautilusInventoryViewClass NautilusInventoryViewClass;
 #define NAUTILUS_INVENTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INVENTORY_VIEW, NautilusInventoryView))
 #define NAUTILUS_INVENTORY_VIEW_CLASS (klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INVENTORY_VIEW, NautilusInventoryViewClass))
 #define NAUTILUS_IS_INVENTORY_VIEW(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INVENTORY_VIEW))
-#define NAUTILUS_IS_INVENTORY_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_INVENTORY_VIEW))
+#define NAUTILUS_IS_INVENTORY_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INVENTORY_VIEW))
 
 typedef struct _NautilusInventoryViewDetails NautilusInventoryViewDetails;
 

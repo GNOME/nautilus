@@ -35,7 +35,7 @@ typedef struct _NautilusServiceStartupViewClass NautilusServiceStartupViewClass;
 #define NAUTILUS_SERVICE_STARTUP_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServiceStartupView))
 #define NAUTILUS_SERVICE_STARTUP_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServiceStartupViewClass))
 #define NAUTILUS_IS_SERVICE_STARTUP_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
-#define NAUTILUS_IS_SERVICE_STARTUP_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
+#define NAUTILUS_IS_SERVICE_STARTUP_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
 
 typedef struct _NautilusServiceStartupViewDetails NautilusServiceStartupViewDetails;
 

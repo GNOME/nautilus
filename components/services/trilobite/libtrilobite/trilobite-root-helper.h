@@ -38,7 +38,7 @@ extern "C" {
 #define TRILOBITE_ROOT_HELPER_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), TRILOBITE_TYPE_ROOT_HELPER, \
 							TrilobiteRootHelperClass))
 #define TRILOBITE_IS_ROOT_HELPER(obj)		(GTK_CHECK_TYPE ((obj), TRILOBITE_TYPE_ROOT_HELPER))
-#define TRILOBITE_IS_ROOT_HELPER_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), TRILOBITE_TYPE_ROOT_HELPER))
+#define TRILOBITE_IS_ROOT_HELPER_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), TRILOBITE_TYPE_ROOT_HELPER))
 
 typedef struct _TrilobiteRootHelper TrilobiteRootHelper;
 typedef struct _TrilobiteRootHelperClass TrilobiteRootHelperClass;

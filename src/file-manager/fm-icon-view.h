@@ -34,7 +34,7 @@ typedef struct FMIconViewClass FMIconViewClass;
 #define FM_ICON_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_ICON_VIEW, FMIconView))
 #define FM_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_ICON_VIEW, FMIconViewClass))
 #define FM_IS_ICON_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_ICON_VIEW))
-#define FM_IS_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_ICON_VIEW))
+#define FM_IS_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_VIEW))
 
 typedef struct FMIconViewDetails FMIconViewDetails;
 

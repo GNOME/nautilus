@@ -39,7 +39,7 @@ extern "C" {
 #define NAUTILUS_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW, NautilusView))
 #define NAUTILUS_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VIEW, NautilusViewClass))
 #define NAUTILUS_IS_VIEW(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEW))
-#define NAUTILUS_IS_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_VIEW))
+#define NAUTILUS_IS_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_VIEW))
 
 typedef struct NautilusViewDetails NautilusViewDetails;
 

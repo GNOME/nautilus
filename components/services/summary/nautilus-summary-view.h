@@ -33,7 +33,7 @@ typedef struct _NautilusSummaryViewClass NautilusSummaryViewClass;
 #define NAUTILUS_SUMMARY_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SUMMARY_VIEW, NautilusSummaryView))
 #define NAUTILUS_SUMMARY_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SUMMARY_VIEW, NautilusSummaryViewClass))
 #define NAUTILUS_IS_SUMMARY_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SUMMARY_VIEW))
-#define NAUTILUS_IS_SUMMARY_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SUMMARY_VIEW))
+#define NAUTILUS_IS_SUMMARY_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SUMMARY_VIEW))
 
 typedef struct _NautilusSummaryViewDetails NautilusSummaryViewDetails;
 

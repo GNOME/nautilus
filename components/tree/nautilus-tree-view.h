@@ -36,11 +36,11 @@
 typedef struct NautilusTreeView NautilusTreeView;
 typedef struct NautilusTreeViewClass NautilusTreeViewClass;
 
-#define NAUTILUS_TYPE_TREE_VIEW	     (nautilus_tree_view_get_type ())
-#define NAUTILUS_TREE_VIEW(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeView))
+#define NAUTILUS_TYPE_TREE_VIEW	           (nautilus_tree_view_get_type ())
+#define NAUTILUS_TREE_VIEW(obj)	           (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeView))
 #define NAUTILUS_TREE_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeViewClass))
-#define NAUTILUS_IS_TREE_VIEW(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_TREE_VIEW))
-#define NAUTILUS_IS_TREE_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_TREE_VIEW))
+#define NAUTILUS_IS_TREE_VIEW(obj)	   (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_TREE_VIEW))
+#define NAUTILUS_IS_TREE_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TREE_VIEW))
 
 typedef struct NautilusTreeViewDetails NautilusTreeViewDetails;
 

@@ -34,7 +34,7 @@ typedef struct FMListViewClass FMListViewClass;
 #define FM_LIST_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_LIST_VIEW, FMListView))
 #define FM_LIST_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_LIST_VIEW, FMListViewClass))
 #define FM_IS_LIST_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_LIST_VIEW))
-#define FM_IS_LIST_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_LIST_VIEW))
+#define FM_IS_LIST_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_VIEW))
 
 typedef struct FMListViewDetails FMListViewDetails;
 

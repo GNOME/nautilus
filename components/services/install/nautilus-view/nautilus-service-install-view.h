@@ -33,7 +33,7 @@ typedef struct _NautilusServiceInstallViewClass NautilusServiceInstallViewClass;
 #define NAUTILUS_SERVICE_INSTALL_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SERVICE_INSTALL_VIEW, NautilusServiceInstallView))
 #define NAUTILUS_SERVICE_INSTALL_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SERVICE_INSTALL_VIEW, NautilusServiceInstallViewClass))
 #define NAUTILUS_IS_SERVICE_INSTALL_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SERVICE_INSTALL_VIEW))
-#define NAUTILUS_IS_SERVICE_INSTALL_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SERVICE_INSTALL_VIEW))
+#define NAUTILUS_IS_SERVICE_INSTALL_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SERVICE_INSTALL_VIEW))
 
 typedef struct _NautilusServiceInstallViewDetails NautilusServiceInstallViewDetails;
 
