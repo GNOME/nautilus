@@ -6600,14 +6600,14 @@ disconnect_model_handlers (FMDirectoryView *view)
 	disconnect_directory_handler (view, &view->details->done_loading_handler_id);
 	disconnect_directory_handler (view, &view->details->load_error_handler_id);
 	disconnect_directory_as_file_handler (view, &view->details->file_changed_handler_id);
-	nautilus_directory_file_monitor_remove (view->details->model,
-						&view->details->model);
 	nautilus_file_cancel_call_when_ready (view->details->directory_as_file,
 					      metadata_for_directory_as_file_ready_callback,
 					      view);
 	nautilus_directory_cancel_callback (view->details->model,
 					    metadata_for_files_in_directory_ready_callback,
 					    view);
+	nautilus_directory_file_monitor_remove (view->details->model,
+						&view->details->model);
 	nautilus_file_monitor_remove (view->details->directory_as_file,
 				      &view->details->directory_as_file);
 }
