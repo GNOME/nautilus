@@ -57,25 +57,24 @@ static const struct poptOption options[] = {
 int
 main (int argc, char *argv[])
 {
-  GtkWidget *window;
-  EazelInstaller *installer;
+	EazelInstaller *installer;
 
 #ifdef ENABLE_NLS
-  bindtextdomain ("nautilus-installer", GNOMELOCALEDIR);
-  textdomain ("nautilus-installer");
+	bindtextdomain ("nautilus-installer", GNOMELOCALEDIR);
+	textdomain ("nautilus-installer");
 #endif
-  gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
+	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
 
-  installer = eazel_installer_new ();
+	installer = eazel_installer_new ();
 
-  gtk_main ();
-  return 0;
+	gtk_main ();
+	return 0;
 }
 
 
 /* Dummy functions to make linking work */
 
 const gpointer oaf_popt_options = NULL;
-gpointer oaf_init (int argc, char *argv[]) {}
-int bonobo_init (gpointer a, gpointer b, gpointer c) {};
+gpointer oaf_init (int argc, char *argv[]) { return NULL; }
+int bonobo_init (gpointer a, gpointer b, gpointer c) { return 0; };
 char *nautilus_pixmap_file (const char *a) { return NULL; };

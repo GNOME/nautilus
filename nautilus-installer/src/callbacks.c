@@ -44,7 +44,6 @@ begin_install (EazelInstaller  *installer)
 {
 	GtkWidget *window = installer->window;
 	GnomeDruid *druid;
-	GnomeDruidPage *nextpage;
 	GList *iterator;
 	GList *install_categories = NULL;
 
@@ -94,5 +93,3 @@ prep_finish (GnomeDruidPage  *gnomedruidpage,
 {
 	gnome_druid_set_buttons_sensitive(GNOME_DRUID (druid), FALSE, TRUE, FALSE);
 }
-
-

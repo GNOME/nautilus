@@ -28,7 +28,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 #include <glib.h>
+#include <libtrilobite/trilobite-core-utils.h>
 #include "proxy.h"
 
 /**

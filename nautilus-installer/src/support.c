@@ -15,10 +15,6 @@
 
 #include "support.h"
 
-/* This is an internally used function to create pixmaps. */
-static GtkWidget* create_dummy_pixmap  (GtkWidget       *widget,
-                                        gboolean         gnome_pixmap);
-
 GtkWidget*
 lookup_widget                          (GtkWidget       *widget,
                                         const gchar     *widget_name)
