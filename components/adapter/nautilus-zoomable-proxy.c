@@ -22,6 +22,7 @@
  *
  */
 
+#include <config.h>
 #include "nautilus-zoomable-proxy.h"
 
 #undef ZOOMABLE_DEBUG
@@ -40,8 +41,6 @@ typedef struct {
 } impl_POA_Bonobo_Zoomable;
 
 static POA_Bonobo_Zoomable__vepv nautilus_zoomable_proxy_vepv;
-
-#define CLASS(o) BONOBO_ZOOMABLE_CLASS(GTK_OBJECT(o)->klass)
 
 static inline NautilusZoomableProxy *
 nautilus_zoomable_proxy_from_servant (PortableServer_Servant servant)

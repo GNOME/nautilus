@@ -917,15 +917,11 @@ gboolean
 nautilus_window_content_view_matches_iid (NautilusWindow *window, 
 					  const char *iid)
 {
-	const char *content_view_iid;
-
         if (window->content_view == NULL) {
-                content_view_iid = "";
-        } else {
-                content_view_iid = nautilus_view_frame_get_view_iid (window->content_view);
+                return FALSE;
         }
-
-	return strcmp (content_view_iid, iid) == 0;
+	return eel_strcmp (nautilus_view_frame_get_view_iid (window->content_view),
+                           iid) == 0;
 }
 
 static void

@@ -88,7 +88,7 @@ while (@directories)
                 die "can't parse SUBDIRS in $directory\n";
               }
           }
-	while (s/([-_a-zA-Z0-9]+\.(c|h|xml|cpp))\W//)
+	while (s/([-_a-zA-Z0-9]+\.(c|h|xml|cpp|oaf\.in|desktop\.in))\W//)
 	  {
 	    $files{$prefix . $1} = $1;
 	  }

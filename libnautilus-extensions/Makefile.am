@@ -226,3 +226,6 @@ CLEANFILES = \
 	$(nautilus_metafile_server_idl_sources)		\
 	nautilus_metafile_server_idl_stamp		\
 	$(NULL)
+
+dist-hook:
+	cd $(distdir); rm -f $(CLEANFILES)

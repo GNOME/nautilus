@@ -1,3 +1,37 @@
+2001-04-17  Darin Adler  <darin@eazel.com>
+
+	* THANKS: Added a translator's name.
+	* check-POTFILES.pl: Made it work for more file extensions.
+	* check-THANKS.pl: Updated for recent email changes.
+
+	* components/image-viewer/io-png.h: Fixed includes.
+	* components/image-viewer/io-png.c: Fixed includes.
+	* components/adapter/nautilus-zoomable-proxy.c: Add include of
+	<config.h>.
+	* components/music/Makefile.am: Add non-compiled files to
+	EXTRA_DIST. This makes check-headers-in-Makefile.pl happy.
+	* components/tree/main.c: Removed this unused file since it's just
+	a call to the standard main function.
+	* components/tree/nautilus-tree-change-queue.c: Add include of
+	<config.h>.
+	
+	* libnautilus/Makefile.am:
+	* libnautilus-adapter/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* src/Makefile.am:
+	Do the dist-hook dance so we don't include generated files in the
+	tarball.
+	
+	* libnautilus-extensions/nautilus-dateedit-extensions.h:
+	* libnautilus-extensions/nautilus-dateedit-extensions.c:
+	(nautilus_gnome_date_edit_get_date_as_string): Rewrite to use
+	eel_gstrdup_strftime.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_content_view_matches_iid): We can get a NULL
+	content view IID in some cases, so make sure we don't call strcmp
+	on it.
+
 2001-04-17  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-gconf-extensions.c:

@@ -96,3 +96,6 @@ CLEANFILES = \
 	$(nautilus_distributed_undo_idl_sources)	\
 	nautilus_distributed_undo_idl_stamp             \
 	$(NULL)
+
+dist-hook:
+	cd $(distdir); rm -f $(CLEANFILES)

@@ -32,65 +32,72 @@ use strict;
 
 # Map from alternate names of some users to canonical versions
 
-my %name_map = ("Darin as Andy" => "Darin Adler",
-                "J. Shane Culpepper" => "J Shane Culpepper",
-                "Shane Culpepper" => "J Shane Culpepper",
-                "Michael K. Fleming" => "Mike Fleming",
-                "Rebecka Schulman" => "Rebecca Schulman",
-                "Michael Engber" => "Mike Engber",
-		"Pavel Císler" => "Pavel Cisler",
-                "Pavel" => "Pavel Cisler",
-                "Eskil Olsen" => "Eskil Heyn Olsen",
-		"Szabolcs BAN" => "Szabolcs Ban",
-		"arik devens" => "Arik Devens",
-		"Takuo KITAME" => "Takuo Kitame",
-                "Robin Slomkowski" => "Robin * Slomkowski");
+my %name_map =
+  (
+   "Darin as Andy" => "Darin Adler",
+   "Eskil Olsen" => "Eskil Heyn Olsen",
+   "J. Shane Culpepper" => "J Shane Culpepper",
+   "Michael Engber" => "Mike Engber",
+   "Michael K. Fleming" => "Mike Fleming",
+   "Pavel Císler" => "Pavel Cisler",
+   "Pavel" => "Pavel Cisler",
+   "Rebecka Schulman" => "Rebecca Schulman",
+   "Robin Slomkowski" => "Robin * Slomkowski",
+   "Shane Culpepper" => "J Shane Culpepper",
+   "Szabolcs BAN" => "Szabolcs Ban",
+   "Takuo KITAME" => "Takuo Kitame",
+   "arik devens" => "Arik Devens",
+  );
 
 # Map from alternate email addresses of some users to canonical versions
 
-my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
-                 'sopwith@eazel.com' => 'sopwith@redhat.com',
-                 'chief_wanker@eazel.com' => 'eskil@eazel.com',
-                 'yakk@yakk.net' => 'ian@eazel.com',
-                 'yakk@yakk.net.au' => 'ian@eazel.com',
-                 'linuxfan@ionet..net' => 'josh@eazel.com',
-                 'snickell@stanford.edu' => 'seth@eazel.com',
-                 'mathieu@gnu.org' => 'mathieu@eazel.com',
-                 'mathieu@gnome.org' => 'mathieu@eazel.com',
-                 'hp@pobox.com' => 'hp@redhat.com',
-                 'kmaraas@online.no' => 'kmaraas@gnome.org',
-                 'kmaraas@gnu.org' => 'kmaraas@gnome.org',
-                 'raph@gimp.org' => 'raph@acm.org',
-                 'baulig@suse.de' => 'martin@home-of-linux.org',
-                 'carlos@gnome-db.org' => 'carlos@hispalinux.es',
-                 'mawa@iname.com' => 'mawarkus@gnome.org',
-                 'linuxfan@ionet.net' => 'josh@eazel.com',
-                 'rslomkow@rslomkow.org' => 'rslomkow@eazel.com',
-		 'kabalak@gtranslator.org' => 'kabalak@kabalak.net',
-		 'kabalak@gmx.net' => 'kabalak@kabalak.net',
-                 'arik@gnome.org' => 'arik@eazel.com');
+my %email_map =
+  (
+   'arik@gnome.org' => 'arik@eazel.com',
+   'at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
+   'baulig@suse.de' => 'martin@home-of-linux.org',
+   'carlos@gnome-db.org' => 'carlos@hispalinux.es',
+   'chief_wanker@eazel.com' => 'eskil@eazel.com',
+   'hp@pobox.com' => 'hp@redhat.com',
+   'josh@eazel.com' => 'josh@whitecape.org',
+   'kabalak@gmx.net' => 'kabalak@kabalak.net',
+   'kabalak@gtranslator.org' => 'kabalak@kabalak.net',
+   'kmaraas@gnu.org' => 'kmaraas@gnome.org',
+   'kmaraas@online.no' => 'kmaraas@gnome.org',
+   'linuxfan@ionet..net' => 'josh@whitecape.org',
+   'linuxfan@ionet.net' => 'josh@whitecape.org',
+   'mathieu@gnome.org' => 'mathieu@eazel.com',
+   'mathieu@gnu.org' => 'mathieu@eazel.com',
+   'mawa@iname.com' => 'mawarkus@gnome.org',
+   'raph@gimp.org' => 'raph@acm.org',
+   'rslomkow@rslomkow.org' => 'rslomkow@eazel.com',
+   'snickell@stanford.edu' => 'seth@eazel.com',
+   'sopwith@eazel.com' => 'sopwith@redhat.com',
+   'yakk@yakk.net' => 'ian@eazel.com',
+   'yakk@yakk.net.au' => 'ian@eazel.com',
+  );
 
 
 # Some ChangeLog lines that carry no credit (incorrect changes that
 # had to be reverted, etc)
 
-my %no_credit = ('2000-09-08  Daniel Egger  <egger@suse.de>' => 1,
-                 '2000-09-06  Daniel Egger  <egger@suse.de>' => 1);
+my %no_credit =
+  (
+   '2000-09-08  Daniel Egger  <egger@suse.de>' => 1,
+   '2000-09-06  Daniel Egger  <egger@suse.de>' => 1
+  );
 
 
 open CHANGELOGS, "cat `find . -name intl -prune -or -name 'ChangeLog*' -and \! -name '*~' -print`|" or die;
 
 my @lines;
-LOOP: while (<CHANGELOGS>)
+while (<CHANGELOGS>)
   {
     chomp;
     
     if (/@/)
       {
-        if ($no_credit{$_})
-          {
-            next LOOP;
-          }
+        next if $no_credit{$_};
 
         if (/^\d\d\d\d-\d\d-\d\d/)
           {
@@ -106,7 +113,7 @@ LOOP: while (<CHANGELOGS>)
           {
             # FIXME bugzilla.eazel.com 3452: we should also try to extract
             # names & addresses from entry body text.
-            next LOOP; # ignore unknown lines for now
+            next; # ignore unknown lines for now
           }
         
         my $name = $_;
@@ -164,26 +171,25 @@ close THANKS;
 my $found_about_authors = 0;
 my @about_authors;
 
-if (open ABOUT, "src/nautilus-window-menus.c") {
-
+if (open ABOUT, "src/nautilus-window-menus.c")
+  {
     while (<ABOUT>)
-    {
+      {
         if (/const char \*authors/)
-        {
+          {
             $found_about_authors = 1;
             last;
-        }
-    }
-
+          }
+      }
+    
     if ($found_about_authors)
-    {
-        my $i = 0;
+      {
         while (<ABOUT>)
-        {
+          {
             last unless /^\s+\"(.*)\",\s*\n/;
             push @about_authors, $1;
-        }
-    }
+          }
+      }
     
     close ABOUT;
 }
@@ -285,4 +291,3 @@ if (@double_credited)
 
 
 print "\n" if $printed;
-

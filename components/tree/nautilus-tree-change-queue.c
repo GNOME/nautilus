@@ -24,9 +24,11 @@
 /* nautilus-tree-change-queue.c - Class to help pool changes and defer
    them to an idle handler. */
 
+#include <config.h>
 #include "nautilus-tree-change-queue.h"
-#include <eel/eel-gtk-macros.h>
+
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
 
 struct NautilusTreeChangeQueueDetails {
 	GSList *head;

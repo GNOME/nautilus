@@ -3,7 +3,7 @@
 /* nautilus-dateedit-extensions.h -- Extension functions to the gnome-dateedit
    widget 
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2001 Eazel, Inc.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -23,9 +23,12 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
-/* This is annoying, but someone forgot it in the gnome-dateedit header, so it has to be here.
-   A bug report about this has been submitted. */
+/* This is annoying, but someone forgot time.h in the gnome-dateedit
+ * header, so it has to be here.  A bug report about this has been
+ * submitted.
+ */
+
 #include <time.h>
 #include <libgnomeui/gnome-dateedit.h>
 
-char *      nautilus_gnome_date_edit_get_date_as_string        (GnomeDateEdit *dateedit);
+char *nautilus_gnome_date_edit_get_date_as_string (GnomeDateEdit *dateedit);

@@ -49,3 +49,5 @@ CLEANFILES = \
 EXTRA_DIST = \
 	nautilus-adapter-factory.idl
 
+dist-hook:
+	cd $(distdir); rm -f $(CLEANFILES)

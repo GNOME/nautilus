@@ -3,12 +3,11 @@
  * borrowed from Imlib, Bonobo Stream API by Michael Meeks <mmeeks@gnu.org>
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <bonobo.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <png.h>
+#include <config.h>
 #include "io-png.h"
+
+#include <bonobo/bonobo-stream-client.h>
+#include <png.h>
 
 typedef struct {
 	Bonobo_Stream      stream;

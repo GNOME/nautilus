@@ -182,3 +182,6 @@ install-data-hook: run-nautilus
 	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
 	done
+
+dist-hook:
+	cd $(distdir); rm -f $(CLEANFILES)
