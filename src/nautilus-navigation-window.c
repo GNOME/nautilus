@@ -1154,7 +1154,7 @@ nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 	 * control both the menu and toolbar.
 	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       "/menu/Go/Back", allow);
+				       NAUTILUS_COMMAND_BACK, allow);
 }
 
 void
@@ -1164,7 +1164,7 @@ nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 	 * control both the menu and toolbar.
 	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       "/menu/Go/Forward", allow);
+				       NAUTILUS_COMMAND_FORWARD, allow);
 }
 
 void
@@ -1174,7 +1174,7 @@ nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 	 * control both the menu and toolbar.
 	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       "/menu/Go/Up", allow);
+				       NAUTILUS_COMMAND_UP, allow);
 }
 
 void
@@ -1184,14 +1184,14 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 	 * control both the menu and toolbar.
 	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       "/menu/View/Reload", allow);
+				       NAUTILUS_COMMAND_RELOAD, allow);
 }
 
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       "/Tool Bar/Stop", allow);
+				       NAUTILUS_COMMAND_STOP, allow);
 	if (window->throbber != NULL) {
 		if (allow) {
 			nautilus_throbber_start (NAUTILUS_THROBBER (window->throbber));
@@ -1403,13 +1403,13 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	}
 
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
+				       NAUTILUS_COMMAND_ZOOM_IN,
 				       zoom_level < nautilus_view_frame_get_max_zoom_level (view));
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM,
+				       NAUTILUS_COMMAND_ZOOM_OUT,
 				       zoom_level > nautilus_view_frame_get_min_zoom_level (view));
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
+				       NAUTILUS_COMMAND_ZOOM_NORMAL,
 				       TRUE);
 	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
 }

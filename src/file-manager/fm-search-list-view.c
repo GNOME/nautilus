@@ -54,6 +54,8 @@
 #define MENU_PATH_INDEXING_INFO			"/menu/File/General Status Placeholder/Indexing Info"
 #define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/menu/File/Open Placeholder/Reveal"
 
+#define COMMAND_REVEAL_IN_NEW_WINDOW 		"/command/Reveal"
+
 struct FMSearchListViewDetails {
 	BonoboUIComponent *ui;
 };
@@ -397,7 +399,7 @@ real_create_selection_context_menu_items (FMDirectoryView *view,
 	 * existing Open With item.
 	 */
 	position = fm_directory_view_get_context_menu_index
-		(menu, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) + 1;
+		(menu, FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH) + 1;
 	compute_reveal_item_name_and_sensitivity (selection, FALSE, &name, &sensitive);
         menu_item = gtk_menu_item_new_with_label (name);
         g_free (name);
@@ -467,9 +469,11 @@ update_reveal_item (FMSearchListView *view)
 
 	compute_reveal_item_name_and_sensitivity 
 		(selected_files, TRUE, &name, &sensitive);
+
 	nautilus_bonobo_set_sensitive (view->details->ui, 
-				       MENU_PATH_REVEAL_IN_NEW_WINDOW, 
+				       COMMAND_REVEAL_IN_NEW_WINDOW, 
 				       sensitive);
+					       
 	nautilus_bonobo_set_label (view->details->ui, MENU_PATH_REVEAL_IN_NEW_WINDOW, name);
 
 	g_free (name);

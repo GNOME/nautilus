@@ -70,6 +70,16 @@ struct NautilusWindowDetails
 #define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/menu/View/Zoom Items Placeholder/Zoom Out"
 #define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/menu/View/Zoom Items Placeholder/Zoom Normal"
 
+#define NAUTILUS_COMMAND_BACK				"/commands/Back"
+#define NAUTILUS_COMMAND_FORWARD			"/commands/Forward"
+#define NAUTILUS_COMMAND_UP				"/commands/Up"
+
+#define NAUTILUS_COMMAND_RELOAD				"/commands/Reload"
+#define NAUTILUS_COMMAND_STOP				"/commands/Stop"
+#define NAUTILUS_COMMAND_ZOOM_IN			"/commands/Zoom In"
+#define NAUTILUS_COMMAND_ZOOM_OUT			"/commands/Zoom Out"
+#define NAUTILUS_COMMAND_ZOOM_NORMAL			"/commands/Zoom Normal"
+
 /* window geometry */
 #define NAUTILUS_WINDOW_MIN_WIDTH			450
 #define NAUTILUS_WINDOW_MIN_HEIGHT			350

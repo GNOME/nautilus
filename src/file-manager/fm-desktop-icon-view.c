@@ -446,7 +446,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		 (view, menu));
 
 	position = fm_directory_view_get_context_menu_index
-			(menu, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) + 1;
+			(menu, FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER) + 1;
 	fm_directory_view_insert_context_menu_item 
 		(view, menu, 
 		 _("New Terminal"), 
@@ -511,7 +511,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 	}
 	
 	position = fm_directory_view_get_context_menu_index
-			(menu, FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND);
+			(menu, FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND);
 	/* Hide the old Reset Background item so we can replace it with one of our own */
 	nautilus_gtk_menu_set_item_visibility (menu, position, FALSE);
 	

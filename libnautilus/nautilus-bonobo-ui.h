@@ -55,6 +55,12 @@
 #define NAUTILUS_MENU_PATH_CLEAR_ITEM			"/menu/Edit/Clear"
 #define NAUTILUS_MENU_PATH_SELECT_ALL_ITEM		"/menu/Edit/Select All"
 
+#define NAUTILUS_COMMAND_CUT				"/commands/Cut"
+#define NAUTILUS_COMMAND_COPY				"/commands/Copy"
+#define NAUTILUS_COMMAND_PASTE				"/commands/Paste"
+#define NAUTILUS_COMMAND_CLEAR				"/commands/Clear"
+#define NAUTILUS_COMMAND_SELECT_ALL			"/commands/Select All"
+
 /** 
  * Components can use these placeholder paths with BonoboUIContainer calls to 
  * insert new items in well-defined positions. 

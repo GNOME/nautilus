@@ -2,15 +2,38 @@
 
 <!-- A description of each placeholder's purpose is in libnautilus/nautilus-bonobo-ui.h -->
 
+<commands>
+	<!-- We define commands here for (at least) all the items
+	 for which we share tip or sensitivity state between more
+	 than one item (usually 1 menuitem and 1 toolitem.
+	-->
+	 
+	<cmd name="Back" accel="*Control*["
+	 _tip="Go to the previous visited location"/>
+	<cmd name="Forward" accel="*Control*]"
+	 _tip="Go to the next visited location"/>
+	<cmd name="New Window"
+	 _tip="Open another Nautilus window for the displayed location"/>
+	<cmd name="Stop"
+	 _tip="Stop loading this location"/>
+	<cmd name="Select All" accel="*Control*a" sensitive="0"/>
+	<cmd name="Up" accel="*Control*U"
+	 _tip="Go to the location that contains this one"/>
+	<cmd name="Zoom In" accel="*Control*="
+	 _tip="Show the contents in more detail"/>
+	<cmd name="Zoom Out" accel="*Control*-"
+	 _tip="Show the contents in less detail"/>
+	<cmd name="Zoom Normal"
+	 _tip="Show the contents at the normal size"/>				  
+</commands>
+
 <menu>
 	<submenu name="File" _label="_File">
 
 		<placeholder name="New Items Placeholder">
 			<menuitem name="New Window"
 				  _label="_New Window"
-				  _descr="Open another Nautilus window for the displayed location"
-				  pixtype="stock" pixname="New"
-				  verb=""/>
+				  verb="New Window"/>
 		</placeholder>
 		<placeholder name="Open Placeholder" delimit="top"/>
 
@@ -19,12 +42,12 @@
 			  _descr="Close this window"
 			  pixtype="stock" pixname="Close"
 			  accel="*Control*w"
-			  verb=""/>
+			  verb="Close"/>
 		<menuitem name="Close All Windows"
 			  _label="Close _All Windows"
 			  _descr="Close all Nautilus windows"
 			  accel="*Control**Shift*w"
-			  verb=""/>
+			  verb="Close All Windows"/>
 
 		<placeholder name="General Status Placeholder" delimit="top"/>
 		<placeholder name="File Items Placeholder" delimit="top"/>
@@ -35,12 +58,12 @@
 			  _label="_Find"
 			  _descr="Search this computer for files"
 			  accel="*Control*f"
-			  verb=""/>
+			  verb="Toggle Find Mode"/>
 		<menuitem name="Go to Web Search"
 			  _label="_Web Search"
 			  _descr="Search the World Wide Web"
 			  accel="*Control**Shift*f"
-			  verb=""/>
+			  verb="Go to Web Search"/>
 
 		<placeholder name="Global File Items Placeholder" delimit="top"/>
 	</submenu>
@@ -51,7 +74,7 @@
 			  _descr="Undo the last text change"
 			  pixtype="stock" pixname="Undo" 
 			  accel="*Control*z"
-			  verb=""/>
+			  verb="Undo"/>
 
 		<separator/>
 
@@ -60,42 +83,40 @@
 			  _descr="Cut the selected text to the clipboard"
 			  pixtype="stock" pixname="Cut" 
 			  accel="*Control*x"
-			  verb=""/>
+			  verb="Cut"/>
 		<menuitem name="Copy" 
 			  _label="_Copy Text" 
 			  _descr="Copy the selected text to the clipboard"
 			  pixtype="stock" pixname="Copy" 
 			  accel="*Control*c"
-			  verb=""/>
+			  verb="Copy"/>
 		<menuitem name="Paste" 
 			  _label="_Paste Text" 
 			  _descr="Paste the text stored on the clipboard"
 			  pixtype="stock" pixname="Paste" 
 			  accel="*Control*v"
-			  verb=""/>
+			  verb="Paste"/>
 		<menuitem name="Clear"
 			  _label="C_lear Text" 
 			  _descr="Removes the selected text without putting it on the clipboard"
-			  verb=""/>
+			  verb="Clear"/>
 
 		<separator/>
 
 		<menuitem name="Select All"
 			  _label="_Select All" 
-			  accel="*Control*a"
-			  verb=""
-			  sensitive="0"/>
+			  verb="Select All"/>
 		
 		<separator/>
 
 		<menuitem name="Customize" 
 			  _label="Custo_mization..." 
 			  _descr="Display the Property Browser, containing patterns, colors, and emblems"
-			  verb=""/>
+			  verb="Customize"/>
 		<menuitem name="Change Appearance" 
 			  _label="C_hange Appearance..." 
 			  _descr="Display the set of available appearance themes"
-			  verb=""/>
+			  verb="Change Appearance"/>
 
 		<placeholder name="Global Edit Items Placeholder"/>
 		<placeholder name="Edit Items Placeholder" delimit="top"/>
@@ -107,74 +128,63 @@
 			  _label="_Refresh" 
 			  _descr="Display the latest contents of the current location"
 			  accel="*Control*r"
-			  verb=""/>
+			  verb="Reload"/>
 
 		<placeholder name="Show Hide Placeholder" delimit="top">
 			<menuitem name="Show Hide Sidebar" 
 				  _label="Hide Sidebar"
 				  _descr="Change the visibility of this window's sidebar"
-				  verb=""/>
+				  verb="Show Hide Sidebar"/>
 			<menuitem name="Show Hide Tool Bar" 
 				  _label="Hide Tool Bar"
 				  _descr="Change the visibility of this window's tool bar"
-				  verb=""/>
+				  verb="Show Hide Tool Bar"/>
 			<menuitem name="Show Hide Location Bar" 
 				  _label="Hide Location Bar"
 				  _descr="Change the visibility of this window's location bar"
-				  verb=""/>
+				  verb="Show Hide Location Bar"/>
 			<menuitem name="Show Hide Status Bar" 
 				  _label="Hide Status Bar"
 				  _descr="Change the visibility of this window's status bar"
-				  verb=""/>
+				  verb="Show Hide Status Bar"/>
 		</placeholder>
 		<placeholder name="View Items Placeholder" delimit="top"/>
 		
 		<placeholder name="Zoom Items Placeholder" delimit="top">
 			<menuitem name="Zoom In" 
 				  _label="Zoom _In" 
-				  _descr="Show the contents in more detail"
-				  accel="*Control*="
-				  verb=""/>
+				  verb="Zoom In"/>
 			<menuitem name="Zoom Out" 
 				  _label="Zoom _Out" 
-				  _descr="Show the contents in less detail"
-				  accel="*Control*-"
-				  verb=""/>
+				  verb="Zoom Out"/>
 			<menuitem name="Zoom Normal" 
 				  _label="_Normal Size" 
-				  _descr="Show the contents at the normal size"
-				  verb=""/>
+				  verb="Zoom Normal"/>
 		</placeholder>
 	</submenu>
 
 	<submenu name="Go" _label="_Go">
 		<menuitem name="Back" 
 			  _label="_Back" 
-			  _descr="Go to the previous visited location"
-			  accel="*Control*["
-			  verb=""/>
+			  verb="Back"/>
 		<menuitem name="Forward" 
 			  _label="_Forward" 
-			  _descr="Go to the next visited location"
-			  accel="*Control*]"
-			  verb=""/>
+			  verb="Forward"/>
 		<menuitem name="Up" 
 			  _label="_Up a Level" 
-			  _descr="Go to the location that contains this one"
-			  accel="*Control*u"
-			  verb=""/>
+			  verb="Up"/>
 		<menuitem name="Home" 
 			  _label="_Home" 
 			  _descr="Go to the home location"
 			  accel="*Control*h"
-			  verb=""/>
+			  verb="Home"/>
 
 		<separator/>
 
 		<menuitem name="Forget History" 
 			  _label="For_get History" 
 			  _descr="Clear contents of Go menu and Back/Forward lists"
-			  verb=""/>
+			  verb="Forget History"/>
 
 		<placeholder name="History Placeholder" delimit="top"/>
 	</submenu>
@@ -184,11 +194,11 @@
 			  _label="_Add Bookmark" 
 			  _descr="Add a bookmark for the current location to this menu"
 			  accel="*Control*B"
-			  verb=""/>
+			  verb="Add Bookmark"/>
 		<menuitem name="Edit Bookmarks" 
 			  _label="_Edit Bookmarks..." 
 			  _descr="Display a window that allows editing the bookmarks in this menu"
-			  verb=""/>
+			  verb="Edit Bookmarks"/>
 
 		<placeholder name="Bookmarks Placeholder" delimit="top"/>
 	</submenu>
@@ -197,11 +207,11 @@
 		<menuitem name="About Nautilus" 
 			  _label="_About Nautilus..." 
 			  _descr="Display credits for the creators of Nautilus"
-			  verb=""/>
+			  verb="Help"/>
 		<menuitem name="Nautilus Feedback" 
 			  _label="_Nautilus Feedback..." 
 			  _descr="Show a page from which you can send feedback about Nautilus to its creators"
-			  verb=""/>
+			  verb="Nautilus Feedback"/>
 	</submenu>
 
 
@@ -225,7 +235,7 @@
 		<menuitem name="User Level Customization" 
 			  _label="Edit Settings..." 
 			  _descr="Edit settings for the current user level"
-			  verb=""/>
+			  verb="User Level Customization"/>
 	</submenu>
 </menu>
 
@@ -233,28 +243,25 @@
 
 	<toolitem name="Back"
                   _label="Back"
-		  _descr="Go to the previous visited location"
 	          min_width="48"
-		  pixtype="stock" pixname="Back"
-		  verb=""/>
+	          pixtype="stock" pixname="Back"
+		  verb="Back"/>
 	<toolitem name="Forward"
                   _label="Forward"
-		  _descr="Go to the next visited location"
 	          min_width="48"
 	          pixtype="stock" pixname="Forward"
-	          verb=""/>
+	          verb="Forward"/>
 	<toolitem name="Up"
                   _label="Up"
-		  _descr="Go to the location that contains this one"
 	          min_width="48"
 	          pixtype="stock" pixname="Up"
-	          verb=""/>
+	          verb="Up"/>
 	<toolitem name="Reload"
 		  _label="Refresh"
 		  _descr="Display the latest contents of the current location"
 	          min_width="48"
 	          pixtype="stock" pixname="Refresh"
-		  verb=""/>
+		  verb="Reload"/>
 
 	<separator/>
 
@@ -263,28 +270,27 @@
 		  _descr="Go to the home location"
 	          min_width="48"
 	          pixtype="stock" pixname="Home"
-		  verb=""/>
+		  verb="Home"/>
 	<toolitem name="Toggle Find Mode"
                   _label="Find"
 		  _descr="Search this computer for files"
 	          min_width="48"
 	          type="toggle"
 	          pixtype="stock" pixname="Search"
-		  verb=""/>
+		  verb="Toggle Find Mode"/>
 	<toolitem name="Go to Web Search"
 		  _label="Web Search"
 		  _descr="Search the World Wide Web"
 	          pixtype="stock" pixname="Search"
-		  verb=""/>
+		  verb="Go to Web Search"/>
 
 	<separator/>
 
-	<toolitem name="Stop"
-		  _label="Stop"
-		  _descr="Stop loading this location"
+	<toolitem name="Stop" _label="Stop"
+	          verb="Stop"/>	
 	          min_width="48"
 	          pixtype="stock" pixname="Stop"
-	          verb=""/>	
+	          verb="Stop"/>	
 
 	<placeholder name="Extra Buttons Placeholder" delimit="top">
 		<toolitem name="Services"
@@ -292,7 +298,7 @@
 			  _descr="Go to Eazel Services"
 	          	  min_width="48"
 		          pixtype="stock" pixname="Services"
-		          verb=""/>	
+		          verb="Services"/>	
 	</placeholder>
 	
 	<control name="ThrobberWrapper"/>

@@ -78,6 +78,15 @@
 #define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Lay Out/Reversed Order"
 #define MENU_PATH_CLEAN_UP			"/menu/View/View Items Placeholder/Clean Up"
 
+#define COMMAND_RENAME 				"/commands/Rename"
+#define COMMAND_STRETCH_ICON 			"/commands/Stretch"
+#define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
+#define COMMAND_MANUAL_LAYOUT 			"/commands/Manual Layout"
+#define COMMAND_TIGHTER_LAYOUT 			"/commands/Tighter Layout"
+#define COMMAND_SORT_REVERSED			"/commands/Reversed Order"
+#define COMMAND_CLEAN_UP			"/commands/Clean Up"
+
+
 /* forward declarations */
 static void 	create_icon_container                    (FMIconView        *icon_view);
 static void 	fm_icon_view_initialize                  (FMIconView        *icon_view);
@@ -659,7 +668,7 @@ fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 	 */
 	if (!special_link_in_selection (view)) {
 		position = fm_directory_view_get_context_menu_index
-				(menu, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1;
+				(menu, FM_DIRECTORY_VIEW_COMMAND_DUPLICATE) + 1;
      		insert_one_context_menu_item
 				(FM_ICON_VIEW (view), menu, selection, 
 		 		 MENU_PATH_RENAME, position,
@@ -700,7 +709,7 @@ fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 		 (view, menu));
 
 	position = fm_directory_view_get_context_menu_index
-		(menu, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) + 1;
+		(menu, FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER) + 1;
 
 	nautilus_gtk_menu_insert_separator (menu, position++);
 
@@ -866,18 +875,18 @@ update_layout_menus (FMIconView *view)
 
 		/* Sort order isn't relevant for manual layout. */
 		nautilus_bonobo_set_sensitive
-			(view->details->ui, MENU_PATH_SORT_REVERSED, is_auto_layout);
+			(view->details->ui, COMMAND_SORT_REVERSED, is_auto_layout);
 
 		/* Tighter Layout is only relevant for auto layout */
 		nautilus_bonobo_set_sensitive
-			(view->details->ui, MENU_PATH_TIGHTER_LAYOUT, is_auto_layout);	
+			(view->details->ui, COMMAND_TIGHTER_LAYOUT, is_auto_layout);	
 		 
 		view->details->updating_toggle_menu_item = FALSE;
 	}
 
 	/* Clean Up is only relevant for manual layout */
 	nautilus_bonobo_set_sensitive
-		(view->details->ui, MENU_PATH_CLEAN_UP, !is_auto_layout);	
+		(view->details->ui, COMMAND_CLEAN_UP, !is_auto_layout);	
 }
 
 
@@ -1612,13 +1621,15 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 static void
 update_one_menu_item (FMIconView *view, 
 		      GList *selection,
-		      const char *menu_path)
+		      const char *menu_path,
+		      const char *verb_path)
 {
 	char *label;
 	gboolean sensitive;
 	
 	compute_menu_item_info (view, selection, menu_path, TRUE, &label, &sensitive, NULL);
-	nautilus_bonobo_set_sensitive (view->details->ui, menu_path, sensitive);
+
+	nautilus_bonobo_set_sensitive (view->details->ui, verb_path, sensitive);
 	nautilus_bonobo_set_label (view->details->ui, menu_path, label);
 	g_free (label);
 }
@@ -1633,11 +1644,14 @@ fm_icon_view_update_menus (FMDirectoryView *view)
         selection = fm_directory_view_get_selection (view);
 
 	update_one_menu_item (FM_ICON_VIEW (view), selection, 
-			      MENU_PATH_STRETCH_ICON);
+			      MENU_PATH_STRETCH_ICON,
+			      COMMAND_STRETCH_ICON);
         update_one_menu_item (FM_ICON_VIEW (view), selection, 
-			      MENU_PATH_UNSTRETCH_ICONS);
+			      MENU_PATH_UNSTRETCH_ICONS,
+			      COMMAND_UNSTRETCH_ICONS);
         update_one_menu_item (FM_ICON_VIEW (view), selection, 
-			      MENU_PATH_RENAME);
+			      MENU_PATH_RENAME,
+			      COMMAND_RENAME);
 	
 	nautilus_file_list_free (selection);
 }

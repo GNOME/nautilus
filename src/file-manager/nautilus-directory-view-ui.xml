@@ -6,76 +6,76 @@
 			<menuitem name="New Folder"
 				  _label="New Folder"
 			  	  accel="*Control*n"
-				  verb=""/>
+				  verb="New Folder"/>
 		</placeholder>
 		<placeholder name="Open Placeholder">
 			<menuitem name="Open"
 				  _label="_Open"
-				  _descr="Open the selected item in this window"
+				  _tip="Open the selected item in this window"
 				  accel="*Control*o"
-				  verb=""/>
+				  verb="Open"/>
 			<menuitem name="OpenNew"
 				  _label="_Open in New Window"
-				  _descr="Open each selected item in a new window"
-				  verb=""/>
+				  _tip="Open each selected item in a new window"
+				  verb="OpenNew"/>
 			<submenu name="Open With" _label="Open With">
-				<placeholder name="Open With Applications Placeholder"/>
+				<placeholder name="Applications Placeholder"/>
 				<menuitem name="OtherApplication"
 					  _label="Other _Application..."
-					  _descr="Choose another application with which to open the selected item"
-					  verb=""/>
+					  _tip="Choose another application with which to open the selected item"
+					  verb="OtherApplication"/>
 				<menuitem/>
-				<placeholder name="Open With Viewers Placeholder"/>
+				<placeholder name="Viewers Placeholder"/>
 				<menuitem name="OtherViewer"
 					  _label="Other _Viewer..."
-					  _descr="Choose another viewer with which to view the selected item"
-					  verb=""/>
+					  _tip="Choose another viewer with which to view the selected item"
+					  verb="OtherViewer"/>
 			</submenu>
 		</placeholder>
 
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Show Properties"
 				  _label="Show _Properties"
-				  _descr="View or modify the properties of each selected item"
+				  _tip="View or modify the properties of each selected item"
 				  accel="*Control*i"
-				  verb=""/>
+				  verb="Show Properties"/>
 			<menuitem name="Trash"
 				  _label="Move to _Trash"
-				  _descr="Move each selected item to the Trash"
+				  _tip="Move each selected item to the Trash"
 				  accel="*Control*t"
-				  verb=""/>
+				  verb="Trash"/>
 			<menuitem name="Duplicate"
 				  _label="_Duplicate"
-				  _descr="Duplicate each selected item"
+				  _tip="Duplicate each selected item"
 				  accel="*Control*d"
-				  verb=""/>
+				  verb="Duplicate"/>
 			<menuitem name="Create Link"
 				  _label="Create _Link"
-				  _descr="Create a symbolic link for each selected item"
+				  _tip="Create a symbolic link for each selected item"
 				  accel="*Control*l"
-				  verb=""/>
+				  verb="Create Link"/>
 		</placeholder>
 
 		<placeholder name="Global File Items Placeholder">
 			<menuitem name="Empty Trash"
 				  _label="_Empty Trash"
-				  _descr="Delete all items in the trash"
-				  verb=""/>
+				  _tip="Delete all items in the trash"
+				  verb="Empty Trash"/>
 		</placeholder>
 	</submenu>
 
 	<submenu name="Edit" _label="_Edit">
 		<menuitem name="Select All"
 			  _label="_Select All Files" 
-			  _descr="Select all items in this window"
+			  _tip="Select all items in this window"
 			  accel="*Control*a"
-			  verb=""/>
+			  verb="Select All"/>
 		
 		<placeholder name="Edit Items Placeholder">
 			<menuitem name="Remove Custom Icons"
 				  _label="R_emove Custom Images" 
-				  _descr="Remove any custom images from selected icons"
-				  verb=""/>
+				  _tip="Remove any custom images from selected icons"
+				  verb="Remove Custom Icons"/>
 		</placeholder>
 
 	</submenu>

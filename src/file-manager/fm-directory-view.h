@@ -45,23 +45,20 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
  * Note that this may change as we complete the switchover to the
  * new Bonobo UI code.
  */
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
-#define FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER				"/menu/File/New Items Placeholder/New Folder"
-#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/menu/File/File Items Placeholder/Delete"
-#define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/File/File Items Placeholder/Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/menu/File/Global File Items Placeholder/Empty Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                	 	"/menu/File/File Items Placeholder/Duplicate"
-#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/File/File Items Placeholder/Create Link"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES         	   	"/menu/File/File Items Placeholder/Show Properties"
-#define FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND			"/menu/Edit/Global Edit Items Placeholder/Reset Background"
-#define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION    		"/menu/File/Open Placeholder/Open With/OtherApplication"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Open With Applications Placeholder"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS		"/menu/File/Open Placeholder/Open With/SeparatorBeforeViewers"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/menu/File/Open Placeholder/Open With/OtherViewer"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Open With Viewers Placeholder"
+#define FM_DIRECTORY_VIEW_COMMAND_OPEN                      	"/commands/Open"
+#define FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW        	"/commands/OpenNew"
+#define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH			"/commands/Open With"
+#define FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER			"/commands/New Folder"
+#define FM_DIRECTORY_VIEW_COMMAND_DELETE                    	"/commands/Delete"
+#define FM_DIRECTORY_VIEW_COMMAND_TRASH                    	"/commands/Trash"
+#define FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH                   "/commands/Empty Trash"
+#define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                	"/commands/Duplicate"
+#define FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK                	"/commands/Create Link"
+#define FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES         	"/commands/Show Properties"
+#define FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND		"/commands/Reset Background"
+#define FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS		"/commands/Remove Custom Icons"
+#define FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION    		"/commands/OtherApplication"
+#define FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER	   		"/commands/OtherViewer"
 
 
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
@@ -321,7 +318,7 @@ void               fm_directory_view_move_copy_items                (const GList
 								     int                    y,
 								     FMDirectoryView       *view);
 gint               fm_directory_view_get_context_menu_index         (GtkMenu 		   *menu,
-								     const char            *menu_name);
+								     const char            *verb_path);
 gboolean	   fm_directory_link_type_in_selection 		    (FMDirectoryView 	   *view, 
 								     NautilusLinkType 	   link_type);
 

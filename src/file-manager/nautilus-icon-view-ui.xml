@@ -4,8 +4,8 @@
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Rename" 
 				  _label="_Rename" 
-				  _descr="Rename selected icon"
-				  verb=""/>
+				  _tip="Rename selected icon"
+				  verb="Rename"/>
 		</placeholder>
 	</submenu>
 	
@@ -13,19 +13,19 @@
 		<placeholder name="Global Edit Items Placeholder">
 			<menuitem name="Icon Text" 
 				  _label="_Icon Captions..." 
-				  _descr="Choose which information appears beneath each icon's name"
-				  verb=""/>
+				  _tip="Choose which information appears beneath each icon's name"
+				  verb="Icon Text"/>
 		</placeholder>
 
 		<placeholder name="Edit Items Placeholder">
 			<menuitem name="Stretch" 
 				  _label="_Stretch Icon" 
-				  _descr="Make the selected icon stretchable"
-				  verb=""/>
+				  _tip="Make the selected icon stretchable"
+				  verb="Stretch"/>
 			<menuitem name="Unstretch" 
 				  _label="_Restore Icons' Original Sizes" 
-				  _descr="Restore each selected icon to its original size"
-				  verb=""/>
+				  _tip="Restore each selected icon to its original size"
+				  verb="Unstretch"/>
 		</placeholder>
 
 	</submenu>
@@ -35,43 +35,44 @@
 			<submenu name="Lay Out" _label="_Lay out items">
 				<menuitem name="Manual Layout" 
 					  _label="_manually" 
-					  _descr="Leave icons wherever they are dropped"
+					  _tip="Leave icons wherever they are dropped"
 					  type="radio" group="layout group"/>
-				<placeholder name="Auto Layout" delimit="both">
+				<placeholder name="Auto Layout" delimit="top">
 					<menuitem name="Sort by Name" 
 						  _label="by _Name" 
-						  _descr="Keep icons sorted by name in rows"
+						  _tip="Keep icons sorted by name in rows"
 						  type="radio" group="layout group"/>
 					<menuitem name="Sort by Size" 
 						  _label="by _Size" 
-						  _descr="Keep icons sorted by size in rows"
+						  _tip="Keep icons sorted by size in rows"
 						  type="radio" group="layout group"/>
 					<menuitem name="Sort by Type" 
 						  _label="by _Type" 
-						  _descr="Keep icons sorted by type in rows"
+						  _tip="Keep icons sorted by type in rows"
 						  type="radio" group="layout group"/>
 					<menuitem name="Sort by Modification Date" 
 						  _label="by Modification _Date" 
-						  _descr="Keep icons sorted by modification date in rows"
+						  _tip="Keep icons sorted by modification date in rows"
 						  type="radio" group="layout group"/>
 					<menuitem name="Sort by Emblems" 
 						  _label="by _Emblems" 
-						  _descr="Keep icons sorted by emblems in rows"
+						  _tip="Keep icons sorted by emblems in rows"
 						  type="radio" group="layout group"/>
 				</placeholder>
+				<separator/>
 				<menuitem name="Tighter Layout" 
 					  _label="_Tighter Layout" 
-					  _descr="Toggle using a tighter layout scheme"
-					  verb=""/>
+					  _tip="Toggle using a tighter layout scheme"
+					  verb="Tighter Layout"/>
 				<menuitem name="Reversed Order" 
 					  _label="Re_versed Order" 
-					  _descr="Display icons in the opposite order"
-					  verb=""/>
+					  _tip="Display icons in the opposite order"
+					  verb="Reversed Order"/>
 			</submenu>
 			<menuitem name="Clean Up" 
 				  _label="_Clean Up by Name" 
-				  _descr="Reposition icons to better fit in the window and avoid overlapping"
-				  verb=""/>
+				  _tip="Reposition icons to better fit in the window and avoid overlapping"
+				  verb="Clean Up"/>
 		</placeholder>
 		
 	</submenu>

@@ -74,6 +74,24 @@
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 #define SILENT_WINDOW_OPEN_LIMIT	10
 
+/* Paths to use when referring to bonobo menu items. */
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
+#define FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER				"/menu/File/New Items Placeholder/New Folder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/menu/File/File Items Placeholder/Delete"
+#define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/File/File Items Placeholder/Trash"
+#define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/menu/File/Global File Items Placeholder/Empty Trash"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                	 	"/menu/File/File Items Placeholder/Duplicate"
+#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/File/File Items Placeholder/Create Link"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES         	   	"/menu/File/File Items Placeholder/Show Properties"
+#define FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND			"/menu/Edit/Global Edit Items Placeholder/Reset Background"
+#define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
+#define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION    		"/menu/File/Open Placeholder/Open With/OtherApplication"
+#define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/menu/File/Open Placeholder/Open With/OtherViewer"
+
 enum {
 	ADD_FILE,
 	CREATE_BACKGROUND_CONTEXT_MENU_ITEMS,
@@ -2654,18 +2672,19 @@ static void
 append_gtk_menu_item (FMDirectoryView *view,
 		      GtkMenu *menu,
 		      GList *files,
-		      const char *path,
+		      const char *menu_path,
+		      const char *verb_path,
 		      GtkSignalFunc callback)
 {
         GtkWidget *menu_item;
         char *label_string;
         gboolean sensitive;
 
-        compute_menu_item_info (view, path, files, FALSE, &label_string, &sensitive);
+        compute_menu_item_info (view, menu_path, files, FALSE, &label_string, &sensitive);
         menu_item = gtk_menu_item_new_with_label (label_string);
         g_free (label_string);
 
-        set_menu_item_path (GTK_MENU_ITEM (menu_item), path);
+        set_menu_item_path (GTK_MENU_ITEM (menu_item), verb_path);
 
         gtk_signal_connect (GTK_OBJECT (menu_item),
                             "activate",
@@ -2735,7 +2754,7 @@ fm_directory_view_insert_context_menu_item (FMDirectoryView *view,
 					    accel_key, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 	}
 	
-	/* Store menu path in item, so we can find this item by path later */
+	/* Store command path in item, so we can find this item by command path later */
 	set_menu_item_path (GTK_MENU_ITEM (menu_item), identifier);
 
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
@@ -2788,7 +2807,7 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 	fm_directory_view_append_context_menu_item 
 		(view, menu, 
 		 _("_New Folder"), 
-		 FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
+		 FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER,
 		 GTK_SIGNAL_FUNC (new_folder_callback), 
 		 fm_directory_view_supports_creating_files (view));
 
@@ -2802,6 +2821,7 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 			      menu,
 			      NULL,
 			      FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND,
+			      FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND,
 			      reset_background_callback);
 }
 
@@ -2926,6 +2946,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 				      open_with_menu,
 			 	      files,
 			 	      FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
+			 	      FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION,
 			 	      other_application_callback);
 
 		nautilus_gtk_menu_append_separator (open_with_menu);
@@ -2944,6 +2965,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 				      open_with_menu,
 				      files,
 			 	      FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
+			 	      FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
 			 	      other_viewer_callback);
 	}
 
@@ -2962,9 +2984,11 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	
 	append_gtk_menu_item (view, menu, files,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
+			      FM_DIRECTORY_VIEW_COMMAND_OPEN,
 			      open_callback);
 	append_gtk_menu_item (view, menu, files,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
+			      FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
 			      open_in_new_window_callback);
 	append_selection_menu_subtree (view, menu, 
 				       create_open_with_gtk_menu (view, files), files,
@@ -2976,22 +3000,27 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	if (!link_in_selection) {
 		append_gtk_menu_item (view, menu, files,
 				      FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+				      FM_DIRECTORY_VIEW_COMMAND_TRASH,
 				      trash_callback);
 	}
 
 	if (!link_in_selection) {
 		append_gtk_menu_item (view, menu, files,
 				      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
+				      FM_DIRECTORY_VIEW_COMMAND_DUPLICATE,
 				      duplicate_callback);
 		append_gtk_menu_item (view, menu, files,
 				      FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
+				      FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 				      create_link_callback);
 	}
 	append_gtk_menu_item (view, menu, files,
 			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
+			      FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES,
 			      open_properties_window_callback);
         append_gtk_menu_item (view, menu, files,
 			      FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
+			      FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
 			      remove_custom_icons_callback);
 }
 
@@ -3001,7 +3030,6 @@ bonobo_launch_application_callback (BonoboUIComponent *component, gpointer callb
 	ApplicationLaunchParameters *launch_parameters;
 	
 	launch_parameters = (ApplicationLaunchParameters *) callback_data;
-
 	fm_directory_view_launch_application 
 		(launch_parameters->application,
 		 launch_parameters->uri,
@@ -3031,7 +3059,7 @@ add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 
 	escaped_label = nautilus_str_double_underscores (label);
 
-	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION_PLACEHOLDER, 
+	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER, 
 				       label, escaped_label);
 
 	verb_name = g_strdup_printf ("verb:%s", label);
@@ -3052,7 +3080,7 @@ add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
 
 	escaped_label = nautilus_str_double_underscores (label);
 
-	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER_PLACEHOLDER, 
+	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER, 
 				       escaped_label, escaped_label);
 				       
 	verb_name = g_strdup_printf ("verb:%s", label);
@@ -3107,13 +3135,15 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 static void
 update_one_menu_item (FMDirectoryView *view,
 		      GList *selection,
-		      const char *menu_path)
+		      const char *menu_path,
+		      const char *verb_path)
 {
 	char *label_string;
 	gboolean sensitive;
         compute_menu_item_info (view, menu_path, selection, TRUE, &label_string, &sensitive);
 
-	nautilus_bonobo_set_sensitive (view->details->ui, menu_path, sensitive);
+	nautilus_bonobo_set_sensitive (view->details->ui, verb_path, sensitive);
+	
 	nautilus_bonobo_set_label (view->details->ui, menu_path, label_string);
 	g_free (label_string);
 }
@@ -3137,7 +3167,9 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, GList *selection)
 						 "*Control*t");
 	}
 
-	update_one_menu_item (view, selection, FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
+	update_one_menu_item (view, selection, 
+			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+			      FM_DIRECTORY_VIEW_COMMAND_TRASH);
 }
 
 static void
@@ -3150,8 +3182,8 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 
 	/* Clear any previous inserted items in the applications and viewers placeholders */
 	/* FIXME bugzilla.eazel.com 3568: We are leaking here. We need to remove the verbs also */
-	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER);
 	
 	/* This menu is only displayed when there's one selected item. */
 	if (nautilus_g_list_exactly_one_item (selection)) {
@@ -3225,29 +3257,38 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	selection = fm_directory_view_get_selection (view);
 
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER);
+			      FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
+			      FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER);
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN);
+			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
+			      FM_DIRECTORY_VIEW_COMMAND_OPEN);
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW);
+			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
+			      FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW);
 
 	reset_bonobo_open_with_menu (view, selection);
 	
 	reset_bonobo_trash_delete_menu (view, selection);
 
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
+			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
+			      FM_DIRECTORY_VIEW_COMMAND_DUPLICATE);
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK);
+			      FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
+			      FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK);
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES);
+			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
+			      FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES);
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH);
+			      FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
+			      FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH);
 	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS);
+			      FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
+			      FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS);
 
 	update_one_menu_item (view, selection,
-			      NAUTILUS_MENU_PATH_SELECT_ALL_ITEM);
+			      NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
+			      NAUTILUS_COMMAND_SELECT_ALL);
 
 	nautilus_file_list_free (selection);
 }
@@ -4137,10 +4178,10 @@ menu_item_matches_path (GtkMenuItem *item, const char *path)
  * @menu: A GtkMenu, either the item-specific or background context menu
  * as passed to _create_selection_context_menu_items or
  * _create_background_context_menu_items.
- * @menu_path: Item whose index in @menu should be returned.
+ * @verb_path: command name (e.g. "/commands/Open") whose index in @menu should be returned.
  */
 int
-fm_directory_view_get_context_menu_index (GtkMenu *menu, const char *menu_path)
+fm_directory_view_get_context_menu_index (GtkMenu *menu, const char *verb_path)
 {
 	GList *children, *node;
 	GtkMenuItem *menu_item;
@@ -4148,14 +4189,14 @@ fm_directory_view_get_context_menu_index (GtkMenu *menu, const char *menu_path)
 	int result;
 
 	g_return_val_if_fail (GTK_IS_MENU (menu), -1);
-	g_return_val_if_fail (menu_path != NULL, -1);
+	g_return_val_if_fail (verb_path != NULL, -1);
 
 	children = gtk_container_children (GTK_CONTAINER (menu));
 	result = -1;
 	
 	for (node = children, index = 0; node != NULL; node = node->next, ++index) {
 		menu_item = GTK_MENU_ITEM (node->data);
-		if (menu_item_matches_path (menu_item, menu_path)) {
+		if (menu_item_matches_path (menu_item, verb_path)) {
 			result = index;
 			break;
 		}

@@ -1,3 +1,78 @@
+2000-10-09  John Sullivan  <sullivan@eazel.com>
+
+	Bunches o' Bonobo conversion & cleanup. Most of this is
+	about the new "command/widget separation" in Bonobo.
+	Essentially, changes to sensitivity, state, and hiddenness
+	should be made to the command (verb), whereas other changes
+	should be made to the widget.
+
+	This should fix the "cmd/widget" warnings at launch, and
+	make the tool bar buttons desensitize appropriately again.
+
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml:
+	* components/mozilla/nautilus-mozilla-ui.xml:
+	* components/sample/nautilus-sample-content-view-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/file-manager/nautilus-search-list-view-ui.xml:
+	Filled in the names of all verbs; we don't want to use
+	the default if-verb-name-is-blank-use-item-name feature because
+	it causes vast confusion; also, change _descr to _tip everywhere
+	(updated name from Bonobo); also explicitly defined <cmd>s for
+	the items that have pre-set insensitivity, or that share
+	tips between tool bar buttons and menu items.
+
+	* libnautilus/nautilus-bonobo-ui.h: Add #defines for command paths
+	as well as menu paths.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Use command paths instead of menu paths.
+	
+	* src/file-manager/fm-directory-view.h: Publicize command paths,
+	not menu paths (for use in context menu index-finding. Some day
+	we will convert the context menus to use Bonobo and then this
+	will get cleaned up further.)
+	
+	* src/file-manager/fm-directory-view.c:
+	Moved menu path #defines inside here.
+	(append_gtk_menu_item), (update_one_menu_item): 
+	Take both a menu path and a verb path; use the verb path 
+	for sensitivity.
+	(fm_directory_view_insert_context_menu_item): Updated comment.
+	(fm_directory_view_real_create_background_context_menu_items),
+	(create_open_with_gtk_menu),
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(reset_bonobo_trash_delete_menu),
+	(fm_directory_view_real_update_menus):
+	Pass verb paths as well as menu paths.
+	(fm_directory_view_get_context_menu_index): Changed variable
+	names for clarity.
+	
+	* src/file-manager/fm-icon-view.c:
+	New #defines for command paths.
+	(update_one_menu_item): Take both a menu path and a verb path; use
+	the verb path for sensitivity.
+	(fm_icon_view_create_selection_context_menu_items),
+	(fm_icon_view_create_background_context_menu_items),
+	(fm_icon_view_update_menus), (update_layout_menus): 
+	Pass both a menu path and a verb path.
+
+	* src/file-manager/fm-search-list-view.c:
+	#define for COMMAND_REVEAL_IN_NEW_WINDOW
+	(real_create_selection_context_menu_items): Use verb path not
+	menu path for context menu positioning.
+	(update_reveal_item): Use verb path not menu path for sensitivity.
+
+	* src/nautilus-window-private.h: #defines for command paths.
+	* src/nautilus-window-manage-views.c: (load_content_view):
+	* src/nautilus-window.c: (nautilus_window_allow_back),
+	(nautilus_window_allow_forward), (nautilus_window_allow_up),
+	(nautilus_window_allow_stop),
+	(nautilus_window_zoom_level_changed_callback): Use verb paths
+	instead of menu paths for changing sensitivity.
+
 2000-10-09  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3513, No applications or viewers appear in "Open With" menu

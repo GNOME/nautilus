@@ -751,14 +751,15 @@ load_content_view (NautilusWindow *window,
 
         bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-						NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
-						FALSE);
+				       NAUTILUS_COMMAND_ZOOM_IN,
+				       FALSE);
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-						NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM,
-						FALSE);
+				       NAUTILUS_COMMAND_ZOOM_OUT,
+				       FALSE);
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-						NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
-						FALSE);
+				       NAUTILUS_COMMAND_ZOOM_NORMAL,
+				       FALSE);
+        
         bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
         content_view = window->content_view;
