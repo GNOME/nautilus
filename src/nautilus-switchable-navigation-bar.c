@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "nautilus-switchable-navigation-bar.h"
+#include "nautilus-switchable-search-bar.h"
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -97,7 +98,7 @@ nautilus_switchable_navigation_bar_initialize (NautilusSwitchableNavigationBar *
 
 	hbox = gtk_hbox_new (0, FALSE);
 	bar->location_bar = nautilus_location_bar_new ();
-	bar->search_bar = nautilus_search_bar_new ();
+	bar->search_bar = nautilus_switchable_search_bar_new ();
 
 	gtk_signal_connect (GTK_OBJECT (bar->location_bar),
 			    "location_changed",

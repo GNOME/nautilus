@@ -42,13 +42,17 @@ noinst_HEADERS = \
 	nautilus-sidebar-title.h		\
 	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
+	nautilus-search-bar.h			\
+	nautilus-search-bar-criterion.h		\
+	nautilus-switchable-search-bar.h	\
+	nautilus-simple-search-bar.h		\
+	nautilus-complex-search-bar.h		\
 	nautilus-navigation-bar.h		\
 	nautilus-property-browser.h		\
 	nautilus-self-check-functions.h 	\
 	nautilus-signaller.h			\
 	nautilus-zoom-control.h			\
 	nautilus-application.h			\
-	nautilus-search-bar.h			\
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-sidebar.h			\
 	nautilus-applicable-views.h		\
@@ -67,6 +71,11 @@ nautilus_SOURCES =\
 	nautilus-sidebar-title.c		\
 	nautilus-link-set-window.c		\
 	nautilus-location-bar.c         	\
+	nautilus-search-bar.c			\
+	nautilus-switchable-search-bar.c	\
+	nautilus-search-bar-criterion.c		\
+	nautilus-simple-search-bar.c		\
+	nautilus-complex-search-bar.c		\
 	nautilus-navigation-bar.c         	\
 	nautilus-property-browser.c     	\
 	nautilus-self-check-functions.c 	\
@@ -76,7 +85,6 @@ nautilus_SOURCES =\
 	nautilus-zoom-control.c			\
 	nautilus-zoomable-frame-corba.c		\
 	nautilus-application.c			\
-	nautilus-search-bar.c         		\
 	nautilus-sidebar.c			\
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-main.c 			\

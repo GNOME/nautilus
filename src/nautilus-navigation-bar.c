@@ -81,12 +81,12 @@ nautilus_navigation_bar_initialize (NautilusNavigationBar *bar)
 
 
 /**
- * nautilus_navigation_bar_set_navigation
+ * nautilus_navigation_bar_set_location
  * 
  * Change the location displayed in the navigation bar.
  * 
  * @bar: A NautilusNavigationBar.
- * @navigation: The uri that should be displayed.
+ * @location: The uri that should be displayed.
  */
 void
 nautilus_navigation_bar_set_location (NautilusNavigationBar *bar,

@@ -1,3 +1,54 @@
+2000-06-20  Rebecca Schulman  <rebecka@eazel.com>
+
+	* src/Makefile.am:
+	* src/nautilus-search-bar.c:
+	* src/nautilus-search-bar.h:
+	(nautilus_search_bar_initialize_class),
+	(nautilus_search_bar_initialize),
+	(nautilus_search_bar_set_location),
+	(nautilus_search_bar_set_search_controls):
+	* src/nautilus-switchable-search-bar.c: 
+	* src/nautilus-switchable-search-bar.h:
+	* src/nautilus-search-bar-criterion.c:
+	* src/nautilus-search-bar-criterion.h:
+	set up search-bar as a virtual class that
+	switches between the available search bars,
+	similar to nautilus-navigation-bar.
+
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-complex-search-bar.h:
+	* src/nautilus-simple-search-bar.c:
+	* src/nautilus-simple-search-bar.h:
+	Added simple and complex search bar skeletons.
+	these need to get filled out a lot more
+	
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_initialize):
+	switchable navigation bar uses a switchable
+	search bar instead of a normal search bar,
+	since that class is now virtual
+	
+	* src/nautilus-navigation-bar.c:
+	fixed comment typos
+	
+	* libnautilus-extensions/nautilus-directory.h:
+	Exported nautilus_uri_is_search_uri function
+	* libnautilus-extensions/Makefile.am:
+	Added nautilus-search-uri.c and .h files
+	The functions aren't filled out yet, though
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_search_uri_to_simple_search_criteria):
+	* libnautilus-extensions/nautilus-search-uri.h:
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register_for_ui):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Changed search bar preference names from NAUTILUS_SEARCH_BAR_ONE_BOX 
+	and NAUTILUS_SEARCH_BAR_MULTI_BOX
+	to NAUTILUS_SIMPLE_SEARCH_BAR and NAUTILUS_COMPLEX_SEARCH_BAR
+	to match respective object names
+
+
 2000-06-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

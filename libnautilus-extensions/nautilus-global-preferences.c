@@ -567,19 +567,19 @@ global_preferences_register_for_ui (void)
 	/* search bar type */
 	global_preferences_register_enum_with_defaults (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 							"search type to do by default",
-							NAUTILUS_SEARCH_BAR_ONE_BOX,
-							NAUTILUS_SEARCH_BAR_MULTI_BOX,
-							NAUTILUS_SEARCH_BAR_MULTI_BOX);
+							NAUTILUS_SIMPLE_SEARCH_BAR,
+							NAUTILUS_COMPLEX_SEARCH_BAR,
+							NAUTILUS_COMPLEX_SEARCH_BAR);
 
 	nautilus_preference_enum_add_entry_by_name (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						     "search by text",
 						     "Search for files by text only",
-						     NAUTILUS_SEARCH_BAR_ONE_BOX);
+						     NAUTILUS_SIMPLE_SEARCH_BAR);
 
 	nautilus_preference_enum_add_entry_by_name (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						     "search by text and properties",
 						     "Search for files by text and by their properties",
-						     NAUTILUS_SEARCH_BAR_MULTI_BOX);
+						     NAUTILUS_COMPLEX_SEARCH_BAR);
 
 	/*
 	 * These dont have a UI (yet ? maybe in the advanced settings ?).

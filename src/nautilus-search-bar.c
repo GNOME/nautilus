@@ -20,46 +20,41 @@
    Boston, MA 02111-1307, USA.
 
    Author: Maciej Stachowiak <mjs@eazel.com>
+           Rebecca Schulman <rebecka@eazel.com>
 */
 
 #include <config.h>
 #include "nautilus-search-bar.h"
+#include "nautilus-search-bar-private.h"
+#include "nautilus-simple-search-bar.h"
+#include "nautilus-complex-search-bar.h"
+#include "nautilus-search-bar-criterion.h"
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkeventbox.h>
+
+#include <libgnomeui/gnome-uidefs.h>
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-directory.h>
 
-typedef enum {
-	NAUTILUS_SEARCH_ONE_BOX,
-	NAUTILUS_SEARCH_MULTI_BOX
-} NautilusSearchBarType;
+static void                       nautilus_search_bar_initialize_class (NautilusSearchBarClass *class);
+static void                       nautilus_search_bar_initialize       (NautilusSearchBar      *bar);
 
-struct NautilusSearchBarDetails {
-	NautilusSearchBarType search_bar_type;
-	GtkLabel *search_label;
-	/* This one is used for the simple search */  
-	GtkEntry *entry;
-	/* These are used for the more complicated
-	   search */
-	/* Under construction */
-	GList *search_bar_pairs;
-	
-};
-
-static void nautilus_search_bar_set_location     (NautilusNavigationBar *bar,
-						  const char            *location);
-
-
-static void nautilus_search_bar_initialize_class (NautilusSearchBarClass *class);
-static void nautilus_search_bar_initialize       (NautilusSearchBar      *bar);
+static void                       nautilus_search_bar_set_location     (NautilusNavigationBar *navigation_bar,
+									const char *location);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSearchBar, nautilus_search_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
 
 
+
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_search_bar, set_search_controls)
+
 static void
 destroy (GtkObject *object)
 {
@@ -79,35 +74,39 @@ nautilus_search_bar_initialize_class (NautilusSearchBarClass *klass)
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
 
 	navigation_bar_class->set_location = nautilus_search_bar_set_location;
+
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_search_bar, set_search_controls);
 }
 
 static void
 nautilus_search_bar_initialize (NautilusSearchBar *bar)
 {
-	GtkWidget *label;		
 
-	/* FIXME: set up the widgetry here. */
-
-	label = gtk_label_new (_("The search bar goes here"));
-
-     	gtk_widget_show (label);
-
-	gtk_container_add   (GTK_CONTAINER (bar), label);
 }
 
-
-GtkWidget *
-nautilus_search_bar_new (void)
-{
-	return gtk_widget_new (nautilus_search_bar_get_type (), NULL);
-}
 
 
 static void
-nautilus_search_bar_set_location (NautilusNavigationBar *bar,
+nautilus_search_bar_set_location (NautilusNavigationBar *navigation_bar,
 				  const char *location)
 {
-	/* FIXME: should check if URI is search URI, and if so,
-	   set up the controls properly. */
+	NautilusSearchBar *search_bar;
+
+	search_bar = NAUTILUS_SEARCH_BAR (navigation_bar);
+
+	(* NAUTILUS_SEARCH_BAR_CLASS (GTK_OBJECT (search_bar)->klass)->set_search_controls)
+		(search_bar, location);
+
+}
+
+/* This is here for children (nautilus-switchable-search-bar, for one)
+   to use */
+void
+nautilus_search_bar_set_search_controls (NautilusSearchBar *search_bar,
+					 const char *location)
+{
+	(* NAUTILUS_SEARCH_BAR_CLASS (GTK_OBJECT (search_bar)->klass)->set_search_controls)
+		(search_bar, location);
+
 }
 

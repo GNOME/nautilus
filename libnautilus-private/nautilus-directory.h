@@ -165,6 +165,7 @@ gboolean           nautilus_directory_is_local             (NautilusDirectory   
  */
 gboolean           nautilus_directory_is_search_directory  (NautilusDirectory         *directory);
 
+gboolean           nautilus_uri_is_search_uri              (const char *uri);
 
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
