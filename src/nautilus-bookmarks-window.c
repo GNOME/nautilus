@@ -25,9 +25,9 @@
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
 #include <libnautilus/nautilus-undo.h>
-#include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <gnome.h>
 
 
@@ -171,7 +171,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_field, FALSE, FALSE, 0);
-	nautilus_entry_set_undo_key (NAUTILUS_ENTRY (name_field), TRUE);
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 	
 	vbox4 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox4);
@@ -183,8 +183,8 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 
 	uri_field = nautilus_entry_new ();
 	gtk_widget_show (uri_field);
-	gtk_box_pack_start (GTK_BOX (vbox4), uri_field, FALSE, FALSE, 0);
-	nautilus_entry_set_undo_key (NAUTILUS_ENTRY (uri_field), TRUE);
+	gtk_box_pack_start (GTK_BOX (vbox4), uri_field, FALSE, FALSE, 0);	
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (uri_field), TRUE);
 
 	hbox2 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox2);

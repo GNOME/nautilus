@@ -1,3 +1,42 @@
+2000-06-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	* libnautilus-extensions/nautilus-undo-signal-handlers.h:
+	(nautilus_entry_user_changed_callback),
+	(nautilus_undo_setup_nautilus_entry_for_undo),
+	(nautilus_undo_teardown_nautilus_entry_for_undo),
+	(free_editable_undo_data), (free_editable_object_data),
+	(editable_insert_text_callback), (editable_delete_text_callback),
+	(editable_register_edit_undo),
+	(nautilus_undo_setup_editable_for_undo),
+	(nautilus_undo_teardown_editable_for_undo),
+	(restore_editable_from_undo_snapshot_callback),
+	(editable_key_press_event), (nautilus_undo_editable_set_undo_key):
+	New file and functions to handle undo in NautilusEntry and
+	GtkEditables.  This file is intended to contain signal handlers
+	that enable undo for a variety of GTK widgets. Calling a 
+	setup_for_undo function will prepare the widget to handle
+	undo functionality.
+
+	* libnautilus-extensions/Makefile.am:
+	Added entries for new files nautilus-undo-signal-handlers.c
+	and nautilus-undo-signal-handlers.h
+	
+	* components/notes/nautilus-notes.c: (make_notes_view):
+	Fixed bug #973.  Add undo to notes component.
+	
+	* components/websearch/ntl-web-search.c: (make_obj):
+	Changed to use new undo signal handlers.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize), (nautilus_entry_key_press),
+	(nautilus_entry_set_text), (nautilus_entry_delete_text):
+	Removed old undo code that had been rendered obsolete by the
+	new signal handlers mentioned above.
+	
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	Changed to use new undo signal handlers.
+
 2000-06-12  John Sullivan  <sullivan@eazel.com>
 
 	Fixed  bug 692 (Bookmarks for deleted files don't do

@@ -29,6 +29,7 @@
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
@@ -149,22 +150,24 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         notes->uri = g_strdup ("");
         
         /* allocate a vbox to hold all of the UI elements */
-        
         vbox = gtk_vbox_new (FALSE, 0);
         
-        /* create the text container */
-        
+        /* create the text container */               
         notes->note_text_field = gtk_text_new (NULL, NULL);
-        gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);
+        gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
         background = nautilus_get_widget_background (notes->note_text_field);
         nautilus_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
-
+        
         gtk_widget_show_all (vbox);
         
-        /* Create CORBA object. */
+	/* Create CORBA object. */
         notes->view = nautilus_view_new (vbox);
         gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", do_destroy, notes);
+
+	/* Setup up text field for undo */
+	nautilus_undo_setup_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (notes->note_text_field), TRUE);
 
         notes_object_count++;
         

@@ -86,6 +86,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-text-caption.c			\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
+	nautilus-undo-signal-handlers.c		\
 	nautilus-user-level-manager.c		\
 	nautilus-view-identifier.c		\
 	nautilus-xml-extensions.c		\

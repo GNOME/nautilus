@@ -49,8 +49,6 @@ typedef struct NautilusEntryClass NautilusEntryClass;
 struct NautilusEntry {
 	GtkEntry parent;
 		
-	gboolean undo_registered;
-	gboolean handle_undo_key;
 	gboolean user_edit;
 };
 
@@ -63,11 +61,10 @@ struct NautilusEntryClass {
 
 GtkType    nautilus_entry_get_type           (void);
 GtkWidget* nautilus_entry_new                (void);
-void 	   nautilus_entry_set_text 	     (NautilusEntry *entry, const gchar *text);
+void 	   nautilus_entry_set_text 	     (NautilusEntry *entry, 
+					      const gchar   *text);
 void       nautilus_entry_select_all         (NautilusEntry *entry);
 void       nautilus_entry_select_all_at_idle (NautilusEntry *entry);
-void       nautilus_entry_set_undo_key       (NautilusEntry *entry,
-					      gboolean       value);
 
 END_GNOME_DECLS
 

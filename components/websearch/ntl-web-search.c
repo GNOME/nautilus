@@ -25,13 +25,16 @@
 /* ntl-web-search.c: Rewrite KWebSearch using Gtk+ and Nautilus */
 
 #include <config.h>
-#include <libnautilus/libnautilus.h>
-#include <libnautilus-extensions/nautilus-entry.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <limits.h>
 #include <ctype.h>
+
+#include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+
+
 
 typedef struct {
   char *name, *url_head, *url_tail;
@@ -182,7 +185,8 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   web_search_populate_engines(hview);
 
   hview->ent_params = nautilus_entry_new();
-
+  nautilus_undo_editable_set_undo_key ( GTK_EDITABLE (hview->ent_params), TRUE);
+  
   gtk_signal_connect(GTK_OBJECT(hview->ent_params), "activate", do_search, hview);
   gtk_container_add(GTK_CONTAINER(vbox), hview->ent_params);
 
