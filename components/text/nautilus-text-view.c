@@ -52,6 +52,8 @@
 
 #include <ghttp.h>
 
+#define MAX_SERVICE_ITEMS 32
+
 struct _NautilusTextViewDetails {
 	NautilusFile *file;
 	NautilusView *nautilus_view;
@@ -63,7 +65,9 @@ struct _NautilusTextViewDetails {
 	
 	char *font_name;
 	GdkFont *current_font;
+	
 	int service_item_count;
+	gboolean service_item_uses_selection[MAX_SERVICE_ITEMS];
 };
 
 /* structure for handling service menu item execution */
@@ -454,12 +458,13 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 		source_mode = xmlGetProp (service_node, "source");
 		
 		if (label != NULL && template != NULL) {
-		
 			/* allocate a structure containing the text_view and template to pass in as the user data */
-
 			escaped_label = nautilus_str_double_underscores (label);
 			parameters = service_menu_item_parameters_new (text_view, template, source_mode);
 		
+			text_view->details->service_item_uses_selection[*index] = 
+				nautilus_strcmp (source_mode, "document") != 0;
+			
 			/* use bonobo to add the menu item */
 			nautilus_bonobo_add_numbered_menu_item 
 				(ui, 
@@ -485,14 +490,15 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 							  (GDestroyNotify) service_menu_item_parameters_free);	   
 			g_free (verb_name);	
 			
-			/* initially disable the item; it will be enabled if there's a selection */
+			/* initially disable the item unless it's document-based; it will be enabled if there's a selection */
 			item_path = nautilus_bonobo_get_numbered_menu_item_path
 					(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);	
-			nautilus_bonobo_set_sensitive (ui, item_path, FALSE);
+			if (nautilus_strcmp (source_mode, "document") != 0) {
+				nautilus_bonobo_set_sensitive (ui, item_path, FALSE);
+			}
 			g_free (item_path);
 			
 			*index += 1;
-
 		}
 
 		xmlFree (label);
@@ -500,8 +506,7 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 		xmlFree (tooltip);
 		
 		/* release the xml file */
-		xmlFreeDoc (service_definition);
-	
+		xmlFreeDoc (service_definition);	
 	}
 }
 
@@ -525,8 +530,11 @@ add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const
 	/* iterate through the directory */
 	current_file_info = gnome_vfs_directory_list_first (file_list);
 	while (current_file_info != NULL) {
-		if (nautilus_istr_has_suffix (current_file_info->name, ".xml")) {
-			
+		if (*index >= MAX_SERVICE_ITEMS) {
+			break;
+		}
+		
+		if (nautilus_istr_has_suffix (current_file_info->name, ".xml")) {		
 			service_xml_path = nautilus_make_path (services_directory, current_file_info->name);
 			add_one_service (text_view, control, service_xml_path, index);
 			g_free (service_xml_path);
@@ -591,10 +599,11 @@ update_service_menu_items (GtkWidget *widget, GdkEventButton *event, gpointer *u
 	for (index = 0; index < text_view->details->service_item_count; index++) {
 		command_path = nautilus_bonobo_get_numbered_menu_item_path
 					(ui, ADDITIONAL_SERVICES_MENU_PATH, index);
-	
-		nautilus_bonobo_set_sensitive (ui, 
+		if (text_view->details->service_item_uses_selection[index]) {
+			nautilus_bonobo_set_sensitive (ui, 
 				       command_path,
 				       has_selection);
+		}
 		g_free (command_path);
 	}
 	

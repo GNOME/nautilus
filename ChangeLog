@@ -1,5 +1,11 @@
 2000-11-30  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/text/nautilus-text-view.c: (add_one_service),
+	(add_services_to_menu), (update_service_menu_items):
+	only disable selection dependent services when there's no selection.
+	
+2000-11-30  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/text/services/Makefile.am:
 	* components/text/services/english_to_french.xml:
 	added sample document-oriented text view service.
