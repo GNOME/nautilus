@@ -29,6 +29,7 @@ static char *requested_nodename=NULL;
 static struct poptOption options[] = {
   {NULL, 'a', POPT_ARG_STRING, &requested_nodename},
   {NULL, 'b', POPT_ARG_STRING, &OverrideBaseFilename},
+  {NULL, 'g', POPT_ARG_NONE, &galeon_mode},
   {NULL}
 };
 

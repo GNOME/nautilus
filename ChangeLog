@@ -1,3 +1,14 @@
+2001-09-21  Philip Langdale  <philipl@mail.utexas.edu>
+
+	* Reviewed by John Fleck <jfleck@inkstain.net> (Bug 60511)
+        * components/help/converters/gnome-info2html2/html.c
+        * components/help/converters/gnome-info2html2/html.h
+        * components/help/converters/gnome-info2html2/main.c: Added optional
+        "galeon mode" invoked with -g command line param. This involves writing 
+        fully qualified info: hrefs instead of just the #nodename target,  
+        which appears to me to be a bug, but might have negative effects on
+        nautilus. It also uses ? queries instead of # refs when forming hrefs.
+
 2001-09-20  Darin Adler  <darin@bentspoon.com>
 
 	* components/help/hyperbola-nav-index.c:

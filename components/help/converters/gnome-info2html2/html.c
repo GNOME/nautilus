@@ -25,6 +25,8 @@ int inTable=0;
 char *BaseFilename=NULL;
 char *OverrideBaseFilename=NULL;
 
+int galeon_mode=0;
+
 /* prototypes */
 char *form_info_tag_href( char *nodefile, char *nodename );
 int make_Top_link( char *destdir, char *destfile );
@@ -53,7 +55,10 @@ char *form_info_tag_href( char *nodefile, char *nodename )
   else
 	  filename = nodefile;
 
-  g_snprintf (tmp, sizeof (tmp), "HREF=\"#%s\"", escaped_nodename);
+  if (galeon_mode)
+    g_snprintf (tmp, sizeof (tmp), "HREF=\"info:%s?%s\"", filename,  escaped_nodename);
+  else
+    g_snprintf (tmp, sizeof (tmp), "HREF=\"#%s\"", escaped_nodename);
 
   if (escaped_nodename)
     g_free(escaped_nodename);

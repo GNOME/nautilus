@@ -9,6 +9,8 @@
 extern char *BaseFilename;
 extern char *OverrideBaseFilename;
 
+extern int galeon_mode;
+
 void dump_html_for_node( NODE *node );
 
 void open_body_text_html( FILE *f );
