@@ -1,3 +1,59 @@
+2001-02-13  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 6385 (Properties window doesn't set/display
+	icon correctly for Nautilus link files)
+
+	Now the Properties window keeps around an "original
+	file" and a "target file", which are currently the
+	same for all files except Nautilus links. The original
+	file is used to display/set the icon & name. (So you
+	can edit the name of your Home icon in the properties
+	window now also.)
+
+	* src/file-manager/fm-properties-window.c:
+	Renamed details->file to details->target_file. Added
+	details->original_file. Removed two details fields
+	that were unused.
+	
+	(directory_contents_value_field_update),
+	(attach_directory_contents_value_field),
+	(update_visibility_of_item_count_fields),
+	(should_show_custom_icon_buttons), (should_show_file_type),
+	(should_show_accessed_date), (should_show_mime_type),
+	(create_emblems_page),
+	(append_special_execution_checkbox), (create_permissions_page),
+	(should_show_emblems), (should_show_permissions),
+	(real_shutdown):
+	Updated for name change only.
+	
+	(create_basic_page): Use original file for icon & name widgetry.
+
+	(startup_data_new), (startup_data_free): New functions used to
+	manipulate the data needed before a Properties window object
+	exists for a given file.
+
+	(create_properties_window): Reworked to use StartupData and set up
+	both target_file and original_file.
+
+	(get_target_file): Renamed from get_and_ref_file_to_display.
+
+	(create_properties_window_callback): Reworked to use StartupData;
+	slight reordering due to object lifetime issues.
+	
+	(cancel_create_properties_window_callback),
+	(directory_view_destroyed_callback), (remove_pending_file),
+	(fm_properties_window_present):
+	Reworked to use StartupData.
+	
+	(real_destroy): clean up after original_file and target_file.
+	
+	(set_icon_callback): Use original_file.
+	(select_image_button_callback),
+	(remove_image_button_callback): Changed signatures to take
+	FMPropertiesWindows instead of NautilusFiles; use original_file.
+
 2001-02-13  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Sullivan
