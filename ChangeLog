@@ -1,3 +1,13 @@
+2000-12-06  Michael Engber  <engber@eazel.com>
+
+	* src/nautilus-sidebar-title.c: (appearance_changed_callback),
+	(realize_callback), (nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_background),
+	(nautilus_sidebar_title_select_text_color):
+	Hookup sidebar_title to their background's appearance_changed
+	signals so that the text can adjust color to match the
+	background being light or dark - bug 4991.
+
 2000-12-06  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:

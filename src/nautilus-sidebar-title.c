@@ -27,6 +27,7 @@
 
 #include <config.h>
 #include "nautilus-sidebar-title.h"
+#include "nautilus-sidebar.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -64,6 +65,7 @@ static void sidebar_create_smooth_components_if_needed (NautilusSidebarTitle    
 static void sidebar_create_normal_components_if_needed (NautilusSidebarTitle      *sidebar_title);
 static void smooth_graphics_mode_changed_callback         (gpointer                   callback_data);
 
+static NautilusBackground *nautilus_sidebar_title_background (NautilusSidebarTitle *sidebar_title);
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile		*file;
@@ -105,6 +107,29 @@ nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
 	widget_class->size_allocate = nautilus_sidebar_title_size_allocate;
 }
 
+
+static void
+appearance_changed_callback (NautilusBackground *background, NautilusSidebarTitle *sidebar_title)
+{
+	nautilus_sidebar_title_select_text_color (sidebar_title);
+}		
+
+static void
+realize_callback (NautilusSidebarTitle *sidebar_title)
+{
+	NautilusBackground *background;
+	
+	background = nautilus_sidebar_title_background (sidebar_title);
+
+	g_return_if_fail (background != NULL);
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (background),
+					"appearance_changed",
+					appearance_changed_callback,
+					sidebar_title,
+					GTK_OBJECT (sidebar_title));
+}
+
 static void
 nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 { 
@@ -117,6 +142,7 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 					       "icons_changed",
 					       update_icon,
 					       GTK_OBJECT (sidebar_title));
+	gtk_signal_connect (GTK_OBJECT (sidebar_title), "realize", realize_callback, NULL);
 
 	sidebar_title->details->label_box = gtk_vbox_new (FALSE, 0);
 	sidebar_title->details->more_info_box = gtk_vbox_new (FALSE, 0);
@@ -222,22 +248,48 @@ set_widget_color (GtkWidget *widget, const char* color_spec)
 	gtk_style_unref (style);
 }
 
+static NautilusBackground *
+nautilus_sidebar_title_background (NautilusSidebarTitle *sidebar_title)
+{
+	GtkWidget *widget;
+	GtkWidget *sidebar;
+	NautilusBackground *background;
+
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (sidebar_title), NULL);
+	
+	widget = GTK_WIDGET (sidebar_title)->parent;
+
+	 
+	if (widget != NULL) {
+		sidebar = widget->parent;
+		g_return_val_if_fail (NAUTILUS_IS_SIDEBAR (sidebar), NULL);
+		background = nautilus_get_widget_background (sidebar);
+		g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), NULL);
+		return background;
+	} else {
+		/* FIXME 
+		 * It would be preferable to assert widget != NULL and not have
+		 * this else case. Doing this would require us to be carful when
+		 * nautilus_sidebar_title_select_text_color is called - which would
+		 * probably involve doing more of the sidebar_title initialization
+		 * at realize time.
+		 */
+		return NULL;
+	}
+}
+
 /* utility that returns true if the title is over a dark background.  We do this by finding the
    sidebar and asking its background */
 void
 nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 {
-	GtkWidget *widget, *sidebar;
 	NautilusBackground *background;
-	char *sidebar_title_color, *sidebar_info_title_color;
+	char *sidebar_title_color;
+	char *sidebar_info_title_color;
 	char *sidebar_title_shadow_color;
 	
-	widget = GTK_WIDGET (sidebar_title);
-	sidebar = widget->parent;
-	if (sidebar) {
-		sidebar = GTK_WIDGET (sidebar)->parent;
-		background = nautilus_get_widget_background (sidebar);
-		
+	background = nautilus_sidebar_title_background (sidebar_title);
+	if (background != NULL) {
 		/* FIXME bugzilla.eazel.com 2496: for now, both the title and info colors are the same */
 		if (nautilus_background_is_dark (background)) {
 			sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
