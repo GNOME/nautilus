@@ -32,6 +32,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-metadata.h"
 
 #include <stdio.h>
 
@@ -82,7 +83,7 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
 	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
 	action_type_string = nautilus_directory_get_metadata
-		(directory, "DEFAULT_ACTION_TYPE", NULL);
+		(directory, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL);
 	nautilus_directory_unref (directory);
 
 	if (action_type_string == NULL) {
@@ -158,7 +159,8 @@ nautilus_mime_get_default_application_for_uri (const char *uri)
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	default_application_string = nautilus_directory_get_metadata (directory, "DEFAULT_APPLICATION", NULL);
+	default_application_string = nautilus_directory_get_metadata 
+		(directory, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
 	nautilus_directory_unref (directory);
 
 	if (default_application_string == NULL) {
@@ -212,7 +214,8 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
 
 	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
-	default_component_string = nautilus_directory_get_metadata (directory, "DEFAULT_COMPONENT", NULL);
+	default_component_string = nautilus_directory_get_metadata 
+		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
 	nautilus_directory_unref (directory);
@@ -315,8 +318,10 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	metadata_application_add_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_APPLICATION_ADD", "ID");
-	metadata_application_remove_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_APPLICATION_REMOVE", "ID");
+	metadata_application_add_ids = nautilus_directory_get_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+	metadata_application_remove_ids = nautilus_directory_get_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
@@ -388,8 +393,10 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	g_list_free (attributes);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	metadata_component_add_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_COMPONENT_ADD", "IID");
-	metadata_component_remove_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_COMPONENT_REMOVE", "IID");
+	metadata_component_add_ids = nautilus_directory_get_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
+	metadata_component_remove_ids = nautilus_directory_get_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
@@ -453,7 +460,8 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	metadata_application_ids = nautilus_directory_get_metadata_list (directory, "APPLICATION", "ID");
+	metadata_application_ids = nautilus_directory_get_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
@@ -547,7 +555,8 @@ nautilus_mime_set_default_action_type_for_uri (const char             *uri,
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	nautilus_directory_set_metadata (directory, "DEFAULT_ACTION_TYPE", NULL, action_string);
+	nautilus_directory_set_metadata 
+		(directory, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL, action_string);
 	nautilus_directory_unref (directory);
 }
 
@@ -561,7 +570,8 @@ nautilus_mime_set_default_application_for_uri (const char *uri,
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	nautilus_directory_set_metadata (directory, "DEFAULT_APPLICATION", NULL, application_id);
+	nautilus_directory_set_metadata 
+		(directory, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL, application_id);
 	nautilus_directory_unref (directory);
 }
 
@@ -575,7 +585,8 @@ nautilus_mime_set_default_component_for_uri (const char *uri,
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	nautilus_directory_set_metadata (directory, "DEFAULT_COMPONENT", NULL, component_iid);
+	nautilus_directory_set_metadata 
+		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL, component_iid);
 	nautilus_directory_unref (directory);
 }
 
@@ -615,8 +626,10 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	nautilus_directory_set_metadata_list (directory, "SHORT_LIST_APPLICATION_ADD", "ID", add_list);
-	nautilus_directory_set_metadata_list (directory, "SHORT_LIST_APPLICATION_REMOVE", "ID", remove_list);
+	nautilus_directory_set_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, add_list);
+	nautilus_directory_set_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, remove_list);
 	nautilus_directory_unref (directory);	
 
 	/* FIXME: need to free normal_short_list, normal_short_list_ids, add_list, remove_list */
@@ -657,8 +670,10 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	nautilus_directory_set_metadata_list (directory, "SHORT_LIST_COMPONENT_ADD", "IID", add_list);
-	nautilus_directory_set_metadata_list (directory, "SHORT_LIST_COMPONENT_REMOVE", "IID", remove_list);
+	nautilus_directory_set_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID, add_list);
+	nautilus_directory_set_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID, remove_list);
 	nautilus_directory_unref (directory);	
 
 	/* FIXME: need to free normal_short_list, normal_short_list_ids, add_list, remove_list */
@@ -751,13 +766,15 @@ nautilus_mime_extend_all_applications_for_uri (const char *uri,
 	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
 
-	metadata_application_ids = nautilus_directory_get_metadata_list (directory, "APPLICATION", "ID");
+	metadata_application_ids = nautilus_directory_get_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
 	extras = str_list_difference (applications, metadata_application_ids);
 
 	final_applications = g_list_concat (g_list_copy (metadata_application_ids), extras);
 
-	nautilus_directory_set_metadata_list (directory, "APPLICATION", "ID", final_applications);
+	nautilus_directory_set_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, final_applications);
 	nautilus_directory_unref (directory);
 }
 
@@ -773,11 +790,13 @@ nautilus_mime_remove_from_all_applications_for_uri (const char *uri,
 	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
 
-	metadata_application_ids = nautilus_directory_get_metadata_list (directory, "APPLICATION", "ID");
+	metadata_application_ids = nautilus_directory_get_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
 	final_applications = str_list_difference (metadata_application_ids, applications);
 
-	nautilus_directory_set_metadata_list (directory, "APPLICATION", "ID", final_applications);
+	nautilus_directory_set_metadata_list 
+		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, final_applications);
 	nautilus_directory_unref (directory);
 }
 
@@ -900,7 +919,7 @@ get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory)
 {
         if (directory != NULL) {
                 return nautilus_directory_get_metadata_list 
-                        (directory, "EXPLICIT_CONTENT_VIEW", "IID");
+                        (directory, NAUTILUS_METADATA_KEY_EXPLICIT_COMPONENT, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
         } else {
 		return NULL;
 	}

@@ -1,5 +1,26 @@
 2000-06-06  John Sullivan  <sullivan@eazel.com>
 
+	* libnautilus-extensions/nautilus-metadata.h:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_type_for_uri),
+	(nautilus_mime_get_default_application_for_uri),
+	(nautilus_mime_get_default_component_for_uri_internal),
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_get_short_list_components_for_uri),
+	(nautilus_mime_get_all_applications_for_uri),
+	(nautilus_mime_set_default_action_type_for_uri),
+	(nautilus_mime_set_default_application_for_uri),
+	(nautilus_mime_set_default_component_for_uri),
+	(nautilus_mime_set_short_list_applications_for_uri),
+	(nautilus_mime_set_short_list_components_for_uri),
+	(nautilus_mime_extend_all_applications_for_uri),
+	(nautilus_mime_remove_from_all_applications_for_uri),
+	(get_explicit_content_view_iids_from_metafile):
+	Made all the metadata keys in this file be #defines
+	instead of in-line strings.
+
+2000-06-06  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 1219 (saved viewer not used if not in preferred list)
 
 	* libnautilus-extensions/nautilus-metadata.h:
