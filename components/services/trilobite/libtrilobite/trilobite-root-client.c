@@ -137,7 +137,7 @@ gtk_marshal_STRING__STRING (GtkObject *object, GtkSignalFunc func, gpointer func
 
 /* destroy callback, and accessible from the outside world */
 void
-trilobite_root_client_destroy (GtkObject *object)
+trilobite_root_client_unref (GtkObject *object)
 {
 	TrilobiteRootClient *root_client;
 
@@ -147,21 +147,25 @@ trilobite_root_client_destroy (GtkObject *object)
 
 	root_client = TRILOBITE_ROOT_CLIENT (object);
 
-	/* anything that needs to be freed? */
-	if (root_client->private) {
-		if (root_client->private->pq_client != CORBA_OBJECT_NIL) {
-			CORBA_Environment ev;
+	bonobo_object_unref (BONOBO_OBJECT (object));
+}
 
-			CORBA_exception_init (&ev);
-			CORBA_Object_release (root_client->private->pq_client, &ev);
-			CORBA_exception_free (&ev);
-		}
-		g_free (root_client->private);
-	}
+static void
+trilobite_root_client_finalize (GtkObject *object)
+{
+	TrilobiteRootClient *root_client;
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (TRILOBITE_IS_ROOT_CLIENT (object));
+
+	root_client = TRILOBITE_ROOT_CLIENT (object);
+
+	g_free (root_client->private);
+	root_client->private = NULL;
 
 	/* call parent destructor */
-	if (GTK_OBJECT_CLASS (parent_class)->destroy) {
-		GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	if (GTK_OBJECT_CLASS (parent_class)->finalize) {
+		GTK_OBJECT_CLASS (parent_class)->finalize (object);
 	}
 }
 
@@ -174,7 +178,7 @@ trilobite_root_client_class_initialize (TrilobiteRootClientClass *klass)
 	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
 
 	object_class = (GtkObjectClass *)klass;
-	object_class->destroy = trilobite_root_client_destroy;
+	object_class->finalize = trilobite_root_client_finalize;
 
 	klass->servant_init = POA_Trilobite_PasswordQueryClient__init;
 	klass->servant_fini = POA_Trilobite_PasswordQueryClient__fini;
@@ -221,9 +225,8 @@ trilobite_root_client_initialize (TrilobiteRootClient *object)
 
 	corba_trilobite = trilobite_root_client_create_corba_object (BONOBO_OBJECT (object));
 	if (trilobite_root_client_construct (object, corba_trilobite) == FALSE) {
-		g_error ("argh!");
-		trilobite_root_client_destroy (GTK_OBJECT (object));
-		object = NULL;
+		/* FIXME: no good way to bail out now */
+		corba_trilobite = CORBA_OBJECT_NIL;
 	}
 
 	object->private = g_new0 (TrilobiteRootClientPrivate, 1);

@@ -1,3 +1,25 @@
+2000-07-14  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client-pu
+	blic.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	(trilobite_root_client_unref), (trilobite_root_client_finalize),
+	(trilobite_root_client_class_initialize),
+	(trilobite_root_client_initialize):
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery.c: (trilobite_passwordquery_get_password):
+	* components/services/trilobite/sample/command-line/main.c: (main):
+	*
+	components/services/trilobite/sample/service/sample-service-impl.c:
+	(impl_Trilobite_Eazel_Sample_list_it):
+
+	Fix up TrilobiteRootClient implementation (destroy -> unref) to
+	behave according to standards, and to more closely match gob
+	output.  Fix a few small bugs.
+	
 2000-07-14  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* Makefile.am:

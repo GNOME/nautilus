@@ -67,7 +67,7 @@ gboolean trilobite_root_client_construct (TrilobiteRootClient *root_client,
 					  Trilobite_PasswordQueryClient corba_trilobite);
 TrilobiteRootClient *trilobite_root_client_new (void);
 POA_Trilobite_PasswordQueryClient__epv *trilobite_root_client_get_epv (void);
-void trilobite_root_client_destroy (GtkObject *object);
+void trilobite_root_client_unref (GtkObject *object);
 
 Trilobite_PasswordQueryClient trilobite_root_client_get_passwordqueryclient (TrilobiteRootClient *root_client);
 

@@ -121,6 +121,7 @@ impl_Trilobite_Eazel_Sample_list_it(impl_POA_Sample_Service *service,
 	/* Start and run the eazel-helper */
 	if (trilobite_root_helper_start (helper) == TRILOBITE_ROOT_HELPER_BAD_PASSWORD) {
 		g_warning ("Incorrect password");
+		return;
 	} else {
 		if (trilobite_root_helper_run (helper, TRILOBITE_ROOT_HELPER_RUN_LS, args, &fd) != TRILOBITE_ROOT_HELPER_SUCCESS) {
 			g_warning ("trilobite_root_helper failed");

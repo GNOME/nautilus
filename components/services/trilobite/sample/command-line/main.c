@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
 
 	/* throw away the root client if we made one */
 	if (root_client != NULL) {
-		trilobite_root_client_destroy (GTK_OBJECT (root_client));
+		trilobite_root_client_unref (GTK_OBJECT (root_client));
 	}
 
 	/* Clean up the bonobo_object_activate return value */

@@ -339,7 +339,8 @@ trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper,
 								  trilobite->private->prompt, 
 								  &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
-			g_warning ("Error during query of password from client");
+			g_warning ("Error during query of password from client: %s",
+				   CORBA_exception_id (&ev));
 		}
 		CORBA_exception_free (&ev);
 		
