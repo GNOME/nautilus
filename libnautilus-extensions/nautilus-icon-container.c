@@ -1992,6 +1992,7 @@ key_press_event (GtkWidget *widget,
 	gboolean handled;
 	gboolean flush_typeahead;
 
+
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	handled = FALSE;
 	flush_typeahead = TRUE;
@@ -2000,59 +2001,65 @@ key_press_event (GtkWidget *widget,
 	nautilus_icon_dnd_update_drop_action (widget);
 
 
-
-	switch (event->keyval) {
-	case GDK_Home:
-		keyboard_home (container, event);
-		handled = TRUE;
-		break;
-	case GDK_End:
-		keyboard_end (container, event);
-		handled = TRUE;
-		break;
-	case GDK_Left:
-		keyboard_left (container, event);
-		handled = TRUE;
-		break;
-	case GDK_Up:
-		keyboard_up (container, event);
-		handled = TRUE;
-		break;
-	case GDK_Right:
-		keyboard_right (container, event);
-		handled = TRUE;
-		break;
-	case GDK_Down:
-		keyboard_down (container, event);
-		handled = TRUE;
-		break;
-	case GDK_space:
-		keyboard_space (container, event);
-		handled = TRUE;
-		break;
-	case GDK_Tab:
-	case GDK_ISO_Left_Tab:
-		select_previous_or_next_name (container, 
-					      (event->state & GDK_SHIFT_MASK) == 0, event);
-		handled = TRUE;
-		break;
-	case GDK_Return:
-		if (container->details->renaming) {
-			end_renaming_mode (container, TRUE);	
-		} else {
-			activate_selected_items (container);
+	if (nautilus_icon_container_is_renaming (container)) {
+		switch (event->keyval) {
+		case GDK_Escape:
+			end_renaming_mode (container, FALSE);
+			handled = TRUE;
+			break;
+		default:
+			break;
 		}
-		handled = TRUE;
-		break;
-	case GDK_Escape:
-		end_renaming_mode (container, FALSE);
-		handled = TRUE;
-		break;
-	default:
-		handled = nautilus_icon_container_handle_typeahead (container, 
-								    event->string);
-		flush_typeahead = !handled;
-		break;
+	} else {
+		switch (event->keyval) {
+		case GDK_Home:
+			keyboard_home (container, event);
+			handled = TRUE;
+			break;
+		case GDK_End:
+			keyboard_end (container, event);
+			handled = TRUE;
+			break;
+		case GDK_Left:
+			keyboard_left (container, event);
+			handled = TRUE;
+			break;
+		case GDK_Up:
+			keyboard_up (container, event);
+			handled = TRUE;
+			break;
+		case GDK_Right:
+			keyboard_right (container, event);
+			handled = TRUE;
+			break;
+		case GDK_Down:
+			keyboard_down (container, event);
+			handled = TRUE;
+			break;
+		case GDK_space:
+			keyboard_space (container, event);
+			handled = TRUE;
+			break;
+		case GDK_Tab:
+		case GDK_ISO_Left_Tab:
+			select_previous_or_next_name (container, 
+						      (event->state & GDK_SHIFT_MASK) == 0, event);
+			handled = TRUE;
+			break;
+		case GDK_Return:
+			if (container->details->renaming) {
+				end_renaming_mode (container, TRUE);	
+			} else {
+				activate_selected_items (container);
+			}
+			handled = TRUE;
+			break;
+		default:
+			handled = nautilus_icon_container_handle_typeahead (container, 
+									    event->string);
+			flush_typeahead = !handled;
+			break;
+		}
 	}
 
 	if (flush_typeahead) {

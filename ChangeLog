@@ -1,3 +1,12 @@
+2000-05-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(key_press_event):
+	Fixed bug introduced by Pavel's new super cool keyboard icon
+	selection feature.  An icon in renaming mode no longer received
+	keyboard events.  A check is now made to see if the icon container
+	is in renaming mode before processing event for icon selection.
+
 2000-05-08  Maciej Stachowiak  <mjs@eazel.com>
 
 	Fixed merging of explicitly specified components. Now the name is
