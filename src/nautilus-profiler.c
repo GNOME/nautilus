@@ -182,7 +182,7 @@ dump_dialog_new (const char *title)
 	dump_dialog = g_new (DumpDialog, 1);
 	
 	dump_dialog->window = gtk_window_new (GTK_WINDOW_DIALOG);
-	nautilus_gtk_extensions_set_up_close_accelerator 
+	nautilus_gtk_window_set_up_close_accelerator 
 		(GTK_WINDOW (dump_dialog->window));
 	gtk_signal_connect (GTK_OBJECT (dump_dialog->window),
 			    "delete_event", 

@@ -1,3 +1,12 @@
+2000-12-13  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	* src/nautilus-profiler.c (dump_dialog_new): Replace call to the
+	obsolete `nautilus_gtk_extensions_set_up_close_accelerator' with a
+	call to `nautilus_gtk_window_set_up_close_accelerator', so the
+	profile build works.
+
 2000-12-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-title.c:
