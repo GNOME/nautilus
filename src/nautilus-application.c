@@ -64,8 +64,6 @@
 #include <liboaf/liboaf.h>
 
 #define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
-#define ICON_VIEW_IID	     "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
-#define LIST_VIEW_IID	     "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
 #define SEARCH_LIST_VIEW_IID "OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b"
 #define SHELL_IID	     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
 
@@ -115,9 +113,9 @@ manufactures (PortableServer_Servant servant,
 	      const CORBA_char *iid,
 	      CORBA_Environment *ev)
 {
-	return strcmp (iid, ICON_VIEW_IID) == 0
+	return strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0
 		|| strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0
-		|| strcmp (iid, LIST_VIEW_IID) == 0
+		|| strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0
 		|| strcmp (iid, SEARCH_LIST_VIEW_IID) == 0
 		|| strcmp (iid, SHELL_IID) == 0
 		|| strcmp (iid, METAFILE_FACTORY_IID) == 0;
@@ -133,13 +131,13 @@ create_object (PortableServer_Servant servant,
 	FMDirectoryView *directory_view;
 	NautilusApplication *application;
 
-	if (strcmp (iid, ICON_VIEW_IID) == 0) {
+	if (strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_desktop_icon_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-	} else if (strcmp (iid, LIST_VIEW_IID) == 0) {
+	} else if (strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, SEARCH_LIST_VIEW_IID) == 0) {
@@ -336,37 +334,6 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	return uri_list;
 }
 
-/* This is a bit of a hack to make the Preferences dialog version of the List View/Icon View
- * default choice work with the gnome-vfs-based mechanism for choosing a handler for a MIME type.
- */
-static void
-default_folder_viewer_changed_callback (gpointer callback_data)
-{
-	int preference_value;
-	const char *viewer_iid;
-
-	g_assert (callback_data == NULL);
-
-	preference_value = 
-		nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
-
-	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
-		viewer_iid = LIST_VIEW_IID;
-	} else {
-		g_return_if_fail (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
-		viewer_iid = ICON_VIEW_IID;
-	}
-
-	gnome_vfs_mime_set_default_action_type ("x-directory/normal", GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
-	gnome_vfs_mime_set_default_component ("x-directory/normal", viewer_iid);
-
-	/* FIXME bugzilla.eazel.com 8024: 
-	 * when preference changes, we tell gnome-vfs. But if gnome-vfs value changes
-	 * some other way, preferences mechanism isn't told, so value displayed in
-	 * preferences dialog might be incorrect.
-	 */
-}
-
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
@@ -538,11 +505,6 @@ nautilus_application_startup (NautilusApplication *application,
 							       desktop_location_changed_callback,
 							       NULL,
 							       GTK_OBJECT (application));
-
-		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
-						   	       default_folder_viewer_changed_callback, 
-						   	       NULL,
-						   	       GTK_OBJECT (application));
 
 		/* CORBA C mapping doesn't allow NULL to be passed
 		   for string parameters */

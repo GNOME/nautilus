@@ -28,6 +28,7 @@
 
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
+#include "nautilus-global-preferences.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 #include <eel/eel-stock-dialogs.h>
@@ -897,7 +898,11 @@ set_default_for_type (ProgramFilePair *pair)
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 		gnome_vfs_mime_set_default_application (mime_type, pair->application->id);
 	} else {
-		gnome_vfs_mime_set_default_component (mime_type, pair->view_identifier->iid);
+		if (g_strcasecmp (mime_type, "x-directory/normal") == 0) {
+			nautilus_global_preferences_set_default_folder_viewer (pair->view_identifier->iid);
+		} else {
+			gnome_vfs_mime_set_default_component (mime_type, pair->view_identifier->iid);
+		}
 	}
 
 	gnome_vfs_mime_set_default_action_type (mime_type, pair->action_type);

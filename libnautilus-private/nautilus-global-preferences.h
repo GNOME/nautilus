@@ -103,8 +103,14 @@ BEGIN_GNOME_DECLS
 enum
 {
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW,
-	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW
+	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW,
+	NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER
 };
+
+/* These IIDs are used by the preferences code and in nautilus-application.c */
+#define NAUTILUS_ICON_VIEW_IID	     "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
+#define NAUTILUS_LIST_VIEW_IID	     "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
+
 
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon-view/default_sort_in_reverse_order"
@@ -173,6 +179,9 @@ void                    nautilus_global_preferences_initialize                  
 struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font    (void);
 struct EelScalableFont *nautilus_global_preferences_get_default_smooth_font      (void);
 struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font (void);
+
+void   nautilus_global_preferences_set_default_folder_viewer 			 (const char *iid);
+
 
 END_GNOME_DECLS
 

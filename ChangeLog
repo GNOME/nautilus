@@ -1,3 +1,49 @@
+2001-04-23  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 8024 (Default folder viewer chosen from "View As..."
+	window is not reflected in Preferences dialog)
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Put iids for Icon and List view here since they must be accessed
+	from multiple places now. Add NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER
+	enum case. Add prototype for 
+	nautilus_global_preferences_set_default_folder_viewer.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(get_default_folder_viewer_preference_from_iid): New helper function,
+	returns appropriate NAUTILUS_DEFAULT_FOLDER_VIEWER preference value
+	based on folder-viewing iid.
+	(default_default_folder_viewer_callback): New function to determine
+	default value of NAUTILUS_DEFAULT_FOLDER_VIEWER preference; uses
+	gnome_vfs_mime (name is not a typo).
+	(set_default_folder_viewer_in_gnome_vfs): New function,
+	updates gnome-vfs mime database properly for new folder-viewing iid.
+	(default_folder_viewer_changed_callback): New function, reacts
+	to change in NAUTILUS_DEFAULT_FOLDER_VIEWER preference by updating
+	gnome-vfs mime database (moved here from nautilus-application.c).
+	(nautilus_global_preferences_set_default_folder_viewer): New public
+	function to set the default folder viewer with an iid; handles setting
+	both gnome-vfs and gconf's values.
+	(nautilus_global_preferences_initialize): Add callback for when
+	default folder viewer changes (moved here from nautilus-application.c).
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(set_default_for_type): Special-case folder viewer to call
+	nautilus_global_preferences_set_default_folder_viewer.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml: Changed
+	"Reset to View Preferences" to "Reset View to Match Preferences".
+	It's really long, but the former was very unclear. Improvements
+	to wording are hereby solicited.
+	
+	* src/nautilus-application.c: (manufactures), (create_object),
+	(default_folder_viewer_changed_callback): Updated for #define
+	name changes.
+	(nautilus_application_startup): Moved code that reacted to
+	default folder viewer preference to nautilus-global-preferences.c.
+
 2001-04-23  John Harper  <jsh@eazel.com>
 
 	* nautilus-clean.sh: added `nautilus-news' to list of auxiliary

@@ -39,6 +39,7 @@
 #include <eel/eel-string.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 /* Constants */
@@ -53,6 +54,7 @@ static void     global_preferences_register_enumerations (void);
 static gpointer default_font_callback                    (int  user_level);
 static gpointer default_smooth_font_callback             (int  user_level);
 static gpointer default_home_location_callback           (int  user_level);
+static gpointer default_default_folder_viewer_callback	 (int  user_level);
 
 static const char *default_smooth_font_auto_value;
 static const char *icon_view_smooth_font_auto_value;
@@ -545,7 +547,7 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW) },
+	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_default_folder_viewer_callback, NULL },
 	  { USER_LEVEL_NONE },
 	  "default_folder_viewer"
 	},
@@ -801,6 +803,38 @@ default_smooth_font_callback (int user_level)
 	return eel_font_manager_get_default_font ();
 }
 
+static int
+get_default_folder_viewer_preference_from_iid (const char *iid)
+{
+	g_return_val_if_fail (iid != NULL, NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
+
+	if (strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0) {
+		return NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW;
+	} else if (strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0) {
+		return NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
+	}
+
+	return NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER;
+}
+
+static gpointer
+default_default_folder_viewer_callback (int user_level)
+{
+	OAF_ServerInfo *oaf_info;
+	int result;
+
+	oaf_info = gnome_vfs_mime_get_default_component ("x-directory/normal");
+	g_return_val_if_fail (oaf_info != NULL, NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
+
+	result = get_default_folder_viewer_preference_from_iid (oaf_info->iid);
+	if (result == NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER) {
+		result = NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
+	}
+	CORBA_free (oaf_info);
+
+	return GINT_TO_POINTER (result);
+}
+
 static gpointer
 default_home_location_callback (int user_level)
 {
@@ -909,6 +943,55 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 	eel_smooth_widget_global_set_is_smooth (is_smooth);
 }
 
+static void
+set_default_folder_viewer_in_gnome_vfs (const char *iid)
+{
+	gnome_vfs_mime_set_default_action_type ("x-directory/normal", GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+	gnome_vfs_mime_set_default_component ("x-directory/normal", iid);
+}
+
+/* Convert between gnome-vfs and gconf ways of storing this information. */
+static void
+default_folder_viewer_changed_callback (gpointer callback_data)
+{
+	int preference_value;
+	const char *viewer_iid;
+
+	g_assert (callback_data == NULL);
+
+	preference_value = 
+		nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+
+	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
+		viewer_iid = NAUTILUS_LIST_VIEW_IID;
+	} else {
+		g_return_if_fail (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
+		viewer_iid = NAUTILUS_ICON_VIEW_IID;
+	}
+
+	set_default_folder_viewer_in_gnome_vfs (viewer_iid);
+}
+
+void
+nautilus_global_preferences_set_default_folder_viewer (const char *iid)
+{
+	int viewer_preference;
+
+	set_default_folder_viewer_in_gnome_vfs (iid);
+
+	viewer_preference = get_default_folder_viewer_preference_from_iid (iid);
+
+	/* If viewer is set to one that the Preferences dialog doesn't know about,
+	 * just change the underlying gnome-vfs setting but leave the Preferences dialog alone.
+	 */
+	if (viewer_preference == NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER) {
+		return;		
+	}
+	
+	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+					  viewer_preference);
+}
+
 void
 nautilus_global_preferences_initialize (void)
 {
@@ -938,6 +1021,10 @@ nautilus_global_preferences_initialize (void)
 
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
 					   smooth_graphics_mode_changed_callback, 
+					   NULL);
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
+					   default_folder_viewer_changed_callback, 
 					   NULL);
 
 	/* Keep track of smooth graphics mode changes in order to notify the smooth
