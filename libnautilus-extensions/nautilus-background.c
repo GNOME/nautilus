@@ -229,8 +229,8 @@ nautilus_background_draw (NautilusBackground *background,
 	gboolean horizontal_gradient;
 	gboolean image_totally_obscures;
 
-	/* FIXME combo mode only works with tiled images. If we decide we want combo mode to work
-	 * more generally, this needs to be fixed.
+	/* FIXME bugzilla.eazel.com 2189: combine mode only works with tiled images. If we decide we want
+	 * combo mode to work more generally, this needs to be fixed.
 	 */
 	if (background->details->combine_mode) {
 		/* allocate a pixbuf the size of the rectangle */

@@ -1,5 +1,15 @@
 2000-08-16  Michael Engber  <engber@eazel.com>
 
+	Added bug numbers to some FIXME's and a new
+	FIXME (and placeholder handling) for our lack
+	of emboss support in background (bug 2193)
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_read_desktop_settings):
+
+2000-08-16  Michael Engber  <engber@eazel.com>
+
 	Cleanup some of my desktop changes (better names) (bug 1047)
 	Fix nautilus_background_get_image_placement, it was returning
 	the wrong value (copy/paste error). Lay some ground work

@@ -98,7 +98,10 @@ theme_image_path_to_uri (char *image_file)
 	return image_uri;
 }
 
-/* FIXME combine mode (image over gradient) does not work for the GNOME desktop.
+/* FIXME bugzilla.eazel.com 2190: combine mode (image over gradient) does not work for the
+ * GNOME desktop. Two things to address are supporting it in the background capplet and
+ * in whatever code initializes the desktop.
+ * 
  * None of our themes currently specify this for the desktop.
  */
  
@@ -184,11 +187,17 @@ nautilus_directory_background_read_desktop_settings (char **color,
 		*placement = default_placement;
 	} else {
 		 switch (image_alignment) {
-			case WALLPAPER_TILED:
-				*placement = NAUTILUS_BACKGROUND_TILED;
-				break;
+		 	default:
+		 		g_assert_not_reached ();
+			case WALLPAPER_EMBOSSED:
+				/* FIXME bugzilla.eazel.com 2193: we don't support embossing.
+				 * Just treat it as centered - ugh.
+				 */
 			case WALLPAPER_CENTERED:
 				*placement = NAUTILUS_BACKGROUND_CENTERED;
+				break;
+			case WALLPAPER_TILED:
+				*placement = NAUTILUS_BACKGROUND_TILED;
 				break;
 			case WALLPAPER_SCALED:
 				*placement = NAUTILUS_BACKGROUND_SCALED;
