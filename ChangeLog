@@ -1,3 +1,42 @@
+2001-02-21  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Mike Fleming  <mfleming@eazel.com>
+
+	The old help tree, "user-guide/*", was broken in several ways.
+	It assumed there was only one doc, called "user-guide", whereas
+	we have multiple docs.  Plus it had odd subdirectories which
+	are unusual and we don't want to use.  Plus the convention is
+	to put all docs in a directory called "help" (modelled after
+	$prefix/gnome/help) and figures in a subdir called "figures".
+	So, I'm creating a new tree for this called "help" and installing
+	the latest version of Vera's Nautilus User Manual with
+	screenshots.  I also added a nifty makefile, help/docs.make,
+	which we will use for all the SGML docs and translations
+	to keep things tidy and working with low maintenance.
+
+	* Makefile.am: Including help/
+	* configure.in: Including help/ and subdirs
+	* help/Makefile.am: added
+	* help/docs.make: added nifty makefile to be used by all
+	  SGML docs and translations of SGML docs
+	* help/nautilus-user-manual/C/Makefile.am: added
+	* help/nautilus-user-manual/C/figures/custicon.png: added
+	* help/nautilus-user-manual/C/figures/full.png: added
+	* help/nautilus-user-manual/C/figures/link.png: added
+	* help/nautilus-user-manual/C/figures/locbar.png: added
+	* help/nautilus-user-manual/C/figures/noread.png: added
+	* help/nautilus-user-manual/C/figures/nowrite.png: added
+	* help/nautilus-user-manual/C/figures/part.png: added
+	* help/nautilus-user-manual/C/figures/player.png: added
+	* help/nautilus-user-manual/C/figures/prefmenu.png: added
+	* help/nautilus-user-manual/C/figures/sidebar.png: added
+	* help/nautilus-user-manual/C/figures/viewmenu.png: added
+	* help/nautilus-user-manual/C/figures/viewmusic.png: added 
+	* help/nautilus-user-manual/C/nautilus-user-manual-C.omf: added
+	* help/nautilus-user-manual/C/nautilus-user-manual.sgml: added
+	* help/nautilus-user-manual/Makefile.am: added
+	* user-guide/Makefile.am: turned off old user guide installation
+
 2001-02-21  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/callbacks.c:

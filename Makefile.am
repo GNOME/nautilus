@@ -26,6 +26,7 @@ SUBDIRS =			\
 	nautilus-installer	\
 	test 			\
 	user-guide		\
+	help			\
 	po 			\
 	omf-install		\
 	$(NULL)
