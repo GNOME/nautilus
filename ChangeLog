@@ -1,3 +1,25 @@
+2000-08-17  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-image.c: (ensure_buffer_size),
+	(nautilus_gdk_pixbuf_render_to_drawable):
+	made it respect the alpha channel for ordinary images by making
+	the buffer use an alpha channel and rending with an alpha channel if
+	present.
+	
+	* src/nautilus-application.c: (need_to_show_first_time_druid):
+	removed the code that set the first time flag here, since it
+	shouldn't be set until the user has gone all the way through the
+	druid.
+	
+	* src/nautilus-first-time-druid.c:
+	(druid_set_first_time_file_flag), (druid_finished),
+	(update_selection_changed), (set_up_update_page),
+	(set_up_update_feedback_page), (next_update_page_callback),
+	(finish_page_back_callback), (nautilus_first_time_druid_show):
+	started to add the "welcome package" service download to the
+	druid, which I'll finish soon.  Also, set the first time flag
+	at the end of the druid and other clean-ups.
+	
 2000-08-17  Darin Adler  <darin@eazel.com>
 
 	* components/tree/nautilus-tree-model.c:

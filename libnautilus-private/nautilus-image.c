@@ -726,7 +726,7 @@ ensure_buffer_size (NautilusImage	*image,
 	if (old_width < new_width || old_height < new_height) {
 		GdkPixbuf *new_pixbuf = NULL;
 
-		new_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, new_width, new_height);
+		new_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, new_width, new_height);
 		
 		if (image->detail->buffer) {
 			gdk_pixbuf_unref (image->detail->buffer);
@@ -809,7 +809,23 @@ nautilus_gdk_pixbuf_render_to_drawable (const GdkPixbuf		*pixbuf,
 		dst.height -= (end.y - gdk_pixbuf_get_height (pixbuf));
 	}
 
-	gdk_pixbuf_render_to_drawable ((GdkPixbuf *) pixbuf,
+	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
+		gdk_pixbuf_render_to_drawable_alpha ((GdkPixbuf *) pixbuf,
+				       drawable,
+				       src.x,
+				       src.y,
+				       dst.x,
+				       dst.y,
+				       dst.width,
+				       dst.height,
+				       GDK_PIXBUF_ALPHA_FULL,
+				       128,
+				       dither,
+				       0,
+				       0);
+
+	} else {
+		gdk_pixbuf_render_to_drawable ((GdkPixbuf *) pixbuf,
 				       drawable,
 				       gc,
 				       src.x,
@@ -821,6 +837,7 @@ nautilus_gdk_pixbuf_render_to_drawable (const GdkPixbuf		*pixbuf,
 				       dither,
 				       0,
 				       0);
+	}
 }
 
 static void

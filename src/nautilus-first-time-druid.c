@@ -52,7 +52,12 @@
 static NautilusApplication *save_application;
 static gboolean save_manage_desktop;
 
+static GtkWidget *start_page;
+static GtkWidget *finish_page;
+static GtkWidget *pages[4];
+
 static int last_signup_choice = 0;
+static int last_update_choice = 0;
 
 static void
 druid_cancel (GtkWidget *druid)
@@ -62,6 +67,33 @@ druid_cancel (GtkWidget *druid)
 }
 
 /* handle the final page finishing  */
+
+static void
+druid_set_first_time_file_flag (void)
+{
+	FILE *stream;
+	char *user_directory, *druid_flag_file_name;
+	
+	user_directory = nautilus_get_user_directory ();
+	druid_flag_file_name = g_strdup_printf ("%s/%s",
+						user_directory,
+						"first-time-wizard-flag");
+	g_free (user_directory);
+
+		
+	stream = fopen (druid_flag_file_name, "w");
+	if (stream) {
+		const char *blurb =
+			_("Existence of this file indicates that the Nautilus configuration wizard\n"
+				"has been presented.\n\n"
+				"You can manually erase this file to present the wizard again.\n\n");
+			
+			fwrite (blurb, sizeof (char), strlen (blurb), stream);
+			fclose (stream);
+	}
+	
+	g_free (druid_flag_file_name);
+}
 
 static void
 druid_finished (GtkWidget *druid_page)
@@ -82,6 +114,9 @@ druid_finished (GtkWidget *druid_page)
 	}
 	g_free (user_main_directory);
 
+	/* write out the first time file to indicate that we've successfully traversed the druid */
+	druid_set_first_time_file_flag ();
+	
 	switch (last_signup_choice) {
 		case 0:
 			signup_uris[0] = "eazel:registerinfo";
@@ -135,6 +170,15 @@ signup_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 
 	last_signup_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
 }
+
+static void
+update_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
+{
+
+	last_update_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
+}
+
+
 
 static GdkPixbuf*
 create_named_pixbuf (const char *name) 
@@ -262,6 +306,105 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 
 }
 
+/* set up the "Nautilus Update" page */
+static void
+set_up_update_page (NautilusDruidPageStandard *page)
+{
+	GtkWidget *radio_buttons, *frame, *label;
+	GtkWidget *container, *main_box;
+
+	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
+
+	/* allocate a vbox to hold the description and the widgets */
+	main_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (main_box);
+	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	/* allocate a descriptive label */
+	label = gtk_label_new (_("Nautilus will now contact Eazel services to verify your web connection and download the latest updates.  Click the Next button to continue."));
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+	
+	frame = gtk_frame_new (_("Updating Nautilus"));
+	gtk_widget_show (frame);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
+
+	radio_buttons = nautilus_radio_button_group_new (FALSE);
+	gtk_container_add (GTK_CONTAINER (frame),
+					radio_buttons);
+
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Yes, verify my web connection and update Nautilus now."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No, I do not wish to verify my web connect and update Nautilus now."));	
+
+	gtk_signal_connect (GTK_OBJECT (radio_buttons),
+			    "changed",
+			    GTK_SIGNAL_FUNC (update_selection_changed),
+			    (gpointer) NULL);
+
+	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
+	gtk_widget_show (radio_buttons);
+
+}
+
+/* set up the update feedback page */
+static void
+set_up_update_feedback_page (NautilusDruidPageStandard *page)
+{
+	GtkWidget *frame, *label;
+	GtkWidget *container, *main_box;
+	
+	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
+
+	/* allocate a vbox to hold the description and the widgets */
+	main_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (main_box);
+	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	/* allocate a descriptive label */
+	label = gtk_label_new (_("We are now contacting the Eazel service to verify your web connection and update Nautilus.  We will advance to the next page automatically when updating is complete."));
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+		
+	frame = gtk_frame_new (_("Nautilus Update Progress"));
+	gtk_widget_show (frame);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
+	
+	label = gtk_label_new (_("This is a placeholder - the real thing is coming soon"));
+	gtk_widget_show (label);
+	gtk_container_add (GTK_CONTAINER (frame), label);
+	
+	/* allocate update progess widgets */
+	
+	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
+}
+
+/* handle the "next" signal for the update page based on the user's choice */
+static gboolean
+next_update_page_callback (GtkWidget *button, NautilusDruid *druid)
+{
+	if (last_update_choice == 0) {
+		/* initiate the file transfer and launch a timer task to track feedback */
+		/* return FALSE to display the feedback page */
+		return FALSE;
+	}
+
+	/* the user declined to update, so skip the feedback page and go directly to finish */
+	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));
+	return TRUE;
+}
+
+/* handle the "back" signal from the finish page to skip the feedback page */
+static gboolean
+finish_page_back_callback (GtkWidget *button, NautilusDruid *druid)
+{
+	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[2]));
+	return TRUE;
+}
+
 /* create the initial preferences druid */
 
 GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
@@ -270,11 +413,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	GtkWidget *dialog;
 	GtkWidget *druid;
 
-	GtkWidget *start_page;
-	GtkWidget *finish_page;
-
-	GtkWidget *pages[2];
-	/* GdkPixbuf *logo; */
+	GdkPixbuf *logo;
 
 	/* remember parameters for later window invocation */
 	save_application = application;
@@ -292,6 +431,8 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 
 	pages[0] = nautilus_druid_page_standard_new ();
 	pages[1] = nautilus_druid_page_standard_new ();
+	pages[2] = nautilus_druid_page_standard_new ();
+	pages[3] = nautilus_druid_page_standard_new ();
 		
 	/* set up the initial page */
 	nautilus_druid_page_start_set_title (NAUTILUS_DRUID_PAGE_START (start_page), _("Welcome to Nautilus!"));
@@ -302,32 +443,53 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	nautilus_druid_page_finish_set_text (NAUTILUS_DRUID_PAGE_FINISH(finish_page), _("Click to finish button to launch Nautilus.\n\nWe hope that you enjoying using it!"));
 
 	/* set up the user level page */
-	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), "Select A User Level");
-	set_up_user_level_page(NAUTILUS_DRUID_PAGE_STANDARD (pages[0]));
+	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), _("Select A User Level"));
+	set_up_user_level_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]));
 				
 	/* set up the service sign-up page */
-	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), "Sign Up for Eazel Services");
-	set_up_service_signup_page(NAUTILUS_DRUID_PAGE_STANDARD (pages[1]));
+	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), _("Sign Up for Eazel Services"));
+	set_up_service_signup_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]));
 
+	/* set up the update page */
+	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[2]), _("Nautilus Update"));
+	set_up_update_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[2]));
+
+	gtk_signal_connect (GTK_OBJECT (pages[2]), "next",
+			    GTK_SIGNAL_FUNC (next_update_page_callback),
+			    druid);
+
+	/* set up the update feedback page */
+	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[3]), _("Updating Nautilus..."));
+	set_up_update_feedback_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[3]));
+
+	/* capture the "back" signal from the finish page to skip the feedback page */
+	gtk_signal_connect (GTK_OBJECT (finish_page), "back",
+			    GTK_SIGNAL_FUNC (finish_page_back_callback),
+			    druid);
+	
 	/* append all of the pages to the druid */
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (start_page));
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[0]));
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[1]));
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[2]));
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[3]));
+	
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (finish_page));
 
 	/* set up the logo images */	
 
-	/*
 	logo = create_named_pixbuf ("nautilus-logo.png");
 	g_assert (logo != NULL);
 	
-	nautilus_druid_page_start_set_logo (NAUTILUS_DRUID_PAGE_START (start_page), logo);
-
-	nautilus_druid_page_finish_set_logo (NAUTILUS_DRUID_PAGE_FINISH (finish_page), logo);
+	/*
+	nautilus_druid_page_start_set_logo (NAUTILUS_DRUID_PAGE_START (start_page), logo);	
 	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), logo);
+	nautilus_druid_page_finish_set_logo (NAUTILUS_DRUID_PAGE_FINISH (finish_page), logo);
 	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), logo);
 	*/
-	
+
+	gdk_pixbuf_unref (logo);
+		
   	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
   			    druid,
   			    TRUE,
@@ -343,14 +505,6 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
                       NULL);
 
 	gtk_widget_show_all (druid);
-
-	/* Im commenting out this call cause it makes the druid unusable for me and 
-	 * thus any new users of nautilus that use large fonts as i do.
-	 * Perhaps we need a better way to control the druid geometry.  We can
-	 * file specific bugs for that --ramiro
-	 */
-
-	/* gtk_widget_set_usize (druid, 400, 320); */
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 	return druid;

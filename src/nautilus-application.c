@@ -579,30 +579,7 @@ need_to_show_first_time_druid (void)
 						"first-time-wizard-flag");
 	g_free (user_directory);
 
-	result = !g_file_exists (druid_flag_file_name);
-
-	/* Touch the file so that next time around out states changes */
-	if (result) {
-		FILE *stream;
-		
-		stream = fopen (druid_flag_file_name, "w");
-
-		/* If for some crazy reason we cant touch the file,
-		 * then the worst that will happen is that the user
-		 * will get the startup druid again next time, so we
-		 * dont report this failure to the user.
-		 */
-		if (stream) {
-			const char *blurb =
-				_("Existence of this file indicates that the Nautilus configuration wizard\n"
-				  "has been presented.\n\n"
-				  "You can manually erase this file to present the wizard again.\n\n");
-			
-			fwrite (blurb, sizeof (char), strlen (blurb), stream);
-			fclose (stream);
-		}
-	}
-	
+	result = !g_file_exists (druid_flag_file_name);	
 	g_free (druid_flag_file_name);
 
 	return result;
