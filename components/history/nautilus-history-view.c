@@ -28,7 +28,10 @@
 #include "config.h"
 
 #include <libnautilus/libnautilus.h>
+#include <libnautilus/nautilus-bookmark.h>
+#include <libnautilus/nautilus-icon-factory.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 #include <libgnorba/gnorba.h>
 
 typedef struct {
@@ -41,14 +44,51 @@ typedef struct {
   BonoboUIHandler *uih;
 } HistoryView;
 
+#define HISTORY_VIEW_COLUMN_ICON	0
+#define HISTORY_VIEW_COLUMN_NAME	1
+#define HISTORY_VIEW_COLUMN_COUNT	2
+
+static const char *
+get_uri_from_row (GtkCList *clist, int row)
+{
+  NautilusBookmark *bookmark;
+  
+  g_assert (NAUTILUS_IS_BOOKMARK (gtk_clist_get_row_data (clist, row)));
+  bookmark = NAUTILUS_BOOKMARK (gtk_clist_get_row_data (clist, row));
+  return nautilus_bookmark_get_uri (bookmark);
+}
+
+
+static void
+install_icon (GtkCList *clist, const NautilusBookmark *bookmark, gint row)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *bitmap;
+
+	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
+		  				    NAUTILUS_ICON_SIZE_SMALLER,
+						    &pixmap,
+						    &bitmap))
+	{
+		return;
+	}
+
+	gtk_clist_set_pixmap (clist,	
+			      row,
+			      HISTORY_VIEW_COLUMN_ICON,
+			      pixmap,
+			      bitmap);
+}
+
 static void
 hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
 						     Nautilus_NavigationInfo *loci,
 						     HistoryView *hview)
 {
-  char *cols[2];
+  char *cols[HISTORY_VIEW_COLUMN_COUNT];
   int new_rownum;
   GtkCList *clist;
+  NautilusBookmark *bookmark;
 
   hview->notify_count++;
 
@@ -56,7 +96,7 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
 
   if(hview->last_row >= 0)
     {
-      char *uri;
+      const char *uri;
       int i, j;
 
       /* If we are moving 'forward' in history, must either just
@@ -68,7 +108,19 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
 	  if((hview->last_row + i) < 0)
 	    continue;
 
-	  gtk_clist_get_text(clist, hview->last_row + i, 0, &uri);
+	  /* FIXME: This is checking for back/reload/forward, by checking
+	   * "nearby" uris in the list. This isn't really correct (it doesn't
+	   * distinguish using the back/forward UI from coincidentally revisiting
+	   * one of those pages, like web browsers do). It also doesn't handle
+	   * cases where the user went to an arbitrary item in the back or
+	   * forward list. That information is not currently being passed around,
+	   * but will need to be to get the exact right behavior.
+	   */
+	   
+	  if (hview->last_row + i >= clist->rows)
+	    continue;
+	  
+	  uri = get_uri_from_row (clist, hview->last_row + i);
 	  if(!strcmp(uri, loci->requested_uri))
 	    {
 	      hview->last_row = new_rownum = hview->last_row + i;
@@ -80,9 +132,19 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
 	gtk_clist_remove(clist, 0);
     }
 
+  bookmark = nautilus_bookmark_new (loci->requested_uri, loci->requested_uri);
+
   gtk_clist_freeze(clist);
-  cols[0] = (char *)loci->requested_uri;
+  cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
+  /* Ugh. Gotta cast away the const */
+  cols[HISTORY_VIEW_COLUMN_NAME] = (char *)nautilus_bookmark_get_name (bookmark);
   hview->last_row = new_rownum = gtk_clist_prepend(clist, cols);
+  gtk_clist_set_row_data_full (clist,
+  			       new_rownum,
+  			       bookmark,
+  			       (GtkDestroyNotify)gtk_object_unref);
+  install_icon (clist, bookmark, new_rownum);
+
 
  skip_prepend:
   gtk_clist_columns_autosize(clist);
@@ -116,7 +178,8 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   if(gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL)
     gtk_clist_moveto(clist, row, -1, 0.5, 0.0);
 
-  gtk_clist_get_text(clist, row, 0, &reqi.requested_uri);
+  /* FIXME: gotta cast away const because requested_uri isn't defined correctly */
+  reqi.requested_uri = (char *)get_uri_from_row (clist, row);
 
   reqi.new_window_default = reqi.new_window_suggested = Nautilus_V_FALSE;
   reqi.new_window_enforced = Nautilus_V_FALSE;
@@ -156,9 +219,9 @@ menu_setup(BonoboObject *ctl, HistoryView *hview)
 
 static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  GtkWidget *frame, *clist, *wtmp;
+  GtkWidget *frame, *wtmp;
+  GtkCList *clist;
   BonoboObject *ctl;
-  char *col_titles[1];
   HistoryView *hview;
 
   g_return_val_if_fail(!strcmp(goad_id, "ntl_history_view"), NULL);
@@ -179,17 +242,18 @@ static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_i
                                      _("History"));
 
   /* create interface */
-  col_titles[0] = _("Path");
-  clist = gtk_clist_new_with_titles(1, col_titles);
-  gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_BROWSE);
-  gtk_clist_columns_autosize(GTK_CLIST(clist));
-  wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(GTK_CLIST(clist)),
-				 gtk_clist_get_vadjustment(GTK_CLIST(clist)));
+  clist = GTK_CLIST (gtk_clist_new (HISTORY_VIEW_COLUMN_COUNT));
+  gtk_clist_column_titles_hide (clist);
+  gtk_clist_set_row_height (clist, NAUTILUS_ICON_SIZE_SMALLER);
+  gtk_clist_set_selection_mode(clist, GTK_SELECTION_BROWSE);
+  gtk_clist_columns_autosize(clist);
+  wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(clist),
+				 gtk_clist_get_vadjustment(clist));
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp),
 				 GTK_POLICY_AUTOMATIC,
 				 GTK_POLICY_AUTOMATIC);
   gtk_container_add(GTK_CONTAINER(frame), wtmp);
-  gtk_container_add(GTK_CONTAINER(wtmp), clist);
+  gtk_container_add(GTK_CONTAINER(wtmp), GTK_WIDGET (clist));
 
   gtk_widget_show_all(frame);
   
@@ -213,6 +277,7 @@ int main(int argc, char *argv[])
   orb = gnome_CORBA_init_with_popt_table("ntl-history-view", VERSION, &argc, argv, NULL, 0, NULL,
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+  gnome_vfs_init ();
 
   factory = bonobo_generic_factory_new_multi("ntl_history_view_factory", make_obj, NULL);
 
