@@ -69,6 +69,12 @@
 #define SEARCH_LIST_VIEW_IID "OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b"
 #define SHELL_IID	     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
 
+/* Keeps track of the one and only desktop window. */
+static NautilusDesktopWindow *nautilus_application_desktop_window;
+
+/* Keeps track of all the nautilus windows. */
+static GList *nautilus_application_window_list;
+
 static CORBA_boolean manufactures                          (PortableServer_Servant    servant,
 							    const CORBA_char         *iid,
 							    CORBA_Environment        *ev);
@@ -163,12 +169,6 @@ create_factory (PortableServer_POA poa,
 	POA_GNOME_ObjectFactory__init ((PortableServer_Servant) servant, ev);
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
-
-/* Keeps track of the one and only desktop window. */
-static NautilusDesktopWindow *nautilus_application_desktop_window;
-
-/* Keeps track of all the nautilus windows. */
-static GList *nautilus_application_window_list;
 
 GList *
 nautilus_application_get_window_list (void)
@@ -536,7 +536,7 @@ nautilus_application_startup (NautilusApplication *application,
 		/* point to the Unix home folder */
 		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 							       desktop_location_changed_callback,
-							       nautilus_application_desktop_window,
+							       NULL,
 							       GTK_OBJECT (application));
 
 		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
@@ -599,7 +599,7 @@ nautilus_application_close_desktop (void)
 	if (nautilus_application_desktop_window != NULL) {
 		gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop_window));
 		nautilus_application_desktop_window = NULL;
-	}	
+	}
 }
 
 void
@@ -692,12 +692,9 @@ confirm_ok_to_run_as_root (void)
 static void
 desktop_location_changed_callback (gpointer user_data)
 {
-	NautilusDesktopWindow *desktop_window;
-
-	if (user_data != NULL && NAUTILUS_IS_DESKTOP_WINDOW (user_data)) {
-		desktop_window = NAUTILUS_DESKTOP_WINDOW (user_data);
-
-		nautilus_desktop_window_update_directory (desktop_window);
+	if (nautilus_application_desktop_window != NULL) {
+		nautilus_desktop_window_update_directory
+			(nautilus_application_desktop_window);
 	}
 }
 

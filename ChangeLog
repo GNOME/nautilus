@@ -1,5 +1,15 @@
 2001-04-20  Darin Adler  <darin@eazel.com>
 
+	Fixed bug where toggling the "desktop is home" preference would
+	fail after you toggled the desktop on and off.
+
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Don't pass the desktop window as callback data.
+	(desktop_location_changed_callback): Use the desktop window global
+	instead of callback data.
+
+2001-04-20  Darin Adler  <darin@eazel.com>
+
 	Fixed bug where the monitor would be "left behind" when a file was
 	moved from one directory to another.
 
