@@ -96,25 +96,26 @@ char **
 egg_screen_exec_environment (GdkScreen *screen)
 {
 	char **retval = NULL;
-	int    i;
+	int    i, env_len;
 #ifdef HAVE_GTK_MULTIHEAD
 	int    display_index = -1;
 
 	g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
 
-	for (i = 0; environ [i]; i++)
-		if (!strncmp (environ [i], "DISPLAY", 7))
-			display_index = i;
+	for (env_len = 0; environ [env_len]; env_len++)
+		if (!strncmp (environ [env_len], "DISPLAY", 7))
+			display_index = env_len;
 
 	if (display_index == -1)
-		display_index = i++;
+		display_index = env_len++;
 #else
-	for (i = 0; environ [i]; i++);
+	for (env_len = 0; environ [env_len]; env_len++);
 #endif
 
-	retval = g_new (char *, i + 1);
+	retval = g_new (char *, env_len + 1);
+	retval [env_len] = NULL;
 
-	for (i = 0; environ [i]; i++)
+	for (i = 0; i < env_len; i++)
 #ifdef HAVE_GTK_MULTIHEAD
 		if (i == display_index)
 			retval [i] = egg_screen_exec_display_string (screen);
@@ -122,7 +123,7 @@ egg_screen_exec_environment (GdkScreen *screen)
 #endif
 			retval [i] = g_strdup (environ [i]);
 
-	retval [i] = NULL;
+	g_assert (i == env_len);
 
 	return retval;
 }
@@ -247,7 +248,7 @@ egg_screen_execute_command_line_async (GdkScreen    *screen,
 	if (gdk_screen_get_default () != screen)
 		envp = egg_screen_exec_environment (screen);
 
-	retval = g_spawn_async (g_get_home_dir (),
+	retval = g_spawn_async (NULL,
 				argv, envp, G_SPAWN_SEARCH_PATH,
 				NULL, NULL, NULL, error);
 	g_strfreev (argv);

@@ -875,12 +875,14 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 	
 	file = NAUTILUS_FILE (selection->data);
 	
-	if (!nautilus_file_is_local (file)) {
+	uri = nautilus_file_get_uri (file);
+	if (!eel_str_has_prefix (uri, "file:")) {
+		/* Don't allow volume ops on remote uris */
+		g_free (uri);
 		nautilus_file_list_free (selection);
 		return;
 	}
-		
-	uri = nautilus_file_get_uri (file);
+	
 	mount_uri = nautilus_link_local_get_link_uri (uri);
 	mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
 	g_free (uri);

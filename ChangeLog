@@ -1,6 +1,67 @@
-2003-04-02  Dave Camp  <dave@ximian.com>
+2003-04-30  Dave Camp  <dave@ximian.com>
 
-	* src/file-manager/fm-list-view.c (motion_notify_callback): Only 
+	Merged bugfixes from HEAD.
+
+2003-04-23 Dave Camp <dave@ximian.com>
+
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	Modify emblems on the original_file, not the target_file.
+
+2003-04-23 Alexander Larsson <alexl@redhat.com>
+	* src/file-manager/fm-list-view.c (key_press_callback):
+	* libnautilus-private/nautilus-icon-container.c (key_press_event):
+	* docs/key_mouse_navigation.txt (Keyboard):
+	Bring up context menu is Ctrl-F10, not Shift-F9
+	
+2003-04-23 Alexander Larsson <alexl@redhat.com>
+	* src/file-manager/fm-desktop-icon-view.c (volume_ops_callback):
+	Check for file: instead of is_local when verifying a volume desktop file
+	is ok. Fixes bug #98306.
+
+2003-04-23 Alexander Larsson <alexl@redhat.com>
+
+	* src/nautilus-window-menus.c (view_menu_zoom_normal_callback):
+	Do a zoom to 100%, not a best-fit.
+	Fixes bug #109413, patch by Jens Finke.
+
+2003-04-16 Alexander Larsson <alexl@redhat.com>
+
+	* cut-n-paste-code/libegg/Makefile.am:
+	* cut-n-paste-code/libegg/egg-recent-vfs-util.c:
+	* cut-n-paste-code/libegg/egg-recent-vfs-util.h:
+	Remove old files
+
+	* cut-n-paste-code/libegg/egg-recent-item.c:
+	(egg_recent_item_set_uri), (egg_recent_item_get_uri_for_display):
+	* cut-n-paste-code/libegg/egg-recent-model.c:
+	(egg_recent_model_update_item), (egg_recent_model_filter),
+	(egg_recent_model_read), (egg_recent_model_add_full),
+	(egg_recent_model_get_list), (egg_recent_model_changed):
+	* cut-n-paste-code/libegg/egg-screen-exec.c:
+	(egg_screen_exec_environment),
+	(egg_screen_execute_command_line_async):
+
+	Update libegg stuff.
+	Among other stuff this makes nautilus scripts execute in the
+	right directory.
+
+2003-04-16 Alexander Larsson <alexl@redhat.com>
+
+	* components/emblem/Nautilus_View_emblem.server.in.in:
+	* components/history/Nautilus_View_history.server.in.in:
+	* components/image_properties/Nautilus_View_image_properties.server.in.in:
+	* components/notes/Nautilus_View_notes.server.in.in:
+	* components/tree/Nautilus_View_tree.server.in.in:
+	Don't add .so to the server files. This makes it work on systems that
+	don't use .so as the library name.
+
+	* src/nautilus-main.c: (main):
+	* src/nautilus-server-connect.c: (browse):
+	Don't initialize array to a non-constant value. 
+
+2003-04-02 Dave Camp <dave@ximian.com>
+
+	* src/file-manager/fm-list-view.c (motion_notify_callback): Only
 	handle motion_notify_event for the bin window.
 
 === nautilus 2.2.3.1 ===

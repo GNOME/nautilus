@@ -18,8 +18,6 @@ EGG_RECENT_FILES =		\
 	egg-recent-model.h	\
 	egg-recent-item.c	\
 	egg-recent-item.h       \
-	egg-recent-vfs-utils.c  \
-	egg-recent-vfs-utils.h	\
 	$(NULL)
 
 EGG_TREE_DND_FILES = 		\
