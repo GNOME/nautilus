@@ -27,7 +27,7 @@
 /* nautilus-view-frame-corba.c: CORBA server implementation of the object
    representing a data view frame. */
 
-#define DEBUG_MATHIEU 1
+#define DEBUG_MATHIEU 0
 
 #include <config.h>
 
