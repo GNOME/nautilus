@@ -198,6 +198,8 @@ static void     element_clicked_callback                        (GtkWidget      
 #define MAX_ICON_WIDTH 63
 #define MAX_ICON_HEIGHT 63
 #define COLOR_SQUARE_SIZE 48
+#define MAX_EMBLEM_HEIGHT 52
+#define STANDARD_BUTTON_IMAGE_HEIGHT 42
 
 #define LABELED_IMAGE_SPACING 2
 #define IMAGE_TABLE_X_SPACING 6

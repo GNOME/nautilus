@@ -21,6 +21,7 @@ SUBDIRS = \
 	loser \
 	music \
 	notes \
+	rss-control \
 	sample \
 	text \
 	throbber \

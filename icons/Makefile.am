@@ -22,6 +22,7 @@ icon_DATA =\
 	bubble-LR.png \
 	bubble-UL.png \
 	bubble-UR.png \
+	bullet.png \
 	chit_frame.png \
 	colors.png \
 	computer.png \
@@ -43,6 +44,7 @@ icon_DATA =\
 	emblem-important.svg \
 	emblem-new.svg \
 	emblem-noread.svg \
+	emblem-note.png \
 	emblem-nowrite.svg \
 	emblem-ohno.svg \
 	emblem-personal.svg \

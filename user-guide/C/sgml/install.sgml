@@ -1,0 +1,190 @@
+<chapter id="instal">
+        <title>Installation</title>
+
+
+	<para>
+	Nautilus will be the default file manager for 
+	GNOME 1.4. So for users of that version of 
+	GNOME, no special Nautilus installation will be 
+	necessary.
+	</para>
+
+	<para>
+	For other users, Nautilus can be downloaded from 
+	the Eazel Nautilus website. Instructions for this 
+	follow the system requirements section, below.
+	</para>
+
+	<sect1 id="instal-system-requirements">
+	<title>System Requirements for Running Nautilus</title>
+
+	<para>
+	The minimum system requirements for running 
+	the Nautilus preview release two are:
+	</para>
+
+	<sect2 id="instal-system-requirements-harware">
+	<title>Hardware</title>
+	<para>
+	<itemizedlist>
+
+	<listitem><para>
+	x86 compatible processor (200mHz minimum).
+	</para></listitem>
+
+	<listitem><para>
+	64MB RAM recommended.
+	</para></listitem>
+
+
+	<listitem><para>
+	60MB hard drive space.
+	</para></listitem>
+
+	<listitem><para>
+	500MB of additional space, if you have to install GNOME.
+	</para></listitem>
+
+	</itemizedlist>
+	</para>
+	</sect2>
+
+
+	<sect2 id="instal-system-requirements-software">
+	<title>Software</title>
+
+	<para>
+
+	<itemizedlist>
+
+	<listitem><para>
+	RedHat Linux 6.2 (others may work, but this is the preview test 
+	platform).
+	</para></listitem>
+
+	<listitem><para>
+	GNOME 1.2 (Components for GNOME will be downloaded by the Eazel
+	Installer if needed).
+	</para></listitem>
+
+	<listitem><para>
+	Mozilla-5.0-M18-4 (downloaded by the Eazel Installer if needed).
+	</para></listitem>
+
+	</itemizedlist>
+
+	</para>
+	</sect2>
+	</sect1>
+
+	<sect1 id="instal-download-install">
+	<title>Download and Install Instructions for the Nautilus Preview 
+	Release Two</title>
+
+	<para>First, make sure you have enough hard disk space, 
+	and are running the correct version of Linux, and 
+	of GNOME.
+	</para>
+
+	<para>
+	The Eazel site for downloading Nautilus is 
+	<ulink url="http://download.eazel.com/">http://download.eazel.com</ulink>.
+	</para>
+
+	<para>
+	Once at the site:
+	<orderedlist>
+	<listitem><para>
+	Fill out the simple registration form.
+	</para></listitem>
+	<listitem><para>
+	Save the Eazel Installer in your tmp directory.
+	</para></listitem>
+
+	<listitem><para>
+	Open a terminal window, and type: /tmp
+	</para></listitem>
+
+	<listitem><para>
+	Next, type: sh ./nautilus-installer.sh
+	</para></listitem>
+
+	<listitem><para>
+	When prompted, enter your systems root password.
+	</para></listitem>
+
+	<listitem><para>
+	The Nautilus installation wizard will launch. Read the 
+	requirements and click Begin.
+	</para></listitem>
+
+	</orderedlist>
+	</para>
+
+	<para>
+	When the installation is finished, start Nautilus by 
+	opening the GNOME main menu, opening the 
+	Applications sub-menu, and clicking on the 
+	Nautilus icon.
+	</para>
+	</sect1>
+
+	<sect1 id="instal-initial-screens">
+	<title>Initial Screens</title>
+
+	<para>
+	When you start Nautilus for the first time, there 
+	are several initial screens. The first is simply a 
+	welcome screen. The second, however, lets you 
+	select your initial user level (Figure 1)
+	</para>
+
+	<figure>
+	<title>Selecting an Initial User Level</title>
+	<graphic fileref="install-user-level" scale="50"></graphic>
+	</figure>
+
+	<para>
+	The different user levels primarily control the 
+	amount of system and file detail that Nautilus 
+	displays. Check the level you feel is right for you, 
+	and click on the Next button.
+	</para>
+
+	<para>
+	The following screen gives you an opportunity to 
+	learn about Eazel Services, to sign up for them 
+	immediately, to login to Services if you are 
+	already a member, or to skip exploring Services at 
+	this time.
+	</para>
+
+	<para>
+	Nautilus and Eazel Services are covered in 
+	Chapter Three of this manual.
+	</para>
+
+	<figure>
+	<title>The Nautilus Update Screen</title>
+	<graphic fileref="install-update" scale="50"></graphic>
+	</figure>
+
+	<para>
+	The next screen (Figure 2), offers to automatically 
+	contact Eazel Services to verify your 
+	Internet connection and download the latest 
+	Nautilus updates. Check the appropriate box and 
+	click the Next button. The update procedure is 
+	automatic.
+	</para>
+
+	<para>
+	At the final screen click the Finish button to 
+	complete the install. After a moment or two the 
+	Nautilus file manager will start.
+	</para>
+
+
+	</sect1>
+
+</chapter>

@@ -44,6 +44,7 @@
 #define DEFAULT_X_ALIGNMENT 0.5
 #define DEFAULT_Y_ALIGNMENT 0.5
 
+
 /* Arguments */
 enum
 {
@@ -710,7 +711,7 @@ nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_ima
 	GtkRequisition image_requisition;
 	ArtIRect image_bounds;
 	ArtIRect content_bounds;
-
+	
 	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
 
 	if (labeled_image->details->fill) {

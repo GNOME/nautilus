@@ -56,6 +56,7 @@ nautilus_metafile_server_idl_sources =		\
 
 libnautilus_extensions_la_SOURCES = 		\
 	$(nautilus_metafile_server_idl_sources)	\
+	nautilus-annotation.c			\
 	nautilus-art-extensions.c		\
 	nautilus-art-gtk-extensions.c		\
 	nautilus-background-canvas-group.c	\
@@ -169,6 +170,7 @@ libnautilus_extensions_la_SOURCES = 		\
 
 # Everything is private for now
 noinst_HEADERS =				\
+	nautilus-annotation.h			\
 	nautilus-art-extensions.h		\
 	nautilus-art-gtk-extensions.h		\
 	nautilus-background-canvas-group.h	\

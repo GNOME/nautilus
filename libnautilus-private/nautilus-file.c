@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-file.h"
 
+#include "nautilus-annotation.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
@@ -1499,6 +1500,11 @@ prepend_automatic_emblem_names (NautilusFile *file,
 {
 	/* Prepend in reverse order. */
 
+	if (nautilus_annotation_has_annotation (file) > 0) {
+		names = g_list_prepend
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_ANNOTATION));
+		g_message ("got annotation for %s", nautilus_file_get_uri (file));
+	}
 	if (nautilus_file_is_in_trash (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
