@@ -1,3 +1,26 @@
+2000-05-24  Gene Z. Ragan  <gzr@eazel.com>
+	
+	* libnautilus/nautilus-undo-manager.c:
+	(impl_Nautilus_Undo_Manager__forget),
+	(nautilus_undo_manager_add_transaction),
+	(nautilus_undo_manager_forget_transaction):
+	Added code to these functions that actually works.
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_enable_undo):
+	Work in progress on undo.
+			
+	* libnautilus/nautilus-undo-manager.h:
+	* libnautilus/nautilus-undoable.c: 
+	* libnautilus/nautilus-undoable.h:
+	(nautilus_undo_unregister):
+	Make this call private to the source file.
+	
+	* src/ntl-window-msgs.c: 
+	(nautilus_window_request_title_change):
+	Fixed a build breakeing typo made by my hero.  
+	I can't believe it!
+
 2000-05-24  Darin Adler  <darin@eazel.com>
 
 	Eliminated ContentView and ContentViewFrame.

@@ -100,7 +100,6 @@ void nautilus_undo_register_full (GList                *atoms,
 				  const char           *undo_menu_item_description,
 				  const char           *redo_menu_item_name,
 				  const char           *redo_menu_item_description);
-void nautilus_undo_unregister    (GtkObject            *target);
 
 /* Performing an undo explicitly. Only for use by objects "out in the field".
  * The menu bar itself uses a richer API in the undo manager.

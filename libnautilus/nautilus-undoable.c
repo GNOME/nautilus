@@ -48,8 +48,8 @@ static guint signals[LAST_SIGNAL];
 /* GtkObject */
 static void     nautilus_undoable_initialize_class (NautilusUndoableClass  *class);
 static void     nautilus_undoable_initialize       (NautilusUndoable       *item);
-static void	destroy 			   (GtkObject *object);
-
+static void	destroy 			   (GtkObject 		   *object);
+static void	nautilus_undo_unregister 	   (GtkObject 		   *target);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoable, nautilus_undoable, GTK_TYPE_OBJECT)
 
@@ -315,7 +315,7 @@ nautilus_undo_register_full (GList *atoms,
 }
 
 /* Cover for forgetting about all undo relating to a particular target. */
-void
+static void
 nautilus_undo_unregister (GtkObject *target)
 {
 	g_return_if_fail (GTK_IS_OBJECT (target));
@@ -324,7 +324,6 @@ nautilus_undo_unregister (GtkObject *target)
 	 * FIXME: We will have to figure out which transactions this affects
 	 * and remove ourselves from them. It's not clear how to do that.
 	 */
-	nautilus_undo_manager_unregister_object (target);
 
 	/* Perhaps this should also unregister all children if called on a
 	 * GtkContainer? That might be handy.

@@ -270,7 +270,8 @@ nautilus_entry_enable_undo (NautilusEntry *entry, gboolean value)
 			update_undo_text (entry);
 		}
 	} else {
-		nautilus_undo_unregister (GTK_OBJECT (entry));
+		/* FIXME */
+		/* nautilus_undo_unregister (GTK_OBJECT (entry)); */
 	}
 }
 

@@ -288,7 +288,7 @@ nautilus_window_request_title_change (NautilusWindow *window,
                                       const char *new_title,
                                       NautilusViewFrame *requesting_view)
 {
-        g_return_if_fail (NAUTILUS_IS_WINDOW (widnow));
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (new_title != NULL);
         g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (requesting_view));
 

@@ -67,7 +67,7 @@ void                  nautilus_undo_manager_enable_redo       (NautilusUndoManag
 							       gboolean               value);
 void                  nautilus_undo_manager_set_queue_depth   (NautilusUndoManager   *manager,
 							       gint                   depth);
-gboolean              nautilus_undo_manager_unregister_object (GtkObject             *object);
+							       
 void                  nautilus_attach_undo_manager            (GtkObject             *object,
 							       Nautilus_Undo_Manager  manager);
 void                  nautilus_share_undo_manager             (GtkObject             *destination_object,
