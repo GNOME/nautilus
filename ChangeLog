@@ -1,3 +1,11 @@
+2000-09-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	fixed bug 2107, music view fails when encountering a broken image file,
+	by testing for a NULL result from gdk_pixbuf_new_from_file and
+	handling it accordingly.
+	
 2000-09-29  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3322 (context menus don't work in FTP site

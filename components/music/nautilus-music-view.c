@@ -1271,12 +1271,13 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	char *image_path, *image_path_uri;
 	int file_index;
 	int track_index;
+	gboolean got_image;
 	
 	song_list = NULL;
 	image_path_uri = NULL;
 	file_index = 1;
 	track_index = 0;
-
+	
 	/* connect the music view background to directory metadata */	
 	nautilus_connect_background_to_directory_metadata_by_uri (GTK_WIDGET (music_view), uri);
 			
@@ -1375,31 +1376,37 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	}
 	
 	/* install the album cover */
-		
+	
+	got_image = FALSE;	
 	if (image_path_uri != NULL) {
   		image_path = gnome_vfs_get_local_path_from_uri(image_path_uri);
   		pixbuf = gdk_pixbuf_new_from_file(image_path);
-		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit(pixbuf, 128, 128);
-		gdk_pixbuf_unref (pixbuf);
+		
+		if (pixbuf != NULL) {
+			scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit(pixbuf, 128, 128);
+			gdk_pixbuf_unref (pixbuf);
 
-       		gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-		gdk_pixbuf_unref (scaled_pixbuf);
+       			gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+			gdk_pixbuf_unref (scaled_pixbuf);
+			got_image = TRUE;
+			
+			if (music_view->details->album_image == NULL) {
+				music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
+				gtk_box_pack_start(GTK_BOX(music_view->details->control_box), 
+					   	   music_view->details->album_image, FALSE, FALSE, 2);	
+			} else { 
+				gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
+			}
 		
-		if (music_view->details->album_image == NULL) {
-			music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
-			gtk_box_pack_start(GTK_BOX(music_view->details->control_box), 
-					   music_view->details->album_image, FALSE, FALSE, 2);	
+			gtk_widget_show (music_view->details->album_image);
+ 			g_free(image_path_uri);
+ 			g_free(image_path);
 		}
-		else { 
-			gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
-		}
-		
-		gtk_widget_show (music_view->details->album_image);
- 		g_free(image_path_uri);
- 		g_free(image_path);
-	} else if (music_view->details->album_image != NULL) {
-		gtk_widget_hide (music_view->details->album_image);
-        }
+	
+		if (!got_image && music_view->details->album_image != NULL) {
+			gtk_widget_hide (music_view->details->album_image);
+        	}
+	}
 		
 	/* determine the album title/artist line */
 	
