@@ -5,6 +5,7 @@ SUBDIRS = throbber
 icondir = $(datadir)/pixmaps/nautilus/eazel-logos
 
 icon_DATA =\
+	LICENSE \
 	About_Image.png \
 	about_background.png \
 	default.xml \

@@ -1,3 +1,24 @@
+2001-03-02  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Don Melton <don@eazel.com>
+
+	Doing build stuff so that new files regarding
+	the distribution license of the Eazel trademarks 
+	contained in eazel-logos/ are properly included
+	in tarballs and RPM's.
+
+	Bug #: 7275 and 7274
+
+	* Makefile.am: Added TRADEMARK_NOTICE to EXTRA_DIST
+	* eazel-logos/Makefile.am: Added LICENSE to icon_DATA
+	* nautilus.spec.in: Added eazel-logos/LICENSE and 
+	  TRADEMARK_NOTICE
+
+	Fixed a small problem for "es_ES" locale missing
+	a doc.
+
+	* components/help/topleveldocs.xml:
+
 2001-03-02  Michael Engber  <engber@eazel.com>
 
 	reviewed by: George Lebl <jirka@5z.org>
