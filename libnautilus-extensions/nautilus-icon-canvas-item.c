@@ -918,7 +918,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	NautilusIconCanvasItemDetails *details;
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
-	GdkPixbuf *emblem_pixbuf, *prelit_pixbuf, *selected_pixbuf;
+	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
 	
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
@@ -937,19 +937,21 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 
 	/* if the pre-lit or selection flag is set, make a pre-lit or darkened pixbuf and draw that instead */
 	
-	if (details->is_prelit) {
-		prelit_pixbuf = create_spotlight_pixbuf (details->pixbuf);
-		draw_pixbuf (prelit_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
-		gdk_pixbuf_unref (prelit_pixbuf);
-	}
-	else if (details->is_highlighted_for_selection) {
-		selected_pixbuf = create_darkened_pixbuf (details->pixbuf, (int)(0.6*255), (int)(0.6*255));
-		draw_pixbuf (selected_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
-		gdk_pixbuf_unref (selected_pixbuf);	
-
-	} else {
-		draw_pixbuf (details->pixbuf, drawable, icon_rect.x0, icon_rect.y0);
-	}
+	temp_pixbuf = details->pixbuf;
+	
+	if (details->is_prelit)
+		temp_pixbuf = create_spotlight_pixbuf (details->pixbuf);
+	
+	if (details->is_highlighted_for_selection) {
+		GdkPixbuf* old_pixbuf = temp_pixbuf;
+		temp_pixbuf = create_darkened_pixbuf (temp_pixbuf, (int)(0.6*255), (int)(0.6*255));
+		if (old_pixbuf != details->pixbuf)
+			gdk_pixbuf_unref (old_pixbuf);	
+	} 
+	
+	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
+	if (temp_pixbuf != details->pixbuf)
+		gdk_pixbuf_unref (temp_pixbuf);	
 
 	/* Draw the emblem pixbufs. */
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);

@@ -1,5 +1,12 @@
 2000-03-27  Andy Hertzfeld <andy@eazel.com>
 
+	* libnautilus/nautilus-icon-canvas-item.c:
+	changed the logic in nautilus_icon_canvas_item_draw to treat
+	pre-lighting and selection darkening independently, so both properties
+	will be visually reflected.
+	
+2000-03-27  Andy Hertzfeld <andy@eazel.com>
+
 	Changed how selection emboldening works.  The problem was that using
 	a bold font changed the text layout, making words jump from line to
 	line when an icon was selected.  The new approach doesn't use a bold
