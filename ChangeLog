@@ -1,3 +1,26 @@
+2004-02-13  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	(nautilus_have_broken_filenames),
+	(nautilus_get_uri_shortname_for_display):
+	New functions
+	
+	* libnautilus-private/nautilus-file.c:
+	Use the public nautilus_have_broken_filenames instead of private copy
+	Make display names for toplevel uris better.
+	
+	* src/nautilus-location-entry.c: (try_to_expand_path):
+	Use the public nautilus_have_broken_filenames instead of private copy
+	
+	* src/nautilus-spatial-window.c:
+	(location_button_clicked_callback),
+	(nautilus_spatial_window_set_location_button):
+	Use nautilus_get_uri_shortname_for_display()
+	
+	* src/nautilus-window.c: (compute_default_title):
+	Special casing toplevel stuff not needed, since this is
+	handled by the display name change.
+	
 2004-02-12  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-icon-view.c: (fm_icon_view_merge_menus):

@@ -1128,48 +1128,20 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 	gtk_widget_show (dialog);
 }
 
-static gboolean 
-is_method_root (char *uri)
-{
-	while (*uri != 0) {
-		if (*uri == ':') {
-			break;
-		}
-		if (!g_ascii_isalpha (*uri)) {
-			return FALSE;
-		}
-		uri++;
-	}
-	return (strcmp (uri, "://") == 0 ||
-		strcmp (uri, ":///") == 0);
-}
-
 static char *
 compute_default_title (const char *text_uri)
 {
 	NautilusFile *file;
 	char *title;
-	char *canonical_uri;
-	char *colon;
-	
-	canonical_uri = eel_make_uri_canonical (text_uri);
-	
-	title = NULL;
-	if (canonical_uri == NULL) {
-		title = g_strdup ("");
-	} else if (is_method_root (canonical_uri)) {
-		colon = strchr (canonical_uri, ':');
-		g_assert (colon != NULL);
-		*colon = 0;
-		title = g_strdup (nautilus_get_vfs_method_display_name (canonical_uri));
-	} 
-	if (title == NULL) {
+
+	if (text_uri) {
 		file = nautilus_file_get (text_uri);
 		title = nautilus_file_get_display_name (file);
 		nautilus_file_unref (file);
+	} else {
+		title = g_strdup ("");
 	}
 	
-	g_free (canonical_uri);
 	return title;
 }
 

@@ -70,5 +70,7 @@ char *   nautilus_find_file_in_gnome_path            (char       *file);
 GList *  nautilus_find_all_files_in_gnome_path       (char       *file);
 
 const char *nautilus_get_vfs_method_display_name (char *method);
+gboolean    nautilus_have_broken_filenames (void);
+char *      nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

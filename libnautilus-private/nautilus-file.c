@@ -1261,23 +1261,6 @@ rename_guts (NautilusFile *file,
 	gnome_vfs_uri_unref (vfs_uri);
 }
 
-static gboolean
-have_broken_filenames (void)
-{
-	static gboolean initialized = FALSE;
-	static gboolean broken;
-  
-	if (initialized) {
-		return broken;
-	}
-
-	broken = g_getenv ("G_BROKEN_FILENAMES") != NULL;
-  
-	initialized = TRUE;
-  
-	return broken;
-}
-
 void
 nautilus_file_rename (NautilusFile *file,
 		      const char *new_name,
@@ -1287,7 +1270,7 @@ nautilus_file_rename (NautilusFile *file,
 	char *locale_name;
 
 	/* Note: Desktop file renaming wants utf8, even with G_BROKEN_FILENAMES */
-	if (has_local_path (file) && have_broken_filenames () &&
+	if (has_local_path (file) && nautilus_have_broken_filenames () &&
 	    !is_desktop_file (file)) {
 		locale_name = g_filename_from_utf8 (new_name, -1, NULL, NULL, NULL);
 		if (locale_name == NULL) {
@@ -2639,10 +2622,11 @@ nautilus_file_get_display_name_collation_key (NautilusFile *file)
 static char *
 nautilus_file_get_display_name_nocopy (NautilusFile *file)
 {
-	char *name, *utf8_name;
+	char *name, *utf8_name, *short_name;
 	gboolean broken_filenames;
 	gboolean validated;
 	GnomeVFSURI *vfs_uri;
+	const char *method;
 
 	if (file == NULL) {
 		return NULL;
@@ -2671,8 +2655,9 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 			 * thing with any local filename that does not
 			 * validate as good UTF-8.
 			 */
+			/* Keep in sync with nautilus_get_uri_shortname_for_display */
 			if (has_local_path (file)) {
-				broken_filenames = have_broken_filenames ();
+				broken_filenames = nautilus_have_broken_filenames ();
 				if (broken_filenames || !g_utf8_validate (name, -1, NULL)) {
 					utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
 					if (utf8_name != NULL) {
@@ -2688,8 +2673,22 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 			} else if (strcmp (name, "/") == 0) {
 				/* Special-case the display name for roots that are not local files */
 				g_free (name);
+				
 				vfs_uri = gnome_vfs_uri_new (file->details->directory->details->uri);
-				name = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_PASSWORD);
+				method = nautilus_get_vfs_method_display_name (vfs_uri->method_string);
+				if (method == NULL) {
+					method = vfs_uri->method_string;
+				}
+
+				short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+				if (short_name == NULL ||
+				    strcmp (short_name, GNOME_VFS_URI_PATH_STR) == 0) {
+					name = g_strdup (method);
+				} else {
+					name = g_strdup_printf ("%s: %s", method, short_name);
+				}
+				g_free (short_name);
+				
 				gnome_vfs_uri_unref (vfs_uri);
 			}
 		}

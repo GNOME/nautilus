@@ -31,6 +31,7 @@
 #include "nautilus-metafile.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
@@ -378,6 +379,76 @@ nautilus_get_vfs_method_display_name (char *method)
 		return _("Windows Network");
 	}
 	return NULL;
+}
+
+gboolean
+nautilus_have_broken_filenames (void)
+{
+	static gboolean initialized = FALSE;
+	static gboolean broken;
+  
+	if (initialized) {
+		return broken;
+	}
+
+	broken = g_getenv ("G_BROKEN_FILENAMES") != NULL;
+  
+	initialized = TRUE;
+  
+	return broken;
+}
+
+char *
+nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri)
+{
+	gboolean broken_filenames;
+	char *utf8_name, *name, *tmp;
+	gboolean validated;
+	const char *method;
+	
+	validated = FALSE;
+	name = gnome_vfs_uri_extract_short_name (uri);
+	if (name == NULL) {
+		name = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_PASSWORD);
+	} else if (g_ascii_strcasecmp (uri->method_string, "file") == 0) {
+		broken_filenames = nautilus_have_broken_filenames ();
+		if (broken_filenames || !g_utf8_validate (name, -1, NULL)) {
+			utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+			if (utf8_name != NULL) {
+				g_free (name);
+				name = utf8_name;
+				/* Guaranteed to be correct utf8 here */
+				validated = TRUE;
+			}
+		} else if (!broken_filenames) {
+			/* name was valid, no need to re-validate */
+			validated = TRUE;
+		}
+	} else if (!gnome_vfs_uri_has_parent (uri)) {
+		/* Special-case the display name for roots that are not local files */
+		method = nautilus_get_vfs_method_display_name (uri->method_string);
+		if (method == NULL) {
+			method = uri->method_string;
+		}
+		
+		if (name == NULL ||
+		    strcmp (name, GNOME_VFS_URI_PATH_STR) == 0) {
+			g_free (name);
+			name = g_strdup (method);
+		} else {
+			tmp = name;
+			name = g_strdup_printf ("%s: %s", method, name);
+			g_free (tmp);
+		}
+	}
+
+	if (!validated && !g_utf8_validate (name, -1, NULL)) {
+		utf8_name = eel_make_valid_utf8 (name);
+		g_free (name);
+		name = utf8_name;
+	}
+
+	return name;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

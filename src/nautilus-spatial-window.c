@@ -444,32 +444,6 @@ menu_popup_pos (GtkMenu   *menu,
 	*push_in = TRUE;
 }
 
-static char *
-get_uri_name (GnomeVFSURI *uri) 
-{
-	char *name, *short_name;
-	const char *method;
-
-	if (!gnome_vfs_uri_has_parent (uri) && 
-	    g_ascii_strcasecmp (uri->method_string, "file") != 0) {
-		method = nautilus_get_vfs_method_display_name (uri->method_string);
-		if (method == NULL) {
-			method = uri->method_string;
-		}
-
-		short_name = gnome_vfs_uri_extract_short_name (uri);
-		if (short_name == NULL ||
-		    strcmp (short_name, GNOME_VFS_URI_PATH_STR) == 0) {
-			return g_strdup (method);
-		}
-		name = g_strdup_printf ("%s: %s", method, short_name);
-		g_free (short_name);
-	} else {
-		name = gnome_vfs_uri_extract_short_name (uri);
-	}
-	return name;
-}
-
 static void
 location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *window)
 {
@@ -484,7 +458,7 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 	
 	uri = gnome_vfs_uri_ref (window->details->location);
 	while (uri != NULL) {
-		name = get_uri_name (uri);
+		name = nautilus_get_uri_shortname_for_display (uri);
 		menu_item = gtk_image_menu_item_new_with_label (name);
 		g_free (name);
 		gtk_widget_show (menu_item);
@@ -525,7 +499,7 @@ nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
 		uri = gnome_vfs_uri_new (location);
 	}
 	if (uri != NULL) {
-		name = get_uri_name (uri);
+		name = nautilus_get_uri_shortname_for_display (uri);
 		gtk_button_set_label (GTK_BUTTON (window->details->location_button),
 				      name);
 		g_free (name);

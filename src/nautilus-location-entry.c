@@ -46,6 +46,7 @@
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus/nautilus-clipboard.h>
@@ -67,24 +68,6 @@ static void  nautilus_location_entry_init             (NautilusLocationEntry    
 EEL_CLASS_BOILERPLATE (NautilusLocationEntry,
 		       nautilus_location_entry,
 		       NAUTILUS_TYPE_ENTRY)
-
-static gboolean
-have_broken_filenames (void)
-{
-	static gboolean initialized = FALSE;
-	static gboolean broken;
-  
-	if (initialized) {
-		return broken;
-	}
-
-	broken = g_getenv ("G_BROKEN_FILENAMES") != NULL;
-  
-	initialized = TRUE;
-  
-	return broken;
-}
-
 
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
    the whole string, otherwise accept the largest part common to both */
@@ -268,7 +251,7 @@ try_to_expand_path (gpointer callback_data)
 			} else {
 				expand_name = g_strdup (current_file_info->name);
 			}
-			if (have_broken_filenames()) {
+			if (nautilus_have_broken_filenames()) {
 				expand_text = accumulate_name_locale (expand_text, expand_name);
 			} else {
 				expand_text = accumulate_name_utf8 (expand_text, expand_name);
@@ -277,7 +260,7 @@ try_to_expand_path (gpointer callback_data)
 		}
 	}
 
-	if (have_broken_filenames ()) {
+	if (nautilus_have_broken_filenames ()) {
 		if (expand_text) {
 			expand_text_utf8 = g_locale_to_utf8 (expand_text, -1, NULL, NULL, NULL);
 			g_free (expand_text);
