@@ -55,6 +55,7 @@
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-authentication-manager.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock-icons.h>
@@ -69,7 +70,6 @@
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-volume-monitor.h>
-#include <libnautilus-private/nautilus-authn-manager.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <bonobo-activation/bonobo-activation.h>
 
@@ -360,7 +360,7 @@ finish_startup (NautilusApplication *application)
 	nautilus_sound_init ();
 
 	/* initialize URI authentication manager */
-	nautilus_authentication_manager_init ();
+	gnome_authentication_manager_init ();
 
 	/* Make the desktop work with old Nautilus. */
 	migrate_old_nautilus_files ();
