@@ -697,24 +697,27 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 
 	text_x = text_x_pos + 1;
 	text_y = y - widget->allocation.y + THEMED_TAB_TEXT_V_OFFSET;
-		
-	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, 
+	
+	/* make sure we can at least draw some of it */
+	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	
+		nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
 					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  NAUTILUS_RGB_COLOR_BLACK,
 					  NAUTILUS_OPACITY_FULLY_OPAQUE);
-	text_x -= 1;
-	text_y -= 1;
+		text_x -= 1;
+		text_y -= 1;
 
-	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf,
+		nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf,
 					  text_x, text_y,
 					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  NAUTILUS_RGB_COLOR_WHITE,
 					  NAUTILUS_OPACITY_FULLY_OPAQUE);
+	}
 	
 	/* set up the bounds rectangle for later hit-testing */
 	if (tab_rect) {
@@ -1026,12 +1029,24 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 					if (needs_compositing) {
 						int dest_x = last_x_pos + tab_width - widget->allocation.x;
 						int dest_y = last_y_pos - widget->allocation.y;
+						int src_width = gdk_pixbuf_get_width (temp_pixbuf);
+						int src_height = gdk_pixbuf_get_height (temp_pixbuf);
+						int dest_width = gdk_pixbuf_get_width (tab_pixbuf);
+						int dest_height = gdk_pixbuf_get_height (tab_pixbuf);
+						
+						/* clip it in both dimensions */
+						if ((dest_x + src_width) > dest_width) {
+							src_width = dest_width - dest_x;
+						}
+						if ((dest_y + src_height) > dest_height) {
+							src_height = dest_height - dest_y;
+						}
 						
 						gdk_pixbuf_composite (temp_pixbuf, tab_pixbuf,
 							dest_x,
 							dest_y,
-							gdk_pixbuf_get_width (temp_pixbuf),
-							gdk_pixbuf_get_height (temp_pixbuf),
+							src_width,
+							src_height,
 							dest_x,
 							dest_y,
 							1.0, 1.0,

@@ -1,3 +1,16 @@
+2001-01-23  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed),
+	(draw_or_layout_all_tabs):
+	fixed bug 5895, critical when stretching sidebar less than 40 pixels,
+	and worse bug where it would segfault if the sidebar is ~4 pixels
+	or so.  Fixed the former by explicitly clipping and the latter by
+	not drawing text if it starts beyond the end of the buffer.
+	
+	* data/browser.xml:
+	fixed typo which manifested as the "Terracotta" pattern not being
+	capitalized in the property browser.
+	
 2001-01-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
