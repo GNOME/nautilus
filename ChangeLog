@@ -1,3 +1,16 @@
+2000-06-08  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback), (directory_load_done):
+	Moved a state changed call in for the case where we discover
+	new items in a directory. This fixes bugs 1066 and 1068.
+	
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	Fixed problem where we get occasional stray calls to
+	"set_sensitive". The problem is that we must remove the
+	idle call used by the window state machine when the window
+	in question is destroyed.
+
 2000-06-08  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c
@@ -5,7 +18,6 @@
 	(OAF_ServerInfo__copy): Fine-tuning to avoid crashing.
 	(nautilus_do_component_query): Fix 1270
 	(strv_length, strv_concat): New utility functions.
-
 
 	* RENAMING: Added more renaming ideas.
 	* libnautilus-extensions/nautilus-mime-actions.c:
@@ -43,7 +55,8 @@
 
 2000-06-07  John Sullivan  <sullivan@eazel.com>
 
-Fixed bug 1299 (view-and-location switching fails if short list empty)
+	Fixed bug 1299 (view-and-location switching fails if
+	short list empty)
 
 	* libnautilus-extensions/nautilus-mime-actions.h,
 	* libnautilus-extensions/nautilus-mime-actions.c:

@@ -734,6 +734,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	directory->details->files = g_list_concat
 		(directory->details->files, pending_files);
 
+	state_changed (directory);
+
 	return FALSE;
 }
 
@@ -780,8 +782,6 @@ directory_load_done (NautilusDirectory *directory,
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
 	}
 	dequeue_pending_idle_callback (directory);
-
-	state_changed (directory);
 }
 
 static GnomeVFSDirectoryListPosition

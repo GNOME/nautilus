@@ -541,8 +541,13 @@ nautilus_window_destroy (NautilusWindow *window)
 	g_slist_free (window->back_list);
 	g_slist_free (window->forward_list);
 	
-	if (window->statusbar_clear_id)
-		g_source_remove(window->statusbar_clear_id);
+	if (window->statusbar_clear_id != 0) {
+		g_source_remove (window->statusbar_clear_id);
+	}
+
+	if (window->action_tag != 0) {
+		g_idle_remove_by_data (window);
+	}
 	
 	if (GTK_OBJECT_CLASS(klass->parent_class)->destroy)
 		GTK_OBJECT_CLASS(klass->parent_class)->destroy(GTK_OBJECT(window));
