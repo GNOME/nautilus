@@ -120,25 +120,25 @@ nautilus_preferences_dialog_initialize (NautilusPreferencesDialog * prefs_dialog
 }
 
 static void
-dialog_clicked(GtkWidget * widget, gint n, gpointer data)
+dialog_clicked (GtkWidget * widget, gint n, gpointer data)
 {
 	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
 	g_assert(prefs_dialog);
 
-	gtk_widget_hide(GTK_WIDGET(prefs_dialog));
+	gtk_widget_hide (GTK_WIDGET(prefs_dialog));
 }
 
 static void
-dialog_show(GtkWidget * widget, gpointer data)
+dialog_show (GtkWidget * widget, gpointer data)
 {
 	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
-	g_assert(prefs_dialog);
+	g_assert (prefs_dialog);
 }
 
 static void
-dialog_destroy(GtkWidget * widget, gpointer data)
+dialog_destroy (GtkWidget * widget, gpointer data)
 {
 	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
@@ -185,17 +185,17 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
 			    "clicked",
 			    GTK_SIGNAL_FUNC (dialog_clicked),
-			    (gpointer) prefs_dialog);
+			    prefs_dialog);
 
 	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
 			    "show",
 			    GTK_SIGNAL_FUNC(dialog_show),
-			    (gpointer) prefs_dialog);
+			    prefs_dialog);
 	
 	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
 			    "destroy",
 			    GTK_SIGNAL_FUNC (dialog_destroy),
-			    (gpointer) prefs_dialog);
+			    prefs_dialog);
 
 	/* Configure the GNOME_DIALOG's vbox */
  	g_assert (gnome_dialog->vbox);

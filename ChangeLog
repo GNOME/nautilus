@@ -1,3 +1,66 @@
+2001-01-25  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Michael Engber  <engber@eazel.com>
+
+	Fix 5879 (Close copy source & destination windows -> crash at
+		  end of copy operation).
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_remove_file_metadata):
+	Merge a fix from PR3 branch.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(null_the_reference), (nautilus_gtk_null_reference_if_destroyed),
+	(nautilus_gtk_stop_null_reference_if_destroyed):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	Add new magic calls that set up a reference to get nulled out
+	when the object it points to is destroyed.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(transfer_info_new), (transfer_info_destroy),
+	(handle_transfer_ok), (nautilus_file_operations_copy_move),
+	(nautilus_file_operations_move_to_trash),
+	(nautilus_file_operations_delete), (do_empty_trash):
+	Null out a saved reference to the parent window so
+	that we don't try to use it after the window gets closed.
+	Clean up creation and destruction of TransferInfo.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_transfer_ok):
+	Fix a case where TransferInfo could get leaked.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(new_folder_transfer_callback),
+	(nautilus_file_operations_new_folder):
+	Rework to make deleting of NewFolderTransferState cleaner.
+	Set up parent_view to get nulled out when the view gets closed.
+	
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(dialog_clicked), (dialog_show), (dialog_destroy),
+	Tweaks. Get rid of unneeded casts.
+
+	* src/nautilus-property-browser.c: (add_new_pattern),
+	(show_color_selection_window), (add_new_color), (add_new_emblem):
+	* src/nautilus-theme-selector.c: (add_new_theme_button_callback):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame__destroy),
+	(impl_Nautilus_ViewFrame__create):
+	Use new magic calls to null out references.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_destroy):
+	Disconnect from the destroy-watching signal.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(set_pending_icon_to_reveal):
+	(nautilus_preferences_dialog_construct):
+	* src/file-manager/fm-directory-view.c: (copy_move_done_data_free),
+	(pre_copy_move), (copy_move_done_partition_func),
+	(copy_move_done_callback):
+	Use new magic calls to null out references.
+	Fix a memory trasher where CopyMoveDoneData was being destroyed too
+	early.
+
 2001-01-25  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5981, Desktop Eazel-Services link won't work without

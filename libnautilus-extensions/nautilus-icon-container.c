@@ -434,7 +434,7 @@ set_pending_icon_to_reveal (NautilusIconContainer *container, NautilusIcon *icon
 	
 	if (cur_pending != NULL) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (cur_pending->item),
-					       &pending_icon_to_reveal_destroy_callback,
+					       pending_icon_to_reveal_destroy_callback,
 					       container);
 	}
 	

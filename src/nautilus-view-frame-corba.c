@@ -35,6 +35,7 @@
 #include <gtk/gtksignal.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-view.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 static void impl_Nautilus_ViewFrame_open_location_in_this_window         (PortableServer_Servant  servant,
 									  Nautilus_URI            location,
@@ -89,14 +90,6 @@ POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv =
 };
 
 static void
-view_widget_gone (GtkObject *object,
-		  impl_POA_Nautilus_ViewFrame *servant)
-{
-	g_assert (servant->view == NAUTILUS_VIEW_FRAME (object));
-	servant->view = NULL;
-}
-
-static void
 impl_Nautilus_ViewFrame__destroy (BonoboObject *object,
 				  impl_POA_Nautilus_ViewFrame *servant)
 {
@@ -105,12 +98,7 @@ impl_Nautilus_ViewFrame__destroy (BonoboObject *object,
 	
 	CORBA_exception_init (&ev);
 
-	if (servant->view != NULL) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (servant->view),
-					       view_widget_gone,
-					       servant);
-	}
-	
+	nautilus_nullify_cancel (&servant->view);
 	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
 	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
 	CORBA_free (object_id);
@@ -140,8 +128,7 @@ impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
 	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
 			    GTK_SIGNAL_FUNC (impl_Nautilus_ViewFrame__destroy), servant);
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy",
-			    view_widget_gone, servant);
+	nautilus_nullify_when_destroyed (&servant->view);
   
 	return bonobo_object;
 }

@@ -934,12 +934,14 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 		 * be removed when the metafile is later read.
 		 */
 		hash = directory->details->metadata_changes;
-		found = g_hash_table_lookup_extended
-			(hash, file_name, &key, &value);
-		if (found) {
-			g_hash_table_remove (hash, file_name);
-			g_free (key);
-			metadata_value_destroy (value);
+		if (hash != NULL) {
+			found = g_hash_table_lookup_extended
+				(hash, file_name, &key, &value);
+			if (found) {
+				g_hash_table_remove (hash, file_name);
+				g_free (key);
+				metadata_value_destroy (value);
+			}
 		}
 	}
 

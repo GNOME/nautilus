@@ -330,6 +330,8 @@ nautilus_theme_selector_destroy (GtkObject *object)
 
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
 		
+	nautilus_nullify_cancel (&theme_selector->details->dialog);
+
 	g_free (theme_selector->details);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
@@ -450,28 +452,20 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	g_free (theme_path);
 }
 
-/* Callback used when the theme selection dialog is destroyed */
-static gboolean
-dialog_destroy (GtkWidget *widget, gpointer data)
-{
-	NautilusThemeSelector *theme_selector = NAUTILUS_THEME_SELECTOR (data);
-	theme_selector->details->dialog = NULL;
-	return FALSE;
-}
-
 /* handle the add_new button */
 static void
-add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_selector)
+add_new_theme_button_callback (GtkWidget *widget, NautilusThemeSelector *theme_selector)
 {
 	if (theme_selector->details->remove_mode) {
 		exit_remove_mode (theme_selector);
 		return;
 	}
 	
-	if (theme_selector->details->dialog) {
-		gtk_widget_show(theme_selector->details->dialog);
-		if (theme_selector->details->dialog->window)
-			gdk_window_raise(theme_selector->details->dialog->window);
+	if (theme_selector->details->dialog != NULL) {
+		gtk_widget_show (theme_selector->details->dialog);
+		if (theme_selector->details->dialog->window) {
+			gdk_window_raise (theme_selector->details->dialog->window);
+		}
 
 	} else {
 		GtkFileSelection *file_dialog;
@@ -480,10 +474,8 @@ add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_se
 			(_("Select a theme folder to add as a new theme:"));
 		file_dialog = GTK_FILE_SELECTION (theme_selector->details->dialog);
 		
-		gtk_signal_connect (GTK_OBJECT (theme_selector->details->dialog),
-				    "destroy",
-				    (GtkSignalFunc) dialog_destroy,
-				    theme_selector);
+		nautilus_nullify_when_destroyed (&theme_selector->details->dialog);
+		
 		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
 				    "clicked",
 				    (GtkSignalFunc) add_theme_to_icons,

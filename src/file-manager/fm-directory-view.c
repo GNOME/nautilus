@@ -1567,15 +1567,16 @@ debuting_uri_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, D
 typedef struct {
 	GList		*added_files;
 	FMDirectoryView *directory_view;
-}CopyMoveDoneData;
+} CopyMoveDoneData;
 
 static void
 copy_move_done_data_free (CopyMoveDoneData *data)
 {
-	if (data != NULL) {
-		nautilus_g_list_free_deep_custom (data->added_files, (GFunc) gtk_object_unref, NULL);
-		g_free (data);
-	}
+	g_assert (data != NULL);
+	
+	nautilus_nullify_cancel (&data->directory_view);
+	nautilus_g_list_free_deep_custom (data->added_files, (GFunc) gtk_object_unref, NULL);
+	g_free (data);
 }
 
 static void
@@ -1598,18 +1599,17 @@ pre_copy_move (FMDirectoryView *directory_view)
 	copy_move_done_data = g_new0 (CopyMoveDoneData, 1);
 	copy_move_done_data->directory_view = directory_view;
 
+	nautilus_nullify_when_destroyed (&copy_move_done_data->directory_view);
+
 	/* We need to run after the default handler adds the folder we want to
 	 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
 	 * must use connect_after.
 	 */
-	gtk_signal_connect_full (GTK_OBJECT (directory_view),
-				 "add_file",
-				 pre_copy_move_add_file_callback,
-				 NULL,
-				 copy_move_done_data,
-				 (GtkDestroyNotify) copy_move_done_data_free,
-				 FALSE,
-				 TRUE);
+	gtk_signal_connect (GTK_OBJECT (directory_view),
+			    "add_file",
+			    pre_copy_move_add_file_callback,
+			    copy_move_done_data);
+
 	return copy_move_done_data;
 }
 
@@ -1619,7 +1619,7 @@ pre_copy_move (FMDirectoryView *directory_view)
 static gboolean
 copy_move_done_partition_func (gpointer data, gpointer callback_data)
 {
- 	char* uri;
+ 	char *uri;
  	gboolean result;
  	
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (data));
@@ -1647,43 +1647,48 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 
 	copy_move_done_data = (CopyMoveDoneData *) data;
 	directory_view = copy_move_done_data->directory_view;
-	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
-	debuting_uri_data = g_new (DebutingUriData, 1);
-	debuting_uri_data->debuting_uris = debuting_uris;
-	debuting_uri_data->added_files	 = nautilus_g_list_partition (copy_move_done_data->added_files,
-								      copy_move_done_partition_func,
-								      debuting_uris,
-								      &copy_move_done_data->added_files);
-								      
-	/* We're passed the same data used by pre_copy_move_add_file_callback, so disconnecting
-	 * it will free data. We've already siphoned off the added_files we need, and stashed the
-	 * directory_view pointer.
-	 */
-	gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view), &pre_copy_move_add_file_callback, data);
-
-	if (g_hash_table_size (debuting_uris) == 0) {
-		/* on the off-chance that all the icons have already been added ...
+	if (directory_view != NULL) {
+		g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+	
+		debuting_uri_data = g_new (DebutingUriData, 1);
+		debuting_uri_data->debuting_uris = debuting_uris;
+		debuting_uri_data->added_files	 = nautilus_g_list_partition (copy_move_done_data->added_files,
+									      copy_move_done_partition_func,
+									      debuting_uris,
+									      &copy_move_done_data->added_files);
+									      
+		/* We're passed the same data used by pre_copy_move_add_file_callback, so disconnecting
+		 * it will free data. We've already siphoned off the added_files we need, and stashed the
+		 * directory_view pointer.
 		 */
-		if (debuting_uri_data->added_files != NULL) {
-			fm_directory_view_set_selection (directory_view, debuting_uri_data->added_files);
-			fm_directory_view_reveal_selection (directory_view);
+		gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view), &pre_copy_move_add_file_callback, data);
+	
+		if (g_hash_table_size (debuting_uris) == 0) {
+			/* on the off-chance that all the icons have already been added ...
+			 */
+			if (debuting_uri_data->added_files != NULL) {
+				fm_directory_view_set_selection (directory_view, debuting_uri_data->added_files);
+				fm_directory_view_reveal_selection (directory_view);
+			}
+			debuting_uri_data_free (debuting_uri_data);
+		} else {
+			/* We need to run after the default handler adds the folder we want to
+			 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
+			 * must use connect_after.
+			 */
+			gtk_signal_connect_full (GTK_OBJECT (directory_view),
+						 "add_file",
+						 debuting_uri_add_file_callback,
+						 NULL,
+						 debuting_uri_data,
+						 (GtkDestroyNotify) debuting_uri_data_free,
+						 FALSE,
+						 TRUE);
 		}
-		debuting_uri_data_free (debuting_uri_data);
-	} else {
-		/* We need to run after the default handler adds the folder we want to
-		 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
-		 * must use connect_after.
-		 */
-		gtk_signal_connect_full (GTK_OBJECT (directory_view),
-					 "add_file",
-					 debuting_uri_add_file_callback,
-					 NULL,
-					 debuting_uri_data,
-					 (GtkDestroyNotify) debuting_uri_data_free,
-					 FALSE,
-					 TRUE);
 	}
+
+	copy_move_done_data_free (copy_move_done_data);
 }
 
 static int

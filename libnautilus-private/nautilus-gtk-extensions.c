@@ -1269,6 +1269,69 @@ nautilus_gtk_signal_connect_full_while_alive (GtkObject *object,
 				    info);
 }
 
+static void
+null_the_reference (GtkObject *object, gpointer callback_data)
+{
+	g_assert (* (GtkObject **) callback_data == object);
+
+	* (gpointer *) callback_data = NULL;
+}
+
+/**
+ * nautilus_nullify_when_destroyed.
+ *
+ * Nulls out a saved reference to an object when the object gets destroyed.
+ * @data: Address of the saved reference.
+ **/
+
+void 
+nautilus_nullify_when_destroyed (gpointer data)
+{
+	GtkObject **object_reference;
+
+	object_reference = (GtkObject **)data;	
+	if (*object_reference == NULL) {
+		/* the reference is  NULL, nothing to do. */
+		return;
+	}
+
+	g_assert (GTK_IS_OBJECT (*object_reference));
+
+	gtk_signal_connect (*object_reference, "destroy",
+		null_the_reference, object_reference);
+}
+
+/**
+ * nautilus_nullify_cancel.
+ *
+ * Disconnects the signal used to make nautilus_nullify_when_destroyed.
+ * Used when the saved reference is no longer needed, the structure it is in is
+ * being destroyed, etc. Nulls out the refernce when done.
+ * @data: Address of the saved reference.
+ **/
+
+void 
+nautilus_nullify_cancel (gpointer data)
+{
+	GtkObject **object_reference;
+
+	object_reference = (GtkObject **)data;	
+	if (*object_reference == NULL) {
+		/* the object was already destroyed and the reference nulled out,
+		 * nothing to do.
+		 */
+		return;
+	}
+
+	g_assert (GTK_IS_OBJECT (*object_reference));
+
+	gtk_signal_disconnect_by_func (*object_reference,
+		null_the_reference, object_reference);
+	
+	*object_reference = NULL;
+}
+
+
 /**
  * nautilus_gtk_container_get_first_child.
  *

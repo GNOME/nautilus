@@ -423,7 +423,10 @@ nautilus_property_browser_destroy (GtkObject *object)
 {
 	NautilusPropertyBrowser *property_browser;
 
+	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
+
+	nautilus_nullify_cancel (&property_browser->details->dialog);
 	
 	g_free (property_browser->details->path);
 	g_free (property_browser->details->category);
@@ -921,15 +924,6 @@ nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_brow
 	}
 }
 
-/* Callback used when the color selection dialog is destroyed */
-static gboolean
-dialog_destroy (GtkWidget *widget, gpointer data)
-{
-	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
-	property_browser->details->dialog = NULL;
-	return FALSE;
-}
-
 /* utility to set up the emblem image from the passed-in file */
 
 static void
@@ -1167,10 +1161,8 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 			(_("Select an image file to add as a pattern:"));
 		file_dialog = GTK_FILE_SELECTION (property_browser->details->dialog);
 		
-		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
-				    "destroy",
-				    (GtkSignalFunc) dialog_destroy,
-				    property_browser);
+		nautilus_nullify_when_destroyed (&property_browser->details->dialog);
+		
 		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
 				    "clicked",
 				    add_pattern_to_browser,
@@ -1269,9 +1261,8 @@ show_color_selection_window (GtkWidget *widget, gpointer *data)
 	
 	/* connect the signals to the new dialog */
 	
-	gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
-				"destroy",
-				(GtkSignalFunc) dialog_destroy, property_browser);
+	nautilus_nullify_when_destroyed (&property_browser->details->dialog);
+
 	gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
 				 "clicked",
 				 (GtkSignalFunc) add_color_to_browser, property_browser);
@@ -1297,9 +1288,8 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 		property_browser->details->dialog = gtk_color_selection_dialog_new (_("Select a color to add:"));
 		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog);
 		
-		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
-				    "destroy",
-				    (GtkSignalFunc) dialog_destroy, property_browser);
+		nautilus_nullify_when_destroyed (&property_browser->details->dialog);
+
 		gtk_signal_connect (GTK_OBJECT (color_dialog->ok_button),
 				    "clicked",
 				    (GtkSignalFunc) show_color_selection_window, property_browser);
@@ -1464,9 +1454,9 @@ add_new_emblem (NautilusPropertyBrowser *property_browser)
 		}
 	} else {
 		property_browser->details->dialog = nautilus_emblem_dialog_new (property_browser);		
-		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
-				    "destroy",
-				    (GtkSignalFunc) dialog_destroy, property_browser);
+
+		nautilus_nullify_when_destroyed (&property_browser->details->dialog);
+
 		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
 				    "clicked",
 				    (GtkSignalFunc) emblem_dialog_clicked, property_browser);
