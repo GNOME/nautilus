@@ -156,6 +156,147 @@ categorydata_list_destroy (GList *list)
 	g_list_free (list);
 }
 
+GList* 
+categorylist_flatten_to_packagelist (GList *categories)
+{
+	GList* packages = NULL;
+	GList* category_iterator;
+	
+	for (category_iterator = categories; category_iterator; category_iterator = g_list_next (category_iterator)) {
+		CategoryData *cat = (CategoryData*)category_iterator->data;
+		if (packages) {
+			packages = g_list_concat (packages, g_list_copy (cat->packages));
+		} else {
+			packages = g_list_copy (cat->packages);
+		}
+	}
+
+
+	return packages;
+}
+
+/*************************************************************************************************/
+static void
+packagedata_class_initialize (PackageDataClass *klass) 
+{
+	GtkObjectClass *object_class;
+
+	object_class = (GtkObjectClass*)klass;
+	object_class->finalize = packagedata_finalize;
+}
+
+static void
+packagedata_initialize (PackageData *package) {
+	g_assert (package!=NULL); 
+	g_assert (IS_PACKAGEDATA (package));
+
+
+#ifdef DEBUG_PACKAGE_ALLOCS
+	package_allocs ++;
+	trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, package);
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
+	package->name = NULL;
+	package->version = NULL;
+	package->minor = NULL;
+	package->archtype = NULL;
+	package->source_package = FALSE;
+	package->summary = NULL;
+	package->description = NULL;
+	package->bytesize = 0;
+	package->distribution = trilobite_get_distribution ();
+	package->filename = NULL;
+	package->eazel_id = NULL;
+	package->remote_url = NULL;
+	package->conflicts_checked = FALSE;
+	package->install_root = NULL;
+	package->provides = NULL;
+	package->soft_depends = NULL;
+	package->hard_depends = NULL;
+	package->breaks = NULL;
+	package->modifies = NULL;
+	package->depends = NULL;
+	package->status = PACKAGE_UNKNOWN_STATUS;
+	package->modify_status = PACKAGE_MOD_UNTOUCHED;
+	package->md5 = NULL;
+	package->packsys_struc = NULL;
+	package->features = NULL;
+	package->fillflag = PACKAGE_FILL_INVALID;
+}
+
+void
+packagedata_finalize (GtkObject *obj) 
+{
+	PackageData *pack = PACKAGEDATA (obj);
+	
+#ifdef DEBUG_PACKAGE_ALLOCS
+	package_allocs --;
+	if (pack) {
+		if (pack->name) {
+			trilobite_debug ("package_allocs = %d (0x%p) %s", package_allocs, pack,pack->name);
+		} else if (pack->provides) {
+			trilobite_debug ("package_allocs = %d (0x%p) providing %s", package_allocs, pack,
+					 (char*)pack->provides->data);
+		} else {
+			trilobite_debug ("package_allocs = %d (0x%p) ?", package_allocs, pack);
+		}
+	} else {
+		trilobite_debug ("package_allocs = %d (0x%p) ??", package_allocs, pack);
+	}
+#endif /* DEBUG_PACKAGE_ALLOCS */
+	g_return_if_fail (pack != NULL);
+
+	g_free (pack->name);
+	pack->name = NULL;
+	g_free (pack->version);
+	pack->version = NULL;
+	g_free (pack->minor);
+	pack->minor = NULL;
+	g_free (pack->archtype);
+	pack->archtype = NULL;
+	g_free (pack->summary);
+	pack->summary = NULL;
+	g_free (pack->description);
+	pack->description = NULL;
+	pack->bytesize = 0;
+	g_free (pack->filename);
+	pack->filename = NULL;
+	g_free (pack->eazel_id);
+	pack->eazel_id = NULL;
+	g_free (pack->remote_url);
+	pack->remote_url = NULL;
+	g_free (pack->install_root);
+	pack->install_root = NULL;
+	g_free (pack->md5);
+	pack->md5 = NULL;
+	g_list_foreach (pack->provides, (GFunc)g_free, NULL); 
+	g_list_free (pack->provides);
+	pack->provides = NULL;
+	g_list_foreach (pack->features, (GFunc)g_free, NULL);
+	g_list_free (pack->features);
+	pack->features = NULL;
+
+	g_list_free (pack->soft_depends);
+	g_list_free (pack->hard_depends);
+	g_list_free (pack->breaks);
+	g_list_free (pack->modifies);
+	g_list_free (pack->depends);
+	pack->soft_depends = NULL;
+	pack->hard_depends = NULL;
+	pack->depends = NULL;
+	pack->breaks = NULL;
+	pack->modifies = NULL;
+
+	if (pack->packsys_struc) {
+		/* FIXME bugzilla.eazel.com 1532:
+		   RPM specific code */
+		/* even better, this just crashes 
+		 */
+		headerFree ((Header) pack->packsys_struc);
+		pack->packsys_struc = NULL;
+	}
+}
+
 PackageDependency *
 packagedependency_new (void)
 {
@@ -190,45 +331,42 @@ packagedependency_destroy (PackageDependency *dep, gboolean deep)
 	g_free (dep);
 }
 
+GtkType 
+packagedata_get_type (void)
+{
+	static GtkType object_type = 0;
+
+	/* First time it's called ? */
+	if (!object_type)
+	{
+		static const GtkTypeInfo object_info =
+		{
+			"PackageData",
+			sizeof (PackageData),
+			sizeof (PackageDataClass),
+			(GtkClassInitFunc) packagedata_class_initialize,
+			(GtkObjectInitFunc) packagedata_initialize,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+
+		object_type = gtk_type_unique (gtk_object_get_type (), &object_info);
+	}
+
+	return object_type;
+}
+
 PackageData*
 packagedata_new ()
 {
-	PackageData *pack;
-	pack = g_new0 (PackageData, 1);
+	PackageData *package;
 
-#ifdef DEBUG_PACKAGE_ALLOCS
-	package_allocs ++;
-	trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, pack);
-#endif /* DEBUG_PACKAGE_ALLOCS */
+	package = PACKAGEDATA (gtk_object_new (TYPE_PACKAGEDATA, NULL));
+	gtk_object_ref (GTK_OBJECT (package));
+	gtk_object_sink (GTK_OBJECT (package));
 
-	
-	pack->name = NULL;
-	pack->version = NULL;
-	pack->minor = NULL;
-	pack->archtype = NULL;
-	pack->source_package = FALSE;
-	pack->summary = NULL;
-	pack->description = NULL;
-	pack->bytesize = 0;
-	pack->distribution = trilobite_get_distribution ();
-	pack->filename = NULL;
-	pack->eazel_id = NULL;
-	pack->remote_url = NULL;
-	pack->conflicts_checked = FALSE;
-	pack->install_root = NULL;
-	pack->provides = NULL;
-	pack->soft_depends = NULL;
-	pack->hard_depends = NULL;
-	pack->depends = NULL;
-	pack->breaks = NULL;
-	pack->modifies = NULL;
-	pack->status = PACKAGE_UNKNOWN_STATUS;
-	pack->modify_status = PACKAGE_MOD_UNTOUCHED;
-	pack->md5 = NULL;
-	pack->packsys_struc = NULL;
-	pack->features = NULL;
-	pack->fillflag = PACAKGE_FILL_INVALID;
-	return pack;
+	return package;
 }
 
 GList *
@@ -375,60 +513,12 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 		package->hard_depends = packagedata_list_copy (full_package->hard_depends, TRUE);
 		package->depends = packagedata_deplist_copy (full_package->depends, TRUE);
 	}
+	package->fillflag = fill_flags;
 }
 
 void 
 packagedata_destroy (PackageData *pack, gboolean deep)
 {
-#ifdef DEBUG_PACKAGE_ALLOCS
-	package_allocs --;
-	if (pack) {
-		if (pack->name) {
-			trilobite_debug ("package_allocs = %d (0x%p) %s", package_allocs, pack,pack->name);
-		} else if (pack->provides) {
-			trilobite_debug ("package_allocs = %d (0x%p) providing %s", package_allocs, pack,
-					 (char*)pack->provides->data);
-		} else {
-			trilobite_debug ("package_allocs = %d (0x%p) ?", package_allocs, pack);
-		}
-	} else {
-		trilobite_debug ("package_allocs = %d (0x%p) ??", package_allocs, pack);
-	}
-#endif /* DEBUG_PACKAGE_ALLOCS */
-
-
-	g_return_if_fail (pack != NULL);
-
-	g_free (pack->name);
-	pack->name = NULL;
-	g_free (pack->version);
-	pack->version = NULL;
-	g_free (pack->minor);
-	pack->minor = NULL;
-	g_free (pack->archtype);
-	pack->archtype = NULL;
-	g_free (pack->summary);
-	pack->summary = NULL;
-	g_free (pack->description);
-	pack->description = NULL;
-	pack->bytesize = 0;
-	g_free (pack->filename);
-	pack->filename = NULL;
-	g_free (pack->eazel_id);
-	pack->eazel_id = NULL;
-	g_free (pack->remote_url);
-	pack->remote_url = NULL;
-	g_free (pack->install_root);
-	pack->install_root = NULL;
-	g_free (pack->md5);
-	pack->md5 = NULL;
-	g_list_foreach (pack->provides, (GFunc)g_free, NULL); 
-	g_list_free (pack->provides);
-	pack->provides = NULL;
-	g_list_foreach (pack->features, (GFunc)g_free, NULL);
-	g_list_free (pack->features);
-	pack->features = NULL;
-
 	if (deep) {
 		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
@@ -436,26 +526,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 		g_list_foreach (pack->breaks, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->modifies, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 	}
-	g_list_free (pack->soft_depends);
-	g_list_free (pack->hard_depends);
-	g_list_free (pack->depends);
-	g_list_free (pack->breaks);
-	g_list_free (pack->modifies);
-	pack->soft_depends = NULL;
-	pack->hard_depends = NULL;
-	pack->breaks = NULL;
-	pack->modifies = NULL;
 
-	if (pack->packsys_struc) {
-		/* FIXME bugzilla.eazel.com 1532:
-		   RPM specific code */
-		/* even better, this just crashes 
-		 */
-		headerFree ((Header) pack->packsys_struc);
-		pack->packsys_struc = NULL;
-	}
-
-	g_free (pack);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 void 
@@ -925,28 +997,123 @@ eazel_install_package_other_version_compare (PackageData *pack,
 int 
 eazel_install_package_matches_versioning (PackageData *a, 
 					  const char *version,
-					  const char *minor)
+					  const char *minor,
+					  EazelSoftCatSense sense)
 {
-	int result = 0;
+	int version_result = 0, minor_result = 0;
 
-	if (version && minor) {
-		if (strcmp (a->minor, minor)==0 &&
-		    strcmp (a->version, version)==0) {
-			result = 1;
+	g_assert (!((version==NULL) && minor));
+
+	if (version) {
+		if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+			if (strcmp (a->version, version)==0) {
+				version_result = 1;
+			}
 		}
-	} else if (version && !minor) {
-		if (strcmp (a->version, version)==0) {
-			result = 1;
+		if ((version_result==0) && (sense & EAZEL_SOFTCAT_SENSE_GT)) {
+			if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+				if (strcmp (a->version, version)>=0) {
+					version_result = 1;
+				}
+			} else {
+				if (strcmp (a->version, version)>0) {
+					version_result = 1;
+				}
+			}			
 		}
-	} else if (!version && minor) {
-		if (strcmp (a->minor, minor)==0) {
-			result = 1;
+		if ((version_result==0) && (sense & EAZEL_SOFTCAT_SENSE_LT)) {
+			if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+				if (strcmp (a->version, version)<=0) {
+					version_result = 1;
+				}
+			} else {
+				if (strcmp (a->version, version)<0) {
+					version_result = 1;
+				}
+			}			
 		}
-	} else if (!version && !minor) {
-		result = 1;
+	} else {
+		version_result = 1;
 	}
- 	
+
+	if (minor) {
+		if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+			if (strcmp (a->minor, minor)==0) {
+				minor_result = 1;
+			}
+		}
+		if ((minor_result==0) && (sense & EAZEL_SOFTCAT_SENSE_GT)) {
+			if (version_result) {
+				minor_result = 1;
+			}			
+		}
+		if ((minor_result==0) && (sense & EAZEL_SOFTCAT_SENSE_LT)) {
+			if (version_result) {
+				minor_result = 1;
+			}			
+		}
+	} else {
+		minor_result = 1;
+	}
+
+/*
+	if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+		if (version && minor) {
+			if (strcmp (a->minor, minor)==0 &&
+			    strcmp (a->version, version)==0) {
+				result = 1;
+			}
+		} else if (version && !minor) {
+			if (strcmp (a->version, version)==0) {
+				result = 1;
+			}
+		} else if (!version && minor) {
+			if (strcmp (a->minor, minor)==0) {
+				result = 1;
+			}
+		} else if (!version && !minor) {
+			result = 1;
+		}
+	}
+	if ((result==0) && (sense & EAZEL_SOFTCAT_SENSE_GT)) {
+		if (version && minor) {
+			if (strcmp (a->minor, minor)>0 &&
+			    strcmp (a->version, version)>0) {
+				result = 1;
+			}
+		} else if (version && !minor) {
+			if (strcmp (a->version, version)>0) {
+				result = 1;
+			}
+		} else if (!version && minor) {
+			if (strcmp (a->minor, minor)>0) {
+				result = 1;
+			}
+		} else if (!version && !minor) {
+			result = 1;
+		}
+	}
+	if ((result==0) && (sense & EAZEL_SOFTCAT_SENSE_LT)) {
+		if (version && minor) {
+			if (strcmp (a->minor, minor)<0 &&
+			    strcmp (a->version, version)<0) {
+				result = 1;
+			}
+		} else if (version && !minor) {
+			if (strcmp (a->version, version)<0) {
+				result = 1;
+			}
+		} else if (!version && minor) {
+			if (strcmp (a->minor, minor)<0) {
+				result = 1;
+			}
+		} else if (!version && !minor) {
+			result = 1;
+		}
+	}
 	return result;
+*/ 	
+	return version_result && minor_result;
 }
 
 /* The evil marshal func */

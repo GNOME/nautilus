@@ -195,7 +195,7 @@ init_default_install_configuration (void)
 
 	rv->mode_verbose = get_conf_boolean ("verbose", TRUE);
 	rv->mode_silent = get_conf_boolean ("silent", FALSE);
-	rv->mode_debug = get_conf_boolean ("debug", TRUE);
+	rv->mode_debug = get_conf_boolean ("debug", FALSE);
 	rv->mode_test = get_conf_boolean ("dry-run", FALSE);
 	rv->mode_force = get_conf_boolean ("force", FALSE);
 	rv->mode_depend = get_conf_boolean ("depend", FALSE);

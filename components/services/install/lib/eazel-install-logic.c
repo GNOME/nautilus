@@ -90,31 +90,6 @@ static gboolean  eazel_install_check_for_file_conflicts (EazelInstall *service,
 static void eazel_install_prune_packages (EazelInstall *service, 
 					  PackageData *pack, 
 					  ...);
-
-/*
-  Iterate across the categories and assemble one long
-  list with all the toplevel packages in the categories
- */
-static GList *
-eazel_install_flatten_categories (EazelInstall *service,
-				  GList *categories)
-{
-	GList* packages = NULL;
-	GList* category_iterator;
-	
-	for (category_iterator = categories; category_iterator; category_iterator = g_list_next (category_iterator)) {
-		CategoryData *cat = (CategoryData*)category_iterator->data;
-		if (packages) {
-			packages = g_list_concat (packages, g_list_copy (cat->packages));
-		} else {
-			packages = g_list_copy (cat->packages);
-		}
-	}
-
-
-	return packages;
-}
-
 /* 
    Checks for pre-existance of all the packages
  */
@@ -170,7 +145,7 @@ eazel_install_pre_install_packages (EazelInstall *service,
 }
 
 EazelInstallStatus
-install_packages (EazelInstall *service, GList *categories) {
+ei_install_packages (EazelInstall *service, GList *categories) {
 	EazelInstallStatus result;
 
 	if (categories == NULL) {
@@ -181,7 +156,7 @@ install_packages (EazelInstall *service, GList *categories) {
 	result = EAZEL_INSTALL_NOTHING;
 	if (categories != NULL) {
 		/* First, collect all packages in one list */
-		GList *packages = eazel_install_flatten_categories (service, categories);
+		GList *packages = categorylist_flatten_to_packagelist (categories);
 
 		/* Now download all the packages */
 		if (eazel_install_download_packages (service, TRUE, &packages, NULL)) {
@@ -283,6 +258,7 @@ eazel_install_download_packages (EazelInstall *service,
 				package->status = PACKAGE_CANNOT_OPEN;
 				remove_list = g_list_prepend (remove_list, package);
 			} else {
+#if 0
 				/* If downloaded package has soft_deps,
 				   fetch them by a recursive call */
 				if (package->soft_depends) {
@@ -291,6 +267,7 @@ eazel_install_download_packages (EazelInstall *service,
 										  &package->soft_depends,
 										  NULL);
 				}
+#endif
 			}
 		}
 
@@ -299,6 +276,11 @@ eazel_install_download_packages (EazelInstall *service,
 			if (package->source_package) {
 				package->status = PACKAGE_SOURCE_NOT_SUPPORTED;
 				remove_list = g_list_prepend (remove_list, package);
+			}
+			if (strlen ("debug")) {
+				char *tmp = packagedata_dump (package, TRUE);
+				fprintf (stderr, "%s", tmp);
+				g_free (tmp);
 			}
 		}
 	}
@@ -479,7 +461,7 @@ uninstall_all_packages (EazelInstall *service,
 }
 
 EazelInstallStatus
-uninstall_packages (EazelInstall *service,
+ei_uninstall_packages (EazelInstall *service,
 		    GList* categories) 
 {
 	EazelInstallStatus result = EAZEL_INSTALL_NOTHING;
@@ -547,7 +529,7 @@ static void hest (PackageData *pack, char *str) {
 }
 
 EazelInstallStatus
-revert_transaction (EazelInstall *service, 
+ei_revert_transaction (EazelInstall *service, 
 		    GList *packages)
 {
 	GList *uninst, *inst, *upgrade, *downgrade;
@@ -575,28 +557,28 @@ revert_transaction (EazelInstall *service,
 		eazel_install_set_downgrade (service, FALSE);
 		eazel_install_set_update (service, FALSE);
 		cat->packages = uninst;
-		result |= uninstall_packages (service, categories);
+		result |= ei_uninstall_packages (service, categories);
 	}
 	if (inst) {
 		eazel_install_set_uninstall (service, FALSE);
 		eazel_install_set_downgrade (service, FALSE);
 		eazel_install_set_update (service, FALSE);
 		cat->packages = inst;
-		result |= install_packages (service, categories);
+		result |= ei_install_packages (service, categories);
 	}
 	if (downgrade) {
 		eazel_install_set_uninstall (service, FALSE);
 		eazel_install_set_downgrade (service, TRUE);
 		eazel_install_set_update (service, FALSE);
 		cat->packages = downgrade;
-		result |= install_packages (service, categories);
+		result |= ei_install_packages (service, categories);
 	}
 	if (upgrade) {
 		eazel_install_set_uninstall (service, FALSE);
 		eazel_install_set_downgrade (service, TRUE);
 		eazel_install_set_update (service, TRUE);
 		cat->packages = upgrade;
-		result |= install_packages (service, categories);
+		result |= ei_install_packages (service, categories);
 		g_list_foreach (upgrade, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	}
 
@@ -1245,7 +1227,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			
 			/* check against minor version */
 			if (res==0) {
-				trilobite_debug ("versions are equal, comparing minosr");
+				trilobite_debug ("versions are equal, comparing minors");
 				if (pack->minor && existing_package->minor) {
 					trilobite_debug ("minors are %s and %s (installed)", 
 							 pack->minor, existing_package->minor);
@@ -1471,7 +1453,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 		/* Emit the signal here, since then we won't have to make that
 		   call in for every package system (when I say every, we know
 		   I mean "both"...) */
-		eazel_install_emit_dependency_check (service, pack, dep);
+		eazel_install_emit_dependency_check_pre_ei2 (service, pack, dep);
 		packagedata_add_pack_to_soft_depends (pack, dep);
 
 		fetch_result = eazel_install_fetch_package (service, dep);
@@ -2288,7 +2270,8 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 				PackageData *matched = (PackageData*)match_it->data;
 				if (eazel_install_package_matches_versioning (matched, 
 									      pack->version, 
-									      pack->minor)) {
+									      pack->minor,
+									      EAZEL_SOFTCAT_SENSE_EQ)) {
 					matched->toplevel = TRUE;
 					/* mark that at least one matched */
 					any = TRUE;

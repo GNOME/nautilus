@@ -26,6 +26,7 @@
 #include <gmodule.h>
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-distribution.h>
+#include <libtrilobite/trilobite-core-utils.h>
 
 enum {
 	START,
@@ -125,7 +126,8 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 				   const char *dbpath,
 				   const char *name,
 				   const char *version,
-				   const char *minor)
+				   const char *minor,
+				   EazelSoftCatSense version_sense)
 {
 	GList *matches;
 	gboolean result = FALSE;
@@ -142,7 +144,10 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 
 			for (iterator = matches; iterator && !result; iterator = g_list_next (iterator)) {
 				PackageData *pack = (PackageData*)iterator->data;
-				if (eazel_install_package_matches_versioning (pack, version, minor)) {
+				if (eazel_install_package_matches_versioning (pack, 
+									      version, 
+									      minor, 
+									      version_sense)) {
 					result = TRUE;
 				}
 			}
@@ -152,7 +157,11 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	}
 	g_list_free (matches);
-
+#if 0
+	info (system, "is_installed (%s, %s, %s, %d) == %s", 
+	      name, version, minor, version_sense, result ? "TRUE" : "FALSE");
+#endif
+	
 	return result;
 }
 

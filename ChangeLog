@@ -1,3 +1,140 @@
+2000-12-19  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	This powerpatch introduces the first parts of the ei2 work.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri):
+	Updated the is_installed call to also pass a version sense.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line),
+	(eazel_download_progress_signal), (main):
+	Option to enable ei2.
+	And since I was bored and played with adding KB/s to download.
+	Also reenabled the use of gnome_init since otherwise the options
+	were all incorrect.
+	
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_query), (progress_signal), (test_verify):
+	Made the tests easier to tweak, by having defines for the
+	packages/features etc that are used in the test queries.
+	Fixed test_verify, so it' won't report badness on verify of
+	multiple packages.
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(categorylist_flatten_to_packagelist),
+	Moved a function from eazel-install-logic. It returns a flat list
+	of all the packages in a set of categories.
+	(packagedata_class_initialize), (packagedata_initialize),
+	(packagedata_finalize), (packagedata_get_type), (packagedata_new),
+	(packagedata_fill_in_missing), (packagedata_destroy),
+	gtk'ified the packagedata object (I apologize)
+	(eazel_install_package_matches_versioning):
+	Made the matches_versioning use a version sense.
+	Also added a PACKAGE_FILL_INVALID enum and a
+	EAZEL_SOFTCAT_SENSE_ANY. Guess what they mean...
+	Also added some gtk style defines for PackageDependency, for the
+	day when we actually want to abuse it into a gtkobject (shudder)
+	fill_in_missing now also sets the fillflag (needed for the ei2 work)
+	
+	* components/services/install/command-line/eazel-test-types.c:
+	(test_eazel_install_package_matches_versioning):
+	More test of matches_versioning to test the new sense ability.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install__set_ei2), (impl_Eazel_Install__get_ei2),
+	(impl_Eazel_Install__set_ignore_file_conflicts),
+	(impl_Eazel_Install__get_ignore_file_conflicts),
+	(eazel_install_get_epv):
+	Added the evil ei2 boolean. If set, libeazelinstall will use the
+	new ei2 features.
+	
+	* components/services/install/lib/Makefile.am:
+	Added eazel-install-logic2.c which has the ei2 stuff.
+	
+	* components/services/install/lib/eazel-install-logic.h:
+	* components/services/install/lib/eazel-install-logic.c:
+	(ei_install_packages), (eazel_install_download_packages),
+	(ei_uninstall_packages), (ei_revert_transaction),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_dependencies),
+	(eazel_uninstall_check_for_install):
+	Moved flatten_packages out.
+	Prefixed soem functions with ei_ to seperate them from the ei2
+	equivalents.
+	Suffixed emit_dependency_check with _pre_ei2 to seperate it from
+	the ei2 equivalent.
+	
+	* components/services/install/lib/eazel-install-logic2.h:
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (dump_tree), (get_softcat_info),
+	(get_package_info_foreach), (get_package_info),
+	(dedupe_foreach_depends), (dedupe_foreach), (dedupe),
+	(is_satisfied), (is_satisfied_features),
+	(check_dependencies_foreach), (check_dependencies),
+	(no_two_packages_with_same_file), (check_conflicts_with_other),
+	(feature_consistency_check), (do_file_conflict_check),
+	(do_dep_check), (install_packages), (uninstall_packages),
+	(revert_transaction):
+	Implemented the first many steps of ei2. It now gets package info
+	and correctly constructs a tree of needed packages. It still lacks
+	the file and feature conflict checking.
+	
+	* components/services/install/lib/eazel-install-metadata.c:
+	(init_default_install_configuration):
+	Default debug to FALSE
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_initialize), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_emit_dependency_check),
+	(eazel_install_emit_dependency_check_pre_ei2),
+	(eazel_install_set_debug):
+	Shitload of code just to have one more arg (ei2). I remember how
+	easy this was in Emerald... *sigh*
+	_set_debug also sets VERBOSE debug in the packagesystem object.
+	Initialise also inits some new hashes for ei2.
+	The install, uninstall and revert checks for the ei2 setting, if
+	true, use the new ones, of not, use the old ones (doh)
+	Added a new emit_dependency that as second arg takes a
+	PackageDependency and mutates a correct PackageData from it.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	Back to only getting with NO_PROVIDES|NO_DEPENDENCIES when using
+	the old (non ei2) stuff.
+	
+	* components/services/install/lib/eazel-package-system.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_is_installed):
+	Takes a sense as last argument, make it more flexible.	
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(eazel_package_system_rpm3_query_requires),
+	(check_if_all_packages_seen):
+	Removed a fixme comment.
+	Added a fixme comment.
+	Set the package fillflag in fill_from_header.
+	Fixed some braindamage in query_requires to limit the amount of
+	damage the query does.
+	all_packages_seen changes according to the is_installed changes.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	* components/services/install/lib/eazel-softcat.h:
+	Give robey more blame than me.
+	
+	* components/services/install/lib/makefile.staticlib.in:
+	Added logic2.o
+	
 2000-12-19  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 5258 (no UI for renaming new folder in View as List)

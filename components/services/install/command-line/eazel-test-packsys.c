@@ -27,6 +27,11 @@
 
 #include <libtrilobite/trilobite-root-helper.h>
 
+#define MATCHES_ONLY_ONE "glibc"
+#define PROVIDED_BY_ONLY_ONE "libc.so.6"
+#define OWNED_BY_ONLY_ONE "/bin/sh"
+#define NEEDED_BY_MANY "glibc"
+
 static void
 test_package_load (EazelPackageSystem *packsys,
 		   const char *package_file_name) 
@@ -105,13 +110,40 @@ test_query (EazelPackageSystem *packsys)
 
 	result = eazel_package_system_query (packsys,
 					     NULL,
-					     "rpm",
+					     MATCHES_ONLY_ONE,
 					     EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
 					     0);
 	if (g_list_length (result)==1) {
-		g_message ("Query matches ok");
+		g_message ("Query matches ok (1 hit on %s)", MATCHES_ONLY_ONE);
 	} else {
-		g_message ("Query matches fail (got %d, not 1)", g_list_length (result));
+		g_message ("Query matches fail (got %d, not 1 for %s)", 
+			   g_list_length (result), MATCHES_ONLY_ONE);
+	}
+	g_list_free (result);
+
+	result = eazel_package_system_query (packsys,
+					     NULL,
+					     PROVIDED_BY_ONLY_ONE,
+					     EAZEL_PACKAGE_SYSTEM_QUERY_PROVIDES,
+					     0);
+	if (g_list_length (result)==1) {
+		g_message ("Query provides ok (1 hit for %s)", PROVIDED_BY_ONLY_ONE);
+	} else {
+		g_message ("Query provides fail (got %d, not 1 for %s)", 
+			   g_list_length (result), PROVIDED_BY_ONLY_ONE);
+	}
+	g_list_free (result);
+
+	result = eazel_package_system_query (packsys,
+					     NULL,
+					     OWNED_BY_ONLY_ONE,
+					     EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
+					     0);
+	if (g_list_length (result)==1) {
+		g_message ("Query owned ok (1 hit for %s)", OWNED_BY_ONLY_ONE);
+	} else {
+		g_message ("Query owned fail (got %d, not 1 for %s)", 
+			   g_list_length (result), OWNED_BY_ONLY_ONE);
 	}
 	g_list_free (result);
 	
@@ -121,23 +153,11 @@ test_query (EazelPackageSystem *packsys)
 					     EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR,
 					     0);
 	if (g_list_length (result)>10) {
-		g_message ("Query substr ok (%d hits)", g_list_length (result));
+		g_message ("Query substr ok (%d hits for \"\")", g_list_length (result));
 	} else {
-		g_message ("Query substr fail (%d hits, too few)", g_list_length (result));
+		g_message ("Query substr fail (%d hits, too few (<10) for \"\")", 
+			   g_list_length (result));
 	}
-	
-/*
-	{
-		GList *iterator;
-		
-		for (iterator = result; iterator; iterator = g_list_next (iterator)) {
-			PackageData *pack = (PackageData*)iterator->data;
-			char *tmp = packagedata_get_readable_name (pack);
-			g_message ("pacakge %s", tmp);
-			g_free (tmp);
-		}
-	}
-*/
 	g_list_free (result);
 
 	{		
@@ -145,7 +165,7 @@ test_query (EazelPackageSystem *packsys)
 
 		glibc_result = eazel_package_system_query (packsys,
 							   NULL,
-							   "glibc",
+							   NEEDED_BY_MANY,
 							   EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
 							   0);
 
@@ -158,13 +178,15 @@ test_query (EazelPackageSystem *packsys)
 							     EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
 							     0);
 			if (g_list_length (result)>50) {
-				g_message ("Query requries ok (%d hits)", g_list_length (result));
+				g_message ("Query requries ok (%d hits for %s)", 
+					   g_list_length (result), NEEDED_BY_MANY);
 			} else {
-				g_message ("Query requires fail (%d hits, too few)",  g_list_length (result));
+				g_message ("Query requires fail (%d hits, too few (<50) for %s)",  
+					   g_list_length (result), NEEDED_BY_MANY);
 			}
 			g_list_free (result);
 		} else {
-			g_message ("Can't test query requires");
+			g_message ("Can't test query requires, no hits for %s", NEEDED_BY_MANY);
 		}
 	}
 }
@@ -218,11 +240,13 @@ progress_signal (EazelPackageSystem *system,
 		 gboolean *signals)
 {
 	if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY) {
+		/*
 		g_message ("checking file \"%s\" (%ld/%ld %ld/%ld %ld/%ld)",
 			   (char*)((g_list_nth (pack->provides, info[0]-1))->data),
 			   info [0], info [1],
 			   info [2], info [3],
 			   info [4], info [5]);
+		*/
 	}
 	signals[1] = TRUE;
 	return TRUE;
@@ -391,6 +415,14 @@ test_verify (EazelPackageSystem *packsys,
 	eazel_package_system_verify (packsys,
 				     dbpath,
 				     packages);
+
+	if (signals[3]) {
+		g_message ("verified more then 1 file");
+	} else if (signals[0] && signals[1] && signals[2]) {
+		g_message ("verify ok");
+	} else {
+		g_message ("verify didn't emit enough signals");
+	}
 
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h1);
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h2);

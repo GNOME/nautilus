@@ -115,7 +115,8 @@ gboolean             eazel_package_system_is_installed (EazelPackageSystem *pack
 							const char *dbpath,
 							const char *name,
 							const char *version,
-							const char *minor);
+							const char *minor,
+							EazelSoftCatSense version_sense);
 
 PackageData         *eazel_package_system_load_package (EazelPackageSystem *package_system,
 							PackageData *in_package,

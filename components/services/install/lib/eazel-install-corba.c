@@ -198,6 +198,7 @@ impl_Eazel_Install__get_test_mode (impl_POA_GNOME_Trilobite_Eazel_Install *serva
 	return eazel_install_get_test (servant->object);
 }
 
+
 static void
 impl_Eazel_Install__set_force (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 			       const CORBA_boolean value,
@@ -211,6 +212,21 @@ impl_Eazel_Install__get_force (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 			       CORBA_Environment *ev)
 {
 	return eazel_install_get_force (servant->object);
+}
+
+static void
+impl_Eazel_Install__set_ei2 (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+			       const CORBA_boolean value,
+			       CORBA_Environment *ev)
+{
+	eazel_install_set_ei2 (servant->object, value);
+}
+
+static CORBA_boolean
+impl_Eazel_Install__get_ei2 (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+			       CORBA_Environment *ev)
+{
+	return eazel_install_get_ei2 (servant->object);
 }
 
 static void
@@ -277,8 +293,8 @@ impl_Eazel_Install__get_ssl_rename (impl_POA_GNOME_Trilobite_Eazel_Install *serv
 
 static void
 impl_Eazel_Install__set_ignore_file_conflicts (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
-				    const CORBA_boolean value,
-				    CORBA_Environment *ev)
+					       const CORBA_boolean value,
+					       CORBA_Environment *ev)
 {
 	eazel_install_set_ignore_file_conflicts (servant->object, value);
 }
@@ -286,7 +302,7 @@ impl_Eazel_Install__set_ignore_file_conflicts (impl_POA_GNOME_Trilobite_Eazel_In
 
 static CORBA_boolean
 impl_Eazel_Install__get_ignore_file_conflicts (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
-				    CORBA_Environment *ev)
+					       CORBA_Environment *ev)
 {
 	return eazel_install_get_ignore_file_conflicts (servant->object);
 }
@@ -461,6 +477,9 @@ eazel_install_get_epv ()
 
 	epv->_set_force = (gpointer)&impl_Eazel_Install__set_force;
 	epv->_get_force = (gpointer)&impl_Eazel_Install__get_force;
+
+	epv->_set_ei2 = (gpointer)&impl_Eazel_Install__set_ei2;
+	epv->_get_ei2 = (gpointer)&impl_Eazel_Install__get_ei2;
 
 	epv->_set_update = (gpointer)&impl_Eazel_Install__set_update;
 	epv->_get_update = (gpointer)&impl_Eazel_Install__get_update;

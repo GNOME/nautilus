@@ -48,6 +48,7 @@
 #include "eazel-install-metadata.h"
 #include "eazel-install-protocols.h"
 #include "eazel-install-logic.h"
+#include "eazel-install-logic2.h"
 #include "eazel-package-system-types.h"
 
 #include <sys/stat.h>
@@ -89,7 +90,8 @@ enum {
 	ARG_CGI_PATH,
 	ARG_SSL_RENAME,
 	ARG_IGNORE_FILE_CONFLICTS,
-	ARG_EAZEL_AUTH
+	ARG_EAZEL_AUTH,
+	ARG_EI2
 };
 
 /* The signal array, used for building the signal bindings */
@@ -290,6 +292,9 @@ eazel_install_set_arg (GtkObject *object,
 	service = EAZEL_INSTALL (object);
 
 	switch (arg_id) {
+	case ARG_EI2:
+		eazel_install_set_ei2 (service, GTK_VALUE_BOOL(*arg));
+		break;
 	case ARG_VERBOSE:
 		eazel_install_set_verbose (service, GTK_VALUE_BOOL(*arg));
 		break;
@@ -466,6 +471,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 #endif
 	klass->done = eazel_install_emit_done_default;
 
+	gtk_object_add_arg_type ("EazelInstall::ei2",
+				 GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE,
+				 ARG_VERBOSE);
 	gtk_object_add_arg_type ("EazelInstall::verbose",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
@@ -590,6 +599,10 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->log_to_stderr = FALSE;
 	service->private->name_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
 								   (GCompareFunc)g_str_equal);
+	service->private->dedupe_hash = g_hash_table_new ((GHashFunc)g_str_hash,
+							  (GCompareFunc)g_str_equal);
+	service->private->dep_ok_hash = g_hash_table_new ((GHashFunc)g_str_hash,
+							  (GCompareFunc)g_str_equal);
 	service->private->downloaded_files = NULL;
 	service->private->transaction = NULL;
 	service->private->revert = FALSE;
@@ -1001,7 +1014,13 @@ eazel_install_install_packages (EazelInstall *service,
 		g_free (service->private->cur_root);
 		service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 		eazel_install_set_uninstall (service, FALSE);
-		result = install_packages (service, categories);
+		
+		if (eazel_install_get_ei2 (service)) {
+			trilobite_debug ("Using EI2");
+			result = install_packages (service, categories);
+		} else {
+			result = ei_install_packages (service, categories);
+		}
 		
 		if (result == EAZEL_INSTALL_NOTHING) {
 			g_warning (_("Install failed"));
@@ -1043,7 +1062,11 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 		eazel_install_fetch_remote_package_list (service);
 	}
 
-	result = uninstall_packages (service, categories);
+	if (eazel_install_get_ei2 (service)) {
+		result = uninstall_packages (service, categories);
+	} else {
+		result = ei_uninstall_packages (service, categories);
+	}
 
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Uninstall failed"));
@@ -1068,7 +1091,11 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	service->private->revert = TRUE;
 
 	if (create_temporary_directory (service)) {
-		result = revert_transaction (service, packages);
+		if (eazel_install_get_ei2 (service)) {
+			result = revert_transaction (service, packages);
+		} else {
+			result = ei_revert_transaction (service, packages);
+		}
 		
 		eazel_install_unlock_tmp_dir (service);
 	} else {
@@ -1396,7 +1423,26 @@ eazel_install_emit_uninstall_failed_default (EazelInstall *service,
 void 
 eazel_install_emit_dependency_check (EazelInstall *service, 
 				     const PackageData *package,
-				     const PackageData *needs)
+				     const PackageDependency *needs)
+{
+	PackageData *needed_package;
+
+	EAZEL_INSTALL_SANITY(service);
+
+	needed_package = packagedata_copy (needs->package, FALSE);
+	if (needs->version) {
+		g_free (needed_package->version);
+		g_free (needed_package->minor);
+		needed_package->version = g_strdup (needs->version);
+	} 
+	gtk_signal_emit (GTK_OBJECT (service), signals[DEPENDENCY_CHECK], package, needed_package);
+	packagedata_destroy (needed_package, TRUE);
+}
+
+void 
+eazel_install_emit_dependency_check_pre_ei2 (EazelInstall *service, 
+					     const PackageData *package,
+					     const PackageData *needs)
 {
 	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[DEPENDENCY_CHECK], package, needs);
@@ -1550,6 +1596,7 @@ eazel_install_set_cgi_path (EazelInstall *service, const char *cgi_path)
 void eazel_install_set_debug (EazelInstall *service, gboolean debug) {
 	EAZEL_INSTALL_SANITY (service);
 	service->private->iopts->mode_debug = debug;
+
 	if (debug) {
 		eazel_package_system_set_debug (service->private->package_system, 
 						EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
@@ -1575,6 +1622,7 @@ ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
 ei_mutator_impl_copy (transaction_dir, char*, transaction_dir, g_strdup);
 ei_mutator_impl (ssl_rename, gboolean, ssl_rename);
 ei_mutator_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts);
+ei_mutator_impl (ei2, gboolean, ei2);
 
 ei_access_impl (verbose, gboolean, iopts->mode_verbose, FALSE);
 ei_access_impl (silent, gboolean, iopts->mode_silent, FALSE);
@@ -1594,6 +1642,7 @@ ei_access_impl (transaction_dir, char*, transaction_dir, NULL);
 ei_access_impl (root_dirs, GList*, root_dirs, NULL);
 ei_access_impl (ssl_rename, gboolean, ssl_rename, FALSE);
 ei_access_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts, FALSE);
+ei_access_impl (ei2, gboolean, ei2, FALSE);
 
 void eazel_install_set_root_dirs (EazelInstall *service,
 				  const GList *new_roots) 

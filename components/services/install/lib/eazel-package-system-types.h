@@ -36,13 +36,16 @@
 #include <unistd.h>
 #include <libtrilobite/trilobite-core-distribution.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum _URLType URLType;
 typedef enum _PackageType PackageType;
 typedef enum _PackageFillFlags PackageFillFlags;
 typedef struct _TransferOptions TransferOptions;
 typedef struct _InstallOptions InstallOptions;
 typedef struct _CategoryData CategoryData;
-typedef struct _PackageData PackageData;
 typedef enum _PackageSystemStatus PackageSystemStatus;
 
 /*
@@ -106,8 +109,8 @@ enum _PackageFillFlags {
 	PACKAGE_FILL_NO_PROVIDES = 0x02,
 	PACKAGE_FILL_NO_DEPENDENCIES = 0x04,
 	PACKAGE_FILL_NO_DIRS_IN_PROVIDES = 0x8, /* only used if PACKAGE_FILL_NO_PROVIDES is not set */
-	PACKAGE_FILL_MINIMAL = 0xff,
-	PACAKGE_FILL_INVALID = -1
+	PACKAGE_FILL_MINIMAL = 0x7fff,
+	PACKAGE_FILL_INVALID = 0x8000
 };
 
 /* FIXME eventually this is going away completely */
@@ -150,27 +153,27 @@ void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
 void categorydata_list_destroy (GList *list);
 
-typedef enum {
-	EAZEL_SOFTCAT_SENSE_EQ = 0x1,
-	EAZEL_SOFTCAT_SENSE_GT = 0x2,
-	EAZEL_SOFTCAT_SENSE_LT = 0x4,
-	EAZEL_SOFTCAT_SENSE_GE = (EAZEL_SOFTCAT_SENSE_GT | EAZEL_SOFTCAT_SENSE_EQ)
-} EazelSoftCatSense;
+/* Returns a glist of all the packages in the categories */
+GList* categorylist_flatten_to_packagelist (GList *categories);
 
-/* dependency list */
-typedef struct {
-	PackageData *package;
-	/* if this dependency fills a requirement, like "gconf >= 0.6",
-	 * the requirement is listed here: */
-	EazelSoftCatSense sense;
-	char *version;
-} PackageDependency;
+/*************************************************************************************************/
 
-PackageDependency *packagedependency_new (void);
-PackageDependency *packagedependency_copy (const PackageDependency *dep, gboolean deep);
-void packagedependency_destroy (PackageDependency *dep, gboolean deep);
+#define TYPE_PACKAGEDATA           (packagedata_get_type ())
+#define PACKAGEDATA(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEDATA, PackageData))
+#define PACKAGEDATA_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEDATA, PackageDataClass))
+#define IS_PACKAGEDATA(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEDATA))
+#define IS_PACKAGEDATA_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEDATA))
+
+typedef struct _PackageData PackageData;
+typedef struct _PackageDataClass PackageDataClass;
+
+struct _PackageDataClass {
+	GtkObjectClass parent_class;
+};
 
 struct _PackageData {
+	GtkObject parent;
+
 	char* name;
 	char* version;
 	char* minor;
@@ -239,6 +242,9 @@ struct _PackageData {
 };
 
 PackageData* packagedata_new (void);
+GtkType packagedata_get_type (void);
+	void packagedata_finalize (GtkObject *obj);
+
 PackageData* packagedata_new_from_file (const char *file);
 PackageData* packagedata_copy (const PackageData *pack, gboolean deep);
 GList *packagedata_list_copy (const GList *list, gboolean deep);
@@ -274,6 +280,33 @@ void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 */
 void packagedata_list_prune (GList **input, GList *remove_list, gboolean destroy, gboolean deep);
 
+/*************************************************************************************************/
+
+typedef enum {
+	EAZEL_SOFTCAT_SENSE_EQ = 0x1,
+	EAZEL_SOFTCAT_SENSE_GT = 0x2,
+	EAZEL_SOFTCAT_SENSE_LT = 0x4,
+	EAZEL_SOFTCAT_SENSE_GE = (EAZEL_SOFTCAT_SENSE_GT | EAZEL_SOFTCAT_SENSE_EQ),
+	EAZEL_SOFTCAT_SENSE_ANY = (EAZEL_SOFTCAT_SENSE_GT | EAZEL_SOFTCAT_SENSE_EQ | EAZEL_SOFTCAT_SENSE_LT)
+} EazelSoftCatSense;
+
+/* dependency list */
+typedef struct {
+	PackageData *package;
+	/* if this dependency fills a requirement, like "gconf >= 0.6",
+	 * the requirement is listed here: */
+	EazelSoftCatSense sense;
+	char *version;
+} PackageDependency;
+
+PackageDependency *packagedependency_new (void);
+PackageDependency *packagedependency_copy (const PackageDependency *dep, gboolean deep);
+void packagedependency_destroy (PackageDependency *dep, gboolean deep);
+
+#define PACKAGEDEPENDENCY(obj) ((PackageDependency*)(obj))
+#define IS_PACKAGEDEPENDENCY(obj) (1)
+/*************************************************************************************************/
+
 typedef struct {
 	PackageData *package;
 	PackageData *required;
@@ -294,8 +327,11 @@ int eazel_install_package_other_version_compare (PackageData *pack, PackageData 
 
 /* Other compare functions */
 
-/* Specific compare where b is more complete then a, do not use in glib functions */
-int eazel_install_package_matches_versioning (PackageData *a, const char *version, const char *minor);
+/* Specific compare where b is more complete then a, do not use in
+   glib functions.  both version and minor can be null, however, if
+   version is null, minor must also be null. */
+int eazel_install_package_matches_versioning (PackageData *a, const char *version, 
+					      const char *minor, EazelSoftCatSense);
 
 /* Evil marshal func */
 
@@ -304,5 +340,9 @@ void eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject 
 								      gpointer func_data, GtkArg * args);
 
 char *packagedata_dump (const PackageData *package, gboolean deep);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* EAZEL_PACKAGE_SYSTEM_TYPES_H */

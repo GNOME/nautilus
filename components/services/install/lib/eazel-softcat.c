@@ -17,8 +17,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: Eskil Heyn Olsen <eskil@eazel.com>
- *	    Robey Pointer <robey@eazel.com>
+ * Authors: Robey Pointer <robey@eazel.com>
+ *	    Eskil Heyn Olsen <eskil@eazel.com>
  */
 
 #include <config.h>

@@ -532,7 +532,8 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                                                           NULL,
                                                           rpm_view->details->package->name,
                                                           rpm_view->details->package->version,
-                                                          rpm_view->details->package->minor);
+                                                          rpm_view->details->package->minor,
+                                                          EAZEL_SOFTCAT_SENSE_EQ);
 	rpm_view->details->package_installed = is_installed != 0;
 			
 	/* set up the install message and buttons */

@@ -46,6 +46,9 @@ struct _EazelInstallPrivate {
 	int problem_filters; 
 	char *transaction_dir;
 
+	gboolean ei2; /* This for the transition period. ei2==true means use the
+			 new ei2 stuff */
+
 	gboolean ssl_rename; /* If true, rename the hosts part in all urls to 
 				localhost. This is to make stuff work
 				with ssl tunneling */
@@ -94,6 +97,10 @@ struct _EazelInstallPrivate {
 
 	/* context to use for softcat queries */
 	EazelSoftCat *softcat;
+
+	/* This is one of the ei2 hashes */
+	GHashTable *dedupe_hash;
+	GHashTable *dep_ok_hash;
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

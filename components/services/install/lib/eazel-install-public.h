@@ -49,9 +49,12 @@ extern "C" {
 #define EAZEL_IS_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL))
 
 typedef enum {
-	EAZEL_INSTALL_USE_RPM
-} PackageSystem;;
-
+	EAZEL_INSTALL_NOTHING = 0,
+	EAZEL_INSTALL_INSTALL_OK = 1<<0,
+	EAZEL_INSTALL_UNINSTALL_OK = 1<<1,
+	EAZEL_INSTALL_REVERSION_OK = 1<<2
+} EazelInstallOperationStatus;
+	
 typedef struct _EazelInstall EazelInstall;
 typedef struct _EazelInstallClass EazelInstallClass;
 
@@ -155,6 +158,9 @@ void eazel_install_emit_install_failed            (EazelInstall *service,
 void eazel_install_emit_uninstall_failed          (EazelInstall *service, 
 						   const PackageData *pd);
 void eazel_install_emit_dependency_check          (EazelInstall *service, 
+						   const PackageData *package, 
+						   const PackageDependency *needed);
+void eazel_install_emit_dependency_check_pre_ei2  (EazelInstall *service, 
 						   const PackageData *package, 
 						   const PackageData *needed);
 void eazel_install_emit_done                      (EazelInstall *service, 
@@ -271,6 +277,7 @@ ei_mutator_decl (cgi_path, char*);
 ei_mutator_decl (eazel_auth, gboolean);
 ei_mutator_decl (ssl_rename, gboolean);
 ei_mutator_decl (ignore_file_conflicts, gboolean);
+ei_mutator_decl (ei2, gboolean);
 
 ei_access_decl (verbose, gboolean);
 ei_access_decl (silent, gboolean);
@@ -295,6 +302,7 @@ ei_access_decl (cgi_path, char*);
 ei_access_decl (eazel_auth, gboolean);
 ei_access_decl (ssl_rename, gboolean);
 ei_access_decl (ignore_file_conflicts, gboolean);
+ei_access_decl (ei2, gboolean);
 
 #ifdef __cplusplus
 }

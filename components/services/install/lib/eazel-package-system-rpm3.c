@@ -510,7 +510,6 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			(void **) &sizep, NULL);	
 	pack->bytesize = *sizep;
 
-	/* FIXME: bugzilla.eazel.com 4862 */
 	pack->packsys_struc = (gpointer)hd;
 	
 	pack->fillflag = detail_level;
@@ -585,6 +584,13 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		g_free (paths_copy);
 		xfree (paths);
 		xfree (names);
+	}
+
+	/* FIXME: bugzill.eaze.com 5262
+	   Without this, libeazelinstall --ei2 cannot install starting with
+	   a rpm file
+	 */
+	if (~detail_level & PACKAGE_FILL_NO_DEPENDENCIES) {		
 	}
 }
 
@@ -846,9 +852,9 @@ eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
 		   fkey is "lib.*\.so.*", or "/bin/.*" or "/sbin/.*" */
 		for (iterator = pack->provides; iterator; iterator = g_list_next (iterator)) {
 			const char *fkey = (const char*)iterator->data;
-			if ((strncmp (fkey, "lib", 3) && strstr (fkey, ".so")) ||
-			    strncmp (fkey, "/bin", 4) ||
-			    strncmp (fkey, "/sbin", 5)) {
+			if ((strncmp (g_basename (fkey), "lib", 3)==0 && strstr (fkey, ".so")) ||
+			    strncmp (fkey, "/bin/", 5)==0 ||
+			    strncmp (fkey, "/sbin/", 6)==0) {
 				(EAZEL_PACKAGE_SYSTEM_RPM3_CLASS (GTK_OBJECT (system)->klass)->query_impl) (EAZEL_PACKAGE_SYSTEM (system),
 													    dbpath,
 													    g_basename (fkey),
@@ -857,6 +863,7 @@ eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
 													    result);
 			}
 		}
+		info (system, "result set size is now %d", g_list_length (*result));
 	}
 }
 
@@ -1003,7 +1010,8 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 							       dbpath,
 							       pack->name,
 							       pack->version,
-							       pack->minor)) {
+							       pack->minor,
+							       EAZEL_SOFTCAT_SENSE_EQ)) {
 				fail (system, "%s is still installed", pack->name);
 				eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), op, pack);
 			} 

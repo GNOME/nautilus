@@ -522,7 +522,7 @@ eazel_install_fetch_package (EazelInstall *service,
 	case PROTOCOL_HTTP: 
 	{
 		if (eazel_softcat_get_info (service->private->softcat, package, EAZEL_SOFTCAT_SENSE_GE,
-					    PACKAGE_FILL_NO_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES)
+					    PACKAGE_FILL_NO_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES) 
 		    == EAZEL_SOFTCAT_SUCCESS) {
 			url = g_strdup (package->remote_url);
 		} else {

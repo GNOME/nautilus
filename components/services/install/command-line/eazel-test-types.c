@@ -78,6 +78,30 @@ test_packagelist_prune (void)
 	}
 }
 
+#define EQ_TEST(b,a,order) do {                                                                       \
+int res = eazel_install_package_matches_versioning (b, a->version, a->minor, EAZEL_SOFTCAT_SENSE_EQ); \
+if (res) {                                                                                            \
+	g_message ("matches_versioning (%s == %s) = %d %s",                                           \
+		   packagedata_get_name (b), packagedata_get_name (a), res,                           \
+		   order ? "ok" : "fail");                                                            \
+} else {                                                                                              \
+	g_message ("matches_versioning (%s == %s) = %d %s",                                           \
+		   packagedata_get_name (b), packagedata_get_name (a), res,                           \
+		   !order ? "ok" : "fail");                                                           \
+} } while (0)
+
+#define GE_TEST(b,a,order) do {                                                                       \
+int res = eazel_install_package_matches_versioning (b, a->version, a->minor, EAZEL_SOFTCAT_SENSE_GE); \
+if (res) {                                                                                            \
+	g_message ("matches_versioning (%s >= %s) = %d %s",                                           \
+		   packagedata_get_name (b), packagedata_get_name (a), res,                           \
+		   order ? "ok" : "fail");                                                            \
+} else {                                                                                              \
+	g_message ("matches_versioning (%s >= %s) = %d %s",                                           \
+		   packagedata_get_name (b), packagedata_get_name (a),                                \
+		   res, !order ? "ok" : "fail");                                                      \
+} } while (0)
+
 static void
 test_eazel_install_package_matches_versioning (void)
 {
@@ -85,75 +109,69 @@ test_eazel_install_package_matches_versioning (void)
 
 	a = make_package ("odder", NULL, NULL);
 	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 1 ok");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 1 fail");
-	}
+	EQ_TEST(b, a, 1);
 
 	a = make_package ("odder", "1.0", NULL);
 	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 2 ok");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 2 fail");
-	}
+	EQ_TEST(b, a, 1);
 
 	a = make_package ("odder", "1.0", "1");
 	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 3 ok");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 3 fail");
-	}
-
-	a = make_package ("odder", NULL, "1");
-	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 4 ok");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 4 fail");
-	}
+	EQ_TEST(b, a, 1);
 
 	a = make_package ("odder", "1.1", NULL);
 	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 1b fail");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 1b ok");
-	}
-
-	a = make_package ("odder", NULL, "2");
-	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 2b fail");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 2b ok");
-	}
+	EQ_TEST(b, a, 0);
 
 	a = make_package ("odder", "1.1", "2");
 	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 3b fail");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 3b ok");
-	}
+	EQ_TEST(b, a, 0);
 
 	a = make_package ("odder", "1.0", "2");
 	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 4b fail");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 4b ok");
-	}
+	EQ_TEST(b, a, 0);
 
 	a = make_package ("odder", "1.1", "1");
 	b = make_package ("odder", "1.0", "1");
-	if (eazel_install_package_matches_versioning (b, a->version, a->minor)) {
-		g_message ("eazel_install_package_matches_versioning 5b fail");
-	} else {
-		g_message ("eazel_install_package_matches_versioning 5b ok");
-	}
+	EQ_TEST(b,a, 0);
+
+	/* EQ | GT */
+
+	a = make_package ("odder", NULL, NULL);
+	b = make_package ("odder", "1.0", "1");
+	GE_TEST(b,a, 1);
+
+	a = make_package ("odder", "1.0", NULL);
+	b = make_package ("odder", "1.0", "1");
+	GE_TEST(b,a, 1);
+
+	a = make_package ("odder", "1.0", "1");
+	b = make_package ("odder", "1.0", "1");
+	GE_TEST(b,a, 1);
+
+	a = make_package ("odder", "1.0", NULL);
+	b = make_package ("odder", "1.1", "1");
+	GE_TEST(b,a, 1);
+
+	a = make_package ("odder", "1.0", "2");
+	b = make_package ("odder", "1.1", "1");
+	GE_TEST(b,a, 1);
+
+	a = make_package ("odder", "1.0", "1");
+	b = make_package ("odder", "1.0", "2");
+	GE_TEST(b,a, 1);
+
+	a = make_package ("odder", "1.1", "1");
+	b = make_package ("odder", "1.0", "1");
+	GE_TEST(b,a, 0);
+
+	a = make_package ("odder", "1.1", "2");
+	b = make_package ("odder", "1.0", "1");
+	GE_TEST(b,a, 0);
+	
+	a = make_package ("odder", "1.1", "1");
+	b = make_package ("odder", "1.0", "2");
+	GE_TEST(b,a, 0);
 }
 
 int main(int argc, char *argv[]) {

@@ -70,6 +70,7 @@ int     arg_dry_run,
 	arg_provides,
 	arg_verbose,
 	arg_id,
+	arg_ei2,
 	arg_no_pct;
 char    *arg_server,
 	*arg_config_file,
@@ -94,6 +95,7 @@ static const struct poptOption options[] = {
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
 	{"downgrade", 'd', POPT_ARG_NONE, &arg_downgrade, 0, N_("Allow downgrades"), NULL},
 	{"erase", 'e', POPT_ARG_NONE, &arg_erase, 0, N_("Erase packages"), NULL},
+	{"ei2", '\0', POPT_ARG_NONE, &arg_ei2, 0, N_("enable ei2"), NULL},
 	{"file",'\0', POPT_ARG_NONE, &arg_file, 0, N_("RPM args are filename"), NULL},
 	{"force", 'F', POPT_ARG_NONE, &arg_force, 0, N_("Force install"), NULL},
 	{"ftp", 'f', POPT_ARG_NONE, &arg_ftp, 0, N_("Use ftp"), NULL},
@@ -132,7 +134,7 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 	if (!arg_debug) {
 		GNOME_Trilobite_Eazel_Install__set_log_file (service, DEFAULT_LOG_FILE, &ev);
 		check_ev ("set_log_file");
-	}
+	} 
 
 	/* We only want 1 protocol type */
 	if (arg_http + arg_ftp + arg_local > 1) {
@@ -176,6 +178,10 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 	if (arg_ssl_rename) {
 		GNOME_Trilobite_Eazel_Install__set_ssl_rename (service, TRUE, &ev);
 		check_ev ("set_ssl_rename");
+	}
+	if (arg_ei2) {
+		GNOME_Trilobite_Eazel_Install__set_ei2 (service, TRUE, &ev);
+		check_ev ("set_ei2");
 	}
 
 #define RANDCHAR ('A' + (rand () % 23))
@@ -237,24 +243,49 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 				int total,
 				char *title) 
 {
+	static time_t t;
+	static int pct;
+	static int old_pct;
+
+	time_t end;
+	time_t diff;
+	static float ks=0;
+
 	downloaded_files = TRUE;
 
 	if (amount==0) {
 		fprintf (stdout, "Downloading %s...", name);
+		t = time (NULL);
+		old_pct = pct = 0;
 	} else if (amount != total ) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%%", 
-				 name,
-				 amount, total, amount / (total / 100));
-				 /* (float) (((float) amount * 100.0) / total));  %.1f */
+			pct = amount / (total / 100);
+			if (pct > 1) {
+				if (old_pct != pct) {
+					end = time (NULL);
+					diff = end - t;
+					ks = ((float)amount/1024)/diff;
+					old_pct = pct;
+				}
+				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%% %.1f KB/s     \r", 
+					 name,
+					 amount, total, pct,
+					 ks);
+			} else {
+				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%%", 
+					 name,
+					 amount, total, pct);
+			}
 		}
 	} else if (amount == total && total!=0) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%% Done\n",
+			fprintf (stdout, "\rDownloading %s... (%d/%d) %.1f KB/s Done      \n",
 				 name,
-				 amount, total, 100);
+				 amount, total, 
+				 ks);
 		} else {
-			fprintf (stdout, "Downloading %s... Done\n", name);
+			fprintf (stdout, "Downloading %s... %3.1f KB/s Done\n", 
+				 name, ks);
 		}
 	}
 	fflush (stdout);
@@ -642,7 +673,7 @@ int main(int argc, char *argv[]) {
 	/* Seems that bonobo_main doens't like
 	   not having gnome_init called, dies in a
 	   X call, yech */
-#if 0
+#if 1
 	gnome_init_with_popt_table ("Eazel Install", "1.0", argc, argv, options, 0, &ctxt);
 	orb = oaf_init (argc, argv);
 	if (!bonobo_init (NULL, NULL, NULL)) {

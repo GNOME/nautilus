@@ -55,6 +55,8 @@ libeazelinstallinclude_HEADERS = 		\
 	eazel-install-private.h			\
 	eazel-install-corba-callback.h		\
 	eazel-install-problem.h			\
+	eazel-install-logic.h			\
+	eazel-install-logic2.h			\
 	$(NULL)
 
 libeazelinstall_la_SOURCES = \
@@ -65,6 +67,7 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
 	eazel-install-logic.c			\
+	eazel-install-logic2.c			\
 	eazel-install-rpm-glue.c		\
 	eazel-install-rpm-signature.c		\
 	eazel-install-tests.c			\

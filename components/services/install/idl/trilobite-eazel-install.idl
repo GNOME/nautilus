@@ -187,6 +187,8 @@ module Trilobite {
 			attribute boolean ignore_file_conflicts; /* instruct the installer to not
 								    do file conflict checking */
 
+			attribute boolean ei2;
+
 			/* Install/uninstall using the packagelist from the server */
 			oneway void install (in string packagelist, in InstallCallback cb);
 			oneway void uninstall (in string packagelist, in InstallCallback cb);
