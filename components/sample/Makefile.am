@@ -19,6 +19,7 @@ bin_PROGRAMS =					\
 	nautilus-sample-content-view
 
 nautilus_sample_content_view_SOURCES =		\
+	nautilus-sample-content-view.h          \
 	nautilus-sample-content-view.c          \
 	main.c
 

@@ -26,6 +26,11 @@ BUILT_SOURCES=$(fsextension_idl_sources)
 
 libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
 libnautilus_extensionsinclude_HEADERS=			\
+	nautilus-icon-grid.h			\
+	nautilus-icon-dnd.h			\
+	nautilus-icon-canvas-item.h		\
+	nautilus-file-changes-queue.h		\
+	nautilus-background-canvas-group.h	\
 	bonobo-stream-vfs.h			\
 	gtkscrollframe.h			\
 	libnautilus-extensions.h		\
@@ -47,6 +52,7 @@ libnautilus_extensionsinclude_HEADERS=			\
 	nautilus-gnome-extensions.h		\
 	nautilus-graphic-effects.h		\
 	nautilus-gtk-extensions.h		\
+	nautilus-gtk-macros.h			\
 	nautilus-icon-container.h		\
 	nautilus-icon-factory.h			\
 	nautilus-icon-text-item.h		\
@@ -62,6 +68,11 @@ libnautilus_extensionsinclude_HEADERS=			\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = \
+	nautilus-file-changes-queue-private.h	\
+	nautilus-icon-private.h			\
+	nautilus-file-private.h			\
+	nautilus-directory-private.h		\
+	nautilus-lib-self-check-functions.h	\
 	bonobo-stream-vfs.c			\
 	gtkscrollframe.c			\
 	nautilus-background-canvas-group.c	\
@@ -111,4 +122,4 @@ fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
 
 CLEANFILES = fsextension_idl_stamp
 
-#EXTRA_DIST =
+EXTRA_DIST = $(top_srcdir)/idl/fsextension.idl $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl

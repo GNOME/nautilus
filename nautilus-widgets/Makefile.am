@@ -37,6 +37,7 @@ libnautilus_widgetsinclude_HEADERS =\
 	$(NULL)
 
 libnautilus_widgets_la_SOURCES =\
+	nautilus-widgets-self-check-functions.h \
 	nautilus-caption-table.c \
 	nautilus-password-dialog.c \
 	nautilus-preference.c \

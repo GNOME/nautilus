@@ -21,6 +21,7 @@ LDADD =\
 	$(XML_LIBS)
 
 hyperbola_SOURCES=		\
+	hyperbola-types.h	\
 	hyperbola-nav-tree.c 	\
 	hyperbola-main.c	\
 	hyperbola-filefmt.c	\
@@ -37,7 +38,7 @@ mapdata_DATA=pages.map
 module_flags = -export_dynamic -avoid-version
 modulesdir = $(libdir)/vfs/modules
 
-libvfs_help_la_SOURCES = help-method.c
+libvfs_help_la_SOURCES = help-method.c help-method.h
 libvfs_help_la_LDFLAGS = $(module_flags)
 libvfs_help_la_LIBADD  = $(GLIB_LIBS)
 

@@ -33,20 +33,22 @@ libnautilusincludedir=$(includedir)/libnautilus
 
 libnautilusinclude_HEADERS=			\
 	libnautilus.h				\
-	nautilus-view-component.h		\
-	nautilus-content-view-frame.h		\
-	nautilus-meta-view-frame.h			\
-	nautilus-view-frame.h			\
 	nautilus-clipboard.h			\
+	nautilus-content-view-frame.h		\
+	nautilus-meta-view-frame.h		\
+	nautilus-view-component.h		\
+	nautilus-view-frame.h			\
+	nautilus-zoomable.h			\
 	$(NULL)
 
 libnautilus_la_SOURCES=				\
+	nautilus-view-frame-private.h		\
 	$(nautilus_view_component_idl_sources)	\
-	nautilus-zoomable.c			\
+	nautilus-clipboard.c			\
 	nautilus-content-view-frame.c		\
 	nautilus-meta-view-frame.c		\
 	nautilus-view-frame.c			\
-	nautilus-clipboard.c			\
+	nautilus-zoomable.c			\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp

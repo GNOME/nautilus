@@ -17,6 +17,7 @@ bin_PROGRAMS =\
 	$(NULL)
 
 nautilus_mozilla_content_view_SOURCES = \
+	nautilus-mozilla-content-view.h \
 	nautilus-mozilla-content-view.c \
 	main.c \
 	$(NULL)

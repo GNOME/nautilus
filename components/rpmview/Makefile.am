@@ -20,6 +20,7 @@ oaf_DATA = nautilus-rpm-view.oafinfo
 bin_PROGRAMS = nautilus-rpm-view
 
 nautilus_rpm_view_SOURCES =		        \
+	nautilus-rpm-view.h			\
 	nautilus-rpm-view.c			\
 	main.c
 

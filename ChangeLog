@@ -1,4 +1,29 @@
 2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
+	More 'make dist' fixes.  Let automake know about private headers
+	so that the dist tarball will contain them.
+
+	* components/help/Makefile.am,
+	* components/mozilla/Makefile.am,
+	* components/rpmview/Makefile.am,
+	* components/sample/Makefile.am:
+	Add .h files to SOURCES.
+
+	* libnautilus/Makefile.am:
+	Add missing nautilus-zoomable.h to HEADERS.
+	Add missing private .h files SOURCES.
+	
+	* libnautilus-extensions/Makefile.am:
+	Add missing .h files to HEADERS.
+	Add missing private .h files SOURCES.
+	Add missing idl sources top EXTRA_DIST.
+	
+	* nautilus-widgets/Makefile.am:
+	Add missing nautilus-widgets-self-check-functions.h to SOURCES.
+	
+	* src/Makefile.am:
+	Add missing nautilus.h to SOURCES.
+	
+2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* librsvg/Makefile.am:
 	Add .h files to la_SOURCES to make 'make dist' happy.

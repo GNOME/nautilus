@@ -38,21 +38,22 @@ nautilus_SOURCES =\
 	nautilus-bookmark-list.h	\
 	nautilus-bookmarks-window.c	\
 	nautilus-bookmarks-window.h	\
-        nautilus-index-tabs.c		\
-        nautilus-index-tabs.h		\
-        nautilus-index-title.c		\
-        nautilus-index-title.h		\
+	nautilus-index-tabs.c		\
+	nautilus-index-tabs.h		\
+	nautilus-index-title.c		\
+	nautilus-index-title.h		\
 	nautilus-location-bar.c         \
 	nautilus-location-bar.h		\
-        nautilus-self-check-functions.c \
-        nautilus-self-check-functions.h \
+	nautilus-self-check-functions.c \
+	nautilus-self-check-functions.h \
 	nautilus-signaller.c		\
 	nautilus-signaller.h		\
-        nautilus-window-menus.c         \
-        nautilus-window-toolbars.c      \
+	nautilus-window-menus.c         \
+	nautilus-window-toolbars.c      \
 	nautilus-zoom-control.c		\
 	nautilus-zoom-control.h		\
 	nautilus-zoomable-frame-svr.c	\
+	nautilus.h			\
 	ntl-app.c			\
 	ntl-app.h			\
 	ntl-content-view.c		\
