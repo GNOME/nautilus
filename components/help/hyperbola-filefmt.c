@@ -52,6 +52,7 @@ static void fmt_help_populate_tree (HyperbolaDocTree * tree);
 #endif
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
+static void fmt_toplevel_populate_tree (HyperbolaDocTree * tree);
 static void fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree);
 #endif
 
@@ -65,6 +66,7 @@ static FormatHandler format_handlers[] = {
 	{"info", fmt_info_populate_tree},
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 	{"xml", fmt_scrollkeeper_populate_tree},
+	{"toplevel", fmt_toplevel_populate_tree},
 #endif
 	{NULL, NULL}
 };
@@ -667,7 +669,6 @@ fmt_info_populate_tree_for_subdir (HyperbolaDocTree * tree,
 	}
 
 	closedir (dirh);
-
 }
 
 static void
@@ -1302,9 +1303,8 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 
 	char *xml_location;
 	int bytes_read;
-
+	
 	char *tree_path[] = { NULL };
-
 
 	xml_location = g_new0 (char, 1024);
 
@@ -1346,6 +1346,179 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 	g_free (xml_location);
 
 	return;
+}
+
+static char* remove_leading_and_trailing_white_spaces (char * str)
+{
+    	int i, len;
+   
+    	len = strlen(str);
+   
+    	for(i = len-1; i >= 0; i--) {
+        	if (str[i] == ' ' || str[i] == '\t' ||
+            	    str[i] == '\n' || str[i] == '\r')
+            		str[i] = '\0';
+        	else
+            		break;
+    	}
+
+    	while (*str == ' ' || *str == '\t' ||
+               *str == '\n' || *str == '\r')
+           	str++;
+
+    	return str;
+}
+
+static void fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
+{
+    	xmlDocPtr doc;
+    	xmlNodePtr node;
+    	char *uri, *title, *str, *doc_path, prefix[4];
+        
+    	doc = xmlParseFile(omf_name);
+    	if (doc == NULL)
+        	return;
+	
+    	if (doc->root == NULL || doc->root->childs == NULL ||
+            doc->root->childs->childs == NULL) {
+        	xmlFreeDoc(doc);
+		return;
+    	}
+    
+    	uri = NULL;
+    	title == NULL;
+    	prefix[0] = '\1';
+    	prefix[1] = '.';
+    	prefix[2] = ' ';
+    	prefix[3] = '\0';
+    
+    	for(node = doc->root->childs->childs; node != NULL;
+            node = node->next) {
+        	if (!strcmp(node->name, "identifier")) {
+	    		doc_path = xmlGetProp(node, "url");
+	    		uri = g_strconcat("gnome-help:", doc_path, NULL); 
+		}
+	    
+		if (!strcmp(node->name, "title") &&
+	    	    node->childs != NULL &&
+	    	    node->childs->content != NULL) {
+
+	    		char *ptr;
+	    
+	    		ptr = strdup(node->childs->content);
+	    		str = remove_leading_and_trailing_white_spaces(ptr);
+	    		title = g_strconcat(prefix, str, NULL);
+	    		g_free(ptr);	
+		}   
+    	}
+    
+    	if (uri != NULL && title != NULL) {
+	
+        	char toc_location[1024];
+		FILE *pipe;
+		int bytes_read, i;
+		char **section;
+		char *tree_path[1];
+	
+		tree_path[0] = NULL;
+    
+        	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+	             	        	(const char **)tree_path, title, uri);
+				
+		section = fmt_scrollkeeper_expand_ancestor_list(tree_path, &i);
+		section[i] = title;
+				
+		/* Get the TOC, if there is one, for the document */ 
+        	g_snprintf (toc_location, 1024, "scrollkeeper-get-toc-from-docpath %s", 
+		  		doc_path);
+
+	  	pipe = popen (toc_location, "r");
+  		bytes_read = fread ((void *)toc_location, sizeof(char), 1024, pipe);
+
+	  	if (bytes_read > 0) {
+    		    	toc_location[bytes_read - 1] = '\0';
+ 
+	    		/* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
+    	    		if(!pclose(pipe))
+       	    			fmt_scrollkeeper_parse_doc_toc (tree, section, toc_location, uri);
+    		}
+
+		g_free(uri);
+		g_free(title);
+		g_free(section);
+
+    	}
+}
+
+static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc)
+{
+	xmlNodePtr doc_node, docpath_node;
+    	char *locale, *omf_name, *str, *doc_locale, omf_dir[256], omf_path[256];
+	FILE *pipe;
+	int bytes_read;
+
+
+    	if (doc == NULL || doc->root == NULL)
+        	return;
+		
+	pipe = popen ("scrollkeeper-config --omfdir", "r");
+	bytes_read = fread ((void *) omf_dir, sizeof (char), 128, pipe);
+
+	/* Make sure that we don't end up out-of-bunds */
+	if (bytes_read < 1) {
+		pclose (pipe);
+		return;
+	}
+
+	/* Make sure the string is properly terminated */
+	omf_dir[bytes_read - 1] = '\0';
+
+	/* Exit code of 0 means we got a path back from ScrollKeeper */
+	if (pclose (pipe))
+		return;
+	
+    	locale = getenv("LANG");
+	
+    	for(doc_node = doc->root->childs; doc_node != NULL; 
+            doc_node = doc_node->next) {
+	    
+        	for(docpath_node = doc_node->childs; 
+	    	    docpath_node != NULL;
+	    	    docpath_node = docpath_node->next) {	
+		    
+	    		doc_locale = xmlGetProp(docpath_node, "locale");
+	    		if (doc_locale != NULL && !strcmp(doc_locale, locale)) {
+	        		if (docpath_node->childs != NULL && 
+	            		    docpath_node->childs->content != NULL) {
+				    
+	            			str = g_strdup(docpath_node->childs->content);
+		    			omf_name = remove_leading_and_trailing_white_spaces(str);
+					sprintf(omf_path, "%s/%s", omf_dir, omf_name);
+		    			fmt_toplevel_add_doc(tree, omf_path);
+		    			g_free(str);
+		 		}
+	    		}
+		}
+    	}
+}
+
+static void fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
+{
+    	xmlDocPtr toplevel_doc;
+    	char *toplevel_file;
+  	
+	toplevel_file = HYPERBOLA_DATADIR "/topleveldocs.xml";
+
+    	toplevel_doc = xmlParseFile (toplevel_file); 
+   
+    	if (toplevel_doc) {
+        	fmt_toplevel_parse_xml_tree(tree, toplevel_doc);
+    	}
+    	else {
+        	g_warning ("Unable to locate toplevel XML file:\n\t%s", toplevel_file);
+    	}
+
+    	xmlFreeDoc (toplevel_doc);
 }
 
 #endif /* ENABLE_SCROLLKEEPER_SUPPORT */
