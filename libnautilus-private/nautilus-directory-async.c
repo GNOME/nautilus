@@ -1554,6 +1554,12 @@ start_getting_top_lefts (NautilusDirectory *directory)
 	NautilusFile *file;
 	char *uri;
 
+	/* FIXME bugzilla.eazel.com 830: The GNOME VFS bug that leaks
+	 * file descriptors makes it impractical to do so much async.
+	 * I/O, so we just don't do any of this work for now.
+	 */
+	return; /* Arrgh! */
+
 	/* If there's already a read in progress, check to be sure
 	 * it's still wanted.
 	 */

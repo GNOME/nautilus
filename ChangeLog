@@ -1,3 +1,10 @@
+2000-05-06  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(start_getting_top_lefts): Disabled the embedded text until I can
+	fix the file descriptor linking problem. It's easy to re-enable,
+	but then you quickly run out of FDs.
+
 2000-05-06  Jesus Bravo Alvarez  <jba@pobox.com>
 
 	* configure.in: Added Galician (gl) to ALL_LINGUAS
@@ -6,7 +13,7 @@
 
 	did some work at the request of Bud
 	
-	* libnautilus-extenstions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.h:
 	added preference NAUTILUS_PREFERENCES_SIDEBAR_WIDTH
 	* src/ntl-window.c:
 	set the initial sidebar width from NAUTILUS_PREFERENCES_SIDEBAR_WIDTH.  
@@ -38,7 +45,7 @@
 	* libnautilus-extensions/nautilus-icon-factory.c:
 	(nautilus_self_check_icon_factory): Updated self checks so they
 	work again. John didn't notice that he needed to fix these when
-	he added the 20-pixel size icon to the standard sizees.
+	he added the 20-pixel size icon to the standard sizes.
 	
 2000-05-05  Gene Z. Ragan  <gzr@eazel.com>
 
