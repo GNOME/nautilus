@@ -25,28 +25,34 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef EAZEL_INSTALL_RPM_GLUE_H
-#define EAZEL_INSTALL_RPM_GLUE_H
+#ifndef EAZEL_INSTALL_LOGIC_H
+#define EAZEL_INSTALL_LOGIC_H
 
 #include "eazel-install-types.h"
+#include "eazel-install-protocols.h"
 #include "eazel-install-public.h"
 
-void eazel_install_rpm_set_settings (EazelInstall *service);
-void eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
-							     GList **args);
-gboolean eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
-						  GIOCondition condition,
-						  EazelInstall *service);
-void eazel_install_free_rpm_system_close_db_foreach (char *key, 
-						     rpmdb db, 
-						     gpointer unused);
-gboolean eazel_install_free_rpm_system (EazelInstall *service);
-gboolean eazel_install_prepare_rpm_system(EazelInstall *service);
-void eazel_install_do_rpm_dependency_check (EazelInstall *service,
-					    GList **packages,
-					    GList **failedpackages,
-					    GList **requirements);
+typedef enum {
+	EAZEL_INSTALL_NOTHING = 0,
+	EAZEL_INSTALL_INSTALL_OK = 1<<0,
+	EAZEL_INSTALL_UNINSTALL_OK = 1<<1,
+	EAZEL_INSTALL_REVERSION_OK = 1<<2
+} EazelInstallStatus;
+	
 
+EazelInstallStatus install_packages (EazelInstall *service, GList *categories);
+EazelInstallStatus uninstall_packages (EazelInstall *service, GList *categories);
+EazelInstallStatus revert_transaction (EazelInstall *service, GList *packages);
 
+gboolean eazel_install_prepare_package_system (EazelInstall *service);
+gboolean eazel_install_free_package_system (EazelInstall *service);
 
-#endif /* EAZEL_INSTALL_RPM_GLUE_H */
+unsigned long eazel_install_get_total_size_of_packages (EazelInstall *service,
+							const GList *packages);
+void eazel_install_do_transaction_add_to_transaction (EazelInstall *service,
+						      PackageData *pack);
+gboolean eazel_install_check_if_related_package (EazelInstall *service,
+						 PackageData *package,
+						 PackageData *dep);
+
+#endif /* EAZEL_INSTALL_LOGIC_H */

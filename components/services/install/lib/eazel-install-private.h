@@ -57,9 +57,12 @@ struct _EazelInstallPrivate {
 		struct {
 			GHashTable *dbs;
 			unsigned long total_size, 
-				current_installed_size, 
-				num_packages, 
-				packages_installed;
+				      current_installed_size, 
+				      num_packages, 
+				      packages_installed;
+			int install_flags,
+			    interface_flags,
+			    problem_filters;
 		} rpm;
 	} packsys;
 

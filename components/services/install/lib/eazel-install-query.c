@@ -30,11 +30,6 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 
-extern gboolean eazel_install_prepare_package_system (EazelInstall *service);
-extern gboolean eazel_install_free_package_system (EazelInstall *service);
-extern int eazel_install_package_name_compare (PackageData *pack, char *name);
-extern int eazel_install_package_compare (PackageData *pack, char *name);
-
 /*****************************************************************************/
 /* Query mechanisms                                                          */
 /*****************************************************************************/

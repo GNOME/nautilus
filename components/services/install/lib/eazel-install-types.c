@@ -604,6 +604,102 @@ packagerequirement_new (PackageData *pack,
 	result->required = req;
 	return result;
 }
+
+/* The funky compare functions */
+
+
+int
+eazel_install_package_provides_basename_compare (char *a,
+						 char *b)
+{
+	return strcmp (g_basename (a), b);
+}
+
+int
+eazel_install_package_provides_compare (PackageData *pack,
+					char *name)
+{
+	GList *ptr = NULL;
+	ptr = g_list_find_custom (pack->provides, 
+				  (gpointer)name, 
+				  (GCompareFunc)eazel_install_package_provides_basename_compare);
+	if (ptr) {
+		trilobite_debug ("package %s supplies %s", pack->name, name);
+		return 0;
+	} 
+	return -1;
+}
+
+int
+eazel_install_package_name_compare (PackageData *pack,
+				    char *name)
+{
+	return strcmp (pack->name, name);
+}
+
+/* This does a slow and painfull comparison of all the major fields */
+int 
+eazel_install_package_compare (PackageData *pack, 
+			       PackageData *other)
+{
+	int result = 0;
+	/* For the field sets, if they both exists, compare them,
+	   if one has it and the other doesn't, not equal */
+	if (pack->name && other->name) {
+		int tmp_result = strcmp (pack->name, other->name);
+		if (tmp_result) {
+			result = tmp_result;
+		}
+	} else if (pack->name || other->name) {
+		result = 1;
+	}
+	if (pack->version && other->version) {
+		int tmp_result = strcmp (pack->version, other->version);
+		if (tmp_result) {
+			result = tmp_result;
+		}
+	} else if (pack->version || other->version) {
+		result = 1;
+	}
+	if (pack->minor && other->minor) {
+		int tmp_result = strcmp (pack->minor, other->minor);
+		if (tmp_result) {
+			result = tmp_result;
+		}
+	} else if (pack->minor || other->minor) {
+		result = 1;
+	}
+	
+	return result;
+}
+
+/* Compare function used while creating the PackageRequirements in 
+   eazel_install_do_dependency_check.
+   It checks for equality on the package names, if one doens't have a name,
+   it checks for the same 1st element in ->provides, if one doens't have 
+   a provides list, they're not the same */
+int 
+eazel_install_requirement_dep_compare (PackageRequirement *req,
+				       PackageData *pack)
+{
+	if (pack->name && req->required->name) {
+		return strcmp (req->required->name, pack->name);
+	} else if (pack->provides && req->required->provides) {
+		return strcmp ((char*)pack->provides->data, (char*)req->required->provides);
+	} else {
+		return -1;
+	}
+}
+
+
+int 
+eazel_install_package_version_compare (PackageData *pack, 
+				       char *version)
+{
+	return strcmp (pack->version, version);
+}
+
+
 /* The evil marshal func */
 
 typedef void (*GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT) (GtkObject * object,

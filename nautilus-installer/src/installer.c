@@ -729,6 +729,9 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 	case PACKAGE_ALREADY_INSTALLED:
 		message = g_strdup_printf (_("%s was already installed"), required);
 		break;
+	case PACKAGE_WOULD_BE_LOST:
+		message = g_strdup_printf (_("%s would be deleted but is needed\n"), required);
+		break;
 	case PACKAGE_RESOLVED:
 		break;
 	}

@@ -228,6 +228,15 @@ typedef struct {
 
 PackageRequirement* packagerequirement_new (PackageData *pack, PackageData *req);
 
+/* Compares */
+
+int eazel_install_package_provides_basename_compare (char *a, char *b);
+int eazel_install_package_provides_compare (PackageData *pack, char *name);
+int eazel_install_package_name_compare (PackageData *pack, char *name);
+int eazel_install_package_compare (PackageData *pack, PackageData *other);
+int eazel_install_requirement_dep_compare (PackageRequirement *req, PackageData *pack);
+int eazel_install_package_version_compare (PackageData *pack, char *version);
+
 /* Evil marshal func */
 
 void eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * object,

@@ -55,6 +55,7 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-md5.c			\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
+	eazel-install-logic.c			\
 	eazel-install-rpm-glue.c		\
 	eazel-install-rpm-signature.c		\
 	eazel-install-query.c			\

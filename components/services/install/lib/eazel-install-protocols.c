@@ -34,6 +34,7 @@
 #include <sys/utsname.h>
 #include <errno.h>
 
+/* We use rpmvercmp to compare versions... */
 #include <rpm/misc.h>
 
 #include <libtrilobite/trilobite-core-utils.h>

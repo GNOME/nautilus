@@ -46,7 +46,7 @@
 
 #include "eazel-install-metadata.h"
 #include "eazel-install-protocols.h"
-#include "eazel-install-rpm-glue.h"
+#include "eazel-install-logic.h"
 #include "eazel-install-types.h"
 
 #include <sys/stat.h>
@@ -899,7 +899,7 @@ eazel_install_install_packages (EazelInstall *service,
 		service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 		
 		eazel_install_prepare_package_system (service);
-		result = install_new_packages (service, categories);
+		result = install_packages (service, categories);
 		
 		if (result == EAZEL_INSTALL_NOTHING) {
 			g_warning (_("Install failed"));
@@ -1388,10 +1388,6 @@ ei_mutator_impl (server_port, guint, topts->port_number);
 ei_mutator_impl_copy (cgi_path, char*, topts->cgi_path, g_strdup);
 ei_mutator_impl (eazel_auth, gboolean, topts->eazel_auth);
 
-ei_mutator_impl (install_flags, int, install_flags);
-ei_mutator_impl (interface_flags, int, interface_flags);
-ei_mutator_impl (problem_filters, int, problem_filters);
-
 ei_mutator_impl (package_system, int, package_system);
 
 ei_mutator_impl (ssl_rename, gboolean, ssl_rename);
@@ -1416,10 +1412,6 @@ ei_access_impl (root_dirs, GList*, root_dirs, NULL);
 ei_access_impl (server_port, guint, topts->port_number, 0);
 ei_access_impl (cgi_path, char*, topts->cgi_path, NULL);
 ei_access_impl (eazel_auth, gboolean, topts->eazel_auth, FALSE);
-
-ei_access_impl (install_flags, int, install_flags, 0);
-ei_access_impl (interface_flags, int, interface_flags, 0);
-ei_access_impl (problem_filters, int, problem_filters, 0);
 
 ei_access_impl (package_system, int, package_system, 0);
 

@@ -1,3 +1,72 @@
+2000-10-09  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_flatten_categories),
+	(eazel_install_pre_install_packages), (eazel_install_set_settings),
+	(install_packages), (eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_do_install_packages), (uninstall_all_packages),
+	(uninstall_packages), (ei_get_packages_with_mod_flag),
+	(ei_check_uninst_vs_downgrade), (hest), (revert_transaction),
+	(eazel_install_do_transaction_fill_hash),
+	(eazel_install_get_total_size_of_packages),
+	(eazel_install_do_transaction_add_to_transaction),
+	(eazel_install_start_transaction_make_argument_list),
+	(eazel_install_do_transaction_save_report_helper),
+	(eazel_install_do_transaction_save_report),
+	(eazel_install_monitor_process_pipe),
+	(eazel_install_display_arguments),
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_do_transaction_all_files_check),
+	(eazel_install_do_transaction_md5_check),
+	(eazel_install_start_transaction),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_prune_packages),
+	(eazel_install_prepare_package_system),
+	(eazel_install_free_package_system),
+	(eazel_install_add_to_extras_foreach),
+	(eazel_install_check_existing_packages),
+	(eazel_install_check_if_related_package),
+	(eazel_install_fetch_dependencies), (dump_one_package),
+	(dump_packages), (print_package_list),
+	(eazel_install_do_file_conflict_check),
+	(eazel_install_do_dependency_check), (eazel_install_ensure_deps),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install), (eazel_uninstall_globber):
+	* components/services/install/lib/eazel-install-logic.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_install_packages):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-query.c:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_set_settings),
+	(eazel_install_monitor_rpm_propcess_pipe),
+	(eazel_install_free_rpm_system_close_db_foreach),
+	(eazel_install_free_rpm_system):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(eazel_install_package_provides_basename_compare),
+	(eazel_install_package_provides_compare),
+	(eazel_install_package_name_compare),
+	(eazel_install_package_compare),
+	(eazel_install_requirement_dep_compare),
+	(eazel_install_package_version_compare):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/makefile.staticlib.in:
+	Moved code around. 
+	Moved the general dep check stuff into eazel-install-logic.c, and
+	kept the rpmspecific in rpm-glue.c. Except for eg. the uninstall
+	stuff and some other parts which are still rpm specific (in
+	-logic.c and -types.c).
+	
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach):
+	Added the WOULD_BE_LOST to the error display thingy.
+	
 2000-10-09  John Sullivan  <sullivan@eazel.com>
 
 	Various bonobo-related cleanups
