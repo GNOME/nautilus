@@ -301,7 +301,7 @@ metafile_read_failed (NautilusDirectory *directory)
 		 */
 
 		/* First, check if we already know if it a directory. */
-		file = nautilus_file_get_existing (directory->details->uri_text);
+		file = nautilus_file_get (directory->details->uri_text);
 		if (file == NULL || file->details->is_gone) {
 			need_directory_check = FALSE;
 			is_directory = FALSE;
@@ -1266,7 +1266,10 @@ new_files_callback (GnomeVFSAsyncHandle *handle,
 	/* Queue up the new files. */
 	for (p = results; p != NULL; p = p->next) {
 		result = p->data;
-		directory_load_one (directory, result->file_info);
+
+		if (result->result == GNOME_VFS_OK) {
+			directory_load_one (directory, result->file_info);
+		}
 	}
 }
 
