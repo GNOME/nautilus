@@ -1,3 +1,40 @@
+2000-08-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-link.h:
+	(nautilus_link_is_volume_link):
+	New function.  Identifies if link is a volume link.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(nautilus_volume_monitor_initialize_class),
+	(mount_device_is_mounted), (mount_device_cdrom_set_state),
+	(mount_device_floppy_set_state), (mount_device_ext2_set_state),
+	(mount_device_set_state), (device_set_state_empty),
+	(mount_device_mount), (mount_device_activate_cdrom),
+	(mount_device_activate_floppy), (mount_device_activate_ext2),
+	(mount_device_activate), (eject_cdrom), (mount_device_deactivate),
+	(mount_device_do_nothing), (mount_device_check_change),
+	(mount_devices_update_is_mounted), (mount_device_floppy_add),
+	(mount_device_ext2_add), (mount_device_iso9660_add),
+	(mount_device_add_aliases), (add_mount_device),
+	(nautilus_volume_monitor_each_device),
+	(nautilus_volume_monitor_each_mounted_device),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(free_device_info), (get_iso9660_volume_name),
+	(get_ext2_volume_name), (get_floppy_volume_name):
+	Renamed DeviceInfo to NautilusDeviceInfo.
+	Removed all code that handled links and moved to 
+	FMDesktopIconView.  Fixed creation of volume mounted signal
+	to have proper signature,
+			
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize), (volume_mounted_callback),
+	(volume_unmounted_callback), (remove_old_mount_links):
+	Added signal handlers for mount and unmount signals emitted
+	by NautilusVolumeMonitor.  These handlers create and remove
+	mount links.
+
 2000-08-18  Mathieu Lacage  <mathieu@eazel.com>
 
 

@@ -353,7 +353,7 @@ nautilus_link_get_link_type (const char *path)
 		(path, "NAUTILUS_LINK");
 }
 
-/* FIXME: Caller has to know to pass in a file with a NUL character at
+/* FIXME: Caller has to know to pass in a file with a NULL character at
  * the end.
  */
 char *
@@ -367,4 +367,24 @@ nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 	property = xml_get_root_property (doc, "LINK");
 	xmlFreeDoc (doc);
 	return property;
+}
+
+gboolean
+nautilus_link_is_volume_link (const char *path)
+{
+	gboolean retval;
+	char *link_type;
+	
+	retval = FALSE;
+	link_type = nautilus_link_get_link_type (path);
+	if (link_type != NULL) {
+		if (strcmp (link_type, NAUTILUS_LINK_MOUNT) == 0) {
+			retval = TRUE;
+		} else {
+			retval = FALSE;
+		}
+		g_free (link_type);
+	}
+	
+	return retval;
 }

@@ -35,6 +35,7 @@
 #include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-directory-notify.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -75,6 +76,12 @@ static void     fm_desktop_icon_view_set_directory_auto_layout            (FMIco
 static void     fm_desktop_icon_view_trash_state_changed_callback         (NautilusTrashMonitor   *trash,
 									   gboolean                state,
 									   gpointer                callback_data);
+static void     volume_mounted_callback         			  (NautilusVolumeMonitor  *monitor,
+									   NautilusDeviceInfo     *info,
+									   FMDesktopIconView      *icon_view);
+static void     volume_unmounted_callback         			  (NautilusVolumeMonitor  *monitor,
+									   NautilusDeviceInfo     *info,
+									   FMDesktopIconView      *icon_view);
 static void     mount_unmount_removable                                   (GtkCheckMenuItem       *item,
 									   FMDesktopIconView      *icon_view);
 static void     place_home_directory                                      (FMDesktopIconView      *icon_view);
@@ -227,6 +234,16 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    fm_desktop_icon_view_trash_state_changed_callback,
 			    desktop_icon_view);
 
+	gtk_signal_connect (GTK_OBJECT (desktop_icon_view->details->volume_monitor),
+			    "volume_mounted",
+			    volume_mounted_callback,
+			    desktop_icon_view);
+
+	gtk_signal_connect (GTK_OBJECT (desktop_icon_view->details->volume_monitor),
+			    "volume_unmounted",
+			    volume_unmounted_callback,
+			    desktop_icon_view);
+
 	/* Check for mountable devices */
 	nautilus_volume_monitor_find_mount_devices (desktop_icon_view->details->volume_monitor);
 }
@@ -373,6 +390,70 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 }
 
 static void
+volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *info, 
+			 FMDesktopIconView *icon_view)
+{
+	gboolean result;
+	char *desktop_path, *target_uri, *icon_name;
+		
+	/* Get icon type */
+	if (strcmp (info->mount_type, "cdrom") == 0) {
+		icon_name = g_strdup("i-cdrom.png");
+	} else if (strcmp (info->mount_type, "floppy") == 0) {
+		icon_name = g_strdup("i-floppy.png");
+	} else {
+		icon_name = g_strdup("i-blockdev.png");
+	}
+	
+	desktop_path = nautilus_get_desktop_directory ();
+	target_uri = nautilus_get_uri_from_local_path (info->mount_path);
+
+	/* Create link */
+	result = nautilus_link_create (desktop_path, info->volume_name, icon_name, target_uri);
+	if (result) {		
+		char *link_uri;
+		
+		link_uri = nautilus_make_path (desktop_path, info->volume_name);
+
+		/* Identify this as a mount link */
+		nautilus_link_set_type (link_uri, NAUTILUS_LINK_MOUNT);
+		g_free (link_uri);		
+	}
+	
+	g_free (desktop_path);
+	g_free (target_uri);
+	g_free (icon_name);
+}
+
+static void
+volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *info, 
+			   FMDesktopIconView *icon_view)
+{
+	GnomeVFSResult result;
+	char *link_uri, *desktop_path;
+	GList dummy_list;
+	
+	desktop_path = nautilus_get_desktop_directory ();
+	link_uri = nautilus_make_path (desktop_path, info->volume_name);
+	
+	if (link_uri != NULL) {
+		/* Remove mounted device icon from desktop */
+		dummy_list.data = link_uri;
+		dummy_list.next = NULL;
+		dummy_list.prev = NULL;
+		nautilus_directory_notify_files_removed (&dummy_list);
+		
+		result = gnome_vfs_unlink (link_uri);
+		if (result != GNOME_VFS_OK) {
+			/* FIXME: Is a message to the console acceptable here? */
+		}
+		g_free (link_uri);
+	}
+
+	g_free (desktop_path);
+}
+
+static void
 mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
 {
 	gboolean is_mounted;
@@ -464,7 +545,7 @@ remove_old_mount_links (void)
 			if (!S_ISDIR (status.st_mode)) {
 				/* Check and see if this is a link */
 				link_path = nautilus_make_path (desktop_path, this_entry->d_name);
-				if (nautilus_volume_monitor_is_volume_link (link_path)) {
+				if (nautilus_link_is_volume_link (link_path)) {
 					unlink (this_entry->d_name);					
 				}
 				g_free (link_path);

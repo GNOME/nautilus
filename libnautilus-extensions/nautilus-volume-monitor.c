@@ -31,7 +31,6 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-iso9660.h"
-#include "nautilus-link.h"
 #include "nautilus-volume-monitor.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -81,21 +80,20 @@ static guint signals[LAST_SIGNAL];
 static void	nautilus_volume_monitor_initialize 			(NautilusVolumeMonitor 		*desktop_mounter);
 static void	nautilus_volume_monitor_initialize_class 		(NautilusVolumeMonitorClass 	*klass);
 static void	nautilus_volume_monitor_destroy 			(GtkObject 			*object);
-static void     remove_mount_link                                     	(DeviceInfo             	*device);								  
-static void     get_iso9660_volume_name                              	(DeviceInfo             	*device);
-static void     get_ext2_volume_name                               	(DeviceInfo             	*device);
-static void     get_floppy_volume_name                           	(DeviceInfo             	*device);
+static void     get_iso9660_volume_name                              	(NautilusDeviceInfo             *device);
+static void     get_ext2_volume_name                               	(NautilusDeviceInfo             *device);
+static void     get_floppy_volume_name                           	(NautilusDeviceInfo             *device);
 static void     mount_device_mount                               	(NautilusVolumeMonitor      	*view,
-									 DeviceInfo             	*device);
-static gboolean mount_device_is_mounted                       		(DeviceInfo             	*device);
+									 NautilusDeviceInfo             *device);
+static gboolean mount_device_is_mounted                       		(NautilusDeviceInfo             *device);
 static void	mount_device_activate 					(NautilusVolumeMonitor 	  	*view, 
-									 DeviceInfo 		  	*device);
+									 NautilusDeviceInfo 		*device);
 static void     mount_device_deactivate                               	(NautilusVolumeMonitor      	*monitor,
-									 DeviceInfo             	*device);
+									 NautilusDeviceInfo             *device);
 static void     mount_device_activate_floppy                          	(NautilusVolumeMonitor      	*view,
-									 DeviceInfo             	*device);
+									 NautilusDeviceInfo             *device);
 static gboolean	mntent_is_removable_fs					(struct mntent 	  		*ent);
-static void	free_device_info             				(DeviceInfo             	*device,
+static void	free_device_info             				(NautilusDeviceInfo             *device,
 						 	 	 	 NautilusVolumeMonitor      	*monitor);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
@@ -127,7 +125,7 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_mounted),
 				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1);
+				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNTED] 
 		= gtk_signal_new ("volume_unmounted",
@@ -250,13 +248,13 @@ nautilus_volume_monitor_volume_is_mounted (const char *mount_point)
 }
 
 static gboolean
-mount_device_is_mounted (DeviceInfo *device)
+mount_device_is_mounted (NautilusDeviceInfo *device)
 {
 	return device->is_mounted;
 }
 
 static void
-mount_device_cdrom_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_cdrom_set_state (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
 	if (device->device_fd < 0) {
 		device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
@@ -301,7 +299,7 @@ mount_device_cdrom_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *device
 
 
 static void
-mount_device_floppy_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_floppy_set_state (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
 	/* If the floppy is not in mtab, then we set it to empty */
 	if (nautilus_volume_monitor_volume_is_mounted (device->mount_path)) {
@@ -312,13 +310,13 @@ mount_device_floppy_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *devic
 }
 
 static void
-mount_device_ext2_set_state (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_ext2_set_state (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
 	device->state = STATE_ACTIVE;
 }
 
 static void
-mount_device_set_state (DeviceInfo *device, NautilusVolumeMonitor *monitor)
+mount_device_set_state (NautilusDeviceInfo *device, NautilusVolumeMonitor *monitor)
 {
 	switch (device->type) {
 	case DEVICE_CDROM:
@@ -339,23 +337,21 @@ mount_device_set_state (DeviceInfo *device, NautilusVolumeMonitor *monitor)
 }
 
 static void
-device_set_state_empty (DeviceInfo *device, NautilusVolumeMonitor *monitor)
+device_set_state_empty (NautilusDeviceInfo *device, NautilusVolumeMonitor *monitor)
 {
 	device->state = STATE_EMPTY;
 }
 
 static void
-mount_device_mount (NautilusVolumeMonitor *view, DeviceInfo *device)
+mount_device_mount (NautilusVolumeMonitor *view, NautilusDeviceInfo *device)
 {
-	char *target_uri, *desktop_path;
-	const char *icon_name;
-	gboolean result;
+	char *target_uri, *desktop_path;	
 	int index;
 
 	desktop_path = nautilus_get_desktop_directory ();
 	target_uri = nautilus_get_uri_from_local_path (device->mount_path);
 
-	/* Make volume name link "nice" */
+	/* Make user readable volume name "nice" */
 
 	/* Strip whitespace from the end of the name. */
 	for (index = strlen (device->volume_name) - 1; index > 0; index--) {
@@ -377,30 +373,6 @@ mount_device_mount (NautilusVolumeMonitor *view, DeviceInfo *device)
 		}
 	}
 	
-	/* Clean up old link, This should have been done earlier, but
-	 * we double check to be sure.
-	 */
-	remove_mount_link (device);
-
-	/* Get icon type */
-	if (strcmp (device->mount_type, "cdrom") == 0) {
-		icon_name = "i-cdrom.png";
-	} else if (strcmp (device->mount_type, "floppy") == 0) {
-		icon_name = "i-floppy.png";
-	} else {
-		icon_name = "i-blockdev.png";
-	}
-	
-	/* Create link */
-	result = nautilus_link_create (desktop_path, device->volume_name, icon_name, target_uri);
-	if (result) {
-		device->link_uri = nautilus_make_path (desktop_path, device->volume_name);
-
-		/* Identify this as a mount link */
-		nautilus_link_set_type (device->link_uri, NAUTILUS_LINK_MOUNT);
-		
-	}
-	
 	g_free (desktop_path);
 	g_free (target_uri);
 	
@@ -408,7 +380,7 @@ mount_device_mount (NautilusVolumeMonitor *view, DeviceInfo *device)
 }
 
 static void
-mount_device_activate_cdrom (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_activate_cdrom (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
 	int disctype;
 
@@ -443,7 +415,7 @@ mount_device_activate_cdrom (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 }
 
 static void
-mount_device_activate_floppy (NautilusVolumeMonitor *view, DeviceInfo *device)
+mount_device_activate_floppy (NautilusVolumeMonitor *view, NautilusDeviceInfo *device)
 {
 	/* Get volume name */
 	get_floppy_volume_name (device);
@@ -452,7 +424,7 @@ mount_device_activate_floppy (NautilusVolumeMonitor *view, DeviceInfo *device)
 }
 
 static void
-mount_device_activate_ext2 (NautilusVolumeMonitor *view, DeviceInfo *device)
+mount_device_activate_ext2 (NautilusVolumeMonitor *view, NautilusDeviceInfo *device)
 {
 	/* Get volume name */
 	get_ext2_volume_name (device);
@@ -460,10 +432,10 @@ mount_device_activate_ext2 (NautilusVolumeMonitor *view, DeviceInfo *device)
 	mount_device_mount (view, device);
 }
 
-typedef void (* ChangeDeviceInfoFunction) (NautilusVolumeMonitor *view, DeviceInfo *device);
+typedef void (* ChangeNautilusDeviceInfoFunction) (NautilusVolumeMonitor *view, NautilusDeviceInfo *device);
 
 static void
-mount_device_activate (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_activate (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
 	switch (device->type) {
 	case DEVICE_CDROM:
@@ -490,7 +462,7 @@ mount_device_activate (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 
 
 static void 
-eject_cdrom (DeviceInfo *device)
+eject_cdrom (NautilusDeviceInfo *device)
 {
 #if 0
 	if (device->device_fd < 0) {
@@ -509,19 +481,8 @@ eject_cdrom (DeviceInfo *device)
 }
 
 static void
-mount_device_deactivate (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_deactivate (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
-	GList dummy_list;
-	
-	/* Remove mounted device icon from desktop */
-	dummy_list.data = device->link_uri;
-	dummy_list.next = NULL;
-	dummy_list.prev = NULL;
-	nautilus_directory_notify_files_removed (&dummy_list);
-
-	/* Clean up old link */
-	remove_mount_link (device);
-
 	switch (device->type) {
 	case DEVICE_CDROM:
 		eject_cdrom (device);
@@ -539,7 +500,7 @@ mount_device_deactivate (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 }
 
 static void
-mount_device_do_nothing (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_do_nothing (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
 }
 
@@ -547,7 +508,7 @@ static void
 mount_device_check_change (gpointer data, gpointer callback_data)
 {
 	/* What functions to run for particular state transitions */
-	static const ChangeDeviceInfoFunction state_transitions[STATE_LAST][STATE_LAST] = {
+	static const ChangeNautilusDeviceInfoFunction state_transitions[STATE_LAST][STATE_LAST] = {
 		/************  from: ACTIVE                   INACTIVE                 EMPTY */
 		/* to */
 		/* ACTIVE */   {     mount_device_do_nothing, mount_device_activate,   mount_device_activate   },
@@ -555,7 +516,7 @@ mount_device_check_change (gpointer data, gpointer callback_data)
 		/* EMPTY */    {     mount_device_deactivate, mount_device_deactivate, mount_device_do_nothing }
 	};	
 
-	DeviceInfo *device;
+	NautilusDeviceInfo *device;
 	NautilusVolumeMonitor *monitor;
 	DeviceState old_state;
 
@@ -579,7 +540,7 @@ mount_devices_update_is_mounted (NautilusVolumeMonitor *monitor)
 	FILE *fh;
 	char line[PATH_MAX * 3], mntpoint[PATH_MAX], devname[PATH_MAX];
 	GList *element;
-	DeviceInfo *device;
+	NautilusDeviceInfo *device;
 
 	/* Toggle mount state to off and then recheck in mtab. */
 	for (element = monitor->details->devices; element != NULL; element = element->next) {
@@ -653,7 +614,7 @@ check_permissions (gchar *filename, int mode)
 }
 
 static gboolean
-mount_device_floppy_add (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_floppy_add (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {
 	device->mount_type 	= g_strdup ("floppy");
 	device->type 		= DEVICE_FLOPPY;
@@ -668,7 +629,7 @@ mount_device_floppy_add (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 }
 
 static gboolean
-mount_device_ext2_add (DeviceInfo *device)
+mount_device_ext2_add (NautilusDeviceInfo *device)
 {		
 	if (check_permissions (device->fsname, R_OK)) {		
 		return FALSE;
@@ -696,7 +657,7 @@ cdrom_ioctl_frenzy (int fd)
 
 
 static gboolean
-mount_device_iso9660_add (NautilusVolumeMonitor *monitor, DeviceInfo *device)
+mount_device_iso9660_add (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *device)
 {		
 	device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
 	if (device->device_fd < 0) {
@@ -721,7 +682,7 @@ mount_device_iso9660_add (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 
 /* This is here because mtab lists devices by their symlink-followed names rather than what is listed in fstab. *sigh* */
 static void
-mount_device_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, DeviceInfo *device)
+mount_device_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, NautilusDeviceInfo *device)
 {
 	char buf[PATH_MAX];
 	int buflen;
@@ -752,16 +713,15 @@ mount_device_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, Dev
 static void
 add_mount_device (NautilusVolumeMonitor *monitor, struct mntent *ent)
 {
-	DeviceInfo *newdev = NULL;
+	NautilusDeviceInfo *newdev = NULL;
 	gboolean mounted;
 
-	newdev = g_new0 (DeviceInfo, 1);
+	newdev = g_new0 (NautilusDeviceInfo, 1);
 	g_assert (newdev);
 	newdev->device_fd   = -1;
 	newdev->fsname 	    = g_strdup (ent->mnt_fsname);
 	newdev->mount_path  = g_strdup (ent->mnt_dir);
 	newdev->volume_name = NULL;
-	newdev->link_uri    = NULL;
 	newdev->state 	    = STATE_EMPTY;
 
 	mounted = FALSE;
@@ -881,7 +841,7 @@ nautilus_volume_monitor_each_device (NautilusVolumeMonitor *monitor,
 	GList *p;
 
 	for (p = monitor->details->devices; p != NULL; p = p->next) {
-		if ((* function) ((DeviceInfo *) p->data, context)) {
+		if ((* function) ((NautilusDeviceInfo *) p->data, context)) {
 			break;
 		}
 	}
@@ -893,10 +853,10 @@ nautilus_volume_monitor_each_mounted_device (NautilusVolumeMonitor *monitor,
 					     gpointer context)
 {
 	GList *p;
-	DeviceInfo *device;
+	NautilusDeviceInfo *device;
 
 	for (p = monitor->details->devices; p != NULL; p = p->next) {
-		device = (DeviceInfo *) p->data;
+		device = (NautilusDeviceInfo *) p->data;
 		if (device->is_mounted && (* function) (device, context)) {
 			break;
 		}
@@ -909,14 +869,14 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	gboolean is_mounted, found_device;
 	char *argv[3];
 	GList *p;
-	DeviceInfo *device;
+	NautilusDeviceInfo *device;
 	int exec_err;
 	
 	is_mounted = FALSE;
 	found_device = FALSE;
 	device = NULL;
 	
-	/* Locate DeviceInfo for mount point */
+	/* Locate NautilusDeviceInfo for mount point */
 	for (p = monitor->details->devices; p != NULL; p = p->next) {
 		device = p->data;
 		if (strcmp (mount_point, device->mount_path) == 0) {
@@ -946,22 +906,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 }
 
 static void
-remove_mount_link (DeviceInfo *device)
-{
-	GnomeVFSResult result;
-	
-	if (device->link_uri != NULL) {
-		result = gnome_vfs_unlink (device->link_uri);
-		if (result != GNOME_VFS_OK) {
-			/* FIXME: Is a message to the console acceptable here? */
-		}
-		g_free (device->link_uri);
-		device->link_uri = NULL;
-	}
-}
-
-static void
-free_device_info (DeviceInfo *device, NautilusVolumeMonitor *monitor)
+free_device_info (NautilusDeviceInfo *device, NautilusVolumeMonitor *monitor)
 {
 	if (device->device_fd != -1) {
 		close (device->device_fd);
@@ -979,13 +924,10 @@ free_device_info (DeviceInfo *device, NautilusVolumeMonitor *monitor)
 
 	g_free (device->volume_name);
 	device->volume_name = NULL;
-
-	g_free (device->link_uri);
-	device->link_uri = NULL;
 }
 
 static void
-get_iso9660_volume_name (DeviceInfo *device)
+get_iso9660_volume_name (NautilusDeviceInfo *device)
 {
 	struct iso_primary_descriptor iso_buffer;
 
@@ -1001,31 +943,13 @@ get_iso9660_volume_name (DeviceInfo *device)
 }
 
 static void
-get_ext2_volume_name (DeviceInfo *device)
+get_ext2_volume_name (NautilusDeviceInfo *device)
 {
 	device->volume_name = g_strdup ("Ext2 Volume");
 }
 
 static void
-get_floppy_volume_name (DeviceInfo *device)
+get_floppy_volume_name (NautilusDeviceInfo *device)
 {
 	device->volume_name = g_strdup ("Floppy");
-}
-
-gboolean
-nautilus_volume_monitor_is_volume_link (const char *path)
-{
-	gboolean retval;
-	char *link_type;
-	
-	retval = FALSE;
-	link_type = nautilus_link_get_link_type (path);
-	if (link_type != NULL) {
-		if (strcmp (link_type, NAUTILUS_LINK_MOUNT) == 0) {
-			retval = TRUE;
-		}
-		g_free (link_type);
-	}
-	
-	return retval;
 }

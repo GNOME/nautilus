@@ -76,6 +76,12 @@ char *   nautilus_link_get_image_uri                    (const char *link_file_u
 char * 	nautilus_link_get_link_type 			(const char *path);
 
 
+/* Returns if a link is a mount link.
+ * Works only if the file is local and does sync. I/O
+ */
+gboolean nautilus_link_is_volume_link 			(const char *path);
+
+
 /* Returns the link uri associated with a link file. The first version
  * works only if the file is local and does sync. I/O, despite the
  * fact that it takes a URI parameter. The second version takes the

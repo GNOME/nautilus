@@ -41,16 +41,16 @@ struct NautilusVolumeMonitor {
 	NautilusVolumeMonitorDetails *details;
 };
 
-typedef struct DeviceInfo DeviceInfo;
+typedef struct NautilusDeviceInfo NautilusDeviceInfo;
 
 struct NautilusVolumeMonitorClass {
 	GtkObjectClass parent_class;
 
 	/* Signals */
-	void (* volume_mounted)	  (NautilusVolumeMonitor *monitor,
-				   const DeviceInfo      *info);
-	void (* volume_unmounted) (NautilusVolumeMonitor *monitor,
-				   const DeviceInfo      *info);
+	void (* volume_mounted)	  (NautilusVolumeMonitor 	 *monitor,
+				   const NautilusDeviceInfo      *info);
+	void (* volume_unmounted) (NautilusVolumeMonitor 	 *monitor,
+				   const NautilusDeviceInfo      *info);
 };
 
 /* FIXME: Needs Nautilus prefix. */
@@ -79,7 +79,7 @@ typedef enum {
 } DeviceType;
 
 /* FIXME: Needs Nautilus prefix. */
-struct DeviceInfo {
+struct NautilusDeviceInfo {
 	DeviceType type;
 	DeviceState state;
 	int device_fd;
@@ -88,7 +88,6 @@ struct DeviceInfo {
 	char *mount_path;
 	char *mount_type;
 	char *volume_name;
-	char *link_uri;
 	
 	gboolean is_mounted;
 	gboolean did_mount;
@@ -97,7 +96,7 @@ struct DeviceInfo {
 };
 
 /* FIXME: Needs Nautilus prefix. */
-typedef gboolean (* EachDeviceFunction) (const DeviceInfo *, gpointer);
+typedef gboolean (* EachDeviceFunction) (const NautilusDeviceInfo *, gpointer);
 
 GtkType                nautilus_volume_monitor_get_type                   (void);
 NautilusVolumeMonitor *nautilus_volume_monitor_get                        (void);
