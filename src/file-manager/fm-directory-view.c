@@ -208,7 +208,6 @@ struct FMDirectoryViewDetails
 	gboolean send_selection_change_to_shell;
 
 	NautilusFile *file_monitored_for_open_with;
-	NautilusDirectory *directory_monitored_for_activation;
 
 	GList *clipboard_contents;
 	gboolean clipboard_contents_were_cut;
@@ -300,8 +299,6 @@ static void           fm_directory_view_trash_state_changed_callback (NautilusTr
 static void           fm_directory_view_select_file                  (FMDirectoryView      *view,
 								      NautilusFile         *file);
 static void           monitor_file_for_open_with                     (FMDirectoryView      *view,
-								      NautilusFile         *file);
-static void           monitor_file_for_activation                    (FMDirectoryView      *view,
 								      NautilusFile         *file);
 
 EEL_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
@@ -1305,8 +1302,6 @@ fm_directory_view_destroy (GtkObject *object)
 	 * purposes.
 	 */
 	view->details->nautilus_view = NULL;
-
-	monitor_file_for_activation (view, NULL);
 
 	monitor_file_for_open_with (view, NULL);
 
@@ -4412,11 +4407,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	GnomeVFSMimeApplication *application;
 	GnomeDesktopEntry *entry;
 	ActivationAction action;
-	gboolean need_to_continue_monitoring_file_for_activation;
 	
 	parameters = callback_data;
-
-	need_to_continue_monitoring_file_for_activation = FALSE;
 
 	eel_timed_wait_stop (cancel_activate_callback, parameters);
 
@@ -4534,12 +4526,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			gnome_vfs_mime_application_free (application);
 		} else {
 			open_location (view, uri, parameters->choice);
-			need_to_continue_monitoring_file_for_activation = TRUE;
 		}
-	}
-
-	if (!need_to_continue_monitoring_file_for_activation) {
-		monitor_file_for_activation (view, NULL);
 	}
 
 	g_free (uri);
@@ -4556,8 +4543,6 @@ cancel_activate_callback (gpointer callback_data)
 	nautilus_file_cancel_call_when_ready (parameters->file, 
 					      activate_callback, 
 					      parameters);
-
-	monitor_file_for_activation (parameters->view, NULL);
 
 	g_free (parameters);
 }
@@ -4584,8 +4569,6 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-	monitor_file_for_activation (view, file);
 
 	/* Might have to read some of the file to activate it. */
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
@@ -5406,46 +5389,6 @@ monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
 		attributes = nautilus_mime_actions_get_full_file_attributes ();
 		nautilus_file_monitor_add (file, file_spot, attributes);
 		g_list_free (attributes);
-	}
-}
-
-static void
-monitor_file_for_activation (FMDirectoryView *view,
-			     NautilusFile *file)
-{
-	char *uri;
-	NautilusDirectory **directory_spot;
-	NautilusDirectory *directory, *old_directory;
-
-	if (file == NULL) {
-		directory = NULL;
-	} else {
-		uri = nautilus_file_get_uri (file);
-		directory = nautilus_directory_get (uri);
-		g_free (uri);
-	}
-
-	/* Quick out when not changing. */
-	directory_spot = &view->details->directory_monitored_for_activation;
-	old_directory = *directory_spot;
-	if (old_directory == directory) {
-		nautilus_directory_unref (directory);
-		return;
-	}
-
-	/* Point at the new directory. */
-	view->details->directory_monitored_for_activation = directory;
-
-	/* Stop monitoring the old directory. */
-	if (old_directory != NULL) {
-		nautilus_directory_file_monitor_remove (old_directory, directory_spot);
-		nautilus_directory_unref (old_directory);
-	}
-
-	/* Start monitoring the new directory. */
-	if (directory != NULL) {
-		nautilus_directory_file_monitor_add (directory, directory_spot,
-						     TRUE, TRUE, NULL);
 	}
 }
 

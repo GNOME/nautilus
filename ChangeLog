@@ -1,5 +1,17 @@
 2001-05-16  Darin Adler  <darin@eazel.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (activate_callback),
+	(cancel_activate_callback), (fm_directory_view_activate_file),
+	Got rid of monitor_file_for_activation, another example of this
+	same loose end as last time.
+	
+	* src/nautilus-window-manage-views.c:
+	(set_to_pending_location_and_selection): There was an overzealous
+	assert in here. Looked into why it fired, and fixed it up.
+
+2001-05-16  Darin Adler  <darin@eazel.com>
+
 	* src/nautilus-window-private.h:
 	* src/nautilus-window-manage-views.c: (free_location_change),
 	(begin_location_change):

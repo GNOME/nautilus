@@ -889,7 +889,11 @@ static void
 set_to_pending_location_and_selection (NautilusWindow *window)
 {
         g_assert (window->new_content_view != NULL);
-        g_assert (window->details->pending_location != NULL);
+
+        if (window->details->pending_location == NULL) {
+                g_assert (window->details->pending_selection == NULL);
+                return;
+        }
 
         load_new_location_in_all_views (window,
                                         window->details->pending_location,
