@@ -2307,7 +2307,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		}
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) == 0) {
-		name = g_strdup (_("Show _Properties"));
+		name = g_strdup (_("Show _Properties..."));
 		*return_sensitivity = selection != NULL && fm_directory_view_supports_properties (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
 		name = g_strdup (_("_Empty Trash"));
@@ -2656,6 +2656,8 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 							    GtkMenu *menu,
 						       	    GList *files)
 {
+	GtkWidget *menu_item;
+	
 	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
 				    	open_callback, files);
@@ -2665,6 +2667,11 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	append_selection_menu_subtree (view, menu, 
 				       create_open_with_gtk_menu (view, files), files,
 				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
+
+	/* add a separator for more clarity */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
 
 	/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
 	if (!fm_directory_all_selected_items_in_trash (view)) {
