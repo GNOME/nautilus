@@ -1,3 +1,13 @@
+2003-07-25  Chris Altmann  <altmann@rcsis.com>
+
+	* src/file-manager/fm-properties-window.c
+	  (struct FMPropertiesWindowDetails),
+	  (create_basic_page),
+	  (select_image_button_callback):
+	  Track opening and closing of icon_selector window, resuse existing
+	  window if user clicks "Select Custom Icon" multiple times and
+	  close it if the proerties window is closed. Fixes bug #118135
+
 2003-07-20  Fredrik Jösson  <fjo@nada.kth.se>
 
 	* src/file-manager/fm-directory-view.c: move g_slist_free further

@@ -88,6 +88,7 @@ struct FMPropertiesWindowDetails {
 	
 	GtkNotebook *notebook;
 	GtkWidget *remove_image_button;
+	GtkWidget *icon_selector_window;
 	
 	GtkTable *basic_table;
 	GtkTable *permissions_table;
@@ -2333,6 +2334,8 @@ create_basic_page (FMPropertiesWindow *window)
 			
 			g_free (image_uri);
 		}
+
+		window->details->icon_selector_window = NULL;
 	}
 }
 
@@ -3739,11 +3742,23 @@ select_image_button_callback (GtkWidget *widget, FMPropertiesWindow *properties_
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (properties_window));
 
-	dialog = eel_gnome_icon_selector_new (_("Select an icon"),
-					      NULL,
-					      GTK_WINDOW (properties_window),
-					      (EelIconSelectionFunction) set_icon_callback,
-					      properties_window);
+	dialog = properties_window->details->icon_selector_window;
+
+	if (dialog) {
+		gtk_window_present (GTK_WINDOW (dialog));
+	} else {
+		dialog = eel_gnome_icon_selector_new (_("Select an icon"),
+						      NULL,
+					 	      GTK_WINDOW (properties_window),
+						      (EelIconSelectionFunction) set_icon_callback,
+						      properties_window);
+		
+		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
+
+		properties_window->details->icon_selector_window = dialog;
+
+		eel_add_weak_pointer (&properties_window->details->icon_selector_window);
+	}
 }
 
 static void
