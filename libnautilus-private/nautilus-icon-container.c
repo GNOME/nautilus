@@ -1219,6 +1219,20 @@ button_event_modifies_selection (GdkEventButton *event)
 	return (event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 }
 
+/* invalidate the cached label sizes for all the icons */
+static void
+invalidate_label_sizes (NautilusIconContainer *container)
+{
+	GList *p;
+	NautilusIcon *icon;
+	
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+
+		nautilus_icon_canvas_item_invalidate_label_size (icon->item);		
+	}
+}
+
 static gboolean
 select_one_unselect_others (NautilusIconContainer *container,
 			    NautilusIcon *icon_to_select)
@@ -3992,6 +4006,8 @@ nautilus_icon_container_set_anti_aliased_mode (NautilusIconContainer *container,
 	canvas = GNOME_CANVAS (container);
 	if (canvas->aa != anti_aliased_mode) {
 		canvas->aa = anti_aliased_mode;
+		
+		invalidate_label_sizes (container);	
 		nautilus_icon_container_request_update_all (container);	
 	}
 }
@@ -4492,6 +4508,7 @@ nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
 
 	container->details->tighter_layout = tighter_layout;
 
+	invalidate_label_sizes (container);
 	redo_layout (container);
 
 	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);

@@ -1,3 +1,26 @@
+2001-01-11  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 5338, switching to and from "tighter layout" messes up
+	icon labels, by adding a call to invalidate an item's cached label
+	size, and making the icon canvas invalidate the items when appropriate.
+	This also fixes a similar problem when the anti-aliased mode changes.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize),
+	(nautilus_icon_canvas_item_invalidate_label_size),
+	(nautilus_icon_canvas_item_set_arg):
+	renamed internal invalidation routine to make it externally accessible
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	added nautilus_icon_canvas_item_invalidate_label_size
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(invalidate_label_sizes),
+	(nautilus_icon_container_set_anti_aliased_mode),
+	(nautilus_icon_container_set_tighter_layout):
+	added an invalidate_label_sizes routine and called it when
+	tighter layout or the anti-aliased mode changes.
+	
 2001-01-11  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	reviewed by: <Josh Barrow  <josh@eazel.com>

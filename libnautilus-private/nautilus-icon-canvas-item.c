@@ -283,8 +283,7 @@ nautilus_icon_canvas_item_initialize (NautilusIconCanvasItem *icon_item)
 	icon_item->details->is_renaming = FALSE;
 
 	/* invalidate cached text dimensions initially */
-	icon_item->details->text_width = -1;
-	icon_item->details->text_height = -1;
+	nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 	
 	/* set up the default font and size */
 	icon_item->details->smooth_font_size = 12;
@@ -342,11 +341,9 @@ pixbuf_is_acceptable (GdkPixbuf *pixbuf)
 		&& gdk_pixbuf_get_bits_per_sample (pixbuf) == 8;
 }
 
-/* utility routine to invalidate the text width and height cached in the
- * item details.
- */
-static void
-invalidate_text_dimensions (NautilusIconCanvasItem *item)
+/* invalidate the text width and height cached in the item details. */
+void
+nautilus_icon_canvas_item_invalidate_label_size (NautilusIconCanvasItem *item)
 {
 	item->details->text_width = -1;
 	item->details->text_height = -1;
@@ -373,7 +370,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		g_free (details->editable_text);
 		details->editable_text = g_strdup (GTK_VALUE_STRING (*arg));
 		
-		invalidate_text_dimensions (item);		
+		nautilus_icon_canvas_item_invalidate_label_size (item);		
 		break;
 
 	case ARG_ADDITIONAL_TEXT:
@@ -384,7 +381,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		g_free (details->additional_text);
 		details->additional_text = g_strdup (GTK_VALUE_STRING (*arg));
 		
-		invalidate_text_dimensions (item);		
+		nautilus_icon_canvas_item_invalidate_label_size (item);		
 		break;
 
 	case ARG_FONT:
@@ -401,7 +398,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		}
 		details->font = font;
 		
-		invalidate_text_dimensions (item);		
+		nautilus_icon_canvas_item_invalidate_label_size (item);		
 		break;
 
 	case ARG_HIGHLIGHTED_FOR_SELECTION:
@@ -428,7 +425,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
         case ARG_SMOOTH_FONT:
 		nautilus_icon_canvas_item_set_smooth_font (NAUTILUS_ICON_CANVAS_ITEM (object),
 							   NAUTILUS_SCALABLE_FONT (GTK_VALUE_OBJECT (*arg)));
-		invalidate_text_dimensions (item);				
+		nautilus_icon_canvas_item_invalidate_label_size (item);				
 		break;
 
         case ARG_SMOOTH_FONT_SIZE:
