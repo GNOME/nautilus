@@ -1,3 +1,10 @@
+2000-05-16  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(select_previous_or_next_name):
+	Fixed a crash when using Tab and Shift-Tab in an empty folder,
+	caused by an uninitialized variable.
+
 2000-05-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:

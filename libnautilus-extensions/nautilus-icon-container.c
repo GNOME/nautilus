@@ -1554,6 +1554,7 @@ select_previous_or_next_name (NautilusIconContainer *container,
 	GList *list;
 	const GList *item;
 
+	item = NULL;
 	/* Chose the icon to start with.
 	 * If we have a keyboard focus, start with it.
 	 * Otherwise, use the single selected icon.
