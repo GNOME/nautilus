@@ -3,8 +3,8 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 0.9.0
-  Last modified: March 1, 2001
+  Version: 1.0
+  Last modified: March 7, 2001
   This document is maintained by Eazel Inc.
   Maintainers:
                Eazel Inc.
@@ -49,7 +49,7 @@
     License</citetitle></ulink>, Version 1.1 or any later version 
     published by the Free Software Foundation with no Invariant Sections, 
     no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license
-    can be found <ulink type="help" url="gnome-help:fdl">here</ulink>
+    can be found <ulink type="help" url="gnome-help:gnufdl">here</ulink>
     or in the file COPYING-DOCS which shipped as part of this package.
    </para>
    <para>
@@ -70,9 +70,202 @@
   <title>Introduction</title>
 
   <para>
-   This document is a placeholder.  The real document will appear here
-   shortly.
+   These release notes, last updated March 7, 2001, describe known
+   issues for Nautilus versions 1.0.
   </para>
+
+  <para>
+   For information about Mozilla, visit mozilla.org and read the
+   latest Mozilla release notes.
+  </para>
+
+  <para>
+   Solutions to some common problems with Nautilus can be found at the
+   Eazel Customer Support site. Click <ulink type="http"
+   url="http://support.linuxcare.com/knowledgebase/eazel"> here</ulink>
+   to see if your problem is described.
+  </para>
+
  </sect1>
+
+ <sect1 id="new">
+  <title>What's New in Nautilus 1.0</title>
+
+  <itemizedlist>
+
+   <listitem>
+    <para>
+     The <guimenuitem>Nautilus window</guimenuitem> makes it easy for
+     you to view and manage files on your computer, and visit sites on
+     the Web.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     The <guimenuitem>sidebar</guimenuitem> includes views of your
+     directory hierarchy (tree), access to help and information
+     sources, a list of recently-visited page, folder, and website
+     locations, and space to record notes about specific folders and
+     other items.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Nautilus offers various <guimenuitem>views</guimenuitem> of your
+     file and folders, such as an icon view, a list view, and a music
+     view for MP3 files.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     For people who have a lot of MP3 files, extra features for
+     <guimenuitem>music files and folders</guimenuitem> let you
+     organize your MP3s into albums, attach custom icons, and more.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Nautilus includes a fast <guimenuitem>find</guimenuitem> feature
+     that indexes your hard disk so you can quickly search for a file
+     by content as well as file name, creation date, and other file
+     attributes.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Nautilus has several <guimenuitem>customization</guimenuitem> features: You can change
+     backgrounds, personalize icons, and switch themes.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Quick access to <guimenuitem>Eazel Services</guimenuitem>
+     is available through the Nautilus toolbar.
+    </para>
+   </listitem>
+
+   </itemizedlist>
+  </sect1>
+
+  <sect1 id="require">
+   <title>System Requirements</title>
+
+   <para>
+    Red Hat Linux 6.1 or 6.2: An IA-32-compatible system with a
+    minimum of 32MB of RAM.</para>
+
+   <para>
+    Red Hat Linux 7: The latest GNOME 1.2 libraries running on an
+    IA-32-compatible system with a minimum of 32MB of RAM.
+   </para>
+
+  </sect1>
+
+  <sect1 id="beta">
+   <title>Upgrading From a Beta Version of Nautilus</title>
+
+   <para>
+    <guimenuitem>Restoring Custom Settings</guimenuitem>
+   </para>
+
+   <para>
+    If you installed Nautilus Preview Release 1, 2, or 3, you will
+    lose some of your custom settings when you upgrade to Nautilus
+    1.0. One symptom of this problem is that your icons will look like
+    text files and your desktop may not be correctly drawn.
+   </para>
+
+   <para>
+    The preview release versions of Nautilus created XML files (links
+    and metafiles containing your customization information) with
+    incorrect capitalization. Because of this error, your Nautilus
+    links may now appear as plain text files beginning with "&lt;?xml."
+   </para>
+
+   <para>
+    To restore a normal appearance, open a terminal window and run this
+    command:
+   </para>
+
+   <para>
+    nautilus-xml-migrate <emphasis>directory</emphasis>
+   </para>
+
+   <para>
+    This command searches the directory you specify (or the current
+    directory if you don't specify one) and all subdirectories for
+    files with a first line beginning with "&lt;?xml" and a second line
+    beginning with "&lt;NAUTILUS." If any such files are found, their XML
+    tags will be corrected to be lower case instead of upper case.
+   </para>
+
+   <para>
+    After the command has been executed, return to Nautilus and click
+    the Refresh button to see the corrected window.
+   </para>
+
+   <para>
+    <guimenuitem>Problems Loading Web Pages</guimenuitem>
+   </para>
+
+   <para>
+    If you installed Nautilus Preview Release 1 or 2, and you are
+    having problems loading Web pages, you may need to delete two
+    directories. Do this:
+   </para>
+
+   <orderedlist>
+    <listitem><para>Shut down Nautilus and the gconfd utility. To do
+    this, open a terminal window and enter the following
+    command: killall gconfd</para></listitem>
+
+    <listitem><para>Remove the following two directories and then restart
+    Nautilus.</para></listitem>
+
+   </orderedlist>
+
+     <simplelist>
+      <member>~/.gconf</member>
+      <member>~/.gconfd</member>
+     </simplelist>
+
+   <para><guimenuitem>Medusa Off by Default</guimenuitem></para>
+
+   <para>The Medusa daemon, which indexes your hard disk so fast
+   searches can be performed, is turned off by default. To turn it on,
+   open a terminal window and enter the following command:
+   </para>
+
+   <para>
+    medusa-searchd
+   </para>
+
+   <para>Note: For Medusa to perform its indexing task, the crond
+   program must also be running. If you have turned off crond, Medusa
+   won't work.
+   </para>
+
+  </sect1>
+
+  <sect1 id="problems">
+   <title>Known Problems</title>
+
+   <para>
+    Ximian packages from the Red Hat 6 category cannot be installed
+    from package view and will fail if your system is running Red Hat
+    7, because the installer is seeking a Red Hat 6.2-specific
+    library.
+   </para>
+
+  </sect1>
+
+
 </article>
+
 
