@@ -1,7 +1,7 @@
 NULL=
 
 if BUILD_RPM_COMPONENTS
-INSTALL_SERVICES=install inventory inventory-view
+INSTALL_SERVICE=install inventory inventory-view
 endif
 
 
@@ -13,4 +13,3 @@ SUBDIRS = \
 	summary \
 	vault \
 	$(NULL)
-
