@@ -2060,6 +2060,7 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 		/* Tell it that the activation URI is just the real URI. */
 		g_free (name);
 		activation_uri_found (directory, NULL);
+		return;
 	}
 
 	/* We know it's a link file, so we must read and parse the

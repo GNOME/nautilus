@@ -1,5 +1,11 @@
 2000-07-25  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(activation_uri_gmc_link_read_callback):
+	Add missing return statement.
+
+2000-07-25  Darin Adler  <darin@eazel.com>
+
 	* components/help/help-method.c: (help_uri_new): No parameters
 	is indicated by "(void)" instead of "()".
 	(help_uri_to_string): Changed to share more code (I think I might
