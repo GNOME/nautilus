@@ -318,8 +318,7 @@ nautilus_viewport_get_is_smooth (const NautilusViewport *nautilus_viewport)
 }
 
 void
-nautilus_viewport_set_never_smooth (NautilusViewport *nautil
-us_viewport,
+nautilus_viewport_set_never_smooth (NautilusViewport *nautilus_viewport,
 				    gboolean never_smooth)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport));
