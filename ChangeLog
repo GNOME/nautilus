@@ -1,3 +1,15 @@
+2000-04-25  Andy Hertzfeld <andy@eazel.com>
+
+	made drag and drop to and from the location bar work properly
+	
+	* src/nautilus-location-bar.c:
+	changed the exported drag action to GDK_ACTION_LINK, as well as making
+	it accept links.  Fixed crashes in drag_data_get by referencing the
+	actual location bar instead of the event box, and by not destroying
+	the result from gtk_entry_get_text, since it's not a copy.  Made it
+	actually go to the dropped in uri by emitting the location changed
+	signal.
+	
 2000-04-25  John Sullivan  <sullivan@eazel.com>
 
 	* data/mime/nautilus.keys

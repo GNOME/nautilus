@@ -109,6 +109,9 @@ drag_data_received_cb (GtkWidget *widget,
 
 	nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (widget),
 					    names->data);
+	gtk_signal_emit (GTK_OBJECT (widget),
+			 signals[LOCATION_CHANGED],
+			 gtk_entry_get_text (GTK_ENTRY (NAUTILUS_LOCATION_BAR (widget)->entry)));
 
 	gnome_uri_list_free_strings (names);
 
@@ -124,11 +127,10 @@ drag_data_get_cb (GtkWidget *widget,
 {
 	char *entry_text;
 
-	g_assert (NAUTILUS_IS_LOCATION_BAR (widget));
 	g_assert (selection_data != NULL);
 
-	entry_text = gtk_entry_get_text (NAUTILUS_LOCATION_BAR (widget)->entry);
-
+	entry_text = gtk_entry_get_text (NAUTILUS_LOCATION_BAR (widget->parent)->entry);
+	
 	switch (info) {
 	case NAUTILUS_DND_URI_LIST:
 	case NAUTILUS_DND_TEXT_PLAIN:
@@ -141,8 +143,6 @@ drag_data_get_cb (GtkWidget *widget,
 	default:
 		g_assert_not_reached ();
 	}
-
-	g_free (entry_text);
 }
 
 static void
@@ -217,7 +217,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	gtk_drag_source_set (GTK_WIDGET (event_box), 
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
 			     drag_types, NAUTILUS_N_ELEMENTS (drag_types),
-			     GDK_ACTION_COPY | GDK_ACTION_MOVE);
+			     GDK_ACTION_LINK);
 	gtk_signal_connect  (GTK_OBJECT (event_box), "drag_data_get",
 			     GTK_SIGNAL_FUNC (drag_data_get_cb),
 			     bar);
@@ -226,7 +226,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	gtk_drag_dest_set  (GTK_WIDGET (bar),
 			    GTK_DEST_DEFAULT_ALL,
 			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
-			    GDK_ACTION_COPY | GDK_ACTION_MOVE);
+			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 	gtk_signal_connect (GTK_OBJECT (bar), "drag_data_received",
 			    GTK_SIGNAL_FUNC (drag_data_received_cb),
 			    NULL);
