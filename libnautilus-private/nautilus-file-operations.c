@@ -304,9 +304,16 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 
 	/* Make the progress dialog show up over the window we are copying into */
 	if (transfer_info->parent_view != NULL) {
-		gtk_window_set_transient_for (
-			GTK_WINDOW (transfer_info->progress_dialog), 
-			GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
+		GtkWidget *toplevel;
+
+		/* Transient-for-desktop are visible on all desktops, we don't want
+		   that. */
+		toplevel = gtk_widget_get_toplevel (transfer_info->parent_view);
+		if (toplevel != NULL &&
+		    g_object_get_data (G_OBJECT (toplevel), "is_desktop_window") == NULL) {
+			gtk_window_set_transient_for (GTK_WINDOW (transfer_info->progress_dialog), 
+						      GTK_WINDOW (toplevel));
+		}
 	}
 }
 

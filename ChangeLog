@@ -1,3 +1,11 @@
+2004-08-30  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(create_transfer_dialog):
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_instance_init):
+	Don't make progress dialogs transient for the desktop. 
+
 2004-08-27  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_get_group_names_including):
