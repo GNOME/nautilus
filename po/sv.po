@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-02-02 11:37+0100\n"
-"PO-Revision-Date: 2001-01-30 14:02+0100\n"
+"POT-Creation-Date: 2001-02-02 16:13+0100\n"
+"PO-Revision-Date: 2001-02-02 16:15+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Can't create nautilus-launcher-applet!"
 msgstr "Kan inte skapa nautilus-startar-applet!"
 
-#: applets/preferences-applet/nautilus-preferences-applet.c:170
+#: applets/preferences-applet/nautilus-preferences-applet.c:182
 msgid "Can't create nautilus-preferences-applet!"
 msgstr "Kan inte skapa nautilus-inställningar-applet!"
 
@@ -2183,7 +2183,7 @@ msgid "Messages"
 msgstr "Meddelanden"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:641
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:549
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:542
 #, c-format
 msgid "Version: %s"
 msgstr "Version: %s"
@@ -2801,53 +2801,53 @@ msgstr ""
 "Ditt användarnamn eller lösenord var inte korrekt. Var vänlig och försök "
 "igen."
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:105
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:102
 msgid "Register"
 msgstr "Anmäl"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:106
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:103
 msgid "Login"
 msgstr "Logga in"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:107
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:115
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:104
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:112
 msgid "Terms of Use"
 msgstr "Användningsvillkor"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:108
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:116
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:105
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:113
 msgid "Privacy Statement"
 msgstr "Policy för persondataskydd"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:113
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:110
 msgid "Account Preferences"
 msgstr "Kontoinställningar"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:114
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:111
 msgid "Logout"
 msgstr "Logga ut"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:127
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:124
 #, c-format
 msgid "Welcome, %s!"
 msgstr "Välkommen, %s!"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:132
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:129
 msgid "You are not logged in"
 msgstr "Du är inte inloggad"
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:673
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:666
 #: src/nautilus-service-ui.xml.h:5
 msgid "Services"
 msgstr "Tjänster"
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:709
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:702
 msgid "Featured Downloads"
 msgstr "Framhävda hämtningar"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:869
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:862
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly.You could try again "
@@ -2856,7 +2856,7 @@ msgstr ""
 "Kunde inte ansluta till Eazels server. Servern kan vara otillgänglig just nu "
 "eller så kan din dator vara felkonfigurerad. Du kan försöka igen senare."
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:887
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:880
 msgid ""
 "Found problem with data on Eazel servers. Please contact support@eazel.com."
 msgstr ""
@@ -4630,7 +4630,7 @@ msgstr "Visa antal objekt i mappar"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:141
 msgid "Show thumbnails for image files"
-msgstr "Visa tumnaglar för bildfiler"
+msgstr "Visa miniatyrbilder för bildfiler"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:144
 msgid "Read and write metadata in each folder"
@@ -4855,7 +4855,7 @@ msgstr "Visa antal objekt i mappar"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:759
 msgid "Show Thumbnails for Image Files"
-msgstr "Visa tumnaglar för bildfiler"
+msgstr "Visa miniatyrbilder för bildfiler"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:766
 msgid "Previewing Sound Files"
@@ -5177,195 +5177,196 @@ msgstr "Kunde inte öppna fjärrfil"
 #: libnautilus-extensions/nautilus-search-uri.c:212
 #, c-format
 msgid "[Items ]containing \"%s\" in their names"
-msgstr "som har \"%s\" i sina namn"
+msgstr "[Objekt ]som har \"%s\" i sina namn"
 
 #. "%s" here is a pattern the file name started with, such as
 #. "nautilus"
 #: libnautilus-extensions/nautilus-search-uri.c:217
 #, c-format
 msgid "[Items ]starting with \"%s\""
-msgstr "som börjar med \"%s\""
+msgstr "[Objekt ]som börjar med \"%s\""
 
 #. "%s" here is a pattern the file name ended with, such as
 #. "mime"
 #: libnautilus-extensions/nautilus-search-uri.c:222
 #, c-format
 msgid "[Items ]ending with %s"
-msgstr "som slutar med %s"
+msgstr "[Objekt ]som slutar med %s"
 
 #. "%s" here is a pattern the file name did not match, such
 #. as "nautilus"
 #: libnautilus-extensions/nautilus-search-uri.c:227
 #, c-format
 msgid "[Items ]not containing \"%s\" in their names"
-msgstr "som inte har  \"%s\" i sina namn"
+msgstr "[Objekt ]som inte har \"%s\" i sina namn"
 
 #. "%s" is a regular expression string, for example "[abc]"
 #: libnautilus-extensions/nautilus-search-uri.c:231
 #, c-format
 msgid "[Items ]matching the regular expression \"%s\""
-msgstr "som matchar det reguljära uttrycket \"%s\""
+msgstr "[Objekt ]som matchar det reguljära uttrycket \"%s\""
 
 #. "%s" is a file glob, for example "*.txt"
 #: libnautilus-extensions/nautilus-search-uri.c:235
 #, c-format
 msgid "[Items ]matching the file pattern \"%s\""
-msgstr "som matchar filmönstret \"%s\""
+msgstr "[Objekt ]som matchar filmönstret \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:248
 msgid "[Items that are ]regular files"
-msgstr "vanliga filer"
+msgstr "[Objekt som är ]vanliga filer"
 
 #: libnautilus-extensions/nautilus-search-uri.c:251
 msgid "[Items that are ]text files"
-msgstr "textfiler"
+msgstr "[Objekt som är ]textfiler"
 
 #: libnautilus-extensions/nautilus-search-uri.c:254
 msgid "[Items that are ]applications"
-msgstr "program"
+msgstr "[Objekt som är ]program"
 
 #: libnautilus-extensions/nautilus-search-uri.c:257
 msgid "[Items that are ]folders"
-msgstr "mappar"
+msgstr "[Objekt som är ]mappar"
 
 #: libnautilus-extensions/nautilus-search-uri.c:260
 msgid "[Items that are ]music"
-msgstr "musik"
+msgstr "[Objekt som är ]musik"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-extensions/nautilus-search-uri.c:268
 #, c-format
 msgid "[Items ]that are not %s"
-msgstr "som inte är %s"
+msgstr "[Objekt ]som inte är %s"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-extensions/nautilus-search-uri.c:273
 #, c-format
 msgid "[Items ]that are %s"
-msgstr "som är %s"
+msgstr "[Objekt ]som är %s"
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-extensions/nautilus-search-uri.c:287
 #, c-format
 msgid "[Items ]not owned by \"%s\""
-msgstr "som inte ägs av \"%s\""
+msgstr "[Objekt ]som inte ägs av \"%s\""
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-extensions/nautilus-search-uri.c:292
 #, c-format
 msgid "[Items ]owned by \"%s\""
-msgstr "som ägs av \"%s\""
+msgstr "[Objekt ]som ägs av \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:295
 #, c-format
 msgid "[Items ]with owner UID \"%s\""
-msgstr "som har ägar-UID \"%s\""
+msgstr "[Objekt ]med ägar-UID \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:298
 #, c-format
 msgid "[Items ]with owner UID other than \"%s\""
-msgstr "som har annat ägar-UID än \"%s\""
+msgstr "[Objekt ]med annat ägar-UID än \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:309
 #, c-format
 msgid "[Items ]larger than %s bytes"
-msgstr "som är större än %s byte"
+msgstr "[Objekt ]som är större än %s byte"
 
 #: libnautilus-extensions/nautilus-search-uri.c:312
 #, c-format
 msgid "[Items ]smaller than %s bytes"
-msgstr "som är mindre än %s byte"
+msgstr "[Objekt ]som är mindre än %s byte"
 
 #: libnautilus-extensions/nautilus-search-uri.c:315
 #, c-format
 msgid "[Items ]of %s bytes"
-msgstr "som är %s byte"
+msgstr "[Objekt ]som är %s byte"
 
 #: libnautilus-extensions/nautilus-search-uri.c:326
 msgid "[Items ]modified today"
-msgstr "som är ändrade idag"
+msgstr "[Objekt ]som är ändrade idag"
 
 #: libnautilus-extensions/nautilus-search-uri.c:329
 msgid "[Items ]modified yesterday"
-msgstr "som ändrades igår"
+msgstr "[Objekt ]som ändrades igår"
 
 #: libnautilus-extensions/nautilus-search-uri.c:332
 #, c-format
 msgid "[Items ]modified on %s"
-msgstr "som ändrades %s"
+msgstr "[Objekt ]som ändrades %s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:334
 #, c-format
 msgid "[Items ]not modified on %s"
-msgstr "som inte ändrades %s"
+msgstr "[Objekt ]som inte ändrades %s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:337
 #, c-format
 msgid "[Items ]modified before %s"
-msgstr "som ändrades innan %s"
+msgstr "[Objekt ]som ändrades innan %s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:340
 #, c-format
 msgid "[Items ]modified after %s"
-msgstr "som ändrades efter %s"
+msgstr "[Objekt ]som ändrades efter %s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:343
 #, c-format
 msgid "[Items ]modified within a week of %s"
-msgstr "som ändrades inom en vecka från %s"
+msgstr "[Objekt ]som ändrades inom en vecka från %s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:346
 #, c-format
 msgid "[Items ]modified within a month of %s"
-msgstr "som ändrade inom en månad från %s"
+msgstr "[Objekt ]som ändrades inom en månad från %s"
 
 #. "%s" here is the name of an Emblem
 #: libnautilus-extensions/nautilus-search-uri.c:359
 #, c-format
 msgid "[Items ]marked with \"%s\""
-msgstr "som är märkta med \"%s\""
+msgstr "[Objekt ]som är märkta med \"%s\""
 
 #. "%s" here is the name of an Emblem
 #: libnautilus-extensions/nautilus-search-uri.c:363
 #, c-format
 msgid "[Items ]not marked with \"%s\""
-msgstr "som inte är märkta med \"%s\""
+msgstr "[Objekt ]som inte är märkta med \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:379
 #, c-format
 msgid "[Items ]with all the words \"%s\""
-msgstr "som innehåller alla orden \"%s\""
+msgstr "[Objekt ]som innehåller alla orden \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:384
 #, c-format
 msgid "[Items ]containing one of the words \"%s\""
-msgstr "som innehåller något av orden \"%s\""
+msgstr "[Objekt ]som innehåller något av orden \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:389
 #, c-format
 msgid "[Items ]without all the words \"%s\""
-msgstr "som inte innehåller alla orden \"%s\""
+msgstr "[Objekt ]som inte innehåller alla orden \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:394
 #, c-format
 msgid "[Items ]without any of the words \"%s\""
-msgstr "som inte innehåller något av orden \"%s\""
+msgstr "[Objekt ]som inte innehåller något av orden \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:556
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "och"
+msgstr ""
+"[Objekt som är större än 400 kB] och [utan alla orden \"äpple apelsin\"]"
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -5374,7 +5375,9 @@ msgstr "och"
 msgid ""
 "[Items larger than 400K], [owned by root and without all the words \"apple "
 "orange\"]"
-msgstr ", "
+msgstr ""
+"[Objekt som är större än 400 kB], [ägda av root och utan alla orden \"äpple "
+"apelsin\"]"
 
 #. The beginning of the description of a search that has just been
 #. performed.  The "%s" here is a description of a single criterion,
@@ -5592,19 +5595,6 @@ msgstr "_Klipp ut text"
 #: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
 msgid "_Paste Text"
 msgstr "K_listra in text"
-
-#. The copyright character in here is correct for
-#. * Latin-1 encoding, but not for UTF-8, so we have
-#. * to change it when we upgrade to GTK 2.0.
-#.
-#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:240
-#: src/nautilus-window-menus.c:553
-msgid "Nautilus"
-msgstr "Nautilus"
-
-#: nautilus.desktop.in.h:2
-msgid "Nautilus File Manager and Graphic Shell"
-msgstr "Filhanteraren och det grafiska skalet Nautilus"
 
 #. Note to translators: If it's hard to compose a good home
 #. * icon name from the user name, you can use a string without
@@ -6706,7 +6696,7 @@ msgstr ""
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
-#: src/nautilus-sidebar.c:479
+#: src/nautilus-sidebar.c:482
 msgid "Reset Background"
 msgstr "Återställ bakgrund"
 
@@ -7609,151 +7599,151 @@ msgstr "  Ta bort ett emblem  "
 #. will not be used.
 #: src/nautilus-search-bar-criterion.c:73
 msgid "[Search for] Name [contains \"fish\"]"
-msgstr "Namnet"
+msgstr "[Sök efter] Namn [som innehåller \"fisk\"]"
 
 #: src/nautilus-search-bar-criterion.c:74
 msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "Innehållet"
+msgstr "[Sök efter] Innehåll [som innehåller allt av \"fisk träd\"]"
 
 #: src/nautilus-search-bar-criterion.c:75
 msgid "[Search for] Type [is regular file]"
-msgstr "Typen"
+msgstr "[Sök efter] Typ [som är en vanlig fil]"
 
 #: src/nautilus-search-bar-criterion.c:76
 msgid "[Search for] Size [larger than 400K]"
-msgstr "Storleken"
+msgstr "[Sök efter] Storlek [som är större än 400 kB]"
 
 #: src/nautilus-search-bar-criterion.c:77
 msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "Med emblem"
+msgstr "[Sök efter] Med emblem [som innehåller \"Viktigt\"]"
 
 #: src/nautilus-search-bar-criterion.c:78
 msgid "[Search for] Last Modified [before yesterday]"
-msgstr "Senast modifierad"
+msgstr "[Sök efter] Senast modifierad [är innan igår]"
 
 #: src/nautilus-search-bar-criterion.c:79
 msgid "[Search for] Owner [is not root]"
-msgstr "Ägaren"
+msgstr "[Sök efter] Ägaren [är inte root]"
 
 #: src/nautilus-search-bar-criterion.c:85
 msgid "[File name] contains [help]"
-msgstr "innehåller"
+msgstr "[Filnamn] innehåller [hjälp]"
 
 #: src/nautilus-search-bar-criterion.c:86
 msgid "[File name] starts with [nautilus]"
-msgstr "börjar med"
+msgstr "[Filnamn] börjar med [nautilus]"
 
 #: src/nautilus-search-bar-criterion.c:87
 msgid "[File name] ends with [.c]"
-msgstr "slutar med"
+msgstr "[Filnamn] slutar med [.c]"
 
 #: src/nautilus-search-bar-criterion.c:88
 msgid "[File name] matches glob [*.c]"
-msgstr "matchar skalmönster"
+msgstr "[Filnamn] matchar skalmönster [*.c]"
 
 #: src/nautilus-search-bar-criterion.c:89
 msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "matchar reguljärt uttryck"
+msgstr "[Filnamn] matchar reguljärt uttryck [\"e??l.$\"]"
 
 #: src/nautilus-search-bar-criterion.c:94
 msgid "[File content] includes all of [apple orange]"
-msgstr "inkluderar allt av"
+msgstr "[Filinnehåll] inkluderar allt av [äpple apelsin]"
 
 #: src/nautilus-search-bar-criterion.c:95
 msgid "[File content] includes any of [apply orange]"
-msgstr "inkluderar något av"
+msgstr "[Filinnehåll] inkluderar något av [äpple apelsin]"
 
 #: src/nautilus-search-bar-criterion.c:96
 msgid "[File content] does not include all of [apple orange]"
-msgstr "inkluderar inte allt av"
+msgstr "[Filinnehåll] inkluderar inte allt av [äpple apelsin]"
 
 #: src/nautilus-search-bar-criterion.c:97
 msgid "[File content] includes none of [apple orange]"
-msgstr "inkluderar inget av"
+msgstr "[Filinnehåll] inkluderar inget av [äpple apelsin]"
 
 #: src/nautilus-search-bar-criterion.c:103
 msgid "[File type] is [folder]"
-msgstr "är"
+msgstr "[Filtyp] är [mapp]"
 
 #: src/nautilus-search-bar-criterion.c:104
 msgid "[File type] is not [folder]"
-msgstr "är inte"
+msgstr "[Filtyp] är inte [mapp]"
 
 #: src/nautilus-search-bar-criterion.c:109
 msgid "[File type is] regular file"
-msgstr "vanlig fil"
+msgstr "[Filtyp är] vanlig fil"
 
 #: src/nautilus-search-bar-criterion.c:110
 msgid "[File type is] text file"
-msgstr "textfil"
+msgstr "[Filtyp är] textfil"
 
 #: src/nautilus-search-bar-criterion.c:111
 msgid "[File type is] application"
-msgstr "program"
+msgstr "[Filtyp är] program"
 
 #: src/nautilus-search-bar-criterion.c:112
 msgid "[File type is] folder"
-msgstr "mapp"
+msgstr "[Filtyp är] mapp"
 
 #: src/nautilus-search-bar-criterion.c:113
 msgid "[File type is] music"
-msgstr "musik"
+msgstr "[Filtyp är] musik"
 
 #: src/nautilus-search-bar-criterion.c:118
 msgid "[File size is] larger than [400K]"
-msgstr "är större än"
+msgstr "[Filstorlek är] större än [400 kB]"
 
 #: src/nautilus-search-bar-criterion.c:119
 msgid "[File size is] smaller than [300K]"
-msgstr "är mindre än"
+msgstr "[Filstorlek är] mindre än [300 kB]"
 
 #: src/nautilus-search-bar-criterion.c:124
 msgid "[With emblem] marked with [Important]"
-msgstr "märkt med"
+msgstr "[Med emblem] märkt med [Viktigt]"
 
 #: src/nautilus-search-bar-criterion.c:125
 msgid "[With emblem] not marked with [Important]"
-msgstr "inte märkt med"
+msgstr "[Med emblem] inte märkt med [Viktigt]"
 
 #: src/nautilus-search-bar-criterion.c:130
 msgid "[Last modified date] is [1/24/00]"
-msgstr "är"
+msgstr "[Senaste modifieringsdatum] är [00-01-24]"
 
 #: src/nautilus-search-bar-criterion.c:131
 msgid "[Last modified date] is not [1/24/00]"
-msgstr "är inte"
+msgstr "[Senaste modifieringsdatum] är inte [00-01-24]"
 
 #: src/nautilus-search-bar-criterion.c:132
 msgid "[Last modified date] is after [1/24/00]"
-msgstr "är efter"
+msgstr "[Senaste modifieringsdatum] är efter"
 
 #: src/nautilus-search-bar-criterion.c:133
 msgid "[Last modified date] is before [1/24/00]"
-msgstr "är före"
+msgstr "[Senaste modifieringsdatum] är före [00-01-24]"
 
 #: src/nautilus-search-bar-criterion.c:135
 msgid "[Last modified date] is today"
-msgstr "är idag"
+msgstr "[Senaste modifieringsdatum] är idag"
 
 #: src/nautilus-search-bar-criterion.c:136
 msgid "[Last modified date] is yesterday"
-msgstr "är igår"
+msgstr "[Senaste modifieringsdatum] är igår"
 
 #: src/nautilus-search-bar-criterion.c:138
 msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "är inom en vecka från %s"
+msgstr "[Senaste modifieringsdatum] är inom en vecka från [00-01-24]"
 
 #: src/nautilus-search-bar-criterion.c:139
 msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "är inom en månad från %s"
+msgstr "[Senaste modifieringsdatum] är inom en månad från [00-01-24]"
 
 #: src/nautilus-search-bar-criterion.c:158
 msgid "[File owner] is [root]"
-msgstr "är"
+msgstr "[Filägare] är [root]"
 
 #: src/nautilus-search-bar-criterion.c:159
 msgid "[File owner] is not [root]"
-msgstr "är inte"
+msgstr "[Filägare] är inte [root]"
 
 #: src/nautilus-service-ui.xml.h:1
 msgid "Display support information for Eazel Services"
@@ -8246,7 +8236,7 @@ msgstr "_Visa"
 msgid "_Web Search"
 msgstr "_Webbsökning"
 
-#: src/nautilus-sidebar.c:652
+#: src/nautilus-sidebar.c:655
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -8254,11 +8244,11 @@ msgstr ""
 "Du kan inte tilldela mer än en anpassad ikon åt gången! Var vänlig och dra "
 "endast en bild för att ställa in en anpassad ikon."
 
-#: src/nautilus-sidebar.c:654
+#: src/nautilus-sidebar.c:657
 msgid "More Than One Image"
 msgstr "Fler än en bild"
 
-#: src/nautilus-sidebar.c:673
+#: src/nautilus-sidebar.c:676
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -8266,11 +8256,11 @@ msgstr ""
 "Filen som du släppte är inte lokal. Du kan endast använda lokala bilder som "
 "anpassade ikoner."
 
-#: src/nautilus-sidebar.c:675
+#: src/nautilus-sidebar.c:678
 msgid "Local Images Only"
 msgstr "Endast lokala bilder"
 
-#: src/nautilus-sidebar.c:680
+#: src/nautilus-sidebar.c:683
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -8278,17 +8268,17 @@ msgstr ""
 "Filen som du släppte är inte en bild. Du kan endast använda lokala bilder "
 "anpassade ikoner."
 
-#: src/nautilus-sidebar.c:682
+#: src/nautilus-sidebar.c:685
 msgid "Images Only"
 msgstr "Endast bilder"
 
-#: src/nautilus-sidebar.c:1222
+#: src/nautilus-sidebar.c:1237
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1256
+#: src/nautilus-sidebar.c:1271
 msgid "Open with..."
 msgstr "Öppna med..."
 
@@ -8396,6 +8386,14 @@ msgstr "Stäng"
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Förhandsversion %s: %s"
+
+#. The copyright character in here is correct for
+#. * Latin-1 encoding, but not for UTF-8, so we have
+#. * to change it when we upgrade to GTK 2.0.
+#.
+#: src/nautilus-window-manage-views.c:240 src/nautilus-window-menus.c:553
+msgid "Nautilus"
+msgstr "Nautilus"
 
 #: src/nautilus-window-manage-views.c:646
 #, c-format
@@ -8651,6 +8649,9 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:587
 msgid "%.0f%%"
 msgstr "%.0f %%"
+
+#~ msgid "Nautilus File Manager and Graphic Shell"
+#~ msgstr "Filhanteraren och det grafiska skalet Nautilus"
 
 #~ msgid "containing \"%s\" in their names"
 #~ msgstr "som innehåller \"%s\" i namnet"
