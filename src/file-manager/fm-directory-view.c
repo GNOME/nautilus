@@ -206,6 +206,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static GdkAtom copied_files_atom;
+static GdkAtom utf8_string_atom;
 
 static gboolean show_delete_command_auto_value;
 static gboolean confirm_trash_auto_value;
@@ -298,11 +299,13 @@ typedef struct {
 } ActivateParameters;
 
 enum {
-	GNOME_COPIED_FILES
+	GNOME_COPIED_FILES,
+	UTF8_STRING
 };
 
 static const GtkTargetEntry clipboard_targets[] = {
 	{ "x-special/gnome-copied-files", 0, GNOME_COPIED_FILES },
+	{ "UTF8_STRING", 0, UTF8_STRING }
 };
 
 /* forward declarations */
@@ -4967,27 +4970,47 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 	return menu;
 }
 
+typedef struct {
+	GList *file_uris;
+	gboolean cut;
+} ClipboardInfo;
+
 static char *
 convert_file_list_to_string (GList *files,
+			     gboolean format_for_text,
 			     gboolean cut)
 {
 	GString *uris;
 	GList *node;
-	char *uri, *result;
+	char *uri, *tmp;
 
-	uris = g_string_new (cut ? "cut" : "copy");
+	if (format_for_text) {
+		uris = g_string_new (NULL);
+	} else {
+		uris = g_string_new (cut ? "cut" : "copy");
+	}
 	
 	for (node = files; node != NULL; node = node->next) {
-		uri = nautilus_file_get_uri (node->data);
-		g_string_append_c (uris, '\n');
-		g_string_append (uris, uri);
-		g_free (uri);
+		uri = node->data;
+		
+		if (format_for_text) {
+			tmp = eel_format_uri_for_display (uri);
+			
+			if (tmp != NULL) {
+				g_string_append (uris, tmp);
+				g_free (tmp);
+			} else {
+				g_string_append (uris, uri);
+			}
+			g_string_append_c (uris, '\n');
+			
+		} else {
+			g_string_append_c (uris, '\n');
+			g_string_append (uris, uri);
+		}
 	}
 
-	result = uris->str;
-	g_string_free (uris, FALSE);
-
-	return result;
+	return g_string_free (uris, FALSE);
 }
 
 static void
@@ -4996,20 +5019,32 @@ get_clipboard_callback (GtkClipboard     *clipboard,
 			guint             info,
 			gpointer          user_data_or_owner)
 {
-	char *str = user_data_or_owner;
+	ClipboardInfo *clipboard_info = user_data_or_owner;
+	char *str;
+
+	str = convert_file_list_to_string (clipboard_info->file_uris,
+					   info == UTF8_STRING,
+					   clipboard_info->cut);
+
 
 	gtk_selection_data_set (selection_data,
-				copied_files_atom,
+				selection_data->target,
 				8,
 				str,
 				strlen (str));
+	
+	g_free (str);
 }
 
 static void
 clear_clipboard_callback (GtkClipboard *clipboard,
 			  gpointer      user_data_or_owner)
 {
-	g_free (user_data_or_owner);
+	ClipboardInfo *info = user_data_or_owner;
+	
+	eel_g_list_free_deep (info->file_uris);
+
+	g_free (info);
 }
 
 static GtkClipboard *
@@ -5019,7 +5054,20 @@ get_clipboard (FMDirectoryView *view)
 					      GDK_SELECTION_CLIPBOARD);
 }
 
+static GList *
+convert_file_list_to_uri_list (GList *files)
+{
+	GList *tmp = NULL;
+	
+	while (files != NULL) {
+		tmp = g_list_prepend (tmp, nautilus_file_get_uri (files->data));
 
+		files = files->next;
+	}
+
+	return g_list_reverse (tmp);
+}
+	
 static void
 copy_or_cut_files (FMDirectoryView *view,
 		   gboolean cut)
@@ -5027,16 +5075,18 @@ copy_or_cut_files (FMDirectoryView *view,
 	int count;
 	char *status_string, *name;
 	GList *clipboard_contents;
-	char *clipboard_string;
+	ClipboardInfo *info;
 	
 	clipboard_contents = fm_directory_view_get_selection (view);
 
-	clipboard_string = convert_file_list_to_string (clipboard_contents, cut);
+	info = g_new0 (ClipboardInfo, 1);
+	info->file_uris = convert_file_list_to_uri_list (clipboard_contents);
+	info->cut = cut;
 	
 	gtk_clipboard_set_with_data (get_clipboard (view),
 				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
 				     get_clipboard_callback, clear_clipboard_callback,
-				     clipboard_string);
+				     info);
 	nautilus_clipboard_monitor_emit_changed ();
 	
 	
@@ -5070,6 +5120,7 @@ copy_or_cut_files (FMDirectoryView *view,
 							 count);
 		}
 	}
+
 	nautilus_file_list_free (clipboard_contents);
 	
 	nautilus_view_report_status (view->details->nautilus_view,
@@ -7623,4 +7674,5 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
+	utf8_string_atom = gdk_atom_intern ("UTF8_STRING", FALSE);
 }
