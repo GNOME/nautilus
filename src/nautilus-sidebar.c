@@ -755,8 +755,6 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (widget));
 
-	g_print ("panel received drop.\n");
-
 	sidebar = NAUTILUS_SIDEBAR (widget);
 
 	switch (info) {
