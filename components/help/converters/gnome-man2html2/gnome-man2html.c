@@ -133,7 +133,8 @@
 #include <time.h>
 #include <sys/time.h>
 #include <errno.h>
-
+#include <fcntl.h>
+#include <zlib.h>
 
 static char *URLbasename = NULL;
 
@@ -361,6 +362,7 @@ static STRDEF standardchar[] = {
 
 static char escapesym='\\', nobreaksym='\'', controlsym='.', fieldsym=0, padsym=0;
 
+static gzFile infh = NULL;
 static char *buffer=NULL;
 static int buffpos=0, buffmax=0;
 static int scaninbuff=0;
@@ -427,7 +429,7 @@ static char
 	int bytes;
 
 	/* input from stdin */
-	bytes = read(0,buf, sizeof(buf));
+	bytes = gzread(infh, buf, sizeof(buf));
 	while (bytes > 0) {
 		if (!man_buf) {
 			man_buf = malloc(bytes+1);
@@ -439,7 +441,7 @@ static char
 
 		memcpy(man_buf+buf_size, buf, bytes);
 		buf_size += bytes;
-		bytes = read(0,buf, sizeof(buf));
+		bytes = gzread(infh, buf, sizeof(buf));
 	}
 
 	if (man_buf) {
@@ -3636,14 +3638,66 @@ int
 main(int argc, char **argv)
 {
 	char *t=NULL;
-	int i;char *buf;
+	int i;
+	char *buf;
 	char *h = '\0';
 	STRDEF *stdf;
+	char *infile = NULL;
 
 	/* see if they gave us a basename for the URL references */
-	if (argc > 1)
-		if (!strcmp(argv[1], "-n"))
-			URLbasename = strdup(argv[2]);
+
+	for(i = 1; i < argc; i++)
+	  {
+	    if(!strcmp(argv[i], "-n"))
+	      {
+		i++;
+		if(i >= argc)
+		  return 1;
+
+		URLbasename = strdup(argv[i]);		
+	      }
+	    else if(argv[i][0] == '-')
+	      return 2;
+	    else
+	      infile = argv[i];
+	  }
+
+	if(!infile || !strcmp(infile, "-"))
+	  infh = gzdopen(0, "r");
+	else
+	  {
+	    infh = gzopen(infile, "r");
+	    if(!infh)
+	      {
+		FILE *fh;
+		char cmdline[512], *ctmp, output[512];
+
+		/* Try searching for this as a man page name, instead */
+		ctmp = strrchr(infile, '.');
+		if(ctmp && (isdigit(*(ctmp+1)) || (*(ctmp+1) == 'n')) && *(ctmp+2) == '\0')
+		  {
+		    char section = *(ctmp+1);
+
+		    *ctmp = '\0';
+
+		    snprintf(cmdline, sizeof(cmdline), "man -w %c %s", section, infile);
+		  }
+		else
+		  snprintf(cmdline, sizeof(cmdline), "man -w %s", infile);
+
+		fh = popen(cmdline, "r");
+		fgets(output, sizeof(output), fh);
+		pclose(fh);
+
+		i = strlen(output) - 1;
+		while(isspace(output[i])) output[i--] = '\0';
+
+		if(output[0])
+		  infh = gzopen(output, "r");
+	      }
+	  }
+	if(!infh)
+	  return 3;
 
 	buf=read_man_page();
 	if (!buf) {
