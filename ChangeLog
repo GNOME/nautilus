@@ -1,3 +1,12 @@
+2001-01-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5414, Don't create a link for launchers dragged onto desktop
+	that require a terminal
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_link_callback),
+	(icon_view_create_nautilus_links):
+	Display a simple dialog telling user that we don't support htis feature yet.
+
 2001-01-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c: (hit_test):

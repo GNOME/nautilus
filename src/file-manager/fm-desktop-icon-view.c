@@ -50,6 +50,7 @@
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
@@ -82,7 +83,7 @@ typedef struct {
 	char *target_uri;
 	GdkPoint point;
 	GnomeDesktopEntry *entry;
-} CallbackData;
+} CreateLinkData;
 
 typedef struct {
 	FMDesktopIconView *view;
@@ -592,11 +593,11 @@ create_link_callback (GnomeVFSAsyncHandle *handle,
 {
 	char *uri, *target_uri, *position;
 	GnomeVFSResult expected_result;
-	CallbackData *info;
+	CreateLinkData *info;
 	GList one_item_list;
 	NautilusFile *file;
 
-	info = (CallbackData *) callback_data;
+	info = (CreateLinkData *) callback_data;
 	
 	uri = info->uri;
 	target_uri = info->target_uri;
@@ -630,11 +631,11 @@ icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *
 	char *desktop_path, *target_uri, *link_path, *link_uri, *program_path;
 	GnomeVFSURI *uri;
 	GnomeDesktopEntry *entry;
-	CallbackData *info;
+	CreateLinkData *info;
 	GnomeVFSAsyncHandle *handle;
 	int index;
 	gboolean make_nautilus_link;
-	char *link_name, *last_slash;
+	char *link_name, *last_slash, *message;
 	const char *icon_name;
 	
 	if (item_uris == NULL) {
@@ -650,6 +651,15 @@ icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *
 	for (element = item_uris, index = 0; element != NULL; element = element->next, index++) {
 		entry = gnome_desktop_entry_load ((char *)element->data);
 		if (entry != NULL) {
+			if (entry->terminal) {
+				/* FIXME bugzilla.eazel.com 5623: Create better text here */				
+				message = _("Nautilus does not currently support "
+					    "launchers that require a terminal.");
+				nautilus_warning_dialog (message, _("Unable to Create Link"),
+					  fm_directory_view_get_containing_window (view));
+				break;
+			}
+			
 			/* Verify that have an actual path */			
 			if (entry->exec[index][0] != '/') {
 				program_path = gnome_is_program_in_path(entry->exec[index]);
@@ -703,7 +713,7 @@ icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *
 						link_uri = gnome_vfs_get_uri_from_local_path (link_path);
 						
 						/* Create symbolic link */
-						info = g_malloc (sizeof (CallbackData));
+						info = g_malloc (sizeof (CreateLinkData));
 						info->uri = link_uri;			
 						info->target_uri = target_uri;
 						info->expected_result = GNOME_VFS_OK;
