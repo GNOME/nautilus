@@ -368,3 +368,40 @@ nautilus_point_in_widget (GtkWidget *widget,
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
 	return nautilus_point_in_allocation (&widget->allocation, x, y);
 }
+
+/**
+ * nautilus_gtk_object_list_ref
+ *
+ * Ref all the files in a list.
+ * @list: GList of files.
+ **/
+void
+nautilus_gtk_object_list_ref (GList *list)
+{
+	g_list_foreach (list, (GFunc) gtk_object_ref, NULL);
+}
+
+/**
+ * nautilus_gtk_object_list_unref
+ *
+ * Unref all the files in a list.
+ * @list: GList of files.
+ **/
+void
+nautilus_gtk_object_list_unref (GList *list)
+{
+	g_list_foreach (list, (GFunc) gtk_object_unref, NULL);
+}
+
+/**
+ * nautilus_gtk_object_list_free
+ *
+ * Free a list of files after unrefing them.
+ * @list: GList of files.
+ **/
+void
+nautilus_gtk_object_list_free (GList *list)
+{
+	nautilus_gtk_object_list_unref (list);
+	g_list_free (list);
+}

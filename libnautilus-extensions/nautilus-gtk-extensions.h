@@ -42,68 +42,72 @@
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
 
 /* signals */
-guint             nautilus_gtk_signal_connect_free_data                    (GtkObject              *object,
-									    const gchar            *name,
-									    GtkSignalFunc           func,
-									    gpointer                data);
+guint             nautilus_gtk_signal_connect_free_data                          (GtkObject              *object,
+										  const gchar            *name,
+										  GtkSignalFunc           func,
+										  gpointer                data);
+
+/* list of GtkObject */
+void              nautilus_gtk_object_list_ref                                   (GList                  *list);
+void              nautilus_gtk_object_list_unref                                 (GList                  *list);
+void              nautilus_gtk_object_list_free                                  (GList                  *list);
 
 /* GtkWidget */
-gboolean          nautilus_point_in_allocation                             (const GtkAllocation    *allocation,
-									    int                     x,
-									    int                     y);
-gboolean          nautilus_point_in_widget                                 (GtkWidget              *widget,
-									    int                     x,
-									    int                     y);
+gboolean          nautilus_point_in_allocation                                   (const GtkAllocation    *allocation,
+										  int                     x,
+										  int                     y);
+gboolean          nautilus_point_in_widget                                       (GtkWidget              *widget,
+										  int                     x,
+										  int                     y);
 
 /* GtkWindow */
-void              nautilus_gtk_window_present                              (GtkWindow              *window);
+void              nautilus_gtk_window_present                                    (GtkWindow              *window);
 
 /* selection data */
-GtkSelectionData *nautilus_gtk_selection_data_copy_deep                    (const GtkSelectionData *selection_data);
-void              nautilus_gtk_selection_data_free_deep                    (GtkSelectionData       *selection_data);
+GtkSelectionData *nautilus_gtk_selection_data_copy_deep                          (const GtkSelectionData *selection_data);
+void              nautilus_gtk_selection_data_free_deep                          (GtkSelectionData       *selection_data);
 
 /* GtkMenu */
-void              nautilus_pop_up_context_menu                             (GtkMenu                *menu,
-									    gint16                  offset_x,
-									    gint16                  offset_y);
+void              nautilus_pop_up_context_menu                                   (GtkMenu                *menu,
+										  gint16                  offset_x,
+										  gint16                  offset_y);
 
 /* marshals */
-void              nautilus_gtk_marshal_NONE__DOUBLE                        (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
-void              nautilus_gtk_marshal_STRING__NONE                        (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
-void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE        (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
-void              nautilus_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT   (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
-void              nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT (GtkObject        *object,
-									    	  GtkSignalFunc     func,
-									   	  gpointer          func_data,
-									  	  GtkArg           *args);
-
-void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
-void              nautilus_gtk_marshal_POINTER__POINTER                    (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
-void              nautilus_gtk_marshal_POINTER__POINTER_POINTER            (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
-void              nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER    (GtkObject              *object,
-									    GtkSignalFunc           func,
-									    gpointer                func_data,
-									    GtkArg                 *args);
+void              nautilus_gtk_marshal_NONE__DOUBLE                              (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_STRING__NONE                              (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE              (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT         (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE       (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_POINTER__POINTER                          (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_POINTER__POINTER_POINTER                  (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER          (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
 
 #endif /* NAUTILUS_GTK_EXTENSIONS_H */

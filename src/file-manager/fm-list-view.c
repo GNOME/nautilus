@@ -425,7 +425,9 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	int column;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (list_view));
-	g_return_if_fail (file != NULL);
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+	nautilus_file_ref (file);
 
 	/* One extra slot so it's NULL-terminated */
 	text = g_new0 (char *, LIST_VIEW_COLUMN_COUNT+1);

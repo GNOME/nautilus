@@ -63,20 +63,20 @@ enum
 	LAST_SIGNAL
 };
 
-static guint nautilus_directory_signals[LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
-static void               nautilus_directory_initialize_class           (gpointer               klass);
-static void               nautilus_directory_initialize                 (gpointer               object,
-									 gpointer               klass);
-static void               nautilus_directory_destroy                    (GtkObject             *object);
-static NautilusDirectory *nautilus_directory_new                        (const char            *uri);
-static void               nautilus_directory_read_metafile              (NautilusDirectory     *directory);
-static void               nautilus_directory_write_metafile             (NautilusDirectory     *directory);
-static void               nautilus_directory_load_callback                    (GnomeVFSAsyncHandle   *handle,
-									 GnomeVFSResult         result,
-									 GnomeVFSDirectoryList *list,
-									 guint                  entries_read,
-									 gpointer               callback_data);
+static void               nautilus_directory_initialize_class (gpointer               klass);
+static void               nautilus_directory_initialize       (gpointer               object,
+							       gpointer               klass);
+static void               nautilus_directory_destroy          (GtkObject             *object);
+static NautilusDirectory *nautilus_directory_new              (const char            *uri);
+static void               nautilus_directory_read_metafile    (NautilusDirectory     *directory);
+static void               nautilus_directory_write_metafile   (NautilusDirectory     *directory);
+static void               nautilus_directory_load_callback    (GnomeVFSAsyncHandle   *handle,
+							       GnomeVFSResult         result,
+							       GnomeVFSDirectoryList *list,
+							       guint                  entries_read,
+							       gpointer               callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -91,21 +91,21 @@ nautilus_directory_initialize_class (gpointer klass)
 	
 	object_class->destroy = nautilus_directory_destroy;
 
-	nautilus_directory_signals[FILES_ADDED] =
+	signals[FILES_ADDED] =
 		gtk_signal_new ("files_added",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_added),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	nautilus_directory_signals[FILES_REMOVED] =
+	signals[FILES_REMOVED] =
 		gtk_signal_new ("files_removed",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_removed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	nautilus_directory_signals[FILES_CHANGED] =
+	signals[FILES_CHANGED] =
 		gtk_signal_new ("files_changed",
 				GTK_RUN_LAST,
 				object_class->type,
@@ -113,7 +113,7 @@ nautilus_directory_initialize_class (gpointer klass)
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
-	gtk_object_class_add_signals (object_class, nautilus_directory_signals, LAST_SIGNAL);
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
@@ -659,7 +659,10 @@ nautilus_directory_monitor_files_ref (NautilusDirectory *directory,
 		return;
 	}
 
-	g_assert (!directory->details->directory_loaded);
+	if (directory->details->directory_loaded) {
+		return;
+	}
+
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	
 	g_assert (directory->details->uri->text != NULL);
@@ -716,7 +719,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		/* FIXME: The file could already be in the files list
 		 * if someone did a nautilus_file_get already on it.
 		 */
-		file = nautilus_directory_new_file (directory, p->data);
+		file = nautilus_file_new (directory, p->data);
 		pending_files = g_list_prepend (pending_files, file);
 	}
 	nautilus_gnome_vfs_file_info_list_free (pending_file_info);
@@ -724,7 +727,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	/* Tell the objects that are monitoring about these new files. */
 	g_assert (pending_files != NULL);
 	gtk_signal_emit (GTK_OBJECT (directory),
-			 nautilus_directory_signals[FILES_ADDED],
+			 signals[FILES_ADDED],
 			 pending_files);
 
 	/* Remember them for later. */
@@ -1136,7 +1139,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 static int
 compare_file_with_name (gconstpointer a, gconstpointer b)
 {
-	return strcmp (((const NautilusFile *) a)->info->name,
+	return strcmp (NAUTILUS_FILE (a)->details->info->name,
 		       (const char *) b);
 }
 
@@ -1155,31 +1158,12 @@ nautilus_directory_find_file (NautilusDirectory *directory, const char *name)
 	return list_entry == NULL ? NULL : list_entry->data;
 }
 
-NautilusFile *
-nautilus_directory_new_file (NautilusDirectory *directory, GnomeVFSFileInfo *info)
-{
-	NautilusFile *file;
-
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-	g_return_val_if_fail (info != NULL, NULL);
-
-	gnome_vfs_file_info_ref (info);
-	nautilus_directory_ref (directory);
-
-	file = g_new0 (NautilusFile, 1);
-	file->ref_count = 1;
-	file->directory = directory;
-	file->info = info;
-
-	return file;
-}
-
 void
 nautilus_directory_files_removed (NautilusDirectory *directory,
 				  GList *removed_files)
 {
 	gtk_signal_emit (GTK_OBJECT (directory),
-			 nautilus_directory_signals[FILES_REMOVED],
+			 signals[FILES_REMOVED],
 			 removed_files);
 }
 
@@ -1188,7 +1172,7 @@ nautilus_directory_files_changed (NautilusDirectory *directory,
 				  GList *changed_files)
 {
 	gtk_signal_emit (GTK_OBJECT (directory),
-			 nautilus_directory_signals[FILES_CHANGED],
+			 signals[FILES_CHANGED],
 			 changed_files);
 }
 
@@ -1209,7 +1193,7 @@ get_files_callback (NautilusDirectory *directory, GList *files, gpointer data)
 
 /* Return the number of extant NautilusDirectories */
 int
-nautilus_directory_number_outstanding ()
+nautilus_directory_number_outstanding (void)
 {
         return g_hash_table_size (directory_objects);
 }

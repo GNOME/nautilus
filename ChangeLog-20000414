@@ -1,5 +1,49 @@
 2000-03-30  Darin Adler  <darin@eazel.com>
 
+	Finished task 62 (Set custom icon by drag/drop on index panel)
+	and fixed some problems from my earlier check-ins today.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_monitor_files_ref):
+	Fixed a bad assert from my last check-in.
+
+	* src/file-manager/fm-list-view.c: (add_to_list):
+	The list view had the same missing ref that I fixed for icon
+	view in my last check-in.
+	
+	* src/nautilus-index-title.c: (release_file),
+	(nautilus_index_title_destroy),
+	(nautilus_index_title_update_icon),
+	(nautilus_index_title_update_label),
+	(nautilus_index_title_update_info),
+	(nautilus_index_title_set_uri): Changed to hold around the
+	NautilusFile object and connect to its "changed" message to update
+	the file information. This causes the icon to get updated right
+	away when the custom icon is changed.
+
+	* libnautilus/nautilus-directory-private.h:
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-file-private.h:
+	* libnautilus/nautilus-file.c:
+	* libnautilus/nautilus-file.h:
+	Converted NautilusFile to be a GtkObject instead of a plain struct,
+	so it can have a "changed" signal. We still recommend using the
+	"files_changed" signal on the directory to avoid the overhead
+	of a signal connection for each file.
+
+	* libnautilus/nautilus-gtk-extensions.c:
+	* libnautilus/nautilus-gtk-extensions.h:
+	(nautilus_gtk_object_list_ref), (nautilus_gtk_object_list_unref),
+	(nautilus_gtk_object_list_free): Added some functions to be used
+	with a list of GtkObjects.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_file):
+	Had to change the name of nautilus_file_get_type to avoid conflict
+	with the GtkObject standard get_type routine.
+
+2000-03-30  Darin Adler  <darin@eazel.com>
+
 	* src/file-manager/fm-icon-view.c: (add_icon_if_already_positioned),
 	(add_icon_at_free_position): Added missing ref that caused very bad
 	things to happen now that the file ref. counts are working.

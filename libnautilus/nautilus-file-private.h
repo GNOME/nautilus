@@ -25,11 +25,12 @@
 #include "nautilus-file.h"
 #include "nautilus-directory.h"
 
-struct NautilusFile
+struct NautilusFileDetails
 {
-	guint ref_count;
-
 	NautilusDirectory *directory;
 	GnomeVFSFileInfo *info;
 	gboolean is_gone;
 };
+
+NautilusFile *nautilus_file_new (NautilusDirectory *directory,
+				 GnomeVFSFileInfo  *info);

@@ -449,7 +449,7 @@ static const char *
 nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
 {
 	/* Get an icon name based on the file's type. */
-        switch (nautilus_file_get_type (file)) {
+        switch (nautilus_file_get_file_type (file)) {
         case GNOME_VFS_FILE_TYPE_DIRECTORY:
                 return ICON_NAME_DIRECTORY;
         case GNOME_VFS_FILE_TYPE_FIFO:
