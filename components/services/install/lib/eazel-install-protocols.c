@@ -585,12 +585,13 @@ gboolean eazel_install_fetch_package_by_id (EazelInstall *service,
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
-	{
 		url = get_url_for_package (service, RPMSEARCH_ENTRY_ID, (const gpointer)id, package);
-	}
-	break;
+		break;
 	case PROTOCOL_LOCAL:
 		g_warning (_("Using local protocol cannot fetch by id"));
+		url = NULL;
+		break;
+	default:
 		url = NULL;
 		break;
 	};

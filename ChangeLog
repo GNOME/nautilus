@@ -1,3 +1,45 @@
+2000-10-02  Darin Adler  <darin@eazel.com>
+
+	Saw the Tinderbox broken, so I just had to fix it. Also, I
+	couldn't compile, and check-THANKS.pl failed.
+
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_istr_compare): Change back nautilus_istr_compare to its
+	old meaning.
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(compare_strings_case_breaks_ties),
+	(nautilus_g_str_list_sort_case_insensitive): Make the case
+	insensitive sort use nautilus_strcmp_case_breaks_ties.
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package_by_id):
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_query):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (eazel_install_prepare_package_system),
+	(eazel_install_free_package_system),
+	(eazel_install_add_to_rpm_set), (eazel_install_fetch_dependencies):
+	* components/services/install/lib/eazel-install-rpm-signature.c:
+	(trilobite_check_rpm_signature):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_status_str_to_enum),
+	(packagedata_modstatus_enum_to_str),
+	(packagedata_modstatus_str_to_enum):
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list):
+	Fixed a bunch of uninitialized variable warnings. At least one was
+	probably a real bug, so Eskil needs to review these changes.
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri): This didn't compile with the
+	Red Hat 6.1 version of the rpm library. So I fixed it. I hope I
+	did it right. Eskil needs to review this change.
+	
+	* THANKS: Victor's name needed another space between it and the
+	email address.
+	* check-THANKS.pl: Missing comma, also the misspelling of Josh's
+	email address was not mapped to his new email address.
+
 2000-10-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	Fixed bug 3223.

@@ -356,44 +356,51 @@ generate_xml_package_list (const char* pkg_template_file,
 
 	if (lines) {
 		entry_array = g_strsplit (retbuf, "\n", lines);
-	}
 
-	for (index = 0; index < lines; index++) {
-		if (entry_array[index] == NULL) {
-			break;
-		}
-
-		package_array = g_strsplit (entry_array[index], ":", num_tags+1);
-
-		if (package_array && package_array[0]) {
-			xmlNodePtr packages;
-			xmlNodePtr category;
-			xmlNodePtr package;
-			xmlNodePtr data;
-			int i;
-
-			/* NOTE: This xmlGetProp leaks, since it's return value 
-			   is forgotten */
-			if ((doc->root->childs == NULL) ||
-			    (strlen (package_array[0]) && strcmp (cur_category, package_array[0]))) {
-				g_free (cur_category);
-				cur_category = g_strdup (package_array[0]);
-				category = xmlNewChild (doc->root, NULL, "CATEGORY", NULL);
-				xmlSetProp (category, "name", package_array[0]);
-				packages = xmlNewChild (category, NULL, "PACKAGES", NULL);
-				g_message ("Category %s...", cur_category);
+		for (index = 0; index < lines; index++) {
+			if (entry_array[index] == NULL) {
+				break;
 			}
-
-			package = xmlNewChild (packages, NULL, "PACKAGE", NULL);
 			
-			for (i = 0; i <= num_tags; i++) {
-				if (package_array[i+1]) {
-					data = xmlNewChild (package, NULL, tags[i], package_array[i+1]);
-				} else {
-					trilobite_debug ("line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
+			package_array = g_strsplit (entry_array[index], ":", num_tags+1);
+			
+			if (package_array && package_array[0]) {
+				xmlNodePtr packages;
+				xmlNodePtr category;
+				xmlNodePtr package;
+				xmlNodePtr data;
+				int i;
+
+				/* FIXME: I added this to get rid of
+				 * an uninitialized variable warning,
+				 * but I think it's probably
+				 * wrong. (Darin)
+				 */
+				packages = NULL;
+
+				/* NOTE: This xmlGetProp leaks, since its return value 
+				   is forgotten */
+				if ((doc->root->childs == NULL) ||
+				    (strlen (package_array[0]) && strcmp (cur_category, package_array[0]))) {
+					g_free (cur_category);
+					cur_category = g_strdup (package_array[0]);
+					category = xmlNewChild (doc->root, NULL, "CATEGORY", NULL);
+					xmlSetProp (category, "name", package_array[0]);
+					packages = xmlNewChild (category, NULL, "PACKAGES", NULL);
+					g_message ("Category %s...", cur_category);
 				}
+				
+				package = xmlNewChild (packages, NULL, "PACKAGE", NULL);
+				
+				for (i = 0; i <= num_tags; i++) {
+					if (package_array[i+1]) {
+						data = xmlNewChild (package, NULL, tags[i], package_array[i+1]);
+					} else {
+						trilobite_debug ("line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
+					}
+				}
+				g_strfreev (package_array);
 			}
-			g_strfreev (package_array);
 		}
 	}
 	

@@ -50,7 +50,7 @@ my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
                  'chief_wanker@eazel.com' => 'eskil@eazel.com',
                  'eskil@eazel.om' => 'eskil@eazel.com',
                  'yakk@yakk.net' => 'yakk@yakk.net.au',
-                 'linuxfan@ionet..net' => 'linuxfan@ionet.net',
+                 'linuxfan@ionet..net' => 'josh@eazel.com',
                  'rslokow@eazel.com' => 'rslomkow@eazel.com',
                  'snickell@stanford.edu' => 'seth@eazel.com',
                  'mathieu@gnome.org' => 'mathieu@eazel.com',
@@ -58,7 +58,7 @@ my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
                  'kmaraas@online.no' => 'kmaraas@gnome.org',
                  'kmaraas@gnu.org' => 'kmaraas@gnome.org',
                  'raph@gimp.org' => 'raph@acm.org',
-                 'baulig@suse.de' => 'martin@home-of-linux.org'
+                 'baulig@suse.de' => 'martin@home-of-linux.org',
                  'linuxfan@ionet.net' => 'josh@eazel.com');
 
 
@@ -115,7 +115,7 @@ LOOP: while (<CHANGELOGS>) {
 
         if ($name_map{$name}) {
             $name = $name_map{$name};
-        };
+        }
 
         
         $email =~ s/^.*<//;
@@ -124,7 +124,7 @@ LOOP: while (<CHANGELOGS>) {
         
         if ($email_map{$email}) {
             $email = $email_map{$email};
-        };
+        }
 
         push @lines, "${name}  <${email}>";
     }
@@ -205,4 +205,3 @@ if (@double_credited) {
 # the About dialog.
 
 print "\n";
-

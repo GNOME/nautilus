@@ -406,10 +406,18 @@ nautilus_g_str_list_sort (GList *list)
  * 
  * Return value: @list, sorted.
  **/
+
+static int
+compare_strings_case_breaks_ties (gconstpointer str_a,
+				  gconstpointer str_b)
+{
+	return nautilus_strcmp_case_breaks_ties (str_a, str_b);
+}
+
 GList *
 nautilus_g_str_list_sort_case_insensitive (GList *list)
 {
-	return g_list_sort (list, nautilus_istr_compare);
+	return g_list_sort (list, compare_strings_case_breaks_ties);
 }
 
 /**

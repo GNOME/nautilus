@@ -145,6 +145,8 @@ eazel_install_simple_query (EazelInstall *service,
 	GList *root_dirs;
 	GHashTable *names_to_ignore;
 
+	names_to_ignore = NULL; /* make compiler happy */
+
 	if (neglist_count) {
 		int i;
 		va_list va;

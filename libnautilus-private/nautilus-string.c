@@ -97,8 +97,8 @@ nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
 int
 nautilus_istr_compare (gconstpointer string_a, gconstpointer string_b)
 {
-	return nautilus_strcmp_case_breaks_ties ((const char *) string_a,
-						 (const char *) string_b);
+	return nautilus_strcasecmp ((const char *) string_a,
+				    (const char *) string_b);
 }
 
 gboolean

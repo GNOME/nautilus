@@ -521,7 +521,7 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
 	else if (strcmp (st, "ALREADY_INSTALLED")==0) { result = PACKAGE_ALREADY_INSTALLED; } 
-	else { g_assert_not_reached (); };
+	else { g_assert_not_reached (); result = PACKAGE_UNKNOWN_STATUS; };
 
 	return result;
 }
@@ -549,6 +549,7 @@ packagedata_modstatus_enum_to_str (PackageSystemStatus st)
 		result = g_strdup ("UNTOUCHED");
 		break;
 	default:
+		result = NULL;
 		break;
 	}
 	return result;
@@ -566,6 +567,7 @@ packagedata_modstatus_str_to_enum (const char *st)
 	else if (strcmp (st, "UNINSTALLED")==0) { result = PACKAGE_MOD_UNINSTALLED; } 
 	else if (strcmp (st, "UPGRADED")==0) { result = PACKAGE_MOD_UPGRADED; } 
 	else if (strcmp (st, "DOWNGRADED")==0) { result = PACKAGE_MOD_DOWNGRADED; } 
+	else { result = PACKAGE_MOD_UNTOUCHED; }
 
 	return result;
 }

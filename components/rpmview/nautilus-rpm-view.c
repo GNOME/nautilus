@@ -548,9 +548,12 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
         char *description;
 	char *default_icon_path;
 
+#ifndef RPMTAG_FILENAMES
 	char **paths = NULL;
-	char **basenames = NULL;
         int *pathindex;
+#endif
+
+	char **basenames = NULL;
 	char **links = NULL;	
 	char *temp_version = NULL;
 	char *temp_release = NULL;
@@ -616,7 +619,9 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                         if (*(links[index]) == '\0') {
                                 temp_str = basenames[index];
                         } else {
-                                g_snprintf(buffer, 511, "%s -> %s", path[index], links[index]);
+                                g_snprintf (buffer, 511, "%s -> %s",
+                                            basenames[index],
+                                            links[index]);
                                 temp_str = buffer;
                         }
                         gtk_clist_append (GTK_CLIST(rpm_view->details->package_file_list), &temp_str);

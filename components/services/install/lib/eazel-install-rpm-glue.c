@@ -239,9 +239,8 @@ install_new_packages (EazelInstall *service, GList *categories) {
 		categories = parse_local_xml_package_list (eazel_install_get_package_list (service), NULL);
 	}
 
-	if (categories == NULL) {
-		result = EAZEL_INSTALL_NOTHING;
-	} else {
+	result = EAZEL_INSTALL_NOTHING;
+	if (categories != NULL) {
 		/* First, collect all packages in one list */
 		GList *packages = eazel_install_flatten_categories (service, categories);
 
@@ -1406,6 +1405,9 @@ eazel_install_prepare_package_system (EazelInstall *service)
 	case EAZEL_INSTALL_USE_RPM:
 		result = eazel_install_prepare_rpm_system (service);	       
 		break;
+	default:
+		result = FALSE;
+		break;
 	}
 	return result;
 }
@@ -1418,6 +1420,9 @@ eazel_install_free_package_system (EazelInstall *service)
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM:
 		result = eazel_install_free_rpm_system (service);	       
+		break;
+	default:
+		result = FALSE;
 		break;
 	}
 	return result;
@@ -1442,6 +1447,7 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 
 	tmp_failed = NULL;
 
+	interface_flags = 0;
 	if (eazel_install_get_update (service)) {
 		interface_flags |= INSTALL_UPGRADE;
 	}
@@ -1879,6 +1885,9 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 							       extrapackages,
 							       failedpackages,
 							       requirements);
+		break;
+	default:
+		result = FALSE;
 		break;
 	}
 	
