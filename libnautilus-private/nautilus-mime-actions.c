@@ -1312,7 +1312,7 @@ mime_type_hash_table_destroy (GHashTable *table)
 static gboolean
 server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table, GList *explicit_iids)
 {
-        OAF_Attribute *attr;
+        OAF_Property *prop;
         GNOME_stringlist types;
         int i;
 
@@ -1321,12 +1321,12 @@ server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_ta
                 return TRUE;
         }
 
-        attr = oaf_server_info_attr_find (server, "nautilus:required_directory_content_mime_types");
+        prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
-        if (attr == NULL || attr->v._d != OAF_A_STRINGV) {
+        if (prop == NULL || prop->v._d != OAF_P_STRINGV) {
                 return TRUE;
         } else {
-                types = attr->v._u.value_stringv;
+                types = prop->v._u.value_stringv;
 
                 for (i = 0; i < types._length; i++) {
                         if (g_hash_table_lookup (type_table, types._buffer[i]) != NULL) {

@@ -91,10 +91,10 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
         GSList *langs;
 
         langs = get_lang_list ();
-        view_as_name = oaf_server_info_attr_lookup (server, name_attribute, langs);
+        view_as_name = oaf_server_info_prop_lookup (server, name_attribute, langs);
 		
         if (view_as_name == NULL) {
-                view_as_name = oaf_server_info_attr_lookup (server, "name", langs);
+                view_as_name = oaf_server_info_prop_lookup (server, "name", langs);
         }
 
         if (view_as_name == NULL) {
