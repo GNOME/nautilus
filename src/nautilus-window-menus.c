@@ -417,6 +417,8 @@ action_about_nautilus_callback (GtkAction *action,
 		   "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA")
 	};
 	gchar *license_trans;
+	char *logo_path;
+	GdkPixbuf *logo;
 
 	license_trans = g_strconcat (_(license[0]), "\n\n", _(license[1]), "\n\n",
 				     _(license[2]), "\n\n", NULL);
@@ -429,6 +431,12 @@ action_about_nautilus_callback (GtkAction *action,
 		 * which will be displayed at the bottom of the about
 		 * box to give credit to the translator(s).
 		 */
+
+		logo_path = nautilus_pixmap_file ("nautilus-launch-icon.png");
+		logo = NULL;
+		if (logo_path != NULL) {
+			logo = gdk_pixbuf_new_from_file (logo_path, NULL);
+		}
 		
 		g_object_set (about,
 			      "name", _("Nautilus"),
@@ -443,9 +451,13 @@ action_about_nautilus_callback (GtkAction *action,
 			      "authors", authors,
 			      "documenters", documenters,
 			      "translator-credits", _("translator-credits"),
-			      "logo-icon-name", "gnome-starthere",
+			      "logo", logo,
 			      NULL);
-
+		
+		if (logo != NULL) {
+			g_object_unref (logo);
+		}
+		
 		gtk_window_set_transient_for (GTK_WINDOW (about), GTK_WINDOW (user_data));
 
 		eel_add_weak_pointer (&about);
