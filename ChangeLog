@@ -1,3 +1,15 @@
+2003-03-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_accessible_ref_state_set): New function
+	which sets which state ATK_STATE_FOCUSED, if appropriate.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(select_one_unselect_others): Call atk_focus_tracker_notify() if
+	selection changed.
+
+	This fixes bug #107639.
+
 2003-03-18  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-emblem-utils.c:

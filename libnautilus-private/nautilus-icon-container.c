@@ -1474,6 +1474,10 @@ select_one_unselect_others (NautilusIconContainer *container,
 			(container, icon, icon == icon_to_select);
 	}
 	
+	if (selection_changed) {
+		AtkObject *atk_object = eel_accessibility_for_object (icon_to_select->item);
+		atk_focus_tracker_notify (atk_object);
+	}
 	return selection_changed;
 }
 

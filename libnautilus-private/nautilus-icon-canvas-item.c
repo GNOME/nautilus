@@ -191,6 +191,7 @@ static void      draw_embedded_text                  (NautilusIconCanvasItem    
 
 
 static NautilusIconCanvasItemClass *parent_class = NULL;
+static gpointer accessible_parent_class = NULL;
 
 /* Object initialization function for the icon item. */
 static void
@@ -1950,14 +1951,63 @@ nautilus_icon_canvas_item_accessible_get_index_in_parent (AtkObject *accessible)
 	return -1;
 }
 
+static AtkStateSet*
+nautilus_icon_canvas_item_accessible_ref_state_set (AtkObject *accessible)
+{
+	AtkStateSet *state_set;
+	NautilusIconCanvasItem *item;
+	NautilusIconContainer *container;
+	NautilusIcon *icon;
+	GList *l;
+	gboolean one_item_selected;
+
+	state_set = ATK_OBJECT_CLASS (accessible_parent_class)->ref_state_set (accessible);
+
+	item = eel_accessibility_get_gobject (accessible);
+	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
+	if (!item) {
+		atk_state_set_add_state (state_set, ATK_STATE_DEFUNCT);
+	} else if (item->details->is_highlighted_as_keyboard_focus) {
+		atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
+	} else if (!container->details->keyboard_focus) {
+
+		one_item_selected = FALSE;
+		l = container->details->icons;
+		while (l) {
+			icon = l->data;
+		
+			if (icon->item == item) {
+				if (icon->is_selected) {
+					one_item_selected = TRUE;
+				} else {
+					break;
+				}
+			} else if (icon->is_selected) {
+				one_item_selected = FALSE;
+				break;
+			}
+
+			l = l->next;
+		}
+
+		if (one_item_selected) {
+			atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
+		}
+	}
+
+	return state_set;
+}
 
 static void
 nautilus_icon_canvas_item_accessible_class_init (AtkObjectClass *klass)
 {
+	accessible_parent_class = g_type_class_peek_parent (klass);
+
 	klass->get_name = nautilus_icon_canvas_item_accessible_get_name;
 	klass->get_description = nautilus_icon_canvas_item_accessible_get_description;
 	klass->get_parent = nautilus_icon_canvas_item_accessible_get_parent;
 	klass->get_index_in_parent = nautilus_icon_canvas_item_accessible_get_index_in_parent;
+	klass->ref_state_set = nautilus_icon_canvas_item_accessible_ref_state_set;
 }
 
 
