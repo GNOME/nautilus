@@ -1,6 +1,6 @@
 # Nautilus' Spanish translation
 # Copyright (C) 2000-2002 GNOME Foundation, Inc.
-# Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2000.
+# Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2000-2002.
 # Carlos Perelló Marín <carlos@gnome-db.org>, 2000-2002
 # Jorge Carrasquilla Soares <jorge@conectiva.com.br>, 2000"
 # Ismael Olea <ismael@olea.org>, 2001
@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.5\n"
-"POT-Creation-Date: 2002-05-06 13:56-0400\n"
-"PO-Revision-Date: 2002-05-02 21:58GMT\n"
+"POT-Creation-Date: 2002-05-07 00:29+0200\n"
+"PO-Revision-Date: 2002-05-06 22:22GMT\n"
 "Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: español <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2174,6 +2174,16 @@ msgstr "Tahoe"
 msgid "This theme uses photo-realistic folders."
 msgstr "Este tema utiliza fotos realistas de carpetas."
 
+#: libbackground/preview-file-selection.c:193
+msgid "Can't find an hbox, using a normal file selection"
+msgstr "No puedo encontrar un hbox, usando un selector normal de archivos"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# components/music/nautilus-music-view.c:1122
+#: libbackground/preview-file-selection.c:198
+msgid "Preview"
+msgstr "Vista Previa"
+
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
 msgstr "Volumen AFFS"
@@ -3085,8 +3095,7 @@ msgstr "Preparando para Vaciar la Papelera..."
 
 # src/file-manager/fm-directory-view.c:1855
 #: libnautilus-private/nautilus-file-operations.c:2220
-msgid ""
-"Are you sure you want to permanently delete all of the items in the Trash?"
+msgid "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "¿Está seguro que desea eliminar permanentemente todos los elementos de la "
 "Papelera?"
@@ -4921,8 +4930,7 @@ msgstr "Vaciar Papelera"
 #: src/file-manager/fm-directory-view.c:475
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr ""
-"Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
+msgstr "Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
 
 # src/file-manager/fm-directory-view.c:2128
 #: src/file-manager/fm-directory-view.c:477
@@ -5063,10 +5071,8 @@ msgstr "Demasiados Archivos"
 
 #: src/file-manager/fm-directory-view.c:2943
 #, c-format
-msgid ""
-"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr ""
-"\"%s\" no puede ser movido a la Papelera. ¿Quiere borrarlo inmediatamente?"
+msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgstr "\"%s\" no puede ser movido a la Papelera. ¿Quiere borrarlo inmediatamente?"
 
 #: src/file-manager/fm-directory-view.c:2948
 #, c-format
@@ -5212,16 +5218,14 @@ msgstr "\"%s\" será copiado si selecciona la orden Pegar Archivos"
 
 #: src/file-manager/fm-directory-view.c:4005
 #, c-format
-msgid ""
-"The %d selected items will be moved if you select the Paste Files command"
+msgid "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán movidos si selecciona la orden Pegar "
 "Archivos"
 
 #: src/file-manager/fm-directory-view.c:4009
 #, c-format
-msgid ""
-"The %d selected items will be copied if you select the Paste Files command"
+msgid "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán copiados si selecciona la orden Pegar "
 "Archivos"
@@ -5411,8 +5415,7 @@ msgstr "¿Cancelar Abrir?"
 # src/nautilus-window-manage-views.c:648
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "No tiene los permisos suficientes para ver el contenido de \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:61
@@ -5433,16 +5436,14 @@ msgstr "Error Mostrando Carpeta"
 # src/file-manager/fm-error-reporting.c:50
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 "El nombre \"%s\" ya está siendo usado en esta carpeta.\n"
 "Por favor seleccione un nombre diferente."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
 "No hay un \"%s\" en esta carpeta, ¿Puede ser que acabara de moverse o "
 "borrarse?"
@@ -5490,15 +5491,13 @@ msgstr "Error al cambiar el nombre"
 # src/file-manager/fm-error-reporting.c:85
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "No tiene los permisos suficientes para cambiar el grupo de \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:167
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
-msgstr ""
-"No se pudo cambiar el grupo de \"%s\" porque está en un disco de sólo lectura"
+msgstr "No se pudo cambiar el grupo de \"%s\" porque está en un disco de sólo lectura"
 
 # src/file-manager/fm-error-reporting.c:93
 #: src/file-manager/fm-error-reporting.c:175
@@ -5530,8 +5529,7 @@ msgstr "Error al configurar el propietario"
 # src/file-manager/fm-error-reporting.c:137
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid ""
-"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "No se pudo cambiar los permisos de \"%s\" porque está en un disco de sólo "
 "lectura"
@@ -5632,8 +5630,7 @@ msgstr "apuntando a \"%s\""
 
 #: src/file-manager/fm-icon-view.c:2261
 msgid "Drag and drop is only supported to local file systems."
-msgstr ""
-"Arrastrar y soltar solo está implementado en sistemas de archivos locales."
+msgstr "Arrastrar y soltar solo está implementado en sistemas de archivos locales."
 
 #: src/file-manager/fm-icon-view.c:2262 src/file-manager/fm-icon-view.c:2281
 msgid "Drag and Drop error"
@@ -6233,10 +6230,8 @@ msgid "Protect Conditionally"
 msgstr "Proteger Condicionalmente "
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
-msgstr ""
-"Muestra una ventana que le deja configurar el fondo y color de su escritorio"
+msgid "Show a window that lets you set your desktop background's pattern or color"
+msgstr "Muestra una ventana que le deja configurar el fondo y color de su escritorio"
 
 # components/html/gnome-dialogs.c:234
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
@@ -6245,22 +6240,19 @@ msgstr "Desmontar Volumen"
 
 # components/html/gnome-dialogs.c:234
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
-#, fuzzy
 msgid "Unmount Volume Conditionally"
 msgstr "Desmontar Volumen Condicionalmente"
 
 # src/nautilus-sidebar.c:424
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
-#, fuzzy
 msgid "Use Default Background"
-msgstr "Restaurar fondo del escritorio"
+msgstr "Usar Fondo por Omisión"
 
 # src/nautilus-sidebar.c:424
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
-#, fuzzy
 msgid "Use the default desktop background"
-msgstr "Restaurar fondo del escritorio"
+msgstr "Usar el fondo de escritorio por omisión"
 
 # libnautilus-private/nautilus-program-chooser.c:1248
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
@@ -6314,8 +6306,7 @@ msgid "Make Link"
 msgstr "Crear Enlace"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Mover o copiar archivos previamente seleccionados por una orden Cortar o "
 "Copiar archivos"
@@ -6478,9 +6469,8 @@ msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Mostrar la carpeta que contiene los guiones que aparecen en este menú"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:55
-#, fuzzy
 msgid "Use the default background for this location"
-msgstr "Abrir otra ventana de Nautilus para la dirección mostrada"
+msgstr "Usar el fondo por omisión para esta dirección"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "View or modify the properties of each selected item"
@@ -7459,8 +7449,7 @@ msgstr "Lo siento, pero '%s' no es un archivo de imagen que se pueda usar"
 
 #: src/nautilus-property-browser.c:1338
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr ""
-"Lo siento, pero debe especificar una palabra clave para la nueva marca."
+msgstr "Lo siento, pero debe especificar una palabra clave para la nueva marca."
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:197
 #: src/nautilus-property-browser.c:1339 src/nautilus-property-browser.c:1342
@@ -7469,8 +7458,7 @@ msgid "Couldn't install emblem"
 msgstr "No se pudo instalar la marca"
 
 #: src/nautilus-property-browser.c:1341
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Lo siento, pero la palabra clave de la marca sólo puede contener letras, "
 "espacios y números."
@@ -7740,8 +7728,7 @@ msgstr "Cambia la visibilidad de la barra de herramientas de esta ventana"
 
 #: src/nautilus-shell-ui.xml.h:7
 msgid "Choose a view for the current location, or modify the set of views"
-msgstr ""
-"Elegir una vista para la dirección actual o modificar el conjunto de vistas"
+msgstr "Elegir una vista para la dirección actual o modificar el conjunto de vistas"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Clear contents of Go menu and Back/Forward lists"
@@ -7763,14 +7750,12 @@ msgstr "Cerrar esta ventana"
 # src/nautilus-window-manage-views.c:217
 # src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:437
 #: src/nautilus-shell-ui.xml.h:13
-#, fuzzy
 msgid "Display Nautilus help"
-msgstr "Shell de Nautilus"
+msgstr "Mostrar ayuda de Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:14
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr ""
-"Muestra una ventana que permite editar los marcadores que hay en este menú"
+msgstr "Muestra una ventana que permite editar los marcadores que hay en este menú"
 
 #: src/nautilus-shell-ui.xml.h:15
 msgid "Display credits for the creators of Nautilus"
@@ -7821,7 +7806,7 @@ msgstr "Ir a la dirección visitada previamente"
 
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Go up one level"
-msgstr ""
+msgstr "Subir un nivel"
 
 # libnautilus-private/nautilus-global-preferences.c:306
 #: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-menus.c:472
@@ -7865,9 +7850,8 @@ msgstr "Abrir otra ventana de Nautilus para la dirección mostrada"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-first-time-druid.c:272
 #: src/nautilus-shell-ui.xml.h:34
-#, fuzzy
 msgid "P_references"
-msgstr "Preferencias"
+msgstr "P_referencias"
 
 # src/file-manager/fm-properties-window.c:1573
 #: src/nautilus-shell-ui.xml.h:35
@@ -7948,9 +7932,8 @@ msgstr "Redu_cir"
 
 # src/nautilus-window-menus.c:1329
 #: src/nautilus-shell-ui.xml.h:54
-#, fuzzy
 msgid "_About Nautilus"
-msgstr "_Acerca de Nautilus..."
+msgstr "_Acerca de Nautilus"
 
 # src/nautilus-window-menus.c:1235
 #: src/nautilus-shell-ui.xml.h:55
@@ -7981,9 +7964,8 @@ msgstr "_Cerrar ventana"
 
 # src/file-manager/fm-properties-window.c:878
 #: src/nautilus-shell-ui.xml.h:61
-#, fuzzy
 msgid "_Contents"
-msgstr "Contenidos:"
+msgstr "_Contenidos"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-undo-signal-handlers.c:174
@@ -7993,9 +7975,8 @@ msgstr "_Editar"
 
 # src/nautilus-bookmarks-window.c:136
 #: src/nautilus-shell-ui.xml.h:64
-#, fuzzy
 msgid "_Edit Bookmarks"
-msgstr "_Editar marcadores"
+msgstr "_Editar Marcadores"
 
 # src/nautilus-first-time-druid.c:290
 #: src/nautilus-shell-ui.xml.h:66
@@ -8244,8 +8225,7 @@ msgstr ""
 # src/nautilus-window-manage-views.c:1247
 #: src/nautilus-window-manage-views.c:1229
 #, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
+msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" no es una dirección válida. Por favor verifique lo que ha escrito y "
 "pruébelo de nuevo."
@@ -8360,8 +8340,7 @@ msgstr ""
 "a repetirlo."
 
 #: src/nautilus-window-menus.c:347
-msgid ""
-"Are you sure you want Nautilus to forget which locations you have visited?"
+msgid "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "¿Está seguro de que quiere que Nautilus borre las direcciones que ha "
 "visitado?"
@@ -8496,14 +8475,6 @@ msgstr "Aplicación"
 msgid "The NautilusApplication associated with this window."
 msgstr "La Aplicación Nautilus asociada con esta ventana."
 
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "No puedo encontrar un hbox, usando un selector normal de archivos"
-
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# components/music/nautilus-music-view.c:1122
-#~ msgid "Preview"
-#~ msgstr "Vista Previa"
-
 #~ msgid "Remove any custom pattern or color from the desktop background"
 #~ msgstr "Quitar cualquier fondo o color personalizado del escritorio"
 
@@ -8603,3 +8574,4 @@ msgstr "La Aplicación Nautilus asociada con esta ventana."
 # src/nautilus-first-time-druid.c:272
 #~ msgid "Nautilus Release _Notes"
 #~ msgstr "_Notas de Liberación de Nautilus"
+
