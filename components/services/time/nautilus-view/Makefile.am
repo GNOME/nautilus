@@ -63,12 +63,8 @@ trilobite_eazel_time_view_SOURCES =		\
 	main.c	    	    	    	    	\
 	${NULL}
 
-trilobite_eazel_time_view_LDADD =	\
+trilobite_eazel_time_view_LDADD =			\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
-	$(NULL)
-
-
-trilobite_eazel_time_view_LDFLAGS =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \

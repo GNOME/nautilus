@@ -32,11 +32,6 @@ nautilus_service_install_view_SOURCES =		        \
 	$(NULL)
 
 nautilus_service_install_view_LDADD =			\
-	$(RPM_LIBS)					\
-	$(NULL)
-
-
-nautilus_service_install_view_LDFLAGS =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \

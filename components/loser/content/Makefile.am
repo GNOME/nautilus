@@ -23,7 +23,7 @@ nautilus_content_loser_SOURCES =		\
 	nautilus-content-loser.c          \
 	main.c
 
-nautilus_content_loser_LDFLAGS =			\
+nautilus_content_loser_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \

@@ -54,15 +54,12 @@ eazel_time_SOURCES =	\
 	trilobite-eazel-time-service-stubs.c	\
 	$(NULL)
 
-eazel_time_LDFLAGS =	\
+eazel_time_LDADD =	\
 	$(BONOBO_LIBS)				\
 	$(GNOMEUI_LIBS)				\
 	$(GCONF_LIBS)				\
 	$(VFS_LIBS)				\
 	$(OAF_LIBS)				\
-	$(NULL)
-
-eazel_time_LDADD = 	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(NULL)
 

@@ -34,7 +34,7 @@ nautilus_login_view_SOURCES =				\
 	main.c								\
 	$(NULL)
 
-nautilus_login_view_LDFLAGS =				\
+nautilus_login_view_LDADD =				\
 	$(top_builddir)/components/services/login/lib/liblogin_corba.a  \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/libnautilus/libnautilus.la			\

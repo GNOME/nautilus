@@ -19,7 +19,7 @@ nautilus_authenticate_SOURCES =\
 	nautilus-authenticate-fork.c \
 	$(NULL)
 
-nautilus_authenticate_LDFLAGS =	\
+nautilus_authenticate_LDADD =	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
 	$(top_builddir)/librsvg/librsvg.la                                \

@@ -69,13 +69,13 @@ EXTRA_DIST =					\
 # build an .so with statically linked -liberty
 
 # LIBLEAKCHECK_STATIC_LIBS = "-Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic"
-#libleakcheck_la_LDFLAGS = -module -avoid-version $(LIBLEAKCHECK_STATIC_LIBS)
+#libleakcheck_la_LDADD = -module -avoid-version $(LIBLEAKCHECK_STATIC_LIBS)
 #libleakcheck_la_LIBADD = -ldl 
 
 
 
 # libleakcheck.la: $(libleakcheck_la_OBJECTS) $(libleakcheck_la_DEPENDENCIES)
-#	$(LINK) -rpath $(libdir) $(libleakcheck_la_LDFLAGS) $(libleakcheck_la_OBJECTS) $(libleakcheck_la_LIBADD) $(LIBS)
+#	$(LINK) -rpath $(libdir) $(libleakcheck_la_LDADD) $(libleakcheck_la_OBJECTS) $(libleakcheck_la_LIBADD) $(LIBS)
 
 
 # for now just hardcode a plain old link line, someday someone can 

@@ -30,7 +30,7 @@ nautilus_music_view_SOURCES =		        \
 	main.c					\
 	pixmaps.h
 
-nautilus_music_view_LDFLAGS =			\
+nautilus_music_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \

@@ -28,7 +28,7 @@ noinst_HEADERS =				\
 	mozilla-preferences.h \
 	$(NULL)
 
-nautilus_mozilla_content_view_LDFLAGS = \
+nautilus_mozilla_content_view_LDADD = \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(BONOBO_LIBS) \
 	$(GNOMEUI_LIBS) \

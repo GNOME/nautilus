@@ -22,15 +22,12 @@ eazel_vault_SOURCES =							\
 	vault-operations.c						\
 	$(NULL)
 
-eazel_vault_LDFLAGS =							\
+eazel_vault_LDADD =							\
 	$(BONOBO_LIBS)							\
 	$(GNOMEUI_LIBS)							\
 	$(GCONF_LIBS)							\
 	$(VFS_LIBS)							\
 	$(OAF_LIBS)							\
-	$(NULL)
-
-eazel_vault_LDADD =							\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/vault/lib/libvault_corba.a \
 	$(NULL)

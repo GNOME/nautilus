@@ -21,7 +21,7 @@ eazel_register_SOURCES =			\
 	eazel-register.c			\
 	$(NULL)
 
-eazel_register_LDFLAGS =			\
+eazel_register_LDADD =			\
 	$(BONOBO_LIBS)				\
 	$(GNOMEUI_LIBS)				\
 	$(GCONF_LIBS)				\

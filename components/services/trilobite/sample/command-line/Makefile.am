@@ -15,21 +15,18 @@ INCLUDES =								\
 	$(NULL)
 
 bin_PROGRAMS =								\
-	trilobite-eazel-sample-client
+	eazel-sample-client
 
-trilobite_eazel_sample_client_SOURCES =					\
+eazel_sample_client_SOURCES =						\
 	main.c								\
 	$(NULL)
 
-trilobite_eazel_sample_client_LDFLAGS =					\
+eazel_sample_client_LDADD =						\
 	$(BONOBO_LIBS)							\
 	$(GNOMEUI_LIBS)							\
 	$(GCONF_LIBS)							\
 	$(VFS_LIBS)							\
 	$(OAF_LIBS)							\
-	$(NULL)
-
-trilobite_eazel_sample_client_LDADD = 					\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/trilobite/sample/lib/libsample_corba.a \
 	$(NULL)

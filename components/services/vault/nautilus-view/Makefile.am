@@ -32,7 +32,7 @@ nautilus_vault_view_SOURCES =				\
 	main.c								\
 	$(NULL)
 
-nautilus_vault_view_LDFLAGS =				\
+nautilus_vault_view_LDADD =				\
 	$(top_builddir)/components/services/vault/lib/libvault_corba.a  \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/libnautilus/libnautilus.la			\

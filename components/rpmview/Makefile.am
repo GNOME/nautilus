@@ -30,10 +30,7 @@ nautilus_rpm_view_SOURCES =		        \
 	nautilus-rpm-view-install.c		\
 	main.c
 
-nautilus_rpm_view_LDADD = \
-	$(RPM_LIBS) 
-
-nautilus_rpm_view_LDFLAGS =			\
+nautilus_rpm_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
