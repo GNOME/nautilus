@@ -413,7 +413,7 @@ draw_or_measure_text_box (GnomeCanvasItem* item,
 			text_piece = " ";
 		
 		icon_text_info = gnome_icon_layout_text
-			(details->font, text_piece, " -_,;.:?/&", max_text_width, TRUE);
+			(details->font, text_piece, " -_,;.?/&", max_text_width, TRUE);
 		
 		if (drawable != NULL) {
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
