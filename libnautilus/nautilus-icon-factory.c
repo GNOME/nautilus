@@ -116,12 +116,12 @@ typedef struct {
 
 	/* thumbnail task state */
 	GList *thumbnails;
-	gchar *new_thumbnail_path;
+	char *new_thumbnail_path;
 	gboolean thumbnail_in_progress;
 	
 	/* id of timeout task for making thumbnails */
-	gint timeout_task_id;
-	
+	int timeout_task_id;
+
 } NautilusIconFactory;
 
 typedef struct {
@@ -150,7 +150,8 @@ struct _NautilusScalableIcon {
  */
 typedef struct {
 	NautilusScalableIcon *scalable_icon;
-	guint size_in_pixels;
+	guint size_in_pixels_x;
+	guint size_in_pixels_y;
 
 	NautilusCircularList recently_used_node;
 
@@ -160,28 +161,30 @@ typedef struct {
 
 /* forward declarations */
 
-static GtkType               nautilus_icon_factory_get_type         (void);
-static void                  nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class);
-static void                  nautilus_icon_factory_initialize       (NautilusIconFactory      *factory);
-static NautilusIconFactory * nautilus_get_current_icon_factory      (void);
-static gchar *		     nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsController *controller);
-static NautilusIconFactory * nautilus_icon_factory_new              (const char               *theme_name);
-static NautilusScalableIcon *nautilus_scalable_icon_get             (const char               *uri,
-								     const char               *name);
-static guint                 nautilus_scalable_icon_hash            (gconstpointer             p);
-static gboolean              nautilus_scalable_icon_equal           (gconstpointer             a,
-								     gconstpointer             b);
-static void                  nautilus_icon_cache_key_destroy        (NautilusIconCacheKey     *key);
-static guint                 nautilus_icon_cache_key_hash           (gconstpointer             p);
-static gboolean              nautilus_icon_cache_key_equal          (gconstpointer             a,
-								     gconstpointer             b);
-static gboolean		     vfs_file_exists			    (const char		      *file_name);
-static GdkPixbuf *           get_image_from_cache                   (NautilusScalableIcon     *scalable_icon,
-								     guint                     size_in_pixels,
-								     gboolean                  picky,
-								     gboolean                  custom);
-static gboolean check_for_thumbnails(NautilusIconFactory *factory);
-static gint nautilus_icon_factory_make_thumbnails(gpointer data);
+static GtkType               nautilus_icon_factory_get_type          (void);
+static void                  nautilus_icon_factory_initialize_class  (NautilusIconFactoryClass *class);
+static void                  nautilus_icon_factory_initialize        (NautilusIconFactory      *factory);
+static NautilusIconFactory * nautilus_get_current_icon_factory       (void);
+static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFile             *file,
+								      NautilusIconsController  *controller);
+static NautilusIconFactory * nautilus_icon_factory_new               (const char               *theme_name);
+static NautilusScalableIcon *nautilus_scalable_icon_get              (const char               *uri,
+								      const char               *name);
+static guint                 nautilus_scalable_icon_hash             (gconstpointer             p);
+static gboolean              nautilus_scalable_icon_equal            (gconstpointer             a,
+								      gconstpointer             b);
+static void                  nautilus_icon_cache_key_destroy         (NautilusIconCacheKey     *key);
+static guint                 nautilus_icon_cache_key_hash            (gconstpointer             p);
+static gboolean              nautilus_icon_cache_key_equal           (gconstpointer             a,
+								      gconstpointer             b);
+static gboolean              vfs_file_exists                         (const char               *file_name);
+static GdkPixbuf *           get_image_from_cache                    (NautilusScalableIcon     *scalable_icon,
+								      guint                     size_in_pixels_x,
+								      guint                     size_in_pixels_y,
+								      gboolean                  picky,
+								      gboolean                  custom);
+static gboolean              check_for_thumbnails                    (NautilusIconFactory      *factory);
+static int                   nautilus_icon_factory_make_thumbnails   (gpointer                  data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory, nautilus_icon_factory, GTK_TYPE_OBJECT)
 
@@ -221,11 +224,6 @@ nautilus_icon_factory_initialize (NautilusIconFactory *factory)
 						    nautilus_scalable_icon_equal);
         factory->icon_cache = g_hash_table_new (nautilus_icon_cache_key_hash,
 						nautilus_icon_cache_key_equal);
-
-	factory->thumbnails = NULL;
-	factory->timeout_task_id = -1;
-	factory->thumbnail_in_progress = FALSE;
-	factory->new_thumbnail_path = NULL;
 	
 	/* Empty out the recently-used list. */
 	factory->recently_used_dummy_head.next = &factory->recently_used_dummy_head;
@@ -612,7 +610,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, void *controller)
 		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
 			uri = nautilus_file_get_uri (file);
 		else
-			uri = nautilus_icon_factory_get_thumbnail_uri(file, controller ? NAUTILUS_ICONS_CONTROLLER(controller) : NULL);	
+			uri = nautilus_icon_factory_get_thumbnail_uri (file, controller ? NAUTILUS_ICONS_CONTROLLER (controller) : NULL);	
 	}
 	
 	/* Get the generic icon set for this file. */
@@ -643,7 +641,7 @@ nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file)
 
 /* utility to test whether a file exists using vfs */
 static gboolean
-vfs_file_exists(const gchar *file_uri)
+vfs_file_exists(const char *file_uri)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *file_info;
@@ -656,79 +654,81 @@ vfs_file_exists(const gchar *file_uri)
 
 /* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
 
-static gchar *
-make_thumbnail_path(const gchar *image_uri, gboolean directory_only)
+static char *
+make_thumbnail_path(const char *image_uri, gboolean directory_only)
 {
-	gchar *thumbnail_uri;
-	gchar *temp_str = strdup(image_uri);
-	gchar *last_slash = strrchr(temp_str, '/');
+	char *thumbnail_uri;
+	char *temp_str = g_strdup (image_uri);
+	char *last_slash = strrchr (temp_str, '/');
 	*last_slash = '\0';
 	
 	if (directory_only)
-		thumbnail_uri = g_strdup_printf("%s/.thumbnails", temp_str);
+		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", temp_str);
 	else {
-		if (nautilus_has_suffix(image_uri, ".png") || nautilus_has_suffix(image_uri, ".PNG"))
-			thumbnail_uri = g_strdup_printf("%s/.thumbnails/%s", temp_str, last_slash + 1);
+		if (nautilus_has_suffix (image_uri, ".png") || nautilus_has_suffix (image_uri, ".PNG"))
+			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s", temp_str, last_slash + 1);
 		else
-			thumbnail_uri = g_strdup_printf("%s/.thumbnails/%s.png", temp_str, last_slash + 1);
+			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s.png", temp_str, last_slash + 1);
 	}
-	g_free(temp_str);
+	g_free (temp_str);
 	return thumbnail_uri;
 }
 
 /* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
    If no thumbnail is available, put the image on the thumbnail queue so one is eventually made. */
-    
-static gchar *
+/* FIXME: Most of this thumbnail machinery belongs in NautilusFile, not here.
+ * FIXME: No way this should have any references to NautilusIconsController;
+ * instead the file_changed signal from NautilusDirectory/File needs to be used.
+ */
+
+static char *
 nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsController *controller)
 {
 	NautilusIconFactory *factory;
 	GnomeVFSResult result;
-	gchar *thumbnail_uri = NULL;
-	gchar *file_uri = nautilus_file_get_uri(file);
+	char *thumbnail_uri = NULL;
+	char *file_uri = nautilus_file_get_uri (file);
 	
 	/* compose the uri for the thumbnail */
-	
-	thumbnail_uri = make_thumbnail_path(file_uri, FALSE);
+	thumbnail_uri = make_thumbnail_path (file_uri, FALSE);
 		
 	/* if the thumbnail file already exists, simply return the uri */
-	if (vfs_file_exists(thumbnail_uri)) {
-		g_free(file_uri);
+	if (vfs_file_exists (thumbnail_uri)) {
+		g_free (file_uri);
 		return thumbnail_uri;
 	}
 	
         /* make the thumbnail directory if necessary */
-       
-	g_free(thumbnail_uri);
-	thumbnail_uri = make_thumbnail_path(file_uri, TRUE);
-	result = gnome_vfs_make_directory(thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
+	g_free (thumbnail_uri);
+	thumbnail_uri = make_thumbnail_path (file_uri, TRUE);
+	result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
 
 	/* the thumbnail needs to be created, so add an entry to the thumbnail list */
  
 	/* FIXME: need to handle error by making directory elsewhere */
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
-		g_warning("error when making thumbnail directory: %d\n", result);	
-	}
-	else {
+		g_warning ("error when making thumbnail directory: %d\n", result);	
+	} else {
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;
 		info->controller = controller;
 		
 		factory = nautilus_get_current_icon_factory ();		
-		if (factory->thumbnails)
-			factory->thumbnails = g_list_prepend(factory->thumbnails, info);
-		else {
-			factory->thumbnails = g_list_alloc();
+		if (factory->thumbnails) {
+			factory->thumbnails = g_list_prepend (factory->thumbnails, info);
+		} else {
+			factory->thumbnails = g_list_alloc ();
 			factory->thumbnails->data = info;
 		}
 	
-		if (factory->timeout_task_id == -1)
-			factory->timeout_task_id = gtk_timeout_add(400, (GtkFunction) nautilus_icon_factory_make_thumbnails, NULL);
+		if (factory->timeout_task_id == 0) {
+			factory->timeout_task_id = gtk_timeout_add (400, (GtkFunction) nautilus_icon_factory_make_thumbnails, NULL);
+		}
 	}
-	g_free(thumbnail_uri);
+	g_free (thumbnail_uri);
 	
 	/* return the uri to the "loading image" icon */
-	return get_icon_file_path("loading.png", NAUTILUS_ICON_SIZE_STANDARD);
+	return get_icon_file_path ("loading.png", NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 static guint
@@ -859,7 +859,7 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	/* First check for a custom image. */
 	actual_size = 0;
 	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
-		image = get_image_from_cache (scalable_icon, actual_size, TRUE, TRUE);
+		image = get_image_from_cache (scalable_icon, actual_size, actual_size, TRUE, TRUE);
 		if (image != NULL) {
 			*actual_size_result = actual_size;
 			*custom = TRUE;
@@ -870,7 +870,7 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	/* Next, go for the normal image. */
 	actual_size = 0;
 	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
-		image = get_image_from_cache (scalable_icon, actual_size, TRUE, FALSE);
+		image = get_image_from_cache (scalable_icon, actual_size, actual_size, TRUE, FALSE);
 		if (image != NULL) {
 			*actual_size_result = actual_size;
 			*custom = FALSE;
@@ -898,7 +898,8 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 /* This load function is not allowed to return NULL. */
 static GdkPixbuf *
 load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
-			       guint requested_size,
+			       guint requested_size_x,
+			       guint requested_size_y,
 			       gboolean *scaled,
 			       gboolean *custom)
 {
@@ -907,16 +908,16 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 	int scaled_width, scaled_height;
 	
 	/* Load the image for the icon that's closest in size to what we want. */
-	image = load_image_for_scaling (scalable_icon, requested_size,
+	image = load_image_for_scaling (scalable_icon, requested_size_x,
 					&actual_size, custom);
-        if (requested_size == actual_size) {
+        if (requested_size_x == actual_size && requested_size_y == actual_size) {
 		*scaled = FALSE;
 		return image;
 	}
 	
 	/* Scale the image to the size we want. */
-	scaled_width = (gdk_pixbuf_get_width (image) * requested_size) / actual_size;
-	scaled_height = (gdk_pixbuf_get_height (image) * requested_size) / actual_size;
+	scaled_width = (gdk_pixbuf_get_width (image) * requested_size_x) / actual_size;
+	scaled_height = (gdk_pixbuf_get_height (image) * requested_size_y) / actual_size;
 	scaled_image = gdk_pixbuf_scale_simple
 		(image, scaled_width, scaled_height, ART_FILTER_BILINEAR);
 	
@@ -979,7 +980,8 @@ mark_recently_used (NautilusCircularList *node)
  */
 static GdkPixbuf *
 get_image_from_cache (NautilusScalableIcon *scalable_icon,
-		      guint size_in_pixels,
+		      guint size_in_pixels_x,
+		      guint size_in_pixels_y,
 		      gboolean picky,
 		      gboolean custom)
 {
@@ -996,7 +998,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 
 	/* Check to see if it's already in the table. */
 	lookup_key.scalable_icon = scalable_icon;
-	lookup_key.size_in_pixels = size_in_pixels;
+	lookup_key.size_in_pixels_x = size_in_pixels_x;
+	lookup_key.size_in_pixels_y = size_in_pixels_y;
 	if (g_hash_table_lookup_extended (hash_table, &lookup_key,
 					  &key_in_table, &value)) {
 		/* Found it in the table. */
@@ -1015,7 +1018,12 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		
 		/* Not in the table, so load the image. */
 		if (picky) {
-			image = load_specific_image (scalable_icon, size_in_pixels, custom);
+			if (size_in_pixels_x != size_in_pixels_y) {
+				return NULL;
+			}
+			image = load_specific_image (scalable_icon,
+						     size_in_pixels_x,
+						     custom);
 			if (image == NULL) {
 				return NULL;
 			}
@@ -1023,7 +1031,9 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 			got_scaled_image = FALSE;
 			got_custom_image = custom;
 		} else {
-			image = load_image_scale_if_necessary (scalable_icon, size_in_pixels,
+			image = load_image_scale_if_necessary (scalable_icon,
+							       size_in_pixels_x,
+							       size_in_pixels_y,
 							       &got_scaled_image,
 							       &got_custom_image);
 			g_assert (image != NULL);
@@ -1033,7 +1043,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		key = g_new0 (NautilusIconCacheKey, 1);
 		nautilus_scalable_icon_ref (scalable_icon);
 		key->scalable_icon = scalable_icon;
-		key->size_in_pixels = size_in_pixels;
+		key->size_in_pixels_x = size_in_pixels_x;
+		key->size_in_pixels_y = size_in_pixels_y;
 		key->scaled = got_scaled_image;
 		key->custom = got_custom_image;
 		
@@ -1054,9 +1065,10 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 
 GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
-					   guint size_in_pixels)
+					   guint size_in_pixels_x, guint size_in_pixels_y)
 {
-	return get_image_from_cache (scalable_icon, size_in_pixels,
+	return get_image_from_cache (scalable_icon,
+				     size_in_pixels_x, size_in_pixels_y,
 				     FALSE, FALSE);
 }
 
@@ -1072,7 +1084,9 @@ nautilus_icon_cache_key_hash (gconstpointer p)
 	const NautilusIconCacheKey *key;
 
 	key = p;
-	return GPOINTER_TO_UINT (key->scalable_icon) ^ key->size_in_pixels;
+	return (((GPOINTER_TO_UINT (key->scalable_icon) << 4)
+		 ^ key->size_in_pixels_x) << 4)
+		^ key->size_in_pixels_y;
 }
 
 static gboolean
@@ -1084,7 +1098,8 @@ nautilus_icon_cache_key_equal (gconstpointer a, gconstpointer b)
 	key_b = b;
 
 	return key_a->scalable_icon == key_b->scalable_icon
-		&& key_a->size_in_pixels == key_b->size_in_pixels;
+		&& key_a->size_in_pixels_x == key_b->size_in_pixels_x
+		&& key_a->size_in_pixels_y == key_b->size_in_pixels_y;
 }
 
 /* Return nominal icon size for given zoom level.
@@ -1130,7 +1145,9 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	g_return_val_if_fail (file != NULL, NULL);
 
 	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, size_in_pixels);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
+							    size_in_pixels,
+							    size_in_pixels);
 	nautilus_scalable_icon_unref (icon);
 	return pixbuf;
 }
@@ -1172,12 +1189,12 @@ nautilus_scalable_icon_list_free (GList *icon_list)
    should be in a utility library, possibly in gdk-pixbuf itself */
     
 static gboolean
-save_pixbuf_to_file(GdkPixbuf *pixbuf, gchar *filename)
+save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 {
 	FILE *handle;
-  	gchar *buffer;
+  	char *buffer;
 	gboolean has_alpha;
-	gint width, height, depth, rowstride;
+	int width, height, depth, rowstride;
   	guchar *pixels;
   	png_structp png_ptr;
   	png_infop info_ptr;
@@ -1246,9 +1263,9 @@ save_pixbuf_to_file(GdkPixbuf *pixbuf, gchar *filename)
 	    	png_write_row (png_ptr, row_pointer);
 	    } else {
 	    	/* expand RGB to RGBA using an opaque alpha value */
-		gint x;
-		gchar *buffer_ptr = buffer;
-		gchar *source_ptr = pixels;
+		int x;
+		char *buffer_ptr = buffer;
+		char *source_ptr = pixels;
 		for (x = 0; x < width; x++)
 		  {
 		    *buffer_ptr++ = *source_ptr++;
@@ -1278,111 +1295,114 @@ save_pixbuf_to_file(GdkPixbuf *pixbuf, gchar *filename)
 static gboolean 
 check_for_thumbnails(NautilusIconFactory *factory)
 {
-	gchar *current_thumbnail;
+	char *current_thumbnail;
 	NautilusThumbnailInfo *info;
 	GList *stop_element;
 	GList *next_thumbnail = factory->thumbnails;		
 	
-	while (next_thumbnail != NULL)
-	  {
-	    info = (NautilusThumbnailInfo*) next_thumbnail->data;
-	    current_thumbnail = make_thumbnail_path(info->thumbnail_uri, FALSE);
-	    if (vfs_file_exists(current_thumbnail)) {
-	    	/* we found one, so update the icon and remove all of the elements up to and including
-		   this one from the pending list. */
-		g_free(current_thumbnail);
-		if (info->controller)
-			nautilus_icons_controller_update_icon(NAUTILUS_ICONS_CONTROLLER(info->controller), info->thumbnail_uri);
-	        		
-		stop_element = next_thumbnail->next;
-		while (factory->thumbnails != stop_element)
-		  {
-		    info = (NautilusThumbnailInfo*) factory->thumbnails->data;
-		    g_free(info->thumbnail_uri);
-		    g_free(info);
-		    factory->thumbnails = g_list_remove_link(factory->thumbnails, factory->thumbnails);
-		  } 
-		return TRUE;
-	    }
+	while (next_thumbnail != NULL) {
+		info = (NautilusThumbnailInfo*) next_thumbnail->data;
+		current_thumbnail = make_thumbnail_path(info->thumbnail_uri, FALSE);
+		if (vfs_file_exists(current_thumbnail)) {
+			/* we found one, so update the icon and remove all of the elements up to and including
+			   this one from the pending list. */
+			g_free (current_thumbnail);
+			if (info->controller != NULL) {
+				nautilus_icons_controller_update_icon (NAUTILUS_ICONS_CONTROLLER (info->controller), info->thumbnail_uri);
+			}
+			
+			stop_element = next_thumbnail->next;
+			while (factory->thumbnails != stop_element) {
+				info = (NautilusThumbnailInfo *) factory->thumbnails->data;
+				g_free (info->thumbnail_uri);
+				g_free (info);
+				factory->thumbnails = g_list_remove_link (factory->thumbnails, factory->thumbnails);
+			}
+			return TRUE;
+		}
 	    
-	    g_free(current_thumbnail);
-	    next_thumbnail = next_thumbnail->next;
-	  }
-
+		g_free (current_thumbnail);
+		next_thumbnail = next_thumbnail->next;
+	}
+	
 	return FALSE;
 }
 
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
 
-static gint
+static int
 nautilus_icon_factory_make_thumbnails(gpointer data)
 {
 	pid_t thumbnail_pid;
 	NautilusThumbnailInfo *info;
 	NautilusIconFactory *factory = nautilus_get_current_icon_factory();
 	GList *next_thumbnail = factory->thumbnails;
-
-	/* if the queue is empty, there's nothing more to do */
-
-	if (next_thumbnail == NULL) {
-		gtk_timeout_remove(factory->timeout_task_id);
-		factory->timeout_task_id = -1;
-		return 0;
-	}	
 	
-	info = (NautilusThumbnailInfo*) next_thumbnail->data;
+	/* if the queue is empty, there's nothing more to do */
+	
+	if (next_thumbnail == NULL) {
+		gtk_timeout_remove (factory->timeout_task_id);
+		factory->timeout_task_id = 0;
+		return FALSE;
+	}
+	
+	info = (NautilusThumbnailInfo *) next_thumbnail->data;
 	
 	/* see which state we're in.  If a thumbnail isn't in progress, start one up.  Otherwise,
 	   check if the pending one is completed.  */	
 	if (factory->thumbnail_in_progress) {
-		if (check_for_thumbnails(factory))
+		if (check_for_thumbnails(factory)) {
 			factory->thumbnail_in_progress = FALSE;
+		}
 	} 
 	else {
 		/* start up a task to make the thumbnail corresponding to the queue element. */
 			
 		/* First, compute the path name of the target thumbnail */
-		if (factory->new_thumbnail_path != NULL)
-			g_free(factory->new_thumbnail_path);
-		factory->new_thumbnail_path = make_thumbnail_path(info->thumbnail_uri, FALSE);
+		g_free (factory->new_thumbnail_path);
+		factory->new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE);
 
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
 		if (!(thumbnail_pid = fork())) {
-			GdkPixbuf* full_size_image = gdk_pixbuf_new_from_file (info->thumbnail_uri + 7);
-			if (full_size_image) {
+			GdkPixbuf* full_size_image;
+
+			full_size_image = gdk_pixbuf_new_from_file (info->thumbnail_uri + 7);
+			if (full_size_image != NULL) {
 				GdkPixbuf *scaled_image;
-				gint scaled_width, scaled_height;
-				gint full_width = gdk_pixbuf_get_width (full_size_image);
-				gint full_height = gdk_pixbuf_get_height (full_size_image);
+				int scaled_width, scaled_height;
+				int full_width = gdk_pixbuf_get_width (full_size_image);
+				int full_height = gdk_pixbuf_get_height (full_size_image);
 					
 				if (full_width > full_height) {
 					scaled_width = 96;
-						scaled_height = full_height * 96 / full_width;
+					scaled_height = full_height * 96 / full_width;
 				} else {
 					scaled_height = 96;
 					scaled_width = full_width * 96 / full_height;
-					
 				}
 
-				scaled_image = gdk_pixbuf_scale_simple(full_size_image, scaled_width, scaled_height, ART_FILTER_BILINEAR);
+				scaled_image = gdk_pixbuf_scale_simple (full_size_image,
+									scaled_width, scaled_height,
+									ART_FILTER_BILINEAR);
 					
-				gdk_pixbuf_unref(full_size_image);
-				if (!save_pixbuf_to_file(scaled_image, factory->new_thumbnail_path + 7))
-					g_warning("error saving thumbnail %s", factory->new_thumbnail_path + 7);	
-				gdk_pixbuf_unref(scaled_image);
+				gdk_pixbuf_unref (full_size_image);
+				if (!save_pixbuf_to_file (scaled_image, factory->new_thumbnail_path + 7))
+					g_warning ("error saving thumbnail %s", factory->new_thumbnail_path + 7);	
+				gdk_pixbuf_unref (scaled_image);
 			}
 			else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
-				gchar *temp_str = g_strdup_printf("png:%s", factory->new_thumbnail_path + 7);
-				execlp("convert", "convert", "-geometry",  "96x96", info->thumbnail_uri + 7, temp_str, NULL);
+				char *temp_str = g_strdup_printf ("png:%s", factory->new_thumbnail_path + 7);
+				execlp ("convert", "convert", "-geometry",  "96x96", info->thumbnail_uri + 7, temp_str, NULL);
+				g_free (temp_str);
 			}
 			
 			_exit(0);
 		}
-			factory->thumbnail_in_progress = TRUE;
+		factory->thumbnail_in_progress = TRUE;
 	}
 	
-	return 1;  /* we're not done yet */
+	return TRUE;  /* we're not done yet */
 }
 
 

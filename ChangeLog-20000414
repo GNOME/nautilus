@@ -1,12 +1,62 @@
+2000-03-06  Darin Adler  <darin@eazel.com>
+
+	Added the concept of separate X and Y scale factors to more
+	of the code. Even though we don't want to scale the two
+	dimensions separately at the moment, I figured it was better
+	to go in this direction than to remove all the separate X
+	and Y stuff that Seth Nickell added.
+
+	* libnautilus/gnome-icon-container-dnd.c
+	(gnome_icon_container_receive_dropped_icons):
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.c (icon_get_actual_size),
+	(icon_new), (icon_get_size), (start_stretching), (update_icon),
+	(gnome_icon_container_add), (gnome_icon_container_is_stretched),
+	(gnome_icon_container_unstretch),
+	(gnome_icon_container_move_icon):
+	* libnautilus/gnome-icon-container.h:
+	Got rid of the old "scale", "xscale", and "yscale" and replaced
+	them with "scale_x" and "scale_y". Made the code always set the
+	scale factor through the gnome_icon_container_move_icon bottleneck
+	so the changes are all reported throught the icon_moved signal.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(add_icon_if_already_positioned),
+	(fm_directory_view_icons_icon_moved_cb):
+	Store only a single scale factor if the X and Y are both scaled
+	exactly the same (the normal case). Also, use a default for
+	the scale factor so we don't save 1.0 for every file.
+
+	* libnautilus/nautilus-gtk-extensions.h:
+	* libnautilus/nautilus-gtk-extensions.c:
+	My original change required an additional marshal function. I
+	decided to add it anyway even though I don't need it right now.
+
+	* libnautilus/nautilus/nautilus-bookmark.c
+	(nautilus_bookmark_get_pixmap_and_mask):
+	Changed to use the nautilus_icon_factory_get_pixbuf_for_file
+	convenience function which has a simpler interface.
+
+	* libnautilus/nautilus-icon-factory.h:
+	* libnautilus/nautilus-icon-factory.c:
+	Added separate X and Y scaling of icons for possible future
+	use; the convenience functions still use the same size in
+	both dimentions.
+
+	* components/music/.cvsignore:
+	  New directory, new .cvsignore needed.
+	
+	* RENAMING: Some more name change ideas.
+
 2000-03-06  Elliot Lee  <sopwith@redhat.com>
 
 	* components/help/hyperbola-nav-index.c: Initial implementation completed.
 
 2000-03-05  Andy Hertzfeld <andy@eazel.com>
 
- 	* components/music/nautilus-music-view.c: derive name and 
- 	track position when there's no id3 tag present, and format 
- 	the title better from the id3-derived information
+	* components/music/nautilus-music-view.c: derive name and 
+	track position when there's no id3 tag present, and format 
+	the title better from the id3-derived information
 	
 2000-03-05  Andy Hertzfeld <andy@eazel.com>
 
@@ -25,26 +75,26 @@
 	added a music view component for viewing directories of mp3 files.  
 	This first cut only handles only the case when the mp3 files have 
 	id3 tags present (most do these days)
- 	
- 	* components/music/nautilus-music-view.c,.h: a new music view 
- 	component gathers information from the id3 tags of mp3 files in 
- 	the target directory and displays them in a list, sorted by track 
- 	number. It also displays the album cover if it can find one.  For 
- 	now, it launches xmms to do the playing, but it will eventually 
- 	have an integrated player and support other file types.
- 	* components/music/nautilus-music-view.goad: component activation file
- 	* main.c: boiler-plate component stuff
- 	* components/music/Makefile.am: makefile for music component
- 	* configure.in: added music component
- 	* components/Makefile.am: added music component
- 	
- 	* src/ntl-uri-map: added a new way to install content view components, 
- 	by having the components explicitly listed in the metadata for the 
- 	object being displayed.	Used this to test the music view, but there's 
- 	no way to manipulate it through the UI yet
- 	* libnautilus/nautilus-metadata.h: added a "CONTENT_VIEWS" tag for 
- 	specifying content views in the metadata
- 	
+	
+	* components/music/nautilus-music-view.c,.h: a new music view 
+	component gathers information from the id3 tags of mp3 files in 
+	the target directory and displays them in a list, sorted by track 
+	number. It also displays the album cover if it can find one.  For 
+	now, it launches xmms to do the playing, but it will eventually 
+	have an integrated player and support other file types.
+	* components/music/nautilus-music-view.goad: component activation file
+	* main.c: boiler-plate component stuff
+	* components/music/Makefile.am: makefile for music component
+	* configure.in: added music component
+	* components/Makefile.am: added music component
+	
+	* src/ntl-uri-map: added a new way to install content view components, 
+	by having the components explicitly listed in the metadata for the 
+	object being displayed.	Used this to test the music view, but there's 
+	no way to manipulate it through the UI yet
+	* libnautilus/nautilus-metadata.h: added a "CONTENT_VIEWS" tag for 
+	specifying content views in the metadata
+	
 2000-03-05  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-window-msgs.c (nautilus_window_update_internals): Handle
@@ -86,11 +136,11 @@
 
 2000-03-03  John Sullivan  <sullivan@eazel.com>
 
-        * configure.in: Turned -Werror back on. It had been turned 
-        off accidentally as part of the patch Maciej applied earlier today.
-        * src/file-manager/fm-directory-view-icons.c:
-        (fm_directory_view_icons_icon_moved_cb): Changed two %lf's to %f's
-        in g_strdup_printf to make compiler happy.
+	* configure.in: Turned -Werror back on. It had been turned 
+	off accidentally as part of the patch Maciej applied earlier today.
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_icon_moved_cb): Changed two %lf's to %f's
+	in g_strdup_printf to make compiler happy.
 
 2000-03-03  Elliot Lee  <sopwith@redhat.com>
 
@@ -111,7 +161,6 @@
 	ViewWindows.
 
 2000-03-03  Maciej Stachowiak  <mjs@eazel.com>
->>>>>>> 1.388
 
 	* components/sample/nautilus-sample-content-view.c,
 	components/sample/nautilus-sample-content-view.h,
@@ -181,9 +230,9 @@
 
 2000-03-02  John Sullivan  <sullivan@eazel.com>
 
-        * src/ntl-main.c: Change gtk_object_unref (app) to
-        bonobo_object_unref (app) to avoid bonobo complaints
-        when quitting.
+	* src/ntl-main.c: Change gtk_object_unref (app) to
+	bonobo_object_unref (app) to avoid bonobo complaints
+	when quitting.
 
 2000-03-02  Elliot Lee  <sopwith@redhat.com>
 
@@ -238,16 +287,16 @@
 	
 2000-02-29  John Sullivan <sullivan@eazel.com>
 
-        * src/ntl-window-msgs.c: (nautilus_window_set_state_info):
-          Replaced gtk_object_ref with comment explaining not to
-          ref in the cases NEW_CONTENT_VIEW_ACTIVATED and
-          NEW_META_VIEW_ACTIVATED. The former is called only when
-          switching views via the View As menu, and was leaving
-          an extra ref on the content_view, which was preventing 
-          it from getting destroyed when switching views, which
-          was preventing me from using the destroy signal for
-          menu unmerging. The latter is never called, but presumably
-          would have the same issue if anyone ever called it.
+	* src/ntl-window-msgs.c: (nautilus_window_set_state_info):
+	  Replaced gtk_object_ref with comment explaining not to
+	  ref in the cases NEW_CONTENT_VIEW_ACTIVATED and
+	  NEW_META_VIEW_ACTIVATED. The former is called only when
+	  switching views via the View As menu, and was leaving
+	  an extra ref on the content_view, which was preventing 
+	  it from getting destroyed when switching views, which
+	  was preventing me from using the destroy signal for
+	  menu unmerging. The latter is never called, but presumably
+	  would have the same issue if anyone ever called it.
 
 2000-02-28  Maciej Stachowiak  <mjs@eazel.com>
 
@@ -257,70 +306,70 @@
 
 2000-02-28  John Sullivan <sullivan@eazel.com>
 
-        Separated out more menu-handling code into new file.
+	Separated out more menu-handling code into new file.
 
-        * src/ntl-app.h: Added #include ntl-window.h.
-        * src/nautilus-window-menus.c:
-        * src/ntl-window-private.h:
-          (nautilus_window_initialize_bookmarks_menu),
-          (nautilus_window_initialize_go_menu): Removed prototypes.
-          (nautilus_window_initialize_menus), (nautilus_window_back_cb),
-          (nautilus_window_forward_cb), (nautilus_window_up_cb),
-          (nautilus_window_home_cb): Added prototypes.
-        * src/ntl-window.c: Moved all the static menu definitions and
-          most of the callback functions out of here.
-        * src/nautilus-window-menus.c: Moved all of the static menu
-          definitions and most of the callback functions into here.
+	* src/ntl-app.h: Added #include ntl-window.h.
+	* src/nautilus-window-menus.c:
+	* src/ntl-window-private.h:
+	  (nautilus_window_initialize_bookmarks_menu),
+	  (nautilus_window_initialize_go_menu): Removed prototypes.
+	  (nautilus_window_initialize_menus), (nautilus_window_back_cb),
+	  (nautilus_window_forward_cb), (nautilus_window_up_cb),
+	  (nautilus_window_home_cb): Added prototypes.
+	* src/ntl-window.c: Moved all the static menu definitions and
+	  most of the callback functions out of here.
+	* src/nautilus-window-menus.c: Moved all of the static menu
+	  definitions and most of the callback functions into here.
 
 2000-02-28  John Sullivan <sullivan@eazel.com>
 
-        Switched NautilusWindow over to using BonoboUIHandler-style
-        menus. Everything works except that the Go and Bookmarks
-        menu items don't show icons for now. Apparently the part of
-        Bonobo that would support using arbitrary GdkPixbufs as
-        menu item icons is not yet implemented. Other than the
-        missing icons problem, this change has no visible effect,
-        but is required to support merging items into the standard
-        menus.
+	Switched NautilusWindow over to using BonoboUIHandler-style
+	menus. Everything works except that the Go and Bookmarks
+	menu items don't show icons for now. Apparently the part of
+	Bonobo that would support using arbitrary GdkPixbufs as
+	menu item icons is not yet implemented. Other than the
+	missing icons problem, this change has no visible effect,
+	but is required to support merging items into the standard
+	menus.
 
-        * src/nautilus-bookmarks-menu.h: Deleted this file.
-        * src/nautilus-bookmarks-menu.c: Deleted this file, moved/morphed its
-          code into ntl-window.c and nautilus-window-menus.c as appropriate.
-        * src/nautilus-window-menus.c: New file, avoids making ntl-window.c
-          any huger by keeping some of the menu-specific stuff in here. Right
-          now this file includes only stuff I had to change or create for this
-          checkin. I will soon make another pass at moving a bunch of old menu 
-          code into here.
-        * src/Makefile.am: Removed deleted files, added new file.
-        * src/nautilus.h: Removed #include nautilus-bookmarks-menu.h.
-        * src/ntl-window-msgs.c: Added #include <libnautilus/nautilus-bookmark.h>
-          that became necessary when nautilus.h changed.
-        * src/ntl-app.c: (nautilus_app_exiting):
-          Changed nautilus_bookmarks_menu_exiting to nautilus_bookmarks_exiting,
-          since there's no menu involved in this code now.
-        * src/ntl-window-private.h: Added prototypes for functions called
-          between ntl-window.c and nautilus-window-menus.c.
-        * src/ntl-window.h: Added prototype for nautilus_bookmarks_exiting;
-          removed fields for various stored menu items.          
-        * src/ntl-window.c:
-          Removed #defines for GO_MENU_<foo>_ITEM_INDEX, since menu-item
-          accessing is now done with paths the Bonobo way.
-          Removed separator from static part of Go menu; the separator is
-          now added when the dynamic items are added.
-          Added static items in Bookmarks menu to GnomeUIInfo array.
-          (add_bookmark_cb), (edit_bookmarks_cb): New callback functions used
-          by the static part of the Bookmarks menu.
-          (clear_go_menu_history), (activate_bookmark_in_menu_item),
-          (refresh_history_list_in_go_menu): Removed functions; new versions 
-          are in nautilus-window-menus.c.
-          (nautilus_window_init): Removed go-menu signal connections; new
-          versions are in nautilus-window-menus.c.
-          (nautilus_window_constructed): Create and access menus the Bonobo way;
-          also call functions to initialize the two dynamic menus.
-          (nautilus_window_allow_back), (nautilus_window_allow_forward),
-          (nautilus_window_allow_up): Access menu items with paths, the Bonobo way.
-          (nautilus_get_history_list): New function, wrapper around static
-          variable so it can be accessed from nautilus-window-menus.c.
+	* src/nautilus-bookmarks-menu.h: Deleted this file.
+	* src/nautilus-bookmarks-menu.c: Deleted this file, moved/morphed its
+	  code into ntl-window.c and nautilus-window-menus.c as appropriate.
+	* src/nautilus-window-menus.c: New file, avoids making ntl-window.c
+	  any huger by keeping some of the menu-specific stuff in here. Right
+	  now this file includes only stuff I had to change or create for this
+	  checkin. I will soon make another pass at moving a bunch of old menu 
+	  code into here.
+	* src/Makefile.am: Removed deleted files, added new file.
+	* src/nautilus.h: Removed #include nautilus-bookmarks-menu.h.
+	* src/ntl-window-msgs.c: Added #include <libnautilus/nautilus-bookmark.h>
+	  that became necessary when nautilus.h changed.
+	* src/ntl-app.c: (nautilus_app_exiting):
+	  Changed nautilus_bookmarks_menu_exiting to nautilus_bookmarks_exiting,
+	  since there's no menu involved in this code now.
+	* src/ntl-window-private.h: Added prototypes for functions called
+	  between ntl-window.c and nautilus-window-menus.c.
+	* src/ntl-window.h: Added prototype for nautilus_bookmarks_exiting;
+	  removed fields for various stored menu items.	  
+	* src/ntl-window.c:
+	  Removed #defines for GO_MENU_<foo>_ITEM_INDEX, since menu-item
+	  accessing is now done with paths the Bonobo way.
+	  Removed separator from static part of Go menu; the separator is
+	  now added when the dynamic items are added.
+	  Added static items in Bookmarks menu to GnomeUIInfo array.
+	  (add_bookmark_cb), (edit_bookmarks_cb): New callback functions used
+	  by the static part of the Bookmarks menu.
+	  (clear_go_menu_history), (activate_bookmark_in_menu_item),
+	  (refresh_history_list_in_go_menu): Removed functions; new versions 
+	  are in nautilus-window-menus.c.
+	  (nautilus_window_init): Removed go-menu signal connections; new
+	  versions are in nautilus-window-menus.c.
+	  (nautilus_window_constructed): Create and access menus the Bonobo way;
+	  also call functions to initialize the two dynamic menus.
+	  (nautilus_window_allow_back), (nautilus_window_allow_forward),
+	  (nautilus_window_allow_up): Access menu items with paths, the Bonobo way.
+	  (nautilus_get_history_list): New function, wrapper around static
+	  variable so it can be accessed from nautilus-window-menus.c.
 
 2000-02-26  Andy Hertzfeld <andy@eazel.com>
 
@@ -379,15 +428,15 @@
 	
 2000-02-25  John Sullivan <sullivan@eazel.com>
 
-        * src/file-manager/fm-directory-view-c:
-         (confirm-delete): New function, puts up a dialog confirming
-         whether to delete the selected items.
-         (delete_cb): Checks with confirm_delete before deleting.
-         It's too easy to accidentally delete files without this, as
-         I discovered yesterday in my foolish experimentations.
-         (fm_directory_view_real_append_selection_context_menu_items):
-         Renamed "Delete" menu item to "Delete..." to make it clear that
-         no deleting will occur without confirmation.
+	* src/file-manager/fm-directory-view-c:
+	 (confirm-delete): New function, puts up a dialog confirming
+	 whether to delete the selected items.
+	 (delete_cb): Checks with confirm_delete before deleting.
+	 It's too easy to accidentally delete files without this, as
+	 I discovered yesterday in my foolish experimentations.
+	 (fm_directory_view_real_append_selection_context_menu_items):
+	 Renamed "Delete" menu item to "Delete..." to make it clear that
+	 no deleting will occur without confirmation.
 
 2000-02-25  Andy Hertzfeld <andy@eazel.com>
 
@@ -648,7 +697,7 @@
 	
 	* icons/i-directory.png, icons/i-directory-36.png,
 	* icons/i-regular.png, icons/i-regular-36.png:
-        This completes Kenneth's set of icons for the generic document and folder
+	This completes Kenneth's set of icons for the generic document and folder
 	* icons/Makefile.am:
 	Added the 36 pixel versions.
 	
@@ -777,7 +826,7 @@
 	winds and assume an unknown type is a text file it only enables
 	this for eazel themes now, we have to figure out a better way to
 	tell if the icon can contain it.
-    
+
 2000-02-21  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus/ntl-view-frame.c: Fixed crashes introduced in the
@@ -788,13 +837,13 @@
 2000-02-21  Andy Hertzfeld <andy@eazel.com>
 
 	added document icons to eazel icons theme in 4 sizes
-    
+	
 	* icons/eazel/i-regular.png, i-regular-36.png, i-regular-72.png,
 	  i-regular-96.png:
 	Added Susan's document icons at 4 zoom levels.
 	* icons/eazel/Makefile.am:
 	Added to Makefile so they get installed.
-    
+
 2000-02-21  John Sullivan  <sullivan@eazel.com>
 
 	Refined right-click context-menu behavior in file manager.
@@ -1777,7 +1826,7 @@
 	made hit-testing work for the title tab
 	* src/ntl-window.c:
 	defaulted hpaned position to proper size
-    
+
 2000-02-10  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-index-tabs.c,h:
@@ -1869,12 +1918,12 @@
 
 	Completed hit-testing and activation for the index tabs.  They're
 	usable now, but I'm leaving them off until they're more refined.
-    
+
 	* src/nautilus-index-tabs.c:
 	completed hit-testing
 	* src/ntl-index-panel.c:
 	activate the appropriate metaview when the corresponding tab is clicked
-    
+
 2000-02-09  Andy Hertzfeld <andy@eazel.com>
 
 	More work on the index panel, still conditionally disabled;
@@ -2174,7 +2223,7 @@
 
 2000-02-07  Andy Hertzfeld <andy@eazel.com>
 
-        first cut at real tabs for index panel, still incomplete and not
+	first cut at real tabs for index panel, still incomplete and not
 	hooked up yet, but will be soon.
 	
 	* icons/tableft.png, tabright.png:
@@ -3586,7 +3635,7 @@
 	(struct _FMDirectoryViewListDetails): Add icon_size field.
 	(fm_directory_view_list_initialize): Initialize icon_size field.
 	(create_flist): Determine icon column width and row height from icon size.
- 	(add_to_flist): Change parameters to take FMDirectoryViewList
+	(add_to_flist): Change parameters to take FMDirectoryViewList
 	instead of GtkFList, and remove FMIconCache parameter. Now calls
 	install_icon.
 	(fm_directory_view_list_add_entry): Update add_to_flist parameters.
@@ -4272,38 +4321,38 @@
 	* src/file-manager/fm-directory-view-icons.h:
 	* src/file-manager/fm-directory-view-list.c:
 	* src/file-manager/fm-directory-view-list.h:
- 	Moved icon_layout and icons_not_in_layout fields from
- 	FMDirectoryView to FMDirectoryViewIcons (where they hide
- 	inside a details structure in fm-directory-view-icons.c)
- 	Commented .h files and all public functions in .c files.
- 	Removed unnecessary #includes.
- 	Changed signatures on many static functions in subclasses
- 	to take subclass type instead of superclass type.
- 	(display_selection_info_idle_cb):
- 	(fm_directory_view_get_selection): 
- 	(fm_directory_view_icons_get_selection):
- 	(fm_directory_view_list_get_selection):
- 	(fm_directory_view_notify_selection_changed):
- 	New functions used to handle subclasses telling
- 	superclass about the selection, so superclass can
- 	display info about it.
- 	(display_icon_container_selection_info_idle_cb):
- 	(display_flist_selection_info_idle_cb): Removed these
- 	old functions in favor of new cleaner mechanism.
- 	(flist_activate_cb), (icon_container_activate_cb): Moved
- 	common code into new superclass function...
- 	(fm_directory_view_activate_entry): New home of that common
- 	code.
+	Moved icon_layout and icons_not_in_layout fields from
+	FMDirectoryView to FMDirectoryViewIcons (where they hide
+	inside a details structure in fm-directory-view-icons.c)
+	Commented .h files and all public functions in .c files.
+	Removed unnecessary #includes.
+	Changed signatures on many static functions in subclasses
+	to take subclass type instead of superclass type.
+	(display_selection_info_idle_cb):
+	(fm_directory_view_get_selection): 
+	(fm_directory_view_icons_get_selection):
+	(fm_directory_view_list_get_selection):
+	(fm_directory_view_notify_selection_changed):
+	New functions used to handle subclasses telling
+	superclass about the selection, so superclass can
+	display info about it.
+	(display_icon_container_selection_info_idle_cb):
+	(display_flist_selection_info_idle_cb): Removed these
+	old functions in favor of new cleaner mechanism.
+	(flist_activate_cb), (icon_container_activate_cb): Moved
+	common code into new superclass function...
+	(fm_directory_view_activate_entry): New home of that common
+	code.
 
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/fm-directory-view.h:
- 	Moved remaining fields of FMDirectoryView inside a private 
- 	details structure so they can change without affecting clients.
- 	(fm_directory_view_get_uri): (fm_directory_view_get_view_frame): 
- 	New functions to use instead of peeking at structure directly.
- 	(init): (class_init): (fm_directory_view_get_type): Renamed
- 	the former two functions and removed the latter while
- 	deploying NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+	Moved remaining fields of FMDirectoryView inside a private 
+	details structure so they can change without affecting clients.
+	(fm_directory_view_get_uri): (fm_directory_view_get_view_frame): 
+	New functions to use instead of peeking at structure directly.
+	(init): (class_init): (fm_directory_view_get_type): Renamed
+	the former two functions and removed the latter while
+	deploying NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
 		
 	* src/file-manager/fm-main.c:
 	(make_obj): Use fm_directory_view_get_view_frame() where it
@@ -5392,9 +5441,9 @@
 	* libnautilus/nautilus-file-utilities.c : new file
 	* libnautilus/Makefile.am : added these two new files to the build.
 
- 	* src/nautilus_bookmarklist.c:
- 	  (nautilus_bookmarklist_get_file_path): Deployed
- 	  nautilus_make_path() and nautilus_user_directory()
+	* src/nautilus_bookmarklist.c:
+	  (nautilus_bookmarklist_get_file_path): Deployed
+	  nautilus_make_path() and nautilus_user_directory()
 
 2000-01-03  Darin Adler  <darin@eazel.com>
 
@@ -5411,10 +5460,10 @@
 
 2000-01-03  John Sullivan  <sullivan@eazel.com>
 
- 	* src/nautilus_bookmarklist.c:
- 	  (nautilus_bookmarklist_save_file): Took out unused local 
- 	  variables. My compiler didn't notice these because -Wall
- 	  isn't in our compile flags. Darin is fixing the compile flags.
+	* src/nautilus_bookmarklist.c:
+	  (nautilus_bookmarklist_save_file): Took out unused local 
+	  variables. My compiler didn't notice these because -Wall
+	  isn't in our compile flags. Darin is fixing the compile flags.
 
 2000-01-03  Elliot Lee  <sopwith@redhat.com>
 
@@ -5523,7 +5572,7 @@
 
 1999-12-28  John Sullivan  <sullivan@eazel.com>
 
-	* src/nautilus-bookmark.c, src/nautilus-bookmark.h: 			
+	* src/nautilus-bookmark.c, src/nautilus-bookmark.h:			
 	  (nautilus_bookmark_compare_with): 
 	  new function, compares two bookmarks for equivalence, used by:
 	* src/nautilus-bookmarklist.c, src/nautilus-bookmarklist.h: 
@@ -5868,17 +5917,17 @@
 	* components/help/hyperbola-nav-tree.c: Translate strings.
 
 	* components/history/ntl-history-view.c: Bug fixes, use API
- 	function for setting meta-view label.
+	function for setting meta-view label.
 
 	* libnautilus/ntl-meta-view-client.[ch]:
- 	s/meta_view_set_label/meta_view_client_set_label/
+	s/meta_view_set_label/meta_view_client_set_label/
 
 	* src/ntl-uri-map.c: Use history view instead of help view as the
- 	default meta view for now.
+	default meta view for now.
 
 	* src/ntl-window.c: As per the comment that was removed from
- 	ntl-window.c, gnome_app_install_menu_hints() needs to be called
- 	_after_ statusbar creation
+	ntl-window.c, gnome_app_install_menu_hints() needs to be called
+	after_ statusbar creation
 
 	* src/file-manager/fm-directory-view.c: Add more debugging assertions
 	and messages.

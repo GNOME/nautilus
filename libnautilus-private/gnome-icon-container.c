@@ -78,7 +78,7 @@ static void update_icon (GnomeIconContainer *container,
 			 GnomeIconContainerIcon *icon);
 static void compute_stretch (StretchState *start,
 			     StretchState *current);
-static double icon_get_actual_size(GnomeIconContainerIcon *icon);
+static guint icon_get_actual_size (GnomeIconContainerIcon *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -91,7 +91,7 @@ enum {
 	ACTIVATE,
 	CONTEXT_CLICK_SELECTION,
 	CONTEXT_CLICK_BACKGROUND,
-	ICON_MOVED,
+	ICON_CHANGED,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -115,13 +115,14 @@ icon_new (GnomeIconContainer *container,
 {
 	GnomeIconContainerIcon *new;
         GnomeCanvas *canvas;
-        double actual_size;
+	guint actual_size;
         
 	canvas = GNOME_CANVAS (container);
 	
 	new = g_new0 (GnomeIconContainerIcon, 1);
 	
-	new->scale = 1.0;
+	new->scale_x = 1.0;
+	new->scale_y = 1.0;
 	new->layout_done = TRUE;
 	
 	new->data = data;
@@ -133,10 +134,15 @@ icon_new (GnomeIconContainer *container,
 
 	update_icon (container, new);
 	
-	/* enforce a maximum size for new icons by reducing the scale factor as necessary */
-	actual_size = new->scale * icon_get_actual_size(new);
+	/* Enforce a maximum size for new icons by reducing the scale factor as necessary.
+	 * FIXME: This needs to be done again later when the image changes, so it's not
+	 * sufficient to just have this check here. Also, this should not be done by
+	 * changing the scale factor because we don't want a persistent change to that.
+	 */
+	actual_size = icon_get_actual_size (new);
 	if (actual_size > MAXIMUM_INITIAL_ICON_SIZE) {
-		new->scale *= MAXIMUM_INITIAL_ICON_SIZE / actual_size;
+		new->scale_x = MAXIMUM_INITIAL_ICON_SIZE / actual_size;
+		new->scale_y = new->scale_x;
 		update_icon (container, new);
 	}
 	
@@ -158,13 +164,25 @@ icon_set_position (GnomeIconContainerIcon *icon,
 	icon->y = y;
 }
 
-static guint
+/* icon_get_size and icon_set_size are used by the stretching user interface,
+ * which currently stretches in a way that keeps the aspect ratio. Later we
+ * might have a stretching interface that stretches Y separate from X and
+ * we will change this around.
+ */
+
+static void
 icon_get_size (GnomeIconContainer *container,
-	       GnomeIconContainerIcon *icon)
+	       GnomeIconContainerIcon *icon,
+	       guint *size_x, guint *size_y)
 {
-	return MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-		    * icon->scale,
-		    NAUTILUS_ICON_SIZE_SMALLEST);
+	if (size_x != NULL) {
+		*size_x = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+			       * icon->scale_x, NAUTILUS_ICON_SIZE_SMALLEST);
+	}
+	if (size_y != NULL) {
+		*size_y = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+			       * icon->scale_y, NAUTILUS_ICON_SIZE_SMALLEST);
+	}
 }
 
 static void
@@ -172,32 +190,40 @@ icon_set_size (GnomeIconContainer *container,
 	       GnomeIconContainerIcon *icon,
 	       guint icon_size)
 {
-	if (icon_size == icon_get_size (container, icon))
-		return;
+	guint old_size_x, old_size_y;
+	double scale;
 
-	icon->scale = (double) icon_size /
+	icon_get_size (container, icon, &old_size_x, &old_size_y);
+	if (icon_size == old_size_x && icon_size == old_size_y) {
+		return;
+	}
+
+	scale = (double) icon_size /
 		nautilus_get_icon_size_for_zoom_level
 		(container->details->zoom_level);
-
-	update_icon (container, icon);
+	gnome_icon_container_move_icon (container, icon,
+					icon->x, icon->y,
+					scale, scale,
+					FALSE);
 }
 
 /* return the size in pixels of the largest dimension of the pixmap associated with the icon */ 
-static double
-icon_get_actual_size(GnomeIconContainerIcon *icon)
+static guint
+icon_get_actual_size (GnomeIconContainerIcon *icon)
 {
 	GtkArg pixbuf_arg;
 	GdkPixbuf *pixbuf;
-	gint max_size;
+	guint max_size;
 	
 	pixbuf_arg.name = "NautilusIconsViewIconItem::pixbuf";
 	gtk_object_getv (GTK_OBJECT (icon->item), 1, &pixbuf_arg);
  	pixbuf = GTK_VALUE_BOXED (pixbuf_arg);
 	max_size = pixbuf->art_pixbuf->width;
-	if (pixbuf->art_pixbuf->height > max_size)
+	if (pixbuf->art_pixbuf->height > max_size) {
 		max_size = pixbuf->art_pixbuf->height;
+	}
 
-	return (double) max_size;
+	return max_size;
 }
 
 static void
@@ -1003,57 +1029,76 @@ unselect_all (GnomeIconContainer *container)
 void
 gnome_icon_container_move_icon (GnomeIconContainer *container,
 	   GnomeIconContainerIcon *icon,
-	   int x, int y, double xscale, double yscale, gboolean raise)
+	   int x, int y, double scale_x, double scale_y, gboolean raise)
 {
 	GnomeIconContainerDetails *details;
-	int old_x, old_y;
 	guint old_grid_x, old_grid_y;
 	int old_x_offset, old_y_offset;
 	guint new_grid_x, new_grid_y;
 	int new_x_offset, new_y_offset;
+	gboolean emit_signal;
 
 	details = container->details;
 
-	old_x = icon->x;
-	old_y = icon->y;
+	emit_signal = FALSE;
 
-	world_to_grid (container, old_x, old_y, &old_grid_x, &old_grid_y);
-	old_x_offset = old_x % GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-	old_y_offset = old_y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
+	if (x != icon->x || y != icon->y) {
+		world_to_grid (container, icon->x, icon->y, &old_grid_x, &old_grid_y);
+		old_x_offset = (int)icon->x % GNOME_ICON_CONTAINER_CELL_WIDTH (container);
+		old_y_offset = (int)icon->y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
+		
+		world_to_grid (container, x, y, &new_grid_x, &new_grid_y);
+		new_x_offset = x % GNOME_ICON_CONTAINER_CELL_WIDTH (container);
+		new_y_offset = y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
+		
+		icon_grid_remove (details->grid, icon, old_grid_x, old_grid_y);
+		if (old_x_offset > 0) {
+			icon_grid_remove (details->grid, icon,
+					  old_grid_x + 1, old_grid_y);
+		}
+		if (old_y_offset > 0) {
+			icon_grid_remove (details->grid, icon,
+					  old_grid_x, old_grid_y + 1);
+		}
+		if (old_x_offset > 0 && old_y_offset > 0) {
+			icon_grid_remove (details->grid, icon,
+					  old_grid_x + 1, old_grid_y + 1);
+		}
+		
+		icon_grid_add (details->grid, icon, new_grid_x, new_grid_y);
+		if (new_x_offset > 0) {
+			icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y);
+		}
+		if (new_y_offset > 0) {
+			icon_grid_add (details->grid, icon, new_grid_x, new_grid_y + 1);
+		}
+		if (new_x_offset > 0 && new_y_offset > 0) {
+			icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y + 1);
+		}
+		
+		icon_set_position (icon, x, y);
+		
+		/* Update the keyboard selection indicator.  */
+		if (details->kbd_current == icon) {
+			set_kbd_current (container, icon, FALSE);
+		}
 
-	world_to_grid (container, x, y, &new_grid_x, &new_grid_y);
-	new_x_offset = x % GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-	new_y_offset = y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-
-	icon_grid_remove (details->grid, icon, old_grid_x, old_grid_y);
-	if (old_x_offset > 0)
-		icon_grid_remove (details->grid, icon,
-				  old_grid_x + 1, old_grid_y);
-	if (old_y_offset > 0)
-		icon_grid_remove (details->grid, icon,
-				  old_grid_x, old_grid_y + 1);
-	if (old_x_offset > 0 && old_y_offset > 0)
-		icon_grid_remove (details->grid, icon,
-				  old_grid_x + 1, old_grid_y + 1);
-
-	icon_grid_add (details->grid, icon, new_grid_x, new_grid_y);
-	if (new_x_offset > 0)
-		icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y);
-	if (new_y_offset > 0)
-		icon_grid_add (details->grid, icon, new_grid_x, new_grid_y + 1);
-	if (new_x_offset > 0 && new_y_offset > 0)
-		icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y + 1);
-
-	icon_set_position (icon, x, y);
-	if (raise)
+		emit_signal = TRUE;
+	}
+	
+	if (scale_x != icon->scale_x || scale_y != icon->scale_y) {
+		update_icon (container, icon);
+		emit_signal = TRUE;
+	}
+	
+	if (emit_signal) {
+		gtk_signal_emit (GTK_OBJECT (container), signals[ICON_CHANGED],
+				 icon->data, x, y, scale_x, scale_y);
+	}
+	
+	if (raise) {
 		icon_raise (icon);
-
-	/* Update the keyboard selection indicator.  */
-	if (details->kbd_current == icon)
-		set_kbd_current (container, icon, FALSE);
-
-	gtk_signal_emit (GTK_OBJECT (container), signals[ICON_MOVED],
-			 icon->data, x, y, xscale, yscale);
+	}
 }
 
 
@@ -1832,7 +1877,8 @@ start_stretching (GnomeIconContainer *container)
 			  icon->x, icon->y,
 			  &details->stretch_start.icon_x,
 			  &details->stretch_start.icon_y);
-	details->stretch_start.icon_size = icon_get_size (container, icon);
+	icon_get_size (container, icon,
+		       &details->stretch_start.icon_size, NULL);
 
 	return TRUE;
 }
@@ -2062,12 +2108,12 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 						     context_click_background),
 				  gtk_marshal_NONE__NONE,
 				  GTK_TYPE_NONE, 0);
-	signals[ICON_MOVED]
-		= gtk_signal_new ("icon_moved",
+	signals[ICON_CHANGED]
+		= gtk_signal_new ("icon_changed",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
-						     icon_moved),
+						     icon_changed),
 				  nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE,
 				  GTK_TYPE_NONE, 5,
 				  GTK_TYPE_POINTER,
@@ -2473,8 +2519,8 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 	NautilusScalableIcon *scalable_icon;
-	guint icon_size;
-	GdkPixbuf *pixbuf;
+	guint icon_size_x, icon_size_y;
+	GdkPixbuf *pixbuf, *emblem_pixbuf;
 	GList *emblem_icons, *emblem_pixbufs, *p;
 	char *label;
 	char *contents_as_text;
@@ -2487,13 +2533,15 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 		(details->controller, icon->data, &emblem_icons);
 
 	/* Get the corresponding pixbufs for this size. */
-	icon_size = icon_get_size (container, icon);
+	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon, icon_size);
+		(scalable_icon, icon_size_x, icon_size_y);
 	emblem_pixbufs = NULL;
 	for (p = emblem_icons; p != NULL; p = p->next) {
+		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+			(p->data, icon_size_x, icon_size_y);
 		emblem_pixbufs = g_list_prepend
-			(emblem_pixbufs, nautilus_icon_factory_get_pixbuf_for_icon (p->data, icon_size));
+			(emblem_pixbufs, emblem_pixbuf);
 	}
 
 	/* Let the icons go. */
@@ -2527,7 +2575,7 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 void
 gnome_icon_container_add (GnomeIconContainer *container,
 			  NautilusControllerIcon *data,
-			  int x, int y, double xscale, double yscale)
+			  int x, int y, double scale_x, double scale_y)
 {
 	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *new_icon;
@@ -2540,7 +2588,8 @@ gnome_icon_container_add (GnomeIconContainer *container,
 
 	new_icon = icon_new (container, data);
 	icon_set_position (new_icon, x, y);
-
+	new_icon->scale_x = scale_x;
+	new_icon->scale_y = scale_y;
 
 	world_to_grid (container, x, y, &grid_x, &grid_y);
 	icon_grid_add (details->grid, new_icon, grid_x, grid_y);
@@ -2557,10 +2606,6 @@ gnome_icon_container_add (GnomeIconContainer *container,
 
 	add_idle (container);
 
-	/* FIXME: deal with y scaling and x scaling seperately */
-	new_icon->scale = xscale; 
-	new_icon->xscale = xscale;
-	new_icon->yscale = yscale;
 	update_icon (container, new_icon);
 }
 
@@ -3146,7 +3191,7 @@ gnome_icon_container_is_stretched (GnomeIconContainer *container)
 		return FALSE;
 	}
 
-	return icon->scale != 1.0;
+	return icon->scale_x != 1.0 || icon->scale_y != 1.0;
 }
 
 /**
@@ -3165,8 +3210,10 @@ gnome_icon_container_unstretch (GnomeIconContainer *container)
 		return;
 	}
 
-	icon->scale = 1.0;
-	update_icon (container, icon);
+	gnome_icon_container_move_icon (container, icon,
+					icon->x, icon->y,
+					1.0, 1.0,
+					FALSE);
 }
 
 static void
@@ -3184,10 +3231,10 @@ compute_stretch (StretchState *start,
 	x_stretch = start->pointer_x - current->pointer_x;
 	y_stretch = start->pointer_y - current->pointer_y;
 	if (right) {
-		x_stretch = -x_stretch;
+		x_stretch = - x_stretch;
 	}
 	if (bottom) {
-		y_stretch = -y_stretch;
+		y_stretch = - y_stretch;
 	}
 	current->icon_size = MAX ((int)start->icon_size + MIN (x_stretch, y_stretch),
 				  (int)NAUTILUS_ICON_SIZE_SMALLEST);

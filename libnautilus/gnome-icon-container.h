@@ -59,9 +59,9 @@ struct _GnomeIconContainerClass {
 
 	void (* context_click_background) (GnomeIconContainer *container);
 
-	void (* icon_moved)		  (GnomeIconContainer *container,
+	void (* icon_changed)		  (GnomeIconContainer *container,
 					   NautilusControllerIcon *icon,
-					   int x, int y, double xscale, double yscale);
+					   int x, int y, double scale_x, double scale_y);
 };
 
 
@@ -78,8 +78,8 @@ void       gnome_icon_container_add                     (GnomeIconContainer     
 							 NautilusControllerIcon  *icon,
 							 int                      x,
 							 int                      y,
-							 double xscale,
-							 double yscale);
+							 double                   scale_x,
+							 double                   scale_y);
 void       gnome_icon_container_add_auto                (GnomeIconContainer      *view,
 							 NautilusControllerIcon  *icon);
 

@@ -177,7 +177,6 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 				       GdkBitmap **mask_return)
 {
 	NautilusFile *file;
-	NautilusScalableIcon *scalable_icon;
 	GdkPixbuf *pixbuf;
 
 	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
@@ -187,15 +186,12 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 	 * other reason. It should get some sort of generic icon, but for
 	 * now it gets none.
 	 */
-	if (file == NULL)
+	if (file == NULL) {
 		return FALSE;
+	}
 
-	scalable_icon = nautilus_icon_factory_get_icon_for_file	(file, NULL);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, icon_size);
 	nautilus_file_unref (file);
-
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon, icon_size);
-	nautilus_scalable_icon_unref (scalable_icon);
 
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 100);
 	gdk_pixbuf_unref (pixbuf);

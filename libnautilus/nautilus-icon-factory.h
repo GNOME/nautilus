@@ -105,9 +105,12 @@ GList *               nautilus_icon_factory_get_emblem_icons_for_file    (Nautil
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
+ * This allows scaling in both dimensions. All other calls assume
+ * that X and Y scaling are the same.
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon  *scalable_icon,
-									  guint                  size_in_pixels);
+									  guint                  size_in_pixels_x,
+									  guint                  size_in_pixels_y);
 
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.

@@ -40,9 +40,7 @@ typedef struct {
 	double x, y;
 	
 	/* Scale factor (stretches icon). */
-	double scale;
-	/* FIXME: should be using xscale and yscale not scale! */
-	double xscale, yscale;
+	double scale_x, scale_y;
 
 	/* Whether this item is selected for operation. */
 	gboolean is_selected : 1;
@@ -202,8 +200,8 @@ void                    gnome_icon_container_move_icon                   (GnomeI
 									  GnomeIconContainerIcon *icon,
 									  int                     x,
 									  int                     y,
-									  double xscale,
-									  double yscale,
+									  double                  scale_x,
+									  double                  scale_y,
 									  gboolean                raise);
 void                    gnome_icon_container_select_list_unselect_others (GnomeIconContainer     *container,
 									  GList                  *icons);

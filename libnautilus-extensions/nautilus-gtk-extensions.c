@@ -64,7 +64,7 @@ guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
 static void
 nautilus_gtk_window_hide_retain_geometry (GtkWindow *window) {
 	gchar *geometry_string;
-	gint left, top, width, height;
+	int left, top, width, height;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
@@ -148,8 +148,8 @@ nautilus_gtk_selection_data_free_deep (GtkSelectionData *data)
  **/
 static void
 nautilus_popup_menu_position_func (GtkMenu   *menu,
-				   gint      *x,
-				   gint      *y,
+				   int      *x,
+				   int      *y,
 				   gpointer  user_data)
 {
 	GdkPoint *offset;
@@ -166,8 +166,8 @@ nautilus_popup_menu_position_func (GtkMenu   *menu,
 	 * gint16 might cause problems.  Unfortunately, GdkPoint
 	 * uses gint16.
 	 */
-	*x += (gint) offset->x;
-	*y += (gint) offset->y;
+	*x += (int) offset->x;
+	*y += (int) offset->y;
 }
 
 /**
@@ -214,13 +214,35 @@ nautilus_pop_up_context_menu (GtkMenu	*menu,
 }
 
 
+typedef void (*NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE) (GtkObject * object,
+								gpointer arg1,
+								int arg2,
+								int arg3,
+								double arg4,
+								gpointer user_data);
+
 typedef void (*NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) (GtkObject * object,
 								       gpointer arg1,
-								       gint arg2,
-								       gint arg3,
-								       gdouble arg4,
-								       gdouble arg5,
+								       int arg2,
+								       int arg3,
+								       double arg4,
+								       double arg5,
 								       gpointer user_data);
+
+void
+nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject * object,
+						   GtkSignalFunc func,
+						   gpointer func_data,
+						   GtkArg * args)
+{
+	(* (NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 GTK_VALUE_INT (args[1]),
+		 GTK_VALUE_INT (args[2]),
+		 GTK_VALUE_DOUBLE (args[3]),
+		 func_data);
+}
 
 void
 nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject * object,
@@ -228,13 +250,12 @@ nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject * object,
 							  gpointer func_data,
 							  GtkArg * args)
 {
-  NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE rfunc;
-  rfunc = (NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) func;
-  (*rfunc) (object,
-	    GTK_VALUE_POINTER (args[0]),
-	    GTK_VALUE_INT (args[1]), 
-	    GTK_VALUE_INT (args[2]), 
-	    GTK_VALUE_DOUBLE (args[3]), 
-	    GTK_VALUE_DOUBLE (args[4]), 
-	    func_data);
+	(* (NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 GTK_VALUE_INT (args[1]), 
+		 GTK_VALUE_INT (args[2]), 
+		 GTK_VALUE_DOUBLE (args[3]), 
+		 GTK_VALUE_DOUBLE (args[4]), 
+		 func_data);
 }
