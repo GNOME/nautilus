@@ -1,3 +1,36 @@
+2000-06-13  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1044 (Make "Open With Other" behave sensibly
+	when there are no programs available for this file), and
+	some related UI tweaking.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(launch_mime_capplet), (launch_mime_capplet_and_close_dialog):
+	Split old launch_mime_capplet into these two parts, so I
+	could call the simpler one from two places.
+	(run_program_configurator_callback),
+	(nautilus_program_chooser_new): Moved the "Why not visit the
+	Control Center?" box from the sub-dialog into the main dialog.
+	Also created both a "Cancel" and "Done" button, only one of
+	which is shown at a time.
+	(nautilus_program_chooser_set_is_cancellable): New function,
+	determines which of the two buttons "Cancel" and "Done" to
+	display.
+	(nautilus_program_chooser_show_no_choices_message):
+	New function, puts up a modeless dialog telling user that
+	there are no applications/viewers for this file and asking
+	if they want to go to the File Types and Programs capplet.
+
+	* libnautilus-extensions/nautilus-program-chooser.h:
+	Prototype for nautilus_program_chooser_show_no_choices_message. 
+
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(any_programs_available_for_file): New helper function.
+	(nautilus_choose_component_for_file),
+	(nautilus_choose_application_for_file): Reworked a bit to
+	call nautilus_program_chooser_show_no_choices_message
+	in the case where there are no choices at all.
+
 2000-06-13  Pavel Cisler <pavel@eazel.com>
 
 	* test/nautilus-leak-checker-stubs.h:

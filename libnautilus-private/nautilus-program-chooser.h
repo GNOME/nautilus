@@ -33,10 +33,14 @@
 #include "nautilus-file.h"
 #include "nautilus-view-identifier.h"
 
-GnomeDialog 		*nautilus_program_chooser_new 		  (GnomeVFSMimeActionType  type, 
-					   			   NautilusFile 	  *file);
+GnomeDialog 		*nautilus_program_chooser_new 		  	  (GnomeVFSMimeActionType  type, 
+					   			   	   NautilusFile 	  *file);
 
-GnomeVFSMimeApplication *nautilus_program_chooser_get_application (GnomeDialog 		  *program_chooser);
-NautilusViewIdentifier  *nautilus_program_chooser_get_component   (GnomeDialog 		  *program_chooser);
+GnomeVFSMimeApplication *nautilus_program_chooser_get_application 	  (GnomeDialog 		  *program_chooser);
+NautilusViewIdentifier  *nautilus_program_chooser_get_component   	  (GnomeDialog 		  *program_chooser);
+
+void			 nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_type,
+									   NautilusFile	  	  *file,
+									   GtkWindow		  *parent_window);
 
 #endif /* NAUTILUS_PROGRAM_CHOOSER_H */

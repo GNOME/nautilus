@@ -59,10 +59,7 @@
  * Hardwire an initial window size here, but let user resize
  * bigger or smaller.
  */
-#define PROGRAM_CHOOSER_DEFAULT_HEIGHT	 303
-
-/* Global used to quit dialog & subdialog together. */
-static gboolean quit_program_chooser = FALSE;
+#define PROGRAM_CHOOSER_DEFAULT_HEIGHT	 374
 
 static GnomeVFSMimeActionType
 nautilus_program_chooser_get_type (GnomeDialog *program_chooser)
@@ -159,6 +156,25 @@ static GtkLabel *
 nautilus_program_chooser_get_status_label (GnomeDialog *chooser)
 {
 	return GTK_LABEL (gtk_object_get_data (GTK_OBJECT (chooser), "status_label"));
+}
+
+static void
+nautilus_program_chooser_set_is_cancellable (GnomeDialog *chooser, gboolean cancellable)
+{
+	GtkButton *done_button, *cancel_button;
+
+	cancel_button = nautilus_gnome_dialog_get_button_by_index 
+		(chooser, GNOME_CANCEL);
+	done_button = nautilus_gnome_dialog_get_button_by_index 
+		(chooser, GNOME_CANCEL+1);
+
+	if (cancellable) {
+		gtk_widget_hide (GTK_WIDGET (done_button));
+		gtk_widget_show (GTK_WIDGET (cancel_button));
+	} else {
+		gtk_widget_hide (GTK_WIDGET (cancel_button));
+		gtk_widget_show (GTK_WIDGET (done_button));
+	}
 }
 
 static void
@@ -688,22 +704,24 @@ set_default_for_item (GnomeDialog *program_chooser, NautilusFile *file, gpointer
 }
 
 static void
-launch_mime_capplet (GtkWidget *button, gpointer callback_data)
+launch_mime_capplet (GtkWidget *button, gpointer ignored)
+{
+	g_assert (GTK_IS_WIDGET (button));
+
+	nautilus_launch_application ("nautilus-mime-type-capplet", NULL);
+}
+
+static void
+launch_mime_capplet_and_close_dialog (GtkWidget *button, gpointer callback_data)
 {
 	g_assert (GTK_IS_WIDGET (button));
 	g_assert (GNOME_IS_DIALOG (callback_data));
 
+	launch_mime_capplet (button, callback_data);
 
-	nautilus_launch_application ("nautilus-mime-type-capplet", NULL);
-
-	/* Don't leave a pair of nested modal dialogs in the wake of switching
-	 * user's attention to the capplet; close them up. Can't close the
-	 * parent one until the child one has exited from its run loop, because
-	 * of the way gnome dialogs use their event loops. So set a flag here
-	 * that the parent dialog will check when the child dialog exits.
-	 */
-	quit_program_chooser = TRUE;
-	
+	/* Don't leave a nested modal dialogs in the wake of switching
+	 * user's attention to the capplet.
+	 */	
 	gnome_dialog_close (GNOME_DIALOG (callback_data));
 }
 
@@ -715,8 +733,6 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	GtkCList *clist;
 	GtkWidget *dialog;
 	GtkWidget *radio_buttons_frame, *framed_vbox;
-	GtkWidget *capplet_button_frame, *framed_hbox;
-	GtkWidget *capplet_button, *capption;
 	GtkRadioButton *type_radio_button, *type_default_radio_button, *item_radio_button, *item_default_radio_button, *none_radio_button;
 	GtkRadioButton *old_active_button;
 	char *radio_button_text;
@@ -818,32 +834,6 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	}
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (old_active_button), TRUE);
 
-	/* Add button to launch mime type editing capplet. */
-	  
-	capplet_button_frame = gtk_frame_new (_("File Types and Programs"));
-	gtk_widget_show (capplet_button_frame);
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), capplet_button_frame, FALSE, FALSE, 0);
-
-  	framed_hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-  	gtk_widget_show (framed_hbox);
-  	gtk_container_add (GTK_CONTAINER (capplet_button_frame), framed_hbox);
-  	gtk_container_set_border_width (GTK_CONTAINER (framed_hbox), GNOME_PAD);
-
-	capplet_button = gtk_button_new_with_label (_("Go There"));	 
-	nautilus_gtk_button_set_padding (GTK_BUTTON (capplet_button), GNOME_PAD_SMALL);
-	gtk_signal_connect (GTK_OBJECT (capplet_button),
-			    "clicked",
-			    launch_mime_capplet,
-			    dialog);
-	gtk_widget_show (capplet_button);
-	gtk_box_pack_end (GTK_BOX (framed_hbox), capplet_button, FALSE, FALSE, 0);
-
-	capption = gtk_label_new (_("You can configure which programs are offered "
-				    "for which file types in the Gnome Control Center."));
-	gtk_widget_show (capption);
-	gtk_label_set_line_wrap (GTK_LABEL (capption), TRUE);
-	gtk_box_pack_start (GTK_BOX (framed_hbox), capption, FALSE, FALSE, 0);				    
-
 	/* Buttons close this dialog. */
   	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
 
@@ -901,15 +891,13 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 				/* Nothing to add anywhere for this case. */
 			}
 
+			/* Change made in sub-dialog; now the main dialog can't be "cancel"ed, 
+			 * it can only be closed with no further changes.
+			 */
+			nautilus_program_chooser_set_is_cancellable (program_chooser, FALSE);
+
+			/* Update displayed text about selected program. */
 			update_selected_item_details (program_chooser);
-		}
-	} else {
-		/* Sub-dialog closed somehow other than OK button. See if the sub-dialog
-		 * set the global to tell this dialog to close also.
-		 */
-		if (quit_program_chooser) {
-			gnome_dialog_close (program_chooser);
-			quit_program_chooser = FALSE;
 		}
 	}
 
@@ -917,7 +905,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 }
 
 GnomeDialog *
-nautilus_program_chooser_new (GnomeVFSMimeActionType type,
+nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 			      NautilusFile *file)
 {
 	GtkWidget *window;
@@ -929,6 +917,8 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType type,
 	GtkWidget *status_label;
 	GtkWidget *change_button_holder;
 	GtkWidget *change_button;
+	GtkWidget *capplet_button_frame, *capplet_hbox;
+	GtkWidget *capplet_button, *capption;
 	char *file_name, *prompt;
 	const char *title;
 
@@ -936,7 +926,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType type,
 
 	file_name = nautilus_file_get_name (file);
 
-	switch (type) {
+	switch (action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
 		title = _("Nautilus: Open with Other");
 		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\"."), file_name);
@@ -953,14 +943,18 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType type,
 	window = gnome_dialog_new (title, 
 				   _("Choose"), 
 				   GNOME_STOCK_BUTTON_CANCEL, 
+	   			   _("Done"),
 				   NULL);
+
+	nautilus_program_chooser_set_is_cancellable (GNOME_DIALOG (window), TRUE);
+
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 	gtk_window_set_default_size (GTK_WINDOW (window), 
 				     NO_DEFAULT_MAGIC_NUMBER,
 				     PROGRAM_CHOOSER_DEFAULT_HEIGHT);
 
-	gtk_object_set_data (GTK_OBJECT (window), "type", GINT_TO_POINTER (type));
+	gtk_object_set_data (GTK_OBJECT (window), "type", GINT_TO_POINTER (action_type));
 
 	dialog_vbox = GNOME_DIALOG (window)->vbox;
 
@@ -981,7 +975,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType type,
 	  
 	clist = gtk_clist_new (PROGRAM_LIST_COLUMN_COUNT);
 	gtk_clist_set_selection_mode (GTK_CLIST (clist), GTK_SELECTION_BROWSE);
-	populate_program_list (type, file, GTK_CLIST (clist));
+	populate_program_list (action_type, file, GTK_CLIST (clist));
 	gtk_widget_show (clist);
 	gtk_container_add (GTK_CONTAINER (list_scroller), clist);
 	gtk_clist_column_titles_hide (GTK_CLIST (clist));
@@ -1021,6 +1015,31 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType type,
   			    "clicked",
   			    run_program_configurator_callback,
   			    window);
+
+	/* Framed area with button to launch mime type editing capplet. */
+	capplet_button_frame = gtk_frame_new (_("File Types and Programs"));
+	gtk_widget_show (capplet_button_frame);
+  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (window)->vbox), capplet_button_frame, FALSE, FALSE, 0);
+
+  	capplet_hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+  	gtk_widget_show (capplet_hbox);
+  	gtk_container_add (GTK_CONTAINER (capplet_button_frame), capplet_hbox);
+  	gtk_container_set_border_width (GTK_CONTAINER (capplet_hbox), GNOME_PAD);
+
+	capplet_button = gtk_button_new_with_label (_("Go There"));	 
+	nautilus_gtk_button_set_padding (GTK_BUTTON (capplet_button), GNOME_PAD_SMALL);
+	gtk_signal_connect (GTK_OBJECT (capplet_button),
+			    "clicked",
+			    launch_mime_capplet_and_close_dialog,
+			    window);
+	gtk_widget_show (capplet_button);
+	gtk_box_pack_end (GTK_BOX (capplet_hbox), capplet_button, FALSE, FALSE, 0);
+
+	capption = gtk_label_new (_("You can configure which programs are offered "
+				    "for which file types in the Gnome Control Center."));
+	gtk_widget_show (capption);
+	gtk_label_set_line_wrap (GTK_LABEL (capption), TRUE);
+	gtk_box_pack_start (GTK_BOX (capplet_hbox), capption, FALSE, FALSE, 0);				    
 
 	/* Buttons close this dialog. */
   	gnome_dialog_set_close (GNOME_DIALOG (window), TRUE);
@@ -1109,4 +1128,47 @@ nautilus_program_chooser_get_component (GnomeDialog *program_chooser)
 	clist = GTK_CLIST (gtk_object_get_data (GTK_OBJECT (program_chooser), "list"));
 	return (NautilusViewIdentifier *)gtk_clist_get_row_data 
 		(clist, nautilus_gtk_clist_get_first_selected_row (clist));
+}
+
+void
+nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_type,
+						  NautilusFile *file, 
+						  GtkWindow *parent_window)
+{
+	char *prompt;
+	char *unavailable_message;
+	char *file_name;
+	GtkWidget *dialog;
+
+	file_name = nautilus_file_get_name (file);
+
+	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
+		unavailable_message = g_strdup_printf ("No viewers are available for %s.", file_name);		
+	} else {
+		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
+		unavailable_message = g_strdup_printf ("No applications are available for %s.", file_name);		
+	}
+
+	/* Note: This might be misleading in the components case, since the
+	 * user can't add components to the complete list even from the capplet.
+	 * (They can add applications though.)
+	 */
+	prompt = g_strdup_printf ("%s\n\n"
+				  "You can configure which programs are offered "
+				  "for which file types with the \"File Types and "
+				  "Programs\" part of the Gnome Control Center. Do "
+				  "you want to go there now?", unavailable_message);
+	if (parent_window) {
+		dialog = nautilus_yes_no_dialog_parented 
+			(prompt, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
+	} else {
+		dialog = nautilus_yes_no_dialog 
+			(prompt, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL);
+	}
+
+	gnome_dialog_button_connect (GNOME_DIALOG (dialog), GNOME_OK, launch_mime_capplet, NULL);
+
+	g_free (unavailable_message);
+	g_free (file_name);
+	g_free (prompt);
 }

@@ -25,10 +25,32 @@
 
 #include <config.h>
 #include "nautilus-program-choosing.h"
+
+#include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
 #include "nautilus-string.h"
 
 #include <libgnomeui/gnome-uidefs.h>
+
+static gboolean
+any_programs_available_for_file (GnomeVFSMimeActionType action_type, NautilusFile *file)
+{
+	gboolean result;
+	char *uri;
+	
+	uri = nautilus_file_get_uri (file);
+
+	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
+		result = nautilus_mime_has_any_components_for_uri (uri);
+	} else {
+		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
+		result = nautilus_mime_has_any_applications_for_uri (uri);
+	}
+
+	g_free (uri);
+
+	return result;
+}
 
 /**
  * set_up_program_chooser:
@@ -85,21 +107,33 @@ nautilus_choose_component_for_file (NautilusFile *file,
 {
 	NautilusViewIdentifier *identifier;
 	GnomeDialog *dialog;
+	gboolean any_choices;
+	GnomeVFSMimeActionType action_type;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (callback != NULL);
 
+	action_type = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
+
 	/* The API uses a callback so we can do this non-modally in the future,
 	 * but for now we just use a modal dialog.
 	 */
-	dialog = set_up_program_chooser 
-		(file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT, parent_window);
 
-	if (gnome_dialog_run (dialog) == GNOME_OK) {
-		identifier = nautilus_program_chooser_get_component (dialog);;
+	any_choices = any_programs_available_for_file (action_type, file);
+
+	identifier = NULL;
+
+	if (any_choices) {
+		dialog = set_up_program_chooser 
+			(file, action_type, parent_window);
+
+		if (gnome_dialog_run (dialog) == GNOME_OK) {
+			identifier = nautilus_program_chooser_get_component (dialog);;
+		}
 	} else {
-		identifier = NULL;
+		nautilus_program_chooser_show_no_choices_message (action_type, file, parent_window);
 	}
+	 
 
 	/* Call callback even if identifier is NULL, so caller can
 	 * free callback_data if necessary and present some cancel
@@ -107,10 +141,12 @@ nautilus_choose_component_for_file (NautilusFile *file,
 	 */
 	(* callback) (identifier, callback_data);
 
-	/* Destroy only after callback, since view identifier will
-	 * be destroyed too.
-	 */
-	gtk_widget_destroy (GTK_WIDGET (dialog));
+	if (any_choices) {
+		/* Destroy only after callback, since view identifier will
+		 * be destroyed too.
+		 */
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+	}
 }				    
 
 /**
@@ -132,21 +168,31 @@ nautilus_choose_application_for_file (NautilusFile *file,
 {
 	GnomeDialog *dialog;
 	GnomeVFSMimeApplication *application;
+	gboolean any_choices;
+	GnomeVFSMimeActionType action_type;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (callback != NULL);
 
+	action_type = GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
+
 	/* The API uses a callback so we can do this non-modally in the future,
 	 * but for now we just use a modal dialog.
 	 */
-	dialog = set_up_program_chooser 
-		(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION, parent_window);
+	any_choices = any_programs_available_for_file (action_type, file);
 
-	if (gnome_dialog_run (dialog) == GNOME_OK) {
-		application = nautilus_program_chooser_get_application (dialog);
+	application = NULL;
+
+	if (any_choices) {
+		dialog = set_up_program_chooser 
+			(file, action_type, parent_window);
+
+		if (gnome_dialog_run (dialog) == GNOME_OK) {
+			application = nautilus_program_chooser_get_application (dialog);
+		}
 	} else {
-		application = NULL;
-	}
+		nautilus_program_chooser_show_no_choices_message (action_type, file, parent_window);
+	}	 
 
 	/* Call callback even if identifier is NULL, so caller can
 	 * free callback_data if necessary and present some cancel
@@ -154,10 +200,12 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	 */
 	(* callback) (application, callback_data);
 
-	/* Destroy only after callback, since application struct will
-	 * be destroyed too.
-	 */
-	gtk_widget_destroy (GTK_WIDGET (dialog));
+	if (any_choices) {
+		/* Destroy only after callback, since application struct will
+		 * be destroyed too.
+		 */
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+	}
 }				    
 
 /**
