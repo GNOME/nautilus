@@ -25,15 +25,18 @@
 #include <config.h>
 #include "nautilus-stock-dialogs.h"
 
+#include "nautilus-gnome-extensions.h"
+#include "nautilus-string.h"
 #include <gtk/gtkbox.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include "nautilus-string.h"
-#include "nautilus-gnome-extensions.h"
+
+#define TIMED_WAIT_DURATION 5000
 
 typedef struct {
 	NautilusCancelCallback cancel_callback;
@@ -44,17 +47,22 @@ typedef struct {
 	char *wait_message;
 	GtkWindow *parent_window;
 
+	/* Timer to determine when we need to create the window. */
+	guint timeout_handler_id;
+
 	/* Window, once it's created. */
-} NautilusTimedWait;
+	GnomeDialog *dialog;
+} TimedWait;
 
 static GHashTable *timed_wait_hash_table;
 
-static void find_message_label_callback (GtkWidget *widget, gpointer callback_data);
+static void find_message_label_callback (GtkWidget *widget,
+					 gpointer   callback_data);
 
 static guint
 timed_wait_hash (gconstpointer value)
 {
-	const NautilusTimedWait *wait;
+	const TimedWait *wait;
 
 	wait = value;
 
@@ -65,13 +73,98 @@ timed_wait_hash (gconstpointer value)
 static gboolean
 timed_wait_hash_equal (gconstpointer value1, gconstpointer value2)
 {
-	const NautilusTimedWait *wait1, *wait2;
+	const TimedWait *wait1, *wait2;
 
 	wait1 = value1;
 	wait2 = value2;
 
 	return wait1->cancel_callback == wait2->cancel_callback
 		&& wait1->callback_data == wait2->callback_data;
+}
+
+static void
+add_label_to_dialog (GnomeDialog *dialog, const char *message)
+{
+	GtkLabel *message_widget;
+
+	if (message == NULL) {
+		return;
+	}
+	
+	message_widget = GTK_LABEL (gtk_label_new (message));
+	gtk_label_set_line_wrap (message_widget, TRUE);
+	gtk_label_set_justify (message_widget,
+			       GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+			    GTK_WIDGET (message_widget),
+			    TRUE, TRUE, GNOME_PAD);
+}
+
+static void
+timed_wait_free (TimedWait *wait)
+{
+	g_hash_table_remove (timed_wait_hash_table, wait);
+
+	g_free (wait->window_title);
+	g_free (wait->wait_message);
+	if (wait->parent_window != NULL) {
+		gtk_widget_unref (GTK_WIDGET (wait->parent_window));
+	}
+	if (wait->timeout_handler_id != 0) {
+		gtk_timeout_remove (wait->timeout_handler_id);
+	}
+	if (wait->dialog != NULL) {
+		gtk_object_destroy (GTK_OBJECT (wait->dialog));
+		gtk_object_unref (GTK_OBJECT (wait->dialog));
+	}
+	
+	/* And the wait object itself. */
+	g_free (wait);
+}
+
+static void
+timed_wait_cancel_callback (GtkObject *object, gpointer callback_data)
+{
+	TimedWait *wait;
+
+	wait = callback_data;
+
+	g_assert (GNOME_DIALOG (object) == wait->dialog);
+
+	(* wait->cancel_callback) (wait->callback_data);
+	timed_wait_free (wait);
+}
+
+static gboolean
+timed_wait_callback (gpointer callback_data)
+{
+	TimedWait *wait;
+	GnomeDialog *dialog;
+
+	wait = callback_data;
+
+	/* Put up the timed wait window. */
+	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title,
+						 GNOME_STOCK_BUTTON_CANCEL,
+						 NULL));
+	add_label_to_dialog (dialog, wait->wait_message);
+	gnome_dialog_set_close (dialog, TRUE);
+	gtk_widget_show_all (GTK_WIDGET (dialog));
+
+	/* FIXME: Could parent here, but it's complicated because we
+	 * don't want this window to go away just because the parent
+	 * would go away first.
+	 */
+
+	/* Make the dialog cancel the timed wait when it goes away.
+	 * Connect to "destroy" instead of "clicked" since we want
+	 * to be called no matter how the dialog goes away.
+	 */
+	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+			    timed_wait_cancel_callback, wait);
+
+	wait->timeout_handler_id = 0;
+	return FALSE;
 }
 
 void
@@ -81,7 +174,7 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 			   const char *wait_message,
 			   GtkWindow *parent_window)
 {
-	NautilusTimedWait *timed_wait;
+	TimedWait *wait;
 	
 	g_return_if_fail (cancel_callback != NULL);
 	g_return_if_fail (callback_data != NULL);
@@ -90,55 +183,47 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 	g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));
 
 	/* Create the timed wait record. */
-	timed_wait = g_new (NautilusTimedWait, 1);
-	timed_wait->window_title = g_strdup (window_title);
-	timed_wait->wait_message = g_strdup (wait_message);
-	timed_wait->cancel_callback = cancel_callback;
-	timed_wait->callback_data = callback_data;
-	timed_wait->parent_window = parent_window;
+	wait = g_new (TimedWait, 1);
+	wait->window_title = g_strdup (window_title);
+	wait->wait_message = g_strdup (wait_message);
+	wait->cancel_callback = cancel_callback;
+	wait->callback_data = callback_data;
+	wait->parent_window = parent_window;
 	if (parent_window != NULL) {
 		gtk_widget_ref (GTK_WIDGET (parent_window));
 	}
 
+	/* Start the timer. */
+	wait->timeout_handler_id = gtk_timeout_add
+		(TIMED_WAIT_DURATION,
+		 timed_wait_callback, wait);
+
+	/* Put in the hash table so we can find it later. */
 	if (timed_wait_hash_table == NULL) {
 		timed_wait_hash_table = g_hash_table_new
 			(timed_wait_hash, timed_wait_hash_equal);
 	}
-	g_assert (g_hash_table_lookup (timed_wait_hash_table, timed_wait) == NULL);
-	g_hash_table_insert (timed_wait_hash_table, timed_wait, timed_wait);
-}
-
-static void
-nautilus_timed_wait_free (NautilusTimedWait *timed_wait)
-{
-	g_free (timed_wait->window_title);
-	g_free (timed_wait->wait_message);
-	if (timed_wait->parent_window != NULL) {
-		gtk_widget_unref (GTK_WIDGET (timed_wait->parent_window));
-	}
-	
-	/* And the wait object itself. */
-	g_free (timed_wait);
+	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == NULL);
+	g_hash_table_insert (timed_wait_hash_table, wait, wait);
 }
 
 void
 nautilus_timed_wait_stop (NautilusCancelCallback cancel_callback,
 			  gpointer callback_data)
 {
-	NautilusTimedWait key;
-	NautilusTimedWait *timed_wait;
+	TimedWait key;
+	TimedWait *wait;
 
 	g_return_if_fail (cancel_callback != NULL);
 	g_return_if_fail (callback_data != NULL);
 	
 	key.cancel_callback = cancel_callback;
 	key.callback_data = callback_data;
-	timed_wait = g_hash_table_lookup (timed_wait_hash_table, &key);
+	wait = g_hash_table_lookup (timed_wait_hash_table, &key);
 
-	g_return_if_fail (timed_wait != NULL);
+	g_return_if_fail (wait != NULL);
 
-	g_hash_table_remove (timed_wait_hash_table, timed_wait);
-	nautilus_timed_wait_free (timed_wait);
+	timed_wait_free (wait);
 }
 
 static const char **
@@ -169,7 +254,6 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 	const char **button_titles;
         GtkWidget *dialog;
         GtkWidget *top_widget;
-        GtkWidget *prompt_widget;
 	
 	/* Create the dialog. */
 	va_start (button_title_args, title);
@@ -180,7 +264,6 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 	
 	/* Allow close. */
         gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-        gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
 	
 	/* Parent it if asked to. */
         if (parent != NULL) {
@@ -191,15 +274,7 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 	}
 	
 	/* Title it if asked to. */
-	if (text != NULL) {
-		prompt_widget = gtk_label_new (text);
-		gtk_label_set_line_wrap (GTK_LABEL (prompt_widget), TRUE);
-		gtk_label_set_justify (GTK_LABEL (prompt_widget),
-				       GTK_JUSTIFY_LEFT);
-		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-				    prompt_widget,
-				    TRUE, TRUE, GNOME_PAD);
-	}
+	add_label_to_dialog (GNOME_DIALOG (dialog), text);
 	
 	/* Run it. */
         gtk_widget_show_all (dialog);
@@ -236,7 +311,6 @@ find_message_label_callback (GtkWidget *widget, gpointer callback_data)
 	find_message_label (widget, callback_data);
 }
 
-/* Shamelessly stolen from gnome-dialog-utils.c: */
 static GnomeDialog *
 show_message_box (const char *message,
 		  const char *type,
