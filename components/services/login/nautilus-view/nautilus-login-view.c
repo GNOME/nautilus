@@ -50,14 +50,15 @@ struct _NautilusLoginViewDetails {
 	GtkWidget	*form_title;
 	GtkWidget	*account_name;
 	GtkWidget	*account_password;
-	GtkWidget	*confirm_password;
 	GtkWidget	*login_button;
 	GtkWidget	*maintenance_button;
 	GtkWidget	*feedback_text;
 };
 
-#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:0/6666/6666"
-#define SERVICE_DOMAIN_NAME			"eazel24.eazel.com"
+#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
+#define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
+#define SERVICE_SUMMARY_LOCATION                "eazel:summary"
+#define SERVICE_HELP_LOCATION                   "http://www.eazel.com"
 
 static void	nautilus_login_view_initialize_class	(NautilusLoginViewClass	*klass);
 static void	nautilus_login_view_initialize		(NautilusLoginView	*view);
@@ -76,6 +77,7 @@ static void	maintenance_button_cb			(GtkWidget		*button,
 							 NautilusLoginView	*view);
 static void	generate_form_title			(NautilusLoginView	*view,
 							 const char		*title_text);
+static void	go_to_uri				(NautilusLoginView	*view, char	*uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLoginView, nautilus_login_view, GTK_TYPE_EVENT_BOX)
 
@@ -88,6 +90,7 @@ generate_login_form (NautilusLoginView	*view) {
 	GtkWidget	*login_label;
 	GtkWidget	*maintenance_button;
 	GtkWidget	*maintenance_label;
+	GdkFont		*font;
 
 	/* allocate a box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -95,7 +98,7 @@ generate_login_form (NautilusLoginView	*view) {
 	gtk_widget_show (view->details->form);
 
 	/* setup the title */
-	generate_form_title (view, "Eazel Services Login");
+	generate_form_title (view, "Please Sign in! ");
 
 	/* initialize the parent form */
 	temp_box = gtk_hbox_new (FALSE, 4);
@@ -103,24 +106,33 @@ generate_login_form (NautilusLoginView	*view) {
 	gtk_widget_show (temp_box);
 
 	/* allocate a table to hold the login form */
-	table = GTK_TABLE (gtk_table_new (2, 2, FALSE));
+	table = GTK_TABLE (gtk_table_new (4, 3, TRUE));
 
 	/* username */
-	temp_widget = gtk_label_new ("User Name: ");
-	gtk_misc_set_alignment (GTK_MISC (temp_widget), 1.0, 0.5);
-	gtk_table_attach (table, temp_widget, 0,1, 0,1, GTK_FILL, GTK_FILL, 2,2);
+	temp_widget = gtk_label_new ("Nickname: ");
+
+	font = nautilus_font_factory_get_font_from_preferences (16);
+	nautilus_gtk_widget_set_font (temp_widget, font);
+	gdk_font_unref (font);
+
+	gtk_table_attach (table, temp_widget, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
+
 	view->details->account_name = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4,4);
+	gtk_table_attach (table, view->details->account_name, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
 	gtk_widget_show (view->details->account_name);
 
 	/* password */
 	temp_widget = gtk_label_new ("Password: ");
-	gtk_misc_set_alignment (GTK_MISC (temp_widget), 1.0, 0.5);
-	gtk_table_attach (table, temp_widget, 0,1, 1,2, GTK_FILL, GTK_FILL, 2,2);
+
+	font = nautilus_font_factory_get_font_from_preferences (16);
+	nautilus_gtk_widget_set_font (temp_widget, font);
+	gdk_font_unref (font);
+
+	gtk_table_attach (table, temp_widget, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 	view->details->account_password = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_password, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4,4);
+	gtk_table_attach (table, view->details->account_password, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 4, 4);
 	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_password), FALSE);
 	gtk_widget_show (view->details->account_password);
 
@@ -135,11 +147,11 @@ generate_login_form (NautilusLoginView	*view) {
 	/* allocate the command buttons - first the login button */
 
 	view->details->login_button = gtk_button_new ();
-	login_label = gtk_label_new (" Login to Eazel ");
+	login_label = gtk_label_new (" I'm ready to login! ");
 	gtk_widget_show (login_label);
 	gtk_container_add (GTK_CONTAINER (view->details->login_button), login_label);
 
-	temp_box = gtk_hbox_new (FALSE, 0);
+	temp_box = gtk_hbox_new (TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->login_button, FALSE, FALSE, 21);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->login_button),
@@ -147,25 +159,26 @@ generate_login_form (NautilusLoginView	*view) {
 			    GTK_SIGNAL_FUNC (login_button_cb), view);
 	gtk_widget_set_sensitive (view->details->login_button, FALSE);
 	gtk_widget_show (view->details->login_button);
+	gtk_widget_show (temp_box);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 
         /* now allocate the account maintenance button */
 
         maintenance_button = gtk_button_new ();
-        maintenance_label = gtk_label_new (" Account Maintenance ");
+        maintenance_label = gtk_label_new ("  I need some help!  ");
         gtk_widget_show (maintenance_label);
         gtk_container_add (GTK_CONTAINER (maintenance_button), maintenance_label);
+	temp_box = gtk_hbox_new (TRUE, 0);
         gtk_box_pack_start (GTK_BOX (temp_box), maintenance_button, FALSE, FALSE, 21);
         gtk_signal_connect (GTK_OBJECT (maintenance_button), "clicked",
 			    GTK_SIGNAL_FUNC (maintenance_button_cb), view);
         gtk_widget_show (maintenance_button);
-
-	/* show the buttons */
 	gtk_widget_show (temp_box);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 21);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 
         /* add a label for error messages, but don't show it until there's an error */
         view->details->feedback_text = gtk_label_new ("");
-        gtk_box_pack_start (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
+        gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
 }
 
 /* callback to enable/disable the login button when something is typed in the field */
@@ -205,7 +218,7 @@ login_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
 	}
 
 	if (registered_ok) {
-		show_feedback (view, "eazel:summary");
+		go_to_uri (view, SERVICE_SUMMARY_LOCATION);
 	}
 }
 
@@ -213,7 +226,7 @@ login_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
 static void
 maintenance_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
 
-	show_feedback (view, "http://www.eazel.com");
+	go_to_uri (view, SERVICE_HELP_LOCATION);
 }
 
 /* utility routine to show an error message */
@@ -223,6 +236,16 @@ show_feedback (NautilusLoginView	*view, char	*error_message) {
         gtk_label_set_text (GTK_LABEL (view->details->feedback_text), error_message);
         gtk_widget_show (view->details->feedback_text);
 }
+
+/* utility routine to go to another uri */
+
+static void
+go_to_uri (NautilusLoginView	*view, char	*uri) {
+
+	nautilus_view_open_location (view->details->nautilus_view, uri);
+
+}
+
 
 static void
 generate_form_title (NautilusLoginView	*view,
@@ -246,11 +269,11 @@ generate_form_title (NautilusLoginView	*view,
 
         view->details->form_title = gtk_label_new (title_text);
 
-        font = nautilus_font_factory_get_font_from_preferences (18);
+        font = nautilus_font_factory_get_font_from_preferences (20);
         nautilus_gtk_widget_set_font (view->details->form_title, font);
         gdk_font_unref (font);
 
-        gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);
+        gtk_box_pack_end (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);
         gtk_widget_show (view->details->form_title);
 }
 
