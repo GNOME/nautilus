@@ -341,7 +341,8 @@ static void
 handle_go_back (NautilusWindow *window, const char *location)
 {
         guint i;
-        GList *link;        
+        GList *link;
+        NautilusBookmark *bookmark;
 
         /* Going back. Move items from the back list to the forward list. */
         g_assert (g_list_length (window->back_list) > window->location_change_distance);
@@ -361,10 +362,9 @@ handle_go_back (NautilusWindow *window, const char *location)
                                 
         /* Move extra links from Back to Forward list */
         for (i = 0; i < window->location_change_distance; ++i) {
-                link = window->back_list;
-                window->back_list = g_list_remove_link (window->back_list, link);
-                g_list_free_1 (link);
-                window->forward_list = g_list_prepend (window->forward_list, link->data);
+        	bookmark = NAUTILUS_BOOKMARK (window->back_list->data);
+                window->back_list = g_list_remove (window->back_list, bookmark);
+                window->forward_list = g_list_prepend (window->forward_list, bookmark);
         }
         
         /* One bookmark falls out of back/forward lists and becomes viewed location */
@@ -379,6 +379,7 @@ handle_go_forward (NautilusWindow *window, const char *location)
 {
         guint i;
         GList *link;
+        NautilusBookmark *bookmark;
 
         /* Going forward. Move items from the forward list to the back list. */
         g_assert (g_list_length (window->forward_list) > window->location_change_distance);
@@ -398,10 +399,9 @@ handle_go_forward (NautilusWindow *window, const char *location)
         
         /* Move extra links from Forward to Back list */
         for (i = 0; i < window->location_change_distance; ++i) {
-                link = window->forward_list;
-                window->forward_list = g_list_remove_link (window->forward_list, link);
-                window->back_list = g_list_prepend (window->back_list, link->data);
-                g_list_free_1 (link);
+        	bookmark = NAUTILUS_BOOKMARK (window->forward_list->data);
+                window->forward_list = g_list_remove (window->forward_list, bookmark);
+                window->back_list = g_list_prepend (window->back_list, bookmark);
         }
         
         /* One bookmark falls out of back/forward lists and becomes viewed location */

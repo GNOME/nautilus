@@ -1,5 +1,15 @@
 2000-10-03  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3422 (Forward menu crashes after choosing from
+	Back menu (and vice-versa))
+
+	* src/nautilus-window-manage-views.c: 
+	(handle_go_back), (handle_go_forward): Don't free the
+	link whose data you're about to move to another list.
+	This got broken in a recent leak-fixing pass.
+
+2000-10-03  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 3420: "Show Sidebar" can leave sidebar at zero width
 
 	* libnautilus-extensions/nautilus-horizontal-splitter.h:
