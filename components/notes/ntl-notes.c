@@ -33,11 +33,14 @@
 #include <libgnorba/gnorba.h>
 #include <limits.h>
 #include <ctype.h>
+#include <libnautilus/nautilus-background.h>
+
+#define NOTES_DEFAULT_BACKGROUND_COLOR  "rgb:FFFF/FFFF/BBBB"
+
 
 typedef struct {
   NautilusViewFrame *view;
 
-  GtkWidget *note_label;
   GtkWidget *note_text_field;
   gchar* current_uri;
   
@@ -47,9 +50,6 @@ static int notes_object_count = 0;
 
 static void notes_load_metainfo (NotesView *hview)
 {
-  GnomeVFSURI *vfs_uri;
-  char *file_name;
-  char temp_string[PATH_MAX + 16];  
   NautilusFile *file_object;
 
   gtk_editable_delete_text(GTK_EDITABLE(hview->note_text_field), 0, -1);   
@@ -69,14 +69,6 @@ static void notes_load_metainfo (NotesView *hview)
 	}
 
       /* set up the label */
-
-      vfs_uri = gnome_vfs_uri_new (hview->current_uri);
-      file_name = gnome_vfs_uri_extract_short_name(vfs_uri);
-      gnome_vfs_uri_unref (vfs_uri);
-      
-      g_snprintf(temp_string, sizeof(temp_string), "Notes for %s", file_name);
-      gtk_label_set_text(GTK_LABEL(hview->note_label), temp_string);
-      g_free(file_name); 
 
       nautilus_file_unref (file_object);
     }  
@@ -131,7 +123,8 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
   GtkWidget *vbox;
   NotesView *hview;
- 
+  NautilusBackground *background;
+
   g_return_val_if_fail (!strcmp (goad_id, "ntl_notes_view"), NULL);
 
   hview = g_new0 (NotesView, 1);
@@ -141,18 +134,16 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   
   /* allocate a vbox to hold all of the UI elements */
   
-  vbox = gtk_vbox_new(FALSE, GNOME_PAD);
-
-  /* create the label */
-  
-  hview->note_label = gtk_label_new("Notes for ...");
-  gtk_box_pack_start (GTK_BOX(vbox), hview->note_label, 0, 0, 0);
+  vbox = gtk_vbox_new(FALSE, 0);
 
   /* create the text container */
   
   hview->note_text_field = gtk_text_new(NULL, NULL);
   gtk_text_set_editable(GTK_TEXT(hview->note_text_field), TRUE);
-  gtk_box_pack_start (GTK_BOX(vbox), hview->note_text_field, 0, 0, 0);
+  gtk_box_pack_start (GTK_BOX(vbox), hview->note_text_field, TRUE, TRUE, 0);
+  background = nautilus_get_widget_background (GTK_WIDGET (hview->note_text_field));
+  nautilus_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
+
 
   gtk_widget_show_all (vbox);
   
