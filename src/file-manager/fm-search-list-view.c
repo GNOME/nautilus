@@ -123,7 +123,9 @@ load_error_callback (FMDirectoryView *nautilus_view,
 	GnomeDialog *load_error_dialog;
 	char *generic_error_string;
 	
-	if (result == GNOME_VFS_ERROR_SERVICE_OBSOLETE) {
+
+	switch (result) {
+	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
 		/* FIXME: Shoudl be two messages, one for each of whether
 		   "slow complete search" turned on or not */
 		load_error_dialog = nautilus_yes_no_dialog (_("The search you have selected "
@@ -140,9 +142,19 @@ load_error_callback (FMDirectoryView *nautilus_view,
 				    "clicked",
 				    nautilus_indexing_info_request_reindex,
 				    NULL);
-		
-	}
-	else {
+		break;
+	case GNOME_VFS_ERROR_TOO_BIG:
+		generic_error_string = g_strdup_printf (_("Every indexed file on your computer "
+							  "matches the criteria you selected. "
+							  "You can check the spelling on your selections "
+							  "or add more criteria to narrow your results."),
+							NULL);
+		load_error_dialog = nautilus_error_dialog (generic_error_string,
+							   "Error during directory load",
+							   NULL);
+		break;
+
+	default:
 		generic_error_string = g_strdup_printf (_("An error occurred while loading "
 							  "this search's contents: "
 							  "%s"),

@@ -1,3 +1,15 @@
+2000-12-05  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/file-manager/fm-search-list-view.c: (load_error_callback):
+	Added an error callback for search uris that produce error
+	GNOME_VFS_ERROR_TOO_BIG, which happens when a search matches
+	every criterion in the database.
+	* src/nautilus-search-bar-criterion.c: (get_owner_location_for):
+	Fixed an "is not" in a search uri that should have been "is_not"
+	so that searches did not produce an error.
+
 2000-12-05  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:
@@ -40,7 +52,7 @@
 	distinct errors.
 	Added a specific case for a move from a directory that is not writable.
 
-2000-12-05  John Sullivan  <sullivan@eazel.com>
+2000-12-05  John Sullivan  <sullivan@eazel.com>f
 
 	reviewed by: Darin Adler  <darin@eazel.com>
 

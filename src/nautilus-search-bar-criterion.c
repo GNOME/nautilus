@@ -958,7 +958,7 @@ static char *
 get_owner_location_for (int relation_number,
 			char *owner_text)
 {
-	const char *possible_relations[] = { "is", "is not" };
+	const char *possible_relations[] = { "is", "is_not" };
 	g_assert (relation_number == 0 || relation_number == 1);
 	return g_strdup_printf ("%s %s %s",
 				NAUTILUS_SEARCH_URI_TEXT_OWNER,
