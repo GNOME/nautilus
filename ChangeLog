@@ -1,5 +1,14 @@
 2001-04-06  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_has_annotation), (http_post_simple),
+	(nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	implemented client side of annotation upload; still need to do
+	server side before it can be tested.
+	
+2001-04-06  Andy Hertzfeld  <andy@eazel.com>
+
 	started implementation of optionally sending annotations to the
 	server.  Also, put up error when the user tries to annotate
 	a directory

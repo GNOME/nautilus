@@ -58,6 +58,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 #include <eel/eel-vfs-extensions.h>
+#include <ghttp.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-util.h>
@@ -90,6 +91,7 @@ struct NautilusDigestFileHandle {
 #define READ_CHUNK_SIZE 65536
 #define MAX_DIGESTS_IN_PROGRESS 16
 #define SERVER_URI_TEMPLATE		"http://dellbert.differnet.com/get_notes.cgi?ids=%s"
+#define SERVER_POST_URI			"http://dellbert.differnet.com/set_notes.cgi"
 
 static int open_count = 0;
 static int close_count = 0;
@@ -1010,7 +1012,7 @@ nautilus_annotation_get_annotation_for_display (NautilusFile *file)
 /* return the number of annotations associated with the passed in file.  If we don't know,
  * return 0, but queue a request like above
  */
-int	nautilus_annotation_has_annotation (NautilusFile *file)
+int nautilus_annotation_has_annotation (NautilusFile *file)
 {
 	char *digest_info, *digits, *temp_str;
 	int count;
@@ -1035,11 +1037,95 @@ int	nautilus_annotation_has_annotation (NautilusFile *file)
 	return 0;
 }
 
+/* utility routine for making an HTTP POST request with ghttp */
+static gboolean
+http_post_simple (const char *uri, const char *name, const char *value) {
+        ghttp_request* request;
+	char *ename=NULL, *evalue=NULL, *body=NULL;
+
+	request = ghttp_request_new ();
+	if (!request) {
+		return FALSE;
+	}
+
+	if (ghttp_set_uri (request, (char *)uri) != 0 || 
+			ghttp_set_type (request, ghttp_type_post) != 0) {
+		ghttp_close (request);
+		return FALSE;
+	}
+        ghttp_set_header (request, http_hdr_Connection, "close");
+        ghttp_set_header (request, http_hdr_User_Agent, "Nautilus Annotation");
+        ghttp_set_header (request, http_hdr_Content_Type, "application/x-www-form-urlencoded");
+
+	evalue = gnome_vfs_escape_string (value);
+	if (name) {
+		ename = gnome_vfs_escape_string (name);
+		body = g_strconcat (ename, "=", evalue, NULL);
+		g_free (ename);
+		g_free (evalue);
+	} else {
+		body = evalue;
+	}
+
+	if (ghttp_set_body (request, body, strlen(body)) != 0 || 
+			ghttp_prepare (request) != 0) {
+		ghttp_close (request);
+		return FALSE;
+	}
+
+	if (ghttp_process (request) != ghttp_done) {
+		ghttp_close (request);
+		return FALSE;
+	}
+
+	ghttp_close (request);
+	return TRUE;
+}
+
 /* send the local annotations associated with the passed-in digest to the server */
 static void
-nautilus_annotation_send_to_server (const char *digest)
+nautilus_annotation_send_to_server (const char *digest, 
+				    const char *annotation_type,
+				    const char *annotation_text)
 {
-	g_message ("sending annotations for %s to server", digest);
+	char *user_id;
+	xmlChar *request_text;
+	xmlDocPtr xml_document;
+	xmlNodePtr root_node, annotation_node;
+	int request_size;
+	
+	/* for now, assume the userid is "andy"; soon, fetch it from ammonite */
+	user_id = g_strdup ("andy");
+	
+	/* create an xml document to hold the annotation posting */
+	xml_document = xmlNewDoc ("1.0");
+		
+	/* create the header node, with the digest attribute */
+	root_node = xmlNewDocNode (xml_document, NULL, "annotations", NULL);
+	xmlDocSetRootElement (xml_document, root_node);
+	xmlSetProp (root_node, "digest", digest);
+	xmlSetProp (root_node, "user", user_id);
+	
+	/* set up the annotation payload */
+	annotation_node = xmlNewChild (root_node, NULL, "annotation", NULL);
+	xmlSetProp (annotation_node, "type", annotation_type);	
+	xmlNodeSetContent (annotation_node, annotation_text);
+		
+	/* post the annotation request to the server using ghttp */
+	xmlDocDumpMemory (xml_document, &request_text, &request_size);
+	
+	if (TRUE) {
+		g_message ("sending annotations for %s to server", digest);
+		g_message ("posted request is %s", request_text);
+	} else {
+		http_post_simple (SERVER_POST_URI, "note", request_text);	
+	}
+	
+	/* clean up and we're done */
+	xmlFree (request_text);
+	g_free (user_id);
+	xmlFreeDoc (xml_document);
+		
 }
 
 /* add an annotation to a file */
@@ -1146,7 +1232,7 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	
 	/* if the access is global, send it to the server */
 	if (eel_strcmp (access, "global") == 0) {
-		nautilus_annotation_send_to_server (digest);
+		nautilus_annotation_send_to_server (digest, annotation_type, annotation_text);
 	}
 	
 	/* clean up and we're done */
