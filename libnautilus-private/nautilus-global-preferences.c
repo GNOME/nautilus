@@ -85,6 +85,7 @@ global_preferences_create_dialog (void)
 	GtkWidget		*directory_views_pane;
 	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
+	GtkWidget		*tradeoffs_pane;
 
 	/*
 	 * In the soon to come star trek future, the following widgetry
@@ -108,7 +109,7 @@ global_preferences_create_dialog (void)
 	 */
 	directory_views_pane = nautilus_preferences_box_add_pane (preference_box,
 								 "Directory Views",
-								 "Directory Views Something");
+								 "Directory Views Settings");
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Window Behavior");
 	
@@ -124,12 +125,11 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
-
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Remote Views");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Hidden Files");
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 2,
-							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
+							 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*
@@ -176,7 +176,7 @@ global_preferences_create_dialog (void)
 	 */
 	appearance_pane = nautilus_preferences_box_add_pane (preference_box,
 							     "Appearance",
-							     "Appearance Options");
+							     "Appearance Settings");
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Smoother Graphics");
 	
@@ -184,7 +184,6 @@ global_preferences_create_dialog (void)
 							 0,
 							 NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
 
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Toolbar Icons");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
@@ -197,12 +196,26 @@ global_preferences_create_dialog (void)
 							 2,
 							 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 							 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
+
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Icons");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 3,
 							 NAUTILUS_PREFERENCES_ICON_THEME,
 							 NAUTILUS_PREFERENCE_ITEM_ICON_THEME);
+	/*
+	 * Tradeoffs
+	 */
+	tradeoffs_pane = nautilus_preferences_box_add_pane (preference_box,
+							    "Speed Tradeoffs",
+							    "Speed Tradeoffs Settings");
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), "Remote Views");
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	/* all done */
 	
 	return prefs_dialog;
