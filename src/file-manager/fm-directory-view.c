@@ -1670,6 +1670,13 @@ debuting_uri_data_free (DebutingUriData *data)
 	g_free (data);
 }
  
+gboolean
+remove_debuting_uri (GHashTable *hash_table, const char *key)
+{
+	return eel_g_hash_table_remove_deep_custom
+		(hash_table, key, (GFunc) g_free, NULL, NULL, NULL);
+}
+
 /* This signal handler watch for the arrival of the icons created
  * as the result of a file operation. Once the last one is detected
  * it selects and reveals them all.
@@ -1683,7 +1690,7 @@ debuting_uri_add_file_callback (FMDirectoryView *view,
 
 	uri = nautilus_file_get_uri (new_file);
 
-	if (eel_g_hash_table_remove_deep (data->debuting_uris, uri)) {
+	if (remove_debuting_uri (data->debuting_uris, uri)) {
 		gtk_object_ref (GTK_OBJECT (new_file));
 		data->added_files = g_list_prepend (data->added_files, new_file);
 
@@ -1758,7 +1765,7 @@ copy_move_done_partition_func (gpointer data, gpointer callback_data)
  	gboolean result;
  	
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (data));
-	result = eel_g_hash_table_remove_deep ((GHashTable *) callback_data, uri);
+	result = remove_debuting_uri ((GHashTable *) callback_data, uri);
 	g_free (uri);
 
 	return result;

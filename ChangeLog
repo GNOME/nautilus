@@ -1,3 +1,13 @@
+2001-04-12  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	Get rid of stray % character.
+	
+	* src/file-manager/fm-directory-view.c: (remove_debuting_uri),
+	(debuting_uri_add_file_callback), (copy_move_done_partition_func):
+	Fix bug I introduced with my last check-in, where we try to g_free
+	a GINT_TO_POINTER(TRUE).
+
 2001-04-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

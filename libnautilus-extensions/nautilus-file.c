@@ -2245,6 +2245,7 @@ const char *TODAY_TIME_FORMATS [] = {
 	
 	N_("today"),
 	N_("today"),
+
 	NULL
 };
 
@@ -2263,6 +2264,7 @@ const char *YESTERDAY_TIME_FORMATS [] = {
 	
 	N_("yesterday"),
 	N_("yesterday"),
+
 	NULL
 };
 
@@ -2272,7 +2274,7 @@ const char *CURRENT_WEEK_TIME_FORMATS [] = {
 	 * The width measurement templates correspond to
 	 * the day/month name with the most letters.
 	 */
-	N_("Wednesday, September 00 0000 at %00:00:00 PM"),
+	N_("Wednesday, September 00 0000 at 00:00:00 PM"),
 	N_("%A, %B %-d %Y at %-I:%M:%S %p"),
 
 	N_("Mon, Oct 00 0000 at 00:00:00 PM"),
@@ -2332,7 +2334,6 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 	g_date_free (file_date);
 	g_date_free (today);
 
-
 	/* Format varies depending on how old the date is. This minimizes
 	 * the length (and thus clutter & complication) of typical dates
 	 * while providing sufficient detail for recent dates to make
@@ -2386,7 +2387,7 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 			break;
 		}
 
-		if ((measure_callback) (width_template, measure_context) <= width) {
+		if ((* measure_callback) (width_template, measure_context) <= width) {
 			/* The template fits, this is the format we can fit. */
 			break;
 		}
