@@ -4,6 +4,7 @@ INCLUDES = -I. -I$(srcdir) 				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(includedir)					\
 	$(APPLETS_CFLAGS)				\
+	-DDATADIR=\""$(datadir)"\" 			\
 	$(NULL)
 
 bin_PROGRAMS = nautilus-icon-applet
@@ -14,7 +15,20 @@ nautilus_icon_applet_SOURCES = 	\
 	$(NULL)
 
 nautilus_icon_applet_LDADD =	\
+	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(APPLETS_LIBS) 	\
+	$(NULL)
+
+foo =\
+	$(top_builddir)/libnautilus/libnautilus.la 				\
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(BONOBO_LIBS) 			\
+	$(OAF_LIBS) 			\
+	$(GCONF_LIBS) 			\
+	$(GNOMEUI_LIBS) 		\
+	$(VFS_LIBS) 			\
+	$(XML_LIBS) 			\
 	$(NULL)
 
 EXTRA_DIST = 				\

@@ -20,13 +20,32 @@
 
 #include <config.h>
 #include <applet-widget.h>
-
 #include <gtk/gtkobject.h>
-#include <gtk/gtkbutton.h>
+#include <gtk/gtkeventbox.h>
+#include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-graphic-effects.h>
 
+#define ICON_NAME "nautilus-launch-icon.png"
 
+static GdkPixbuf *icon_pixbuf = NULL;
+static GdkPixbuf *icon_prelight_pixbuf = NULL;
 
+static void
+create_pixbufs ()
+{
+	if (icon_pixbuf == NULL) {
+		char *path;
+		
+		path = g_strdup_printf ("%s/pixmaps/%s", DATADIR, ICON_NAME);
+		
+		icon_pixbuf = gdk_pixbuf_new_from_file (path);
+		g_free (path);
+		
+		g_assert (icon_pixbuf != NULL);
 
+		icon_prelight_pixbuf = nautilus_create_spotlight_pixbuf (icon_pixbuf);
+	}
+}
 
 static void
 applet_change_pixel_size(GtkWidget *widget, int size, gpointer data)
@@ -34,12 +53,38 @@ applet_change_pixel_size(GtkWidget *widget, int size, gpointer data)
 	/* need to change the size of the button here */
 }
 
+static gint
+image_enter_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
+{
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (client_data), TRUE);
+	
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (client_data), icon_prelight_pixbuf);
+
+	return TRUE;
+}
+
+static gint
+image_leave_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
+{
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (client_data), TRUE);
+	
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (client_data), icon_pixbuf);
+
+	return TRUE;
+}
 
 int
 main (int argc, char **argv)
 {
 	GtkWidget *applet;
-	GtkWidget *icon_applet;
+	GtkWidget *icon;
+	GtkWidget *event_box;
 	int size;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
@@ -52,15 +97,29 @@ main (int argc, char **argv)
 	if (applet == NULL)
 		g_error (_("Can't create nautilus-icon-applet!"));
 
-	icon_applet = gtk_button_new_with_label ("nautilus");
-	gtk_object_set_data (GTK_OBJECT (applet), "widget", icon_applet);
-	applet_widget_add (APPLET_WIDGET (applet), icon_applet);
+	create_pixbufs ();
+
+	event_box = gtk_event_box_new ();
+
+	icon = nautilus_image_new ();
+
+	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (image_enter_event), icon);
+	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (image_leave_event), icon);
+
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
+	//nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_prelight_pixbuf);
+
+	gtk_container_add (GTK_CONTAINER (event_box), icon);
+
+	//gtk_object_set_data (GTK_OBJECT (applet), "widget", icon);
+	gtk_object_set_data (GTK_OBJECT (applet), "widget", event_box);
+	//applet_widget_add (APPLET_WIDGET (applet), icon);
+	applet_widget_add (APPLET_WIDGET (applet), event_box);
 
 	size = applet_widget_get_panel_pixel_size(APPLET_WIDGET(applet)) - 2;
 	applet_change_pixel_size (GTK_WIDGET (applet), size, NULL);
 
-	gtk_widget_show (icon_applet);
-	gtk_widget_show (applet);
+	gtk_widget_show_all (applet);
 
 	gtk_signal_connect(GTK_OBJECT(applet),"change_pixel_size",
 			   GTK_SIGNAL_FUNC(applet_change_pixel_size),
