@@ -451,6 +451,11 @@ on_select_row (GtkCList	       *clist,
 	g_assert (GTK_IS_ENTRY (name_field));
 	g_assert (GTK_IS_ENTRY (uri_field));
 
+	/* Workaround for apparent GtkCList bug. See bugzilla.eazel.com 7846. */
+	if (clist->rows <= row) {
+		return;
+	}
+
 	selected = get_selected_bookmark ();
 	name = nautilus_bookmark_get_name (selected);
 	uri = nautilus_bookmark_get_uri (selected);

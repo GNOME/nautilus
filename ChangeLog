@@ -1,5 +1,20 @@
 2001-03-23  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 7846: crash removing only bookmark in Bookmarks window.
+
+	GtkCList is emitting a select_row signal on a non-existent row, 
+	which caused a Nautilus parameter check to fail. Worked around 
+	this in Nautilus. I don't know when this started happening in GTK,
+	but I'm sure it didn't crash here when the bookmarks window
+	was last tested. I've sent mail to gtk-devel-list about the
+	GtkCList issue.
+
+	* src/nautilus-bookmarks-window.c: (on_select_row):
+	Bail out without doing anything if selected row is not
+	a valid row number.
+
+2001-03-23  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
 
 	Make properties window show link target path for
