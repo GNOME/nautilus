@@ -3818,8 +3818,6 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
 		 text[ctree->tree_column] : NULL, spacing, pixmap_closed,
 		 mask_closed, pixmap_opened, mask_opened, is_leaf, expanded);
 
-  nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
-
   /* sorted insertion */
   if (GTK_CLIST_AUTO_SORT (clist))
     {
@@ -3828,13 +3826,13 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
       else
 	sibling = NAUTILUS_CTREE_NODE (clist->row_list);
 
-      while (sibling
-	     && (sibling == node || clist->compare (clist, NAUTILUS_CTREE_ROW (node), NAUTILUS_CTREE_ROW (sibling)) > 0))
+      while (sibling && clist->compare
+	     (clist, NAUTILUS_CTREE_ROW (node), NAUTILUS_CTREE_ROW (sibling)) > 0)
 	sibling = NAUTILUS_CTREE_ROW (sibling)->sibling;
 
-      nautilus_ctree_unlink (ctree, node, TRUE);
-      nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
     }
+
+  nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
 
   if (text && !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist) &&
       nautilus_ctree_is_viewable (ctree, node))
@@ -5680,6 +5678,37 @@ nautilus_ctree_sort_node (NautilusCTree     *ctree,
     {
       clist->focus_row = g_list_position (clist->row_list,(GList *)focus_node);
       clist->undo_anchor = clist->focus_row;
+    }
+
+  gtk_clist_thaw (clist);
+}
+
+void
+nautilus_ctree_sort_single_node (NautilusCTree *ctree,
+				 NautilusCTreeNode *node)
+{
+  NautilusCTreeNode *sibling, *parent;
+  GtkCList *clist;
+
+  clist = GTK_CLIST (ctree);
+
+  gtk_clist_freeze (clist);
+
+  if (GTK_CLIST_AUTO_SORT (clist))
+    {
+      parent = NAUTILUS_CTREE_ROW (node)->parent;
+
+      if (parent)
+	sibling = NAUTILUS_CTREE_ROW (parent)->children;
+      else
+	sibling = NAUTILUS_CTREE_NODE (clist->row_list);
+
+      while (sibling
+	     && (sibling == node || clist->compare (clist, NAUTILUS_CTREE_ROW (node), NAUTILUS_CTREE_ROW (sibling)) > 0))
+	sibling = NAUTILUS_CTREE_ROW (sibling)->sibling;
+
+      nautilus_ctree_unlink (ctree, node, TRUE);
+      nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
     }
 
   gtk_clist_thaw (clist);

@@ -275,6 +275,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 									    &open_mask);
 
 
+			view->details->inserting_node = TRUE;
 			view_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
 								parent_view_node, 
 								NULL,
@@ -283,6 +284,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 								closed_pixmap, closed_mask, open_pixmap, open_mask,
 								! nautilus_file_is_directory (file),
 								FALSE);
+			view->details->inserting_node = FALSE;
+
 			gdk_pixmap_unref (closed_pixmap);
 			gdk_pixmap_unref (open_pixmap);
 			if (closed_mask != NULL) {
@@ -319,6 +322,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 					}
 				}
 			}
+
+			nautilus_ctree_sort_single_node (NAUTILUS_CTREE (view->details->tree), view_node);
 
 			insert_unparented_nodes (view, node);
 		} else {
@@ -819,18 +824,29 @@ ctree_compare_rows (GtkCList      *clist,
 {
 	NautilusTreeView *view;
 	NautilusFile *file1, *file2;
+	gint result;
+
+	/* Default to returning -1 in unknown cases. This magically
+	 * ensures that inserted nodes are initially placed at the
+	 * head of the list, instead of wasting time comparing
+	 * against all files for no reason (makes expanding /dev/
+	 * actually bearable)
+	 */
+	result = -1;
 
 	view = gtk_object_get_data (GTK_OBJECT (clist), "tree_view");
 	g_assert (view != NULL);
 
-	file1 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr1));
-	file2 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr2));
+	if (!view->details->inserting_node) {
+		file1 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr1));
+		file2 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr2));
 
-	if (file1 == NULL || file2 == NULL) {
-		return 0;
+		if (file1 != NULL && file2 != NULL) {
+			result = nautilus_file_compare_for_sort (file1, file2, NAUTILUS_FILE_SORT_BY_NAME);
+		}
 	}
 
-	return nautilus_file_compare_for_sort (file1, file2, NAUTILUS_FILE_SORT_BY_NAME);
+	return result;
 }
 
 static void

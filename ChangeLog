@@ -1,3 +1,30 @@
+2001-02-21  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug I introduced in my last sorting change (sort order
+	was incorrect when nodes are first inserted):
+
+	* components/tree/nautilus-tree-view-private.h: added an
+	`inserting_node' flag field to the view details. This is used
+	to tell the sorting comparison function when the nodes it's
+	trying to sort haven't yet been fully initialized
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_insert_model_node): set the inserting_node
+	flag around the call to nautilus_ctree_insert_node (). After
+	the node is fully initialized, call
+	nautilus_ctree_sort_single_node ()
+
+	(ctree_compare_rows): when `inserting_node' is set, bail out
+	with a nonsense value
+
+	* libnautilus-extensions/nautilus-ctree.h,
+	libnautilus-extensions/nautilus-ctree.c: reverted the change to
+	insert_node
+	(nautilus_ctree_sort_single_node): new function, reorders a
+	given node, but no others
+
 2001-02-21  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
