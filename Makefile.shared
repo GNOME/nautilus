@@ -1,4 +1,4 @@
 NULL =
 
-%.xml.h: $(BONOBO_UI_EXTRACT) %.xml
-	$^ > $@
+%.xml.h: %.xml
+	$(BONOBO_UI_EXTRACT) $^ > $@

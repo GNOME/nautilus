@@ -32,6 +32,7 @@
 #include "nautilus-main.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-window-private.h"
+#include "nautilus-zoom-control.h"
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-i18n.h>
@@ -93,10 +94,9 @@
 
 static void nautilus_window_set_state_info (NautilusWindow *window, ...);
 
-void
-nautilus_window_report_selection_change (NautilusWindow *window,
-                                         GList *selection,
-                                         NautilusViewFrame *view)
+static void
+change_selection (NautilusWindow *window,
+                  GList *selection)
 {
         GList *sorted, *node;
 
@@ -118,62 +118,6 @@ nautilus_window_report_selection_change (NautilusWindow *window,
         for (node = window->sidebar_panels; node != NULL; node = node->next) {
                 nautilus_view_frame_selection_changed
                         (NAUTILUS_VIEW_FRAME (node->data), sorted);
-        }
-}
-
-void
-nautilus_window_report_status (NautilusWindow *window,
-                               const char *status,
-                               NautilusViewFrame *view)
-{
-        nautilus_window_set_status (window, status);
-}
-
-/* Since these can be called while the window is still getting set up,
- * they don't do any work directly.
- */
-void
-nautilus_window_report_load_underway (NautilusWindow *window,
-                                      NautilusViewFrame *view)
-{
-        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
-        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
-        if (view == window->new_content_view
-            || view == window->content_view) {
-               nautilus_window_set_state_info
-                       (window,
-                        (NautilusWindowStateItem) CV_PROGRESS_INITIAL,
-                        (NautilusWindowStateItem) 0);
-        }
-}
-
-void
-nautilus_window_report_load_complete (NautilusWindow *window,
-                                      NautilusViewFrame *view)
-{
-        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
-        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
-        if (view == window->new_content_view
-            || view == window->content_view) {
-               nautilus_window_set_state_info
-                       (window,
-                        (NautilusWindowStateItem) CV_PROGRESS_DONE,
-                        (NautilusWindowStateItem) 0);
-        }
-}
-
-void
-nautilus_window_report_load_failed (NautilusWindow *window,
-                                    NautilusViewFrame *view)
-{
-        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
-        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
-        if (view == window->new_content_view
-            || view == window->content_view) {
-               nautilus_window_set_state_info
-                       (window,
-                        (NautilusWindowStateItem) CV_PROGRESS_ERROR,
-                        (NautilusWindowStateItem) 0);
         }
 }
 
@@ -338,21 +282,7 @@ nautilus_window_set_displayed_location (NautilusWindow *window, const char *uri)
         update_title (window);
 }
 
-void
-nautilus_window_title_changed (NautilusWindow *window,
-                               NautilusViewFrame *view)
-{
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-        g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-        /* Only the content view can change the window title. */
-        if (view == window->content_view || view == window->new_content_view) {
-                update_title (window);
-        }
-}
-
 /* The bulk of this file - location changing */
-
 
 /* Debugging function used to verify that the last_location_bookmark
  * is in the state we expect when we're about to use it to update the
@@ -501,53 +431,53 @@ viewed_file_changed_callback (NautilusWindow *window)
 
 /* Handle the changes for the NautilusWindow itself. */
 static void
-nautilus_window_update_internals (NautilusWindow *window)
+nautilus_window_update_for_new_location (NautilusWindow *window)
 {
         char *new_location;
         
-        if (window->pending_ni != NULL) {
-                new_location = nautilus_navigation_info_get_location (window->pending_ni);
-                
-                /* Maintain history lists. */
-                if (window->location_change_type != NAUTILUS_LOCATION_CHANGE_RELOAD) {
-                        /* Always add new location to history list. */
-                        nautilus_add_to_history_list (window->current_location_bookmark);
-                        
-                        /* Update back and forward list. */
-                        if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_BACK) {
-                                handle_go_back (window, new_location);
-                        } else if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_FORWARD) {
-                                handle_go_forward (window, new_location);
-                        } else {
-                                g_assert (window->location_change_type == NAUTILUS_LOCATION_CHANGE_STANDARD);
-                                handle_go_elsewhere (window, new_location);
-                        }
-                }
-                
-                /* Set the new location. */
-                g_free (window->location);
-                window->location = new_location;
+        g_assert (window->pending_ni != NULL);
 
-                /* Create a NautilusFile for this location, so we can
-                 * check if it goes away.
-                 */
-                nautilus_file_unref (window->details->viewed_file);
-                window->details->viewed_file = nautilus_file_get (window->location);
-                gtk_signal_connect_object_while_alive (GTK_OBJECT (window->details->viewed_file),
-                		    		       "changed", 
-                		    		       viewed_file_changed_callback, 
-                		    		       GTK_OBJECT (window));
+        new_location = nautilus_navigation_info_get_location (window->pending_ni);
+        
+        /* Maintain history lists. */
+        if (window->location_change_type != NAUTILUS_LOCATION_CHANGE_RELOAD) {
+                /* Always add new location to history list. */
+                nautilus_add_to_history_list (window->current_location_bookmark);
                 
-                /* Clear the selection. */
-                nautilus_g_list_free_deep (window->selection);
-                window->selection = NULL;
-                
-                /* Check if we can go up. */
-                update_up_button (window);
-                
-                /* Set up the content view menu for this new location. */
-                nautilus_window_load_content_view_menu (window);
+                /* Update back and forward list. */
+                if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_BACK) {
+                        handle_go_back (window, new_location);
+                } else if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_FORWARD) {
+                        handle_go_forward (window, new_location);
+                } else {
+                        g_assert (window->location_change_type == NAUTILUS_LOCATION_CHANGE_STANDARD);
+                        handle_go_elsewhere (window, new_location);
+                }
         }
+        
+        /* Set the new location. */
+        g_free (window->location);
+        window->location = new_location;
+        
+        /* Create a NautilusFile for this location, so we can
+         * check if it goes away.
+         */
+        nautilus_file_unref (window->details->viewed_file);
+        window->details->viewed_file = nautilus_file_get (window->location);
+        gtk_signal_connect_object_while_alive (GTK_OBJECT (window->details->viewed_file),
+                                               "changed", 
+                                               viewed_file_changed_callback, 
+                                               GTK_OBJECT (window));
+        
+        /* Clear the selection. */
+        nautilus_g_list_free_deep (window->selection);
+        window->selection = NULL;
+        
+        /* Check if we can go up. */
+        update_up_button (window);
+        
+        /* Set up the content view menu for this new location. */
+        nautilus_window_load_content_view_menu (window);
         
         /* Check if the back and forward buttons need enabling or disabling. */
         nautilus_window_allow_back (window, window->back_list != NULL);
@@ -611,7 +541,7 @@ nautilus_window_has_really_changed (NautilusWindow *window)
 
         /* Tell the window we are finished. */
         if (window->pending_ni != NULL) {
-                nautilus_window_update_internals (window);
+                nautilus_window_update_for_new_location (window);
                 nautilus_navigation_info_free (window->pending_ni);
                 if (window->pending_ni == window->cancel_tag) {
                         window->cancel_tag = NULL;
@@ -1083,7 +1013,6 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
         
         while ((item_type = va_arg (args, NautilusWindowStateItem)) != 0) {
                 switch (item_type) {
-                        
                 case NAVINFO_RECEIVED: /* The information needed for a location change to continue has been received */
                         x_message (("NAVINFO_RECEIVED"));
                         window->pending_ni = va_arg(args, NautilusNavigationInfo *);
@@ -1137,9 +1066,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
 
                 case CV_PROGRESS_DONE: /* The content view is done loading */
                         x_message (("CV_PROGRESS_DONE"));
-                        if (!window->cv_progress_initial) {
-                                window->cv_progress_initial = TRUE;
-                        }
+                        window->cv_progress_initial = TRUE;
                         window->cv_progress_done = TRUE;
                         break;
 
@@ -1558,4 +1485,222 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 	}
 
 	g_list_free (identifier_list);
+}
+
+static void
+zoom_level_changed_callback (NautilusViewFrame *view,
+                             NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+                                              nautilus_view_frame_get_zoom_level (view));
+
+	/* We rely on the initial zoom_level_changed signal to inform us that the
+	 * view-frame is showing a new zoomable.
+	 */
+	if (!GTK_WIDGET_VISIBLE (window->zoom_control)) {
+		nautilus_zoom_control_set_min_zoom_level
+			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+			 nautilus_view_frame_get_min_zoom_level (view));
+		nautilus_zoom_control_set_max_zoom_level
+			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+			 nautilus_view_frame_get_max_zoom_level (view));
+		nautilus_zoom_control_set_preferred_zoom_levels
+			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+			 nautilus_view_frame_get_preferred_zoom_levels (view));
+			 
+		gtk_widget_show (window->zoom_control);
+	}
+
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       NAUTILUS_COMMAND_ZOOM_IN,
+				       nautilus_view_frame_get_zoom_level (view)
+                                       < nautilus_view_frame_get_max_zoom_level (view));
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       NAUTILUS_COMMAND_ZOOM_OUT,
+				       nautilus_view_frame_get_zoom_level (view)
+                                       > nautilus_view_frame_get_min_zoom_level (view));
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       NAUTILUS_COMMAND_ZOOM_NORMAL,
+				       TRUE);
+	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
+}
+
+static Nautilus_HistoryList *
+get_history_list_callback (NautilusViewFrame *view,
+                           NautilusWindow *window)
+{
+	Nautilus_HistoryList *list;
+	NautilusBookmark *bookmark;
+	int length, i;
+	GList *node;
+	char *name, *location;
+
+	/* Get total number of history items */
+	length = g_list_length (nautilus_get_history_list ());
+
+	list = Nautilus_HistoryList__alloc ();
+
+	list->_length = length;
+	list->_maximum = length;
+	list->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
+	CORBA_sequence_set_release (list, CORBA_TRUE);
+	
+	/* Iterate through list and copy item data */
+	for (i = 0, node = nautilus_get_history_list (); i < length; i++, node = node->next) {
+		bookmark = node->data;
+
+		name = nautilus_bookmark_get_name (bookmark);
+		location = nautilus_bookmark_get_uri (bookmark);
+		
+		list->_buffer[i].title = CORBA_string_dup (name);
+		list->_buffer[i].location = CORBA_string_dup (location);
+		
+		g_free (name);
+		g_free (location);
+	}
+
+	return list;
+}
+
+static void
+change_selection_callback (NautilusViewFrame *view,
+                           GList *selection,
+                           NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        change_selection (window, selection);
+}
+
+static void
+change_status_callback (NautilusViewFrame *view,
+                        const char *status,
+                        NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        nautilus_window_set_status (window, status);
+}
+
+static void
+failed_callback (NautilusViewFrame *view,
+                 NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        nautilus_window_view_failed (window, view);
+}
+
+static void
+load_underway_callback (NautilusViewFrame *view,
+                        NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
+        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
+        if (view == window->new_content_view
+            || view == window->content_view) {
+               nautilus_window_set_state_info
+                       (window,
+                        (NautilusWindowStateItem) CV_PROGRESS_INITIAL,
+                        (NautilusWindowStateItem) 0);
+        }
+}
+
+static void
+load_complete_callback (NautilusViewFrame *view,
+                        NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
+        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
+        if (view == window->new_content_view
+            || view == window->content_view) {
+               nautilus_window_set_state_info
+                       (window,
+                        (NautilusWindowStateItem) CV_PROGRESS_DONE,
+                        (NautilusWindowStateItem) 0);
+        }
+}
+
+static void
+open_location_callback (NautilusViewFrame *view,
+                        const char *location,
+                        NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        nautilus_window_open_location (window, location);
+}
+
+static void
+open_location_in_new_window_callback (NautilusViewFrame *view,
+                                      const char *location,
+                                      GList *selection,
+                                      NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        nautilus_window_open_location_in_new_window (window, location, selection);
+}
+
+static void
+title_changed_callback (NautilusViewFrame *view,
+                        NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        update_title (window);
+}
+
+#define FOR_EACH_NAUTILUS_WINDOW_SIGNAL(macro) \
+	macro (change_selection)		\
+	macro (change_status)			\
+	macro (failed)				\
+	macro (get_history_list)		\
+	macro (load_complete)			\
+	macro (load_underway)			\
+	macro (open_location)			\
+	macro (open_location_in_new_window)	\
+	macro (title_changed)			\
+	macro (zoom_level_changed)
+
+void
+nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
+{
+	GtkObject *view_object;
+	
+	view_object = GTK_OBJECT (view);
+
+	#define CONNECT(signal) gtk_signal_connect \
+        	(view_object, #signal, \
+                 GTK_SIGNAL_FUNC (signal##_callback), window);
+        FOR_EACH_NAUTILUS_WINDOW_SIGNAL (CONNECT)
+	#undef CONNECT
+}
+
+void
+nautilus_window_disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
+{
+	GtkObject *view_object;
+	
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	if (view == NULL) {
+		return;
+	}
+
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_object = GTK_OBJECT (view);
+
+	#define DISCONNECT(signal) gtk_signal_disconnect_by_func \
+        	(view_object, \
+        	 GTK_SIGNAL_FUNC (signal##_callback), window);
+        FOR_EACH_NAUTILUS_WINDOW_SIGNAL (DISCONNECT)
+	#undef DISCONNECT
 }

@@ -1,3 +1,42 @@
+2000-10-23  Darin Adler  <darin@eazel.com>
+
+	* Makefile.shared: Fix extra dependency that was causing the xml.h
+	files to be generated too often.
+	* configure.in: Fix code that detects the gcc options to work even
+	with -O on.
+	
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(view_frame_loaded), (view_frame_failed),
+	(nautilus_view_frame_handle_client_destroy),
+	(nautilus_view_frame_handle_client_gone),
+	(nautilus_view_frame_new), (check_if_view_is_gone),
+	(nautilus_view_frame_set_to_component),
+	(nautilus_view_frame_get_is_underway):
+	Revamp set of signals to be easier to understand. Handle all
+	failures uniformly,
+	
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c: (change_selection),
+	(nautilus_window_update_for_new_location),
+	(nautilus_window_has_really_changed),
+	(nautilus_window_set_state_info),
+	(nautilus_window_set_sidebar_panels),
+	(zoom_level_changed_callback), (get_history_list_callback),
+	(change_selection_callback), (change_status_callback),
+	(failed_callback), (load_underway_callback),
+	(load_complete_callback), (open_location_callback),
+	(open_location_in_new_window_callback), (title_changed_callback),
+	(nautilus_window_connect_view), (nautilus_window_disconnect_view):
+	Make more of the view management private to this file. Use the
+	signals by their new names. Disconnect all the signals, not just
+	the error-related ones.
+	
+	* src/nautilus-window.c:
+	(nautilus_window_set_content_view_widget): Updated the debugging
+	check to do it with the new Bonobo UI calls.
+
 2000-10-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

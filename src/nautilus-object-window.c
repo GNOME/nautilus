@@ -1360,207 +1360,14 @@ nautilus_get_history_list (void)
 	return history_list;
 }
 
-static void
-nautilus_window_open_location_callback (NautilusViewFrame *view,
-					const char *location,
-					NautilusWindow *window)
-{
-	nautilus_window_open_location (window, location);
-}
-
-static void
-nautilus_window_open_location_in_new_window_callback (NautilusViewFrame *view,
-						      const char *location,
-						      GList *selection,
-						      NautilusWindow *window)
-{
-	nautilus_window_open_location_in_new_window (window, location, selection);
-}
-
-static void
-nautilus_window_report_selection_change_callback (NautilusViewFrame *view,
-						  GList *selection,
-						  NautilusWindow *window)
-{
-	nautilus_window_report_selection_change (window, selection, view);
-}
-
-static void
-nautilus_window_report_status_callback (NautilusViewFrame *view,
-					const char *status,
-					NautilusWindow *window)
-{
-	nautilus_window_report_status (window, status, view);
-}
-
-static void
-nautilus_window_report_load_underway_callback (NautilusViewFrame *view,
-					       NautilusWindow *window)
-{
-	nautilus_window_report_load_underway (window, view);
-}
-
-static void
-nautilus_window_report_load_complete_callback (NautilusViewFrame *view,
-					       NautilusWindow *window)
-{
-	nautilus_window_report_load_complete (window, view);
-}
-
-static void
-nautilus_window_report_load_failed_callback (NautilusViewFrame *view,
-					     NautilusWindow *window)
-{
-	nautilus_window_report_load_failed (window, view);
-}
-
-static void
-nautilus_window_title_changed_callback (NautilusViewFrame *view, 
-					NautilusWindow *window)
-{
-	nautilus_window_title_changed (window, view);
-}
-
-static void
-nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
-                                    	     double zoom_level,
-                                    	     NautilusWindow *window)
-{
-	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), zoom_level);
-
-	/* We rely on the initial zoom_level_change signal to inform us that the
-	* view-frame is showing a new zoomable.
-	*/
-	if (!GTK_WIDGET_VISIBLE (window->zoom_control)) {
-		nautilus_zoom_control_set_min_zoom_level
-			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-			 nautilus_view_frame_get_min_zoom_level (view));
-		nautilus_zoom_control_set_max_zoom_level
-			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-			 nautilus_view_frame_get_max_zoom_level (view));
-		nautilus_zoom_control_set_preferred_zoom_levels
-			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-			 nautilus_view_frame_get_preferred_zoom_levels (view));
-			 
-		gtk_widget_show (window->zoom_control);
-
-	}
-
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_ZOOM_IN,
-				       zoom_level < nautilus_view_frame_get_max_zoom_level (view));
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_ZOOM_OUT,
-				       zoom_level > nautilus_view_frame_get_min_zoom_level (view));
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_ZOOM_NORMAL,
-				       TRUE);
-	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
-}
-
-static Nautilus_HistoryList *
-nautilus_window_get_history_list_callback (NautilusViewFrame *view,
-					   NautilusWindow *window)
-{
-	Nautilus_HistoryList *list;
-	NautilusBookmark *bookmark;
-	int length, i;
-	GList *p;
-	char *name, *location;
-
-	/* Get total number of history items */
-	length = g_list_length (history_list);
-
-	list = Nautilus_HistoryList__alloc ();
-
-	list->_length = length;
-	list->_maximum = length;
-	list->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
-	CORBA_sequence_set_release (list, CORBA_TRUE);
-	
-	/* Iterate through list and copy item data */
-	for (i = 0, p = history_list; i < length; i++, p = p->next) {
-		bookmark = p->data;
-
-		name = nautilus_bookmark_get_name (bookmark);
-		location = nautilus_bookmark_get_uri (bookmark);
-		
-		list->_buffer[i].title = CORBA_string_dup (name);
-		list->_buffer[i].location = CORBA_string_dup (location);
-		
-		g_free (name);
-		g_free (location);
-	}
-
-	return list;
-}
-
 void
-nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
-{
-	GtkObject *view_object;
-	
-	view_object = GTK_OBJECT (view);
-
-	#define CONNECT(signal) gtk_signal_connect (view_object, #signal, GTK_SIGNAL_FUNC (nautilus_window_##signal##_callback), window)
-
-	CONNECT (open_location);
-	CONNECT (open_location_in_new_window);
-	CONNECT (report_selection_change);
-	CONNECT (report_status);
-	CONNECT (report_load_underway);
-	CONNECT (report_load_complete);
-	CONNECT (report_load_failed);
-	CONNECT (title_changed);
-	CONNECT (zoom_level_changed);
-	CONNECT (get_history_list);
-
-	#undef CONNECT
-
-	/* Can't use connect_object_while_alive here, because
-	 * elsewhere disconnect_by_function is used to disconnect the
-	 * switched-out content view's signal, and disconnect_by_function
-	 * doesn't completely clean up after connect_object_while_alive,
-	 * leading to assertion failures later on.
-	 */
-	gtk_signal_connect_object
-		(view_object,
-		 "destroy",
-		 nautilus_window_view_failed,
-		 GTK_OBJECT (window));
-	gtk_signal_connect_object
-		(view_object,
-		 "client_gone",
-		 nautilus_window_view_failed,
-		 GTK_OBJECT (window));
-}
-
-void
-nautilus_window_disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	if (view == NULL) {
-		return;
-	}
-
-	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
-
-	gtk_signal_disconnect_by_func (GTK_OBJECT(view), 
-				       nautilus_window_view_failed, 
-				       window);
-}
-
-void
-nautilus_window_display_error(NautilusWindow *window, const char *error_msg)
+nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 {
 	GtkWidget *dialog;
 	
 	dialog = gnome_message_box_new (error_msg, GNOME_MESSAGE_BOX_ERROR, _("Close"), NULL);
-	gnome_dialog_set_close (GNOME_DIALOG(dialog), TRUE);
-	
-	gnome_dialog_set_default (GNOME_DIALOG(dialog), 0);
-	
+	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+	gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
 	gtk_widget_show (dialog);
 }
 
@@ -1582,20 +1389,17 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	}
 
 	/* Here's an explicit check for a problem that happens all too often. */
-	/* FIXME bugzilla.eazel.com 3598:
-	 * We should update this debugging code for the new Bonobo UI mechanism.
-	 */
-#ifdef UIH
-	if (bonobo_ui_handler_menu_path_exists (window->ui_handler, "/File/Open")) {
-		g_warning ("There's a lingering Open menu item. This usually means a new Bonobo bug.");
+	if (bonobo_win_xml_node_exists (BONOBO_WIN (window),
+					"/menu/File/Open Placeholder/Open")) {
+		g_warning ("There's a lingering Open menu item. "
+			   "This usually means a new Bonobo bug.");
 	}
-#endif
 	
-	if (new_view != NULL) {			
+	if (new_view != NULL) {
 		gtk_widget_show (GTK_WIDGET (new_view));
 		
 		nautilus_view_frame_activate (new_view); 
-
+		
 		/* FIXME bugzilla.eazel.com 1243: 
 		 * We should use inheritance instead of these special cases
 		 * for the desktop window.

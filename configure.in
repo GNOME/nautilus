@@ -596,7 +596,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 		SAVE_CFLAGS="$CFLAGS"
 		CFLAGS="$CFLAGS $VFS_CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
-		AC_TRY_COMPILE([], [int test;],
+		AC_TRY_COMPILE([], [],
 			has_option=yes,
 			has_option=no,)
 		CFLAGS="$SAVE_CFLAGS"
