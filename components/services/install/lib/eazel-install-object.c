@@ -280,6 +280,92 @@ eazel_install_unref (GtkObject *object)
 #endif
 }
 
+static gboolean
+eazel_install_start_signal (EazelPackageSystem *system,
+			    EazelPackageSystemOperation op,
+			    const PackageData *pack,
+			    EazelInstall *service)
+{
+	service->private->infoblock[2]++;
+	switch (op) {
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+		break;
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+		eazel_install_emit_install_progress (service, 
+						     pack,
+						     service->private->infoblock[2], service->private->infoblock[3],
+						     0, pack->bytesize,
+						     service->private->infoblock[4], service->private->infoblock[5]);				     
+		break;
+	default:
+		break;
+	}
+	return TRUE;
+}
+
+static gboolean
+eazel_install_end_signal (EazelPackageSystem *system,
+			  EazelPackageSystemOperation op,
+			  const PackageData *pack,
+			  EazelInstall *service)
+{
+	switch (op) {
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+		eazel_install_emit_install_progress (service, 
+						     pack,
+						     service->private->infoblock[2], service->private->infoblock[3],
+						     pack->bytesize, pack->bytesize,
+						     service->private->infoblock[4], service->private->infoblock[5]);				     
+		break;
+	default:
+		break;
+	}
+	return TRUE;
+}
+
+static gboolean
+eazel_install_progress_signal (EazelPackageSystem *system,
+			       EazelPackageSystemOperation op,
+			       const PackageData *pack,
+			       unsigned long *info,
+			       EazelInstall *service)
+{
+	service->private->infoblock[4] = info[4];
+	if ((info[0] != 0) && (info[0] != info[1])) {
+		switch (op) {
+		case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+		case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+			eazel_install_emit_install_progress (service, 
+							     pack,
+							     service->private->infoblock[2], service->private->infoblock[3],
+							     info[0], pack->bytesize,
+							     info[4], info[5]);
+			break;
+		default:
+			break;
+		}
+	}
+	return TRUE;
+}
+
+static gboolean
+eazel_install_failed_signal (EazelPackageSystem *system,
+			     EazelPackageSystemOperation op,
+			     const PackageData *pack,
+			     EazelInstall *service)
+{
+	trilobite_debug ("*** %s failed", pack->name);
+	if (pack->toplevel) {
+		trilobite_debug ("emiting failed for %s", pack->name);
+		if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL) {
+			eazel_install_emit_install_failed (service, pack);
+		} else if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
+			eazel_install_emit_uninstall_failed (service, pack);
+		}
+	}
+	return TRUE;
+}
 
 static void
 eazel_install_set_arg (GtkObject *object,
@@ -738,6 +824,11 @@ eazel_install_new_with_config (void)
 
 	return service;
 }
+
+
+/*****************************************
+  install stuff
+*****************************************/
 
 /* if there's an older tmpdir left over from a previous attempt, use it */
 static char *

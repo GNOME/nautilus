@@ -76,6 +76,7 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	corbapack = GNOME_Trilobite_Eazel_PackageDataStruct__alloc ();
 	corbapack->name = pack->name ? CORBA_string_dup (pack->name) : CORBA_string_dup ("");
 	corbapack->eazel_id = pack->eazel_id ? CORBA_string_dup (pack->eazel_id) : CORBA_string_dup ("");
+	corbapack->suite_id = pack->suite_id ? CORBA_string_dup (pack->suite_id) : CORBA_string_dup ("");
 	corbapack->version = pack->version ? CORBA_string_dup (pack->version) : CORBA_string_dup ("");
 	corbapack->archtype = pack->archtype ? CORBA_string_dup (pack->archtype) : CORBA_string_dup ("");
 	corbapack->filename = pack->filename ? CORBA_string_dup (pack->filename) : CORBA_string_dup ("");
@@ -191,6 +192,7 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 	pack = packagedata_new();
 	pack->name = strlen (corbapack.name) ? g_strdup (corbapack.name) : NULL;
 	pack->eazel_id = strlen (corbapack.eazel_id) ? g_strdup (corbapack.eazel_id) : NULL;
+	pack->suite_id = strlen (corbapack.suite_id) ? g_strdup (corbapack.suite_id) : NULL;
 	pack->version = strlen (corbapack.version) ? g_strdup (corbapack.version) : NULL;
 	pack->minor = strlen (corbapack.release) ? g_strdup (corbapack.release) : NULL;
 	pack->archtype = strlen (corbapack.archtype) ? g_strdup (corbapack.archtype) : NULL;

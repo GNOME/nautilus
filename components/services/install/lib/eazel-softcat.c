@@ -298,8 +298,9 @@ eazel_softcat_error_string (EazelSoftCatError err)
   actual real implementation stuff
 *****************************************/
 
-/* can be OR'd together for "greater than or equal" etc -- this happens often */
-/* --- private to me.  everyone else should use the real sense flags in eazel-softcat.h */
+/* can be OR'd together for "greater than or equal" etc -- this happens often. */
+/* --- private to me.  everyone else should use the real sense flags in eazel-softcat.h. */
+/* these are the numbers that the softcat server uses. */
 typedef enum {
 	SOFTCAT_SENSE_FLAG_LESS = 2,
 	SOFTCAT_SENSE_FLAG_GREATER = 4,
@@ -470,6 +471,12 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 		add_to_url (url, "?rpm_id=", package->eazel_id);
 		add_to_url (url, "&arch=", arch);
 		g_free (arch);
+	} else if (package->suite_id != NULL) {
+		/* find by suite-id! */
+		arch = trilobite_get_distribution_arch ();
+		add_to_url (url, "?suite_id=", package->eazel_id);
+		add_to_url (url, "&arch=", arch);
+		g_free (arch);
 	} else if (package->name == NULL) {
 		/* find by provides list! */
 		g_assert ((package->provides != NULL) && (g_list_length (package->provides) > 0));
@@ -526,6 +533,7 @@ is_filename_probably_a_directory (const char *filename, const GList *provides)
 	return is_dir;
 }
 
+/* this doesn't completely workaround forseti bug 1279 :( */
 static void
 remove_directories_from_provides_list (PackageData *pack)
 {
@@ -559,6 +567,7 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 	gboolean got_happy;
 	GList *packages;
 	PackageData *full_package;
+	int err;
 
 	search_url = get_search_url_for_package (softcat, package, sense_flags);
 	if (search_url == NULL) {
@@ -591,6 +600,8 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 	if (! got_happy) {
 		if (package->eazel_id != NULL) {
 			g_warning ("couldn't fetch info about package id %s", package->eazel_id);
+		} else if (package->suite_id != NULL) {
+			g_warning ("couldn't fetch info about suite id %s", package->suite_id);
 		} else if (package->name != NULL) {
 			g_warning ("couldn't fetch info about package '%s'", package->name);
 		} else if ((package->provides != NULL) && (package->provides->data != NULL)) {
@@ -605,26 +616,39 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 
 	if (g_list_length (packages) == 0) {
 		trilobite_debug ("no matches for that package.");
-		g_free (body);
-		g_free (search_url);
-		return EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE;
+		err = EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE;
+		goto out;
 	}
 
 	if (g_list_length (packages) > 1) {
-		trilobite_debug ("more than one match!  using the first one.");
+		trilobite_debug ("more than one match: making a suite");
+		err = EAZEL_SOFTCAT_SUCCESS;
+
+		/* clear out any old deps */
+		if (package->soft_depends != NULL) {
+			g_list_foreach (package->soft_depends, (GFunc)gtk_object_unref, NULL);
+		}
+		package->soft_depends = packages;
+		g_free (package->filename);
+		g_free (package->remote_url);
+		package->filename = NULL;
+		package->remote_url = NULL;
+	} else {
+		trilobite_debug ("package info ok.");
+		err = EAZEL_SOFTCAT_SUCCESS;
+
+		full_package = (PackageData *) packages->data;
+		packagedata_fill_in_missing (package, full_package, fill_flags);
+		remove_directories_from_provides_list (package);
+		g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+		g_list_free (packages);
 	}
 
-	full_package = (PackageData *) packages->data;
-	packagedata_fill_in_missing (package, full_package, fill_flags);
-	remove_directories_from_provides_list (package);
-
-	g_list_foreach (packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
-	g_list_free (packages);
+out:
 	g_free (body);
 	g_free (search_url);
-	trilobite_debug ("package info ok.");
 
-	return EAZEL_SOFTCAT_SUCCESS;
+	return err;
 }
 
 /* Check if there's a newer version in SoftCat.

@@ -56,8 +56,11 @@ module Trilobite {
 			   still use eg. protocol HTTP to do dep stuff */
 			string filename;
 			/*
-			  Or this if you want to use a eazel package id */
+			  Or this if you want to use an Eazel package id */
 			string eazel_id;
+			/*
+			  Or this if you want to use an Eazel suite id */
+			string suite_id;
 
 			/*
 			  Eazel:Install::install ()

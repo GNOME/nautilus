@@ -33,24 +33,6 @@
 #include "eazel-install-public.h"
 #include <eazel-package-system.h>
 
-gboolean eazel_install_start_signal (EazelPackageSystem *system,
-				     EazelPackageSystemOperation op,
-				     const PackageData *pack,
-				     EazelInstall *service);
-gboolean eazel_install_end_signal (EazelPackageSystem *system,
-				   EazelPackageSystemOperation op,
-				   const PackageData *pack,
-				   EazelInstall *service);
-gboolean  eazel_install_progress_signal (EazelPackageSystem *system,
-					 EazelPackageSystemOperation op,
-					 const PackageData *pack,
-					 unsigned long *info,
-					 EazelInstall *service);
-gboolean eazel_install_failed_signal (EazelPackageSystem *system,
-				      EazelPackageSystemOperation op,
-				      const PackageData *pack,
-				      EazelInstall *service);
-
 EazelInstallOperationStatus ei_install_packages (EazelInstall *service, GList *categories);
 EazelInstallOperationStatus ei_uninstall_packages (EazelInstall *service, GList *categories);
 EazelInstallOperationStatus ei_revert_transaction (EazelInstall *service, GList *packages);

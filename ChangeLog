@@ -1,3 +1,32 @@
+2001-01-29  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_initialize), (packagedata_finalize),
+	(packagedata_copy), (packagedata_fill_in_missing),
+	(packagedata_get_readable_name):
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(get_search_url_for_package), (eazel_softcat_get_info):
+
+	Add "suite_id" field to the PackageData and corba struct, for
+	packages that actually refer to a group of packages, not just one.
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	* components/services/install/lib/eazel-install-logic.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_start_signal), (eazel_install_end_signal),
+	(eazel_install_progress_signal), (eazel_install_failed_signal):
+
+	Move four signal calls into the file they're used in, so that
+	someday in the startrek future, we can get rid of the old
+	logic.[ch] files.
+	
 2001-01-29  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

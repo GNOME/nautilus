@@ -194,7 +194,9 @@ struct _PackageData {
 	char *md5;
 	char *install_root;
 	
+	/* various odd ways to look up packages in softcat */
 	char *eazel_id;
+	char *suite_id;
 
 	gboolean source_package;
 	gboolean conflicts_checked; /* set to TRUE when the files provided by the package

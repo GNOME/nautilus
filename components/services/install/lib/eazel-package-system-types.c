@@ -231,6 +231,7 @@ packagedata_initialize (PackageData *package) {
 	package->distribution = trilobite_get_distribution ();
 	package->filename = NULL;
 	package->eazel_id = NULL;
+	package->suite_id = NULL;
 	package->remote_url = NULL;
 	package->conflicts_checked = FALSE;
 	package->install_root = NULL;
@@ -293,6 +294,8 @@ packagedata_finalize (GtkObject *obj)
 	pack->filename = NULL;
 	g_free (pack->eazel_id);
 	pack->eazel_id = NULL;
+	g_free (pack->suite_id);
+	pack->suite_id = NULL;
 	g_free (pack->remote_url);
 	pack->remote_url = NULL;
 	g_free (pack->install_root);
@@ -462,6 +465,7 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	result->remote_url = g_strdup (pack->remote_url);
 	result->install_root = g_strdup (pack->install_root);
 	result->eazel_id = g_strdup (pack->eazel_id);
+	result->suite_id = g_strdup (pack->suite_id);
 
 	result->toplevel = pack->toplevel;
 	result->status = pack->status;
@@ -520,6 +524,7 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 	package->distribution = full_package->distribution;
 	COPY_STRING (filename);
 	COPY_STRING (eazel_id);
+	COPY_STRING (suite_id);
 	COPY_STRING (remote_url);
 	COPY_STRING (md5);
 
@@ -649,7 +654,7 @@ packagedata_get_readable_name (const PackageData *pack)
 	char *result = NULL;
 	if (pack==NULL) {
 		result = NULL;
-	} else if (pack->name && pack->version) {
+	} else if ((pack->name != NULL) && (pack->version != NULL)) {
 		/* This is a hack to shorten EazelSourceSnapshot names
 		   into the build date/time */
 		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->version, ".200") != NULL) {
@@ -670,10 +675,12 @@ packagedata_get_readable_name (const PackageData *pack)
 		} else {
 			result = g_strdup_printf ("%s v%s", pack->name, pack->version);
 		}
-	} else if (pack->name) {
+	} else if (pack->name != NULL) {
 		result = g_strdup_printf ("%s", pack->name);
-	} else if (pack->eazel_id) {
+	} else if (pack->eazel_id != NULL) {
 		result = g_strdup_printf ("Eazel Package #%s", pack->eazel_id);
+	} else if (pack->suite_id != NULL) {
+		result = g_strdup_printf ("Eazel Suite #%s", pack->suite_id);
 	} else if (pack->provides && pack->provides->data) {
 		result = g_strdup_printf ("file %s", (char*)(pack->provides->data));
 	} else {
