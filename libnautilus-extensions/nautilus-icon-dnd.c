@@ -48,6 +48,7 @@
 #include "nautilus-background.h"
 #include "nautilus-graphic-effects.h"
 #include "nautilus-stock-dialogs.h"
+#include "nautilus-string.h"
 
 #include "nautilus-icon-private.h"
 
@@ -100,6 +101,8 @@ static GtkTargetEntry drop_types [] = {
 	/* the largest amount of auto scroll used when we are right over the view
 	 * edge
 	 */
+/* special reserved name for the erase emblem */
+#define ERASE_KEYWORD "erase"
 
 static GnomeCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
@@ -519,20 +522,24 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 	file = nautilus_file_get (uri);
 	g_free (uri);
 	
-	keywords = nautilus_file_get_keywords (file);
-	word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
-	if (word == NULL) {
-		keywords = g_list_append (keywords, g_strdup (keyword));
+	/* special case the erase emblem */
+	if (!nautilus_strcmp (keyword, ERASE_KEYWORD)) {
+		keywords = NULL;
 	} else {
-		keywords = g_list_remove_link (keywords, word);
-		g_free (word->data);
-		g_list_free (word);
+		keywords = nautilus_file_get_keywords (file);
+		word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
+		if (word == NULL) {
+			keywords = g_list_append (keywords, g_strdup (keyword));
+		} else {
+			keywords = g_list_remove_link (keywords, word);
+			g_free (word->data);
+			g_list_free (word);
+		}
 	}
-
+	
 	nautilus_file_set_keywords (file, keywords);
 	nautilus_file_unref (file);
 	nautilus_icon_container_update_icon (container, drop_target_icon);
-
 }
 
 static int

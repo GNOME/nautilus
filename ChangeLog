@@ -1,5 +1,17 @@
 2000-08-17  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(receive_dropped_keyword):
+	implemented task 2078, we need a better drag and drop-based way to
+	delete emblems, by adding an "erase emblems" emblem and special-casing
+	it to erase the emblems.
+	
+	* data/emblems/Makefile.am:
+	* data/emblems/erase.png:
+	added Susan's erase emblem image
+	
+2000-08-17  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-image.c: (ensure_buffer_size),
 	(nautilus_gdk_pixbuf_render_to_drawable):
 	made it respect the alpha channel for ordinary images by making

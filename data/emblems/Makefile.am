@@ -6,6 +6,7 @@ emblems_DATA = \
 	confidential.gif \
 	distinguished.png \
 	draft.png \
+	erase.png \
 	favorite.png \
 	important.png \
 	new.png \
