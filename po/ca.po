@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.3.4\n"
+"Project-Id-Version: nautilus 2.3.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-08-09 20:16+0200\n"
-"PO-Revision-Date: 2003-08-09 20:18+0200\n"
+"POT-Creation-Date: 2003-09-05 19:55+0200\n"
+"PO-Revision-Date: 2003-09-05 19:58+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -395,15 +395,15 @@ msgstr "(Buit)"
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:519 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Carpeta Inici"
 
-#: components/tree/nautilus-tree-view.c:507
+#: components/tree/nautilus-tree-view.c:521
 msgid "Filesystem"
 msgstr "Sistema de fitxers"
 
-#: components/tree/nautilus-tree-view.c:509
+#: components/tree/nautilus-tree-view.c:523
 msgid "Network Neighbourhood"
 msgstr "Entorn de xarxa"
 
@@ -1760,16 +1760,14 @@ msgstr "a l'escriptori"
 msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
-msgstr ""
-"No podeu suprimir una icona de volum. Si voleu ejectar el volum, si us plau, "
-"utilitzeu «Ejecta» al menú del botó dret del volum."
+msgstr "No podeu suprimir una icona de volum. Si voleu expulsar el volum, si us plau, utilitzeu «Expulsa» al menú del botó dret del volum."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
 msgid "Can't delete volume"
 msgstr "No es pot suprimir el volum"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5592
+#: libnautilus-private/nautilus-file.c:5613
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -2213,7 +2211,7 @@ msgstr "Reemplaça-ho tot"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4420
+#: libnautilus-private/nautilus-file.c:4433
 #, c-format
 msgid "link to %s"
 msgstr "enllaç a %s"
@@ -2539,7 +2537,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "S'està preparant per a buidar la paperera..."
 
 #: libnautilus-private/nautilus-file-operations.c:2263
-#: src/file-manager/fm-desktop-icon-view.c:999
+#: src/file-manager/fm-desktop-icon-view.c:1016
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Empty Trash"
 msgstr "Buida la paperera"
@@ -2955,77 +2953,77 @@ msgstr "00/00/00"
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4013
 msgid "0 items"
 msgstr "0 elements"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4013
 msgid "0 folders"
 msgstr "0 carpetes"
 
-#: libnautilus-private/nautilus-file.c:4001
+#: libnautilus-private/nautilus-file.c:4014
 msgid "0 files"
 msgstr "0 fitxers"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4018
 msgid "1 item"
 msgstr "1 element"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4018
 msgid "1 folder"
 msgstr "1 carpeta"
 
-#: libnautilus-private/nautilus-file.c:4006
+#: libnautilus-private/nautilus-file.c:4019
 msgid "1 file"
 msgstr "1 fitxer"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4022
 #, c-format
 msgid "%u items"
 msgstr "%u elements"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4022
 #, c-format
 msgid "%u folders"
 msgstr "%u carpetes"
 
-#: libnautilus-private/nautilus-file.c:4010
+#: libnautilus-private/nautilus-file.c:4023
 #, c-format
 msgid "%u files"
 msgstr "%u fitxers"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4322
-#: libnautilus-private/nautilus-file.c:4338
+#: libnautilus-private/nautilus-file.c:4335
+#: libnautilus-private/nautilus-file.c:4351
 msgid "? items"
 msgstr "? elements"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4328
+#: libnautilus-private/nautilus-file.c:4341
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4343
+#: libnautilus-private/nautilus-file.c:4356
 msgid "unknown type"
 msgstr "tipus desconegut"
 
-#: libnautilus-private/nautilus-file.c:4346
+#: libnautilus-private/nautilus-file.c:4359
 msgid "unknown MIME type"
 msgstr "tipus de MIME desconegut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4352
+#: libnautilus-private/nautilus-file.c:4365
 #: src/file-manager/fm-properties-window.c:1128
 msgid "unknown"
 msgstr "desconegut"
 
-#: libnautilus-private/nautilus-file.c:4384
+#: libnautilus-private/nautilus-file.c:4397
 msgid "program"
 msgstr "programa"
 
-#: libnautilus-private/nautilus-file.c:4396
+#: libnautilus-private/nautilus-file.c:4409
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3035,7 +3033,7 @@ msgstr ""
 "probablement significa que el fitxer gnome-vfs.keys no està en el lloc "
 "correcte o no es troba per alguna altra raó."
 
-#: libnautilus-private/nautilus-file.c:4400
+#: libnautilus-private/nautilus-file.c:4413
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3044,11 +3042,11 @@ msgstr ""
 "No s'ha trobat la descripció del tipus mime \"%s\" (el fitxer és \"%s\"), "
 "informeu-ne si us plau a la llista de correu del gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4414
+#: libnautilus-private/nautilus-file.c:4427
 msgid "link"
 msgstr "enllaç"
 
-#: libnautilus-private/nautilus-file.c:4434
+#: libnautilus-private/nautilus-file.c:4447
 msgid "link (broken)"
 msgstr "enllaç (trencat)"
 
@@ -3359,55 +3357,55 @@ msgstr "remarcat per soltar"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "si estem o no remarcats per un Arrastrar &i Soltar"
 
-#: libnautilus-private/nautilus-icon-container.c:2009
+#: libnautilus-private/nautilus-icon-container.c:2022
 msgid "The selection rectangle"
 msgstr "El rectangle de la sel·lecció"
 
-#: libnautilus-private/nautilus-icon-container.c:4011
+#: libnautilus-private/nautilus-icon-container.c:4079
 msgid "Frame Text"
 msgstr "Enmarca el text"
 
-#: libnautilus-private/nautilus-icon-container.c:4012
+#: libnautilus-private/nautilus-icon-container.c:4080
 msgid "Draw a frame around unselected text"
 msgstr "Dibuixa un marc al voltant del text no seleccionat"
 
-#: libnautilus-private/nautilus-icon-container.c:4018
+#: libnautilus-private/nautilus-icon-container.c:4086
 msgid "Selection Box Color"
 msgstr "Color de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:4019
+#: libnautilus-private/nautilus-icon-container.c:4087
 msgid "Color of the selection box"
 msgstr "Color de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:4024
+#: libnautilus-private/nautilus-icon-container.c:4092
 msgid "Selection Box Alpha"
 msgstr "Alfa de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:4025
+#: libnautilus-private/nautilus-icon-container.c:4093
 msgid "Opacity of the selection box"
 msgstr "Opacitat de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:4032
+#: libnautilus-private/nautilus-icon-container.c:4100
 msgid "Highlight Alpha"
 msgstr "Alfa resaltat"
 
-#: libnautilus-private/nautilus-icon-container.c:4033
+#: libnautilus-private/nautilus-icon-container.c:4101
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacitat del resaltat per a les icones seleccionades"
 
-#: libnautilus-private/nautilus-icon-container.c:4039
+#: libnautilus-private/nautilus-icon-container.c:4107
 msgid "Light Info Color"
 msgstr "Color d'informació clar"
 
-#: libnautilus-private/nautilus-icon-container.c:4040
+#: libnautilus-private/nautilus-icon-container.c:4108
 msgid "Color used for information text against a dark background"
 msgstr "El color que s'usa per a text informatiu amb un fons fosc"
 
-#: libnautilus-private/nautilus-icon-container.c:4045
+#: libnautilus-private/nautilus-icon-container.c:4113
 msgid "Dark Info Color"
 msgstr "Color d'informació fosc"
 
-#: libnautilus-private/nautilus-icon-container.c:4046
+#: libnautilus-private/nautilus-icon-container.c:4114
 msgid "Color used for information text against a light background"
 msgstr "El color que s'usa per a text informatiu amb un fons clar"
 
@@ -4375,20 +4373,20 @@ msgstr "Visualitza com a _icones"
 msgid "View as _List"
 msgstr "Visualitza com _llista"
 
-#: src/file-manager/fm-desktop-icon-view.c:579
+#: src/file-manager/fm-desktop-icon-view.c:596
 msgid "Background"
 msgstr "Segon pla"
 
-#: src/file-manager/fm-desktop-icon-view.c:749
+#: src/file-manager/fm-desktop-icon-view.c:766
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Error a l'executar el programa d'utilitat «%s»: %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1017
+#: src/file-manager/fm-desktop-icon-view.c:1034
 msgid "E_ject"
-msgstr "E_jecta"
+msgstr "E_xpulsa"
 
-#: src/file-manager/fm-desktop-icon-view.c:1117
+#: src/file-manager/fm-desktop-icon-view.c:1134
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "Desm_unta el volum"
@@ -5907,11 +5905,11 @@ msgstr "Mostra l'estat de la _indexació"
 msgid "Show status of indexing used when searching"
 msgstr "Mostra l'estat de la indexació utilitzat mentre s'està cercant"
 
-#: src/nautilus-application.c:220
+#: src/nautilus-application.c:221
 msgid "Couldn't Create Required Folder"
 msgstr "No s'ha pogut crear la carpeta requerida"
 
-#: src/nautilus-application.c:221
+#: src/nautilus-application.c:222
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5922,11 +5920,11 @@ msgstr ""
 "el Nautilus, creeu aquesta carpeta, o especifiqueu els permisos per a que el "
 "Nautilus pugui crear-la."
 
-#: src/nautilus-application.c:226
+#: src/nautilus-application.c:227
 msgid "Couldn't Create Required Folders"
 msgstr "No s'han pogut crear les carpetes necessàries"
 
-#: src/nautilus-application.c:227
+#: src/nautilus-application.c:228
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5943,11 +5941,11 @@ msgstr ""
 "Abans d'executar el Nautilus, creeu aquesta carpeta, o especifiqueu els "
 "permisos per a que el Nautilus pugui crear-les."
 
-#: src/nautilus-application.c:298
+#: src/nautilus-application.c:300
 msgid "Link To Old Desktop"
 msgstr "Enllaç a l'escriptori vell"
 
-#: src/nautilus-application.c:314
+#: src/nautilus-application.c:316
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
@@ -5957,7 +5955,7 @@ msgstr ""
 "creat un enllaç anomenat «Enllaç a l'escriptori vell» a l'escriptori. Podeu "
 "obrir-lo per a moure els fitxers que voleu i després eliminar l'enllaç."
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:319
 msgid "Migrated old desktop"
 msgstr "S'ha migrat l'escriptori vell"
 
@@ -5971,7 +5969,7 @@ msgstr "S'ha migrat l'escriptori vell"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:435
+#: src/nautilus-application.c:486
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5982,7 +5980,7 @@ msgstr ""
 "d'arrencar de nou l'ordinador o instal·lar de nou el Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:441
+#: src/nautilus-application.c:492
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6029,14 +6027,14 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:471 src/nautilus-application.c:489
-#: src/nautilus-application.c:496
+#: src/nautilus-application.c:522 src/nautilus-application.c:540
+#: src/nautilus-application.c:547
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 "A causa d'un error inesperat, en aquest moment el Nautilus no es pot "
 "utilitzar."
 
-#: src/nautilus-application.c:472
+#: src/nautilus-application.c:523
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6045,7 +6043,7 @@ msgstr ""
 "vistes del gestor de fitxers, en aquest moment no es pot utilitzar el "
 "Nautilus.\""
 
-#: src/nautilus-application.c:490
+#: src/nautilus-application.c:541
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6056,7 +6054,7 @@ msgstr ""
 "activation-server i reiniciant el Nautilus potser ajudarà a arreglar el "
 "problema."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -7211,20 +7209,26 @@ msgstr "El pannell de la barra lateral ha fallat"
 #: src/nautilus-window-manage-views.c:1328
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr "No s'ha pogut trobar «%s». Si us plau comproveu l'ortografia i torneu a provar."
+msgstr ""
+"No s'ha pogut trobar «%s». Si us plau comproveu l'ortografia i torneu a "
+"provar."
 
 #: src/nautilus-window-manage-views.c:1334
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
-msgstr "«%s» no és una ubicació vàlida. Si us plau comproveu l'ortografia i torneu a provar."
+msgstr ""
+"«%s» no és una ubicació vàlida. Si us plau comproveu l'ortografia i torneu a "
+"provar."
 
 #: src/nautilus-window-manage-views.c:1348
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
-msgstr "No s'ha pogut mostrar «%s» perquè el Nautilus no pot determinar quin tipus de fitxer és."
+msgstr ""
+"No s'ha pogut mostrar «%s» perquè el Nautilus no pot determinar quin tipus "
+"de fitxer és."
 
 #: src/nautilus-window-manage-views.c:1356
 #, c-format
@@ -7235,7 +7239,9 @@ msgstr "El Nautilus no té instal·lat cap visualitzador capaç de mostrar «%s�
 #: src/nautilus-window-manage-views.c:1368
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr "No s'ha pogut mostrar «%s», perquè el Nautilus no pot gestionar les ubicacions %s."
+msgstr ""
+"No s'ha pogut mostrar «%s», perquè el Nautilus no pot gestionar les "
+"ubicacions %s."
 
 #: src/nautilus-window-manage-views.c:1374
 #, c-format
@@ -7252,12 +7258,17 @@ msgstr "No s'ha pogut mostrar «%s», perquè s'ha denegat l'accés."
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
 "the spelling is correct and that your proxy settings are correct."
-msgstr "No es pot mostrar «%s», perquè l'ordinador central \"%s\" no s'ha trobat. Comproveu que l'ortografia és correcta i que els paràmetres del vostre servidor intermedi són correctes."
+msgstr ""
+"No es pot mostrar «%s», perquè l'ordinador central \"%s\" no s'ha trobat. "
+"Comproveu que l'ortografia és correcta i que els paràmetres del vostre "
+"servidor intermedi són correctes."
 
 #: src/nautilus-window-manage-views.c:1398
 #, c-format
 msgid "Couldn't display \"%s\". Check that your proxy settings are correct."
-msgstr "No s'ha pogut mostrar «%s». Comproveu que els paràmetres del servidor intermedi són correctes."
+msgstr ""
+"No s'ha pogut mostrar «%s». Comproveu que els paràmetres del servidor "
+"intermedi són correctes."
 
 #: src/nautilus-window-manage-views.c:1405
 #, c-format
@@ -7266,7 +7277,8 @@ msgid ""
 "browser.\n"
 "Check that an SMB server is running in the local network."
 msgstr ""
-"No s'ha pogut mostrar «%s» perquè el Nautilus no pot connectar amb el navegador principal de SMB.\n"
+"No s'ha pogut mostrar «%s» perquè el Nautilus no pot connectar amb el "
+"navegador principal de SMB.\n"
 "Revisa que tinguis un servidor de SMB a la xarxa local."
 
 #: src/nautilus-window-manage-views.c:1417
