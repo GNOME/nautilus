@@ -212,13 +212,6 @@ nautilus_app_class_init (NautilusAppClass *klass)
 	object_class->destroy = nautilus_app_destroy;
 
 	app_parent_class = gtk_type_class (gtk_object_get_type ());
-
-	/* Startup preferences.  This call is needed so that preferences have
-	 * decent defaults.  Not calling this function would cause some
-	 * preferences to have "not nice" defaults.  Things would still work
-	 * because it is legal to use nautilus preferences implicitly. 
-	 */
-	nautilus_global_preferences_startup ();
 }
 
 static void

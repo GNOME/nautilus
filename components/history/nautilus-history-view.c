@@ -29,7 +29,7 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <nautilus-widgets/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -257,7 +257,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 
 int main(int argc, char *argv[])
 {
-  gboolean preferences_succeeded;
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
 
@@ -266,13 +265,13 @@ int main(int argc, char *argv[])
                              oaf_popt_options, 0, NULL); 
   orb = oaf_init (argc, argv);
 
-  /* FIXME bugzilla.eazel.com 672: Need better error reporting if this
-   * fails. But is it too early to post a dialog here? Does every user
-   * of NautilusPreferences have to deal with this;
+  /* Initialize global preferences. */
+  nautilus_global_preferences_startup (argc, argv);
+  
+  /* FIXME bugzilla.eazel.com 672: 
+   * Need better error reporting here if preferences initialization fails.
    */
-  preferences_succeeded = nautilus_preferences_initialize (argc, argv);
-  g_assert (preferences_succeeded);
-        
+
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
   gnome_vfs_init ();
 

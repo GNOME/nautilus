@@ -35,7 +35,7 @@
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
-#include <nautilus-widgets/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
 #include <popt.h>
 #include <libgnome/gnome-i18n.h>
@@ -51,7 +51,6 @@ main(int argc, char *argv[])
 	gboolean handle_desktop;
 	poptContext popt_context;
 	CORBA_ORB orb;
-	gboolean preferences_initialized;
 	NautilusApp *application;
 	const char **args;
 	struct poptOption options[] = {
@@ -87,12 +86,12 @@ main(int argc, char *argv[])
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-	/* Initialize parts of Nautilus (move to NautilusApplication?). */
-	preferences_initialized = nautilus_preferences_initialize (argc, argv);
+	/* Initialize global preferences. */
+	nautilus_global_preferences_startup (argc, argv);
+
 	/* FIXME bugzilla.eazel.com 672: 
-	 * Need error reporting if this fails instead of a core dump.
+	 * Need better error reporting here if preferences initialization fails.
 	 */
-	g_assert (preferences_initialized);
 	
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK

@@ -541,10 +541,20 @@ nautilus_global_preferences_shutdown (void)
 }
 
 void
-nautilus_global_preferences_startup (void)
+nautilus_global_preferences_startup (int argc, char **argv)
 {
-	global_preferences_register_for_ui ();
+	gboolean result;
 
+	/* Initialize preferences */
+	result = nautilus_preferences_initialize (argc, argv);
+
+	/* FIXME bugzilla.eazel.com 672: 
+	 * Need error reporting if this fails instead of a core dump.
+	 */
+	g_assert (result);
+	
+	global_preferences_register_for_ui ();
+	
 	/* Keep track of user level changes */
 	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 						user_level_changed_callback,

@@ -73,13 +73,15 @@ enum
 
 #define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS "/nautilus/preferences/remote_icon_text"
 
-void                      nautilus_global_preferences_startup                            (void);
-void                      nautilus_global_preferences_shutdown                           (void);
-void                      nautilus_global_preferences_show_dialog                        (void);
+void   nautilus_global_preferences_startup                                     (int    argc,
+										char **argv);
+void   nautilus_global_preferences_shutdown                                    (void);
+void   nautilus_global_preferences_show_dialog                                 (void);
 
 /* Sidebar */
-GList *                   nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
-GList *                   nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void);
+GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers  (void);
+GList *nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void);
+
 
 BEGIN_GNOME_DECLS
 
