@@ -46,9 +46,10 @@
 
 #include "nautilus-theme.h"
 
-/* static globals to hold the last accessed theme file */
+/* static globals to hold the last accessed and default theme files */
 static char	 *last_theme_name = NULL;
 static xmlDocPtr last_theme_document = NULL;
+static xmlDocPtr default_theme_document = NULL;
 
 /* return the current theme by asking the preferences machinery */
 char *
@@ -100,7 +101,7 @@ load_theme_document (const char * theme_name)
 
 /* fetch data from the current theme.  Cache the last theme file as a parsed xml document */
 char *
-nautilus_theme_get_theme_data(const char *resource_name, const char *property_name)
+nautilus_theme_get_theme_data (const char *resource_name, const char *property_name)
 {
 	char *theme_name, *temp_str;
 	char *theme_data;
@@ -110,6 +111,7 @@ nautilus_theme_get_theme_data(const char *resource_name, const char *property_na
 	
 	/* fetch the current theme name */
 	theme_data = NULL;
+	
 	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
 	if (nautilus_strcmp (theme_name, last_theme_name) == 0) {
 		theme_document = last_theme_document;
@@ -125,16 +127,33 @@ nautilus_theme_get_theme_data(const char *resource_name, const char *property_na
 	}			
 		
 	if (theme_document != NULL) {
-		/* fetch the resource node */
-				
+		/* fetch the resource node */			
 		resource_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (theme_document), resource_name);
 		if (resource_node) {		
 			temp_str = xmlGetProp(resource_node, property_name);
-			if (temp_str)
+			if (temp_str) {
 				theme_data = g_strdup (temp_str);
+				xmlFree (temp_str);
+			}
 		}
 	}
 	
+	/* if we couldn't find anything in the current theme, try the default theme */
+	if (theme_data == NULL) {
+		if (default_theme_document == NULL) {
+			default_theme_document = load_theme_document ("default");
+		}
+
+		resource_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (default_theme_document), resource_name);
+		if (resource_node) {		
+			temp_str = xmlGetProp(resource_node, property_name);
+			if (temp_str) {
+				theme_data = g_strdup (temp_str);
+				xmlFree (temp_str);
+			}
+		}
+
+	}
 	g_free(theme_name); 
 
 	return theme_data;

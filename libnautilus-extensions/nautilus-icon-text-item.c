@@ -14,6 +14,8 @@
 #include "nautilus-icon-text-item.h"
 
 #include "nautilus-entry.h"
+#include "nautilus-theme.h"
+
 #include <libnautilus/nautilus-undo.h>
 #include "nautilus-gdk-extensions.h"
 
@@ -382,6 +384,20 @@ iti_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 	priv->need_state_update = FALSE;
 }
 
+/* utility to fetch a color from a theme */
+static void
+fetch_themed_color (const char *property_name, GdkColor *color)
+{
+	char *color_string;
+	
+	color_string = nautilus_theme_get_theme_data ("icon", property_name);
+	if (color_string == NULL) {
+		color_string = g_strdup ("rgb:FFFF/FFFF/FFFF");
+	}
+	gdk_color_parse (color_string, color);
+	g_free (color_string);
+}
+
 /* Draw the icon text item's text when it is being edited */
 static void
 iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
@@ -419,11 +435,11 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	sgc = style->fg_gc [GTK_STATE_SELECTED];
 	bsgc = style->bg_gc [GTK_STATE_SELECTED];
 
-	/* FIXME bugzilla.eazel.com 2568: Get these values from prefs when they are saved there */
-	gdk_color_parse ("rgb:00/00/00", &highlight_background_color);
-	gdk_color_parse ("rgb:FF/FF/FF", &highlight_text_color);
-	gdk_color_parse ("rgb:FF/FF/FF", &fill_color);
-
+	/* fetch the colors from the theme */
+	fetch_themed_color ("HIGHLIGHT_BACKGROUND_COLOR",  &highlight_background_color);
+	fetch_themed_color ("HIGHLIGHT_TEXT_COLOR",  &highlight_text_color);
+	fetch_themed_color ("TEXT_FILL_COLOR",  &fill_color);
+	
 	/* Set up user defined colors */
 	canvas_item = GNOME_CANVAS_ITEM (iti);
 	gdk_colormap_alloc_color

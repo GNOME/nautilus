@@ -1,3 +1,16 @@
+2000-09-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(fetch_themed_color), (iti_paint_text):
+	fixed bug 2568, hardwired colors in icon_text_item, by fetching
+	them from the theme
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_get_theme_data):
+	made the theme machinery look in the default theme when it can't find
+	a property in the current theme
+	* icons/default.xml:
+	defined default icon text colors
+
 2000-09-11  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal
