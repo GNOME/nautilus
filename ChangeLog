@@ -1,5 +1,15 @@
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3577 (Menu item initially titled "Edit Settings" instead
+	of "Edit <user level> Settings"
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Call update_user_level_menu_items after installing; it had been
+	doing most of the guts of update_user_level_menu_items in-line,
+	but not this part.
+
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus-extensions/nautilus-bonobo-extensions.h:
 	* libnautilus-extensions/nautilus-bonobo-extensions.c:
 	(nautilus_bonobo_get_label): New function, does the obvious.

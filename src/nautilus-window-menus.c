@@ -1254,9 +1254,6 @@ add_user_level_menu_item (NautilusWindow *window,
 void 
 nautilus_window_initialize_menus (NautilusWindow *window)
 {
-	char *new_user_level_icon_name;
-	guint new_user_level;
-
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
@@ -1328,12 +1325,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 				  NAUTILUS_USER_LEVEL_INTERMEDIATE);
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
 				  NAUTILUS_USER_LEVEL_HACKER);
-	new_user_level = nautilus_user_level_manager_get_user_level ();
-	new_user_level_icon_name = get_user_level_icon_name (new_user_level, FALSE);
-	/* the line below is disabled because of a bug in bonobo */
-	nautilus_bonobo_set_icon (window->details->shell_ui,
-				  NAUTILUS_MENU_PATH_USER_LEVEL,
-				  new_user_level_icon_name);
+	update_user_level_menu_items (window);				  
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
 	/* connect to the user level changed signal, so we can update the menu when the
