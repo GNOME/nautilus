@@ -39,8 +39,8 @@ nautilus_service_install_view_SOURCES =		        \
 	$(NULL)
 
 nautilus_service_install_view_LDADD =								\
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(top_builddir)/libnautilus/libnautilus.la						\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la			\
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la			\
 	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la		\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la		\

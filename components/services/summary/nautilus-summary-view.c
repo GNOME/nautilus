@@ -22,54 +22,43 @@
  */
 
 #include <config.h>
-
-
 #include "nautilus-summary-view.h"
 
-#include "eazel-summary-shared.h"
-#include "nautilus-summary-view-private.h"
-
-#include "nautilus-summary-callbacks.h"
-#include "nautilus-summary-menu-items.h"
-#include "nautilus-summary-dialogs.h"
-#include "nautilus-summary-footer.h"
-
+#include "eazel-services-extensions.h"
 #include "eazel-services-footer.h"
 #include "eazel-services-header.h"
-#include "eazel-services-extensions.h"
-
-#ifdef HAVE_RPM
-#include "../inventory/eazel-inventory.h"
-#endif
-
+#include "eazel-summary-shared.h"
+#include "nautilus-summary-callbacks.h"
+#include "nautilus-summary-dialogs.h"
+#include "nautilus-summary-footer.h"
+#include "nautilus-summary-menu-items.h"
+#include "nautilus-summary-view-private.h"
+#include <bonobo/bonobo-control.h>
 #include <eel/eel-background.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <eel/eel-clickable-image.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-label.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-tabs.h>
 #include <eel/eel-viewport.h>
-
+#include <gnome.h>
+#include <gtk/gtkalignment.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-tabs.h>
 #include <liboaf/liboaf.h>
-#include <libtrilobite/trilobite-redirect.h>
 #include <libtrilobite/eazelproxy.h>
 #include <libtrilobite/libammonite.h>
-
-#include <bonobo/bonobo-control.h>
-#include <gtk/gtkalignment.h>
-
-#include <gnome.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libtrilobite/trilobite-redirect.h>
 #include <stdio.h>
 #include <unistd.h>
+#ifdef HAVE_RPM
+#include "../inventory/eazel-inventory.h"
+#endif
 
 #define notDEBUG_TEST	1
 #define notDEBUG_PEPPER	1

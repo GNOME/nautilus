@@ -13,6 +13,8 @@ INCLUDES =								\
 	-I$(top_builddir)/components/services/trilobite/sample/lib	\
 	-I$(top_srcdir)/components/services/trilobite/sample/lib	\
 	-I../server/							\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GCONF_CFLAGS) 						\
 	$(GNOME_CFLAGS) 						\
 	$(GNOME_INCLUDEDIR) 						\
@@ -31,6 +33,8 @@ trilobite_eazel_sample_service_LDADD =				\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la \
 	$(top_builddir)/components/services/trilobite/sample/lib/libsample_corba.a \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS) \
 	$(NULL)
 

@@ -63,7 +63,6 @@ void trilobite_main_quit (void);
 
 const char *trilobite_get_useragent_string (char *suffix);
 const char *trilobite_get_config_dir_string (void);
-gboolean trilobite_setenv (const char *name, const char *value, gboolean overwrite);
 
 #endif /* TRILOBITE_CORE_UTILS_H */
 

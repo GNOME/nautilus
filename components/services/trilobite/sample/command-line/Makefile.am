@@ -11,6 +11,8 @@ INCLUDES =								\
 	-I$(top_builddir)/components/services/trilobite/libtrilobite	\
 	-I$(top_srcdir)/components/services/trilobite/sample/lib	\
 	-I$(top_builddir)/components/services/trilobite/sample/lib	\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS)						\
 	$(GCONF_CFLAGS)							\
 	$(XML_CFLAGS)							\
@@ -24,6 +26,8 @@ eazel_sample_client_SOURCES =						\
 	$(NULL)
 
 eazel_sample_client_LDADD =						\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)							\
 	$(GNOMEUI_LIBS)							\
 	$(GCONF_LIBS)							\

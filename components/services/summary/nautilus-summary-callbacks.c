@@ -22,26 +22,22 @@
  */
 
 #include <config.h>
+#include "nautilus-summary-callbacks.h"
 
-#include <libgnomeui/gnome-stock.h>
-#include <stdio.h>
-#include <unistd.h>
-
-#include <orb/orbit.h>
-#include <liboaf/liboaf.h>
-#include <bonobo/bonobo-main.h>
-
-#include <eel/eel-caption-table.h>
-#include <libtrilobite/eazelproxy.h>
-#include <libtrilobite/libammonite.h>
-#include <libtrilobite/trilobite-redirect.h>
-
-#include "nautilus-summary-view.h"
 #include "eazel-summary-shared.h"
 #include "nautilus-summary-dialogs.h"
 #include "nautilus-summary-menu-items.h"
-#include "nautilus-summary-callbacks.h"
 #include "nautilus-summary-view-private.h"
+#include <bonobo/bonobo-main.h>
+#include <eel/eel-caption-table.h>
+#include <libgnomeui/gnome-stock.h>
+#include <liboaf/liboaf.h>
+#include <libtrilobite/eazelproxy.h>
+#include <libtrilobite/libammonite.h>
+#include <libtrilobite/trilobite-redirect.h>
+#include <orb/orbit.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #define notDEBUG_PEPPER	1
 

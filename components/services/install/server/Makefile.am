@@ -12,6 +12,8 @@ INCLUDES = \
 	-I$(top_builddir)/components/services/install/lib \
 	-I$(top_builddir)/components/services/trilobite \
 	-I$(top_builddir)/components/services/trilobite/libtrilobite \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GHTTP_CFLAGS) 	\
 	$(GCONF_CFLAGS) 	\
 	$(GNOME_CFLAGS) 	\
@@ -43,6 +45,8 @@ trilobite_eazel_install_service_LDADD =								\
 	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la		\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la	 	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la 	\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(GNOMEUI_LIBS) 									\
 	$(VFS_LIBS)										\
 	$(BONOBO_LIBS) 										\

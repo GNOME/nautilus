@@ -53,7 +53,6 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-core-distribution.h		\
 	trilobite-core-network.h		\
 	trilobite-core-utils.h			\
-	trilobite-file-utilities.h		\
 	trilobite-i18n.h			\
 	trilobite-root-helper.h			\
 	trilobite-root-client-public.h		\
@@ -67,7 +66,6 @@ libtrilobite_la_SOURCES =			\
 	trilobite-core-distribution.c		\
 	trilobite-core-network.c		\
 	trilobite-core-utils.c			\
-	trilobite-file-utilities.c		\
 	trilobite-root-helper.c			\
 	trilobite-root-client.c			\
 	trilobite-redirect.c			\

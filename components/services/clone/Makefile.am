@@ -12,6 +12,8 @@ INCLUDES =								\
         -I$(top_srcdir)/components/services/install/lib			\
         -I$(top_builddir)/components/services/install/lib		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOME_CFLAGS)							\
 	$(GCONF_CFLAGS)							\
 	$(VFS_CFLAGS)							\
@@ -24,6 +26,8 @@ LDADD =											\
         $(top_builddir)/components/services/install/lib/libeazelinstall.la		\
         $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
 	$(top_builddir)/components/services/clone/libeazelinstallclone.la		\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)									\
 	$(GNOME_LIBS)									\
 	$(GCONF_LIBS)									\

@@ -25,16 +25,16 @@
 
 #include "eazel-summary-shared.h"
 
-#include <libtrilobite/libtrilobite.h>
-#include <libtrilobite/trilobite-file-utilities.h>
-#include <gnome.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
+#include <ctype.h>
+#include <eel/eel-vfs-extensions.h>
 #include <glib.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/tree.h>
+#include <gnome.h>
+#include <libtrilobite/libtrilobite.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <ctype.h>
 
 static GList * build_services_glist_from_xml (xmlNodePtr node);
 static GList * build_eazel_news_glist_from_xml (xmlNodePtr node);
@@ -327,7 +327,7 @@ eazel_summary_data_parse_xml (char *body,
 
 
 struct EazelSummaryFetchHandle {
-	TrilobiteReadFileHandle *handle;
+	EelReadFileHandle *handle;
 	EazelSummaryFetchCallback callback;
 	gpointer callback_data;
 };
@@ -369,7 +369,7 @@ eazel_summary_fetch_data_async (const char *uri,
 	handle->callback = callback;
 	handle->callback_data = callback_data;
 
-	handle->handle = trilobite_read_entire_file_async (uri, summary_data_fetch_callback, handle);
+	handle->handle = eel_read_entire_file_async (uri, summary_data_fetch_callback, handle);
 
 	return handle;
 }
@@ -378,7 +378,7 @@ eazel_summary_fetch_data_async (const char *uri,
 void
 eazel_summary_fetch_data_cancel (EazelSummaryFetchHandle *handle)
 {
-	trilobite_read_file_cancel (handle->handle);
+	eel_read_file_cancel (handle->handle);
 	g_free (handle);
 }
 

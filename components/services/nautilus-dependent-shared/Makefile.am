@@ -35,7 +35,7 @@ libnautilusdepshared_a_SOURCES =\
 
 test_footer_header_LDADD = \
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(EEL_LIBS) \
 	$(LIBRSVG_LIBS) \

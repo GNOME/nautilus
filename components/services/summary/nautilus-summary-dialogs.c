@@ -28,7 +28,6 @@
 #include <eel/eel-background.h>
 #include <eel/eel-string.h>
 #include <eel/eel-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <eel/eel-image.h>
 
 #include <libgnomeui/gnome-stock.h>

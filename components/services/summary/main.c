@@ -25,15 +25,17 @@
    content view component. */
 
 #include <config.h>
-#include <gnome.h>
-#include <liboaf/liboaf.h>
-#include <bonobo.h>
+
 #include "nautilus-summary-view.h"
+#include <bonobo.h>
+#include <eel/eel-glib-extensions.h>
 #include <gconf/gconf.h>
+#include <gnome.h>
+#include <libgnomevfs/gnome-vfs-init.h>
+#include <liboaf/liboaf.h>
 #include <libtrilobite/libammonite.h>
 #include <libtrilobite/trilobite-core-messaging.h>
 #include <libtrilobite/trilobite-core-utils.h>
-#include <libgnomevfs/gnome-vfs-init.h>
 
 static int object_count =0;
 
@@ -95,7 +97,7 @@ main (int argc, char *argv[])
 		    argc, argv);
 	gdk_rgb_init ();
 
-	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), 1);
+	eel_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), 1);
 	g_thread_init (NULL);
 	gnome_vfs_init ();
 

@@ -29,16 +29,16 @@
 
 #include "trilobite-core-network.h"
 #include "trilobite-core-utils.h"
-#include "trilobite-file-utilities.h"
-#include <libgnomevfs/gnome-vfs.h>
-#include <gconf/gconf.h>
+#include <ctype.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gconf/gconf-engine.h>
-#include <gnome-xml/parser.h>
+#include <gconf/gconf.h>
 #include <glib.h>
+#include <gnome-xml/parser.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 static gboolean trilobite_redirect_parse_xml (char *blob, 
 					      int   length);
@@ -195,7 +195,7 @@ bad:
 
 
 struct TrilobiteRedirectFetchHandle {
-	TrilobiteReadFileHandle *handle;
+	EelReadFileHandle *handle;
 	TrilobiteRedirectFetchCallback callback;
 	gpointer callback_data;
 };
@@ -236,7 +236,7 @@ trilobite_redirect_fetch_table_async (const char *uri,
 	handle->callback = callback;
 	handle->callback_data = callback_data;
 
-	handle->handle = trilobite_read_entire_file_async (uri, redirect_fetch_callback, handle);
+	handle->handle = eel_read_entire_file_async (uri, redirect_fetch_callback, handle);
 
 	return handle;
 }
@@ -244,7 +244,7 @@ trilobite_redirect_fetch_table_async (const char *uri,
 void
 trilobite_redirect_fetch_table_cancel (TrilobiteRedirectFetchHandle *handle)
 {
-	trilobite_read_file_cancel (handle->handle);
+	eel_read_file_cancel (handle->handle);
 	g_free (handle);
 }
 

@@ -23,6 +23,9 @@
 #ifndef NAUTILUS_SUMMARY_CALLBACKS_H
 #define NAUTILUS_SUMMARY_CALLBACKS_H
 
+#include <gtk/gtkwidget.h>
+#include "nautilus-summary-view.h"
+
 void	login_button_cb				(GtkWidget			*button,
 						 NautilusSummaryView		*view);
 void	preferences_button_cb			(GtkWidget			*button,

@@ -65,7 +65,6 @@ trilobite_eazel_time_view_SOURCES =		\
 trilobite_eazel_time_view_LDADD =			\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(GNOMEUI_LIBS)					\
 	$(BONOBO_LIBS)					\
 	$(GCONF_LIBS) \

@@ -30,7 +30,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-image.h>
 #include <eel/eel-label.h>
-#include <libnautilus-extensions/nautilus-theme.h>
 #include <eel/eel-clickable-image.h>
 
 #include <gtk/gtksignal.h>

@@ -1,5 +1,59 @@
 2001-04-04  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/mozilla/Makefile.am:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	* components/services/clone/Makefile.am:
+	* components/services/install-view/Makefile.am:
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_query):
+	* components/services/install/server/Makefile.am:
+	* components/services/inventory-view/Makefile.am:
+	* components/services/inventory/Makefile.am:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/nautilus-change-password-view.c:
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	* components/services/nautilus-dependent-shared/eazel-services-header.c:
+	* components/services/summary/Makefile.am:
+	* components/services/summary/eazel-summary-shared.c:
+	(eazel_summary_fetch_data_async),
+	(eazel_summary_fetch_data_cancel):
+	* components/services/summary/main.c: (main):
+	* components/services/summary/nautilus-summary-callbacks.c:
+	* components/services/summary/nautilus-summary-callbacks.h:
+	* components/services/summary/nautilus-summary-dialogs.c:
+	* components/services/summary/nautilus-summary-footer.c:
+	* components/services/summary/nautilus-summary-menu-items.c:
+	* components/services/summary/nautilus-summary-menu-items.h:
+	* components/services/summary/nautilus-summary-view.c:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/libtrilobite/trilobite-core-network.c:
+	(trilobite_open_uri):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	(trilobite_get_config_dir_string):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h:
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_redirect_fetch_table_async),
+	(trilobite_redirect_fetch_table_cancel):
+	* components/services/trilobite/sample/command-line/Makefile.am:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	* components/services/trilobite/utils/Makefile.am:
+	Lots of components cleanup.  Remove many unused #includes.
+	Replace cut-n-paste code with eel.  Fix Makefiles to link only the
+	stuff that is needed.  This is an effort to minimize the
+	dependence on libnautilus-extensions.  Theres a few dependencies
+	left to go.
+		
+	* components/services/trilobite/libtrilobite/trilobite-file-utilities.c:
+	* components/services/trilobite/libtrilobite/trilobite-file-utilities.h:
+	Retire this cut-n-paste code.  Use the vfs extensions from eel
+	instead.
+	
+2001-04-04  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-file-utilities.c:
 	* libnautilus-extensions/nautilus-file-utilities.h:
 	Move vfs extensions to eel.

@@ -61,7 +61,6 @@
 #include <libgnomeui/gnome-dialog-util.h>
 
 #include <eel/eel-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 #ifdef EAZEL_SERVICES
 #include <libtrilobite/libammonite-gtk.h>

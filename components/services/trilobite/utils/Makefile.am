@@ -10,6 +10,8 @@ INCLUDES =								\
         -I$(top_srcdir)/components/services/trilobite			\
         -I$(top_builddir)/components/services/trilobite			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOME_CFLAGS)							\
 	$(GCONF_CFLAGS)							\
 	$(VFS_CFLAGS)							\
@@ -19,6 +21,8 @@ INCLUDES =								\
 
 LDADD =											\
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la	\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)									\
 	$(GNOME_LIBS)									\
 	$(GCONF_LIBS)									\

@@ -22,47 +22,37 @@
  */
 
 #include <config.h>
+#include "eazel-services-footer.h"
 
+#include "eazel-services-extensions.h"
+#include "eazel-services-footer.h"
+#include "eazel-services-header.h"
+#include "eazel-summary-shared.h"
+#include "nautilus-summary-callbacks.h"
+#include "nautilus-summary-dialogs.h"
+#include "nautilus-summary-footer.h"
+#include "nautilus-summary-view-private.h"
+#include "nautilus-summary-view.h"
 #include <bonobo/bonobo-control.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-
+#include <bonobo/bonobo-main.h>
 #include <eel/eel-background.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <eel/eel-caption-table.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-tabs.h>
-
 #include <libgnomeui/gnome-stock.h>
-#include <stdio.h>
-#include <unistd.h>
-
-#include <orb/orbit.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <liboaf/liboaf.h>
-#include <libtrilobite/trilobite-redirect.h>
 #include <libtrilobite/eazelproxy.h>
 #include <libtrilobite/libammonite.h>
-#include <bonobo/bonobo-main.h>
-
-#include "nautilus-summary-view.h"
-#include "eazel-summary-shared.h"
-
-#include "eazel-services-footer.h"
-#include "eazel-services-header.h"
-#include "eazel-services-extensions.h"
-
-#include "nautilus-summary-callbacks.h"
-#include "nautilus-summary-dialogs.h"
-#include "nautilus-summary-footer.h"
-#include "nautilus-summary-view-private.h"
+#include <libtrilobite/trilobite-redirect.h>
+#include <orb/orbit.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #define notDEBUG_TEST	1
 #define notDEBUG_PEPPER	1

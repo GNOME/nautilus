@@ -22,11 +22,13 @@
  */
 
 #include <config.h>
-#include <libtrilobite/trilobite-core-utils.h>
-#include <libtrilobite/trilobite-core-network.h>
 #include "eazel-softcat.h"
-#include "eazel-softcat-private.h"
+
 #include "eazel-install-xml-package-list.h"
+#include "eazel-softcat-private.h"
+#include <eel/eel-glib-extensions.h>
+#include <libtrilobite/trilobite-core-network.h>
+#include <libtrilobite/trilobite-core-utils.h>
 
 /* used for gnome_vfs_escape_string */
 #ifndef EAZEL_INSTALL_SLIM
@@ -711,7 +713,7 @@ eazel_softcat_query (EazelSoftCat *softcat, GList *packages, int sense_flags, in
 	}
 	trilobite_debug ("package search url: %s", search_url);
 
-	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), TRUE);
+	eel_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), TRUE);
 
 	for (got_happy = FALSE, tries_left = softcat->private->retries;
 	     !got_happy && (tries_left > 0);

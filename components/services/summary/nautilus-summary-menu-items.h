@@ -23,6 +23,9 @@
 #ifndef NAUTILUS_SUMMARY_MENU_ITEMS_H
 #define NAUTILUS_SUMMARY_MENU_ITEMS_H
 
+#include <bonobo/bonobo-control.h>
+#include "nautilus-summary-view.h"
+
 void	merge_bonobo_menu_items		(BonoboControl		*control,
 					 gboolean		state,
 					 gpointer		user_data);

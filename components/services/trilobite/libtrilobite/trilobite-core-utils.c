@@ -291,26 +291,3 @@ trilobite_get_config_dir_string ()
 	
 	return res;
 }
-
-/* copied from libnautilus-extensions */
-gboolean
-trilobite_setenv (const char *name, const char *value, gboolean overwrite)
-{
-#if defined (HAVE_SETENV)
-	return (setenv (name, value, overwrite) == 0);
-#else
-	char *string = NULL;
-
-	if (!overwrite && getenv (name) != NULL) {
-		return FALSE;
-	}
-
-	/* This results in a leak when you overwrite existing
-	 * settings. It would be fairly easy to fix this by keeping
-	 * our own parallel array or hash table.
-	 * FIXME: bugzilla.eazel.com 2900
-	 */
-	string = g_strconcat (name, "=", value, NULL);
-	return putenv (string);
-#endif
-}

@@ -49,11 +49,11 @@ nautilus_summary_view_SOURCES =			\
 	$(NULL)
 
 nautilus_summary_view_LDADD =									\
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la		\
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a	\
 	$(INVENTORY_LIBS)									\
 	$(top_builddir)/libnautilus/libnautilus.la						\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la			\
 	$(EEL_LIBS) \
 	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)										\

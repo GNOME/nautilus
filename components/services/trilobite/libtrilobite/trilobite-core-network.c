@@ -27,11 +27,11 @@
 #include "trilobite-core-network.h"
 
 #include "trilobite-core-utils.h"
+#include <eel/eel-glib-extensions.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 
 /* function for lazy bastards who can't be bothered to figure out the format of the xml they're parsing:
  * it checks for a property with the name, and then if there isn't one, then it tries to find a child
@@ -74,7 +74,7 @@ trilobite_open_uri (const char *uri_text)
 	GnomeVFSHandle *handle = NULL;
 
 	if (! gnome_vfs_initialized ()) {
-		trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), 1);
+		eel_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), 1);
 
 		if (! gnome_vfs_init ()) {
 			g_warning ("cannot initialize gnome-vfs!");
