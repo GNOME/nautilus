@@ -42,7 +42,7 @@ struct NautilusComplexSearchBarDetails {
 	GtkWidget *more_options;
 	GtkWidget *fewer_options;
 
-	NautilusSearchBarCriterionList *search_criteria;
+	GSList *search_criteria;
 	gchar *undo_text;
 	gboolean undo_registered;
 };
@@ -105,8 +105,8 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 
 	bar->details->table = GTK_TABLE (gtk_table_new (1, 1, FALSE));
 	file_name_criterion = nautilus_search_bar_criterion_first_new ();
-	bar->details->search_criteria = g_list_append (NULL,
-						       file_name_criterion);
+	bar->details->search_criteria = g_slist_append (NULL,
+							file_name_criterion);
 	attach_criterion_to_search_bar (bar, file_name_criterion, 1);
 	nautilus_search_bar_criterion_show (file_name_criterion);
 
@@ -120,7 +120,7 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	hbox = gtk_hbox_new (0, FALSE);
 
 	bar->details->more_options = gtk_button_new_with_label ("More Options");
-	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "pressed",
+	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "clicked",
 			    more_options_callback, bar);
 	gtk_box_pack_start (GTK_BOX (hbox),
 			     bar->details->more_options,
@@ -128,7 +128,7 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	gtk_widget_show (bar->details->more_options);
 	
 	bar->details->fewer_options = gtk_button_new_with_label ("Fewer Options");
-	gtk_signal_connect (GTK_OBJECT (bar->details->fewer_options), "pressed",
+	gtk_signal_connect (GTK_OBJECT (bar->details->fewer_options), "clicked",
 			    fewer_options_callback, bar);
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    bar->details->fewer_options,
@@ -149,18 +149,17 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 static char *                     
 nautilus_complex_search_bar_get_location  (NautilusComplexSearchBar *bar)
 {
-	return "file:///tmp";
-	/* char *location;
-	NautilusSearchBarCriterionList *criterion;
+	char *location;
+	GSList *criteria;
 
 	g_return_val_if_fail (bar->details->search_criteria != NULL, "search:[file:///]");
-	   location = g_strdup ("search:[file:///]");
-	   for (criterion = bar->details->search_criteria; criterion != NULL; criterion = criterion->next) {
-	   location = g_strconcat (location, "");
-	   }
-	   return "fixme"; */
-	
-}		
+	location = g_strdup ("search:[file:///]");
+	for (criteria = bar->details->search_criteria; criteria != NULL; criteria = criteria->next) {
+		location = g_strconcat (location, "");
+	}
+	return "fixme";
+
+}
 
 static void                       
 nautilus_complex_search_bar_set_search_controls (NautilusSearchBar *bar,
@@ -229,22 +228,23 @@ static void
 more_options_callback (GtkObject *object,
 		       gpointer data)
 {
-	NautilusSearchBarCriterion *criterion;
+	NautilusSearchBarCriterion *criterion, *last_criterion;
 	NautilusComplexSearchBar *bar;
+	GSList *list;
   
 	g_return_if_fail (GTK_IS_BUTTON (object));
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (data));
 
 	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
 
-	bar->details->search_criteria = 
-		nautilus_search_bar_criterion_next_new (bar->details->search_criteria);
-	criterion = nautilus_search_bar_criterion_list_get_last (bar->details->search_criteria);
+	list = bar->details->search_criteria;
+	last_criterion = (NautilusSearchBarCriterion *)((g_slist_last (list))->data);
+	criterion = nautilus_search_bar_criterion_next_new (last_criterion);
+	bar->details->search_criteria = g_slist_append (list, criterion);
+
 	attach_criterion_to_search_bar (bar, criterion, 
-					g_list_length (bar->details->search_criteria));
+					g_slist_length (bar->details->search_criteria));
 	nautilus_search_bar_criterion_show (criterion);
-	bar->details->search_criteria = g_list_append (bar->details->search_criteria,
-						       criterion);
 
 }
 
@@ -255,25 +255,39 @@ fewer_options_callback (GtkObject *object,
 {
 	NautilusSearchBarCriterion *criterion;
 	NautilusComplexSearchBar *bar;
-	int prior_length;
+	GSList *last;
+	int old_length, new_length;
 
 	g_return_if_fail (GTK_IS_BUTTON (object));
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (data));
 
 	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
 
+	old_length = g_slist_length (bar->details->search_criteria);
+	if (old_length == 1) {
+		return;
+	}
 
-	criterion = nautilus_search_bar_criterion_list_get_last (bar->details->search_criteria);
-
+	last = g_slist_last (bar->details->search_criteria);
+	criterion = (NautilusSearchBarCriterion *) last->data;
 	unattach_criterion_from_search_bar (bar, criterion);
-	prior_length = g_list_length (bar->details->search_criteria);
-	bar->details->search_criteria = g_list_remove (bar->details->search_criteria, 
-						       criterion);
+	bar->details->search_criteria = g_slist_remove (bar->details->search_criteria, 
+							criterion);
+
 	/* Assert that the old criteria got removed from the criteria list */
-	g_assert (prior_length == 0 || g_list_length (bar->details->search_criteria) + 1 == prior_length);
+	new_length = g_slist_length (bar->details->search_criteria);
+	g_assert ( new_length + 1 == old_length);
 	/* nautilus_search_bar_criterion_destroy (criterion); */
-	gtk_table_resize (bar->details->table, 3, g_list_length (bar->details->search_criteria));
-	
+	gtk_table_resize (bar->details->table, 3, new_length);
+
+	/* FIXME: the folowing is pretty much evil since it relies on the run-time
+	   widget hierarchy of the nautilus toolbar. 
+	   Any better fix is wellcome.
+	*/
+	gtk_widget_queue_resize (GTK_WIDGET (bar->details->bar_container)->parent->parent->parent->parent->parent->parent->parent->parent);
 }
+
+
+
 
 

@@ -48,8 +48,6 @@ typedef struct NautilusSearchBarCriterionDetails NautilusSearchBarCriterionDetai
 
 #define NAUTILUS_SEARCH_BAR_CRITERION(arg) (NautilusSearchBarCriterion *) arg
 
-typedef GList NautilusSearchBarCriterionList;
-
 typedef struct NautilusSearchBarCriterion {
 	NautilusSearchBarCriterionDetails *details;
 	NautilusSearchBarCriterionType type;
@@ -59,15 +57,26 @@ typedef struct NautilusSearchBarCriterion {
 
 NautilusSearchBarCriterion *       nautilus_search_bar_criterion_first_new        (void);
 
-NautilusSearchBarCriterionList *   nautilus_search_bar_criterion_next_new          (NautilusSearchBarCriterionList *criteria);
+NautilusSearchBarCriterion *       nautilus_search_bar_criterion_next_new          (NautilusSearchBarCriterion *criterion);
 
 void                               nautilus_search_bar_criterion_show             (NautilusSearchBarCriterion *criterion);
 void                               nautilus_search_bar_criterion_hide             (NautilusSearchBarCriterion *criterion);
 
-NautilusSearchBarCriterion *       nautilus_search_bar_criterion_list_get_last    (NautilusSearchBarCriterionList *criteria);
 void                               nautilus_search_bar_criterion_destroy          (NautilusSearchBarCriterion *criterion);
 
 
 
 
 #endif NAUTILUS_SEARCH_BAR_CRITERION_H
+
+
+
+
+
+
+
+
+
+
+
+

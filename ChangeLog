@@ -1,3 +1,20 @@
+2000-07-27  Mathieu Lacage  <set EMAIL_ADDRESS environment variable>
+
+	Fixes a number of bugs from rebecka latest commit.
+	The UI for search is almost working. I will finish it
+	tomorow and will hook it onto medusa quickly.
+	
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	(number_from_type),
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_first_new):
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize),
+	(nautilus_complex_search_bar_get_location),
+	(more_options_callback), (fewer_options_callback):
+
 2000-07-27  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-model.c:

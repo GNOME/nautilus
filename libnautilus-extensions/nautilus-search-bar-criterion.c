@@ -38,101 +38,129 @@
 
 #include <libgnomeui/gnome-uidefs.h>
 
+typedef struct criteria_table_element {
+	NautilusSearchBarCriterionType type;
+	char *title;
+} criteria_table_element;
 
-static char *criteria_titles[] = {
-	_("Name"),
-	_("Content"),
-	_("Type"),
-	_("Stored"),
-	_("Size"),
-	_("With Note"),
-	_("With Emblem"),
-	_("Last Modified"),
-	_("Owned By"),
-	NULL
+static criteria_table_element criteria_table [] = {
+	{ NAUTILUS_FILE_NAME_SEARCH_CRITERION,
+	  N_("Name") },
+	{ NAUTILUS_CONTENT_SEARCH_CRITERION,
+	  N_("Content") },
+	{ NAUTILUS_FILE_TYPE_SEARCH_CRITERION,
+	  N_("Type") },
+	{ NAUTILUS_LOCATION_SEARCH_CRITERION,
+	  N_("Stored") },
+	{ NAUTILUS_SIZE_SEARCH_CRITERION,
+	  N_("Size") },
+	{ NAUTILUS_NOTES_SEARCH_CRITERION,
+	  N_("With Note") },
+	{ NAUTILUS_EMBLEM_SEARCH_CRITERION,
+	  N_("With Emblem") },
+	{ NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
+	  N_("Last Modified") },
+	{ NAUTILUS_OWNER_SEARCH_CRITERION,
+	  N_("Owned By") },
+	{ NAUTILUS_LAST_CRITERION,
+	  NULL},
+	{ 0, NULL }
 };
 
 static char *name_relations [] = {
-	_("contains"),
-	_("starts with"),
-	_("ends with"),
-	_("matches glob"),
-	_("matches regexp"),
+	N_("contains"),
+	N_("starts with"),
+	N_("ends with"),
+	N_("matches glob"),
+	N_("matches regexp"),
 	NULL
 };
 
 static char *content_relations [] = {
-	_("includes"),
-	_("does not include"),
+	N_("includes"),
+	N_("does not include"),
 	NULL
 
 };
 
 static char *type_relations [] = {
-	_("is"),
-	_("is not"),
+	N_("is"),
+	N_("is not"),
 	NULL
 };
 
 static char *type_options [] = {
-	_("regular file"),
-	_("text file"),
-	_("application"),
-	_("directory"),
-	_("music"),
+	N_("regular file"),
+	N_("text file"),
+	N_("application"),
+	N_("directory"),
+	N_("music"),
 	NULL
 };
 
 static char *location_relations [] = {
-	_("is"),
+	N_("is"),
 	NULL
 };
 
 static char *location_options [] = {
-	_("on this computer"),
-	_("in my vault"),
+	N_("on this computer"),
+	N_("in my vault"),
 	NULL
 };
 
 static char *size_relations [] = {
-	_("larger than"),
-	_("smaller than"),
+	N_("larger than"),
+	N_("smaller than"),
 	NULL
 };
 
+static char *size_options [] = {
+	N_("1 KB"),
+	N_("10 KB"),
+	N_("100 KB"),
+	N_("1 MB"),
+	N_("10 MB"),
+	N_("100 MB"),
+	NULL
+};
+
+
 static char *notes_relations [] = {
-	_("including"),
-	_("not including"),
+	N_("including"),
+	N_("not including"),
 	NULL
 };
 
 static char *emblem_relations [] = {
-	_("marked with"),
-	_("not marked with"),
+	N_("marked with"),
+	N_("not marked with"),
 	NULL
 };
 
 static char *emblem_options [] = {
-	/* FIXME: add emblem possibilities here */
+	/* FIXME: add emblem possibilities here.
+	   likely to be icon filenames
+	*/
 	NULL
 };
 	
 static char *modified_relations [] = {
-	_("after"),
-	_("before"),
+	N_("after"),
+	N_("before"),
 	NULL
 };
 
 static char *modified_options [] = {
-	_("today"),
-	_("this week"),
-	_("this month"),
+	N_("today"),
+	N_("this week"),
+	N_("this month"),
 	NULL
 };
 
 static char *owner_relations [] = {
-	_("is"),
-	_("is not"),
+	N_("is"),
+	N_("is not"),
 	NULL
 };
 
@@ -146,6 +174,22 @@ static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_value
 
 NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
 
+
+static int number_from_type (NautilusSearchBarCriterionType type);
+
+static int number_from_type (NautilusSearchBarCriterionType type) 
+{
+	int i;
+
+	for (i = 0; criteria_table[i].title != NULL; i++) {
+		if (criteria_table[i].type == type) {
+			return i;
+		}
+	}
+	
+	return 0;
+}
+
 void
 nautilus_search_bar_criterion_destroy (NautilusSearchBarCriterion *criterion)
 {
@@ -158,6 +202,7 @@ nautilus_search_bar_criterion_new (void)
 {
 	return g_new0 (NautilusSearchBarCriterion, 1);
 }
+
 
 static NautilusSearchBarCriterion *
 nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType type,
@@ -179,13 +224,16 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 	search_criteria_option_menu = gtk_option_menu_new ();
 	search_criteria_menu = gtk_menu_new ();
-	for (i = 0; criteria_titles[i] != NULL; i++) {
+	for (i = 0; criteria_table[i].title != NULL; i++) {
 		gtk_menu_append (GTK_MENU (search_criteria_menu),
-				 gtk_menu_item_new_with_label (criteria_titles[i]));
+				 gtk_menu_item_new_with_label (_(criteria_table[i].title)));
 	}
+	gtk_menu_set_active (GTK_MENU (search_criteria_menu), number_from_type (type));
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (search_criteria_option_menu),
 				  search_criteria_menu);
-	gtk_menu_set_active (GTK_MENU (search_criteria_menu), type);
+
+
+
 	criterion->details->available_option_menu = GTK_OPTION_MENU (search_criteria_option_menu);
 	g_return_val_if_fail (operator_menu != NULL, NULL);
 	
@@ -193,7 +241,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	operator_menu = gtk_menu_new ();
 	for (i = 0; operator_options[i] != NULL; i++) {
 		gtk_menu_append (GTK_MENU (operator_menu),
-				 gtk_menu_item_new_with_label (operator_options[i]));
+				 gtk_menu_item_new_with_label (_(operator_options[i])));
 	}
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (operator_option_menu),
 				  operator_menu);
@@ -211,7 +259,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		value_menu = gtk_menu_new ();
 		for (i = 0; value_options[i] != NULL; i++) {
 			gtk_menu_append (GTK_MENU (value_menu),
-					 gtk_menu_item_new_with_label (value_options[i]));
+					 gtk_menu_item_new_with_label (_(value_options[i])));
 		}
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (value_option_menu),
 					  value_menu);
@@ -223,19 +271,13 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 }
 
 
-NautilusSearchBarCriterionList *
-nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionList *criteria)
+NautilusSearchBarCriterion *
+nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterion *criterion)
 {
-	NautilusSearchBarCriterion *last_criterion;
 	NautilusSearchBarCriterion *new_criterion;
 	NautilusSearchBarCriterionType next_type;
 
-	if (criteria == NULL) {
-		return g_list_append (NULL,
-				      nautilus_search_bar_criterion_first_new ());
-	}
-	last_criterion = nautilus_search_bar_criterion_list_get_last (criteria);
-	next_type = get_next_default_search_criterion_type (last_criterion->details->type);
+	next_type = get_next_default_search_criterion_type (criterion->details->type);
 
 	switch(next_type) {
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
@@ -269,9 +311,9 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionList *criteria
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_SIZE_SEARCH_CRITERION,
 									       size_relations,
-									       TRUE,
 									       FALSE,
-									       NULL);
+									       TRUE,
+									       size_options);
 		break;
 	case NAUTILUS_NOTES_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_NOTES_SEARCH_CRITERION,
@@ -306,9 +348,7 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionList *criteria
 	}
 	
 		
-
-	return g_list_append (criteria, new_criterion);
-	
+	return new_criterion;
 }
 
 NautilusSearchBarCriterion *
@@ -318,24 +358,10 @@ nautilus_search_bar_criterion_first_new ()
 							      name_relations,
 							      TRUE,
 							      FALSE,
-							      NULL);
- 	
+							      NULL); 	
 }
 
 
-NautilusSearchBarCriterion *
-nautilus_search_bar_criterion_list_get_last (NautilusSearchBarCriterionList *criteria)
-{
-	NautilusSearchBarCriterionList *end_of_criteria;
-	NautilusSearchBarCriterion *last_criterion;
-
-	g_return_val_if_fail (criteria != NULL, NULL);
-
-	end_of_criteria = g_list_last (criteria);
-	last_criterion = NAUTILUS_SEARCH_BAR_CRITERION (end_of_criteria->data);
-
-	return last_criterion;
-}
 
 
 NautilusSearchBarCriterionType
@@ -398,6 +424,12 @@ nautilus_search_bar_criterion_hide (NautilusSearchBarCriterion *criterion)
 		gtk_widget_hide (GTK_WIDGET (criterion->details->value_menu));
 	}
 }
+
+
+
+
+
+
 
 
 
