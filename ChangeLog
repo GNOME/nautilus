@@ -1,3 +1,19 @@
+2000-11-17  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Mathieu Lacage  <mathieu@eazel.com>
+
+	Fixed bug 4484 (leading whitespace in location bar produces
+	errors)
+	Fixed bug 4039 (Pasting URL with trailing carriage return fails, 
+	but needn't)
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_from_input): Strip leading and trailing white
+	space before any further processing; also now handles NULL with
+	return_val_if_fail.
+	(nautilus_self_check_file_utilities): Added new self-check tests
+	for white space stripping, and a couple of others.
+
 2000-11-17  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:

@@ -117,19 +117,26 @@ nautilus_format_uri_for_display (const char *uri)
 char *
 nautilus_make_uri_from_input (const char *location)
 {
-	char *path, *toreturn, *escaped;
+	char *stripped, *path, *toreturn, *escaped;
 	const char *no_method;
 	int method_length;
 
-	if (location[0] == '/') {
-		escaped = gnome_vfs_escape_path_string (location);
+	g_return_val_if_fail (location != NULL, g_strdup (""));
+
+	/* URIs can't contain leading or trailing white space,
+	 * so strip it off. This makes copy/paste of URIs less error-prone.
+	 */
+	stripped = g_strstrip (g_strdup (location));
+
+	if (stripped[0] == '/') {
+		escaped = gnome_vfs_escape_path_string (stripped);
 		toreturn = g_strconcat (DEFAULT_SCHEME, escaped, NULL);
 		g_free (escaped);
-	} else if (location[0] == '~') {
-		if (location[1] == '/') {
-			path = g_strconcat (g_get_home_dir (), &location[1], NULL);
-		} else if (location[1]) {
-			path = g_strconcat ("/home/", &location[1], NULL);
+	} else if (stripped[0] == '~') {
+		if (stripped[1] == '/') {
+			path = g_strconcat (g_get_home_dir (), &stripped[1], NULL);
+		} else if (stripped[1]) {
+			path = g_strconcat ("/home/", &stripped[1], NULL);
 		} else {
 			path = g_strdup (g_get_home_dir ());
 		}
@@ -139,9 +146,9 @@ nautilus_make_uri_from_input (const char *location)
 		g_free (escaped);
 		
 	} else {
-		no_method = strchr (location, ':');
+		no_method = strchr (stripped, ':');
 		if (no_method == NULL) {
-			no_method = location;
+			no_method = stripped;
 		} else {
 			no_method++;
 			if ((no_method[0] == '/') && (no_method[1] == '/')) {
@@ -149,14 +156,16 @@ nautilus_make_uri_from_input (const char *location)
 			}
 		}
 
-		method_length = (no_method - location);
+		method_length = (no_method - stripped);
 		escaped = gnome_vfs_escape_host_and_path_string (no_method);
 		toreturn = g_new (char, strlen (escaped) + method_length + 1);
 		toreturn[0] = '\0';
-		strncat (toreturn, location, method_length);
+		strncat (toreturn, stripped, method_length);
 		strcat (toreturn, escaped);
 		g_free (escaped);
 	}
+
+	g_free (stripped);
 
 	return toreturn;
 }
@@ -1227,6 +1236,11 @@ nautilus_self_check_file_utilities (void)
 {
 	/* nautilus_make_uri_from_input */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home"), "file:///home");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("www.eazel.com"), "www.eazel.com");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" "), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" \n\t"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" /home\n\n"), "file:///home");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu"), "http://null.stanford.edu");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu:80"), "http://null.stanford.edu:80");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://seth@null.stanford.edu:80"), "http://seth@null.stanford.edu:80");
