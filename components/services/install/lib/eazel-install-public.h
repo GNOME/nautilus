@@ -30,8 +30,6 @@
 #ifndef EAZEL_INSTALL_PUBLIC_H
 #define EAZEL_INSTALL_PUBLIC_H
 
-#include "evil.h"
-
 #include <libgnome/gnome-defs.h>
 #ifndef EAZEL_INSTALL_NO_CORBA
 #include "bonobo.h"
