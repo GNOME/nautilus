@@ -543,10 +543,10 @@ dump_one_file_node (gpointer key, gpointer value, gpointer user_data)
 	g_assert (NAUTILUS_IS_TREE_NODE (value));
 	g_assert (user_data != NULL);
 
-	file_number = (guint *)user_data;
+	file_number = (guint *) user_data;
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (key));
 
-	g_print ("%d: %s (0x%x)|\n", ++(*file_number), uri, (unsigned) key);
+	g_print ("%d: %s (%p)|\n", ++(*file_number), uri, key);
 	
 	g_free (uri);
 }

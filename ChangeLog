@@ -1,3 +1,9 @@
+2000-12-19  Darin Adler  <darin@eazel.com>
+
+	* components/tree/nautilus-tree-model.c: (dump_one_file_node):
+	Fixed code that cast a pointer to (unsigned), which won't work on
+	the many platforms where pointers are bigger than ints.
+
 2000-12-19  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-thumbnails.c:
