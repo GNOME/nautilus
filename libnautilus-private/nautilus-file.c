@@ -4470,6 +4470,7 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
 {
 	char *file_uri;
 	char *target;
+	char *escaped_name;	
 	
         g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
 
@@ -4477,10 +4478,13 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
 		return NULL;
 	} else {
 		file_uri = nautilus_file_get_uri (file);
+		escaped_name = gnome_vfs_escape_path_string
+			(file->details->info->symlink_name);
+
 		target = gnome_vfs_uri_make_full_from_relative 
-			(file_uri,
-			 file->details->info->symlink_name);
+			(file_uri, escaped_name);
 		g_free (file_uri);
+		g_free (escaped_name);
 		return target;
 	}
 }

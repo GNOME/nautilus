@@ -1,3 +1,9 @@
+2002-06-13  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_symbolic_link_target_uri): Escape the symlink
+	name before constructing the uri.  Fixes #84004.
+
 2002-06-12  Damon Chaplin  <damon@ximian.com>
 
 	* src/nautilus-property-browser.c (nautilus_property_browser_init): 
