@@ -25,8 +25,38 @@
  */
 
 #include "nautilus.h"
+#include <libnautilus/libnautilus.h>
+#include <file-manager/fm-public-api.h>
 
 static int window_count = 0;
+
+
+static BonoboObject *
+nautilus_make_object(BonoboGenericFactory *gfact, const char *goad_id, gpointer closure)
+{
+        FMDirectoryView *dir_view;
+        NautilusContentViewFrame *view_frame;
+        
+        g_return_val_if_fail (strcmp (goad_id, "ntl_file_manager_icon_view") == 0 ||
+			      strcmp (goad_id, "ntl_file_manager_list_view") == 0, NULL);
+        
+        if (strcmp (goad_id, "ntl_file_manager_icon_view") == 0)
+                 dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_icons_get_type (), NULL));
+        else
+                 dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_list_get_type (), NULL));
+        
+        g_return_val_if_fail(dir_view, NULL);
+        
+        view_frame = fm_directory_view_get_view_frame (dir_view);
+        
+        if (BONOBO_IS_OBJECT (view_frame))
+                return BONOBO_OBJECT (view_frame);
+        
+        gtk_widget_show (GTK_WIDGET (view_frame));
+                
+        return nautilus_view_frame_get_bonobo_object (NAUTILUS_VIEW_FRAME (view_frame));
+}
+
 
 /**
  * nautilus_app_exiting:
@@ -49,6 +79,9 @@ nautilus_app_init(const char *initial_url)
 
   nautilus_navinfo_init();
   nautilus_prefs_load();
+
+  /* Create our CORBA objects */
+  bonobo_generic_factory_new_multi("ntl_file_manager_factory", nautilus_make_object, NULL);
 
   /* Set default configuration */
   mainwin = nautilus_app_create_window();

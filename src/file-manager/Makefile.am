@@ -1,24 +1,10 @@
-# FIXME should be a shared library component or compiled in.
-
-bin_PROGRAMS = ntl-file-manager
+noinst_LTLIBRARIES=libntl-file-manager.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
 	$(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\"" \
-	$(GNOMECANVASPIXBUF_INCLUDEDIR)				\
+	$(GNOMECANVASPIXBUF_INCLUDEDIR)			\
 	$(WERROR)
-
-LDADD=	../../libnautilus/libnautilus.la \
-	$(BONOBO_LIBS) \
-	$(GNORBA_LIBS) \
-	$(GNOMEUI_LIBS) \
-	$(GNOMECANVASPIXBUF_LIBS) \
-	$(VFS_LIBS) \
-	$(XML_LIBS)
-
-gnorbadir = $(sysconfdir)/CORBA/servers
-gnorba_DATA =					\
-	ntl-file-manager.goad
 
 dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService.h		\
@@ -26,7 +12,7 @@ dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService-skels.c	\
 	GNOME_Desktop_FileOperationService-common.c
 
-ntl_file_manager_SOURCES=		\
+libntl_file_manager_la_SOURCES=	\
 	$(dfos_corba_srcs)		\
 	dfos-corba.c			\
 	dfos-corba.h			\
@@ -47,8 +33,8 @@ ntl_file_manager_SOURCES=		\
 	fm-icon-cache.c			\
 	fm-icon-cache.h			\
 	fm-icons-controller.c		\
-	fm-icons-controller.h		\
-	fm-main.c
+	fm-icons-controller.h
+
 
 # noinst_PROGRAMS=gnome-desktop
 
@@ -87,5 +73,3 @@ dfos_corba_stamp: $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
 BUILT_SOURCES=$(dfos_corba_srcs)
 
 CLEAN_FILES=$(dfos_corba_srcs) dfos_corba_stamp
-
-EXTRA_DIST = ntl-file-manager.goad
