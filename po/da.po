@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-03-06 09:57-0800\n"
+"POT-Creation-Date: 2001-03-07 19:06+0100\n"
 "PO-Revision-Date: 2001-02-21 22:50+01:00\n"
 "Last-Translator: <kenneth@gnu.org>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -1708,15 +1708,15 @@ msgstr "Vis som musik"
 #. FIXME: eventually, get this from preferences
 #. set up the default font
 #: components/notes/nautilus-notes.c:200
-#: components/text/nautilus-text-view.c:188
+#: components/text/nautilus-text-view.c:186
 #: libnautilus-extensions/nautilus-global-preferences.c:1118
-#: libnautilus-extensions/nautilus-icon-container.c:3324
-#: libnautilus-extensions/nautilus-icon-container.c:3325
-#: libnautilus-extensions/nautilus-icon-container.c:3326
-#: libnautilus-extensions/nautilus-icon-container.c:3327
-#: libnautilus-extensions/nautilus-icon-container.c:3328
-#: libnautilus-extensions/nautilus-icon-container.c:3329
-#: libnautilus-extensions/nautilus-icon-container.c:3330
+#: libnautilus-extensions/nautilus-icon-container.c:3332
+#: libnautilus-extensions/nautilus-icon-container.c:3333
+#: libnautilus-extensions/nautilus-icon-container.c:3334
+#: libnautilus-extensions/nautilus-icon-container.c:3335
+#: libnautilus-extensions/nautilus-icon-container.c:3336
+#: libnautilus-extensions/nautilus-icon-container.c:3337
+#: libnautilus-extensions/nautilus-icon-container.c:3338
 #: libnautilus-extensions/nautilus-preferences-item.c:482
 #: src/nautilus-sidebar-title.c:495
 msgid "helvetica"
@@ -2106,14 +2106,12 @@ msgid "Should I delete the RPM files? (y/n) "
 msgstr "Skal RPM-filerne slettes? (j/n) "
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:831
-#, fuzzy
 msgid "Operation ok\n"
-msgstr "National folkemusik"
+msgstr "Operation forløb fint\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:833
-#, fuzzy
 msgid "Operation failed\n"
-msgstr "Installation mislykkedes!"
+msgstr "Operationen mislykkedes!\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:959
 msgid "Installing"
@@ -2125,7 +2123,7 @@ msgstr "Afinstallerer"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:983
 msgid "Only one operation at a time please."
-msgstr ""
+msgstr "Kun en operation af gangen, tak."
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:988
 #: components/services/install/command-line/eazel-alt-install-corba.c:996
@@ -2252,62 +2250,62 @@ msgstr "Ingen MD5 tilstede for %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:324
+#: components/services/install/lib/eazel-install-logic2.c:327
 #, c-format
 msgid "%s is ok"
 msgstr "%s er i orden"
 
-#: components/services/install/lib/eazel-install-logic2.c:430
+#: components/services/install/lib/eazel-install-logic2.c:433
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s version %s-%s er allerede installeret"
 
-#: components/services/install/lib/eazel-install-logic2.c:434
+#: components/services/install/lib/eazel-install-logic2.c:437
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s version %s er allerede installeret"
 
-#: components/services/install/lib/eazel-install-logic2.c:443
-#: components/services/install/lib/eazel-install-logic2.c:448
+#: components/services/install/lib/eazel-install-logic2.c:446
+#: components/services/install/lib/eazel-install-logic2.c:451
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s opgraderinger fra version %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:457
+#: components/services/install/lib/eazel-install-logic2.c:460
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s nedgraderinger fra version %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:462
+#: components/services/install/lib/eazel-install-logic2.c:465
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra version %s til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:515
+#: components/services/install/lib/eazel-install-logic2.c:518
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s installerer version %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:520
+#: components/services/install/lib/eazel-install-logic2.c:523
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerer version %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:684
+#: components/services/install/lib/eazel-install-logic2.c:687
 #, fuzzy, c-format
 msgid "Loading package info from file %s"
 msgstr "Henter information om pakke ..."
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:990
+#: components/services/install/lib/eazel-install-logic2.c:993
 msgid "ok"
 msgstr "i orden"
 
-#: components/services/install/lib/eazel-install-logic2.c:990
+#: components/services/install/lib/eazel-install-logic2.c:993
 msgid "not ok"
 msgstr "ikke i orden"
 
-#: components/services/install/lib/eazel-install-logic2.c:1156
+#: components/services/install/lib/eazel-install-logic2.c:1159
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "Kontrollerer afhængigheder for %s"
@@ -2315,107 +2313,107 @@ msgstr "Kontrollerer afhængigheder for %s"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1763
+#: components/services/install/lib/eazel-install-logic2.c:1766
 #, fuzzy, c-format
 msgid "%s is related to %s"
 msgstr "\"%s\" valgt (%s)"
 
-#: components/services/install/lib/eazel-install-logic2.c:1823
+#: components/services/install/lib/eazel-install-logic2.c:1826
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
-msgstr ""
+msgstr "opdatering af %s til udgave %s-%s løser konflikten"
 
-#: components/services/install/lib/eazel-install-logic2.c:1839
+#: components/services/install/lib/eazel-install-logic2.c:1842
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:1846
+#: components/services/install/lib/eazel-install-logic2.c:1849
 #, c-format
 msgid "could not revive %s"
 msgstr "Kunne ikke forny %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2001
+#: components/services/install/lib/eazel-install-logic2.c:2004
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2022
+#: components/services/install/lib/eazel-install-logic2.c:2025
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2034
-#: components/services/install/lib/eazel-install-logic2.c:2188
+#: components/services/install/lib/eazel-install-logic2.c:2037
+#: components/services/install/lib/eazel-install-logic2.c:2191
 msgid "... but it's ok, the packages are related"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2042
+#: components/services/install/lib/eazel-install-logic2.c:2045
 #, fuzzy, c-format
 msgid "(there were %d other conflicts)"
 msgstr "Men der er filkonflikter"
 
-#: components/services/install/lib/eazel-install-logic2.c:2137
+#: components/services/install/lib/eazel-install-logic2.c:2140
 #, fuzzy, c-format
 msgid "file conflict checking %s"
 msgstr "%s havde en fil i konflikt med %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2174
+#: components/services/install/lib/eazel-install-logic2.c:2177
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2184
+#: components/services/install/lib/eazel-install-logic2.c:2187
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2276
+#: components/services/install/lib/eazel-install-logic2.c:2279
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2344
+#: components/services/install/lib/eazel-install-logic2.c:2347
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2423
+#: components/services/install/lib/eazel-install-logic2.c:2426
 #, fuzzy, c-format
 msgid "downloading %d packages"
 msgstr "Henter pakker"
 
-#: components/services/install/lib/eazel-install-logic2.c:2692
+#: components/services/install/lib/eazel-install-logic2.c:2695
 #, c-format
 msgid "will upgrade %s"
 msgstr "vil opgradere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2695
-#, fuzzy, c-format
-msgid "will downgrade %s"
-msgstr "Tillad nedgraderinger"
-
 #: components/services/install/lib/eazel-install-logic2.c:2698
-#, fuzzy, c-format
-msgid "will install %s"
-msgstr "Installerer \"%s\""
+#, c-format
+msgid "will downgrade %s"
+msgstr "vil nedgradere %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2701
+#, c-format
+msgid "will install %s"
+msgstr "vil installere %s"
+
+#: components/services/install/lib/eazel-install-logic2.c:2704
 #, c-format
 msgid "will uninstall %s"
 msgstr "vil affinstallere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2786
+#: components/services/install/lib/eazel-install-logic2.c:2789
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er afhængig af %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2979
+#: components/services/install/lib/eazel-install-logic2.c:2982
 #, c-format
 msgid "failed %s"
 msgstr "Mislykket %s"
@@ -2518,9 +2516,9 @@ msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
 msgstr "%s som er nyere, er allerede installeret og nedgradering er ikke mulig"
 
 #: components/services/install/lib/eazel-install-problem.c:256
-#, fuzzy, c-format
+#, c-format
 msgid "%s, which is older, needs upgrade and upgrade is not enabled"
-msgstr "%s som er ældre, er allerede installeret og opgradering er ikke mulig"
+msgstr "%s som er ældre, kræver opgradering og opgradering er ikke slået til"
 
 #: components/services/install/lib/eazel-install-problem.c:346
 #, fuzzy, c-format
@@ -2625,7 +2623,7 @@ msgstr "FTP er ikke understøttet endnu"
 #: components/services/install/lib/eazel-install-protocols.c:457
 #, c-format
 msgid "Checking local file %s..."
-msgstr "Tjekker lokal fil %s..."
+msgstr "Kontrollerer lokal fil %s..."
 
 #: components/services/install/lib/eazel-install-protocols.c:578
 #, c-format
@@ -2635,7 +2633,7 @@ msgstr "Kunne ikke modtage %s!"
 #: components/services/install/lib/eazel-install-protocols.c:651
 #, c-format
 msgid "Could not get an URL for %s"
-msgstr "Fandt ikke en URL for %s"
+msgstr "Fandt ikke en URI for %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:666
 msgid "Downloaded package does not have the correct name"
@@ -2670,19 +2668,19 @@ msgstr "*** Stopper læsning af pakke! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:166
 msgid "*** No package nodes! ***"
-msgstr "*** Ingen pakkepunkter! ***"
+msgstr "*** Ingen pakkeknuder! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:172
 msgid "*** Malformed package node!"
-msgstr "*** Forkert udformet pakkepunkt! ***"
+msgstr "*** Forkert udformet pakkeknude! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:181
 msgid "*** No depends nodes! ***"
-msgstr "*** Ingen afhængighedspunkter! ***"
+msgstr "*** Ingen afhængighedsknude! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:187
 msgid "*** Malformed depends node!"
-msgstr "*** Forkert udformet afhængighedspunkt!"
+msgstr "*** Forkert udformet afhængighedsknude!"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:211
 #, c-format
@@ -2930,9 +2928,8 @@ msgid "Installation complete."
 msgstr "Installationen er fuldført."
 
 #: components/services/install-view/callbacks.c:565
-#, fuzzy
 msgid "Installation failed."
-msgstr "Installation mislykkedes ved %s"
+msgstr "Installationen mislykkedes."
 
 #. some succeeded; some failed
 #: components/services/install-view/callbacks.c:569
@@ -2992,11 +2989,8 @@ msgid "Version: %s"
 msgstr "Udgave: %s"
 
 #: components/services/install-view/forms.c:407
-#, fuzzy
 msgid "These packages are ready to be downloaded and installed:"
-msgstr ""
-"Disse pakker er på vej til at blive hentet og installeret:\n"
-"\n"
+msgstr "Disse pakker er på vej til at blive hentet og installeret:\n"
 
 #: components/services/install-view/forms.c:408
 #, fuzzy
@@ -3014,7 +3008,7 @@ msgstr ""
 
 #: components/services/install-view/forms.c:412
 msgid "If you wish to uninstall these packages, click Continue."
-msgstr ""
+msgstr "Hvis du ønsker at afinstallerer disse pakker, klik fortsæt."
 
 #: components/services/install-view/forms.c:415
 #, fuzzy
@@ -3049,9 +3043,9 @@ msgid "Cancel"
 msgstr "Annullér"
 
 #: components/services/install-view/nautilus-service-install-view.c:419
-#, fuzzy, c-format
+#, c-format
 msgid "%s is in GNOME (footprint) > %s"
-msgstr "%s er i Gnome-menuen under %s"
+msgstr "%s er i Gnome (foden) > %s"
 
 #: components/services/install-view/nautilus-service-install-view.c:437
 #, fuzzy, c-format
@@ -3641,7 +3635,7 @@ msgstr "prøve på Eazel tjenestevisning"
 msgid "Factory for the sample service"
 msgstr "Fabrik for prøvetjenesten"
 
-#: components/text/nautilus-text-view.c:328
+#: components/text/nautilus-text-view.c:326
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
 msgstr "Beklager, men %s er for stor til at Nautilus kan indlæse det hele."
@@ -5217,7 +5211,8 @@ msgstr "Forbereder tømning af papirkurv"
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
-"Er du sikker på at du en gang for alle ønsker at slette alle elementer i papirskurven?"
+"Er du sikker på at du en gang for alle ønsker at slette alle elementer i "
+"papirskurven?"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2313
 msgid "Delete Trash Contents?"
@@ -5473,7 +5468,7 @@ msgstr "GConf-fejl"
 #. * when no other font can be found. It must be guaranteed
 #. * to exist, * even in the most limited user environment
 #.
-#: libnautilus-extensions/nautilus-gdk-font-extensions.c:905
+#: libnautilus-extensions/nautilus-gdk-font-extensions.c:956
 msgid "fixed"
 msgstr "fast"
 
@@ -5482,15 +5477,15 @@ msgstr "fast"
 #. * yields -- usually just omitting the AM part is all that's
 #. * needed.
 #.
-#: libnautilus-extensions/nautilus-glib-extensions.c:1364
+#: libnautilus-extensions/nautilus-glib-extensions.c:1427
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00 01:00"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1365
+#: libnautilus-extensions/nautilus-glib-extensions.c:1428
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1366
+#: libnautilus-extensions/nautilus-glib-extensions.c:1429
 msgid " 1/ 1/00,  1:00 AM"
 msgstr "1/ 1/00,  1:00"
 
@@ -5682,7 +5677,7 @@ msgstr "Brug HTTP-mellemvært"
 
 #. allocate the proxy label, followed by the entry
 #: libnautilus-extensions/nautilus-global-preferences.c:228
-#: src/nautilus-first-time-druid.c:670
+#: src/nautilus-first-time-druid.c:680
 msgid "Port:"
 msgstr "Port:"
 
@@ -5817,7 +5812,8 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-gnome-extensions.c:640
 msgid "No image was selected.  You must click on an image to select it."
-msgstr "Intet billede var valgt.  Du skal klikke på et billede for at vælge det."
+msgstr ""
+"Intet billede var valgt.  Du skal klikke på et billede for at vælge det."
 
 #: libnautilus-extensions/nautilus-gnome-extensions.c:641
 #, fuzzy
@@ -5829,7 +5825,7 @@ msgstr "sektionen her"
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:741
+#: libnautilus-extensions/nautilus-icon-dnd.c:766
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -5839,7 +5835,7 @@ msgstr ""
 "placering og lade punktet blive hvor du slap det? Dette vil ødelægge den "
 "gemte manuelle placering."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:745
+#: libnautilus-extensions/nautilus-icon-dnd.c:770
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -5849,7 +5845,7 @@ msgstr ""
 "placering og lade disse punkter blive hvor du slap dem? Dette vil ødelægge "
 "den gemte manuelle placering."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:751
+#: libnautilus-extensions/nautilus-icon-dnd.c:776
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -5857,7 +5853,7 @@ msgstr ""
 "Dette katalog bruger automatisk placering. Ønsker du at skifte til manuel "
 "placering og lade punktet blive hvor du slap den?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:754
+#: libnautilus-extensions/nautilus-icon-dnd.c:779
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -5865,11 +5861,11 @@ msgstr ""
 "Dette katalog bruger automatisk placering. Ønsker du at skifte til manuel "
 "placering og lade disse punkter blive hvor du slap dem?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:759
+#: libnautilus-extensions/nautilus-icon-dnd.c:784
 msgid "Switch to Manual Layout?"
 msgstr "Skift til manuelt udseende?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:760
+#: libnautilus-extensions/nautilus-icon-dnd.c:785
 msgid "Switch"
 msgstr "Skift"
 
@@ -6399,7 +6395,7 @@ msgstr "Søger på diskene"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr ""
 
-#: libnautilus-extensions/nautilus-trash-file.c:593
+#: libnautilus-extensions/nautilus-trash-file.c:600
 msgid "on the desktop"
 msgstr "på skrivebordet"
 
@@ -8156,7 +8152,7 @@ msgstr ""
 "Du kan slette denne fil manuelt for at få vismanden frem igen.\n"
 "\n"
 
-#: src/nautilus-first-time-druid.c:474
+#: src/nautilus-first-time-druid.c:484
 #, fuzzy
 msgid ""
 "Your user level adjusts Nautilus to your degree of experience\n"
@@ -8167,7 +8163,7 @@ msgstr ""
 "dit niveau af teknisk ekspertise. Vælg et startniveau som du\n"
 "er komfortabel med; du kan altid ændre det igen senere."
 
-#: src/nautilus-first-time-druid.c:485
+#: src/nautilus-first-time-druid.c:495
 msgid ""
 "For users who have no previous experience with GNOME\n"
 "and Linux."
@@ -8175,7 +8171,7 @@ msgstr ""
 "For brugere som har tidligere erfaring med Gnome\n"
 "og Linux."
 
-#: src/nautilus-first-time-druid.c:491
+#: src/nautilus-first-time-druid.c:501
 #, fuzzy
 msgid ""
 "For users who are comfortable with GNOME and Linux,\n"
@@ -8184,7 +8180,7 @@ msgstr ""
 "For ikke-tekniske brugere som er komfortabel med\n"
 "deres GNOME og Linux-miljøer."
 
-#: src/nautilus-first-time-druid.c:497
+#: src/nautilus-first-time-druid.c:507
 #, fuzzy
 msgid ""
 "For users who have GNOME and Linux experience, and\n"
@@ -8193,7 +8189,7 @@ msgstr ""
 "For brugere som behøver adgang til\n"
 "alle detaljer i deres styresystem."
 
-#: src/nautilus-first-time-druid.c:535
+#: src/nautilus-first-time-druid.c:545
 msgid ""
 "To verify your Internet connection and make sure you have\n"
 "the latest Nautilus updates, Nautilus will now connect to\n"
@@ -8205,16 +8201,16 @@ msgid ""
 "Verify and Nautilus will use it.\n"
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:549
+#: src/nautilus-first-time-druid.c:559
 #, fuzzy
 msgid "Verify my connection and check for updates"
 msgstr "Ja, efterprøv min forbindelse og opdatér Nautilus nu."
 
-#: src/nautilus-first-time-druid.c:550
+#: src/nautilus-first-time-druid.c:560
 msgid "Don't verify my connection or check for updates"
 msgstr "Efterprøv ikke min forbindelse eller tjek efter opdateringer"
 
-#: src/nautilus-first-time-druid.c:615
+#: src/nautilus-first-time-druid.c:625
 #, fuzzy
 msgid ""
 "We are having trouble making an external web connection.\n"
@@ -8226,47 +8222,47 @@ msgstr ""
 "dørvogtere. Udfyld navn og port for din proxy, hvis\n"
 "du har en, nedenunder."
 
-#: src/nautilus-first-time-druid.c:627
+#: src/nautilus-first-time-druid.c:637
 msgid "No proxy server required."
 msgstr "Ingen proxy nødvendig."
 
-#: src/nautilus-first-time-druid.c:628
+#: src/nautilus-first-time-druid.c:638
 msgid "Use this proxy server:"
 msgstr "Benyt denne mellemvært:"
 
 #. allocate the proxy label, followed by the entry
-#: src/nautilus-first-time-druid.c:653
+#: src/nautilus-first-time-druid.c:663
 msgid "Proxy address:"
 msgstr "Mellemværtsadresse:"
 
-#: src/nautilus-first-time-druid.c:715
+#: src/nautilus-first-time-druid.c:725
 msgid "Verifying your Internet connection and checking for updates..."
 msgstr "Efterprøv din Internetsforbindelse og tjek efter opdateringer..."
 
-#: src/nautilus-first-time-druid.c:723
+#: src/nautilus-first-time-druid.c:733
 msgid "Downloading Nautilus updates..."
 msgstr "Henter Nautilus-opdateringer..."
 
-#: src/nautilus-first-time-druid.c:892
+#: src/nautilus-first-time-druid.c:902
 msgid ""
 "If you have been using the GNOME Midnight Commander\n"
 "these settings move your desktop icons to Nautilus and\n"
 "make Nautilus the default desktop.\n"
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:899
+#: src/nautilus-first-time-druid.c:909
 msgid "Use Nautilus to draw the desktop."
 msgstr "Benyt Nautilus til at håndtere skrivebordet."
 
-#: src/nautilus-first-time-druid.c:905
+#: src/nautilus-first-time-druid.c:915
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Overfør eksisterende skrivebordsikoner til Nautilus skrivebordet."
 
-#: src/nautilus-first-time-druid.c:910
+#: src/nautilus-first-time-druid.c:920
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Start Nautilus sammen med Gnome."
 
-#: src/nautilus-first-time-druid.c:949
+#: src/nautilus-first-time-druid.c:959
 msgid ""
 "The fast search feature indexes all the items on your hard disk.\n"
 "It speeds up searching and allows you to search by file content\n"
@@ -8275,7 +8271,7 @@ msgid ""
 "Fast search requires that the cron daemon on your system be running.\n"
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:954
+#: src/nautilus-first-time-druid.c:964
 msgid ""
 "The fast search feature indexes all the items on your hard disk.\n"
 "It speeds up searching and allows you to search by file content\n"
@@ -8283,15 +8279,15 @@ msgid ""
 "takes time but is performed only when your computer is idle.\n"
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:963
+#: src/nautilus-first-time-druid.c:973
 msgid "Enable fast search"
 msgstr "Anvend hurtig søgning"
 
-#: src/nautilus-first-time-druid.c:964
+#: src/nautilus-first-time-druid.c:974
 msgid "Turn fast search on when cron is enabled"
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:1010
+#: src/nautilus-first-time-druid.c:1020
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing\n"
 "currently can't be performed because the program crond, which does\n"
@@ -8305,7 +8301,7 @@ msgid ""
 "/etc/rc.d/init.d/cron start\n"
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:1018
+#: src/nautilus-first-time-druid.c:1028
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing\n"
 "may not be performed because the program crond, which does nightly tasks\n"
@@ -8319,15 +8315,15 @@ msgid ""
 "/etc/rc.d/init.d/cron start\n"
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:1118
+#: src/nautilus-first-time-druid.c:1128
 msgid "Nautilus First Time Setup"
 msgstr "Nautilus første-gangs opsætning"
 
-#: src/nautilus-first-time-druid.c:1148
+#: src/nautilus-first-time-druid.c:1158
 msgid "Welcome to Nautilus"
 msgstr "Velkommen til Nautilus"
 
-#: src/nautilus-first-time-druid.c:1150
+#: src/nautilus-first-time-druid.c:1160
 msgid ""
 "Nautilus is part of your GNOME desktop environment. It\n"
 "helps you manage your files and folders (directories),\n"
@@ -8340,11 +8336,11 @@ msgid ""
 msgstr ""
 
 #. set up the final page
-#: src/nautilus-first-time-druid.c:1162
+#: src/nautilus-first-time-druid.c:1172
 msgid "Finished"
 msgstr "Færdig"
 
-#: src/nautilus-first-time-druid.c:1169
+#: src/nautilus-first-time-druid.c:1179
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
 "Nautilus windows: one shows your home folder, and the\n"
@@ -8355,46 +8351,46 @@ msgid ""
 msgstr ""
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:1178
+#: src/nautilus-first-time-druid.c:1188
 msgid "Choose Your User Level"
 msgstr "Vælg dit brugerniveau"
 
 #. set up the GMC transition page
-#: src/nautilus-first-time-druid.c:1182
+#: src/nautilus-first-time-druid.c:1192
 msgid "GMC to Nautilus Transition"
 msgstr "Overgang fra GMC til Nautilus"
 
 #. set up the `Launch Medusa' page
-#: src/nautilus-first-time-druid.c:1186
+#: src/nautilus-first-time-druid.c:1196
 msgid "Fast Searches"
 msgstr "Hurtige søgninger"
 
 #. set up optional page to tell the user how to run cron
-#: src/nautilus-first-time-druid.c:1194
+#: src/nautilus-first-time-druid.c:1204
 msgid "The Cron Daemon"
 msgstr "Cron-dæmonen"
 
 #. set up the update page
-#: src/nautilus-first-time-druid.c:1199
+#: src/nautilus-first-time-druid.c:1209
 msgid "Checking Your Internet Connection"
 msgstr "Kontrollerer din Internetforbindelse"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:1210
+#: src/nautilus-first-time-druid.c:1220
 msgid "Updating Nautilus..."
 msgstr "Opdaterer Nautilus..."
 
 #. set up the (optional) proxy configuration page
-#: src/nautilus-first-time-druid.c:1218
+#: src/nautilus-first-time-druid.c:1228
 msgid "Web Proxy Configuration"
 msgstr "Konfigurering af mellemvært"
 
 #. change the message to expanding file
-#: src/nautilus-first-time-druid.c:1293
+#: src/nautilus-first-time-druid.c:1303
 msgid "Decoding Update..."
 msgstr "Dekoder opdatering..."
 
-#: src/nautilus-first-time-druid.c:1310
+#: src/nautilus-first-time-druid.c:1320
 msgid "Update Complete. Click Next to Continue."
 msgstr "Opdatering fuldført. Klik næste for at fortsætte."
 
@@ -8402,7 +8398,7 @@ msgstr "Opdatering fuldført. Klik næste for at fortsætte."
 #. * doesn't exist. Arlo and I (jsh) and decided that the
 #. * best thing to do is silently fail
 #.
-#: src/nautilus-first-time-druid.c:1323
+#: src/nautilus-first-time-druid.c:1333
 #, fuzzy
 msgid "No Update Available... Press Next to Continue."
 msgstr "Opdatering fuldført... Tryk næste for at fortsætte."
@@ -9964,4 +9960,3 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #~ "Ingen af opsætningerne for %s niveauet kan redigeres. Hvis du ønsker at "
 #~ "redigere opsætningerne skal du vælge %s eller %s niveauet. Ønsker du at "
 #~ "skifte til %s niveauet nu og redigere opsætningerne?"
-
