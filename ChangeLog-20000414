@@ -1,3 +1,9 @@
+2000-03-29  Andy Hertzfeld <andy@eazel.com>
+
+	* src/nautilus-index-tabs.c:
+	fixed bug #312, index tabs don't resize properly, by overriding size_allocate, to fix up the
+	height appropriately when the size changes
+	
 2000-03-28  Pavel Cisler  <pavel@eazel.com>
 
 	Started on copy/move operations

@@ -74,6 +74,8 @@ static void nautilus_index_tabs_initialize       (NautilusIndexTabs      *pixmap
 static int  nautilus_index_tabs_expose           (GtkWidget              *widget,
 						  GdkEventExpose         *event);
 static void nautilus_index_tabs_destroy          (GtkObject              *object);
+static void nautilus_index_tabs_size_allocate     (GtkWidget              *widget,
+						  GtkAllocation         *allocatoin);
 static void nautilus_index_tabs_size_request     (GtkWidget              *widget,
 						  GtkRequisition         *requisition);
 static int  draw_or_hit_test_all_tabs            (NautilusIndexTabs      *index_tabs,
@@ -99,6 +101,7 @@ nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *class)
 	object_class->destroy = nautilus_index_tabs_destroy;
 	widget_class->expose_event = nautilus_index_tabs_expose;
 	widget_class->size_request = nautilus_index_tabs_size_request;
+	widget_class->size_allocate = nautilus_index_tabs_size_allocate;
 		
 	/* load the font */
 	/* FIXME: this shouldn't be hardwired - it should be fetched from preferences */
@@ -201,6 +204,23 @@ recalculate_size(NautilusIndexTabs *index_tabs)
 	else
 		widget->requisition.height = index_tabs->details->total_height + TAB_TOP_GAP;
 	gtk_widget_queue_resize (widget);
+}
+
+static void
+nautilus_index_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+{
+	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(widget);
+	
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	
+	/* dummy hit test to mesure height */
+	draw_or_hit_test_all_tabs(index_tabs, FALSE, -1000, -1000);
+	
+	if (!index_tabs->details->title_mode) {
+		 gint delta_height = widget->allocation.height - (index_tabs->details->total_height + TAB_TOP_GAP);
+         widget->allocation.height -= delta_height;
+         widget->allocation.y += delta_height;
+    }
 }
 
 static void
