@@ -66,10 +66,17 @@ finish_button_activation (gpointer data)
 	
 	button = GTK_BUTTON (data);
 
-	if (!button->in_button) {
+	if (!GTK_OBJECT_DESTROYED (button) && !button->in_button) {
 		gtk_button_clicked (button);
 	}
-	gtk_button_released (button);
+
+	/* Check again--button can be destroyed during call to gtk_button_clicked */
+	if (!GTK_OBJECT_DESTROYED (button)) {
+		gtk_button_released (button);
+	}
+
+	/* this was ref'd in nautilus_gtk_button_auto_click */
+	gtk_object_unref (GTK_OBJECT(button));
 
 	return FALSE;	
 }
@@ -102,6 +109,10 @@ nautilus_gtk_button_auto_click (GtkButton *button)
 	 * In practice the timeout is short enough that this probably
 	 * isn't a problem.
 	 */
+
+	/* This is unref'ed in finish_button_activation */
+	gtk_object_ref (GTK_OBJECT(button));
+
 	g_timeout_add (BUTTON_AUTO_HIGHLIGHT_MILLISECONDS, 
 		       finish_button_activation, button);
 }
