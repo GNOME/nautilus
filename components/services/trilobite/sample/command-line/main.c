@@ -28,7 +28,6 @@
 
 #include <libtrilobite/libtrilobite.h>
 #include <libtrilobite/libtrilobite-service.h>
-#include <libtrilobite/trilobite-root-client-public.h>
 
 #include "sample-service.h"
 

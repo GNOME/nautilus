@@ -8,9 +8,11 @@ INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I/usr/include/rpm					\
+        -I$(top_srcdir)/components/services/trilobite/libtrilobite\
+        -I$(top_builddir)/components/services/trilobite/libtrilobite\
         -I$(top_srcdir)/components/services/trilobite 		\
-        -I$(top_srcdir)/components/services/install/lib		\
         -I$(top_builddir)/components/services/trilobite 	\
+        -I$(top_srcdir)/components/services/install/lib		\
         -I$(top_builddir)/components/services/install/lib	\
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\

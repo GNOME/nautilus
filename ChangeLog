@@ -1,3 +1,24 @@
+2000-07-21  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/genpkg_list.example:
+	* components/services/install/lib/Makefile.am:
+	* components/services/time/command-line/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/time/service/Makefile.am:
+	* components/services/trilobite/sample/command-line/Makefile.am:
+	* components/services/trilobite/sample/command-line/main.c:
+	* components/services/trilobite/sample/service/Makefile.am:
+	The build was completely wasted if you did a make uninstall,
+	since the libtrilobite.h changes hadn't been made to all the libs
+	using it. This should fix it. I now need to check, if it uses the
+	installer or local .h files after a make install.
+	
+	* components/services/install/lib/eazel-install-corba.c:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_url_for_package):
+	Added a FIXME.
+
 2000-07-21  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	* components/help/help-method.c:

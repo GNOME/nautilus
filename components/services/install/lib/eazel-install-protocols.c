@@ -376,6 +376,9 @@ get_url_for_package  (EazelInstall *service,
 					}
 				case ghttp_done:
 					/* 404 or did we get something usefull ? */
+					/* FIXME: bugzilla.eazel.com 1718
+					   Once the rpmsearch script is done, revamp this to parse the 
+					   xml returned */
 					if (ghttp_status_code (request) != 404) {
 						url = g_strdup (ghttp_get_body (request));
 						if (url) {

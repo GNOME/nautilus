@@ -13,6 +13,8 @@ INCLUDES = \
 	-I/usr/include/rpm					\
         -I$(top_srcdir)/components/services/trilobite		\
         -I$(top_builddir)/components/services/trilobite		\
+        -I$(top_srcdir)/components/services/trilobite/libtrilobite\
+        -I$(top_builddir)/components/services/trilobite/libtrilobite\
         -I$(top_srcdir)/components/services/trilobite/lib	\
         -I$(top_builddir)/components/services/trilobite/lib	\
 	$(GNOME_CFLAGS)						\

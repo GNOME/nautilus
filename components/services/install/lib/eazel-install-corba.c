@@ -28,11 +28,10 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 #include <libtrilobite/libtrilobite.h>
-#include "trilobite-eazel-install.h"
 
+#include "trilobite-eazel-install.h"
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
-
 #include "eazel-install-corba-types.h"
 
 #define RELEASE_CB if (servant->object->callback != CORBA_OBJECT_NIL) { \
