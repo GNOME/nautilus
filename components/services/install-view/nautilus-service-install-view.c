@@ -27,6 +27,7 @@
 #include "nautilus-service-install-view.h"
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
+#include "eazel-services-header.h"
 #include <libeazelinstall.h>
 #include "libtrilobite/libtrilobite.h"
 
@@ -112,7 +113,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 
 	/* Setup the title */
-	title = create_services_title_widget (_("Easy Install"));
+	title = eazel_services_header_new (_("Easy Install"));
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
 

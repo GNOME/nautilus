@@ -46,7 +46,6 @@ GtkWidget* create_label_widget						(const char *text,
 									 guint	     ypad,
 									 gint	     horizontal_offset,
 									 gint	     vertical_offset);
-GtkWidget* create_services_title_widget  				(const char *title_text);
 GtkWidget* create_summary_service_title_top_widget			(const char *login_status_text);
 GtkWidget* create_summary_service_title_bottom_widget			(const char *section_title);
 GtkWidget* create_services_header_widget				(const char *left_text,

@@ -1,5 +1,45 @@
 2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/services/nautilus-dependent-shared/.cvsignore:
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/nautilus-dependent-shared/eazel-services-constants.h:
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	(eazel_services_footer_initialize_class),
+	(eazel_services_footer_initialize), (footer_destroy),
+	(pixbuf_new_from_name), (label_new), (label_enter_event),
+	(label_leave_event), (label_button_press_event), (label_free_data),
+	(label_free_uri), (image_new), (image_new_from_name),
+	(buffered_widget_add_prelighting), (footer_item_new),
+	(footer_remainder_new), (eazel_services_footer_new),
+	(eazel_services_footer_update):
+	* components/services/nautilus-dependent-shared/eazel-services-footer.h:
+	* components/services/nautilus-dependent-shared/eazel-services-header.c:
+	(eazel_services_header_initialize_class),
+	(eazel_services_header_initialize), (header_destroy),
+	(pixbuf_new_from_name), (label_new), (image_new),
+	(image_new_from_name), (eazel_services_header_new),
+	(eazel_services_header_set_text):
+	* components/services/nautilus-dependent-shared/eazel-services-header.h:
+	Two new widgets to deal with services views headers and footers.
+	
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form):
+	* components/services/login/nautilus-view/nautilus-change-password-view.c:
+	(generate_change_password_form):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(generate_summary_form):
+	Use the new footer and header widgets.
+	
+	* components/services/nautilus-dependent-shared/shared-service-widgets.c:
+	* components/services/nautilus-dependent-shared/shared-service-widgets.h:
+	Retire some old code.
+
+	* components/services/nautilus-dependent-shared/test-footer-header.c:
+	(delete_event), (main):
+	Add a test for the new header and footer widgets.
+	
+2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-label.c:
 	(nautilus_label_size_request), (render_buffer_pixbuf):
 	Make sure text layout honors the vertical and horizontal offsets.

@@ -28,6 +28,7 @@
 #include "nautilus-change-password-view.h"
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
+#include "eazel-services-header.h"
 
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -141,7 +142,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->form);
 
 	/* Setup the title */
-	title = create_services_title_widget (_("Change your Eazel password..."));
+	title = eazel_services_header_new (_("Change your Eazel password..."));
 
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);

@@ -28,6 +28,10 @@
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
 
+#include "eazel-services-footer.h"
+#include "eazel-services-header.h"
+#include "eazel-services-constants.h"
+
 #include <gnome-xml/tree.h>
 #include <bonobo/bonobo-control.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -256,12 +260,29 @@ updates_tab_selected_callback				(GtkWidget *widget,
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
+static const char *footer_items[] = 
+{
+	"Register",
+	"Login",
+	"Terms of Use",
+	"Privacy Statement"
+};
+
+static const char *footer_uris[] = 
+{
+	"eazel:register",
+	"eazel:login",
+	"eazel:terms",
+	"eazel:privacy"
+};
+
 static void
 generate_summary_form (NautilusSummaryView	*view)
 {
 
 	GtkWidget		*frame;
 	GtkWidget		*title;
+	GtkWidget		*footer;
 	GtkWidget		*notebook, *notebook_tabs;
 	GtkWidget		*temp_box;
 	ServicesData		*service_node;
@@ -293,20 +314,19 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 
 	/* setup the title */
+	title = eazel_services_header_new ("");
+
 	if (!view->details->logged_in) {
-		title = create_services_title_widget ("You are not logged in!");
-		widget_set_nautilus_background_color (title, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title),
+						_("You are not logged in!"));
 	}
 	else {
-		char	*title_string;
-
+		char *text;
 		g_free (view->details->user_name);
 		view->details->user_name = who_is_logged_in (view);
-		title_string = g_strdup_printf ("Welcome Back %s!", view->details->user_name);
-		g_print ("%s\n", title_string);
-		title = create_services_title_widget (title_string);
-		widget_set_nautilus_background_color (title, DEFAULT_SUMMARY_BACKGROUND_COLOR);
-		g_free (title_string);
+		text = g_strdup_printf (_("Welcome Back %s!"), view->details->user_name);
+		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title), text);
+		g_free (text);
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
@@ -554,6 +574,15 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	g_free (view->details->xml_data);
 	view->details->xml_data = NULL;
+
+	footer = eazel_services_footer_new ();
+	eazel_services_footer_update (EAZEL_SERVICES_FOOTER (footer),
+				      footer_items,
+				      footer_uris,
+				      NAUTILUS_N_ELEMENTS (footer_items));
+	
+	gtk_box_pack_start (GTK_BOX (view->details->form), footer, FALSE, FALSE, 0);
+	gtk_widget_show (footer);
 
 	/* draw parent vbox and connect it to the update news frame */
 	gtk_container_add (GTK_CONTAINER (viewport), temp_box);

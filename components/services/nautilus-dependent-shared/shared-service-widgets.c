@@ -195,44 +195,7 @@ create_label_widget (const char		*text,
 	return label;
 }
 
-/* utility routine to create the standard services title bar */
-
-GtkWidget*
-create_services_title_widget (const char *title_text)
-{
-	GtkWidget		*title_hbox;
-	GtkWidget		*logo_image;
-	GtkWidget		*filler_image;
-	GtkWidget		*label;
-
-	g_return_val_if_fail (title_text != NULL, NULL);
-
-	title_hbox = gtk_hbox_new (FALSE, 0);
-
-	logo_image = create_image_widget ("eazel-services-logo.png", NULL);
-
-	filler_image = create_image_widget (NULL, "eazel-services-logo-tile.png");
-
-	label = create_label_widget (title_text, 20, "eazel-services-logo-tile.png", 10, 0, 0, -4);
-
-        nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
-	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
-
-	gtk_widget_show (logo_image);
-	gtk_widget_show (filler_image);
-	gtk_widget_show (label);
-
-	gtk_box_pack_start (GTK_BOX (title_hbox), logo_image, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (title_hbox), label, FALSE, FALSE, 0);
-
-	return title_hbox;
-
-}
-
 /* utility routine to create the top half of the summary title */
-
 GtkWidget*
 create_summary_service_title_top_widget (const char *login_status_text)
 {

@@ -1,6 +1,6 @@
-NULL =
+include $(top_srcdir)/Makefile.shared
 
-SUBDIRS=icons
+SUBDIRS = icons
 
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\" 					\
@@ -21,13 +21,35 @@ INCLUDES = \
 
 noinst_LIBRARIES = libnautilusdepshared.a
 
-noinst_HEADERS = 						\
-	shared-service-utilities.h				\
-	shared-service-widgets.h				\
+noinst_HEADERS =\
+	eazel-services-footer.h \
+	eazel-services-header.h \
+	shared-service-utilities.h \
+	shared-service-widgets.h \
 	$(NULL)
 
-libnautilusdepshared_a_SOURCES = 				\
-	shared-service-utilities.c				\
-	shared-service-widgets.c				\
+libnautilusdepshared_a_SOURCES =\
+	eazel-services-footer.c \
+	eazel-services-header.c \
+	shared-service-utilities.c \
+	shared-service-widgets.c \
 	$(NULL)
+
+test_footer_header_LDADD = \
+	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(top_builddir)/libnautilus/libnautilus.la \
+	$(BONOBO_LIBS) \
+	$(OAF_LIBS) \
+	$(GCONF_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(VFS_LIBS) \
+	$(XML_LIBS) \
+	$(NULL)
+
+noinst_PROGRAMS =\
+	test-footer-header \
+	$(NULL)
+
+test_footer_header_SOURCES = test-footer-header.c
 
