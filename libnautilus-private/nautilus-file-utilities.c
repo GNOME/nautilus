@@ -593,7 +593,6 @@ nautilus_get_user_main_directory (void)
 			nautilus_file_unref (file);
 		}
 		g_free (file_uri);
-		
 		g_free (image_uri);
 		
 		/* install the default link set */

@@ -28,6 +28,7 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include "fm-icon-text-window.h"
+#include <bonobo/bonobo-widget.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
 #include <errno.h>
@@ -1673,6 +1674,39 @@ get_icon_images_callback (NautilusIconContainer *container,
 	return nautilus_icon_factory_get_icon_for_file (file, modifier, smooth_graphics);
 }
 
+/* return the Bonobo control associated with the icon, if any */
+static void 
+get_icon_control_callback (NautilusIconContainer *container,
+			   NautilusFile *file,
+			   GtkWidget **control,
+			   FMIconView *icon_view)
+{
+	Bonobo_UIContainer ui_container;
+	char *control_moniker, *control_data;
+	char *uri, *path;
+	*control = NULL;
+
+	if (nautilus_file_is_nautilus_link (file)) {
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		if (path != NULL) {
+			nautilus_link_local_get_component_info (path, &control_moniker, &control_data);
+			if (control_moniker && strlen (control_moniker) > 0) {
+				g_message ("got moniker %s", control_moniker);
+				ui_container = fm_directory_view_get_bonobo_ui_container (FM_DIRECTORY_VIEW (icon_view));
+				*control = bonobo_widget_new_control (control_moniker, ui_container);				
+				g_free (control_moniker);
+			}
+			if (control_data && strlen (control_data) > 0) {
+				bonobo_widget_set_property (BONOBO_WIDGET (*control), "configuration", control_data, NULL);
+				g_free (control_data);
+			}
+			g_free (path);
+		}
+		g_free (uri);
+	}	
+}
+
 static char *
 get_icon_uri_callback (NautilusIconContainer *container,
 		       NautilusFile *file,
@@ -2042,6 +2076,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_images",
 			    GTK_SIGNAL_FUNC (get_icon_images_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_control",
+			    GTK_SIGNAL_FUNC (get_icon_control_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_uri",

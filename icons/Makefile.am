@@ -18,6 +18,7 @@ icon_DATA =\
 	about_background.png \
 	audio.png \
 	backgrounds.png \
+	bullet.png \
 	chit_frame.png \
 	colors.png \
 	computer.png \

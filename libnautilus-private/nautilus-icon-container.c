@@ -158,6 +158,7 @@ enum {
 	CONTEXT_CLICK_SELECTION,
 	MIDDLE_CLICK,
 	GET_CONTAINER_URI,
+	GET_ICON_CONTROL,
 	GET_ICON_IMAGES,
 	GET_ICON_TEXT,
 	GET_ICON_URI,
@@ -3038,6 +3039,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  gtk_marshal_NONE__POINTER,
 				  GTK_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
+	signals[GET_ICON_CONTROL]
+		= gtk_signal_new ("get_icon_control",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     get_icon_control),
+				  gtk_marshal_NONE__POINTER_POINTER,
+				  GTK_TYPE_NONE, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_POINTER);	
 	signals[GET_ICON_IMAGES]
 		= gtk_signal_new ("get_icon_images",
 				  GTK_RUN_LAST,
@@ -3591,9 +3602,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GdkPixbuf *pixbuf, *emblem_pixbuf, *saved_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
+	GtkWidget *embedded_control;
 	GdkFont *font;
 	guint smooth_font_size;
-
+	
 	if (icon == NULL) {
 		return;
 	}
@@ -3625,8 +3637,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	
 	nautilus_scalable_icon_unref (scalable_icon);
 
-	/*  in the rare case an image is too small, scale it up */
-	
+	/*  in the rare case an image is too small, scale it up */	
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 	if (width < min_image_size || height < min_image_size) {
@@ -3634,9 +3645,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		/* don't let it exceed the maximum width in the other dimension */
 		scale_factor = MIN (scale_factor, max_image_size / width);
 		scale_factor = MIN (scale_factor, max_image_size / height);
-		
+
 		scaled_width  = floor (width * scale_factor + .5);
 		scaled_height = floor (height * scale_factor + .5);
+				
+		/* scale the image to the calculated size */
 		saved_pixbuf = pixbuf;
 		pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);
 		gdk_pixbuf_unref (saved_pixbuf);
@@ -3665,13 +3678,22 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
 	nautilus_scalable_icon_list_free (emblem_scalable_icons);
 
+	/* get the embedded control, if any */
+	embedded_control = nautilus_icon_canvas_item_get_control (icon->item);
+	if (embedded_control == NULL) {
+		gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_CONTROL],
+			 icon->data,
+			 &embedded_control);	
+	}
+	 	 
 	/* Get both editable and non-editable icon text */
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[GET_ICON_TEXT],
 			 icon->data,
 			 &editable_text,
 			 &additional_text);
-
+	
 	/* If name of icon being renamed was changed from elsewhere, end renaming mode. 
 	 * Alternatively, we could replace the characters in the editable text widget
 	 * with the new name, but that could cause timing problems if the user just
@@ -3695,6 +3717,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			       "smooth_font_size", smooth_font_size,
 			       "smooth_font", details->smooth_label_font,
 			       NULL);
+	
+	nautilus_icon_canvas_item_set_control (icon->item, embedded_control);
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
 	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);

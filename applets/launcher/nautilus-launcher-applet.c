@@ -28,7 +28,7 @@
 #include <applet-widget.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <gtk.h>
+#include <gtk/gtk.h>
 
 static void
 button_toggled (GtkWidget *button,
@@ -49,12 +49,13 @@ show_desktop_changed_callback (gpointer callback_data)
 				      nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP));
 }
 
+/*
 static void
 delete_event (GtkWidget *widget, GdkEvent *event, gpointer callback_data)
 {
 	gtk_main_quit ();
 }
-
+*/
 int
 main (int argc, char **argv)
 {

@@ -1,3 +1,72 @@
+2001-01-24  Andy Hertzfeld  <andy@eazel.com>
+
+	merged the post-1_0 branch with HEAD 1/23/01 to get this,
+	the post-1_0_1 branch
+	
+	* applets/launcher/nautilus-launcher-applet.c:
+	* components/Makefile.am:
+	* components/rss-control/.cvsignore:
+	* components/rss-control/Makefile.am:
+	* components/rss-control/main.c: (rss_control_object_destroyed),
+	(rss_control_make_object), (main):
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_rss_control_initialize),
+	(free_rss_data_item), (nautilus_rss_control_clear_items),
+	(nautilus_rss_control_destroy), (nautilus_rss_control_get_control),
+	(nautilus_rss_control_set_title), (rss_logo_callback),
+	(rss_read_done_callback), (load_rss_file),
+	(nautilus_rss_control_set_uri), (rss_control_pixbuf_composite),
+	(draw_rss_logo_image), (draw_rss_title), (draw_blue_line),
+	(draw_rss_items), (nautilus_rss_control_draw),
+	(nautilus_rss_control_expose),
+	(nautilus_rss_control_set_prelight_index),
+	(nautilus_rss_control_motion_event),
+	(nautilus_rss_control_leave_event),
+	(nautilus_rss_control_button_press_event):
+	* components/rss-control/nautilus-rss-control.h:
+	* components/rss-control/nautilus-rss-control.oafinfo:
+	* configure.in:
+	* data/top/Clock:
+	* data/top/Makefile.am:
+	* data/top/Slashdot:
+	* icons/Makefile.am:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_get_icon_width),
+	(nautilus_icon_canvas_item_get_icon_height),
+	(nautilus_icon_canvas_item_set_arg), (do_control_destroy),
+	(nautilus_icon_canvas_item_get_arg),
+	(nautilus_icon_canvas_item_get_image), (recompute_bounding_box),
+	(nautilus_icon_canvas_item_update_bounds),
+	(draw_or_measure_label_text), (emblem_layout_next),
+	(nautilus_icon_canvas_item_draw), (draw_or_measure_label_text_aa),
+	(nautilus_icon_canvas_item_render),
+	(nautilus_icon_canvas_item_bounds),
+	(nautilus_icon_canvas_item_get_icon_rectangle),
+	(get_icon_canvas_rectangle),
+	(nautilus_icon_canvas_item_set_smooth_font),
+	(nautilus_icon_canvas_item_get_control),
+	(nautilus_icon_canvas_item_set_control):
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_update_icon):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_get_component_info):
+	* libnautilus-extensions/nautilus-link.h:
+	* libnautilus-extensions/nautilus-metadata.h:
+	* src/file-manager/fm-icon-view.c: (get_icon_control_callback),
+	(create_icon_container):
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_hit_test),
+	(nautilus_sidebar_tabs_select_tab):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_release_event):
+	
 2001-01-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-theme-selector.c: (remove_button_callback),
@@ -5401,6 +5470,170 @@ Wed Jan 03 04:11:01 2001  George Lebl <jirka@5z.com>
 	improved performance by using nautilus_gnome_canvas_draw_pixbuf
 	to draw on the aa canvas instead of libart.
 
+=======
+2001-01-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-throbber.c: (nautilus_throbber_initialize_class),
+	(nautilus_throbber_initialize), (bump_throbber_frame),
+	(nautilus_throbber_start), (nautilus_throbber_stop):
+
+	made the throbber anti-aliased by using a nautilus_image widget
+	to do the drawing.
+	
+2001-01-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class),
+	(nautilus_rss_control_initialize), (nautilus_rss_control_destroy),
+	(rss_control_pixbuf_composite), (draw_rss_logo_image),
+	(draw_rss_items), (nautilus_rss_control_draw),
+	(nautilus_rss_control_expose),
+	(nautilus_rss_control_set_prelight_index),
+	(nautilus_rss_control_motion_event),
+	(nautilus_rss_control_leave_event):
+	
+	fixed problem with critical errors in gdk_pixbuf by clipping to
+	the destination pixbuf.
+	
+	added prelighting to the rss items by tracking mouse motion events
+	to maintain a prelight index, which is used to draw an item
+	in a different color.
+	
+2001-01-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rss-control/main.c: (main):
+	tweaked broken stop-on-criticals stuff
+	
+	* components/rss-control/nautilus-rss-control.c:
+	(free_rss_data_item), (nautilus_rss_control_clear_items),
+	(nautilus_rss_control_destroy), (rss_logo_callback),
+	(rss_read_done_callback), (load_rss_file), (draw_rss_items),
+	(nautilus_rss_control_button_press_event):
+	made it extract urls for rss items and keep them in a structure,
+	and then activate them when clicked.
+	
+	Also, keep around file handles in instance data so we can cancel
+	any pending async I/O when the object is destroyed.
+	
+	* data/top/Makefile.am:
+	add sample controls to novice home directory
+	* data/top/Clock:
+	sample control
+	* data/top/Slashdot:
+	sample control
+	* src/file-manager/fm-icon-view.c: (get_icon_control_callback):
+	added check for non-zero moniker length
+	
+2001-01-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize), (nautilus_rss_control_destroy),
+	(rss_read_done_callback), (nautilus_rss_control_draw),
+	(nautilus_rss_control_button_press_event):
+	captured the channel link from the xml file, added title and logo
+	hit-testing, and made it launch a new window pointed at the
+	channel link when the user clicks on the logo or title.
+	
+2001-01-02  Andy Hertzfeld  <andy@eazel.com>
+
+	first check-in to post-1_0 branch.
+	
+	add ability to embed Bonobo controls in the icon view.
+	created a new bonobo control that fetches and displays rss weblogs
+	plus miscellaneous optimizations and improvements
+	
+	* components/Makefile.am:
+	* configure.in:
+	added new rss-control component
+	
+	* components/hardware/nautilus-hardware-view.c:
+	(get_RAM_description), (get_IDE_description):
+	incorporated Bud's disk size calculation, plus tweaked the
+	RAM size calculation
+	
+	* components/rss-control/.cvsignore:
+	* components/rss-control/Makefile.am:
+	* components/rss-control/nautilus-rss-control.oafinfo:
+	files for the new rss-control component
+	
+	* components/rss-control/main.c: (rss_control_object_destroyed),
+	(rss_control_make_object), (main):
+	factory for the rss-control Bonobo component
+	
+	* components/rss-control/nautilus-rss-control.c,h:
+	(nautilus_rss_control_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_rss_control_initialize),
+	(nautilus_rss_control_clear_items), (nautilus_rss_control_destroy),
+	(nautilus_rss_control_get_control),
+	(nautilus_rss_control_set_title), (rss_logo_callback),
+	(rss_read_done_callback), (load_rss_file),
+	(nautilus_rss_control_set_uri), (draw_rss_logo_image),
+	(draw_rss_title), (draw_blue_line), (draw_rss_items),
+	(nautilus_rss_control_draw), (nautilus_rss_control_expose),
+	(nautilus_rss_control_button_press_event):
+	new bonobo control to fetch an rss file and display it.
+	
+	* icons/Makefile.am:
+	* icons/bullet.png:
+	added a "bullet" image used in rss control, but it's generally
+	useful enough that I added it to the main icons
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	deleted some code that's no longer relevant
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c,h:
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_get_icon_width),
+	(nautilus_icon_canvas_item_get_icon_height),
+	(nautilus_icon_canvas_item_set_arg), (do_control_destroy),
+	(nautilus_icon_canvas_item_get_arg),
+	(nautilus_icon_canvas_item_get_image), (recompute_bounding_box),
+	(nautilus_icon_canvas_item_update_bounds),
+	(draw_or_measure_label_text), (emblem_layout_next),
+	(draw_pixbuf_aa), (nautilus_icon_canvas_item_draw),
+	(draw_or_measure_label_text_aa),
+	(nautilus_icon_canvas_item_render),
+	(nautilus_icon_canvas_item_bounds),
+	(nautilus_icon_canvas_item_get_icon_rectangle),
+	(get_icon_canvas_rectangle),
+	(nautilus_icon_canvas_item_set_smooth_font),
+	(nautilus_icon_canvas_item_get_control),
+	(nautilus_icon_canvas_item_set_control):
+	added support for widgets embedded in icon canvas items
+	
+	* libnautilus-extensions/nautilus-icon-container.c,h:
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_update_icon):
+	taught the icon container to ask for the control associated
+	with a file, and configured the canvas item with it if there
+	is one.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	made it unref the image it fetches from the canvas item, so the
+	canvas item can generate custom images for controls.
+	
+	* libnautilus-extensions/nautilus-link.c,h:
+	(nautilus_link_local_get_component_info):
+	fetch the activation and configuration strings associated with
+	a link file for string embedding.
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	added metadata types for the activation and configuration data
+	
+	* src/file-manager/fm-icon-view.c: (get_icon_control_callback),
+	(create_icon_container):
+	added signal to create a bonobo control associated with a file
+	and configure it, if there is one
+	
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_hit_test),
+	(nautilus_sidebar_tabs_select_tab):
+	hit test invisible tabs to support the change below.
+	* src/nautilus-sidebar.c: (nautilus_sidebar_release_event):
+	implemented Bud's idea of toggling the visibility of the active
+	view by clicking on the tab again.
+	
 2001-01-02  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -72,14 +72,21 @@ gboolean         nautilus_link_local_set_link_uri               (const char     
  * none. Despite the fact that it takes a URI parameter, works only if
  * the file is local and does sync. I/O.
  */
-char *           nautilus_link_local_get_additional_text        (const char       *path);
+char *	nautilus_link_local_get_additional_text        (const char       *path);
 
 /* Returns the image associated with a link file. Despite the fact
  * that it takes a URI parameter, works only if the file is local and
  * does sync. I/O on the link, although it does async. on the image
  * and caches if the image is remote.
  */
-char *           nautilus_link_local_get_image_uri              (const char       *path);
+char *		nautilus_link_local_get_image_uri              (const char       *path);
+
+/* returns the moniker of the component associated with a link file, as well as configuration data.
+ * It works only if the file is local and does sync. I/O.
+ */
+void		nautilus_link_local_get_component_info         (const char       *path,
+								 char 		  **control_moniker,
+								 char		  **control_data);
 
 /* Returns the link type of a link file.
  * Works only if the file is local and does sync. I/O
