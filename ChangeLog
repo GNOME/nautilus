@@ -1,3 +1,15 @@
+2001-01-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Band aid fix for bug 5898 - Beginner: sidebar tab right click
+	on/off option not working.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	For PR3 we are simply making sidebar panels visible at all users
+	levels.  The tree sidebar panel defaults to being off on all user
+	levels.
+	
 2001-01-23  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: make mozilla = 0.7 instead of >=

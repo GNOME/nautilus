@@ -825,10 +825,10 @@ static struct
 	int visible_user_level;
 } known_sidebar_panels[] =
 {
-	{ "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",       TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE},
-	{ "OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234", TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE },
-	{ "OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",     TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE },
-	{ "OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d",        FALSE, TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE },
+	{ "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",       TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_NOVICE},
+	{ "OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234", TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_NOVICE },
+	{ "OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",     TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_NOVICE },
+	{ "OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d",        FALSE, FALSE, FALSE, NAUTILUS_USER_LEVEL_NOVICE },
 };
 
 static void
