@@ -1422,7 +1422,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 			
 			if (music_view->details->album_image == NULL) {
 				music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
-				gtk_box_pack_start(GTK_BOX(music_view->details->control_box), 
+				gtk_box_pack_end (GTK_BOX(music_view->details->control_box), 
 					   	   music_view->details->album_image, FALSE, FALSE, 2);	
 			} else { 
 				gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
