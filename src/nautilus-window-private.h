@@ -30,9 +30,8 @@
 #include "nautilus-window.h"
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-ui-container.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
 
-/* FIXME bugzilla.eazel.com 2575: Need to migrate window fields into here. */
+/* FIXME bugzilla.eazel.com 2575: Migrate more fields into here. */
 struct NautilusWindowDetails
 {
         /* Bonobo. */
@@ -78,41 +77,42 @@ struct NautilusWindowDetails
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH			700
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT			550
 
-void                 nautilus_window_set_status                        (NautilusWindow             *window,
-                                                                        const char                 *status);
-void                 nautilus_window_back_or_forward                   (NautilusWindow             *window,
-                                                                        gboolean                    back,
-                                                                        guint                       distance);
-void                 nautilus_window_load_content_view_menu            (NautilusWindow             *window);
-void                 nautilus_window_synch_content_view_menu           (NautilusWindow             *window);
-void                 nautilus_send_history_list_changed                (void);
-void                 nautilus_add_to_history_list                      (NautilusBookmark           *bookmark);
-GList *              nautilus_get_history_list                         (void);
-void                 nautilus_window_add_bookmark_for_current_location (NautilusWindow             *window);
-void                 nautilus_window_initialize_menus                  (NautilusWindow             *window);
-void                 nautilus_window_initialize_toolbars               (NautilusWindow             *window);
-void                 nautilus_window_go_back                           (NautilusWindow             *window);
-void                 nautilus_window_go_forward                        (NautilusWindow             *window);
-void                 nautilus_window_go_up                             (NautilusWindow             *window);
-void                 nautilus_window_update_find_menu_item             (NautilusWindow             *window);
-void                 nautilus_window_toolbar_remove_theme_callback     (NautilusWindow             *window);
-NautilusUndoManager *nautilus_window_get_undo_manager                  (NautilusWindow             *window);
-void                 nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow             *window);
-void                 nautilus_window_remove_go_menu_callback           (NautilusWindow             *window);
-void                 nautilus_window_remove_bookmarks_menu_items       (NautilusWindow             *window);
-void                 nautilus_window_remove_go_menu_items              (NautilusWindow             *window);
-void                 nautilus_window_update_show_hide_menu_items       (NautilusWindow             *window);
-void                 nautilus_window_zoom_in                           (NautilusWindow             *window);
-void                 nautilus_window_zoom_out                          (NautilusWindow             *window);
-void                 nautilus_window_zoom_to_level                     (NautilusWindow             *window,
-                                                                        double                      level);
-void                 nautilus_window_zoom_to_fit                       (NautilusWindow             *window);
-void                 nautilus_window_set_content_view_widget           (NautilusWindow             *window,
-                                                                        NautilusViewFrame          *content_view);
-void                 nautilus_window_add_sidebar_panel                 (NautilusWindow             *window,
-                                                                        NautilusViewFrame          *sidebar_panel);
-void                 nautilus_window_remove_sidebar_panel              (NautilusWindow             *window,
-                                                                        NautilusViewFrame          *sidebar_panel);
-Bonobo_UIContainer   nautilus_window_get_ui_container                  (NautilusWindow             *window);
+void               nautilus_window_set_status                     (NautilusWindow    *window,
+                                                                   const char        *status);
+void               nautilus_window_back_or_forward                (NautilusWindow    *window,
+                                                                   gboolean           back,
+                                                                   guint              distance);
+void               nautilus_window_load_view_as_menu              (NautilusWindow    *window);
+void               nautilus_window_synch_view_as_menu             (NautilusWindow    *window);
+void               nautilus_window_initialize_menus               (NautilusWindow    *window);
+void               nautilus_window_initialize_toolbars            (NautilusWindow    *window);
+void               nautilus_window_go_back                        (NautilusWindow    *window);
+void               nautilus_window_go_forward                     (NautilusWindow    *window);
+void               nautilus_window_go_up                          (NautilusWindow    *window);
+void               nautilus_window_update_find_menu_item          (NautilusWindow    *window);
+void               nautilus_window_toolbar_remove_theme_callback  (NautilusWindow    *window);
+void               nautilus_window_remove_bookmarks_menu_callback (NautilusWindow    *window);
+void               nautilus_window_remove_go_menu_callback        (NautilusWindow    *window);
+void               nautilus_window_remove_bookmarks_menu_items    (NautilusWindow    *window);
+void               nautilus_window_remove_go_menu_items           (NautilusWindow    *window);
+void               nautilus_window_update_show_hide_menu_items    (NautilusWindow    *window);
+void               nautilus_window_zoom_in                        (NautilusWindow    *window);
+void               nautilus_window_zoom_out                       (NautilusWindow    *window);
+void               nautilus_window_zoom_to_level                  (NautilusWindow    *window,
+                                                                   double             level);
+void               nautilus_window_zoom_to_fit                    (NautilusWindow    *window);
+void               nautilus_window_set_content_view_widget        (NautilusWindow    *window,
+                                                                   NautilusViewFrame *content_view);
+void               nautilus_window_add_sidebar_panel              (NautilusWindow    *window,
+                                                                   NautilusViewFrame *sidebar_panel);
+void               nautilus_window_remove_sidebar_panel           (NautilusWindow    *window,
+                                                                   NautilusViewFrame *sidebar_panel);
+Bonobo_UIContainer nautilus_window_get_ui_container               (NautilusWindow    *window);
+void               nautilus_window_set_viewed_file                (NautilusWindow    *window,
+                                                                   NautilusFile      *file);
+
+void               nautilus_send_history_list_changed             (void);
+void               nautilus_add_to_history_list                   (NautilusBookmark  *bookmark);
+GList *            nautilus_get_history_list                      (void);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

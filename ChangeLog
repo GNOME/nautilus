@@ -1,3 +1,81 @@
+2000-11-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed some problems with callbacks that are left around after
+	the object is destroyed.
+
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c:
+	(viewed_file_changed_callback): Changed to be a normal callback,
+	not a "connect_object" callback, and simplified the logic.
+	(cancel_viewed_file_changed_callback): Added a function to cancel
+	the callback, which is needed both when the window is destroyed
+	and when the viewed file changes.
+	(update_for_new_location): Cancel the old callback before setting
+	up the new one so we don't leave behind callbacks for old locations.
+	Also use the new nautilus_window_set_viewed_file function so the
+	callbacks set up in nautilus-window.c can be managed properly.
+	(free_location_change): Moved part of
+	nautilus_window_free_load_info in here. This function frees all
+	the stuff that's used in the location change process; shared by
+	destroy and "cancel" code. Also fixed a bug where it wouldn't free
+	the "error_views".
+	(cancel_location_change): Moved the rest of
+	nautilus_window_free_load_info in here and made this use the new
+	function.
+	(disconnect_view): Made this private now that the code to
+	disconnect the views is inside this file.
+	(disconnect_view_callback),
+	(nautilus_window_manage_views_destroy): Moved the code to clean up
+	from nautilus-window.c in here. Added cleanup for the location
+	change fields and for the viewd_file_changed callback.
+	
+	* src/nautilus-window.c: 
+	(nautilus_window_destroy): Call a new function to do the
+	nautilus-window-manage-views.c part of the destroy and moved some
+	code in there. Cancel the view-as callback too.
+	(create_view_as_menu_item),
+	(replace_special_current_view_in_view_as_menu),
+	(nautilus_window_synch_view_as_menu): Renamed. The words "view as
+	menu" are clearer than "content view menu".
+	(chose_component_callback): Got rid of code that tries to handle
+	bad values for callback data. The callback must be cancelled,
+	because you can't call NAUTILUS_IS_WINDOW on a freed window and
+	expect it to behave predictably.
+	(cancel_chose_component_callback): Function to cancel the callback,
+	called at both destroy time and before adding a new one.
+	(view_menu_choose_view_callback): Cancel the old callback before
+	adding a new one.
+	(view_menu_vfs_method_callback): Simplify logic a bit.
+	(load_view_as_menu_callback): Renamed.
+	(cancel_view_as_callback): Function to cancel the callback, called
+	at both destroy time and before adding a new one.
+	(nautilus_window_load_view_as_menu): Cancel the old callback before
+	adding a new one. Also renamed.
+	(nautilus_window_set_viewed_file): A new function that cancels the
+	callbacks on the file object before switching to a new one.
+	
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_cancel_choose_component_for_file): Implemented missing
+	cancel function, needed by new window code.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-menus.c:
+	(bookmarks_menu_add_bookmark_callback),
+	(add_bookmark_for_current_location): Made the function local to
+	this file since it's both defined and used here.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus/nautilus-undo-transaction.c:
+	* libnautilus/nautilus-view.c:
+	* librsvg/rsvg.c:
+	Added missing "static" to make some local non-"nautilus_"-prefixed
+	globals be internal instead of external.
+	
+	* src/nautilus-sidebar.c: Formatting tweaks, added FIXME.
+
 2000-11-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus.spec.in:

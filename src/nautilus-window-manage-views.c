@@ -81,7 +81,10 @@
  */
 #define MAX_URI_IN_DIALOG_LENGTH 60
 
-static void connect_view (NautilusWindow *window, NautilusViewFrame *view);
+static void connect_view    (NautilusWindow    *window,
+                             NautilusViewFrame *view);
+static void disconnect_view (NautilusWindow    *window,
+                             NautilusViewFrame *view);
 
 static void
 change_selection (NautilusWindow *window,
@@ -409,17 +412,30 @@ update_up_button (NautilusWindow *window)
 }
 
 static void
-viewed_file_changed_callback (NautilusWindow *window)
+viewed_file_changed_callback (NautilusFile *file,
+                              NautilusWindow *window)
 {
+        g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (NAUTILUS_IS_WINDOW (window));
-
-        /* FIXME: is the below really the right thing to do for all
-           cases? */
+	g_assert (window->details->viewed_file == file);
 
 	/* Close window if the file it's viewing has been deleted. */
-	if (nautilus_file_is_gone (window->details->viewed_file)) {
+        /* FIXME: Is closing the window really the right thing to do
+         * for all cases?
+         */
+	if (nautilus_file_is_gone (file)) {
 		nautilus_window_close (window);
 	}
+}
+
+static void
+cancel_viewed_file_changed_callback (NautilusWindow *window)
+{
+        if (window->details->viewed_file != NULL) {
+                gtk_signal_disconnect_by_func (GTK_OBJECT (window->details->viewed_file),
+                                               viewed_file_changed_callback,
+                                               window);
+        }
 }
 
 /* Handle the changes for the NautilusWindow itself. */
@@ -427,6 +443,7 @@ static void
 update_for_new_location (NautilusWindow *window)
 {
         char *new_location;
+        NautilusFile *file;
         
         g_assert (window->pending_ni != NULL);
 
@@ -452,15 +469,17 @@ update_for_new_location (NautilusWindow *window)
         g_free (window->location);
         window->location = new_location;
         
-        /* Create a NautilusFile for this location, so we can
-         * check if it goes away.
+        /* Create a NautilusFile for this location, so we can catch it
+         * if it goes away.
          */
-        nautilus_file_unref (window->details->viewed_file);
-        window->details->viewed_file = nautilus_file_get (window->location);
-        gtk_signal_connect_object_while_alive (GTK_OBJECT (window->details->viewed_file),
-                                               "changed", 
-                                               viewed_file_changed_callback, 
-                                               GTK_OBJECT (window));
+        cancel_viewed_file_changed_callback (window);
+        file = nautilus_file_get (window->location);
+        nautilus_window_set_viewed_file (window, file);
+        gtk_signal_connect (GTK_OBJECT (file),
+                            "changed",
+                            viewed_file_changed_callback,
+                            window);
+        nautilus_file_unref (file);
         
         /* Clear the selection. */
         nautilus_g_list_free_deep (window->selection);
@@ -470,7 +489,7 @@ update_for_new_location (NautilusWindow *window)
         update_up_button (window);
         
         /* Set up the content view menu for this new location. */
-        nautilus_window_load_content_view_menu (window);
+        nautilus_window_load_view_as_menu (window);
         
         /* Check if the back and forward buttons need enabling or disabling. */
         nautilus_window_allow_back (window, window->back_list != NULL);
@@ -506,7 +525,7 @@ location_has_really_changed (NautilusWindow *window)
         /* Switch to the new content view. */
         if (window->new_content_view != NULL) {
                 if (GTK_WIDGET (window->new_content_view)->parent == NULL) {
-                	nautilus_window_disconnect_view (window, window->content_view);
+                	disconnect_view (window, window->content_view);
                         nautilus_window_set_content_view_widget (window, window->new_content_view);
                 }
                 gtk_object_unref (GTK_OBJECT (window->new_content_view));
@@ -518,7 +537,7 @@ location_has_really_changed (NautilusWindow *window)
 		 * views in the menu are for the old location).
 		 */
                 if (window->pending_ni == NULL) {
-                	nautilus_window_synch_content_view_menu (window);
+                	nautilus_window_synch_view_as_menu (window);
                 }
 	}
 
@@ -534,28 +553,6 @@ location_has_really_changed (NautilusWindow *window)
         }
 
         update_title (window);
-}
-
-/* This is called when we are done loading to get rid of the load_info structure. */
-static void
-nautilus_window_free_load_info (NautilusWindow *window)
-{
-        if (window->pending_ni != NULL) {
-                nautilus_navigation_info_free (window->pending_ni);
-                window->pending_ni = NULL;
-        }
-
-        window->error_views = NULL;
-        window->new_content_view = NULL;
-        window->cancel_tag = NULL;
-        window->views_shown = FALSE;
-        window->view_bombed_out = FALSE;
-        window->view_activation_complete = FALSE;
-        window->cv_progress_initial = FALSE;
-        window->cv_progress_done = FALSE;
-        window->cv_progress_error =  FALSE;
-        window->sent_update_view = FALSE;
-        window->reset_to_idle = FALSE;
 }
 
 static gboolean
@@ -796,15 +793,32 @@ handle_view_failure (NautilusWindow *window,
 }
 
 static void
-cancel_location_change (NautilusWindow *window)
+free_location_change (NautilusWindow *window)
 {
-        GList *node;
-
         if (window->cancel_tag != NULL) {
                 nautilus_navigation_info_cancel (window->cancel_tag);
                 window->cancel_tag = NULL;
         }
         
+        if (window->pending_ni != NULL) {
+                nautilus_navigation_info_free (window->pending_ni);
+                window->pending_ni = NULL;
+        }
+        
+        if (window->new_content_view != NULL) {
+                gtk_widget_unref (GTK_WIDGET (window->new_content_view));
+                window->new_content_view = NULL;
+        }
+        
+        nautilus_gtk_object_list_free (window->error_views);
+        window->error_views = NULL;
+}
+
+static void
+cancel_location_change (NautilusWindow *window)
+{
+        GList *node;
+
         if (window->pending_ni != NULL) {
                 set_displayed_location
                         (window, window->location == NULL ? "" : window->location);
@@ -820,15 +834,20 @@ cancel_location_change (NautilusWindow *window)
                 }
         }
         
-        if (window->new_content_view != NULL) {
-                gtk_widget_unref (GTK_WIDGET (window->new_content_view));
-        }
-        
-        nautilus_window_free_load_info (window);
-        
         nautilus_window_allow_stop (window, FALSE);
-}
 
+        free_location_change (window);
+
+        window->views_shown = FALSE;
+        window->view_bombed_out = FALSE;
+        window->view_activation_complete = FALSE;
+        window->cv_progress_initial = FALSE;
+        window->cv_progress_done = FALSE;
+        window->cv_progress_error = FALSE;
+        window->sent_update_view = FALSE;
+        window->reset_to_idle = FALSE;
+}
+        
 static void
 load_view_for_new_location (NautilusWindow *window)
 {
@@ -1415,7 +1434,7 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 						 (char *) nautilus_view_frame_get_iid (sidebar_panel),
 						 compare_view_identifier_with_iid);
 		if (found_node == NULL) {
-			nautilus_window_disconnect_view	(window, sidebar_panel);
+			disconnect_view (window, sidebar_panel);
 			nautilus_window_remove_sidebar_panel (window, sidebar_panel);
 		} else {
                         identifier = (NautilusViewIdentifier *) found_node->data;
@@ -1722,8 +1741,8 @@ connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	#undef CONNECT
 }
 
-void
-nautilus_window_disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
+static void
+disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
 	GtkObject *view_object;
 	
@@ -1742,4 +1761,27 @@ nautilus_window_disconnect_view (NautilusWindow *window, NautilusViewFrame *view
         	 GTK_SIGNAL_FUNC (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (DISCONNECT)
 	#undef DISCONNECT
+}
+
+static void
+disconnect_view_callback (gpointer list_item_data, gpointer callback_data)
+{
+	disconnect_view (NAUTILUS_WINDOW (callback_data),
+                         NAUTILUS_VIEW_FRAME (list_item_data));
+}
+
+
+void
+nautilus_window_manage_views_destroy (NautilusWindow *window)
+{
+        free_location_change (window);
+
+	/* Disconnect view signals here so they don't trigger when
+	 * views are destroyed.
+	 */
+	g_list_foreach (window->sidebar_panels, disconnect_view_callback, window);
+        disconnect_view (window, window->content_view);
+
+        /* Cancel callbacks. */
+        cancel_viewed_file_changed_callback (window);
 }

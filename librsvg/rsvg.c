@@ -1358,7 +1358,7 @@ rsvg_entity_decl (void *data, const xmlChar *name, int type,
   g_hash_table_insert (entities, dupname, entity);
 }
 
-xmlSAXHandler rsvgSAXHandlerStruct = {
+static xmlSAXHandler rsvgSAXHandlerStruct = {
     NULL, /* internalSubset */
     NULL, /* isStandalone */
     NULL, /* hasInternalSubset */
@@ -1386,7 +1386,7 @@ xmlSAXHandler rsvgSAXHandlerStruct = {
     NULL, /* getParameterEntity */
 };
 
-xmlSAXHandlerPtr rsvgSAXHandler = &rsvgSAXHandlerStruct;
+static xmlSAXHandlerPtr rsvgSAXHandler = &rsvgSAXHandlerStruct;
 
 GdkPixbuf *
 rsvg_render_file (FILE *f, double zoom)

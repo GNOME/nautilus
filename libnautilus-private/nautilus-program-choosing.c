@@ -263,7 +263,38 @@ nautilus_choose_component_for_file (NautilusFile *file,
 				       choose_component_callback,
 				       choose_data);
 	g_list_free (attributes);
-}				    
+}
+
+void
+nautilus_cancel_choose_component_for_file (NautilusFile *file,
+					   NautilusComponentChoiceCallback callback,
+					   gpointer callback_data)
+{
+	ChooseComponentCallbackData search_criteria;
+	ChooseComponentCallbackData *choose_data;
+
+	if (choose_component_hash_table == NULL) {
+		return;
+	}
+
+	/* Search for an existing choose in progress. */
+	search_criteria.file = file;
+	search_criteria.callback = callback;
+	search_criteria.callback_data = callback_data;
+	choose_data = g_hash_table_lookup (choose_component_hash_table,
+					   &search_criteria);
+	if (choose_data == NULL) {
+		return;
+	}
+
+	/* Stop it. */
+	g_hash_table_remove (choose_component_hash_table,
+			     choose_data);
+	nautilus_file_cancel_call_when_ready (file,
+					      choose_component_callback,
+					      choose_data);
+	choose_component_destroy (choose_data);
+}
 
 /**
  * nautilus_choose_application_for_file:

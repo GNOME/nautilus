@@ -80,15 +80,15 @@ struct NautilusVolumeMonitorDetails
 	guint mount_volume_timer_id;
 };
 
-NautilusVolumeMonitor *global_volume_monitor = NULL;
+static NautilusVolumeMonitor *global_volume_monitor = NULL;
 
-const char * const state_names[] = { 
+static const char * const state_names[] = { 
 	"ACTIVE", 
 	"INACTIVE", 
 	"EMPTY" 
 };
 
-const char * const type_names[] = { 
+static const char * const type_names[] = { 
 	"CDROM", 
 	"FLOPPY",
 	"LOCAL_DISK",

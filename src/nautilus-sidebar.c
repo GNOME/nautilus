@@ -117,9 +117,9 @@ static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 
 static void	nautilus_sidebar_update_all	    (NautilusSidebar  *sidebar);
 
-/* FIXME bugzilla.eazel.com 1245: hardwired sizes */
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
+/* FIXME bugzilla.eazel.com 1245: hardwired sizes */
 #define SIDEBAR_MINIMUM_WIDTH 1
 #define SIDEBAR_MINIMUM_HEIGHT 400
 
@@ -1217,9 +1217,14 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 				    FALSE, FALSE, 
 				    0);
 
-		/* FIXME bugzilla.eazel.com 2510: Security hole? Can't use a string from the
-		 * MIME file as a printf format string without first
-		 * checking it over somehow.
+		/* FIXME bugzilla.eazel.com 2510: Security hole?
+		 * Unsafe to use a string from the MIME file as a
+		 * printf format string without first checking it over
+		 * somehow. We can do a search and replace on the "%s"
+		 * part instead, which should work.
+		 */
+		/* FIXME: Doing a +7 does not turn a URI into a path
+		 * name.
 		 */
 		temp_str = g_strdup_printf
 			("'%s'", 
@@ -1239,7 +1244,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 
 	/* Catch-all button after all the others. */
 	temp_button = gtk_button_new_with_label (_("Open with..."));
-	gtk_signal_connect (GTK_OBJECT (temp_button),  "clicked",
+	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked",
 			    open_with_callback, NULL);
 	gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
 	gtk_widget_show (temp_button);

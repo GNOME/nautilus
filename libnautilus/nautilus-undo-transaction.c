@@ -61,7 +61,7 @@ static void                    undo_atom_list_undo_and_free                     
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoTransaction, nautilus_undo_transaction, BONOBO_OBJECT_TYPE)
 
-POA_Nautilus_Undo_Transaction__epv libnautilus_Nautilus_Undo_Transaction_epv =
+static POA_Nautilus_Undo_Transaction__epv libnautilus_Nautilus_Undo_Transaction_epv =
 {
 	NULL,
 	&impl_Nautilus_Undo_Transaction__get_undo_menu_item,

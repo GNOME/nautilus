@@ -90,18 +90,19 @@
 
 static GtkWindow *bookmarks_window = NULL;
 
-static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
-									     NautilusBookmark *bookmark,
-									     const char             *parent_path,
-									     guint		     index_in_parent,
-									     gboolean		     is_in_bookmarks_menu);
-static void		     append_dynamic_bookmarks 			    (NautilusWindow *window);
-static NautilusBookmarkList *get_bookmark_list                              (void);
-static void                  refresh_go_menu                   		    (NautilusWindow         *window);
-static void                  refresh_bookmarks_menu            	    	    (NautilusWindow         *window);
-static void		     schedule_refresh_go_menu 		    	    (NautilusWindow 	    *window);
-static void		     schedule_refresh_bookmarks_menu 	    	    (NautilusWindow 	    *window);
-static void                  edit_bookmarks                                 (NautilusWindow         *window);
+static void                  append_bookmark_to_menu                       (NautilusWindow   *window,
+									    NautilusBookmark *bookmark,
+									    const char       *parent_path,
+									    guint             index_in_parent,
+									    gboolean          is_in_bookmarks_menu);
+static void                  append_dynamic_bookmarks                      (NautilusWindow   *window);
+static NautilusBookmarkList *get_bookmark_list                             (void);
+static void                  refresh_go_menu                               (NautilusWindow   *window);
+static void                  refresh_bookmarks_menu                        (NautilusWindow   *window);
+static void                  schedule_refresh_go_menu                      (NautilusWindow   *window);
+static void                  schedule_refresh_bookmarks_menu               (NautilusWindow   *window);
+static void                  edit_bookmarks                                (NautilusWindow   *window);
+static void                  add_bookmark_for_current_location             (NautilusWindow   *window);
 
 /* User level things */
 static guint                 convert_verb_to_user_level                    (const char       *verb);
@@ -474,7 +475,7 @@ bookmarks_menu_add_bookmark_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
-        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
+        add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -1022,13 +1023,13 @@ nautilus_bookmarks_exiting (void)
 }
 
 /**
- * nautilus_window_add_bookmark_for_current_location
+ * add_bookmark_for_current_location
  * 
  * Add a bookmark for the displayed location to the bookmarks menu.
  * Does nothing if there's already a bookmark for the displayed location.
  */
-void
-nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
+static void
+add_bookmark_for_current_location (NautilusWindow *window)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 

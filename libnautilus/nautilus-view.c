@@ -74,7 +74,7 @@ static void nautilus_view_initialize_class       (NautilusViewClass      *klass)
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TYPE)
 
-POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
+static POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
 	NULL,
 	&impl_Nautilus_View_load_location,

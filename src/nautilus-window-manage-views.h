@@ -29,6 +29,7 @@
 
 #include "nautilus-window.h"
 
+void nautilus_window_manage_views_destroy        (NautilusWindow             *window);
 void nautilus_window_open_location               (NautilusWindow             *window,
                                                   const char                 *location);
 void nautilus_window_open_location_in_new_window (NautilusWindow             *window,
@@ -43,7 +44,5 @@ void nautilus_window_begin_location_change       (NautilusWindow             *wi
                                                   const char                 *location,
                                                   NautilusLocationChangeType  type,
                                                   guint                       distance);
-void nautilus_window_disconnect_view             (NautilusWindow             *window,
-                                                  NautilusViewFrame          *view);
 
 #endif /* NAUTILUS_WINDOW_MANAGE_VIEWS_H */

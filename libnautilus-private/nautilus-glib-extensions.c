@@ -43,7 +43,7 @@ typedef struct {
 	gboolean keys_known_to_be_strings;
 } HashTableToFree;
 
-GList *hash_tables_to_free_at_exit;
+static GList *hash_tables_to_free_at_exit;
 
 /* We will need this for nautilus_unsetenv if there is no unsetenv. */
 #if !defined (HAVE_SETENV)
