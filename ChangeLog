@@ -1,5 +1,15 @@
 2001-06-01  Darin Adler  <darin@bentspoon.com>
 
+	Rolled in patch by Juan Pablo Mendoza <pablo_juan@yahoo.com> to
+	make the file dialog show up in the right position instead of
+	showing up in one place and then moving right away.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(create_transfer_dialog): Move gtk_show_widget until after the
+	center_dialog_over_window call.
+
+2001-06-01  Darin Adler  <darin@bentspoon.com>
+
 	Fixed mistakes in my MIME type change from yesterday.
 
 	* libnautilus-private/nautilus-mime-actions.c:

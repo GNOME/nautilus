@@ -365,13 +365,13 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 			    GTK_SIGNAL_FUNC (handle_close_callback),
 			    transfer_info);
 
-	gtk_widget_show (GTK_WIDGET (transfer_info->progress_dialog));
-
 	/* Make the progress dialog show up over the window we are copying into */
 	if (transfer_info->parent_view != NULL) {
 		center_dialog_over_window (GTK_WINDOW (transfer_info->progress_dialog), 
 					   GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
 	}
+
+	gtk_widget_show (GTK_WIDGET (transfer_info->progress_dialog));
 }
 
 static void
