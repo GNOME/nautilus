@@ -2339,6 +2339,9 @@ destroy (GtkObject *object)
 					      container);
 	
 	nautilus_icon_container_flush_typeselect_state (container);
+
+	g_hash_table_destroy (container->details->icon_set);
+	container->details->icon_set = NULL;
 	
 	g_free (container->details);
 
@@ -3331,6 +3334,8 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
+	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
+
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
  	/* font table - this isn't exactly proportional, but it looks better than computed */
@@ -3597,6 +3602,9 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	g_list_free (details->new_icons);
 	details->new_icons = NULL;
 	
+ 	g_hash_table_destroy (details->icon_set);
+ 	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
+ 
 	nautilus_icon_container_update_scroll_region (container);
 }
 
@@ -3652,7 +3660,8 @@ icon_destroy (NautilusIconContainer *container,
 
 	details->icons = g_list_remove (details->icons, icon);
 	details->new_icons = g_list_remove (details->new_icons, icon);
-		
+	g_hash_table_remove (details->icon_set, icon->data);
+
 	was_selected = icon->is_selected;
 
 	if (details->keyboard_focus == icon) {
@@ -3928,7 +3937,6 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 			     NautilusIconData *data)
 {
 	NautilusIconContainerDetails *details;
-	GList *p;
 	NautilusIcon *icon;
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
@@ -3936,14 +3944,8 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 
 	details = container->details;
 
-	/* FIXME bugzilla.gnome.org 41288: 
-	 * I guess we need to use an indexed data structure to avoid this loop.
-	 */
-	for (p = details->icons; p != NULL; p = p->next) {
-		icon = p->data;
-		if (icon->data == data) {
-			return FALSE;
-		}
+	if (g_hash_table_lookup (details->icon_set, data) != NULL) {
+		return FALSE;
 	}
 
 	/* Create the new icon, including the canvas item. */
@@ -3964,6 +3966,8 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	details->icons = g_list_prepend (details->icons, icon);
 	details->new_icons = g_list_prepend (details->new_icons, icon);
 
+	g_hash_table_insert (details->icon_set, data, icon);
+
 	/* Run an idle function to add the icons. */
 	schedule_redo_layout (container);
 	
@@ -3982,26 +3986,22 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 				NautilusIconData *data)
 {
 	NautilusIcon *icon;
-	GList *p;
 
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 
 	end_renaming_mode (container, FALSE);
 		
-	/* FIXME bugzilla.gnome.org 41288: 
-	 * I guess we need to use an indexed data structure to avoid this loop.
-	 */
-	for (p = container->details->icons; p != NULL; p = p->next) {
-		icon = p->data;
-		if (icon->data == data) {
-			icon_destroy (container, icon);
-			schedule_redo_layout (container);
-			return TRUE;
-		}
+	icon = g_hash_table_lookup (container->details->icon_set, data);
+
+	if (icon == NULL) {
+		return FALSE;
 	}
 
-	return FALSE;
+	icon_destroy (container, icon);
+	schedule_redo_layout (container);
+
+	return TRUE;
 }
 
 /**
@@ -4016,18 +4016,15 @@ nautilus_icon_container_request_update (NautilusIconContainer *container,
 					NautilusIconData *data)
 {
 	NautilusIcon *icon;
-	GList *p;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (data != NULL);
 
-	for (p = container->details->icons; p != NULL; p = p->next) {
-		icon = p->data;
-		if (icon->data == data) {
-			nautilus_icon_container_update_icon (container, icon);
-			schedule_redo_layout (container);
-			return;
-		}
+	icon = g_hash_table_lookup (container->details->icon_set, data);
+
+	if (icon != NULL) {
+		nautilus_icon_container_update_icon (container, icon);
+		schedule_redo_layout (container);
 	}
 }
 
@@ -4097,20 +4094,15 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 void
 nautilus_icon_container_reveal (NautilusIconContainer *container, NautilusIconData *data)
 {
-	GList *p;
 	NautilusIcon *icon;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (data != NULL);
 
-	/* FIXME bugzilla.gnome.org 41288: 
-	 * I guess we need to use an indexed data structure to avoid this loop.
-	 */
-	for (p = container->details->icons; p != NULL; p = p->next) {
-		icon = p->data;
-		if (icon->data == data) {
-			reveal_icon (container, icon);
-		}
+	icon = g_hash_table_lookup (container->details->icon_set, data);
+
+	if (icon != NULL) {
+		reveal_icon (container, icon);
 	}
 }
 

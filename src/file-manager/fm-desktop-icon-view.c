@@ -801,7 +801,6 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 
 	path = nautilus_make_path (desktop_directory, TRASH_LINK_NAME);
 
-	/* Change the XML file to have a new icon. */
 	nautilus_link_local_set_icon (path, state ? "trash-empty" : "trash-full");
 
 	g_free (path);

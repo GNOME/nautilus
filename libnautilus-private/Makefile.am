@@ -48,6 +48,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-bookmark.c \
 	nautilus-customization-data.c \
 	nautilus-default-file-icon.c \
+	nautilus-desktop-file-loader.c \
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-metafile-monitor.c \
@@ -60,6 +61,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-changes-queue.c \
 	nautilus-file-dnd.c \
 	nautilus-file-operations-progress.c \
+	nautilus-file-queue.c \
 	nautilus-file-operations.c \
 	nautilus-file-utilities.c \
 	nautilus-file.c \
@@ -75,6 +77,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-lib-self-check-functions.c \
 	nautilus-link-set.c \
 	nautilus-link.c \
+	nautilus-link-desktop-file.c \
+	nautilus-link-historical.c \
 	nautilus-medusa-support.c \
 	nautilus-merged-directory.c \
 	nautilus-metafile-factory.c \
@@ -106,6 +110,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-cdrom-extensions.h \
 	nautilus-customization-data.h \
 	nautilus-default-file-icon.h \
+	nautilus-desktop-file-loader.h \
 	nautilus-directory-background.h \
 	nautilus-directory-metafile-monitor.h \
 	nautilus-directory-metafile.h \
@@ -124,6 +129,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-private.h \
 	nautilus-file-utilities.h \
 	nautilus-file.h \
+	nautilus-file-queue.h \
 	nautilus-font-factory.h \
 	nautilus-global-preferences.h \
 	nautilus-horizontal-splitter.h \
@@ -139,6 +145,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-lib-self-check-functions.h \
 	nautilus-link-set.h \
 	nautilus-link.h \
+	nautilus-link-desktop-file.h \
+	nautilus-link-historical.h \
 	nautilus-medusa-support.h \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \

@@ -128,6 +128,8 @@ nautilus_directory_initialize (gpointer object, gpointer klass)
 
 	directory->details = g_new0 (NautilusDirectoryDetails, 1);
 	directory->details->file_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	directory->details->high_priority_queue = nautilus_file_queue_new ();
+	directory->details->low_priority_queue = nautilus_file_queue_new ();
 	directory->details->idle_queue = nautilus_idle_queue_new ();
 }
 
@@ -195,6 +197,8 @@ nautilus_directory_destroy (GtkObject *object)
 	}
 	g_assert (directory->details->file_list == NULL);
 	g_hash_table_destroy (directory->details->file_hash);
+	nautilus_file_queue_destroy (directory->details->high_priority_queue);
+	nautilus_file_queue_destroy (directory->details->low_priority_queue);
 	nautilus_idle_queue_destroy (directory->details->idle_queue);
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
@@ -309,7 +313,8 @@ nautilus_directory_make_uri_canonical (const char *uri)
 	 * created. (See bugzilla.gnome.org 43322 for an example.)
 	 */
 	canonical = eel_str_strip_trailing_chr (canonical_maybe_trailing_slash, '/');
-	if (strcmp (canonical, canonical_maybe_trailing_slash) != 0) {
+	if (strcmp (canonical, canonical_maybe_trailing_slash) != 0 &&
+	    strcmp (canonical, "favorites:") != 0) {
 		/* If some trailing '/' were stripped, there's the possibility,
 		 * that we stripped away all the '/' from a uri that has only
 		 * '/' characters. If you change this code, check to make sure
@@ -561,6 +566,7 @@ nautilus_directory_add_file (NautilusDirectory *directory, NautilusFile *file)
 	/* Ref if we are monitoring. */
 	if (nautilus_directory_is_file_list_monitored (directory)) {
 		nautilus_file_ref (file);
+		nautilus_directory_add_file_to_work_queue (directory, file);
 	}
 }
 
@@ -582,6 +588,8 @@ nautilus_directory_remove_file (NautilusDirectory *directory, NautilusFile *file
 	directory->details->file_list = g_list_remove_link
 		(directory->details->file_list, node);
 	g_list_free_1 (node);
+
+	nautilus_directory_remove_file_from_work_queue (directory, file);
 
 	if (!file->details->unconfirmed) {
 		directory->details->confirmed_file_count--;

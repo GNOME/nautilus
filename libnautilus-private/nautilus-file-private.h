@@ -67,6 +67,10 @@ struct NautilusFileDetails
 
 	GList *mime_list; /* If this is a directory, the list of MIME types in it. */
 	char *top_left_text;
+
+	/* Info you might get from a link (.desktop, .directory or nautilus link) */
+	char *custom_name;
+	char *custom_icon_uri;
 	char *activation_uri;
 
 	/* The following is for file operations in progress. Since
@@ -109,8 +113,8 @@ struct NautilusFileDetails
 	eel_boolean_bit got_top_left_text             : 1;
 	eel_boolean_bit top_left_text_is_up_to_date   : 1;
 
-	eel_boolean_bit got_activation_uri            : 1;
-	eel_boolean_bit activation_uri_is_up_to_date  : 1;
+	eel_boolean_bit got_link_info                 : 1;
+	eel_boolean_bit link_info_is_up_to_date       : 1;
 };
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,

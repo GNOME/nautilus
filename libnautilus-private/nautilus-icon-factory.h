@@ -105,6 +105,11 @@ NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (Nautil
 									  const char                  *modifier);
 gboolean              nautilus_icon_factory_is_icon_ready_for_file       (NautilusFile                *file);
 GList *               nautilus_icon_factory_get_required_file_attributes (void);
+
+/* The calls below do not account for top-left text, allowing it to be loaded progressively. */
+gboolean              nautilus_icon_factory_is_basic_icon_ready_for_file (NautilusFile                *file);
+GList *               nautilus_icon_factory_get_basic_file_attributes    (void);
+
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile                *file,
 									  EelStringList               *exclude);
 NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name);

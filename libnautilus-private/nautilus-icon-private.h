@@ -102,6 +102,7 @@ struct NautilusIconContainerDetails {
 	/* List of icons. */
 	GList *icons;
 	GList *new_icons;
+	GHashTable *icon_set;
 
 	/* Current icon for keyboard navigation. */
 	NautilusIcon *keyboard_focus;

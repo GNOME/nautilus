@@ -30,6 +30,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <stdio.h>
@@ -327,8 +328,10 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 			 "changed",
 			 nautilus_tree_model_root_node_file_monitor,
 			 model);
-		
-		monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+
+		monitor_attributes = nautilus_icon_factory_get_required_file_attributes ();
+		monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+		monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
 		nautilus_file_monitor_add (nautilus_tree_node_get_file (model->details->root_node),
 					   model,
 					   monitor_attributes);
@@ -411,8 +414,10 @@ nautilus_tree_model_node_begin_monitoring_no_connect (NautilusTreeModel         
 	if (force_reload) {
 		nautilus_directory_force_reload (directory);
 	}
-
-	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+	
+	monitor_attributes = nautilus_icon_factory_get_required_file_attributes ();
+	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
 	nautilus_directory_file_monitor_add (directory,
 					     model,
 					     TRUE, TRUE,

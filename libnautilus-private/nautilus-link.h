@@ -78,13 +78,6 @@ gboolean         nautilus_link_local_set_link_uri               (const char     
  */
 char *           nautilus_link_local_get_additional_text        (const char       *path);
 
-/* Returns the image associated with a link file. Despite the fact
- * that it takes a URI parameter, works only if the file is local and
- * does sync. I/O on the link, although it does async. on the image
- * and caches if the image is remote.
- */
-char *           nautilus_link_local_get_image_uri              (const char       *path);
-
 /* Returns the link type of a link file.
  * Works only if the file is local and does sync. I/O
  */
@@ -115,9 +108,12 @@ gboolean         nautilus_link_local_is_trash_link              (const char     
 char *           nautilus_link_local_get_link_uri               (const char       *path);
 char *           nautilus_link_get_link_uri_given_file_contents (const char       *link_file_contents,
 								 int               link_file_size);
-
-void		nautilus_link_local_create_from_gnome_entry 	(GnomeDesktopEntry *entry,
-								 const char 	   *dest_path,
-								 const GdkPoint    *position);
+char *           nautilus_link_get_link_name_given_file_contents (const char      *file_contents,
+								  int              link_file_size);
+char *           nautilus_link_get_link_icon_given_file_contents (const char      *file_contents,
+								  int              link_file_size);
+void		 nautilus_link_local_create_from_gnome_entry 	 (GnomeDesktopEntry *entry,
+								  const char 	   *dest_path,
+								  const GdkPoint    *position);
 								 								 
 #endif /* NAUTILUS_LINK_H */

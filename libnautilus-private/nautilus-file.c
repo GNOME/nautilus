@@ -50,7 +50,6 @@
 #include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-metadata.h>
-#include <libgnome/gnome-mime-info.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
@@ -449,6 +448,8 @@ destroy (GtkObject *object)
 		gnome_vfs_file_info_unref (file->details->info);
 	}
 	g_free (file->details->top_left_text);
+	g_free (file->details->custom_name);
+	g_free (file->details->custom_icon_uri);
 	g_free (file->details->activation_uri);
 	g_free (file->details->compare_by_emblem_cache);
 	
@@ -2251,81 +2252,18 @@ nautilus_file_set_integer_metadata (NautilusFile *file,
 		 metadata);
 }
 
-
-
-
 char *
 nautilus_file_get_name (NautilusFile *file)
 {
 	char *name;
-	GnomeDesktopEntry *entry;
-	char *path, *uri;
-	char *caption;
-	int size, res;
 
 	if (file == NULL) {
 		return NULL;
 	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	/* FIXME: It's very bad to do this I/O here. For one thing,
-	 * this means that a file's name can change when the MIME
-	 * type is fetched. For another, it means that there's I/O
-	 * done every single time nautilus_file_get_name is called.
-	 * This goes against the design of NautilusFile. The proper
-	 * way to do this is to do this I/O in an async. way when
-	 * the object is created, but at the very least we need to
-	 * change this so it only does the I/O once!
-	 */
-	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
-		uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (uri);
-
-		name = NULL;
-		if (path != NULL) {
-			entry = gnome_desktop_entry_load (path);
-			if (entry != NULL) {
-				name = g_strdup (entry->name);
-				gnome_desktop_entry_free (entry);
-			}
-		}
-		
-		g_free (path);
-		g_free (uri);
-
-		if (name != NULL) {
-			return name;
-		}
-	}
-
-	/* FIXME: It's very bad to do this I/O here. For one thing,
-	 * this means that a file's name can change when the MIME
-	 * type is fetched. For another, it means that there's I/O
-	 * done every single time nautilus_file_get_name is called.
-	 * This goes against the design of NautilusFile. The proper
-	 * way to do this is to do this I/O in an async. way when
-	 * the object is created, but at the very least we need to
-	 * change this so it only does the I/O once!
-	 */
-	/* Desktop directories contain special "URL" files, handle
-	 * those by using the gnome metadata caption.
-	 */
-	if (nautilus_file_is_gmc_url (file)) {
-		uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (uri);
-
-		if (path != NULL) {
-			res = gnome_metadata_get (path, "icon-caption", &size, &caption);
-		} else {
-			res = -1;
-		}
-		
-		g_free (path);
-		g_free (uri);
-
-		if (res == 0 && caption != NULL) {
-			return caption;
-		}
+	
+ 	if (file->details->got_link_info && file->details->custom_name != NULL) {
+ 		return g_strdup (file->details->custom_name);
 	}
 
 	name = gnome_vfs_unescape_string (file->details->relative_uri, "/");
@@ -2375,13 +2313,33 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (!file->details->got_activation_uri) {
+	if (!file->details->got_link_info) {
 		return NULL;
 	}
 	return file->details->activation_uri == NULL
 		? nautilus_file_get_uri (file)
 		: g_strdup (file->details->activation_uri);
 }
+
+char *
+nautilus_file_get_custom_icon_uri (NautilusFile *file)
+{
+	char *uri;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	
+	uri = NULL;
+
+	/* Metadata takes precedence */
+	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+
+	if (uri == NULL && file->details->got_link_info) {
+		uri = g_strdup (file->details->custom_icon_uri);
+	}
+
+	return uri;
+}
+
 
 /* Return the actual uri associated with the passed-in file. */
 char *
@@ -4469,7 +4427,8 @@ nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
 /**
  * nautilus_file_is_nautilus_link
  * 
- * Check if this file is a nautilus link.
+ * Check if this file is a "nautilus link", meaning a historical
+ * nautilus xml link file or a desktop file.
  * @file: NautilusFile representing the file in question.
  * 
  * Returns: True if the file is a nautilus link.
@@ -4478,7 +4437,8 @@ nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
 gboolean
 nautilus_file_is_nautilus_link (NautilusFile *file)
 {
-	return nautilus_file_is_mime_type (file, "application/x-nautilus-link");
+	return nautilus_file_is_mime_type (file, "application/x-nautilus-link") ||
+		nautilus_file_is_mime_type (file, "application/x-gnome-app-info");
 }
 
 /**
@@ -4552,20 +4512,17 @@ nautilus_file_get_file_info_result (NautilusFile *file)
 gboolean
 nautilus_file_contains_text (NautilusFile *file)
 {
-	char *mime_type;
-	gboolean contains_text;
-	
 	if (file == NULL) {
 		return FALSE;
 	}
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-	
-	mime_type = nautilus_file_get_mime_type (file);
-	contains_text = eel_istr_has_prefix (mime_type, "text/");
-	g_free (mime_type);
-	
-	return contains_text;
+
+	if (file->details->info == NULL || file->details->info->mime_type == NULL) {
+		return FALSE;
+	}
+
+	return eel_istr_has_prefix (file->details->info->mime_type, "text/");
 }
 
 /**
@@ -4875,11 +4832,10 @@ invalidate_file_info (NautilusFile *file)
 }
 
 static void
-invalidate_activation_uri (NautilusFile *file)
+invalidate_link_info (NautilusFile *file)
 {
-	file->details->activation_uri_is_up_to_date = FALSE;
+	file->details->link_info_is_up_to_date = FALSE;
 }
-
 
 void
 nautilus_file_invalidate_attributes_internal (NautilusFile *file,
@@ -4908,8 +4864,8 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 	if (request.top_left_text) {
 		invalidate_top_left_text (file);
 	}
-	if (request.activation_uri) {
-		invalidate_activation_uri (file);
+	if (request.link_info) {
+		invalidate_link_info (file);
 	}
 
 	/* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */
@@ -4935,6 +4891,8 @@ nautilus_file_invalidate_attributes (NautilusFile *file,
 	
 	/* Actually invalidate the values */
 	nautilus_file_invalidate_attributes_internal (file, file_attributes);
+
+	nautilus_directory_add_file_to_work_queue (file->details->directory, file);
 	
 	/* Kick off I/O if necessary */
 	nautilus_directory_async_state_changed (file->details->directory);
@@ -4958,6 +4916,7 @@ nautilus_file_get_all_attributes (void)
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
 
 	return attributes;
 }

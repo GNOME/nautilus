@@ -4502,7 +4502,6 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	FMDirectoryView *view;
 	char *uri, *command, *executable_path, *quoted_path, *name;
 	GnomeVFSMimeApplication *application;
-	GnomeDesktopEntry *entry;
 	ActivationAction action;
 	
 	parameters = callback_data;
@@ -4545,24 +4544,6 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		}
 	}
-
-	if (action != ACTIVATION_ACTION_DO_NOTHING
-	    && strcmp (gnome_vfs_mime_type_from_name_or_default (uri, ""),
-		       "application/x-gnome-app-info") == 0) {
-
-		executable_path = gnome_vfs_get_local_path_from_uri (uri);
-		if (executable_path != NULL) {
-			entry = gnome_desktop_entry_load (executable_path);
-			if (entry != NULL) {
-				gnome_desktop_entry_launch (entry);
-			}
-			gnome_desktop_entry_free (entry);
-		}
-		g_free (executable_path);
-
-		action = ACTIVATION_ACTION_DO_NOTHING;
-	}
-	
 	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
 
 		action = ACTIVATION_ACTION_LAUNCH;
@@ -4845,7 +4826,8 @@ finish_loading (FMDirectoryView *view)
 
 	/* Monitor the things needed to get the right icon. Also
 	 * monitor a directory's item count because the "size"
-	 * attribute is based on that, and the file's metadata.
+	 * attribute is based on that, and the file's metadata
+	 * and possible custom name.
 	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
 	attributes = g_list_prepend (attributes,
@@ -4854,6 +4836,8 @@ finish_loading (FMDirectoryView *view)
 				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	attributes = g_list_prepend (attributes, 
 				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attributes = g_list_prepend (attributes, 
+				     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
 
 	nautilus_directory_file_monitor_add (view->details->model,
 					     &view->details->model,

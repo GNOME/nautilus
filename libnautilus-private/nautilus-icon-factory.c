@@ -35,7 +35,6 @@
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
-#include "nautilus-metadata.h"
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-monitor.h"
@@ -54,12 +53,13 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime-monitor.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <librsvg/rsvg.h>
 #include <stdio.h>
@@ -1458,26 +1458,53 @@ is_supported_mime_type (const char *mime_type)
 	return TRUE;
 }
 
+static void
+image_uri_to_name_or_uri (const char *image_uri,
+			  char      **icon_name,
+			  char      **uri)
+{
+	char *icon_path;
+
+	if (image_uri == NULL) {
+		return;
+	}
+	
+	/* FIXME bugzilla.eazel.com 2564: All custom icons must be in file:. */
+	icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
+	if (icon_path == NULL && image_uri[0] == '/') {
+		icon_path = g_strdup (image_uri);
+	}
+	if (icon_path != NULL) {
+		if (*uri == NULL) {
+			*uri = gnome_vfs_get_uri_from_local_path (icon_path);
+		}
+		g_free (icon_path);
+	} else if (strpbrk (image_uri, ":/") == NULL) {
+		*icon_name = remove_icon_name_suffix (image_uri);
+	}
+}
+
 /* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifier)
 {
-	char *uri, *file_uri, *file_path, *image_uri, *icon_name, *mime_type, *top_left_text;
-	char *directory, *desktop_directory, *buf, *icon_path;
+ 	char *uri, *custom_uri, *file_uri, *icon_name, *mime_type, *top_left_text;
+ 	int file_size;
  	gboolean is_local;
- 	int file_size, size, res;
  	NautilusScalableIcon *scalable_icon;
-	char *directory_uri;
-	GnomeDesktopEntry *entry;
 	
 	if (file == NULL) {
 		return NULL;
 	}
 
 	icon_name = NULL;
+ 	uri = NULL;
+ 
+ 	/* if there is a custom image in the metadata or link info, use that. */
+ 	custom_uri = nautilus_file_get_custom_icon_uri (file);
+ 	image_uri_to_name_or_uri (custom_uri, &icon_name, &uri);
+ 	g_free (custom_uri);
 
-	/* if there is a custom image in the metadata, use that. */
-	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 	file_uri = nautilus_file_get_uri (file);
 	is_local = nautilus_file_is_local (file);
 	mime_type = nautilus_file_get_mime_type (file);
@@ -1486,37 +1513,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	   or use a thumbnail if one exists.  If it's too large, don't try to thumbnail it at all. 
 	   If a thumbnail is required, but does not yet exist,  put an entry on the thumbnail queue so we
 	   eventually make one */
-
-	if (uri == NULL) {
-		/* Do we have to check the gnome metadata?
-		 *
-		 * Do this only for the ~/.gnome-desktop directory, as it was
-		 * the only place where GMC used it (since everywhere else we could
-		 * not do it because of the imlib leaks).
-		 */
-		desktop_directory = nautilus_get_gmc_desktop_directory ();
-		directory_uri = nautilus_file_get_parent_uri (file);
-		directory = gnome_vfs_get_local_path_from_uri (directory_uri);
-		if (directory != NULL && strcmp (directory, desktop_directory) == 0) {
-			file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-
-			if (file_path != NULL) {
-				res = gnome_metadata_get (file_path, "icon-filename", &size, &buf);
-			} else {
-				res = -1;
-			}
-
-			if (res == 0 && buf != NULL) {
-				uri = gnome_vfs_get_uri_from_local_path (buf);
-				g_free (buf);
-			}
-			
-			g_free (file_path);
-		}
-		g_free (directory);
-		g_free (directory_uri);
-		g_free (desktop_directory);
-	}
 	
 	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL) {		
@@ -1539,50 +1535,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			}
 		}
 	}
-	
-	/* Handle nautilus link xml files, which may specify their own image */	
-	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.gnome.org 42563: This does sync. I/O and only works for local paths. */
-		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-		if (file_path != NULL) {
-			image_uri = nautilus_link_local_get_image_uri (file_path);
-			if (image_uri != NULL) {
-				/* FIXME bugzilla.gnome.org 42564: All custom icons must be in file:. */
-				icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
-				if (icon_path == NULL && image_uri[0] == '/') {
-					icon_path = g_strdup (image_uri);
-				}
-				if (icon_path != NULL) {
-					if (uri == NULL) {
-						uri = gnome_vfs_get_uri_from_local_path (icon_path);
-					}
-					g_free (icon_path);
-				} else if (strpbrk (image_uri, ":/") == NULL) {
-					icon_name = remove_icon_name_suffix (image_uri);
-				}
-				g_free (image_uri);
-			}
-			g_free (file_path);
-		}
-	}
 
-	/* Handle .desktop files. */
-	if (uri == NULL
-	    && nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
-		/* FIXME bugzilla.gnome.org 42563: This does sync. I/O and only works for local paths. */
-		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-		if (file_path != NULL) {
-			entry = gnome_desktop_entry_load (file_path);
-			if (entry != NULL) {
-				if (entry->icon != NULL) {
-					uri = gnome_vfs_get_uri_from_local_path (entry->icon);
-				}
-				gnome_desktop_entry_free (entry);
-			}
-			g_free (file_path);
-		}
-	}
-	
 	/* handle SVG files */
 	if (uri == NULL && icon_name == NULL
 	    && nautilus_file_is_mime_type (file, "image/svg")) {
@@ -1600,13 +1553,34 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
 		(uri, mime_type, icon_name, modifier, top_left_text);
-
+	
 	g_free (uri);
 	g_free (mime_type);
 	g_free (icon_name);
 	g_free (top_left_text);
 	
 	return scalable_icon;
+}
+
+
+
+/**
+ * nautilus_icon_factory_get_basic_file_attributes
+ * 
+ * Get the list of file attributes required to obtain a file's basic icon.
+ * This includes attributes needed to get a custom icon, but not those needed
+ * for text preview.
+ * Callers must free this list.
+ */
+GList *
+nautilus_icon_factory_get_basic_file_attributes (void)
+{
+	GList *attributes;
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	return attributes;
 }
 
 /**
@@ -1620,14 +1594,13 @@ nautilus_icon_factory_get_required_file_attributes (void)
 {
 	GList *attributes;
 
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attributes = nautilus_icon_factory_get_basic_file_attributes ();
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 
 	return attributes;
 }
+
 
 /**
  * nautilus_icon_factory_is_icon_ready_for_file
@@ -1649,6 +1622,31 @@ nautilus_icon_factory_is_icon_ready_for_file (NautilusFile *file)
 
 	return result;
 }
+
+
+
+/**
+ * nautilus_icon_factory_is_basic_icon_ready_for_file
+ * 
+ * Check whether a NautilusFile has enough information to report
+ * what its basic icon should be. This will account for custom icons
+ * but not text preview.
+ * 
+ * @file: The NautilusFile in question.
+ */
+gboolean
+nautilus_icon_factory_is_basic_icon_ready_for_file (NautilusFile *file)
+{
+	GList *attributes;
+	gboolean result;
+
+	attributes = nautilus_icon_factory_get_basic_file_attributes ();
+	result = nautilus_file_check_if_ready (file, attributes);
+	g_list_free (attributes);
+
+	return result;
+}
+
 
 NautilusScalableIcon *
 nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name)
@@ -1916,6 +1914,7 @@ load_named_icon (const char *name,
 	path = get_icon_file_path (name, modifier,
 				   size_in_pixels, optimized_for_aa,
 				   details);
+	
 	pixbuf = load_icon_from_path (path, size_in_pixels, FALSE,
 				      eel_str_has_prefix (name, EMBLEM_NAME_PREFIX),
 				      optimized_for_aa);

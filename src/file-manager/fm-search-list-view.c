@@ -632,7 +632,9 @@ real_adding_file (FMListView *view, NautilusFile *file)
 				   GTK_OBJECT (view));
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because
-	 * the "size" attribute is based on that, and the file's metadata.  */
+	 * the "size" attribute is based on that, and the file's metadata, and
+	 * possible custom icon.  
+	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();		
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
@@ -640,6 +642,8 @@ real_adding_file (FMListView *view, NautilusFile *file)
 				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	attributes = g_list_prepend (attributes, 
 				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attributes = g_list_prepend (attributes, 
+				     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
 	nautilus_file_monitor_add (file, view, attributes);
 	g_list_free (attributes);
 }

@@ -2132,6 +2132,8 @@ create_properties_window (StartupData *startup_data)
 	 * target file.
 	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
 	nautilus_file_monitor_add (window->details->original_file, window, attributes);
 	g_list_free (attributes);
 

@@ -514,7 +514,8 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 		nautilus_icon_container_reset_scroll_region (get_icon_container (icon_view));
 	}
 
-	if (nautilus_icon_container_add (get_icon_container (icon_view),
+	if (nautilus_icon_factory_is_basic_icon_ready_for_file (file) &&
+	    nautilus_icon_container_add (get_icon_container (icon_view),
 					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_ref (file);
 	}
@@ -535,6 +536,10 @@ fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 		if (removed) {
 			nautilus_file_unref (file);
 		}
+	} else if (nautilus_icon_factory_is_basic_icon_ready_for_file (file) &&
+		    nautilus_icon_container_add (get_icon_container (FM_ICON_VIEW (view)),
+						 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+		nautilus_file_ref (file);
 	} else {
 		nautilus_icon_container_request_update
 			(get_icon_container (FM_ICON_VIEW (view)),
@@ -1980,6 +1985,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 			FMIconView *icon_view)
 {
 	char *actual_uri, *path;
+	gchar *description;
 	char *attribute_names;
 	char **text_array;
 	int i , slot_index;
@@ -2005,9 +2011,12 @@ get_icon_text_callback (NautilusIconContainer *container,
 		actual_uri = nautilus_file_get_uri (file);
 		path = gnome_vfs_get_local_path_from_uri (actual_uri);
 		g_free (actual_uri);
+ 		*additional_text = NULL;
 		if (path != NULL) {
-			*additional_text = nautilus_link_local_get_additional_text (path);
-			g_free (path);
+			description = nautilus_link_local_get_additional_text (path);
+			if (description)
+				*additional_text = g_strdup_printf (" \n%s\n ", description);
+			g_free (description);
 			return;
 		}
 	}
@@ -2648,6 +2657,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	char *local_path;
 	char *stripped_uri;
 	char *container_uri_string;
+	char *container_path;
 	const char *last_slash, *link_name;
 	int n_uris;
 	gboolean all_local;
@@ -2733,6 +2743,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		if (points)
 			g_array_free (points, TRUE);
 	} else {
+		container_path = gnome_vfs_get_local_path_from_uri (container_uri_string);
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */
 			local_path = gnome_vfs_get_local_path_from_uri (node->data);
@@ -2741,7 +2752,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 				if (entry != NULL) {
 					
 					/* FIXME: Handle name conflicts? */
-					nautilus_link_local_create_from_gnome_entry (entry, container_uri_string, &point);
+					nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
 					gnome_desktop_entry_free (entry);
 				}
 				g_free (local_path);
@@ -2763,7 +2774,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			
 			if (!eel_str_is_empty (link_name)) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create (container_uri_string, link_name,
+				nautilus_link_local_create (container_path, link_name,
 							    "gnome-http-url", local_path,
 							    &point, NAUTILUS_LINK_GENERIC);
 			}
@@ -2772,6 +2783,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 			break;
 		}
+		g_free (container_path);
 	}
 	
 	gnome_uri_list_free_strings (real_uri_list);

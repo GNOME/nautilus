@@ -27,6 +27,7 @@
 #include "nautilus-file.h"
 #include "nautilus-metafile-server.h"
 #include "nautilus-monitor.h"
+#include "nautilus-file-queue.h"
 #include <eel/eel-vfs-extensions.h>
 #include <libxml/tree.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -35,7 +36,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-idle-queue.h>
 
-typedef struct ActivationURIReadState ActivationURIReadState;
+typedef struct LinkInfoReadState LinkInfoReadState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
 typedef struct FileMonitors FileMonitors;
 
@@ -49,6 +50,10 @@ struct NautilusDirectoryDetails
 	NautilusFile *as_file;
 	GList *file_list;
 	GHashTable *file_hash;
+
+	/* Queues of files needing some I/O done. */
+	NautilusFileQueue *high_priority_queue;
+	NautilusFileQueue *low_priority_queue;
 
 	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.
@@ -97,14 +102,15 @@ struct NautilusDirectoryDetails
 	GnomeVFSAsyncHandle *get_info_in_progress;
 
 	TopLeftTextReadState *top_left_read_state;
-	ActivationURIReadState *activation_uri_read_state;
+
+	LinkInfoReadState *link_info_read_state;
 
 	GList *file_operations_in_progress; /* list of FileOperation * */
 };
 
 /* A request for information about one or more files. */
 typedef struct {
-	gboolean activation_uri;
+	gboolean link_info;
 	gboolean deep_count;
 	gboolean directory_count;
 	gboolean file_info;
@@ -205,6 +211,12 @@ void               nautilus_directory_end_file_name_change            (NautilusD
 								       GList                     *node);
 void               nautilus_directory_moved                           (const char                *from_uri,
 								       const char                *to_uri);
+/* Interface to the work queue. */
+
+void               nautilus_directory_add_file_to_work_queue          (NautilusDirectory *directory,
+								       NautilusFile *file);
+void               nautilus_directory_remove_file_from_work_queue     (NautilusDirectory *directory,
+								       NautilusFile *file);
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding              (void);

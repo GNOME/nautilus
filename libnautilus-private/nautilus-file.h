@@ -290,6 +290,9 @@ GList                  *nautilus_file_list_filter_hidden_and_backup     (GList  
  */
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 
+/* Get custom icon (if specified by metadata or link contents) */
+char *                  nautilus_file_get_custom_icon_uri               (NautilusFile                   *file);
+
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.
  */

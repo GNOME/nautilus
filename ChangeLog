@@ -1,3 +1,467 @@
+2001-09-20  Alex Larsson  <alexl@redhat.com>
+	
+	* libnautilus-private/nautilus-desktop-file-loader.c:
+	Correct filename in header.
+	(nautilus_desktop_file_new): Use g_new0
+	(nautilus_desktop_file_load):
+	Don't initialize contents. Don't need to check contents
+	for NULL.
+	(nautilus_desktop_file_foreach_section):
+	Coding style fix.
+
+	* libnautilus-private/nautilus-link-desktop-file.c
+	(nautilus_link_desktop_file_local_create): Use fputs instead
+	of fwrite.
+	
+2001-09-19  Alex Larsson  <alexl@redhat.com>
+	
+	* libnautilus-private/nautilus-link-desktop-file.c
+	(nautilus_link_desktop_file_get_link_uri_from_desktop):
+	Handle broken .desktop file with type "URL".
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	Load the default icon name even when we have a custom icon uri.
+	It may be needed if the custom icon was not there.
+
+2001-09-19  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(make_dot_directory_uri): gnome_vfs_uri_new() may fail.
+	(link_info_start): Handle make_dot_directory_uri failing.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	Remove fixed FIXME.
+	
+	* libnautilus-private/nautilus-link-desktop-file.c
+	(slurp_key_string): Pass uris to nautilus_desktop_file_load ().
+	(nautilus_link_desktop_file_local_create): Create files
+	using FILE * instead of GnomeVFS.
+	(nautilus_link_desktop_file_local_set_icon,
+	nautilus_link_desktop_file_local_get_link_uri):
+	The argument is a path, not a uri.
+	(nautilus_link_desktop_file_local_set_type,
+	nautilus_link_desktop_file_local_set_link_uri): Remove failing functions.
+	(nautilus_link_desktop_file_local_get_additional_text): Comment
+	out additional text for now.
+
+	* libnautilus-private/nautilus-link-desktop-file.h
+	  (nautilus_link_desktop_file_local_set_type,
+           nautilus_link_desktop_file_local_set_link_uri): Remove failing functions.
+
+	* libnautilus-private/nautilus-link-historical.c:
+	  (local_get_root_property):
+	  Always use paths for the arguments.
+
+	* libnautilus-private/nautilus-link.c:
+	Make nautilus_link_local_set_link_uri and nautilus_link_local_set_type
+	not be called for .desktop files.
+
+	* src/file-manager/fm-directory-view.c:
+	Remove unnecessary include
+
+	* src/file-manager/fm-icon-view.c:
+	Re-enable additional text.
+	
+2001-09-19  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-desktop-file-loader.[ch]:
+	* libnautilus-private/nautilus-link-historical.[ch]:
+	Rename nautilus-link-impl to nautilus-link-historical
+	and nauitlus-link-desktop to nautilus-link-desktop-file.
+
+	* libnautilus-private/nautilus-link-impl-desktop.[ch]:
+	* libnautilus-private/nautilus-link-impl.[ch]:
+	Removed old files.
+
+	* libnautilus-private/nautilus-link.c:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-icon-factory.c:
+	Update for the renames.
+
+	* libnautilus-private/nautilus-desktop-file-loader.c:
+	Some coding style changes.
+	
+2001-09-18  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/desktop-file-loader.[ch],
+	libnautilus-private/nautilus-desktop-file.[ch]:
+	Removed files.
+	* libnautilus-private/nautilus-desktop-file-loader.[ch],
+	libnautilus-private/Makefile.am:
+	New, cleaned up version of the desktop-file loader.
+
+	* libnautilus-private/nautilus-link-impl-desktop.c:
+	Update to the new desktop file parser names.
+
+2001-09-13  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_contains_text): Fix test for NULL mime type with
+	reverse polarity; don't free the mime type string since we are not
+	copying it. I could have sworn I fixed both of these problems
+	before merging my changes to the RH branch!
+
+2001-09-01  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	Merged changes from mjs-patches-to-redhat-patches branch to
+	redhat-outstanding-patches:
+
+	2001-08-27  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(nautilus_directory_invalidate_count_and_mime_list): Fix a
+	reference count underflow.
+
+	2001-08-27  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(link_info_read_done, start_or_stop_io,
+	file_needs_high_priority_work_done,
+	file_needs_low_priority_work_done, file_needs_work_done,
+	nautilus_directory_add_file_to_work_queue,
+	nautilus_directory_remove_file_from_work_queue,
+	move_file_to_low_priority_queue): Use two queues instead of one
+	for file attributes. The high priority attributes are ones needed
+	to display an icon at all (file_info and link_info), the rest are
+	things that can be displayed later. This change makes directory
+	counts and top left text generally get loaded after all the files
+	appear, instead of slowing down the load.
+	* libnautilus-private/nautilus-directory-private.h: Adjusted
+	for the two queue change.
+	libnautilus-private/nautilus-directory.c
+	(nautilus_directory_initialize, nautilus_directory_destroy):
+	Likewise.
+	* libnautilus-private/nautilus-file-queue.h,
+	libnautilus-private/nautilus-file-queue.c:
+	(nautilus_file_queue_new, nautilus_file_queue_destroy,
+	nautilus_file_queue_enqueue, nautilus_file_queue_dequeue,
+	nautilus_file_queue_remove, nautilus_file_queue_head,
+	nautilus_file_queue_is_empty): New data structure that provides a
+	queue of NautilusFiles that allows constant time removal from an
+	arbitrary point in the list and avoids storing duplicates
+	(basically factored out this code from nautilus-direcvtory-async).
+	* libnautilus-private/Makefile.am: Add nautilus-file-queue.[ch] to
+	build.
+
+	2001-08-27  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(lacks_link_info): If we can determine here that link info will
+	not be applicable to this file, set the proper flags and say it's
+	not wanted. This removes much of the chunky loading effect the
+	previous changes were causing.
+	(link_info_start): Make test for gmc link more efficient by using
+	nutilus_file_is_mime_type for mime type checking.
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_contains_text): Speed this check up by avoiding
+	memory allocation.
+
+	2001-08-25  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	Reworked nautilus-directory-async to maintain a queue of files
+	that need some async I/O done, to avoid n^2 behavior on large
+	directory loads.
+	
+	* libnautilus-private/nautilus-directory-private.h: Added
+	declarations of file queue data structures and functions.
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_add_file_to_work_queue,
+	add_all_files_to_work_queue,
+	nautilus_directory_remove_file_from_work_queue): New functions for
+	managing work queue.
+	(file_needs_work_done): New function to determine when a file
+	needs async I/O of any kind done.
+	(nautilus_directory_monitor_add_internal,
+	nautilus_directory_monitor_remove_internal,
+	nautilus_directory_remove_file_monitors,
+	nautilus_directory_add_file_monitors,
+	nautilus_directory_call_when_ready_internal,
+	nautilus_directory_force_reload_internal): Add files to work
+	queue or remove files from work queue as appropriate.
+	(nautilus_directory_invalidate_count_and_mime_list): Invalidate
+	using the generic file attribute invalidation code, to make sure
+	the right file is added to the work queue.
+	(lacks_directory_count, lacks_deep_count, lacks_mime_list): Don't
+	bother to check if it's a directory, since the relevant `_start'
+	functions will check for that case and set the flag that says the
+	data is up to date.
+	(file_list_start_or_stop): Renamed to make effects more clear.
+	(directory_count_callback): Set directory count info properly in
+	the failure case.
+	(link_info_done): Don't send a file changed notification
+	here, since this might be called in cases where link info doesn't
+	apply, and we don't want to send a notice in that case. 
+	(link_info_read_done): Instead, send it here, since cases where
+	the link info applies all go through here.
+	(top_left_read_done): Don't say we got the top left text when it
+	failed.
+	(directory_count_stop, directory_count_start, deep_count_stop,
+	deep_count_start, mime_list_stop, mime_list_start,
+	top_left_read_callback, top_left_stop, top_left_start),
+	file_info_stop, file_info_start, link_info_stop, link_info_start):
+	Split start and stop functions; make start functions take a file
+	to start work on, if applicable, instead of searching the file
+	list for a needy file.
+	(start_or_stop_io): Revise algorithm as follows: stop all I/O that
+	is no longer wanted; remove all files from the head of the queue
+	that need no more I/O; and start any needed I/O for the file
+	currently at the head of the queue.
+
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_initialize, nautilus_directory_destroy):
+	Create and destroy work queue hash table.
+	(nautilus_directory_add_file, nautilus_directory_remove_file): Add
+	file to or remove file from work queue.
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_invalidate_attributes): Add file to work queue.
+
+	2001-08-22  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(image_uri_to_name_or_uri,
+	nautilus_icon_factory_get_icon_for_file): Don't crash (oops).
+
+	2001-08-21  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file): Fix slight merge
+	problem.
+
+	2001-08-21  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	These changes are meant to fix some of the areas of slowness
+	uncovered by getting the link info asynchronously. They don't do
+	the job all the way though.
+
+	* libnautilus-private/nautilus-directory-async.c: (lacks_top_left,
+	lacks_link_info, top_left_start): Fix these up a bit to avoid
+	doing the more expensive mime type comparing checks too
+	frequently.
+
+	* libnautilus-private/nautilus-icon-private.h,
+	libnautilus-private/nautilus-icon-container.c: (destroy),
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_clear), (icon_destroy),
+	(nautilus_icon_container_add), (nautilus_icon_container_remove),
+	(nautilus_icon_container_request_update),
+	(nautilus_icon_container_reveal): Add a hashtable mapping from
+	icon data to icons, to make some formerly linear operations
+	constant time and so hopefully avoid N^2 behavior. Manage the
+	hashtable properly.
+
+	* libnautilus-private/nautilus-icon-factory.h,
+	libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file,
+	nautilus_icon_factory_get_required_file_attributes): Tweak a bit.
+	(nautilus_icon_factory_get_basic_file_attributes,
+	nautilus_icon_factory_is_basic_icon_ready_for_file): New functions
+	that let you determine if most of the info needed to get an icon
+	is ready - "most" being everything but top left text right now.
+	
+	* libnautilus-private/nautilus-link-impl-desktop.c
+	(nautilus_link_impl_desktop_get_link_icon_from_desktop): Remove
+	stray printf.
+
+	2001-08-21  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_add_file,
+	fm_icon_view_file_changed): Try to avoid displaying the generic
+	icon before custom icon data is read.
+
+	2001-08-21  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-file-attributes.h: Add
+	NAUTILUS_FILE_CUSTOM_NAME attribute.
+
+	* libnautilus-private/nautilus-directory-private.h,
+	libnautilus-private/nautilus-directory-async.c:
+	(link_info_cancel), (nautilus_directory_set_up_request),
+	(nautilus_async_destroying_file), (lacks_link_info),
+	(wants_link_info), (request_is_satisfied), (link_info_done),
+	(link_info_read_done), (link_info_nautilus_link_read_callback),
+	(link_info_gmc_link_read_callback),
+	(link_info_gmc_link_read_more_callback), (make_dot_directory_uri),
+	(link_info_start), (start_or_stop_io),
+	(nautilus_directory_cancel),
+	(cancel_link_info_for_file), (cancel_loading_attributes),
+	(nautilus_directory_cancel_loading_file_attributes): Changes to
+	get the custom name and custom icon out of a link files and
+	.directory files asynchronously and with caching. The I/O is
+	shared with the fetching of the activation URI. 
+
+	* libnautilus-private/nautilus-file-private.h,
+	libnautilus-private/nautilus-file.c: (destroy),
+	(nautilus_file_get_name), (nautilus_file_get_activation_uri),
+	(nautilus_file_get_custom_icon_uri), (invalidate_link_info),
+	(nautilus_file_invalidate_attributes_internal),
+	(nautilus_file_get_all_attributes): Handle new custom_name and
+	custom_icon_uri attributes and link_info internal attribute
+	properly.
+
+	* libnautilus-private/nautilus-file.h: Prototype new
+	nautilus_file_get_custom_icon_uri call.
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file): Remove code for reading
+	icons from .directory files and various kinds of links. Instead
+	rely on nautilus_file_get_custom_icon_uri.
+
+	* libnautilus-private/nautilus-link.h,
+	libnautilus-private/nautilus-link.c:
+	(nautilus_link_get_link_uri_given_file_contents): Fix to work for
+	classic nautilus links.
+	(nautilus_link_get_link_name_given_file_contents): New call to get
+	a custom name given link contents. (Actually does nothing for
+	old-style nautilus links).
+	(nautilus_link_get_link_icon_given_file_contents): New call to get
+	a custom icon given link contents.
+	(nautilus_link_local_set_icon, nautilus_link_local_set_link_uri):
+	Invalidate the relevant file attributes.
+
+	* libnautilus-private/nautilus-link-impl-desktop.h,
+	libnautilus-private/nautilus-link-impl-desktop.c:
+
+	* libnautilus-private/nautilus-link-impl-desktop.h,
+	libnautilus-private/nautilus-link-impl-desktop.c:
+	(nautilus_link_impl_desktop_local_set_icon): Remve attempt at
+	notification (now done by generic layer).
+	(nautilus_link_impl_desktop_get_link_name_from_desktop,
+	nautilus_link_impl_desktop_get_link_name_given_file_contents):
+	Implement getting the custom name.
+	(nautilus_link_impl_desktop_get_link_icon_from_desktop,
+	nautilus_link_impl_desktop_get_link_icon_given_file_contents):
+	Implement getting the custom icon. This no longer attempts the
+	hack of asynchronously downloading and caching remote
+	icons. Nothing uses this feature and it should really be done in
+	the icon factory, not here.
+
+	* libnautilus-private/nautilus-link-impl.h,
+	libnautilus-private/nautilus-link-impl.c:
+	(nautilus_link_impl_local_set_link_uri): Remove attempt at
+	notification (done by generic layer now).
+	(nautilus_link_impl_get_link_icon_given_file_contents): Implement
+	getting the custom icon. This no longer attempts the hack of
+	asynchronously downloading and caching remote icons. Nothing uses
+	this feature and it should really be done in the icon factory, not
+	here.
+
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_monitor_add,
+	nautilus_tree_model_node_begin_monitoring_no_connect): Monitor
+	custom_name and attributes required by icon factory.
+	
+	* src/file-manager/fm-directory-view.c (finish_loading): Monitor
+	custom name attribute.
+
+	* src/file-manager/fm-properties-window.c
+	(create_properties_window): Monitor custom name attribute.
+	
+	* src/file-manager/fm-search-list-view.c (real_adding_file):
+	Monitor custom name attribute.
+
+	* src/nautilus-window-manage-views.c
+	(viewed_file_changed_callback): Always update title even if URI
+	did not change because custom name may have changed or just been
+	retrieved.
+
+	* src/nautilus-window.c: (nautilus_window_set_viewed_file):
+	Monitor custom name attribute.
+
+2001-08-20  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file):
+	add a nautilus_file_is_local() before loading desktop files; this
+	breaks Nautilus links, which are actually async. We lost the 
+	is_local() check on .desktop files because the .desktop files were
+	added as a nautilus link backend, and nautilus links were async,
+	so people were using them in nonlocal cases, but we deleted the
+	.desktop codepath in favor of the nautilus link codepath.
+
+	(nautilus_icon_factory_get_icon_for_file): Do same processing for
+	.directory image URI that we do for .desktop image URI, allowing
+	us to handle X-Nautilus-Icon in .directory
+	(image_uri_to_name_or_uri): function with the common processing
+
+Wed Aug  8 21:02:33 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* libnautilus-private/nautilus-link-impl-desktop.c
+	(nautilus_link_impl_desktop_local_create): fix to really work with
+	gnome_vfs.
+
+Mon Aug  6 15:04:14 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* libnautilus-private/nautilus-link-impl-desktop.c
+	(nautilus_link_impl_desktop_local_create): write nautilus files
+	using gnome-vfs instead of FILE.
+
+2001-08-01  Havoc Pennington  <hp@redhat.com>
+
+	
+	* libnautilus-private/nautilus-link-impl-desktop.c: use 
+	desktop_file_get_locale_string() instead of
+	desktop_file_get_string() to get the names from the desktop files.
+
+Wed Aug  1 04:58:35 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* libnautilus-private/nautilus-link.c: Fix a crash when some files
+	could return NULL as a mime-type.
+
+	* src/file-manager/fm-icon-view.c (get_icon_text_callback):
+	Disable additional_text for .desktop files.
+
+2001-07-31  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-link-impl-desktop.c (nautilus_link_impl_desktop_get_link_uri_from_desktop):
+	Handle FSType desktop files here to. To allow unmounts.
+
+2001-07-31  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_name):
+	get_text, not get_additional_text, for .directory files. fixes
+	sidebar names hopefully.
+	
+Fri Jul 27 16:03:12 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* libnautilus-private/nautilus-link.c (get_uri_mime_type_full):
+	check the file for the mime-type rather then just the file name.
+	Grabs old nautilus-link files.
+
+Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_trash_link_and_delete_copies): fix Trash.desktop file.
+
+	* libnautilus-private/nautilus-link-impl-desktop.c
+	(slurp_uri_contents): '\000' terminate buffer read in.
+	(nautilus_link_impl_desktop_local_set_icon): Implement.
+
+2001-07-26  Havoc Pennington  <hp@redhat.com>
+
+	* src/file-manager/fm-directory-view.c
+	(activate_callback): remove the hack for .desktop files, we now 
+	do them the same way as Nautilus link files
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file):
+	get icons for .desktop files and .directory files
+	
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_get_name): handle .desktop files using the 
+	desktop loader that works on non-file: URIs
+
+	* libnautilus-private/desktop-file-loader.h, 
+	libnautilus-private/desktop-file-loader.c: lame desktop file
+	parser to be used temporarily until George finishes the Ultimate 
+	Desktop File Loader.
+
+	* libnautilus-private/Makefile.am: Add files for link file
+	abstraction, intended to allow use of .desktop files in place of 
+	Nautilus link files.
+
 2001-09-25  Darin Adler  <darin@bentspoon.com>
 
 	* components/adapter/nautilus-adapter.c:

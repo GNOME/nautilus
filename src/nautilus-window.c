@@ -67,6 +67,7 @@
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-drag-window.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-horizontal-splitter.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -2267,11 +2268,23 @@ void
 nautilus_window_set_viewed_file (NautilusWindow *window,
 				 NautilusFile *file)
 {
+	GList *attributes;
+
 	if (window->details->viewed_file == file) {
 		return;
 	}
 
+	if (window->details->viewed_file != NULL) {
+		nautilus_file_monitor_remove (window->details->viewed_file,
+					      window);
+	}
+
 	nautilus_file_ref (file);
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+	nautilus_file_monitor_add (file, window, attributes);
+	g_list_free (attributes);
+
 	cancel_view_as_callback (window);
 	cancel_chose_component_callback (window);
 	nautilus_file_unref (window->details->viewed_file);

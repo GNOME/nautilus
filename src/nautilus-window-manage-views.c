@@ -523,10 +523,11 @@ viewed_file_changed_callback (NautilusFile *file,
                                 (NAUTILUS_NAVIGATION_BAR (window->navigation_bar),
                                  window->details->location);
 
-                        update_title (window);
                 } else {
                         g_free (new_location);
                 }
+
+                update_title (window);
         }
 }
 
