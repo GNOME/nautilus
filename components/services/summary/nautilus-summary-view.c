@@ -102,8 +102,6 @@ enum {
 	#define URL_REDIRECT_TABLE_HOME		"http://localhost/redirects.xml"
 #endif
 
-#define KEY_GCONF_TRILOBITE_DEFAULT_USER "/apps/eazel-trilobite/default-services-user"
-
 typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
 
 typedef enum {
@@ -246,6 +244,8 @@ static void     goto_service_cb                        (GtkWidget               
 static void     goto_update_cb                         (GtkWidget                  *button,
 							ServicesButtonCallbackData *cbdata);
 static void     register_button_cb                     (GtkWidget                  *button,
+							NautilusSummaryView        *view);
+static void     forgot_password_button_cb              (GtkWidget                  *button,
 							NautilusSummaryView        *view);
 static gint     logged_in_callback                     (gpointer                    raw);
 static gint     logged_out_callback                    (gpointer                    raw);
@@ -1073,6 +1073,22 @@ preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 }
 
+/* callback to handle the forgotten password button. */
+static void
+forgot_password_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
+{
+	char	*url;
+	url = "eazel-services://anonymous/account/login/lost_pw_form";
+
+	if (!url) {
+		g_assert ("Failed to load Registration url!\n");
+	}
+
+	nautilus_view_open_location (view->details->nautilus_view, url);
+	g_free (url);
+
+}
+
 /* callback to handle the register button.  Right now only does a simple redirect. */
 static void
 register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
@@ -1200,11 +1216,18 @@ generate_login_dialog (NautilusSummaryView	*view)
 	GtkWidget	*message;
 	char		*message_text;
 	char		*pixmap_name;
+	char		*button_text;
 
 	dialog = NULL;
 	pixmap = NULL;
 
-	dialog = GNOME_DIALOG (gnome_dialog_new (_("Services Login"), _("Register Now"), 
+	if (view->details->attempt_number == 0) {
+		button_text = g_strdup ("Register Now");
+	} else {
+		button_text = g_strdup ("I forgot my password");
+	}
+
+	dialog = GNOME_DIALOG (gnome_dialog_new (_("Services Login"), button_text, 
 			       GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL));
 
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
@@ -1290,7 +1313,12 @@ generate_login_dialog (NautilusSummaryView	*view)
 			    nautilus_gnome_dialog_get_button_by_index (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX));
 	nautilus_caption_table_entry_grab_focus	(NAUTILUS_CAPTION_TABLE (view->details->caption_table), LOGIN_DIALOG_NAME_ROW);
 
-	gnome_dialog_button_connect (dialog, LOGIN_DIALOG_REGISTER_BUTTON_INDEX, GTK_SIGNAL_FUNC (register_button_cb), view);
+	if (view->details->attempt_number == 0) {
+		gnome_dialog_button_connect (dialog, LOGIN_DIALOG_REGISTER_BUTTON_INDEX, GTK_SIGNAL_FUNC (register_button_cb), view);
+	} else {
+		gnome_dialog_button_connect (dialog, LOGIN_DIALOG_REGISTER_BUTTON_INDEX, GTK_SIGNAL_FUNC (forgot_password_button_cb), view);
+	}
+
 	gnome_dialog_button_connect (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX, GTK_SIGNAL_FUNC (login_button_cb), view);
 
   	gnome_dialog_set_close (dialog, TRUE);
