@@ -1,5 +1,14 @@
 2000-11-05  Robey Pointer  <robey@eazel.com>
 
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+
+	Use a temporary name for packages as they're downloaded, so an
+	aborted install won't find (and try to use) any packages that
+	didn't finish downloading.
+	
+2000-11-05  Robey Pointer  <robey@eazel.com>
+
 	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
 	: (trilobite_fetch_uri):
 

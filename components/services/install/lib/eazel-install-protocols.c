@@ -121,11 +121,14 @@ http_fetch_remote_file (EazelInstall *service,
 	int total_bytes=0;
 	gboolean first_emit;
 	const char *report;
+	char *target_file_premove;
 
 	report = file_to_report ? file_to_report : g_basename (target_file);
 	trilobite_debug (_("Downloading %s..."), url);	
 
-        file = fopen (target_file, "wb");
+	target_file_premove = g_strdup_printf ("%s~", target_file);
+
+        file = fopen (target_file_premove, "wb");
         get_failed = 0;
         length = -1;
         request = NULL;
@@ -134,9 +137,9 @@ http_fetch_remote_file (EazelInstall *service,
 
 	if (file == NULL) {
 		get_failed = 1;
-		g_warning (_("Could not open target file %s"),target_file);
+		g_warning (_("Could not open target file %s"), target_file_premove);
+		g_free (target_file_premove);
 		return FALSE;
-
 	}
 
         request = ghttp_request_new();
@@ -212,6 +215,11 @@ http_fetch_remote_file (EazelInstall *service,
                 ghttp_request_destroy (request);
         }
         fclose (file);
+
+	if (! get_failed) {
+		rename (target_file_premove, target_file);
+	}
+	g_free (target_file_premove);
 
         if (get_failed != 0) {
 		return FALSE;
