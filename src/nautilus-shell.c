@@ -351,12 +351,12 @@ restore_one_window_callback (const char *attributes,
 	if (eel_strlen (location) > 0) {
 		window = nautilus_application_present_spatial_window (shell->details->application, 
 								      NULL,
-								      NULL, /* FIXME: Need startup_id? */
+								      NULL,
 								      location,
 								      screen);
 	} else {
 		window = nautilus_application_create_navigation_window (shell->details->application,
-									NULL, /* FIXME: Need startup_id? */
+									NULL,
 									screen);
 		nautilus_window_go_home (window);
 	}

@@ -1002,51 +1002,16 @@ sn_error_trap_pop (SnDisplay *display,
 	gdk_error_trap_pop ();
 }
 
-static gboolean
-id_string_has_timestamp (const char *startup_id_string)
-{
-	char * time_str;
-	
-	time_str = g_strrstr (startup_id_string, "_TIME");
-	
-	return time_str != NULL;
-}
-
-static guint32
-get_timestamp_from_id_string (const char *startup_id_string)
-{
-	char   *time_str;
-	gchar  *end;
-	gulong  retval;
-
-	retval = 0;
-	time_str = g_strrstr (startup_id_string, "_TIME");
-	g_assert (time_str != NULL);
-
-	errno = 0;
-
-	/* Skip past the "_TIME" part */
-	time_str += 5;
-
-	retval = strtoul (time_str, &end, 0);
-	if (end == time_str || errno != 0) {
-		g_warning ("startup_id is messed up\n");
-	}
-
-	return retval;
-}
-
 static void
 end_startup_notification (GtkWidget  *widget, 
-			  const char *startup_id_to_end,
-			  const char *startup_id_with_timestamp)
+			  const char *startup_id)
 {
 	SnDisplay *sn_display;
 	SnLauncheeContext *context;
 	GdkDisplay *display;
 	GdkScreen  *screen;
 
-	g_return_if_fail (startup_id_to_end != NULL);
+	g_return_if_fail (startup_id != NULL);
   
 	if (!GTK_WIDGET_REALIZED (widget)) {
 		gtk_widget_realize (widget);
@@ -1069,20 +1034,17 @@ end_startup_notification (GtkWidget  *widget,
       
 	context = sn_launchee_context_new (sn_display,
 					   gdk_screen_get_number (screen),
-					   startup_id_to_end);
+					   startup_id);
 
-	if (startup_id_with_timestamp == NULL) {
-		sn_launchee_context_setup_window (context,
-						  GDK_WINDOW_XWINDOW (widget->window));
-		startup_id_with_timestamp = startup_id_to_end;
-	}
+	sn_launchee_context_setup_window (context,
+					  GDK_WINDOW_XWINDOW (widget->window));
 
 	/* Now, set the _NET_WM_USER_TIME for the new window to the timestamp
 	 * that caused the window to be launched.
 	 */
-	if (id_string_has_timestamp (startup_id_with_timestamp)) {
+	if (sn_launchee_context_get_id_has_timestamp (context)) {
 		gulong startup_id_timestamp;
-		startup_id_timestamp = get_timestamp_from_id_string (startup_id_with_timestamp);
+		startup_id_timestamp = sn_launchee_context_get_timestamp (context);
 		gdk_x11_window_set_user_time (widget->window, startup_id_timestamp);
 	} else {
 		/* Comment this out for now, as it warns way to often.
@@ -1126,8 +1088,8 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 
 		if (eel_uris_match (existing_location, location)) {
 			end_startup_notification (GTK_WIDGET (existing_window),
-						  existing_window->details->startup_id,
 						  startup_id);
+
 			gtk_window_present (GTK_WINDOW (existing_window));
 			if (new_selection) {
 				nautilus_view_set_selection (existing_window->content_view, new_selection);
@@ -1138,8 +1100,7 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 
 	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, startup_id, screen);
 	end_startup_notification (GTK_WIDGET (window),
-				  startup_id,
-				  NULL);
+				  startup_id);
 	if (requesting_window) {
 		/* Center the window over the requesting window by default */
 		int orig_x, orig_y, orig_width, orig_height;
@@ -1183,8 +1144,7 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 	
 	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, startup_id, screen);
 	end_startup_notification (GTK_WIDGET (window),
-				  startup_id,
-				  NULL);
+				  startup_id);
 
 	return window;
 }
