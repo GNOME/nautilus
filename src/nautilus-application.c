@@ -472,13 +472,13 @@ nautilus_application_startup (NautilusApplication *application,
 			 * since neither of the above causes explain it.
 			 */
 			message = _("Nautilus can't be used now. "
-				    "Running the command \"nautilus-clean.sh -x\""
+				    "Running the command \"bonobo-slay\""
 				    " from the console may fix the problem. If not,"
 				    " you can try rebooting the computer or"
 				    " installing Nautilus again.");
 			/* FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame. */
 			detailed_message = _("Nautilus can't be used now. "
-					     "Running the command \"nautilus-clean.sh -x\" "
+					     "Running the command \"bonobo-slay\" "
 					     "from the console may fix the problem. If not, "
 					     "you can try rebooting the computer or "
 					     "installing Nautilus again.\n\n"
@@ -487,7 +487,7 @@ nautilus_application_startup (NautilusApplication *application,
 					     "that does not include the bonobo-activation library's directory. "
 					     "Another possible cause would be bad install "
 					     "with a missing Nautilus_Shell.server file.\n\n"
-					     "Running \"nautilus-clean.sh -x\" will kill all "
+					     "Running \"bonobo-slay\" will kill all "
 					     "Bonobo Activation and GConf processes, which may be needed by "
 					     "other applications.\n\n"
 					     "Sometimes killing bonobo-activation-server and gconfd fixes "

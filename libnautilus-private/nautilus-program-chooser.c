@@ -71,11 +71,6 @@ typedef struct {
 	ProgramFileStatus status;
 } ProgramFilePair;
 
-/* gtk_window_set_default_width (and some other functions) use a
- * magic undocumented number of -2 to mean "ignore this parameter".
- */
-#define NO_DEFAULT_MAGIC_NUMBER		-2
-
 /* Scrolling list has no idea how tall to make itself. Its
  * "natural height" is just enough to draw the scroll bar controls.
  * Hardwire an initial window size here, but let user resize
@@ -1285,9 +1280,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
-	gtk_window_set_default_size (GTK_WINDOW (window), 
-				     NO_DEFAULT_MAGIC_NUMBER,
-				     PROGRAM_CHOOSER_DEFAULT_HEIGHT);
+	gtk_window_set_default_size (GTK_WINDOW (window), -1, PROGRAM_CHOOSER_DEFAULT_HEIGHT);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "program_chooser", "Nautilus");
 
 	g_object_set_data (G_OBJECT (window), "type", GINT_TO_POINTER (action_type));

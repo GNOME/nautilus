@@ -31,7 +31,6 @@ EXTRA_DIST=					\
 	HACKING					\
 	MAINTAINERS				\
 	nautilus.spec.in			\
-	nautilus-clean.sh			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
 	nautilus-help.desktop			\
@@ -65,12 +64,3 @@ Toplevelmenu_DATA = nautilus-help.desktop
 
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
-
-install-data-hook: nautilus-clean.sh
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/bin
-	@list='nautilus-clean.sh'; for p in $$list; do\
-	  if test -f $(srcdir)/$$p; then \
-	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)$(prefix)/bin/$$p"; \
-	    $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)$(prefix)/bin/$$p; \
-	  else :; fi; \
-	done

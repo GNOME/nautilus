@@ -30,9 +30,18 @@
 #include "nautilus-sidebar.h"
 #include "nautilus-window.h"
 
-#include <ctype.h>
-#include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-property-bag-client.h>
+#include <ctype.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-image-with-background.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkpixmap.h>
@@ -41,25 +50,19 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-font-factory.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
-#include <eel/eel-image-with-background.h>
-#include <eel/eel-label-with-background.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-search-uri.h>
-#include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <math.h>
 #include <string.h>
+
+#if GNOME2_CONVERSION_COMPLETE
+#include <eel/eel-label-with-background.h>
+#endif
 
 /* maximum allowable size to be displayed as the title */
 #define MAX_TITLE_SIZE 		256
@@ -143,6 +146,7 @@ realize_callback (NautilusSidebarTitle *sidebar_title)
 static void
 smooth_font_changed_callback (gpointer callback_data)
 {
+#if GNOME2_CONVERSION_COMPLETE
 	EelScalableFont *new_font;
 	EelScalableFont *new_bold_font;
 	NautilusSidebarTitle *sidebar_title;
@@ -159,6 +163,7 @@ smooth_font_changed_callback (gpointer callback_data)
 
 	g_object_unref (G_OBJECT (new_font));
 	g_object_unref (G_OBJECT (new_bold_font));
+#endif
 }
 
 #if GNOME2_CONVERSION_COMPLETE
@@ -399,6 +404,7 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 			}
 		}
 
+#if GNOME2_CONVERSION_COMPLETE
 		eel_label_set_text_color (EEL_LABEL (sidebar_title->details->title_label),
 						       eel_parse_rgb_with_white_default (sidebar_title_color));
 		
@@ -416,6 +422,7 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		
 		eel_label_set_smooth_drop_shadow_offset (EEL_LABEL (sidebar_title->details->more_info_label),
 							       sidebar_title->details->shadow_offset);
+#endif
 		
 		g_free (sidebar_title_color);	
 		g_free (sidebar_info_title_color);	
@@ -540,9 +547,9 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	GdkFont *template_font;
 	GdkFont *bold_template_font;
 	GdkFont *largest_fitting_font;
-#endif
 	int largest_fitting_smooth_font_size;
 	EelScalableFont *smooth_font;
+#endif
 
 	/* Make sure theres work to do */
 	if (eel_strlen (sidebar_title->details->title_text) < 1) {
@@ -556,6 +563,7 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 		return;
 	}
 	
+#if GNOME2_CONVERSION_COMPLETE
 	/* Update the smooth font */
 	smooth_font = eel_label_get_smooth_font (EEL_LABEL (sidebar_title->details->title_label));
 	largest_fitting_smooth_font_size = eel_scalable_font_largest_fitting_font_size
@@ -570,7 +578,6 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	
 	g_object_unref (G_OBJECT (smooth_font));
 
-#if GNOME2_CONVERSION_COMPLETE
 	/* Update the regular font */
 	template_font = get_non_smooth_font (MAX_TITLE_FONT_SIZE);
 	bold_template_font = eel_gdk_font_get_bold (template_font);
@@ -599,10 +606,15 @@ static void
 update_title (NautilusSidebarTitle *sidebar_title)
 {
 	/* FIXME bugzilla.gnome.org 42500: We could defer showing the title until the icon is ready. */
+#ifdef GNOME2_CONVERSION_COMPLETE
 	if (eel_label_set_text (EEL_LABEL (sidebar_title->details->title_label),
 				     sidebar_title->details->title_text)) {
 		update_title_font (sidebar_title);
 	}
+#else
+	gtk_label_set_text (GTK_LABEL (sidebar_title->details->title_label),
+			    sidebar_title->details->title_text);
+#endif
 }
 
 static void
@@ -634,6 +646,7 @@ file_is_search_location (NautilusFile *file)
 static int
 measure_width_callback (const char *string, void *context)
 {
+#if GNOME2_CONVERSION_COMPLETE
 	EelLabel *label;
 	EelScalableFont *smooth_font;
 	int smooth_font_size;
@@ -642,6 +655,9 @@ measure_width_callback (const char *string, void *context)
 	smooth_font = eel_label_get_smooth_font (label); 
 	smooth_font_size = eel_label_get_smooth_font_size (label);
 	return eel_scalable_font_text_width (smooth_font, smooth_font_size, string, strlen (string));
+#else
+	return 0;
+#endif
 }
 
 static void
@@ -687,16 +703,22 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 			
 			sidebar_width = GTK_WIDGET (sidebar_title)->allocation.width - 2 * SIDEBAR_INFO_MARGIN;
 			if (sidebar_width > MINIMUM_INFO_WIDTH) {
-				date_modified_str = nautilus_file_fit_modified_date_as_string (file, sidebar_width,
-											measure_width_callback, NULL,
-											sidebar_title->details->more_info_label);
+				date_modified_str = nautilus_file_fit_modified_date_as_string
+					(file, sidebar_width,
+					 measure_width_callback, NULL,
+					 sidebar_title->details->more_info_label);
 				append_and_eat (info_string, "\n", date_modified_str);
 				g_string_append_c (info_string, '\0');
 			}
 		}
 	}
+#if GNOME2_CONVERSION_COMPLETE
 	eel_label_set_text (EEL_LABEL (sidebar_title->details->more_info_label),
 			    info_string->str);
+#else
+	gtk_label_set_text (GTK_LABEL (sidebar_title->details->more_info_label),
+			    info_string->str);
+#endif
 
 	g_string_free (info_string, TRUE);
 }
@@ -873,10 +895,16 @@ sidebar_title_create_title_label (void)
 { 
 	GtkWidget *title_label;
 
+#if GNOME2_CONVERSION_COMPLETE
 	title_label = eel_label_new_with_background ("");
 	eel_label_make_bold (EEL_LABEL (title_label));
 	eel_label_set_wrap (EEL_LABEL (title_label), TRUE);
 	eel_label_set_justify (EEL_LABEL (title_label), GTK_JUSTIFY_CENTER);
+#else
+	title_label = gtk_label_new ("");
+	gtk_label_set_line_wrap (GTK_LABEL (title_label), TRUE);
+	gtk_label_set_justify (GTK_LABEL (title_label), GTK_JUSTIFY_CENTER);
+#endif
 
 	return title_label;
 }
@@ -886,11 +914,14 @@ sidebar_title_create_more_info_label (void)
 {
 	GtkWidget *more_info_label;
 
-	more_info_label = eel_label_new_with_background ("");
 #if GNOME2_CONVERSION_COMPLETE
+	more_info_label = eel_label_new_with_background ("");
 	eel_label_make_smaller (EEL_LABEL (more_info_label), 2);
-#endif
 	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
+#else
+	more_info_label = gtk_label_new ("");
+	gtk_label_set_justify (GTK_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
+#endif
 	
 	return more_info_label;
 }

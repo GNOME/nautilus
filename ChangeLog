@@ -1,5 +1,25 @@
 2001-11-07  Darin Adler  <darin@bentspoon.com>
 
+	* Makefile.am:
+	* README:
+	* nautilus-clean.sh:
+	* nautilus.spec.in:
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Remove nautilus-clean.sh -- use bonobo-slay instead.
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new): The -2 feature is gone from
+	gtk_window_set_default_size, so use -1.
+
+	* src/nautilus-sidebar-title.c: (smooth_font_changed_callback),
+	(nautilus_sidebar_title_select_text_color), (update_title_font),
+	(update_title), (measure_width_callback), (update_more_info),
+	(sidebar_title_create_title_label),
+	(sidebar_title_create_more_info_label): Change to use GtkLabel
+	instead of EelLabel for now -- that makes us actually get a label.
+
+2001-11-07  Darin Adler  <darin@bentspoon.com>
+
 	* components/help/help-method.c:
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/fm-icon-view.c:

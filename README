@@ -185,12 +185,10 @@ Then get root and:
 5: Issues when running Nautilus
 ===============================
 
-There's a script named nautilus-clean.sh, at the top level of the
-Nautilus sources. If bonobo-activation or GConf changes, you may need
-to run this script to get Nautilus to work properly. One way to invoke
-it is like this:
+If bonobo-activation changes, you may need to run the bonobo-slay
+script.
 
-        nautilus-clean.sh -x
+	bonobo-slay
 
 ==================
 6: Mozilla support
