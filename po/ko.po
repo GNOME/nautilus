@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-05-19 18:55+0900\n"
+"POT-Creation-Date: 2000-06-03 13:41+0900\n"
 "PO-Revision-Date: 2000-05-19 10:10:26+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist@dacome.co.kr>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -13,1039 +13,348 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-kr\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: src/nautilus-bookmarks-window.c:130
-msgid "Nautilus: Bookmarks"
-msgstr "노틸러스: 책갈피"
+#: components/html/main.c:551
+msgid "Could not initialize Bonobo!"
+msgstr "Bonobo를 초기화 할수 없습니다!"
 
-#. Icon
-#. Emblems
-#: src/file-manager/fm-list-view.c:490 src/nautilus-bookmarks-window.c:166
-msgid "Name"
-msgstr "이름"
-
-#: src/nautilus-bookmarks-window.c:178
-msgid "Location"
-msgstr "위치"
-
-#: src/nautilus-bookmarks-window.c:190
-msgid "Remove"
-msgstr "지우기"
-
-#: src/file-manager/fm-properties-window.c:590 src/nautilus-location-bar.c:212
-msgid "Location:"
-msgstr "위치:"
-
-#: src/nautilus-window-menus.c:306 src/ntl-window-msgs.c:211
-#: src/ntl-window-msgs.c:246 src/ntl-window-msgs.c:247
-msgid "Nautilus"
-msgstr "노틸러스"
-
-#: src/nautilus-window-menus.c:310
-msgid "The Cool Shell Program"
-msgstr "괜찮은 쉘 프로그램"
-
-#: src/nautilus-window-menus.c:362
-msgid "Go to the specified location"
-msgstr "지정한 위치로 갑니다"
-
-#. File menu
-#: src/nautilus-window-menus.c:582
-msgid "_File"
-msgstr "파일(_F)"
-
-#: src/nautilus-window-menus.c:586
-msgid "_New Window"
-msgstr "새 창(_N)"
-
-#: src/nautilus-window-menus.c:587
-msgid "Create a new window"
-msgstr "새창을 만듭니다"
-
-#: src/nautilus-window-menus.c:598
-msgid "_Close Window"
-msgstr "창 닫기(_C)"
-
-#: src/nautilus-window-menus.c:599
-msgid "Close this window"
-msgstr "이 창을 닫습니다"
-
-#: src/nautilus-window-menus.c:612
-msgid "_Exit"
-msgstr "나가기(_E)"
-
-#: src/nautilus-window-menus.c:613
-msgid "Exit from Nautilus"
-msgstr "노틸러스를 종료합니다"
-
-#. Edit menu
-#: src/nautilus-window-menus.c:624
-msgid "_Edit"
-msgstr "편집(_E)"
-
-#: src/nautilus-window-menus.c:628
-msgid "_Undo"
-msgstr "취소(_U)"
-
-#: src/nautilus-window-menus.c:629
-msgid "Undo the last text change"
-msgstr "마지막 변경사항을 취소합니다"
-
-#: src/nautilus-window-menus.c:642
-msgid "_Cut Text"
-msgstr "자르기(_C)"
-
-#: src/nautilus-window-menus.c:643
-msgid "Cuts the selected text to the clipboard"
-msgstr "클립보드에서 선택한 문자를 자릅니다"
-
-#: src/nautilus-window-menus.c:654
-msgid "_Copy Text"
-msgstr "복사(_C)"
-
-#: src/nautilus-window-menus.c:655
-msgid "Copies the selected text to the clipboard"
-msgstr "클립보드에서 선택한 문자를 복사합니다"
-
-#: src/nautilus-window-menus.c:666
-msgid "_Paste Text"
-msgstr "붙이기(_P)"
-
-#: src/nautilus-window-menus.c:667
-msgid "Pastes the text stored on the clipboard"
-msgstr "클립보드에 저장된 문자를 붙입니다"
-
-#: src/nautilus-window-menus.c:678
-msgid "C_lear Text"
-msgstr "비우기(_l)"
-
-#: src/nautilus-window-menus.c:679
-msgid "Removes the selected text without putting it on the clipboard"
-msgstr "클립보드에 선택된 문자를 기록하지 않고 지웁니다"
-
-#: src/file-manager/fm-directory-view.c:1536 src/nautilus-window-menus.c:692
-msgid "_Select All"
-msgstr "전체 선택(_S)"
-
-#. Go menu
-#: src/nautilus-window-menus.c:703
-msgid "_Go"
-msgstr "가기(_G)"
-
-#: src/nautilus-window-menus.c:707
-msgid "_Back"
-msgstr "뒤로(_B)"
-
-#: src/nautilus-window-menus.c:708
-msgid "Go to the previous visited location"
-msgstr "전에 방문했던 위치로 갑니다"
-
-#: src/nautilus-window-menus.c:719
-msgid "_Forward"
-msgstr "앞으로(_F)"
-
-#: src/nautilus-window-menus.c:720
-msgid "Go to the next visited location"
-msgstr "다음 방문한 위치로 갑니다"
-
-#: src/nautilus-window-menus.c:731
-msgid "_Up"
-msgstr "위로(_U)"
-
-#: src/nautilus-window-menus.c:732
-msgid "Go to the location that contains this one"
-msgstr "이곳을 포함하는 위치로 갑니다"
-
-#: src/nautilus-window-menus.c:743
-msgid "_Home"
-msgstr "홈(_H)"
-
-#: src/nautilus-window-menus.c:744
-msgid "Go to the home location"
-msgstr "홈으로 갑니다"
-
-#. Bookmarks
-#: src/nautilus-window-menus.c:757
-msgid "_Bookmarks"
-msgstr "책갈피(_B)"
-
-#: src/nautilus-window-menus.c:761
-msgid "_Add Bookmark"
-msgstr "책갈피 추가(_A)"
-
-#: src/nautilus-window-menus.c:762
-msgid "Add a bookmark for the current location to this menu"
-msgstr "현재 위치를 책갈피에 추가시킵니다"
-
-#: src/nautilus-window-menus.c:773
-msgid "_Edit Bookmarks..."
-msgstr "책갈피 편집"
-
-#: src/nautilus-window-menus.c:774
-msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "책갈피를 편집할수 있는 창을 표시합니다"
-
-#. Settings
-#: src/nautilus-window-menus.c:783
-msgid "_Settings"
-msgstr "설정(_S)"
-
-#: src/nautilus-window-menus.c:787
-msgid "_General Settings..."
-msgstr "일반적인 설정(_G)"
-
-#: src/nautilus-window-menus.c:788
-msgid "Customize various aspects of Nautilus's appearance and behavior"
-msgstr "노틸러스의 모양과 기능을 설정합니다"
-
-#: src/nautilus-window-menus.c:799
-msgid "_Customize..."
-msgstr "사용자 설정(_C)"
-
-#: src/nautilus-window-menus.c:800
-msgid ""
-"Displays the Property Browser, to add properties to objects and customize "
-"appearance"
-msgstr "객체 설정과 모양을 설정할수 있는 설정 브라우져를 표시합니다."
-
-#: src/nautilus-window-menus.c:817
-msgid "Use _Eazel Theme Icons"
-msgstr "Eazel 테마 아이콘 사용(_E)"
-
-#: src/nautilus-window-menus.c:818
-msgid "Select whether to use standard or Eazel icons"
-msgstr "표준 아니면 Eazel아이콘을 사용하게 선택합니다"
-
-#. Help
-#: src/nautilus-window-menus.c:826
-msgid "_Help"
-msgstr "도움말(_H)"
-
-#: src/nautilus-window-menus.c:830
-msgid "_About Nautilus..."
-msgstr "노틸러스는 (_A)"
-
-#: src/nautilus-window-menus.c:831
-msgid "Displays information about the Nautilus program"
-msgstr "노틸러스 프로그램에 대한 정보를 표시합니다"
-
-#: src/nautilus-window-toolbars.c:78
-msgid "Back"
-msgstr "뒤로"
-
-#: src/nautilus-window-toolbars.c:78
-msgid "Go to the previously visited directory"
-msgstr "전에 방문했던 디렉토리로 갑니다"
-
-#: src/nautilus-window-toolbars.c:81
-msgid "Forward"
-msgstr "앞으로"
-
-#: src/nautilus-window-toolbars.c:81
-msgid "Go to the next directory"
-msgstr "다음 디렉토리로 갑니다"
-
-#: src/nautilus-window-toolbars.c:84
-msgid "Up"
-msgstr "위로"
-
-#: src/nautilus-window-toolbars.c:84
-msgid "Go up a level in the directory heirarchy"
-msgstr "디렉토리 구조의 한단계 위로 갑니다"
-
-#: src/nautilus-window-toolbars.c:87
-msgid "Reload"
-msgstr "다시 읽기"
-
-#: src/nautilus-window-toolbars.c:87
-msgid "Reload this view"
-msgstr "현재 목록을 다시 읽습니다"
-
-#: src/nautilus-window-toolbars.c:91
-msgid "Home"
-msgstr "홈"
-
-#: src/nautilus-window-toolbars.c:91
-msgid "Go to your home directory"
-msgstr "홈 디렉토리로 갑니다"
-
-#: src/file-manager/dfos-xfer.c:216 src/nautilus-window-toolbars.c:95
-msgid "Stop"
-msgstr "중지"
-
-#: src/nautilus-window-toolbars.c:95
-msgid "Interrupt loading"
-msgstr "읽기를 중단합니다"
-
-#: src/ntl-main.c:56
-msgid "Perform high-speed self-check tests."
-msgstr ""
-
-#: src/ntl-view-bonobo-control.c:78
-#, c-format
-msgid "Control %p"
-msgstr ""
-
-#: src/ntl-window-msgs.c:249
-#, c-format
-msgid "Nautilus: %s"
-msgstr "노틸러스: %s"
-
-#: src/ntl-window-msgs.c:624
-#, c-format
-msgid "You do not have the right permissions to view \"%s.\""
-msgstr "\"%s\"를 보기위한 퍼미션을 가지지 않았습니다."
-
-#: src/ntl-window-msgs.c:1090
-#, c-format
-msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr ""
-"\"%s\" 를 찾을수 없습니다.\n"
-"정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
-
-#: src/ntl-window-msgs.c:1094
-#, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
-msgstr ""
-"\"%s\" 는 올바른 위치가 아닙니다.\n"
-"정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
-
-#: src/ntl-window-msgs.c:1101
-#, c-format
-msgid ""
-"Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
-msgstr ""
-"\"%s\" 를 표시할수 없습니다.\n"
-"\"%s\"형식의 항목을 처리할수 없습니다."
-
-#: src/ntl-window-msgs.c:1105
-#, c-format
-msgid ""
-"Couldn't display \"%s\", because Nautilus cannot handle items of this type."
-msgstr ""
-"\"%s\" 를 표시할수 없습니다.\n"
-"이런 형식의 항목을 처리할수 없습니다."
-
-#. Shouldn't have gotten this error unless there's a : separator.
-#: src/ntl-window-msgs.c:1115
-#, c-format
-msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr ""
-"\"%s\" 를 표시할수 없습니다.\n"
-"%s: 형식의 위치를 처리할수 없습니다."
-
-#. It is so sad that we can't say anything more useful than this.
-#. * When this comes up, we should figure out what's really happening
-#. * and add another specific case.
 #.
-#: src/ntl-window-msgs.c:1125
-#, c-format
-msgid "Nautilus cannot display \"%s\"."
-msgstr "노틸러스가 \"%s\"를 표시할수 없습니다."
-
-#: src/ntl-window-msgs.c:1182
-msgid "Gathering information"
-msgstr "정보 수집중"
-
-#: src/ntl-window.c:715
-#, c-format
-msgid "View as %s"
-msgstr "%s 로 보기"
-
-#: src/ntl-window.c:742
-msgid "View as ..."
-msgstr "보기"
-
-#: src/ntl-window.c:1035
-msgid "Close"
-msgstr "닫기"
-
-#: src/file-manager/dfos-corba.c:110
-#, c-format
-msgid "Unknown XferOverwriteMode %d"
-msgstr ""
-
-#: src/file-manager/dfos-corba.c:124
-#, c-format
-msgid "Unknown XferErrorMode %d"
-msgstr ""
-
-#: src/file-manager/dfos-xfer.c:163
-msgid "From:"
-msgstr ""
-
-#: src/file-manager/dfos-xfer.c:166
-msgid "To:"
-msgstr ""
-
-#. transfer error, prompt the user to continue or stop
-#: src/file-manager/dfos-xfer.c:209
-#, c-format
-msgid ""
-"Error %s copying file %s.\n"
-"Would you like to continue?"
-msgstr ""
-"%2$s 파일을 복사하는중 %1$s 오류. \n"
-"계속 진행 하겠습니까?"
-
-#: src/file-manager/dfos-xfer.c:215
-msgid "File copy error"
-msgstr "파일 복사 오류"
-
-#: src/file-manager/dfos-xfer.c:216 src/file-manager/dfos-xfer.c:259
-#: src/file-manager/dfos-xfer.c:270
-msgid "Skip"
-msgstr "건너뜀"
-
-#: src/file-manager/dfos-xfer.c:216
-msgid "Retry"
-msgstr "재시도"
-
-#: src/file-manager/dfos-xfer.c:248
-#, c-format
-msgid ""
-"File %s already exists.\n"
-"Would you like to replace it?"
-msgstr ""
-"%s 파일이 이미 존재합니다. \n"
-"파일을 바꾸시겠습니까?"
-
-#: src/file-manager/dfos-xfer.c:258 src/file-manager/dfos-xfer.c:269
-msgid "File copy conflict"
-msgstr "파일 복사 충돌"
-
-#: src/file-manager/dfos-xfer.c:259 src/file-manager/dfos-xfer.c:270
-msgid "Replace"
-msgstr "바꾸기"
-
-#: src/file-manager/dfos-xfer.c:270
-msgid "Replace All"
-msgstr "모두 바꾸기"
-
-#: src/file-manager/dfos-xfer.c:324
-#, c-format
-msgid "Unknown GnomeVFSXferProgressStatus %d"
-msgstr ""
-
-#: src/file-manager/dfos-xfer.c:394
-#, c-format
-msgid ""
-"The transfer between\n"
-"%s\n"
-"and\n"
-"%s\n"
-"could not be started:\n"
-"%s"
-msgstr ""
-"%s\n"
-"와\n"
-"%s\n"
-"사이의 전송이시작될수 없습니다:\n"
-"%s"
-
-#: src/file-manager/dfos-xfer.c:484
-msgid "Moving"
-msgstr "이동중"
-
-#: src/file-manager/dfos-xfer.c:485
-msgid "Preparing To Move..."
-msgstr "이동 준비중"
-
-#: src/file-manager/dfos-xfer.c:492
-msgid "Copying"
-msgstr "복사중"
-
-#: src/file-manager/dfos-xfer.c:493
-msgid "Preparing To Copy..."
-msgstr "복사 준비중"
-
-#: src/file-manager/dfos-xfer.c:509
-msgid "You cannot copy items into the Trash."
-msgstr "선택한 항목을 쓰레기통으로 복사할수 없습니다."
-
-#: src/file-manager/dfos-xfer.c:510
-msgid "Error copying"
-msgstr "복사중 오류"
-
-#: src/file-manager/dfos-xfer.c:511 src/file-manager/dfos-xfer.c:530
-#: src/file-manager/dfos-xfer.c:545 src/file-manager/dfos-xfer.c:617
-#: src/file-manager/dfos-xfer.c:626
-msgid "OK"
-msgstr "확인"
-
-#: src/file-manager/dfos-xfer.c:527
-msgid "You cannot move the Trash."
-msgstr "쓰레기통으로 이동할수 없습니다."
-
-#: src/file-manager/dfos-xfer.c:528
-msgid "You cannot copy the Trash."
-msgstr "쓰레기통으로 복사할수 없습니다."
-
-#: src/file-manager/dfos-xfer.c:529 src/file-manager/dfos-xfer.c:544
-#: src/file-manager/dfos-xfer.c:616 src/file-manager/dfos-xfer.c:625
-msgid "Error moving to Trash"
-msgstr "쓰레기통 이동중 오류"
-
-#: src/file-manager/dfos-xfer.c:542
-msgid "You cannot move an item into itself."
-msgstr "항목을 그 자신에게 옮길수 없습니다."
-
-#: src/file-manager/dfos-xfer.c:543
-msgid "You cannot copy an item into itself."
-msgstr "항목을 그 자신에게 복사할수 없습니다."
-
-#: src/file-manager/dfos-xfer.c:615
-msgid "You cannot throw away the Trash."
-msgstr "쓰레기통에 버릴수 없습니다."
-
-#: src/file-manager/dfos-xfer.c:621
-#, c-format
-msgid "You cannot throw \"%s\" into the Trash."
-msgstr "\"%s\"를 쓰레기통에 버릴수 없습니다."
-
-#: src/file-manager/dfos-xfer.c:653
-msgid "Moving to Trash"
-msgstr "쓰레기통 이동중"
-
-#: src/file-manager/dfos-xfer.c:654
-msgid "Preparing to Move to Trash..."
-msgstr "쓰레기통으로 이동 준비중"
-
-#: src/file-manager/dfos-xfer.c:701
-msgid "Emptying the Trash"
-msgstr "쓰레기통 비우는중"
-
-#: src/file-manager/dfos-xfer.c:702
-msgid "Preparing to Empty the Trash..."
-msgstr "쓰레기통 비우기 준비중"
-
-#: src/file-manager/fm-directory-view.c:595
-#, c-format
-msgid "\"%s\" selected"
-msgstr "\"%s\" 선택됨"
-
-#: src/file-manager/fm-directory-view.c:597
-msgid "1 directory selected"
-msgstr "1 디렉토리 선택됨"
-
-#: src/file-manager/fm-directory-view.c:600
-#, c-format
-msgid "%d directories selected"
-msgstr "%d 디렉토리 선택됨"
-
-#: src/file-manager/fm-directory-view.c:606
-msgid " (containing 0 items)"
-msgstr " (0 항목 포함)"
-
-#: src/file-manager/fm-directory-view.c:608
-msgid " (containing 1 item)"
-msgstr " (1 항목 포함)"
-
-#: src/file-manager/fm-directory-view.c:610
-#, c-format
-msgid " (containing %d items)"
-msgstr " (%d 항목 포함)"
-
-#: src/file-manager/fm-directory-view.c:621
-#, c-format
-msgid "\"%s\" selected (%s)"
-msgstr "\"%s\" 선택됨 (%s)"
-
-#: src/file-manager/fm-directory-view.c:625
-#, c-format
-msgid "%d items selected (%s)"
-msgstr "%d 항목 선택됨 (%s)"
-
-#: src/file-manager/fm-directory-view.c:632
-#, c-format
-msgid "1 other item selected (%s)"
-msgstr "1 다른 항목 선택됨 (%s)"
-
-#: src/file-manager/fm-directory-view.c:635
-#, c-format
-msgid "%d other items selected (%s)"
-msgstr "%d 다른 항목 선택됨 (%s)"
-
-#: src/file-manager/fm-directory-view.c:649
-#, c-format
-msgid "%s%s"
-msgstr ""
-
-#: src/file-manager/fm-directory-view.c:653
-#, c-format
-msgid "%s%s, %s"
-msgstr ""
-
-#. Don't use GNOME_STOCK_BUTTON_CANCEL because the
-#. * red X is confusing in this context.
+#. * Create our mozilla menu item.
+#. *
+#. * Note that it's sorta bogus that we know Nautilus has a menu whose
+#. * path is "/File", and also that we know a sensible position to use within
+#. * that menu. Nautilus should publish this information somehow.
 #.
-#: src/file-manager/fm-directory-view.c:1256
-msgid "Delete Selection"
-msgstr "지움 선택"
+#. BonoboUIHandler
+#. menu item path, must start with /some-existing-menu-path and be otherwise unique
+#: components/mozilla/nautilus-mozilla-content-view.c:395
+msgid "_Mozilla"
+msgstr "모질라(_M)"
 
-#: src/file-manager/fm-directory-view.c:1257
-msgid "Delete"
-msgstr "지움"
+#. menu item user-displayed label
+#: components/mozilla/nautilus-mozilla-content-view.c:396
+msgid "This is a mozilla merged menu item"
+msgstr "이것은 모질라와 합쳐진 메뉴 항목입니다"
 
-#: src/file-manager/fm-directory-view.c:1258
-msgid "Cancel"
-msgstr "취소"
-
-#: src/file-manager/fm-directory-view.c:1277
-#, c-format
-msgid "Are you sure you want to delete \"%s\"?"
-msgstr "\"%s\"를 정말로 지우시겠습니까?"
-
-#: src/file-manager/fm-directory-view.c:1280
-#, c-format
-msgid "Are you sure you want to delete the %d selected items?"
-msgstr "%d 선택한 항목을 정말로 지우시겠습니까?"
-
-#: src/file-manager/fm-directory-view.c:1495
-msgid "_Open"
-msgstr "열기(_O)"
-
-#: src/file-manager/fm-directory-view.c:1498
-msgid "Open With"
-msgstr "열기"
-
-#: src/file-manager/fm-directory-view.c:1501
-msgid "Other Application..."
-msgstr "다른 프로그램"
-
-#: src/file-manager/fm-directory-view.c:1504
-msgid "Other Viewer..."
-msgstr "다른 보기 프로그램..."
-
-#: src/file-manager/fm-directory-view.c:1509
-msgid "Open in _New Window"
-msgstr "새창으로 열기(_N)"
-
-#: src/file-manager/fm-directory-view.c:1511
-#, c-format
-msgid "Open in %d _New Windows"
-msgstr "%d개의 항목을 새창으로 열기"
-
-#: src/file-manager/fm-directory-view.c:1519
-msgid "_Delete..."
-msgstr "지움(_D)"
-
-#: src/file-manager/fm-directory-view.c:1523
-msgid "_Move to Trash"
-msgstr "쓰레기통으로 이동(_M)"
-
-#: src/file-manager/fm-directory-view.c:1526
-msgid "_Duplicate"
-msgstr "복사(_D)"
-
-#: src/file-manager/fm-directory-view.c:1529
-msgid "Show _Properties"
-msgstr "속성 보기(_P)"
-
-#: src/file-manager/fm-directory-view.c:1532
-msgid "_Empty Trash"
-msgstr "쓰레기통 비우기(_E)"
-
-#: src/file-manager/fm-directory-view.c:1540
-msgid "R_emove Custom Images"
-msgstr "설정한 이미지 제거(_e)"
-
-#: src/file-manager/fm-directory-view.c:1542
-msgid "R_emove Custom Image"
-msgstr "설정한 이미지 제거(_e)"
-
-#. FIXME: Need to think clearly about what items to include here.
-#. * We want the list to be pretty short, but not degenerately short.
-#. * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
-#. * (for the current location, not selection -- but would have to not
-#. * include this item when there's a selection)? Add Bookmark? (same issue).
+#. hint that appears in status bar
+#. position within menu; -1 means last
+#. pixmap type
+#. pixmap data
+#. accelerator key, couldn't bear the thought of using Control-S for anything except Save
+#. accelerator key modifiers
+#. callback function
+#. callback function data
 #.
-#: src/file-manager/fm-directory-view.c:1644
-msgid "Zoom In"
-msgstr "확대"
+#. * Create our mozilla toolbar button.
+#. *
+#. * Note that it's sorta bogus that we know Nautilus has a toolbar whose
+#. * path is "/Main". Nautilus should publish this information somehow.
+#.
+#. BonoboUIHandler
+#. button path, must start with /Main/ and be otherwise unique
+#: components/mozilla/nautilus-mozilla-content-view.c:413
+msgid "Mozilla"
+msgstr "모질라"
 
-#: src/file-manager/fm-directory-view.c:1646
-msgid "Zoom Out"
-msgstr "축소"
+#. button user-displayed label
+#: components/mozilla/nautilus-mozilla-content-view.c:414
+msgid "This is a mozilla merged toolbar button"
+msgstr "이것은 모질라와 합쳐진 도구막대 단추입니다"
 
-#: src/file-manager/fm-directory-view.c:1676
-#, c-format
-msgid "Application %d"
-msgstr "응용 프로그램 %d"
+#: libnautilus-extensions/nautilus-entry.c:244
+msgid "Edit"
+msgstr "편집"
 
-#: src/file-manager/fm-directory-view.c:1688
-#, c-format
-msgid "Viewer %d"
-msgstr "%d 로 보기"
+#: libnautilus-extensions/nautilus-entry.c:245
+msgid "Undo Edit"
+msgstr "편집 취소"
 
-#: src/file-manager/fm-directory-view.c:1812
-msgid "Choose a program with which to open the selected item"
-msgstr "선택한 항목을 열 프로그램을 선택합니다"
+#: libnautilus-extensions/nautilus-entry.c:246
+msgid "Undo the edit"
+msgstr "편집한것을 취소"
 
-#: src/file-manager/fm-directory-view.c:1825
-msgid "Choose another application with which to open the selected item"
-msgstr "선택한 항목을 열 다른 프로그램을 선택합니다"
+#: libnautilus-extensions/nautilus-entry.c:247
+msgid "Redo Edit"
+msgstr "편집 되돌림"
 
-#: src/file-manager/fm-directory-view.c:1844
-msgid "Choose another viewer with which to view the selected item"
-msgstr "선택한 항목을 볼 다른 보기 프로그램을 선택합니다"
+#: libnautilus-extensions/nautilus-entry.c:248
+msgid "Redo the edit"
+msgstr "편집한것을 되돌림"
 
-#: src/file-manager/fm-directory-view.c:1863
-msgid "Open the selected item in this window"
-msgstr "선택한 항목을 이 창에서 엽니다"
-
-#: src/file-manager/fm-directory-view.c:1870
-msgid "Open each selected item in a new window"
-msgstr "각각 선택한 항목을 새창에서 엽니다"
-
-#: src/file-manager/fm-directory-view.c:1885
-msgid "View or modify the properties of the selected items"
-msgstr "선택한 항목의 설정을 보거나 고칩니다"
-
-#: src/file-manager/fm-directory-view.c:1896
-msgid "Delete all selected items"
-msgstr "선택한 항목을 모두 지웁니다"
-
-#: src/file-manager/fm-directory-view.c:1904
-msgid "Move all selected items to the Trash"
-msgstr "선택한 항목을 모두 쓰레기통으로 이동합니다"
-
-#: src/file-manager/fm-directory-view.c:1911
-msgid "Duplicate all selected items"
-msgstr "선택한 항목을 모두 복사합니다"
-
-#: src/file-manager/fm-directory-view.c:1918
-msgid "Delete all items in the trash"
-msgstr "쓰레기통에 있는 모든항목을 지웁니다"
-
-#: src/file-manager/fm-directory-view.c:1925
-msgid "Select all items in this window"
-msgstr "이 창에 있는 모든 항목을 선택합니다"
-
-#: src/file-manager/fm-directory-view.c:1938
-msgid "Remove the custom image from each selected icon"
-msgstr "각각 선택한 아이콘의 설정한 이미지를 제거합니다"
-
-#: src/file-manager/fm-icon-text-window.c:72
-msgid "size"
-msgstr "크기"
-
-#: src/file-manager/fm-icon-text-window.c:73
-msgid "type"
-msgstr "형식"
-
-#: src/file-manager/fm-icon-text-window.c:74
-msgid "date modified"
-msgstr "수정 시간"
-
-#: src/file-manager/fm-icon-text-window.c:75
-msgid "date changed"
-msgstr "변경 시간"
-
-#: src/file-manager/fm-icon-text-window.c:76
-msgid "date accessed"
-msgstr "접근 날짜"
-
-#: src/file-manager/fm-icon-text-window.c:77
-msgid "owner"
-msgstr "소유주"
-
-#: src/file-manager/fm-icon-text-window.c:78
-msgid "group"
-msgstr "그룹"
-
-#: src/file-manager/fm-icon-text-window.c:79
-msgid "permissions"
-msgstr "허가권"
-
-#: src/file-manager/fm-icon-text-window.c:80
-msgid "MIME type"
-msgstr "MIME 형식"
-
-#: src/file-manager/fm-icon-text-window.c:250
-msgid "Nautilus: Icon Text"
-msgstr "노틸러스: 아이콘 설명"
-
-#: src/file-manager/fm-icon-text-window.c:257
-msgid ""
-"Choose the order for information to appear beneath icon names. More "
-"information appears as you zoom in closer."
+#: libnautilus-extensions/nautilus-icon-canvas-item.c:670
+msgid " -_,;.?/&"
 msgstr ""
-"아이콘 이름밑에 나타낼 정보의 순서를 선택합니다. 크게 확대할수록 많은 정보가 "
-"나타날것 입니다."
 
-#: src/file-manager/fm-icon-view.c:98
-msgid "Sort by _Name"
-msgstr "이름순 정렬(_N)"
+#: libnautilus-extensions/nautilus-icon-dnd.c:532
+msgid ""
+"This directory uses automatic layout. Do you want to switch to manual layout "
+"and leave this item where you dropped it? This will clobber the stored "
+"manual layout."
+msgstr ""
+"이 디렉토리는 자동 배치를 사용합니다. 수동 배치로 전환하고 이동한 항목을 그"
+"대로 두고 싶습니까? "
+" "
 
-#: src/file-manager/fm-icon-view.c:99
-msgid "Keep icons sorted by name in rows"
-msgstr "이름순으로 아이콘을 정렬합니다"
+#: libnautilus-extensions/nautilus-icon-dnd.c:534
+msgid ""
+"This directory uses automatic layout. Do you want to switch to manual layout "
+"and leave these items where you dropped them? This will clobber the stored "
+"manual layout."
+msgstr ""
+"이 디렉토리는 자동 배치를 사용합니다. 수동 배치로 전환하고 이동한 항목을 그"
+"대로 두고 싶습니까? 이것은 저장된 수동 배치에 영향을 끼칠것입니다."
 
-#: src/file-manager/fm-icon-view.c:105
-msgid "Sort by _Size"
-msgstr "크기순 정렬(_S)"
+#: libnautilus-extensions/nautilus-icon-dnd.c:538
+msgid ""
+"This directory uses automatic layout. Do you want to switch to manual layout "
+"and leave this item where you dropped it?"
+msgstr ""
+"이 디렉토리는 자동 배치를 사용합니다. 수동 배치로 전환하고 이동한 항목을 그"
+"대로 두고 싶습니까? 이것은 저장된 수동 배치에 영향을 끼칠것입니다."
 
-#: src/file-manager/fm-icon-view.c:106
-msgid "Keep icons sorted by size in rows"
-msgstr "크기순으로 아이콘을 정렬합니다"
+#: libnautilus-extensions/nautilus-icon-dnd.c:540
+msgid ""
+"This directory uses automatic layout. Do you want to switch to manual layout "
+"and leave these items where you dropped them?"
+msgstr ""
+"이 디렉토리는 자동 배치를 사용합니다. 수동 배치로 전환하고 이동한 항목을 그"
+"대로 두고 싶습니까? "
 
-#: src/file-manager/fm-icon-view.c:112
-msgid "Sort by _Type"
-msgstr "형식순 정렬(_T)"
+#: libnautilus-extensions/nautilus-icon-dnd.c:546
+msgid "Switch to Manual Layout?"
+msgstr "수동 배치로 전환 하시겠습니까?"
 
-#: src/file-manager/fm-icon-view.c:113
-msgid "Keep icons sorted by type in rows"
-msgstr "파일형식순으로 아이콘을 정렬합니다"
+#: libnautilus-extensions/nautilus-icon-dnd.c:547
+msgid "Switch"
+msgstr "전환"
 
-#: src/file-manager/fm-icon-view.c:119
-msgid "Sort by Modification _Date"
-msgstr "변경날짜순 정렬(_D)"
-
-#: src/file-manager/fm-icon-view.c:120
-msgid "Keep icons sorted by modification date in rows"
-msgstr "변경날짜순으로 아이콘을 정렬합니다"
-
-#: src/file-manager/fm-icon-view.c:126
-msgid "Sort by _Emblems"
-msgstr "표시순 정렬(_E)"
-
-#: src/file-manager/fm-icon-view.c:127
-msgid "Keep icons sorted by emblems in rows"
-msgstr "표시순으로 아이콘을 정렬합니다"
-
-#: src/file-manager/fm-icon-view.c:298
-msgid "_Stretch Icon"
-msgstr "아이콘 확장(_R)"
-
-#: src/file-manager/fm-icon-view.c:306
-msgid "_Restore Icons to Unstretched Size"
-msgstr "확장하지 않은 아이콘으로 저장(_R)"
-
-#: src/file-manager/fm-icon-view.c:308
-msgid "_Restore Icon to Unstretched Size"
-msgstr "확장하지 않은 아이콘으로 저장(_R)"
-
-#: src/file-manager/fm-icon-view.c:312
-msgid "Customize _Icon Text..."
-msgstr "아이콘 설명 설정"
-
-#. Modify file name. We only allow this on a single file selection.
-#: src/file-manager/fm-icon-view.c:316
-msgid "_Rename"
-msgstr "이름 바꾸기(_R)"
-
-#: src/file-manager/fm-icon-view.c:912
-msgid "Make the selected icon stretchable"
-msgstr "선택한 아이콘을 확장합니다"
-
-#: src/file-manager/fm-icon-view.c:917
-msgid "Restore each selected icon to its original size"
-msgstr "각각 선택한 아이콘은 원래 크기로 저장합니다"
-
-#: src/file-manager/fm-icon-view.c:926
-msgid "Choose which information appears beneath each icon's name"
-msgstr "각각 아이콘의 이름 바로밑에 나타낼 정보를 선택합니다"
-
-#: src/file-manager/fm-icon-view.c:939
-msgid "_Layout"
-msgstr "배치(_L)"
-
-#: src/file-manager/fm-icon-view.c:947
-msgid "_Manual Layout"
-msgstr "수동 배치(_M)"
-
-#: src/file-manager/fm-icon-view.c:948
-msgid "Leave icons wherever they are dropped"
-msgstr "아이콘의 위치를 그대로 둡니다"
-
-#: src/file-manager/fm-icon-view.c:969
-msgid "_Ascending"
-msgstr "오름차순(_A)"
-
-#: src/file-manager/fm-icon-view.c:970
-msgid "Sort icons from \"smallest\" to \"largest\" according to sort criteria"
-msgstr "정렬 기준을 \"작은것\"부터 \"큰것\"으로 아이콘을 정렬합니다"
-
-#: src/file-manager/fm-icon-view.c:976
-msgid "Des_cending"
-msgstr "내림차순(_c)"
-
-#: src/file-manager/fm-icon-view.c:977
-msgid "Sort icons from \"largest\" to \"smallest\" according to sort criteria"
-msgstr "정렬 기준을 \"큰것\"부터 \"작은것\"으로 아이콘을 정렬합니다"
-
-#: src/file-manager/fm-icon-view.c:992
+#: libnautilus-extensions/nautilus-icon-text-item.c:1352
+#: src/file-manager/fm-icon-view.c:1013
 msgid "Rename"
 msgstr "이름 바꿈"
 
-#: src/file-manager/fm-icon-view.c:993
-msgid "Rename selected item"
-msgstr "선택한 항목의 이름을 바꿉니다"
+#: libnautilus-extensions/nautilus-icon-text-item.c:1353
+msgid "Undo Rename"
+msgstr "이름 바꿈 취소"
 
-#: src/file-manager/fm-list-view.c:491
-msgid "Size"
-msgstr "크기"
+#: libnautilus-extensions/nautilus-icon-text-item.c:1354
+msgid "Restore the old name"
+msgstr "이전 이름 저장"
 
-#: src/file-manager/fm-list-view.c:492
-msgid "Type"
-msgstr "형식"
+#: libnautilus-extensions/nautilus-icon-text-item.c:1355
+#, fuzzy
+msgid "Redo Rename"
+msgstr "이름 바꿈"
 
-#: src/file-manager/fm-list-view.c:493
-msgid "Date Modified"
-msgstr "변경 날짜"
+#: libnautilus-extensions/nautilus-icon-text-item.c:1356
+msgid "Restore the changed name"
+msgstr "변경한 이름 저장"
 
-#: src/file-manager/fm-properties-window.c:370
+#: libnautilus-extensions/nautilus-program-chooser.c:341
 #, c-format
-msgid "Nautilus: %s Properties"
-msgstr "노틸러스: %s 속성"
+msgid "Is in the menu for all \"%s\" items."
+msgstr "모든 \"%s\" 항목을 위한 메뉴."
 
-#: src/file-manager/fm-properties-window.c:529
-msgid "Basic"
-msgstr "기본"
+#: libnautilus-extensions/nautilus-program-chooser.c:346
+#, c-format
+msgid "Is in the menu for \"%s\"."
+msgstr "\"%s\"용 메뉴"
 
-#: src/file-manager/fm-properties-window.c:592
-msgid "Type:"
-msgstr "형식:"
+#: libnautilus-extensions/nautilus-program-chooser.c:351
+#, c-format
+msgid "Is not in the menu for \"%s\"."
+msgstr "\"%s\"용 메뉴가 아님"
 
-#: src/file-manager/fm-properties-window.c:594
-msgid "Size:"
-msgstr "크기:"
+#: libnautilus-extensions/nautilus-program-chooser.c:426
+#, c-format
+msgid "Modify %s"
+msgstr "%s 수정"
 
-#: src/file-manager/fm-properties-window.c:596
-msgid "Date Modified:"
-msgstr "변경일:"
+#: libnautilus-extensions/nautilus-program-chooser.c:522
+msgid "Nautilus: Open with Other"
+msgstr "노틸러스: 다른 프로그램으로 열기"
 
-#: src/file-manager/fm-properties-window.c:721
-msgid "Emblems"
-msgstr "무늬"
+#: libnautilus-extensions/nautilus-program-chooser.c:523
+#, c-format
+msgid "Choose an application with which to open \"%s\"."
+msgstr "선택한 항목을 열 다른 프로그램을 선택합니다"
 
-#: src/file-manager/fm-properties-window.c:1004
-msgid "Permissions"
-msgstr "허가권"
+#: libnautilus-extensions/nautilus-program-chooser.c:527
+msgid "Nautilus: View as Other"
+msgstr "노틸러스: 다른 프로그램으로 보기"
 
-#: src/file-manager/fm-properties-window.c:1010
-msgid "You are not the owner, so you can't change these permissions."
+#: libnautilus-extensions/nautilus-program-chooser.c:528
+#, c-format
+msgid "Choose a view for \"%s\"."
+msgstr "\"%s\"를 보기위한 프로그램 선택"
+
+#: libnautilus-extensions/nautilus-program-chooser.c:535
+msgid "Choose"
+msgstr "선택"
+
+#: libnautilus-extensions/nautilus-program-chooser.c:591
+msgid "Modify..."
+msgstr "수정..."
+
+#: libnautilus/nautilus-clipboard.c:117
+msgid "_Cut"
+msgstr "자르기(_C)"
+
+#: libnautilus/nautilus-clipboard.c:118
+msgid "Remove selected text from selection"
+msgstr "선택한 문자를 제거합니다"
+
+#: libnautilus/nautilus-clipboard.c:122
+msgid "_Copy"
+msgstr "복사(_C)"
+
+#: libnautilus/nautilus-clipboard.c:123
+msgid "Copy selected text to the clipboard"
+msgstr "클립보드로 선택한 문자를 복사합니다"
+
+#: libnautilus/nautilus-clipboard.c:127
+msgid "_Paste"
+msgstr "붙이기(_P)"
+
+#: libnautilus/nautilus-clipboard.c:128
+msgid "Paste text from clipboard into text box"
+msgstr "클립보드에서 문자상자로 문자를 붙입니다"
+
+#: libnautilus/nautilus-clipboard.c:132
+msgid "_Clear"
+msgstr "비우기(_C)"
+
+#: libnautilus/nautilus-clipboard.c:133
+msgid "Clear the current selection"
+msgstr "현재 선택을 비웁니다"
+
+#: src/file-manager/fm-error-reporting.c:57
+#, c-format
+msgid ""
+"The name \"%s\" is already used in this directory.\n"
+"Please use a different name."
+msgstr ""
+"\"%s\"라는 이름은 이미 이 디렉토리에서 사용되고 있습니다.\n"
+"다른 이름을 사용하십시오."
+
+#: src/file-manager/fm-error-reporting.c:62
+#, fuzzy, c-format
+msgid "You do not have the permissions necessary to rename \"%s.\""
+msgstr "\"%s\"를 보기위한 퍼미션을 가지지 않았습니다."
+
+#: src/file-manager/fm-error-reporting.c:70
+#, c-format
+msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
+msgstr "\"%s\"를 \"%s\"로 바꾸지 못합니다."
+
+#: src/file-manager/fm-error-reporting.c:93
+#, fuzzy, c-format
+msgid "Sorry, couldn't change the permissions of \"%s\"."
 msgstr "당신은 이파일의 소유주가 아니기 때문에 허가권을 변경할수 없습니다."
 
-#: src/file-manager/fm-properties-window.c:1041
-#, c-format
-msgid "owner (%s):"
-msgstr "소유주 권한 (%s):"
+#: src/nautilus-application.c:276
+msgid "Nautilus: caveat"
+msgstr "노틸러스: 경고"
 
-#: src/file-manager/fm-properties-window.c:1044
-#, c-format
-msgid "group (%s):"
-msgstr "그룹 권한 (%s):"
-
-#: src/file-manager/fm-properties-window.c:1047
-msgid "others:"
-msgstr "다른 사용자 권한:"
-
-#: src/file-manager/fm-properties-window.c:1051
-msgid "standard format:"
-msgstr "표준 형식:"
-
-#: src/file-manager/fm-properties-window.c:1055
-msgid "read"
-msgstr "읽기"
-
-#: src/file-manager/fm-properties-window.c:1059
-msgid "write"
-msgstr "쓰기"
-
-#: src/file-manager/fm-properties-window.c:1063
-msgid "execute"
-msgstr "실행"
-
-#: src/file-manager/fm-properties-window.c:1117
-#, c-format
-msgid "The permissions of \"%s\" could not be determined."
-msgstr "\"%s\"의 허가권을 바꿀수 없습니다."
-
-#: src/file-manager/fm-properties-window.c:1131
-msgid "More"
-msgstr "기타"
-
-#: src/file-manager/fm-properties-window.c:1137
-msgid "MIME type:"
-msgstr "MIME 형식:"
-
-#: src/file-manager/fm-properties-window.c:1141
-msgid "Tell sullivan@eazel.com all your good ideas for what should go here."
-msgstr "여기에 들어갈 좋은 생각이 있으면 sullivan@eazel.com에게 연락주십시오."
-
-#: nautilus-widgets/nautilus-preferences-dialog.c:201
-msgid "Prefs Box"
-msgstr "설정 상자"
-
-#. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1242
-msgid "today %-I:%M %p"
-msgstr "오늘 %p %-I:%M "
-
-#. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1245
-msgid "yesterday %-I:%M %p"
-msgstr "어제 %p %-I:%M"
-
-#. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1248
-msgid "%A %-m/%-d/%y %-I:%M %p"
-msgstr "%y/%-2m/%-2d %A %p %-I:%M"
-
-#: libnautilus-extensions/nautilus-file.c:1250
-msgid "%-m/%-d/%y %-I:%M %p"
-msgstr "%y/%-2m/%-2d %p %-I:%M"
-
-#: libnautilus-extensions/nautilus-file.c:1493
-msgid "unknown owner"
-msgstr "알수없는 소유주"
-
-#: libnautilus-extensions/nautilus-file.c:1524
-msgid "unknown group"
-msgstr "알수없는 그룹"
-
-#: libnautilus-extensions/nautilus-file.c:1553
-msgid "unknown MIME type"
-msgstr "알수없는 MIME 형태"
-
-#: libnautilus-extensions/nautilus-file.c:1577
-msgid "xxx"
-msgstr "xxx"
-
-#: libnautilus-extensions/nautilus-file.c:1577
-msgid "--"
-msgstr "--"
-
-#: libnautilus-extensions/nautilus-file.c:1580
-msgid "0 items"
-msgstr "0 항목"
-
-#: libnautilus-extensions/nautilus-file.c:1583
-msgid "1 item"
-msgstr "1 항목"
-
-#: libnautilus-extensions/nautilus-file.c:1585
-#, c-format
-msgid "%u items"
-msgstr "%u 항목"
-
-#: libnautilus-extensions/nautilus-file.c:1694
-msgid "program"
-msgstr "프로그램"
-
-#: libnautilus-extensions/nautilus-file.c:1697
-msgid "unknown type"
-msgstr "알수없는 형태"
-
-#: libnautilus-extensions/nautilus-file.c:1974
-msgid " --"
+#: src/nautilus-application.c:301
+msgid ""
+"The Nautilus shell is under development; it's not ready for daily use. Many "
+"features, including some of the best ones, are not yet done, partly done, or "
+"unstable. The program doesn't look or act the way it will in version 1.0.\n"
+"\n"
+"If you do decide to test this version of Nautilus, beware. The program could "
+"do something unpredictable and may even delete or overwrite files on your "
+"computer.\n"
+"\n"
+"For more information, visit http://nautilus.eazel.com."
 msgstr ""
+"노틸러스 쉘은 개발중입니다; 이것은 일상적으로 사용할수 없습니다. 몇몇 최고의 "
+"포함하여, 많은 기능들이 완전히 작동하지 않고, 부분적으로만 동작하거나 불안합"
+"니다. 이 프로그램은 버젼 1.0의 모습이나 작동을 하지는 않습니다. "
+"\n"
+"이 버젼의 노틸러스를 시험해보려면, 주의하여야 합니다. 프로그램은 예측할수 없"
+"는 작동을 할수 있고 컴퓨터의 파일을 지우거나 덮어쓸수도 있습니다. \n"
+"\n"
+"더 많은 정보를 알고 싶으면 http://nautilus.eazel.com. 에 방문하십시오."
 
-#: libnautilus/nautilus-meta-view-frame.c:144
-msgid "Label"
-msgstr "이름표"
+#. set the title
+#: src/nautilus-property-browser.c:179
+msgid "Nautilus Property Browser"
+msgstr "노틸러스 설정"
+
+#. add the title label
+#: src/nautilus-property-browser.c:225 src/nautilus-property-browser.c:1458
+msgid "Select A Category:"
+msgstr "카테고리 선택:"
+
+#: src/nautilus-property-browser.c:235
+msgid "Add new..."
+msgstr "추가..."
+
+#: src/nautilus-property-browser.c:246
+msgid "Remove..."
+msgstr "지우기..."
+
+#: src/nautilus-property-browser.c:671 src/nautilus-property-browser.c:764
+#, c-format
+msgid "Sorry, but '%s' is not an image file!"
+msgstr "'%s' 는 그림 파일이 아닙니다!"
+
+#: src/nautilus-property-browser.c:698
+msgid "Create a New Emblem:"
+msgstr "새 표시를 만듭니다"
+
+#. make the keyword label and field
+#: src/nautilus-property-browser.c:703
+msgid "Keyword:"
+msgstr "키워드:"
+
+#. set up a gnome file entry to pick the image file
+#: src/nautilus-property-browser.c:720
+msgid "Select an image file for the new emblem:"
+msgstr "새 표시로 사용할 그림 파일 선택:"
+
+#: src/nautilus-property-browser.c:819
+msgid "Select an image file to add as a background:"
+msgstr "배경으로 사용할 그림파일 선택:"
+
+#: src/nautilus-property-browser.c:913
+msgid "Select a color to add:"
+msgstr "추가할 색상 선택:"
+
+#: src/nautilus-property-browser.c:1467
+msgid "Cancel Remove"
+msgstr "지우기 취소"
+
+#: src/nautilus-property-browser.c:1469
+#, c-format
+msgid "Add a new %s"
+msgstr "새 %s 추가"
+
+#. strip trailing s
+#: src/nautilus-property-browser.c:1486
+#, c-format
+msgid "Click on a %s to remove it"
+msgstr "그것을 지울려면 %s를 클릭하십시오"
+
+#: src/nautilus-property-browser.c:1490
+#, c-format
+msgid "Categories: %s"
+msgstr "카테고리: %s"
+
+#: src/nautilus-property-browser.c:1499
+#, c-format
+msgid "Remove a %s"
+msgstr "%s 지우기"
+
+#: src/nautilus-sidebar.c:778
+#, c-format
+msgid "Open with %s"
+msgstr "%s 로 열기"
+
+#. Catch-all button after all the others.
+#: src/nautilus-sidebar.c:801
+msgid "Open with..."
+msgstr "열기"
 
 #. * From 'man(7)':
 #.
@@ -1154,14 +463,6 @@ msgstr " (참조 \""
 msgid " (see also \""
 msgstr " (참조 \""
 
-#: components/help/hyperbola-nav-index.c:721
-msgid "Help Index"
-msgstr "도움말 색인"
-
-#: components/history/ntl-history-view.c:247
-msgid "History"
-msgstr "기록"
-
 #: components/html/gnome-dialogs.c:87
 msgid "Transfer Progress"
 msgstr "전송 진행"
@@ -1248,34 +549,67 @@ msgstr "문자를 입력하세요"
 msgid "Enter Password"
 msgstr "암호를 입력하세요"
 
-#: components/music/nautilus-music-view.c:166
+#: components/music/nautilus-music-view.c:197
 msgid "Track "
 msgstr "트랙"
 
-#: components/music/nautilus-music-view.c:166
+#: components/music/nautilus-music-view.c:197
 msgid "Title"
 msgstr "제목"
 
-#: components/music/nautilus-music-view.c:166
+#: components/music/nautilus-music-view.c:197
 msgid "Artist"
 msgstr "가수"
 
-#: components/music/nautilus-music-view.c:166
+#: components/music/nautilus-music-view.c:197
+msgid "Year"
+msgstr "년도"
+
+#: components/music/nautilus-music-view.c:197
 msgid "Bitrate "
 msgstr "비트율 "
 
-#: components/music/nautilus-music-view.c:166
+#: components/music/nautilus-music-view.c:197
 msgid "Time "
 msgstr "시간 "
 
+#: components/music/nautilus-music-view.c:197
+msgid "Album"
+msgstr "앨범"
+
+#: components/music/nautilus-music-view.c:197
+msgid "Comment"
+msgstr "설명"
+
 #. allocate a widget for the album title
-#: components/music/nautilus-music-view.c:188
+#: components/music/nautilus-music-view.c:221
 msgid "Album Title"
 msgstr "앨범 제목"
 
-#: components/notes/ntl-notes.c:180 components/notes/ntl-notes.c:189
-msgid "Notes"
-msgstr "노트"
+#: components/music/nautilus-music-view.c:1115
+msgid "Song Title"
+msgstr "노래 제목"
+
+#: components/music/nautilus-music-view.c:1167
+msgid "Previous"
+msgstr "이전"
+
+#: components/music/nautilus-music-view.c:1179
+msgid "Play"
+msgstr "연주"
+
+#: components/music/nautilus-music-view.c:1191
+msgid "Pause"
+msgstr "중지"
+
+#: components/music/nautilus-music-view.c:1203
+#: src/file-manager/dfos-xfer.c:219 src/nautilus-window-toolbars.c:95
+msgid "Stop"
+msgstr "중지"
+
+#: components/music/nautilus-music-view.c:1215
+msgid "Next"
+msgstr "다음"
 
 #: components/rpmview/nautilus-rpm-view.c:138
 msgid "Package Contents"
@@ -1354,7 +688,7 @@ msgstr "버젼 %s-%s"
 msgid "Package Contents: %d files"
 msgstr "꾸러미 내용: %d 파일"
 
-#: components/sample/nautilus-sample-content-view.c:142
+#: components/sample/nautilus-sample-content-view.c:140
 #, c-format
 msgid ""
 "%s\n"
@@ -1365,7 +699,7 @@ msgstr ""
 "\n"
 "이것은 노틸러스 항목 보기 컴포넌트 예제 입니다."
 
-#: components/sample/nautilus-sample-content-view.c:203
+#: components/sample/nautilus-sample-content-view.c:201
 #, c-format
 msgid ""
 "%s\n"
@@ -1378,23 +712,23 @@ msgstr ""
 
 #. BonoboUIHandler
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
-#: components/sample/nautilus-sample-content-view.c:244
+#: components/sample/nautilus-sample-content-view.c:242
 msgid "_Sample"
 msgstr "예제(_S)"
 
 #. menu item user-displayed label
-#: components/sample/nautilus-sample-content-view.c:245
+#: components/sample/nautilus-sample-content-view.c:243
 msgid "This is a sample merged menu item"
 msgstr "이것은 예제로 합쳐진 메뉴 항목입니다"
 
 #. BonoboUIHandler
 #. button path, must start with /some-existing-toolbar-path and be otherwise unique
-#: components/sample/nautilus-sample-content-view.c:264
+#: components/sample/nautilus-sample-content-view.c:262
 msgid "Sample"
 msgstr "예제"
 
 #. button user-displayed label
-#: components/sample/nautilus-sample-content-view.c:265
+#: components/sample/nautilus-sample-content-view.c:263
 msgid "This is a sample merged toolbar button"
 msgstr "이것은 예제로 합쳐진 도구막대 단추입니다"
 
@@ -1404,12 +738,1061 @@ msgstr "검색"
 
 #. For now we just display the results as HTML
 #. Results list
-#: components/websearch/ntl-web-search.c:196
+#: components/websearch/ntl-web-search.c:197
 msgid "Results"
 msgstr "검색 결과"
 
-#: components/websearch/ntl-web-search.c:228
-#: components/websearch/ntl-web-search.c:237
-msgid "WebSearch"
-msgstr "웹 검색"
+#. today, use special word
+#: libnautilus-extensions/nautilus-file.c:1263
+msgid "today %-I:%M %p"
+msgstr "오늘 %p %-I:%M "
+
+#. yesterday, use special word
+#: libnautilus-extensions/nautilus-file.c:1266
+msgid "yesterday %-I:%M %p"
+msgstr "어제 %p %-I:%M"
+
+#. current week, include day of week
+#: libnautilus-extensions/nautilus-file.c:1269
+msgid "%A %-m/%-d/%y %-I:%M %p"
+msgstr "%y/%-2m/%-2d %A %p %-I:%M"
+
+#: libnautilus-extensions/nautilus-file.c:1271
+msgid "%-m/%-d/%y %-I:%M %p"
+msgstr "%y/%-2m/%-2d %p %-I:%M"
+
+#: libnautilus-extensions/nautilus-file.c:1519
+msgid "unknown owner"
+msgstr "알수없는 소유주"
+
+#: libnautilus-extensions/nautilus-file.c:1550
+msgid "unknown group"
+msgstr "알수없는 그룹"
+
+#: libnautilus-extensions/nautilus-file.c:1579
+msgid "unknown MIME type"
+msgstr "알수없는 MIME 형태"
+
+#: libnautilus-extensions/nautilus-file.c:1603
+msgid "xxx"
+msgstr "xxx"
+
+#: libnautilus-extensions/nautilus-file.c:1603
+msgid "--"
+msgstr "--"
+
+#: libnautilus-extensions/nautilus-file.c:1606
+msgid "0 items"
+msgstr "0 항목"
+
+#: libnautilus-extensions/nautilus-file.c:1609
+msgid "1 item"
+msgstr "1 항목"
+
+#: libnautilus-extensions/nautilus-file.c:1611
+#, c-format
+msgid "%u items"
+msgstr "%u 항목"
+
+#: libnautilus-extensions/nautilus-file.c:1720
+msgid "program"
+msgstr "프로그램"
+
+#: libnautilus-extensions/nautilus-file.c:1723
+msgid "unknown type"
+msgstr "알수없는 형태"
+
+#: libnautilus-extensions/nautilus-file.c:2019
+msgid " --"
+msgstr ""
+
+#: nautilus-widgets/nautilus-preferences-dialog.c:201
+msgid "Prefs Box"
+msgstr "설정 상자"
+
+#: src/file-manager/dfos-corba.c:112
+#, c-format
+msgid "Unknown XferOverwriteMode %d"
+msgstr ""
+
+#: src/file-manager/dfos-corba.c:126
+#, c-format
+msgid "Unknown XferErrorMode %d"
+msgstr ""
+
+#: src/file-manager/dfos-xfer.c:165
+msgid "From:"
+msgstr ""
+
+#: src/file-manager/dfos-xfer.c:169
+msgid "To:"
+msgstr ""
+
+#. transfer error, prompt the user to continue or stop
+#: src/file-manager/dfos-xfer.c:212
+#, c-format
+msgid ""
+"Error %s copying file %s.\n"
+"Would you like to continue?"
+msgstr ""
+"%2$s 파일을 복사하는중 %1$s 오류. \n"
+"계속 진행 하겠습니까?"
+
+#: src/file-manager/dfos-xfer.c:218
+msgid "File copy error"
+msgstr "파일 복사 오류"
+
+#: src/file-manager/dfos-xfer.c:219 src/file-manager/dfos-xfer.c:262
+#: src/file-manager/dfos-xfer.c:273
+msgid "Skip"
+msgstr "건너뜀"
+
+#: src/file-manager/dfos-xfer.c:219
+msgid "Retry"
+msgstr "재시도"
+
+#: src/file-manager/dfos-xfer.c:251
+#, c-format
+msgid ""
+"File %s already exists.\n"
+"Would you like to replace it?"
+msgstr ""
+"%s 파일이 이미 존재합니다. \n"
+"파일을 바꾸시겠습니까?"
+
+#: src/file-manager/dfos-xfer.c:261 src/file-manager/dfos-xfer.c:272
+msgid "File copy conflict"
+msgstr "파일 복사 충돌"
+
+#: src/file-manager/dfos-xfer.c:262 src/file-manager/dfos-xfer.c:273
+msgid "Replace"
+msgstr "바꾸기"
+
+#: src/file-manager/dfos-xfer.c:273
+msgid "Replace All"
+msgstr "모두 바꾸기"
+
+#: src/file-manager/dfos-xfer.c:327 src/file-manager/dfos-xfer.c:608
+#, c-format
+msgid "Unknown GnomeVFSXferProgressStatus %d"
+msgstr ""
+
+#: src/file-manager/dfos-xfer.c:393
+#, c-format
+msgid ""
+"The transfer between\n"
+"%s\n"
+"and\n"
+"%s\n"
+"could not be started:\n"
+"%s"
+msgstr ""
+"%s\n"
+"와\n"
+"%s\n"
+"사이의 전송이시작될수 없습니다:\n"
+"%s"
+
+#: src/file-manager/dfos-xfer.c:483
+msgid "Moving"
+msgstr "이동중"
+
+#: src/file-manager/dfos-xfer.c:484
+msgid "Preparing To Move..."
+msgstr "이동 준비중"
+
+#: src/file-manager/dfos-xfer.c:491
+msgid "Copying"
+msgstr "복사중"
+
+#: src/file-manager/dfos-xfer.c:492
+msgid "Preparing To Copy..."
+msgstr "복사 준비중"
+
+#: src/file-manager/dfos-xfer.c:508
+msgid "You cannot copy items into the Trash."
+msgstr "선택한 항목을 쓰레기통으로 복사할수 없습니다."
+
+#: src/file-manager/dfos-xfer.c:509
+msgid "Error copying"
+msgstr "복사중 오류"
+
+#: src/file-manager/dfos-xfer.c:510 src/file-manager/dfos-xfer.c:529
+#: src/file-manager/dfos-xfer.c:544 src/file-manager/dfos-xfer.c:673
+#: src/file-manager/dfos-xfer.c:682
+msgid "OK"
+msgstr "확인"
+
+#: src/file-manager/dfos-xfer.c:526
+msgid "You cannot move the Trash."
+msgstr "쓰레기통으로 이동할수 없습니다."
+
+#: src/file-manager/dfos-xfer.c:527
+msgid "You cannot copy the Trash."
+msgstr "쓰레기통으로 복사할수 없습니다."
+
+#: src/file-manager/dfos-xfer.c:528 src/file-manager/dfos-xfer.c:543
+#: src/file-manager/dfos-xfer.c:672 src/file-manager/dfos-xfer.c:681
+msgid "Error moving to Trash"
+msgstr "쓰레기통 이동중 오류"
+
+#: src/file-manager/dfos-xfer.c:541
+msgid "You cannot move an item into itself."
+msgstr "항목을 그 자신에게 옮길수 없습니다."
+
+#: src/file-manager/dfos-xfer.c:542
+msgid "You cannot copy an item into itself."
+msgstr "항목을 그 자신에게 복사할수 없습니다."
+
+#: src/file-manager/dfos-xfer.c:671
+msgid "You cannot throw away the Trash."
+msgstr "쓰레기통에 버릴수 없습니다."
+
+#: src/file-manager/dfos-xfer.c:677
+#, c-format
+msgid "You cannot throw \"%s\" into the Trash."
+msgstr "\"%s\"를 쓰레기통에 버릴수 없습니다."
+
+#: src/file-manager/dfos-xfer.c:709
+msgid "Moving to Trash"
+msgstr "쓰레기통 이동중"
+
+#: src/file-manager/dfos-xfer.c:710
+msgid "Preparing to Move to Trash..."
+msgstr "쓰레기통으로 이동 준비중"
+
+#: src/file-manager/dfos-xfer.c:749
+msgid "Deleting"
+msgstr "지우는중"
+
+#: src/file-manager/dfos-xfer.c:750
+msgid "Preparing to Delete..."
+msgstr "지울 준비중"
+
+#: src/file-manager/dfos-xfer.c:794
+msgid "Emptying the Trash"
+msgstr "쓰레기통 비우는중"
+
+#: src/file-manager/dfos-xfer.c:795
+msgid "Preparing to Empty the Trash..."
+msgstr "쓰레기통 비우기 준비중"
+
+#: src/file-manager/fm-directory-view.c:671
+#, c-format
+msgid "\"%s\" selected"
+msgstr "\"%s\" 선택됨"
+
+#: src/file-manager/fm-directory-view.c:673
+msgid "1 directory selected"
+msgstr "1 디렉토리 선택됨"
+
+#: src/file-manager/fm-directory-view.c:676
+#, c-format
+msgid "%d directories selected"
+msgstr "%d 디렉토리 선택됨"
+
+#: src/file-manager/fm-directory-view.c:682
+msgid " (containing 0 items)"
+msgstr " (0 항목 포함)"
+
+#: src/file-manager/fm-directory-view.c:684
+msgid " (containing 1 item)"
+msgstr " (1 항목 포함)"
+
+#: src/file-manager/fm-directory-view.c:686
+#, c-format
+msgid " (containing %d items)"
+msgstr " (%d 항목 포함)"
+
+#: src/file-manager/fm-directory-view.c:697
+#, c-format
+msgid "\"%s\" selected (%s)"
+msgstr "\"%s\" 선택됨 (%s)"
+
+#: src/file-manager/fm-directory-view.c:701
+#, c-format
+msgid "%d items selected (%s)"
+msgstr "%d 항목 선택됨 (%s)"
+
+#: src/file-manager/fm-directory-view.c:708
+#, c-format
+msgid "1 other item selected (%s)"
+msgstr "1 다른 항목 선택됨 (%s)"
+
+#: src/file-manager/fm-directory-view.c:711
+#, c-format
+msgid "%d other items selected (%s)"
+msgstr "%d 다른 항목 선택됨 (%s)"
+
+#: src/file-manager/fm-directory-view.c:725
+#, c-format
+msgid "%s%s"
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:729
+#, c-format
+msgid "%s%s, %s"
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:1419
+#, c-format
+msgid "Are you sure you want to permanently remove item \"%s\"?"
+msgstr "\"%s\"항목을 완전히 지우시겠습니까?"
+
+#: src/file-manager/fm-directory-view.c:1424
+#, fuzzy, c-format
+msgid "Are you sure you want to permanently remove the %d selected items?"
+msgstr "선택한 %d 항목을 완전히 지우시겠습니까?"
+
+#: src/file-manager/fm-directory-view.c:1428
+msgid "Deleting items"
+msgstr "항목 지우는중"
+
+#: src/file-manager/fm-directory-view.c:1429
+msgid "Delete"
+msgstr "지움"
+
+#: src/file-manager/fm-directory-view.c:1429
+msgid "Cancel"
+msgstr "취소"
+
+#: src/file-manager/fm-directory-view.c:1669
+msgid "_Open"
+msgstr "열기(_O)"
+
+#: src/file-manager/fm-directory-view.c:1672
+msgid "Open With"
+msgstr "열기"
+
+#: src/file-manager/fm-directory-view.c:1675
+msgid "Other Application..."
+msgstr "다른 프로그램"
+
+#: src/file-manager/fm-directory-view.c:1677
+msgid "Other Viewer..."
+msgstr "다른 보기 프로그램..."
+
+#: src/file-manager/fm-directory-view.c:1681
+msgid "Open in _New Window"
+msgstr "새창으로 열기(_N)"
+
+#: src/file-manager/fm-directory-view.c:1683
+#, c-format
+msgid "Open in %d _New Windows"
+msgstr "%d개의 항목을 새창으로 열기"
+
+#: src/file-manager/fm-directory-view.c:1687
+msgid "New Folder"
+msgstr "새 폴더"
+
+#: src/file-manager/fm-directory-view.c:1689
+msgid "_Delete..."
+msgstr "지움(_D)"
+
+#: src/file-manager/fm-directory-view.c:1692
+msgid "_Move to Trash"
+msgstr "쓰레기통으로 이동(_M)"
+
+#: src/file-manager/fm-directory-view.c:1695
+msgid "_Duplicate"
+msgstr "복사(_D)"
+
+#: src/file-manager/fm-directory-view.c:1698
+msgid "Show _Properties"
+msgstr "속성 보기(_P)"
+
+#: src/file-manager/fm-directory-view.c:1701
+msgid "_Empty Trash"
+msgstr "쓰레기통 비우기(_E)"
+
+#: src/file-manager/fm-directory-view.c:1705 src/nautilus-window-menus.c:742
+msgid "_Select All"
+msgstr "전체 선택(_S)"
+
+#: src/file-manager/fm-directory-view.c:1709
+msgid "R_emove Custom Images"
+msgstr "설정한 이미지 제거(_e)"
+
+#: src/file-manager/fm-directory-view.c:1711
+msgid "R_emove Custom Image"
+msgstr "설정한 이미지 제거(_e)"
+
+#. FIXME: Need to think clearly about what items to include here.
+#. * We want the list to be pretty short, but not degenerately short.
+#. * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
+#. * (for the current location, not selection -- but would have to not
+#. * include this item when there's a selection)? Add Bookmark? (same issue).
+#.
+#: src/file-manager/fm-directory-view.c:1811
+msgid "Zoom In"
+msgstr "확대"
+
+#: src/file-manager/fm-directory-view.c:1813
+msgid "Zoom Out"
+msgstr "축소"
+
+#: src/file-manager/fm-directory-view.c:2229
+msgid "Move all selected items to the Trash"
+msgstr "선택한 항목을 모두 쓰레기통으로 이동합니다"
+
+#: src/file-manager/fm-directory-view.c:2237
+msgid "Delete all selected items"
+msgstr "선택한 항목을 모두 지웁니다"
+
+#: src/file-manager/fm-directory-view.c:2259
+msgid "Choose a program with which to open the selected item"
+msgstr "선택한 항목을 열 프로그램을 선택합니다"
+
+#: src/file-manager/fm-directory-view.c:2278
+msgid "Choose another application with which to open the selected item"
+msgstr "선택한 항목을 열 다른 프로그램을 선택합니다"
+
+#: src/file-manager/fm-directory-view.c:2299
+msgid "Choose another viewer with which to view the selected item"
+msgstr "선택한 항목을 볼 다른 보기 프로그램을 선택합니다"
+
+#: src/file-manager/fm-directory-view.c:2320
+msgid "Create a new folder in this window"
+msgstr "현재 창에서 새 폴더를 만듭니다 "
+
+#: src/file-manager/fm-directory-view.c:2327
+msgid "Open the selected item in this window"
+msgstr "선택한 항목을 이 창에서 엽니다"
+
+#: src/file-manager/fm-directory-view.c:2334
+msgid "Open each selected item in a new window"
+msgstr "각각 선택한 항목을 새창에서 엽니다"
+
+#: src/file-manager/fm-directory-view.c:2348
+msgid "View or modify the properties of the selected items"
+msgstr "선택한 항목의 설정을 보거나 고칩니다"
+
+#: src/file-manager/fm-directory-view.c:2358
+msgid "Duplicate all selected items"
+msgstr "선택한 항목을 모두 복사합니다"
+
+#: src/file-manager/fm-directory-view.c:2365
+msgid "Delete all items in the trash"
+msgstr "쓰레기통에 있는 모든항목을 지웁니다"
+
+#: src/file-manager/fm-directory-view.c:2372
+msgid "Select all items in this window"
+msgstr "이 창에 있는 모든 항목을 선택합니다"
+
+#: src/file-manager/fm-directory-view.c:2385
+msgid "Remove the custom image from each selected icon"
+msgstr "각각 선택한 아이콘의 설정한 이미지를 제거합니다"
+
+#: src/file-manager/fm-icon-text-window.c:72
+msgid "size"
+msgstr "크기"
+
+#: src/file-manager/fm-icon-text-window.c:73
+msgid "type"
+msgstr "형식"
+
+#: src/file-manager/fm-icon-text-window.c:74
+msgid "date modified"
+msgstr "수정 시간"
+
+#: src/file-manager/fm-icon-text-window.c:75
+msgid "date changed"
+msgstr "변경 시간"
+
+#: src/file-manager/fm-icon-text-window.c:76
+msgid "date accessed"
+msgstr "접근 날짜"
+
+#: src/file-manager/fm-icon-text-window.c:77
+msgid "owner"
+msgstr "소유주"
+
+#: src/file-manager/fm-icon-text-window.c:78
+msgid "group"
+msgstr "그룹"
+
+#: src/file-manager/fm-icon-text-window.c:79
+msgid "permissions"
+msgstr "허가권"
+
+#: src/file-manager/fm-icon-text-window.c:80
+msgid "MIME type"
+msgstr "MIME 형식"
+
+#: src/file-manager/fm-icon-text-window.c:250
+msgid "Nautilus: Icon Text"
+msgstr "노틸러스: 아이콘 설명"
+
+#: src/file-manager/fm-icon-text-window.c:257
+msgid ""
+"Choose the order for information to appear beneath icon names. More "
+"information appears as you zoom in closer."
+msgstr ""
+"아이콘 이름밑에 나타낼 정보의 순서를 선택합니다. 크게 확대할수록 많은 정보가 "
+"나타날것 입니다."
+
+#: src/file-manager/fm-icon-view.c:104
+msgid "Sort by _Name"
+msgstr "이름순 정렬(_N)"
+
+#: src/file-manager/fm-icon-view.c:105
+msgid "Keep icons sorted by name in rows"
+msgstr "이름순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:111
+msgid "Sort by _Size"
+msgstr "크기순 정렬(_S)"
+
+#: src/file-manager/fm-icon-view.c:112
+msgid "Keep icons sorted by size in rows"
+msgstr "크기순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:118
+msgid "Sort by _Type"
+msgstr "형식순 정렬(_T)"
+
+#: src/file-manager/fm-icon-view.c:119
+msgid "Keep icons sorted by type in rows"
+msgstr "파일형식순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:125
+msgid "Sort by Modification _Date"
+msgstr "변경날짜순 정렬(_D)"
+
+#: src/file-manager/fm-icon-view.c:126
+msgid "Keep icons sorted by modification date in rows"
+msgstr "변경날짜순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:132
+msgid "Sort by _Emblems"
+msgstr "표시순 정렬(_E)"
+
+#: src/file-manager/fm-icon-view.c:133
+msgid "Keep icons sorted by emblems in rows"
+msgstr "표시순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:309
+msgid "_Stretch Icon"
+msgstr "아이콘 확장(_R)"
+
+#: src/file-manager/fm-icon-view.c:317
+msgid "_Restore Icons to Unstretched Size"
+msgstr "확장하지 않은 아이콘으로 저장(_R)"
+
+#: src/file-manager/fm-icon-view.c:319
+msgid "_Restore Icon to Unstretched Size"
+msgstr "확장하지 않은 아이콘으로 저장(_R)"
+
+#: src/file-manager/fm-icon-view.c:323
+msgid "Customize _Icon Text..."
+msgstr "아이콘 설명 설정"
+
+#. Modify file name. We only allow this on a single file selection.
+#: src/file-manager/fm-icon-view.c:327
+msgid "_Rename"
+msgstr "이름 바꾸기(_R)"
+
+#: src/file-manager/fm-icon-view.c:933
+msgid "Make the selected icon stretchable"
+msgstr "선택한 아이콘을 확장합니다"
+
+#: src/file-manager/fm-icon-view.c:938
+msgid "Restore each selected icon to its original size"
+msgstr "각각 선택한 아이콘은 원래 크기로 저장합니다"
+
+#: src/file-manager/fm-icon-view.c:947
+msgid "Choose which information appears beneath each icon's name"
+msgstr "각각 아이콘의 이름 바로밑에 나타낼 정보를 선택합니다"
+
+#: src/file-manager/fm-icon-view.c:960
+msgid "_Layout"
+msgstr "배치(_L)"
+
+#: src/file-manager/fm-icon-view.c:968
+msgid "_Manual Layout"
+msgstr "수동 배치(_M)"
+
+#: src/file-manager/fm-icon-view.c:969
+msgid "Leave icons wherever they are dropped"
+msgstr "아이콘의 위치를 그대로 둡니다"
+
+#: src/file-manager/fm-icon-view.c:990
+msgid "_Ascending"
+msgstr "오름차순(_A)"
+
+#: src/file-manager/fm-icon-view.c:991
+msgid "Sort icons from \"smallest\" to \"largest\" according to sort criteria"
+msgstr "정렬 기준을 \"작은것\"부터 \"큰것\"으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:997
+msgid "Des_cending"
+msgstr "내림차순(_c)"
+
+#: src/file-manager/fm-icon-view.c:998
+msgid "Sort icons from \"largest\" to \"smallest\" according to sort criteria"
+msgstr "정렬 기준을 \"큰것\"부터 \"작은것\"으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:1014
+msgid "Rename selected item"
+msgstr "선택한 항목의 이름을 바꿉니다"
+
+#. Icon
+#. Emblems
+#: src/file-manager/fm-list-view.c:556 src/nautilus-bookmarks-window.c:166
+msgid "Name"
+msgstr "이름"
+
+#: src/file-manager/fm-list-view.c:557
+msgid "Size"
+msgstr "크기"
+
+#: src/file-manager/fm-list-view.c:558
+msgid "Type"
+msgstr "형식"
+
+#: src/file-manager/fm-list-view.c:559
+msgid "Date Modified"
+msgstr "변경 날짜"
+
+#: src/file-manager/fm-properties-window.c:370
+#, c-format
+msgid "Nautilus: %s Properties"
+msgstr "노틸러스: %s 속성"
+
+#: src/file-manager/fm-properties-window.c:529
+msgid "Basic"
+msgstr "기본"
+
+#: src/file-manager/fm-properties-window.c:589 src/nautilus-location-bar.c:208
+msgid "Location:"
+msgstr "위치:"
+
+#: src/file-manager/fm-properties-window.c:591
+msgid "Type:"
+msgstr "형식:"
+
+#: src/file-manager/fm-properties-window.c:593
+msgid "Size:"
+msgstr "크기:"
+
+#: src/file-manager/fm-properties-window.c:595
+msgid "Date Modified:"
+msgstr "변경일:"
+
+#: src/file-manager/fm-properties-window.c:720
+msgid "Emblems"
+msgstr "무늬"
+
+#: src/file-manager/fm-properties-window.c:1003
+msgid "Permissions"
+msgstr "허가권"
+
+#: src/file-manager/fm-properties-window.c:1009
+msgid "You are not the owner, so you can't change these permissions."
+msgstr "당신은 이파일의 소유주가 아니기 때문에 허가권을 변경할수 없습니다."
+
+#: src/file-manager/fm-properties-window.c:1040
+#, c-format
+msgid "owner (%s):"
+msgstr "소유주 권한 (%s):"
+
+#: src/file-manager/fm-properties-window.c:1043
+#, c-format
+msgid "group (%s):"
+msgstr "그룹 권한 (%s):"
+
+#: src/file-manager/fm-properties-window.c:1046
+msgid "others:"
+msgstr "다른 사용자 권한:"
+
+#: src/file-manager/fm-properties-window.c:1050
+msgid "standard format:"
+msgstr "표준 형식:"
+
+#: src/file-manager/fm-properties-window.c:1054
+msgid "read"
+msgstr "읽기"
+
+#: src/file-manager/fm-properties-window.c:1058
+msgid "write"
+msgstr "쓰기"
+
+#: src/file-manager/fm-properties-window.c:1062
+msgid "execute"
+msgstr "실행"
+
+#: src/file-manager/fm-properties-window.c:1116
+#, c-format
+msgid "The permissions of \"%s\" could not be determined."
+msgstr "\"%s\"의 허가권을 바꿀수 없습니다."
+
+#: src/file-manager/fm-properties-window.c:1130
+msgid "More"
+msgstr "기타"
+
+#: src/file-manager/fm-properties-window.c:1136
+msgid "MIME type:"
+msgstr "MIME 형식:"
+
+#: src/file-manager/fm-properties-window.c:1140
+msgid "Tell sullivan@eazel.com all your good ideas for what should go here."
+msgstr "여기에 들어갈 좋은 생각이 있으면 sullivan@eazel.com에게 연락주십시오."
+
+#: src/nautilus-bookmarks-window.c:130
+msgid "Nautilus: Bookmarks"
+msgstr "노틸러스: 책갈피"
+
+#: src/nautilus-bookmarks-window.c:178
+msgid "Location"
+msgstr "위치"
+
+#: src/nautilus-bookmarks-window.c:190
+msgid "Remove"
+msgstr "지우기"
+
+#: src/nautilus-main.c:57
+msgid "Perform high-speed self-check tests."
+msgstr ""
+
+#: src/nautilus-main.c:59
+msgid "Draw background and icons on desktop."
+msgstr ""
+
+#: src/nautilus-window.c:813
+#, c-format
+msgid "View as %s"
+msgstr "%s 로 보기"
+
+#: src/nautilus-window.c:842
+#, fuzzy
+msgid "View as Other..."
+msgstr "보기"
+
+#: src/nautilus-window.c:1140
+msgid "Close"
+msgstr "닫기"
+
+#: src/nautilus-window-manage-views.c:215
+#: src/nautilus-window-manage-views.c:248
+#: src/nautilus-window-manage-views.c:249 src/nautilus-window-menus.c:356
+msgid "Nautilus"
+msgstr "노틸러스"
+
+#: src/nautilus-window-manage-views.c:251
+#, c-format
+msgid "Nautilus: %s"
+msgstr "노틸러스: %s"
+
+#: src/nautilus-window-manage-views.c:641
+#, c-format
+msgid "You do not have the permissions necessary to view \"%s\"."
+msgstr "\"%s\"를 보기위한 퍼미션을 가지지 않았습니다."
+
+#: src/nautilus-window-manage-views.c:1127
+#, c-format
+msgid "Couldn't find \"%s\". Please check the spelling and try again."
+msgstr ""
+"\"%s\" 를 찾을수 없습니다.\n"
+"정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
+
+#: src/nautilus-window-manage-views.c:1131
+#, c-format
+msgid ""
+"\"%s\" is not a valid location. Please check the spelling and try again."
+msgstr ""
+"\"%s\" 는 올바른 위치가 아닙니다.\n"
+"정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
+
+#: src/nautilus-window-manage-views.c:1138
+#, c-format
+msgid ""
+"Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
+msgstr ""
+"\"%s\" 를 표시할수 없습니다.\n"
+"\"%s\"형식의 항목을 처리할수 없습니다."
+
+#: src/nautilus-window-manage-views.c:1142
+#, c-format
+msgid ""
+"Couldn't display \"%s\", because Nautilus cannot handle items of this type."
+msgstr ""
+"\"%s\" 를 표시할수 없습니다.\n"
+"이런 형식의 항목을 처리할수 없습니다."
+
+#. Shouldn't have gotten this error unless there's a : separator.
+#: src/nautilus-window-manage-views.c:1152
+#, c-format
+msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
+msgstr ""
+"\"%s\" 를 표시할수 없습니다.\n"
+"%s: 형식의 위치를 처리할수 없습니다."
+
+#. It is so sad that we can't say anything more useful than this.
+#. * When this comes up, we should figure out what's really happening
+#. * and add another specific case.
+#.
+#: src/nautilus-window-manage-views.c:1162
+#, c-format
+msgid "Nautilus cannot display \"%s\"."
+msgstr "노틸러스가 \"%s\"를 표시할수 없습니다."
+
+#: src/nautilus-window-manage-views.c:1219
+msgid "Gathering information"
+msgstr "정보 수집중"
+
+#: src/nautilus-window-menus.c:360
+msgid "The Gnome Shell"
+msgstr "그놈 쉘"
+
+#: src/nautilus-window-menus.c:412
+msgid "Go to the specified location"
+msgstr "지정한 위치로 갑니다"
+
+#. File menu
+#: src/nautilus-window-menus.c:632
+msgid "_File"
+msgstr "파일(_F)"
+
+#: src/nautilus-window-menus.c:636
+msgid "_New Window"
+msgstr "새 창(_N)"
+
+#: src/nautilus-window-menus.c:637
+msgid "Create a new window"
+msgstr "새창을 만듭니다"
+
+#: src/nautilus-window-menus.c:648
+msgid "_Close Window"
+msgstr "창 닫기(_C)"
+
+#: src/nautilus-window-menus.c:649
+msgid "Close this window"
+msgstr "이 창을 닫습니다"
+
+#: src/nautilus-window-menus.c:662
+msgid "_Exit"
+msgstr "나가기(_E)"
+
+#: src/nautilus-window-menus.c:663
+msgid "Exit from Nautilus"
+msgstr "노틸러스를 종료합니다"
+
+#. Edit menu
+#: src/nautilus-window-menus.c:674
+msgid "_Edit"
+msgstr "편집(_E)"
+
+#: src/nautilus-window-menus.c:678
+msgid "_Undo"
+msgstr "취소(_U)"
+
+#: src/nautilus-window-menus.c:679
+msgid "Undo the last text change"
+msgstr "마지막 변경사항을 취소합니다"
+
+#: src/nautilus-window-menus.c:692
+msgid "_Cut Text"
+msgstr "자르기(_C)"
+
+#: src/nautilus-window-menus.c:693
+msgid "Cuts the selected text to the clipboard"
+msgstr "클립보드에서 선택한 문자를 자릅니다"
+
+#: src/nautilus-window-menus.c:704
+msgid "_Copy Text"
+msgstr "복사(_C)"
+
+#: src/nautilus-window-menus.c:705
+msgid "Copies the selected text to the clipboard"
+msgstr "클립보드에서 선택한 문자를 복사합니다"
+
+#: src/nautilus-window-menus.c:716
+msgid "_Paste Text"
+msgstr "붙이기(_P)"
+
+#: src/nautilus-window-menus.c:717
+msgid "Pastes the text stored on the clipboard"
+msgstr "클립보드에 저장된 문자를 붙입니다"
+
+#: src/nautilus-window-menus.c:728
+msgid "C_lear Text"
+msgstr "비우기(_l)"
+
+#: src/nautilus-window-menus.c:729
+msgid "Removes the selected text without putting it on the clipboard"
+msgstr "클립보드에 선택된 문자를 기록하지 않고 지웁니다"
+
+#. Go menu
+#: src/nautilus-window-menus.c:753
+msgid "_Go"
+msgstr "가기(_G)"
+
+#: src/nautilus-window-menus.c:757
+msgid "_Back"
+msgstr "뒤로(_B)"
+
+#: src/nautilus-window-menus.c:758
+msgid "Go to the previous visited location"
+msgstr "전에 방문했던 위치로 갑니다"
+
+#: src/nautilus-window-menus.c:769
+msgid "_Forward"
+msgstr "앞으로(_F)"
+
+#: src/nautilus-window-menus.c:770
+msgid "Go to the next visited location"
+msgstr "다음 방문한 위치로 갑니다"
+
+#: src/nautilus-window-menus.c:781
+msgid "_Up"
+msgstr "위로(_U)"
+
+#: src/nautilus-window-menus.c:782
+msgid "Go to the location that contains this one"
+msgstr "이곳을 포함하는 위치로 갑니다"
+
+#: src/nautilus-window-menus.c:793
+msgid "_Home"
+msgstr "홈(_H)"
+
+#: src/nautilus-window-menus.c:794
+msgid "Go to the home location"
+msgstr "홈으로 갑니다"
+
+#. Bookmarks
+#: src/nautilus-window-menus.c:807
+msgid "_Bookmarks"
+msgstr "책갈피(_B)"
+
+#: src/nautilus-window-menus.c:811
+msgid "_Add Bookmark"
+msgstr "책갈피 추가(_A)"
+
+#: src/nautilus-window-menus.c:812
+msgid "Add a bookmark for the current location to this menu"
+msgstr "현재 위치를 책갈피에 추가시킵니다"
+
+#: src/nautilus-window-menus.c:823
+msgid "_Edit Bookmarks..."
+msgstr "책갈피 편집"
+
+#: src/nautilus-window-menus.c:824
+msgid "Display a window that allows editing the bookmarks in this menu"
+msgstr "책갈피를 편집할수 있는 창을 표시합니다"
+
+#. Settings
+#: src/nautilus-window-menus.c:833
+msgid "_Settings"
+msgstr "설정(_S)"
+
+#: src/nautilus-window-menus.c:842
+msgid "Novice"
+msgstr "초보자"
+
+#: src/nautilus-window-menus.c:843
+msgid "Novice User Level"
+msgstr "초보 사용자 수준"
+
+#: src/nautilus-window-menus.c:850
+msgid "Intermediate"
+msgstr "중급자"
+
+#: src/nautilus-window-menus.c:851
+msgid "Intermediate User Level"
+msgstr "중급 사용자 수준"
+
+#: src/nautilus-window-menus.c:858
+msgid "Hacker"
+msgstr "해커"
+
+#: src/nautilus-window-menus.c:859
+msgid "Hacker User Level"
+msgstr "고급 사용자 수준"
+
+#: src/nautilus-window-menus.c:866
+msgid "Customize Current User Level..."
+msgstr "현재 사용자 수준 설정..."
+
+#: src/nautilus-window-menus.c:867
+msgid "Customize Current User Level"
+msgstr "현재 사용자 수준 설정"
+
+#: src/nautilus-window-menus.c:891
+msgid "_Customize..."
+msgstr "사용자 설정(_C)"
+
+#: src/nautilus-window-menus.c:892
+msgid ""
+"Displays the Property Browser, to add properties to objects and customize "
+"appearance"
+msgstr "객체 설정과 모양을 설정할수 있는 설정 브라우져를 표시합니다."
+
+#: src/nautilus-window-menus.c:909
+msgid "Use _Eazel Theme Icons"
+msgstr "Eazel 테마 아이콘 사용(_E)"
+
+#: src/nautilus-window-menus.c:910
+msgid "Select whether to use standard or Eazel icons"
+msgstr "표준 아니면 Eazel아이콘을 사용하게 선택합니다"
+
+#. Help
+#: src/nautilus-window-menus.c:918
+msgid "_Help"
+msgstr "도움말(_H)"
+
+#: src/nautilus-window-menus.c:922
+msgid "_About Nautilus..."
+msgstr "노틸러스는 (_A)"
+
+#: src/nautilus-window-menus.c:923
+msgid "Displays information about the Nautilus program"
+msgstr "노틸러스 프로그램에 대한 정보를 표시합니다"
+
+#: src/nautilus-window-menus.c:1084
+msgid "Undo"
+msgstr "취소"
+
+#: src/nautilus-window-toolbars.c:78
+msgid "Back"
+msgstr "뒤로"
+
+#: src/nautilus-window-toolbars.c:78
+msgid "Go to the previously visited directory"
+msgstr "전에 방문했던 디렉토리로 갑니다"
+
+#: src/nautilus-window-toolbars.c:81
+msgid "Forward"
+msgstr "앞으로"
+
+#: src/nautilus-window-toolbars.c:81
+msgid "Go to the next directory"
+msgstr "다음 디렉토리로 갑니다"
+
+#: src/nautilus-window-toolbars.c:84
+msgid "Up"
+msgstr "위로"
+
+#: src/nautilus-window-toolbars.c:84
+msgid "Go up a level in the directory heirarchy"
+msgstr "디렉토리 구조의 한단계 위로 갑니다"
+
+#: src/nautilus-window-toolbars.c:87
+msgid "Reload"
+msgstr "다시 읽기"
+
+#: src/nautilus-window-toolbars.c:87
+msgid "Reload this view"
+msgstr "현재 목록을 다시 읽습니다"
+
+#: src/nautilus-window-toolbars.c:91
+msgid "Home"
+msgstr "홈"
+
+#: src/nautilus-window-toolbars.c:91
+msgid "Go to your home directory"
+msgstr "홈 디렉토리로 갑니다"
+
+#: src/nautilus-window-toolbars.c:95
+msgid "Interrupt loading"
+msgstr "읽기를 중단합니다"
 
