@@ -424,7 +424,7 @@ toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window)
 static void
 toolbar_services_callback (GtkWidget *widget, NautilusWindow *window)
 {
-	nautilus_window_goto_uri (window, "eazel:");
+	nautilus_window_goto_uri (window, "http://www.eazel.com/services.html");
 }
 #endif
 
