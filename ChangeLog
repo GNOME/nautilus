@@ -1,3 +1,25 @@
+2002-02-06  Dave Camp  <dave@ximian.com>
+
+	* components/news/nautilus-news.c: Make this component build with
+	the deprecation flags set.
+	(update_size_and_redraw): #ifed out the gtk_widget_set_usize()
+	call pending changes to the size negotation code.
+	(get_xml_path): Use g_file_test() instead of g_file_exists().
+	(add_channel_to_remove_list), (remove_selected_site),
+	(make_remove_widgets): Use a GtkTreeView instead of a GtkCList
+	here.
+	(determine_sort_position): Use gtk_container_get_children()
+	instead of gtk_container_children().
+	(add_channel_entry): Use g_object_set_data() instead of
+	gtk_object_set_user_data().
+	(remove_list_selection_changed): New function, update the remove
+	button.
+	(update_remove_button): Make the remove button insensitive if no
+	channel is selected for removal.
+	(make_remove_widgets), (make_add_widgets), (add_command_buttons):
+	Use gtk_box_set_spacing() instead of gtk_button_box_set_spacing(), 
+	and remove calls to gtk_button_box_set_child_size().
+	
 2002-02-06  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-window-manage-views.c

@@ -31,7 +31,10 @@
 #include <time.h>
 
 #include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkclist.h>
+#include <gtk/gtktreeview.h>
+#include <gtk/gtktreeselection.h>
+#include <gtk/gtkliststore.h>
+#include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkdrawingarea.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbbox.h>
@@ -79,6 +82,11 @@
 enum {
 	TAB_IMAGE,
 	CLOSE_NOTIFY,
+};
+
+enum {
+        REMOVE_COL_NAME,
+        LAST_REMOVE_COL
 };
 
 /* data structure for the news view */
@@ -1223,12 +1231,13 @@ extract_items (RSSChannelData *channel_data, xmlNodePtr container_node)
 /* utility routine to resize the news display and redraw it */
 static void
 update_size_and_redraw (News* news_data)
-{
+{	
 	int display_size;
-	
 	display_size = nautilus_news_update_display (news_data, TRUE);
 	if (display_size != news_data->news_display->allocation.height) {
+#ifdef GNOME2_CONVERSION_COMPLETE
 		gtk_widget_set_usize (news_data->news_display, -1, display_size);
+#endif
 		gtk_widget_queue_resize (news_data->news_display);				
 	}
 	gtk_widget_queue_draw (news_data->news_display);
@@ -1664,7 +1673,7 @@ get_xml_path (const char *file_name, gboolean force_local)
 	xml_path = nautilus_make_path (user_directory,
 				       file_name);
 	g_free (user_directory);
-	if (force_local || g_file_exists (xml_path)) {
+	if (force_local || g_file_test (xml_path, G_FILE_TEST_EXISTS)) {
 		return xml_path;
 	}
 	g_free (xml_path);
@@ -1672,7 +1681,7 @@ get_xml_path (const char *file_name, gboolean force_local)
 	/* next try the shared directory */
 	xml_path = nautilus_make_path (NAUTILUS_DATADIR,
 				       file_name);
-	if (g_file_exists (xml_path)) {
+	if (g_file_test (xml_path, G_FILE_TEST_EXISTS)) {
 		return xml_path;
 	}
 	g_free (xml_path);
@@ -1877,20 +1886,36 @@ add_site_button_clicked (GtkWidget *widget, News *news)
 	gtk_widget_show_all (news->edit_site_box);
 }
 
+
 /* utility to add an entry to the remove channel clist */
 static void
 add_channel_to_remove_list (News *news_data, const char *channel_name)
 {
-	char* entry[1];
-	
-	entry[0] = g_strdup (channel_name);
-	gtk_clist_append ( GTK_CLIST (news_data->remove_site_list), entry);
+        GtkTreeIter iter;
+        GtkListStore *store;
+        
+        store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (news_data->remove_site_list)));
+        
+        gtk_list_store_append (store, &iter);
+        gtk_list_store_set (store, &iter, REMOVE_COL_NAME, channel_name, -1);
 }
 
 static void
 update_remove_button (News *news)
 {
-	gtk_widget_set_sensitive (news->remove_button, news->channel_list != NULL);
+        GtkTreeSelection *selection;
+        GtkTreeIter iter;
+        gboolean sensitive;
+
+        sensitive = FALSE;
+        if (news->channel_list != NULL) {
+                selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (news->remove_site_list));
+                if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+                        sensitive = TRUE;
+                }        
+        }
+        
+	gtk_widget_set_sensitive (news->remove_button, sensitive);
 }
 
 /* handle adding a new site from the data in the "add site" fields */
@@ -1960,27 +1985,52 @@ add_site_from_fields (GtkWidget *widget, News *news)
 static void
 remove_selected_site (GtkWidget *widget, News *news)
 {
+        GtkTreeSelection *selection;
+        GtkTreeIter iter;
 	RSSChannelData *channel_data;
 	GList *channel_item;
-	char *channel_name;
+	const char *channel_name;
+        GValue channel_name_value = { 0, };
+        
+        GtkTreeModel *model;
+        
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (news->remove_site_list));
+        model = gtk_tree_view_get_model (GTK_TREE_VIEW (news->remove_site_list));
+        
+        if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+                gtk_tree_model_get_value (model, 
+                                          &iter, 
+                                          REMOVE_COL_NAME,
+                                          &channel_name_value);
+
+                channel_name = g_value_get_string (&channel_name_value);
+
+                /* remove the channel from the channel linked list */
+                channel_data = get_channel_from_name (news, channel_name);
+                
+                channel_item = g_list_find (news->channel_list, channel_data);
+                if (channel_item != NULL) {
+                        news->channel_list = g_list_remove_link (news->channel_list, channel_item);
+                }
+                
+                /* remove the channel from the add list and release it */
+                if (channel_data != NULL) {
+                        gtk_widget_destroy (channel_data->checkbox);
+                        free_channel (channel_data);	
+                }
+                
+                gtk_list_store_remove (GTK_LIST_STORE (model), 
+                                       &iter);
+                update_remove_button (news);
+                configure_button_clicked (widget, news);
+        }
+        
+#ifdef GNOME2_CONVERSION_COMPLETE
 
 	gtk_clist_get_text (GTK_CLIST (news->remove_site_list),
 			    news->remove_selection_index, 0,
 			    &channel_name);
 	
-	/* remove the channel from the channel linked list */
-	channel_data = get_channel_from_name (news, channel_name);
-	
-	channel_item = g_list_find (news->channel_list, channel_data);
-	if (channel_item != NULL) {
-		news->channel_list = g_list_remove_link (news->channel_list, channel_item);
-	}
-
-	/* remove the channel from the add list and release it */
-	if (channel_data != NULL) {
-		gtk_widget_destroy (channel_data->checkbox);
-		free_channel (channel_data);	
-	}	
 	
 	/* remove the channel from the remove list */
 	gtk_clist_remove (GTK_CLIST (news->remove_site_list), news->remove_selection_index);
@@ -1988,6 +2038,7 @@ remove_selected_site (GtkWidget *widget, News *news)
 	
 	/* back to configure mode */
 	configure_button_clicked (widget, news);
+#endif
 }
 
 /* utility routine to create the button box and constituent buttons */
@@ -2008,8 +2059,7 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
 
   	/* Set the appearance of the Button Box */
   	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (button_box), 4);
-  	gtk_button_box_set_child_size (GTK_BUTTON_BOX (button_box), 24, 14);
+	gtk_box_set_spacing (GTK_BOX (button_box), 4);
 	
 	if (from_configure) {
 		button = gtk_button_new_with_label (_("Edit"));
@@ -2087,7 +2137,7 @@ determine_sort_position (GtkWidget *container, const char *name)
 	char *current_name;
 	int index;
 	
-	checkboxes = gtk_container_children (GTK_CONTAINER (container));
+	checkboxes = gtk_container_get_children (GTK_CONTAINER (container));
 	index = 0;
 	current_item = checkboxes;
 	while (current_item != NULL) {
@@ -2132,7 +2182,7 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 	}
 	
 	/* set up user data to use in toggle handler */
-        gtk_object_set_user_data (GTK_OBJECT (check_button), news_data);
+        g_object_set_data (G_OBJECT (check_button), "user_data", news_data);
 	g_object_set_data_full (G_OBJECT(check_button),
 				  "channel_name",
 				  g_strdup (channel_name),
@@ -2241,10 +2291,9 @@ news_label_new (const char *label_text, gboolean title_mode)
 }
 
 static void
-select_row_in_remove_list (GtkCList *clist, gint row, gint column,
-			   GdkEventButton *event, News* news)
+remove_list_selection_changed (GObject *obj, News *news)
 {
-	news->remove_selection_index = row;
+        update_remove_button (news);
 }
 
 /* generate the remove widgets */
@@ -2253,19 +2302,36 @@ make_remove_widgets (News *news, GtkWidget *container)
 {
 	GtkWidget *button_box;
 	GtkScrolledWindow *scrolled_window;
-	
-	news->remove_site_list = gtk_clist_new (1);
+	GtkListStore *store;
+        GtkCellRenderer *renderer;
+        GtkTreeViewColumn *column;
+        GtkTreeSelection *selection;
 
-	gtk_clist_column_titles_hide (GTK_CLIST (news->remove_site_list));
-	gtk_clist_set_column_width (GTK_CLIST (news->remove_site_list), 0, 108);
-	gtk_clist_set_selection_mode (GTK_CLIST (news->remove_site_list), GTK_SELECTION_BROWSE);		
-	gtk_clist_set_auto_sort (GTK_CLIST (news->remove_site_list), TRUE);
-	
-	g_signal_connect (news->remove_site_list, "select_row",
-			    G_CALLBACK (select_row_in_remove_list), news);
-			    
-	scrolled_window = GTK_SCROLLED_WINDOW (gtk_scrolled_window_new (NULL, NULL));
+        store = gtk_list_store_new (LAST_REMOVE_COL, G_TYPE_STRING);
+
+	news->remove_site_list = 
+                gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+        gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (news->remove_site_list), FALSE);
+
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (news->remove_site_list));
+        gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+        g_signal_connect (G_OBJECT (selection), "changed", 
+                          G_CALLBACK (remove_list_selection_changed), news);
+
+        renderer = gtk_cell_renderer_text_new ();
+        column = gtk_tree_view_column_new_with_attributes (_("Site Name"),
+                                                           renderer, 
+                                                           "text", 
+                                                           REMOVE_COL_NAME,
+                                                           NULL);
+        gtk_tree_view_append_column (GTK_TREE_VIEW (news->remove_site_list), 
+                                     column);
+        g_object_unref (G_OBJECT (store));
+        
+        scrolled_window = GTK_SCROLLED_WINDOW (gtk_scrolled_window_new (NULL, NULL));
 	gtk_scrolled_window_set_policy (scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);   
+        gtk_scrolled_window_set_shadow_type (scrolled_window, 
+                                             GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER (scrolled_window), news->remove_site_list);
 	gtk_box_pack_start (GTK_BOX (container), GTK_WIDGET (scrolled_window), TRUE, TRUE, 0);
 
@@ -2274,8 +2340,7 @@ make_remove_widgets (News *news, GtkWidget *container)
 	gtk_box_pack_start (GTK_BOX (container), button_box, FALSE, FALSE, 4);
  	
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (button_box), 4);
-  	gtk_button_box_set_child_size (GTK_BUTTON_BOX (button_box), 24, 14);
+	gtk_box_set_spacing (GTK_BOX (button_box), 4);
 	
 	news->remove_button = gtk_button_new_with_label (_("Remove Site"));
 	gtk_container_add (GTK_CONTAINER (button_box), news->remove_button);
@@ -2319,8 +2384,7 @@ make_add_widgets (News *news, GtkWidget *container)
 	gtk_box_pack_start (GTK_BOX (container), button_box, FALSE, FALSE, 4);
  	
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (button_box), 4);
-  	gtk_button_box_set_child_size (GTK_BUTTON_BOX (button_box), 24, 14);
+	gtk_box_set_spacing (GTK_BOX (button_box), 4);
 	
 	button = gtk_button_new_with_label (_("Add New Site"));
 	gtk_container_add (GTK_CONTAINER (button_box), button);
