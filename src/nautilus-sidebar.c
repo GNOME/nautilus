@@ -497,15 +497,24 @@ nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel,
 				       NautilusViewFrame *meta_view)
 {
 	int page_num;
+	char *description;
 	
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook),
 					  GTK_WIDGET (meta_view));
 	if (page_num < 0) {
+		g_warning ("nautilus_index_panel_remove_meta_view: page_num '%d' for meta_view is bogus.\n", page_num);
 		return;
 	}
 
 	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->notebook),
 				  page_num);
+
+	description = nautilus_view_frame_get_label (meta_view);
+
+	/* Remove the tab associated with this meta view */
+	nautilus_index_tabs_remove_view (index_panel->details->index_tabs, description);
+
+	g_free (description);
 }
 
 /* utility to activate the metaview corresponding to the passed in index  */

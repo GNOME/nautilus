@@ -1,3 +1,11 @@
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* src/ntl-index-panel.c: (nautilus_index_panel_remove_meta_view):
+
+	Remove the tab associated with meta view as well.  Add a warning
+	for the case when the page_num is bogus.  Perhaps this should be
+	an assertion.  But at least this way it wont fail silently.
+	
 2000-05-26  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-view-bonobo-subdoc.c:
