@@ -1,3 +1,22 @@
+2000-09-19  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3019, renaming special icons should be
+	impossible or harmless.
+
+	You can't rename any NautilusLinks now.  This makes
+	sense given the way we use them.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_can_rename):
+	Add a check to see if file is NautilusLink.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(special_link_in_selection):
+	Check and see if selection contains link files.
+	
+	(fm_icon_view_create_selection_context_menu_items):
+	Call above funcion and disable rename if it returns TRUE.
+	
 2000-09-18  Maciej Stachowiak  <mjs@eazel.com>
 
 	Fix bugzilla.eazelc.om 674 2052

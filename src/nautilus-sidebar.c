@@ -1445,12 +1445,11 @@ nautilus_sidebar_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	NautilusSidebar *sidebar = NAUTILUS_SIDEBAR(widget);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
-
+	
 	/* remember the size if it changed */
 	
 	if (widget->allocation.width != sidebar->details->old_width) {
 		sidebar->details->old_width = widget->allocation.width;
  		nautilus_preferences_set_enum(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, widget->allocation.width);
-	
 	}	
 }

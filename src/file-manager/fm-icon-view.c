@@ -595,19 +595,40 @@ append_one_context_menu_item (FMIconView *view,
 	return insert_one_context_menu_item (view, menu, selection, menu_path, -1, callback);
 }
 
+/* special_link_in_selection
+ * 
+ * Return TRUE is one of our special links is the selection.
+ * Special links include the following: 
+ *	 NAUTILUS_LINK_TRASH, NAUTILUS_LINK_HOME, NAUTILUS_LINK_MOUNT
+ */
+ 
+static gboolean
+special_link_in_selection (FMDirectoryView *view)
+{
+	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_TRASH)) {
+		return TRUE;
+	}
+
+	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_HOME)) {
+		return TRUE;
+	}
+
+	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_MOUNT)) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 						  GtkMenu *menu,
 						  GList *selection)
 {
 	gint position;
-	gboolean trash_in_selection;
 
 	g_assert (FM_IS_ICON_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
-
-	/* Check for special links */
-	trash_in_selection = fm_directory_link_type_in_selection (view, NAUTILUS_LINK_TRASH);
 
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 
@@ -626,7 +647,7 @@ fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 	/* The Rename item is inserted directly after the
 	 * Duplicate item created by the FMDirectoryView.
 	 */
-	if (!trash_in_selection) {
+	if (!special_link_in_selection (view)) {
 		position = fm_directory_view_get_context_menu_index
 				(menu, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1;
      		insert_one_context_menu_item

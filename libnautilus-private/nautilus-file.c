@@ -658,6 +658,11 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
+	/* Certain types of links can't be renamed */
+	if (nautilus_file_is_nautilus_link (file)) {
+		return FALSE;
+	}
+	
 	/* User must have write permissions for the parent directory. */
 	parent = get_file_for_parent_directory (file);
 
@@ -667,7 +672,7 @@ nautilus_file_can_rename (NautilusFile *file)
 	if (parent == NULL) {
 		return TRUE;
 	}
-
+	
 	result = nautilus_file_can_write (parent);
 
 	nautilus_file_unref (parent);
