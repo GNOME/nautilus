@@ -798,10 +798,7 @@ need_to_show_first_time_druid (void)
 	
 	user_directory = nautilus_get_user_directory ();
 
-	druid_flag_file_name = g_strdup_printf ("%s/%s",
-						user_directory,
-						"first-time-flag");
-
+	druid_flag_file_name = g_strconcat (user_directory, "/first-time-flag", NULL);
 	result = !g_file_exists (druid_flag_file_name);	
 	g_free (druid_flag_file_name);
 
@@ -809,10 +806,8 @@ need_to_show_first_time_druid (void)
 	 * check for and delete the old one, if the new one didn't exist 
 	 */
 	if (result) {
-		druid_flag_file_name = g_strdup_printf ("file://%s/%s",
-						user_directory,
-						"first-time-wizard-flag");
-		gnome_vfs_unlink (druid_flag_file_name);
+		druid_flag_file_name = g_strconcat (user_directory, "/first-time-wizard-flag", NULL);
+		unlink (druid_flag_file_name);
 		g_free (druid_flag_file_name);
 	}
 	g_free (user_directory); 

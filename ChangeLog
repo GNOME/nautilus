@@ -1,3 +1,21 @@
+2001-06-11  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Updated version to 1.0.3.2 for the 1.0.4
+	candidate build.
+
+	* icons/gnome/Makefile.am: Added missing backslash character.
+	Without it, many icons didn't get installed.
+
+	* src/nautilus-application.c: (need_to_show_first_time_druid):
+	Fix some code that was building a URL by sticking a file://
+	onto the front of a file name. I just changed it to use the
+	path directly and do a plain unlink instead of gnome_vfs_unlink.
+
+	* src/nautilus-profiler.c:
+	(nautilus_profiler_bonobo_ui_report_callback):
+	Use gnome_vfs_get_uri_from_local_path instead of just sticking
+	a file:// on the front of a path name.
+
 2001-06-10 John Fleck <jfleck@inkstain.net>
 
 	* components/help/converters/gnome-db2html3/Makefile.am:
@@ -17,6 +35,7 @@
 	* help/nautilus-user-manual/es/nautilus-user-manual.sgml:
 
 2001-06-08  Laszlo Kovacs <laszlo.kovacs@sun.com>
+
         reviewed by Seth Nickell <snickell@stanford.edu>
         patch containing the build environment for gnome-db2html3,
         the new stylesheet based XML->HTML converter, it all can be activated

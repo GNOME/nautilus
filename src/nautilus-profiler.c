@@ -298,7 +298,7 @@ nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component,
 
 	profile_dump (dump_file_name, TRUE);
 
-	uri = g_strdup_printf ("file://%s", dump_file_name);
+	uri = gnome_vfs_get_uri_from_local_path (dump_file_name);
 	
 	if (eel_read_entire_file (uri, &dump_size, &dump_contents) == GNOME_VFS_OK) {
 		dump_dialog_show (dump_contents, uri);
