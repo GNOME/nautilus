@@ -1,3 +1,22 @@
+2001-03-01  Eric Fischer  <eric@eazel.com>
+
+	reviewed by: Arik Devens <arik@eazel.com>
+
+	* configure.in:
+	Improve the process of checking for required versions of other
+	software by moving the version numbers out of the spec file and
+	the body of the configure script and into their own section of
+	the script.
+
+	Also add a couple of autoconf macros that will reduce the amount
+	of boilerplate that needs to get written for each version check.
+
+	* nautilus.spec.in:
+	Change some of the requirements to get their version numbers from
+	the configure script rather than hardwiring them here.
+
+	(Bug 7229)
+
 2001-03-01  Arlo Rose  <arlo@eazel.com>
 
 	* icons/About_Image.png:
