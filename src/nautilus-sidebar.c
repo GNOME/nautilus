@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <nautilus-widgets/nautilus-preferences.h>
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
@@ -824,12 +825,12 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	}
 
 	full_application_list =
-		gnome_vfs_mime_get_all_applications_for_uri (sidebar->details->uri);
+		nautilus_mime_get_all_applications_for_uri (sidebar->details->uri);
 
 	/* Don't even put "Open With" button up if there are zero choices. */
 	if (full_application_list != NULL) {
 		short_application_list = 
-			gnome_vfs_mime_get_short_list_applications_for_uri (sidebar->details->uri);
+			nautilus_mime_get_short_list_applications_for_uri (sidebar->details->uri);
 		add_command_buttons (sidebar, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 

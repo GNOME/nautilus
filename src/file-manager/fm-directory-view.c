@@ -60,6 +60,7 @@
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
 
 #include "fm-properties-window.h"
 #include "dfos-xfer.h"
@@ -1983,7 +1984,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
 
 		applications = 
-			gnome_vfs_mime_get_short_list_applications_for_uri (uri);
+			nautilus_mime_get_short_list_applications_for_uri (uri);
 
 		for (node = applications; node != NULL; node = node->next) {
 			add_application_to_gtk_menu (open_with_menu, node->data, uri);
@@ -2000,7 +2001,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 		add_open_with_gtk_menu_item (open_with_menu, NULL);
 
 		components = 
-			gnome_vfs_mime_get_short_list_components_for_uri (uri);
+			nautilus_mime_get_short_list_components_for_uri (uri);
 
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_gtk_menu (open_with_menu, node->data, uri);
@@ -2254,7 +2255,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 	if (nautilus_g_list_exactly_one_item (selection)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
 
-		applications = gnome_vfs_mime_get_short_list_applications_for_uri (uri);
+		applications = nautilus_mime_get_short_list_applications_for_uri (uri);
 
 		for (node = applications; node != NULL; node = node->next) {
 			add_application_to_bonobo_menu (ui_handler, node->data, uri);
@@ -2275,7 +2276,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 			 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS, 
 			 -1);
 
-		components = gnome_vfs_mime_get_short_list_components_for_uri (uri);
+		components = nautilus_mime_get_short_list_components_for_uri (uri);
 
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_bonobo_menu (ui_handler, node->data, uri);

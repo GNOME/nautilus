@@ -62,6 +62,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-list-column-title.h		\
 	nautilus-list.h                         \
 	nautilus-metadata.h			\
+	nautilus-mime-actions.h			\
 	nautilus-mini-icon.h			\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
@@ -116,6 +117,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-link-set.c			\
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
+	nautilus-mime-actions.c			\
 	nautilus-mini-icon.c			\
 	nautilus-program-chooser.c		\
 	nautilus-program-choosing.c		\

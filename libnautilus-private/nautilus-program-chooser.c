@@ -28,6 +28,7 @@
 
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-view-identifier.h"
+#include "nautilus-mime-actions.h"
 
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkclist.h>
@@ -74,8 +75,8 @@ populate_program_list (GnomeVFSMimeActionType type,
 
 	uri = nautilus_file_get_uri (file);
 	programs = type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
-		? gnome_vfs_mime_get_all_components_for_uri (uri)
-		: gnome_vfs_mime_get_all_applications_for_uri (uri);
+		? nautilus_mime_get_all_components_for_uri (uri)
+		: nautilus_mime_get_all_applications_for_uri (uri);
 	g_free (uri);
 		
 

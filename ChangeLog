@@ -1,3 +1,33 @@
+2000-05-31  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.h,
+	libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_for_uri,
+	nautilus_mime_get_default_application_for_uri,
+	nautilus_mime_get_default_component_for_uri,
+	nautilus_mime_get_short_list_applications_for_uri,
+	nautilus_mime_get_short_list_components_for_uri,
+	nautilus_mime_get_all_applications_for_uri,
+	nautilus_mime_get_all_components_for_uri,
+	nautilus_mime_set_default_action_type_for_uri,
+	nautilus_mime_set_default_application_for_uri,
+	nautilus_mime_set_default_component_for_uri,
+	nautilus_mime_set_short_list_applications_for_uri,
+	nautilus_mime_set_short_list_components_for_uri,
+	nautilus_mime_extend_all_applications_for_uri,
+	nautilus_mime_remove_from_all_applications_for_uri): Moved from
+	gnome-vfs-handlers.[ch] and renamed from gnome_vfs_mime... to
+	nautilus_mime...
+	(get_mime_type_from_uri_hack): Internal helper fucntion moved from
+	gnome-vfs-handlers.c
+	* libnautilus-extensions/Makefile.am: Build and install
+	nautilus-mime-actions.c and nautilus-mime-actions.h repsectively.
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(populate_program_list):
+	* src/file-manager/fm-directory-view.c:
+	(create_open_with_gtk_menu), (reset_bonobo_open_with_menu):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_buttons):
+
 2000-05-31  John Sullivan  <sullivan@eazel.com>
 
 	More incremental work to use the new mime-handling API.
