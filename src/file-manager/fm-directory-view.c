@@ -1210,29 +1210,35 @@ compute_menu_item_info (const char *path,
                         char **return_name, 
                         gboolean *return_sensitivity)
 {
+	char *name, *stripped;
+
         if (strcmp (path, MENU_PATH_OPEN) == 0) {
-                *return_name = g_strdup_printf (_("_Open"));
+                name = g_strdup_printf (_("_Open"));
                 *return_sensitivity = selection_length == 1;
         } else if (strcmp (path, MENU_PATH_OPEN_IN_NEW_WINDOW) == 0) {
 		if (selection_length <= 1) {
-			*return_name = g_strdup (_("Open in _New Window"));
+			name = g_strdup (_("Open in _New Window"));
 		} else {
-			*return_name = g_strdup_printf (_("Open in %d _New Windows"), selection_length);
+			name = g_strdup_printf (_("Open in %d _New Windows"), selection_length);
 		}
 		*return_sensitivity = selection_length > 0;
 	} else if (strcmp (path, MENU_PATH_DELETE) == 0) {
-		*return_name = g_strdup (_("_Delete..."));
+		name = g_strdup (_("_Delete..."));
 		*return_sensitivity = selection_length > 0;
 	} else if (strcmp (path, MENU_PATH_SET_PROPERTIES) == 0) {
-		*return_name = g_strdup (_("Set _Properties..."));
+		name = g_strdup (_("Set _Properties..."));
 		*return_sensitivity = selection_length > 0;
         } else {
                 g_assert_not_reached ();
         }
 
-        if (!include_accelerator_underbars) {
-                nautilus_strstrip (*return_name, '_');
+	if (!include_accelerator_underbars) {
+                stripped = nautilus_str_strip_chr (name, '_');
+		g_free (name);
+		name = stripped;
         }
+
+	*return_name = name;
 }
 
 static void

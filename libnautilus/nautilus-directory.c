@@ -71,7 +71,6 @@ static void               nautilus_directory_finalize                   (GtkObje
 static NautilusDirectory *nautilus_directory_new                        (const char            *uri);
 static void               nautilus_directory_read_metafile              (NautilusDirectory     *directory);
 static void               nautilus_directory_write_metafile             (NautilusDirectory     *directory);
-static void               nautilus_directory_remove_write_metafile_idle (NautilusDirectory     *directory);
 static void               nautilus_directory_load_cb                    (GnomeVFSAsyncHandle   *handle,
 									 GnomeVFSResult         result,
 									 GnomeVFSDirectoryList *list,
@@ -133,9 +132,7 @@ nautilus_directory_finalize (GtkObject *object)
 
 	directory = NAUTILUS_DIRECTORY (object);
 
-	if (directory->details->write_metafile_idle_id != 0) {
-		nautilus_directory_write_metafile (directory);
-	}
+	g_assert (directory->details->write_metafile_idle_id == 0);
 
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
 
@@ -172,13 +169,15 @@ nautilus_directory_finalize (GtkObject *object)
 NautilusDirectory *
 nautilus_directory_get (const char *uri)
 {
+	char *canonical_uri;
 	NautilusDirectory *directory;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
 	/* FIXME: This currently ignores the issue of two uris that are not identical but point
-	   to the same data.
+	   to the same data except for the specific case of trailing '/' characters.
 	*/
+	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
 
 	/* Create the hash table first time through. */
 	if (directory_objects == NULL) {
@@ -186,24 +185,29 @@ nautilus_directory_get (const char *uri)
 	}
 
 	/* If the object is already in the hash table, look it up. */
-	directory = g_hash_table_lookup (directory_objects, uri);
+	directory = g_hash_table_lookup (directory_objects,
+					 canonical_uri);
 	if (directory != NULL) {
 		g_assert (NAUTILUS_IS_DIRECTORY (directory));
 		gtk_object_ref (GTK_OBJECT (directory));
 	} else {
 		/* Create a new directory object instead. */
-		directory = nautilus_directory_new (uri);
+		directory = nautilus_directory_new (canonical_uri);
 		if (directory == NULL) {
 			return NULL;
 		}
 
-		g_assert (strcmp (directory->details->uri_text, uri) == 0);
+		g_assert (strcmp (directory->details->uri_text, canonical_uri) == 0);
 
 		/* Put it in the hash table. */
 		gtk_object_ref (GTK_OBJECT (directory));
 		gtk_object_sink (GTK_OBJECT (directory));
-		g_hash_table_insert (directory_objects, directory->details->uri_text, directory);
+		g_hash_table_insert (directory_objects,
+				     directory->details->uri_text,
+				     directory);
 	}
+
+	g_free (canonical_uri);
 
 	return directory;
 }
@@ -252,13 +256,6 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 		if (size != metafile_info.size) {
 			result = GNOME_VFS_ERROR_TOOBIG;
 		}
-		
-		/* Avoid allocating a NULL buffer later and passing it
-		   around; we still want to try to parse an empty file
-		   so we get a metafile tree and a valid result. */
-		if (size == 0) {
-			size = 1;
-		}
 	}
 
 	metafile_handle = NULL;
@@ -269,8 +266,14 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 	}
 
 	if (result == GNOME_VFS_OK) {
-		buffer = g_malloc (size);
+		/* The gnome-xml parser requires a zero-terminated array.
+		 * Also, we don't want to allocate an empty buffer
+		 * because it would be NULL and gnome-xml won't parse
+		 * NULL properly.
+		 */
+		buffer = g_malloc (size + 1);
 		result = gnome_vfs_read (metafile_handle, buffer, size, &actual_size);
+		buffer[actual_size] = '\0';
 		directory->details->metafile_tree = xmlParseMemory (buffer, actual_size);
 		g_free (buffer);
 	}
@@ -290,22 +293,16 @@ nautilus_directory_read_metafile (NautilusDirectory *directory)
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	/* Check for the alternate metafile first.
-	   If we read from it, then write to it later.  */
+	 * If we read from it, then write to it later.
+	 */
 	directory->details->use_alternate_metafile = FALSE;
-	result = nautilus_directory_try_to_read_metafile (directory, directory->details->alternate_metafile_uri);
+	result = nautilus_directory_try_to_read_metafile (directory,
+							  directory->details->alternate_metafile_uri);
 	if (result == GNOME_VFS_OK) {
 		directory->details->use_alternate_metafile = TRUE;
 	} else {
-		result = nautilus_directory_try_to_read_metafile (directory, directory->details->metafile_uri);
-	}
-}
-
-static void
-nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory)
-{
-	if (directory->details->write_metafile_idle_id != 0) {
-		gtk_idle_remove (directory->details->write_metafile_idle_id);
-		directory->details->write_metafile_idle_id = 0;
+		result = nautilus_directory_try_to_read_metafile (directory,
+								  directory->details->metafile_uri);
 	}
 }
 
@@ -355,35 +352,45 @@ nautilus_directory_write_metafile (NautilusDirectory *directory)
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
+	gtk_object_ref (GTK_OBJECT (directory));
+
 	/* We are about the write the metafile, so we can cancel the pending
 	   request to do so.
 	*/
-	nautilus_directory_remove_write_metafile_idle (directory);
+	if (directory->details->write_metafile_idle_id != 0) {
+		gtk_idle_remove (directory->details->write_metafile_idle_id);
+		directory->details->write_metafile_idle_id = 0;
+		gtk_object_unref (GTK_OBJECT (directory));
+	}
 
 	/* Don't write anything if there's nothing to write.
 	   At some point, we might want to change this to actually delete
 	   the metafile in this case.
 	*/
-	if (directory->details->metafile_tree == NULL) {
-		return;
+	if (directory->details->metafile_tree != NULL) {
+		
+		/* Try the main URI, unless we have already been instructed to use the alternate URI. */
+		if (directory->details->use_alternate_metafile) {
+			result = GNOME_VFS_ERROR_ACCESSDENIED;
+		} else {
+			result = nautilus_directory_try_to_write_metafile (directory,
+									   directory->details->metafile_uri);
+		}
+		
+		/* Try the alternate URI if the main one failed. */
+		if (result != GNOME_VFS_OK) {
+			result = nautilus_directory_try_to_write_metafile (directory,
+									   directory->details->alternate_metafile_uri);
+		}
+		
+		/* Check for errors. FIXME: Later this must be reported to the user, not spit out as a warning. */
+		if (result != GNOME_VFS_OK) {
+			g_warning ("nautilus_directory_write_metafile failed to write metafile - we should report this to the user");
+		}
+
 	}
 
-	/* Try the main URI, unless we have already been instructed to use the alternate URI. */
-	if (directory->details->use_alternate_metafile) {
-		result = GNOME_VFS_ERROR_ACCESSDENIED;
-	} else {
-		result = nautilus_directory_try_to_write_metafile (directory, directory->details->metafile_uri);
-	}
-
-	/* Try the alternate URI if the main one failed. */
-	if (result != GNOME_VFS_OK) {
-		result = nautilus_directory_try_to_write_metafile (directory, directory->details->alternate_metafile_uri);
-	}
-
-	/* Check for errors. FIXME: Later this must be reported to the user, not spit out as a warning. */
-	if (result != GNOME_VFS_OK) {
-		g_warning ("nautilus_directory_write_metafile failed to write metafile - we should report this to the user");
-	}
+	gtk_object_unref (GTK_OBJECT (directory));
 }
 
 static gboolean
@@ -396,6 +403,8 @@ nautilus_directory_write_metafile_idle_cb (gpointer callback_data)
 	directory->details->write_metafile_idle_id = 0;
 	nautilus_directory_write_metafile (directory);
 
+	gtk_object_unref (GTK_OBJECT (directory));
+
 	return FALSE;
 }
 
@@ -404,6 +413,7 @@ nautilus_directory_request_write_metafile (NautilusDirectory *directory)
 {
 	/* Set up an idle task that will write the metafile. */
 	if (directory->details->write_metafile_idle_id == 0) {
+		gtk_object_ref (GTK_OBJECT (directory));
 		directory->details->write_metafile_idle_id =
 			gtk_idle_add (nautilus_directory_write_metafile_idle_cb,
 				      directory);
@@ -1056,6 +1066,27 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	nautilus_directory_request_write_metafile (directory);
 }
 
+static int
+compare_file_with_name (gconstpointer a, gconstpointer b)
+{
+	return strcmp (((const NautilusFile *) a)->info->name, b);
+}
+
+NautilusFile *
+nautilus_directory_find_file (NautilusDirectory *directory, const char *name)
+{
+	GList *list_entry;
+
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	list_entry = g_list_find_custom (directory->details->files,
+					 (gpointer) name,
+					 compare_file_with_name);
+
+	return list_entry == NULL ? NULL : list_entry->data;
+}
+
 NautilusFile *
 nautilus_directory_new_file (NautilusDirectory *directory, GnomeVFSFileInfo *info)
 {
@@ -1138,28 +1169,40 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (NULL, "TEST_INTEGER", 42), 42);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "NONEXISTENT_KEY", 42), 42);
 
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc") == directory, TRUE);
 	gtk_object_unref (GTK_OBJECT (directory));
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc/") == directory, TRUE);
+	gtk_object_unref (GTK_OBJECT (directory));
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc////") == directory, TRUE);
+	gtk_object_unref (GTK_OBJECT (directory));
+
+	gtk_object_unref (GTK_OBJECT (directory));
+
+	/* let the idle function run */
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 0);
 
 	directory = nautilus_directory_get ("file:///etc");
 
+	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->metafile_tree != NULL, TRUE);
+
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
 
-	/* nautilus_directory_escape_slashes */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a"), "a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("/"), "%2F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%"), "%25");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a/a"), "a%2Fa");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a%a"), "a%25a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%25"), "%2525");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%2F"), "%252F");
-
 	file_1 = nautilus_file_get ("file:///home/");
+
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home/") == file_1, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home") == file_1, TRUE);
+	nautilus_file_unref (file_1);
+
 	nautilus_file_unref (file_1);
 
 	file_1 = nautilus_file_get ("file:///home");
@@ -1179,6 +1222,16 @@ nautilus_self_check_directory (void)
 
 	nautilus_file_unref (file_1);
 	nautilus_file_unref (file_2);
+
+	/* nautilus_directory_escape_slashes */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("/"), "%2F");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%"), "%25");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a/a"), "a%2Fa");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a%a"), "a%25a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%25"), "%2525");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%2F"), "%252F");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

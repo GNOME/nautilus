@@ -25,14 +25,11 @@
  */
 
 #include <config.h>
-#include <math.h>
-
 #include "ntl-index-panel.h"
 
-#include "ntl-meta-view.h"
-#include "nautilus-index-tabs.h"
-#include "nautilus-index-title.h"
-#include "libnautilus/nautilus-mime-type.h"
+#include <math.h>
+
+#include <gnome.h>
 
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-background.h>
@@ -42,7 +39,11 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-string.h>
-#include <gnome.h>
+
+#include "ntl-meta-view.h"
+#include "nautilus-index-tabs.h"
+#include "nautilus-index-title.h"
+#include <libnautilus/nautilus-mime-type.h>
 
 struct _NautilusIndexPanelDetails {
 	GtkWidget *index_container;
@@ -53,7 +54,7 @@ struct _NautilusIndexPanelDetails {
 	GtkWidget *button_box;
 	gboolean  has_buttons;
 	char *uri;
-	gint selected_index;
+	int selected_index;
 	NautilusDirectory *directory;
 	int background_connection;
 };
@@ -67,7 +68,7 @@ static void nautilus_index_panel_destroy (GtkObject *object);
 static void nautilus_index_panel_finalize (GtkObject *object);
 
 static void nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-						     gint x, gint y,
+						     int x, int y,
 						     GtkSelectionData *selection_data,
 						     guint info, guint time);
 
@@ -217,7 +218,7 @@ nautilus_index_panel_new (void)
 
 static void  
 nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-					 gint x, gint y,
+					 int x, int y,
 					 GtkSelectionData *selection_data, guint info, guint time)
 {
 	NautilusIndexPanel *index_panel;
@@ -277,7 +278,7 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	GtkWidget *label;
 	const char *description;
 	char cbuf[32];
-	gint page_num;
+	int page_num;
 	
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
 	g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
@@ -305,7 +306,7 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 void
 nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
 {
-	gint page_num;
+	int page_num;
 	
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
 	g_return_if_fail (page_num >= 0);
@@ -314,7 +315,7 @@ nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, Nautilus
 
 /* utility to activate the metaview corresponding to the passed in index  */
 static void
-nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint which_view)
+nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, int which_view)
 {
 	char *title;
 	GtkNotebook *notebook = GTK_NOTEBOOK(index_panel->details->notebook);
@@ -359,7 +360,7 @@ nautilus_index_panel_deactivate_meta_view(NautilusIndexPanel *index_panel)
 static gboolean
 nautilus_index_panel_motion_event (GtkWidget *widget, GdkEventMotion *event)
 {
-	gint x, y;
+	int x, y;
 	NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
 	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
 
@@ -367,16 +368,16 @@ nautilus_index_panel_motion_event (GtkWidget *widget, GdkEventMotion *event)
 	
 	/* if the click is in the main tabs, tell them about it */
 	if (y >= index_panel->details->index_tabs->allocation.y) {
-		gint which_tab = nautilus_index_tabs_hit_test(index_tabs, (double) x, (double) y);
+		int which_tab = nautilus_index_tabs_hit_test(index_tabs, (double) x, (double) y);
 		nautilus_index_tabs_prelite_tab(index_tabs, which_tab);
 	}
 
 	/* also handle prelighting in the title tab if necessary */
 	if (index_panel->details->selected_index >= 0) {
-		gint title_top = index_panel->details->title_tab->allocation.y;
-		gint title_bottom = title_top + index_panel->details->title_tab->allocation.height;
+		int title_top = index_panel->details->title_tab->allocation.y;
+		int title_bottom = title_top + index_panel->details->title_tab->allocation.height;
 		if ((y >= title_top) && (y <= title_bottom)) {
-			gint which_tab = nautilus_index_tabs_hit_test(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), (double) x, (double) y);
+			int which_tab = nautilus_index_tabs_hit_test(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), (double) x, (double) y);
 			nautilus_index_tabs_prelite_tab(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), which_tab);			
 		}
 		else
@@ -408,15 +409,15 @@ nautilus_index_panel_leave_event (GtkWidget *widget, GdkEventCrossing *event)
 static gboolean
 nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
 {
-	gint title_top, title_bottom;
+	int title_top, title_bottom;
 	NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
 	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
 	NautilusIndexTabs *title_tab = NAUTILUS_INDEX_TABS(index_panel->details->title_tab);
-	gint rounded_y = floor(event->y + .5);
+	int rounded_y = floor(event->y + .5);
 		
 	/* if the click is in the main tabs, tell them about it */
 	if (rounded_y >= index_panel->details->index_tabs->allocation.y) {
-		gint which_tab = nautilus_index_tabs_hit_test(index_tabs, event->x, event->y);
+		int which_tab = nautilus_index_tabs_hit_test(index_tabs, event->x, event->y);
 		if (which_tab >= 0) {
 			nautilus_index_tabs_select_tab(index_tabs, which_tab);
 			nautilus_index_panel_activate_meta_view(index_panel, which_tab);
@@ -429,7 +430,7 @@ nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
 		title_top = index_panel->details->title_tab->allocation.y;
 		title_bottom = title_top + index_panel->details->title_tab->allocation.height;
 		if ((rounded_y >= title_top) && (rounded_y <= title_bottom)) {
-			gint which_tab = nautilus_index_tabs_hit_test(title_tab, event->x, event->y);
+			int which_tab = nautilus_index_tabs_hit_test(title_tab, event->x, event->y);
 			if (which_tab >= 0) {
 				/* the user clicked in the title tab, so deactivate the metaview */
 				nautilus_index_panel_deactivate_meta_view(index_panel);
@@ -461,19 +462,24 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 /* utility to fork a process to actually execute the button command */
 
 static void
-command_button_cb(GtkWidget *button, gchar* command_str)
+command_button_cb (GtkWidget *button, char* command_str)
 {
-  pid_t button_pid; 
-  NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL(gtk_object_get_user_data(GTK_OBJECT(button)));
-  gchar *parameter_ptr = index_panel->details->uri;
-    
-  if (nautilus_has_prefix(index_panel->details->uri, "file://"))
-  	parameter_ptr +=  7;
- 
-  if (!(button_pid = fork())) {
-        execlp(command_str, command_str, parameter_ptr, NULL);
-        exit(0);
-  } 	
+	pid_t button_pid; 
+	NautilusIndexPanel *index_panel;
+	char *parameter_ptr;
+
+	index_panel = NAUTILUS_INDEX_PANEL (gtk_object_get_user_data (GTK_OBJECT (button)));
+
+	parameter_ptr = index_panel->details->uri;
+	if (nautilus_str_has_prefix (parameter_ptr, "file://")) {
+		parameter_ptr +=  7;
+	}
+	
+	button_pid = fork();
+	if (button_pid == 0) {
+		execlp(command_str, command_str, parameter_ptr, NULL);
+		exit(0);
+	}
 }
 
 /* utility routine that allocates the command buttons from the command list */
@@ -481,7 +487,7 @@ command_button_cb(GtkWidget *button, gchar* command_str)
 static void
 add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 {
-	gchar *command_string, *temp_str;
+	char *command_string, *temp_str;
 	GList *this_item = command_list;
 	GtkWidget *temp_button, *temp_label;
 	
@@ -501,10 +507,11 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 
 		/* FIXME: we must quote the uri in case it has blanks */
 		
-		if (nautilus_has_prefix(index_panel->details->uri, "file://"))
-		  temp_str = index_panel->details->uri + 7;
-		else
-		  temp_str = index_panel->details->uri;
+		if (nautilus_str_has_prefix (index_panel->details->uri, "file://")) {
+			temp_str = index_panel->details->uri + 7;
+		} else {
+			temp_str = index_panel->details->uri;
+		}
 		command_string = g_strdup_printf(info->command_string, temp_str); 		
 		
 		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (command_button_cb), command_string);
@@ -535,7 +542,7 @@ nautilus_index_panel_set_up_buttons (NautilusIndexPanel *index_panel, const char
 	
 	file_object = nautilus_file_get(new_uri);
 	if (file_object) {
-		const gchar* mime_type = nautilus_file_get_mime_type(file_object);
+		const char* mime_type = nautilus_file_get_mime_type(file_object);
 	
 		/* generate a command list from the mime-type */
 		if (mime_type) {

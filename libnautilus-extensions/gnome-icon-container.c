@@ -1698,7 +1698,7 @@ static void
 destroy (GtkObject *object)
 {
 	GnomeIconContainer *container;
-	int index;
+	int i;
 
 	container = GNOME_ICON_CONTAINER (object);
 
@@ -1709,18 +1709,24 @@ destroy (GtkObject *object)
 	g_hash_table_destroy (container->details->canvas_item_to_icon);
 	unschedule_kbd_icon_visibility (container);
 	
-	if (container->details->rubberband_info.timer_id != 0)
+	if (container->details->rubberband_info.timer_id != 0) {
 		gtk_timeout_remove (container->details->rubberband_info.timer_id);
-	if (container->details->rubberband_info.selection_rectangle != NULL)
+	}
+	if (container->details->rubberband_info.selection_rectangle != NULL) {
 		gtk_object_destroy (GTK_OBJECT (container->details->rubberband_info.selection_rectangle));
+	}
 
-        if (container->details->idle_id != 0)
+        if (container->details->idle_id != 0) {
 		gtk_idle_remove (container->details->idle_id);
-	if (container->details->linger_selection_mode_timer_id != 0)
+	}
+	if (container->details->linger_selection_mode_timer_id != 0) {
 		gtk_timeout_remove (container->details->linger_selection_mode_timer_id);
-        for (index = 0; index < NAUTILUS_N_ELEMENTS (container->details->label_font); index++)
-        	if (container->details->label_font[index] != NULL)
-                	gdk_font_unref(container->details->label_font[index]);
+	}
+        for (i = 0; i < NAUTILUS_N_ELEMENTS (container->details->label_font); i++) {
+        	if (container->details->label_font[i] != NULL) {
+                	gdk_font_unref(container->details->label_font[i]);
+		}
+	}
 	
 	g_free (container->details);
 
@@ -2441,8 +2447,9 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 	set_kbd_current (container, NULL, FALSE);
 	details->stretch_icon = NULL;
 
-	for (p = details->icons; p != NULL; p = p->next)
+	for (p = details->icons; p != NULL; p = p->next) {
 		icon_free (p->data);
+	}
 	g_list_free (details->icons);
 	details->icons = NULL;
 	details->num_icons = 0;

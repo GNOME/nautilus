@@ -1,3 +1,65 @@
+2000-03-09  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-directory-private.h,
+	libnautilus/nautilus-directory.c, libnautilus/nautilus-file.c
+	(nautilus_directory_find_file, compare_file_with_name,
+	nautilus_directory_get, nautilus_file_get): Fixed bugs relating to
+	multiple directory and file objects for the same entity. Stripped
+	trailing '/' characters in nautilus_directory_get and changed
+	nautilus_file_get to return already-existing files instead of
+	always creating new ones. Added self-checks to make sure this
+	works.
+
+	* libnautilus/nautilus-directory.c
+	(nautilus_directory_try_to_read_metafile): Fixed bug where
+	metafile reading would fail. The gnome-xml parser requires a null
+	character at the end of the file, even though the size is passed
+	in!
+
+	* libnautilus/nautilus-directory.c
+	(nautilus_directory_remove_write_metafile_idle,
+	nautilus_directory_finalize,
+	nautilus_directory_try_to_write_metafile,
+	nautilus_directory_request_write_metafile, ): Changed metafile
+	writing so it always happens at idle time.
+
+	* libnautilus/nautilus-directory.c
+	(nautilus_directory_try_to_read_metafile): Fixed bug where
+	metafile reading would fail. The gnome-xml parser requires a null
+	character at the end of the file, even though the size is passed
+	in!
+
+	* libnautilus/nautilus-lib-self-check-functions.h: Changed order
+	so lower-level tests come before higher-level ones.
+
+	* libnautilus/nautilus-string.h, libnautilus/nautilus-string.c:
+	Renamed functions:
+		nautilus_has_prefix -> nautilus_str_has_prefix
+		nautilus_strdup_prefix -> nautilus_str_get_prefix
+		nautilus_has_suffix -> nautilus_str_has_suffix
+		nautilus_strstrip -> nautilus_str_strip_chr
+		nautilus_string_to_int -> nautilus_str_to_int
+		nautilus_eat_string_to_int -> nautilus_eat_str_to_int
+	Changed nautilus_str_strip_chr not to modify in place.
+	Added nautilus_str_strip_trailing_chr.
+
+	* components/music/nautilus-music-view.c (is_mp3_file,
+	nautilus_music_view_update_from_uri),
+	libnautilus/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file, make_thumbnail_path,
+	load_specific_image), libnautilus/nautilus-icons-view-icon-item.c
+	(draw_mini_text), src/ntl-index-panel.c (command_button_cb,
+	add_command_buttons), src/ntl-window-msgs.c
+	(nautilus_window_change_location_2),
+	src/file-manager-fm-directory-view-icons.c
+	(fm_directory_view_icons_compute_menu_item_info),
+	src/file-manager/fm-directory-view.c (compute_menu_item_info),
+	src/file-manager/fm-icons-controller.c
+	(fm_icons_controller_get_icon_property): Switched callers to use
+	new names for string calls.
+
+	* libnautilus/gnome-icon-container.c (destroy): Reformatting.
+
 2000-03-09  John Sullivan <sullivan@eazel.com>
 
         * libnautilus/gnome-icon-container.c: (update_icon):
@@ -25,6 +87,7 @@
         causing havoc later, by setting list to result of g_list_remove.
 
 2000-03-09 Elliot Lee <sopwith@redhat.com>
+	
 	* libnautilus/Makefile.am: Install libnautilus.h
 	* src/ntl-uri-map.c: Handle mapping of special schemes
 	(i.e. unknown to gnome-vfs). Currently just 'irc'.

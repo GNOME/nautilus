@@ -601,7 +601,7 @@ draw_mini_text (GnomeCanvasItem* item, GdkDrawable *drawable,
 	/* FIXME: need to use gnome_vfs to read the file  */
 	
 	file_name = details->text_source;
-	if (nautilus_has_prefix (details->text_source, "file://")) {
+	if (nautilus_str_has_prefix (details->text_source, "file://")) {
 		file_name += 7;
 	}
         text_file = fopen(file_name, "r");

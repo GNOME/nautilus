@@ -351,13 +351,14 @@ fm_directory_view_icons_compute_menu_item_info (FMDirectoryViewIcons *view,
                                                 gboolean *sensitive_return)
 {
 	GnomeIconContainer *icon_container;
+	char *name, *stripped;
 
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
 	icon_container = get_icon_container (view);
 
 	if (strcmp (MENU_PATH_STRETCH_ICON, menu_path) == 0) {
-                *return_name = g_strdup (_("_Stretch Icon"));
+                name = g_strdup (_("_Stretch Icon"));
 		/* Current stretching UI only works on one item at a time, so we'll
 		 * desensitize the menu item if that's not the case.
 		 */
@@ -365,23 +366,27 @@ fm_directory_view_icons_compute_menu_item_info (FMDirectoryViewIcons *view,
         	                    && !gnome_icon_container_has_stretch_handles (icon_container);
 	} else if (strcmp (MENU_PATH_RESTORE_STRETCHED_ICONS, menu_path) == 0) {
                 if (g_list_length (files) > 1) {
-                        *return_name = g_strdup (_("_Restore Icons to Unstretched Size"));
+                        name = g_strdup (_("_Restore Icons to Unstretched Size"));
                 } else {
-                        *return_name = g_strdup (_("_Restore Icon to Unstretched Size"));
+                        name = g_strdup (_("_Restore Icon to Unstretched Size"));
                 }
 
         	*sensitive_return = gnome_icon_container_is_stretched (icon_container);
 
 	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
-                *return_name = g_strdup (_("Customize _Icon Text..."));
+                name = g_strdup (_("Customize _Icon Text..."));
         	*sensitive_return = TRUE;
 	} else {
                 g_assert_not_reached ();
 	}
 
 	if (!include_accelerator_underbars) {
-                nautilus_strstrip (*return_name, '_');
+                stripped = nautilus_str_strip_chr (name, '_');
+		g_free (name);
+		name = stripped;
         }
+
+	*return_name = name;
 }           
 
 static void

@@ -55,6 +55,8 @@ struct NautilusDirectoryDetails
 	GList *files;
 };
 
+NautilusFile *nautilus_directory_find_file              (NautilusDirectory *directory,
+							 const char        *file_name);
 NautilusFile *nautilus_directory_new_file               (NautilusDirectory *directory,
 							 GnomeVFSFileInfo  *info);
 char *        nautilus_directory_get_file_metadata      (NautilusDirectory *directory,

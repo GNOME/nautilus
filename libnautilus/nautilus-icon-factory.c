@@ -610,7 +610,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	   or use a thumbnail if one exists.  If a thumbnail is required, but does not yet exist,
 	   put an entry on the thumbnail queue so we eventually make one */
 	   
-	if (uri == NULL && nautilus_has_prefix (nautilus_file_get_mime_type (file), "image/")) {
+	if (uri == NULL && nautilus_str_has_prefix (nautilus_file_get_mime_type (file), "image/")) {
 		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
 			uri = nautilus_file_get_uri (file);
 		else
@@ -686,7 +686,8 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only)
 	if (directory_only)
 		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", temp_str);
 	else {
-		if (nautilus_has_suffix (image_uri, ".png") || nautilus_has_suffix (image_uri, ".PNG")) {
+		if (nautilus_str_has_suffix (image_uri, ".png")
+		    || nautilus_str_has_suffix (image_uri, ".PNG")) {
 			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s", temp_str, last_slash + 1);
 		} else {
 			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s.png", temp_str, last_slash + 1);
@@ -869,7 +870,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		 * and gdk-pixbuf.
 		 */
 		if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD
-		    && nautilus_has_prefix (scalable_icon->uri, "file://")) {
+		    && nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
 			return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
 		}
 

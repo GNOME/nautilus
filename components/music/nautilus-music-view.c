@@ -24,12 +24,12 @@
 /* music view - presents the contents of the directory as an album of music */
 
 #include <config.h>
+#include "nautilus-music-view.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
-  
-#include "nautilus-music-view.h"
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-background.h>
@@ -47,7 +47,7 @@
 #include <limits.h>
 
 struct _NautilusMusicViewDetails {
-  gchar *current_uri;
+  char *current_uri;
   NautilusContentViewFrame *view_frame;
   
   GtkVBox   *album_container;
@@ -59,14 +59,14 @@ struct _NautilusMusicViewDetails {
 
 /* structure for holding song info */
 
-typedef struct  {
-	gint track_number;
-	gchar *title;
-	gchar *artist;
-	gchar *album;
-	gchar *year;
-        gchar *comment;
-        gchar *path_name;
+typedef struct {
+	int track_number;
+	char *title;
+	char *artist;
+	char *album;
+	char *year;
+        char *comment;
+        char *path_name;
 } SongInfo;
 
 #define MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/BBBB/FFFF"
@@ -74,7 +74,7 @@ typedef struct  {
 enum {
 	TARGET_URI_LIST,
 	TARGET_COLOR,
-    TARGET_GNOME_URI_LIST
+        TARGET_GNOME_URI_LIST
 };
 
 static GtkTargetEntry music_dnd_target_table[] = {
@@ -85,7 +85,7 @@ static GtkTargetEntry music_dnd_target_table[] = {
 
 static void nautilus_music_view_background_changed (NautilusMusicView *music_view);
 static void nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-						     gint x, gint y,
+						     int x, int y,
 						     GtkSelectionData *selection_data,
 						     guint info, guint time);
 
@@ -101,7 +101,7 @@ static void
 music_view_notify_location_change_cb(NautilusContentViewFrame  *view, 
 				     Nautilus_NavigationInfo   *navinfo, 
 				     NautilusMusicView *music_view);
-static void selection_callback(GtkCList * clist, gint row, gint column, GdkEventButton * event);
+static void selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event);
 
 static void
 nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
@@ -123,9 +123,9 @@ static void
 nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
   	NautilusBackground *background;
-	gchar *file_name;
+	char *file_name;
 	GtkWidget *song_box, *scrollwindow;
-	gchar *titles[] = {"Track", "Title", "Artist", "Time"};
+	char *titles[] = {"Track", "Title", "Artist", "Time"};
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
@@ -211,10 +211,10 @@ nautilus_music_view_destroy (GtkObject *object)
 /* handle a row being selected in the list view by playing the corresponding song */
 /* FIXME: xmms shouldn't be hardwired */
 static void 
-selection_callback(GtkCList * clist, gint row, gint column, GdkEventButton * event)
+selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event)
 {
         pid_t play_pid;
-	gchar* song_name = gtk_clist_get_row_data(clist, row);
+	char* song_name = gtk_clist_get_row_data(clist, row);
 	if (!song_name)
 		return;
 		
@@ -298,18 +298,19 @@ release_song_info(SongInfo *info)
 
 /* determine if the passed in filename is an mp3 file by looking at the extension */
 static gboolean
-is_mp3_file(gchar *song_path)
+is_mp3_file(char *song_path)
 {
-	return nautilus_has_suffix(song_path, ".mp3") || nautilus_has_suffix(song_path, ".MP3");
+	return nautilus_str_has_suffix(song_path, ".mp3")
+          || nautilus_str_has_suffix(song_path, ".MP3");
 }
 
 /* read the id3 tag of the file if present */
 /* FIXME: need to use gnome vfs for this */
 
 static gboolean
-read_id_tag(gchar* song_path, SongInfo* song_info)
+read_id_tag(char* song_path, SongInfo* song_info)
 {
-	gint mp3_file;
+	int mp3_file;
 
 	char tag_buffer[129];
 	char temp_str[255];
@@ -355,7 +356,7 @@ read_id_tag(gchar* song_path, SongInfo* song_info)
 /* allocate a return a song info record, from an mp3 tag if present, or from intrinsic info */
 
 static SongInfo* 
-fetch_song_info(gchar *song_path, gint file_order) 
+fetch_song_info(char *song_path, int file_order) 
 {
 	gboolean has_info = FALSE;
 	SongInfo *info; 
@@ -381,15 +382,15 @@ fetch_song_info(gchar *song_path, gint file_order)
 /* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
 /* FIXME: assumes 128k bits/second.  Must read header and factor in bitrate */
 
-static gchar*
-format_play_time(gchar* song_path_name)
+static char*
+format_play_time(char* song_path_name)
 {
 	NautilusFile *file = nautilus_file_get(song_path_name);
  	GnomeVFSFileSize file_size = nautilus_file_get_size(file);       			
-	gint seconds = (file_size - 512) / 16384;
-	gint minutes = seconds / 60;
-	gint remain_seconds = seconds - (60 * minutes);
-	gchar *result = g_strdup_printf("%d:%02d", minutes, remain_seconds);
+	int seconds = (file_size - 512) / 16384;
+	int minutes = seconds / 60;
+	int remain_seconds = seconds - (60 * minutes);
+	char *result = g_strdup_printf("%d:%02d", minutes, remain_seconds);
 	
 	nautilus_file_unref(file);
 	return result;
@@ -412,11 +413,11 @@ sort_by_track_number (gconstpointer ap, gconstpointer bp)
    album or artist. Return NULL if no names or too heterogenous.   This first cut just captures 
    the first one it can - soon, we'll use a hash table and count them up */
 
-static gchar*
+static char*
 determine_attribute(GList *song_list, gboolean is_artist)
 {
 	SongInfo *info;
-	gchar *attribute_value = NULL;
+	char *attribute_value = NULL;
 	GList *next_item = song_list;
 	while ((next_item != NULL) && (attribute_value == NULL)) {
 		info = (SongInfo*) next_item->data;
@@ -433,7 +434,7 @@ determine_attribute(GList *song_list, gboolean is_artist)
 /* FIXME: need to use gnome-vfs for iterating the directory */
 
 static void
-nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar *uri)
+nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *uri)
 {
 	DIR *dir;
 	struct dirent *entry;
@@ -444,10 +445,10 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar 
 	GList *this_song;
 	GList *song_list = NULL ;
 	SongInfo *info;
-	gchar *path_name;
-	gchar *image_path_name = NULL;
-	gint file_index = 1;
-	gint track_index = 0;
+	char *path_name;
+	char *image_path_name = NULL;
+	int file_index = 1;
+	int track_index = 0;
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	/* soon we'll use gnomevfs, but at first just the standard unix stuff */
 	
@@ -477,9 +478,9 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar 
 		        else {
 		        	/* it's not an mp3 file, so see if it's an image */
 		        	NautilusFile *file = nautilus_file_get(path_name);
-        			const gchar *mime_type = nautilus_file_get_mime_type (file);
+        			const char *mime_type = nautilus_file_get_mime_type (file);
 		        	
-		        	if (nautilus_has_prefix(mime_type, "image/")) {
+		        	if (nautilus_str_has_prefix(mime_type, "image/")) {
 		        		/* for now, just keep the first image */
 		        		if (image_path_name == NULL)
 		        			image_path_name = strdup(path_name);
@@ -560,8 +561,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar 
 	/* determine the album title/artist line */
 	
 	if (music_view->details->album_title) {
-		gchar *artist_name, *temp_str;
-		gchar* album_name = determine_attribute(song_list, FALSE);
+		char *artist_name, *temp_str;
+		char* album_name = determine_attribute(song_list, FALSE);
 		if (album_name == NULL)
 			album_name = g_basename(uri);
 		
@@ -589,7 +590,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar 
 
 
 void
-nautilus_music_view_load_uri (NautilusMusicView *music_view, const gchar *uri)
+nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 {
 	if (music_view->details->current_uri != NULL)
   		g_free(music_view->details->current_uri);
@@ -644,7 +645,7 @@ nautilus_music_view_background_changed (NautilusMusicView *music_view)
 
 static void  
 nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-					 gint x, gint y,
+					 int x, int y,
 					 GtkSelectionData *selection_data, guint info, guint time)
 {
 	g_return_if_fail (NAUTILUS_IS_MUSIC_VIEW (widget));

@@ -32,22 +32,22 @@
 #include "nautilus-lib-self-check-functions.h"
 
 size_t
-nautilus_strlen (const char *string_null_allowed)
+nautilus_strlen (const char *string)
 {
-	return string_null_allowed == NULL ? 0 : strlen (string_null_allowed);
+	return string == NULL ? 0 : strlen (string);
 }
 
 char *
-nautilus_strchr (const char *haystack_null_allowed, char needle)
+nautilus_strchr (const char *haystack, char needle)
 {
-	return haystack_null_allowed == NULL ? NULL : strchr (haystack_null_allowed, needle);
+	return haystack == NULL ? NULL : strchr (haystack, needle);
 }
 
 int
-nautilus_strcmp (const char *string_a_null_allowed, const char *string_b_null_allowed)
+nautilus_strcmp (const char *string_a, const char *string_b)
 {
-	return strcmp (string_a_null_allowed == NULL ? "" : string_a_null_allowed,
-		       string_b_null_allowed == NULL ? "" : string_b_null_allowed);
+	return strcmp (string_a == NULL ? "" : string_a,
+		       string_b == NULL ? "" : string_b);
 }
 
 int
@@ -61,13 +61,13 @@ nautilus_eat_strcmp (char *string_a, const char *string_b)
 }
 
 gboolean
-nautilus_has_prefix (const char *haystack_null_allowed, const char *needle_null_allowed)
+nautilus_str_has_prefix (const char *haystack, const char *needle)
 {
 	const char *h, *n;
 
 	/* Eat one character at a time. */
-	h = haystack_null_allowed == NULL ? "" : haystack_null_allowed;
-	n = needle_null_allowed == NULL ? "" : needle_null_allowed;
+	h = haystack == NULL ? "" : haystack;
+	n = needle == NULL ? "" : needle;
 	do {
 		if (*n == '\0') {
 			return TRUE;
@@ -80,25 +80,25 @@ nautilus_has_prefix (const char *haystack_null_allowed, const char *needle_null_
 }
 
 gboolean
-nautilus_has_suffix (const char *haystack_null_allowed, const char *needle_null_allowed)
+nautilus_str_has_suffix (const char *haystack, const char *needle)
 {
 	const char *h, *n;
 
-	if (needle_null_allowed == NULL) {
+	if (needle == NULL) {
 		return TRUE;
 	}
-	if (haystack_null_allowed == NULL) {
-		return needle_null_allowed[0] == '\0';
+	if (haystack == NULL) {
+		return needle[0] == '\0';
 	}
 		
 	/* Eat one character at a time. */
-	h = haystack_null_allowed + strlen(haystack_null_allowed);
-	n = needle_null_allowed + strlen(needle_null_allowed);
+	h = haystack + strlen(haystack);
+	n = needle + strlen(needle);
 	do {
-		if (n == needle_null_allowed) {
+		if (n == needle) {
 			return TRUE;
 		}
-		if (h == haystack_null_allowed) {
+		if (h == haystack) {
 			return FALSE;
 		}
 	} while (*--h == *--n);
@@ -107,44 +107,44 @@ nautilus_has_suffix (const char *haystack_null_allowed, const char *needle_null_
 
 
 /**
- * nautilus_strdup_prefix:
+ * nautilus_str_get_prefix:
  * Get a new string containing the first part of an existing string.
  * 
- * @source_null_allowed: The string whose prefix should be extracted.
- * @delimiter_null_allowed: The string that marks the end of the prefix.
+ * @source: The string whose prefix should be extracted.
+ * @delimiter: The string that marks the end of the prefix.
  * 
  * Return value: A newly-allocated string that that matches the first part
- * of @source_null_allowed, up to but not including the first occurrence of
- * @delimiter_null_allowed. If @source_null_allowed is NULL, returns NULL. If 
- * @delimiter_null_allowed is NULL, returns a copy of @source_null_allowed.
- * If @delimiter_null_allowed does not occur in @source_null_allowed, returns
- * a copy of @source_null_allowed.
+ * of @source, up to but not including the first occurrence of
+ * @delimiter. If @source is NULL, returns NULL. If 
+ * @delimiter is NULL, returns a copy of @source.
+ * If @delimiter does not occur in @source, returns
+ * a copy of @source.
  **/
 char *
-nautilus_strdup_prefix (const char *source_null_allowed, 
-			const char *delimiter_null_allowed)
+nautilus_str_get_prefix (const char *source, 
+			 const char *delimiter)
 {
 	char *prefix_start;
 
-	if (source_null_allowed == NULL) {
+	if (source == NULL) {
 		return NULL;
 	}
 
-	if (delimiter_null_allowed == NULL) {
-		return g_strdup (source_null_allowed);
+	if (delimiter == NULL) {
+		return g_strdup (source);
 	}
 
-	prefix_start = strstr (source_null_allowed, delimiter_null_allowed);
+	prefix_start = strstr (source, delimiter);
 
 	if (prefix_start == NULL) {
 		return NULL;
 	}
 
-	return g_strndup (source_null_allowed, prefix_start - source_null_allowed);
+	return g_strndup (source, prefix_start - source);
 }
 
 gboolean
-nautilus_string_to_int (const char *string, int *integer)
+nautilus_str_to_int (const char *string, int *integer)
 {
 	long result;
 	char *parse_end;
@@ -179,63 +179,94 @@ nautilus_string_to_int (const char *string, int *integer)
 }
 
 /**
- * nautilus_strstrip:
- * Remove all occurrences of a character from a string. The
- * original string is modified in place, and also returned for convenience.
+ * nautilus_str_strip_chr:
+ * Remove all occurrences of a character from a string.
  * 
- * @string_null_allowed: The string to be stripped.
- * @remove_this: The char to remove from @string_null_allowed
+ * @source: The string to be stripped.
+ * @remove_this: The char to remove from @source
  * 
- * Return value: @string_null_allowed, after removing all occurrences
+ * Return value: A copy of @source, after removing all occurrences
  * of @remove_this.
  */
 char *
-nautilus_strstrip (char *string_null_allowed, char remove_this)
+nautilus_str_strip_chr (const char *source, char remove_this)
 {
-        if (string_null_allowed != NULL) {
-	        char *in, *out;
+	char *result, *out;
+	const char *in;
+	
+        if (source == NULL) {
+		return NULL;
+	}
+	
+	result = g_malloc (strlen (source) + 1);
+	in = source;
+	out = result;
+	do {
+		if (*in != remove_this) {
+			*out++ = *in;
+		}
+	} while (*in++ != '\0');
 
-	        in = string_null_allowed;
-		out = string_null_allowed;
-		do {
-	                if (*in != remove_this) {
-				*out++ = *in;
-	                }
-	        } while (*in++ != '\0');
-        }
+        return result;
+}
 
-        return string_null_allowed;        
+/**
+ * nautilus_str_strip_trailing_chr:
+ * Remove trailing occurrences of a character from a string.
+ * 
+ * @source: The string to be stripped.
+ * @remove_this: The char to remove from @source
+ * 
+ * Return value: @source, after removing trailing occurrences
+ * of @remove_this.
+ */
+char *
+nautilus_str_strip_trailing_chr (const char *source, char remove_this)
+{
+	const char *end;
+	
+        if (source == NULL) {
+		return NULL;
+	}
+
+	for (end = source + strlen (source); end != source; end--) {
+		if (end[-1] != remove_this) {
+			break;
+		}
+	}
+	
+        return g_strndup (source, end - source);
 }
 
 gboolean
-nautilus_eat_string_to_int (char *string, int *integer)
+nautilus_eat_str_to_int (char *source, int *integer)
 {
 	gboolean result;
 
-	result = nautilus_string_to_int (string, integer);
-	g_free (string);
+	result = nautilus_str_to_int (source, integer);
+	g_free (source);
 	return result;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int
-call_string_to_int (const char *string)
+call_str_to_int (const char *string)
 {
 	int integer;
 
 	integer = 9999;
-	nautilus_string_to_int (string, &integer);
+	nautilus_str_to_int (string, &integer);
 	return integer;
 }
 
 static int
-call_eat_string_to_int (char *string)
+call_eat_str_to_int (char *string)
 {
 	int integer;
 
 	integer = 9999;
-	nautilus_eat_string_to_int (string, &integer);
+	nautilus_eat_str_to_int (string, &integer);
 	return integer;
 }
 
@@ -278,57 +309,64 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("aaa"), "aaab") < 0, TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("aaab"), "aaa") > 0, TRUE);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix (NULL, NULL), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix (NULL, ""), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("", NULL), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("a", "a"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("aaab", "aaab"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix (NULL, "a"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("a", NULL), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("", "a"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("a", ""), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("a", "b"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("a", "ab"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("ab", "a"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("aaa", "aaab"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("aaab", "aaa"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix (NULL, NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix (NULL, ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("a", "a"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("aaab", "aaab"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix (NULL, "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("a", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("", "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("a", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("a", "b"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("a", "ab"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("ab", "a"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("aaa", "aaab"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix ("aaab", "aaa"), TRUE);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix (NULL, NULL), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix (NULL, ""), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("", NULL), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", "a"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("aaab", "aaab"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix (NULL, "a"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", NULL), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("", "a"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", ""), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", "b"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", "ab"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("ab", "a"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("ab", "b"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("aaa", "baaa"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("baaa", "aaa"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix (NULL, NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix (NULL, ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("a", "a"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("aaab", "aaab"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix (NULL, "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("a", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("", "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("a", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("a", "b"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("a", "ab"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("ab", "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("ab", "b"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("aaa", "baaa"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("baaa", "aaa"), TRUE);
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix (NULL, NULL), NULL);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix (NULL, "foo"), NULL);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo", NULL), "foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo", "foo"), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo:", ":"), "foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo:bar", ":"), "foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("footle:bar", "tle:"), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix (NULL, NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix (NULL, "foo"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo", NULL), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo", "foo"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo:", ":"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo:bar", ":"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("footle:bar", "tle:"), "foo");	
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (NULL, '_'), NULL);	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("foo"), '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("_foo"), '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("foo_"), '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("_foo_"), '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("_f_o__o_"), '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr (NULL, '_'), NULL);	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("foo", '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_foo", '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("foo_", '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_foo__", '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_f_o__o_", '_'), "foo");	
+        
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr (NULL, '_'), NULL);	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("foo", '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_foo", '_'), "_foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("foo_", '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_foo__", '_'), "_foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_f_o__o_", '_'), "_f_o__o");	
         
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
-		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_to_int (string, &integer), boolean_result); \
-		NAUTILUS_CHECK_INTEGER_RESULT (call_string_to_int (string), integer_result); \
-		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_string_to_int (g_strdup (string), &integer), boolean_result); \
-		NAUTILUS_CHECK_INTEGER_RESULT (call_eat_string_to_int (g_strdup (string)), integer_result);
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_to_int (string, &integer), boolean_result); \
+		NAUTILUS_CHECK_INTEGER_RESULT (call_str_to_int (string), integer_result); \
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_str_to_int (g_strdup (string), &integer), boolean_result); \
+		NAUTILUS_CHECK_INTEGER_RESULT (call_eat_str_to_int (g_strdup (string)), integer_result);
 
 	TEST_INTEGER_CONVERSION_FUNCTIONS (NULL, FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("", FALSE, 9999)

@@ -28,33 +28,39 @@
 #include <glib.h>
 #include <string.h>
 
+/* We use the "str" abbrevation to mean char * string, since
+ * "string" usually means g_string instead.
+ */
+
+/* NULL is allowed for all the str parameters to these functions. */
+
 /* Versions of basic string functions that allow NULL. */
-size_t   nautilus_strlen            (const char *string_null_allowed);
-char *   nautilus_strchr            (const char *haystack_null_allowed,
-				     char        needle);
-int      nautilus_strcmp            (const char *string_a_null_allowed,
-				     const char *string_b_null_allowed);
+size_t   nautilus_strlen                 (const char *string);
+char *   nautilus_strchr                 (const char *haystack,
+					  char        needle);
+int      nautilus_strcmp                 (const char *string_a,
+					  const char *string_b);
 
 /* Versions of basic string functions that free their parameters. */
-int      nautilus_eat_strcmp        (char       *string_a_null_allowed_gets_freed,
-				     const char *string_b_null_allowed);
+int      nautilus_eat_strcmp             (char       *string_a_gets_freed,
+					  const char *string_b);
 
 /* Other basic string operations. */
-gboolean nautilus_has_prefix        (const char *target_null_allowed,
-				     const char *prefix_null_allowed);
-char *   nautilus_strdup_prefix     (const char *source_null_allowed,
-				     const char *delimiter_null_allowed);
-gboolean nautilus_has_suffix        (const char *target_null_allowed,
-				     const char *suffix_null_allowed);
-
-char *   nautilus_strstrip          (char       *string_null_allowed,
-                                     char        remove_this);
-
+gboolean nautilus_str_has_prefix         (const char *target,
+					  const char *prefix);
+char *   nautilus_str_get_prefix         (const char *source,
+					  const char *delimiter);
+gboolean nautilus_str_has_suffix         (const char *target,
+					  const char *suffix);
+char *   nautilus_str_strip_chr          (const char *string,
+					  char        remove_this);
+char *   nautilus_str_strip_trailing_chr (const char *string,
+					  char        remove_this);
 
 /* Conversions to and from strings. */
-gboolean nautilus_string_to_int     (const char *string,
-				     int        *integer);
-gboolean nautilus_eat_string_to_int (char       *string_gets_freed,
-				     int        *integer);
+gboolean nautilus_str_to_int             (const char *string,
+					  int        *integer);
+gboolean nautilus_eat_str_to_int         (char       *string_gets_freed,
+					  int        *integer);
 
 #endif /* NAUTILUS_STRING_H */

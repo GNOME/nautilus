@@ -83,19 +83,22 @@ nautilus_file_get (const char *uri)
 					  GNOME_VFS_FILE_INFO_GETMIMETYPE
 					  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
 		  			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
-	if (result != GNOME_VFS_OK)
+	if (result != GNOME_VFS_OK) {
 		return NULL;
+	}
 
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL)
+	if (vfs_uri == NULL) {
 		return NULL;
+	}
 
 	/* Make VFS version of directory URI. */
 	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
-	if (directory_vfs_uri == NULL)
+	if (directory_vfs_uri == NULL) {
 		return NULL;
+	}
 
 	/* Make text version of directory URI. */
 	directory_uri = gnome_vfs_uri_to_string (directory_vfs_uri,
@@ -105,10 +108,16 @@ nautilus_file_get (const char *uri)
 	/* Get object that represents the directory. */
 	directory = nautilus_directory_get (directory_uri);
 	g_free (directory_uri);
-	if (directory == NULL)
+	if (directory == NULL) {
 		return NULL;
+	}
 
-	file = nautilus_directory_new_file (directory, file_info);
+	file = nautilus_directory_find_file (directory, file_info->name);
+	if (file == NULL) {
+		file = nautilus_directory_new_file (directory, file_info);
+		directory->details->files =
+			g_list_append (directory->details->files, file);
+	}
 
 	gnome_vfs_file_info_unref (file_info);
 	nautilus_file_ref (file);
@@ -176,14 +185,17 @@ nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFi
 	is_directory_1 = nautilus_file_is_directory (file_1);
 	is_directory_2 = nautilus_file_is_directory (file_2);
 
-	if (is_directory_1 && !is_directory_2)
+	if (is_directory_1 && !is_directory_2) {
 		return -1;
+	}
 
-	if (is_directory_2 && !is_directory_1)
+	if (is_directory_2 && !is_directory_1) {
 		return +1;
+	}
 
-	if (!is_directory_1 && !is_directory_2)
+	if (!is_directory_1 && !is_directory_2) {
 		return 0;
+	}
 
 	/* Both are directories, compare by item count. */
 	/* FIXME: get_directory_item_count_hack is slow, and calling
@@ -195,11 +207,13 @@ nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFi
 	item_count_1 = get_directory_item_count_hack (file_1, FALSE);
 	item_count_2 = get_directory_item_count_hack (file_2, FALSE);
 
-	if (item_count_1 < item_count_2)
+	if (item_count_1 < item_count_2) {
 		return -1;
+	}
 
-	if (item_count_2 < item_count_1)
+	if (item_count_2 < item_count_1) {
 		return +1;
+	}
 
 	return 0;
 }
@@ -221,17 +235,21 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	is_directory_1 = nautilus_file_is_directory (file_1);
 	is_directory_2 = nautilus_file_is_directory (file_2);
 	
-	if (is_directory_1 && is_directory_2)
+	if (is_directory_1 && is_directory_2) {
 		return 0;
+	}
 
-	if (is_directory_1)
+	if (is_directory_1) {
 		return -1;
+	}
 
-	if (is_directory_2)
+	if (is_directory_2) {
 		return +1;
+	}
 
-	if (nautilus_strcmp (file_1->info->mime_type, file_2->info->mime_type) == 0)
+	if (nautilus_strcmp (file_1->info->mime_type, file_2->info->mime_type) == 0) {
 		return 0;
+	}
 
 	type_string_1 = nautilus_file_get_type_as_string (file_1);
 	type_string_2 = nautilus_file_get_type_as_string (file_2);
@@ -300,14 +318,15 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		return 0;
 	}
 
-	if (reversed)
+	if (reversed) {
 		return gnome_vfs_file_info_compare_for_sort_reversed (file_1->info,
 								      file_2->info,
 								      rules);
-	else
+	} else {
 		return gnome_vfs_file_info_compare_for_sort (file_1->info,
 							     file_2->info,
 							     rules);
+	}
 }
 
 /**
@@ -460,23 +479,16 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	 * internationalization's sake.
 	 */
 
-	if (file_date_age == 0)
-	{
+	if (file_date_age == 0)	{
 		/* today, use special word */
 		format = _("today %-I:%M %p");
-	}
-	else if (file_date_age == 1)
-	{
+	} else if (file_date_age == 1) {
 		/* yesterday, use special word */
 		format = _("yesterday %-I:%M %p");
-	}
-	else if (file_date_age < 7)
-	{
+	} else if (file_date_age < 7) {
 		/* current week, include day of week */
 		format = _("%A %-m/%-d/%y %-I:%M %p");
-	}
-	else
-	{
+	} else {
 		format = _("%-m/%-d/%y %-I:%M %p");
 	}
 
@@ -578,8 +590,7 @@ nautilus_file_get_owner_as_string (NautilusFile *file)
 
 	g_print ("pointer to password info is %p\n", password_info);
 
-	if (password_info == NULL)
-	{
+	if (password_info == NULL) {
 		return g_strdup (_("unknown owner"));
 	}
 	
@@ -607,8 +618,7 @@ nautilus_file_get_group_as_string (NautilusFile *file)
 	/* No need to free result of getgrgid */
 	group_info = getgrgid (file->info->gid);
 
-	if (group_info == NULL)
-	{
+	if (group_info == NULL) {
 		return g_strdup (_("unknown group"));
 	}
 	
@@ -633,24 +643,28 @@ get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_ite
 	g_assert (nautilus_file_is_directory (file));
 	
 	uri = nautilus_file_get_uri (file);
-	if (nautilus_has_prefix (uri, "file://"))
+	if (nautilus_str_has_prefix (uri, "file://")) {
 		path = uri + 7;
-	else
+	} else {
 		path = uri;
+	}
 	
 	directory = opendir (path);
 	
 	g_free (uri);
 	
-	if (!directory)
+	if (!directory) {
 		return 0;
+	}
         
 	count = 0;
 	
-	while ((entry = readdir(directory)) != NULL)
+	while ((entry = readdir(directory)) != NULL) {
 		// Only count invisible items if requested.
-		if (!ignore_invisible_items || entry->d_name[0] != '.')
+		if (!ignore_invisible_items || entry->d_name[0] != '.') {
 			count += 1;
+		}
+	}
 	
 	closedir(directory);
 	
@@ -678,8 +692,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
-	if (nautilus_file_is_directory (file))
-	{
+	if (nautilus_file_is_directory (file)) {
 		/* FIXME: Since computing the item count is slow, we
 		 * want to do it in a deferred way. However, that
 		 * architecture doesn't exist yet, so we're hacking

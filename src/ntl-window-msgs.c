@@ -953,7 +953,7 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
          */
         char * scheme_string;
 
-        scheme_string = nautilus_strdup_prefix (requested_uri, ":");
+        scheme_string = nautilus_str_get_prefix (requested_uri, ":");
         g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
       	error_message = g_strdup_printf ("Couldn't display \"%s\",\nbecause Nautilus cannot handle %s: locations.", requested_uri, scheme_string);
 	g_free (scheme_string);

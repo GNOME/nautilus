@@ -108,11 +108,11 @@ fm_icons_controller_get_icon_property (NautilusIconsController *controller,
 		 * the theme name starting with eazel.
 		 */
 		theme_name = nautilus_icon_factory_get_theme ();
-		use_text = nautilus_has_prefix (theme_name, "eazel");
+		use_text = nautilus_str_has_prefix (theme_name, "eazel");
 		g_free (theme_name);
 		
 		mime_type = nautilus_file_get_mime_type (NAUTILUS_FILE (icon));
-		if (use_text && (mime_type == NULL || nautilus_has_prefix (mime_type, "text/"))) {
+		if (use_text && (mime_type == NULL || nautilus_str_has_prefix (mime_type, "text/"))) {
 			return nautilus_file_get_uri (NAUTILUS_FILE (icon));
 		}
 	}
