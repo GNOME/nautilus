@@ -1,3 +1,15 @@
+2000-04-07  Andy Hertzfeld <andy@eazel.com>
+
+	* components/services/startup/nautilus-service-startup-view.c:
+	switched over to using Jonathan's prototype service, which is only
+	accessible from eazel's intranet for now. Registration now works with
+	the service.
+	* libnautilus/nautilus-icon-canvas-item.c:
+	first, simple version of drag/swallow highliting - it just darkens the
+	icon and emboldens the text, exactly like selection highlighting.
+	Pavel's going to set the flag during dragging soon, so this will help
+	him see what he's doing.  Soon, we'll have a more elaborate approach.
+	
 2000-04-06  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:

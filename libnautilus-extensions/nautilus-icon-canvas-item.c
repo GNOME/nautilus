@@ -598,7 +598,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 					       text_left, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
 			
 			/* if it's selected, embolden the text by drawing again offset by one pixel */
-			if (details->is_highlighted_for_selection)
+			if (details->is_highlighted_for_selection || details->is_highlighted_for_drop)
 				gnome_icon_paint_text (icon_text_info, drawable, gc,
 					       text_left + 1, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);			
 
@@ -948,7 +948,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 		temp_pixbuf = nautilus_create_spotlight_pixbuf (details->pixbuf);
 	}
 	
-	if (details->is_highlighted_for_selection) {
+	if (details->is_highlighted_for_selection || details->is_highlighted_for_drop) {
 		old_pixbuf = temp_pixbuf;
 		temp_pixbuf = nautilus_create_darkened_pixbuf (temp_pixbuf,
 							       0.8 * 255,

@@ -56,7 +56,7 @@ struct _NautilusServicesContentViewDetails {
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/DDDD/FFFF"
 /* FIXME: the service domain name should be settable and kept with the other preferences. */
-#define SERVICE_DOMAIN_NAME		       "hippie.eazel.com"
+#define SERVICE_DOMAIN_NAME		       "eazel24.eazel.com"
 
 static void nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass);
 static void nautilus_service_startup_view_initialize       (NautilusServicesContentView *view);
@@ -277,13 +277,13 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 		
 	/* FIXME: need to url-encode the arguments here */
 	body = g_strdup_printf("email=%s&pwd=%s", email, password);
-	uri = g_strdup_printf("http://%s/new.pl", SERVICE_DOMAIN_NAME);
+	uri = g_strdup_printf("http://%s/member/new.pl", SERVICE_DOMAIN_NAME);
 	 
 	request = make_http_post_request(uri, body);
 	response_str = ghttp_get_body(request);
 	
 	/* handle the error response */
-	if (strstr(response_str, "<ERROR field=") == response_str) {
+	if (response_str && (strstr(response_str, "<ERROR field=") == response_str)) {
 		if (strstr(response_str, "email")) {
 			if (strstr(response_str, "taken"))
 				show_feedback(view, "That email address is already registered!  Please change it and try again.");
