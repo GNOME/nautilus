@@ -52,13 +52,13 @@
 
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
-/* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
-#define	SUMMARY_XML_HOME			"eazel-services://anonymous/services"
-#define	SUMMARY_XML_HOME_2			"eazel-services:/services"
 #define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
 #define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
-#define	REGISTER_HOME				"eazel-services://anonymous/account/register/form"
-#define	PREFERENCES_HOME			"eazel-services:/account/preferences/form"
+
+#define SUMMARY_XML_KEY				"eazel_summary_xml"
+#define URL_REDIRECT_TABLE			"eazel_url_table_xml"
+#define REGISTER_KEY				"eazel_service_register"
+#define PREFERENCES_KEY				"eazel_service_account_maintenance"
 
 typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
 
@@ -215,10 +215,13 @@ generate_summary_form (NautilusSummaryView	*view)
 	gboolean		got_url_table;
 	GtkWidget 		*viewport;
 	NautilusBackground	*background;
+	char			*url;
 
 	view->details->current_service_row = 0;
 	view->details->current_news_row = 0;
 	view->details->current_update_row = 0;
+
+	url = NULL;
 
 	length = 0;
 	padding = 0;
@@ -233,7 +236,12 @@ generate_summary_form (NautilusSummaryView	*view)
 			generate_error_dialog (view);
 		}
 		/* fetch and parse the xml file */
-		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME_2);
+		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+		if (!url) {
+			g_assert ("Failed to get summary xml home !\n");
+		}
+		view->details->xml_data = parse_summary_xml_file (url);
+		g_free (url);
 		if (view->details->xml_data == NULL) {
 			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
 			generate_error_dialog (view);
@@ -250,7 +258,12 @@ generate_summary_form (NautilusSummaryView	*view)
 		}
 
 		/* fetch and parse the xml file */
-		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
+		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+		if (!url) {
+			g_assert ("Failed to get summary xml home !\n");
+		}
+		view->details->xml_data = parse_summary_xml_file (url);
+		g_free (url);
 		if (view->details->xml_data == NULL) {
 			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
 			generate_error_dialog (view);
@@ -1020,8 +1033,16 @@ logged_out_callback (gpointer	raw)
 static void
 preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
+	char	*url;
+	url = NULL;
 
-	go_to_uri (view->details->nautilus_view, PREFERENCES_HOME);
+	url = trilobite_redirect_lookup (PREFERENCES_KEY);
+	if (!url) {
+		g_assert ("Failed to load Registration url!\n");
+	}
+
+	go_to_uri (view->details->nautilus_view, url);
+	g_free (url);
 
 }
 
@@ -1029,8 +1050,16 @@ preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 static void
 register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
+	char	*url;
+	url = NULL;
 
-	go_to_uri (view->details->nautilus_view, REGISTER_HOME);
+	url = trilobite_redirect_lookup (REGISTER_KEY);
+	if (!url) {
+		g_assert ("Failed to load Registration url!\n");
+	}
+
+	go_to_uri (view->details->nautilus_view, url);
+	g_free (url);
 
 }
 
