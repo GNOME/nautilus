@@ -1,0 +1,29 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_login_view_factory:a2839e69-53ae-47b8-b797-3e9335bacf22" type="exe" location="nautilus-login-view">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/GenericFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus Service Login View Factory"/>
+<oaf_attribute name="description" type="string" value="Service Login View Component's Factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_login_view:3a6345f0-d78d-4edc-9c3e-0c1be7426c44" type="factory" location="OAFIID:nautilus_login_view_factory:a2839e69-53ae-47b8-b797-3e9335bacf22">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Control:1.0"/>
+<item value="IDL:Bonobo/Unknown:1.0"/>
+<item value="IDL:Nautilus/ContentView:1.0"/>
+<item value="IDL:Nautilus/View:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus Login View"/>
+<oaf_attribute name="description" type="string" value="Service Login view component"/>
+<oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
+<item value="eazel-login"/>
+</oaf_attribute>
+<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+<item value="eazel-login"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="Login"/>
+</oaf_server>
+
+</oaf_info>
