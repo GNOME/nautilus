@@ -1,2 +1,2 @@
-SUBDIRS = idl lib server command-line
+SUBDIRS = idl lib server command-line nautilus-view
 

@@ -1,18 +1,52 @@
 NULL =
 
-CPPFLAGS = \
-	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Services\"
+CPPFLAGS =						\
+	-DPREFIX=\"$(prefix)\"				\
+	-DG_LOG_DOMAIN=\"Nautilus-service-install\"
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS) \
-	$(OAF_CFLAGS) \
-	$(XML_CFLAGS) \
-	$(WERROR) \
+INCLUDES =						\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/components/services/install/lib	\
+	-I$(top_srcdir)/components/services/trilobite	\
+	-I$(top_builddir)				\
+	-I/usr/include/rpm				\
+	$(GCONF_CFLAGS)					\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(GNOMEUI_CFLAGS)				\
+	$(VFS_CFLAGS)					\
+	$(WERROR)					\
 	$(NULL)
 
-gnorbadir = $(sysconfdir)/CORBA/servers
+oafdir = $(datadir)/oaf
 
+oaf_DATA = nautilus-service-install-view.oafinfo
+
+bin_PROGRAMS = nautilus-service-install-view
+
+nautilus_service_install_view_SOURCES =		        \
+	nautilus-service-install-view.h			\
+	nautilus-service-install-view.c			\
+	main.c						\
+	$(NULL)
+
+nautilus_service_install_view_LDADD =			\
+	$(RPM_LIBS)					\
+	$(NULL)
+
+
+nautilus_service_install_view_LDFLAGS =			\
+	$(top_builddir)/libnautilus/libnautilus.la	\
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
+	$(top_builddir)/librsvg/librsvg.la		\
+	$(top_builddir)/components/services/install/lib/libeazelinstall.la \
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
+	$(BONOBO_LIBS)					\
+	$(GCONF_LIBS)					\
+	$(GNOMEUI_LIBS)					\
+	$(OAF_LIBS)					\
+	$(VFS_LIBS)					\
+	$(RPM_LIBS)					\
+	$(NULL)
+
+EXTRA_DIST = $(oaf_DATA)
