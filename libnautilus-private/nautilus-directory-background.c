@@ -31,8 +31,6 @@
 #include "nautilus-background.h"
 #include "nautilus-metadata.h"
 
-#define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
-
 static void background_changed_callback (NautilusBackground *background,
                                          NautilusDirectory  *directory);
 static void directory_changed_callback  (NautilusDirectory  *directory,
@@ -60,7 +58,7 @@ background_changed_callback (NautilusBackground *background,
 	color = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (directory,
 					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
-					 DEFAULT_BACKGROUND_COLOR,
+					 NULL,
 					 color);
 	g_free (color);
 
@@ -99,7 +97,7 @@ directory_changed_callback (NautilusDirectory *directory,
         /* Update color based on metadata. */
 	color = nautilus_directory_get_metadata (directory,
                                                  NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
-                                                 DEFAULT_BACKGROUND_COLOR);
+                                                 NULL);
 	nautilus_background_set_color (background, color);
 	g_free (color);
         
