@@ -1,3 +1,21 @@
+2000-09-05  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 2610, can't delete duplicate colors from property browser.
+	Also, made property browser use anti-aliased item labels
+		
+	* src/nautilus-property-browser.c: (remove_color),
+	(add_new_button_callback), (remove_button_callback),
+	(element_clicked_callback), (make_properties_from_directories):
+	fixed bug by checking for delete property when finding item to delete;
+	also, set up nautilus_buffered_widget properities for labels
+	* src/nautilus-search-bar-criterion.c: (make_emblem_value_menu):
+	made it use nautilus_label routines to access returned label text	
+	* libnautilus-extensions/nautilus-customization-data.h:
+	changed type of label returned from GtkLabel to GtkWidget
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_get_next_element_for_display):
+	return a nautilus_label instead of a gtk_label
+	
 2000-09-05  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c:
@@ -9,6 +27,7 @@
 	(nautilus_self_check_search_uri): fix tests after rebecka 
 	second break of them :)
 
+>>>>>>> 1.1695
 2000-09-05  Darin Adler  <darin@eazel.com>
 
 	* check-FIXME.pl: Removed some special-case file names
@@ -70,6 +89,7 @@
 	the invoking shell in the case where the parameters are not
 	consistent.
 	
+>>>>>>> 1.1694
 2000-09-05  Pavel Cisler  <pavel@eazel.com>
 
 	* configure.in:

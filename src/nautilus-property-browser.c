@@ -668,7 +668,8 @@ remove_color (NautilusPropertyBrowser *property_browser, const char* color_value
 				xmlNodePtr color_node = nautilus_xml_get_children (cur_node);
 				while (color_node != NULL) {
 					char* color_content = xmlNodeGetContent(color_node);
-					if (color_content && !strcmp(color_content, color_value)) {
+					if (color_content && !strcmp(color_content, color_value) &&
+						!xmlGetProp (color_node, "deleted")) {
 						xmlSetProp(color_node, "deleted", "1");
 						break;
 					}
@@ -1209,6 +1210,7 @@ add_new_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_bro
 	if (property_browser->details->remove_mode) {
 		property_browser->details->remove_mode = FALSE;
 		nautilus_property_browser_update_contents(property_browser);
+		gtk_widget_show (property_browser->details->help_label);
 		return;
 	}
 	
@@ -1231,6 +1233,7 @@ remove_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_brow
 	}
 	
 	property_browser->details->remove_mode = TRUE;
+	gtk_widget_hide (property_browser->details->help_label);
 	nautilus_property_browser_update_contents(property_browser);	
 }
 
@@ -1254,6 +1257,7 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 		nautilus_property_browser_remove_element(property_browser, element_name);
 		property_browser->details->remove_mode = FALSE;
 		nautilus_property_browser_update_contents(property_browser);
+		gtk_widget_show (property_browser->details->help_label);
 		return;
 	}
 	
@@ -1361,7 +1365,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	NautilusCustomizationData *customization_data;
 	char *emblem_name;
 	GtkWidget *pixmap_widget;
-	GtkLabel *label;
+	GtkWidget *label;
 	int index;
 
 
@@ -1398,8 +1402,12 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
 		gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
 		
-		gtk_box_pack_start (GTK_BOX(temp_vbox), GTK_WIDGET (label), FALSE, FALSE, 0);
-		gtk_widget_show(GTK_WIDGET (label));
+		nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);		
+		nautilus_buffered_widget_set_background_color
+		(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_RGB_COLOR_WHITE);		
+		
+		gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
+		gtk_widget_show(label);
 		
 		gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
 		gtk_signal_connect_full

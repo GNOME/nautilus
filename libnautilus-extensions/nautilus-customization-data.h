@@ -55,7 +55,7 @@ GnomeVFSResult             nautilus_customization_data_get_next_element_for_disp
 										     GtkWidget **pixmap_widget,
 
 
-										     GtkLabel **label_widget);
+										     GtkWidget **label_widget);
 
 
 gboolean                   nautilus_customization_data_private_data_was_displayed   (NautilusCustomizationData *data);

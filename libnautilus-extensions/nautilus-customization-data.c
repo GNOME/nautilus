@@ -38,6 +38,7 @@
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-label.h"
 #include "nautilus-string.h"
 
 typedef enum {
@@ -140,7 +141,7 @@ GnomeVFSResult
 nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
 							  char **emblem_name,
 							  GtkWidget **pixmap_widget,
-							  GtkLabel **label)
+							  GtkWidget **label)
 {
 	GnomeVFSFileInfo *current_file_info;
 
@@ -207,7 +208,9 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	
 	*pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	filtered_name = format_name_for_display (current_file_info->name);
-	*label = GTK_LABEL (gtk_label_new (filtered_name));
+	*label = nautilus_label_new (filtered_name);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (*label), 12);
+	
 	g_free (filtered_name);
 
 	if (data->reading_mode == READ_PRIVATE_CUSTOMIZATIONS) {

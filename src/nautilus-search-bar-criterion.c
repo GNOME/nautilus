@@ -45,6 +45,7 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -722,7 +723,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 	char *emblem_file_name;
 	char *emblem_display_name;
 	GtkWidget *emblem_pixmap_widget;
-	GtkLabel *emblem_label;
+	GtkWidget *emblem_label;
 	GtkWidget *value_menu; 
 	
 	/* Add the items to the emblems menu here */
@@ -739,12 +740,12 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 									 &emblem_label) == GNOME_VFS_OK) {
 		
 		menu_item = gtk_menu_item_new ();
-		gtk_label_get (emblem_label, &emblem_display_name);
-		gtk_object_set_data (GTK_OBJECT (menu_item), "emblem name", emblem_display_name);
+		emblem_display_name = nautilus_label_get_text (NAUTILUS_LABEL (emblem_label));
+		gtk_object_set_data_full (GTK_OBJECT (menu_item), "emblem name", emblem_display_name, g_free);
 		temp_hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
 		gtk_container_add (GTK_CONTAINER (menu_item), temp_hbox);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (temp_hbox), GTK_WIDGET (emblem_label), FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_label, FALSE, FALSE, 0);
 		gtk_menu_append (GTK_MENU (value_menu), menu_item);
 	}
 
