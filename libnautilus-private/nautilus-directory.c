@@ -918,7 +918,7 @@ nautilus_directory_notify_files_added (GList *uris)
 	NautilusDirectory *directory;
 	GHashTable *parent_directories;
 	const char *uri;
-	const char *directory_uri;
+	char *directory_uri;
 	GnomeVFSURI *vfs_uri;
 	NautilusFile *file;
 
@@ -941,6 +941,7 @@ nautilus_directory_notify_files_added (GList *uris)
 			
 			directory_uri = uri_get_directory_part (uri);
 			file = nautilus_file_get_existing (directory_uri);
+			g_free (directory_uri);
 
 			if (file != NULL) {
 				nautilus_file_invalidate_count_and_mime_list (file);

@@ -42,9 +42,8 @@ GNOME_CLASS_BOILERPLATE (FMIconContainer, fm_icon_container,
 static FMIconView *
 get_icon_view (NautilusIconContainer *container)
 {
-	g_assert (FM_IS_ICON_CONTAINER (container));
-
-	return FM_ICON_CONTAINER (container)->view;
+	/* Type unsafe comparison for performance */
+	return ((FMIconContainer *)container)->view;
 }
 
 static char *
@@ -349,9 +348,10 @@ fm_icon_container_compare_icons (NautilusIconContainer *container,
 			(container, icon_a, icon_b);
 	}
 
+	/* Type unsafe comparisons for performance */
 	return fm_icon_view_compare_files (icon_view,
-					   NAUTILUS_FILE (icon_a),
-					   NAUTILUS_FILE (icon_b));
+					   (NautilusFile *)icon_a,
+					   (NautilusFile *)icon_b);
 }
 
 static int

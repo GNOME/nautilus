@@ -1749,11 +1749,10 @@ fm_icon_view_compare_files (FMIconView   *icon_view,
 			    NautilusFile *a,
 			    NautilusFile *b)
 {
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-
 	return nautilus_file_compare_for_sort
 		(a, b, icon_view->details->sort->sort_type,
-		 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)),
+		 /* Use type-unsafe cast for performance */
+		 fm_directory_view_should_sort_directories_first ((FMDirectoryView *)icon_view),
 		 icon_view->details->sort_reversed);
 }
 

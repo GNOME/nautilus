@@ -1860,9 +1860,6 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 {
 	int compare;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file_1), 0);
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file_2), 0);
-
 	switch (sort_type) {
 	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
 		compare = compare_by_display_name (file_1, file_2);

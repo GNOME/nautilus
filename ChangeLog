@@ -1,5 +1,15 @@
 2002-10-18  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c (nautilus_file_compare_for_sort_internal): 
+	* src/file-manager/fm-icon-view.c (fm_icon_view_compare_files): 
+	* src/file-manager/fm-icon-container.c (get_icon_view):
+	Remove type checks, was showing up in profiles.
+
+	* libnautilus-private/nautilus-directory.c (nautilus_directory_notify_files_added):
+	Don't leak directory_uri
+
+2002-10-18  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-directory-async.c:
 	The HP-UX compiler is an anal retentive bastard.
 
