@@ -282,7 +282,6 @@ static int      insert_row                              (GtkCList             *l
 							 int                   row,
 							 char                 *text[]);
 
-
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
 
 static guint list_signals[LAST_SIGNAL];
@@ -2294,6 +2293,8 @@ nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 
 	clist = GTK_CLIST (widget);
 
+	nautilus_list_setup_style_colors (NAUTILUS_LIST (widget));
+
 	if (GTK_WIDGET_DRAWABLE (widget)) {
 		int border_width;
 		border_width = GTK_CONTAINER (widget)->border_width;
@@ -2323,6 +2324,8 @@ nautilus_list_expose (GtkWidget *widget, GdkEventExpose *event)
 	g_assert (NAUTILUS_IS_LIST (widget));
 
 	clist = GTK_CLIST (widget);
+
+	nautilus_list_setup_style_colors (NAUTILUS_LIST (widget));
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
 

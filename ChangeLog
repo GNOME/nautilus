@@ -1,3 +1,11 @@
+2000-07-18  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c: (nautilus_list_draw),
+	(nautilus_list_expose):
+	Update the colors before each draw to deal with background color
+	changes. I had it listen to appearance_changed signals but this
+	is way more robust.
+
 2000-07-18  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-stock-dialogs.c:
