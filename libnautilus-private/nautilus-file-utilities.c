@@ -40,6 +40,7 @@
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <ctype.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
@@ -140,6 +141,70 @@ nautilus_make_uri_from_input (const char *location)
 
 	return toreturn;
 }
+
+
+char *
+nautilus_make_uri_canonical (const char *uri)
+{
+	size_t length;
+	char *canonical_uri, *old_uri, *with_slashes, *p;
+
+	/* Convert "gnome-trash:<anything>" and "trash:<anything>" to
+	 * "trash:".
+	 */
+	if (nautilus_istr_has_prefix (uri, "trash:")
+	    || nautilus_istr_has_prefix (uri, "gnome-trash:")) {
+		return g_strdup ("trash:");
+	}
+
+	/* FIXME bugzilla.eazel.com 648: 
+	 * This currently ignores the issue of two uris that are not identical but point
+	 * to the same data except for the specific cases of trailing '/' characters,
+	 * file:/ and file:///, and "lack of file:".
+	 */
+
+	/* Strip the trailing "/" characters. */
+	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
+	if (strcmp (canonical_uri, uri) != 0) {
+		/* If some trailing '/' were stripped, there's the possibility,
+		 * that we stripped away all the '/' from a uri that has only
+		 * '/' characters. If you change this code, check to make sure
+		 * that "file:///" still works as a URI.
+		 */
+		length = strlen (canonical_uri);
+		if (length == 0 || canonical_uri[length - 1] == ':') {
+			with_slashes = g_strconcat (canonical_uri, "///", NULL);
+			g_free (canonical_uri);
+			canonical_uri = with_slashes;
+		}
+	}
+
+	/* Add file: if there is no scheme. */
+	if (strchr (canonical_uri, ':') == NULL) {
+		old_uri = canonical_uri;
+		canonical_uri = g_strconcat ("file:", old_uri, NULL);
+		g_free (old_uri);
+	}
+
+	/* Lower-case the scheme. */
+	for (p = canonical_uri; *p != ':'; p++) {
+		g_assert (*p != '\0');
+		if (isupper (*p)) {
+			*p = tolower (*p);
+		}
+	}
+
+	/* Convert file:/ to file:/// */
+	if (nautilus_str_has_prefix (canonical_uri, "file:/")
+	    && !nautilus_str_has_prefix (canonical_uri, "file:///")) {
+		old_uri = canonical_uri;
+		canonical_uri = g_strconcat ("file://", old_uri + 5, NULL);
+		g_free (old_uri);
+	}
+
+	return canonical_uri;
+}
+
 
 /**
  * nautilus_make_path:
@@ -703,6 +768,15 @@ nautilus_self_check_file_utilities (void)
 	g_free (tmp);
 	tmp = nautilus_make_uri_from_input ("::");
 	g_free (tmp);
+
+	/* nautilus_make_uri_canonical */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), "trash:");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

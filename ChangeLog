@@ -1,3 +1,40 @@
+2000-08-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix for 1528. "Where's the money, Lebowski?"
+	
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_monitor_node): A few changes to avoid
+	crashing when re-monitoring a node.
+
+	* components/tree/nautilus-tree-view.c
+	(uri_to_view_node, model_node_to_view_node): New convenience
+	functions.
+	(insert_hack_node, nautilus_tree_view_insert_model_node,
+	nautilus_tree_view_remove_model_node,
+	nautilus_tree_view_update_model_node,
+	nautilus_tree_view_find_parent_node): Use the new functions
+	(notify_done_loading, notify_node_seen,
+	nautilus_tree_view_model_node_added_callback,
+	nautilus_tree_view_model_done_loading_callback,
+	get_uri_sequence_to_root, call_when_root_seen,
+	call_when_uri_loaded_or_parent_done_loading,
+	cancel_selection_in_progress, expand_uri_sequence_and_select_end,
+	nautilus_tree_view_load_uri, tree_load_location_callback,
+	tree_select_row_callback): New mess^Wcode to select on content
+	view navigation, handling all the asynchronicity.
+
+	* libnautilus-extensions/nautilus-file-utilities.h,
+	libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical): Export the function formerly known
+	as `make_uri_canonical' in natuilus-directory.c.
+	(nautilus_self_check_file_utilities): Move tests here.
+	* libnautilus-extensions/nautilus-directory.c:
+	(make_uri_canonical): remove
+	(nautilus_directory_get_internal):
+	s/make_uri_canonical/nautilus_make_uri_canonical/
+	(nautilus_self_check_directory): Remove tests for
+	make_uri_canonical
+	
 2000-08-24  Andy Hertzfeld  <andy@eazel.com>
  
 	cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-finish.c:

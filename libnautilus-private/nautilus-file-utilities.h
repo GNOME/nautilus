@@ -38,6 +38,8 @@ typedef struct NautilusReadFileHandle NautilusReadFileHandle;
 
 char *                  nautilus_format_uri_for_display     (const char                *uri);
 char *                  nautilus_make_uri_from_input        (const char                *location);
+char *                  nautilus_make_uri_canonical         (const char                *uri);
+
 
 /* FIXME: This is the same as gnome-libs g_concat_dir_and_file except
  * for handling path == NULL.

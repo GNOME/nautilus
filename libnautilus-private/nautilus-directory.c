@@ -194,67 +194,6 @@ nautilus_directory_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-static char *
-make_uri_canonical (const char *uri)
-{
-	size_t length;
-	char *canonical_uri, *old_uri, *with_slashes, *p;
-
-	/* Convert "gnome-trash:<anything>" and "trash:<anything>" to
-	 * "trash:".
-	 */
-	if (nautilus_istr_has_prefix (uri, "trash:")
-	    || nautilus_istr_has_prefix (uri, "gnome-trash:")) {
-		return g_strdup ("trash:");
-	}
-
-	/* FIXME bugzilla.eazel.com 648: 
-	 * This currently ignores the issue of two uris that are not identical but point
-	 * to the same data except for the specific cases of trailing '/' characters,
-	 * file:/ and file:///, and "lack of file:".
-	 */
-
-	/* Strip the trailing "/" characters. */
-	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
-	if (strcmp (canonical_uri, uri) != 0) {
-		/* If some trailing '/' were stripped, there's the possibility,
-		 * that we stripped away all the '/' from a uri that has only
-		 * '/' characters. If you change this code, check to make sure
-		 * that "file:///" still works as a URI.
-		 */
-		length = strlen (canonical_uri);
-		if (length == 0 || canonical_uri[length - 1] == ':') {
-			with_slashes = g_strconcat (canonical_uri, "///", NULL);
-			g_free (canonical_uri);
-			canonical_uri = with_slashes;
-		}
-	}
-
-	/* Add file: if there is no scheme. */
-	if (strchr (canonical_uri, ':') == NULL) {
-		old_uri = canonical_uri;
-		canonical_uri = g_strconcat ("file:", old_uri, NULL);
-		g_free (old_uri);
-	}
-
-	/* Lower-case the scheme. */
-	for (p = canonical_uri; *p != ':'; p++) {
-		g_assert (*p != '\0');
-		if (isupper (*p)) {
-			*p = tolower (*p);
-		}
-	}
-
-	/* Convert file:/ to file:/// */
-	if (nautilus_str_has_prefix (canonical_uri, "file:/")
-	    && !nautilus_str_has_prefix (canonical_uri, "file:///")) {
-		old_uri = canonical_uri;
-		canonical_uri = g_strconcat ("file://", old_uri + 5, NULL);
-		g_free (old_uri);
-	}
-
-	return canonical_uri;
-}
 
 #ifndef G_DISABLE_ASSERT
 
@@ -308,7 +247,7 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
     		return NULL;
 	}
 
-	canonical_uri = make_uri_canonical (uri);
+	canonical_uri = nautilus_make_uri_canonical (uri);
 
 	/* Create the hash table first time through. */
 	if (directories == NULL) {
@@ -1123,15 +1062,6 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a%a"), "a%25a");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%25"), "%2525");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%2F"), "%252F");
-
-	/* make_uri_canonical */
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical (""), "file:");
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:/"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:///"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("trash:xxx"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("gnome-trash:xxx"), "trash:");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

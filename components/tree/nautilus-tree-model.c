@@ -299,9 +299,10 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 		return;
 	}
 
+	directory = nautilus_tree_node_get_directory (node);
+
 	if (node->details->monitor_clients == NULL) {
 		/* we must connect to signals */
-		directory = nautilus_tree_node_get_directory (node);
 		
 		node->details->files_added_id = gtk_signal_connect 
 			(GTK_OBJECT (directory),
@@ -324,8 +325,11 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 
 	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
 	
+#if 0
 	node->details->provisional_children = node->details->children;
+	g_list_free (node->details->children);
 	node->details->children = NULL;
+#endif
 
 	nautilus_directory_file_monitor_add (directory,
 					     model,
@@ -388,17 +392,6 @@ nautilus_tree_model_get_node (NautilusTreeModel *model,
 {
 	return g_hash_table_lookup (model->details->uri_to_node_map, uri);
 }
-
-
-#if 0
-
-NautilusTreeNode  *nautilus_tree_model_get_nearest_parent_node  (NautilusTreeModel *model,
-								 const char *uri);
-
-
-NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeModel *model);
-
-#endif
 
 
 /* helper functions */

@@ -42,15 +42,18 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libgnomevfs/gnome-vfs.h>
 
 
 #include <stdio.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
+
+typedef void (*TreeViewCallback) (NautilusTreeView *view);
 
 /* A NautilusContentView's private information. */
 struct NautilusTreeViewDetails {
@@ -66,40 +69,55 @@ struct NautilusTreeViewDetails {
 	gboolean show_hidden_files;
 
 	NautilusTreeExpansionState *expansion_state;
+
+	char *selected_uri;
+
+	TreeViewCallback root_seen_callback;
+	char *wait_uri;
+	NautilusTreeNode *wait_node;
+	TreeViewCallback uri_loaded_or_parent_done_loading;
+        GList *in_progress_select_uris;
+        gboolean root_seen;
 };
 
 #define TREE_SPACING 5
+
+static void         notify_done_loading    (NautilusTreeView *view, 
+					    NautilusTreeNode *node);
+static void         notify_node_seen       (NautilusTreeView *view, 
+					    NautilusTreeNode *node);
 
 static char         *nautilus_tree_view_uri_to_name      (const char       *uri);
 static GtkCTreeNode *nautilus_tree_view_find_parent_node (NautilusTreeView *view, 
 							  const char       *uri);
 
+static gboolean      ctree_is_node_expanded              (GtkCTree     *ctree,
+							  GtkCTreeNode *node);
+static GtkCTreeNode *uri_to_view_node                    (NautilusTreeView *view,
+							  const char *uri);
+static GtkCTreeNode *model_node_to_view_node             (NautilusTreeView *view,
+							  NautilusTreeNode *node);
+
+
 static void reload_node_for_uri                 (NautilusTreeView *view,
 						 const char       *uri);
-
 static void expand_node_for_uri                 (NautilusTreeView *view,
 						 const char       *uri);
-
 static void tree_load_location_callback         (NautilusView          *nautilus_view,
 						 const char            *location,
 						 NautilusTreeView      *view);
-
 static void tree_expand_callback                (GtkCTree              *tree,
 						 GtkCTreeNode          *node,
 						 NautilusTreeView      *view);
-
 static void tree_collapse_callback              (GtkCTree              *tree,
 						 GtkCTreeNode          *node,
 						 NautilusTreeView      *view);
-
 static void tree_select_row_callback            (GtkCTree              *tree,
 						 GtkCTreeNode          *node,
 						 gint                   column,
 						 NautilusTreeView      *view);
-
 static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
 						 const char            *uri);
-
 static void nautilus_tree_view_update_all_icons (NautilusTreeView *view);
 
 
@@ -120,40 +138,6 @@ nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass)
 	
 	object_class->destroy = nautilus_tree_view_destroy;
 }
-
-
-
-
-#if 0
-/* FIXME bugzilla.eazel.com 1523: this doesn't really do everything
-   you might want to do when canonifying a URI. If it did, it might
-   want to move to libnautilus-extensions, or gnome-vfs. What this
-   should really do is parse the URI apart and reassemble it. */
-
-static char *
-nautilus_tree_view_get_canonical_uri (const char *uri)
-{
-	char *scheme_end;
-	char *canonical_uri;
-
-	scheme_end = strchr (uri, ':');
-
-	g_assert (scheme_end != NULL);
-
-	if (scheme_end[1] == '/' && scheme_end[2] != '/') {
-		canonical_uri = g_malloc (strlen (uri) + 3);
-		strncpy (canonical_uri, uri, (scheme_end - uri) + 1);
-		strcpy (canonical_uri + (scheme_end - uri) + 1, "//");
-		strcpy (canonical_uri + (scheme_end - uri) + 3, scheme_end + 1);
-	} else {
-		canonical_uri = g_strdup (uri);
-	}
-
-	return canonical_uri;
-}
-
-#endif
-
 
 
 static gboolean
@@ -201,7 +185,7 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 		text[0] = "...HACK...";
 		text[1] = NULL;
 
-		view_node = g_hash_table_lookup (view->details->uri_to_node_map, uri);
+		view_node = uri_to_view_node (view, uri);
 
 		hack_node = gtk_ctree_insert_node (GTK_CTREE (view->details->tree),
 						   view_node, 
@@ -284,7 +268,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	text[0] = nautilus_file_get_name (file);
 	text[1] = NULL;
 
-	if (g_hash_table_lookup (view->details->uri_to_node_map, uri) == NULL) {
+	if (model_node_to_view_node (view, node) == NULL) {
 		
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
 								    NULL,
@@ -299,13 +283,6 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 						   TREE_SPACING,
 						   pixmap, mask, pixmap, mask,
 						   FALSE,
-						   
-						   /* FIXME bugzilla.eazel.com 1525: should 
-						      remember what was
-						      expanded last time and what
-						      wasn't. On first start, we should
-						      expand "/" and leave everything else
-						      collapsed. */
 						   FALSE);
 
 		gtk_ctree_node_set_row_data_full (GTK_CTREE (view->details->tree),
@@ -343,14 +320,11 @@ static void
 nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
 	GtkCTreeNode *view_node;
-	NautilusFile *file;
 	char *uri;
-	
-	file = nautilus_tree_node_get_file (node);
 
-	uri = nautilus_file_get_uri (file);
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
 	
-	view_node = g_hash_table_lookup (view->details->uri_to_node_map, uri); 
+	view_node = model_node_to_view_node (view, node); 
 	
 	if (view_node != NULL) {
 		gtk_ctree_remove_node (GTK_CTREE (view->details->tree),
@@ -404,7 +378,7 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 	uri = nautilus_file_get_uri (file);
 
-	view_node = g_hash_table_lookup (view->details->uri_to_node_map, uri); 
+	view_node = model_node_to_view_node (view, node);
 
 	if (view_node != NULL) {
 
@@ -457,6 +431,56 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 }
 
 
+static void
+notify_done_loading (NautilusTreeView *view,
+		     NautilusTreeNode *node)
+{
+	TreeViewCallback callback;
+
+	if (view->details->uri_loaded_or_parent_done_loading != NULL &&
+	    view->details->wait_node == node) {
+		callback = view->details->uri_loaded_or_parent_done_loading;
+		view->details->wait_node = NULL;
+		g_free (view->details->wait_uri);
+		view->details->wait_uri = NULL;
+
+		(*callback) (view);
+	}
+}
+
+static void
+notify_node_seen (NautilusTreeView *view,
+		  NautilusTreeNode *node)
+{
+	TreeViewCallback root_callback;
+	TreeViewCallback callback;
+	char *uri;
+
+	if (!view->details->root_seen) {
+		view->details->root_seen = TRUE;
+
+		if (view->details->root_seen_callback != NULL) {
+			root_callback = view->details->root_seen_callback;
+			view->details->root_seen_callback = NULL;
+			
+			(*root_callback) (view);
+		}
+	}
+
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	
+	if (nautilus_strcmp (uri, view->details->wait_uri) == 0) {
+		callback = view->details->uri_loaded_or_parent_done_loading;
+		view->details->wait_node = NULL;
+		g_free (view->details->wait_uri);
+		view->details->wait_uri = NULL;
+
+		(*callback) (view);
+	}
+}
+
+
+
 
 
 static void
@@ -469,6 +493,7 @@ nautilus_tree_view_model_node_added_callback (NautilusTreeModel *model,
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
 	nautilus_tree_view_insert_model_node (view, node);
+	notify_node_seen (view, node);
 }
 
 
@@ -516,6 +541,8 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 	remove_hack_node (view, uri);
 
 	g_free (uri);
+
+	notify_done_loading (view, node);
 }
 
 static void
@@ -665,6 +692,177 @@ nautilus_tree_view_get_nautilus_view (NautilusTreeView *view)
 	return view->details->nautilus_view;
 }
 
+
+static GtkCTreeNode *
+uri_to_view_node (NautilusTreeView *view,
+		  const char *uri)
+{
+	return g_hash_table_lookup (view->details->uri_to_node_map, uri);
+}
+
+
+static GtkCTreeNode *
+model_node_to_view_node (NautilusTreeView *view,
+			 NautilusTreeNode *node)
+{
+	GtkCTreeNode *view_node;
+	char *uri;
+
+	if (node == NULL) {
+		return NULL;
+	}
+
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	view_node = uri_to_view_node (view, uri);
+	g_free (uri);
+
+	return view_node;
+}
+
+
+static GList *
+get_uri_sequence_to_root (char *uri_text)
+{
+	GList *retval;
+	GnomeVFSURI *uri;
+	GnomeVFSURI *parent_uri;
+
+	retval = NULL;
+
+	uri = gnome_vfs_uri_new (uri_text);
+
+	retval = g_list_prepend (retval, uri_text);
+	
+	if (uri == NULL) {
+		return retval;
+	}
+
+	while (1) {
+		parent_uri = gnome_vfs_uri_get_parent (uri);
+		
+		gnome_vfs_uri_unref (uri);
+
+		if  (parent_uri == NULL) {
+			return retval;
+		}
+
+		uri = parent_uri;
+		uri_text = gnome_vfs_uri_to_string (uri, 
+						    GNOME_VFS_URI_HIDE_NONE);
+
+		retval = g_list_prepend (retval, uri_text);
+	}
+}
+
+
+static void
+call_when_root_seen (NautilusTreeView *view, 
+		     TreeViewCallback callback)
+{
+	view->details->root_seen_callback = callback;
+}
+
+static void
+call_when_uri_loaded_or_parent_done_loading (NautilusTreeView *view,
+					     const char *uri, 
+					     NautilusTreeNode *node,
+					     TreeViewCallback callback)
+{
+	view->details->wait_uri = g_strdup (uri);
+	view->details->wait_node = node;
+
+	view->details->uri_loaded_or_parent_done_loading = callback;
+}
+
+
+static void
+cancel_selection_in_progress (NautilusTreeView *view)
+{
+	nautilus_g_list_free_deep (view->details->in_progress_select_uris);
+	view->details->in_progress_select_uris = NULL;
+
+	view->details->root_seen_callback = NULL;
+
+	g_free (view->details->wait_uri);
+	view->details->wait_uri = NULL;
+	view->details->wait_node = NULL;
+
+	view->details->uri_loaded_or_parent_done_loading = NULL;
+}
+
+static void
+expand_uri_sequence_and_select_end (NautilusTreeView *view)
+{
+	const char *uri;
+	GList *p;
+	GList *old_sequence;
+	GtkCTreeNode *view_node;
+	gboolean at_least_one_found;
+
+	at_least_one_found = FALSE;
+
+	if (!view->details->root_seen) {
+		call_when_root_seen (view, expand_uri_sequence_and_select_end);
+		return;
+	}
+
+	for (p = view->details->in_progress_select_uris; p != NULL; p = p->next) {
+		uri = (char *) p->data;
+
+		view_node = uri_to_view_node (view, uri);
+
+		if (view_node == NULL) {
+			break;
+		}
+
+		at_least_one_found = TRUE;
+
+		if (p->next != NULL) {
+			gtk_ctree_expand (GTK_CTREE (view->details->tree),
+					  view_node);
+		} else {
+			g_free (view->details->selected_uri);
+			view->details->selected_uri = g_strdup (uri);
+			gtk_ctree_select (GTK_CTREE (view->details->tree),
+					  view_node);
+		}
+	}
+		
+	if (!at_least_one_found) {
+		/* The target URI just isn't in the tree at all; don't
+                   expand, load or select anything */
+		
+		cancel_selection_in_progress (view);
+
+		return;
+	}
+
+	if (p != NULL) {
+		/* Not all the nodes existed yet, damn */
+		
+		old_sequence = view->details->in_progress_select_uris;
+		
+		view->details->in_progress_select_uris = p;
+
+		call_when_uri_loaded_or_parent_done_loading (view, uri, 
+							     nautilus_tree_model_get_node (view->details->model,
+											   (char *) p->prev->data),
+							     expand_uri_sequence_and_select_end);
+
+
+		p->prev->next = NULL;
+		p->prev = NULL;
+		nautilus_g_list_free_deep (old_sequence);
+
+		return;
+	}
+
+	/* We're all done, clean up potential remaining junk. */
+
+	cancel_selection_in_progress (view);
+}
+
+
 /**
  * nautilus_tree_view_load_uri:
  *
@@ -675,8 +873,20 @@ void
 nautilus_tree_view_load_uri (NautilusTreeView *view,
 			     const char       *uri)
 {
-	/* FIXME bugzilla.eazel.com 1528: Should just change selection
-           here. */
+	char *canonical_uri;
+
+	cancel_selection_in_progress (view);
+
+	canonical_uri = nautilus_make_uri_canonical (uri);
+
+	if (nautilus_strcmp (canonical_uri, view->details->selected_uri) == 0) {
+		g_free (canonical_uri);
+		return;
+	}
+
+	view->details->in_progress_select_uris = get_uri_sequence_to_root (canonical_uri);
+			
+	expand_uri_sequence_and_select_end (view);
 }
  
 static void
@@ -686,26 +896,11 @@ tree_load_location_callback (NautilusView *nautilus_view,
 {
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
-	/* It's mandatory to send an underway message once the
-	 * component starts loading, otherwise nautilus will assume it
-	 * failed. In a real component, this will probably happen in
-	 * some sort of callback from whatever loading mechanism it is
-	 * using to load the data; this component loads no data, so it
-	 * gives the progress update here.
-	 */
 	nautilus_view_report_load_underway (nautilus_view);
 	
 	/* Do the actual load. */
 	nautilus_tree_view_load_uri (view, location);
 	
-	/* It's mandatory to call report_load_complete once the
-	 * component is done loading successfully, or
-	 * report_load_failed if it completes unsuccessfully. In a
-	 * real component, this will probably happen in some sort of
-	 * callback from whatever loading mechanism it is using to
-	 * load the data; this component loads no data, so it gives
-	 * the progress update here.
-	 */
 	nautilus_view_report_load_complete (nautilus_view);
 }
 
@@ -786,12 +981,16 @@ tree_select_row_callback (GtkCTree              *tree,
 	const char *uri;
 	
 	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-							  node);
-
-
-	if (uri != NULL) {
+								  node);
+	
+	if (uri != NULL &&
+	    nautilus_strcmp (view->details->selected_uri, uri) != 0) {
 		nautilus_view_open_location (NAUTILUS_VIEW (view->details->nautilus_view), uri);
+		
+		g_free (view->details->selected_uri);
+		view->details->selected_uri = g_strdup (uri);
 	}
+
 }
 
 
@@ -823,24 +1022,10 @@ nautilus_tree_view_find_parent_node (NautilusTreeView *view,
 				     const char *uri)
 {
 	NautilusTreeNode *node;
-	char *parent_uri;
-	GtkCTreeNode *retval;
 
 	node = nautilus_tree_model_get_node (view->details->model, uri);
 
 	g_assert (node != NULL);
 
-	if (nautilus_tree_node_get_parent (node) == NULL) {
-		return NULL;
-	}
-	
-	parent_uri = nautilus_file_get_uri 
-		(nautilus_tree_node_get_file 
-		 (nautilus_tree_node_get_parent (node)));
-
-	retval = g_hash_table_lookup (view->details->uri_to_node_map, parent_uri);
-
-	g_free (parent_uri);
-
-	return retval;
+	return model_node_to_view_node (view, nautilus_tree_node_get_parent (node));
 }
