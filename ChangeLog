@@ -1,3 +1,13 @@
+2003-02-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus/nautilus-view-standard-main.c (nautilus_view_standard_main_multi):
+	Move the GNOME_CLIENT_PARAM_SM_CONNECT property setting to the
+	gnome_program_init call. Setting it later doesn't work.
+	
+	* src/file-manager/fm-directory-view.c (no_locale_at_end) 
+	(get_bonobo_menu_verb_names): Filter out locale versions
+	of nautilusverbs.
+
 2003-02-17  Arvind Samptur <arvind.samptur@wipro.com>
 	* src/nautilus-file-management-properties.[ch]:
 	(nautilus_file_management_properties_dialog_setup):

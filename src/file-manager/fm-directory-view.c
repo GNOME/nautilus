@@ -3727,6 +3727,30 @@ add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
 
 }
 
+static gboolean
+no_locale_at_end (const char *str)
+{
+	int len;
+
+	len = strlen (str);
+	if (len > 3 &&
+	    str[len-3] == '-' &&
+	    g_ascii_isalpha (str[len-2]) &&
+	    g_ascii_isalpha (str[len-1])) {
+		return FALSE;
+	}
+	if (len > 6 &&
+	    str[len-6] == '-' &&
+	    g_ascii_isalpha (str[len-5]) &&
+	    g_ascii_isalpha (str[len-4]) &&
+	    str[len-3] == '_' &&
+	    g_ascii_isalpha (str[len-2]) &&
+	    g_ascii_isalpha (str[len-1])) {
+		return FALSE;
+	}
+	return TRUE;
+}
+
 static GList *
 get_bonobo_menu_verb_names (Bonobo_ServerInfo *info)
 {
@@ -3742,7 +3766,8 @@ get_bonobo_menu_verb_names (Bonobo_ServerInfo *info)
 		/* look for properties that start with "nautilusverb:".  The
 		 * part following the colon is the verb name
 		 */
-		if (strstr (info->props._buffer[i].name, "nautilusverb:")) {
+		if (strstr (info->props._buffer[i].name, "nautilusverb:") &&
+		    no_locale_at_end (info->props._buffer[i].name)) {
 			l = g_list_prepend (l,
 			      g_strdup (&info->props._buffer[i].name[offset]));	
 		}
