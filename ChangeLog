@@ -1,3 +1,14 @@
+2002-01-07  Darin Adler  <darin@bentspoon.com>
+
+	Integrate patches from Frank Worsley <fworlsey@shaw.ca>.
+
+	* libnautilus-private/nautilus-link.c:
+	(get_link_style_for_mime_type): Fix porting mistake that caused all
+	desktop files to be treated as Nautilus links.
+
+	* libnautilus-private/nautilus-file.c: (rename_callback):
+	Fix storage leak.
+
 2002-01-07  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-theme-selector.c (theme_selector_finalize): Put

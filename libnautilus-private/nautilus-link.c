@@ -58,7 +58,7 @@ static LinkStyle
 get_link_style_for_mime_type (const char *mime_type)
 {
 	if (mime_type != NULL) {
-		if (g_ascii_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
+		if (g_ascii_strcasecmp (mime_type, "application/x-gnome-app-info") == 0) {
 			return desktop;
 		}
 		if (g_ascii_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {

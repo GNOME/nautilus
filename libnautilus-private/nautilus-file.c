@@ -951,6 +951,7 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		
 		old_uri = nautilus_file_get_uri (op->file);
 		old_relative_uri = g_strdup (op->file->details->relative_uri);
+
 		update_info_and_name (op->file, new_info);
 
 		/* Self-owned files store their metadata under the
@@ -961,6 +962,8 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 			nautilus_directory_rename_file_metadata
 				(directory, old_relative_uri, op->file->details->relative_uri);
 		}
+
+		g_free (old_relative_uri);
 
 		new_uri = nautilus_file_get_uri (op->file);
 		nautilus_directory_moved (old_uri, new_uri);
