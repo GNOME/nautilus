@@ -188,61 +188,60 @@ struct FMDirectoryViewClass {
 };
 
 /* GtkObject support */
-GtkType                   fm_directory_view_get_type                       (void);
+GtkType              fm_directory_view_get_type                       (void);
 
 /* Component embedding support */
-NautilusContentViewFrame *fm_directory_view_get_view_frame                 (FMDirectoryView       *view);
+NautilusContentView *fm_directory_view_get_nautilus_view              (FMDirectoryView       *view);
 
 /* URI handling */
-void                      fm_directory_view_load_uri                       (FMDirectoryView       *view,
-									    const char            *uri);
+void                 fm_directory_view_load_uri                       (FMDirectoryView       *view,
+								       const char            *uri);
 
 /* Functions callable from the user interface and elsewhere. */
-char *                    fm_directory_view_get_container_uri              (NautilusIconContainer *container,
-									    FMDirectoryView       *view);
-gboolean                  fm_directory_view_can_accept_item                (NautilusIconContainer *container,
-									    NautilusFile 	  *target_item,
-									    const char 		  *item_uri,
-									    FMDirectoryView       *view);
-GList *                   fm_directory_view_get_selection                  (FMDirectoryView       *view);
-void                      fm_directory_view_stop                           (FMDirectoryView       *view);
-gboolean                  fm_directory_view_can_zoom_in                    (FMDirectoryView       *view);
-gboolean                  fm_directory_view_can_zoom_out                   (FMDirectoryView       *view);
-void                      fm_directory_view_bump_zoom_level                (FMDirectoryView       *view,
-									    int                    zoom_increment);
-void                      fm_directory_view_select_all                     (FMDirectoryView       *view);
-void                      fm_directory_view_set_selection                  (FMDirectoryView       *view,
-									    GList                 *selection);
-void                      fm_directory_view_move_copy_items                (NautilusIconContainer *container,
-									    const GList           *item_uris,
-									    const GdkPoint        *relative_item_points,
-									    const char            *target_uri,
-									    int                    copy_action,
-									    int                    x,
-									    int                    y,
-									    FMDirectoryView       *view);
-gint			  fm_directory_view_get_context_menu_index	   (const char *menu_name);
+char *               fm_directory_view_get_container_uri              (NautilusIconContainer *container,
+								       FMDirectoryView       *view);
+gboolean             fm_directory_view_can_accept_item                (NautilusIconContainer *container,
+								       NautilusFile          *target_item,
+								       const char            *item_uri,
+								       FMDirectoryView       *view);
+GList *              fm_directory_view_get_selection                  (FMDirectoryView       *view);
+void                 fm_directory_view_stop                           (FMDirectoryView       *view);
+gboolean             fm_directory_view_can_zoom_in                    (FMDirectoryView       *view);
+gboolean             fm_directory_view_can_zoom_out                   (FMDirectoryView       *view);
+void                 fm_directory_view_bump_zoom_level                (FMDirectoryView       *view,
+								       int                    zoom_increment);
+void                 fm_directory_view_select_all                     (FMDirectoryView       *view);
+void                 fm_directory_view_set_selection                  (FMDirectoryView       *view,
+								       GList                 *selection);
+void                 fm_directory_view_move_copy_items                (NautilusIconContainer *container,
+								       const GList           *item_uris,
+								       const GdkPoint        *relative_item_points,
+								       const char            *target_uri,
+								       int                    copy_action,
+								       int                    x,
+								       int                    y,
+								       FMDirectoryView       *view);
+gint                 fm_directory_view_get_context_menu_index         (const char            *menu_name);
 
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
  * that observers might want to connect with.
  */
-void                      fm_directory_view_clear                          (FMDirectoryView       *view);
-void                      fm_directory_view_begin_loading                  (FMDirectoryView       *view);
+void                 fm_directory_view_clear                          (FMDirectoryView       *view);
+void                 fm_directory_view_begin_loading                  (FMDirectoryView       *view);
 
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
-void                      fm_directory_view_activate_file                  (FMDirectoryView       *view,
-									    NautilusFile          *file,
-									    gboolean               request_new_window);
-void                      fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
-BonoboUIHandler *         fm_directory_view_get_bonobo_ui_handler          (FMDirectoryView       *view);
-NautilusDirectory *       fm_directory_view_get_model                      (FMDirectoryView       *view);
-void                      fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
-void                      fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
-void                      fm_directory_view_update_menus                   (FMDirectoryView       *view);
-
+void                 fm_directory_view_activate_file                  (FMDirectoryView       *view,
+								       NautilusFile          *file,
+								       gboolean               request_new_window);
+void                 fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
+BonoboUIHandler *    fm_directory_view_get_bonobo_ui_handler          (FMDirectoryView       *view);
+NautilusDirectory *  fm_directory_view_get_model                      (FMDirectoryView       *view);
+void                 fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
+void                 fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
+void                 fm_directory_view_update_menus                   (FMDirectoryView       *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_UNDO_MANAGER_H
 #define NAUTILUS_UNDO_MANAGER_H
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-control.h>
 
 #include "nautilus-undo-transaction.h"
 #include "nautilus-undo.h"
@@ -77,6 +77,6 @@ void                    nautilus_share_undo_manager                             
 /* FIXME: This should not be a public function. 
  */
 Nautilus_Undo_Manager 	nautilus_get_undo_manager                                 (GtkObject *start_object);
-void			nautilus_undo_setup_bonobo_control 		  	  (BonoboObject *control);
+void			nautilus_undo_setup_bonobo_control 		  	  (BonoboControl *control);
 
 #endif

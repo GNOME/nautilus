@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -22,36 +22,37 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
+
 /* ntl-meta-view.h: Interface of the object representing a meta/navigation view. Derived from NautilusView. */
 
 #ifndef NAUTILUS_META_VIEW_H
-#define NAUTILUS_META_VIEW_H 1
+#define NAUTILUS_META_VIEW_H
 
 #include "ntl-view.h"
 
-#define NAUTILUS_TYPE_META_VIEW (nautilus_meta_view_get_type())
-#define NAUTILUS_META_VIEW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_META_VIEW, NautilusMetaView))
-#define NAUTILUS_META_VIEW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_META_VIEW, NautilusMetaViewClass))
-#define NAUTILUS_IS_META_VIEW(obj)	        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_META_VIEW))
-#define NAUTILUS_IS_META_VIEW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_META_VIEW))
+#define NAUTILUS_TYPE_META_VIEW_FRAME            (nautilus_meta_view_frame_get_type())
+#define NAUTILUS_META_VIEW_FRAME(obj)	         (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_META_VIEW_FRAME, NautilusMetaViewFrame))
+#define NAUTILUS_META_VIEW_FRAME_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_META_VIEW_FRAME, NautilusMetaViewFrameClass))
+#define NAUTILUS_IS_META_VIEW_FRAME(obj)	 (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_META_VIEW_FRAME))
+#define NAUTILUS_IS_META_VIEW_FRAME_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_META_VIEW_FRAME))
 
-typedef struct _NautilusMetaView NautilusMetaView;
+typedef struct NautilusMetaViewFrame NautilusMetaViewFrame;
 
 typedef struct {
-  NautilusViewClass parent_spot;
+	NautilusViewFrameClass parent_spot;
+	
+	NautilusViewFrameClass *parent_class;
+} NautilusMetaViewFrameClass;
 
-  NautilusViewClass *parent_class;
-} NautilusMetaViewClass;
-
-struct _NautilusMetaView {
-  NautilusView parent_object;
-  char *label;
+struct NautilusMetaViewFrame {
+	NautilusViewFrame parent_object;
+	char *label;
 };
 
-GtkType           nautilus_meta_view_get_type      (void);
-NautilusMetaView *nautilus_meta_view_new           (void);
-const char       *nautilus_meta_view_get_label     (NautilusMetaView *nview);
-void              nautilus_meta_view_set_label     (NautilusMetaView *nview,
-                                                    const char *label);
+GtkType                nautilus_meta_view_frame_get_type  (void);
+NautilusMetaViewFrame *nautilus_meta_view_frame_new       (void);
+const char *           nautilus_meta_view_frame_get_label (NautilusMetaViewFrame *view);
+void                   nautilus_meta_view_frame_set_label (NautilusMetaViewFrame *view,
+							   const char            *label);
 
 #endif

@@ -48,7 +48,7 @@ music_view_make_object (BonoboGenericFactory *factory,
 		    void *closure)
 {
 	NautilusMusicView *music_view;
-	NautilusViewFrame *view_frame;
+	NautilusView *nautilus_view;
 
 	if (strcmp (goad_id, "OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391")) {
 		return NULL;
@@ -60,8 +60,8 @@ music_view_make_object (BonoboGenericFactory *factory,
 
 	gtk_signal_connect (GTK_OBJECT (music_view), "destroy", music_view_object_destroyed, NULL);
 
-	view_frame = NAUTILUS_VIEW_FRAME (nautilus_music_view_get_view_frame (music_view));
-	return BONOBO_OBJECT (view_frame);
+	nautilus_view = NAUTILUS_VIEW (nautilus_music_view_get_nautilus_view (music_view));
+	return BONOBO_OBJECT (nautilus_view);
 }
 
 int main(int argc, char *argv[])

@@ -40,6 +40,8 @@ nautilus_SOURCES =\
 	nautilus-bookmark-list.h	\
 	nautilus-bookmarks-window.c	\
 	nautilus-bookmarks-window.h	\
+	nautilus-desktop-window.c	\
+	nautilus-desktop-window.h	\
 	nautilus-index-tabs.c		\
 	nautilus-index-tabs.h		\
 	nautilus-index-title.c		\

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
  *  libnautilus: A library for nautilus view implementations.
@@ -27,33 +27,32 @@
 /* nautilus-content-view-frame.h: Interface for object that represents a
    the frame a nautilus content view plugs into. */
 
-#ifndef NAUTILUS_CONTENT_VIEW_FRAME_H
-#define NAUTILUS_CONTENT_VIEW_FRAME_H
+#ifndef NAUTILUS_CONTENT_VIEW_H
+#define NAUTILUS_CONTENT_VIEW_H
 
 #include <libnautilus/nautilus-view-frame.h>
 
-#define NAUTILUS_TYPE_CONTENT_VIEW_FRAME			(nautilus_content_view_frame_get_type ())
-#define NAUTILUS_CONTENT_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME, NautilusContentViewFrame))
-#define NAUTILUS_CONTENT_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONTENT_VIEW_FRAME, NautilusContentViewFrameClass))
-#define NAUTILUS_IS_CONTENT_VIEW_FRAME(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME))
-#define NAUTILUS_IS_CONTENT_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME))
+#define NAUTILUS_TYPE_CONTENT_VIEW	    (nautilus_content_view_get_type ())
+#define NAUTILUS_CONTENT_VIEW(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_VIEW, NautilusContentView))
+#define NAUTILUS_CONTENT_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONTENT_VIEW, NautilusContentViewClass))
+#define NAUTILUS_IS_CONTENT_VIEW(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW))
+#define NAUTILUS_IS_CONTENT_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW))
 
-typedef struct _NautilusContentViewFrame NautilusContentViewFrame;
-typedef struct _NautilusContentViewFrameClass NautilusContentViewFrameClass;
+typedef struct NautilusContentView NautilusContentView;
+typedef struct NautilusContentViewClass NautilusContentViewClass;
 
-struct _NautilusContentViewFrameClass {
-  NautilusViewFrameClass parent_spot;
+struct NautilusContentViewClass {
+	NautilusViewClass parent_spot;
 };
 
-struct _NautilusContentViewFrame {
-  NautilusViewFrame parent;
+struct NautilusContentView {
+	NautilusView parent;
 };
 
-GtkType                   nautilus_content_view_frame_get_type                 (void);
-NautilusContentViewFrame *nautilus_content_view_frame_new                      (GtkWidget *widget);
-NautilusContentViewFrame *nautilus_content_view_frame_new_from_bonobo_control  (BonoboObject *bonobo_control);
-
-void               	  nautilus_content_view_frame_request_title_change     (NautilusContentViewFrame *view,
-								 		const char *new_title);
+GtkType              nautilus_content_view_get_type                (void);
+NautilusContentView *nautilus_content_view_new                     (GtkWidget           *widget);
+NautilusContentView *nautilus_content_view_new_from_bonobo_control (BonoboControl       *bonobo_control);
+void                 nautilus_content_view_request_title_change    (NautilusContentView *view,
+								    const char          *new_title);
 
 #endif

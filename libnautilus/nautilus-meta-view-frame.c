@@ -38,7 +38,7 @@ typedef struct {
 	POA_Nautilus_View servant;
 	gpointer bonobo_object;
 	
-	NautilusMetaViewFrame *view;
+	NautilusMetaView *view;
 } impl_POA_Nautilus_MetaView;
 
 extern POA_Nautilus_View__epv libnautilus_Nautilus_View_epv;
@@ -52,37 +52,37 @@ static POA_Nautilus_MetaView__vepv impl_Nautilus_MetaView_vepv =
   &impl_Nautilus_MetaView_epv
 };
 
-static void nautilus_meta_view_frame_initialize       (NautilusMetaViewFrame      *view);
-static void nautilus_meta_view_frame_destroy          (NautilusMetaViewFrame      *view);
-static void nautilus_meta_view_frame_initialize_class (NautilusMetaViewFrameClass *klass);
+static void nautilus_meta_view_initialize       (NautilusMetaView      *view);
+static void nautilus_meta_view_destroy          (NautilusMetaView      *view);
+static void nautilus_meta_view_initialize_class (NautilusMetaViewClass *klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetaViewFrame, nautilus_meta_view_frame, NAUTILUS_TYPE_VIEW_FRAME)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetaView, nautilus_meta_view, NAUTILUS_TYPE_VIEW)
 
 static void
-nautilus_meta_view_frame_initialize (NautilusMetaViewFrame *view)
+nautilus_meta_view_initialize (NautilusMetaView *view)
 {
 }
 
-NautilusMetaViewFrame *
-nautilus_meta_view_frame_new (GtkWidget *widget)
+NautilusMetaView *
+nautilus_meta_view_new (GtkWidget *widget)
 {
 	BonoboControl *control;
 
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 	
 	control = bonobo_control_new (widget);
-	return nautilus_meta_view_frame_new_from_bonobo_control (control);
+	return nautilus_meta_view_new_from_bonobo_control (control);
 }
 
 
-NautilusMetaViewFrame *
-nautilus_meta_view_frame_new_from_bonobo_control (BonoboControl *bonobo_control)
+NautilusMetaView *
+nautilus_meta_view_new_from_bonobo_control (BonoboControl *bonobo_control)
 {
-	NautilusMetaViewFrame *view;
+	NautilusMetaView *view;
 
 	g_return_val_if_fail (BONOBO_IS_CONTROL (bonobo_control), NULL);
 
-	view = NAUTILUS_META_VIEW_FRAME (gtk_object_new (NAUTILUS_TYPE_META_VIEW_FRAME,
+	view = NAUTILUS_META_VIEW (gtk_object_new (NAUTILUS_TYPE_META_VIEW,
 							 "bonobo_control", bonobo_control,
 							 NULL));
 
@@ -91,19 +91,19 @@ nautilus_meta_view_frame_new_from_bonobo_control (BonoboControl *bonobo_control)
 }
 
 static void
-nautilus_meta_view_frame_destroy (NautilusMetaViewFrame *view)
+nautilus_meta_view_destroy (NautilusMetaView *view)
 {
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));
 }
 
 static void
-nautilus_meta_view_frame_initialize_class (NautilusMetaViewFrameClass *klass)
+nautilus_meta_view_initialize_class (NautilusMetaViewClass *klass)
 {
-	NautilusViewFrameClass *view_class;
+	NautilusViewClass *view_class;
 
-	view_class = NAUTILUS_VIEW_FRAME_CLASS (klass);
+	view_class = NAUTILUS_VIEW_CLASS (klass);
 	
-	GTK_OBJECT_CLASS (klass)->destroy = (void (*)(GtkObject *)) nautilus_meta_view_frame_destroy;
+	GTK_OBJECT_CLASS (klass)->destroy = (void (*)(GtkObject *)) nautilus_meta_view_destroy;
 	
 	view_class->servant_init_func = POA_Nautilus_MetaView__init;
 	view_class->servant_destroy_func = POA_Nautilus_MetaView__fini;

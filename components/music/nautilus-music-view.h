@@ -52,14 +52,13 @@ struct _NautilusMusicViewClass {
 
 
 /* GtkObject support */
-GtkType                   nautilus_music_view_get_type                      (void);
+GtkType              nautilus_music_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentViewFrame *nautilus_music_view_get_view_frame                (NautilusMusicView *view);
+NautilusContentView *nautilus_music_view_get_nautilus_view (NautilusMusicView *view);
 
 /* URI handling */
-void                      nautilus_music_view_load_uri                      (NautilusMusicView *view,
-									     const char                *uri);
-
+void                 nautilus_music_view_load_uri          (NautilusMusicView *view,
+							    const char        *uri);
 
 #endif /* NAUTILUS_MUSIC_VIEW_H */

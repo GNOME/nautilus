@@ -2,9 +2,44 @@ We put plans for renaming in here so we can think about them for a while.
 Note that when we rename a class, it usually involves renaming some files too.
 ---
 
-ntl* -> nautilus* (1)
-NautilusViewFrame <--> NautilusView (2)
-ntl-view-bonobo-subdoc -> ntl-view-bonobo-embeddable (see also 1, 2)
+src/ntl-app.c -> src/nautilus-application.c
+src/ntl-app.h -> src/nautilus-application.h
+src/ntl-content-view.c -> src/nautilus-content-view-frame.c
+src/ntl-content-view.h -> src/nautilus-content-view-frame.h
+src/ntl-main.c -> src/nautilus-main.c
+src/ntl-meta-view.c -> src/nautilus-meta-view-frame.c
+src/ntl-meta-view.h -> src/nautilus-meta-view-frame.h
+src/ntl-view-bonobo-control.c -> src/nautilus-view-frame-bonobo-control.c
+src/ntl-view-bonobo-subdoc.c -> src/nautilus-view-frame-bonobo-embeddable.c
+src/ntl-view-private.h -> src/nautilus-view-frame-private.h
+src/ntl-view.c -> src/nautilus-view-frame.c
+src/ntl-view.h -> src/nautilus-view-frame.h
+src/ntl-window-private.h -> src/nautilus-window-private.h
+src/ntl-window-state.c -> src/nautilus-window-state.c
+src/ntl-window-state.h -> src/nautilus-window-state.h
+src/ntl-window.c -> src/nautilus-window.c
+src/ntl-window.h -> src/nautilus-window.h
+libnautilus/nautilus-content-view-frame.c -> libnautilus/nautilus-content-view.c
+libnautilus/nautilus-content-view-frame.h -> libnautilus/nautilus-content-view.h
+libnautilus/nautilus-meta-view-frame.c -> libnautilus/nautilus-meta-view.c
+libnautilus/nautilus-meta-view-frame.h -> libnautilus/nautilus-meta-view.h
+libnautilus/nautilus-view-frame.c -> libnautilus/nautilus-view.c
+libnautilus/nautilus-view-frame.h -> libnautilus/nautilus-view.h
+
+src/ntl-types.h -> (delete this file)
+
+src/ntl-index-panel.c -> ?
+src/ntl-index-panel.h -> ?
+src/ntl-miniicon.c -> ?
+src/ntl-miniicon.h -> ?
+src/ntl-uri-map.c -> ?
+src/ntl-uri-map.h -> ?
+src/ntl-view-frame-svr.c -> ?
+src/ntl-view-nautilus.c -> ?
+src/ntl-window-msgs.c -> ?
+src/ntl-window-msgs.h -> ?
+
+ntl* -> nautilus*
 
 GtkScrollFrame -> NautilusScrollFrame
 
@@ -17,10 +52,7 @@ GtkScrollFrame -> NautilusScrollFrame
 NavigationRequestInfo -> NavigationRequest
 NavigationInfo -> Location
 	
-
 SelectionInfo -> Selection
 SelectionRequestInfo -> SelectionRequest
 
-
 StatusRequestInfo -> Status (or StatusRequest)
-	

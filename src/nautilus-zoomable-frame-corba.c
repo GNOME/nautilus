@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -23,6 +23,7 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
+
 /* ntl-zoomable-frame-svr.c: CORBA server implementation of
    Nautilus::ZoomableFrame interface of a nautilus ViewFrame. */
 
@@ -31,10 +32,10 @@
 #include "ntl-view-private.h"
 
 typedef struct {
-  POA_Nautilus_ZoomableFrame servant;
-  gpointer bonobo_object;
-
-  NautilusView *view;
+	POA_Nautilus_ZoomableFrame servant;
+	gpointer bonobo_object;
+	
+	NautilusViewFrame *view;
 } impl_POA_Nautilus_ZoomableFrame;
 
 static void impl_Nautilus_ZoomableFrame_notify_zoom_level (impl_POA_Nautilus_ZoomableFrame *servant,
@@ -63,10 +64,10 @@ impl_Nautilus_ZoomableFrame__destroy (BonoboObject *obj,
 {
    PortableServer_ObjectId *objid;
    CORBA_Environment ev;
-   NautilusViewClass *klass;
+   NautilusViewFrameClass *klass;
    void (*servant_destroy_func) (PortableServer_Servant, CORBA_Environment *);
 
-   klass = NAUTILUS_VIEW_CLASS (GTK_OBJECT (servant->view)->klass);
+   klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (servant->view)->klass);
 
    CORBA_exception_init(&ev);
 
@@ -82,15 +83,15 @@ impl_Nautilus_ZoomableFrame__destroy (BonoboObject *obj,
 }
 
 BonoboObject *
-impl_Nautilus_ZoomableFrame__create (NautilusView *view, 
+impl_Nautilus_ZoomableFrame__create (NautilusViewFrame *view, 
                                      CORBA_Environment * ev)
 {
    BonoboObject *retval;
    impl_POA_Nautilus_ZoomableFrame *newservant;
-   NautilusViewClass *klass;
+   NautilusViewFrameClass *klass;
    void (*servant_init_func) (PortableServer_Servant, CORBA_Environment *);
 
-   klass = NAUTILUS_VIEW_CLASS (GTK_OBJECT (view)->klass);
+   klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (view)->klass);
    newservant = g_new0 (impl_POA_Nautilus_ZoomableFrame, 1);
 
    newservant->servant.vepv = klass->vepv;
@@ -115,5 +116,5 @@ impl_Nautilus_ZoomableFrame_notify_zoom_level (impl_POA_Nautilus_ZoomableFrame *
                                                CORBA_double       level,
                                                CORBA_Environment *ev)
 {
-  nautilus_view_notify_zoom_level (servant->view, level);
+  nautilus_view_frame_notify_zoom_level (servant->view, level);
 }

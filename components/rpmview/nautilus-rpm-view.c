@@ -52,7 +52,7 @@
 
 struct _NautilusRPMViewDetails {
         char *current_uri;
-        NautilusContentViewFrame *view_frame;
+        NautilusContentView *nautilus_view;
         
         GtkWidget *package_image;
         GtkWidget *package_title;
@@ -106,7 +106,7 @@ static void nautilus_rpm_view_drag_data_received     (GtkWidget                *
 static void nautilus_rpm_view_initialize_class       (NautilusRPMViewClass   *klass);
 static void nautilus_rpm_view_initialize             (NautilusRPMView        *view);
 static void nautilus_rpm_view_destroy                (GtkObject                *object);
-static void rpm_view_notify_location_change_callback (NautilusContentViewFrame *view,
+static void rpm_view_notify_location_change_callback (NautilusContentView *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusRPMView        *rpm_view);
 static gint check_installed			     (gchar *package_name, gchar *package_version, gchar *package_release);
@@ -139,9 +139,9 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
 
-	rpm_view->details->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (rpm_view));
+	rpm_view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (rpm_view));
 
-	gtk_signal_connect (GTK_OBJECT (rpm_view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (rpm_view->details->nautilus_view), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (rpm_view_notify_location_change_callback), 
 			    rpm_view);
@@ -348,7 +348,7 @@ nautilus_rpm_view_destroy (GtkObject *object)
 {
 	NautilusRPMView *rpm_view = NAUTILUS_RPM_VIEW (object);
 
-        bonobo_object_unref (BONOBO_OBJECT (rpm_view->details->view_frame));
+        bonobo_object_unref (BONOBO_OBJECT (rpm_view->details->nautilus_view));
 
 	g_free (rpm_view->details->current_uri);
 	g_free (rpm_view->details);
@@ -357,10 +357,10 @@ nautilus_rpm_view_destroy (GtkObject *object)
 }
 
 /* Component embedding support */
-NautilusContentViewFrame *
-nautilus_rpm_view_get_view_frame (NautilusRPMView *rpm_view)
+NautilusContentView *
+nautilus_rpm_view_get_nautilus_view (NautilusRPMView *rpm_view)
 {
-	return rpm_view->details->view_frame;
+	return rpm_view->details->nautilus_view;
 }
 
 
@@ -593,7 +593,7 @@ nautilus_rpm_view_load_uri (NautilusRPMView *rpm_view, const char *uri)
 }
 
 static void
-rpm_view_notify_location_change_callback (NautilusContentViewFrame *view, 
+rpm_view_notify_location_change_callback (NautilusContentView *view, 
                                           Nautilus_NavigationInfo *navinfo, 
                                           NautilusRPMView *rpm_view)
 {
@@ -605,7 +605,7 @@ rpm_view_notify_location_change_callback (NautilusContentViewFrame *view,
   
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
 	progress.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (rpm_view->details->view_frame), &progress);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (rpm_view->details->nautilus_view), &progress);
 
 	/* do the actual work here */
 	nautilus_rpm_view_load_uri (rpm_view, navinfo->actual_uri);
@@ -613,7 +613,7 @@ rpm_view_notify_location_change_callback (NautilusContentViewFrame *view,
 	/* send the required PROGRESS_DONE signal */
 	progress.type = Nautilus_PROGRESS_DONE_OK;
 	progress.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (rpm_view->details->view_frame), &progress);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (rpm_view->details->nautilus_view), &progress);
 }
 
 /* handle drag and drop */

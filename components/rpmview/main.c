@@ -48,7 +48,7 @@ rpm_view_make_object (BonoboGenericFactory *factory,
 		    void *closure)
 {
 	NautilusRPMView *rpm_view;
-	NautilusViewFrame *view_frame;
+	NautilusView *nautilus_view;
 
 	if (strcmp (goad_id, "OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70")) {
 		return NULL;
@@ -60,8 +60,8 @@ rpm_view_make_object (BonoboGenericFactory *factory,
 
 	gtk_signal_connect (GTK_OBJECT (rpm_view), "destroy", rpm_view_object_destroyed, NULL);
 
-	view_frame = NAUTILUS_VIEW_FRAME (nautilus_rpm_view_get_view_frame (rpm_view));
-	return BONOBO_OBJECT (view_frame);
+	nautilus_view = NAUTILUS_VIEW (nautilus_rpm_view_get_nautilus_view (rpm_view));
+	return BONOBO_OBJECT (nautilus_view);
 }
 
 int main(int argc, char *argv[])

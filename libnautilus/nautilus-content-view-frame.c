@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
  *  libnautilus: A library for nautilus view implementations.
@@ -35,55 +35,51 @@
 
 
 typedef struct {
-  POA_Nautilus_View servant;
-  gpointer bonobo_object;
+	POA_Nautilus_View servant;
+	gpointer bonobo_object;
 
-  NautilusContentViewFrame *view;
+	NautilusContentView *view;
 } impl_POA_Nautilus_ContentView;
 
 extern POA_Nautilus_View__epv libnautilus_Nautilus_View_epv;
-
-static POA_Nautilus_ContentView__epv impl_Nautilus_ContentView_epv = {
-  NULL /* _private */
-};
-
-static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
+static POA_Nautilus_ContentView__epv impl_Nautilus_ContentView_epv;
+static PortableServer_ServantBase__epv base_epv;
 
 static POA_Nautilus_ContentView__vepv impl_Nautilus_ContentView_vepv =
 {
-  &base_epv,
-  NULL,
-  &libnautilus_Nautilus_View_epv,
-  &impl_Nautilus_ContentView_epv
+	&base_epv,
+	NULL,
+	&libnautilus_Nautilus_View_epv,
+	&impl_Nautilus_ContentView_epv
 };
 
-static void nautilus_content_view_frame_initialize        (NautilusContentViewFrame      *view);
-static void nautilus_content_view_frame_destroy           (NautilusContentViewFrame      *view);
-static void nautilus_content_view_frame_initialize_class  (NautilusContentViewFrameClass *klass);
+static void nautilus_content_view_initialize        (NautilusContentView      *view);
+static void nautilus_content_view_destroy           (NautilusContentView      *view);
+static void nautilus_content_view_initialize_class  (NautilusContentViewClass *klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusContentViewFrame, nautilus_content_view_frame, NAUTILUS_TYPE_VIEW_FRAME)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusContentView, nautilus_content_view, NAUTILUS_TYPE_VIEW)
 
 static void
-nautilus_content_view_frame_initialize (NautilusContentViewFrame *view)
+nautilus_content_view_initialize (NautilusContentView *view)
 {
 }
 
-NautilusContentViewFrame *
-nautilus_content_view_frame_new (GtkWidget *widget)
+NautilusContentView *
+nautilus_content_view_new (GtkWidget *widget)
 {
-  BonoboObject *control;
+  BonoboControl *control;
   
-  control = BONOBO_OBJECT (bonobo_control_new (widget));
+  control = bonobo_control_new (widget);
 
-  return nautilus_content_view_frame_new_from_bonobo_control (control);
+  return nautilus_content_view_new_from_bonobo_control (control);
 }
 
-NautilusContentViewFrame *
-nautilus_content_view_frame_new_from_bonobo_control (BonoboObject *bonobo_control)
+NautilusContentView *
+nautilus_content_view_new_from_bonobo_control (BonoboControl *bonobo_control)
 {
-  NautilusContentViewFrame *view;
+  NautilusContentView *view;
   
-  view = NAUTILUS_CONTENT_VIEW_FRAME (gtk_object_new (NAUTILUS_TYPE_CONTENT_VIEW_FRAME,
+  view = NAUTILUS_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_CONTENT_VIEW,
 						      "bonobo_control", bonobo_control,
 						      NULL));
 
@@ -91,43 +87,43 @@ nautilus_content_view_frame_new_from_bonobo_control (BonoboObject *bonobo_contro
 }
 
 static void
-nautilus_content_view_frame_destroy    (NautilusContentViewFrame *view)
+nautilus_content_view_destroy    (NautilusContentView *view)
 {
   NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));
 }
 
 static void
-nautilus_content_view_frame_initialize_class (NautilusContentViewFrameClass *klass)
+nautilus_content_view_initialize_class (NautilusContentViewClass *klass)
 {
-  NautilusViewFrameClass *view_class;
+  NautilusViewClass *view_class;
   GtkObjectClass *object_class;
 
   object_class = (GtkObjectClass*) klass;
-  object_class->destroy = (void (*)(GtkObject *))nautilus_content_view_frame_destroy;
+  object_class->destroy = (void (*)(GtkObject *))nautilus_content_view_destroy;
 
-  view_class = (NautilusViewFrameClass *) klass;
+  view_class = (NautilusViewClass *) klass;
   view_class->servant_init_func = POA_Nautilus_ContentView__init;
   view_class->servant_destroy_func = POA_Nautilus_ContentView__fini;
   view_class->vepv = &impl_Nautilus_ContentView_vepv;
 }
 
 void
-nautilus_content_view_frame_request_title_change (NautilusContentViewFrame *view,
+nautilus_content_view_request_title_change (NautilusContentView *view,
 					          const char *new_title)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail (NAUTILUS_IS_CONTENT_VIEW_FRAME (view));
+  g_return_if_fail (NAUTILUS_IS_CONTENT_VIEW (view));
   g_return_if_fail (new_title != NULL);
 
   CORBA_exception_init(&ev);
 
-  if (nautilus_view_frame_ensure_view_frame (NAUTILUS_VIEW_FRAME (view))) {
-    Nautilus_ContentViewFrame_request_title_change (NAUTILUS_VIEW_FRAME (view)->private->view_frame, new_title, &ev);
+  if (nautilus_view_ensure_view_frame (NAUTILUS_VIEW (view))) {
+    Nautilus_ContentViewFrame_request_title_change (NAUTILUS_VIEW (view)->details->view_frame, new_title, &ev);
     if (ev._major != CORBA_NO_EXCEPTION)
       {
-	CORBA_Object_release(NAUTILUS_VIEW_FRAME (view)->private->view_frame, &ev);
-	NAUTILUS_VIEW_FRAME (view)->private->view_frame = CORBA_OBJECT_NIL;
+	CORBA_Object_release(NAUTILUS_VIEW (view)->details->view_frame, &ev);
+	NAUTILUS_VIEW (view)->details->view_frame = CORBA_OBJECT_NIL;
       }
   }
 

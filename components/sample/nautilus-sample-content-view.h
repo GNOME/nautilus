@@ -32,14 +32,14 @@
 #include <libnautilus/nautilus-content-view-frame.h>
 #include <gtk/gtklabel.h>
 
-typedef struct NautilusSampleContentView      NautilusSampleContentView;
+typedef struct NautilusSampleContentView NautilusSampleContentView;
 typedef struct NautilusSampleContentViewClass NautilusSampleContentViewClass;
 
-#define NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW	      (nautilus_sample_content_view_get_type ())
-#define NAUTILUS_SAMPLE_CONTENT_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NautilusSampleContentView))
-#define NAUTILUS_SAMPLE_CONTENT_VIEW_CLASS(klass)     (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NautilusSampleContentViewClass))
-#define NAUTILUS_IS_SAMPLE_CONTENT_VIEW(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW))
-#define NAUTILUS_IS_SAMPLE_CONTENT_VIEW_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW))
+#define NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW	     (nautilus_sample_content_view_get_type ())
+#define NAUTILUS_SAMPLE_CONTENT_VIEW(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NautilusSampleContentView))
+#define NAUTILUS_SAMPLE_CONTENT_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NautilusSampleContentViewClass))
+#define NAUTILUS_IS_SAMPLE_CONTENT_VIEW(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW))
+#define NAUTILUS_IS_SAMPLE_CONTENT_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW))
 
 typedef struct NautilusSampleContentViewDetails NautilusSampleContentViewDetails;
 
@@ -53,13 +53,13 @@ struct NautilusSampleContentViewClass {
 };
 
 /* GtkObject support */
-GtkType                   nautilus_sample_content_view_get_type       (void);
+GtkType              nautilus_sample_content_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentViewFrame *nautilus_sample_content_view_get_view_frame (NautilusSampleContentView *view);
+NautilusContentView *nautilus_sample_content_view_get_nautilus_view (NautilusSampleContentView *view);
 
 /* URI handling */
-void                      nautilus_sample_content_view_load_uri       (NautilusSampleContentView *view,
-								       const char                *uri);
+void                 nautilus_sample_content_view_load_uri          (NautilusSampleContentView *view,
+								     const char                *uri);
 
 #endif /* NAUTILUS_SAMPLE_CONTENT_VIEW_H */

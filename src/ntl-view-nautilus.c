@@ -35,7 +35,7 @@ typedef struct {
 } NautilusViewInfo;
 
 static gboolean
-nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev)
+nautilus_view_try_load_client(NautilusViewFrame *view, CORBA_Object obj, CORBA_Environment *ev)
 {
   Bonobo_Control control;
   NautilusViewInfo *nvi;
@@ -69,7 +69,7 @@ nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
 }
 
 static void
-destroy_nautilus_view(NautilusView *view, CORBA_Environment *ev)
+destroy_nautilus_view(NautilusViewFrame *view, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 
@@ -79,7 +79,7 @@ destroy_nautilus_view(NautilusView *view, CORBA_Environment *ev)
 }
 
 static void
-nv_show_properties(NautilusView *view, CORBA_Environment *ev)
+nv_show_properties(NautilusViewFrame *view, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 
@@ -89,7 +89,7 @@ nv_show_properties(NautilusView *view, CORBA_Environment *ev)
 }
 
 static void
-nv_save_state(NautilusView *view, const char *config_path, CORBA_Environment *ev)
+nv_save_state(NautilusViewFrame *view, const char *config_path, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 
@@ -99,7 +99,7 @@ nv_save_state(NautilusView *view, const char *config_path, CORBA_Environment *ev
 }
 
 static void
-nv_load_state(NautilusView *view, const char *config_path, CORBA_Environment *ev)
+nv_load_state(NautilusViewFrame *view, const char *config_path, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 
@@ -109,7 +109,7 @@ nv_load_state(NautilusView *view, const char *config_path, CORBA_Environment *ev
 }
 
 static void
-nv_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, CORBA_Environment *ev)
+nv_notify_location_change(NautilusViewFrame *view, Nautilus_NavigationInfo *nav_ctx, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 
@@ -119,7 +119,7 @@ nv_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, 
 }
 
 static void
-nv_notify_selection_change(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, CORBA_Environment *ev)
+nv_notify_selection_change(NautilusViewFrame *view, Nautilus_SelectionInfo *nav_ctx, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 
@@ -130,7 +130,7 @@ nv_notify_selection_change(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, 
 }
 
 static void
-nv_stop_location_change(NautilusView *view, CORBA_Environment *ev)
+nv_stop_location_change(NautilusViewFrame *view, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 

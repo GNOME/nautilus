@@ -75,10 +75,10 @@ impl_Nautilus_ViewFrame__destroy(BonoboObject *obj, impl_POA_Nautilus_ViewFrame 
 {
    PortableServer_ObjectId *objid;
    CORBA_Environment ev;
-   NautilusViewClass *klass;
+   NautilusViewFrameClass *klass;
    void (*servant_destroy_func)(PortableServer_Servant, CORBA_Environment *);
 
-   klass = NAUTILUS_VIEW_CLASS(GTK_OBJECT(servant->view)->klass);
+   klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(servant->view)->klass);
 
    CORBA_exception_init(&ev);
 
@@ -94,14 +94,14 @@ impl_Nautilus_ViewFrame__destroy(BonoboObject *obj, impl_POA_Nautilus_ViewFrame 
 }
 
 BonoboObject *
-impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
+impl_Nautilus_ViewFrame__create(NautilusViewFrame *view, CORBA_Environment * ev)
 {
    BonoboObject *retval;
    impl_POA_Nautilus_ViewFrame *newservant;
-   NautilusViewClass *klass;
+   NautilusViewFrameClass *klass;
    void (*servant_init_func)(PortableServer_Servant, CORBA_Environment *);
 
-   klass = NAUTILUS_VIEW_CLASS(GTK_OBJECT(view)->klass);
+   klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(view)->klass);
    newservant = g_new0(impl_POA_Nautilus_ViewFrame, 1);
    newservant->servant.vepv = klass->vepv;
    if(!newservant->servant.vepv->Bonobo_Unknown_epv)
@@ -129,7 +129,7 @@ impl_Nautilus_ViewFrame_request_location_change(impl_POA_Nautilus_ViewFrame * se
 						Nautilus_NavigationRequestInfo * navinfo,
 						CORBA_Environment * ev)
 {
-  nautilus_view_request_location_change(servant->view, navinfo);
+  nautilus_view_frame_request_location_change(servant->view, navinfo);
 }
 
 static void
@@ -137,7 +137,7 @@ impl_Nautilus_ViewFrame_request_selection_change(impl_POA_Nautilus_ViewFrame * s
 						 Nautilus_SelectionRequestInfo * selinfo,
 						 CORBA_Environment * ev)
 {
-  nautilus_view_request_selection_change(servant->view, 
+  nautilus_view_frame_request_selection_change(servant->view, 
                                          selinfo); 
 }
 
@@ -146,7 +146,7 @@ impl_Nautilus_ViewFrame_request_status_change(impl_POA_Nautilus_ViewFrame * serv
                                               Nautilus_StatusRequestInfo * statinfo,
                                               CORBA_Environment * ev)
 {
-  nautilus_view_request_status_change(servant->view, statinfo);
+  nautilus_view_frame_request_status_change(servant->view, statinfo);
 }
 
 static void
@@ -154,5 +154,5 @@ impl_Nautilus_ViewFrame_request_progress_change(impl_POA_Nautilus_ViewFrame * se
                                                 Nautilus_ProgressRequestInfo * proginfo,
                                                 CORBA_Environment * ev)
 {
-  nautilus_view_request_progress_change(servant->view, proginfo);
+  nautilus_view_frame_request_progress_change(servant->view, proginfo);
 }

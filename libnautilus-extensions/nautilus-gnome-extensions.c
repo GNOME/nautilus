@@ -303,6 +303,19 @@ show_ok_box (const char *message,
 }
 
 GtkWidget *
+nautilus_warning_dialog (const char *warning)
+{
+	return show_ok_box (warning, GNOME_MESSAGE_BOX_WARNING, NULL);
+}
+
+GtkWidget *
+nautilus_warning_dialog_parented (const char *warning,
+				  GtkWindow *parent)
+{
+	return show_ok_box (warning, GNOME_MESSAGE_BOX_WARNING, parent);
+}
+
+GtkWidget *
 nautilus_error_dialog (const char *error)
 {
 	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, NULL);

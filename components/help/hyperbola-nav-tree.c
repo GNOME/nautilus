@@ -4,7 +4,7 @@
 #include <gtk/gtk.h>
 
 typedef struct {
-  NautilusViewFrame *view_frame;
+  NautilusView *view_frame;
 
   GtkWidget *ctree;
   HyperbolaDocTree *doc_tree;
@@ -18,7 +18,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 GtkCTreeNode *node,
 						 gint column,
 						 HyperbolaNavigationTree *view);
-static void hyperbola_navigation_tree_notify_location_change (NautilusViewFrame *view_frame,
+static void hyperbola_navigation_tree_notify_location_change (NautilusView *view_frame,
 							      Nautilus_NavigationInfo *navi,
 							      HyperbolaNavigationTree *hview);
 
@@ -91,16 +91,16 @@ hyperbola_navigation_tree_new(void)
   gtk_widget_show(view->ctree);
   gtk_widget_show(wtmp);
 
-  view->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (wtmp));
-  gtk_signal_connect(GTK_OBJECT(view->view_frame), "notify_location_change", 
-		     hyperbola_navigation_tree_notify_location_change,
-		     view);
+  view->view_frame = NAUTILUS_VIEW (nautilus_meta_view_new (wtmp));
+  gtk_signal_connect (GTK_OBJECT(view->view_frame), "notify_location_change", 
+		      hyperbola_navigation_tree_notify_location_change,
+		      view);
 
   return BONOBO_OBJECT (view->view_frame);
 }
 
 static void
-hyperbola_navigation_tree_notify_location_change (NautilusViewFrame *view_frame,
+hyperbola_navigation_tree_notify_location_change (NautilusView *view_frame,
 						  Nautilus_NavigationInfo *navi,
 						  HyperbolaNavigationTree *hview)
 {
@@ -138,7 +138,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
   memset(&nri, 0, sizeof(nri));
   nri.requested_uri = tnode->uri;
   nri.new_window_requested = FALSE;
-  nautilus_view_frame_request_location_change(view->view_frame, &nri);
+  nautilus_view_request_location_change(view->view_frame, &nri);
 
   view->notify_count--;
 }

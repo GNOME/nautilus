@@ -55,7 +55,7 @@
 
 struct _NautilusMusicViewDetails {
         char *uri;
-	NautilusContentViewFrame *view_frame;
+	NautilusContentView *nautilus_view;
         
 	int background_connection;
 	int sort_mode;
@@ -155,7 +155,7 @@ static void nautilus_music_view_initialize             (NautilusMusicView       
 static void nautilus_music_view_destroy                (GtkObject                *object);
 static void nautilus_music_view_update_from_uri        (NautilusMusicView *music_view, 
 							const char *uri);
-static void music_view_notify_location_change_callback (NautilusContentViewFrame *view,
+static void music_view_notify_location_change_callback (NautilusContentView *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusMusicView        *music_view);
 static void selection_callback                         (GtkCList                 *clist,
@@ -197,9 +197,9 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
-	music_view->details->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (music_view));
+	music_view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (music_view));
     	
-	gtk_signal_connect (GTK_OBJECT (music_view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (music_view->details->nautilus_view), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (music_view_notify_location_change_callback), 
 			    music_view);
@@ -287,7 +287,7 @@ nautilus_music_view_destroy (GtkObject *object)
 {
 	NautilusMusicView *music_view = NAUTILUS_MUSIC_VIEW (object);
 
-        bonobo_object_unref (BONOBO_OBJECT (music_view->details->view_frame));
+        bonobo_object_unref (BONOBO_OBJECT (music_view->details->nautilus_view));
 
 	g_free (music_view->details->uri);
 	g_free (music_view->details);
@@ -383,10 +383,10 @@ static void click_column_callback (GtkCList * clist, gint column, NautilusMusicV
 }
 
 /* Component embedding support */
-NautilusContentViewFrame *
-nautilus_music_view_get_view_frame (NautilusMusicView *music_view)
+NautilusContentView *
+nautilus_music_view_get_nautilus_view (NautilusMusicView *music_view)
 {
-	return music_view->details->view_frame;
+	return music_view->details->nautilus_view;
 }
 
 /* here are some utility routines for reading ID3 tags from mp3 files */
@@ -1419,7 +1419,7 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 }
 
 static void
-music_view_notify_location_change_callback (NautilusContentViewFrame *view, 
+music_view_notify_location_change_callback (NautilusContentView *view, 
                                             Nautilus_NavigationInfo *navinfo, 
                                             NautilusMusicView *music_view)
 {
@@ -1431,7 +1431,7 @@ music_view_notify_location_change_callback (NautilusContentViewFrame *view,
   
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
 	progress.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (music_view->details->view_frame), &progress);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (music_view->details->nautilus_view), &progress);
 
 	/* do the actual work here */
 	nautilus_music_view_load_uri (music_view, navinfo->actual_uri);
@@ -1439,7 +1439,7 @@ music_view_notify_location_change_callback (NautilusContentViewFrame *view,
 	/* send the required PROGRESS_DONE signal */
 	progress.type = Nautilus_PROGRESS_DONE_OK;
 	progress.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (music_view->details->view_frame), &progress);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (music_view->details->nautilus_view), &progress);
 }
 
 /* handle receiving dropped objects */

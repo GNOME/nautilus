@@ -37,7 +37,7 @@ typedef struct {
 } EngineInfo;
 
 typedef struct {
-  NautilusViewFrame *view;
+  NautilusView *view;
 
   GtkCList *clist;
 
@@ -54,9 +54,9 @@ typedef struct {
 static int object_count = 0;
 
 static void
-web_search_notify_location_change (NautilusViewFrame *view,
-                                Nautilus_NavigationInfo *loci,
-                                WebSearchView *hview)
+web_search_notify_location_change (NautilusView *view,
+                                   Nautilus_NavigationInfo *loci,
+                                   WebSearchView *hview)
 {
 }
 
@@ -92,7 +92,7 @@ do_search(GtkWidget *widget, WebSearchView *hview)
   nri.requested_uri = uri;
   nri.new_window_requested = FALSE;
 
-  nautilus_view_frame_request_location_change(hview->view, &nri);
+  nautilus_view_request_location_change(hview->view, &nri);
 }
 
 static void
@@ -214,7 +214,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   
   /* create CORBA object */
 
-  hview->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
+  hview->view = NAUTILUS_VIEW (nautilus_meta_view_new (vbox));
   gtk_signal_connect(GTK_OBJECT (hview->view), "destroy", do_destroy, NULL);
   object_count++;
 
@@ -223,7 +223,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   
   /* handle selections */
   info = nautilus_clipboard_info_new ();
-  nautilus_clipboard_info_set_view_frame (info, hview->view);
+  nautilus_clipboard_info_set_view (info, hview->view);
   nautilus_clipboard_info_set_clipboard_owner (info, GTK_WIDGET (hview->ent_params));
   nautilus_clipboard_info_set_component_name (info, _("WebSearch"));
   gtk_signal_connect (GTK_OBJECT (hview->ent_params), "focus_in_event",

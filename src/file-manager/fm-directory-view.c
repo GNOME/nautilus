@@ -79,7 +79,7 @@ static guint signals[LAST_SIGNAL];
 
 struct FMDirectoryViewDetails
 {
-	NautilusContentViewFrame *view_frame;
+	NautilusContentView *nautilus_view;
 	NautilusZoomable *zoomable;
 
 	NautilusDirectory *model;
@@ -136,12 +136,12 @@ static void           fm_directory_view_real_update_menus                       
 static GtkMenu *      create_selection_context_menu                               (FMDirectoryView          *view);
 static GtkMenu *      create_background_context_menu                              (FMDirectoryView          *view);
 static BonoboControl *get_bonobo_control                                          (FMDirectoryView          *view);
-static void           stop_location_change_callback                               (NautilusViewFrame        *view_frame,
+static void           stop_location_change_callback                               (NautilusView             *nautilus_view,
 										   FMDirectoryView          *directory_view);
-static void           notify_location_change_callback                             (NautilusViewFrame        *view_frame,
+static void           notify_location_change_callback                             (NautilusView             *nautilus_view,
 										   Nautilus_NavigationInfo  *nav_context,
 										   FMDirectoryView          *directory_view);
-static void           notify_selection_change_callback                            (NautilusViewFrame        *view_frame,
+static void           notify_selection_change_callback                            (NautilusView             *nautilus_view,
 										   Nautilus_SelectionInfo   *sel_context,
 										   FMDirectoryView          *directory_view);
 static void           open_callback                                               (GtkMenuItem              *item,
@@ -312,8 +312,8 @@ bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer u
 
 static void
 bonobo_menu_move_to_trash_callback (BonoboUIHandler *ui_handler,
-			      gpointer user_data,
-			      const char *path)
+				    gpointer user_data,
+				    const char *path)
 {
         FMDirectoryView *view;
         GList *selection;
@@ -407,8 +407,8 @@ bonobo_menu_open_properties_window_callback (BonoboUIHandler *ui_handler, gpoint
 static BonoboControl *
 get_bonobo_control (FMDirectoryView *view)
 {
-        return BONOBO_CONTROL (nautilus_view_frame_get_bonobo_control
-			       (NAUTILUS_VIEW_FRAME (view->details->view_frame)));
+        return BONOBO_CONTROL (nautilus_view_get_bonobo_control
+			       (NAUTILUS_VIEW (view->details->nautilus_view)));
 }
 
 static void
@@ -449,23 +449,21 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
 
-	directory_view->details->view_frame = NAUTILUS_CONTENT_VIEW_FRAME
-		(nautilus_content_view_frame_new (GTK_WIDGET (directory_view)));
+	directory_view->details->nautilus_view = NAUTILUS_CONTENT_VIEW
+		(nautilus_content_view_new (GTK_WIDGET (directory_view)));
 
-	directory_view->details->zoomable = 
-		nautilus_zoomable_new_from_bonobo_control (BONOBO_OBJECT 
-							   (directory_view->details->view_frame),
-							   .25, 4.0, FALSE);		
+	directory_view->details->zoomable = nautilus_zoomable_new_from_bonobo_control
+		(get_bonobo_control (directory_view), .25, 4.0, FALSE);		
 
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
 			    "stop_location_change",
 			    GTK_SIGNAL_FUNC (stop_location_change_callback),
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (notify_location_change_callback), 
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
 			    "notify_selection_change",
 			    GTK_SIGNAL_FUNC (notify_selection_change_callback), 
 			    directory_view);
@@ -661,8 +659,8 @@ display_selection_info (FMDirectoryView *view)
 	g_free (folder_item_count_str);
 	g_free (non_folder_str);
 
-	nautilus_view_frame_request_status_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
+	nautilus_view_request_status_change
+		(NAUTILUS_VIEW (view->details->nautilus_view), &request);
 
 	g_free (request.status_string);
 }
@@ -687,8 +685,8 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 	nautilus_file_list_free (selection);
 
 	/* Send the selection change. */
-	nautilus_view_frame_request_selection_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
+	nautilus_view_request_selection_change
+		(NAUTILUS_VIEW (view->details->nautilus_view), &request);
 
 	/* Free the URIs. */
 	for (i = 0; i < request.selected_uris._length; i++) {
@@ -699,7 +697,7 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 
 
 static void
-notify_location_change_callback (NautilusViewFrame *view_frame,
+notify_location_change_callback (NautilusView *nautilus_view,
 			   Nautilus_NavigationInfo *navigation_context,
 			   FMDirectoryView *directory_view)
 {
@@ -707,7 +705,7 @@ notify_location_change_callback (NautilusViewFrame *view_frame,
 }
 
 static void
-notify_selection_change_callback (NautilusViewFrame *view_frame,
+notify_selection_change_callback (NautilusView *nautilus_view,
 				  Nautilus_SelectionInfo *selection_context,
 				  FMDirectoryView *directory_view)
 {
@@ -746,7 +744,7 @@ notify_selection_change_callback (NautilusViewFrame *view_frame,
 }
 
 static void
-stop_location_change_callback (NautilusViewFrame *view_frame,
+stop_location_change_callback (NautilusView *nautilus_view,
 			 FMDirectoryView *directory_view)
 {
 	fm_directory_view_stop (directory_view);
@@ -766,8 +764,8 @@ done_loading (FMDirectoryView *view)
 	memset (&progress, 0, sizeof (progress));
 	progress.amount = 100.0;
 	progress.type = Nautilus_PROGRESS_DONE_OK;
-	nautilus_view_frame_request_progress_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
+	nautilus_view_request_progress_change
+		(NAUTILUS_VIEW (view->details->nautilus_view), &progress);
 
 	view->details->loading = FALSE;
 }
@@ -1197,21 +1195,21 @@ fm_directory_view_get_bonobo_ui_handler (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_get_view_frame:
+ * fm_directory_view_get_nautilus_view:
  *
- * Get the NautilusContentViewFrame for this FMDirectoryView.
+ * Get the NautilusContentView for this FMDirectoryView.
  * This is normally called only by the embedding framework.
  * @view: FMDirectoryView of interest.
  * 
- * Return value: NautilusContentViewFrame for this view.
+ * Return value: NautilusContentView for this view.
  * 
  **/
-NautilusContentViewFrame *
-fm_directory_view_get_view_frame (FMDirectoryView *view)
+NautilusContentView *
+fm_directory_view_get_nautilus_view (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return view->details->view_frame;
+	return view->details->nautilus_view;
 }
 
 /**
@@ -2154,8 +2152,8 @@ fm_directory_view_activate_file_internal (FMDirectoryView *view,
 
 	request.requested_uri = nautilus_file_get_mapped_uri (file);
 	request.new_window_requested = use_new_window;
-	nautilus_view_frame_request_location_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
+	nautilus_view_request_location_change
+		(NAUTILUS_VIEW (view->details->nautilus_view), &request);
 
 	g_free (request.requested_uri);
 }
@@ -2228,8 +2226,8 @@ finish_loading_uri (FMDirectoryView *view)
 
 	memset (&progress, 0, sizeof (progress));
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
-	nautilus_view_frame_request_progress_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
+	nautilus_view_request_progress_change
+		(NAUTILUS_VIEW (view->details->nautilus_view), &progress);
 
 	/* Tell interested parties that we've begun loading this directory now.
 	 * Subclasses use this to know that the new metadata is now available.

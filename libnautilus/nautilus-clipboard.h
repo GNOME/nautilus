@@ -62,38 +62,27 @@ struct NautilusClipboardInfoClass {
 };
 
 /* GtkObject support */
-GtkType                nautilus_clipboard_info_get_type                             (void);
+GtkType                nautilus_clipboard_info_get_type            (void);
+void                   nautilus_clipboard_info_initialize          (NautilusClipboardInfo *info);
+void                   nautilus_clipboard_info_destroy             (NautilusClipboardInfo *info);		
+void                   nautilus_clipboard_info_destroy_cb          (GtkObject             *object,
+								    gpointer               user_data);
+NautilusClipboardInfo *nautilus_clipboard_info_new                 (void);
+void                   nautilus_clipboard_info_set_component_name  (NautilusClipboardInfo *info,
+								    char                  *component_name);
+char *                 nautilus_clipboard_info_get_component_name  (NautilusClipboardInfo *info);
+void                   nautilus_clipboard_info_set_clipboard_owner (NautilusClipboardInfo *info,
+								    GtkWidget             *clipboard_owner);
+GtkWidget *            nautilus_clipboard_info_get_clipboard_owner (NautilusClipboardInfo *info);
+void                   nautilus_clipboard_info_set_view            (NautilusClipboardInfo *info,
+								    NautilusView          *view);
+NautilusView *         nautilus_clipboard_info_get_view            (NautilusClipboardInfo *info);
+void                   nautilus_clipboard_info_free                (NautilusClipboardInfo *info);
+void                   nautilus_component_merge_bonobo_items_cb    (GtkWidget             *widget,
+								    GdkEventAny           *event,
+								    gpointer               user_data);
+void                   nautilus_component_unmerge_bonobo_items_cb  (GtkWidget             *widget,
+								    GdkEventAny           *event,
+								    gpointer               user_data);
 
-
-void                   nautilus_clipboard_info_initialize                           (NautilusClipboardInfo *info);
-										    
-void                   nautilus_clipboard_info_destroy                              (NautilusClipboardInfo *info);		
-
-void                   nautilus_clipboard_info_destroy_cb                           (GtkObject *object, gpointer user_data);
-
-NautilusClipboardInfo* nautilus_clipboard_info_new                                  (void);
-
-void                   nautilus_clipboard_info_set_component_name                   (NautilusClipboardInfo *info, char *component_name);
-char*                  nautilus_clipboard_info_get_component_name                   (NautilusClipboardInfo *info);
-
-void                   nautilus_clipboard_info_set_clipboard_owner                  (NautilusClipboardInfo *info, GtkWidget *clipboard_owner);
-GtkWidget*             nautilus_clipboard_info_get_clipboard_owner                  (NautilusClipboardInfo *info);
-
-void                   nautilus_clipboard_info_set_view_frame                       (NautilusClipboardInfo *info, NautilusViewFrame *view);
-NautilusViewFrame*     nautilus_clipboard_info_get_view_frame                       (NautilusClipboardInfo *info);
-
-
-void                   nautilus_clipboard_info_free                                 (NautilusClipboardInfo *info) ;
-
-
-void                   nautilus_component_merge_bonobo_items_cb                     (GtkWidget *widget, 
-                                                                                     GdkEventAny *event, 
-                                                                                     gpointer user_data);
-void                   nautilus_component_unmerge_bonobo_items_cb                   (GtkWidget *widget,
-										     GdkEventAny *event,
-										     gpointer user_data);
 #endif
-
-
-
-

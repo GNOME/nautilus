@@ -462,7 +462,7 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 
 /* add a new meta-view to the index panel */
 void
-nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
+nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusViewFrame *meta_view)
 {
 	GtkWidget *label;
 	char cbuf[32];
@@ -470,9 +470,9 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	int page_num;
 	
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
-	g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
+	g_return_if_fail (NAUTILUS_IS_META_VIEW_FRAME (meta_view));
 	
-	description = nautilus_meta_view_get_label (NAUTILUS_META_VIEW (meta_view));
+	description = nautilus_meta_view_frame_get_label (NAUTILUS_META_VIEW_FRAME (meta_view));
 	if (description == NULL) {
 		/* FIXME bugzilla.eazel.com 599: 
 		 * Why is a hex address better than an empty string? 
@@ -499,7 +499,7 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 /* remove the passed-in meta-view from the index panel */
 void
 nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel,
-				       NautilusView *meta_view)
+				       NautilusViewFrame *meta_view)
 {
 	int page_num;
 	

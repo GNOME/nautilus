@@ -46,7 +46,7 @@
 struct _NautilusServicesContentViewDetails {
 	char* uri;
 	char* auth_token;
-	NautilusContentViewFrame* view_frame;
+	NautilusContentView* nautilus_view;
 	GtkWidget* form;
 	GtkWidget* form_title;
 	GtkWidget* account_name;
@@ -67,7 +67,7 @@ static void nautilus_service_startup_view_destroy (GtkObject* object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServicesContentView, nautilus_service_startup_view, GTK_TYPE_EVENT_BOX)
 
-static void service_main_notify_location_change_cb (NautilusContentViewFrame* view, 
+static void service_main_notify_location_change_cb (NautilusContentView* view, 
                                                     Nautilus_NavigationInfo* navinfo, 
                                                     NautilusServicesContentView* services);
 static gboolean is_location (char* document_str, const char* place_str);
@@ -75,12 +75,13 @@ static gboolean is_location (char* document_str, const char* place_str);
 /* utility routine to go to another uri */
 
 static void
-go_to_uri(NautilusServicesContentView* view, char* uri) {
+go_to_uri(NautilusServicesContentView* view, char* uri)
+{
 
 	Nautilus_NavigationRequestInfo nri;	
 	memset (&nri, 0, sizeof(nri));
  	nri.requested_uri = uri;
-  	nautilus_view_frame_request_location_change ((NautilusViewFrame*)view->details->view_frame, &nri);
+  	nautilus_view_request_location_change (NAUTILUS_VIEW (view->details->nautilus_view), &nri);
 }
 
 /* temporary callback to handle the configuration button */    
@@ -760,8 +761,8 @@ nautilus_service_startup_view_initialize (NautilusServicesContentView* view) {
   	NautilusBackground* background;
 
 	view->details = g_new0 (NautilusServicesContentViewDetails, 1);
-	view->details->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (view));
-	gtk_signal_connect (GTK_OBJECT (view->details->view_frame), 
+	view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (view));
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (service_main_notify_location_change_cb),
 			    view);
@@ -792,9 +793,9 @@ nautilus_service_startup_view_destroy (GtkObject* object) {
 }
 
 /* Component embedding support */
-NautilusContentViewFrame*
-nautilus_service_startup_view_get_view_frame (NautilusServicesContentView* view) {
-	return view->details->view_frame;
+NautilusContentView *
+nautilus_service_startup_view_get_nautilus_view (NautilusServicesContentView* view) {
+	return view->details->nautilus_view;
 }
 
 /* utility for checking uri */
@@ -843,7 +844,7 @@ nautilus_service_startup_view_load_uri (NautilusServicesContentView* view,
 }
 
 static void
-service_main_notify_location_change_cb (NautilusContentViewFrame* view, 
+service_main_notify_location_change_cb (NautilusContentView* view, 
 					Nautilus_NavigationInfo* navinfo, 
 					NautilusServicesContentView* services) {
 
@@ -854,12 +855,12 @@ service_main_notify_location_change_cb (NautilusContentViewFrame* view,
 	/* we must send a PROGRESS_UNDERWAY message */
 	pri.type = Nautilus_PROGRESS_UNDERWAY;
 	pri.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (services->details->view_frame), &pri);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (services->details->nautilus_view), &pri);
 
 	nautilus_service_startup_view_load_uri (services, navinfo->actual_uri);
 	
 	/* likewise, we must send a PROGRESS_DONE message */
 	pri.type = Nautilus_PROGRESS_DONE_OK;
 	pri.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (services->details->view_frame), &pri);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (services->details->nautilus_view), &pri);
 }

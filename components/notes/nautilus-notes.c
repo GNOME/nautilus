@@ -44,7 +44,7 @@
 
 
 typedef struct {
-        NautilusViewFrame *view;
+        NautilusView *view;
         GtkWidget *note_text_field;
         char *uri;
         NautilusFile *file;
@@ -111,7 +111,7 @@ notes_save_metainfo (Notes *notes)
 }
 
 static void
-notes_notify_location_change (NautilusViewFrame *view,
+notes_notify_location_change (NautilusView *view,
                               Nautilus_NavigationInfo *loci,
                               Notes *notes)
 {
@@ -132,7 +132,7 @@ notes_notify_location_change (NautilusViewFrame *view,
 		
 		CORBA_exception_init(&ev);
 
-		view_control = nautilus_view_frame_get_bonobo_control (view);
+		view_control = nautilus_view_get_bonobo_control (view);
 		g_assert (view_control);
 		
 		undo_manager = bonobo_object_query_interface (view_control, 
@@ -195,7 +195,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         gtk_widget_show_all (vbox);
         
         /* Create CORBA object. */
-        notes->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
+        notes->view = NAUTILUS_VIEW (nautilus_meta_view_new (vbox));
         gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", do_destroy, notes);
 
         notes_object_count++;
@@ -206,7 +206,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         
         /* handle selections */
         info = nautilus_clipboard_info_new ();
-	nautilus_clipboard_info_set_view_frame (info, notes->view);
+	nautilus_clipboard_info_set_view (info, notes->view);
 	nautilus_clipboard_info_set_clipboard_owner (info, GTK_WIDGET (notes->note_text_field));
 	nautilus_clipboard_info_set_component_name (info, _("Notes"));
         gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_in_event",

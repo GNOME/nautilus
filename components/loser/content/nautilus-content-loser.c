@@ -38,30 +38,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-/* A NautilusContentViewFrame's private information. */
 struct NautilusContentLoserDetails {
 	char *uri;
-	NautilusContentViewFrame *view_frame;
+	NautilusContentView *nautilus_view;
 };
 
 static void nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass);
 static void nautilus_content_loser_initialize       (NautilusContentLoser      *view);
-static void nautilus_content_loser_destroy          (GtkObject                      *object);
+static void nautilus_content_loser_destroy          (GtkObject                 *object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusContentLoser, nautilus_content_loser, GTK_TYPE_LABEL)
      
-static void loser_notify_location_change_callback        (NautilusContentViewFrame  *view_frame, 
-							   Nautilus_NavigationInfo   *navinfo, 
-							   NautilusContentLoser *view);
-static void loser_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
-							   gboolean 		      state, 
-							   gpointer 		      user_data);
-
-
-static void nautilus_content_loser_fail                   (void);
-static void ensure_fail_env                               (void);
-
+static void loser_notify_location_change_callback (NautilusContentView     *nautilus_view,
+						   Nautilus_NavigationInfo *navinfo,
+						   NautilusContentLoser    *view);
+static void loser_merge_bonobo_items_callback     (BonoboObject            *control,
+						   gboolean                 state,
+						   gpointer                 user_data);
+static void nautilus_content_loser_fail           (void);
+static void ensure_fail_env                       (void);
      
 static void
 nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass)
@@ -80,19 +75,18 @@ nautilus_content_loser_initialize (NautilusContentLoser *view)
 	
 	gtk_label_set_text (GTK_LABEL (view), g_strdup ("(none)"));
 	
-	view->details->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (view));
+	view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (view));
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (loser_notify_location_change_callback), 
 			    view);
 
-	/* 
-	 * Get notified when our bonobo control is activated so we
+	/* Get notified when our bonobo control is activated so we
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_frame_get_bonobo_control
-					(NAUTILUS_VIEW_FRAME (view->details->view_frame))),
+        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
+					(NAUTILUS_VIEW (view->details->nautilus_view))),
                             "activate",
                             loser_merge_bonobo_items_callback,
                             view);
@@ -107,7 +101,7 @@ nautilus_content_loser_destroy (GtkObject *object)
 	
 	view = NAUTILUS_CONTENT_LOSER (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->details->view_frame));
+	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 	
 	g_free (view->details->uri);
 	g_free (view->details);
@@ -116,24 +110,24 @@ nautilus_content_loser_destroy (GtkObject *object)
 }
 
 /**
- * nautilus_content_loser_get_view_frame:
+ * nautilus_content_loser_get_nautilus_view:
  *
- * Return the NautilusViewFrame object associated with this view; this
+ * Return the NautilusView object associated with this view; this
  * is needed to export the view via CORBA/Bonobo.
- * @view: NautilusContentLoser to get the view_frame from..
+ * @view: NautilusContentLoser to get the nautilus_view from..
  * 
  **/
-NautilusContentViewFrame *
-nautilus_content_loser_get_view_frame (NautilusContentLoser *view)
+NautilusContentView *
+nautilus_content_loser_get_nautilus_view (NautilusContentLoser *view)
 {
-	return view->details->view_frame;
+	return view->details->nautilus_view;
 }
 
 /**
  * nautilus_content_loser_load_uri:
  *
  * Load the resource pointed to by the specified URI.
- * @view: NautilusContentLoser to get the view_frame from.
+ * @view: NautilusContentLoser to get the nautilus_view from.
  * 
  **/
 void
@@ -144,27 +138,26 @@ nautilus_content_loser_load_uri (NautilusContentLoser *view,
 	
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
-
+	
 	label_text = g_strdup_printf (_("%s\n\nThis is a Nautilus content view that fails on demand."), uri);
 	gtk_label_set_text (GTK_LABEL (view), label_text);
 	g_free (label_text);
 }
 
 static void
-loser_notify_location_change_callback (NautilusContentViewFrame  *view_frame, 
+loser_notify_location_change_callback (NautilusContentView  *nautilus_view, 
 				  	Nautilus_NavigationInfo   *navinfo, 
 				  	NautilusContentLoser *view)
 {
 	Nautilus_ProgressRequestInfo request;
 
-	g_assert (view_frame == view->details->view_frame);
+	g_assert (nautilus_view == view->details->nautilus_view);
 	
 	memset(&request, 0, sizeof(request));
 
 	nautilus_content_loser_maybe_fail ("pre-underway");
 	
-	/* 
-	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
+	/* It's mandatory to send a PROGRESS_UNDERWAY message once the
 	 * component starts loading, otherwise nautilus will assume it
 	 * failed. In a real component, this will probably happen in
 	 * some sort of callback from whatever loading mechanism it is
@@ -174,15 +167,14 @@ loser_notify_location_change_callback (NautilusContentViewFrame  *view_frame,
 	
 	request.type = Nautilus_PROGRESS_UNDERWAY;
 	request.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &request);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
 	
 	nautilus_content_loser_maybe_fail ("pre-load");
 
 	/* Do the actual load. */
 	nautilus_content_loser_load_uri (view, navinfo->actual_uri);
 	
-	/*
-	 * It's mandatory to send a PROGRESS_DONE_OK message once the
+	/* It's mandatory to send a PROGRESS_DONE_OK message once the
 	 * component is done loading successfully, or
 	 * PROGRESS_DONE_ERROR if it completes unsuccessfully. In a
 	 * real component, this will probably happen in some sort of
@@ -190,13 +182,13 @@ loser_notify_location_change_callback (NautilusContentViewFrame  *view_frame,
 	 * load the data; this component loads no data, so it gives
 	 * the progrss upodate here. 
 	 */
-
+	
 	nautilus_content_loser_maybe_fail ("pre-done");
-
+	
 	request.type = Nautilus_PROGRESS_DONE_OK;
 	request.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &request);
-
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
+	
 	nautilus_content_loser_maybe_fail ("post-done");
 }
 
@@ -213,11 +205,11 @@ bonobo_loser_callback (BonoboUIHandler *ui_handler, gpointer user_data, const ch
 	if (strcmp (path, "/File/Kill Content View") == 0) {
 		label_text = g_strdup_printf ("%s\n\nYou selected the Kill Content View menu item.", view->details->uri);
 		nautilus_content_loser_fail ();
-
+		
 	} else {
 		g_assert (strcmp (path, "/Main/Kill Content View") == 0);
 		label_text = g_strdup_printf (_("%s\n\nYou clicked the Kill Content View toolbar button."), view->details->uri);
-
+		
 		nautilus_content_loser_fail ();
 
 	}

@@ -59,7 +59,7 @@ enum
 };
 
 static void nautilus_window_realize (GtkWidget *widget);
-static void nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new_view);
+static void nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame *new_view);
 
 /* Object framework static variables */
 static GnomeAppClass *parent_class = NULL;
@@ -343,7 +343,7 @@ zoom_in_cb (NautilusZoomControl *zoom_control,
             NautilusWindow      *window)
 {
   if (window->content_view != NULL) {
-    nautilus_view_zoom_in (window->content_view);
+    nautilus_view_frame_zoom_in (window->content_view);
   }
 }
 
@@ -352,7 +352,7 @@ zoom_out_cb (NautilusZoomControl *zoom_control,
                              NautilusWindow      *window)
 {
   if (window->content_view != NULL) {
-    nautilus_view_zoom_out (window->content_view);
+    nautilus_view_frame_zoom_out (window->content_view);
   }
 }
 
@@ -491,7 +491,7 @@ nautilus_window_set_arg (GtkObject      *object,
     	window->app = BONOBO_OBJECT(GTK_VALUE_OBJECT(*arg));
     break;
   case ARG_CONTENT_VIEW:
-    nautilus_window_real_set_content_view (window, (NautilusView *)GTK_VALUE_OBJECT(*arg));
+    nautilus_window_real_set_content_view (window, (NautilusViewFrame *)GTK_VALUE_OBJECT(*arg));
     break;
   }
 }
@@ -654,7 +654,7 @@ nautilus_window_realize (GtkWidget *widget)
 
 #if 0
 static gboolean
-nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event, NautilusView *meta_view)
+nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event, NautilusViewFrame *meta_view)
 {
   if(event->button != 3)
     return FALSE;
@@ -671,7 +671,7 @@ static void
 view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
 {
         NautilusWindow *window;
-        NautilusView *view;
+        NautilusViewFrame *view;
         NautilusDirectory *directory;
         char *iid;
         
@@ -768,29 +768,29 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
 }
 
 void
-nautilus_window_set_content_view (NautilusWindow *window, NautilusView *content_view)
+nautilus_window_set_content_view (NautilusWindow *window, NautilusViewFrame *content_view)
 {
   nautilus_window_real_set_content_view (window, content_view);
 }
 
 void
-nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
+nautilus_window_add_meta_view(NautilusWindow *window, NautilusViewFrame *meta_view)
 {
   g_return_if_fail (!g_list_find (window->meta_views, meta_view));
-  g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
+  g_return_if_fail (NAUTILUS_IS_META_VIEW_FRAME (meta_view));
 
   nautilus_index_panel_add_meta_view (window->index_panel, meta_view);
   window->meta_views = g_list_prepend (window->meta_views, meta_view);
 }
 
 void
-nautilus_window_remove_meta_view_real (NautilusWindow *window, NautilusView *meta_view)
+nautilus_window_remove_meta_view_real (NautilusWindow *window, NautilusViewFrame *meta_view)
 {
   nautilus_index_panel_remove_meta_view(window->index_panel, meta_view);
 }
 
 void
-nautilus_window_remove_meta_view (NautilusWindow *window, NautilusView *meta_view)
+nautilus_window_remove_meta_view (NautilusWindow *window, NautilusViewFrame *meta_view)
 {
   if (!g_list_find(window->meta_views, meta_view))
     return;
@@ -953,7 +953,7 @@ nautilus_get_history_list ()
 
 
 static void
-nautilus_window_request_location_change_cb (NautilusView *view, 
+nautilus_window_request_location_change_cb (NautilusViewFrame *view, 
                                             Nautilus_NavigationRequestInfo *info, 
                                             NautilusWindow *window)
 {
@@ -962,7 +962,7 @@ nautilus_window_request_location_change_cb (NautilusView *view,
 
 
 static void
-nautilus_window_request_selection_change_cb (NautilusView *view, 
+nautilus_window_request_selection_change_cb (NautilusViewFrame *view, 
                                              Nautilus_SelectionRequestInfo *info, 
                                              NautilusWindow *window)
 {
@@ -970,7 +970,7 @@ nautilus_window_request_selection_change_cb (NautilusView *view,
 }
 
 static void
-nautilus_window_request_status_change_cb (NautilusView *view,
+nautilus_window_request_status_change_cb (NautilusViewFrame *view,
                                           Nautilus_StatusRequestInfo *info,
                                           NautilusWindow *window)
 {
@@ -978,7 +978,7 @@ nautilus_window_request_status_change_cb (NautilusView *view,
 }
 
 static void
-nautilus_window_request_progress_change_cb (NautilusView *view,
+nautilus_window_request_progress_change_cb (NautilusViewFrame *view,
                                             Nautilus_ProgressRequestInfo *info,
                                             NautilusWindow *window)
 {
@@ -986,7 +986,7 @@ nautilus_window_request_progress_change_cb (NautilusView *view,
 }
 
 static void
-nautilus_window_request_title_change_callback (NautilusContentView *view,
+nautilus_window_request_title_change_callback (NautilusContentViewFrame *view,
                                                const char *new_title,
                                                NautilusWindow *window)
 {
@@ -994,7 +994,7 @@ nautilus_window_request_title_change_callback (NautilusContentView *view,
 }
 
 void
-nautilus_window_connect_view(NautilusWindow *window, NautilusView *view)
+nautilus_window_connect_view(NautilusWindow *window, NautilusViewFrame *view)
 {
   GtkObject *view_object;
 
@@ -1022,14 +1022,14 @@ nautilus_window_connect_view(NautilusWindow *window, NautilusView *view)
 }
 
 void
-nautilus_window_connect_content_view(NautilusWindow *window, NautilusContentView *view)
+nautilus_window_connect_content_view(NautilusWindow *window, NautilusContentViewFrame *view)
 {
   GtkObject *view_object;
 
-  /* First connect with NautilusView signals. */
-  nautilus_window_connect_view (window, NAUTILUS_VIEW (view));
+  /* First connect with NautilusViewFrame signals. */
+  nautilus_window_connect_view (window, NAUTILUS_VIEW_FRAME (view));
 
-  /* Now connect with NautilusContentView signals. */
+  /* Now connect with NautilusContentViewFrame signals. */
   view_object = GTK_OBJECT(view);
   gtk_signal_connect(view_object,
                      "request_title_change", 
@@ -1051,10 +1051,10 @@ nautilus_window_display_error(NautilusWindow *window, const char *error_msg)
 }
 
 static void
-nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new_view)
+nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame *new_view)
 {
   g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-  g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW (new_view));
+  g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW_FRAME (new_view));
 
   if (new_view == window->content_view)
     {
@@ -1072,7 +1072,7 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
 
       gtk_widget_show (GTK_WIDGET (new_view));
 
-      nautilus_content_view_set_active (NAUTILUS_CONTENT_VIEW (new_view)); 
+      nautilus_content_view_frame_set_active (NAUTILUS_CONTENT_VIEW_FRAME (new_view)); 
 
       gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET (new_view), TRUE, FALSE);
     }

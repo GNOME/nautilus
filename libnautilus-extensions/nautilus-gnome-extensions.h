@@ -80,6 +80,9 @@ int        nautilus_simple_dialog                               (GtkWidget      
 								 ...);
 
 /* Variations on gnome dialogs that use text with line-wrapping turned on. */
+GtkWidget *nautilus_warning_dialog                              (const char      *warning);
+GtkWidget *nautilus_warning_dialog_parented                     (const char      *warning,
+								 GtkWindow       *parent);
 GtkWidget *nautilus_error_dialog                                (const char      *error);
 GtkWidget *nautilus_error_dialog_parented                       (const char      *error,
 								 GtkWindow       *parent);

@@ -35,15 +35,14 @@ typedef struct {
 } BonoboSubdocInfo;
 
 static void
-destroy_bonobo_subdoc_view(NautilusView *view, CORBA_Environment *ev)
+destroy_bonobo_subdoc_view (NautilusViewFrame *view, CORBA_Environment *ev)
 {
   BonoboSubdocInfo *bsi = view->component_data;
-
   g_free(bsi);
 }
 
 static void
-bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
+bonobo_subdoc_notify_location_change(NautilusViewFrame *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
 {
   Bonobo_PersistStream persist;
 
@@ -60,7 +59,7 @@ bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo
         pri.type = Nautilus_PROGRESS_UNDERWAY;
       else
         pri.type = Nautilus_PROGRESS_DONE_ERROR;
-      nautilus_view_request_progress_change(view, &pri);
+      nautilus_view_frame_request_progress_change(view, &pri);
       if(stream)
         {
           Bonobo_PersistStream_load (persist,
@@ -69,13 +68,13 @@ bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo
           Bonobo_Unknown_unref(persist, ev);
           CORBA_Object_release(persist, ev);
           pri.type = Nautilus_PROGRESS_DONE_OK;
-          nautilus_view_request_progress_change(view, &pri);
+          nautilus_view_frame_request_progress_change(view, &pri);
         }
     }
 }      
 
 static gboolean
-bonobo_subdoc_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev)
+bonobo_subdoc_try_load_client(NautilusViewFrame *view, CORBA_Object obj, CORBA_Environment *ev)
 {
   BonoboSubdocInfo *bsi;
   Bonobo_UIHandler uih = bonobo_object_corba_objref(BONOBO_OBJECT(nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window))));

@@ -29,23 +29,23 @@
 #define NAUTILUS_ZOOMABLE_H
 
 #include <libnautilus/nautilus-view-component.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-control.h>
 #include <gtk/gtkwidget.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define NAUTILUS_TYPE_ZOOMABLE			(nautilus_zoomable_get_type ())
-#define NAUTILUS_ZOOMABLE(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ZOOMABLE, NautilusZoomable))
-#define NAUTILUS_ZOOMABLE_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ZOOMABLE, NautilusZoomableClass))
-#define NAUTILUS_IS_ZOOMABLE(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ZOOMABLE))
-#define NAUTILUS_IS_ZOOMABLE_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_ZOOMABLE))
+#define NAUTILUS_TYPE_ZOOMABLE		  (nautilus_zoomable_get_type ())
+#define NAUTILUS_ZOOMABLE(obj)		  (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ZOOMABLE, NautilusZoomable))
+#define NAUTILUS_ZOOMABLE_CLASS(klass)	  (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ZOOMABLE, NautilusZoomableClass))
+#define NAUTILUS_IS_ZOOMABLE(obj)	  (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ZOOMABLE))
+#define NAUTILUS_IS_ZOOMABLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_ZOOMABLE))
 
-typedef struct _NautilusZoomable       NautilusZoomable;
-typedef struct _NautilusZoomableClass  NautilusZoomableClass;
+typedef struct NautilusZoomable NautilusZoomable;
+typedef struct NautilusZoomableClass NautilusZoomableClass;
 
-struct _NautilusZoomableClass
+struct NautilusZoomableClass
 {
 	BonoboObjectClass parent_spot;
 
@@ -58,12 +58,12 @@ struct _NautilusZoomableClass
 	gpointer servant_init_func, servant_destroy_func, vepv;
 };
 
-typedef struct _NautilusZoomablePrivate NautilusZoomablePrivate;
+typedef struct NautilusZoomableDetails NautilusZoomableDetails;
 
-struct _NautilusZoomable
+struct NautilusZoomable
 {
 	BonoboObject parent;
-	NautilusZoomablePrivate *private;
+	NautilusZoomableDetails *details;
 };
 
 GtkType            nautilus_zoomable_get_type                 (void);
@@ -71,13 +71,13 @@ NautilusZoomable  *nautilus_zoomable_new                      (GtkWidget        
 							       gdouble           min_zoom_level,
 							       gdouble           max_zoom_level,
 							       gboolean          is_continuous);
-NautilusZoomable  *nautilus_zoomable_new_from_bonobo_control  (BonoboObject     *bonobo_control, 
+NautilusZoomable  *nautilus_zoomable_new_from_bonobo_control  (BonoboControl    *bonobo_control, 
 							       gdouble           min_zoom_level,
 							       gdouble           max_zoom_level,
 							       gboolean          is_continuous);
 void               nautilus_zoomable_set_zoom_level           (NautilusZoomable *view,
 							       gdouble           zoom_level);
-BonoboObject      *nautilus_zoomable_get_bonobo_control       (NautilusZoomable *view);
+BonoboControl     *nautilus_zoomable_get_bonobo_control       (NautilusZoomable *view);
 
 #ifdef __cplusplus
 }

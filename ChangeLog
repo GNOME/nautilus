@@ -1,3 +1,292 @@
+2000-05-23  Darin Adler  <darin@eazel.com>
+
+	The ViewFrame <-> View renaming.
+	We still have to rename the files.
+
+	* RENAMING: Put in explicit cases for file name renaming.
+	
+	* src/Makefile.am:
+	* src/nautilus-desktop-window.c:
+	* src/nautilus-desktop-window.h:
+	Added placeholders. I'll be putting code in here soon.
+	
+	* src/ntl-app.c: (display_prototype_caveat):
+	Changed to use nautilus_simple_dialog again since otherwise it
+	comes up behind the main window. Perhaps someone will resolve
+	that issue and change it back.
+
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_warning_dialog), (nautilus_warning_dialog_parented):
+	Added centered version of the warning dialog as well, since
+	Eskil was using gnome_warning_dialog in a case where he really
+	wanted lines wrapped.
+	
+	* components/loser/.cvsignore:
+	* components/loser/content/.cvsignore:
+	* components/loser/sidebar/.cvsignore:
+	Ignore some generated files.
+
+	* components/hardware/main.c: (hardware_view_make_object):
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_initialize),
+	(nautilus_hardware_view_destroy),
+	(nautilus_hardware_view_get_nautilus_view),
+	(hardware_view_notify_location_change_callback):
+	* components/hardware/nautilus-hardware-view.h:
+	* components/help/hyperbola-nav-index.c:
+	(hyperbola_navigation_index_select_row),
+	(hyperbola_navigation_index_new):
+	* components/help/hyperbola-nav-search.c:
+	(hyperbola_navigation_search_select_row),
+	(hyperbola_navigation_search_new):
+	* components/help/hyperbola-nav-tree.c:
+	(hyperbola_navigation_tree_new),
+	(hyperbola_navigation_tree_notify_location_change),
+	(hyperbola_navigation_tree_select_row):
+	* components/history/ntl-history-view.c:
+	(hyperbola_navigation_history_notify_location_change),
+	(hyperbola_navigation_history_select_row), (make_obj):
+	* components/html/ntl-web-browser.c: (browser_url_load_done),
+	(browser_vfs_callback), (browser_goto_url_real),
+	(browser_goto_url), (browser_select_url), (browser_title_changed),
+	(browser_notify_location_change), (make_obj):
+	* components/loser/content/main.c: (loser_make_object):
+	* components/loser/content/nautilus-content-loser.c:
+	(nautilus_content_loser_initialize),
+	(nautilus_content_loser_destroy),
+	(nautilus_content_loser_get_nautilus_view),
+	(nautilus_content_loser_load_uri),
+	(loser_notify_location_change_callback), (bonobo_loser_callback):
+	* components/loser/content/nautilus-content-loser.h:
+	* components/loser/sidebar/main.c: (loser_make_object):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(nautilus_sidebar_loser_initialize),
+	(nautilus_sidebar_loser_destroy),
+	(nautilus_sidebar_loser_get_nautilus_view),
+	(loser_notify_location_change_callback):
+	* components/loser/sidebar/nautilus-sidebar-loser.h:
+	* components/music/main.c: (music_view_make_object):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (nautilus_music_view_destroy),
+	(nautilus_music_view_get_nautilus_view),
+	(music_view_notify_location_change_callback):
+	* components/music/nautilus-music-view.h:
+	* components/notes/ntl-notes.c: (notes_notify_location_change),
+	(make_notes_view):
+	* components/rpmview/main.c: (rpm_view_make_object):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize), (nautilus_rpm_view_destroy),
+	(nautilus_rpm_view_get_nautilus_view),
+	(rpm_view_notify_location_change_callback):
+	* components/rpmview/nautilus-rpm-view.h:
+	* components/sample/main.c: (sample_make_object):
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_initialize),
+	(nautilus_sample_content_view_destroy),
+	(nautilus_sample_content_view_get_nautilus_view),
+	(sample_notify_location_change_callback):
+	* components/sample/nautilus-sample-content-view.h:
+	* components/services/startup/nautilus-view/main.c:
+	(services_make_object):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(go_to_uri), (nautilus_service_startup_view_initialize),
+	(nautilus_service_startup_view_get_nautilus_view),
+	(service_main_notify_location_change_cb):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.h:
+	* components/websearch/ntl-web-search.c:
+	(web_search_notify_location_change), (do_search), (make_obj):
+	* libnautilus/nautilus-clipboard.c:
+	(nautilus_clipboard_info_set_view),
+	(nautilus_clipboard_info_get_view),
+	(nautilus_clipboard_info_get_bonobo_control):
+	* libnautilus/nautilus-clipboard.h:
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_menu_move_to_trash_callback), (get_bonobo_control),
+	(fm_directory_view_initialize), (display_selection_info),
+	(fm_directory_view_send_selection_change),
+	(notify_location_change_callback),
+	(notify_selection_change_callback),
+	(stop_location_change_callback), (done_loading),
+	(fm_directory_view_get_nautilus_view),
+	(fm_directory_view_activate_file_internal), (finish_loading_uri):
+	* src/file-manager/fm-directory-view.h:
+	Updated for new libnautilus where the NautilusViewFrame
+	classes are now named NautilusView.
+	
+	* libnautilus/nautilus-content-view-frame.c:
+	(nautilus_content_view_initialize), (nautilus_content_view_new),
+	(nautilus_content_view_new_from_bonobo_control),
+	(nautilus_content_view_destroy),
+	(nautilus_content_view_initialize_class),
+	(nautilus_content_view_request_title_change):
+	* libnautilus/nautilus-content-view-frame.h:
+	* libnautilus/nautilus-meta-view-frame.c:
+	(nautilus_meta_view_initialize), (nautilus_meta_view_new),
+	(nautilus_meta_view_new_from_bonobo_control),
+	(nautilus_meta_view_destroy),
+	(nautilus_meta_view_initialize_class):
+	* libnautilus/nautilus-meta-view-frame.h:
+	Changed Nautilus*ViewFrame classes to Nautilus*View. This is
+	something we had in RENAMING for some time, and it's consistent
+	with Bonobo's naming of BonoboControl and BonoboControlFrame.
+	Also changed interfaces to use actual BonoboControl * instead of
+	using BonobObject * and query_interface.
+	
+	* libnautilus/nautilus-undo-manager.c:
+	(nautilus_undo_setup_bonobo_control):
+	* libnautilus/nautilus-undo-manager.h:
+	Changed the BonoboControl parameter to actually be of type
+	BonoboControl * instead of BonoboObject *.
+	
+	* libnautilus/nautilus-view-frame-private.h:
+	* libnautilus/nautilus-view-frame.c:
+	(impl_Nautilus_View_save_state), (impl_Nautilus_View_load_state),
+	(impl_Nautilus_View_notify_location_change),
+	(impl_Nautilus_View_show_properties),
+	(impl_Nautilus_View_notify_selection_change),
+	(impl_Nautilus_View_stop_location_change),
+	(impl_Nautilus_View__destroy), (impl_Nautilus_View__create),
+	(nautilus_view_initialize_class), (nautilus_view_set_arg),
+	(nautilus_view_get_arg), (nautilus_view_initialize),
+	(nautilus_view_new), (nautilus_view_new_from_bonobo_control),
+	(nautilus_view_destroy), (nautilus_view_ensure_view_frame),
+	(nautilus_view_request_location_change),
+	(nautilus_view_request_selection_change),
+	(nautilus_view_request_status_change),
+	(nautilus_view_request_progress_change),
+	(nautilus_view_get_bonobo_control),
+	(nautilus_view_get_main_window),
+	(nautilus_view_real_set_bonobo_control):
+	* libnautilus/nautilus-view-frame.h:
+	* libnautilus/nautilus-zoomable.c:
+	(impl_Nautilus_Zoomable__get_zoom_level),
+	(impl_Nautilus_Zoomable__set_zoom_level),
+	(impl_Nautilus_Zoomable__get_min_zoom_level),
+	(impl_Nautilus_Zoomable__get_max_zoom_level),
+	(impl_Nautilus_Zoomable__get_is_continuous),
+	(impl_Nautilus_Zoomable_zoom_in),
+	(impl_Nautilus_Zoomable_zoom_out),
+	(impl_Nautilus_Zoomable_zoom_to_fit),
+	(impl_Nautilus_Zoomable__destroy),
+	(impl_Nautilus_Zoomable__create), (marshal_NONE__DOUBLE),
+	(nautilus_zoomable_initialize_class), (nautilus_zoomable_set_arg),
+	(nautilus_zoomable_get_arg), (nautilus_zoomable_initialize),
+	(nautilus_zoomable_new),
+	(nautilus_zoomable_new_from_bonobo_control),
+	(nautilus_zoomable_destroy),
+	(nautilus_zoomable_ensure_zoomable_frame),
+	(nautilus_zoomable_set_zoom_level),
+	(nautilus_zoomable_get_bonobo_control),
+	(nautilus_zoomable_real_set_bonobo_control):
+	* libnautilus/nautilus-zoomable.h:
+	* src/nautilus-zoomable-frame-svr.c:
+	(impl_Nautilus_ZoomableFrame__destroy),
+	(impl_Nautilus_ZoomableFrame__create),
+	(impl_Nautilus_ZoomableFrame_notify_zoom_level):
+	* src/ntl-app.c: (impl_Nautilus_Application_create_object),
+	* src/ntl-content-view.c:
+	(impl_Nautilus_ContentViewFrame_request_title_change),
+	(nautilus_content_view_frame_get_type),
+	(nautilus_content_view_frame_class_init),
+	(nautilus_content_view_frame_init),
+	(nautilus_content_view_frame_set_active),
+	(nautilus_content_view_frame_request_title_change):
+	* src/ntl-content-view.h:
+	* src/ntl-index-panel.c: (nautilus_index_panel_add_meta_view),
+	(nautilus_index_panel_remove_meta_view):
+	* src/ntl-index-panel.h:
+	* src/ntl-meta-view.c: (nautilus_meta_view_frame_initialize_class),
+	(nautilus_meta_view_frame_initialize),
+	(nautilus_meta_view_frame_set_label),
+	(nautilus_meta_view_frame_get_label):
+	* src/ntl-meta-view.h:
+	* src/ntl-view-bonobo-control.c: (destroy_bonobo_control_view),
+	(nautilus_view_frame_activate_uri),
+	(bonobo_control_try_load_client),
+	(bonobo_control_notify_location_change):
+	* src/ntl-view-bonobo-subdoc.c: (destroy_bonobo_subdoc_view),
+	(bonobo_subdoc_notify_location_change),
+	(bonobo_subdoc_try_load_client):
+	* src/ntl-view-frame-svr.c: (impl_Nautilus_ViewFrame__destroy),
+	(impl_Nautilus_ViewFrame__create),
+	(impl_Nautilus_ViewFrame_request_location_change),
+	(impl_Nautilus_ViewFrame_request_selection_change),
+	(impl_Nautilus_ViewFrame_request_status_change),
+	(impl_Nautilus_ViewFrame_request_progress_change):
+	* src/ntl-view-nautilus.c: (nautilus_view_try_load_client),
+	(destroy_nautilus_view), (nv_show_properties), (nv_save_state),
+	(nv_load_state), (nv_notify_location_change),
+	(nv_notify_selection_change), (nv_stop_location_change):
+	* src/ntl-view-private.h:
+	* src/ntl-view.c: (nautilus_view_frame_get_type),
+	(nautilus_view_frame_class_init), (nautilus_view_frame_set_arg),
+	(nautilus_view_frame_get_arg), (nautilus_view_frame_init),
+	(nautilus_view_frame_destroy_client),
+	(nautilus_view_frame_destroy), (nautilus_view_frame_constructed),
+	(nautilus_view_frame_construct_arg_set),
+	(nautilus_view_frame_size_request),
+	(nautilus_view_frame_size_allocate),
+	(nautilus_view_frame_handle_client_destroy),
+	(nautilus_view_frame_handle_client_destroy_2),
+	(nautilus_view_frame_load_client),
+	(nautilus_view_frame_notify_location_change),
+	(nautilus_view_frame_notify_selection_change),
+	(nautilus_view_frame_load_state), (nautilus_view_frame_save_state),
+	(nautilus_view_frame_show_properties),
+	(nautilus_view_frame_stop_location_change),
+	(nautilus_view_frame_is_zoomable),
+	(nautilus_view_frame_get_zoom_level),
+	(nautilus_view_frame_set_zoom_level),
+	(nautilus_view_frame_get_min_zoom_level),
+	(nautilus_view_frame_get_max_zoom_level),
+	(nautilus_view_frame_get_is_continuous),
+	(nautilus_view_frame_zoom_in), (nautilus_view_frame_zoom_out),
+	(nautilus_view_frame_zoom_to_fit), (nautilus_view_frame_get_iid),
+	(nautilus_view_frame_get_client_objref),
+	(nautilus_view_frame_get_objref),
+	(nautilus_view_frame_request_location_change),
+	(nautilus_view_frame_request_selection_change),
+	(nautilus_view_frame_request_status_change),
+	(nautilus_view_frame_request_progress_change),
+	(nautilus_view_frame_notify_zoom_level), (check_object),
+	(nautilus_view_frame_set_active_errors):
+	* src/ntl-view.h:
+	* src/ntl-window-msgs.c: (nautilus_window_notify_selection_change),
+	(nautilus_window_request_selection_change),
+	(nautilus_window_request_status_change),
+	(nautilus_window_request_progress_change),
+	(nautilus_window_request_title_change),
+	(nautilus_window_update_internals), (nautilus_window_update_view),
+	(nautilus_window_view_destroyed), (nautilus_window_load_meta_view),
+	(nautilus_window_request_location_change),
+	(nautilus_window_load_content_view),
+	(nautilus_window_update_state), (nautilus_window_set_state_info),
+	(nautilus_window_begin_location_change):
+	* src/ntl-window-msgs.h:
+	* src/ntl-window-private.h:
+	* src/ntl-window.c: (zoom_in_cb), (zoom_out_cb),
+	(nautilus_window_set_arg), (nautilus_window_send_show_properties),
+	(view_menu_switch_views_callback),
+	(nautilus_window_set_content_view),
+	(nautilus_window_add_meta_view),
+	(nautilus_window_remove_meta_view_real),
+	(nautilus_window_remove_meta_view),
+	(nautilus_window_request_location_change_cb),
+	(nautilus_window_request_selection_change_cb),
+	(nautilus_window_request_status_change_cb),
+	(nautilus_window_request_progress_change_cb),
+	(nautilus_window_request_title_change_callback),
+	(nautilus_window_connect_view),
+	(nautilus_window_connect_content_view),
+	(nautilus_window_real_set_content_view):
+	* src/ntl-window.h:
+	Changed Nautilus*View classes to Nautilus*ViewFrame. This is
+	something we had in RENAMING for some time, and it's consistent
+	with Bonobo's naming of BonoboControl and BonoboControlFrame.
+	Also changed interfaces to use actual BonoboControl * instead of
+	using BonoboObject * and query_interface.
+	
 2000-05-23  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus/nautilus-undo-context.c:
@@ -38,29 +327,30 @@
 
 2000-05-23  Andy Hertzfeld  <andy@eazel.com>
 
-	made a preference for the anti-aliased canvas, and hooked it up so you can
-	switch on the fly. Anti-aliased drawing is still only partially implemented, so
-	it defaults off.
+	Made a preference for the anti-aliased canvas, and hooked it up so
+	you can switch on the fly. Anti-aliased drawing is still only
+	partially implemented, so it defaults off.
 	
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_create_dialog),
 	(global_preferences_register_for_ui):
-	added a preference category "Appearance" and an entry for "smoother but slower" 
+	added a preference category "Appearance" and an entry for
+	"smoother but slower"
 	* libnautilus-extensions/nautilus-global-preferences.h:
 	added NAUTILUS_PREFERENCE_ANTI_ALIASED_CANVAS
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
 	(draw_pixbuf_aa), (map_pixbuf), (nautilus_icon_canvas_item_draw),
 	(nautilus_icon_canvas_item_render):
-	made the render method draw right at different scales, partially implemented
-	emblems
+	made the render method draw right at different scales, partially
+	implemented emblems
 	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
 	(nautilus_icon_container_initialize),
 	(nautilus_icon_container_new),
 	(nautilus_icon_container_set_anti_aliased_mode),
 	(click_policy_changed_callback),
 	(anti_aliased_preferences_changed):
-	receive notification when the anti-aliased preference changes,
-	and update the canvas
+	receive notification when the anti-aliased preference changes, and
+	update the canvas
 	* libnautilus-extensions/nautilus-icon-container.h:
 	added nautilus_icon_container_set_anti_aliased_mode
 	
@@ -114,7 +404,6 @@
 	* nautilus-installer/nautilus-installer.c: (show_usage),
 	(show_license), (init_default_iopts), (init_default_topts),
 	(create_temporary_directory), (fetch_remote_package_list), (main):
-
 	Adding a simple implementation of the nautilus-installer.  Beginning
 	of the fix for Bug # 863.  This is a statically linked command line
 	implementation only right now.

@@ -34,25 +34,25 @@ typedef struct {
 } BonoboControlInfo;
 
 static void
-destroy_bonobo_control_view(NautilusView *view, CORBA_Environment *ev)
+destroy_bonobo_control_view(NautilusViewFrame *view, CORBA_Environment *ev)
 {
   BonoboControlInfo *bci = view->component_data;
   g_free(bci);
 }
 
 static void
-nautilus_view_activate_uri(BonoboControlFrame *frame, const char *uri, gboolean relative, NautilusView *view)
+nautilus_view_frame_activate_uri(BonoboControlFrame *frame, const char *uri, gboolean relative, NautilusViewFrame *view)
 {
   Nautilus_NavigationRequestInfo nri;
   g_assert(!relative);
 
   memset(&nri, 0, sizeof(nri));
   nri.requested_uri = (char *)uri;
-  nautilus_view_request_location_change(view, &nri);
+  nautilus_view_frame_request_location_change(view, &nri);
 }
 
 static gboolean
-bonobo_control_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev)
+bonobo_control_try_load_client(NautilusViewFrame *view, CORBA_Object obj, CORBA_Environment *ev)
 {
   BonoboControlInfo *bci;
   Bonobo_UIHandler uih = bonobo_object_corba_objref(BONOBO_OBJECT(nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window))));
@@ -67,20 +67,20 @@ bonobo_control_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Envir
   view->client_widget = bonobo_control_frame_get_widget(BONOBO_CONTROL_FRAME(bci->control_frame));
   
   gtk_signal_connect(GTK_OBJECT(bci->control_frame),
-                     "activate_uri", GTK_SIGNAL_FUNC(nautilus_view_activate_uri), view);
+                     "activate_uri", GTK_SIGNAL_FUNC(nautilus_view_frame_activate_uri), view);
 
   return TRUE;
 }
 
 static void
-bonobo_control_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
+bonobo_control_notify_location_change(NautilusViewFrame *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
 {
   Nautilus_ProgressRequestInfo pri;
   pri.amount = 0;
   pri.type = Nautilus_PROGRESS_UNDERWAY;
-  nautilus_view_request_progress_change(view, &pri);
+  nautilus_view_frame_request_progress_change(view, &pri);
   pri.type = Nautilus_PROGRESS_DONE_OK;
-  nautilus_view_request_progress_change(view, &pri);
+  nautilus_view_frame_request_progress_change(view, &pri);
 }
 
 NautilusViewComponentType bonobo_control_component_type = {

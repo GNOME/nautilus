@@ -676,7 +676,7 @@ nautilus_share_undo_manager (GtkObject *destination_object,
  */
 
 void
-nautilus_undo_setup_bonobo_control (BonoboObject *control)
+nautilus_undo_setup_bonobo_control (BonoboControl *control)
 {
 	/*
 	NautilusUndoContext *undo_context;

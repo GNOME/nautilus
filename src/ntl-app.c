@@ -131,7 +131,7 @@ impl_Nautilus_Application_create_object (impl_POA_Nautilus_Application *servant,
 					 CORBA_Environment * ev)
 {
 	FMDirectoryView *dir_view;
-	NautilusContentViewFrame *view_frame;
+	NautilusContentView *view;
 
 	if (!impl_Nautilus_Application_supports (servant, obj_iid, ev)) {
 		return CORBA_OBJECT_NIL;
@@ -147,8 +147,8 @@ impl_Nautilus_Application_create_object (impl_POA_Nautilus_Application *servant,
 		return CORBA_OBJECT_NIL;
 	}
         
-	view_frame = fm_directory_view_get_view_frame (dir_view);
-	return CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (view_frame)), ev);
+	view = fm_directory_view_get_nautilus_view (dir_view);
+	return CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (view)), ev);
 }
 
 
@@ -269,14 +269,26 @@ display_prototype_caveat (void)
 	/* Inform the user that Nautilus has a long way to go
 	 * before they should be expecting it to work well.
 	 */
-	if (getenv ("NAUTILUS_NO_CAVEAT_DIALOG")==NULL) {
-		gnome_warning_dialog (
-			_("Thank you for trying Nautilus!"
-			  "\n\nIt is still under development, and many features are"
-			  "\nnot yet implemented or have some degree of instability. "
-			  "\nIf you use this pre-release version of Nautilus, please "
-			  "\nexercise extreme caution."
-			  "\n\nFor more information, visit http://nautilus.eazel.com."));
+	if (getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
+		/* Before you change this code back to use gnome_warning_dialog
+		 * or nautilus_warning_dialog, you better test it. See bug 963.
+		 */
+		nautilus_simple_dialog
+			(NULL,
+			 _("The Nautilus shell is under development; "
+			   "it's not ready for daily use. "
+			   "Many features, including some of the best ones, "
+			   "are not yet done, partly done, or unstable. "
+			   "The program doesn't look or act the way it "
+			   "will in version 1.0."
+			   "\n\n"
+			   "If you do decide to test this version of Nautilus, beware. "
+			   "The program could do something unpredictable and may even "
+			   "delete or overwrite files on your computer."
+			   "\n\n"
+			   "For more information, visit http://nautilus.eazel.com."),
+			 _("Nautilus: caveat"),
+			 GNOME_STOCK_BUTTON_OK, NULL);
 	}
 }
 

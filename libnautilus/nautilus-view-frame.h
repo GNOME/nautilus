@@ -31,62 +31,60 @@
 #define NAUTILUS_VIEW_FRAME_H
 
 #include <libnautilus/nautilus-view-component.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-control.h>
 #include <gtk/gtkwidget.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define NAUTILUS_TYPE_VIEW_FRAME			(nautilus_view_frame_get_type ())
-#define NAUTILUS_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrame))
-#define NAUTILUS_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrameClass))
-#define NAUTILUS_IS_VIEW_FRAME(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEW_FRAME))
-#define NAUTILUS_IS_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_VIEW_FRAME))
+#define NAUTILUS_TYPE_VIEW	      (nautilus_view_get_type ())
+#define NAUTILUS_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW, NautilusView))
+#define NAUTILUS_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VIEW, NautilusViewClass))
+#define NAUTILUS_IS_VIEW(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEW))
+#define NAUTILUS_IS_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_VIEW))
 
-typedef struct _NautilusViewFrame       NautilusViewFrame;
-typedef struct _NautilusViewFrameClass  NautilusViewFrameClass;
+typedef struct NautilusView NautilusView;
+typedef struct NautilusViewClass NautilusViewClass;
 
-struct _NautilusViewFrameClass
+struct NautilusViewClass
 {
 	BonoboObjectClass parent_spot;
-
-	void (*save_state)              (NautilusViewFrame *view, const char *config_path);
-	void (*load_state)              (NautilusViewFrame *view, const char *config_path);
-	void (*notify_location_change)	(NautilusViewFrame *view,
+	
+	void (*save_state)              (NautilusView *view, const char *config_path);
+	void (*load_state)              (NautilusView *view, const char *config_path);
+	void (*notify_location_change)	(NautilusView *view,
 					 Nautilus_NavigationInfo *nav_context);
-	void (*stop_location_change)    (NautilusViewFrame *view);
-	void (*notify_selection_change)	(NautilusViewFrame *view,
+	void (*stop_location_change)    (NautilusView *view);
+	void (*notify_selection_change)	(NautilusView *view,
 					 Nautilus_SelectionInfo *nav_context);
-	void (*show_properties)         (NautilusViewFrame *view);
-
+	void (*show_properties)         (NautilusView *view);
+	
 	BonoboObjectClass *parent_class;
-
+	
 	gpointer servant_init_func, servant_destroy_func, vepv;
 };
 
-typedef struct _NautilusViewFramePrivate NautilusViewFramePrivate;
+typedef struct NautilusViewDetails NautilusViewDetails;
 
-struct _NautilusViewFrame
-{
+struct NautilusView {
 	BonoboObject parent;
-	NautilusViewFramePrivate *private;
+	NautilusViewDetails *details;
 };
 
-GtkType            nautilus_view_frame_get_type                 (void);
-NautilusViewFrame *nautilus_view_frame_new                      (GtkWidget *widget);
-NautilusViewFrame *nautilus_view_frame_new_from_bonobo_control  (BonoboObject *bonobo_control);
-void               nautilus_view_frame_request_location_change  (NautilusViewFrame              *view,
-								 Nautilus_NavigationRequestInfo *loc);
-void               nautilus_view_frame_request_selection_change (NautilusViewFrame              *view,
-								 Nautilus_SelectionRequestInfo  *loc);
-void               nautilus_view_frame_request_status_change    (NautilusViewFrame              *view,
-								 Nautilus_StatusRequestInfo     *loc);
-void               nautilus_view_frame_request_progress_change  (NautilusViewFrame              *view,
-								 Nautilus_ProgressRequestInfo   *loc);
-BonoboObject      *nautilus_view_frame_get_bonobo_control       (NautilusViewFrame              *view);
-CORBA_Object	  nautilus_view_frame_get_main_window 		(NautilusViewFrame 		*view);
-
+GtkType        nautilus_view_get_type                 (void);
+NautilusView * nautilus_view_new                      (GtkWidget                      *widget);
+NautilusView * nautilus_view_new_from_bonobo_control  (BonoboControl                  *bonobo_control);
+void           nautilus_view_request_location_change  (NautilusView                   *view,
+						       Nautilus_NavigationRequestInfo *loc);
+void           nautilus_view_request_selection_change (NautilusView                   *view,
+						       Nautilus_SelectionRequestInfo  *loc);
+void           nautilus_view_request_status_change    (NautilusView                   *view,
+						       Nautilus_StatusRequestInfo     *loc);
+void           nautilus_view_request_progress_change  (NautilusView                   *view,
+						       Nautilus_ProgressRequestInfo   *loc);
+BonoboControl *nautilus_view_get_bonobo_control       (NautilusView                   *view);
+CORBA_Object   nautilus_view_get_main_window          (NautilusView                   *view);
 
 #ifdef __cplusplus
 }

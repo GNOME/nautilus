@@ -61,9 +61,9 @@
 #endif
 
 static void nautilus_window_notify_selection_change (NautilusWindow         *window,
-                                                     NautilusView           *view,
+                                                     NautilusViewFrame           *view,
                                                      Nautilus_SelectionInfo *loc,
-                                                     NautilusView           *requesting_view);
+                                                     NautilusViewFrame           *requesting_view);
 
 typedef enum { PROGRESS_INITIAL, PROGRESS_VIEWS, PROGRESS_DONE, PROGRESS_ERROR } ProgressType;
 
@@ -105,18 +105,18 @@ Nautilus_SelectionInfo__copy(Nautilus_SelectionInfo *dest_si, Nautilus_Selection
 
 static void
 nautilus_window_notify_selection_change(NautilusWindow *window,
-					NautilusView *view,
+					NautilusViewFrame *view,
 					Nautilus_SelectionInfo *loc,
-					NautilusView *requesting_view)
+					NautilusViewFrame *requesting_view)
 {
         loc->self_originated = (view == requesting_view);
-        nautilus_view_notify_selection_change(view, loc);
+        nautilus_view_frame_notify_selection_change(view, loc);
 }
 
 void
 nautilus_window_request_selection_change(NautilusWindow *window,
 					 Nautilus_SelectionRequestInfo *loc,
-					 NautilusView *requesting_view)
+					 NautilusViewFrame *requesting_view)
 {
         GList *p;
         Nautilus_SelectionInfo selinfo;
@@ -125,7 +125,7 @@ nautilus_window_request_selection_change(NautilusWindow *window,
         CORBA_exception_init (&environment);
         selinfo.selected_uris = loc->selected_uris;
         selinfo.content_view = CORBA_Object_duplicate
-                (nautilus_view_get_objref (NAUTILUS_VIEW (window->content_view)),
+                (nautilus_view_frame_get_objref (NAUTILUS_VIEW_FRAME (window->content_view)),
                  &environment);
         CORBA_exception_free (&environment);
         
@@ -144,7 +144,7 @@ nautilus_window_request_selection_change(NautilusWindow *window,
 void
 nautilus_window_request_status_change(NautilusWindow *window,
                                       Nautilus_StatusRequestInfo *loc,
-                                      NautilusView *requesting_view)
+                                      NautilusViewFrame *requesting_view)
 {
         nautilus_window_set_status(window, loc->status_string);
 }
@@ -156,7 +156,7 @@ nautilus_window_request_status_change(NautilusWindow *window,
 void
 nautilus_window_request_progress_change(NautilusWindow *window,
 					Nautilus_ProgressRequestInfo *loc,
-					NautilusView *requesting_view)
+					NautilusViewFrame *requesting_view)
 {
         NautilusWindowStateItem item;
         
@@ -233,7 +233,7 @@ nautilus_window_get_current_location_title (NautilusWindow *window)
 /*
  * nautilus_window_update_title_internal:
  * 
- * Update the non-NautilusView objects that use the location's user-displayable
+ * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
  * @window: The NautilusWindow in question.
  * @title: The new user-displayable title.
@@ -262,7 +262,7 @@ nautilus_window_update_title_internal (NautilusWindow *window, const char *title
 /*
  * nautilus_window_reset_title_internal:
  * 
- * Update the non-NautilusView objects that use the location's user-displayable
+ * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
  * @window: The NautilusWindow in question.
  * @title: The new user-displayable title.
@@ -292,7 +292,7 @@ nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
 void
 nautilus_window_request_title_change(NautilusWindow *window,
                                      const char *new_title,
-                                     NautilusContentView *requesting_view)
+                                     NautilusContentViewFrame *requesting_view)
 {
         g_return_if_fail (new_title != NULL);
         
@@ -444,7 +444,7 @@ nautilus_window_update_internals (NautilusWindow *window, NautilusNavigationInfo
         /* Notify the index panel of the location change. */
         /* FIXME bugzilla.eazel.com 211: 
          * Eventually, this will not be necessary when we restructure the 
-         * index panel to be a NautilusView.
+         * index panel to be a NautilusViewFrame.
          */
         current_title = nautilus_window_get_current_location_title (window);
         nautilus_index_panel_set_uri (window->index_panel, window->ni->requested_uri, current_title);
@@ -453,11 +453,11 @@ nautilus_window_update_internals (NautilusWindow *window, NautilusNavigationInfo
 
 static void
 nautilus_window_update_view (NautilusWindow *window,
-                             NautilusView *view,
+                             NautilusViewFrame *view,
                              Nautilus_NavigationInfo *navi,
                              Nautilus_SelectionInfo *seli,
-                             NautilusView *requesting_view,
-                             NautilusView *content_view)
+                             NautilusViewFrame *requesting_view,
+                             NautilusViewFrame *content_view)
 {
         CORBA_Environment environment;
         
@@ -465,13 +465,13 @@ nautilus_window_update_view (NautilusWindow *window,
         
         navi->self_originated = (view == requesting_view);
         
-        nautilus_view_notify_location_change (view, navi);
+        nautilus_view_frame_notify_location_change (view, navi);
         
         if(seli) {
                 CORBA_exception_init(&environment);
                 CORBA_Object_release(seli->content_view, &environment);
                 seli->content_view = CORBA_Object_duplicate
-                        (nautilus_view_get_client_objref(content_view),
+                        (nautilus_view_frame_get_client_objref(content_view),
                          &environment);
                 CORBA_exception_free(&environment);
                 
@@ -480,7 +480,7 @@ nautilus_window_update_view (NautilusWindow *window,
 }
 
 void
-nautilus_window_view_destroyed (NautilusView *view, NautilusWindow *window)
+nautilus_window_view_destroyed (NautilusViewFrame *view, NautilusWindow *window)
 {
         NautilusWindowStateItem item = VIEW_ERROR;
         nautilus_window_set_state_info (window, item, view, (NautilusWindowStateItem) 0);
@@ -569,26 +569,26 @@ nautilus_window_free_load_info (NautilusWindow *window)
 }
 
 /* Meta view handling */
-static NautilusView *
+static NautilusViewFrame *
 nautilus_window_load_meta_view(NautilusWindow *window,
                                const char *iid,
-                               NautilusView *requesting_view)
+                               NautilusViewFrame *requesting_view)
 {
-        NautilusView *meta_view;
+        NautilusViewFrame *meta_view;
         GList *p;
         
         meta_view = NULL;
         for (p = window->meta_views; p != NULL; p = p->next) {
-                meta_view = NAUTILUS_VIEW (p->data);
-                if (!strcmp (nautilus_view_get_iid (meta_view), iid))
+                meta_view = NAUTILUS_VIEW_FRAME (p->data);
+                if (!strcmp (nautilus_view_frame_get_iid (meta_view), iid))
                         break;
         }
         
         if (p == NULL) {
-                meta_view = NAUTILUS_VIEW (gtk_widget_new (nautilus_meta_view_get_type(),
+                meta_view = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_meta_view_frame_get_type(),
                                                            "main_window", window, NULL));
                 nautilus_window_connect_view (window, meta_view);
-                if (!nautilus_view_load_client (meta_view, iid)) {
+                if (!nautilus_view_frame_load_client (meta_view, iid)) {
                         gtk_widget_unref (GTK_WIDGET (meta_view));
                         meta_view = NULL;
                 }
@@ -596,7 +596,7 @@ nautilus_window_load_meta_view(NautilusWindow *window,
         
         if (meta_view != NULL) {
                 gtk_object_ref (GTK_OBJECT (meta_view));
-                nautilus_view_set_active_errors (meta_view, TRUE);
+                nautilus_view_frame_set_active_errors (meta_view, TRUE);
         }
         
         return meta_view;
@@ -636,7 +636,7 @@ handle_unreadable_location (NautilusWindow *window, const char *uri) {
 void
 nautilus_window_request_location_change (NautilusWindow *window,
                                          Nautilus_NavigationRequestInfo *loc,
-                                         NautilusView *requesting_view)
+                                         NautilusViewFrame *requesting_view)
 {  
         NautilusWindow *new_window;
 
@@ -656,21 +656,21 @@ nautilus_window_request_location_change (NautilusWindow *window,
         }
 }
 
-NautilusView *
+NautilusViewFrame *
 nautilus_window_load_content_view(NautilusWindow *window,
                                   const char *iid,
                                   Nautilus_NavigationInfo *navinfo,
-                                  NautilusView **requesting_view)
+                                  NautilusViewFrame **requesting_view)
 {
-        NautilusView *content_view = window->content_view;
-        NautilusView *new_view;
+        NautilusViewFrame *content_view = window->content_view;
+        NautilusViewFrame *new_view;
         CORBA_Environment environment;
         
         g_return_val_if_fail(iid, NULL);
         g_return_val_if_fail(navinfo, NULL);
         
-        if (!NAUTILUS_IS_VIEW (content_view)
-            || strcmp (nautilus_view_get_iid (content_view), iid) != 0) {
+        if (!NAUTILUS_IS_VIEW_FRAME (content_view)
+            || strcmp (nautilus_view_frame_get_iid (content_view), iid) != 0) {
 
                 if (requesting_view != NULL && *requesting_view == window->content_view) {
                         /* If we are going to be zapping the old view,
@@ -680,12 +680,12 @@ nautilus_window_load_content_view(NautilusWindow *window,
                         *requesting_view = NULL;
                 }
                 
-                new_view = NAUTILUS_VIEW (gtk_widget_new (nautilus_content_view_get_type(),
+                new_view = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_content_view_frame_get_type(),
                                                           "main_window", window, NULL));
                 
-                nautilus_window_connect_content_view (window, NAUTILUS_CONTENT_VIEW (new_view));
+                nautilus_window_connect_content_view (window, NAUTILUS_CONTENT_VIEW_FRAME (new_view));
                 
-                if (!nautilus_view_load_client (new_view, iid)) {
+                if (!nautilus_view_frame_load_client (new_view, iid)) {
                         gtk_widget_unref(GTK_WIDGET(new_view));
                         new_view = NULL;
                 }
@@ -698,7 +698,7 @@ nautilus_window_load_content_view(NautilusWindow *window,
                 new_view = window->content_view;
         }
         
-        if (!NAUTILUS_IS_VIEW (new_view)) {
+        if (!NAUTILUS_IS_VIEW_FRAME (new_view)) {
                 new_view = NULL;
         } else {
                 gtk_object_ref (GTK_OBJECT (new_view));
@@ -706,11 +706,11 @@ nautilus_window_load_content_view(NautilusWindow *window,
                 CORBA_exception_init(&environment);
                 CORBA_Object_release(navinfo->content_view, &environment);
                 navinfo->content_view = CORBA_Object_duplicate
-                        (nautilus_view_get_client_objref (new_view),
+                        (nautilus_view_frame_get_client_objref (new_view),
                          &environment);
                 CORBA_exception_free(&environment);
                 
-                nautilus_view_set_active_errors (new_view, TRUE);
+                nautilus_view_frame_set_active_errors (new_view, TRUE);
         }
         
         return new_view;
@@ -748,9 +748,9 @@ nautilus_window_update_state (gpointer data)
         /* Now make any needed state changes based on available information */
         if (window->view_bombed_out && window->error_views != NULL) {
                 for (p = window->error_views; p != NULL; p = p->next) {
-                        NautilusView *error_view = p->data;
+                        NautilusViewFrame *error_view = p->data;
                         
-                        if (NAUTILUS_IS_CONTENT_VIEW(error_view)) {
+                        if (NAUTILUS_IS_CONTENT_VIEW_FRAME(error_view)) {
                                 if (error_view == window->new_content_view) {
                                         window->made_changes++;
                                         window->reset_to_idle = TRUE;
@@ -766,7 +766,7 @@ nautilus_window_update_state (gpointer data)
                                 }
                                 window->cv_progress_error = TRUE;
                         }
-                        else if (NAUTILUS_IS_META_VIEW(error_view))
+                        else if (NAUTILUS_IS_META_VIEW_FRAME(error_view))
                         {
                                 if (g_list_find (window->new_meta_views, error_view) != NULL) {
                                         window->new_meta_views = g_list_remove (window->new_meta_views, error_view);
@@ -843,7 +843,7 @@ nautilus_window_update_state (gpointer data)
                                  &window->new_requesting_view);
                         
                         for (p = window->pending_ni->sidebar_panel_identifiers; p != NULL; p = p->next) {
-                                NautilusView *meta_view;
+                                NautilusViewFrame *meta_view;
                                 NautilusViewIdentifier *identifier;
 
                                 identifier = (NautilusViewIdentifier *) (p->data);
@@ -852,7 +852,7 @@ nautilus_window_update_state (gpointer data)
                                         (window, identifier->iid, window->new_requesting_view);
 
                                 if (meta_view != NULL) {
-                                        nautilus_meta_view_set_label (NAUTILUS_META_VIEW (meta_view), 
+                                        nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (meta_view), 
                                                                       identifier->name);
                                         window->new_meta_views = g_list_prepend (window->new_meta_views, meta_view);
                                 }
@@ -944,7 +944,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
 {
         va_list args;
         NautilusWindowStateItem item_type;
-        NautilusView *new_view;
+        NautilusViewFrame *new_view;
         gboolean do_sync;
 
         /* Ensure that changes happen in-order */
@@ -971,7 +971,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                         break;
 
                 case VIEW_ERROR:
-                        new_view = va_arg (args, NautilusView*);
+                        new_view = va_arg (args, NautilusViewFrame*);
                         x_message (("VIEW_ERROR on %p", new_view));
                         window->view_bombed_out = TRUE;
                         gtk_object_ref (GTK_OBJECT (new_view));
@@ -981,7 +981,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                 case NEW_CONTENT_VIEW_ACTIVATED:
                         x_message (("NEW_CONTENT_VIEW_ACTIVATED"));
                         g_return_if_fail (window->new_content_view == NULL);
-                        new_view = va_arg (args, NautilusView*);
+                        new_view = va_arg (args, NautilusViewFrame*);
                         /* Don't ref here, reference is held by widget hierarchy. */
                         window->new_content_view = new_view;
                         if (window->pending_ni == NULL) {
@@ -993,7 +993,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
 
                 case NEW_META_VIEW_ACTIVATED:
                         x_message (("NEW_META_VIEW_ACTIVATED"));
-                        new_view = va_arg (args, NautilusView*);
+                        new_view = va_arg (args, NautilusViewFrame*);
                         /* Don't ref here, reference is held by widget hierarchy. */
                         window->new_meta_views = g_list_prepend (window->new_meta_views, new_view);
                         window->changes_pending = TRUE;
@@ -1166,7 +1166,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 void
 nautilus_window_begin_location_change (NautilusWindow *window,
                                        Nautilus_NavigationRequestInfo *loc,
-                                       NautilusView *requesting_view,
+                                       NautilusViewFrame *requesting_view,
                                        NautilusLocationChangeType type,
                                        guint distance)
 {
@@ -1197,7 +1197,7 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         
         current_iid = NULL;
         if (window->content_view != NULL) {
-                current_iid = nautilus_view_get_iid (window->content_view);
+                current_iid = nautilus_view_frame_get_iid (window->content_view);
         }
         
         window->cancel_tag = nautilus_navigation_info_new

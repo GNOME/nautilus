@@ -51,13 +51,13 @@ struct _NautilusRPMViewClass {
 
 
 /* GtkObject support */
-GtkType                   nautilus_rpm_view_get_type                      (void);
+GtkType              nautilus_rpm_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentViewFrame *nautilus_rpm_view_get_view_frame                (NautilusRPMView *view);
+NautilusContentView *nautilus_rpm_view_get_nautilus_view (NautilusRPMView *view);
 
 /* URI handling */
-void                      nautilus_rpm_view_load_uri                      (NautilusRPMView *view,
-									     const char                *uri);
+void                 nautilus_rpm_view_load_uri          (NautilusRPMView *view,
+							  const char      *uri);
 
 #endif /* NAUTILUS_RPM_VIEW_H */

@@ -35,38 +35,38 @@ typedef struct {
         POA_Nautilus_ViewFrame servant;
         gpointer bonobo_object;
         
-        NautilusView *view;
+        NautilusViewFrame *view;
 } impl_POA_Nautilus_ViewFrame;
 
 
 extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
 extern POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv;
 
-BonoboObject *impl_Nautilus_ViewFrame__create        (NautilusView                   *view,
-                                                      CORBA_Environment              *ev);
-BonoboObject *impl_Nautilus_ZoomableFrame__create    (NautilusView                   *view,
-                                                      CORBA_Environment              *ev);
-void          nautilus_view_request_location_change  (NautilusView                   *view,
-                                                      Nautilus_NavigationRequestInfo *loc);
-void          nautilus_view_request_selection_change (NautilusView                   *view,
-                                                      Nautilus_SelectionRequestInfo  *loc);
-void          nautilus_view_request_status_change    (NautilusView                   *view,
-                                                      Nautilus_StatusRequestInfo     *loc);
-void          nautilus_view_request_progress_change  (NautilusView                   *view,
-                                                      Nautilus_ProgressRequestInfo   *loc);
-void          nautilus_view_notify_zoom_level        (NautilusView                   *view,
-                                                      double                          level);
+BonoboObject *impl_Nautilus_ViewFrame__create              (NautilusViewFrame              *view,
+                                                            CORBA_Environment              *ev);
+BonoboObject *impl_Nautilus_ZoomableFrame__create          (NautilusViewFrame              *view,
+                                                            CORBA_Environment              *ev);
+void          nautilus_view_frame_request_location_change  (NautilusViewFrame              *view,
+                                                            Nautilus_NavigationRequestInfo *loc);
+void          nautilus_view_frame_request_selection_change (NautilusViewFrame              *view,
+                                                            Nautilus_SelectionRequestInfo  *loc);
+void          nautilus_view_frame_request_status_change    (NautilusViewFrame              *view,
+                                                            Nautilus_StatusRequestInfo     *loc);
+void          nautilus_view_frame_request_progress_change  (NautilusViewFrame              *view,
+                                                            Nautilus_ProgressRequestInfo   *loc);
+void          nautilus_view_frame_notify_zoom_level        (NautilusViewFrame              *view,
+                                                            double                          level);
 
 struct NautilusViewComponentType {
         const char *primary_repoid;
-        gboolean (* try_load)(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev);
-        void (* destroy) (NautilusView *view, CORBA_Environment *ev);
-        void (* save_state)(NautilusView *view, const char *config_path, CORBA_Environment *ev);
-        void (* load_state)(NautilusView *view, const char *config_path, CORBA_Environment *ev);
-        void (* notify_location_change)(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, CORBA_Environment *ev);
-        void (* stop_location_change)(NautilusView *view, CORBA_Environment *ev);
-        void (* notify_selection_change)(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, CORBA_Environment *ev);
-        void (* show_properties)(NautilusView *view, CORBA_Environment *ev);
+        gboolean (* try_load)(NautilusViewFrame *view, CORBA_Object obj, CORBA_Environment *ev);
+        void (* destroy) (NautilusViewFrame *view, CORBA_Environment *ev);
+        void (* save_state)(NautilusViewFrame *view, const char *config_path, CORBA_Environment *ev);
+        void (* load_state)(NautilusViewFrame *view, const char *config_path, CORBA_Environment *ev);
+        void (* notify_location_change)(NautilusViewFrame *view, Nautilus_NavigationInfo *nav_ctx, CORBA_Environment *ev);
+        void (* stop_location_change)(NautilusViewFrame *view, CORBA_Environment *ev);
+        void (* notify_selection_change)(NautilusViewFrame *view, Nautilus_SelectionInfo *nav_ctx, CORBA_Environment *ev);
+        void (* show_properties)(NautilusViewFrame *view, CORBA_Environment *ev);
 };
 
 #endif /* NTL_VIEW_PRIVATE_H */

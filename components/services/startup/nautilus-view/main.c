@@ -47,7 +47,7 @@ services_make_object (BonoboGenericFactory* factory,
                       void* closure) {
 
 	NautilusServicesContentView* view;
-	NautilusViewFrame* view_frame;
+	NautilusView* nautilus_view;
 
 	puts ("Trying to create object.");
 
@@ -61,11 +61,11 @@ services_make_object (BonoboGenericFactory* factory,
 
 	gtk_signal_connect (GTK_OBJECT (view), "destroy", services_object_destroyed, NULL);
 
-	view_frame = NAUTILUS_VIEW_FRAME (nautilus_service_startup_view_get_view_frame (view));
+	nautilus_view = NAUTILUS_VIEW (nautilus_service_startup_view_get_nautilus_view (view));
 	
-	printf ("Returning new object %x\n", (unsigned) view_frame);
+	printf ("Returning new object %p\n", nautilus_view);
 
-	return BONOBO_OBJECT (view_frame);
+	return BONOBO_OBJECT (nautilus_view);
 }
 
 int

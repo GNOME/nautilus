@@ -48,7 +48,6 @@ hardware_view_make_object (BonoboGenericFactory *factory,
 		    void *closure)
 {
 	NautilusHardwareView *hardware_view;
-	NautilusViewFrame *view_frame;
 
 	if (strcmp (goad_id, "OAFIID:nautilus_hardware_view:20000422-2250")) {
 		return NULL;
@@ -60,8 +59,7 @@ hardware_view_make_object (BonoboGenericFactory *factory,
 
 	gtk_signal_connect (GTK_OBJECT (hardware_view), "destroy", hardware_view_object_destroyed, NULL);
 
-	view_frame = NAUTILUS_VIEW_FRAME (nautilus_hardware_view_get_view_frame (hardware_view));
-	return BONOBO_OBJECT (view_frame);
+	return BONOBO_OBJECT (nautilus_hardware_view_get_nautilus_view (hardware_view));
 }
 
 int main(int argc, char *argv[])

@@ -59,9 +59,9 @@ struct NautilusIndexPanelClass
 GtkType             nautilus_index_panel_get_type         (void);
 NautilusIndexPanel *nautilus_index_panel_new              (void);
 void                nautilus_index_panel_add_meta_view    (NautilusIndexPanel *panel,
-							   NautilusView       *meta_view);
+							   NautilusViewFrame  *meta_view);
 void                nautilus_index_panel_remove_meta_view (NautilusIndexPanel *panel,
-							   NautilusView       *meta_view);
+							   NautilusViewFrame  *meta_view);
 void                nautilus_index_panel_set_uri          (NautilusIndexPanel *panel,
 							   const char         *new_uri,
 							   const char         *initial_title);

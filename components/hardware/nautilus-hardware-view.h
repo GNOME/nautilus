@@ -36,7 +36,7 @@ typedef struct _NautilusHardwareViewClass NautilusHardwareViewClass;
 #define NAUTILUS_HARDWARE_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HARDWARE_VIEW, NautilusHardwareView))
 #define NAUTILUS_HARDWARE_VIEW_CLASS(klass) 	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_HARDWARE_VIEW, NautilusHardwareViewClass))
 #define NAUTILUS_IS_HARDWARE_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_HARDWARE_VIEW))
-#define NAUTILUS_IS_HARDWARE_VIEW_CLASS(klass) 	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_HARDWARE_VIEW))
+#define NAUTILUS_IS_HARDWARE_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_HARDWARE_VIEW))
 
 typedef struct _NautilusHardwareViewDetails NautilusHardwareViewDetails;
 
@@ -49,16 +49,14 @@ struct _NautilusHardwareViewClass {
 	GtkEventBoxClass parent_class;
 };
 
-
 /* GtkObject support */
-GtkType                   nautilus_hardware_view_get_type                      (void);
+GtkType              nautilus_hardware_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentViewFrame *nautilus_hardware_view_get_view_frame                (NautilusHardwareView *view);
+NautilusContentView *nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *view);
 
 /* URI handling */
-void                      nautilus_hardware_view_load_uri                      (NautilusHardwareView *view,
-									       const char                *uri);
-
+void                 nautilus_hardware_view_load_uri          (NautilusHardwareView *view,
+							       const char           *uri);
 
 #endif /* NAUTILUS_HARDWARE_VIEW_H */

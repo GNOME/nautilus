@@ -10,7 +10,7 @@
 #include <ctype.h>
 
 typedef struct {
-  NautilusViewFrame *view_frame;
+  NautilusView *view_frame;
 
   GtkWidget *clist, *ent;
 
@@ -140,7 +140,7 @@ hyperbola_navigation_search_select_row(GtkWidget *clist, gint row, gint column, 
   memset(&loc, 0, sizeof(loc));
   loc.requested_uri = uri;
   loc.new_window_requested = FALSE;
-  nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(hns->view_frame), &loc);
+  nautilus_view_request_location_change(NAUTILUS_VIEW(hns->view_frame), &loc);
 }
 
 BonoboObject *hyperbola_navigation_search_new(void)
@@ -174,7 +174,7 @@ BonoboObject *hyperbola_navigation_search_new(void)
   gtk_clist_thaw(GTK_CLIST(hns->clist));
   gtk_widget_show_all(vbox);
 
-  hns->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
+  hns->view_frame = NAUTILUS_VIEW (nautilus_meta_view_new (vbox));
 
   return BONOBO_OBJECT (hns->view_frame);
 }

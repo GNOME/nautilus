@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -24,41 +24,38 @@
  */
 /* ntl-content-view.h: Interface of the object representing a content view. */
 
-#ifndef NAUTILUS_CONTENT_VIEW_H
-#define NAUTILUS_CONTENT_VIEW_H 1
+#ifndef NTL_CONTENT_VIEW_H
+#define NTL_CONTENT_VIEW_H
 
 #include "ntl-view.h"
 
-#define NAUTILUS_TYPE_CONTENT_VIEW (nautilus_content_view_get_type())
-#define NAUTILUS_CONTENT_VIEW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_VIEW, NautilusContentView))
-#define NAUTILUS_CONTENT_VIEW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONTENT_VIEW, NautilusContentViewClass))
-#define NAUTILUS_IS_CONTENT_VIEW(obj)	        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW))
-#define NAUTILUS_IS_CONTENT_VIEW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CONTENT_VIEW))
+#define NAUTILUS_TYPE_CONTENT_VIEW_FRAME            (nautilus_content_view_frame_get_type())
+#define NAUTILUS_CONTENT_VIEW_FRAME(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME, NautilusContentViewFrame))
+#define NAUTILUS_CONTENT_VIEW_FRAME_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONTENT_VIEW_FRAME, NautilusContentViewFrameClass))
+#define NAUTILUS_IS_CONTENT_VIEW_FRAME(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME))
+#define NAUTILUS_IS_CONTENT_VIEW_FRAME_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CONTENT_VIEW_FRAME))
 
-typedef struct _NautilusContentView       NautilusContentView;
-typedef struct _NautilusContentViewClass  NautilusContentViewClass;
+typedef struct NautilusContentViewFrame NautilusContentViewFrame;
+typedef struct NautilusContentViewFrameClass NautilusContentViewFrameClass;
 
-struct _NautilusContentViewClass
+struct NautilusContentViewFrameClass
 {
-  NautilusViewClass parent_spot;
-
-  /* 
-   * These signals correspond to the Nautilus:ContentViewFrame CORBA interface.
-   * They are requests that the underlying view may make of the framework.
-   */
-
-  void (*request_title_change)		(NautilusContentView *view,
-  					 const char *new_title);
-
-  NautilusViewClass *parent_class;
+	NautilusViewFrameClass parent_spot;
+	
+	/* These signals correspond to the Nautilus:ContentViewFrame CORBA interface.
+	 * They are requests that the underlying view may make of the framework.
+	 */
+	void (*request_title_change)		(NautilusContentViewFrame *view,
+						 const char *new_title);
+	
+	NautilusViewFrameClass *parent_class;
 };
 
-struct _NautilusContentView {
-  NautilusView parent_object;
+struct NautilusContentViewFrame {
+	NautilusViewFrame parent_object;
 };
 
-GtkType nautilus_content_view_get_type   (void);
+GtkType nautilus_content_view_frame_get_type   (void);
+void    nautilus_content_view_frame_set_active (NautilusContentViewFrame *view); 
 
-void    nautilus_content_view_set_active (NautilusContentView *view); 
-
-#endif
+#endif /* NTL_CONTENT_VIEW_H */

@@ -42,7 +42,7 @@
 /* A NautilusSidebarLoser's private information. */
 struct NautilusSidebarLoserDetails {
 	char *uri;
-	NautilusMetaViewFrame *view_frame;
+	NautilusMetaView *nautilus_view;
 };
 
 static void nautilus_sidebar_loser_initialize_class (NautilusSidebarLoserClass *klass);
@@ -51,7 +51,7 @@ static void nautilus_sidebar_loser_destroy          (GtkObject                  
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarLoser, nautilus_sidebar_loser, GTK_TYPE_LABEL)
      
-static void loser_notify_location_change_callback        (NautilusMetaViewFrame  *view_frame, 
+static void loser_notify_location_change_callback        (NautilusMetaView  *nautilus_view, 
 							   Nautilus_NavigationInfo   *navinfo, 
 							   NautilusSidebarLoser *view);
 static void loser_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
@@ -80,9 +80,9 @@ nautilus_sidebar_loser_initialize (NautilusSidebarLoser *view)
 	
 	gtk_label_set_text (GTK_LABEL (view), g_strdup ("(none)"));
 	
-	view->details->view_frame = nautilus_meta_view_frame_new (GTK_WIDGET (view));
+	view->details->nautilus_view = nautilus_meta_view_new (GTK_WIDGET (view));
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->view_frame), 
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (loser_notify_location_change_callback), 
 			    view);
@@ -91,8 +91,8 @@ nautilus_sidebar_loser_initialize (NautilusSidebarLoser *view)
 	 * Get notified when our bonobo control is activated so we
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_frame_get_bonobo_control
-					(NAUTILUS_VIEW_FRAME (view->details->view_frame))),
+        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
+					(NAUTILUS_VIEW (view->details->nautilus_view))),
                             "activate",
                             loser_merge_bonobo_items_callback,
                             view);
@@ -107,7 +107,7 @@ nautilus_sidebar_loser_destroy (GtkObject *object)
 	
 	view = NAUTILUS_SIDEBAR_LOSER (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->details->view_frame));
+	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 	
 	g_free (view->details->uri);
 	g_free (view->details);
@@ -116,24 +116,24 @@ nautilus_sidebar_loser_destroy (GtkObject *object)
 }
 
 /**
- * nautilus_sidebar_loser_get_view_frame:
+ * nautilus_sidebar_loser_get_nautilus_view:
  *
- * Return the NautilusViewFrame object associated with this view; this
+ * Return the NautilusView object associated with this view; this
  * is needed to export the view via CORBA/Bonobo.
- * @view: NautilusSidebarLoser to get the view_frame from..
+ * @view: NautilusSidebarLoser to get the nautilus_view from..
  * 
  **/
-NautilusMetaViewFrame *
-nautilus_sidebar_loser_get_view_frame (NautilusSidebarLoser *view)
+NautilusMetaView *
+nautilus_sidebar_loser_get_nautilus_view (NautilusSidebarLoser *view)
 {
-	return view->details->view_frame;
+	return view->details->nautilus_view;
 }
 
 /**
  * nautilus_sidebar_loser_load_uri:
  *
  * Load the resource pointed to by the specified URI.
- * @view: NautilusSidebarLoser to get the view_frame from.
+ * @view: NautilusSidebarLoser to get the nautilus_view from.
  * 
  **/
 void
@@ -151,13 +151,13 @@ nautilus_sidebar_loser_load_uri (NautilusSidebarLoser *view,
 }
 
 static void
-loser_notify_location_change_callback (NautilusMetaViewFrame  *view_frame, 
+loser_notify_location_change_callback (NautilusMetaView  *nautilus_view, 
 				  	Nautilus_NavigationInfo   *navinfo, 
 				  	NautilusSidebarLoser *view)
 {
 	Nautilus_ProgressRequestInfo request;
 
-	g_assert (view_frame == view->details->view_frame);
+	g_assert (nautilus_view == view->details->nautilus_view);
 	
 	memset(&request, 0, sizeof(request));
 
@@ -174,7 +174,7 @@ loser_notify_location_change_callback (NautilusMetaViewFrame  *view_frame,
 	
 	request.type = Nautilus_PROGRESS_UNDERWAY;
 	request.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &request);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
 	
 	nautilus_sidebar_loser_maybe_fail ("pre-load");
 
@@ -195,7 +195,7 @@ loser_notify_location_change_callback (NautilusMetaViewFrame  *view_frame,
 
 	request.type = Nautilus_PROGRESS_DONE_OK;
 	request.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &request);
+	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
 
 	nautilus_sidebar_loser_maybe_fail ("post-done");
 }

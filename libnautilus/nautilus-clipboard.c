@@ -71,7 +71,7 @@ static void             nautilus_component_bonobo_menu_clear_cb                 
 struct NautilusClipboardDetails {
 	char *component_name;
 	GtkWidget *clipboard_owner;
-	NautilusViewFrame *view;
+	NautilusView *view;
 };
 
 
@@ -159,19 +159,19 @@ nautilus_clipboard_info_set_clipboard_owner (NautilusClipboardInfo *info, GtkWid
 	gtk_widget_ref (clipboard_owner);
 }
 
-GtkWidget*
+GtkWidget *
 nautilus_clipboard_info_get_clipboard_owner (NautilusClipboardInfo *info)
 {
 	return info->details->clipboard_owner;
 }
 
 void
-nautilus_clipboard_info_set_view_frame (NautilusClipboardInfo *info, NautilusViewFrame *view)
+nautilus_clipboard_info_set_view (NautilusClipboardInfo *info, NautilusView *view)
 {
 	g_return_if_fail (info != NULL);
 	g_return_if_fail (NAUTILUS_CLIPBOARD_INFO (info));
 	g_return_if_fail (view != NULL);
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
 	bonobo_object_ref (BONOBO_OBJECT (view));
 	
@@ -179,8 +179,8 @@ nautilus_clipboard_info_set_view_frame (NautilusClipboardInfo *info, NautilusVie
 
 }
 
-NautilusViewFrame*
-nautilus_clipboard_info_get_view_frame (NautilusClipboardInfo *info)
+NautilusView *
+nautilus_clipboard_info_get_view (NautilusClipboardInfo *info)
 {
 	return info->details->view;
 }
@@ -197,7 +197,7 @@ nautilus_clipboard_info_get_bonobo_ui_handler (NautilusClipboardInfo *info)
 static BonoboControl *
 nautilus_clipboard_info_get_bonobo_control (NautilusClipboardInfo *info)
 {
-        return BONOBO_CONTROL (nautilus_view_frame_get_bonobo_control (info->details->view));
+        return nautilus_view_get_bonobo_control (info->details->view);
 }
 
 

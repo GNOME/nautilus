@@ -48,7 +48,7 @@ sample_make_object (BonoboGenericFactory *factory,
 		    void *closure)
 {
 	NautilusSampleContentView *view;
-	NautilusViewFrame *view_frame;
+	NautilusView *nautilus_view;
 
 	puts ("Checking IID!");
 
@@ -62,11 +62,11 @@ sample_make_object (BonoboGenericFactory *factory,
 
 	object_count++;
 
-	view_frame = NAUTILUS_VIEW_FRAME (nautilus_sample_content_view_get_view_frame (view));
+	nautilus_view = NAUTILUS_VIEW (nautilus_sample_content_view_get_nautilus_view (view));
 
-	gtk_signal_connect (GTK_OBJECT (view_frame), "destroy", sample_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", sample_object_destroyed, NULL);
 
-	return BONOBO_OBJECT (view_frame);
+	return BONOBO_OBJECT (nautilus_view);
 }
 
 int main(int argc, char *argv[])

@@ -36,7 +36,7 @@
 #include <liboaf/liboaf.h>
 
 typedef struct {
-  NautilusViewFrame *view;
+  NautilusView *view;
 
   GtkCList *clist;
 
@@ -98,7 +98,7 @@ history_view_update_icons (GtkCList *clist)
 }
 
 static void
-hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
+hyperbola_navigation_history_notify_location_change (NautilusView *view,
 						     Nautilus_NavigationInfo *loci,
 						     HistoryView *hview)
 {
@@ -194,7 +194,7 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   reqi.requested_uri = (char *)get_uri_from_row (clist, row);
   reqi.new_window_requested = FALSE;
 
-  nautilus_view_frame_request_location_change(hview->view, &reqi);
+  nautilus_view_request_location_change(hview->view, &reqi);
 
   gtk_clist_thaw(clist);
 }
@@ -236,7 +236,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_widget_show_all(wtmp);
 
   /* create object */
-  hview->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (wtmp));
+  hview->view = NAUTILUS_VIEW (nautilus_meta_view_new (wtmp));
   gtk_signal_connect (GTK_OBJECT (hview->view), "destroy", do_destroy, hview);
   object_count++;
 

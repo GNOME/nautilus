@@ -32,25 +32,25 @@
 #include <libnautilus/nautilus-view-frame.h>
 #include <bonobo/bonobo-control.h>
 
-#define NAUTILUS_TYPE_META_VIEW_FRAME			(nautilus_meta_view_frame_get_type ())
-#define NAUTILUS_META_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_META_VIEW_FRAME, NautilusMetaViewFrame))
-#define NAUTILUS_META_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_META_VIEW_FRAME, NautilusMetaViewFrameClass))
-#define NAUTILUS_IS_META_VIEW_FRAME(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_META_VIEW_FRAME))
-#define NAUTILUS_IS_META_VIEW_FRAME_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_META_VIEW_FRAME))
+#define NAUTILUS_TYPE_META_VIEW			(nautilus_meta_view_get_type ())
+#define NAUTILUS_META_VIEW(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_META_VIEW, NautilusMetaView))
+#define NAUTILUS_META_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_META_VIEW, NautilusMetaViewClass))
+#define NAUTILUS_IS_META_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_META_VIEW))
+#define NAUTILUS_IS_META_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_META_VIEW))
 
-typedef struct NautilusMetaViewFrame NautilusMetaViewFrame;
-typedef struct NautilusMetaViewFrameClass NautilusMetaViewFrameClass;
+typedef struct NautilusMetaView NautilusMetaView;
+typedef struct NautilusMetaViewClass NautilusMetaViewClass;
 
-struct NautilusMetaViewFrame {
-	NautilusViewFrame base;
+struct NautilusMetaView {
+	NautilusView base;
 };
 
-struct NautilusMetaViewFrameClass {
-	NautilusViewFrameClass base;
+struct NautilusMetaViewClass {
+	NautilusViewClass base;
 };
 
-GtkType                nautilus_meta_view_frame_get_type                (void);
-NautilusMetaViewFrame *nautilus_meta_view_frame_new                     (GtkWidget             *widget);
-NautilusMetaViewFrame *nautilus_meta_view_frame_new_from_bonobo_control (BonoboControl         *control);
+GtkType           nautilus_meta_view_get_type                (void);
+NautilusMetaView *nautilus_meta_view_new                     (GtkWidget     *widget);
+NautilusMetaView *nautilus_meta_view_new_from_bonobo_control (BonoboControl *control);
 
 #endif

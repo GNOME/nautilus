@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
  *  libnautilus: A library for nautilus view implementations.
@@ -26,11 +26,11 @@
 #ifndef NAUTILUS_VIEW_FRAME_PRIVATE_H
 #define NAUTILUS_VIEW_FRAME_PRIVATE_H
 
-struct _NautilusViewFramePrivate {
-  BonoboObject *control;
-  Nautilus_ViewFrame view_frame;
+struct NautilusViewDetails {
+	BonoboControl *control;
+	Nautilus_ViewFrame view_frame;
 };
 
-gboolean nautilus_view_frame_ensure_view_frame (NautilusViewFrame *view);
+gboolean nautilus_view_ensure_view_frame (NautilusView *view);
 
 #endif
