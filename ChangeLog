@@ -1,3 +1,12 @@
+2000-10-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c: (selection_callback),
+	(add_play_controls), (nautilus_music_view_set_album_image),
+	(nautilus_music_view_update):
+	minimized flashing in the music view by fixing the size of the
+	song label and play time, since it was relaying everything out
+	when they changed.
+	
 2000-10-26  Mathieu Lacage  <mathieu@eazel.com>
 
         Make prelighted icons not prelighted when you leave the list 

@@ -53,6 +53,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -401,7 +402,7 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 
 /* handle a row being selected in the list view by playing the corresponding song */
 static void 
-selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event, NautilusMusicView* music_view)
+selection_callback (GtkCList * clist, int row, int column, GdkEventButton * event, NautilusMusicView* music_view)
 {
 	gboolean is_playing;
 	char *song_name;
@@ -417,13 +418,12 @@ selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event
 	if (is_playing) {
 		stop_playing_file();
         }
-
         song_name = gtk_clist_get_row_data (clist, row);
 	if (song_name == NULL) {
 		return;
         }
 
-        music_view_set_selected_song_title(music_view, row);
+        music_view_set_selected_song_title (music_view, row);
 	if (is_playing) {
 		play_current_file (music_view, FALSE);
         }
@@ -1269,11 +1269,12 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_table_set_col_spacings (GTK_TABLE (table), 1);
 	
 	music_view->details->song_label = nautilus_label_new ("");
-        /* FIXME: Hardcoded font and size. */
+        /* FIXME: Hardcoded font and size.  */
         nautilus_label_set_font_from_components (NAUTILUS_LABEL (music_view->details->song_label),
                                                  "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->song_label), 14);
-	
+	/* we must make this a fixed size to avoid flashing when we change it */
+	gtk_widget_set_usize (music_view->details->song_label, 224, 40);
 	gtk_widget_show (music_view->details->song_label);
         
 	vbox = gtk_vbox_new (0, 0);
@@ -1292,9 +1293,13 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show (hbox2);
 	
 	music_view->details->playtime = nautilus_label_new ("--:--");
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+	/* fix horizontal size to avoid jitter */
+	gtk_widget_set_usize (music_view->details->playtime, 36, -1);
+	
 	gtk_widget_show (music_view->details->playtime);
 	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime, FALSE, FALSE, 0);
-
+	
 	/* progress bar */
 
 	music_view->details->playtime_adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
@@ -1317,6 +1322,8 @@ add_play_controls (NautilusMusicView *music_view)
 	/* total label */
 
 	music_view->details->total_track_time = nautilus_label_new ("--:--");
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (music_view->details->total_track_time), GTK_JUSTIFY_LEFT);
+	
 	gtk_widget_show (music_view->details->total_track_time);
 	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->total_track_time, FALSE, FALSE, 0);
 
@@ -1422,7 +1429,7 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
 	GdkBitmap *mask;	
 
 	if (image_path_uri != NULL) {
-  		image_path = gnome_vfs_get_local_path_from_uri (image_path_uri);
+  		image_path = gnome_vfs_get_local_path_from_uri (image_path_uri);  		
   		pixbuf = gdk_pixbuf_new_from_file (image_path);
 		
 		if (pixbuf != NULL) {
@@ -1643,7 +1650,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	if (music_view->details->play_control_box == NULL)
 		add_play_controls(music_view);
 	
-	music_view_set_selected_song_title(music_view, 0);
+	music_view_set_selected_song_title (music_view, 0);
 	
 	/* release the song list */
 	for (p = song_list; p != NULL; p = p->next) {
