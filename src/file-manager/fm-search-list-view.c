@@ -310,15 +310,14 @@ indexing_info_callback (BonoboUIComponent *component, gpointer data, const char 
 
 static void
 compute_reveal_item_name_and_sensitivity (GList *selected_files,
-					  gboolean include_accelerator_underbars,
-					  char **return_name,
+					  char **return_name_with_underscore,
+					  char **return_name_no_underscore,
 					  gboolean *return_sensitivity)
 {
-	char *name;
-	char *stripped;
+	char *name_with_underscore;
 	int count;
 
-	g_assert (*return_name != NULL);
+	g_assert (return_name_with_underscore != NULL || return_name_no_underscore != NULL);
 	g_assert (return_sensitivity != NULL);
 
 	count = g_list_length (selected_files);
@@ -328,7 +327,7 @@ compute_reveal_item_name_and_sensitivity (GList *selected_files,
 		 * and scroll as necessary to make that item visible (this comment
 		 * is to inform translators of this tricky concept).
 		 */
-		name = g_strdup (_("_Reveal in New Window"));
+		name_with_underscore = g_strdup (_("_Reveal in New Window"));
 	} else {
 		/* "Reveal in n New Windows" means open the parent folder for each
 		 * selected item in a separate new window, select each selected
@@ -336,18 +335,20 @@ compute_reveal_item_name_and_sensitivity (GList *selected_files,
 		 * items visible (this comment is to inform translators of this 
 		 * tricky concept).
 		 */
-		name = g_strdup_printf (_("Reveal in %d _New Windows"), count);
+		name_with_underscore = g_strdup_printf (_("Reveal in %d _New Windows"), count);
 	}
 
 	*return_sensitivity = selected_files != NULL;
 	
-	if (!include_accelerator_underbars) {
-		stripped = nautilus_str_strip_chr (name, '_');
-		g_free (name);
-		name = stripped;
-	}
+        if (return_name_no_underscore != NULL) {
+        	*return_name_no_underscore = nautilus_str_strip_chr (name_with_underscore, '_');
+        }
 
-	*return_name = name;
+        if (return_name_with_underscore != NULL) {
+		*return_name_with_underscore = name_with_underscore;
+        } else {
+		g_free (name_with_underscore);
+        }
 }
 
 static void
@@ -401,7 +402,7 @@ real_create_selection_context_menu_items (FMDirectoryView *view,
 	 */
 	position = fm_directory_view_get_context_menu_index
 		(menu, FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH) + 1;
-	compute_reveal_item_name_and_sensitivity (selection, FALSE, &name, &sensitive);
+	compute_reveal_item_name_and_sensitivity (selection, NULL, &name, &sensitive);
         menu_item = gtk_menu_item_new_with_label (name);
         g_free (name);
         gtk_widget_set_sensitive (menu_item, sensitive);
@@ -469,7 +470,7 @@ static void
 update_reveal_item (FMSearchListView *view)
 {
 	GList *selected_files;
-	char *name;
+	char *label_with_underscore, *label_no_underscore;
 	gboolean sensitive;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
@@ -477,15 +478,16 @@ update_reveal_item (FMSearchListView *view)
 	selected_files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
 
 	compute_reveal_item_name_and_sensitivity 
-		(selected_files, TRUE, &name, &sensitive);
+		(selected_files, &label_with_underscore, &label_no_underscore, &sensitive);
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       COMMAND_REVEAL_IN_NEW_WINDOW, 
 				       sensitive);
-					       
-	nautilus_bonobo_set_label (view->details->ui, MENU_PATH_REVEAL_IN_NEW_WINDOW, name);
+	nautilus_bonobo_set_label (view->details->ui, COMMAND_REVEAL_IN_NEW_WINDOW, label_no_underscore);					       
+	nautilus_bonobo_set_label (view->details->ui, MENU_PATH_REVEAL_IN_NEW_WINDOW, label_with_underscore);
 
-	g_free (name);
+	g_free (label_with_underscore);
+	g_free (label_no_underscore);
 
         nautilus_file_list_free (selected_files);
 }

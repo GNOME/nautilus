@@ -1,3 +1,46 @@
+2000-11-13  John Sullivan  <sullivan@eazel.com>
+
+	More progress on using Bonobo for context menu items.
+	Now the Bonobo context menu items get their labels
+	updated to match the selection.
+
+	* src/file-manager/fm-directory-view.c: 
+	(compute_menu_item_info):
+	Now has return parameters for the label with & without underscore,
+	instead of a boolean parameter to choose between them.	
+	(append_gtk_menu_item), (append_selection_menu_subtree):
+	Update callers that only want the without-underscore version.	
+	(update_one_menu_item): Set the label for the verb (no underscore)
+	as well as the label for the menu item (include underscore).
+
+	* src/file-manager/fm-icon-view.c: 
+	(compute_menu_item_info):
+	Now has return parameters for the label with & without underscore,
+	instead of a boolean parameter to choose between them.
+	(insert_one_context_menu_item),
+	(fm_icon_view_create_background_context_menu_items):
+	Update callers that only want the without-underscore version.
+	(update_one_menu_item): Set the label for the verb (no underscore)
+	as well as the label for the menu item (include underscore).
+
+	* src/file-manager/fm-search-list-view.c:
+	(compute_reveal_item_name_and_sensitivity):
+	Now has return parameters for the label with & without underscore,
+	instead of a boolean parameter to choose between them.
+	(real_create_selection_context_menu_items): Update caller that
+	only wants the without-underscore version.
+	(update_reveal_item): Set the label for the verb (no underscore)
+	as well as the label for the menu item (include underscore).
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Add some placeholders in the selection context menu so subclasses
+	can place items correctly.
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Insert Rename, Stretch, and Unstretch into context menu.
+	* src/file-manager/nautilus-search-list-view-ui.xml:
+	Define commands for each verb. Move tips to commands.
+	Insert Reveal into context menu.
+
 2000-11-13  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 4703, add new background crashes when you pick trash.

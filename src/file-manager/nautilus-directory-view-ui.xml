@@ -123,21 +123,26 @@
 		</placeholder>
 	</popup>
 	<popup name="selection">
-		<menuitem name="Open" verb="Open"/>
-		<menuitem name="OpenNew" verb="OpenNew"/>
-		<submenu name="Open With" _label="Open With">
-			<placeholder name="Applications Placeholder"/>
-			<menuitem name="OtherApplication" verb="OtherApplication"/>
-			<separator/>
-			<placeholder name="Viewers Placeholder"/>
-			<menuitem name="OtherViewer" verb="OtherViewer"/>
-		</submenu>
-		<separator/>
-		<menuitem name="Show Properties" verb="Show Properties"/>
-		<menuitem name="Trash" verb="Trash"/>
-		<menuitem name="Duplicate" verb="Duplicate"/>
-		<menuitem name="Create Link" verb="Create Link"/>
-		<menuitem name="Remove Custom Icons" verb="Remove Custom Icons"/>
+		<placeholder name="Open Placeholder">
+			<menuitem name="Open" verb="Open"/>
+			<menuitem name="OpenNew" verb="OpenNew"/>
+			<submenu name="Open With" _label="Open With">
+				<placeholder name="Applications Placeholder"/>
+				<menuitem name="OtherApplication" verb="OtherApplication"/>
+				<separator/>
+				<placeholder name="Viewers Placeholder"/>
+				<menuitem name="OtherViewer" verb="OtherViewer"/>
+			</submenu>
+		</placeholder>
+		<placeholder name="File Actions" delimit="top">
+			<menuitem name="Show Properties" verb="Show Properties"/>
+			<menuitem name="Trash" verb="Trash"/>
+			<menuitem name="Duplicate" verb="Duplicate"/>
+			<menuitem name="Create Link" verb="Create Link"/>
+		</placeholder>
+		<placeholder name="Icon Appearance Items" delimit="top">
+			<menuitem name="Remove Custom Icons" verb="Remove Custom Icons"/>
+		</placeholder>
 	</popup>
 </popups>
 </Root>

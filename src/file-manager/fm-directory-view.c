@@ -2697,31 +2697,31 @@ static void
 compute_menu_item_info (FMDirectoryView *directory_view,
 			const char *path, 
                         GList *selection,
-                        gboolean include_accelerator_underbars,
-                        char **return_name, 
+                        char **return_name_with_underscore, 
+                        char **return_name_no_underscore,
                         gboolean *return_sensitivity)
 {
-	char *name, *stripped;
+	char *name_with_underscore;
 	int count;
 
 	*return_sensitivity = TRUE;
 
         if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN) == 0) {
-                name = g_strdup (_("_Open"));
+                name_with_underscore = g_strdup (_("_Open"));
                 *return_sensitivity = nautilus_g_list_exactly_one_item (selection);
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) == 0) {
-		name = g_strdup (_("Open With"));
+		name_with_underscore = g_strdup (_("Open With"));
 		*return_sensitivity = nautilus_g_list_exactly_one_item (selection);
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION) == 0) {
-		name = g_strdup (_("Other Application..."));
+		name_with_underscore = g_strdup (_("Other Application..."));
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER) == 0) {
-		name = g_strdup (_("Other Viewer..."));
+		name_with_underscore = g_strdup (_("Other Viewer..."));
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW) == 0) {
 		count = g_list_length (selection);
 		if (count <= 1) {
-			name = g_strdup (_("Open in _New Window"));
+			name_with_underscore = g_strdup (_("Open in _New Window"));
 		} else {
-			name = g_strdup_printf (_("Open in %d _New Windows"), count);
+			name_with_underscore = g_strdup_printf (_("Open in %d _New Windows"), count);
 		}
 		if (nautilus_g_list_exactly_one_item (selection)) {
 			/* If the only selected item is launchable, dim out "Open in New Window"
@@ -2733,68 +2733,70 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 			*return_sensitivity = selection != NULL;
 		}
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
-		name = g_strdup (_("New Folder"));
+		name_with_underscore = g_strdup (_("New Folder"));
 		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
 		if (fm_directory_all_selected_items_in_trash (directory_view)) {
 			if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
-				name = g_strdup (_("Delete from _Trash..."));
+				name_with_underscore = g_strdup (_("Delete from _Trash..."));
 			} else {
-				name = g_strdup (_("Delete from _Trash"));
+				name_with_underscore = g_strdup (_("Delete from _Trash"));
 			}
 		} else {
-			name = g_strdup (_("Move to _Trash"));
+			name_with_underscore = g_strdup (_("Move to _Trash"));
 		}
 		*return_sensitivity = !fm_directory_view_is_read_only (directory_view) && selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
-		name = g_strdup (_("_Duplicate"));
+		name_with_underscore = g_strdup (_("_Duplicate"));
 		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view) && selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK) == 0) {
 		if (selection != NULL && !nautilus_g_list_exactly_one_item (selection)) {
-			name = g_strdup (_("Create _Links"));
+			name_with_underscore = g_strdup (_("Create _Links"));
 		} else {
-			name = g_strdup (_("Create _Link"));
+			name_with_underscore = g_strdup (_("Create _Link"));
 		}
 		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view) && selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) == 0) {
 		/* No ellipses here because this command does not require further
 		 * information to be completed.
 		 */
-		name = g_strdup (_("Show _Properties"));
+		name_with_underscore = g_strdup (_("Show _Properties"));
 		*return_sensitivity = selection != NULL && fm_directory_view_supports_properties (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
 		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
-			name = g_strdup (_("_Empty Trash..."));
+			name_with_underscore = g_strdup (_("_Empty Trash..."));
 		} else {
-			name = g_strdup (_("_Empty Trash"));
+			name_with_underscore = g_strdup (_("_Empty Trash"));
 		}
 		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
 	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
-		name = g_strdup (_("_Select All Files"));
+		name_with_underscore = g_strdup (_("_Select All Files"));
 		*return_sensitivity = !fm_directory_view_is_empty (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
-                        name = g_strdup (_("R_emove Custom Images"));
+                        name_with_underscore = g_strdup (_("R_emove Custom Images"));
                 } else {
-                        name = g_strdup (_("R_emove Custom Image"));
+                        name_with_underscore = g_strdup (_("R_emove Custom Image"));
                 }
         	*return_sensitivity = files_have_any_custom_images (selection);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND) == 0) {
-                name = g_strdup (_("Reset _Background"));
+                name_with_underscore = g_strdup (_("Reset _Background"));
         	*return_sensitivity = nautilus_file_background_is_set 
         		(fm_directory_view_get_background (directory_view));
         } else {
-        	name = "";
+        	name_with_underscore = "";
                 g_assert_not_reached ();
         }
 
-	if (!include_accelerator_underbars) {
-                stripped = nautilus_str_strip_chr (name, '_');
-		g_free (name);
-		name = stripped;
+        if (return_name_no_underscore != NULL) {
+        	*return_name_no_underscore = nautilus_str_strip_chr (name_with_underscore, '_');
         }
 
-	*return_name = name;
+        if (return_name_with_underscore != NULL) {
+		*return_name_with_underscore = name_with_underscore;
+        } else {
+		g_free (name_with_underscore);
+        }
 }
 
 static void
@@ -2828,7 +2830,7 @@ append_gtk_menu_item (FMDirectoryView *view,
         char *label_string;
         gboolean sensitive;
 
-        compute_menu_item_info (view, menu_path, files, FALSE, &label_string, &sensitive);
+        compute_menu_item_info (view, menu_path, files, NULL, &label_string, &sensitive);
         menu_item = gtk_menu_item_new_with_label (label_string);
         g_free (label_string);
 
@@ -2854,7 +2856,7 @@ append_selection_menu_subtree (FMDirectoryView *view,
         char *label_string;
         gboolean sensitive;
 
-        compute_menu_item_info (view, path, files, FALSE, &label_string, &sensitive);
+        compute_menu_item_info (view, path, files, NULL, &label_string, &sensitive);
         menu_item = gtk_menu_item_new_with_label (label_string);
         g_free (label_string);
 
@@ -3333,15 +3335,17 @@ update_one_menu_item (FMDirectoryView *view,
 		      const char *menu_path,
 		      const char *verb_path)
 {
-	char *label_string;
+	char *label_with_underscore, *label_no_underscore;
 	gboolean sensitive;
 
-        compute_menu_item_info (view, menu_path, selection, TRUE, &label_string, &sensitive);
+        compute_menu_item_info (view, menu_path, selection, &label_with_underscore, &label_no_underscore, &sensitive);
 
 	nautilus_bonobo_set_sensitive (view->details->ui, verb_path, sensitive);
-	nautilus_bonobo_set_label (view->details->ui, menu_path, label_string);
+	nautilus_bonobo_set_label (view->details->ui, verb_path, label_no_underscore);
+	nautilus_bonobo_set_label (view->details->ui, menu_path, label_with_underscore);
 
-	g_free (label_string);
+	g_free (label_with_underscore);
+	g_free (label_no_underscore);
 }
 
 static void
