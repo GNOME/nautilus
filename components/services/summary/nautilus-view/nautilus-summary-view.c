@@ -280,7 +280,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		g_free (title_string);
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
-
+	gtk_widget_show (title);
 	/* Create the Parent Table to hold the 4 frames */
 	parent = GTK_TABLE (gtk_table_new (3, 2, FALSE));
 	/* Create the Services Listing Box */
