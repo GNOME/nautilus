@@ -840,7 +840,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 		thumb_factory = NULL;
 	}
 
-	lookup_flags = GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES | GNOME_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES;
+	lookup_flags = GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES;
 	if (embedd_text) {
 		lookup_flags |= GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT;
 	}
