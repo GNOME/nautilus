@@ -1,3 +1,28 @@
+2001-03-26  Gene Z. Ragan  <gzr@eazel.com>
+	
+	* libnautilus-extensions/nautilus-audio-player.c:
+	* libnautilus-extensions/nautilus-audio-player.h:
+ 	(player_thread),
+	(nautilus_audio_player_play), (nautilus_audio_player_stop),
+	(esdout_init), (esdout_write), (get_latency), (esd_stou8),
+	(esd_utos16sw), (esd_utos16), (esd_16sw):
+	New code to add support for an audio player thread. This is
+	a first step to avoid the use of external binaries from
+	within nautilus to preview audio. This will hopefully allow
+	us to use a more flexible preview mechanism in the future.
+	The new code currently uses the audiofile library from
+	gnome cvs.
+			
+	* libnautilus-extensions/Makefile.am:
+	Add new files to build.
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy),
+	(fm_icon_view_begin_loading), (play_file), (preview_audio),
+	(icon_container_preview_callback), (fm_icon_view_initialize):
+	Add a conditional to allow the use of the new audio preview
+	code.  The conditional is currently set to use the old code,
+	not the new mechanism.
+
 2001-03-26  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

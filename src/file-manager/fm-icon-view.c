@@ -43,6 +43,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libnautilus-extensions/nautilus-audio-player.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
@@ -67,6 +68,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+#define USE_OLD_AUDIO_PREVIEW 1
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
@@ -138,7 +141,8 @@ static void                 set_sort_criterion_by_id                       (FMIc
 static gboolean             set_sort_reversed                              (FMIconView        *icon_view,
 									    gboolean           new_value);
 static void                 switch_to_manual_layout                        (FMIconView        *view);
-static void                 preview_sound                                  (NautilusFile      *file,
+static void                 preview_audio                                  (FMIconView 	      *icon_view,
+									    NautilusFile      *file,
 									    gboolean           start_flag);
 static void                 update_layout_menus                            (FMIconView        *view);
 
@@ -189,9 +193,6 @@ static const SortCriterion sort_criteria[] = {
 };
 
 /* some state variables used for sound previewing */
-
-static int timeout = -1;
-
 struct FMIconViewDetails
 {
 	GList *icons_not_positioned;
@@ -206,6 +207,10 @@ struct FMIconViewDetails
 	gboolean sort_reversed;
 
 	BonoboUIComponent *ui;
+	
+	NautilusAudioPlayerData *audio_player_data;
+	int timeout;
+	NautilusFile *audio_preview_file;
 };
 
 static void
@@ -228,7 +233,7 @@ fm_icon_view_destroy (GtkObject *object)
         }
 
 	/* kill any sound preview process that is ongoing */
-	preview_sound (NULL, FALSE);
+	preview_audio (icon_view, NULL, FALSE);
 
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
@@ -810,7 +815,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	icon_view->details->loading = TRUE;
 
 	/* kill any sound preview process that is ongoing */
-	preview_sound (NULL, FALSE);
+	preview_audio (icon_view, NULL, FALSE);
 	
 	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
 	 * of hardcoding desktop knowledge in here.
@@ -1331,6 +1336,7 @@ band_select_ended_callback (NautilusIconContainer *container,
 static int
 play_file (gpointer callback_data)
 {
+#if USE_OLD_AUDIO_PREVIEW	
 	NautilusFile *file;
 	char *file_uri;
 	char *file_path, *mime_type;
@@ -1363,9 +1369,34 @@ play_file (gpointer callback_data)
 	g_free (file_path);
 	g_free (file_uri);
 	g_free (mime_type);
+#else
+	char *file_path, *file_uri, *mime_type;
+	gboolean is_mp3;
+	FMIconView *icon_view;
 	
-	timeout = -1;
+	icon_view = FM_ICON_VIEW (callback_data);
+	if (icon_view == NULL) {
+		icon_view->details->timeout = -1;
+		return 0;
+	}
+		
+	file_uri = nautilus_file_get_uri (icon_view->details->audio_preview_file);
+	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
+	mime_type = nautilus_file_get_mime_type (icon_view->details->audio_preview_file);
+
+	is_mp3 = nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0;
+
+	if (file_path != NULL && !is_mp3) {
+		icon_view->details->audio_player_data = nautilus_audio_player_play (file_path);
+	}
 	
+	g_free (file_uri);
+	g_free (file_path);	
+	g_free (mime_type);
+
+	icon_view->details->timeout = -1;
+	icon_view->details->audio_preview_file = NULL;
+#endif
 	return 0;
 }
 
@@ -1378,16 +1409,30 @@ play_file (gpointer callback_data)
    start playing.  If we move out before the task files, we remove it. */
 
 static void
-preview_sound (NautilusFile *file, gboolean start_flag)
+preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 {		
+	/* Stop current audio playback */
+#if USE_OLD_AUDIO_PREVIEW
 	nautilus_sound_kill_sound ();
-	
-	if (timeout >= 0) {
-		gtk_timeout_remove (timeout);
-		timeout = -1;
+#else
+	if (icon_view->details->audio_player_data != NULL) {
+		nautilus_audio_player_stop (icon_view->details->audio_player_data);
+		g_free (icon_view->details->audio_player_data);
+		icon_view->details->audio_player_data = NULL;
 	}
+#endif
+	if (icon_view->details->timeout >= 0) {
+		gtk_timeout_remove (icon_view->details->timeout);
+		icon_view->details->timeout = -1;
+	}
+			
 	if (start_flag) {
-		timeout = gtk_timeout_add (1000, play_file, file);
+		icon_view->details->audio_preview_file = file;
+#if USE_OLD_AUDIO_PREVIEW			
+		icon_view->details->timeout = gtk_timeout_add (1000, play_file, file);
+#else
+		icon_view->details->timeout = gtk_timeout_add (1000, play_file, icon_view);
+#endif
 	}
 }
 
@@ -1423,14 +1468,13 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	
 	/* preview files based on the mime_type. */
 	/* at first, we just handle sounds */
-
 	if (should_preview_sound (file)) {
 		mime_type = nautilus_file_get_mime_type (file);
 		if (nautilus_istr_has_prefix (mime_type, "audio/") &&
 				nautilus_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0) {
 			if (nautilus_sound_can_play_sound ()) {
 				result = 1;
-				preview_sound (file, start_flag);
+				preview_audio (icon_view, file, start_flag);
 			}
 		}	
 		g_free (mime_type);
@@ -1926,7 +1970,9 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 	icon_view->details->sort = &sort_criteria[0];
-
+	icon_view->details->audio_player_data = NULL;
+	icon_view->details->timeout = -1;
+	icon_view->details->audio_preview_file = NULL;
 	create_icon_container (icon_view);
 }
 

@@ -65,6 +65,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	$(nautilus_metafile_server_idl_sources)	\
 	nautilus-art-extensions.c		\
 	nautilus-art-gtk-extensions.c		\
+	nautilus-audio-player.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
@@ -178,6 +179,7 @@ libnautilus_extensions_la_SOURCES = 		\
 noinst_HEADERS =				\
 	nautilus-art-extensions.h		\
 	nautilus-art-gtk-extensions.h		\
+	nautilus-audio-player.h			\
 	nautilus-background-canvas-group.h	\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
