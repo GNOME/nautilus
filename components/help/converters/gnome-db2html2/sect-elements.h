@@ -128,4 +128,7 @@ void sect_legalnotice_end_element (Context *context, const char *name);
 void sect_legalnotice_characters (Context *context, const char *chars, int len);
 void sect_question_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_answer_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_glosssee_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_glossseealso_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_glossee_end_element (Context *context, const gchar *name);
 #endif
