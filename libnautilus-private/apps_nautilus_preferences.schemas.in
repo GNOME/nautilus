@@ -722,11 +722,26 @@
       <applyto>/apps/nautilus/desktop/home_icon_visible</applyto>
       <owner>nautilus</owner>
       <type>bool</type>
-      <default>true</default>
+      <default>false</default>
       <locale name="C">
          <short>Home icon visible on desktop</short>
          <long>
           If this is set to true, an icon linking to the home directory
+	  will be put on the desktop.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/desktop/computer_icon_visible</key>
+      <applyto>/apps/nautilus/desktop/computer_icon_visible</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Computer icon visible on desktop</short>
+         <long>
+          If this is set to true, an icon linking to the computer location
 	  will be put on the desktop.
          </long>
       </locale>

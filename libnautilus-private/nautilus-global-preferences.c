@@ -56,6 +56,7 @@ static gpointer default_home_location_callback           (void);
 static gpointer default_default_folder_viewer_callback	 (void);
 static void     import_old_preferences_if_needed         (void);
 static gpointer default_home_link_name                   (void);
+static gpointer default_computer_link_name               (void);
 static gpointer default_trash_link_name                  (void);
 
 /* An enumeration used for installing type specific preferences defaults. */
@@ -488,13 +489,24 @@ static const PreferenceDefault preference_defaults[] = {
 	/* Desktop Preferences */
 	{ NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
 	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
+	  GINT_TO_POINTER (FALSE)
 	},
 	
 	{ NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
 	  PREFERENCE_STRING,
 	  NULL,
 	  default_home_link_name, g_free,
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (TRUE)
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
+	  PREFERENCE_STRING,
+	  NULL,
+	  default_computer_link_name, g_free,
 	},
 	
 	{ NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
@@ -529,6 +541,12 @@ default_home_link_name (void)
 	 * put the user name in the final string.
 	 */
 	return g_strdup_printf (_("%s's Home"), g_get_user_name ());
+}
+
+static gpointer
+default_computer_link_name (void)
+{
+	return g_strdup (_("Computer"));
 }
 
 static gpointer

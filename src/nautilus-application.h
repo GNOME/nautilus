@@ -66,6 +66,7 @@ void                 nautilus_application_startup           (NautilusApplication
 							     gboolean             no_default_window,
 							     gboolean             no_desktop,
 							     gboolean             do_first_time_druid_check,
+							     gboolean             browser_window,
 							     const char          *default_geometry,
 							     const char          *urls[]);
 GList *              nautilus_application_get_window_list           (void);

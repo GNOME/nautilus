@@ -30,6 +30,7 @@
 #include <locale.h> 
 
 #include "nautilus-application.h"
+#include "nautilus-connect-server-dialog.h"
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
@@ -90,6 +91,7 @@
 #define ID_SHOW_HIDE_STATUS_BAR                         "Show Hide Statusbar"
 
 #define START_HERE_URI          "start-here:"
+#define COMPUTER_URI          "computer:"
 #define BURN_CD_URI          "burn:"
 
 /* Struct that stores all the info necessary to activate a bookmark. */
@@ -255,6 +257,17 @@ file_menu_burn_cd_callback (BonoboUIComponent *component,
 	nautilus_window_launch_cd_burner (NAUTILUS_WINDOW (user_data));
 }
 
+static void
+connect_to_server_callback (BonoboUIComponent *component, 
+			    gpointer user_data, 
+			    const char *verb)
+{
+	GtkWidget *dialog;
+	
+	dialog = nautilus_connect_server_dialog_new (NAUTILUS_WINDOW (user_data));
+	gtk_widget_show (dialog);
+}
+
 static gboolean
 have_burn_uri (void)
 {
@@ -357,6 +370,15 @@ go_menu_start_here_callback (BonoboUIComponent *component,
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       START_HERE_URI);
+}
+
+static void
+go_menu_go_to_computer_callback (BonoboUIComponent *component, 
+				 gpointer user_data, 
+				 const char *verb) 
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       COMPUTER_URI);
 }
 
 static void
@@ -629,6 +651,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
 		BONOBO_UI_VERB ("Burn CD", file_menu_burn_cd_callback),
+		BONOBO_UI_VERB ("Connect to Server", connect_to_server_callback),
 #ifdef HAVE_MEDUSA
 		BONOBO_UI_VERB ("Find", file_menu_find_callback),
 		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
@@ -638,6 +661,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
 		BONOBO_UI_VERB ("Start Here", go_menu_start_here_callback),
+		BONOBO_UI_VERB ("Go to Computer", go_menu_go_to_computer_callback),
 		BONOBO_UI_VERB ("Go to Trash", go_menu_go_to_trash_callback),
 		BONOBO_UI_VERB ("Go to Burn CD", go_menu_go_to_burn_cd_callback),
 		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),

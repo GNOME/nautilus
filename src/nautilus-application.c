@@ -100,6 +100,9 @@ static void     desktop_location_changed_callback (gpointer                  use
 static void     volume_unmounted_callback         (GnomeVFSVolumeMonitor    *monitor,
 						   GnomeVFSVolume           *volume,
 						   NautilusApplication      *application);
+static void     volume_mounted_callback           (GnomeVFSVolumeMonitor    *monitor,
+						   GnomeVFSVolume           *volume,
+						   NautilusApplication      *application);
 static void     update_session                    (gpointer                  callback_data);
 static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
@@ -172,6 +175,8 @@ nautilus_application_instance_init (NautilusApplication *application)
 	/* Watch for volume unmounts so we can close open windows */
 	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), application, 0);
+	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_mounted",
+				 G_CALLBACK (volume_mounted_callback), application, 0);
 
 	nautilus_bonobo_register_activation_shortcut (NAUTILUS_ICON_VIEW_IID, create_object_shortcut, application);
 	nautilus_bonobo_register_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID, create_object_shortcut, application);
@@ -452,6 +457,7 @@ nautilus_application_startup (NautilusApplication *application,
 			      gboolean no_default_window,
 			      gboolean no_desktop,
 			      gboolean do_first_time_druid_check,
+			      gboolean browser_window,
 			      const char *geometry,
 			      const char *urls[])
 {
@@ -625,10 +631,10 @@ nautilus_application_startup (NautilusApplication *application,
 	  	/* Create the other windows. */
 		if (urls != NULL) {
 			url_list = nautilus_make_uri_list_from_shell_strv (urls);
-			Nautilus_Shell_open_windows (shell, url_list, corba_geometry, &ev);
+			Nautilus_Shell_open_windows (shell, url_list, corba_geometry, browser_window, &ev);
 			CORBA_free (url_list);
 		} else if (!no_default_window) {
-			Nautilus_Shell_open_default_window (shell, corba_geometry, &ev);
+			Nautilus_Shell_open_default_window (shell, corba_geometry, browser_window, &ev);
 		}
 		
 		/* Add ourselves to the session */
@@ -1083,6 +1089,23 @@ window_can_be_closed (NautilusWindow *window)
 	}
 	
 	return FALSE;
+}
+
+static void
+volume_mounted_callback (GnomeVFSVolumeMonitor *monitor,
+			 GnomeVFSVolume *volume,
+			 NautilusApplication *application)
+{
+	char *activation_uri;
+	NautilusDirectory *directory;
+		
+	activation_uri = gnome_vfs_volume_get_activation_uri (volume);
+	directory = nautilus_directory_get_existing (activation_uri);
+	g_free (activation_uri);
+	if (directory != NULL) {
+		nautilus_directory_force_reload (directory);
+		nautilus_directory_unref (directory);
+	}
 }
 
 /* Called whenever a volume is unmounted. Check and see if there are any windows open

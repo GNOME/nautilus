@@ -63,6 +63,7 @@ nautilus_SOURCES = \
 	nautilus-bookmarks-window.c		\
 	nautilus-complex-search-bar.c		\
 	nautilus-component-adapter-factory.c	\
+	nautilus-connect-server-dialog.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
 	nautilus-information-panel.c            \
@@ -100,6 +101,7 @@ nautilus_SOURCES = \
 	nautilus-bookmarks-window.h		\
 	nautilus-complex-search-bar.h		\
 	nautilus-component-adapter-factory.h	\
+	nautilus-connect-server-dialog.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
 	nautilus-information-panel.h            \

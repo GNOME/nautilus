@@ -45,6 +45,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <stdlib.h>
@@ -63,9 +64,11 @@ static void     finalize                         (GObject              *shell);
 static void     corba_open_windows              (PortableServer_Servant  servant,
 						 const Nautilus_URIList *list,
 						 const CORBA_char       *geometry,
+						 CORBA_boolean           browser_window,
 						 CORBA_Environment      *ev);
 static void     corba_open_default_window       (PortableServer_Servant  servant,
 						 const CORBA_char       *geometry,
+						 CORBA_boolean           browser_window,
 						 CORBA_Environment      *ev);
 static void     corba_start_desktop             (PortableServer_Servant  servant,
 						 CORBA_Environment      *ev);
@@ -122,47 +125,13 @@ nautilus_shell_new (NautilusApplication *application)
 }
 
 static void
-open_window (NautilusShell *shell, const char *uri, const char *geometry)
+open_window (NautilusShell *shell, const char *uri, const char *geometry,
+	     gboolean browser_window)
 {
+	char *home_uri;
 	NautilusWindow *window;
-	NautilusWindow *existing_window;
-	GList *node;
-	const char *existing_location;
-	gboolean prefer_existing_window;
 
-#if NEW_UI_COMPLETE
-	/* FIXME: This needs more thought */
-#endif
-	prefer_existing_window = TRUE;
-
-        /* If the user's preference is always_open_in_new_window
-	 * we raise an existing window for the location if it already exists.
-	 */
-	if (prefer_existing_window)
-	{
-        	for (node = nautilus_application_get_window_list ();
-             	     node != NULL; node = node->next) {
-               	     
-			existing_window = NAUTILUS_WINDOW (node->data);
-                     	existing_location = existing_window->details->pending_location;
-                
-			if (existing_location == NULL) {
-                        	existing_location = existing_window->details->location;
-                	}
-
-                	if (eel_uris_match (existing_location, uri)) {
-                        	gtk_window_present (GTK_WINDOW (existing_window));
-                        	return;
-                	}
-		}
-        }
-
-        /* Otherwise, open a new window. */
-	if (uri) {
-		window = nautilus_application_present_spatial_window (shell->details->application,
-								     uri,
-								     gdk_screen_get_default ());
-	} else {
+	if (browser_window) {
 		window = nautilus_application_create_navigation_window (shell->details->application,
 									gdk_screen_get_default ());
 		if (uri == NULL) {
@@ -170,14 +139,29 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 		} else {
 			nautilus_window_go_to (window, uri);
 		}
+	} else {
+		home_uri = NULL;
+		if (uri == NULL) {
+#ifdef WEB_NAVIGATION_ENABLED
+			home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+			home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
+			uri = home_uri;
+		}
+		
+		window = nautilus_application_present_spatial_window (shell->details->application,
+								     uri,
+								     gdk_screen_get_default ());
+		g_free (home_uri);
 	}
 	
-	if (geometry != NULL) {
+	if (geometry != NULL && !GTK_WIDGET_VISIBLE (window)) {
 		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
-								      geometry,
-								      APPLICATION_WINDOW_MIN_WIDTH,
-								      APPLICATION_WINDOW_MIN_HEIGHT,
-								      FALSE);
+								 geometry,
+								 APPLICATION_WINDOW_MIN_WIDTH,
+								 APPLICATION_WINDOW_MIN_HEIGHT,
+								 FALSE);
 	}
 }
 
@@ -185,6 +169,7 @@ static void
 corba_open_windows (PortableServer_Servant servant,
 		    const Nautilus_URIList *list,
 		    const CORBA_char *geometry,
+		    CORBA_boolean browser_window,
 		    CORBA_Environment *ev)
 {
 	NautilusShell *shell;
@@ -195,13 +180,14 @@ corba_open_windows (PortableServer_Servant servant,
 	/* Open windows at each requested location. */
 	for (i = 0; i < list->_length; i++) {
 		g_assert (list->_buffer[i] != NULL);
-		open_window (shell, list->_buffer[i], geometry);
+		open_window (shell, list->_buffer[i], geometry, browser_window);
 	}
 }
 
 static void
 corba_open_default_window (PortableServer_Servant servant,
 			   const CORBA_char *geometry,
+			   CORBA_boolean browser_window,
 			   CORBA_Environment *ev)
 {
 	NautilusShell *shell;
@@ -210,7 +196,7 @@ corba_open_default_window (PortableServer_Servant servant,
 
 	if (!restore_window_states (shell)) {
 		/* Open a window pointing at the default location. */
-		open_window (shell, NULL, geometry);
+		open_window (shell, NULL, geometry, browser_window);
 	}
 }
 

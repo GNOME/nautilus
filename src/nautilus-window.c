@@ -1173,6 +1173,9 @@ compute_default_title (const char *text_uri)
 	} else if (strcmp (text_uri, "fonts://") == 0 ||
 		   strcmp (text_uri, "fonts:///") == 0) {
 		title = g_strdup (_("Fonts"));
+	} else if (strcmp (text_uri, "burn://") == 0 ||
+		   strcmp (text_uri, "burn:///") == 0) {
+		title = g_strdup (_("CD Creator"));
 	} else {
 		file = nautilus_file_get (text_uri);
 		title = nautilus_file_get_display_name (file);

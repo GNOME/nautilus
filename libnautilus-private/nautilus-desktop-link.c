@@ -90,6 +90,20 @@ home_name_changed (gpointer callback_data)
 }
 
 static void
+computer_name_changed (gpointer callback_data)
+{
+	NautilusDesktopLink *link;
+
+	link = NAUTILUS_DESKTOP_LINK (callback_data);
+	g_assert (link->details->type == NAUTILUS_DESKTOP_LINK_COMPUTER);
+
+	g_free (link->details->display_name);
+	link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME);
+	
+	nautilus_desktop_link_changed (link);
+}
+
+static void
 trash_name_changed (gpointer callback_data)
 {
 	NautilusDesktopLink *link;
@@ -134,6 +148,22 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 					      link);
 		
 		break;
+		
+	case NAUTILUS_DESKTOP_LINK_COMPUTER:
+		link->details->filename = g_strdup ("computer");
+
+		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME);
+		
+		link->details->activation_uri = g_strdup ("computer:///");
+		/* TODO: This might need a different icon: */
+		link->details->icon = g_strdup ("gnome-fs-client");
+
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
+					      computer_name_changed,
+					      link);
+		
+		break;
+		
 	case NAUTILUS_DESKTOP_LINK_TRASH:
 		link->details->filename = g_strdup ("trash");
 		link->details->display_name = g_strdup (_("Trash"));
@@ -305,6 +335,10 @@ nautilus_desktop_link_rename (NautilusDesktopLink     *link,
 		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
 				     name);
 		break;
+	case NAUTILUS_DESKTOP_LINK_COMPUTER:
+		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
+				     name);
+		break;
 	case NAUTILUS_DESKTOP_LINK_TRASH:
 		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
 				     name);
@@ -354,6 +388,12 @@ desktop_link_finalize (GObject *object)
 						 link);
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
 						 home_name_changed,
+						 link);
+	}
+	
+	if (link->details->type == NAUTILUS_DESKTOP_LINK_COMPUTER) {
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
+						 computer_name_changed,
 						 link);
 	}
 	

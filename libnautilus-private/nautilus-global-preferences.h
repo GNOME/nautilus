@@ -168,6 +168,8 @@ typedef enum
 
 #define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "desktop/home_icon_visible"
 #define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "desktop/home_icon_name"
+#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE      "desktop/computer_icon_visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME         "desktop/computer_icon_name"
 #define NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE         "desktop/trash_icon_visible"
 #define NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME            "desktop/trash_icon_name"
 

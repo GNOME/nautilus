@@ -4,9 +4,13 @@ include $(top_srcdir)/Makefile.shared
 
 DESKTOP_IN_FILES= 					\
 	nautilus.desktop.in				\
+	nautilus-home.desktop.in			\
+	nautilus-computer.desktop.in			\
 	nautilus-file-management-properties.desktop.in
 DESKTOP_APPLICATIONS_FILES=		\
-	nautilus.desktop
+	nautilus.desktop		\
+	nautilus-home.desktop		\
+	nautilus-computer.desktop
 DESKTOP_SETTINGS_FILES=				\
 	nautilus-file-management-properties.desktop
 

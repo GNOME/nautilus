@@ -9,8 +9,8 @@
 module Nautilus {
 
 	interface Shell : ::Bonobo::Unknown {
-		void open_windows (in URIList uris, in string geometry);
-		void open_default_window (in string geometry);
+		void open_windows (in URIList uris, in string geometry, in boolean browser_window);
+		void open_default_window (in string geometry, in boolean browser_window);
 		void start_desktop ();
 		void stop_desktop ();
 		void quit ();

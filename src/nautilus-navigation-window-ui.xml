@@ -21,6 +21,11 @@
 
 <menu>
 	<submenu name="File">
+		<placeholder name="Location Placeholder">
+		        <menuitem name="Connect to Server"
+			  _label="Connect to _Server..."
+			  verb="Connect to Server"/>
+		</placeholder>
 		<placeholder name="Close Items Placeholder">
 			<menuitem name="Close All Windows"
 			  _label="Close _All Windows"
@@ -72,6 +77,10 @@
 			  accel="*Alt*Home"
 			  pixtype="stock" pixname="gtk-home"
 			  verb="Home"/>
+		<menuitem name="Computer" 
+			  _label="_Computer" 
+			  pixtype="stock" pixname="gnome-fs-client"
+			  verb="Go to Computer"/>
 		<menuitem name="Go to Trash"
 			  _label="_Trash"
 			  _tip="Go to the trash folder"
@@ -144,6 +153,11 @@
 		  priority="1"
 	          pixtype="stock" pixname="gtk-home"
 		  verb="Home"/>
+	<toolitem name="Computer"
+		  _label="Computer"
+		  priority="1"
+	          pixtype="stock" pixname="gnome-fs-client"
+		  verb="Go to Computer"/>
 	<toolitem name="Toggle Find Mode"
 		  priority="1"
 	          type="toggle"

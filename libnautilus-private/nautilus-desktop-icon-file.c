@@ -199,11 +199,17 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	file_info->flags = GNOME_VFS_FILE_FLAGS_NONE;
 	file_info->link_count = 1;
 	file_info->size = 0;
+	file_info->permissions =
+		GNOME_VFS_PERM_OTHER_WRITE |
+		GNOME_VFS_PERM_USER_READ |
+		GNOME_VFS_PERM_OTHER_READ |
+		GNOME_VFS_PERM_GROUP_READ;
 	
 	file_info->valid_fields = GNOME_VFS_FILE_INFO_FIELDS_TYPE |
 		GNOME_VFS_FILE_INFO_FIELDS_FLAGS |
 		GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE |
 		GNOME_VFS_FILE_INFO_FIELDS_SIZE |
+		GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS |
 		GNOME_VFS_FILE_INFO_FIELDS_LINK_COUNT;
 
 	volume = nautilus_desktop_link_get_volume (link);

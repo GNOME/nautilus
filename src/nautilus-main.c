@@ -43,6 +43,7 @@
 #include <eel/eel-self-checks.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkiconfactory.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-init.h>
@@ -126,12 +127,49 @@ nautilus_main_event_loop_quit (void)
 	}
 }
 
+static void
+register_icons (void)
+{
+	GnomeIconTheme *icon_theme;
+	char *icon;
+	GtkIconSource *source;
+	GtkIconSet *set;
+	GtkIconFactory *factory;
+
+	icon_theme = nautilus_icon_factory_get_icon_theme ();
+	icon = gnome_icon_theme_lookup_icon (icon_theme, "gnome-fs-client", 48,
+					     NULL, NULL);
+	if (icon != NULL) {
+		factory = gtk_icon_factory_new ();
+		gtk_icon_factory_add_default (factory);
+		
+		source = gtk_icon_source_new ();
+		gtk_icon_source_set_filename (source, icon);
+		g_free (icon);
+		
+		set = gtk_icon_set_new ();
+		gtk_icon_set_add_source (set, source);
+
+		gtk_icon_factory_add (factory, "gnome-fs-client", set);
+		gtk_icon_set_unref (set);
+		
+		gtk_icon_source_free (source);
+
+		g_object_unref (factory);
+	}
+	
+	g_object_unref (icon_theme);
+	
+	
+}
+
 int
 main (int argc, char *argv[])
 {
 	gboolean kill_shell;
 	gboolean restart_shell;
 	gboolean no_default_window;
+	gboolean browser_window;
 	gboolean no_desktop;
 	char *geometry;
 	gboolean perform_self_check;
@@ -154,6 +192,8 @@ main (int argc, char *argv[])
 		  N_("Only create windows for explicitly specified URIs."), NULL },
 		{ "no-desktop", '\0', POPT_ARG_NONE, NULL, 0,
 		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
+		{ "browser", '\0', POPT_ARG_NONE, NULL, 0,
+		  N_("open a browser window."), NULL },
 		{ "quit", 'q', POPT_ARG_NONE, NULL, 0,
 		  N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, NULL, 0,
@@ -168,6 +208,7 @@ main (int argc, char *argv[])
 	options[i++].arg = &geometry;
 	options[i++].arg = &no_default_window;
 	options[i++].arg = &no_desktop;
+	options[i++].arg = &browser_window;
 	options[i++].arg = &kill_shell;
 	options[i++].arg = &restart_shell;
 
@@ -187,6 +228,7 @@ main (int argc, char *argv[])
 	no_desktop = FALSE;
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
+	browser_window = FALSE;
 
 	g_set_application_name (_("File Manager"));
 	
@@ -196,6 +238,8 @@ main (int argc, char *argv[])
 				      GNOME_PARAM_POPT_TABLE, options,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
 				      NULL);
+
+	register_icons ();
 	
 	/* Need to set this to the canonical DISPLAY value, since
 	   thats where we're registering per-display components */
@@ -276,6 +320,7 @@ main (int argc, char *argv[])
 			(application,
 			 kill_shell, restart_shell, no_default_window, no_desktop,
 			 !(kill_shell || restart_shell),
+			 browser_window,
 			 geometry,
 			 args);
 		if (is_event_loop_needed ()) {

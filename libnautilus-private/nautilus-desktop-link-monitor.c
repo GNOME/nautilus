@@ -47,6 +47,7 @@ struct NautilusDesktopLinkMonitorDetails {
 	NautilusDirectory *desktop_dir;
 	
 	NautilusDesktopLink *home_link;
+	NautilusDesktopLink *computer_link;
 	NautilusDesktopLink *trash_link;
 
 	gulong mount_id;
@@ -95,6 +96,9 @@ nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 	switch (nautilus_desktop_link_get_link_type (link)) {
 	case NAUTILUS_DESKTOP_LINK_HOME:
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE, FALSE);
+		break;
+	case NAUTILUS_DESKTOP_LINK_COMPUTER:
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE, FALSE);
 		break;
 	case NAUTILUS_DESKTOP_LINK_TRASH:
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE, FALSE);
@@ -184,6 +188,25 @@ desktop_home_visible_changed (gpointer callback_data)
 }
 
 static void
+desktop_computer_visible_changed (gpointer callback_data)
+{
+	NautilusDesktopLinkMonitor *monitor;
+
+	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (callback_data);
+
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE)) {
+		if (monitor->details->computer_link == NULL) {
+			monitor->details->computer_link = nautilus_desktop_link_new (NAUTILUS_DESKTOP_LINK_COMPUTER);
+		}
+	} else {
+		if (monitor->details->computer_link != NULL) {
+			g_object_unref (monitor->details->computer_link);
+			monitor->details->computer_link = NULL;
+		}
+	}
+}
+
+static void
 desktop_trash_visible_changed (gpointer callback_data)
 {
 	NautilusDesktopLinkMonitor *monitor;
@@ -221,6 +244,10 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 		monitor->details->home_link = nautilus_desktop_link_new (NAUTILUS_DESKTOP_LINK_HOME);
 	}
 	
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE)) {
+		monitor->details->computer_link = nautilus_desktop_link_new (NAUTILUS_DESKTOP_LINK_COMPUTER);
+	}
+	
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE)) {
 		monitor->details->trash_link = nautilus_desktop_link_new (NAUTILUS_DESKTOP_LINK_TRASH);
 	}
@@ -236,6 +263,9 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
 				      desktop_home_visible_changed,
+				      monitor);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE,
+				      desktop_computer_visible_changed,
 				      monitor);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
 				      desktop_trash_visible_changed,
@@ -261,6 +291,11 @@ desktop_link_monitor_finalize (GObject *object)
 		monitor->details->home_link = NULL;
 	}
 
+	if (monitor->details->computer_link != NULL) {
+		g_object_unref (monitor->details->computer_link);
+		monitor->details->computer_link = NULL;
+	}
+
 	if (monitor->details->trash_link != NULL) {
 		g_object_unref (monitor->details->trash_link);
 		monitor->details->trash_link = NULL;
@@ -275,6 +310,9 @@ desktop_link_monitor_finalize (GObject *object)
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
 					 desktop_home_visible_changed,
+					 monitor);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE,
+					 desktop_computer_visible_changed,
 					 monitor);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
 					 desktop_trash_visible_changed,

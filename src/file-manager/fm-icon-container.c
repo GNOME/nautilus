@@ -317,6 +317,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
  *   4) trash link
  */
 typedef enum {
+	SORT_COMPUTER_LINK,
 	SORT_HOME_LINK,
 	SORT_MOUNT_LINK,
 	SORT_OTHER,
@@ -333,6 +334,9 @@ get_sort_category (NautilusFile *file)
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 		
 		switch (nautilus_desktop_link_get_link_type (link)) {
+		case NAUTILUS_DESKTOP_LINK_COMPUTER:
+			category = SORT_COMPUTER_LINK;
+			break;
 		case NAUTILUS_DESKTOP_LINK_HOME:
 			category = SORT_HOME_LINK;
 			break;

@@ -1,3 +1,59 @@
+2003-11-06  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	* nautilus-computer.desktop.in:
+	* nautilus-home.desktop.in:
+	New desktop files
+	
+	* nautilus.desktop.in:
+	Make this one "browse filesystem"
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	computer desktop icon prefs
+	
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	(update_info_from_link): Set permissions too
+	
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	* libnautilus-private/nautilus-desktop-link.[ch]:
+	Add computer icon
+	
+	* src/Makefile.am:
+	* src/nautilus-connect-server-dialog.[ch]:
+	Connect server dialog
+	
+	* src/file-manager/fm-directory-view.c:
+	Mount drives on activation.
+
+	* src/file-manager/fm-icon-container.c:
+	Sort computer first
+	
+	* src/file-manager/fm-properties-window.c:
+	Put back NautilusDesktopLink handling for e.g. computer and home.
+	
+	* src/nautilus-application.[ch]:
+	Reload dirs on mounts.
+	add browser_window argument on open window
+	
+	* src/nautilus-main.c:
+	add browser_window argument on open window (--browser)
+	hack to register computer icon
+	
+	* src/nautilus-shell-interface.idl:
+	* src/nautilus-shell.c: 
+	add browser_window argument on open window
+	
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-window-menus.c:
+	Add connect to server
+	Add computer
+	
+	* src/nautilus-window.c:
+	Nice title for burn:///
+
 2003-11-05  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

@@ -267,6 +267,9 @@ typedef struct {
 	Nautilus_ViewFrame_OpenMode mode;
 	Nautilus_ViewFrame_OpenFlags flags;
 	NautilusFileCallback callback;
+	gboolean mounted;
+	gboolean mounting;
+	gboolean cancelled;
 } ActivateParameters;
 
 typedef struct {
@@ -349,6 +352,8 @@ static void     fm_directory_view_select_file                  (FMDirectoryView 
 static void     monitor_file_for_open_with                     (FMDirectoryView      *view,
 								NautilusFile         *file);
 static void     create_scripts_directory                       (void);
+static void     activate_activation_uri_ready_callback         (NautilusFile         *file,
+								gpointer              callback_data);
 
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 
@@ -4935,15 +4940,12 @@ real_update_menus_volumes (FMDirectoryView *view,
 			unmount_is_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
 		} else if (nautilus_file_has_drive (file)) {
 			drive = nautilus_file_get_drive (file);
-			volume = gnome_vfs_drive_get_mounted_volume (drive);
-			if (volume == NULL) {
-				show_mount = TRUE;
-			} else {
+			if (gnome_vfs_drive_is_mounted (drive)) {
 				show_unmount = TRUE;
 				unmount_is_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
+			} else {
+				show_mount = TRUE;
 			}
-
-			gnome_vfs_volume_unref (volume);
 		} 
 	}
 
@@ -5539,14 +5541,54 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 }
 
 static void
+activation_drive_mounted_callback (gboolean succeeded,
+				   char *error,
+				   char *detailed_error,
+				   gpointer callback_data)
+{
+	ActivateParameters *parameters;
+
+	parameters = callback_data;
+
+	parameters->mounted = TRUE;
+	parameters->mounting = FALSE;
+	
+	if (succeeded && !parameters->cancelled) {
+		activate_activation_uri_ready_callback (parameters->file,
+							parameters);
+	} else {
+		if (!parameters->cancelled) {
+			eel_timed_wait_stop (cancel_activate_callback, parameters);
+			eel_show_error_dialog_with_details (error, _("Mount Error"), detailed_error, NULL);
+		}
+		
+		nautilus_file_unref (parameters->file);
+		
+		g_free (parameters);
+	}
+}
+
+
+static void
 activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	NautilusFile *actual_file;
 	NautilusFileAttributes attributes;
+	GnomeVFSDrive *drive;
 	char *uri;
 	
 	parameters = callback_data;
+
+	if (!parameters->mounted && nautilus_file_has_drive (file)) {
+		drive = nautilus_file_get_drive (file);
+		if (drive != NULL &&
+		    !gnome_vfs_drive_is_mounted (drive)) {
+			parameters->mounting = TRUE;
+			gnome_vfs_drive_mount (drive, activation_drive_mounted_callback, callback_data);
+			return;
+		}
+	}
 	
 	/* We want the file for the activation URI since we care
 	 * about the attributes for that, not for the original file.
@@ -5583,13 +5625,16 @@ cancel_activate_callback (gpointer callback_data)
 
 	parameters = (ActivateParameters *) callback_data;
 
-	nautilus_file_cancel_call_when_ready (parameters->file, 
-					      parameters->callback, 
-					      parameters);
-
-	nautilus_file_unref (parameters->file);
-	
-	g_free (parameters);
+	parameters->cancelled = TRUE;
+	if (!parameters->mounting) {
+		nautilus_file_cancel_call_when_ready (parameters->file, 
+						      parameters->callback, 
+						      parameters);
+		
+		nautilus_file_unref (parameters->file);
+		
+		g_free (parameters);
+	}
 }
 
 /**
@@ -5624,7 +5669,8 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	nautilus_file_ref (file);
 
 	/* Might have to read some of the file to activate it. */
-	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_VOLUMES;
 
 	parameters = g_new (ActivateParameters, 1);
 	parameters->view = view;
@@ -5632,6 +5678,9 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters->mode = mode;
 	parameters->flags = flags;
 	parameters->callback = activate_activation_uri_ready_callback;
+	parameters->mounted = FALSE;
+	parameters->mounting = FALSE;
+	parameters->cancelled = FALSE;
 
 	file_name = nautilus_file_get_display_name (file);
 	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\""), file_name);
