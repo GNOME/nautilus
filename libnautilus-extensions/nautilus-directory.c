@@ -91,6 +91,7 @@ static void nautilus_directory_request_write_metafile (NautilusDirectory *direct
 static void nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory);
 
 static void nautilus_file_detach (NautilusFile *file);
+static int nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2);
 static int  nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 	     NautilusFile *file_2,
 					 	     NautilusFileSortType sort_type,
@@ -1179,6 +1180,46 @@ nautilus_file_detach (NautilusFile *file)
 }
 
 static int
+nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
+{
+	gboolean is_directory_1;
+	gboolean is_directory_2;
+	char * type_string_1;
+	char * type_string_2;
+	int result;
+
+	/* Directories go first. Then, if mime types are identical,
+	 * don't bother getting strings (for speed). This assumes
+	 * that the string is dependent entirely on the mime type,
+	 * which is true now but might not be later.
+	 */
+	is_directory_1 = file_1->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+	is_directory_2 = file_2->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+	
+	if (is_directory_1 && is_directory_2)
+		return 0;
+
+	if (is_directory_1)
+		return -1;
+
+	if (is_directory_2)
+		return +1;
+
+	if (nautilus_strcmp (file_1->info->mime_type, file_2->info->mime_type) == 0)
+		return 0;
+
+	type_string_1 = nautilus_file_get_type_as_string (file_1);
+	type_string_2 = nautilus_file_get_type_as_string (file_2);
+
+	result = nautilus_strcmp (type_string_1, type_string_2);
+
+	g_free (type_string_1);
+	g_free (type_string_2);
+
+	return result;
+}
+
+static int
 nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 NautilusFile *file_2,
 					 NautilusFileSortType sort_type,
@@ -1211,11 +1252,19 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
 	case NAUTILUS_FILE_SORT_BY_TYPE:
-		rules = ALLOC_RULES (4);
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYMIMETYPE;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
-		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		/* GnomeVFS doesn't know about our special text for certain
+		 * mime types, so we handle the mime-type sorting ourselves.
+		 */
+		{
+		int type_compare;
+
+		type_compare = nautilus_file_compare_by_type (file_1, file_2);
+		if (type_compare != 0)
+			return type_compare;
+		}
+		rules = ALLOC_RULES (2);
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
 	case NAUTILUS_FILE_SORT_BY_MTIME:
 		rules = ALLOC_RULES (3);
@@ -1439,7 +1488,14 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 	g_return_val_if_fail (file != NULL, NULL);
 
 	if (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
-		return g_strdup ("");
+	{
+		/* FIXME: We want this to display the item count, but
+		 * it might be slow to compute an item count so we're
+		 * postponing that until we've got an architecture for
+		 * getting slow info from NautilusFile.
+		 */
+		return g_strdup (_("--"));
+	}
 
 	return gnome_vfs_file_size_to_string (file->info->size);
 }
@@ -1506,6 +1562,9 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 		 * Should this be "folder" instead?
 		 */		
 		return g_strdup (_("directory"));
+
+	if (nautilus_strlen (file->info->mime_type) == 0)
+		return g_strdup (_("unknown type"));
 
 	return g_strdup (file->info->mime_type);
 }
