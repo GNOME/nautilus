@@ -28,6 +28,7 @@
 #include <config.h>
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-gdk-font-extensions.h"
 
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
@@ -1347,7 +1348,6 @@ nautilus_gtk_adjustment_clamp_value (GtkAdjustment *adjustment)
  * Switches the font of label to a bold equivalent.
  * @label: The label.
  **/
-
 void
 nautilus_gtk_label_make_bold (GtkLabel *label)
 {
@@ -1364,6 +1364,56 @@ nautilus_gtk_label_make_bold (GtkLabel *label)
 	}
 	nautilus_gtk_widget_set_font (GTK_WIDGET (label), bold_font);
 	gdk_font_unref (bold_font);
+}
+
+/**
+ * nautilus_gtk_label_make_larger.
+ *
+ * Switches the font of label to a larger version of the font.
+ * @label: The label.
+ **/
+void
+nautilus_gtk_label_make_larger (GtkLabel *label,
+				guint num_steps)
+{
+	GtkStyle *style;
+	GdkFont *larger_font;
+
+	g_return_if_fail (GTK_IS_LABEL (label));
+
+	style = gtk_widget_get_style (GTK_WIDGET (label));
+
+	larger_font = nautilus_gdk_font_get_larger (style->font, num_steps);
+	if (larger_font == NULL) {
+		return;
+	}
+	nautilus_gtk_widget_set_font (GTK_WIDGET (label), larger_font);
+	gdk_font_unref (larger_font);
+}
+
+/**
+ * nautilus_gtk_label_make_smaller.
+ *
+ * Switches the font of label to a smaller version of the font.
+ * @label: The label.
+ **/
+void
+nautilus_gtk_label_make_smaller (GtkLabel *label,
+				 guint num_steps)
+{
+	GtkStyle *style;
+	GdkFont *smaller_font;
+
+	g_return_if_fail (GTK_IS_LABEL (label));
+
+	style = gtk_widget_get_style (GTK_WIDGET (label));
+
+	smaller_font = nautilus_gdk_font_get_smaller (style->font, num_steps);
+	if (smaller_font == NULL) {
+		return;
+	}
+	nautilus_gtk_widget_set_font (GTK_WIDGET (label), smaller_font);
+	gdk_font_unref (smaller_font);
 }
 
 void

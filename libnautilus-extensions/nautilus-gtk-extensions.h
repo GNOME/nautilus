@@ -40,126 +40,127 @@
 
 
 /* GtkButton */
-void              nautilus_gtk_button_auto_click               (GtkButton              *button);
-void              nautilus_gtk_button_set_padding              (GtkButton              *button,
-								int                     pad_amount);
+void              nautilus_gtk_button_auto_click                       (GtkButton                *button);
+void              nautilus_gtk_button_set_padding                      (GtkButton                *button,
+									int                       pad_amount);
 
 /* GtkCList */
-int               nautilus_gtk_clist_get_first_selected_row    (GtkCList               *list);
-int               nautilus_gtk_clist_get_last_selected_row     (GtkCList               *list);
-void              nautilus_gtk_clist_set_double_click_button   (GtkCList               *clist,
-								GtkButton              *button);
+int               nautilus_gtk_clist_get_first_selected_row            (GtkCList                 *list);
+int               nautilus_gtk_clist_get_last_selected_row             (GtkCList                 *list);
+void              nautilus_gtk_clist_set_double_click_button           (GtkCList                 *clist,
+									GtkButton                *button);
 
 /* signals */
-guint             nautilus_gtk_signal_connect_free_data        (GtkObject              *object,
-								const gchar            *name,
-								GtkSignalFunc           func,
-								gpointer                data);
-guint             nautilus_gtk_signal_connect_free_data_custom (GtkObject              *object,
-								const gchar            *name,
-								GtkSignalFunc           func,
-								gpointer                data,
-								GtkDestroyNotify        destroy_func);
-void              nautilus_gtk_signal_connect_full_while_alive (GtkObject              *object,
-								const gchar            *name,
-								GtkSignalFunc           func,
-								GtkCallbackMarshal      marshal,
-								gpointer                data,
-								GtkDestroyNotify        destroy_func,
-								gboolean                object_signal,
-								gboolean                after,
-								GtkObject              *alive_object);
+guint             nautilus_gtk_signal_connect_free_data                (GtkObject                *object,
+									const gchar              *name,
+									GtkSignalFunc             func,
+									gpointer                  data);
+guint             nautilus_gtk_signal_connect_free_data_custom         (GtkObject                *object,
+									const gchar              *name,
+									GtkSignalFunc             func,
+									gpointer                  data,
+									GtkDestroyNotify          destroy_func);
+void              nautilus_gtk_signal_connect_full_while_alive         (GtkObject                *object,
+									const gchar              *name,
+									GtkSignalFunc             func,
+									GtkCallbackMarshal        marshal,
+									gpointer                  data,
+									GtkDestroyNotify          destroy_func,
+									gboolean                  object_signal,
+									gboolean                  after,
+									GtkObject                *alive_object);
 
 /* list of GtkObject */
-GList *           nautilus_gtk_object_list_ref                 (GList                  *list);
-void              nautilus_gtk_object_list_unref               (GList                  *list);
-void              nautilus_gtk_object_list_free                (GList                  *list);
-GList *           nautilus_gtk_object_list_copy                (GList                  *list);
+GList *           nautilus_gtk_object_list_ref                         (GList                    *list);
+void              nautilus_gtk_object_list_unref                       (GList                    *list);
+void              nautilus_gtk_object_list_free                        (GList                    *list);
+GList *           nautilus_gtk_object_list_copy                        (GList                    *list);
 
 /* GtkWidget */
-gboolean          nautilus_point_in_allocation                 (const GtkAllocation    *allocation,
-								int                     x,
-								int                     y);
-void              nautilus_gtk_widget_set_font                 (GtkWidget              *widget,
-								GdkFont                *font);
-void              nautilus_gtk_widget_set_font_by_name         (GtkWidget              *widget,
-								const char             *font_name);
-gboolean          nautilus_point_in_widget                     (GtkWidget              *widget,
-								int                     x,
-								int                     y);
-void              nautilus_gtk_widget_set_background_color     (GtkWidget              *widget,
-								const char             *color_spec);
-void              nautilus_gtk_widget_set_foreground_color     (GtkWidget              *widget,
-								const char             *color_spec);
-GtkWidget *       nautilus_gtk_widget_find_windowed_ancestor   (GtkWidget              *widget);
+gboolean          nautilus_point_in_allocation                         (const GtkAllocation      *allocation,
+									int                       x,
+									int                       y);
+void              nautilus_gtk_widget_set_font                         (GtkWidget                *widget,
+									GdkFont                  *font);
+void              nautilus_gtk_widget_set_font_by_name                 (GtkWidget                *widget,
+									const char               *font_name);
+gboolean          nautilus_point_in_widget                             (GtkWidget                *widget,
+									int                       x,
+									int                       y);
+void              nautilus_gtk_widget_set_background_color             (GtkWidget                *widget,
+									const char               *color_spec);
+void              nautilus_gtk_widget_set_foreground_color             (GtkWidget                *widget,
+									const char               *color_spec);
+GtkWidget        *nautilus_gtk_widget_find_windowed_ancestor           (GtkWidget                *widget);
 
 /* GtkContainer */
-GtkWidget        *nautilus_gtk_container_get_first_child       (GtkContainer           *container);
-void		  nautilus_gtk_container_foreach_deep	       (GtkContainer	       *container,
-								GtkCallback		callback,
-								gpointer		callback_data);
+GtkWidget        *nautilus_gtk_container_get_first_child               (GtkContainer             *container);
+void              nautilus_gtk_container_foreach_deep                  (GtkContainer             *container,
+									GtkCallback               callback,
+									gpointer                  callback_data);
 
 /* GtkWindow */
-void		  nautilus_gtk_window_set_initial_geometry     (GtkWindow	       *window,
-								NautilusGdkGeometryFlags geometry_flags,
-								int			left,
-								int			top,
-								guint			width,
-								guint			height);
-void		  nautilus_gtk_window_set_initial_geometry_from_string     
-							       (GtkWindow	       *window,
-								const char	       *geometry_string,
-								guint			minimum_width,
-								guint			minimum_height);
-void		  nautilus_gtk_window_set_up_close_accelerator (GtkWindow	       *window);
-gboolean	  nautilus_gtk_window_event_is_close_accelerator 
-							       (GtkWindow	       *window,
-								GdkEventKey	       *event);
-void              nautilus_gtk_window_present                  (GtkWindow              *window);
+void              nautilus_gtk_window_set_initial_geometry             (GtkWindow                *window,
+									NautilusGdkGeometryFlags  geometry_flags,
+									int                       left,
+									int                       top,
+									guint                     width,
+									guint                     height);
+void              nautilus_gtk_window_set_initial_geometry_from_string (GtkWindow                *window,
+									const char               *geometry_string,
+									guint                     minimum_width,
+									guint                     minimum_height);
+void              nautilus_gtk_window_set_up_close_accelerator         (GtkWindow                *window);
+gboolean          nautilus_gtk_window_event_is_close_accelerator       (GtkWindow                *window,
+									GdkEventKey              *event);
+void              nautilus_gtk_window_present                          (GtkWindow                *window);
 
 /* selection data */
-GtkSelectionData *nautilus_gtk_selection_data_copy_deep        (const GtkSelectionData *selection_data);
-void              nautilus_gtk_selection_data_free_deep        (GtkSelectionData       *selection_data);
+GtkSelectionData *nautilus_gtk_selection_data_copy_deep                (const GtkSelectionData   *selection_data);
+void              nautilus_gtk_selection_data_free_deep                (GtkSelectionData         *selection_data);
 
 /* GtkMenu and GtkMenuItem */
-char *		  nautilus_truncate_text_for_menu_item	       (const char	       *text);
-void              nautilus_pop_up_context_menu                 (GtkMenu                *menu,
-								gint16                  offset_x,
-								gint16                  offset_y,
-								GdkEventButton	       *event);
-GtkMenuItem	 *nautilus_gtk_menu_append_separator	       (GtkMenu		       *menu);
-GtkMenuItem	 *nautilus_gtk_menu_insert_separator	       (GtkMenu		       *menu,
-								int			index);
-
-void		  nautilus_gtk_menu_set_item_visibility	       (GtkMenu		       *menu,
-								int			index,
-								gboolean		visible);
+char             *nautilus_truncate_text_for_menu_item                 (const char               *text);
+void              nautilus_pop_up_context_menu                         (GtkMenu                  *menu,
+									gint16                    offset_x,
+									gint16                    offset_y,
+									GdkEventButton           *event);
+GtkMenuItem	 *nautilus_gtk_menu_append_separator                   (GtkMenu                  *menu);
+GtkMenuItem	 *nautilus_gtk_menu_insert_separator                   (GtkMenu                  *menu,
+									int                       index);
+void              nautilus_gtk_menu_set_item_visibility                (GtkMenu                  *menu,
+									int                       index,
+									gboolean                  visible);
 /* GtkStyle */
-void              nautilus_gtk_style_set_font                  (GtkStyle               *style,
-								GdkFont                *font);
-void              nautilus_gtk_style_set_font_by_name          (GtkStyle               *style,
-								const char             *font_name);
+void              nautilus_gtk_style_set_font                          (GtkStyle                 *style,
+									GdkFont                  *font);
+void              nautilus_gtk_style_set_font_by_name                  (GtkStyle                 *style,
+									const char               *font_name);
 
 /* GtkLabel */
-void              nautilus_gtk_label_make_bold                 (GtkLabel               *label);
+void              nautilus_gtk_label_make_bold                         (GtkLabel                 *label);
+void              nautilus_gtk_label_make_larger                       (GtkLabel                 *label,
+									guint                     num_steps);
+void              nautilus_gtk_label_make_smaller                      (GtkLabel                 *label,
+									guint                     num_steps);
 
 /* GtkPixmap */
-GtkPixmap        *nautilus_gtk_pixmap_new_empty                (void);
+GtkPixmap        *nautilus_gtk_pixmap_new_empty                        (void);
 
 /* GtkAdjustment */
-void              nautilus_gtk_adjustment_set_value            (GtkAdjustment          *adjustment,
-								float                   value);
-void              nautilus_gtk_adjustment_clamp_value          (GtkAdjustment          *adjustment);
+void              nautilus_gtk_adjustment_set_value                    (GtkAdjustment            *adjustment,
+									float                     value);
+void              nautilus_gtk_adjustment_clamp_value                  (GtkAdjustment            *adjustment);
 
 /* GdkColor */
-void              nautilus_gtk_style_shade                     (GdkColor               *a,
-								GdkColor               *b,
-								gdouble                 k);
+void              nautilus_gtk_style_shade                             (GdkColor                 *a,
+									GdkColor                 *b,
+									gdouble                   k);
 
 /* Make the given class name act like an existing GtkType for
  * gtk style/theme purposes. */
-void              nautilus_gtk_class_name_make_like_existing_type (const char          *class_name,
-								   GtkType              existing_gtk_type);
+void              nautilus_gtk_class_name_make_like_existing_type      (const char               *class_name,
+									GtkType                   existing_gtk_type);
 
 /* marshals */
 

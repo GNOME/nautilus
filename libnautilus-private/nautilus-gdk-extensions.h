@@ -70,109 +70,96 @@ typedef enum {
    The gradient is vertical by default and the spec. can end with ":v" to indicate that.
    If the gradient ends with ":h", the gradient is horizontal.
 */
-char *     nautilus_gradient_new                       (const char         *start_color,
-							const char         *end_color,
-							gboolean            is_horizontal);
-char *     nautilus_gradient_parse_one_color_spec      (const char         *spec,
-                                                              int          *percent,
-                                                        const char        **next_spec);
-gboolean   nautilus_gradient_is_gradient               (const char         *gradient_spec);
-char *     nautilus_gradient_get_start_color_spec      (const char         *gradient_spec);
-char *     nautilus_gradient_get_end_color_spec        (const char         *gradient_spec);
-gboolean   nautilus_gradient_is_horizontal             (const char         *gradient_spec);
-char *     nautilus_gradient_set_left_color_spec       (const char         *gradient_spec,
-							const char         *left_color);
-char *     nautilus_gradient_set_top_color_spec        (const char         *gradient_spec,
-							const char         *top_color);
-char *     nautilus_gradient_set_right_color_spec      (const char         *gradient_spec,
-							const char         *right_color);
-char *     nautilus_gradient_set_bottom_color_spec     (const char         *gradient_spec,
-							const char         *bottom_color);
+char *                   nautilus_gradient_new                       (const char          *start_color,
+								      const char          *end_color,
+								      gboolean             is_horizontal);
+char *                   nautilus_gradient_parse_one_color_spec      (const char          *spec,
+								      int                 *percent,
+								      const char         **next_spec);
+gboolean                 nautilus_gradient_is_gradient               (const char          *gradient_spec);
+char *                   nautilus_gradient_get_start_color_spec      (const char          *gradient_spec);
+char *                   nautilus_gradient_get_end_color_spec        (const char          *gradient_spec);
+gboolean                 nautilus_gradient_is_horizontal             (const char          *gradient_spec);
+char *                   nautilus_gradient_set_left_color_spec       (const char          *gradient_spec,
+								      const char          *left_color);
+char *                   nautilus_gradient_set_top_color_spec        (const char          *gradient_spec,
+								      const char          *top_color);
+char *                   nautilus_gradient_set_right_color_spec      (const char          *gradient_spec,
+								      const char          *right_color);
+char *                   nautilus_gradient_set_bottom_color_spec     (const char          *gradient_spec,
+								      const char          *bottom_color);
 
 
 /* A version of parse_color that substitutes a default color instead of returning
    a boolean to indicate it cannot be parsed.
 */
-void       nautilus_gdk_coolor_parse_with_default      (const char         *color_spec,
-							const GdkColor     *default_color,
-							GdkColor           *parsed_color);
-void       nautilus_gdk_color_parse_with_white_default (const char         *color_spec,
-							GdkColor           *parsed_color);
-guint32    nautilus_parse_rgb_with_default             (const char         *color_spec,
-							guint32             default_rgb);
-guint32    nautilus_parse_rgb_with_white_default       (const char         *color_spec);
-guint32    nautilus_rgb_shift_color                    (guint32             color,
-							float               shift_by);
-guint32    nautilus_rgb16_to_rgb					   (gushort r, gushort g, gushort b);
-guint32    nautilus_rgb8_to_rgb						   (guchar r, guchar g, guchar b);
-guint32    nautilus_gdk_color_to_rgb                   (const GdkColor     *color);
-GdkColor * nautilus_gdk_rgb_to_color                   (const guint32       color);
-
-char *     nautilus_gdk_rgb_to_color_spec              (guint32             color);
+void                     nautilus_gdk_coolor_parse_with_default      (const char          *color_spec,
+								      const GdkColor      *default_color,
+								      GdkColor            *parsed_color);
+void                     nautilus_gdk_color_parse_with_white_default (const char          *color_spec,
+								      GdkColor            *parsed_color);
+guint32                  nautilus_parse_rgb_with_default             (const char          *color_spec,
+								      guint32              default_rgb);
+guint32                  nautilus_parse_rgb_with_white_default       (const char          *color_spec);
+guint32                  nautilus_rgb_shift_color                    (guint32              color,
+								      float                shift_by);
+guint32                  nautilus_rgb16_to_rgb                       (gushort              r,
+								      gushort              g,
+								      gushort              b);
+guint32                  nautilus_rgb8_to_rgb                        (guchar               r,
+								      guchar               g,
+								      guchar               b);
+guint32                  nautilus_gdk_color_to_rgb                   (const GdkColor      *color);
+GdkColor *               nautilus_gdk_rgb_to_color                   (const guint32        color);
+char *                   nautilus_gdk_rgb_to_color_spec              (guint32              color);
 
 /* Fill routines that take GdkRectangle parameters instead of four integers. */
-void       nautilus_fill_rectangle                     (GdkDrawable        *drawable,
-							GdkGC              *gc,
-							const GdkRectangle *rectangle);
-void       nautilus_fill_rectangle_with_color          (GdkDrawable        *drawable,
-							GdkGC              *gc,
-							const GdkRectangle *rectangle,
-							guint32             rgb);
+void                     nautilus_fill_rectangle                     (GdkDrawable         *drawable,
+								      GdkGC               *gc,
+								      const GdkRectangle  *rectangle);
+void                     nautilus_fill_rectangle_with_color          (GdkDrawable         *drawable,
+								      GdkGC               *gc,
+								      const GdkRectangle  *rectangle,
+								      guint32              rgb);
 
 /* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
-GdkBitmap *nautilus_stipple_bitmap                     (void);
+GdkBitmap *              nautilus_stipple_bitmap                     (void);
 
 
 /* Misc GdkRectangle helper functions */
-gboolean   nautilus_rectangle_contains                 (const GdkRectangle *rectangle,
-							int                 x,
-							int                 y);
-void       nautilus_rectangle_inset                    (GdkRectangle       *rectangle,
-							int                 x,
-							int                 y);
+gboolean                 nautilus_rectangle_contains                 (const GdkRectangle  *rectangle,
+								      int                  x,
+								      int                  y);
+void                     nautilus_rectangle_inset                    (GdkRectangle        *rectangle,
+								      int                  x,
+								      int                  y);
 
 
 /* A basic operation we use for drawing gradients is interpolating two colors.*/
-guint32    nautilus_interpolate_color                  (gdouble             ratio,
-							guint32             start_rgb,
-							guint32             end_rgb);
-
-
-/* Misc GdkFont helper functions */
-gboolean   nautilus_gdk_font_equal                     (GdkFont            *font_a_null_allowed,
-							GdkFont            *font_b_null_allowed);
-GdkFont *  nautilus_get_largest_fitting_font           (const char         *text_to_format,
-							int                 width,
-							const char         *font_format);
-GdkFont *  nautilus_gdk_font_get_bold                  (const GdkFont      *plain);
-
-
+guint32                  nautilus_interpolate_color                  (gdouble              ratio,
+								      guint32              start_rgb,
+								      guint32              end_rgb);
 
 /* Misc GdkWindow helper functions */
-void       nautilus_gdk_window_bring_to_front          (GdkWindow          *window);
-void	   nautilus_gdk_window_set_invisible_cursor	   (GdkWindow          *window);
+void                     nautilus_gdk_window_bring_to_front          (GdkWindow           *window);
+void                     nautilus_gdk_window_set_invisible_cursor    (GdkWindow           *window);
 
 
 /* In GNOME 2.0 this function will be in the libraries */
-void       nautilus_set_mini_icon                      (GdkWindow          *window,
-							GdkPixmap          *pixmap,
-							GdkBitmap          *mask);
-GdkGC *    nautilus_gdk_create_copy_area_gc            (GdkWindow          *window);
-void       nautilus_gdk_gc_ref_if_not_null             (GdkGC              *gc_or_null);
-void       nautilus_gdk_gc_unref_if_not_null           (GdkGC              *gc_or_null);
-
-void	   nautilus_gdk_window_set_wm_hints_input      (GdkWindow 	   *w, 
-							gboolean 	    status);
-
-char *	   nautilus_string_ellipsize_start	       (const char 	   *original,
-							GdkFont		   *font,
-							int		   length);
+void                     nautilus_set_mini_icon                      (GdkWindow           *window,
+								      GdkPixmap           *pixmap,
+								      GdkBitmap           *mask);
+GdkGC *                  nautilus_gdk_create_copy_area_gc            (GdkWindow           *window);
+void                     nautilus_gdk_gc_ref_if_not_null             (GdkGC               *gc_or_null);
+void                     nautilus_gdk_gc_unref_if_not_null           (GdkGC               *gc_or_null);
+void                     nautilus_gdk_window_set_wm_hints_input      (GdkWindow           *w,
+								      gboolean             status);
 
 /* Wrapper for XParseGeometry */
-NautilusGdkGeometryFlags nautilus_gdk_parse_geometry   (const char         *string,
-							int 		   *x_return,
-							int		   *y_return,
-							guint		   *width_return,
-							guint		   *height_return);
+NautilusGdkGeometryFlags nautilus_gdk_parse_geometry                 (const char          *string,
+								      int                 *x_return,
+								      int                 *y_return,
+								      guint               *width_return,
+								      guint               *height_return);
 
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */

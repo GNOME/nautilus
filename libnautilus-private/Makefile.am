@@ -79,6 +79,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-font-factory.c			\
 	nautilus-font-picker.c			\
 	nautilus-gdk-extensions.c		\
+	nautilus-gdk-font-extensions.c		\
 	nautilus-gdk-pixbuf-extensions.c	\
 	nautilus-generous-bin.c			\
 	nautilus-glib-extensions.c		\
@@ -175,6 +176,7 @@ noinst_HEADERS =				\
 	nautilus-font-factory.h			\
 	nautilus-font-picker.h			\
 	nautilus-gdk-extensions.h		\
+	nautilus-gdk-font-extensions.h		\
 	nautilus-gdk-pixbuf-extensions.h	\
 	nautilus-generous-bin.h			\
 	nautilus-glib-extensions.h		\

@@ -43,6 +43,30 @@ nautilus_art_irect_contains_irect (const ArtIRect *outer_rect,
 		&& outer_rect->y1 >= inner_rect->y1; 
 }
 
+/**
+ * nautilus_art_irect_contains_point:
+ * 
+ * @rectangle: An ArtIRect.
+ * @x: X coordinate to test.
+ * @y: Y coordinate to test.
+ *
+ * Returns: A boolean value indicating whether the rectangle 
+ *          contains the x,y coordinate.
+ * 
+ */
+gboolean
+nautilus_art_irect_contains_point (const ArtIRect *rectangle,
+				   int x,
+				   int y)
+{
+	g_return_val_if_fail (rectangle != NULL, FALSE);
+
+	return x >= rectangle->x0
+		&& x <= rectangle->x1
+		&& y >= rectangle->y0
+		&& y <= rectangle->y1;
+}
+
 gboolean
 nautilus_art_irect_hits_irect (const ArtIRect *rect_a,
 			       const ArtIRect *rect_b)

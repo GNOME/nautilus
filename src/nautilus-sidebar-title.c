@@ -41,6 +41,7 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>

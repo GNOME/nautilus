@@ -45,6 +45,7 @@ void nautilus_run_lib_self_checks (void);
 	macro (nautilus_self_check_string_map) \
 	macro (nautilus_self_check_glib_extensions) \
 	macro (nautilus_self_check_gdk_extensions) \
+	macro (nautilus_self_check_gdk_font_extensions) \
 	macro (nautilus_self_check_search_uri) \
 	macro (nautilus_self_check_file_utilities) \
 	macro (nautilus_self_check_file_operations) \

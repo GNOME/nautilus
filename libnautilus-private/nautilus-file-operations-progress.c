@@ -30,7 +30,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-file-operations-progress.h"
 #include "libnautilus-extensions/nautilus-gtk-extensions.h"
-#include "libnautilus-extensions/nautilus-gdk-extensions.h"
+#include "libnautilus-extensions/nautilus-gdk-font-extensions.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
 
 

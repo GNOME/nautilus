@@ -39,7 +39,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-link.h>

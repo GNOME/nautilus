@@ -42,6 +42,7 @@
 #include "nautilus-art-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-gdk-font-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"

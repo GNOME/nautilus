@@ -1,3 +1,62 @@
+2001-01-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_art_irect_contains_point):
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	New function to test whether a rectangle contains a point.
+	
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_self_check_gdk_extensions):
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_gdk_font_get_bold), (font_scalable_get_by_size),
+	(font_bitmap_get_by_size), (nautilus_gdk_font_get_larger),
+	(nautilus_gdk_font_get_smaller), (nautilus_gdk_font_equal),
+	(nautilus_get_largest_fitting_font),
+	(nautilus_string_ellipsize_start), (nautilus_gdk_font_list_fonts),
+	(nautilus_gdk_font_get_name), (xlfd_string_get_nth),
+	(xlfd_string_replace_nth), (xlfd_string_get_nth_as_int),
+	(xlfd_string_is_scalable_non_bitmap),
+	(xlfd_string_could_be_scalable_non_bitmap),
+	(font_entry_has_bold_weight_test),
+	(font_entry_is_scalable_non_bitmap_test),
+	(compare_xlfd_by_size_in_points), (compare_xlfd_by_size_in_pixels),
+	(nautilus_self_check_ellipsize_start),
+	(nautilus_self_check_gdk_font_extensions):
+	* libnautilus-extensions/nautilus-gdk-font-extensions.h:
+	Move GdkFont extensions to their own file.  Add new functions to
+	find a larger/smaller find given an existing font.  Change the
+	bold flavor font function to query the system for fonts, this
+	makes it work regardless of the user's selected font.  Before it
+	worked only for some fonts.
+
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	* libnautilus-extensions/nautilus-file-operations.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	* src/nautilus-sidebar-title.c:
+	Include nautilus-gdk-font-extensions.h.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_label_make_bold), (nautilus_gtk_label_make_larger),
+	(nautilus_gtk_label_make_smaller):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	New functions to make a GtkLabel larger/smaller.
+	
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	Add entry for nautilus-gdk-font-extensions.
+	
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_modify_nth),
+	(nautilus_string_list_remove_nth),
+	(nautilus_string_list_find_by_function),
+	(nautilus_string_list_sort),
+	(nautilus_string_list_sort_with_function):
+	* libnautilus-extensions/nautilus-string-list.h:
+	New functions to modify, remove and find specific string entries.
+	New function to sort the string list given a compare function.
+
 2001-01-02  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.

@@ -211,6 +211,70 @@ nautilus_string_list_nth (const NautilusStringList *string_list, guint n)
 	return NULL;
 }
 
+/**
+ * nautilus_string_list_modify_nth
+ *
+ * @string_list: A NautilusStringList
+ * @n: Index of string to modify.
+ * @string: New value for the string.
+ *
+ * Modify the nth value of a string in the collection.
+ */
+void
+nautilus_string_list_modify_nth (NautilusStringList *string_list,
+				 guint n,
+				 const char *string)
+{
+	GList* nth;
+
+	g_return_if_fail (string_list != NULL);
+	g_return_if_fail (string != NULL);
+
+	if (n >= g_list_length (string_list->strings)) {
+		if (!supress_out_of_bounds_warning) {
+			g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
+		}
+
+		return;
+	}
+
+	nth = g_list_nth (string_list->strings, n);
+	g_assert (nth != NULL);
+
+	g_free (nth->data);
+	nth->data = g_strdup (string);
+}
+
+/**
+ * nautilus_string_list_remove_nth
+ *
+ * @string_list: A NautilusStringList
+ * @n: Index of string to modify.
+ *
+ * Remove the nth string in the collection.
+ */
+void
+nautilus_string_list_remove_nth (NautilusStringList *string_list,
+				 guint n)
+{
+	GList* nth;
+
+	g_return_if_fail (string_list != NULL);
+
+	if (n >= g_list_length (string_list->strings)) {
+		if (!supress_out_of_bounds_warning) {
+			g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
+		}
+
+		return;
+	}
+
+	nth = g_list_nth (string_list->strings, n);
+	g_assert (nth != NULL);
+	g_free (nth->data);
+	string_list->strings = g_list_remove_link (string_list->strings, nth);
+}
+
 gboolean
 nautilus_string_list_contains (const NautilusStringList	*string_list,
 			       const char		*string)
@@ -227,6 +291,39 @@ nautilus_string_list_contains (const NautilusStringList	*string_list,
 				   string_list->compare_function);
 
 	return find == NULL ? FALSE : TRUE;
+}
+
+/**
+ * nautilus_string_list_get_longest_string:
+ *
+ * @string_list: A NautilusStringList
+ * @test_function: Function to use for testing the strings.
+ * @callback_data: Data to pass to test function.
+ *
+ * Return value: Returns the first string in the collection for 
+ * which the test function returns TRUE.  If the no string matches, the 
+ * result is NULL.
+ */
+char *
+nautilus_string_list_find_by_function (const NautilusStringList *string_list,
+				       NautilusStringListTestFunction test_function,
+				       gpointer callback_data)
+{
+	GList *iterator;
+
+	if (string_list == NULL) {
+		return NULL;
+	}
+
+	g_return_val_if_fail (test_function != NULL, FALSE);
+	
+	for (iterator = string_list->strings; iterator; iterator = iterator->next) {
+		if ((* test_function) (string_list, iterator->data, callback_data)) {
+			return g_strdup (iterator->data);
+		}
+	}
+
+	return NULL;
 }
 
 guint
@@ -380,6 +477,23 @@ nautilus_string_list_sort (NautilusStringList *string_list)
 	string_list->strings = g_list_sort (string_list->strings, string_list->compare_function);
 }
 
+/**
+ * nautilus_string_list_sort_by_function
+ *
+ * @string_list: A NautilusStringList
+ * @compare_function: Function to use for comparing the strings.
+ *
+ * Sort the strings using the given compare function.
+ */
+void
+nautilus_string_list_sort_by_function (NautilusStringList *string_list,
+				       GCompareFunc compare_function)
+{
+	g_return_if_fail (string_list != NULL);
+
+	string_list->strings = g_list_sort (string_list->strings, compare_function);
+}
+
 void
 nautilus_string_list_remove_duplicates (NautilusStringList *string_list)
 {
@@ -485,6 +599,62 @@ str_is_equal (const char	*a,
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+static gboolean
+test_dog (const NautilusStringList *string_list,
+	     const char *string,
+	     gpointer callback_data)
+{
+	return nautilus_str_is_equal (string, "dog");
+}
+
+static gboolean
+test_data (const NautilusStringList *string_list,
+	   const char *string,
+	   gpointer callback_data)
+{
+	return nautilus_str_is_equal (string, callback_data);
+}
+
+static gboolean
+test_true (const NautilusStringList *string_list,
+	   const char *string,
+	   gpointer callback_data)
+{
+	return TRUE;
+}
+
+static gboolean
+test_false (const NautilusStringList *string_list,
+	    const char *string,
+	    gpointer callback_data)
+{
+	return FALSE;
+}
+
+static int
+compare_number (gconstpointer string_a,
+		gconstpointer string_b)
+{
+	int a;
+	int b;
+	
+	g_return_val_if_fail (string_a != NULL, 0);
+	g_return_val_if_fail (string_b != NULL, 0);
+
+	g_return_val_if_fail (nautilus_str_to_int (string_a, &a), 0);
+	g_return_val_if_fail (nautilus_str_to_int (string_b, &b), 0);
+
+ 	if (a < b) {
+ 		return -1;
+	}
+
+ 	if (a == b) {
+ 		return 0;
+ 	}
+
+	return 1;
+}
 
 void
 nautilus_self_check_string_list (void)
@@ -860,6 +1030,113 @@ nautilus_self_check_string_list (void)
 		
 		nautilus_string_list_free (lines);
 		nautilus_string_list_free (thick_lines);
+	}
+
+	/*
+	 * nautilus_string_list_modify_nth
+	 */
+	{
+		NautilusStringList *list;
+
+		list = nautilus_string_list_new (TRUE);
+		nautilus_string_list_insert (list, "dog");
+		nautilus_string_list_insert (list, "cat");
+		nautilus_string_list_insert (list, "mouse");
+
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 0), "dog");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 2), "mouse");
+		nautilus_string_list_modify_nth (list, 2, "rat");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 2), "rat");
+		nautilus_string_list_modify_nth (list, 0, "pig");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 0), "pig");
+		
+		nautilus_string_list_free (list);
+	}
+
+	/*
+	 * nautilus_string_list_remove_nth
+	 */
+	{
+		NautilusStringList *list;
+
+		list = nautilus_string_list_new (TRUE);
+		nautilus_string_list_insert (list, "dog");
+		nautilus_string_list_insert (list, "cat");
+		nautilus_string_list_insert (list, "mouse");
+		nautilus_string_list_insert (list, "bird");
+		nautilus_string_list_insert (list, "pig");
+		
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (list), 5);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 0), "dog");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 4), "pig");
+
+		nautilus_string_list_remove_nth (list, 2);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (list), 4);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 2), "bird");
+
+		nautilus_string_list_remove_nth (list, 3);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (list), 3);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 0), "dog");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 2), "bird");
+
+		nautilus_string_list_remove_nth (list, 0);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (list), 2);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 0), "cat");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (list, 1), "bird");
+		
+		nautilus_string_list_free (list);
+	}
+
+	/*
+	 * nautilus_string_list_find_by_function
+	 */
+	{
+		NautilusStringList *list;
+
+		list = nautilus_string_list_new (TRUE);
+		nautilus_string_list_insert (list, "house");
+		nautilus_string_list_insert (list, "street");
+		nautilus_string_list_insert (list, "car");
+		nautilus_string_list_insert (list, "dog");
+		
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_find_by_function (NULL, test_dog, NULL), NULL);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_find_by_function (list, test_dog, NULL), "dog");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_find_by_function (list, test_false, NULL), NULL);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_find_by_function (list, test_true, NULL), "house");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_find_by_function (list, test_data, "car"), "car");
+
+		nautilus_string_list_free (list);
+	}
+
+	/*
+	 * nautilus_string_list_sort_by_function
+	 */
+	{
+		NautilusStringList *sorted_list;
+		NautilusStringList *list;
+
+		sorted_list = nautilus_string_list_new (TRUE);
+		nautilus_string_list_insert (sorted_list, "0");
+		nautilus_string_list_insert (sorted_list, "1");
+		nautilus_string_list_insert (sorted_list, "2");
+		nautilus_string_list_insert (sorted_list, "3");
+		nautilus_string_list_insert (sorted_list, "4");
+
+		list = nautilus_string_list_new (TRUE);
+		nautilus_string_list_insert (list, "4");
+		nautilus_string_list_insert (list, "2");
+		nautilus_string_list_insert (list, "1");
+		nautilus_string_list_insert (list, "0");
+		nautilus_string_list_insert (list, "3");
+
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (list, sorted_list), FALSE);
+
+		nautilus_string_list_sort_by_function (list, compare_number);
+		
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (list, sorted_list), TRUE);
+
+		nautilus_string_list_free (list);
+		nautilus_string_list_free (sorted_list);
 	}
 }
 
