@@ -85,7 +85,7 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	int rc;
 	int i;
 	
-	g_message ("Querying for %s in %s", input, root);
+	g_message (_("Querying for %s in package database in %s"), input, root);
 
 	rc = -1;
 	db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs, root);	

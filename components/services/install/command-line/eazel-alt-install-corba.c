@@ -38,10 +38,7 @@
 
 #define PACKAGE_FILE_NAME "package-list.xml"
 
-#define DEFAULT_HOSTNAME "services.eazel.com"
-#define DEFAULT_PORT_NUMBER 8888
 #define DEFAULT_PROTOCOL PROTOCOL_HTTP
-#define DEFAULT_TMP_DIR "/tmp/eazel-install"
 #define DEFAULT_RPMRC "/usr/lib/rpm/rpmrc"
 #define DEFAULT_REMOTE_PACKAGE_LIST "/package-list.xml"
 #define DEFAULT_REMOTE_RPM_DIR "/RPMS"
@@ -141,14 +138,17 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		Trilobite_Eazel_Install__set_downgrade (service, TRUE, &ev);
 		check_ev ("downgrade");
 	}
-	if (arg_server == NULL) {
-		arg_server = g_strdup (DEFAULT_HOSTNAME);
+	if (arg_server) {
+		Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
+		check_ev ("set_server");
 	}
-	if (arg_tmp_dir == NULL) {
-		arg_tmp_dir = g_strdup (DEFAULT_TMP_DIR);
+	if (arg_tmp_dir) {
+		Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
+		check_ev ("set_tmp_dir");
 	}
-	if (arg_port == 0) {
-		arg_port = DEFAULT_PORT_NUMBER;
+	if (arg_port) {
+		Trilobite_Eazel_Install__set_server_port (service, arg_port, &ev);
+		check_ev ("set_server_port");
 	}
 	if (arg_dry_run) {
 		Trilobite_Eazel_Install__set_test_mode (service, TRUE, &ev);
@@ -160,18 +160,6 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		Trilobite_Eazel_Install__set_package_list (service, arg_package_list, &ev);
 		check_ev ("packagelist");
 	}
-/*
-
-	Trilobite_Eazel_Install__set_rpmrc_file (service, DEFAULT_RPMRC, &ev);
-	Trilobite_Eazel_Install__set_package_list_storage_path (service, DEFAULT_REMOTE_PACKAGE_LIST, &ev);
-	Trilobite_Eazel_Install__set_rpm_storage_path (service, DEFAULT_REMOTE_RPM_DIR, &ev);
-*/
-	Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
-	check_ev ("set_tmp_dir");
-	Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
-	check_ev ("set_server");
-	Trilobite_Eazel_Install__set_server_port (service, arg_port, &ev);
-	check_ev ("set_server_port");
 
 	if (arg_root) {
 		if (arg_root[0]=='~') {
@@ -325,6 +313,17 @@ dep_check (EazelInstallCallback *service,
 	   gpointer unused) 
 {
 	fprintf (stdout, "Doing dependency check for %s - need %s\n", package->name, needs->name);
+}
+
+static void
+md5_check_failed (EazelInstallCallback *service,
+		  const PackageData *package,
+		  const char *actual_md5,
+		  gpointer unused) 
+{
+	fprintf (stdout, "Package %s failed md5 check!\n", package->name);
+	fprintf (stdout, "MD5 checksum is  %s\n", package->md5);
+	fprintf (stdout, "should have been %s\n", actual_md5);
 }
 
 static PackageData*
@@ -488,16 +487,40 @@ int main(int argc, char *argv[]) {
 	set_parameters_from_command_line (eazel_install_callback_corba_objref (cb));
 	set_root_client (eazel_install_callback_bonobo (cb));
 	
-	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
-	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", eazel_preflight_check_signal, NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", eazel_install_progress_signal, "Installing");
-	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", install_failed, "");
-	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", eazel_install_progress_signal, "Uninstalling");
-	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", install_failed, "");
-	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
+	/* Set up signal connections */
+	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", 
+			    GTK_SIGNAL_FUNC (eazel_download_progress_signal), 
+			    "Download progress");
+	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", 
+			    GTK_SIGNAL_FUNC (eazel_preflight_check_signal), 
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", 
+			    GTK_SIGNAL_FUNC (eazel_install_progress_signal), 
+			    "Installing");
+	gtk_signal_connect (GTK_OBJECT (cb), "md5_check_failed", 
+			    GTK_SIGNAL_FUNC (md5_check_failed), 
+			    "");
+	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", 
+			    GTK_SIGNAL_FUNC (install_failed), 
+			    "");
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", 
+			    GTK_SIGNAL_FUNC (eazel_install_progress_signal), 
+			    "Uninstalling");
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", 
+			    GTK_SIGNAL_FUNC (install_failed), 
+			    "");
+	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", 
+			    GTK_SIGNAL_FUNC (download_failed), 
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", 
+			    GTK_SIGNAL_FUNC (dep_check), 
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", 
+			    GTK_SIGNAL_FUNC (delete_files), 
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "done", 
+			    GTK_SIGNAL_FUNC (done), 
+			    NULL);
 
 	if (arg_erase + arg_query + arg_downgrade + arg_upgrade + arg_revert > 1) {
 		g_error ("Only one operation at a time please.");
@@ -548,8 +571,7 @@ int main(int argc, char *argv[]) {
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	
 	if (!arg_query) {
-		fprintf (stdout, "\nEntering main loop...\n");
-		bonobo_main ();
+		gtk_main ();
 	}
 
 	eazel_install_callback_unref (GTK_OBJECT (cb));

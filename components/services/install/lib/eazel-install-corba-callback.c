@@ -42,6 +42,7 @@ enum {
 	UNINSTALL_PROGRESS,
 
 	DOWNLOAD_FAILED,
+	MD5_CHECK_FAILED,
 	INSTALL_FAILED,
 	UNINSTALL_FAILED,
 
@@ -139,6 +140,19 @@ impl_uninstall_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
+impl_md5_check_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+		       const Trilobite_Eazel_PackageDataStruct *corbapack,
+		       const CORBA_char *actual_md5,
+		       CORBA_Environment * ev)
+{
+	PackageData *pack, *needs;
+	g_message ("impl_md5_check_failed (..., %s)", actual_md5);
+	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[MD5_CHECK_FAILED], pack, actual_md5);
+	packagedata_destroy (pack, TRUE);
+}
+
+static void 
 impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 		     const CORBA_char *xmlcorbapack,
 		     CORBA_Environment * ev)
@@ -219,6 +233,7 @@ eazel_install_callback_get_epv ()
 	epv->dependency_check    = (gpointer)&impl_dep_check;
 	epv->install_progress    = (gpointer)&impl_install_progress;
 	epv->uninstall_progress  = (gpointer)&impl_uninstall_progress;
+	epv->md5_check_failed    = (gpointer)&impl_md5_check_failed;
 	epv->install_failed      = (gpointer)&impl_install_failed;
 	epv->download_failed     = (gpointer)&impl_download_failed;
 	epv->uninstall_failed    = (gpointer)&impl_uninstall_failed;
@@ -283,8 +298,6 @@ eazel_install_callback_finalize (GtkObject *object)
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL_CALLBACK (object));
 	
-	g_message ("in eazel_install_callback_finalize");
-
 	service = EAZEL_INSTALL_CALLBACK (object);
 
 	if (service->installservice_corba != CORBA_OBJECT_NIL) {
@@ -302,7 +315,6 @@ eazel_install_callback_finalize (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy (object);
 	}
-	g_message ("out eazel_install_callback_finalize");
 }
 
 static void
@@ -355,6 +367,13 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, download_failed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[MD5_CHECK_FAILED] = 
+		gtk_signal_new ("md5_check_failed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, md5_check_failed),
+				gtk_marshal_NONE__POINTER_POINTER,
+				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 	signals[INSTALL_FAILED] = 
 		gtk_signal_new ("install_failed",
 				GTK_RUN_LAST,

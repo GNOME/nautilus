@@ -157,7 +157,6 @@ trilobite_root_client_unref (GtkObject *object)
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (TRILOBITE_IS_ROOT_CLIENT (object));
-	trilobite_debug ("<-- trilobite_root_client");
 
 	root_client = TRILOBITE_ROOT_CLIENT (object);
 
@@ -236,7 +235,6 @@ trilobite_root_client_initialize (TrilobiteRootClient *object)
 
 	g_assert (object != NULL);
 	g_assert (TRILOBITE_IS_ROOT_CLIENT (object));
-	trilobite_debug ("--> trilobite_root_client");
 
 	root_client = TRILOBITE_ROOT_CLIENT (object);
 

@@ -82,6 +82,7 @@ struct _EazelInstallClass
 	                 RPM_DEP_FAIL, info is a GSList of required packages (PackageData objects)
 			 RPM_NOT_AN_RPM, info is NULL
 	*/
+	void (*md5_check_failed) (EazelInstall *service, const PackageData *pd, const char *actual_md5);
 	void (*install_failed) (EazelInstall *service, const PackageData *pd);
 	void (*uninstall_failed) (EazelInstall *service, const PackageData *pd);
 
@@ -139,6 +140,9 @@ void eazel_install_emit_preflight_check         (EazelInstall *service,
 						 int total_packages);
 void eazel_install_emit_download_failed           (EazelInstall *service, 
 						   const char *name);
+void eazel_install_emit_md5_check_failed          (EazelInstall *service, 
+						   const PackageData *pd,
+						   const char *actual_md5);
 void eazel_install_emit_install_failed            (EazelInstall *service, 
 						   const PackageData *pd);
 void eazel_install_emit_uninstall_failed          (EazelInstall *service, 

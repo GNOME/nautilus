@@ -79,7 +79,6 @@ trilobite_root_helper_destroy (GtkObject *object)
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (TRILOBITE_IS_ROOT_HELPER (object));
-	trilobite_debug ("<-- trilobite_root_helper");
 
 	root_helper = TRILOBITE_ROOT_HELPER (object);
 
@@ -129,7 +128,6 @@ trilobite_root_helper_initialize (TrilobiteRootHelper *object)
 
 	g_assert (object != NULL);
 	g_assert (TRILOBITE_IS_ROOT_HELPER (object));
-	trilobite_debug ("--> trilobite_root_helper");
 
 	root_helper = TRILOBITE_ROOT_HELPER (object);
 	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;

@@ -35,80 +35,85 @@ corba_packagedatastructlist_from_packagedata_list (GList *packages)
 	for (i = 0; i < packagelist._length; i++) {
 		PackageData *pack;
 		pack = (PackageData*)(g_list_nth (packages,i)->data);
-		packagelist._buffer[i] = corba_packagedatastruct_from_packagedata (pack);
+		packagelist._buffer[i] = *(corba_packagedatastruct_from_packagedata (pack));
 	}
 
 	return packagelist;
 }
 
-Trilobite_Eazel_PackageDataStruct
+Trilobite_Eazel_PackageDataStruct*
 corba_packagedatastruct_from_packagedata (const PackageData *pack)
 {
-	Trilobite_Eazel_PackageDataStruct corbapack;
-	corbapack.name = pack->name ? CORBA_string_dup (pack->name) : CORBA_string_dup ("");
-	corbapack.version = pack->version ? CORBA_string_dup (pack->version) : CORBA_string_dup ("");
-	corbapack.archtype = pack->archtype ? CORBA_string_dup (pack->archtype) : CORBA_string_dup ("");
-	corbapack.filename = pack->filename ? CORBA_string_dup (pack->filename) : CORBA_string_dup ("");
-	corbapack.toplevel = pack->toplevel;
+	Trilobite_Eazel_PackageDataStruct *corbapack;
+
+	corbapack = Trilobite_Eazel_PackageDataStruct__alloc ();
+	corbapack->name = pack->name ? CORBA_string_dup (pack->name) : CORBA_string_dup ("");
+	corbapack->version = pack->version ? CORBA_string_dup (pack->version) : CORBA_string_dup ("");
+	corbapack->archtype = pack->archtype ? CORBA_string_dup (pack->archtype) : CORBA_string_dup ("");
+	corbapack->filename = pack->filename ? CORBA_string_dup (pack->filename) : CORBA_string_dup ("");
+	corbapack->toplevel = pack->toplevel;
+
+	corbapack->install_root = pack->install_root ? CORBA_string_dup (pack->install_root) : CORBA_string_dup ("");
+	corbapack->md5 = pack->md5 ? CORBA_string_dup (pack->md5) : CORBA_string_dup ("");
 
 	if (pack->distribution.name == DISTRO_UNKNOWN) {
 		DistributionInfo dist;
 		dist = trilobite_get_distribution ();
-		corbapack.distribution.name = 
+		corbapack->distribution.name = 
 			CORBA_string_dup (trilobite_get_distribution_name (dist, FALSE, FALSE));
-		corbapack.distribution.major = dist.version_major;
-		corbapack.distribution.minor = dist.version_minor;
+		corbapack->distribution.major = dist.version_major;
+		corbapack->distribution.minor = dist.version_minor;
 	} else {
-		corbapack.distribution.name = 
+		corbapack->distribution.name = 
 			CORBA_string_dup (trilobite_get_distribution_name (pack->distribution, FALSE, FALSE));
-		corbapack.distribution.major = pack->distribution.version_major;
-		corbapack.distribution.minor = pack->distribution.version_minor;
+		corbapack->distribution.major = pack->distribution.version_major;
+		corbapack->distribution.minor = pack->distribution.version_minor;
 	}
-	corbapack.release = pack->minor ? CORBA_string_dup (pack->minor) : CORBA_string_dup ("");
-	corbapack.description = pack->description ? CORBA_string_dup (pack->description) : CORBA_string_dup ("");
+	corbapack->release = pack->minor ? CORBA_string_dup (pack->minor) : CORBA_string_dup ("");
+	corbapack->description = pack->description ? CORBA_string_dup (pack->description) : CORBA_string_dup ("");
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
-		corbapack.status = Trilobite_Eazel_UNKNOWN_STATUS;
+		corbapack->status = Trilobite_Eazel_UNKNOWN_STATUS;
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		corbapack.status = Trilobite_Eazel_SOURCE_NOT_SUPPORTED;
+		corbapack->status = Trilobite_Eazel_SOURCE_NOT_SUPPORTED;
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		corbapack.status = Trilobite_Eazel_DEPENDENCY_FAIL;
+		corbapack->status = Trilobite_Eazel_DEPENDENCY_FAIL;
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		corbapack.status = Trilobite_Eazel_BREAKS_DEPENDENCY;
+		corbapack->status = Trilobite_Eazel_BREAKS_DEPENDENCY;
 		break;
 	case PACKAGE_INVALID:
-		corbapack.status = Trilobite_Eazel_INVALID;
+		corbapack->status = Trilobite_Eazel_INVALID;
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		corbapack.status = Trilobite_Eazel_CANNOT_OPEN;
+		corbapack->status = Trilobite_Eazel_CANNOT_OPEN;
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
-		corbapack.status = Trilobite_Eazel_PARTLY_RESOLVED;
+		corbapack->status = Trilobite_Eazel_PARTLY_RESOLVED;
 		break;
 	case PACKAGE_RESOLVED:
-		corbapack.status = Trilobite_Eazel_RESOLVED;
+		corbapack->status = Trilobite_Eazel_RESOLVED;
 		break;
 	}
 /*
   FIXME bugzilla.eazel.com 1542:
 	if (pack->soft_depends) {
-		corbapack.soft_depends = corba_packagedatastructlist_from_packagedata_list (pack->soft_depends);
+		corbapack->soft_depends = corba_packagedatastructlist_from_packagedata_list (pack->soft_depends);
 	} else {
-		corbapack.soft_depends._length = 0;
+		corbapack->soft_depends._length = 0;
 	}
 	if (pack->hard_depends) {
-		corbapack.hard_depends = corba_packagedatastructlist_from_packagedata_list (pack->hard_depends);
+		corbapack->hard_depends = corba_packagedatastructlist_from_packagedata_list (pack->hard_depends);
 	} else {
-		corbapack.hard_depends._length = 0;
+		corbapack->hard_depends._length = 0;
 	}
 	if (pack->breaks) {
-		corbapack.breaks = corba_packagedatastructlist_from_packagedata_list (pack->breaks);
+		corbapack->breaks = corba_packagedatastructlist_from_packagedata_list (pack->breaks);
 	} else {
-		corbapack.breaks._length = 0;
+		corbapack->breaks._length = 0;
 	}
 */
 	return corbapack;
@@ -145,6 +150,10 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	pack->description = strlen (corbapack.description) ? g_strdup (corbapack.description) : NULL;
 	pack->toplevel = corbapack.toplevel;
 	pack->bytesize = corbapack.bytesize;
+
+	pack->install_root = strlen (corbapack.install_root) ? g_strdup (corbapack.install_root) : NULL;
+	pack->md5 = strlen (corbapack.md5) ? g_strdup (corbapack.md5) : NULL;
+
 
 	pack->distribution.name = trilobite_get_distribution_enum (corbapack.distribution.name, FALSE);
 	pack->distribution.version_major = corbapack.distribution.major;

@@ -52,6 +52,7 @@ enum {
 	PREFLIGHT_CHECK,
 	INSTALL_PROGRESS,
 	DOWNLOAD_FAILED,
+	MD5_CHECK_FAILED,
 	INSTALL_FAILED,
 	UNINSTALL_FAILED,
 	DEPENDENCY_CHECK,
@@ -110,6 +111,9 @@ void  eazel_install_emit_preflight_check_default (EazelInstall *service,
 						  int total_packages);
 void  eazel_install_emit_download_failed_default (EazelInstall *service, 
 						  const char *name);
+void eazel_install_emit_md5_check_failed_default (EazelInstall *service,
+						  const PackageData *pack,
+						  const char *actual_md5);
 void eazel_install_emit_install_failed_default (EazelInstall *service,
 						const PackageData *pack);
 void eazel_install_emit_uninstall_failed_default (EazelInstall *service,
@@ -325,6 +329,13 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, download_failed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[MD5_CHECK_FAILED] = 
+		gtk_signal_new ("md5_check_failed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, md5_check_failed),
+				gtk_marshal_NONE__POINTER_POINTER,
+				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 	signals[INSTALL_FAILED] = 
 		gtk_signal_new ("install_failed",
 				GTK_RUN_LAST,
@@ -366,6 +377,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->download_progress = eazel_install_emit_download_progress_default;
 	klass->preflight_check = eazel_install_emit_preflight_check_default;
 	klass->download_failed = eazel_install_emit_download_failed_default;
+	klass->md5_check_failed = eazel_install_emit_md5_check_failed_default;
 	klass->install_failed = eazel_install_emit_install_failed_default;
 	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
 	klass->dependency_check = eazel_install_emit_dependency_check_default;
@@ -596,7 +608,7 @@ create_temporary_directory (const char* tmpdir)
 
 	g_print (_("Creating temporary download directory ...\n"));
 
-	retval = mkdir (tmpdir, 0755);
+	retval = mkdir (tmpdir, 0700);
 	if (retval < 0) {
 		if (errno != EEXIST) {
 			g_error (_("Could not create temporary directory!\n"));
@@ -688,11 +700,13 @@ eazel_install_alter_mode_on_temp (EazelInstall *service,
 	GList *iterator;
 	gboolean result = TRUE;
 
-	g_message ("D: locking dir to 0%o", mode);
+	SANITY_VAL (service, FALSE);
+
+	trilobite_debug ("locking dir to 0%o", mode);
 
 	/* First set mode 400 on all files */
 	if (chmod (eazel_install_get_tmp_dir (service), mode + 0100) != 0) {
-		g_warning ("D: cannot change %s to 0%o", eazel_install_get_tmp_dir (service), mode + 0100);
+		trilobite_debug ("cannot change %s to 0%o", eazel_install_get_tmp_dir (service), mode + 0100);
 		result = FALSE;
 	}
 
@@ -700,13 +714,13 @@ eazel_install_alter_mode_on_temp (EazelInstall *service,
 		char *filename = (char*)iterator->data;
 		if (filename) {
 			if (chmod (filename, mode) != 0) {
-				g_warning ("D: cannot change %s to 0%o", filename, mode);
+				trilobite_debug ("cannot change %s to 0%o", filename, mode);
 				result = FALSE;
 			}
 		}
 	}
 	
-	g_message ("D: locking done");
+	trilobite_debug ("locking done");
 
 	return result;
 }
@@ -726,6 +740,8 @@ eazel_install_unlock_tmp_dir (EazelInstall *service)
 static void
 eazel_install_delete_downloads (EazelInstall *service)
 {
+	SANITY (service);
+
 	if (service->private->downloaded_files && eazel_install_emit_delete_files (service)) {
 		GList *iterator;
 		PackageData *top_pack, *sub_pack;
@@ -778,7 +794,7 @@ eazel_install_install_packages (EazelInstall *service,
 	} 
 
 	eazel_install_unlock_tmp_dir (service);
-	g_message ("D: service->private->downloaded_files = 0x%x", service->private->downloaded_files);
+	trilobite_debug ("service->private->downloaded_files = 0x%x", service->private->downloaded_files);
 	eazel_install_delete_downloads (service);
 
 	g_free (service->private->cur_root);
@@ -902,14 +918,15 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageDataStruct package;
+		Trilobite_Eazel_PackageDataStruct *package;
 		package = corba_packagedatastruct_from_packagedata (pack);
 		Trilobite_Eazel_InstallCallback_install_progress (service->callback, 
-								  &package, 
+								  package, 
 								  package_num, num_packages,
 								  package_size_completed, package_size_total,
 								  total_size_completed, total_size,
 								  &ev);			
+		CORBA_free (package);
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -991,6 +1008,39 @@ eazel_install_emit_download_failed_default (EazelInstall *service,
 } 
 
 void 
+eazel_install_emit_md5_check_failed (EazelInstall *service, 
+				     const PackageData *pd,
+				     const char *actual_md5)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[MD5_CHECK_FAILED], pd, actual_md5);
+}
+
+void 
+eazel_install_emit_md5_check_failed_default (EazelInstall *service, 
+					     const PackageData *pack,
+					     const char *actual_md5)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_PackageDataStruct *corbapack;
+
+		corbapack = corba_packagedatastruct_from_packagedata (pack);
+		
+		Trilobite_Eazel_InstallCallback_md5_check_failed (service->callback, 
+								  corbapack, 
+								  actual_md5, 
+								  &ev);	
+		CORBA_free (corbapack);
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
 eazel_install_emit_install_failed (EazelInstall *service, 
 				   const PackageData *pd)
 {
@@ -1061,13 +1111,17 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageDataStruct corbapack;
-		Trilobite_Eazel_PackageDataStruct corbaneeds;
+		Trilobite_Eazel_PackageDataStruct *corbapack;
+		Trilobite_Eazel_PackageDataStruct *corbaneeds;
 
 		corbapack = corba_packagedatastruct_from_packagedata (pack);
 		corbaneeds = corba_packagedatastruct_from_packagedata (needs);
 
-		Trilobite_Eazel_InstallCallback_dependency_check (service->callback, &corbapack, &corbaneeds, &ev);	
+		Trilobite_Eazel_InstallCallback_dependency_check (service->callback, 
+								  corbapack, 
+								  corbaneeds, &ev);	
+		CORBA_free (corbapack);
+		CORBA_free (corbaneeds);
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -1106,7 +1160,7 @@ void
 eazel_install_emit_done (EazelInstall *service, gboolean result)
 {
 	SANITY(service);
-	g_message ("D: emit_done (%s)", result ? "TRUE" : "FALSE");
+	trilobite_debug ("emit_done (result = %s)", result ? "TRUE" : "FALSE");
 	gtk_signal_emit (GTK_OBJECT (service), signals[DONE], result);
 }
 

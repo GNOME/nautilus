@@ -237,12 +237,12 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
-		g_message ("D: GnomeVFS Error: %s\n",
+		trilobite_debug ("GnomeVFS Error: %s\n",
 			   gnome_vfs_result_to_string (info->vfs_status));
 		return FALSE;
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE:
-		g_message ("D: Overwriting `%s' with `%s'",
+		trilobite_debug ("Overwriting `%s' with `%s'",
 			   info->target_name, info->source_name);
 		return TRUE;
 		break;
@@ -309,15 +309,15 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			}
 			return TRUE;
 		default:
-			g_message ("D: Unexpected phase %d", info->phase);
+			trilobite_debug ("Unexpected phase %d", info->phase);
 			return FALSE; /* keep going anyway */
 		}
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
-		g_message ("D: Duplicate");
+		trilobite_debug ("Duplicate");
 		return FALSE;
 	default:
-		g_message ("D: Unknown status");
+		trilobite_debug ("Unknown status");
 		return FALSE;
 	}       
 	
@@ -354,7 +354,7 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 		t_file = g_strdup (target_file);
 	}
 
-	g_message ("D: gnome_vfs_xfer_uri ( %s %s )", url, t_file);
+	trilobite_debug ("gnome_vfs_xfer_uri ( %s %s )", url, t_file);
 	
 	src_uri = gnome_vfs_uri_new (url);
 	g_assert (src_uri != NULL);
@@ -376,7 +376,11 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 				     (GnomeVFSXferProgressCallback)gnome_vfs_xfer_callback,
 				     cbstruct);
 
-	g_message ("D: gnome vfs result = %s", result==GNOME_VFS_OK?"OK":"fucked");
+	if (result==GNOME_VFS_OK) {
+		g_message ("File download successfull");
+	} else {
+		g_message ("File download failed");
+	}
  
 	/* Free the various stuff */
 	g_free (t_file);
@@ -458,12 +462,14 @@ eazel_install_fetch_file (EazelInstall *service,
 									     url, 
 									     file_to_report, 
 									     target_file);
-		/* If file didn't exist, and downloaded successfully, add to
-		   list of downloaded file */
-		if (result) {
-			service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
-									     g_strdup (target_file));
-		}
+	}
+
+	/* By always adding the file to the downloaded_files list,
+	   we enforce md5 check on files that were present but should have
+	   been downloaded */
+	if (result) {
+		service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
+								     g_strdup (target_file));
 	}
 	
 	if (result==FALSE) {
@@ -530,14 +536,14 @@ eazel_install_fetch_package (EazelInstall *service,
 		targetname = g_strdup_printf ("%s/%s",
 					      eazel_install_get_tmp_dir (service),
 					      filename_from_url (url));
-		g_message ("D: %s resolved", package->name);
+		trilobite_debug ("%s resolved", package->name);
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 		result = eazel_install_fetch_file (service, url, package->name, targetname);
 #else /*  EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
 			result = eazel_install_fetch_file (service, url, package->name, targetname);
 		} else {
-			g_warning ("D: cannot handle %s", url);
+			trilobite_debug ("cannot handle %s", url);
 		}
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (result==TRUE) {
@@ -633,7 +639,17 @@ get_url_for_package  (EazelInstall *service,
 	int length;
 
 	search_url = get_search_url_for_package (service, entry, data);
-	g_message (_("Search URL: %s"), search_url);
+	trilobite_debug ("Search URL: %s", search_url);
+
+	{
+		char *tmp;
+		tmp = g_strdup_printf ("GNOME_VFS_HTTP_USER_AGENT=%s", 
+				       trilobite_get_useragent_string (FALSE, NULL));
+		putenv (tmp);
+		/* NOTE: tmp is now owned by env, wonder if it's leaked everytime
+		   I set it...
+		   FIXME: bugzilla.eazel.com  */
+	}
 
 	if (trilobite_fetch_uri (search_url, &body, &length)) {
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
@@ -642,9 +658,9 @@ get_url_for_package  (EazelInstall *service,
 		
 		packages = parse_osd_xml_from_memory (body, length);
 		if (g_list_length (packages) == 0) {
-			g_warning ("D: No url for file");
+			trilobite_debug ("No url for file");
 		} else if (g_list_length (packages) > 1) {
-			g_warning ("D: Ugh, more then one match, using first");
+			trilobite_debug ("Ugh, more then one match, using first");
 		}
 		
 		if (g_list_length (packages) > 0) {

@@ -379,6 +379,26 @@ md5_get_digest_from_md5_string (const char *md5string,
 	}
 }
 
+const char *
+md5_get_string_from_md5_digest (const unsigned char md5[16])
+{
+	static char *str = NULL;
+	int cnt;
+
+	g_free (str);
+	str = g_new0 (char, 33);
+
+	for (cnt = 0; cnt < 16; cnt++) {
+		char *tmp;
+		tmp = g_strdup_printf ("%02x", md5[cnt]);
+		str[cnt*2] = tmp[0];
+		str[cnt*2 + 1] = tmp[1];
+		g_free (tmp);
+	}
+
+	return str;
+}
+
 #ifdef _MD5_STANDALONE
 int
 main (int argc, char **argv)

@@ -18,6 +18,8 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
+ *          Eskil Heyn Olsen <eskil@eazel.com>
+ *          Robey Pointer <robey@eazel.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
@@ -29,6 +31,7 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-engine.h>
 #include "eazel-install-metadata.h"
+#include <libtrilobite/trilobite-core-utils.h>
 
 #define INSTALL_GCONF_PATH	"/apps/eazel-trilobite/install"
 

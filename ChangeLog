@@ -1,3 +1,101 @@
+2000-09-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line), (md5_check_failed), (main):
+	Fixed the setting of server/port/tempdir now that libeazelinstall
+	uses gconf.
+	Uses the md5_check_failed signal/
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added the md5_check_failed signal.
+	
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_md5_check_failed), (eazel_install_callback_get_epv),
+	(eazel_install_callback_finalize),
+	(eazel_install_callback_class_initialize):
+	Added the md5_check_failed signal.
+	
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastructlist_from_packagedata_list),
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	Changed corba_packagedatastruct_from_packagedata to return a
+	pointer instead of a struct. Hope it doesn't introduce any funky
+	leaks in corba_packagedatastructlist_from_packagedata_list.
+	
+	* components/services/install/lib/eazel-install-md5.h:
+	* components/services/install/lib/eazel-install-md5.c:
+	(md5_get_string_from_md5_digest):
+	Added a method to convert a md5 digest to a human-readable string.
+	
+	* components/services/install/lib/eazel-install-metadata.c:
+	Added authors and includeds trilobite-core-utils (for
+	trilobite_debug)
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(create_temporary_directory),
+	Open tmpdir in 0700 instead of 0755.
+	(eazel_install_alter_mode_on_temp),
+	(eazel_install_delete_downloads), 
+	(eazel_install_install_packages),
+	(eazel_install_emit_install_progress_default),
+	(eazel_install_class_initialize), 
+	Changed all 'g_.* ("D: ' to trilobite_debug
+	(eazel_install_emit_md5_check_failed),
+	(eazel_install_emit_md5_check_failed_default),
+	Added the md5_check_failed signal
+	(eazel_install_emit_dependency_check_default),
+	Modified because of the change in eazel-install-corba-types.
+	(eazel_install_emit_done):
+	Output cleaning.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (gnome_vfs_fetch_remote_file),
+	(eazel_install_fetch_file), (eazel_install_fetch_package),
+	(get_url_for_package):
+	Changed all 'g_.* ("D: ' to trilobite_debug
+	Output cleaning.
+	Always add downloaded file to downloaded_files, thus always doing
+	md5 check on them.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	Output cleaning.
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_download_packages),
+	(eazel_install_pre_install_packages), (hest),
+	(eazel_install_monitor_rpm_propcess_pipe),
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_do_transaction_md5_check),
+	(eazel_install_free_rpm_system_close_db_foreach),
+	(eazel_install_free_rpm_system),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_fetch_rpm_dependencies), (print_package_list),
+	(eazel_install_ensure_deps), (eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install), (eazel_uninstall_globber):
+	Changed all 'g_.* ("D: ' to trilobite_debug
+	Output cleaning.
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list), (osd_parse_implementation),
+	(osd_parse_softpkg), (osd_parse_shared),
+	(parse_osd_xml_from_memory):
+	Changed all 'g_.* ("D: ' to trilobite_debug
+	Output cleaning.
+
+	* components/services/trilobite/libtrilobite/trilobite-root-client.
+	c: (trilobite_root_client_unref),
+	(trilobite_root_client_initialize):
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_destroy),
+	(trilobite_root_helper_initialize):
+	Removed some debug output.
+	
 2000-09-07  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-metadata.c:

@@ -74,6 +74,13 @@ struct _EazelInstallCallbackClass
 	/* Same as install_failed... */
 	void (*uninstall_failed) (EazelInstallCallback *service, PackageData *pd);
 
+	/* Emitted when the md5 checksum fails for a package file.
+	   pd contains the md5 that the package file should have,
+	   and actual_md5 contains the actual md5 of the package file */
+	void (*md5_check_failed) (EazelInstallCallback *service, 
+				  const PackageData *pd, 
+				  const char *actual_md5);
+
 	/* Called after installation to determine if the RPM files should be deleted */
 	gboolean (*delete_files) (EazelInstallCallback *service);
 

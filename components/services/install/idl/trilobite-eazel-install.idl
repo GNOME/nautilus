@@ -57,6 +57,12 @@ module Trilobite {
 			long bytesize;
 			boolean toplevel;
 
+			/* The location the rpm is installed (if installed) */
+			string install_root;
+
+			/* The md5 checksum of the rpmfile */
+			string md5;
+
 			/* When Eazel::IntallCallback::install_failed is
 			   called, this is set. The toplevel will have
 			   PARTLY_RESOLVED and in soft_ & hard_depends,
@@ -116,6 +122,11 @@ module Trilobite {
 			*/
 			void install_failed (in string xml_package);
 			void uninstall_failed (in string xml_package);
+
+			/* Emitted when a package fails the md5 check.
+			   The package structure contains the md5 it should have,
+			   and actual_md5 contains the md5 checksum of the rpmfile */
+			void md5_check_failed (in PackageDataStruct package, in string actual_md5);
 
 			/* Called to find out whether to delete the rpms or not, after finishing */
 			boolean delete_files ();

@@ -31,6 +31,7 @@
 #include <config.h>
 #include "eazel-install-xml-package-list.h"
 
+#include <libtrilobite/trilobite-core-utils.h>
 #include <gnome-xml/parser.h>
 
 static PackageData* parse_package (xmlNode* package, gboolean set_toplevel);
@@ -322,7 +323,7 @@ generate_xml_package_list (const char* pkg_template_file,
 				if (package_array[i+1]) {
 					data = xmlNewChild (package, NULL, tags[i], package_array[i+1]);
 				} else {
-					g_warning ("D: line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
+					trilobite_debug ("line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
 				}
 			}
 			g_strfreev (package_array);
@@ -510,7 +511,7 @@ osd_parse_implementation (PackageData *pack,
 				g_free (stmp);
 			}
 		} else {
-			/* g_warning ("D: unparsed tag \"%s\" in IMPLEMENTATION", child->name); */
+			/* trilobite_debug ("unparsed tag \"%s\" in IMPLEMENTATION", child->name); */
 		}
 		child = child->next;
 	}
@@ -530,7 +531,6 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 	result->name = xml_get_value (softpkg, "NAME");
 	result->version = xml_get_value (softpkg, "VERSION");
 	result->md5 = xml_get_value (softpkg, "MD5");
-	g_message ("MD5 is %s", result->md5);
 	
 	child = softpkg->childs;
 	while (child) {
@@ -539,7 +539,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
 			osd_parse_implementation (result, child);
 		} else {
-			/* g_warning ("D: unparsed tag \"%s\" in SOFTPKG", child->name); */
+			/* trilobite_debug ("unparsed tag \"%s\" in SOFTPKG", child->name); */
 		}
 		child = child->next;
 	}
@@ -574,10 +574,10 @@ osd_parse_shared (xmlDocPtr doc)
 			if (pack) {
 				result = g_list_prepend (result, pack);
 			} else {
-				g_warning ("D: SOFTPKG parse failed");
+				trilobite_debug ("SOFTPKG parse failed");
 			}
 		} else {
-			g_warning ("D: child is not a SOFTPKG, but a \"%s\"", child->name);
+			trilobite_debug ("child is not a SOFTPKG, but a \"%s\"", child->name);
 		}
 		child = child->next;
 	}
@@ -604,7 +604,7 @@ parse_osd_xml_from_memory (const char *mem,
 	ptr = strstr (docptr, "<?xml");
 	if (ptr == NULL) {
 		g_warning (_("Could not find <?xml tag in string"));
-		g_message ("D: XML is %sEND", docptr);
+		trilobite_debug ("XML is %sEND", docptr);
 		g_free (docptr);
 		return result;
 	}
@@ -623,10 +623,11 @@ parse_osd_xml_from_memory (const char *mem,
 		}
 	}
 
+
 	doc = xmlParseMemory (ptr, size);
 
 	if (doc == NULL) {
-		g_warning ("D: XML =\"%s\"", ptr);
+		trilobite_debug ("XML =\"%s\"", ptr);
 		g_warning (_("Could not parse the xml (lenght %d)"), size);
 		g_free (docptr);
 		return result;
