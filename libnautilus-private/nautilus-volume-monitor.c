@@ -195,7 +195,7 @@ static guint signals[LAST_SIGNAL];
 
 static void            nautilus_volume_monitor_init       (NautilusVolumeMonitor      *desktop_mounter);
 static void            nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass);
-static void            nautilus_volume_monitor_destroy          (GtkObject                  *object);
+static void            nautilus_volume_monitor_finalize         (GObject                    *object);
 static char *          get_iso9660_volume_name                  (NautilusVolume             *volume,
 								 int                         volume_fd);
 static GHashTable *    load_file_system_table                   (void);
@@ -219,6 +219,7 @@ static GHashTable *    create_readable_mount_point_name_table   (void);
 static int             get_cdrom_type                           (const char                 *vol_dev_path,
 								 int                        *fd);
 static void            nautilus_volume_free                     (NautilusVolume             *volume);
+static void            nautilus_file_system_type_free           (NautilusFileSystemType     *type);
 
 #ifdef HAVE_CDDA
 static gboolean        locate_audio_cd                          (void);
@@ -238,7 +239,9 @@ load_file_system_table (void)
 	xmlChar *name, *default_volume_name, *trash;
 	NautilusFileSystemType *type;
 
-	table = g_hash_table_new (g_str_hash, g_str_equal);
+	/* We don't provide a free_key func since the key is freed by the value_free func */
+	table = g_hash_table_new_full (g_str_hash, g_str_equal,
+				       NULL, (GDestroyNotify) nautilus_file_system_type_free);
 	
 	file_system_attributes_file = nautilus_get_data_file_path ("filesystem-attributes.xml");
 	if (file_system_attributes_file == NULL) {
@@ -292,11 +295,11 @@ nautilus_volume_monitor_init (NautilusVolumeMonitor *monitor)
 static void
 nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 {
-	GtkObjectClass		*object_class;
+	GObjectClass		*object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 
-	object_class->destroy = nautilus_volume_monitor_destroy;
+	object_class->finalize = nautilus_volume_monitor_finalize;
 
 	signals[VOLUME_MOUNTED] 
 		= g_signal_new ("volume_mounted",
@@ -354,7 +357,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 }
 
 static void
-nautilus_volume_monitor_destroy (GtkObject *object)
+nautilus_volume_monitor_finalize (GObject *object)
 {
 	NautilusVolumeMonitor *monitor;
 	
@@ -370,12 +373,15 @@ nautilus_volume_monitor_destroy (GtkObject *object)
 	/* Clean up readable names table */	
 	g_hash_table_destroy (monitor->details->readable_mount_point_names);
 
+	/* Clean up file system table */
+	g_hash_table_destroy (monitor->details->file_system_table);
+	
 	/* Clean up details */	 
 	g_free (monitor->details);
 
 	global_volume_monitor = NULL;
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -1088,7 +1094,7 @@ get_mount_list (NautilusVolumeMonitor *monitor)
                         file_system_type_name = eel_string_list_nth (list, 2);
                         volume = create_volume (device_path, mount_path);
 			if (eel_string_list_get_length (list) >= 4 &&
-			    option_list_has_option (eel_string_list_nth (list, 3), MNTOPT_RO))
+			    option_list_has_option (eel_string_list_peek_nth (list, 3), MNTOPT_RO))
 				volume->is_read_only = TRUE;
                         volumes = finish_creating_volume_and_prepend
 				(monitor, volume, file_system_type_name, volumes);
@@ -1703,6 +1709,15 @@ nautilus_volume_free (NautilusVolume *volume)
 	g_free (volume);
 }
 
+static void
+nautilus_file_system_type_free (NautilusFileSystemType *type)
+{
+	g_print ("freeing: %s\n", type->name);
+	g_free (type->name);
+	g_free (type->default_volume_name);
+	g_free (type);
+}
+
 static char *
 get_iso9660_volume_name (NautilusVolume *volume, int fd)
 {
@@ -1731,8 +1746,9 @@ load_additional_mount_list_info (GList *volume_list)
 		/* These are set up by get_current_mount_list for Solaris. */
 		volume->is_removable = volume_is_removable (volume);
 #endif
-
-		volume->volume_name = mount_volume_make_name (volume);
+		if (volume->volume_name == NULL) {
+			volume->volume_name = mount_volume_make_name (volume);
+		}
 	}
 }
 

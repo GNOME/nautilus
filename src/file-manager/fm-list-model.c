@@ -728,6 +728,18 @@ fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
 }
 
 static void
+fm_list_model_finalize (GObject *object)
+{
+	FMListModel *model;
+
+	model = FM_LIST_MODEL (object);
+
+	g_free (model->details);
+	
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+}
+
+static void
 fm_list_model_init (FMListModel *model)
 {
 	model->details = g_new0 (FMListModelDetails, 1);

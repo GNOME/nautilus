@@ -229,6 +229,14 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 	if (details->rendered_pixbuf != NULL) {
 		g_object_unref (details->rendered_pixbuf);
 	}
+
+	if (details->editable_text_layout != NULL) {
+		g_object_unref (details->editable_text_layout);
+	}
+
+	if (details->additional_text_layout != NULL) {
+		g_object_unref (details->additional_text_layout);
+	}
 	
 	g_free (details);
 

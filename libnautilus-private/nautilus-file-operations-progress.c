@@ -38,6 +38,7 @@
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
+#include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-file-operations-progress-icons.h"
@@ -49,6 +50,7 @@
 #define PROGRESS_DIALOG_WIDTH 400
 
 #define OUTER_BORDER       5
+#define VERTICAL_SPACING   8
 #define HORIZONTAL_SPACING 3
 
 #define MINIMUM_TIME_UP    1000
@@ -242,27 +244,23 @@ delete_event_callback (GtkWidget *widget,
 static void
 nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress)
 {
-	GtkBox *vbox;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *vbox;
 	GtkTable *titled_label_table;
 
 	progress->details = g_new0 (NautilusFileOperationsProgressDetails, 1);
 
-	vbox = GTK_BOX (GTK_DIALOG (progress)->vbox);
-
-	/* This is evil but makes the dialog look less cramped. */
+	vbox = gtk_vbox_new (FALSE, VERTICAL_SPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), OUTER_BORDER);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (progress)->vbox), vbox, TRUE, TRUE, VERTICAL_SPACING);
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (vbox, hbox, TRUE, TRUE, HORIZONTAL_SPACING);
-	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, HORIZONTAL_SPACING);
 
 	/* label- */
 	/* Files remaining to be copied: */
 	progress->details->progress_title_label = gtk_label_new ("");
 	gtk_label_set_justify (GTK_LABEL (progress->details->progress_title_label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (hbox), progress->details->progress_title_label, FALSE, FALSE, 0);
-	gtk_widget_show (progress->details->progress_title_label);
 	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_title_label));
 
 
@@ -271,19 +269,16 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 	progress->details->progress_count_label = gtk_label_new ("");
 	gtk_label_set_justify (GTK_LABEL (progress->details->progress_count_label), GTK_JUSTIFY_RIGHT);
 	gtk_box_pack_end (GTK_BOX (hbox), progress->details->progress_count_label, FALSE, FALSE, 0);
-	gtk_widget_show (progress->details->progress_count_label);
 	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_count_label));
 
 	/* progress bar */
 	progress->details->progress_bar = gtk_progress_bar_new ();
 	gtk_window_set_default_size (GTK_WINDOW (progress), PROGRESS_DIALOG_WIDTH, -1);
-	gtk_box_pack_start (vbox, progress->details->progress_bar, FALSE, TRUE, 0);
-	gtk_widget_show (progress->details->progress_bar);
+	gtk_box_pack_start (GTK_BOX (vbox), progress->details->progress_bar, FALSE, TRUE, 0);
 
 	titled_label_table = GTK_TABLE (gtk_table_new (3, 2, FALSE));
 	gtk_table_set_row_spacings (titled_label_table, 4);
 	gtk_table_set_col_spacings (titled_label_table, 4);
-	gtk_widget_show (GTK_WIDGET (titled_label_table));
 
 	create_titled_label (titled_label_table, 0,
 			     &progress->details->operation_name_label, 
@@ -295,13 +290,15 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 			     &progress->details->to_label, 
 			     &progress->details->to_path_label);
 
-	gtk_box_pack_start (vbox, GTK_WIDGET (titled_label_table), FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (titled_label_table), FALSE, FALSE, 0);
 
 	/* Set window icon */
 	gtk_window_set_icon (GTK_WINDOW (progress), empty_jar_pixbuf);
 
 	/* Set progress jar position */
 	progress->details->progress_jar_position = gdk_pixbuf_get_height (empty_jar_pixbuf);
+
+	gtk_widget_show_all (vbox);
 }
 
 static void

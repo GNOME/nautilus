@@ -1,3 +1,24 @@
+2002-04-17  Anders Carlsson  <andersca@gnu.org>
+
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_init):
+	Fixup padding so that the dialog looks more like the 
+	Nautilus 1.0 one.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_finalize):
+	Unref the layouts.
+	
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(load_file_system_table), (nautilus_volume_monitor_class_init),
+	(nautilus_volume_monitor_finalize), (get_mount_list),
+	(nautilus_file_system_type_free),
+	(load_additional_mount_list_info):
+	Free the file system table on ::finalize.
+	
+	* src/file-manager/fm-list-model.c: (fm_list_model_finalize):
+	Free details on ::finalize.
+	
 2002-04-17  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
 	* configure.in,po/vi.po: Added Vietnamese po file
