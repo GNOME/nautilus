@@ -58,12 +58,36 @@ extern void eazel_dump_stack_trace	(const char    *print_prefix,
 /* from libleakcheck.so */
 #endif
 
+/* Files that start with these characters sort after files that don't. */
+#define SORT_LAST_CHARACTERS ".#"
+
+/* Name to use to tag metadata for the directory itself. */
+#define FILE_NAME_FOR_DIRECTORY_METADATA "."
+
 typedef enum {
 	NAUTILUS_DATE_TYPE_MODIFIED,
 	NAUTILUS_DATE_TYPE_CHANGED,
 	NAUTILUS_DATE_TYPE_ACCESSED,
 	NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED
 } NautilusDateType;
+
+typedef struct {
+	NautilusFile *file;
+	GnomeVFSAsyncHandle *handle;
+	NautilusFileOperationCallback callback;
+	gpointer callback_data;
+} Operation;
+
+/* These are in sort order. Known things come first, then things
+ * where we can't know, finally things where we don't yet know.
+ */
+typedef enum {
+	KNOWN,
+	UNKNOWABLE,
+	UNKNOWN
+} Knowledge;
+
+typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
 
 enum {
 	CHANGED,
@@ -111,7 +135,6 @@ nautilus_file_initialize (NautilusFile *file)
 	file->details = g_new0 (NautilusFileDetails, 1);
 }
 
-
 static NautilusFile *
 nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 				     const char *relative_uri)
@@ -154,8 +177,6 @@ info_missing (NautilusFile *file, GnomeVFSFileInfoFields needed_mask)
 	}
 	return (info->valid_fields & needed_mask) != needed_mask;
 }
-
-typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
 
 static void
 modify_link_hash_table (NautilusFile *file,
@@ -443,7 +464,7 @@ nautilus_file_unref (NautilusFile *file)
 }
 
 static gboolean
-nautilus_file_is_self_owned (NautilusFile *file)
+is_self_owned (NautilusFile *file)
 {
 	return file->details->directory->details->as_file == file;
 }
@@ -491,7 +512,7 @@ nautilus_file_get_parent_uri (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (nautilus_file_is_self_owned (file)) {
+	if (is_self_owned (file)) {
 		/* Callers expect an empty string, not a NULL. */
 		return g_strdup ("");
 	}
@@ -507,7 +528,7 @@ get_file_for_parent_directory (NautilusFile *file)
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (nautilus_file_is_self_owned (file)) {
+	if (is_self_owned (file)) {
 		return NULL;
 	}
 
@@ -689,7 +710,7 @@ nautilus_file_can_rename (NautilusFile *file)
 	}
 
 	/* Self-owned files can't be renamed */
-	if (nautilus_file_is_self_owned (file)) {
+	if (is_self_owned (file)) {
 		return FALSE;
 	}
 
@@ -725,7 +746,7 @@ nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
 		return NULL;
 	}
 
-	if (nautilus_file_is_self_owned (file)) {
+	if (is_self_owned (file)) {
 		gnome_vfs_uri_ref (vfs_uri);
 		return vfs_uri;
 	}
@@ -733,13 +754,6 @@ nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
 	return gnome_vfs_uri_append_string
 		(vfs_uri, file->details->relative_uri);
 }
-
-typedef struct {
-	NautilusFile *file;
-	GnomeVFSAsyncHandle *handle;
-	NautilusFileOperationCallback callback;
-	gpointer callback_data;
-} Operation;
 
 static Operation *
 operation_new (NautilusFile *file,
@@ -839,8 +853,15 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		old_uri = nautilus_file_get_uri (op->file);
 		old_relative_uri = g_strdup (op->file->details->relative_uri);
 		update_info_and_name (op->file, new_info);
-		nautilus_directory_rename_file_metadata
-			(directory, old_relative_uri, op->file->details->relative_uri);
+
+		/* Self-owned files store their metadata under the
+		 * hard-code name "."  so there's no need to rename
+		 * their metadata when they are renamed.
+		 */
+		if (!is_self_owned (op->file)) {
+			nautilus_directory_rename_file_metadata
+				(directory, old_relative_uri, op->file->details->relative_uri);
+		}
 
 		renamed_directory = nautilus_directory_get_existing (old_uri);
 		if (renamed_directory != NULL) {
@@ -912,7 +933,7 @@ nautilus_file_rename (NautilusFile *file,
 	/* Self-owned files can't be renamed. Test the name-not-actually-changing
 	 * case before this case.
 	 */
-	if (nautilus_file_is_self_owned (file)) {
+	if (is_self_owned (file)) {
 	       	/* Claim that something changed even if the rename
 		 * failed. This makes it easier for some clients who
 		 * see the "reverting" to the old name as "changing
@@ -1160,20 +1181,166 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 	return TRUE;
 }
 
+static Knowledge
+get_item_count (NautilusFile *file,
+		guint *count)
+{
+	gboolean known, unreadable;
+
+	known = nautilus_file_get_directory_item_count
+		(file, count, &unreadable);
+	if (!known) {
+		return UNKNOWN;
+	}
+	if (unreadable) {
+		return UNKNOWABLE;
+	}
+	return KNOWN;
+}
+
+static Knowledge
+get_size (NautilusFile *file,
+	  GnomeVFSFileSize *size)
+{
+	/* If we tried and failed, then treat it like there is no size
+	 * to know.
+	 */
+	if (file->details->get_info_failed) {
+		return UNKNOWABLE;
+	}
+
+	/* If the info is NULL that means we haven't even tried yet,
+	 * so it's just unknown, not unknowable.
+	 */
+	if (file->details->info == NULL) {
+		return UNKNOWN;
+	}
+
+	/* If we got info with no size in it, it means there is no
+	 * such thing as a size as far as gnome-vfs is concerned,
+	 * so "unknowable".
+	 */
+	if ((file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0) {
+		return UNKNOWABLE;
+	}
+
+	/* We have a size! */
+	*size = file->details->info->size;
+	return KNOWN;
+}
+
+static Knowledge
+get_modification_time (NautilusFile *file,
+		       time_t *modification_time)
+{
+	/* If we tried and failed, then treat it like there is no size
+	 * to know.
+	 */
+	if (file->details->get_info_failed) {
+		return UNKNOWABLE;
+	}
+
+	/* If the info is NULL that means we haven't even tried yet,
+	 * so it's just unknown, not unknowable.
+	 */
+	if (file->details->info == NULL) {
+		return UNKNOWN;
+	}
+
+	/* If we got info with no modification time in it, it means
+	 * there is no such thing as a modification time as far as
+	 * gnome-vfs is concerned, so "unknowable".
+	 */
+	if ((file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MTIME) == 0) {
+		return UNKNOWABLE;
+	}
+
+	/* We have a modification time. */
+	*modification_time = file->details->info->mtime;
+	return KNOWN;
+}
+
 static int
-nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *file_2)
+compare_directories_by_count (NautilusFile *file_1, NautilusFile *file_2)
 {
 	/* Sort order:
 	 *   Directories with n items
 	 *   Directories with 0 items
+	 *   Directories with "unknowable" # of items
 	 *   Directories with unknown # of items
-	 *   All files.
-	 * The files are sorted by size in a separate pass.
 	 */
+
+	Knowledge count_known_1, count_known_2;
+	guint count_1, count_2;
+
+	count_known_1 = get_item_count (file_1, &count_1);
+	count_known_2 = get_item_count (file_2, &count_2);
+
+	if (count_known_1 < count_known_2) {
+		return -1;
+	}
+	if (count_known_1 > count_known_2) {
+		return +1;
+	}
+
+	if (count_1 > count_2) {
+		return -1;
+	}
+	if (count_1 < count_2) {
+		return +1;
+	}
+
+	return 0;
+}
+
+static int
+compare_files_by_size (NautilusFile *file_1, NautilusFile *file_2)
+{
+	/* Sort order:
+	 *   Files with large sizes.
+	 *   Files with smaller sizes.
+	 *   Files with "unknowable" size.
+	 *   Files with unknown size.
+	 */
+
+	Knowledge size_known_1, size_known_2;
+	GnomeVFSFileSize size_1, size_2;
+
+	size_known_1 = get_size (file_1, &size_1);
+	size_known_2 = get_size (file_2, &size_2);
+
+	if (size_known_1 < size_known_2) {
+		return -1;
+	}
+	if (size_known_1 > size_known_2) {
+		return +1;
+	}
+
+	if (size_1 > size_2) {
+		return -1;
+	}
+	if (size_1 < size_2) {
+		return +1;
+	}
+
+	return 0;
+}
+
+static int
+compare_by_size (NautilusFile *file_1, NautilusFile *file_2)
+{
+	/* Sort order:
+	 *   Directories with n items
+	 *   Directories with 0 items
+	 *   Directories with "unknowable" # of items
+	 *   Directories with unknown # of items
+	 *   Files with large sizes.
+	 *   Files with smaller sizes.
+	 *   Files with "unknowable" size.
+	 *   Files with unknown size.
+	 */
+
 	gboolean is_directory_1, is_directory_2;
-	gboolean count_known_1, count_known_2;
-	gboolean count_unreadable_1, count_unreadable_2;
-	guint item_count_1, item_count_2;
 
 	is_directory_1 = nautilus_file_is_directory (file_1);
 	is_directory_2 = nautilus_file_is_directory (file_2);
@@ -1185,59 +1352,33 @@ nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *f
 		return +1;
 	}
 
-	if (!is_directory_1 && !is_directory_2) {
-		return 0;
+	if (is_directory_1) {
+		return compare_directories_by_count (file_1, file_2);
+	} else {
+		return compare_files_by_size (file_1, file_2);
 	}
-
-	/* Both are directories, compare by item count. */
-
-	count_known_1 = nautilus_file_get_directory_item_count (file_1,
-								&item_count_1,
-								&count_unreadable_1);
-	count_known_2 = nautilus_file_get_directory_item_count (file_2,
-								&item_count_2,
-								&count_unreadable_2);
-
-	if (!count_known_1 && count_known_2) {
-		return +1;
-	}
-	if (count_known_1 && !count_known_2) {
-		return -1;
-	}
-
-	if (!count_known_1 && !count_known_2) {
-		/* Put unknowable after simply unknown. */
-		if (count_unreadable_1 && !count_unreadable_2) {
-			return +1;
-		}
-
-		if (!count_unreadable_1 && count_unreadable_2) {
-			return -1;
-		}
-
-		return 0;
-	}
-
-	if (item_count_1 > item_count_2) {
-		return -1;
-	}
-	if (item_count_2 > item_count_1) {
-		return +1;
-	}
-
-	return 0;
 }
 
 static int
-nautilus_file_compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
+compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
 {
 	char *name_1, *name_2;
+	gboolean sort_last_1, sort_last_2;
 	int compare;
 
 	name_1 = nautilus_file_get_name (file_1);
 	name_2 = nautilus_file_get_name (file_2);
 
-	compare = nautilus_strcmp_case_breaks_ties (name_1, name_2);
+	sort_last_1 = strchr (SORT_LAST_CHARACTERS, name_1[0]) != NULL;
+	sort_last_2 = strchr (SORT_LAST_CHARACTERS, name_2[0]) != NULL;
+
+	if (sort_last_1 && !sort_last_2) {
+		compare = +1;
+	} else if (!sort_last_1 && sort_last_2) {
+		compare = -1;
+	} else {
+		compare = nautilus_strcmp_case_breaks_ties (name_1, name_2);
+	}
 
 	g_free (name_1);
 	g_free (name_2);
@@ -1246,10 +1387,14 @@ nautilus_file_compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
 }
 
 static int
-nautilus_file_compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
+compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 {
 	char *directory_1, *directory_2;
 	int compare;
+
+	if (file_1->details->directory == file_2->details->directory) {
+		return 0;
+	}
 
 	directory_1 = nautilus_file_get_parent_uri_for_display (file_1);
 	directory_2 = nautilus_file_get_parent_uri_for_display (file_2);
@@ -1307,7 +1452,7 @@ prepend_automatic_emblem_names (NautilusFile *file,
 }
 
 static int
-nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
+compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 {
 	int auto_1, auto_2;
 	GList *keywords_1, *keywords_2;
@@ -1353,7 +1498,7 @@ nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 }
 
 static int
-nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
+compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 {
 	gboolean is_directory_1;
 	gboolean is_directory_2;
@@ -1399,6 +1544,51 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	return result;
 }
 
+static int
+compare_by_modification_time (NautilusFile *file_1, NautilusFile *file_2)
+{
+	/* Sort order:
+	 *   Files with newer times.
+	 *   Files with older times.
+	 *   Files with "unknowable" times.
+	 *   Files with unknown times.
+	 */
+
+	Knowledge time_known_1, time_known_2;
+	time_t time_1, time_2;
+
+	time_known_1 = get_modification_time (file_1, &time_1);
+	time_known_2 = get_modification_time (file_2, &time_2);
+
+	if (time_known_1 < time_known_2) {
+		return -1;
+	}
+	if (time_known_1 > time_known_2) {
+		return +1;
+	}
+
+	if (time_1 > time_2) {
+		return -1;
+	}
+	if (time_1 < time_2) {
+		return +1;
+	}
+
+	return 0;
+}
+
+static int
+compare_by_full_path (NautilusFile *file_1, NautilusFile *file_2)
+{
+	int compare;
+
+	compare = compare_by_directory_name (file_1, file_2);
+	if (compare != 0) {
+		return compare;
+	}
+	return compare_by_name (file_1, file_2);
+}
+
 /**
  * nautilus_file_compare_for_sort:
  * @file_1: A file object
@@ -1416,19 +1606,10 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 				NautilusFile *file_2,
 				NautilusFileSortType sort_type)
 {
-	GnomeVFSDirectorySortRule rules[3];
 	int compare;
-	char *name_1, *name_2;
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file_1), 0);
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file_2), 0);
-
-	/* FIXME: If we didn't use
-	 * GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE, we could free
-	 * the names in the file info (in update_info_and_name) and
-	 * save some storage per-file. We might need to stop using it
-	 * anyway to make international sorting work right.
-	 */
 
 	switch (sort_type) {
 	case NAUTILUS_FILE_SORT_BY_NAME:
@@ -1437,89 +1618,50 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 		 * but I can imagine discussing this further.
 		 * John Sullivan <sullivan@eazel.com>
 		 */
-		compare = nautilus_file_compare_by_name (file_1, file_2);
+		compare = compare_by_name (file_1, file_2);
 		if (compare != 0) {
 			return compare;
 		}
-		return nautilus_file_compare_by_directory_name (file_1, file_2);
+		return compare_by_directory_name (file_1, file_2);
 	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
-		compare = nautilus_file_compare_by_directory_name (file_1, file_2);
-		if (compare != 0) {
-			return compare;
-		}
-		return nautilus_file_compare_by_name (file_1, file_2);
+		return compare_by_full_path (file_1, file_2);
 	case NAUTILUS_FILE_SORT_BY_SIZE:
 		/* Compare directory sizes ourselves, then if necessary
 		 * use GnomeVFS to compare file sizes.
 		 */
-		compare = nautilus_file_compare_directories_by_size (file_1, file_2);
+		compare = compare_by_size (file_1, file_2);
 		if (compare != 0) {
 			return compare;
 		}
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYSIZE;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
+		return compare_by_full_path (file_1, file_2);
 	case NAUTILUS_FILE_SORT_BY_TYPE:
 		/* GnomeVFS doesn't know about our special text for certain
 		 * mime types, so we handle the mime-type sorting ourselves.
 		 */
-		compare = nautilus_file_compare_by_type (file_1, file_2);
+		compare = compare_by_type (file_1, file_2);
 		if (compare != 0) {
 			return compare;
 		}
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
+		return compare_by_full_path (file_1, file_2);
 	case NAUTILUS_FILE_SORT_BY_MTIME:
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYMTIME;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
+		compare = compare_by_modification_time (file_1, file_2);
+		if (compare != 0) {
+			return compare;
+		}
+		return compare_by_full_path (file_1, file_2);
 	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
 		/* GnomeVFS doesn't know squat about our emblems, so
 		 * we handle comparing them here, before falling back
 		 * to tie-breakers.
 		 */
-		compare = nautilus_file_compare_by_emblems (file_1, file_2);
+		compare = compare_by_emblems (file_1, file_2);
 		if (compare != 0) {
 			return compare;
 		}
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
+		return compare_by_full_path (file_1, file_2);
 	default:
 		g_return_val_if_fail (FALSE, 0);
 	}
-
-	if (file_1->details->info == NULL) {
-		if (file_2->details->info == NULL) {
-			name_1 = nautilus_file_get_name (file_1);
-			name_2 = nautilus_file_get_name (file_2);
-			compare = nautilus_strcmp_case_breaks_ties (name_1, name_2);
-			g_free (name_1);
-			g_free (name_2);
-		} else {
-			/* FIXME bugzilla.eazel.com 2426: 
-			 * We do have a name for file 2 to
-                         * compare with, so we can probably do better
-                         * than this for all cases.
-			 */
-			compare = -1;
-		}
-	} else if (file_2->details->info == NULL) {
-		/* FIXME bugzilla.eazel.com 2426: 
-		 * We do have a name for file 1 to compare
-                 * with, so we can probably do better than this for
-		 * all cases.
-		 */
-		compare = +1;
-	} else {
-		compare = gnome_vfs_file_info_compare_for_sort
-			(file_1->details->info, file_2->details->info, rules);
-	}
-
-	return compare;
 }
 
 /**
@@ -1566,6 +1708,19 @@ nautilus_file_compare_name (NautilusFile *file,
 	return result;
 }
 
+/* We use the file's URI for the metadata for files in a directory,
+ * but we use a hard-coded string for the metadata for the directory
+ * itself.
+ */
+static const char *
+get_metadata_name (NautilusFile *file)
+{
+	if (is_self_owned (file)) {
+		return FILE_NAME_FOR_DIRECTORY_METADATA;
+	}
+	return file->details->relative_uri;
+}
+
 char *
 nautilus_file_get_metadata (NautilusFile *file,
 			    const char *key,
@@ -1580,7 +1735,7 @@ nautilus_file_get_metadata (NautilusFile *file,
 
 	return nautilus_directory_get_file_metadata
 		(file->details->directory,
-		 file->details->relative_uri,
+		 get_metadata_name (file),
 		 key,
 		 default_metadata);
 }
@@ -1601,7 +1756,7 @@ nautilus_file_get_metadata_list (NautilusFile *file,
 
 	return nautilus_directory_get_file_metadata_list
 		(file->details->directory,
-		 file->details->relative_uri,
+		 get_metadata_name (file),
 		 list_key,
 		 list_subkey);
 }
@@ -1617,7 +1772,7 @@ nautilus_file_set_metadata (NautilusFile *file,
 	g_return_if_fail (key[0] != '\0');
 
 	if (nautilus_directory_set_file_metadata (file->details->directory,
-						  file->details->relative_uri,
+						  get_metadata_name (file),
 						  key,
 						  default_metadata,
 						  metadata)) {
@@ -1638,7 +1793,7 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 	g_return_if_fail (list_subkey[0] != '\0');
 
 	if (nautilus_directory_set_file_metadata_list (file->details->directory,
-						       file->details->relative_uri,
+						       get_metadata_name (file),
 						       list_key,
 						       list_subkey,
 						       list)) {
@@ -1661,7 +1816,7 @@ nautilus_file_get_boolean_metadata (NautilusFile *file,
 
 	return nautilus_directory_get_boolean_file_metadata
 		(file->details->directory,
-		 file->details->relative_uri,
+		 get_metadata_name (file),
 		 key,
 		 default_metadata);
 }
@@ -1680,7 +1835,7 @@ nautilus_file_get_integer_metadata (NautilusFile *file,
 
 	return nautilus_directory_get_integer_file_metadata
 		(file->details->directory,
-		 file->details->relative_uri,
+		 get_metadata_name (file),
 		 key,
 		 default_metadata);
 }
@@ -1697,7 +1852,7 @@ nautilus_file_set_boolean_metadata (NautilusFile *file,
 	g_return_if_fail (key[0] != '\0');
 
 	if (nautilus_directory_set_boolean_file_metadata (file->details->directory,
-							  file->details->relative_uri,
+							  get_metadata_name (file),
 							  key,
 							  default_metadata,
 							  metadata)) {
@@ -1716,7 +1871,7 @@ nautilus_file_set_integer_metadata (NautilusFile *file,
 	g_return_if_fail (key[0] != '\0');
 
 	if (nautilus_directory_set_integer_file_metadata (file->details->directory,
-							  file->details->relative_uri,
+							  get_metadata_name (file),
 							  key,
 							  default_metadata,
 							  metadata)) {
@@ -1800,7 +1955,7 @@ nautilus_file_get_uri (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (nautilus_file_is_self_owned (file)) {
+	if (is_self_owned (file)) {
 		return g_strdup (file->details->directory->details->uri);
 	}
 
@@ -3826,7 +3981,7 @@ nautilus_file_mark_gone (NautilusFile *file)
 
 	/* Let the directory know it's gone. */
 	directory = file->details->directory;
-	if (directory->details->as_file != file) {
+	if (!is_self_owned (file)) {
 		nautilus_directory_remove_file (directory, file);
 	}
 	
@@ -3857,7 +4012,7 @@ nautilus_file_changed (NautilusFile *file)
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	if (nautilus_file_is_self_owned (file)) {
+	if (is_self_owned (file)) {
 		nautilus_file_emit_changed (file);
 	} else {
 		fake_list.data = file;

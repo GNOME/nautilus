@@ -44,8 +44,6 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = 		\
-	nautilus-file-operations-progress.c	\
-	nautilus-file-operations.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
@@ -63,10 +61,12 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-directory-metafile.c		\
 	nautilus-directory.c			\
 	nautilus-drag.c				\
-	nautilus-druid.c			\
 	nautilus-druid-page-eazel.c		\
+	nautilus-druid.c			\
 	nautilus-entry.c			\
 	nautilus-file-changes-queue.c		\
+	nautilus-file-operations-progress.c	\
+	nautilus-file-operations.c		\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
 	nautilus-font-factory.c			\
@@ -132,8 +132,6 @@ libnautilus_extensions_la_SOURCES = 		\
 
 # Everything is private for now
 noinst_HEADERS =				\
-	nautilus-file-operations.h 		\
-	nautilus-file-operations-progress.h 	\
 	nautilus-background-canvas-group.h	\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
@@ -153,11 +151,13 @@ noinst_HEADERS =				\
 	nautilus-directory-private.h		\
 	nautilus-directory.h			\
 	nautilus-drag.h				\
-	nautilus-druid.h			\
 	nautilus-druid-page-eazel.h		\
+	nautilus-druid.h			\
 	nautilus-entry.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-changes-queue.h		\
+	nautilus-file-operations-progress.h 	\
+	nautilus-file-operations.h 		\
 	nautilus-file-private.h			\
 	nautilus-file-utilities.h		\
 	nautilus-file.h				\
@@ -176,8 +176,8 @@ noinst_HEADERS =				\
 	nautilus-icon-canvas-item.h		\
 	nautilus-icon-container.h		\
 	nautilus-icon-dnd.h			\
-	nautilus-icon-factory.h			\
 	nautilus-icon-factory-private.h		\
+	nautilus-icon-factory.h			\
 	nautilus-icon-private.h			\
 	nautilus-icon-text-item.h		\
 	nautilus-image.h			\
@@ -199,8 +199,8 @@ noinst_HEADERS =				\
 	nautilus-preferences-group.h		\
 	nautilus-preferences-item.h		\
 	nautilus-preferences-pane.h		\
-	nautilus-preferences.h			\
 	nautilus-preferences-private.h		\
+	nautilus-preferences.h			\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\

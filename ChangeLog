@@ -1,3 +1,46 @@
+2000-11-08  Darin Adler  <darin@eazel.com>
+
+	buddy: Gene Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c: (rename_callback): Since
+	metadata for the directory itself is now stored under a fixed
+	name, no need to rename the metadata for self-owned files any
+	more.
+	(get_item_count), (get_size), (compare_directories_by_count),
+	(compare_files_by_size), (compare_by_size): Reimplement compares
+	by size so they don't use gnome_vfs_file_info_compare -- this
+	makes them work better for info == NULL cases.
+	(get_date), (compare_by_modification_date): Reimplement compares
+	by modification date so they don't use gnome_vfs_file_info_compare
+	-- this makes them work better for info == NULL cases.
+	(compare_by_name): Sort files that start with "." or "#" last.
+	(compare_by_name_and_directory_name): Helper function so that we
+	always sort by directory name when names are equal.
+	(nautilus_file_compare_for_sort): Use the new functions above so
+	we never have to use the gnome_vfs_file_info_compare function.
+	Because of that, we won't have to keep file names around any more.
+	This also simplified the logic -- I was able to remove all the
+	special cases for info == NULL.
+	(get_metadata_name): Function that returns "." for self-owned
+	files so the metadata for the directory itself is stored somewhere
+	that's not affected by renaming.
+	(nautilus_file_get_metadata), (nautilus_file_get_metadata_list),
+	(nautilus_file_set_metadata), (nautilus_file_set_metadata_list),
+	(nautilus_file_get_boolean_metadata),
+	(nautilus_file_get_integer_metadata),
+	(nautilus_file_set_boolean_metadata),
+	(nautilus_file_set_integer_metadata): Use the new
+	get_metadata_name function.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml: Changed an old
+	<menuitem/> to <separator/>.
+
+	* po/.cvsignore: Ignore the tmp directory, but no need to ignore
+	the .headerlock file which is now obsolete.
+
+	* README: Minor tweaks.
+	* libnautilus-extensions/Makefile.am: Resorted lists.
+
 2000-11-08  John Sullivan  <sullivan@eazel.com>
 
 	buddy: Darin Adler <darin@eazel.com>

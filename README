@@ -114,7 +114,7 @@ The following lists the packages and the versions they should report.
     glib:              1.2.8                                      HC1.2
     gtk+:              1.2.8                                      HC1.2
     imlib:             1.9.8.1                                    HC1.2
-    gnome-xml:         1.8.10                                      HC1.2
+    gnome-xml:         1.8.10                                     HC1.2
     ORBit:             0.5.4                                      HC1.2
     gnome-libs:        1.2.7              --enable-prefer-db1     HC1.2
     gnome-http:        1.0.7					  HC1.2
@@ -167,12 +167,12 @@ The following lists the packages and the versions that are required.
     module             branch             configure options      dist.
     ------             ------             -----------------      -----
     popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
-    glib:              glib-1-2                                  HC1.2
-    gtk+:              gtk-1-2                                   HC1.2
-    imlib:             HEAD                                      HC1.2
+    glib:              glib-1-2
+    gtk+:              gtk-1-2
+    imlib:             HEAD
     gnome-xml:         LIB_XML_1_BRANCH
     ORBit:             orbit-stable-0-5
-    gnome-libs:        gnome-libs-1-0     --enable-prefer-db1    HC1.2
+    gnome-libs:        gnome-libs-1-0     --enable-prefer-db1
     gnome-http:        HEAD
     oaf:               HEAD
     gconf:             HEAD
@@ -187,7 +187,6 @@ The following lists the packages and the versions that are required.
     nautilus:          HEAD
 
 RH6.2 == Version from Red Hat 6.2 OK
-HC1.2 == Version from Helix Code Gnome 1.2 OK
 
 One difference between tarball and cvs compilation is that when you
 get stuff from cvs, you don't get a configure script. This script has
