@@ -27,6 +27,7 @@ struct _SectContext {
 	HeaderInfo *header;
 	FigureInfo *figure;
 	gint figure_count;
+	gint table_count;
 	gchar *prev;
 	gchar *previd;
 	SectContextState state;
@@ -65,7 +66,6 @@ void sect_tt_start_element (Context *context, const gchar *name, const xmlChar *
 void sect_tt_end_element (Context *context, const gchar *name);
 void sect_b_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_b_end_element (Context *context, const gchar *name);
-void sect_b_arrow_end_element (Context *context, const gchar *name);
 void sect_tti_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_tti_end_element (Context *context, const gchar *name);
 void sect_btt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
@@ -100,5 +100,17 @@ void sect_link_start_element (Context *context, const char *name, const xmlChar 
 void sect_link_end_element (Context *context, const char *name);
 void sect_menu_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_menu_end_element (Context *context, const char *name);
+void sect_informaltable_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_informaltable_end_element (Context *context, const char *name);
+void sect_table_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_table_end_element (Context *context, const char *name);
+void sect_row_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_row_end_element (Context *context, const char *name);
+void sect_entry_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_entry_end_element (Context *context, const char *name);
+void sect_thead_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_thead_end_element (Context *context, const char *name);
+void sect_tbody_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_tbody_end_element (Context *context, const char *name);
 
 #endif

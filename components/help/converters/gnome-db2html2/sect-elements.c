@@ -3,7 +3,6 @@
 #include "gnome.h"
 
 #define IS_IN_SECT(context) (((SectContext *)context->data)->state == IN_SECT)
-
 ElementInfo sect_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) sect_article_end_element, NULL},
 	{ BOOK, "book", NULL, NULL, NULL},
@@ -87,6 +86,12 @@ ElementInfo sect_elements[] = {
 	{ INTERFACE, "interface", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ LINK, "link", (startElementSAXFunc) sect_link_start_element, (endElementSAXFunc) sect_link_end_element, (charactersSAXFunc) sect_write_characters},
 	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
+	{ TABLE, "table", (startElementSAXFunc) sect_table_start_element, (endElementSAXFunc) sect_table_end_element, NULL},
+	{ INFORMALTABLE, "informaltable", (startElementSAXFunc) sect_informaltable_start_element, (endElementSAXFunc) sect_informaltable_end_element, NULL},
+	{ ROW, "row", (startElementSAXFunc) sect_row_start_element, (endElementSAXFunc) sect_row_end_element, NULL},
+	{ ENTRY, "entry", (startElementSAXFunc) sect_entry_start_element, (endElementSAXFunc) sect_entry_end_element, (charactersSAXFunc) sect_write_characters},
+	{ THEAD, "thead", (startElementSAXFunc) sect_thead_start_element, (endElementSAXFunc) sect_thead_end_element, NULL},
+	{ TBODY, "tbody", (startElementSAXFunc) sect_tbody_start_element, (endElementSAXFunc) sect_tbody_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -112,6 +117,7 @@ sect_print (Context *context, gchar *format, ...)
 	list = g_slist_prepend (list, GINT_TO_POINTER (FUNCDEF));
 	list = g_slist_prepend (list, GINT_TO_POINTER (PARAMDEF));
 	index = find_first_parent (context, list);
+	g_slist_free (list);
 
 	switch (index) {
 	case FUNCDEF:
@@ -161,12 +167,13 @@ sect_print (Context *context, gchar *format, ...)
 		g_free (string);
 		break;
 	default:
-		if ((*string == '<') && (*(string +1) == '\000'))
+		if ((*string == '<') && (*(string +1) == '\000')) {
 			printf ("&lt;");
-		else if ((*string == '&') && (*(string +1) == '\000'))
+		} else if ((*string == '&') && (*(string +1) == '\000')) {
 			printf ("&amp;");
-		else
+		} else {
 			printf (string);
+		}
 		g_free (string);
 	}
 }
@@ -188,11 +195,27 @@ sect_write_characters (Context *context,
 		      int len)
 {
 	gchar *temp;
+	GSList *list = NULL;
+	ElementIndex index;
 
-	if (!IS_IN_SECT (context))
-		return;
-
-	temp = g_strndup (chars, len);
+	list = g_slist_prepend (list, GINT_TO_POINTER (ENTRY));
+	index = find_first_parent (context, list);
+	g_slist_free (list);
+	
+	switch (index) { 
+		case ENTRY:
+			if (len == 0) {
+				/* This will not work possible due to a
+				 * libxml bug */
+				temp = g_strdup ("&nbsp;");
+			} else {
+				temp = g_strndup (chars, len);
+			}
+			break;
+		default:
+			temp = g_strndup (chars, len);
+			break;
+	}
 	sect_print (context, temp);
 	g_free (temp);
 }
@@ -536,7 +559,9 @@ sect_title_start_element (Context *context,
 	GSList *element_list = NULL;
 	StackElement *stack_el;
 	gchar **atrs_ptr;
+	SectContext *sect_context;
 
+	sect_context = (SectContext *) context->data;
 	if (!IS_IN_SECT (context))
 		return;
 
@@ -547,6 +572,7 @@ sect_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	stack_el = find_first_element (context, element_list);
 
@@ -556,6 +582,9 @@ sect_title_start_element (Context *context,
 
 
 	switch (stack_el->info->index) {
+	case TABLE:
+		sect_print (context, "<P><B>Table %d. ", sect_context->table_count); 
+		break;
 	case SECT1:
 	case SECT2:
 	case SECT3:
@@ -605,11 +634,15 @@ sect_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
+	case TABLE:
+		sect_print (context, "</B></P>\n");
+		break;
 	case SECT1:
 	case SECTION:
 		sect_print (context, "</A></H2>\n");
@@ -687,6 +720,7 @@ sect_title_characters (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 
 	index = find_first_parent (context, element_list);
@@ -710,6 +744,11 @@ sect_title_characters (Context *context,
 		break;
 	case FIGURE:
 		((SectContext *) context->data)->figure->title = temp;
+		break;
+	case TABLE:
+		sect_print (context, temp);
+		g_free (temp);
+//		((SectContext *) context->data)->table->title = temp;
 		break;
 	default:
 		g_free (temp);
@@ -1030,15 +1069,6 @@ sect_b_end_element (Context *context,
 		return;
 
 	sect_print (context, "</B>");
-}
-
-void sect_b_arrow_end_element (Context *context,
-                               const gchar *name)
-{
-	        if (!IS_IN_SECT (context))
-			return;
-		
-		sect_print (context, "-&gt;</B>");
 }
 
 void
@@ -1440,3 +1470,176 @@ sect_void_start_element (Context        *context,
 
 	sect_print (context, "void");
 }
+
+
+void
+sect_informaltable_start_element (Context *context,
+			   	  const char *name,
+				  const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<TABLE BORDER=\"0\" BGCOLOR=\"#E0E0E0\"
+                           CELLSPACING=\"0\" CELLPADDING=\"4\">\n");
+}
+
+void
+sect_informaltable_end_element (Context *context,
+				const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+	sect_print (context, "</TABLE>\n");
+}
+
+void
+sect_table_start_element (Context *context,
+			  const char *name,
+			  const xmlChar **atrs)
+{
+	SectContext *sect_context;
+
+	sect_context = (SectContext *) context->data;
+	if (!IS_IN_SECT (context))
+		return;
+	
+	sect_print (context, "<TABLE BORDER=\"1\"\n");
+	
+	sect_context->table_count++;
+}
+
+void
+sect_table_end_element (Context *context,
+			        const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+	
+	sect_print (context,"</TABLE>\n");
+}
+
+void
+sect_row_start_element (Context *context,
+			const char *name,
+			const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<TR>\n");
+}
+
+void
+sect_row_end_element (Context *context,
+		      const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</TR>\n");
+}
+void
+sect_entry_start_element (Context *context,
+			   const char *name,
+			   const xmlChar **atrs)
+{
+	GSList *element_list = NULL;
+	StackElement *stack_el;
+	
+	if (!IS_IN_SECT (context))
+		return;
+	
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (THEAD));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TBODY));
+	stack_el = find_first_element (context, element_list);
+	g_slist_free (element_list);
+
+	if (stack_el == NULL) {
+		return;
+	}
+
+	switch (stack_el->info->index) {
+		case THEAD:
+			sect_print (context, "<TH ALIGN=\"LEFT\" VALIGN=\"TOP\">");
+			break;
+		case TBODY:
+			sect_print (context, "<TD ALIGN=\"LEFT\" VALIGN=\"TOP\">");
+			break;
+		default:
+			break;
+	};
+}
+
+void
+sect_entry_end_element (Context *context,
+			const char *name)
+{
+	GSList *element_list = NULL;
+	StackElement *stack_el;
+	
+	if (!IS_IN_SECT (context))
+		return;
+
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (THEAD));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TBODY));
+	stack_el = find_first_element (context, element_list);
+	g_slist_free (element_list);
+	if (stack_el == NULL) {
+		return;
+	}
+	
+	switch (stack_el->info->index) {
+		case THEAD:
+			sect_print (context, "</TH>\n");
+			break;
+		case TBODY:
+			sect_print (context, "</TD>\n");
+			break;
+		default:
+			break;
+	}
+}
+
+void
+sect_thead_start_element (Context *context,
+			  const char *name,
+			  const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+	        return;
+
+        sect_print (context, "<THEAD>");
+}
+
+void
+sect_thead_end_element (Context *context,
+			const char *name)
+{
+        if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</THEAD>");
+}
+
+void
+sect_tbody_start_element (Context *context,
+                          const char *name,
+			  const xmlChar **atrs)
+{
+        if (!IS_IN_SECT (context))
+                return;
+
+        sect_print (context, "<TBODY>");
+}
+
+void
+sect_tbody_end_element (Context *context,
+                        const char *name)
+{
+        if (!IS_IN_SECT (context))
+                return;
+
+        sect_print (context, "</TBODY>");
+}
+

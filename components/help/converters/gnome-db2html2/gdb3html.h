@@ -89,7 +89,13 @@ typedef enum ElementIndex {
 	INTERFACE,
 	LINK, /* 80 */
 	MENUCHOICE, 
-	UNDEFINED /* 82 */
+	TABLE,
+	INFORMALTABLE,
+	ROW,
+	ENTRY, /* 85 */
+	THEAD,
+	TBODY,
+	UNDEFINED /* 88 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;

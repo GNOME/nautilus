@@ -245,7 +245,7 @@ characters (Context *context,
 	if (context->stack == NULL)
 		return;
 	element = ((StackElement *)context->stack->data)->info;
-
+	
 	if (element && element->characters_func)
 		(* element->characters_func) (context, chars, len);
 }
