@@ -1379,10 +1379,10 @@ static NautilusZoomLevel default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 static NautilusZoomLevel
 get_default_zoom_level (void)
 {
-	static gboolean auto_storaged_added = FALSE;
+	static gboolean auto_storage_added = FALSE;
 
-	if (auto_storaged_added == FALSE) {
-		auto_storaged_added = TRUE;
+	if (!auto_storage_added) {
+		auto_storage_added = TRUE;
 		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 						       (int *) &default_zoom_level);
 	}

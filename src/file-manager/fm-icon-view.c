@@ -1685,20 +1685,22 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	
 	/* preview files based on the mime_type. */
 	/* at first, we just handle sounds */
-	if (should_preview_sound (file)) {
+	if (should_preview_sound (file)
+	    && nautilus_sound_can_play_sound ()) {
 		mime_type = nautilus_file_get_mime_type (file);
-		if ((eel_istr_has_prefix (mime_type, "audio/") ||
-		     eel_istr_has_prefix (mime_type, "application/x-ogg")) &&
-		    eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0) {
-			if (nautilus_sound_can_play_sound ()) {
-				result = 1;
-				preview_audio (icon_view, file, start_flag);
-			}
+		if ((eel_istr_has_prefix (mime_type, "audio/")
+		     || eel_istr_has_prefix (mime_type, "application/x-ogg"))
+		    && eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0
+		    && eel_strcasecmp (mime_type, "audio/x-mpegurl") != 0) {
+			result = 1;
+			preview_audio (icon_view, file, start_flag);
 		}	
 		g_free (mime_type);
 	}
 	
-	/* display file name in status area at low zoom levels, since the name is not displayed or hard to read */
+	/* Display file name in status area at low zoom levels, since
+	 * the name is not displayed or hard to read in the icon view.
+	 */
 	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
 		if (start_flag) {
 			file_name = nautilus_file_get_name (file);

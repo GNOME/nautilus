@@ -94,20 +94,13 @@ dnl ====================================
 dnl ====================================
 dnl = Check for different mount systems
 dnl ====================================
-
-echo "
-Determining mount system properties:
-"
-AC_CHECK_FUNCS( setmntent endmntent )
-AC_CHECK_HEADERS( mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h )
-echo "
-"
+AC_CHECK_FUNCS(setmntent endmntent hasmntopt)
+AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h)
 
 dnl ====================================
 dnl = Method for changing environment
 dnl ====================================
-
-AC_CHECK_FUNCS( setenv unsetenv putenv )
+AC_CHECK_FUNCS(setenv unsetenv putenv)
 
 dnl ====================================
 dnl Check for FAM header -- we find the library at runtime

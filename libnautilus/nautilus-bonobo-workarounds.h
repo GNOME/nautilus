@@ -37,7 +37,7 @@ POA_Bonobo_Stream__epv * nautilus_bonobo_stream_get_epv                         
 
 /* Bonobo will address this problem some day. */
 void                     nautilus_bonobo_object_force_destroy                       (BonoboObject                 *object);
-void                     nautilus_bonobo_object_force_destroy_at_idle               (BonoboObject                 *object);
+void                     nautilus_bonobo_object_force_destroy_later                 (BonoboObject                 *object);
 void                     nautilus_bonobo_object_call_when_remote_object_disappears  (BonoboObject                 *object,
 										     Bonobo_Unknown                remote_object,
 										     NautilusBonoboObjectCallback  function,

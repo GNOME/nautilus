@@ -445,7 +445,7 @@ get_removable_volumes (void)
 			volumes = mount_volume_prepend_filesystem (volumes, volume);
 		}
 	}
-#elif defined (HAVE_MNTTENT_H)
+#elif defined (HAVE_MNTENT_H)
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
 			volume = create_volume (ent->mnt_fsname, ent->mnt_dir, ent->mnt_type);

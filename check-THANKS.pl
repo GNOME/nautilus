@@ -37,6 +37,7 @@ my %name_map =
    "Darin as Andy" => "Darin Adler",
    "Eskil Olsen" => "Eskil Heyn Olsen",
    "J. Shane Culpepper" => "J Shane Culpepper",
+   "Jesus Bravo Alvarez" => "Jesús Bravo Álvarez",
    "Michael Engber" => "Mike Engber",
    "Michael K. Fleming" => "Mike Fleming",
    "Pavel Císler" => "Pavel Cisler",
@@ -163,11 +164,15 @@ close AUTHORS;
 open THANKS, "THANKS" or die;
 
 my @thanks_people;
+my @non_translation_thanks_people;
+my $in_translations = 0;
 
 while (<THANKS>) {
     chomp;
     s/ - .*$//;
     push @thanks_people, $_;
+    $in_translations = 1 if /contributed translations/;
+    push @non_translation_thanks_people, $_ if !$in_translations;
 }
 
 close THANKS;
@@ -211,7 +216,7 @@ foreach my $person (@changelog_people)
 my @double_credited;
 foreach my $person (@authors)
   {
-    if (grep {$_ eq $person} @thanks_people)
+    if (grep {$_ eq $person} @non_translation_thanks_people)
       {
         push @double_credited, $person;
       }

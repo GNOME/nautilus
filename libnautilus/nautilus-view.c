@@ -452,7 +452,7 @@ widget_destroyed_callback (GtkWidget *widget,
 {
 	g_assert (NAUTILUS_IS_VIEW (callback_data));
 
-	nautilus_bonobo_object_force_destroy_at_idle
+	nautilus_bonobo_object_force_destroy_later
 		(BONOBO_OBJECT (callback_data));
 }
 

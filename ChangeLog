@@ -1,3 +1,84 @@
+2001-05-22  Darin Adler  <darin@eazel.com>
+
+	Fixed problem compiling with new gettext:
+
+	* hack-macros/gnome.m4: Add BUILD_INCLUDED_LIBINTL for
+	compatibility with the new gettext.
+	
+	Fixed a problem with the throbber detecting that its X window is
+	gone. Based on suggestions from Owen Taylor.
+	
+	* libnautilus/nautilus-bonobo-workarounds.h:
+	* libnautilus/nautilus-bonobo-workarounds.c:
+	(destroy_later_callback), (destroyed_before_timeout_callback),
+	(nautilus_bonobo_object_force_destroy_later): Changed to "destroy
+	later" instead of "destroy at idle". This makes us less likely to
+	experience race conditions.
+
+	* src/nautilus-window.c: (nautilus_window_initialize_class),
+	(nautilus_window_unrealize), (nautilus_window_destroy): Moved the
+	throbber destruction to unrealize so we destroy the throbber
+	before we destroy its X window.
+
+	Starting with patch by Anders Carlsson <andersca@gnu.org>, added
+	both prelighting and tracking to the throbber, also making it take
+	action on release, not press.
+
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_initialize_class): Add handlers for enter,
+	leave, and release.
+	(nautilus_throbber_initialize): Set flags so we get enter and
+	leave events.
+	(select_throbber_image): Ref the image that's returned.
+	(draw_throbber_image): Make the image be prelit if the mouse is
+	over the throbber but it wasn't clicked, and darkened if the mouse
+	is over the throbber and it was clicked.
+	(nautilus_throbber_enter_notify_event): Set flag and request
+	redraw to prelight.
+	(nautilus_throbber_leave_notify_event): Set flag and request
+	redraw to un-prelight.
+	(nautilus_throbber_button_press_event): Set flag to indicate we
+	hit the button in the throbber. Also, respond only to left clicks.
+	(nautilus_throbber_button_release_event): Look at flag set in
+	press event. Do the work here now instead of at press time since
+	we are more like a real button.
+
+	Rolled in change by Miguel Rodríguez Pérez <migrax@terra.es> to
+	fix volume mounting problems:
+
+	* configure.in: Check for hasmntopt.
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(get_removable_volumes): Fix typo (HAVE_MNTTENT_H ->
+	HAVE_MNTENT_H).
+	
+	Integrated patch by Miguel Rodríguez Pérez <migrax@terra.es> to
+	make Nautilus not try to preview MPEG lists:
+
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback): Made audio/x-mpegurl another
+	exception to the list of audio types we can preview.
+
+	Rolled in change by Dennis Smit <synap@area101.penguin.nl>:
+ 
+	* THANKS: added more translators that were missing from the
+	THANKS file (names from all the .po files in ./po).
+
+	Other updates to THANKS:
+
+	* THANKS: Added Jon K Hellan.
+ 	* check-THANKS.pl: Fixed logic so you can be credited as both an
+	author and translator.
+
+	Other changes:
+
+	* src/file-manager/fm-list-view.c: (get_default_zoom_level): Fix
+	typo (storaged -> storage).
+	
+	* src/nautilus-shell-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Fixed keybindings entries to use the correct tags as described by
+	ui-xml.txt.
+
 2001-05-21  Andy Hertzfeld  <andy@eazel.com>
 
 	made the news panel flash less by defering async updates with a timer

@@ -62,11 +62,11 @@
 	 _tip="Move each selected item to the Trash"/>
 </commands>
 <keybindings>
-	<keybinding name="*Control*BackSpace" id="Trash"/>
-	<keybinding name="Delete" id="Trash"/>
-	<keybinding name="KP_Delete" id="Trash"/>
-	<keybinding name="*Shift*Delete" id="Delete"/>
-	<keybinding name="*Shift*KP_Delete" id="Delete"/>
+	<accel name="*Control*BackSpace" verb="Trash"/>
+	<accel name="Delete" verb="Trash"/>
+	<accel name="KP_Delete" verb="Trash"/>
+	<accel name="*Shift*Delete" verb="Delete"/>
+	<accel name="*Shift*KP_Delete" verb="Delete"/>
 </keybindings>
 <menu>
 	<submenu name="File">

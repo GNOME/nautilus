@@ -117,23 +117,24 @@ static GList *history_list = NULL;
 static GdkPixmap *mini_icon_pixmap;
 static GdkBitmap *mini_icon_mask;
 
-static void nautilus_window_initialize_class       (NautilusWindowClass *klass);
-static void nautilus_window_initialize             (NautilusWindow      *window);
-static void nautilus_window_destroy                (GtkObject           *object);
-static void nautilus_window_set_arg                (GtkObject           *object,
-						    GtkArg              *arg,
-						    guint                arg_id);
-static void nautilus_window_get_arg                (GtkObject           *object,
-						    GtkArg              *arg,
-						    guint                arg_id);
-static void nautilus_window_size_request           (GtkWidget           *widget,
-						    GtkRequisition      *requisition);
-static void nautilus_window_realize                (GtkWidget           *widget);
-static void update_sidebar_panels_from_preferences (NautilusWindow      *window);
-static void sidebar_panels_changed_callback        (gpointer             user_data);
-static void nautilus_window_show                   (GtkWidget           *widget);
-static void cancel_view_as_callback                (NautilusWindow      *window);
-static void real_add_current_location_to_history_list (NautilusWindow   *window);
+static void nautilus_window_initialize_class          (NautilusWindowClass *klass);
+static void nautilus_window_initialize                (NautilusWindow      *window);
+static void nautilus_window_destroy                   (GtkObject           *object);
+static void nautilus_window_set_arg                   (GtkObject           *object,
+						       GtkArg              *arg,
+						       guint                arg_id);
+static void nautilus_window_get_arg                   (GtkObject           *object,
+						       GtkArg              *arg,
+						       guint                arg_id);
+static void nautilus_window_size_request              (GtkWidget           *widget,
+						       GtkRequisition      *requisition);
+static void nautilus_window_realize                   (GtkWidget           *widget);
+static void update_sidebar_panels_from_preferences    (NautilusWindow      *window);
+static void sidebar_panels_changed_callback           (gpointer             user_data);
+static void nautilus_window_show                      (GtkWidget           *widget);
+static void nautilus_window_unrealize                 (GtkWidget           *widget);
+static void cancel_view_as_callback                   (NautilusWindow      *window);
+static void real_add_current_location_to_history_list (NautilusWindow      *window);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
@@ -164,6 +165,7 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 	object_class->set_arg = nautilus_window_set_arg;
 	
 	widget_class->show = nautilus_window_show;
+	widget_class->unrealize = nautilus_window_unrealize;
 	
 	gtk_object_add_arg_type ("NautilusWindow::app_id",
 				 GTK_TYPE_STRING,
@@ -900,12 +902,42 @@ free_stored_viewers (NautilusWindow *window)
 	window->details->extra_viewer = NULL;
 }
 
-static void 
-nautilus_window_destroy (GtkObject *object)
+static void
+nautilus_window_unrealize (GtkWidget *widget)
 {
 	NautilusWindow *window;
 	CORBA_Environment ev;
 	Bonobo_PropertyBag property_bag;
+	
+	window = NAUTILUS_WINDOW (widget);
+
+	/* Get rid of the throbber explicitly before it self-destructs
+	 * (which it will do when the control frame goes away.
+	 */
+	if (window->throbber != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
+		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
+			bonobo_event_source_client_remove_listener
+				(property_bag,
+				 window->details->throbber_location_change_request_listener_id,
+				 &ev);
+			bonobo_object_release_unref (property_bag, NULL);	
+		}
+		CORBA_exception_free (&ev);
+
+		bonobo_object_release_unref (window->throbber, NULL);
+
+		window->throbber = CORBA_OBJECT_NIL;
+	}
+
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
+}
+
+static void 
+nautilus_window_destroy (GtkObject *object)
+{
+	NautilusWindow *window;
 	
 	window = NAUTILUS_WINDOW (object);
 
@@ -960,27 +992,13 @@ nautilus_window_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
 	}
 
-	if (window->throbber != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
-		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
-			bonobo_event_source_client_remove_listener
-				(property_bag,
-				 window->details->throbber_location_change_request_listener_id,
-				 &ev);
-			bonobo_object_release_unref (property_bag, NULL);	
-		}
-		CORBA_exception_free (&ev);
-
-		bonobo_object_release_unref (window->throbber, NULL);
-	}
 	if (window->details->location_change_at_idle_id != 0) {
 		gtk_idle_remove (window->details->location_change_at_idle_id);
 	}
 
 	g_free (window->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

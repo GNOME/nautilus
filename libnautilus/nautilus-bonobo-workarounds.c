@@ -50,6 +50,12 @@ typedef struct {
 
 #endif
 
+/* By waiting a minute before self-destructing, we minimize the race
+ * conditions that can occur if we self-destruct right when we notice
+ * an X window going away.
+ */
+#define MINIMIZE_RACE_CONDITIONS_DELAY 60000
+
 /* FIXME bugzilla.eazel.com 2456: Is a hard-coded 20 seconds wait to
  * detect that a remote object's process is hung acceptable? Can a
  * component that is working still take 20 seconds to respond?
@@ -69,9 +75,9 @@ typedef struct {
 
 typedef struct {
 	BonoboObject *object;
-	guint idle_id;
+	guint timeout_id;
 	guint destroy_handler_id;
-} IdleDestroyData;
+} DestroyLaterData;
 
 POA_Bonobo_Unknown__epv *
 nautilus_bonobo_object_get_epv (void)
@@ -195,9 +201,9 @@ nautilus_bonobo_object_force_destroy (BonoboObject *object)
 #endif /* RELY_ON_BONOBO_INTERNALS */
 
 static gboolean
-destroy_at_idle_callback (gpointer callback_data)
+destroy_later_callback (gpointer callback_data)
 {
-	IdleDestroyData *data;
+	DestroyLaterData *data;
 
 	data = callback_data;
 	g_assert (BONOBO_IS_OBJECT (data->object));
@@ -210,22 +216,22 @@ destroy_at_idle_callback (gpointer callback_data)
 }
 
 static void
-destroyed_before_idle_callback (GtkObject *object,
-				gpointer callback_data)
+destroyed_before_timeout_callback (GtkObject *object,
+				   gpointer callback_data)
 {
-	IdleDestroyData *data;
+	DestroyLaterData *data;
 
 	data = callback_data;
 	g_assert (data->object == BONOBO_OBJECT (object));
 
-	gtk_idle_remove (data->idle_id);
+	gtk_timeout_remove (data->timeout_id);
 	g_free (data);
 }
 
 void
-nautilus_bonobo_object_force_destroy_at_idle (BonoboObject *object)
+nautilus_bonobo_object_force_destroy_later (BonoboObject *object)
 {
-	IdleDestroyData *data;
+	DestroyLaterData *data;
 
 	if (object == NULL) {
 		return;
@@ -234,13 +240,14 @@ nautilus_bonobo_object_force_destroy_at_idle (BonoboObject *object)
 	g_return_if_fail (BONOBO_IS_OBJECT (object));
 	g_return_if_fail (!GTK_OBJECT_DESTROYED (object));
 
-	data = g_new (IdleDestroyData, 1);
+	data = g_new (DestroyLaterData, 1);
 	data->object = object;
-	data->idle_id = gtk_idle_add
-		(destroy_at_idle_callback, data);
+	data->timeout_id = gtk_timeout_add
+		(MINIMIZE_RACE_CONDITIONS_DELAY,
+		 destroy_later_callback, data);
 	data->destroy_handler_id = gtk_signal_connect
 		(GTK_OBJECT (object), "destroy",
-		 destroyed_before_idle_callback, data);
+		 destroyed_before_timeout_callback, data);
 }
 
 /* Same as bonobo_unknown_ping, but this one works. */
