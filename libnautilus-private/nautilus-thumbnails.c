@@ -365,12 +365,12 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	file_mtime = INVALID_MTIME;
 	
 	/* if the thumbnail file already exists locally, simply return the uri */
-	
 	/* note: thumbnail_uri is always local here, so it's not a disaster that we make a synchronous call below.
 	   Eventually, we'll want to do everything asynchronously, when we have time to restructure the thumbnail engine */
 	if (vfs_file_exists (thumbnail_uri)) {
-		
 		/* see if the file changed since it was thumbnailed by comparing the modification time */
+		/* Note: There may be a file there with the wrong mtime, but we can't write to the directory.
+		 *       Make sure you don't loop trying to read this after having created a global one */
 		remake_thumbnail = files_have_different_mtime (file_uri, thumbnail_uri, &file_mtime);
 		
 		/* if the file hasn't changed, return the thumbnail uri */
@@ -386,27 +386,25 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	}
 	
 	/* now try it globally */
-	if (!remake_thumbnail) {
-		g_free (thumbnail_uri);
-		thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, FALSE, TRUE);
+	g_free (thumbnail_uri);
+	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, FALSE, TRUE);
 		
-		/* if the thumbnail file already exists in the common area,  return that uri, */
-		/* the uri is guaranteed to be local */
-		if (vfs_file_exists (thumbnail_uri)) {
+	/* if the thumbnail file already exists in the common area,  return that uri, */
+	/* the uri is guaranteed to be local */
+	if (vfs_file_exists (thumbnail_uri)) {
 		
-			/* see if the file changed since it was thumbnailed by comparing the modification time */
-			remake_thumbnail = files_have_different_mtime (file_uri, thumbnail_uri, &file_mtime);
+		/* see if the file changed since it was thumbnailed by comparing the modification time */
+		remake_thumbnail = files_have_different_mtime (file_uri, thumbnail_uri, &file_mtime);
 		
-			/* if the file hasn't changed, return the thumbnail uri */
-			if (!remake_thumbnail) {
-				g_free (file_uri);
-				return thumbnail_uri;
-			} else {
-				nautilus_icon_factory_remove_by_uri (thumbnail_uri);
-
-				/* the uri is guaranteed to be local */
-				gnome_vfs_unlink (thumbnail_uri);
-			}
+		/* if the file hasn't changed, return the thumbnail uri */
+		if (!remake_thumbnail) {
+			g_free (file_uri);
+			return thumbnail_uri;
+		} else {
+			nautilus_icon_factory_remove_by_uri (thumbnail_uri);
+			
+			/* the uri is guaranteed to be local */
+			gnome_vfs_unlink (thumbnail_uri);
 		}
 	}
 	
@@ -414,7 +412,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	g_free (thumbnail_uri);
 	local_flag = TRUE;
 	thumbnail_uri = make_thumbnail_uri (file_uri, TRUE, local_flag, TRUE);
-				
+
 	/* FIXME bugzilla.gnome.org 43137: more potentially losing
 	   synch I/O - this could be remote */
 
@@ -433,6 +431,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 		g_free (thumbnail_uri);
 		local_flag = FALSE;
 		thumbnail_uri = make_thumbnail_uri (file_uri, TRUE, local_flag, TRUE);
+
 		/* this is guaranteed to be local, so synch I/O can be tolerated here */
 		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
 	}
@@ -578,7 +577,7 @@ make_thumbnails (gpointer data)
 	NautilusThumbnailInfo *info;
 	GList *next_thumbnail = thumbnails;
 	GdkPixbuf *scaled_image;
-	
+
 	/* if the queue is empty, there's nothing more to do */
 	if (next_thumbnail == NULL) {
 		gtk_timeout_remove (thumbnail_timeout_id);
@@ -676,7 +675,7 @@ make_thumbnails (gpointer data)
 				 * but we're lame.
 				 */
 				file_info->atime = info->original_file_mtime;
-				
+
 				gnome_vfs_set_file_info (new_thumbnail_uri,
 							 file_info,
 							 GNOME_VFS_SET_FILE_INFO_TIME);

@@ -1,3 +1,14 @@
+2002-03-28  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-thumbnails-jpeg.c:
+	Don't define JCONFIG_INCLUDED. That breaks libjpeg for me.
+	
+	* libnautilus-private/nautilus-thumbnails.c:
+	Use the global thumbnail if there is one, and the local
+	one had the wrong timestamp. Otherwise we will loop if
+	the local one is wrong and we can't write to the local
+	directory.
+
 2002-03-28  Dave Camp  <dave@ximian.com>
 
 	* configure.in: Check for and include X libraries explicitly.
