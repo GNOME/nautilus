@@ -286,7 +286,8 @@ display_prototype_caveat ()
 		_("Thank you for trying Nautilus!"
 		  "\n\nIt is still under development, and many features "
 		  "are not yet implemented or have some degree of instability. "
-		  "Use it at your own risk."
+		  "If you use this pre-release version of Nautilus, please "
+		  "exercise extreme caution."
 		  "\n\nFor more information, visit http://nautilus.eazel.com."),
 		 _("Nautilus: caveat"),
 		 GNOME_STOCK_BUTTON_OK,
