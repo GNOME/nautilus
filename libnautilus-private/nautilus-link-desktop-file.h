@@ -32,6 +32,7 @@ gboolean         nautilus_link_desktop_file_local_create                      (c
 									       const char       *image,
 									       const char       *target_uri,
 									       const GdkPoint   *point,
+									       int               screen,
 									       NautilusLinkType  type);
 gboolean         nautilus_link_desktop_file_local_set_icon                    (const char       *uri,
 									       const char       *icon_name);
@@ -53,6 +54,7 @@ char *           nautilus_link_desktop_file_get_link_icon_given_file_contents (c
 									       int               link_file_size);
 void             nautilus_link_desktop_file_local_create_from_gnome_entry     (GnomeDesktopItem *entry,
 									       const char       *dest_uri,
-									       const GdkPoint   *position);
+									       const GdkPoint   *position,
+									       int               screen);
 
 #endif /* NAUTILUS_LINK_DESKTOP_FILE_H */

@@ -1,3 +1,17 @@
+2003-07-20  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	(nautilus_link_desktop_file_local_create),
+	(nautilus_link_desktop_file_local_create_from_gnome_entry):
+	* libnautilus-private/nautilus-link-desktop-file.h:
+	* libnautilus-private/nautilus-link.c:
+	(nautilus_link_local_create),
+	(nautilus_link_local_create_from_gnome_entry):
+	* libnautilus-private/nautilus-link.h:
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	Pass the screen number when creating nautilus links, fixes
+	#117946
+	
 2003-07-19  Dennis Cranston <dennis_cranston at yahoo com>
 
 	* icons/Makefile.am: Added window icon for the File Management
