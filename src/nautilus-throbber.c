@@ -47,6 +47,8 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
+#define THROBBER_TIMEOUT 50		/* Milliseconds Per Frame */
+
 struct NautilusThrobberDetails {
 	GList	*image_list;
 
@@ -284,7 +286,7 @@ nautilus_throbber_start (NautilusThrobber *throbber)
 	if (throbber->details->timer_task != -1)
 		gtk_timeout_remove(throbber->details->timer_task);
 
-	throbber->details->timer_task = gtk_timeout_add (100, (GtkFunction) bump_throbber_frame, throbber);
+	throbber->details->timer_task = gtk_timeout_add (THROBBER_TIMEOUT, (GtkFunction) bump_throbber_frame, throbber);
 }
 
 static void

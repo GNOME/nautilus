@@ -13,6 +13,24 @@ throbber_DATA = 	\
 	008.png		\
 	009.png		\
 	010.png		\
+	011.png		\
+	012.png		\
+	013.png		\
+	014.png		\
+	015.png		\
+	016.png		\
+	017.png		\
+	018.png		\
+	019.png		\
+	020.png		\
+	021.png		\
+	022.png		\
+	023.png		\
+	024.png		\
+	025.png		\
+	026.png		\
+	027.png		\
+	028.png		\
 	rest.png	\
 	$(NULL)
 		
