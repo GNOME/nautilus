@@ -27,6 +27,7 @@ libtrilobite_la_LDFLAGS =	\
 	$(BONOBO_LIBS)		\
 	$(XML_LIBS)		\
 	$(VFS_LIBS)		\
+	$(RPM_LIBS)		\
 	$(NULL)
 
 libtrilobite_service_la_LDFLAGS =\
