@@ -45,11 +45,12 @@ to avoid this. Also, we prefer to cast data pointers, rather than casting
 function pointers, since there's so much more to get wrong with function
 pointer casts.</p>
 
-<p><b>We use typedefs from &lt;glib.h&gt; for things like guint and gpointer,
+<p><b>We use typedefs from &lt;glib.h&gt; for things like guint, guchar and gpointer,
 but not gint, gchar, or gdouble.</b> Using these gives a false sense
 of portability. In all three cases, using system calls like printf requires
 knowing that these are the "real" int, char, and double, so there's no reason
-to use a typedef that's non-standard.</p>
+to use a typedef that's non-standard unless it's a shorter name or clearer
+in some way.</p>
 
 <p><b>We avoid in-band signaling.</b> This means that we avoid using special
 values to indicate errors, for example. This can lead to subtle bugs when a valid

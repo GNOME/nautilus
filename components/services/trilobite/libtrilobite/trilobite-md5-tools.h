@@ -28,28 +28,21 @@
 
 #include <glib.h>
 
-/* FIXME: bugzilla.eazel.com 2851
-   darins styleguide says not to use
-   evil glib types. Check if guchar is 
-   "blacklisted"
-   http://cvs.gnome.org/lxr/source/nautilus/docs/style-guide.html
-*/
 typedef struct {
 	guint32 buf[4];
 	guint32 bits[2];
-	unsigned char in[64];
+	guchar in[64];
 	int doByteReverse;
 } MD5Context ;
 
 
-void trilobite_md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16]);
-void trilobite_md5_get_digest_from_file (const char *filename, unsigned char digest[16]);
+void trilobite_md5_get_digest (const char *buffer, int buffer_size, guchar digest[16]);
+void trilobite_md5_get_digest_from_file (const char *filename, guchar digest[16]);
 
 /* Converts a 32 char hex'ified md5 to a 16 byte md5 digest */
-void trilobite_md5_get_digest_from_md5_string (const char *md5string, unsigned char pmd5[16]);
+void trilobite_md5_get_digest_from_md5_string (const char *md5string, guchar pmd5[16]);
 
 /* Converts a 16 byte md5 digest to a 32 char hex'ified */
-const char *trilobite_md5_get_string_from_md5_digest (const unsigned char md5[16]);
+const char *trilobite_md5_get_string_from_md5_digest (const guchar md5[16]);
 
-#endif	/* TRILOBITE_MD5_TOOLS_H */
-
+#endif /* TRILOBITE_MD5_TOOLS_H */

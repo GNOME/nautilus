@@ -609,7 +609,7 @@ rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
 		pack->filename = g_strdup (filename);
 	}
 
-	/* FIXME: bugzilla.eazel.com 4862 */
+	/* FIXME: Would be better to call a package_data_ function to do this. */
 	if (pack->packsys_struc) {
 		headerFree ((Header) pack->packsys_struc);
 	}

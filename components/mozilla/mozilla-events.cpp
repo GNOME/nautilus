@@ -152,7 +152,8 @@ mozilla_events_get_href_for_mouse_event (gpointer mouse_event)
 /*
  * returns TRUE if the given event occurs in a SUBMIT button to a form with method=POST
  */
-/* FIXME this doesn't handle form submissions with a BUTTON or by hitting <return> */
+/* FIXME bugzilla.eazel.com 4411: this doesn't handle form submissions
+   with a BUTTON or by hitting <return> */
 extern "C" gboolean
 mozilla_events_is_in_form_POST_submit (gpointer mouse_event)
 {

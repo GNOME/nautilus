@@ -573,13 +573,6 @@ open_location (FMDirectoryView *directory_view,
 	switch (choice) {
 	case RESPECT_PREFERENCE:
 		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE)) {
-			/* FIXME bugzilla.eazel.com 2464: This may be
-			 * the desired behavior, but the preferences
-			 * UI still says "open each item in a new
-			 * window" and the preference name also says
-			 * "ALWAYS_NEW". Can we resolve this
-			 * inconsistency?
-			 */
 			nautilus_view_open_location_prefer_existing_window
 				(directory_view->details->nautilus_view, new_uri);
 		} else {

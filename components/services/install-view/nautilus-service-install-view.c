@@ -767,9 +767,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		show_overall_feedback (view, out);
 		g_free (out);
 
-		/* Crude fix for 
-		   FIXME bugzilla.eazel.com 3431
-		*/	
+		/* Crude fix. See bugzilla.eazel.com bug 3431 for details. */
 		if (pack->name) {		
 			if (g_strncasecmp (pack->name, "nautilus", 8)==0) {
 				view->details->core_package = TRUE;

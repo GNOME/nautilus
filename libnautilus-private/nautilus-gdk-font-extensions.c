@@ -59,7 +59,7 @@
 
 /* Font functions that could be public */
 static NautilusStringList *nautilus_gdk_font_list_fonts             (const char               *pattern);
-static char *              nautilus_gdk_font_get_name               (const GdkFont            *font);
+static char *              nautilus_gdk_font_get_name               (GdkFont                  *font);
 
 /* XLFD string operations */
 static char *              xlfd_string_get_nth                      (const char               *xlfd_string,
@@ -95,7 +95,7 @@ static int                 compare_xlfd_by_size_in_pixels           (gconstpoint
  * if no bold font is found.
  */
 GdkFont *
-nautilus_gdk_font_get_bold (const GdkFont *font)
+nautilus_gdk_font_get_bold (GdkFont *font)
 {
 	char *name;
 	char *weight_pattern;
@@ -261,7 +261,7 @@ font_bitmap_get_by_size (const char *xlfd_string,
  *          the first font equal or larger than the requested size.
  */
 GdkFont *
-nautilus_gdk_font_get_larger (const GdkFont *font,
+nautilus_gdk_font_get_larger (GdkFont *font,
 			      int num_steps)
 {
 	GdkFont *result = NULL;
@@ -371,7 +371,7 @@ nautilus_gdk_font_get_larger (const GdkFont *font,
  *          the first font equal or smaller than the requested size.
  */
 GdkFont *
-nautilus_gdk_font_get_smaller (const GdkFont *font, int num_steps)
+nautilus_gdk_font_get_smaller (GdkFont *font, int num_steps)
 {
 	g_return_val_if_fail (font != NULL, NULL);
 	g_return_val_if_fail (ABS (num_steps) >= MIN_NUM_STEPS, NULL);
@@ -539,7 +539,7 @@ nautilus_gdk_font_list_fonts (const char *pattern)
 
 /* Return the font name - an xlfd string used by Gdk to allocate the font */
 static char *
-nautilus_gdk_font_get_name (const GdkFont *font)
+nautilus_gdk_font_get_name (GdkFont *font)
 {
 	GdkFontPrivate *font_private;
 	const char *font_name;

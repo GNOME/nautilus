@@ -287,7 +287,7 @@ make_anti_aliased_label (const char *text)
 	
 	label = nautilus_label_new (text);
 
-	/* FIXME bugzilla.eazel.com 5052: Hardcoded font and size. */
+	/* FIXME bugzilla.eazel.com 3778: Hardcoded font and size. */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
@@ -361,7 +361,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	label = make_anti_aliased_label (user_level_name);
 	g_free (user_level_name);
 
-	/* FIXME bugzilla.eazel.com 5052: Hardcoded font. */
+	/* FIXME bugzilla.eazel.com 3778: Hardcoded font. */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 
 	/* extra vbox to help with alignment */
@@ -414,7 +414,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to your\n"
 					   "level of technical expertise. Pick an initial level that you\n"
 					   "feel comfortable with; you can always change it later."));
-	/* FIXME bugzilla.eazel.com 5052: Hardcoded font size. */
+	/* FIXME bugzilla.eazel.com 3778: Hardcoded font size. */
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
 	gtk_widget_show (label);

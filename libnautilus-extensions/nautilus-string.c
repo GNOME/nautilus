@@ -47,10 +47,10 @@ nautilus_strchr (const char *haystack, char needle)
 int
 nautilus_strcmp (const char *string_a, const char *string_b)
 {
-	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL < ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	return strcmp (string_a == NULL ? "" : string_a,
 		       string_b == NULL ? "" : string_b);
@@ -59,10 +59,10 @@ nautilus_strcmp (const char *string_a, const char *string_b)
 int
 nautilus_strcasecmp (const char *string_a, const char *string_b)
 {
-	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL < ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	return g_strcasecmp (string_a == NULL ? "" : string_a,
 		             string_b == NULL ? "" : string_b);
@@ -73,10 +73,10 @@ nautilus_strcmp_case_breaks_ties (const char *string_a, const char *string_b)
 {
 	int casecmp_result;
 
-	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL < ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	casecmp_result = nautilus_strcasecmp (string_a, string_b);
 	if (casecmp_result != 0) {
@@ -91,10 +91,10 @@ nautilus_strcoll (const char *string_a, const char *string_b)
 	const char *locale;
 	int result;
 	
-	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL < ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 
 	locale = setlocale (LC_COLLATE, NULL);
@@ -122,10 +122,10 @@ nautilus_str_is_empty (const char *string_or_null)
 gboolean
 nautilus_str_is_equal (const char *string_a, const char *string_b)
 {
-	/* FIXME: Maybe we need to make this treat 'NULL != ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL != ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	return nautilus_strcmp (string_a, string_b) == 0;
 }
@@ -133,10 +133,10 @@ nautilus_str_is_equal (const char *string_a, const char *string_b)
 gboolean
 nautilus_istr_is_equal (const char *string_a, const char *string_b)
 {
-	/* FIXME: Maybe we need to make this treat 'NULL != ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL != ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	return nautilus_strcasecmp (string_a, string_b) == 0;
 }
@@ -144,10 +144,10 @@ nautilus_istr_is_equal (const char *string_a, const char *string_b)
 int
 nautilus_strcmp_compare_func (gconstpointer string_a, gconstpointer string_b)
 {
-	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL < ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	return nautilus_strcmp ((const char *) string_a,
 				(const char *) string_b);
@@ -156,10 +156,10 @@ nautilus_strcmp_compare_func (gconstpointer string_a, gconstpointer string_b)
 int
 nautilus_strcoll_compare_func (gconstpointer string_a, gconstpointer string_b)
 {
-	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL < ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	return nautilus_strcoll ((const char *) string_a,
 				 (const char *) string_b);
@@ -168,10 +168,10 @@ nautilus_strcoll_compare_func (gconstpointer string_a, gconstpointer string_b)
 int
 nautilus_strcasecmp_compare_func (gconstpointer string_a, gconstpointer string_b)
 {
-	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
-	 * have a flavor that does that. If we didn't have code that
-	 * already relies on 'NULL == ""', I would change it right
-	 * now.
+	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
+	 * treat 'NULL < ""', or have a flavor that does that. If we
+	 * didn't have code that already relies on 'NULL == ""', I
+	 * would change it right now.
 	 */
 	return nautilus_strcasecmp ((const char *) string_a,
 				    (const char *) string_b);

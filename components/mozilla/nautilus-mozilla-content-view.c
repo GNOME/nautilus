@@ -916,9 +916,9 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 
 	/* See section 5.2 in RFC 2396 */
 
-	/* FIXME This function does not take into account a BASE tag
-	 * in an HTML document, so its functionality differs
-	 * from what Mozilla itself would do.
+	/* FIXME bugzilla.eazel.com 4413: This function does not take
+	 * into account a BASE tag in an HTML document, so its
+	 * functionality differs from what Mozilla itself would do.
 	 */
 
 	if (is_uri_partial (uri)) {
@@ -1303,7 +1303,7 @@ eazel_services_scheme_translate	(NautilusMozillaContentView	*view,
 			parsed = ammonite_url_parse (uri);
 			g_assert (parsed);
 			
-			/*FIXME it's possible that "view" will be gone by the time the reponse comes back */
+			/* FIXME bugzilla.eazel.com 4412: it's possible that "view" will be gone by the time the reponse comes back */
 			if (! ammonite_do_prompt_login_async (parsed->user, NULL, NULL, p_state,  prompt_login_cb) ) {
 				ret = NULL;
 				g_free (p_state->uri);

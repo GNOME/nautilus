@@ -30,18 +30,18 @@
 #include <gdk/gdk.h>
 
 /* Misc GdkFont helper functions */
-gboolean nautilus_gdk_font_equal           (GdkFont       *font_a_null_allowed,
-					    GdkFont       *font_b_null_allowed);
-GdkFont *nautilus_get_largest_fitting_font (const char    *text_to_format,
-					    int            width,
-					    const char    *font_format);
-GdkFont *nautilus_gdk_font_get_bold        (const GdkFont *plain);
-GdkFont *nautilus_gdk_font_get_larger      (const GdkFont *font,
-					    int            num_sizes);
-GdkFont *nautilus_gdk_font_get_smaller     (const GdkFont *font,
-					    int            num_sizes);
-char *   nautilus_string_ellipsize_start   (const char    *original,
-					    GdkFont       *font,
-					    int            length);
+gboolean nautilus_gdk_font_equal           (GdkFont    *font_a_null_allowed,
+					    GdkFont    *font_b_null_allowed);
+GdkFont *nautilus_get_largest_fitting_font (const char *text_to_format,
+					    int         width,
+					    const char *font_format);
+GdkFont *nautilus_gdk_font_get_bold        (GdkFont    *plain);
+GdkFont *nautilus_gdk_font_get_larger      (GdkFont    *font,
+					    int         num_sizes);
+GdkFont *nautilus_gdk_font_get_smaller     (GdkFont    *font,
+					    int         num_sizes);
+char *   nautilus_string_ellipsize_start   (const char *original,
+					    GdkFont    *font,
+					    int         length);
 
 #endif /* NAUTILUS_GDK_FONT_EXTENSIONS_H */

@@ -45,7 +45,7 @@ static union _endian { int i; char b[4]; } *_endian = (union _endian *)&_ie;
  * Note: this code is harmless on little-endian machines.
  */
 static void 
-_byte_reverse (unsigned char *buf, guint32 longs)
+_byte_reverse (guchar *buf, guint32 longs)
 {
 	guint32 t;
 	do {
@@ -92,7 +92,7 @@ md5_init (MD5Context *ctx)
  * of bytes. Use this to progressively construct an md5 hash.
  **/
 static void 
-md5_update (MD5Context *ctx, const unsigned char *buf, guint32 len)
+md5_update (MD5Context *ctx, const guchar *buf, guint32 len)
 {
 	guint32 t;
 	
@@ -108,7 +108,7 @@ md5_update (MD5Context *ctx, const unsigned char *buf, guint32 len)
 	/* Handle any leading odd-sized chunks */
 	
 	if (t) {
-		unsigned char *p = (unsigned char *) ctx->in + t;
+		guchar *p = (guchar *) ctx->in + t;
 		
 		t = 64 - t;
 		if (len < t) {
@@ -154,10 +154,10 @@ md5_update (MD5Context *ctx, const unsigned char *buf, guint32 len)
  * copy the final md5 hash to a bufer
  **/
 static void 
-md5_final (MD5Context *ctx, unsigned char digest[16])
+md5_final (MD5Context *ctx, guchar digest[16])
 {
 	guint32 count;
-	unsigned char *p;
+	guchar *p;
 	
 	/* Compute number of bytes mod 64 */
 	count = (ctx->bits[0] >> 3) & 0x3F;
@@ -193,7 +193,7 @@ md5_final (MD5Context *ctx, unsigned char digest[16])
 	
 	md5_transform (ctx->buf, (guint32 *) ctx->in);
 	if (ctx->doByteReverse)
-		_byte_reverse ((unsigned char *) ctx->buf, 4);
+		_byte_reverse ((guchar *) ctx->buf, 4);
 	memcpy (digest, ctx->buf, 16);
 }
 
@@ -314,7 +314,7 @@ md5_transform (guint32 buf[4], const guint32 in[16])
  * the 16 bytes buffer @digest .
  **/
 void
-trilobite_md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16])
+trilobite_md5_get_digest (const char *buffer, int buffer_size, guchar digest[16])
 {	
 	MD5Context ctx;
 
@@ -334,10 +334,10 @@ trilobite_md5_get_digest (const char *buffer, int buffer_size, unsigned char dig
  * the 16 bytes buffer @digest .
  **/
 void
-trilobite_md5_get_digest_from_file (const char *filename, unsigned char digest[16])
+trilobite_md5_get_digest_from_file (const char *filename, guchar digest[16])
 {	
 	MD5Context ctx;
-	unsigned char tmp_buf[1024];
+	guchar tmp_buf[1024];
 	int nb_bytes_read;
 	FILE *fp;
 
@@ -352,7 +352,7 @@ trilobite_md5_get_digest_from_file (const char *filename, unsigned char digest[1
 		return;
 	}
 	
-	while ((nb_bytes_read = fread (tmp_buf, sizeof (unsigned char), 1024, fp)) > 0)
+	while ((nb_bytes_read = fread (tmp_buf, sizeof (guchar), 1024, fp)) > 0)
 		md5_update (&ctx, tmp_buf, nb_bytes_read);
 	
 	if (ferror(fp)) {
@@ -391,7 +391,7 @@ trilobite_md5_get_digest_from_md5_string (const char *md5string,
 }
 
 const char *
-trilobite_md5_get_string_from_md5_digest (const unsigned char md5[16])
+trilobite_md5_get_string_from_md5_digest (const guchar md5[16])
 {
 	static char *str = NULL;
 	int cnt;
@@ -414,7 +414,7 @@ trilobite_md5_get_string_from_md5_digest (const unsigned char md5[16])
 int
 main (int argc, char **argv)
 {
-	unsigned char digest[16];
+	guchar digest[16];
 	int i;
 
 	trilobite_md5_get_digest_from_file (argv[1], digest);

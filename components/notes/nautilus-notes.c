@@ -109,7 +109,7 @@ notes_load_metainfo (Notes *notes)
                 return;
         }
 
-        /* FIXME: should monitor file metadata, not just call_when_ready */
+        /* FIXME bugzilla.eazel.com 4422: should monitor file metadata, not just call_when_ready */
 
         attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
         nautilus_file_call_when_ready (notes->file, attributes, finish_loading_note, notes);

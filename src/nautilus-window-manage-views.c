@@ -1770,11 +1770,15 @@ load_underway_callback (NautilusViewFrame *view,
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        /* We intentionally ignore progress from sidebar panels. Some
-           sidebar panels may get their own progress indicators
-           later. */
+        /* FIXME bugzilla.eazel.com 2460: We intentionally ignore
+         * progress from sidebar panels. Some sidebar panels may get
+         * their own progress indicators later.
+         */
 
-        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
+        /* FIXME bugzilla.eazel.com 2461: Is progress from either old
+         * or new really equally interesting?
+         */
+
         if (view == window->new_content_view
             || view == window->content_view) {
                 change_state (window, LOAD_UNDERWAY, NULL, NULL);

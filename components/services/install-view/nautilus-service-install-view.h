@@ -83,9 +83,7 @@ struct _NautilusServiceInstallViewDetails {
 	EazelInstallProblem *problem;
 	TrilobiteRootClient *root_client;
 	GList		    *categories;	
-	/* Crude fix for 
-	   FIXME bugzilla.eazel.com 3431
-	*/
+
 	gboolean core_package;
 
 	GList *problem_cases;

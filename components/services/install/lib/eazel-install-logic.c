@@ -349,7 +349,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 		
 		if (g_list_length (owners) > 1) {
 			GList *pit;
-			/* FIXME: bugzilla.eazel.com 2959
+			/* FIXME bugzilla.eazel.com 3511:
 			   More than one packages owns this file,
 			   this cannot happen (or should not at least)
 			*/
@@ -783,7 +783,7 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 		
 		result = FALSE;
 		/* Need to fail the package here to fully fix bug
-		   FIXME: bugzilla.eazel.com 3374 */
+		   FIXME bugzilla.eazel.com 3374: */
 		trilobite_debug ("Conflict between %s and %s", req->package->name, req->required->name);
 		req->package->status = PACKAGE_FILE_CONFLICT;
 		req->required->status = PACKAGE_FILE_CONFLICT;
@@ -1090,7 +1090,7 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 		PackageData *super;
 		
 		super = (PackageData*)iterator->data;
-		/* FIXME bugzilla.eazel.com: 3542
+		/* FIXME bugzilla.eazel.com 3542:
 		   This is the cause of 3542. 
 		   In this specific case, gnome-print is removed from the toplevel and from
 		   1st sublevel of soft_deps.
@@ -1206,7 +1206,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			trilobite_debug ("(which is dangerous by the way....)");
 			trilobite_debug ("rpm -e --nodeps `rpm -q %s`", pack->name);
 			trilobite_debug ("Or wait for the author to fix bug 3511");
-			/* FIXME bugzilla.eazel.com: 3511 */
+			/* FIXME bugzilla.eazel.com 3511 */
 			g_assert_not_reached ();
 		}
 		for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
