@@ -204,7 +204,7 @@ display_caveat (GtkWindow *parent_window)
 		   "\n"
 		   "As with any software under development, you should exercise caution when "
 		   "using Nautilus.  Eazel does not provide any guarantee that it will work "
-		   "properly, or assume any liablity for your use of it.  Please use it at your "
+		   "properly, or assume any liability for your use of it.  Please use it at your "
 		   "own risk.\n"
 		   "\n"
 		   "Please visit http://www.eazel.com/feedback.html to provide feedback, "
