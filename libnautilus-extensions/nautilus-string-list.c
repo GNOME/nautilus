@@ -107,22 +107,24 @@ nautilus_string_list_new_from_tokens (const char *string,
 				      const char *delimiter)
 {
 	NautilusStringList *string_list;
-	char		   **string_array;
-	guint		   i;
 
-	g_return_val_if_fail (string != NULL, NULL);
 	g_return_val_if_fail (delimiter != NULL, NULL);
 
 	string_list = nautilus_string_list_new ();
 
-	string_array = g_strsplit (string, delimiter, -1);
+	if (string != NULL) {
+		char  **string_array;
+		guint i;
 
-	if (string_array) {
-		for (i = 0; string_array[i]; i++) {
-			nautilus_string_list_insert (string_list, string_array[i]);
-		}
+		string_array = g_strsplit (string, delimiter, -1);
 		
-		g_strfreev (string_array);
+		if (string_array) {
+			for (i = 0; string_array[i]; i++) {
+				nautilus_string_list_insert (string_list, string_array[i]);
+			}
+			
+			g_strfreev (string_array);
+		}
 	}
 
 	return string_list;
@@ -205,7 +207,7 @@ nautilus_string_list_contains (const NautilusStringList *string_list,
 
 	g_return_val_if_fail (string != NULL, FALSE);
 
-	find = g_list_find_custom (string_list->strings, (gpointer) string, (GCompareFunc) strcmp);
+	find = g_list_find_custom (string_list->strings, (gpointer) string, nautilus_str_compare);
 
 	return find == NULL ? FALSE : TRUE;
 }
@@ -352,18 +354,12 @@ nautilus_string_list_as_concatenated_string (const NautilusStringList *string_li
 	return result;
 }
 
-static int
-compare_strings (gconstpointer a, gconstpointer b)
-{
-        return nautilus_strcmp ((const char *) a, (const char *) b);
-}
-
 void
 nautilus_string_list_sort (NautilusStringList *string_list)
 {
 	g_return_if_fail (string_list != NULL);
 
-	string_list->strings = g_list_sort (string_list->strings, compare_strings);
+	string_list->strings = g_list_sort (string_list->strings, nautilus_str_compare);
 }
 
 void
@@ -378,7 +374,7 @@ nautilus_string_list_remove_duplicates (NautilusStringList *string_list)
 		const char *string = (const char *) iterator->data;
 		g_assert (string != NULL);
 
-		if (g_list_find_custom (new_strings, (gpointer) string, (GCompareFunc) strcmp) == NULL) {
+		if (g_list_find_custom (new_strings, (gpointer) string, nautilus_str_compare) == NULL) {
 			new_strings = g_list_append (new_strings, g_strdup (string));
 		}
 	}
@@ -396,6 +392,70 @@ nautilus_string_list_for_each (const NautilusStringList *string_list,
 	g_return_if_fail (string_list != NULL);
 
 	g_list_foreach (string_list->strings, function, user_data);
+}
+
+/**
+ * nautilus_string_list_get_longest_string:
+ *
+ * @string_list: A NautilusStringList
+ *
+ * Return value: A copy of the longest string in the collection.  Need to g_free() it.
+ */
+char *
+nautilus_string_list_get_longest_string (const NautilusStringList *string_list)
+{
+	guint	longest_length = 0;
+	guint	longest_index = 0;
+	GList	*iterator;
+	guint	i;
+
+	g_return_val_if_fail (string_list != NULL, NULL);
+
+	if (string_list->strings == NULL) {
+		return NULL;
+	}
+	
+	for (iterator = string_list->strings, i = 0; iterator != NULL; iterator = iterator->next, i++) {
+		guint current_length = nautilus_strlen ((const char *) iterator->data);
+		
+		if (current_length > longest_length) {
+			longest_index = i;
+			longest_length = current_length;
+		}
+	}
+
+	return nautilus_string_list_nth (string_list, longest_index);
+}
+
+/**
+ * nautilus_string_list_get_longest_string_length:
+ *
+ * @string_list: A NautilusStringList
+ *
+ * Return value: The length of the longest string in the collection.
+ */
+guint
+nautilus_string_list_get_longest_string_length (const NautilusStringList *string_list)
+{
+	guint	longest_length = 0;
+	GList	*iterator;
+	guint	i;
+
+	g_return_val_if_fail (string_list != NULL, 0);
+
+	if (string_list->strings == NULL) {
+		return 0;
+	}
+	
+	for (iterator = string_list->strings, i = 0; iterator != NULL; iterator = iterator->next, i++) {
+		guint current_length = nautilus_strlen ((const char *) iterator->data);
+		
+		if (current_length > longest_length) {
+			longest_length = current_length;
+		}
+	}
+
+	return longest_length;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -695,6 +755,37 @@ nautilus_self_check_string_list (void)
 
 		nautilus_string_list_free (l);
 		nautilus_string_list_free (other);
+	}
+
+
+	/*
+	 * nautilus_string_list_get_longest_string
+	 *
+	 */
+	{
+		NautilusStringList *l;
+
+		l = nautilus_string_list_new ();
+
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_get_longest_string (l), NULL);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_longest_string_length (l), 0);
+
+		nautilus_string_list_insert (l, "a");
+		nautilus_string_list_insert (l, "bb");
+		nautilus_string_list_insert (l, "ccc");
+		nautilus_string_list_insert (l, "dddd");
+
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_get_longest_string (l), "dddd");
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_longest_string_length (l), strlen ("dddd"));
+
+		nautilus_string_list_clear (l);
+
+		nautilus_string_list_insert (l, "foo");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_get_longest_string (l), "foo");
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_longest_string_length (l), strlen ("foo"));
+
+		nautilus_string_list_free (l);
+
 	}
 }
 

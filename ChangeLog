@@ -1,5 +1,20 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_new_from_tokens),
+	(nautilus_string_list_contains), (nautilus_string_list_sort),
+	(nautilus_string_list_remove_duplicates),
+	(nautilus_string_list_get_longest_string),
+	(nautilus_string_list_get_longest_string_length),
+	(nautilus_self_check_string_list):
+	* libnautilus-extensions/nautilus-string-list.h:
+
+	New functions to find the longest string and longest string length.
+	
+	Also, some function pointers cast cleanup.
+	
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Tasks: 1612, 1274, 1511 and 1588.
 	
 	* libnautilus-extensions/nautilus-scalable-font.c:
