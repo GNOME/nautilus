@@ -782,6 +782,8 @@ nautilus_preferences_get_enum (const char	*name,
 
 	result = gconf_client_get_int (GLOBAL.gconf_client, key, NULL);
 
+	g_free (key);
+
 	return result;
 }
 
