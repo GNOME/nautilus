@@ -41,6 +41,7 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
 
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -170,327 +171,17 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 }
 
 
-static char * const nautilus_sort_criteria[] = {
-        /* Prefer the industrial strengthe html viewer most */
-        "iid == 'OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1'",
-        /* Prefer the gtkhtml viewer next */
-        "iid == 'OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b'",
-        /* Prefer the icon view next */
-        "iid == 'OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058'",
-        /* Prefer anything else over the loser view. */
-        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
-        /* Prefer anything else over the sample view. */
-        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
-        NULL};
-
-/* It might be worth moving this to nautilus-string.h at some point. */
-static char *
-extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix)
+static gint
+view_identifier_has_iid (NautilusViewIdentifier *identifier, const char *iid)
 {
-        const char *separator_position;
-        int prefix_length;
-        char *result;
-
-        separator_position = strstr (string, separator);
-        prefix_length = separator_position == NULL
-                ? strlen (string)
-                : separator_position - string;
-
-        result = g_malloc (prefix_length + strlen(suffix) + 1);
-        
-        strncpy (result, string, prefix_length);
-        result[prefix_length] = '\0';
-
-        strcat (result, suffix);
-
-        return result;
+        return strcmp (identifier->iid, iid);        
 }
 
-static char *
-mime_type_get_supertype (const char *mime_type)
+static gint
+view_identifier_iids_compare (NautilusViewIdentifier *a, NautilusViewIdentifier *b)
 {
-        return extract_prefix_add_suffix (mime_type, "/", "/*");
+        return strcmp (a->iid, b->iid);
 }
-
-static char *
-uri_string_get_scheme (const char *uri_string)
-{
-        return extract_prefix_add_suffix (uri_string, ":", "");
-}
-
-/*
- * The following routine uses metadata associated with the current url
- * to add content view components specified in the metadata. The
- * content views are specified in the string as <EXPLICIT_CONTENT_VIEW
- * IID="iid"/> elements inside the appropriate <DIRECTORY> or <FILE> element.  
- */
-
-static void
-get_explicit_content_view_iids_from_metafile (NautilusNavigationInfo *navinfo)
-{
-        if (navinfo->directory != NULL) {
-                navinfo->explicit_iids = nautilus_directory_get_metadata_list 
-                        (navinfo->directory, "EXPLICIT_CONTENT_VIEW", "IID");
-        } 
-}
-
-static char *
-make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
-{
-        GList *p;
-        char  *iid;
-        char  *query;
-        char  *old_query;
-
-        query = NULL;
-
-        for (p = view_iids; p != NULL; p = p->next) {
-                iid = (char *) p->data;
-                if (query != NULL) {
-                        old_query = query;
-                        query = g_strconcat (query, " OR ", NULL);
-                        g_free (old_query);
-                } else {
-                        query = g_strdup ("(");
-                }
-
-                old_query = query;
-                query = g_strdup_printf ("%s iid=='%s'", old_query, iid);
-                g_free (old_query);
-        }
-
-
-        if (query != NULL) {
-                old_query = query;
-                query = g_strconcat (old_query, ")", NULL);
-                g_free (old_query);
-        } else {
-                query = g_strdup ("false");
-        }
-
-        return query;
-}
-
-static char *
-make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
-{
-        const char *mime_type;
-        char *mime_supertype;
-        char *uri_scheme;
-        char *result;
-        char *explicit_iid_query;
-
-        mime_type = navinfo->navinfo.content_type;
-        mime_supertype = mime_type_get_supertype (mime_type);
-        uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
-
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (navinfo->explicit_iids);
-
-        result = g_strdup_printf 
-                (
-                 /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus View, or
-                  * with a Bonobo Control or Embeddable that supports
-                  * one of the three persistence interfaces:
-                  * PersistStream, ProgressiveDataSink, or
-                  * PersistFile.
-                  */
-                 "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                     "'IDL:Nautilus/View:1.0'])"
-                  "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
-                                        "'IDL:Bonobo/Embeddable:1.0'])"
-                      "AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0',"
-                                            "'IDL:Bonobo/ProgressiveDataSink:1.0',"
-                                            "'IDL:Bonobo/PersistFile:1.0'])))"
-                 
-                 /* Check that the component either has a specific
-                  * MIME type or URI scheme. If neither is specified,
-                  * then we don't trust that to mean "all MIME types
-                  * and all schemes". For that, you have to do a
-                  * wildcard for the MIME type or for the scheme.
-                  */
-                 "AND (bonobo:supported_mime_types.defined()"
-                      "OR bonobo:supported_uri_schemes.defined ())"
-
-                 /* Check that the supported MIME types include the
-                  * URI's MIME type or its supertype.
-                  */
-                 "AND (NOT bonobo:supported_mime_types.defined()"
-                      "OR bonobo:supported_mime_types.has('%s')"
-                      "OR bonobo:supported_mime_types.has('%s')"
-                      "OR bonobo:supported_mime_types.has('*/*'))"
-
-                 /* Check that the supported URI schemes include the
-                  * URI's scheme.
-                  */
-                 "AND (NOT bonobo:supported_uri_schemes.defined()"
-                      "OR bonobo:supported_uri_schemes.has('%s')"
-                      "OR bonobo:supported_uri_schemes.has('*'))"
-
-                  /* Check that the component makes it clear that it's
-                   * intended for Nautilus by providing a "view_as"
-                   * name. We could instead support a default, but
-                   * that would make components that are untested with
-                   * Nautilus appear.
-                   */
-                 "AND nautilus:view_as_name.defined())"
-
-                  /* Also select iids that were specifically requested
-                     for this location, even if they do not otherwise
-                     meet the requirements. */
-                  "OR %s"
-
-                 /* The MIME type, MIME supertype, and URI scheme for
-                  * the %s above.
-                  */
-                 , mime_type, mime_supertype, uri_scheme
-
-                 /* The explicit metafile iid query for the %s above. */
-                 , explicit_iid_query
-);
-
-        g_free (mime_supertype);
-        g_free (uri_scheme);
-        g_free (explicit_iid_query);
-        return result;
-}
-
-static char *
-make_oaf_query_with_uri_scheme_only (NautilusNavigationInfo *navinfo)
-{
-        char *uri_scheme;
-        char *result;
-        char *explicit_iid_query;
-        
-        uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
-
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (navinfo->explicit_iids);
-
-        result = g_strdup_printf 
-                (
-                 /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus tView, or
-                  * with a Bonobo Control or Embeddable that works on
-                  * a file, which is indicated by Bonobo PersistFile.
-                  */
-                  "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                      "'IDL:Nautilus/View:1.0'])"
-                   "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
-                                         "'IDL:Bonobo/Embeddable:1.0'])"
-                       "AND repo_ids.has('IDL:Bonobo/PersistFile:1.0')))"
-
-                  /* Check if the component supports this particular
-                   * URI scheme.
-                   */
-                  "AND (bonobo:supported_uri_schemes.has('%s')"
-                       "OR bonobo:supported_uri_schemes.has('*'))"
-
-                  /* Check that the component doesn't require
-                   * particular MIME types. Note that even saying you support "all"
-                   */
-                  "AND (NOT bonobo:supported_mime_types.defined())"
-
-                  /* Check that the component makes it clear that it's
-                   * intended for Nautilus by providing a "view_as"
-                   * name. We could instead support a default, but
-                   * that would make components that are untested with
-                   * Nautilus appear.
-                   */
-                  "AND nautilus:view_as_name.defined())"
-
-                 /* Also select iids that were specifically requested
-                     for this location, even if they do not otherwise
-                     meet the requirements. */
-
-                  "OR %s"
-
-                  /* The URI scheme for the %s above. */
-                  , uri_scheme
-
-                  /* The explicit metafile iid query for the %s above. */
-                  , explicit_iid_query);
-           
-
-        g_free (uri_scheme);
-        g_free (explicit_iid_query);
-
-        return result;
-}
-
-
-
-
-static GHashTable *
-file_list_to_mime_type_hash_table (GList *files)
-{
-        GHashTable *result;
-        GList *p;
-        char *mime_type;
-
-        result = g_hash_table_new (g_str_hash, g_str_equal);
-
-        for (p = files; p != NULL; p = p->next) {
-                if (p->data != NULL) {
-                        mime_type = nautilus_file_get_mime_type ((NautilusFile *) p->data);
-                        
-                        if (NULL != mime_type) {
-                                if (g_hash_table_lookup (result, mime_type) == NULL) {
-#ifdef DEBUG_MJS
-                                        printf ("XXX content mime type: %s\n", mime_type);
-#endif
-                                        g_hash_table_insert (result, mime_type, mime_type);
-                                } else {
-                                        g_free (mime_type);
-                                }
-                        }
-                }
-        }
-
-        return result;
-}
-
-static void
-free_key (gpointer key, gpointer value, gpointer user_data)
-{
-        g_free (key);
-}
-
-static void
-mime_type_hash_table_destroy (GHashTable *table)
-{
-        g_hash_table_foreach (table, free_key, NULL);
-        g_hash_table_destroy (table);
-}
-
-static gboolean
-server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table, GList *explicit_iids)
-{
-        OAF_Attribute *attr;
-        GNOME_stringlist types;
-        int i;
-
-        /* Components explicitly requested in the metafile are not capability tested. */
-        if (g_list_find_custom (explicit_iids, (gpointer) server->iid, (GCompareFunc) strcmp) != NULL) {
-                return TRUE;
-        }
-
-        attr = oaf_server_info_attr_find (server, "nautilus:required_directory_content_mime_types");
-
-        if (attr == NULL || attr->v._d != OAF_A_STRINGV) {
-                return TRUE;
-        } else {
-                types = attr->v._u.value_stringv;
-
-                for (i = 0; i < types._length; i++) {
-                        if (g_hash_table_lookup (type_table, types._buffer[i]) != NULL) {
-                                return TRUE;
-                        }
-                }
-        }
-
-        return FALSE;
-}
-
 
 static void
 got_file_info_callback (GnomeVFSAsyncHandle *ah,
@@ -504,9 +195,9 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         gpointer notify_ready_data;
         NautilusNavigationResult result_code;
         const char *fallback_iid;
-        const char *query;
-        OAF_ServerInfoList *oaf_result;
-        CORBA_Environment ev;
+        GList *components;
+        GList *p;
+        OAF_ServerInfo *default_component;
 
         g_assert (result_list != NULL);
         g_assert (result_list->data != NULL);
@@ -523,99 +214,66 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         file_result = result_list->data;
         vfs_result_code = file_result->result;
 
-        oaf_result = NULL;
-        query = NULL;
-
-        get_explicit_content_view_iids_from_metafile (navinfo);
-
-        if (vfs_result_code == GNOME_VFS_OK) {
-                /* FIXME bugzilla.eazel.com 697: disgusting hack to make rpm view work. Why
-                   is the mime type not being detected properly in the
-                   first place? */
-
-                if (nautilus_str_has_suffix (navinfo->navinfo.requested_uri, ".rpm")) {
-                        navinfo->navinfo.content_type = g_strdup ("application/x-rpm");
-                } else {
-                        navinfo->navinfo.content_type = g_strdup
-                                (gnome_vfs_file_info_get_mime_type (file_result->file_info));
-                }
-
-                /* FIXME bugzilla.eazel.com 699: 
-                   hack for lack of good type descriptions. Can
-                   we remove this now? */
-
-                if (navinfo->navinfo.content_type == NULL) {
-                        navinfo->navinfo.content_type = g_strdup ("text/plain");
-                }
-
-                /* activate by scheme and mime type */
-
-                query = make_oaf_query_with_known_mime_type (navinfo);
-        } else if (vfs_result_code == GNOME_VFS_ERROR_NOTSUPPORTED
+        if (vfs_result_code == GNOME_VFS_OK || vfs_result_code == GNOME_VFS_ERROR_NOTSUPPORTED
                    || vfs_result_code == GNOME_VFS_ERROR_INVALIDURI) {
-                /* Activate by scheme only */
-
-                query = make_oaf_query_with_uri_scheme_only (navinfo);
+                components = nautilus_mime_get_short_list_components_for_uri (navinfo->navinfo.requested_uri);
         } else {
                 goto out;
         }
 
-        CORBA_exception_init (&ev);
+        navinfo->content_identifiers = NULL;
 
+        /* convert component list into view identifier list */   
+        for (p = components; p != NULL; p = p->next) {
+                navinfo->content_identifiers = g_list_append 
+                        (navinfo->content_identifiers, 
+                         nautilus_view_identifier_new_from_content_view (p->data));
+        }
+
+        gnome_vfs_mime_component_list_free (components);
+
+        /* FIXME: should also merge the default into
+           navinfo->content_identifiers if not already there */
+
+        default_component = nautilus_mime_get_default_component_for_uri (navinfo->navinfo.requested_uri);
+        
+        if (default_component != NULL) {
+                fallback_iid = g_strdup (default_component->iid);
+                
+                if (g_list_find_custom (navinfo->content_identifiers, default_component->iid, 
+                                        (GCompareFunc) view_identifier_has_iid) == NULL) {
+                        navinfo->content_identifiers = g_list_insert_sorted 
+                                (navinfo->content_identifiers,
+                                 nautilus_view_identifier_new_from_content_view (default_component),
+                                 (GCompareFunc) view_identifier_iids_compare);
+                        
+                }
+                CORBA_free (default_component);
+        } else {
+                if (navinfo->content_identifiers != NULL) {
+                        fallback_iid = ((NautilusViewIdentifier *)
+                                        (navinfo->content_identifiers->data))->iid;
+                }
+        }
+        
 #ifdef DEBUG_MJS
-        printf ("query: \"%s\"\n", query);
+        printf ("XXXXXX - fallback_iid: %s\n", fallback_iid);
 #endif
 
-        oaf_result = oaf_query (query, nautilus_sort_criteria, &ev);
-        
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
-                GHashTable *content_types;
-                int i;
-                
-                content_types = file_list_to_mime_type_hash_table (navinfo->files);
-                
-                CORBA_exception_free (&ev);
-                
+        if (navinfo->content_identifiers != NULL) {
                 vfs_result_code = GNOME_VFS_OK;
-                
-                for (i = 0; i < oaf_result->_length; i++) {
-                        OAF_ServerInfo *server;
-
-                        server = &oaf_result->_buffer[i];
-
-                        if (server_matches_content_requirements (server, content_types, navinfo->explicit_iids)) {
-                                navinfo->content_identifiers = g_list_append
-                                        (navinfo->content_identifiers, 
-                                         nautilus_view_identifier_new_from_content_view (server));
-                        }
+                result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
+        } else {
+                /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
+                if (vfs_result_code == GNOME_VFS_OK && navinfo->content_identifiers == NULL) {
+                        result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
                 }
 
-                mime_type_hash_table_destroy (content_types);
-        } else {
-                CORBA_exception_free (&ev);
-                result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
+                result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
                 goto out;
         }
 
-
-        /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
-        result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
-
-        if (vfs_result_code != GNOME_VFS_OK) {
-                /* Leave navinfo intact so notify_ready function can access the uri.
-                 * (notify_ready function is responsible for freeing navinfo).
-                 */
-                goto out;
-        }
                
-        if (navinfo->content_identifiers) {
-                fallback_iid = ((NautilusViewIdentifier *)
-                                (navinfo->content_identifiers->data))->iid;
-#ifdef DEBUG_MJS
-                printf ("XXX - fallback_iid: %s\n", fallback_iid);
-#endif
-        }
-  
         /* Now that all the content_identifiers are in place, we're ready to choose
          * the initial one.
          */

@@ -1,3 +1,19 @@
+2000-06-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	Completed task 772: Make "View as" menu use short list, not all
+	available components
+	
+	* src/nautilus-applicable-views.c (got_file_info_callback):
+	Changed to use the mime APIs to determine the preferred list and
+	default for view components.
+
+	(view_identifier_has_iid, view_identifier_iids_compare): Some
+	utility functions.
+
+	Also removed many of the other functions in here that are no
+	longer necessary and have effectively moved to
+	nautilus-mime-actions.c
+	
 2000-06-01  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug where choosing viewer from "View as Other..."
