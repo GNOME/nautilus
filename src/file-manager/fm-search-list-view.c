@@ -39,6 +39,7 @@
 #include <libmedusa/medusa-indexed-search.h>
 #include <libmedusa/medusa-unindexed-search.h>
 #include <libmedusa/medusa-index-service.h>
+#include <libmedusa/medusa-system-state.h>
 #endif
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
@@ -97,7 +98,9 @@ static void 	load_location_callback               	 (NautilusView 	   *nautilus_
 						      	  char 		   *location);
 static void	real_update_menus 		     	 (FMDirectoryView  *view);
 #ifdef HAVE_MEDUSA
-static void     display_indexed_search_problems_dialog   (gboolean unindexed_search_is_available);
+static void     display_system_services_are_blocked_dialog            (gboolean unindexed_search_is_available);
+static void     display_system_services_are_disabled_dialog           (gboolean unindexed_search_is_available);
+static void     display_indexed_search_problems_dialog                (gboolean unindexed_search_is_available);
 #endif
 static void	reveal_selected_items_callback 		 (BonoboUIComponent *component, 
 							  gpointer 	    user_data, 
@@ -117,24 +120,40 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 	gboolean unindexed_search_is_available_for_uri;
 	gboolean indexed_search_is_available;
 
-	indexed_search_is_available = medusa_indexed_search_is_available () == GNOME_VFS_OK;
-	if (indexed_search_is_available &&
-	    !nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD)) {
-		last_indexing_time = nautilus_indexing_info_get_last_index_time ();
-		if (last_indexing_time) {
-			status_string = g_strdup_printf (_("Search results may not include items modified after %s, when your drive was last indexed."),
-							 last_indexing_time);
-			
-			g_free (last_indexing_time);
-			nautilus_view_report_status (nautilus_view, status_string);
-			g_free (status_string);
-		}
+
+	nautilus_view_set_title (nautilus_view, _("Search Results"));
+
+	unescaped_location = gnome_vfs_unescape_string (location, NULL);
+	unindexed_search_is_available_for_uri = (medusa_unindexed_search_is_available_for_uri (unescaped_location) == GNOME_VFS_OK);
+	g_free (unescaped_location);
+
+	if (medusa_system_services_are_blocked ()) {
+		display_system_services_are_blocked_dialog (unindexed_search_is_available_for_uri);
+	} else if (!medusa_system_services_are_enabled ()) {
+		display_system_services_are_disabled_dialog (unindexed_search_is_available_for_uri);
 	}
-	if (!indexed_search_is_available) {
-		unescaped_location = gnome_vfs_unescape_string (location, NULL);
-		unindexed_search_is_available_for_uri = (medusa_unindexed_search_is_available_for_uri (unescaped_location) == GNOME_VFS_OK);
-		g_free (unescaped_location);
-		display_indexed_search_problems_dialog (unindexed_search_is_available_for_uri);
+	else {
+		/* Medusa is enabled */
+		indexed_search_is_available = medusa_indexed_search_is_available () == GNOME_VFS_OK;
+
+		if (indexed_search_is_available &&
+		    !nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD)) {
+			last_indexing_time = nautilus_indexing_info_get_last_index_time ();
+			if (last_indexing_time) {
+				status_string = g_strdup_printf (_("Search results may not include items modified after %s, "
+								   "when your drive was last indexed."),
+								 last_indexing_time);
+				
+				g_free (last_indexing_time);
+				nautilus_view_report_status (nautilus_view, status_string);
+				g_free (status_string);
+			}
+		}
+
+		if (!indexed_search_is_available) {
+
+			display_indexed_search_problems_dialog (unindexed_search_is_available_for_uri);
+		}
 	}
 #else
 	nautilus_show_error_dialog (_("Sorry, but the Medusa search service is not available because it is not installed."),
@@ -142,7 +161,7 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 			            NULL);
 #endif
 
-	nautilus_view_set_title (nautilus_view, _("Search Results"));
+
 }
 
 /* FIXME bugzilla.eazel.com 5057: GnomeVFSResults may not be the
@@ -188,6 +207,8 @@ real_load_error (FMDirectoryView *nautilus_view,
 		break;
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
 		/* We've handled this case in load_location_callback */
+		break;
+	case GNOME_VFS_ERROR_CANCELLED:
 		break;
 	default:
 		error_string = g_strdup_printf (_("An error occurred while loading "
@@ -328,6 +349,41 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 		}
 	}
 
+}
+
+static void     
+display_system_services_are_blocked_dialog (gboolean unindexed_search_is_available)
+{
+	GnomeDialog *dialog_shown;
+
+	/* It is not necessary to translate this text just yet; it has not been
+	   edited yet, and will be replaced by a final copy in a few days. */
+	dialog_shown = nautilus_show_info_dialog (_("To do a fast search, Find requires an index "
+						    "of the files on your system.  "
+						    "Your system administrator has turned off indexing "
+						    "so your computer does not have an index "
+						    "right now.  Because Find cannot use an "
+						    "index, this search may take several "
+						    "minutes.  "),
+						  _("Indexing is Blocked on Your Computer"),
+						  NULL);
+}
+
+
+static void     
+display_system_services_are_disabled_dialog (gboolean unindexed_search_is_available)
+{
+	/* It is not necessary to translate this text just yet; it has not been
+	   edited yet, and will be replaced by a final copy in a few days. */
+	nautilus_show_info_dialog (_("To do a fast search, Find requires an index "
+				     "of the files on your system.  "
+				     "You have elected not to index your computer "
+				     "so it does not have an index "
+				     "right now.  Because Find cannot use an "
+				     "index, this search may take several "
+				     "minutes.  "),
+				   _("Indexing is Disabled on Your Computer"),
+				   NULL);
 }
 
 #endif	

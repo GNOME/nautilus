@@ -124,6 +124,10 @@ show_index_progress_dialog (void)
         callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_DISABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
                                                                      dialog_close_cover,
                                                                      dialogs->index_in_progress_dialog);
+        gtk_signal_connect_object (GTK_OBJECT (dialogs->index_in_progress_dialog),
+                                   "destroy",
+                                   medusa_remove_state_changed_function,
+                                   GINT_TO_POINTER (callback_id));
 }
 
 
@@ -138,6 +142,10 @@ show_reindex_request_dialog (void)
         callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_DISABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
                                                                      dialog_close_cover,
                                                                      dialogs->last_index_time_dialog);
+        gtk_signal_connect_object (GTK_OBJECT (dialogs->last_index_time_dialog),
+                                   "destroy",
+                                   medusa_remove_state_changed_function,
+                                   GINT_TO_POINTER (callback_id));
 }
 
 static void
@@ -337,6 +345,10 @@ show_indexing_info_dialog (void)
                 callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_DISABLED,
                                                                              dialog_close_cover,
                                                                              dialog_shown);
+                gtk_signal_connect_object (GTK_OBJECT (dialog_shown),
+                                           "destroy",
+                                           medusa_remove_state_changed_function,
+                                           GINT_TO_POINTER (callback_id));
                 return;
 
         }
@@ -352,6 +364,10 @@ show_indexing_info_dialog (void)
                 callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
                                                                              dialog_close_cover,
                                                                              dialog_shown);
+                gtk_signal_connect_object (GTK_OBJECT (dialog_shown),
+                                           "destroy",
+                                           medusa_remove_state_changed_function,
+                                           GINT_TO_POINTER (callback_id));
                 return;
         }
 	if (dialogs == NULL) {

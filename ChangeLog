@@ -1,3 +1,28 @@
+2001-02-14  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bugzilla.eazel.com bug 6416, that the search results view
+	needs to inform the user if indexing is disabled or blocked
+	on their system.  I haven't added the final text yet, since
+	it is not complete.  The final text will be swapped in.
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* src/file-manager/fm-search-list-view.c:
+	(load_location_callback),
+	(real_load_error), (display_indexed_search_problems_dialog),
+	(display_system_services_are_blocked_dialog),
+	(display_system_services_are_disabled_dialog): Add the dialogs for
+	the cases when searches are enabled and disabled in the right
+	cases.  Stop displaying an error dialog about a problem loading
+	the location in the case where the directory load is cancelled.
+
+	* src/file-manager/nautilus-indexing-info.c:
+	(show_index_progress_dialog), (show_reindex_request_dialog),
+	(show_indexing_info_dialog):
+	Fix an obscure bug introduced in my last checkin by
+	removing a reference to the index status that was kept by the
+	medusa system state poller on destroy. If this reference was left around,
+	enabling or disabling indexing could crash nautilus.
+
 2001-02-14  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>
@@ -90,6 +115,7 @@
 	to run, have not added that dependancy as it is not
 	easily available.
 
+>>>>>>> 1.3768
 2001-02-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Mike Engber <engber@eazel.com>
@@ -340,7 +366,7 @@
 
 	reviewed by: Seth Nickell <seth@eazel.com>
 
-	Fix bugzilla.eazel.com bug 6416, that the indexing
+	Fix bugzilla.eazel.com bug 6417, that the indexing
 	information dialog should not be shown if indexing is
 	disabled or blocked.
 
