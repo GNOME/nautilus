@@ -1877,8 +1877,8 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	outline_color = 0x000000FF;
 	
 	canvas = GNOME_CANVAS_ITEM (icon_item)->canvas;
-	note_text = nautilus_icon_container_get_note_text (NAUTILUS_ICON_CONTAINER (canvas), icon_item->user_data, emblem_index);
-
+	note_text = nautilus_icon_container_get_note_text (NAUTILUS_ICON_CONTAINER (canvas), icon_item->user_data, emblem_index);		
+	
 	icon_item->details->annotation = gnome_canvas_item_new
 			(gnome_canvas_root (canvas),
 		 	nautilus_canvas_note_item_get_type (),

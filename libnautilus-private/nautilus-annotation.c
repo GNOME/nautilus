@@ -406,7 +406,12 @@ digest_file_completed (NautilusDigestFileHandle *digest_handle)
 	}
 	
 	(* digest_handle->callback) (digest_handle->file, &digest_string[0]);
-	
+
+	{
+	char* name = nautilus_file_get_name (digest_handle->file);
+	g_free (name);
+	}
+		
 	nautilus_file_unref (digest_handle->file);
 	g_free (digest_handle->buffer);
 	g_free (digest_handle);
@@ -424,6 +429,7 @@ digest_file_failed (NautilusDigestFileHandle *digest_handle, GnomeVFSResult resu
 	g_free (digest_handle->buffer);
 	
 	(* digest_handle->callback) (digest_handle->file, NULL);
+		
 	nautilus_file_unref (digest_handle->file);	
 	g_free (digest_handle);
 }
@@ -474,17 +480,20 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 			 gpointer callback_data)
 {
 	NautilusDigestFileHandle *digest_handle;
-
+	char *name;
+	
 	digest_handle = callback_data;
 	g_assert (digest_handle->handle == handle);
 
 	/* Handle the failure case. */
 	if (result != GNOME_VFS_OK) {
-		g_message ("open failed, error was %d", result);
+		name = nautilus_file_get_name (digest_handle->file);
+		g_message ("open failed, filename %s, error was %d", name, result);
+		g_free (name);
 		digest_file_failed (digest_handle, result);
 		return;
 	}
-
+	
 	/* read in the first chunk of the file */
 	digest_handle->opened = TRUE;
 	open_count += 1;
@@ -581,7 +590,7 @@ look_up_local_annotation (NautilusFile *file, const char *digest)
 {
 	GnomeVFSResult result;
 	int  file_size;
-	char *uri, *path, *file_data;
+	char *uri, *path, *file_data, *buffer;
 	
 	path = get_annotation_path (digest);
 	if (g_file_exists (path)) {
@@ -591,7 +600,10 @@ look_up_local_annotation (NautilusFile *file, const char *digest)
 		g_free (uri);
 		g_free (path);
 		if (result == GNOME_VFS_OK) {
-			return file_data;
+			/* add a null at the end, so it's a valid string */
+			buffer = g_realloc (file_data, file_size + 1);
+			buffer[file_size] = '\0';					
+			return buffer;
 		} else {
 			return NULL;
 		}
@@ -688,12 +700,14 @@ got_annotations_callback (GnomeVFSResult result,
 		return;
 	}
 	
+	g_message ("got annotation response %s", file_contents);
+	
 	/* inexplicably, the gnome-xml parser requires a zero-terminated array, so add the null at the end. */
 	buffer = g_realloc (file_contents, file_size + 1);
 	buffer[file_size] = '\0';
 	annotations = xmlParseMemory (buffer, file_size);
 	g_free (buffer);
-
+	
 	/* iterate through the xml document, handling each annotation entry */	
 	if (annotations != NULL) {
 		next_annotation = xmlDocGetRootElement (annotations)->childs;

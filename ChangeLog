@@ -1,3 +1,20 @@
+2001-03-20  Andy Hertzfeld  <andy@eazel.com>
+
+	made annotation size itself to the text
+	parse xml based annotations correctly
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(digest_file_completed), (digest_file_failed),
+	(read_file_open_callback), (look_up_local_annotation),
+	(got_annotations_callback):
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text),
+	(nautilus_canvas_note_item_set_arg), (get_display_text),
+	(nautilus_canvas_note_item_render),
+	(nautilus_canvas_note_item_draw):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation):
+
 2001-03-19  Andy Hertzfeld  <andy@eazel.com>
 
 	made it draw annotation text in aa mode;
