@@ -2532,10 +2532,14 @@ icon_destroy (GnomeIconContainer *container,
 	gint icon_x, icon_y;
 	gint grid_x, grid_y;
 	gint x_offset, y_offset;
+	gboolean was_selected;
+	
 	details = container->details;
 
 	details->icons = g_list_remove(details->icons, icon);
 	details->num_icons--;
+
+	was_selected = icon->is_selected;
 
 	if (details->kbd_current == icon) {
         	set_kbd_current (container, NULL, FALSE);
@@ -2562,6 +2566,11 @@ icon_destroy (GnomeIconContainer *container,
  	g_hash_table_remove (details->canvas_item_to_icon, icon->item);
 	
 	icon_free (icon);
+
+	if (was_selected) {
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[SELECTION_CHANGED]);
+	}
 }
 
 /* activate any selected items in the container */

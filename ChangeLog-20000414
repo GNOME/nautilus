@@ -1,3 +1,11 @@
+2000-03-14  John Sullivan  <sullivan@eazel.com>
+
+        * libnautilus/gnome-icon-container.c: (icon_destroy):
+        Send SELECTION_CHANGED signal when destroying an icon
+        that had been selected. This fixes bug Elliot reported
+        where "Open in New Window" item in File menu was sensitive
+        after the selected items had been deleted.
+
 2000-03-14  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus/gnome-icon-container-dnd.c (drag_drop_cb): Add a
