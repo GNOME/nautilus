@@ -62,7 +62,7 @@ loser_make_object (BonoboGenericFactory *factory,
 
 	nautilus_view = nautilus_sidebar_loser_get_nautilus_view (view);
 
-	g_signal_connect (nautilus_view, "destroy", loser_object_destroyed, NULL);
+	g_signal_connect (nautilus_view, "destroy", G_CALLBACK (loser_object_destroyed), NULL);
 
 	nautilus_sidebar_loser_maybe_fail ("post-make-object");
 
@@ -72,37 +72,40 @@ loser_make_object (BonoboGenericFactory *factory,
 int main(int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
-	CORBA_ORB orb;
 	CORBA_Environment ev;
+#if GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
+#endif
 
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 
 	nautilus_sidebar_loser_maybe_fail ("pre-init");
 
+#if GNOME2_CONVERSION_COMPLETE
 	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-	orb = bonobo_activation_init (argc, argv);
+#endif
 
-        gnome_init ("nautilus-sidebar-loser", VERSION, 
-		    argc, argv); 
+        bonobo_ui_init ("nautilus-sidebar-loser", VERSION, &argc, argv); 
 	
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-
 	nautilus_sidebar_loser_maybe_fail ("post-init");
 
-
+#if GNOME2_CONVERSION_COMPLETE
         registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
-						    loser_make_object,
-						    NULL);
+#endif
+	factory = bonobo_generic_factory_new ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", 
+					      loser_make_object,
+					      NULL);
+#if GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
-
+#endif
 
 	nautilus_sidebar_loser_maybe_fail ("post-factory-init");
 
-	do {
-		bonobo_main ();
-	} while (object_count > 0);
+	if (factory != NULL) {
+		do {
+			bonobo_main ();
+		} while (object_count > 0);
+	}
 	
 	return 0;
 }

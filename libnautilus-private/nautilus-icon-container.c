@@ -2523,8 +2523,8 @@ button_press_event (GtkWidget *widget,
 	
 	/* Otherwise, we emit a button_press message. */
 	g_signal_emit (widget,
-			 signals[BUTTON_PRESS], 0, event,
-			 &return_value);
+		       signals[BUTTON_PRESS], 0, event,
+		       &return_value);
 	return return_value;
 }
 
@@ -3528,12 +3528,12 @@ handle_icon_button_press (NautilusIconContainer *container,
 	if (button_event_modifies_selection (event)) {
 		icon_toggle_selected (container, icon);
 		g_signal_emit (container,
-				 signals[SELECTION_CHANGED], 0);
+			       signals[SELECTION_CHANGED], 0);
 	} else if (!icon->is_selected) {
 		unselect_all (container);
 		icon_set_selected (container, icon, TRUE);
 		g_signal_emit (container,
-				 signals[SELECTION_CHANGED], 0);
+			       signals[SELECTION_CHANGED], 0);
 	}
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == DRAG_BUTTON) {
@@ -3904,7 +3904,7 @@ finish_adding_icon (NautilusIconContainer *container,
 	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
 
 	g_signal_connect (icon->item, "event",
-			    G_CALLBACK (item_event_callback), container);
+			  G_CALLBACK (item_event_callback), container);
 }
 
 static void

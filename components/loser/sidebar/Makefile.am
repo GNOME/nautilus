@@ -5,7 +5,7 @@ INCLUDES =					\
 	-DDATADIR=\"$(datadir)\"		\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir)				\
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
 uidir = $(datadir)/gnome-2.0/ui
@@ -21,7 +21,7 @@ nautilus_sidebar_loser_SOURCES =		\
 
 nautilus_sidebar_loser_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS) \
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers

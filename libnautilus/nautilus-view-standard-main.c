@@ -200,17 +200,10 @@ nautilus_view_standard_main_multi (const char *executable_name,
 
 #if GNOME2_CONVERSION_COMPLETE
 	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-	orb = bonobo_activation_init (argc, argv);
 #endif
 	/* Initialize libraries. */
-#if GNOME2_CONVERSION_COMPLETE
-        gnome_init (executable_name, version, argc, argv); 
-#endif
 	g_thread_init (NULL);
 	gnome_vfs_init ();
-#if GNOME2_CONVERSION_COMPLETE
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-#endif
 
 	bonobo_ui_init (executable_name, version, &argc, argv);
 

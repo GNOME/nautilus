@@ -30,7 +30,6 @@ lib_LTLIBRARIES =			\
 
 libnautilus_tree_view_la_SOURCES =         \
 	$(TREE_VIEW_COMMON_SOURCES)        \
-	$(COMPONENT_LIBS)		   \
 	libmain.c                          \
 	$(NULL)
 

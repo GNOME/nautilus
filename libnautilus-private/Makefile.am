@@ -61,8 +61,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-directory.h \
 	nautilus-drag-window.c \
 	nautilus-drag-window.h \
-	nautilus-druid-page-eazel.h \
-	nautilus-druid.h \
 	nautilus-entry.c \
 	nautilus-entry.h \
 	nautilus-file-attributes.h \

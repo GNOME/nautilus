@@ -27,14 +27,14 @@
 /* nautilus-adapter-embeddable-embed-strategy.c - 
  */
 
-
 #include <config.h>
-
 #include "nautilus-adapter-embeddable-embed-strategy.h"
+
+#if GNOME2_CONVERSION_COMPLETE
+
 #include "nautilus-adapter-embed-strategy-private.h"
 #include "nautilus-zoomable-proxy.h"
 
-#include <bonobo/bonobo-client-site.h>
 #include <bonobo/bonobo-item-container.h>
 #include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
@@ -230,4 +230,4 @@ nautilus_adapter_embeddable_embed_strategy_get_zoomable (NautilusAdapterEmbedStr
 	return strategy->details->zoomable;
 }
 
-
+#endif

@@ -1,3 +1,57 @@
+2002-01-15  Darin Adler  <darin@bentspoon.com>
+
+	Inspired by a patch from Jacob Berkman <jacob@ximian.com>, got
+	rid of all the Makefile.am hackery so that everything ends up in
+	the tarball.
+
+	* configure.in: Bumped version to 1.1.1.
+
+	* components/Makefile.am: Re-enabled all the subdirs.
+	
+	* components/adapter/Makefile.am: Re-enabled
+	nautilus-adapter-embeddable-embed-strategy.[ch].
+	
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	Put an #if GNOME2_CONVERSION_COMPLETE around the whole thing.
+	
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	Update for COMPONENT_CFLAGS in NAUTILUS_PRIVATE_CFLAGS.
+	
+	* components/loser/content/main.c: (loser_make_object), (main):
+	* components/loser/sidebar/main.c: (loser_make_object), (main):
+	* components/loser/content/nautilus-content-loser.c:
+	(nautilus_content_loser_init):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(nautilus_sidebar_loser_init):
+	Make these compile, not sure if they actually work.
+
+	* components/shell/Nautilus_View_shell.server.in: Remove.
+	* components/shell/shell.c: Remove.
+	This component can go in a separate package -- it doesn't need to be
+	part of the main Nautilus source tree.
+	
+	* components/text/Makefile.am: Turned off compiling of the component,
+	but used EXTRA_DIST to make sure the source code still gets into the
+	tarball.
+	
+	* components/tree/Makefile.am: Removed $(COMPONENT_LIBS) from the
+	libnautilus_tree_view_la_SOURCES list. Not sure why it was in there.
+	
+	* libnautilus-private/Makefile.am: Remove stale references to the
+	nautilus-druid-related headers.
+	
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi): Remove some
+	GNOME2_CONVERSION_COMPLETE code that is now clearly not going to
+	be needed. Left in the stuff that is a placeholder for things we
+	still need.
+	
+	* src/Makefile.am: Distribute the profiler sources even when they are
+	not built.
+
+	* libnautilus-private/nautilus-icon-container.c: Whitespace tweak.
+
 2002-01-15  Johan Dahlin  <jdahlin@telia.com>
 
 	* src/nautilus-bookmarks-window.c: Port to GtkTreeView.

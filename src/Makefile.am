@@ -35,6 +35,8 @@ nautilus_shell_interface_idl_sources =		\
 if ENABLE_PROFILER
 profiler_headers = nautilus-profiler.h
 profiler_sources = nautilus-profiler.c
+else
+profiler_dist = nautilus-profiler.h nautilus-profiler.c
 endif
 
 nautilus_SOURCES = \
@@ -144,6 +146,7 @@ EXTRA_DIST =					\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
 	run-nautilus				\
+	$(profiler_dist)			\
 	$(NULL)
 
 BUILT_SOURCES = \

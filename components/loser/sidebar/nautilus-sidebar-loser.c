@@ -88,9 +88,9 @@ nautilus_sidebar_loser_init (NautilusSidebarLoser *view)
 	 * Get notified when our bonobo control is activated so we
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
-        g_signal_connect (nautilus_view_get_bonobo_control (view->details->nautilus_view)),
+        g_signal_connect (nautilus_view_get_bonobo_control (view->details->nautilus_view),
                           "activate",
-                          loser_merge_bonobo_items_callback,
+                          G_CALLBACK (loser_merge_bonobo_items_callback),
                           view);
 	
 	gtk_widget_show (GTK_WIDGET (view));
@@ -229,8 +229,8 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
          */
 }
 
-static char *failure_mode = NULL;
-static char *failure_point = NULL;
+static const char *failure_mode = NULL;
+static const char *failure_point = NULL;
 static gboolean env_checked = FALSE;
 
 void

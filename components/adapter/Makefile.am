@@ -27,6 +27,8 @@ nautilus_adapter_SOURCES =				\
 	nautilus-adapter-embed-strategy-private.h	\
 	nautilus-adapter-embed-strategy.c		\
 	nautilus-adapter-embed-strategy.h		\
+	nautilus-adapter-embeddable-embed-strategy.c	\
+	nautilus-adapter-embeddable-embed-strategy.h	\
 	nautilus-adapter-factory-server.c		\
 	nautilus-adapter-factory-server.h		\
 	nautilus-adapter-file-load-strategy.c		\
@@ -40,11 +42,6 @@ nautilus_adapter_SOURCES =				\
 	nautilus-zoomable-proxy.h			\
 	nautilus-adapter.c				\
 	nautilus-adapter.h				\
-	$(NULL)
-
-XXX =  \
-	nautilus-adapter-embeddable-embed-strategy.c	\
-	nautilus-adapter-embeddable-embed-strategy.h	\
 	$(NULL)
 
 nautilus_adapter_LDADD =							\
