@@ -481,19 +481,74 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 										 (gpointer)conflict.needsName,
 										 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
 						if (pack_entry == NULL) {
-							trilobite_debug ("This was certainly unexpected v2!");
-							g_assert_not_reached ();
+							/* Still kühl, we're looking for a name... */
+							pack_entry = g_list_find_custom (*failedpackages, 
+											 (gpointer)conflict.needsName,
+											 (GCompareFunc)eazel_install_package_name_compare); 					
+							   if (pack_entry == NULL) {
+								   /* Massive debug output before I die.... */
+								   int a;
+								   GList *ptr;
+								   trilobite_debug ("This was certainly unexpected v5!");
+								   trilobite_debug ("*********************************");
+								   trilobite_debug ("Cannot lookup %s for %s", 
+										    conflict.needsName,
+										    conflict.byName);
+								   trilobite_debug ("Cannot lookup %s in *packages",
+										    conflict.needsName);
+								   trilobite_debug ("Cannot lookup %s in *failedpackages",
+										    conflict.needsName);
+								   
+								   trilobite_debug ("packages = 0x%x", packages);
+								   trilobite_debug ("*packages = 0x%x", *packages);
+								   trilobite_debug ("failedpackages = 0x%x", failedpackages);
+								   trilobite_debug ("*failedpackages = 0x%x", *failedpackages);
+								   
+								   trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages));
+								   trilobite_debug ("g_list_length (*failedpackages) = %d", g_list_length (*failedpackages));
+								   a = 0;
+								   for (ptr = *packages; ptr; glist_step (ptr)) {
+									   PackageData *p = (PackageData*)ptr->data;
+									   a++;
+									   trilobite_debug ("(*packages)[%d] = %s-%s-%s",
+											    a,
+											    p->name,
+											    p->version,
+											    p->minor);
+								   }
+								   a = 0;
+								   for (ptr = *failedpackages; ptr; glist_step (ptr)) {
+									   PackageData *p = (PackageData*)ptr->data;
+									   a++;
+									   trilobite_debug ("(*failedpackages)[%d] = %s-%s-%s",
+											    a,
+											    p->name,
+											    p->version,
+											    p->minor);
+								   }
+								   
+								   
+								   g_assert_not_reached ();
+							   }
 						} 
+						trilobite_debug ("We don't want to redo failing it");
+						pack_entry = NULL;
 					}
 				}
 				
-				/* Create a packagedata for the dependecy */
-				dep = packagedata_new_from_rpm_conflict_reversed (conflict);
-				pack = (PackageData*)(pack_entry->data);
-				dep->archtype = g_strdup (pack->archtype);
-				pack->status = PACKAGE_BREAKS_DEPENDENCY;
-				dep->status = PACKAGE_DEPENDENCY_FAIL;
-				g_assert (dep!=NULL);
+				if (pack_entry) {
+					trilobite_debug ("pack_entry found");
+					/* Create a packagedata for the dependecy */
+					dep = packagedata_new_from_rpm_conflict_reversed (conflict);
+					pack = (PackageData*)(pack_entry->data);
+					dep->archtype = g_strdup (pack->archtype);
+					pack->status = PACKAGE_BREAKS_DEPENDENCY;
+					dep->status = PACKAGE_DEPENDENCY_FAIL;
+					g_assert (dep!=NULL);
+				} else {
+					trilobite_debug ("pack_enty is NULL, continueing");
+					continue;
+				}
 				
 				/* Here I check to see if I'm breaking the -devel package, if so,
 				   request it. It does a pretty generic check to see
