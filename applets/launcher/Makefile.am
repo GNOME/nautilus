@@ -1,11 +1,13 @@
 include $(top_srcdir)/Makefile.shared
 
-INCLUDES = -I. -I$(srcdir) 				\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-I$(includedir)					\
-	$(APPLETS_CFLAGS)				\
-	-DDATADIR=\""$(datadir)"\" 			\
-	-DBINDIR=\""$(bindir)"\" 			\
+INCLUDES = -I. -I$(srcdir) \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(includedir) \
+	$(APPLETS_CFLAGS) \
+	-DDATADIR=\""$(datadir)"\" \
+	-DBINDIR=\""$(bindir)"\" \
 	$(NULL)
 
 bin_PROGRAMS = nautilus-launcher-applet
