@@ -1,3 +1,38 @@
+2001-02-01  Gene Z. Ragan  <gzr@eazel.com>
+
+	Additional work on first time druid gmc to nautilus conversion routines.
+	
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(convert_gmc_desktop_icons), (transition_value_changed):
+
+	Make gmc link to Nautilus link conversion more complete
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	(nautilus_gnome_get_terminal_path):
+	New utility routine to return path to an installed terminal application
+	
+	(nautilus_gnome_open_terminal):
+	Call above function
+	
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-link.h:
+	(nautilus_link_local_create),
+	
+	(nautilus_link_local_create_from_gnome_entry):
+	New function to create a nautilus link from .desktop entry data
+		
+	It's hard to be hated by millions.  Make gmc to nautilus link transition much better.
+	We now can support converted .desktop links that require a terminal. Also, get rid
+	of gnome-vfs symlinks and use the command: specifier to launch instead.  This was not possible
+	earlier, but due to a recent bug fix by me, we can now use this specifier in a
+	Nautilus link.
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(icon_view_create_nautilus_links),
+	(update_home_link_and_delete_copies),
+	(update_trash_link_and_delete_copies):
+	
 2001-01-31  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com> and Eli Goldberg
@@ -9,6 +44,7 @@
 	added some address aliases.
 
 2001-01-31  Rebecca Schulman  <rebecka@eazel.com>
+
 	Fixed bug 5245, that words used in the search bar were used
 	elsewhere, such that they could not be translated correctly for
 	both contexts.  The fix was to wrap all of the strings used to

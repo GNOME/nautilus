@@ -31,12 +31,15 @@
 #include "nautilus-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
+#include "nautilus-stock-dialogs.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs.h>
@@ -99,6 +102,7 @@ nautilus_link_local_create (const char *directory_path,
 			    const char *name,
 			    const char *image,
 			    const char *target_uri,
+			    const GdkPoint *point,
 			    NautilusLinkType type)
 {
 	xmlDocPtr output_document;
@@ -107,6 +111,8 @@ nautilus_link_local_create (const char *directory_path,
 	int result;
 	char *uri;
 	GList dummy_list;
+	NautilusFileChangesQueuePositionSetting item;
+
 	
 	g_return_val_if_fail (directory_path != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
@@ -145,6 +151,19 @@ nautilus_link_local_create (const char *directory_path,
 	dummy_list.next = NULL;
 	dummy_list.prev = NULL;
 	nautilus_directory_notify_files_added (&dummy_list);
+	
+	if (point != NULL) {
+		item.point.x = point->x;
+		item.point.y = point->y;
+		item.uri = uri;
+		
+		dummy_list.data = &item;
+		dummy_list.next = NULL;
+		dummy_list.prev = NULL;
+	
+		nautilus_directory_schedule_position_setting (&dummy_list);
+	}
+
 	g_free (uri);
 
 	g_free (path);
@@ -471,3 +490,71 @@ nautilus_link_local_is_trash_link (const char *path)
 {
 	return nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_TRASH;
 }
+
+
+void
+nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const char *dest_path, const GdkPoint *position)
+{
+	const char *icon_name;
+	char *launch_string, *terminal_path;
+	char *arguments, *temp_str;
+	gboolean create_link;
+	int index;
+
+	if (entry == NULL || dest_path == NULL) {
+		return;
+	}
+	
+	terminal_path = nautilus_gnome_get_terminal_path ();
+	if (terminal_path == NULL) {
+		return;
+	}
+
+	create_link = TRUE;
+	
+	/* Extract arguments from exec array */			
+	for (index = 0, arguments = NULL; index < entry->exec_length; ++index) {
+		if (arguments == NULL) {
+			arguments = g_strdup (entry->exec[index]);
+		} else {
+			temp_str = arguments;
+			arguments = g_strdup_printf ("%s %s", temp_str, entry->exec[index]);
+			g_free (temp_str);
+		}		
+	}
+		
+	if (strcmp (entry->type, "Application") == 0) {
+		if (entry->terminal) {		
+			if (strstr (terminal_path, "gnome-terminal") != NULL) {
+				/* gnome-terminal takes different arguments */
+				launch_string = g_strdup_printf ("command:%s '-x %s'", terminal_path, arguments);			
+			} else {
+				launch_string = g_strdup_printf ("command:%s '-e %s'", terminal_path, arguments);
+			}			
+		} else {
+			launch_string = g_strdup_printf ("command:%s", arguments);
+		}		
+	} else if (strcmp (entry->type, "URL") == 0) {
+		launch_string = g_strdup_printf ("command:%s", arguments);
+	} else {
+		/* Unknown .desktop file type */
+		launch_string = NULL;
+		create_link = TRUE;		
+	}
+	
+	if (entry->icon != NULL) {
+		icon_name = entry->icon;
+	} else {
+		icon_name = "gnome-unknown.png";
+	}
+	
+	if (create_link) {
+		nautilus_link_local_create (dest_path, entry->name, icon_name, 
+			    	    	    launch_string, position, NAUTILUS_LINK_GENERIC);
+	}
+				
+	g_free (launch_string);
+	g_free (arguments);
+	g_free (terminal_path);
+}
+

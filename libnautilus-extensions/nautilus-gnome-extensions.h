@@ -107,6 +107,9 @@ void       nautilus_gnome_canvas_fill_rgb                               (GnomeCa
 GtkButton *nautilus_gnome_dialog_get_button_by_index                    (GnomeDialog     *dialog,
 									 int              index);
 
+/* Return a command string containing the path to a terminal on this system. */
+char 	  *nautilus_gnome_get_terminal_path 				(void);
+
 /* Open up a new terminal, optionally passing in a command to execute */
 void       nautilus_gnome_open_terminal                                 (const char      *command);
 

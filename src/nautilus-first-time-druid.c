@@ -125,6 +125,7 @@ static enum {
 	Fail
 } network_status = Untested;
 
+
 /* Globals used to implement DNS timeout. */
 static gboolean sigalrm_occurred;
 static pid_t child_pid;
@@ -138,6 +139,7 @@ static void     initiate_file_download           (GnomeDruid *druid);
 static gboolean set_http_proxy                   (const char *proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 static gboolean check_network_connectivity	 (void);
+static void	convert_gmc_desktop_icons 	 (void);
 
 
 static void
@@ -229,11 +231,22 @@ druid_finished (GtkWidget *druid_page)
 	}
 	signup_uris[1] = NULL;
 	
+	
+	/* Do the GMC to Nautilus Transition */
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);
+	
+	if (add_to_session) {
+	}
+
+	if (transfer_gmc_icons) {
+		convert_gmc_desktop_icons ();
+	}
+	
 	/* FIXME bugzilla.eazel.com bug 5681: Services icon on desktop may need better icon and text */
 	/* Create default services icon on the desktop */
 	desktop_path = nautilus_get_desktop_directory ();
 	nautilus_link_local_create (desktop_path, _("Eazel Services"), "big_services_icon.png", 
-				    "http://services.eazel.com", NAUTILUS_LINK_GENERIC);
+				    "eazel:", NULL, NAUTILUS_LINK_GENERIC);
 	g_free (desktop_path);
 	
 	/* Time to start. Hooray! */
@@ -785,30 +798,31 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 	return TRUE;
 }
 
-#if 0
 static void
-convert_gmc_desktop_icons ()
+convert_gmc_desktop_icons (void)
 {
 	const char *home_dir;
-	char *gmc_desktop_dir;
+	char *gmc_desktop_dir,*nautilus_desktop_dir, *link_path;
 	struct stat st;
 	DIR *dir;
 	struct dirent *dirent;
-
+	GnomeDesktopEntry *gmc_link;
+	
 	home_dir = g_get_home_dir ();
 	if (home_dir == NULL) {
 		return;
 	}
 		
-	gmc_desktop_dir = g_strdup_printf ("%s/.gnome_desktop", home_dir);
-
+	gmc_desktop_dir = g_strdup_printf ("%s/.gnome-desktop", home_dir);
+	
 	if (stat (gmc_desktop_dir, &st) != 0) {
 		g_free (gmc_desktop_dir);
 		return;
 	}
 	
-	if (S_ISDIR (st.st_mode) != 0) {
+	if (!S_ISDIR (st.st_mode)) {
 		g_free (gmc_desktop_dir);
+		g_message ("Not a dir");
 		return;
 	}
 	
@@ -818,26 +832,37 @@ convert_gmc_desktop_icons ()
 		return;
 	}
 
+	nautilus_desktop_dir = nautilus_get_desktop_directory ();
+
 	/* Iterate all the files here and indentify the GMC links. */
-	dirent = NULL;
-	while ((dirent = readdir (dir)) != NULL) {
+	for (dirent = readdir (dir); dirent != NULL; dirent = readdir (dir)) {
 		if (strcmp (dirent->d_name, ".") == 0 || strcmp (dirent->d_name, "..") == 0) {
 			continue;
 		}
-				
-		//sprintf(buff, "%s/%s", path.CStr(), dirent->d_name);
+		
+		link_path = g_strdup_printf ("%s/%s", gmc_desktop_dir, dirent->d_name);
+
+		gmc_link = gnome_desktop_entry_load (link_path);
+		gmc_link = gnome_desktop_entry_load_unconditional (link_path);
+		g_free (link_path);
+		
+		if (gmc_link != NULL) {
+			nautilus_link_local_create_from_gnome_entry (gmc_link, nautilus_desktop_dir, NULL);
+			gnome_desktop_entry_free (gmc_link);
+		}
 	}
 				
-	g_free (gmc_desktop_dir);	
+	g_free (gmc_desktop_dir);
+	g_free (nautilus_desktop_dir);	
+
 }
-#endif
 
 /* handle the "next" signal for the update feedback page to skip the error page */
 static gboolean
 transition_value_changed (GtkWidget *checkbox, gboolean *value)
 {	
 	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
-		
+	
 	return TRUE;
 }
 

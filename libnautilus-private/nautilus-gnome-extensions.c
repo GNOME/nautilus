@@ -512,25 +512,14 @@ nautilus_gnome_shell_execute (const char *command)
 	return WEXITSTATUS(status);
 }
 
-void
-nautilus_gnome_open_terminal (const char *command)
+/* Return a command string containing the path to a terminal on this system. */
+char *
+nautilus_gnome_get_terminal_path (void)
 {
 	char *terminal_path;
-	char *terminal_path_with_flags;
-	char *terminal_flags;
-	gboolean using_gnome_terminal;
-	char *command_line;
-
-
-	using_gnome_terminal = FALSE;
-
+	
 	/* Look up a well-known terminal app */
 	terminal_path = gnome_is_program_in_path ("gnome-terminal");
-	if (terminal_path != NULL) {
-		/* gnome-terminal has different command-line options than the others
-		 */
-		using_gnome_terminal = TRUE;
-	}
 	
 	if (terminal_path == NULL) {
 		terminal_path = gnome_is_program_in_path ("nxterm");
@@ -553,15 +542,34 @@ nautilus_gnome_open_terminal (const char *command)
 	}
 
 	
+	return terminal_path;
+}
+
+void
+nautilus_gnome_open_terminal (const char *command)
+{
+	char *terminal_path;
+	char *terminal_path_with_flags;
+	char *terminal_flags;
+	gboolean using_gnome_terminal;
+	char *command_line;
+	
+	terminal_path = nautilus_gnome_get_terminal_path ();
 	if (terminal_path == NULL){
 		g_message (" Could not start a terminal ");
-	} else if (command) {
+		g_free (terminal_path);
+		return;
+	}
+	
+	using_gnome_terminal = strstr (terminal_path, "gnome-terminal") != NULL;
+	
+	if (command != NULL) {
 		if (using_gnome_terminal) {
 			command_line = g_strconcat (terminal_path, " -x ", command, NULL);
 		} else {
 			command_line = g_strconcat (terminal_path, " -e ", command, NULL);
 		}
-		
+				
 		nautilus_gnome_shell_execute (command_line);
 		g_free (command_line);
 	} else {
@@ -576,7 +584,6 @@ nautilus_gnome_open_terminal (const char *command)
 			nautilus_gnome_shell_execute (terminal_path_with_flags);
 		}
 	}
-
 
 	g_free (terminal_path);
 }

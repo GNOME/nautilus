@@ -27,6 +27,9 @@
 #define NAUTILUS_LINK_H
 
 #include "nautilus-file.h"
+#include <gdk/gdk.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-dentry.h>
 
 /* Link types */
 typedef enum {
@@ -43,6 +46,7 @@ gboolean         nautilus_link_local_create                     (const char     
 								 const char       *name,
 								 const char       *image,
 								 const char       *target_uri,
+								 const GdkPoint   *point,
 								 NautilusLinkType  type);
 
 /* Change the icon of an existing link file. Takes a path, works
@@ -112,4 +116,8 @@ char *           nautilus_link_local_get_link_uri               (const char     
 char *           nautilus_link_get_link_uri_given_file_contents (const char       *link_file_contents,
 								 int               link_file_size);
 
+void		nautilus_link_local_create_from_gnome_entry 	(GnomeDesktopEntry *entry,
+								 const char 	   *dest_path,
+								 const GdkPoint    *position);
+								 								 
 #endif /* NAUTILUS_LINK_H */
