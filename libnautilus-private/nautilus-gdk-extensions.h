@@ -143,6 +143,10 @@ guint32                  nautilus_interpolate_color                  (gdouble   
 /* Misc GdkWindow helper functions */
 void                     nautilus_gdk_window_bring_to_front          (GdkWindow           *window);
 void                     nautilus_gdk_window_set_invisible_cursor    (GdkWindow           *window);
+void			 nautilus_gdk_window_focus		     (GdkWindow          *window);
+void			 nautilus_gdk_window_set_wm_protocols	     (GdkWindow		 *window,
+								      GdkAtom		 *protocols,
+								      int		  nprotocols);
 
 
 /* In GNOME 2.0 this function will be in the libraries */

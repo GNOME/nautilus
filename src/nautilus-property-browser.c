@@ -60,6 +60,7 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-drag-window.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
@@ -427,6 +428,9 @@ nautilus_property_browser_initialize (GtkObject *object)
 
 	/* initially, display the top level */
 	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
+
+	/* Register that things may be dragged from this window */
+	nautilus_drag_window_register (GTK_WINDOW (property_browser));
 }
 
 static void

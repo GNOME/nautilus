@@ -1,3 +1,36 @@
+2001-01-03  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Work to make clicking on an inactive window not focus it if the
+	click subsequently starts a drag. Fixes bug 1681, and removes
+	fixme bugs 5030, 5032, and 5033
+
+	* libnautilus-extensions/nautilus-drag-window.c,
+	libnautilus-extensions/nautilus-drag-window.h
+	(nautilus_drag_window_register): new module, hooks into a
+	GtkWindow to retrofit a focus policy that makes sense with drag
+	and drop sources. When dragging from a window, a button press
+	event that subsequently causes a drag to be started doesn't
+	focus (or raise) the window
+
+	This uses a sawfish-specific WM_PROTOCOL to handle the `don't
+	raise' part (_SAWFISH_WM_RAISE_WINDOW), but everything else
+	should work with any ICCCM-compliant wm. (The sawfish specific
+	part will have zero effect with other wm's. It currently
+	requires a cvs version of sawfish)
+
+	* src/nautilus-window.c (nautilus_window_constructed): 
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_initialize): 
+	Call nautilus_drag_window_register () on the window, since it
+	may be used as a drag source
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c,
+	libnautilus-extensions/nautilus-gdk-extensions.h
+	(nautilus_gdk_window_focus,
+	nautilus_gdk_window_set_wm_protocols): new functions
+
 2001-01-04  Rebecca Schulman  <rebecka@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

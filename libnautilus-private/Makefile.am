@@ -68,6 +68,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-directory-metafile.c		\
 	nautilus-directory.c			\
 	nautilus-drag.c				\
+	nautilus-drag-window.c			\
 	nautilus-druid-page-eazel.c		\
 	nautilus-druid.c			\
 	nautilus-entry.c			\
@@ -163,6 +164,7 @@ noinst_HEADERS =				\
 	nautilus-directory-private.h		\
 	nautilus-directory.h			\
 	nautilus-drag.h				\
+	nautilus-drag-window.h			\
 	nautilus-druid-page-eazel.h		\
 	nautilus-druid.h			\
 	nautilus-entry.h			\
