@@ -393,8 +393,11 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	GdkGC *fg_gc, *bg_gc;
 	GdkGC *gc, *bgc, *sgc, *bsgc;
 	GList *item;
+	GdkGCValues save_gc;
+	GdkColor highlight_background_color, highlight_text_color, fill_color;
 	int xpos, len;
 	int cursor, offset, i;
+	GnomeCanvasItem *canvas_item;
 
 	priv = iti->priv;
 	style = GTK_WIDGET (GNOME_CANVAS_ITEM (iti)->canvas)->style;
@@ -414,6 +417,23 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	sgc = style->fg_gc [GTK_STATE_SELECTED];
 	bsgc = style->bg_gc [GTK_STATE_SELECTED];
 
+	/* FIXME: Get these values from prefs when they are saved there */
+	gdk_color_parse ("rgb:00/00/00", &highlight_background_color);
+	gdk_color_parse ("rgb:FF/FF/FF", &highlight_text_color);
+	gdk_color_parse ("rgb:FF/FF/FF", &fill_color);
+
+	/* Set up user defined colors */
+	canvas_item = GNOME_CANVAS_ITEM (iti);
+	gdk_colormap_alloc_color
+		(gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),
+	 	&highlight_background_color, FALSE, TRUE);
+	gdk_colormap_alloc_color
+		(gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),
+	 	&highlight_text_color, FALSE, TRUE);
+	gdk_colormap_alloc_color
+		(gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),
+	 	&fill_color, FALSE, TRUE);
+	
 	for (item = ti->rows; item; item = item->next, len += (row ? row->text_length : 0)) {
 		GdkWChar *text_wc;
 		int text_length;		
@@ -425,53 +445,78 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 			y += ti->baseline_skip / 2;
 			continue;
 		}
-
+		
 		text_wc = row->text_wc;
 		text_length = row->text_length;
 
 		xpos = (ti->width - row->width) / 2;
 
 		sel_start = GTK_EDITABLE (priv->entry)->selection_start_pos - len;
-		sel_end = GTK_EDITABLE (priv->entry)->selection_end_pos - len;
-		offset = 0;
-		cursor = GTK_EDITABLE (priv->entry)->current_pos - len;
+		sel_end   = GTK_EDITABLE (priv->entry)->selection_end_pos - len;
+		offset    = 0;
+		cursor    = GTK_EDITABLE (priv->entry)->current_pos - len;
 
 		for (i = 0; *text_wc; text_wc++, i++) {
 			int size, px;
 
 			size = gdk_text_width_wc (ti->font, text_wc, 1);
-
+			px = x + xpos + offset;
+			
 			if (i >= sel_start && i < sel_end) {
+				/* Draw selection */
 				fg_gc = sgc;
 				bg_gc = bsgc;
-			} else {
-				fg_gc = gc;
-				bg_gc = bgc;
-			}
-
-			px = x + xpos + offset;
-			gdk_draw_rectangle (drawable,
+				
+				gdk_gc_get_values (bg_gc, &save_gc);
+				
+				gdk_gc_set_foreground (bg_gc, &highlight_background_color);
+				gdk_draw_rectangle (drawable,
 					    bg_gc,
 					    TRUE,
 					    px,
 					    y - ti->font->ascent,
 					    size, ti->baseline_skip);
 
-			gdk_draw_text_wc (drawable,
+				gdk_gc_set_foreground (bg_gc, &highlight_text_color);
+				gdk_draw_text_wc (drawable,
 					  ti->font,
 					  fg_gc,
 					  px, y,
 					  text_wc, 1);
+			} else {
+				/* Draw unselected area */
+				fg_gc = gc;
+				bg_gc = bgc;
+				gdk_gc_get_values (bg_gc, &save_gc);
 
-			if (cursor == i)
+				gdk_gc_set_foreground (bg_gc, &fill_color);
+				gdk_draw_rectangle (drawable,
+					    bg_gc,
+					    TRUE,
+					    px,
+					    y - ti->font->ascent,
+					    size, ti->baseline_skip);
+					    
+				gdk_draw_text_wc (drawable,
+					  ti->font,
+					  fg_gc,
+					  px, y,
+					  text_wc, 1);
+			}
+														  
+			if (cursor == i) {
 				gdk_draw_line (drawable,
 					       gc,
 					       px,
 					       y - ti->font->ascent,
 					       px,
 					       y + ti->font->descent - 1);
-
+			}
 			offset += size;
+
+			/* Restore colors */
+			gdk_gc_set_foreground(bg_gc, &save_gc.foreground);
+			gdk_gc_set_background(bg_gc, &save_gc.background);
 		}
 		
 		y += ti->baseline_skip;
@@ -527,15 +572,15 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 	style = GTK_WIDGET (item->canvas)->style;
 
 	if (iti->editing) {
+		/* Draw outline around text */
 		gdk_draw_rectangle (drawable,
 				    style->fg_gc[GTK_STATE_NORMAL],
 				    FALSE,
 				    xofs, yofs,
 				    w - 1, h - 1);
-
+		
 		iti_paint_text (iti, drawable, xofs + MARGIN_X, yofs + MARGIN_Y);
 	} else {
-
 		if (iti->selected) {
 			gdk_draw_rectangle (drawable,
 				    style->bg_gc[GTK_STATE_SELECTED],
