@@ -780,7 +780,7 @@ get_eazel_auth_path (EazelInstall *service)
 					  eazel_install_get_username (service),
 					  eazel_install_get_cgi_path (service));
 	} else {
-		result = g_strdup (eazel_install_get_username (service));
+		result = g_strdup (eazel_install_get_cgi_path (service));
 	}
 	return result;
 }
