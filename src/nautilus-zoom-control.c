@@ -183,11 +183,11 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
 /* routines to create and handle the zoom menu */
 
 static void
-zoom_menu_cb(GtkMenuItem *item, gint zoom_level)
+zoom_menu_cb(GtkMenuItem *item, gpointer data)
 {
   NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL(gtk_object_get_user_data(GTK_OBJECT(item)));
   if (zoom_control)
-      set_zoom_level(zoom_control, zoom_level);
+      set_zoom_level(zoom_control, GPOINTER_TO_INT(data));
 }
 
 static void
@@ -196,7 +196,7 @@ create_zoom_menu_item(GtkMenu* menu, GtkWidget *zoom_control, const gchar *item_
   GtkWidget *menu_item;
   
   menu_item = gtk_menu_item_new_with_label(item_text);
-  gtk_signal_connect(GTK_OBJECT (menu_item), "activate", GTK_SIGNAL_FUNC (zoom_menu_cb), (void*) zoom_index);
+  gtk_signal_connect(GTK_OBJECT (menu_item), "activate", GTK_SIGNAL_FUNC (zoom_menu_cb), GINT_TO_POINTER(zoom_index));
 
   gtk_object_set_user_data(GTK_OBJECT(menu_item), zoom_control);
   gtk_widget_show (menu_item);
