@@ -710,7 +710,6 @@ nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *
 		if (node == NULL) {
 			/* Do we need to add this node? */
 			uri = nautilus_file_get_uri (file);
-			g_warning ("ANOMALY: %s", uri);
 			g_free (uri);
 		} else {
 			if (!nautilus_directory_contains_file (directory, file)) {

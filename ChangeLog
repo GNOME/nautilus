@@ -1,3 +1,17 @@
+2000-10-26  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback):
+	Did some refactoring to stop an assertion in NautilusDirectory
+	add_to_hash_table from firing. This involved removing two lists
+	of NautilusFiles that we being created and then merged.  Now one
+	list is being used and the condition that causes the assertion (duplicate
+	files in the hash table) is not being created.
+	
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_directory_files_changed_callback):
+	Removed the world famous ANOMALY error at the request of Darin.
+	
 2000-10-26  Robey Pointer  <robey@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-change-password-

@@ -1200,7 +1200,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	GList *pending_file_info;
 	GList *node, *next;
 	NautilusFile *file;
-	GList *pending_files, *changed_files, *saw_again_files, *added_files;
+	GList *changed_files, *added_files;
 	GnomeVFSFileInfo *file_info;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
@@ -1217,9 +1217,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		return FALSE;
 	}
 
-	pending_files = NULL;
+	added_files = NULL;
 	changed_files = NULL;
-	saw_again_files = NULL;
 
 	/* Build a list of NautilusFile objects. */
 	for (node = pending_file_info; node != NULL; node = node->next) {
@@ -1245,13 +1244,13 @@ dequeue_pending_idle_callback (gpointer callback_data)
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
 			}
-			nautilus_file_ref (file);
-			saw_again_files = g_list_prepend (saw_again_files, file);
+			nautilus_file_ref (file);			
 		} else {
 			/* new file, create a nautilus file object and add it to the list */
 			file = nautilus_file_new_from_info (directory, file_info);
-			pending_files = g_list_prepend (pending_files, file);
+			nautilus_directory_add_file (directory, file);			
 		}
+		added_files = g_list_prepend (added_files, file);
 	}
 	gnome_vfs_file_info_list_free (pending_file_info);
 
@@ -1273,16 +1272,6 @@ dequeue_pending_idle_callback (gpointer callback_data)
 			}
 		}
 	}
-
-	/* Add all the new files to the list. */
-	for (node = pending_files; node != NULL; node = node->next) {
-		nautilus_directory_add_file (directory, node->data);
-	}
-	
-	/* Send a files_added message for both files seen again and
-	 * truly new files.
-	 */
-	added_files = g_list_concat (saw_again_files, pending_files);
 
 	/* Send the changed and added signals. */
 	nautilus_directory_emit_change_signals_deep (directory, changed_files);
