@@ -1250,12 +1250,14 @@ sect_em_start_element (Context *context,
 		}
 		atrs_ptr += 2;
 	}
-	if (g_strcasecmp (role, "bold") == 0 ) {
+	
+	if (role) {
 		emphasis_bold = TRUE;
 		sect_print (context, "<B>");
 	}
-		
-	sect_print (context, "<EM>");
+	else {	
+		sect_print (context, "<EM>");
+	}
 }
 
 void
@@ -1265,10 +1267,13 @@ sect_em_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "</EM>");
+	
 	if (emphasis_bold) {
 		sect_print (context, "</B>");
 		emphasis_bold = FALSE;
+	}
+	else {
+		sect_print (context, "</EM>");
 	}
 }
 
