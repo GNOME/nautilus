@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-21 20:44+0100\n"
-"PO-Revision-Date: 2004-02-28 03:29-0600\n"
+"PO-Revision-Date: 2004-02-28 03:59-0600\n"
 "Last-Translator: Paisa Seeluangsawat <paisa@users.sf.net>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -1094,7 +1094,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Current Nautilus theme (deprecated)"
-msgstr ""
+msgstr "ชุดตกแต่งปัจจุบันของ Nautilus (ล้าสมัยแล้ว)"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 msgid "Custom Background Set"
@@ -1184,13 +1184,14 @@ msgstr "ใช้พฤติกรรมดั้งเดิมของ Nauti
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
-msgstr ""
+msgstr "ชื่อแฟ้มสำหรับใช้เป็นพื้นหลังของโฟลเดอร์ ใช้ต่อเมื่อ background_set มีค่าเป็น true"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
+"ชื่อแฟ้มสำหรับใช้เป็นพื้นหลังของแถบข้าง ใช้ต่อเมื่อ side_pane_background_set มีค่าเป็น true"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid ""
@@ -3424,7 +3425,7 @@ msgstr "[Items that are ]แฟ้มปกติ"
 
 #: libnautilus-private/nautilus-search-uri.c:250
 msgid "[Items that are ]text files"
-msgstr "[Items that are ]แฟ้ม text"
+msgstr "[Items that are ]แฟ้มข้อความ"
 
 #: libnautilus-private/nautilus-search-uri.c:253
 msgid "[Items that are ]applications"
@@ -3711,7 +3712,7 @@ msgstr "เรียกดูระบบแฟ้มด้วยตัวจั
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr ""
+msgstr "โรงงานสำหรับเชลล์และตัวจัดการแฟ้ม Nautilus"
 
 #: src/Nautilus_shell.server.in.h:2
 msgid "Icons"
@@ -4526,7 +4527,7 @@ msgstr "คุณ_สมบัติ"
 #: src/file-manager/fm-properties-window.c:917
 #, c-format
 msgid "%s Properties"
-msgstr ""
+msgstr "คุณสมบัติ %s"
 
 #: src/file-manager/fm-properties-window.c:1378
 msgid "Cancel Group Change?"
@@ -5525,7 +5526,7 @@ msgstr ""
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr ""
+msgstr "ใช้ Nautilus ไม่ได้เนื่องจากข้อผิดพลาดที่ไม่คาดหมาย"
 
 #: src/nautilus-application.c:571
 msgid ""
@@ -5671,7 +5672,7 @@ msgstr "<span weight=\"bold\">มุมมองปริยาย</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Executable Text Files</span>"
-msgstr "<span weight=\"bold\">แฟ้ม text ที่เรียกใช้ได้</span>"
+msgstr "<span weight=\"bold\">แฟ้มข้อความที่เรียกใช้เป็นโปรแกรมได้</span>"
 
 #: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Folders</span>"
@@ -5729,7 +5730,7 @@ msgstr "พฤติกรรม"
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
-msgstr "เลือกลำดับข้อมูลที่จะแสดงใต้ไอคอน ข้อมูลจะแสดงมากขึ้นเมื่อซูมเข้าไปดูใกล้ไอคอนขึ้น"
+msgstr "เลือกลำดับข้อมูล ที่จะแสดงใต้ไอคอน ข้อมูลจะแสดงมากขึ้น เมื่อขยายเข้าไปดูใกล้ๆ ไอคอน"
 
 #: src/nautilus-file-management-properties.glade.h:46
 msgid "Choose the order of information to appear in the list view."
@@ -5737,7 +5738,7 @@ msgstr "เลือกลำดับข้อมูลที่จะแสด
 
 #: src/nautilus-file-management-properties.glade.h:47
 msgid "Count _number of items:"
-msgstr "นั_บจำนวนของรายการ:"
+msgstr "นั_บจำนวนรายการลูก:"
 
 #: src/nautilus-file-management-properties.glade.h:48
 msgid "Default _zoom level:"
@@ -5777,7 +5778,7 @@ msgstr "ตัวอย่าง"
 
 #: src/nautilus-file-management-properties.glade.h:59
 msgid "Preview _sound files:"
-msgstr "เ_ล่นตัวอย่างจากแฟ้มเสียง"
+msgstr "เ_ล่นตัวอย่างจากแฟ้มเสียง:"
 
 #: src/nautilus-file-management-properties.glade.h:60
 msgid "Show _only folders"
@@ -5785,7 +5786,7 @@ msgstr "แ_สดงแต่โฟลเดอร์"
 
 #: src/nautilus-file-management-properties.glade.h:61
 msgid "Show _thumbnails:"
-msgstr "แสดงรู_ปย่อ"
+msgstr "แสดงรู_ปย่อ:"
 
 #: src/nautilus-file-management-properties.glade.h:62
 msgid "Show hidden and _backup files"
@@ -5793,11 +5794,11 @@ msgstr "แ_สดงแฟ้มสำรองข้อมูลและแ�
 
 #: src/nautilus-file-management-properties.glade.h:63
 msgid "Show te_xt in icons:"
-msgstr "แสดงตัวอย่าง_ข้อความในไอคอน"
+msgstr "แสดงตัวอย่าง_ข้อความในไอคอน:"
 
 #: src/nautilus-file-management-properties.glade.h:64
 msgid "Sort _folders before files"
-msgstr "เรียงโฟลเดอร์_ก่อนแฟ้ม"
+msgstr "เรียงโฟลเดอร์มา_ก่อนแฟ้ม"
 
 #: src/nautilus-file-management-properties.glade.h:65
 msgid "View _new folders using:"
@@ -5833,7 +5834,7 @@ msgstr "เปิด/ใช้ รายการด้วย_คลิกเด
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Text beside icons"
-msgstr "แสดง_ข้อความที่ข้างขวาของไอคอน"
+msgstr "เอา_ข้อความไว้ข้างขวาไอคอน"
 
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "_Use compact layout"
@@ -5965,7 +5966,7 @@ msgstr "ตำแหน่งและขนาด"
 
 #: src/nautilus-main.c:193
 msgid "Only create windows for explicitly specified URIs."
-msgstr ""
+msgstr "สร้างหน้าต่างเฉพาะสำหรับ URI ที่ให้โดยตรง"
 
 #: src/nautilus-main.c:195
 msgid ""
@@ -5998,27 +5999,27 @@ msgstr "Nautilus"
 #: src/nautilus-main.c:259
 #, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
-msgstr ""
+msgstr "nautilus: ใช้ --check พร้อมกับให้ URI ไม่ได้\n"
 
 #: src/nautilus-main.c:263
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
-msgstr ""
+msgstr "nautilus: ใช้ --check พร้อมกับตัวเลือกอื่นไม่ได้\n"
 
 #: src/nautilus-main.c:267
 #, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
-msgstr ""
+msgstr "nautilus: ใช้ --quit พร้อมกับให้ URI ไม่ได้\n"
 
 #: src/nautilus-main.c:271
 #, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
-msgstr ""
+msgstr "nautilus: ใช้ --restart พร้อมกับให้ URI ไม่ได้\n"
 
 #: src/nautilus-main.c:275
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
-msgstr ""
+msgstr "nautilus: ไม่สามารถใช้ --geometry กับมากกว่าหนึ่ง URI\n"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
@@ -6551,7 +6552,7 @@ msgstr "[File type is] แฟ้มปกติ"
 
 #: src/nautilus-search-bar-criterion.c:110
 msgid "[File type is] text file"
-msgstr "[File type is] แฟ้ม text"
+msgstr "[File type is] แฟ้มข้อความ"
 
 #: src/nautilus-search-bar-criterion.c:111
 msgid "[File type is] application"
@@ -6938,7 +6939,7 @@ msgstr ""
 
 #: src/nautilus-window-manage-views.c:1350
 msgid "Check that an SMB server is running in the local network."
-msgstr ""
+msgstr "ตรวจดูว่ามีเซิร์ฟเวอร์ SMB ทำงานอยู่ในเครื่อข่ายท้องถิ่น"
 
 #: src/nautilus-window-manage-views.c:1360
 msgid ""
@@ -7016,19 +7017,19 @@ msgstr "แสดงตำแหน่งนี้ด้วย \"%s\""
 
 #: src/nautilus-window.c:1578
 msgid "Application ID"
-msgstr ""
+msgstr "Application ID"
 
 #: src/nautilus-window.c:1579
 msgid "The application ID of the window."
-msgstr ""
+msgstr "application ID ของหน้าต่าง"
 
 #: src/nautilus-window.c:1585
 msgid "Application"
-msgstr ""
+msgstr "โปรแกรม"
 
 #: src/nautilus-window.c:1586
 msgid "The NautilusApplication associated with this window."
-msgstr ""
+msgstr "NautilusApplication ของหน้าต่างนี้"
 
 #: src/nautilus-zoom-control.c:83
 msgid "Zoom In"
