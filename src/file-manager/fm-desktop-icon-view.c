@@ -91,6 +91,7 @@ static void     fm_desktop_icon_view_initialize_class                     (FMDes
 static void     fm_desktop_icon_view_trash_state_changed_callback         (NautilusTrashMonitor   *trash,
 									   gboolean                state,
 									   gpointer                callback_data);
+static void	home_uri_changed 					  (gpointer 		   user_data);
 static void     volume_mounted_callback         			  (NautilusVolumeMonitor  *monitor,
 									   NautilusVolume     	  *volume,
 									   FMDesktopIconView      *icon_view);
@@ -136,6 +137,10 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	FMDesktopIconView *icon_view;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
+					      home_uri_changed,
+					      icon_view);
 
 	/* Clean up details */	
 	if (icon_view->details->ui != NULL) {
@@ -355,7 +360,6 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI, home_uri_changed,
 				  	   desktop_icon_view);
-			    
 }
 
 static void

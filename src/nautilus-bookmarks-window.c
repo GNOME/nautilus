@@ -69,9 +69,6 @@ static void	on_select_row 		      (GtkCList	*,
 	       				       int column,
 	       				       GdkEventButton *,
 	       				       gpointer user_data);
-static gboolean	on_text_field_focus_in_event  (GtkWidget *, 
-					       GdkEventFocus *, 
-					       gpointer user_data);
 static gboolean	on_text_field_focus_out_event (GtkWidget *, 
 					       GdkEventFocus *, 
 					       gpointer user_data);
@@ -224,10 +221,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
                 	            GTK_SIGNAL_FUNC (on_name_field_changed),
                       		    NULL);
                       		    
-	gtk_signal_connect (GTK_OBJECT (name_field), "focus_in_event",
-      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_in_event),
-                            NULL);
-                            
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
                             NULL);
@@ -241,10 +234,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
                 	    	    GTK_SIGNAL_FUNC (on_uri_field_changed),
                       		    NULL);
                       		    
-	gtk_signal_connect (GTK_OBJECT (uri_field), "focus_in_event",
-      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_in_event),
-                            NULL);
-                            
 	gtk_signal_connect (GTK_OBJECT (uri_field), "focus_out_event",
         	            GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
               	    	    NULL);
@@ -503,17 +492,6 @@ update_bookmark_from_text ()
 }
 
 static gboolean
-on_text_field_focus_in_event (GtkWidget *widget,
-			       GdkEventFocus *event,
-			       gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_ENTRY (widget));
-
-	nautilus_entry_select_all (NAUTILUS_ENTRY (widget));
-	return FALSE;
-}
-
-static gboolean
 on_text_field_focus_out_event (GtkWidget *widget,
 			       GdkEventFocus *event,
 			       gpointer user_data)
@@ -521,7 +499,6 @@ on_text_field_focus_out_event (GtkWidget *widget,
 	g_assert (NAUTILUS_IS_ENTRY (widget));
 
 	update_bookmark_from_text ();
-	gtk_editable_select_region (GTK_EDITABLE (widget), -1, -1);
 	return FALSE;
 }
 

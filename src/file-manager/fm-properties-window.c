@@ -413,20 +413,8 @@ name_field_focus_out (NautilusEntry *name_field,
 {
 	if (GTK_WIDGET_SENSITIVE (name_field)) {
 		name_field_done_editing (name_field);
-		gtk_editable_select_region (GTK_EDITABLE (name_field), -1, -1);
 	}
 
-	return TRUE;
-}
-
-static gboolean
-name_field_focus_in (NautilusEntry *name_field,
-		      GdkEventFocus *event,
-		      gpointer user_data)
-{
-	if (GTK_WIDGET_SENSITIVE (name_field)) {
-		nautilus_entry_select_all (name_field);
-	}
 	return TRUE;
 }
 
@@ -1182,10 +1170,7 @@ create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFi
 	nautilus_undo_set_up_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 #endif
-	gtk_signal_connect (GTK_OBJECT (name_field), "focus_in_event",
-      	              	    GTK_SIGNAL_FUNC (name_field_focus_in),
-                            NULL);
-                      			    
+
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (name_field_focus_out),
                             NULL);
@@ -1196,6 +1181,7 @@ create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFi
 
         /* Start with name field selected, if it's sensitive. */
         if (GTK_WIDGET_SENSITIVE (name_field)) {
+		nautilus_entry_select_all (NAUTILUS_ENTRY (name_field));
 	        gtk_widget_grab_focus (GTK_WIDGET (name_field));
         }
                       			    

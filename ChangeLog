@@ -1,3 +1,40 @@
+2000-12-12  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	While investigating bug 5147, which I couldn't reproduce, I found
+	and fixed a crashing bug with similar steps.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy): remove preferences callback for
+	home_uri_changed, so we won't crash trying to execute it after the
+	desktop view has been destroyed.
+
+	Fixed bug 4226 (Non-standard text field auto-selection behavior
+	wreaks havoc with finely tuned middle-click paste feature)
+
+	The problem here was that I had done some automatic selection 
+	changing on focus-in and focus-out a long time ago in an attempt
+	to make the behavior more usable for real copy/paste and tabbing.
+	Unfortunately my attempt to improve the default behavior ran afoul
+	of the hellish X middle-click-to-paste-selected-text feature that
+	is a staple of every poor X window user's life. For now, I just took
+	out my non-standard behaviors as they aren't clearly an overall
+	improvement and I hadn't even tried to deploy them across Nautilus,
+	much less across GTK.
+	
+	* src/file-manager/fm-properties-window.c: 
+	(name_field_focus_in): Removed this function, which used to select
+	all the text in the field.
+	(name_field_focus_out): No longer deselects contents.
+	(create_basic_page): Don't connect to focus-in signal.
+	
+	* src/nautilus-bookmarks-window.c:
+	(on_text_field_focus_in_event): Removed this function, which used to
+	select all the text in the field.
+	(on_text_field_focus_out_event): No longer deselects contents.
+	(create_bookmarks_window): Don't connect to focus-in signal.
+
 2000-12-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c: (cache_icon_new),
