@@ -1,5 +1,11 @@
 2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-clean.sh:
+	Fix for bug 4530.  Race condition in nautilus-clean.sh trying to
+	kill its own grep processes.
+	
+2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Fix for bug 4475.  Transplant Andy's fix from the HEAD to the pr2
 	branch. 
 
