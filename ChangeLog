@@ -1,3 +1,14 @@
+2001-04-03  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7949 (Nautilus allows Cut/Copy on icons that
+	can't be moved)
+
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	Fixed up sensitivity logic for Cut/Copy/Paste and a couple
+	of related items.
+
 2001-04-03  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

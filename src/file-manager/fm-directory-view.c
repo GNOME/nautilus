@@ -3923,6 +3923,9 @@ real_update_menus (FMDirectoryView *view)
 	gboolean selection_contains_special_link;
 	gboolean can_create_files;
 	gboolean can_delete_files;
+	gboolean can_copy_files;
+	gboolean can_link_files;
+	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
 	NautilusBackground *background;
 	
@@ -3930,7 +3933,16 @@ real_update_menus (FMDirectoryView *view)
 	selection_count = g_list_length (selection);
 
 	selection_contains_special_link = special_link_in_selection (view);
+
 	can_create_files = fm_directory_view_supports_creating_files (view);
+	can_delete_files = !fm_directory_view_is_read_only (view)
+		&& selection_count != 0
+		&& !selection_contains_special_link;
+	can_copy_files = selection_count != 0
+		&& !selection_contains_special_link;
+	can_duplicate_files = can_create_files && can_copy_files;
+	can_link_files = can_create_files && can_copy_files;
+	
 
 	bonobo_ui_component_freeze (view->details->ui, NULL);
 
@@ -3985,10 +3997,6 @@ real_update_menus (FMDirectoryView *view)
 		show_separate_delete_command = show_delete_command_auto_value;
 	}
 	
-	can_delete_files = !fm_directory_view_is_read_only (view)
-		&& selection_count != 0
-		&& !selection_contains_special_link;
-	
 	nautilus_bonobo_set_label_for_menu_item_and_command 
 		(view->details->ui,
 		 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
@@ -4020,9 +4028,7 @@ real_update_menus (FMDirectoryView *view)
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_DUPLICATE,
-				       can_create_files
-			     	       	&& selection_count != 0
-			      		&& !selection_contains_special_link);
+				       can_duplicate_files);
 
 	background = fm_directory_view_get_background (view);
 	nautilus_bonobo_set_sensitive (view->details->ui, 
@@ -4039,9 +4045,7 @@ real_update_menus (FMDirectoryView *view)
 			: _("Make _Link"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
-				       can_create_files
-			     	       	&& selection_count != 0
-			      		&& !selection_contains_special_link);
+				       can_link_files);
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES,
@@ -4084,7 +4088,7 @@ real_update_menus (FMDirectoryView *view)
 		 : _("Cu_t Files"));
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_COMMAND_CUT_FILES,
-				       selection_count != 0);
+				       can_delete_files);
 
 	nautilus_bonobo_set_label_for_menu_item_and_command 
 		(view->details->ui,
@@ -4095,12 +4099,15 @@ real_update_menus (FMDirectoryView *view)
 		 : _("_Copy Files"));
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_COMMAND_COPY_FILES,
-				       selection_count != 0);
+				       can_copy_files);
 
 	/* FIXME: Would be nice to set up paste item here based on
 	 * contents of CLIPBOARD, but I'm not sure that's possible due
 	 * to limitations of X clipboard support.
 	 */
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
+				       can_create_files);
 
 	bonobo_ui_component_thaw (view->details->ui, NULL);
 
