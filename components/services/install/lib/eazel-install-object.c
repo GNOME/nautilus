@@ -743,7 +743,7 @@ eazel_install_install_packages (EazelInstall *service,
 	}
 	g_free (service->private->cur_root);
 
-	eazel_install_emit_done (service, result | EAZEL_INSTALL_INSTALL_OK);
+	eazel_install_emit_done (service, result & EAZEL_INSTALL_INSTALL_OK);
 }
 
 void 

@@ -1,3 +1,49 @@
+2000-08-28  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_install_packages):
+
+	Fix small bug that made emit_done() always signal success.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_packages), (eazel_install_start_transaction):
+	* components/services/install/lib/eazel-install-rpm-signature.c:
+	(trilobite_check_rpm_signature):
+
+	Return failure if the transaction fails.  Only call root-helper
+	once now (let root-helper handle the password retries).  Fix pexec
+	calls to check for the new return value.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_try_again), (set_root_client):
+
+	Set up try_again callback to allow 3 attempts at entering the root
+	password.
+	
+	* components/services/trilobite/idl/trilobite-service.idl:
+	* components/services/trilobite/libtrilobite/trilobite-root-client.
+	c: (impl_Trilobite_PasswordQueryClient_try_again),
+	(trilobite_root_client_get_epv),
+	(trilobite_root_client_class_initialize):
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_destroy),
+	(trilobite_root_helper_class_initialize), (eazel_helper_start),
+	(eazel_helper_password), (trilobite_root_helper_start):
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	h:
+	* components/services/trilobite/libtrilobite/trilobite-service-pass
+	wordquery.c: (trilobite_passwordquery_initialize),
+	(trilobite_passwordquery_get_password),
+	(trilobite_passwordquery_try_again):
+
+	Add try_again signal to the root-client, root-helper, and
+	PasswordQueryClient APIs.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_pexec), (trilobite_init):
+
+	pexec now returns the child pid.
+
 2000-08-29  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:
