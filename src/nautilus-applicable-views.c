@@ -208,6 +208,8 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         g_assert (result_list->data != NULL);
         g_assert (result_list->next == NULL);
 
+        result_code = NAUTILUS_NAVIGATION_RESULT_UNDEFINED;
+
         navinfo = data;
 
         navinfo->ah = NULL;
@@ -274,8 +276,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                 if (vfs_result_code == GNOME_VFS_OK && navinfo->content_identifiers == NULL) {
                         result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
                 }
-
-                result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
                 goto out;
         }
 
@@ -288,6 +288,9 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         nautilus_view_identifier_free (fallback_id);
         
  out:
+ 	if (result_code == NAUTILUS_NAVIGATION_RESULT_UNDEFINED) {
+                result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
+ 	}
         (* notify_ready) (result_code, navinfo, notify_ready_data);
 }
 

@@ -43,6 +43,7 @@ typedef struct NautilusNavigationInfo NautilusNavigationInfo;
  * the GnomeVFSResults are treated the same here.
  */
 typedef enum {
+	NAUTILUS_NAVIGATION_RESULT_UNDEFINED = -1,
 	NAUTILUS_NAVIGATION_RESULT_OK,
 	NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR,
 	NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE,

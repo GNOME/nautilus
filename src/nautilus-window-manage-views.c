@@ -1161,6 +1161,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * When this comes up, we should figure out what's really happening
                  * and add another specific case.
                  */
+                g_message ("Case %d not handled well in nautilus_window_end_location_change_callback, please tell sullivan@eazel.com", result_code);
                 error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."), requested_uri);
         }
         

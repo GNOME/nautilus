@@ -1,3 +1,17 @@
+2000-06-05  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1118: Generic error message for bogus ftp location
+
+	* src/nautilus-applicable-views.h: 
+	Added NAUTILUS_NAVIGATION_RESULT_UNDEFINED to enum.
+	* src/nautilus-applicable-views.c: (got_file_info_callback):
+	Used this new value to fix bug where early goto was not
+	setting result code. Goto considered evil.
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	Added "complain to sullivan@eazel.com" message when an
+	unhandled result code is stumbled across.
+
 2000-06-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Bug 647.  Should report missing special directories to user.
