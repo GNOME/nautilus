@@ -1,5 +1,23 @@
 2000-10-19  Darin Adler  <darin@eazel.com>
 
+	Check in the xml.h files. It would be better not to have these
+	checked in, but it helps the translators if they are. If we
+	come up with something better later, we can get rid of them.
+	For now, if you exit a ui.xml file, then you should also do
+	a build and check in the generated xml.h file.
+
+	* components/loser/content/nautilus-content-loser-ui.xml.h:
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:
+	* components/mozilla/nautilus-mozilla-ui.xml.h:
+	* components/sample/nautilus-sample-content-view-ui.xml.h:
+	* libnautilus/nautilus-clipboard-ui.xml.h:
+	* src/file-manager/nautilus-directory-view-ui.xml.h:
+	* src/file-manager/nautilus-icon-view-ui.xml.h:
+	* src/file-manager/nautilus-search-list-view-ui.xml.h:
+	* src/nautilus-shell-ui.xml.h:
+
+2000-10-19  Darin Adler  <darin@eazel.com>
+
 	Do some routine housekeeping that will help make the future
 	switchover to libxml2 easier.
 	
