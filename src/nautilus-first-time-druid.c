@@ -144,10 +144,10 @@ druid_finished (GtkWidget *druid_page)
 	
 	switch (last_signup_choice) {
 		case 0:
-			signup_uris[0] = "http://www.eazel.com/services.html";
+			signup_uris[0] = "http://services.eazel.com/services";
 			break;
 		case 1:
-			signup_uris[0] = "http://services.eazel.com:8888/account/register/form";
+			signup_uris[0] = "http://services.eazel.com/account/register/form";
 			break;
 		case 2:
 			signup_uris[0] = "eazel:";
