@@ -161,6 +161,7 @@ struct NautilusCList
   GMemChunk *cell_mem_chunk;
 
   guint freeze_count;
+  gboolean refresh_at_unfreeze_time;
   
   /* allocation rectangle after the conatiner_border_width
    * and the width of the shadow border */
@@ -778,6 +779,8 @@ void nautilus_clist_sort (NautilusCList *clist);
 /* Automatically sort upon insertion */
 void nautilus_clist_set_auto_sort (NautilusCList *clist,
 			      gboolean  auto_sort);
+
+gboolean nautilus_clist_check_unfrozen (NautilusCList *clist);
 
 
 #ifdef __cplusplus

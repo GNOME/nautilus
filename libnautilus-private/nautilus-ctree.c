@@ -82,10 +82,10 @@ COLUMN_FROM_XPIXEL (NautilusCList * clist,
 }
 
 #define NAUTILUS_CLIST_CLASS_FW(_widget_) NAUTILUS_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
-#define CLIST_UNFROZEN(clist)     (((NautilusCList*) (clist))->freeze_count == 0)
+#define CLIST_UNFROZEN(clist) nautilus_clist_check_unfrozen (clist)
 #define CLIST_REFRESH(clist)    G_STMT_START { \
   if (CLIST_UNFROZEN (clist)) \
-    NAUTILUS_CLIST_CLASS_FW (clist)->refresh ((NautilusCList*) (clist)); \
+    NAUTILUS_CLIST_CLASS_FW (clist)->refresh (clist); \
 } G_STMT_END
 
 
@@ -2548,6 +2548,7 @@ real_tree_move (NautilusCTree     *ctree,
 	work = NAUTILUS_CTREE_ROW (work)->parent;
       clist->focus_row = g_list_position (clist->row_list, (GList *)work);
       clist->undo_anchor = clist->focus_row;
+      CLIST_REFRESH (clist);
     }
 
   if (clist->column[ctree->tree_column].auto_resize &&
@@ -3514,7 +3515,6 @@ real_select_all (NautilusCList *clist)
       return;
 
     case GTK_SELECTION_EXTENDED:
-
       nautilus_clist_freeze (clist);
 
       g_list_free (clist->undo_selection);
@@ -3531,6 +3531,7 @@ real_select_all (NautilusCList *clist)
 	   node = NAUTILUS_CTREE_NODE_NEXT (node))
 	nautilus_ctree_pre_recursive (ctree, node, select_row_recursive, NULL);
 
+      CLIST_REFRESH (clist);
       nautilus_clist_thaw (clist);
       break;
 
@@ -3867,11 +3868,12 @@ nautilus_ctree_insert_gnode (NautilusCTree          *ctree,
   for (work = g_node_last_child (gnode); work; work = work->prev)
     {
       new_child = nautilus_ctree_insert_gnode (ctree, cnode, child,
-					  work, func, data);
+					       work, func, data);
       if (new_child)
 	child = new_child;
     }	
   
+  CLIST_REFRESH (clist);
   nautilus_clist_thaw (clist);
 
   return cnode;
@@ -3971,6 +3973,7 @@ nautilus_ctree_remove_node (NautilusCTree     *ctree,
   else
     nautilus_clist_clear (clist);
 
+  CLIST_REFRESH (clist);
   nautilus_clist_thaw (clist);
 }
 
@@ -4459,6 +4462,7 @@ nautilus_ctree_expand_recursive (NautilusCTree     *ctree,
 
   nautilus_ctree_post_recursive (ctree, node, NAUTILUS_CTREE_FUNC (tree_expand), NULL);
 
+  CLIST_REFRESH (clist);
   if (thaw)
     nautilus_clist_thaw (clist);
 }
@@ -4488,6 +4492,7 @@ nautilus_ctree_expand_to_depth (NautilusCTree     *ctree,
   nautilus_ctree_post_recursive_to_depth (ctree, node, depth,
 				     NAUTILUS_CTREE_FUNC (tree_expand), NULL);
 
+  CLIST_REFRESH (clist);
   if (thaw)
     nautilus_clist_thaw (clist);
 }
@@ -4536,6 +4541,7 @@ nautilus_ctree_collapse_recursive (NautilusCTree     *ctree,
       nautilus_clist_set_column_width (clist, i,
 				  nautilus_clist_optimal_column_width (clist, i));
 
+  CLIST_REFRESH (clist);
   if (thaw)
     nautilus_clist_thaw (clist);
 }
@@ -4573,6 +4579,7 @@ nautilus_ctree_collapse_to_depth (NautilusCTree     *ctree,
       nautilus_clist_set_column_width (clist, i,
 				  nautilus_clist_optimal_column_width (clist, i));
 
+  CLIST_REFRESH (clist);
   if (thaw)
     nautilus_clist_thaw (clist);
 }
@@ -4615,6 +4622,7 @@ nautilus_ctree_toggle_expansion_recursive (NautilusCTree     *ctree,
   nautilus_ctree_post_recursive (ctree, node,
 			    NAUTILUS_CTREE_FUNC (tree_toggle_expansion), NULL);
 
+  CLIST_REFRESH (clist);
   if (thaw)
     nautilus_clist_thaw (clist);
 }
@@ -4700,6 +4708,7 @@ nautilus_ctree_real_select_recursive (NautilusCTree     *ctree,
     nautilus_ctree_post_recursive (ctree, node,
 			      NAUTILUS_CTREE_FUNC (tree_unselect), NULL);
   
+  CLIST_REFRESH (clist);
   if (thaw)
     nautilus_clist_thaw (clist);
 }
@@ -4836,8 +4845,6 @@ nautilus_ctree_set_node_info (NautilusCTree     *ctree,
     {
       nautilus_ctree_sort_single_node (ctree, NAUTILUS_CTREE_ROW (node)->parent);
     }
-
-  tree_draw_node (ctree, node);
 }
 
 void
@@ -5360,7 +5367,7 @@ nautilus_ctree_set_indent (NautilusCTree *ctree,
       (clist, ctree->tree_column,
        nautilus_clist_optimal_column_width (clist, ctree->tree_column));
   else
-    CLIST_REFRESH (ctree);
+    CLIST_REFRESH (clist);
 }
 
 void
@@ -5388,7 +5395,7 @@ nautilus_ctree_set_spacing (NautilusCTree *ctree,
 				clist->column[ctree->tree_column].width +
 				spacing - old_spacing);
   else
-    CLIST_REFRESH (ctree);
+    CLIST_REFRESH (clist);
 }
 
 void
@@ -5470,7 +5477,7 @@ nautilus_ctree_set_line_style (NautilusCTree          *ctree,
 	default:
 	  return;
 	}
-      CLIST_REFRESH (ctree);
+      CLIST_REFRESH (clist);
     }
 }
 
@@ -5565,6 +5572,7 @@ nautilus_ctree_sort_recursive (NautilusCTree     *ctree,
       clist->undo_anchor = clist->focus_row;
     }
 
+  CLIST_REFRESH (clist);
   nautilus_clist_thaw (clist);
 }
 
@@ -5610,6 +5618,7 @@ nautilus_ctree_sort_node (NautilusCTree     *ctree,
       clist->undo_anchor = clist->focus_row;
     }
 
+  CLIST_REFRESH (clist);
   nautilus_clist_thaw (clist);
 }
 
@@ -5641,6 +5650,7 @@ nautilus_ctree_sort_single_node (NautilusCTree *ctree,
       nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
     }
 
+  CLIST_REFRESH (clist);
   nautilus_clist_thaw (clist);
 }
 

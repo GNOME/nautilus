@@ -1,3 +1,52 @@
+2001-03-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Followup on my recent tree change to get rid of some flicker.
+
+	* components/tree/nautilus-tree-view.c:
+	(set_selected_row_position): Only scroll the view if the row isn't
+	already in the right position. Prevents the case where it scrolls
+	by less than a whole row.
+	
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.h:
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.c:
+	(nautilus_clist_thaw), (nautilus_clist_check_unfrozen),
+	(real_resize_column), (real_row_move), (resync_selection),
+	(nautilus_clist_map), (nautilus_clist_style_set),
+	(real_sort_list):
+	Add code to detect changes and only redraw when actual changes
+	happen. Also make freeze/thaw with no changes between them a no-op
+	by having the frozen check schedule a refresh at thaw time as a
+	side effect. It used to do a refresh every time it got thawed. Add
+	calls to do refresh for all cases where the old code was counting
+	on thaw implying a full refresh.
+	
+	* libnautilus-extensions/nautilus-ctree.c: (real_tree_move),
+	(real_select_all), (nautilus_ctree_insert_gnode),
+	(nautilus_ctree_remove_node), (nautilus_ctree_expand_recursive),
+	(nautilus_ctree_expand_to_depth),
+	(nautilus_ctree_collapse_recursive),
+	(nautilus_ctree_collapse_to_depth),
+	(nautilus_ctree_toggle_expansion_recursive),
+	(nautilus_ctree_real_select_recursive),
+	(nautilus_ctree_set_node_info), (nautilus_ctree_set_indent),
+	(nautilus_ctree_set_spacing), (nautilus_ctree_set_line_style),
+	(nautilus_ctree_sort_recursive), (nautilus_ctree_sort_node),
+	(nautilus_ctree_sort_single_node):
+	Use the new unfrozen check that has a side effect of making the
+	next thaw do a refresh. Add the new refresh calls that are needed
+	now that thaw doesn't always do a refresh. Removed some
+	unnecessary drawing for cases where things haven't changed.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_track_new_column_width):
+	Use the new unfrozen check that has a side effect of making the
+	next thaw do a refresh.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_view_set_zoom_level):
+	Formatting tweak.
+
 2001-03-28  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/text/nautilus-text-view-ui.xml:

@@ -64,6 +64,8 @@
 #define ACTION_BUTTON		1
 #define CONTEXTUAL_MENU_BUTTON	3
 
+#define CLIST_UNFROZEN(clist) nautilus_clist_check_unfrozen (clist)
+
 struct NautilusListDetails
 {
 	/* Single click mode ? */
@@ -2711,9 +2713,6 @@ nautilus_list_resize_column (NautilusCList *clist, int column_index, int width)
 }
 
 
-/* redraw the list if it's not frozen */
-#define CLIST_UNFROZEN(clist)     (((NautilusCList*) (clist))->freeze_count == 0)
-
 /**
  * nautilus_list_mark_cell_as_link:
  * 
@@ -2921,6 +2920,7 @@ static void
 nautilus_list_track_new_column_width (NautilusCList *clist, int column_index, int new_width)
 {
 	NautilusList *list;
+	GdkRectangle area;
 
 	list = NAUTILUS_LIST (clist);
 
@@ -2943,10 +2943,7 @@ nautilus_list_track_new_column_width (NautilusCList *clist, int column_index, in
 	size_allocate_title_buttons (clist);
 
 	/* redraw the invalid columns */
-	if (clist->freeze_count == 0) {
-	
-  		GdkRectangle area;
-
+	if (CLIST_UNFROZEN (clist)) {
 		area = clist->column_title_area;
 		area.x = clist->column[column_index].area.x;
 		area.height += clist->clist_window_height;

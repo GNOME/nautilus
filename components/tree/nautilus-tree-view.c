@@ -612,9 +612,13 @@ static void
 set_selected_row_position (NautilusCTree *ctree,
 			   int position)
 {
-	int top_row;
+	int current_position, top_row;
 
 	if (position <= 0) {
+		return;
+	}
+	current_position = get_selected_row_position (ctree);
+	if (current_position == position) {
 		return;
 	}
 	top_row = get_selected_row (ctree) - position;

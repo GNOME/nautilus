@@ -1640,19 +1640,14 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	/* This little dance is necessary due to bugs in NautilusCList.
 	 * Must set min, then max, then min, then actual width.
 	 */
-	/* FIXME bugzilla.eazel.com 2532: Make a cover to do this trick. */
-	nautilus_clist_set_column_min_width (clist,
-					LIST_VIEW_COLUMN_ICON,
-					new_width);
-	nautilus_clist_set_column_max_width (clist,
-					LIST_VIEW_COLUMN_ICON,
-					new_width);
-	nautilus_clist_set_column_min_width (clist,
-					LIST_VIEW_COLUMN_ICON,
-					new_width);
-	nautilus_clist_set_column_width (clist,
-				    LIST_VIEW_COLUMN_ICON,
-				    new_width);
+	/* FIXME bugzilla.eazel.com 2532: Make a cover to do this
+	 * trick, or fix NautilusCList now that we have a copy of the
+	 * code here in Nautilus.
+	 */
+	nautilus_clist_set_column_min_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
+	nautilus_clist_set_column_max_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
+	nautilus_clist_set_column_min_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
+	nautilus_clist_set_column_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
 	
 	update_icons (list_view);
 

@@ -131,7 +131,7 @@ LIST_WIDTH (NautilusCList * clist)
 #define NAUTILUS_CLIST_CLASS_FW(_widget_) NAUTILUS_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
 
 /* redraw the list if it's not frozen */
-#define CLIST_UNFROZEN(clist)     (((NautilusCList *) (clist))->freeze_count == 0)
+#define CLIST_UNFROZEN(clist) nautilus_clist_check_unfrozen (clist)
 #define	CLIST_REFRESH(clist)	G_STMT_START { \
   if (CLIST_UNFROZEN (clist)) \
     NAUTILUS_CLIST_CLASS_FW (clist)->refresh ((NautilusCList *) (clist)); \
@@ -281,11 +281,6 @@ static GList *selection_find          (NautilusCList      *clist,
 			               GList         *row_list_element);
 static void real_select_all           (NautilusCList      *clist);
 static void real_unselect_all         (NautilusCList      *clist);
-static void move_vertical             (NautilusCList      *clist,
-			               gint           row,
-			               gfloat         align);
-static void move_horizontal           (NautilusCList      *clist,
-			               gint           diff);
 static void real_undo_selection       (NautilusCList      *clist);
 static void fake_unselect_all         (NautilusCList      *clist,
 			               gint           row);
@@ -1245,8 +1240,23 @@ nautilus_clist_thaw (NautilusCList *clist)
   if (clist->freeze_count)
     {
       clist->freeze_count--;
-      CLIST_REFRESH (clist);
+      if (clist->freeze_count == 0)
+	{
+	  if (clist->refresh_at_unfreeze_time)
+	    NAUTILUS_CLIST_CLASS_FW (clist)->refresh (clist);
+	  clist->refresh_at_unfreeze_time = FALSE;
+	}
     }
+}
+
+gboolean
+nautilus_clist_check_unfrozen (NautilusCList *clist)
+{
+  if (clist->freeze_count == 0)
+    return TRUE;
+
+  clist->refresh_at_unfreeze_time = TRUE;
+  return FALSE;
 }
 
 /* PUBLIC COLUMN FUNCTIONS
@@ -1852,6 +1862,10 @@ real_resize_column (NautilusCList *clist,
   if (clist->column[column].max_width >= 0 &&
       width > clist->column[column].max_width)
     width = clist->column[column].max_width;
+
+  if (clist->column[column].width == width
+      && clist->column[column].width_set)
+    return;
 
   clist->column[column].width = width;
   clist->column[column].width_set = TRUE;
@@ -2971,8 +2985,6 @@ real_row_move (NautilusCList *clist,
       source_row == dest_row)
     return;
 
-  nautilus_clist_freeze (clist);
-
   /* unlink source row */
   clist_row = ROW_ELEMENT (clist, source_row)->data;
   if (source_row == clist->rows - 1)
@@ -3014,7 +3026,7 @@ real_row_move (NautilusCList *clist,
   else if (clist->focus_row > first)
     clist->focus_row += d;
 
-  nautilus_clist_thaw (clist);
+  CLIST_REFRESH (clist);
 }
 
 /* PUBLIC ROW FUNCTIONS
@@ -4167,6 +4179,7 @@ resync_selection (NautilusCList *clist,
   clist->anchor = -1;
   clist->drag_pos = -1;
 
+  CLIST_REFRESH (clist);
   nautilus_clist_thaw (clist);
 }
 
@@ -4787,6 +4800,7 @@ nautilus_clist_map (GtkWidget *widget)
 
       /* unfreeze the list */
       clist->freeze_count = 0;
+      clist->refresh_at_unfreeze_time = FALSE;
     }
 }
 
@@ -4859,13 +4873,12 @@ nautilus_clist_expose (GtkWidget      *widget,
 		       GdkEventExpose *event)
 {
   g_error ("this should not be called, the NautilusList drawing would be disrupted by this");
-
   return FALSE;
 }
 
 static void
 nautilus_clist_style_set (GtkWidget *widget,
-		     GtkStyle  *previous_style)
+			  GtkStyle  *previous_style)
 {
   NautilusCList *clist;
 
@@ -7005,8 +7018,6 @@ real_sort_list (NautilusCList *clist)
   if (gdk_pointer_is_grabbed () && GTK_WIDGET_HAS_GRAB (clist))
     return;
 
-  nautilus_clist_freeze (clist);
-
   if (clist->anchor != -1 && clist->selection_mode == GTK_SELECTION_EXTENDED)
     {
       NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
@@ -7032,7 +7043,7 @@ real_sort_list (NautilusCList *clist)
 	clist->row_list_end = list;
     }
 
-  nautilus_clist_thaw (clist);
+  CLIST_REFRESH (clist);
 }
 
 static GList *
