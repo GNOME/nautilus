@@ -1,6 +1,6 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:nautilus_throbber_factory" type="exe" location="nautilus-throbber">
+<oaf_server iid="OAFIID:Nautilus_Throbber_Factory" type="exe" location="nautilus-throbber">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
@@ -8,7 +8,7 @@
 	<oaf_attribute name="description" type="string" _value="throbber object factory"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_throbber" type="factory" location="OAFIID:nautilus_throbber_factory">
+<oaf_server iid="OAFIID:Nautilus_Throbber" type="factory" location="OAFIID:Nautilus_Throbber_Factory">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>

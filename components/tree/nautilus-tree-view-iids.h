@@ -26,10 +26,7 @@
 #ifndef NAUTILUS_TREE_VIEW_IIDS_H
 #define NAUTILUS_TREE_VIEW_IIDS_H
 
-
-#define TREE_VIEW_IID "OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d"
-
-#define TREE_VIEW_FACTORY_IID "OAFIID:nautilus_tree_view_factory:79f93d13-d404-4ef6-8de2-b8a0045a96ab"
-
+#define TREE_VIEW_IID         "OAFIID:Nautilus_Tree_View"
+#define TREE_VIEW_FACTORY_IID "OAFIID:Nautilus_Tree_View_Factory"
 
 #endif /* NAUTILUS_TREE_VIEW_IIDS_H */

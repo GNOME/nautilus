@@ -1,6 +1,6 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:nautilus_text_view_factory:124ae209-d356-418f-8757-54e071cb3a21" type="exe" location="nautilus-text-view">
+<oaf_server iid="OAFIID:Nautilus_Text_View_Factory" type="exe" location="nautilus-text-view">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
@@ -8,7 +8,7 @@
 	<oaf_attribute name="description" type="string" _value="Factory for text view"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437" type="factory" location="OAFIID:nautilus_text_view_factory:124ae209-d356-418f-8757-54e071cb3a21">
+<oaf_server iid="OAFIID:Nautilus_Text_View" type="factory" location="OAFIID:Nautilus_Text_View_Factory">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>

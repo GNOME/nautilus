@@ -36,10 +36,10 @@
 #include <libnautilus/nautilus-view-standard-main.h>
 
 /* CHANGE: Replace these OAFIIDs with the new ones you put in the
- * .oafinfo file. 
+ * .server file. 
  */
-#define FACTORY_IID     "OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5"
-#define VIEW_IID        "OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae"
+#define FACTORY_IID "OAFIID:Nautilus_Sample_Content_View_Factory"
+#define VIEW_IID    "OAFIID:Nautilus_Sample_Content_View"
 
 /* CHANGE: Change to your executable name */
 #define EXECUTABLE_NAME "nautilus-sample-content-view"

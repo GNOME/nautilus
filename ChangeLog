@@ -1,3 +1,19 @@
+2002-04-18  Michael Meeks  <michael@ximian.com>
+
+	* *.server.in, *.c: replace all the OAFIIDs with more
+	sensibly named ones, that follow the namespacing
+	guidelines in the libbonobo/docs/FAQ. Needs a new
+	gnome-vfs to work well.
+	
+	* src/nautilus-window-toolbars.c
+	(throbber_set_throbbing): impl.
+	(throbber_created_callback): upd.
+	(nautilus_window_allow_stop): upd.
+
+	* libnautilus-private/nautilus-mime-actions.c
+	(nautilus_do_component_query): remove hack around bonobo's
+	sample text component, we no longer have one.
+
 2002-04-17  Anders Carlsson  <andersca@gnu.org>
 
 	* src/file-manager/fm-properties-window.c:

@@ -1,13 +1,13 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:nautilus_news_view_factory:041601" type="exe" location="nautilus-news">
+<oaf_server iid="OAFIID:Nautilus_News_View_Factory" type="exe" location="nautilus-news">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="description" type="string" _value="Factory for news view"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_news_view:041601" type="factory" location="OAFIID:nautilus_news_view_factory:041601">
+<oaf_server iid="OAFIID:Nautilus_News_View" type="factory" location="OAFIID:Nautilus_News_View_Factory">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>

@@ -70,9 +70,9 @@
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 
-#define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
-#define SEARCH_LIST_VIEW_IID "OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b"
-#define SHELL_IID	     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
+#define FACTORY_IID	     "OAFIID:Nautilus_Factory"
+#define SEARCH_LIST_VIEW_IID "OAFIID:Nautilus_File_Manager_Search_List_View"
+#define SHELL_IID	     "OAFIID:Nautilus_Shell"
 
 /* Keeps track of the one and only desktop window. */
 static NautilusDesktopWindow *nautilus_application_desktop_window;

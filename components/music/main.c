@@ -32,8 +32,8 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-debug.h>
 
-#define FACTORY_IID     "OAFIID:nautilus_music_view_factory:1be0c129-87cd-4daa-9d3a-94397de9bce2"
-#define VIEW_IID        "OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391"
+#define VIEW_IID    "OAFIID:Nautilus_Music_View"
+#define FACTORY_IID "OAFIID:Nautilus_Music_View_Factory"
 
 int
 main (int argc, char *argv[])

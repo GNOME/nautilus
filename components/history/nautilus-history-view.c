@@ -41,8 +41,8 @@
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
-#define FACTORY_IID	"OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e"
-#define VIEW_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
+#define FACTORY_IID "OAFIID:Nautilus_History_View_Factory"
+#define VIEW_IID    "OAFIID:Nautilus_History_View"
 
 #define NAUTILUS_TYPE_HISTORY_VIEW            (nautilus_history_view_get_type ())
 #define NAUTILUS_HISTORY_VIEW(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HISTORY_VIEW, NautilusHistoryView))

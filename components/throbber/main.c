@@ -29,8 +29,8 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
-#define FACTORY_IID "OAFIID:nautilus_throbber_factory"
-#define VIEW_IID    "OAFIID:nautilus_throbber"
+#define FACTORY_IID "OAFIID:Nautilus_Throbber_Factory"
+#define VIEW_IID    "OAFIID:Nautilus_Throbber"
 
 static BonoboObject *
 cb_create_throbber (const char *ignore0, void *ignore1)

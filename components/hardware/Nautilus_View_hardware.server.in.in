@@ -1,13 +1,13 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce" type="exe" location="nautilus-hardware-view">
+<oaf_server iid="OAFIID:Nautilus_Hardware_View_Factory" type="exe" location="nautilus-hardware-view">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="description" type="string" _value="Factory for hardware view"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150" type="factory" location="OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce">
+<oaf_server iid="OAFIID:Nautilus_Hardware_View" type="factory" location="OAFIID:Nautilus_Hardware_View_Factory">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>

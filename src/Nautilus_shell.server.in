@@ -1,6 +1,6 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3" type="exe" location="nautilus">
+<oaf_server iid="OAFIID:Nautilus_Factory" type="exe" location="nautilus">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:GNOME/ObjectFactory:1.0"/>
   </oaf_attribute>
@@ -8,7 +8,7 @@
   <oaf_attribute name="description" type="string" _value="Factory for Nautilus shell and file manager"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+<oaf_server iid="OAFIID:Nautilus_File_Manager_Icon_View" type="factory" location="OAFIID:Nautilus_Factory">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:Bonobo/Unknown:1.0"/>
     <item value="IDL:Bonobo/Control:1.0"/>
@@ -30,7 +30,7 @@
   <oaf_attribute name="nautilus:viewer_label" type="string" _value="Icons Viewer"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_file_manager_desktop_icon_view:8d8121b1-0f1e-400b-bf0d-5b0f4555f5e1" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+<oaf_server iid="OAFIID:Nautilus_File_Manager_Desktop_Icon_View" type="factory" location="OAFIID:Nautilus_Factory">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:Bonobo/Unknown:1.0"/>
     <item value="IDL:Bonobo/Control:1.0"/>
@@ -41,7 +41,7 @@
   <oaf_attribute name="description" type="string" _value="Nautilus file manager component that shows icons on the desktop"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+<oaf_server iid="OAFIID:Nautilus_File_Manager_List_View" type="factory" location="OAFIID:Nautilus_Factory">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:Bonobo/Unknown:1.0"/>
     <item value="IDL:Bonobo/Control:1.0"/>
@@ -64,7 +64,7 @@
   <oaf_attribute name="nautilus:viewer_label" type="string" _value="List Viewer"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+<oaf_server iid="OAFIID:Nautilus_File_Manager_Search_List_View" type="factory" location="OAFIID:Nautilus_Factory">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:Bonobo/Unknown:1.0"/>
     <item value="IDL:Bonobo/Control:1.0"/>
@@ -81,7 +81,7 @@
   <oaf_attribute name="nautilus:viewer_label" type="string" value="Search List Viewer"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+<oaf_server iid="OAFIID:Nautilus_Shell" type="factory" location="OAFIID:Nautilus_Factory">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:Bonobo/Unknown:1.0"/>
     <item value="IDL:Nautilus/Shell:1.0"/>
@@ -90,7 +90,7 @@
   <oaf_attribute name="description" type="string" _value="Nautilus shell operations that can be done from subsequent command-line invocations"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:nautilus_metafile_factory:bc318c01-4106-4622-8d6c-b419ec89e4c6" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+<oaf_server iid="OAFIID:Nautilus_Metafile_Factory" type="factory" location="OAFIID:Nautilus_Factory">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:Bonobo/Unknown:1.0"/>
     <item value="IDL:Nautilus/MetafileFactory:1.0"/>

@@ -22,8 +22,8 @@
 
 /* main.c - main function and object activation function for the hardware view component. */
 
-#define FACTORY_IID	"OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce" 
-#define VIEW_IID	"OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150"
+#define FACTORY_IID "OAFIID:Nautilus_Hardware_View_Factory" 
+#define VIEW_IID    "OAFIID:Nautilus_Hardware_View"
 
 #include <config.h>
 

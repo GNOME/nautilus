@@ -41,8 +41,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define META_FACTORY_IID "OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f"
-#define FACTORY_OBJECT_IID    "OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4"
+#define META_FACTORY_IID   "OAFIID:Nautilus_Adapter_Factory_Factory"
+#define FACTORY_OBJECT_IID "OAFIID:Nautilus_Adapter_Factory"
 
 static int object_count = 0;
 

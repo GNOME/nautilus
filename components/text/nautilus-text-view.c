@@ -36,8 +36,8 @@
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
-#define FACTORY_IID "OAFIID:nautilus_text_view_factory:124ae209-d356-418f-8757-54e071cb3a21"
-#define VIEW_IID "OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437" 
+#define VIEW_IID    "OAFIID:Nautilus_Text_View" 
+#define FACTORY_IID "OAFIID:Nautilus_Text_View_Factory"
 
 typedef struct {
 	NautilusView base;
@@ -248,6 +248,3 @@ main (int argc, char *argv[])
                                             NULL,
                                             nautilus_text_view_get_type);
 }
-
-
-

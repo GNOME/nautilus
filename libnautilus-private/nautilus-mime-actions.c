@@ -1537,16 +1537,18 @@ server_matches_content_requirements (Bonobo_ServerInfo *server,
 }
 
 
+/* FIXME: do we actually need this it would seem to me that the
+ * test_only attribute handles this
+ */
 static char *nautilus_sort_criteria[] = {
         /* Prefer anything else over the loser view. */
-        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
+        "iid != 'OAFIID:Nautilus_Content_Loser'",
         /* Prefer anything else over the sample view. */
-        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
+        "iid != 'OAFIID:Nautilus_Sample_Content_View'",
 	/* Sort alphabetically */
 	"name",
-        NULL};
-
-
+        NULL
+};
 
 static GList *
 nautilus_do_component_query (const char        *mime_type, 
@@ -1596,10 +1598,7 @@ nautilus_do_component_query (const char        *mime_type,
 
                         if (ignore_content_mime_types || 
 			    server_matches_content_requirements (server, content_types, explicit_iids)) {
-                                /* Hack to suppress the Bonobo_Sample_Text component, since the Nautilus text
-                                 * view is a superset and it's confusing for the user to be presented with both
-                                 */
-                                if (server->iid != NULL && strcmp (server->iid, "OAFIID:Bonobo_Sample_Text") != 0) {
+                                if (server->iid != NULL) {
                                 	retval = g_list_prepend
                                         	(retval, 
 						 Bonobo_ServerInfo_duplicate (server));

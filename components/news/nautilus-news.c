@@ -2549,8 +2549,8 @@ main(int argc, char *argv[])
                                             GNOMELOCALEDIR,
                                             argc,
                                             argv,
-                                            "OAFIID:nautilus_news_view_factory:041601",
-                                            "OAFIID:nautilus_news_view:041601",
+                                            "OAFIID:Nautilus_News_View_Factory",
+                                            "OAFIID:Nautilus_News_View",
                                             make_news_view,
                                             nautilus_global_preferences_init,
                                             NULL);

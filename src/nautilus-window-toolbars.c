@@ -444,6 +444,22 @@ throbber_callback (BonoboListener *listener,
 }
 
 static void
+throbber_set_throbbing (NautilusWindow *window,
+			gboolean        throbbing)
+{
+	CORBA_boolean b;
+	CORBA_any     val;
+
+	val._type = TC_CORBA_boolean;
+	val._value = &b;
+	b = throbbing;
+
+	eel_bonobo_pbclient_set_value_async (
+		window->details->throbber_property_bag,
+		"throbbing", &val, NULL);
+}
+
+static void
 throbber_created_callback (Bonobo_Unknown     throbber,
 			   CORBA_Environment *ev,
 			   gpointer           user_data)
@@ -474,10 +490,7 @@ throbber_created_callback (Bonobo_Unknown     throbber,
 		window->details->throbber_property_bag = CORBA_OBJECT_NIL;
 		CORBA_exception_free (ev);
 	} else {
-		bonobo_pbclient_set_boolean (window->details->throbber_property_bag,
-					     "throbbing",
-					     window->details->throbber_active,
-					     ev);
+		throbber_set_throbbing (window, window->details->throbber_active);
 	}
 
 	window->details->throbber_listener =
@@ -494,8 +507,6 @@ throbber_created_callback (Bonobo_Unknown     throbber,
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
-	CORBA_Environment ev;
-	
 	if (( window->details->throbber_active &&  allow) ||
 	    (!window->details->throbber_active && !allow)) {
 		return;
@@ -514,10 +525,7 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 				       NAUTILUS_COMMAND_STOP, allow);
 
 	if (window->details->throbber_property_bag != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		bonobo_pbclient_set_boolean (window->details->throbber_property_bag,
-					     "throbbing", allow, &ev);
-		CORBA_exception_free (&ev);
+		throbber_set_throbbing (window, allow);
 	}
 
 	nautilus_window_ui_thaw (window);
@@ -539,7 +547,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 		CORBA_exception_init (&ev);
 
 		g_object_ref (window);
-		bonobo_get_object_async ("OAFIID:nautilus_throbber",
+		bonobo_get_object_async ("OAFIID:Nautilus_Throbber",
 					 "IDL:Bonobo/Control:1.0",
 					 &ev,
 					 throbber_created_callback,

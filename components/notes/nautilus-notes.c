@@ -430,8 +430,8 @@ main(int argc, char *argv[])
                                             GNOMELOCALEDIR,
                                             argc,
                                             argv,
-                                            "OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
-                                            "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",
+                                            "OAFIID:Nautilus_Notes_View_Factory",
+                                            "OAFIID:Nautilus_Notes_View",
                                             make_notes_view,
                                             nautilus_global_preferences_init,
                                             NULL);

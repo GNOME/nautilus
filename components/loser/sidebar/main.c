@@ -32,6 +32,8 @@
 #include <eel/eel-gnome-extensions.h>
 #include <bonobo.h>
 
+#define FACTORY_IID "OAFIID:Nautilus_Sidebar_Loser_Factory"
+
 static int object_count = 0;
 
 static void
@@ -53,7 +55,7 @@ loser_make_object (BonoboGenericFactory *factory,
 
 	nautilus_sidebar_loser_maybe_fail ("pre-make-object");
 
-	if (strcmp (iid, "OAFIID:nautilus_sidebar_loser:07bfdd1d-7abc-4412-98ab-441b226a10d0")) {
+	if (strcmp (iid, "OAFIID:Nautilus_Sidebar_Loser")) {
 		return NULL;
 	}
 
@@ -84,9 +86,8 @@ int main(int argc, char *argv[])
 	
 	nautilus_sidebar_loser_maybe_fail ("post-init");
 
-        registration_id = eel_bonobo_make_registration_id (
-		"OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa");
-	factory = bonobo_generic_factory_new ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", 
+        registration_id = eel_bonobo_make_registration_id (FACTORY_IID);
+	factory = bonobo_generic_factory_new (FACTORY_IID,
 					      loser_make_object,
 					      NULL);
 	g_free (registration_id);

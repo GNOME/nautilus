@@ -106,8 +106,8 @@ enum
 };
 
 /* These IIDs are used by the preferences code and in nautilus-application.c */
-#define NAUTILUS_ICON_VIEW_IID	     "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
-#define NAUTILUS_LIST_VIEW_IID	     "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
+#define NAUTILUS_ICON_VIEW_IID	     "OAFIID:Nautilus_File_Manager_Icon_View"
+#define NAUTILUS_LIST_VIEW_IID	     "OAFIID:Nautilus_File_Manager_List_View"
 
 
 /* Icon View */

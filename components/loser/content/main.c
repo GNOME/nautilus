@@ -53,7 +53,7 @@ loser_make_object (BonoboGenericFactory *factory,
 
 	nautilus_content_loser_maybe_fail ("pre-make-object");
 
-	if (strcmp (iid, "OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d")) {
+	if (strcmp (iid, "OAFIID:Nautilus_Content_Loser")) {
 		return NULL;
 	}
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 	nautilus_content_loser_maybe_fail ("post-init");
 
         registration_id = eel_bonobo_make_registration_id
-		("OAFIID:nautilus_content_loser_factory:adf30e75-3b63-4360-8784-a8e239390a69");
+		("OAFIID:Nautilus_Content_Loser_Factory");
 	factory = bonobo_generic_factory_new (registration_id,
 					      loser_make_object,
 					      NULL);
