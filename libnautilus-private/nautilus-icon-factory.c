@@ -94,7 +94,7 @@ static const char *icon_file_name_suffixes[] =
  * cache if the caller keeps the pixbuf around (we only get rid of
  * items from the cache after the caller unref's them).
 */
-#define ICON_CACHE_COUNT                20
+#define ICON_CACHE_COUNT                128
 
 /* This is the number of milliseconds we wait before sweeping out
  * items from the cache.

@@ -55,9 +55,9 @@ SUBDIRS = \
 	$(NULL)
 
 install-data-local: $(DIRECTORY_FILES)
-	$(mkinstalldirs) $(sysconfdir)/X11/starthere
-	$(mkinstalldirs) $(sysconfdir)/X11/sysconfig
-	$(mkinstalldirs) $(sysconfdir)/X11/serverconfig
-	$(INSTALL_DATA) starthere.directory $(sysconfdir)/X11/starthere/.directory
-	$(INSTALL_DATA) sysconfig.directory $(sysconfdir)/X11/sysconfig/.directory
-	$(INSTALL_DATA) serverconfig.directory $(sysconfdir)/X11/serverconfig/.directory
+	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/X11/starthere
+	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/X11/sysconfig
+	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/X11/serverconfig
+	$(INSTALL_DATA) starthere.directory $(DESTDIR)$(sysconfdir)/X11/starthere/.directory
+	$(INSTALL_DATA) sysconfig.directory $(DESTDIR)$(sysconfdir)/X11/sysconfig/.directory
+	$(INSTALL_DATA) serverconfig.directory $(DESTDIR)$(sysconfdir)/X11/serverconfig/.directory
