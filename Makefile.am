@@ -15,7 +15,6 @@ SUBDIRS =			\
 	po 			\
 	src 			\
 	test 			\
-	tools 			\
 	$(NULL)
 
 EXTRA_DIST=			\

@@ -32,6 +32,9 @@ read other relevant documents in the docs directory too.
 2: Using the leak checker
 =========================
 
+The leak checker is built as part of the eazel-tools gnome module.
+Build that first before you continue.
+
 Nautilus is set up to use the libleakcheck.so leak checking
 library. To use it, run Nautilus with LD_PRELOAD set to the path to
 the installed libleakcheck.so library. For example, if you are using a
