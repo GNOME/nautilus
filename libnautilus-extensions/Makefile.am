@@ -180,6 +180,7 @@ noinst_HEADERS = \
 	nautilus-metafile-factory.h \
 	nautilus-metafile.h \
 	nautilus-mime-actions.h \
+	nautilus-monitor.h \
 	nautilus-preferences-box.h \
 	nautilus-preferences-dialog.h \
 	nautilus-preferences-group.h \
