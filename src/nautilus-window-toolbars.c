@@ -176,21 +176,27 @@ back_or_forward_button_clicked_callback (GtkWidget *widget,
 }
 
 static char *
-get_file_name_from_icon_name (const char *icon_name)
+get_file_name_from_icon_name (const char *icon_name, gboolean is_custom)
 {
 	char *full_path_name, *icon_theme, *theme_path_name;
 
-	/* look in the theme to see if there's a redirection found */
+	/* look in the theme to see if there's a redirection found; if so, prefer the
+	 * redirection to the ordinary theme look-up */
 	icon_theme = nautilus_theme_get_theme_data ("toolbar", "icon_theme");
 	if (icon_theme != NULL) {
-		/* special case the "standard" theme which indicates using the stock gnome icons */
-		if (nautilus_strcmp (icon_theme, "standard") == 0) {
+		/* special case the "standard" theme which indicates using the stock gnome icons,
+		 * except for the custom ones, that are not present in stock
+		 */
+		if (!is_custom && nautilus_strcmp (icon_theme, "standard") == 0) {
 			g_free (icon_theme);
 			return NULL;
 		}
 		
 		theme_path_name = g_strdup_printf ("%s/%s.png", icon_theme, icon_name);
 		full_path_name = nautilus_pixmap_file (theme_path_name);
+		if (full_path_name == NULL) {
+			full_path_name = nautilus_theme_get_image_path (icon_name);
+		}
 		g_free (theme_path_name);
 		g_free (icon_theme);
 	} else {
@@ -203,11 +209,12 @@ get_file_name_from_icon_name (const char *icon_name)
 static void
 set_up_standard_bonobo_button (NautilusWindow *window, 
 			       const char *item_path, 
-			       const char *icon_name)
+			       const char *icon_name,
+			       gboolean is_custom)
 {
 	char *file_name;
 
-	file_name = get_file_name_from_icon_name (icon_name);
+	file_name = get_file_name_from_icon_name (icon_name, is_custom);
 		
 	nautilus_window_ui_freeze (window);
 
@@ -253,7 +260,7 @@ set_up_special_bonobo_button (NautilusWindow *window,
 	char *icon_file_name;
 	GdkPixbuf *pixbuf;	
 
-	icon_file_name = get_file_name_from_icon_name (icon_name);
+	icon_file_name = get_file_name_from_icon_name (icon_name, FALSE);
 
 	if (icon_file_name == NULL) {
 		pixbuf = get_pixbuf_for_xml_node (window, control_path);
@@ -293,14 +300,14 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_special_bonobo_button (window, window->details->back_button_item, "/Toolbar/BackWrapper", "Back");
 	set_up_special_bonobo_button (window, window->details->forward_button_item, "/Toolbar/ForwardWrapper", "Forward");
 	
-	set_up_standard_bonobo_button (window, "/Toolbar/Up", "Up");
-	set_up_standard_bonobo_button (window, "/Toolbar/Home", "Home");
-	set_up_standard_bonobo_button (window, "/Toolbar/Reload", "Refresh");
-	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search");
-	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb");
-	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop");
+	set_up_standard_bonobo_button (window, "/Toolbar/Up", "Up", FALSE);
+	set_up_standard_bonobo_button (window, "/Toolbar/Home", "Home", FALSE);
+	set_up_standard_bonobo_button (window, "/Toolbar/Reload", "Refresh", FALSE);
+	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search", FALSE);
+	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb", TRUE);
+	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop", FALSE);
 #ifdef EAZEL_SERVICES	
-	set_up_standard_bonobo_button (window, "/Toolbar/Extra Buttons Placeholder/Services", "Services");
+	set_up_standard_bonobo_button (window, "/Toolbar/Extra Buttons Placeholder/Services", "Services", TRUE);
 #endif
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 

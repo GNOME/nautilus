@@ -22,6 +22,8 @@ gnome_DATA =\
 	i-regular-72.png \
 	i-regular-96.png \
 	i-regular.png \
+	SearchWeb.png \
+	Services.png \
 	theme_preview.png \
 	$(NULL)
 

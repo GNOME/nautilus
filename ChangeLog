@@ -1,3 +1,24 @@
+2001-03-02  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 7247, Web Search and Services toolbar icons missing in
+	GNOME theme; fixed by tweaking the toolbar theming logic to
+	deal with icons that don't have stock equivalents, and adding images
+	for the gnome theme to use
+	
+	* icons/gnome/Makefile.am:
+	* icons/gnome/SearchWeb.png:
+	* icons/gnome/Services.png:	
+	* src/nautilus-window-toolbars.c: (get_file_name_from_icon_name),
+	(set_up_standard_bonobo_button), (set_up_special_bonobo_button),
+	(set_up_toolbar_images):
+
+	* icons/Services.png:
+	stopgap fix for bug 7289, services toolbar icon in default theme
+	doesn't fit in the rest of the toolbar icons.  I replaced it with
+	an earlier one that is still consistent with the other services icons,
+	but it's still not good enough; Arlo will keep working on a better
+	one.
+	
 2001-03-02  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: John Fleck <jfleck@inkstain.net> 
