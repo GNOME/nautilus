@@ -32,8 +32,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-22 21:58+0100\n"
-"PO-Revision-Date: 2004-01-22 21:58+0100\n"
+"POT-Creation-Date: 2004-01-25 11:28+0100\n"
+"PO-Revision-Date: 2004-01-25 11:28+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -569,7 +569,7 @@ msgstr "Zitrone"
 
 #: data/browser.xml.h:51
 msgid "Mail"
-msgstr "Mail"
+msgstr "E-Mail"
 
 #: data/browser.xml.h:52
 msgid "Mango"
@@ -677,7 +677,7 @@ msgstr "Schnee gerippt"
 
 #: data/browser.xml.h:78
 msgid "Sound"
-msgstr "Klang"
+msgstr "Audio"
 
 #: data/browser.xml.h:79
 msgid "Special"
@@ -1057,7 +1057,7 @@ msgstr "Dem Benutzer anzuzeigende Beschriftung"
 
 #: libnautilus-extension/nautilus-menu-item.c:220
 msgid "Tip"
-msgstr "Minihilfe"
+msgstr "Tipp"
 
 #: libnautilus-extension/nautilus-menu-item.c:221
 msgid "Tooltip for the menu item"
@@ -1811,7 +1811,7 @@ msgstr "Minix-Datenträger"
 
 #: libnautilus-private/filesystem-attributes.xml.h:17
 msgid "NFS Network Volume"
-msgstr "NFS-Netzwerk-Datenträger"
+msgstr "NFS-Netzwerkdatenträger"
 
 #: libnautilus-private/filesystem-attributes.xml.h:18
 msgid "Pcfs Solaris Volume"
@@ -1843,7 +1843,7 @@ msgstr "Windows NT-Datenträger"
 
 #: libnautilus-private/filesystem-attributes.xml.h:25
 msgid "Windows Shared Volume"
-msgstr "Freigegebener Windowsdatenträger"
+msgstr "Freigegebener Windows-Datenträger"
 
 #: libnautilus-private/filesystem-attributes.xml.h:26
 msgid "Windows VFAT Volume"
@@ -2458,8 +2458,8 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-private/nautilus-file-operations.c:1543
-#: libnautilus-private/nautilus-file-operations.c:2131
-#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2133
+#: libnautilus-private/nautilus-file-operations.c:2295
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Unbekannter GnomeVFSXferProgressStatus %d"
@@ -2544,156 +2544,160 @@ msgstr "Kopieren"
 msgid "Preparing To Copy..."
 msgstr "Kopieren wird vorbereitet..."
 
-#: libnautilus-private/nautilus-file-operations.c:1929
+#: libnautilus-private/nautilus-file-operations.c:1930
 msgid "You cannot copy items into the trash."
 msgstr "Sie können Objekte nicht in den Müll kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:1930
+#: libnautilus-private/nautilus-file-operations.c:1931
+msgid "You cannot create links inside the trash."
+msgstr "Sie können keine Verknüpfungen im Müll anlegen."
+
+#: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
 msgstr "Dateien und Ordner können ausschließlich in den Müll verschoben werden"
 
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1956
 msgid "You cannot move this trash folder."
 msgstr "Sie können diesen Müllordner nicht verschieben."
 
-#: libnautilus-private/nautilus-file-operations.c:1955
+#: libnautilus-private/nautilus-file-operations.c:1957
 msgid "You cannot copy this trash folder."
 msgstr "Sie können diesen Müllordner nicht kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
 "Ein Müll-Ordner wird zum Speichern von in den Müll verschobenen Objekte "
 "verwendet."
 
-#: libnautilus-private/nautilus-file-operations.c:1958
+#: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
 msgstr "Ort des Mülls kann nicht geändert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:1959
+#: libnautilus-private/nautilus-file-operations.c:1961
 msgid "Can't Copy Trash"
 msgstr "Müll konnte nicht kopiert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:1983
+#: libnautilus-private/nautilus-file-operations.c:1985
 msgid "You cannot move a folder into itself."
 msgstr "Sie können einen Ordner nicht in sich selbst verschieben."
 
-#: libnautilus-private/nautilus-file-operations.c:1984
+#: libnautilus-private/nautilus-file-operations.c:1986
 msgid "You cannot copy a folder into itself."
 msgstr "Sie können einen Ordner nicht in sich selbst kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1987
 msgid "The destination folder is inside the source folder."
 msgstr "Der Zielordner befindet sich im Quellordner."
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1989
 msgid "Can't Move Into Self"
 msgstr "Kann nicht auf sich selbst verschoben werden"
 
-#: libnautilus-private/nautilus-file-operations.c:1988
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "Can't Copy Into Self"
 msgstr "Kann nicht auf sich selbst kopiert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:2001
+#: libnautilus-private/nautilus-file-operations.c:2003
 msgid "You cannot copy a file over itself."
 msgstr "Sie können eine Datei nicht über sich selbst kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:2002
+#: libnautilus-private/nautilus-file-operations.c:2004
 msgid "The destination and source are the same file."
 msgstr "Ziel- und Quelldatei sind identisch."
 
-#: libnautilus-private/nautilus-file-operations.c:2003
+#: libnautilus-private/nautilus-file-operations.c:2005
 msgid "Can't Copy Over Self"
 msgstr "Kann nicht über sich selbst kopiert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:2055
-#: libnautilus-private/nautilus-file-operations.c:2195
+#: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2197
 msgid "You do not have permissions to write to the destination."
 msgstr ""
 "Sie haben nicht die nötigen Zugriffsrechte, um auf das Ziel zu schreiben."
 
-#: libnautilus-private/nautilus-file-operations.c:2057
-#: libnautilus-private/nautilus-file-operations.c:2197
+#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2199
 msgid "There is no space on the destination."
 msgstr "Am Ziel ist kein Platz."
 
-#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2061
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Fehler »%s« beim Anlegen eines neuen Ordners."
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 msgid "Error creating new folder."
 msgstr "Fehler beim Anlegen eines neuen Ordners."
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 msgid "Error Creating New Folder"
 msgstr "Fehler beim Anlegen eines neuen Ordners"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2159
+#: libnautilus-private/nautilus-file-operations.c:2161
 msgid "untitled folder"
 msgstr "Namenloser Ordner"
 
-#: libnautilus-private/nautilus-file-operations.c:2199
+#: libnautilus-private/nautilus-file-operations.c:2201
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Fehler »%s« beim Anlegen eines neuen Dokuments."
 
-#: libnautilus-private/nautilus-file-operations.c:2204
+#: libnautilus-private/nautilus-file-operations.c:2206
 msgid "Error creating new document."
 msgstr "Fehler beim Anlegen eines neuen Dokuments."
 
-#: libnautilus-private/nautilus-file-operations.c:2204
+#: libnautilus-private/nautilus-file-operations.c:2206
 msgid "Error Creating New Document"
 msgstr "Fehler beim Anlegen eines neuen Dokuments"
 
-#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "new file"
 msgstr "neue Datei"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2423
+#: libnautilus-private/nautilus-file-operations.c:2425
 msgid "Deleting files"
 msgstr "Dateien werden gelöscht"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2425
-#: libnautilus-private/nautilus-file-operations.c:2460
+#: libnautilus-private/nautilus-file-operations.c:2427
+#: libnautilus-private/nautilus-file-operations.c:2462
 msgid "Files deleted:"
 msgstr "Gelöschte Dateien:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2427
-#: libnautilus-private/nautilus-file-operations.c:2462
+#: libnautilus-private/nautilus-file-operations.c:2429
+#: libnautilus-private/nautilus-file-operations.c:2464
 msgid "Deleting"
 msgstr "Löschen"
 
-#: libnautilus-private/nautilus-file-operations.c:2428
+#: libnautilus-private/nautilus-file-operations.c:2430
 msgid "Preparing to Delete files..."
 msgstr "Löschen von Dateien wird vorbereitet..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2458
+#: libnautilus-private/nautilus-file-operations.c:2460
 msgid "Emptying the Trash"
 msgstr "Müll wird geleert"
 
-#: libnautilus-private/nautilus-file-operations.c:2463
+#: libnautilus-private/nautilus-file-operations.c:2465
 msgid "Preparing to Empty the Trash..."
 msgstr "Leeren des Mülls wird vorbereitet..."
 
-#: libnautilus-private/nautilus-file-operations.c:2526
+#: libnautilus-private/nautilus-file-operations.c:2528
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr ""
 "Sind sie sicher, dass Sie alle Objekte im Müll dauerhaft löschen wollen?"
 
-#: libnautilus-private/nautilus-file-operations.c:2540
+#: libnautilus-private/nautilus-file-operations.c:2542
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 "Falls Sie den Müll leeren, werden darin enthaltene Objekte dauerhaft "
 "gelöscht."
 
-#: libnautilus-private/nautilus-file-operations.c:2552
+#: libnautilus-private/nautilus-file-operations.c:2554
 msgid "_Empty"
 msgstr "_Leeren"
 
@@ -3564,7 +3568,7 @@ msgstr "Aktion _verknüpfen"
 
 #: libnautilus-private/nautilus-program-choosing.c:529
 msgid "Open Failed, would you like to choose another application?"
-msgstr "Öffnen fehlgeschlagen. Wollen Sie eine andere Anwendung wählen?"
+msgstr "Öffnen gescheitert. Wollen Sie eine andere Anwendung wählen?"
 
 #: libnautilus-private/nautilus-program-choosing.c:530
 #, c-format
@@ -3578,7 +3582,7 @@ msgstr ""
 # CHECK
 #: libnautilus-private/nautilus-program-choosing.c:535
 msgid "Open Failed, would you like to choose another action?"
-msgstr "Öffnen fehlgeschlagen, wollen Sie eine andere Aktion ausführen?"
+msgstr "Öffnen gescheitert. Wollen Sie eine andere Aktion wählen?"
 
 #: libnautilus-private/nautilus-program-choosing.c:536
 #, c-format
@@ -4574,7 +4578,7 @@ msgid "_Copy Files"
 msgstr "Dateien _kopieren"
 
 #: src/file-manager/fm-directory-view.c:5576
-msgid "The link is borken, do you want to move it to the Trash?"
+msgid "The link is broken, do you want to move it to the Trash?"
 msgstr ""
 "Diese Verknüpfung ist fehlerhaft. Soll sie in den Müll verschoben werden?"
 
@@ -5416,7 +5420,7 @@ msgstr "(Leer)"
 
 #: src/file-manager/fm-tree-model.c:1199
 msgid "Loading..."
-msgstr "Einen Moment..."
+msgstr "Ladevorgang..."
 
 #: src/file-manager/fm-tree-view.c:947
 msgid "Open"
@@ -6050,7 +6054,7 @@ msgid ""
 "There was an error displaying help: \n"
 "%s"
 msgstr ""
-"Beim Anzeigen der Hilfe ist ein Fehler aufgetreten: \n"
+"Beim Anzeigen der Hilfe ist ein Fehler aufgetreten:\n"
 "%s"
 
 #: src/nautilus-bookmarks-window.c:180
@@ -6625,7 +6629,7 @@ msgstr "Zum Vorlagenordner gehen"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
 msgid "Go to the next visited location"
-msgstr "Zum nächsten besuchten Ort gehen"
+msgstr "Zum als nächstes besuchten Ort gehen"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
 msgid "Go to the previous visited location"
@@ -6662,7 +6666,7 @@ msgstr "Stopp"
 
 #: src/nautilus-navigation-window-ui.xml.h:24
 msgid "Up"
-msgstr "Rauf"
+msgstr "Hinauf"
 
 #: src/nautilus-navigation-window-ui.xml.h:25
 msgid "_Add Bookmark"
@@ -6722,7 +6726,7 @@ msgstr "_Müll"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
 msgid "_Up"
-msgstr "_Rauf"
+msgstr "Hin_auf"
 
 #: src/nautilus-navigation-window-ui.xml.h:39 src/nautilus-shell-ui.xml.h:48
 msgid "_View"
@@ -6764,7 +6768,7 @@ msgstr "Wenn dies öfter vorkommt, ist es ratsam, diese zu deaktivieren."
 
 #: src/nautilus-navigation-window.c:1125
 msgid "Side Panel Failed"
-msgstr "Seitenleiste fehlgeschlagen"
+msgstr "Seitenleiste gescheitert"
 
 #: src/nautilus-navigation-window.c:1256
 msgid "Side Pane"
@@ -7381,7 +7385,7 @@ msgstr "Zum CD-Ersteller gehen"
 
 #: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Open _Location..."
-msgstr "O_rt öffnen..."
+msgstr "_Ort öffnen..."
 
 #: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Open _Parent"
