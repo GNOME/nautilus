@@ -1,19 +1,19 @@
 # nautilus ja.po.
-# Copyright (C) 2000-2004 Free Software Foundation, Inc.
+# Copyright (C) 2000-2005 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2002.
 # Takuo Kitame <kitame@debian.org>, 2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
 # Satoru Sato <ss@gnome.gr.jp>, 2001.
 # James Hashida <khashida@redhat.com>, 2002
 # KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
-# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003-2004.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003-2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-11 09:55+0100\n"
-"PO-Revision-Date: 2004-11-25 12:08+0900\n"
+"POT-Creation-Date: 2005-01-12 00:24+0900\n"
+"PO-Revision-Date: 2005-01-12 00:23+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -5478,62 +5478,62 @@ msgstr "場所を開く"
 msgid "_Location:"
 msgstr "場所(_L):"
 
-#: src/nautilus-main.c:187
+#: src/nautilus-main.c:211
 msgid "Perform a quick set of self-check tests."
 msgstr "簡易自己診断テストセットを実行する"
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:214
 msgid "Create the initial window with the given geometry."
 msgstr "指定した大きさでウィンドウを起動する"
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:214
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: src/nautilus-main.c:192
+#: src/nautilus-main.c:216
 msgid "Only create windows for explicitly specified URIs."
 msgstr "明示的に指定された URL のウィンドウだけを起動する"
 
-#: src/nautilus-main.c:194
+#: src/nautilus-main.c:218
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "デスクトップを管理しない (設定ダイアログの設定を無視します)"
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:220
 msgid "open a browser window."
 msgstr "ブラウザ・ウィンドウを開く"
 
-#: src/nautilus-main.c:198
+#: src/nautilus-main.c:222
 msgid "Quit Nautilus."
 msgstr "Nautilus を強制終了する"
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:224
 msgid "Restart Nautilus."
 msgstr "Nautilus を再起動する"
 
-#: src/nautilus-main.c:233
+#: src/nautilus-main.c:257
 msgid "File Manager"
 msgstr "ファイル・マネージャ"
 
 #. Set initial window title
-#: src/nautilus-main.c:239 src/nautilus-spatial-window.c:330
+#: src/nautilus-main.c:263 src/nautilus-spatial-window.c:330
 #: src/nautilus-window-menus.c:432 src/nautilus-window.c:178
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:259 src/nautilus-main.c:268 src/nautilus-main.c:273
+#: src/nautilus-main.c:283 src/nautilus-main.c:292 src/nautilus-main.c:297
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s オプションには URI を指定できません。\n"
 
-#: src/nautilus-main.c:264
+#: src/nautilus-main.c:288
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check オプションには他のオプションを指定できません。\n"
 
-#: src/nautilus-main.c:278
+#: src/nautilus-main.c:302
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry オプションには複数の URI を指定できません。\n"
@@ -5619,8 +5619,8 @@ msgid "Specify a location to open"
 msgstr "開く場所を指定して下さい"
 
 #: src/nautilus-navigation-window-menus.c:550
-msgid "_Clear History"
-msgstr "履歴の削除(_C)"
+msgid "Clea_r History"
+msgstr "履歴のクリア(_R)"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:551
@@ -5700,8 +5700,8 @@ msgstr "%s表示"
 
 #: src/nautilus-navigation-window.c:689
 #, c-format
-msgid "File Browser: %s"
-msgstr "ファイル・ブラウザ: %s"
+msgid "%s - File Browser"
+msgstr "%s - ファイル・ブラウザ"
 
 #: src/nautilus-notes-viewer.c:388 src/nautilus-notes-viewer.c:495
 msgid "Notes"
@@ -6221,8 +6221,8 @@ msgstr "ゴミ箱フォルダへ移動します"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:646
-msgid "CD _Creator"
-msgstr "CD の作成(_C)"
+msgid "CD/_DVD Creator"
+msgstr "CD/DVD の作成(_D)"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:647
@@ -6277,6 +6277,3 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "Open with..."
-#~ msgstr "別のアプリで開く..."
