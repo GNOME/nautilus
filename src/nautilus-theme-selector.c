@@ -152,7 +152,13 @@ file_selection_ok_clicked_callback (GtkWidget *button,
 				       theme_selector->details->parent_window);
 		g_free (message);
 		break;
-
+	case NAUTILUS_THEME_INSTALL_NOT_A_THEME_FILE:
+		message = g_strdup_printf (_("Sorry, but \"%s\" is not a valid theme file."),
+					   selected_path);
+		eel_show_error_dialog (message, _("Couldn't add theme"),
+				       theme_selector->details->parent_window);
+		g_free (message);
+		break;
 	case NAUTILUS_THEME_INSTALL_OK:
 		/* Re populate the theme lists to match the stored state */
 		theme_selector_populate_list (theme_selector->details->theme_selector,

@@ -41,6 +41,7 @@
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <librsvg/rsvg.h>
 
 /* static globals to hold the last accessed theme files */
@@ -717,32 +718,20 @@ nautilus_theme_remove_user_theme (const char *theme_to_remove_name)
 NautilusThemeInstallResult
 nautilus_theme_install_user_theme (const char *theme_to_install_path)
 {
+	GnomeVFSHandle *handle;
 	GnomeVFSResult result;
 	char *theme_name;
 	char *theme_xml_path;
 	char *user_themes_directory;
 	char *theme_destination_path;
-
-	if (theme_to_install_path == NULL
-	    || !g_file_test (theme_to_install_path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
-		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
-	}
-
-	theme_name = eel_uri_get_basename (theme_to_install_path);
-	g_return_val_if_fail (theme_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	
-	theme_xml_path = g_strdup_printf ("%s/%s.xml",
-					  theme_to_install_path,
-					  theme_name);
-
-	if (!g_file_test (theme_xml_path, G_FILE_TEST_EXISTS)) {
-		g_free (theme_name);
-		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
-	}
-	g_free (theme_xml_path);
+	char *command;
+	char *mime_type;
+	char *quoted_user_path;
+	char *quoted_theme_path;
+	int status;
 
 	user_themes_directory = nautilus_theme_get_user_themes_directory ();
-
+	
 	/* Create the user themes directory if it doesn't exist */
 	if (!g_file_test (user_themes_directory, G_FILE_TEST_EXISTS)) {
 		result = gnome_vfs_make_directory (user_themes_directory,
@@ -752,15 +741,86 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 
 		if (result != GNOME_VFS_OK) {
 			g_free (user_themes_directory);
-			g_free (theme_name);
 			return NAUTILUS_THEME_INSTALL_FAILED_USER_THEMES_DIRECTORY_CREATION;
 		}
 	}
+
+	if (theme_to_install_path != NULL && g_file_test (theme_to_install_path, G_FILE_TEST_IS_REGULAR)) {
+		result = gnome_vfs_open (&handle, theme_to_install_path, GNOME_VFS_OPEN_READ);
+		gnome_vfs_close (handle);
+		/* Did we manage to read the file? */
+		if (result != GNOME_VFS_OK) {
+			g_free (user_themes_directory);
+			return NAUTILUS_THEME_INSTALL_FAILED;
+		}
+		mime_type = gnome_vfs_get_mime_type (theme_to_install_path);
+		if (mime_type != NULL) {
+			quoted_theme_path = g_shell_quote (theme_to_install_path);
+			quoted_user_path = g_shell_quote (user_themes_directory);
+			
+			if (strcmp (mime_type, "application/x-compressed-tar") == 0) {
+				/* gzipped tarball */
+				command = g_strdup_printf ("gzip -d -c < %s | (cd %s ; tar -xf -)", 
+							   quoted_theme_path,
+							   quoted_user_path
+							   );
+			} else if (strcmp (mime_type, "application/x-tar") == 0) {
+				/* vanilla tarball */
+				command = g_strdup_printf ("cd %s && tar -xf %s", 
+							   quoted_user_path, 
+							   quoted_theme_path
+							   );
+					   
+			} else if (strcmp (mime_type, "application/x-bzip") == 0) {
+				/* bzipped tarball */
+				command = g_strdup_printf ("bzip2 -d -c < %s | (cd %s ; tar -xf -)", 
+							   quoted_theme_path, 
+							   quoted_user_path
+							   );
+			} else {
+				/* unsupported mime-type */
+				command = NULL;
+			}
+			g_free (user_themes_directory);
+			g_free (quoted_theme_path);
+			g_free (quoted_user_path);
+			g_free (mime_type);
+			if (command != NULL) {
+				status = system (command);
+				g_free (command);
+				if (status != 0) {
+					return NAUTILUS_THEME_INSTALL_FAILED;
+				} else {
+					return NAUTILUS_THEME_INSTALL_OK; 
+				}
+			} else {
+				return NAUTILUS_THEME_INSTALL_NOT_A_THEME_FILE;
+			}
+		} else {
+			g_free (user_themes_directory);
+			return NAUTILUS_THEME_INSTALL_FAILED;
+		}
+	}
+
+	if (theme_to_install_path == NULL
+	    || !g_file_test (theme_to_install_path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
+	}
 	
+	theme_name = eel_uri_get_basename (theme_to_install_path);
+	g_return_val_if_fail (theme_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 	theme_destination_path = nautilus_make_path (user_themes_directory, theme_name);
+	theme_xml_path = g_strdup_printf ("%s/%s.xml",
+					  theme_to_install_path,
+					  theme_name);
 	g_free (user_themes_directory);
 	g_free (theme_name);
-	
+	if (!g_file_test (theme_xml_path, G_FILE_TEST_EXISTS)) {
+		g_free (theme_destination_path);
+		g_free (theme_xml_path);
+		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
+	}
+	g_free (theme_xml_path);
 	result = eel_copy_uri_simple (theme_to_install_path, theme_destination_path);
 	if (result != GNOME_VFS_OK) {
 		g_free (theme_destination_path);
@@ -768,6 +828,6 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 	}
 
 	g_free (theme_destination_path);
-
+	
 	return NAUTILUS_THEME_INSTALL_OK;
 }

@@ -50,7 +50,12 @@ typedef enum
 	NAUTILUS_THEME_INSTALL_FAILED_USER_THEMES_DIRECTORY_CREATION,
 
 	/* Failed to install the theme */
-	NAUTILUS_THEME_INSTALL_FAILED
+	NAUTILUS_THEME_INSTALL_FAILED,
+	
+	/* Not a proper tar-ball */
+	NAUTILUS_THEME_INSTALL_NOT_A_THEME_FILE
+
+
 } NautilusThemeInstallResult;
 
 /* get and set the current theme */

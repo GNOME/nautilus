@@ -1,5 +1,16 @@
 2002-04-26  Alex Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-theme.c:
+	(nautilus_theme_install_user_theme):
+	Allow installation of tared themes.
+	
+	* libnautilus-private/nautilus-theme.h:
+	* src/nautilus-theme-selector.c:
+	(file_selection_ok_clicked_callback):
+	Better warnings for non-theme files.
+
+2002-04-26  Alex Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-volume-monitor.c:
 	* libnautilus-private/nautilus-volume-monitor.h:
 	Added new function nautilus_volume_get_device_path.
