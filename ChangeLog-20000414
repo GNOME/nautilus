@@ -1,3 +1,10 @@
+2000-04-06  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-directory-background.c:
+	(nautilus_connect_background_to_directory_metadata):
+	Fixed code that was trying to disconnect the handler from the
+	new directory, not the old one.
+
 2000-04-06  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-list-view.c:
@@ -349,7 +356,7 @@
 
 2000-04-04  Andy Hertzfeld <andy@eazel.com>
 
-	* components.services/startup/nautilus-service-startup-view.c:
+	* components/services/startup/nautilus-service-startup-view.c:
 	changed the account name field to e-mail address; make the submit
 	button initially insensitive; turned off the visibility property of
 	the gtk_entry objects used for passwords

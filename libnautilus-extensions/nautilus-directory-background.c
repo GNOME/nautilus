@@ -138,7 +138,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                 g_assert (NAUTILUS_IS_DIRECTORY (old_directory));
                 gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_changed_callback),
-                                               directory);
+                                               old_directory);
                 gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
                                                GTK_SIGNAL_FUNC (directory_changed_callback),
                                                background);
