@@ -22,13 +22,13 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-meta-view-client.h: Interface for object that represents the
+/* ntl-meta-view-frame.h: Interface for object that represents the
    frame a nautilus meta view plugs into. */
 
 #ifndef NTL_META_VIEW_FRAME_H
 #define NTL_META_VIEW_FRAME_H
 
-#include <libnautilus/ntl-view-client.h>
+#include <libnautilus/ntl-view-frame.h>
 
 #define NAUTILUS_TYPE_META_VIEW_FRAME			(nautilus_meta_view_frame_get_type ())
 #define NAUTILUS_META_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_META_VIEW_FRAME, NautilusMetaViewFrame))

@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
 
 /*
- *  libnautilus: A library for nautilus clients.
+ *  libnautilus: A library for nautilus view components.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
@@ -29,8 +29,8 @@
 
 #include <bonobo/gnome-bonobo.h>
 #include <libnautilus/nautilus.h>
-#include <libnautilus/ntl-view-client.h>
-#include <libnautilus/ntl-meta-view-client.h>
-#include <libnautilus/ntl-content-view-client.h>
+#include <libnautilus/ntl-view-frame.h>
+#include <libnautilus/ntl-meta-view-frame.h>
+#include <libnautilus/ntl-content-view-frame.h>
 
 #endif

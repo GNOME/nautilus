@@ -23,7 +23,7 @@
  *
  */
 
-/* ntl-view-client.c: Implementation for object that represents a
+/* ntl-view-frame.c: Implementation for object that represents a
    nautilus view implementation. */
 
 #include <gtk/gtk.h>

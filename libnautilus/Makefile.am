@@ -28,9 +28,9 @@ libnautilusinclude_HEADERS=			\
 	nautilus-lib-self-check-functions.h	\
 	nautilus-self-checks.h			\
 	nautilus-string.h			\
-	ntl-content-view-client.h		\
-	ntl-meta-view-client.h			\
-	ntl-view-client.h
+	ntl-content-view-frame.h		\
+	ntl-meta-view-frame.h			\
+	ntl-view-frame.h
 
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gdk-extensions.c			\
@@ -46,9 +46,9 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-self-checks.c			\
 	nautilus-string.c			\
-	ntl-content-view-client.c		\
-	ntl-meta-view-client.c			\
-	ntl-view-client.c			\
+	ntl-content-view-frame.c		\
+	ntl-meta-view-frame.c			\
+	ntl-view-frame.c			\
 	$(fsextension_idl_sources)
 
 libnautilus_la_LDFLAGS=$(GNOME_LIBS) \

@@ -23,7 +23,7 @@
  *
  */
 
-/* ntl-view-client.h: Interface of the object representing the frame a
+/* ntl-view-frame.h: Interface of the object representing the frame a
    data view plugs into. */
 
 #ifndef NTL_VIEW_FRAME_H

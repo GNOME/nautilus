@@ -22,7 +22,7 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-meta-view-client.c: Implementation for object that represents a
+/* ntl-meta-view-frame.c: Implementation for object that represents a
    nautilus meta view implementation. */
 #include "libnautilus.h"
 
