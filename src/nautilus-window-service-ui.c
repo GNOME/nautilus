@@ -66,7 +66,7 @@ goto_online_storage (BonoboUIComponent *component,
 		url = g_strdup ("eazel-services://anonymous/services");
 	} else {
 		user_name = who_is_logged_in (user_control);
-		url = g_strdup_printf ("eazel-services://~%s", user_name);
+		url = g_strdup_printf ("eazel-services:/~%s", user_name);
 	}
 
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
