@@ -329,7 +329,7 @@ static char _bad[] = {
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	/* `abcdefghijklmno */
         0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1		/* pqrstuvwxyz{|}~del */
 };
-#define EVILCHAR(c)	(((c) < 0x20) || ((c) > 0x7F) || (_bad[c]))
+#define EVILCHAR(c)	(((c) < 0x20) || ((c) > 0x7F) || (_bad[c-0x20]))
 
 static char *
 gnome_vfs_escape_string (const char *in)
@@ -357,6 +357,7 @@ gnome_vfs_escape_string (const char *in)
 			*q++ = *p;
 		}
 	}
+        *q = '\0';
 
 	return quoted;
 }

@@ -59,8 +59,6 @@
 /* number of rows of (label, progressbar) to scroll at the bottom */
 #define STATUS_ROWS		4
 
-#define NEXT_SERVICE_VIEW				"eazel:"
-
 /* This ensures that if the arch is detected as i[3-9]86, the
    requested archtype will be set to i386 */
 #define ASSUME_ix86_IS_i386 
@@ -813,29 +811,6 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	}
 }
 
-#if 0
-static void
-show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
-{
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (view->details->message_box);
-	if (GTK_IS_WINDOW (toplevel)) {
-		dialog = gnome_ok_dialog_parented (message, GTK_WINDOW (toplevel));
-	} else {
-		dialog = gnome_ok_dialog (message);
-	}
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-
-	/* just in case we were in "loading" mode */
-	nautilus_view_report_load_complete (view->details->nautilus_view);
-
-	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-	nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
-}
-#endif
-
 /* Get the toplevel menu name for the desktop file installed */
 static char*
 nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view) 
@@ -998,7 +973,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 			CORBA_exception_free (&ev);
 		}
 		
-		if (view->details->core_package && success) {
+		if (success && view->details->core_package) {
 			message = _("A core package of Nautilus has been\n"
 				    "updated.  You should restart Nautilus.\n\n"
 				    "Do you wish to do that now?");
@@ -1016,9 +991,8 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 					g_message ("Exec error %s", strerror (errno));
 				}
 			}
-		} else {	       	    
-			nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
 		}
+		/* don't change views anymore, let the user navigate where they want to go. */
 	}
 }
 

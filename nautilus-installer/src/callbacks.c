@@ -30,14 +30,88 @@
 #include "support.h"
 #include "installer.h"
 
+
+extern int installer_debug;
+
+/* better than a macro, and uses our nice logging system */
+static void
+log_debug (const gchar *format, ...)
+{
+	va_list args;
+
+	if (installer_debug) {
+		va_start (args, format);
+		g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
+		va_end (args);
+	}
+}
+
+/* do what gnome ought to do automatically */
+static void
+reply_callback (int reply, gboolean *answer)
+{
+	*answer = (reply == 0);
+}
+
+static void
+ask_to_delete_rpms (EazelInstaller *installer)
+{
+	GtkWidget *toplevel, *dialog;
+	char *message;
+	char *package_list;
+	gboolean answer;
+
+	message = g_strdup_printf (_("Would you like to delete the downloaded package files?\n"
+				     "(They are no longer needed by the installer.)\n\n"
+				     "The package files are stored in %s"), installer->tmpdir);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (installer->druid));
+	if (GTK_IS_WINDOW (toplevel)) {
+		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+							 &answer, GTK_WINDOW (toplevel));
+	} else {
+		dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+	}
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+
+	if (answer) {
+		g_message ("Deleting package files...");
+		package_list = g_strdup_printf ("%s/package-list.xml", installer->tmpdir);
+		unlink (package_list);
+		g_free (package_list);
+		eazel_install_delete_downloads (installer->service);
+	}
+}
+
+static gboolean
+ask_are_you_sure (EazelInstaller *installer)
+{
+	GtkWidget *toplevel, *dialog;
+	char *message;
+	gboolean answer;
+
+	message = _("Cancel the installation:\nAre you sure?");
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (installer->druid));
+	if (GTK_IS_WINDOW (toplevel)) {
+		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+							 &answer, GTK_WINDOW (toplevel));
+	} else {
+		dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+	}
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	return answer;
+}
+
 void
 druid_cancel (GnomeDruid      *gnomedruid,
 	      EazelInstaller  *installer)
 {
 	g_mem_profile ();
-	exit (1);
+	if (ask_are_you_sure (installer)) {
+		exit (1);
+	}
 }
-
 
 void
 druid_delete (GtkWidget *widget, GdkEvent *event, EazelInstaller *installer)
@@ -45,7 +119,6 @@ druid_delete (GtkWidget *widget, GdkEvent *event, EazelInstaller *installer)
 	g_mem_profile ();
 	exit (1);
 }
-
 
 gboolean
 begin_install (EazelInstaller  *installer)
@@ -57,9 +130,7 @@ begin_install (EazelInstaller  *installer)
 
 	gnome_druid_set_buttons_sensitive(druid, FALSE, FALSE, TRUE);
 
-	g_message ("%s:%d", __FILE__, __LINE__);
-
-	g_message ("%s %s %s %s", 
+	g_message ("dep-check:%s install-categories:%s problems:%s successful:%s", 
 		   installer->got_dep_check ? "TRUE" : "FALSE",
 		   installer->install_categories ? "TRUE" : "FALSE",
 		   installer->problems ? "TRUE" : "FALSE",
@@ -69,7 +140,7 @@ begin_install (EazelInstaller  *installer)
 	if (installer->got_dep_check==FALSE && installer->install_categories == NULL) {
 		GList *iterator;
 		GList *install_categories = NULL;
-		g_message ("%s:%d", __FILE__, __LINE__);
+		log_debug ("first time through");
 		for (iterator = installer->categories; iterator; iterator = iterator->next) {
 			CategoryData *category = (CategoryData*)iterator->data;
 			GtkWidget *widget = gtk_object_get_data (GTK_OBJECT (window), category->name);
@@ -83,7 +154,7 @@ begin_install (EazelInstaller  *installer)
 	} 
 	
 	if (installer->successful && installer->force_remove_categories) { 
-		g_message ("%s:%d", __FILE__, __LINE__);
+		log_debug ("-> force remove categories");
 		eazel_installer_do_install (installer, installer->force_remove_categories, TRUE);
 		eazel_installer_post_install (installer);
 		categorydata_list_destroy (installer->force_remove_categories);
@@ -91,7 +162,7 @@ begin_install (EazelInstaller  *installer)
 	}
 	
 	if (installer->problems) {
-		g_message ("%s:%d", __FILE__, __LINE__);
+		log_debug ("-> problem cases");
 		eazel_install_problem_handle_cases (installer->problem,
 						    installer->service,
 						    &(installer->problems),
@@ -101,21 +172,20 @@ begin_install (EazelInstaller  *installer)
 		eazel_installer_post_install (installer);
 		return TRUE;
 	} else {
-		g_message ("%s:%d", __FILE__, __LINE__);
+		log_debug ("-> let's go");
 		if (installer->successful && installer->install_categories) { 
-			g_message ("%s:%d", __FILE__, __LINE__);
+			log_debug ("   ... ready to install");
 			eazel_installer_do_install (installer, installer->install_categories, FALSE);
 			eazel_installer_post_install (installer);
 			if (installer->problems) {
-				g_message ("%sn:%d", __FILE__, __LINE__);
+				log_debug ("   ... had problems");
 				return TRUE;
 			} 
 		}
 		
-		gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE); 
+		gnome_druid_set_buttons_sensitive (druid, FALSE, TRUE, TRUE); 
 	}
 	
-	g_message ("%s:%d", __FILE__, __LINE__);
 	/* FALSE means remove this source */
 	return FALSE;
 }
@@ -126,14 +196,8 @@ druid_finish (GnomeDruidPage  *gnomedruidpage,
 	      gpointer         arg1,
 	      EazelInstaller  *installer)
 {
-	char *package_list;
-
-	/* for now, always delete the rpm files on exit */
-	g_message ("Farewell -- deleting RPM files.");
-	package_list = g_strdup_printf ("%s/package-list.xml", installer->tmpdir);
-	unlink (package_list);
-	g_free (package_list);
-	eazel_install_delete_downloads (installer->service);
+	g_message ("Farewell!");
+	ask_to_delete_rpms (installer);
 
 	g_mem_profile ();
 	exit (0);

@@ -1,3 +1,34 @@
+2000-12-06  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-softcat.c:
+	(gnome_vfs_escape_string):
+
+	Fixed a dumb url-quoting error that resulted in "hilarious"
+	quoting flubs.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_done):
+
+	Never return to the summary-view page after completion now: let
+	the user do their own navigation.
+	
+	* nautilus-installer/src/callbacks.c: (log_debug),
+	(reply_callback), (ask_to_delete_rpms), (ask_are_you_sure),
+	(druid_cancel), (begin_install), (druid_finish):
+	* nautilus-installer/src/installer.c: (start_over),
+	(insert_info_page), (get_detailed_errors_foreach),
+	(get_detailed_errors), (install_failed), (uninstall_failed),
+	(download_failed), (eazel_installer_post_install),
+	(draw_splash_text), (eazel_installer_set_default_texts),
+	(eazel_installer_initialize):
+
+	Ask if the user wants to delete the RPMs after a successful
+	install, and ask for verification when they hit the "cancel"
+	button.  Eliminate a redundant cancel callback that caused double
+	vision.  Restore the error dialog's AWOL title (?).  Turn off that
+	damn checkbox for now (can turn it on later if anyone makes an
+	installer PR2.1).
+
 John Fleck <jfleck@inkstain.net>
 
 	reviewed by: Ali Abdin

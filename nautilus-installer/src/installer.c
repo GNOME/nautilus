@@ -108,7 +108,8 @@ typedef struct {
  			  "        http://www.eazel.com/support/\n" \
 			  "Once you have resolved the problem, please restart the installer.")
 
-#define D_SPLASH_TITLE    _("Welcome to the Eazel Installer!")
+#define D_ERROR_TITLE	_("An error has occurred")
+#define D_SPLASH_TITLE  _("Welcome to the Eazel Installer!")
 #define D_FINISHED_TITLE	_("Congratulations!")
 
 #define D_INFO_EAZEL_HACKING_TITLE _("Eazel-Hacking")
@@ -135,6 +136,7 @@ typedef struct {
 					  "Linux 7.x systems.")
 
 #define NAUTILUS_INSTALLER_RELEASE
+#undef THAT_DAMN_CHECKBOX
 
 enum {
 	ERROR_RPM_4_NOT_SUPPORTED,
@@ -194,7 +196,6 @@ log_debug (const gchar *format, ...)
 		va_end (args);
 	}
 }
-
 
 static void
 get_pixmap_x_y (char **xpmdata, int *x, int *y)
@@ -278,7 +279,7 @@ static void
 start_over (EazelInstaller *installer)
 {
 	GtkWidget *install_page;
-	g_message ("START OVER");
+	g_message ("--- installation round begins ---");
 	install_page = gtk_object_get_data (GTK_OBJECT (installer->window), "install_page");
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (install_page));
 }
@@ -672,10 +673,6 @@ insert_info_page (EazelInstaller *installer,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-
-	gtk_signal_connect (GTK_OBJECT (info_page), "cancel",
-			    GTK_SIGNAL_FUNC (druid_cancel),
-			    installer);
 	gnome_druid_insert_page (installer->druid, 
 				 installer->back_page,
 				 GNOME_DRUID_PAGE (info_page));
@@ -982,9 +979,9 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 			cat = (CategoryData *)iter->data;
 			for (iter2 = cat->packages; iter2 ; iter2 = g_list_next (iter2)) {
 				pack_in = (PackageData *)iter2->data;
-				g_message ("pack->name = %s, pack_in->name = %s", pack->name, pack_in->name);
+				trilobite_debug ("pack->name = %s, pack_in->name = %s", pack->name, pack_in->name);
 				if (strcmp (pack->name, pack_in->name) == 0) {
-					g_message ("yes");
+					g_message ("bad mojo: cannot open package %s", pack->name);
 					distro = trilobite_get_distribution_name (trilobite_get_distribution (),
 										  TRUE, FALSE);
 					message = g_strdup_printf (_("Initial package download failed: Possibly your "
@@ -1036,11 +1033,11 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 
 	data.installer = installer;
 	data.path = NULL;
-	g_message ("copying package");
+	log_debug ("copying package");
 	non_const_pack = packagedata_copy (pack, TRUE);
-	g_message ("getting detailed errors");
+	log_debug ("getting detailed errors");
 	get_detailed_errors_foreach (non_const_pack, &data);
-	g_message ("destroying copy");
+	log_debug ("destroying copy");
 	packagedata_destroy (non_const_pack, TRUE);
 }
 
@@ -1078,7 +1075,7 @@ install_failed (EazelInstall *service,
 		const PackageData *pd,
 		EazelInstaller *installer)
 {
-	log_debug ("INSTALL FAILED.");
+	g_message ("INSTALL FAILED.");
 	
 	get_detailed_errors (pd, installer);
 	collect_failure_info (service, pd, installer, FALSE);
@@ -1089,7 +1086,7 @@ uninstall_failed (EazelInstall *service,
 		  const PackageData *pd,
 		  EazelInstaller *installer)
 {
-	log_debug ("UNINSTALL FAILED.");
+	g_message ("UNINSTALL FAILED.");
 	collect_failure_info (service, pd, installer, TRUE);
 }
 
@@ -1104,7 +1101,7 @@ download_failed (EazelInstall *service,
 		temp = g_strdup_printf (_("Download of %s failed"), name);
 		installer->failure_info = g_list_append (installer->failure_info, temp);
 	}
-	log_debug ("Download FAILED for %s", name);
+	g_message ("Download FAILED for %s", name);
 }
 
 static gboolean
@@ -1657,7 +1654,7 @@ eazel_installer_post_install (EazelInstaller *installer)
 	} else if (installer->uninstalling==TRUE && installer->install_categories) {
 		/* begin_install (installer); */
 	}
-	g_message ("out of post_install");
+	log_debug ("out of post_install");
 }
 
 /* fill in the splash text to look nice */
@@ -1702,6 +1699,7 @@ draw_splash_text (EazelInstaller *installer, const char *splash_text)
 	gtk_widget_show (vbox);
 
 	button = gtk_check_button_new_with_label ("I am now ready to install Nautilus.");
+#ifdef THAT_DAMN_CHECKBOX
 	gtk_widget_show (button);
 	gtk_object_ref (GTK_OBJECT (button));
 	gtk_object_set_data_full (GTK_OBJECT (installer->window), "kohberg", button,
@@ -1710,6 +1708,11 @@ draw_splash_text (EazelInstaller *installer, const char *splash_text)
 	gtk_box_pack_start (GTK_BOX (vbox), button, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (button), "toggled", GTK_SIGNAL_FUNC (go_live),
 			    installer);
+#else
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+	go_live (GTK_TOGGLE_BUTTON (button), installer);
+	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, TRUE, TRUE);
+#endif
 
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (start_page), vbox);
 }
@@ -1778,6 +1781,7 @@ eazel_installer_set_default_texts (EazelInstaller *installer)
 	text_labels [ERROR_LABEL] = g_strdup (D_ERROR_LABEL);
 	text_labels [ERROR_LABEL_2] = g_strdup (D_ERROR_LABEL_2);
 	text_labels [SPLASH_TITLE] = g_strdup (D_SPLASH_TITLE);
+	text_labels [ERROR_TITLE] = g_strdup (D_ERROR_TITLE);
 	text_labels [FINISHED_TITLE] = g_strdup (D_FINISHED_TITLE);
 	text_labels [WHAT_TO_INSTALL_LABEL] = g_strdup (D_WHAT_TO_INSTALL_LABEL);
 	text_labels [WHAT_TO_INSTALL_LABEL_SINGLE] = g_strdup (D_WHAT_TO_INSTALL_LABEL_SINGLE);
@@ -2208,7 +2212,9 @@ eazel_installer_initialize (EazelInstaller *object)
 			    GTK_SIGNAL_FUNC (druid_finish),
 			    installer);
 
+#ifdef THAT_DAMN_CHECKBOX
 	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, FALSE, TRUE);
+#endif
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
