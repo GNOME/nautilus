@@ -108,7 +108,6 @@ enum {
     	PROP_HIGHLIGHTED_FOR_SELECTION,
     	PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	PROP_HIGHLIGHTED_FOR_DROP,
-    	PROP_MODIFIER,
 };
 
 typedef enum {
@@ -315,7 +314,7 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		}
 		details->is_highlighted_for_drop = g_value_get_boolean (value);
 		break;
-
+		
 	default:
 		g_warning ("nautilus_icons_view_item_item_set_arg on unknown argument");
 		return;
@@ -653,7 +652,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				     icon_bottom);
 			g_object_unref (selection_pixbuf);
 		} else {
-			gdk_gc_set_foreground (gc, &container->details->highlight_color);
+			gdk_gc_set_rgb_fg_color (gc, &container->details->highlight_color);
 			
 			gdk_draw_rectangle
 				(drawable, GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc, TRUE,
@@ -672,7 +671,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
 				 TRUE, needs_highlight);
 
-			gdk_gc_set_foreground (gc, label_color);
+			gdk_gc_set_rgb_fg_color (gc, label_color);
 			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
@@ -696,7 +695,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
 				 FALSE, needs_highlight);
 
-			gdk_gc_set_foreground (gc, label_color);
+			gdk_gc_set_rgb_fg_color (gc, label_color);
 			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
@@ -1134,7 +1133,10 @@ create_label_layout (NautilusIconCanvasItem *item,
 		     const char *text)
 {
 	PangoLayout *layout;
+	PangoFontDescription *desc;
+	NautilusIconContainer *container;
 
+	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);
 	layout = pango_layout_new (eel_gnome_canvas_get_pango_context (GNOME_CANVAS_ITEM (item)->canvas));
 
 	pango_layout_set_text (layout, text, -1);
@@ -1142,6 +1144,12 @@ create_label_layout (NautilusIconCanvasItem *item,
 	pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
 	pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
 
+	/* Create a font description */
+	desc = pango_font_description_from_string (container->details->font_name);
+	pango_font_description_set_size (desc, container->details->font_size_table [container->details->zoom_level] * PANGO_SCALE);
+	pango_layout_set_font_description (layout, desc);
+	pango_font_description_free (desc);
+	
 	/* if it's prelit, and we're in click-to-activate mode, underline the text */
 	if (item->details->is_prelit && in_single_click_mode ()) {
 		eel_pango_layout_set_underline (layout, PANGO_UNDERLINE_SINGLE);
@@ -1716,7 +1724,7 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 				      _("highlighted for drop"),
 				      _("whether we are highlighted for a D&D drop"),
 				      FALSE, G_PARAM_READWRITE)); 
-
+	
 	signals[BOUNDS_CHANGED]
 		= g_signal_new ("bounds_changed",
 		                G_TYPE_FROM_CLASS (class),

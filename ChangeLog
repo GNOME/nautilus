@@ -1,3 +1,69 @@
+2002-02-25  Anders Carlsson  <andersca@gnu.org>
+
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_get_column_type),
+	(nautilus_tree_model_get_value):
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-view.c: (create_tree):
+	Let "Loading" and "Empty" special nodes be italic.
+	
+	* libnautilus-private/nautilus-global-preferences.c:
+	(default_font_callback):
+	Return "sans" here instead of "fixed"
+	
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), (create_label_layout),
+	Set font from icon container name, use gdk_gc_set_rgb_fg_color.
+	
+	* libnautilus-private/nautilus-icon-container.c: (finalize):
+	(realize), (nautilus_icon_container_init),
+	(nautilus_icon_container_update_icon),
+	(nautilus_icon_container_set_zoom_level),
+	(nautilus_icon_container_request_update_all),
+	(nautilus_icon_container_get_label_color), (update_label_color),
+	(nautilus_icon_container_theme_changed),
+	(nautilus_icon_container_set_font_name),
+	(nautilus_icon_container_set_font_size_table):
+	Add support for setting fonts, and fix some bugs with the 
+	label color handling.
+	
+	* libnautilus-private/nautilus-icon-container.h:
+	Add nautilus_icon_container_set_font_name and 
+	nautilus_icon_container_set_font_size_table.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	(embedded_text_font_changed_callback), (embed_text):
+	Set the font of the embedded text to the default font.
+	
+	* libnautilus-private/nautilus-icon-private.h:
+	Add font name and font size table variables to 
+	NautilusIconContainerDetails.
+	
+	* libnautilus-private/nautilus-program-chooser.c:
+	(nautilus_program_chooser_init):
+	Fix button ordering according to the HIG.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(fm_icon_view_update_icon_container_fonts),
+	(fm_icon_view_update_icon_container_font_size_table):
+	Set font name and font size table in the icon container.
+	
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data),
+	(default_font_changed_callback), (nautilus_sidebar_tabs_init),
+	(nautilus_sidebar_tabs_destroy), (draw_one_tab_plain),
+	(draw_one_tab_themed):
+	Use the "default font" preference.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_class_init),
+	(default_font_changed_callback), (nautilus_sidebar_title_init),
+	(nautilus_sidebar_title_destroy), (update_title_font):
+	Use the "default font" preference.
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Use the GnomeAbout widget.
+	
 2002-02-25  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-file-operations.c

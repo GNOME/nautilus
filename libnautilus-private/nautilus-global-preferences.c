@@ -707,11 +707,7 @@ global_preferences_install_defaults (void)
 static gpointer
 default_font_callback (void)
 {
-	if (eel_dumb_down_for_multi_byte_locale_hack ()) {
-		return g_strdup ("fixed");
-	}
-
-	return g_strdup ("helvetica");
+	return g_strdup ("sans");
 }
 
 static int

@@ -1283,11 +1283,12 @@ nautilus_program_chooser_init (NautilusProgramChooser *program_chooser)
 	
 	program_chooser->details = g_new0 (NautilusProgramChooserDetails, 1);
 
+	program_chooser->details->cancel_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
+									 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+
 	gtk_dialog_add_button (GTK_DIALOG (program_chooser),
 			       _("Choose"), GTK_RESPONSE_OK);
 
-	program_chooser->details->cancel_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
-									 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	program_chooser->details->done_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
 								       _("Done"), GTK_RESPONSE_CANCEL);
 

@@ -165,7 +165,12 @@ struct NautilusIconContainerDetails {
 
 	/* zoom level */
 	int zoom_level;
-	
+
+	/* fonts used to draw labels */
+	char *font_name;
+	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+	gboolean update_icon_font;
+
 	/* pixbuf and color for label highlighting */
 	GdkPixbuf *highlight_frame;
 	GdkColor   highlight_color;

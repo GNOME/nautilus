@@ -255,6 +255,7 @@ fm_icon_view_finalize (GObject *object)
 	preview_audio (icon_view, NULL, FALSE);
 
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
+
 	g_free (icon_view->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -936,7 +937,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
-	
+
 	/* FIXME bugzilla.gnome.org 45060: Should use methods instead
 	 * of hardcoding desktop knowledge in here.
 	 */
@@ -945,6 +946,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	} else {
 		nautilus_connect_background_to_file_metadata (icon_container, file);
 	}
+
 	
 	/* Set up the zoom level from the metadata. */
 	if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (icon_view))) {
@@ -2316,26 +2318,19 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 static void
 fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 {
-#if GNOME2_CONVERSION_COMPLETE
- 	/* font size table - this isn't exactly proportional, but it looks better than computed */
-	static guint font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
-		8, 8, 10, 12, 14, 18, 18 };
 	NautilusIconContainer *icon_container;
-	GdkFont *font;
-	guint i;
-
+	char *font_name;
+	
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		font = nautilus_font_factory_get_font_from_preferences (font_size_table[i]);
-		g_assert (font != NULL);
-		nautilus_icon_container_set_label_font_for_zoom_level (icon_container, i, font);
-		gdk_font_unref (font);
-	}
+	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_ICON_VIEW_FONT);
 
+	nautilus_icon_container_set_font_name (icon_container, font_name);
+
+	g_free (font_name);
+	
 	nautilus_icon_container_request_update_all (icon_container);
-#endif
 }
 
 static int default_zoom_level_font_size = 12;
@@ -2399,7 +2394,8 @@ fm_icon_view_update_icon_container_font_size_table (FMIconView *icon_view)
 					    max_font_size);
 
 	}
-
+	
+	nautilus_icon_container_set_font_size_table (icon_container, font_size_table);
 	nautilus_icon_container_request_update_all (icon_container);
 }
 

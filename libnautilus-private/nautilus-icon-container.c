@@ -2314,7 +2314,9 @@ finalize (GObject *object)
 
 	g_hash_table_destroy (details->icon_set);
 	details->icon_set = NULL;
-	
+
+	g_free (details->font_name);
+
 	g_free (details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -2365,33 +2367,6 @@ size_allocate (GtkWidget *widget,
 }
 
 static void
-alloc_colors (NautilusIconContainer *container)
-{
-	GtkWidget *widget = GTK_WIDGET (container);
-
-	gdk_colormap_alloc_color (
-		gtk_widget_get_colormap	(widget),
-		&container->details->highlight_color,
-		TRUE, TRUE);
-	gdk_colormap_alloc_color (
-		gtk_widget_get_colormap	(widget),
-		&container->details->label_color,
-		TRUE, TRUE);
-	g_assert (gdk_colormap_alloc_color (
-		gtk_widget_get_colormap	(widget),
-		&container->details->label_color_highlight,
-		TRUE, TRUE));
-	g_assert (gdk_colormap_alloc_color (
-		gtk_widget_get_colormap	(widget),
-		&container->details->label_info_color,
-		TRUE, TRUE));
-	g_assert (gdk_colormap_alloc_color (
-		gtk_widget_get_colormap	(widget),
-		&container->details->label_info_color_highlight,
-		TRUE, TRUE));
-}
-
-static void
 realize (GtkWidget *widget)
 {
 	GtkStyle *style;
@@ -2411,8 +2386,6 @@ realize (GtkWidget *widget)
  	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
 	window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, widget);
-
-	alloc_colors (NAUTILUS_ICON_CONTAINER (widget));
 }
 
 static void
@@ -3352,7 +3325,15 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
- 
+
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = 8;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = 8;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = 10;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 10;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 12;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 14;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 14;
+
 	container->details = details;
 
 	/* Set up DnD.  */
@@ -3809,7 +3790,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			nautilus_icon_canvas_item_get_editable_text (icon->item)) != 0) {
 		end_renaming_mode (container, FALSE);
 	}
-	
+
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
 			       "additional_text", additional_text,
@@ -3820,6 +3801,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
 
+	if (container->details->update_icon_font == TRUE) {
+		nautilus_icon_canvas_item_invalidate_label_size (icon->item);
+	}
+	
 	/* Let the pixbufs go. */
 	g_object_unref (pixbuf);
 	eel_gdk_pixbuf_list_free (emblem_pixbufs);
@@ -4032,7 +4017,7 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
         } else if (pinned_level > NAUTILUS_ZOOM_LEVEL_LARGEST) {
         	pinned_level = NAUTILUS_ZOOM_LEVEL_LARGEST;
 	}
-	
+
         if (pinned_level == details->zoom_level) {
 		return;
 	}
@@ -4043,6 +4028,9 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
 		/ NAUTILUS_ICON_SIZE_STANDARD;
 	gnome_canvas_set_pixels_per_unit (GNOME_CANVAS (container), pixels_per_unit);
 
+	/* We need to update the icon font too */
+	container->details->update_icon_font = TRUE;
+	
 	nautilus_icon_container_request_update_all (container);
 }
 
@@ -4063,6 +4051,9 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		nautilus_icon_container_update_icon (container, p->data);
 	}
+
+	container->details->update_icon_font = FALSE;
+	
 	redo_layout (container);
 }
 
@@ -4967,7 +4958,7 @@ nautilus_icon_container_get_label_color (NautilusIconContainer *container,
 		}
 	} else {
 		if (is_highlight) {
-			return &container->details->label_color_highlight;
+			return &container->details->label_info_color_highlight;
 		} else {
 			return &container->details->label_info_color;
 		}
@@ -5004,20 +4995,16 @@ update_label_color (EelBackground         *background,
 		g_free (dark_info_color);
 	}
 	
+	container->details->label_color_highlight = eel_gdk_rgb_to_color (0xFFFFFF);
+	container->details->label_info_color_highlight = eel_gdk_rgb_to_color (0xCCCCCC);
+	
 	if (eel_background_is_dark (background)) {
 		container->details->label_color = eel_gdk_rgb_to_color (0xEFEFEF);
-		container->details->label_color_highlight = eel_gdk_rgb_to_color (0x000000);
 		container->details->label_info_color = eel_gdk_rgb_to_color (light_info_value);
-		container->details->label_info_color_highlight = eel_gdk_rgb_to_color (dark_info_value);
 	} else { /* converse */
 		container->details->label_color = eel_gdk_rgb_to_color (0x000000);
-		container->details->label_color_highlight = eel_gdk_rgb_to_color (0xEFEFEF);
 		container->details->label_info_color = eel_gdk_rgb_to_color (dark_info_value);
-		container->details->label_info_color_highlight = eel_gdk_rgb_to_color (light_info_value);
 	}
-
-	if (GTK_WIDGET_REALIZED (container))
-		alloc_colors (container);
 }
 
 
@@ -5091,6 +5078,42 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	}
 	container->details->highlight_color = eel_gdk_rgb_to_color (
 		container->details->highlight_color_rgba);
+}
+
+void
+nautilus_icon_container_set_font_name (NautilusIconContainer  *container,
+				       const char             *font_name)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	g_free (container->details->font_name);
+
+	g_print ("new font name is: %s\n", font_name);
+	
+	if (font_name != NULL) {
+		container->details->font_name = g_strdup (font_name);
+	}
+	else {
+		container->details->font_name = NULL;
+	}
+
+	container->details->update_icon_font = TRUE;
+}
+
+void
+nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
+					     const int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1])
+{
+	int i;
+	
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (font_size_table != NULL);
+	
+	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+		container->details->font_size_table[i] = font_size_table[i];
+	}
+
+	container->details->update_icon_font = TRUE;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

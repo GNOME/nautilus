@@ -38,6 +38,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-pango-extensions.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkimage.h>
@@ -79,7 +80,7 @@ static void		   update_all 				   (NautilusSidebarTitle      *sidebar_title);
 static void		   update_title_font			   (NautilusSidebarTitle      *sidebar_title);
 static EelBackground 	  *nautilus_sidebar_title_background       (NautilusSidebarTitle      *sidebar_title);
 
-static const char *non_smooth_font_name;
+static const char *default_font_name;
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile		*file;
@@ -90,7 +91,7 @@ struct NautilusSidebarTitleDetails {
 	GtkWidget		*more_info_label;
 	GtkWidget		*emblem_box;
 	GtkWidget		*notes;
-
+	
 	int			shadow_offset;
 	gboolean		determined_icon;
 };
@@ -110,7 +111,7 @@ nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *class)
 	widget_class->size_allocate = nautilus_sidebar_title_size_allocate;
 
 	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-					 &non_smooth_font_name);
+					 &default_font_name);
 }
 
 static void
@@ -135,24 +136,11 @@ realize_callback (NautilusSidebarTitle *sidebar_title)
 				 0);
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
-static GdkFont *
-get_non_smooth_font (int font_size)
-{
-	GdkFont *result;
-
-	result = nautilus_font_factory_get_font_by_family (non_smooth_font_name, font_size);
-	g_assert (result != NULL);
-
-	return result;
-}
-
 static void
-non_smooth_font_changed_callback (gpointer callback_data)
+default_font_changed_callback (gpointer callback_data)
 {
 	NautilusSidebarTitle *sidebar_title;
-	GdkFont *new_font;
+	PangoFontDescription *font_desc;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
 
@@ -162,13 +150,14 @@ non_smooth_font_changed_callback (gpointer callback_data)
 	update_title_font (sidebar_title);
 
 	/* Update the fixed-size "more info" font */
-	new_font = get_non_smooth_font (MORE_INFO_FONT_SIZE);
-	eel_gtk_widget_set_font (sidebar_title->details->more_info_label,
-				 new_font);	
-	gdk_font_unref (new_font);
+	font_desc = pango_font_description_from_string (default_font_name);
+	pango_font_description_set_size (font_desc, MORE_INFO_FONT_SIZE * PANGO_SCALE);
+	
+	gtk_widget_modify_font (sidebar_title->details->more_info_label,
+				font_desc);
+	pango_font_description_free (font_desc);
+	
 }
-
-#endif
 
 static void
 nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
@@ -209,12 +198,11 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
-#if GNOME2_CONVERSION_COMPLETE
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-						  non_smooth_font_changed_callback,
+						  default_font_changed_callback,
 						  sidebar_title,
 						  G_OBJECT (sidebar_title));
-#endif
+
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
 						  nautilus_sidebar_title_theme_changed,
 						  sidebar_title,
@@ -222,9 +210,7 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 
 	/* initialize the label colors & fonts */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
-#if GNOME2_CONVERSION_COMPLETE
-	non_smooth_font_changed_callback (sidebar_title);
-#endif
+	default_font_changed_callback (sidebar_title);
 }
 
 /* destroy by throwing away private storage */
@@ -253,7 +239,7 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 
 	if (sidebar_title->details) {
 		release_file (sidebar_title);
-	
+
 		g_free (sidebar_title->details->title_text);
 		g_free (sidebar_title->details);
 		sidebar_title->details = NULL;
@@ -500,13 +486,8 @@ static void
 update_title_font (NautilusSidebarTitle *sidebar_title)
 {
 	int available_width;
-#if GNOME2_CONVERSION_COMPLETE
-	GdkFont *template_font;
-	GdkFont *bold_template_font;
-	GdkFont *largest_fitting_font;
-	int largest_fitting_smooth_font_size;
-	EelScalableFont *smooth_font;
-#endif
+	PangoFontDescription *title_font;
+	int largest_fitting_font_size;
 
 	/* Make sure theres work to do */
 	if (eel_strlen (sidebar_title->details->title_text) < 1) {
@@ -519,47 +500,21 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	if (available_width <= 0) {
 		return;
 	}
-	
-#if GNOME2_CONVERSION_COMPLETE
-	/* Update the smooth font */
-	smooth_font = eel_label_get_smooth_font (EEL_LABEL (sidebar_title->details->title_label));
-	largest_fitting_smooth_font_size = eel_scalable_font_largest_fitting_font_size
-		(smooth_font,
-		 sidebar_title->details->title_text,
-		 available_width,
-		 MIN_TITLE_FONT_SIZE,
-		 MAX_TITLE_FONT_SIZE);
-	
-	eel_label_set_smooth_font_size (EEL_LABEL (sidebar_title->details->title_label), 
-					largest_fitting_smooth_font_size);
-	
-	g_object_unref (smooth_font);
 
-	/* Update the regular font */
-	template_font = get_non_smooth_font (MAX_TITLE_FONT_SIZE);
-	bold_template_font = eel_gdk_font_get_bold (template_font);
+	title_font = pango_font_description_from_string (default_font_name);
+	largest_fitting_font_size = eel_pango_font_description_get_largest_fitting_font_size (
+		title_font,
+		gtk_widget_get_pango_context (sidebar_title->details->title_label),
+		sidebar_title->details->title_text,
+		available_width,
+		MIN_TITLE_FONT_SIZE,
+		MAX_TITLE_FONT_SIZE);
+	pango_font_description_set_size (title_font, largest_fitting_font_size * PANGO_SCALE);
+	pango_font_description_set_weight (title_font, PANGO_WEIGHT_BOLD);
 	
-	largest_fitting_font = eel_gdk_font_get_largest_fitting
-		(bold_template_font,
-		 sidebar_title->details->title_text,
-		 available_width,
-		 MIN_TITLE_FONT_SIZE,
-		 MAX_TITLE_FONT_SIZE);
-	
-	if (largest_fitting_font == NULL) {
-		largest_fitting_font = eel_gdk_font_get_fixed ();
-	}
-	
-	eel_gtk_widget_set_font (sidebar_title->details->title_label,
-				 largest_fitting_font);
-	
-	gdk_font_unref (largest_fitting_font);
-	gdk_font_unref (bold_template_font);
-	gdk_font_unref (template_font);
-#else
-	eel_gtk_label_make_bold (GTK_LABEL (sidebar_title->details->title_label));
-	eel_gtk_label_set_scale (GTK_LABEL (sidebar_title->details->title_label), PANGO_SCALE_LARGE);
-#endif
+	gtk_widget_modify_font (sidebar_title->details->title_label,
+				title_font);
+	pango_font_description_free (title_font);
 }
 
 static void

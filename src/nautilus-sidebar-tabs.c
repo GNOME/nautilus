@@ -71,6 +71,9 @@
 #define TAB_ACTIVE_PRELIGHT_RIGHT 	18
 #define LAST_TAB_OFFSET			19
 
+/* FIXME: Hard coded font size */
+#define DEFAULT_FONT_SIZE 9
+
 #define RIGHT_MARGIN_WIDTH 12
 
 /* data structures */
@@ -101,6 +104,7 @@ struct NautilusSidebarTabsDetails {
 	GdkColor prelit_text_color;
 
 	GdkPixbuf *tab_piece_images[LAST_TAB_OFFSET];
+	PangoFontDescription *tab_font;
 	int tab_height;
 	int tab_left_offset;
 	char *title;
@@ -134,6 +138,7 @@ static void     draw_or_layout_all_tabs                 (NautilusSidebarTabs    
 							 gboolean                  layout_only);
 static TabItem* tab_item_find_by_name                   (NautilusSidebarTabs      *sidebar_tabs,
 							 const char               *name);
+static void     default_font_changed_callback           (gpointer                  callback_data);
 
 EEL_CLASS_BOILERPLATE (NautilusSidebarTabs, nautilus_sidebar_tabs, GTK_TYPE_WIDGET)
 
@@ -232,36 +237,27 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 		}	
 	}	
 
-#if GNOME2_CONVERSION_COMPLETE
-	/* unload the old font if necessary */
-	if (sidebar_tabs->details->tab_font != NULL) {
-		g_object_unref (sidebar_tabs->details->tab_font);
-		sidebar_tabs->details->tab_font = NULL;
-	}
-
-	smooth_font_changed_callback (sidebar_tabs);
-
-	/* FIXME: Hard coded font size */
-	sidebar_tabs->details->font_size = DEFAULT_FONT_SIZE;
-#endif
+	default_font_changed_callback (sidebar_tabs);
 }
-
-#if GNOME2_CONVERSION_COMPLETE
 
 /* Use the font from preferences */
 static void
-smooth_font_changed_callback (gpointer callback_data)
+default_font_changed_callback (gpointer callback_data)
 {
-	EelScalableFont *new_font;
+	PangoFontDescription *new_font;
+	char *font_name;
 	NautilusSidebarTabs *sidebar_tabs;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (callback_data));
 
 	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (callback_data);
-	new_font = nautilus_global_preferences_get_default_smooth_bold_font ();
 
+	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_DEFAULT_FONT);
+	new_font = pango_font_description_from_string (font_name);
+	pango_font_description_set_size (new_font, DEFAULT_FONT_SIZE * PANGO_SCALE);
+	
 	if (sidebar_tabs->details->tab_font != NULL) {
-		g_object_unref (sidebar_tabs->details->tab_font);
+		pango_font_description_free (sidebar_tabs->details->tab_font);
 		sidebar_tabs->details->tab_font = NULL;
 	}
 
@@ -269,8 +265,6 @@ smooth_font_changed_callback (gpointer callback_data)
 
 	gtk_widget_queue_resize (GTK_WIDGET (sidebar_tabs));
 }
-
-#endif
 
 /* initialize a newly allocated sidebar tabs object */
 static void
@@ -308,11 +302,10 @@ nautilus_sidebar_tabs_init (NautilusSidebarTabs *sidebar_tabs)
 	eel_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
 				     (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
 				     sidebar_tabs);
-#if GNOME2_CONVERSION_COMPLETE
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-				      smooth_font_changed_callback,
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FONT,
+				      default_font_changed_callback,
 				      sidebar_tabs);
-#endif
 	
 	sidebar_tabs->details->title_prelit = FALSE;
 }
@@ -407,12 +400,13 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
 						 (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
 						 sidebar_tabs);
-#if GNOME2_CONVERSION_COMPLETE
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-						 smooth_font_changed_callback,
+
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_FONT,
+						 default_font_changed_callback,
 						 sidebar_tabs);
-#endif
-	
+
+		pango_font_description_free (sidebar_tabs->details->tab_font);
+		
 		g_free (sidebar_tabs->details);
 		sidebar_tabs->details = NULL;
 	}
@@ -624,7 +618,8 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 
 	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
 	pango_layout_set_text (layout, tab_name, -1);
-
+	pango_layout_set_font_description (layout, sidebar_tabs->details->tab_font);
+	
 	pango_layout_get_pixel_size (layout, &text_width, &text_height);
 
 	total_width = text_width + indicator_width + 2 * TAB_MARGIN;
@@ -802,7 +797,8 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	/* measure the size of the name */
 	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
 	pango_layout_set_text (layout, tab_name, -1);
-
+	pango_layout_set_font_description (layout, sidebar_tabs->details->tab_font);
+	
 	pango_layout_get_pixel_size (layout, &text_width, NULL);
 
 	/* draw the left edge piece */

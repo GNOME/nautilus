@@ -882,6 +882,8 @@ nautilus_tree_model_get_column_type (GtkTreeModel *model, int index)
 		return GDK_TYPE_PIXBUF;
 	case NAUTILUS_TREE_MODEL_OPEN_PIXBUF_COLUMN:
 		return GDK_TYPE_PIXBUF;
+	case NAUTILUS_TREE_MODEL_FONT_STYLE_COLUMN:
+		return PANGO_TYPE_STYLE;
 	default:
 		g_assert_not_reached ();
 	}
@@ -1017,6 +1019,15 @@ nautilus_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int colum
 	case NAUTILUS_TREE_MODEL_OPEN_PIXBUF_COLUMN:
 		g_value_init (value, GDK_TYPE_PIXBUF);
 		g_value_set_object (value, node == NULL ? NULL : tree_node_get_open_pixbuf (node));
+		break;
+	case NAUTILUS_TREE_MODEL_FONT_STYLE_COLUMN:
+		g_value_init (value, PANGO_TYPE_STYLE);
+		if (node == NULL) {
+			g_value_set_enum (value, PANGO_STYLE_OBLIQUE);
+		}
+		else {
+			g_value_set_enum (value, PANGO_STYLE_NORMAL);
+		}
 		break;
 	default:
 		g_assert_not_reached ();

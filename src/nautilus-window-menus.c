@@ -29,7 +29,6 @@
 
 #include <locale.h> 
 
-#include "nautilus-about.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmark-parsing.h"
@@ -53,6 +52,7 @@
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-about.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -586,9 +586,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 	const char *translator_credits;
 	const char *locale;
 
-	if (about != NULL) {
-		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
-	} else {
+	if (about == NULL) {
 		/* The time stamp overrides the build message, because
 		 * the time stamp should only be set on Tinderbox for
 		 * hourly builds.
@@ -626,16 +624,17 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		 */
 		translator_credits = _("Translator Credits");
 		
-		about = nautilus_about_new (_("Nautilus"),
-					    VERSION,
-					    copyright,
-					    authors,
-					    _("Nautilus is a graphical shell\n"
-					      "for GNOME that makes it\n"
-					      "easy to manage your files\n"
-					      "and the rest of your system."),
-					    translator_credits,
-					    build_message);
+		about = gnome_about_new (_("Nautilus"),
+					 VERSION,
+					 copyright,
+					 _("Nautilus is a graphical shell "
+					   "for GNOME that makes it "
+					   "easy to manage your files "
+					   "and the rest of your system."),
+					 authors,
+					 NULL,
+					 translator_credits,
+					 NULL);
 		
 		g_free (build_message);
 	}

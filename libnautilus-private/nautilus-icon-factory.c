@@ -2125,37 +2125,32 @@ embedded_text_rect_usable (ArtIRect embedded_text_rect)
 	return TRUE;
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 static gboolean embedded_text_preferences_callbacks_added = FALSE;
-static EelScalableFont *embedded_text_font = NULL;
+static PangoFontDescription *embedded_text_font = NULL;
 
 static void
 embedded_text_font_changed_callback (gpointer callback_data)
 {
 	gboolean clear_cache;
-
+	char *font_name;
+	
 	clear_cache = GPOINTER_TO_INT (callback_data);
 
-	embedded_text_font = nautilus_global_preferences_get_default_smooth_font ();
+	if (embedded_text_font != NULL) {
+		pango_font_description_free (embedded_text_font);
+	}
+
+	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_DEFAULT_FONT);
+	embedded_text_font = pango_font_description_from_string (font_name);
+	g_free (font_name);
+
+	pango_font_description_set_size (embedded_text_font,
+					 EMBEDDED_TEXT_FONT_SIZE * PANGO_SCALE);
 
 	if (clear_cache) {
 		nautilus_icon_factory_clear ();
 	}
 }
-
-static void
-embedded_text_font_free (void)
-{
-	if (embedded_text_font == NULL) {
-		return;
-	}
-	
-	g_object_unref (embedded_text_font);
-	embedded_text_font = NULL;
-}
-
-#endif
 
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
@@ -2176,26 +2171,21 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	}
 
 	/* Listen for changes in embedded text (icon text preview) font preferences */
-#if GNOME2_CONVERSION_COMPLETE
 	if (!embedded_text_preferences_callbacks_added) {
 		embedded_text_preferences_callbacks_added = TRUE;
 
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FONT,
 					      embedded_text_font_changed_callback,
 					      GINT_TO_POINTER (TRUE));
 		embedded_text_font_changed_callback (GINT_TO_POINTER (FALSE));
-
-		eel_debug_call_at_shutdown (embedded_text_font_free);
 	}
-
-	g_return_val_if_fail (EEL_IS_SCALABLE_FONT (embedded_text_font), NULL);
-#endif
 	
 	if (context == NULL) {
 		context = eel_pango_ft2_get_context ();
 		eel_debug_call_at_shutdown_with_data (g_object_unref, context);
 	}
 	layout = pango_layout_new (context);
+	pango_layout_set_font_description (layout, embedded_text_font);
 	pango_layout_set_text (layout, text, -1);
 	
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);

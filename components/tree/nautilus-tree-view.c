@@ -302,6 +302,7 @@ create_tree (NautilusTreeView *view)
 	gtk_tree_view_column_pack_start (column, cell, TRUE);
 	gtk_tree_view_column_set_attributes (column, cell,
 					     "text", NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN,
+					     "style", NAUTILUS_TREE_MODEL_FONT_STYLE_COLUMN,
 					     NULL);
 
 	gtk_tree_view_append_column (view->details->tree_widget, column);
