@@ -47,8 +47,6 @@
 
 #include <stdio.h>
 
-#define DEBUG_TREE 1
-
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
 
@@ -328,8 +326,6 @@ forget_view_node (NautilusTreeView *view,
 	NautilusFile *file;
 
 	file = nautilus_tree_view_node_to_file (view, view_node);
-
-	g_message ("forgetting %s", nautilus_file_get_uri (file));
 
 	g_hash_table_remove (view->details->file_to_node_map, file);
 	nautilus_file_unref (file);
