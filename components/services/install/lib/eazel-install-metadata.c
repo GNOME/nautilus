@@ -33,7 +33,7 @@
 #define INSTALL_GCONF_PATH	"/apps/eazel-trilobite/install"
 
 /* these are NOT reasonable defaults. */
-#define DEFAULT_SERVER		"ham.eazel.com"
+#define DEFAULT_SERVER		"services.eazel.com"
 #define DEFAULT_PORT		8888
 
 
@@ -78,6 +78,8 @@ get_conf_string (const char *key, const char *default_value)
 	value = gconf_get_string (conf_engine, full_key, NULL);
 	if ((value == NULL) && (default_value != NULL)) {
 		value = g_strdup (default_value);
+		/* write default value to gconf */
+		gconf_set_string (conf_engine, full_key, default_value, NULL);
 	}
 	g_free (full_key);
 	return value;
@@ -87,14 +89,21 @@ static int
 get_conf_int (const char *key, int default_value)
 {
 	char *full_key;
-	int value;
-	GConfError *error = NULL;
+	GConfValue *value;
+	int out;
 
 	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
-	value = gconf_get_int (conf_engine, full_key, &error);
-	if (error != NULL) {
-		value = default_value;
-		gconf_error_destroy (error);
+	value = gconf_get (conf_engine, full_key, NULL);
+	if (value && (value->type == GCONF_VALUE_INT)) {
+		out = gconf_value_int (value);
+		gconf_value_destroy (value);
+	} else {
+		if (value) {
+			gconf_value_destroy (value);
+		}
+		out = default_value;
+		/* write default value to gconf */
+		gconf_set_int (conf_engine, full_key, default_value, NULL);
 	}
 
 	g_free (full_key);
@@ -105,18 +114,26 @@ static gboolean
 get_conf_boolean (const char *key, gboolean default_value)
 {
 	char *full_key;
-	gboolean value;
-	GConfError *error = NULL;
+	GConfValue *value;
+	gboolean out;
 
 	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
-	value = gconf_get_bool (conf_engine, full_key, &error);
-	if (error != NULL) {
-		value = default_value;
-		gconf_error_destroy (error);
+	/* gconf API is so crappy that we can't use gconf_get_bool or anything nice */
+	value = gconf_get (conf_engine, full_key, NULL);
+	if (value && (value->type == GCONF_VALUE_BOOL)) {
+		out = gconf_value_bool (value);
+		gconf_value_destroy (value);
+	} else {
+		if (value) {
+			gconf_value_destroy (value);
+		}
+		out = default_value;
+		/* write default value to gconf */
+		gconf_set_bool (conf_engine, full_key, default_value, NULL);
 	}
 
 	g_free (full_key);
-	return value;
+	return out;
 }
 
 static URLType

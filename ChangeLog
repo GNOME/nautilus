@@ -1,3 +1,11 @@
+2000-09-07  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(get_conf_string), (get_conf_int), (get_conf_boolean):
+
+	Work around fatal API flaw in gconf, so we can detect whether
+	ints/bools are set before we substitute default values.
+
 2000-09-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c:
