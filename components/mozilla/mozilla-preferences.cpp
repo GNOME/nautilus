@@ -43,6 +43,14 @@
 #include "nsIServiceManager.h"
 #include "nsIPref.h"
 
+#define DEBUG_mfleming 1
+
+#ifdef DEBUG_mfleming
+#define DEBUG_MSG(x)	g_print x;
+#else
+#define DEBUG_MSG(x)	;
+#endif
+
 static GConfClient *preferences_get_global_gconf_client       (void);
 static void         preferences_proxy_sync_mozilla_with_gconf (void);
 
@@ -302,9 +310,16 @@ preferences_proxy_sync_mozilla_with_gconf (void)
 		proxy_port = gconf_client_get_int (gconf_client, PROXY_PORT_KEY, &error);
 		proxy_port_success = !mozilla_gconf_handle_gconf_error (&error);
 
-		if (proxy_host_success && proxy_port_success) {
+		if (proxy_host_success) {
 			mozilla_preference_set ("network.proxy.http", proxy_host);
-			mozilla_preference_set_int ("network.proxy.http_port", proxy_port);
+
+			if (proxy_port_success && proxy_port != 0) {
+				DEBUG_MSG(("mozilla-view: setting http proxy to %s:%u\n", proxy_host, (unsigned)proxy_port));
+				mozilla_preference_set_int ("network.proxy.http_port", proxy_port);
+			} else {
+				DEBUG_MSG(("mozilla-view: setting http proxy to %s:%u\n", proxy_host, (unsigned)8080));
+				mozilla_preference_set_int ("network.proxy.http_port", 8080);
+			}
 			
 			/* 1, Configure proxy settings manually */
 			mozilla_preference_set_int ("network.proxy.type", 1);
@@ -314,6 +329,8 @@ preferences_proxy_sync_mozilla_with_gconf (void)
 
 		return;
 	}
+
+	DEBUG_MSG(("mozilla-view: disabling HTTP proxy\n"));
 
 	/* Default is 3, which conects to internet hosts directly */
 	mozilla_preference_set_int ("network.proxy.type", 3);
