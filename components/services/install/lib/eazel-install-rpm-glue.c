@@ -737,7 +737,7 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 	if (g_list_find (*pruned, pack) || pack->name==NULL) {
 		return;
 	}
-	g_message (_("Reomving package %s"), pack->name);
+	g_message (_("Removing package %s"), pack->name);
 	if (pack->toplevel) {
 		/* We only emit signal for the toplevel packages, 
 		   and only delete them. They _destroy function destroys
