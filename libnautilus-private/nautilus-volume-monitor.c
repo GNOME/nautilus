@@ -73,6 +73,9 @@
 #include <sys/mnttab.h>
 #endif
 
+#ifdef SOLARIS_MNT
+#define USE_VOLRMMOUNT
+#endif
 
 
 #ifdef MOUNT_AUDIO_CD
@@ -1379,6 +1382,21 @@ nautilus_volume_monitor_volume_is_mounted (NautilusVolumeMonitor *monitor,
 	return FALSE;					   
 }						 
 
+
+#ifdef USE_VOLRMMOUNT
+
+static const char *volrmmount_locations [] = {
+       "/usr/bin/volrmmount",
+       NULL
+};
+
+#define MOUNT_COMMAND volrmmount_locations
+#define MOUNT_SEPERATOR " -i "
+#define UMOUNT_COMMAND volrmmount_locations
+#define UMOUNT_SEPERATOR " -e "
+
+#else
+
 static const char *mount_known_locations [] = {
 	"/sbin/mount", "/bin/mount",
 	"/usr/sbin/mount", "/usr/bin/mount",
@@ -1391,6 +1409,12 @@ static const char *umount_known_locations [] = {
 	NULL
 };
 
+#define MOUNT_COMMAND mount_known_locations
+#define MOUNT_SEPERATOR " "
+#define UMOUNT_COMMAND umount_known_locations
+#define UMOUNT_SEPERATOR " "
+
+#endif /* USE_VOLRMMOUNT */
 
 /* Returns the full path to the queried command */
 static const char *
@@ -1583,6 +1607,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	char *command_string;
 	MountThreadInfo *mount_info;
 	pthread_t mount_thread;
+	const char *name;
 
 	volume = NULL;
 	
@@ -1593,14 +1618,26 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 			return;
 		}		
 	}
-		
-	if (should_mount) {
-		command = find_command (mount_known_locations);
-	} else {
-		command = find_command (umount_known_locations);
-	}
+	
+#if USE_VOLRMMOUNT
+       name = strrchr (mount_point, '/');
+       if (name != NULL) {
+               name = name + 1;
+       } else {
+                name = mount_point;
+       }
+#else
+       name = mount_point;
+#endif
 
-	command_string = g_strconcat (command, " ", mount_point, NULL);
+       if (should_mount) {
+
+               command = find_command (MOUNT_COMMAND);
+               command_string = g_strconcat (command, MOUNT_SEPERATOR, name, NULL);
+       } else {
+               command = find_command (UMOUNT_COMMAND);
+               command_string = g_strconcat (command, UMOUNT_SEPERATOR, name, NULL);
+       }
 
 	mount_info = g_new0 (MountThreadInfo, 1);
 	mount_info->command = g_strdup (command_string);	
