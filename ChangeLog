@@ -1,3 +1,14 @@
+2001-01-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5507, nautilus crashes when you unmount a drive while a file is
+	viewed in music viewer
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(close_error_pipe):
+	In the case of a failed unmount, I was just assigning a string to memory
+	that was later being freed, rather than allocating the memory and
+	copying the string. I now allocate memory and copy the string.
+
 2001-01-08  Eric Fischer  <eric@eazel.com>
 
 	* configure.in:

@@ -1014,7 +1014,7 @@ close_error_pipe (gboolean mount, const char *mount_path)
 	char detailed_msg[MAX_PIPE_SIZE];
 	int len = 0;
 	gboolean is_floppy;
-
+		
 	if (mount) {
 		title = _("Mount Error");
 	} else {
@@ -1073,7 +1073,7 @@ close_error_pipe (gboolean mount, const char *mount_path)
 			}
 		}
 	} else {
-		message = _("Nautilus was unable to unmount the selected volume.");
+		message = g_strdup (_("Nautilus was unable to unmount the selected volume."));
 	}
 	
 	nautilus_error_dialog_with_details (message, title, detailed_msg, NULL);
