@@ -116,6 +116,8 @@ struct _NautilusSummaryViewDetails {
 	char		*update_description_header;
 	GtkWidget	*update_description_body_widget;
 	char		*update_description_body;
+	GtkWidget	*update_description_version_widget;
+	char		*update_description_version;
 	GtkWidget	*update_button_container;
 	GtkWidget	*update_goto_button;
 	GtkWidget	*update_goto_label_widget;
@@ -434,7 +436,9 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* Build the first column with static data for now */
 	view->details->update_icon_name = g_strdup_printf ("netscape.png");
-	view->details->update_description_body = g_strdup_printf ("Netscape Communicator 4.75\n Everyone's favorite web browser.");
+	view->details->update_description_header = g_strdup_printf ("Netscape Communicator");
+	view->details->update_description_body = g_strdup_printf ("Everyone's favorite web browser.");
+	view->details->update_description_version = g_strdup_printf ("Version 4.75");
 	view->details->update_goto_label = g_strdup_printf (" Update Nescape Now! ");
 	view->details->update_redirect = g_strdup_printf ("http://download.netscape.com");
 	generate_update_news_entry_row (view, 1);
@@ -490,6 +494,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (temp_hbox);
 
 	gtk_table_attach (view->details->services_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_vbox);
 
 	/* Add the redirect button to the third column */
 	view->details->services_button_container = gtk_hbox_new (TRUE, 0);
@@ -530,6 +535,8 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 static void
 generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
+	GtkWidget	*temp_vbox;
+	GtkWidget	*temp_hbox;
 
 	/* Generate first column with icon */
 	view->details->update_icon_container = gtk_hbox_new (TRUE, 4);
@@ -540,11 +547,45 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_table_attach (view->details->updates_table, view->details->update_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->update_icon_container);
 
-	/* Generate second Column with update title and summary */
+	/* Generate second Column with update title, summary, and version */
+	temp_vbox = gtk_vbox_new (FALSE, 0);
+	/* Header */
+	temp_hbox = gtk_hbox_new (TRUE, 0);
+	view->details->update_description_header_widget = nautilus_label_new (view->details->update_description_header);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_header_widget), 14);
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->update_description_header_widget),
+						 "helvetica",
+						 "bold",
+						 NULL,
+						 NULL);
+	gtk_widget_show (view->details->update_description_header_widget);
+	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_header_widget);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
+	gtk_widget_show (temp_hbox);
+	/* Body */
+	temp_hbox = gtk_hbox_new (FALSE, 0);
 	view->details->update_description_body_widget = nautilus_label_new (view->details->update_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_body_widget), 12);
-	gtk_table_attach (view->details->updates_table, view->details->update_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->update_description_body_widget);
+	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_body_widget);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
+	gtk_widget_show (temp_hbox);
+	/* Version */
+	temp_hbox = gtk_hbox_new (FALSE, 0);
+	view->details->update_description_version_widget = nautilus_label_new (view->details->update_description_version);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_version_widget), 12);
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->update_description_version_widget),
+						 "helvetica",
+						 "bold",
+						 NULL,
+						 NULL);
+	gtk_widget_show (view->details->update_description_version_widget);
+	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_version_widget);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
+	gtk_widget_show (temp_hbox);
+
+	gtk_table_attach (view->details->updates_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_vbox);
 
 	/* Add the redirect button to the third column */
 	view->details->update_button_container = gtk_hbox_new (TRUE, 0);
