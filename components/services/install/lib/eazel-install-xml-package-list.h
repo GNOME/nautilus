@@ -35,6 +35,7 @@
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 
+GList* parse_memory_xml_package_list (char *mem, int size);
 GList* parse_local_xml_package_list (const char* pkg_list_file);
 void free_categories (GList* categories);
 gboolean generate_xml_package_list (const char* pkg_template_file,

@@ -62,9 +62,7 @@ int     arg_dry_run,
 	arg_delay;
 char    *arg_server,
 	*arg_config_file,
-	*arg_local_list, 
-	*arg_tmp_dir,
-	*arg_input_list;
+	*arg_tmp_dir;
 
 CORBA_ORB orb;
 CORBA_Environment ev;
@@ -79,9 +77,7 @@ static const struct poptOption options[] = {
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"ftp", 'f', POPT_ARG_NONE, &arg_ftp, 0, N_("Use ftp"), NULL},
 	{"local", 'l', POPT_ARG_NONE, &arg_local, 0, N_("Use local"), NULL},
-	{"packagelist", '\0', POPT_ARG_STRING, &arg_local_list, 0, N_("Specify package list to use (/var/eazel/service/package-list.xml)"), NULL},
 	{"config", '\0', POPT_ARG_STRING, &arg_config_file, 0, N_("Specify config file (/var/eazel/services/eazel-services-config.xml)"), NULL},
-	{"genpkglist", '\0', POPT_ARG_STRING, &arg_input_list, 0, N_("Use specified file to generate a package list, requires --packagelist"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -125,18 +121,7 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	if (arg_dry_run) {
 		Trilobite_Eazel_Install__set_test_mode (service, TRUE, &ev);
 	}
-/*
-	if (arg_local_list) {
-		Trilobite_Eazel_Install__set_package_list (service, arg_local_list, &ev);
-	}
-	if (arg_input_list) {
-		if (arg_local_list == NULL) {
-			fprintf (stderr, "Use of --genpkglist requires --packagelist\n");
-			exit (1);
-		}
-		generate_xml_package_list (arg_input_list, arg_local_list);
-	}
-*/
+
 /*
 
 	Trilobite_Eazel_Install__set_rpmrc_file (service, DEFAULT_RPMRC, &ev);
@@ -333,13 +318,13 @@ int main(int argc, char *argv[]) {
 		g_error ("Could not init bonobo");
 	}
 	bonobo_activate ();
+	
+	cb = eazel_install_callback_new ();
 
 	if (arg_delay) {
 		sleep (10);
 	}
 
-	
-	cb = eazel_install_callback_new ();
 	set_parameters_from_command_line (eazel_install_callback_corba_objref (cb));
 	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");

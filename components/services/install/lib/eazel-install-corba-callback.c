@@ -24,6 +24,7 @@
 #include <config.h>
 #include "eazel-install-corba-callback.h"
 #include "eazel-install-corba-types.h"
+#include "eazel-install-xml-package-list.h"
 /*
 #include <gnome.h>
 #include <liboaf/liboaf.h>
@@ -83,57 +84,67 @@ impl_download_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 
 static void 
 impl_dep_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-		const Trilobite_Eazel_PackageStruct *corbapack,
+		const Trilobite_Eazel_PackageDataStruct *corbapack,
 		const Trilobite_Eazel_PackageDataStruct *corbaneeds, 
 		CORBA_Environment * ev)
 {
 	PackageData *pack, *needs;
-	pack = packagedata_from_corba_packagestruct (corbapack);
+	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	needs = packagedata_from_corba_packagedatastruct (*corbaneeds);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DEPENDENCY_CHECK], pack, needs);
 }
 
 static void 
 impl_install_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-		       const Trilobite_Eazel_PackageStruct *corbapack,
+		       const Trilobite_Eazel_PackageDataStruct *corbapack,
 		       const CORBA_long amount,
 		       const CORBA_long total,
 		       CORBA_Environment * ev) 
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagestruct (corbapack);
+	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_PROGRESS], pack, amount, total);
 }
 
 static void 
 impl_uninstall_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-			 const Trilobite_Eazel_PackageStruct *corbapack,
+			 const Trilobite_Eazel_PackageDataStruct *corbapack,
 			 const CORBA_long amount,
 			 const CORBA_long total,
 			 CORBA_Environment * ev)
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagestruct (corbapack);
+	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], pack, amount, total);
 }
 
 static void 
 impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-		     const Trilobite_Eazel_PackageStruct *corbapack,
+		     const CORBA_char *xmlcorbapack,
 		     CORBA_Environment * ev)
 {
+	GList *categories;
 	PackageData *pack;
-	pack = packagedata_from_corba_packagestruct (corbapack);
+	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
+	/* FIXME: bugzilla.eazel.com 1557
+	   semi ugly, but assuming that the xml parse was ok, this gets the package 
+	   in for the signal */
+	pack = (PackageData*)((CategoryData*)categories->data)->packages->data;
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
 }
 
 static void 
 impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-		       const Trilobite_Eazel_PackageStruct *corbapack,
+		       const CORBA_char *xmlcorbapack,
 		       CORBA_Environment * ev)
 {
+	GList *categories;
 	PackageData *pack;
-	pack = packagedata_from_corba_packagestruct (corbapack);
+	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
+	/* FIXME: bugzilla.eazel.com 1557
+	   semi ugly, but assuming that the xml parse was ok, this gets the package 
+	   in for the signal */
+	pack = (PackageData*)((CategoryData*)categories->data)->packages->data;
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], pack);
 }
 
@@ -397,7 +408,7 @@ eazel_install_callback_query (EazelInstallCallback *service,
 			      CORBA_Environment *ev)
 {
 	GList *result;
-	Trilobite_Eazel_PackageStructList *corbares;
+	Trilobite_Eazel_PackageDataStructList *corbares;
 	
 	/* FIXME: bugzilla.eazel.com 1446 */
 

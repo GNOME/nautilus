@@ -1,3 +1,79 @@
+2000-07-05  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* po/POTFILES.in:
+
+	Removed ntl-web-search.c since it's no longer in the codebase.
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_package_callback):
+	Fixed bug... eh, some number.
+	
+	* components/services/install/command-line/Makefile.am:
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(set_parameters_from_command_line), (main):
+	* components/services/install/command-line/eazel-gen-xml.c: (main):
+	* components/services/install/command-line/eazel-uninstall.c:
+	(uninstall_failed):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_dep_check), (impl_install_progress),
+	(impl_uninstall_progress), (impl_install_failed),
+	(impl_uninstall_failed), (eazel_install_callback_query):
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct),
+	(corba_category_list_from_categorydata_list),
+	(categorydata_list_from_corba_categorystructlist),
+	(xmlnode_from_packageData), (xml_from_packagedata):
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_uninstall_packages),
+	(impl_Eazel_Install_query), (eazel_install_get_epv):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize),
+	(eazel_install_emit_install_progress_default),
+	(eazel_install_emit_install_failed_default),
+	(eazel_install_emit_uninstall_failed_default),
+	(eazel_install_emit_dependency_check_default):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_query):
+	* components/services/install/lib/eazel-install-query.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_all_packages),
+	(uninstall_packages), (do_rpm_install),
+	(eazel_install_load_rpm_headers), (eazel_install_free_rpm_system),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_fetch_rpm_dependencies), (print_package_list),
+	(eazel_install_do_dependency_check), (eazel_install_ensure_deps),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse), (eazel_uninstall_globber):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_destroy_foreach), (rpmname_from_packagedata),
+	(packagedata_equal), (packagedata_status_enum_to_str),
+	(packagedata_status_str_to_enum):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (parse_category), (parse_shared),
+	(parse_memory_xml_package_list), (parse_local_xml_package_list):
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+
+	Muy work. Worked around orbit-idl's shortcommings, by packing the
+	dependency trees for the (un)install_failed callbacks into
+	xml. Uninstall now does the upwards traversel to detect packages
+	that will break. Still not the downwards though. Installing a
+	packge using the filename no longer results in a query for the
+	file to the server, although we still download all missing deps.
+
+	Most of the corbafication stuff is done.
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (installer):
+
+	Compiles again. 
+
 2000-07-05  Darin Adler  <darin@eazel.com>
 
 	* components/services/trilobite/sample/service/.cvsignore:

@@ -93,22 +93,19 @@ void eazel_install_emit_install_progress_default (EazelInstall *service,
 						  const PackageData *pack,
 						  int amount,
 						  int total);
-
 void  eazel_install_emit_download_progress_default (EazelInstall *service, 
 						    const char *name,
 						    int amount, 
 						    int total);
-
 void  eazel_install_emit_download_failed_default (EazelInstall *service, 
 						  const char *name);
-
 void eazel_install_emit_install_failed_default (EazelInstall *service,
 						const PackageData *pack);
-
+void eazel_install_emit_uninstall_failed_default (EazelInstall *service,
+						  const PackageData *pack);
 void eazel_install_emit_dependency_check_default (EazelInstall *service,
 						  const PackageData *pack,
 						  const PackageData *needs);
-
 void eazel_install_emit_done_default (EazelInstall *service);
 
 #ifndef EAZEL_INSTALL_NO_CORBA
@@ -284,6 +281,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->download_progress = eazel_install_emit_download_progress_default;
 	klass->download_failed = eazel_install_emit_download_failed_default;
 	klass->install_failed = eazel_install_emit_install_failed_default;
+	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
 	klass->dependency_check = eazel_install_emit_dependency_check_default;
 	klass->done = eazel_install_emit_done_default;
 
@@ -633,8 +631,8 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageStruct package;
-		package = corba_packagestruct_from_packagedata (pack);
+		Trilobite_Eazel_PackageDataStruct package;
+		package = corba_packagedatastruct_from_packagedata (pack);
 		Trilobite_Eazel_InstallCallback_install_progress (service->callback, &package, amount, total, &ev);	
 	} 
 	CORBA_exception_free (&ev);
@@ -708,9 +706,10 @@ eazel_install_emit_install_failed_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageStruct package;
-		package = corba_packagestruct_from_packagedata (pack);
-		Trilobite_Eazel_InstallCallback_install_failed (service->callback, &package, &ev);	
+		CORBA_char *package;
+		package = xml_from_packagedata (pack);
+		Trilobite_Eazel_InstallCallback_install_failed (service->callback, package, &ev);	
+		CORBA_free (package);
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -723,6 +722,24 @@ eazel_install_emit_uninstall_failed (EazelInstall *service,
 	SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], pd);
 }
+
+void 
+eazel_install_emit_uninstall_failed_default (EazelInstall *service, 
+					     const PackageData *pack)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		CORBA_char *package;
+		package = xml_from_packagedata (pack);
+		Trilobite_Eazel_InstallCallback_uninstall_failed (service->callback, package, &ev);	
+		/* CORBA_free (package); */
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
 
 void 
 eazel_install_emit_dependency_check (EazelInstall *service, 
@@ -743,10 +760,10 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageStruct corbapack;
+		Trilobite_Eazel_PackageDataStruct corbapack;
 		Trilobite_Eazel_PackageDataStruct corbaneeds;
 
-		corbapack = corba_packagestruct_from_packagedata (pack);
+		corbapack = corba_packagedatastruct_from_packagedata (pack);
 		corbaneeds = corba_packagedatastruct_from_packagedata (needs);
 
 		Trilobite_Eazel_InstallCallback_dependency_check (service->callback, &corbapack, &corbaneeds, &ev);	

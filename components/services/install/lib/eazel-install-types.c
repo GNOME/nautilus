@@ -177,6 +177,14 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
+
+	if (pack->packsys_struc) {
+		/* FIXME: bugzilla.eazel.com 1532
+		   RPM specific code */
+		/* even better, this just crashes 
+		   headerFree (*pack->packsys_struc); */
+		g_free (pack->packsys_struc);
+	}
 }
 
 void 
@@ -212,6 +220,29 @@ rpmfilename_from_packagedata (const PackageData *pack)
 	return filename;
 }
 
+const char*
+rpmname_from_packagedata (const PackageData *pack)
+{
+	static char *name = NULL;
+	
+	g_free (name);
+	
+	if (pack->version && pack->minor) {
+		name = g_strdup_printf ("%s-%s-%s",
+					pack->name,
+					pack->version,
+					pack->minor);
+	} else if (pack->version) {
+		name = g_strdup_printf ("%s-%s",
+					pack->name,
+					pack->version);
+	} else {
+		name = g_strconcat (pack->name, NULL); 
+	}
+
+	return name;
+}
+
 int 
 packagedata_hash (PackageData *pack)
 {
@@ -230,4 +261,57 @@ packagedata_equal (PackageData *a,
 	g_assert (b->name!=NULL);
 	
 	return strcmp (a->name, b->name);
+}
+
+
+const char*
+packagedata_status_enum_to_str (PackageSystemStatus st)
+{
+	static char *result=NULL;
+	g_free (result);
+
+	switch (st) {
+	case PACKAGE_UNKNOWN_STATUS:
+		result = g_strdup ("UNKNOWN_STATUS");
+		break;
+	case PACKAGE_SOURCE_NOT_SUPPORTED:
+		result = g_strdup ("SOURCE_NOT_SUPPORTED");
+		break;
+	case PACKAGE_DEPENDENCY_FAIL:
+		result = g_strdup ("DEPENDENCY_FAIL");
+		break;
+	case PACKAGE_BREAKS_DEPENDENCY:
+		result = g_strdup ("BREAKS_DEPENDENCY");
+		break;
+	case PACKAGE_INVALID:
+		result = g_strdup ("INVALID");
+		break;
+	case PACKAGE_CANNOT_OPEN:
+		result = g_strdup ("CANNOT_OPEN");
+		break;
+	case PACKAGE_PARTLY_RESOLVED:
+		result = g_strdup ("PARTLY_RESOLVED");
+		break;
+	case PACKAGE_RESOLVED:
+		result = g_strdup ("RESOLVED");
+		break;
+	}
+	return result;
+}
+
+PackageSystemStatus
+packagedata_status_str_to_enum (const char *st)
+{
+	PackageSystemStatus result;
+	
+	if (strcmp (st, "UNKNOWN_STATUS")==0) { result = PACKAGE_UNKNOWN_STATUS; } 
+	else if (strcmp (st, "SOURCE_NOT_SUPPORTED")==0) { result = PACKAGE_SOURCE_NOT_SUPPORTED; } 
+	else if (strcmp (st, "DEPENDENCY_FAIL")==0) { result = PACKAGE_DEPENDENCY_FAIL; } 
+	else if (strcmp (st, "BREAKS_DEPENDENCY")==0) { result = PACKAGE_BREAKS_DEPENDENCY; } 
+	else if (strcmp (st, "INVALID")==0) { result = PACKAGE_INVALID; } 
+	else if (strcmp (st, "CANNOT_OPEN")==0) { result = PACKAGE_CANNOT_OPEN; } 
+	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
+	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
+
+	return result;
 }

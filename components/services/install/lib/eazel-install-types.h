@@ -60,6 +60,10 @@ enum _PackageSystemStatus {
 	PACKAGE_PARTLY_RESOLVED,
 	PACKAGE_RESOLVED
 };
+/* Methods to convert enum to/from char* val. The returned
+   char* must not be freed */
+PackageSystemStatus packagedata_status_str_to_enum (const char *st);
+const char* packagedata_status_enum_to_str (PackageSystemStatus st);
 
 struct _HTTPError {
 	int code;
@@ -150,11 +154,16 @@ PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyCon
 
 void packagedata_fill_from_rpm_header (PackageData *pack, Header*);
 const char *rpmfilename_from_packagedata (const PackageData *pack);
+const char *rpmname_from_packagedata (const PackageData *pack);
 
 void packagedata_destroy_foreach (PackageData *pd, gpointer unused);
 void packagedata_destroy (PackageData *pd);
 
 int packagedata_hash (PackageData *pd);
 int packagedata_equal (PackageData *a, PackageData *b);
+
+void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_soft_deps (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_hard_deps (PackageData *pack, PackageData *b);
 
 #endif /* EAZEL_INSTALL_SERVICES_TYPES_H */

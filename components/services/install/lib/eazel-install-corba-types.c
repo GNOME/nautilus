@@ -23,25 +23,7 @@
 
 #include "eazel-install-corba-types.h"
 #include <libtrilobite/trilobite-core-distribution.h>
-
-Trilobite_Eazel_PackageStructList*
-corba_packagestructlist_from_packagedata_list (GList *packages)
-{
-	Trilobite_Eazel_PackageStructList *packagelist;
-	int i;
-	
-	packagelist = Trilobite_Eazel_PackageStructList__alloc ();
-	packagelist->_length = g_list_length (packages);
-	packagelist->_buffer = CORBA_sequence_Trilobite_Eazel_PackageStruct_allocbuf (packagelist->_length);
-	for (i = 0; i < packagelist->_length; i++) {
-		PackageData *pack;
-		pack = (PackageData*)(g_list_nth (packages,i)->data);
-		packagelist->_buffer[i] = corba_packagestruct_from_packagedata (pack);
-	}
-
-	return packagelist;
-}
-
+#include <gnome-xml/tree.h>
 
 Trilobite_Eazel_PackageDataStructList
 corba_packagedatastructlist_from_packagedata_list (GList *packages)
@@ -60,7 +42,7 @@ corba_packagedatastructlist_from_packagedata_list (GList *packages)
 	return packagelist;
 }
 
-Trilobite_Eazel_PackageDataStruct 
+Trilobite_Eazel_PackageDataStruct
 corba_packagedatastruct_from_packagedata (const PackageData *pack)
 {
 	Trilobite_Eazel_PackageDataStruct corbapack;
@@ -110,17 +92,8 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 		corbapack.status = Trilobite_Eazel_RESOLVED;
 		break;
 	}
-	
-	return corbapack;
-}
-
-
-Trilobite_Eazel_PackageStruct 
-corba_packagestruct_from_packagedata (const PackageData *pack)
-{
-	Trilobite_Eazel_PackageStruct corbapack;
-	corbapack.data = corba_packagedatastruct_from_packagedata (pack);
-	
+/*
+  FIXME: bugzilla.eazel.com 1542
 	if (pack->soft_depends) {
 		corbapack.soft_depends = corba_packagedatastructlist_from_packagedata_list (pack->soft_depends);
 	} else {
@@ -136,26 +109,8 @@ corba_packagestruct_from_packagedata (const PackageData *pack)
 	} else {
 		corbapack.breaks._length = 0;
 	}
+*/
 	return corbapack;
-}
-
-
-
-GList*
-packagedata_list_from_corba_packagestructlist (const Trilobite_Eazel_PackageStructList corbapack)
-{
-	GList *result;
-	int i;
-
-	result = NULL;
-	
-	for (i = 0; i < corbapack._length; i++) {
-		PackageData *pack;
-		pack = packagedata_from_corba_packagestruct (&(corbapack._buffer[i]));
-		result = g_list_prepend (result, pack);
-	}
-
-	return result;
 }
 
 GList*
@@ -220,20 +175,12 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 		pack->status = PACKAGE_RESOLVED;
 		break;
 	}
-
-	return pack;
-}
-
-PackageData*
-packagedata_from_corba_packagestruct (const Trilobite_Eazel_PackageStruct *corbapack)
-{
-	PackageData *pack;
-
-	pack = packagedata_from_corba_packagedatastruct (corbapack->data);
-	pack->soft_depends = packagedata_list_from_corba_packagedatastructlist (corbapack->soft_depends);
-	pack->hard_depends = packagedata_list_from_corba_packagedatastructlist (corbapack->hard_depends);
-	pack->breaks = packagedata_list_from_corba_packagedatastructlist (corbapack->breaks);
-
+/*
+  FIXME: bugzilla.eazel.com 1542
+	pack->soft_depends = packagedata_list_from_corba_packagedatastructlist (corbapack.soft_depends);
+	pack->hard_depends = packagedata_list_from_corba_packagedatastructlist (corbapack.hard_depends);
+	pack->breaks = packagedata_list_from_corba_packagedatastructlist (corbapack.breaks);
+*/
 	return pack;
 }
 
@@ -254,13 +201,12 @@ corba_category_list_from_categorydata_list (GList *categories)
 	for (iterator = categories; iterator; iterator = iterator->next) {
 		CategoryData *cat;
 		Trilobite_Eazel_CategoryStruct corbacat;
-		Trilobite_Eazel_PackageStructList *packstructlist;
+		Trilobite_Eazel_PackageDataStructList corbapacklist;
 
 		cat = (CategoryData*)iterator->data;
 		corbacat.name = cat->name ? CORBA_string_dup (cat->name) : CORBA_string_dup ("");
-		packstructlist = corba_packagestructlist_from_packagedata_list (cat->packages);
-		corbacat.packages = *packstructlist;
-		CORBA_free (packstructlist);
+		corbapacklist = corba_packagedatastructlist_from_packagedata_list (cat->packages);
+		corbacat.packages = corbapacklist;
 
 		corbacats->_buffer[i] = corbacat;
 		i++;
@@ -280,7 +226,7 @@ categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryS
 		CategoryData *category;
 		GList *packages;
 		Trilobite_Eazel_CategoryStruct corbacategory;
-		Trilobite_Eazel_PackageStructList packagelist;
+		Trilobite_Eazel_PackageDataStructList packagelist;
 
 		packages = NULL;
 		corbacategory = corbacategories._buffer [i];
@@ -288,10 +234,10 @@ categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryS
 
 		for (j = 0; j < packagelist._length; j++) {
 			PackageData *pack;
-			Trilobite_Eazel_PackageStruct corbapack;
+			Trilobite_Eazel_PackageDataStruct corbapack;
 			
 			corbapack = packagelist._buffer [j];
-			pack = packagedata_from_corba_packagestruct (&corbapack);
+			pack = packagedata_from_corba_packagedatastruct (corbapack);
 			
 			packages = g_list_prepend (packages, pack);
 		}
@@ -302,4 +248,79 @@ categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryS
 	}
 
 	return categories;
+}
+
+static xmlNodePtr
+xmlnode_from_packageData (const PackageData *pack, char *title, xmlNodePtr droot)
+{
+	xmlNodePtr root, node;
+	char *tmp;
+	GList *iterator;
+
+	if (title) {
+		root = xmlNewChild (droot, NULL, title, NULL);
+	} else {
+		root = droot;
+	}
+	node = xmlNewChild (root, NULL, "NAME", pack->name);
+	node = xmlNewChild (root, NULL, "VERSION", pack->version);
+	node = xmlNewChild (root, NULL, "MINOR", pack->minor);
+	node = xmlNewChild (root, NULL, "ARCH", pack->archtype);
+	node = xmlNewChild (root, NULL, "SUMMARY", pack->summary);
+	node = xmlNewChild (root, NULL, "STATUS", packagedata_status_enum_to_str (pack->status));
+
+	tmp = trilobite_get_distribution_name(pack->distribution, FALSE);
+	node = xmlNewChild (root, NULL, "DISTRIBUTION", tmp);
+	g_free (tmp);
+	if (pack->distribution.version_major!=-1) {
+		tmp = g_strdup_printf ("%d", pack->distribution.version_major);
+		xmlSetProp (node, "major", tmp);
+		g_free (tmp);
+	}
+	if (pack->distribution.version_minor!=-1) {
+		tmp = g_strdup_printf ("%d", pack->distribution.version_minor);
+		xmlSetProp (node, "minor", tmp);
+		g_free (tmp);
+	}
+
+	tmp = g_strdup_printf ("%d", pack->bytesize);
+	node = xmlNewChild (root, NULL, "BYTESIZE", tmp);
+	g_free (tmp);
+
+	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
+		node = xmlNewChild (root, NULL, "SOFT_DEPEND", NULL);
+		xmlnode_from_packageData ((PackageData*)iterator->data, NULL, node);
+	}
+	for (iterator = pack->hard_depends; iterator; iterator = iterator->next) {
+		node = xmlNewChild (root, NULL, "HARD_DEPEND", NULL);
+		xmlnode_from_packageData ((PackageData*)iterator->data, NULL, node);
+	}
+	for (iterator = pack->breaks; iterator; iterator = iterator->next) {
+		node = xmlNewChild (root, NULL, "BREAKS", NULL);
+		xmlnode_from_packageData ((PackageData*)iterator->data, NULL, node);
+	}
+
+	return root;
+}
+
+CORBA_char*
+xml_from_packagedata (const PackageData *pack)
+{
+	xmlDocPtr doc;
+	xmlNodePtr root, node;
+	xmlChar *mem;
+	CORBA_char *result;
+	int size;
+	
+	doc = xmlNewDoc ("1.0");
+	root = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
+	node = xmlNewChild (root, NULL, "CATEGORY", NULL);
+	xmlSetProp (node, "name", "");
+	node = xmlNewChild (node, NULL, "PACKAGES", NULL);
+	xmlnode_from_packageData (pack, "PACKAGE", node);
+	xmlDocSetRootElement (doc, root);
+
+	xmlDocDumpMemory (doc, &mem, &size);
+	result = CORBA_string_dup (mem);
+	return mem;
 }

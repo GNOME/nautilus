@@ -90,9 +90,9 @@ impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 
 static void 
 impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
-				    const Trilobite_Eazel_CategoryStructList *corbacategories,
+				      const Trilobite_Eazel_CategoryStructList *corbacategories,
 				      const Trilobite_Eazel_InstallCallback cb,
-			     CORBA_Environment * ev) 
+				      CORBA_Environment * ev) 
 {
 	GList *categories;
 
@@ -290,12 +290,12 @@ impl_Eazel_Install__get_protocol (impl_POA_Trilobite_Eazel_Install *servant,
 	}
 }
 
-static Trilobite_Eazel_PackageStructList*
+static Trilobite_Eazel_PackageDataStructList*
 impl_Eazel_Install_query (impl_POA_Trilobite_Eazel_Install *servant,
 			  const CORBA_char *query,
 			  CORBA_Environment *ev)
 {
-	Trilobite_Eazel_PackageStructList *result;
+	Trilobite_Eazel_PackageDataStructList *result;
 
 	/* FIXME: bugzilla.eazel.com 
 	   Finish this, need to convert the return value to a 
@@ -316,7 +316,7 @@ eazel_install_get_epv ()
 	epv->uninstall          = (gpointer)&impl_Eazel_Install_uninstall;
 	epv->install_packages   = (gpointer)&impl_Eazel_Install_install_packages;
 	epv->uninstall_packages = (gpointer)&impl_Eazel_Install_uninstall_packages;
-	
+
 	epv->_set_verbose = (gpointer)&impl_Eazel_Install__set_verbose;
 	epv->_get_verbose = (gpointer)&impl_Eazel_Install__get_verbose;
 
@@ -337,6 +337,7 @@ eazel_install_get_epv ()
 
 	epv->_set_server = (gpointer)&impl_Eazel_Install__set_server;
 	epv->_get_server = (gpointer)&impl_Eazel_Install__get_server;
+
 	epv->_set_server_port = (gpointer)&impl_Eazel_Install__set_server_port;
 	epv->_get_server_port = (gpointer)&impl_Eazel_Install__get_server_port;
 

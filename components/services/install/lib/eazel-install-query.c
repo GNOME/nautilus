@@ -78,3 +78,23 @@ eazel_install_query_package_system (EazelInstall *service,
 
 	return NULL;
 }
+
+GList* 
+eazel_install_simple_query (EazelInstall *service, char *input, 
+			    SimpleQueryEnum flag, 
+			    int neglists, 
+			    GList *neglist,...)
+{
+	dbiIndexSet matches;
+	rpmdb db;
+	int rc;
+	int i;
+
+	/* db = service->private->packsys.rpm.db; */
+	
+	switch (flag) {
+	case EI_SIMPLE_QUERY_PROVIDES:
+	case EI_SIMPLE_QUERY_REQUIRES:
+	case EI_SIMPLE_QUERY_MATCHES:
+	}
+}

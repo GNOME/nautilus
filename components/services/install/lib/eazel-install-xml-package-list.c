@@ -27,48 +27,58 @@
  * file and install a services generated package-list.xml.
  */
 
-#include "eazel-install-xml-package-list.h"
 #include <config.h>
+#include "eazel-install-xml-package-list.h"
 
-static PackageData* parse_package (xmlNode* package);
+#include <gnome-xml/parser.h>
+
+static PackageData* parse_package (xmlNode* package, gboolean set_toplevel);
 static CategoryData* parse_category (xmlNode* cat);
 static int parse_pkg_template (const char* pkg_template_file, char** result);
 
 
 static PackageData*
-parse_package (xmlNode* package) {
+parse_package (xmlNode* package, gboolean set_toplevel) {
 
 	xmlNodePtr dep;
 	PackageData* rv;
 
 	rv = packagedata_new ();
 
-	rv->distribution = trilobite_get_distribution ();
 	rv->name = g_strdup (xml_get_value (package, "NAME"));
 	rv->version = g_strdup (xml_get_value (package, "VERSION"));
 	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
 	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
 	rv->bytesize = atoi (xml_get_value (package, "BYTESIZE"));
 	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
-	rv->toplevel = TRUE;
+	rv->distribution = trilobite_get_distribution ();
+	if (set_toplevel) {
+		rv->toplevel = TRUE;
+	}
 	
 	/* Dependency Lists */
 	rv->soft_depends = NULL;
 	rv->hard_depends = NULL;
+	rv->breaks = NULL;
 
 	dep = package->childs;
 	while (dep) {
 		if (g_strcasecmp (dep->name, "SOFT_DEPEND") == 0) {
 			PackageData* depend;
 
-			depend = parse_package (dep);
+			depend = parse_package (dep, FALSE);
 			rv->soft_depends = g_list_append (rv->soft_depends, depend);
 		}
 		else if (g_strcasecmp (dep->name, "HARD_DEPEND") == 0) {
 			PackageData* depend;
 
-			depend = parse_package (dep);
+			depend = parse_package (dep, FALSE);
 			rv->hard_depends = g_list_append (rv->hard_depends, depend);
+		} else if (g_strcasecmp (dep->name, "BREAKS") == 0) {
+			PackageData* depend;
+
+			depend = parse_package (dep, FALSE);
+			rv->breaks = g_list_append (rv->breaks, depend);
 		}
 
 		dep = dep->next;
@@ -97,7 +107,7 @@ parse_category (xmlNode* cat) {
 	while (pkg) {
 		PackageData* pakdat;
 
-		pakdat = parse_package (pkg);
+		pakdat = parse_package (pkg, TRUE);
 		category->packages = g_list_append (category->packages, pakdat);
 		pkg = pkg->next;
 	}
@@ -106,23 +116,13 @@ parse_category (xmlNode* cat) {
 
 } /* end parse_category */
 
-GList*
-parse_local_xml_package_list (const char* pkg_list_file) {
-	GList* rv;
-	xmlDocPtr doc;
+GList* parse_shared (xmlDocPtr doc) 
+{
 	xmlNodePtr base;
 	xmlNodePtr category;
+	GList* rv;
 
 	rv = NULL;
-		
-	doc = xmlParseFile (pkg_list_file);
-	
-	if (doc == NULL) {
-		fprintf (stderr, "***Unable to open pkg list file %s\n", pkg_list_file);
-		xmlFreeDoc (doc);
-		return NULL;
-	}
-
 	base = doc->root;
 	if (base == NULL) {
 		xmlFreeDoc (doc);
@@ -155,6 +155,38 @@ parse_local_xml_package_list (const char* pkg_list_file) {
 
 	xmlFreeDoc (doc);
 	return rv;
+}
+
+GList* parse_memory_xml_package_list (char *mem, int size) {
+	xmlDocPtr doc;
+
+	g_return_val_if_fail (mem!=NULL, NULL);
+
+	doc = xmlParseMemory (mem, size);
+
+	if (doc == NULL) {
+		xmlFreeDoc (doc);
+		return NULL;
+	}
+	
+	return parse_shared (doc);
+}
+
+GList*
+parse_local_xml_package_list (const char* pkg_list_file) {
+	xmlDocPtr doc;
+
+	g_return_val_if_fail (pkg_list_file!=NULL, NULL);
+
+	doc = xmlParseFile (pkg_list_file);
+	
+	if (doc == NULL) {
+		fprintf (stderr, "***Unable to open pkg list file %s\n", pkg_list_file);
+		xmlFreeDoc (doc);
+		return NULL;
+	}
+
+	return parse_shared (doc);
 	
 } /*end fetch_xml_packages_local */
 

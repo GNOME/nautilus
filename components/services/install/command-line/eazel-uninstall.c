@@ -125,19 +125,21 @@ uninstall_failed (EazelInstallCallback *service,
 	}
 	switch (pd->status) {
 	case PACKAGE_DEPENDENCY_FAIL:
-		fprintf (stdout, "%s-%s FAILED\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s- %s FAILED\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		fprintf (stdout, "%s-%s NOT FOUND\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s- %s NOT FOUND\n", indent, rpmfilename_from_packagedata (pd));
 		break;		
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		fprintf (stdout, "%s-%s is a source package\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s- %s is a source package\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		fprintf (stdout, "%s-%s breaks\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s- %s breaks (%dd  %db)\n", indent, rpmfilename_from_packagedata (pd),
+			 g_list_length (pd->soft_depends), g_list_length (pd->breaks));
 		break;
 	default:
-		fprintf (stdout, "%s-%s\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s- %s (%d deps and %d breaks)\n", indent, rpmfilename_from_packagedata (pd),
+			 g_list_length (pd->soft_depends), g_list_length (pd->breaks));
 		break;
 	}
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			

@@ -164,11 +164,12 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 		char *ptr;
 		CategoryData *category;
 		PackageData *pack;
-		/* FIXME: bugzilla.eazel.com 1492
-		   I need a clean way to get the filename... */
-		ptr = rpm_view->details->current_uri + strlen (rpm_view->details->current_uri) - 1;
-		while (ptr != rpm_view->details->current_uri && *ptr!='/') { ptr--; };
-		ptr++;
+
+		/* Find the :// of the url and skip to after it */
+		ptr = strstr (rpm_view->details->current_uri, "file://");
+		ptr += strlen ("file://");
+
+		/* make a package and add to it to a categorylist */
 		pack = packagedata_new ();
 		pack->filename = g_strdup (ptr);
 		

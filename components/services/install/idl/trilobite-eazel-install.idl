@@ -66,20 +66,22 @@ module Trilobite {
 			   bad: deps.
 			*/
 			PackageStatusEnum status;
+
+			/* FIXME: bugzilla.eazel.com 1542
+			   This is legal IDL, but not supported by wannabe idl compiler
+			   orbit-idl. Therefore I have to encode these
+			   trees as xml...
+			   When orbit-idl parses IDL, we can loose the xml
+			sequence <PackageDataStruct> soft_depends;
+			sequence <PackageDataStruct> hard_depends;
+			sequence <PackageDataStruct> breaks;
+			*/			
 		};		
 		typedef sequence <PackageDataStruct> PackageDataStructList;
 
-		struct PackageStruct {
-			PackageDataStruct data;
-			PackageDataStructList soft_depends;
-			PackageDataStructList hard_depends;
-			PackageDataStructList breaks;
-		};
-		typedef sequence <PackageStruct> PackageStructList;
-
 		struct CategoryStruct {
 			string name;
-			PackageStructList packages;
+			PackageDataStructList packages;
 		};
 		typedef sequence <CategoryStruct> CategoryStructList;
 
@@ -88,18 +90,24 @@ module Trilobite {
 			oneway void download_progress (in string file, in long amount, in long total);
 
 			/* Called when dependency check is being handled */
-			oneway void dependency_check (in PackageStruct package, in PackageDataStruct needs);
+			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
 			
 			/* Called during (un)installation of a package */
-			oneway void install_progress (in PackageStruct package, in long amount, in long total);
-			oneway void uninstall_progress (in PackageStruct package, in long amount, in long total);
+			oneway void install_progress (in PackageDataStruct package, in long amount, in long total);
+			oneway void uninstall_progress (in PackageDataStruct package, in long amount, in long total);
 
 			/* Called whenever a package (un)install fails
 			*/
 			oneway void download_failed (in string file);
-			oneway void install_failed (in PackageStruct package);
-			oneway void uninstall_failed (in PackageStruct package);
-
+			/* FIXME: bugzilla.eazel.com 1542 
+			   This is what they should be, but orbit-idl's lack of
+			   recursive structures, forces us to encode the structures
+			   as xml and transfer these instead. 
+			oneway void install_failed (in PackageDataStruct package);
+			oneway void uninstall_failed (in PackageDataStruct package);
+			*/
+			oneway void install_failed (in string xml_package);
+			oneway void uninstall_failed (in string xml_package);
 			/* Called when the operation is finished */
 			void done ();
 		};
@@ -117,8 +125,8 @@ module Trilobite {
 			attribute string log_file;  /* where to put the logfile (otherwise it blurps to stdout */
 			attribute string tmp_dir;   /* directory to store tmp files in (/tmp/eazel-install) */
 
-			attribute ProtocolEnum protocol; /*
-
+			attribute ProtocolEnum protocol; /* */
+			
 			/* Install/uninstall using the packagelist from the server */
 			oneway void install (in string packagelist, in InstallCallback cb);
 			oneway void uninstall (in string packagelist, in InstallCallback cb);
@@ -128,7 +136,7 @@ module Trilobite {
 			oneway void uninstall_packages (in CategoryStructList categories, in InstallCallback cb);
 
 			/* Run a query to the package sys */
-			PackageStructList query (in string query);
+			PackageDataStructList query (in string query);
 		};
 	};
 };

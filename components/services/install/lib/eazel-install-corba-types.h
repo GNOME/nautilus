@@ -28,19 +28,19 @@
 #include <trilobite-eazel-install.h>
 #include <glib.h>
 
-Trilobite_Eazel_PackageStructList *corba_packagestructlist_from_packagedata_list (GList *packages);
 Trilobite_Eazel_PackageDataStructList corba_packagedatastructlist_from_packagedata_list (GList *packages);
 
-Trilobite_Eazel_PackageStruct corba_packagestruct_from_packagedata (const PackageData *pack);
 Trilobite_Eazel_PackageDataStruct corba_packagedatastruct_from_packagedata (const PackageData *pack);
 
 Trilobite_Eazel_CategoryStructList* corba_category_list_from_categorydata_list (GList *categories);
 
 GList* packagedata_list_from_corba_packagedatastructlist (const Trilobite_Eazel_PackageDataStructList corbapack);
-GList *packagedata_list_from_corba_packagestructlist (const Trilobite_Eazel_PackageStructList corbapack);
-PackageData *packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruct corbapack);
-PackageData *packagedata_from_corba_packagestruct (const Trilobite_Eazel_PackageStruct *corbapack);
 
-GList *categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryStructList corbacategories);
+PackageData* packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruct corbapack);
+
+GList* categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryStructList corbacategories);
+
+CORBA_char*
+xml_from_packagedata (const PackageData *pack);
 
 #endif /* EAZEL_INSTALL_SERVICES_TYPES_H */
