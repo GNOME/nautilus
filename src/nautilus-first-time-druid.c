@@ -225,7 +225,7 @@ druid_finished (GtkWidget *druid_page)
 	/* Create default services icon on the desktop */
 	desktop_path = nautilus_get_desktop_directory ();
 	nautilus_link_local_create (desktop_path, _("Eazel Services"), "big_services_icon.png", 
-				    "http://services.eazel.com", NAUTILUS_LINK_GENERIC);
+				    "eazel:", NAUTILUS_LINK_GENERIC);
 	g_free (desktop_path);
 	
 	/* Time to start. Hooray! */

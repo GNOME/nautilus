@@ -1,5 +1,14 @@
 2001-01-25  Gene Z. Ragan  <gzr@eazel.com>
 
+	Fixed bug 5981, Desktop Eazel-Services link won't work without
+	Mozilla installed
+		
+	* src/nautilus-first-time-druid.c: (druid_finished):
+	Use the eazel: protocol instead of the http: services
+	URI.
+	
+2001-01-25  Gene Z. Ragan  <gzr@eazel.com>
+
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 	
 	Fixed bug 6002, programs run from Nautilus Link files leave zombie processes
