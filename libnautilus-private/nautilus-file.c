@@ -1348,6 +1348,7 @@ nautilus_file_matches_uri (NautilusFile *file, const char *match_uri)
 	if (match_vfs_uri == NULL || file_vfs_uri == NULL) {
 		file_uri = nautilus_file_get_uri (file);
 		result = strcmp (match_uri, file_uri) == 0;
+		g_free (file_uri);
 	} else {
 		result = gnome_vfs_uri_equal (file_vfs_uri, match_vfs_uri);
 	}
