@@ -127,7 +127,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (view->details->form);
 
 	/* setup the title */
-	title = create_services_title_widget ("Eazel Services Summary");
+	title = create_summary_service_title_top_widget ("You are not logged in.");
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
 
@@ -145,13 +145,20 @@ generate_summary_form (NautilusSummaryView	*view)
 			  GTK_FILL | GTK_EXPAND,
 			  0, 0);
 
-	/* create the parent services list box and its table */
+	/* create the parent services list box */
 	temp_box = gtk_vbox_new (FALSE, 0);
+
+	/* setup the title */
+	title = create_summary_service_title_bottom_widget ("Services");
+	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
+	gtk_widget_show (title);
+
+	/* Create the parent table to hold 3 rows */
 	services_table = GTK_TABLE (gtk_table_new (5, 3, FALSE));
 
 	/* Generate first column with fake icon */
 	temp_hbox = gtk_hbox_new (TRUE, 4);
-	temp_icon = create_image_widget ("emblem-encrypted.gif", DEFAULT_BACKGROUND_COLOR);
+	temp_icon = create_image_widget ("vault-service-icon.png", DEFAULT_BACKGROUND_COLOR);
 	g_assert (temp_icon != NULL);
 	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_icon, 0, 0, 0);
 	gtk_widget_show (temp_icon);

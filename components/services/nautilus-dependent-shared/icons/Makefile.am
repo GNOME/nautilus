@@ -11,6 +11,7 @@ icon_DATA =					\
 	eazel-services-logo.png			\
 	eazel-services-logo-tile.png		\
 	inventory-service-icon.png		\
+	softcat-service-icon.png		\
 	vault-service-icon.png			\
 	service-summary-large-grey-section.png	\
 	service-summary-short-grey-section.png	\
