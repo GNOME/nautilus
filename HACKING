@@ -1,3 +1,18 @@
+====================
+0: Table of Contents
+====================
+
+0: Table of Contents
+1: Intro
+2: Module Listing
+3: Distribution Specific Notes
+4: m4 macro and aclocal issues
+5: Issues When Running Nautilus
+
+========
+1: Intro
+========
+
 To build Nautilus without interfering with an existing Gnome install,
 you will need to build several components from CVS into a separate
 prefix.
@@ -8,24 +23,31 @@ the --prefix= option to autogen.sh or configure.
 
 Specifically, you will need to:
 
-
 * Install all the needed modules into your selected prefix.
 
+NOTE:  more documentation is in docs/
+
+=================
+2: Module Listing
+=================
+
 NOTE the development libraries in helix gnome 1.2, are not adequate,
-you need the versions from CVS
+you need the versions from CVS. (as of  Wed Jun 14 13:48:35 PDT 2000,
+you can use glib, gtk+, imlib, gtk-engine, gnome-xml, gnome-libs from
+Helix Gnome ) also modern version of RedHat come with a new popt,
 
 Nautilus currently requires the following modules from GNOME CVS
 (built in the given order):
 
-	module             branch              configure options
-	------             ------              -----------------
-	popt:              <need 1.5, but not from GNOME CVS, see below>
-	glib:		   glib-1-2
-	gtk+:		   gtk-1-2
-	imlib:		   HEAD 
-	gnome-xml:	   LIB_XML_1_X
+	module             branch              configure options	Distro
+	------             ------              -----------------	-------
+	popt:              <need 1.5, but not from GNOME CVS, see below>RH6.2
+	glib:		   glib-1-2					H1.2
+	gtk+:		   gtk-1-2					H1.2
+	imlib:		   HEAD 					H1.2
+	gnome-xml:	   LIB_XML_1_X					H1.2
 	ORBit:		   orbit-stable-0-5
-	gnome-libs:	   gnome-libs-1-0    --enable-prefer-db1
+	gnome-libs:	   gnome-libs-1-0    --enable-prefer-db1	H1.2
 	gnet:              HEAD
 	gnome-http:        HEAD
 	oaf:               HEAD
@@ -40,6 +62,13 @@ Nautilus currently requires the following modules from GNOME CVS
 	xpdf:              HEAD
 	medusa:            HEAD
 	nautilus:          HEAD
+
+RH6.2 == Version from Red Hat 6.2 OK
+H1.2 == Version from Helix Gnome 1.2 OK
+
+=============================
+3: Distribution Specfic Notes
+=============================
 
 Other libraries needed:
 
@@ -80,44 +109,51 @@ If you need to get a copy of popt from source:
 	CVSROOT=:pserver:anonymous@cvs.rpm.org:/cvs/devel
 	The default passwd is a carriage return.  You should do a cvs co popt
 
-m4 macro issues:
+==============================
+4: m4 macro and aclocal issues
+==============================
 
-	m4 macros have issues.  Trying to install multiple versions of them on you system can be very tricky.
-	While building these libraries you will place following m4 macros into "your prefix"/share/aclocal
-	directory.  Note you will generally get errors with -I
 
-		glib.m4
-		gtk.m4
-		imlib.m4
-		libIDL.m4
-		ORBit.m4
-		libart.m4
-		gnet.m4
-		oaf.m4
-		gconf.m4
-		gdk-pixbuf.m4
+m4 macros have issues.  Trying to install multiple versions of them on you system can be very tricky.
+While building these libraries you will place following m4 macros into "your prefix"/share/aclocal
+directory.  Note you will generally get errors with -I
 
-	One ugly but functional way to make this work is to symlink your system m4 files into your
-	First you need to make the directory where they will live.
+	glib.m4
+	gtk.m4
+	imlib.m4
+	libIDL.m4
+	ORBit.m4
+	libart.m4
+	gnet.m4
+	oaf.m4
+	gconf.m4
+	gdk-pixbuf.m4
 
-		mkdir -p "your prefix"/share/aclocal
+One ugly but functional way to make this work is to symlink your system m4 files into your
+First you need to make the directory where they will live.
+
+	mkdir -p "your prefix"/share/aclocal
+
+Then you need to link all the m4 files from your system aclocal directory to the new one.
+
+	for file in `ls /usr/share/alocal/*m4`
+	do
+		ln -s $file "your prefix"/share/aclocal/
+	done
 	
-	Then you need to link all the m4 files from your system aclocal directory to the new one.
+Then you want to remove the m4 file for any of the things you are building.
 
-		for file in `ls /usr/share/alocal/*m4`
-		do
-			ln -s $file "your prefix"/share/aclocal/
-		done
-	
-	Then you want to remove the m4 file for any of the things you are building.
-
-		for link in glib.m4 gtk.m4 imlib.m4 libIDL.m4 ORBit.m4\
-			    libart.m4 gnet.m4 oaf.m4 gconf.m4 gdk-pixbuf.m4
-		do
-			rm "your prefix"/$link
-		done
+	for link in glib.m4 gtk.m4 imlib.m4 libIDL.m4 ORBit.m4\
+		    libart.m4 gnet.m4 oaf.m4 gconf.m4 gdk-pixbuf.m4
+	do
+		rm "your prefix"/$link
+	done
 		
 * Build and install nautilus into your selected prefix.
+
+===============================
+5: Issues When Running Nautilus
+===============================
 
 Also, you need to do a "killall oafd; killall gconfd" before
 running Nautilus if OAF, GConf, or any of the .oafinfo files
