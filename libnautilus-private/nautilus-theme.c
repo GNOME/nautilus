@@ -85,6 +85,11 @@ load_theme_document (const char * theme_name)
 		theme_path = nautilus_pixmap_file (temp_str);
 		g_free(temp_str);
 	}
+
+	/* if the file cannot be found, return NULL for no document */
+	if (theme_path == NULL) {
+		return NULL;
+	}
 	
 	/* load and parse the theme file */
 	theme_document = xmlParseFile(theme_path);

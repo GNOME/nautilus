@@ -245,10 +245,12 @@ create_named_pixbuf (const char *name)
 	
 	path = nautilus_pixmap_file (name);
 
+	if (path == NULL) {
+		return NULL;
+	}
+
 	pixbuf = gdk_pixbuf_new_from_file (path);
 	g_free (path);
-
-	g_assert (pixbuf != NULL);
 
 	return pixbuf;
 }
@@ -288,7 +290,9 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 
 	icon_pixbuf = create_named_pixbuf (icon_name);
 	icon = nautilus_image_new ();
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
+	if (icon_pixbuf != NULL) {
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
+	}
 	gtk_box_pack_start (GTK_BOX (label_box), icon, FALSE, FALSE, 0);
 	label = make_anti_aliased_label (text);
 
@@ -649,15 +653,8 @@ static void
 set_page_sidebar (NautilusDruidPageEazel *page)
 {
 	GdkPixbuf *pixbuf;
-	char *file;
 
-	file = nautilus_pixmap_file ("druid_sidebar.png");
-	if (file != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file (file);
-	} else {
-		pixbuf = NULL;
-	}
-	g_free (file);
+	pixbuf = create_named_pixbuf ("druid_sidebar.png");
 
 	if (pixbuf != NULL) {
 		nautilus_druid_page_eazel_set_sidebar_image (page, pixbuf);
@@ -669,7 +666,6 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 {	
 	GtkWidget *dialog;
 	GtkWidget *druid;
-	char *file;
 	int i;
 	GtkWidget *container, *main_box, *label;
 	GdkPixbuf *pixbuf;
@@ -701,13 +697,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	}
 		
 	/* set up the initial page */
-	file = nautilus_pixmap_file ("druid_welcome.png");
-	if (file != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file (file);
-	} else {
-		pixbuf = NULL;
-	}
-	g_free (file);
+	pixbuf = create_named_pixbuf ("druid_welcome.png");
 
 	if (pixbuf != NULL) {
 		nautilus_druid_page_eazel_set_title_image (NAUTILUS_DRUID_PAGE_EAZEL (start_page), pixbuf);

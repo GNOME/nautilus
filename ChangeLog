@@ -1,3 +1,23 @@
+Sat Sep 02 02:56:48 2000  George Lebl <jirka@5z.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c (map_pixbuf),
+	  libnautilus-extensions/nautilus-theme.c (load_theme_document):
+	  Deal with the fact that nautilus_pixmap_file can return a NULL
+	  if the file doesn't exist.
+
+	* src/nautilus-first-time-druid.c (create_named_pixbuf),
+	  (make_hbox_user_level_radio_button):
+	  Deal with nautilus_pixmnap_file_returning NULL.  Also do
+	  not assert out when no icon can be loaded.  Things need to
+	  work/fail gracefully if icons are not installer properly instead of
+	  just asserting.
+	  (set_page_sidebar) (nautilus_first_time_druid_show):
+	  Use the create_named_pixbuf function for loading the pixbufs
+
+	* src/nautilus-shell.c (display_caveat):  Again deal with
+	  non-existant image.  If it doesn't exist don't even create the
+	  frame for the image.
+
 2000-09-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-types.h:

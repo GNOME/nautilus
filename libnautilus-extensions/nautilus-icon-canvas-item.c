@@ -1093,7 +1093,11 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 		if (icon_item->details->is_active) {
 			/* Load the audio symbol. */
 			audio_filename = nautilus_pixmap_file ("audio.png");
-			audio_pixbuf = gdk_pixbuf_new_from_file (audio_filename);
+			if (audio_filename != NULL) {
+				audio_pixbuf = gdk_pixbuf_new_from_file (audio_filename);
+			} else {
+				audio_pixbuf = NULL;
+			}
 			
 			/* Composite it onto the icon. */
 			if (audio_pixbuf != NULL) {

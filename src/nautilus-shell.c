@@ -181,16 +181,23 @@ display_caveat (GtkWindow *parent_window)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
 
-	frame = gtk_frame_new (NULL);
-	gtk_widget_show (frame);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
-  	gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, FALSE, 0);
-	
 	file_name = nautilus_pixmap_file ("About_Image.png");
-	pixmap = gnome_pixmap_new_from_file (file_name);
-	g_free (file_name);
-	gtk_widget_show (pixmap);
-	gtk_container_add (GTK_CONTAINER (frame), pixmap);
+	if (file_name != NULL) {
+		pixmap = gnome_pixmap_new_from_file (file_name);
+		g_free (file_name);
+
+		if (pixmap != NULL) {
+			frame = gtk_frame_new (NULL);
+			gtk_widget_show (frame);
+			gtk_frame_set_shadow_type (GTK_FRAME (frame),
+						   GTK_SHADOW_IN);
+			gtk_box_pack_start (GTK_BOX (vbox), frame,
+					    FALSE, FALSE, 0);
+
+			gtk_widget_show (pixmap);
+			gtk_container_add (GTK_CONTAINER (frame), pixmap);
+		}
+	}
 
   	text = gtk_label_new
 		(_("The Nautilus shell is under development; it's not "
