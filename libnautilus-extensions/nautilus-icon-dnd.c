@@ -228,10 +228,9 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 
 	container = NAUTILUS_ICON_CONTAINER (context->iterator_context);
 
-	nautilus_icon_canvas_item_get_icon_rectangle
-		(icon->item, &world_rect);
-	eel_gnome_canvas_world_to_window_rectangle
-		(GNOME_CANVAS (container), &world_rect, &window_rect);
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+	window_rect = eel_gnome_canvas_world_to_window_rectangle
+		(GNOME_CANVAS (container), world_rect);
 
 	uri = nautilus_icon_container_get_icon_uri (container, icon);
 	if (uri == NULL) {
@@ -551,9 +550,9 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 		NautilusIcon *icon;
 		icon = p->data;
 		
-		eel_gnome_canvas_world_to_canvas_rectangle (GNOME_CANVAS_ITEM (icon->item)->canvas, &point, &canvas_point);
-		
-		if (nautilus_icon_canvas_item_hit_test_rectangle (icon->item, &canvas_point)) {
+		canvas_point = eel_gnome_canvas_world_to_canvas_rectangle (GNOME_CANVAS_ITEM (icon->item)->canvas,
+									   point);
+		if (nautilus_icon_canvas_item_hit_test_rectangle (icon->item, canvas_point)) {
 			return icon;
 		}
 	}
@@ -1286,10 +1285,10 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	   to it, with the hope that we get it back someday as X Windows improves */
 	
         /* compute the image's offset */
-	nautilus_icon_canvas_item_get_icon_rectangle
-		(container->details->drag_icon->item, &world_rect);
-	eel_gnome_canvas_world_to_window_rectangle
-		(canvas, &world_rect, &window_rect);
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (
+		container->details->drag_icon->item);
+	window_rect = eel_gnome_canvas_world_to_window_rectangle
+		(canvas, world_rect);
         x_offset = dnd_info->drag_info.start_x - window_rect.x0;
         y_offset = dnd_info->drag_info.start_y - window_rect.y0;
         

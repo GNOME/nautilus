@@ -887,7 +887,7 @@ row_get_data_binder (EelCListRow *row, int row_index, gpointer data)
 	eel_list_get_initial_drag_offset (context->list, &drag_offset_x, &drag_offset_y);
 
 	/* adjust the icons to be vertically relative to the initial mouse click position */
-	icon_rect = eel_art_irect_offset_by (eel_gdk_rectangle_to_art_irect (&cell_rectangle),
+	icon_rect = eel_art_irect_offset_by (eel_gdk_rectangle_to_art_irect (cell_rectangle),
 		0, -drag_offset_y);
 
 	/* horizontally just center the outline rectangles -- this will make the outlines align with

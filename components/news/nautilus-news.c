@@ -597,9 +597,9 @@ draw_rss_items (RSSChannelData *channel_data,
 			if (!art_irect_empty (&dest_bounds)) {
 				eel_smooth_text_layout_draw_to_pixbuf
 					(smooth_text_layout, pixbuf,
-		 			 0, 0, &dest_bounds, GTK_JUSTIFY_LEFT,
-		 		 	TRUE, text_color,
-		 		 	EEL_OPACITY_FULLY_OPAQUE);
+		 			 0, 0, dest_bounds, GTK_JUSTIFY_LEFT,
+                                         TRUE, text_color,
+                                         EEL_OPACITY_FULLY_OPAQUE);
 									
 				/* draw the bullet */	
 				if (bullet != NULL) {

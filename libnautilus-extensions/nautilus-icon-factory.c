@@ -276,10 +276,10 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory,
 			      nautilus_icon_factory,
 			      GTK_TYPE_OBJECT)
 
-static NautilusIconFactory *global_icon_factory = NULL;
+	static NautilusIconFactory *global_icon_factory = NULL;
 
-static void
-destroy_icon_factory (void)
+	static void
+	destroy_icon_factory (void)
 {
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      icon_theme_changed_callback,
@@ -590,8 +590,8 @@ nautilus_icon_factory_destroy (GtkObject *object)
 
 static gboolean
 nautilus_icon_factory_possibly_free_cached_icon (gpointer key,
-						  gpointer value,
-						  gpointer user_data)
+						 gpointer value,
+						 gpointer user_data)
 {
         CacheIcon *icon;
 
@@ -1466,15 +1466,15 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			image_uri = nautilus_link_local_get_image_uri (file_path);
 			if (image_uri != NULL) {
 				/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file:// URIs? */
-				if (eel_istr_has_prefix (image_uri, "file://")) {
-					if (uri == NULL) {
-						uri = image_uri;
-					} else {
-						g_free (image_uri);
-					}
-				} else {
-					icon_name = image_uri;
-				}
+	if (eel_istr_has_prefix (image_uri, "file://")) {
+		if (uri == NULL) {
+			uri = image_uri;
+		} else {
+			g_free (image_uri);
+		}
+	} else {
+		icon_name = image_uri;
+	}
 			}
 			g_free (file_path);
 		}
@@ -2426,15 +2426,15 @@ GdkPixbuf * nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 									  
 
 static gboolean
-embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
+embedded_text_rect_usable (ArtIRect embedded_text_rect)
 {
-	if (art_irect_empty (embedded_text_rect)) {
+	if (art_irect_empty (&embedded_text_rect)) {
 		return FALSE;
 	}
 
-	if (embedded_text_rect->x1 - embedded_text_rect->x0 
+	if (embedded_text_rect.x1 - embedded_text_rect.x0 
 	    < MINIMUM_EMBEDDED_TEXT_RECT_WIDTH ||
-	    embedded_text_rect->y1 - embedded_text_rect->y0 
+	    embedded_text_rect.y1 - embedded_text_rect.y0 
 	    < MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT) {
 		return FALSE;
 	}
@@ -2470,14 +2470,13 @@ embedded_text_font_free (void)
 
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
-	    const ArtIRect *embedded_text_rect,
+	    ArtIRect embedded_text_rect,
 	    const char *text)
 {
 	EelSmoothTextLayout *smooth_text_layout;
 	GdkPixbuf *pixbuf_with_text;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
-	g_return_val_if_fail (embedded_text_rect != NULL, NULL);
 	
 	/* Quick out for the case where there's no place to embed the
 	 * text or the place is too small or there's no text.
@@ -2512,14 +2511,14 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
 	
 	eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
-						    pixbuf_with_text,
-						    0,
-						    0,
-						    embedded_text_rect,
-						    GTK_JUSTIFY_LEFT,
-						    FALSE,
-						    EEL_RGB_COLOR_BLACK,
-						    EEL_OPACITY_FULLY_OPAQUE);
+					       pixbuf_with_text,
+					       0,
+					       0,
+					       embedded_text_rect,
+					       GTK_JUSTIFY_LEFT,
+					       FALSE,
+					       EEL_RGB_COLOR_BLACK,
+					       EEL_OPACITY_FULLY_OPAQUE);
 	
 	gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 
@@ -2550,7 +2549,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	
 	/* Create a pixbuf with the text in it. */
 	pixbuf_with_text = embed_text (icon_without_text->pixbuf,
-				       &icon_without_text->details.text_rect,
+				       icon_without_text->details.text_rect,
 				       scalable_icon->embedded_text);
 	if (pixbuf_with_text == NULL) {
 		return icon_without_text;

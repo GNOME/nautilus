@@ -419,11 +419,10 @@ nautilus_about_update_authors (NautilusAbout *about)
 	EelScalableFont *plain_font;
 	
 	/* clear the author area */
-	eel_art_irect_assign (&author_area,
-				   AUTHOR_LEFT_POS - 24,
-				   AUTHOR_TOP_POS,
-				   2 * AUTHOR_COLUMN_WIDTH,
-				   AUTHOR_LINE_HEIGHT * ITEMS_PER_COLUMN);
+	author_area = eel_art_irect_assign (AUTHOR_LEFT_POS - 24,
+					    AUTHOR_TOP_POS,
+					    2 * AUTHOR_COLUMN_WIDTH,
+					    AUTHOR_LINE_HEIGHT * ITEMS_PER_COLUMN);
 	
 	eel_gdk_pixbuf_fill_rectangle_with_color
 		(about->details->background_pixbuf,

@@ -220,7 +220,7 @@ test_label_new (const char *text,
 /* Preferences hacks */
 void
 test_text_caption_set_text_for_int_preferences (EelTextCaption *text_caption,
-					 const char *name)
+						const char *name)
 {
 	int int_value;
 	char *text;
@@ -340,7 +340,7 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 	if (x0 == -1 && y0 == -1 && x1 == -1 && y1 == -1) {
 		EelDimensions dimensions;
 		dimensions = eel_gdk_pixbuf_get_dimensions (pixbuf);
-		area = eel_art_irect_assign_dimensions (0, 0, &dimensions);
+		area = eel_art_irect_assign_dimensions (0, 0, dimensions);
 	} else {
 		g_return_if_fail (x0 >= 0);
 		g_return_if_fail (y0 >= 0);
@@ -354,14 +354,14 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 	}
 	
 	eel_gdk_pixbuf_draw_to_pixbuf_tiled (tile_pixbuf,
-						  pixbuf,
-						  &area,
-						  gdk_pixbuf_get_width (tile_pixbuf),
-						  gdk_pixbuf_get_height (tile_pixbuf),
-						  0,
-						  0,
-						  opacity,
-						  GDK_INTERP_NEAREST);
+					     pixbuf,
+					     area,
+					     gdk_pixbuf_get_width (tile_pixbuf),
+					     gdk_pixbuf_get_height (tile_pixbuf),
+					     0,
+					     0,
+					     opacity,
+					     GDK_INTERP_NEAREST);
 
 	gdk_pixbuf_unref (tile_pixbuf);
 }

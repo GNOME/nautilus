@@ -1,3 +1,18 @@
+2001-04-30  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/news/nautilus-news.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	* src/file-manager/fm-list-view.c:
+	* src/nautilus-about.c:
+	* test/test.c:
+	Change parameters for functions that accept and return ArtIRect,
+	EelArtIPoint, ArtDRect, EelDimensions to pass by value instead of
+	by pointer.
+
 2001-04-30  Dan Mueth  <dan@eazel.com>
 
 	Updating Nautilus Quick Reference, both content and many
