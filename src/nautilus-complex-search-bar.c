@@ -569,13 +569,13 @@ criteria_invalid (NautilusComplexSearchBar *bar)
 	NautilusSearchBarCriterion *criterion;
 	char *text;
 	gboolean text_is_empty;
+	int size;
 	
 	g_assert (NAUTILUS_IS_COMPLEX_SEARCH_BAR (bar));
 
-	/* Walk through all value fields, checking whether any of them are empty.
-	 * Maybe someday we will also check the non-text fields to make sure 
-	 * they are set to sensible values somehow. 
-	 */
+	/* Walk through all value fields, checking whether any of them are empty. */
+	/* Also check the value of the size entry, if it's open to make sure
+	   it's actually a valid number */
 	for (node = bar->details->search_criteria; node != NULL; node = node->next) {
 		criterion = NAUTILUS_SEARCH_BAR_CRITERION (node->data);
 		if (criterion->details->use_value_entry) {
@@ -583,6 +583,13 @@ criteria_invalid (NautilusComplexSearchBar *bar)
 				(GTK_EDITABLE (criterion->details->value_entry),
 				0, -1);
 			text_is_empty = nautilus_str_is_empty (text);
+			if (criterion->details->type == NAUTILUS_SIZE_SEARCH_CRITERION) {
+				if (!nautilus_str_to_int (text, &size)) {
+					g_free (text);
+					return TRUE;
+				}
+			}
+
 			g_free (text);
 			if (text_is_empty) {
 				return TRUE;
