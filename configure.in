@@ -466,7 +466,7 @@ AC_MSG_CHECKING(for more warnings, including -Werror)
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	AC_MSG_RESULT(yes)
 	CFLAGS="$CFLAGS \
-	-Wall -Wuninitialized \
+	-Wall \
 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith \
 	-Wno-sign-compare -Wsign-promo \

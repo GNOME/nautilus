@@ -1,5 +1,11 @@
 2000-09-05  Pavel Cisler  <pavel@eazel.com>
 
+	* configure.in:
+	Remove the -Wuninitialized to unbreak the build.
+	(It should be part of -Wall so it's probably not needed anyhow).
+
+2000-09-05  Pavel Cisler  <pavel@eazel.com>
+
 	* components/help/converters/gnome-db2html2/gdb3html.c:
 	(xml_parse_document):
 	* components/help/hyperbola-nav-index.c: (end_element):
