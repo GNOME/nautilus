@@ -1,3 +1,14 @@
+2000-12-12  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* src/nautilus-window-menus.c:
+	(nautilus_window_bookmarks_preference_changed_callback),
+	(nautilus_window_initialize_bookmarks_menu):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	Added a preference remove callback - which fixes bug 5147.
+
 2000-12-12  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

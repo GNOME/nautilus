@@ -120,4 +120,6 @@ void               nautilus_send_history_list_changed             (void);
 void               nautilus_add_to_history_list                   (NautilusBookmark  *bookmark);
 GList *            nautilus_get_history_list                      (void);
 
+void		   nautilus_window_bookmarks_preference_changed_callback (gpointer user_data);
+
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

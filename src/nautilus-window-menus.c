@@ -1043,6 +1043,12 @@ edit_bookmarks (NautilusWindow *window)
 		(get_or_create_bookmarks_window (GTK_OBJECT (window)));
 }
 
+void
+nautilus_window_bookmarks_preference_changed_callback (gpointer user_data)
+{
+	refresh_bookmarks_menu (NAUTILUS_WINDOW (user_data));
+}
+
 static void
 refresh_bookmarks_menu (NautilusWindow *window)
 {
@@ -1117,7 +1123,7 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 	 * showing static bookmarks changes.
 	 */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-					   (NautilusPreferencesCallback)refresh_bookmarks_menu,
+					   nautilus_window_bookmarks_preference_changed_callback,
 					   window);
 		
 	/* Recreate dynamic part of menu if bookmark list changes */
