@@ -1,3 +1,29 @@
+2001-02-26  John Harper  <jsh@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 7073 (Alt-vs-Control, Sawfish-vs-Nautilus, arrow key
+	bindings problems.) - I also changed sawfish to use control by
+	default again.
+
+	* libnautilus-extensions/nautilus-list.c
+	(nautilus_list_keyboard_move_to, nautilus_list_keyboard_space):
+	changed GDK_CONTROL_MASK to GDK_MOD1_MASK to be consistent with
+	the icon container
+
+2001-02-26  John Harper  <jsh@eazel.com>
+
+	* components/services/install/nautilus-view/.cvsignore: 
+	* components/services/vault/.cvsignore: 
+	* components/services/vault/command-line/.cvsignore: 
+	* data/top/.cvsignore: 
+	* help/nautilus-quick-reference/C/.cvsignore: 
+	* help/nautilus-user-manual/C/.cvsignore: 
+	* help/nautilus-user-manual/es/.cvsignore: 
+	* helper-utilities/xml-migrate/.cvsignore:
+
+	Added and updated .cvsignore files to shut up cvs update
+
 2001-02-26  Eric Fischer <eric@eazel.com>
 
 	reviewed by: Robin Slomkoswki <rslomkow@eazel.com>

@@ -1171,7 +1171,7 @@ nautilus_list_keyboard_move_to (NautilusList *list, int row_index, GdkEventKey *
 
 	clist = NAUTILUS_CLIST (list);
 
-	if (event != NULL && (event->state & GDK_CONTROL_MASK) != 0) {
+	if (event != NULL && (event->state & GDK_MOD1_MASK) != 0) {
 		/* Move the keyboard focus. */
 		nautilus_list_set_keyboard_focus (list, row_index);
 	} else {
@@ -1386,7 +1386,7 @@ nautilus_list_keyboard_page_down (NautilusList *list, GdkEventKey *event)
 static void
 nautilus_list_keyboard_space (NautilusList *list, GdkEventKey *event)
 {
-	if (event->state & GDK_CONTROL_MASK) {
+	if (event->state & GDK_MOD1_MASK) {
 		gtk_signal_emit_by_name (GTK_OBJECT (list), "toggle_focus_row");
 	}
 }
