@@ -1,3 +1,44 @@
+2000-08-30  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2393 (need cleaner way for directory view subclasses
+	to insert menu items)
+
+	I'm going to be futzing with directory view context menu items
+	soon, so I started by cleaning up the architecture a little to
+	make future futzing easier.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c: 
+	(set_menu_item_path): New function, stores the menu's path 
+	identifier in the GtkMenuItem (via set_data) so that it can
+	be compared against later.
+	(menu_item_matches_path): New function, checks whether a menu
+	item's stored path matches a specified one.
+	(fm_directory_view_add_context_menu_item): Renamed this function
+	from fm_directory_view_add_menu_item for clarity, and gave it
+	a path parameter so callers could specify the path by which the
+	item can later be identified. Calls set_menu_item_path with
+	path.
+	(append_gtk_menu_item_with_view): call set_menu_item_path.
+	(real_create_background_context_menu_zoom_items),
+	(fm_directory_view_real_create_background_context_menu_items):
+	Update for fm_directory_view_add_context_menu_item change.
+	(add_open_with_gtk_menu_item): Add comment about lameness that I
+	will fix soon.
+	(fm_directory_view_get_context_menu_index): Reimplement using
+	menu_item_matches_path instead of hardwiring indices that could
+	easily get out of synch with actual menu-creation code (and were
+	in fact out of synch). Added a GtkMenu parameter as part of this.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Update for fm_directory_view_add_context_menu_item change.
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_create_selection_context_menu_items),
+	* src/file-manager/fm-search-list-view.c:
+	(real_create_selection_context_menu_items): Update for
+	fm_directory_view_get_context_menu_index change.
+
 2000-08-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-throbber.c: (get_throbber_dimensions),

@@ -283,7 +283,8 @@ void               fm_directory_view_move_copy_items                (const GList
 								     int                    x,
 								     int                    y,
 								     FMDirectoryView       *view);
-gint               fm_directory_view_get_context_menu_index         (const char            *menu_name);
+gint               fm_directory_view_get_context_menu_index         (GtkMenu 		   *menu,
+								     const char            *menu_name);
 
 
 /* Wrappers for signal emitters. These are normally called 
@@ -308,9 +309,10 @@ NautilusBackground *fm_directory_view_get_background		    (FMDirectoryView 	   *
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);
-void		   fm_directory_view_add_menu_item		    (FMDirectoryView 	   *view, 
+void		   fm_directory_view_add_context_menu_item	    (FMDirectoryView 	   *view, 
 								     GtkMenu 		   *menu, 
 								     const char 	   *label,
+								     const char 	   *path,
 								     void 		  (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
 								     gboolean 		   sensitive);
 void		   fm_directory_view_new_folder			    (FMDirectoryView       *view);

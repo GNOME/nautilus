@@ -499,7 +499,7 @@ fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 	 * Duplicate item created by the FMDirectoryView.
 	 */
 	position = fm_directory_view_get_context_menu_index
-		(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1;
+		(menu, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1;
      	insert_one_context_menu_item
 		(FM_ICON_VIEW (view), menu, selection, 
 		 MENU_PATH_RENAME, position,

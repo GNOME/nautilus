@@ -343,7 +343,7 @@ real_create_selection_context_menu_items (FMDirectoryView *view,
 	 * existing Open With item.
 	 */
 	position = fm_directory_view_get_context_menu_index
-		(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) + 1;
+		(menu, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) + 1;
 	compute_reveal_item_name_and_sensitivity (selection, FALSE, &name, &sensitive);
         menu_item = gtk_menu_item_new_with_label (name);
         g_free (name);

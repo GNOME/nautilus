@@ -2374,6 +2374,22 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 }
 
 static void
+set_menu_item_path (GtkMenuItem *item, const char *path)
+{
+	/* set_data_full is unhappy if you give it a destroy_func
+	 * and a NULL, even though it would work fine in this case.
+	 */
+	if (path == NULL) {
+		return;
+	}
+
+	gtk_object_set_data_full (GTK_OBJECT (item),
+				  "path",
+				  g_strdup (path),
+				  g_free);
+}
+
+static void
 append_gtk_menu_item_with_view (FMDirectoryView *view,
 			        GtkMenu *menu,
 			        GList *files,
@@ -2388,6 +2404,8 @@ append_gtk_menu_item_with_view (FMDirectoryView *view,
         compute_menu_item_info (view, path, files, FALSE, &label_string, &sensitive);
         menu_item = gtk_menu_item_new_with_label (label_string);
         g_free (label_string);
+
+        set_menu_item_path (GTK_MENU_ITEM (menu_item), path);
 
         if (sensitive) {
         	if (view != NULL) {
@@ -2430,10 +2448,16 @@ append_selection_menu_subtree (FMDirectoryView *view,
         			   GTK_WIDGET (child_menu));
 }
 
+/* FIXME: John, you bozo, explain this confusing function in a comment
+ * or redesign it out of existence.
+ */
 void
-fm_directory_view_add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
-	       void (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
-	       gboolean sensitive)
+fm_directory_view_add_context_menu_item (FMDirectoryView *view, 
+					 GtkMenu *menu, 
+					 const char *label,
+					 const char *path,
+	       				 void (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
+	       				 gboolean sensitive)
 {
 	GtkWidget *menu_item;
 	guint accel_key;
@@ -2448,6 +2472,9 @@ fm_directory_view_add_menu_item (FMDirectoryView *view, GtkMenu *menu, const cha
 					    accel_key, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 	}
 	
+	/* Store menu path in item, so we can find this item by path later */
+	set_menu_item_path (GTK_MENU_ITEM (menu_item), path);
+
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (activate_handler), view);
 	finish_adding_menu_item (menu, menu_item, sensitive);
@@ -2464,11 +2491,11 @@ real_create_background_context_menu_zoom_items (FMDirectoryView *view,
 	gtk_menu_append (menu, menu_item);
 
 	
-	fm_directory_view_add_menu_item (view, menu, _("Zoom In"), zoom_in_callback,
+	fm_directory_view_add_context_menu_item (view, menu, _("Zoom In"), NULL, zoom_in_callback,
 		       fm_directory_view_can_zoom_in (view));
-	fm_directory_view_add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
+	fm_directory_view_add_context_menu_item (view, menu, _("Zoom Out"), NULL, zoom_out_callback,
 		       fm_directory_view_can_zoom_out (view));
-	fm_directory_view_add_menu_item (view, menu, _("Normal Size"), zoom_default_callback, TRUE);
+	fm_directory_view_add_context_menu_item (view, menu, _("Normal Size"), NULL, zoom_default_callback, TRUE);
 }
 
 static void
@@ -2498,10 +2525,18 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 							     GtkMenu *menu)
 
 {
-	fm_directory_view_add_menu_item (view, menu, _("_New Folder"), new_folder_menu_item_callback,
-		       			 TRUE);
-	fm_directory_view_add_menu_item (view, menu, _("Select _All Files"), select_all_callback,
-		       			 TRUE);
+	fm_directory_view_add_context_menu_item 
+		(view, menu, 
+		 _("_New Folder"), 
+		 FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
+		 new_folder_menu_item_callback, 
+		 TRUE);
+	fm_directory_view_add_context_menu_item 
+		(view, menu, 
+		 _("Select _All Files"), 
+		 NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
+		 select_all_callback, 
+		 TRUE);
 
 	create_background_context_menu_zoom_items (view, menu);
 }
@@ -2542,7 +2577,8 @@ static void
 add_open_with_gtk_menu_item (GtkMenu *menu, const char *label)
 {
 	GtkWidget *menu_item;
-
+	
+	/* FIXME: This is only called to add a separator? */
 	if (label != NULL) {
 		menu_item = gtk_menu_item_new_with_label (label);
 	} else {
@@ -3768,51 +3804,49 @@ fm_directory_view_can_accept_item (NautilusFile *target_item,
 	return nautilus_drag_can_accept_item (target_item, item_uri);
 }
 
+static gboolean
+menu_item_matches_path (GtkMenuItem *item, const char *path)
+{
+	return nautilus_strcmp ((const char *)gtk_object_get_data (GTK_OBJECT (item), "path"), path) == 0;
+}
+
 /**
  * fm_directory_view_get_context_menu_index:
  * 
- * Return index of menu item in context menu.  This function only
- * works if it is referring to the context menu that is displayed
- * when it is brought up in response to a click on an icon item.
- * Return -1 if item is not found
+ * Return index of specified menu item in the passed-in context menu.
+ * Return -1 if item is not found. This is intended for subclasses to 
+ * use to properly position new items in the context menu.
  * 
- * @menu_name: Item index to be returned.
+ * @menu: A GtkMenu, either the item-specific or background context menu
+ * as passed to _create_selection_context_menu_items or
+ * _create_background_context_menu_items.
+ * @menu_path: Item whose index in @menu should be returned.
  */
 int
-fm_directory_view_get_context_menu_index (const char *menu_name)
+fm_directory_view_get_context_menu_index (GtkMenu *menu, const char *menu_path)
 {
-	g_return_val_if_fail (menu_name != NULL, -1);
+	GList *children, *node;
+	GtkMenuItem *menu_item;
+	int index;
+	int result;
 
-	/* FIXME bugzilla.eazel.com 2393: It's very bad to have this redundant information
-         * here that replicates what's done in the function above that
-	 * creates the context menu. We should make a cleaner way of
-	 * doing this.
-	 */
-	if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_OPEN, menu_name) == 0) {
-		return 0;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, menu_name) == 0) {
-		return 1;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH, menu_name) == 0) {
-		return 2;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_DELETE, menu_name) == 0) {
-		return 3;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_TRASH, menu_name) == 0) {
-		return 3;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {
-		return 4;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK, menu_name) == 0) {
-		return 5;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES, menu_name) == 0) {
-		return 6;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS, menu_name) == 0) {
-		return 7;
-	/* Separator at position 8 */
-	} else if (strcmp (NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, menu_name) == 0) {
-		return 9;
-	} else {
-		/* No match found */
-		return -1;
+	g_return_val_if_fail (GTK_IS_MENU (menu), -1);
+	g_return_val_if_fail (menu_path != NULL, -1);
+
+	children = gtk_container_children (GTK_CONTAINER (menu));
+	result = -1;
+	
+	for (node = children, index = 0; node != NULL; node = node->next, ++index) {
+		menu_item = GTK_MENU_ITEM (node->data);
+		if (menu_item_matches_path (menu_item, menu_path)) {
+			result = index;
+			break;
+		}
 	}
+
+	g_list_free (children);
+
+	return result;
 }
 
 static void

@@ -469,10 +469,10 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 
 	/* We are not calling the parent class because we don't want the zoom menu items here.
 	 * Is there a better way to do this? */
-	fm_directory_view_add_menu_item (view, menu, _("_New Folder"), new_folder_menu_item_callback,
+	fm_directory_view_add_context_menu_item (view, menu, _("_New Folder"), NULL, new_folder_menu_item_callback,
 		       			 TRUE);
 
-	fm_directory_view_add_menu_item (view, menu, _("New Terminal"), new_terminal_menu_item_callback,
+	fm_directory_view_add_context_menu_item (view, menu, _("New Terminal"), NULL, new_terminal_menu_item_callback,
 					 TRUE);
 
 	/* Add Disks item to show state of removable volumes */
