@@ -684,64 +684,40 @@ desktop_icons_sort (gconstpointer a, gconstpointer b)
 	}
 
 	file_a = nautilus_file_get (uri_a);
-	if (file_a == NULL) {
-		g_free (uri_a);
-		g_free (uri_b);
-		return 0;
-	}
-
+	g_assert (file_a);
 	file_b = nautilus_file_get (uri_b);
-	if (file_b == NULL) {
-		nautilus_file_unref (file_a);
-		g_free (uri_a);
-		g_free (uri_b);
-		return 0;
-	}
-
+	g_assert (file_b);
+	
 	/* Non link files go after all links */
-	if (!nautilus_file_is_nautilus_link (file_a) || !nautilus_file_is_nautilus_link (file_b)) {
+	if (!nautilus_file_is_nautilus_link (file_a)) {
 		nautilus_file_unref (file_a);
 		nautilus_file_unref (file_b);
 		g_free (uri_a);
 		g_free (uri_b);
 		return 1;
+	}
+
+	if (!nautilus_file_is_nautilus_link (file_b)) {
+		nautilus_file_unref (file_a);
+		nautilus_file_unref (file_b);
+		g_free (uri_a);
+		g_free (uri_b);
+		return -1;
 	}
 	
 	/* If we get here, both files are links */
 
-	/* Get uri.  If we fail, send file to end */
-	vfs_uri_a = gnome_vfs_uri_new (uri_a);
-	if (vfs_uri_a == NULL) {
-		nautilus_file_unref (file_a);
-		nautilus_file_unref (file_b);
-		g_free (uri_a);
-		g_free (uri_b);
-		return 1;
-	}
-	
+	/* Get uris */
+	vfs_uri_a = gnome_vfs_uri_new (uri_a);	
+	g_assert (vfs_uri_a);
 	vfs_uri_b = gnome_vfs_uri_new (uri_b);
-	if (vfs_uri_b == NULL) {
-		nautilus_file_unref (file_a);
-		nautilus_file_unref (file_b);
-		g_free (uri_a);
-		g_free (uri_b);
-		gnome_vfs_uri_unref (vfs_uri_a);
-		return 1;
-	}
+	g_assert (vfs_uri_b);
 
 	/* Get paths */
 	path_a = gnome_vfs_uri_get_path (vfs_uri_a);
+	g_assert (path_a);
 	path_b = gnome_vfs_uri_get_path (vfs_uri_b);
-
-	if (path_a == NULL || path_b == NULL) {
-		nautilus_file_unref (file_a);
-		nautilus_file_unref (file_b);
-		g_free (uri_a);
-		g_free (uri_b);
-		gnome_vfs_uri_unref (vfs_uri_a);
-		gnome_vfs_uri_unref (vfs_uri_b);
-		return 1;
-	}
+	g_assert (path_b);
 
 	/* Done with NautilusFiles and uris */
 	nautilus_file_unref (file_a);
@@ -767,7 +743,7 @@ desktop_icons_sort (gconstpointer a, gconstpointer b)
 			gnome_vfs_uri_unref (vfs_uri_a);
 			gnome_vfs_uri_unref (vfs_uri_b);
 			g_free (link_type);
-			return -1;
+			return 1;
 		}
 		g_free (link_type);
 	}	
@@ -1004,7 +980,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 			get_best_empty_grid_location (icon, icon_grid, num_rows, num_columns,
 						      &x, &y);
 			icon_set_position (icon, x, y);
-			/* Add new placed icon to grid */
+			/* Add newly placed icon to grid */
 			mark_icon_location_in_grid (icon, icon_grid, num_rows, num_columns);
 		}
 
@@ -1057,13 +1033,10 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 			break;
 
 		case NAUTILUS_ICON_CONTAINER_LAYOUT_T_B_L_R:
+		case NAUTILUS_ICON_CONTAINER_LAYOUT_T_B_R_L:
 			lay_down_icons_tblr (container, icons);
 			break;
-			
-		case NAUTILUS_ICON_CONTAINER_LAYOUT_T_B_R_L:
-			lay_down_icons_horizontal (container, icons, start_y);
-			break;
-			
+						
 		default:
 			break;
 	}
