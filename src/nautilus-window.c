@@ -45,6 +45,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkmenubar.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
@@ -331,6 +332,61 @@ set_initial_window_geometry (NautilusWindow *window)
 }
 
 static void
+menu_bar_no_resize_hack_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+{
+	/* do nothing */
+}
+
+static void
+menu_bar_no_resize_hack_menu_bar_finder (GtkWidget *child, gpointer data)
+{
+	if (GTK_IS_MENU_BAR (child)) {
+		* (GtkObject **) data = GTK_OBJECT (child);
+	}
+}
+
+/* Since there's only one desktop at a time, we can keep track
+ * of our faux-klass with a single static.
+ */
+static GtkObjectClass *menu_bar_no_resize_hack_klass;
+
+static void
+menu_bar_no_resize_hack_atexit (void)
+{
+	g_free (menu_bar_no_resize_hack_klass);
+}
+
+/* This fn is used to keep the desktop menu bar from resizing.
+ * It patches out its class with one where the size_allocate
+ * method has been replaced with a no-op.
+ */
+static void
+menu_bar_no_resize_hack (NautilusWindow *window)
+{
+	GtkObject *menu_bar;
+	GtkTypeQuery *type_query;
+	
+	menu_bar = NULL;
+	
+	nautilus_gtk_container_foreach_deep (GTK_CONTAINER (window), menu_bar_no_resize_hack_menu_bar_finder, &menu_bar);
+
+	g_return_if_fail (menu_bar != NULL);
+
+	if (menu_bar_no_resize_hack_klass == NULL) {
+		g_atexit (menu_bar_no_resize_hack_atexit);
+	}
+	
+	type_query = gtk_type_query (menu_bar->klass->type);
+	g_free (menu_bar_no_resize_hack_klass);
+	menu_bar_no_resize_hack_klass = g_memdup (menu_bar->klass, type_query->class_size);
+	g_free (type_query);
+	
+	((GtkWidgetClass *) menu_bar_no_resize_hack_klass)->size_allocate = menu_bar_no_resize_hack_size_allocate;
+
+	menu_bar->klass = menu_bar_no_resize_hack_klass;
+}
+
+static void
 nautilus_window_constructed (NautilusWindow *window)
 {
 	GtkWidget *location_bar_box;
@@ -437,8 +493,6 @@ nautilus_window_constructed (NautilusWindow *window)
 		e_paned_pack1 (E_PANED(window->content_hbox), GTK_WIDGET(window->sidebar), FALSE, FALSE);
 	}
 	
-
-
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
@@ -450,6 +504,12 @@ nautilus_window_constructed (NautilusWindow *window)
 					    STATUS_BAR_PATH, TRUE);
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    MENU_BAR_PATH, TRUE);
+
+		/* FIXME bugzilla.eazel.com 4752:
+		 * If we ever get the unsigned math errors in
+		 * gtk_menu_item_size_allocate fixed this can be removed.
+		 */
+		menu_bar_no_resize_hack (window);
 	}
 
 	/* Wrap the location bar in a control and set it up. */

@@ -1184,6 +1184,36 @@ nautilus_gtk_container_get_first_child (GtkContainer *container)
 	return first_child;
 }
 
+typedef struct {
+	GtkCallback   callback;
+	gpointer      callback_data;
+} container_foreach_deep_callback_data;
+
+static void
+container_foreach_deep_callback (GtkWidget *child, gpointer data)
+{
+	container_foreach_deep_callback_data *deep_data;
+
+	deep_data = (container_foreach_deep_callback_data *) data;
+
+	deep_data->callback (child, deep_data->callback_data);
+
+	if (GTK_IS_CONTAINER (child)) {
+		gtk_container_foreach (GTK_CONTAINER (child), container_foreach_deep_callback, data);
+	}
+}
+
+void
+nautilus_gtk_container_foreach_deep (GtkContainer *container,
+				     GtkCallback callback,
+				     gpointer callback_data)
+{
+	container_foreach_deep_callback_data deep_data;
+	deep_data.callback = callback;
+	deep_data.callback_data = callback_data;
+	gtk_container_foreach (container, container_foreach_deep_callback, &deep_data);
+}
+
 /* We have to supply a dummy pixmap to avoid the return_if_fail in gtk_pixmap_new. */
 GtkPixmap *
 nautilus_gtk_pixmap_new_empty (void)

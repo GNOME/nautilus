@@ -343,10 +343,6 @@ call_settings_changed (NautilusBackground *background)
  * Since there's no way to determine the origin of the x-event (or mark it)
  * we use this variable determine if we think the next PropertyNotify is
  * due to us.
- * 
- * It's not an infalible soln, another app changing this property at the
- * same would mess it up, but this is unlikely because it's not a setting
- * that's widely used.
  */
 static int set_root_pixmap_count = 0;
 
@@ -360,7 +356,7 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 
 	if (xevent->type == PropertyNotify && xevent->xproperty.atom == gdk_atom_intern("ESETROOT_PMAP_ID", TRUE)) {
 
-		/* ignore if nautilus caused it.
+		/* If we caused it, ignore it.
 		 */
 		if (set_root_pixmap_count > 0) {
 			--set_root_pixmap_count;
@@ -374,10 +370,6 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 	    	 * the new setting in gnome_config AFTER setting the root window's property -
 	    	 * i.e. after we get this event. How long afterwards is not knowable - we
 	    	 * guess half a second. Fixing this requires changing the capplet.
-	    	 */
-
-	    	/* FIXME bugzilla.eazel.com 3038:
-	    	 * We don't want to respond to an event we originated.
 	    	 */
 	    	gtk_timeout_add (500, (GtkFunction) (call_settings_changed), background);
 	}

@@ -91,6 +91,9 @@ GtkWidget *       nautilus_gtk_widget_find_windowed_ancestor   (GtkWidget       
 
 /* GtkContainer */
 GtkWidget        *nautilus_gtk_container_get_first_child       (GtkContainer           *container);
+void		  nautilus_gtk_container_foreach_deep	       (GtkContainer	       *container,
+								GtkCallback		callback,
+								gpointer		callback_data);
 
 /* GtkWindow */
 void		  nautilus_gtk_window_set_initial_geometry     (GtkWindow	       *window,
