@@ -38,6 +38,7 @@
 #include <libgnomeui/gnome-pixmap.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 
@@ -53,6 +54,7 @@ static guint signals[LAST_SIGNAL];
 
 static void     nautilus_zoom_control_class_initialize 	 (NautilusZoomControlClass *klass);
 static void     nautilus_zoom_control_initialize       	 (NautilusZoomControl *pixmap);
+static void	nautilus_zoom_control_destroy		 (GtkObject *object);
 static void     nautilus_zoom_control_draw 	       	 (GtkWidget *widget, 
 							  GdkRectangle *box);
 static int     nautilus_zoom_control_expose 		 (GtkWidget *widget, 
@@ -100,7 +102,9 @@ nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
 	object_class = (GtkObjectClass*) class;
 	widget_class = (GtkWidgetClass*) class;
 	parent_class = gtk_type_class (gtk_event_box_get_type ());
-	
+
+	object_class->destroy = nautilus_zoom_control_destroy;
+
 	widget_class->draw = nautilus_zoom_control_draw;
 	widget_class->expose_event = nautilus_zoom_control_expose;
 	widget_class->button_press_event = nautilus_zoom_control_button_press_event;
@@ -148,6 +152,14 @@ nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
 
 }
 
+static void 
+nautilus_zoom_control_destroy (GtkObject *object)
+{
+	nautilus_g_list_free_deep (NAUTILUS_ZOOM_CONTROL (object)->preferred_zoom_levels);
+	
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
 static void
 nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 {
@@ -158,9 +170,6 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	zoom_control->min_zoom_level = 0.0;
 	zoom_control->max_zoom_level = 2.0;
 	zoom_control->preferred_zoom_levels = NULL;
-	/* FIXME
-	 * need to nautilus_g_list_free_deep(zoom_control->preferred_zoom_levels) on destructions
-	 */
 
 	/* allocate the pixmap that holds the image */
 	
@@ -268,13 +277,9 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *zoom_control, double zoom_level
 {
 	GtkWidget *menu_item;
 	double	  *zoom_level_ptr;
-	char	  *item_text;
+	char	  item_text[8];
 	
-	item_text = (char*) g_malloc(8);
-	/* FIXME
-	 * need to make sure item_text is freed somewhere
-	 */
-	g_snprintf(item_text, 8, _("%.0f%%"), 100.0 * zoom_level);
+	g_snprintf(item_text, sizeof (item_text), _("%.0f%%"), 100.0 * zoom_level);
 
 	menu_item = gtk_menu_item_new_with_label (item_text);
 

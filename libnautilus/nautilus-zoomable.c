@@ -43,7 +43,8 @@ struct NautilusZoomableDetails {
 	double max_zoom_level;
 	gboolean is_continuous;
 
-	Nautilus_ZoomLevelList *preferred_zoom_levels;
+	Nautilus_ZoomLevel *preferred_zoom_levels;
+	int num_preferred_zoom_levels;
 	
 	Nautilus_ZoomableFrame zoomable_frame;
 };
@@ -63,6 +64,7 @@ enum {
 	ARG_MAX_ZOOM_LEVEL,
 	ARG_IS_CONTINUOUS,
 	ARG_PREFERRED_ZOOM_LEVELS,
+	ARG_NUM_PREFERRED_ZOOM_LEVELS,
 };
 
 static guint signals[LAST_SIGNAL];
@@ -126,7 +128,7 @@ nautilus_g_list_from_ZoomLevelList (const Nautilus_ZoomLevelList *zoom_level_lis
 {
 	GList *list;
 	int i;
-	double* zoom_level_ptr;
+	double *zoom_level_ptr;
 
 	list = NULL;
 	for (i = 0; i < zoom_level_list->_length; ++i) {
@@ -137,22 +139,19 @@ nautilus_g_list_from_ZoomLevelList (const Nautilus_ZoomLevelList *zoom_level_lis
 	return g_list_reverse (list);
 }
 
-static Nautilus_ZoomLevelList *
-nautilus_ZoomLevelList_from_zoom_levels (const double *zoom_levels, int num_levels)
+static Nautilus_ZoomLevel *
+nautilus_ZoomLevelListBuffer_from_zoom_levels (const double *zoom_levels, int num_levels)
 {
 	int i;
-	Nautilus_ZoomLevelList *list;
+	Nautilus_ZoomLevel *buffer;
 
-	list = Nautilus_ZoomLevelList__alloc ();
-	list->_maximum = num_levels;
-	list->_length = num_levels;
-	list->_buffer = CORBA_sequence_Nautilus_ZoomLevel_allocbuf (num_levels);
+	buffer = CORBA_sequence_Nautilus_ZoomLevel_allocbuf (num_levels);
+	
 	for (i = 0; i < num_levels; ++i) {
-		list->_buffer[i] = zoom_levels[i];
+		buffer[i] = zoom_levels[i];
 	}
-	CORBA_sequence_set_release (list, TRUE); 
 
-	return list;
+	return buffer;
 }
 
 static CORBA_double
@@ -195,7 +194,16 @@ static Nautilus_ZoomLevelList *
 impl_Nautilus_Zoomable__get_preferred_zoom_level_list (impl_POA_Nautilus_Zoomable *servant,
 					    		  CORBA_Environment      *ev)
 {
-	return servant->gtk_object->details->preferred_zoom_levels;
+	Nautilus_ZoomLevelList *list;
+
+	list = Nautilus_ZoomLevelList__alloc ();
+	list->_maximum = servant->gtk_object->details->num_preferred_zoom_levels;
+	list->_length = servant->gtk_object->details->num_preferred_zoom_levels;
+	list->_buffer = servant->gtk_object->details->preferred_zoom_levels;
+	
+	/*  set_release defaults to FALSE - CORBA_sequence_set_release (list, FALSE) */ 
+
+	return list;
 }
 
 static void
@@ -356,6 +364,10 @@ nautilus_zoomable_initialize_class (NautilusZoomableClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT | GTK_ARG_CONSTRUCT_ONLY,
 				 ARG_PREFERRED_ZOOM_LEVELS);
+	gtk_object_add_arg_type ("NautilusZoomable::num_preferred_zoom_levels",
+				 GTK_TYPE_INT,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_NUM_PREFERRED_ZOOM_LEVELS);
 }
 
 static void
@@ -385,6 +397,9 @@ nautilus_zoomable_set_arg (GtkObject      *object,
 	case ARG_PREFERRED_ZOOM_LEVELS:
 		zoomable->details->preferred_zoom_levels = GTK_VALUE_POINTER (*arg);
 		break;
+	case ARG_NUM_PREFERRED_ZOOM_LEVELS:
+		zoomable->details->num_preferred_zoom_levels = GTK_VALUE_INT (*arg);
+		break;
 	}
 }
 
@@ -412,6 +427,9 @@ nautilus_zoomable_get_arg (GtkObject      *object,
 		break;
 	case ARG_PREFERRED_ZOOM_LEVELS:
 		GTK_VALUE_POINTER (*arg) = NAUTILUS_ZOOMABLE (object)->details->preferred_zoom_levels;
+		break;
+	case ARG_NUM_PREFERRED_ZOOM_LEVELS:
+		GTK_VALUE_INT (*arg) = NAUTILUS_ZOOMABLE (object)->details->num_preferred_zoom_levels;
 		break;
 	}
 }
@@ -462,7 +480,8 @@ nautilus_zoomable_new_from_bonobo_control (BonoboControl *bonobo_control,
 						      "min_zoom_level", min_zoom_level,
 						      "max_zoom_level", max_zoom_level,
 						      "is_continuous",  is_continuous,
-						      "preferred_zoom_levels", nautilus_ZoomLevelList_from_zoom_levels (preferred_zoom_levels, num_preferred_zoom_levels),
+						      "preferred_zoom_levels", nautilus_ZoomLevelListBuffer_from_zoom_levels (preferred_zoom_levels, num_preferred_zoom_levels),
+						      "num_preferred_zoom_levels", num_preferred_zoom_levels,
 						      NULL));
 	
 	return zoomable;

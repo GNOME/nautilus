@@ -1,3 +1,22 @@
+2000-06-28  Michael Engber  <engber@eazel.com>
+
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_g_list_from_ZoomLevelList),
+	(nautilus_ZoomLevelListBuffer_from_zoom_levels),
+	(impl_Nautilus_Zoomable__get_preferred_zoom_level_list),
+	(nautilus_zoomable_initialize_class), (nautilus_zoomable_set_arg),
+	(nautilus_zoomable_get_arg),
+	(nautilus_zoomable_new_from_bonobo_control):
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_get_preferred_zoom_levels):
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_class_initialize),
+	(nautilus_zoom_control_destroy),
+	(nautilus_zoom_control_initialize), (create_zoom_menu_item):
+	Fixed 1497 - problems with freeing the CORBA returned preferred
+	zoom level lists. Finally done with 1425 - decoupling the zoom
+	control from insider knowledge of the icon/list views.
+
 2000-06-28  Darin Adler  <darin@eazel.com>
 
 	* components/music/nautilus-music-view.c:
