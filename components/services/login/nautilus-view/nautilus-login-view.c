@@ -118,7 +118,7 @@ generate_login_form (NautilusLoginView	*view) {
 	table = GTK_TABLE (gtk_table_new (4, 3, TRUE));
 
 	/* username */
-	temp_widget = gtk_label_new ("Nickname: ");
+	temp_widget = gtk_label_new ("User Name: ");
 
 	font = nautilus_font_factory_get_font_from_preferences (16);
 	nautilus_gtk_widget_set_font (temp_widget, font);
