@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.3.1\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
-"PO-Revision-Date: 2003-05-17 03:26+0800\n"
+"POT-Creation-Date: 2003-05-28 02:47+0800\n"
+"PO-Revision-Date: 2003-05-28 05:41+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -1025,10 +1025,13 @@ msgid ""
 "are: size, type, date_modified, date_changed, date_accessed, owner, group, "
 "permissions, octal_permissions and mime_type"
 msgstr ""
+"在圖示顯示模式中，或者在桌面中，圖示下方附帶的一系列標題。實際會顯示的標題數"
+"目取決於縮放倍率。可接受的值為：size、type、date_modified、date_changed、"
+"date_accessed、owner、group、permissions、octal_permissions 及 mime_type"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add nautilus to session"
-msgstr ""
+msgstr "將 nautilus 加入至作業階段"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
@@ -1107,11 +1110,11 @@ msgstr "桌面字型"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Desktop home icon name"
-msgstr ""
+msgstr "桌面中個人目錄圖示的名稱"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Desktop trash icon name"
-msgstr ""
+msgstr "桌面中垃圾桶圖示的名稱"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Enable 'special' flags in file preferences dialog"
@@ -1139,7 +1142,7 @@ msgstr "在書籤選單中隱藏預設的書籤。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "在桌面中顯示個人目錄圖示"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid ""
@@ -1244,14 +1247,13 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
-msgstr ""
+msgstr "如選用本選項，則桌面上會有一個圖示連結至個人目錄。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr "如選用本選項，nautilus 會在桌面上繪畫圖示。"
+msgstr "如選用本選項，則桌面上會有一個圖示連結至垃圾桶。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
@@ -1279,7 +1281,7 @@ msgstr "如選用本選項，新的視窗會使用較緊密的方式排列圖示
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, new windows will use manual layout by default."
-msgstr ""
+msgstr "如選用本選項，在新的視窗中，圖示預設會以自選的方式排列。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
@@ -1292,7 +1294,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "List of possible captions on icons"
-msgstr ""
+msgstr "圖示下方可以出現的標題"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid "Maximum handled files in a directory"
@@ -1378,6 +1380,9 @@ msgid ""
 "filesystems. If set to \"never\" then never bother to thumbnail images, just "
 "use a generic icon."
 msgstr ""
+"決定是否顯示圖像的縮圖。如果設定為“always”，即使是遠端檔案仍然必定會顯示縮"
+"圖。如果設定為“local_only”則只會顯示本機檔案的縮圖。如果設定為“never”則一定不"
+"會顯示縮圖，只會用一般的圖示代替。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid ""
@@ -1398,6 +1403,9 @@ msgid ""
 "remote server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
+"決定是否顯示目錄中副目錄或檔案的數目。如果設定為“always”，即使是遠端目錄仍然"
+"必定會顯示數目。如果設定為“local_only”則只會在本機目錄顯示數目。如果設定"
+"為“never”則一定不會計算數目。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1428,26 +1436,24 @@ msgid "The side pane view to show in newly opened windows."
 msgstr "在新的視窗中，側面窗格預設的顯示模式"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the home link icon on the "
 "desktop."
-msgstr "桌面圖示所使用的字型"
+msgstr "如果您想為桌面上的個人目錄圖示命名，可以在這裡指定。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "桌面圖示所使用的字型"
+msgstr "如果您想為桌面上的垃圾桶圖示命名，可以在這裡指定。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Trash icon visible on desktop"
-msgstr ""
+msgstr "在桌面上顯示垃圾桶圖示"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Type of click used to launch/open files"
-msgstr ""
+msgstr "使用指定的方式，按下滑鼠按鈕來啟動/開啟檔案"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid "Use manual layout new windows"
@@ -1464,6 +1470,9 @@ msgid ""
 "nautilus on massive directories. A negative value denotes no limit. The "
 "limit is approximate due to the reading of directories chunk-wise."
 msgstr ""
+"對於一些項目太多的目錄，將實際上顯示的項目數目減少至大約這個數字。這樣做的意"
+"義是避免 nautilus 因載入過大的目錄而不正常地結束。負數表示沒有限制。這個數字"
+"只是大約的數字，因為載入目錄時，每次讀取資料都是讀取多個項目的。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid "What to do with executable text files when activated"
@@ -1476,6 +1485,10 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
+"當啟用(點選或雙擊)可執行的文字檔時，會以哪一種方式處理。可接受的值為：\n"
+"“launch”會當它們作為程式來啟動\n"
+"“ask”會顯示對話方塊詢問使用者\n"
+"“display”會以文字檔方式顯示內容"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
@@ -1488,7 +1501,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "When to show number of items in a directory"
-msgstr "何時會在目錄中顯示項目的數目"
+msgstr "何時會在目錄中顯示有多少個項目"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "When to show preview text in icons"
@@ -1646,36 +1659,34 @@ msgstr "XIAFS 檔案系統"
 msgid "Xenix Volume"
 msgstr "Xenix 檔案系統"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "必須先登入才可使用 HTTP 代理伺服器。\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"存取“%s”前必須先登入。\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "密碼會以不加密的方式傳送。"
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "密碼會以加密的方式傳送。"
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "需要認證"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "重設"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "在桌面上"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+"您不可以刪除檔案系統圖示。如果您想卸載該檔案系統，請在該圖示上按右邊滑鼠按"
+"鈕，然後選「退出」。"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+msgid "Can't delete volume"
+msgstr "不可刪除檔案系統"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "垃圾桶"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2943,12 +2954,6 @@ msgstr "鏈結"
 msgid "link (broken)"
 msgstr "鏈結 (目標不存在)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "垃圾桶"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "一定(_A)"
@@ -3362,9 +3367,9 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"如果想使用快速搜尋功能，必須以 root 的身份修改檔案 %s。修改 enabled 設定"
+"如果想使用快速搜尋功能，必須以 root 的身分修改檔案 %s。修改 enabled 設定"
 "為“yes”會開啟 medusa 服務。\n"
-"如果要現在就啟用搜尋服務，應該以 root 的身份執行以下的指令：\n"
+"如果要現在就啟用搜尋服務，應該以 root 的身分執行以下的指令：\n"
 "\n"
 "medusa-indexd\n"
 "medusa-searchd\n"
@@ -3557,21 +3562,20 @@ msgid "No Application Associated"
 msgstr "沒有任何有關聯的程式"
 
 #: libnautilus-private/nautilus-program-chooser.c:1607
-#, fuzzy, c-format
+#, c-format
 msgid "There is no action associated with \"%s\"."
 msgstr "沒有任何和“%s”有關聯的處理程序。"
 
 #: libnautilus-private/nautilus-program-chooser.c:1608
-#, fuzzy
 msgid "No Action Associated"
-msgstr "沒有任何有關聯的程式"
+msgstr "沒有任何有關聯的處理程序"
 
 #. Note: This might be misleading in the components case, since the
 #. * user can't add components to the complete list even from the capplet.
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1615
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -3580,8 +3584,8 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"您可以在 GNOME 中將程式及檔案類型建立聯繫。是否立刻將這種檔案和其它程式建立聯"
-"繫？"
+"您可以在 GNOME 中將不同的檔案類型及程式建立聯繫。是否立刻將這種檔案和其它程式"
+"建立聯繫？"
 
 #: libnautilus-private/nautilus-program-chooser.c:1622
 msgid "Associate Application"
@@ -3590,32 +3594,32 @@ msgstr "和程式建立聯繫"
 #: libnautilus-private/nautilus-program-chooser.c:1648
 #, c-format
 msgid "The viewer associated with \"%s\" is invalid."
-msgstr ""
+msgstr "這個和“%s”有聯繫的顯示模式是無效的。"
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
 msgid "Invalid Viewer Associated"
-msgstr ""
+msgstr "聯繫了無效的顯示模式"
 
 #: libnautilus-private/nautilus-program-chooser.c:1651
 #, c-format
 msgid "The application associated with \"%s\" is invalid."
-msgstr ""
+msgstr "這個和“%s”有聯繫的程式是無效的。"
 
 #: libnautilus-private/nautilus-program-chooser.c:1652
 msgid "Invalid Application Associated"
-msgstr ""
+msgstr "聯繫了無效的程式"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
 #, c-format
 msgid "The action associated with \"%s\" is invalid."
-msgstr ""
+msgstr "這個和“%s”有聯繫的處理方式是無效的。"
 
 #: libnautilus-private/nautilus-program-chooser.c:1655
 msgid "Invalid Action Associated"
-msgstr ""
+msgstr "聯繫了無效的處理方式"
 
 #: libnautilus-private/nautilus-program-chooser.c:1658
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -3625,12 +3629,12 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"您可以在 GNOME 中將程式及檔案類型建立聯繫。是否立刻將這種檔案和其它程式建立聯"
-"繫？"
+"您可以在 GNOME 中將這類檔案和不同的程式/顯示模式建立聯繫。是否立刻將這類檔案"
+"和其它程式/顯示模式建立聯繫？"
 
 #: libnautilus-private/nautilus-program-chooser.c:1665
 msgid "Associate Action"
-msgstr ""
+msgstr "和其它處理方式建立聯繫"
 
 #: libnautilus-private/nautilus-program-choosing.c:495
 #, c-format
@@ -3640,11 +3644,12 @@ msgid ""
 msgstr "“%s”無法開啟“%s”，因為“%s”無法存取“%s”中的檔案。是否選取其它應用程式？"
 
 #: libnautilus-private/nautilus-program-choosing.c:500
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  Would you like to choose another action?"
-msgstr "“%s”無法開啟“%s”，因為“%s”無法存取“%s”中的檔案。是否選取其它應用程式？"
+msgstr ""
+"預設的處理方式無法開啟“%s”，因為無法存取“%s”中的檔案。是否使用其它處理方式？"
 
 #: libnautilus-private/nautilus-program-choosing.c:506
 #: libnautilus-private/nautilus-program-choosing.c:537
@@ -3662,14 +3667,14 @@ msgstr ""
 "顯示該檔案。如果將該檔案複製至您的電腦中，也許可以開啟該檔案。"
 
 #: libnautilus-private/nautilus-program-choosing.c:531
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  No other actions are available to view this file.  If you copy "
 "this file onto your computer, you may be able to open it."
 msgstr ""
-"“%s”無法開啟“%s”，因為“%s”無法存取“%s”中的檔案。目前沒有其它應用程式可以用來"
-"顯示該檔案。如果將該檔案複製至您的電腦中，也許可以開啟該檔案。"
+"預設的處理方式無法開啟“%s”，因為無法存取“%s”中的檔案。目前沒有其它方式可以顯"
+"示該檔案。如果將該檔案複製至您的電腦中，也許可以開啟它。"
 
 #: libnautilus-private/nautilus-program-choosing.c:801
 msgid ""
@@ -3973,10 +3978,6 @@ msgstr "正在搜尋磁碟"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus 正在各磁碟中搜尋垃圾桶資料夾。"
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "在桌面上"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "修改"
@@ -4124,14 +4125,6 @@ msgstr "選取這個文字欄位中的所有文字"
 msgid "_Paste Text"
 msgstr "貼上文字(_P)"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "個人資料夾"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "在 Nautilus 檔案總管中瀏覽個人資料夾"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "設定如何管理檔案"
@@ -4139,6 +4132,14 @@ msgstr "設定如何管理檔案"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "檔案管理"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "個人資料夾"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "在 Nautilus 檔案總管中瀏覽個人資料夾"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4821,33 +4822,33 @@ msgstr "還原圖示尺寸(_Z)"
 msgid "pointing at \"%s\""
 msgstr "目標為“%s”"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "拖放圖示只在本機的檔案系統之間適用。"
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "拖放時發生錯誤"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "拖曳方式不正確。"
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "檔案名稱"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "大小"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "類型"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "最後修改日期"
@@ -4946,7 +4947,6 @@ msgstr "基本"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "名稱(_N)："
 
@@ -5096,8 +5096,8 @@ msgid "Creating Properties window"
 msgstr "正在顯示屬性視窗"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
-msgstr "選取新圖示︰"
+msgid "Select an icon"
+msgstr "選取圖示"
 
 #: src/file-manager/fm-search-list-view.c:124
 #, c-format
@@ -5129,7 +5129,7 @@ msgid ""
 "running \"medusa-indexd\" as root on the command line."
 msgstr ""
 "搜尋條件中的時間比最後一次進行索引的時間還要新。現在進行搜尋不會輸出任何結"
-"果。可以用 root 的身份在指令列中執行“medusa-indexd”來產生新的索引。"
+"果。可以用 root 的身分在指令列中執行“medusa-indexd”來產生新的索引。"
 
 #: src/file-manager/fm-search-list-view.c:196
 msgid "Search for items that are too new"
@@ -5157,7 +5157,7 @@ msgid ""
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
 msgstr ""
-"Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的身份"
+"Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的身分"
 "在指令列中執行“medusa-indexd”來產生新的索引。"
 
 #: src/file-manager/fm-search-list-view.c:214
@@ -5205,7 +5205,7 @@ msgid ""
 "medusa-searchd"
 msgstr ""
 "索引檔已經存在，但處理索引要求的 Medusa 搜尋伺服程式並沒有執行。如要執行該程"
-"式，請先以 root 身份登入並輸入以下指令：\n"
+"式，請先以 root 身分登入並輸入以下指令：\n"
 "\n"
 "medusa-searchd"
 
@@ -5240,7 +5240,7 @@ msgid ""
 "searches will take several minutes."
 msgstr ""
 "如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。目前該索引不存"
-"在。您可以用 root 的身份執行“medusa-indexd”來產生索引。今次的搜尋要求可能會需"
+"在。您可以用 root 的身分執行“medusa-indexd”來產生索引。今次的搜尋要求可能會需"
 "時數分鐘，直至有完整的索引為止。"
 
 #: src/file-manager/fm-search-list-view.c:298
@@ -5251,7 +5251,7 @@ msgid ""
 "index is available, content searches cannot be performed."
 msgstr ""
 "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案內容的索引。目前該索引"
-"檔不存在。您可以用 root 的身份執行“medusa-indexd”來產生索引。目前無法進行搜"
+"檔不存在。您可以用 root 的身分執行“medusa-indexd”來產生索引。目前無法進行搜"
 "尋，直至有完整的索引為止。"
 
 #: src/file-manager/fm-search-list-view.c:323
@@ -5585,7 +5585,7 @@ msgstr "切換是否使用較緊密的排列方式"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:24
 msgid "_Keep Aligned"
-msgstr ""
+msgstr "保持整齊排列(_K)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "_Manually"
@@ -5661,11 +5661,11 @@ msgstr "顯示索引化狀態(_I)"
 msgid "Show status of indexing used when searching"
 msgstr "當搜尋時顯示索引的狀態"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "無法新增所需的資料夾"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5675,11 +5675,11 @@ msgstr ""
 "Nautilus 無法新增所需的資料夾“%s”。執行 Nautilus 之前，請自行新增這些資料夾，"
 "或是設定正確的權限使 Nautilus 可以新增這些資料夾。"
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "無法新增所需的資料夾"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5696,21 +5696,22 @@ msgstr ""
 "執行 Nautilus 之前，請自行新增這些資料夾，或是設定正確的權限使 Nautilus 可以"
 "新增這些資料夾。"
 
-#: src/nautilus-application.c:300
-#, fuzzy
+#: src/nautilus-application.c:301
 msgid "Link To Old Desktop"
-msgstr "在桌面上"
+msgstr "舊桌面的鏈結"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
+"在 GNOME 2.4 中，桌面目錄的位置有所更改。桌面上會有一個新的鏈結，稱為「舊桌面"
+"的鏈結」。您可以在其中，將所有需要保留的檔案移至新的桌面，然後刪除該鏈結。"
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
-msgstr ""
+msgstr "成功合併舊的桌面"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -5722,7 +5723,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5732,7 +5733,7 @@ msgstr ""
 "請重新啟動電腦或是重新安裝 Nautilus。"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5774,12 +5775,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus 因為預計之外的錯誤而無法使用。"
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5787,7 +5788,7 @@ msgstr ""
 "目前無法使用 Nautilus，因為當嘗試登記檔案總管顯示模式伺服器時，Bonobo 出現預"
 "計之外的錯誤。"
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5796,7 +5797,7 @@ msgstr ""
 "Nautilus 目前無法使用，因為當 Bonobo 嘗試尋找工廠時出現預計之外的錯誤。強行中"
 "止 bonobo-activation-server 及重新啟動 Nautilus 或許可以修正問題。"
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5810,16 +5811,20 @@ msgid "No bookmarks defined"
 msgstr "未定義任何書籤"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "修改書籤"
+msgid "<b>_Bookmarks</b>"
+msgstr "<b>書籤</b>(_B)"
 
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
-msgstr "書籤(_B)"
+#: src/nautilus-bookmarks-window.glade.h:2
+msgid "<b>_Location</b>"
+msgstr "<b>位置</b>(_L)"
 
 #: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
-msgstr "位置(_L)："
+msgid "<b>_Name</b>"
+msgstr "<b>名稱</b>(_N)"
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "修改書籤"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6258,8 +6263,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "抱歉，‘%s’不是可用的圖像檔！"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
-msgstr "選取種類："
+msgid "Select a Category:"
+msgstr "選取類別："
 
 #: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
@@ -6507,6 +6512,10 @@ msgstr "新增伺服程式"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+msgid "_Connect"
+msgstr "連接(_C)"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "將目前的位置加入書籤中"
@@ -6730,6 +6739,10 @@ msgstr "上一頁(_B)"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "背景及圖章(_B)"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "書籤(_B)"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -6984,7 +6997,7 @@ msgid ""
 "Check that an SMB server is running in the local network."
 msgstr ""
 "無法顯示“%s”，因為 Nautilus 無法聯絡 SMB master browser。\n"
-"請檢查本地網路中有 SMB 伺服器正在運行。"
+"請確保本地網路中已經有運行中的 SMB 伺服器。"
 
 #: src/nautilus-window-manage-views.c:1417
 msgid ""
@@ -7156,6 +7169,15 @@ msgstr "網路伺服器"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "密碼會以不加密的方式傳送。"
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "密碼會以加密的方式傳送。"
+
+#~ msgid "Authentication Required"
+#~ msgstr "需要認證"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "垃圾桶必須留於桌面上。"
