@@ -1,3 +1,10 @@
+2004-06-02  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-directory-view.c:
+	(disconnect_model_handlers):
+	Remove directory monitor after cancelling the callbacks.
+	Fixes a rare crash during list view destruction (#143561).
+
 2004-06-01  Dave Camp  <dave@novell.com>
 
 	* src/nautilus-file-management-properties.c:
