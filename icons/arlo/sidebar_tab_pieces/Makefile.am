@@ -7,6 +7,7 @@ arlotab_DATA = \
 	fill-empty-space.png			\
 	fill-prelight.png			\
 	fill.png				\
+	left-bumper.png				\
 	left-bumper-active.png			\
 	left-bumper-prelight.png		\
 	middle-normal-normal.png		\
