@@ -57,6 +57,22 @@ struct _RsvgFTCtx {
 
 	GHashTable *font_hash_table; /* map filename to RsvgFTFontCacheEntry */
 
+	/* Notes on the font list:
+
+	   There is a font list entry for each font that is "intern"ed.
+	   This entry persists for the life of the RsvgFTCtx structure.
+	   These entry correspond one-to-one with font handles, which
+	   begin at 0 and allocate upwards.
+
+	   Each entry in the font list may be either loaded or not, as
+	   indicated by the non-NULL status of the font element of the
+	   RsvgFTFontCacheEntry.
+
+	   The lru list (first and last pointers here, prev and next
+	   pointers in the RsvgFTFontCacheEntry) contains only loaded
+	   fonts. This should be considered an invariant.
+	*/
+
 	int n_font_list;
 	RsvgFTFontCacheEntry **font_list;
 	RsvgFTFontCacheEntry *first, *last;
@@ -313,6 +329,7 @@ rsvg_ft_ctx_done (RsvgFTCtx *ctx) {
 			FT_Done_Face (font->face);
 			g_free (font);
 		}
+		g_free (entry);
 	}
 	g_free (ctx->font_list);
 
@@ -374,25 +391,7 @@ rsvg_ft_intern (RsvgFTCtx *ctx, const char *font_file_name)
 	RsvgFTFontCacheEntry *entry;
 
 	entry = g_hash_table_lookup (ctx->font_hash_table, font_file_name);
-	if (entry != NULL) {
-		/* found in font list */
-
-		/* todo: I think moving the font to the front of the
-		   lru list should happen on resolve, not intern */
-		/* move entry to front of LRU list */
-		if (entry->prev != NULL) {
-			entry->prev->next = entry->next;
-			if (entry->next != NULL) {
-				entry->next->prev = entry->prev;
-			} else {
-				ctx->last = entry->prev;
-			}
-			entry->prev = NULL;
-			entry->next = ctx->first;
-			ctx->first->prev = entry;
-			ctx->first = entry;
-		}
-	} else {
+	if (entry == NULL) {
 		/* not found in font list */
 		int n_font_list;
 
@@ -403,12 +402,7 @@ rsvg_ft_intern (RsvgFTCtx *ctx, const char *font_file_name)
 		entry->handle = n_font_list;
 		entry->font = NULL;
 		entry->prev = NULL;
-		entry->next = ctx->first;
-		if (ctx->first != NULL)
-			ctx->first->prev = entry;
-		else
-			ctx->last = entry;
-		ctx->first = entry;
+		entry->next = NULL;
 		if (n_font_list == 0) {
 			ctx->font_list = g_new (RsvgFTFontCacheEntry *, 1);
 		} else if (!(n_font_list & (n_font_list - 1))) {
@@ -454,6 +448,53 @@ rsvg_ft_font_attach (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 }
 
 /**
+ * rsvg_ft_font_evict: Evict least recently used font from font cache.
+ * @ctx: Rsvg FT context.
+ *
+ * Removes the least recently used font from the font cache.
+ **/
+static void
+rsvg_ft_font_evict (RsvgFTCtx *ctx)
+{
+	RsvgFTFontCacheEntry *victim;
+	RsvgFTFont *font;
+
+#ifdef DEBUG
+	g_print ("rsvg_ft_font_evict: evicting!\n");
+#endif
+
+	victim = ctx->last;
+	if (victim == NULL) {
+		/* We definitely shouldn't get here, but if we do,
+		   print an error message that helps explain why we
+		   did. */
+		if (ctx->n_loaded_fonts > 0) {
+			g_error ("rsvg_ft_font_evict: no font in loaded font list to evict, but ctx->n_loaded_fonts = %d, internal invariant violated",
+				 ctx->n_loaded_fonts);
+		} else {
+			g_error ("rsvg_ft_font_evict: ctx->n_loaded_fonts_max = %d, it must be positive",
+				 ctx->n_loaded_fonts_max);
+		}
+	}
+
+	if (victim->prev == NULL)
+		ctx->first = NULL;
+	else
+		victim->prev->next = NULL;
+	if (victim->next != NULL) {
+		g_warning ("rsvg_ft_font_evict: last font in LRU font list has non-NULL next field, suggesting corruption of data structure");
+	}
+	ctx->last = victim->prev;
+
+	font = victim->font;
+	FT_Done_Face (font->face);
+	g_free (font);
+	victim->font = NULL;
+
+	ctx->n_loaded_fonts--;
+}
+
+/**
  * rsvg_ft_font_resolve: Resolve a font handle.
  * @ctx: Rsvg FT context.
  * @fh: Font handle.
@@ -474,23 +515,46 @@ rsvg_ft_font_resolve (RsvgFTCtx *ctx, RsvgFTFontHandle fh)
 		return NULL;
 	entry = ctx->font_list[fh];
 	if (entry->font == NULL) {
-		ctx->n_loaded_fonts++;
-		while (ctx->n_loaded_fonts > ctx->n_loaded_fonts_max) {
-			/* todo: evict lru */
-			break;
+		while (ctx->n_loaded_fonts >= ctx->n_loaded_fonts_max) {
+			rsvg_ft_font_evict (ctx);
 		}
 		font = rsvg_ft_load (ctx, entry->fn);
-		if (entry->fn_attached != NULL) {
-			FT_Error error;
+		if (font != NULL) {
+			if (entry->fn_attached != NULL) {
+				FT_Error error;
 
-			error = FT_Attach_File (font->face,
-						entry->fn_attached);
+				error = FT_Attach_File (font->face,
+							entry->fn_attached);
+			}
+			entry->font = font;
+			ctx->n_loaded_fonts++;
+
+			/* insert entry at front of list */
+			entry->next = ctx->first;
+			if (ctx->first != NULL)
+				ctx->first->prev = entry;
+			else
+				ctx->last = entry;
+			ctx->first = entry;
 		}
-		entry->font = font;
-	}
-	else {
+	} else {
 		font = entry->font;
+
+		/* move entry to front of LRU list */
+		if (entry->prev != NULL) {
+			entry->prev->next = entry->next;
+			if (entry->next != NULL) {
+				entry->next->prev = entry->prev;
+			} else {
+				ctx->last = entry->prev;
+			}
+			entry->prev = NULL;
+			entry->next = ctx->first;
+			ctx->first->prev = entry;
+			ctx->first = entry;
+		}
 	}
+
 	return font;
 }
 
@@ -867,4 +931,3 @@ rsvg_ft_glyph_unref (RsvgFTGlyph *glyph)
 		g_free (glyph);
 	}
 }
-
