@@ -35,6 +35,8 @@
 
 GtkWidget* create_image_widget						(const char *icon_name,
 									 const char *tile_icon_name);
+GtkWidget* create_image_widget_from_uri					(const char *uri,
+									 const char *tile_icon_name);
 GtkWidget* create_label_widget						(const char *text,
 									 guint	font_size,
 									 const char *tile_icon_name,

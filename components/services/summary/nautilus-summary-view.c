@@ -380,7 +380,6 @@ generate_summary_form (NautilusSummaryView	*view)
 		generate_service_entry_row (view, view->details->current_service_row);
 
 		g_free (service_node);
-
 		gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_row), FALSE, FALSE, 0);
 
 	}
@@ -525,7 +524,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Generate first box with service icon */
 	view->details->services_icon_container = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (view->details->services_icon_container);
-	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	view->details->services_icon_widget = create_image_widget_from_uri (view->details->services_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->services_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->services_icon_widget);
@@ -599,7 +598,7 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Generate first box with icon */
 	view->details->news_icon_container = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (view->details->news_icon_container);
-	view->details->news_icon_widget = create_image_widget (view->details->news_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	view->details->news_icon_widget = create_image_widget_from_uri (view->details->news_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->news_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->news_icon_container), view->details->news_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->news_icon_widget);
@@ -642,7 +641,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Generate first box with icon */
 	view->details->update_icon_container = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (view->details->update_icon_container);
-	view->details->update_icon_widget = create_image_widget (view->details->update_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	view->details->update_icon_widget = create_image_widget_from_uri (view->details->update_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->update_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->update_icon_container), view->details->update_icon_widget, 0, 0, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->updates_row), view->details->update_icon_container, FALSE, FALSE, 0);

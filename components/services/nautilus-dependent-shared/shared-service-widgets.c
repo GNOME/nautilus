@@ -28,6 +28,7 @@
 #include "shared-service-widgets.h"
 
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -36,36 +37,22 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-theme.h>
+
 #include <stdio.h>
 
-GtkWidget*
-create_image_widget (const char *icon_name,
-		     const char *tile_icon_name)
+/* private shared helper routine to create an image widget from a pixbuf */
+static GtkWidget*
+create_image_widget_from_pixbuf (GdkPixbuf *icon_pixbuf, const char *tile_icon_name)
 {
-	GtkWidget *image;
+	GtkWidget *image_widget;
 
-	g_return_val_if_fail (icon_name || tile_icon_name, NULL);
+	g_return_val_if_fail (icon_pixbuf || tile_icon_name, NULL);
 
-	image = nautilus_image_new ();
+	image_widget = nautilus_image_new ();
 
-	if (icon_name != NULL) {
-		char *icon_path;
-		
-		icon_path = nautilus_pixmap_file (icon_name);
-		
-		if (icon_path != NULL) {
-			GdkPixbuf *icon_pixbuf;
-			icon_pixbuf = gdk_pixbuf_new_from_file (icon_path);
-			g_free (icon_path);
-			
-			if (icon_pixbuf != NULL) {
-				nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), icon_pixbuf);
-				gdk_pixbuf_unref (icon_pixbuf);
-			}
-			else {
-				g_warning ("Could not find the requested icon: %s", icon_path);
-			}
-		}
+	if (icon_pixbuf != NULL) {
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image_widget), icon_pixbuf);
 	}
 
 	if (tile_icon_name != NULL) {
@@ -79,7 +66,7 @@ create_image_widget (const char *icon_name,
 			g_free (tile_icon_path);
 			
 			if (tile_icon_pixbuf != NULL) {
-				nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (image), tile_icon_pixbuf);
+				nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (image_widget), tile_icon_pixbuf);
 				gdk_pixbuf_unref (tile_icon_pixbuf);
 			}
 			else {
@@ -88,9 +75,70 @@ create_image_widget (const char *icon_name,
 		}
 	}
 
-	return image;
+	return image_widget;
 }
 
+/* create and return an image widget using a themed nautilus icon name and a tiled background */
+GtkWidget*
+create_image_widget (const char *icon_name, const char *tile_icon_name)
+{
+	GtkWidget *image_widget;
+	GdkPixbuf *pixbuf;
+	
+	g_return_val_if_fail (icon_name || tile_icon_name, NULL);
+
+	pixbuf = NULL;
+	if (icon_name != NULL) {
+		char *icon_path;
+		
+		icon_path = nautilus_theme_get_image_path (icon_name);
+		
+		if (icon_path != NULL) {
+			pixbuf = gdk_pixbuf_new_from_file (icon_path);
+			g_free (icon_path);
+			
+			if (pixbuf == NULL) {
+				g_warning ("Could not find the requested icon: %s", icon_path);
+			}
+		}
+	}
+	
+	/* create the image widget then release the pixbuf*/
+	image_widget = create_image_widget_from_pixbuf (pixbuf, tile_icon_name);
+	if (pixbuf != NULL) {
+		gdk_pixbuf_unref (pixbuf);
+	}
+	return image_widget;
+}
+
+/* create and return an image widget from a uri and a tiled background */
+GtkWidget*
+create_image_widget_from_uri (const char *uri, const char *tile_icon_name)
+{
+	GtkWidget *image_widget;
+	GdkPixbuf *pixbuf;
+	
+	g_return_val_if_fail (uri || tile_icon_name, NULL);
+
+	/* as an optimization, it can be a local file.  If it doesn't start with http://,
+	   just pass it on to create_image_widget */
+	if (!nautilus_istr_has_prefix (uri, "http://")) {
+		create_image_widget (uri, tile_icon_name);
+	}
+	
+	/* load the image - synchronously, at least at first */
+	pixbuf = nautilus_gdk_pixbuf_load (uri);
+	
+	/* create the image widget then release the pixbuf*/
+	image_widget = create_image_widget_from_pixbuf (pixbuf, tile_icon_name);
+	if (pixbuf != NULL) {
+		gdk_pixbuf_unref (pixbuf);
+	}
+	
+	return image_widget;
+}
+
+/* create a label widget with anti-aliased text and a tiled image background */
 GtkWidget*
 create_label_widget (const char		*text,
 		     guint		font_size,

@@ -1,3 +1,24 @@
+2000-10-22  Andy Hertzfeld  <andy@eazel.com>
+
+	made the images show up again in the summary view by adding
+	image fetching from the service via http.
+	
+	* components/services/nautilus-dependent-shared/
+	shared-service-widgets.c: (create_image_widget_from_pixbuf),
+	(create_image_widget), (create_image_widget_from_uri):
+	restructured code a bit so I could at fetching from a uri instead of
+	a local icon.  Added optimization so a local icon could be used
+	at the service's discretion.
+	
+	* components/services/nautilus-dependent-shared/
+	  shared-service-widgets.h:
+	added create_image_widget_from_uri
+	
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (generate_service_entry_row),
+	(generate_eazel_news_entry_row), (generate_update_news_entry_row):
+	made it fetch the icons from the service
+	
 2000-10-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* librsvg/rsvg.c: (rsvg_text_handler_characters),
