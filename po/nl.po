@@ -9,12 +9,12 @@
 # Ronald Hummelink <ronald@hummelink.xs4all.nl>, 2002.
 # Jordi Bosveld <jotti@jotti.dhs.org>, 2002.
 # Reinout van Schouwen <reinout@cs.vu.nl>, 2002
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2002-11-25 21:44-0500\n"
-"PO-Revision-Date: 2002-08-10 21:32+0100\n"
+"POT-Creation-Date: 2002-12-01 06:18+0100\n"
+"PO-Revision-Date: 2002-12-04 23:48+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,14 +52,12 @@ msgid "Emblems"
 msgstr "Emblemen"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
-#, fuzzy
 msgid "Nautilus Emblem side pane"
-msgstr "Nautilus boom-zijpaneel"
+msgstr "Nautilus embleem-zijpaneel"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Emblem view"
-msgstr "Nautilus Voorbeeldvenster"
+msgstr "Nautilus embleemvenster"
 
 #: components/emblem/nautilus-emblem-view.c:202
 #, c-format
@@ -67,11 +65,12 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
+"Kon het embleem met de naam '%s' niet verwijderen. Waarschijnlijk komt dit "
+"doordat het een permanent embleem is, en niet één die u zelf hebt toegevoegd."
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy
 msgid "Couldn't remove emblem"
-msgstr "Kon het thema niet verwijderen"
+msgstr "Kon het embleem niet verwijderen"
 
 #: components/emblem/nautilus-emblem-view.c:237
 #, c-format
@@ -79,55 +78,57 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
+"Kon het embleem met de naam '%s' niet hernoemen. Waarschijnlijk komt dit "
+"doordat het een permanent embleem is, en niet één die u zelf hebt toegevoegd."
 
 #: components/emblem/nautilus-emblem-view.c:238
-#, fuzzy
 msgid "Couldn't rename emblem"
-msgstr "Kon het embleem niet installeren"
+msgstr "Kon het embleem niet hernoemen"
 
 #: components/emblem/nautilus-emblem-view.c:257
-#, fuzzy
 msgid "Rename Emblem"
-msgstr "Een embleem verwijderen..."
+msgstr "Embleem hernoemen"
 
 #: components/emblem/nautilus-emblem-view.c:276
-#, fuzzy
 msgid "Enter a new name for the displayed emblem:"
-msgstr "Selecteer een afbeelding voor het nieuwe embleem:"
+msgstr "Geef een nieuwe naam voor het weergegeven embleem:"
 
 #: components/emblem/nautilus-emblem-view.c:330
-#, fuzzy
 msgid "Rename"
-msgstr "He_rnoemen..."
+msgstr "Hernoemen"
 
 #: components/emblem/nautilus-emblem-view.c:497
-#, fuzzy
 msgid "Add Emblems..."
-msgstr "Nieuw embleem _toevoegen..."
+msgstr "Emblemen toevoegen..."
 
 #: components/emblem/nautilus-emblem-view.c:513
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Geef een beschrijvende naam bij elk embleem. Deze naam wordt op andere "
+"plaatsen gebruikt om het embleem te identificeren."
 
 #: components/emblem/nautilus-emblem-view.c:515
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Geef een beschrijvende naam bij het embleem. Deze naam wordt op andere "
+"plaatsen gebruikt om het embleem te identificeren."
 
 #: components/emblem/nautilus-emblem-view.c:718
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Sommige van de bestanden konden niet als emblemen worden toegevoegd omdat ze "
+"geen geldige bestanden lijken te zijn."
 
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
-#, fuzzy
 msgid "Couldn't add emblems"
-msgstr "Kon thema niet toevoegen"
+msgstr "Kon emblemen niet toevoegen"
 
 #: components/emblem/nautilus-emblem-view.c:720
 msgid ""
@@ -137,24 +138,23 @@ msgstr ""
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
-msgstr ""
+msgstr "De gesleepte tekst was geen geldige bestandslocatie."
 
 #: components/emblem/nautilus-emblem-view.c:741
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:814
-#, fuzzy
 msgid "Couldn't add emblem"
-msgstr "Kon thema niet toevoegen"
+msgstr "Kon embleem niet toevoegen"
 
 #: components/emblem/nautilus-emblem-view.c:760
 #: components/emblem/nautilus-emblem-view.c:813
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr ""
+msgstr "Het bestand '%s' lijkt geen geldige afbeelding te zijn."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "Het gesleepte bestand lijkt geen geldige afbeelding te zijn."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
 msgid "Erase"
@@ -176,7 +176,7 @@ msgstr "Hardware-weergave"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:4
 msgid "Hardware view"
-msgstr "Hardwarevenster"
+msgstr "Hardware-weergave"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:5
 msgid "View as Hardware"
@@ -184,7 +184,7 @@ msgstr "Bekijken als Hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:6
 msgid "hardware view"
-msgstr "hardwarevenster"
+msgstr "hardware-weergave"
 
 #: components/hardware/nautilus-hardware-view.c:172
 msgid "name of icon for the hardware view"
@@ -261,24 +261,20 @@ msgid "History side pane for Nautilus"
 msgstr "Geschiedenis-zijpaneel voor Nautilus"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
-#, fuzzy
 msgid "Image"
-msgstr "_Afbeelding:"
+msgstr "Afbeelding"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
-#, fuzzy
 msgid "Image Properties content view component"
-msgstr "Voorbeeld inhoudsbekijkvenster-component"
+msgstr "Afbeeldingseigenschappen-inhoudsvenstercomponent"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Image Properties view"
-msgstr "Nautilus boomweergave"
+msgstr "Nautilus afbeeldingseigenschappenvenster"
 
 #: components/image_properties/nautilus-image-properties-view.c:90
-#, fuzzy
 msgid "Failed to load image information"
-msgstr "Snelkoppeling-informatie bewerken"
+msgstr "Afbeeldingsinformatie laden mislukt"
 
 #: components/image_properties/nautilus-image-properties-view.c:142
 #, c-format
@@ -286,15 +282,16 @@ msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
+"<b>Afbeeldingstype:</b> %s (%s)\n"
+"<b>Resolutie:</b> %dx%d pixels\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:239
-#, fuzzy
 msgid "loading..."
-msgstr "Bezig te laden..."
+msgstr "Bezig met laden..."
 
 #: components/image_properties/nautilus-image-properties-view.c:252
 msgid "URI currently displayed"
-msgstr ""
+msgstr "URI momenteel weergegeven"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Nodes side pane for Nautilus"
@@ -323,7 +320,7 @@ msgstr "Tekstweergave"
 #: components/text/Nautilus_View_text.server.in.in.h:4
 #: components/text/nautilus-text-view-ui.xml.h:4
 msgid "Text view"
-msgstr "Tekstvenster"
+msgstr "Tekstweergave"
 
 #: components/text/Nautilus_View_text.server.in.in.h:5
 msgid "Text view factory"
@@ -1241,7 +1238,7 @@ msgstr "Hierheen _verwijzen"
 
 #: libnautilus-private/nautilus-dnd.c:580
 msgid "Set as _Background"
-msgstr "Als achtergrond instellen"
+msgstr "Als _achtergrond instellen"
 
 #: libnautilus-private/nautilus-dnd.c:589
 #: libnautilus-private/nautilus-dnd.c:642
@@ -1250,12 +1247,11 @@ msgstr "Annuleren"
 
 #: libnautilus-private/nautilus-dnd.c:628
 msgid "Set as background for _all directories"
-msgstr ""
+msgstr "Als achtergrond inste_llen voor alle mappen"
 
 #: libnautilus-private/nautilus-dnd.c:633
-#, fuzzy
 msgid "Set as background for _this directory"
-msgstr "De standaardachtergrond voor deze lokatie gebruiken"
+msgstr "Als achtergrond instellen voor _deze map"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1282,21 +1278,21 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:206
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
 "different name for it."
 msgstr ""
-"Sorry, maar \"%s\" is een bestaand trefwoord. Gelieve een andere naam te "
-"kiezen."
+"Sorry, maar er is reeds een embleem met de naam \"%s\". Gelieve een andere "
+"naam ervoor te kiezen."
 
 #: libnautilus-private/nautilus-emblem-utils.c:229
 msgid "Sorry, unable to save custom emblem."
-msgstr ""
+msgstr "Sorry, niet in staat aangepast embleem op te slaan."
 
 #: libnautilus-private/nautilus-emblem-utils.c:244
 msgid "Sorry, unable to save custom emblem name."
-msgstr ""
+msgstr "Sorry, niet in staat aangepaste embleemnaam op te slaan."
 
 #: libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
@@ -2818,61 +2814,57 @@ msgstr "gemarkeerd voor loslaten"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "of we gemarkeerd zijn voor sleepactie loslaten"
 
-#: libnautilus-private/nautilus-icon-container.c:1712
+#: libnautilus-private/nautilus-icon-container.c:1713
 msgid "The selection rectangle"
 msgstr "De selectierechthoek"
 
-#: libnautilus-private/nautilus-icon-container.c:3492
+#: libnautilus-private/nautilus-icon-container.c:3493
 msgid "Frame Text"
 msgstr "Tekst omkaderen"
 
-#: libnautilus-private/nautilus-icon-container.c:3493
+#: libnautilus-private/nautilus-icon-container.c:3494
 msgid "Draw a frame around unselected text"
 msgstr "Kader om ongeselecteerde tekst tekenen"
 
-#: libnautilus-private/nautilus-icon-container.c:3499
-msgid "Selection Box Color"
-msgstr ""
-
 #: libnautilus-private/nautilus-icon-container.c:3500
-#, fuzzy
-msgid "Color of the selection box"
-msgstr "Naar Startlokatie gaan"
+msgid "Selection Box Color"
+msgstr "Kleur selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:3505
-#, fuzzy
-msgid "Selection Box Alpha"
-msgstr "Alles selecteren"
+#: libnautilus-private/nautilus-icon-container.c:3501
+msgid "Color of the selection box"
+msgstr "Naar van het selectieveld"
 
 #: libnautilus-private/nautilus-icon-container.c:3506
-msgid "Opacity of the selection box"
-msgstr ""
+msgid "Selection Box Alpha"
+msgstr "Alpha-waarde selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:3513
-msgid "Highlight Alpha"
-msgstr ""
+#: libnautilus-private/nautilus-icon-container.c:3507
+msgid "Opacity of the selection box"
+msgstr "Doorschijnendheid van het selectieveld"
 
 #: libnautilus-private/nautilus-icon-container.c:3514
-#, fuzzy
-msgid "Opacity of the highlight for selected icons"
-msgstr "gemarkeerd voor selectie"
+msgid "Highlight Alpha"
+msgstr "Alpha-waarde markering"
 
-#: libnautilus-private/nautilus-icon-container.c:3520
-msgid "Light Info Color"
-msgstr ""
+#: libnautilus-private/nautilus-icon-container.c:3515
+msgid "Opacity of the highlight for selected icons"
+msgstr "Doorschijnendheid van de markering voor geselecteerde pictogrammen"
 
 #: libnautilus-private/nautilus-icon-container.c:3521
-msgid "Color used for information text against a dark background"
-msgstr ""
+msgid "Light Info Color"
+msgstr "Lichte informatiekleur"
 
-#: libnautilus-private/nautilus-icon-container.c:3526
-#, fuzzy
-msgid "Dark Info Color"
-msgstr "Donkere kurk"
+#: libnautilus-private/nautilus-icon-container.c:3522
+msgid "Color used for information text against a dark background"
+msgstr "Kleur voor informatietekst tegen een donkere achtergrond"
 
 #: libnautilus-private/nautilus-icon-container.c:3527
+msgid "Dark Info Color"
+msgstr "Donkere informatiekleur"
+
+#: libnautilus-private/nautilus-icon-container.c:3528
 msgid "Color used for information text against a light background"
-msgstr ""
+msgstr "Kleur voor informatietekst tegen een lichte achtergrond"
 
 #: libnautilus-private/nautilus-icon-dnd.c:725
 msgid ""
@@ -3672,16 +3664,15 @@ msgstr "Persoonlijke map"
 
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
-msgstr "Toon uw persoonlijke map met Nautilus bestandsbeheer"
+msgstr "Uw persoonlijke map bekijken met Nautilus bestandsbeheer"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
-msgstr ""
+msgstr "De wijze van bestandsbeheer veranderen"
 
 #: nautilus-file-management-properties.desktop.in.h:2
-#, fuzzy
 msgid "File Management"
-msgstr "Bestandsnaam"
+msgstr "Bestandsbeheer"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -3768,14 +3759,12 @@ msgid "Search List"
 msgstr "Zoeklijst"
 
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as _Icons"
-msgstr "Bekijken als pictogrammen"
+msgstr "Bekijken als p_ictogrammen"
 
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as _List"
-msgstr "Bekijken als lijst"
+msgstr "Bekijken als _lijst"
 
 #: src/file-manager/fm-desktop-icon-view.c:785
 msgid "Background"
@@ -3816,7 +3805,7 @@ msgstr "Dit zal %d nieuwe vensters openen. Weet u zeker dat u dat wilt?"
 #: src/file-manager/fm-directory-view.c:489
 #, c-format
 msgid "Open %d Windows?"
-msgstr "Open %d Vensters?"
+msgstr "%d vensters openen?"
 
 #: src/file-manager/fm-directory-view.c:840
 #, c-format
@@ -3996,11 +3985,11 @@ msgstr "Een _weergave..."
 #: src/file-manager/fm-directory-view.c:3560
 #, c-format
 msgid "Could not complete specified action:  %s"
-msgstr ""
+msgstr "Kon aangegeven actie niet voltooien: %s"
 
 #: src/file-manager/fm-directory-view.c:3583
 msgid "Could not complete specified action."
-msgstr ""
+msgstr "Kon aangegeven actie niet voltooien."
 
 #: src/file-manager/fm-directory-view.c:4028
 #, c-format
@@ -4167,21 +4156,20 @@ msgid "_Copy Files"
 msgstr "Bestanden _kopiëren"
 
 #: src/file-manager/fm-directory-view.c:4928
-#, fuzzy
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
 msgstr ""
-"Deze verwijzing kan niet nagegaan worden, omdat het doel ontbreekt. Wilt u "
+"Deze verwijzing kan niet gebruikt worden, omdat het doel ontbreekt. Wilt u "
 "de verwijzing in de Prullenbak gooien?"
 
 #: src/file-manager/fm-directory-view.c:4931
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to move this link to the Trash?"
 msgstr ""
-"Deze verwijzing kan niet nagegaan worden, omdat haar doel \"%s\"ontbreekt. "
+"Deze verwijzing kan niet gebruikt worden, omdat haar doel \"%s\"ontbreekt. "
 "Wilt u de verwijzing in de Prullenbak gooien?"
 
 #: src/file-manager/fm-directory-view.c:4937
@@ -4673,19 +4661,18 @@ msgstr ""
 "%s"
 
 #: src/file-manager/fm-properties-window.c:2359
-#, fuzzy
 msgid "Couldn't show help"
-msgstr "Kon thema niet toevoegen"
+msgstr "Kon hulptekst niet tonen"
 
-#: src/file-manager/fm-properties-window.c:2621
+#: src/file-manager/fm-properties-window.c:2624
 msgid "Cancel Showing Properties Window?"
-msgstr "Annuleer het Eigenschappenvenster?"
+msgstr "Eigenschappenvenster annuleren?"
 
-#: src/file-manager/fm-properties-window.c:2622
+#: src/file-manager/fm-properties-window.c:2625
 msgid "Creating Properties window"
-msgstr "Eigenschappenvenster aan het maken"
+msgstr "Bezig met creëren eigenschappenvenster"
 
-#: src/file-manager/fm-properties-window.c:2716
+#: src/file-manager/fm-properties-window.c:2719
 msgid "Select an icon:"
 msgstr "Kies een pictogram:"
 
@@ -5029,11 +5016,11 @@ msgstr "Elk geselecteerd item klonen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:12
 msgid "Edit Launcher"
-msgstr "Snelkoppeling bewerken"
+msgstr "Starter bewerken"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:13
 msgid "Edit the launcher information"
-msgstr "Snelkoppeling-informatie bewerken"
+msgstr "Starter-informatie bewerken"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid ""
@@ -5445,170 +5432,151 @@ msgstr "Zoeken!"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Gedrag</span>"
 
 #: src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Default View</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Standaardweergave</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
-#, fuzzy
 msgid "<span weight=\"bold\">Executable Text Files</span>"
-msgstr "Uitvoerbare tekstbestanden"
+msgstr "<span weight=\"bold\">Uitvoerbare tekstbestanden</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Folders</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Mappen</span>"
 
 #: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Icon Captions</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Pictogramtitels</span>"
 
 #: src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Standaardinstellingen pictogramweergave</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Image Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Afbeeldingsbestanden</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Standaardinstellingen lijstweergave</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">Sound Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Geluidsbestanden</span>"
 
 #: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">Text Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Tekstbestanden</span>"
 
 #: src/nautilus-file-management-properties.glade.h:33
 msgid "<span weight=\"bold\">Trash</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Prullenbak</span>"
 
 #: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Standaardinstellingen boomweergave</span>"
 
 #: src/nautilus-file-management-properties.glade.h:37
-#, fuzzy
 msgid "Always"
-msgstr "_Altijd"
+msgstr "Altijd"
 
 #: src/nautilus-file-management-properties.glade.h:38
-#, fuzzy
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr ""
-"Bevestiging _vragen voor het legen van de Prullenbak of het wissen van "
+"B_evestiging vragen voor het legen van de Prullenbak of het wissen van "
 "bestanden"
 
 #: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"De volgorde waarin informatie onder pictogram-namen verschijnt.\n"
-"Meer informatie verschijnt zodra u verder inzoomt."
+"Kies de volgorde waarin informatie onder pictogram-namen verschijnt. Meer "
+"informatie verschijnt zodra u verder inzoomt."
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
 msgstr "Standaard _zoomfactor:"
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "E_xecute scripts when they are clicked"
-msgstr "Bestanden _uitvoeren bij aanklikken"
+msgstr "Scripts _uitvoeren bij aanklikken"
 
 #: src/nautilus-file-management-properties.glade.h:47
-#, fuzzy
 msgid "File Management Preferences"
-msgstr "Bureaubladvoorkeuren"
+msgstr "Bestandsbeheer-voorkeuren"
 
 #: src/nautilus-file-management-properties.glade.h:48
-#, fuzzy
 msgid "Files and Folders"
-msgstr "Bestandstypen en Programma's"
+msgstr "Bestanden en mappen"
 
 #: src/nautilus-file-management-properties.glade.h:49
-#, fuzzy
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "Een _wissen-opdracht aanbieden die voorbijgaat aan de Prullenbak"
+msgstr "Een Verw_ijderen-opdracht aanbieden die voorbijgaat aan de Prullenbak"
 
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon Captions"
 msgstr "Pictogramtitels"
 
 #: src/nautilus-file-management-properties.glade.h:53
-#, fuzzy
 msgid "Local Files Only"
-msgstr "Alleen _lokaal bestand"
+msgstr "Alleen lokalw bestanden"
 
 #: src/nautilus-file-management-properties.glade.h:55
-#, fuzzy
 msgid "Never"
-msgstr "_Nooit"
+msgstr "Nooit"
 
 #: src/nautilus-file-management-properties.glade.h:57
-#, fuzzy
 msgid "Preview _sound files:"
-msgstr "Fragment van geluidsbestanden spelen"
+msgstr "Fragment van geluid_sbestanden spelen:"
 
 #: src/nautilus-file-management-properties.glade.h:58
-#, fuzzy
 msgid "Show _number of items:"
-msgstr "Aantal items in mappen tonen"
+msgstr "Aa_ntal items tonen:"
 
 #: src/nautilus-file-management-properties.glade.h:59
-#, fuzzy
 msgid "Show _only folders"
-msgstr "_Alleen mappen tonen"
+msgstr "Alleen mappen t_onen"
 
 #: src/nautilus-file-management-properties.glade.h:60
-#, fuzzy
 msgid "Show _thumbnails:"
-msgstr "Showtunes"
+msgstr "Minia_tuurafbeeldingen tonen:"
 
 #: src/nautilus-file-management-properties.glade.h:61
 msgid "Show hidden and _backup files"
-msgstr ""
+msgstr "Ver_borgen- en reservekopiebestanden tonen"
 
 #: src/nautilus-file-management-properties.glade.h:62
-#, fuzzy
 msgid "Show te_xt in icons:"
-msgstr "Tekst in pictogrammen tonen"
+msgstr "Te_kst in pictogrammen tonen:"
 
 #: src/nautilus-file-management-properties.glade.h:63
-#, fuzzy
 msgid "Sort _folders before files"
-msgstr "_Mappen vóór bestanden"
+msgstr "_Mappen vóór bestanden sorteren"
 
 #: src/nautilus-file-management-properties.glade.h:64
 msgid "Sort in _reverse"
-msgstr "In _omgekeerde volgorde sorteren"
+msgstr "In omgekee_rde volgorde sorteren"
 
 #: src/nautilus-file-management-properties.glade.h:65
-#, fuzzy
 msgid "Use _manual layout"
-msgstr "Co_mpacte lay-out gebruiken"
+msgstr "Hand_matige lay-out gebruiken"
 
 #: src/nautilus-file-management-properties.glade.h:66
-#, fuzzy
 msgid "View _new folders using:"
-msgstr "_Bekijk nieuwe mappen met:"
+msgstr "_Nieuwe mappen bekijken met:"
 
 #: src/nautilus-file-management-properties.glade.h:67
 msgid "Views"
 msgstr "Weergaven"
 
 #: src/nautilus-file-management-properties.glade.h:68
-#, fuzzy
 msgid "_Arrange Items:"
 msgstr "Items _ordenen:"
 
@@ -5617,23 +5585,20 @@ msgid "_Default zoom level:"
 msgstr "_Standaard zoomfactor:"
 
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
 msgid "_Only for files smaller than:"
-msgstr "_Geen miniaturen maken voor bestanden groter dan:"
+msgstr "Alleen v_oor bestanden kleiner dan:"
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Open each file or folder in a new window"
 msgstr "Elk bestand of map in een _nieuw venster openen"
 
 #: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
 msgid "_Use compact layout"
-msgstr "Co_mpacte lay-out gebruiken"
+msgstr "Compacte lay-out gebr_uiken"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_View scripts when they are clicked"
-msgstr "Bestanden _uitvoeren bij aanklikken"
+msgstr "Scripts _bekijken bij aanklikken"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -6063,6 +6028,8 @@ msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
+"Kon Nautilus niet uitvoeren\n"
+"Zorg ervoor dat Nautilus in uw pad staat en correct geïnstalleerd is"
 
 #: src/nautilus-server-connect.c:387
 #, c-format
@@ -6071,26 +6038,30 @@ msgid ""
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
+"Kon niet verbinden met de URI %s\n"
+"Zorg er alstublieft voor dat het adres correct is. U kunt ook proberen dit "
+"adres direct in te voeren in het bestandsbeheer"
 
 #: src/nautilus-server-connect.c:452
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
 msgstr ""
+"Glade-bestand voor het programma om met de server te verbinden ontbreekt.\n"
+"Ga na of uw Nautilus-installatie wel goed is"
 
 #: src/nautilus-server-connect.desktop.in.h:1
 msgid "Add a new server to your Network Servers and connect to it"
-msgstr ""
+msgstr "Nieuwe server toevoegen aan uw Netwerkservers en ermee verbinden"
 
 #: src/nautilus-server-connect.desktop.in.h:2
 #: src/nautilus-server-connect.glade.h:2
-#, fuzzy
 msgid "New Server"
-msgstr "New Wave"
+msgstr "Nieuwe server"
 
 #: src/nautilus-server-connect.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -6411,14 +6382,13 @@ msgid "_View as..."
 msgstr "_Bekijken als..."
 
 #: src/nautilus-side-pane.c:395
-#, fuzzy
 msgid "Close the side pane"
-msgstr "Opmerkingen-zijpaneel"
+msgstr "Zijpaneel sluiten"
 
 #: src/nautilus-side-pane.c:566
-#, fuzzy, c-format
+#, c-format
 msgid "Show %s"
-msgstr "Opties voor tonen/verbergen"
+msgstr "%s tonen"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
@@ -6675,9 +6645,8 @@ msgid "Go forward a number of pages"
 msgstr "Ga een paar pagina's vooruit"
 
 #: src/nautilus-window.c:669
-#, fuzzy
 msgid "Information"
-msgstr "Internationaal"
+msgstr "Informatie"
 
 #: src/nautilus-window.c:1183
 #, c-format
@@ -6725,14 +6694,12 @@ msgid "Set the zoom level of the current view"
 msgstr "Zoomfactor van huidige weergave instellen"
 
 #: src/network-scheme.desktop.in.h:1
-#, fuzzy
 msgid "Network Servers"
-msgstr "Netraverse"
+msgstr "Netwerkservers"
 
 #: src/network-scheme.desktop.in.h:2
-#, fuzzy
 msgid "View your network servers in the Nautilus file manager"
-msgstr "Toon uw persoonlijke map met Nautilus bestandsbeheer"
+msgstr "Uw netwerkservers bekijken met Nautilus bestandsbeheer"
 
 #~ msgid "Content Loser"
 #~ msgstr "Inhoudsbekijker"
