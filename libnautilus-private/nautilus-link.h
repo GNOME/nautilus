@@ -108,6 +108,12 @@ gboolean         nautilus_link_local_is_trash_link               (const char    
 gboolean         nautilus_link_local_is_special_link             (const char       *uri);
 
 
+/* Returns TRUE if the link is encoded in utf8
+ * Works only if the file is local and does sync. I/O
+ */
+gboolean         nautilus_link_local_is_utf8                     (const char       *uri,
+								  GnomeVFSFileInfo *info);
+
 /* Returns the link uri associated with a link file. The first version
  * works only if the file is local and does sync. I/O, despite the
  * fact that it takes a URI parameter. The second version takes the

@@ -1,3 +1,17 @@
+2002-08-20  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	* libnautilus-private/nautilus-link-desktop-file.h:
+	New function nautilus_link_desktop_file_local_is_utf8.
+
+	* libnautilus-private/nautilus-link.c:
+	* libnautilus-private/nautilus-link.h:
+	New function nautilus_link_local_is_utf8.
+	
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_desktop_directory):
+	Recreate trash and homedir links if they are not in utf8.
+
 2002-08-15  Dave Camp  <dave@ximian.com>
 
 	* libnautilus/nautilus-clipboard.c (select_all_callback): Save the 

@@ -233,6 +233,19 @@ nautilus_link_local_get_link_type (const char *uri, GnomeVFSFileInfo *info)
 	}
 }
 
+gboolean
+nautilus_link_local_is_utf8 (const char *uri,
+			     GnomeVFSFileInfo *info)
+{
+	switch (get_link_style_for_local_file (uri, info)) {
+	case desktop:
+		return nautilus_link_desktop_file_local_is_utf8 (uri);
+	case historical:
+	default:
+		return FALSE;
+	}
+}
+
 char *
 nautilus_link_get_link_uri_given_file_contents (const char *uri,
 						const char *file_contents,
