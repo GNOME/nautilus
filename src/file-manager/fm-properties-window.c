@@ -32,6 +32,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkpixmap.h>
@@ -83,6 +84,10 @@ struct FMPropertiesWindowDetails {
 	NautilusEntry *name_field;
 	char *pending_name;
 
+	GtkLabel *directory_contents_title_field;
+	GtkLabel *directory_contents_value_field;
+	guint update_directory_contents_timeout_id;
+
 	GList *directory_contents_widgets;
 	int directory_contents_row;
 
@@ -115,6 +120,8 @@ enum {
 
 #define ERASE_EMBLEM_FILENAME	"erase.png"
 #define EMBLEM_COLUMN_COUNT 2
+
+#define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
 
 static void real_destroy                          (GtkObject               *object);
 static void real_finalize                         (GtkObject               *object);
@@ -1003,7 +1010,7 @@ append_separator (GtkTable *table)
 }		  	
  
 static void
-directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
+directory_contents_value_field_update (FMPropertiesWindow *window)
 {
 	NautilusRequestStatus status;
 	char *text, *temp;
@@ -1013,15 +1020,13 @@ directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 	guint unreadable_directory_count;
 	GnomeVFSFileSize total_size;
 	char *size_string;
-	GtkLabel *title_field;
 	gboolean used_two_lines;
-	
-	g_assert (GTK_IS_LABEL (label));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (nautilus_file_is_directory (file) || nautilus_file_is_gone (file));
+	NautilusFile *file;
 
-	title_field = gtk_object_get_user_data (GTK_OBJECT (label));
-	g_assert (GTK_IS_LABEL (title_field));
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+
+	file = window->details->file;
+	g_assert (nautilus_file_is_directory (file) || nautilus_file_is_gone (file));
 
 	status = nautilus_file_get_deep_counts (file, 
 						&directory_count, 
@@ -1043,7 +1048,7 @@ directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 			}
 			break;
 		default:
-			text = g_strdup ("--");
+			text = g_strdup ("...");
 		}
 	} else {
 		size_string = gnome_vfs_format_file_size_for_display (total_size);
@@ -1062,7 +1067,7 @@ directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 		}
 	}
 
-	gtk_label_set_text (label, text);
+	gtk_label_set_text (window->details->directory_contents_value_field, text);
 	g_free (text);
 
 	/* Also set the title field here, with a trailing carriage return & space
@@ -1076,39 +1081,61 @@ directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 		text = g_strconcat (temp, "\n ", NULL);
 		g_free (temp);
 	}
-	gtk_label_set_text (title_field, text);
+	gtk_label_set_text (window->details->directory_contents_title_field, text);
 	g_free (text);
 }
 
+static gboolean
+update_directory_contents_callback (gpointer data)
+{
+	FMPropertiesWindow *window;
+
+	window = FM_PROPERTIES_WINDOW (data);
+
+	window->details->update_directory_contents_timeout_id = 0;
+	directory_contents_value_field_update (window);
+
+	return FALSE;
+}
+
+static void
+schedule_directory_contents_update (FMPropertiesWindow *window)
+{
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+
+	if (window->details->update_directory_contents_timeout_id == 0) {
+		window->details->update_directory_contents_timeout_id
+			= gtk_timeout_add (DIRECTORY_CONTENTS_UPDATE_INTERVAL,
+					   update_directory_contents_callback,
+					   window);
+	}
+}
+
 static GtkLabel *
-attach_directory_contents_value_field (GtkTable *table,
-				       int row,
-				       NautilusFile *file,
-				       GtkLabel *title_field)
+attach_directory_contents_value_field (FMPropertiesWindow *window,
+				       GtkTable *table,
+				       int row)
 {
 	GtkLabel *value_field;
 
 	value_field = attach_value_label (table, row, VALUE_COLUMN, "");
+
+	g_assert (window->details->directory_contents_value_field == NULL);
+	window->details->directory_contents_value_field = value_field;
+
 	gtk_label_set_line_wrap (value_field, TRUE);
 
-	/* Bit of a hack; store a reference to the title field in
-	 * the value field so we can get it out without having to
-	 * invent a struct to pass as the callback data and later
-	 * free.
-	 */
-	gtk_object_set_user_data (GTK_OBJECT (value_field), title_field);
-
 	/* Always recompute from scratch when the window is shown. */
-	nautilus_file_recompute_deep_counts (file);
+	nautilus_file_recompute_deep_counts (window->details->file);
 
 	/* Fill in the initial value. */
-	directory_contents_value_field_update (value_field, file);
+	directory_contents_value_field_update (window);
 
 	/* Connect to signal to update value when file changes. */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (window->details->file),
 					       "updated_deep_count_in_progress",
-					       directory_contents_value_field_update,
-					       GTK_OBJECT (value_field));
+					       schedule_directory_contents_update,
+					       GTK_OBJECT (window));
 
 	return value_field;	
 }					
@@ -1220,10 +1247,11 @@ append_directory_contents_fields (FMPropertiesWindow *window,
 	last_row = append_row (table);
 
 	title_field = attach_title_field (table, last_row, "");
+	window->details->directory_contents_title_field = title_field;
 	gtk_label_set_line_wrap (title_field, TRUE);
 
 	value_field = attach_directory_contents_value_field 
-		(table, last_row, window->details->file, title_field);
+		(window, table, last_row);
 
 	remember_directory_contents_widget (window, GTK_WIDGET (title_field));
 	remember_directory_contents_widget (window, GTK_WIDGET (value_field));
@@ -2308,6 +2336,11 @@ real_destroy (GtkObject *object)
 	nautilus_file_unref (window->details->file);
 	g_list_free (window->details->directory_contents_widgets);
 	g_list_free (window->details->special_flags_widgets);
+
+	if (window->details->update_directory_contents_timeout_id != 0) {
+		gtk_timeout_remove (window->details->update_directory_contents_timeout_id);
+	}
+
 
 	/* Note that file_changed_handler_id is disconnected in shutdown,
 	 * and details are freed in finalize 

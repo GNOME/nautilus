@@ -1,5 +1,31 @@
 2001-02-09  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 6473 (counting deep contents of folder in Properties
+	window takes tons of CPU)
+
+	Fixed by deploying a timeout, so that the displayed numbers
+	only update periodically, instead of with every item count
+	increment. The interval is 200 milliseconds. This makes the
+	count faster as well as greatly reducing CPU thrashage by
+	not pounding on the poor widdle widgets so often.
+
+	* src/file-manager/fm-properties-window.c:
+	(directory_contents_value_field_update): Changed signature
+	to just take an FMPropertiesWindow, and get the other
+	relevant objects from the Details struct.
+	(update_directory_contents_callback): New function, updates
+	field and clears timeout ID.
+	(schedule_directory_contents_update): Schedules update if
+	not already pending.
+	(attach_directory_contents_value_field): Removed old hack
+	to store the title_field in the object data of the value
+	field; store value_field after creation in Details struct.
+	(append_directory_contents_fields): Store title_field after
+	creation in Details struct.
+	(real_destroy): Remove timeout if still pending.
+
+2001-02-09  John Sullivan  <sullivan@eazel.com>
+
 	Fixed part of bug 6462 (two error messages after doing search
 	in Red Hat 7). Now you should only get one error message.
 	Rebecca gets to figure out that one.
