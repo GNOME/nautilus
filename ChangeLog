@@ -1,3 +1,14 @@
+2005-02-11  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-tree-model.c:
+	Don't do any i/o on tree roots until they are opened.
+	This means you don't get any auth dialogs.
+	Removed the monitor on the root file totally, as that should
+	not normally change/go away anyway (and it was doing i/o).
+	
+	This changes semantics in the file a bit, we now have a dummy
+	row also if node->directory != NULL and node->parent == NULL.
+
 2005-02-10  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

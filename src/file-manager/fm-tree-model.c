@@ -108,8 +108,6 @@ struct FMTreeModelRoot {
 	GHashTable *file_to_node_map;
 	
 	TreeNode *root_node;
-
-	gulong changed_handler_id;
 };
 
 typedef struct {
@@ -396,10 +394,12 @@ tree_node_get_display_name (TreeNode *node)
 static gboolean
 tree_node_has_dummy_child (TreeNode *node)
 {
-	return node->directory != NULL
+	return (node->directory != NULL
 		&& (!node->done_loading
 		    || node->first_child == NULL
-		    || node->inserting_first_child);
+		    || node->inserting_first_child)) ||
+		/* Roots always have dummy nodes if directory isn't loaded yet */
+		(node->directory == NULL && node->parent == NULL);
 }
 
 static int
@@ -632,7 +632,8 @@ report_node_inserted (FMTreeModel *model, TreeNode *node)
 	report_row_inserted (model, &iter);
 	node->inserted = TRUE;
 
-	if (node->directory != NULL) {
+	if (node->directory != NULL ||
+	    node->parent == NULL) {
 		report_row_has_child_toggled (model, &iter);
        }
        if (tree_node_has_dummy_child (node)) {
@@ -784,9 +785,11 @@ update_node_without_reporting (FMTreeModel *model, TreeNode *node)
 
 	changed = FALSE;
 	
-	if (node->directory == NULL && nautilus_file_is_directory (node->file)) {
+	if (node->directory == NULL &&
+	    (nautilus_file_is_directory (node->file) || node->parent == NULL)) {
 		node->directory = nautilus_directory_get_for_file (node->file);
-	} else if (node->directory != NULL && !nautilus_file_is_directory (node->file)) {
+	} else if (node->directory != NULL &&
+		   !(nautilus_file_is_directory (node->file) || node->parent == NULL)) {
 		stop_monitoring_directory (model, node);
 		destroy_children (model, node);
 		nautilus_directory_unref (node->directory);
@@ -995,7 +998,14 @@ done_loading_callback (NautilusDirectory *directory,
 
 	file = nautilus_directory_get_corresponding_file (directory);
 	node = get_node_from_file (root, file);
-	g_assert (node != NULL);
+	if (node == NULL) {
+		/* This can happen for non-existing files as tree roots,
+		 * since the directory <-> file object relation gets
+		 * broken due to nautilus_directory_remove_file()
+		 * getting called when i/o fails.
+		 */
+		return;
+	}
 	set_done_loading (root->model, node, TRUE);
 	nautilus_file_unref (file);
 	
@@ -1303,7 +1313,7 @@ fm_tree_model_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter)
 
 	node = iter->user_data;
 
-	has_child = node != NULL && node->directory != NULL;
+	has_child = node != NULL && (node->directory != NULL || node->parent == NULL);
 
 #if 0
 	g_warning ("Node '%s' %s",
@@ -1517,20 +1527,11 @@ fm_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
 	}
 }
 
-static void
-root_node_file_changed_callback (NautilusFile *file, FMTreeModelRoot *root)
-{
-	if (root->root_node != NULL) {
-		update_node (root->model, root->root_node);
-	}
-}
-
 void
 fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char *display_name, const char *icon_name, GnomeVFSVolume *volume)
 {
 	NautilusFile *file;
 	TreeNode *node, *cnode;
-	NautilusFileAttributes attributes;
 	FMTreeModelRoot *newroot;
 	
 	file = nautilus_file_get (root_uri);
@@ -1553,13 +1554,6 @@ fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char
 		cnode->next = node;
 		node->prev = cnode;
 	}
-
-	newroot->changed_handler_id = g_signal_connect (node->file, "changed",
-							G_CALLBACK (root_node_file_changed_callback),
-							node->root);
-
-	attributes = get_tree_monitor_attributes ();
-	nautilus_file_monitor_add (file, model, attributes);
 
 	nautilus_file_unref (file);
 
@@ -1624,7 +1618,6 @@ fm_tree_model_remove_root_uri (FMTreeModel *model, const char *uri)
 		
 		/* destroy the root identifier */
 		root = node->root;
-		g_signal_handler_disconnect (node->file, root->changed_handler_id);
 		destroy_node_without_reporting (model, node);
 		g_hash_table_destroy (root->file_to_node_map);
 		g_free (root);
@@ -1807,8 +1800,6 @@ fm_tree_model_finalize (GObject *object)
 	for (root_node = model->details->root_node; root_node != NULL; root_node = next_root) {
 		next_root = root_node->next;
 		root = root_node->root;
-		g_signal_handler_disconnect (root_node->file, root->changed_handler_id);
-		nautilus_file_monitor_remove (root_node->file, model);
 		destroy_node_without_reporting (model, root_node);
 		g_hash_table_destroy (root->file_to_node_map);
 		g_free (root);
