@@ -5201,6 +5201,14 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 		return;
 	}
 
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		/* Desktop icon files are always up to date.
+		 * If we invalidate their attributes they
+		 * will lose data, so we just ignore them.
+		 */
+		return;
+	}
+	
 	nautilus_directory_set_up_request (&request, file_attributes);
 
 	if (request.directory_count) {

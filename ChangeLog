@@ -1,3 +1,11 @@
+2003-09-01  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_invalidate_attributes_internal):
+	Don't invalidate attributes for NautilusDesktopIconFiles, since
+	they are always up to date (being in-memory objects). This fixes the
+	problem where the trash and/or home icons became unusable with the default
+	icon.
+
 2003-08-29  Alexander Larsson  <alexl@redhat.com>
 
 	* components/tree/nautilus-tree-view.c (theme_changed_callback):
