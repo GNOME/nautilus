@@ -787,8 +787,9 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->news_description_body_widget), GTK_JUSTIFY_LEFT);
+	/*
 	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (view->details->news_description_body_widget), -1);
-	
+	*/
 	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_description_body_widget, TRUE, TRUE, 2);
 	gtk_widget_show (view->details->news_description_body_widget);
 	

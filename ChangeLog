@@ -1,3 +1,11 @@
+2000-10-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_eazel_news_entry_row):
+	disabled the "use all the space" since it causes too much flashing
+	during size negotiation.  I'll either fix the flashing or remove
+	it from nautilus_label soon.
+	
 2000-10-29  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-label.c:
