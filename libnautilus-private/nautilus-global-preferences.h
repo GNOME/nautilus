@@ -92,6 +92,9 @@ BEGIN_GNOME_DECLS
  */
 #define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"sidebar-panels"
 
+/* Sorting order */
+#define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"preferences/sort_directories_first"
+
 /* Directory view */
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT		"directory-view/smooth_font"

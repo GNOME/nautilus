@@ -262,13 +262,14 @@ struct FMDirectoryViewClass {
 	 * Icon and list views respond by synchronizing to the new preference
 	 * values and forcing an update if appropriate.
 	 */
-	void	(* text_attribute_names_changed)(FMDirectoryView *view);
-	void	(* embedded_text_policy_changed)(FMDirectoryView *view);
-	void	(* image_display_policy_changed)(FMDirectoryView *view);
-	void	(* font_family_changed)		(FMDirectoryView *view);
-	void	(* smooth_font_changed)		(FMDirectoryView *view);
-	void	(* click_policy_changed)	(FMDirectoryView *view);
-	void	(* smooth_graphics_mode_changed)(FMDirectoryView *view);
+	void	(* text_attribute_names_changed)    (FMDirectoryView *view);
+	void	(* embedded_text_policy_changed)    (FMDirectoryView *view);
+	void	(* image_display_policy_changed)    (FMDirectoryView *view);
+	void	(* font_family_changed)		    (FMDirectoryView *view);
+	void	(* smooth_font_changed)		    (FMDirectoryView *view);
+	void	(* click_policy_changed)	    (FMDirectoryView *view);
+	void	(* smooth_graphics_mode_changed)    (FMDirectoryView *view);
+	void	(* sort_directories_first_changed)  (FMDirectoryView *view);
 };
 
 /* GtkObject support */
@@ -350,6 +351,7 @@ void                fm_directory_view_pop_up_selection_context_menu    (FMDirect
 void                fm_directory_view_send_selection_change            (FMDirectoryView *view);
 gboolean            fm_directory_view_should_show_file                 (FMDirectoryView  *view,
 									NautilusFile     *file);
+gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);

@@ -208,6 +208,9 @@ global_preferences_install_descriptions (void)
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 					      _("Show special flags in Properties window"));
 	
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+					      _("Always list folders before files"));
+	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 					      _("Show only folders (no files) in the tree"));
 
@@ -308,6 +311,10 @@ global_preferences_install_defaults (void)
 						  NAUTILUS_USER_LEVEL_ADVANCED,
 						  TRUE);
 	
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  TRUE);
@@ -430,6 +437,9 @@ global_preferences_install_visibility (void)
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 						     NAUTILUS_USER_LEVEL_ADVANCED);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 						     NAUTILUS_USER_LEVEL_ADVANCED);
@@ -652,6 +662,14 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 2,
 							 NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+					     _("Sorting Order"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 3,
+							 NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*

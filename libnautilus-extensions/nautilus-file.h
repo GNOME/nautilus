@@ -255,10 +255,9 @@ gboolean                nautilus_file_is_local                          (Nautilu
 /* Comparing two file objects for sorting */
 int                     nautilus_file_compare_for_sort                  (NautilusFile                   *file_1,
 									 NautilusFile                   *file_2,
-									 NautilusFileSortType            sort_type);
-int                     nautilus_file_compare_for_sort_reversed         (NautilusFile                   *file_1,
-									 NautilusFile                   *file_2,
-									 NautilusFileSortType            sort_type);
+									 NautilusFileSortType            sort_type,
+									 gboolean			 directories_first,
+									 gboolean		  	 reversed);
 int                     nautilus_file_compare_name                      (NautilusFile                   *file_1,
 									 const char                     *pattern);
 

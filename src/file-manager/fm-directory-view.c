@@ -173,6 +173,8 @@ struct FMDirectoryViewDetails
 	gboolean scripts_invalid;
 	gboolean reported_load_error;
 
+	gboolean sort_directories_first;
+
 	gboolean show_hidden_files;
 	gboolean show_backup_files;
 	gboolean ignore_hidden_file_preferences;
@@ -1022,6 +1024,31 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 		 smooth_graphics_mode_changed, (view));
 }
 
+gboolean
+fm_directory_view_should_sort_directories_first (FMDirectoryView *view)
+{
+	return view->details->sort_directories_first;
+}
+
+static void
+sort_directories_first_changed_callback (gpointer callback_data)
+{
+	FMDirectoryView *view;
+	gboolean preference_value;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	preference_value = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+
+	if (preference_value != view->details->sort_directories_first) {
+		view->details->sort_directories_first = preference_value;
+		NAUTILUS_CALL_METHOD
+			(FM_DIRECTORY_VIEW_CLASS, view,
+			 sort_directories_first_changed, (view));
+	}
+}
+
 static float fm_directory_view_preferred_zoom_levels[] = {
 	(float) NAUTILUS_ICON_SIZE_SMALLEST	/ NAUTILUS_ICON_SIZE_STANDARD,
 	(float) NAUTILUS_ICON_SIZE_SMALLER	/ NAUTILUS_ICON_SIZE_STANDARD,
@@ -1126,6 +1153,9 @@ fm_directory_view_initialize (FMDirectoryView *view)
 	bonobo_object_add_interface (BONOBO_OBJECT (view->details->nautilus_view),
 				     BONOBO_OBJECT (view->details->zoomable));
 
+	view->details->sort_directories_first = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "stop_loading",
 			    GTK_SIGNAL_FUNC (stop_loading_callback),
@@ -1214,6 +1244,11 @@ fm_directory_view_initialize (FMDirectoryView *view)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
 					   smooth_graphics_mode_changed_callback, 
 					   view);
+	
+	/* Keep track of changes in sort order */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
+					   sort_directories_first_changed_callback, 
+					   view);
 }
 
 static void
@@ -1273,6 +1308,9 @@ fm_directory_view_destroy (GtkObject *object)
 					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 					      smooth_graphics_mode_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+					      sort_directories_first_changed_callback,
 					      view);
 
 	g_free (view->details);

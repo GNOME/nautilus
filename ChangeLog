@@ -1,3 +1,71 @@
+2001-03-22  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 1853 (Want preference for always sorting folders first)
+
+	For now, this is a global preference. Making it
+	per-window later is a possibility. Arlo is working on
+	a design for directory view defaults that may incorporate
+	this.
+
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_compare_for_sort_reversed): Eliminated this in
+	favor of a parameter to nautilus_file_compare_for_sort.
+	(nautilus_file_compare_for_sort): Add a parameter for reversed,
+	and another for directories_first.
+	(nautilus_file_compare_for_sort_internal): Former guts of
+	nautilus_file_compare_for_sort moved here.
+	(nautilus_self_check_file): Update compare_for_sort self-checks.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog): Install an "Always list
+	folders before files" preference in the Icon and List Views
+	section.
+	
+	* src/file-manager/fm-directory-view.h:
+	(sort_directories_first_changed): New function pointer for
+	subclasses to override.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_should_sort_directories_first): New function 
+	for subclasses to call.
+	(sort_directories_first_changed_callback): Call virtual function
+	when preference changes.
+	(fm_directory_view_initialize): Store initial value of preference;
+	install preference callback.
+	(fm_directory_view_destroy): Remove preference callback.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(desktop_icons_compare_callback): Respect preference
+	setting.
+
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_compare_icons_callback): Update to respect
+	directories_first setting.
+	(icon_container_compare_icons_by_name_callback): Update for API
+	change only.
+	(fm_icon_view_sort_directories_first_changed): Override virtual
+	function; re-sort icon container if in auto-layout mode.
+	(fm_icon_view_initialize_class): Install virtual function override.
+	
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_initialize_class): Install virtual function override.
+	(list_view_compare_files_for_sort): New function, broken out of
+	fm_list_view_compare_rows, and changed to respect directories_first
+	setting.
+	(fm_list_view_compare_rows): Break out list_view_compare_files_for_sort.
+	(compare_rows_by_name): Update for API change only.
+	(real_sort_directories_first_changed): Override virtual function;
+	re-sort list.
+	(fm_list_view_display_pending_files): Update code that sorts
+	pending items before adding them to list.
+	(fm_list_view_sort_items): Add comment.
+
 2001-03-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in: Make the configure report a little easier to read
@@ -73,7 +141,6 @@
 	(corba_packagedatastruct_fill_from_packagedata):
 	s/DistributionInfo/TrilobiteDistributionInfo/	
 
->>>>>>> 1.4259
 2001-03-21  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

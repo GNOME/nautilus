@@ -1479,23 +1479,20 @@ icon_container_compare_icons_callback (NautilusIconContainer *container,
 				       NautilusFile *file_b,
 				       FMIconView *icon_view)
 {
-	int result;
-
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (NAUTILUS_IS_FILE (file_a));
 	g_assert (NAUTILUS_IS_FILE (file_b));
 
-	result = nautilus_file_compare_for_sort
-		(file_a, file_b, icon_view->details->sort->sort_type);
-
-	if (icon_view->details->sort_reversed) {
-		result = -result;
-	}
-
-	return result;
+	return nautilus_file_compare_for_sort
+		(file_a, file_b, icon_view->details->sort->sort_type,
+		 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)), 
+		 icon_view->details->sort_reversed);
 }
 
+/* This is used by type-to-select code. It deliberately ignores the
+ * folders-first and reversed-sort settings.
+ */
 static int
 icon_container_compare_icons_by_name_callback (NautilusIconContainer *container,
 					       NautilusFile *file_a,
@@ -1509,7 +1506,8 @@ icon_container_compare_icons_by_name_callback (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (file_a));
 	g_assert (NAUTILUS_IS_FILE (file_b));
 
-	result = nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_NAME);
+	result = nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_NAME,
+		 				 FALSE, FALSE);
 
 	return result;
 }
@@ -1856,6 +1854,19 @@ fm_icon_view_smooth_graphics_mode_changed (FMDirectoryView *directory_view)
 	fm_icon_view_update_smooth_graphics_mode (FM_ICON_VIEW (directory_view));
 }
 
+static void
+fm_icon_view_sort_directories_first_changed (FMDirectoryView *directory_view)
+{
+	FMIconView *icon_view;
+
+	icon_view = FM_ICON_VIEW (directory_view);
+
+	if (fm_icon_view_using_auto_layout (icon_view)) {
+		nautilus_icon_container_sort 
+			(get_icon_container (icon_view));
+	}
+}
+
 /* GtkObject methods. */
 
 static void
@@ -1896,6 +1907,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->smooth_font_changed = fm_icon_view_smooth_font_changed;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
         fm_directory_view_class->smooth_graphics_mode_changed = fm_icon_view_smooth_graphics_mode_changed;
+        fm_directory_view_class->sort_directories_first_changed = fm_icon_view_sort_directories_first_changed;
 
 
 	klass->clean_up			   = fm_icon_view_real_clean_up;

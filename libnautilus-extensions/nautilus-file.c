@@ -1700,22 +1700,10 @@ compare_by_full_path (NautilusFile *file_1, NautilusFile *file_2)
 	return compare_by_name (file_1, file_2);
 }
 
-/**
- * nautilus_file_compare_for_sort:
- * @file_1: A file object
- * @file_2: Another file object
- * @sort_type: Sort criterion
- * 
- * Return value: int < 0 if @file_1 should come before file_2 in a smallest-to-largest
- * sorted list; int > 0 if @file_2 should come before file_1 in a smallest-to-largest
- * sorted list; 0 if @file_1 and @file_2 are equal for this sort criterion. Note
- * that each named sort type may actually break ties several ways, with the name
- * of the sort criterion being the primary but not only differentiator.
- **/
-int
-nautilus_file_compare_for_sort (NautilusFile *file_1,
-				NautilusFile *file_2,
-				NautilusFileSortType sort_type)
+static int
+nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
+					 NautilusFile *file_2,
+					 NautilusFileSortType sort_type)
 {
 	int compare;
 
@@ -1724,11 +1712,6 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 
 	switch (sort_type) {
 	case NAUTILUS_FILE_SORT_BY_NAME:
-		/* Note: This used to put directories first. I
-		 * thought that was counterintuitive and removed it,
-		 * but I can imagine discussing this further.
-		 * John Sullivan <sullivan@eazel.com>
-		 */
 		compare = compare_by_name (file_1, file_2);
 		if (compare != 0) {
 			return compare;
@@ -1776,24 +1759,50 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 }
 
 /**
- * nautilus_file_compare_for_sort_reversed:
+ * nautilus_file_compare_for_sort:
  * @file_1: A file object
  * @file_2: Another file object
  * @sort_type: Sort criterion
+ * @directories_first: Put all directories before any non-directories
+ * @reversed: Reverse the order of the items, except that
+ * the directories_first flag is still respected.
  * 
- * Return value: The opposite of nautilus_file_compare_for_sort: int > 0 if @file_1 
- * should come before file_2 in a smallest-to-largest sorted list; int < 0 if @file_2 
- * should come before file_1 in a smallest-to-largest sorted list; 0 if @file_1 
- * and @file_2 are equal for this sort criterion. Note that each named sort type 
- * may actually break ties several ways, with the name of the sort criterion 
- * being the primary but not only differentiator.
+ * Return value: int < 0 if @file_1 should come before file_2 in a
+ * sorted list; int > 0 if @file_2 should come before file_1 in a
+ * sorted list; 0 if @file_1 and @file_2 are equal for this sort criterion. Note
+ * that each named sort type may actually break ties several ways, with the name
+ * of the sort criterion being the primary but not only differentiator.
  **/
 int
-nautilus_file_compare_for_sort_reversed (NautilusFile *file_1,
-					 NautilusFile *file_2,
-					 NautilusFileSortType sort_type)
+nautilus_file_compare_for_sort (NautilusFile *file_1,
+				NautilusFile *file_2,
+				NautilusFileSortType sort_type,
+				gboolean directories_first,
+				gboolean reversed)
 {
-	return - nautilus_file_compare_for_sort (file_1, file_2, sort_type);
+	int result;
+	gboolean is_directory_1, is_directory_2;
+
+	if (directories_first) {
+		is_directory_1 = nautilus_file_is_directory (file_1);
+		is_directory_2 = nautilus_file_is_directory (file_2);
+
+		if (is_directory_1 && !is_directory_2) {
+			return -1;
+		}
+
+		if (is_directory_2 && !is_directory_1) {
+			return +1;
+		}
+	}
+	
+	result = nautilus_file_compare_for_sort_internal (file_1, file_2, sort_type);
+
+	if (reversed) {
+		result = -result;
+	}
+
+	return result;
 }
 
 /**
@@ -4821,9 +4830,12 @@ nautilus_self_check_file (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
 	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) < 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort_reversed (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) > 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME) == 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) < 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) > 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) == 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, FALSE) == 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) == 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, TRUE) == 0, TRUE);
 
 	nautilus_file_unref (file_1);
 	nautilus_file_unref (file_2);

@@ -60,7 +60,10 @@ struct FMListViewDetails {
    in chunks, to improve responsiveness during loading.
    This is the number of files we add to the list, or change
    at once. */
-/* FIXME: Why doesn't the icon view need the same thing? */
+/* FIXME: Why doesn't the icon view need the same thing? 
+ * (Probably this was added when testing search results and
+ * similar tests weren't done for icon view.)
+ */
 #define LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE 100
 
 /* 
@@ -183,6 +186,7 @@ static void                 real_get_column_specification             (FMListVie
 								       int                column_number,
 								       FMListViewColumn  *specification);
 static gboolean		    real_is_empty			      (FMDirectoryView	 *view);
+static void		    real_sort_directories_first_changed	      (FMDirectoryView   *view);
 static void		    real_start_renaming_item  		      (FMDirectoryView   *view, 
 								       const char 	 *uri);
 
@@ -230,6 +234,7 @@ fm_list_view_initialize_class (gpointer klass)
         fm_directory_view_class->image_display_policy_changed = fm_list_view_image_display_policy_changed;
         fm_directory_view_class->font_family_changed = fm_list_view_font_family_changed;
         fm_directory_view_class->smooth_graphics_mode_changed = fm_list_view_update_smooth_graphics_mode;
+        fm_directory_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
 
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
@@ -306,6 +311,35 @@ column_clicked_callback (NautilusCList *clist, int column, gpointer user_data)
 	fm_list_view_sort_items (list_view, column, reversed);
 }
 
+/* NautilusCompareFunction-style compare function */
+static int
+list_view_compare_files_for_sort (gconstpointer a, gconstpointer b, gpointer callback_data)
+{
+	FMListView *list_view;
+	NautilusFile *file1;
+	NautilusFile *file2;
+	int result;
+
+	list_view = FM_LIST_VIEW (callback_data);
+	file1 = NAUTILUS_FILE (a);
+	file2 = NAUTILUS_FILE (b);
+
+	result = nautilus_file_compare_for_sort (file1, file2,
+					       get_column_sort_criterion (list_view, list_view->details->sort_column),
+					       fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (list_view)),
+					       list_view->details->sort_reversed);
+
+	/* Flip the sign in the reversed case since list widget will flip it back.
+	 * See comment in fm_list_view_sort_items.
+	 */
+	if (list_view->details->sort_reversed) {
+		result = -result;
+	}
+
+	return result;
+}
+
+/* CList-style compare function */
 static int
 fm_list_view_compare_rows (NautilusCList *clist,
 			   gconstpointer ptr1,
@@ -315,7 +349,6 @@ fm_list_view_compare_rows (NautilusCList *clist,
 	NautilusCListRow *row2;
 	NautilusFile *file1;
 	NautilusFile *file2;
-	NautilusFileSortType sort_criterion;
 	FMListView *list_view;
   
 	g_return_val_if_fail (NAUTILUS_IS_LIST (clist), 0);
@@ -344,10 +377,12 @@ fm_list_view_compare_rows (NautilusCList *clist,
 	
 	list_view = FM_LIST_VIEW (GTK_WIDGET (clist)->parent);
 
-	sort_criterion = get_column_sort_criterion (list_view, clist->sort_column);
-	return nautilus_file_compare_for_sort (file1, file2, sort_criterion);
+	return list_view_compare_files_for_sort (file1, file2, list_view);
 }
 
+/* This is used by type-to-select code. It deliberately ignores the
+ * folders-first and reversed-sort settings.
+ */
 static int
 compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
 {
@@ -362,7 +397,8 @@ compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
 	return nautilus_file_compare_for_sort
 		(NAUTILUS_FILE (row1->data),
 		 NAUTILUS_FILE (row2->data),
-		 NAUTILUS_FILE_SORT_BY_NAME);
+		 NAUTILUS_FILE_SORT_BY_NAME,
+		 FALSE, FALSE);
 }
 
 static int
@@ -921,6 +957,12 @@ fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
 	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 	
 	nautilus_list_set_anti_aliased_mode (list, smooth_graphics_mode);
+}
+
+static void
+real_sort_directories_first_changed (FMDirectoryView *directory_view)
+{
+	nautilus_clist_sort (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (directory_view))));
 }
 
 static void
@@ -1690,16 +1732,9 @@ fm_list_view_display_pending_files (FMDirectoryView *view,
 
 	/* Sort the added items before displaying them, so that they'll be added in order,
 	   and items won't move around.  */
-	if (FM_LIST_VIEW (view)->details->sort_reversed) {
-		*pending_files_added = nautilus_g_list_sort_custom (*pending_files_added,
-								    (NautilusCompareFunction) nautilus_file_compare_for_sort_reversed,
-								    GINT_TO_POINTER (sort_criterion));
-	}
-	else {
-		*pending_files_added = nautilus_g_list_sort_custom (*pending_files_added,
-								    (NautilusCompareFunction) nautilus_file_compare_for_sort,
-								    GINT_TO_POINTER (sort_criterion));
-	}
+	*pending_files_added = nautilus_g_list_sort_custom (*pending_files_added,
+							    (NautilusCompareFunction) list_view_compare_files_for_sort,
+							    FM_LIST_VIEW (view));
 
 	files_added = g_list_split_off_first_n (pending_files_added,
 						       LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE);
@@ -1798,6 +1833,11 @@ fm_list_view_sort_items (FMListView *list_view,
 	list_view->details->sort_column = column;
 
 	if (reversed != list_view->details->sort_reversed) {
+		/* Set DESCENDING or ASCENDING so the sort-order triangle
+		 * in the column header draws correctly; we have to play
+		 * games with the sort order in list_view_compare_files_for_sort
+		 * to make up for this.
+		 */
 		nautilus_clist_set_sort_type (clist, reversed
 					      ? GTK_SORT_DESCENDING
 					      : GTK_SORT_ASCENDING);
