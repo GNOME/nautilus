@@ -84,6 +84,11 @@ void                   nautilus_scalable_font_measure_text                    (c
 									       guint                        text_length,
 									       guint                       *text_width_out,
 									       guint                       *text_height_out);
+guint                  nautilus_scalable_font_text_width                      (const NautilusScalableFont  *font,
+									       guint                        font_width,
+									       guint                        font_height,
+									       const char                  *text,
+									       guint                        text_length);
 void                   nautilus_scalable_font_draw_text                       (const NautilusScalableFont  *font,
 									       GdkPixbuf                   *destination_pixbuf,
 									       int                          x,
@@ -146,7 +151,6 @@ gboolean               nautilus_scalable_font_query_font                      (c
 									       NautilusStringList         **weights,
 									       NautilusStringList         **slants,
 									       NautilusStringList         **set_widths);
-
 
 END_GNOME_DECLS
 

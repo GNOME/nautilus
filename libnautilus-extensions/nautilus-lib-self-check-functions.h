@@ -41,6 +41,7 @@ void nautilus_run_lib_self_checks (void);
 #define NAUTILUS_LIB_FOR_EACH_SELF_CHECK_FUNCTION(macro) \
 	macro (nautilus_self_check_string) \
 	macro (nautilus_self_check_string_list) \
+	macro (nautilus_self_check_scalable_font) \
 	macro (nautilus_self_check_string_map) \
 	macro (nautilus_self_check_glib_extensions) \
 	macro (nautilus_self_check_gdk_extensions) \

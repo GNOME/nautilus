@@ -33,6 +33,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string-map.h"
+#include "nautilus-lib-self-check-functions.h"
 
 #include <librsvg/rsvg-ft.h>
 
@@ -648,6 +649,37 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
 	*text_height_out = glyph->height;
 
 	rsvg_ft_glyph_unref (glyph);
+}
+
+guint
+nautilus_scalable_font_text_width (const NautilusScalableFont  *font,
+				   guint                        font_width,
+				   guint                        font_height,
+				   const char                  *text,
+				   guint                        text_length)
+{
+	guint	text_width = 0;
+	guint	text_height = 0;
+
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), 0);
+	g_return_val_if_fail (font_width > 0, 0);
+	g_return_val_if_fail (font_height > 0, 0);
+
+	if (text == NULL || text[0] == '\0' || text_length == 0) {
+		return 0;
+	}
+
+	g_return_val_if_fail (text_length <= strlen (text), 0);
+
+	nautilus_scalable_font_measure_text (font,
+					     font_width,
+					     font_height,
+					     text,
+					     text_length,
+					     &text_width,
+					     &text_height);
+
+	return text_width;
 }
 
 void
@@ -1287,3 +1319,13 @@ initialize_global_stuff_if_needed (void)
 		g_atexit (font_family_string_map_at_exit_destructor);
 	}
 }
+
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+void
+nautilus_self_check_scalable_font (void)
+{
+	/* const char *fonts_place = NAUTILUS_DATADIR "/fonts/urw"; */
+}
+
+#endif /* !NAUTILUS_OMIT_SELF_CHECK */
