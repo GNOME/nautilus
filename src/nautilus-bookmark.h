@@ -56,6 +56,7 @@ typedef struct _NautilusBookmarkClass NautilusBookmarkClass;
 GtkType		    nautilus_bookmark_get_type	   (void);
 NautilusBookmark   *nautilus_bookmark_new	   (const gchar *name,
 						    const gchar *uri);
+NautilusBookmark   *nautilus_bookmark_copy	   (const NautilusBookmark *);
 const gchar	   *nautilus_bookmark_get_name	   (const NautilusBookmark *);
 const gchar	   *nautilus_bookmark_get_uri	   (const NautilusBookmark *);
 

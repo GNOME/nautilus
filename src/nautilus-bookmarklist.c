@@ -118,16 +118,11 @@ void
 nautilus_bookmarklist_append (NautilusBookmarklist *bookmarks, 
 			      const NautilusBookmark *bookmark)
 {
-	NautilusBookmark *new_bookmark;
-
 	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
-	new_bookmark = nautilus_bookmark_new(
-			nautilus_bookmark_get_name(bookmark),
-			nautilus_bookmark_get_uri(bookmark));
-			
-	bookmarks->list = g_list_append(bookmarks->list, new_bookmark);
+	bookmarks->list = g_list_append(bookmarks->list, 
+					nautilus_bookmark_copy(bookmark));
 	nautilus_bookmarklist_contents_changed(bookmarks);
 }
 
@@ -144,8 +139,8 @@ gboolean
 nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks, 
 			      const NautilusBookmark *bookmark)
 {
-	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
 
 	return g_list_find_custom(bookmarks->list, 
 				  (gpointer)bookmark, 

@@ -141,6 +141,16 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 	return 0;
 }
 
+NautilusBookmark *
+nautilus_bookmark_copy (const NautilusBookmark *bookmark)
+{
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
+
+	return nautilus_bookmark_new(
+			nautilus_bookmark_get_name(bookmark),
+			nautilus_bookmark_get_uri(bookmark));
+}
+
 const gchar *
 nautilus_bookmark_get_name (const NautilusBookmark *bookmark)
 {

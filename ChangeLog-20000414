@@ -1,5 +1,16 @@
 1999-12-28  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-bookmarklist.c: 
+	  (nautilus_bookmarklist_contains):
+	  changed two g_return_if_fail to g_return_val_if_fail. Eek! I
+	  accidentally checked this in yesterday without compiling. I
+	  should be tarred and feathered.
+	  (nautilus_bookmarklist_append): Now calls new nautilus_bookmark_copy
+	* src/nautilus-bookmark.[ch]:
+	  (nautilus_bookmark_copy): New method
+
+1999-12-28  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-bookmark.c: 
 	* src/nautilus-bookmarklist.c:
 	* src/nautilus-bookmarks-menu.c:
