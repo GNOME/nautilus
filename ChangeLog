@@ -1,3 +1,16 @@
+2001-02-05  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 6359 (Choosing current view from "View as" menu crashes)
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_content_view_matches_iid): New function, extracted
+	from load_content_view, checks whether passed iid is the one in
+	use by this window.
+	(load_content_view): Now calls extracted function.
+	(nautilus_window_set_content_view): Bail out early if the
+	new content view is the old one. This avoids unpleasant crashing
+	later on.
+
 2001-02-05  Gene Z. Ragan  <gzr@eazel.com>
 
 	Add code to send the mime type of the file being examined to the

@@ -876,11 +876,26 @@ set_to_pending_location_and_selection (NautilusWindow *window)
         window->details->pending_selection = NULL;
 }
 
+static gboolean
+nautilus_window_content_view_matches_iid (NautilusWindow *window, 
+					  const char *iid)
+{
+	const char *content_view_iid;
+
+        if (window->content_view == NULL) {
+                content_view_iid = "";
+        } else {
+                content_view_iid = nautilus_view_frame_get_view_iid (window->content_view);
+        }
+
+	return strcmp (content_view_iid, iid) == 0;
+}
+
 static void
 load_content_view (NautilusWindow *window,
                    const NautilusViewIdentifier *id)
 {
-        const char *iid, *content_view_iid;
+        const char *iid;
         NautilusViewFrame *view;
 
  	/* FIXME bugzilla.eazel.com 1243: 
@@ -914,13 +929,7 @@ load_content_view (NautilusWindow *window,
         nautilus_view_identifier_free (window->content_view_id);
         window->content_view_id = nautilus_view_identifier_copy (id);
 
-        if (window->content_view == NULL) {
-                content_view_iid = "";
-        } else {
-                content_view_iid = nautilus_view_frame_get_view_iid (window->content_view);
-        }
-
-        if (strcmp (content_view_iid, iid) == 0) {
+        if (nautilus_window_content_view_matches_iid (window, iid)) {
                 /* reuse existing content view */
                 view = window->content_view;
                 window->new_content_view = view;
@@ -1370,6 +1379,10 @@ nautilus_window_set_content_view (NautilusWindow *window,
         g_return_if_fail (window->details->location != NULL);
         g_return_if_fail (window->new_content_view == NULL);
 	g_return_if_fail (id != NULL);
+
+        if (nautilus_window_content_view_matches_iid (window, id->iid)) {
+        	return;
+        }
 
 	file = nautilus_file_get (window->details->location);
         nautilus_mime_set_default_component_for_file
