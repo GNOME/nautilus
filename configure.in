@@ -668,6 +668,17 @@ AC_SUBST(BONOBO_PRINT_LIBS)
 AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
 
+dnl   Bug 7315: Rediscover CFLAGS for GTK, because gnome-config won't know
+dnl   all the necessary flags if GTK has been upgraded more recently than
+dnl   it has.
+
+AC_PATH_PROG(GTK_CONFIG,gtk-config,false)
+AC_MSG_CHECKING(for gtk-config cflags)
+GTK_CFLAGS=`$GTK_CONFIG --cflags`
+AC_MSG_RESULT($GTK_CFLAGS)
+GNOMEUI_CFLAGS="$GNOMEUI_CFLAGS $GTK_CFLAGS"
+AC_SUBST(GNOMEUI_CFLAGS)
+
 IDL_CFLAGS="${IDL_CFLAGS} -I\$(top_srcdir) -I\$(top_builddir)"
 
 echo "IDL_CFLAGS: $IDL_CFLAGS"
