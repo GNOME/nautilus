@@ -1,5 +1,15 @@
 2001-01-17  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/throbber/main.c: (main):	
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_destroy):
+	fixed problem that Pavel pointed out where the throbber
+	component is left around after Nautilus exists, by calling
+	gnome_vfs_shutdown when we exit, and also unrefing the
+	throbber's bonobo control when the widget is destroyed.
+	
+2001-01-17  Andy Hertzfeld  <andy@eazel.com>
+
 	reviewed by: <darin@eazel.com>
 
 	* src/nautilus-window-manage-views.c: (unref_callback),

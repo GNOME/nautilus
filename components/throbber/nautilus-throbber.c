@@ -199,6 +199,11 @@ nautilus_throbber_destroy (GtkObject *object)
 	if (throbber->details->property_bag) {
 		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
 	}
+	
+	if (throbber->details->control) {
+		bonobo_object_unref (BONOBO_OBJECT (throbber->details->control));
+	}
+
 
 	g_free (throbber->details);
 
