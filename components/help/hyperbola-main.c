@@ -5,12 +5,32 @@
 /* In hyperbola-nav-tree.c */
 extern GnomeObject *hyperbola_navigation_tree_new(void);
 
+static int object_count = 0;
+
+static void
+do_destroy(GtkObject *obj)
+{
+  object_count--;
+
+  if(object_count <= 0)
+    gtk_main_quit();
+}
+
 static GnomeObject *
 make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
 {
+  GnomeObject *retval = NULL;
+
   if(!strcmp(goad_id, "hyperbola_navigation_tree"))
-    return hyperbola_navigation_tree_new();
-  return NULL;
+     retval = hyperbola_navigation_tree_new();
+
+  if(retval)
+    {
+      object_count++;
+      gtk_signal_connect(GTK_OBJECT(retval), "destroy", do_destroy, NULL);
+    }
+
+  return retval;
 }
 
 int main(int argc, char *argv[])
@@ -26,7 +46,9 @@ int main(int argc, char *argv[])
 
   factory = gnome_generic_factory_new_multi("hyperbola_factory", make_obj, NULL);
 
-  bonobo_main();
+  do {
+    bonobo_main();
+  } while(object_count > 0);
 
   return 0;
 }

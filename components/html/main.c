@@ -29,8 +29,7 @@
 #include <bonobo/gnome-bonobo.h>
 
 #include <gtkhtml/gtkhtml.h>
-
-#include "gnome-progressive-loader.h"
+#include <libnautilus/gnome-progressive-loader.h>
 
 
 /* Per-GnomeEmbeddable data.  */
@@ -483,11 +482,7 @@ embeddable_factory (GnomeEmbeddableFactory *this,
 
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 
-	html = gtk_html_new
-		(gtk_scrolled_window_get_hadjustment
-		 	(GTK_SCROLLED_WINDOW (scrolled_window)),
-		 gtk_scrolled_window_get_vadjustment
-		 	(GTK_SCROLLED_WINDOW (scrolled_window)));
+	html = gtk_html_new ();
 	connect_gtk_html_signals (GTK_HTML (html), embeddable_data);
 
 	gtk_container_add (GTK_CONTAINER (scrolled_window), html);

@@ -1,0 +1,11 @@
+[ntl_web_browser_factory]
+type=exe
+repo_id=IDL:GNOME/GenericFactory:1.0
+description=HTML component's factory
+location_info=ntl-web-browser
+
+[ntl_web_browser]
+type=factory
+repo_id=IDL:GNOME/Control:1.0 IDL:Nautilus/ContentView:1.0 IDL:Nautilus/View:1.0
+description=Web browser component
+location_info=ntl_web_browser_factory

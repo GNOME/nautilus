@@ -1,3 +1,13 @@
+1999-12-20  Elliot Lee  <sopwith@redhat.com>
+
+	* configure.in, components/Makefile.am: Add HTML component to build.
+	* components/help/hyperbola-main.c, components/history/ntl-history-view.c: Make process die when
+	  all objects have been destroyed.
+	* components/history/ntl-history-view.c: Bug fixes.
+	* components/html/*.[ch]: Copy glibwww over, write new NautilusViewClient for HTML browsing.
+	* src/ntl-uri-map.c: Cleanup, and use ntl_web_browser as default HTML display engine.
+	* src/ntl-view.c: Try to handle Bonobo views for data display.
+
 1999-12-20  John Sullivan  <sullivan@eazel.com>
 	* src/nautilus-bookmark.h,c: new files
 	* src/nautilus-bookmarklist.h,c: new files

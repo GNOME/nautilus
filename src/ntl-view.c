@@ -22,9 +22,9 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-view.c: Implementation of the object representing a data
-   view, and its associated CORBA object for proxying requests into
-   this object. */
+/* ntl-view.c: Implementation of the object representing a data view,
+   and its associated CORBA object for proxying requests into this
+   object. */
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
@@ -583,20 +583,54 @@ nautilus_view_notify_location_change(NautilusView *view,
   CORBA_Environment ev;
   Nautilus_NavigationInfo real_nav_ctx;
 
-  g_return_if_fail(view->type == NV_NAUTILUS_VIEW);
-
   CORBA_exception_init(&ev);
 
   real_nav_ctx = *nav_context;
   g_assert(real_nav_ctx.requested_uri);
 #define DEFAULT_STRING(x) if(!real_nav_ctx.x) real_nav_ctx.x = ""
+  if(!real_nav_ctx.actual_uri) real_nav_ctx.actual_uri = real_nav_ctx.requested_uri;
+  DEFAULT_STRING(content_type);
 
-  DEFAULT_STRING(actual_uri);
   DEFAULT_STRING(referring_uri);
-  DEFAULT_STRING(actual_referring_uri);
+  if(!real_nav_ctx.actual_referring_uri) real_nav_ctx.actual_referring_uri = real_nav_ctx.referring_uri;
   DEFAULT_STRING(referring_content_type);
 
-  Nautilus_View_notify_location_change(view->u.nautilus_view_info.view_client, &real_nav_ctx, &ev);
+  switch(view->type)
+    {
+    case NV_NAUTILUS_VIEW:
+      Nautilus_View_notify_location_change(view->u.nautilus_view_info.view_client, &real_nav_ctx, &ev);
+      break;
+    case NV_BONOBO_SUBDOC:
+      {
+        GNOME_PersistFile persist;
+
+        persist = gnome_object_client_query_interface(view->client_object, "IDL:GNOME/PersistFile:1.0",
+                                                      NULL);
+        if(!CORBA_Object_is_nil(persist, &ev))
+          {
+            GNOME_PersistFile_load(persist, real_nav_ctx.actual_uri, &ev);
+            GNOME_Unknown_unref(persist, &ev);
+            CORBA_Object_release(persist, &ev);
+          }
+        else if((persist = gnome_object_client_query_interface(view->client_object, "IDL:GNOME/PersistStream:1.0",
+                                                               NULL))
+                && !CORBA_Object_is_nil(persist, &ev))
+          {
+            GnomeStream *stream;
+
+            stream = gnome_stream_fs_open(real_nav_ctx.actual_uri, GNOME_Storage_READ);
+            GNOME_PersistStream_load (persist,
+                                      (GNOME_Stream) gnome_object_corba_objref (GNOME_OBJECT (stream)),
+                                      &ev);
+            GNOME_Unknown_unref(persist, &ev);
+            CORBA_Object_release(persist, &ev);
+          }
+      }      
+      break;
+    default:
+      g_warning("Unhandled view type %d", view->type);
+      break;
+    }
 
   CORBA_exception_free(&ev);
 }

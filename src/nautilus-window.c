@@ -444,12 +444,10 @@ nautilus_window_constructed(NautilusWindow *window)
   /* insert bookmarks menu */
   gtk_menu_item_set_submenu(GTK_MENU_ITEM (main_menu[BOOKMARKS_MENU_INDEX].widget), 
   			    nautilus_bookmarks_menu_new(window));
-
   /* set up toolbar */
   gnome_app_create_toolbar_with_data(app, toolbar_info, window);
   window->btn_back = toolbar_info[0].widget;
   window->btn_fwd = toolbar_info[1].widget;
-
   nautilus_window_allow_stop(window, FALSE);
 
   /* set up location bar */

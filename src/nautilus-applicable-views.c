@@ -82,19 +82,25 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 
   /* This is just a hardcoded hack until OAF works with Bonobo.
      In the future we will use OAF queries to determine this information. */
-  if(navinfo->navinfo.content_type && !strcmp(navinfo->navinfo.content_type, "text/html"))
+  if(navinfo->navinfo.content_type)
     {
-      navinfo->content_iid = "embeddable:explorer-html-component";
+      if(!strcmp(navinfo->navinfo.content_type, "text/html"))
+        {
+          navinfo->content_iid = "ntl_web_browser";
+        }
+      else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
+        {
+          navinfo->content_iid = "embeddable:text-plain";
+        }
+      else if(!strcmp(navinfo->navinfo.content_type, "special/directory"))
+        {
+          navinfo->content_iid = "ntl_file_manager";
+        }
+      else
+        {
+          g_warning("Unhandled content type %s", navinfo->navinfo.content_type);
+        }
     }
-  else if(navinfo->navinfo.content_type && !strcmp(navinfo->navinfo.content_type, "text/plain"))
-    {
-      navinfo->content_iid = "embeddable:text-plain";
-    }
-  else if(navinfo->navinfo.content_type && !strcmp(navinfo->navinfo.content_type, "special/directory"))
-    {
-      navinfo->content_iid = "ntl_file_manager";
-    }
-
 
   navinfo->meta_iids = g_slist_append(navinfo->meta_iids, "ntl_history_view");
 

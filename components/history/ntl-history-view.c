@@ -26,7 +26,7 @@ hyperbola_navigation_history_notify_location_change (NautilusViewClient *view,
   if(hview->last_row >= 0)
     {
       char *uri;
-      int i;
+      int i, j;
 
       /* If we are moving 'forward' in history, must either just
 	 select a new row that is farther ahead in history, or delete
@@ -34,15 +34,18 @@ hyperbola_navigation_history_notify_location_change (NautilusViewClient *view,
 
       for(i = -1; i <= 1; i++)
 	{
+	  if((hview->last_row + i) < 0)
+	    continue;
+
 	  gtk_clist_get_text(clist, hview->last_row + i, 0, &uri);
 	  if(!strcmp(uri, loci->requested_uri))
 	    {
-	      new_rownum = hview->last_row + i;
+	      hview->last_row = new_rownum = hview->last_row + i;
 	      goto skip_prepend;
 	    }
 	}
 
-      for(i = 0; i < hview->last_row; i++)
+      for(j = 0; j < hview->last_row; j++)
 	gtk_clist_remove(clist, 0);
     }
 
@@ -92,6 +95,15 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   gtk_clist_thaw(clist);
 }
 
+static int object_count = 0;
+
+static void
+do_destroy(GtkObject *obj)
+{
+  object_count--;
+  if(object_count <= 0)
+    gtk_main_quit();
+}
 
 static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
@@ -105,6 +117,8 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
   hview = g_new0(HistoryView, 1);
   hview->last_row = -1;
   client = gtk_widget_new(nautilus_meta_view_client_get_type(), NULL);
+  gtk_signal_connect(GTK_OBJECT(client), "destroy", do_destroy, NULL);
+  object_count++;
 
   ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(client));
 
@@ -150,7 +164,9 @@ int main(int argc, char *argv[])
 
   factory = gnome_generic_factory_new_multi("ntl_history_view_factory", make_obj, NULL);
 
-  bonobo_main();
+  do {
+    bonobo_main();
+  } while(object_count > 0);
 
   return 0;
 }

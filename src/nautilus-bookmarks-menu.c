@@ -293,7 +293,6 @@ nautilus_bookmarks_menu_repopulate (NautilusBookmarksMenu *menu)
 	for (index = 0; index < bookmark_count; ++index)
 	{
 		const NautilusBookmark *bookmark;
-		const char *name;
 		GtkWidget *item;
 
 		bookmark = nautilus_bookmarklist_item_at(bookmarks, index);

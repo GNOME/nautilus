@@ -6,34 +6,34 @@ CPPFLAGS =					\
 	-DG_LOG_DOMAIN=\"Nautilus-HTML\"
 
 INCLUDES =					\
-	-I$(top_srcdir)/intl			\
-	-I$(top_builddir)/intl			\
-	-I$(top_srcdir)/src/lib			\
-	-I$(top_builddir)/src/lib		\
-	$(DMALLOC_INCLUDES)			\
-	$(GNOME_INCLUDEDIR)
+	-I$(top_srcdir)				\
+	-I$(top_builddir)			\
+	$(GNOMEUI_CFLAGS)			\
+	`libwww-config --cflags`
 
 gnorbadir = $(sysconfdir)/CORBA/servers
 gnorba_DATA =					\
-	ntl-html-component.gnorba
+	ntl-web-browser.goad
 
 
 bin_PROGRAMS =					\
-	ntl-html-component
+	ntl-web-browser
 
-ntl_html_component_SOURCES =		\
-	main.c
+ntl_web_browser_SOURCES =		\
+	ntl-web-browser.c		\
+	glibwww-init.c			\
+	glibwww-trans.c			\
+	glibwww-callbacks.c		\
+	glibwww.h			\
+	gnome-dialogs.c
 
-ntl_html_component_LDADD =			\
+ntl_web_browser_LDFLAGS =				\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	-lgtkhtml -lgdk_pixbuf			\
-	$(BONOBO_LIBS)				\
-	$(GNOME_LIBDIR)				\
-	$(GNOMEUI_LIBS)				\
-	$(GNOME_VFS_LIBS)			\
-	$(GNORBA_LIBS)				\
-	$(GNOME_XML_LIB)			\
-	$(INTLLIBS)
+	-lgtkhtml -lgdk_pixbuf				\
+	$(BONOBO_LIBS)					\
+	$(GNOMEUI_LIBS)					\
+	$(VFS_LIBS)					\
+	$(GNORBA_LIBS)					\
+	`libwww-config --libs`
 
-
-EXTRA_DIST = ntl-html-component.gnorba
+EXTRA_DIST = ntl-web-browser.goad
