@@ -1,3 +1,13 @@
+2000-08-02  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_changed):
+	Fixed a bug where we did not send out "changed" signals for files
+	that have no parents (like "/").
+
+	* libnautilus-extensions/nautilus-directory-async.c: (is_needy),
+	(select_needy_file): Improved logic so it works more precisely
+	for non-parented files.
+
 2000-08-02  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1866, Turn volume mounting code into an object.

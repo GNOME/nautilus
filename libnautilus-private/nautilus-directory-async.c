@@ -1519,6 +1519,7 @@ is_needy (NautilusFile *file,
 	  FileCheck check_missing,
 	  RequestCheck check_wanted)
 {
+	NautilusDirectory *directory;
 	GList *p;
 	ReadyCallback *callback;
 	Monitor *monitor;
@@ -1529,18 +1530,31 @@ is_needy (NautilusFile *file,
 		return FALSE;
 	}
 
-	for (p = file->details->directory->details->call_when_ready_list; p != NULL; p = p->next) {
+	directory = file->details->directory;
+	for (p = directory->details->call_when_ready_list;
+	     p != NULL; p = p->next) {
 		callback = p->data;
-		if ((* check_wanted) (&callback->request)
-		    && (callback->file == NULL || callback->file == file)) {
-			return TRUE;
+		if ((* check_wanted) (&callback->request)) {
+			if (callback->file == file) {
+				return TRUE;
+			}
+			if (callback->file == NULL
+			    && file != directory->details->as_file) {
+				return TRUE;
+			}
 		}
 	}
-	for (p = file->details->directory->details->monitor_list; p != NULL; p = p->next) {
+	for (p = directory->details->monitor_list;
+	     p != NULL; p = p->next) {
 		monitor = p->data;
-		if ((* check_wanted) (&monitor->request)
-		    && (monitor->file == NULL || monitor->file == file)) {
-			return TRUE;
+		if ((* check_wanted) (&monitor->request)) {
+			if (monitor->file == file) {
+				return TRUE;
+			}
+			if (monitor->file == NULL
+			    && file != directory->details->as_file) {
+				return TRUE;
+			}
 		}
 	}
 	return FALSE;
@@ -1581,8 +1595,8 @@ select_needy_file (NautilusDirectory *directory,
 		if ((* check_missing) (file)) {
 		    	for (p2 = directory->details->call_when_ready_list; p2 != NULL; p2 = p2->next) {
 				callback = p2->data;
-				if ((* check_wanted) (&callback->request)
-				    && (callback->file == NULL || callback->file == file)) {
+				if ((callback->file == NULL || callback->file == file)
+				    && (* check_wanted) (&callback->request)) {
 					break;
 				}
 		    	}
@@ -1591,8 +1605,8 @@ select_needy_file (NautilusDirectory *directory,
 			}
 			for (p2 = directory->details->monitor_list; p2 != NULL; p2 = p2->next) {
 				monitor = p2->data;
-				if ((* check_wanted) (&monitor->request)
-				    && (monitor->file == NULL || monitor->file == file)) {
+				if ((monitor->file == NULL || monitor->file == file)
+				    && (* check_wanted) (&monitor->request)) {
 					break;
 				}
 			}
@@ -1608,8 +1622,8 @@ select_needy_file (NautilusDirectory *directory,
 		if ((* check_missing) (file)) {
 		    	for (p2 = directory->details->call_when_ready_list; p2 != NULL; p2 = p2->next) {
 				callback = p2->data;
-				if ((* check_wanted) (&callback->request)
-				    && callback->file == file) {
+				if (callback->file == file
+				    && (* check_wanted) (&callback->request)) {
 					break;
 				}
 		    	}
@@ -1618,8 +1632,8 @@ select_needy_file (NautilusDirectory *directory,
 			}
 			for (p2 = directory->details->monitor_list; p2 != NULL; p2 = p2->next) {
 				monitor = p2->data;
-				if ((* check_wanted) (&monitor->request)
-				    && monitor->file == file) {
+				if (monitor->file == file
+				    && (* check_wanted) (&monitor->request)) {
 					break;
 				}
 			}

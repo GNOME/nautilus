@@ -3450,7 +3450,9 @@ nautilus_file_changed (NautilusFile *file)
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	if (!nautilus_file_is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
+		nautilus_file_emit_changed (file);
+	} else {
 		fake_list.data = file;
 		fake_list.next = NULL;
 		fake_list.prev = NULL;
