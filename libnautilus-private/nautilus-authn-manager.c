@@ -24,7 +24,7 @@
 
 /*
  * Questions:
- *  -- Can we center the authn dialog over the window where the operation
+ *  -- Can we center the authentication dialog over the window where the operation
  *     is occuring?  (which doesn't even make sense in a drag between two windows)
  *  -- Can we provide a CORBA interface for components to access this info?
  *
@@ -51,19 +51,19 @@
 #endif
 
 static EelPasswordDialog *
-construct_password_dialog (gboolean is_proxy_authn, const GnomeVFSCallbackSimpleAuthIn *in_args)
+construct_password_dialog (gboolean is_proxy_authentication, const GnomeVFSCallbackSimpleAuthIn *in_args)
 {
 	char *message;
 	EelPasswordDialog *dialog;
 
 	message = g_strdup_printf (
-		is_proxy_authn
+		is_proxy_authentication
 			? _("Your HTTP Proxy requires you to log in.\n")
-			: _("The following location requires you to log in:\n%s\n\n%s"), 
+			: _("You must log in to access \"%s\".\n\n%s"), 
 		in_args->uri, 
 		in_args->auth_type == AuthTypeBasic
-			? _("Your password will be transmitted unencrypted") 
-			: _("Your password will be transmitted encrypted"));
+			? _("Your password will be transmitted unencrypted.") 
+			: _("Your password will be transmitted encrypted."));
 
 	dialog = EEL_PASSWORD_DIALOG (eel_password_dialog_new (
 			_("Authentication Required"),
@@ -78,14 +78,14 @@ construct_password_dialog (gboolean is_proxy_authn, const GnomeVFSCallbackSimple
 }
 
 static void
-present_authn_dialog_blocking (gboolean is_proxy_authn,
+present_authentication_dialog_blocking (gboolean is_proxy_authentication,
 			    const GnomeVFSCallbackSimpleAuthIn * in_args,
 			    GnomeVFSCallbackSimpleAuthOut *out_args)
 {
 	EelPasswordDialog *dialog;
 	gboolean dialog_result;
 
-	dialog = construct_password_dialog (is_proxy_authn, in_args);
+	dialog = construct_password_dialog (is_proxy_authentication, in_args);
 
 	dialog_result = eel_password_dialog_run_and_block (dialog);
 
@@ -102,7 +102,7 @@ present_authn_dialog_blocking (gboolean is_proxy_authn,
 typedef struct {
 	const GnomeVFSCallbackSimpleAuthIn	*in_args;
 	GnomeVFSCallbackSimpleAuthOut		*out_args;
-	gboolean				 is_proxy_authn;
+	gboolean				 is_proxy_authentication;
 
 	volatile gboolean	complete;
 } CallbackInfo;
@@ -118,7 +118,7 @@ mark_callback_completed (CallbackInfo *info)
 }
 
 static void
-authn_dialog_button_clicked (GnomeDialog *dialog, gint button_number, CallbackInfo *info)
+authentication_dialog_button_clicked (GnomeDialog *dialog, gint button_number, CallbackInfo *info)
 {
 	DEBUG_MSG (("+%s button: %d\n", __FUNCTION__, button_number));
 
@@ -135,7 +135,7 @@ authn_dialog_button_clicked (GnomeDialog *dialog, gint button_number, CallbackIn
 }
 
 static void
-authn_dialog_closed (GnomeDialog *dialog, CallbackInfo *info)
+authentication_dialog_closed (GnomeDialog *dialog, CallbackInfo *info)
 {
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
@@ -143,7 +143,7 @@ authn_dialog_closed (GnomeDialog *dialog, CallbackInfo *info)
 }
 
 static void
-authn_dialog_destroyed (GnomeDialog *dialog, CallbackInfo *info)
+authentication_dialog_destroyed (GnomeDialog *dialog, CallbackInfo *info)
 {
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
@@ -151,7 +151,7 @@ authn_dialog_destroyed (GnomeDialog *dialog, CallbackInfo *info)
 }
 
 static gint /* GtkFunction */
-present_authn_dialog_nonblocking (gpointer data)
+present_authentication_dialog_nonblocking (gpointer data)
 {
 	CallbackInfo *info;
 	EelPasswordDialog *dialog;
@@ -160,23 +160,23 @@ present_authn_dialog_nonblocking (gpointer data)
 
 	info = data;
 
-	dialog = construct_password_dialog (info->is_proxy_authn, info->in_args);
+	dialog = construct_password_dialog (info->is_proxy_authentication, info->in_args);
 
 	gtk_window_set_modal (GTK_WINDOW (dialog), FALSE);
 
 	gtk_signal_connect (GTK_OBJECT (dialog), 
 			     "clicked", 
-			     GTK_SIGNAL_FUNC (authn_dialog_button_clicked),
+			     GTK_SIGNAL_FUNC (authentication_dialog_button_clicked),
 			     data);
 
 	gtk_signal_connect (GTK_OBJECT (dialog), 
 			     "close", 
-			     GTK_SIGNAL_FUNC (authn_dialog_closed),
+			     GTK_SIGNAL_FUNC (authentication_dialog_closed),
 			     data);
 
 	gtk_signal_connect (GTK_OBJECT (dialog), 
 			     "destroy", 
-			     GTK_SIGNAL_FUNC (authn_dialog_destroyed),
+			     GTK_SIGNAL_FUNC (authentication_dialog_destroyed),
 			     data);
 
 	gtk_widget_show_all (GTK_WIDGET (dialog));
@@ -185,21 +185,21 @@ present_authn_dialog_nonblocking (gpointer data)
 }
 
 static void 
-run_authn_dialog_on_main_thread (gboolean is_proxy_authn,
+run_authentication_dialog_on_main_thread (gboolean is_proxy_authentication,
 			    	 const GnomeVFSCallbackSimpleAuthIn *in_args,
 			    	 GnomeVFSCallbackSimpleAuthOut *out_args)
 {
 	CallbackInfo info;
 
 	if (gnome_vfs_is_primary_thread ()) {
-		present_authn_dialog_blocking (is_proxy_authn, in_args, out_args);
+		present_authentication_dialog_blocking (is_proxy_authentication, in_args, out_args);
 	} else {
-		info.is_proxy_authn = is_proxy_authn;
+		info.is_proxy_authentication = is_proxy_authentication;
 		info.in_args = in_args;
 		info.out_args = out_args;
 		info.complete = FALSE;
 
-		g_idle_add (present_authn_dialog_nonblocking, &info);
+		g_idle_add (present_authentication_dialog_nonblocking, &info);
 
 		/* The callback_mutex actually isn't used for anything */
 		g_mutex_lock (callback_mutex);
@@ -213,11 +213,11 @@ run_authn_dialog_on_main_thread (gboolean is_proxy_authn,
 
 /* This function may be dispatched on a gnome-vfs job thread */
 static void /* GnomeVFSCallback */
-vfs_authn_callback (gpointer user_data, gconstpointer in, size_t in_size, gpointer out, size_t out_size)
+vfs_authentication_callback (gpointer user_data, gconstpointer in, size_t in_size, gpointer out, size_t out_size)
 {
 	GnomeVFSCallbackSimpleAuthIn *in_real;
 	GnomeVFSCallbackSimpleAuthOut *out_real;
-	gboolean is_proxy_authn;
+	gboolean is_proxy_authentication;
 	
 	g_return_if_fail (sizeof (GnomeVFSCallbackSimpleAuthIn) == in_size
 		&& sizeof (GnomeVFSCallbackSimpleAuthOut) == out_size);
@@ -228,36 +228,35 @@ vfs_authn_callback (gpointer user_data, gconstpointer in, size_t in_size, gpoint
 	in_real = (GnomeVFSCallbackSimpleAuthIn *)in;
 	out_real = (GnomeVFSCallbackSimpleAuthOut *)out;
 
-	is_proxy_authn = (user_data == GINT_TO_POINTER (1));
+	is_proxy_authentication = (user_data == GINT_TO_POINTER (1));
 
-	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", __FUNCTION__, in_real->uri, (unsigned) is_proxy_authn));
+	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", __FUNCTION__, in_real->uri, (unsigned) is_proxy_authentication));
 
-	run_authn_dialog_on_main_thread (is_proxy_authn, in_real, out_real);
+	run_authentication_dialog_on_main_thread (is_proxy_authentication, in_real, out_real);
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
 
 void
-nautilus_authn_manager_initialize (void)
+nautilus_authentication_manager_initialize (void)
 {
         GnomeVFSAppContext *app_context;
 
 	callback_cond = g_cond_new ();
 	callback_mutex = g_mutex_new ();
 
-
 	app_context = gnome_vfs_app_context_new ();
 
 	gnome_vfs_app_context_set_callback_full (app_context, 
 		GNOME_VFS_HOOKNAME_BASIC_AUTH, 
-		vfs_authn_callback, 
+		vfs_authentication_callback, 
 		GINT_TO_POINTER (0),
 		TRUE,
 		NULL);
 
 	gnome_vfs_app_context_set_callback_full (app_context, 
 		GNOME_VFS_HOOKNAME_HTTP_PROXY_AUTH, 
-		vfs_authn_callback, 
+		vfs_authentication_callback, 
 		GINT_TO_POINTER (1),
 		TRUE,
 		NULL);

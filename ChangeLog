@@ -1,3 +1,23 @@
+2001-09-01  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-authn-manager.h,
+	libnautilus-private/nautilus-authn-manager.c:
+	(construct_password_dialog),
+	(present_authentication_dialog_blocking),
+	(authentication_dialog_button_clicked),
+	(authentication_dialog_closed), (authentication_dialog_destroyed),
+	(present_authentication_dialog_nonblocking),
+	(run_authentication_dialog_on_main_thread),
+	(vfs_authentication_callback),
+	(nautilus_authentication_manager_initialize):
+
+	Replace authn with authentication throughout.
+
+	* src/nautilus-application.c (finish_startup): Adjust to rename.
+
+	* RENAMING: Suggest renaming nautilus-authn-manager to
+	nautillus-authentication-manager.c
+
 2001-08-31  Darin Adler  <darin@bentspoon.com>
 
 	* components/adapter/Makefile.am:

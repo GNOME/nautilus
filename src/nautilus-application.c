@@ -423,7 +423,7 @@ finish_startup (NautilusApplication *application)
 	nautilus_sound_initialize ();
 
 	/* initialize URI authentication manager */
-	nautilus_authn_manager_initialize ();
+	nautilus_authentication_manager_initialize ();
 
 	/* Make the desktop work with gmc and old Nautilus. */
 	migrate_gmc_trash ();
