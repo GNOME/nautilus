@@ -44,12 +44,9 @@ struct _NautilusBookmarkDetails
 
 
 
-static void       nautilus_bookmark_initialize_class (NautilusBookmarkClass  *class);
-static void       nautilus_bookmark_initialize       (NautilusBookmark       *bookmark);
-static GtkWidget *create_pixmap_widget_for_bookmark  (const NautilusBookmark *bookmark);
-
-char *            nautilus_bookmark_get_menu_display_name 
-                                                     (const NautilusBookmark *bookmark);
+static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass  *class);
+static void       nautilus_bookmark_initialize            (NautilusBookmark       *bookmark);
+static GtkWidget *create_pixmap_widget_for_bookmark       (const NautilusBookmark *bookmark);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
@@ -143,15 +140,6 @@ nautilus_bookmark_get_name (const NautilusBookmark *bookmark)
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
 	return bookmark->details->name;
-}
-
-/* Function to get menu name for a bookmark, that escapes underscore keys */
-char *
-nautilus_bookmark_get_menu_display_name (const NautilusBookmark *bookmark) {
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
-	return nautilus_str_underscore_escape(
-			nautilus_bookmark_get_name(bookmark));		      
-	
 }
 
 gboolean	    
@@ -345,7 +333,7 @@ nautilus_bookmark_menu_item_new (const NautilusBookmark *bookmark)
 		gtk_widget_show (pixmap_widget);
 		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
 	}
-	accel_label = gtk_accel_label_new (nautilus_bookmark_get_name(bookmark));
+	accel_label = gtk_accel_label_new (nautilus_bookmark_get_name (bookmark));
 	gtk_misc_set_alignment (GTK_MISC (accel_label), 0.0, 0.5);
 
 	gtk_container_add (GTK_CONTAINER (menu_item), accel_label);

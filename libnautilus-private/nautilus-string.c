@@ -249,34 +249,37 @@ nautilus_eat_str_to_int (char *source, int *integer)
 }
 
 char *
-nautilus_str_underscore_escape (const char *string)
+nautilus_str_double_underscores (const char *string)
 {
-  char *q;
-  char *escaped;
-  int underscores = 0;
-  const char *p;
+	int underscores;
+	const char *p;
+	char *q;
+	char *escaped;
+	
+	if (string == NULL) {
+		return NULL;
+	}
+	
+	underscores = 0;
+	for (p = string; *p != '\0'; p++) {
+		underscores += (*p == '_');
+	}
+	
+	if (underscores == 0) {
+		return g_strdup (string);
+	}
 
-  g_return_val_if_fail (string != NULL, NULL);
-  p=string;
-
-  while (*p != '\000') {
-	  underscores += (*p++ == '_');
-  }
-
-  if (!underscores) {
-	  return g_strdup (string);
-  }
-  escaped = g_new (gchar, strlen (string) + underscores + 1);
-  for(p=string, q=escaped; *p ; ) {
-	  /* Add a slash */
-	  if (*p == '_') {
-		  *q++ = '_';
-	  }
-	  *q++ = *p++;
-  }
-  *q = '\000';
-
-  return escaped;
+	escaped = g_malloc (strlen (string) + underscores + 1);
+	for (p = string, q = escaped; *p != '\0'; p++, q++) {
+		/* Add an extra underscore. */
+		if (*p == '_') {
+			*q++ = '_';
+		}
+		*q = *p;
+	}
+	*q = '\0';
+	
+	return escaped;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -393,14 +396,14 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_foo__", '_'), "_foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_f_o__o_", '_'), "_f_o__o");	
 	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape (NULL), NULL);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo"), "foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar"), "foo__bar");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar_2"), "foo__bar__2");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("_foo"), "__foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_"), "foo__");
-	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores (NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("_"), "__");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("foo"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("foo_bar"), "foo__bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("foo_bar_2"), "foo__bar__2");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("_foo"), "__foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("foo_"), "foo__");
         
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_to_int (string, &integer), boolean_result); \

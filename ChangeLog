@@ -1,7 +1,31 @@
+2000-04-14  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-string.c: 
+	* libnautilus-extensions/nautilus-string.h:
+	After a chat with Rebecca, named nautilus_str_underscore_escape to
+	nautilus_str_double_underscores since the latter name more
+	accurately describes what it does.
+	(nautilus_str_double_underscores): Changed the function to allow
+	NULL and return NULL instead of doing g_return_val_if_fail.
+	(Also reformatted a bit and made a few gratuitous changes.)
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	* libnautilus-extensions/nautilus-bookmark.h:
+	(nautilus_bookmark_get_menu_display_name):
+	Moved the logic about escaping menu characters up one level so
+	the bookmark class doesn't have to know about it. This removes
+	the function from NautilusBookmark completely.
+
+	* src/nautilus-window-menus.c:
+	(append_bookmark_to_menu): Fixed a storage leak and moved the
+	double-underscore escaping in here.
+
 2000-04-14 Rebecca Schulman <rebecka@eazel.com>
+
 	Fixed test cases on nautilus-string.c to be correct
 	
 2000-04-14 Rebecca Schulman <rebecka@eazel.com>
+
         Bookmarks with '_' characters display
 	correctly now on menus
 	
@@ -13,7 +37,6 @@
 	'_' escaped names
 	* src/nautilus-window-menus.c
 	Calls function to escape bookmark names
-
 
 2000-04-14  Darin Adler  <darin@eazel.com>
 
@@ -45,7 +68,19 @@
 	(finish_loading_uri): Pass in an attribute that we want to monitor:
 	NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT.
 
-<Rebecka's ChangeLog entry goes here>
+2000-04-14 Rebecca Schulman <rebecka@eazel.com>
+	
+        Bookmarks with '_' characters display
+	correctly now on menus
+	
+	* libnautilus-extensions/nautilus-string.c
+	New function to escape '_' characters in strings
+	for menu display
+	* libnautilus-extensions/nautilus-bookmark.c
+	New function to take bookmarks and return
+	'_' escaped names
+	* src/nautilus-window-menus.c
+	Calls function to escape bookmark names
 
 Fri Apr 14 16:35:32 2000  Raph Levien  <raph@acm.org>
 

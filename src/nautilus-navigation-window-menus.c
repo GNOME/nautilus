@@ -312,11 +312,12 @@ append_bookmark_to_menu (NautilusWindow *window,
                          const NautilusBookmark *bookmark, 
                          const char *menu_item_path)
 {
-	BookmarkHolder 				*bookmark_holder;	
-	gpointer					*pixbuf_data = NULL;
-	BonoboUIHandlerPixmapType 	pixmap_type;
-	gboolean					result;
-	GdkPixbuf					*pixbuf;
+	BookmarkHolder *bookmark_holder;	
+	gpointer pixbuf_data;
+	BonoboUIHandlerPixmapType pixmap_type;
+	gboolean result;
+	GdkPixbuf *pixbuf;
+	char *name;
 
 	/* Attempt to retrieve icon and mask for bookmark */
 	result = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_SMALLER, &pixbuf);
@@ -324,7 +325,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
 	if (result) {
 		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
-		pixbuf_data = (gpointer)pixbuf;
+		pixbuf_data = pixbuf;
 	}
 	else {
 		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
@@ -334,17 +335,25 @@ append_bookmark_to_menu (NautilusWindow *window,
 	bookmark_holder = g_new (BookmarkHolder, 1);
 	bookmark_holder->window = window;
 
- 	bonobo_ui_handler_menu_new_item (	window->uih,
-                                  		menu_item_path,
-                                       	nautilus_bookmark_get_menu_display_name (bookmark),
-                                       	("Go to the specified location"),
-                                       	-1,
-                                       	pixmap_type,
-                                       	pixbuf_data,
-                                      	0,
-                                       	0,
-                                       	activate_bookmark_in_menu_item,
-                                      	bookmark_holder);
+	/* We double the underscores here to escape them so Bonobo will know they are
+	 * not keyboard accelerator character prefixes. If we ever find we need to
+	 * escape more than just the underscores, we'll add a menu helper function
+	 * instead of a string utility. (Like maybe escaping control characters.)
+	 */
+	name = nautilus_str_double_underscores
+		(nautilus_bookmark_get_name (bookmark));
+ 	bonobo_ui_handler_menu_new_item (window->uih,
+					 menu_item_path,
+					 name,
+					 _("Go to the specified location"),
+					 -1,
+					 pixmap_type,
+					 pixbuf_data,
+					 0,
+					 0,
+					 activate_bookmark_in_menu_item,
+					 bookmark_holder);
+	g_free (name);
 }
 
 static void
