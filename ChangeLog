@@ -1,3 +1,16 @@
+2001-01-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_file_list):
+	* components/services/install/lib/eazel-softcat.c:
+	(is_filename_probably_a_directory),
+	(remove_directories_from_provides_list), (eazel_softcat_get_info):
+
+	Make softcat module remove obvious directories from the file list
+	provided by XML.  There are still files that could slip through
+	the cracks (forseti bug 1279).
+
 2001-01-18  Andy Hertzfeld  <andy@eazel.com>
 
 	made the real default theme, based on what was formerly the

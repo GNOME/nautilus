@@ -507,6 +507,42 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 }
 
 
+static gboolean
+is_filename_probably_a_directory (const char *filename, const GList *provides)
+{
+	const GList *iter;
+	gboolean is_dir = FALSE;
+
+	for (iter = g_list_first ((GList *)provides); iter != NULL; iter = g_list_next (iter)) {
+		const char *filename2 = (const char *)(iter->data);
+		/* substring match is not sufficient (think of "libfoo.so.0" & "libfoo.so.0.0") */
+		if ((strlen (filename2) > strlen (filename)) &&
+		    (strncmp (filename, filename2, strlen (filename)) == 0) &&
+		    (filename2[strlen (filename)] == '/')) {
+			is_dir = TRUE;
+			break;
+		}
+	}
+	return is_dir;
+}
+
+static void
+remove_directories_from_provides_list (PackageData *pack)
+{
+	GList *iter;
+
+	for (iter = g_list_first (pack->provides); iter != NULL; ) {
+		if (is_filename_probably_a_directory ((char *)(iter->data), pack->provides)) {
+			printf ("removing '%s'\n", (char *)(iter->data));
+			g_free (iter->data);
+			pack->provides = g_list_remove (pack->provides, iter->data);
+			iter = g_list_first (pack->provides);
+		} else {
+			iter = g_list_next (iter);
+		}
+	}
+}
+
 /* Given a partially filled packagedata object, 
    check softcat, and fill it with the desired info */
 EazelSoftCatError
@@ -576,6 +612,7 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 
 	full_package = (PackageData *) packages->data;
 	packagedata_fill_in_missing (package, full_package, fill_flags);
+	remove_directories_from_provides_list (package);
 
 	g_list_foreach (packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	g_list_free (packages);

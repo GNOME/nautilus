@@ -741,6 +741,7 @@ osd_parse_file_list (PackageData *pack, xmlNodePtr node)
 			xmlFree (tmp);
 		} else {
 			/* bad : thing in file list that isn't a file */
+			trilobite_debug ("XML file list contains %s (not FILE)", child->name);
 		}
 		child = child->next;
 	}

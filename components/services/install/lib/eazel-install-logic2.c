@@ -794,28 +794,6 @@ void check_feature_consistency (EazelInstall *service, GList *packages);
 void check_conflicts_against_already_installed_packages (EazelInstall *service, GList *packages);
 void check_tree_for_conflicts (EazelInstall *service, GList **packages, GList **extra_packages);
 
-#if 0
-static gboolean
-is_filename_probably_a_directory (const char *filename, const GList *provides)
-{
-	const GList *iter;
-	gboolean is_dir = FALSE;
-
-	if (g_file_test (filename, G_FILE_TEST_ISDIR)) {
-		return TRUE;
-	}
-	for (iter = g_list_first ((GList *)provides); iter != NULL; iter = g_list_next (iter)) {
-		const char *filename2 = (const char *)(iter->data);
-		if ((strlen (filename2) > strlen (filename)) &&
-		    (strncmp (filename, filename2, strlen (filename)) == 0)) {
-			is_dir = TRUE;
-			break;
-		}
-	}
-	return is_dir;
-}
-#endif 
-
 static void
 check_tree_helper (EazelInstall *service, 
 		   PackageData *pack,
