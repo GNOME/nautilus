@@ -326,15 +326,14 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 	if (result == GNOME_VFS_OK && bytes_read > 0) {
 		/* write the buffer into the text field */
                 display = GTK_TEXT (text_view->details->text_display);
-		if (!GTK_OBJECT_DESTROYED (display)) {
-                        gtk_text_freeze (display);
-                        gtk_text_set_point (display,
-                                            gtk_text_get_length (display));
-                        gtk_text_insert (display,
-                                         NULL, NULL, NULL,
-                                         buffer, bytes_read);
-                        gtk_text_thaw (display);
-                }
+                
+                gtk_text_freeze (display);
+                gtk_text_set_point (display,
+                                    gtk_text_get_length (display));
+                gtk_text_insert (display,
+                                 NULL, NULL, NULL,
+                                 buffer, bytes_read);
+                gtk_text_thaw (display);
                 
 		/* read more if necessary */		
 		if (text_view->details->file_size < MAX_FILE_SIZE) {

@@ -2542,7 +2542,7 @@ main(int argc, char *argv[])
 	 */
 	if (g_getenv("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
+			(G_LOG_DOMAIN, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	}
 	
         return nautilus_view_standard_main ("nautilus-news",

@@ -1,3 +1,34 @@
+2001-11-21  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-main.c (main): kill g_log_domain_glib.
+
+	* components/news/nautilus-news.c (main): ditto.
+
+	* libnautilus-private/nautilus-marshal.h: upd.
+
+	* libnautilus/nautilus-view.c (nautilus_view_class_init):
+	update for new marshallers.
+
+	* libnautilus-private/nautilus-directory-async.c
+	(nautilus_directory_async_state_changed): #ifdef out
+	GTK_OBJECT_DESTROYED check.
+
+	* libnautilus/nautilus-clipboard.c
+	(select_all_idle_callback): kill GTK_OBJECT_DESTROYED
+	check; unneccessary.
+
+	* libnautilus-private/nautilus-directory.c
+	(nautilus_directory_find_file_by_internal_uri): ditto.
+
+	* libnautilus-private/nautilus-entry.c
+	(select_all_at_idle): ditto.
+
+	* components/text/nautilus-text-view.c
+	(file_read_callback): ditto.
+
+	* src/file-manager/fm-properties-window.c
+	(rename_callback): ditto.
+
 2001-11-15  Ramiro Estrugo  <ramiro@fateware.com>
 
 	* src/nautilus-preferences-dialog.c:

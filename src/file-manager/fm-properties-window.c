@@ -446,7 +446,7 @@ name_field_restore_original_name (NautilusEntry *name_field)
 	char *displayed_name;
 
 	original_name = (const char *) g_object_get_data (G_OBJECT (name_field),
-						      	    "original_name");
+							  "original_name");
 	displayed_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
 
 	if (strcmp (original_name, displayed_name) != 0) {
@@ -472,10 +472,7 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 					       window->details->pending_name, 
 					       result,
 					       GTK_WINDOW (window));
-		/* This can trigger after window destroy, before finalize. */
-		if (!GTK_OBJECT_DESTROYED (window)) {
-			name_field_restore_original_name (window->details->name_field);
-		}
+		name_field_restore_original_name (window->details->name_field);
 	}
 
 	g_object_unref (G_OBJECT (window));

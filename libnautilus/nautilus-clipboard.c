@@ -103,9 +103,7 @@ select_all_idle_callback (gpointer callback_data)
 
 	editable = GTK_EDITABLE (callback_data);
 
-	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (editable))) {
-		select_all (editable);
-	}
+	select_all (editable);
 
 	g_object_unref (G_OBJECT (editable));
 

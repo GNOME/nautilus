@@ -669,7 +669,6 @@ nautilus_directory_find_file_by_internal_uri (NautilusDirectory *directory,
 		result = nautilus_directory_get_existing_corresponding_file (directory);
 		if (result != NULL) {
 			nautilus_file_unref (result);
-			g_return_val_if_fail (!GTK_OBJECT_DESTROYED (result), NULL);
 		}
 	} else {
 		result = nautilus_directory_find_file_by_relative_uri (directory, relative_uri);

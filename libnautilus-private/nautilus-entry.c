@@ -264,13 +264,9 @@ nautilus_entry_select_all (NautilusEntry *entry)
 static gboolean
 select_all_at_idle (gpointer callback_data)
 {
-	NautilusEntry *entry;
+	nautilus_entry_select_all (NAUTILUS_ENTRY (callback_data));
+	g_object_unref (G_OBJECT (callback_data));
 
-	entry = NAUTILUS_ENTRY (callback_data);
-	if (!GTK_OBJECT_DESTROYED (entry)) {
-		nautilus_entry_select_all (entry);
-	}
-	g_object_unref (G_OBJECT (entry));
 	return FALSE;
 }
 

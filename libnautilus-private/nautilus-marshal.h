@@ -1,3 +1,2 @@
-#include <gobject/gclosure.h>
-#include <gobject/gvaluetypes.h>
+#include <glib-object.h>
 #include "nautilus-marshal-guts.h"

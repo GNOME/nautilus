@@ -167,7 +167,7 @@ main (int argc, char *argv[])
 	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib,
+			(G_LOG_DOMAIN,
 			 "Bonobo",
 			 "Gdk",
 			 "GnomeUI",
