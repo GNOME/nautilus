@@ -25,6 +25,8 @@
 #include <config.h>
 #include "nautilus-directory.h"
 
+#include <grp.h>
+#include <pwd.h>
 #include <stdlib.h>
 
 #include <gtk/gtksignal.h>
@@ -103,6 +105,9 @@ static int  nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 
 static char * nautilus_file_get_date_as_string (NautilusFile *file,
 						NautilusDateType date_type);
+static char *nautilus_file_get_owner_as_string (NautilusFile *file);
+static char *nautilus_file_get_group_as_string (NautilusFile *file);
+static char *nautilus_file_get_permissions_as_string (NautilusFile *file);
 static char * nautilus_file_get_size_as_string (NautilusFile *file);
 static char * nautilus_file_get_type_as_string (NautilusFile *file);
 static void nautilus_directory_load_cb (GnomeVFSAsyncHandle *handle,
@@ -1527,6 +1532,101 @@ nautilus_file_get_size (NautilusFile *file)
 	return file->info->size;
 }
 
+/**
+ * nautilus_file_get_permissions_as_string:
+ * 
+ * Get a user-displayable string representing a file's permissions. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_permissions_as_string (NautilusFile *file)
+{
+	GnomeVFSFilePermissions permissions;
+	gboolean is_directory;
+	gboolean is_link;
+
+	permissions = file->info->permissions;
+	is_directory = file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+	is_link = GNOME_VFS_FILE_INFO_SYMLINK(file->info);
+	
+	return g_strdup_printf ("%c%c%c%c%c%c%c%c%c%c",
+				 is_link ? 'l' : is_directory ? 'd' : '-',
+		 		 permissions & GNOME_VFS_PERM_USER_READ ? 'r' : '-',
+				 permissions & GNOME_VFS_PERM_USER_WRITE ? 'w' : '-',
+				 permissions & GNOME_VFS_PERM_USER_EXEC ? 'x' : '-',
+				 permissions & GNOME_VFS_PERM_GROUP_READ ? 'r' : '-',
+				 permissions & GNOME_VFS_PERM_GROUP_WRITE ? 'w' : '-',
+				 permissions & GNOME_VFS_PERM_GROUP_EXEC ? 'x' : '-',
+				 permissions & GNOME_VFS_PERM_OTHER_READ ? 'r' : '-',
+				 permissions & GNOME_VFS_PERM_OTHER_WRITE ? 'w' : '-',
+				 permissions & GNOME_VFS_PERM_OTHER_EXEC ? 'x' : '-');
+}
+
+/**
+ * nautilus_file_get_owner_as_string:
+ * 
+ * Get a user-displayable string representing a file's owner. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_owner_as_string (NautilusFile *file)
+{
+	struct passwd *password_info;
+
+	/* FIXME: Can we trust the uid in the file info? Might
+	 * there be garbage there? What will it do for non-local files?
+	 */
+	/* No need to free result of getpwuid */
+	password_info = getpwuid (file->info->uid);
+
+	g_print ("pointer to password info is %p\n", password_info);
+
+	if (password_info == NULL)
+	{
+		return g_strdup ("unknown owner");
+	}
+	
+	return g_strdup (password_info->pw_name);
+}
+
+/**
+ * nautilus_file_get_group_as_string:
+ * 
+ * Get a user-displayable string representing a file's group. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_group_as_string (NautilusFile *file)
+{
+	struct group *group_info;
+
+	/* FIXME: Can we trust the gid in the file info? Might
+	 * there be garbage there? What will it do for non-local files?
+	 */
+	/* No need to free result of getgrgid */
+	group_info = getgrgid (file->info->gid);
+
+	if (group_info == NULL)
+	{
+		return g_strdup ("unknown group");
+	}
+	
+	return g_strdup (group_info->gr_name);
+}
+
+
 /* This #include is part of the following hack, and should be removed with it */
 #include <dirent.h>
 
@@ -1573,7 +1673,8 @@ get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_ite
  * nautilus_file_get_size_as_string:
  * 
  * Get a user-displayable string representing a file size. The caller
- * is responsible for g_free-ing this string.
+ * is responsible for g_free-ing this string. The string is an item
+ * count for directories.
  * @file: NautilusFile representing the file in question.
  * 
  * Returns: Newly allocated string ready to display to the user.
@@ -1613,8 +1714,8 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * 
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
- * set includes "name", "type", "size", "date_modified", "date_changed", and
- * "date_accessed".
+ * set includes "name", "type", "size", "date_modified", "date_changed",
+ * "date_accessed", "owner", "group", "permissions".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if @attribute_name is not supported.
@@ -1643,6 +1744,15 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	if (strcmp (attribute_name, "date_accessed") == 0)
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_ACCESSED);
+
+	if (strcmp (attribute_name, "permissions") == 0)
+		return nautilus_file_get_permissions_as_string (file);
+
+	if (strcmp (attribute_name, "owner") == 0)
+		return nautilus_file_get_owner_as_string (file);
+
+	if (strcmp (attribute_name, "group") == 0)
+		return nautilus_file_get_group_as_string (file);
 
 	return NULL;
 }

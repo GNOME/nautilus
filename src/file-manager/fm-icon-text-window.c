@@ -56,6 +56,9 @@ static char * attribute_names[] = {
 	"date_modified",
 	"date_changed",
 	"date_accessed",
+	"owner",
+	"group",
+	"permissions",
 	NULL
 };
 
@@ -65,6 +68,9 @@ static char * attribute_labels[] = {
 	_("date modified"),
 	_("date changed"),
 	_("date accessed"),
+	_("owner"),
+	_("group"),
+	_("permissions"),
 	NULL
 };
 
