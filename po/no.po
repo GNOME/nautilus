@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-09-12 01:22+0200\n"
-"PO-Revision-Date: 2001-09-12 01:28+0200\n"
+"POT-Creation-Date: 2001-09-24 23:43+0200\n"
+"PO-Revision-Date: 2001-09-24 23:45+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -149,7 +149,7 @@ msgstr "Dette er en plassholder for RAM-siden."
 msgid "This is a placeholder for the IDE page."
 msgstr "Dette er en plassholder for IDE-siden."
 
-#: components/help/Nautilus_View_help.oaf.in.h:1
+#: components/help/Nautilus_View_help.oaf.in.h:1 nautilus-help.desktop.in.h:2
 msgid "Help"
 msgstr "Hjelp"
 
@@ -2359,6 +2359,14 @@ msgstr "Hvit"
 msgid "White Ribs"
 msgstr "Hvite ribber"
 
+#: data/favorites.desktop.in.h:1
+msgid "Favorite applications"
+msgstr "Favorittapplikasjoner"
+
+#: data/favorites.desktop.in.h:2
+msgid "Favorites"
+msgstr "Favoritter"
+
 #: data/linksets/apps.xml.h:2
 msgid "Gnumeric"
 msgstr "Gnumeric"
@@ -2413,6 +2421,34 @@ msgstr "Google"
 #: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
 msgid "Search Engines"
 msgstr "Søkemotorer"
+
+#: data/preferences.desktop.in.h:1
+msgid "Adjust your user environment"
+msgstr "Tilpass ditt brukermiljø"
+
+#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:447
+msgid "Preferences"
+msgstr "Brukervalg"
+
+#: data/programs.desktop.in.h:1
+msgid "Browse available software"
+msgstr "Bla gjennom tilgjengelig programvare"
+
+#: data/programs.desktop.in.h:2
+msgid "Programs"
+msgstr "Programmer"
+
+#: data/serverconfig.desktop.in.h:1
+msgid "Configure network services (web server, DNS server, etc.)"
+msgstr "Konfigurer nettverkstjenester (webtjener, DNS-tjener, etc.)"
+
+#: data/serverconfig.desktop.in.h:2
+msgid "Server Configuration"
+msgstr "Tjenerkonfigurasjon"
+
+#: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
+msgid "Start Here"
+msgstr "Start her"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Allaire"
@@ -2589,6 +2625,14 @@ msgstr "ZDNET Linux ressurssenter"
 #: data/static_bookmarks.xml.h:45
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
+
+#: data/sysconfig.desktop.in.h:1
+msgid "Change systemwide settings (affects all users)"
+msgstr "Endre innstillinger for hele systemet (påvirker alle brukere)"
+
+#: data/sysconfig.desktop.in.h:2
+msgid "System Settings"
+msgstr "Systeminnstillinger"
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
@@ -3630,7 +3674,7 @@ msgstr "foo foo (25te kopi).txt"
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000te kopi).txt"
 
-#. FIXME bugzilla.eazel.com 7701: These are wrong.
+#. FIXME bugzilla.gnome.org 47701: These are wrong.
 #: libnautilus-private/nautilus-file-operations.c:2293
 msgid "foo (10th copy)"
 msgstr "foo (10de kopi)"
@@ -4923,6 +4967,10 @@ msgstr "Nautilus"
 #: nautilus.desktop.in.h:2
 msgid "Nautilus File Manager and Graphic Shell"
 msgstr "Nautilus filhåndterer og grafisk skall"
+
+#: nautilus-help.desktop.in.h:1
+msgid "Documentation"
+msgstr "Dokumentasjon"
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -6596,7 +6644,7 @@ msgstr ""
 "kommandoen \"nautilus-clean.sh -x\" fra konsollet. Hvis ikke kan du prøve å "
 "starte datamaskinen på nytt eller installere Nautilus en gang til."
 
-#. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:539
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
@@ -6636,7 +6684,7 @@ msgstr ""
 #. * version of OAF). Show dialog and terminate the
 #. * program.
 #.
-#. FIXME bugzilla.eazel.com 2537: Looks like this does happen with the
+#. FIXME bugzilla.gnome.org 42537: Looks like this does happen with the
 #. * current OAF. I guess I read the code
 #. * wrong. Need to figure out when and make a
 #. * good message.
@@ -6846,7 +6894,7 @@ msgstr "Bruk Nautilus til å tegne skrivebordet."
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Flytt eksisterende skrivebordsikoner til Nautilus-skrivebordet."
 
-#. This option is currently disabled, per bugzilla.eazel.com 7557
+#. This option is currently disabled, per bugzilla.gnome.org 47557
 #: src/nautilus-first-time-druid.c:895
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Start Nautilus når GNOME starter opp."
@@ -7266,7 +7314,7 @@ msgstr "Ikke lag miniatyrer for filer som er større enn:"
 msgid "Preview Sound Files"
 msgstr "Forhåndsvisning av lydfiler"
 
-#. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
+#. FIXME bugzilla.gnome.org 42560: This title phrase needs improvement.
 #: src/nautilus-preferences-dialog.c:368
 msgid "Make Folder Appearance Details Public"
 msgstr "Gjør detaljer om katalogutseende offentlig"
@@ -7330,10 +7378,6 @@ msgstr "Forsak hastighet"
 #: src/nautilus-preferences-dialog.c:420
 msgid "News Panel"
 msgstr "Nyhetspanel"
-
-#: src/nautilus-preferences-dialog.c:447
-msgid "Preferences"
-msgstr "Brukervalg"
 
 #: src/nautilus-preferences-dialog.c:476
 #, c-format
@@ -8074,9 +8118,13 @@ msgid ""
 msgstr ""
 "Takk for din interesse for Nautilus.\n"
 "\n"
-"Som med all annen programvare under utvikling, bør du utøve forsiktighet ved bruk av Nautilus. Vi gir deg ingen garantier for at programmet vil virke, og tar heller ikke ansvar for din bruk av det. Vennligst bruk det på egen risiko.\n"
+"Som med all annen programvare under utvikling, bør du utøve forsiktighet ved "
+"bruk av Nautilus. Vi gir deg ingen garantier for at programmet vil virke, og "
+"tar heller ikke ansvar for din bruk av det. Vennligst bruk det på egen "
+"risiko.\n"
 "\n"
-"Vennligst skriv en melding til <nautilus-list@eazel.com> for å gi tilbakemeldinger, kommentarer og forslag."
+"Vennligst skriv en melding til <nautilus-list@eazel.com> for å gi "
+"tilbakemeldinger, kommentarer og forslag."
 
 #: src/nautilus-sidebar.c:726
 msgid ""
@@ -8186,7 +8234,7 @@ msgstr "Beklager, men det temaet kunne ikke fjernes!"
 msgid "Couldn't remove theme"
 msgstr "Kunne ikke fjerne tema"
 
-#. FIXME bugzilla.eazel.com 5037: The text Preview
+#. FIXME bugzilla.gnome.org 45037: The text Preview
 #. * Release is hardcoded here. Are all builds with
 #. * time stamps really best described as "preview
 #. * release"?.
@@ -10352,9 +10400,6 @@ msgstr "%d%%"
 #~ msgid "Speed Tradeoffs Settings"
 #~ msgstr "Innstillinger for forsaking av hastighet"
 
-#~ msgid "Search Settings"
-#~ msgstr "Innstillinger for søk"
-
 #~ msgid "Disable Inventory [FIXME]"
 #~ msgstr "Slå av inventar"
 
@@ -10893,9 +10938,6 @@ msgstr "%d%%"
 
 #~ msgid "regular files"
 #~ msgstr "vanlige filer"
-
-#~ msgid "applications"
-#~ msgstr "applikasjoner"
 
 #~ msgid "folders"
 #~ msgstr "mapper"
