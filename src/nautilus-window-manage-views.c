@@ -343,7 +343,7 @@ nautilus_window_has_really_changed(NautilusWindow *window)
       /* Do lots of shuffling to make sure we don't remove views that were already there, but add new views */
       for(cur = new_meta_views; cur; cur = cur->next)
         {
-          if(!GTK_WIDGET(cur->data)->parent)
+          if(!GTK_OBJECT_DESTROYED(cur->data) && !GTK_WIDGET(cur->data)->parent)
             nautilus_window_add_meta_view(window, cur->data);
           gtk_object_unref(cur->data);
         }
