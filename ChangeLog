@@ -7,9 +7,8 @@
 
 	Add usage of default values to get_* api.  So now callers can
 	provide a default which will be given back to them if no default
-	exists for the preference.  For example, no default will exists
-	for the preference when it was implicitly pulled out of someone's
-	ass.
+	exists.  For example, no default will exist for the preference
+	when it was implicitly pulled out of someone's 	ass.
 
 	The callback function no longer passes along the value.  Instead
 	the caller is expected to use the get_ functions.
@@ -21,9 +20,9 @@
 
 	Also constify the get functions.
 	
-	(nautilus_preferneces_get_info): Changed to 
-	(nautilus_preferneces_get_preference) which returns a referenced
-	pointer to the preference description object.  Prehaps this could
+	(nautilus_preferneces_get_info): Renamed to 
+	nautilus_preferneces_get_preference which returns a referenced
+	pointer to the preference description object.  Perhaps this could
 	have a better name.
 
 	(nautilus_preferences_enum_add_entry): New function to add entries
@@ -31,21 +30,20 @@
 
 	* nautilus-widgets/nautilus-preferences-group.c,
 	  nautilus-widgets/nautilus-preferences-group.h:
-	(nautilus_preferences_group_add): retire
+	(nautilus_preferences_group_add): Retire.
 
 	(nautilus_preferences_group_add_item): New function that does all
 	the work of creating an item based on a given item_type.
 
 	* nautilus-widgets/nautilus-preferences-item.c,
-	  nautilus-widgets/nautilus-preferences-item.h:
-
-	Use NautilusPreferences directly instead of GtkObject.
+	  nautilus-widgets/nautilus-preferences-item.h: Use
+	NautilusPreferences directly instead of GtkObject.
 
 	Ref/unref the preference object properly.
 
 	Use more consistent identifiers.  Fix some stupid style things.
 
-	Update for NautilusPreference usage (instead of the info struct
+	Update for NautilusPreference usage instead of the info struct
 	hack). 
 
 	*  nautilus-widgets/nautilus-preferences-pane.c,
@@ -60,17 +58,15 @@
  	* nautilus-widgets/Makefile.am: Add building of
 	nautilus-preference.[ch] and the self test driver.
 
-
 	* libnautilus-extensions/nautilus-global-preferences.c,
-	  libnautilus-extensions/nautilus-global-preferences.h:
-
-	Add CLICK_ACTIVATION_TYPE preferences.  Add HOME_URI
-	preference.  Add SHOW_HIDDEN_FILES preference.
+	  libnautilus-extensions/nautilus-global-preferences.h: Add
+	CLICK_ACTIVATION_TYPE preferences.  Add HOME_URI preference.  Add
+	SHOW_HIDDEN_FILES preference.
 
 	Make all the user level stuff private.  Dont expose either the
 	user level preference or the user level values at all.  Instead,
-	track user level changes in a callback and set appropiate
-	preferences.  
+	track user level changes in a callback and set corresponsing
+	preferences accordingly.
 
 	(nautilus_global_preferences_startup): Hook to make the above work
 	properly.
@@ -95,7 +91,8 @@
 	* src/ntl-app.c:
 	(nautilus_app_class_init): Call
 	nautilus_global_preferences_startup so that user level callbacks
-	and such that preferences exposed in the ui have nice defaults.
+	always works.  Also, allows preferences exposed in the ui to have
+	nice defaults.
 	
 	* src/ntl-main.c:
 	(main): Add nautilus-widgets self checks.
@@ -112,8 +109,11 @@
 	* src/file-manager/fm-directory-view.c:
 	(use_new_window_changed_callback): Retired.  Instead check
 	preference when needed.  There really is not need to go to the
-	trouble of installing a callback.  Its just as easy and not
-	slow to check directly.  Also, retire the 'use_new_window' member.
+	trouble of installing a callback for this specific preference.
+	Its just as easy (and not a performance issues) to check it
+	directly.  
+
+	Also retired the 'use_new_window' member.
 
 	(user_level_changed_callback): Retired.  User level no longer
 	publically exposed.
@@ -136,11 +136,14 @@
 	(fm_directory_view_activate_file): Check USE_NEW_WINDOW preference
 	to determine if a new window is requested.
 
-	*  src/file-manager/fm-icon-text-window.c:
-	Include fm-icon-virw.h and use
-	DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES from it instead of
+	*  src/file-manager/fm-icon-text-window.c: #include fm-icon-virw.h
+	and use DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES from it instead of
 	ATTRIBUTE_NAMES_DEFAULT.  This makes sure the default is not out
 	of whack.  This define should probably be placed in a better place.
+
+	NOTE: This seems to be one of the drawbacks of passing in defaults
+	to fetch functions - that is out-of-whackness in 2 or more callers
+	in difference places.
 	
 	(synch_menus_with_preference),
 	(changed_attributes_option_menu_cb): Update for preference api changes.
