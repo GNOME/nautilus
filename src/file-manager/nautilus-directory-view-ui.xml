@@ -109,7 +109,7 @@
 				  accel="*Control*t"
 				  verb="Trash"/>
 			<menuitem name="Delete"
-				  _label="Delete"
+				  _label="De_lete"
 				  verb="Delete"/>
 			<menuitem name="Duplicate"
 				  _label="_Duplicate"
@@ -164,6 +164,11 @@
 				<menuitem name="New Folder" verb="New Folder"/>
 			</placeholder>
 			<placeholder name="View Items" delimit="top"/>
+			<placeholder name="File Clipboard Actions" delimit="top">
+				<menuitem name="Cut Files" verb="Cut Files"/>
+				<menuitem name="Copy Files" verb="Copy Files"/>
+				<menuitem name="Paste Files" verb="Paste Files"/>
+			</placeholder>
 		</placeholder>
 		<placeholder name="After Zoom Items">
 			<placeholder name="Background Items" delimit="none">
@@ -202,6 +207,11 @@
 			<menuitem name="Delete" verb="Delete"/>
 			<menuitem name="Duplicate" verb="Duplicate"/>
 			<menuitem name="Create Link" verb="Create Link"/>
+		</placeholder>
+		<placeholder name="File Clipboard Actions" delimit="top">
+			<menuitem name="Cut Files" verb="Cut Files"/>
+			<menuitem name="Copy Files" verb="Copy Files"/>
+			<menuitem name="Paste Files" verb="Paste Files"/>
 		</placeholder>
 		<placeholder name="Icon Appearance Items" delimit="top">
 			<menuitem name="Remove Custom Icons" verb="Remove Custom Icons"/>

@@ -4044,7 +4044,7 @@ real_update_menus (FMDirectoryView *view)
 			(view->details->ui,
 			 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
 			 FM_DIRECTORY_VIEW_COMMAND_DELETE,
-			 confirm_trash ? _("Delete...") : _("Delete"));
+			 confirm_trash ? _("De_lete...") : _("De_lete"));
 		nautilus_bonobo_set_sensitive (view->details->ui, 
 					       FM_DIRECTORY_VIEW_COMMAND_DELETE,
 					       can_delete_files);
