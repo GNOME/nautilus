@@ -1,3 +1,23 @@
+2000-06-02  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.h,
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_add_application_to_short_list_for_uri),
+	(nautilus_mime_remove_application_from_short_list_for_uri),
+	(nautilus_mime_add_component_to_short_list_for_uri),
+	(nautilus_mime_remove_component_from_short_list_for_uri):
+	New prototypes and empty function bodies, convenience
+	covers for modifying the short lists. Not yet implemented,
+	but callable.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(add_to_short_list_for_file), (remove_from_short_list_for_file),
+	(add_to_short_list_for_type), (remove_from_short_list_for_type),
+	(run_program_configurator_callback): Wired up things so if
+	the user switches radio buttons in the "Modify details" dialog,
+	the right code is called when they hit OK. But this right code
+	doesn't yet do anything.
+
 2000-06-02  Arlo Rose  <arlo@eazel.com>
 
 	* icons/Makefile.am:

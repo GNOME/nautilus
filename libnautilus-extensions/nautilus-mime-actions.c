@@ -630,6 +630,30 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 
 }
 
+void nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
+						   	  const char *application_id)
+{
+	g_message ("called nautilus_mime_add_application_to_short_list_for_uri");
+}						   
+
+void nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
+						   	       const char *application_id)
+{
+	g_message ("called nautilus_mime_remove_application_from_short_list_for_uri");
+}						   
+
+void nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
+						 	const char *iid)
+{
+	g_message ("called nautilus_mime_add_component_to_short_list_for_uri");
+}						   
+
+void nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
+						      	     const char *iid)
+{
+	g_message ("called nautilus_mime_remove_component_from_short_list_for_uri");
+}						   
+
 void
 nautilus_mime_extend_all_applications_for_uri (const char *uri,
 					       GList      *applications)

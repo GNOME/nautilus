@@ -390,6 +390,74 @@ pack_radio_button (GtkBox *box, const char *label_text, GtkRadioButton *group)
 }
 
 static void
+add_to_short_list_for_file (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *uri;
+
+	uri = nautilus_file_get_uri (file);
+	
+	if (nautilus_program_chooser_get_type (program_chooser) 
+	    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		nautilus_mime_add_application_to_short_list_for_uri (uri, ((GnomeVFSMimeApplication *)data)->id);
+	} else {
+		nautilus_mime_add_component_to_short_list_for_uri (uri, ((NautilusViewIdentifier *)data)->iid);
+	}
+
+	g_free (uri);
+}
+
+static void
+remove_from_short_list_for_file (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *uri;
+
+	uri = nautilus_file_get_uri (file);
+	
+	if (nautilus_program_chooser_get_type (program_chooser) 
+	    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		nautilus_mime_remove_application_from_short_list_for_uri (uri, ((GnomeVFSMimeApplication *)data)->id);
+	} else {
+		nautilus_mime_remove_component_from_short_list_for_uri (uri, ((NautilusViewIdentifier *)data)->iid);
+	}
+
+	g_free (uri);
+}
+
+static void
+add_to_short_list_for_type (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *mime_type;
+
+	mime_type = nautilus_file_get_mime_type (file);
+	
+	if (nautilus_program_chooser_get_type (program_chooser) 
+	    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		gnome_vfs_mime_add_application_to_short_list (mime_type, ((GnomeVFSMimeApplication *)data)->id);
+	} else {
+		gnome_vfs_mime_add_component_to_short_list (mime_type, ((NautilusViewIdentifier *)data)->iid);
+	}
+
+	g_free (mime_type);
+}
+
+static void
+remove_from_short_list_for_type (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *mime_type;
+
+	mime_type = nautilus_file_get_mime_type (file);
+	
+	if (nautilus_program_chooser_get_type (program_chooser) 
+	    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		gnome_vfs_mime_remove_application_from_short_list (mime_type, ((GnomeVFSMimeApplication *)data)->id);
+	} else {
+		gnome_vfs_mime_remove_component_from_short_list (mime_type, ((NautilusViewIdentifier *)data)->iid);
+	}
+
+	g_free (mime_type);
+}
+
+static void
 run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 {
 	GnomeDialog *program_chooser;
@@ -423,7 +491,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 		return;
 	}
 
-	title = g_strdup_printf (_("Modify %s"), row_text);		     
+	title = g_strdup_printf (_("Modify \"%s\""), row_text);		     
 	dialog = gnome_dialog_new (title,
 				   GNOME_STOCK_BUTTON_OK,
 				   GNOME_STOCK_BUTTON_CANCEL,
@@ -485,10 +553,33 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
 
 	if (gnome_dialog_run (GNOME_DIALOG (dialog)) == GNOME_OK) {
-		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (old_active_button))) {
-			g_message ("no change");
-		} else {
-			g_message ("user chose different radio button, will update when API is available");
+		if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (old_active_button))) {
+			/* Selected button has changed, update stuff as necessary. */
+
+			if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (item_radio_button))) {
+				if (old_active_button == type_radio_button) {
+					remove_from_short_list_for_type (program_chooser, file, selected_row_data);
+				} else {
+					g_assert (old_active_button == none_radio_button);
+				}
+				add_to_short_list_for_file (program_chooser, file, selected_row_data);
+			} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (type_radio_button))) {
+				if (old_active_button == item_radio_button) {
+					remove_from_short_list_for_file (program_chooser, file, selected_row_data);
+				} else {
+					g_assert (old_active_button == none_radio_button);
+				}
+				add_to_short_list_for_type (program_chooser, file, selected_row_data);
+			} else {
+				g_assert (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (none_radio_button)));
+				if (old_active_button == item_radio_button) {
+					remove_from_short_list_for_file (program_chooser, file, selected_row_data);
+				} else {
+					g_assert (old_active_button == type_radio_button);
+				}
+				remove_from_short_list_for_type (program_chooser, file, selected_row_data);
+			}
+
 			update_selected_item_details (program_chooser);
 		}
 	}
