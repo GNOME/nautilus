@@ -1,3 +1,17 @@
+2000-03-04  Maciej Stachowiak  <mjs@eazel.com>
+
+	* nautilus-clean.sh: Simple shell script to check if any of the
+	auxiliary processes nautilus might launch are still running, and
+	if so, report which ones and kill them. Total hack for dev/testing
+	use only; should not be distributed.
+
+2000-03-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/sample/nautilus-sample-content-view.c: Fix
+	indentation on some of the lines.
+	(nautilus_sample_content_view_load_uri): g_free() the old uri before
+	g_strdup()ing a new one to avoid leaking memory.
+
 2000-03-03  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in: added eazel services define
@@ -38,6 +52,7 @@
 	ViewWindows.
 
 2000-03-03  Maciej Stachowiak  <mjs@eazel.com>
+>>>>>>> 1.388
 
 	* components/sample/nautilus-sample-content-view.c,
 	components/sample/nautilus-sample-content-view.h,
