@@ -34,6 +34,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include "nsIContentViewer.h"
 #include "nsIServiceManager.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellTreeItem.h"

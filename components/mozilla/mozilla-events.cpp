@@ -39,6 +39,7 @@
 #include "mozilla-events.h"
 #include "gtkmozembed_internal.h"
 
+#include "nsIContentViewer.h"
 #include "nsIServiceManager.h"
 #include "nsComponentManagerUtils.h"
 #include "nsILocalFile.h"

@@ -1,3 +1,10 @@
+2001-08-07  Darin Adler  <darin@bentspoon.com>
+
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
+	Add an include of nsIContentView.h in the hopes that this
+	will make it work with newer Mozilla sources.
+
 2001-08-06  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-thumbnails.c:
