@@ -1,3 +1,41 @@
+2000-08-02  Darin Adler  <darin@eazel.com>
+
+	* check-FIXME.pl: Added HACKING to the files to skip.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_install_failed), (impl_uninstall_failed),
+	(eazel_install_callback_query):
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_query):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package),
+	(eazel_install_fetch_package_which_provides),
+	(get_url_for_package), (get_search_url_for_package):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_do_rpm_transaction_save_report),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_destroy_foreach):
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	* src/nautilus-window.c: (nautilus_window_realize):
+	Fixed "FIXME bugzilla.eazel.com ###:" formatting to match what
+	check-FIXME.pl looks for. The colon goes after the bug number.
+	And it has to be "bugzilla.eazel.com", not "bug".
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(allow_metafile): Fixed a comment.
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_can_accept_item):
+	Got rid of a fixed FIXME and changed to use
+	nautilus_file_is_directory instead of nautilus_file_get_file_type.
+
 2000-08-02  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 1554 (Need new preference for accessing

@@ -160,7 +160,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 	pack->packsys_struc = (gpointer)hd;
 }
 
-/* FIXME: bugzilla.eazel.com 1532
+/* FIXME bugzilla.eazel.com 1532:
    RPM specific code */
 PackageData* 
 packagedata_new_from_file (const char *file)
@@ -172,7 +172,7 @@ packagedata_new_from_file (const char *file)
 	return pack;
 }
 
-/* FIXME: bugzilla.eazel.com 1532
+/* FIXME bugzilla.eazel.com 1532:
    RPM specific code */
 void 
 packagedata_fill_from_file (PackageData *pack, const char *filename)
@@ -220,7 +220,7 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	pack->breaks = NULL;
 
 	if (pack->packsys_struc) {
-		/* FIXME: bugzilla.eazel.com 1532
+		/* FIXME bugzilla.eazel.com 1532:
 		   RPM specific code */
 		/* even better, this just crashes 
 		   headerFree (*pack->packsys_struc); */

@@ -300,8 +300,7 @@ allow_metafile (NautilusDirectory *directory)
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-
-	/* For now, hard-code these schemes. Perhaps we should *
+	/* For now, hard-code these schemes. Perhaps we should
 	 * hardcode the schemes that are good for metadata instead of
 	 * the schemes that are bad for it.
 	 */

@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* nautilus-drag.c - Common Drag & drop handling code shared by the icon container
    and the list view.
 
@@ -205,14 +207,7 @@ gboolean
 nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 			       const char *item_uri)
 {
-	/* FIXME bugzilla.eazel.com 657:
-	 * elaborate here some more
-	 * should consider permissions, handle symlinks to directories, etc.
-	 * 
-	 * for now just allways return true if dropping into a directory
-	 */
-	if (nautilus_file_get_file_type (drop_target_item) 
-		!= GNOME_VFS_FILE_TYPE_DIRECTORY) {
+	if (!nautilus_file_is_directory (drop_target_item)) {
 		return FALSE;
 	}
 

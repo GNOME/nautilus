@@ -142,7 +142,7 @@ impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	GList *categories;
 	PackageData *pack;
 	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	/* FIXME: bugzilla.eazel.com 1557
+	/* FIXME bugzilla.eazel.com 1557:
 	   semi ugly, but assuming that the xml parse was ok, this gets the package 
 	   in for the signal */
 	pack = (PackageData*)((CategoryData*)categories->data)->packages->data;
@@ -157,7 +157,7 @@ impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	GList *categories;
 	PackageData *pack;
 	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	/* FIXME: bugzilla.eazel.com 1557
+	/* FIXME bugzilla.eazel.com 1557:
 	   semi ugly, but assuming that the xml parse was ok, this gets the package 
 	   in for the signal */
 	pack = (PackageData*)((CategoryData*)categories->data)->packages->data;
@@ -469,7 +469,7 @@ eazel_install_callback_query (EazelInstallCallback *service,
 	GList *result;
 	Trilobite_Eazel_PackageDataStructList *corbares;
 	
-	/* FIXME: bugzilla.eazel.com 1446 */
+	/* FIXME bugzilla.eazel.com 1446: ? */
 
 	corbares = Trilobite_Eazel_Install_query (service->installservice_corba,
 						  query,

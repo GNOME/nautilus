@@ -264,7 +264,7 @@ eazel_install_fetch_package (EazelInstall *service,
 	if (url == NULL) {
 		g_warning (_("Could not get a URL for %s"), rpmfilename_from_packagedata (package));
 	} else {
-		/* FIXME: bugzilla.eazel.com 1315
+		/* FIXME bugzilla.eazel.com 1315:
 		   Loose the check once a proper rpmsearch.cgi is up and running */
 		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
 			targetname = g_strdup_printf ("%s/%s",
@@ -312,7 +312,7 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 	if (url == NULL) {
 		g_warning (_("Could not get a URL for %s"), file);
 	} else {
-		/* FIXME: bugzilla.eazel.com 1315
+		/* FIXME bugzilla.eazel.com 1315:
 		   Loose the check once a proper rpmsearch.cgi is up and running */
 		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
 			targetname = g_strdup_printf ("%s/%s",
@@ -394,7 +394,7 @@ get_url_for_package  (EazelInstall *service,
 					}
 				case ghttp_done:
 					/* 404 or did we get something usefull ? */
-					/* FIXME: bugzilla.eazel.com 1718
+					/* FIXME bugzilla.eazel.com 1718:
 					   Once the rpmsearch script is done, revamp this to parse the 
 					   xml returned */
 					if (ghttp_status_code (request) != 404) {
@@ -429,7 +429,7 @@ char* get_search_url_for_package (EazelInstall *service,
 			       eazel_install_get_server_port (service));
 
 /*
-  FIXME: bugzilla.eazel.com 1333
+  FIXME bugzilla.eazel.com 1333:
   We need to send distro name at some point. Depends on the rpmsearch cgi script
 */
 

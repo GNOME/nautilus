@@ -67,11 +67,11 @@ module Trilobite {
 			*/
 			PackageStatusEnum status;
 
-			/* FIXME: bugzilla.eazel.com 1542
+			/* FIXME bugzilla.eazel.com 1542:
 			   This is legal IDL, but not supported by wannabe idl compiler
 			   orbit-idl. Therefore I have to encode these
 			   trees as xml...
-			   When orbit-idl parses IDL, we can loose the xml
+			   When orbit-idl parses IDL, we can loose the xml.
 			sequence <PackageDataStruct> soft_depends;
 			sequence <PackageDataStruct> hard_depends;
 			sequence <PackageDataStruct> breaks;
@@ -107,7 +107,7 @@ module Trilobite {
 			/* Called whenever a package (un)install fails
 			*/
 			void download_failed (in string file);
-			/* FIXME: bugzilla.eazel.com 1542 
+			/* FIXME bugzilla.eazel.com 1542:
 			   This is what they should be, but orbit-idl's lack of
 			   recursive structures, forces us to encode the structures
 			   as xml and transfer these instead. 

@@ -542,11 +542,12 @@ nautilus_window_realize (GtkWidget *widget)
                      
         if (pixmap != NULL) {
                 nautilus_set_mini_icon (widget->window,
-                                       pixmap,
-                                       mask);
-		
-		/* FIXME: bug 610 - we may be leaking the pixmap and mask here,
-		   but if we unref them here, the task bar crashes */
+					pixmap,
+					mask);
+		/* FIXME bugzilla.eazel.com 610: It seems we are
+		 * leaking the pixmap and mask here, but if we unref
+		 * them here, the task bar crashes.
+		 */
 	}
 }
 

@@ -665,7 +665,8 @@ eazel_install_do_rpm_transaction_save_report (EazelInstall *service)
 	fclose (outfile);
 	g_free (name);
 
-	/* FIXME: bugzilla.eazel.com 1586 1673
+	/* FIXME bugzilla.eazel.com 1586:
+	   FIXME bugzilla.eazel.com 1673:
 	   at this point, we could emit the transaction info, by finding the toplevel
 	   packages, and spewing out xml for them */
 }
@@ -1172,7 +1173,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 }
 
 
-/* FIXME: bugzilla.eazel.com 1698
+/* FIXME bugzilla.eazel.com 1698:
    This function needs some refactoring. It's getting too huge */
 static gboolean
 eazel_install_fetch_rpm_dependencies (EazelInstall *service, 
@@ -1193,7 +1194,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 	fetch_from_file_dependency = FALSE;
 	fetch_result = FALSE;
 
-	/* FIXME: bugzilla.eazel.com 1512 
+	/* FIXME bugzilla.eazel.com 1512:
 	   This piece of code is rpm specific. It has some generic algorithm
 	   for doing the dep stuff, but it's rpm entangled */
 
@@ -1252,7 +1253,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			break;
 			case RPMDEP_SENSE_CONFLICTS:
 				/* If we end here, it's a conflict is going to break something */
-				/* FIXME: bugzilla.eazel.com 1514
+				/* FIXME bugzilla.eazel.com 1514:
 				   Need to handle this more intelligently */
 				g_warning (_("%s conflicts %s-%s"), conflict.byName, conflict.needsName, conflict.needsVersion);
 				if (g_list_find (*failedpackages, pack) == NULL) {
@@ -1293,7 +1294,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			   might fail, and then we have to fail the package */
 			GList *extralist;
 
-			/* FIXME: bugzilla.eazel.com
+			/* FIXME bugzilla.eazel.com:
 			   Need to check that the downloaded package is of sufficiently high version
 			*/
 
@@ -1617,7 +1618,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 		
 		pack = (PackageData*)iterator->data;
 		g_message ("checking reqs by %s (0x%x)", rpmname_from_packagedata (pack), pack);
-		/* FIXME: bugzilla.eazel.com 1697
+		/* FIXME bugzilla.eazel.com 1697:
 		   use eazel_install_simple_query instead */
 		rc = rpmdbFindByRequiredBy (db, pack->name, &matches);
 		if (!rc) {
@@ -1714,7 +1715,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 		int rc;
 
 		pack = (PackageData*)iterator->data;
-		/* FIXME: bugzilla.eazel.com 1697
+		/* FIXME bugzilla.eazel.com 1697:
 		   use eazel_install_simple_query instead */
 		rc = rpmdbFindPackage (db,
 				       pack->name,
@@ -1746,7 +1747,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 					Header *hd2;
 					PackageData *isrequired;
 					
-					/* FIXME: bugzilla.eazel.com 1697
+					/* FIXME bugzilla.eazel.com 1697:
 					   use eazel_install_simple_query instead */
 					rc = rpmdbFindPackage (db, require_name[j], &secondmatches);
 					/* Iterate over all packages that match the required package */
@@ -1770,22 +1771,22 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 						{
 							dbiIndexSet thirdmatches;
 							int l;
-							/* FIXME: bugzilla.eazel.com 1697
+							/* FIXME bugzilla.eazel.com 1697:
 							   use eazel_install_simple_query instead */
 							rc = rpmdbFindByRequiredBy (db, isrequired->name, &thirdmatches);
 						}
-						/* FIXME bugzilla.eazel.com 1539
+						/* FIXME bugzilla.eazel.com 1539:
 						   check noone outside of "packages" & "requires" require
 						   this before adding */
 						(*requires) = g_list_prepend (*requires, isrequired);
 					}
 					dbiFreeIndexRecord (secondmatches);
 				} else {
-					/* FIXME bugzilla.eazel.com 1542
+					/* FIXME bugzilla.eazel.com 1542:
 					   Need the ability to lookup a pacakge that provides a file
 					   and process that */
 					g_message ("must lookup %s", require_name[j]);
-					/* FIXME bugzilla.eazel.com 1539
+					/* FIXME bugzilla.eazel.com 1539:
 					   lookup package "p" that provides requires[j],
 					   if packages that that require "p" are not in "packages"
 					   don't add it, otherwise add to requires */

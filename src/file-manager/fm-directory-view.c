@@ -3072,7 +3072,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		 * file, not on the original.
 		 */
 		/* Launch executables to activate them. */
-		/* FIXME: bugzilla.eazel.com 1773: This is a lame way to
+		/* FIXME bugzilla.eazel.com 1773: This is a lame way to
 		 * run command-line tools.
 		 */
 		executable_path = nautilus_get_local_path_from_uri (uri);

@@ -314,7 +314,7 @@ impl_Eazel_Install_query (impl_POA_Trilobite_Eazel_Install *servant,
 {
 	Trilobite_Eazel_PackageDataStructList *result;
 
-	/* FIXME: bugzilla.eazel.com 
+	/* FIXME bugzilla.eazel.com:
 	   Finish this, need to convert the return value to a 
 	   corba sequence and return it.
 	*/

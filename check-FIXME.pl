@@ -36,6 +36,7 @@ if (!@ARGV)
     @ARGV = `find . \\( \\( -name po -prune -false \\) -or \\( -name CVS -prune -false \\) -or \\( -name '*' -and -type f \\) \\) -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name Entries \\) -print`;
     %skip_files =
       (
+       "./HACKING" => 1,
        "./TODO" => 1,
        "./aclocal.m4" => 1,
        "./check-FIXME.pl" => 1,
