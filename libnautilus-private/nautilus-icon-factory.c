@@ -70,6 +70,7 @@
 #define ICON_NAME_THUMBNAIL_LOADING     "gnome-fs-loading-icon"
 #define ICON_NAME_TRASH_EMPTY		"gnome-fs-trash-empty"
 #define ICON_NAME_TRASH_FULL		"gnome-fs-trash-full"
+#define ICON_NAME_HOME                  "gnome-fs-home"
 
 #define NAUTILUS_EMBLEM_NAME_PREFIX "emblem-"
 
@@ -835,7 +836,11 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 		return  g_strdup (nautilus_trash_monitor_is_empty ()
 				  ? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_FULL);
 	}
-	
+
+	if (nautilus_file_is_home (file)) {
+		return g_strdup (ICON_NAME_HOME);
+	}
+		
 	mime_type = nautilus_file_get_mime_type (file);
 	
 	file_info = nautilus_file_peek_vfs_file_info (file);

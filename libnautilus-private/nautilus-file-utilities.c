@@ -236,6 +236,30 @@ update_desktop_dir (void)
 }
 
 gboolean
+nautilus_is_home_directory_file_escaped (char *escaped_dirname,
+					 char *escaped_file)
+{
+	static char *escaped_home_dir_dirname = NULL;
+	static char *escaped_home_dir_filename = NULL;
+	char *uri;
+	GnomeVFSURI *vfs_uri;
+	
+	if (escaped_home_dir_dirname == NULL) {
+		uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+		vfs_uri = gnome_vfs_uri_new (uri);
+		g_free (uri);
+
+		escaped_home_dir_filename = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+		escaped_home_dir_dirname = gnome_vfs_uri_extract_dirname (vfs_uri);
+
+		gnome_vfs_uri_unref (vfs_uri);
+	}
+
+	return (strcmp (escaped_dirname, escaped_home_dir_dirname) == 0 &&
+		strcmp (escaped_file, escaped_home_dir_filename) == 0);
+}
+					 
+gboolean
 nautilus_is_desktop_directory_file_escaped (char *escaped_dirname,
 					    char *escaped_file)
 {

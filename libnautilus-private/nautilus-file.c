@@ -2407,6 +2407,22 @@ nautilus_file_should_show (NautilusFile *file,
 }
 
 gboolean
+nautilus_file_is_home (NautilusFile *file)
+{
+	GnomeVFSURI *dir_vfs_uri;
+
+	dir_vfs_uri = file->details->directory->details->vfs_uri;
+
+	if (dir_vfs_uri == NULL ||
+	    strcmp (dir_vfs_uri->method_string, "file") != 0) {
+		return FALSE;
+	}
+
+	return nautilus_is_home_directory_file_escaped (dir_vfs_uri->text,
+							file->details->relative_uri);
+}
+
+gboolean
 nautilus_file_is_in_desktop (NautilusFile *file)
 {
 	/* This handles visiting other people's desktops, but it can arguably
