@@ -37,6 +37,10 @@
 #include <config.h>
 #include <popt-gnome.h>
 
+#define PACKAGE_FILE_NAME "package-list.xml"
+#define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
+	
+
 static void show_usage (int exitcode, char* error);
 static void show_license (int exitcode, char* error);
 static void generate_new_package_list (const char* popt_genpkg_file,
@@ -49,18 +53,20 @@ static void
 show_usage (int exitcode, char* error) {
 	fprintf (stderr, "Usage: eazel-install [options]\n"
 			"Valid options are:\n"
-			"	--help               : show help\n"
-			"	--License            : show license\n"
-			"	--local              : use local files\n"
-			"	--http               : use http\n"
-			"	--ftp                : use ftp\n"
-			"	--test               : dry run - don't actually install\n"
-			"	--force              : dry run - don't actually install\n"
-			"	--uninstall          : uninstall the package list\n"
-			"	--tmpdir <dir>       : temporary directory to store rpms\n"
-			"	--server <url>)      : url of remote server\n"
-			"   --genpkg_list <file> : generate xml package list\n"
-			"Example: eazel-install --http --server www.eazel.com --tmpdir /tmp\n");
+			"	--help                   : show help\n"
+			"	--License                : show license\n"
+			"	--local                  : use local files\n"
+			"	--http                   : use http\n"
+			"	--ftp                    : use ftp\n"
+			"	--verbose                : give more information during processing\n"
+			"	--log <file>             : redirect all information to log file.\n"
+			"	--test                   : dry run - don't actually install\n"
+			"	--force                  : force package to install/uninstall\n"
+			"	--uninstall              : uninstall the package list\n"
+			"	--tmpdir <dir>           : temporary directory to store rpms\n"
+			"	--server <url>)          : url of remote server\n"
+			"        --new-pkg-list <file>    : generate xml package list from template\n"
+			"\nExample: eazel-install --http --server www.eazel.com --tmpdir /tmp\n\n");
 			
 	if (error) {
 		fprintf (stderr, "%s\n", error);
@@ -148,12 +154,13 @@ int
 main (int argc, char* argv[]) {
 	char opt;
 	gboolean retval;
-	gboolean USE_LOCAL, USE_HTTP, USE_FTP, UNINSTALL_MODE, DOWNGRADE_MODE, TEST_MODE, FORCE_MODE;
+	gboolean USE_LOCAL, USE_HTTP, USE_FTP, UNINSTALL_MODE, DOWNGRADE_MODE, TEST_MODE, FORCE_MODE, VERBOSE_MODE, LOGGING_MODE;
 	InstallOptions* iopts;
 	TransferOptions* topts;
 	poptContext pctx;
 	char* config_file;
 	char* target_file;
+	char* popt_log_file;
 	char* popt_tmpdir;
 	char* popt_server;
 	char* popt_genpkg_file;
@@ -164,6 +171,8 @@ main (int argc, char* argv[]) {
 		{ "local", 'l', 0, NULL, 'l'},
 		{ "http", 'w', 0, NULL, 'w' },
 		{ "ftp", 'f', 0, NULL, 'f' },
+		{ "verbose", 'v', 0, NULL, 'v' },
+		{ "log", 'S', POPT_ARG_STRING, &popt_log_file, 'S' },
 		{ "force", 'F', 0, NULL, 'F' },
 		{ "test", 't', 0, NULL, 't' },
 		{ "uninstall", 'u', 0, NULL, 'u' },
@@ -178,16 +187,19 @@ main (int argc, char* argv[]) {
 	USE_LOCAL = FALSE;
 	USE_HTTP = FALSE;
 	USE_FTP = FALSE;
+	VERBOSE_MODE = FALSE;
+	LOGGING_MODE = FALSE;
 	FORCE_MODE = FALSE;
 	TEST_MODE = FALSE;
 	UNINSTALL_MODE = FALSE;
 	DOWNGRADE_MODE = FALSE;
+	popt_log_file = NULL;
 	popt_server = NULL;
 	popt_tmpdir = NULL;
 	popt_genpkg_file = NULL;
 
-	config_file = g_strdup ("/var/eazel/services/eazel-services-config.xml");
-	target_file = g_strdup ("package-list.xml");
+	config_file = g_strdup (DEFAULT_CONFIG_FILE);
+	target_file = g_strdup (PACKAGE_FILE_NAME);
 	
 	pctx = poptGetContext ("eazel-install", argc, argv, optionsTable, 0);
 
@@ -207,6 +219,12 @@ main (int argc, char* argv[]) {
 				break;
 			case 'f':
 				USE_FTP = TRUE;
+				break;
+			case 'v':
+				VERBOSE_MODE = TRUE;
+				break;
+			case 'S':
+				LOGGING_MODE = TRUE;
 				break;
 			case 'F':
 				FORCE_MODE = TRUE;
@@ -267,6 +285,11 @@ main (int argc, char* argv[]) {
 		generate_new_package_list (popt_genpkg_file, target_file);
 	}
 
+	if ( LOGGING_MODE == TRUE ) {
+		fprintf (stderr, "***Logging not currently supported !***\n");
+		exit (1);
+	}
+
 	if ( USE_FTP == TRUE ) {
 		fprintf (stderr, "***FTP installs are not currently supported !***\n");
 		exit (1);
@@ -278,9 +301,8 @@ main (int argc, char* argv[]) {
 		iopts->protocol = PROTOCOL_LOCAL;
 	}
 
-	if (iopts->mode_silent == TRUE) {
-		fprintf (stderr, "*** Silent mode not available yet !***\n");
-		exit (1);
+	if (VERBOSE_MODE == TRUE) {
+		iopts->mode_verbose = TRUE;
 	}
 
 	if (TEST_MODE == TRUE) {
@@ -324,9 +346,10 @@ main (int argc, char* argv[]) {
 		}
 	}
 
-	g_print ("Install completed normally...\n");
+	g_print ("Transaction completed normally...\n");
 	g_free (config_file);
 	g_free (iopts);
 	g_free (topts);
 	exit (0);
 }
+
