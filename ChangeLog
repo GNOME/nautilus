@@ -1,3 +1,43 @@
+2001-03-08  Darin Adler  <darin@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-08  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix another part of bug 7494 (History sidebar component spews
+	assertions when closing nautilus window [and sometimes crashes]):
+	
+	* libnautilus/nautilus-idle-queue.c: (execute_queued_functions):
+	Change logic so that queued functions no longer execute once the
+	caller destroys the queue.
+
+	Fix bug 7564 (opening and quickly closing window in list view
+	leads to core dump):
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy): Remove code to empty lists now that
+	stop handles that.
+	(load_error_callback): Added a FIXME about the fact that we throw
+	away some pending files on an error.
+	(fm_directory_view_stop): Don't display pending files any more.
+	This is a problem when trying to destroy, and also the old code
+	displayed only one "batch" of pending files, so it wasn't really
+	making sure all the files were displayed anyway. If we re-add the
+	code to display pending files here, we'll have to make sure it
+	doesn't do this for the destroy case.
+	* src/file-manager/fm-list-view.c: Added FIXME asking why the "add
+	100 items at a time" logic is only needed for list view, and not
+	for icon view. If both kinds of views had it, it could be done
+	more simply at the FMDirectoryView level.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_get_icon_size_for_zoom_level): Fix this code so that it
+	doesn't do a core dump if it gets a bad size. This is not the
+	cause of the problem, but it's good to fix this too, because a
+	core dump is overreacting to a bad parameter.
+
 2001-03-08  Maciej Stachowiak  <mjs@eazel.com>
 
 	Merge from HEAD:

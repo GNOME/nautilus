@@ -1099,13 +1099,6 @@ fm_directory_view_destroy (GtkObject *object)
 
 	monitor_file_for_activation (view, NULL);
 
-	nautilus_file_list_free (view->details->pending_files_added);
-	view->details->pending_files_added = NULL;
-	nautilus_file_list_free (view->details->pending_files_changed);
-	view->details->pending_files_changed = NULL;
-	nautilus_g_list_free_deep (view->details->pending_uris_selected);
-	view->details->pending_uris_selected = NULL;
-
 	monitor_file_for_open_with (view, NULL);
 
 	fm_directory_view_stop (view);
@@ -1383,7 +1376,6 @@ stop_loading_callback (NautilusView *nautilus_view,
 {
 	fm_directory_view_stop (view);
 }
-
 
 static void
 fm_directory_view_file_limit_reached (FMDirectoryView *view)
@@ -2005,11 +1997,16 @@ load_error_callback (NautilusDirectory *directory,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
+	/* FIXME: By doing a stop, we discard some pending files. Is
+	 * that OK?
+	 */
 	fm_directory_view_stop (view);
-	/* Emit a signal to tell subclasses that a load
-	   error has occurred, so they can handle it in the
-	   UI */
-	gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_ERROR], load_error_code);
+
+	/* Emit a signal to tell subclasses that a load error has
+	 * occurred, so they can handle it in the UI.
+	 */
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[LOAD_ERROR], load_error_code);
 }
 
 static void
@@ -4120,12 +4117,14 @@ fm_directory_view_stop (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	unschedule_display_of_pending_files (view);
-	display_pending_files (view);
+
 	/* Free extra undisplayed files */
 	nautilus_file_list_free (view->details->pending_files_added);
 	view->details->pending_files_added = NULL;
 	nautilus_file_list_free (view->details->pending_files_changed);
 	view->details->pending_files_changed = NULL;
+	nautilus_g_list_free_deep (view->details->pending_uris_selected);
+	view->details->pending_uris_selected = NULL;
 
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
