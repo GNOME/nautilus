@@ -519,10 +519,16 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 static char *
 get_link_name (char *name, int count) 
 {
-	const char *format;
 	char *result;
+	char *unescaped_name;
+	char *unescaped_result;
+
+	const char *format;
 	
 	g_assert (name != NULL);
+
+	unescaped_name = gnome_vfs_unescape_string (name, "/");
+	g_free (name);
 
 	if (count < 1) {
 		g_warning ("bad count in get_link_name");
@@ -544,7 +550,7 @@ get_link_name (char *name, int count)
 			format = _("another link to %s");
 			break;
 		}
-		result = g_strdup_printf (format, name);
+		unescaped_result = g_strdup_printf (format, unescaped_name);
 
 	} else {
 		/* Handle special cases for the first few numbers of each ten.
@@ -569,10 +575,14 @@ get_link_name (char *name, int count)
 			format = _("%dth link to %s");
 			break;
 		}
-		result = g_strdup_printf (format, count, name);
+		unescaped_result = g_strdup_printf (format, count, unescaped_name);
 	}
 
-	g_free (name);
+	result = gnome_vfs_escape_path_string (unescaped_result);
+	
+	g_free (unescaped_name);
+	g_free (unescaped_result);
+
 	return result;
 }
 
@@ -582,7 +592,7 @@ get_link_name (char *name, int count)
  */
 
 #define COPY_DUPLICATE_TAG _(" (copy)")
-#define FRIST_COPY_DUPLICATE_FORMAT _("%s (copy)%s")
+#define FIRST_COPY_DUPLICATE_FORMAT _("%s (copy)%s")
 #define ANOTHER_COPY_DUPLICATE_TAG _(" (another copy)")
 #define SECOND_COPY_DUPLICATE_FORMAT _("%s (another copy)%s")
 
@@ -721,7 +731,7 @@ make_next_duplicate_name (const char *base, const char *suffix, int count)
 			g_assert_not_reached ();
 			/* fall through */
 		case 1:
-			format = FRIST_COPY_DUPLICATE_FORMAT;
+			format = FIRST_COPY_DUPLICATE_FORMAT;
 			break;
 		case 2:
 			format = SECOND_COPY_DUPLICATE_FORMAT;

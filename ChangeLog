@@ -1,3 +1,15 @@
+2000-10-26  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(get_link_name), (make_next_duplicate_name):
+	Link names weren't properly escaped causing them not to
+	get selected.
+
+	* src/file-manager/fm-directory-view.c: (copy_move_done_callback),
+	(new_folder_done),
+	(fm_directory_view_trash_state_changed_callback):
+	added asserts
+
 2000-10-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/nautilus-dependent-shared/eazel-services-footer.c:

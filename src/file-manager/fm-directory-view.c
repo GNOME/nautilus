@@ -1601,9 +1601,9 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 	CopyMoveDoneData *copy_move_done_data;
 	DebutingUriData  *debuting_uri_data;
 
-	
 	copy_move_done_data = (CopyMoveDoneData *) data;
 	directory_view = copy_move_done_data->directory_view;
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	debuting_uri_data = g_new (DebutingUriData, 1);
 	debuting_uri_data->debuting_uris = debuting_uris;
@@ -2613,7 +2613,8 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	FMDirectoryView *directory_view;
 	RenameLaterParameters *parameters;
 
-	directory_view = (FMDirectoryView *)data;
+	directory_view = (FMDirectoryView *) data;
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	/* We need to run after the default handler adds the folder we want to
 	 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
@@ -4434,7 +4435,7 @@ fm_directory_view_trash_state_changed_callback (NautilusTrashMonitor *trash_moni
 {
 	FMDirectoryView *view;
 
-	view = (FMDirectoryView *)callback_data;
+	view = (FMDirectoryView *) callback_data;
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	schedule_update_menus (view);
