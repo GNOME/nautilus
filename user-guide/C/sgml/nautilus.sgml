@@ -1,0 +1,1086 @@
+<!DOCTYPE Book PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
+]>
+
+<!-- ============= Document Header =================================== -->
+<book id="index">
+
+ <bookinfo>
+  <title>Nautilus User's Manual</title>
+  <edition>v1.0</edition>
+  <authorgroup>
+   <author>
+    <firstname>Vera</firstname>
+    <surname>Horiuchi</surname>
+    <authorblurb>
+     <para>
+      <email>
+       vera@eazel.com
+      </email>
+     </para>
+    </authorblurb>
+   </author>
+  </authorgroup>
+
+  <copyright>
+   <year>2001</year>
+   <holder>Eazel Inc.</holder>
+  </copyright>
+
+  <!-- translators: uncomment this:
+
+  <copyright>
+   <year>2000</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+  <legalnotice id="legalnotice">
+   <para>
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the <ulink type="help" 
+    url="gnome-help:gnufdl"><citetitle>GNU Free Documentation
+    License</citetitle></ulink>, Version 1.1 or any later version 
+    published by the Free Software Foundation with no Invariant Sections, 
+    no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license
+    can be found <ulink type="help" url="gnome-help:gnufdl">here</ulink>.
+   </para>
+   <para>
+    Many of the names used by companies to distinguish their products and
+    services are claimed as trademarks. Where those names appear in any
+    GNOME documentation, and those trademarks are made aware to the members
+    of the GNOME Documentation Project, the names have been printed in caps
+    or initial caps.
+   </para>
+  </legalnotice>
+
+  <!-- this is the version of manual, not application --> 
+  <releaseinfo>
+   This is version 1.0 of the Nautilus User's Manual.
+  </releaseinfo>
+
+ </bookinfo>
+
+
+<!-- DOCUMENT BODY ====================================================== -->
+
+
+<!-- CHAPTER 1: INTRODUCTING NAUTILUS  -->
+<chapter id="chapter1">
+<title>Introducing Nautilus</title>
+
+<para>Nautilus is the window to the network user enviroment. It integrates your access to files, applications, media, Internet-based resources, and the Web.</para>
+
+<para>Nautilus is an open source project developed under the GNU Public License (GPL) and is a core component of the GNOME desktop project. Eazel is a founding member of the  <ulink type="http" url="http://www.gnome.org">GNOME Foundation</ulink>.</para>
+
+<!-- Introducing Nautilus: The Nautilus Window -->
+<sect1 id="window">
+<title>The Nautilus Window</title>
+
+
+<figure id="full">
+<title>The Nautilus Window</title>
+<screenshot>
+<screeninfo>Diagram of Nautilus</screeninfo>
+<graphic format="png" fileref="full">
+</graphic>
+</screenshot>
+</figure>
+
+
+</sect1>
+
+<!-- Introducing Nautilus: Adding Nautilus to the Panel  -->
+<sect1 id="default">
+<title>Adding Nautilus to the Panel</title>
+
+<note>
+<title>Try this</title>
+<para>To keep Nautilus easily available, add its icon to the GNOME panel:</para>
+</note>
+
+<orderedlist>
+<listitem><para>Open the GNOME main menu (represented by the footprint icon).</para></listitem>
+<listitem><para>Choose Programs; then choose Applications and select Nautilus.</para></listitem>
+<listitem><para>Drag the Nautilus icon to the GNOME panel.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+</chapter>
+
+<!-- CHAPTER 2: WHAT'S ON YOUR COMPUTER? -->
+<chapter id="chapter2">
+<title>What's On Your Computer?</title>
+
+<para>Nautilus is part of the GNOME desktop environment. It lets you view, copy, move, rename, and delete files and folders. This section explains how to use Nautilus to keep track of folders and files on your own machine, and on the Internet.
+
+<simplelist> 
+<member><link linkend="home">Viewing Your Home Folder</link></member>
+<member><link linkend="navigating">Navigating Your Computer's Files and Folders</link></member>
+<member><link linkend="viewopen">Viewing and Opening Files</link></member>
+<member><link linkend="internet">Navigating the Internet</link></member>
+<member><link linkend="history">Viewing Your Navigation History</link></member>
+<member><link linkend="bookmarks">Bookmarking Your Favorite Locations</link></member>
+</simplelist>
+
+</para>
+
+<!-- What's On Your Computer?: Viewing Your Home Folder  -->
+<sect1 id="home">
+<title>Viewing Your Home Folder</title>
+
+<para>When you first launch Nautilus, you'll be in your home folder. Three areas of the Nautilus window contain information about your folder:</para>
+
+<itemizedlist>
+<listitem><para>The sidebar panel, which contains a folder icon representing your folder</para></listitem>
+<listitem><para>The right-hand (main) panel, where you see icons representing the items in your folder</para></listitem>
+<listitem><para>The location bar, which contains your folder's path name</para></listitem>
+</itemizedlist>
+ 
+</sect1>
+
+<!-- What's On Your Computer?: Navigating Your Files and Folders  -->
+<sect1 id="navigating">
+<title>Navigating Your Files and Folders</title>
+
+<para>You can move around in your files and folders using the navigation buttons in the toolbar and the icons in the Nautilus window.   </para>
+
+<note>
+<title>Try this</title>
+ 
+<para>
+<itemizedlist>
+<listitem><para>To view your home folder, click the Home button.</para></listitem>
+<listitem><para>To move to the folder that contains your home folder -- that is, to move one folder up in the hierarchy - click the Up button.</para></listitem>
+<listitem><para>To go back, click the Back button.</para></listitem>
+<listitem><para>To view the contents of any folder, double-click its icon (normally a folder icon).</para></listitem>
+<listitem><para>If you think that the contents of a folder have changed while you've been viewing it, click the Refresh button to update the information.</para></listitem>
+</itemizedlist>
+</para>
+
+</note>
+
+</sect1>
+
+<!--  What's On Your Computer?: The Tree View  -->
+<sect1 id="tree">
+<title>The Tree View</title>
+
+<para>You can get an overview of all of your computer's files and folders using the Tree view. Many people find it faster to navigate using the Tree rather than selecting and opening folders.</para>
+
+<para>To see the Tree view, click the Tree tab at the bottom of the sidebar. Click the tab again to put the Tree view away.</para>
+
+<para>Note: If you don't see a tab for Tree view, right-click the sidebar and choose Tree.</para>
+
+<para>The starting point - the top of the tree - is the root directory, represented by a slash (/). Click the disclosure triangle next to the root directory to open or close the list of all your computer's folders and files. The items on your computer are arranged hierarchically. The root directory may also list network locations in addition to locations on your own computer.</para>
+
+<note>
+<title>Try this</title>
+
+<para>
+<itemizedlist>
+<listitem><para>To open or close a folder in Tree view, click its triangle.</para></listitem>
+<listitem><para>To display the contents of a folder in the right-hand panel, click the folder's name in the tree.</para></listitem>
+</itemizedlist>
+</para>
+
+</note>
+
+</sect1>
+
+<!--  What's On Your Computer?: Viewing and Opening Files  -->
+<sect1 id="viewopen">
+<title>Viewing and Opening Files</title>
+
+<para><emphasis>Icon View</emphasis></para>
+
+<para>The first time you launch Nautilus, you see folders and files represented as icons. This is the default view.</para>
+
+<para>If you have changed the view and want to return to icon view, click the &quot;View as&quot; menu and choose View as Icons.</para>
+
+<figure id="viewmenu">
+<title>View Menu</title>
+<screenshot>
+<screeninfo>Screenshot of view menu</screeninfo>
+<graphic format="png" fileref="viewmenu">
+</graphic>
+</screenshot>
+</figure>
+
+<para><emphasis>List View</emphasis></para>
+
+<para>To see the contents of a folder as a list, click the &quot;View as&quot; menu and choose View as List.</para>
+
+<para>To sort the items displayed in list view, click the column headers (Name, Size, Type, and Date Modified).</para>
+
+
+<para><emphasis>Zooming In or Out</emphasis></para>
+
+<para>You can enlarge or reduce the size of items in either list or icon view, and stretch individual icons in icon view.</para>
+
+<para>To enlarge or reduce all of the icons:</para>
+
+<itemizedlist>
+<listitem><para>Click the plus (+) and minus (-) symbols in the Location bar. To return to the original size, open the View menu and choose Normal Size.</para></listitem>
+</itemizedlist>
+
+<para>To stretch an individual icon:</para>
+
+<orderedlist>
+<listitem><para>Click the &quot;View as&quot; menu and choose View as Icons.</para></listitem>
+<listitem><para>Click to select the icon you want to stretch.</para></listitem>
+<listitem><para>Open the Edit menu and choose Stretch Icon. A box appears around the icon, with &quot;handles&quot; in each corner.</para></listitem>
+<listitem><para>Click and drag the handles to resize the icon. To cancel the stretch and return the icon to its original size, press the Esc key on your keyboard.</para></listitem>
+</orderedlist>
+
+<para>To return an icon to its original size:</para>
+
+<itemizedlist>
+<listitem><para>Select the icon; then open the Edit menu and choose Restore Icon's Original Size.</para></listitem> 
+</itemizedlist>
+
+
+<para><emphasis>Viewing Individual Files</emphasis></para>
+
+<para>You can preview many files in the Nautilus window just by looking at their icons in the right-hand panel - you don't need to open the files.</para>
+
+<para>Text files: The icons for most text files display the files' first few words or lines of text. If you enlarge a text file's icon by zooming or stretching, you can see more of the text.</para>
+
+<para>Image files: The icons for most image files appear as thumbnails -- small versions of the file.</para>
+
+<para>Music files: You can preview common types of music files by positioning the mouse pointer over the icons. Music plays as long as the pointer is over a music file's icon.</para>
+
+<para>You can also use the Nautilus window as a viewer for many types of files:</para>
+
+<itemizedlist>
+<listitem><para>Some files, such as most text files, automatically appear in the Nautilus window when you double-click their icons.</para></listitem>
+<listitem><para>Some files open in their applications for editing instead of opening for viewing. For such files, right-click the icon and choose Open With.Then choose Text Viewer, Image Viewer, or another viewer, as appropriate.</para></listitem>
+</itemizedlist>
+
+<para>Note: You can control whether an individual file opens in Nautilus to be viewed, or opens in an application. See <link linkend="mime">Setting Up Helper Applications</link>.</para>
+
+<para>Here are some of the file types for which the Nautilus window can act as a viewer:</para>
+
+<informaltable frame="none">
+<tgroup cols="2">
+<tbody>
+<row>
+<entry><emphasis>Music</emphasis></entry>
+<entry>MP3 (for MP3 files located on your hard disk), AIFF, MPEG, WAV, RIFF</entry>
+</row>
+<row>
+<entry><emphasis>Text</emphasis></entry>
+<entry>ASCII text files, HTML files</entry>
+</row>
+<row>
+<entry><emphasis>Image</emphasis></entry>
+<entry>JPEG, PNG, GIF, XPM, SVG (without interactive features)</entry>
+</row>
+<row>
+<entry><emphasis>Package</emphasis></entry>
+<entry>RPM (for RPM files located on your hard disk)</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+
+
+<para><emphasis>Opening Individual Files</emphasis></para>
+
+<para>There are several ways to open files in Nautilus:</para>
+
+<itemizedlist>
+<listitem><para>Double-click the file's icon (unless you've change your preference so a single-click activates items)</para></listitem>
+<listitem><para>Click the file's icon, open the File menu, and choose Open or Open With</para></listitem>
+<listitem><para>Right-click the file's icon and choose one of the Open or Open With options</para></listitem>
+</itemizedlist>
+
+<para>Note: You can control whether an individual file opens in Nautilus to be viewed, or opens in an application.  If the application you want to use is not listed, you can add it to the list. See <link linkend="mime">Setting Up Helper Applications</link>.</para>
+
+</sect1>
+
+<!-- Viewing and Playing MP3 Files  -->
+<sect1 id="music">
+<title>Viewing and Playing MP3 Files</title>
+
+<para>If you have a folder that contains MP3 music files, you should try the "View As Music" option.</para>
+
+<note>
+<title>Try this</title>
+
+<para>
+<orderedlist>
+<listitem><para>Go to your folder containing MP3 files.</para></listitem>
+<listitem><para>Click the &quot;View as&quot; menu and choose View as Music.</para></listitem>
+</orderedlist>
+</para>
+
+</note>
+
+<figure id="view2">
+<title>View Menu</title>
+<screenshot>
+<screeninfo>Screenshot of View Menu</screeninfo>
+<graphic format="png" fileref="viewmenu">
+</graphic>
+</screenshot>
+</figure>
+
+<para>Only the MP3 files in your folder are visible in this view. For each file, you see a listing of tracks, titles, artists, bit rates, and playing times.</para>
+
+<para>There's also a music player at the bottom of the window:</para>
+
+<figure id="player">
+<title>Music Player</title>
+<screenshot>
+<screeninfo>Screenshot of Music Player</screeninfo>
+<graphic format="png" fileref="player">
+</graphic>
+</screenshot>
+</figure>
+
+<para>If you wish, you can choose a cover image to be displayed for your music folder:</para>
+
+<orderedlist>
+<listitem><para>Go to your folder containing MP3 files.</para></listitem>
+<listitem><para>Click the &quot;View as&quot; menu and choose View as Music.</para></listitem>
+<listitem><para>Click the Set Cover Image button in the bottom right corner of the Nautilus window.</para></listitem>
+<listitem><para>Browse to find the graphic you want to use; then select it.</para></listitem>
+<listitem><para>Click OK.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+
+<!-- What's On Your Computer?: Navigating the Internet  -->
+<sect1 id="internet">
+<title>Navigating the Internet</title>
+
+<para>You can use Nautilus as a browser for viewing web pages and FTP sites.</para>
+
+<para>To view a web page, type its URL (address) in the Location bar. For instance, to connect to Eazel's web site, you type</para>
+
+
+<para><ulink type="http" url="http://www.eazel.com/">www.eazel.com</ulink></para>
+
+<para>in the Location bar, and then press Enter.</para>
+
+<figure id="locbar">
+<title>Location Bar</title>
+<screenshot>
+<screeninfo>Screenshot of Location Bar</screeninfo>
+<graphic format="png" fileref="locbar">
+</graphic>
+</screenshot>
+</figure>
+
+<para>When you're viewing a web page, Nautilus gives you additional choices of web browsers in case you want to use a full-feature web browser. To select a different browser, click one of the buttons in the sidebar.</para>
+
+<figure id="sidebar">
+<title>Sidebar</title>
+<screenshot>
+<screeninfo>Screenshot of Sidebar</screeninfo>
+<graphic format="png" fileref="sidebar">
+</graphic>
+</screenshot>
+</figure>
+
+</sect1>
+
+<!--  What's On Your Computer?: Viewing Your Navigation History  -->
+<sect1 id="history">
+<title>Viewing Your Navigation History</title>
+
+<para>As you navigate your own computer as well as the Internet, you may want to return to a page, file, or folder you've previously viewed. You can view your history in three ways:</para>
+
+<itemizedlist>
+<listitem><para>Open the Go menu. The bottom section of the menu lists the things you've viewed during the current session.</para></listitem>
+<listitem><para>Click the History tab at the bottom of the sidebar. (To put the History list away, click the tab again.)</para></listitem>
+<listitem><para>Right-click the Back or Forward buttons.</para></listitem>
+</itemizedlist>
+
+<para>You can have Nautilus clear the locations you've previously visted. This removes the previous locations listed in the Go menu, the History tab, and under the Back and Forward buttons.</para>
+
+<para>To clear the list of previously visited locations:</para>
+
+<itemizedlist>
+<listitem><para>Open the Go menu and choose Forget History.</para></listitem>
+</itemizedlist>
+
+</sect1>
+
+<!--  What's On Your Computer?: Bookmarking Your Favorite Locations  -->
+<sect1 id="bookmarks">
+<title>Bookmarking Your Favorite Locations</title>
+
+<para>You will probably discover that you frequently visit certain locations - web pages, folders on your computer, and favorite photos or text files.
+You can bookmark these items in Nautilus, so you can return to them easily.</para>
+
+<para><emphasis>Creating a Bookmark</emphasis></para>
+
+<para>To bookmark an item:</para>
+
+<orderedlist>
+<listitem><para>Go to the item you want to bookmark. You can bookmark any item displayed in Nautilus.</para></listitem>
+<listitem><para>Open the Bookmarks menu and choose Add Bookmark.</para></listitem>
+</orderedlist>
+
+<para>To use your bookmarks, open the Bookmarks menu and choose an item.</para>
+
+<para><emphasis>The Built-In Bookmarks</emphasis></para>
+
+<para>Nautilus comes with some built-in bookmarks arranged in folders in the Bookmarks menu. They take you to the web sites of organizations and companies of interest to Linux users.</para>
+
+<para>If your user level is set to Intermediate or Advanced, you can turn off the built-in bookmarks:</para>
+
+<orderedlist>
+<listitem><para>Open the Preferences menu and choose Preferences.</para></listitem>
+<listitem><para>In the left-hand column of the Preferences dialog box, click Navigation.</para></listitem>
+<listitem><para>Select "Don't include the built-in bookmarks."</para></listitem>
+<listitem><para>Click OK.</para></listitem>
+</orderedlist>
+
+
+<para><emphasis>Editing Your Bookmarks</emphasis></para>
+
+<para>You can rename a bookmark, change the information about its location, or remove it altogether:</para>
+
+<orderedlist>
+<listitem><para>Open the Bookmarks menu and choose Edit Bookmarks.</para></listitem>
+<listitem><para>Select the bookmark you want to edit.</para></listitem>
+<listitem><para>Type a new name or location for the bookmark, or click Remove.</para></listitem>
+<listitem><para>When you're done editing bookmarks, close the dialog box.</para></listitem>
+</orderedlist>
+
+
+</sect1>
+
+</chapter>
+
+<!--  CHAPTER 3: SEARCHING YOUR COMPUTER AND THE INTERNET  -->
+<chapter id="chapter3">
+<title>Searching Your Computer and the Internet</title>
+
+<para>Nautilus provides a Find feature for locating files and directories on your own computer and a Web Search feature for finding web pages.</para>
+
+<simplelist>
+<member><link linkend="find">Finding Items on Your Computer</link></member>
+<member><link linkend="search">Searching the Internet</link></member>
+</simplelist>
+
+
+<!--  Searching Your Computer and the Internet: Finding Items on Your Computer  -->
+<sect1 id="find">
+<title>Finding Items on Your Computer</title>
+
+<para>Nautilus includes Medusa, an indexing daemon (utility) that makes it possible to search the files on your hard disk not just by file name, creator, file type, and so forth, but also by content.</para>
+
+<para>To find an item on your hard disk (Beginner user level):</para>
+
+<orderedlist>
+<listitem><para>Click the Find button in the toolbar.</para></listitem>
+<listitem><para>Enter the name of the item you want to find in the search field.</para></listitem>
+<listitem><para>Click Find Them.</para></listitem>
+</orderedlist>
+
+
+<para>To find an item on your hard disk (Intermediate and Advanced user level):</para>
+
+<orderedlist>
+<listitem><para>Click the Find button in the toolbar.</para></listitem>
+<listitem><para>From the two pop-up menus, choose criteria to define your search. The options are explained below.</para></listitem>
+<listitem><para>(Optional) To further narrow your search, click More Options and choose additional criteria. </para></listitem>
+<listitem><para>Enter the item you want to find - a particular file name, modification date, and so forth - in the search field.</para></listitem>
+<listitem><para>Click Find Them.</para></listitem>
+</orderedlist>
+
+
+<informaltable frame="all">
+<tgroup cols="3">
+<tbody>
+
+<row>
+<entry><emphasis>Search Criterion</emphasis></entry>
+<entry><emphasis>Modifier</emphasis></entry>
+<entry><emphasis>Search Field or List</emphasis></entry>
+</row>
+
+<row>
+<entry>Name: Nautilus will search the names of files on your hard disk.</entry>
+<entry>Specify if the file(s) found should have names that contain, begin with, or end with the characters you type. You can also choose "matches glob" or "matches regexp" to do Linux wildcard searches.</entry>
+<entry>Enter part or all of the file name you want to find.</entry>
+</row>
+
+<row>
+<entry>Content: Nautilus will search the content of files on your hard disk.</entry>
+<entry>Specify if the file(s) found should have content that includes any, all, some, or none of the word or phrase you type.</entry>
+<entry>Enter a word or phrase you want to search for in the content of the files on your hard disk.</entry>
+</row>
+
+<row>
+<entry>Type: Nautilus will search for the file type(s) you specify.</entry>
+<entry>Choose "is" or "is not" to include or exclude file types from the search.</entry>
+<entry>Choose a file type from the pop-up menu.</entry>
+</row>
+
+<row>
+<entry>Size</entry>
+<entry>Specify if the file(s) found should be larger or smaller than the number you type.</entry>
+<entry>Type a size, in Kbytes.</entry>
+</row>
+
+<row>
+<entry>With Emblem</entry>
+<entry>Specify if the file(s) found should be marked with, or not marked with, a particular emblem.</entry>
+<entry>Choose an emblem.</entry>
+</row>
+
+<row>
+<entry>Last Modified</entry>
+<entry>Choose an option to narrow down the last modification date of the files to be found.</entry>
+<entry>Enter a date. The current date is filled in by default, but you can delete it and type any date you want.</entry>
+</row>
+
+<row>
+<entry>Owned By</entry>
+<entry>Choose "is" or "is not" to include or exclude files owned by a particular group.</entry>
+<entry>Enter the name of a user group that owns files on your system.</entry>
+</row>
+
+
+</tbody>
+</tgroup>
+</informaltable>
+
+
+</sect1>
+
+
+<!--  Searching Your Computer and the Internet: Searching the Internet  -->
+<sect1 id="search">
+<title>Searching the Internet</title>
+
+<para>To search for pages on the Web, click the Web Search button in the toolbar. Eazel's search page appears. Type the word or phrase for which you want to search, and click Search.</para>
+
+<para>You can choose a search engine from the ones listed at the top of the search box. For instance, choose Google by clicking the Google link.</para>
+
+</sect1>
+
+
+</chapter>
+
+<!--  CHAPTER 4: MANAGING YOUR FILES AND FOLDERS  -->
+<chapter id="chapter4">
+<title>Managing Your Files and Folders</title>
+
+<para>This section explains how to use Nautilus to organize your files and folders. It includes:</para>
+
+<simplelist>
+<member><link linkend="move">Moving and Copying Files and Folders</link></member>
+<member><link linkend="create">Creating a New Folder</link></member>
+<member><link linkend="duplicate">Duplicating Files and Folders</link></member>
+<member><link linkend="rename">Renaming Files and Folders</link></member>
+<member><link linkend="delete">Deleting Files and Folders</link></member>
+<member><link linkend="permissions">Changing File Permissions</link></member>
+</simplelist>
+
+<!--  Managing Your Files and Folders: Moving and Copying Files and Folders  -->
+<sect1 id="move">
+<title>Moving and Copying Files and Folders</title>
+
+<para>The easiest way to move a file or folder is to work with two Nautilus windows.</para>
+
+<para>To move a file or folder to a new location, do this:</para>
+
+<orderedlist>
+<listitem><para>Open the File menu and choose New Window. You now have two Nautilus windows.</para></listitem>
+<listitem><para>In one window, locate the file or folder you want to move. In the other window, locate the destination folder.</para></listitem>
+<listitem><para>Using the left mouse button, click the file or folder you want to move and drag it to the other window.</para></listitem>
+</orderedlist>
+
+<para>Note: If your hard disk is divided into volumes, dragging a file or folder from one volume to another copies the file or folder rather than moving it.</para>
+
+<para>To copy a file or folder to a new folder while retaining the original, do this:</para>
+
+<orderedlist>
+<listitem><para>Open the File menu and choose New Window. You now have two Nautilus windows.</para></listitem>
+<listitem><para>In one window, locate the file or folder you want to copy. In the other window, locate the destination folder.</para></listitem>
+<listitem><para>Using the left mouse button, click the item you want to copy.</para></listitem>
+<listitem><para>Using the right mouse button, drag the item to the destination folder. A pop-up menu appears.</para></listitem>
+<listitem><para>Choose Copy Here to place a copy of the item in the destination folder. Choose Link Here to create a link to the item.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+<!--  Managing Your Files and Folders: Creating a New Folder  -->
+<sect1 id="create">
+<title>Creating a New Folder</title>
+
+<para>You can create a new folder anywhere in the folder hierarchy on your computer, as long as you have appropriate permissions.</para>
+
+<para>Do this:</para>
+
+<orderedlist>
+<listitem><para>Go to the folder that will contain the new folder. (In the main window, double-click the folder's icon.)</para></listitem>
+<listitem><para>Open the File menu and choose New Folder.</para></listitem>
+</orderedlist>
+
+<para>Nautilus creates a new folder inside the current folder. It has the name &quot;untitled folder.&quot; You can <link linkend="rename">rename the new folder</link>.</para>
+
+</sect1>
+
+<!--  Managing Your Files and Folders: Duplicating Files and Folders  -->
+<sect1 id="duplicate">
+<title>Duplicating Files and Folders</title>
+
+<para>To duplicate an item, do this:</para>
+
+<orderedlist>
+<listitem><para>Click to select the item you want to duplicate.</para></listitem>
+<listitem><para>Open the File menu and choose Duplicate.</para></listitem>
+</orderedlist>
+
+<para>A copy of the item is added to the current folder.</para>
+
+</sect1>
+
+<!--  Managing Your Files and Folders: Renaming Files and Folders  -->
+<sect1 id="rename">
+<title>Renaming Files and Folders</title>
+
+<para>To rename an item, do this:</para>
+
+<orderedlist>
+<listitem><para>Click to select the item you want to rename.</para></listitem>
+<listitem><para>Open the File menu and choose Rename. The icon's label now has a text box around it.</para></listitem>
+<listitem><para>Type a new name for the item.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+<!--  Managing Your Files and Folders: Deleting Files and Folders  -->
+<sect1 id="delete">
+<title>Deleting Files and Folders</title>
+
+<para>To delete an item, do this:</para>
+
+<orderedlist>
+<listitem><para>Click to select the item you want to delete.</para></listitem>
+<listitem><para>Open the File menu and choose Move to Trash.</para></listitem>
+<listitem><para>To empty the trash, open the File menu and choose Empty Trash. (Empty the trash only if you're sure you want to permanently delete the items in it!)</para></listitem>
+</orderedlist>
+
+</sect1>
+
+<!--  Managing Your Files and Folders: Changing File Permissions  -->
+<sect1 id="permissions">
+<title>Changing File Permissions</title>
+
+<para>You can change permissions for folders and files you own. If you're logged in as root (for experts only), you can change permissions for any folders and files on your computer.</para>
+
+<orderedlist>
+<listitem><para>Click to select the item for which you want to change permissions.</para></listitem>
+<listitem><para>Open the File menu and choose Show Properties. The Properties dialog box opens for the file or folder you selected.</para></listitem>
+<listitem><para>Click the Permissions tab.</para></listitem>
+<listitem><para>From the File Group menu, choose the group (users) that can own this file or folder.</para></listitem>
+<listitem><para>In the table, click to put a checkmark under each type of permission you want to grant. For instance, you can give the owner and users in the group permission to read (view), write (edit), and execute files in the group. (Execute is for programs.) You can give others permission to read files, but not write to them.</para></listitem>
+<listitem><para>When you are done managing permissions, close the dialog box.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+</chapter>
+
+
+<!-- CHAPTER 5: CUSTOMIZING NAUTILUS -->
+<chapter id="chapter5">
+<title>Customizing Nautilus</title>
+
+<para>You can customize Nautilus in many ways so its appearance and behavior meets your needs and taste. This section explains how.</para>
+
+<simplelist>
+<member><link linkend="settings">Adjusting Beginner, Intermediate, and Advanced Settings</link></member>
+<member><link linkend="preferences">Setting Preferences</link></member>
+<member><link linkend="bars">Showing and Hiding Bars</link></member>
+<member><link linkend="layout">Choosing a File Layout</link></member>
+<member><link linkend="themes">Changing Themes and Backgrounds</link></member>
+<member><link linkend="customicons">Customizing Icons and Icon Captions</link></member>
+<member><link linkend="mime">Setting up Helper Applications (File Types)</link></member>
+</simplelist>
+
+<!--  Customizing Nautilus: Adjusting Beginner, Intermediate, and Advanced Settings -->
+<sect1 id="settings">
+<title>Adjusting Beginner, Intermediate, and Advanced Settings</title>
+
+<para>When you first lanched Nautilus, you were asked to choose your user level: Beginner, Intermediate, or Advanced. You can change your user level at any time.</para>
+
+<para>To change your user level:</para>
+
+<itemizedlist>
+<listitem><para>Open the Preferences menu and choose the level you want.</para></listitem>
+</itemizedlist>
+
+<figure id="prefmenu">
+<title>Preferences Menu</title>
+<screenshot>
+<screeninfo>Screenshot of Preferences Menu</screeninfo>
+<graphic format="png" fileref="prefmenu">
+</graphic>
+</screenshot>
+</figure>
+
+<para>One way to see the difference between the levels is to go to your home directory and then compare what you see as you select each level in turn. Be sure to return to the level with which you're comfortable when you're done.</para>
+
+</sect1>
+
+<!--  Customizing Nautilus: Setting Preferences -->
+<sect1 id="preferences">
+<title>Setting Preferences</title>
+
+<para>If your user level is set to Intermediate or Advanced, you can customize preferences:</para>
+
+<orderedlist>
+<listitem><para>Open the Preferences menu and choose Preferences.</para></listitem>
+<listitem><para>From the left column in the Preferences dialog, choose the type of settings you want to adjust (for instance, Folder Views).</para></listitem>
+<listitem><para>Adjust each group of settings as desired, following the instructions in the Preferences dialog box.</para></listitem>
+<listitem><para>When you are finished setting preferences, click OK.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+<!--  Customizing Nautilus: Showing and Hiding Bars -->
+<sect1 id="bars">
+<title>Showing and Hiding Bars</title>
+
+<para>The Nautilus window shows these bars by default:</para>
+
+<itemizedlist>
+<listitem><para>Sidebar</para></listitem>
+<listitem><para>Toolbar</para></listitem>
+<listitem><para>Location Bar</para></listitem>
+<listitem><para>Status Bar (at the bottom of the window)</para></listitem>
+</itemizedlist>
+
+<para>You may want to hide one or more of them to save space on your screen.</para>
+
+<para>To hide a bar, open the View menu and click one of the options in the second section. For instance, to hide the Sidebar, click Hide Sidebar.</para>
+
+<para>If you want to see the bar again, open the View menu and choose one of the Show options.</para>
+
+<para>Note: If you hide a bar in your Nautilus window, and then open another Nautilus window, the bar is not hidden in the new window. To specify which bars should be hidden or displayed in new windows:</para>
+
+<orderedlist>
+<listitem><para>Open the Preferences menu and choose Edit Beginner, Intermediate, or Advanced Preferences (whichever is available).</para></listitem>
+<listitem><para>In the left column of the Preferences dialog box, click Appearance.</para></listitem>
+<listitem><para>Under Views, de-select any bars you want hidden in new windows.</para></listitem>
+<listitem><para>Click OK.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+<!--  Customizing Nautilus: Choosing a File Layout -->
+<sect1 id="layout">
+<title>Choosing a File Layout</title>
+
+
+<para><emphasis>File Layout in Icon View</emphasis></para>
+
+<para>To change the layout for the files you're viewing, open the View menu and choose Lay Out Items. Then choose how you want the files arranged:</para>
+
+<itemizedlist>
+<listitem><para>Manually - You can drag icons to arrange them as you like.</para></listitem>
+<listitem><para>by Name - The files appear alphabetically by name.</para></listitem>
+<listitem><para>by Type - All directory (folder) icons are grouped, followed by files arranged in groups such as text, image, and so on.</para></listitem>
+<listitem><para>by Size - Files are displayed from largest to smallest.</para></listitem>
+<listitem><para>by Modification Date - The most recently modified files appear first.</para></listitem>
+<listitem><para>by Emblems - If you've added emblems to icons, the files are grouped according to emblems (files without emblems are at the end).</para></listitem>
+<listitem><para>Tighter Layout - Icons are closer together.</para></listitem>
+<listitem><para>Reversed Order - Reverses the order for the option you've chosen.</para></listitem>
+</itemizedlist>
+
+
+<para><emphasis>File Layout in List View</emphasis></para>
+
+<para>In list view, you can change the layout of files by clicking the column headings. For instance, to arrange files by type, click the Type column heading.</para>
+
+<para><link linkend="viewopen">See also Viewing and Opening Files</link>.</para>
+
+</sect1>
+
+<!--  Customizing Nautilus: Choosing Themes and Backgrounds -->
+<sect1 id="themes">
+<title>Changing Themes and Backgrounds</title>
+
+<para>You can customize the d&eacute;cor of your Nautilus window by choosing an overall theme and by changing the background color or image of specific objects.</para>
+
+
+<para><emphasis>Choosing a New Theme</emphasis></para>
+
+<orderedlist>
+<listitem><para>Open the Edit menu and choose Change Appearance.</para></listitem>
+<listitem><para>Choose one of the themes. The appearance changes immediately, so you can see how the theme looks.</para></listitem> 
+<listitem><para>When you are finished, close the dialog box.</para></listitem>
+</orderedlist>
+
+
+<para><emphasis>Changing Backgound Patterns and Colors</emphasis></para>
+
+<orderedlist>
+<listitem><para>Open the Edit menu and choose Backgrounds and Emblems.</para></listitem>
+<listitem><para>In the Backgrounds and Emblems dialog box, choose Patterns or Colors.</para></listitem>
+<listitem><para>Drag a tile to a part of the Nautilus window. For instance, change the color of the sidebar by dragging the yellow tile.</para></listitem>
+<listitem><para>When you're finished, click Done.</para></listitem>
+</orderedlist>
+
+<para>Note: The Backgrounds and Emblems dialog also lets you drag emblems to attach to individual file and folder icons.</para>
+
+
+<para><emphasis>Adding and Removing Background Patterns and Colors</emphasis></para>
+
+<para>If your user level is set to Intermediate or Advanced, you can add and remove patterns and colors to the customization choices.</para>
+
+<para>Any image file can be a new background pattern. To add a pattern:</para>
+
+<orderedlist>
+<listitem><para>Open the Edit menu and choose Backgrounds and Emblems.</para></listitem>
+<listitem><para>In the Backgrounds and Emblems dialog box, choose Patterns.</para></listitem>
+<listitem><para>Click Add a New Pattern.</para></listitem>
+<listitem><para>Use the Directories and Files lists to find the image file you want to use.</para></listitem>
+<listitem><para>Select the image file and click OK. The image is added as a tile to the pattern options.</para></listitem>
+</orderedlist>
+
+<para>To add a new color to the background color choices:</para>
+
+<orderedlist>
+<listitem><para>Open the Edit menu and choose Backgrounds and Emblems.</para></listitem>
+<listitem><para>In the Backgrounds and Emblems dialog box, choose Colors.</para></listitem>
+<listitem><para>Click Add a New Color.</para></listitem>
+<listitem><para>On the color wheel, click the color you want to use and click OK. The color is added as a tile to the color choices.</para></listitem>
+</orderedlist>
+
+<para>To remove a pattern or color:</para>
+
+<orderedlist>
+<listitem><para>Open the Edit menu and choose Backgrounds and Emblems.</para></listitem>
+<listitem><para>In the Backgrounds and Emblems dialog box, choose Patterns or Colors.</para></listitem>
+<listitem><para>Click Remove a Pattern or Remove a Color.</para></listitem>
+<listitem><para>Any patterns or colors you have previous added are displayed. Click the one(s) you want to remove.</para></listitem>
+<listitem><para>Click Done.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+<!--  Customizing Nautilus: Customizing Icons and Icon Captions -->
+<sect1 id="customicons">
+<title>Customizing Icons and Icon Captions</title>
+
+<para>Icons appear with information in their captions - normally the directory name and number of items for directories and the name and size for files. If you zoom in for a closer look at icons, more information appears.</para>
+
+<para><emphasis>Customizing Icon Captions</emphasis></para>
+
+<para>You can specify which information to show for icons and change the order of the information:</para>
+
+<orderedlist>
+<listitem><para>Open the Edit menu and choose Icon Captions.</para></listitem>
+<listitem><para>Click the first button and choose from the list. The information you choose will be the first thing shown below icons, after the filename.</para></listitem>
+<listitem><para>Repeat step 2 for the second and third buttons.</para></listitem>
+<listitem><para>When you are done customizing icon captions, close the dialog box.</para></listitem>
+</orderedlist>
+
+
+<para><emphasis>Customizing an Icon</emphasis></para>
+
+<para>You can change the icon for an individual folder or file, giving it a custom icon:</para>
+
+<orderedlist>
+<listitem><para>Make sure you aren't viewing the Tree, Notes, History, or Help tabs in the sidebar. (To &quot;put away&quot; a tab, click it.)</para></listitem>
+<listitem><para>Double-click the item you want to customize, so its icon is displayed in the sidebar.</para></listitem>
+<listitem><para>Drag a thumbnail image to the icon. The image replaces the icon.</para></listitem>
+</orderedlist>
+
+<figure id="custicon">
+<title>Creating a Custom Icon</title>
+<screenshot>
+<screeninfo>Screenshot of Custom Icon</screeninfo>
+<graphic format="png" fileref="custicon">
+</graphic>
+</screenshot>
+</figure>
+
+<para>Tip: You may want to work with two Nautilus windows when you customize a directory's icon. Open the File menu and choose New Window. You can drag a thumbnail image from one window to the directory you're customizing in the other window.</para>
+
+
+<para><emphasis>Adding Emblems to Icons</emphasis></para>
+
+<para>Emblems let you tag individual files as &quot;urgent,&quot; &quot;favorite,&quot; and so forth. To add an emblem to an icon:</para>
+
+<orderedlist>
+<listitem><para>Make sure that the folder or file to which you want to add an emblem is visible in the Nautilus window. You can be in Icon or List view.</para></listitem>
+<listitem><para>Open the Edit menu and choose Backgrounds and Emblems.</para></listitem>
+<listitem><para>In the Backgrounds and Emblems dialog box, choose Emblems.</para></listitem>
+<listitem><para>Select an emblem and drag it to the icon you want to customize.</para></listitem>
+<listitem><para>Click Done.</para></listitem>
+</orderedlist>
+
+<para>You can add as many emblems as you like.</para>
+
+<para>Tip: You can use emblems to organize your files. For instance, attach &quot;ohno!&quot; emblems to the files that need immediate attention; then open the View menu and choose Lay Out Items by Emblems. The files with &quot;ohno!&quot; emblems are displayed at the top in icon view and first in list view.</para>
+
+</sect1>
+
+</chapter>
+
+
+
+<!-- CHAPTER 6: SETTING UP FILE HANDLERS  -->
+<chapter id="chapter6">
+<title>Setting up File Handlers (MIME Types)</title>
+
+<para>There are several ways to open and view files in Nautilus:</para>
+
+<itemizedlist>
+<listitem><para>Double-click the file's icon (unless you've change your preference so a single-click activates items)</para></listitem>
+<listitem><para>Click the file's icon, open the File menu, and choose Open or Open With</para></listitem>
+<listitem><para>Right-click the file's icon and choose one of the Open or Open With options</para></listitem>
+</itemizedlist>
+
+<para>When you choose Open With, you see a list of applications that can open that particular file. You also have the choices "Other Applications" and "Other Viewer,"  which let you open or view the file using an application that's not in the list.</para>
+
+<para>You can customize the options for viewing and opening files. This section explains how.</para>
+
+<simplelist>
+<member><link linkend="menu">Adding and Removing Applications and Viewers</link></member>
+<member><link linkend="defaulthandler">Changing the Default Viewer or Application</link></member>
+<member><link linkend="configure">Configuring Additional Applications (Advanced)</link></member>
+<member><link linkend="mime">Adding a New MIME Type (Advanced)</link></member>
+</simplelist>
+
+
+<!-- Setting Up File Handlers: Adding and Removing Applications and Viewers  -->
+<sect1 id="menu">
+<title>Adding and Removing Applications and Viewers</title>
+
+<para>You can modify the list of applications you see when you choose Open With:</para>
+
+<orderedlist>
+<listitem><para>Click to select the file for which you want to change the Open options.</para></listitem> 
+<listitem><para>Open the File menu and choose Open With; then choose Other Application. The Open With Other dialog box appears. Its lists all the applications currently set as able to open this particular type of  file. Some applications in the list are tagged as "in the menu" for this file type, others are tagged as "not in the menu."</para></listitem>
+<listitem><para>Select an application in the list and click Modify. The Modify dialog box appears.</para></listitem>
+<listitem><para>Choose the option you want. You can choose to add or remove the application from the menu for this particular file, or for all files of this type.</para></listitem>
+<listitem><para>Click OK.</para></listitem>
+<listitem><para>In the Open With Other dialog box, click Done. (If you want to open the file now, click Choose.)</para></listitem>
+</orderedlist>
+
+<para>To modify the list of viewers you see when you choose Open With, follow steps 1-6 above, but choose "Other Viewer" instead of "Other Application" in step 2.</para>
+
+</sect1>
+
+<!-- Setting Up File Handlers: Changing the Default Viewer or Application  -->
+<sect1 id="defaulthandler">
+<title>Changing the Default Viewer or Application</title>
+
+<para>The default application or viewer opens a file automatically when you select the file and choose Open from the File menu. To specify the default:</para>
+
+<orderedlist>
+<listitem><para>Click to select the file for which you want to change the default.</para></listitem> 
+<listitem><para>Open the File menu and choose Open With; then choose Other Application. The Open With Other dialog box appears.</para></listitem>
+<listitem><para>Select the  application you want to use as the default and click Modify. The Modify dialog box appears.</para></listitem>
+<listitem><para>Choose the option you want. You can choose to use the application as the default for this particular file, or for all files of this type.</para></listitem>
+<listitem><para>Click OK.</para></listitem>
+<listitem><para>In the Open With Other dialog box, click Done. (If you want to open the file now, click Choose.)</para></listitem>
+</orderedlist>
+
+<para>To change the default viewer, follow steps 1-6 above, but choose "Other Viewer" instead of "Other Application" in step 2.</para>
+
+</sect1>
+
+<!-- Setting Up File Handlers: Configuring Additional Applications (Advanced)  -->
+<sect1 id="configure">
+<title>Configuring Additional Applications (Advanced)</title>
+
+<para>The Open With Other dialog box (described above) lists all applications currently configured to open a file. There may be additional applications on your computer that can open the file, but aren't in the list. You can configure additional applications so they appear in the list.</para>
+
+<orderedlist>
+<listitem><para>Click to select the file for which you want to configure a new application.</para></listitem> 
+<listitem><para>Open the File menu and choose Open With; then choose Other Application. The Open With Other dialog box appears.</para></listitem>
+<listitem><para>Under File Types and Programs, click Go There. The GNOME Control Center opens, with the File Types and Programs preferences displayed.</para></listitem>
+<listitem><para>In the list, find the file type for the file you're working with. For instance, if you're confuring an additional application for a plain text file, locate the entry for plain text files in the list. (Clicking the column headers sorts the list.)</para></listitem>
+<listitem><para>Once you find the file type, click to select it.</para></listitem>
+<listitem><para>Under Default Action, click Edit List. The Edit Applications List dialog box appears.</para></listitem>
+<listitem><para>Click Add Application. The New Application dialog box appears.</para></listitem>
+<listitem><para>Type the application's name and the command that launches the application. The command is the same as the command you'd type if you were launching the application from a Linux command line.</para></listitem> 
+<listitem><para>Click OK to dismiss the New Application dialog box.</para></listitem>
+<listitem><para>Click OK to dismiss the Edit Applications List dialog box.</para></listitem> 
+<listitem><para>Click OK in the File Types and Programs preferences.</para></listitem>
+</orderedlist>
+
+<para>To edit the name or command for an application, follow steps 1-11 but click Edit Application instead of Add Application in step 7.</para>
+
+</sect1>
+
+<!-- Setting Up File Handlers: Adding a New MIME Type (Advanced)  -->
+<sect1 id="mime">
+<title>Adding a New MIME Type(Advanced)</title>
+
+<para>You can set up default applications for new file types that are not currently configured on your system.</para>
+
+<para>First, add the new file type:</para>
+
+<orderedlist>
+<listitem><para>Open the GNOME main menu and choose Programs: Settings: GNOME Control Center.</para></listitem> 
+<listitem><para>Choose File Types and Programs in the GNOME Control Center's left-hand column.</para></listitem>
+<listitem><para>Click Add New Mime Type.</para></listitem>
+<listitem><para>In the Add Mime Type dialog box, enter the Mime type and a description. For instance, if you have a new type of image file of type "alf" (alfie files), you'd enter "alf" as the Mime type and "Alfie image" as the description.</para></listitem>
+<listitem><para>Click OK. Your new Mime type is added to the list.</para></listitem>
+</orderedlist>
+
+<para>Second, associate a file extension and icon with the new type:</para>
+
+<orderedlist>
+<listitem><para>Select your new Mime type in the list and click Change File Extensions.</para></listitem> 
+<listitem><para>Type a file extension (for instance, ".alf" for the "alfie" image files in the example) and click OK.</para></listitem>
+<listitem><para>To specify the default icon for files of this type, click Change Icon. Choose an icon and click OK.</para></listitem>
+</orderedlist>
+
+<para>Third, defined the application(s) that can open files of this type:</para>
+
+<orderedlist>
+<listitem><para>Select your new Mime type in the list.</para></listitem>
+<listitem><para>Under Default Action, click Edit List. The Edit Applications List dialog box appears.</para></listitem> 
+<listitem><para>Click Add Application. The New Application dialog box appears.</para></listitem>
+<listitem><para>Type the application's name and the command that launches the application. The command is the same as the command you'd type if you were launching the application from a Linux command line.</para></listitem>
+<listitem><para>Click OK to dismiss the New Application dialog box.</para></listitem>
+<listitem><para>Click OK to dismiss the Edit Applications List dialog box.</para></listitem>
+<listitem><para>Click OK in the File Types and Programs preferences.</para></listitem>
+</orderedlist>
+
+</sect1>
+
+</chapter>
+
+
+<!-- CHAPTER 7: EAZEL SERVICES -->
+<chapter id="chapter7">
+<title>Eazel Services</title>
+
+<para>Eazel Services are Internet-based tools designed to simplify system management for Linux users. Nautilus and Eazel Services work together to make your life easier.</para>
+
+<para>Eazel Services include:</para>
+
+<itemizedlist>
+<listitem><para>Free online storage for file backup</para></listitem>
+<listitem><para>File sharing</para></listitem>
+<listitem><para>Eazel's Software Catalog with easy installation of software titles.</para></listitem>
+<listitem><para>Nautilus Installer</para></listitem>
+</itemizedlist>
+
+<para><emphasis>Registering with Eazel</emphasis></para>
+
+<para>When you first launched Eazel, you were asked if you wanted to register for Eazel Services. If you registered at that time, click the Services button in the Nautilus window and log in, using your user name and password.</para>
+
+<para>If you have not already registered, click the Services button to see a registration screen. Follow the steps for registering.</para>
+
+</chapter>
+
+</book>
+
