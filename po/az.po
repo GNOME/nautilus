@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.az\n"
-"POT-Creation-Date: 2003-11-24 12:49+0100\n"
+"POT-Creation-Date: 2003-12-08 12:14+0100\n"
 "PO-Revision-Date: 2003-08-11 17:01+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <gnome@azitt.com>\n"
@@ -39,7 +39,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() iflas etdi."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2407
+#: src/file-manager/fm-properties-window.c:2408
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "Emblemlər"
@@ -1382,7 +1382,8 @@ msgstr ""
 "Seçilidirsə, yeni pəncərələrdəki fayllar tərs ardıcıllıqda sıralanacaq."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-msgid "If true, icons will be layed out tighter by default in new windows."
+#, fuzzy
+msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Seçilidirsə, yeni pəncərələrdəki timsallar birbirinə daha yaxın "
 "yerləşdiriləcək."
@@ -1530,17 +1531,19 @@ msgstr ""
 "ədədi göstəriləcək. \"never\" seçilidirsə, üzv ədədi hesab edilməyəcək."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
+"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
 "Üzvlərin masa üstündə əsas düzülüş qaydası. Mümkün qiymətlər: \"name\", "
 "\"size\", \"type\", \"modification_date\", \"emblems\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#, fuzzy
 msgid ""
-"The default sort-order for the item in the list view. Possible values are "
-"name, size, type, and modification_date."
+"The default sort-order for the items in the list view. Possible values are "
+"\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 "Üzvlərin siyahı görünüşündə əsas düzülüş qaydası. Mümükün qiymətlər: name, "
 "size, type və modification_date."
@@ -1586,7 +1589,8 @@ msgid "Use manual layout in new windows"
 msgstr "Yeni pəncərələrdə əllə düzülüşü işlət"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-msgid "Use tighter Layout in new windows"
+#, fuzzy
+msgid "Use tighter layout in new windows"
 msgstr "Yeni pəncərələrdə gərgin düzülüş işlət"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
@@ -3047,7 +3051,7 @@ msgstr "namə'lum MIME növü"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4473
-#: src/file-manager/fm-properties-window.c:1151
+#: src/file-manager/fm-properties-window.c:1152
 msgid "unknown"
 msgstr "namə'lum"
 
@@ -3198,7 +3202,7 @@ msgid "Search for files by file name and file properties"
 msgstr "Faylları fayl adı və xüsusiyyətlərinə görə axtar"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
-#: src/file-manager/fm-icon-container.c:473
+#: src/file-manager/fm-icon-container.c:496
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "Timsal Görünüşü"
@@ -3354,52 +3358,48 @@ msgstr "Ev %.0s"
 
 #: libnautilus-private/nautilus-global-preferences.c:549
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#: src/nautilus-window.c:1169
+#: src/nautilus-window.c:1173
 #, fuzzy
 msgid "Computer"
 msgstr "Piştaxta"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2343
-msgid "file icon"
-msgstr "fayl timsalı"
-
-#: libnautilus-private/nautilus-icon-canvas-item.c:2726
+#: libnautilus-private/nautilus-icon-canvas-item.c:2758
 msgid "editable text"
 msgstr "dəyişdirilə bilən mətn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2727
+#: libnautilus-private/nautilus-icon-canvas-item.c:2759
 msgid "the editable label"
 msgstr "dəyişdirilə bilən etiket adı"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2734
+#: libnautilus-private/nautilus-icon-canvas-item.c:2766
 msgid "additional text"
 msgstr "əlavə mətn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2735
+#: libnautilus-private/nautilus-icon-canvas-item.c:2767
 msgid "some more text"
 msgstr "biraz daha mətn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2742
+#: libnautilus-private/nautilus-icon-canvas-item.c:2774
 msgid "highlighted for selection"
 msgstr "seçim üçün işıqlandırılmış"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2743
+#: libnautilus-private/nautilus-icon-canvas-item.c:2775
 msgid "whether we are highlighted for a selection"
 msgstr "seçmədə işıqlandırılmış olacağı"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2750
+#: libnautilus-private/nautilus-icon-canvas-item.c:2782
 msgid "highlighted as keyboard focus"
 msgstr "klaviatura fokuslayanda işıqlandır"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2751
+#: libnautilus-private/nautilus-icon-canvas-item.c:2783
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "klaviatura fokusunda işıqlandırılmış olacağı"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2791
 msgid "highlighted for drop"
 msgstr "buraxma üçün işıqlandırılmış"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2760
+#: libnautilus-private/nautilus-icon-canvas-item.c:2792
 msgid "whether we are highlighted for a D&D drop"
 msgstr "sür və buraxda işıqlandırılmış olacağı"
 
@@ -5005,7 +5005,7 @@ msgstr "Növ"
 msgid "Date Modified"
 msgstr "Təkmilləşdirmə Tarixi"
 
-#: src/file-manager/fm-properties-window.c:481
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
@@ -5014,12 +5014,12 @@ msgstr ""
 "Eyni vaxtda bir neçə timsal işlədə bilərsiniz! Əsad timsal üçün xahiş edirik "
 "birini sürükləyin."
 
-#: src/file-manager/fm-properties-window.c:483
+#: src/file-manager/fm-properties-window.c:484
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Bir Rəsmdən Daha Çox"
 
-#: src/file-manager/fm-properties-window.c:492
+#: src/file-manager/fm-properties-window.c:493
 #: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
@@ -5028,12 +5028,12 @@ msgstr ""
 "Sürüklənən fayl yerli deyil. Əsas rəsmlər üçün takcə yerli rəsmləri işlədə "
 "bilərsiniz."
 
-#: src/file-manager/fm-properties-window.c:494
+#: src/file-manager/fm-properties-window.c:495
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Təkcə Yerli Rəsmlər"
 
-#: src/file-manager/fm-properties-window.c:499
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
@@ -5042,55 +5042,55 @@ msgstr ""
 "Sürüklədiyiniz fayl rəsm deyildir. Əsas rəsmlər üçün takcə yerli rəsmləri "
 "işlədə bilərsiniz."
 
-#: src/file-manager/fm-properties-window.c:501
+#: src/file-manager/fm-properties-window.c:502
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Təkcə Rəsmlər"
 
-#: src/file-manager/fm-properties-window.c:918
+#: src/file-manager/fm-properties-window.c:919
 msgid "Properties"
 msgstr "Xassələr"
 
-#: src/file-manager/fm-properties-window.c:921
+#: src/file-manager/fm-properties-window.c:922
 #, c-format
 msgid "%s Properties"
 msgstr "\"%s\" Xüsusiyyətlər"
 
-#: src/file-manager/fm-properties-window.c:1382
+#: src/file-manager/fm-properties-window.c:1383
 msgid "Cancel Group Change?"
 msgstr "Qrup Dəyişikliyini Ləğv Edimmi?"
 
-#: src/file-manager/fm-properties-window.c:1383
+#: src/file-manager/fm-properties-window.c:1384
 msgid "Changing group"
 msgstr "Qrup dəyişdirilir"
 
-#: src/file-manager/fm-properties-window.c:1544
+#: src/file-manager/fm-properties-window.c:1545
 msgid "Cancel Owner Change?"
 msgstr "Yiyə Dəyişikliyini Ləğv Edimmi?"
 
-#: src/file-manager/fm-properties-window.c:1545
+#: src/file-manager/fm-properties-window.c:1546
 msgid "Changing owner"
 msgstr "Yiyə dəyişdirilir"
 
-#: src/file-manager/fm-properties-window.c:1751
+#: src/file-manager/fm-properties-window.c:1752
 msgid "nothing"
 msgstr "heç bir şey"
 
-#: src/file-manager/fm-properties-window.c:1753
+#: src/file-manager/fm-properties-window.c:1754
 msgid "unreadable"
 msgstr "oxuna bilmir"
 
-#: src/file-manager/fm-properties-window.c:1764
+#: src/file-manager/fm-properties-window.c:1765
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 üzv, böyüklüyü %s"
 
-#: src/file-manager/fm-properties-window.c:1767
+#: src/file-manager/fm-properties-window.c:1768
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d üzv, toplam böyüklük %s"
 
-#: src/file-manager/fm-properties-window.c:1775
+#: src/file-manager/fm-properties-window.c:1776
 msgid "(some contents unreadable)"
 msgstr "( bə'zi girişlər oxuna bilmədi )"
 
@@ -5100,172 +5100,172 @@ msgstr "( bə'zi girişlər oxuna bilmədi )"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1792
+#: src/file-manager/fm-properties-window.c:1793
 msgid "Contents:"
 msgstr "Məzmun:"
 
-#: src/file-manager/fm-properties-window.c:2183
+#: src/file-manager/fm-properties-window.c:2184
 msgid "Basic"
 msgstr "Əsas"
 
-#: src/file-manager/fm-properties-window.c:2211
+#: src/file-manager/fm-properties-window.c:2212
 msgid "_Names:"
 msgstr "_Adlar:"
 
-#: src/file-manager/fm-properties-window.c:2213
+#: src/file-manager/fm-properties-window.c:2214
 #: src/nautilus-connect-server-dialog.c:185
 msgid "_Name:"
 msgstr "_Ad:"
 
-#: src/file-manager/fm-properties-window.c:2262
+#: src/file-manager/fm-properties-window.c:2263
 msgid "Type:"
 msgstr "Növ:"
 
-#: src/file-manager/fm-properties-window.c:2264
-#: src/file-manager/fm-properties-window.c:2274
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2287
-#: src/file-manager/fm-properties-window.c:2291
-#: src/file-manager/fm-properties-window.c:2299
-#: src/file-manager/fm-properties-window.c:2305
-#: src/file-manager/fm-properties-window.c:2314
-#: src/file-manager/fm-properties-window.c:2320
-#: src/file-manager/fm-properties-window.c:2893
-#: src/file-manager/fm-properties-window.c:2914
-#: src/file-manager/fm-properties-window.c:2996
-#: src/file-manager/fm-properties-window.c:3000
-#: src/file-manager/fm-properties-window.c:3004
+#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2275
+#: src/file-manager/fm-properties-window.c:2281
+#: src/file-manager/fm-properties-window.c:2288
+#: src/file-manager/fm-properties-window.c:2292
+#: src/file-manager/fm-properties-window.c:2300
+#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2315
+#: src/file-manager/fm-properties-window.c:2321
+#: src/file-manager/fm-properties-window.c:2905
+#: src/file-manager/fm-properties-window.c:2926
+#: src/file-manager/fm-properties-window.c:3017
+#: src/file-manager/fm-properties-window.c:3021
+#: src/file-manager/fm-properties-window.c:3025
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2272
+#: src/file-manager/fm-properties-window.c:2273
 msgid "Size:"
 msgstr "Böyüklük:"
 
-#: src/file-manager/fm-properties-window.c:2278 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:61
 #: src/nautilus-location-dialog.c:145
 msgid "Location:"
 msgstr "Mövqe:"
 
-#: src/file-manager/fm-properties-window.c:2285
+#: src/file-manager/fm-properties-window.c:2286
 msgid "Volume:"
 msgstr "Həcm:"
 
-#: src/file-manager/fm-properties-window.c:2289
+#: src/file-manager/fm-properties-window.c:2290
 msgid "Free space:"
 msgstr "Boş sahə:"
 
-#: src/file-manager/fm-properties-window.c:2297
+#: src/file-manager/fm-properties-window.c:2298
 msgid "Link target:"
 msgstr "Körpü hədəfi:"
 
-#: src/file-manager/fm-properties-window.c:2303
+#: src/file-manager/fm-properties-window.c:2304
 msgid "MIME type:"
 msgstr "MIME növü:"
 
-#: src/file-manager/fm-properties-window.c:2312
+#: src/file-manager/fm-properties-window.c:2313
 msgid "Modified:"
 msgstr "Təkmilləşdirmə tarixi:"
 
-#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2319
 msgid "Accessed:"
 msgstr "Yetişmə tarixi:"
 
-#: src/file-manager/fm-properties-window.c:2334
+#: src/file-manager/fm-properties-window.c:2335
 msgid "_Select Custom Icon..."
 msgstr "_Xüsusi Timsal Seç..."
 
-#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2341
 msgid "_Remove Custom Icon"
 msgstr "Xüsusi Timsalı _Sil"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2684
 msgid "_Read"
 msgstr "_Oxuma"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2686
 msgid "_Write"
 msgstr "_Yazma"
 
-#: src/file-manager/fm-properties-window.c:2685
+#: src/file-manager/fm-properties-window.c:2688
 msgid "E_xecute"
 msgstr "İ_cra Etmə"
 
-#: src/file-manager/fm-properties-window.c:2762
+#: src/file-manager/fm-properties-window.c:2771
 msgid "Set _user ID"
 msgstr "_İstifadəçi ID'sini seç"
 
-#: src/file-manager/fm-properties-window.c:2767
+#: src/file-manager/fm-properties-window.c:2776
 msgid "Special flags:"
 msgstr "Xüsusi bayraqlar:"
 
-#: src/file-manager/fm-properties-window.c:2770
+#: src/file-manager/fm-properties-window.c:2779
 msgid "Set gro_up ID"
 msgstr "Qr_up ID'sini seç"
 
-#: src/file-manager/fm-properties-window.c:2772
+#: src/file-manager/fm-properties-window.c:2781
 msgid "_Sticky"
 msgstr "_Yapışıq"
 
-#: src/file-manager/fm-properties-window.c:2858
+#: src/file-manager/fm-properties-window.c:2870
 msgid "Permissions"
 msgstr "Səlahiyyətlər"
 
-#: src/file-manager/fm-properties-window.c:2868
+#: src/file-manager/fm-properties-window.c:2880
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Yiyəsi olmadığın üçün, Səlahiyyətləri dəyişdirə bilməzsən."
 
-#: src/file-manager/fm-properties-window.c:2882
+#: src/file-manager/fm-properties-window.c:2894
 #, fuzzy
 msgid "File _owner:"
 msgstr "Fayl yiyəsi:"
 
-#: src/file-manager/fm-properties-window.c:2888
+#: src/file-manager/fm-properties-window.c:2900
 msgid "File owner:"
 msgstr "Fayl yiyəsi:"
 
-#: src/file-manager/fm-properties-window.c:2899
+#: src/file-manager/fm-properties-window.c:2911
 msgid "_File group:"
 msgstr "_Fayl qrupu:"
 
-#: src/file-manager/fm-properties-window.c:2908
+#: src/file-manager/fm-properties-window.c:2920
 msgid "File group:"
 msgstr "Fayl qrupu:"
 
-#: src/file-manager/fm-properties-window.c:2920
+#: src/file-manager/fm-properties-window.c:2932
 msgid "Owner:"
 msgstr "Yiyə:"
 
-#: src/file-manager/fm-properties-window.c:2921
+#: src/file-manager/fm-properties-window.c:2933
 msgid "Group:"
 msgstr "Qrup:"
 
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2934
 msgid "Others:"
 msgstr "Digərləri:"
 
-#: src/file-manager/fm-properties-window.c:2995
+#: src/file-manager/fm-properties-window.c:3016
 msgid "Text view:"
 msgstr "Mətn Görünüşü:"
 
-#: src/file-manager/fm-properties-window.c:2999
+#: src/file-manager/fm-properties-window.c:3020
 msgid "Number view:"
 msgstr "Rəqəm Görünüşü:"
 
-#: src/file-manager/fm-properties-window.c:3003
+#: src/file-manager/fm-properties-window.c:3024
 msgid "Last changed:"
 msgstr "Son dəyişiklik:"
 
-#: src/file-manager/fm-properties-window.c:3009
+#: src/file-manager/fm-properties-window.c:3030
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\"nin səlahiyyətləri öyrənilə bilmədi."
 
-#: src/file-manager/fm-properties-window.c:3012
+#: src/file-manager/fm-properties-window.c:3033
 msgid "The permissions of the selected file could not be determined."
 msgstr "Seçili faylın səlahiyyətləri öyrənilə bilmədi."
 
-#: src/file-manager/fm-properties-window.c:3328
+#: src/file-manager/fm-properties-window.c:3349
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:629
@@ -5277,19 +5277,19 @@ msgstr ""
 "Yardım göstərilərkən xəta oldu: \n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3330
+#: src/file-manager/fm-properties-window.c:3351
 msgid "Couldn't show help"
 msgstr "Yardım göstərilə bilmədi"
 
-#: src/file-manager/fm-properties-window.c:3667
+#: src/file-manager/fm-properties-window.c:3688
 msgid "Cancel Showing Properties Window?"
 msgstr "Xüsusiyyətler Pəncərəsinin Nümayişi Ləğv Edilsin?"
 
-#: src/file-manager/fm-properties-window.c:3668
+#: src/file-manager/fm-properties-window.c:3689
 msgid "Creating Properties window"
 msgstr "Xüsusiyyətlər Pəncərəsi Yaradılır"
 
-#: src/file-manager/fm-properties-window.c:3794
+#: src/file-manager/fm-properties-window.c:3815
 msgid "Select an icon"
 msgstr "Timsal seç"
 
@@ -6500,7 +6500,6 @@ msgid "Close _All Windows"
 msgstr "_Bütün Pəncərələri Bağla"
 
 #: src/nautilus-navigation-window-ui.xml.h:8
-#: src/nautilus-spatial-window-ui.xml.h:3
 #, fuzzy
 msgid "Close all Navigation windows"
 msgstr "Bütün Nautilus pəncərələrini bağla"
@@ -7232,8 +7231,13 @@ msgstr "_CD Yaradıcı"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
 #, fuzzy
-msgid "Close _All Parents"
+msgid "Close P_arent Folders"
 msgstr "_Bütün Pəncərələri Bağla"
+
+#: src/nautilus-spatial-window-ui.xml.h:3
+#, fuzzy
+msgid "Close this folder's parents"
+msgstr "Yan çubuğu bağla"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 #, fuzzy
@@ -7440,39 +7444,39 @@ msgstr "Bir neçə səhifə geri get"
 msgid "Go forward a number of pages"
 msgstr "Bir neçə səhifə irəli get"
 
-#: src/nautilus-window.c:902
+#: src/nautilus-window.c:906
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Bu yeri \"%s\" ilə göstər"
 
-#: src/nautilus-window.c:1172
+#: src/nautilus-window.c:1176
 #, fuzzy
 msgid "Network"
 msgstr "Red Hat Şəbəkəsi"
 
-#: src/nautilus-window.c:1175
+#: src/nautilus-window.c:1179
 #, fuzzy
 msgid "Fonts"
 msgstr "Nöqtələr"
 
-#: src/nautilus-window.c:1178
+#: src/nautilus-window.c:1182
 #, fuzzy
 msgid "CD Creator"
 msgstr "_CD Yaradıcı"
 
-#: src/nautilus-window.c:1610
+#: src/nautilus-window.c:1614
 msgid "Application ID"
 msgstr "Proqram ID'si"
 
-#: src/nautilus-window.c:1611
+#: src/nautilus-window.c:1615
 msgid "The application ID of the window."
 msgstr "Pəncərənin tə'minat ID'si"
 
-#: src/nautilus-window.c:1617
+#: src/nautilus-window.c:1621
 msgid "Application"
 msgstr "Proqram"
 
-#: src/nautilus-window.c:1618
+#: src/nautilus-window.c:1622
 msgid "The NautilusApplication associated with this window."
 msgstr "Bu pəncərə ilə əlaqələndirilmiş Nautilus Tə'minatı"
 
@@ -7507,6 +7511,9 @@ msgstr "Şəbəkə Vericiləri"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus fayl idarəçisində şəbəkə vericilərinizi görün"
+
+#~ msgid "file icon"
+#~ msgstr "fayl timsalı"
 
 #, fuzzy
 #~ msgid "Name:"

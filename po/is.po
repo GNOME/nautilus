@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-11-24 12:49+0100\n"
+"POT-Creation-Date: 2003-12-08 12:14+0100\n"
 "PO-Revision-Date: 2003-08-20 20:19-0100\n"
 "Last-Translator: Samuel Jon Gunnarsson <sammi@techattack.nu>\n"
 "Language-Team: Icelandic <gnome@techattack.nu>\n"
@@ -39,7 +39,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() mistókst."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2407
+#: src/file-manager/fm-properties-window.c:2408
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "Merkimiðar"
@@ -1379,7 +1379,8 @@ msgstr ""
 "sjást efst í staðinn fyrir minnstu skrá."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-msgid "If true, icons will be layed out tighter by default in new windows."
+#, fuzzy
+msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr "Ef virkt munu táknmyndir verða lagðar þéttar saman í nýjum gluggum."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
@@ -1512,13 +1513,13 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
+"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid ""
-"The default sort-order for the item in the list view. Possible values are "
-"name, size, type, and modification_date."
+"The default sort-order for the items in the list view. Possible values are "
+"\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
@@ -1560,7 +1561,8 @@ msgid "Use manual layout in new windows"
 msgstr "Nota handvirka uppröðun í nýjum gluggum"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-msgid "Use tighter Layout in new windows"
+#, fuzzy
+msgid "Use tighter layout in new windows"
 msgstr "Nota þéttari uppröðun í nýjum gluggum"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
@@ -3025,7 +3027,7 @@ msgstr "óþekkt MIME gerð"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4473
-#: src/file-manager/fm-properties-window.c:1151
+#: src/file-manager/fm-properties-window.c:1152
 msgid "unknown"
 msgstr "óþekkt"
 
@@ -3174,7 +3176,7 @@ msgid "Search for files by file name and file properties"
 msgstr "Leita að skrám eftir skráarheiti og eigindum"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
-#: src/file-manager/fm-icon-container.c:473
+#: src/file-manager/fm-icon-container.c:496
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "Táknmyndasýn"
@@ -3323,53 +3325,49 @@ msgstr "Heimasvæðið þitt"
 
 #: libnautilus-private/nautilus-global-preferences.c:549
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#: src/nautilus-window.c:1169
+#: src/nautilus-window.c:1173
 #, fuzzy
 msgid "Computer"
 msgstr "CNET Computers.com"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2343
-msgid "file icon"
-msgstr "skráartáknmynd"
-
-#: libnautilus-private/nautilus-icon-canvas-item.c:2726
+#: libnautilus-private/nautilus-icon-canvas-item.c:2758
 msgid "editable text"
 msgstr "breytanlegur texti"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2727
+#: libnautilus-private/nautilus-icon-canvas-item.c:2759
 msgid "the editable label"
 msgstr "breytanlegur miði"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2734
+#: libnautilus-private/nautilus-icon-canvas-item.c:2766
 msgid "additional text"
 msgstr "viðbótartexti"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2735
+#: libnautilus-private/nautilus-icon-canvas-item.c:2767
 msgid "some more text"
 msgstr "frekari texti"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2742
+#: libnautilus-private/nautilus-icon-canvas-item.c:2774
 msgid "highlighted for selection"
 msgstr "Upplýst vegna vals"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2743
+#: libnautilus-private/nautilus-icon-canvas-item.c:2775
 msgid "whether we are highlighted for a selection"
 msgstr "Hvort lýsa eigi upp vegna vals"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2750
+#: libnautilus-private/nautilus-icon-canvas-item.c:2782
 msgid "highlighted as keyboard focus"
 msgstr "lýsa upp þegar lyklaborð fókusar"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2751
+#: libnautilus-private/nautilus-icon-canvas-item.c:2783
 #, fuzzy
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "Hvort lýsa eigi upp vegna málun lyklaborðs"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2791
 msgid "highlighted for drop"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2760
+#: libnautilus-private/nautilus-icon-canvas-item.c:2792
 msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 
@@ -4933,7 +4931,7 @@ msgstr "Gerð"
 msgid "Date Modified"
 msgstr "Breytt þann"
 
-#: src/file-manager/fm-properties-window.c:481
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
@@ -4942,12 +4940,12 @@ msgstr ""
 "Þú getur ekki tildeilt fleiri en eina sérvalda táknmynd í einu! Vinsamlegast "
 "dragðu einungis eina mynd til að setja sérvalda táknmynd."
 
-#: src/file-manager/fm-properties-window.c:483
+#: src/file-manager/fm-properties-window.c:484
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Fleiri en ein mynd"
 
-#: src/file-manager/fm-properties-window.c:492
+#: src/file-manager/fm-properties-window.c:493
 #: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
@@ -4956,12 +4954,12 @@ msgstr ""
 "Skráin sem þú slepptir er ekki staðbundin. Þú getur einungis notað "
 "staðbundnar myndir í sérvaldar táknmyndir."
 
-#: src/file-manager/fm-properties-window.c:494
+#: src/file-manager/fm-properties-window.c:495
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Einungis staðbundnar myndir"
 
-#: src/file-manager/fm-properties-window.c:499
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
@@ -4970,55 +4968,55 @@ msgstr ""
 "Skráin sem þú slepptir er ekki mynd. Þú getur einungis notað staðbundnar "
 "myndir í sérvaldar táknmyndir."
 
-#: src/file-manager/fm-properties-window.c:501
+#: src/file-manager/fm-properties-window.c:502
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Einungis myndir"
 
-#: src/file-manager/fm-properties-window.c:918
+#: src/file-manager/fm-properties-window.c:919
 msgid "Properties"
 msgstr "Stillingar"
 
-#: src/file-manager/fm-properties-window.c:921
+#: src/file-manager/fm-properties-window.c:922
 #, c-format
 msgid "%s Properties"
 msgstr "Stillingar f. %s"
 
-#: src/file-manager/fm-properties-window.c:1382
+#: src/file-manager/fm-properties-window.c:1383
 msgid "Cancel Group Change?"
 msgstr "Hætta við breytingu á hóp?"
 
-#: src/file-manager/fm-properties-window.c:1383
+#: src/file-manager/fm-properties-window.c:1384
 msgid "Changing group"
 msgstr "Breyti hóp"
 
-#: src/file-manager/fm-properties-window.c:1544
+#: src/file-manager/fm-properties-window.c:1545
 msgid "Cancel Owner Change?"
 msgstr "Hætta við breytingu á eiganda?"
 
-#: src/file-manager/fm-properties-window.c:1545
+#: src/file-manager/fm-properties-window.c:1546
 msgid "Changing owner"
 msgstr "Breyti eiganda"
 
-#: src/file-manager/fm-properties-window.c:1751
+#: src/file-manager/fm-properties-window.c:1752
 msgid "nothing"
 msgstr "ekkert"
 
-#: src/file-manager/fm-properties-window.c:1753
+#: src/file-manager/fm-properties-window.c:1754
 msgid "unreadable"
 msgstr "ólesanlegt"
 
-#: src/file-manager/fm-properties-window.c:1764
+#: src/file-manager/fm-properties-window.c:1765
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 hlutur, stærð alls %s"
 
-#: src/file-manager/fm-properties-window.c:1767
+#: src/file-manager/fm-properties-window.c:1768
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d hlutir, stærð alls %s"
 
-#: src/file-manager/fm-properties-window.c:1775
+#: src/file-manager/fm-properties-window.c:1776
 msgid "(some contents unreadable)"
 msgstr "(sumt er ólesanlegt)"
 
@@ -5028,174 +5026,174 @@ msgstr "(sumt er ólesanlegt)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1792
+#: src/file-manager/fm-properties-window.c:1793
 msgid "Contents:"
 msgstr "Innihald:"
 
-#: src/file-manager/fm-properties-window.c:2183
+#: src/file-manager/fm-properties-window.c:2184
 msgid "Basic"
 msgstr "Grunn"
 
-#: src/file-manager/fm-properties-window.c:2211
+#: src/file-manager/fm-properties-window.c:2212
 msgid "_Names:"
 msgstr "_Skráarheiti:"
 
-#: src/file-manager/fm-properties-window.c:2213
+#: src/file-manager/fm-properties-window.c:2214
 #: src/nautilus-connect-server-dialog.c:185
 msgid "_Name:"
 msgstr "_Skráarheiti:"
 
-#: src/file-manager/fm-properties-window.c:2262
+#: src/file-manager/fm-properties-window.c:2263
 msgid "Type:"
 msgstr "Gerð:"
 
-#: src/file-manager/fm-properties-window.c:2264
-#: src/file-manager/fm-properties-window.c:2274
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2287
-#: src/file-manager/fm-properties-window.c:2291
-#: src/file-manager/fm-properties-window.c:2299
-#: src/file-manager/fm-properties-window.c:2305
-#: src/file-manager/fm-properties-window.c:2314
-#: src/file-manager/fm-properties-window.c:2320
-#: src/file-manager/fm-properties-window.c:2893
-#: src/file-manager/fm-properties-window.c:2914
-#: src/file-manager/fm-properties-window.c:2996
-#: src/file-manager/fm-properties-window.c:3000
-#: src/file-manager/fm-properties-window.c:3004
+#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2275
+#: src/file-manager/fm-properties-window.c:2281
+#: src/file-manager/fm-properties-window.c:2288
+#: src/file-manager/fm-properties-window.c:2292
+#: src/file-manager/fm-properties-window.c:2300
+#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2315
+#: src/file-manager/fm-properties-window.c:2321
+#: src/file-manager/fm-properties-window.c:2905
+#: src/file-manager/fm-properties-window.c:2926
+#: src/file-manager/fm-properties-window.c:3017
+#: src/file-manager/fm-properties-window.c:3021
+#: src/file-manager/fm-properties-window.c:3025
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2272
+#: src/file-manager/fm-properties-window.c:2273
 msgid "Size:"
 msgstr "Stærð:"
 
-#: src/file-manager/fm-properties-window.c:2278 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:61
 #: src/nautilus-location-dialog.c:145
 msgid "Location:"
 msgstr "Staðsetning:"
 
-#: src/file-manager/fm-properties-window.c:2285
+#: src/file-manager/fm-properties-window.c:2286
 msgid "Volume:"
 msgstr "Gagnahirsla:"
 
-#: src/file-manager/fm-properties-window.c:2289
+#: src/file-manager/fm-properties-window.c:2290
 msgid "Free space:"
 msgstr "Laust pláss:"
 
-#: src/file-manager/fm-properties-window.c:2297
+#: src/file-manager/fm-properties-window.c:2298
 msgid "Link target:"
 msgstr "Áfangastaður tengils:"
 
-#: src/file-manager/fm-properties-window.c:2303
+#: src/file-manager/fm-properties-window.c:2304
 msgid "MIME type:"
 msgstr "MIME gerð:"
 
-#: src/file-manager/fm-properties-window.c:2312
+#: src/file-manager/fm-properties-window.c:2313
 msgid "Modified:"
 msgstr "Breytt þann:"
 
-#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2319
 msgid "Accessed:"
 msgstr "Síðast notað:"
 
-#: src/file-manager/fm-properties-window.c:2334
+#: src/file-manager/fm-properties-window.c:2335
 msgid "_Select Custom Icon..."
 msgstr "_Veldu sérvalda táknmynd..."
 
-#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2341
 msgid "_Remove Custom Icon"
 msgstr "_Fjarlægja sérvalda táknmynd"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2684
 msgid "_Read"
 msgstr "_Lesa"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2686
 msgid "_Write"
 msgstr "_Rita"
 
-#: src/file-manager/fm-properties-window.c:2685
+#: src/file-manager/fm-properties-window.c:2688
 msgid "E_xecute"
 msgstr "Ke_yra"
 
-#: src/file-manager/fm-properties-window.c:2762
+#: src/file-manager/fm-properties-window.c:2771
 msgid "Set _user ID"
 msgstr "Setja notendaa_uðkenni"
 
-#: src/file-manager/fm-properties-window.c:2767
+#: src/file-manager/fm-properties-window.c:2776
 msgid "Special flags:"
 msgstr "Sérstök flögg:"
 
-#: src/file-manager/fm-properties-window.c:2770
+#: src/file-manager/fm-properties-window.c:2779
 msgid "Set gro_up ID"
 msgstr "Setja hópa a_uðkenni"
 
-#: src/file-manager/fm-properties-window.c:2772
+#: src/file-manager/fm-properties-window.c:2781
 msgid "_Sticky"
 msgstr "Klí_strað"
 
-#: src/file-manager/fm-properties-window.c:2858
+#: src/file-manager/fm-properties-window.c:2870
 msgid "Permissions"
 msgstr "Réttindi"
 
-#: src/file-manager/fm-properties-window.c:2868
+#: src/file-manager/fm-properties-window.c:2880
 msgid "You are not the owner, so you can't change these permissions."
 msgstr ""
 "Þar sem þú ert ekki eigandi þá getur þú þar af leiðandi ekki breytt þessum "
 "réttindum."
 
-#: src/file-manager/fm-properties-window.c:2882
+#: src/file-manager/fm-properties-window.c:2894
 #, fuzzy
 msgid "File _owner:"
 msgstr "Eigandi skráar:"
 
-#: src/file-manager/fm-properties-window.c:2888
+#: src/file-manager/fm-properties-window.c:2900
 msgid "File owner:"
 msgstr "Eigandi skráar:"
 
-#: src/file-manager/fm-properties-window.c:2899
+#: src/file-manager/fm-properties-window.c:2911
 msgid "_File group:"
 msgstr "S_kráarhópur:"
 
-#: src/file-manager/fm-properties-window.c:2908
+#: src/file-manager/fm-properties-window.c:2920
 msgid "File group:"
 msgstr "Skráarhópur:"
 
-#: src/file-manager/fm-properties-window.c:2920
+#: src/file-manager/fm-properties-window.c:2932
 msgid "Owner:"
 msgstr "Eigandi:"
 
-#: src/file-manager/fm-properties-window.c:2921
+#: src/file-manager/fm-properties-window.c:2933
 msgid "Group:"
 msgstr "Hópur:"
 
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2934
 msgid "Others:"
 msgstr "Annað:"
 
-#: src/file-manager/fm-properties-window.c:2995
+#: src/file-manager/fm-properties-window.c:3016
 msgid "Text view:"
 msgstr "Textasýn:"
 
-#: src/file-manager/fm-properties-window.c:2999
+#: src/file-manager/fm-properties-window.c:3020
 msgid "Number view:"
 msgstr "Tölusýn:"
 
-#: src/file-manager/fm-properties-window.c:3003
+#: src/file-manager/fm-properties-window.c:3024
 msgid "Last changed:"
 msgstr "Síðast breytt:"
 
-#: src/file-manager/fm-properties-window.c:3009
+#: src/file-manager/fm-properties-window.c:3030
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir \"%s\"."
 
-#: src/file-manager/fm-properties-window.c:3012
+#: src/file-manager/fm-properties-window.c:3033
 msgid "The permissions of the selected file could not be determined."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir valda skrá."
 
-#: src/file-manager/fm-properties-window.c:3328
+#: src/file-manager/fm-properties-window.c:3349
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:629
@@ -5207,19 +5205,19 @@ msgstr ""
 "Villa kom upp þegar sýna átti hjálp: \n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3330
+#: src/file-manager/fm-properties-window.c:3351
 msgid "Couldn't show help"
 msgstr "Ekki tókst að sýna hjálp"
 
-#: src/file-manager/fm-properties-window.c:3667
+#: src/file-manager/fm-properties-window.c:3688
 msgid "Cancel Showing Properties Window?"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:3668
+#: src/file-manager/fm-properties-window.c:3689
 msgid "Creating Properties window"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:3794
+#: src/file-manager/fm-properties-window.c:3815
 msgid "Select an icon"
 msgstr "Veldu táknmynd"
 
@@ -6345,7 +6343,6 @@ msgid "Close _All Windows"
 msgstr "Loka _öllum gluggum"
 
 #: src/nautilus-navigation-window-ui.xml.h:8
-#: src/nautilus-spatial-window-ui.xml.h:3
 #, fuzzy
 msgid "Close all Navigation windows"
 msgstr "Loka öllum Nautilus gluggum"
@@ -7069,8 +7066,13 @@ msgstr ""
 
 #: src/nautilus-spatial-window-ui.xml.h:2
 #, fuzzy
-msgid "Close _All Parents"
+msgid "Close P_arent Folders"
 msgstr "Loka _öllum gluggum"
+
+#: src/nautilus-spatial-window-ui.xml.h:3
+#, fuzzy
+msgid "Close this folder's parents"
+msgstr "Loka síðustiku"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 #, fuzzy
@@ -7267,39 +7269,39 @@ msgstr "Fara til baka um nokkrar síður"
 msgid "Go forward a number of pages"
 msgstr "Fara áfram um nokkrar síður"
 
-#: src/nautilus-window.c:902
+#: src/nautilus-window.c:906
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Sýna þessa staðsetningu með \"%s\""
 
-#: src/nautilus-window.c:1172
+#: src/nautilus-window.c:1176
 #, fuzzy
 msgid "Network"
 msgstr "Red Hat Netið"
 
-#: src/nautilus-window.c:1175
+#: src/nautilus-window.c:1179
 #, fuzzy
 msgid "Fonts"
 msgstr "Punktar"
 
-#: src/nautilus-window.c:1178
+#: src/nautilus-window.c:1182
 #, fuzzy
 msgid "CD Creator"
 msgstr "Fara í ruslatunnu"
 
-#: src/nautilus-window.c:1610
+#: src/nautilus-window.c:1614
 msgid "Application ID"
 msgstr "Forritsauðkenni"
 
-#: src/nautilus-window.c:1611
+#: src/nautilus-window.c:1615
 msgid "The application ID of the window."
 msgstr "Forritsauðkenni þessa glugga."
 
-#: src/nautilus-window.c:1617
+#: src/nautilus-window.c:1621
 msgid "Application"
 msgstr "Forrit"
 
-#: src/nautilus-window.c:1618
+#: src/nautilus-window.c:1622
 msgid "The NautilusApplication associated with this window."
 msgstr "Nautilusforrit sem bundið er þessum glugga."
 
@@ -7334,6 +7336,9 @@ msgstr "Netþjónar"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Skoða netþjóna í Nautilus skráarstjóranum"
+
+#~ msgid "file icon"
+#~ msgstr "skráartáknmynd"
 
 #, fuzzy
 #~ msgid "Name:"

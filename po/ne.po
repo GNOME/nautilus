@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.x\n"
-"POT-Creation-Date: 2003-11-24 12:49+0100\n"
+"POT-Creation-Date: 2003-12-08 12:14+0100\n"
 "PO-Revision-Date: 2003-11-01 10:53NST\n"
 "Last-Translator: Pawan Chitrakar <pawan@nplinux.org>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -34,7 +34,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "बानोबो यूआई इनिट() असफल भयो"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2407
+#: src/file-manager/fm-properties-window.c:2408
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "चिन्हहरू"
@@ -1321,7 +1321,7 @@ msgid ""
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-msgid "If true, icons will be layed out tighter by default in new windows."
+msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
@@ -1445,13 +1445,13 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
+"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid ""
-"The default sort-order for the item in the list view. Possible values are "
-"name, size, type, and modification_date."
+"The default sort-order for the items in the list view. Possible values are "
+"\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
@@ -1491,7 +1491,8 @@ msgid "Use manual layout in new windows"
 msgstr "नया विन्डोमा manual layout प्रयोग गर"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-msgid "Use tighter Layout in new windows"
+#, fuzzy
+msgid "Use tighter layout in new windows"
 msgstr "नया विन्डोमा कसिएको layout प्रयोग गर"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
@@ -2904,7 +2905,7 @@ msgstr "अपरिचित MIME प्रकार"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4473
-#: src/file-manager/fm-properties-window.c:1151
+#: src/file-manager/fm-properties-window.c:1152
 msgid "unknown"
 msgstr "अपरिचित"
 
@@ -3055,7 +3056,7 @@ msgid "Search for files by file name and file properties"
 msgstr "फाइल को उनके नाम व विशेषताओं से खोजें"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
-#: src/file-manager/fm-icon-container.c:473
+#: src/file-manager/fm-icon-container.c:496
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "आयकान दिखाएं"
@@ -3205,52 +3206,48 @@ msgstr "%s को होम"
 
 #: libnautilus-private/nautilus-global-preferences.c:549
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#: src/nautilus-window.c:1169
+#: src/nautilus-window.c:1173
 #, fuzzy
 msgid "Computer"
 msgstr "काउण्टरटप"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2343
-msgid "file icon"
-msgstr "फाइल आयकान"
-
-#: libnautilus-private/nautilus-icon-canvas-item.c:2726
+#: libnautilus-private/nautilus-icon-canvas-item.c:2758
 msgid "editable text"
 msgstr "एडीटेबल टेक्स्ट"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2727
+#: libnautilus-private/nautilus-icon-canvas-item.c:2759
 msgid "the editable label"
 msgstr "द एडीटेबल लेबल"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2734
+#: libnautilus-private/nautilus-icon-canvas-item.c:2766
 msgid "additional text"
 msgstr "एड़ीशनल टेक्स्ट"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2735
+#: libnautilus-private/nautilus-icon-canvas-item.c:2767
 msgid "some more text"
 msgstr "अरू केहि पाठ्य"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2742
+#: libnautilus-private/nautilus-icon-canvas-item.c:2774
 msgid "highlighted for selection"
 msgstr "सिलेक्शन के लिए हाइलाइट किया"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2743
+#: libnautilus-private/nautilus-icon-canvas-item.c:2775
 msgid "whether we are highlighted for a selection"
 msgstr "क्या चुनने के लिए हमने हाइलाइटेड किया है"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2750
+#: libnautilus-private/nautilus-icon-canvas-item.c:2782
 msgid "highlighted as keyboard focus"
 msgstr "की-बोर्ड फोकस के हमने हाइलाइट किया"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2751
+#: libnautilus-private/nautilus-icon-canvas-item.c:2783
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "क्या रेंडर की-बोर्ड फोकस को लमने हाइलाइट किया"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2791
 msgid "highlighted for drop"
 msgstr "ड्राव के लिए हाइलाइट करें"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2760
+#: libnautilus-private/nautilus-icon-canvas-item.c:2792
 msgid "whether we are highlighted for a D&D drop"
 msgstr "क्या हमने डी और डी ड्राप को हाइलाइट किया है"
 
@@ -4803,7 +4800,7 @@ msgstr "प्रकार"
 msgid "Date Modified"
 msgstr "तारीखमा परीवर्तन"
 
-#: src/file-manager/fm-properties-window.c:481
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
@@ -4812,12 +4809,12 @@ msgstr ""
 "आप एक से अधिक कस्टम आईकन को एक समय निश्चित नहीं कर सकते। कपया ड्रैग करें सिर्फ एक को "
 "कस्टम आईकन के लिए छवि निश्चित करें"
 
-#: src/file-manager/fm-properties-window.c:483
+#: src/file-manager/fm-properties-window.c:484
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "एक से ज्यादा छवि"
 
-#: src/file-manager/fm-properties-window.c:492
+#: src/file-manager/fm-properties-window.c:493
 #: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
@@ -4826,12 +4823,12 @@ msgstr ""
 "जो फाईल आपने छोड़ी है स्थानीय नहीं है आप सिर्फ स्थानीय छवि ही उपयोग में ला सकते हैं कस्टम "
 "आईकन्स"
 
-#: src/file-manager/fm-properties-window.c:494
+#: src/file-manager/fm-properties-window.c:495
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "सिर्फ स्थानीय छवियाँ"
 
-#: src/file-manager/fm-properties-window.c:499
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
@@ -4840,56 +4837,56 @@ msgstr ""
 "जो फाईल आपने छोड़ी है वह छवि नहीं है। आप सिर्फ स्थानीय छवि ही उपयोग कर सकते हैं कस्टम "
 "आईकन्स की तरह"
 
-#: src/file-manager/fm-properties-window.c:501
+#: src/file-manager/fm-properties-window.c:502
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "सिर्फ छवियां"
 
-#: src/file-manager/fm-properties-window.c:918
+#: src/file-manager/fm-properties-window.c:919
 #, fuzzy
 msgid "Properties"
 msgstr "विशेषताएँ"
 
-#: src/file-manager/fm-properties-window.c:921
+#: src/file-manager/fm-properties-window.c:922
 #, c-format
 msgid "%s Properties"
 msgstr "%s विशेषताहरू"
 
-#: src/file-manager/fm-properties-window.c:1382
+#: src/file-manager/fm-properties-window.c:1383
 msgid "Cancel Group Change?"
 msgstr "समुहको परिवर्तन रद्द गर्नु?"
 
-#: src/file-manager/fm-properties-window.c:1383
+#: src/file-manager/fm-properties-window.c:1384
 msgid "Changing group"
 msgstr "समूह परिवर्तन गरिंदैछ"
 
-#: src/file-manager/fm-properties-window.c:1544
+#: src/file-manager/fm-properties-window.c:1545
 msgid "Cancel Owner Change?"
 msgstr "साहुको परिवर्तन रद्द गर्नु"
 
-#: src/file-manager/fm-properties-window.c:1545
+#: src/file-manager/fm-properties-window.c:1546
 msgid "Changing owner"
 msgstr "साहू परीवर्तन हुँदैछ"
 
-#: src/file-manager/fm-properties-window.c:1751
+#: src/file-manager/fm-properties-window.c:1752
 msgid "nothing"
 msgstr "केहि छैन"
 
-#: src/file-manager/fm-properties-window.c:1753
+#: src/file-manager/fm-properties-window.c:1754
 msgid "unreadable"
 msgstr "पढन सकिएन"
 
-#: src/file-manager/fm-properties-window.c:1764
+#: src/file-manager/fm-properties-window.c:1765
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 आईटम, %s साईज"
 
-#: src/file-manager/fm-properties-window.c:1767
+#: src/file-manager/fm-properties-window.c:1768
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d आईटम, कुल %s"
 
-#: src/file-manager/fm-properties-window.c:1775
+#: src/file-manager/fm-properties-window.c:1776
 msgid "(some contents unreadable)"
 msgstr "केहि अंश पढ़न सकिएन"
 
@@ -4899,174 +4896,174 @@ msgstr "केहि अंश पढ़न सकिएन"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1792
+#: src/file-manager/fm-properties-window.c:1793
 msgid "Contents:"
 msgstr "अंश"
 
-#: src/file-manager/fm-properties-window.c:2183
+#: src/file-manager/fm-properties-window.c:2184
 msgid "Basic"
 msgstr "साधारण"
 
-#: src/file-manager/fm-properties-window.c:2211
+#: src/file-manager/fm-properties-window.c:2212
 #, fuzzy
 msgid "_Names:"
 msgstr "नाम"
 
-#: src/file-manager/fm-properties-window.c:2213
+#: src/file-manager/fm-properties-window.c:2214
 #: src/nautilus-connect-server-dialog.c:185
 msgid "_Name:"
 msgstr "नाम"
 
-#: src/file-manager/fm-properties-window.c:2262
+#: src/file-manager/fm-properties-window.c:2263
 msgid "Type:"
 msgstr "प्रकार"
 
-#: src/file-manager/fm-properties-window.c:2264
-#: src/file-manager/fm-properties-window.c:2274
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2287
-#: src/file-manager/fm-properties-window.c:2291
-#: src/file-manager/fm-properties-window.c:2299
-#: src/file-manager/fm-properties-window.c:2305
-#: src/file-manager/fm-properties-window.c:2314
-#: src/file-manager/fm-properties-window.c:2320
-#: src/file-manager/fm-properties-window.c:2893
-#: src/file-manager/fm-properties-window.c:2914
-#: src/file-manager/fm-properties-window.c:2996
-#: src/file-manager/fm-properties-window.c:3000
-#: src/file-manager/fm-properties-window.c:3004
+#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2275
+#: src/file-manager/fm-properties-window.c:2281
+#: src/file-manager/fm-properties-window.c:2288
+#: src/file-manager/fm-properties-window.c:2292
+#: src/file-manager/fm-properties-window.c:2300
+#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2315
+#: src/file-manager/fm-properties-window.c:2321
+#: src/file-manager/fm-properties-window.c:2905
+#: src/file-manager/fm-properties-window.c:2926
+#: src/file-manager/fm-properties-window.c:3017
+#: src/file-manager/fm-properties-window.c:3021
+#: src/file-manager/fm-properties-window.c:3025
 msgid "--"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:2272
+#: src/file-manager/fm-properties-window.c:2273
 msgid "Size:"
 msgstr "आकार"
 
-#: src/file-manager/fm-properties-window.c:2278 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:61
 #: src/nautilus-location-dialog.c:145
 msgid "Location:"
 msgstr "लोकेशन"
 
-#: src/file-manager/fm-properties-window.c:2285
+#: src/file-manager/fm-properties-window.c:2286
 #, fuzzy
 msgid "Volume:"
 msgstr "डीवीडी भोल्यूम"
 
-#: src/file-manager/fm-properties-window.c:2289
+#: src/file-manager/fm-properties-window.c:2290
 msgid "Free space:"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:2297
+#: src/file-manager/fm-properties-window.c:2298
 msgid "Link target:"
 msgstr "सम्बन्ध करें लछ्य"
 
-#: src/file-manager/fm-properties-window.c:2303
+#: src/file-manager/fm-properties-window.c:2304
 msgid "MIME type:"
 msgstr "एमआईएमई प्रकार"
 
-#: src/file-manager/fm-properties-window.c:2312
+#: src/file-manager/fm-properties-window.c:2313
 msgid "Modified:"
 msgstr "बदलाव किया गया"
 
-#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2319
 msgid "Accessed:"
 msgstr "पुगियो:"
 
-#: src/file-manager/fm-properties-window.c:2334
+#: src/file-manager/fm-properties-window.c:2335
 msgid "_Select Custom Icon..."
 msgstr "कस्टम आईकन छान्नुस"
 
-#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2341
 msgid "_Remove Custom Icon"
 msgstr "कस्टम आईकन हटाउनुस"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2684
 msgid "_Read"
 msgstr "पढ"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2686
 msgid "_Write"
 msgstr "लेख"
 
-#: src/file-manager/fm-properties-window.c:2685
+#: src/file-manager/fm-properties-window.c:2688
 msgid "E_xecute"
 msgstr "चलाउने"
 
-#: src/file-manager/fm-properties-window.c:2762
+#: src/file-manager/fm-properties-window.c:2771
 msgid "Set _user ID"
 msgstr "उपयोगकर्ता निर्धारित गर"
 
-#: src/file-manager/fm-properties-window.c:2767
+#: src/file-manager/fm-properties-window.c:2776
 msgid "Special flags:"
 msgstr "विशेष चिन्ह"
 
-#: src/file-manager/fm-properties-window.c:2770
+#: src/file-manager/fm-properties-window.c:2779
 msgid "Set gro_up ID"
 msgstr "समूह निर्धारित गर"
 
-#: src/file-manager/fm-properties-window.c:2772
+#: src/file-manager/fm-properties-window.c:2781
 msgid "_Sticky"
 msgstr "चिपचिपा"
 
-#: src/file-manager/fm-properties-window.c:2858
+#: src/file-manager/fm-properties-window.c:2870
 msgid "Permissions"
 msgstr "अनुमति"
 
-#: src/file-manager/fm-properties-window.c:2868
+#: src/file-manager/fm-properties-window.c:2880
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "आप मालिक नहीं हैं, कारणवश आप इन अनुमतियों को बदल नहीं सकते"
 
-#: src/file-manager/fm-properties-window.c:2882
+#: src/file-manager/fm-properties-window.c:2894
 #, fuzzy
 msgid "File _owner:"
 msgstr "फाइल धनी"
 
-#: src/file-manager/fm-properties-window.c:2888
+#: src/file-manager/fm-properties-window.c:2900
 msgid "File owner:"
 msgstr "फाइल धनी"
 
-#: src/file-manager/fm-properties-window.c:2899
+#: src/file-manager/fm-properties-window.c:2911
 msgid "_File group:"
 msgstr "फाइल समूह"
 
-#: src/file-manager/fm-properties-window.c:2908
+#: src/file-manager/fm-properties-window.c:2920
 msgid "File group:"
 msgstr "फाईल समूह"
 
-#: src/file-manager/fm-properties-window.c:2920
+#: src/file-manager/fm-properties-window.c:2932
 msgid "Owner:"
 msgstr "मालिक"
 
-#: src/file-manager/fm-properties-window.c:2921
+#: src/file-manager/fm-properties-window.c:2933
 msgid "Group:"
 msgstr "समूह"
 
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2934
 msgid "Others:"
 msgstr "अन्य"
 
-#: src/file-manager/fm-properties-window.c:2995
+#: src/file-manager/fm-properties-window.c:3016
 msgid "Text view:"
 msgstr "पाठ्य दृश्य"
 
-#: src/file-manager/fm-properties-window.c:2999
+#: src/file-manager/fm-properties-window.c:3020
 msgid "Number view:"
 msgstr "अंक दृश्य"
 
-#: src/file-manager/fm-properties-window.c:3003
+#: src/file-manager/fm-properties-window.c:3024
 msgid "Last changed:"
 msgstr "आखिरी बार बदला गया"
 
-#: src/file-manager/fm-properties-window.c:3009
+#: src/file-manager/fm-properties-window.c:3030
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" की अनुमतियां पता नहीं लगाई जा सकीं"
 
-#: src/file-manager/fm-properties-window.c:3012
+#: src/file-manager/fm-properties-window.c:3033
 msgid "The permissions of the selected file could not be determined."
 msgstr "\"%s\" की अनुमतियां पता नहीं लगाई जा सकीं"
 
-#: src/file-manager/fm-properties-window.c:3328
+#: src/file-manager/fm-properties-window.c:3349
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:629
@@ -5078,19 +5075,19 @@ msgstr ""
 "मदद दर्शाने में त्रुटि: \n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3330
+#: src/file-manager/fm-properties-window.c:3351
 msgid "Couldn't show help"
 msgstr "सहायता देखाउन सकियन"
 
-#: src/file-manager/fm-properties-window.c:3667
+#: src/file-manager/fm-properties-window.c:3688
 msgid "Cancel Showing Properties Window?"
 msgstr "विंडोको प्रोपर्टिज देखाउन रद्द गर्नुस"
 
-#: src/file-manager/fm-properties-window.c:3668
+#: src/file-manager/fm-properties-window.c:3689
 msgid "Creating Properties window"
 msgstr "प्रोपर्टिज विन्डो बनीराखेको छ"
 
-#: src/file-manager/fm-properties-window.c:3794
+#: src/file-manager/fm-properties-window.c:3815
 msgid "Select an icon"
 msgstr "आईकन छान्नुस"
 
@@ -6240,7 +6237,6 @@ msgid "Close _All Windows"
 msgstr "सबै विन्डो बन्द गर्नुहोस्"
 
 #: src/nautilus-navigation-window-ui.xml.h:8
-#: src/nautilus-spatial-window-ui.xml.h:3
 #, fuzzy
 msgid "Close all Navigation windows"
 msgstr "सबै नटिलस विन्डो बन्द गर्नुहोस्"
@@ -6969,8 +6965,13 @@ msgstr "सिडि निर्माता"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
 #, fuzzy
-msgid "Close _All Parents"
+msgid "Close P_arent Folders"
 msgstr "सबै विन्डो बन्द गर्नुहोस्"
+
+#: src/nautilus-spatial-window-ui.xml.h:3
+#, fuzzy
+msgid "Close this folder's parents"
+msgstr "साईड पेन बन्द गर"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 #, fuzzy
@@ -7164,39 +7165,39 @@ msgstr "कुछ पन्ने पीछे जाएँ"
 msgid "Go forward a number of pages"
 msgstr "कई पन्ने आगे जाएँ"
 
-#: src/nautilus-window.c:902
+#: src/nautilus-window.c:906
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "यस स्थानलाई %s सँग देखाऊ"
 
-#: src/nautilus-window.c:1172
+#: src/nautilus-window.c:1176
 #, fuzzy
 msgid "Network"
 msgstr "रेडहेट नेटवर्क"
 
-#: src/nautilus-window.c:1175
+#: src/nautilus-window.c:1179
 #, fuzzy
 msgid "Fonts"
 msgstr "बिन्दु"
 
-#: src/nautilus-window.c:1178
+#: src/nautilus-window.c:1182
 #, fuzzy
 msgid "CD Creator"
 msgstr "सिडि निर्माता"
 
-#: src/nautilus-window.c:1610
+#: src/nautilus-window.c:1614
 msgid "Application ID"
 msgstr "एप्लीकेशन ID"
 
-#: src/nautilus-window.c:1611
+#: src/nautilus-window.c:1615
 msgid "The application ID of the window."
 msgstr "विन्डो की उपयोग के योग्य आई डी"
 
-#: src/nautilus-window.c:1617
+#: src/nautilus-window.c:1621
 msgid "Application"
 msgstr "एप्लीकेशन"
 
-#: src/nautilus-window.c:1618
+#: src/nautilus-window.c:1622
 msgid "The NautilusApplication associated with this window."
 msgstr "इस विन्डो के साथ निर्धारित करें नटिलस उफयोग के योग्य"
 
@@ -7233,6 +7234,9 @@ msgstr "नेट्रावर्स"
 #, fuzzy
 msgid "View your network servers in the Nautilus file manager"
 msgstr "अपने होम फोल्डर को नटिलस फाइल मैनेजर में देखें"
+
+#~ msgid "file icon"
+#~ msgstr "फाइल आयकान"
 
 #, fuzzy
 #~ msgid "Name:"

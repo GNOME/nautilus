@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.5.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-27 21:40+0100\n"
+"POT-Creation-Date: 2003-12-08 12:14+0100\n"
 "PO-Revision-Date: 2003-11-27 21:50+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -1536,17 +1536,19 @@ msgstr ""
 "filsystemer. Hvis satt til «never» vil antall aldri beregnes."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
+"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
 "Forvalgt sorteringsrekkefølge for oppføringer i ikonvisning. Mulige verdier "
 "er «name», «size», «type», «modification_date» og «emblems»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#, fuzzy
 msgid ""
-"The default sort-order for the item in the list view. Possible values are "
-"name, size, type, and modification_date."
+"The default sort-order for the items in the list view. Possible values are "
+"\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 "Forvalgt sorteringsrekkefølge for oppføringer i listevisning. Mulige verdier "
 "er «name», «size», «type» og «modification_date»"
@@ -3196,7 +3198,7 @@ msgid "Search for files by file name and file properties"
 msgstr "Søk etter filer på tekstinnhold og egenskaper"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
-#: src/file-manager/fm-icon-container.c:473
+#: src/file-manager/fm-icon-container.c:496
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "Ikonvisning"
@@ -3345,51 +3347,47 @@ msgstr "Hjem til %s"
 
 #: libnautilus-private/nautilus-global-preferences.c:549
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#: src/nautilus-window.c:1169
+#: src/nautilus-window.c:1173
 msgid "Computer"
 msgstr "Datamaskin"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2343
-msgid "file icon"
-msgstr "ikon for fil"
-
-#: libnautilus-private/nautilus-icon-canvas-item.c:2726
+#: libnautilus-private/nautilus-icon-canvas-item.c:2758
 msgid "editable text"
 msgstr "redigerbar tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2727
+#: libnautilus-private/nautilus-icon-canvas-item.c:2759
 msgid "the editable label"
 msgstr "den redigerbare etiketten"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2734
+#: libnautilus-private/nautilus-icon-canvas-item.c:2766
 msgid "additional text"
 msgstr "tilleggstekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2735
+#: libnautilus-private/nautilus-icon-canvas-item.c:2767
 msgid "some more text"
 msgstr "litt mer tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2742
+#: libnautilus-private/nautilus-icon-canvas-item.c:2774
 msgid "highlighted for selection"
 msgstr "merket for utvalg"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2743
+#: libnautilus-private/nautilus-icon-canvas-item.c:2775
 msgid "whether we are highlighted for a selection"
 msgstr "om vi er merket for et utvalg"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2750
+#: libnautilus-private/nautilus-icon-canvas-item.c:2782
 msgid "highlighted as keyboard focus"
 msgstr "merket som tastaturfokus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2751
+#: libnautilus-private/nautilus-icon-canvas-item.c:2783
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "om vi er merket for å rendre tastaturfokus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2791
 msgid "highlighted for drop"
 msgstr "merket for slipp"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2760
+#: libnautilus-private/nautilus-icon-canvas-item.c:2792
 msgid "whether we are highlighted for a D&D drop"
 msgstr "om vi er merket for slipp"
 
@@ -6488,7 +6486,6 @@ msgid "Close _All Windows"
 msgstr "Lukk _alle vinduer"
 
 #: src/nautilus-navigation-window-ui.xml.h:8
-#: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close all Navigation windows"
 msgstr "Lukk alle navigeringsvinduer"
 
@@ -6631,7 +6628,9 @@ msgstr "Filvisning: %s"
 msgid ""
 "One of the side panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
-msgstr "Ett av sidepanelene ble utsatt for en feil og kan ikke fortsette. Beklageligvis kan jeg ikke si hvilket dette gjelder."
+msgstr ""
+"Ett av sidepanelene ble utsatt for en feil og kan ikke fortsette. "
+"Beklageligvis kan jeg ikke si hvilket dette gjelder."
 
 #: src/nautilus-navigation-window.c:1108
 #, c-format
@@ -7213,8 +7212,14 @@ msgid "CD _Creator"
 msgstr "_CD-brenner"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-msgid "Close _All Parents"
+#, fuzzy
+msgid "Close P_arent Folders"
 msgstr "Lukk _alle opphav"
+
+#: src/nautilus-spatial-window-ui.xml.h:3
+#, fuzzy
+msgid "Close this folder's parents"
+msgstr "Lukk sidepanelet"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Go to Computer"
@@ -7409,36 +7414,36 @@ msgstr "Gå tilbake noen sider"
 msgid "Go forward a number of pages"
 msgstr "Få fremover et antall sider"
 
-#: src/nautilus-window.c:902
+#: src/nautilus-window.c:906
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Vis denne lokasjonen med «%s»"
 
-#: src/nautilus-window.c:1172
+#: src/nautilus-window.c:1176
 msgid "Network"
 msgstr "Nettverk"
 
-#: src/nautilus-window.c:1175
+#: src/nautilus-window.c:1179
 msgid "Fonts"
 msgstr "Skrifter"
 
-#: src/nautilus-window.c:1178
+#: src/nautilus-window.c:1182
 msgid "CD Creator"
 msgstr "CD-brenner"
 
-#: src/nautilus-window.c:1610
+#: src/nautilus-window.c:1614
 msgid "Application ID"
 msgstr "Applikasjons-ID"
 
-#: src/nautilus-window.c:1611
+#: src/nautilus-window.c:1615
 msgid "The application ID of the window."
 msgstr "Applikasjons-ID for vinduet"
 
-#: src/nautilus-window.c:1617
+#: src/nautilus-window.c:1621
 msgid "Application"
 msgstr "Applikasjon"
 
-#: src/nautilus-window.c:1618
+#: src/nautilus-window.c:1622
 msgid "The NautilusApplication associated with this window."
 msgstr "NautilusApplication assosiert med dette vinduet."
 
@@ -7473,3 +7478,6 @@ msgstr "Nettverkstjenere"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis dine nettverkstjenere i Nautilus"
+
+#~ msgid "file icon"
+#~ msgstr "ikon for fil"

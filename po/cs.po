@@ -7,14 +7,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-03 04:22+0100\n"
+"POT-Creation-Date: 2003-12-08 12:14+0100\n"
 "PO-Revision-Date: 2003-12-03 12:06+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -1354,7 +1354,9 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr "Je-li nastaveno na true, bude na pracovní ploše zobrazena ikona ukazující umístění počítače."
+msgstr ""
+"Je-li nastaveno na true, bude na pracovní ploše zobrazena ikona ukazující "
+"umístění počítače."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -1396,7 +1398,8 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr "Je-li true, budou jmenovky v nových oknech implicitně rozloženy kompaktněji."
+msgstr ""
+"Je-li true, budou jmenovky v nových oknech implicitně rozloženy kompaktněji."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
@@ -1547,13 +1550,17 @@ msgstr ""
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-msgstr "Implicitní pořadí třídění položek v ikonovém pohledu. Možné hodnoty jsou \"name\", \"size\", \"type\", \"modification_date\" a \"emblems\"."
+msgstr ""
+"Implicitní pořadí třídění položek v ikonovém pohledu. Možné hodnoty jsou "
+"\"name\", \"size\", \"type\", \"modification_date\" a \"emblems\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
-msgstr "Implicitní pořadí třídění položek v seznamovém pohledu. Možné hodnoty jsou \"name\", \"size\", \"type\" a \"modification_date\"."
+msgstr ""
+"Implicitní pořadí třídění položek v seznamovém pohledu. Možné hodnoty jsou "
+"\"name\", \"size\", \"type\" a \"modification_date\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The default width of the side pane in new windows."
@@ -3205,7 +3212,7 @@ msgid "Search for files by file name and file properties"
 msgstr "Hledat soubory podle názvu a vlastností"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
-#: src/file-manager/fm-icon-container.c:473
+#: src/file-manager/fm-icon-container.c:496
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "Ikonový pohled"
@@ -3358,47 +3365,43 @@ msgstr "Domov %s"
 msgid "Computer"
 msgstr "Počítač"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2343
-msgid "file icon"
-msgstr "ikona souboru"
-
-#: libnautilus-private/nautilus-icon-canvas-item.c:2726
+#: libnautilus-private/nautilus-icon-canvas-item.c:2758
 msgid "editable text"
 msgstr "měnitelný text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2727
+#: libnautilus-private/nautilus-icon-canvas-item.c:2759
 msgid "the editable label"
 msgstr "měnitelná jmenovka"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2734
+#: libnautilus-private/nautilus-icon-canvas-item.c:2766
 msgid "additional text"
 msgstr "přídavný text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2735
+#: libnautilus-private/nautilus-icon-canvas-item.c:2767
 msgid "some more text"
 msgstr "ještě další text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2742
+#: libnautilus-private/nautilus-icon-canvas-item.c:2774
 msgid "highlighted for selection"
 msgstr "zvýrazněno pro výběr"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2743
+#: libnautilus-private/nautilus-icon-canvas-item.c:2775
 msgid "whether we are highlighted for a selection"
 msgstr "jestli jsme zvýrazněni pro výběr"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2750
+#: libnautilus-private/nautilus-icon-canvas-item.c:2782
 msgid "highlighted as keyboard focus"
 msgstr "zvýrazněni jako zaměření klávesnice"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2751
+#: libnautilus-private/nautilus-icon-canvas-item.c:2783
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "jestli jsme zvýrazněni pro znázornění zaměření klávesnice"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2791
 msgid "highlighted for drop"
 msgstr "zvýrazněno pro puštění"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2760
+#: libnautilus-private/nautilus-icon-canvas-item.c:2792
 msgid "whether we are highlighted for a D&D drop"
 msgstr "jestli jsme zvýrazněni pro D&D puštění"
 
@@ -6631,14 +6634,18 @@ msgstr "Prohlížeč souborů: %s"
 msgid ""
 "One of the side panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
-msgstr "V jednom z bočních panelů došlo k chybě a on nemůže pokračovat. Bohužel nevím, který."
+msgstr ""
+"V jednom z bočních panelů došlo k chybě a on nemůže pokračovat. Bohužel "
+"nevím, který."
 
 #: src/nautilus-navigation-window.c:1108
 #, c-format
 msgid ""
 "The %s side panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
-msgstr "V v bočním panelu %s došlo k chybě a on nemůže pokračovat. Pokud se to bude opakovat, možná byste měli tento panel vypnout."
+msgstr ""
+"V v bočním panelu %s došlo k chybě a on nemůže pokračovat. Pokud se to bude "
+"opakovat, možná byste měli tento panel vypnout."
 
 #: src/nautilus-navigation-window.c:1113
 msgid "Side Panel Failed"
@@ -7477,109 +7484,113 @@ msgstr "Síťové servery"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Zobrazit vaše síťové servery ve správci souborů Nautilus"
 
-msgid "Name:"
-msgstr "Název:"
+#~ msgid "file icon"
+#~ msgstr "ikona souboru"
 
-msgid "Unknown"
-msgstr "Neznámé"
+#~ msgid "Name:"
+#~ msgstr "Název:"
 
-msgid "Floppy"
-msgstr "Disketa"
+#~ msgid "Unknown"
+#~ msgstr "Neznámé"
 
-msgid "CD-ROM"
-msgstr "CD-ROM"
+#~ msgid "Floppy"
+#~ msgstr "Disketa"
 
-msgid "Zip Drive"
-msgstr "Zip disk"
+#~ msgid "CD-ROM"
+#~ msgstr "CD-ROM"
 
-msgid "Audio CD"
-msgstr "Zvukové CD"
+#~ msgid "Zip Drive"
+#~ msgstr "Zip disk"
 
-msgid "Root Volume"
-msgstr "Kořenový svazek"
+#~ msgid "Audio CD"
+#~ msgstr "Zvukové CD"
 
-msgid ""
-"Nautilus was unable to mount the floppy drive. There is probably no floppy "
-"in the drive."
-msgstr ""
-"Nautilus nemohl připojit disketovou mechaniku. Pravděpodobně v ní není "
-"disketa."
+#~ msgid "Root Volume"
+#~ msgstr "Kořenový svazek"
 
-msgid ""
-"Nautilus was unable to mount the volume. There is probably no media in the "
-"device."
-msgstr "Nautilus nemohl připojit svazek. V zařízení pravděpodobně není médium."
+#~ msgid ""
+#~ "Nautilus was unable to mount the floppy drive. There is probably no "
+#~ "floppy in the drive."
+#~ msgstr ""
+#~ "Nautilus nemohl připojit disketovou mechaniku. Pravděpodobně v ní není "
+#~ "disketa."
 
-msgid ""
-"Nautilus was unable to mount the floppy drive. The floppy is probably in a "
-"format that cannot be mounted."
-msgstr ""
-"Nautilus nemohl připojit disketovou mechaniku. Disketa asi obsahuje "
-"souborový systém, který nelze připojit."
+#~ msgid ""
+#~ "Nautilus was unable to mount the volume. There is probably no media in "
+#~ "the device."
+#~ msgstr ""
+#~ "Nautilus nemohl připojit svazek. V zařízení pravděpodobně není médium."
 
-msgid ""
-"Nautilus was unable to mount the selected volume. The volume is probably in "
-"a format that cannot be mounted."
-msgstr ""
-"Nautilus nemohl připojit vybraný svazek. Svazek asi obsahuje souborový "
-"systém, který nelze připojit."
+#~ msgid ""
+#~ "Nautilus was unable to mount the floppy drive. The floppy is probably in "
+#~ "a format that cannot be mounted."
+#~ msgstr ""
+#~ "Nautilus nemohl připojit disketovou mechaniku. Disketa asi obsahuje "
+#~ "souborový systém, který nelze připojit."
 
-msgid "Nautilus was unable to mount the selected floppy drive."
-msgstr "Nautilus nemohl připojit vybranou disketu."
+#~ msgid ""
+#~ "Nautilus was unable to mount the selected volume. The volume is probably "
+#~ "in a format that cannot be mounted."
+#~ msgstr ""
+#~ "Nautilus nemohl připojit vybraný svazek. Svazek asi obsahuje souborový "
+#~ "systém, který nelze připojit."
 
-msgid "Nautilus was unable to mount the selected volume."
-msgstr "Nautilus nemohl připojit vybraný svazek."
+#~ msgid "Nautilus was unable to mount the selected floppy drive."
+#~ msgstr "Nautilus nemohl připojit vybranou disketu."
 
-msgid "Nautilus was unable to unmount the selected volume."
-msgstr "Nautilus nemohl odpojit vybraný svazek."
+#~ msgid "Nautilus was unable to mount the selected volume."
+#~ msgstr "Nautilus nemohl připojit vybraný svazek."
 
-msgid "ISO 9660 Volume"
-msgstr "Disk ISO 9660"
+#~ msgid "Nautilus was unable to unmount the selected volume."
+#~ msgstr "Nautilus nemohl odpojit vybraný svazek."
 
-msgid "Error executing utility program '%s': %s"
-msgstr "Chyba při spouštění pomocného programu '%s': %s"
+#~ msgid "ISO 9660 Volume"
+#~ msgstr "Disk ISO 9660"
 
-msgid "Dis_ks"
-msgstr "Dis_ky"
+#~ msgid "Error executing utility program '%s': %s"
+#~ msgstr "Chyba při spouštění pomocného programu '%s': %s"
 
-msgid "Mount or unmount disks"
-msgstr "Připojit či odpojit disky"
+#~ msgid "Dis_ks"
+#~ msgstr "Dis_ky"
 
-msgid "Open _in This Window"
-msgstr "Ot_evřít v tomto okně"
+#~ msgid "Mount or unmount disks"
+#~ msgstr "Připojit či odpojit disky"
 
-msgid "_Open activated item in a new window"
-msgstr "_Otevřít aktivovanou položku v novém okně"
+#~ msgid "Open _in This Window"
+#~ msgstr "Ot_evřít v tomto okně"
 
-msgid "Change the visibility of this window's toolbar"
-msgstr "Změnit viditelnost nástrojové lišty tohoto okna"
+#~ msgid "_Open activated item in a new window"
+#~ msgstr "_Otevřít aktivovanou položku v novém okně"
 
-msgid "Go to the Start Here folder"
-msgstr "Jít do adresáře Začněte zde"
+#~ msgid "Change the visibility of this window's toolbar"
+#~ msgstr "Změnit viditelnost nástrojové lišty tohoto okna"
 
-msgid "Open New _Window"
-msgstr "Ot_evřít nové okno"
+#~ msgid "Go to the Start Here folder"
+#~ msgstr "Jít do adresáře Začněte zde"
 
-msgid "Open another Nautilus window for the displayed location"
-msgstr "Otevřít další okno Nautilu pro zobrazované umístění"
+#~ msgid "Open New _Window"
+#~ msgstr "Ot_evřít nové okno"
 
-msgid "_Find"
-msgstr "N_ajít"
+#~ msgid "Open another Nautilus window for the displayed location"
+#~ msgstr "Otevřít další okno Nautilu pro zobrazované umístění"
 
-msgid "_Start Here"
-msgstr "_Začněte zde"
+#~ msgid "_Find"
+#~ msgstr "N_ajít"
 
-msgid "_Toolbar"
-msgstr "_Nástrojová lišta"
+#~ msgid "_Start Here"
+#~ msgstr "_Začněte zde"
 
-msgid "The location \"%s\" no longer exists."
-msgstr "Umístění \"%s\" již neexistuje"
+#~ msgid "_Toolbar"
+#~ msgstr "_Nástrojová lišta"
 
-msgid "Go to Nonexistent Location"
-msgstr "Jdi na neexistující umístění"
+#~ msgid "The location \"%s\" no longer exists."
+#~ msgstr "Umístění \"%s\" již neexistuje"
 
-msgid "Sort in _reverse"
-msgstr "Seřadit _obráceně"
+#~ msgid "Go to Nonexistent Location"
+#~ msgstr "Jdi na neexistující umístění"
 
-msgid "Use _manual layout"
-msgstr "Používat _ruční rozložení"
+#~ msgid "Sort in _reverse"
+#~ msgstr "Seřadit _obráceně"
+
+#~ msgid "Use _manual layout"
+#~ msgstr "Používat _ruční rozložení"
