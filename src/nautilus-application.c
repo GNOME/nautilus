@@ -47,6 +47,7 @@
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -661,15 +662,15 @@ desktop_changed_callback (gpointer user_data)
  * Determine whether Nautilus needs to show the first time druid.
  * 
  * Note that the flag file indicating whether the druid has been
- * presented is: ~/.nautilus/first-time-wizard.
+ * presented is: ~/.nautilus/first-time-flag.
  *
  * Another alternative could be to use preferences to store this flag
  * However, there because of bug 1229 this is not yet possible.
  *
  * Also, for debugging purposes, it is convenient to have just one file
- * to kill in order to test the startup wizard:
+ * to kill in order to test the startup druid:
  *
- * rm -f ~/.nautilus/first-time-wizard
+ * rm -f ~/.nautilus/first-time-flag
  *
  * In order to accomplish the same thing with preferences, you would have
  * to either kill ALL your preferences or spend time digging in ~/.gconf
@@ -681,17 +682,27 @@ need_to_show_first_time_druid (void)
 	gboolean result;
 	char *user_directory;
 	char *druid_flag_file_name;
-
+	
 	user_directory = nautilus_get_user_directory ();
 
 	druid_flag_file_name = g_strdup_printf ("%s/%s",
 						user_directory,
-						"first-time-wizard-flag");
-	g_free (user_directory);
+						"first-time-flag");
 
 	result = !g_file_exists (druid_flag_file_name);	
 	g_free (druid_flag_file_name);
 
+	/* we changed the name of the flag for version 1.0, so we should
+	 * check for and delete the old one, if the new one didn't exist 
+	 */
+	if (result) {
+		druid_flag_file_name = g_strdup_printf ("file://%s/%s",
+						user_directory,
+						"first-time-wizard-flag");
+		gnome_vfs_unlink (druid_flag_file_name);
+		g_free (druid_flag_file_name);
+	}
+	g_free (user_directory); 
 	return result;
 }
 

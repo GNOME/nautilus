@@ -62,7 +62,7 @@
 #define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
 #define WELCOME_PACKAGE_URI "http://services.eazel.com/downloads/eazel/updates.tgz"
 
-/* Wizard page number enumeration */
+/* Druid page number enumeration */
 enum {
 	USER_LEVEL_PAGE = 0,
 	GMC_TRANSITION_PAGE,
@@ -170,16 +170,16 @@ druid_set_first_time_file_flag (void)
 	user_directory = nautilus_get_user_directory ();
 	druid_flag_file_name = g_strdup_printf ("%s/%s",
 						user_directory,
-						"first-time-wizard-flag");
+						"first-time-flag");
 	g_free (user_directory);
 
 		
 	stream = fopen (druid_flag_file_name, "w");
 	if (stream) {
 		const char *blurb =
-			_("Existence of this file indicates that the Nautilus configuration wizard\n"
+			_("Existence of this file indicates that the Nautilus configuration druid\n"
 				"has been presented.\n\n"
-				"You can manually erase this file to present the wizard again.\n\n");
+				"You can manually erase this file to present the druid again.\n\n");
 			
 			fwrite (blurb, sizeof (char), strlen (blurb), stream);
 			fclose (stream);
