@@ -76,6 +76,8 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
                 return NAUTILUS_NAVIGATION_RESULT_INVALID_URI;
         case GNOME_VFS_ERROR_NOTSUPPORTED:
                 return NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME;
+	case GNOME_VFS_ERROR_LOGINFAILED:
+		return NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED;
         case GNOME_VFS_ERROR_GENERIC:
                 /* This one has occurred at least once in the web browser component */
                 return NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR;
@@ -87,7 +89,7 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
                  * what GnomeVFSResult code the message reported, and what caused it to
                  * fire).
                  */
-                g_message ("in ntl-uri-map.c, got unhandled GnomeVFSResult %d", gnome_vfs_result);
+                g_message ("in nautilus-applicable-views.c, got unhandled GnomeVFSResult %d, please tell sullivan@eazel.com", gnome_vfs_result);
                 return NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR;
         }
 }

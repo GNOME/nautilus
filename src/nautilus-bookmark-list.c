@@ -32,6 +32,7 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 #include <parser.h>
@@ -98,6 +99,8 @@ append_bookmark_node (gpointer data, gpointer user_data)
 {
 	xmlNodePtr root_node, bookmark_node;
 	NautilusBookmark *bookmark;
+	NautilusScalableIcon *icon;
+	char *icon_uri, *icon_name;
 
 	g_assert (NAUTILUS_IS_BOOKMARK (data));
 
@@ -107,6 +110,17 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	bookmark_node = xmlNewChild (root_node, NULL, "bookmark", NULL);
 	xmlSetProp (bookmark_node, "name", nautilus_bookmark_get_name (bookmark));
 	xmlSetProp (bookmark_node, "uri", nautilus_bookmark_get_uri (bookmark));
+
+	icon = nautilus_bookmark_get_icon (bookmark);
+	if (icon != NULL) {
+		/* Don't bother storing modifier or embedded text for bookmarks. */
+		nautilus_scalable_icon_get_text_pieces (icon, &icon_uri, &icon_name, NULL, NULL);
+		xmlSetProp (bookmark_node, "icon_uri", icon_uri);
+		xmlSetProp (bookmark_node, "icon_name", icon_name);
+		nautilus_scalable_icon_unref (icon);
+		g_free (icon_uri);
+		g_free (icon_name);
+	}
 }
 
 /**
@@ -314,6 +328,38 @@ nautilus_bookmark_list_length (NautilusBookmarkList *bookmarks)
 	return g_list_length (bookmarks->list);
 }
 
+static NautilusBookmark *
+make_bookmark_from_node (xmlNodePtr node)
+{
+	xmlChar *xml_name;
+	xmlChar *xml_uri;
+	xmlChar *xml_icon_uri;
+	xmlChar *xml_icon_name;
+	NautilusScalableIcon *icon;
+	NautilusBookmark *new_bookmark;
+
+	/* Maybe should only accept bookmarks with both a name and uri? */
+	xml_name = xmlGetProp (node, "name");
+	xml_uri = xmlGetProp (node, "uri");
+	xml_icon_uri = xmlGetProp (node, "icon_uri");
+	xml_icon_name = xmlGetProp (node, "icon_name");
+
+	if (xml_icon_uri == NULL && xml_icon_name == NULL) {
+		icon = NULL;
+	} else {
+		icon = nautilus_scalable_icon_new_from_text_pieces
+			(xml_icon_uri, xml_icon_name, NULL, NULL);
+	}
+	new_bookmark = nautilus_bookmark_new_with_icon (xml_uri, xml_name, icon);
+
+	xmlFree (xml_name);
+	xmlFree (xml_uri);
+	xmlFree (xml_icon_uri);
+	xmlFree (xml_icon_name);
+
+	return new_bookmark;
+}
+
 /**
  * nautilus_bookmark_list_load_file:
  * 
@@ -325,6 +371,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
+	NautilusBookmark *new_bookmark;
 
 	/* Wipe out old list. */
 	nautilus_gtk_object_list_free (bookmarks->list);
@@ -336,20 +383,9 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	     node != NULL;
 	     node = node->next) {
 
-		if (strcmp(node->name, "bookmark") == 0) {
-			xmlChar *xml_name;
-			xmlChar *xml_uri;
-			
-			/* Maybe should only accept bookmarks with both a name and uri? */
-			xml_name = xmlGetProp (node, "name");
-			xml_uri = xmlGetProp (node, "uri");
-			
-			bookmarks->list = g_list_append
-				(bookmarks->list,
-				 nautilus_bookmark_new (xml_uri, xml_name));
-			
-			xmlFree (xml_name);
-			xmlFree (xml_uri);
+		if (strcmp (node->name, "bookmark") == 0) {
+			new_bookmark = make_bookmark_from_node (node);
+			bookmarks->list = g_list_append	(bookmarks->list, new_bookmark);
 		} else if (strcmp (node->name, "window") == 0) {
 			xmlChar *geometry_string;
 			

@@ -25,6 +25,8 @@
 #ifndef NAUTILUS_BOOKMARK_H
 #define NAUTILUS_BOOKMARK_H
 
+#include "nautilus-icon-factory.h"
+
 #include <gtk/gtkwidget.h>
 #include <gdk/gdktypes.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -60,9 +62,13 @@ typedef struct NautilusBookmarkClass NautilusBookmarkClass;
 GtkType           nautilus_bookmark_get_type            (void);
 NautilusBookmark *nautilus_bookmark_new       		(const char              *uri,
 							 const char              *name);
+NautilusBookmark *nautilus_bookmark_new_with_icon	(const char		 *uri,
+							 const char		 *name,
+							 NautilusScalableIcon	 *icon);
 NautilusBookmark *nautilus_bookmark_copy                (const NautilusBookmark  *bookmark);
 const char *      nautilus_bookmark_get_name            (const NautilusBookmark  *bookmark);
 const char *      nautilus_bookmark_get_uri             (const NautilusBookmark  *bookmark);
+NautilusScalableIcon *nautilus_bookmark_get_icon	(const NautilusBookmark  *bookmark);
 void		  nautilus_bookmark_set_name 		(NautilusBookmark 	 *bookmark, 
 							 const char 		 *new_name);
 int               nautilus_bookmark_compare_with        (gconstpointer            a,

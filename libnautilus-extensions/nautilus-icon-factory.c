@@ -211,10 +211,6 @@ static NautilusIconFactory * nautilus_get_current_icon_factory       (void);
 static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFile             *file);
 static NautilusIconFactory * nautilus_icon_factory_new               (const char               *theme_name);
 static void                  nautilus_icon_factory_set_theme         (const char               *theme_name);
-static NautilusScalableIcon *nautilus_scalable_icon_get              (const char               *uri,
-								      const char               *name,
-								      const char               *modifier,
-								      const char               *embedded_text);
 static guint                 nautilus_scalable_icon_hash             (gconstpointer             p);
 static gboolean              nautilus_scalable_icon_equal            (gconstpointer             a,
 								      gconstpointer             b);
@@ -527,6 +523,8 @@ get_themed_icon_file_path (const char *theme_name,
 	char *size_as_string, *property;
 	ArtIRect parsed_rect;
 
+	g_assert (icon_name != NULL);
+
 	if (theme_name == NULL || icon_name[0] == '/') {
 		themed_icon_name = g_strdup (icon_name);
 	} else {
@@ -624,6 +622,10 @@ get_icon_file_path (const char *name,
 	const char *theme_name;
 	char *path;
 
+	if (name == NULL) {
+		return NULL;
+	}
+
 	use_theme_icon = FALSE;
  	theme_name = nautilus_get_current_icon_factory ()->theme_name;
 	
@@ -645,15 +647,16 @@ get_icon_file_path (const char *name,
 	/* Now we know whether or not to use the theme. */
 	/* if there's a modifier, try using that first */
 	
-	if (modifier && strlen(modifier)) {
-		char* modified_name = g_strdup_printf("%s-%s", name, modifier);
+	if (modifier && modifier[0] != '\0') {
+		char* modified_name = g_strdup_printf ("%s-%s", name, modifier);
 		path = get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
 						  modified_name,
 						  size_in_pixels, 
 						  text_rect);
-		g_free(modified_name);
-		if (path)
+		g_free (modified_name);
+		if (path != NULL) {
 		    return path;
+		}
 	}
 	
 	return get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
@@ -678,12 +681,36 @@ icon_theme_changed_callback (gpointer user_data)
 
 }
 
-/* Get or create a scalable icon. */
-static NautilusScalableIcon *
-nautilus_scalable_icon_get (const char *uri,
-			    const char *name,
-			    const char *modifier,
-			    const char *embedded_text)
+/* Decompose a scalable icon into its text pieces. */
+void
+nautilus_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
+				 	char **uri_return,
+				 	char **name_return,
+				 	char **modifier_return,
+				 	char **embedded_text_return)
+{
+	g_return_if_fail (icon != NULL);
+
+	if (uri_return != NULL) {
+		*uri_return = g_strdup (icon->uri);
+	}
+	if (name_return != NULL) {
+		*name_return = g_strdup (icon->name);
+	}
+	if (modifier_return != NULL) {
+		*modifier_return = g_strdup (icon->modifier);
+	}
+	if (embedded_text_return != NULL) {
+		*embedded_text_return = g_strdup (icon->embedded_text);
+	}
+}				 
+
+/* Get or create a scalable icon from text pieces. */
+NautilusScalableIcon *
+nautilus_scalable_icon_new_from_text_pieces (const char *uri,
+			    	      	     const char *name,
+			    	      	     const char *modifier,
+			    	      	     const char *embedded_text)
 {
 	GHashTable *hash_table;
 	NautilusScalableIcon icon_key, *icon;
@@ -863,8 +890,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 
 	
 	/* Create the icon or find it in the cache if it's already there. */
-	scalable_icon = nautilus_scalable_icon_get (uri, icon_name, modifier,
-						    top_left_text);
+	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
+		(uri, icon_name, modifier, top_left_text);
 	g_free (uri);
 	g_free (icon_name);
 	g_free (top_left_text);
@@ -879,7 +906,8 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name)
 	char *name_with_prefix;
 
 	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, emblem_name, NULL);
-	scalable_icon = nautilus_scalable_icon_get (NULL, name_with_prefix, NULL, NULL);
+	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
+		(NULL, name_with_prefix, NULL, NULL);
 	g_free (name_with_prefix);	
 
 	return scalable_icon;
@@ -1910,7 +1938,7 @@ load_image_with_embedded_text (NautilusScalableIcon *scalable_icon,
 
 	g_assert (scalable_icon->embedded_text != NULL);
 
-	scalable_icon_without_text = nautilus_scalable_icon_get
+	scalable_icon_without_text = nautilus_scalable_icon_new_from_text_pieces
 		(scalable_icon->uri,
 		 scalable_icon->name,
 		 scalable_icon->modifier,

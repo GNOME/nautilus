@@ -139,10 +139,22 @@ void                  nautilus_icon_factory_get_pixmap_and_mask_by_name  (Nautil
 void                  nautilus_scalable_icon_ref                         (NautilusScalableIcon  *scalable_icon);
 void                  nautilus_scalable_icon_unref                       (NautilusScalableIcon  *scalable_icon);
 
-/* The name of a scalable icon is suitable for storage in metadata.
- * This is a quick way to record the result of getting an icon by name.
+/* A scalable icon can be decomposed into text and reconstituted later
+ * using nautilus_scalable_icon_new_from_text_pieces. This is the way 
+ * to store scalable icons in metadata or other files.
  */
-char *                nautilus_scalable_icon_get_name                    (NautilusScalableIcon  *scalable_icon);
+void                  nautilus_scalable_icon_get_text_pieces             (NautilusScalableIcon  *scalable_icon,
+									  char		       **uri_return,
+									  char		       **name_return,
+									  char		       **modifier_return,
+									  char		       **embedded_text_return);
+/* Get a scalable icon using the earlier results of
+ * nautilus_scalable_icon_get_text_pieces.
+ */
+NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces	 (const char		*uri,
+									  const char		*name,
+									  const char		*modifier,
+									  const char		*embedded_text);
 
 /* Convenience function for freeing a list of scalable icons.
  * Unrefs all the icons before freeing the list.

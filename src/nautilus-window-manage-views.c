@@ -1163,12 +1163,13 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 g_free (scheme_string);
                 break;
 
+	case NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED:
+                error_message = g_strdup_printf (_("Couldn't display \"%s\", because the attempt to log in failed."),
+                                                 requested_uri);		
+		break;
+
+
         default:
-                /* It is so sad that we can't say anything more useful than this.
-                 * When this comes up, we should figure out what's really happening
-                 * and add another specific case.
-                 */
-                g_message ("Case %d not handled well in nautilus_window_end_location_change_callback, please tell sullivan@eazel.com", result_code);
                 error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."), requested_uri);
         }
         

@@ -1,3 +1,54 @@
+2000-06-15  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 705 (Need to avoid network hit on startup for
+	each remote bookmark). Bookmarks now get their icon only
+	when they're initially created, and then store a text
+	version of it to disk for future sessions. We might have
+	to update the icon at certain times later (maybe when it's
+	used?).
+
+	* libnautilus-extensions/nautilus-bookmark.h,
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_copy), (nautilus_bookmark_get_pixbuf),
+	(nautilus_bookmark_get_icon), (get_icon_for_uri),
+	(nautilus_bookmark_new), (nautilus_bookmark_new_with_icon):
+	Changed guts of NautilusBookmark to keep a 
+	NautilusScalableIcon around. Also some miscellaneous
+	cleanup in this ancient file (need to do more).
+	
+	* libnautilus-extensions/nautilus-icon-factory.h,
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path): Added icon != NULL assert.
+	(get_icon_file_path): Handle NULL icon name by returning NULL;
+	some style fixes.
+	(nautilus_scalable_icon_get_text_pieces): New function,
+	returns all four pieces of text used to define a
+	NautilusScalableIcon.
+	(nautilus_scalable_icon_new_from_text_pieces):
+	Renamed from nautilus_scalable_icon_get and made public.
+	(nautilus_icon_factory_get_icon_for_file),
+	(nautilus_icon_factory_get_emblem_icon_by_name),
+	(load_image_with_embedded_text): Updated for function renaming.
+	
+	* src/nautilus-bookmark-list.c: (append_bookmark_node),
+	(make_bookmark_from_node), (nautilus_bookmark_list_load_file):
+	Save & restore NautilusScalableIcon with each bookmark.
+
+	Added custom error message when trying to open a location
+	fails with GNOME_VFS_LOGINFAILED
+
+	* src/nautilus-applicable-views.h: Define 
+	NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED
+	* src/nautilus-applicable-views.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result):
+	Support GNOME_VFS_LOGINFAILED, and tweak message for
+	unhandled case.
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	Support NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED and
+	remove message for unhandled case since complaining
+	about unhandled cases is done elsewhere.
+
 2000-06-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_constructed):

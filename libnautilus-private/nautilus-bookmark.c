@@ -40,6 +40,7 @@ struct NautilusBookmarkDetails
 {
 	char *name;
 	char *uri;
+	NautilusScalableIcon *icon;
 };
 
 
@@ -129,9 +130,10 @@ nautilus_bookmark_copy (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return nautilus_bookmark_new (
-			nautilus_bookmark_get_uri (bookmark),
-			nautilus_bookmark_get_name (bookmark));
+	return nautilus_bookmark_new_with_icon (
+			bookmark->details->uri,
+			bookmark->details->name,
+			bookmark->details->icon);
 }
 
 const char *
@@ -166,24 +168,25 @@ GdkPixbuf *
 nautilus_bookmark_get_pixbuf (const NautilusBookmark *bookmark,
 			      guint icon_size)
 {
-	NautilusFile *file;
-	GdkPixbuf *pixbuf;
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
-
-	/* FIXME bugzilla.eazel.com 461: This might be a bookmark that points 
-	 * to nothing, or maybe its uri cannot be converted to a NautilusFile 
-	 * for some other reason. It should get some sort of generic icon, but 
-	 * for now it gets none.
-	 */
-	if (file == NULL) {
+	if (bookmark->details->icon == NULL) {
 		return NULL;
 	}
+	
+	return nautilus_icon_factory_get_pixbuf_for_icon
+		(bookmark->details->icon, icon_size, icon_size, icon_size, icon_size);
+}
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, icon_size);
-	nautilus_file_unref (file);
+NautilusScalableIcon *
+nautilus_bookmark_get_icon (const NautilusBookmark *bookmark)
+{
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return pixbuf;
+	if (bookmark->details->icon != NULL) {
+		nautilus_scalable_icon_ref (bookmark->details->icon);
+	}
+	return bookmark->details->icon;
 }
 
 const char *
@@ -212,6 +215,29 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 	bookmark->details->name = g_strdup (new_name);
 }
 
+static NautilusScalableIcon *
+get_icon_for_uri (const char *uri)
+{
+	NautilusFile *file;
+	NautilusScalableIcon *icon;
+
+	file = nautilus_file_get (uri);
+
+	/* FIXME bugzilla.eazel.com 461: This might be a bookmark that points 
+	 * to nothing, or maybe its uri cannot be converted to a NautilusFile 
+	 * for some other reason. It should get some sort of generic icon, but 
+	 * for now it gets none.
+	 */
+	if (file == NULL) {
+		return NULL;
+	}
+
+	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
+	nautilus_file_unref (file);
+
+	return icon;
+}
+
 /**
  * nautilus_bookmark_new:
  *
@@ -225,6 +251,26 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 NautilusBookmark *
 nautilus_bookmark_new (const char *uri, const char *name)
 {
+	NautilusScalableIcon *icon;
+	NautilusBookmark *result;
+
+	/* FIXME: This needs to do fancy asynch stuff to be
+	 * notified when the icon is ready; we can't just get it
+	 * right away like this.
+	 */
+	icon = get_icon_for_uri (uri);
+	result = nautilus_bookmark_new_with_icon (uri, name, icon);
+	if (icon != NULL) {
+		nautilus_scalable_icon_unref (icon);
+	}
+
+	return result;
+}
+
+NautilusBookmark *
+nautilus_bookmark_new_with_icon (const char *uri, const char *name, 
+				 NautilusScalableIcon *icon)
+{
 	NautilusBookmark *new_bookmark;
 
 	new_bookmark = gtk_type_new (NAUTILUS_TYPE_BOOKMARK);
@@ -232,8 +278,13 @@ nautilus_bookmark_new (const char *uri, const char *name)
 	new_bookmark->details->name = g_strdup (name);
 	new_bookmark->details->uri = g_strdup (uri);
 
+	if (icon != NULL) {
+		nautilus_scalable_icon_ref (icon);
+	}
+	new_bookmark->details->icon = icon;
+
 	return new_bookmark;
-}
+}				 
 
 static GtkWidget *
 create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
@@ -252,7 +303,7 @@ create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
 }
 
 /**
- * nautilus_bookmark_menu_item_new:
+ * nautilus_bookmarnuk_menu_item_new:
  * 
  * Return a menu item representing a bookmark.
  * @bookmark: The bookmark the menu item represents.
