@@ -2660,7 +2660,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 				mime_type = gnome_vfs_get_mime_type (uri);
 
 				if (mime_type != NULL &&
-				    strcmp (mime_type, "application/x-gnome-app-info") == 0) {
+				    (strcmp (mime_type, "application/x-gnome-app-info") == 0 ||
+				     strcmp (mime_type, "application/x-desktop") == 0)) {
 					entry = gnome_desktop_item_new_from_file (path,
 							GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
 							NULL);

@@ -784,7 +784,8 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
-	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")
+	if ((nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
+	     nautilus_file_is_mime_type (file, "application/x-desktop"))
 	    && !nautilus_file_is_local (file)) {
 		return FALSE;
 	}
@@ -4896,7 +4897,8 @@ gboolean
 nautilus_file_is_nautilus_link (NautilusFile *file)
 {
 	return nautilus_file_is_mime_type (file, "application/x-nautilus-link") ||
-		nautilus_file_is_mime_type (file, "application/x-gnome-app-info");
+		nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
+		nautilus_file_is_mime_type (file, "application/x-desktop");
 }
 
 /**
