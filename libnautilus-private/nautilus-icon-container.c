@@ -3594,7 +3594,8 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	details->icons = NULL;
 	g_list_free (details->new_icons);
 	details->new_icons = NULL;
-
+	details->drop_target = NULL;
+	
 	nautilus_icon_container_update_scroll_region (container);
 }
 

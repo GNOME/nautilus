@@ -1,3 +1,8 @@
+2001-07-19  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_clear):
+	Clear details->drop_target. This should fix a hard to trigger DnD segfault.
+
 Wed Jul 18 16:17:55 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* configure.in: Update version to 1.0.4.1-SNAP for internal use.
