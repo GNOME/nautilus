@@ -391,8 +391,6 @@ trilobite_service_create_corba_object (BonoboObject *trilobite)
 		return CORBA_OBJECT_NIL;
 	}
 
-	
-
 	CORBA_exception_free (&ev);		
 
 	return (Trilobite_Service) bonobo_object_activate_servant (trilobite, servant);
@@ -416,12 +414,15 @@ trilobite_service_initialize (TrilobiteService *trilobite)
 	} 
 
 	trilobite->private = g_new0 (TrilobiteServicePrivate,1);
-	trilobite->private->service_name = NULL;
-	trilobite->private->service_version = NULL;
-	trilobite->private->service_vendor_name = NULL;
-	trilobite->private->service_vendor_url = NULL;
-	trilobite->private->service_url = NULL;
-	trilobite->private->service_icon = NULL;
+
+	/* By defaulting to "" instead of NULL, we avoid
+	   accidently passing a NULL through CORBA */
+	trilobite->private->service_name = g_strdup ("");
+	trilobite->private->service_version = g_strdup ("");
+	trilobite->private->service_vendor_name = g_strdup ("");
+	trilobite->private->service_vendor_url = g_strdup ("");
+	trilobite->private->service_url = g_strdup ("");
+	trilobite->private->service_icon = g_strdup ("");
 
 	trilobite->private->destroyed = FALSE;
 	trilobite->private->alive = TRUE;
@@ -543,86 +544,86 @@ trilobite_service_get_icon(TrilobiteService *trilobite)
 	return trilobite->private->service_icon;
 }
 
+/*
+  This is a helper function, since the code in the
+  _set_x calls is so identical. I have not moved the g_returns
+  and g_asserts into the helper, as I still want the 
+  warnings and assertions to happen in the correct function.
+ */
+static void 
+trilobite_service_set_helper (const char *value,
+			      char **element) 
+{
+	g_free (*element);
+	if (value == NULL) {
+		(*element) = g_strdup ("");
+	} else {
+		(*element) = g_strdup (value);
+	}
+}
+
 void 
 trilobite_service_set_name (TrilobiteService *trilobite, 
-			    char *value) 
+			    const char *value) 
 {
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
 	g_assert (trilobite->private != NULL);
 
-	if (trilobite->private->service_name != NULL) {
-		g_free (trilobite->private->service_name);
-	}
-	trilobite->private->service_name = g_strdup (value);
+	trilobite_service_set_helper (value, &(trilobite->private->service_name));
 }
 
 void 
 trilobite_service_set_version (TrilobiteService *trilobite, 
-			       char *value)
+			       const char *value)
 {
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
 	g_assert (trilobite->private != NULL);
 
-	if (trilobite->private->service_version != NULL) {
-		g_free (trilobite->private->service_version);
-	}
-	trilobite->private->service_version = g_strdup (value);
+	trilobite_service_set_helper (value, &(trilobite->private->service_version));
 }
 
 void 
 trilobite_service_set_vendor_name (TrilobiteService *trilobite, 
-				   char *value)
+				   const char *value)
 {
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
 	g_assert (trilobite->private != NULL);
 
-	if (trilobite->private->service_vendor_name != NULL) {
-		g_free (trilobite->private->service_vendor_name);
-	}
-	trilobite->private->service_vendor_name = g_strdup (value);
+	trilobite_service_set_helper (value, &(trilobite->private->service_vendor_name));
 }
 
 void 
 trilobite_service_set_vendor_url (TrilobiteService *trilobite, 
-				  char *value)
+				  const char *value)
 {
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
 	g_assert (trilobite->private != NULL);
 
-	if (trilobite->private->service_vendor_url != NULL) {
-		g_free (trilobite->private->service_vendor_url);
-	}
-	trilobite->private->service_vendor_url = g_strdup (value);
+	trilobite_service_set_helper (value, &(trilobite->private->service_vendor_url));
 }
 
 void 
 trilobite_service_set_url (TrilobiteService *trilobite, 
-			   char *value)
+			   const char *value)
 {
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
 	g_assert (trilobite->private != NULL);
 
-	if (trilobite->private->service_url != NULL) {
-		g_free (trilobite->private->service_url);
-	}
-	trilobite->private->service_url = g_strdup (value);
+	trilobite_service_set_helper (value, &(trilobite->private->service_url));
 }
 
 void 
 trilobite_service_set_icon (TrilobiteService *trilobite, 
-				char *value)
+				const char *value)
 {
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
 	g_assert (trilobite->private != NULL);
 
-	if (trilobite->private->service_icon != NULL) {
-		g_free (trilobite->private->service_icon);
-	}
-	trilobite->private->service_icon = g_strdup (value);
+	trilobite_service_set_helper (value, &(trilobite->private->service_icon));
 }

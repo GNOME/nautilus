@@ -27,6 +27,8 @@ libtrilobiteincludedir = $(includedir)/libtrilobite
 
 libtrilobiteinclude_HEADERS =			\
 	libtrilobite.h				\
+	trilobite-service.h			\
+	trilobite-service-public.h		\
 	trilobite-core-messaging.h		\
 	trilobite-core-metadata-manager.h	\
 	trilobite-core-network.h		\
@@ -38,6 +40,10 @@ libtrilobiteinclude_HEADERS =			\
 	$(NULL)
 
 libtrilobite_la_SOURCES =			\
+	trilobite-service-common.c		\
+	trilobite-service-stubs.c		\
+	trilobite-service-skels.c		\
+	trilobite-service.c			\
 	trilobite-core-messaging.c		\
 	trilobite-core-metadata-manager.c	\
 	trilobite-core-network.c		\
@@ -48,3 +54,19 @@ libtrilobite_la_SOURCES =			\
 	helixcode-utils.c			\
 	$(NULL)
 
+TRILOBITE_CORBA_GENERATED =		\
+	trilobite-service-stubs.c	\
+	trilobite-service-common.c	\
+	trilobite-service-skels.c	\
+	$(NULL)
+
+$(TRILOBITE_CORBA_GENERATED): trilobite-service.h
+
+IDL = $(top_srcdir)/components/services/trilobite/idl/trilobite-service.idl
+
+trilobite-service.h: $(IDL)
+	$(prefix)/bin/orbit-idl -I${datadir}/idl $(IDL)
+
+CLEANFILES= $(TRILOBITE_CORBA_GENERATED) trilobite-service.h
+
+trilobite-service.c: trilobite-service.h

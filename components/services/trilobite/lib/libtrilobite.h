@@ -31,6 +31,8 @@
 #define __LIBTRILOBITE_H__
 
 #include <gnome.h>
+#include <libtrilobite/trilobite-service.h>
+#include <libtrilobite/trilobite-service-public.h>
 #include <libtrilobite/trilobite-core-messaging.h>
 #include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-core-network.h>

@@ -53,14 +53,14 @@ struct _TrilobiteServiceClass
 	char* (*get_vendor_name)  (TrilobiteService *trilobite);
 	char* (*get_vendor_url)   (TrilobiteService *trilobite);
 	char* (*get_url)          (TrilobiteService *trilobite);
-	char* (*get_icon)     (TrilobiteService *trilobite);
+	char* (*get_icon)         (TrilobiteService *trilobite);
 
-	void (*set_name)         (TrilobiteService *trilobite, char *value);
-	void (*set_version)      (TrilobiteService *trilobite, char *value);
-	void (*set_vendor_name)  (TrilobiteService *trilobite, char *value);
-	void (*set_vendor_url)   (TrilobiteService *trilobite, char *value);
-	void (*set_url)          (TrilobiteService *trilobite, char *value);
-	void (*set_icon)     (TrilobiteService *trilobite, char *value);
+	void (*set_name)         (TrilobiteService *trilobite, const char *value);
+	void (*set_version)      (TrilobiteService *trilobite, const char *value);
+	void (*set_vendor_name)  (TrilobiteService *trilobite, const char *value);
+	void (*set_vendor_url)   (TrilobiteService *trilobite, const char *value);
+	void (*set_url)          (TrilobiteService *trilobite, const char *value);
+	void (*set_icon)         (TrilobiteService *trilobite, const char *value);
 
 	gpointer servant_init;
 	gpointer servant_fini;
@@ -88,12 +88,12 @@ char*              trilobite_service_get_vendor_url      (TrilobiteService *tril
 char*              trilobite_service_get_url             (TrilobiteService *trilobite);
 char*              trilobite_service_get_icon            (TrilobiteService *trilobite);
 
-void               trilobite_service_set_name            (TrilobiteService *trilobite, char *value);
-void               trilobite_service_set_version         (TrilobiteService *trilobite, char *value);
-void               trilobite_service_set_vendor_name     (TrilobiteService *trilobite, char *value);
-void               trilobite_service_set_vendor_url      (TrilobiteService *trilobite, char *value);
-void               trilobite_service_set_url             (TrilobiteService *trilobite, char *value);
-void               trilobite_service_set_icon            (TrilobiteService *trilobite, char *value);
+void               trilobite_service_set_name            (TrilobiteService *trilobite, const char *value);
+void               trilobite_service_set_version         (TrilobiteService *trilobite, const char *value);
+void               trilobite_service_set_vendor_name     (TrilobiteService *trilobite, const char *value);
+void               trilobite_service_set_vendor_url      (TrilobiteService *trilobite, const char *value);
+void               trilobite_service_set_url             (TrilobiteService *trilobite, const char *value);
+void               trilobite_service_set_icon            (TrilobiteService *trilobite, const char *value);
 
 #ifdef __cplusplus
 }
