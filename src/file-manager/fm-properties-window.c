@@ -3532,7 +3532,7 @@ void
 fm_properties_window_present (GList *original_files,
 			      FMDirectoryView *directory_view) 
 {
-	GList *l;
+	GList *l, *next;
 	GtkWidget *parent_window;
 	StartupData *startup_data;
 	GList *target_files;
@@ -3597,7 +3597,8 @@ fm_properties_window_present (GList *original_files,
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 
 
-	for (l = startup_data->target_files; l != NULL; l = l->next) {
+	for (l = startup_data->target_files; l != NULL; l = next) {
+		next = l->next;
 		nautilus_file_call_when_ready
 			(NAUTILUS_FILE (l->data),
 			 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,

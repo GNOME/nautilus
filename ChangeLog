@@ -1,5 +1,11 @@
 2003-06-11  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-properties-window.c (fm_properties_window_present):
+	Handle the case when the data is alreay ready.
+	This fixes properties on the home icon on the desktop.
+
+2003-06-11  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-view.c (fm_list_view_did_not_drag) 
 	(button_press_callback):
 	Don't deselect multiple selected files when dragging
