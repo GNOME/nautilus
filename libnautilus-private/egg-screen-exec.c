@@ -33,6 +33,17 @@
 
 extern char **environ;
 
+/**
+ * egg_screen_exec_display_string:
+ * @screen: A #GdkScreen
+ *
+ * Description: Returns a string that when passed to XOpenDisplay()
+ * would cause @screen to be the default screen on the newly opened
+ * X display. This string is suitable for setting $DISPLAY when
+ * launching an application which should appear on @screen.
+ *
+ * Returns: a newly allocated string or %NULL on error.
+ **/
 char *
 egg_screen_exec_display_string (GdkScreen *screen)
 {
@@ -42,7 +53,13 @@ egg_screen_exec_display_string (GdkScreen *screen)
 	char       *retval;
 	char       *p;
 
-	old_display = gdk_display_get_name (gdk_display_get_default ());
+	g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+	if (gdk_screen_get_default () == screen)
+		return g_strdup (gdk_display_get_name (
+					gdk_screen_get_display (screen)));
+
+	old_display = gdk_display_get_name (gdk_screen_get_display (screen));
 
 	str = g_string_new ("DISPLAY=");
 	g_string_append (str, old_display);
@@ -63,6 +80,17 @@ egg_screen_exec_display_string (GdkScreen *screen)
 #endif
 }
 
+/**
+ * egg_screen_exec_environment:
+ * @screen: A #GdkScreen
+ *
+ * Description: Modifies the current program environment to
+ * ensure that $DISPLAY is set such that a launched application
+ * inheriting this environment would appear on @screen.
+ *
+ * Returns: a newly-allocated %NULL-terminated array of strings or
+ * %NULL on error. Use g_strfreev() to free it.
+ **/
 char **
 egg_screen_exec_environment (GdkScreen *screen)
 {
@@ -70,6 +98,8 @@ egg_screen_exec_environment (GdkScreen *screen)
 	int    i;
 #ifdef HAVE_GTK_MULTIHEAD
 	int    display_index = -1;
+
+	g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
 
 	for (i = 0; environ [i]; i++)
 		if (!strncmp (environ [i], "DISPLAY", 7))
@@ -96,6 +126,20 @@ egg_screen_exec_environment (GdkScreen *screen)
 	return retval;
 }
 
+/**
+ * egg_screen_execute_async:
+ * @screen: A #GdkScreen
+ * @dir: Directory in which child should be executed, or %NULL for current
+ *       directory
+ * @argc: Number of arguments
+ * @argv: Argument vector to exec child
+ *
+ * Description: Like gnome_execute_async(), but ensures that the child
+ * is launched in an environment such that if it calls XOpenDisplay()
+ * the resulting display would have @screen as the default screen.
+ *
+ * Returns: process id of child, or %-1 on error.
+ **/
 int
 egg_screen_execute_async (GdkScreen    *screen,
                           const char   *dir,
@@ -125,6 +169,19 @@ egg_screen_execute_async (GdkScreen    *screen,
 #endif
 }
 
+/**
+ * egg_screen_execute_shell:
+ * @screen: A #GdkScreen.
+ * @dir: Directory in which child should be executed, or %NULL for current
+ *       directory
+ * @commandline: Shell command to execute
+ *
+ * Description: Like gnome_execute_shell(), but ensures that the child
+ * is launched in an environment such that if it calls XOpenDisplay()
+ * the resulting display would have @screen as the default screen.
+ *
+ * Returns: process id of shell, or %-1 on error.
+ **/
 int
 egg_screen_execute_shell (GdkScreen    *screen,
                           const char   *dir,
@@ -157,6 +214,19 @@ egg_screen_execute_shell (GdkScreen    *screen,
 #endif
 }
 
+/**
+ * egg_screen_execute_command_line_async:
+ * @screen: A #GdkScreen.
+ * @command_line: a command line
+ * @error: return location for errors
+ *
+ * Description: Like g_spawn_command_line_async(), but ensures that
+ * the child is launched in an environment such that if it calls
+ * XOpenDisplay() the resulting display would have @screen as the
+ * default screen.
+ *
+ * Returns: %TRUE on success, %FALSE if error is set.
+ **/
 gboolean
 egg_screen_execute_command_line_async (GdkScreen    *screen,
                                        const char   *command,
@@ -167,6 +237,7 @@ egg_screen_execute_command_line_async (GdkScreen    *screen,
 	char     **argv = NULL;
 	char     **envp = NULL;
 
+	g_return_val_if_fail (GDK_IS_SCREEN (screen), FALSE);
 	g_return_val_if_fail (command != NULL, FALSE);
 
 	if (!g_shell_parse_argv (command, NULL, &argv, error))
