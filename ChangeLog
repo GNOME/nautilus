@@ -1,3 +1,20 @@
+2000-11-07  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_create_requirement),
+	(eazel_install_do_rpm_dependency_check):
+	* components/services/install/lib/eazel-install-types.c:
+	(eazel_install_requirement_dep_name_compare):
+	* components/services/install/lib/eazel-install-types.h:
+
+	Backport bug 4594's fix to head: skip checking breakage on
+	packages we're about to install/upgrade.
+	
+	* nautilus-installer/src/prescript:
+
+	Revert Josh's well-meaning but incorrect patch to the spelling of
+	Gnome in the Nautilus PR1 version test.
+
 2000-11-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus-installer/src/installer.c: (did_we_already_try),

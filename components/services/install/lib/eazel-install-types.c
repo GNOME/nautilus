@@ -921,6 +921,22 @@ eazel_install_requirement_dep_compare (PackageRequirement *req,
 	}
 }
 
+/* Given a package name, checks to see if theres a requirement already for this */
+int 
+eazel_install_requirement_dep_name_compare (PackageRequirement *req, 
+					    const char *name)
+{
+	g_assert (req->required);
+	g_assert (name);
+	if (req->required->name) {
+		return strcmp (req->required->name, name);
+	} else if (req->required->provides) {
+		return strcmp ((char*)(req->required->provides->data), name);
+	} else {
+		return -1;
+	}
+}
+
 
 int 
 eazel_install_package_version_compare (PackageData *pack, 
