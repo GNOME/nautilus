@@ -87,6 +87,11 @@ static void tree_expand_callback                (NautilusView          *nautilus
 						 GtkCTreeNode          *node,
 						 NautilusTreeView      *view);
 
+static void tree_select_row_callback            (GtkCTree              *tree,
+						 GtkCTreeNode          *node,
+						 gint                   column,
+						 NautilusTreeView      *view);
+
 static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
 						 const char            *uri);
 
@@ -710,6 +715,11 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    GTK_SIGNAL_FUNC (tree_expand_callback), 
 			    view);
 	
+	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+			    "tree_select_row",
+			    GTK_SIGNAL_FUNC (tree_select_row_callback), 
+			    view);
+
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
@@ -845,13 +855,29 @@ tree_expand_callback (NautilusView     *nautilus_view,
 		      GtkCTreeNode     *node,
 		      NautilusTreeView *view)
 {
-	char *uri;
+	const char *uri;
 
-	uri = (char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-						    node);
+	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
+							  node);
 
 	nautilus_tree_expand_uri (view, uri);
 }
 
 
 
+
+static void tree_select_row_callback            (GtkCTree              *tree,
+						 GtkCTreeNode          *node,
+						 gint                   column,
+						 NautilusTreeView      *view)
+{
+	const char *uri;
+	
+	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
+							  node);
+
+
+	if (uri != NULL) {
+		nautilus_view_open_location (NAUTILUS_VIEW (view->details->nautilus_view), uri);
+	}
+}

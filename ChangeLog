@@ -1,3 +1,10 @@
+2000-07-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-view.c:
+	(tree_expand_callback): constness fixes
+	(nautilus_tree_view_initialize, tree_select_row_callback):
+	Navigate to selected location on row selection.
+
 2000-07-03  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (draw_or_hit_test_all_tabs):
