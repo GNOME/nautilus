@@ -449,7 +449,9 @@ intl/Makefile
 test/Makefile
 ])
 
-echo "<= Nautilus configuration summary : =>"
+dnl <= Configuration summary =>
+
+echo "<= Nautilus configuration summary :"
 dnl <= Rpm-view integrated? =>
 grep -sq HAVE_RPM config.h
 case $? in
@@ -473,6 +475,7 @@ echo "
 Mozilla component	: NO"
 ;;
 esac
+dnl <= Do we want Eazel services =>
 case "X$EAZEL_SERVICES" in
 X1)
 echo "
@@ -483,4 +486,6 @@ echo "
 Eazel services          : NO"
 ;;
 esac
-echo "<=                                  =>"
+echo "=>"
+
+dnl <= End of configuration summary =>
