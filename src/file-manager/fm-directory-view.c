@@ -1482,7 +1482,7 @@ zoomable_zoom_to_fit_callback (NautilusZoomable *zoomable, FMDirectoryView *view
 
 typedef struct {
 	GHashTable *debuting_uris;
-	GList	   *added_uris;
+	GList	   *added_files;
 } DebutingUriData;
 
 static void
@@ -1490,11 +1490,11 @@ debuting_uri_data_free (DebutingUriData *data)
 {
 	if (data != NULL) {
 		nautilus_g_hash_table_free_deep (data->debuting_uris);
-		nautilus_g_list_free_deep (data->added_uris);
+		nautilus_g_list_free_deep_custom (data->added_files, (GFunc) gtk_object_unref, NULL);
 		g_free (data);
 	}
 }
-
+ 
 /* This signal handler watch for the arrival of the icons created
  * as the result of a file operation. Once the last one is detected
  * it selects and reveals them all.
@@ -1507,20 +1507,21 @@ debuting_uri_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, D
 	uri = nautilus_file_get_uri (new_file);
 
 	if (nautilus_g_hash_table_remove_deep (data->debuting_uris, uri)) {
-		data->added_uris = g_list_prepend (data->added_uris, uri);
+		gtk_object_ref (GTK_OBJECT (new_file));
+		data->added_files = g_list_prepend (data->added_files, new_file);
 
 		if (g_hash_table_size (data->debuting_uris) == 0) {
-			fm_directory_view_set_selection (view, data->added_uris);
+			fm_directory_view_set_selection (view, data->added_files);
 			fm_directory_view_reveal_selection (view);
 			gtk_signal_disconnect_by_func (GTK_OBJECT (view), &debuting_uri_add_file_callback, data);
 		}
-	} else {
-		g_free (uri);
 	}
+	
+	g_free (uri);
 }
 
 typedef struct {
-	GList		*added_uris;
+	GList		*added_files;
 	FMDirectoryView *directory_view;
 }CopyMoveDoneData;
 
@@ -1528,7 +1529,7 @@ static void
 copy_move_done_data_free (CopyMoveDoneData *data)
 {
 	if (data != NULL) {
-		nautilus_g_list_free_deep (data->added_uris);
+		nautilus_g_list_free_deep_custom (data->added_files, (GFunc) gtk_object_unref, NULL);
 		g_free (data);
 	}
 }
@@ -1536,7 +1537,8 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 static void
 pre_copy_move_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, CopyMoveDoneData *data)
 {
-	data->added_uris = g_list_prepend (data->added_uris, nautilus_file_get_uri (new_file));
+	gtk_object_ref (GTK_OBJECT (new_file));
+	data->added_files = g_list_prepend (data->added_files, new_file);
 }
 
 /* This needs to be called prior to nautilus_file_operations_copy_move.
@@ -1573,7 +1575,16 @@ pre_copy_move (FMDirectoryView *directory_view)
 static gboolean
 copy_move_done_partition_func (gpointer data, gpointer callback_data)
 {
-	return nautilus_g_hash_table_remove_deep ((GHashTable *) callback_data, (char *) data);
+ 	char* uri;
+ 	gboolean result;
+ 	
+	uri = nautilus_file_get_uri (NAUTILUS_FILE (data));
+
+	result = nautilus_g_hash_table_remove_deep ((GHashTable *) callback_data, uri);
+	
+	g_free (uri);
+
+	return result;
 }
 
 /* When this function is invoked, the file operation is over, but all
@@ -1596,13 +1607,13 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 
 	debuting_uri_data = g_new (DebutingUriData, 1);
 	debuting_uri_data->debuting_uris = debuting_uris;
-	debuting_uri_data->added_uris	 = nautilus_g_list_partition (copy_move_done_data->added_uris,
+	debuting_uri_data->added_files	 = nautilus_g_list_partition (copy_move_done_data->added_files,
 								      copy_move_done_partition_func,
 								      debuting_uris,
-								      &copy_move_done_data->added_uris);
+								      &copy_move_done_data->added_files);
 								      
 	/* We're passed the same data used by pre_copy_move_add_file_callback, so disconnecting
-	 * it will free data. We've already siphoned off the added_uris we need, and stashed the
+	 * it will free data. We've already siphoned off the added_files we need, and stashed the
 	 * directory_view pointer.
 	 */
 	gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view), &pre_copy_move_add_file_callback, data);
@@ -1610,10 +1621,10 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 	if (g_hash_table_size (debuting_uris) == 0) {
 		/* on the off-chance that all the icons have already been added ...
 		 */
-		if (debuting_uri_data->added_uris != NULL) {
-			fm_directory_view_set_selection (directory_view, debuting_uri_data->added_uris);
+		if (debuting_uri_data->added_files != NULL) {
+			fm_directory_view_set_selection (directory_view, debuting_uri_data->added_files);
 			fm_directory_view_reveal_selection (directory_view);
-			nautilus_g_list_free_deep (debuting_uri_data->added_uris);
+			debuting_uri_data_free (debuting_uri_data);
 		}
 	} else {
 		/* We need to run after the default handler adds the folder we want to
@@ -3947,6 +3958,8 @@ load_directory (FMDirectoryView *view,
 	view->details->directory_as_file =
 		nautilus_directory_get_corresponding_file (directory);
 	nautilus_file_unref (old_file);
+
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
 	view->details->force_reload = force_reload;
 

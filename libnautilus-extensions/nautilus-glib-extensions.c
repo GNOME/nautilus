@@ -879,7 +879,9 @@ nautilus_g_hash_table_safe_for_each (GHashTable *hash_table,
 
 
 gboolean
-nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer key, GFreeFunc key_free, GFreeFunc data_free)
+nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer key,
+					  GFreeFunc key_free_func, gpointer key_free_data,
+					  GFreeFunc value_free_func, value_free_data)
 {
 	gpointer key_in_table;
 	gpointer value;
@@ -888,11 +890,11 @@ nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer 
 	 */
 	if (g_hash_table_lookup_extended (hash_table, key, &key_in_table, &value)) {
 		g_hash_table_remove (hash_table, key);
-		if (key_free) {
-			key_free (key_in_table);
+		if (key_free_func) {
+			key_free_func (key_in_table, key_free_data);
 		}
-		if (data_free) {
-			data_free (value);
+		if (value_free_func) {
+			value_free_func (value, value_free_data);
 		}
 		return TRUE;
 	} else {
@@ -903,12 +905,14 @@ nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer 
 gboolean
 nautilus_g_hash_table_remove_deep (GHashTable *hash_table, gconstpointer key)
 {
-	return nautilus_g_hash_table_remove_deep_custom (hash_table, key, g_free, g_free);
+	return nautilus_g_hash_table_remove_deep_custom (hash_table, key, g_free, NULL, g_free, NULL);
 }
 
 typedef struct {
-	GFreeFunc key_free;
-	GFreeFunc data_free;
+	GFreeFunc key_free_func;
+	gpointer  key_free_data;
+	GFreeFunc value_free_func;
+	gpointer  value_free_data;
 } HashTableFreeFuncs;
 
 static gboolean
@@ -917,23 +921,27 @@ nautilus_g_hash_table_free_deep_helper (gpointer key, gpointer value, gpointer d
 	HashTableFreeFuncs *free_funcs;
 	free_funcs = (HashTableFreeFuncs *) data;
 	
-	if (free_funcs->key_free) {
-		free_funcs->key_free (key);
+	if (free_funcs->key_free_func) {
+		free_funcs->key_free_func (key, free_funcs->key_free_data);
 	}
-	if (free_funcs->data_free) {
-		free_funcs->data_free (data);
+	if (free_funcs->value_free_func) {
+		free_funcs->value_free_func (data, free_funcs->value_free_data);
 	}
 	return TRUE;
 }
 
 void
-nautilus_g_hash_table_free_deep_custom (GHashTable *hash_table, GFreeFunc key_free, GFreeFunc data_free)
+nautilus_g_hash_table_free_deep_custom (GHashTable *hash_table,
+					GFreeFunc key_free_func, gpointer key_free_data,
+					GFreeFunc value_free_func, gpointer value_free_data)
 {
 	HashTableFreeFuncs free_funcs;
 
 	if (hash_table != NULL) {
-		free_funcs.key_free = key_free;
-		free_funcs.data_free = data_free;
+		free_funcs.key_free_func = key_free_func;
+		free_funcs.key_free_data = key_free_data;
+		free_funcs.value_free_func = value_free_func;
+		free_funcs.value_free_data = value_free_data;
 		
 		g_hash_table_foreach_remove (hash_table, nautilus_g_hash_table_free_deep_helper, &free_funcs);
 	}
@@ -942,7 +950,7 @@ nautilus_g_hash_table_free_deep_custom (GHashTable *hash_table, GFreeFunc key_fr
 void
 nautilus_g_hash_table_free_deep (GHashTable *hash_table)
 {
-	nautilus_g_hash_table_free_deep_custom (hash_table, g_free, g_free);
+	nautilus_g_hash_table_free_deep_custom (hash_table, g_free, NULL, g_free, NULL);
 }
 
 /* This is something like the new g_string_append_len function from

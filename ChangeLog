@@ -1,3 +1,20 @@
+2000-10-24  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_hash_table_remove_deep_custom),
+	(nautilus_g_hash_table_remove_deep),
+	(nautilus_g_hash_table_free_deep_helper),
+	(nautilus_g_hash_table_free_deep_custom),
+	(nautilus_g_hash_table_free_deep):
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	Fixed APIs of new utils to match existing, similar, fns.
+
+	* src/file-manager/fm-directory-view.c: (debuting_uri_data_free),
+	(debuting_uri_add_file_callback), (copy_move_done_data_free),
+	(pre_copy_move_add_file_callback), (copy_move_done_partition_func),
+	(copy_move_done_callback):
+	Icons now left selected after copy_move operation.
+
 2000-10-24  Brian Frank  <bfrank@eazel.com>
 
 	* data/static_bookmarks.xml
