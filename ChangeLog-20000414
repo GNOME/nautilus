@@ -1,3 +1,9 @@
+2000-01-20  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_file_metadata): Fix segfault that was
+	happening when viewing a folder without a metafile.
+
 2000-01-19  Darin Adler  <darin@eazel.com>
 
 	The list view now has a background color just like the

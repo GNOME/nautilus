@@ -630,6 +630,8 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 
 	/* The root itself represents the directory. */
 	root = xmlDocGetRootElement (directory->details->metafile_tree);
+	if (root == NULL)
+		return g_strdup (default_metadata);
 
 	/* The children represent the files.
 	   This linear search is temporary.
