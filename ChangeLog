@@ -1,3 +1,64 @@
+2000-07-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* Makefile.am:
+	* tools/.cvsignore:
+	* tools/Makefile.am:
+	* tools/leak-checker/.cvsignore:
+	* tools/leak-checker/Makefile.am:
+	* tools/leak-checker/nautilus-leak-checker-stubs.h:
+	* tools/leak-checker/nautilus-leak-checker.c:
+	(nautilus_leak_allocation_record_init),
+	(nautilus_leak_allocation_record_copy),
+	(nautilus_leak_allocation_record_finalize),
+	(nautilus_leak_allocation_record_free),
+	(nautilus_leak_stack_crawl_compare), (nautilus_leak_initialize),
+	(get_stack_trace), (detect_reentry), (nautilus_leak_record_malloc),
+	(nautilus_leak_record_realloc), (nautilus_leak_record_free),
+	(nautilus_leak_initialize_if_needed),
+	(allocate_temporary_fallback_memory), (__libc_malloc),
+	(__libc_memalign), (__libc_calloc), (__libc_realloc),
+	(__libc_free), (print_leaks_at_exit), (__libc_start_main),
+	(print_one_leak), (nautilus_leak_print_leaks),
+	(nautilus_leak_checker_init), (malloc), (realloc), (memalign),
+	(calloc), (free), (allocate_lots), (leak_mem2), (leak_mem), (main):
+	* tools/leak-checker/nautilus-leak-checker.h:
+	* tools/leak-checker/nautilus-leak-hash-table.c:
+	(nautilus_leak_hash_element_finalize),
+	(nautilus_leak_hash_element_hash),
+	(nautilus_leak_hash_element_match),
+	(nautilus_leak_hash_element_vector_inititalize),
+	(nautilus_leak_hash_element_vector_finalize),
+	(nautilus_leak_hash_element_vector_at),
+	(nautilus_leak_hash_element_vector_add),
+	(nautilus_leak_hash_element_vector_remove),
+	(nautilus_leak_hash_table_optimal_size),
+	(nautilus_leak_hash_table_initialize),
+	(nautilus_leak_hash_table_finalize),
+	(nautilus_leak_hash_table_new), (nautilus_leak_hash_table_free),
+	(nautilus_leak_hash_table_hash), (nautilus_leak_hash_table_find),
+	(nautilus_leak_hash_table_add),
+	(nautilus_leak_hash_table_remove_element),
+	(nautilus_leak_hash_table_remove),
+	(nautilus_leak_table_new_entry_at),
+	(nautilus_leak_table_add_entry), (nautilus_leak_table_new),
+	(nautilus_leak_table_free), (sort_by_count),
+	(nautilus_leak_table_sort_by_count), (sort_by_size),
+	(nautilus_leak_table_sort_by_size),
+	(nautilus_leak_table_each_item):
+	* tools/leak-checker/nautilus-leak-hash-table.h:
+	* tools/leak-checker/nautilus-leak-symbol-lookup.c:
+	(nautilus_leak_find_symbol_in_map),
+	(nautilus_leak_symbol_map_get_offsets),
+	(nautilus_leak_symbol_map_load),
+	(nautilus_leak_symbol_map_load_if_needed),
+	(nautilus_leak_print_symbol_cleanup),
+	(nautilus_leak_find_symbol_address),
+	(nautilus_leak_print_symbol_address):
+	* tools/leak-checker/nautilus-leak-symbol-lookup.h:
+
+	Turn my dumbass brain on this time before committing.  
+	Add the moved leak checker code for real.
+	
 2000-07-14  Darin Adler  <darin@eazel.com>
 
 	* .cvsignore:
