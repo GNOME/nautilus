@@ -213,7 +213,7 @@ nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
 {
 	GdkPixbuf *pixbuf;
 
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, icon_size);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, icon_size, FALSE);
 	if (pixbuf == NULL) {
 		return FALSE;
 	}
@@ -226,7 +226,8 @@ nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
 
 GdkPixbuf *	    
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
-			      guint icon_size)
+			      guint icon_size,
+			      gboolean optimize_for_anti_aliasing)
 {
 	GdkPixbuf *result;
 	NautilusScalableIcon *icon;
@@ -239,7 +240,10 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	}
 	
 	result = nautilus_icon_factory_get_pixbuf_for_icon
-		(icon, icon_size, icon_size, icon_size, icon_size, NULL, TRUE);
+		(icon,
+		 icon_size, icon_size, icon_size, icon_size,
+		 optimize_for_anti_aliasing,
+		 NULL, TRUE);
 	nautilus_scalable_icon_unref (icon);
 	
 	return result;
@@ -350,8 +354,7 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 	}
 
 	if (nautilus_icon_factory_is_icon_ready_for_file (bookmark->details->file)) {
-		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file,
-								    NULL, FALSE);
+		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file, NULL);
 		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
 			if (bookmark->details->icon != NULL) {
 				nautilus_scalable_icon_unref (bookmark->details->icon);
@@ -435,7 +438,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 		icon_name = GENERIC_BOOKMARK_ICON_NAME;
 	}
 	bookmark->details->icon = nautilus_scalable_icon_new_from_text_pieces 
-		(NULL, icon_name, NULL, NULL, FALSE);
+		(NULL, icon_name, NULL, NULL);
 }
 
 /**

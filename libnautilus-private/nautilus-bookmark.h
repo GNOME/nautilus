@@ -93,7 +93,8 @@ gboolean              nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark   
 							     GdkPixmap           **pixmap_return,
 							     GdkBitmap           **mask_return);
 GdkPixbuf *           nautilus_bookmark_get_pixbuf          (NautilusBookmark     *bookmark,
-							     guint		   icon_size);
+							     guint		   icon_size,
+							     gboolean              optimize_for_anti_aliasing);
 GtkWidget *           nautilus_bookmark_menu_item_new       (NautilusBookmark     *bookmark);
 
 

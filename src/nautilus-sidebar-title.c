@@ -630,7 +630,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	}
 	
 	/* fetch the emblem icons from metadata */
-	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file, FALSE, NULL);
+	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file, NULL);
 
 	/* loop through the list of emblems, installing them in the box */
 	for (p = icons; p != NULL; p = p->next) {
@@ -638,7 +638,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			(p->data,
 			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
 			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-			 NULL, FALSE);
+			 FALSE, NULL, FALSE);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
 			gdk_pixbuf_unref (pixbuf);

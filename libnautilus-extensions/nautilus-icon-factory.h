@@ -102,15 +102,12 @@ guint                 nautilus_get_icon_size_for_zoom_level              (Nautil
 
 /* Choose the appropriate icon, but don't render it yet. */
 NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file,
-									  const char                  *modifier,
-									  gboolean                     anti_aliased);
+									  const char                  *modifier);
 gboolean              nautilus_icon_factory_is_icon_ready_for_file       (NautilusFile                *file);
 GList *               nautilus_icon_factory_get_required_file_attributes (void);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile                *file,
-									  gboolean                     anti_aliased,
-									  EelStringList          *exclude);
-NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name,
-									  gboolean                     anti_aliased);
+									  EelStringList               *exclude);
+NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name);
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
@@ -125,8 +122,9 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
 									  guint                        nominal_size_in_pixels_y,
 									  guint                        maximum_size_in_pixels_x,
 									  guint                        maximum_size_in_pixels_y,
+									  gboolean                     optimized_for_anti_aliasing,
 									  NautilusEmblemAttachPoints  *attach_points,
-									  gboolean		       wants_default);
+									  gboolean                     wants_default);
 									  
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.
@@ -134,7 +132,7 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile                *file,
 									  const char                  *modifer,
 									  guint                        size_in_pixels,
-									  gboolean                     anti_aliased);
+									  gboolean                     optimized_for_anti_aliasing);
 
 /* Convenience functions for legacy interfaces that require a pixmap and
  * bitmap. Maybe we can get rid of these one day.
@@ -146,10 +144,10 @@ void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (Nautil
 									  GdkBitmap                  **mask);
 /* Convenience routine for getting a pixbuf from an icon name
  */
-GdkPixbuf *	      nautilus_icon_factory_get_pixbuf_from_name	 (const char		      *icon_name,
-									  const char		      *modifer,
-									  guint			      size_in_pixels,
-									  gboolean		      anti_aliased);									  
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const char                  *icon_name,
+									  const char                  *modifer,
+									  guint                        size_in_pixels,
+									  gboolean                     optimized_for_anti_aliasing);
 /* Manage a scalable icon.
  * Since the factory always passes out references to the same scalable
  * icon, you can compare two scalable icons to see if they are the same
@@ -173,8 +171,7 @@ void                  nautilus_scalable_icon_get_text_pieces             (Nautil
 NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces        (const char                  *uri,
 									  const char                  *name,
 									  const char                  *modifier,
-									  const char                  *embedded_text,
-									  gboolean                     anti_aliased);
+									  const char                  *embedded_text);
 
 /* Convenience function for freeing a list of scalable icons.
  * Unrefs all the icons before freeing the list.

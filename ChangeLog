@@ -1,3 +1,76 @@
+2001-04-16  Darin Adler  <darin@eazel.com>
+
+	Fixed API to icon factory that took an anti-aliased parameter when
+	creating a scalable icon. Instead it should be possible to get a
+	scalable icon and then get either an anti-aliased-optimized or
+	non-anti-alias-optimized version of the icon.
+
+	* libnautilus-extensions/nautilus-bookmark.h:
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixmap_and_mask): Pass FALSE so we get the
+	non-anti-aliased version.
+	(nautilus_bookmark_get_pixbuf): Add parameter to indicate if we
+	want the anti-aliased-optimized version or not.
+	(nautilus_bookmark_update_icon): Get rid of anti-aliased boolean
+	here since we are just updating the scalable icon.
+	(nautilus_bookmark_set_icon_to_default): Get rid of anti-aliased
+	boolean here since we are just updating the scalable icon.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon): Pass in a flag to indicate
+	if we need the anti-aliased version of the icon or not.
+
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_scalable_icon_new_from_text_pieces): Removed the
+	anti-aliased parameter.
+	(nautilus_scalable_icon_hash), (nautilus_scalable_icon_equal):
+	Remove the anti-aliased flag. A scalable icon itself is created
+	before we make the "anti-aliased or not" choice.
+	(nautilus_icon_factory_get_icon_for_file): Since we no longer know
+	whether the icon will be needed anti-aliased or not, make the
+	thumbnail code always use the anti-aliased version (and added
+	FIXME). Also changed the "loading" image to use the normal icon
+	name case instead of hard-coding.
+	(nautilus_icon_factory_get_emblem_icon_by_name): Removed the
+	anti-aliased parameter.
+	(nautilus_icon_factory_get_emblem_icons_for_file): Removed the
+	anti-aliased parameter.
+	(load_specific_icon): Add an anti-aliased parameter.
+	(load_icon_for_scaling): Add an anti-aliased parameter.
+	(load_icon_scale_if_necessary): Pass in the anti-aliased parameter
+	from the icon size request.
+	(get_icon_from_cache): Pass in the anti-aliased parameter from the
+	icon size request.
+	(nautilus_icon_factory_get_pixbuf_for_icon): Add an anti-aliased
+	parameter.
+	(cache_key_hash): Include the anti-aliased flag in the hash.
+	(cache_key_equal): Include the anti-aliased flag in the compare.
+	(nautilus_icon_factory_get_pixbuf_for_file): Pass the anti-aliased
+	parameter into the get_pixbuf half, not the get_icon_for_file
+	half.
+	(nautilus_icon_factory_get_pixbuf_from_name): Pass the
+	anti-aliased parameter into the get_pixbuf half, not the
+	scalable_icon_new half.
+	(load_icon_with_embedded_text): Remove the anti-aliased parameter.
+
+	* src/file-manager/fm-icon-view.c: (get_icon_images_callback): Get
+	rid of code to pass in the anti-aliased parameter.
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_get_emblem_pixbufs_for_file): Pass the anti-aliased
+	parameter to the pixbuf-getting function, not the
+	scalable-icon-getting part.
+	* src/nautilus-bookmark-parsing.c:
+	(nautilus_bookmark_new_from_node): No need to pass an anti-aliased
+	parameter (before it was always FALSE).
+	* src/nautilus-sidebar-title.c: (update_emblems): Pass FALSE for
+	the anti-aliased parameter to the get_pixbuf call rather than to
+	the get_icons call.
+	* src/nautilus-window-manage-views.c: (get_history_list_callback):
+	No need to pass FALSE for anti-aliased any more.
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu): No need
+	to pass FALSE for anti-aliased any more.
+
 2001-04-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	Add a global to track the presence of /etc/mnttab and
@@ -10,7 +83,7 @@
 	(nautilus_volume_monitor_initialize_class),
 	(get_current_mount_list):
 
-Sun Apr 15 23:55:21 2001  George Lebl <jirka@5z.com>
+2001-04-15  George Lebl <jirka@5z.com>
 
 	* configure.in, po/cs.po:  Being the nationalistic bastard I am,
 	  made an initial translation since nobody else seemed to want to

@@ -2082,7 +2082,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 
 	emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
 		(FM_DIRECTORY_VIEW (list_view));
-	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, anti_aliased, emblems_to_ignore);
+	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, emblems_to_ignore);
 	eel_string_list_free (emblems_to_ignore);
 	
 	emblem_pixbufs = NULL;
@@ -2093,6 +2093,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 			(p->data, 
 			 emblem_size, emblem_size,
 			 emblem_size, emblem_size,
+			 anti_aliased,
 			 NULL, anti_aliased);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend

@@ -1678,7 +1678,7 @@ get_history_list_callback (NautilusViewFrame *view,
 
 		name = nautilus_bookmark_get_name (bookmark);
 		location = nautilus_bookmark_get_uri (bookmark);
-		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
+		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
 		pixbuf_xml = bonobo_ui_util_pixbuf_to_xml (pixbuf);
 		
 		list->_buffer[i].title = CORBA_string_dup (name);

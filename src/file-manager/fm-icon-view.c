@@ -1823,21 +1823,19 @@ get_icon_images_callback (NautilusIconContainer *container,
 			  GList **emblem_icons,
 			  FMIconView *icon_view)
 {
-	gboolean smooth_graphics;
 	EelStringList *emblems_to_ignore;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	smooth_graphics = nautilus_icon_container_get_anti_aliased_mode (container);
 	if (emblem_icons != NULL) {
 		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
 			(FM_DIRECTORY_VIEW (icon_view));
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, smooth_graphics, emblems_to_ignore);
+		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, emblems_to_ignore);
 		eel_string_list_free (emblems_to_ignore);
 	}
-	return nautilus_icon_factory_get_icon_for_file (file, modifier, smooth_graphics);
+	return nautilus_icon_factory_get_icon_for_file (file, modifier);
 }
 
 static char *

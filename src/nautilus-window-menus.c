@@ -879,7 +879,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	g_free (truncated_name);
 
 	/* Create menu item with pixbuf */
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
 	nautilus_bonobo_add_numbered_menu_item 
 		(window->details->shell_ui, 
 		 parent_path, 
