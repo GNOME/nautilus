@@ -25,8 +25,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#include <config.h>
 #include "eazel-install-tests.h"
+#include <config.h>
 
 InstallOptions*
 init_default_install_configuration_test () {

@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000 Helix Code, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,6 +19,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
+ *          Joe Shaw <joe@helixcode.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
@@ -25,16 +27,17 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef __EAZEL_SERVICES_METADATA_H__
-#define __EAZEL_SERVICES_METADATA_H__
+#ifndef __EAZEL_SERVICES_XML_PACKAGE_LISTH__
+#define __EAZEL_SERVICES_XML_PACKAGE_LIST_H__
 
 #include "eazel-install-types.h"
-#include "helixcode-install-utils.h"
-#include <errno.h>
-#include <sys/stat.h>
+#include "helixcode-utils.h"
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 
-InstallOptions* init_default_install_configuration (const char* config_file);
+GList* parse_local_xml_package_list (const char* pkg_list_file);
+void free_categories (GList* categories);
+gboolean generate_xml_package_list (const char* pkg_template_file,
+                                    const char* target_file);
 
-#endif /* __EAZEL_SERVICES_METADATA_H__ */
+#endif /* __EAZEL_SERVICES_XML_PACKAGE_LIST_H__ */

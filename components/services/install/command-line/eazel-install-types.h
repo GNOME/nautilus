@@ -47,20 +47,20 @@ enum _URLType {
 };
 
 struct _InstallOptions {
-	URLType protocol;			/* Specifies local, ftp, or http */ 
-	gboolean mode_debug;		/* Internal testing mode for debugging */
-	gboolean mode_test;			/* dry run mode */
-	gboolean mode_verbose;		/* print extra information */
-	gboolean mode_silent;		/* FIXME bugzilla.eazel.com 731: print all information to a logfile */
-	gboolean mode_depend;		/* FIXME bugzilla.eazel.com 731: print all dependancies */
-	gboolean mode_uninstall;	/* Uninstall the package list */
-	gboolean mode_update;		/* If package is already installed, update it */
-	guint port_number;			/* Connection port */
-	char* hostname;				/* Remote Hostname */
-	char* rpmrc_file;			/* Points to the rpmrc file */
-	char* pkg_list_file;		/* Absolute path to package-list.xml */
-	char* rpm_storage_dir;		/* Absolute path to remote RPM directory */
-	char* install_tmpdir;		/* Location to copy rpm downloads before installing */
+	URLType protocol;          /* Specifies local, ftp, or http */ 
+	gboolean mode_debug;       /* Internal testing mode for debugging */
+	gboolean mode_test;        /* dry run mode */
+	gboolean mode_verbose;     /* print extra information */
+	gboolean mode_silent;      /* FIXME bugzilla.eazel.com 731: print all information to a logfile */
+	gboolean mode_depend;      /* FIXME bugzilla.eazel.com 731: print all dependancies */
+	gboolean mode_uninstall;   /* Uninstall the package list */
+	gboolean mode_update;      /* If package is already installed, update it */
+	guint port_number;         /* Connection port */
+	char* hostname;            /* Remote Hostname */
+	char* rpmrc_file;          /* Points to the rpmrc file */
+	char* pkg_list_file;       /* Absolute path to package-list.xml */
+	char* rpm_storage_dir;     /* Absolute path to remote RPM directory */
+	char* install_tmpdir;      /* Location to copy rpm downloads before installing */
 };
 
 struct _CategoryData {

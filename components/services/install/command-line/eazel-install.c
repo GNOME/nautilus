@@ -28,13 +28,13 @@
  * file and install a services generated package-list.xml.
  */
 
-#include <config.h>
 #include "eazel-install-types.h"
 #include "eazel-install-protocols.h"
 #include "eazel-install-rpm-glue.h"
-#include "helixcode-install-utils.h"
 #include "eazel-install-xml-package-list.h"
 #include "eazel-install-metadata.h"
+#include "helixcode-utils.h"
+#include <config.h>
 #include <popt-gnome.h>
 
 static void show_usage (int exitcode, char* error);

@@ -26,26 +26,28 @@ libtrilobite_la_LDFLAGS =	\
 
 libtrilobiteincludedir = $(includedir)/libtrilobite
 
-libtrilobiteinclude_HEADERS =		\
-	eazel-register.h		\
-	eazel-install-metadata.h	\
-	eazel-install-protocols.h	\
-	eazel-install-rpm-glue.h	\
-	eazel-install-tests.h		\
-	eazel-install-types.h		\
-	eazel-install-utils.h		\
-	eazel-install-xml-package-list.h	\
-	helixcode-install-utils.h	\
+libtrilobiteinclude_HEADERS =			\
+	libtrilobite.h				\
+	trilobite-core-messaging.h		\
+	trilobite-core-metadata-manager.h	\
+	trilobite-core-network.h		\
+	trilobite-core-package-manager.h	\
+	trilobite-core-security-manager.h	\
+	trilobite-core-tests.h			\
+	trilobite-core-utils.h			\
+	eazel-register.h			\
+	helixcode-utils.h			\
 	$(NULL)
 
-libtrilobite_la_SOURCES =		\
-	eazel-register.c		\
-	eazel-install-metadata.c	\
-	eazel-install-protocols.c	\
-	eazel-install-rpm-glue.c	\
-	eazel-install-tests.c		\
-	eazel-install-utils.c		\
-	eazel-install-xml-package-list.c	\
-	helixcode-install-utils.c	\
+libtrilobite_la_SOURCES =			\
+	trilobite-core-messaging.c		\
+	trilobite-core-metadata-manager.c	\
+	trilobite-core-network.c		\
+	trilobite-core-package-manager.c	\
+	trilobite-core-security-manager.c	\
+	trilobite-core-tests.c			\
+	trilobite-core-utils.c			\
+	eazel-register.c			\
+	helixcode-utils.c			\
 	$(NULL)
 

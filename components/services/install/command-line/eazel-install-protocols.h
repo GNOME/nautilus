@@ -1,6 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
- * Copyright (C) 2000 Helix Code, Inc
  * Copyright (C) 2000 Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
@@ -18,24 +17,25 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: Joe Shaw <joe@helixcode.com>
- *          J. Shane Culpepper <pepper@eazel.com>
+ * Authors: J Shane Culpepper <pepper@eazel.com>
  */
 
-/* Most of this code is taken directly from Joe Shaw's Helix Code install / Updater
- * with a few very minor changes made by me. */
- 
-#ifndef __HELIXCODE_INSTALL_UTILS_H__
-#define __HELIXCODE_INSTALL_UTILS_H__
+/* eazel-install - services command line install/update/uninstall
+ * component.  This program will parse the eazel-services-config.xml
+ * file and install a services generated package-list.xml.
+ */
 
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
+#ifndef __EAZEL_SERVICES_PROTOCOLS_H__
+#define __EAZEL_SERVICES_PROTOCOLS_H__
+
 #include "eazel-install-types.h"
+#include "helixcode-utils.h"
+#include <gnet/gnet.h>
+#include <gnome-xml/parser.h>
 
-char* xml_get_value (xmlNode* node, const char* name);
-xmlDocPtr prune_xml (char* xmlbuf);
-gboolean check_for_root_user (void);
-gboolean check_for_redhat (void);
+gboolean http_fetch_xml_package_list (const char* hostname,
+                                      int port,
+                                      const char* path,
+                                      const char* pkg_list_file);
 
-
-#endif /* __HELIXCODE_INSTALL_UTILS_H__ */
+#endif /* __EAZEL_SERVICES_PROTOCOLS_H__ */

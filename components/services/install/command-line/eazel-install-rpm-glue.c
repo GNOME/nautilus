@@ -25,12 +25,11 @@
  * file and install a services generated package-list.xml.
  */
 
-#include <config.h>
+#include "eazel-install-rpm-glue.h"
+#include "eazel-install-xml-package-list.h"
+#include "helixcode-utils.h"
 #include <rpm/rpmlib.h>
 #include <rpm/rpmurl.h>
-#include "helixcode-install-utils.h"
-#include "eazel-install-xml-package-list.h"
-#include "eazel-install-rpm-glue.h"
 
 gboolean
 install_new_packages (InstallOptions* iopts) {

@@ -27,8 +27,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#include <config.h>
 #include "eazel-install-xml-package-list.h"
+#include <config.h>
 
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);

@@ -1,3 +1,16 @@
+2000-05-11  J Shane Culpepper <pepper@eazel.com>
+
+	* components/services/trilobite/lib/*
+	* components/services/install/command-line
+
+	More file gymnastics to isolate generic service code into libtrilobite.
+	Revived some dead files in eazel-install for now until I can do some
+	more work to clean the current functions up.
+	Added a distribution type function to helixcode-utils.c so that we can
+	start determining distribution.  This will be used by inventory and
+	eazel-install.  Created several skeleton files that will be filled with
+	generic functionality like logging, networking, security, etc.
+
 2000-05-11  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

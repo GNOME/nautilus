@@ -25,17 +25,16 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef __EAZEL_SERVICES_PROTOCOLS_H__
-#define __EAZEL_SERVICES_PROTOCOLS_H__
+#ifndef __EAZEL_SERVICES_METADATA_H__
+#define __EAZEL_SERVICES_METADATA_H__
 
 #include "eazel-install-types.h"
-#include "helixcode-install-utils.h"
-#include <gnet/gnet.h>
+#include "helixcode-utils.h"
+#include <errno.h>
+#include <sys/stat.h>
+#include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 
-gboolean http_fetch_xml_package_list (const char* hostname,
-									  int port,
-									  const char* path,
-									  const char* pkg_list_file);
+InstallOptions* init_default_install_configuration (const char* config_file);
 
-#endif /* __EAZEL_SERVICES_PROTOCOLS_H__ */
+#endif /* __EAZEL_SERVICES_METADATA_H__ */

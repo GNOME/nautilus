@@ -26,14 +26,14 @@
  * file and install a services generated package-list.xml.
  */
 
-#include <config.h>
 #include "eazel-install-protocols.h"
+#include <config.h>
 
 gboolean
 http_fetch_xml_package_list (const char* hostname,
-							 int port,
-							 const char* path,
-							 const char* pkg_list_file) {
+                             int port,
+                             const char* path,
+                             const char* pkg_list_file) {
 
 	GInetAddr* addr;
 	GTcpSocket* socket;
