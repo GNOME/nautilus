@@ -545,6 +545,25 @@
    </para>
   </sect1>
 
+  <sect1 id="medusa">
+   <title>Building Nautilus and Medusa</title>
+
+   <para>
+    Medusa is an indexing program which produces an index of all the 
+    files and their contents on the computer.  Because there were a
+    couple significant problems caused by Medusa, it is recommended 
+    that Medusa be disabled.
+   </para>
+
+   <para>
+    Medusa support is automatically built into Nautilus at configure
+    time if Medusa is on the machine.  Thus, if you are repackaging
+    Nautilus, you should be sure that your machine does not have
+    Medusa installed on it.
+   </para>
+
+  </sect1>
+
 </article>
 
 
