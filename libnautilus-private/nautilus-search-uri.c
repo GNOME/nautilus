@@ -697,13 +697,13 @@ nautilus_self_check_search_uri (void)
 
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
-                                      _("Search results for items that contain \"stuff\"."));
+                                      _("Search results for items that have \"stuff\" in the name."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
-                                      _("Search results for items that contain \"stuff\" and are regular files."));
+                                      _("Search results for items that have \"stuff\" in the name and are regular files."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
-                                      _("Search results for items that contain \"stuff\", are regular files and that are "
-                                        "smaller than 2000 kilobytes."));
+                                      _("Search results for items that have \"stuff\" in the name, are regular files and that are "
+                                        "smaller than 2000 bytes."));
         
         /* is_search_uri */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);

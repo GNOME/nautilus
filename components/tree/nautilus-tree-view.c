@@ -46,6 +46,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file.h>
+
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
@@ -97,7 +98,7 @@ struct _NautilusTreeViewDndDetails {
 	/* data used by the drag_motion code */
 	int current_x, current_y;
 	/* row being highlighted */
-	int current_row;
+	GtkCTreeNode *current_prelighted_node;
 	GtkStyle *normal_style;
 	GtkStyle *highlight_style;
 	/* queue of motion event's y coordinates */
@@ -238,6 +239,15 @@ static char    *nautilus_tree_view_find_drop_target   (NautilusTreeView         
 						       int                       x, 
 						       int                       y);
 static char    *nautilus_tree_view_get_drag_uri       (NautilusTreeView         *tree_view);
+
+static void     nautilus_tree_view_expand_or_collapse_row (GtkCTree *tree, 
+							   int row);
+
+static gboolean nautilus_tree_view_is_tree_node_directory (NautilusTreeView *tree_view,
+							   GtkCTreeNode *node);
+static GtkCTreeNode *nautilus_tree_view_tree_node_at (NautilusTreeView *tree_view,
+						      int x, int y);
+
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
@@ -424,12 +434,10 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 						   FALSE,
 						   FALSE);
 		
-
-		gtk_ctree_node_set_row_data_full (GTK_CTREE (view->details->tree),
-						  view_node,
-						  g_strdup (uri),
-						  g_free);
-
+		g_print ("???\n");
+		gtk_ctree_node_set_row_data (GTK_CTREE (view->details->tree),
+					     view_node,
+					     node);
 
 		g_hash_table_insert (view->details->uri_to_node_map, uri, view_node); 
 		
@@ -1018,12 +1026,34 @@ model_node_to_view_node (NautilusTreeView *view,
 	return view_node;
 }
 
+static NautilusTreeNode *
+view_node_to_model_node (NautilusTreeView *view,
+			 GtkCTreeNode *node)
+{
+	NautilusTreeNode *tree_node;
+
+	tree_node = (NautilusTreeNode *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
+								      node);
+
+	return tree_node;
+}
+
 static const char *
 view_node_to_uri (NautilusTreeView *view,
 		  GtkCTreeNode *node)
 {
-	return (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-							   node);
+	NautilusTreeNode *tree_node;
+	char *uri;
+
+	tree_node = view_node_to_model_node (view, node);
+
+	if (tree_node == NULL) {
+		return NULL;
+	}
+
+	uri = nautilus_tree_node_get_uri (tree_node);
+
+	return uri;
 }
 
 static GList *
@@ -1387,9 +1417,12 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 	dnd = tree_view->details->dnd;
 
 	/* bring the highlighted row back to normal. */
-	gtk_clist_set_row_style (GTK_CLIST (tree_view->details->tree), 
-				 dnd->current_row,
-				 tree_view->details->dnd->normal_style);
+	if (dnd->current_prelighted_node != NULL) {
+		gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
+					      dnd->current_prelighted_node,
+					      tree_view->details->dnd->normal_style);
+	}
+	dnd->current_prelighted_node = NULL;
 }
 
 
@@ -1443,7 +1476,8 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 {
 	NautilusTreeView *tree_view;
 	NautilusTreeViewDndDetails *dnd;
-	int row, column, column_is_in_range;
+	GtkCTreeNode *node;
+	gboolean is_directory;
 #if 0
 	int resulting_action;
 #endif
@@ -1461,22 +1495,29 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 
 
 
-
 	/* make the thing under us prelighted. */
-	column_is_in_range = gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
-							   x, y, &row, &column);
-	if (column_is_in_range == 0) {
-		/* not in range */
-		return FALSE;
+
+	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
+	is_directory = nautilus_tree_view_is_tree_node_directory (NAUTILUS_TREE_VIEW (tree_view), node);
+
+	if (is_directory == FALSE) {
+		NautilusTreeNode *parent_node, *current_node;
+		current_node = view_node_to_model_node (tree_view, node);
+		parent_node = nautilus_tree_node_get_parent (current_node);
+		node = model_node_to_view_node (tree_view, parent_node);
+	} 
+
+	/* get the current cell's parent */
+	if (node != dnd->current_prelighted_node 
+	    && dnd->current_prelighted_node != NULL) {
+		gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
+					      dnd->current_prelighted_node,
+					      tree_view->details->dnd->normal_style);
 	}
-	if (row != dnd->current_row) {
-		gtk_clist_set_row_style (GTK_CLIST (tree_view->details->tree), 
-					 dnd->current_row,
-					 tree_view->details->dnd->normal_style);
-	}
-	gtk_clist_set_row_style (GTK_CLIST (tree_view->details->tree), row,
-				 tree_view->details->dnd->highlight_style);
-	dnd->current_row = row;
+	gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
+				      node,
+				      tree_view->details->dnd->highlight_style);
+	dnd->current_prelighted_node = node;
 
 
 	/* update dragging cursor. */
@@ -1739,34 +1780,11 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 		if (distance_squared <= RADIUS 
 		    && tree_view->details->dnd->pressed_hot_spot == TRUE
 		    && is_still_hot_spot == TRUE) {
-			GtkCTreeNode *node;
-			char *node_text;
-			guint8 node_spacing;
-			GdkPixmap *pixmap_closed;
-			GdkBitmap *mask_closed;
-			GdkPixmap *pixmap_opened;
-			GdkBitmap *mask_opened;
-			gboolean is_leaf;
-			gboolean is_expanded;
-
-			tree_view->details->dnd->pressed_hot_spot = FALSE;
-
-			node = gtk_ctree_node_nth (GTK_CTREE(tree_view->details->tree), release_row);
-			gtk_ctree_get_node_info (GTK_CTREE(tree_view->details->tree), 
-						 node, &node_text,
-						 &node_spacing, &pixmap_closed, &mask_closed,
-						 &pixmap_opened, &mask_opened, 
-						 &is_leaf, &is_expanded);
-			if (is_expanded == FALSE) {
-				/* expand */
-				gtk_ctree_expand (GTK_CTREE(tree_view->details->tree),
-						  node);
-			} else {
-				/* collapse */ 
-				gtk_ctree_collapse (GTK_CTREE(tree_view->details->tree),
-						    node);
-			}
 			
+			tree_view->details->dnd->pressed_hot_spot = FALSE;
+			
+			nautilus_tree_view_expand_or_collapse_row (GTK_CTREE(tree_view->details->tree), 
+								   release_row);
 		} else if (distance_squared <= RADIUS) {
 			/* we are close from the place we clicked */
 			/* select current row */
@@ -1780,6 +1798,7 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 	return FALSE;
 
 }
+
 
 
 static int
@@ -1846,6 +1865,38 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
    -----------------------------------------------------------------------
 */
 
+
+static void
+nautilus_tree_view_expand_or_collapse_row (GtkCTree *tree, int row)
+{
+	GtkCTreeNode *node;
+	char *node_text;
+	guint8 node_spacing;
+	GdkPixmap *pixmap_closed;
+	GdkBitmap *mask_closed;
+	GdkPixmap *pixmap_opened;
+	GdkBitmap *mask_opened;
+	gboolean is_leaf;
+	gboolean is_expanded;
+
+	node = gtk_ctree_node_nth (GTK_CTREE(tree), row);
+	gtk_ctree_get_node_info (GTK_CTREE(tree), 
+				 node, &node_text,
+				 &node_spacing, &pixmap_closed, &mask_closed,
+				 &pixmap_opened, &mask_opened, 
+				 &is_leaf, &is_expanded);
+	if (is_expanded == FALSE) {
+				/* expand */
+		gtk_ctree_expand (GTK_CTREE(tree),
+				  node);
+	} else {
+				/* collapse */ 
+		gtk_ctree_collapse (GTK_CTREE(tree),
+				    node);
+	}
+
+}
+
 static void
 nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 				    GList *selection_list,
@@ -1905,7 +1956,44 @@ nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 }
 
 
+static gboolean
+nautilus_tree_view_is_tree_node_directory (NautilusTreeView *tree_view,
+					   GtkCTreeNode *node) 
+{
+	NautilusTreeNode *model_node;
+	NautilusFile *file;
+	gboolean is_directory;
 
+	model_node = view_node_to_model_node (tree_view, node);
+
+	file = nautilus_tree_node_get_file (model_node);
+
+	is_directory = nautilus_file_is_directory (file);
+	
+	return is_directory;
+}
+
+
+
+static GtkCTreeNode *
+nautilus_tree_view_tree_node_at (NautilusTreeView *tree_view,
+				 int x, int y) 
+{
+	int row, column, on_row;
+	GtkCTreeNode *node;
+
+
+	on_row = gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
+					       x, y, &row, &column);
+
+	node = NULL;
+	if (on_row == 1) {
+		node = gtk_ctree_node_nth (GTK_CTREE (tree_view->details->tree),
+					   row);
+	}
+
+	return node;
+}
 
 /**
  * nautilus_tree_view_item_at:
@@ -1922,16 +2010,13 @@ nautilus_tree_view_item_at (NautilusTreeView *tree_view,
 			    int x, int y)
 {
 	char *retval;
-	int row, column, on_row;
 	GtkCTreeNode *node;
 
-	retval = NULL;
+	node = NULL;
+	node = nautilus_tree_view_tree_node_at (tree_view, x, y);
 
-	on_row = gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
-					       x, y, &row, &column);
-	if (on_row == 1) {
-		node = gtk_ctree_node_nth (GTK_CTREE (tree_view->details->tree),
-					   row);
+	retval = NULL;
+	if (node != NULL) {
 		retval = g_strdup (view_node_to_uri(tree_view, node));
 	}
 	return retval;
