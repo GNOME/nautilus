@@ -3,7 +3,7 @@ NULL=
 lib_LTLIBRARIES=libe-paned.la
 
 INCLUDES = \
-	-I$(top_builddir)/cut-n-paste-code \
+	-I$(top_srcdir)/cut-n-paste-code \
 	$(GNOME_CFLAGS) \
 	$(NULL)
 

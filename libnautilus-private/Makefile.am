@@ -5,7 +5,8 @@ lib_LTLIBRARIES=libnautilus-extensions.la
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	-I$(top_builddir)/cut-n-paste-code \
+	-I$(top_builddir)/libnautilus \
+	-I$(top_srcdir)/cut-n-paste-code \
 	$(GNOME_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \

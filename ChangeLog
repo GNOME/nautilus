@@ -1,3 +1,30 @@
+2000-07-13 Elliot Lee <sopwith@redhat.com>
+	* TODO: Fix typo
+	* components/rpmview/Makefile.am,
+	components/services/install/command-line/Makefile.am,
+	components/services/install/lib/Makefile.am,
+	components/services/install/nautilus-view/Makefile.am,
+	components/services/install/server/Makefile.am,
+	components/services/startup/lib/Makefile.am,
+	components/services/time/command-line/Makefile.am,
+	components/services/time/service/Makefile.am,
+	components/services/trilobite/helper/Makefile.am,
+	components/services/trilobite/sample/command-line/Makefile.am,
+	components/services/trilobite/sample/service/Makefile.am,
+	components/services/vault/command-line/Makefile.am,
+	cut-n-paste-code/widgets/e-paned/Makefile.am,
+	cut-n-paste-code/widgets/nautilus-druid/Makefile.am,
+	libnautilus-extensions/Makefile.am,
+	src/Makefile.am,
+	test/Makefile.am: Fix srcdir != builddir:
+
+	* components/services/trilobite/helper/eazel-helper.c,
+	components/services/vault/command-line/vault-operations.c,
+	libnautilus-extensions/nautilus-graphic.c,
+	libnautilus-extensions/nautilus-icon-container.c,
+	libnautilus-extensions/nautilus-list.c: Include string.h
+	for strlen prototype.
+
 2000-07-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

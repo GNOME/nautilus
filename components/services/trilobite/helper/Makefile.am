@@ -12,9 +12,9 @@ eazel-helper.security: $(srcdir)/eazel-helper.security.in Makefile
 
 install-data-local: $(PAM_FILES)
 	mkdir -p $(sysconfdir)/security/console.apps
-	cp eazel-helper.security $(sysconfdir)/security/console.apps/eazel-helper
+	cp $(srcdir)/eazel-helper.security $(sysconfdir)/security/console.apps/eazel-helper
 	mkdir -p $(sysconfdir)/pam.d
-	cp eazel-helper.pam $(sysconfdir)/pam.d/eazel-helper
+	cp $(srcdir)/eazel-helper.pam $(sysconfdir)/pam.d/eazel-helper
 
 eazel_helper_SOURCES = \
 	eazel-helper.c		\

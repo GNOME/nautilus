@@ -11,7 +11,10 @@ INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I/usr/include/rpm					\
-        -I$(top_srcdir)/components/services/trilobite	\
+        -I$(top_srcdir)/components/services/trilobite		\
+        -I$(top_builddir)/components/services/trilobite		\
+        -I$(top_srcdir)/components/services/trilobite/lib	\
+        -I$(top_builddir)/components/services/trilobite/lib	\
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
 	$(XML_CFLAGS)						\
@@ -55,6 +58,9 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-xml-package-list.c	\
 	eazel-install-object.c			\
 	$(NULL)
+
+libeazelinstall_la_LDFLAGS = \
+	$(GHTTP_LIBS)
 
 EXTRA_DIST = eazel-install-query-lex.l
 

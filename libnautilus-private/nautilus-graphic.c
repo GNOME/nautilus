@@ -30,6 +30,7 @@
 #include "nautilus-gdk-pixbuf-extensions.h"
 
 #include <math.h>
+#include <string.h>
 
 /* FIXME bugzilla.eazel.com 1612: 
  * We should use NautilusBackground for the background.  This will simplify

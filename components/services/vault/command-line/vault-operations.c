@@ -24,6 +24,7 @@
 #include <config.h>
 #include <unistd.h>
 #include <glib.h>
+#include <string.h>
 #include "vault-operations.h"
 
 static GnomeVFSResult vault_list(GList *args, gchar *uri, gboolean debug, gchar **error_context);

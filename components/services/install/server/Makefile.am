@@ -11,6 +11,8 @@ INCLUDES = \
 	-I$(top_builddir) 	\
 	-I$(top_srcdir)/components/services/install/lib \
 	-I$(top_srcdir)/components/services/trilobite \
+	-I$(top_builddir)/components/services/install/lib \
+	-I$(top_builddir)/components/services/trilobite \
 	-I/usr/include/rpm	\
 	$(GHTTP_CFLAGS) 	\
 	$(GCONF_CFLAGS) 	\

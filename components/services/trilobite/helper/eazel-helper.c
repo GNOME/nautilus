@@ -34,6 +34,7 @@
 #include <time.h>
 #include <errno.h>
 #include <glib.h>
+#include <string.h>
 
 #define RPM_EXEC	"/bin/rpm"
 

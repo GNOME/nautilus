@@ -1,5 +1,3 @@
-NULL =
-
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"trilobite-eazel-startup\"
@@ -15,6 +13,4 @@ INCLUDES = \
 
 noinst_LIBRARIES = libstartup.a
 
-libstartup_a_SOURCES =		        	\
-	$(NULL)
-
+libstartup_a_SOURCES = dummy.c

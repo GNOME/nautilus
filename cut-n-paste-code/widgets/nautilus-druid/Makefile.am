@@ -3,7 +3,7 @@ NULL=
 lib_LTLIBRARIES=libnautilus-druid.la
 
 INCLUDES = \
-	-I$(top_builddir)/cut-n-paste-code \
+	-I$(top_srcdir)/cut-n-paste-code \
 	$(GNOME_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(NULL)

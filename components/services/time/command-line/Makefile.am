@@ -8,6 +8,7 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	-I$(top_srcdir)/components/services/trilobite \
+	-I$(top_builddir)/components/services/trilobite \
 	$(GNOMEUI_CFLAGS)                       \
 	$(GCONF_CFLAGS)				\
 	$(NULL)

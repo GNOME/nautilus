@@ -7,6 +7,7 @@ bin_PROGRAMS=nautilus
 INCLUDES =\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
+	-I$(top_srcdir)/cut-n-paste-code \
 	-I$(top_builddir)/cut-n-paste-code \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
@@ -120,7 +121,7 @@ nautilus_SOURCES = \
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
 nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) -I.. nautilus-shell-interface.idl
+	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
 	touch nautilus_shell_interface_idl_stamp
 
 TESTS=check-nautilus
