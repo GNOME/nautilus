@@ -132,12 +132,12 @@ parse_category (xmlNode* cat) {
 	}
 	while (pkg) {
 		pkg2 = pkg->xmlChildrenNode;
-		if (pkg2 == NULL) {
-			g_print (_("*** No package nodes! ***"));
-			g_free (category);
-			g_error (_("*** Bailing from package parse! ***"));
-		}
 		if (g_strcasecmp (pkg->name, "PACKAGES") == 0) {
+			if (pkg2 == NULL) {
+				g_print (_("*** No package nodes! ***"));
+				g_free (category);
+				g_error (_("*** Bailing from package parse! ***"));
+			}
 			while (pkg2) {
 				if (g_strcasecmp (pkg2->name, "PACKAGE") != 0) {
 					g_error (_("*** Malformed package node!"));
@@ -148,6 +148,11 @@ parse_category (xmlNode* cat) {
 				pkg2 = pkg2->next;
 			}
 		} else if (g_strcasecmp (pkg->name, "DEPENDS") == 0) {
+			if (pkg2 == NULL) {
+				g_print (_("*** No depends nodes! ***"));
+				g_free (category);
+				g_error (_("*** Bailing from package parse! ***"));
+			}
 			while (pkg2) {
 				if (g_strcasecmp (pkg2->name, "ON") != 0) {
 					g_error (_("*** Malformed depends node!"));
@@ -159,6 +164,8 @@ parse_category (xmlNode* cat) {
 				}
 				pkg2 = pkg2->next;
 			}
+		} else if (g_strcasecmp (pkg->name, "EXCLUSIVE") == 0) {
+			category->exclusive = TRUE;
 		} else if (g_strcasecmp (pkg->name, "DESCRIPTION") == 0) {
 			text = xmlNodeGetContent (pkg);
 			category->description = g_strdup (text);

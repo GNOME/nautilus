@@ -501,13 +501,13 @@ strip_categories (GList **categories, char *name)
 	GList *iterator;
 	GList *remove = NULL;
 
-	LOG_DEBUG (("strip_categories \"%s\"", name));
+	LOG_DEBUG (("strip_categories \"%s\"\n", name));
 	
 	for (iterator = *categories; iterator; iterator = g_list_next (iterator)) {
 		CategoryData *cat = (CategoryData*)iterator->data;
-		LOG_DEBUG (("strip %s from %s ?", name, cat->name));
+		LOG_DEBUG (("strip %s from %s ?\n", name, cat->name));
 		if (strcmp (cat->name, name)==0) {
-			LOG_DEBUG (("yes"));
+			LOG_DEBUG (("yes\n"));
 			remove = g_list_prepend (remove, iterator->data);
 			break;
 		}
@@ -529,7 +529,7 @@ start_over_make_category_func (int *key,
 	CategoryData *cat;
 	
 	cat = categorydata_new ();
-	LOG_DEBUG (("start_over_make_category_func key = %d", *key));
+	LOG_DEBUG (("start_over_make_category_func key = %d\n", *key));
 	switch (*key) {
 	case FORCE_BOTH:
 		cat->name = g_strdup ("Force install");
@@ -595,7 +595,7 @@ start_over (GnomeDruidPage *druid_page,
 		case FORCE_BOTH: {
 			PackageData *pack;
 
-			LOG_DEBUG (("met a FORCE_BOTH"));
+			LOG_DEBUG (("met a FORCE_BOTH\n"));
 
 			pack = rcase->u.force_both.pack_1;
 			pack->toplevel = TRUE;
@@ -608,7 +608,7 @@ start_over (GnomeDruidPage *druid_page,
 		case MUST_UPDATE: {
 			PackageData *pack = rcase->u.in_the_way.pack;
 
-			LOG_DEBUG (("met a MUST_UPDATE"));
+			LOG_DEBUG (("met a MUST_UPDATE\n"));
 
 			pack->toplevel = TRUE;
 			a_list = g_list_prepend (a_list, pack);
@@ -617,7 +617,7 @@ start_over (GnomeDruidPage *druid_page,
 		case REMOVE: {
 			PackageData *pack = rcase->u.remove.pack;
 
-			LOG_DEBUG (("met a REMOVE"));
+			LOG_DEBUG (("met a REMOVE\n"));
 
 			pack->toplevel = TRUE;
 			a_list = g_list_prepend (a_list, pack);
@@ -770,12 +770,12 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 15);
 
-	LOG_DEBUG (("g_list_length (installer->additional_packages) = %d", 
+	LOG_DEBUG (("g_list_length (installer->additional_packages) = %d\n", 
 		    g_list_length (installer->additional_packages)));
 	for (iter = g_list_first (installer->additional_packages); iter != NULL; iter = g_list_next (iter)) {
 		RepairCase *rcase = (RepairCase*)(iter->data);		
 		
-		LOG_DEBUG (("rcase->t = %d", rcase->t));
+		LOG_DEBUG (("rcase->t = %d\n", rcase->t));
 		switch (rcase->t) {
 		case MUST_UPDATE: {
 			char *required = get_required_name (rcase->u.in_the_way.pack);
@@ -802,7 +802,7 @@ jump_to_retry_page (EazelInstaller *installer)
 		break;
 		};
 
-		LOG_DEBUG (("temp = \"%s\"", temp));
+		LOG_DEBUG (("temp = \"%s\"\n", temp));
 		label = gtk_label_new_with_font (temp, FONT_NORM_BOLD);
 		g_free (temp);
 		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -1068,7 +1068,7 @@ add_force_packages (EazelInstaller *installer,
 {
 	RepairCase *rcase = g_new0 (RepairCase, 1);
 
-	LOG_DEBUG (("add_force_package"));
+	LOG_DEBUG (("add_force_package\n"));
 
 	rcase->t = FORCE_BOTH;
 	rcase->u.force_both.pack_1 = packagedata_copy (pack_1, FALSE);
@@ -1084,7 +1084,7 @@ add_force_remove (EazelInstaller *installer,
 {
 	RepairCase *rcase = g_new0 (RepairCase, 1);
 
-	LOG_DEBUG (("add_force_remove_package"));
+	LOG_DEBUG (("add_force_remove_package\n"));
 
 	rcase->t = REMOVE;
 	rcase->u.remove.pack = packagedata_copy (pack, FALSE);
@@ -1101,7 +1101,7 @@ add_update_package (EazelInstaller *installer,
 	RepairCase *rcase = g_new0 (RepairCase, 1);
 	GList *already_tried;
 
-	LOG_DEBUG (("add_update_package"));
+	LOG_DEBUG (("add_update_package\n"));
 
 	copy->name = g_strdup (pack->name);
 	copy->distribution  = pack->distribution;
@@ -1539,9 +1539,10 @@ static void
 toggle_button_toggled (GtkToggleButton *button,
 		       EazelInstaller *installer) 
 {
-	GList *deps;
 	GList *iterator;
 	GList *item;
+	CategoryData *category, *category2;
+	GtkWidget *other_button;
 
 	LOG_DEBUG (("%s toggled to %s\n", gtk_widget_get_name (GTK_WIDGET (button)),
 		    button->active ? "ACTIVE" : "deactivated"));
@@ -1549,11 +1550,20 @@ toggle_button_toggled (GtkToggleButton *button,
 	item = g_list_find_custom (installer->categories, gtk_widget_get_name (GTK_WIDGET (button)),
 				   (GCompareFunc)category_compare_func);
 	if (item) {
-		deps = ((CategoryData *)(item->data))->depends;
-		for (iterator = deps; iterator; iterator = iterator->next) {
+		category = (CategoryData *)(item->data);
+		for (iterator = category->depends; iterator; iterator = iterator->next) {
 			toggle_button_lock (installer, 
 					    (char*)iterator->data,
 					    button->active);		
+		}
+		if (category->exclusive && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
+			for (iterator = installer->categories; iterator; iterator = iterator->next) {
+				category2 = (CategoryData *)(iterator->data);
+				other_button = lookup_widget (installer->window, category2->name);
+				if (other_button && (category != category2)) {
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (other_button), FALSE);
+				}
+			}
 		}
 	}
 
@@ -1576,6 +1586,9 @@ eazel_installer_add_category (EazelInstaller *installer,
 	char *p, *lastp;
 
 	LOG_DEBUG (("Read category \"%s\"\n", category->name));
+	if (category->exclusive) {
+		LOG_DEBUG (("it's exclusive.\n"));
+	}
 
 	vbox = GTK_WIDGET (gtk_object_get_data (GTK_OBJECT (installer->window), "vbox3"));
 
@@ -1819,12 +1832,12 @@ eazel_installer_do_install (EazelInstaller *installer,
 
 	for (iter = installer->install_categories; iter; iter=iter->next) {
 		CategoryData *cat = (CategoryData*)iter->data;
-		LOG_DEBUG (("HESTEOST %d", g_list_length (cat->packages)));
+		LOG_DEBUG (("HESTEOST %d\n", g_list_length (cat->packages)));
 	}
 	
 	eazel_install_set_force (installer->service, force);
 	eazel_install_set_uninstall (installer->service, remove);
-	LOG_DEBUG (("eazel_installer_do_install (..., ..., force = %s, remove = %s)",
+	LOG_DEBUG (("eazel_installer_do_install (..., ..., force = %s, remove = %s)\n",
 		    force ? "TRUE" : "FALSE",
 		    remove ? "TRUE" : "FALSE"));
 	if (remove) {

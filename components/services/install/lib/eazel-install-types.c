@@ -78,6 +78,7 @@ categorydata_new (void)
 	result->description = NULL;
 	result->packages = NULL;
 	result->depends = NULL;
+	result->exclusive = FALSE;
 	return result;
 }
 

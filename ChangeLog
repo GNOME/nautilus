@@ -1,3 +1,21 @@
+2000-10-23  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_category):
+	* nautilus-installer/src/installer.c: (strip_categories),
+	(start_over_make_category_func), (start_over),
+	(jump_to_retry_page), (add_force_packages), (add_force_remove),
+	(add_update_package), (toggle_button_toggled),
+	(eazel_installer_add_category), (eazel_installer_do_install):
+
+	add <EXCLUSIVE/> tag to categories in package-list.xml to indicate
+	that a category can't be selected with any other category (it's
+	mutually exclusive with them).  added puppet-strings to the
+	bootstrap installer to support that.
+	
 2000-10-23  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* user-guide/C/Makefile.am:
