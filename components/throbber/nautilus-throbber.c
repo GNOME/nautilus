@@ -104,7 +104,8 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 
 enum {
 	THROBBING,
-	LOCATION
+	LOCATION,
+	CONFIGURATION
 } MyArgs;
 
 
@@ -140,8 +141,12 @@ get_bonobo_properties (BonoboPropertyBag *bag,
 				BONOBO_ARG_SET_STRING (arg, "");			
 			}
 		
+			break;
 		}
 		
+		case CONFIGURATION:
+			BONOBO_ARG_SET_STRING (arg, "");
+			break;
 		default:
 			g_warning ("Unhandled arg %d", arg_id);
 			break;
@@ -174,6 +179,13 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 			break;
 		}
 
+		/* respond to configuration calls by starting the throbber */
+		case CONFIGURATION:
+		{
+			nautilus_throbber_start (throbber);
+			break;
+		}
+		
 		default:
 			g_warning ("Unhandled arg %d", arg_id);
 			break;
@@ -300,6 +312,9 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 				 "Throbber active", 0);
 	bonobo_property_bag_add (throbber->details->property_bag, "location", LOCATION, BONOBO_ARG_STRING, NULL,
 				 "associated URL", 0);
+
+	bonobo_property_bag_add (throbber->details->property_bag, "configuration", CONFIGURATION, BONOBO_ARG_STRING, NULL,
+				 "Throbber image source", BONOBO_PROPERTY_WRITEABLE);
 	
 	/* allocate the pixmap that holds the image */
 	nautilus_throbber_load_images (throbber);

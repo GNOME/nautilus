@@ -25,9 +25,11 @@
 #include <config.h>
 #include "fm-icon-view.h"
 
+#include "fm-annotation-window.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include "fm-icon-text-window.h"
+#include <bonobo/bonobo-widget.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
 #include <errno.h>
@@ -45,6 +47,7 @@
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libnautilus-extensions/nautilus-audio-player.h>
 #include <eel/eel-background.h>
+#include <libnautilus-extensions/nautilus-annotation.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
@@ -73,6 +76,7 @@
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
+#define MENU_PATH_ANNOTATE 			"/menu/File/File Items Placeholder/Annotate"
 #define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/menu/Edit/Global Edit Items Placeholder/Icon Text"
 #define MENU_PATH_STRETCH_ICON 			"/menu/Edit/Edit Items Placeholder/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
@@ -86,6 +90,7 @@
 
 #define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_RENAME 				"/commands/Rename"
+#define COMMAND_ANNOTATE			"/commands/Annotate"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
 #define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
 #define COMMAND_TIGHTER_LAYOUT 			"/commands/Tighter Layout"
@@ -393,6 +398,23 @@ rename_icon_callback (BonoboUIComponent *component, gpointer callback_data, cons
 		(get_icon_container (FM_ICON_VIEW (callback_data)));
 
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
+}
+
+static void
+annotate_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	GList *selected_files;
+	NautilusFile *first_file;
+	
+	g_assert (FM_IS_ICON_VIEW (callback_data));
+  		
+	/* show the annotation window */
+	selected_files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (callback_data));
+	if (selected_files != NULL) {
+		first_file = NAUTILUS_FILE (selected_files->data);
+		fm_annotation_window_present (first_file, FM_DIRECTORY_VIEW (callback_data));
+		g_list_free (selected_files);
+	}
 }
 
 static void
@@ -1162,6 +1184,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	FMIconView *icon_view;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Rename", rename_icon_callback),
+		BONOBO_UI_VERB ("Annotate", annotate_callback),
 		BONOBO_UI_VERB ("Icon Text", customize_icon_text_callback),
 		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
 		BONOBO_UI_VERB ("Unstretch", unstretch_icons_callback),
@@ -1251,6 +1274,10 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 				       COMMAND_RENAME,
 				       selection_count == 1
 				       && nautilus_file_can_rename (selection->data));
+	
+	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
+				       COMMAND_ANNOTATE,
+				       selection_count == 1);
 				       
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
@@ -1719,6 +1746,38 @@ get_icon_images_callback (NautilusIconContainer *container,
 	return nautilus_icon_factory_get_icon_for_file (file, modifier, smooth_graphics);
 }
 
+/* return the Bonobo control associated with the icon, if any */
+static void 
+get_icon_control_callback (NautilusIconContainer *container,
+			   NautilusFile *file,
+			   GtkWidget **control,
+			   FMIconView *icon_view)
+{
+	Bonobo_UIContainer ui_container;
+	char *control_moniker, *control_data;
+	char *uri, *path;
+	*control = NULL;
+
+	if (nautilus_file_is_nautilus_link (file)) {
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		if (path != NULL) {
+			nautilus_link_local_get_component_info (path, &control_moniker, &control_data);
+			if (control_moniker && strlen (control_moniker) > 0) {
+				ui_container = fm_directory_view_get_bonobo_ui_container (FM_DIRECTORY_VIEW (icon_view));
+				*control = bonobo_widget_new_control (control_moniker, ui_container);				
+				g_free (control_moniker);
+			}
+			if (control_data && strlen (control_data) > 0) {
+				bonobo_widget_set_property (BONOBO_WIDGET (*control), "configuration", control_data, NULL);
+				g_free (control_data);
+			}
+			g_free (path);
+		}
+		g_free (uri);
+	}	
+}
+
 static char *
 get_icon_uri_callback (NautilusIconContainer *container,
 		       NautilusFile *file,
@@ -1783,6 +1842,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 	g_assert (additional_text != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+
 	/* In the smallest zoom mode, no text is drawn. */
 	if (fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
 		*editable_text = NULL;
@@ -1790,7 +1850,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 		/* Strip the suffix for nautilus object xml files. */
 		*editable_text = nautilus_file_get_name (file);
 	}
-	
+		
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
@@ -1839,6 +1899,39 @@ get_icon_text_callback (NautilusIconContainer *container,
 	*additional_text = g_strjoinv ("\n", text_array);
 
 	g_strfreev (text_array);
+}
+
+/* this callback returns the annotation text associated with the passed-in file and emblem index */
+static char *
+get_icon_annotation_callback (NautilusIconContainer *container,
+		       		   NautilusFile *file,
+		       		   int emblem_index,
+		       		   FMIconView *icon_view)
+{
+	GList *keyword_list, *selected_keyword;
+	char  *keyword;
+		
+	keyword_list = nautilus_file_get_emblem_names (file);
+	if (keyword_list == NULL) {
+		return NULL;
+	}
+	
+	selected_keyword = g_list_nth (keyword_list, emblem_index - 1);
+	if (selected_keyword == NULL) {
+		eel_g_list_free_deep (keyword_list);	
+		return NULL;
+	}
+	
+	keyword = g_strdup (selected_keyword->data);	
+	eel_g_list_free_deep (keyword_list);
+	
+	/* if the keyword is "note", return the file annotation instead */
+	if (eel_strcmp (keyword, "note") == 0) {
+		g_free (keyword);
+		keyword = nautilus_annotation_get_annotation (file);
+	}
+	
+	return keyword;
 }
 
 /* Preferences changed callbacks */
@@ -2185,6 +2278,10 @@ create_icon_container (FMIconView *icon_view)
 			    GTK_SIGNAL_FUNC (get_icon_images_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_control",
+			    GTK_SIGNAL_FUNC (get_icon_control_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_uri",
 			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
 			    icon_view);
@@ -2195,6 +2292,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_text",
 			    GTK_SIGNAL_FUNC (get_icon_text_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_annotation",
+			    GTK_SIGNAL_FUNC (get_icon_annotation_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "move_copy_items",

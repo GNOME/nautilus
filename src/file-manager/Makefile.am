@@ -19,6 +19,7 @@ INCLUDES = 					\
 
 
 libnautilus_file_manager_la_SOURCES=	\
+	fm-annotation-window.c		\
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
@@ -31,6 +32,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	$(NULL)
 
 noinst_HEADERS = 			\
+	fm-annotation-window.h		\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\

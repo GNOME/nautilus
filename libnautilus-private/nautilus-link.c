@@ -312,6 +312,35 @@ nautilus_link_local_get_additional_text (const char *path)
 		(path, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
 }
 
+void	nautilus_link_local_get_component_info (const char *path,
+			char **control_moniker, char **control_data)
+{
+	xmlDoc *document;
+	const char *mime_type;
+	
+	*control_moniker = NULL;
+	*control_data = NULL;
+	
+	/* Check mime type. Exit if it is not a nautilus link */
+	mime_type = gnome_vfs_get_file_mime_type (path, NULL, FALSE);
+	if (strcmp (mime_type, "application/x-nautilus-link") != 0) {
+		return;
+	}
+	
+	document = xmlParseFile (path);
+	if (document != NULL) {
+		*control_moniker = xml_get_root_property (document,
+			NAUTILUS_METADATA_KEY_CONTROL_MONIKER);
+		
+		*control_data = xml_get_root_property (document,
+			NAUTILUS_METADATA_KEY_CONTROL_DATA);
+		
+		xmlFreeDoc (document);
+	}
+}
+
+
+
 /* utility to return the local pathname of a cached icon, given the leaf name */
 /* if the icons directory hasn't been created yet, create it */
 static char *

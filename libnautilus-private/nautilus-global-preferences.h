@@ -101,6 +101,10 @@ BEGIN_GNOME_DECLS
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"preferences/sort_directories_first"
 
+/* enabling annotations */
+#define NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS			"preferences/lookup_annotations"
+#define NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS		"preferences/display_annotations"
+
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_FONT			"icon-view/font"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT		"icon-view/smooth_font"

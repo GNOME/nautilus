@@ -63,9 +63,11 @@ nautilus_metafile_server_idl_sources = \
 
 libnautilus_extensions_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
+	nautilus-annotation.c \
 	nautilus-audio-player.c \
 	nautilus-bonobo-extensions.c \
 	nautilus-bookmark.c \
+	nautilus-canvas-note-item.c \
 	nautilus-customization-data.c \
 	nautilus-dateedit-extensions.c \
 	nautilus-default-file-icon.c \
@@ -130,9 +132,11 @@ libnautilus_extensions_la_SOURCES = \
 
 # Everything is private for now
 noinst_HEADERS = \
+	nautilus-annotation.h \
 	nautilus-audio-player.h \
 	nautilus-bonobo-extensions.h \
 	nautilus-bookmark.h \
+	nautilus-canvas-note-item.h \
 	nautilus-cdrom-extensions.h \
 	nautilus-customization-data.h \
 	nautilus-dateedit-extensions.h \
