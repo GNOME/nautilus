@@ -257,7 +257,8 @@ nautilus_file_background_read_desktop_settings (char **color,
         switch (prefs->wallpaper_type) {
         default:
                 g_assert_not_reached ();
-        case WPTYPE_EMBOSSED:
+
+/*        case WPTYPE_EMBOSSED:*/
                 /* FIXME bugzilla.gnome.org 42193: we don't support embossing.
                  * Just treat it as centered - ugh.
                  */
