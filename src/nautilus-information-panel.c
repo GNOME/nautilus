@@ -1015,7 +1015,7 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 	 * need a framework to allow protocols to add commands buttons */
 	if (eel_istr_has_prefix (information_panel->details->uri, "trash:")) {
 		/* FIXME: We don't use spaces to pad labels! */
-		temp_button = gtk_button_new_with_mnemonic (_("_Empty Trash"));
+		temp_button = gtk_button_new_with_mnemonic (_("Empty _Trash"));
 
 		gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
 					temp_button, FALSE, FALSE, 0);

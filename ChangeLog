@@ -1,3 +1,11 @@
+2003-01-06  Arvind Samptur <arvind.samptur@wipro.com>
+	* src/nautilus-information-panel.c
+	(nautilus_information_panel_update_buttons): changing the
+	mnemonic of "Empty Trash" button. Resolves the conflict
+	between "Edit" menu option and "Empty Trash" button, which
+	caused the desktop to be badly stuck.
+	Please see #101690, for Owen's comments as well.
+
 2002-12-31  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-file-management-properties.glade: Applied UI review 
