@@ -42,11 +42,12 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-preferences.h"
+#include "nautilus-file-utilities.h"
 
 /* utility routine to build the link set path name */
 
 static char *
-link_set_path_name(const char *directory_path, const char *name)
+link_set_path_name (const char *directory_path, const char *name)
 {
 	const char *path_start;
 	if (nautilus_str_has_prefix(directory_path, "file://"))
@@ -104,17 +105,13 @@ get_link_set_document(const char *link_set_name)
 
 /* utility to expand the uri to deal with the home directory, etc. */
 static char *
-expand_uri(const char *uri)
+expand_uri (const char *uri)
 {
-	char *full_uri, *home_in_uri_format;
-				
+	/* FIXME: This turns "~x" into "HOME", which is bad. */
 	if (uri[0] == '~') {
-		home_in_uri_format = gnome_vfs_escape_string (g_get_home_dir (), GNOME_VFS_URI_UNSAFE_PATH);
-		full_uri = g_strconcat ("file://", home_in_uri_format, uri + 1, NULL);
-		g_free (home_in_uri_format);
-		return full_uri;
+		return nautilus_get_uri_from_local_path (g_get_home_dir ());
 	}
-	return g_strdup(uri);
+	return g_strdup (uri);
 }
 
 /* install a link set into the specified directory */

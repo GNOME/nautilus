@@ -508,9 +508,9 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                                 gtk_label_set (GTK_LABEL (rpm_view->details->package_description), data_ptr+4);
                                 break;
                         case RPMTAG_SIZE:
-                                temp_str = gnome_vfs_file_size_to_string (*integer_ptr);
+                                temp_str = gnome_vfs_format_file_size_for_display (*integer_ptr);
                                 gtk_label_set (GTK_LABEL (rpm_view->details->package_size), temp_str);
-                                g_free(temp_str);					
+                                g_free (temp_str);					
                                 break;
                         case RPMTAG_DISTRIBUTION:
                                 gtk_label_set (GTK_LABEL (rpm_view->details->package_distribution), data_ptr+4);

@@ -58,8 +58,7 @@ nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
 	/* FIXME bugzilla.eazel.com 1251: 
 	 * Although Havoc had this call to set_default_size in
 	 * his code, it seems to have no effect for me. But the
-	 * gdk_window_move_resize below does seem to work. Not sure if
-	 * this should stay or not.
+	 * set_usize below does seem to work.
 	 */
 	gtk_window_set_default_size (GTK_WINDOW (window),
 				     gdk_screen_width (),
@@ -87,7 +86,6 @@ nautilus_desktop_window_new (NautilusApplication *application)
 {
 	NautilusDesktopWindow *window;
 	const char *desktop_directory_path;
-	char *desktop_directory_path_in_uri_format;
 	char *desktop_directory_uri;
 
 	window = NAUTILUS_DESKTOP_WINDOW
@@ -104,20 +102,11 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	 */
 	nautilus_link_set_install (desktop_directory_path, "desktop");
 
-	/* FIXME bugzilla.eazel.com 1252: 
-	 * This little ditty is just the way you convert a
-	 * local path to a file: URI. Should be a utility somewhere
-	 * to do the two steps at once.
-	 */
-	desktop_directory_path_in_uri_format = gnome_vfs_escape_string
-		(desktop_directory_path, GNOME_VFS_URI_UNSAFE_PATH);
-	desktop_directory_uri = g_strconcat
-		("file://", desktop_directory_path_in_uri_format, NULL);
-	g_free (desktop_directory_path_in_uri_format);
-
 	/* Point window at the desktop folder.
 	 * Note that nautilus_desktop_window_initialize is too early to do this.
 	 */
+	desktop_directory_uri = nautilus_get_uri_from_local_path
+		(desktop_directory_path);
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), desktop_directory_uri);
 	g_free (desktop_directory_uri);
 
@@ -207,15 +196,13 @@ realize (GtkWidget *widget)
 				   | WIN_HINTS_SKIP_TASKBAR);
 
 	/* FIXME bugzilla.eazel.com 1255: 
-	 * Should we do a gdk_window_set_hints or a
-	 * gdk_window_move_resize here too?
+	 * Should we do a gdk_window_move_resize here, in addition to
+	 * the calls in initialize above that set the size?
 	 */
-#if 0
 	gdk_window_move_resize (widget->window,
 				0, 0,
 				gdk_screen_width (),
 				gdk_screen_height ());
-#endif
 
 	/* Get rid of the things that window managers add to resize
 	 * and otherwise manipulate the window.

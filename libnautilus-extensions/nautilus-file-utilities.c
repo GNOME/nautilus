@@ -65,7 +65,7 @@ nautilus_format_uri_for_display (const char *uri)
 
 	g_assert (uri != NULL);
 
-	unescaped = gnome_vfs_unescape_for_display (uri);
+	unescaped = gnome_vfs_unescape_string_for_display (uri);
 	
 	/* Remove file:// from the beginning */
 	if (nautilus_str_has_prefix (uri, DEFAULT_SCHEME)) {
@@ -334,7 +334,7 @@ nautilus_get_uri_from_local_path (const char *local_path)
 	g_return_val_if_fail (local_path != NULL, NULL);
 	g_return_val_if_fail (local_path[0] == '/', NULL);
 
-	escaped_path = gnome_vfs_escape_string (local_path, GNOME_VFS_URI_UNSAFE_PATH);
+	escaped_path = gnome_vfs_escape_path_string (local_path);
 	result = g_strconcat ("file://", escaped_path, NULL);
 	g_free (escaped_path);
 	return result;

@@ -1793,7 +1793,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
 		return g_strdup (_("--"));
 	}
-	return gnome_vfs_file_size_to_string (file->details->info->size);
+	return gnome_vfs_format_file_size_for_display (file->details->info->size);
 }
 
 /**

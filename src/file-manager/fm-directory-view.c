@@ -855,7 +855,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	if (non_folder_count != 0) {
 		char *size_string;
 
-		size_string = gnome_vfs_file_size_to_string (non_folder_size);
+		size_string = gnome_vfs_format_file_size_for_display (non_folder_size);
 
 		if (folder_count == 0) {
 			if (non_folder_count == 1) {

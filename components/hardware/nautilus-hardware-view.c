@@ -245,8 +245,8 @@ get_CPU_description(gint nth)
 }
 
 /* get descriptive information about main memory */
-static char*
-get_RAM_description()
+static char *
+get_RAM_description (void)
 {
 	char *temp_str, *num_str, *result;
 	GString* string_data = g_string_new("");
@@ -255,7 +255,9 @@ get_RAM_description()
 	temp_str = extract_info(proc_data, "MemTotal", 0);
 	/* strip kbyte suffix */
 	temp_str[strlen(temp_str) - 3] = '\0';
-        num_str = gnome_vfs_file_size_to_string (1000 * atoi(temp_str));
+
+        /* FIXME: Would 1024 give a better result? */
+        num_str = gnome_vfs_format_file_size_for_display (1000 * atoi (temp_str));
 	
 	g_string_append(string_data, num_str);
 	g_string_append(string_data, " RAM");

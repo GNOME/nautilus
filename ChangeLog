@@ -1,3 +1,32 @@
+2000-06-21  Darin Adler  <darin@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	(get_RAM_description):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(gather_config_button_cb), (register_button_cb),
+	(nautilus_service_startup_view_destroy):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(set_up_request_by_file_attributes):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display),
+	(nautilus_get_uri_from_local_path):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_size_as_string):
+	* libnautilus-extensions/nautilus-link-set.c: (link_set_path_name),
+	(expand_uri):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_display_selection_info):
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_initialize),
+	(nautilus_desktop_window_new), (realize):
+	Updated callers of the gnome-vfs calls that I just changed.
+	In some cases I made them use higher-level nautilus utility
+	functions instead.
+
 2000-06-21  Gene Z. Ragan  <gzr@eazel.com>
 
 	More updating of code to change gnome-vfs error codes to reflect
@@ -37,7 +66,6 @@
 	* libnautilus-extensions/nautilus-horizontal-splitter.c:
 	(nautilus_horizontal_splitter_initialize), (draw_resize_bar),
 	(draw_resize_bar_thumb), (nautilus_horizontal_splitter_draw):
-
 	Arlofication of the splitter widget.  Bug 759.
 	
 2000-06-20  J Shane Culpepper  <pepper@eazel.com>
@@ -52,13 +80,11 @@
 	(nautilus_login_view_get_nautilus_view),
 	(nautilus_login_view_load_uri), (login_load_location_callback):
 	* components/services/login/nautilus-view/nautilus-login-view.h:
-	*
-	components/services/login/nautilus-view/nautilus-login-view.oafinfo
-	:
-	Inital stab at a decent login view for services.  Doesn't 
+	* components/services/login/nautilus-view/nautilus-login-view.oafinfo:
+	Initial stab at a decent login view for services. Doesn't
 	actually do any connecting or authentication yet but it's a good
-	start to the view.  Still needs some work before I hook it up to the
-	build.
+	start to the view. Still needs some work before I hook it up to
+	the build.
 
 2000-06-20  Rebecca Schulman  <rebecka@eazel.com>
 
@@ -78,22 +104,20 @@
 	* src/nautilus-switchable-search-bar.h:
 	* src/nautilus-search-bar-criterion.c:
 	* src/nautilus-search-bar-criterion.h:
-	set up search-bar as a virtual class that
-	switches between the available search bars,
-	similar to nautilus-navigation-bar.
+	Set up search-bar as a virtual class that switches between the
+	available search bars, similar to nautilus-navigation-bar.
 
 	* src/nautilus-complex-search-bar.c:
 	* src/nautilus-complex-search-bar.h:
 	* src/nautilus-simple-search-bar.c:
 	* src/nautilus-simple-search-bar.h:
 	Added simple and complex search bar skeletons.
-	these need to get filled out a lot more
+	These need to get filled out a lot more.
 	
 	* src/nautilus-switchable-navigation-bar.c:
 	(nautilus_switchable_navigation_bar_initialize):
-	switchable navigation bar uses a switchable
-	search bar instead of a normal search bar,
-	since that class is now virtual
+	Switchable navigation bar uses a switchable search bar instead of
+	a normal search bar, since that class is now virtual.
 	
 	* src/nautilus-navigation-bar.c:
 	fixed comment typos
@@ -101,8 +125,8 @@
 	* libnautilus-extensions/nautilus-directory.h:
 	Exported nautilus_uri_is_search_uri function
 	* libnautilus-extensions/Makefile.am:
-	Added nautilus-search-uri.c and .h files
-	The functions aren't filled out yet, though
+	Added nautilus-search-uri.c and .h files.
+	The functions aren't filled out yet, though.
 	* libnautilus-extensions/nautilus-search-uri.c:
 	(nautilus_search_uri_to_simple_search_criteria):
 	* libnautilus-extensions/nautilus-search-uri.h:
@@ -110,17 +134,16 @@
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_register_for_ui):
 	* libnautilus-extensions/nautilus-global-preferences.h:
-	Changed search bar preference names from NAUTILUS_SEARCH_BAR_ONE_BOX 
-	and NAUTILUS_SEARCH_BAR_MULTI_BOX
-	to NAUTILUS_SIMPLE_SEARCH_BAR and NAUTILUS_COMPLEX_SEARCH_BAR
-	to match respective object names
-
+	Changed search bar preference names from
+	NAUTILUS_SEARCH_BAR_ONE_BOX and NAUTILUS_SEARCH_BAR_MULTI_BOX to
+	NAUTILUS_SIMPLE_SEARCH_BAR and NAUTILUS_COMPLEX_SEARCH_BAR to
+	match respective object names
 
 2000-06-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
 	(draw_stretch_handles_aa):
-	improved the positioning of the anti-aliased stretch handles by
+	Improved the positioning of the anti-aliased stretch handles by
 	using the icon rect instead of the bounds rect.
 	
 2000-06-20  John Sullivan  <sullivan@eazel.com>

@@ -1273,11 +1273,11 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	while (current_file_info != NULL) {
 		/* skip invisible files, for now */
 		if (current_file_info->name[0] == '.') {
-				current_file_info = gnome_vfs_directory_list_next(list);
-				continue;
+                        current_file_info = gnome_vfs_directory_list_next(list);
+                        continue;
                 }
 		
- 		escaped_name = gnome_vfs_escape_string (current_file_info->name, GNOME_VFS_URI_UNSAFE_PATH);
+ 		escaped_name = gnome_vfs_escape_string (current_file_info->name);
 		path_uri = nautilus_make_path (uri, escaped_name);
 		g_free(escaped_name);
 			

@@ -77,6 +77,7 @@ typedef struct {
 	gboolean file_list; /* always FALSE if file != NULL */
 	gboolean file_info;
 	gboolean directory_count;
+	gboolean directory_deep_count;
 	gboolean top_left_text;
 } Request;
 
@@ -602,6 +603,10 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
 		 nautilus_str_compare) != NULL;
+	request->directory_deep_count = g_list_find_custom
+		(file_attributes,
+		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_DEEP_COUNT,
+		 nautilus_str_compare) != NULL;
 	request->top_left_text = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
@@ -611,7 +616,7 @@ set_up_request_by_file_attributes (Request *request,
 		 NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE,
 		 nautilus_str_compare) != NULL;
 
-	/* FIXME: 
+	/* FIXME:
 	 * Some file attributes are really pieces of metadata.
 	 * This is a confusing/broken design, since other metadata
 	 * pieces are handled separately from file attributes. There

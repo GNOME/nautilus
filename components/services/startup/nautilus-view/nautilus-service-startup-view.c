@@ -247,8 +247,8 @@ gather_config_button_cb (GtkWidget* button, NautilusServicesContentView* view) {
 
 	gethostname (&host_name[0], 511);
 		
-	encoded_token = gnome_vfs_escape_string (view->details->auth_token, GNOME_VFS_URI_UNSAFE_ALL);
-	encoded_host_name = gnome_vfs_escape_string (host_name, GNOME_VFS_URI_UNSAFE_ALL);
+	encoded_token = gnome_vfs_escape_string (view->details->auth_token);
+	encoded_host_name = gnome_vfs_escape_string (host_name);
 	
 	cookie_str = g_strdup_printf ("token=%s; computer=%s", encoded_token, encoded_host_name);
 	request = make_http_post_request (uri, config_string, cookie_str);
@@ -321,8 +321,8 @@ register_button_cb (GtkWidget* button, NautilusServicesContentView* view) {
 	/* hide the error text and give feedback in the status area during the request */
 	gtk_widget_hide (view->details->feedback_text);
 		
-	encoded_email = gnome_vfs_escape_string (email, GNOME_VFS_URI_UNSAFE_ALL);
-	encoded_password = gnome_vfs_escape_string (password, GNOME_VFS_URI_UNSAFE_ALL);
+	encoded_email = gnome_vfs_escape_string (email);
+	encoded_password = gnome_vfs_escape_string (password);
 	
 	body = g_strdup_printf ("email=%s&pwd=%s", encoded_email, encoded_password);
 	uri = g_strdup_printf ("http://%s/member/new.pl", SERVICE_DOMAIN_NAME);
@@ -374,10 +374,9 @@ register_button_cb (GtkWidget* button, NautilusServicesContentView* view) {
 	                        xmlSetProp (service_node, "domain", SERVICE_DOMAIN_NAME);
   		
   				/* save the token in the view object for subsequent accesses */
-  				if (view->details->auth_token)
-  					g_free (view->details->auth_token);
+				g_free (view->details->auth_token);
   				
-				view->details->auth_token = g_strdup (gnome_vfs_unescape_string (temp_str, NULL));	
+				view->details->auth_token = g_strdup (gnome_vfs_unescape_string (temp_str, NULL));
 	                        xmlSetProp (service_node, "token", view->details->auth_token);
 				
 				temp_filename = g_strdup_printf ("%s/.nautilus/service.xml", g_get_home_dir ());
@@ -780,13 +779,8 @@ nautilus_service_startup_view_destroy (GtkObject* object) {
 
 	view = NAUTILUS_SERVICE_STARTUP_VIEW (object);
 
-	if (view->details->uri) {
-		g_free (view->details->uri);
-	}
-
-	if (view->details->auth_token) {
-		g_free (view->details->auth_token);
-	}
+	g_free (view->details->uri);
+	g_free (view->details->auth_token);
 	g_free (view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
