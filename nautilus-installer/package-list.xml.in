@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<CATEGORIES>
+  <SPLASH-TEXT>
+This installer takes you through all the steps to get Nautilus up and
+running on 
+your Linux system.
+
+The installer may update some existing packages, and in rare cases
+overwrite 
+files that are shared by more than one package.
+  </SPLASH-TEXT>
+  <FINISH-TEXT>
+The Nautilus installer has completed your installation, and you're ready to go.  
+To run Nautilus, select it from the GNOME menu: Main (footprint) -> Programs -> Applications -> Nautilus
+
+Please keep up-to-date on Eazel news at http://www.eazel.com 
+
+If you have any suggestions, please submit them at: http://www.eazel.com/feedback.html
+  </FINISH-TEXT>
+  <CATEGORY name="Nautilus @VERSION@">
+    <EXCLUSIVE/>
+    <DEFAULT/>
+    <DESCRIPTION>
+Nautilus, a sneak preview of Eazel Services, Mozilla, and a few extra
+file viewers will be installed.
+</DESCRIPTION>
+    <PACKAGES>
+      <PACKAGE>
+        <NAME>nautilus-suggested</NAME>
+        <ARCH>i386</ARCH>
+      </PACKAGE>
+    </PACKAGES>
+  </CATEGORY>
+</CATEGORIES>
