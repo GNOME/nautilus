@@ -1,3 +1,11 @@
+2003-01-18  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
+	(create_and_set_up_tree_view), (fm_list_view_start_renaming_file):
+	Don't initiate a rename on mouse clicks.
+	Patch from Marten Ter Borgh <marten-devel@terborgh.demon.nl>,
+	fixes bug #83552.
+
 2003-01-18  Tõivo Leedjärv  <toivo@linux.ee>
 
 	* configure.in: Added et to ALL_LINGUAS.

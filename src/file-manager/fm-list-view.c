@@ -286,6 +286,12 @@ cell_renderer_edited (GtkCellRendererText *cell,
 	fm_rename_file (file, new_text);
 	
 	nautilus_file_unref (file);
+
+	/*We're done editing - make the filename-cells readonly again.*/
+	g_object_set (G_OBJECT (view->details->file_name_cell),
+		      "editable", FALSE,
+		      NULL);
+
 }
 
 static char *
@@ -418,9 +424,7 @@ create_and_set_up_tree_view (FMListView *view)
 
 	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
 	gtk_tree_view_column_set_attributes (view->details->file_name_column, cell,
-					     "text", FM_LIST_MODEL_NAME_COLUMN,
-					     "editable", FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN,
-					     NULL);
+					     "text", FM_LIST_MODEL_NAME_COLUMN, NULL);
 	gtk_tree_view_append_column (view->details->tree_view, view->details->file_name_column);
 
 	/* Create the size column */
@@ -826,6 +830,11 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	}
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
+
+	/*Make filename-cells editable.*/
+	g_object_set (G_OBJECT (list_view->details->file_name_cell),
+		      "editable", TRUE,
+		      NULL);
 	
 	gtk_tree_view_set_cursor (list_view->details->tree_view,
 				  path,
