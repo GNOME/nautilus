@@ -71,7 +71,7 @@ nautilus_tree_expansion_state_initialize_class (gpointer klass)
 }
 
 /* Give full gconf path so that this preference won't be coupled to user level. */
-#define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE		"sidebar-panels/tree/expansion_state"
+#define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE		"tree-sidebar-panel/expansion_state"
 
 static void
 nautilus_tree_expansion_state_load_foreach_callback (char *uri,

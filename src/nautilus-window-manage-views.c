@@ -98,6 +98,9 @@ static void disconnect_view	   (NautilusWindow    *window,
                                     NautilusViewFrame *view);
 static void disconnect_view_and_destroy        (NautilusWindow    *window,
                                                 NautilusViewFrame *view);
+static void disconnect_and_destroy_sidebar_panel (NautilusWindow    *window,
+                                                  NautilusViewFrame *view);
+
 static void cancel_location_change (NautilusWindow    *window);
 
 static void
@@ -920,8 +923,7 @@ handle_view_failure (NautilusWindow *window,
                 report_sidebar_panel_failure_to_user (window, view);
 		current_iid = nautilus_view_frame_get_iid (view);
 		nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
-		disconnect_view_and_destroy (window, view);
-        	nautilus_window_remove_sidebar_panel (window, view);
+		disconnect_and_destroy_sidebar_panel (window, view);
 	} else {
 	        if (view == window->content_view) {
 	                if (GTK_WIDGET (window->content_view)->parent) {
@@ -1576,8 +1578,7 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 		if (found_node == NULL) {
 			current_iid = nautilus_view_frame_get_iid (sidebar_panel);
 			nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
-			disconnect_view_and_destroy (window, sidebar_panel);
-			nautilus_window_remove_sidebar_panel (window, sidebar_panel);
+			disconnect_and_destroy_sidebar_panel (window, sidebar_panel);
 		} else {
                         identifier = (NautilusViewIdentifier *) found_node->data;
 
@@ -1934,6 +1935,14 @@ disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
         	 GTK_SIGNAL_FUNC (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (DISCONNECT)
 	#undef DISCONNECT
+}
+
+static void
+disconnect_and_destroy_sidebar_panel (NautilusWindow *window, NautilusViewFrame *view)
+{
+	disconnect_view (window, view);
+        nautilus_window_remove_sidebar_panel (window, sidebar_panel);
+	gtk_widget_destroy (GTK_WIDGET (view));
 }
 
 static void
