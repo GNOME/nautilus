@@ -1,5 +1,14 @@
 2000-09-19  Darin Adler  <darin@eazel.com>
 
+	Fixed bug 3157 (Going to a bogus URI crashes nautilus).
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_async_state_changed): Add a ref/unref to keep
+	the directory around even if call_when_ready results in the last
+	ref to the directory going away.
+
+2000-09-19  Darin Adler  <darin@eazel.com>
+
 	Fixed bug 640 (icon cache never frees images (awaiting GdkPixbuf
 	fix)). Also took care of bug 3145 (zillions of 'main_loops !=
 	NULL' assertion failures when quitting) and bug 3138 (Some code in

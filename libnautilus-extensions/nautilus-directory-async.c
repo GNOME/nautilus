@@ -2444,14 +2444,16 @@ start_or_stop_io (NautilusDirectory *directory)
 void
 nautilus_directory_async_state_changed (NautilusDirectory *directory)
 {
-	/* Check if any callbacks are satisifed and call them if they
+	/* Check if any callbacks are satisfied and call them if they
 	 * are. Do this last so that any changes done in start or stop
 	 * I/O functions immediately (not in callbacks) are taken into
 	 * consideration. If any callbacks are called, consider the
 	 * I/O state again so that we can release or cancel I/O that
 	 * is not longer needed once the callbacks are satisfied.
 	 */
+	nautilus_directory_ref (directory);
 	do {
 		start_or_stop_io (directory);
 	} while (call_ready_callbacks (directory));
+	nautilus_directory_unref (directory);
 }
