@@ -110,6 +110,7 @@ void transferoptions_destroy (TransferOptions *topts);
 struct _InstallOptions {
 	URLType protocol;          /* Specifies local, ftp, or http */ 
 	char* pkg_list;            /* Local path to package-list.xml */
+	char* transaction_dir;                     /* Local directory to store transactions */
 	gboolean mode_verbose;     /* print extra information */
 	gboolean mode_silent;      /* FIXME bugzilla.eazel.com 731: print all information to a logfile */
 	gboolean mode_debug;       /* Internal testing mode for debugging */

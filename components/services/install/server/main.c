@@ -25,6 +25,7 @@
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#include <signal.h>
 
 #include <libtrilobite/libtrilobite-service.h>
 
@@ -44,6 +45,13 @@ static BonoboGenericFactory *factory;
 static int trilobites_active = 0;
 
 static void trilobite_service_factory_destroy (GtkObject *object);
+static void sig_segv_handler (int);
+
+static void 
+sig_segv_handler (int roedgroed_med_floede)
+{
+	g_error ("Crash");
+}
 
 static void
 trilobite_service_factory_destroy (GtkObject *object) 
@@ -112,6 +120,8 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
+	signal (SIGSEGV, &sig_segv_handler);
+
 /* FIXME: bugzilla.eazel.com 1624
    dep on libnautilus-extensions */
 #define TEST_NEW_PASSWORD_STUFF
@@ -126,6 +136,8 @@ int main(int argc, char *argv[]) {
 	orb = oaf_init (argc, argv);
 	gnomelib_parse_args (argc, argv, 0);
 #endif 	
+
+
 	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
 		g_error ("Could not initialize Bonobo");
 	}

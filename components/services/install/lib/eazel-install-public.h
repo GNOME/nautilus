@@ -198,6 +198,16 @@ void eazel_install_set_##name (EazelInstall *service, \
 	service->private->var = copyfunc ( name ); \
 }
 
+/* When adding fields to EazelInstall object, add
+   _mutator_decl here
+   _access_decl here
+   ARG_ in -object.c
+   code in eazel_install_set_arg
+   code in eazel_install_class_initialize
+   _mutator_impl in -object.c
+   _access_impl in -object.c
+*/
+
 ei_mutator_decl (verbose, gboolean);
 ei_mutator_decl (silent, gboolean);
 ei_mutator_decl (debug, gboolean);
@@ -215,6 +225,7 @@ ei_mutator_decl (rpm_storage_path, char*);
 ei_mutator_decl (package_list_storage_path, char*);
 ei_mutator_decl (package_list, char*);
 ei_mutator_decl (root_dir, char*);
+ei_mutator_decl (transaction_dir, char*);
 ei_mutator_decl (server_port, guint);
 
 ei_mutator_decl (install_flags, int);
@@ -240,6 +251,7 @@ ei_access_decl (rpm_storage_path, char*);
 ei_access_decl (package_list_storage_path, char*);
 ei_access_decl (package_list, char*);
 ei_access_decl (root_dir, char*);
+ei_access_decl (transaction_dir, char*);
 ei_access_decl (server_port, guint);
 
 ei_access_decl (install_flags, int);

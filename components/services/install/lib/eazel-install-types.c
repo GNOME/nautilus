@@ -88,6 +88,8 @@ packagedata_new ()
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
 	pack->modifies = NULL;
+	pack->status = PACKAGE_UNKNOWN_STATUS;
+	pack->modify_status = PACKAGE_MOD_UNTOUCHED;
 	return pack;
 }
 

@@ -1,3 +1,39 @@
+2000-07-25  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/docs/install-user-settings:
+	Stuff that the user should be able to config.
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	Removed an unused include
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-metadata.c:
+	(create_default_configuration_metafile),
+	(init_default_install_configuration), (installoptions_destroy):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_initialize), (eazel_install_new_with_config):
+	Handle the transaction dir var.
+		
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(download_all_packages),
+	(eazel_install_do_rpm_transaction_make_argument_list),
+	(eazel_install_do_rpm_transaction_save_report),
+	(do_rpm_transaction), (eazel_install_add_to_rpm_set),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies), (eazel_uninstall_globber):
+	Removed a lot of of rpmtransaction code. Polished the xml
+	transaction output.	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new):
+	Default vals for status and modify status.
+	
+	* components/services/install/server/main.c: (sig_segv_handler),
+	(main):
+	Upon crash, say something on stdout.	
+
 2000-07-25  Maciej Stachowiak  <mjs@eazel.com>
 
 	I think I fixed 1693 and 1766 but I can't test them cause medusa

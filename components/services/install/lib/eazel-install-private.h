@@ -35,6 +35,7 @@ struct _EazelInstallPrivate {
 	int install_flags; 
 	int interface_flags; 
 	int problem_filters; 
+	char *transaction_dir;
 
 	gboolean use_local_package_list;
 	

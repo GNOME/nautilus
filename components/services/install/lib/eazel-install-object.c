@@ -74,7 +74,8 @@ enum {
 	ARG_PACKAGE_LIST,
 	ARG_ROOT_DIR,
 	ARG_PACKAGE_SYSTEM,
-	ARG_SERVER_PORT
+	ARG_SERVER_PORT,
+	ARG_TRANSACTION_DIR
 };
 
 /* The signal array, used for building the signal bindings */
@@ -254,6 +255,9 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_ROOT_DIR:
 		eazel_install_set_root_dir (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
+	case ARG_TRANSACTION_DIR:
+		eazel_install_set_transaction_dir (service, (char*)GTK_VALUE_POINTER(*arg));
+		break;
 	}
 }
 
@@ -420,6 +424,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_ROOT_DIR);
+	gtk_object_add_arg_type ("EazelInstall::transaction_dir",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_READWRITE,
+				 ARG_TRANSACTION_DIR);
 	gtk_object_add_arg_type ("EazelInstall::server_port",
 				 GTK_TYPE_UINT,
 				 GTK_ARG_READWRITE,
@@ -451,7 +459,8 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private = g_new0 (EazelInstallPrivate,1);
 	service->private->topts = g_new0 (TransferOptions, 1);
 	service->private->iopts = g_new0 (InstallOptions, 1);
-	service->private->root_dir = NULL;
+	service->private->root_dir = g_strdup ("/");
+	service->private->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir() );
 	service->private->packsys.rpm.conflicts = NULL;
 	service->private->packsys.rpm.num_conflicts = 0;
 	service->private->packsys.rpm.db = NULL;
@@ -520,23 +529,24 @@ eazel_install_new_with_config (const char *config_file)
 	}
 
 	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
-							   "verbose", iopts->mode_verbose,
-							   "silent", iopts->mode_silent,
-							   "debug", iopts->mode_debug,
-							   "test", iopts->mode_test,
-							   "force", iopts->mode_force,
-							   "depend", iopts->mode_depend,
-							   "update", iopts->mode_update,
-							   "uninstall", iopts->mode_uninstall,
-							   "downgrade", iopts->mode_downgrade,
-							   "protocol", iopts->protocol,
-							   "tmp_dir", topts->tmp_dir,
-							   "rpmrc_file", topts->rpmrc_file,
-							   "server", topts->hostname,
-							   "rpm_storage_path", topts->rpm_storage_path,
-							   "package_list_storage_path", topts->pkg_list_storage_path,
-							   "server_port", topts->port_number,
-							   NULL));
+						 "verbose", iopts->mode_verbose,
+						 "silent", iopts->mode_silent,
+						 "debug", iopts->mode_debug,
+						 "test", iopts->mode_test,
+						 "force", iopts->mode_force,
+						 "depend", iopts->mode_depend,
+						 "update", iopts->mode_update,
+						 "uninstall", iopts->mode_uninstall,
+						 "downgrade", iopts->mode_downgrade,
+						 "protocol", iopts->protocol,
+						 "tmp_dir", topts->tmp_dir,
+						 "transaction_dir", iopts->transaction_dir,
+						 "rpmrc_file", topts->rpmrc_file,
+						 "server", topts->hostname,
+						 "rpm_storage_path", topts->rpm_storage_path,
+						 "package_list_storage_path", topts->pkg_list_storage_path,
+						 "server_port", topts->port_number,
+						 NULL));
 
 	transferoptions_destroy (topts);
 	installoptions_destroy (iopts);
@@ -969,6 +979,7 @@ ei_mutator_impl_copy (rpm_storage_path, char*, topts->rpm_storage_path, g_strdup
 ei_mutator_impl_copy (package_list_storage_path, char*, topts->pkg_list_storage_path, g_strdup);
 ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
 ei_mutator_impl_copy (root_dir, char*, root_dir, g_strdup);
+ei_mutator_impl_copy (transaction_dir, char*, transaction_dir, g_strdup);
 ei_mutator_impl (server_port, guint, topts->port_number);
 
 ei_mutator_impl (install_flags, int, install_flags);
@@ -993,6 +1004,7 @@ ei_access_impl (server, char*, topts->hostname, NULL);
 ei_access_impl (rpm_storage_path, char*, topts->rpm_storage_path, NULL);
 ei_access_impl (package_list_storage_path, char*, topts->pkg_list_storage_path, NULL);
 ei_access_impl (package_list, char*, iopts->pkg_list, NULL);
+ei_access_impl (transaction_dir, char*, transaction_dir, NULL);
 ei_access_impl (root_dir, char*, root_dir, NULL);
 ei_access_impl (server_port, guint, topts->port_number, 0);
 

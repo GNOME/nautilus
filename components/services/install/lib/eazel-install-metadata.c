@@ -94,6 +94,7 @@ create_default_configuration_metafile (const char* target_file) {
 	tree = xmlNewChild (doc->root, NULL, "PKG_LIST_STORAGE_PATH", "/package-list.xml");
 	tree = xmlNewChild (doc->root, NULL, "RPM_STORAGE_PATH", "/RPMS");
 	tree = xmlNewChild (doc->root, NULL, "TMP_DIR", "/tmp/eazel-install");
+	tree = xmlNewChild (doc->root, NULL, "TRANSACTION_DIR", "/var/eazel/services/transaction");
 	tree = xmlNewChild (doc->root, NULL, "RPMRC_FILE", "/usr/lib/rpm/rpmrc");
 
 	if (doc == NULL) {
@@ -198,6 +199,7 @@ init_default_install_configuration (const char* config_file) {
 	rv->protocol = get_urltype_from_string (tmpbuf);
 
 	rv->pkg_list = g_strdup (xml_get_value (base, "PKG_LIST"));
+	rv->transaction_dir = g_strdup (xml_get_value (base, "TRANSACTION_DIR"));	
 
 	tmpbuf = xml_get_value (base, "VERBOSE");
 	rv->mode_verbose = get_boolean_value_from_string (tmpbuf);
@@ -284,5 +286,7 @@ installoptions_destroy (InstallOptions *iopts)
 {
 	g_return_if_fail (iopts!=NULL);
 	g_free (iopts->pkg_list);
+	g_free (iopts->transaction_dir);
 	iopts->pkg_list = NULL;
+	iopts->transaction_dir = NULL;
 }

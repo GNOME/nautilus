@@ -23,7 +23,6 @@
 
 #include "eazel-install-corba-types.h"
 #include <libtrilobite/trilobite-core-distribution.h>
-#include <gnome-xml/tree.h>
 
 Trilobite_Eazel_PackageDataStructList
 corba_packagedatastructlist_from_packagedata_list (GList *packages)

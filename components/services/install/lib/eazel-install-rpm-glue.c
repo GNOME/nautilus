@@ -44,7 +44,11 @@
 #include <string.h>
 #include <time.h>
 
-#define UNKNOWN_SIZE 1024
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 typedef void (*rpm_install_cb)(char* name, char* group, void* user_data);
 
@@ -54,39 +58,12 @@ static gboolean download_all_packages (EazelInstall *service,
 static gboolean install_all_packages (EazelInstall *service,
                                       GList* categories);
 
-
-static gboolean uninstall_a_package (EazelInstall *service,
-				     PackageData* package,
-				     int uninstall_flags,
-				     int problem_filters,
-				     int interface_flags);
-
 typedef void* (*RpmCallbackFunc) (const Header, const rpmCallbackType, 
 				  const unsigned long, const unsigned long, 
 				  const void*, void*);
-static void* rpm_show_progress (const Header h,
-                                const rpmCallbackType callback_type,
-                                const unsigned long amount,
-                                const unsigned long total,
-                                const char* pkgKey,
-                                EazelInstall* service);
-
-static int rpm_uninstall (EazelInstall *service, 
-			  char* root_dir,
-                          char* file,
-                          int install_flags,
-                          int problem_filters,
-                          int interface_flags);
 
 static int do_rpm_transaction (EazelInstall *service, 
 			       GList* packages);
-
-static int do_rpm_uninstall (EazelInstall *service, 
-			     char* root_dir,
-                             GList* packages,
-                             int install_flags,
-                             int problem_filters,
-                             int interface_flags);
 
 static gboolean eazel_install_ensure_deps (EazelInstall *service, 
 					   GList **filenames, 
@@ -192,9 +169,10 @@ download_all_packages (EazelInstall *service,
 			/* if filename in the package is set, but the file
 			   does not exist, get it anyway */
 			if (package->filename) {
-
+				g_message ("Filename set, and file exists = %d", g_file_test (package->filename, G_FILE_TEST_ISFILE));
 				if (g_file_test (package->filename, G_FILE_TEST_ISFILE)) {
-					fetch_package = FALSE;		
+					fetch_package = FALSE;	
+					packagedata_fill_from_file (package, package->filename);
 				} else {
 					/* The file didn't exist, remove the 
 					   leading path and set the filename, plus
@@ -207,6 +185,8 @@ download_all_packages (EazelInstall *service,
 					fetch_package = TRUE;
 				}
 
+			} else {
+				g_message ("Must download %s", package->name);
 			}
 
 			if (fetch_package &&
@@ -350,110 +330,6 @@ uninstall_packages (EazelInstall *service,
 
 } /* end install_new_packages */
 
-static gboolean
-uninstall_a_package (EazelInstall *service,
-		     PackageData* package,
-                     int uninstall_flags,
-                     int problem_filters,
-                     int interface_flags) {
-	int retval;
-	gboolean rv;
-
-	retval = 0;
-
-	rv = TRUE;
-	g_message (_("Uninstalling %s"), package->name);
-	retval = rpm_uninstall (service,
-				"/",
-				package->name,
-				uninstall_flags,
-				problem_filters,
-				interface_flags);
-	if (retval == 0) {
-		g_message ("Package uninstall successful!");
-	} else {
-		g_message (_("Package uninstall failed !"));
-		rv = FALSE;
-	}
-
-	return rv;
-
-} /* end uninstall_a_package */
-
-static void*
-rpm_show_progress (const Header h,
-                   const rpmCallbackType callback_type,
-                   const unsigned long amount,
-                   const unsigned long total,
-                   const char *filename,
-                   EazelInstall *service) {
-
-	static FD_t fd;
-	PackageData *pack;		
-	static int kept_total;
-
-	g_assert (service != NULL);
-	g_assert (IS_EAZEL_INSTALL (service));
-	       
-	switch (callback_type) {
-	case RPMCALLBACK_INST_OPEN_FILE:
-		fd = fdOpen (filename, O_RDONLY, 0);
-		service->private->packsys.rpm.packages_installed ++;
-		/* reset kept_total so the first emit is with amount==0 */
-		kept_total = 0;
-		return fd;
-
-	case RPMCALLBACK_INST_CLOSE_FILE:
-		service->private->packsys.rpm.current_installed_size += kept_total;
-		fdClose (fd);
-		pack = g_hash_table_lookup (service->private->name_to_package_hash, filename);
-		/* ensure install_progress emit with amount==total */
-		eazel_install_emit_install_progress (service, 
-						     pack, 
-						     service->private->packsys.rpm.packages_installed, 
-						     service->private->packsys.rpm.num_packages,
-						     kept_total, 
-						     kept_total,
-						     service->private->packsys.rpm.current_installed_size,
-						     service->private->packsys.rpm.total_size);
-		break;
-			
-	case RPMCALLBACK_INST_PROGRESS: {
-		int tmp;
-		/* Ensure first emit is with amount==0 */
-		if (kept_total == 0) {
-			kept_total = total;
-			tmp = 0;
-		} else {
-			/* and ensure emit with amount==0 only occurs once */
-			if (amount==0) {
-				tmp = 1;
-			} else {
-				tmp = amount;
-			}
-		}
-		pack = g_hash_table_lookup (service->private->name_to_package_hash, filename);
-		/* this if ensures that callback_type == CLOSE_FILE ensures that
-		   amount==total only occurs once */
-		if (tmp!=kept_total) {
-			eazel_install_emit_install_progress (service, 
-							     pack, 
-							     service->private->packsys.rpm.packages_installed, 
-							     service->private->packsys.rpm.num_packages,
-							     tmp, 
-							     kept_total,
-							     service->private->packsys.rpm.current_installed_size + amount,
-							     service->private->packsys.rpm.total_size);
-		}
-	}
-	break;
-
-	default:
-		break;
-	}
-	return NULL;
-} /* end rpm_show_progress */
-
 static void
 eazel_install_do_rpm_transaction_fill_hash (EazelInstall *service,
 					GList *packages)
@@ -504,8 +380,10 @@ eazel_install_do_rpm_transaction_make_argument_list (EazelInstall *service,
 		   we need to g_strdup both into the args list.
 		*/
 		if (eazel_install_get_uninstall (service)) {
+			pack->modify_status = PACKAGE_MOD_UNINSTALLED;
 			args = g_list_prepend (args, g_strdup (rpmname_from_packagedata (pack)));
 		} else {
+			pack->modify_status = PACKAGE_MOD_INSTALLED;
 			args = g_list_prepend (args, g_strdup (pack->filename));
 		}
 	}
@@ -616,6 +494,76 @@ eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
 	fclose (pipe);
 }
 
+static void
+eazel_install_do_rpm_transaction_save_report (EazelInstall *service) 
+{
+	FILE *outfile;
+	GList *iterator;
+	xmlDocPtr doc;
+	xmlNodePtr node, root;
+	char *name;
+	
+	doc = xmlNewDoc ("1.0");
+	root = node = xmlNewNode (NULL, "TRANSACTION");
+	xmlDocSetRootElement (doc, node);
+	name = g_strdup_printf ("%s/transaction.%d", eazel_install_get_transaction_dir (service), time (NULL));
+	while (g_file_test (name, G_FILE_TEST_ISFILE)) {
+		g_free (name);
+		sleep (1);
+		name = g_strdup_printf ("%s/transaction.%d", eazel_install_get_transaction_dir (service), time (NULL));
+	}
+
+	/* Ensure the transaction dir is present */
+	if (! g_file_test (eazel_install_get_transaction_dir (service), G_FILE_TEST_ISDIR)) {
+		int retval;
+		retval = mkdir (eazel_install_get_transaction_dir (service), 0755);		       
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				g_error (_("*** Could not create transaction directory (%s)! ***\n"), 
+					 eazel_install_get_transaction_dir (service));
+			}
+		}
+	}
+
+	outfile = fopen (name, "w");
+	xmlAddChild (root, eazel_install_packagelist_to_xml (service->private->transaction));
+	node = xmlAddChild (node, xmlNewNode (NULL, "DESCRIPTIONS"));
+
+	{
+		char *tmp;
+		tmp = g_strdup_printf ("%d", time (NULL));		
+		xmlNewChild (node, NULL, "DATE", tmp);
+		g_free (tmp);
+	}
+
+	for (iterator = service->private->transaction; iterator; iterator = iterator->next) {
+		PackageData *pack;
+		char *tmp;
+		pack = (PackageData*)iterator->data;
+		switch (pack->modify_status) {
+		case PACKAGE_MOD_INSTALLED:			
+			tmp = g_strdup_printf ("Installed %s", pack->name);
+			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
+			g_free (tmp);
+			break;
+		case PACKAGE_MOD_UNINSTALLED:			
+			tmp = g_strdup_printf ("Uninstalled %s", pack->name);
+			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
+			g_free (tmp);
+			break;
+		}
+	}
+
+	xmlDocDump (outfile, doc);
+	
+	fclose (outfile);
+	g_free (name);
+
+	/* FIXME: bugzilla.eazel.com 1586 1673
+	   at this point, we could emit the transaction info, by finding the toplevel
+	   packages, and spewing out xml for them */
+}
+
 int
 do_rpm_transaction (EazelInstall *service,
 		    GList* packages) 
@@ -670,140 +618,13 @@ do_rpm_transaction (EazelInstall *service,
 	}
 	
 	eazel_install_do_rpm_transaction_process_pipe (service, fd);
+	eazel_install_do_rpm_transaction_save_report (service);
 
 	g_list_foreach (args, (GFunc)g_free, NULL);
 	g_list_free (args);
 
-	/* FIXME: bugzilla.eazel.com 1586 1673
-	   at this point, we could emit the transaction info, by finding the toplevel
-	   packages, and spewing out xml for them */
-	{
-		FILE *hest;
-		GList *iterator;
-		xmlDocPtr doc;
-		xmlNodePtr node;
-
-		doc = xmlNewDoc ("1.0");
-		hest = fopen ("/tmp/transaction", "w");
-		node = xmlDocSetRootElement (doc, eazel_install_packagelist_to_xml (service->private->transaction));
-		xmlDocDump (hest, doc);
-		
-		fclose (hest);
-	}
-
 	return 0;
 } /* end do_rpm_transaction */
-
-static int
-do_rpm_uninstall (EazelInstall *service, 
-		  char* root_dir, 
-		  GList* packages, 
-		  int install_flags,
-                  int problem_filters, 
-		  int interface_flags) 
-{
-	rpmdb db;
-	int count, i;
-	int rc;
-	int num_packages;
-	int num_failed;
-	int num_conflicts;
-	int  stop_uninstall;
-	char* pkg_name;
-	dbiIndexSet matches;
-	rpmTransactionSet rpmdep;
-	struct rpmDependencyConflict* conflicts;
-	rpmProblemSet probs;
-
-	num_failed = 0;
-	stop_uninstall = 0;
-	rpmdep = NULL;
-
-	if (rpmdbOpen (root_dir, &db, O_RDONLY, 0644)) {
-		const char* dn;
-		dn = rpmGetPath ((root_dir ? root_dir : ""), "%{_dbpath}", NULL);
-		if (!dn) {
-			g_warning (_("Packages database query failed !"));
-		}
-		return g_list_length (packages);
-	}
-
-	rpmdep = rpmtransCreateSet (db, root_dir);
-	for (num_packages = 0; packages != NULL; packages = packages->next) {
-		pkg_name = packages->data;
-		/* FIXME: bugzilla.eazel.com 1697
-		   use eazel_install_simple_query instead */
-		rc = rpmdbFindByLabel (db, pkg_name, &matches);
-		switch (rc) {
-			case 1:
-				g_message (_("Package %s is not installed"), pkg_name);
-				num_failed++;
-				break;
-			case 2:
-				g_message (_("Error finding index to %s"), pkg_name);
-				num_failed++;
-				break;
-			default:
-				count = 0;
-				for (i = 0; i < dbiIndexSetCount (matches); i++) {
-					unsigned int rec_offset;
-					if (dbiIndexRecordOffset (matches, i)) {
-						count++;
-					}
-					rec_offset = dbiIndexRecordOffset (matches, i);
-					if (rec_offset) {
-						rpmtransRemovePackage (rpmdep, rec_offset);
-						num_packages++;
-					}
-				}
-				dbiFreeIndexRecord (matches);
-				break;
-		}
-	}
-
-	if (!(interface_flags & UNINSTALL_NODEPS)) {
-
-		if (rpmdepCheck (rpmdep, &conflicts, &num_conflicts)) {
-			num_failed = num_packages;
-			stop_uninstall = 1;
-		}
-
-		if (!stop_uninstall && conflicts) {
-			int i;
-			g_message (_("Dependency check failed."));
-			printDepProblems (stderr, conflicts,
-                                          num_conflicts);
-			for (i=0; i<num_conflicts; i++) {
-				switch (conflicts[i].sense) {
-				case RPMDEP_SENSE_REQUIRES:
-					g_message ("%s deps on %s and must also be uninstalled", conflicts[i].byName, conflicts[i].needsName);
-					break;
-				default:
-					break;
-				}
-			}
-			num_failed += num_packages;
-			stop_uninstall = 1;
-			rpmdepFreeConflicts (conflicts, num_conflicts);
-		}
-	}
-	if (!stop_uninstall && rpmdep != NULL) {
-		num_failed += rpmRunTransactions (rpmdep,
-						  (RpmCallbackFunc)rpm_show_progress,
-						  service,
-                                                  NULL,
-                                                  &probs,
-                                                  install_flags,
-                                                  problem_filters);
-	}
-
-	if (rpmdep != NULL) {
-		rpmtransFree (rpmdep);
-	}
-
-	rpmdbClose (db);
-	return num_failed;
-} /* end do_rpm_uninstall */
 
 /*
   The helper for eazel_install_prune_packages.
@@ -1112,8 +933,8 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 			dbiIndexSet matches;
 			int rc;
 			
-			/* FIXME: bugzilla.eazel.com 1697
-			   use eazel_install_simple_query instead */
+			/* This does not use simple_query, as the rpmtransRemovePackage uses
+			   record offsets instead of headers */
 			rc =  rpmdbFindByLabel (service->private->packsys.rpm.db, pack->name, &matches);
 
 			if (rc!=0) {
@@ -1217,7 +1038,8 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			existing_package->modify_status = PACKAGE_MOD_UPGRADED;
 			pack->modifies = g_list_prepend (pack->modifies, existing_package);
 			
-			res = rpmvercmp (existing_package->version, pack->version);
+			/* The order of arguments to rpmvercmp is important... */
+			res = rpmvercmp (pack->version, existing_package->version);
 			
 			if (res == 0 && result > 0) {
 				result = 0;
@@ -1318,6 +1140,10 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				/* FIXME: bugzilla.eazel.com 1514
 				   Need to handle this more intelligently */
 				g_warning (_("%s conflicts %s-%s"), conflict.byName, conflict.needsName, conflict.needsVersion);
+				if (g_list_find (*failedpackages, pack) == NULL) {
+					(*failedpackages) = g_list_prepend (*failedpackages, pack);
+				}
+				to_remove = g_list_remove (to_remove, pack);
 				continue;
 				break;
 			}
@@ -1325,16 +1151,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			/* Does the conflict look like a file dependency ? */
 			pack = (PackageData*)pack_entry->data;
 			if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
-				/* FIXME bugzilla.eazel.com 1316
-				   Need to find a solid way to capture file dependencies, and once they do not
-				   appear at this point anymore, remove them. And in the end, check the list is
-				   empty. 
-				   
-				   Perhaps the smartest thing is to check at the final install. We can't resolve
-				   these deps anyway, as we have on idea as to where the file is from.
-				   
-				   Or do a http search for a package providing the lib
-				*/
 				g_message (_("Processing dep for %s : requires %s"), pack->name, conflict.needsName);		
 				dep = packagedata_new ();
 				dep->name = g_strdup (conflict.needsName);
@@ -1366,6 +1182,8 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			   Need to check that the downloaded package is of sufficiently high version
 			*/
 
+			/* This call sets the dep->modifies if there are already
+			   packages installed of that name */
 			eazel_install_check_existing_packages (service, dep);
 
 			extralist = g_hash_table_lookup (extras, pack->name);
@@ -1919,26 +1737,3 @@ eazel_uninstall_globber (EazelInstall *service,
 
 	g_message ("out eazel_uninstall_globber");
 }
-
-static int
-rpm_uninstall (EazelInstall *service, 
-	       char* root_dir,
-               char* file,
-               int install_flags,
-               int problem_filters,
-               int interface_flags) {
-  GList* list;
-  int result;
-
-  list = g_list_append (NULL, file);
-
-  result = do_rpm_uninstall (service,
-			     root_dir,
-                             list,
-                             install_flags,
-                             problem_filters,
-                             interface_flags);
-
-  g_list_free (list);
-  return result;
-} /* end rpm_uninstall */
