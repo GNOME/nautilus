@@ -397,7 +397,7 @@ static EelPreferencesPaneDescription panes[] = {
 	{ NULL }
 };
 
-static void
+static gint
 dialog_delete_event_callback (GtkWidget   *widget,
 			      GdkEventAny *event,
 			      gpointer     user_data)
@@ -411,6 +411,7 @@ dialog_button_response_callback (GtkDialog *dialog,
 				 gpointer callback_data)
 {
 	gtk_widget_hide (GTK_WIDGET (dialog));
+	return TRUE;
 }
 
 static GtkWidget *
