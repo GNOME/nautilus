@@ -277,7 +277,17 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			return;	
 		}
 		else if (!strcmp(property_browser->details->drag_type, "application/x-color")) {
-		        gtk_selection_data_set(selection_data, selection_data->target, 8, property_browser->details->dragged_file, strlen(property_browser->details->dragged_file));
+		        GdkColor color;
+			guint16 colorArray[4];
+			
+			gdk_color_parse(property_browser->details->dragged_file, &color);
+			colorArray[0] = color.red;
+			colorArray[1] = color.green;
+			colorArray[2] = color.blue;
+			colorArray[3] = 0xffff;
+						
+			gtk_selection_data_set(selection_data,
+			selection_data->target, 16, (const char*) &colorArray[0], 8);
 			return;	
 		}
 		
@@ -360,10 +370,31 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 /* create a pixbuf and fill it with a color */
 
 static GdkPixbuf*
-make_color_drag_image(NautilusPropertyBrowser *property_browser, const char* color_str)
+make_color_drag_image(NautilusPropertyBrowser *property_browser, const char* color_spec)
 {
-	g_message("color image for %s coming soon", color_str);
-	return NULL;	
+	GdkPixbuf *color_square =  gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
+	
+	/* turn the color into a 32-bit integer */
+	int row, col, stride;
+	char *pixels, *row_pixels;
+	GdkColor color;
+			
+	gdk_color_parse(property_browser->details->dragged_file, &color);
+	
+	pixels = gdk_pixbuf_get_pixels (color_square);
+	stride = gdk_pixbuf_get_rowstride (color_square);
+	
+	/* loop through and set each pixel */
+	for (row = 0; row < 48; row++) {
+		row_pixels =  (pixels + (row * stride));
+		for (col = 0; col < 48; col++) {		
+			*row_pixels++ = color.red;
+			*row_pixels++ = color.green;
+			*row_pixels++ = color.blue;
+			*row_pixels++ = 255;
+		}
+	}
+	return color_square;
 }
 
 /* this callback handles button presses on the category widget */
