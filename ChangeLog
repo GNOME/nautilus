@@ -1,3 +1,20 @@
+2001-02-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 6421 (Labels for permissions should look insensitive
+	when permissions are not settable)
+
+	* src/file-manager/fm-properties-window.c:
+	(add_permissions_column_label), (create_permissions_page):
+	Pass file parameter into add_permissions_column_label,
+	set insensitive if can't set permissions.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_string_attribute_with_default):
+	Use "--" as item count string instead of "..." when
+	the preference is set to not display the item counts.
+	("..." implied that it would show up eventually, not 
+	true in this case.)
+	
 2001-02-08  Laszlo Kovacs  <laszlo.kovacs@sun.com>
 	* components/help/Makefile.am:
 

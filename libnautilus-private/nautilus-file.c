@@ -3662,7 +3662,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 }
 
 /**
- * nautilus_file_get_string_attribute:
+ * nautilus_file_get_string_attribute_with_default:
  * 
  * Get a user-displayable string from a named attribute. Use g_free to
  * free this string. If the value is unknown, returns a string representing
@@ -3694,12 +3694,16 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 		 * Use hash table and switch statement or function pointers for speed? 
 		 */
 		if (strcmp (attribute_name, "size") == 0) {
-			count_unreadable = FALSE;
-			if (nautilus_file_is_directory (file)) {
-				nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
+			if (!nautilus_file_should_show_directory_item_count (file)) {
+				result = g_strdup ("--");
+			} else {
+				count_unreadable = FALSE;
+				if (nautilus_file_is_directory (file)) {
+					nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
+				}
+				
+				result = g_strdup (count_unreadable ? _("? items") : "...");
 			}
-			
-			result = g_strdup (count_unreadable ? _("? items") : "...");
 		} else if (strcmp (attribute_name, "deep_size") == 0) {
 			status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
 			if (status == NAUTILUS_REQUEST_DONE) {

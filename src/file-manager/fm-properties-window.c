@@ -1653,6 +1653,7 @@ create_emblems_page (FMPropertiesWindow *window)
 
 static void
 add_permissions_column_label (GtkTable *table, 
+			      NautilusFile *file,
 			      int column, 
 			      const char *title_text)
 {
@@ -1660,6 +1661,8 @@ add_permissions_column_label (GtkTable *table,
 
 	label = gtk_label_new (title_text);
 	nautilus_gtk_label_make_bold (GTK_LABEL (label));
+	gtk_widget_set_sensitive (GTK_WIDGET (label), 
+				  nautilus_file_can_set_permissions (file));
 
 	/* Text is centered in table cell by default, which is what we want here. */
 	gtk_widget_show (label);
@@ -1952,15 +1955,15 @@ create_permissions_page (FMPropertiesWindow *window)
 				  0, 0,
 				  0, 0);
 
-		add_permissions_column_label (check_button_table, 
+		add_permissions_column_label (check_button_table, file,
 					      PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					      _("Read"));
 
-		add_permissions_column_label (check_button_table, 
+		add_permissions_column_label (check_button_table, file,
 					      PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					      _("Write"));
 
-		add_permissions_column_label (check_button_table, 
+		add_permissions_column_label (check_button_table, file,
 					      PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					      _("Execute"));
 
