@@ -112,6 +112,7 @@ static void  nautilus_property_browser_drag_data_get    (GtkWidget              
 							 GtkSelectionData        *selection_data,
 							 guint                    info,
 							 guint32                  time);
+static void  nautilus_property_browser_theme_changed	(gpointer user_data);
 
 /* misc utilities */
 static char *strip_extension                            (const char              *string_to_strip);
@@ -278,6 +279,11 @@ nautilus_property_browser_initialize (GtkObject *object)
 						(NautilusPreferencesCallback) nautilus_property_browser_preferences_changed, 
 						property_browser);
 	
+	/* add a callback for when the theme changes */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, 
+					   nautilus_property_browser_theme_changed,
+					   property_browser);	
+	
 	/* initially, display the top level */
 	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
 }
@@ -299,6 +305,9 @@ nautilus_property_browser_destroy (GtkObject *object)
 	nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 						(NautilusPreferencesCallback) nautilus_property_browser_preferences_changed, 
 						NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					      nautilus_property_browser_theme_changed,
+					      property_browser);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -1433,14 +1442,22 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 	}
 }
 
+/* handle theme changes by updating the browser contents */
+
+static void
+nautilus_property_browser_theme_changed (gpointer user_data)
+{
+	NautilusPropertyBrowser *property_browser;
+	
+	property_browser = NAUTILUS_PROPERTY_BROWSER(user_data);
+	nautilus_property_browser_update_contents (property_browser);
+}
+
 /* handle clicks on the theme selector by setting the theme */
 static void
 theme_clicked_callback(GtkWidget *widget, char *theme_name)
 {
-	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(gtk_object_get_user_data(GTK_OBJECT(widget)));
-	
 	nautilus_theme_set_theme (theme_name);
-        nautilus_property_browser_update_contents (property_browser);
 }
 
 static gboolean

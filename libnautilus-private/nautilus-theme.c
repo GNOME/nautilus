@@ -182,17 +182,21 @@ nautilus_theme_make_selector (const char *theme_name)
 	pixbuf_file = nautilus_pixmap_file(temp_str);
 	g_free (temp_str);
 	
-	if (!g_file_exists (pixbuf_file)) {
-		g_free (pixbuf_file);
+	if (pixbuf_file == NULL) {
 		temp_str = g_strdup_printf ("%s/%s", theme_name, "i-directory.svg");
 		pixbuf_file = nautilus_pixmap_file(temp_str);
 		g_free (temp_str);
-		if (!g_file_exists (pixbuf_file)) {
-			g_free (pixbuf_file);
+		if (pixbuf_file == NULL) {
 			pixbuf_file = nautilus_pixmap_file ("i-directory.png");
 		}	
 	}
 	
+	/* if we can't find anything, return NULL */
+	if (pixbuf_file == NULL) {
+		return NULL;
+	}
+	
+	/* load the icon that we found and return it */
 	if (nautilus_str_has_suffix(pixbuf_file, ".svg")) {
 		FILE *f = fopen (pixbuf_file, "rb");
 		if (f != NULL) {

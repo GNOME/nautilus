@@ -11,6 +11,7 @@ emblems_DATA = \
 	favorite.png \
 	important.gif \
 	new.gif \
+	personal.png \
 	remote.gif \
 	$(NULL)
 

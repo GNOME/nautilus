@@ -1,3 +1,22 @@
+2000-07-10  Andy Hertzfeld  <andy@eazel.com>
+
+		
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_destroy),
+	(nautilus_property_browser_theme_changed),
+	(theme_clicked_callback):
+	made the property browser update itself when the theme changes	
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_make_selector):
+	fixed bug where we were calling g_file_exists with NULL
+	by testing for NULL instead of calling it at all.		
+	* data/emblems/Makefile.am:
+	* data/emblems/personal.png:
+	* icons/Makefile.am:
+	* icons/emblem-personal.svg:
+	added the emblems that I tried to on Friday but forgot to cvsadd
+
 2000-07-10  Ramiro Estrugo  <ramiro@eazel.com>
 
 	*
