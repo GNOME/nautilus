@@ -169,7 +169,9 @@ compute_default_title (const char *text_uri)
                 if (vfs_uri != NULL) {
                         short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
                         gnome_vfs_uri_unref (vfs_uri);
-                        g_assert (short_name != NULL);
+                        if (short_name == NULL) {
+                                short_name = g_strdup (_("(untitled)"));
+                        }
                         return short_name;
                 } else {
                 	colon_pos = strchr (text_uri, ':');

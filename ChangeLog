@@ -1,3 +1,9 @@
+2000-08-02  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* src/nautilus-window-manage-views.c: (compute_default_title):
+	if gnome-vfs-uri-extract-short-name returns NULL, default to
+	_("(untitled)") instead of g_assert. (bug#1892)
+
 2000-08-02  Seth Nickell  <seth@eazel.com>
 
 	* src/file-manager/dfos-xfer.c: (get_duplicate_lettering),
