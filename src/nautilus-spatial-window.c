@@ -1312,7 +1312,7 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 				nautilus_window_add_meta_view (window, sidebar_panel);
 			}
 			else {
-				g_warning ("sidebar_panels_changed_callback: Failed to load_client for '%s' meta view.\n", 
+				g_warning ("sidebar_panels_changed_callback: Failed to load_client for '%s' meta view.", 
 					   identifier->iid);
 				
 				gtk_widget_unref (GTK_WIDGET (sidebar_panel));

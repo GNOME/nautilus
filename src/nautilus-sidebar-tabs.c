@@ -484,7 +484,7 @@ nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, G
 
 	/* Check to see if we already have one with this name, if so, refuse to add it */   
 	if (tab_item_find_by_name (index_tabs, name)) {
-		g_warning ("nautilus_index_tabs_add_view: Trying to add duplicate item '%s'\n", name);
+		g_warning ("nautilus_index_tabs_add_view: Trying to add duplicate item '%s'", name);
 		return FALSE;
 	}
 	
@@ -541,7 +541,7 @@ nautilus_index_tabs_remove_view (NautilusIndexTabs *index_tabs, const char *name
 	tab_item = tab_item_find_by_name (index_tabs, name);
 
 	if (tab_item == NULL) {
-		g_warning ("nautilus_index_tabs_remove_view: Trying to remove a non-existing item '%s'\n", name);
+		g_warning ("nautilus_index_tabs_remove_view: Trying to remove a non-existing item '%s'", name);
 		return;
 	}
 	
@@ -714,7 +714,7 @@ nautilus_index_tabs_set_visible (NautilusIndexTabs *index_tabs,
 	tab_item = tab_item_find_by_name (index_tabs, name);
 
 	if (tab_item == NULL) {
-		g_warning ("nautilus_index_tabs_set_visible: Trying to munge a non-existing item '%s'\n", name);
+		g_warning ("nautilus_index_tabs_set_visible: Trying to munge a non-existing item '%s'", name);
 		return;
 	}
 

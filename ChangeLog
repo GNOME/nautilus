@@ -1,5 +1,15 @@
 2000-05-28  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-sidebar-tabs.c: (nautilus_index_tabs_add_view),
+	(nautilus_index_tabs_remove_view),
+	(nautilus_index_tabs_set_visible):
+	* src/nautilus-window.c:
+	(window_update_sidebar_panels_from_preferences):
+
+	g_warning with trailing \n == EVIL! - fix.
+
+2000-05-28  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_register_for_ui):
 	* nautilus-widgets/nautilus-preferences.c:
