@@ -1,3 +1,16 @@
+2000-08-03  John Sullivan  <sullivan@eazel.com>
+
+	Reinstated the bug fix to 1781 from two days ago,
+	which was completely clobbered by Rebecca's checkin
+	yesterday.
+
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_initialize_class),
+	(search_bar_preference_changed_callback),
+	(nautilus_switchable_search_bar_initialize),
+	(nautilus_switchable_search_bar_destroy),
+	(nautilus_switchable_search_bar_set_mode):
+
 2000-08-03  Mathieu Lacage  <set EMAIL_ADDRESS environment variable>
 
 	* configure.in: fix build with new bonobo.
