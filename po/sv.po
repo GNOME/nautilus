@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-07-12 06:53+0200\n"
-"PO-Revision-Date: 2001-07-12 06:58+0200\n"
+"POT-Creation-Date: 2001-07-17 21:13+0200\n"
+"PO-Revision-Date: 2001-07-17 21:18+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,15 @@ msgstr ""
 msgid "Nautilus component adapter factory"
 msgstr "Nautilus komponentadapterfabrik"
 
-#: components/hardware/nautilus-hardware-view.c:230
+#: components/hardware/nautilus-hardware-view.c:180
+msgid "name of icon for the hardware view"
+msgstr "namn på ikon för hårdvaruvyn"
+
+#: components/hardware/nautilus-hardware-view.c:182
+msgid "summary of hardware info"
+msgstr "sammanfattning av hårdvaruinformation"
+
+#: components/hardware/nautilus-hardware-view.c:305
 #, c-format
 msgid ""
 "%s CPU\n"
@@ -78,45 +86,50 @@ msgstr ""
 "Klockfrekvens: %s MHz\n"
 "Cachestorlek: %s"
 
-#: components/hardware/nautilus-hardware-view.c:264
+#: components/hardware/nautilus-hardware-view.c:339
 #, c-format
 msgid "%lu GB RAM"
 msgstr "%lu GB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:266
+#: components/hardware/nautilus-hardware-view.c:341
 #, c-format
 msgid "%lu MB RAM"
 msgstr "%lu MB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:324
+#: components/hardware/nautilus-hardware-view.c:399
 #, c-format
 msgid "%lu GB"
 msgstr "%lu GB"
 
-#: components/hardware/nautilus-hardware-view.c:326
+#: components/hardware/nautilus-hardware-view.c:401
 #, c-format
 msgid "%lu MB"
 msgstr "%lu MB"
 
+#: components/hardware/nautilus-hardware-view.c:479
+#, c-format
+msgid "Uptime is %d days, %d hours, %d minutes"
+msgstr "Drifttid är %d dagar, %d timmar, %d minuter"
+
 #. set up the title
-#: components/hardware/nautilus-hardware-view.c:407
+#: components/hardware/nautilus-hardware-view.c:505
 msgid "Hardware Overview"
 msgstr "Hårdvaruöversikt"
 
-#: components/hardware/nautilus-hardware-view.c:520
+#: components/hardware/nautilus-hardware-view.c:628
 msgid "This is a placeholder for the CPU page."
 msgstr "Detta är en platshållare för CPU-sidan."
 
-#: components/hardware/nautilus-hardware-view.c:545
+#: components/hardware/nautilus-hardware-view.c:653
 msgid "This is a placeholder for the RAM page."
 msgstr "Detta är en platshållare för RAM-sidan."
 
-#: components/hardware/nautilus-hardware-view.c:570
+#: components/hardware/nautilus-hardware-view.c:678
 msgid "This is a placeholder for the IDE page."
 msgstr "Detta är en platshållare för IDE-sidan."
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:2
-#: components/hardware/nautilus-hardware-view.c:631
+#: components/hardware/nautilus-hardware-view.c:750
 #: data/static_bookmarks.xml.h:16
 msgid "Hardware"
 msgstr "Hårdvara"
@@ -912,7 +925,15 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:764
+#: components/mozilla/nautilus-mozilla-content-view.c:395
+msgid "name of icon for the mozilla view"
+msgstr "namn på ikonen för mozillavyn"
+
+#: components/mozilla/nautilus-mozilla-content-view.c:397
+msgid "mozilla summary info"
+msgstr "mozilla-sammanfattningsinformation"
+
+#: components/mozilla/nautilus-mozilla-content-view.c:832
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but Nautilus does not support the opening new windows by "
@@ -926,7 +947,7 @@ msgstr ""
 "\n"
 "Försök att titta på sidan i en annan webbläsare, som exempelvis Mozilla."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:768
+#: components/mozilla/nautilus-mozilla-content-view.c:836
 msgid "Nautilus JavaScript Warning"
 msgstr "Nautilus JavaScript-varning"
 
@@ -1713,92 +1734,92 @@ msgstr "Musikvyfabrik"
 msgid "View as Music"
 msgstr "Visa som musik"
 
-#: components/news/nautilus-news.c:1322
+#: components/news/nautilus-news.c:1327
 #, c-format
 msgid "Couldn't load %s"
 msgstr "Kunde inte läsa in %s"
 
 #. put up a title that's displayed while we wait
-#: components/news/nautilus-news.c:1562
+#: components/news/nautilus-news.c:1567
 #, c-format
 msgid "Loading %s"
 msgstr "Läser in %s"
 
-#: components/news/nautilus-news.c:1899
+#: components/news/nautilus-news.c:1904
 msgid "Sorry, but you have not specified a name for the site!"
 msgstr "Tyvärr, du har inte angivit ett namn på webbplatsen!"
 
-#: components/news/nautilus-news.c:1899
+#: components/news/nautilus-news.c:1904
 msgid "Missing Site Name Error"
 msgstr "Fel på grund av saknat namn på webbplatsen"
 
-#: components/news/nautilus-news.c:1903
+#: components/news/nautilus-news.c:1908
 msgid "Sorry, but you have not specified a URL for the site!"
 msgstr "Tyvärr, du har inte angivit en URL för webbplatsen!"
 
-#: components/news/nautilus-news.c:1903
+#: components/news/nautilus-news.c:1908
 msgid "Missing URL Error"
 msgstr "Fel på grund av saknad URL"
 
-#: components/news/nautilus-news.c:1920
+#: components/news/nautilus-news.c:1925
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
 msgstr "Tyvärr, den angivna url:en verkar inte vara en giltig RSS-fil!"
 
-#: components/news/nautilus-news.c:1920
+#: components/news/nautilus-news.c:1925
 msgid "Invalid RSS URL"
 msgstr "Ogiltig RSS-URL"
 
-#: components/news/nautilus-news.c:2002
+#: components/news/nautilus-news.c:2007
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Edit"
 msgstr "Redigera"
 
-#: components/news/nautilus-news.c:2265
+#: components/news/nautilus-news.c:2270
 msgid "Remove Site"
 msgstr "Ta bort webbplats"
 
 #. allocate the name field
-#: components/news/nautilus-news.c:2284
+#: components/news/nautilus-news.c:2289
 msgid "Site Name:"
 msgstr "Namn på webbplats:"
 
-#: components/news/nautilus-news.c:2295
+#: components/news/nautilus-news.c:2300
 msgid "Site RSS URL:"
 msgstr "RSS-URL för webbplats:"
 
-#: components/news/nautilus-news.c:2310
+#: components/news/nautilus-news.c:2315
 msgid "Add New Site"
 msgstr "Lägg till ny webbplats"
 
 #. make the add new site label
-#: components/news/nautilus-news.c:2333
+#: components/news/nautilus-news.c:2338
 msgid "Add a New Site:"
 msgstr "Lägg till en ny webbplats:"
 
-#: components/news/nautilus-news.c:2342
+#: components/news/nautilus-news.c:2347
 msgid "Remove a Site:"
 msgstr "Ta bort en webbplats:"
 
 #. add the button box at the bottom with a cancel button
-#: components/news/nautilus-news.c:2350
+#: components/news/nautilus-news.c:2355
 #: src/file-manager/fm-directory-view.c:4387
 msgid "Cancel"
 msgstr "Avbryt"
 
 #. add a descriptive label
-#: components/news/nautilus-news.c:2367
+#: components/news/nautilus-news.c:2372
 msgid "Select Sites:"
 msgstr "Välj webbplatser:"
 
 #. allocate the button box for the done button
-#: components/news/nautilus-news.c:2382
+#: components/news/nautilus-news.c:2387
 #: libnautilus-private/nautilus-program-chooser.c:1280
 #: src/nautilus-bookmarks-window.c:123 src/nautilus-property-browser.c:358
 msgid "Done"
 msgstr "Klar"
 
 #. add the empty message
-#: components/news/nautilus-news.c:2410
+#: components/news/nautilus-news.c:2415
 msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
@@ -1808,9 +1829,13 @@ msgstr ""
 "visas."
 
 #. create a button box to hold the command buttons
-#: components/news/nautilus-news.c:2438
+#: components/news/nautilus-news.c:2443
 msgid "Select Sites"
 msgstr "Välj webbplatser"
+
+#: components/news/nautilus-news.c:2503
+msgid "image indicating that the news has changed"
+msgstr "bild som visar att nyheterna har ändrats"
 
 #: components/news/Nautilus_View_news.oaf.in.h:1
 msgid "Factory for news view"
@@ -2869,11 +2894,11 @@ msgstr ""
 #: libnautilus-private/nautilus-file.c:4137
 #, c-format
 msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell "
-"aaron@eazel.com"
+"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
+"gnome-vfs mailing list."
 msgstr ""
 "Ingen beskrivning kunde hittas för mime-typen \"%s\" (filen är \"%s\"), tala "
-"om det för aaron@eazel.com på engelska."
+"om det för gnome-vfs-sändlistan (på engelska)."
 
 #: libnautilus-private/nautilus-file.c:4151
 msgid "link"
@@ -5632,7 +5657,7 @@ msgstr "_Återställ ikoner till originalstorlekarna"
 msgid "_Restore Icon's Original Size"
 msgstr "_Återställ ikon till originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1707
+#: src/file-manager/fm-icon-view.c:1708
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
