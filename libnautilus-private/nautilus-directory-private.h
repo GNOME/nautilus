@@ -32,6 +32,7 @@
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-directory-metafile-monitor.h"
 
 typedef struct ActivationURIReadState ActivationURIReadState;
 typedef struct MetafileReadState MetafileReadState;
@@ -67,6 +68,9 @@ struct NautilusDirectoryDetails
 	 */
 	GList *call_when_ready_list;
 	GList *monitor_list;
+
+	NautilusMetafileMonitor *metafile_monitor;
+	gboolean load_metafile_for_server;
 
 	gboolean in_async_service_loop;
 	gboolean state_changed;
@@ -168,7 +172,6 @@ void               nautilus_directory_cancel_loading_file_attributes  (NautilusD
 								       GList                     *file_attributes);
 
 /* Calls shared between directory, file, and async. code. */
-void               nautilus_directory_emit_metadata_changed           (NautilusDirectory         *directory);
 void               nautilus_directory_emit_files_added                (NautilusDirectory         *directory,
 								       GList                     *added_files);
 void               nautilus_directory_emit_files_changed              (NautilusDirectory         *directory,

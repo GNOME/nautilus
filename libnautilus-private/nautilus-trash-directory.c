@@ -71,7 +71,7 @@ find_directory_start (void)
 							 NULL,
 							 add_volume,
 							 _("Searching Disks"),
-							 _("Nautilus is searching for trash folders."),
+							 _("Nautilus is searching your disks for trash folders."),
 							  NULL);
 	}
 

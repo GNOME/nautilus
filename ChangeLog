@@ -1,3 +1,93 @@
+2001-02-21  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+	             John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-directory-metafile-monitor.h:
+	* libnautilus-extensions/nautilus-directory-metafile-monitor.c:
+	(nautilus_metafile_monitor_initialize_class),
+	(nautilus_metafile_monitor_get_epv),
+	(nautilus_metafile_monitor_get_vepv),
+	(nautilus_metafile_monitor_create_servant),
+	(nautilus_metafile_monitor_initialize), (destroy),
+	(nautilus_metafile_monitor_new), (corba_metafile_changed):
+	Added implementation of monitors for directories to recieve
+	notification when their metadata changes. This works across
+	processes.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy),
+	(nautilus_directory_emit_change_signals):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_mark_done), (metafile_read_start),
+	(nautilus_directory_monitor_add_internal),
+	(update_metadata_monitors),
+	(nautilus_directory_monitor_remove_internal),
+	(nautilus_directory_call_when_ready_internal),
+	(nautilus_directory_cancel_callback_internal),
+	(nautilus_async_destroying_file), (request_is_satisfied),
+	(call_ready_callbacks):
+	The state machine now uses monitors in the metadata server
+	process.
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_metafile), (nautilus_directory_is_metadata_read),
+	(nautilus_directory_get_file_metadata),
+	(nautilus_directory_get_file_metadata_list),
+	(nautilus_directory_set_file_metadata),
+	(nautilus_directory_set_file_metadata_list),
+	(nautilus_directory_set_boolean_file_metadata),
+	(nautilus_directory_set_integer_file_metadata),
+	(nautilus_directory_copy_file_metadata),
+	(nautilus_directory_remove_file_metadata),
+	(nautilus_directory_rename_file_metadata),
+	(nautilus_directory_register_metadata_monitor),
+	(nautilus_directory_unregister_metadata_monitor):
+	* libnautilus-extensions/nautilus-directory-metafile.h:
+	-new calls for registering/unregistering monitors 
+	-Metadata setters no longer return booleans.
+	-misc cleanup of CORBA exception code (or lack thereof)
+
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_is_self_owned), (destroy),
+	(nautilus_file_get_parent_uri), (get_file_for_parent_directory),
+	(nautilus_file_can_rename), (nautilus_file_get_gnome_vfs_uri),
+	(rename_callback), (nautilus_file_rename),
+	(nautilus_file_set_directory), (get_metadata_name),
+	(nautilus_file_set_metadata), (nautilus_file_set_metadata_list),
+	(nautilus_file_set_boolean_metadata),
+	(nautilus_file_set_integer_metadata), (nautilus_file_get_uri),
+	(nautilus_file_mark_gone), (nautilus_file_changed):
+	-exposed (& renamed) is_self_owned in the private header.
+	-metadata setters no longer emit changes (it's done by the server)
+
+	* libnautilus-extensions/nautilus-metafile-server.idl:
+	-metafile_changed now is passed a list of file names
+
+	* libnautilus-extensions/nautilus-metafile.c:
+	(nautilus_metafile_get_epv), (destroy), (corba_is_read),
+	(corba_get), (corba_get_list), (corba_set), (corba_set_list),
+	(corba_copy), (corba_remove), (corba_rename), (find_monitor_node),
+	(corba_register_monitor), (corba_unregister_monitor),
+	(call_metatfile_changed), (file_list_filler_ghfunc),
+	(call_metafile_changed_for_all_files_mentioned_in_metafile),
+	(call_metatfile_changed_for_one_file):
+	* libnautilus-extensions/nautilus-metafile.h:
+	- metafile setters now emit changes and do not return boolean values
+	- added call_metafile_changed_for_all_files_mentioned_in_metafile
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_callback):
+	Un-canelable timed wait dialogs now have an ok button
+	which dismisses them.
+
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(find_directory_start):
+	Slightly clarified the text in the infamous searching for text dialog.
+
 2001-02-21  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

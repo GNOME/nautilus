@@ -175,6 +175,10 @@ nautilus_directory_destroy (GtkObject *object)
 		nautilus_g_list_free_deep (directory->details->monitor_list);
 	}
 
+	if (directory->details->metafile_monitor != NULL) {
+		nautilus_directory_unregister_metadata_monitor (directory);
+	}
+
 	g_hash_table_remove (directories, directory->details->uri);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
@@ -733,16 +737,6 @@ nautilus_directory_emit_change_signals (NautilusDirectory *directory,
 		nautilus_file_emit_changed (p->data);
 	}
 	nautilus_directory_emit_files_changed (directory, changed_files);
-}
-
-void
-nautilus_directory_emit_metadata_changed (NautilusDirectory *directory)
-{
-	/* Say that all the files have changed.
-	 * We could optimize this to only mention files that
-	 * have metadata, but this is a fine rough cut for now.
-	 */
-	emit_change_signals_for_all_files (directory);
 }
 
 void

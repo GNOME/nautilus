@@ -28,11 +28,13 @@
 
 module Nautilus {
 
+	typedef sequence<string> FileNameList;
+
 	/* NautilusFiles creates (and registers) MetafileMonitors in order
 	 * to get notified of metafile changes.
 	 */
 	interface MetafileMonitor : ::Bonobo::Unknown {
-		void metafile_changed ();
+		void metafile_changed (in FileNameList file_names);
 	};
 
 	typedef sequence<string> MetadataList;
@@ -45,8 +47,10 @@ module Nautilus {
 	 */
 	interface Metafile : ::Bonobo::Unknown {
 
-		/* getters for a file's metadata
-		 */
+		/* returns whether the metadata has been read in yet */
+		boolean  is_read ();
+
+		/* getters for a file's metadata */
 		string           get  (in string  file_name,
 				       in string  key,
 				       in string  default_value);
@@ -54,19 +58,17 @@ module Nautilus {
 				       in string  list_key,
 				       in string  list_subkey);
 
-		/* setters for a file's metadata
-		 */
-		boolean set      (in string       file_name,
-				  in string       key,
-				  in string       default_value,
-				  in string       metadata);
-		boolean set_list (in string       file_name,
-				  in string       list_key,
-				  in string       list_subkey,
-				  in MetadataList list);
+		/* setters for a file's metadata */
+		void set      (in string       file_name,
+			       in string       key,
+			       in string       default_value,
+			       in string       metadata);
+		void set_list (in string       file_name,
+			       in string       list_key,
+			       in string       list_subkey,
+			       in MetadataList list);
 				     
-		/* calls to keep metadata in sync with file operations
-		 */
+		/* calls to keep metadata in sync with file operations */
 		void copy   (in string  source_file_name,
 			     in URI	destination_directory_uri,
 			     in string  destination_file_name);
@@ -74,14 +76,12 @@ module Nautilus {
 		void rename (in string  old_file_name,
 			     in string  new_file_name);
 
-		/* calls for registering a MetafileMonitor with a Metafile 
-		 */
+		/* calls for registering a MetafileMonitor with a Metafile */
 		void register_monitor   (in MetafileMonitor monitor);
 		void unregister_monitor (in MetafileMonitor monitor);
 	};
 
-	/* Components use the MetafileFactory to get a Metafile for a directory. 
-	 */
+	/* Components use the MetafileFactory to get a Metafile for a directory. */
 	interface MetafileFactory : ::Bonobo::Unknown {
 		Metafile open (in URI directory);
 	};

@@ -25,6 +25,7 @@
 #include <config.h>
 
 #include "nautilus-metafile.h"
+#include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
@@ -457,7 +458,7 @@ metafile_read_mark_done (NautilusDirectory *directory)
 	nautilus_metafile_apply_pending_changes (directory);
 
 	/* Tell change-watchers that we have update information. */
-	nautilus_directory_emit_metadata_changed (directory);
+	call_metafile_changed_for_all_files_mentioned_in_metafile (directory);
 
 	/* Let the callers that were waiting for the metafile know. */
 	nautilus_directory_async_state_changed (directory);
@@ -704,7 +705,7 @@ metafile_read_start (NautilusDirectory *directory)
 
 	g_assert (directory->details->metafile == NULL);
 
-	if (!is_anyone_waiting_for_metafile (directory)) {
+	if (!directory->details->load_metafile_for_server) {
 		return;
 	}
 
@@ -1121,7 +1122,14 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 			nautilus_file_list_free (file_list);
 		}
 	}
-
+	
+	/* We could just call update_metadata_monitors here, but we can be smarter
+	 * since we know what monitor was just added.
+	 */
+	if (monitor->request.metafile && directory->details->metafile_monitor == NULL) {
+		nautilus_directory_register_metadata_monitor (directory);	
+	}
+	
 	/* Kick off I/O. */
 	nautilus_directory_async_state_changed (directory);
 }
@@ -1482,6 +1490,24 @@ directory_load_callback (GnomeVFSAsyncHandle *handle,
 	}
 }
 
+static void
+update_metadata_monitors (NautilusDirectory *directory)
+{
+	gboolean is_metadata_monitored;
+	
+	is_metadata_monitored = is_anyone_waiting_for_metafile (directory);
+	
+	if (directory->details->metafile_monitor == NULL) {
+		if (is_metadata_monitored) {
+			nautilus_directory_register_metadata_monitor (directory);	
+		}
+	} else {
+		if (!is_metadata_monitored) {
+			nautilus_directory_unregister_metadata_monitor (directory);	
+		}
+	}
+}
+
 void
 nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 					    NautilusFile *file,
@@ -1492,6 +1518,8 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 	g_assert (client != NULL);
 
 	remove_monitor (directory, file, client);
+
+	update_metadata_monitors (directory);
 
 	nautilus_directory_async_state_changed (directory);
 }
@@ -1604,6 +1632,14 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 		(directory->details->call_when_ready_list,
 		 g_memdup (&callback, sizeof (callback)));
 
+	/* When we change the ready list we need to sync up metadata monitors.
+	 * We could just call update_metadata_monitors here, but we can be smarter
+	 * since we know what was just added.
+	 */
+	if (callback.request.metafile && directory->details->metafile_monitor == NULL) {
+		nautilus_directory_register_metadata_monitor (directory);	
+	}
+
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -1671,6 +1707,9 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 				ready_callback_key_compare);
 	if (node != NULL) {
 		remove_callback_link (directory, node);
+		/* When we change the ready list we need to sync up metadata monitors. */
+		update_metadata_monitors (directory);
+		
 		nautilus_directory_async_state_changed (directory);
 	}
 }
@@ -1797,6 +1836,11 @@ nautilus_async_destroying_file (NautilusFile *file)
 			remove_monitor_link (directory, node);
 			changed = TRUE;
 		}
+	}
+
+	/* When we change the monitor or ready list we need to sync up metadata monitors */
+	if (changed) {
+		update_metadata_monitors (directory);
 	}
 
 	/* Check if it's a file that's currently being worked on.
@@ -1954,7 +1998,7 @@ request_is_satisfied (NautilusDirectory *directory,
 		      NautilusFile *file,
 		      Request *request)
 {
-	if (request->metafile && !directory->details->metafile_read) {
+	if (request->metafile && !nautilus_directory_is_metadata_read (directory)) {
 		return FALSE;
 	}
 
@@ -2023,6 +2067,10 @@ call_ready_callbacks (NautilusDirectory *directory)
 			}
 		}
 		if (node == NULL) {
+			if (called_any) {
+				/* When we change the ready list we need to sync up metadata monitors. */
+				update_metadata_monitors (directory);
+			}
 			return called_any;
 		}
 		

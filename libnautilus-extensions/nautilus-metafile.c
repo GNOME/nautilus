@@ -49,6 +49,9 @@ static void nautilus_metafile_initialize_class (NautilusMetafileClass *klass);
 
 static void destroy (GtkObject *metafile);
 
+static CORBA_boolean corba_is_read (PortableServer_Servant  servant,
+				    CORBA_Environment      *ev);
+
 static CORBA_char *corba_get		      (PortableServer_Servant  servant,
 					       const CORBA_char       *file_name,
 					       const CORBA_char       *key,
@@ -60,18 +63,18 @@ static Nautilus_MetadataList *corba_get_list (PortableServer_Servant  servant,
 					       const CORBA_char      *list_subkey,
 					       CORBA_Environment     *ev);
 
-static CORBA_boolean corba_set      (PortableServer_Servant  servant,
-				     const CORBA_char       *file_name,
-				     const CORBA_char       *key,
-				     const CORBA_char       *default_value,
-				     const CORBA_char       *metadata,
-				     CORBA_Environment      *ev);
-static CORBA_boolean corba_set_list (PortableServer_Servant       servant,
-				     const CORBA_char            *file_name,
-				     const CORBA_char            *list_key,
-				     const CORBA_char            *list_subkey,
-				     const Nautilus_MetadataList *list,
-				     CORBA_Environment           *ev);
+static void corba_set      (PortableServer_Servant  servant,
+			    const CORBA_char       *file_name,
+			    const CORBA_char       *key,
+			    const CORBA_char       *default_value,
+			    const CORBA_char       *metadata,
+			    CORBA_Environment      *ev);
+static void corba_set_list (PortableServer_Servant       servant,
+			    const CORBA_char            *file_name,
+			    const CORBA_char            *list_key,
+			    const CORBA_char            *list_subkey,
+			    const Nautilus_MetadataList *list,
+			    CORBA_Environment           *ev);
 					       
 static void corba_copy  (PortableServer_Servant   servant,
 			 const CORBA_char        *source_file_name,
@@ -122,6 +125,9 @@ static void copy_file_metadata   (NautilusDirectory *source_directory,
 static void remove_file_metadata (NautilusDirectory *directory,
 				  const char *file_name);
 
+static void call_metatfile_changed_for_one_file (NautilusDirectory *directory,
+						 const CORBA_char  *file_name);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetafile, nautilus_metafile, BONOBO_OBJECT_TYPE)
 
 static void
@@ -135,6 +141,7 @@ nautilus_metafile_get_epv (void)
 {
 	static POA_Nautilus_Metafile__epv epv;
 	
+	epv.is_read            = corba_is_read;
 	epv.get                = corba_get;
 	epv.get_list           = corba_get_list;
 	epv.set                = corba_set;
@@ -196,7 +203,7 @@ destroy (GtkObject *object)
 	NautilusDirectory *directory;
 
 	metafile  = NAUTILUS_METAFILE (object);
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 	
 	nautilus_directory_unref (directory);
 	g_free (metafile->details);
@@ -213,6 +220,19 @@ nautilus_metafile_new (const char *directory_uri)
 	return metafile;
 }
 
+static CORBA_boolean
+corba_is_read (PortableServer_Servant  servant,
+	       CORBA_Environment      *ev)
+{
+	NautilusMetafile  *metafile;
+	NautilusDirectory *directory;
+
+	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
+	directory = metafile->details->directory;
+
+	return directory->details->metafile_read ? CORBA_TRUE : CORBA_FALSE;
+}
+
 static CORBA_char *
 corba_get (PortableServer_Servant  servant,
 	   const CORBA_char       *file_name,
@@ -227,7 +247,7 @@ corba_get (PortableServer_Servant  servant,
 	CORBA_char *result;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 
 	metadata = get_file_metadata (directory, file_name, key, default_value);
 
@@ -255,7 +275,7 @@ corba_get_list (PortableServer_Servant  servant,
 	GList   *list_ptr;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 
 	metadata_list = get_file_metadata_list (directory, file_name, list_key, list_subkey);
 
@@ -283,7 +303,7 @@ corba_get_list (PortableServer_Servant  servant,
 	return result;
 }
 
-static CORBA_boolean
+static void
 corba_set (PortableServer_Servant  servant,
 	   const CORBA_char       *file_name,
 	   const CORBA_char       *key,
@@ -294,8 +314,6 @@ corba_set (PortableServer_Servant  servant,
 	NautilusMetafile  *metafile;
 	NautilusDirectory *directory;
 
-	CORBA_boolean result;
-
 	if (nautilus_str_is_empty (default_value)) {
 		default_value = NULL;
 	}
@@ -304,14 +322,14 @@ corba_set (PortableServer_Servant  servant,
 	}
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 
-	result = set_file_metadata (directory, file_name, key, default_value, metadata);
-
-	return result;
+	if (set_file_metadata (directory, file_name, key, default_value, metadata)) {
+		call_metatfile_changed_for_one_file (directory, file_name);
+	}
 }
 
-static CORBA_boolean
+static void
 corba_set_list (PortableServer_Servant      servant,
 		const CORBA_char            *file_name,
 		const CORBA_char            *list_key,
@@ -323,11 +341,10 @@ corba_set_list (PortableServer_Servant      servant,
 	NautilusDirectory *directory;
 
 	GList               *metadata_list;
-	CORBA_boolean        result;
 	CORBA_unsigned_long  buf_pos;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 
 	metadata_list = NULL;
 	for (buf_pos = 0; buf_pos < list->_length; ++buf_pos) {
@@ -335,11 +352,11 @@ corba_set_list (PortableServer_Servant      servant,
 	}
 	metadata_list = g_list_reverse (metadata_list);
 	
-	result = set_file_metadata_list (directory, file_name, list_key, list_subkey, metadata_list);
-
+	if (set_file_metadata_list (directory, file_name, list_key, list_subkey, metadata_list)) {
+		call_metatfile_changed_for_one_file (directory, file_name);
+	}
+	
 	g_list_free (metadata_list);
-
-	return result;
 }
 					       
 static void
@@ -354,7 +371,7 @@ corba_copy (PortableServer_Servant   servant,
 	NautilusDirectory *destination_directory;
 
 	source_metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	source_directory = NAUTILUS_DIRECTORY (source_metafile->details->directory);
+	source_directory = source_metafile->details->directory;
 	
 	destination_directory = nautilus_directory_get (destination_directory_uri);
 
@@ -373,7 +390,7 @@ corba_remove (PortableServer_Servant  servant,
 	NautilusDirectory *directory;
 
 	metafile =  NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 	
 	remove_file_metadata (directory, file_name);
 }
@@ -388,7 +405,7 @@ corba_rename (PortableServer_Servant  servant,
 	NautilusDirectory *directory;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 
 	rename_file_metadata (directory, old_file_name, new_file_name);
 }
@@ -441,15 +458,26 @@ remove_directory_monitor_list_entry (NautilusDirectory *directory)
 }
 
 static GList *
-find_monitor_link (GList *monitor_list, const Nautilus_MetafileMonitor monitor, CORBA_Environment *ev)
+find_monitor_node (GList *monitors, const Nautilus_MetafileMonitor monitor)
 {
-	while (monitor_list != NULL) {
-		if (CORBA_Object_is_equivalent (monitor_list->data, monitor, ev)) {
+	GList                    *node;
+	CORBA_Environment	  ev;
+	Nautilus_MetafileMonitor  cur_monitor;		
+
+	CORBA_exception_init (&ev);
+
+	for (node = monitors; node != NULL; node = node->next) {
+		cur_monitor = node->data;
+		if (CORBA_Object_is_equivalent (cur_monitor, monitor, &ev)) {
 			break;
 		}
-		monitor_list = g_list_next (monitor_list);
 	}
-	return monitor_list;
+	
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+
+	CORBA_exception_free (&ev);
+	
+	return node;
 }
 
 static void
@@ -462,13 +490,17 @@ corba_register_monitor (PortableServer_Servant          servant,
 	DirectoryMonitorListEntry *monitor_list;
 	
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 
 	monitor_list = get_or_add_directory_monitor_list_entry (directory);
 
-	g_return_if_fail (find_monitor_link (monitor_list->monitors, monitor, ev) == NULL);
+	g_return_if_fail (find_monitor_node (monitor_list->monitors, monitor) == NULL);
 
 	monitor_list->monitors = g_list_prepend (monitor_list->monitors, (gpointer) CORBA_Object_duplicate (monitor, ev));	
+
+	/* cause metafile to be read */
+	directory->details->load_metafile_for_server = TRUE;
+	nautilus_directory_async_state_changed (directory);
 }
 
 static void
@@ -478,28 +510,102 @@ corba_unregister_monitor (PortableServer_Servant          servant,
 {
 	NautilusMetafile          *metafile;
 	NautilusDirectory         *directory;
-	DirectoryMonitorListEntry *monitor_list;
-	GList                     *monitor_link;
+	DirectoryMonitorListEntry *entry;
+	GList                     *node;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = NAUTILUS_DIRECTORY (metafile->details->directory);
+	directory = metafile->details->directory;
 	
-	monitor_list = g_hash_table_lookup (directory_monitor_lists, directory);
+	entry = g_hash_table_lookup (directory_monitor_lists, directory);
 
-	g_return_if_fail (monitor_list != NULL);
+	g_return_if_fail (entry != NULL);
 
-	monitor_link = find_monitor_link (monitor_list->monitors, monitor, ev);
+	node = find_monitor_node (entry->monitors, monitor);
 
-	g_return_if_fail (monitor_link != NULL);
+	g_return_if_fail (node != NULL);
 
-	monitor_list->monitors = g_list_remove_link (monitor_list->monitors, monitor_link);
+	entry->monitors = g_list_remove_link (entry->monitors, node);
 
-	CORBA_Object_release (monitor_link->data, ev);
-	g_list_free_1 (monitor_link);
+	CORBA_Object_release (node->data, ev);
+	g_list_free_1 (node);
 
-	if (monitor_list->monitors == NULL) {
+	if (entry->monitors == NULL) {
 		remove_directory_monitor_list_entry (directory);
 	}
+}
+
+static void
+call_metatfile_changed (NautilusDirectory *directory,
+	                const Nautilus_FileNameList  *file_names)
+{
+	GList                     *node;
+	CORBA_Environment          ev;
+	Nautilus_MetafileMonitor   monitor;		
+	DirectoryMonitorListEntry *entry;
+
+	entry = g_hash_table_lookup (directory_monitor_lists, directory);
+	
+	if (entry != NULL) {
+		CORBA_exception_init (&ev);
+		
+		for (node = entry->monitors; node != NULL; node = node->next) {
+			monitor = node->data;
+			Nautilus_MetafileMonitor_metafile_changed (monitor, file_names, &ev);
+			/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+		}
+		
+		CORBA_exception_free (&ev);
+	}
+}
+
+static void
+file_list_filler_ghfunc (gpointer key,
+			 gpointer value,
+			 gpointer user_data)
+{
+	Nautilus_FileNameList *file_names;
+
+	file_names = user_data;
+
+	file_names->_buffer [file_names->_length] = key;
+	
+	++file_names->_length;
+}
+
+void
+call_metafile_changed_for_all_files_mentioned_in_metafile (NautilusDirectory *directory)
+{
+	CORBA_unsigned_long   len;
+	Nautilus_FileNameList file_names;
+
+	len = g_hash_table_size (directory->details->metafile_node_hash);
+
+	if (len > 0) {
+		file_names._maximum =  len;
+		file_names._length  =  0;
+		file_names._buffer  =  g_new (CORBA_char *, len);
+
+		g_hash_table_foreach (directory->details->metafile_node_hash,
+				      file_list_filler_ghfunc,
+				      &file_names);
+
+		call_metatfile_changed (directory, &file_names);
+
+		g_free (file_names._buffer);
+	}
+}
+
+static void
+call_metatfile_changed_for_one_file (NautilusDirectory *directory,
+				     const CORBA_char  *file_name)
+{
+	Nautilus_FileNameList file_names;
+	
+	file_names._maximum =  1;
+	file_names._length  =  1;
+	file_names._buffer  =  (CORBA_char **) &file_name;
+
+	call_metatfile_changed (directory, &file_names);
 }
 
 typedef struct {

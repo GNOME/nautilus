@@ -207,13 +207,14 @@ timed_wait_callback (gpointer callback_data)
 {
 	TimedWait *wait;
 	GnomeDialog *dialog;
+	const char *button;
 
 	wait = callback_data;
 
 	/* Put up the timed wait window. */
-	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title,
-						 wait->cancel_callback != NULL ? GNOME_STOCK_BUTTON_CANCEL : NULL,
-						 NULL));
+	button = wait->cancel_callback != NULL ? GNOME_STOCK_BUTTON_CANCEL : GNOME_STOCK_BUTTON_OK;
+	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title, button, NULL));
+
 	/* The contents are often very small, causing tiny little
 	 * dialogs with their titles clipped if you just let gtk
 	 * sizing do its thing. This enforces a minimum width to

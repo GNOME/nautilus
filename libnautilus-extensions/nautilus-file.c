@@ -396,8 +396,8 @@ nautilus_file_get (const char *uri)
 	return nautilus_file_get_internal (uri, TRUE);
 }
 
-static gboolean
-is_self_owned (NautilusFile *file)
+gboolean
+nautilus_file_is_self_owned (NautilusFile *file)
 {
 	return file->details->directory->details->as_file == file;
 }
@@ -418,7 +418,7 @@ destroy (GtkObject *object)
 
 	directory = file->details->directory;
 	
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		directory->details->as_file = NULL;
 	} else {
 		if (!file->details->is_gone) {
@@ -519,7 +519,7 @@ nautilus_file_get_parent_uri (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		/* Callers expect an empty string, not a NULL. */
 		return g_strdup ("");
 	}
@@ -535,7 +535,7 @@ get_file_for_parent_directory (NautilusFile *file)
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		return NULL;
 	}
 
@@ -727,7 +727,7 @@ nautilus_file_can_rename (NautilusFile *file)
 	}
 
 	/* Self-owned files can't be renamed */
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		return FALSE;
 	}
 
@@ -791,7 +791,7 @@ nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
 		return NULL;
 	}
 
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		gnome_vfs_uri_ref (vfs_uri);
 		return vfs_uri;
 	}
@@ -901,7 +901,7 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		 * hard-code name "."  so there's no need to rename
 		 * their metadata when they are renamed.
 		 */
-		if (!is_self_owned (op->file)) {
+		if (!nautilus_file_is_self_owned (op->file)) {
 			nautilus_directory_rename_file_metadata
 				(directory, old_relative_uri, op->file->details->relative_uri);
 		}
@@ -973,7 +973,7 @@ nautilus_file_rename (NautilusFile *file,
 	/* Self-owned files can't be renamed. Test the name-not-actually-changing
 	 * case before this case.
 	 */
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 	       	/* Claim that something changed even if the rename
 		 * failed. This makes it easier for some clients who
 		 * see the "reverting" to the old name as "changing
@@ -1217,7 +1217,7 @@ nautilus_file_set_directory (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (file->details->directory));
 	g_return_if_fail (!file->details->is_gone);
-	g_return_if_fail (!is_self_owned (file));
+	g_return_if_fail (!nautilus_file_is_self_owned (file));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (new_directory));
 
 	old_directory = file->details->directory;
@@ -1851,7 +1851,7 @@ nautilus_file_list_filter_hidden_and_backup (GList    *files,
 static const char *
 get_metadata_name (NautilusFile *file)
 {
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		return FILE_NAME_FOR_DIRECTORY_METADATA;
 	}
 	return file->details->relative_uri;
@@ -1907,13 +1907,12 @@ nautilus_file_set_metadata (NautilusFile *file,
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (key[0] != '\0');
 
-	if (nautilus_directory_set_file_metadata (file->details->directory,
-						  get_metadata_name (file),
-						  key,
-						  default_metadata,
-						  metadata)) {
-		nautilus_file_changed (file);
-	}
+	nautilus_directory_set_file_metadata
+		(file->details->directory,
+		 get_metadata_name (file),
+		 key,
+		 default_metadata,
+		 metadata);
 }
 
 void
@@ -1928,13 +1927,12 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 	g_return_if_fail (list_subkey != NULL);
 	g_return_if_fail (list_subkey[0] != '\0');
 
-	if (nautilus_directory_set_file_metadata_list (file->details->directory,
-						       get_metadata_name (file),
-						       list_key,
-						       list_subkey,
-						       list)) {
-		nautilus_file_changed (file);
-	}
+	nautilus_directory_set_file_metadata_list
+		(file->details->directory,
+		 get_metadata_name (file),
+		 list_key,
+		 list_subkey,
+		 list);
 }
 
 
@@ -1987,13 +1985,12 @@ nautilus_file_set_boolean_metadata (NautilusFile *file,
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (key[0] != '\0');
 
-	if (nautilus_directory_set_boolean_file_metadata (file->details->directory,
-							  get_metadata_name (file),
-							  key,
-							  default_metadata,
-							  metadata)) {
-		nautilus_file_changed (file);
-	}
+	nautilus_directory_set_boolean_file_metadata
+		(file->details->directory,
+		 get_metadata_name (file),
+		 key,
+		 default_metadata,
+		 metadata);
 }
 
 void
@@ -2006,13 +2003,12 @@ nautilus_file_set_integer_metadata (NautilusFile *file,
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (key[0] != '\0');
 
-	if (nautilus_directory_set_integer_file_metadata (file->details->directory,
-							  get_metadata_name (file),
-							  key,
-							  default_metadata,
-							  metadata)) {
-		nautilus_file_changed (file);
-	}
+	nautilus_directory_set_integer_file_metadata
+		(file->details->directory,
+		 get_metadata_name (file),
+		 key,
+		 default_metadata,
+		 metadata);
 }
 
 
@@ -2091,7 +2087,7 @@ nautilus_file_get_uri (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		return g_strdup (file->details->directory->details->uri);
 	}
 
@@ -4165,7 +4161,7 @@ nautilus_file_mark_gone (NautilusFile *file)
 
 	/* Let the directory know it's gone. */
 	directory = file->details->directory;
-	if (!is_self_owned (file)) {
+	if (!nautilus_file_is_self_owned (file)) {
 		nautilus_directory_remove_file (directory, file);
 	}
 	
@@ -4196,7 +4192,7 @@ nautilus_file_changed (NautilusFile *file)
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	if (is_self_owned (file)) {
+	if (nautilus_file_is_self_owned (file)) {
 		nautilus_file_emit_changed (file);
 	} else {
 		fake_list.data = file;

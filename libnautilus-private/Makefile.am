@@ -122,8 +122,9 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-list.c                         \
 	nautilus-medusa-support.c		\
 	nautilus-merged-directory.c		\
-	nautilus-metafile-factory.c             \
 	nautilus-metafile.c                     \
+	nautilus-metafile-factory.c             \
+	nautilus-directory-metafile-monitor.c   \
 	nautilus-mime-actions.c			\
 	nautilus-password-dialog.c		\
 	nautilus-preferences-box.c		\
@@ -241,8 +242,9 @@ noinst_HEADERS =				\
 	nautilus-medusa-support.h		\
 	nautilus-merged-directory.h		\
 	nautilus-metadata.h			\
-	nautilus-metafile-factory.h             \
 	nautilus-metafile.h                     \
+	nautilus-metafile-factory.h             \
+	nautilus-directory-metafile-monitor.h   \
 	nautilus-mime-actions.h			\
 	nautilus-password-dialog.h		\
 	nautilus-preferences-box.h		\

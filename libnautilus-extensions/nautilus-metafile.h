@@ -49,7 +49,8 @@ GtkType nautilus_metafile_get_type (void);
 
 NautilusMetafile *nautilus_metafile_new (const char *directory_uri);
 
- 
+void call_metafile_changed_for_all_files_mentioned_in_metafile (NautilusDirectory *directory);
+
 void nautilus_metafile_apply_pending_changes (NautilusDirectory *directory);
 
 void nautilus_metafile_destroy (NautilusDirectory *directory);
