@@ -52,6 +52,9 @@ static void realize                                  (GtkWidget                 
 static void map                                      (GtkWidget                  *widget);
 static void real_add_current_location_to_history_list (NautilusWindow		 *window);
 
+
+static void set_wmspec_desktop_hint                   (GdkWindow *window);
+
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
 
 static void
@@ -291,6 +294,12 @@ realize (GtkWidget *widget)
 	/* Do the work of realizing. */
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
+	/* This is the new way to set up the desktop window */
+	set_wmspec_desktop_hint (widget->window);
+	
+	/* FIXME all this gnome_win_hints stuff is legacy cruft */
+	
+	/* FIXME the following FIXME is bogus, we aren't mapped yet. */
 	/* FIXME bugzilla.eazel.com 1253: 
 	 * Looking at the gnome_win_hints implementation,
 	 * it looks like you can call these with an unmapped window,
@@ -301,7 +310,7 @@ realize (GtkWidget *widget)
 
 	/* Put this window behind all the others. */
 	gnome_win_hints_set_layer (widget, WIN_LAYER_DESKTOP);
-
+	
 	/* Make things like the task list ignore this window and make
 	 * it clear that it it's at its full size.
 	 *
@@ -360,4 +369,22 @@ real_add_current_location_to_history_list (NautilusWindow *window)
 	/* Do nothing. The desktop window's location should not
 	 * show up in the history list.
 	 */
+}
+
+static void
+set_wmspec_desktop_hint (GdkWindow *window)
+{
+        Atom atom;
+        
+        atom = XInternAtom (gdk_display,
+                            "_NET_WM_WINDOW_TYPE_DESKTOP",
+                            False);
+
+        XChangeProperty (GDK_WINDOW_XDISPLAY (window),
+                         GDK_WINDOW_XWINDOW (window),
+                         XInternAtom (gdk_display,
+                                      "_NET_WM_WINDOW_TYPE",
+                                      False),
+                         XA_ATOM, 32, PropModeReplace,
+                         (guchar *)&atom, 1);
 }

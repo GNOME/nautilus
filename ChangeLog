@@ -1,3 +1,10 @@
+2001-08-21  Havoc Pennington  <hp@redhat.com>
+
+	* src/nautilus-desktop-window.c
+	(set_wmspec_desktop_hint): function to set _NET_WM_WINDOW_TYPE, to
+	avoid confusing kwin so badly, and also to go ahead and support
+	the Window Manager Hints Of The Future.
+
 2001-08-20  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-icon-factory.c
