@@ -595,9 +595,21 @@ fmt_help_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname, 
       FILE *fh;
       GList *cur;
 
-      g_snprintf(afile, sizeof(afile), "%s/%s/C/index.html", dirname, dent->d_name);
-      if(!g_file_exists(afile))
-	continue;
+      /* first, try to find xml doc... */
+      g_snprintf(afile, sizeof(afile), "%s/%s/C/%s.xml", dirname, dent->d_name, dent->d_name);
+      if(!g_file_exists(afile)) {
+
+	/* then, try to find sgml doc... */
+	g_snprintf(afile, sizeof(afile), "%s/%s/C/%s.sgml", dirname, dent->d_name, dent->d_name);
+	if(!g_file_exists(afile)) {
+
+	  /* last, html... */
+	  g_snprintf(afile, sizeof(afile), "%s/%s/C/index.html", dirname, dent->d_name);
+	  if (!g_file_exists(afile)) {
+	    continue;
+	  }
+	}
+      }
 
       g_snprintf(uribuf, sizeof(uribuf), "help:%s", dent->d_name);
 
