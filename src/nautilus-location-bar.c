@@ -40,9 +40,9 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-input-event-box.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkdnd.h>
-#include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
@@ -704,7 +704,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 
 	hbox = gtk_hbox_new (0, FALSE);
 
-	event_box = gtk_event_box_new ();
+	event_box = eel_input_event_box_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (event_box),
 					GNOME_PAD_SMALL);
 	label = gtk_label_new (LOCATION_LABEL);

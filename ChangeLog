@@ -1,5 +1,11 @@
 2003-03-04  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-location-bar.c (nautilus_location_bar_init):
+	Use EelInputEventBox for the location label.
+	This makes theming nicer.
+
+2003-03-04  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-desktop-icon-view.c (fm_desktop_icon_view_init):
 	Don't connect empty void-returning handler to "event". Fixes
 	delete-key on desktop, and probably other random keynav-on-desktop
