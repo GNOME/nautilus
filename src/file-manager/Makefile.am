@@ -31,6 +31,8 @@ libntl_file_manager_la_SOURCES=	\
 	dfos-xfer.h			\
 	dfos.c				\
 	dfos.h				\
+	fm-desktop-icon-view.c		\
+	fm-desktop-icon-view.h		\
 	fm-directory-view.c		\
 	fm-directory-view.h		\
 	fm-error-reporting.c		\

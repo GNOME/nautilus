@@ -719,7 +719,22 @@ nautilus_window_load_content_view (NautilusWindow *window,
         NautilusViewFrame *content_view;
         NautilusViewFrame *new_view;
         
-        g_return_val_if_fail(id, NULL);
+        char *iid;
+
+ 	/* FIXME bugzilla.eazel.com 1243: 
+	 * We should use inheritance instead of these special cases
+	 * for the desktop window.
+	 */
+        if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+        	/* We force the desktop to use a desktop_icon_view. It's simpler
+        	 * to do fix it here than trying to make it pick the right view
+        	 * in the first place.
+        	 */
+		iid = NAUTILUS_DESKTOP_ICON_VIEW_IID;
+	} else {
+        	g_return_val_if_fail(id, NULL);
+        	iid = id->iid;
+        }
         
         /* Assume new content is not zoomable. When/if it sends a zoom_level_changed
          * the zoom_control will get shown.
@@ -728,7 +743,7 @@ nautilus_window_load_content_view (NautilusWindow *window,
         
         content_view = window->content_view;
         if (!NAUTILUS_IS_VIEW_FRAME (content_view)
-            || strcmp (nautilus_view_frame_get_iid (content_view), id->iid) != 0) {
+            || strcmp (nautilus_view_frame_get_iid (content_view), iid) != 0) {
 
                 if (requesting_view != NULL && *requesting_view == window->content_view) {
                         /* If we are going to be zapping the old view,
@@ -742,7 +757,7 @@ nautilus_window_load_content_view (NautilusWindow *window,
                                                     window->application->undo_manager);
                 nautilus_window_connect_view (window, new_view);
                 
-                if (!nautilus_view_frame_load_client (new_view, id->iid)) {
+                if (!nautilus_view_frame_load_client (new_view, iid)) {
                         gtk_widget_unref (GTK_WIDGET(new_view));
                         new_view = NULL;
                 }

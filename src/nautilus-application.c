@@ -34,6 +34,7 @@
 #define nautilus_view_component_H
 
 #include "file-manager/fm-icon-view.h"
+#include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-first-time-druid.h"
@@ -48,10 +49,10 @@
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <liboaf/liboaf.h>
 
-#define FACTORY_IID   "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
-#define ICON_VIEW_IID "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
-#define LIST_VIEW_IID "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
-#define SHELL_IID     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
+#define FACTORY_IID	"OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
+#define ICON_VIEW_IID	"OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
+#define LIST_VIEW_IID	"OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
+#define SHELL_IID	"OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
 
 static CORBA_boolean manufactures                                (PortableServer_Servant    servant,
 								  const CORBA_char         *iid,
@@ -84,6 +85,7 @@ manufactures (PortableServer_Servant servant,
 	      CORBA_Environment *ev)
 {
 	return strcmp (iid, ICON_VIEW_IID) == 0
+		|| strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0
 		|| strcmp (iid, LIST_VIEW_IID) == 0
 		|| strcmp (iid, SHELL_IID) == 0;
 }
@@ -101,6 +103,9 @@ create_object (PortableServer_Servant servant,
 
 	if (strcmp (iid, ICON_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
+		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
+	} else if (strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0) {
+		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_desktop_icon_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, LIST_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));

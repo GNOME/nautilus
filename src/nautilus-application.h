@@ -30,6 +30,8 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
+#define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:nautilus_file_manager_desktop_icon_view:8d8121b1-0f1e-400b-bf0d-5b0f4555f5e1"
+
 #define NAUTILUS_TYPE_APPLICATION	     (nautilus_application_get_type ())
 #define NAUTILUS_APPLICATION(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplication))
 #define NAUTILUS_APPLICATION_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_APPLICATION, NautilusApplicationClass))

@@ -1,3 +1,20 @@
+2000-07-10  Michael Engber  <engber@eazel.com>
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class),
+	(fm_desktop_icon_view_initialize),
+	(fm_desktop_icon_view_quit_menu_item_callback),
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/nautilus-application.c: (manufactures), (create_object):
+	* src/nautilus-application.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_load_content_view):
+	* src/nautilus.oafinfo:
+	First half of putting a quit menu item on the desktop's
+	right-click menu. Still need to hook up the quit item.
+
 2000-07-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 971, enable undo in file editing part of
