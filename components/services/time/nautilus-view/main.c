@@ -32,7 +32,6 @@
 #include <liboaf/liboaf.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <bonobo.h>
-#include <glade/glade.h>
 
 static int object_count = 0;
 
