@@ -38,6 +38,8 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-graphic.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -48,23 +50,24 @@
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 #define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
 
-static void	nautilus_service_install_view_initialize_class	(NautilusServiceInstallViewClass	*klass);
-static void	nautilus_service_install_view_initialize	(NautilusServiceInstallView		*view);
-static void	nautilus_service_install_view_destroy		(GtkObject				*object);
-static void	service_install_load_location_callback		(NautilusView				*nautilus_view,
-								 const char				*location,
-		 						 NautilusServiceInstallView		*view);
-static void	generate_install_form				(NautilusServiceInstallView		*view);
-static void	generate_form_title				(NautilusServiceInstallView		*view,
-								 const char				*title_text);
-static void	fake_overall_install_progress			(NautilusServiceInstallView		*view);
-static void	generate_current_progress			(NautilusServiceInstallView		*view,
-								 char					*progress_message);
-static void	nautilus_service_install_view_update_from_uri	(NautilusServiceInstallView		*view,
-								 const char				*uri);
-static void	show_overall_feedback				(NautilusServiceInstallView		*view,
-								 char					*progress_message);
-
+static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass *klass);
+static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView      *view);
+static void       nautilus_service_install_view_destroy          (GtkObject                       *object);
+static void       service_install_load_location_callback         (NautilusView                    *nautilus_view,
+								  const char                      *location,
+								  NautilusServiceInstallView      *view);
+static void       generate_install_form                          (NautilusServiceInstallView      *view);
+static void       fake_overall_install_progress                  (NautilusServiceInstallView      *view);
+static void       generate_current_progress                      (NautilusServiceInstallView      *view,
+								  char                            *progress_message);
+static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView      *view,
+								  const char                      *uri);
+static void       show_overall_feedback                          (NautilusServiceInstallView      *view,
+								  char                            *progress_message);
+static GtkWidget* create_title_widget                            (const char                      *title_text);
+static GtkWidget* create_graphic_widget                          (const char                      *icon_name,
+								  const char                      *background_color_spec,
+								  NautilusGraphicPlacementType     placement);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
 
@@ -73,14 +76,18 @@ generate_install_form (NautilusServiceInstallView	*view) {
 
 	GdkFont		*font;
 	GtkWidget	*temp_box;
+	GtkWidget	*title;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 	gtk_widget_show (view->details->form);
 
-	/* setup the title */
-	generate_form_title (view, "Easy Install");
+	/* Setup the title */
+	title = create_title_widget ("Easy Install");
+
+        gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
+        gtk_widget_show (title);
 
 	/* Add package information */
 
@@ -159,34 +166,91 @@ generate_install_form (NautilusServiceInstallView	*view) {
 
 }
 
-static void
-generate_form_title (NautilusServiceInstallView	*view,
-                     const char			*title_text) {
+static GtkWidget*
+create_graphic_widget (const char			*icon_name,
+		       const char			*background_color_spec,
+		       NautilusGraphicPlacementType	placement)
+{
+	char		*path;
+	GtkWidget	*graphic;
+	GdkPixbuf	*pixbuf;
+	guint32		background_rgb;
 
-        GtkWidget	*temp_widget;
-        char		*file_name;
-        GtkWidget	*temp_container;
-        GdkFont		*font;
+	g_return_val_if_fail (icon_name != NULL, NULL);
+	g_return_val_if_fail (background_color_spec != NULL, NULL);
 
-        temp_container = gtk_hbox_new (FALSE, 0);
+	graphic = nautilus_graphic_new();
+	
+	path = nautilus_pixmap_file (icon_name);
+	
+	pixbuf = gdk_pixbuf_new_from_file (path);
+	g_free (path);
 
-        gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);
-        gtk_widget_show (temp_container);
+	if (pixbuf != NULL) {
+		nautilus_graphic_set_pixbuf (NAUTILUS_GRAPHIC (graphic), pixbuf);
+		gdk_pixbuf_unref (pixbuf);
+	}
+	else {
+		g_warning ("Could not find the requested icon.");
+	}
+	
+	nautilus_graphic_set_background_type (NAUTILUS_GRAPHIC (graphic),
+					      NAUTILUS_GRAPHIC_BACKGROUND_SOLID);
+	
+	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);
+	
+	nautilus_graphic_set_background_color (NAUTILUS_GRAPHIC (graphic),
+					       background_rgb);
 
-        file_name = nautilus_pixmap_file ("eazel-cloud-logo.png");
-        temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-        gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);
-        gtk_widget_show (temp_widget);
-        g_free (file_name);
+	nautilus_graphic_set_placement_type (NAUTILUS_GRAPHIC (graphic), placement);
 
-        view->details->form_title = gtk_label_new (title_text);
+	return graphic;
+}
 
-        font = nautilus_font_factory_get_font_from_preferences (21);
-        nautilus_gtk_widget_set_font (view->details->form_title, font);
-        gdk_font_unref (font);
+static GtkWidget*
+create_title_widget (const char *title_text) 
+{
+        GtkWidget	*title_hbox;
+        GtkWidget	*logo_graphic;
+        GtkWidget	*filler_graphic;
+        GtkWidget	*text_graphic;
+	GdkFont		*font;
 
-        gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);
-        gtk_widget_show (view->details->form_title);
+	g_assert (title_text != NULL);
+
+        title_hbox = gtk_hbox_new (FALSE, 0);
+
+	logo_graphic = create_graphic_widget ("eazel-services-logo.png",
+					      SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+					      NAUTILUS_GRAPHIC_PLACEMENT_CENTER);
+
+	filler_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
+						SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+						NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+
+	text_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
+					      SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+					      NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+
+	font = nautilus_font_factory_get_font_by_family ("helvetica", 20);
+
+	nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (text_graphic), title_text);
+	nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (text_graphic), font);
+	nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (text_graphic), 8);
+	nautilus_graphic_set_right_offset (NAUTILUS_GRAPHIC (text_graphic), 8);
+	nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (text_graphic), 3);
+
+	gdk_font_unref (font);
+
+	gtk_widget_show (logo_graphic);
+	gtk_widget_show (filler_graphic);
+	gtk_widget_show (text_graphic);
+
+        gtk_box_pack_start (GTK_BOX (title_hbox), logo_graphic, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (title_hbox), filler_graphic, TRUE, TRUE, 0);
+        gtk_box_pack_end (GTK_BOX (title_hbox), text_graphic, FALSE, FALSE, 0);
+
+	return title_hbox;
 }
 
 static void

@@ -300,6 +300,10 @@ main (int argc, char* argv[])
 		nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (graphic3), font);
 
 		gdk_font_unref (font);
+
+		nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (graphic3), 8);
+		nautilus_graphic_set_right_offset (NAUTILUS_GRAPHIC (graphic3), 8);
+		nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (graphic3), 3);
 	}
 	
 	graphic_box = gtk_hbox_new (FALSE, 0);

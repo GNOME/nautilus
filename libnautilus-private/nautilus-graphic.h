@@ -110,7 +110,18 @@ gchar*                        nautilus_graphic_get_label_text        (NautilusGr
 void                          nautilus_graphic_set_label_font        (NautilusGraphic               *graphic,
 								      GdkFont                       *font);
 GdkFont*                      nautilus_graphic_get_label_font        (NautilusGraphic               *graphic);
-
+void                          nautilus_graphic_set_left_offset       (NautilusGraphic               *graphic,
+								      guint                          left_offset);
+void                          nautilus_graphic_set_right_offset      (NautilusGraphic               *graphic,
+								      guint                          right_offset);
+void                          nautilus_graphic_set_top_offset        (NautilusGraphic               *graphic,
+								      guint                          top_offset);
+void                          nautilus_graphic_set_bottom_offset     (NautilusGraphic               *graphic,
+								      guint                          bottom_offset);
+void                          nautilus_graphic_set_extra_width       (NautilusGraphic               *graphic,
+								      guint                          extra_width);
+void                          nautilus_graphic_set_extra_height      (NautilusGraphic               *graphic,
+								      guint                          extra_width);
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_GRAPHIC_H */

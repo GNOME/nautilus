@@ -66,6 +66,15 @@ struct _NautilusGraphicDetail
 
 	GdkGC				*copy_area_gc;
 	GdkPixbuf			*buffer;
+
+	/* Offsets */
+	guint				left_offset;
+	guint				right_offset;
+	guint				top_offset;
+	guint				bottom_offset;
+
+	guint				extra_width;
+	guint				extra_height;
 };
 
 /* GtkObjectClass methods */
@@ -272,6 +281,14 @@ nautilus_graphic_initialize (NautilusGraphic *graphic)
 	graphic->detail->background_tile_origin.y = 0;
 	graphic->detail->overall_alpha = NAUTILUS_ALPHA_NONE;
 	graphic->detail->background_tile_screen_relative = TRUE;
+
+	graphic->detail->left_offset = 0;
+	graphic->detail->right_offset = 0;
+	graphic->detail->top_offset = 0;
+	graphic->detail->bottom_offset = 0;
+
+	graphic->detail->extra_width = 0;
+	graphic->detail->extra_height = 0;
 }
 
 /* GtkObjectClass methods */
@@ -590,8 +607,11 @@ nautilus_graphic_size_allocate (GtkWidget *widget, GtkAllocation* allocation)
 				       graphic ->detail->label_text,
 				       &text_size);
 
-		x = (widget->allocation.width - text_size.width) / 2;
-		y = (widget->allocation.height - text_size.height) / 2;
+		x = widget->allocation.width - text_size.width - graphic->detail->right_offset;
+		y = graphic->detail->top_offset;
+
+// 		x = (widget->allocation.width - text_size.width) / 2;
+//  		y = (widget->allocation.height - text_size.height) / 2;
 
 		text_rect.x0 = x;
 		text_rect.y0 = y;
@@ -646,8 +666,13 @@ nautilus_graphic_size_request (GtkWidget	*widget,
 				       &text_size);
 	}
 
-   	requisition->width = MAX (pixbuf_size.width, text_size.width);
-   	requisition->height = MAX (pixbuf_size.height, text_size.height);
+   	requisition->width = 
+		MAX (pixbuf_size.width, text_size.width) +
+		graphic->detail->extra_width;
+
+   	requisition->height = 
+		MAX (pixbuf_size.height, text_size.height) +
+		graphic->detail->extra_height;
 }
 
 static void
@@ -1376,6 +1401,8 @@ nautilus_graphic_set_label_text (NautilusGraphic	*graphic,
 	g_free (graphic->detail->label_text);
 	
 	graphic->detail->label_text = text ? g_strdup (text) : NULL;
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
 }
 
 gchar*
@@ -1399,6 +1426,8 @@ nautilus_graphic_set_label_font (NautilusGraphic	*graphic,
 	graphic->detail->label_font = font;
 
 	NAUTILUS_GDK_FONT_REF_IF (graphic->detail->label_font);
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
 }
 
 GdkFont *
@@ -1411,3 +1440,76 @@ nautilus_graphic_get_label_font (NautilusGraphic *graphic)
 
 	return graphic->detail->label_font;
 }
+
+void
+nautilus_graphic_set_left_offset (NautilusGraphic	*graphic,
+				  guint			left_offset)
+{
+	g_return_if_fail (graphic != NULL);
+	g_return_if_fail (NAUTILUS_IS_GRAPHIC (graphic));
+
+	graphic->detail->left_offset = left_offset;
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
+}
+
+void
+nautilus_graphic_set_right_offset (NautilusGraphic	*graphic,
+				   guint		right_offset)
+{
+	g_return_if_fail (graphic != NULL);
+	g_return_if_fail (NAUTILUS_IS_GRAPHIC (graphic));
+
+	graphic->detail->right_offset = right_offset;
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
+}
+
+void
+nautilus_graphic_set_top_offset (NautilusGraphic	*graphic,
+				 guint			top_offset)
+{
+	g_return_if_fail (graphic != NULL);
+	g_return_if_fail (NAUTILUS_IS_GRAPHIC (graphic));
+
+	graphic->detail->top_offset = top_offset;
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
+}
+
+void
+nautilus_graphic_set_bottom_offset (NautilusGraphic	*graphic,
+				    guint		bottom_offset)
+{
+	g_return_if_fail (graphic != NULL);
+	g_return_if_fail (NAUTILUS_IS_GRAPHIC (graphic));
+
+	graphic->detail->bottom_offset = bottom_offset;
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
+}
+
+void
+nautilus_graphic_set_extra_width (NautilusGraphic	*graphic,
+				    guint		extra_width)
+{
+	g_return_if_fail (graphic != NULL);
+	g_return_if_fail (NAUTILUS_IS_GRAPHIC (graphic));
+
+	graphic->detail->extra_width = extra_width;
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
+}
+
+void
+nautilus_graphic_set_extra_height (NautilusGraphic	*graphic,
+				    guint		extra_height)
+{
+	g_return_if_fail (graphic != NULL);
+	g_return_if_fail (NAUTILUS_IS_GRAPHIC (graphic));
+
+	graphic->detail->extra_height = extra_height;
+
+	gtk_widget_queue_resize (GTK_WIDGET (graphic));
+}
+
