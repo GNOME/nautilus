@@ -321,6 +321,10 @@ motion_notify_callback (GtkWidget *widget,
 	
 	view = FM_LIST_VIEW (callback_data);
 	
+	if (event->window != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))) {
+		return FALSE;
+	}
+
 	if (view->details->drag_button != 0) {
 		if (gtk_drag_check_threshold (widget,
 					      view->details->drag_x,
