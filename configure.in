@@ -30,10 +30,7 @@ dnl =
 dnl = Profiling support
 dnl =
 dnl ====================================
-PROFILE_CFLAGS=
-PROFILE_LIBS=
-
-PROFILER=
+ENABLE_PROFILER=
 AC_ARG_ENABLE(profiler,
 [  --enable-profiler		Enable profiler],
 ENABLE_PROFILER=1
@@ -712,9 +709,7 @@ dnl <= Profile support? =>
 case "X$ENABLE_PROFILER" in
 X1)
 echo "
-Enable profiler         : YES
-   PROFILE_CFLAGS       : $PROFILE_CFLAGS
-   PROFILE_LIBS         : $PROFILE_LIBS"
+Enable profiler         : YES"
 ;;
 *)
 echo "
