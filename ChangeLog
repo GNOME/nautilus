@@ -1,3 +1,23 @@
+2001-04-24  Dan Mueth  <dan@eazel.com>
+
+	Left-justifying the labels in the help sidebar.
+	Also changed strings to remove colons ":".
+	Bug#: 8123
+
+	* components/help/hyperbola-nav-tree.c:
+	(hyperbola_navigation_tree_new):
+
+	Updating so that 'make install' works right
+	and users building RPM's don't get lots of warnings.
+	Bug#: 8125
+
+	* omf-install/Makefile.am:
+
+	Changing from "Customer Support" to "Community Support".
+	Bug#: 7837
+
+	* src/nautilus-shell-ui.xml:
+
 2001-04-24  Darin Adler  <darin@eazel.com>
 
 	Fix bug 8152 (Opening Help sidebar crashes Nautilus):

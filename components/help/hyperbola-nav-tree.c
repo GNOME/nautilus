@@ -5,6 +5,7 @@
 #include <gtk/gtkctree.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus/libnautilus.h>
 
@@ -307,8 +308,10 @@ hyperbola_navigation_tree_new (void)
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (wtmp), box);
 	
 	if (!top_tree_empty) {
-        	label = gtk_label_new (_("Introductory Documents:"));
+        	label = gtk_label_new (_("Introductory Documents"));
 		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+		gtk_misc_set_padding (GTK_MISC (label), GNOME_PAD_SMALL, 0);
         	gtk_widget_show (label);
         	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 			
@@ -321,8 +324,10 @@ hyperbola_navigation_tree_new (void)
 	
 	gtk_box_pack_start ( GTK_BOX(box), view->top_ctree, FALSE, FALSE, 0);
 	
-	label = gtk_label_new (_("Documents by Subject:"));
+	label = gtk_label_new (_("Documents by Subject"));
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_misc_set_padding (GTK_MISC (label), GNOME_PAD_SMALL, 0);
         gtk_widget_show (label);
 	gtk_box_pack_start ( GTK_BOX(box), label, FALSE, FALSE, 0);
 #endif 
