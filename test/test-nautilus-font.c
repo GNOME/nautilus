@@ -81,7 +81,7 @@ main (int argc, char* argv[])
 	blue_area.x = 300;
 	blue_area.y = 20;
 	blue_area.width = 100;
-	blue_area.height = 400;
+	blue_area.height = 30;
 
 	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, &blue_area, NAUTILUS_RGBA_COLOR_PACK (0, 0, 255, 255));
 	

@@ -47,3 +47,8 @@ test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c
 test_nautilus_password_dialog_SOURCES = test-nautilus-password-dialog.c
 test_nautilus_preferences_SOURCES = test-nautilus-preferences.c
 test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
+
+EXTRA_DIST =\
+	font-test.sh \
+	$(NULL)
+
