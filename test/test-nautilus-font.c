@@ -280,20 +280,20 @@ main (int argc, char* argv[])
 	 * Text layout test.
 	 */
 	{
-		NautilusTextLayout *text_info;
+		NautilusTextLayout *text_layout;
 		const guint max_text_width = 100;
 		const char *separators = " -_,;.?/&";
 		const char *text = "This is a long piece of text!-This is the second piece-Now we have the third piece-And finally the fourth piece";
 		const guint font_size = 14;
 		ArtIRect layout_area;
 		
-		text_info = nautilus_text_layout_new (font,
+		text_layout = nautilus_text_layout_new (font,
 						      font_size,
 						      text,
 						      separators,
 						      max_text_width, 
 						      TRUE);
-		g_assert (text_info != NULL);
+		g_assert (text_layout != NULL);
 		
 		layout_area.x0 = 20;
 		layout_area.y0 = 550;
@@ -302,12 +302,13 @@ main (int argc, char* argv[])
 
 		draw_rectangle_around (pixbuf, &layout_area, RED);
 		
-		nautilus_text_layout_paint (text_info,
+		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
 					    layout_area.x0, 
 					    layout_area.y0, 
 					    GTK_JUSTIFY_LEFT,
 					    BLACK,
+					    FALSE,
 					    FALSE);
 		
 		layout_area.x0 += (max_text_width + 20);
@@ -315,12 +316,13 @@ main (int argc, char* argv[])
 
 		draw_rectangle_around (pixbuf, &layout_area, RED);
 		
-		nautilus_text_layout_paint (text_info,
+		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
 					    layout_area.x0, 
 					    layout_area.y0, 
 					    GTK_JUSTIFY_CENTER,
 					    BLACK,
+					    FALSE,
 					    FALSE);
 		
 		layout_area.x0 += (max_text_width + 20);
@@ -328,15 +330,54 @@ main (int argc, char* argv[])
 		
 		draw_rectangle_around (pixbuf, &layout_area, RED);
 		
-		nautilus_text_layout_paint (text_info,
+		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
 					    layout_area.x0, 
 					    layout_area.y0, 
 					    GTK_JUSTIFY_RIGHT,
 					    BLACK,
+					    FALSE,
 					    FALSE);
 		
-		nautilus_text_layout_free (text_info);
+		nautilus_text_layout_free (text_layout);
+	}
+
+	/*
+	 * Underlined text test.
+	 */
+	{
+		NautilusTextLayout *text_layout;
+		const guint max_text_width = pixbuf_width / 2;
+		const char *separators = "-";
+		const char *text = "This is multi line-text (g) that should-be centered and-(q) underlined";
+		const guint font_size = 30;
+		ArtIRect layout_area;
+		
+		text_layout = nautilus_text_layout_new (font,
+							font_size,
+							text,
+							separators,
+							max_text_width, 
+							TRUE);
+		g_assert (text_layout != NULL);
+		
+		layout_area.x0 = (pixbuf_width - text_layout->width) / 2;
+		layout_area.y0 = 410;
+		layout_area.x1 = layout_area.x0 + text_layout->width;
+		layout_area.y1 = layout_area.y0 + text_layout->height;
+
+		draw_rectangle_around (pixbuf, &layout_area, RED);
+		
+		nautilus_text_layout_paint (text_layout,
+					    pixbuf,
+					    layout_area.x0, 
+					    layout_area.y0, 
+					    GTK_JUSTIFY_CENTER,
+					    BLACK,
+					    FALSE,
+					    TRUE);
+		
+		nautilus_text_layout_free (text_layout);
 	}
 
 	nautilus_gdk_pixbuf_save_to_file (pixbuf, "font_test.png");

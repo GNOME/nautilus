@@ -1440,11 +1440,11 @@ text_layout_free_row (gpointer data, gpointer user_data)
  * freeing the structure yourself.
  */
 void
-nautilus_text_layout_free (NautilusTextLayout *text_info)
+nautilus_text_layout_free (NautilusTextLayout *text_layout)
 {
-	g_list_foreach (text_info->rows, text_layout_free_row, NULL);
-	g_list_free (text_info->rows);
-	g_free (text_info);
+	g_list_foreach (text_layout->rows, text_layout_free_row, NULL);
+	g_list_free (text_layout->rows);
+	g_free (text_layout);
 }
 
 /**
@@ -1476,7 +1476,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 			  int max_width,
 			  gboolean confine)
 {
-	NautilusTextLayout *text_info;
+	NautilusTextLayout *text_layout;
 	NautilusTextLayoutRow *row;
 	const char *row_end;
 	const char *s, *word_start, *word_end, *old_word_end;
@@ -1497,14 +1497,14 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 
 	separators_len = strlen (separators);
 
-	text_info = g_new (NautilusTextLayout, 1);
+	text_layout = g_new (NautilusTextLayout, 1);
 
-	text_info->rows = NULL;
-	text_info->font = font;
-	text_info->font_size = font_size;
-	text_info->width = 0;
-	text_info->height = 0;
-	text_info->baseline_skip = font_size;
+	text_layout->rows = NULL;
+	text_layout->font = font;
+	text_layout->font_size = font_size;
+	text_layout->width = 0;
+	text_layout->height = 0;
+	text_layout->baseline_skip = font_size;
 
 	word_end = NULL;
 
@@ -1566,12 +1566,12 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 						if (row->text == NULL)
 							row->text = g_strdup("");
 
-						text_info->rows = g_list_append (text_info->rows, row);
+						text_layout->rows = g_list_append (text_layout->rows, row);
 
-						if (row->width > text_info->width)
-							text_info->width = row->width;
+						if (row->width > text_layout->width)
+							text_layout->width = row->width;
 
-						text_info->height += text_info->baseline_skip;
+						text_layout->height += text_layout->baseline_skip;
 
 						/* Bump the text pointer */
 
@@ -1597,8 +1597,8 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 		if (text_iter == row_end) {
 			/* We are on a newline, so append an empty row */
 
-			text_info->rows = g_list_append (text_info->rows, NULL);
-			text_info->height += text_info->baseline_skip / 2;
+			text_layout->rows = g_list_append (text_layout->rows, NULL);
+			text_layout->height += text_layout->baseline_skip / 2;
 
 			/* Next! */
 
@@ -1621,12 +1621,12 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 			if (row->text == NULL)
 				row->text = g_strdup("");
 
-			text_info->rows = g_list_append (text_info->rows, row);
+			text_layout->rows = g_list_append (text_layout->rows, row);
 
-			if (row->width > text_info->width)
-				text_info->width = row->width;
+			if (row->width > text_layout->width)
+				text_layout->width = row->width;
 
-			text_info->height += text_info->baseline_skip;
+			text_layout->height += text_layout->baseline_skip;
 
 			/* Next! */
 
@@ -1634,7 +1634,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 		}
 	}
 
-	return text_info;
+	return text_layout;
 }
 
 /**
@@ -1651,63 +1651,83 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
  * rendering functions.
  */
 void
-nautilus_text_layout_paint (const NautilusTextLayout *text_info,
-			    GdkPixbuf *destination_pixbuf,
-			    int x, 
-			    int y, 
-			    GtkJustification just,
-			    guint32 color,
-			    gboolean		    inverted)
+nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
+			    GdkPixbuf			*destination_pixbuf,
+			    int				x, 
+			    int				y, 
+			    GtkJustification		justification,
+			    guint32			color,
+			    gboolean			inverted,
+			    gboolean			underlined)
 {
 	GList *item;
 	const NautilusTextLayoutRow *row;
 	int xpos;
 
-	g_return_if_fail (text_info != NULL);
+	g_return_if_fail (text_layout != NULL);
 	g_return_if_fail (destination_pixbuf != NULL);
+	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
 
- 	/* y += text_info->font->ascent; */
+ 	/* y += text_layout->font->ascent; */
 
-	for (item = text_info->rows; item; item = item->next) {
+	for (item = text_layout->rows; item; item = item->next) {
 		if (item->data) {
 			row = item->data;
 
-			switch (just) {
+			switch (justification) {
 			case GTK_JUSTIFY_LEFT:
 				xpos = 0;
 				break;
 
 			case GTK_JUSTIFY_RIGHT:
-				xpos = text_info->width - row->width;
+				xpos = text_layout->width - row->width;
 				break;
 
 			case GTK_JUSTIFY_CENTER:
-				xpos = (text_info->width - row->width) / 2;
+				xpos = (text_layout->width - row->width) / 2;
 				break;
 
 			default:
 				/* Anyone care to implement GTK_JUSTIFY_FILL? */
 				g_warning ("Justification type %d not supported.  Using left-justification.",
-					   (int) just);
+					   (int) justification);
 				xpos = 0;
 			}
 			
-			nautilus_scalable_font_draw_text (text_info->font,
+			nautilus_scalable_font_draw_text (text_layout->font,
 							  destination_pixbuf,
 							  x + xpos,
 							  y,
 							  NULL,
-							  text_info->font_size,
-							  text_info->font_size,
+							  text_layout->font_size,
+							  text_layout->font_size,
 							  row->text,
 							  row->text_length,
 							  color,
 							  255,
 							  inverted);
 
-			y += text_info->baseline_skip;
+			/* Underline the text if needed */
+			if (underlined) {
+				GdkRectangle underline_rect;
+
+				/* FIXME bugzilla.eazel.com 2865: This underlining code should
+				 * take into account the baseline for the rendered string rather
+				 * that doing the '-2' nonsense.
+				 */
+				underline_rect.x = x + xpos;
+				underline_rect.y = y + text_layout->font_size - 2;
+				underline_rect.width = row->width;
+				underline_rect.height = 1;
+
+				nautilus_gdk_pixbuf_fill_rectangle_with_color (destination_pixbuf,
+									       &underline_rect,
+									       color);
+			}
+
+			y += text_layout->baseline_skip;
 		} else
-			y += text_info->baseline_skip / 2;
+			y += text_layout->baseline_skip / 2;
 	}
 }
 

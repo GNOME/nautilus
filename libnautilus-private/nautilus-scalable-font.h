@@ -200,7 +200,8 @@ void                nautilus_text_layout_paint (const NautilusTextLayout   *text
 						int                         y,
 						GtkJustification            just,
 						guint32                     color,
-						gboolean		    inverted);
+						gboolean		    inverted,
+						gboolean		    underlined);
 void                nautilus_text_layout_free  (NautilusTextLayout         *text_info);
 
 
