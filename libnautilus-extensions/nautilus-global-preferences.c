@@ -26,21 +26,21 @@
 #include "nautilus-global-preferences.h"
 
 #include "nautilus-file-utilities.h"
-#include <eel/eel-font-manager.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-extensions.h>
+#include "nautilus-file.h"
+#include "nautilus-icon-factory.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-preferences-group.h"
 #include "nautilus-preferences-item.h"
-#include <eel/eel-scalable-font.h>
-#include <eel/eel-string.h>
-#include "nautilus-medusa-support.h"
-#include <eel/eel-stock-dialogs.h>
-#include "nautilus-view-identifier.h"
 #include "nautilus-sidebar-functions.h"
+#include <eel/eel-font-manager.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-scalable-font.h>
 #include <eel/eel-smooth-widget.h>
-#include <gconf/gconf.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <gconf/gconf-client.h>
+#include <gconf/gconf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -56,17 +56,18 @@ static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 typedef struct PreferenceDialogItem PreferenceDialogItem;
 
 /* Forward declarations */
-static gboolean   global_preferences_close_dialog_callback              (GtkWidget                  *dialog,
-									 gpointer                    user_data);
-static void       global_preferences_install_sidebar_panel_defaults     (void);
-static void       global_preferences_install_defaults                   (void);
-static void       global_preferences_install_home_location_defaults     (void);
-static void       global_preferences_install_font_defaults              (void);
-static GtkWidget *global_preferences_create_dialog                      (void);
-static void       global_preferences_create_sidebar_panels_pane         (NautilusPreferencesBox     *preference_box);
-static GtkWidget *global_preferences_populate_pane                      (NautilusPreferencesBox     *preference_box,
-									 const char                 *pane_name,
-									 const PreferenceDialogItem *preference_dialog_item);
+static gboolean   global_preferences_close_dialog_callback          (GtkWidget                  *dialog,
+								     gpointer                    user_data);
+static void       global_preferences_install_sidebar_panel_defaults (void);
+static void       global_preferences_install_defaults               (void);
+static void       global_preferences_register_enumerations          (void);
+static void       global_preferences_install_home_location_defaults (void);
+static void       global_preferences_install_font_defaults          (void);
+static GtkWidget *global_preferences_create_dialog                  (void);
+static void       global_preferences_create_sidebar_panels_pane     (NautilusPreferencesBox     *preference_box);
+static GtkWidget *global_preferences_populate_pane                  (NautilusPreferencesBox     *preference_box,
+								     const char                 *pane_name,
+								     const PreferenceDialogItem *preference_dialog_item);
 
 static GtkWidget *global_prefs_dialog = NULL;
 static const char *default_smooth_font_auto_value;
@@ -79,6 +80,121 @@ typedef enum
 	PREFERENCE_INTEGER,
 	PREFERENCE_STRING
 } PreferenceType;
+
+/* Enumerations used to qualify some INTEGER preferences */
+static EelEnumerationEntry speed_tradeoff_enum_entries[] = {
+	{ "always",	    N_("Always"),		NAUTILUS_SPEED_TRADEOFF_ALWAYS },
+	{ "local_only",	    N_("Local Files Only"),	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY },
+	{ "never",	    N_("Never"),		NAUTILUS_SPEED_TRADEOFF_NEVER },
+	{ NULL }
+};
+
+static EelEnumerationEntry default_zoom_level_enum_entries[] = {
+	{ "smallest",	    N_("25%"),		NAUTILUS_ZOOM_LEVEL_SMALLEST },
+	{ "smaller",	    N_("50%"),		NAUTILUS_ZOOM_LEVEL_SMALLER },
+	{ "small",	    N_("75%"),		NAUTILUS_ZOOM_LEVEL_SMALL },
+	{ "standard",	    N_("100%"),		NAUTILUS_ZOOM_LEVEL_STANDARD },
+	{ "large",	    N_("150%"),		NAUTILUS_ZOOM_LEVEL_LARGE },
+	{ "larger",	    N_("200%"),		NAUTILUS_ZOOM_LEVEL_LARGER },
+	{ "largest",	    N_("400%"),		NAUTILUS_ZOOM_LEVEL_LARGEST },
+	{ NULL }
+};
+
+static EelEnumerationEntry file_size_enum_entries[] = {
+	{ "102400",	    N_("100 K"),	102400 },
+	{ "512000",	    N_("500 K"),	512000 },
+	{ "1048576",	    N_("1 MB"),		1048576 },
+	{ "3145728",	    N_("3 MB"),		3145728 },
+	{ "5242880",	    N_("5 MB"),		5242880 },
+	{ "10485760",	    N_("10 MB"),	10485760 },
+	{ "104857600",	    N_("100 MB"),	104857600 },
+	{ NULL }
+};
+
+static EelEnumerationEntry click_policy_enum_entries[] = {
+	{ "single",
+	  N_("Activate items with a single click"),
+	  NAUTILUS_CLICK_POLICY_SINGLE
+	},
+	{ "double",
+	  N_("Activate items with a double click"),
+	  NAUTILUS_CLICK_POLICY_DOUBLE
+	},
+	{ NULL }
+};
+
+static EelEnumerationEntry executable_text_activation_enum_entries[] = {
+	{ "launch",
+	  N_("Execute files when they are clicked"),
+	  NAUTILUS_EXECUTABLE_TEXT_LAUNCH
+	},
+	{ "display",
+	  N_("Display files when they are clicked"),
+	  NAUTILUS_EXECUTABLE_TEXT_DISPLAY
+	},
+	{ "ask",
+	  N_("Ask each time"),
+	  NAUTILUS_EXECUTABLE_TEXT_ASK
+	},
+	{ NULL }
+};
+
+static EelEnumerationEntry search_bar_type_enum_entries[] = {
+	{ N_("search by text"),
+	  N_("Search for files by file name only"),
+	  NAUTILUS_SIMPLE_SEARCH_BAR
+	},
+	{ N_("search by text and properties"),
+	  N_("Search for files by file name and file properties"),
+	  NAUTILUS_COMPLEX_SEARCH_BAR
+	},
+	{ NULL }
+};
+
+static EelEnumerationEntry default_folder_viewer_enum_entries[] = {
+	{ "icon_view",	    N_("Icon View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW },
+	{ "list_view",	    N_("List View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW },
+	{ NULL }
+};
+
+static EelEnumerationEntry default_sort_order_enum_entries[] = {
+	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_NAME },
+	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
+	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
+	{ "modification date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
+	{ "emblemd",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
+	{ NULL }
+};
+
+static EelEnumerationEntry standard_font_size_entries[] = {
+	{ "8",		   N_("8"),	8 },
+	{ "10",		   N_("10"),	10 },
+	{ "12",		   N_("12"),	12 },
+	{ "14",		   N_("14"),	14 },
+	{ "16",		   N_("16"),	16 },
+	{ "18",		   N_("18"),	18 },
+	{ "20",		   N_("20"),	20 },
+	{ "22",		   N_("22"),	22 },
+	{ "24",		   N_("24"),	24 },
+	{ NULL }
+};
+
+/* These enumerations are used in the preferences dialog to 
+ * populate widgets and route preferences changes between the
+ * storage (GConf) and the displayed values.
+ */
+static EelEnumerationInfo enumerations[] = {
+	{ "click_policy",		click_policy_enum_entries },
+	{ "default_folder_viewer",	default_folder_viewer_enum_entries },
+	{ "default_sort_order",		default_sort_order_enum_entries },
+	{ "default_zoom_level",		default_zoom_level_enum_entries },
+	{ "executable_text_activation",	executable_text_activation_enum_entries },
+	{ "file_size",			file_size_enum_entries },
+	{ "search_bar_type",		search_bar_type_enum_entries },
+	{ "speed_tradeoff",		speed_tradeoff_enum_entries },
+	{ "standard_font_size",		standard_font_size_entries },
+	{ NULL }
+};
 
 /* A structure that pairs a default value with a specific user level. */
 typedef struct
@@ -97,6 +213,7 @@ typedef struct
 	int visible_user_level;
 	PreferenceUserLevelDefault default1;
 	PreferenceUserLevelDefault default2;
+	const char *enumeration_id;
 } PreferenceDefault;
 
 /* The following table defines the default values and user level visibilities of
@@ -155,6 +272,11 @@ typedef struct
  *    installed for a high user level, the next lowest user level with a valid
  *    default is used.
  *
+ * 6. enumeration_id
+ *    An an enumeration id is a unique string that identifies an enumeration.
+ *    If given, an enumeration id can be used to qualify a INTEGER preference.
+ *    The preferences dialog widgetry will use this enumeration id to find out
+ *    what choices and descriptions of choices to present to the user.
  */
 static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
@@ -185,7 +307,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE }
+	  { USER_LEVEL_NONE },
+	  "speed_tradeoff"
 	},
 	/* Don't show remote directory item counts for Beginner users because computing them
 	 * can be annoyingly slow, especially for FTP. If we make this fast enough for FTP in
@@ -195,19 +318,22 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_ALWAYS) }
+	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_ALWAYS) },
+	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_CLICK_POLICY,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE }
+	  { USER_LEVEL_NONE },
+	  "click_policy"
 	},
 	{ NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_ADVANCED,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_EXECUTABLE_TEXT_ASK) },
-	  { USER_LEVEL_NONE }
+	  { USER_LEVEL_NONE },
+	  "executable_text_activation"
 	},
 	{ NAUTILUS_PREFERENCES_THEME,
 	  PREFERENCE_STRING,
@@ -219,19 +345,22 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE }
+	  { USER_LEVEL_NONE },
+	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_ADVANCED,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (3145728) },
-	  { USER_LEVEL_NONE }
+	  { USER_LEVEL_NONE },
+	  "file_size"
 	},
 	{ NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_ADVANCED,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE }
+	  { USER_LEVEL_NONE },
+	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 	  PREFERENCE_BOOLEAN,
@@ -243,13 +372,14 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE }
+	  { USER_LEVEL_NONE },
+	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_ADVANCED,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { NAUTILUS_USER_LEVEL_ADVANCED, GINT_TO_POINTER (TRUE) },
+	  { NAUTILUS_USER_LEVEL_ADVANCED, GINT_TO_POINTER (TRUE) }
 	},
 	{ NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 	  PREFERENCE_BOOLEAN,
@@ -267,13 +397,14 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_NOVICE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) },
+	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
 	},
 	{ NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SIMPLE_SEARCH_BAR) },
 	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_COMPLEX_SEARCH_BAR) },
+	  "search_bar_type"
 	},
 	{ NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 	  PREFERENCE_BOOLEAN,
@@ -363,8 +494,95 @@ static const PreferenceDefault preference_defaults[] = {
 	  { USER_LEVEL_NONE }
 	},
 
+
+	/* View Preferences */
+	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW) },
+	  { USER_LEVEL_NONE },
+	  "default_folder_viewer"
+	},
+
+	/* Icon View Default Preferences */
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  { USER_LEVEL_NONE },
+	  "default_sort_order"
+	},
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD) },
+	  { USER_LEVEL_NONE },
+	  "default_zoom_level"
+	},
+
+	/* List View Default Preferences */
+	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  { USER_LEVEL_NONE },
+	  "default_sort_order"
+	},
+	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD) },
+	  { USER_LEVEL_NONE },
+	  "default_zoom_level"
+	},
+
 	{ NULL }
 };
+
+/**
+ * global_preferences_register_enumerations
+ *
+ * Register enumerations for INTEGER preferences that need them.
+ *
+ * This function needs to be called before the preferences dialog
+ * panes are populated, as they use the registered information to
+ * create enumeration item widgets.
+ */
+static void
+global_preferences_register_enumerations (void)
+{
+	guint i;
+
+	/* Register the enumerations */
+	eel_enumeration_register (enumerations);
+
+	/* Set the enumeration ids for preferences that need them */
+	for (i = 0; preference_defaults[i].name != NULL; i++) {
+		if (preference_defaults[i].type == PREFERENCE_INTEGER
+		    && eel_strlen (preference_defaults[i].enumeration_id) > 0) {
+			nautilus_preferences_set_enumeration_id (preference_defaults[i].name,
+								 preference_defaults[i].enumeration_id);
+		}
+	}
+}
 
 /**
  * global_preferences_install_defaults
@@ -449,34 +667,6 @@ global_preferences_install_defaults (void)
 	global_preferences_install_font_defaults ();
 }
 
-/*
- * Private stuff
- */
-
-/* An enumeration structure used for NAUTILUS_PREFERENCE_ITEM_ENUM items. */
-typedef struct
-{
-	const char *stored_value;
-	const char *display_value;
-	int value;
-} EnumerationEntry;
-
-static EnumerationEntry speed_tradeoff_enumeration[] = {
-	{ N_("always"),
-	  N_("Always"),
-	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
-	},
-	{ N_("local only"),
-	  N_("Local Files Only"),
-	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
-	},
-	{ N_("never"),
-	  N_("Never"),
-	  NAUTILUS_SPEED_TRADEOFF_NEVER,
-	},
-	{ NULL, NULL, 0 }
-};
-
 /* A structure that describes a single preferences dialog ui item. */
 struct PreferenceDialogItem
 {
@@ -486,9 +676,7 @@ struct PreferenceDialogItem
 	NautilusPreferencesItemType item_type;
 	const char *control_preference_name;
 	NautilusPreferencesItemControlAction control_action;
-	const EnumerationEntry *enumeration_values;
-	const char *constrained_integer_values;
-	const char *constrained_integer_labels;
+	int column;
 };
 
 /* The following tables define preference items for the preferences dialog.
@@ -518,9 +706,10 @@ struct PreferenceDialogItem
  *    description.  In particular, enumeration items use the descriptions from
  *    an enumeration structure.  See field XX below.
  *
- *    This field needs to be non NULL for items other than 
- *    NAUTILUS_PREFERENCE_ITEM_ENUM or 
- *    NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM
+ *    This field needs to be non NULL for items other than:
+ * 
+ *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO or 
+ *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
  * 
  * 4. item_type
  *
@@ -541,79 +730,24 @@ struct PreferenceDialogItem
  *    The action to take when the control preference in field 5 changes.
  *    There are only 2 possible actions:
  *
- *       NAUTILUS_PREFERENCE_ITEM_SHOW - If the control preference is TRUE
- *                                       the show this item.
+ *      NAUTILUS_PREFERENCE_ITEM_SHOW - If the control preference is TRUE
+ *                                      the show this item.
  *
- *       NAUTILUS_PREFERENCE_ITEM_HIDE - If the control preference is FALSE
- *                                       the hide this item.
+ *      NAUTILUS_PREFERENCE_ITEM_HIDE - If the control preference is FALSE
+ *                                      the hide this item.
  *
- * 7. enumeration_values
+ * 7. column
  *
- *    If the item_type in field 4 was NAUTILUS_PREFERENCE_ITEM_ENUM or
- *    NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM, then this field should be 
- *    a pointer to a NULL terminated array of EnumerationEntry.
- *
- * 8. constrained_integer_values
- *
- *    If the item_type in field 4 was NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
- *    then this field should be a string of comma delimeted integers to be
- *    tokenized and used as the list of possible integers.
- *
- * 9. constrained_integer_labels
- *
- *    If the item_type in field 4 was NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
- *    then this field should be a string of comma delimeted labels corresponding to
- *    the integers in field 8.
- *
+ *    A preference pane is composed of groups.  Each group is bounded by
+ *    a frame.  Each of these groups can have 0 or 1 columns of preference
+ *    item widgets.  This field controls which column the preference item 
+ *    widgets appear in.
  */
 static PreferenceDialogItem appearance_items[] = {
 	{ N_("Smoother Graphics"),
 	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 	  N_("Use smoother (but slower) graphics"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-	  N_("Font for Icon view:"),
-	  NAUTILUS_PREFERENCE_ITEM_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  NAUTILUS_PREFERENCE_ITEM_HIDE
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-	  N_("Font for Icon view:"),
-	  NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE,
-	  N_("Font size for Icon view at 100% zoom:"),
-	  NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
-	  NULL,
-	  0,
-	  NULL,
-	  "8,10,12,14,16,18,20,22,24",
-	  "8,10,12,14,16,18,20,22,24",
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
-	  N_("Font for List view:"),
-	  NAUTILUS_PREFERENCE_ITEM_FONT,
-	  NULL,
-	  0
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE,
-	  N_("Font size for List view at 100% zoom:"),
-	  NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
-	  NULL,
-	  0,
-	  NULL,
-	  "8,10,12,14,16,18,20,22,24",
-	  "8,10,12,14,16,18,20,22,24",
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Fonts"),
 	  NAUTILUS_PREFERENCES_DEFAULT_FONT,
@@ -629,65 +763,49 @@ static PreferenceDialogItem appearance_items[] = {
 	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 	  NAUTILUS_PREFERENCE_ITEM_SHOW
 	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
+	{ NULL }
 };
 
 static PreferenceDialogItem windows_and_desktop_items[] = {
 	{ N_("Desktop"),
 	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 	  N_("Use Nautilus to draw the desktop"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 	  N_("Open each file or folder in a separate window"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 	  N_("Display toolbar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
 	  N_("Display location bar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
 	  N_("Display status bar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
 	  N_("Display sidebar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Trash Behavior"),
 	  NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 	  N_("Ask before emptying the Trash or deleting files"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Trash Behavior"),
 	  NAUTILUS_PREFERENCES_ENABLE_DELETE,
 	  N_("Include a Delete command that bypasses Trash"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	/* FIXME: This group clearly doesn't belong in Windows &
 	 * Desktop, but there's no obviously-better place for it and
@@ -696,237 +814,231 @@ static PreferenceDialogItem windows_and_desktop_items[] = {
 	{ N_("Keyboard Shortcuts"),
 	  NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
 	  N_("Use Emacs-style keyboard shortcuts in text fields"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
-};
-
-static EnumerationEntry click_policy_enumeration[] = {
-	{ N_("single"),
-	  N_("Activate items with a single click"),
-	  NAUTILUS_CLICK_POLICY_SINGLE,
-	},
-	{ N_("double"),
-	  N_("Activate items with a double click"),
-	  NAUTILUS_CLICK_POLICY_DOUBLE,
-	},
-	{ NULL, NULL, 0 }
-};
-
-static EnumerationEntry executable_text_activation_enumeration[] = {
-	{ N_("launch"),
-	  N_("Execute files when they are clicked"),
-	  NAUTILUS_EXECUTABLE_TEXT_LAUNCH,
-	},
-	{ N_("display"),
-	  N_("Display files when they are clicked"),
-	  NAUTILUS_EXECUTABLE_TEXT_DISPLAY,
-	},
-	{ N_("ask"),
-	  N_("Ask each time"),
-	  NAUTILUS_EXECUTABLE_TEXT_ASK,
-	},
-	{ NULL, NULL, 0 }
+	{ NULL }
 };
 
 static PreferenceDialogItem directory_views_items[] = {
 	{ N_("Click Behavior"),
 	  NAUTILUS_PREFERENCES_CLICK_POLICY,
 	  N_("Click Behavior"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUM,
-	  NULL,
-	  0,
-	  click_policy_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
 	{ N_("Executable Text Files"),
 	  NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 	  N_("Executable Text Files"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUM,
-	  NULL,
-	  0,
-	  executable_text_activation_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
 	{ N_("Show/Hide Options"),
 	  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 	  N_("Show hidden files (file names start with \".\")"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Show/Hide Options"),
 	  NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 	  N_("Show backup files (file names end with \"~\")"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Show/Hide Options"),
 	  NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 	  N_("Show special flags in Properties window"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Sorting Order"),
 	  NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 	  N_("Always list folders before files"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
+	{ NULL }
 };
 
-static EnumerationEntry search_bar_type_enumeration[] = {
-	{ N_("search by text"),
-	  N_("Search for files by file name only"),
-	  NAUTILUS_SIMPLE_SEARCH_BAR,
+static PreferenceDialogItem view_preferences_items[] = {
+	{ N_("Default View"),
+	  NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+	  N_("View new folders using:"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
-	{ N_("search by text and properties"),
-	  N_("Search for files by file name and file properties"),
-	  NAUTILUS_COMPLEX_SEARCH_BAR,
+
+	/* Icon View Defaults */
+	{ N_("Icon View Defaults"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+	  N_("Lay Out Items:"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
-	{ NULL, NULL, 0 }
+	{ N_("Icon View Defaults"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	  N_("Sort in reversed order"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("Icon View Defaults"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
+	  N_("Font:"),
+	  NAUTILUS_PREFERENCE_ITEM_FONT,
+	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+	  NAUTILUS_PREFERENCE_ITEM_HIDE
+	},
+	{ N_("Icon View Defaults"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
+	  N_("Font:"),
+	  NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT,
+	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+	  NAUTILUS_PREFERENCE_ITEM_SHOW
+	},
+	{ N_("Icon View Defaults"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+	  N_("Default zoom level:"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
+	  NULL, 0, 1
+	},
+	{ N_("Icon View Defaults"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
+	  N_("Use tighter layout"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
+	  NULL, 0, 1
+	},
+	{ N_("Icon View Defaults"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+	  N_("Font size at default zoom level:"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
+	  NULL, 0, 1
+	},
+
+	/* List View Defaults */
+	{ N_("List View Defaults"),
+	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+	  N_("Lay Out Items:"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
+	},
+	{ N_("List View Defaults"),
+	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	  N_("Sort in reversed order"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("List View Defaults"),
+	  NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
+	  N_("Font:"),
+	  NAUTILUS_PREFERENCE_ITEM_FONT
+	},
+	{ N_("List View Defaults"),
+	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+	  N_("Default zoom level:"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
+	  NULL, 0, 1
+	},
+	{ N_("List View Defaults"),
+	  "xxx",
+	  NULL,
+	  NAUTILUS_PREFERENCE_ITEM_PADDING,
+	  NULL, 0, 1
+	},
+	{ N_("List View Defaults"),
+	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+	  N_("Font size at default zoom level:"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
+	  NULL, 0, 1
+	},
+	{ NULL }
 };
 
 static PreferenceDialogItem search_items[] = {
 	{ N_("Search Complexity Options"),
 	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  N_("search type to do by default"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUM,
-	  NULL,
-	  0,
-	  search_bar_type_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
 	{ N_("Search Engines"),
 	  NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 	  N_("Search Engine Location"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING
 	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
+	{ NULL }
 };
 
 static PreferenceDialogItem navigation_items[] = {
 	{ N_("Home"),
 	  NAUTILUS_PREFERENCES_HOME_URI,
 	  N_("Location:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING
 	},
 	{ N_("HTTP Proxy Settings"),
 	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
 	  N_("Use HTTP Proxy"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("HTTP Proxy Settings"),
 	  NAUTILUS_PREFERENCES_HTTP_PROXY_HOST,
 	  N_("Location:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING
 	},
 	{ N_("HTTP Proxy Settings"),
 	  NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
 	  N_("Port:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER
 	},
 	{ N_("HTTP Proxy Settings"),
 	  NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH,
 	  N_("Proxy requires a username and password:"),
 	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
 	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW,
-	  NULL
+	  NAUTILUS_PREFERENCE_ITEM_SHOW
 	},
 	{ N_("HTTP Proxy Settings"),
 	  NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME,
 	  N_("Username:"),
 	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
 	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW,
-	  NULL
+	  NAUTILUS_PREFERENCE_ITEM_SHOW
 	},
 	{ N_("HTTP Proxy Settings"),
 	  NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD,
 	  N_("Password:"),
 	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
 	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW,
-	  NULL
+	  NAUTILUS_PREFERENCE_ITEM_SHOW
 	},
 	{ N_("Built-in Bookmarks"),
 	  NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 	  N_("Don't include the built-in bookmarks in the Bookmarks menu"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
+	{ NULL }
 };
 
 static PreferenceDialogItem tradeoffs_items[] = {
 	{ N_("Show Text in Icons"),
 	  NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
-	  NULL,
-	  0,
-	  speed_tradeoff_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
 	{ N_("Show Count of Items in Folders"),
 	  NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
-	  NULL,
-	  0,
-	  speed_tradeoff_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
-	  NULL,
-	  0,
-	  speed_tradeoff_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 	  N_("Don't make thumbnails for files larger than:"),
-	  NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
-	  NULL,
-	  0,
-	  NULL,
-	  "102400,512000,1048576,3145728,5242880,10485760,104857600",
-	  "100 K,500 K,1 MB,3 MB,5 MB,10 MB,100 MB",
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("Preview Sound Files"),
 	  NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
-	  NULL,
-	  0,
-	  speed_tradeoff_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
 
 	/* FIXME bugzilla.eazel.com 2560: This title phrase needs improvement. */
 	{ N_("Make Folder Appearance Details Public"),
 	  NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
-	  NULL,
-	  0,
-	  speed_tradeoff_enumeration
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
+	{ NULL }
 };
 
 static GtkWidget *
@@ -934,8 +1046,6 @@ global_preferences_create_dialog (void)
 {
 	GtkWidget *prefs_dialog;
 	NautilusPreferencesBox *preference_box;
-	GtkWidget *directory_views_pane;
-	GtkWidget *appearance_pane;
 
 	/*
 	 * In the soon to come star trek future, the following widgetry
@@ -955,11 +1065,17 @@ global_preferences_create_dialog (void)
 	preference_box = NAUTILUS_PREFERENCES_BOX (nautilus_preferences_dialog_get_prefs_box
 						   (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog)));
 
+	global_preferences_register_enumerations ();
 
+	/* View Preferences */
+	global_preferences_populate_pane (preference_box,
+					  _("View Preferences"),
+					  view_preferences_items);
+	
 	/* Appearance */
-	appearance_pane = global_preferences_populate_pane (preference_box,
-							    _("Appearance"),
-							    appearance_items);
+	global_preferences_populate_pane (preference_box,
+					  _("Appearance"),
+					  appearance_items);
 	
 	/* Windows & Desktop */
 	global_preferences_populate_pane (preference_box,
@@ -967,10 +1083,10 @@ global_preferences_create_dialog (void)
 					  windows_and_desktop_items);
 
 	/* Folder Views */
-	directory_views_pane = global_preferences_populate_pane (preference_box,
-								 _("Icon & List Views"),
-								 directory_views_items);
-	
+	global_preferences_populate_pane (preference_box,
+					  _("Icon & List Views"),
+					  directory_views_items);
+
 	/* Sidebar Panels */
 	global_preferences_create_sidebar_panels_pane (preference_box);
 
@@ -999,11 +1115,9 @@ static PreferenceDialogItem sidebar_items[] = {
 	{ N_("Tree"),
 	  NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  N_("Show only folders (no files) in the tree"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
+	{ NULL }
 };
 
 static void
@@ -1029,7 +1143,8 @@ global_preferences_populate_sidebar_panels_callback (const char *name,
 	nautilus_preferences_pane_add_item_to_nth_group (sidebar_pane,
 							 0,
 							 preference_key,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
+							 0);
 	
 	g_free (description);
 }
@@ -1168,17 +1283,21 @@ global_preferences_install_font_defaults (void)
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
 						 NAUTILUS_USER_LEVEL_NOVICE,
 						 default_smooth_font);
-	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE,
+	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
  						  NAUTILUS_USER_LEVEL_NOVICE,
 						  12);
+	nautilus_preferences_set_enumeration_id (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+						 "standard_font_size");
 
 	/* List view fonts */
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
 						 NAUTILUS_USER_LEVEL_NOVICE,
 						 default_font);
-	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE,
+	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
  						  NAUTILUS_USER_LEVEL_NOVICE,
 						  12);
+	nautilus_preferences_set_enumeration_id (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+						 "standard_font_size");
 
 	/* Default fonts */
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
@@ -1216,7 +1335,6 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 	guint i;
 	int group_index;
 	guint start_group_index;
-	const EnumerationEntry *enumeration_values;
 
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box), NULL);
 	g_return_val_if_fail (pane_name != NULL, NULL);
@@ -1249,28 +1367,11 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 							      _(preference_dialog_item[i].preference_description));
 		}
 
-		enumeration_values = preference_dialog_item[i].enumeration_values;
-		while (enumeration_values != NULL && enumeration_values->stored_value != NULL) {
-			nautilus_preferences_enumeration_insert (preference_dialog_item[i].preference_name,
-								 enumeration_values->stored_value,
-								 enumeration_values->display_value,
-								 enumeration_values->value);
-			enumeration_values++;
-		}
-
 		item = nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (pane),
 									group_index,
 									preference_dialog_item[i].preference_name,
-									preference_dialog_item[i].item_type);
-
-		if (preference_dialog_item[i].item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER) {
-			g_assert (eel_strlen (preference_dialog_item[i].constrained_integer_values) > 0);
-			g_assert (eel_strlen (preference_dialog_item[i].constrained_integer_labels) > 0);
-			nautilus_preferences_item_set_constrained_integer_values (
-				NAUTILUS_PREFERENCES_ITEM (item),
-				preference_dialog_item[i].constrained_integer_values,
-				preference_dialog_item[i].constrained_integer_labels);
-		}
+									preference_dialog_item[i].item_type,
+									preference_dialog_item[i].column);
 
 		if (preference_dialog_item[i].control_preference_name != NULL) {
 			nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (item),
