@@ -1,3 +1,21 @@
+2000-05-10  Darin Adler  <darin@eazel.com>
+
+	* fm-icon-view.c: (update_layout_menus), (sort_callback),
+	(manual_layout_callback), (fm_icon_view_merge_menus),
+	(update_one_menu_item), (fm_icon_view_update_menus),
+	(icon_container_compare_icons_callback), (get_icon_text_callback),
+	(text_attribute_names_changed_callback),
+	(fm_icon_view_initialize_class), (fm_icon_view_initialize): Added
+	a Layout menu with a separate item for Manual Layout and for each
+	kind of auto-layout sort.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(idle_handler): Reinstated the call to relayout. It broke looking
+	at a sorted folder the first time.
+
+	Tons of gratuitous whitespace reformatting. I'm so sorry, but
+	I was listening to a talk by rms.
+
 2000-05-10  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 853 (assert and weird window behavior in Properties)

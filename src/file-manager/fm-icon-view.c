@@ -53,15 +53,14 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
 
-/* Paths to use when creating & referring to bonobo menu items */
+/* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_STRETCH_ICON "/Settings/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS "/Settings/Unstretch"
 #define MENU_PATH_AFTER_STRETCH_SEPARATOR "/Settings/After Stretch Separator"
 #define MENU_PATH_CUSTOMIZE_ICON_TEXT "/Settings/Icon Text"
-#define MENU_PATH_AFTER_CUSTOMIZE_SEPARATOR "/Settings/After Customize Separator"
-#define MENU_PATH_LAYOUT_GROUP "/Settings/Layout"
-#define MENU_PATH_AUTO_LAYOUT "/Settings/Auto Layout"
-#define MENU_PATH_MANUAL_LAYOUT "/Settings/Manual Layout"
+#define MENU_PATH_LAYOUT_MENU "/Layout"
+#define MENU_PATH_MANUAL_LAYOUT "/Layout/Manual Layout"
+#define MENU_PATH_LAYOUT_SEPARATOR "/Layout/Separator"
 #define MENU_PATH_RENAME "/File/Rename"
 
 /* forward declarations */
@@ -74,6 +73,52 @@ static void                   text_attribute_names_changed_callback (gpointer   
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
+typedef struct {
+	NautilusFileSortType sort_type;
+	const char *metadata_name;
+	const char *menu_path;
+	const char *menu_label;
+	const char *menu_hint;
+} SortCriterion;
+
+static const SortCriterion sort_criteria[] = {
+	{
+		NAUTILUS_FILE_SORT_BY_NAME,
+		"name",
+		"/Layout/Sort by Name",
+		N_("Sort by _Name"),
+		N_("Keep icons sorted by name in rows")
+	},
+	{
+		NAUTILUS_FILE_SORT_BY_SIZE,
+		"size",
+		"/Layout/Sort by Size",
+		N_("Sort by _Size"),
+		N_("Keep icons sorted by size in rows")
+	},
+	{
+		NAUTILUS_FILE_SORT_BY_TYPE,
+		"type",
+		"/Layout/Sort by Type",
+		N_("Sort by _Type"),
+		N_("Keep icons sorted by type in rows")
+	},
+	{
+		NAUTILUS_FILE_SORT_BY_MTIME,
+		"modification date",
+		"/Layout/Sort by Modification Date",
+		N_("Sort by Modification _Date"),
+		N_("Keep icons sorted by modification date in rows")
+	},
+	{
+		NAUTILUS_FILE_SORT_BY_EMBLEMS,
+		"emblems",
+		"/Layout/Sort by Emblems",
+		N_("Sort by _Emblems"),
+		N_("Keep icons sorted by emblems in rows")
+	}
+};
+
 struct FMIconViewDetails
 {
 	GList *icons_not_positioned;
@@ -81,6 +126,8 @@ struct FMIconViewDetails
 
 	guint react_to_icon_change_idle_id;
 	gboolean menus_ready;
+
+	const SortCriterion *sort;
 
 	/* Workaround for Bonobo bug. */
 	gboolean updating_bonobo_radio_menu_item;
@@ -138,21 +185,24 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_POSITION, "");
-	position_good = sscanf (position_string, " %d , %d %*s",
-				&position->x, &position->y) == 2;
+	position_good = sscanf
+		(position_string, " %d , %d %*s",
+		 &position->x, &position->y) == 2;
 	g_free (position_string);
 
 	/* Get the scale of the icon from the metadata. */
 	scale_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
-	scale_good = sscanf (scale_string, " %lf %*s",
-			     &position->scale_x) == 1;
+	scale_good = sscanf
+		(scale_string, " %lf %*s",
+		 &position->scale_x) == 1;
 	if (scale_good) {
 		position->scale_y = position->scale_x;
 	} else {
-		scale_good = sscanf (scale_string, " %lf %lf %*s",
-				     &position->scale_x,
-				     &position->scale_y) == 2;
+		scale_good = sscanf
+			(scale_string, " %lf %lf %*s",
+			 &position->scale_x,
+			 &position->scale_y) == 2;
 		if (!scale_good) {
 			position->scale_x = 1.0;
 			position->scale_y = 1.0;
@@ -206,8 +256,8 @@ rename_icon_callback (gpointer ignored, gpointer view)
 {
 	g_assert (FM_IS_ICON_VIEW (view));
   		
-	nautilus_icon_container_start_renaming_selected_item (
-				get_icon_container (FM_ICON_VIEW (view)));
+	nautilus_icon_container_start_renaming_selected_item
+		(get_icon_container (FM_ICON_VIEW (view)));
 
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
@@ -241,7 +291,6 @@ compute_menu_item_info (FMIconView *view,
                 } else {
                         name = g_strdup (_("_Restore Icon to Unstretched Size"));
                 }
-		
         	*sensitive_return = nautilus_icon_container_is_stretched (icon_container);
 	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
                 name = g_strdup (_("Customize _Icon Text..."));
@@ -317,28 +366,36 @@ fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
 	g_assert (FM_IS_ICON_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
-				    append_selection_context_menu_items, 
-				    (view, menu, selection));
+	NAUTILUS_CALL_PARENT_CLASS
+		(FM_DIRECTORY_VIEW_CLASS, 
+		 append_selection_context_menu_items,
+		 (view, menu, selection));
 
-        append_one_context_menu_item (FM_ICON_VIEW (view), menu, selection,
-                                      MENU_PATH_STRETCH_ICON,
-                                      GTK_SIGNAL_FUNC (show_stretch_handles_callback));
-        append_one_context_menu_item (FM_ICON_VIEW (view), menu, selection,
-                                      MENU_PATH_UNSTRETCH_ICONS,
-                                      GTK_SIGNAL_FUNC (unstretch_icons_callback));
-
-	/* The Rename item is inserted directly after the Duplicate item created by the FMDirectoryView */
-	position = fm_directory_view_get_context_menu_index (FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
+        append_one_context_menu_item
+		(FM_ICON_VIEW (view), menu, selection,
+		 MENU_PATH_STRETCH_ICON,
+		 GTK_SIGNAL_FUNC (show_stretch_handles_callback));
+        append_one_context_menu_item
+		(FM_ICON_VIEW (view), menu, selection,
+		 MENU_PATH_UNSTRETCH_ICONS,
+		 GTK_SIGNAL_FUNC (unstretch_icons_callback));
+	
+	/* The Rename item is inserted directly after the
+	 * Duplicate item created by the FMDirectoryView.
+	 */
+	position = fm_directory_view_get_context_menu_index
+		(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
 	if (position == -1) {
-		append_one_context_menu_item (FM_ICON_VIEW (view), menu, selection, 
-					      MENU_PATH_RENAME, 
-					      GTK_SIGNAL_FUNC (rename_icon_callback));
+		append_one_context_menu_item
+			(FM_ICON_VIEW (view), menu, selection, 
+			 MENU_PATH_RENAME, 
+			 GTK_SIGNAL_FUNC (rename_icon_callback));
 	} else {
 		position++;
-     		insert_one_context_menu_item (FM_ICON_VIEW (view), menu, selection, 
-					      MENU_PATH_RENAME, position,
-					      GTK_SIGNAL_FUNC (rename_icon_callback));
+     		insert_one_context_menu_item
+			(FM_ICON_VIEW (view), menu, selection, 
+			 MENU_PATH_RENAME, position,
+			 GTK_SIGNAL_FUNC (rename_icon_callback));
 	}
 }
 
@@ -360,9 +417,10 @@ fm_icon_view_append_background_context_menu_items (FMDirectoryView *view,
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
-				    append_background_context_menu_items, 
-				    (view, menu));
+	NAUTILUS_CALL_PARENT_CLASS
+		(FM_DIRECTORY_VIEW_CLASS, 
+		 append_background_context_menu_items, 
+		 (view, menu));
 
 	/* Put a separator before this item, since previous items are
 	 * window-specific and this one is global.
@@ -371,9 +429,10 @@ fm_icon_view_append_background_context_menu_items (FMDirectoryView *view,
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-        append_one_context_menu_item (FM_ICON_VIEW (view), menu, NULL, 
-                                      MENU_PATH_CUSTOMIZE_ICON_TEXT, 
-                                      GTK_SIGNAL_FUNC (customize_icon_text_callback));
+        append_one_context_menu_item
+		(FM_ICON_VIEW (view), menu, NULL, 
+		 MENU_PATH_CUSTOMIZE_ICON_TEXT, 
+		 GTK_SIGNAL_FUNC (customize_icon_text_callback));
 }
 
 static void
@@ -395,47 +454,49 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	nautilus_file_ref (file);
-	nautilus_icon_container_add (get_icon_container (FM_ICON_VIEW (view)),
-				     NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	nautilus_icon_container_add
+		(get_icon_container (FM_ICON_VIEW (view)),
+		 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 }
 
 static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
+	gboolean removed;
+
 	/* This handles both changes to an existing file and the existing file going away. */
 	if (!nautilus_directory_contains_file (fm_directory_view_get_model (view), file)) {
-		if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
-						    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+		removed = nautilus_icon_container_remove
+			(get_icon_container (FM_ICON_VIEW (view)),
+			 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+		if (removed) {
 			nautilus_file_unref (file);
 		}
 	} else {
-		nautilus_icon_container_request_update (get_icon_container (FM_ICON_VIEW (view)),
-							NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+		nautilus_icon_container_request_update
+			(get_icon_container (FM_ICON_VIEW (view)),
+			 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 	}
-}
-
-static void
-fm_icon_view_done_adding_files (FMDirectoryView *view)
-{
 }
 
 static void
 update_layout_menus (FMIconView *view)
 {
+	const char *path;
+
 	if (!view->details->menus_ready) {
 		return;
 	}
 
 	/* Workaround for Bonobo bug. */
 	view->details->updating_bonobo_radio_menu_item = TRUE;
+	path = MENU_PATH_MANUAL_LAYOUT;
+	if (nautilus_icon_container_is_auto_layout (get_icon_container (view))) {
+		path = view->details->sort->menu_path;
+	}
 	bonobo_ui_handler_menu_set_radio_state
-		(fm_directory_view_get_bonobo_ui_handler
-		 (FM_DIRECTORY_VIEW (view)),
-		 nautilus_icon_container_is_auto_layout
-		 (get_icon_container (view))
-		 ? MENU_PATH_AUTO_LAYOUT
-		 : MENU_PATH_MANUAL_LAYOUT,
-		 TRUE);
+		(fm_directory_view_get_bonobo_ui_handler (FM_DIRECTORY_VIEW (view)),
+		 path, TRUE);
 	view->details->updating_bonobo_radio_menu_item = FALSE;
 }
 
@@ -452,8 +513,9 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	icon_view = FM_ICON_VIEW (view);
 	directory = fm_directory_view_get_model (view);
 
-	nautilus_connect_background_to_directory_metadata (GTK_WIDGET (get_icon_container (icon_view)),
-							   directory);
+	nautilus_connect_background_to_directory_metadata
+		(GTK_WIDGET (get_icon_container (icon_view)),
+		 directory);
 
 	/* Set up the zoom level from the metadata. */
 	level = nautilus_directory_get_integer_metadata
@@ -612,31 +674,41 @@ append_bonobo_menu_item (FMIconView *view,
 {
         char *label;
         gboolean sensitive;
-        
+
         compute_menu_item_info (view, selection, path, TRUE, &label, &sensitive);
-        bonobo_ui_handler_menu_new_item (ui_handler, path, label, hint, 
-                                         -1,                            /* Position, -1 means at end */
-                                         BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
-                                         NULL,                          /* Pixmap data */
-                                         0,                             /* Accelerator key */
-                                         0,                             /* Modifiers for accelerator */
-                                         callback, callback_data);
+        bonobo_ui_handler_menu_new_item
+		(ui_handler, path, label, hint, 
+		 -1,                            /* Position, -1 means at end */
+		 BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
+		 NULL,                          /* Pixmap data */
+		 0,                             /* Accelerator key */
+		 0,                             /* Modifiers for accelerator */
+		 callback, callback_data);
         g_free (label);
         bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, sensitive);
 }
 
 static void
-auto_layout_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
+sort_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
 {
+	FMIconView *icon_view;
 	NautilusIconContainer *container;
+	int i;
+
+	icon_view = FM_ICON_VIEW (user_data);
 
 	/* Workaround for Bonobo bug. */
-	if (FM_ICON_VIEW (user_data)->details->updating_bonobo_radio_menu_item) {
+	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
 	container = get_icon_container (FM_ICON_VIEW (user_data));
-	nautilus_icon_container_set_auto_layout (container, TRUE);
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
+		if (strcmp (sort_criteria[i].menu_path, path) == 0) {
+			icon_view->details->sort = &sort_criteria[i];
+		}
+	}
+	nautilus_icon_container_sort (container);
 }
 
 static void
@@ -644,14 +716,18 @@ manual_layout_callback (BonoboUIHandler *handler,
 			gpointer user_data,
 			const char *path)
 {
+	FMIconView *icon_view;
 	NautilusIconContainer *container;
 
+	icon_view = FM_ICON_VIEW (user_data);
+
 	/* Workaround for Bonobo bug. */
-	if (FM_ICON_VIEW (user_data)->details->updating_bonobo_radio_menu_item) {
+	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
 	container = get_icon_container (FM_ICON_VIEW (user_data));
+	icon_view->details->sort = &sort_criteria[0];
 	nautilus_icon_container_set_auto_layout (container, FALSE);
 }
 
@@ -676,6 +752,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
         GList *selection;
         BonoboUIHandler *ui_handler;
 	FMIconView *icon_view;
+	int position, i;
 	
         g_assert (FM_IS_ICON_VIEW (view));
 
@@ -686,63 +763,73 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
         selection = fm_directory_view_get_selection (view);
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
-        append_bonobo_menu_item (icon_view, ui_handler, selection,
-                                 MENU_PATH_STRETCH_ICON,
-                                 _("Make the selected icon stretchable"),
-                                 (BonoboUIHandlerCallbackFunc) show_stretch_handles_callback, view);
-        append_bonobo_menu_item (icon_view, ui_handler, selection,
-                                 MENU_PATH_UNSTRETCH_ICONS,
-                                 _("Restore each selected icon to its original size"),
-                                 (BonoboUIHandlerCallbackFunc) unstretch_icons_callback, view);
+	/* Settings menu. */
+        append_bonobo_menu_item
+		(icon_view, ui_handler, selection,
+		 MENU_PATH_STRETCH_ICON,
+		 _("Make the selected icon stretchable"),
+		 (BonoboUIHandlerCallbackFunc) show_stretch_handles_callback, view);
+        append_bonobo_menu_item
+		(icon_view, ui_handler, selection,
+		 MENU_PATH_UNSTRETCH_ICONS,
+		 _("Restore each selected icon to its original size"),
+		 (BonoboUIHandlerCallbackFunc) unstretch_icons_callback, view);
+        bonobo_ui_handler_menu_new_separator
+		(ui_handler,
+		 MENU_PATH_AFTER_STRETCH_SEPARATOR,
+		 -1);
+        append_bonobo_menu_item
+		(icon_view, ui_handler, selection,
+		 MENU_PATH_CUSTOMIZE_ICON_TEXT,
+		 _("Choose which information appears beneath each icon's name"),
+		 (BonoboUIHandlerCallbackFunc) customize_icon_text_callback, view);
 
-        bonobo_ui_handler_menu_new_separator (ui_handler,
-                                              MENU_PATH_AFTER_STRETCH_SEPARATOR,
-                                              -1);
-
-        append_bonobo_menu_item (icon_view, ui_handler, selection,
-                                 MENU_PATH_CUSTOMIZE_ICON_TEXT,
-                                 _("Choose which information appears beneath each icon's name"),
-                                 (BonoboUIHandlerCallbackFunc) customize_icon_text_callback, view);
-
-        bonobo_ui_handler_menu_new_separator (ui_handler,
-                                              MENU_PATH_AFTER_CUSTOMIZE_SEPARATOR,
-                                              -1);
-
-        bonobo_ui_handler_menu_new_radiogroup (ui_handler,
-					       MENU_PATH_LAYOUT_GROUP);
-
-	/* Workaround for Bonobo bug. */
+	/* Layout menu. */
+	/* FIXME: We want the laytout menu to be before the help menu. */
+ 	bonobo_ui_handler_menu_new_subtree
+		(ui_handler,
+		 MENU_PATH_LAYOUT_MENU,
+		 _("_Layout"),
+		 NULL, -1,
+		 BONOBO_UI_HANDLER_PIXMAP_NONE,
+		 NULL, 0, 0);
 	icon_view->details->updating_bonobo_radio_menu_item = TRUE;
-	bonobo_ui_handler_menu_new_radioitem (ui_handler,
-					      MENU_PATH_AUTO_LAYOUT,
-					      _("Auto Layout"),
-					      _("Keep icons sorted in rows and columns"),
-					      -1,
-					      0, 0,
-					      auto_layout_callback, view);
-	bonobo_ui_handler_menu_new_radioitem (ui_handler,
-					      MENU_PATH_MANUAL_LAYOUT,
-					      _("Manual Layout"),
-					      _("Leave icons wherever they are dropped"),
-					      -1,
-					      0, 0,
-					      manual_layout_callback, view);
+	bonobo_ui_handler_menu_new_radioitem
+		(ui_handler,
+		 MENU_PATH_MANUAL_LAYOUT,
+		 _("_Manual Layout"),
+		 _("Leave icons wherever they are dropped"),
+		 -1, 0, 0,
+		 manual_layout_callback, view);
+	bonobo_ui_handler_menu_new_separator
+		(ui_handler, MENU_PATH_LAYOUT_SEPARATOR, -1);
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
+		bonobo_ui_handler_menu_new_radioitem
+			(ui_handler,
+			 sort_criteria[i].menu_path,
+			 gettext (sort_criteria[i].menu_label),
+			 gettext (sort_criteria[i].menu_hint),
+			 -1, 0, 0,
+			 sort_callback, view);
+	}
 	icon_view->details->updating_bonobo_radio_menu_item = FALSE;
 
+	/* File menu. */
 	/* This menu item needs to go right after the Duplicate item that
 	 * fm-directory-view places in the File menu.
 	 */
-        bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_RENAME,
-                                         _("Rename"),
-                                         _("Rename selected item"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler,
-									 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
-                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
-                                         NULL,
-                                         0, 0,
-                                         (BonoboUIHandlerCallbackFunc) rename_icon_callback,
-                                         view);
+	position = bonobo_ui_handler_menu_get_pos
+		(ui_handler,
+		 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
+        bonobo_ui_handler_menu_new_item
+		(ui_handler,
+		 MENU_PATH_RENAME,
+		 _("Rename"),
+		 _("Rename selected item"),
+		 position,
+		 BONOBO_UI_HANDLER_PIXMAP_NONE,
+		 NULL, 0, 0,
+		 (BonoboUIHandlerCallbackFunc) rename_icon_callback, view);
 
         nautilus_file_list_free (selection);
 
@@ -759,7 +846,7 @@ update_one_menu_item (FMIconView *view,
 {
 	char *label;
 	gboolean sensitive;
-
+	
 	compute_menu_item_info (view, selection, menu_path, TRUE, &label, &sensitive);
 	bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
 	bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label);
@@ -776,8 +863,8 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 
         handler = fm_directory_view_get_bonobo_ui_handler (view);
         selection = fm_directory_view_get_selection (view);
-                
-        update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
+
+	update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
 			      MENU_PATH_STRETCH_ICON);
         update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
 			      MENU_PATH_UNSTRETCH_ICONS);
@@ -832,8 +919,8 @@ icon_container_compare_icons_callback (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (file_a));
 	g_assert (NAUTILUS_IS_FILE (file_b));
 
-	return nautilus_file_compare_for_sort (file_a, file_b,
-					       NAUTILUS_FILE_SORT_BY_NAME);
+	return nautilus_file_compare_for_sort
+		(file_a, file_b, icon_view->details->sort->sort_type);
 }
 
 static void
@@ -918,12 +1005,11 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	/* Store the new position of the icon in the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	if (!nautilus_icon_container_is_auto_layout (container)) {
-		position_string = g_strdup_printf ("%d,%d",
-						   position->x, position->y);
-		nautilus_file_set_metadata (file, 
-					    NAUTILUS_METADATA_KEY_ICON_POSITION, 
-					    NULL, 
-					    position_string);
+		position_string = g_strdup_printf
+			("%d,%d", position->x, position->y);
+		nautilus_file_set_metadata
+			(file, NAUTILUS_METADATA_KEY_ICON_POSITION, 
+			 NULL, position_string);
 	}
 
 	/* FIXME bugzilla.eazel.com 662: 
@@ -940,10 +1026,9 @@ icon_position_changed_callback (NautilusIconContainer *container,
 		g_free (scale_string_x);
 		g_free (scale_string_y);
 	}
-	nautilus_file_set_metadata (file,
-				    NAUTILUS_METADATA_KEY_ICON_SCALE,
-				    "1.00",
-				    scale_string);
+	nautilus_file_set_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_SCALE,
+		 "1.00", scale_string);
 
 	g_free (position_string);
 	g_free (scale_string);
@@ -967,22 +1052,22 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 		return;
 	}
 
-	/* Don't allow a rename with an empty string.  Revert to original 
-	without notifying user */
-	if (strlen (new_name) == 0) {
+	/* Don't allow a rename with an empty string. Revert to original 
+	 * without notifying user
+	 */
+	if (nautilus_strlen (new_name) == 0) {
 		return;
 	}
 	
 	rename_result = nautilus_file_rename (file, new_name);
-
 	if (rename_result == GNOME_VFS_OK) {
 		return;
 	}
 	
-	/* Rename failed. Notify user. */
+	/* Rename failed. Notify the user. */
 	original_name = nautilus_file_get_name (file);
-	fm_report_error_renaming_file (original_name, new_name, rename_result);
-	
+	fm_report_error_renaming_file
+		(original_name, new_name, rename_result);
 	g_free (original_name);
 }
 
@@ -1042,7 +1127,8 @@ get_icon_text_callback (NautilusIconContainer *container,
 		*editable_text = NULL;
 	} else {
 		/* Strip the suffix for nautilus object xml files. */
-		*editable_text = nautilus_link_get_display_name (nautilus_file_get_name (file));
+		*editable_text = nautilus_link_get_display_name
+			(nautilus_file_get_name (file));
 	}
 	
 	/* Handle link files specially. */
@@ -1060,7 +1146,8 @@ get_icon_text_callback (NautilusIconContainer *container,
 
 	/* Get the attributes. */
 	for (i = 0; text_array[i] != NULL; i++)	{
-		attribute_string = nautilus_file_get_string_attribute (file, text_array[i]);
+		attribute_string = nautilus_file_get_string_attribute
+			(file, text_array[i]);
 		
 		/* Unknown attributes get turned into blank lines (also note that
 		 * leaving a NULL in text_array would cause it to be incompletely
@@ -1084,7 +1171,8 @@ get_icon_text_callback (NautilusIconContainer *container,
 static void
 text_attribute_names_changed_callback (gpointer user_data)
 {
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (user_data)));	
+	nautilus_icon_container_request_update_all
+		(get_icon_container (FM_ICON_VIEW (user_data)));	
 }
 
 /* GtkObject methods. */
@@ -1106,7 +1194,6 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->can_zoom_in = fm_icon_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_icon_view_can_zoom_out;
 	fm_directory_view_class->clear = fm_icon_view_clear;
-	fm_directory_view_class->done_adding_files = fm_icon_view_done_adding_files;	
 	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
@@ -1128,10 +1215,11 @@ fm_icon_view_initialize (FMIconView *icon_view)
 
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	icon_view->details->sort = &sort_criteria[0];
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					   text_attribute_names_changed_callback,
-					   icon_view);
+	nautilus_preferences_add_callback
+		(NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+		 text_attribute_names_changed_callback, icon_view);
 	
 	icon_container = create_icon_container (icon_view);
 }
@@ -1208,7 +1296,8 @@ create_icon_container (FMIconView *icon_view)
 			    GTK_SIGNAL_FUNC (layout_changed_callback),
 			    directory_view);
 
-	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
+	gtk_container_add (GTK_CONTAINER (icon_view),
+			   GTK_WIDGET (icon_container));
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 

@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* nautilus-icon-container.c - Icon container widget.
 
    Copyright (C) 1999, 2000 Free Software Foundation
@@ -463,10 +464,11 @@ set_scroll_region (NautilusIconContainer *container)
 	scroll_height = MAX (content_height, allocation->height);
 
 	/* FIXME bugzilla.eazel.com 622: Why are we subtracting one from each dimension? */
-	nautilus_gnome_canvas_set_scroll_region (GNOME_CANVAS (container),
-						 x1, y1,
-						 x1 + scroll_width - 1,
-						 y1 + scroll_height - 1);
+	nautilus_gnome_canvas_set_scroll_region
+		(GNOME_CANVAS (container),
+		 x1, y1,
+		 x1 + scroll_width - 1,
+		 y1 + scroll_height - 1);
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
@@ -623,6 +625,7 @@ idle_handler (gpointer data)
 	details = container->details;
 
 	set_scroll_region (container);
+	relayout (container);
 
 	details->idle_id = 0;
 
@@ -712,7 +715,8 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		position.y = y;
 		position.scale_x = scale_x;
 		position.scale_y = scale_y;
-		gtk_signal_emit (GTK_OBJECT (container), signals[ICON_POSITION_CHANGED],
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[ICON_POSITION_CHANGED],
 				 icon->data, &position);
 	}
 	
@@ -739,8 +743,8 @@ rubberband_select (NautilusIconContainer *container,
 
 	/* As an optimization, ask the grid which icons intersect the rectangles. */
 	art_drect_union (&both_rects, previous_rect, current_rect);
-	icons = nautilus_icon_grid_get_intersecting_icons (container->details->grid,
-							   &both_rects);
+	icons = nautilus_icon_grid_get_intersecting_icons
+		(container->details->grid, &both_rects);
 	
 	for (p = icons; p != NULL; p = p->next) {
 		icon = p->data;
@@ -835,12 +839,11 @@ rubberband_timeout_callback (gpointer data)
 		y2 = world_y;
 	}
 
-	gnome_canvas_item_set (band_info->selection_rectangle,
-			       "x1", x1,
-			       "y1", y1,
-			       "x2", x2,
-			       "y2", y2,
-			       NULL);
+	gnome_canvas_item_set
+		(band_info->selection_rectangle,
+		 "x1", x1, "y1", y1,
+		 "x2", x2, "y2", y2,
+		 NULL);
 
 	selection_rect.x0 = x1;
 	selection_rect.y0 = y1;
@@ -879,23 +882,24 @@ start_rubberbanding (NautilusIconContainer *container,
 		icon->was_selected_before_rubberband = icon->is_selected;
 	}
 
-	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      event->x, event->y,
-				      &band_info->start_x, &band_info->start_y);
+	gnome_canvas_window_to_world
+		(GNOME_CANVAS (container),
+		 event->x, event->y,
+		 &band_info->start_x, &band_info->start_y);
 
-	band_info->selection_rectangle
-		= gnome_canvas_item_new (gnome_canvas_root
-					 (GNOME_CANVAS (container)),
-					 gnome_canvas_rect_get_type (),
-					 "x1", band_info->start_x,
-					 "y1", band_info->start_y,
-					 "x2", band_info->start_x,
-					 "y2", band_info->start_y,
-					 "fill_color", "lightblue",
-					 "fill_stipple", stipple,
-					 "outline_color", "lightblue",
-					 "width_pixels", 1,
-					 NULL);
+	band_info->selection_rectangle = gnome_canvas_item_new
+		(gnome_canvas_root
+		 (GNOME_CANVAS (container)),
+		 gnome_canvas_rect_get_type (),
+		 "x1", band_info->start_x,
+		 "y1", band_info->start_y,
+		 "x2", band_info->start_x,
+		 "y2", band_info->start_y,
+		 "fill_color", "lightblue",
+		 "fill_stipple", stipple,
+		 "outline_color", "lightblue",
+		 "width_pixels", 1,
+		 NULL);
 
 	band_info->prev_x = event->x;
 	band_info->prev_y = event->y;
@@ -903,9 +907,10 @@ start_rubberbanding (NautilusIconContainer *container,
 	band_info->active = TRUE;
 
 	if (band_info->timer_id == 0) {
-		band_info->timer_id = gtk_timeout_add (RUBBERBAND_TIMEOUT_INTERVAL,
-						       rubberband_timeout_callback,
-						       container);
+		band_info->timer_id = gtk_timeout_add
+			(RUBBERBAND_TIMEOUT_INTERVAL,
+			 rubberband_timeout_callback,
+			 container);
 	}
 
 	gnome_canvas_item_grab (band_info->selection_rectangle,
@@ -1300,13 +1305,16 @@ record_arrow_key_start (NautilusIconContainer *container,
 		return;
 	}
 
-	nautilus_icon_canvas_item_get_icon_rectangle (icon->item,
-							  &world_rect);
-	gnome_canvas_w2c (GNOME_CANVAS (container),
-			  (world_rect.x0 + world_rect.x1) / 2,
-			  (world_rect.y0 + world_rect.y1) / 2,
-			  arrow_key_axis == AXIS_VERTICAL ? &container->details->arrow_key_start : NULL,
-			  arrow_key_axis == AXIS_HORIZONTAL ? &container->details->arrow_key_start : NULL);
+	nautilus_icon_canvas_item_get_icon_rectangle
+		(icon->item, &world_rect);
+	gnome_canvas_w2c
+		(GNOME_CANVAS (container),
+		 (world_rect.x0 + world_rect.x1) / 2,
+		 (world_rect.y0 + world_rect.y1) / 2,
+		 arrow_key_axis == AXIS_VERTICAL
+		 ? &container->details->arrow_key_start : NULL,
+		 arrow_key_axis == AXIS_HORIZONTAL
+		 ? &container->details->arrow_key_start : NULL);
 	container->details->arrow_key_axis = arrow_key_axis;
 }
 
@@ -1328,10 +1336,9 @@ keyboard_arrow_key (NautilusIconContainer *container,
 	icon = container->details->keyboard_focus;
 	if (icon == NULL) {
 		if (has_multiple_selection (container)) {
-			icon = find_best_selected_icon (container,
-							NULL,
-							better_start,
-							NULL);
+			icon = find_best_selected_icon
+				(container, NULL,
+				 better_start, NULL);
 		} else {
 			icon = get_first_selected_icon (container);
 		}
@@ -1342,16 +1349,14 @@ keyboard_arrow_key (NautilusIconContainer *container,
 	 */
 	if (icon == NULL) {
 		container->details->arrow_key_axis = AXIS_NONE;
-		icon = find_best_icon (container,
-				       NULL,
-				       empty_start,
-				       NULL);
+		icon = find_best_icon
+			(container, NULL,
+			 empty_start, NULL);
 	} else {
 		record_arrow_key_start (container, icon, axis);
-		icon = find_best_icon (container,
-				       icon,
-				       better_destination,
-				       NULL);
+		icon = find_best_icon
+			(container, icon,
+			 better_destination, NULL);
 	}
 
 	keyboard_move_to (container, icon, event);
@@ -1675,8 +1680,9 @@ realize (GtkWidget *widget)
 	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
 	gtk_widget_set_style (widget, style);
 
-	gdk_window_set_background (GTK_LAYOUT (widget)->bin_window,
-				   & widget->style->bg [GTK_STATE_NORMAL]);
+	gdk_window_set_background
+		(GTK_LAYOUT (widget)->bin_window,
+		 &widget->style->bg[GTK_STATE_NORMAL]);
 
  	/* make us the focused widget */
  	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
@@ -1944,9 +1950,10 @@ motion_notify_event (GtkWidget *widget,
 				break;
 			}
 
-			gnome_canvas_window_to_world (GNOME_CANVAS (container),
-						      motion->x, motion->y,
-						      &world_x, &world_y);
+			gnome_canvas_window_to_world
+				(GNOME_CANVAS (container),
+				 motion->x, motion->y,
+				 &world_x, &world_y);
 			
 			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
 			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
@@ -2034,8 +2041,9 @@ nautilus_icon_container_handle_typeahead (NautilusIconContainer *container, cons
 	}
 
 	if (container->details->type_select_state->type_select_pattern != NULL) {
-		new_pattern = g_strconcat (container->details->type_select_state->type_select_pattern,
-					   key_string, NULL);
+		new_pattern = g_strconcat
+			(container->details->type_select_state->type_select_pattern,
+			 key_string, NULL);
 		g_free (container->details->type_select_state->type_select_pattern);
 	} else {
 		new_pattern = g_strdup (key_string);
@@ -2377,6 +2385,7 @@ static void
 nautilus_icon_container_initialize (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
+	int mode;
 
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
@@ -2403,24 +2412,28 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	request_idle (container);
 
 	/* Make sure that we find out if the theme changes. */
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "icons_changed",
-					       nautilus_icon_container_request_update_all,
-					       GTK_OBJECT (container));	
+	gtk_signal_connect_object_while_alive
+		(nautilus_icon_factory_get (),
+		 "icons_changed",
+		 nautilus_icon_container_request_update_all,
+		 GTK_OBJECT (container));	
 
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;
 	container->details->type_select_state = NULL;
 
 	/* Initialize the single click mode from preferences */
-	details->single_click_mode = 
-		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
+	mode = nautilus_preferences_get_enum
+		(NAUTILUS_PREFERENCES_CLICK_POLICY,
+		 NAUTILUS_CLICK_POLICY_SINGLE);
+	details->single_click_mode =
+		mode == NAUTILUS_CLICK_POLICY_SINGLE;
 
 	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						click_policy_changed_callback,
-						container);
+	nautilus_preferences_add_enum_callback
+		(NAUTILUS_PREFERENCES_CLICK_POLICY,
+		 click_policy_changed_callback,
+		 container);
 }
 
 
@@ -2441,7 +2454,8 @@ handle_icon_button_press (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 
-	if (event->button != DRAG_BUTTON && event->button != CONTEXTUAL_MENU_BUTTON) {
+	if (event->button != DRAG_BUTTON
+	    && event->button != CONTEXTUAL_MENU_BUTTON) {
 		return TRUE;
 	}
 
@@ -3531,14 +3545,17 @@ static void
 click_policy_changed_callback (gpointer user_data)
 {
 	NautilusIconContainer *container;
+	int mode;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (user_data));
 	
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 
+	mode = nautilus_preferences_get_enum
+		(NAUTILUS_PREFERENCES_CLICK_POLICY,
+		 NAUTILUS_CLICK_POLICY_SINGLE);
 	container->details->single_click_mode =
-		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
+		mode == NAUTILUS_CLICK_POLICY_SINGLE;
 }
 
 gboolean
