@@ -971,20 +971,20 @@ report_unusual_errors (const PackageData *pack, EazelInstaller *installer)
 
 static void
 collect_failure_info (EazelInstall *service,
-		      const PackageData *pd,
+		      PackageData *pd,
 		      EazelInstaller *installer,
 		      gboolean uninstall)
 {
 	GList *failure_info_addition;
 
 	eazel_install_problem_tree_to_case (installer->problem,
-					    PACKAGEDATA (pd),
+					    pd,
 					    uninstall,
 					    &(installer->problems));
 	if (!installer->failure_info || 1) {
 		/* could be multiple toplevel packages */
 		failure_info_addition = eazel_install_problem_tree_to_string (installer->problem,
-									      PACKAGEDATA (pd),
+									      pd,
 									      uninstall);
 		if (installer->failure_info) {
 			installer->failure_info = g_list_concat (installer->failure_info, 
@@ -1001,7 +1001,7 @@ collect_failure_info (EazelInstall *service,
 
 static void
 install_failed (EazelInstall *service,
-		const PackageData *pd,
+		PackageData *pd,
 		EazelInstaller *installer)
 {
 	g_message ("INSTALL FAILED.");
@@ -1013,7 +1013,7 @@ install_failed (EazelInstall *service,
 
 static void
 uninstall_failed (EazelInstall *service,
-		  const PackageData *pd,
+		  PackageData *pd,
 		  EazelInstaller *installer)
 {
 	g_message ("UNINSTALL FAILED.");
@@ -1529,7 +1529,7 @@ eazel_installer_do_install (EazelInstaller *installer,
 		installer->uninstalling = FALSE;
 		eazel_install_set_uninstall (installer->service, FALSE);
 		eazel_install_set_force (installer->service, FALSE);		
-		eazel_install_set_update (installer->service, TRUE);		
+		eazel_install_set_upgrade (installer->service, TRUE);		
 		eazel_install_install_packages (installer->service, categories_copy, NULL);
 	}
 	/* now free this copy */
@@ -2083,7 +2083,7 @@ eazel_installer_initialize (EazelInstaller *object)
 					       "test", installer->test ? TRUE : FALSE, 
 					       "force", installer_force ? TRUE : FALSE,
 					       "depend", FALSE,
-					       "update", TRUE,
+					       "upgrade", TRUE,
 					       "uninstall", FALSE,
 					       "downgrade", TRUE,
 					       "protocol", installer_local ? PROTOCOL_LOCAL: PROTOCOL_HTTP,

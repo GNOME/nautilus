@@ -259,18 +259,18 @@ impl_Eazel_Install__get_auth (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 }
 
 static void
-impl_Eazel_Install__set_update (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+impl_Eazel_Install__set_upgrade (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 				const CORBA_boolean value,
 				CORBA_Environment *ev)
 {
-	eazel_install_set_update (servant->object, value);
+	eazel_install_set_upgrade (servant->object, value);
 }
 
 static CORBA_boolean
-impl_Eazel_Install__get_update (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+impl_Eazel_Install__get_upgrade (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 				CORBA_Environment *ev)
 {
-	return eazel_install_get_update (servant->object);
+	return eazel_install_get_upgrade (servant->object);
 }
 
 static void
@@ -531,8 +531,8 @@ eazel_install_get_epv ()
 	epv->_set_auth = (gpointer)&impl_Eazel_Install__set_auth;
 	epv->_get_auth = (gpointer)&impl_Eazel_Install__get_auth;
 
-	epv->_set_update = (gpointer)&impl_Eazel_Install__set_update;
-	epv->_get_update = (gpointer)&impl_Eazel_Install__get_update;
+	epv->_set_upgrade = (gpointer)&impl_Eazel_Install__set_upgrade;
+	epv->_get_upgrade = (gpointer)&impl_Eazel_Install__get_upgrade;
 
 	epv->_set_downgrade = (gpointer)&impl_Eazel_Install__set_downgrade;
 	epv->_get_downgrade = (gpointer)&impl_Eazel_Install__get_downgrade;

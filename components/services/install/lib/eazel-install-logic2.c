@@ -89,7 +89,7 @@ dump_tree_helper (GList *packages, char *indent, GList *path, GList **touched)
 					 pack, 
 					 name, 
 					 pack->eazel_id,
-					 (pack->fillflag & MUST_HAVE) ? "filled" : 
+					 (pack->fillflag == MUST_HAVE) ? "filled" : 
 					     (pack->suite_id != NULL) ? "suite" : "not filled",
 					 (pack->status == PACKAGE_CANNOT_OPEN) ? " but failed" : "",
 					 packagedata_status_enum_to_str (pack->status),
@@ -393,6 +393,13 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			res = eazel_package_system_compare_version (service->private->package_system,
 								    pack->version, 
 								    survivor->version);
+
+			if (survivor->epoch > 0) {
+				g_warning ("modified package has epoch %d, new package has %d",
+					   survivor->epoch,
+					   pack->epoch);
+				eazel_install_set_force (service, TRUE);
+			}
 			
 			/* check against minor version */
 			if (res==0) {
@@ -592,7 +599,7 @@ get_softcat_info (EazelInstall *service,
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
 
-	if ((*package)->fillflag & MUST_HAVE) {
+	if ((*package)->fillflag == MUST_HAVE) {
 		/* Package is already filled, set result to OK and toggle packages status */
 		result = SOFTCAT_HIT_OK;
 		(*package)->status = PACKAGE_PARTLY_RESOLVED;
@@ -671,7 +678,7 @@ get_softcat_info (EazelInstall *service,
 				add_to_dedupe_hash (service, *package);
 				break;
 			case EAZEL_INSTALL_STATUS_UPGRADES:
-				if (eazel_install_get_update (service)) {
+				if (eazel_install_get_upgrade (service)) {
 					add_to_dedupe_hash (service, *package);
 				} else {
 					fail_modified_packages (service, *package);
@@ -851,7 +858,7 @@ is_satisfied (EazelInstall *service,
 	   this checks that the package isn't already filled, but what if
 	   it is, but later fails, will we loose a dependency ? */
 	/* First check if we've already downloaded the package */
-	if (dep->package->fillflag & MUST_HAVE) {
+	if (dep->package->fillflag == MUST_HAVE) {
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("is_satisfied? %p %s", 
 				 dep->package, dep->package->name);
@@ -1365,7 +1372,7 @@ check_tree_helper (EazelInstall *service,
 	trilobite_debug ("-> check_tree_for_conflicts_helper");
 #endif
 	if (pack->status == PACKAGE_FILE_CONFLICT) {
-		if (eazel_install_get_update (service)==FALSE) {
+		if (eazel_install_get_upgrade (service)==FALSE) {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("cannot revive %s, update not allowed", pack->name);
 #endif			
@@ -1929,6 +1936,8 @@ do_file_conflict_check (EazelInstall *service,
 			GList **packages,
 			GList **extra_packages)
 {
+	g_assert (extra_packages);
+
 	/* Check that no two packages in the work set provides the 
 	   same files */
 	check_no_two_packages_has_same_file (service, *packages);
@@ -1943,7 +1952,7 @@ do_file_conflict_check (EazelInstall *service,
 	/* If packages were revived (added to extra_packages,
 	   exit and we'll be recursed, otherwise check
 	   feature consistency */
-	if (extra_packages && (*extra_packages==NULL)) {
+	if (*extra_packages==NULL) {
 		check_feature_consistency (service, *packages);
 		prune_failed_packages (service, packages);
 	} else {
@@ -2105,6 +2114,18 @@ execute (EazelInstall *service,
 
 	if (eazel_install_get_test (service)) {
 		flags |= EAZEL_PACKAGE_SYSTEM_OPERATION_TEST;
+	}
+
+	if (eazel_install_get_force (service)) {
+		flags |= EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
+	}
+
+	if (eazel_install_get_downgrade (service)) {
+		flags |= EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE;
+	}
+
+	if (eazel_install_get_upgrade (service)) {
+		flags |= EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE;
 	}
 
 	eazel_install_init_transaction (service);
@@ -2551,7 +2572,7 @@ install_packages (EazelInstall *service, GList *categories)
 #endif	
 	if (packages) {
 		if (eazel_install_emit_preflight_check (service, packages)) {
-			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE;
+			int flags = 0;
 			gboolean go_ahead = TRUE;
 			
 #if EI2_DEBUG & 0x4
@@ -2646,7 +2667,7 @@ revert_transaction (EazelInstall *service,
 	if (uninst) {
 		eazel_install_set_uninstall (service, TRUE);
 		eazel_install_set_downgrade (service, FALSE);
-		eazel_install_set_update (service, FALSE);
+		eazel_install_set_upgrade (service, FALSE);
 		cat->packages = uninst;
 		if (uninstall_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
 			result = EAZEL_INSTALL_REVERSION_OK;
@@ -2655,7 +2676,7 @@ revert_transaction (EazelInstall *service,
 	if (inst) {
 		eazel_install_set_uninstall (service, FALSE);
 		eazel_install_set_downgrade (service, FALSE);
-		eazel_install_set_update (service, FALSE);
+		eazel_install_set_upgrade (service, FALSE);
 		cat->packages = inst;
 		if (install_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
 			result = EAZEL_INSTALL_REVERSION_OK;
@@ -2664,7 +2685,7 @@ revert_transaction (EazelInstall *service,
 	if (downgrade) {
 		eazel_install_set_uninstall (service, FALSE);
 		eazel_install_set_downgrade (service, TRUE);
-		eazel_install_set_update (service, FALSE);
+		eazel_install_set_upgrade (service, FALSE);
 		cat->packages = downgrade;
 		if (install_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
 			result = EAZEL_INSTALL_REVERSION_OK;
@@ -2673,7 +2694,7 @@ revert_transaction (EazelInstall *service,
 	if (upgrade) {
 		eazel_install_set_uninstall (service, FALSE);
 		eazel_install_set_downgrade (service, TRUE);
-		eazel_install_set_update (service, TRUE);
+		eazel_install_set_upgrade (service, TRUE);
 		cat->packages = upgrade;
 		if (install_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
 			result = EAZEL_INSTALL_REVERSION_OK;

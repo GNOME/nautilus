@@ -163,7 +163,7 @@ void eazel_install_problem_step (EazelInstallProblem *problem);
 /* This returns a GList<EazelInstallProblemCase> list containing the 
    encountered problems in the given PackageData tree */
 void eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
-					 const PackageData *pack,
+					 PackageData *pack,
 					 gboolean uninstall,
 					 GList **output);
 

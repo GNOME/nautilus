@@ -1001,8 +1001,8 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			    (*requires_name[index]=='/')) {
 				package->features = g_list_prepend (package->features, 
 								    g_strdup (requires_name[index]));
-			} else if ((strncmp (requires_name[index], "ld-linux.so", 11) != 0) ||
-				   (strncmp (requires_name[index], "rpmlib(", 7) != 0)) { 
+			} else if ((strncmp (requires_name[index], "ld-linux.so", 11) == 0) ||
+				   (strncmp (requires_name[index], "rpmlib(", 7) == 0)) { 
 				/* foo */
 			} else {
 				/* Otherwise, add as a package name */
@@ -1408,8 +1408,8 @@ display_arguments (EazelPackageSystemRpm3 *system,
 		tmp = g_strdup_printf ("%s %s", str, (char*)iterator->data);
 		g_free (str);
 		str = tmp;
-		/* Since there is a mex lenght on g_message output ... */
-		if (strlen (str) > 1000) {
+		/* Since there is a max length on g_message output ... */
+		if (strlen (str) > 600) {
 			info (system, "%s", str);
 			g_free (str);
 			str = g_strdup ("");

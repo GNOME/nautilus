@@ -227,8 +227,8 @@ module Trilobite {
 			attribute boolean silent;      /* Minimal log output */
 			attribute boolean test_mode;   /* dry run, do not install, but act as if... */
 			attribute boolean force;       /* force install specified package (DANGER WILL ROBINSON) */
-			attribute boolean update;      /* enable update (default is FALSE) */
-			attribute boolean downgrade;   /* enable update (default is FALSE) */
+			attribute boolean upgrade;     /* enable upgrade (default is FALSE) */
+			attribute boolean downgrade;   /* enable downgrade (default is FALSE) */
 			attribute string package_list; /* Local package list to use, rather then download 
 							  from server */
 

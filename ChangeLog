@@ -1,3 +1,76 @@
+2001-02-23  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	This patch removes the const on PackageData objects in the
+	callbacks. The const was needed back when the objects were new'ed
+	and deleted, but now that they're refcounted, the signalemitter in
+	eazel-install-corba-callback.c can just unref and the signal
+	handler can get a non-const object. And since the objects are
+	created on the fly, the signal handler can cause any harm.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line), (tree_helper_helper),
+	(tree_helper), (something_failed), (eazel_preflight_check_signal),
+	(main):
+	Removed const of packagedata objects in handlers.
+	s/update/upgrade/
+	Added a GList** param too tree_helper to check for recursiveness.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	s/update/upgrade/
+	
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install__set_upgrade),
+	(impl_Eazel_Install__get_upgrade), (eazel_install_get_epv):
+	s/update/upgrade/
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(eazel_install_check_existing_packages), (get_softcat_info),
+	(check_tree_helper), (do_file_conflict_check), (execute),
+	(install_packages), (revert_transaction):
+	s/update/upgrade/
+	Removed const of packagedata objects in handlers.
+	If modifying a package which has an epoch set, set force to TRUE.
+	Fixed a bad boolean bug in get_info, where I did a & comparsion
+	and not a ==, which caused packages added due to conflicts to not
+	get dependency checked.
+	Correctly use service object upgrade/downgrade flags.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_new_with_config), (eazel_install_install_packages):
+	s/update/upgrade/
+
+	* components/services/install/lib/eazel-install-problem.h:
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_cases_foreach), (eazel_install_problem_tree_to_case),
+	(eazel_install_problem_handle_cases):
+	Fixed a g_message in the circular dep case.
+	Fixed constness of PackageData objects
+
+	* components/services/install/lib/eazel-install-public.h:
+	s/update/upgrade/
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(display_arguments):
+	One more time, the rpmlib(...) check
+	Fixed display_arguments truncation
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_dump_int):
+	Nicer output of Epoch
+	
+	* components/services/install/nautilus-view/callbacks.c:
+	(nautilus_service_install_failed):
+	* components/services/install/nautilus-view/callbacks.h:
+	* nautilus-installer/src/installer.c: (collect_failure_info),
+	(install_failed), (uninstall_failed), (eazel_installer_do_install),
+	(eazel_installer_initialize):
+	Removed const of packagedata objects in handlers.
+	s/update/upgrade/
+
 2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

@@ -405,7 +405,9 @@ nautilus_service_install_progress (EazelInstallCallback *cb, const PackageData *
 }
 
 void
-nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *package, NautilusServiceInstallView *view)
+nautilus_service_install_failed (EazelInstallCallback *cb, 
+				 PackageData *package, 
+				 NautilusServiceInstallView *view)
 {
 	char *tmp, *message;
 

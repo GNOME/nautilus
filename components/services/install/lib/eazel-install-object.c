@@ -81,7 +81,7 @@ enum {
 	ARG_TEST,	
 	ARG_FORCE,
 	ARG_DEPEND,
-	ARG_UPDATE,
+	ARG_UPGRADE,
 	ARG_UNINSTALL,
 	ARG_DOWNGRADE,
 	ARG_PROTOCOL,
@@ -385,8 +385,8 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_DEPEND:
 		eazel_install_set_depend (service, GTK_VALUE_BOOL(*arg));
 		break;
-	case ARG_UPDATE:
-		eazel_install_set_update (service, GTK_VALUE_BOOL(*arg));
+	case ARG_UPGRADE:
+		eazel_install_set_upgrade (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_UNINSTALL:
 		eazel_install_set_uninstall (service, GTK_VALUE_BOOL(*arg));
@@ -608,10 +608,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_DEPEND);
-	gtk_object_add_arg_type ("EazelInstall::update",
+	gtk_object_add_arg_type ("EazelInstall::upgrade",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
-				 ARG_UPDATE);
+				 ARG_UPGRADE);
 	gtk_object_add_arg_type ("EazelInstall::uninstall",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
@@ -822,7 +822,7 @@ eazel_install_new_with_config (void)
 						 "test", iopts->mode_test,
 						 "force", iopts->mode_force,
 						 "depend", iopts->mode_depend,
-						 "update", iopts->mode_update,
+						 "upgrade", iopts->mode_update,
 						 "uninstall", iopts->mode_uninstall,
 						 "downgrade", iopts->mode_downgrade,
 						 "protocol", iopts->protocol,
@@ -1175,8 +1175,8 @@ eazel_install_install_packages (EazelInstall *service,
 	trilobite_debug ("eazel_install_install_packages (..., %d cats, %s)", 
 			 g_list_length (categories),
 			 root);
-	trilobite_debug ("eazel_install_install_packages (update = %d, downgrade = %d, force = %d)",
-			 eazel_install_get_update (service),
+	trilobite_debug ("eazel_install_install_packages (upgrade = %d, downgrade = %d, force = %d)",
+			 eazel_install_get_upgrade (service),
 			 eazel_install_get_downgrade (service),
 			 eazel_install_get_force (service));
 
@@ -2060,7 +2060,7 @@ ei_mutator_impl (silent, gboolean, iopts->mode_silent);
 ei_mutator_impl (test, gboolean, iopts->mode_test);
 ei_mutator_impl (force, gboolean, iopts->mode_force);
 ei_mutator_impl (depend, gboolean, iopts->mode_depend);
-ei_mutator_impl (update, gboolean, iopts->mode_update);
+ei_mutator_impl (upgrade, gboolean, iopts->mode_update);
 ei_mutator_impl (uninstall, gboolean, iopts->mode_uninstall);
 ei_mutator_impl (downgrade, gboolean, iopts->mode_downgrade);
 ei_mutator_impl (protocol, URLType, iopts->protocol);
@@ -2079,7 +2079,7 @@ ei_access_impl (debug, gboolean, iopts->mode_debug, FALSE);
 ei_access_impl (test, gboolean, iopts->mode_test, FALSE);
 ei_access_impl (force, gboolean, iopts->mode_force, FALSE);
 ei_access_impl (depend, gboolean, iopts->mode_depend, FALSE);
-ei_access_impl (update, gboolean, iopts->mode_update, FALSE);
+ei_access_impl (upgrade, gboolean, iopts->mode_update, FALSE);
 ei_access_impl (uninstall, gboolean, iopts->mode_uninstall, FALSE);
 ei_access_impl (downgrade, gboolean, iopts->mode_downgrade, FALSE);
 ei_access_impl (protocol, URLType , iopts->protocol, PROTOCOL_LOCAL);

@@ -45,9 +45,12 @@ void nautilus_service_install_progress (EazelInstallCallback *cb, const PackageD
                                         int package_progress, int package_total,
                                         int total_progress, int total_total,
                                         NautilusServiceInstallView *view);
-void nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *package,
+void nautilus_service_install_failed (EazelInstallCallback *cb, 
+				      PackageData *package,
                                       NautilusServiceInstallView *view);
-void nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, NautilusServiceInstallView *view);
+void nautilus_service_install_done (EazelInstallCallback *cb, 
+				    gboolean success, 
+				    NautilusServiceInstallView *view);
 
 
 #endif	/* _CALLBACKS_H_ */

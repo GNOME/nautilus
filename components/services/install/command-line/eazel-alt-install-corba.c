@@ -136,11 +136,12 @@ static const struct poptOption options[] = {
 };
 
 static void tree_helper (EazelInstallCallback *service,
-			 const PackageData *pd,		
+			 PackageData *pd,		
 			 gchar *indent,
 			 gchar *indent_type,
 			 int indent_level,
-			 char *title);
+			 char *title,
+			 GList **seen);
 
 #define check_ev(s)                                                \
 if (ev._major!=CORBA_NO_EXCEPTION) {                               \
@@ -182,8 +183,8 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 			exit (1);
 	}
 	if (arg_upgrade) {
-		GNOME_Trilobite_Eazel_Install__set_update (service, TRUE, &ev);
-		check_ev ("update");
+		GNOME_Trilobite_Eazel_Install__set_upgrade (service, TRUE, &ev);
+		check_ev ("upgrade");
 	}
 	if (arg_downgrade) {
 		GNOME_Trilobite_Eazel_Install__set_downgrade (service, TRUE, &ev);
@@ -456,7 +457,8 @@ tree_helper_helper(EazelInstallCallback *service,
 		   gchar *indent_type,
 		   int indent_level,
 		   GList *iterator,
-		   GList *next_list) 
+		   GList *next_list,
+		   GList **seen)
 {
 	PackageData *pack;
 	char *indent2;
@@ -488,23 +490,30 @@ tree_helper_helper(EazelInstallCallback *service,
 		*indent_type = '\\';
 	}
 	
-	indent2 = g_strdup_printf ("%s%s%c", indent, extra_space ? extra_space : "", indenter);
-	tree_helper (service, pack, indent2, indent_type, indent_level, NULL);
-	g_free (indent2);
+	if (g_list_find (*seen, iterator)==NULL) { 		
+		indent2 = g_strdup_printf ("%s%s%c", indent, extra_space ? extra_space : "", indenter);
+		tree_helper (service, pack, indent2, indent_type, indent_level, NULL, seen);
+		g_free (indent2);
+		(*seen) = g_list_prepend (*seen, iterator);
+	}
 	g_free (extra_space);	
 }
 
 
 static void
 tree_helper (EazelInstallCallback *service,
-	     const PackageData *pd,		
+	     PackageData *pd,		
 	     gchar *indent,
 	     gchar *indent_type,
 	     int indent_level,
-	     char *title)
+	     char *title,
+	     GList **seen)
 {
 	char *readable_name;
 	GList *iterator;
+
+	if (g_list_find (*seen, pd)) { return; }
+	(*seen) = g_list_prepend (*seen, pd);
 
 	if (title && pd->toplevel) {
 		fprintf (stdout, title);
@@ -522,19 +531,19 @@ tree_helper (EazelInstallCallback *service,
 		char *tmp;
 		tmp = g_strdup ("-d-");
 		tree_helper_helper (service, indent, tmp, indent_level, iterator, 
-				    pd->breaks ? pd->breaks : pd->modifies);
+				    pd->breaks ? pd->breaks : pd->modifies, seen);
 		g_free (tmp);
 	}
 	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
 		char *tmp;
 		tmp = g_strdup ("-b-");
-		tree_helper_helper (service, indent, tmp, indent_level, iterator, pd->modifies);
+		tree_helper_helper (service, indent, tmp, indent_level, iterator, pd->modifies, seen);
 		g_free (tmp);
 	}
 	for (iterator = pd->modifies; iterator; iterator = iterator->next) {			
 		char *tmp;
 		tmp = g_strdup ("-m-");
-		tree_helper_helper (service, indent, tmp, indent_level, iterator, NULL);
+		tree_helper_helper (service, indent, tmp, indent_level, iterator, NULL, seen);
 		g_free (tmp);
 	}
 }
@@ -563,7 +572,9 @@ something_failed (EazelInstallCallback *service,
 	}
 
 	if (arg_debug) {
-		tree_helper (service, pd, "", "", 4, title);
+		GList *seen = NULL;
+		tree_helper (service, pd, "", "", 4, title, &seen);
+		g_list_free (seen);
 		fprintf (stdout, "\n");
 	} else {
 		fprintf (stdout, "%s", title);
@@ -655,7 +666,9 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		PackageData *pack = (PackageData*)iterator->data;
 		if (arg_debug ) {
-			tree_helper (service, pack, "", "", 4, NULL);
+			GList *seen = NULL;
+			tree_helper (service, pack, "", "", 4, NULL, &seen);
+			g_list_free (seen);
 		} else {
 			char *name = packagedata_get_readable_name (pack);
 			if (pack->depends) {
@@ -1044,7 +1057,7 @@ int main(int argc, char *argv[]) {
 	CORBA_exception_free (&ev);
 
 	if (arg_debug) {
-		g_message ("cli_result = %d", cli_result);
+		printf ("exit code %d\n", cli_result);
 	}
        
 	return cli_result;
