@@ -23,14 +23,14 @@ libntl_file_manager_la_SOURCES=	\
 	dfos-xfer.h			\
 	dfos.c				\
 	dfos.h				\
-	fm-directory-view-icons.c	\
-	fm-directory-view-icons.h	\
-	fm-directory-view-list.c	\
-	fm-directory-view-list.h	\
 	fm-directory-view.c		\
 	fm-directory-view.h		\
 	fm-icon-text-window.c		\
 	fm-icon-text-window.h		\
+	fm-icon-view.c			\
+	fm-icon-view.h			\
+	fm-list-view.c			\
+	fm-list-view.h			\
 	fm-properties-window.c		\
 	fm-properties-window.h		
 

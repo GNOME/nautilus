@@ -28,8 +28,6 @@ BUILT_SOURCES=$(nautilus_idl_sources)
 libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	bonobo-stream-vfs.h			\
-	gnome-icon-container.h			\
-	gtkflist.h				\
 	gtkscrollframe.h			\
 	libnautilus.h				\
 	nautilus-alloc.h			\
@@ -45,9 +43,10 @@ libnautilusinclude_HEADERS=			\
 	nautilus-global-preferences.h		\
 	nautilus-gnome-extensions.h		\
 	nautilus-gtk-extensions.h		\
+	nautilus-icon-container.h		\
 	nautilus-icon-factory.h			\
-	nautilus-icons-view-icon-item.h         \
-        nautilus-list-column-title.h		\
+	nautilus-list-column-title.h		\
+	nautilus-list.h                         \
 	nautilus-metadata.h			\
 	nautilus-mime-type.h			\
 	nautilus-self-checks.h			\
@@ -63,10 +62,6 @@ libnautilusinclude_HEADERS=			\
 
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	bonobo-stream-vfs.c			\
-	gnome-icon-container.c			\
-	gnome-icon-container-dnd.c		\
-	gnome-icon-container-grid.c		\
-	gtkflist.c				\
 	gtkscrollframe.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
@@ -83,10 +78,14 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-global-preferences.c		\
 	nautilus-gnome-extensions.c		\
 	nautilus-gtk-extensions.c		\
+	nautilus-icon-canvas-item.c       	\
+	nautilus-icon-container.c		\
+	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
-	nautilus-icons-view-icon-item.c         \
+	nautilus-icon-grid.c			\
 	nautilus-lib-self-check-functions.c	\
-        nautilus-list-column-title.c		\
+	nautilus-list-column-title.c		\
+	nautilus-list.c                         \
 	nautilus-mime-type.c			\
 	nautilus-self-checks.c			\
 	nautilus-string-list.c			\

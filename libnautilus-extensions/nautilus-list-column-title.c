@@ -23,12 +23,13 @@
 
 */
 
+#include <config.h>
 #include "nautilus-list-column-title.h"
+
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gdk-extensions.h"
 
-/* for now we need to know about GtkFList */
-#include "gtkflist.h"
+#include "nautilus-list.h"
 
 #include <gdk/gdk.h>
 #include <gtk/gtkclist.h>
@@ -679,8 +680,8 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 	int mouse_x, mouse_y;
 	gboolean title_update_needed;
 	
-	g_assert (GTK_FLIST (widget->parent) != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
+	g_assert (NAUTILUS_IS_LIST (widget->parent));
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 	parent_list = GTK_WIDGET (widget->parent);
@@ -693,7 +694,7 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 		if (column_title->details->last_tracking_x != mouse_x) {
 			/* mouse did move horizontally since last time */
 			column_title->details->last_tracking_x = mouse_x;
-			(GTK_FLIST_CLASS (NAUTILUS_KLASS (parent_list)))->
+			(NAUTILUS_LIST_CLASS (NAUTILUS_KLASS (parent_list)))->
 				column_resize_track (parent_list, 
 					column_title->details->tracking_column_resize);
 			title_update_needed = TRUE;
@@ -719,8 +720,8 @@ nautilus_list_column_title_leave (GtkWidget *widget, GdkEventCrossing *event)
 {
 	NautilusListColumnTitle *column_title;
 
-	g_assert (GTK_FLIST (widget->parent) != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
+	g_assert (NAUTILUS_IS_LIST (widget->parent));
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 
@@ -741,8 +742,8 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 	GtkWidget *parent_list;
 
 	g_assert (event != NULL);
-	g_assert (GTK_FLIST (widget->parent) != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
+	g_assert (NAUTILUS_IS_LIST (widget->parent));
 	g_assert (NAUTILUS_LIST_COLUMN_TITLE(widget)->details->tracking_column_resize == -1);
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
@@ -792,7 +793,7 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 			gtk_widget_set_state (widget, GTK_STATE_NORMAL);
 
 			/* start column resize tracking */
-			(GTK_FLIST_CLASS (NAUTILUS_KLASS (parent_list)))->
+			(NAUTILUS_LIST_CLASS (NAUTILUS_KLASS (parent_list)))->
 				column_resize_track_start (parent_list, resized_column);
 
 			return FALSE;
@@ -820,8 +821,8 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 	GtkWidget *parent_list;
 
 	g_assert (event != NULL);
-	g_assert (GTK_FLIST (widget->parent) != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
+	g_assert (NAUTILUS_IS_LIST (widget->parent));
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 	parent_list = GTK_WIDGET (widget->parent);
@@ -833,7 +834,7 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 			gdk_pointer_ungrab (event->time);
 			
 		/* end column resize tracking */
-		(GTK_FLIST_CLASS (NAUTILUS_KLASS (parent_list)))->
+		(NAUTILUS_LIST_CLASS (NAUTILUS_KLASS (parent_list)))->
 			column_resize_track_end (parent_list, 
 						 column_title->details->tracking_column_resize);
 		column_title->details->tracking_column_resize = -1;

@@ -27,8 +27,8 @@
 #include "nautilus.h"
 #include <libnautilus/libnautilus.h>
 #include <bonobo.h>
-#include "file-manager/fm-directory-view-icons.h"
-#include "file-manager/fm-directory-view-list.h"
+#include "file-manager/fm-icon-view.h"
+#include "file-manager/fm-list-view.h"
 #include <libnautilus/nautilus-global-preferences.h>
 
 typedef struct {
@@ -141,9 +141,9 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
     return CORBA_OBJECT_NIL;
         
   if (strcmp (goad_id, "ntl_file_manager_icon_view") == 0)
-    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_icons_get_type (), NULL));
+    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
   else if (strcmp (goad_id, "ntl_file_manager_list_view") == 0)
-    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_list_get_type (), NULL));
+    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
   else if (strcmp (goad_id, "ntl_window"))
     retval = impl_Nautilus_Application_new_view_window(servant, ev);
   else

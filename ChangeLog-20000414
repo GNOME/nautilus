@@ -1,5 +1,53 @@
 2000-03-21  Darin Adler  <darin@eazel.com>
 
+	Did some of the items from RENAMING.
+
+	* libnautilus/Makefile.am:
+	* libnautilus/gnome-icon-container-dnd.c:
+	* libnautilus/gnome-icon-container-dnd.h:
+	* libnautilus/gnome-icon-container-grid.c:
+	* libnautilus/gnome-icon-container-grid.h:
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.c:
+	* libnautilus/gnome-icon-container.h:
+	* libnautilus/gtkflist.c:
+	* libnautilus/gtkflist.h:
+	* libnautilus/nautilus-icon-canvas-item.c:
+	* libnautilus/nautilus-icon-canvas-item.h:
+	* libnautilus/nautilus-icon-container.c:
+	* libnautilus/nautilus-icon-container.h:
+	* libnautilus/nautilus-icon-dnd.c:
+	* libnautilus/nautilus-icon-dnd.h:
+	* libnautilus/nautilus-icon-grid.c:
+	* libnautilus/nautilus-icon-grid.h:
+	* libnautilus/nautilus-icon-private.h:
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	* libnautilus/nautilus-icons-view-icon-item.h:
+	* libnautilus/nautilus-lib-self-check-functions.h:
+	* libnautilus/nautilus-list-column-title.c:
+	* libnautilus/nautilus-list.c:
+	* libnautilus/nautilus-list.h:
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-directory-view-icons.c:
+	* src/file-manager/fm-directory-view-icons.h:
+	* src/file-manager/fm-directory-view-list.c:
+	* src/file-manager/fm-directory-view-list.h:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-icon-view.h:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-list-view.h:
+	* src/ntl-app.c:
+	Did these RENAMING entries:
+	  FMDirectoryViewIcons -> FMIconView
+	  FMDirectoryViewList  -> FMListView
+	  GnomeIconContainer -> NautilusIconContainer
+	  GnomeIconContainerIcon -> NautilusIcon
+	  NautilusIconsViewIconItem -> NautilusIconCanvasItem
+
+	* RENAMING: Marked the renaming done.
+
+2000-03-21  Darin Adler  <darin@eazel.com>
+
 	Fixed arrow keys and worked on the icon grid.
 	Fixes bugs #314, #324, and #325.
 
