@@ -385,11 +385,19 @@ nautilus_window_update_internals (NautilusWindow *window, NautilusNavigationInfo
                                 }
                                 
                                 if (window->ni) {
-                                        /* Store bookmark for current location in back list, unless there is no current location */
-                                        g_assert (strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), window->ni->requested_uri) == 0);
-                                        /* Use the first bookmark in the history list rather than creating a new one. */
-                                        window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
-                                        gtk_object_ref (GTK_OBJECT (window->back_list->data));
+                                	/*
+                                	 * If we're returning to the same uri somehow, don't put this uri on back list. 
+                                	 * This also avoids a problem where nautilus_window_reset_title_internal
+                                	 * didn't update last_location_bookmark since the uri didn't change.
+                                	 */
+                                	if (strcmp (window->ni->requested_uri, navi->navinfo.requested_uri) != 0) {
+	                                        /* Store bookmark for current location in back list, unless there is no current location */
+	                                        g_assert (strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), 
+	                                        		  window->ni->requested_uri) == 0);
+	                                        /* Use the first bookmark in the history list rather than creating a new one. */
+	                                        window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
+	                                        gtk_object_ref (GTK_OBJECT (window->back_list->data));
+                                	}
                                 }
                         }
                 }

@@ -1,5 +1,15 @@
 2000-04-05  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 394 (clicking Home button segfaults)
+
+	* src/ntl-window-msgs.c: (nautilus_window_update_internals):
+	Don't update Back list when the location hasn't actually
+	changed, since (A) it would be silly and (B) the code that 
+	sets up last_location_bookmark and current_location_bookmark
+	doesn't work right if you do.
+
+2000-04-05  John Sullivan  <sullivan@eazel.com>
+
 	Some cleanups from the file-renaming checkin I did
 	yesterday. The largest change was making NautilusDirectory
 	send "files-changed" signal instead of "files-removed" 
