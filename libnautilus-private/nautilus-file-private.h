@@ -153,6 +153,10 @@ gboolean      nautilus_file_update_info                    (NautilusFile        
 gboolean      nautilus_file_update_name                    (NautilusFile           *file,
 							    const char             *name);
 
+gboolean      nautilus_file_update_name_and_directory      (NautilusFile           *file,
+							    const char             *name,
+							    NautilusDirectory      *directory);
+
 /* Return true if the top lefts of files in this directory should be
  * fetched, according to the preference settings.
  */

@@ -1,3 +1,19 @@
+2003-02-10  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved): Use
+	nautilus_file_update_name_and_directory().
+	
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c: (update_name_internal): New
+	function.
+	(nautilus_file_update_name_and_directory): New function.
+	(nautilus_file_update_name): Use update_name_internal.
+	(nautilus_file_set_directory): Use
+	nautilus_file_update_name_and_directory().
+
+	Fixes #97490.
+
 2003-02-08 John Fleck <jfleck@inkstain.net>
 
 	* cvs removing all the stuff in the old help directory, since

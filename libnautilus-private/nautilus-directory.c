@@ -1313,13 +1313,11 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			 */
 			nautilus_directory_unref (new_directory);
 
-			/* Update the file's name. */
+			/* Update the file's name and directory. */
 			name = eel_uri_get_basename (pair->to_uri);
-			nautilus_file_update_name (file, name);
+			nautilus_file_update_name_and_directory 
+				(file, name, new_directory);
 			g_free (name);
-
-			/* Update the file's directory. */
-			nautilus_file_set_directory (file, new_directory);
 			
 			hash_table_list_prepend (changed_lists,
 						 old_directory,

@@ -1319,11 +1319,13 @@ nautilus_file_update_info (NautilusFile *file,
 	return update_info_internal (file, info, FALSE);
 }
 
-gboolean
-nautilus_file_update_name (NautilusFile *file, const char *name)
+static gboolean
+update_name_internal (NautilusFile *file,
+		      const char *name,
+		      gboolean in_directory)
 {
-	GnomeVFSFileInfo *info;
 	GList *node;
+	char *new_relative_uri;
 
 	g_assert (name != NULL);
 
@@ -1334,44 +1336,69 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 	if (name_is (file, name)) {
 		return FALSE;
 	}
+	
+	new_relative_uri = gnome_vfs_escape_string (name);
 
-	if (file->details->info == NULL) {
+	if (file->details->info) {
+		g_free (file->details->info->name);
+		file->details->info->name = g_strdup (name);
+	}
+
+	node = NULL;
+	if (in_directory) {
 		node = nautilus_directory_begin_file_name_change
 			(file->details->directory, file);
-		g_free (file->details->relative_uri);
-		file->details->relative_uri = gnome_vfs_escape_string (name);
-		nautilus_file_clear_cached_display_name (file);
+	}
+	
+	g_free (file->details->relative_uri);
+	file->details->relative_uri = new_relative_uri;
+	nautilus_file_clear_cached_display_name (file);
+	
+	if (in_directory) {
 		nautilus_directory_end_file_name_change
 			(file->details->directory, file, node);
-	} else {
-		/* Make a copy and update the file name in the copy. */
-		info = gnome_vfs_file_info_new ();
-		gnome_vfs_file_info_copy (info, file->details->info);
-		g_free (info->name);
-		info->name = g_strdup (name);
-		update_info_and_name (file, info);
-		gnome_vfs_file_info_unref (info);
 	}
+
 
 	return TRUE;
 }
 
-void
-nautilus_file_set_directory (NautilusFile *file,
-			     NautilusDirectory *new_directory)
+
+gboolean
+nautilus_file_update_name (NautilusFile *file, const char *name)
+{
+	gboolean ret;
+	
+	ret = update_name_internal (file, name, TRUE);
+
+	if (ret) {
+		update_links_if_target (file);
+	}
+
+	return ret;
+}
+
+gboolean
+nautilus_file_update_name_and_directory (NautilusFile *file, 
+					 const char *name,
+					 NautilusDirectory *new_directory)
 {
 	NautilusDirectory *old_directory;
 	FileMonitors *monitors;
 
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (file->details->directory));
-	g_return_if_fail (!file->details->is_gone);
-	g_return_if_fail (!nautilus_file_is_self_owned (file));
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (new_directory));
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (file->details->directory), FALSE);
+	g_return_val_if_fail (!file->details->is_gone, FALSE);
+	g_return_val_if_fail (!nautilus_file_is_self_owned (file), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (new_directory), FALSE);
 
 	old_directory = file->details->directory;
 	if (old_directory == new_directory) {
-		return;
+		if (name) {
+			return update_name_internal (file, name, TRUE);
+		} else {
+			return FALSE;
+		}
 	}
 
 	nautilus_file_ref (file);
@@ -1389,6 +1416,10 @@ nautilus_file_set_directory (NautilusFile *file,
 	file->details->directory = new_directory;
 	nautilus_directory_unref (old_directory);
 
+	if (name) {
+		update_name_internal (file, name, FALSE);
+	}
+
 	nautilus_directory_add_file (new_directory, file);
 	nautilus_directory_add_file_monitors (new_directory, file, monitors);
 
@@ -1397,6 +1428,15 @@ nautilus_file_set_directory (NautilusFile *file,
 	update_links_if_target (file);
 
 	nautilus_file_unref (file);
+
+	return TRUE;
+}
+
+void
+nautilus_file_set_directory (NautilusFile *file,
+			     NautilusDirectory *new_directory)
+{
+	nautilus_file_update_name_and_directory (file, NULL, new_directory);
 }
 
 static Knowledge
