@@ -264,16 +264,13 @@ display_prototype_caveat (void)
 	/* Inform the user that Nautilus has a long way to go
 	 * before they should be expecting it to work well.
 	 */
-	nautilus_simple_dialog
-		(NULL,
-		 _("Thank you for trying Nautilus!"
-		   "\n\nIt is still under development, and many features "
-		   "are not yet implemented or have some degree of instability. "
-		   "If you use this pre-release version of Nautilus, please "
-		   "exercise extreme caution."
-		   "\n\nFor more information, visit http://nautilus.eazel.com."),
-		 _("Nautilus: caveat"),
-		 GNOME_STOCK_BUTTON_OK, NULL);
+	gnome_warning_dialog (
+		_("Thank you for trying Nautilus!"
+		  "\n\nIt is still under development, and many features are"
+		  "\nnot yet implemented or have some degree of instability. "
+		  "\nIf you use this pre-release version of Nautilus, please "
+		  "\nexercise extreme caution."
+		  "\n\nFor more information, visit http://nautilus.eazel.com."));
 }
 
 void
