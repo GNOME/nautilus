@@ -27,6 +27,7 @@
 
 #include "fm-icon-text-window.h"
 #include "fm-icons-controller.h"
+#include "fm-signaller.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -97,6 +98,8 @@ static void icon_container_context_click_icon_cb (GnomeIconContainer *container,
 						  FMDirectoryViewIcons *icon_view);
 static void icon_container_context_click_background_cb (GnomeIconContainer *container,
 							FMDirectoryViewIcons *icon_view);
+static void icon_text_changed_cb		 (FMSignaller *signaller,
+						  FMDirectoryViewIcons *icon_view);
 
 static char * default_icon_text_attribute_names = NULL;
 
@@ -157,6 +160,12 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *icon_view)
 	icon_view->details = g_new0 (FMDirectoryViewIconsDetails, 1);
 
 	icon_container = create_icon_container (icon_view);
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (fm_signaller_get_current ()),
+			    	 	"icon_text_changed",
+			    		icon_text_changed_cb,
+			    		icon_view,
+			    		GTK_OBJECT (icon_view));
 }
 
 static void
@@ -438,9 +447,9 @@ fm_directory_view_icons_can_zoom_out (FMDirectoryView *view)
  * fm_directory_view_icons_get_icon_text_attribute_names:
  *
  * Get a string representing which text attributes should be displayed
- * beneath an icon in this directory at the highest zoom level. 
+ * beneath an icon at the highest zoom level. 
  * Use g_free to free the result.
- * @view: FMDirectoryViewIcons to query.
+ * @view: Any FMDirectoryViewIcons object.
  * 
  * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
  * 
@@ -448,6 +457,10 @@ fm_directory_view_icons_can_zoom_out (FMDirectoryView *view)
 char *
 fm_directory_view_icons_get_full_icon_text_attribute_names (FMDirectoryViewIcons *view)
 {
+	/* For now at least, there's only a global setting, not a per-directory one. 
+	 * So this routine doesn't need the first parameter, but it's in there
+	 * for consistency and possible future expansion.
+	 */
 	return g_strdup (default_icon_text_attribute_names);
 }
 
@@ -455,19 +468,21 @@ fm_directory_view_icons_get_full_icon_text_attribute_names (FMDirectoryViewIcons
  * fm_directory_view_icons_set_icon_text_attribute_names:
  *
  * Sets the string representing which text attributes should be displayed
- * beneath an icon in this directory at the highest zoom level. 
+ * beneath an icon at the highest zoom level. 
  * @view: FMDirectoryViewIcons whose displayed text attributes should be changed.
  * @new_names: The |-delimited set of names to display at the highest zoom level,
  * e.g. "name|size|date_modified".
- * @set_default: TRUE if @new_names should be used as the default for directories
- * that don't have their own setting.
  * 
  **/
 void
 fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons *view,
-							    char *new_names,
-							    gboolean set_default)
+							    char *new_names)
 {
+	/* For now at least, there's only a global setting, not a per-directory one. 
+	 * So this routine doesn't need the first parameter, but it's in there
+	 * for consistency and possible future expansion.
+	 */
+
 	if (strcmp (new_names, default_icon_text_attribute_names) == 0)
 		return;
 
@@ -475,7 +490,10 @@ fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons
 	default_icon_text_attribute_names = g_strdup (new_names);
 
 	/* FIXME: save new choice in global preferences */
-	gnome_icon_container_request_update_all (get_icon_container (view));
+
+	/* Send signal that will notify us and all other directory views to update */
+	gtk_signal_emit_by_name (GTK_OBJECT (fm_signaller_get_current ()),
+			 	 "icon_text_changed");
 }
 
 /**
@@ -584,6 +602,15 @@ icon_container_selection_changed_cb (GnomeIconContainer *container,
 	g_assert (container == get_icon_container (icon_view));
 
 	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (icon_view));
+}
+
+static void
+icon_text_changed_cb (FMSignaller *signaller,
+		      FMDirectoryViewIcons *icon_view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+
+	gnome_icon_container_request_update_all (get_icon_container (icon_view));	
 }
 
 static void

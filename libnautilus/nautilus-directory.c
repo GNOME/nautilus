@@ -65,6 +65,12 @@
 
 #define DIRECTORY_LOAD_ITEMS_PER_CB 1
 
+typedef enum {
+	NAUTILUS_DATE_TYPE_MODIFIED,
+	NAUTILUS_DATE_TYPE_CHANGED,
+	NAUTILUS_DATE_TYPE_ACCESSED
+} NautilusDateType;
+
 enum 
 {
 	FILES_ADDED,
@@ -90,7 +96,8 @@ static int  nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 	     NautilusFileSortType sort_type,
 					 	     gboolean reversed);
 
-static char * nautilus_file_get_date_as_string (NautilusFile *file);
+static char * nautilus_file_get_date_as_string (NautilusFile *file,
+						NautilusDateType date_type);
 static char * nautilus_file_get_size_as_string (NautilusFile *file);
 static char * nautilus_file_get_type_as_string (NautilusFile *file);
 static void nautilus_directory_load_cb (GnomeVFSAsyncHandle *handle,
@@ -1332,16 +1339,8 @@ nautilus_file_get_uri (NautilusFile *file)
  * 
  **/
 static char *
-nautilus_file_get_date_as_string (NautilusFile *file)
-{
-	/* Note: This uses modified time. There's also accessed time and 
-	 * changed time. Accessed time doesn't seem worth showing to the user.
-	 * Changed time is only subtly different from modified time
-	 * (changed time includes "metadata" changes like file permissions).
-	 * We should not display both, but we might change our minds as to
-	 * which one is better.
-	 */
-	 
+nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type)
+{	 
 	struct tm *file_time;
 	const char *format;
 	GDate *today;
@@ -1350,7 +1349,20 @@ nautilus_file_get_date_as_string (NautilusFile *file)
 
 	g_return_val_if_fail (file != NULL, NULL);
 
-	file_time = localtime(&file->info->mtime);
+	switch (date_type)
+	{
+		case NAUTILUS_DATE_TYPE_CHANGED:
+			file_time = localtime(&file->info->ctime);
+			break;
+		case NAUTILUS_DATE_TYPE_ACCESSED:
+			file_time = localtime(&file->info->atime);
+			break;
+		case NAUTILUS_DATE_TYPE_MODIFIED:
+			file_time = localtime(&file->info->mtime);
+			break;
+		default:
+			g_assert_not_reached ();
+	}
 	file_date = nautilus_g_date_new_tm (file_time);
 	
 	today = g_date_new ();
@@ -1439,7 +1451,8 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * 
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
- * set includes "name", "type", "size", and "date modified".
+ * set includes "name", "type", "size", "date_modified", "date_changed", and
+ * "date_accessed".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if @attribute_name is not supported.
@@ -1458,7 +1471,16 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 		return nautilus_file_get_size_as_string (file);
 
 	if (strcmp (attribute_name, "date_modified") == 0)
-		return nautilus_file_get_date_as_string (file);
+		return nautilus_file_get_date_as_string (file, 
+							 NAUTILUS_DATE_TYPE_MODIFIED);
+
+	if (strcmp (attribute_name, "date_changed") == 0)
+		return nautilus_file_get_date_as_string (file, 
+							 NAUTILUS_DATE_TYPE_CHANGED);
+
+	if (strcmp (attribute_name, "date_accessed") == 0)
+		return nautilus_file_get_date_as_string (file, 
+							 NAUTILUS_DATE_TYPE_ACCESSED);
 
 	return NULL;
 }

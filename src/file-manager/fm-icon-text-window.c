@@ -26,8 +26,11 @@
 #include <config.h>
 #include "fm-icon-text-window.h"
 
-#include <gtk/gtkbox.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkhseparator.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkoptionmenu.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkradiobutton.h>
@@ -35,100 +38,161 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 
-/* Larger size initially; user can stretch or shrink (but not shrink below min) */
-#define ICON_TEXT_WINDOW_INITIAL_WIDTH	500
-#define ICON_TEXT_WINDOW_INITIAL_HEIGHT	200
-
 static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,
 				  		     GdkEvent  *event,
 				  		     gpointer   user_data);
 
 
 static FMDirectoryViewIcons *icon_view = NULL;
+static GtkOptionMenu *option_menu_2nd_line = NULL;
+static GtkOptionMenu *option_menu_3rd_line = NULL;
+static GtkOptionMenu *option_menu_4th_line = NULL;
+
+static char * attribute_names[] = {
+	"size",
+	"type",
+	"date_modified",
+	"date_changed",
+	"date_accessed",
+	NULL
+};
+
+static char * attribute_labels[] = {
+	_("size"),
+	_("type"),
+	_("date modified"),
+	_("date changed"),
+	_("date accessed"),
+	NULL
+};
+
+#define PIECES_COUNT	4
+
+static char *
+get_chosen_attribute_name (GtkOptionMenu *option_menu)
+{
+	int attribute_index;
+	
+	g_assert (GTK_IS_OPTION_MENU (option_menu));
+
+	attribute_index = GPOINTER_TO_INT (gtk_object_get_user_data (
+		GTK_OBJECT (option_menu->menu_item)));
+
+	return g_strdup (attribute_names[attribute_index]);
+}
 
 static void
-toggled_radio_button (GtkToggleButton *button, gpointer user_data)
+changed_attributes_option_menu_cb (GtkMenuItem *menu_item, gpointer user_data)
 {
-	char * all_attribute_names;
+	char ** attribute_names_array;
+	char * attribute_names_string;
 	
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 
-	if (!gtk_toggle_button_get_active (button))
-		return;
-		
-	switch (GPOINTER_TO_INT (user_data))
-	{
-		case 0:
-			all_attribute_names = "name|size|date_modified|type";
-			break;
-		case 1:
-			all_attribute_names = "name|date_modified|type|size";
-			break;
-		case 2:
-			all_attribute_names = "name|type|size|date_modified";
-			break;
-		default:
-			g_assert_not_reached ();
-	}
+  	attribute_names_array = g_new0 (gchar*, PIECES_COUNT + 1);
+
+	/* Always start with the name. */
+	attribute_names_array[0] = g_strdup ("name");	
+	attribute_names_array[1] = get_chosen_attribute_name (option_menu_2nd_line);
+	attribute_names_array[2] = get_chosen_attribute_name (option_menu_3rd_line);
+	attribute_names_array[3] = get_chosen_attribute_name (option_menu_4th_line);
+
+	attribute_names_string = g_strjoinv ("|", attribute_names_array);
 
 	fm_directory_view_icons_set_full_icon_text_attribute_names (icon_view, 
-								    all_attribute_names,
-								    TRUE);
+								    attribute_names_string);
+
+	g_free (attribute_names_string);
+	g_strfreev (attribute_names_array);
+}
+
+static GtkOptionMenu *
+create_attributes_option_menu (void)
+{
+	GtkWidget *option_menu;
+	GtkWidget *menu;
+	GtkWidget *menu_item;
+	int index;
+
+  	option_menu = gtk_option_menu_new ();
+  	gtk_widget_show (option_menu);
+  	menu = gtk_menu_new ();
+	
+	for (index = 0; attribute_names[index] != NULL; ++index)
+	{
+		menu_item = gtk_menu_item_new_with_label (_(attribute_labels[index]));
+		/* Store index in item as the way to get from item back to attribute name */
+		gtk_object_set_user_data (GTK_OBJECT (menu_item), GINT_TO_POINTER (index));
+		gtk_widget_show (menu_item);
+		gtk_menu_append (GTK_MENU (menu), menu_item);
+		/* Wire all the menu items to the same callback. If any item is
+		 * changed, the attribute text will be recomputed from scratch.
+		 */
+	  	gtk_signal_connect (GTK_OBJECT (menu_item),
+	  			      "activate",
+	  			      changed_attributes_option_menu_cb,
+	  			      NULL);
+		
+	}
+  	  	
+  	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
+
+	return GTK_OPTION_MENU (option_menu);
 }
 
 static GtkWidget*
-create_icon_text_window (void)
+create_icon_text_window ()
 {
   	GtkWidget *window;
+  	GtkWidget *vbox1;
   	GtkWidget *prompt;
-  	GtkWidget *vbox;
-  	GSList *radio_group;
-  	GtkWidget *default_1;
-  	GtkWidget *default_2;
-  	GtkWidget *custom;
-
-  	radio_group = NULL;
+  	GtkWidget *hseparator1;
+  	GtkWidget *hbox1;
+  	GtkWidget *vbox2;
+  	GtkWidget *name_label;
 
   	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
+  	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus: Icon Text"));
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus: Icon Text (placeholder UI)"));
 
-  	vbox = gtk_vbox_new (FALSE, 0);
-  	gtk_widget_show (vbox);
-  	gtk_container_add (GTK_CONTAINER (window), vbox);
+  	vbox1 = gtk_vbox_new (FALSE, 0);
+  	gtk_widget_show (vbox1);
+  	gtk_container_add (GTK_CONTAINER (window), vbox1);
 
-  	prompt = gtk_label_new (_("Choose the order for information to appear beneath icons.\nMore information appears as you zoom in closer."));
-	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
-	gtk_widget_show (prompt);
-	gtk_box_pack_start (GTK_BOX (vbox), prompt, FALSE, FALSE, GNOME_PAD);
+  	prompt = gtk_label_new (_("Choose the order for information to appear beneath icons. More information appears as you zoom in closer."));
+  	gtk_widget_show (prompt);
+  	gtk_box_pack_start (GTK_BOX (vbox1), prompt, FALSE, FALSE, 0);
+  	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
+  	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
 
-  	default_1 = gtk_radio_button_new_with_label (radio_group, _("name, size, date modified, type"));
-  	radio_group = gtk_radio_button_group (GTK_RADIO_BUTTON (default_1));
-  	gtk_widget_show (default_1);
-  	gtk_box_pack_start (GTK_BOX (vbox), default_1, FALSE, FALSE, 0);
-  	gtk_signal_connect (GTK_OBJECT (default_1),
-  			      "toggled",
-  			      toggled_radio_button,
-  			      GINT_TO_POINTER (0));
+  	hseparator1 = gtk_hseparator_new ();
+  	gtk_widget_show (hseparator1);
+  	gtk_box_pack_start (GTK_BOX (vbox1), hseparator1, TRUE, TRUE, 8);
 
-  	default_2 = gtk_radio_button_new_with_label (radio_group, _("name, date modified, type, size"));
-  	radio_group = gtk_radio_button_group (GTK_RADIO_BUTTON (default_2));
-  	gtk_widget_show (default_2);
-  	gtk_box_pack_start (GTK_BOX (vbox), default_2, FALSE, FALSE, 0);
-  	gtk_signal_connect (GTK_OBJECT (default_2),
-  			      "toggled",
-  			      toggled_radio_button,
-  			      GINT_TO_POINTER (1));
+  	hbox1 = gtk_hbox_new (FALSE, 0);
+  	gtk_widget_show (hbox1);
+  	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
 
-  	custom = gtk_radio_button_new_with_label (radio_group, _("name, type, size, date modified"));
-  	radio_group = gtk_radio_button_group (GTK_RADIO_BUTTON (custom));
-  	gtk_widget_show (custom);
-  	gtk_box_pack_start (GTK_BOX (vbox), custom, FALSE, FALSE, 0);
-  	gtk_signal_connect (GTK_OBJECT (custom),
-  			      "toggled",
-  			      toggled_radio_button,
-  			      GINT_TO_POINTER (2));
+  	vbox2 = gtk_vbox_new (FALSE, 4);
+  	gtk_widget_show (vbox2);
+  	gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, TRUE, 0);
+
+  	name_label = gtk_label_new (_("name"));
+  	gtk_widget_show (name_label);
+  	gtk_box_pack_start (GTK_BOX (vbox2), name_label, FALSE, FALSE, 0);
+  	gtk_misc_set_padding (GTK_MISC (name_label), 0, 4);
+
+	option_menu_2nd_line = create_attributes_option_menu ();
+  	gtk_box_pack_start (GTK_BOX (vbox2), GTK_WIDGET (option_menu_2nd_line), FALSE, FALSE, 0);
+
+  	option_menu_3rd_line = create_attributes_option_menu ();
+  	gtk_option_menu_set_history (option_menu_3rd_line, 1);
+  	gtk_box_pack_start (GTK_BOX (vbox2), GTK_WIDGET (option_menu_3rd_line), FALSE, FALSE, 0);
+
+  	option_menu_4th_line = create_attributes_option_menu ();
+  	gtk_box_pack_start (GTK_BOX (vbox2), GTK_WIDGET (option_menu_4th_line), FALSE, FALSE, 0);
+  	gtk_option_menu_set_history (option_menu_4th_line, 2);
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
                     	    GTK_SIGNAL_FUNC (fm_icon_text_window_delete_event_cb),
@@ -136,6 +200,7 @@ create_icon_text_window (void)
 
   	return window;
 }
+
 
 static gboolean
 fm_icon_text_window_delete_event_cb (GtkWidget *widget,
