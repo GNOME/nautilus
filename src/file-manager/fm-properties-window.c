@@ -235,7 +235,8 @@ static void
 name_field_update_to_match_file (NautilusEntry *name_field)
 {
 	NautilusFile *file;
-	char *original_name, *current_name, *displayed_name;
+	const char *original_name;
+	char *current_name, *displayed_name;
 
 	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
 
@@ -245,8 +246,8 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 		return;
 	}
 
-	original_name = (char *) gtk_object_get_data (GTK_OBJECT (name_field),
-						      "original_name");
+	original_name = (const char *) gtk_object_get_data (GTK_OBJECT (name_field),
+						      	    "original_name");
 
 	/* If the file name has changed since the original name was stored,
 	 * update the text in the text field, possibly (deliberately) clobbering
@@ -285,6 +286,23 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 }
 
 static void
+name_field_restore_original_name (NautilusEntry *name_field)
+{
+	const char *original_name;
+	char *displayed_name;
+
+	original_name = (const char *) gtk_object_get_data (GTK_OBJECT (name_field),
+						      	    "original_name");
+	displayed_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
+
+	if (strcmp (original_name, displayed_name) != 0) {
+		gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
+	}
+
+	g_free (displayed_name);
+}
+
+static void
 rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
 	char *new_name;
@@ -313,7 +331,7 @@ name_field_done_editing (NautilusEntry *name_field)
 
 	/* Special case: silently revert text if new text is empty. */
 	if (strlen (new_name) == 0) {
-		name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
+		name_field_restore_original_name (NAUTILUS_ENTRY (name_field));
 	} else {
 		nautilus_file_rename (file, new_name,
 				      rename_callback, g_strdup (new_name));

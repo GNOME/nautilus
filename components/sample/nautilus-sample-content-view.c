@@ -244,7 +244,7 @@ sample_merge_bonobo_items_callback (BonoboControl *control, gboolean state, gpoi
 	                 _("This is a sample merged menu item"),	/* hint that appears in status bar */
 	                 bonobo_ui_handler_menu_get_pos  		/* position within menu; -1 means last */
 	                 	(ui_handler, 
-	                         NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
+	                         NAUTILUS_MENU_PATH_NEW_ITEMS_PLACEHOLDER) + 1,
 	                 pixmap_type,					/* pixmap type */
 	                 pixbuf,					/* pixmap data */
 	                 'M',						/* accelerator key (couldn't bear the thought of using Control-S for anything except Save) */

@@ -508,8 +508,6 @@ nautilus_window_destroy (GtkObject *object)
 		g_source_remove (window->action_tag);
 	}
 
-	g_free (window->details->last_static_bookmark_path);
-
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
 
 	if (window->ui_handler != NULL) {

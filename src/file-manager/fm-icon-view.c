@@ -315,9 +315,9 @@ compute_menu_item_info (FMIconView *view,
 			&& !nautilus_icon_container_has_stretch_handles (icon_container);
 	} else if (strcmp (MENU_PATH_UNSTRETCH_ICONS, menu_path) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
-                        name = g_strdup (_("_Restore Icons to Unstretched Size"));
+                        name = g_strdup (_("_Restore Icon's Original Size"));
                 } else {
-                        name = g_strdup (_("_Restore Icon to Unstretched Size"));
+                        name = g_strdup (_("_Restore Icons' Original Sizes"));
                 }
         	*sensitive_return = nautilus_icon_container_is_stretched (icon_container);
 	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {

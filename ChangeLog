@@ -1,3 +1,66 @@
+2000-08-18  John Sullivan  <sullivan@eazel.com>
+
+	More menu tweaking, including switching over to use
+	Bonobo "menu placeholders" for menu-merging components.
+
+	Fixed bug 1859 (Need improved way to position added menu items)
+
+	* libnautilus/nautilus-bonobo-ui.h:
+	Removed all menu item paths except those we expect to
+	be merged over (like "Select All"). Added new placeholder
+	paths for components to use when merging instead of relying
+	on the positions of specific menu items. Commented the intended
+	use of each placeholder.
+
+	* components/loser/content/nautilus-content-loser.c:
+	(loser_merge_bonobo_items_callback):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(loser_merge_bonobo_items_callback):
+	* components/sample/nautilus-sample-content-view.c:
+	(sample_merge_bonobo_items_callback):
+	Updated menu-merging code to use placeholder paths.
+	
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_trash_delete_menu), (reset_bonobo_open_with_menu),
+	(fm_directory_view_real_merge_menus): Updated menu-merging code
+	to use placeholder paths or to base positions off other
+	directory view menu items. Added separator before Empty Trash.
+	* src/file-manager/fm-directory-view.h: Updated #defines for
+	directory view menu paths (some used by subclasses)
+	
+	* src/file-manager/fm-icon-view.c: (compute_menu_item_info):
+	Change "Restore Icon to Unstretched Size" to "Restore Icon's
+	Original Size" to match Arlo's wording (and similarly for
+	the plural case)
+	
+	* src/nautilus-window-menus.c: 
+	Moved in the menu paths that were moved out of nautilus-bonobo-ui.h
+	(append_placeholder): New function, wrapper for 
+	bonobo_ui_handler_menu_new_placeholder
+	(nautilus_window_remove_bookmarks_menu_items),
+	(refresh_dynamic_bookmarks), (append_static_bookmarks): 
+	Simplified logic of rebuilding bookmarks menu by
+	using placeholder instead of details->last_static_bookmark_path.
+	(nautilus_window_initialize_menus): Insert the placeholders defined
+	in nautilus-bonobo-ui.h; add Control-/ for "About Nautilus" per Arlo.
+	(nautilus_window_remove_go_menu_items),
+	(refresh_go_menu): Use placeholder to position History menu items.
+	* src/nautilus-window-private.h: Removed last_static_bookmark_path;
+	moved #defines for back/forward/up menu paths here.
+	* src/nautilus-window.c: (nautilus_window_destroy): Removed
+	last_static_bookmark_path.
+
+	Fixed bug 2166 (Clearing name field in Properties window doesn't work right)
+
+	* src/file-manager/fm-properties-window.c:
+	(name_field_update_to_match_file): Changed a char * to const char *
+	for clarity.
+	(name_field_restore_original_name): New function, restores the original
+	contents of the name field, no questions asked.
+	(name_field_done_editing): When handling empty-string case, use
+	restore_original_name instead of update_to_match_file, which was too
+	clever for this case.
+
 2000-08-18  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):

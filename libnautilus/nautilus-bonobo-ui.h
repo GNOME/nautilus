@@ -30,51 +30,53 @@
 #ifndef NAUTILUS_BONOBO_UI_H
 #define NAUTILUS_BONOBO_UI_H
 
-/* Components can use these paths with BonoboUIHandler calls to
- * locate menus and menu items for the purpose of menu merging.
- * Note: Not all Nautilus menu items are necessarily published
- * here; these are the ones whose existence components can count on.
+/** 
+ * Components can use these menu paths with BonoboUIHandler calls to 
+ * place entire new menus. 
  */
 
-/* File menu */
 #define NAUTILUS_MENU_PATH_FILE_MENU			"/File"
-#define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM		"/File/New Window"
-#define NAUTILUS_MENU_PATH_CLOSE_ITEM			"/File/Close"
-#define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/File/Close All Windows"
-
-/* Edit menu */
 #define NAUTILUS_MENU_PATH_EDIT_MENU			"/Edit"
-#define NAUTILUS_MENU_PATH_UNDO_ITEM			"/Edit/Undo"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO		"/Edit/Separator after Undo"
+#define NAUTILUS_MENU_PATH_GO_MENU			"/Go"
+#define NAUTILUS_MENU_PATH_BOOKMARKS_MENU		"/Bookmarks"
+#define NAUTILUS_MENU_PATH_HELP_MENU			"/Help"
+
+/** 
+ * Components can use these menu item paths with BonoboUIHandler calls to 
+ * merge over certain existing items. Only items that we expect to be
+ * merged over are listed here, to avoid making public details that might
+ * change later. 
+ */
+
 #define NAUTILUS_MENU_PATH_CUT_ITEM			"/Edit/Cut"
 #define NAUTILUS_MENU_PATH_COPY_ITEM			"/Edit/Copy"
 #define NAUTILUS_MENU_PATH_PASTE_ITEM			"/Edit/Paste"
 #define NAUTILUS_MENU_PATH_CLEAR_ITEM			"/Edit/Clear"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/Edit/Separator after Clear"
 #define NAUTILUS_MENU_PATH_SELECT_ALL_ITEM		"/Edit/Select All"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/Edit/Separator after Select All"
 
-/* Go menu */
-#define NAUTILUS_MENU_PATH_GO_MENU			"/Go"
-#define NAUTILUS_MENU_PATH_BACK_ITEM			"/Go/Back"
-#define NAUTILUS_MENU_PATH_FORWARD_ITEM			"/Go/Forward"
-#define NAUTILUS_MENU_PATH_UP_ITEM			"/Go/Up"
-#define NAUTILUS_MENU_PATH_HOME_ITEM			"/Go/Home"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY	"/Go/Separator before History"
+/** 
+ * Components can use these placeholder paths with BonoboUIHandler calls to 
+ * insert new items in well-defined positions. 
+ */
 
-/* Bookmarks menu */
-#define NAUTILUS_MENU_PATH_BOOKMARKS_MENU		"/Bookmarks"
-#define NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM		"/Bookmarks/Add Bookmark"
-#define NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM		"/Bookmarks/Edit Bookmarks"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS	"/Bookmarks/Separator before Bookmarks"
+/* Use the "new items" placeholder to insert menu items like "New xxx" */
+#define NAUTILUS_MENU_PATH_NEW_ITEMS_PLACEHOLDER	"/File/New Items Placeholder"
 
-/* Settings menu */
-#define NAUTILUS_MENU_PATH_SETTINGS_MENU		"/Settings"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_USER_LEVELS	"/Settings/Separator after User Levels"
+/**
+ * Use the "open" placeholder to insert menu items dealing with opening the
+ * selected item, like "Open", "Open in New Window", etc.
+ */
+#define NAUTILUS_MENU_PATH_OPEN_PLACEHOLDER		"/File/Open Placeholder"
 
-/* Help menu */
-#define NAUTILUS_MENU_PATH_HELP_MENU			"/Help"
-#define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
+/**
+ * Use the "file items" placeholder to insert other menu items dealing with
+ * individual files, such as "Show Properties" and "Rename"
+ */
+#define NAUTILUS_MENU_PATH_FILE_ITEMS_PLACEHOLDER	"/File/File Items Placeholder"
+
+/* Use the "extra help items" placeholder to add help-related items */
+#define NAUTILUS_MENU_PATH_EXTRA_HELP_ITEMS_PLACEHOLDER	"/Help/Extra Help Items"
+
 
 /* Components can use these paths with BonoboUIHandler calls to
  * locate toolbars and toolbar items for the purpose of merging.

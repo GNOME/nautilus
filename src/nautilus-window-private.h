@@ -47,10 +47,11 @@ struct NautilusWindowDetails
 {
 	guint refresh_dynamic_bookmarks_idle_id;
 	guint refresh_go_menu_idle_id;
-
-	char *last_static_bookmark_path;
 };
 
+#define NAUTILUS_MENU_PATH_BACK_ITEM			"/Go/Back"
+#define NAUTILUS_MENU_PATH_FORWARD_ITEM			"/Go/Forward"
+#define NAUTILUS_MENU_PATH_UP_ITEM			"/Go/Up"
 
 void                 nautilus_window_set_state_info                    (NautilusWindow             *window,
 									... /* things to set, plus optional parameters */);

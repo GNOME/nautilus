@@ -59,6 +59,28 @@
 
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
+/* Private menu paths that components don't know about */
+#define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM		"/File/New Window"
+#define NAUTILUS_MENU_PATH_CLOSE_ITEM			"/File/Close"
+#define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/File/Close All Windows"
+
+#define NAUTILUS_MENU_PATH_UNDO_ITEM			"/Edit/Undo"
+#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO		"/Edit/Separator after Undo"
+#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/Edit/Separator after Clear"
+#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/Edit/Separator after Select All"
+
+#define NAUTILUS_MENU_PATH_HOME_ITEM			"/Go/Home"
+
+#define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER	"/Go/History Placeholder"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY	"/Go/Separator before History"
+
+#define NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM		"/Bookmarks/Add Bookmark"
+#define NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM		"/Bookmarks/Edit Bookmarks"
+#define NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER	"/Bookmarks/Bookmarks Placeholder"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS	"/Bookmarks/Separator before Bookmarks"
+
+#define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
+
 /*
 #define WINDOW_ITEMS_TEST
 */
@@ -78,9 +100,9 @@ static void                  remove_bookmarks_after	                    (Nautilu
 									     const char             *last_static_item_path);
 static NautilusBookmarkList *get_bookmark_list                              (void);
 static void                  refresh_go_menu                   		    (NautilusWindow         *window);
-static void                  refresh_dynamic_bookmarks            		    (NautilusWindow         *window);
+static void                  refresh_dynamic_bookmarks            	    (NautilusWindow         *window);
 static void		     schedule_refresh_go_menu 		    	    (NautilusWindow 	    *window);
-static void		     schedule_refresh_dynamic_bookmarks 		    (NautilusWindow 	    *window);
+static void		     schedule_refresh_dynamic_bookmarks 	    (NautilusWindow 	    *window);
 static void                  edit_bookmarks                                 (NautilusWindow         *window);
 
 
@@ -605,6 +627,13 @@ activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const 
 }
 
 static void
+append_placeholder (NautilusWindow *window, const char *placeholder_path)
+{
+        bonobo_ui_handler_menu_new_placeholder (window->ui_handler,
+                                                placeholder_path);
+}
+
+static void
 append_separator (NautilusWindow *window, const char *separator_path)
 {
         bonobo_ui_handler_menu_new_separator (window->ui_handler,
@@ -765,14 +794,7 @@ append_static_bookmarks (NautilusWindow *window, const char *menu_path)
 	for (index = 0; node != NULL; node = node->next, ++index) {
 		item_path = create_menu_item_from_node 
 			(window, node, menu_path, index);
-		if (node->next == NULL) {
-			/* Stash away path of last canned bookmark to use when
-			 * refreshing menu.
-			 */
-			window->details->last_static_bookmark_path = item_path;
-		} else {
-			g_free (item_path);
-		}
+		g_free (item_path);
 	}
 	
 	xmlFreeDoc(doc);
@@ -1042,6 +1064,9 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 file_menu_new_window_callback,
         				 window);
 
+        append_placeholder (window, NAUTILUS_MENU_PATH_NEW_ITEMS_PLACEHOLDER);
+        append_placeholder (window, NAUTILUS_MENU_PATH_OPEN_PLACEHOLDER);
+
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CLOSE_ITEM,
         				 _("_Close Window"),
@@ -1065,6 +1090,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 GDK_CONTROL_MASK | GDK_SHIFT_MASK,
         				 file_menu_close_all_windows_callback,
         				 NULL);
+
+        append_placeholder (window, NAUTILUS_MENU_PATH_FILE_ITEMS_PLACEHOLDER);
         				 
 	/* Edit menu */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_EDIT_MENU, _("_Edit"));
@@ -1226,7 +1253,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 go_menu_home_callback,
         				 window);
 
-        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
+        append_placeholder (window, NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);
 
         
 	/* Bookmarks */
@@ -1255,6 +1282,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 0,
         				 bookmarks_menu_edit_bookmarks_callback,
         				 window);
+
+	append_placeholder (window, NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER);			 
 #ifdef WINDOW_ITEMS_TEST
 	/* Test window modification items */
 	bonobo_ui_handler_menu_new_separator (ui_handler,
@@ -1329,8 +1358,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
         				 GNOME_STOCK_MENU_ABOUT,
-        				 0,
-        				 0,
+        				 '/',
+        				 GDK_CONTROL_MASK,
         				 help_menu_about_nautilus_callback,
         				 NULL);
 
@@ -1459,9 +1488,7 @@ nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 {
 	remove_bookmarks_after (window, 
 				NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
-				NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM);
-
-	window->details->last_static_bookmark_path = NULL;
+				NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER);
 }
 
 void
@@ -1469,7 +1496,7 @@ nautilus_window_remove_go_menu_items (NautilusWindow *window)
 {
 	remove_bookmarks_after (window, 
 				NAUTILUS_MENU_PATH_GO_MENU, 
-				NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
+				NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);
 }
 
 static void
@@ -1513,24 +1540,12 @@ append_dynamic_bookmarks (NautilusWindow *window)
 static void
 refresh_dynamic_bookmarks (NautilusWindow *window)
 {
-	char *last_static_item;
-	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	/* Unregister any pending call to this function. */
 	nautilus_window_remove_bookmarks_menu_callback (window);
 
-	/* Remove old set of bookmarks. */
-	last_static_item = window->details->last_static_bookmark_path;
-	if (last_static_item == NULL) {
-		last_static_item = NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM;
-	}
-	remove_bookmarks_after (window, 
-				NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
-				last_static_item);
-
-
-	/* append new set of bookmarks */
+	nautilus_window_remove_bookmarks_menu_items (window);
 	append_dynamic_bookmarks (window);
 }
 
@@ -1568,31 +1583,35 @@ refresh_go_menu (NautilusWindow *window)
 {
 	GList *p;
 	int index;
-
+	char *path;
+	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	/* Unregister any pending call to this function. */
 	nautilus_window_remove_go_menu_callback (window);
 
 	/* Remove old set of history items. */
-	remove_bookmarks_after (window, 
-				NAUTILUS_MENU_PATH_GO_MENU, 
-				NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
+	nautilus_window_remove_go_menu_items (window);
 
 	/* Add in a new set of history items. */
 	index = 0;
-	for (p = nautilus_get_history_list (); p != NULL; p = p->next) {
-		char *path;
+	p = nautilus_get_history_list ();
+	if (p != NULL) {
+		/* Append the separator when there's any history items */
+		append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
 
-		path = g_strdup_printf ("/Go/History%d", index); 
-                append_bookmark_to_menu (window,
-                                         NAUTILUS_BOOKMARK (p->data),
-                                         path,
-                                         FALSE);
-                g_free (path);
+		while (p != NULL) {
+			path = g_strdup_printf ("/Go/History%d", index); 
+	                append_bookmark_to_menu (window,
+	                                         NAUTILUS_BOOKMARK (p->data),
+	                                         path,
+	                                         FALSE);
+	                g_free (path);
 
-                ++index;
-	}	
+	                ++index;
+			p = p->next;
+		}
+	}
 }
 
 static gboolean

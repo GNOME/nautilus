@@ -246,7 +246,7 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
 	                 _("Kill the Loser content view"),		/* hint that appears in status bar */
 	                 bonobo_ui_handler_menu_get_pos 
 	                 	(local_ui_handler, 
-	                         NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1, 	/* position within menu; -1 means last */
+	                         NAUTILUS_MENU_PATH_NEW_ITEMS_PLACEHOLDER) + 1,	/* position within menu; -1 means last */
 	                 pixmap_type,						/* pixmap type */
 	                 pixbuf,						/* pixmap data */
 	                 'M',							/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
