@@ -30,6 +30,7 @@ libnautilusinclude_HEADERS=			\
 	gtkflist.h				\
 	gtkscrollframe.h			\
 	nautilus.h				\
+	nautilus-alloc.h			\
 	nautilus-background.h			\
 	nautilus-debug.h			\
 	nautilus-directory.h			\

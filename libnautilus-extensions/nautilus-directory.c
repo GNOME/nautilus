@@ -27,11 +27,13 @@
 #endif
 
 #include "nautilus-directory.h"
-#include "libnautilus.h"
 
 #include <stdlib.h>
 
 #include <gtk/gtkmain.h>
+
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -43,6 +45,7 @@
 #include <gnome-xml/tree.h>
 #include <gnome-xml/xmlmemory.h>
 
+#include "nautilus-alloc.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -72,6 +75,8 @@ static void nautilus_directory_read_metafile (NautilusDirectory *directory);
 static void nautilus_directory_write_metafile (NautilusDirectory *directory);
 static void nautilus_directory_request_write_metafile (NautilusDirectory *directory);
 static void nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory);
+
+static void nautilus_file_detach (NautilusFile *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -132,20 +137,12 @@ nautilus_directory_finalize (GtkObject *object)
 
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
 
-	/* Unref all the files. */
+	/* Let go of all the files. */
 	while (directory->details->files != NULL) {
-		NautilusFile *file;
-		
-		file = directory->details->files->data;
+		nautilus_file_detach (directory->details->files->data);
 
-		/* Detach the file from this directory. */
-		g_assert (file->directory == directory);
-		file->directory = NULL;
-		
-		/* Let the reference go. */
-		nautilus_file_unref (file);
-
-		directory->details->files = g_list_remove_link (directory->details->files, directory->details->files);
+		directory->details->files = g_list_remove_link
+			(directory->details->files, directory->details->files);
 	}
 
 	g_free (directory->details->uri_text);
@@ -760,7 +757,7 @@ nautilus_directory_new_file (NautilusDirectory *directory, GnomeVFSFileInfo *inf
 	gnome_vfs_file_info_ref (info);
 
 	file = g_new (NautilusFile, 1);
-	file->ref_count = 1;
+	file->ref_count = 0;
 	file->directory = directory;
 	file->info = info;
 
@@ -769,18 +766,79 @@ nautilus_directory_new_file (NautilusDirectory *directory, GnomeVFSFileInfo *inf
 	return file;
 }
 
+/**
+ * nautilus_file_get:
+ * @uri: URI of file to get.
+ *
+ * Get a file given a uri.
+ * Returns a referenced object. Unref when finished.
+ * If two windows are viewing the same uri, the file object is shared.
+ */
+NautilusFile *
+nautilus_file_get (const char *uri)
+{
+	GnomeVFSResult result;
+	GnomeVFSFileInfo file_info;
+	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
+	char *directory_uri;
+	NautilusDirectory *directory;
+	NautilusFile *file;
+
+	/* Get info on the file. */
+	result = gnome_vfs_get_file_info (uri, &file_info,
+					  GNOME_VFS_FILE_INFO_FASTMIMETYPE, NULL);
+	if (result != GNOME_VFS_OK)
+		return NULL;
+
+	/* Make VFS version of URI. */
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL)
+		return NULL;
+
+	/* Make VFS version of directory URI. */
+	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	if (directory_vfs_uri == NULL)
+		return NULL;
+
+	/* Make text version of directory URI. */
+	directory_uri = gnome_vfs_uri_to_string (directory_vfs_uri,
+						 GNOME_VFS_URI_HIDE_NONE);
+	gnome_vfs_uri_unref (directory_vfs_uri);
+
+	/* Get object that represents the directory. */
+	directory = nautilus_directory_get (directory_uri);
+	g_free (directory_uri);
+	if (directory == NULL)
+		return NULL;
+
+	file = nautilus_directory_new_file (directory, &file_info);
+	gtk_object_unref (GTK_OBJECT (directory));
+	return file;
+}
+
 void
 nautilus_file_unref (NautilusFile *file)
 {
 	g_return_if_fail (file != NULL);
-	g_return_if_fail (file->ref_count != 0);
+
+	g_assert (file->ref_count != 0);
+	g_assert (file->directory != NULL);
 
 	/* Decrement the ref count. */
 	if (--file->ref_count != 0)
 		return;
 
+	/* No references left, so it's time to release our hold on the directory. */
+	gtk_object_unref (GTK_OBJECT (file->directory));
+}
+
+static void
+nautilus_file_detach (NautilusFile *file)
+{
+	g_assert (file->ref_count == 0);
+
 	/* Destroy the file object. */
-	g_assert (file->directory == NULL);
 	gnome_vfs_file_info_unref (file->info);
 }
 
@@ -868,7 +926,7 @@ nautilus_file_get_date_as_string (NautilusFile *file)
 	today = g_date_new ();
 	g_date_set_time (today, time (NULL));
 
-	/* Overflow results in a large number; fine for our purposes */
+	/* Overflow results in a large number; fine for our purposes. */
 	file_date_age = g_date_julian (today) - g_date_julian (file_date);
 
 	g_date_free (file_date);
@@ -901,7 +959,6 @@ nautilus_file_get_date_as_string (NautilusFile *file)
 	{
 		format = _("%-m/%-d/%y %-I:%M %p");
 	}
-
 
 	return nautilus_strdup_strftime (format, file_time);
 }

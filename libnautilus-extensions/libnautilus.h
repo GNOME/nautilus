@@ -4,6 +4,7 @@
  *  libnautilus: A library for nautilus view components.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
+ *  Copyright (C) 2000 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -22,23 +23,18 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
+
 /* libnautilus.h: Main library header file */
 
 #ifndef LIBNAUTILUS_H
-#define LIBNAUTILUS_H 1
-
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
-#ifndef g_alloca
-#define g_alloca alloca
-#endif
+#define LIBNAUTILUS_H
 
 #include <bonobo/gnome-bonobo.h>
 #include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-alloc.h>
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/ntl-view-frame.h>
 #include <libnautilus/ntl-meta-view-frame.h>
 #include <libnautilus/ntl-content-view-frame.h>
 
-#endif
+#endif /* LIBNAUTILUS_H */

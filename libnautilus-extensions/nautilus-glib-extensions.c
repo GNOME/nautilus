@@ -81,23 +81,22 @@ static void
 check_tm_to_g_date (time_t time)
 {
 	struct tm *before_conversion;
-	struct tm *after_conversion;
+	struct tm after_conversion;
 	GDate *date;
 
 	before_conversion = localtime (&time);
 	date = nautilus_g_date_new_tm (before_conversion);
 
-	after_conversion = g_new0 (struct tm, 1);
-	g_date_to_struct_tm (date, after_conversion);
+	g_date_to_struct_tm (date, &after_conversion);
 
-	NAUTILUS_CHECK_INTEGER_RESULT (after_conversion->tm_mday,
+	g_date_free (date);
+
+	NAUTILUS_CHECK_INTEGER_RESULT (after_conversion.tm_mday,
 				       before_conversion->tm_mday);
-	NAUTILUS_CHECK_INTEGER_RESULT (after_conversion->tm_mon,
+	NAUTILUS_CHECK_INTEGER_RESULT (after_conversion.tm_mon,
 				       before_conversion->tm_mon);
-	NAUTILUS_CHECK_INTEGER_RESULT (after_conversion->tm_year,
+	NAUTILUS_CHECK_INTEGER_RESULT (after_conversion.tm_year,
 				       before_conversion->tm_year);
-	
-	g_free (after_conversion);
 }
 
 void

@@ -1,3 +1,24 @@
+2000-01-26  Darin Adler  <darin@eazel.com>
+	
+	* libnautilus/nautilus-directory.h:
+	(nautilus_file_get):
+	(nautilus_file_detach):
+	(nautilus_directory_finalize):
+	(nautilus_file_unref):
+	Added interface to get a NautilusFile for a specific file rather than
+	a file from a directory that we are scanning.
+
+	* libnautilus/nautilus-glib-extensions.c:
+	(check_tm_to_g_date):
+	A little cleanup of the self-check code.
+
+	* libnautilus/Makefile.am:
+	libnautilus/libnautilus.h:
+	libnautilus/nautilus-alloc.h: 
+	libnautilus/nautilus-directory.h:
+	Moved g_alloca into its own header file so you don't have to include
+	all the Bonobo stuff just to use g_alloca.
+
 2000-01-26  Andy Hertzfeld <andy@eazel.com>
 
 	* src/file-manager/fm-icon-cache.c:

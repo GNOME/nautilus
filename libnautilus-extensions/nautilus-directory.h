@@ -105,6 +105,9 @@ gboolean           nautilus_directory_is_ready_for_layout (NautilusDirectory    
 NautilusFile *     nautilus_directory_new_file            (NautilusDirectory        *directory,
 							   GnomeVFSFileInfo         *info);
 
+/* Getting at a single file. */
+NautilusFile *     nautilus_file_get                      (const char               *uri);
+
 /* Basic operations on file objects. */
 void               nautilus_file_ref                      (NautilusFile             *file);
 void               nautilus_file_unref                    (NautilusFile             *file);
