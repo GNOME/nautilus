@@ -512,10 +512,9 @@ remove_button_callback (GtkWidget *widget, NautilusThemeSelector *theme_selector
 
 	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
 				 _("Click on a theme to remove it."));
-	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->add_button_label),
+	gtk_label_set_text (GTK_LABEL (theme_selector->details->add_button_label),
 				 _("Cancel Remove"));
 	
-	gtk_widget_hide (theme_selector->details->add_button);
 	populate_list_with_themes (theme_selector);
 }
 
@@ -575,10 +574,7 @@ exit_remove_mode (NautilusThemeSelector *theme_selector)
 	set_help_label (theme_selector, FALSE);
 	
 	/* change the add button label back to it's normal state */
-	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->add_button_label), _("Add New Theme"));
-
-	gtk_widget_show (theme_selector->details->add_button);
-	
+	gtk_label_set_text (GTK_LABEL (theme_selector->details->add_button_label), _("Add New Theme"));
 	populate_list_with_themes (theme_selector);	
 }
 

@@ -1,12 +1,19 @@
 2001-01-23  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-theme-selector.c: (remove_button_callback),
+	(exit_remove_mode):
+	fixed recently introduced problem where it was still
+	treating button labels as nautilus_labels instead of
+	gtk_labels.
+	
+2001-01-23  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-theme-selector.c:
 	(nautilus_theme_selector_initialize), (remove_button_callback),
 	(exit_remove_mode):
 	fixed bug 5972, remove theme button uses aa text, by using
-	a gtk_label instead of a nautilus_label.  Also, hide the
-	add button during remove mode so it's less confusing.
-	
+	a gtk_label instead of a nautilus_label.
+		
 	* libnautilus-extensions/nautilus-theme.c:
 	(nautilus_theme_make_selector):
 	fixed a crash when an installed theme lacked a preview icon,
