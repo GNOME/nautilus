@@ -495,7 +495,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 	uint text_color;
 	
 	text_x = x_pos + 1;
-	text_y = 7; /* calculate this to center font in label? */
+	text_y = 5; /* calculate this to center font in label? */
 	
 	/* make sure we can draw at least some of it */
 	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	

@@ -35,7 +35,7 @@
 #include <libgnome/gnome-i18n.h>
 
 #define MIN_FONT_SIZE 5
-#define DEFAULT_LINE_SPACING 2
+#define DEFAULT_LINE_SPACING 0
 #define DEFAULT_FONT_SIZE 14
 
 #define UNDEFINED_DIMENSION -1
@@ -363,15 +363,11 @@ smooth_text_layout_line_list_draw_to_pixbuf (GList *text_line_list,
 			if (underlined) {
 				ArtIRect underline_rect;
 
-				/* FIXME bugzilla.eazel.com 2865: This underlining code should
-				 * take into account the baseline.
-				 */
-				const int underline_height = 1;
-
-				underline_rect = nautilus_glyph_intersect (glyph, text_x, text_y, NULL);
-				underline_rect = nautilus_art_irect_inset (underline_rect, 1, 0);
-  				underline_rect.y0 = underline_rect.y1 - underline_height;
-				
+				nautilus_glyph_get_underline_rectangle (glyph, &underline_rect);
+				underline_rect.y0 += text_y;
+				underline_rect.y1 += text_y;
+				underline_rect.x0 += text_x;
+				underline_rect.x1 += text_x;
 				nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf,
 									       &underline_rect,
 									       color);

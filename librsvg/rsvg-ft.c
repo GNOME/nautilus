@@ -809,6 +809,8 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	FT_UInt last_glyph = 0; /* for kerning */
 	guint n_glyphs;
 	double init_x, init_y;
+	int pixel_height, pixel_baseline;
+	int pixel_underline_position, pixel_underline_thickness;
 
 	g_return_val_if_fail (ctx != NULL, NULL);
 	g_return_val_if_fail (str != NULL, NULL);
@@ -820,6 +822,27 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	font = rsvg_ft_font_resolve (ctx, fh);
 	if (font == NULL)
 		return NULL;
+
+	/* Set the font to the correct size then generate the
+	 * vertical pixel positioning metrics we need. Use 72dpi
+	 * so that pixels == points
+	 */
+	FT_Set_Char_Size (font->face,
+			  FT_FROMFLOAT(sx),
+			  FT_FROMFLOAT(sy),
+			  72, 72);
+	pixel_height = FT_TRUNC (FT_CEIL (font->face->size->metrics.ascender
+					  - font->face->size->metrics.descender));
+	pixel_baseline = FT_TRUNC (FT_CEIL (font->face->size->metrics.ascender));
+
+	pixel_underline_position = ((font->face->ascender
+				     - font->face->underline_position
+				     - font->face->underline_thickness / 2) * sy
+				     / font->face->units_per_EM);
+
+	pixel_underline_thickness = (font->face->underline_thickness * sy
+				     / font->face->units_per_EM);
+	pixel_underline_thickness = MAX (1, pixel_underline_thickness);
 
 	bbox.x0 = bbox.x1 = 0;
 
@@ -918,21 +941,23 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	}
 
 	rowstride = (bbox.x1 - bbox.x0 + 3) & -4;
-	buf = g_malloc0 (rowstride * (bbox.y1 - bbox.y0));
+	buf = g_malloc0 (rowstride * pixel_height);
 
 	result = g_new (RsvgFTGlyph, 1);
 	result->refcnt = 1;
 	result->width = bbox.x1 - bbox.x0;
-	result->height = bbox.y1 - bbox.y0;
+	result->height = pixel_height;
 	result->xpen = glyph_affine[4] - init_x;
 	result->ypen = glyph_affine[5] - init_y;
 	result->rowstride = rowstride;
 	result->buf = buf;
+	result->underline_position = pixel_underline_position;
+	result->underline_thickness = pixel_underline_thickness;
 
 	for (i = 0; i < n_glyphs; i++) {
 		rsvg_ft_glyph_composite (result, glyphs[i],
 					 glyph_xy[i * 2] - bbox.x0,
-					 glyph_xy[i * 2 + 1] - bbox.y0);
+					 glyph_xy[i * 2 + 1] + pixel_baseline);
 		rsvg_ft_glyph_unref (glyphs[i]);
 	}
 

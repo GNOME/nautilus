@@ -1,3 +1,43 @@
+2001-02-28  John Harper  <jsh@eazel.com>
+
+	reviewed by Ramiro Estrugo <ramiro@eazel.com>
+
+	Fixed bug 7111 (Icons appear in formation, then shift, when
+	page first loads). This also fixed bugs 4174 (NautilusLabel
+	needs to handle text with descenders better.) and 2865 (Text
+	underlining should honor the rendered string's baseline):
+
+	* librsvg/rsvg-ft.c (rsvg_ft_measure_or_render_string): don't
+	use the union of the bounding boxes of the glyphs to find the
+	overall bounding box, for the vertical component use the actual
+	font metrics. Also set the underline_position and
+	underline_thickness fields of the returned glyph structure
+
+	* librsvg/rsvg-ft.h (struct _RsvgFTGlyph): added two new
+	fields: underline_position and underline_thickness
+
+	* libnautilus-extensions/nautilus-smooth-text-layout.c
+	(smooth_text_layout_line_list_draw_to_pixbuf): don't just draw
+	the underline under the glyph's rectangle, draw it where the
+	glyph object wants it to be (using
+	nautilus_glyph_get_underline_rectangle (), which for text uses
+	the actual underline information from the font)
+
+	* libnautilus-extensions/nautilus-glyph.h,
+	libnautilus-extensions/nautilus-glyph.c
+	(nautilus_glyph_get_underline_rectangle): new function, fills
+	in an ArtIRect corresponding to the underline of the given
+	glyph object
+
+	* components/services/nautilus-dependent-shared/eazel-services-header.c: 
+	* libnautilus-extensions/nautilus-tabs.c,
+	libnautilus-extensions/nautilus-smooth-text-layout.c,
+	libnautilus-extensions/nautilus-icon-canvas-item.c
+	* src/nautilus-sidebar-title.c, src/nautilus-sidebar-tabs.c
+
+	Tweaked a few hardcoded constants to fix minor changes in font
+	layout (this part was checked by Arlo)
+
 2001-02-27  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Oslen <eskil@eazel.com>

@@ -146,12 +146,12 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 
 	/* Create the more info label */
 	sidebar_title->details->more_info_label = sidebar_title_create_more_info_label ();
-	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info_label, 0, 0, 2);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info_label, 0, 0, 0);
 	gtk_widget_show (sidebar_title->details->more_info_label);
 
 	sidebar_title->details->emblem_box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (sidebar_title->details->emblem_box);
-	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 2);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
 
 	sidebar_title->details->notes = GTK_WIDGET (gtk_label_new (NULL));
 	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->notes), TRUE);

@@ -182,6 +182,27 @@ nautilus_glyph_get_dimensions (const NautilusGlyph *glyph)
 	return glyph_dimensions;
 }
 
+/**
+ * nautilus_glyph_get_underline_rectangle:
+ * @glyph: A NautilusGlyph.
+ * @rectangle: The ArtIRect to store the underline dimensions in.
+ *
+ * Fills @rectangle with the dimensions of the underline rectangle suitable
+ * for @glyph.
+ */
+void
+nautilus_glyph_get_underline_rectangle (const NautilusGlyph *glyph,
+					ArtIRect	    *rectangle)
+{
+	g_return_if_fail (glyph != NULL);
+	g_return_if_fail (glyph_is_valid (glyph));
+
+	rectangle->x0 = 0;
+	rectangle->x1 = glyph_get_width_space_safe (glyph);
+	rectangle->y0 = glyph->rsvg_glyph->underline_position;
+	rectangle->y1 = rectangle->y0 + glyph->rsvg_glyph->underline_thickness;
+}
+
 /* A glyph is valid if IT and the RsvgGlyph it wraps area not NULL */
 static gboolean
 glyph_is_valid (const NautilusGlyph *glyph)

@@ -95,7 +95,7 @@ eazel_services_header_title_new (const char *left_text)
 	header->details->left_text = eazel_services_label_new (left_text,
 							       1,
 							       0.1,
-							       0.3,
+							       0.1,
 							       10,
 							       0,
 							       EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,

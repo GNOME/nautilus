@@ -60,7 +60,7 @@
 
 /* gap between bottom of icon and start of text box */
 #define LABEL_OFFSET 1
-#define LABEL_LINE_SPACING 2
+#define LABEL_LINE_SPACING 0
 
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80

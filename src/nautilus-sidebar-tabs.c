@@ -108,7 +108,7 @@ struct NautilusSidebarTabsDetails {
 #define TAB_TOP_GAP 3
 #define TAB_ROW_V_OFFSET 3
 #define TAB_DEFAULT_LEFT_OFFSET 4
-#define THEMED_TAB_TEXT_V_OFFSET 7
+#define THEMED_TAB_TEXT_V_OFFSET 5
 
 /* headers */
 

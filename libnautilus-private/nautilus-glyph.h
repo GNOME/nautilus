@@ -43,6 +43,8 @@ void               nautilus_glyph_free           (NautilusGlyph              *gl
 int                nautilus_glyph_get_width      (const NautilusGlyph        *glyph);
 int                nautilus_glyph_get_height     (const NautilusGlyph        *glyph);
 NautilusDimensions nautilus_glyph_get_dimensions (const NautilusGlyph        *glyph);
+void		   nautilus_glyph_get_underline_rectangle (const NautilusGlyph *glyph,
+							   ArtIRect	     *rectangle);
 void               nautilus_glyph_draw_to_pixbuf (const NautilusGlyph        *glyph,
 						  GdkPixbuf                  *pixbuf,
 						  int                         destination_x,
