@@ -29,23 +29,20 @@
 #include <config.h>
 #include "nautilus-profiler.h"
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <glib.h>
-
-#include <libgnome/gnome-i18n.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkbutton.h>
-#include <gtk/gtktext.h>
-#include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtktext.h>
+#include <gtk/gtkvbox.h>
 #include <gtk/gtkvscrollbar.h>
-
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-gtk-extensions.h>
+#include <gtk/gtkwindow.h>
+#include <libgnome/gnome-i18n.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 /* These are defined in eazel-tools/profiler/profiler.C */
 extern void profile_on (void);
