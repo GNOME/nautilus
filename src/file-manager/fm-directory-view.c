@@ -94,6 +94,10 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <unistd.h>
 
+
+/* Number of seconds until cancel dialog shows up */
+#define DELAY_UNTIL_CANCEL_MSECS 5000
+
 /* The list view receives files from the directory model in chunks, to
  * improve responsiveness during loading. This is the number of files
  * we add to the list or change at once.
@@ -6232,8 +6236,9 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\"."), file_name);
 	g_free (file_name);
 	
-	eel_timed_wait_start
-		(cancel_activate_callback,
+	eel_timed_wait_start_with_duration
+		(DELAY_UNTIL_CANCEL_MSECS,
+		 cancel_activate_callback,
 		 parameters,
 		 _("Cancel Open?"),
 		 timed_wait_prompt,
