@@ -31,13 +31,11 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-string.h>
 #include <gnome.h>
-
-#define ARRAY_LENGTH(array) \
-	(sizeof (array) / sizeof ((array)[0]))
 
 struct _NautilusIndexPanelDetails {
 	GtkWidget *index_container;
@@ -142,7 +140,7 @@ nautilus_index_panel_initialize (GtkObject *object)
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (index_panel),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   index_dnd_target_table, ARRAY_LENGTH (index_dnd_target_table), GDK_ACTION_COPY);
+			   index_dnd_target_table, NAUTILUS_N_ELEMENTS (index_dnd_target_table), GDK_ACTION_COPY);
 }
 
 static void
@@ -275,7 +273,7 @@ select_font(const gchar *text_to_format, gint width, const gchar* font_template)
 	gint font_sizes[8] = { 28, 24, 18, 14, 12, 10, 8 };
 	gint font_index;
 	
-	for (font_index = 0; font_index < ARRAY_LENGTH (font_sizes); font_index++) {
+	for (font_index = 0; font_index < NAUTILUS_N_ELEMENTS (font_sizes); font_index++) {
 		if (candidate_font != NULL)
 			gdk_font_unref (candidate_font);
 		

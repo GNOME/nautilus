@@ -38,7 +38,7 @@ struct _NautilusIconsViewIconItemDetails {
 	GdkPixbuf *pixbuf;
 
 	/* text for our label */
-	gchar* label;
+	char* label;
 	
 	/* Width value */
 	double width;
@@ -61,11 +61,11 @@ struct _NautilusIconsViewIconItemDetails {
    	/* boolean to indicate selection state */
    	guint is_selected : 1;
         
-	/* boolean to indicate keyboard select state */
+	/* boolean to indicate keyboard selection state */
 	guint is_alt_selected: 1;
 
-   	/* boolean to indicate hilite state (for swallow) */
-   	guint is_hilited : 1;
+   	/* boolean to indicate highlight state (for swallow) */
+   	guint is_highlighted : 1;
       	
 	/* Whether the pixbuf has changed */
 	guint need_pixbuf_update : 1;
@@ -76,7 +76,7 @@ struct _NautilusIconsViewIconItemDetails {
 
 
 
-/* Object argument IDs */
+/* Object argument IDs. */
 enum {
 	ARG_0,
 	ARG_PIXBUF,
@@ -87,35 +87,37 @@ enum {
 	ARG_Y,
     	ARG_SELECTED,
     	ARG_ALT_SELECTED,
-    	ARG_HILITED
+    	ARG_HIGHLIGHTD
 };
 
 /* constants */
 
 #define MAX_LABEL_WIDTH 80
 
-/* Bitmap for stippled selection rectangles.  */
+/* Bitmap for stippled selection rectangles. */
 static GdkBitmap *stipple;
 static char stipple_bits[] = { 0x02, 0x01 };
 
-/* headers */
-
+/* GtkObject */
 static void nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *class);
-static void nautilus_icons_view_icon_item_initialize (NautilusIconsViewIconItem *cpb);
+static void nautilus_icons_view_icon_item_initialize (NautilusIconsViewIconItem *item);
 static void nautilus_icons_view_icon_item_destroy (GtkObject *object);
 static void nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 static void nautilus_icons_view_icon_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
+/* GnomeCanvasItem */
 static void nautilus_icons_view_icon_item_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
 static void nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width, int height);
 static void nautilus_icons_view_icon_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
 static double nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
 static void nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double *y1, double *x2, double *y2);
 
-static void nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable, GdkFont *title_font, gchar* label, 
-                                               gint icon_left, gint icon_bottom, gboolean real_draw);
-                                               
+/* private */
 static GdkFont* get_font_for_item(GnomeCanvasItem *item);
+static void nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
+					       GdkFont *title_font, const char* label, 
+                                               int icon_left, int icon_bottom,
+					       gboolean real_draw);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconsViewIconItem, nautilus_icons_view_icon_item, GNOME_TYPE_CANVAS_ITEM)
 
@@ -146,8 +148,8 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_SELECTED);
 	gtk_object_add_arg_type ("NautilusIconsViewIconItem::alt_selected",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_ALT_SELECTED);
-	gtk_object_add_arg_type ("NautilusIconsViewIconItem::hilited",
-				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HILITED);
+	gtk_object_add_arg_type ("NautilusIconsViewIconItem::highlightd",
+				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTD);
 
 	object_class->destroy = nautilus_icons_view_icon_item_destroy;
 	object_class->set_arg = nautilus_icons_view_icon_item_set_arg;
@@ -190,7 +192,7 @@ nautilus_icons_view_icon_item_destroy (GtkObject *object)
 
 	if (details->pixbuf != NULL)
 		gdk_pixbuf_unref (details->pixbuf);
-	g_free(details->label);
+	g_free (details->label);
                 
 	g_free (details);
 
@@ -206,7 +208,7 @@ nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg
 	NautilusIconsViewIconItem *icon_view_item;
 	NautilusIconsViewIconItemDetails *details;
 	GdkPixbuf *pixbuf;
-	gchar* new_label;
+	char* new_label;
 	double val;
 
 	item = GNOME_CANVAS_ITEM (object);
@@ -285,8 +287,8 @@ nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg
 		gnome_canvas_item_request_update (item);
 		break;
        
-        case ARG_HILITED:
-		details->is_hilited = GTK_VALUE_BOOL (*arg);
+        case ARG_HIGHLIGHTD:
+		details->is_highlighted = GTK_VALUE_BOOL (*arg);
 		gnome_canvas_item_request_update (item);
 		break;
 
@@ -333,15 +335,15 @@ nautilus_icons_view_icon_item_get_arg (GtkObject *object, GtkArg *arg, guint arg
 		break;
 		
         case ARG_SELECTED:
-                GTK_VALUE_BOOL(*arg) = details->is_selected;
+                GTK_VALUE_BOOL (*arg) = details->is_selected;
                 break;
 		
         case ARG_ALT_SELECTED:
-                GTK_VALUE_BOOL(*arg) = details->is_alt_selected;
+                GTK_VALUE_BOOL (*arg) = details->is_alt_selected;
                 break;
 		
-        case ARG_HILITED:
-                GTK_VALUE_BOOL(*arg) = details->is_hilited;
+        case ARG_HIGHLIGHTD:
+                GTK_VALUE_BOOL (*arg) = details->is_highlighted;
                 break;
 		
         default:
@@ -448,7 +450,7 @@ compute_render_affine (NautilusIconsViewIconItem *icon_view_item, double *render
 
 /* utility to return the proper font for a given item, factoring in the current zoom level */
 static GdkFont*
-get_font_for_item(GnomeCanvasItem *item)
+get_font_for_item (GnomeCanvasItem *item)
 {
 	GnomeIconContainer* container = GNOME_ICON_CONTAINER (item->canvas);
 	return container->details->label_font[container->details->zoom_level];
@@ -471,7 +473,7 @@ recompute_bounding_box (NautilusIconsViewIconItem *icon_view_item)
 		return;
 	}
 
-        /* add 2 pixels slop to each side for hilite margin */
+        /* add 2 pixels slop to each side for highlight margin */
 	rect.x0 = 0.0;
 	rect.x1 = details->pixbuf->art_pixbuf->width + 4;
 	if ((details->text_width + 4)> rect.x1)
@@ -587,68 +589,76 @@ transform_pixbuf (guchar *dest, int x, int y, int width, int height, int rowstri
 	}
 }
 
-/* utility routine to draw the label in a box, using gnomelib routines */
+/* Draw the label in a box, using gnomelib routines. */
 static void
-nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable, GdkFont *title_font, gchar* label, 
-                                   gint icon_left, gint icon_bottom, gboolean real_draw)
+nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
+				   GdkFont *title_font, const char *label, 
+                                   int icon_left, int icon_bottom, gboolean real_draw)
 {
-	GnomeIconTextInfo *icon_text_info;
- 	gint box_left;       
-        GdkGC* temp_gc;
 	NautilusIconsViewIconItem *icon_view_item;
 	NautilusIconsViewIconItemDetails *details;
-        gint line_width;
-	gint line_height;
-
+        int text_width, text_height;
+        GdkGC* gc;
+	int max_label_width;
+	int item_width, box_left;
+	GnomeIconTextInfo *icon_text_info;
+	
 	icon_view_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
-
 	details = icon_view_item->details;
-        line_width = gdk_string_width(title_font, label);
-	line_height = gdk_string_height(title_font, label);
-
-	if (real_draw)
-		temp_gc = gdk_gc_new(item->canvas->layout.bin_window);
 	
-	if (line_width < floor(MAX_LABEL_WIDTH * item->canvas->pixels_per_unit)) {
-		gint item_width = floor(item->x2 - item->x1);
-		box_left = icon_left + ((item_width - line_width) >> 1);
-		if (real_draw)
-			gdk_draw_string (drawable, title_font, temp_gc, box_left, icon_bottom + line_height, label);
-		line_height += 4; /* extra slop for nicer hilite */
+        text_width = gdk_string_width (title_font, label);
+	text_height = gdk_string_height (title_font, label);
+	
+	if (real_draw) {
+		item_width = floor (item->x2 - item->x1);
+		gc = gdk_gc_new (item->canvas->layout.bin_window);
+	}
+	
+	max_label_width = floor (MAX_LABEL_WIDTH * item->canvas->pixels_per_unit);
+	if (text_width < max_label_width) {
+		if (real_draw) {
+			box_left = icon_left + (item_width - text_width) / 2;
+			gdk_draw_string (drawable, title_font, gc,
+					 box_left, icon_bottom + text_height, label);
+		}
 	} else {	
-		box_left = icon_left;
-		icon_text_info = gnome_icon_layout_text(title_font, label, " -_,;.:?/&",
-							floor(MAX_LABEL_WIDTH * item->canvas->pixels_per_unit),
-							TRUE);
-		if (real_draw)
-			gnome_icon_paint_text(icon_text_info, drawable, temp_gc, box_left, icon_bottom, GTK_JUSTIFY_CENTER);
-		line_width = icon_text_info->width;
-		line_height = icon_text_info->height;
-		gnome_icon_text_info_free(icon_text_info);
-	}
-			                 
-        /* invert to indicate selection if necessary */
-        if (details->is_selected && real_draw)
-	{
-		gdk_gc_set_function (temp_gc, GDK_INVERT); 
-		gdk_draw_rectangle (drawable, temp_gc, TRUE, box_left, icon_bottom - 2, line_width, line_height);	    
-		gdk_gc_set_function (temp_gc, GDK_COPY); 
+		icon_text_info = gnome_icon_layout_text
+			(title_font, label, " -_,;.:?/&", max_label_width, TRUE);
+		
+		text_width = icon_text_info->width;
+		text_height = icon_text_info->height;
+		
+		if (real_draw) {
+			box_left = icon_left + (item_width - text_width) / 2;
+			gnome_icon_paint_text (icon_text_info, drawable, gc,
+					       box_left, icon_bottom, GTK_JUSTIFY_CENTER);
+		}
+		
+		gnome_icon_text_info_free (icon_text_info);
 	}
 	
-        /* indicate alt-selection by framing the text with a gray-stippled rectangle */
-        
-        if (details->is_alt_selected && real_draw)
-	{
-		gdk_gc_set_stipple(temp_gc, stipple);
-                gdk_gc_set_fill(temp_gc, GDK_STIPPLED);
-                gdk_draw_rectangle (drawable, temp_gc, FALSE, box_left, icon_bottom - 2, line_width, line_height);	    
-	}
-        
-	if (real_draw)
-		gdk_gc_unref (temp_gc);   
+	text_height += 4; /* extra slop for nicer highlighting */
 	
-	details->text_width  = (double) line_width;
-	details->text_height = (double) line_height;
+	if (real_draw) {
+		/* invert to indicate selection if necessary */
+		if (details->is_selected) {
+			gdk_gc_set_function (gc, GDK_INVERT); 
+			gdk_draw_rectangle (drawable, gc, TRUE, box_left, icon_bottom - 2, text_width, text_height);	    
+			gdk_gc_set_function (gc, GDK_COPY); 
+		}
+		
+		/* indicate alt-selection by framing the text with a gray-stippled rectangle */
+		if (details->is_alt_selected) {
+			gdk_gc_set_stipple(gc, stipple);
+			gdk_gc_set_fill(gc, GDK_STIPPLED);
+			gdk_draw_rectangle (drawable, gc, FALSE, box_left, icon_bottom - 2, text_width, text_height);	    
+		}
+		
+		gdk_gc_unref (gc);
+	}
+	
+	details->text_width  = (double) text_width;
+	details->text_height = (double) text_height;
 }
 
 /* draw the icon item */
@@ -663,8 +673,8 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	guchar *buf;
 	GdkPixbuf *pixbuf;
 	ArtIRect p_rect, a_rect, d_rect;
-	gint w, h, icon_height;
-        gint center_offset = 0;
+	int w, h, icon_height;
+        int center_offset = 0;
         GnomeIconContainer *container = GNOME_ICON_CONTAINER(item->canvas);
  	GdkFont *title_font = get_font_for_item(item); 	
        
@@ -726,12 +736,12 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_SMALLEST) {
 		icon_height = details->pixbuf->art_pixbuf->height * item->canvas->pixels_per_unit;
 		nautilus_icons_view_draw_text_box(item, drawable, title_font, details->label, item->x1 - x, 
-						  item->y1 - y  + icon_height, TRUE);       	
+						  item->y1 - y + icon_height, TRUE);       	
 	}
 }
 
 /* return the center offset for this icon */
-gint
+int
 nautilus_icons_view_icon_item_center_offset(NautilusIconsViewIconItem *icon_view_item)
 {
 	GnomeCanvasItem *item;
@@ -787,8 +797,8 @@ nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, 
 	NautilusIconsViewIconItemDetails *details;
 	double i2c[6], render_affine[6], inv[6];
 	ArtPoint c, p;
-	gint px, py;
-	gint center_offset;
+	int px, py;
+	int center_offset;
         double no_hit;
 	ArtPixBuf *apb;
 	guchar *src;
@@ -848,7 +858,7 @@ nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double 
 		return;
 	}
 	
-        /* add 2 pixels slop to each side for hilite margin */
+        /* add 2 pixels slop to each side for highlight margin */
 	rect.x0 = 0.0;
 	rect.x1 = details->pixbuf->art_pixbuf->width + 4;
 	if ((details->text_width + 4) > rect.x1)

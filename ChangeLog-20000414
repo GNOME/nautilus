@@ -1,17 +1,54 @@
+2000-02-01  Darin Adler  <darin@eazel.com>
+
+	Started work on icon stretching. In the process, I am doing some
+	cleanup on the icon container, and I am checking in some of that
+	before the stretching is implemented.
+
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.c:
+	(icon_is_in_region):
+	Got rid of width and height stored in each icon.
+
+	* libnautilus/gnome-icon-container.c:
+	A lot of cleanup, including getting rid of the
+	icon_get_text_bounding_box function.
+	
+	* libnautilus/gnome-icon-container.c:
+	(gnome_icon_container_begin_stretch):
+	(gnome_icon_container_stretch):
+	(gnome_icon_container_end_stretch):
+	(button_release_event):
+	(motion_notify_event):
+	(handle_icon_button_press):
+	First cut at adding stretching hooks in button handlers.
+	
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	(nautilus_icons_view_draw_text_box):
+	Rewrote to fix bug with position of text when it's too long for
+	a single line.
+	
+	* libnautilus/nautilus-glib-extensions.h:
+	Added a macro named NAUTILUS_G_N_ELEMENTS.
+	src/ntl-index-panel.c: 
+	src/explorer-location-bar.c: 
+	libnautilus/gtkflist.c: 
+	Used the NAUTILUS_G_N_ELEMENTS macro.
+
+
 2000-01-31  Andy Hertzfeld <andy@eazel.com>
 
         made the keyboard selection rectangle work again.  It's no longer a
         separate canvas object, but rather a state reflected by the icon_item
         like regular selection
         
-        *libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container-private.h:
         removed the kdb_navigation_item field
         
-        *libnautilus/gnome-icon-container.c:
+	* libnautilus/gnome-icon-container.c:
         removed code that manipulated the kbd_navigation_item, replaced
         with setting and clearing the "alt_selection" item attribute
         
-        *libnautilus/nautilus-icons-view-icon-item.c:
+	* libnautilus/nautilus-icons-view-icon-item.c:
         if the alt_selected attribute is set, frame the item's text with
         a gray-stippled rectangle
         
@@ -58,14 +95,16 @@
 
         implemented the "select all" command in the context menus
         
-        * src/file-manager/directory_view.c,h:
+	* src/file-manager/directory_view.c,h:
         added a directory_view_select_all slot for subclasses to override,
         enabled "select all" item and attached a signal to the item, whose
         callback calls fm_directory_view_select_all
-        * src/file-manager/directory_view_icons.c:
+	
+	* src/file-manager/directory_view_icons.c:
         implemented directory_view_icons_select_all by invoking the "select all"
-        operation of GnomeIconContainer
-        * src/file-manager/directory_view_list.c:
+        operation of GnomeIconContainer.
+	
+	* src/file-manager/directory_view_list.c:
         implemented directory_view_list_select_all by invoking the "select all"
         operation of the clist widget
         

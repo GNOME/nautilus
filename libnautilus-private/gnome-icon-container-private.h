@@ -32,40 +32,42 @@
 
 /* An Icon.  */
 
-struct _GnomeIconContainerIcon {
-	/* Group containing the text and the image.  */
+typedef struct {
+	/* Canvas item for the icon. */
 	GnomeCanvasItem *item;
 
 	/* X/Y coordinates and size.  We could use the GnomeCanvasItem
-           functions, but this is a lot faster.  */
+         * functions, but this is a lot faster
+	 */
 	gdouble x, y;
-	guint width, height;	
         
-	/* Whether this item is selected (i.e. highlighted) for operation.  */
+	/* Whether this item is selected (i.e. highlighted) for operation. */
 	gboolean is_selected : 1;
 
-	/* Whether this item is selected for keyboard navigation.  */
+	/* Whether this item is selected for keyboard navigation. */
 	gboolean is_current : 1;
 
-	/* Whether this item has been repositioned during layout already.  */
+	/* Whether this item has been repositioned during layout already. */
 	gboolean layout_done : 1;
 
-	/* Whether this item was selected before rubberbanding.  */
+	/* Whether this item was selected before rubberbanding. */
 	gboolean was_selected_before_rubberband : 1;
 
 	NautilusControllerIcon *data;
-};
-typedef struct _GnomeIconContainerIcon GnomeIconContainerIcon;
+} GnomeIconContainerIcon;
 
 
+
 #define INITIAL_GRID_WIDTH 64
 #define INITIAL_GRID_HEIGHT 64
-struct _GnomeIconContainerIconGrid {
+
+typedef struct {
 	/* Size of the grid.  */
 	guint width, height;
 
 	/* This is the width that we can actually use for finding an empty
-           position.  */
+         * position.
+	 */
 	guint visible_width;
 
 	/* Array of grid elements.  */
@@ -75,36 +77,36 @@ struct _GnomeIconContainerIconGrid {
 	guint alloc_width, alloc_height;
 
 	/* Position of the first free cell (used to speed up progressive
-	   updates).  If negative, there is no free cell.  */
-	gint first_free_x, first_free_y;
-};
-typedef struct _GnomeIconContainerIconGrid GnomeIconContainerIconGrid;
+	 * updates).  If negative, there is no free cell.
+	 */
+	int first_free_x, first_free_y;
+} GnomeIconContainerIconGrid;
 
 
+
 /* Private GnomeIconContainer members.  */
 
-struct _GnomeIconContainerRubberbandInfo {
-	gboolean active : 1;
+typedef struct {
+	gboolean active;
 
 	gdouble start_x, start_y;
 
 	GnomeCanvasItem *selection_rectangle;
-	guint timer_tag;
+	guint timer_id;
 
 	guint prev_x, prev_y;
 	guint prev_x1, prev_y1;
 	guint prev_x2, prev_y2;
-};
-typedef struct _GnomeIconContainerRubberbandInfo GnomeIconContainerRubberbandInfo;
+} GnomeIconContainerRubberbandInfo;
 
 struct _GnomeIconContainerDetails {
 	NautilusIconsController *controller;
 
 	/* linger selection mode setting. */
-	gboolean linger_selection_mode : 1;
+	gboolean linger_selection_mode;
 
 	/* single-click mode setting */
-	gboolean single_click_mode : 1;
+	gboolean single_click_mode;
 	
 	/* Size of the container.  */
 	guint width, height;
@@ -128,9 +130,10 @@ struct _GnomeIconContainerDetails {
 	GnomeIconContainerRubberbandInfo rubberband_info;
 
 	/* Timeout used to make a selected icon fully visible after a short
-           period of time.  (The timeout is needed to make sure
-           double-clicking still works.)  */
-	int kbd_icon_visibility_timer_tag;
+         * period of time.  (The timeout is needed to make sure
+         * double-clicking still works.)
+	 */
+	guint kbd_icon_visibility_timer_id;
 
         /* the time the mouse button went down in milliseconds */
         guint32 button_down_time;
@@ -150,8 +153,8 @@ struct _GnomeIconContainerDetails {
 	/* Idle ID.  */
 	guint idle_id;
 
-	/* Timeout for selection in browser mode.  */
-	int linger_selection_mode_timer_tag;
+	/* Timeout for selection in browser mode. */
+	guint linger_selection_mode_timer_id;
 
 	/* Icon to be selected at timeout in browser mode.  */
 	GnomeIconContainerIcon *linger_selection_mode_icon;
@@ -160,7 +163,7 @@ struct _GnomeIconContainerDetails {
 	GnomeIconContainerDndInfo *dnd_info;
 
         /* zoom level */
-        gint zoom_level;
+        int zoom_level;
         
         /* default fonts used to draw labels */
         GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
@@ -179,12 +182,15 @@ struct _GnomeIconContainerDetails {
 #define GNOME_ICON_CONTAINER_ICON_WIDTH(container)     NAUTILUS_ICON_LEVEL_STANDARD
 #define GNOME_ICON_CONTAINER_ICON_HEIGHT(container)    NAUTILUS_ICON_LEVEL_STANDARD
 
-GnomeIconContainerIcon *gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
-							      const char *uri);
-void gnome_icon_container_move_icon (GnomeIconContainer *container,
-				     GnomeIconContainerIcon *icon,
-				     int x, int y, gboolean raise);
-void gnome_icon_container_select_list_unselect_others (GnomeIconContainer *container,
-						       GList *icons);
+/* Private functions shared by mutiple files. */
+GnomeIconContainerIcon *gnome_icon_container_get_icon_by_uri             (GnomeIconContainer     *container,
+									  const char             *uri);
+void                    gnome_icon_container_move_icon                   (GnomeIconContainer     *container,
+									  GnomeIconContainerIcon *icon,
+									  int                     x,
+									  int                     y,
+									  gboolean                raise);
+void                    gnome_icon_container_select_list_unselect_others (GnomeIconContainer     *container,
+									  GList                  *icons);
 
 #endif /* GNOME_ICON_CONTAINER_PRIVATE_H */

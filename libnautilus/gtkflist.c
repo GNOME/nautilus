@@ -16,6 +16,7 @@
 #include "gtkflist.h"
 
 #include <gtk/gtkdnd.h>
+#include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-background.h"
 
@@ -38,8 +39,6 @@ struct _GtkFListDetails
 	guint dnd_select_pending_state;
 	
 };
-
-#define ARRAY_LENGTH(a) (sizeof(a) / sizeof((a)[0]))
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
 #define MAX_CLICK_TIME 1500
@@ -177,7 +176,7 @@ gtk_flist_initialize (GtkFList *flist)
 	gtk_drag_dest_set (GTK_WIDGET (flist),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   gtk_flist_dnd_target_table,
-			   ARRAY_LENGTH (gtk_flist_dnd_target_table),
+			   NAUTILUS_N_ELEMENTS (gtk_flist_dnd_target_table),
 			   GDK_ACTION_COPY);
 }
 

@@ -25,13 +25,15 @@
 */
 
 #ifndef NAUTILUS_GLIB_EXTENSIONS_H
-#define NAUTILUS_GLIB_EXTENSIONS_H 1
+#define NAUTILUS_GLIB_EXTENSIONS_H
 
 #include <time.h>
 #include <glib.h>
 
-/* Date & time functions */
+/* Use this until we can switch to G_N_ELEMENTS. */
+#define NAUTILUS_N_ELEMENTS(array) (sizeof (array) / sizeof ((array)[0]))
 
+/* Date & time functions. */
 GDate * nautilus_g_date_new_tm 	 (struct tm *time_pieces);
 char *	nautilus_strdup_strftime (const char *format, 
 				  struct tm *time_pieces);

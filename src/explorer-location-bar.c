@@ -28,6 +28,8 @@
 #include <gnome.h>
 #include <string.h>
 
+#include <libnautilus/nautilus-glib-extensions.h>
+
 #define EXPLORER_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define EXPLORER_DND_TEXT_PLAIN_TYPE 	  "text/plain"
 #define EXPLORER_DND_URL_TYPE		  "_NETSCAPE_URL"
@@ -52,14 +54,12 @@ static GtkTargetEntry drag_types [] = {
 	{ EXPLORER_DND_TEXT_PLAIN_TYPE, 0, EXPLORER_DND_TEXT_PLAIN },
 	{ EXPLORER_DND_URL_TYPE,        0, EXPLORER_DND_URL }
 };
-static const int ndrag_types = sizeof (drag_types) / sizeof (drag_types[0]);
 
 static GtkTargetEntry drop_types [] = {
 	{ EXPLORER_DND_URI_LIST_TYPE,   0, EXPLORER_DND_URI_LIST },
 	{ EXPLORER_DND_TEXT_PLAIN_TYPE, 0, EXPLORER_DND_TEXT_PLAIN },
 	{ EXPLORER_DND_URL_TYPE,        0, EXPLORER_DND_URL }
 };
-static const int ndrop_types = sizeof (drop_types) / sizeof (drop_types[0]);
 
 
 static void
@@ -216,7 +216,7 @@ init (ExplorerLocationBar *location_bar)
 	/* Drag source */
 	gtk_drag_source_set (GTK_WIDGET (eventbox), 
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
-			     drag_types, ndrag_types,
+			     drag_types, NAUTILUS_N_ELEMENTS (drag_types),
 			     GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	gtk_signal_connect  (GTK_OBJECT (eventbox), "drag_data_get",
 			     GTK_SIGNAL_FUNC (drag_data_get_cb),
@@ -225,7 +225,7 @@ init (ExplorerLocationBar *location_bar)
 	/* Drag dest. */
 	gtk_drag_dest_set  (GTK_WIDGET (location_bar),
 			    GTK_DEST_DEFAULT_ALL,
-			    drop_types, ndrop_types,
+			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	gtk_signal_connect (GTK_OBJECT (location_bar), "drag_data_received",
 			    GTK_SIGNAL_FUNC (drag_data_received_cb),
