@@ -2,6 +2,8 @@
 #include "glibwww.h"
 #include <HTEvent.h>
 #include <HTTimer.h>
+#undef PACKAGE
+#undef VERSION
 #include <config.h>
 
 #define WWW_HIGH_PRIORITY (G_PRIORITY_HIGH_IDLE + 50)

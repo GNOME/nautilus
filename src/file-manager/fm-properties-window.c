@@ -660,19 +660,15 @@ get_property_names_from_uri (const char *directory_uri, GList *property_list)
 }
 
 static GList *
-get_property_names ()
+get_property_names (void)
 {
-	char *directory_path, *directory_uri;
+	char *directory_uri;
 	GList *property_list;
 	
-	directory_path = gnome_datadir_file ("nautilus/emblems");
-	directory_uri = g_strdup_printf ("file://%s", directory_path);
-	g_free (directory_path);
-		
-	property_list = get_property_names_from_uri (directory_uri, NULL);
-	g_free (directory_uri);
+	property_list = get_property_names_from_uri
+		("file://" NAUTILUS_PREFIX "/share/nautilus/emblems", NULL);
 
-	directory_uri = g_strdup_printf ("file://%s/emblems", nautilus_get_user_directory());
+	directory_uri = g_strdup_printf ("file://%s/emblems", nautilus_get_user_directory ());
 	property_list = get_property_names_from_uri (directory_uri, property_list);
 	g_free (directory_uri);
 

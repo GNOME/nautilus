@@ -51,10 +51,10 @@
 
 struct NautilusSidebarDetails {
 	GtkVBox *container;
-	NautilusIndexTitle *title;
+	NautilusSidebarTitle *title;
 	GtkNotebook *notebook;
-	NautilusIndexTabs *index_tabs;
-	NautilusIndexTabs *title_tab;
+	NautilusSidebarTabs *sidebar_tabs;
+	NautilusSidebarTabs *title_tab;
 	GtkHBox *button_box_centerer;
 	GtkVBox *button_box;
 	gboolean has_buttons;
@@ -207,23 +207,23 @@ nautilus_sidebar_initialize (GtkObject *object)
 			   GTK_WIDGET (sidebar->details->container));
 
 	/* allocate and install the index title widget */ 
-	sidebar->details->title = NAUTILUS_INDEX_TITLE (nautilus_index_title_new ());
+	sidebar->details->title = NAUTILUS_SIDEBAR_TITLE (nautilus_sidebar_title_new ());
 	gtk_widget_show (GTK_WIDGET (sidebar->details->title));
 	gtk_box_pack_start (GTK_BOX (sidebar->details->container),
 			    GTK_WIDGET (sidebar->details->title),
 			    FALSE, FALSE, GNOME_PAD);
 	
 	/* first, allocate the index tabs */
-	sidebar->details->index_tabs = NAUTILUS_INDEX_TABS (nautilus_index_tabs_new ());
+	sidebar->details->sidebar_tabs = NAUTILUS_SIDEBAR_TABS (nautilus_sidebar_tabs_new ());
 	sidebar->details->selected_index = -1;
 
 	/* also, allocate the title tab */
-	sidebar->details->title_tab = NAUTILUS_INDEX_TABS (nautilus_index_tabs_new ());
-	nautilus_index_tabs_set_title_mode (sidebar->details->title_tab, TRUE);	
+	sidebar->details->title_tab = NAUTILUS_SIDEBAR_TABS (nautilus_sidebar_tabs_new ());
+	nautilus_sidebar_tabs_set_title_mode (sidebar->details->title_tab, TRUE);	
 	
-	gtk_widget_show (GTK_WIDGET (sidebar->details->index_tabs));
+	gtk_widget_show (GTK_WIDGET (sidebar->details->sidebar_tabs));
 	gtk_box_pack_end (GTK_BOX (sidebar->details->container),
-			  GTK_WIDGET (sidebar->details->index_tabs),
+			  GTK_WIDGET (sidebar->details->sidebar_tabs),
 			  FALSE, FALSE, 0);
 
 	sidebar->details->old_width = widget->allocation.width;
@@ -273,7 +273,7 @@ static SidebarPart
 hit_test (NautilusSidebar *sidebar,
 	  int x, int y)
 {
-	if (nautilus_point_in_widget (GTK_WIDGET (sidebar->details->index_tabs), x, y)) {
+	if (nautilus_point_in_widget (GTK_WIDGET (sidebar->details->sidebar_tabs), x, y)) {
 		return TABS_PART;
 	}
 	
@@ -281,7 +281,7 @@ hit_test (NautilusSidebar *sidebar,
 		return TITLE_TAB_PART;
 	}
 	
-	if (nautilus_index_title_hit_test_icon (sidebar->details->title, x, y)) {
+	if (nautilus_sidebar_title_hit_test_icon (sidebar->details->title, x, y)) {
 		return ICON_PART;
 	}
 	
@@ -331,8 +331,8 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 	case BACKGROUND_PART:
 		if (exactly_one && uri_is_local_image (uris[0])) {
 			nautilus_background_set_tile_image_uri
-			(nautilus_get_widget_background (GTK_WIDGET (sidebar)),
-		 	uris[0]);
+				(nautilus_get_widget_background (GTK_WIDGET (sidebar)),
+				 uris[0]);
 		}
 		else if (exactly_one) {
 			gtk_signal_emit (GTK_OBJECT (sidebar),
@@ -356,6 +356,10 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
 							    NULL,
 							    uris[0]);
+				nautilus_file_set_metadata (file,
+							    NAUTILUS_METADATA_KEY_ICON_SCALE,
+							    NULL,
+							    NULL);
 				nautilus_file_unref (file);
 			}
 		}
@@ -387,8 +391,8 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		break;
 	case TABS_PART:
 		/* color dropped on main tabs */
-		nautilus_index_tabs_receive_dropped_color
-			(sidebar->details->index_tabs,
+		nautilus_sidebar_tabs_receive_dropped_color
+			(sidebar->details->sidebar_tabs,
 			 x, y, selection_data);
 		
 		nautilus_directory_set_metadata
@@ -400,7 +404,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		break;
 	case TITLE_TAB_PART:
 		/* color dropped on title tab */
-		nautilus_index_tabs_receive_dropped_color
+		nautilus_sidebar_tabs_receive_dropped_color
 			(sidebar->details->title_tab,
 			 x, y, selection_data);
 		
@@ -450,7 +454,7 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 	nautilus_file_unref(file);
 	
 	/* regenerate the display */
-	title = nautilus_index_title_get_text(sidebar->details->title);
+	title = nautilus_sidebar_title_get_text(sidebar->details->title);
 	nautilus_sidebar_update_info (sidebar, title);  	
 	g_free(title);
 }
@@ -472,12 +476,10 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	case TARGET_URI_LIST:
 		receive_dropped_uri_list (sidebar, x, y, selection_data);
 		break;
-		
 	case TARGET_COLOR:
 		receive_dropped_color (sidebar, x, y, selection_data);
 		break;
 	case TARGET_BGIMAGE:
-	
 		if (hit_test (sidebar, x, y) == BACKGROUND_PART)
 			receive_dropped_uri_list (sidebar, x, y, selection_data);
 		break;	
@@ -512,7 +514,7 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 					  GTK_WIDGET (panel));
 
 	/* tell the index tabs about it */
-	nautilus_index_tabs_add_view (sidebar->details->index_tabs,
+	nautilus_sidebar_tabs_add_view (sidebar->details->sidebar_tabs,
 				      description, GTK_WIDGET (panel), page_num);
 	
 	g_free (description);
@@ -538,7 +540,7 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	description = nautilus_view_frame_get_label (panel);
 
 	/* Remove the tab associated with this panel */
-	nautilus_index_tabs_remove_view (sidebar->details->index_tabs, description);
+	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, description);
 
 	g_free (description);
 }
@@ -568,10 +570,10 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 	}
 	
 	sidebar->details->selected_index = which_view;
-	title = nautilus_index_tabs_get_title_from_index (sidebar->details->index_tabs,
+	title = nautilus_sidebar_tabs_get_title_from_index (sidebar->details->sidebar_tabs,
 							  which_view);
-	nautilus_index_tabs_set_title (sidebar->details->title_tab, title);
-	nautilus_index_tabs_prelight_tab (sidebar->details->title_tab, -1);
+	nautilus_sidebar_tabs_set_title (sidebar->details->title_tab, title);
+	nautilus_sidebar_tabs_prelight_tab (sidebar->details->title_tab, -1);
     
 	g_free (title);
 	
@@ -592,7 +594,7 @@ nautilus_sidebar_deactivate_panel(NautilusSidebar *sidebar)
 	
 	gtk_widget_show (GTK_WIDGET (sidebar->details->button_box));
 	sidebar->details->selected_index = -1;
-	nautilus_index_tabs_select_tab (sidebar->details->index_tabs, -1);
+	nautilus_sidebar_tabs_select_tab (sidebar->details->sidebar_tabs, -1);
 }
 
 /* handle mouse motion events by passing it to the tabs if necessary for pre-lighting */
@@ -603,17 +605,17 @@ nautilus_sidebar_motion_event (GtkWidget *widget, GdkEventMotion *event)
 	int which_tab;
 	int title_top, title_bottom;
 	NautilusSidebar *sidebar;
-	NautilusIndexTabs *index_tabs, *title_tab;
+	NautilusSidebarTabs *sidebar_tabs, *title_tab;
 
 	sidebar = NAUTILUS_SIDEBAR (widget);
 
 	gtk_widget_get_pointer(widget, &x, &y);
 	
 	/* if the click is in the main tabs, tell them about it */
-	index_tabs = sidebar->details->index_tabs;
-	if (y >= GTK_WIDGET (index_tabs)->allocation.y) {
-		which_tab = nautilus_index_tabs_hit_test (index_tabs, x, y);
-		nautilus_index_tabs_prelight_tab (index_tabs, which_tab);
+	sidebar_tabs = sidebar->details->sidebar_tabs;
+	if (y >= GTK_WIDGET (sidebar_tabs)->allocation.y) {
+		which_tab = nautilus_sidebar_tabs_hit_test (sidebar_tabs, x, y);
+		nautilus_sidebar_tabs_prelight_tab (sidebar_tabs, which_tab);
 	}
 
 	/* also handle prelighting in the title tab if necessary */
@@ -622,11 +624,11 @@ nautilus_sidebar_motion_event (GtkWidget *widget, GdkEventMotion *event)
 		title_top = GTK_WIDGET (title_tab)->allocation.y;
 		title_bottom = title_top + GTK_WIDGET (title_tab)->allocation.height;
 		if (y >= title_top && y < title_bottom) {
-			which_tab = nautilus_index_tabs_hit_test (title_tab, x, y);
+			which_tab = nautilus_sidebar_tabs_hit_test (title_tab, x, y);
 		} else {
 			which_tab = -1;
 		}
-		nautilus_index_tabs_prelight_tab (title_tab, which_tab);
+		nautilus_sidebar_tabs_prelight_tab (title_tab, which_tab);
 	}
 
 	return TRUE;
@@ -638,11 +640,11 @@ static gboolean
 nautilus_sidebar_leave_event (GtkWidget *widget, GdkEventCrossing *event)
 {
 	NautilusSidebar *sidebar;
-	NautilusIndexTabs *index_tabs;
+	NautilusSidebarTabs *sidebar_tabs;
 
 	sidebar = NAUTILUS_SIDEBAR (widget);
-	index_tabs = sidebar->details->index_tabs; 
-	nautilus_index_tabs_prelight_tab (index_tabs, -1);
+	sidebar_tabs = sidebar->details->sidebar_tabs; 
+	nautilus_sidebar_tabs_prelight_tab (sidebar_tabs, -1);
 
 	return TRUE;
 }
@@ -654,21 +656,21 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 {
 	int title_top, title_bottom;
 	NautilusSidebar *sidebar;
-	NautilusIndexTabs *index_tabs;
-	NautilusIndexTabs *title_tab;
+	NautilusSidebarTabs *sidebar_tabs;
+	NautilusSidebarTabs *title_tab;
 	int rounded_y;
 	int which_tab;
 		
 	sidebar = NAUTILUS_SIDEBAR (widget);
-	index_tabs = sidebar->details->index_tabs;
+	sidebar_tabs = sidebar->details->sidebar_tabs;
 	title_tab = sidebar->details->title_tab;
 	rounded_y = floor (event->y + .5);
 
 	/* if the click is in the main tabs, tell them about it */
-	if (rounded_y >= GTK_WIDGET (sidebar->details->index_tabs)->allocation.y) {
-		which_tab = nautilus_index_tabs_hit_test (index_tabs, event->x, event->y);
+	if (rounded_y >= GTK_WIDGET (sidebar->details->sidebar_tabs)->allocation.y) {
+		which_tab = nautilus_sidebar_tabs_hit_test (sidebar_tabs, event->x, event->y);
 		if (which_tab >= 0) {
-			nautilus_index_tabs_select_tab (index_tabs, which_tab);
+			nautilus_sidebar_tabs_select_tab (sidebar_tabs, which_tab);
 			nautilus_sidebar_activate_panel (sidebar, which_tab);
 			gtk_widget_queue_draw (widget);	
 		}
@@ -679,7 +681,7 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 		title_top = GTK_WIDGET (sidebar->details->title_tab)->allocation.y;
 		title_bottom = title_top + GTK_WIDGET (sidebar->details->title_tab)->allocation.height;
 		if (rounded_y >= title_top && rounded_y <= title_bottom) {
-			which_tab = nautilus_index_tabs_hit_test (title_tab, event->x, event->y);
+			which_tab = nautilus_sidebar_tabs_hit_test (title_tab, event->x, event->y);
 			if (which_tab >= 0) {
 				/* the user clicked in the title tab, so deactivate the panel */
 				nautilus_sidebar_deactivate_panel (sidebar);
@@ -883,18 +885,18 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	color_spec = nautilus_directory_get_metadata (directory,
 						      NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
 						      DEFAULT_TAB_COLOR);
-	nautilus_index_tabs_set_color(sidebar->details->index_tabs, color_spec);
+	nautilus_sidebar_tabs_set_color(sidebar->details->sidebar_tabs, color_spec);
 	g_free (color_spec);
 
 	color_spec = nautilus_directory_get_metadata (directory,
 						      NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
 						      DEFAULT_TAB_COLOR);
-	nautilus_index_tabs_set_color(sidebar->details->title_tab, color_spec);
+	nautilus_sidebar_tabs_set_color(sidebar->details->title_tab, color_spec);
 	g_free (color_spec);
 
 	
 	/* tell the title widget about it */
-	nautilus_index_title_set_uri (sidebar->details->title,
+	nautilus_sidebar_title_set_uri (sidebar->details->title,
 		                      sidebar->details->uri,
 				      initial_title);
 	
@@ -924,8 +926,8 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 void
 nautilus_sidebar_set_title (NautilusSidebar *sidebar, const char* new_title)
 {       
-	nautilus_index_title_set_text (sidebar->details->title,
-				       new_title);
+	nautilus_sidebar_title_set_text (sidebar->details->title,
+					 new_title);
 }
 
 /* we override size allocate so we can remember our size when it changes, since the paned widget

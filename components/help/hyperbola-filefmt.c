@@ -264,24 +264,23 @@ fmt_map_entry(HyperbolaDocTree *tree, const char *name, char section)
   if(!tinfo)
     {
       GList *langlist, *cur;
-      char mapfile[PATH_MAX], *tmapfile;
+      char mapfile[PATH_MAX];
+      const char *tmapfile;
 
       tinfo = tree->user_data = g_new0(TreeInfo, 1);
 
       /* Because mapping entries are prepended, we have to read the items in reverse order of preference */
 
-      tmapfile = gnome_datadir_file("hyperbola/maps/pages.map");
-      fmt_read_mapping(tinfo, tmapfile?tmapfile:"pages.map");
-      g_free(tmapfile);
+      tmapfile = NAUTILUS_PREFIX "/share/hyperbola/maps/pages.map";
+      fmt_read_mapping(tinfo, g_file_exists(tmapfile)?tmapfile:"pages.map");
 
       for(cur = langlist = g_list_reverse(g_list_copy(gnome_i18n_get_language_list(NULL)));
 	  cur; cur = cur->next)
 	{
-	  g_snprintf(mapfile, sizeof(mapfile), "hyperbola/maps/pages.map.%s", (char *)cur->data);
-
-	  tmapfile = gnome_datadir_file(mapfile);
-	  fmt_read_mapping(tinfo, tmapfile?tmapfile:g_basename(mapfile));
-	  g_free(tmapfile);
+	  g_snprintf(mapfile, sizeof(mapfile),
+		     NAUTILUS_PREFIX "/share/hyperbola/maps/pages.map.%s",
+		     (char *)cur->data);
+	  fmt_read_mapping(tinfo, g_file_exists(mapfile)?mapfile:g_basename(mapfile));
 	}
       g_list_free(langlist);
     }

@@ -114,14 +114,9 @@ static void
 web_search_populate_engines(WebSearchView *hview)
 {
   FILE *fh;
-  char *fn;
   char aline[LINE_MAX];
 
-  fn = gnome_datadir_file("ntl-web-search/standard.eng");
-  g_return_if_fail(fn);
-
-  fh = fopen(fn, "r");
-  g_free(fn);
+  fh = fopen(NAUTILUS_PREFIX "/share/ntl-web-search/standard.eng", "r");
   g_return_if_fail(fh);
 
   while(fgets(aline, sizeof(aline), fh))

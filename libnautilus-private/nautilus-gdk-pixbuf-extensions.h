@@ -55,9 +55,8 @@ void                      nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbu
 									GdkRgbDither                dither,
 									int                         x_dither,
 									int                         y_dither);
+GdkPixbuf *               nautilus_gdk_pixbuf_scale_to_fit             (GdkPixbuf                  *pixbuf,
+									int                         max_width,
+									int                         max_height);
 
-
-GdkPixbuf *		nautilus_gdk_pixbuf_scale_to_fit		(GdkPixbuf		    *pixbuf,
-									int			    max_width,
-									int			    max_height);
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

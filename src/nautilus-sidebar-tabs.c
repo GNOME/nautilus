@@ -19,7 +19,7 @@
  *
  * Author: Andy Hertzfeld <andy@eazel.com>
  *
- * This is the tabs widget for the index panel, which represents metaviews as nice tabs as specified
+ * This is the tabs widget for the sidebar, which represents panels as nice tabs
  */
 
 #include <config.h>
@@ -43,7 +43,7 @@ typedef struct {
 	GtkWidget *tab_view;
 } TabItem;
 
-struct NautilusIndexTabsDetails {
+struct NautilusSidebarTabsDetails {
 	int tab_count;
 	int total_height;
 	gboolean title_mode;
@@ -71,26 +71,26 @@ struct NautilusIndexTabsDetails {
 
 /* headers */
 
-static void     nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *klass);
-static void     nautilus_index_tabs_initialize       (NautilusIndexTabs      *pixmap);
-static int      nautilus_index_tabs_expose           (GtkWidget              *widget,
+static void     nautilus_sidebar_tabs_initialize_class (NautilusSidebarTabsClass *klass);
+static void     nautilus_sidebar_tabs_initialize       (NautilusSidebarTabs      *pixmap);
+static int      nautilus_sidebar_tabs_expose           (GtkWidget              *widget,
 						      GdkEventExpose         *event);
-static void     nautilus_index_tabs_destroy          (GtkObject              *object);
-static void     nautilus_index_tabs_size_allocate    (GtkWidget              *widget,
+static void     nautilus_sidebar_tabs_destroy          (GtkObject              *object);
+static void     nautilus_sidebar_tabs_size_allocate    (GtkWidget              *widget,
 						      GtkAllocation          *allocatoin);
-static void     nautilus_index_tabs_size_request     (GtkWidget              *widget,
+static void     nautilus_sidebar_tabs_size_request     (GtkWidget              *widget,
 						      GtkRequisition         *requisition);
-static int      draw_or_hit_test_all_tabs            (NautilusIndexTabs      *index_tabs,
+static int      draw_or_hit_test_all_tabs            (NautilusSidebarTabs      *sidebar_tabs,
 						      gboolean                draw_flag,
 						      int                     test_x,
 						      int                     test_y);
-static TabItem* tab_item_find_by_name                (NautilusIndexTabs      *index_tabs,
+static TabItem* tab_item_find_by_name                (NautilusSidebarTabs      *sidebar_tabs,
 						      const char             *name);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIndexTabs, nautilus_index_tabs, GTK_TYPE_WIDGET)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTabs, nautilus_sidebar_tabs, GTK_TYPE_WIDGET)
 
 static void
-nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *class)
+nautilus_sidebar_tabs_initialize_class (NautilusSidebarTabsClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -98,75 +98,75 @@ nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *class)
 	object_class = (GtkObjectClass *) class;
 	widget_class = (GtkWidgetClass *) class;
 	
-	object_class->destroy = nautilus_index_tabs_destroy;
-	widget_class->expose_event = nautilus_index_tabs_expose;
-	widget_class->size_request = nautilus_index_tabs_size_request;
-	widget_class->size_allocate = nautilus_index_tabs_size_allocate;
+	object_class->destroy = nautilus_sidebar_tabs_destroy;
+	widget_class->expose_event = nautilus_sidebar_tabs_expose;
+	widget_class->size_request = nautilus_sidebar_tabs_size_request;
+	widget_class->size_allocate = nautilus_sidebar_tabs_size_allocate;
 }
 
 /* utilities to set up the text color alternatives */
 
 static void
-setup_light_text(NautilusIndexTabs *index_tabs)
+setup_light_text(NautilusSidebarTabs *sidebar_tabs)
 {
-	gdk_color_parse ("rgb:ff/ff/ff", &index_tabs->details->text_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->text_color, FALSE, TRUE);
+	gdk_color_parse ("rgb:ff/ff/ff", &sidebar_tabs->details->text_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->text_color, FALSE, TRUE);
 }
 
 static void
-setup_dark_text(NautilusIndexTabs *index_tabs)
+setup_dark_text(NautilusSidebarTabs *sidebar_tabs)
 {
-	gdk_color_parse ("rgb:00/00/00", &index_tabs->details->text_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->text_color, FALSE, TRUE);
+	gdk_color_parse ("rgb:00/00/00", &sidebar_tabs->details->text_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->text_color, FALSE, TRUE);
 }
 
 static void
-nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
+nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
 {
-	GTK_WIDGET_SET_FLAGS (GTK_WIDGET(index_tabs), GTK_NO_WINDOW);
+	GTK_WIDGET_SET_FLAGS (GTK_WIDGET(sidebar_tabs), GTK_NO_WINDOW);
 	
-	index_tabs->details = g_new0 (NautilusIndexTabsDetails, 1);
+	sidebar_tabs->details = g_new0 (NautilusSidebarTabsDetails, 1);
 
 	/* Initialize private members */
-	index_tabs->details->tab_items = NULL;
-	index_tabs->details->tab_count = 0;
-	index_tabs->details->total_height = 0;
-	index_tabs->details->title_mode = FALSE;
-	index_tabs->details->title = NULL;
-	index_tabs->details->title_prelit = FALSE;
+	sidebar_tabs->details->tab_items = NULL;
+	sidebar_tabs->details->tab_count = 0;
+	sidebar_tabs->details->total_height = 0;
+	sidebar_tabs->details->title_mode = FALSE;
+	sidebar_tabs->details->title = NULL;
+	sidebar_tabs->details->title_prelit = FALSE;
 	
 	/* set up the colors */
-	gdk_color_parse ("rgb:99/99/99", &index_tabs->details->tab_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->tab_color, FALSE, TRUE);
+	gdk_color_parse ("rgb:99/99/99", &sidebar_tabs->details->tab_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->tab_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:ee/ee/ee", &index_tabs->details->prelight_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->prelight_color, FALSE, TRUE);
+	gdk_color_parse ("rgb:ee/ee/ee", &sidebar_tabs->details->prelight_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->prelight_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:ff/ff/ff", &index_tabs->details->background_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->background_color, FALSE, TRUE);
+	gdk_color_parse ("rgb:ff/ff/ff", &sidebar_tabs->details->background_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->background_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:00/00/00", &index_tabs->details->line_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->line_color, FALSE, TRUE);
+	gdk_color_parse ("rgb:00/00/00", &sidebar_tabs->details->line_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->line_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:d6/d6/d6", &index_tabs->details->hilight_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->hilight_color, FALSE, TRUE);
+	gdk_color_parse ("rgb:d6/d6/d6", &sidebar_tabs->details->hilight_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->hilight_color, FALSE, TRUE);
 	
-	setup_light_text(index_tabs);
+	setup_light_text(sidebar_tabs);
 	
-	index_tabs->details->title_prelit = FALSE;
+	sidebar_tabs->details->title_prelit = FALSE;
 }
 
 GtkWidget*
-nautilus_index_tabs_new (void)
+nautilus_sidebar_tabs_new (void)
 {
-	return GTK_WIDGET (gtk_type_new (nautilus_index_tabs_get_type ()));
+	return GTK_WIDGET (gtk_type_new (nautilus_sidebar_tabs_get_type ()));
 }
 
 /* utility to destroy all the storage used by a tab item */
@@ -179,23 +179,23 @@ tab_item_destroy (TabItem *item)
 }
 
 static void
-nautilus_index_tabs_destroy (GtkObject *object)
+nautilus_sidebar_tabs_destroy (GtkObject *object)
 {
-	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(object);
+	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(object);
    	
 	/* release the tab list, if any */
-	if (index_tabs->details->tab_items != NULL) {
+	if (sidebar_tabs->details->tab_items != NULL) {
 		GList *next_tab;
-		for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
+		for (next_tab = sidebar_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 			tab_item_destroy ((TabItem*)next_tab->data);
 		}
 		
-		g_list_free (index_tabs->details->tab_items);
+		g_list_free (sidebar_tabs->details->tab_items);
 	}
 	
-	g_free (index_tabs->details->title);
+	g_free (sidebar_tabs->details->title);
 	
-	g_free (index_tabs->details);
+	g_free (sidebar_tabs->details);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -203,64 +203,64 @@ nautilus_index_tabs_destroy (GtkObject *object)
 /* determine the tab associated with the passed-in coordinates, and pass back the notebook
    page index associated with it */
 
-int nautilus_index_tabs_hit_test(NautilusIndexTabs *index_tabs, int x, int y)
+int nautilus_sidebar_tabs_hit_test(NautilusSidebarTabs *sidebar_tabs, int x, int y)
 {
-	return draw_or_hit_test_all_tabs (index_tabs, FALSE, x, y);
+	return draw_or_hit_test_all_tabs (sidebar_tabs, FALSE, x, y);
 }
 
 /* resize the widget based on the number of tabs */
 
 static void
-recalculate_size(NautilusIndexTabs *index_tabs)
+recalculate_size(NautilusSidebarTabs *sidebar_tabs)
 {
-	GtkWidget *widget = GTK_WIDGET (index_tabs);
+	GtkWidget *widget = GTK_WIDGET (sidebar_tabs);
 	
 	/* dummy hit test to make sure height measurement is valid */
-	draw_or_hit_test_all_tabs(index_tabs, FALSE, -1000, -1000);
+	draw_or_hit_test_all_tabs(sidebar_tabs, FALSE, -1000, -1000);
   	
 	widget->requisition.width = widget->parent ? widget->parent->allocation.width: 136;
-	if (index_tabs->details->title_mode)
+	if (sidebar_tabs->details->title_mode)
 		widget->requisition.height = TAB_HEIGHT;
 	else
-		widget->requisition.height = index_tabs->details->total_height + TAB_TOP_GAP;
+		widget->requisition.height = sidebar_tabs->details->total_height + TAB_TOP_GAP;
 	gtk_widget_queue_resize (widget);
 }
 
 static void
-nautilus_index_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 {
-	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(widget);
+	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(widget);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	/* dummy hit test to mesure height */
-	draw_or_hit_test_all_tabs(index_tabs, FALSE, -1000, -1000);
+	draw_or_hit_test_all_tabs(sidebar_tabs, FALSE, -1000, -1000);
 	
-	if (!index_tabs->details->title_mode) {
-		 gint delta_height = widget->allocation.height - (index_tabs->details->total_height + TAB_TOP_GAP);
+	if (!sidebar_tabs->details->title_mode) {
+		 gint delta_height = widget->allocation.height - (sidebar_tabs->details->total_height + TAB_TOP_GAP);
          widget->allocation.height -= delta_height;
          widget->allocation.y += delta_height;
     }
 }
 
 static void
-nautilus_index_tabs_size_request (GtkWidget *widget, GtkRequisition *requisition)
+nautilus_sidebar_tabs_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
-	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(widget);
+	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(widget);
 	
 	/* dummy hit test to make sure height measurement is valid */
-	draw_or_hit_test_all_tabs(index_tabs, FALSE, -1000, -1000);
+	draw_or_hit_test_all_tabs(sidebar_tabs, FALSE, -1000, -1000);
 	requisition->width = widget->parent ? widget->parent->allocation.width: 136;  
-	if (index_tabs->details->title_mode)
+	if (sidebar_tabs->details->title_mode)
 		requisition->height = TAB_HEIGHT;
 	else
-		requisition->height = index_tabs->details->total_height + TAB_TOP_GAP;
+		requisition->height = sidebar_tabs->details->total_height + TAB_TOP_GAP;
 }
 
 /* draw a single tab at the passed-in position, return the total width */
 
 static int
-draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
+draw_one_tab (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	      char *tab_name, int x, int y, gboolean prelight_flag)
 {  
 	int		text_y_offset;
@@ -270,14 +270,13 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 	int		total_width;
 	GtkWidget	*widget;
 
-	g_assert (index_tabs != NULL);
-	g_assert (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
 	/* measure the name and compute the bounding box */
-	name_width = gdk_string_width (GTK_WIDGET (index_tabs)->style->font, tab_name);
+	name_width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font, tab_name);
 	total_width = name_width + 2*TAB_MARGIN;
 
-	widget = GTK_WIDGET (index_tabs);
+	widget = GTK_WIDGET (sidebar_tabs);
 	
 	/* FIXME bugzilla.eazel.com 668: 
 	 * we must "ellipsize" the name if it doesn't fit, for now, assume it does 
@@ -285,33 +284,33 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 		
 	/* fill the tab rectangle with the tab color */
 	
-	gdk_gc_set_foreground (gc, prelight_flag ? &index_tabs->details->prelight_color : &index_tabs->details->tab_color);
+	gdk_gc_set_foreground (gc, prelight_flag ? &sidebar_tabs->details->prelight_color : &sidebar_tabs->details->tab_color);
 	gdk_draw_rectangle (widget->window, gc, TRUE, x, y + 1, total_width, TAB_HEIGHT - 1); 
 	
 	/* draw the border */
-	gdk_gc_set_foreground (gc, &index_tabs->details->line_color);  
+	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
 	gdk_draw_line(widget->window, gc, x + 1, y, x + total_width - 2, y);
 	gdk_draw_line(widget->window, gc, x, y + 1, x, y + TAB_HEIGHT - 1);
 	gdk_draw_line(widget->window, gc, x + total_width - 1, y + 1, x + total_width - 1, y + TAB_HEIGHT - 1);
 	
 	/* draw the highlights for extra dimensionality */
-	gdk_gc_set_foreground (gc, &index_tabs->details->hilight_color);  
+	gdk_gc_set_foreground (gc, &sidebar_tabs->details->hilight_color);  
 	gdk_draw_line(widget->window, gc, x + 2, y + 2, x + total_width - 3, y + 2);
 	gdk_draw_line(widget->window, gc, x + 2, y + 2, x + 2, y + TAB_HEIGHT - 1);
 		
 	/* draw the metaview name */
 	text_y_offset = y + (TAB_HEIGHT >> 1) + 5;  
-	gdk_gc_set_foreground (gc, prelight_flag ? &index_tabs->details->prelit_text_color : &index_tabs->details->text_color);  
+	gdk_gc_set_foreground (gc, prelight_flag ? &sidebar_tabs->details->prelit_text_color : &sidebar_tabs->details->text_color);  
 	gdk_draw_string (widget->window,
-			 GTK_WIDGET (index_tabs)->style->font,
+			 GTK_WIDGET (sidebar_tabs)->style->font,
 			 gc, x + TAB_MARGIN, text_y_offset, tab_name);
 	
 	
 	/* draw the bottom lines */
 	tab_bottom = y + TAB_HEIGHT - 1;
-	gdk_gc_set_foreground (gc, &index_tabs->details->line_color);  
+	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
 	tab_right = x + 2*TAB_MARGIN + name_width;
-	gdk_gc_set_foreground (gc, &index_tabs->details->line_color);  
+	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
 	gdk_draw_line(widget->window, gc, tab_right, tab_bottom, widget->parent->allocation.width, tab_bottom);
 	gdk_draw_line(widget->window, gc, 0, tab_bottom, x, tab_bottom);
 	
@@ -321,7 +320,7 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 /* draw or hit test all of the currently visible tabs */
 
 static int
-draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, int test_x, int test_y)
+draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag, int test_x, int test_y)
 {
 	GdkGC		*temp_gc;
 	int		name_width;
@@ -332,26 +331,25 @@ draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, in
 	int		y_pos;
 	int		total_height;
 	
-	g_assert (index_tabs != NULL);
-	g_assert (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
-	next_tab = index_tabs->details->tab_items;
+	next_tab = sidebar_tabs->details->tab_items;
 
-	widget = GTK_WIDGET (index_tabs);  
+	widget = GTK_WIDGET (sidebar_tabs);  
 
 	x_pos = widget->allocation.x + 4;
 	y_pos = widget->allocation.y + widget->allocation.height - TAB_HEIGHT;
 	total_height = TAB_HEIGHT;
 	
 	/* handle hit-testing for title mode */  
-	if (index_tabs->details->title_mode && !draw_flag) {
+	if (sidebar_tabs->details->title_mode && !draw_flag) {
 		int edge_width =  2 * TAB_MARGIN;     
-		if (index_tabs->details->title == NULL) {
+		if (sidebar_tabs->details->title == NULL) {
 			return -1;
 		}
-		name_width = gdk_string_width (GTK_WIDGET (index_tabs)->style->font,
-					       index_tabs->details->title);
-		index_tabs->details->total_height = total_height;
+		name_width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font,
+					       sidebar_tabs->details->title);
+		sidebar_tabs->details->total_height = total_height;
 		if ((test_x >= TITLE_TAB_OFFSET) && (test_x < (TITLE_TAB_OFFSET + name_width + edge_width))) {
 			return 0;
 		}
@@ -363,7 +361,7 @@ draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, in
 		int y_top = widget->allocation.y + TAB_HEIGHT + TAB_TOP_GAP;
 		int fill_height = widget->allocation.y + widget->allocation.height - y_top;
 		temp_gc = gdk_gc_new(widget->window); 
-		gdk_gc_set_foreground (temp_gc, &index_tabs->details->background_color);
+		gdk_gc_set_foreground (temp_gc, &sidebar_tabs->details->background_color);
 		gdk_draw_rectangle (widget->window, temp_gc, TRUE, widget->allocation.x, y_top, widget->allocation.width, fill_height); 
 	}
 	
@@ -373,10 +371,10 @@ draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, in
 		TabItem *this_item = next_tab->data;
 		
 		if (draw_flag && this_item->visible)
-			tab_width = draw_one_tab(index_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, this_item->prelit);
+			tab_width = draw_one_tab(sidebar_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, this_item->prelit);
 		else {   
 			int edge_width = 2 * TAB_MARGIN;
-			name_width = gdk_string_width(GTK_WIDGET (index_tabs)->style->font,
+			name_width = gdk_string_width(GTK_WIDGET (sidebar_tabs)->style->font,
 						      this_item->tab_text);
 			tab_width = name_width + edge_width;
 			if (!draw_flag && (test_y >= y_pos) && (test_y <= (y_pos + TAB_HEIGHT)) &&
@@ -402,21 +400,20 @@ draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, in
 	
 	if (draw_flag)
 		gdk_gc_unref(temp_gc);
-	index_tabs->details->total_height = total_height;
+	sidebar_tabs->details->total_height = total_height;
 	return -1;
 }
 
 /* find a tab with a given name, or return NULL if we can't find one */
 static TabItem *
-tab_item_find_by_name (NautilusIndexTabs *index_tabs, const char *name)
+tab_item_find_by_name (NautilusSidebarTabs *sidebar_tabs, const char *name)
 {
 	GList *iterator;
 
-	g_return_val_if_fail (index_tabs != NULL, NULL);
-	g_return_val_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-	for (iterator = index_tabs->details->tab_items; iterator != NULL; iterator = iterator->next) {
+	for (iterator = sidebar_tabs->details->tab_items; iterator != NULL; iterator = iterator->next) {
 		TabItem *tab_item = iterator->data;
 
 		g_assert (tab_item != NULL);
@@ -433,31 +430,30 @@ tab_item_find_by_name (NautilusIndexTabs *index_tabs, const char *name)
 /* handle an expose event by drawing the tabs */
 
 static int
-nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
+nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 {
-	NautilusIndexTabs *index_tabs;
+	NautilusSidebarTabs *sidebar_tabs;
 	
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_INDEX_TABS (widget), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TABS (widget), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 	
 	if (widget->window == NULL) {
 		return FALSE;
 	}
 	
-	index_tabs = NAUTILUS_INDEX_TABS (widget);
+	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (widget);
 	
 	/* draw the tabs */
-	if (index_tabs->details->title_mode) {
+	if (sidebar_tabs->details->title_mode) {
 		GdkGC* temp_gc = gdk_gc_new(widget->window); 
 		int x_pos = widget->allocation.x;
 		int y_pos = widget->allocation.y;
 		
-		draw_one_tab (index_tabs, temp_gc, index_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, index_tabs->details->title_prelit);
+		draw_one_tab (sidebar_tabs, temp_gc, sidebar_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, sidebar_tabs->details->title_prelit);
 		gdk_gc_unref (temp_gc);
 	} else {
-		if (index_tabs->details->tab_count > 0) {
-			draw_or_hit_test_all_tabs (index_tabs, TRUE, 0, 0);
+		if (sidebar_tabs->details->tab_count > 0) {
+			draw_or_hit_test_all_tabs (sidebar_tabs, TRUE, 0, 0);
 		}
 	}
 	
@@ -467,18 +463,17 @@ nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 /* add a new tab entry, return TRUE if we succeed */
 
 gboolean
-nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, GtkWidget *new_view, int page_num)
+nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs, const char *name, GtkWidget *new_view, int page_num)
 {
 	TabItem *new_tab_item;
 
-	g_return_val_if_fail (index_tabs != NULL, FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (new_view != NULL, FALSE);
 
 	/* Check to see if we already have one with this name, if so, refuse to add it */   
-	if (tab_item_find_by_name (index_tabs, name)) {
-		g_warning ("nautilus_index_tabs_add_view: Trying to add duplicate item '%s'", name);
+	if (tab_item_find_by_name (sidebar_tabs, name)) {
+		g_warning ("nautilus_sidebar_tabs_add_view: Trying to add duplicate item '%s'", name);
 		return FALSE;
 	}
 	
@@ -491,11 +486,11 @@ nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, G
 	new_tab_item->notebook_page = page_num;
 
 	/* add it to the list */
-	index_tabs->details->tab_items = g_list_append(index_tabs->details->tab_items, new_tab_item);
+	sidebar_tabs->details->tab_items = g_list_append(sidebar_tabs->details->tab_items, new_tab_item);
 	
-	index_tabs->details->tab_count += 1;
-	recalculate_size (index_tabs);
-	gtk_widget_queue_draw (GTK_WIDGET (index_tabs));
+	sidebar_tabs->details->tab_count += 1;
+	recalculate_size (sidebar_tabs);
+	gtk_widget_queue_draw (GTK_WIDGET (sidebar_tabs));
 	
 	return TRUE;
 }
@@ -503,14 +498,13 @@ nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, G
 /* return the name of the tab with the passed in index */
 
 char*
-nautilus_index_tabs_get_title_from_index (NautilusIndexTabs *index_tabs, int which_tab)
+nautilus_sidebar_tabs_get_title_from_index (NautilusSidebarTabs *sidebar_tabs, int which_tab)
 {
 	GList *next_tab;
 
-	g_return_val_if_fail (index_tabs != NULL, NULL);
-	g_return_val_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs), NULL);
 
-	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
+	for (next_tab = sidebar_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		TabItem *item = next_tab->data;
 		if (item->notebook_page == which_tab)
 			return g_strdup (item->tab_text);
@@ -523,55 +517,53 @@ nautilus_index_tabs_get_title_from_index (NautilusIndexTabs *index_tabs, int whi
 /* remove the specified tab entry */
 
 void
-nautilus_index_tabs_remove_view (NautilusIndexTabs *index_tabs, const char *name)
+nautilus_sidebar_tabs_remove_view (NautilusSidebarTabs *sidebar_tabs, const char *name)
 {
 	TabItem *tab_item;
 
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (name != NULL);
 
 	/* Look up the item */
-	tab_item = tab_item_find_by_name (index_tabs, name);
+	tab_item = tab_item_find_by_name (sidebar_tabs, name);
 
 	if (tab_item == NULL) {
-		g_warning ("nautilus_index_tabs_remove_view: Trying to remove a non-existing item '%s'", name);
+		g_warning ("nautilus_sidebar_tabs_remove_view: Trying to remove a non-existing item '%s'", name);
 		return;
 	}
 	
 	/* Remove the item from the list */
-	index_tabs->details->tab_items = g_list_remove (index_tabs->details->tab_items, tab_item);
+	sidebar_tabs->details->tab_items = g_list_remove (sidebar_tabs->details->tab_items, tab_item);
 
  	tab_item_destroy (tab_item);
 	
-	index_tabs->details->tab_count -= 1;
+	sidebar_tabs->details->tab_count -= 1;
 	
-	recalculate_size (index_tabs);
-	gtk_widget_queue_draw (GTK_WIDGET (index_tabs));
+	recalculate_size (sidebar_tabs);
+	gtk_widget_queue_draw (GTK_WIDGET (sidebar_tabs));
 }
 
 /* prelight a tab, from its associated notebook page number, by setting the prelight flag of
    the proper tab and clearing the others */
 
 void
-nautilus_index_tabs_prelight_tab (NautilusIndexTabs *index_tabs, int which_tab)
+nautilus_sidebar_tabs_prelight_tab (NautilusSidebarTabs *sidebar_tabs, int which_tab)
 {
 	GList *next_tab;
 	gboolean is_prelit;
 	gboolean changed = FALSE;
 
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	
-	if (index_tabs->details->title_mode) {
+	if (sidebar_tabs->details->title_mode) {
 		gboolean is_prelit = which_tab != -1;
-		if (index_tabs->details->title_prelit != is_prelit) {
-			index_tabs->details->title_prelit = is_prelit;
+		if (sidebar_tabs->details->title_prelit != is_prelit) {
+			sidebar_tabs->details->title_prelit = is_prelit;
 			changed = TRUE;
 		}
 	}
 	else	
-		for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
+		for (next_tab = sidebar_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 			TabItem *item = next_tab->data;
 			is_prelit = (item->notebook_page == which_tab);
 			if (item->prelit != is_prelit) {
@@ -581,28 +573,27 @@ nautilus_index_tabs_prelight_tab (NautilusIndexTabs *index_tabs, int which_tab)
 		}
 	
 	if (changed)
-		gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
+		gtk_widget_queue_draw(GTK_WIDGET(sidebar_tabs));	
 }
 
 /* select a tab, from its associated notebook page number, by making it invisible 
    and all the others visible */
 
 void
-nautilus_index_tabs_select_tab (NautilusIndexTabs *index_tabs, int which_tab)
+nautilus_sidebar_tabs_select_tab (NautilusSidebarTabs *sidebar_tabs, int which_tab)
 {
 	GList *next_tab;
 
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
-	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
+	for (next_tab = sidebar_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		TabItem *item = next_tab->data;
 		item->visible = (item->notebook_page != which_tab);
 		item->prelit = FALSE;
 	}
 	
-	recalculate_size(index_tabs);
-	gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
+	recalculate_size(sidebar_tabs);
+	gtk_widget_queue_draw(GTK_WIDGET(sidebar_tabs));	
 }
 
 /* utility routine that returns true if the passed-in color is lighter than average
@@ -619,37 +610,35 @@ is_light_color(GdkColor *color)
 /* set the background color associated with a tab */
 
 void
-nautilus_index_tabs_set_color (NautilusIndexTabs *index_tabs,
+nautilus_sidebar_tabs_set_color (NautilusSidebarTabs *sidebar_tabs,
 			       const char *color_spec)
 {
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (color_spec != NULL);
 	
-	gdk_color_parse (color_spec, &index_tabs->details->tab_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->tab_color, FALSE, TRUE);
+	gdk_color_parse (color_spec, &sidebar_tabs->details->tab_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
+				  &sidebar_tabs->details->tab_color, FALSE, TRUE);
 
-	if (is_light_color(&index_tabs->details->tab_color))
-		setup_dark_text(index_tabs);
+	if (is_light_color(&sidebar_tabs->details->tab_color))
+		setup_dark_text(sidebar_tabs);
 	else
-		setup_light_text(index_tabs);
+		setup_light_text(sidebar_tabs);
 	
-	gtk_widget_queue_draw (GTK_WIDGET(index_tabs));	
+	gtk_widget_queue_draw (GTK_WIDGET(sidebar_tabs));	
 }
 
 /* receive a dropped color */
 
 void
-nautilus_index_tabs_receive_dropped_color (NautilusIndexTabs *index_tabs,
+nautilus_sidebar_tabs_receive_dropped_color (NautilusSidebarTabs *sidebar_tabs,
 					   int x, int y,
 					   GtkSelectionData *selection_data)
 {
 	guint16 *channels;
 	char *color_spec;
 
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (selection_data != NULL);
 	
 	/* Convert the selection data into a color spec. */
@@ -660,60 +649,57 @@ nautilus_index_tabs_receive_dropped_color (NautilusIndexTabs *index_tabs,
 	
 	channels = (guint16 *) selection_data->data;
 	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
-	nautilus_index_tabs_set_color(index_tabs, color_spec);
+	nautilus_sidebar_tabs_set_color(sidebar_tabs, color_spec);
 	g_free (color_spec);
 }
 
 /* set the title (used in title mode only) */
 
 void
-nautilus_index_tabs_set_title (NautilusIndexTabs *index_tabs, const char *new_title)
+nautilus_sidebar_tabs_set_title (NautilusSidebarTabs *sidebar_tabs, const char *new_title)
 {
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (new_title != NULL);
 
-	g_free(index_tabs->details->title);
-	index_tabs->details->title = g_strdup (new_title);
+	g_free(sidebar_tabs->details->title);
+	sidebar_tabs->details->title = g_strdup (new_title);
 }
 
 /* set the title mode boolean */
 void
-nautilus_index_tabs_set_title_mode (NautilusIndexTabs *index_tabs, gboolean is_title_mode)
+nautilus_sidebar_tabs_set_title_mode (NautilusSidebarTabs *sidebar_tabs, gboolean is_title_mode)
 {
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
-	if (index_tabs->details->title_mode != !!is_title_mode) {
-		index_tabs->details->title_mode = !!is_title_mode;
-		recalculate_size (index_tabs);
-		gtk_widget_queue_draw (GTK_WIDGET (index_tabs));	    
+	if (sidebar_tabs->details->title_mode != !!is_title_mode) {
+		sidebar_tabs->details->title_mode = !!is_title_mode;
+		recalculate_size (sidebar_tabs);
+		gtk_widget_queue_draw (GTK_WIDGET (sidebar_tabs));	    
 	}
 }
 
 /* set the visibility of the selected tab */
 
 void
-nautilus_index_tabs_set_visible (NautilusIndexTabs *index_tabs,
+nautilus_sidebar_tabs_set_visible (NautilusSidebarTabs *sidebar_tabs,
 				 const char *name,
 				 gboolean is_visible)
 {
 	TabItem *tab_item;
 
-	g_return_if_fail (index_tabs != NULL);
-	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (name != NULL);
 
 	/* Look up the item */
-	tab_item = tab_item_find_by_name (index_tabs, name);
+	tab_item = tab_item_find_by_name (sidebar_tabs, name);
 
 	if (tab_item == NULL) {
-		g_warning ("nautilus_index_tabs_set_visible: Trying to munge a non-existing item '%s'", name);
+		g_warning ("nautilus_sidebar_tabs_set_visible: Trying to munge a non-existing item '%s'", name);
 		return;
 	}
 
 	if (tab_item->visible != is_visible) {
 		tab_item->visible = is_visible;
-		gtk_widget_queue_draw (GTK_WIDGET (index_tabs));
+		gtk_widget_queue_draw (GTK_WIDGET (sidebar_tabs));
 	}
 }

@@ -27,65 +27,54 @@
 
 #include <gtk/gtkmisc.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+#define NAUTILUS_TYPE_SIDEBAR_TABS            (nautilus_sidebar_tabs_get_type ())
+#define NAUTILUS_SIDEBAR_TABS(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR_TABS, NautilusSidebarTabs))
+#define NAUTILUS_SIDEBAR_TABS_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR_TABS, NautilusSidebarTabsClass))
+#define NAUTILUS_IS_SIDEBAR_TABS(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR_TABS))
+#define NAUTILUS_IS_SIDEBAR_TABS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR_TABS))
 
-#define NAUTILUS_TYPE_INDEX_TABS            (nautilus_index_tabs_get_type ())
-#define NAUTILUS_INDEX_TABS(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INDEX_TABS, NautilusIndexTabs))
-#define NAUTILUS_INDEX_TABS_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INDEX_TABS, NautilusIndexTabsClass))
-#define NAUTILUS_IS_INDEX_TABS(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INDEX_TABS))
-#define NAUTILUS_IS_INDEX_TABS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_TABS))
+typedef struct NautilusSidebarTabsDetails NautilusSidebarTabsDetails;
 
-typedef struct NautilusIndexTabs NautilusIndexTabs;
-typedef struct NautilusIndexTabsClass NautilusIndexTabsClass;
-typedef struct NautilusIndexTabsDetails NautilusIndexTabsDetails;
-
-struct NautilusIndexTabs
+typedef struct
 {
-	GtkMisc base;
-	NautilusIndexTabsDetails *details;  
-};
+	GtkMisc base_slot;
+	NautilusSidebarTabsDetails *details;  
+} NautilusSidebarTabs;
 
-struct NautilusIndexTabsClass
+typedef struct
 {
-	GtkMiscClass parent_class;
-};
+	GtkMiscClass base_slot;
+} NautilusSidebarTabsClass;
 
-GtkType    nautilus_index_tabs_get_type              (void);
-GtkWidget *nautilus_index_tabs_new                   (void);
-gboolean   nautilus_index_tabs_add_view              (NautilusIndexTabs *index_tabs,
-						      const char        *name,
-						      GtkWidget         *new_view,
-						      int                page_number);
-char *     nautilus_index_tabs_get_title_from_index  (NautilusIndexTabs *index_tabs,
-						      int                which_tab);
-int        nautilus_index_tabs_hit_test              (NautilusIndexTabs *index_tabs,
-						      int                x,
-						      int                y);
-void	   nautilus_index_tabs_set_color	     (NautilusIndexTabs *index_tabs,
-						      const char *color_spec);
-						      
-void       nautilus_index_tabs_receive_dropped_color (NautilusIndexTabs *index_tabs,
-						      int                x,
-						      int                y,
-						      GtkSelectionData  *selection_data);
-void       nautilus_index_tabs_remove_view           (NautilusIndexTabs *index_tabs,
-						      const char        *name);
-void       nautilus_index_tabs_prelight_tab          (NautilusIndexTabs *index_tabs,
-						      int                which_tab);
-void       nautilus_index_tabs_select_tab            (NautilusIndexTabs *index_tabs,
-						      int                which_tab);
-void       nautilus_index_tabs_set_title             (NautilusIndexTabs *index_tabs,
-						      const char        *new_title);
-void       nautilus_index_tabs_set_title_mode        (NautilusIndexTabs *index_tabs,
-						      gboolean           is_title_mode);
-void       nautilus_index_tabs_set_visible           (NautilusIndexTabs *index_tabs,
-						      const char        *name,
-						      gboolean           is_visible);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+GtkType    nautilus_sidebar_tabs_get_type              (void);
+GtkWidget *nautilus_sidebar_tabs_new                   (void);
+gboolean   nautilus_sidebar_tabs_add_view              (NautilusSidebarTabs *sidebar_tabs,
+							const char          *name,
+							GtkWidget           *new_view,
+							int                  page_number);
+char *     nautilus_sidebar_tabs_get_title_from_index  (NautilusSidebarTabs *sidebar_tabs,
+							int                  which_tab);
+int        nautilus_sidebar_tabs_hit_test              (NautilusSidebarTabs *sidebar_tabs,
+							int                  x,
+							int                  y);
+void       nautilus_sidebar_tabs_set_color             (NautilusSidebarTabs *sidebar_tabs,
+							const char          *color_spec);
+void       nautilus_sidebar_tabs_receive_dropped_color (NautilusSidebarTabs *sidebar_tabs,
+							int                  x,
+							int                  y,
+							GtkSelectionData    *selection_data);
+void       nautilus_sidebar_tabs_remove_view           (NautilusSidebarTabs *sidebar_tabs,
+							const char          *name);
+void       nautilus_sidebar_tabs_prelight_tab          (NautilusSidebarTabs *sidebar_tabs,
+							int                  which_tab);
+void       nautilus_sidebar_tabs_select_tab            (NautilusSidebarTabs *sidebar_tabs,
+							int                  which_tab);
+void       nautilus_sidebar_tabs_set_title             (NautilusSidebarTabs *sidebar_tabs,
+							const char          *new_title);
+void       nautilus_sidebar_tabs_set_title_mode        (NautilusSidebarTabs *sidebar_tabs,
+							gboolean             is_title_mode);
+void       nautilus_sidebar_tabs_set_visible           (NautilusSidebarTabs *sidebar_tabs,
+							const char          *name,
+							gboolean             is_visible);
 
 #endif /* NAUTILUS_SIDEBAR_TABS_H */

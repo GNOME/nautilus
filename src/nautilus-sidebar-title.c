@@ -45,16 +45,16 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 
-static void     nautilus_index_title_initialize_class   (NautilusIndexTitleClass *klass);
-static void     nautilus_index_title_destroy           (GtkObject               *object);
-static void     nautilus_index_title_initialize         (NautilusIndexTitle      *pixmap);
-static gboolean nautilus_index_title_button_press_event (GtkWidget               *widget,
-							 GdkEventButton          *event);
-static void     nautilus_index_title_update_icon        (NautilusIndexTitle      *index_title);
-static void     nautilus_index_title_update_label       (NautilusIndexTitle      *index_title);
-static void     nautilus_index_title_update_info        (NautilusIndexTitle      *index_title);
+static void     nautilus_sidebar_title_initialize_class   (NautilusSidebarTitleClass *klass);
+static void     nautilus_sidebar_title_destroy            (GtkObject                 *object);
+static void     nautilus_sidebar_title_initialize         (NautilusSidebarTitle      *pixmap);
+static gboolean nautilus_sidebar_title_button_press_event (GtkWidget                 *widget,
+							   GdkEventButton            *event);
+static void     nautilus_sidebar_title_update_icon        (NautilusSidebarTitle      *sidebar_title);
+static void     nautilus_sidebar_title_update_label       (NautilusSidebarTitle      *sidebar_title);
+static void     nautilus_sidebar_title_update_info        (NautilusSidebarTitle      *sidebar_title);
 
-struct NautilusIndexTitleDetails {
+struct NautilusSidebarTitleDetails {
 	NautilusFile *file;
 	guint file_changed_connection;
 	char *requested_text;
@@ -72,10 +72,10 @@ struct NautilusIndexTitleDetails {
 
 /* button assignments */
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIndexTitle, nautilus_index_title, gtk_vbox_get_type ())
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
 
 static void
-nautilus_index_title_initialize_class (NautilusIndexTitleClass *class)
+nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -83,53 +83,53 @@ nautilus_index_title_initialize_class (NautilusIndexTitleClass *class)
 	object_class = (GtkObjectClass*) class;
 	widget_class = (GtkWidgetClass*) class;
 	
-	object_class->destroy = nautilus_index_title_destroy;
-	widget_class->button_press_event = nautilus_index_title_button_press_event;
+	object_class->destroy = nautilus_sidebar_title_destroy;
+	widget_class->button_press_event = nautilus_sidebar_title_button_press_event;
 }
 
 static void
-nautilus_index_title_initialize (NautilusIndexTitle *index_title)
+nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 { 
-	index_title->details = g_new0 (NautilusIndexTitleDetails, 1);
+	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
 
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       nautilus_index_title_update_icon,
-					       GTK_OBJECT (index_title));
+					       nautilus_sidebar_title_update_icon,
+					       GTK_OBJECT (sidebar_title));
 }
 
 /* destroy by throwing away private storage */
 
 static void
-release_file (NautilusIndexTitle *index_title)
+release_file (NautilusSidebarTitle *sidebar_title)
 {
-	if (index_title->details->file_changed_connection != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (index_title->details->file),
-				       index_title->details->file_changed_connection);
-		index_title->details->file_changed_connection = 0;
+	if (sidebar_title->details->file_changed_connection != 0) {
+		gtk_signal_disconnect (GTK_OBJECT (sidebar_title->details->file),
+				       sidebar_title->details->file_changed_connection);
+		sidebar_title->details->file_changed_connection = 0;
 	}
 
-	if (index_title->details->file != NULL) {
-		if (nautilus_file_is_directory (index_title->details->file)) {
-			nautilus_file_monitor_remove (index_title->details->file, index_title);
+	if (sidebar_title->details->file != NULL) {
+		if (nautilus_file_is_directory (sidebar_title->details->file)) {
+			nautilus_file_monitor_remove (sidebar_title->details->file, sidebar_title);
 		}
-		nautilus_file_unref (index_title->details->file);
-		index_title->details->file = NULL;
+		nautilus_file_unref (sidebar_title->details->file);
+		sidebar_title->details->file = NULL;
 	}
 }
 
 static void
-nautilus_index_title_destroy (GtkObject *object)
+nautilus_sidebar_title_destroy (GtkObject *object)
 {
-	NautilusIndexTitle *index_title;
+	NautilusSidebarTitle *sidebar_title;
 
-	index_title = NAUTILUS_INDEX_TITLE (object);
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (object);
 
-	release_file (index_title);
+	release_file (sidebar_title);
 	
-	g_free (index_title->details->requested_text);
-	g_free (index_title->details);
+	g_free (sidebar_title->details->requested_text);
+	g_free (sidebar_title->details);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -137,24 +137,24 @@ nautilus_index_title_destroy (GtkObject *object)
 /* return a new index title object */
 
 GtkWidget *
-nautilus_index_title_new (void)
+nautilus_sidebar_title_new (void)
 {
-	return GTK_WIDGET (gtk_type_new (nautilus_index_title_get_type ()));
+	return GTK_WIDGET (gtk_type_new (nautilus_sidebar_title_get_type ()));
 }
 
 /* set up the icon image */
 static void
-nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
+nautilus_sidebar_title_update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	GdkPixbuf *pixbuf;
 
 	/* NULL can happen because nautilus_file_get returns NULL for the root. */
-	if (index_title->details->file == NULL) {
+	if (sidebar_title->details->file == NULL) {
 		return;
 	}
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (index_title->details->file,
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 							    NAUTILUS_ICON_SIZE_STANDARD);
 
 	/* make a pixmap and mask to pass to the widget */
@@ -162,29 +162,29 @@ nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
 	gdk_pixbuf_unref (pixbuf);
 	
 	/* if there's no pixmap so far, so allocate one */
-	if (index_title->details->icon != NULL) {
-		gtk_pixmap_set (GTK_PIXMAP (index_title->details->icon),
+	if (sidebar_title->details->icon != NULL) {
+		gtk_pixmap_set (GTK_PIXMAP (sidebar_title->details->icon),
 				pixmap, mask);
 	} else {
-		index_title->details->icon = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
-		gtk_widget_show (index_title->details->icon);
-		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->icon, 0, 0, 0);
-		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->icon, 0);
+		sidebar_title->details->icon = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
+		gtk_widget_show (sidebar_title->details->icon);
+		gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0, 0, 0);
+		gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0);
 	}
 }
 
 /* set up the filename label */
 static void
-nautilus_index_title_update_label (NautilusIndexTitle *index_title)
+nautilus_sidebar_title_update_label (NautilusSidebarTitle *sidebar_title)
 {
 	GdkFont *label_font;
 	char *displayed_text;
 		
-	if (index_title->details->requested_text == NULL) {
+	if (sidebar_title->details->requested_text == NULL) {
 		/* Use empty string to replace previous contents. */
 		displayed_text = g_strdup ("");
 	} else {
-		displayed_text = g_strdup (index_title->details->requested_text);
+		displayed_text = g_strdup (sidebar_title->details->requested_text);
 	}
 	
 	/* split the filename into two lines if necessary */
@@ -211,58 +211,58 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 				
 				/* free up the old string and replace it with the new one with the return inserted */
 				
-				g_free(displayed_text);
+				g_free (displayed_text);
 				displayed_text = buffer;
 				break;
 			}
 		}
 	}
 	
-	if (index_title->details->title != NULL) {
-		gtk_label_set_text (GTK_LABEL (index_title->details->title), displayed_text);
+	if (sidebar_title->details->title != NULL) {
+		gtk_label_set_text (GTK_LABEL (sidebar_title->details->title), displayed_text);
 	} else {
-		index_title->details->title = GTK_WIDGET (gtk_label_new (displayed_text));
-		gtk_label_set_line_wrap (GTK_LABEL (index_title->details->title), TRUE);
-		gtk_widget_show (index_title->details->title);
-		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->title, 0, 0, 0);
-		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->title, 1);
+		sidebar_title->details->title = GTK_WIDGET (gtk_label_new (displayed_text));
+		gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->title), TRUE);
+		gtk_widget_show (sidebar_title->details->title);
+		gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->title, 0, 0, 0);
+		gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->title, 1);
 	}
 	
 	/* FIXME bugzilla.eazel.com 1103: 
 	 * Make this use the font factory 
 	 */
-	label_font = nautilus_get_largest_fitting_font (displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
+	label_font = nautilus_get_largest_fitting_font (displayed_text, GTK_WIDGET (sidebar_title)->allocation.width - 4,
 				  "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
 	
-	nautilus_gtk_widget_set_font (index_title->details->title, label_font);
+	nautilus_gtk_widget_set_font (sidebar_title->details->title, label_font);
 	g_free (displayed_text);
 }
 
 /* add a pixbuf to the emblem box */
 static void
-nautilus_index_title_add_pixbuf(NautilusIndexTitle *index_title, GdkPixbuf *pixbuf)
+nautilus_sidebar_title_add_pixbuf(NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	GtkWidget *pixmap_widget;
 	
-	if (index_title->details->emblem_box == NULL) {
+	if (sidebar_title->details->emblem_box == NULL) {
 		/* alllocate a new emblem box */
-		index_title->details->emblem_box = gtk_hbox_new(FALSE, 0);
-		gtk_widget_show(index_title->details->emblem_box);
-		gtk_box_pack_start(GTK_BOX (index_title), index_title->details->emblem_box, 0, 0, 0);
+		sidebar_title->details->emblem_box = gtk_hbox_new(FALSE, 0);
+		gtk_widget_show(sidebar_title->details->emblem_box);
+		gtk_box_pack_start(GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
 	}
         
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 	pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	gtk_widget_show (pixmap_widget);
-	gtk_container_add(GTK_CONTAINER(index_title->details->emblem_box), pixmap_widget);	
+	gtk_container_add(GTK_CONTAINER(sidebar_title->details->emblem_box), pixmap_widget);	
 }
 
 /* set up more info about the file */
 
 void
-nautilus_index_title_update_info (NautilusIndexTitle *index_title)
+nautilus_sidebar_title_update_info (NautilusSidebarTitle *sidebar_title)
 {
 	NautilusFile *file;
 	GList *emblem_icons, *current_emblem;
@@ -272,7 +272,7 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 	GdkFont *font;
 
 	/* NULL can happen because nautilus_file_get returns NULL for the root. */
-	file = index_title->details->file;
+	file = sidebar_title->details->file;
 	if (file == NULL) {
 		return;
 	}
@@ -301,9 +301,9 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 	}
 	
 	/* set up the emblems if necessary.  First, deallocate any existing ones */
-	if (index_title->details->emblem_box) {
-		gtk_widget_destroy(index_title->details->emblem_box);
-		index_title->details->emblem_box = NULL;
+	if (sidebar_title->details->emblem_box) {
+		gtk_widget_destroy(sidebar_title->details->emblem_box);
+		sidebar_title->details->emblem_box = NULL;
 	}
 	
 	/* fetch the emblem icons from metadata */
@@ -318,7 +318,7 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 				 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
 				 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD);
 			if (emblem_pixbuf != NULL) {
-				nautilus_index_title_add_pixbuf (index_title, emblem_pixbuf);
+				nautilus_sidebar_title_add_pixbuf (sidebar_title, emblem_pixbuf);
 				gdk_pixbuf_unref (emblem_pixbuf);
 			}
 		}
@@ -328,126 +328,119 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 			
 	/* set up the additional text info */
 	
-	if (index_title->details->more_info)
-		gtk_label_set_text(GTK_LABEL(index_title->details->more_info), info_string);
+	if (sidebar_title->details->more_info)
+		gtk_label_set_text(GTK_LABEL(sidebar_title->details->more_info), info_string);
 	else {
-		index_title->details->more_info = GTK_WIDGET(gtk_label_new(info_string));
-		gtk_widget_show (index_title->details->more_info);
-		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->more_info, 0, 0, 0);
-		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->more_info, 2);
+		sidebar_title->details->more_info = GTK_WIDGET(gtk_label_new(info_string));
+		gtk_widget_show (sidebar_title->details->more_info);
+		gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info, 0, 0, 0);
+		gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->more_info, 2);
 	}   
 
         font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (index_title->details->more_info, font);
+	nautilus_gtk_widget_set_font (sidebar_title->details->more_info, font);
         gdk_font_unref (font);
 	
-	g_free(info_string);
+	g_free (info_string);
 	
 	/* see if there are any notes for this file. If so, display them */
 	notes_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES, NULL);
 	if (notes_text != NULL) {
-		if (index_title->details->notes != NULL)
-			gtk_label_set_text(GTK_LABEL(index_title->details->notes), notes_text);
+		if (sidebar_title->details->notes != NULL)
+			gtk_label_set_text(GTK_LABEL(sidebar_title->details->notes), notes_text);
 		else  {  
-			index_title->details->notes = GTK_WIDGET(gtk_label_new(notes_text));
-			gtk_label_set_line_wrap(GTK_LABEL(index_title->details->notes), TRUE);
-			gtk_widget_show (index_title->details->notes);
-			gtk_box_pack_start (GTK_BOX (index_title), index_title->details->notes, 0, 0, 0);
-			gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->notes, 3);
+			sidebar_title->details->notes = GTK_WIDGET(gtk_label_new(notes_text));
+			gtk_label_set_line_wrap(GTK_LABEL(sidebar_title->details->notes), TRUE);
+			gtk_widget_show (sidebar_title->details->notes);
+			gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
+			gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->notes, 3);
 		}
 		
 		font = nautilus_font_factory_get_font_from_preferences (12);
-		nautilus_gtk_widget_set_font (index_title->details->notes, font);
+		nautilus_gtk_widget_set_font (sidebar_title->details->notes, font);
 		gdk_font_unref (font);
 		
 		g_free (notes_text);
-	} else if (index_title->details->notes != NULL) {
-		gtk_label_set_text (GTK_LABEL (index_title->details->notes), "");
+	} else if (sidebar_title->details->notes != NULL) {
+		gtk_label_set_text (GTK_LABEL (sidebar_title->details->notes), "");
 	}
 }
 
 /* return the filename text */
-
 char *
-nautilus_index_title_get_text(NautilusIndexTitle *index_title)
+nautilus_sidebar_title_get_text(NautilusSidebarTitle *sidebar_title)
 {
-	if (index_title->details->requested_text)
-		return g_strdup(index_title->details->requested_text);
-	return NULL;
+	return g_strdup (sidebar_title->details->requested_text);
 }
 
 /* set up the filename text */
-
 void
-nautilus_index_title_set_text (NautilusIndexTitle *index_title, const char* new_text)
+nautilus_sidebar_title_set_text (NautilusSidebarTitle *sidebar_title, const char* new_text)
 {
-	g_free (index_title->details->requested_text);
-	index_title->details->requested_text = g_strdup (new_text);
+	g_free (sidebar_title->details->requested_text);
+	sidebar_title->details->requested_text = g_strdup (new_text);
 
 	/* Recompute the displayed text. */
-	nautilus_index_title_update_label (index_title);
+	nautilus_sidebar_title_update_label (sidebar_title);
 }
 
 static void
-update (NautilusIndexTitle *index_title)
+update (NautilusSidebarTitle *sidebar_title)
 {
 	/* add the icon */
-	nautilus_index_title_update_icon (index_title);
+	nautilus_sidebar_title_update_icon (sidebar_title);
 
 	/* add the name, in a variable-sized label */
-	nautilus_index_title_update_label (index_title);
+	nautilus_sidebar_title_update_label (sidebar_title);
 
 	/* add various info */
-	nautilus_index_title_update_info (index_title);
+	nautilus_sidebar_title_update_info (sidebar_title);
 }
 
 void
-nautilus_index_title_set_uri (NautilusIndexTitle *index_title,
+nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
 			      const char* new_uri,
 			      const char* initial_text)
 {
 	GList *attributes;
 
-	release_file (index_title);
+	release_file (sidebar_title);
 
-	index_title->details->file = nautilus_file_get (new_uri);
-	if (index_title->details->file != NULL) {
-		index_title->details->file_changed_connection =
-			gtk_signal_connect_object (GTK_OBJECT (index_title->details->file),
+	sidebar_title->details->file = nautilus_file_get (new_uri);
+	if (sidebar_title->details->file != NULL) {
+		sidebar_title->details->file_changed_connection =
+			gtk_signal_connect_object (GTK_OBJECT (sidebar_title->details->file),
 						   "changed",
 						   update,
-						   GTK_OBJECT (index_title));
+						   GTK_OBJECT (sidebar_title));
 		/* Monitor the item count so we can update when it is known. */
-		if (nautilus_file_is_directory (index_title->details->file)) {
+		if (nautilus_file_is_directory (sidebar_title->details->file)) {
 			attributes = g_list_prepend (NULL,
 						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-			nautilus_file_monitor_add (index_title->details->file, index_title,
+			nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
 						   attributes, FALSE);
 			g_list_free (attributes);
 		}
 	}
 
-	g_free (index_title->details->requested_text);
-	index_title->details->requested_text = g_strdup (initial_text);
+	g_free (sidebar_title->details->requested_text);
+	sidebar_title->details->requested_text = g_strdup (initial_text);
 
-	update (index_title);
+	update (sidebar_title);
 }
 
-/* handle a button press */
-
 static gboolean
-nautilus_index_title_button_press_event (GtkWidget *widget, GdkEventButton *event)
+nautilus_sidebar_title_button_press_event (GtkWidget *widget, GdkEventButton *event)
 {
-	/*
-	  NautilusIndexTitle *index_title = NAUTILUS_INDEX_TITLE (widget);  
-	*/
+	/* FIXME: We must do something other than a g_message here.
+	 * NautilusSidebarTitle *sidebar_title = NAUTILUS_SIDEBAR_TITLE (widget);  
+	 */
 	g_message ("button press");
-	
 	return TRUE;
 }
 
 gboolean
-nautilus_index_title_hit_test_icon (NautilusIndexTitle *title, int x, int y)
+nautilus_sidebar_title_hit_test_icon (NautilusSidebarTitle *title, int x, int y)
 {
 	return nautilus_point_in_widget (title->details->icon, x, y);
 }

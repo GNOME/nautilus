@@ -19,46 +19,43 @@
  *
  * Author: Andy Hertzfeld <andy@eazel.com>
  *
- * This is the header file for the index title panel, which is part of the index panel
- *
+ * This is the header file for the sidebar title, which is part of the sidebar.
  */
 
-#ifndef NAUTILUS_INDEX_TITLE_H
-#define NAUTILUS_INDEX_TITLE_H
+#ifndef NAUTILUS_SIDEBAR_TITLE_H
+#define NAUTILUS_SIDEBAR_TITLE_H
 
 #include <gtk/gtkvbox.h>
 
-#define NAUTILUS_TYPE_INDEX_TITLE	     (nautilus_index_title_get_type ())
-#define NAUTILUS_INDEX_TITLE(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INDEX_TITLE, NautilusIndexTitle))
-#define NAUTILUS_INDEX_TITLE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INDEX_TITLE, NautilusIndexTitleClass))
-#define NAUTILUS_IS_INDEX_TITLE(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INDEX_TITLE))
-#define NAUTILUS_IS_INDEX_TITLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_TITLE))
+#define NAUTILUS_TYPE_SIDEBAR_TITLE	       (nautilus_sidebar_title_get_type ())
+#define NAUTILUS_SIDEBAR_TITLE(obj)	       (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitle))
+#define NAUTILUS_SIDEBAR_TITLE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitleClass))
+#define NAUTILUS_IS_SIDEBAR_TITLE(obj)	       (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE))
+#define NAUTILUS_IS_SIDEBAR_TITLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR_TITLE))
 
-typedef struct NautilusIndexTitle NautilusIndexTitle;
-typedef struct NautilusIndexTitleClass NautilusIndexTitleClass;
-typedef struct NautilusIndexTitleDetails NautilusIndexTitleDetails;
+typedef struct NautilusSidebarTitleDetails NautilusSidebarTitleDetails;
 
-struct NautilusIndexTitle
+typedef struct
 {
 	GtkVBox box;
-	NautilusIndexTitleDetails *details; 
-};
+	NautilusSidebarTitleDetails *details; 
+} NautilusSidebarTitle;
 
-struct NautilusIndexTitleClass
+typedef struct
 {
 	GtkVBoxClass parent_class;
-};
+} NautilusSidebarTitleClass;
 
-GtkType    nautilus_index_title_get_type      (void);
-GtkWidget *nautilus_index_title_new           (void);
-void       nautilus_index_title_set_uri       (NautilusIndexTitle *index_title,
-					       const char         *new_uri,
-					       const char         *initial_text);
-void       nautilus_index_title_set_text      (NautilusIndexTitle *index_title,
-					       const char         *new_title);
-char*	   nautilus_index_title_get_text	  (NautilusIndexTitle *index_title);
-gboolean   nautilus_index_title_hit_test_icon (NautilusIndexTitle *index_title,
-					       int                 x,
-					       int                 y);
+GtkType    nautilus_sidebar_title_get_type      (void);
+GtkWidget *nautilus_sidebar_title_new           (void);
+void       nautilus_sidebar_title_set_uri       (NautilusSidebarTitle *sidebar_title,
+						 const char           *new_uri,
+						 const char           *initial_text);
+void       nautilus_sidebar_title_set_text      (NautilusSidebarTitle *sidebar_title,
+						 const char           *new_title);
+char *     nautilus_sidebar_title_get_text      (NautilusSidebarTitle *sidebar_title);
+gboolean   nautilus_sidebar_title_hit_test_icon (NautilusSidebarTitle *sidebar_title,
+						 int                   x,
+						 int                   y);
 
-#endif /* NAUTILUS_INDEX_TITLE_H */
+#endif /* NAUTILUS_SIDEBAR_TITLE_H */

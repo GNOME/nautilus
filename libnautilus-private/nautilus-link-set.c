@@ -72,15 +72,14 @@ create_new_link (const char *directory_path, const char *name, const char *image
 /* utility to return link set path */
 
 static xmlDocPtr
-get_link_set_document(const char* link_set_name)
+get_link_set_document(const char *link_set_name)
 {
-	char *link_set_path, *temp_str;
+	char *link_set_path;
 	xmlDocPtr document;
 	
-	temp_str = g_strdup_printf ("nautilus/linksets/%s.xml", link_set_name);
-	link_set_path = gnome_datadir_file (temp_str);
-	g_free (temp_str);
-	
+	link_set_path = g_strdup_printf ("%s/share/nautilus/linksets/%s.xml",
+					 NAUTILUS_PREFIX,
+					 link_set_name);
 	document = xmlParseFile (link_set_path);
 	g_free (link_set_path);
 	

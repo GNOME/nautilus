@@ -371,26 +371,25 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			return;	
 		}
 		
-		temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
-		path = gnome_datadir_file (temp_str);
-		image_file_name = g_strdup_printf("%s/%s", path, property_browser->details->dragged_file);
+		image_file_name = g_strdup_printf ("%s/share/nautilus/%s/%s",
+						   NAUTILUS_PREFIX,
+						   property_browser->details->category,
+						   property_browser->details->dragged_file);
 		
-	
-		if (!g_file_exists(image_file_name)) {
-			g_free(image_file_name);
-			image_file_name = g_strdup_printf("%s/%s/%s",
-							  nautilus_get_user_directory (),
-							  property_browser->details->category, 
-							  property_browser->details->dragged_file);	
+		if (!g_file_exists (image_file_name)) {
+			g_free (image_file_name);
+			image_file_name = g_strdup_printf ("%s/%s/%s",
+							   nautilus_get_user_directory (),
+							   property_browser->details->category, 
+							   property_browser->details->dragged_file);	
 		}
 
-		image_file_uri = g_strdup_printf("file://%s", image_file_name);
-		gtk_selection_data_set(selection_data, selection_data->target, 8, image_file_uri, strlen(image_file_uri));
+		image_file_uri = g_strdup_printf ("file://%s", image_file_name);
+		gtk_selection_data_set (selection_data, selection_data->target, 8, image_file_uri, strlen(image_file_uri));
 		
-		g_free(temp_str);
-		g_free(path);
-		g_free(image_file_name);
-		g_free(image_file_uri);
+		g_free (path);
+		g_free (image_file_name);
+		g_free (image_file_uri);
 		
 		break;
 	default:
@@ -428,14 +427,16 @@ ensure_uri_is_image(const char *uri)
 }
 
 /* create the appropriate pixbuf for the passed in file */
-static GdkPixbuf*
+static GdkPixbuf *
 make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name)
 {
 	GdkPixbuf *pixbuf;
-	char *temp_str = g_strdup_printf ("nautilus/%s", property_browser->details->category);
-	char *path = gnome_datadir_file (temp_str);
+	char *image_file_name;
 
-	char *image_file_name = nautilus_make_path(path, file_name);
+	image_file_name = g_strdup_printf ("%s/share/nautilus/%s/%s",
+					   NAUTILUS_PREFIX,
+					   property_browser->details->category,
+					   file_name);
 	
 	if (!g_file_exists (image_file_name)) {
 		g_free (image_file_name);
@@ -445,12 +446,10 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 						   file_name);	
 	}
 	
-	pixbuf = nautilus_gdk_pixbuf_scale_to_fit(gdk_pixbuf_new_from_file(image_file_name),
-							MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
+	pixbuf = nautilus_gdk_pixbuf_scale_to_fit (gdk_pixbuf_new_from_file (image_file_name),
+						   MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
 
-	g_free(image_file_name);
-	g_free(temp_str);
-	g_free(path);
+	g_free (image_file_name);
 
 	return pixbuf;
 }
@@ -632,23 +631,26 @@ dialog_destroy (GtkWidget *widget, gpointer data)
 static char *
 get_xml_path(NautilusPropertyBrowser *property_browser)
 {
-	char *temp_str;
-	/* first try the user's home directory */
 	char *xml_path;
 
-	xml_path = nautilus_make_path (nautilus_get_user_directory(),
+	/* first try the user's home directory */
+	xml_path = nautilus_make_path (nautilus_get_user_directory (),
 				       property_browser->details->path);
 	if (g_file_exists (xml_path)) {
 		return xml_path;
 	}
+	g_free (xml_path);
 	
 	/* next try the shared directory */
-	g_free (xml_path);
-	temp_str = g_strdup_printf ("nautilus/%s",
+	xml_path = g_strdup_printf ("%s/share/nautilus/%s",
+				    NAUTILUS_PREFIX,
 				    property_browser->details->path);
-	xml_path = gnome_datadir_file (temp_str);
-	g_free (temp_str);
-	return xml_path;
+	if (g_file_exists (xml_path)) {
+		return xml_path;
+	}
+	g_free (xml_path);
+
+	return NULL;
 }
 
 /* utility to set up the emblem image from the passed-in file */
@@ -1251,20 +1253,16 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 static void
 make_properties_from_directory(NautilusPropertyBrowser *property_browser, const char* path)
 {
-	char *temp_str, *directory_path, *directory_uri;
+	char *directory_uri;
 	int new_index;
 	int index = 0;
 	
 	/* first, make properties from the shared space */
 	if (!property_browser->details->remove_mode) {
-		temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
-		directory_path = gnome_datadir_file (temp_str);
-		directory_uri = g_strdup_printf("file://%s", directory_path);
-		
-		index = make_properties_from_directory_path(property_browser, directory_uri, index);
-	
-		g_free(temp_str);
-		g_free(directory_path);
+		directory_uri = g_strdup_printf ("file://%s/share/nautilus/%s",
+						 NAUTILUS_PREFIX,
+						 property_browser->details->category);
+		index = make_properties_from_directory_path (property_browser, directory_uri, index);
 		g_free(directory_uri);
 	}
 	

@@ -1,3 +1,46 @@
+2000-06-08  Darin Adler  <darin@eazel.com>
+
+	* acconfig.h:
+	* configure.in:
+	Added NAUTILUS_PREFIX so we can locate our installed files
+	correctly instead of assuming they are in the gnome-libs prefix.
+	
+	* components/help/hyperbola-filefmt.c: (fmt_map_entry):
+	* components/websearch/ntl-web-search.c:
+	(web_search_populate_engines):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	* libnautilus-extensions/nautilus-link-set.c:
+	(get_link_set_document):
+	* src/file-manager/fm-properties-window.c: (get_property_names):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get), (make_drag_image),
+	(get_xml_path), (make_properties_from_directory):
+	Use NAUTILUS_PREFIX instead of gnome_datadir_file so we get the
+	files from the right directory. Since gnome_datadir_file does a
+	check to see if the file exists, had to add some explicit checks
+	in various places.
+	
+	* components/html/glib-www-callbacks.c:
+	Got rid of some warnings.
+	
+	* components/services/time/command-line/.cvsignore:
+	* components/services/time/nautilus-view/.cvsignore:
+	* components/services/time/service/.cvsignore:
+	Ignore the new time stamp files.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	Fixed formatting.
+
+	* RENAMING:
+	* src/nautilus-sidebar-tabs.c:
+	* src/nautilus-sidebar-tabs.h:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-sidebar-title.h:
+	* src/nautilus-sidebar.c:
+	Renamed IndexTabs and IndexTitle to SidebarTabs
+	and SidebarTitle as planned.
+
 2000-06-08  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-view-identifier.h,

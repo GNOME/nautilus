@@ -42,8 +42,6 @@
 
 #define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
 
-
-
 /**
  * nautilus_make_path:
  * 
@@ -139,6 +137,8 @@ nautilus_get_user_main_directory (void)
 {
 	static char *user_main_directory = NULL;
 	NautilusFile *file;
+	char *command, *file_uri, *image_uri, *temp_str;
+
 	
 	if (user_main_directory == NULL)
 	{
@@ -147,16 +147,12 @@ nautilus_get_user_main_directory (void)
 							NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
 		if (!g_file_exists (user_main_directory)) {
-			char	   *src;
-			char	   *command;
-			char	   *file_uri, *image_uri, *temp_str;
-
-			src = gnome_datadir_file ("nautilus/top");
-
 			/* FIXME bugzilla.eazel.com 1285: 
 			 * Is it OK to use cp like this? What about quoting the parameters? 
 			 */
-			command = g_strdup_printf ("cp -R %s %s", src, user_main_directory);
+			command = g_strdup_printf ("cp -R %s %s",
+						   NAUTILUS_PREFIX "/share/nautilus/top",
+						   user_main_directory);
 
 			/* FIXME bugzilla.eazel.com 1286: 
 			 * Is a g_warning good enough here? This seems like a big problem. 
@@ -166,7 +162,6 @@ nautilus_get_user_main_directory (void)
 					   command);
 			}
 			
-			g_free (src);
 			g_free (command);
 		
 			/* assign a custom image for the directory icon */

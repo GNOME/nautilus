@@ -39,6 +39,17 @@ if test "$GCC" = "yes"; then
 fi
 AC_SUBST(WERROR)
 
+
+dnl prefix so Nautilus can find its installed files
+if test "x$prefix" = "xNONE"; then
+	nautilus_prefix=${ac_default_prefix}
+else
+	nautilus_prefix=${prefix}
+fi 
+AC_DEFINE_UNQUOTED(NAUTILUS_PREFIX, "${nautilus_prefix}")
+
+
+
 dnl ORBit
 AM_PATH_ORBIT
 

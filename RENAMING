@@ -15,19 +15,17 @@ components/websearch/ntl-web-search.c -> components/websearch/nautilus-web-searc
 src/file-manager/fm-* -> ?
 src/file-manager/dfos* -> ?
 
-
 --------------------------
 Random vestiges of "ntl"
 --------------------------
 libntl-file-manager.* -> libnautilus-file-manager.*
 *ntl* -> *nautilus*
 header file guard #defines, *NTL* -> *NAUTILUS*
+	(change to match header file instead with perl script to check?)
 
 ----------------------------
 classes and other data types
 ----------------------------
-NautilusIndexTabs -> NautilusSidebarTabs
-NautilusIndexTitle -> NautilusSidebarTitle
 NavigationRequestInfo -> NavigationRequest
 NautilusApp -> NautilusApplication
 NavigationInfo -> Location
