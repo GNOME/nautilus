@@ -723,9 +723,10 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 	eazel_install_emit_done (service);
 }
 
-void eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, 
-						      const char *xml, 
-						      int size)
+void 
+eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, 
+						 const char *xml, 
+						 int size)
 {
 	GList *packages;
 
@@ -733,6 +734,22 @@ void eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	revert_transaction (service, packages);
 
 	eazel_install_emit_done (service);
+}
+
+
+void 
+eazel_install_revert_transaction_from_file (EazelInstall *service, 
+					    const char *filename)
+{
+	xmlDocPtr doc;
+	xmlChar *mem;
+	int size;
+	
+	doc = xmlParseFile (filename);
+	xmlDocDumpMemory (doc, &mem, &size);
+	eazel_install_revert_transaction_from_xmlstring (service, mem, size);
+	g_free (mem);
+	xmlFreeDoc (doc);
 }
 
 /************************************************

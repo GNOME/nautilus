@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 			PackageData *pack;
 			pack = (PackageData*)iterator->data;
 			
-			fprintf (stdout, "Package : %s, %s (\"%40.40s\")\n", pack->name, pack->version, pack->summary);
+			fprintf (stdout, "Package : %s, %s (\"%40.40s\")\n", pack->name, pack->version, pack->description);
 			packagedata_destroy (pack);
 		}
 		g_list_free (result);

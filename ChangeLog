@@ -1,3 +1,48 @@
+2000-08-21  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.c:
+	(eazel_install_progress_signal), (main):
+	* components/services/install/command-line/eazel-package-query.c:
+	(main):
+	* components/services/install/command-line/eazel-revert.c:
+	(eazel_install_progress_signal):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_revert_transaction_from_file):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(download_all_packages), (eazel_uninstall_globber):
+	* components/services/install/lib/eazel-install-tests.c:
+	(dump_package_list):
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new), (packagedata_new),
+	(packagedata_fill_from_rpm_header), (packagedata_destroy_foreach):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (eazel_install_packagedata_to_xml),
+	(osd_parse_softpkg):
+	Renames the summary field to description (PackageData
+	struc). Added a revert_transaction_from_file, which reads the xml
+	file. Fixed some const issues.
+	
+	* nautilus-installer/src/callbacks.c:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_install_preflight), (make_dirs), (check_system),
+	(revert_nautilus_install), (installer):
+	* nautilus-installer/src/interface.c: (create_what_to_do_page),
+	(create_install_page), (create_finish_page):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (main):
+	* nautilus-installer/src/prescript:
+	Added GPL license to all the bootstrap installer code. Inserted a
+	textbox into the installer, that
+	displays current action/package description during download. It
+	now also checks linux distro and for a helix install.
+	
 2000-08-21  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c: 

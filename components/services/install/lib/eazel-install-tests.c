@@ -36,6 +36,6 @@ dump_package_list (PackageData* pkg) {
 	g_print ("minor = %s\n", pkg->minor);
 	g_print ("archtype = %s\n", pkg->archtype);
 	g_print ("bytesize = %d\n", pkg->bytesize);
-	g_print ("summary = %s\n", pkg->summary);
+	g_print ("description = %s\n", pkg->description);
 	g_print (_("*** End pkg dump ***\n"));
 } /* end dump_package_list */

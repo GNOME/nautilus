@@ -5,10 +5,9 @@ if test $UID -ne 0; then
     echo ""
     echo "Nautilus-Installer v 0.2"
     echo ""
-    echo "argle bargle glob glyf muhainapuniua bork bork bork"
-    echo "fisk er dumme og heste er grimme"
-    echo "To maend, gik ud i en skov, tog bukserne af, til de begge"
-    echo "blev flove. Gravballemanden blev min skaebne"
+    echo "Fisk er dumme og heste er grimme"
+    echo "To mænd, gik ud i en skov, tog bukserne af, til de begge"
+    echo "blev flove. Gravballemanden blev min skæbne"
     echo ""
     echo "The Nautilus-Installer requires superuser access to prepare the system"
     echo "It needs to create a few administrative directories on in /var and"
@@ -19,8 +18,6 @@ if test $UID -ne 0; then
     xhost + localhost
     su - -c "export DISPLAY=$DISPLAY && cd $PWD && echo Uncompressing... && sh $0 $* $USER"
     xhost - localhost
-    cp -f /usr/share/gnome/apps/Applications/nautilus.desktop ~/.gnome-desktop/
-    chmod -f 644 ~/.gnome-desktop/nautilus.desktop
     exit
 fi
 if ! test -d /var/eazel/services; then

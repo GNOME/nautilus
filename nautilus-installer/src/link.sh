@@ -7,7 +7,7 @@ make -f makefile.staticlib
 popd
 
 make clean
-make CFLAGS="-O -Werror $*" LDFLAGS="-static"
+make CFLAGS="-O -Werror -DNO_TEXT_BOX $*" LDFLAGS="-static"
 gcc -static -O -Werror -o nautilus-installer main.o support.o interface.o callbacks.o installer.o \
 ../../components/services/install/lib/libeazelinstall_minimal.a \
 ../../components/services/trilobite/libtrilobite/helixcode-utils.o \

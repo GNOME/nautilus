@@ -65,7 +65,7 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 			rv->bytesize = 0;
 		}
 	}
-	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
+	rv->description = g_strdup (xml_get_value (package, "SUMMARY"));
 	rv->distribution = trilobite_get_distribution ();
 	if (set_toplevel) {
 		rv->toplevel = TRUE;
@@ -410,7 +410,7 @@ eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodeP
 	node = xmlNewChild (root, NULL, "VERSION", pack->version);
 	node = xmlNewChild (root, NULL, "MINOR", pack->minor);
 	node = xmlNewChild (root, NULL, "ARCH", pack->archtype);
-	node = xmlNewChild (root, NULL, "SUMMARY", pack->summary);
+	node = xmlNewChild (root, NULL, "SUMMARY", pack->description);
 	node = xmlNewChild (root, NULL, "STATUS", packagedata_status_enum_to_str (pack->status));
 	node = xmlNewChild (root, NULL, "MODSTATUS", packagedata_modstatus_enum_to_str (pack->modify_status));
 
@@ -521,7 +521,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 	child = softpkg->childs;
 	while (child) {
 		if (g_strcasecmp (child->name, "ABSTRACT")==0) {
-			result->summary = g_strdup (xmlNodeGetContent (child));
+			result->description = g_strdup (xmlNodeGetContent (child));
 		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
 			osd_parse_implementation (result, child);
 		} else {

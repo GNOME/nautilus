@@ -214,7 +214,7 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 			       char *title)
 {
 	if (amount==0) {
-		fprintf (stdout, "%s %s: \"%20.20s\"...\n", title, pack->name, pack->summary);
+		fprintf (stdout, "%s %s: \"%20.20s\"...\n", title, pack->name, pack->description);
 	} else if (amount != total ) {
 		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
 			 package_num, num_packages,
@@ -483,7 +483,7 @@ int main(int argc, char *argv[]) {
 			for (match_it = matched_packages; match_it; match_it = match_it->next) {
 				PackageData *p;
 				p = (PackageData*)match_it->data;
-				fprintf (stdout, "%s %s %50.50s", p->name, p->version, p->summary);
+				fprintf (stdout, "%s %s %50.50s", p->name, p->version, p->description);
 			}
 		}
 	} else if (arg_revert) {

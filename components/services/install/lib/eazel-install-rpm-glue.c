@@ -200,6 +200,8 @@ download_all_packages (EazelInstall *service,
 			if (fetch_package) {
 				if (eazel_install_fetch_package (service, package)==FALSE) {
 					remove = g_list_prepend (remove, package);
+				} else {
+					package->toplevel = TRUE;
 				}
 			}
 			
@@ -2017,5 +2019,5 @@ eazel_uninstall_globber (EazelInstall *service,
 		eazel_install_free_package_system (service);
 	}
 
-	g_message ("out eazel_uninstall_globber");
+	g_message ("out eazel_uninstall_glob");
 }

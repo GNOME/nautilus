@@ -1,3 +1,25 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* 
+ * Copyright (C) 2000 Eazel, Inc
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Authors: Eskil Heyn Olsen  <eskil@eazel.com>
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -12,6 +34,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include <sys/utsname.h>
 
@@ -46,7 +69,7 @@ eazel_install_progress (EazelInstall *service,
 			GtkWidget *widget) 
 {
 	GtkProgressBar *progressbar, *progress_overall;
-	GtkText *summary;
+	GtkWidget *summary;
 	GtkLabel *package_label;
 
 	package_label = gtk_object_get_data (GTK_OBJECT (widget), "package_label");
@@ -62,9 +85,15 @@ eazel_install_progress (EazelInstall *service,
 
 		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
-		gtk_text_backward_delete (summary, gtk_text_get_length (summary));
-		gtk_text_insert (summary, NULL, NULL, NULL,
-				 package->summary, strlen (package->summary));
+#ifdef NO_TEXT_BOX
+		gtk_label_set_text (GTK_LABEL (summary), package->description);
+#else
+		gtk_text_backward_delete (GTK_TEXT (summary), 
+					  gtk_text_get_length (GTK_TEXT (summary)));
+		gtk_text_insert (GTK_TEXT (summary), 
+				 NULL, NULL, NULL,
+				 package->description, strlen (package->summary));
+#endif
 			
 	}
 
@@ -234,7 +263,7 @@ eazel_install_preflight (EazelInstall *service,
 {
 	GtkProgressBar *progress_overall;
 	GtkLabel *package_label;
-	GtkText *summary;
+	GtkWidget *summary;
 	char *summary_string;
 	char *tmp;
 
@@ -257,9 +286,15 @@ eazel_install_preflight (EazelInstall *service,
 	}
 
 	gtk_label_set_text (package_label, tmp);
-	gtk_text_backward_delete (summary, gtk_text_get_length (summary));
-	gtk_text_insert (summary, NULL, NULL, NULL,
+#ifdef NO_TEXT_BOX
+	gtk_label_set_text (GTK_LABEL (summary), summary_string);
+#else
+	gtk_text_backward_delete (GTK_TEXT (summary), 
+				  gtk_text_get_length (GTK_TEXT (summary)));
+	gtk_text_insert (GTK_TEXT (summary), 
+			 NULL, NULL, NULL,
 			 summary_string, strlen (summary_string));
+#endif
 	g_main_iteration (FALSE);
 }
 
@@ -307,7 +342,8 @@ make_dirs ()
 			retval = mkdir (EAZEL_SERVICES_DIR_HOME, 0755);		       
 			if (retval < 0) {
 				if (errno != EEXIST) {
-					g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR_HOME);
+					g_error (_("*** Could not create services directory (%s)! ***\n"), 
+						 EAZEL_SERVICES_DIR_HOME);
 				}
 			}
 		}
@@ -315,24 +351,20 @@ make_dirs ()
 		retval = mkdir (EAZEL_SERVICES_DIR, 0755);
 		if (retval < 0) {
 			if (errno != EEXIST) {
-				g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR);
+				g_error (_("*** Could not create services directory (%s)! ***\n"), 
+					 EAZEL_SERVICES_DIR);
 			}
 		}
 	}
 }
 
-void installer (GtkWidget *window,
-		gint method) 
+void
+check_system (GtkWidget *window)
 {
-	EazelInstall *service;
-	GtkProgressBar *progressbar;
-	GtkLabel *package_label;
-	GtkLabel *action_label;
+	DistributionInfo dist;
 
-	if (method==UPGRADE) {
-		gnome_warning_dialog ("We don't do UPGRADE yet");
-		return;
-	}
+	dist = trilobite_get_distribution ();
+
 #ifndef NAUTILUS_INSTALLER_RELEASE
 	if (!installer_test) {
 		GnomeDialog *d;
@@ -343,6 +375,61 @@ void installer (GtkWidget *window,
 		gnome_dialog_run_and_close (d);
 	} 
 #endif
+
+	g_message ("checking for rehat");
+	if (dist.name != DISTRO_REDHAT) {
+		GnomeDialog *d;
+		d = GNOME_DIALOG (gnome_warning_dialog_parented (_("This preview installer only works\n"
+								   "for RPM based systems. You will have\n"
+								   "to download the source yourself."),
+								 GTK_WINDOW (window)));
+		gnome_dialog_run_and_close (d);
+		exit (1);
+	}
+
+	if (!g_file_test ("/etc/pam.d/helix-update", G_FILE_TEST_ISFILE)) {
+		GnomeDialog *d;
+		d = GNOME_DIALOG (gnome_warning_dialog_parented (_("You do not have HelixCode gnome installed.\n"
+								   "This means I will install the required parts\n"
+								   "for you, but you might want to abort the\n"
+								   "installer and go to http://www.helixcode.com\n"
+								   "and download the full HelixCode Gnome\n"
+								   "installation"),
+								 GTK_WINDOW (window)));
+		gnome_dialog_run_and_close (d);
+	}
+}
+
+void
+revert_nautilus_install (EazelInstall *service)
+{
+	DIR *dirent;
+	struct dirent *de;
+
+	dirent = opendir (EAZEL_SERVICES_DIR);
+	
+	while (de = readdir (dirent)) {
+		if (strncmp (de->d_name, "transaction.", 12)==0) {
+			eazel_install_revert_transaction_from_file (service, de->d_name);
+			unlink (de->d_name);
+		}
+	}
+}
+
+void installer (GtkWidget *window,
+		gint method) 
+{
+	EazelInstall *service;
+	GtkWidget *druid;
+/*
+	GtkProgressBar *progressbar;
+	GtkLabel *package_label;
+	GtkLabel *action_label;
+*/
+	if (method==UPGRADE) {
+		gnome_warning_dialog ("We don't do UPGRADE yet");
+		return;
+	}
 	
 	/* We set force, update and downgrade to true. */
 	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
@@ -362,6 +449,7 @@ void installer (GtkWidget *window,
 						 "package_list", installer_local, 
 						 "package_list_storage_path", package_list [ method ],
 						 "server_port", PORT_NUMBER,
+						 "transaction_dir", EAZEL_SERVICES_DIR,
 						 NULL));
 	g_assert (service != NULL);
 
@@ -390,20 +478,36 @@ void installer (GtkWidget *window,
 	case FULL_INST:
 	case NAUTILUS_ONLY:
 	case SERVICES_ONLY:
-	case UPGRADE:		
 		eazel_install_install_packages (service, NULL);
 		break;
+	case UPGRADE:	
+	{
+		GList *categories;
+		CategoryData *cat;
+		PackageData *pack;
+
+		cat = categorydata_new ();
+		pack = packagedata_new ();
+		pack->name = g_strdup ("nautilus");
+		pack->distribution = trilobite_get_distribution ();
+		cat->packages = g_list_prepend (NULL, pack);
+		categories = g_list_prepend (NULL, cat);
+		eazel_install_install_packages (service, categories);
+	}
+	break;
 	case UNINSTALL:
-		eazel_install_uninstall_packages (service, NULL);
+		revert_nautilus_install (service);
 		break;
 	};
 
 	gtk_object_destroy (GTK_OBJECT (service)); 
 
+/*
 	progressbar = gtk_object_get_data (GTK_OBJECT (window), "progressbar_single");
 	gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "done");
 	progressbar = gtk_object_get_data (GTK_OBJECT (window), "progressbar_overall");
 	gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "done");
+*/
 
 	if (failure_info && strlen (failure_info)>1) {
 		if (installer_debug) {

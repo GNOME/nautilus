@@ -55,6 +55,12 @@ protocol_as_string (URLType protocol)
 	return as_string;
 }
 
+CategoryData*
+categorydata_new ()
+{
+	return g_new0 (CategoryData, 1);
+}
+
 void
 categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
@@ -80,7 +86,8 @@ packagedata_new ()
 	pack->version = NULL;
 	pack->minor = NULL;
 	pack->archtype = NULL;
-	pack->summary = NULL;
+
+	pack->description = NULL;
 	pack->bytesize = 0;
 	pack->distribution = trilobite_get_distribution ();
 	pack->filename = NULL;
@@ -155,7 +162,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 	pack->bytesize = *sizep;
 	headerGetEntry (*hd,
 			RPMTAG_DESCRIPTION, NULL,
-			(void **) &pack->summary, NULL);
+			(void **) &pack->description, NULL);
 
 	pack->packsys_struc = (gpointer)hd;
 }
@@ -207,8 +214,8 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	pack->minor = NULL;
 	g_free (pack->archtype);
 	pack->archtype = NULL;
-	g_free (pack->summary);
-	pack->summary = NULL;
+	g_free (pack->description);
+	pack->description = NULL;
 	pack->bytesize = 0;
 	g_free (pack->filename);
 	pack->filename = NULL;

@@ -65,7 +65,7 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 		corbapack.distribution.minor = pack->distribution.version_minor;
 	}
 	corbapack.release = pack->minor ? CORBA_string_dup (pack->minor) : CORBA_string_dup ("");
-	corbapack.summary = pack->summary ? CORBA_string_dup (pack->summary) : CORBA_string_dup ("");
+	corbapack.description = pack->description ? CORBA_string_dup (pack->description) : CORBA_string_dup ("");
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
@@ -142,7 +142,7 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	pack->minor = strlen (corbapack.release) ? g_strdup (corbapack.release) : NULL;
 	pack->archtype = strlen (corbapack.archtype) ? g_strdup (corbapack.archtype) : NULL;
 	pack->filename = strlen (corbapack.filename) ? g_strdup (corbapack.filename) : NULL;
-	pack->summary = strlen (corbapack.summary) ? g_strdup (corbapack.summary) : NULL;
+	pack->description = strlen (corbapack.description) ? g_strdup (corbapack.description) : NULL;
 	pack->toplevel = corbapack.toplevel;
 	pack->bytesize = corbapack.bytesize;
 

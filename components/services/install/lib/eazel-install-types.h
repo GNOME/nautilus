@@ -137,6 +137,7 @@ struct _CategoryData {
 	char* name;
 	GList* packages;
 };
+CategoryData *categorydata_new ();
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
 
@@ -147,7 +148,7 @@ struct _PackageData {
 	char* archtype;
 	DistributionInfo distribution;
 	int bytesize;
-	char* summary;	
+	char* description;	
 	GList* soft_depends;
 	GList* hard_depends;
 	GList* breaks; 

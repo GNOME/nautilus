@@ -1,3 +1,24 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* 
+ * Copyright (C) 2000 Eazel, Inc
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Authors: Eskil Heyn Olsen  <eskil@eazel.com>
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -85,7 +106,7 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_show (fixed3);
 	gtk_box_pack_start (GTK_BOX (vbox3), fixed3, TRUE, TRUE, 0);
 
-	fullbutton = gtk_radio_button_new_with_label (fixed3_group, _("Most recent build"));
+	fullbutton = gtk_radio_button_new_with_label (fixed3_group, _("Most Recent Build"));
 	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (fullbutton));
 	gtk_widget_set_name (fullbutton, "fullbutton");
 	gtk_widget_ref (fullbutton);
@@ -106,6 +127,7 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gtk_fixed_put (GTK_FIXED (fixed3), nautilus_only_button, 72, 56);
 	gtk_widget_set_uposition (nautilus_only_button, 72, 56);
 	gtk_widget_set_usize (nautilus_only_button, 0, 0);
+
 /*
 	services_only_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
 	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (services_only_button));
@@ -118,8 +140,9 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_set_uposition (services_only_button, 72, 88);
 	gtk_widget_set_usize (services_only_button, 0, 0);
 	gtk_widget_set_sensitive (GTK_WIDGET (services_only_button), FALSE);
+*/
 
-	upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
+	upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("Latest RPM Build"));
 	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (upgrade_button));
 	gtk_widget_set_name (upgrade_button, "upgrade_button");
 	gtk_widget_ref (upgrade_button);
@@ -129,9 +152,8 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gtk_fixed_put (GTK_FIXED (fixed3), upgrade_button, 72, 120);
 	gtk_widget_set_uposition (upgrade_button, 72, 120);
 	gtk_widget_set_usize (upgrade_button, 0, 0);
-	gtk_widget_set_sensitive (GTK_WIDGET (upgrade_button), FALSE);
-*/
-	uninstall_button = gtk_radio_button_new_with_label (fixed3_group, _("Uninstall"));
+
+	uninstall_button = gtk_radio_button_new_with_label (fixed3_group, _("Uninstall Nautilus"));
 	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (uninstall_button));
 	gtk_widget_set_name (uninstall_button, "uninstall_button");
 	gtk_widget_ref (uninstall_button);
@@ -141,8 +163,7 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gtk_fixed_put (GTK_FIXED (fixed3), uninstall_button, 72, 152);
 	gtk_widget_set_uposition (uninstall_button, 72, 152);
 	gtk_widget_set_usize (uninstall_button, 0, 0);
-	gtk_widget_set_sensitive (GTK_WIDGET (uninstall_button), FALSE);
-	
+
 	return what_to_do_page;
 }
 
@@ -196,14 +217,14 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (druid_vbox2);
 
-	vbox5 = gtk_vbox_new (FALSE, 16);
+	vbox5 = gtk_vbox_new (FALSE, 0);
 	set_white_stuff (GTK_WIDGET (vbox5));
 	gtk_widget_set_name (vbox5, "vbox5");
 	gtk_widget_ref (vbox5);
 	gtk_object_set_data_full (GTK_OBJECT (window), "vbox5", vbox5,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (vbox5);
-	gtk_box_pack_start (GTK_BOX (druid_vbox2), vbox5, FALSE, FALSE, 16);
+	gtk_box_pack_start (GTK_BOX (druid_vbox2), vbox5, TRUE, TRUE, 0);
 
 	table2 = gtk_table_new (3, 2, FALSE);
 	set_white_stuff (GTK_WIDGET (table2));
@@ -212,8 +233,8 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_object_set_data_full (GTK_OBJECT (window), "table2", table2,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (table2);
-	gtk_box_pack_start (GTK_BOX (vbox5), table2, FALSE, TRUE, 16);
 	gtk_table_set_row_spacings (GTK_TABLE (table2), 16);
+	gtk_box_pack_start (GTK_BOX (vbox5), table2, FALSE, FALSE, 16);
 
 	progressbar1 = gtk_progress_bar_new ();
 	gtk_widget_set_name (progressbar1, "progressbar_single");
@@ -234,13 +255,13 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_progress_set_format_string (GTK_PROGRESS (progressbar2), "Waiting for download...");
 	gtk_progress_set_show_text (GTK_PROGRESS (progressbar2), TRUE);		  
-	/* gtk_widget_show (progressbar2); */
+	gtk_widget_show (progressbar2); 
 	gtk_table_attach (GTK_TABLE (table2), progressbar2, 1, 2, 2, 3,
 			  /* GTK_EXPAND */ 0,
 			  /* GTK_EXPAND */ GTK_SHRINK,
 			  0, 0);
 
-	package_label = gtk_label_new (_("                                                     "));
+	package_label = gtk_label_new (_("En fjæsing hedder Bent"));
 	gtk_widget_set_name (package_label, "package_label");
 	gtk_widget_ref (package_label);
 	gtk_object_set_data_full (GTK_OBJECT (window), "package_label", package_label,
@@ -250,7 +271,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 			  GTK_EXPAND,
 			  GTK_EXPAND,
 			  0, 0);
-
+/*
 	fixed1 = gtk_fixed_new ();
 	gtk_widget_set_name (fixed1, "fixed1");
 	set_white_stuff (GTK_WIDGET (fixed1));
@@ -259,7 +280,19 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (fixed1);
 	gtk_box_pack_start (GTK_BOX (vbox5), fixed1, TRUE, TRUE, 16);	
+*/
 
+
+#ifdef NO_TEXT_BOX
+	textbox = gtk_label_new ("");
+	gtk_widget_set_name (textbox, "textbox");
+	gtk_widget_ref (textbox);
+	gtk_object_set_data_full (GTK_OBJECT (window), "summary", textbox,
+				  (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show (textbox);
+	gtk_label_set_text (GTK_LABEL (textbox), download_description);
+	gtk_box_pack_start (GTK_BOX (vbox5), textbox, TRUE, TRUE, 0);	
+#else
 	scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_set_name (scrolledwindow, "scrolledwindow");
 	gtk_widget_ref (scrolledwindow);
@@ -267,11 +300,10 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow),
 					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
+					GTK_POLICY_NEVER);
 	gtk_widget_show (scrolledwindow);
-	gtk_box_pack_start (GTK_BOX (vbox5), scrolledwindow, TRUE, TRUE, 16);	
+	gtk_box_pack_start (GTK_BOX (vbox5), scrolledwindow, TRUE, TRUE, 0);	
     
-
 	textbox = gtk_text_new (NULL, NULL);
 	gtk_widget_set_name (textbox, "summary");
 	gtk_widget_ref (textbox);
@@ -284,7 +316,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_show (textbox);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolledwindow), 
 					       textbox);
-	
+#endif
 	return install_page;
 }
 
@@ -315,9 +347,7 @@ create_finish_page (GtkWidget *druid, GtkWidget *window)
 	gnome_druid_page_finish_set_title (GNOME_DRUID_PAGE_FINISH (finish_page), _("Finished"));
 	gnome_druid_page_finish_set_text (GNOME_DRUID_PAGE_FINISH (finish_page), 
 					  _("If the installation was successfull, you can\n"
-					    "find the nautilus icon in the applications menu.\n"
-					    "If you restart GMC, you can also use the desktop icon, which\n"
-					    "I'll install when you click \"Finish\".\n\n"
+					    "find the nautilus icon in the applications menu.\n\n"
 					    "Thanks for taking the time to try out Nautilus.\n\n"
 					    "May your life be a healthy and happy one."));
 
