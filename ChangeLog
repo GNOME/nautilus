@@ -1,5 +1,31 @@
 2002-02-19  jacob berkman  <jacob@ximian.com>
 
+	* configure.in: require gnome-desktop library
+	
+	* libnautilus-private/nautilus-icon-dnd.[ch]:
+	(nautilus_icon_dnd_uri_list_extract_uris),
+	(nautilus_icon_dnd_uri_list_free_strings): paste old gnome-mime
+	code here as we still need it
+
+	* libnautilus-private/nautilus-link-desktop-file.[ch]:
+	(nautilus_link_desktop_file_local_create_from_gnome_entry):
+	* libnautilus-private/nautilus-link-historical.[ch]:
+	(nautilus_link_historical_local_create_from_gnome_entry):
+	* libnautilus-private/nautilus-link.[ch]:
+	(nautilus_link_local_create_from_gnome_entry):
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	port to gnome-desktop and re-enable
+
+	* src/nautilus-location-bar.c: (drag_data_received_callback): use
+	new uri list functions
+
+	* src/nautilus-zoom-control.c: (draw_number),
+	(nautilus_zoom_control_unload_images),
+	(nautilus_zoom_control_load_images): port to PangoLayout and
+	re-enable text fallback
+
+2002-02-19  jacob berkman  <jacob@ximian.com>
+
 	* libnautilus-private/nautilus-icon-dnd.c (drag_data_received_callback): 
 	(nautilus_icon_container_free_drag_data): call
 	gtk_selection_data_copy() and gtk_selection_data_free() rather

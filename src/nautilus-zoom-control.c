@@ -80,7 +80,7 @@ struct NautilusZoomControlDetails {
 	GdkPixbuf *number_strip;
 	PrelightMode prelight_mode;
 
-	GdkFont *label_font;
+	PangoLayout *layout;
 
 	gboolean marking_menu_items;
 };
@@ -221,6 +221,7 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	int num_v_offset, num_h_offset;
 	NautilusZoomControl *zoom_control;
 	GdkPixbuf *number_pixbuf;
+	PangoRectangle logical_rect;
 
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	number_pixbuf = NULL;
@@ -263,10 +264,22 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 			x += char_width;
 		}
 	} else {
-#ifdef GNOME2_CONVERSION_COMPLETE
-		x = num_h_offset + ((widget->allocation.width - gdk_string_width(zoom_control->details->label_font, buffer)) >> 1);  
-		gdk_draw_string (widget->window, zoom_control->details->label_font, temp_gc, x, y, &buffer[0]);
-#endif
+		widget = GTK_WIDGET (zoom_control);
+
+		pango_layout_set_text (zoom_control->details->layout, buffer, -1);
+		pango_layout_get_pixel_extents (zoom_control->details->layout, NULL, &logical_rect);
+
+		x = num_h_offset + (widget->allocation.width - logical_rect.width)  / 2;
+
+		gtk_paint_layout (widget->style,
+				  widget->window,
+				  GTK_WIDGET_STATE (widget),
+				  FALSE,
+				  box,
+				  widget,
+				  "zoom_control",
+				  x, y,
+				  zoom_control->details->layout);
 	}
 	
 	if (number_pixbuf != zoom_control->details->number_strip) {
@@ -409,13 +422,10 @@ nautilus_zoom_control_unload_images (NautilusZoomControl *zoom_control)
 		zoom_control->details->number_strip = NULL;
 	}
 
-	if (zoom_control->details->label_font != NULL) {
-#ifdef GNOME2_CONVERSION_COMPLETE
-		gdk_font_unref(zoom_control->details->label_font);
-		zoom_control->details->label_font = NULL;
-#endif
+	if (zoom_control->details->layout != NULL) {
+		g_object_unref (zoom_control->details->layout);
+		zoom_control->details->layout = NULL;
 	}
-
 }
 
 static GdkPixbuf*
@@ -442,20 +452,36 @@ nautilus_zoom_control_update_offsets (NautilusZoomControl *zoom_control)
 static void
 nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 {
+	PangoContext *context;
+	PangoFontDescription *font_desc;
+	char *font_name;
+
 	nautilus_zoom_control_unload_images (zoom_control);
 
 	zoom_control->details->zoom_body_image = load_themed_image ("zoom_body.png");
 	zoom_control->details->zoom_decrement_image = load_themed_image ("decrement.png");
 	zoom_control->details->zoom_increment_image = load_themed_image ("increment.png");
+
 	zoom_control->details->number_strip = load_themed_image ("number_strip.png");
-	
+
 	if (zoom_control->details->number_strip == NULL) {
-#ifdef GNOME2_CONVERSION_COMPLETE
-		/* Note to localizers: this font is used for the number in the
-		 * zoom control widget.
-		 */
-		zoom_control->details->label_font = gdk_fontset_load (_("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"));
-#endif
+		context = gtk_widget_get_pango_context (GTK_WIDGET (zoom_control));
+		zoom_control->details->layout = pango_layout_new (context);
+		
+		font_name = nautilus_theme_get_theme_data ("zoom", "font_name");
+		if (!font_name) {
+			font_name = g_strdup ("Mono 9");
+		}
+
+		font_desc = pango_font_description_from_string (font_name);
+
+		if (font_desc) {
+			pango_layout_set_font_description (zoom_control->details->layout,
+							   font_desc);
+		}
+
+		pango_font_description_free (font_desc);
+		g_free (font_name);
 	}
 
 	nautilus_zoom_control_update_offsets (zoom_control);

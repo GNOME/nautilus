@@ -49,6 +49,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-entry.h>
+#include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <stdio.h>
 #include <string.h>
@@ -133,11 +134,7 @@ drag_data_received_callback (GtkWidget *widget,
 	g_assert (data != NULL);
 	g_assert (callback_data == NULL);
 
-#if GNOME2_CONVERSION_COMPLETE
-	names = gnome_uri_list_extract_uris (data->data);
-#else
-	names = NULL;
-#endif
+	names = nautilus_icon_dnd_uri_list_extract_uris (data->data);
 
 	if (names == NULL) {
 		g_warning ("No D&D URI's");
@@ -184,10 +181,8 @@ drag_data_received_callback (GtkWidget *widget,
 			nautilus_window_go_to (new_window, node->data);
 		}
 	}
-						  
-#if GNOME2_CONVERSION_COMPLETE
-	gnome_uri_list_free_strings (names);
-#endif
+
+	nautilus_icon_dnd_uri_list_free_strings (names);
 
 	gtk_drag_finish (context, TRUE, FALSE, time);
 }

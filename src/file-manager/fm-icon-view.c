@@ -45,6 +45,7 @@
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
+#include <libgnome/gnome-desktop-item.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -58,6 +59,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-container.h>
+#include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
@@ -2528,14 +2530,10 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			   GdkDragAction action, int x, int y, FMIconView *view)
 {
 
-#if GNOME2_CONVERSION_COMPLETE
 	GList *uri_list;
-#endif
 	GList *node, *real_uri_list = NULL;
 	GnomeVFSURI *container_uri;
-#if GNOME2_CONVERSION_COMPLETE
-	GnomeDesktopEntry *entry;
-#endif
+	GnomeDesktopItem *entry;
 	GdkPoint point;
 	char *uri;
 	char *local_path;
@@ -2593,8 +2591,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	 */
 	all_local = TRUE;
 	n_uris = 0;
-#if GNOME2_CONVERSION_COMPLETE
-	uri_list = gnome_vfs_uri_list_extract_uris (item_uris);
+	uri_list = nautilus_icon_dnd_uri_list_extract_uris (item_uris);
 	for (node = uri_list; node != NULL; node = node->next) {
 		gchar *sanitized_uri;
 
@@ -2606,8 +2603,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			all_local = FALSE;
 		n_uris++;
 	}
-	gnome_vfs_uri_list_free_strings (uri_list);
-#endif
+	nautilus_icon_dnd_uri_list_free_strings (uri_list);
 
 	if (all_local == TRUE &&
 	    (action == GDK_ACTION_COPY ||
@@ -2635,18 +2631,17 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			uri = node->data;
 			local_path = gnome_vfs_get_local_path_from_uri (uri);
 			if (local_path != NULL) {
-#if GNOME2_CONVERSION_COMPLETE
-				entry = gnome_desktop_entry_load (local_path);
+				entry = gnome_desktop_item_new_from_file (local_path, 0, NULL);
 				if (entry != NULL) {
 					/* FIXME: Handle name conflicts? */
 					nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
-					gnome_desktop_entry_free (entry);
+					gnome_desktop_item_unref (entry);
 				}
 				g_free (local_path);
 				if (entry != NULL) {
 					continue;
+
 				}
-#endif
 			}
 
 			/* Make a link from the URI alone. Generate the file
@@ -2673,9 +2668,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		g_free (container_path);
 	}
 	
-#if GNOME2_CONVERSION_COMPLETE
-	gnome_vfs_uri_list_free_strings (real_uri_list);
-#endif
+	nautilus_icon_dnd_uri_list_free_strings (real_uri_list);
+
 	gnome_vfs_uri_unref (container_uri);
 	g_free (container_uri_string);
 	

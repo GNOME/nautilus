@@ -388,63 +388,52 @@ nautilus_link_historical_local_is_trash_link (const char *path)
 	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_TRASH;
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 void
-nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const char *dest_path, const GdkPoint *position)
+nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopItem *entry, const char *dest_path, const GdkPoint *position)
 {
-	char *icon_name;
+	char *icon_name, *icon;
 	char *launch_string, *terminal_command;
-	char *quoted, *arguments, *temp_str;
-	int i;
+	const char *name, *arguments;
 
 	if (entry == NULL || dest_path == NULL) {
 		return;
 	}
 	
-	/* Extract arguments from exec array */
-	arguments = NULL;
-	for (i = 0; i < entry->exec_length; ++i) {
-		quoted = eel_shell_quote (entry->exec[i]);
-		if (arguments == NULL) {
-			arguments = quoted;
-		} else {
-			temp_str = arguments;
-			arguments = g_strconcat (arguments, " ", quoted, NULL);
-			g_free (temp_str);
-			g_free (quoted);
-		}
-	}
+	name      = gnome_desktop_item_get_string (entry, GNOME_DESKTOP_ITEM_NAME);
+	arguments = gnome_desktop_item_get_string (entry, GNOME_DESKTOP_ITEM_EXEC);
 
-	if (strcmp (entry->type, "Application") == 0) {
-		if (entry->terminal) {
+	switch (gnome_desktop_item_get_entry_type (entry)) {
+	case GNOME_DESKTOP_ITEM_TYPE_APPLICATION:
+		if (gnome_desktop_item_get_boolean (entry, GNOME_DESKTOP_ITEM_TERMINAL)) {
 			terminal_command = eel_gnome_make_terminal_command (arguments);
 			launch_string = g_strconcat ("command:", terminal_command, NULL);
 			g_free (terminal_command);
 		} else {
 			launch_string = g_strconcat ("command:", arguments, NULL);
-		}		
-	} else if (strcmp (entry->type, "URL") == 0) {
+		}
+		break;
+	case GNOME_DESKTOP_ITEM_TYPE_LINK:
 		launch_string = g_strdup (arguments);
-	} else {
+		break;
+	default:
 		/* Unknown .desktop file type */
 		launch_string = NULL;
 	}
 	
-	if (entry->icon != NULL) {
-		icon_name = eel_make_uri_from_half_baked_uri (entry->icon);
+
+	icon = gnome_desktop_item_get_icon (entry);
+	if (icon != NULL) {
+		icon_name = eel_make_uri_from_half_baked_uri (icon);
+		g_free (icon);
 	} else {
 		icon_name = g_strdup ("gnome-unknown.png");
 	}
 	
 	if (launch_string != NULL) {
-		nautilus_link_historical_local_create (dest_path, entry->name, icon_name, 
+		nautilus_link_historical_local_create (dest_path, name, icon_name,
 						       launch_string, position, NAUTILUS_LINK_GENERIC);
 	}
 	
 	g_free (icon_name);
 	g_free (launch_string);
-	g_free (arguments);
 }
-
-#endif

@@ -492,25 +492,26 @@ nautilus_link_desktop_file_get_link_icon_given_file_contents (const char *link_f
 }
 
 
-#if GNOME2_CONVERSION_COMPLETE
-
 void
-nautilus_link_desktop_file_local_create_from_gnome_entry (GnomeDesktopEntry *entry,
+nautilus_link_desktop_file_local_create_from_gnome_entry (GnomeDesktopItem  *entry,
 							  const char        *dest_path,
 							  const GdkPoint    *position)
 {
 	char *uri;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
-	GnomeDesktopEntry *new_entry;
-	char *file_name;
+	GnomeDesktopItem *new_entry;
+	char *file_name, *location;
+	const char *name;
 
-	new_entry = gnome_desktop_entry_copy (entry);
-	g_free (new_entry->location);
-	file_name = g_strdup_printf ("%s.desktop", entry->name);
-	new_entry->location = nautilus_make_path (dest_path, file_name);
+	name = gnome_desktop_item_get_string (entry, GNOME_DESKTOP_ITEM_NAME);
+	file_name = g_strdup_printf ("%s.desktop", name);
+	location = nautilus_make_path (dest_path, file_name);
 	g_free (file_name);
-	gnome_desktop_entry_save (new_entry);
+
+	new_entry = gnome_desktop_item_copy (entry);
+	gnome_desktop_item_save (new_entry, location, TRUE, NULL);
+	g_free (location);
 
 	uri = gnome_vfs_get_uri_from_local_path (dest_path);
 	dummy_list.data = uri;
@@ -531,7 +532,5 @@ nautilus_link_desktop_file_local_create_from_gnome_entry (GnomeDesktopEntry *ent
 	
 		nautilus_directory_schedule_position_set (&dummy_list);
 	}
-	gnome_desktop_entry_free (new_entry);
+	gnome_desktop_item_unref (new_entry);
 }
-
-#endif

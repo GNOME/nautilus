@@ -1386,3 +1386,71 @@ nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 	 */
 }
 
+/**
+ * implements the gnome 1.x gnome_vfs_uri_list_extract_uris(), which
+ * returns a GList of char *uris.
+ **/
+GList *
+nautilus_icon_dnd_uri_list_extract_uris (const char *uri_list)
+{
+	/* Note that this is mostly very stolen from old libgnome/gnome-mime.c */
+
+	const gchar *p, *q;
+	gchar *retval;
+	GList *result = NULL;
+
+	g_return_val_if_fail (uri_list != NULL, NULL);
+
+	p = uri_list;
+
+	/* We don't actually try to validate the URI according to RFC
+	 * 2396, or even check for allowed characters - we just ignore
+	 * comments and trim whitespace off the ends.  We also
+	 * allow LF delimination as well as the specified CRLF.
+	 */
+	while (p != NULL) {
+		if (*p != '#') {
+			while (g_ascii_isspace (*p))
+				p++;
+
+			q = p;
+			while ((*q != '\0')
+			       && (*q != '\n')
+			       && (*q != '\r'))
+				q++;
+
+			if (q > p) {
+				q--;
+				while (q > p
+				       && g_ascii_isspace (*q))
+					q--;
+
+				retval = g_malloc (q - p + 2);
+				strncpy (retval, p, q - p + 1);
+				retval[q - p + 1] = '\0';
+
+				result = g_list_prepend (result, retval);
+			}
+		}
+		p = strchr (p, '\n');
+		if (p != NULL)
+			p++;
+	}
+
+	return g_list_reverse (result);
+}
+
+/**
+ * nautilus_icon_dnd_uri_list_free_strings:
+ * @list: A GList returned by nautilus_icon_dnd_uri_list_extract_uris()
+ *
+ * Releases all of the resources allocated by @list.
+ * 
+ * stolen from gnome-mime.c
+ */
+void
+nautilus_icon_dnd_uri_list_free_strings (GList *list)
+{
+	g_list_foreach (list, (GFunc)g_free, NULL);
+	g_list_free (list);
+}

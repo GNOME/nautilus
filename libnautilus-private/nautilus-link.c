@@ -310,14 +310,10 @@ nautilus_link_local_is_trash_link (const char *path)
 	}
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 void
-nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry,
+nautilus_link_local_create_from_gnome_entry (GnomeDesktopItem *item,
 					     const char *dest_path,
 					     const GdkPoint *position)
 {
-	nautilus_link_desktop_file_local_create_from_gnome_entry (entry, dest_path, position);
+	nautilus_link_desktop_file_local_create_from_gnome_entry (item, dest_path, position);
 }
-
-#endif
