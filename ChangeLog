@@ -1,3 +1,10 @@
+2000-11-17  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_ensure_gradient_buffered):
+	Fixed bug occuring when percentages of multi-point
+	add up to >100% (bug 4759)
+
 2000-11-17  Mathieu Lacage  <mathieu@eazel.om>
 
 	reviewed by: Sullivan

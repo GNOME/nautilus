@@ -341,8 +341,8 @@ nautilus_background_ensure_gradient_buffered (NautilusBackground *background, in
 		db = new_color.blue  - cur_color.blue;
 
 		fill_pos   = 1;
-		fill_width = (percent * num_pixels) / 100;
-		fill_limit = MIN (buff_ptr + fill_width * 3, buff_limit);
+		fill_limit = MIN (buff_ptr + (3 * num_pixels * percent) / 100, buff_limit);
+		fill_width = (fill_limit - buff_ptr) / 3;
 		
 		while (buff_ptr < fill_limit) {
 			*buff_ptr++ = (cur_color.red   + (dr * fill_pos) / fill_width) >> 8;
@@ -350,7 +350,6 @@ nautilus_background_ensure_gradient_buffered (NautilusBackground *background, in
 			*buff_ptr++ = (cur_color.blue  + (db * fill_pos) / fill_width) >> 8;
 			++fill_pos;
 		}
-
 		cur_color = new_color;
 	}
 
