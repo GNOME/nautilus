@@ -22,10 +22,12 @@ libnautilusinclude_HEADERS=			\
 	gtkflist.h				\
 	gtkscrollframe.h			\
 	nautilus.h				\
+	nautilus-background.h			\
 	nautilus-file-utilities.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-lib-self-check-functions.h	\
 	nautilus-self-checks.h			\
+	nautilus-string.h			\
 	ntl-content-view-client.h		\
 	ntl-meta-view-client.h			\
 	ntl-view-client.h
@@ -37,10 +39,13 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gnome-icon-container.c			\
 	gtkflist.c				\
 	gtkscrollframe.c			\
+	nautilus-background.c			\
+	nautilus-background-canvas-group.c	\
 	nautilus-file-utilities.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-self-checks.c			\
+	nautilus-string.c			\
 	ntl-content-view-client.c		\
 	ntl-meta-view-client.c			\
 	ntl-view-client.c			\

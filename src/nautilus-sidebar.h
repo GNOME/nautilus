@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* Nautilus
  * Copyright (C) 1999, 2000 Eazel, Inc.
  *
@@ -19,53 +21,52 @@
  *
  *  This is the header file for the index panel widget, which displays overview information
  *  in a vertical panel and hosts the meta-views.
- *
  */
 
-#ifndef __nautilus_index_panel_H__
-#define __nautilus_index_panel_H__
-
+#ifndef NTL_INDEX_PANEL_H
+#define NTL_INDEX_PANEL_H
 
 #include <gdk/gdk.h>
 #include <gtk/gtkwidget.h>
 #include "nautilus.h"
+#include <libnautilus/nautilus-background.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-
-#define nautilus_index_panel(obj)          GTK_CHECK_CAST (obj, nautilus_index_panel_get_type (), NautilusIndexPanel)
-#define nautilus_index_panel_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, nautilus_index_panel_get_type (), NautilusIndexPanelClass)
-#define NAUTILUS_IS_INDEX_PANEL(obj)       GTK_CHECK_TYPE (obj, nautilus_index_panel_get_type ())
-
-
-typedef struct _NautilusIndexPanel       NautilusIndexPanel;
+typedef struct _NautilusIndexPanel NautilusIndexPanel;
 typedef struct _NautilusIndexPanelClass  NautilusIndexPanelClass;
+
+#define NAUTILUS_TYPE_INDEX_PANEL \
+	(nautilus_index_panel_get_type ())
+#define NAUTILUS_INDEX_PANEL(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INDEX_PANEL, NautilusIndexPanel))
+#define NAUTILUS_INDEX_PANEL_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INDEX_PANEL, NautilusIndexPanelClass))
+#define NAUTILUS_IS_INDEX_PANEL(obj) \
+	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INDEX_PANEL))
+#define NAUTILUS_IS_INDEX_PANEL_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_PANEL))
 
 struct _NautilusIndexPanel
 {
-  GtkEventBox event_box;
-  GtkWidget* index_container;
-  GtkWidget* per_uri_container;
-  GtkWidget* meta_tabs;
-  gchar* uri;
+	GtkEventBox event_box;
+	GtkWidget *index_container;
+	GtkWidget *per_uri_container;
+	GtkWidget *meta_tabs;
+	gchar *uri;
+	NautilusBackground *background;
 };
 
 struct _NautilusIndexPanelClass
 {
-  GtkEventBoxClass parent_class;
+	GtkEventBoxClass parent_class;
 };
 
-guint      nautilus_index_panel_get_type(void);
-GtkWidget* nautilus_index_panel_new(void);
-void nautilus_index_panel_add_meta_view(GtkWidget* widget, NautilusView *meta_view);
-void nautilus_index_panel_remove_meta_view(GtkWidget* widget, NautilusView *meta_view);
-void nautilus_index_panel_set_uri(GtkWidget* widget, const gchar* new_uri);
+GtkType             nautilus_index_panel_get_type         (void);
+NautilusIndexPanel *nautilus_index_panel_new              (void);
+void                nautilus_index_panel_add_meta_view    (NautilusIndexPanel *panel,
+							   NautilusView       *meta_view);
+void                nautilus_index_panel_remove_meta_view (NautilusIndexPanel *panel,
+							   NautilusView       *meta_view);
+void                nautilus_index_panel_set_uri          (NautilusIndexPanel *panel,
+							   const gchar        *new_uri);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-
-#endif /* __nautilus_index_panel_H__ */
+#endif /* NTL_INDEX_PANEL_H */

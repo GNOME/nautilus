@@ -33,6 +33,7 @@
 
 void nautilus_run_lib_self_checks ()
 {
+	nautilus_self_check_background ();
 	nautilus_self_check_gdk_extensions ();
 }
 

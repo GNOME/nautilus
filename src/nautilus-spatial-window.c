@@ -378,7 +378,7 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
 }
 
 void
-nautilus_window_goto_uri(NautilusWindow *window, const char *uri)
+nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 {
   Nautilus_NavigationRequestInfo navinfo;
 
@@ -387,8 +387,8 @@ nautilus_window_goto_uri(NautilusWindow *window, const char *uri)
   navinfo.new_window_default = navinfo.new_window_suggested = Nautilus_V_FALSE;
   navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
 
-  nautilus_window_request_location_change(window, &navinfo, NULL);
-  nautilus_index_panel_set_uri(window->index_panel, uri); 
+  nautilus_window_request_location_change (window, &navinfo, NULL);
+  nautilus_index_panel_set_uri (NAUTILUS_INDEX_PANEL (window->index_panel), uri); 
 }
 
 static void
@@ -491,8 +491,8 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_widget_show(temp_frame);
   
   window->index_panel = nautilus_index_panel_new();
-  gtk_widget_show(window->index_panel);	
-  gtk_container_add(GTK_CONTAINER(temp_frame), window->index_panel);
+  gtk_widget_show (GTK_WIDGET (window->index_panel));
+  gtk_container_add(GTK_CONTAINER(temp_frame), GTK_WIDGET (window->index_panel));
 
 #ifdef CONTENTS_AS_HBOX
   gtk_box_pack_start(GTK_BOX(window->content_hbox), temp_frame, FALSE, FALSE, 0);
@@ -756,12 +756,11 @@ nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_v
 void
 nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
 {
+  g_return_if_fail (!g_slist_find (window->meta_views, meta_view));
+  g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
 
-  g_return_if_fail(!g_slist_find(window->meta_views, meta_view));
-  g_return_if_fail(NAUTILUS_IS_META_VIEW(meta_view));
-
-  nautilus_index_panel_add_meta_view(window->index_panel, meta_view);
-  window->meta_views = g_slist_prepend(window->meta_views, meta_view);
+  nautilus_index_panel_add_meta_view (window->index_panel, meta_view);
+  window->meta_views = g_slist_prepend (window->meta_views, meta_view);
 }
 
 void
@@ -812,7 +811,7 @@ nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
 const char *
 nautilus_window_get_requested_uri (NautilusWindow *window)
 {
-  return window->ni->requested_uri;
+  return window->ni == NULL ? NULL : window->ni->requested_uri;
 }
 
 GnomeUIHandler *

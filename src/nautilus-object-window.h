@@ -30,6 +30,7 @@
 #include <libgnomeui/gnome-app.h>
 #include "ntl-types.h"
 #include "ntl-view.h"
+#include "ntl-index-panel.h"
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type())
 #define NAUTILUS_WINDOW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
@@ -57,7 +58,8 @@ struct _NautilusWindow {
   GSList *meta_views;
 
   /* UI stuff */
-  GtkWidget *index_panel, *content_hbox, *btn_back, *btn_fwd;
+  NautilusIndexPanel *index_panel;
+  GtkWidget *content_hbox, *btn_back, *btn_fwd;
   GtkWidget *option_cvtype, *menu_cvtype, *ent_uri;
 
   guint statusbar_ctx, statusbar_clear_id;

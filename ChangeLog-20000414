@@ -1,3 +1,52 @@
+2000-01-10  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/Makefile.am, libnautilus/nautilus-background.h,
+	libnautilus/nautilus-background.c,
+	libnautilus/nautilus-background-canvas-group.h,
+	libnautilus/nautilus-background-canvas-group.c,
+	libnautilus/nautilus-lib-self-check-functions.h,
+	libnautilus/nautilus-lib-self-check-functions.c: Added first cut
+	at a new class to manage backgrounds that can be colors, color
+	gradients, or tiled images.
+
+	* libnautilus/Makefile.am, libnautilus/nautilus-string.h,
+	libnautilus/nautilus-string.c: Added functions that manipulate
+	strings that allow NULLs to reduce NULL checks in code that
+	treats NULL the same as an empty string.
+
+	* libnautilus/gdk_extensions.c: (nautilus_gradient_new):
+	(nautilus_gradient_is_gradient):
+	(nautilus_gradient_is_horizontal):
+	(nautilus_gradient_strip_trailing_direction_if_any):
+	(nautilus_gradient_get_start_color_spec):
+	(nautilus_gradient_get_end_color_spec):
+	(nautilus_gradient_set_edge_color): Changed gradient functions to
+	allow NULL and treat it the same as an empty string.
+
+	* libnautilus/gdk_extensions.h: libnautilus/gdk_extensions.c:
+	(nautilus_gdk_color_parse_with_default):
+	(nautilus_gdk_color_parse_with_white_default): Added alternate
+	version of gdk_color_parse that uses a default color instead of
+	just returning false. Added self-checks and updated some existing
+	self checks at the same time.
+
+	* src/ntl-index-panel.h, src/ntl-index-panel.c: Wholesale
+	cleanup and reformatting of NautilusIndexPanel. Fixed a number of
+	bugs, including storage leaks, and took first step toward using
+	NautilusBackground class.
+
+	* src/ntl-window.c: (nautilus_window_get_requested_uri):
+	Changed this so it works when window->ni is NULL.
+
+	* src/ntl-window.h: Changed index_panel to be a NautilusIndexPanel
+	now that the index panel interface uses the class instead of using
+	GtkWidget everywhere.
+
+	* src/file-manager/.cvsignore: Added *.la.
+
+	* src/file-manager/fm-directory.c: Minor reformatting to match
+	GNOME code style better.
+
 2000-01-10  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-index-panel.c: (nautilus_index_panel_set_up_label):

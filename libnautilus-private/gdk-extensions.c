@@ -29,8 +29,7 @@
 #include "gdk-extensions.h"
 
 #include "nautilus-lib-self-check-functions.h"
-
-#include <string.h>
+#include "nautilus-string.h"
 
 #define GRADIENT_BAND_SIZE 4
 
@@ -194,9 +193,9 @@ nautilus_gradient_new (const char *start_color,
 		       const char *end_color,
 		       gboolean is_horizontal)
 {
-	g_return_val_if_fail (start_color != NULL, g_strdup (""));
-	g_return_val_if_fail (end_color != NULL, g_strdup (""));
-	g_return_val_if_fail (is_horizontal == FALSE || is_horizontal == TRUE, g_strdup (""));
+	g_return_val_if_fail (start_color != NULL, NULL);
+	g_return_val_if_fail (end_color != NULL, NULL);
+	g_return_val_if_fail (is_horizontal == FALSE || is_horizontal == TRUE, NULL);
 
 	/* Handle the special case where the start and end colors are identical.
 	   Handle the special case where the end color is an empty string.
@@ -221,9 +220,22 @@ nautilus_gradient_new (const char *start_color,
 gboolean
 nautilus_gradient_is_gradient (const char *gradient_spec)
 {
-	g_return_val_if_fail (gradient_spec != NULL, FALSE);
+	return nautilus_strchr (gradient_spec, '-') != NULL;
+}
 
-	return strchr (gradient_spec, '-') != NULL;
+/**
+ * nautilus_gradient_is_horizontal
+ * @gradient_spec: A gradient spec. string.
+ *
+ * Return true if the spec. specifies a horizontal gradient.
+ */
+gboolean
+nautilus_gradient_is_horizontal (const char *gradient_spec)
+{
+	size_t length;
+
+	length = nautilus_strlen (gradient_spec);
+	return length >= 2 && gradient_spec[length - 2] == ':' && gradient_spec[length - 1] == 'h';
 }
 
 static char *
@@ -231,9 +243,7 @@ nautilus_gradient_strip_trailing_direction_if_any (const char *gradient_spec)
 {
 	size_t length;
 
-	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
-
-	length = strlen (gradient_spec);
+	length = nautilus_strlen (gradient_spec);
 	if (length >= 2 && gradient_spec[length - 2] == ':'
 	    && (gradient_spec[length - 1] == 'v' || gradient_spec[length - 1] == 'h'))
 		length -= 2;
@@ -253,9 +263,7 @@ nautilus_gradient_get_start_color_spec (const char *gradient_spec)
 {
 	const char *separator;
 	
-	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
-	
-	separator = strchr (gradient_spec, '-');
+	separator = nautilus_strchr (gradient_spec, '-');
 	if (separator == NULL)
 		return nautilus_gradient_strip_trailing_direction_if_any (gradient_spec);
 
@@ -274,9 +282,7 @@ nautilus_gradient_get_end_color_spec (const char *gradient_spec)
 {
 	const char *separator;
 
-	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
-
-	separator = strchr (gradient_spec, '-');
+	separator = nautilus_strchr (gradient_spec, '-');
 	return nautilus_gradient_strip_trailing_direction_if_any
 		(separator != NULL ? separator + 1 : gradient_spec);
 }
@@ -291,7 +297,6 @@ nautilus_gradient_set_edge_color (const char *gradient_spec,
 	char *opposite_color;
 	char *result;
 
-	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
 	g_return_val_if_fail (edge_color != NULL, g_strdup (gradient_spec));
 
 	/* Get the color from the existing gradient spec. for the opposite
@@ -374,11 +379,35 @@ nautilus_gradient_set_bottom_color_spec (const char *gradient_spec,
 	return nautilus_gradient_set_edge_color (gradient_spec, bottom_color, FALSE, TRUE);
 }
 
+/**
+ * nautilus_gdk_color_parse_with_white_default
+ * @color_spec: A color spec.
+ * @color: Pointer to place to put resulting color.
+ *
+ * The same as gdk_color_parse, except sets the color to white if
+ * the spec. can't be parsed instead of returning a boolean flag.
+ */
+void
+nautilus_gdk_color_parse_with_white_default (const char *color_spec,
+					     GdkColor *color)
+{
+	if (!gdk_color_parse (color_spec, color)) {
+		color->red = 0xFFFF;
+		color->green = 0xFFFF;
+		color->blue = 0xFFFF;
+	}
+}
+
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
-#include <stdio.h>
+static char *
+nautilus_gdk_color_as_hex_string (GdkColor color)
+{
+	return g_strdup_printf("rgb:%04hX/%04hX/%04hX",
+			       color.red, color.green, color.blue);
+}
 
-static GdkColor
+static char *
 nautilus_self_check_interpolate (gdouble ratio,
 				 gushort r1, gushort g1, gushort b1,
 				 gushort r2, gushort g2, gushort b2)
@@ -397,25 +426,30 @@ nautilus_self_check_interpolate (gdouble ratio,
 
 	nautilus_interpolate_color (ratio, &start_color, &end_color, &interpolated_color);
 
-	return interpolated_color;
+	return nautilus_gdk_color_as_hex_string (interpolated_color);
+}
+
+static char *
+nautilus_self_check_parse (const char *color_spec)
+{
+	GdkColor color;
+
+	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
+	return nautilus_gdk_color_as_hex_string (color);
 }
 
 void
 nautilus_self_check_gdk_extensions (void)
 {
 	/* nautilus_interpolate_color */
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0).red, 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0).green, 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0).blue, 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).red, 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).green, 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).blue, 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).red, 0x7FFF);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).green, 0x7FFF);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).blue, 0x7FFF);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).red, 0xFFFF);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).green, 0xFFFF);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).blue, 0xFFFF);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0),
+				      "rgb:0000/0000/0000");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF),
+				      "rgb:0000/0000/0000");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF),
+				      "rgb:7FFF/7FFF/7FFF");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF),
+				      "rgb:FFFF/FFFF/FFFF");
 
 	/* nautilus_fill_rectangle */
 	/* Make a GdkImage and fill it, maybe? */
@@ -503,6 +537,13 @@ nautilus_self_check_gdk_extensions (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a-c:v", "b"), "a-b");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a-c:v", "c"), "a-c");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a:-b:h", "d"), "a:-d");
+
+	/* nautilus_gdk_color_parse_with_white_default */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse (""), "rgb:FFFF/FFFF/FFFF");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse ("a"), "rgb:FFFF/FFFF/FFFF");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse ("white"), "rgb:FFFF/FFFF/FFFF");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse ("black"), "rgb:0000/0000/0000");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse ("rgb:0123/4567/89AB"), "rgb:0123/4567/89AB");
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

@@ -32,44 +32,53 @@
    The gradient is vertical by default and the spec. can end with ":v" to indicate that.
    If the gradient ends with ":h", the gradient is horizontal.
 */
-char *   nautilus_gradient_new                   (const char *start_color,
-						  const char *end_color,
-						  gboolean    is_horizontal);
+char *   nautilus_gradient_new                       (const char         *start_color,
+						      const char         *end_color,
+						      gboolean            is_horizontal);
 
-gboolean nautilus_gradient_is_gradient           (const char *gradient_spec);
-char *   nautilus_gradient_get_start_color_spec  (const char *gradient_spec);
-char *   nautilus_gradient_get_end_color_spec    (const char *gradient_spec);
-gboolean nautilus_gradient_is_horizontal         (const char *gradient_spec);
+gboolean nautilus_gradient_is_gradient               (const char         *gradient_spec);
+char *   nautilus_gradient_get_start_color_spec      (const char         *gradient_spec);
+char *   nautilus_gradient_get_end_color_spec        (const char         *gradient_spec);
+gboolean nautilus_gradient_is_horizontal             (const char         *gradient_spec);
 
-char *   nautilus_gradient_set_left_color_spec   (const char *gradient_spec,
-						  const char *left_color);
-char *   nautilus_gradient_set_top_color_spec    (const char *gradient_spec,
-						  const char *top_color);
-char *   nautilus_gradient_set_right_color_spec  (const char *gradient_spec,
-						  const char *right_color);
-char *   nautilus_gradient_set_bottom_color_spec (const char *gradient_spec,
-						  const char *bottom_color);
+char *   nautilus_gradient_set_left_color_spec       (const char         *gradient_spec,
+						      const char         *left_color);
+char *   nautilus_gradient_set_top_color_spec        (const char         *gradient_spec,
+						      const char         *top_color);
+char *   nautilus_gradient_set_right_color_spec      (const char         *gradient_spec,
+						      const char         *right_color);
+char *   nautilus_gradient_set_bottom_color_spec     (const char         *gradient_spec,
+						      const char         *bottom_color);
 
-/* Fill routines that take GdkRectangle parameters instead of four coordinates. */
-void     nautilus_fill_rectangle                (GdkDrawable        *drawable,
-						 GdkGC              *gc,
-						 const GdkRectangle *rectangle);
-void     nautilus_fill_rectangle_with_color     (GdkDrawable        *drawable,
-						 GdkGC              *gc,
-						 const GdkRectangle *rectangle,
-						 const GdkColor     *color);
-void     nautilus_fill_rectangle_with_gradient  (GdkDrawable        *drawable,
-						 GdkGC              *gc,
-						 GdkColormap        *colormap,
-						 const GdkRectangle *rectangle,
-						 const GdkColor     *start_color,
-						 const GdkColor     *end_color,
-						 gboolean            horizontal_gradient);
+/* A version of parse_color that substitutes a default color instead of returning
+   a boolean to indicate it cannot be parsed.
+*/
+void     nautilus_gdk_color_parse_with_default       (const char         *color_spec,
+						      const GdkColor     *default_color,
+						      GdkColor           *color);
+void     nautilus_gdk_color_parse_with_white_default (const char         *color_spec,
+						      GdkColor           *color);
 
-/* A basic operation needed for drawing gradients is interpolating two colors.*/
-void     nautilus_interpolate_color             (gdouble             ratio,
-						 const GdkColor     *start_color,
-						 const GdkColor     *end_color,
-						 GdkColor           *interpolated_color);
+/* Fill routines that take GdkRectangle parameters instead of four integers. */
+void     nautilus_fill_rectangle                     (GdkDrawable        *drawable,
+						      GdkGC              *gc,
+						      const GdkRectangle *rectangle);
+void     nautilus_fill_rectangle_with_color          (GdkDrawable        *drawable,
+						      GdkGC              *gc,
+						      const GdkRectangle *rectangle,
+						      const GdkColor     *color);
+void     nautilus_fill_rectangle_with_gradient       (GdkDrawable        *drawable,
+						      GdkGC              *gc,
+						      GdkColormap        *colormap,
+						      const GdkRectangle *rectangle,
+						      const GdkColor     *start_color,
+						      const GdkColor     *end_color,
+						      gboolean            horizontal_gradient);
+
+/* A basic operation we use for drawing gradients is interpolating two colors.*/
+void     nautilus_interpolate_color                  (gdouble             ratio,
+						      const GdkColor     *start_color,
+						      const GdkColor     *end_color,
+						      GdkColor           *interpolated_color);
 
 #endif /* GDK_EXTENSIONS_H */
