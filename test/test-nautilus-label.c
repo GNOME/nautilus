@@ -757,7 +757,7 @@ main (int argc, char* argv[])
 	main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (window), main_box);
 
- 	label = nautilus_label_new ("Label that doesn't suck");
+ 	label = nautilus_label_new ("Label that doesn't suck\nFoo\nThree Lines");
 
 	bottom_box = gtk_vbox_new (FALSE, 4);
 
