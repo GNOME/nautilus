@@ -1,3 +1,13 @@
+2001-04-16  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* ja.po: removed ja translations for
+	         Nautilus_View_services-summary.oaf,
+		 this is because of a bug in libxml-1.8.10
+		 so oaf cannot load this file due to characters
+		 in the translation.  These were commented out
+		 as we would like to be able to ship on systems
+		 with libxml-1.8.10 http://bugzilla/show_bug.cgi?id=8060
+
 2001-04-12  Christian Rose  <menthos@menthos.com>
 
 	* sv.po: Updated Swedish translation.
