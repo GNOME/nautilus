@@ -18,6 +18,10 @@ icon_DATA =\
 	about_background.png \
 	audio.png \
 	backgrounds.png \
+	bubble-LL.png \
+	bubble-LR.png \
+	bubble-UL.png \
+	bubble-UR.png \
 	chit_frame.png \
 	colors.png \
 	computer.png \
@@ -228,6 +232,7 @@ icon_DATA =\
 	theme_preview.png \
 	thumbnail_frame.aa.png \
 	thumbnail_frame.png \
+	tiny-alert.png \
 	trash-empty.png \
 	trash-full.png \
 	uparrow.png \
