@@ -176,15 +176,19 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Server"));
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 
 	table = gtk_table_new (2, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 5);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    table, TRUE, TRUE, 12);
+			    table, TRUE, TRUE, 0);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	gtk_widget_show (table);
 	
 	label = gtk_label_new_with_mnemonic (_("_Name:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0, 1,
@@ -203,6 +207,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	
 	label = gtk_label_new_with_mnemonic (_("_Location:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0, 1,
@@ -227,7 +232,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			       GTK_STOCK_CANCEL,
 			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("Connect"),
+			       _("C_onnect"),
 			       RESPONSE_CONNECT);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 					 RESPONSE_CONNECT);
