@@ -784,8 +784,6 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		return;
 	}
 
-	get_all_icon_bounds (container, &x1, &y1, &x2, &y2);
-
 	reset_scroll_region = container->details->reset_scroll_region_trigger
 		|| nautilus_icon_container_is_empty (container)
 		|| nautilus_icon_container_is_auto_layout (container);
@@ -799,20 +797,28 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		container->details->reset_scroll_region_trigger = FALSE;
 	}
 
+	get_all_icon_bounds (container, &x1, &y1, &x2, &y2);	
+
+	/* Auto-layout assumes a 0, 0 scroll origin */
+	if (nautilus_icon_container_is_auto_layout (container)) {
+		x1 = 0;
+		y1 = 0;
+	} else {
+		x1 -= CONTAINER_PAD_LEFT;
+		y1 -= CONTAINER_PAD_TOP;
+	}
+	
+	x2 += CONTAINER_PAD_RIGHT;
+	y2 += CONTAINER_PAD_BOTTOM;
+
 	if (reset_scroll_region) {
 		eel_canvas_set_scroll_region
 			(EEL_CANVAS (container),
-			 x1 - CONTAINER_PAD_LEFT,
-			 y1 - CONTAINER_PAD_TOP,
-			 x2 + CONTAINER_PAD_RIGHT,
-			 y2 + CONTAINER_PAD_BOTTOM);
+			 x1, y1, x2, y2);
 	} else {
 		canvas_set_scroll_region_include_visible_area
 			(EEL_CANVAS (container),
-			 x1 - CONTAINER_PAD_LEFT,
-			 y1 - CONTAINER_PAD_TOP,
-			 x2 + CONTAINER_PAD_RIGHT,
-			 y2 + CONTAINER_PAD_BOTTOM);
+			 x1, y1, x2, y2);
 	}
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
