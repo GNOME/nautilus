@@ -99,7 +99,8 @@ void                   nautilus_scalable_font_draw_text                       (c
 									       const char                  *text,
 									       guint                        text_length,
 									       guint32                      color,
-									       guchar                       overall_alpha);
+									       guchar                       overall_alpha,
+									       gboolean			    inverted);
 void                   nautilus_scalable_font_measure_text_lines              (const NautilusScalableFont  *font,
 									       guint                        font_width,
 									       guint                        font_height,
@@ -125,7 +126,8 @@ void                   nautilus_scalable_font_draw_text_lines_with_dimensions (c
 									       guint                        line_offset,
 									       double			    empty_line_height,
 									       guint32                      color,
-									       guchar                       overall_alpha);
+									       guchar                       overall_alpha,
+									       gboolean			    inverted);
 void                   nautilus_scalable_font_draw_text_lines                 (const NautilusScalableFont  *font,
 									       GdkPixbuf                   *destination_pixbuf,
 									       int                          x,
@@ -138,7 +140,8 @@ void                   nautilus_scalable_font_draw_text_lines                 (c
 									       guint                        line_offset,
 									       double			    empty_line_height,
 									       guint32                      color,
-									       guchar                       overall_alpha);
+									       guchar                       overall_alpha,
+									       gboolean			    inverted);
 guint                  nautilus_scalable_font_largest_fitting_font_size       (const NautilusScalableFont  *font,
 									       const char                  *text,
 									       guint                        available_width,
@@ -196,7 +199,8 @@ void                nautilus_text_layout_paint (const NautilusTextLayout   *text
 						int                         x,
 						int                         y,
 						GtkJustification            just,
-						guint32                     color);
+						guint32                     color,
+						gboolean		    inverted);
 void                nautilus_text_layout_free  (NautilusTextLayout         *text_info);
 
 

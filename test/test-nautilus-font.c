@@ -141,7 +141,6 @@ main (int argc, char* argv[])
 {
 	GdkPixbuf		*pixbuf;
 	NautilusScalableFont	*font;
-	GdkRectangle		blue_area;
 	ArtIRect		clip_area;
 	ArtIRect		whole_area;
 	ArtIRect		multi_lines_area;
@@ -209,15 +208,10 @@ main (int argc, char* argv[])
 		g_free (text_line_heights);
 	}
 
-	blue_area.x = 300;
-	blue_area.y = 20;
-	blue_area.width = 100;
-	blue_area.height = 30;
-
-	clip_area.x0 = blue_area.x;
-	clip_area.y0 = blue_area.y;
-	clip_area.x1 = blue_area.x + blue_area.width;
-	clip_area.y1 = blue_area.y + blue_area.height;
+	clip_area.x0 = 300;
+	clip_area.y0 = 20;
+	clip_area.x1 = clip_area.x0 + 100;
+	clip_area.y1 = clip_area.y0 + 30;
 	
 	draw_rectangle_around (pixbuf, &clip_area, RED);
 
@@ -228,7 +222,9 @@ main (int argc, char* argv[])
 
 	draw_rectangle_around (pixbuf, &multi_lines_area, RED);
 
-	/* Draw some green text clipped by the whole pixbuf area */
+	/*
+	 * Multiple text lines test.
+	 */
 	nautilus_scalable_font_draw_text_lines (font,
 						pixbuf,
 						multi_line_x,
@@ -241,9 +237,16 @@ main (int argc, char* argv[])
 						line_offset,
 						empty_line_height,
 						BLUE,
-						255);
+						255,
+						FALSE);
 
-	/* Draw some red text clipped by the blue area */
+	/*
+	 * Clipped text test.  The "Something" string should be clipped such
+	 * that horizontally you can only see "Som" and a tiny fraction of
+	 * the "e".
+	 *
+	 * Vertically, you should see about 90% of the "Som"
+	 */
 	nautilus_scalable_font_draw_text (font,
 					  pixbuf,
 					  clip_area.x0,
@@ -254,8 +257,28 @@ main (int argc, char* argv[])
 					  "Something",
 					  strlen ("Something"),
 					  GREEN,
-					  255);
+					  255,
+					  FALSE);
 
+	/*
+	 * Inverted text test.
+	 */
+	nautilus_scalable_font_draw_text (font,
+					  pixbuf,
+					  50,
+					  350,
+					  NULL,
+					  50,
+					  50,
+					  "This text is inverted",
+					  strlen ("This text is inverted"),
+					  GREEN,
+					  255,
+					  TRUE);
+
+	/*
+	 * Text layout test.
+	 */
 	{
 		NautilusTextLayout *text_info;
 		const guint max_text_width = 100;
@@ -284,7 +307,8 @@ main (int argc, char* argv[])
 					    layout_area.x0, 
 					    layout_area.y0, 
 					    GTK_JUSTIFY_LEFT,
-					    BLACK);
+					    BLACK,
+					    FALSE);
 		
 		layout_area.x0 += (max_text_width + 20);
 		layout_area.x1 += (max_text_width + 20);
@@ -296,8 +320,8 @@ main (int argc, char* argv[])
 					    layout_area.x0, 
 					    layout_area.y0, 
 					    GTK_JUSTIFY_CENTER,
-					    BLACK);
-		
+					    BLACK,
+					    FALSE);
 		
 		layout_area.x0 += (max_text_width + 20);
 		layout_area.x1 += (max_text_width + 20);
@@ -309,7 +333,8 @@ main (int argc, char* argv[])
 					    layout_area.x0, 
 					    layout_area.y0, 
 					    GTK_JUSTIFY_RIGHT,
-					    BLACK);
+					    BLACK,
+					    FALSE);
 		
 		nautilus_text_layout_free (text_info);
 	}

@@ -195,10 +195,10 @@ draw_aa_string (NautilusScalableFont *font, GdkPixbuf *pixbuf, int font_size, in
 						  NULL,
 						  font_size, font_size,
 						  text, strlen (text),
-						  shadow_color, 255);	
+						  shadow_color, 255, FALSE);	
 	}
 	
-	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL, font_size, font_size, text, strlen (text), color, 255);	
+	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL, font_size, font_size, text, strlen (text), color, 255, FALSE);	
 }
 
 /* draw the information onto the pixbuf */

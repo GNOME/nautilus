@@ -644,6 +644,7 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
 				       font_height,
 				       affine,
 				       glyph_xy);
+	g_assert (glyph != NULL);
 
 	*text_width_out = glyph->width;
 	*text_height_out = glyph->height;
@@ -682,6 +683,40 @@ nautilus_scalable_font_text_width (const NautilusScalableFont  *font,
 	return text_width;
 }
 
+/* Lifted from Raph's test-ft-gtk.c sample program */
+static void
+invert_glyph (guchar *buf, int rowstride, int width, int height)
+{
+	int x, y;
+	int first;
+	int n_words;
+	int last;
+	guint32 *middle;
+	
+	if (width >= 8 && ((rowstride & 3) == 0)) {
+		first = (-(int)buf) & 3;
+		n_words = (width - first) >> 2;
+		last = first + (n_words << 2);
+		
+		for (y = 0; y < height; y++) {
+			middle = (guint32 *)(buf + first);
+			for (x = 0; x < first; x++)
+				buf[x] = ~buf[x];
+			for (x = 0; x < n_words; x++)
+				middle[x] = ~middle[x];
+			for (x = last; x < width; x++)
+				buf[x] = ~buf[x];
+			buf += rowstride;
+		}
+	} else {
+		for (y = 0; y < height; y++) {
+			for (x = 0; x < width; x++)
+				buf[x] = ~buf[x];
+			buf += rowstride;
+		}
+	}
+}
+
 void
 nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				  GdkPixbuf		     *destination_pixbuf,
@@ -693,21 +728,13 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				  const char		     *text,
 				  guint			     text_length,
 				  guint32		     color,
-				  guchar		     overall_alpha)
+				  guchar		     overall_alpha,
+				  gboolean		     inverted)
 {
 	RsvgFTGlyph	*glyph;
  	double		affine[6];
 	int		glyph_xy[2];
-
-	guint		pixbuf_width;
-	guint		pixbuf_height;
-	guint		pixbuf_rowstride;
-	guchar		*pixbuf_pixels;
-
-	ArtRender	*art_render;
-	ArtPixMaxDepth	art_color_array[3];
-	ArtAlphaType	alpha_type;
-	ArtIRect	area;
+	ArtIRect	render_area;
 	ArtIRect	glyph_area;
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
@@ -728,6 +755,7 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 
 	art_affine_identity (affine);
 
+	/* Make a glyph for the given string  */
 	glyph = rsvg_ft_render_string (global_rsvg_ft_context,
 				       font->detail->font_handle,
 				       text,
@@ -736,64 +764,112 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				       font_height,
 				       affine,
 				       glyph_xy);
-
-	pixbuf_width = gdk_pixbuf_get_width (destination_pixbuf);
-	pixbuf_height = gdk_pixbuf_get_height (destination_pixbuf);
-	pixbuf_rowstride = gdk_pixbuf_get_rowstride (destination_pixbuf);
-	pixbuf_pixels = gdk_pixbuf_get_pixels (destination_pixbuf);
+	g_assert (glyph != NULL);
 
    	glyph_xy[0] = 0;
    	glyph_xy[1] = 0;
-
-	alpha_type = gdk_pixbuf_get_has_alpha (destination_pixbuf) ? 
-		ART_ALPHA_SEPARATE : 
-		ART_ALPHA_NONE;
-
-	art_render = art_render_new (0,
-				     0,
-				     pixbuf_width,
-				     pixbuf_height,
-				     pixbuf_pixels,
-				     pixbuf_rowstride,
-				     3,
-				     8,
-				     alpha_type,
-				     NULL);
-
-	art_color_array[0] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_R (color));
-	art_color_array[1] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_G (color));
-	art_color_array[2] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_B (color));
 	
-	art_render_image_solid (art_render, art_color_array);
-
-	glyph_area.x0 = glyph_xy[0] + x;
-	glyph_area.y0 = glyph_xy[1] + y;
-
+	glyph_area.x0 = glyph_xy[0];
+	glyph_area.y0 = glyph_xy[1];
 	glyph_area.x1 = glyph_area.x0 + glyph->width;
 	glyph_area.y1 = glyph_area.y0 + glyph->height;
+	
+	/* Invert the glyph if needed */
+	if (inverted) {
+		ArtIRect invert_area;
+		
+		if (clip_area != NULL) {
+			art_irect_intersect (&invert_area, &glyph_area, clip_area);
+		}
+		else {
+			invert_area = glyph_area;
+		}
 
+		//if (!art_irect_empty (&invert_area)) {
+		{
+			guchar *glyph_pixels;
+			guint glyph_rowstride;
+
+			glyph_rowstride = glyph->rowstride;
+			
+			glyph_pixels = glyph->buf;
+
+			glyph_pixels = 
+				glyph->buf + 
+				(invert_area.x0 - glyph_area.x0) + 
+				glyph_rowstride * (invert_area.y0 - glyph_area.y0);
+
+			invert_glyph (glyph_pixels, 
+				      glyph_rowstride,
+				      invert_area.x1 - invert_area.x0,
+				      invert_area.y1 - invert_area.y0);
+		}
+	}
+
+	/* Translate the glyph area to the (x,y) where its to be rendered */
+	glyph_area.x0 += x;
+	glyph_area.y0 += y;
+	glyph_area.x1 += x;
+	glyph_area.y1 += y;
+
+	/* Clip the glyph_area against the clip_area if needed */
 	if (clip_area != NULL) {
-		art_irect_intersect (&area, &glyph_area, clip_area);
+		art_irect_intersect (&render_area, &glyph_area, clip_area);
 	}
 	else {
-		area = glyph_area;
+		render_area = glyph_area;
 	}
 
-/* 	glyph_xy[0] += destination_point->x; */
-/*  	glyph_xy[1] += destination_point->y; */
-
-	art_render_mask (art_render,
-			 area.x0,
-			 area.y0,
-			 area.x1,
-			 area.y1,
-			 glyph->buf, 
-			 glyph->rowstride);
-
-	art_render_invoke (art_render);
-
+	/* Render the glyph */
+	if (!art_irect_empty (&render_area)) {
+		guint		pixbuf_width;
+		guint		pixbuf_height;
+		guint		pixbuf_rowstride;
+		guchar		*pixbuf_pixels;
+		
+		ArtRender	*art_render;
+		ArtPixMaxDepth	art_color_array[3];
+		ArtAlphaType	alpha_type;
+		
+		pixbuf_width = gdk_pixbuf_get_width (destination_pixbuf);
+		pixbuf_height = gdk_pixbuf_get_height (destination_pixbuf);
+		pixbuf_rowstride = gdk_pixbuf_get_rowstride (destination_pixbuf);
+		pixbuf_pixels = gdk_pixbuf_get_pixels (destination_pixbuf);
+		
+		alpha_type = gdk_pixbuf_get_has_alpha (destination_pixbuf) ? 
+			ART_ALPHA_SEPARATE : 
+			ART_ALPHA_NONE;
+		
+		art_render = art_render_new (0,
+					     0,
+					     pixbuf_width,
+					     pixbuf_height,
+					     pixbuf_pixels,
+					     pixbuf_rowstride,
+					     3,
+					     8,
+					     alpha_type,
+					     NULL);
+		
+		art_color_array[0] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_R (color));
+		art_color_array[1] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_G (color));
+		art_color_array[2] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_B (color));
+		
+		art_render_image_solid (art_render, art_color_array);
+		
+		art_render_mask (art_render,
+				 render_area.x0,
+				 render_area.y0,
+				 render_area.x1,
+				 render_area.y1,
+				 glyph->buf, 
+				 glyph->rowstride);
+		
+		art_render_invoke (art_render);
+	}
+	
 	rsvg_ft_glyph_unref (glyph);
-}
+	}
 
 void
 nautilus_scalable_font_measure_text_lines (const NautilusScalableFont	*font,
@@ -899,7 +975,8 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 							guint                        line_offset,
 							double			     empty_line_height,
 							guint32                      color,
-							guchar                       overall_alpha)
+							guchar                       overall_alpha,
+							gboolean		     inverted)
 {
 	guint		i;
 	const char	*line;
@@ -992,7 +1069,8 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 							  line,
 							  length,
 							  color,
-							  overall_alpha);
+							  overall_alpha,
+							  inverted);
 			
 			y += (line_offset + text_line_heights[i]);
 		}
@@ -1019,7 +1097,8 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 					guint                        line_offset,
 					double			     empty_line_height,
 					guint32                      color,
-					guchar                       overall_alpha)
+					guchar                       overall_alpha,
+					gboolean		     inverted)
 {
 	guint	num_text_lines;
 	guint	*text_line_widths;
@@ -1073,7 +1152,8 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 								line_offset,
 								empty_line_height,
 								color,
-								overall_alpha);
+								overall_alpha,
+								inverted);
 	
 	g_free (text_line_widths);
 	g_free (text_line_heights);
@@ -1576,7 +1656,8 @@ nautilus_text_layout_paint (const NautilusTextLayout *text_info,
 			    int x, 
 			    int y, 
 			    GtkJustification just,
-			    guint32 color)
+			    guint32 color,
+			    gboolean		    inverted)
 {
 	GList *item;
 	const NautilusTextLayoutRow *row;
@@ -1621,7 +1702,8 @@ nautilus_text_layout_paint (const NautilusTextLayout *text_info,
 							  row->text,
 							  row->text_length,
 							  color,
-							  255);
+							  255,
+							  inverted);
 
 			y += text_info->baseline_skip;
 		} else

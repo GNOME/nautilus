@@ -2261,7 +2261,8 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 							line_offset,
 							empty_line_height,
 							NAUTILUS_RGB_COLOR_BLACK,
-							255);
+							255,
+							FALSE);
 		
 		gtk_object_unref (GTK_OBJECT (font));
 		

@@ -1,3 +1,25 @@
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_measure_text), (invert_glyph),
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines),
+	(nautilus_text_layout_paint):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	Add support for drawint inverted text.  Also cleanup the rendering
+	function a bit.  
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	* libnautilus-extensions/nautilus-label.c: (render_buffer_pixbuf):
+	* src/nautilus-about.c: (draw_aa_string):
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain),
+	(draw_one_tab_themed):
+	Update all these for the new inverted scalable font api.
+	
+	* test/test-nautilus-font.c: (main):
+	Add a inverted text test.
+	
 2000-09-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus-installer/src/Makefile:

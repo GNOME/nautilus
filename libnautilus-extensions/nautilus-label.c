@@ -363,7 +363,8 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 										label->detail->line_offset,
 										label_get_empty_line_height (label),
 										label->detail->drop_shadow_color,
-										label->detail->text_alpha);
+										label->detail->text_alpha,
+										FALSE);
 
 			text_x -= label->detail->drop_shadow_offset;
 			text_y -= label->detail->drop_shadow_offset;
@@ -384,7 +385,8 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 									label->detail->line_offset,
 									label_get_empty_line_height (label),
 									label->detail->text_color,
-									label->detail->text_alpha);
+									label->detail->text_alpha,
+									FALSE);
 	}
 }
 
