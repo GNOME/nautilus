@@ -90,18 +90,11 @@ nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 					   NautilusDesktopLink *link,
 					   GtkWidget *parent_view)
 {
-	/* FIXME: Is this right? How to get them back?
-	 * Do we disallow this, or add a prefs ui to get them back? */
-	
 	switch (nautilus_desktop_link_get_link_type (link)) {
 	case NAUTILUS_DESKTOP_LINK_HOME:
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE, FALSE);
-		break;
 	case NAUTILUS_DESKTOP_LINK_COMPUTER:
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE, FALSE);
-		break;
 	case NAUTILUS_DESKTOP_LINK_TRASH:
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE, FALSE);
+		/* just ignore. We don't allow you to delete these */
 		break;
 	default:
 		eel_run_simple_dialog

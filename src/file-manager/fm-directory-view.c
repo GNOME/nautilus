@@ -3047,6 +3047,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	char *prompt;
 	char *detail;
 	int uri_count;
+	char *uri;
 	char *file_name;
 	int response;
 
@@ -3056,7 +3057,12 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	g_assert (uri_count > 0);
 	
 	if (uri_count == 1) {
-		file_name = file_name_from_uri ((char *) uris->data);
+		uri = (char *) uris->data;
+		if (eel_uri_is_desktop (uri)) {
+			/* Don't ask for desktop icons */
+			return TRUE;
+		}
+		file_name = file_name_from_uri (uri);
 		prompt = _("Cannot move file to trash, do you want to delete immediately?");
 		detail = g_strdup_printf (_("The file \"%s\" cannot be moved to the trash."), file_name);
 		g_free (file_name);

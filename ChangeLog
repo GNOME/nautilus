@@ -1,5 +1,18 @@
 2003-12-11  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-dnd.c
+	(nautilus_drag_default_drop_action_for_icons):
+	Handle defaults for desktop drops like
+	normal directories.
+
+	* libnautilus-private/nautilus-desktop-link-monitor.c (nautilus_desktop_link_monitor_delete_link):
+	Don't allow deletion of standard desktop links.
+
+	* src/file-manager/fm-directory-view.c (fm_directory_view_confirm_deletion):
+	Don't need to confirm for desktop icons.
+
+2003-12-11  Alexander Larsson  <alexl@redhat.com>
+
 	* components/emblem/nautilus-emblem-view.c:
 	* components/music/nautilus-music-view.c:
 	* components/news/nautilus-news.c:
