@@ -666,6 +666,12 @@ open_location (NautilusWindow *window,
         NautilusWindow *traverse_window;
         gboolean create_new_window;
 	GSList *element;
+
+	/* empty location doesn't jive with our logic, if there are any characters,
+	 * it will work ok, even if there is space */
+	if (location[0] == '\0') {
+		return;
+	}
 	
         if (handle_unreadable_location (window, location)) {
 		return;
