@@ -1,3 +1,12 @@
+2000-02-02  Darin Adler  <darin@eazel.com>
+
+	(on John Sullivan's machine)
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get): Changed a ! to a == NULL
+	(nautilus_directory_start_monitoring):  Bail out if directory
+	is already loaded; this fixes bug where switching views added
+	an item each time.
+
 2000-02-02  Andy Hertzfeld <andy@eazel.com>
 
 	added a zoom control to location bar, not yet wired up to the content view

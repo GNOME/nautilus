@@ -218,7 +218,7 @@ nautilus_directory_get (const char *uri)
 	*/
 
 	/* Create the hash table first time through. */
-	if (!directory_objects)
+	if (directory_objects == NULL)
 		directory_objects = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* If the object is already in the hash table, look it up. */
@@ -589,6 +589,8 @@ nautilus_directory_start_monitoring (NautilusDirectory *directory,
 				     NautilusFileListCallback callback,
 				     gpointer callback_data)
 {
+	GnomeVFSResult result;
+
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
@@ -597,28 +599,29 @@ nautilus_directory_start_monitoring (NautilusDirectory *directory,
 			      directory->details->files,
 			      callback_data);
 
-	if (directory->details->directory_load_in_progress == NULL) {
-		GnomeVFSResult result;
-
-		directory->details->directory_load_list_last_handled
-			= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-		result = gnome_vfs_async_load_directory_uri
-			(&directory->details->directory_load_in_progress, /* handle */
-			 directory->details->uri,                         /* uri */
-			 (GNOME_VFS_FILE_INFO_GETMIMETYPE	          /* options */
-			  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
-			 NULL, 					          /* meta_keys */
-			 NULL, 					          /* sort_rules */
-			 FALSE, 				          /* reverse_order */
-			 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
-			 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
-			  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
-			 NULL,                                            /* filter_pattern */
-			 DIRECTORY_LOAD_ITEMS_PER_CB,                     /* items_per_notification */
-			 nautilus_directory_load_cb,                      /* callback */
-			 directory);
-	}
+	if (directory->details->directory_loaded)
+		return;
+	if (directory->details->directory_load_in_progress != NULL)
+		return;
+	
+	directory->details->directory_load_list_last_handled
+		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+	result = gnome_vfs_async_load_directory_uri
+		(&directory->details->directory_load_in_progress, /* handle */
+		 directory->details->uri,                         /* uri */
+		 (GNOME_VFS_FILE_INFO_GETMIMETYPE	          /* options */
+		  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+		 NULL, 					          /* meta_keys */
+		 NULL, 					          /* sort_rules */
+		 FALSE, 				          /* reverse_order */
+		 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
+		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
+		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
+		 NULL,                                            /* filter_pattern */
+		 DIRECTORY_LOAD_ITEMS_PER_CB,                     /* items_per_notification */
+		 nautilus_directory_load_cb,                      /* callback */
+		 directory);
 }
 
 static gboolean
