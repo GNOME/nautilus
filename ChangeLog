@@ -1,3 +1,9 @@
+2003-11-11  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-list-view.c 
+	(list_view_get_first_visible_file_callback): Unref the file
+	before returning its uri.
+
 2003-11-10  Abel Cheung  <maddog@linux.org.hk>
 
 	* configure.in: Added "kn" to ALL_LINGUAS.
