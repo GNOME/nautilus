@@ -1,3 +1,36 @@
+2000-07-14  Michael Engber  <engber@eazel.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class),
+	(fm_desktop_icon_view_create_background_context_menu_items),
+	(fm_desktop_icon_view_get_directory_sort_by),
+	(fm_desktop_icon_view_set_directory_sort_by),
+	(fm_desktop_icon_view_get_directory_sort_reversed),
+	(fm_desktop_icon_view_set_directory_sort_reversed),
+	(fm_desktop_icon_view_get_directory_auto_layout),
+	(fm_desktop_icon_view_set_directory_auto_layout):
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_get_directory_sort_by),
+	(fm_icon_view_real_get_directory_sort_by),
+	(fm_icon_view_set_directory_sort_by),
+	(fm_icon_view_real_set_directory_sort_by),
+	(fm_icon_view_get_directory_sort_reversed),
+	(fm_icon_view_real_get_directory_sort_reversed),
+	(fm_icon_view_set_directory_sort_reversed),
+	(fm_icon_view_real_set_directory_sort_reversed),
+	(fm_icon_view_get_directory_auto_layout),
+	(fm_icon_view_real_get_directory_auto_layout),
+	(fm_icon_view_set_directory_auto_layout),
+	(fm_icon_view_real_set_directory_auto_layout),
+	(set_sort_criterion), (set_sort_reversed),
+	(fm_icon_view_begin_loading), (layout_changed_callback),
+	(fm_icon_view_initialize_class):
+	* src/file-manager/fm-icon-view.h:
+	Desktop no longer uses auto layout (bug 1059). Accomplished
+	by adding get/set methods to fm_icon_view which
+	fm_desktop_icon_view overrides.
+
 2000-07-14  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:

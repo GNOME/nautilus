@@ -34,8 +34,14 @@ static void fm_desktop_icon_view_initialize_class	(FMDesktopIconViewClass   *kla
 
 static void fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
+static char *   fm_desktop_icon_view_get_directory_sort_by       (FMIconView *icon_view, NautilusDirectory *directory);
+static void     fm_desktop_icon_view_set_directory_sort_by       (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by);
+static gboolean fm_desktop_icon_view_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory);
+static void     fm_desktop_icon_view_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed);
+static gboolean fm_desktop_icon_view_get_directory_auto_layout   (FMIconView *icon_view, NautilusDirectory *directory);
+static void     fm_desktop_icon_view_set_directory_auto_layout   (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout);
 
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
 
 static void
 fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
@@ -49,6 +55,13 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 	fm_icon_view_class	= FM_ICON_VIEW_CLASS (klass);
 
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
+
+        fm_icon_view_class->get_directory_sort_by       = fm_desktop_icon_view_get_directory_sort_by;
+        fm_icon_view_class->set_directory_sort_by       = fm_desktop_icon_view_set_directory_sort_by;
+        fm_icon_view_class->get_directory_sort_reversed = fm_desktop_icon_view_get_directory_sort_reversed;
+        fm_icon_view_class->set_directory_sort_reversed = fm_desktop_icon_view_set_directory_sort_reversed;
+        fm_icon_view_class->get_directory_auto_layout   = fm_desktop_icon_view_get_directory_auto_layout;
+        fm_icon_view_class->set_directory_auto_layout   = fm_desktop_icon_view_set_directory_auto_layout;
 }
 
 static void
@@ -82,4 +95,40 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 			    view);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
+}
+
+static char *
+fm_desktop_icon_view_get_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return g_strdup("name");
+}
+
+static void
+fm_desktop_icon_view_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by)
+{
+	/* do nothing - the desktop always uses the same sort_by */
+}
+
+static gboolean
+fm_desktop_icon_view_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return FALSE;
+}
+
+static void
+fm_desktop_icon_view_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed)
+{
+	/* do nothing - the desktop always uses sort_reversed == FALSE */
+}
+
+static gboolean
+fm_desktop_icon_view_get_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return FALSE;
+}
+
+static void
+fm_desktop_icon_view_set_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout)
+{
+	/* do nothing - the desktop always uses auto_layout == FALSE */
 }

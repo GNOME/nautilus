@@ -86,7 +86,6 @@ static void fm_icon_view_update_icon_container_fonts    (FMIconView        *icon
 static void fm_icon_view_update_click_mode              (FMIconView        *icon_view);
 static void fm_icon_view_update_anti_aliased_mode       (FMIconView        *icon_view);
 
-
 /* Preferences changed callbacks */
 static void text_attribute_names_changed_callback       (gpointer           user_data);
 static void directory_view_font_family_changed_callback (gpointer           user_data);
@@ -557,6 +556,79 @@ update_layout_menus (FMIconView *view)
 	view->details->updating_bonobo_radio_menu_item = FALSE;
 }
 
+
+static char *
+fm_icon_view_get_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return (* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->get_directory_sort_by) (icon_view, directory);
+}
+
+static char *
+fm_icon_view_real_get_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return nautilus_directory_get_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY, sort_criteria[0].metadata_text);
+}
+
+static void
+fm_icon_view_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by)
+{
+	(* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->set_directory_sort_by) (icon_view, directory, sort_by);
+}
+
+static void
+fm_icon_view_real_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by)
+{
+	nautilus_directory_set_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY, sort_criteria[0].metadata_text, sort_by);
+}
+
+static gboolean
+fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return (* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->get_directory_sort_reversed) (icon_view, directory);
+}
+
+static gboolean
+fm_icon_view_real_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return  nautilus_directory_get_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE);
+}
+
+static void
+fm_icon_view_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed)
+{
+	(* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->set_directory_sort_reversed) (icon_view, directory, sort_reversed);
+}
+
+static void
+fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed)
+{
+	nautilus_directory_set_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE, sort_reversed);
+}
+
+static gboolean
+fm_icon_view_get_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return (* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->get_directory_auto_layout) (icon_view, directory);
+}
+
+static gboolean
+fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory)
+{
+	return nautilus_directory_get_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
+}
+
+static void
+fm_icon_view_set_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout)
+{
+	(* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->set_directory_auto_layout) (icon_view, directory, auto_layout);
+}
+
+static void
+fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout)
+{
+	nautilus_directory_set_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE, auto_layout);
+}
+
 static gboolean
 set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
 {
@@ -568,13 +640,9 @@ set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
 	}
 	icon_view->details->sort = sort;
 
-	/* Store the new sort setting in the metafile. */
-	nautilus_directory_set_metadata
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-		 sort_criteria[0].metadata_text,
-		 sort->metadata_text);
-
+	/* Store the new sort setting. */
+	fm_icon_view_set_directory_sort_by (icon_view, fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)), sort->metadata_text);
+	
 	/* Update the layout menus to match the new sort setting. */
 	update_layout_menus (icon_view);
 
@@ -589,13 +657,9 @@ set_sort_reversed (FMIconView *icon_view, gboolean new_value)
 	}
 	icon_view->details->sort_reversed = new_value;
 
-	/* Store the new sort setting in the metafile. */
-	nautilus_directory_set_boolean_metadata
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-		 FALSE,
-		 new_value);
-
+	/* Store the new sort setting. */
+	fm_icon_view_set_directory_sort_reversed (icon_view, fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)), new_value);
+	
 	/* Update the layout menus to match the new sort-order setting. */
 	update_layout_menus (icon_view);
 
@@ -650,7 +714,6 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	NautilusDirectory *directory;
 	int level;
 	char *sort_name;
-	gboolean auto_layout;
 
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
@@ -668,34 +731,24 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 		 icon_view->details->default_zoom_level);
 	fm_icon_view_set_zoom_level (icon_view, level, TRUE);
 
-	/* Set the sort mode from the metadata.
+	/* Set the sort mode.
 	 * It's OK not to resort the icons because the
 	 * container doesn't have any icons at this point.
 	 */
-	sort_name = nautilus_directory_get_metadata
-		(directory,
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-		 sort_criteria[0].metadata_text);
+	sort_name = fm_icon_view_get_directory_sort_by (icon_view, directory);
 	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name));
 	g_free (sort_name);
 
 	/* Set the sort direction from the metadata. */
-	set_sort_reversed (icon_view, nautilus_directory_get_boolean_metadata
-		(directory,
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-		 FALSE));
+	set_sort_reversed (icon_view, fm_icon_view_get_directory_sort_reversed (icon_view, directory));
 
-	/* Set the layout mode from the metadata.
+	/* Set the layout mode.
 	 * We must do this after getting the sort mode,
 	 * because otherwise the layout_changed callback
 	 * might overwrite the sort mode.
 	 */
-	auto_layout = nautilus_directory_get_boolean_metadata
-		(directory,
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
-		 TRUE);
 	nautilus_icon_container_set_auto_layout
-		(get_icon_container (icon_view), auto_layout);
+		(get_icon_container (icon_view), fm_icon_view_get_directory_auto_layout (icon_view, directory));
 }
 
 static NautilusZoomLevel
@@ -947,11 +1000,7 @@ layout_changed_callback (NautilusIconContainer *container,
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
-	nautilus_directory_set_boolean_metadata
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
-		 TRUE,
-		 nautilus_icon_container_is_auto_layout (container));
+	fm_icon_view_set_directory_auto_layout (icon_view, fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)), nautilus_icon_container_is_auto_layout (container));
 
 	update_layout_menus (icon_view);
 }
@@ -1575,6 +1624,13 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
         fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
+
+        klass->get_directory_sort_by       = fm_icon_view_real_get_directory_sort_by;
+        klass->set_directory_sort_by       = fm_icon_view_real_set_directory_sort_by;
+        klass->get_directory_sort_reversed = fm_icon_view_real_get_directory_sort_reversed;
+        klass->set_directory_sort_reversed = fm_icon_view_real_set_directory_sort_reversed;
+        klass->get_directory_auto_layout   = fm_icon_view_real_get_directory_auto_layout;
+        klass->set_directory_auto_layout   = fm_icon_view_real_set_directory_auto_layout;
 }
 
 static void

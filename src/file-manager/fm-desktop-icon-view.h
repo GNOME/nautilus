@@ -25,7 +25,7 @@
 #ifndef FM_DESKSTOP_ICON_VIEW_H
 #define FM_DESKSTOP_ICON_VIEW_H
 
-#include "fm-directory-view.h"
+#include "fm-icon-view.h"
 
 typedef struct FMDesktopIconView FMDesktopIconView;
 typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
@@ -36,15 +36,12 @@ typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
 #define FM_IS_DESKSTOP_ICON_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_DESKSTOP_ICON_VIEW))
 #define FM_IS_DESKSTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_DESKSTOP_ICON_VIEW))
 
-typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
-
 struct FMDesktopIconView {
-	FMDirectoryView parent;
-	FMDesktopIconViewDetails *details;
+	FMIconView parent;
 };
 
 struct FMDesktopIconViewClass {
-	FMDirectoryViewClass parent_class;
+	FMIconViewClass parent_class;
 };
 
 /* GtkObject support */
