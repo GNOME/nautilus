@@ -2241,7 +2241,6 @@ nautilus_icon_canvas_item_set_control (NautilusIconCanvasItem *icon_item, GtkWid
 	}
 
 	if (control) {
-		g_message ("adding control...");
 		icon_item->details->control = control;
 		icon_item->details->control_destroy_id = gtk_signal_connect (GTK_OBJECT (control), 
 							"destroy",

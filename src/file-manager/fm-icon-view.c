@@ -1688,7 +1688,6 @@ get_icon_control_callback (NautilusIconContainer *container,
 		if (path != NULL) {
 			nautilus_link_local_get_component_info (path, &control_moniker, &control_data);
 			if (control_moniker && strlen (control_moniker) > 0) {
-				g_message ("got moniker %s", control_moniker);
 				ui_container = fm_directory_view_get_bonobo_ui_container (FM_DIRECTORY_VIEW (icon_view));
 				*control = bonobo_widget_new_control (control_moniker, ui_container);				
 				g_free (control_moniker);
