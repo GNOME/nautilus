@@ -131,8 +131,13 @@ monitor_add_internal (const char *uri, gboolean is_directory)
 	GnomeVFSResult result;
 
 	path = gnome_vfs_get_local_path_from_uri (uri);
-	if (path != NULL && 
-	    path_is_on_readonly_volume (path) == FALSE) {
+
+	/*
+	 * Don't monitor URIs on a read-only volume. 
+	 * This is a hack to avoid FAM keeping open fds to CD-ROMs, 
+	 * causing unmount/eject to fail.  
+	 */
+	if (path != NULL && path_is_on_readonly_volume (path) == TRUE) {
 		g_free (path);
 		return NULL;
 	}
