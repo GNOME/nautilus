@@ -44,5 +44,6 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 @XML_I18N_MERGE_OAF_RULE@
 
 EXTRA_DIST = 			\
+	$(oaf_in_files)		\
 	$(oaf_DATA)		\
 	$(NULL)
