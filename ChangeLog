@@ -1,3 +1,11 @@
+2002-07-12  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-file-operations.c (confirm_empty_trash):
+	ui-review fixes to add an icon to the 'Empty' button, add a mnemonic,
+	make 'Empty' the default button, and change the title.
+	Fixes bug #85666. (Though I didn't make it non-modal as that is a bit
+	awkward.)
+
 2002-07-11  Damon Chaplin  <damon@ximian.com>
 
 	* src/file-manager/fm-properties-window.c: ui-review changes.
