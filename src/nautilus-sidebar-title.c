@@ -48,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-image.h>
@@ -305,8 +306,25 @@ static void
 update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixbuf *pixbuf;
+	char *uri, *icon_path;
 	
-	if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
+	/* FIXME: currently, components can't specify their own sidebar icon.  This
+	  needs to be added to the framework, but for now we special-case some
+	  important ones here */
+	
+	uri = NULL;
+	icon_path = NULL;
+	if (sidebar_title->details->file) {
+		uri = nautilus_file_get_uri (sidebar_title->details->file);
+	}	
+	
+	if (nautilus_istr_has_prefix (uri, "eazel:")) {
+		icon_path = nautilus_theme_get_image_path ("big_services_icon.png");
+	}
+	
+	if (icon_path != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (icon_path);
+	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
 								    NAUTILUS_ICON_SIZE_LARGE,
@@ -314,6 +332,9 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	} else {
 		pixbuf = NULL;
 	}
+
+	g_free (uri);	
+	g_free (icon_path);
 	
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (sidebar_title->details->icon), pixbuf);
 	

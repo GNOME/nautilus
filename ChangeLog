@@ -1,3 +1,19 @@
+2000-10-30  Andy Hertzfeld  <andy@eazel.com>
+
+	cleaned up the sidebar for the summary view by putting in a
+	temporary hack to get the right icon and giving the view
+	a shorter title.
+	
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (summary_load_location_callback):
+	changed the summary view's title to "Eazel Services" so it fits
+	better in the sidebar.
+	
+	* src/nautilus-sidebar-title.c: (update_icon):
+	added a hack to special-case the "eazel:" uri to get the appropriate
+	icon; we'll remove this after PR2 and replace it with a real
+	framework.
+	
 2000-10-30  Darin Adler  <darin@eazel.com>
 
 	* icons/Makefile.am: Removed gnome-core.png again.
