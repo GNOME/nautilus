@@ -248,7 +248,7 @@
       <applyto>/apps/nautilus/preferences/sort_directories_first</applyto>
       <owner>nautilus</owner>
       <type>bool</type>
-      <default>false</default>
+      <default>true</default>
       <locale name="C">
          <short>Show directories first in windows</short>
 	 <long>
@@ -433,7 +433,7 @@
       <owner>nautilus</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[size,date_modified,type]</default>
+      <default>[none,size,date_modified]</default>
       <locale name="C">
          <short>List of possible captions on icons</short>
          <long>
