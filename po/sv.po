@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-09-02 13:09+0200\n"
-"PO-Revision-Date: 2003-09-02 13:11+0200\n"
+"POT-Creation-Date: 2003-09-28 22:42+0200\n"
+"PO-Revision-Date: 2003-09-28 22:43+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -43,7 +43,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() misslyckades."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2383
+#: src/file-manager/fm-properties-window.c:2385
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "Emblem"
@@ -156,7 +156,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "Den dragna filen verkar inte vara en giltig bild."
 
 #: components/emblem/nautilus-emblem-view.c:899 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1730
+#: src/nautilus-property-browser.c:1731
 msgid "Erase"
 msgstr "Ta bort"
 
@@ -1765,7 +1765,7 @@ msgid "Can't delete volume"
 msgstr "Kan inte ta bort volym"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5600
+#: libnautilus-private/nautilus-file.c:5611
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -2210,7 +2210,7 @@ msgstr "Ersätt alla"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4420
+#: libnautilus-private/nautilus-file.c:4431
 #, c-format
 msgid "link to %s"
 msgstr "länk till %s"
@@ -2254,13 +2254,13 @@ msgstr "%d:e länken till %s"
 #.
 #. localizers: tag used to detect the first copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1183
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2363
 msgid " (copy)"
 msgstr " (kopia)"
 
 #. localizers: tag used to detect the second copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1185
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2363
 msgid " (another copy)"
 msgstr " (ytterligare en kopia)"
 
@@ -2535,281 +2535,279 @@ msgstr "Tömmer papperskorgen"
 msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömning av papperskorgen..."
 
-#: libnautilus-private/nautilus-file-operations.c:2263
-#: src/file-manager/fm-desktop-icon-view.c:999
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
-msgid "Empty Trash"
-msgstr "Töm papperskorgen"
-
-#: libnautilus-private/nautilus-file-operations.c:2279
-msgid ""
-"Are you sure you want to permanently delete all of the items in the Trash?"
+#: libnautilus-private/nautilus-file-operations.c:2291
+#, fuzzy
+msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Är du säker att du vill ta bort alla objekt i papperskorgen permanent?"
 
-#: libnautilus-private/nautilus-file-operations.c:2289
+#: libnautilus-private/nautilus-file-operations.c:2305
+msgid "If you empty the trash, items will be permanently deleted."
+msgstr ""
+
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "_Empty"
 msgstr "_Töm"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2364
 msgid "foo"
 msgstr "apa"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
-#: libnautilus-private/nautilus-file-operations.c:2346
+#: libnautilus-private/nautilus-file-operations.c:2364
+#: libnautilus-private/nautilus-file-operations.c:2374
 msgid "foo (copy)"
 msgstr "apa (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2365
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2365
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2366
 msgid ".foo.txt"
 msgstr ".apa.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2366
 msgid ".foo (copy).txt"
 msgstr ".apa (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2367
 msgid "foo foo"
 msgstr "apa apa"
 
-#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2367
 msgid "foo foo (copy)"
 msgstr "apa apa (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2368
 msgid "foo.txt"
 msgstr "apa.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2340
-#: libnautilus-private/nautilus-file-operations.c:2347
+#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2375
 msgid "foo (copy).txt"
 msgstr "apa (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2369
 msgid "foo foo.txt"
 msgstr "apa apa.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2341
-#: libnautilus-private/nautilus-file-operations.c:2363
+#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2391
 msgid "foo foo (copy).txt"
 msgstr "apa apa (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2370
 msgid "foo foo.txt txt"
 msgstr "apa apa.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2370
 msgid "foo foo (copy).txt txt"
 msgstr "apa apa (kopia).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2371
 msgid "foo...txt"
 msgstr "apa...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2371
 msgid "foo.. (copy).txt"
 msgstr "apa.. (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2372
 msgid "foo..."
 msgstr "apa..."
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2372
 msgid "foo... (copy)"
 msgstr "apa... (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2373
 msgid "foo. (copy)"
 msgstr "apa. (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2373
 msgid "foo. (another copy)"
 msgstr "apa. (ytterligare en kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2346
-#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2374
+#: libnautilus-private/nautilus-file-operations.c:2376
 msgid "foo (another copy)"
 msgstr "apa (ytterligare en kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2347
-#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2375
+#: libnautilus-private/nautilus-file-operations.c:2377
 msgid "foo (another copy).txt"
 msgstr "apa (ytterligare en kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2376
 msgid "foo (3rd copy)"
 msgstr "apa (tredje kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2377
 msgid "foo (3rd copy).txt"
 msgstr "apa (tredje kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2378
 msgid "foo foo (another copy).txt"
 msgstr "apa apa (ytterligare en kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2378
 msgid "foo foo (3rd copy).txt"
 msgstr "apa apa (tredje kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2351
-#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2379
+#: libnautilus-private/nautilus-file-operations.c:2396
 msgid "foo (13th copy)"
 msgstr "apa (13:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2379
 msgid "foo (14th copy)"
 msgstr "apa (14:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2352
-#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2380
+#: libnautilus-private/nautilus-file-operations.c:2397
 msgid "foo (13th copy).txt"
 msgstr "apa (13:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2380
 msgid "foo (14th copy).txt"
 msgstr "apa (14:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2381
 msgid "foo (21st copy)"
 msgstr "apa (21:a kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
-#: libnautilus-private/nautilus-file-operations.c:2355
+#: libnautilus-private/nautilus-file-operations.c:2381
+#: libnautilus-private/nautilus-file-operations.c:2383
 msgid "foo (22nd copy)"
 msgstr "apa (22:a kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2354
+#: libnautilus-private/nautilus-file-operations.c:2382
 msgid "foo (21st copy).txt"
 msgstr "apa (21:a kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2354
-#: libnautilus-private/nautilus-file-operations.c:2356
+#: libnautilus-private/nautilus-file-operations.c:2382
+#: libnautilus-private/nautilus-file-operations.c:2384
 msgid "foo (22nd copy).txt"
 msgstr "apa (22:a kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2355
-#: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2383
+#: libnautilus-private/nautilus-file-operations.c:2385
 msgid "foo (23rd copy)"
 msgstr "apa (23:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2356
-#: libnautilus-private/nautilus-file-operations.c:2358
+#: libnautilus-private/nautilus-file-operations.c:2384
+#: libnautilus-private/nautilus-file-operations.c:2386
 msgid "foo (23rd copy).txt"
 msgstr "apa (23:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2357
-#: libnautilus-private/nautilus-file-operations.c:2359
+#: libnautilus-private/nautilus-file-operations.c:2385
+#: libnautilus-private/nautilus-file-operations.c:2387
 msgid "foo (24th copy)"
 msgstr "apa (24:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2358
-#: libnautilus-private/nautilus-file-operations.c:2360
+#: libnautilus-private/nautilus-file-operations.c:2386
+#: libnautilus-private/nautilus-file-operations.c:2388
 msgid "foo (24th copy).txt"
 msgstr "apa (24:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2359
+#: libnautilus-private/nautilus-file-operations.c:2387
 msgid "foo (25th copy)"
 msgstr "apa (25:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2360
+#: libnautilus-private/nautilus-file-operations.c:2388
 msgid "foo (25th copy).txt"
 msgstr "apa (25:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2361
+#: libnautilus-private/nautilus-file-operations.c:2389
 msgid "foo foo (24th copy)"
 msgstr "apa apa (24:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2361
+#: libnautilus-private/nautilus-file-operations.c:2389
 msgid "foo foo (25th copy)"
 msgstr "apa apa (25:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2362
+#: libnautilus-private/nautilus-file-operations.c:2390
 msgid "foo foo (24th copy).txt"
 msgstr "apa apa (24:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2362
+#: libnautilus-private/nautilus-file-operations.c:2390
 msgid "foo foo (25th copy).txt"
 msgstr "apa apa (25:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2363
+#: libnautilus-private/nautilus-file-operations.c:2391
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "apa apa (100000000000000:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2364
+#: libnautilus-private/nautilus-file-operations.c:2392
 msgid "foo (10th copy)"
 msgstr "apa (10:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2364
-#: libnautilus-private/nautilus-file-operations.c:2366
+#: libnautilus-private/nautilus-file-operations.c:2392
+#: libnautilus-private/nautilus-file-operations.c:2394
 msgid "foo (11th copy)"
 msgstr "apa (11:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2365
+#: libnautilus-private/nautilus-file-operations.c:2393
 msgid "foo (10th copy).txt"
 msgstr "apa (10:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2365
-#: libnautilus-private/nautilus-file-operations.c:2367
+#: libnautilus-private/nautilus-file-operations.c:2393
+#: libnautilus-private/nautilus-file-operations.c:2395
 msgid "foo (11th copy).txt"
 msgstr "apa (11:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2366
-#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2394
+#: libnautilus-private/nautilus-file-operations.c:2396
 msgid "foo (12th copy)"
 msgstr "apa (12:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2367
-#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2395
+#: libnautilus-private/nautilus-file-operations.c:2397
 msgid "foo (12th copy).txt"
 msgstr "apa (12:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
+#: libnautilus-private/nautilus-file-operations.c:2398
 msgid "foo (110th copy)"
 msgstr "apa (110:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
+#: libnautilus-private/nautilus-file-operations.c:2398
 msgid "foo (111th copy)"
 msgstr "apa (111:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2371
+#: libnautilus-private/nautilus-file-operations.c:2399
 msgid "foo (110th copy).txt"
 msgstr "apa (110:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2371
+#: libnautilus-private/nautilus-file-operations.c:2399
 msgid "foo (111th copy).txt"
 msgstr "apa (111:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2372
+#: libnautilus-private/nautilus-file-operations.c:2400
 msgid "foo (122nd copy)"
 msgstr "apa (122:a kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2372
-#: libnautilus-private/nautilus-file-operations.c:2374
+#: libnautilus-private/nautilus-file-operations.c:2400
+#: libnautilus-private/nautilus-file-operations.c:2402
 msgid "foo (123rd copy)"
 msgstr "apa (123:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2373
+#: libnautilus-private/nautilus-file-operations.c:2401
 msgid "foo (122nd copy).txt"
 msgstr "apa (122:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2373
-#: libnautilus-private/nautilus-file-operations.c:2375
+#: libnautilus-private/nautilus-file-operations.c:2401
+#: libnautilus-private/nautilus-file-operations.c:2403
 msgid "foo (123rd copy).txt"
 msgstr "apa (123:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2374
+#: libnautilus-private/nautilus-file-operations.c:2402
 msgid "foo (124th copy)"
 msgstr "apa (124:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2375
+#: libnautilus-private/nautilus-file-operations.c:2403
 msgid "foo (124th copy).txt"
 msgstr "apa (124:e kopian).txt"
 
@@ -2828,64 +2826,64 @@ msgstr "apa (124:e kopian).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2659
+#: libnautilus-private/nautilus-file.c:2657
 msgid "today at 00:00:00 PM"
 msgstr "idag klockan 00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2660
+#: libnautilus-private/nautilus-file.c:2658
 msgid "today at %-I:%M:%S %p"
 msgstr "idag klockan %H.%M.%S"
 
-#: libnautilus-private/nautilus-file.c:2662
+#: libnautilus-private/nautilus-file.c:2660
 msgid "today at 00:00 PM"
 msgstr "idag klockan 00.00"
 
-#: libnautilus-private/nautilus-file.c:2663
+#: libnautilus-private/nautilus-file.c:2661
 msgid "today at %-I:%M %p"
 msgstr "idag klockan %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2665
+#: libnautilus-private/nautilus-file.c:2663
 msgid "today, 00:00 PM"
 msgstr "idag, 00.00"
 
-#: libnautilus-private/nautilus-file.c:2666
+#: libnautilus-private/nautilus-file.c:2664
 msgid "today, %-I:%M %p"
 msgstr "idag, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2668
-#: libnautilus-private/nautilus-file.c:2669
+#: libnautilus-private/nautilus-file.c:2666
+#: libnautilus-private/nautilus-file.c:2667
 msgid "today"
 msgstr "idag"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2678
+#: libnautilus-private/nautilus-file.c:2676
 msgid "yesterday at 00:00:00 PM"
 msgstr "igår klockan 00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2679
+#: libnautilus-private/nautilus-file.c:2677
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "igår klockan %H.%M.%S"
 
-#: libnautilus-private/nautilus-file.c:2681
+#: libnautilus-private/nautilus-file.c:2679
 msgid "yesterday at 00:00 PM"
 msgstr "igår klockan 00.00"
 
-#: libnautilus-private/nautilus-file.c:2682
+#: libnautilus-private/nautilus-file.c:2680
 msgid "yesterday at %-I:%M %p"
 msgstr "igår klockan %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2684
+#: libnautilus-private/nautilus-file.c:2682
 msgid "yesterday, 00:00 PM"
 msgstr "igår, 00.00"
 
-#: libnautilus-private/nautilus-file.c:2685
+#: libnautilus-private/nautilus-file.c:2683
 msgid "yesterday, %-I:%M %p"
 msgstr "igår, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2687
-#: libnautilus-private/nautilus-file.c:2688
+#: libnautilus-private/nautilus-file.c:2685
+#: libnautilus-private/nautilus-file.c:2686
 msgid "yesterday"
 msgstr "igår"
 
@@ -2894,133 +2892,133 @@ msgstr "igår"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2699
+#: libnautilus-private/nautilus-file.c:2697
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Torsdagen den 00 september 0000 kl. 00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2700
+#: libnautilus-private/nautilus-file.c:2698
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A %-d %B %Y kl. %H.%M.%S"
 
-#: libnautilus-private/nautilus-file.c:2702
+#: libnautilus-private/nautilus-file.c:2700
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Mån 00 okt 0000 kl. 00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2703
+#: libnautilus-private/nautilus-file.c:2701
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a %-d %b %Y kl. %H.%M.%S"
 
-#: libnautilus-private/nautilus-file.c:2705
+#: libnautilus-private/nautilus-file.c:2703
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Mån 00 okt 0000 kl. 00.00"
 
-#: libnautilus-private/nautilus-file.c:2706
+#: libnautilus-private/nautilus-file.c:2704
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a %-d %b %Y kl. %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2708
+#: libnautilus-private/nautilus-file.c:2706
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 okt 0000 kl. 00.00"
 
-#: libnautilus-private/nautilus-file.c:2709
+#: libnautilus-private/nautilus-file.c:2707
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y kl. %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2711
+#: libnautilus-private/nautilus-file.c:2709
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 okt 0000, 00.00"
 
-#: libnautilus-private/nautilus-file.c:2712
+#: libnautilus-private/nautilus-file.c:2710
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2714
+#: libnautilus-private/nautilus-file.c:2712
 msgid "00/00/00, 00:00 PM"
 msgstr "0000-00-00, 00.00"
 
-#: libnautilus-private/nautilus-file.c:2715
+#: libnautilus-private/nautilus-file.c:2713
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%Y-%m-%d, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2717
+#: libnautilus-private/nautilus-file.c:2715
 msgid "00/00/00"
 msgstr "0000-00-00"
 
-#: libnautilus-private/nautilus-file.c:2718
+#: libnautilus-private/nautilus-file.c:2716
 msgid "%m/%d/%y"
 msgstr "%Y-%m-%d"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4011
 msgid "0 items"
 msgstr "0 objekt"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4011
 msgid "0 folders"
 msgstr "0 mappar"
 
-#: libnautilus-private/nautilus-file.c:4001
+#: libnautilus-private/nautilus-file.c:4012
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4016
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4016
 msgid "1 folder"
 msgstr "1 mapp"
 
-#: libnautilus-private/nautilus-file.c:4006
+#: libnautilus-private/nautilus-file.c:4017
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4020
 #, c-format
 msgid "%u items"
 msgstr "%u objekt"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4020
 #, c-format
 msgid "%u folders"
 msgstr "%u mappar"
 
-#: libnautilus-private/nautilus-file.c:4010
+#: libnautilus-private/nautilus-file.c:4021
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4322
-#: libnautilus-private/nautilus-file.c:4338
+#: libnautilus-private/nautilus-file.c:4333
+#: libnautilus-private/nautilus-file.c:4349
 msgid "? items"
 msgstr "? objekt"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4328
+#: libnautilus-private/nautilus-file.c:4339
 msgid "? bytes"
 msgstr "? byte"
 
-#: libnautilus-private/nautilus-file.c:4343
+#: libnautilus-private/nautilus-file.c:4354
 msgid "unknown type"
 msgstr "okänd typ"
 
-#: libnautilus-private/nautilus-file.c:4346
+#: libnautilus-private/nautilus-file.c:4357
 msgid "unknown MIME type"
 msgstr "okänd MIME-typ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4352
-#: src/file-manager/fm-properties-window.c:1128
+#: libnautilus-private/nautilus-file.c:4363
+#: src/file-manager/fm-properties-window.c:1130
 msgid "unknown"
 msgstr "okänd"
 
-#: libnautilus-private/nautilus-file.c:4384
+#: libnautilus-private/nautilus-file.c:4395
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4396
+#: libnautilus-private/nautilus-file.c:4407
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3030,7 +3028,7 @@ msgstr ""
 "troligtvis att din gnome-vfs.keys-fil finns på fel plats eller inte kan "
 "hittas av någon annan anledning."
 
-#: libnautilus-private/nautilus-file.c:4400
+#: libnautilus-private/nautilus-file.c:4411
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3039,11 +3037,11 @@ msgstr ""
 "Ingen beskrivning kunde hittas för mime-typen \"%s\" (filen är \"%s\"), tala "
 "om det för gnome-vfs-sändlistan (på engelska)."
 
-#: libnautilus-private/nautilus-file.c:4414
+#: libnautilus-private/nautilus-file.c:4425
 msgid "link"
 msgstr "länk"
 
-#: libnautilus-private/nautilus-file.c:4434
+#: libnautilus-private/nautilus-file.c:4445
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
@@ -4132,43 +4130,43 @@ msgstr "Visa som %s"
 msgid "%s Viewer"
 msgstr "%s-visare"
 
-#: libnautilus-private/nautilus-volume-monitor.c:897
+#: libnautilus-private/nautilus-volume-monitor.c:901
 msgid "Unknown"
 msgstr "Okänd"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:1070
+#: libnautilus-private/nautilus-volume-monitor.c:1074
 msgid "Floppy"
 msgstr "Diskett"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1071
-#: libnautilus-private/nautilus-volume-monitor.c:1100
+#: libnautilus-private/nautilus-volume-monitor.c:1075
+#: libnautilus-private/nautilus-volume-monitor.c:1104
 msgid "CD-ROM"
 msgstr "Cd-rom"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1072
+#: libnautilus-private/nautilus-volume-monitor.c:1076
 msgid "Zip Drive"
 msgstr "Zip-enhet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1087
-#: libnautilus-private/nautilus-volume-monitor.c:1131
+#: libnautilus-private/nautilus-volume-monitor.c:1091
+#: libnautilus-private/nautilus-volume-monitor.c:1135
 msgid "Audio CD"
 msgstr "Ljud-cd"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1122
+#: libnautilus-private/nautilus-volume-monitor.c:1126
 msgid "Root Volume"
 msgstr "Rotvolym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Mount Error"
 msgstr "Monteringsfel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Unmount Error"
 msgstr "Avmonteringsfel"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1874
+#: libnautilus-private/nautilus-volume-monitor.c:1878
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4177,7 +4175,7 @@ msgstr ""
 "diskett i enheten."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1878
+#: libnautilus-private/nautilus-volume-monitor.c:1882
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4185,7 +4183,7 @@ msgstr ""
 "Nautilus kunde inte montera volymen. Det finns antagligen inget media i "
 "enheten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1884
+#: libnautilus-private/nautilus-volume-monitor.c:1888
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4193,7 +4191,7 @@ msgstr ""
 "Nautilus kunde inte montera diskettstationen. Disketten är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1887
+#: libnautilus-private/nautilus-volume-monitor.c:1891
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4201,20 +4199,20 @@ msgstr ""
 "Nautilus kunde inte montera den valda volymen. Volymen är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1892
+#: libnautilus-private/nautilus-volume-monitor.c:1896
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus kunde inte montera den valda diskettstationen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1894
+#: libnautilus-private/nautilus-volume-monitor.c:1898
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kunde inte montera den valda volymen."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1899
+#: libnautilus-private/nautilus-volume-monitor.c:1903
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunde inte avmontera den valda volymen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:2104
+#: libnautilus-private/nautilus-volume-monitor.c:2148
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-volym"
 
@@ -4365,106 +4363,121 @@ msgstr "Visa som _ikoner"
 msgid "View as _List"
 msgstr "Visa som _lista"
 
-#: src/file-manager/fm-desktop-icon-view.c:579
+#: src/file-manager/fm-desktop-icon-view.c:596
 msgid "Background"
 msgstr "Bakgrund"
 
-#: src/file-manager/fm-desktop-icon-view.c:749
+#: src/file-manager/fm-desktop-icon-view.c:766
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Fel vid körning av verktygsprogrammet \"%s\": %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1017
+#: src/file-manager/fm-desktop-icon-view.c:1016
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+msgid "Empty Trash"
+msgstr "Töm papperskorgen"
+
+#: src/file-manager/fm-desktop-icon-view.c:1034
 msgid "E_ject"
 msgstr "_Mata ut"
 
-#: src/file-manager/fm-desktop-icon-view.c:1117
+#: src/file-manager/fm-desktop-icon-view.c:1134
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Avmontera volym"
 
-#: src/file-manager/fm-directory-view.c:493
+#: src/file-manager/fm-directory-view.c:491
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
 "Detta kommer att öppna %d separata fönster. Är du säker på att du vill göra "
 "detta?"
 
-#: src/file-manager/fm-directory-view.c:495
+#: src/file-manager/fm-directory-view.c:493
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Öppna %d fönster?"
 
-#: src/file-manager/fm-directory-view.c:848
+#: src/file-manager/fm-directory-view.c:846
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent?"
 
-#: src/file-manager/fm-directory-view.c:852
+#: src/file-manager/fm-directory-view.c:850
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "Är du säker att du vill ta bort de %d markerade objekten permanent?"
 
-#: src/file-manager/fm-directory-view.c:858
+#: src/file-manager/fm-directory-view.c:856
 msgid "Delete?"
 msgstr "Ta bort?"
 
-#: src/file-manager/fm-directory-view.c:1541
+#: src/file-manager/fm-directory-view.c:995
+#, fuzzy
+msgid "Select Pattern"
+msgstr "Välj en kategori:"
+
+#: src/file-manager/fm-directory-view.c:1011
+#, fuzzy
+msgid "_Pattern:"
+msgstr "Mönster:"
+
+#: src/file-manager/fm-directory-view.c:1618
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" markerad"
 
-#: src/file-manager/fm-directory-view.c:1543
+#: src/file-manager/fm-directory-view.c:1620
 msgid "1 folder selected"
 msgstr "1 mapp markerad"
 
-#: src/file-manager/fm-directory-view.c:1546
+#: src/file-manager/fm-directory-view.c:1623
 #, c-format
 msgid "%d folders selected"
 msgstr "%d mappar markerade"
 
-#: src/file-manager/fm-directory-view.c:1553
+#: src/file-manager/fm-directory-view.c:1630
 msgid " (containing 0 items)"
 msgstr " (innehåller 0 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1555
+#: src/file-manager/fm-directory-view.c:1632
 msgid " (containing 1 item)"
 msgstr " (innehåller 1 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1557
+#: src/file-manager/fm-directory-view.c:1634
 #, c-format
 msgid " (containing %d items)"
 msgstr " (innehåller %d objekt)"
 
-#: src/file-manager/fm-directory-view.c:1564
+#: src/file-manager/fm-directory-view.c:1641
 msgid " (containing a total of 0 items)"
 msgstr " (innehåller totalt 0 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1566
+#: src/file-manager/fm-directory-view.c:1643
 msgid " (containing a total of 1 item)"
 msgstr " (innehåller totalt 1 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1568
+#: src/file-manager/fm-directory-view.c:1645
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (innehåller totalt %d objekt)"
 
-#: src/file-manager/fm-directory-view.c:1581
+#: src/file-manager/fm-directory-view.c:1658
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" markerad (%s)"
 
-#: src/file-manager/fm-directory-view.c:1585
+#: src/file-manager/fm-directory-view.c:1662
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d objekt markerade (%s)"
 
-#: src/file-manager/fm-directory-view.c:1592
+#: src/file-manager/fm-directory-view.c:1669
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 annat objekt markerat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1595
+#: src/file-manager/fm-directory-view.c:1672
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d andra objekt markerade (%s)"
@@ -4476,7 +4489,7 @@ msgstr "%d andra objekt markerade (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1624
+#: src/file-manager/fm-directory-view.c:1701
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4485,7 +4498,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1749
+#: src/file-manager/fm-directory-view.c:1826
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4494,18 +4507,18 @@ msgstr ""
 "Mappen \"%s\" innehåller fler filer än Nautilus kan visa. En del filer "
 "kommer inte att visas."
 
-#: src/file-manager/fm-directory-view.c:1756
+#: src/file-manager/fm-directory-view.c:1833
 msgid "Too Many Files"
 msgstr "För många filer"
 
-#: src/file-manager/fm-directory-view.c:3050
+#: src/file-manager/fm-directory-view.c:3065
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" kan inte flyttas till papperskorgen. Vill du ta bort det omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:3055
+#: src/file-manager/fm-directory-view.c:3070
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4514,7 +4527,7 @@ msgstr ""
 "De %d markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort dem omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:3059
+#: src/file-manager/fm-directory-view.c:3074
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4523,16 +4536,16 @@ msgstr ""
 "%d av de markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort dessa %d objekt omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:3067
+#: src/file-manager/fm-directory-view.c:3082
 msgid "Delete Immediately?"
 msgstr "Ta bort omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:3099
+#: src/file-manager/fm-directory-view.c:3114
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3103
+#: src/file-manager/fm-directory-view.c:3118
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4541,49 +4554,49 @@ msgstr ""
 "Är du säker att du vill ta bort de %d markerade objekten i papperskorgen "
 "permanent?"
 
-#: src/file-manager/fm-directory-view.c:3109
+#: src/file-manager/fm-directory-view.c:3124
 msgid "Delete From Trash?"
 msgstr "Ta bort från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3387
-#: src/file-manager/fm-directory-view.c:3429
+#: src/file-manager/fm-directory-view.c:3402
+#: src/file-manager/fm-directory-view.c:3444
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Använd \"%s\" för att öppna det markerade objektet"
 
-#: src/file-manager/fm-directory-view.c:3510
+#: src/file-manager/fm-directory-view.c:3525
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Other _Application..."
 msgstr "_Annat program..."
 
-#: src/file-manager/fm-directory-view.c:3510
+#: src/file-manager/fm-directory-view.c:3525
 msgid "An _Application..."
 msgstr "Ett _program..."
 
-#: src/file-manager/fm-directory-view.c:3515
+#: src/file-manager/fm-directory-view.c:3530
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
 msgstr "Annan _visare..."
 
-#: src/file-manager/fm-directory-view.c:3515
+#: src/file-manager/fm-directory-view.c:3530
 msgid "A _Viewer..."
 msgstr "En _visare..."
 
-#: src/file-manager/fm-directory-view.c:3597
+#: src/file-manager/fm-directory-view.c:3612
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "Kunde inte färdigställa angiven åtgärd: %s"
 
-#: src/file-manager/fm-directory-view.c:3621
+#: src/file-manager/fm-directory-view.c:3636
 msgid "Could not complete specified action."
 msgstr "Kunde inte färdigställa angiven åtgärd."
 
-#: src/file-manager/fm-directory-view.c:4130
+#: src/file-manager/fm-directory-view.c:4145
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Kör \"%s\" på alla markerade objekt"
 
-#: src/file-manager/fm-directory-view.c:4347
+#: src/file-manager/fm-directory-view.c:4362
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4593,11 +4606,11 @@ msgstr ""
 "välja ett skript från menyn kör du det skriptet med alla markerade objekt "
 "som indata."
 
-#: src/file-manager/fm-directory-view.c:4350
+#: src/file-manager/fm-directory-view.c:4365
 msgid "About Scripts"
 msgstr "Om skript"
 
-#: src/file-manager/fm-directory-view.c:4351
+#: src/file-manager/fm-directory-view.c:4366
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4636,17 +4649,17 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: det aktuella fönstrets position och storlek"
 
-#: src/file-manager/fm-directory-view.c:4472
+#: src/file-manager/fm-directory-view.c:4487
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" kommer att flyttas om du väljer kommandot Klistra in filer"
 
-#: src/file-manager/fm-directory-view.c:4476
+#: src/file-manager/fm-directory-view.c:4491
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" kommer att kopieras om du väljer kommandot Klistra in filer"
 
-#: src/file-manager/fm-directory-view.c:4483
+#: src/file-manager/fm-directory-view.c:4498
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4654,7 +4667,7 @@ msgstr ""
 "De %d markerade objekten kommer att flyttas om du väljer kommandot Klistra "
 "in filer"
 
-#: src/file-manager/fm-directory-view.c:4487
+#: src/file-manager/fm-directory-view.c:4502
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -4662,81 +4675,82 @@ msgstr ""
 "De %d markerade objekten kommer att kopieras om du väljer kommandot Klistra "
 "in filer"
 
-#: src/file-manager/fm-directory-view.c:4566
+#: src/file-manager/fm-directory-view.c:4581
 msgid "There is nothing on the clipboard to paste."
 msgstr "Det finns inget i Urklipp att klistra in."
 
-#: src/file-manager/fm-directory-view.c:4823
+#: src/file-manager/fm-directory-view.c:4839
 msgid "Open _in This Window"
 msgstr "Öppna _i detta fönster"
 
-#: src/file-manager/fm-directory-view.c:4826
+#: src/file-manager/fm-directory-view.c:4842
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open _in New Window"
 msgstr "Öppna _i nytt fönster"
 
-#: src/file-manager/fm-directory-view.c:4828
+#: src/file-manager/fm-directory-view.c:4844
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Öppna _i %d nya fönster"
 
-#: src/file-manager/fm-directory-view.c:4846
+#: src/file-manager/fm-directory-view.c:4862
 msgid "_Delete from Trash"
 msgstr "_Ta bort från papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:4848
+#: src/file-manager/fm-directory-view.c:4864
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: src/file-manager/fm-directory-view.c:4851
-#: src/file-manager/fm-directory-view.c:5132
+#: src/file-manager/fm-directory-view.c:4867
+#: src/file-manager/fm-directory-view.c:5148
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Mo_ve to Trash"
 msgstr "_Flytta till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:4853
+#: src/file-manager/fm-directory-view.c:4869
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move each selected item to the Trash"
 msgstr "Flytta varje markerat objekt till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:4877
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/fm-directory-view.c:4893
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "_Delete"
 msgstr "_Ta bort"
 
-#: src/file-manager/fm-directory-view.c:4897
+#: src/file-manager/fm-directory-view.c:4913
 msgid "Ma_ke Links"
 msgstr "Sk_apa länkar"
 
-#: src/file-manager/fm-directory-view.c:4898
+#: src/file-manager/fm-directory-view.c:4914
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Ma_ke Link"
 msgstr "Sk_apa länk"
 
-#: src/file-manager/fm-directory-view.c:4911
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+# T, Ö, M, P, A är alla redan upptagna snabbtangenter här
+#: src/file-manager/fm-directory-view.c:4927
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "_Empty Trash"
-msgstr "_Töm papperskorgen"
+msgstr "Töm pappers_korgen"
 
-#: src/file-manager/fm-directory-view.c:4924
+#: src/file-manager/fm-directory-view.c:4940
 msgid "Cu_t File"
 msgstr "Klipp _ut fil"
 
-#: src/file-manager/fm-directory-view.c:4925
+#: src/file-manager/fm-directory-view.c:4941
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Cu_t Files"
 msgstr "Klipp _ut filer"
 
-#: src/file-manager/fm-directory-view.c:4934
+#: src/file-manager/fm-directory-view.c:4950
 msgid "_Copy File"
 msgstr "_Kopiera fil"
 
-#: src/file-manager/fm-directory-view.c:4935
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Copy Files"
 msgstr "_Kopiera filer"
 
-#: src/file-manager/fm-directory-view.c:5123
+#: src/file-manager/fm-directory-view.c:5139
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4744,7 +4758,7 @@ msgstr ""
 "Denna länk kan inte användas eftersom den inte har något mål. Vill du flytta "
 "denna länk till papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:5126
+#: src/file-manager/fm-directory-view.c:5142
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4753,11 +4767,11 @@ msgstr ""
 "Denna länk kan inte användas eftersom dess mål \"%s\" inte finns. Vill du "
 "flytta denna länk till papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:5132
+#: src/file-manager/fm-directory-view.c:5148
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:5189
+#: src/file-manager/fm-directory-view.c:5205
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4765,28 +4779,28 @@ msgid ""
 msgstr ""
 "\"%s\" är en körbar textfil. Vill du köra den eller visa dess innehåll?"
 
-#: src/file-manager/fm-directory-view.c:5195
+#: src/file-manager/fm-directory-view.c:5211
 msgid "Run or Display?"
 msgstr "Kör eller visa?"
 
-#: src/file-manager/fm-directory-view.c:5196
+#: src/file-manager/fm-directory-view.c:5212
 msgid "_Display"
 msgstr "_Visa"
 
-#: src/file-manager/fm-directory-view.c:5197
+#: src/file-manager/fm-directory-view.c:5213
 msgid "Run in _Terminal"
 msgstr "Kör i _terminal"
 
-#: src/file-manager/fm-directory-view.c:5200
+#: src/file-manager/fm-directory-view.c:5216
 msgid "_Run"
 msgstr "_Kör"
 
-#: src/file-manager/fm-directory-view.c:5403
+#: src/file-manager/fm-directory-view.c:5419
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Öppnar \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5409
+#: src/file-manager/fm-directory-view.c:5425
 msgid "Cancel Open?"
 msgstr "Avbryt öppning?"
 
@@ -5009,7 +5023,7 @@ msgstr "Typ"
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
 
-#: src/file-manager/fm-properties-window.c:458
+#: src/file-manager/fm-properties-window.c:460
 #: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
@@ -5018,12 +5032,12 @@ msgstr ""
 "Du kan inte tilldela mer än en anpassad ikon åt gången! Dra endast en bild "
 "för att ställa in en anpassad ikon."
 
-#: src/file-manager/fm-properties-window.c:460
+#: src/file-manager/fm-properties-window.c:462
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Fler än en bild"
 
-#: src/file-manager/fm-properties-window.c:469
+#: src/file-manager/fm-properties-window.c:471
 #: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
@@ -5032,12 +5046,12 @@ msgstr ""
 "Filen som du släppte är inte lokal. Du kan endast använda lokala bilder som "
 "anpassade ikoner."
 
-#: src/file-manager/fm-properties-window.c:471
+#: src/file-manager/fm-properties-window.c:473
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Endast lokala bilder"
 
-#: src/file-manager/fm-properties-window.c:476
+#: src/file-manager/fm-properties-window.c:478
 #: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
@@ -5046,55 +5060,55 @@ msgstr ""
 "Filen som du släppte är inte en bild. Du kan endast använda lokala bilder "
 "anpassade ikoner."
 
-#: src/file-manager/fm-properties-window.c:478
+#: src/file-manager/fm-properties-window.c:480
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Endast bilder"
 
-#: src/file-manager/fm-properties-window.c:895
+#: src/file-manager/fm-properties-window.c:897
 msgid "Properties"
 msgstr "Egenskaper"
 
-#: src/file-manager/fm-properties-window.c:898
+#: src/file-manager/fm-properties-window.c:900
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaper för %s"
 
-#: src/file-manager/fm-properties-window.c:1359
+#: src/file-manager/fm-properties-window.c:1361
 msgid "Cancel Group Change?"
 msgstr "Avbryt ändring av grupp?"
 
-#: src/file-manager/fm-properties-window.c:1360
+#: src/file-manager/fm-properties-window.c:1362
 msgid "Changing group"
 msgstr "Ändrar grupp"
 
-#: src/file-manager/fm-properties-window.c:1521
+#: src/file-manager/fm-properties-window.c:1523
 msgid "Cancel Owner Change?"
 msgstr "Avbryt ändring av ägare?"
 
-#: src/file-manager/fm-properties-window.c:1522
+#: src/file-manager/fm-properties-window.c:1524
 msgid "Changing owner"
 msgstr "Ändrar ägare"
 
-#: src/file-manager/fm-properties-window.c:1727
+#: src/file-manager/fm-properties-window.c:1729
 msgid "nothing"
 msgstr "ingenting"
 
-#: src/file-manager/fm-properties-window.c:1729
+#: src/file-manager/fm-properties-window.c:1731
 msgid "unreadable"
 msgstr "oläsbar"
 
-#: src/file-manager/fm-properties-window.c:1740
+#: src/file-manager/fm-properties-window.c:1742
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 objekt, med storleken %s"
 
-#: src/file-manager/fm-properties-window.c:1743
+#: src/file-manager/fm-properties-window.c:1745
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d objekt, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:1751
+#: src/file-manager/fm-properties-window.c:1753
 msgid "(some contents unreadable)"
 msgstr "(en del innehåll är oläsbart)"
 
@@ -5104,167 +5118,168 @@ msgstr "(en del innehåll är oläsbart)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1768
+#: src/file-manager/fm-properties-window.c:1770
 msgid "Contents:"
 msgstr "Innehåll:"
 
-#: src/file-manager/fm-properties-window.c:2159
+#: src/file-manager/fm-properties-window.c:2161
 msgid "Basic"
 msgstr "Grundläggande"
 
-#: src/file-manager/fm-properties-window.c:2187
+#: src/file-manager/fm-properties-window.c:2189
 msgid "_Names:"
 msgstr "_Namn:"
 
-#: src/file-manager/fm-properties-window.c:2189
+#: src/file-manager/fm-properties-window.c:2191
 msgid "_Name:"
 msgstr "_Namn:"
 
-#: src/file-manager/fm-properties-window.c:2238
+#: src/file-manager/fm-properties-window.c:2240
 msgid "Type:"
 msgstr "Typ:"
 
-#: src/file-manager/fm-properties-window.c:2240
-#: src/file-manager/fm-properties-window.c:2250
-#: src/file-manager/fm-properties-window.c:2256
-#: src/file-manager/fm-properties-window.c:2263
-#: src/file-manager/fm-properties-window.c:2267
-#: src/file-manager/fm-properties-window.c:2275
-#: src/file-manager/fm-properties-window.c:2281
-#: src/file-manager/fm-properties-window.c:2290
-#: src/file-manager/fm-properties-window.c:2296
-#: src/file-manager/fm-properties-window.c:2850
-#: src/file-manager/fm-properties-window.c:2871
-#: src/file-manager/fm-properties-window.c:2953
-#: src/file-manager/fm-properties-window.c:2957
-#: src/file-manager/fm-properties-window.c:2961
+#: src/file-manager/fm-properties-window.c:2242
+#: src/file-manager/fm-properties-window.c:2252
+#: src/file-manager/fm-properties-window.c:2258
+#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2269
+#: src/file-manager/fm-properties-window.c:2277
+#: src/file-manager/fm-properties-window.c:2283
+#: src/file-manager/fm-properties-window.c:2292
+#: src/file-manager/fm-properties-window.c:2298
+#: src/file-manager/fm-properties-window.c:2868
+#: src/file-manager/fm-properties-window.c:2889
+#: src/file-manager/fm-properties-window.c:2971
+#: src/file-manager/fm-properties-window.c:2975
+#: src/file-manager/fm-properties-window.c:2979
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2248
+#: src/file-manager/fm-properties-window.c:2250
 msgid "Size:"
 msgstr "Storlek:"
 
-#: src/file-manager/fm-properties-window.c:2254 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:2256 src/nautilus-location-bar.c:61
 msgid "Location:"
 msgstr "Plats:"
 
-#: src/file-manager/fm-properties-window.c:2261
+#: src/file-manager/fm-properties-window.c:2263
 msgid "Volume:"
 msgstr "Volym:"
 
-#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2267
 msgid "Free space:"
 msgstr "Ledigt utrymme:"
 
-#: src/file-manager/fm-properties-window.c:2273
+#: src/file-manager/fm-properties-window.c:2275
 msgid "Link target:"
 msgstr "Länkmål:"
 
-#: src/file-manager/fm-properties-window.c:2279
+#: src/file-manager/fm-properties-window.c:2281
 msgid "MIME type:"
 msgstr "MIME-typ:"
 
-#: src/file-manager/fm-properties-window.c:2288
+#: src/file-manager/fm-properties-window.c:2290
 msgid "Modified:"
 msgstr "Ändrad:"
 
-#: src/file-manager/fm-properties-window.c:2294
+#: src/file-manager/fm-properties-window.c:2296
 msgid "Accessed:"
 msgstr "Åtkommen:"
 
-#: src/file-manager/fm-properties-window.c:2310
+#: src/file-manager/fm-properties-window.c:2312
 msgid "_Select Custom Icon..."
 msgstr "_Välj anpassad ikon..."
 
-#: src/file-manager/fm-properties-window.c:2316
+#: src/file-manager/fm-properties-window.c:2318
 msgid "_Remove Custom Icon"
 msgstr "_Ta bort anpassad ikon"
 
-#: src/file-manager/fm-properties-window.c:2641
+#: src/file-manager/fm-properties-window.c:2659
 msgid "_Read"
 msgstr "_Läs"
 
-#: src/file-manager/fm-properties-window.c:2643
+#: src/file-manager/fm-properties-window.c:2661
 msgid "_Write"
 msgstr "_Skriv"
 
-#: src/file-manager/fm-properties-window.c:2645
+#: src/file-manager/fm-properties-window.c:2663
 msgid "E_xecute"
 msgstr "_Kör"
 
-#: src/file-manager/fm-properties-window.c:2722
+#: src/file-manager/fm-properties-window.c:2740
 msgid "Set _user ID"
 msgstr "Ställ in _användar-ID"
 
-#: src/file-manager/fm-properties-window.c:2727
+#: src/file-manager/fm-properties-window.c:2745
 msgid "Special flags:"
 msgstr "Specialflaggor:"
 
-#: src/file-manager/fm-properties-window.c:2730
+#: src/file-manager/fm-properties-window.c:2748
 msgid "Set gro_up ID"
 msgstr "Ställ in gr_upp-ID"
 
-#: src/file-manager/fm-properties-window.c:2732
+#: src/file-manager/fm-properties-window.c:2750
 msgid "_Sticky"
 msgstr "_Fast"
 
-#: src/file-manager/fm-properties-window.c:2816
+#: src/file-manager/fm-properties-window.c:2834
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: src/file-manager/fm-properties-window.c:2826
+#: src/file-manager/fm-properties-window.c:2844
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du är inte ägaren, så du kan inte ändra dessa rättigheter."
 
-#: src/file-manager/fm-properties-window.c:2839
+#: src/file-manager/fm-properties-window.c:2857
 msgid "File owner:"
 msgstr "Filägare:"
 
-#: src/file-manager/fm-properties-window.c:2856
+#: src/file-manager/fm-properties-window.c:2874
 msgid "_File group:"
 msgstr "_Filgrupp:"
 
-#: src/file-manager/fm-properties-window.c:2865
+#: src/file-manager/fm-properties-window.c:2883
 msgid "File group:"
 msgstr "Filgrupp:"
 
-#: src/file-manager/fm-properties-window.c:2877
+#: src/file-manager/fm-properties-window.c:2895
 msgid "Owner:"
 msgstr "Ägare:"
 
-#: src/file-manager/fm-properties-window.c:2878
+#: src/file-manager/fm-properties-window.c:2896
 msgid "Group:"
 msgstr "Grupp:"
 
-#: src/file-manager/fm-properties-window.c:2879
+#: src/file-manager/fm-properties-window.c:2897
 msgid "Others:"
 msgstr "Andra:"
 
-#: src/file-manager/fm-properties-window.c:2952
+#: src/file-manager/fm-properties-window.c:2970
 msgid "Text view:"
 msgstr "Textvy:"
 
-#: src/file-manager/fm-properties-window.c:2956
+#: src/file-manager/fm-properties-window.c:2974
 msgid "Number view:"
 msgstr "Talvy:"
 
-#: src/file-manager/fm-properties-window.c:2960
+#: src/file-manager/fm-properties-window.c:2978
 msgid "Last changed:"
 msgstr "Senast ändrad:"
 
-#: src/file-manager/fm-properties-window.c:2966
+#: src/file-manager/fm-properties-window.c:2984
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
 
-#: src/file-manager/fm-properties-window.c:2969
+#: src/file-manager/fm-properties-window.c:2987
 msgid "The permissions of the selected file could not be determined."
 msgstr "Rättigheterna för den markerade filen kunde inte fastställas."
 
-#: src/file-manager/fm-properties-window.c:3285
+#: src/file-manager/fm-properties-window.c:3303
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
+#: src/nautilus-navigation-window-menus.c:769
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:769
 #, c-format
 msgid ""
@@ -5274,19 +5289,19 @@ msgstr ""
 "Det inträffade ett fel vid visande av hjälp: \n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3287
+#: src/file-manager/fm-properties-window.c:3305
 msgid "Couldn't show help"
 msgstr "Kunde inte visa hjälp"
 
-#: src/file-manager/fm-properties-window.c:3623
+#: src/file-manager/fm-properties-window.c:3641
 msgid "Cancel Showing Properties Window?"
 msgstr "Avbryt visandet av egenskapsfönstret?"
 
-#: src/file-manager/fm-properties-window.c:3624
+#: src/file-manager/fm-properties-window.c:3642
 msgid "Creating Properties window"
 msgstr "Skapar fönstret Egenskaper"
 
-#: src/file-manager/fm-properties-window.c:3750
+#: src/file-manager/fm-properties-window.c:3768
 msgid "Select an icon"
 msgstr "Välj en ikon"
 
@@ -5580,7 +5595,7 @@ msgstr "Avmontera den valda volymen"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
-#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 #: src/nautilus-information-panel.c:349
 msgid "Use _Default Background"
 msgstr "Använd standard_bakgrund"
@@ -5697,46 +5712,56 @@ msgid "Select _All Files"
 msgstr "_Markera alla filer"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:34
+#, fuzzy
+msgid "Select _Pattern"
+msgstr "Markera _inget"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Select all items in this window"
 msgstr "Markera alla objekt i detta fönster"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#, fuzzy
+msgid "Select items in this window matching a given pattern"
+msgstr "Markera alla objekt i detta fönster"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Visa mappen som innehåller de skript som visas i denna meny"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Use the default background for this location"
 msgstr "Använd standardbakgrunden för denna plats"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "View or modify the properties of each selected item"
 msgstr "Visa eller ändra egenskaperna på varje markerat objekt"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "_Open"
 msgstr "_Öppna"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "_Open Scripts Folder"
 msgstr "_Öppna skriptmapp"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "_Paste Files"
 msgstr "Klistra _in filer"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "_Paste Files Into Folder"
 msgstr "Klistra _in filer i mapp"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "_Properties"
 msgstr "_Egenskaper"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Rename..."
 msgstr "_Byt namn..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Scripts"
 msgstr "_Skript"
 
@@ -5927,11 +5952,11 @@ msgstr ""
 "Innan du kör Nautilus bör du skapa dessa mappar, eller ställa in de "
 "nödvändiga rättigheterna för att Nautilus ska kunna skapa dem."
 
-#: src/nautilus-application.c:299
+#: src/nautilus-application.c:300
 msgid "Link To Old Desktop"
 msgstr "Länk till gammalt skrivbord"
 
-#: src/nautilus-application.c:315
+#: src/nautilus-application.c:316
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
@@ -5941,7 +5966,7 @@ msgstr ""
 "\"Länk till gammalt skrivbord\" har skapats på skrivbordet. Du kan öppna "
 "denna för att flytta över de filer du vill ha och sedan ta bort länken."
 
-#: src/nautilus-application.c:318
+#: src/nautilus-application.c:319
 msgid "Migrated old desktop"
 msgstr "Migrerat gammalt skrivbord"
 
@@ -5955,7 +5980,7 @@ msgstr "Migrerat gammalt skrivbord"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:485
+#: src/nautilus-application.c:486
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5966,7 +5991,7 @@ msgstr ""
 "eller installera om Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:491
+#: src/nautilus-application.c:492
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6012,12 +6037,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:521 src/nautilus-application.c:539
-#: src/nautilus-application.c:546
+#: src/nautilus-application.c:522 src/nautilus-application.c:540
+#: src/nautilus-application.c:547
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:522
+#: src/nautilus-application.c:523
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6025,7 +6050,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från Bonobo "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:540
+#: src/nautilus-application.c:541
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6035,7 +6060,7 @@ msgstr ""
 "när den skulle hitta fabriken. Om du dödar bonobo-activation-server och "
 "startar om Nautilus kanske problemet löser sig."
 
-#: src/nautilus-application.c:547
+#: src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6284,7 +6309,8 @@ msgstr "Öppna med %s"
 msgid "Open with..."
 msgstr "Öppna med..."
 
-#: src/nautilus-information-panel.c:994 src/nautilus-window-menus.c:229
+#: src/nautilus-information-panel.c:994
+#: src/nautilus-navigation-window-menus.c:229 src/nautilus-window-menus.c:229
 #, c-format
 msgid ""
 "Unable to launch the cd burner application:\n"
@@ -6293,7 +6319,8 @@ msgstr ""
 "Kan inte starta cd-brännarprogrammet:\n"
 "%s"
 
-#: src/nautilus-information-panel.c:996 src/nautilus-window-menus.c:231
+#: src/nautilus-information-panel.c:996
+#: src/nautilus-navigation-window-menus.c:231 src/nautilus-window-menus.c:231
 msgid "Can't launch cd burner"
 msgstr "Kan inte starta cd-brännare"
 
@@ -6357,8 +6384,10 @@ msgid "File Manager"
 msgstr "Filhanterare"
 
 #. Set initial window title
-#: src/nautilus-main.c:197 src/nautilus-window-manage-views.c:232
-#: src/nautilus-window-menus.c:729 src/nautilus-window.c:181
+#: src/nautilus-main.c:197 src/nautilus-navigation-window-menus.c:729
+#: src/nautilus-navigation-window.c:181 src/nautilus-object-window.c:181
+#: src/nautilus-window-manage-views.c:232 src/nautilus-window-menus.c:729
+#: src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6381,6 +6410,125 @@ msgstr "nautilus: --restart kan inte användas med URI:er.\n"
 #: src/nautilus-main.c:230
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
+
+#. This is a little joke, shows up occasionally. I only
+#. * implemented this feature so I could use this joke.
+#.
+#: src/nautilus-navigation-window-menus.c:417 src/nautilus-window-menus.c:417
+msgid ""
+"Are you sure you want to forget history? If you do, you will be doomed to "
+"repeat it."
+msgstr ""
+"Är du säker på att du vill glömma historien? I så fall kommer du att vara "
+"dömd att återupprepa den."
+
+#: src/nautilus-navigation-window-menus.c:420 src/nautilus-window-menus.c:420
+msgid "Are you sure you want to clear the list of locations you have visited?"
+msgstr ""
+"Är du säker på att du vill tömma listan över platser som du har besökt?"
+
+#: src/nautilus-navigation-window-menus.c:425 src/nautilus-window-menus.c:425
+msgid "Clear History"
+msgstr "Töm historik"
+
+#. Localize to deal with issues in the copyright
+#. * symbol characters -- do not translate the company
+#. * name, please.
+#.
+#: src/nautilus-navigation-window-menus.c:719 src/nautilus-window-menus.c:719
+msgid "Copyright (C) 1999-2001 Eazel, Inc."
+msgstr "Copyright © 1999-2001 Eazel, Inc."
+
+#. Translators should localize the following string
+#. * which will be displayed at the bottom of the about
+#. * box to give credit to the translator(s).
+#.
+#: src/nautilus-navigation-window-menus.c:726
+#: src/nautilus-navigation-window-menus.c:727 src/nautilus-window-menus.c:726
+#: src/nautilus-window-menus.c:727
+msgid "Translator Credits"
+msgstr ""
+"Christian Rose\n"
+"Martin Norbäck\n"
+"Richard Hult\n"
+"Skicka synpunkter på översättningen till sv@li.org"
+
+#: src/nautilus-navigation-window-menus.c:732 src/nautilus-window-menus.c:732
+msgid ""
+"Nautilus is a graphical shell for GNOME that makes it easy to manage your "
+"files and the rest of your system."
+msgstr ""
+"Nautilus är ett grafiskt skal till GNOME som gör det enkelt att hantera dina "
+"filer och resten av ditt system."
+
+#: src/nautilus-navigation-window-menus.c:809 src/nautilus-window-menus.c:809
+#, c-format
+msgid ""
+"The location \"%s\" does not exist. Do you want to remove any bookmarks with "
+"this location from your list?"
+msgstr ""
+"Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
+"från din lista?"
+
+#: src/nautilus-navigation-window-menus.c:813 src/nautilus-window-menus.c:813
+msgid "Bookmark for Nonexistent Location"
+msgstr "Bokmärke för icke-existerande plats"
+
+#: src/nautilus-navigation-window-menus.c:814 src/nautilus-window-menus.c:814
+msgid "Remove"
+msgstr "Ta bort"
+
+#: src/nautilus-navigation-window-menus.c:825 src/nautilus-window-menus.c:825
+#, c-format
+msgid "The location \"%s\" no longer exists."
+msgstr "Platsen \"%s\" finns inte längre."
+
+#: src/nautilus-navigation-window-menus.c:826 src/nautilus-window-menus.c:826
+msgid "Go to Nonexistent Location"
+msgstr "Gå till ickeexisterande plats"
+
+#: src/nautilus-navigation-window-menus.c:895 src/nautilus-window-menus.c:895
+msgid "Go to the location specified by this bookmark"
+msgstr "Gå till platsen som detta bokmärke anger"
+
+#. Add "View as..." extra bonus choice.
+#: src/nautilus-navigation-window.c:522 src/nautilus-navigation-window.c:1506
+#: src/nautilus-object-window.c:522 src/nautilus-object-window.c:1506
+#: src/nautilus-shell-ui.xml.h:50 src/nautilus-window.c:522
+#: src/nautilus-window.c:1506
+msgid "View as..."
+msgstr "Visa som..."
+
+#: src/nautilus-navigation-window.c:678 src/nautilus-object-window.c:678
+#: src/nautilus-window.c:678
+msgid "Information"
+msgstr "Information"
+
+#: src/nautilus-navigation-window.c:1212 src/nautilus-object-window.c:1212
+#: src/nautilus-window.c:1212
+#, c-format
+msgid "Display this location with \"%s\""
+msgstr "Visa denna plats med \"%s\""
+
+#: src/nautilus-navigation-window.c:2278 src/nautilus-object-window.c:2278
+#: src/nautilus-window.c:2278
+msgid "Application ID"
+msgstr "Program-id"
+
+#: src/nautilus-navigation-window.c:2279 src/nautilus-object-window.c:2279
+#: src/nautilus-window.c:2279
+msgid "The application ID of the window."
+msgstr "Program-id för fönstret."
+
+#: src/nautilus-navigation-window.c:2285 src/nautilus-object-window.c:2285
+#: src/nautilus-window.c:2285
+msgid "Application"
+msgstr "Program"
+
+#: src/nautilus-navigation-window.c:2286 src/nautilus-object-window.c:2286
+#: src/nautilus-window.c:2286
+msgid "The NautilusApplication associated with this window."
+msgstr "Den NautilusApplication som är associerad med detta fönster."
 
 #: src/nautilus-profiler.c:209
 msgid "Print"
@@ -6502,7 +6650,7 @@ msgstr "Välj en färg att lägga till"
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/nautilus-property-browser.c:2039
+#: src/nautilus-property-browser.c:2041
 msgid "Select a Category:"
 msgstr "Välj en kategori:"
 
@@ -6512,61 +6660,61 @@ msgstr "Välj en kategori:"
 # Jag vill ha "A_vbryt borttagning"
 # men jag går med på ändringen.
 #
-#: src/nautilus-property-browser.c:2048
+#: src/nautilus-property-browser.c:2050
 msgid "C_ancel Remove"
 msgstr "A_vbryt ta bort"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2054
+#: src/nautilus-property-browser.c:2056
 msgid "_Add a New Pattern..."
 msgstr "_Lägg till ett nytt mönster..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2057
+#: src/nautilus-property-browser.c:2059
 msgid "_Add a New Color..."
 msgstr "_Lägg till en ny färg..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2060
+#: src/nautilus-property-browser.c:2062
 msgid "_Add a New Emblem..."
 msgstr "_Lägg till ett nytt emblem..."
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2085
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2086
+#: src/nautilus-property-browser.c:2088
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2089
+#: src/nautilus-property-browser.c:2091
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2100
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2101
+#: src/nautilus-property-browser.c:2103
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2104
+#: src/nautilus-property-browser.c:2106
 msgid "Emblems:"
 msgstr "Emblem:"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2124
+#: src/nautilus-property-browser.c:2126
 msgid "_Remove a Pattern..."
 msgstr "_Ta bort ett mönster..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2127
+#: src/nautilus-property-browser.c:2129
 msgid "_Remove a Color..."
 msgstr "_Ta bort en färg..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2130
+#: src/nautilus-property-browser.c:2132
 msgid "_Remove an Emblem..."
 msgstr "_Ta bort ett emblem..."
 
@@ -6956,12 +7104,6 @@ msgstr "Ångra den senaste textändringen"
 msgid "Up"
 msgstr "Upp"
 
-#. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:50 src/nautilus-window.c:522
-#: src/nautilus-window.c:1506
-msgid "View as..."
-msgstr "Visa som..."
-
 #: src/nautilus-shell-ui.xml.h:51
 msgid "Write contents to a CD"
 msgstr "Skriv innehåll till en cd-skiva"
@@ -7286,91 +7428,13 @@ msgstr "Nautilus kan inte visa \"%s\"."
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
-#: src/nautilus-window-manage-views.c:1686
+#: src/nautilus-window-manage-views.c:1687
 msgid "Side Pane"
 msgstr "Sidopanel"
 
-#: src/nautilus-window-manage-views.c:1688
+#: src/nautilus-window-manage-views.c:1689
 msgid "Contains a side pane view"
 msgstr "Innehåller en sidopanelsvy"
-
-#. This is a little joke, shows up occasionally. I only
-#. * implemented this feature so I could use this joke.
-#.
-#: src/nautilus-window-menus.c:417
-msgid ""
-"Are you sure you want to forget history? If you do, you will be doomed to "
-"repeat it."
-msgstr ""
-"Är du säker på att du vill glömma historien? I så fall kommer du att vara "
-"dömd att återupprepa den."
-
-#: src/nautilus-window-menus.c:420
-msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr ""
-"Är du säker på att du vill tömma listan över platser som du har besökt?"
-
-#: src/nautilus-window-menus.c:425
-msgid "Clear History"
-msgstr "Töm historik"
-
-#. Localize to deal with issues in the copyright
-#. * symbol characters -- do not translate the company
-#. * name, please.
-#.
-#: src/nautilus-window-menus.c:719
-msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr "Copyright © 1999-2001 Eazel, Inc."
-
-#. Translators should localize the following string
-#. * which will be displayed at the bottom of the about
-#. * box to give credit to the translator(s).
-#.
-#: src/nautilus-window-menus.c:726 src/nautilus-window-menus.c:727
-msgid "Translator Credits"
-msgstr ""
-"Christian Rose\n"
-"Martin Norbäck\n"
-"Richard Hult\n"
-"Skicka synpunkter på översättningen till sv@li.org"
-
-#: src/nautilus-window-menus.c:732
-msgid ""
-"Nautilus is a graphical shell for GNOME that makes it easy to manage your "
-"files and the rest of your system."
-msgstr ""
-"Nautilus är ett grafiskt skal till GNOME som gör det enkelt att hantera dina "
-"filer och resten av ditt system."
-
-#: src/nautilus-window-menus.c:809
-#, c-format
-msgid ""
-"The location \"%s\" does not exist. Do you want to remove any bookmarks with "
-"this location from your list?"
-msgstr ""
-"Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
-"från din lista?"
-
-#: src/nautilus-window-menus.c:813
-msgid "Bookmark for Nonexistent Location"
-msgstr "Bokmärke för icke-existerande plats"
-
-#: src/nautilus-window-menus.c:814
-msgid "Remove"
-msgstr "Ta bort"
-
-#: src/nautilus-window-menus.c:825
-#, c-format
-msgid "The location \"%s\" no longer exists."
-msgstr "Platsen \"%s\" finns inte längre."
-
-#: src/nautilus-window-menus.c:826
-msgid "Go to Nonexistent Location"
-msgstr "Gå till ickeexisterande plats"
-
-#: src/nautilus-window-menus.c:895
-msgid "Go to the location specified by this bookmark"
-msgstr "Gå till platsen som detta bokmärke anger"
 
 #: src/nautilus-window-toolbars.c:367
 msgid "Go back a few pages"
@@ -7379,31 +7443,6 @@ msgstr "Gå bakåt några sidor"
 #: src/nautilus-window-toolbars.c:370
 msgid "Go forward a number of pages"
 msgstr "Gå framåt ett antal sidor"
-
-#: src/nautilus-window.c:678
-msgid "Information"
-msgstr "Information"
-
-#: src/nautilus-window.c:1212
-#, c-format
-msgid "Display this location with \"%s\""
-msgstr "Visa denna plats med \"%s\""
-
-#: src/nautilus-window.c:2278
-msgid "Application ID"
-msgstr "Program-id"
-
-#: src/nautilus-window.c:2279
-msgid "The application ID of the window."
-msgstr "Program-id för fönstret."
-
-#: src/nautilus-window.c:2285
-msgid "Application"
-msgstr "Program"
-
-#: src/nautilus-window.c:2286
-msgid "The NautilusApplication associated with this window."
-msgstr "Den NautilusApplication som är associerad med detta fönster."
 
 #: src/nautilus-zoom-control.c:83
 msgid "Zoom In"
@@ -9281,9 +9320,6 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 
 #~ msgid "Select Al_l"
 #~ msgstr "Markera a_lla"
-
-#~ msgid "Select _None"
-#~ msgstr "Markera _inget"
 
 #~ msgid "Show indexes for:"
 #~ msgstr "Visa index för:"
