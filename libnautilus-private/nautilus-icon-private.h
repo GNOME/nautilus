@@ -224,6 +224,7 @@ struct NautilusIconContainerDetails {
 
 	/* Whether we should use drop shadows for the icon labels or not */
 	gboolean use_drop_shadows;
+	gboolean drop_shadows_requested;
 };
 
 /* Private functions shared by mutiple files. */

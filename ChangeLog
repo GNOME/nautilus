@@ -1,3 +1,32 @@
+2002-08-14  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c: 
+	(nautilus_icon_container_class_init): Install a frame_text gtk
+	style property, so that accessible themes can force the icon
+	container to put a frame around unselected text.
+	(setup_label_gcs): Use text[SELECTED] for the highlight text
+	color, since it is now displayed against base[SELECTED].  If
+	frame_text is set, use text[NORMAL] for normal text, since it will
+	be displayed against base[NORMAL].
+	(nautilus_icon_container_set_use_drop_shadows): If frame_text is
+	set, don't enable drop shadows, but save that they were requested.
+	(style_set): Update use_drop_shadows based on whether frame_text
+	is set and whether drop shadows were requested.
+	(nautilus_icon_container_theme_changed): Call setup_label_gcs().
+
+	* libnautilus-private/nautilus-icon-canvas-item.c: (draw_frame):
+	New function.
+	(draw_or_measure_label_text): Rearranged for clarity, make it work
+	when it is called for draw without being called for measure (ugh).
+	Fixed a PangoLayout leak.  If frame_text is set on the icon
+	container, draw a background rectangle.
+	(draw_label_layout): Don't drop shadow selected text.  Drawing
+	with text[SELECTED] on base[SELECTED] should look just fine
+	without a drop shadow.
+	
+	* libnautilus-private/nautilus-icon-private.h: Added a
+	drop_shadow_requested member.
+
 === nautilus 2.0.4 ===
 	
 2002-08-14  Alexander Larsson  <alexl@redhat.com>

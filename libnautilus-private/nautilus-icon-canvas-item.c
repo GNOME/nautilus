@@ -631,8 +631,46 @@ multiply_pixbuf_rgba (GdkPixbuf *pixbuf, guint rgba)
 	}
 }
 
-/* Keep these for a bit while we work on performance of draw_or_measure_label_text. */
+static void
+draw_frame (NautilusIconCanvasItem *item,
+	    GdkDrawable *drawable,
+	    guint color,
+	    int x, 
+	    int y,
+	    int width,
+	    int height)
+{
+	GdkPixbuf *selection_pixbuf;
+	NautilusIconContainer *container;
 
+	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);
+
+	if (ANTIALIAS_SELECTION_RECTANGLE) {
+		selection_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+						   TRUE,
+						   8,
+						   width,
+						   height);
+		eel_gdk_pixbuf_fill_rectangle_with_color (selection_pixbuf,
+							  eel_gdk_pixbuf_whole_pixbuf,
+							  0xffffffff);
+		clear_rounded_corners (selection_pixbuf,
+				       container->details->highlight_frame,
+				       5);
+		multiply_pixbuf_rgba (selection_pixbuf,
+				      color);
+		
+		draw_pixbuf (selection_pixbuf, drawable, x, y);
+		g_object_unref (selection_pixbuf);
+	} else {
+		gdk_draw_rectangle
+			(drawable, 
+			 GTK_WIDGET (container)->style->black_gc, TRUE,
+			 x, y, width, height);
+	}
+}
+
+/* Keep these for a bit while we work on performance of draw_or_measure_label_text. */
 /*
   #define PERFORMANCE_TEST_DRAW_DISABLE
   #define PERFORMANCE_TEST_MEASURE_DISABLE
@@ -646,14 +684,14 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 {
 	NautilusIconCanvasItemDetails *details;
 	NautilusIconContainer *container;
-	guint width_so_far, height_so_far;
+	guint editable_height, editable_width;
+	guint additional_height, additional_width;
 	GnomeCanvasItem *canvas_item;
-	GdkPixbuf *selection_pixbuf;
-	PangoLayout *layout;
+	PangoLayout *editable_layout;
+	PangoLayout *additional_layout;
 	GdkColor *label_color;
-	int layout_width, layout_height;
 	int icon_width;
-	gboolean have_editable, have_additional, needs_highlight;
+	gboolean have_editable, have_additional, needs_highlight, needs_frame;
 	int max_text_width, box_left;
 	GdkGC *gc;
 	
@@ -700,126 +738,128 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
 	}
 	
-	width_so_far = 0;
-	height_so_far = 0;
+	editable_width = 0;
+	editable_height = 0;
+	additional_width = 0;
+	additional_height = 0;
 
 	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 
 	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);	
-				
-	/* if the icon is highlighted, do some set-up */
-	if (needs_highlight && drawable != NULL && !details->is_renaming &&
-	    details->text_width > 0 && details->text_height > 0) {
-		if (ANTIALIAS_SELECTION_RECTANGLE) {
-			selection_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-							   TRUE,
-							   8,
-							   details->text_width,
-							   details->text_height);
-			eel_gdk_pixbuf_fill_rectangle_with_color (selection_pixbuf,
-								  eel_gdk_pixbuf_whole_pixbuf,
-								  0xffffffff);
-			/* container->details->highlight_color_rgba); */
-			clear_rounded_corners (selection_pixbuf,
-					       container->details->highlight_frame,
-					       5);
-			multiply_pixbuf_rgba (selection_pixbuf,
-					      container->details->highlight_color_rgba);
-			draw_pixbuf (selection_pixbuf, drawable, 
-				     icon_left + (icon_width - details->text_width) / 2,
-				     icon_bottom);
-			g_object_unref (selection_pixbuf);
-		} else {
-			gdk_draw_rectangle
-				(drawable, GTK_WIDGET (container)->style->black_gc, TRUE,
-				 icon_left + (icon_width - details->text_width) / 2,
-				 icon_bottom,
-				 details->text_width, details->text_height);
-		}
-		
-	}	
+	editable_layout = NULL;
+	additional_layout = NULL;
 
 	if (have_editable) {
-		layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
-
-		if (drawable != NULL) {
-			gc = nautilus_icon_container_get_label_color_and_gc
-				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
-				 &label_color, TRUE, needs_highlight);
-			
-			draw_label_layout (item, drawable,
-					   layout, needs_highlight,
-					   label_color,
-					   icon_left + (icon_width - max_text_width) / 2,
-					   icon_bottom, gc);
-		}
+		editable_layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
 		
-		pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
-		
-		width_so_far = MAX (width_so_far, (guint) layout_width);
-		height_so_far += layout_height + LABEL_LINE_SPACING;
-		
-		g_object_unref (layout);
+		pango_layout_get_pixel_size (editable_layout, 
+					     &editable_width,
+					     &editable_height);
 	}
-	
+
 	if (have_additional) {
-		layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
+		additional_layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
 
-		if (drawable != NULL) {
-			gc = nautilus_icon_container_get_label_color_and_gc
-				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
-				 &label_color, FALSE, needs_highlight);
-
-			draw_label_layout (item, drawable,
-					   layout, needs_highlight,
-					   label_color,
-					   icon_left + (icon_width - max_text_width) / 2,
-					   icon_bottom + height_so_far, gc);
-		}
-		
-		pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
-
-		width_so_far = MAX (width_so_far, (guint) layout_width);
-		height_so_far += layout_height + LABEL_LINE_SPACING;
+		pango_layout_get_pixel_size (additional_layout, 
+					     &additional_width,
+					     &additional_height);
 	}
-	
+
+	details->text_width = MAX (editable_width, additional_width);
+	details->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
+
 	if (ANTIALIAS_SELECTION_RECTANGLE) {
 		/* add some extra space for highlighting even when we don't highlight so things won't move */
-		height_so_far += 2; /* extra slop for nicer highlighting */	
-		width_so_far += 8;  /* account for emboldening, plus extra to make it look nicer */
+		details->text_height += 2; /* extra slop for nicer highlighting */	
+		details->text_width += 8;  /* extra to make it look nicer */
 	} else {
 		/* add slop used for highlighting, even if we're not highlighting now */
-		width_so_far += 4;
+		details->text_width += 4;
 	}
 
-	if (drawable != NULL) {
-		/* Current calculations should match what we measured before drawing.
-		 * This assumes that we will always make a separate call to measure
-		 * before the call to draw. We might later decide to use this function
-		 * differently and change these asserts.
-		 */
-#if (defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE)
-		g_assert ((int) height_so_far == details->text_height);
-		g_assert ((int) width_so_far == details->text_width);
-#endif
-		box_left = icon_left + (icon_width - details->text_width) / 2;
-
-		if (item->details->is_highlighted_as_keyboard_focus) {
-			gtk_paint_focus (GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style,
-					 drawable,
-					 needs_highlight ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,
-					 NULL,
-					 GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas),
-					 "icon-container",
-					 box_left,
-					 icon_bottom,
-					 details->text_width,
-					 details->text_height);
+	/* if measuring, we are done */
+	if (!drawable) {
+		if (editable_layout) {
+			g_object_unref (editable_layout);
 		}
-	} else {
-		/* If measuring, remember the width & height. */
-		details->text_width = width_so_far;
-		details->text_height = height_so_far;
+
+		if (additional_layout) {
+			g_object_unref (additional_layout);
+		}
+
+		return;
+	}
+	
+	/* if the icon is highlighted, do some set-up */
+	if (needs_highlight && !details->is_renaming &&
+	    details->text_width > 0 && details->text_height > 0) {
+		draw_frame (item,
+			    drawable,
+			    container->details->highlight_color_rgba,
+			    icon_left + (icon_width - details->text_width) / 2,
+			    icon_bottom,
+			    details->text_width, 
+			    details->text_height);
+	}
+
+	if (have_editable) {
+		gtk_widget_style_get (GTK_WIDGET (container),
+				      "frame_text", &needs_frame,
+				      NULL);
+		if (needs_frame && !needs_highlight && details->text_width > 0 && details->text_height > 0) {
+			draw_frame (item, 
+				    drawable,
+				    eel_gdk_color_to_rgb (&GTK_WIDGET (container)->style->base[GTK_STATE_NORMAL]),
+				    icon_left + (icon_width - details->text_width) / 2,
+				    icon_bottom,
+				    details->text_width, 
+				    details->text_height);	    
+		}
+		
+		gc = nautilus_icon_container_get_label_color_and_gc
+			(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
+			 &label_color, TRUE, needs_highlight);
+		
+		draw_label_layout (item, drawable,
+				   editable_layout, needs_highlight,
+				   label_color,
+				   icon_left + (icon_width - max_text_width) / 2,
+				   icon_bottom, gc);
+	}
+
+	if (have_additional) {
+		gc = nautilus_icon_container_get_label_color_and_gc
+			(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
+			 &label_color, FALSE, needs_highlight);
+		
+		draw_label_layout (item, drawable,
+				   additional_layout, needs_highlight,
+				   label_color,
+				   icon_left + (icon_width - max_text_width) / 2,
+				   icon_bottom + editable_height + LABEL_LINE_SPACING, gc);
+	}
+
+	box_left = icon_left + (icon_width - details->text_width) / 2;
+
+	if (item->details->is_highlighted_as_keyboard_focus) {
+		gtk_paint_focus (GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style,
+				 drawable,
+				 needs_highlight ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,
+				 NULL,
+				 GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas),
+				 "icon-container",
+				 box_left,
+				 icon_bottom,
+				 details->text_width,
+				 details->text_height);
+	}
+
+	if (editable_layout) {
+		g_object_unref (editable_layout);
+	}
+	
+	if (additional_layout) {
+		g_object_unref (additional_layout);
 	}
 }
 
@@ -1268,32 +1308,16 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		return;
 	}
 
-	if (!highlight || !ANTIALIAS_SELECTION_RECTANGLE) {
-		if (NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas)->details->use_drop_shadows) {
-			/* draw a drop shadow */
-			eel_gdk_draw_layout_with_drop_shadow (drawable, gc,
-							      label_color,
-							      &GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black,
-							      x, y,
-							      layout);
-		} else {
-			gdk_draw_layout (drawable, gc,
-					 x, y,
-					 layout);
-		}
+	if (!highlight && (NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas)->details->use_drop_shadows)) {
+		/* draw a drop shadow */
+		eel_gdk_draw_layout_with_drop_shadow (drawable, gc,
+						      label_color,
+						      &GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black,
+						      x, y,
+						      layout);
 	} else {
-		/* draw a shadow in black */
-		gdk_draw_layout (drawable,
-				 GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc,
-				 x + 2, y + 1,
-				 layout);
-		
-		/* draw smeared-wide text to "embolden" */
 		gdk_draw_layout (drawable, gc,
 				 x, y,
-				 layout);
-		gdk_draw_layout (drawable, gc,
-				 x+1, y,
 				 layout);
 	}
 }

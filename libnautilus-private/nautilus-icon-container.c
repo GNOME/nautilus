@@ -2433,11 +2433,19 @@ style_set (GtkWidget *widget,
 	   GtkStyle  *previous_style)
 {
 	NautilusIconContainer *container;
+	gboolean frame_text;
+	
+	container = NAUTILUS_ICON_CONTAINER (widget);
 
-	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "frame_text", &frame_text,
+			      NULL);
+
+	container->details->use_drop_shadows = container->details->drop_shadows_requested && !frame_text;
+
+	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));	
 
 	if (GTK_WIDGET_REALIZED (widget)) {
-		container = NAUTILUS_ICON_CONTAINER (widget);
 		invalidate_label_sizes (container);
 		nautilus_icon_container_request_update_all (container);
 	}
@@ -3381,6 +3389,13 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
+
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boolean ("frame_text",
+								       _("Frame Text"),
+								       _("Draw a frame around unselected text"),
+								       FALSE,
+								       G_PARAM_READABLE));
 }
 
 static gboolean
@@ -5089,11 +5104,15 @@ static void
 setup_label_gcs (NautilusIconContainer *container)
 {
 	EelBackground *background;
+	GtkWidget *widget;
 	char *light_info_color, *dark_info_color;
-	uint light_info_value, dark_info_value;
-
+	guint light_info_value, dark_info_value;
+	gboolean frame_text;
+	
 	if (!GTK_WIDGET_REALIZED (container))
 		return;
+
+	widget = GTK_WIDGET (container);
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 
@@ -5119,15 +5138,36 @@ setup_label_gcs (NautilusIconContainer *container)
 		g_free (dark_info_color);
 	}
 
-	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, 0xFFFFFF);
-	setup_gc_with_fg (container, LABEL_INFO_COLOR_HIGHLIGHT, 0xCCCCCC);
+	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_SELECTED]));
+	setup_gc_with_fg (container, 
+			  LABEL_INFO_COLOR_HIGHLIGHT, 
+			  eel_gdk_color_is_dark (&widget->style->base[GTK_STATE_SELECTED]) ? light_info_value : dark_info_value);
 		
-	if (container->details->use_drop_shadows || eel_background_is_dark (background)) {
-		setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
-		setup_gc_with_fg (container, LABEL_INFO_COLOR, light_info_value);
-	} else { /* converse */
-		setup_gc_with_fg (container, LABEL_COLOR, 0x000000);
-		setup_gc_with_fg (container, LABEL_INFO_COLOR, dark_info_value);
+	/* If NautilusIconContainer::frame_text is set, we can safely
+	 * use the foreground color from the theme, because it will
+	 * always be displayed against the gtk background */
+	gtk_widget_style_get (widget,
+			      "frame_text", &frame_text,
+			      NULL);
+
+	if (frame_text) {
+		setup_gc_with_fg (container, LABEL_COLOR, 
+				  eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_NORMAL]));
+			setup_gc_with_fg (container, 
+					  LABEL_INFO_COLOR, 
+					  eel_gdk_color_is_dark (&widget->style->base[GTK_STATE_NORMAL]) ? light_info_value : dark_info_value);
+	} else {
+		if (container->details->use_drop_shadows || eel_background_is_dark (background)) {
+			setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
+			setup_gc_with_fg (container, 
+					  LABEL_INFO_COLOR, 
+					  light_info_value);
+		} else { /* converse */
+			setup_gc_with_fg (container, LABEL_COLOR, 0x000000);
+			setup_gc_with_fg (container, 
+					  LABEL_INFO_COLOR, 
+					  dark_info_value);
+		}
 	}
 }
 
@@ -5182,11 +5222,18 @@ void
 nautilus_icon_container_set_use_drop_shadows (NautilusIconContainer  *container,
 					      gboolean                use_drop_shadows)
 {
-	if (container->details->use_drop_shadows == use_drop_shadows) {
+	gboolean frame_text;
+	
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "frame_text", &frame_text,
+			      NULL);
+
+	if (container->details->drop_shadows_requested == use_drop_shadows) {
 		return;
 	}
 
-	container->details->use_drop_shadows = use_drop_shadows;
+	container->details->drop_shadows_requested = use_drop_shadows;
+	container->details->use_drop_shadows = use_drop_shadows && !frame_text;
 	gtk_widget_queue_draw (GTK_WIDGET (container));
 }
 
@@ -5231,6 +5278,8 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	}
 	container->details->highlight_color = eel_gdk_rgb_to_color (
 		container->details->highlight_color_rgba);
+
+	setup_label_gcs (container);
 }
 
 void
