@@ -1,3 +1,13 @@
+2001-03-06  Pavel Cisler  <pavel@eazel.com>
+
+	Merge from HEAD:
+	
+	Fix 7471 (Crash when drag selecting)
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(rubberband_timeout_callback):
+	Make the selection rectangle never be less than 1 pixel
+	high and 1 pixel wide. This fixes the crash and looks better.
+
 2001-03-06  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
