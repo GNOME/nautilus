@@ -989,7 +989,9 @@ side_panel_image_changed_callback (NautilusSidebar *side_panel,
         nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
                                             GTK_WIDGET (side_panel),
                                             icon);
-	g_object_unref (icon);
+	if (icon != NULL) {
+		g_object_unref (icon);
+	}
 }
 
 void

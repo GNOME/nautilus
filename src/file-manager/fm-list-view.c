@@ -456,7 +456,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
 	tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
-	selection = gtk_tree_view_get_selection(tree_view);
+	selection = gtk_tree_view_get_selection (tree_view);
 
 	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
 		return FALSE;
@@ -492,6 +492,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	allow_drag = FALSE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
+		/* Keep track of path of last click so double clicks only happen
+		 * on the same item */
 		if ((event->button == 1 || event->button == 2)  && 
 		    event->type == GDK_BUTTON_PRESS) {
 			if (view->details->double_click_path[1]) {
@@ -503,9 +505,9 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		if (event->type == GDK_2BUTTON_PRESS) {
 			/* Double clicking does not trigger a D&D action. */
 			view->details->drag_button = 0;
-			call_parent = TRUE;
 			if (view->details->double_click_path[1] &&
 			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0) {
+				/* NOTE: Activation can actually destroy the view if we're switching */
 				if (!button_event_modifies_selection (event)) {
 					if ((event->button == 1 || event->button == 3)) {
 						activate_selected_items (view);
@@ -522,46 +524,48 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 					}
 				}
 			}
-		}
-		
-		/* We're going to filter out some situations where
-		 * we can't let the default code run because all
-		 * but one row would be would be deselected. We don't
-		 * want that; we want the right click menu or single
-		 * click to apply to everything that's currently selected. */
-		
-		if (event->button == 3 && gtk_tree_selection_path_is_selected (selection, path)) {
-			call_parent = FALSE;
-		} 
-
-		if ((event->button == 1 || event->button == 2) &&
-		    ((event->state & GDK_CONTROL_MASK) != 0 ||
-		     (event->state & GDK_SHIFT_MASK) == 0)) {
-			view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
-			if (view->details->row_selected_on_button_down) {
-				call_parent = FALSE;
-			} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
-				call_parent = FALSE;
-				gtk_tree_selection_select_path (selection, path);
-			}
-		}
-
-		if (call_parent) {
 			tree_view_class->button_press_event (widget, event);
-		} else if (gtk_tree_selection_path_is_selected (selection, path)) {
-			gtk_widget_grab_focus (widget);
-		}
-
-		if ((event->button == 1 || event->button == 2) &&
-		    event->type == GDK_BUTTON_PRESS) {
-			view->details->drag_started = FALSE;
-			view->details->drag_button = event->button;
-			view->details->drag_x = event->x;
-			view->details->drag_y = event->y;
-		}
-
-		if (event->button == 3) {
-			do_popup_menu (widget, view, event);
+		} else {
+	
+			/* We're going to filter out some situations where
+			 * we can't let the default code run because all
+			 * but one row would be would be deselected. We don't
+			 * want that; we want the right click menu or single
+			 * click to apply to everything that's currently selected. */
+			
+			if (event->button == 3 && gtk_tree_selection_path_is_selected (selection, path)) {
+				call_parent = FALSE;
+			} 
+			
+			if ((event->button == 1 || event->button == 2) &&
+			    ((event->state & GDK_CONTROL_MASK) != 0 ||
+			     (event->state & GDK_SHIFT_MASK) == 0)) {
+				view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
+				if (view->details->row_selected_on_button_down) {
+					call_parent = FALSE;
+				} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
+					call_parent = FALSE;
+					gtk_tree_selection_select_path (selection, path);
+				}
+			}
+		
+			if (call_parent) {
+				tree_view_class->button_press_event (widget, event);
+			} else if (gtk_tree_selection_path_is_selected (selection, path)) {
+				gtk_widget_grab_focus (widget);
+			}
+			
+			if ((event->button == 1 || event->button == 2) &&
+			    event->type == GDK_BUTTON_PRESS) {
+				view->details->drag_started = FALSE;
+				view->details->drag_button = event->button;
+				view->details->drag_x = event->x;
+				view->details->drag_y = event->y;
+			}
+			
+			if (event->button == 3) {
+				do_popup_menu (widget, view, event);
+			}
 		}
 
 		gtk_tree_path_free (path);

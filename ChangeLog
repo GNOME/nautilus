@@ -1,5 +1,24 @@
 2004-11-05  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c:
+	Fix crash when switching view.
+
+	* src/nautilus-history-sidebar.c:
+	Some cleanups
+
+	* src/nautilus-navigation-window.c:
+	Fix unref-null warning
+	
+	* src/Makefile.am:
+	* src/nautilus-application.c:
+	* src/nautilus-notes-sidebar.[ch]:
+	Add notes sidebar widget, based on old component
+
+	* components/Makefile.am (SUBDIRS):
+	Remove notes
+
+2004-11-05  Alexander Larsson  <alexl@redhat.com>
+
 	* components/Makefile.am:
 	Remove stuff that are now replaced or not needed anymore.
 	

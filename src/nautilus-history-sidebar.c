@@ -68,7 +68,7 @@ G_DEFINE_TYPE_WITH_CODE (NautilusHistorySidebar, nautilus_history_sidebar, GTK_T
 						nautilus_history_sidebar_iface_init));
 
 static void
-update_history (NautilusHistorySidebar *view)
+update_history (NautilusHistorySidebar *sidebar)
 {
 	GtkListStore         *store;
 	GtkTreeSelection     *selection;
@@ -78,11 +78,11 @@ update_history (NautilusHistorySidebar *view)
 	char *name;
 	GList *l, *history;
 	
-	store = GTK_LIST_STORE (gtk_tree_view_get_model (view->tree_view));
+	store = GTK_LIST_STORE (gtk_tree_view_get_model (sidebar->tree_view));
 
 	gtk_list_store_clear (store);
 
-	history = nautilus_window_info_get_history (view->window);
+	history = nautilus_window_info_get_history (sidebar->window);
 	for (l = history; l != NULL; l = l->next) {
 		bookmark = nautilus_bookmark_copy (l->data);
 
@@ -102,7 +102,7 @@ update_history (NautilusHistorySidebar *view)
 	}
 	eel_g_object_list_free (history);
 
-	selection = GTK_TREE_SELECTION (gtk_tree_view_get_selection (view->tree_view));
+	selection = GTK_TREE_SELECTION (gtk_tree_view_get_selection (sidebar->tree_view));
 
 	if (gtk_tree_model_get_iter_root (GTK_TREE_MODEL (store), &iter)) {
 		gtk_tree_selection_select_iter (selection, &iter);
@@ -111,9 +111,9 @@ update_history (NautilusHistorySidebar *view)
 
 static void
 history_changed_callback (GObject *signaller,
-			  NautilusHistorySidebar *view)
+			  NautilusHistorySidebar *sidebar)
 {
-	update_history (view);
+	update_history (sidebar);
 }
 
 static void
@@ -122,13 +122,13 @@ row_activated_callback (GtkTreeView *tree_view,
 			GtkTreeViewColumn *column,
 			gpointer user_data)
 {
-	NautilusHistorySidebar *view;
+	NautilusHistorySidebar *sidebar;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	NautilusBookmark *bookmark;
 	char *uri;
 	
-	view = NAUTILUS_HISTORY_SIDEBAR (user_data);
+	sidebar = NAUTILUS_HISTORY_SIDEBAR (user_data);
 	model = gtk_tree_view_get_model (tree_view);
 	
 	if (!gtk_tree_model_get_iter (model, &iter, path)) {
@@ -141,34 +141,34 @@ row_activated_callback (GtkTreeView *tree_view,
 	/* Navigate to the clicked location. */
 	uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (bookmark));
 	nautilus_window_info_open_location
-		(view->window, 
+		(sidebar->window, 
 		 uri, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0, NULL);
 	g_free (uri);
 }
 
 static void
-update_click_policy (NautilusHistorySidebar *view)
+update_click_policy (NautilusHistorySidebar *sidebar)
 {
 	int policy;
 	
 	policy = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
 	
 	eel_gtk_tree_view_set_activate_on_single_click
-		(view->tree_view, policy == NAUTILUS_CLICK_POLICY_SINGLE);
+		(sidebar->tree_view, policy == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
 static void
 click_policy_changed_callback (gpointer user_data)
 {
-	NautilusHistorySidebar *view;
+	NautilusHistorySidebar *sidebar;
 	
-	view = NAUTILUS_HISTORY_SIDEBAR (user_data);
+	sidebar = NAUTILUS_HISTORY_SIDEBAR (user_data);
 
-	update_click_policy (view);
+	update_click_policy (sidebar);
 }
 
 static void
-nautilus_history_sidebar_init (NautilusHistorySidebar *view)
+nautilus_history_sidebar_init (NautilusHistorySidebar *sidebar)
 {
 	GtkTreeView       *tree_view;
 	GtkTreeViewColumn *col;
@@ -204,43 +204,43 @@ nautilus_history_sidebar_init (NautilusHistorySidebar *view)
 
 	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (store));
 	
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
-	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (tree_view));
-	gtk_widget_show (GTK_WIDGET (view));
+	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (sidebar), NULL);
+	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (sidebar), NULL);
+	gtk_container_add (GTK_CONTAINER (sidebar), GTK_WIDGET (tree_view));
+	gtk_widget_show (GTK_WIDGET (sidebar));
 	
-	view->tree_view = tree_view;
+	sidebar->tree_view = tree_view;
 
 	selection = gtk_tree_view_get_selection (tree_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);	
 
 	g_signal_connect_object
 		(tree_view, "row_activated", 
-		 G_CALLBACK (row_activated_callback), view, 0);
+		 G_CALLBACK (row_activated_callback), sidebar, 0);
 	
 	g_signal_connect_object (nautilus_signaller_get_current (),
 				 "history_list_changed",
-				 G_CALLBACK (history_changed_callback), view, 0);
+				 G_CALLBACK (history_changed_callback), sidebar, 0);
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				      click_policy_changed_callback,
-				      view);
-	update_click_policy (view);
+				      sidebar);
+	update_click_policy (sidebar);
 }
 
 static void
 nautilus_history_sidebar_finalize (GObject *object)
 {
-	NautilusHistorySidebar *view;
+	NautilusHistorySidebar *sidebar;
 	
-	view = NAUTILUS_HISTORY_SIDEBAR (object);
+	sidebar = NAUTILUS_HISTORY_SIDEBAR (object);
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					 click_policy_changed_callback,
-					 view);
+					 sidebar);
 
 	G_OBJECT_CLASS (nautilus_history_sidebar_parent_class)->finalize (object);
 }
@@ -286,24 +286,24 @@ nautilus_history_sidebar_iface_init (NautilusSidebarIface *iface)
 }
 
 static void
-nautilus_history_sidebar_set_parent_window (NautilusHistorySidebar *view,
+nautilus_history_sidebar_set_parent_window (NautilusHistorySidebar *sidebar,
 					    NautilusWindowInfo *window)
 {
-	view->window = window;
-	update_history (view);
+	sidebar->window = window;
+	update_history (sidebar);
 }
 
 static NautilusSidebar *
 nautilus_history_sidebar_create (NautilusWindowInfo *window)
 {
-	NautilusHistorySidebar *view;
+	NautilusHistorySidebar *sidebar;
 	
-	view = g_object_new (nautilus_history_sidebar_get_type (), NULL);
-	nautilus_history_sidebar_set_parent_window (view, window);
-	g_object_ref (view);
-	gtk_object_sink (GTK_OBJECT (view));
+	sidebar = g_object_new (nautilus_history_sidebar_get_type (), NULL);
+	nautilus_history_sidebar_set_parent_window (sidebar, window);
+	g_object_ref (sidebar);
+	gtk_object_sink (GTK_OBJECT (sidebar));
 
-	return NAUTILUS_SIDEBAR (view);
+	return NAUTILUS_SIDEBAR (sidebar);
 }
 
 static NautilusSidebarInfo history_sidebar = {

@@ -1,7 +1,6 @@
 NULL=
 
 SUBDIRS = 					\
-	notes 					\
 	throbber 				\
 	emblem					\
 	image_properties			\
