@@ -38,10 +38,13 @@ static void nautilus_zoom_control_initialize       	(NautilusZoomControl *pixmap
 static void nautilus_zoom_control_draw 			(GtkWidget *widget, GdkRectangle *box);
 static gint nautilus_zoom_control_expose 		(GtkWidget *widget, GdkEventExpose *event);
 static gboolean nautilus_zoom_control_button_press_event(GtkWidget *widget, GdkEventButton *event);
-
+static void set_zoom_level(NautilusZoomControl *zoom_control, gint new_level);
 void draw_number_and_disable_arrows(GtkWidget *widget, GdkRectangle *box);
 
 static GtkEventBoxClass *parent_class;
+
+/* button assignments */
+#define CONTEXTUAL_MENU_BUTTON 3
 
 GtkType
 nautilus_zoom_control_get_type (void)
@@ -140,7 +143,6 @@ void draw_number_and_disable_arrows(GtkWidget *widget, GdkRectangle *box)
     gdk_draw_rectangle (widget->window, widget->style->bg_gc[0], TRUE, box->width - (box->width / 4), 0, box->width / 4, box->height);
     
   gdk_gc_unref(temp_gc);
-
 }
 
 static void
@@ -178,6 +180,54 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
   return FALSE;
 }
 
+/* routines to create and handle the zoom menu */
+
+static void
+zoom_menu_cb(GtkMenuItem *item, gint zoom_level)
+{
+  NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL(gtk_object_get_user_data(GTK_OBJECT(item)));
+  if (zoom_control)
+      set_zoom_level(zoom_control, zoom_level);
+}
+
+static void
+create_zoom_menu_item(GtkMenu* menu, GtkWidget *zoom_control, const gchar *item_text, gint zoom_index)
+{
+  GtkWidget *menu_item;
+  
+  menu_item = gtk_menu_item_new_with_label(item_text);
+  gtk_signal_connect(GTK_OBJECT (menu_item), "activate", GTK_SIGNAL_FUNC (zoom_menu_cb), (void*) zoom_index);
+
+  gtk_object_set_user_data(GTK_OBJECT(menu_item), zoom_control);
+  gtk_widget_show (menu_item);
+  gtk_menu_append (menu, menu_item);
+}
+
+static GtkMenu*
+create_zoom_menu(GtkWidget *zoom_control)
+{
+  GtkMenu *menu = GTK_MENU (gtk_menu_new ());
+
+  create_zoom_menu_item(menu, zoom_control, "25%",  NAUTILUS_ZOOM_LEVEL_SMALLEST);
+  create_zoom_menu_item(menu, zoom_control, "50%",  NAUTILUS_ZOOM_LEVEL_SMALLER);
+  create_zoom_menu_item(menu, zoom_control, "75%",  NAUTILUS_ZOOM_LEVEL_SMALL);
+  create_zoom_menu_item(menu, zoom_control, "100%", NAUTILUS_ZOOM_LEVEL_STANDARD);
+  create_zoom_menu_item(menu, zoom_control, "150%",  NAUTILUS_ZOOM_LEVEL_LARGE);
+  create_zoom_menu_item(menu, zoom_control, "200%", NAUTILUS_ZOOM_LEVEL_LARGER);
+  create_zoom_menu_item(menu, zoom_control, "400%", NAUTILUS_ZOOM_LEVEL_LARGEST);
+
+  return menu;  
+}
+  
+static void
+set_zoom_level(NautilusZoomControl *zoom_control, gint new_level)
+{
+  gtk_widget_queue_draw(GTK_WIDGET(zoom_control));	
+  zoom_control->current_zoom = new_level;
+  zoom_control->zoom_factor = (double) nautilus_icon_size_for_zoom_level (zoom_control->current_zoom) / NAUTILUS_ICON_SIZE_STANDARD;    
+  /* FIXME: tell the content view about the zoom change here soon */
+}
+
 /* hit-test the index tabs and activate if necessary */
 
 static gboolean
@@ -185,8 +235,22 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 {
   NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
   gint width = widget->allocation.width;
+  gint center = width >> 1;
   gint changed = FALSE;
-  
+
+  /* check for the context menu button and handle by creating and showing the menu */  
+  if (event->button == CONTEXTUAL_MENU_BUTTON)
+    {
+ 	  GtkMenu *zoom_menu = create_zoom_menu(widget);
+	  
+	  gtk_object_ref (GTK_OBJECT(zoom_menu));
+	  gtk_object_sink (GTK_OBJECT(zoom_menu));
+
+	  gtk_menu_popup (zoom_menu, NULL, NULL, NULL, NULL, 3, GDK_CURRENT_TIME);
+	  gtk_object_unref (GTK_OBJECT(zoom_menu));
+	  return TRUE;	  
+ 	}
+ 	  
   if (event->x < (width / 3) && (zoom_control->current_zoom > zoom_control->min_zoom))
     {
 	  zoom_control->current_zoom -= 1;
@@ -197,13 +261,15 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	  zoom_control->current_zoom += 1;
 	  changed = TRUE;
 	}
-  
+  else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3))))
+    {
+	  zoom_control->current_zoom = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	  changed = TRUE;
+    }
+    
   if (changed)
     {
-	  gtk_widget_queue_draw(widget);	
-	  zoom_control->zoom_factor = (double) nautilus_icon_size_for_zoom_level (zoom_control->current_zoom)
-											/ NAUTILUS_ICON_SIZE_STANDARD;    
-      /* FIXME: tell the content view about the zoom change here soon */
+	  set_zoom_level(zoom_control, zoom_control->current_zoom);
     }	  
   
   return TRUE;
