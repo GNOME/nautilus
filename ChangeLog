@@ -1,3 +1,35 @@
+2001-03-01  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: <ian@eazel.com>
+
+	Part of bug 5575: Polish up inventory view.
+
+	Makes "enable" and "disable" views look reasonable and 
+	adds a optional ? arg for the next URI.
+
+	* components/services/inventory-view/nautilus-inventory-disable-pag
+	e.c: (disable_inventory_callback),
+	(nautilus_inventory_disable_page_initialize),
+	(nautilus_inventory_disable_page_new),
+	(nautilus_inventory_disable_page_destroy),
+	(nautilus_inventory_disable_page_run):
+	* components/services/inventory-view/nautilus-inventory-disable-pag
+	e.h:
+	* components/services/inventory-view/nautilus-inventory-enable-page
+	.c: (callback_progress_update),
+	(nautilus_inventory_enable_page_initialize),
+	(nautilus_inventory_enable_page_new),
+	(callback_timeout_error_navigate), (callback_eazel_inventory),
+	(nautilus_inventory_enable_page_run),
+	(nautilus_inventory_enable_page_destroy):
+	* components/services/inventory-view/nautilus-inventory-enable-page
+	.h:
+	* components/services/inventory-view/nautilus-inventory-view.c:
+	(nautilus_inventory_view_initialize), (get_finish_uri),
+	(inventory_load_location_callback):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_self_check_file_utilities):
+
 2001-03-01  Arlo Rose  <arlo@eazel.com>
 
 	* icons/crux_eggplant/crux_eggplant.xml:

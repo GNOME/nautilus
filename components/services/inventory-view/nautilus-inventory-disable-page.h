@@ -26,6 +26,7 @@
 
 #ifndef NAUTILUS_INVENTORY_DISABLE_PAGE_H
 #define NAUTILUS_INVENTORY_DISABLE_PAGE_H
+#include "nautilus-inventory-view.h"
 
 #include <gtk/gtkeventbox.h>
 #include <libnautilus/nautilus-view.h>
@@ -52,8 +53,7 @@ struct NautilusInventoryDisablePageClass {
 
 GtkType    nautilus_inventory_disable_page_get_type (void);
 
-GtkWidget *nautilus_inventory_disable_page_new      (NautilusView                *view,
-						    const char                  *next_uri);
+GtkWidget *nautilus_inventory_disable_page_new      (NautilusInventoryView      *view);
 
 void       nautilus_inventory_disable_page_run      (NautilusInventoryDisablePage *disable_page);
 

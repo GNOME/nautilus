@@ -25,12 +25,17 @@
    component.  */
 
 #include <config.h>
-#include "nautilus-inventory-view.h"
+#include "nautilus-inventory-view-private.h"
 
 #include "nautilus-inventory-enable-page.h"
 #include "nautilus-inventory-disable-page.h"
 
+#include "eazel-services-extensions.h"
+
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <bonobo/bonobo-control.h>
 #include <libgnome/gnome-i18n.h>
@@ -39,11 +44,13 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtksignal.h>
 
-struct NautilusInventoryViewDetails {
-	GtkWidget *notebook;
-	GtkWidget *enable_page;
-	GtkWidget *disable_page;
-};
+#undef DEBUG_MESSAGES
+
+#ifdef DEBUG_MESSAGES
+#define DEBUG_MSG(x)	g_print x
+#else
+#define DEBUG_MSG(x)
+#endif
 
 static void nautilus_inventory_view_initialize_class (NautilusInventoryViewClass *klass);
 static void nautilus_inventory_view_initialize       (NautilusInventoryView      *view);
@@ -80,12 +87,10 @@ nautilus_inventory_view_initialize (NautilusInventoryView *view)
 	view->details->notebook = gtk_notebook_new ();
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (view->details->notebook), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (view->details->notebook), FALSE);
-	
 
-	view->details->enable_page = nautilus_inventory_enable_page_new (NAUTILUS_VIEW (view),
-									 "eazel-services:/inventory/updates");
-	view->details->disable_page = nautilus_inventory_disable_page_new (NAUTILUS_VIEW (view),
-									 "eazel-services:/inventory/updates");
+	view->details->enable_page = nautilus_inventory_enable_page_new (view);
+	view->details->disable_page = nautilus_inventory_disable_page_new (view);
+
 	gtk_notebook_append_page (GTK_NOTEBOOK (view->details->notebook),
 				  view->details->enable_page,
 				  gtk_label_new (""));
@@ -117,6 +122,26 @@ nautilus_inventory_view_destroy (GtkObject *object)
 }
 
 
+static char *
+get_finish_uri (const char *uri, const char *default_finish_uri)
+{
+	char *query_portion;
+	char *ret;
+
+	query_portion = strchr (uri, '?');
+
+	if (query_portion != NULL) {
+		ret = gnome_vfs_unescape_string (query_portion + 1, NULL);
+	} else {
+		ret = NULL;
+	}
+
+	if (ret == NULL) {
+		ret = g_strdup (default_finish_uri);
+	}
+
+	return ret;
+}
 
 
 static void
@@ -132,16 +157,29 @@ inventory_load_location_callback (NautilusView *nautilus_view,
 	view = NAUTILUS_INVENTORY_VIEW (nautilus_view);
 	
 	nautilus_view_report_load_underway (nautilus_view);
-	
-	if (strcmp (location, "eazel-inventory:enable") == 0) {
+
+	DEBUG_MSG (("%s: load_location '%s'\n", __FUNCTION__, location));
+
+	if (nautilus_istr_has_prefix (location, "eazel-inventory:enable")) {
+		view->details->next_uri = get_finish_uri (location, "eazel:");
+
+		DEBUG_MSG (("%s: enabling, next_uri is '%s'\n", __FUNCTION__, view->details->next_uri));
+
 		gtk_notebook_set_page (GTK_NOTEBOOK (view->details->notebook), 0);
 		nautilus_view_report_load_complete (nautilus_view);
-		nautilus_inventory_enable_page_run (NAUTILUS_INVENTORY_ENABLE_PAGE 
-						    (view->details->enable_page));
-	} else if (strcmp (location, "eazel-inventory:disable") == 0) {
+		nautilus_inventory_enable_page_run (
+			NAUTILUS_INVENTORY_ENABLE_PAGE (view->details->enable_page));
+	} else if (nautilus_istr_has_prefix (location, "eazel-inventory:disable")) {
+		view->details->next_uri = get_finish_uri (location, "eazel:");
+
+		DEBUG_MSG (("%s: disabling, next_uri is '%s'\n", __FUNCTION__, view->details->next_uri));
+
 		gtk_notebook_set_page (GTK_NOTEBOOK (view->details->notebook), 1);
 		nautilus_view_report_load_complete (nautilus_view);
+		nautilus_inventory_disable_page_run (
+			NAUTILUS_INVENTORY_DISABLE_PAGE (view->details->disable_page));
 	} else {
+		DEBUG_MSG (("%s: invalid uri '%s'\n", __FUNCTION__, location));
 		nautilus_view_report_load_failed (nautilus_view);
 	}
 }

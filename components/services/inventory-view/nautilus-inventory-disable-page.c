@@ -30,22 +30,21 @@
 #include "nautilus-inventory-disable-page.h"
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
+#include "nautilus-inventory-view-private.h"
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtk.h>
 #include <gnome.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus/nautilus-view.h>
 #include <eazel-inventory.h>
 
 struct NautilusInventoryDisablePageDetails {
-	EazelInventory *inventory;
-	GtkWidget    *progress_bar;
-	GtkWidget    *label;
-	NautilusView *nautilus_view;
-	char         *next_uri;
+	EazelInventory 		*inventory;
+	NautilusInventoryView 	*view;
 };
 
 static void     nautilus_inventory_disable_page_initialize_class    (NautilusInventoryDisablePageClass *klass);
@@ -64,28 +63,23 @@ nautilus_inventory_disable_page_initialize_class (NautilusInventoryDisablePageCl
 	object_class->destroy = nautilus_inventory_disable_page_destroy;
 }
 
-static void
-yes_callback (GtkWidget *button, gpointer data)
+static gint /*GtkFunction*/
+disable_inventory_callback (gpointer data)
 {
 	NautilusInventoryDisablePage *disable_page = NAUTILUS_INVENTORY_DISABLE_PAGE (data);
 
-	eazel_inventory_set_enabled (disable_page->details->inventory,
-				     FALSE);
+	g_return_val_if_fail (disable_page != NULL, FALSE);
 
-	nautilus_view_open_location_in_this_window (disable_page->details->nautilus_view, 
-			"eazel:" /*FIXME*/);
+	eazel_inventory_set_enabled (disable_page->details->inventory, FALSE);
 
+	nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (disable_page->details->view),
+			disable_page->details->view->details->next_uri);
+
+	/* Unref the ref that was added when the callback was scheduled */ 
+	gtk_object_unref (GTK_OBJECT (disable_page));
+
+	return FALSE;
 }
-
-static void
-no_callback (GtkWidget *button, gpointer data)
-{
-	NautilusInventoryDisablePage *disable_page = NAUTILUS_INVENTORY_DISABLE_PAGE (data);
-
-	nautilus_view_go_back (disable_page->details->nautilus_view);
-
-}
-
 
 static void
 nautilus_inventory_disable_page_initialize (NautilusInventoryDisablePage *disable_page)
@@ -93,8 +87,7 @@ nautilus_inventory_disable_page_initialize (NautilusInventoryDisablePage *disabl
 	NautilusBackground *background;
 	GtkWidget *header;
 	GtkWidget *vbox;
-	GtkWidget *buttonbox;
-	GtkWidget *yes, *no;
+	GtkWidget *label;
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
@@ -107,52 +100,35 @@ nautilus_inventory_disable_page_initialize (NautilusInventoryDisablePage *disabl
 
 	disable_page->details->inventory = eazel_inventory_get ();
 
-	header = eazel_services_header_title_new (_("Disable Inventory [FIXME]"));
+	header = eazel_services_header_title_new (_("Disabling Inventory..."));
 	gtk_widget_show (header);
 	gtk_box_pack_start (GTK_BOX (vbox), header, FALSE, FALSE, 0);
+
+	label = eazel_services_label_new (_("Please wait while we disable Eazel Inventory..."),
+					       0,
+					       0.5,
+					       0.5,
+					       0,
+					       0,
+					       NAUTILUS_RGB_COLOR_BLACK,
+					       NAUTILUS_RGB_COLOR_WHITE,
+					       NULL,
+					       4,		/*relative size*/
+					       TRUE);
 	
-	disable_page->details->label = gtk_label_new (_("An explanation of how why and what we're doing here."));
-	gtk_widget_show (disable_page->details->label);
-	gtk_box_pack_start (GTK_BOX (vbox), disable_page->details->label, FALSE, FALSE, 0);
-
-	/*
-	disable_page->details->progress_bar = gtk_progress_bar_new ();
-	gtk_widget_show (disable_page->details->progress_bar);
-	gtk_box_pack_start (GTK_BOX (vbox), disable_page->details->progress_bar, FALSE, FALSE, 0);
-	*/
-	
-	buttonbox = gtk_hbutton_box_new ();
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (buttonbox),
-			GTK_BUTTONBOX_SPREAD);
-	gtk_widget_show (buttonbox);
-	gtk_box_pack_start (GTK_BOX (vbox), buttonbox, FALSE, FALSE, 0);
-
-	/* FIXME use stock buttons? */
-	yes = gtk_button_new_with_label (_("Yes"));
-	gtk_widget_show (yes);
-	gtk_signal_connect (GTK_OBJECT (yes), "clicked", 
-			GTK_SIGNAL_FUNC (yes_callback), disable_page);
-	gtk_container_add (GTK_CONTAINER (buttonbox), yes);
-
-	no = gtk_button_new_with_label (_("No"));
-	gtk_widget_show (no);
-	gtk_signal_connect (GTK_OBJECT (no), "clicked", 
-			GTK_SIGNAL_FUNC (no_callback), disable_page);
-	gtk_container_add (GTK_CONTAINER (buttonbox), no);
-
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
 }
 
 
 GtkWidget *
-nautilus_inventory_disable_page_new (NautilusView *view,
-				    const char   *next_uri)
+nautilus_inventory_disable_page_new (NautilusInventoryView *view)
 {
 	NautilusInventoryDisablePage *disable_page;
 
 	disable_page = NAUTILUS_INVENTORY_DISABLE_PAGE (gtk_widget_new (nautilus_inventory_disable_page_get_type (), NULL));
 
-	disable_page->details->nautilus_view = view;
-	disable_page->details->next_uri = g_strdup (next_uri);
+	disable_page->details->view = view;
 
 	return GTK_WIDGET (disable_page);
 }
@@ -169,9 +145,17 @@ nautilus_inventory_disable_page_destroy (GtkObject *object)
 	if (page->details->inventory != CORBA_OBJECT_NIL) {
 		gtk_object_unref (GTK_OBJECT (page->details->inventory));
 	}
-	g_free (page->details->next_uri);
 	g_free (page->details);
 
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+void
+nautilus_inventory_disable_page_run (NautilusInventoryDisablePage *disable_page)
+{
+	/* Pause for impact */
+	/* This ref is released in the callback function */
+	gtk_object_ref (GTK_OBJECT (disable_page));
+	gtk_timeout_add (3 * 1000, disable_inventory_callback, disable_page);
 }
 

@@ -27,8 +27,9 @@
 #ifndef NAUTILUS_INVENTORY_ENABLE_PAGE_H
 #define NAUTILUS_INVENTORY_ENABLE_PAGE_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtkeventbox.h>
 #include <libnautilus/nautilus-view.h>
+#include "nautilus-inventory-view.h"
 
 #define NAUTILUS_TYPE_INVENTORY_ENABLE_PAGE            (nautilus_inventory_enable_page_get_type ())
 #define NAUTILUS_INVENTORY_ENABLE_PAGE(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INVENTORY_ENABLE_PAGE, NautilusInventoryEnablePage))
@@ -41,18 +42,17 @@ typedef struct NautilusInventoryEnablePageClass   NautilusInventoryEnablePageCla
 typedef struct NautilusInventoryEnablePageDetails NautilusInventoryEnablePageDetails;
 
 struct NautilusInventoryEnablePage {
-	GtkVBox base;
+	GtkEventBox base;
 	NautilusInventoryEnablePageDetails *details;
 };
 
 struct NautilusInventoryEnablePageClass {
-	GtkVBoxClass base;
+	GtkEventBoxClass base;
 };
 
 GtkType    nautilus_inventory_enable_page_get_type (void);
 
-GtkWidget *nautilus_inventory_enable_page_new      (NautilusView                *view,
-						    const char                  *next_uri);
+GtkWidget *nautilus_inventory_enable_page_new      (NautilusInventoryView                *view);
 
 void       nautilus_inventory_enable_page_run      (NautilusInventoryEnablePage *enable_page);
 
