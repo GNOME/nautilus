@@ -32,6 +32,7 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <gtk/gtksignal.h>
 
+/* A NautilusContentViewFrame's private information. */
 struct _NautilusSampleContentViewDetails {
 	gchar                     *uri;
 	NautilusContentViewFrame  *view_frame;
@@ -90,14 +91,27 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 }
 
 
-/* Component embedding support */
+/**
+ * nautilus_sample_content_view_get_view_frame:
+ *
+ * Return the NautilusViewFrame object associated with this view; this
+ * is needed to export the view via CORBA/Bonobo.
+ * @view: NautilusSampleContentView to get the view_frame from..
+ * 
+ **/
 NautilusContentViewFrame *
 nautilus_sample_content_view_get_view_frame (NautilusSampleContentView *view)
 {
 	return view->details->view_frame;
 }
 
-/* URI handling */
+/**
+ * nautilus_sample_content_view_load_uri:
+ *
+ * Load the resource pointed to by the specified URI.
+ * @view: NautilusSampleContentView to get the view_frame from..
+ * 
+ **/
 void
 nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
 				       const gchar               *uri)
@@ -116,28 +130,35 @@ sample_notify_location_change_cb (NautilusContentViewFrame  *view,
 	
 	memset(&pri, 0, sizeof(pri));
 	
-	/* It's mandatory to send a PROGRESS_UNDERWAY message once the
-	   component starts loading, otherwise nautilus will assume it
-	   failed. In a real component, this will probably happen in some
-	   sort of callback from whatever loading mechanism it is using to
-	   load the data; this component loads no data, so it gives the
-	   progrss upodate here. */
+	/* 
+	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
+	 * component starts loading, otherwise nautilus will assume it
+	 * failed. In a real component, this will probably happen in
+	 * some sort of callback from whatever loading mechanism it is
+	 * using to load the data; this component loads no data, so it
+	 * gives the progrss update here.  
+	 */
 	
 	pri.type = Nautilus_PROGRESS_UNDERWAY;
 	pri.amount = 0.0;
 	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (sample->details->view_frame), &pri);
 	
+	/* Do the actual load. */
 	nautilus_sample_content_view_load_uri (sample, navinfo->actual_uri);
 	
-	/* It's mandatory to send a PROGRESS_DONE_OK message once the
-	   component is done loading successfully, or PROGRESS_DONE_ERROR if
-	   it completes unsuccessfully. In a real component, this will
-	   probably happen in some sort of callback from whatever loading
-	   mechanism it is using to load the data; this component loads no
-	   data, so it gives the progrss upodate here. */
+	/*
+	 * It's mandatory to send a PROGRESS_DONE_OK message once the
+	 * component is done loading successfully, or
+	 * PROGRESS_DONE_ERROR if it completes unsuccessfully. In a
+	 * real component, this will probably happen in some sort of
+	 * callback from whatever loading mechanism it is using to
+	 * load the data; this component loads no data, so it gives
+	 * the progrss upodate here. 
+	 */
 
 	pri.type = Nautilus_PROGRESS_DONE_OK;
 	pri.amount = 100.0;
 	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (sample->details->view_frame), &pri);
 }
+
 
