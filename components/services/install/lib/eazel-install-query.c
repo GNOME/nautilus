@@ -92,9 +92,12 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	if (db==NULL) {
 		trilobite_debug ("will open db system");
 		free_db_system = TRUE;
-		if (eazel_install_prepare_rpm_system (service)) {
+		if (eazel_install_prepare_package_system (service)) {
 			db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs, root);
-			g_assert (db);
+			if (db==NULL) {
+				trilobite_debug ("Something went wrong when trying to access the db");
+				return;
+			}
 		} else {
 			trilobite_debug ("could not open db system");
 			return;
@@ -141,7 +144,7 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	
 	if (free_db_system) {
 		trilobite_debug ("closing db system");
-		eazel_install_free_rpm_system (service);
+		eazel_install_free_package_system (service);
 	}
 }
 
