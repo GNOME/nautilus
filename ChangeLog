@@ -1,3 +1,10 @@
+2000-08-12  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/help-method.c:
+        (old_help_file): New function to return the old doc path.
+        (transform_file): If we can not find the SGML or XML path use the old
+        doc file (index.html)
+
 2000-08-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (draw_or_layout_all_tabs):

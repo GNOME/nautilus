@@ -57,6 +57,7 @@ typedef struct {
 
 
 static gboolean file_in_info_path (const char *file);
+static char *old_help_file (const char *old_uri);
 
 
 static HelpURI *
@@ -250,7 +251,9 @@ transform_file (const char *old_uri,
 		return help_uri;
 	}
 	g_free (new_uri_with_extension);
-
+	
+	g_free (new_uri);
+	new_uri = old_help_file (base);	
 	/* Try with an html extension. */
 	new_uri_with_extension = g_strconcat (new_uri, ".html", NULL);
 	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {
@@ -315,6 +318,23 @@ file_from_path (const char *path)
 			return g_strdup (path);
 		}
 	}
+}
+
+static char *
+old_help_file (const char *old_uri) 
+{
+	char *base_name, *new_uri;
+
+	base_name = file_from_path (old_uri);
+	if (base_name == NULL || base_name[0] == '\0') {
+		g_free (base_name);
+		return NULL;
+	}
+
+	new_uri = gnome_help_file_path (base_name, "index");
+	g_free (base_name);
+
+	return new_uri;
 }
 
 static char *
