@@ -1313,6 +1313,15 @@ fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 	return result;
 }
 
+static gboolean
+fm_icon_view_is_empty (FMDirectoryView *view)
+{
+	g_assert (FM_IS_ICON_VIEW (view));
+
+	return nautilus_icon_container_is_empty 
+		(get_icon_container (FM_ICON_VIEW (view)));
+}
+
 static GList *
 fm_icon_view_get_selection (FMDirectoryView *view)
 {
@@ -2217,6 +2226,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->get_background_widget = fm_icon_view_get_background_widget;
 	fm_directory_view_class->clear = fm_icon_view_clear;
 	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
+	fm_directory_view_class->is_empty = fm_icon_view_is_empty;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;

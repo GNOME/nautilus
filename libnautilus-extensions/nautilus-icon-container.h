@@ -155,7 +155,7 @@ void       nautilus_icon_container_request_update                (NautilusIconCo
 void       nautilus_icon_container_request_update_all            (NautilusIconContainer  *container);
 void       nautilus_icon_container_reveal                        (NautilusIconContainer  *container,
 								  NautilusIconData       *data);
-
+gboolean   nautilus_icon_container_is_empty			 (NautilusIconContainer	 *container);
 
 /* control the layout */
 gboolean   nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);

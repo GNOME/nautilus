@@ -244,6 +244,11 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* is_read_only)	(FMDirectoryView *view);
 
+	/* is_empty is a function pointer that subclasses must
+	 * override to report whether the view contains any items.
+	 */
+	gboolean (* is_empty)	(FMDirectoryView *view);
+
 	/* supports_creating_files is a function pointer that subclasses may
 	 * override to control whether or not new items can be created.
 	 * be accepted. The default implementation checks whether the
@@ -301,6 +306,7 @@ void               fm_directory_view_select_all                     (FMDirectory
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);
 void               fm_directory_view_reveal_selection               (FMDirectoryView       *view);
+gboolean	   fm_directory_view_is_empty			    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_is_read_only		    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_creating_files	    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_accepts_dragged_files	    (FMDirectoryView	   *view);

@@ -266,6 +266,38 @@ nautilus_directory_get_existing (const char *uri)
 	return nautilus_directory_get_internal (uri, FALSE);
 }
 
+/* Returns a reffed NautilusFile object for this directory.
+ */
+NautilusFile *
+nautilus_directory_get_corresponding_file (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+
+	file = nautilus_directory_get_existing_corresponding_file (directory);
+	if (file == NULL) {
+		file = nautilus_file_get (directory->details->uri);
+	}
+
+	return file;
+}
+
+/* Returns a reffed NautilusFile object for this directory, but only if the
+ * NautilusFile object has already been created.
+ */
+NautilusFile *
+nautilus_directory_get_existing_corresponding_file (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+	
+	file = directory->details->as_file;
+	if (file != NULL) {
+		nautilus_file_ref (file);
+		return file;
+	}
+
+	return nautilus_file_get_existing (directory->details->uri);
+}
+
 /* nautilus_directory_get_name_for_self_as_new_file:
  * 
  * Get a name to display for the file representing this
@@ -597,17 +629,48 @@ call_get_file_info_free_list (gpointer key, gpointer value, gpointer user_data)
 	gnome_vfs_uri_list_free (value);
 }
 
+static void
+invalidate_count_and_unref (gpointer key, gpointer value, gpointer user_data)
+{
+	NautilusDirectory *directory;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (key));
+	g_assert (value == key);
+	g_assert (user_data == NULL);
+
+	directory = NAUTILUS_DIRECTORY (key);
+	
+	nautilus_directory_invalidate_counts (directory);
+	nautilus_directory_unref (directory);
+}
+
+static void
+collect_parent_directories (GHashTable *hash_table, NautilusDirectory *directory)
+{
+	g_assert (hash_table != NULL);
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	if (g_hash_table_lookup (hash_table, directory) == NULL) {
+		nautilus_directory_ref (directory);
+		g_hash_table_insert  (hash_table, directory, directory);
+	}
+}
+
 void
 nautilus_directory_notify_files_added (GList *uris)
 {
 	GHashTable *added_lists;
 	GList *p;
 	NautilusDirectory *directory;
+	GHashTable *parent_directories;
 	const char *uri;
 	GnomeVFSURI *vfs_uri;
 
 	/* Make a list of added files in each directory. */
 	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	/* Make a list of parent directories that will need their counts updated. */
+	parent_directories = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
@@ -617,6 +680,8 @@ nautilus_directory_notify_files_added (GList *uris)
 		if (directory == NULL) {
 			continue;
 		}
+
+		collect_parent_directories (parent_directories, directory);
 
 		/* If no one is monitoring files in the directory, nothing to do. */
 		if (!nautilus_directory_is_file_list_monitored (directory)) {
@@ -636,9 +701,15 @@ nautilus_directory_notify_files_added (GList *uris)
 	}
 
 
-	/* Now send out the changed signals. */
+	/* Now get file info for the new files. This creates NautilusFile
+	 * objects for the new files, and sends out a files_added signal. 
+	 */
 	g_hash_table_foreach (added_lists, call_get_file_info_free_list, NULL);
 	g_hash_table_destroy (added_lists);
+
+	/* Invalidate count for each parent directory. */
+	g_hash_table_foreach (parent_directories, invalidate_count_and_unref, NULL);
+	g_hash_table_destroy (parent_directories);
 }
 
 void
@@ -646,11 +717,16 @@ nautilus_directory_notify_files_removed (GList *uris)
 {
 	GHashTable *changed_lists;
 	GList *p;
+	NautilusDirectory *directory;
+	GHashTable *parent_directories;
 	const char *uri;
 	NautilusFile *file;
 
 	/* Make a list of changed files in each directory. */
 	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	/* Make a list of parent directories that will need their counts updated. */
+	parent_directories = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	/* Go through all the notifications. */
 	for (p = uris; p != NULL; p = p->next) {
@@ -660,6 +736,13 @@ nautilus_directory_notify_files_removed (GList *uris)
 		file = nautilus_file_get (uri);
 		if (file == NULL) {
 			continue;
+		}
+
+		/* Update file count for parent directory if anyone might care. */
+		directory = get_parent_directory_if_exists (uri);
+		if (directory != NULL) {
+			collect_parent_directories (parent_directories, directory);
+			nautilus_directory_unref (directory);
 		}
 
 		/* Mark it gone and prepare to send the changed signal. */
@@ -672,6 +755,10 @@ nautilus_directory_notify_files_removed (GList *uris)
 	/* Now send out the changed signals. */
 	g_hash_table_foreach (changed_lists, call_files_changed_unref_free_list, NULL);
 	g_hash_table_destroy (changed_lists);
+
+	/* Invalidate count for each parent directory. */
+	g_hash_table_foreach (parent_directories, invalidate_count_and_unref, NULL);
+	g_hash_table_destroy (parent_directories);
 }
 
 void
@@ -681,6 +768,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	URIPair *pair;
 	NautilusFile *file;
 	NautilusDirectory *old_directory, *new_directory;
+	GHashTable *parent_directories;
 	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
 	GList **files;
@@ -691,6 +779,9 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
 	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
 	unref_list = NULL;
+
+	/* Make a list of parent directories that will need their counts updated. */
+	parent_directories = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;
@@ -708,9 +799,13 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 						 old_directory,
 						 file);
 
+			collect_parent_directories (parent_directories, old_directory);
+
 			/* Locate the new directory. */
 			new_directory = get_parent_directory (pair->to_uri);
 			g_assert (new_directory != NULL);
+
+			collect_parent_directories (parent_directories, new_directory);
 
 			/* Point the file at the new directory.
 			 * We already have a ref to it from the get_parent_directory
@@ -768,6 +863,10 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 	/* Let the file objects go. */
 	nautilus_file_list_free (unref_list);
+
+	/* Invalidate count for each parent directory. */
+	g_hash_table_foreach (parent_directories, invalidate_count_and_unref, NULL);
+	g_hash_table_destroy (parent_directories);
 
 	/* Separate handling for brand new file objects. */
 	nautilus_directory_notify_files_added (new_files_list);

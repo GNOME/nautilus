@@ -265,6 +265,9 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (uri);
 
+	/* Avoid (false) compiler complaint about possibly uninitialized variable */
+	file_name = NULL;
+
 	if (vfs_uri != NULL) {
 		file_name_escaped = gnome_vfs_uri_extract_short_path_name (vfs_uri);
 		file_name = gnome_vfs_unescape_string (file_name_escaped, NULL);

@@ -1,3 +1,77 @@
+2000-09-26  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 437 (Deleting files doesn't affect count in sidebar)
+	Fixed bug 2001 (adding/removing files doesn't update directory counts)
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(get_corresponding_file): Removed from here, replaced by
+	nautilus_directory_get_existing_corresponding_file, now
+	in nautilus-directory.c
+	(nautilus_directory_invalidate_counts): New function, split out
+	from nautilus_directory_force_reload.
+	(nautilus_directory_force_reload): Now calls _invalidate_counts.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Added prototypes for nautilus_directory_get_existing_corresponding_file
+	and nautilus_directory_invalidate_counts.
+	
+	* libnautilus-extensions/nautilus-directory.h:
+	Added prototype for nautilus_directory_get_corresponding_file.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get_corresponding_file): New public function, 
+	returns	NautilusFile object for this NautilusDirectory (whether or
+	not one already existed).
+	(nautilus_directory_get_existing_corresponding_file): Moved and
+	renamed private function, returns NautilusFile object for this
+	NautilusDirectory but only if one already exists.
+	(invalidate_count_and_unref): New helper hash table foreach function,
+	invalidates count & unrefs a NautilusDirectory.
+	(collect_parent_directories): New helper function, adds directory
+	to hash table & refs if not already present.
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved): Use these two new functions
+	to invalidate directory counts when files added/removed.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal): Initialize a variable to NULL
+	to make compiler happy.
+
+
+	Reimplemented "select all should be insensitive when there
+	are no files to select" a better way after Darin hinted.
+
+	* src/file-manager/fm-directory-view.h: Added is_empty function
+	pointer and prototype for fm_directory_view_is_empty.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class): made is_empty a MUST_OVERRIDE
+	function.
+	(get_directory_as_file): Simplified implementation by calling new
+	nautilus_directory_get_corresponding_file.
+	(no_items_showing): Removed this function.
+	(compute_menu_item_info): Use fm_directory_view_is_empty instead of
+	no_items_showing.
+	(fm_directory_view_is_empty): New function, calls virtual function.
+
+	(fm_directory_view_real_create_background_context_menu_items): Fixed
+	bug where "New Folder" item in context menu was sensitive when it
+	shouldn't have been.
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(real_is_empty): Overrode is_empty function pointer to check whether
+	row count of list is 0.
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_is_empty): New function, checks whether
+	list of icons is NULL.
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_is_empty),
+	(fm_icon_view_initialize_class): Overrode is_empty function pointer
+	to ask icon container.
+
 2000-09-26  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

@@ -163,6 +163,7 @@ static char *               real_get_default_sort_attribute           (FMListVie
 static void                 real_get_column_specification             (FMListView        *list_view,
 								       int                column_number,
 								       FMListViewColumn  *specification);
+static gboolean		    real_is_empty			      (FMDirectoryView	 *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView,
 				   fm_list_view,
@@ -195,6 +196,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->clear = fm_list_view_clear;
 	fm_directory_view_class->done_adding_files = fm_list_view_done_adding_files;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
+	fm_directory_view_class->is_empty = real_is_empty;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
@@ -1234,6 +1236,14 @@ fm_list_view_get_icon_size (FMListView *list_view)
 
 	return nautilus_get_icon_size_for_zoom_level
 		(fm_list_view_get_zoom_level (list_view));
+}
+
+static gboolean
+real_is_empty (FMDirectoryView *view)
+{
+	g_assert (FM_IS_LIST_VIEW (view));
+
+	return GTK_CLIST (get_list (FM_LIST_VIEW (view)))->rows == 0;
 }
 
 static GList *

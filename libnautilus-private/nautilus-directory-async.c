@@ -1661,32 +1661,13 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 	directory->details->directory_loaded = FALSE;
 }
 
-static NautilusFile *
-get_corresponding_file (NautilusDirectory *directory)
-{
-	NautilusFile *file;
-	
-	file = directory->details->as_file;
-	if (file != NULL) {
-		nautilus_file_ref (file);
-		return file;
-	}
-
-	return nautilus_file_get_existing (directory->details->uri);
-}
-
 void
-nautilus_directory_force_reload (NautilusDirectory *directory)
+nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 	NautilusDirectory *parent_directory;
 
-	/* Start a new directory load. */
-	cancel_directory_load (directory);
-	directory->details->directory_loaded = FALSE;
-
-	/* Start a new directory count. */
-	file = get_corresponding_file (directory);
+	file = nautilus_directory_get_existing_corresponding_file (directory);
 	if (file != NULL) {
 		parent_directory = file->details->directory;
 
@@ -1707,6 +1688,18 @@ nautilus_directory_force_reload (NautilusDirectory *directory)
 
 		nautilus_file_unref (file);
 	}
+	nautilus_directory_async_state_changed (directory);
+}
+
+void
+nautilus_directory_force_reload (NautilusDirectory *directory)
+{
+	/* Start a new directory load. */
+	cancel_directory_load (directory);
+	directory->details->directory_loaded = FALSE;
+
+	/* Start a new directory count. */
+	nautilus_directory_invalidate_counts (directory);
 
 	nautilus_directory_async_state_changed (directory);
 }

@@ -151,6 +151,10 @@ char *             nautilus_directory_get_uri              (NautilusDirectory   
 gboolean           nautilus_directory_contains_file        (NautilusDirectory         *directory,
 							    NautilusFile              *file);
 
+/* Get (and ref) a NautilusFile object for this directory. */
+NautilusFile	  *nautilus_directory_get_corresponding_file (NautilusDirectory	      *directory);
+							    
+
 /* Waiting for data that's read asynchronously.
  * The file attribute and metadata keys are for files in the directory.
  * If any file attributes or metadata keys are passed, it won't call

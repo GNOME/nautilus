@@ -3148,6 +3148,12 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	nautilus_icon_container_update_scroll_region (container);
 }
 
+gboolean
+nautilus_icon_container_is_empty (NautilusIconContainer *container)
+{
+	return container->details->icons == NULL;
+}
+
 /* Call a function for all the icons. */
 typedef struct {
 	NautilusIconCallback callback;
