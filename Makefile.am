@@ -21,11 +21,9 @@ EXTRA_DIST=\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps
-
 appicon_DATA = nautilus.png
 
 Applicationsdir = $(datadir)/gnome/apps/Applications
-
 Applications_DATA = nautilus.desktop
 
 dist-hook: nautilus.spec

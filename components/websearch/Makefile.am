@@ -3,6 +3,7 @@ bin_PROGRAMS=ntl-web-search
 INCLUDES=\
 	-I$(top_srcdir) 			\
 	-I$(top_builddir)			\
+	-DWEB_SEARCH_DATADIR=\""$(datadir)/websearch"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS)			\
 	$(GCONF_CFLAGS)				\

@@ -3,11 +3,14 @@ SUBDIRS=converters
 bin_PROGRAMS=hyperbola
 lib_LTLIBRARIES=libvfs-help.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
+INCLUDES = \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
 	$(GNOMEUI_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(XML_CFLAGS) \
+	-DHYPERBOLA_DATADIR=\""$(datadir)/hyperbola"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DINFODIR=\"$(infodir)\"
 

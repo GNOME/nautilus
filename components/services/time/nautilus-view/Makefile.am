@@ -38,7 +38,7 @@ CORBA_GENERATED = \
 $(CORBA_GENERATED): trilobite_eazel_time_service_idl_stamp
 
 trilobite_eazel_time_service_idl_stamp: $(IDL)
-	$(ORBIT_IDL) -I${datadir}/idl $(IDL)
+	$(ORBIT_IDL) $(IDL_CFLAGS) $(IDL)
 	touch trilobite_eazel_time_service_idl_stamp
 
 main.c trilobite-eazel-time-view.c: $(CORBA_GENERATED)
