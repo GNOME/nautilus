@@ -1224,17 +1224,30 @@ get_link_name (char *name, int count)
 static const char untranslated_copy_duplicate_tag[] = N_(" (copy)");
 /* localizers: tag used to detect the second copy of a file */
 static const char untranslated_another_copy_duplicate_tag[] = N_(" (another copy)");
+
+/* localizers: tag used to detect the x11th copy of a file */
+static const char untranslated_x11th_copy_duplicate_tag[] = N_("th copy)");
+/* localizers: tag used to detect the x12th copy of a file */
+static const char untranslated_x12th_copy_duplicate_tag[] = N_("th copy)");
+/* localizers: tag used to detect the x13th copy of a file */
+static const char untranslated_x13th_copy_duplicate_tag[] = N_("th copy)");
+
 /* localizers: tag used to detect the x1st copy of a file */
 static const char untranslated_st_copy_duplicate_tag[] = N_("st copy)");
 /* localizers: tag used to detect the x2nd copy of a file */
 static const char untranslated_nd_copy_duplicate_tag[] = N_("nd copy)");
 /* localizers: tag used to detect the x3rd copy of a file */
 static const char untranslated_rd_copy_duplicate_tag[] = N_("rd copy)");
+
 /* localizers: tag used to detect the xxth copy of a file */
 static const char untranslated_th_copy_duplicate_tag[] = N_("th copy)");
 
 #define COPY_DUPLICATE_TAG _(untranslated_copy_duplicate_tag)
 #define ANOTHER_COPY_DUPLICATE_TAG _(untranslated_another_copy_duplicate_tag)
+#define X11TH_COPY_DUPLICATE_TAG _(untranslated_x11th_copy_duplicate_tag)
+#define X12TH_COPY_DUPLICATE_TAG _(untranslated_x12th_copy_duplicate_tag)
+#define X13TH_COPY_DUPLICATE_TAG _(untranslated_x13th_copy_duplicate_tag)
+
 #define ST_COPY_DUPLICATE_TAG _(untranslated_st_copy_duplicate_tag)
 #define ND_COPY_DUPLICATE_TAG _(untranslated_nd_copy_duplicate_tag)
 #define RD_COPY_DUPLICATE_TAG _(untranslated_rd_copy_duplicate_tag)
@@ -1244,6 +1257,14 @@ static const char untranslated_th_copy_duplicate_tag[] = N_("th copy)");
 static const char untranslated_first_copy_duplicate_format[] = N_("%s (copy)%s");
 /* localizers: appended to second file copy */
 static const char untranslated_second_copy_duplicate_format[] = N_("%s (another copy)%s");
+
+/* localizers: appended to x11th file copy */
+static const char untranslated_x11th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
+/* localizers: appended to x12th file copy */
+static const char untranslated_x12th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
+/* localizers: appended to x13th file copy */
+static const char untranslated_x13th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
+
 /* localizers: appended to x1st file copy */
 static const char untranslated_st_copy_duplicate_format[] = N_("%s (%dst copy)%s");
 /* localizers: appended to x2nd file copy */
@@ -1255,6 +1276,10 @@ static const char untranslated_th_copy_duplicate_format[] = N_("%s (%dth copy)%s
 
 #define FIRST_COPY_DUPLICATE_FORMAT _(untranslated_first_copy_duplicate_format)
 #define SECOND_COPY_DUPLICATE_FORMAT _(untranslated_second_copy_duplicate_format)
+#define X11TH_COPY_DUPLICATE_FORMAT _(untranslated_x11th_copy_duplicate_format)
+#define X12TH_COPY_DUPLICATE_FORMAT _(untranslated_x12th_copy_duplicate_format)
+#define X13TH_COPY_DUPLICATE_FORMAT _(untranslated_x13th_copy_duplicate_format)
+
 #define ST_COPY_DUPLICATE_FORMAT _(untranslated_st_copy_duplicate_format)
 #define ND_COPY_DUPLICATE_FORMAT _(untranslated_nd_copy_duplicate_format)
 #define RD_COPY_DUPLICATE_FORMAT _(untranslated_rd_copy_duplicate_format)
@@ -1320,8 +1345,18 @@ parse_previous_duplicate_name (const char *name,
 
 
 	/* Check to see if we got one of st, nd, rd, th. */
+	tag = strstr (name, X11TH_COPY_DUPLICATE_TAG);
 
-	tag = strstr (name, ST_COPY_DUPLICATE_TAG);
+	if (tag == NULL) {
+		tag = strstr (name, X12TH_COPY_DUPLICATE_TAG);
+	}
+	if (tag == NULL) {
+		tag = strstr (name, X13TH_COPY_DUPLICATE_TAG);
+	}
+
+	if (tag == NULL) {
+		tag = strstr (name, ST_COPY_DUPLICATE_TAG);
+	}
 	if (tag == NULL) {
 		tag = strstr (name, ND_COPY_DUPLICATE_TAG);
 	}
@@ -1377,6 +1412,7 @@ make_next_duplicate_name (const char *base, const char *suffix, int count)
 	}
 
 	if (count <= 2) {
+
 		/* Handle special cases for low numbers.
 		 * Perhaps for some locales we will need to add more.
 		 */
@@ -1399,20 +1435,40 @@ make_next_duplicate_name (const char *base, const char *suffix, int count)
 		 * For locales where getting this exactly right is difficult,
 		 * these can just be made all the same as the general case below.
 		 */
-		switch (count % 10) {
-		case 1:
-			format = ST_COPY_DUPLICATE_FORMAT;
+
+		/* Handle special cases for x11th - x20th.
+		 */
+		switch (count % 100) {
+		case 11:
+			format = X11TH_COPY_DUPLICATE_FORMAT;
 			break;
-		case 2:
-			format = ND_COPY_DUPLICATE_FORMAT;
+		case 12:
+			format = X12TH_COPY_DUPLICATE_FORMAT;
 			break;
-		case 3:
-			format = RD_COPY_DUPLICATE_FORMAT;
+		case 13:
+			format = X13TH_COPY_DUPLICATE_FORMAT;
 			break;
 		default:
-			/* The general case. */
-			format = TH_COPY_DUPLICATE_FORMAT;
+			format = NULL;
 			break;
+		}
+
+		if (format == NULL) {
+			switch (count % 10) {
+			case 1:
+				format = ST_COPY_DUPLICATE_FORMAT;
+				break;
+			case 2:
+				format = ND_COPY_DUPLICATE_FORMAT;
+				break;
+			case 3:
+				format = RD_COPY_DUPLICATE_FORMAT;
+				break;
+			default:
+				/* The general case. */
+				format = TH_COPY_DUPLICATE_FORMAT;
+				break;
+			}
 		}
 
 		result = g_strdup_printf (format, base, count, suffix);
@@ -2288,14 +2344,18 @@ nautilus_self_check_file_operations (void)
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy)"), 1), _("foo foo (25th copy)"));
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy).txt"), 1), _("foo foo (25th copy).txt"));
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (100000000000000th copy).txt"), 1), _("foo foo (copy).txt"));
-
-	/* FIXME bugzilla.gnome.org 47701: These are wrong. */
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy)"), 1), _("foo (11st copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy).txt"), 1), _("foo (11st copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy)"), 1), _("foo (12nd copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy).txt"), 1), _("foo (12nd copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy)"), 1), _("foo (13rd copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy).txt"), 1), _("foo (13rd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy)"), 1), _("foo (11th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy).txt"), 1), _("foo (11th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy)"), 1), _("foo (12th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy).txt"), 1), _("foo (12th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy)"), 1), _("foo (13th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy).txt"), 1), _("foo (13th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (110th copy)"), 1), _("foo (111th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (110th copy).txt"), 1), _("foo (111th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (122nd copy)"), 1), _("foo (123rd copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (122nd copy).txt"), 1), _("foo (123rd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (123rd copy)"), 1), _("foo (124th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (123rd copy).txt"), 1), _("foo (124th copy).txt"));
 }
 
 #endif

@@ -1,3 +1,11 @@
+2001-10-01  Benedikt Roth  <Benedikt.Roth@gmx.net>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(parse_previous_duplicate_name), (make_next_duplicate_name),
+	(nautilus_self_check_file_operations):
+	Fix #47701, Duplicate numbering scheme does not correctly number 
+	the 11th, 12th, and 13th copies
+
 2001-10-01  Alex Larsson  <alexl@redhat.com>
 
 	* data/Makefile.am (install-data-local):
