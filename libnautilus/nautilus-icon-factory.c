@@ -611,7 +611,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, void *controller)
 		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
 			uri = nautilus_file_get_uri (file);
 		else
-			uri = nautilus_icon_factory_get_thumbnail_uri(file, NAUTILUS_ICONS_CONTROLLER(controller));	
+			uri = nautilus_icon_factory_get_thumbnail_uri(file, controller ? NAUTILUS_ICONS_CONTROLLER(controller) : NULL);	
 	}
 	
 	/* Get the generic icon set for this file. */
@@ -1188,8 +1188,9 @@ nautilus_icon_factory_make_thumbnails(gpointer data)
 	   check if the pending one is completed.  */	
 	if (factory->thumbnail_in_progress) {
 		if (vfs_file_exists(factory->new_thumbnail_path)) {
-			/* update the icon */
-			nautilus_icons_controller_update_icon(NAUTILUS_ICONS_CONTROLLER(info->controller), info->thumbnail_uri);
+			/* update the icon if a controller is available */
+			if (info->controller)
+				nautilus_icons_controller_update_icon(NAUTILUS_ICONS_CONTROLLER(info->controller), info->thumbnail_uri);
 			
 			/* done making the thumbnail, so dispose of the list element */
 			g_free(info->thumbnail_uri);
@@ -1208,7 +1209,7 @@ nautilus_icon_factory_make_thumbnails(gpointer data)
 			
 			/* fork a task to make the thumbnail. */
 			if (!(thumbnail_pid = fork())) {
-				gchar *temp_str = g_strdup_printf("convert -geometry 96x96 %s png:%s",
+				gchar *temp_str = g_strdup_printf("convert -geometry 96x96 \"%s\" png:\"%s\"",
 				(gchar*) 				info->thumbnail_uri + 7, factory->new_thumbnail_path + 7);
 				system(temp_str);
 				g_free(temp_str);
