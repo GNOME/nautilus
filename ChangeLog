@@ -1,3 +1,63 @@
+2000-04-18  John Sullivan <sullivan@eazel.com>
+
+	Fixed bugs, mostly related to editable text fields.
+
+	* README: Made the contents of this file slightly helpful.
+	
+	* data/mime/nautilus.keys: Added an obscure MIME type that
+	someone reported running into.
+
+	* libnautilus-extensions/nautilus-entry.h,
+	* libnautilus-extensions/nautilus-entry.c: New files. Define a
+	subclass of GtkEntry (one-line text editing field) that fixes
+	bugs and adds convenience functions.
+	(nautilus_entry_key_press): Override key_press handler to treat
+	the keypad Enter key the same as the other Enter key (in GtkEntry
+	it inserts a "/r" into the text).
+	(nautilus_entry_select_all): Select all text, and move the text
+	cursor position to the end.
+	(nautilus_entry_select_all_at_idle): Same, but do it at the next
+	idle opportunity. Useful since nautilus_entry_select_all won't
+	work right if called in a key_press signal handler.
+	* libnautilus-extensions/Makefile.am: Build these two new files.
+
+	* src/file-manager/fm-properties-window.c:
+	(name_field_activate): New function, updates file name and
+	selects all text.
+	(create_properties_window): Make name_field be a NautilusEntry.
+	This fixes half of bug 433 (Enter keys don't work properly in
+	properties window). Also attach to "activate" signal and update
+	name change then. This fixes other half of bug 433. Also start
+	with name field selected & focused. This fixes bug 432 (properties
+	window should appear with name text selected).
+	(name_field_update_to_match_file): Only update the displayed text
+	if the new name coming in is different. This was needed to make
+	select-all-on-activate work.
+	(name_field_done_editing): Don't accept empty string as name;
+	silently revert back to original name.
+
+	* src/nautilus-bookmarks-window.c:
+	(create_bookmarks_window): Change name & uri text fields to 
+	NautilusEntry; this causes keypad Enter key to behave like other 
+	Enter key. Also connect to focus_in and activate signals.
+	(update_bookmark_from_text): New function, extracted from
+	on_text_field_focus_out_event.
+	(on_text_field_focus_out_event): Deselect all text after updating
+	bookmark.
+	(on_text_field_focus_in_event): New function, select all text.
+	(name_or_uri_field_activate): New function, update bookmark and
+	select all text.
+	
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_initialize): Use NautilusEntry instead of
+	GtkEntry. This makes keypad Enter act like other Enter in uri-entry
+	field.
+	
+	* src/ntl-window-msgs.c:
+	(nautilus_window_end_location_change_callback): Make "Nautilus can't 
+	handle this type of file" message mention (human-readable version of) 
+	file type.
+
 2000-04-17  Andy Hertzfeld <andy@eazel.com>
 
 	fixed bug involving making thumbnails for directories where we don't

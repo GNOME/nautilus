@@ -38,6 +38,7 @@
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
@@ -1016,9 +1017,11 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                               gpointer data)
 {
         NautilusWindow *window = data;
+        NautilusFile *file;
         char *requested_uri;
         char *error_message;
         char *scheme_string;
+        char *type_string;
         
         g_assert (navi != NULL);
         
@@ -1052,7 +1055,15 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE:
-                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of this type."), requested_uri);
+        	file = nautilus_file_get (requested_uri);
+        	if (file != NULL) {
+        		type_string = nautilus_file_get_string_attribute (file, "type");
+	                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of type \"%s\"."), requested_uri, type_string);
+			nautilus_file_unref (file);
+			g_free (type_string);
+        	} else {
+	                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of this type."), requested_uri);
+        	}
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME:

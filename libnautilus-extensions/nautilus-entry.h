@@ -1,0 +1,65 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* NautilusEntry: one-line text editing widget. This consists of bug fixes
+ * and other improvements to GtkEntry, and all the changes could be rolled
+ * into GtkEntry some day.
+ *
+ * Copyright (C) 2000 Eazel, Inc.
+ *
+ * Author: John Sullivan <sullivan@eazel.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+#ifndef NAUTILUS_ENTRY_H
+#define NAUTILUS_ENTRY_H
+
+#include <libgnome/gnome-defs.h>
+#include <gtk/gtkentry.h>
+
+BEGIN_GNOME_DECLS
+
+#define NAUTILUS_TYPE_ENTRY \
+	(nautilus_entry_get_type ())
+#define NAUTILUS_ENTRY(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ENTRY, NautilusEntry))
+#define NAUTILUS_ENTRY_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ENTRY, NautilusEntryClass))
+#define NAUTILUS_IS_ENTRY(obj) \
+        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ENTRY))
+#define NAUTILUS_IS_ENTRY_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_ENTRY))
+
+typedef struct NautilusEntry NautilusEntry;
+typedef struct NautilusEntryClass NautilusEntryClass;
+
+struct NautilusEntry {
+	GtkEntry parent;
+};
+
+struct NautilusEntryClass {
+	GtkEntryClass parent_class;
+};
+
+GtkType    nautilus_entry_get_type           (void);
+GtkWidget* nautilus_entry_new 		     (void);
+
+void	   nautilus_entry_select_all	     (NautilusEntry *entry);
+void	   nautilus_entry_select_all_at_idle (NautilusEntry *entry);
+
+END_GNOME_DECLS
+
+#endif /* NAUTILUS_ENTRY_H */

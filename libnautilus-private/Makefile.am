@@ -36,6 +36,7 @@ libnautilus_extensionsinclude_HEADERS=			\
 	nautilus-debug.h			\
 	nautilus-directory-background.h		\
 	nautilus-directory.h			\
+	nautilus-entry.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-utilities.h		\
 	nautilus-file.h				\
@@ -70,6 +71,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.c		\
 	nautilus-directory.c			\
+	nautilus-entry.c			\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
 	nautilus-gdk-extensions.c		\

@@ -23,6 +23,7 @@
 */
 
 #include "nautilus-bookmarks-window.h"
+#include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 
 /* Static variables to keep track of window state. If there were
@@ -44,6 +45,7 @@ static int		     uri_field_changed_signalID;
 static const NautilusBookmark *get_selected_bookmark (void);
 static guint	get_selected_row	      (void);
 static gboolean get_selection_exists 	      (void);
+static void     name_or_uri_field_activate    (NautilusEntry *entry);
 static void	nautilus_bookmarks_window_restore_geometry
 					      (GtkWidget *window);
 static void	on_bookmark_list_changed       (NautilusBookmarkList *, 
@@ -59,6 +61,9 @@ static void	on_select_row 		      (GtkCList	*,
 	       				       int column,
 	       				       GdkEventButton *,
 	       				       gpointer user_data);
+static gboolean	on_text_field_focus_in_event  (GtkWidget *, 
+					       GdkEventFocus *, 
+					       gpointer user_data);
 static gboolean	on_text_field_focus_out_event (GtkWidget *, 
 					       GdkEventFocus *, 
 					       gpointer user_data);
@@ -157,7 +162,7 @@ create_bookmarks_window(NautilusBookmarkList *list)
 	gtk_widget_show (name_label);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_label, FALSE, FALSE, 0);
 
-	name_field = gtk_entry_new ();
+	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_field, FALSE, FALSE, 0);
 
@@ -169,7 +174,7 @@ create_bookmarks_window(NautilusBookmarkList *list)
 	gtk_widget_show (url_label);
 	gtk_box_pack_start (GTK_BOX (vbox4), url_label, FALSE, FALSE, 0);
 
-	uri_field = gtk_entry_new ();
+	uri_field = nautilus_entry_new ();
 	gtk_widget_show (uri_field);
 	gtk_box_pack_start (GTK_BOX (vbox4), uri_field, FALSE, FALSE, 0);
 
@@ -208,19 +213,35 @@ create_bookmarks_window(NautilusBookmarkList *list)
                 	            GTK_SIGNAL_FUNC (on_name_field_changed),
                       		    NULL);
                       		    
+	gtk_signal_connect (GTK_OBJECT (name_field), "focus_in_event",
+      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_in_event),
+                            NULL);
+                            
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
                             NULL);
                             
+	gtk_signal_connect (GTK_OBJECT (name_field), "activate",
+      	              	    GTK_SIGNAL_FUNC (name_or_uri_field_activate),
+                            NULL);
+
 	uri_field_changed_signalID = 
 		gtk_signal_connect (GTK_OBJECT (uri_field), "changed",
                 	    	    GTK_SIGNAL_FUNC (on_uri_field_changed),
                       		    NULL);
                       		    
+	gtk_signal_connect (GTK_OBJECT (uri_field), "focus_in_event",
+      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_in_event),
+                            NULL);
+                            
 	gtk_signal_connect (GTK_OBJECT (uri_field), "focus_out_event",
         	            GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
               	    	    NULL);
               	    	    
+	gtk_signal_connect (GTK_OBJECT (uri_field), "activate",
+      	              	    GTK_SIGNAL_FUNC (name_or_uri_field_activate),
+                            NULL);
+
 	gtk_signal_connect (GTK_OBJECT (remove_button), "clicked",
         	            GTK_SIGNAL_FUNC (on_remove_button_clicked),
                       	    NULL);
@@ -460,10 +481,8 @@ on_select_row (GtkCList	       *clist,
 }
 
 
-static gboolean
-on_text_field_focus_out_event (GtkWidget *widget,
-			       GdkEventFocus *event,
-			       gpointer user_data)
+static void
+update_bookmark_from_text ()
 {
 	if (text_changed) {
 		NautilusBookmark *bookmark;
@@ -489,10 +508,39 @@ on_text_field_focus_out_event (GtkWidget *widget,
 
 		gtk_object_unref (GTK_OBJECT (bookmark));
 	}
-	
+}
+
+static gboolean
+on_text_field_focus_in_event (GtkWidget *widget,
+			       GdkEventFocus *event,
+			       gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_ENTRY (widget));
+
+	nautilus_entry_select_all (NAUTILUS_ENTRY (widget));
 	return FALSE;
 }
 
+static gboolean
+on_text_field_focus_out_event (GtkWidget *widget,
+			       GdkEventFocus *event,
+			       gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_ENTRY (widget));
+
+	update_bookmark_from_text ();
+	gtk_editable_select_region (GTK_EDITABLE (widget), -1, -1);
+	return FALSE;
+}
+
+static void
+name_or_uri_field_activate (NautilusEntry *entry)
+{
+	g_assert (NAUTILUS_IS_ENTRY (entry));
+
+	update_bookmark_from_text ();
+	nautilus_entry_select_all_at_idle (entry);
+}
 
 static void
 on_uri_field_changed (GtkEditable *editable,

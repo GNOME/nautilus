@@ -44,7 +44,9 @@
 #include <gtk/gtkvbox.h>
 
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
 static GHashTable *windows;
@@ -123,7 +125,7 @@ create_pixmap_widget_for_file (NautilusFile *file)
 }
 
 static gboolean
-name_field_done_editing (GtkWidget *widget,
+name_field_done_editing (NautilusEntry *name_field,
 			 GdkEventFocus *event,
 			 gpointer user_data)
 {
@@ -131,30 +133,40 @@ name_field_done_editing (GtkWidget *widget,
 	GnomeVFSResult rename_result;
 	const char *new_name;
 	char *original_name;
+	gboolean empty_name;
 	
-	g_assert (GTK_IS_ENTRY (widget));
+	g_assert (NAUTILUS_IS_ENTRY (name_field));
 
-	file = gtk_object_get_data (GTK_OBJECT (widget), "nautilus_file");
+	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	if (nautilus_file_is_gone (file)) {
 		return FALSE;
 	}
 
-	new_name = gtk_entry_get_text (GTK_ENTRY (widget));
-	rename_result = nautilus_file_rename (file, new_name);
+	new_name = gtk_entry_get_text (GTK_ENTRY (name_field));
 
-	if (rename_result == GNOME_VFS_OK) {
-		return FALSE;
-	}
+	/* Special case: silently revert text if new text is empty. */
+	if (strlen (new_name) == 0) {
+		empty_name = TRUE;
+	} else {
+		rename_result = nautilus_file_rename (file, new_name);
+
+		if (rename_result == GNOME_VFS_OK) {
+			return FALSE;
+		}
+	}	
 
 	/* Rename failed; restore old name, complain to user. */
 	original_name = nautilus_file_get_name (file);
-	gtk_entry_set_text (GTK_ENTRY (widget), original_name);
+	gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
 
-	fm_report_error_renaming_file (original_name,
-		 		       new_name,
-		 		       rename_result);
+
+	if (!empty_name) {
+		fm_report_error_renaming_file (original_name,
+			 		       new_name,
+			 		       rename_result);
+	}
 	
 	g_free (original_name);
 
@@ -162,7 +174,18 @@ name_field_done_editing (GtkWidget *widget,
 }
 
 static void
-name_field_update_to_match_file (GtkEntry *name_field)
+name_field_activate (NautilusEntry *name_field)
+{
+	g_assert (NAUTILUS_IS_ENTRY (name_field));
+
+	/* Accept changes. */
+	name_field_done_editing (name_field, NULL, NULL);
+
+	nautilus_entry_select_all_at_idle (name_field);
+}
+
+static void
+name_field_update_to_match_file (NautilusEntry *name_field)
 {
 	NautilusFile *file;
 	char *original_name, *current_name;
@@ -171,7 +194,7 @@ name_field_update_to_match_file (GtkEntry *name_field)
 
 	if (file == NULL || nautilus_file_is_gone (file)) {
 		gtk_widget_set_sensitive (GTK_WIDGET (name_field), FALSE);
-		gtk_entry_set_text (name_field, "");
+		gtk_entry_set_text (GTK_ENTRY (name_field), "");
 		return;
 	}
 
@@ -190,7 +213,13 @@ name_field_update_to_match_file (GtkEntry *name_field)
 					  current_name,
 					  g_free);
 
-		gtk_entry_set_text (name_field, current_name);
+		/* Only reset the text if it's different from what is
+		 * currently showing. This causes minimal ripples (e.g.
+		 * selection change).
+		 */
+		if (strcmp (gtk_entry_get_text (GTK_ENTRY (name_field)), current_name) != 0) {
+			gtk_entry_set_text (GTK_ENTRY (name_field), current_name);
+		}
 	} else {
 		g_free (original_name);
 	}
@@ -336,7 +365,7 @@ create_properties_window (NautilusFile *file)
 	gtk_box_pack_start (GTK_BOX (icon_and_name_hbox), icon_pixmap_widget, FALSE, FALSE, 0);
 
 	/* Create the name field */
-	name_field = gtk_entry_new ();
+	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (icon_and_name_hbox), name_field, TRUE, TRUE, 0);
 
@@ -348,11 +377,19 @@ create_properties_window (NautilusFile *file)
 				  (GtkDestroyNotify) nautilus_file_unref);
 
 	/* Update name field initially before hooking up changed signal. */
-	name_field_update_to_match_file (GTK_ENTRY (name_field));
+	name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
 
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (name_field_done_editing),
                             NULL);
+                      			    
+	gtk_signal_connect (GTK_OBJECT (name_field), "activate",
+      	              	    GTK_SIGNAL_FUNC (name_field_activate),
+                            NULL);
+
+        /* Start with name field selected. */
+        nautilus_entry_select_all (NAUTILUS_ENTRY (name_field));
+        gtk_widget_grab_focus (GTK_WIDGET (name_field));
                       			    
 	/* React to name changes from elsewhere. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),

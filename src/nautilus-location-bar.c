@@ -39,6 +39,7 @@
 
 #include <libgnomeui/gnome-uidefs.h>
 
+#include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -207,7 +208,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	gtk_box_pack_start  (GTK_BOX (bar), event_box, FALSE, TRUE,
 			     GNOME_PAD_SMALL);
 
-	entry = gtk_entry_new ();
+	entry = nautilus_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (entry), "activate",
 			    editable_activated_cb, bar);
 	gtk_box_pack_start (GTK_BOX (bar), entry, TRUE, TRUE, 0);
