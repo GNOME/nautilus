@@ -33,7 +33,9 @@ my @directories = (".");
 
 my %exceptions =
   (
+   '$(APPLETS_SUBDIRS)' => 'applets',
    '$(AUTHENTICATE_HELPER_SUBDIRS)' => 'authenticate',
+   '$(INSTALL_SERVICE)' => 'install',
    '$(MOZILLA_COMPONENT_SUBDIRS)' => 'mozilla',
    '$(NULL)' => '',
    '$(RPMVIEW_COMPONENT_SUBDIRS)' => 'rpmview',

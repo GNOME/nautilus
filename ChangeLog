@@ -1,3 +1,31 @@
+2000-11-30  Darin Adler  <darin@eazel.com>
+
+	Ran check-headers-in-Makefile since we had some problems
+	with that lately. I guess the Tinderbox is the new way to
+	catch these problems but I couldn't resist fixing them
+	the old way too.
+
+	* check-headers-in-Makefile.pl: Added some more special cases
+	in here to make it work better.
+
+	* components/services/install/nautilus-view/Makefile.am:
+	Marked the unused files in here as "noinst_HEADERS" as a hack
+	to make the script happy. We should delete the files at some
+	point if we decide we aren't ever using them.
+
+	* components/loser/content/.cvsignore:
+	* components/loser/sidebar/.cvsignore:
+	* components/mozilla/.cvsignore:
+	* components/sample/.cvsignore:
+	* components/services/install/command-line/.cvsignore:
+	* libnautilus/.cvsignore:
+	* src/.cvsignore:
+	* src/file-manager/.cvsignore:
+	Removed all the .xml.h files because they aren't put in these
+	directories any more so they don't need to be ignored. If you
+	have the files still and the cvs warnings bother you, you can
+	delete them.
+
 2000-11-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/image-viewer/nautilus-image-view.c:
@@ -202,7 +230,7 @@
 	isn't updated when text changes) by implementing forgetting of
 	file attributes and using it when appropriate.
 
-	Also fixed various other bugs cought by testing of these fixes or
+	Also fixed various other bugs caught by testing of these fixes or
 	reading the code.
 
 	* libnautilus-extensions/nautilus-file.c: 

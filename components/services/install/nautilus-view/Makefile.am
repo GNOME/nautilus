@@ -26,8 +26,13 @@ oaf_DATA = nautilus-service-install-view.oafinfo
 
 bin_PROGRAMS = nautilus-service-install-view
 
-nautilus_service_install_view_SOURCES =		        \
+noinst_HEADERS =					\
+	nautilus-service-install.c			\
+	nautilus-service-install.h			\
 	nautilus-service-install-view.h			\
+	$(NULL)
+
+nautilus_service_install_view_SOURCES =		        \
 	nautilus-service-install-view.c			\
 	main.c						\
 	$(NULL)
