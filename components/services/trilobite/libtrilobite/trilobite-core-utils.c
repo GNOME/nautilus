@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include <gnome.h>
 
 #ifndef TRILOBITE_SLIM 
@@ -45,6 +46,8 @@
 
 #define TRILOBITE_SERVICE_CONFIG_DIR "/etc/trilobite"
 #define TRILOBITE_SERVICE_CONFIG_DIR_ENV "TRILOBITE_CONFIG"
+
+#define ROBEY_LIKES_TIMESTAMPS
 
 #ifdef OPEN_MAX
 #define LAST_FD OPEN_MAX
@@ -153,6 +156,11 @@ static void
 trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message, FILE *logf)
 {
 	char *prefix;
+	char *timestamp = NULL;
+#ifdef ROBEY_LIKES_TIMESTAMPS
+	struct timeval now;
+#endif
+	
 	g_assert (logf != NULL);
 
 	if (flags & G_LOG_LEVEL_DEBUG) {
@@ -171,7 +179,14 @@ trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message
 		prefix = "???";
 	}
 
-	fprintf (logf, "%s %s\n", prefix, message);
+#ifdef ROBEY_LIKES_TIMESTAMPS
+	gettimeofday (&now, NULL);
+	timestamp = g_malloc (40);
+	strftime (timestamp, 40, "%d-%b %H:%M:%S", localtime ((time_t *)&now.tv_sec));
+	sprintf (timestamp + strlen (timestamp), ".%02ld ", now.tv_usec/10000L);
+#endif
+
+	fprintf (logf, "%s%s %s\n", timestamp != NULL ? timestamp : "", prefix, message);
 	fflush (logf);
 }
 
@@ -432,6 +447,7 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 {
 	CORBA_ORB orb;
 	FILE *logf;
+	char *real_log_filename;
 
 	/* for future reference:
 	 * possible to avoid gtk_init (which requires X) by using gtk_type_init(), gtk_signal_init()
@@ -451,7 +467,15 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 	}
 
 	if (log_filename != NULL) {
-		logf = fopen (log_filename, "wt");
+		if ((log_filename[0] == '~') && (log_filename[1] == '/')) {
+			char *homedir = g_get_home_dir ();
+			real_log_filename = g_strdup_printf ("%s%s", homedir, log_filename+1);
+			g_free (homedir);
+		} else {
+			real_log_filename = g_strdup (log_filename);
+		}
+
+		logf = fopen (real_log_filename, "wt");
 		if (logf != NULL) {
 			g_log_set_handler (service_name, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
 					   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
@@ -461,8 +485,9 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 					   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
 					   (GLogFunc)trilobite_add_log, logf);
 		} else {
-			g_warning (_("Can't write logfile %s -- using default log handler"), log_filename);
+			g_warning (_("Can't write logfile %s -- using default log handler"), real_log_filename);
 		}
+		g_free (real_log_filename);
 	}
 
 	g_atexit (trilobite_close_log);
@@ -476,6 +501,12 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 
 fail:
 	return FALSE;
+}
+
+void
+trilobite_set_debug_mode (gboolean debug_mode)
+{
+	do_debug_log = (debug_mode ? 1 : 0);
 }
 #endif /* TRILOBITE_SLIM */
 

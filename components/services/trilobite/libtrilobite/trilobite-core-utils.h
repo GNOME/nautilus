@@ -58,6 +58,8 @@ gboolean trilobite_init (const char *service_name,
 			 int argc, 
 			 char **argv, 
 			 GData *options);
+
+void trilobite_set_debug_mode (gboolean debug_mode);
 #endif /* TRILOBITE_SLIM  */
 
 const char *trilobite_get_useragent_string (gboolean version, 
