@@ -376,38 +376,62 @@ nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
 	color->blue =  (blue_total  * 256) / count;
 }
 
-/* scale the passed in pixbuf to conform to the passed-in maximum width and height */
-/* utility routine to scale the passed-in pixbuf to be smaller than the maximum allowed size, if necessary */
+/* Returns a scaled copy of pixbuf. When downOnly is true and the image
+ * already fits within max_width X max_height no scaling is
+ * performed - a copy of pixbuf is returned.
+ */
+static GdkPixbuf *
+nautilus_gdk_pixbuf_scale_to_fit_helper (GdkPixbuf *pixbuf, int max_width, int max_height, gboolean downOnly)
+{
+	int width;
+	int height;
+	int scaled_width;
+	int scaled_height;
+	
+	double h_scale;
+	double v_scale;
+	double scale_factor;
+
+	GdkPixbuf *scaled_pixbuf;
+
+	width  = gdk_pixbuf_get_width(pixbuf);
+	height = gdk_pixbuf_get_height(pixbuf);
+	
+	h_scale = max_width  / (double) width;
+	v_scale = max_height / (double) height;
+	
+	scale_factor = MIN (h_scale, v_scale);
+
+	if (downOnly && scale_factor >= 1.0) {
+		scaled_pixbuf = gdk_pixbuf_copy (pixbuf);
+	} else {
+		/* the width and scale factor are always > 0, so it's OK to round by adding here */
+		scaled_width  = floor (width * scale_factor + .5);
+		scaled_height = floor (height * scale_factor + .5);
+				
+		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);	
+	}
+	
+	return scaled_pixbuf;
+}
+
+/* Returns a scaled copy of pixbuf, preserving aspect ratio. The copy will
+ * be scaled as large as possible with exceeding the specified width and height.
+ */
 GdkPixbuf *
 nautilus_gdk_pixbuf_scale_to_fit (GdkPixbuf *pixbuf, int max_width, int max_height)
 {
-	double scale_factor;
-	double h_scale = 1.0;
-	double v_scale = 1.0;
+	return nautilus_gdk_pixbuf_scale_to_fit_helper (pixbuf, max_width, max_height, FALSE);
+}
 
-	int width  = gdk_pixbuf_get_width(pixbuf);
-	int height = gdk_pixbuf_get_height(pixbuf);
-	
-	if (width > max_width) {
-		h_scale = max_width / (double) width;
-	}
-	if (height > max_height) {
-		v_scale = max_height  / (double) height;
-	}
-	scale_factor = MIN (h_scale, v_scale);
-	
-	if (scale_factor < 1.0) {
-		GdkPixbuf *scaled_pixbuf;
-		/* the width and scale factor are always > 0, so it's OK to round by adding here */
-		int scaled_width  = floor(width * scale_factor + .5);
-		int scaled_height = floor(height * scale_factor + .5);
-				
-		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);	
-		gdk_pixbuf_unref (pixbuf);
-		pixbuf = scaled_pixbuf;
-	}
-	
-	return pixbuf;
+/* Returns a copy of pixbuf scaled down, preserving aspect ratio, to fit
+ * within the specified width and height. If it already fits, a copy of
+ * the original, without scaling, is returned.
+ */
+GdkPixbuf *
+nautilus_gdk_pixbuf_scale_down_to_fit (GdkPixbuf *pixbuf, int max_width, int max_height)
+{
+	return nautilus_gdk_pixbuf_scale_to_fit_helper (pixbuf, max_width, max_height, TRUE);
 }
 
 /**

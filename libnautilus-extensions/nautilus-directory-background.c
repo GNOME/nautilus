@@ -88,11 +88,16 @@ theme_image_path_to_uri (char *image_file)
  
 static void
 nautilus_directory_background_get_default_settings (gboolean is_desktop,
-						  char **color, char **image, gboolean *combine)
+						    char **color,
+						    char **image,
+						    nautilus_background_image_placement *placement,
+						    gboolean *combine)
 {
 	char *theme_source;
 	char *combine_str;
 	char *image_local_path;
+
+	*placement = NAUTILUS_BACKGROUND_TILED;
 
 	theme_source = is_desktop ? "desktop" : "directory";
 	
@@ -128,12 +133,16 @@ enum {
 };
 
 static void
-nautilus_directory_background_read_desktop_settings (char **color, char **image, gboolean *combine)
+nautilus_directory_background_read_desktop_settings (char **color,
+						     char **image,
+						     nautilus_background_image_placement *placement,
+						     gboolean *combine)
 {
-	gboolean use_image;
-	char*	 image_local_path;
 	int	 image_alignment;
+	char*	 image_local_path;
 	char*	 default_image_file;
+	gboolean no_alignment;
+	nautilus_background_image_placement default_placement;
 	
 	char	*end_color;
 	char	*start_color;
@@ -143,33 +152,44 @@ nautilus_directory_background_read_desktop_settings (char **color, char **image,
 	gboolean no_start_color;
 	gboolean no_end_color;
 
-	nautilus_directory_background_get_default_settings (TRUE, &default_color, &default_image_file, combine);
-	/* note - value of combine comes from the theme */
+	nautilus_directory_background_get_default_settings (TRUE, &default_color, &default_image_file, &default_placement, combine);
+	/* note - value of combine comes from the theme, not currently setable in gnome_config */
 
-	use_image        = !nautilus_gnome_config_string_match_no_case ("/Background/Default/wallpaper=none", "none");
-	image_local_path = gnome_config_get_string ("/Background/Default/wallpaper");
-	image_alignment  = gnome_config_get_int ("/Background/Default/wallpaperAlign=0");
+	image_local_path = gnome_config_get_string ("/Background/Default/wallpaper=none");
+	image_alignment  = gnome_config_get_int_with_default ("/Background/Default/wallpaperAlign", &no_alignment);
+
+	if (nautilus_strcasecmp (image_local_path, "none")) {
+		*image = nautilus_get_uri_from_local_path (image_local_path);
+	} else {
+		*image = NULL;
+	}
+	
+	g_free(image_local_path);
+	g_free(default_image_file);	
+
+	if (no_alignment) {
+		*placement = default_placement;
+	} else {
+		 switch (image_alignment) {
+			case WALLPAPER_TILED:
+				*placement = NAUTILUS_BACKGROUND_TILED;
+				break;
+			case WALLPAPER_CENTERED:
+				*placement = NAUTILUS_BACKGROUND_CENTERED;
+				break;
+			case WALLPAPER_SCALED:
+				*placement = NAUTILUS_BACKGROUND_SCALED;
+				break;
+			case WALLPAPER_SCALED_KEEP:
+				*placement = NAUTILUS_BACKGROUND_SCALED_ASPECT;
+				break;
+		 }
+	}
 
 	end_color     = gnome_config_get_string_with_default ("/Background/Default/color2", &no_end_color);
 	start_color   = gnome_config_get_string_with_default ("/Background/Default/color1", &no_start_color);
 	use_gradient  = !nautilus_gnome_config_string_match_no_case ("/Background/Default/simple=solid", "solid");
 	is_horizontal = !nautilus_gnome_config_string_match_no_case ("/Background/Default/gradient=vertical", "vertical");
-
-	if (use_image) {
-		*image = nautilus_get_uri_from_local_path (image_local_path);
-		 switch (image_alignment)
-		 {
-			case WALLPAPER_TILED:
-			case WALLPAPER_CENTERED:
-			case WALLPAPER_SCALED:
-			case WALLPAPER_SCALED_KEEP:
-			case WALLPAPER_EMBOSSED:
-			/* FIXME need to fix nautilus_background to handle image alignment
-			 */
-		 }
-	} else {
-		*image = NULL;
-	}
 
 	if (use_gradient) {
 		if (no_start_color || no_end_color) {
@@ -188,17 +208,16 @@ nautilus_directory_background_read_desktop_settings (char **color, char **image,
 	g_free(start_color);
 	g_free(end_color);
 	g_free(default_color);
-	
-	g_free(image_local_path);
-	g_free(default_image_file);	
 }
 
 static void
-nautilus_directory_background_write_desktop_settings (char *color, char *image, gboolean combine)
+nautilus_directory_background_write_desktop_settings (char *color, char *image, nautilus_background_image_placement placement, gboolean combine)
 {
 	char *end_color;
 	char *start_color;
 	char *image_local_path;
+
+	int wallpaper_align;
 
 	if (color != NULL) {
 		start_color = nautilus_gradient_get_start_color_spec (color);
@@ -218,10 +237,21 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 		image_local_path = nautilus_get_local_path_from_uri (image);
 		gnome_config_set_string ("/Background/Default/wallpaper", image_local_path);
 		g_free (image_local_path);
-		/* FIXME need to fix nautilus_background to handle image alignment
-		 * and write out the proper value here.
-		 */
-		gnome_config_set_int ("/Background/Default/wallpaperAlign", WALLPAPER_TILED);
+		switch (placement) {
+			case NAUTILUS_BACKGROUND_TILED:
+				wallpaper_align = WALLPAPER_TILED;
+				break;	
+			case NAUTILUS_BACKGROUND_CENTERED:
+				wallpaper_align = WALLPAPER_CENTERED;
+				break;	
+			case NAUTILUS_BACKGROUND_SCALED:
+				wallpaper_align = WALLPAPER_SCALED;
+				break;	
+			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
+				wallpaper_align = WALLPAPER_SCALED_KEEP;
+				break;	
+		}
+		gnome_config_set_int ("/Background/Default/wallpaperAlign", wallpaper_align);
 	} else {
 		gnome_config_set_string ("/Background/Default/wallpaper", "none");
 	}
@@ -239,8 +269,9 @@ nautilus_directory_background_write_desktop_default_settings ()
 	char *color;
 	char *image;
 	gboolean combine;
-	nautilus_directory_background_get_default_settings (TRUE, &color, &image, &combine);
-	nautilus_directory_background_write_desktop_settings (color, image, combine);
+	nautilus_background_image_placement placement;
+	nautilus_directory_background_get_default_settings (TRUE, &color, &image, &placement, &combine);
+	nautilus_directory_background_write_desktop_settings (color, image, placement, combine);
 }	
 
 /* return true if the background is not in the default state */
@@ -255,14 +286,19 @@ nautilus_directory_background_is_set (NautilusBackground *background)
 	gboolean is_set;
 	gboolean combine;
 	gboolean default_combine;
+	
+	nautilus_background_image_placement placement;
+	nautilus_background_image_placement default_placement;
 
 	color = nautilus_background_get_color (background);
-	image = nautilus_background_get_tile_image_uri (background);
+	image = nautilus_background_get_image_uri (background);
 	default_combine = nautilus_background_get_combine_mode (background);
-	nautilus_directory_background_get_default_settings (nautilus_directory_background_is_desktop (background), &default_color, &default_image, &combine);
+	default_placement = nautilus_background_get_image_placement (background);
+	nautilus_directory_background_get_default_settings (nautilus_directory_background_is_desktop (background), &default_color, &default_image, &placement, &combine);
 
 	is_set = !nautilus_strcmp (color, default_color) ||
 		 !nautilus_strcmp (image, default_image) ||
+		 placement != default_placement ||
 		 combine != default_combine;
 
 	g_free (color);
@@ -287,10 +323,10 @@ background_changed_callback (NautilusBackground *background,
         
 
 	color = nautilus_background_get_color (background);
-	image = nautilus_background_get_tile_image_uri (background);
+	image = nautilus_background_get_image_uri (background);
 
 	if (nautilus_directory_background_is_desktop (background)) {
-		nautilus_directory_background_write_desktop_settings (color, image, nautilus_background_get_combine_mode (background));
+		nautilus_directory_background_write_desktop_settings (color, image, nautilus_background_get_image_placement (background), nautilus_background_get_combine_mode (background));
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
 	         * try to change the background.
@@ -324,8 +360,10 @@ static void
 directory_changed_callback (NautilusDirectory *directory,
                             NautilusBackground *background)
 {
-        char *color, *image;
+        char *color;
+        char *image;
 	gboolean combine;
+	nautilus_background_image_placement placement;
 	
         g_assert (NAUTILUS_IS_DIRECTORY (directory));
         g_assert (NAUTILUS_IS_BACKGROUND (background));
@@ -333,7 +371,7 @@ directory_changed_callback (NautilusDirectory *directory,
                   == directory);
 
 	if (nautilus_directory_background_is_desktop (background)) {
-		nautilus_directory_background_read_desktop_settings (&color, &image, &combine);
+		nautilus_directory_background_read_desktop_settings (&color, &image, &placement, &combine);
 	} else {
 		color = nautilus_directory_get_metadata (directory,
 	                                                 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
@@ -341,11 +379,12 @@ directory_changed_callback (NautilusDirectory *directory,
 		image = nautilus_directory_get_metadata (directory,
 	                                                 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
 	                                                 NULL);
+	        placement = NAUTILUS_BACKGROUND_TILED; /* non-tiled on avail for desktop, at least for now */
 		combine = FALSE; /* only from theme, at least for now */
 
 		/* if there's none, read the default from the theme */
 		if (color == NULL && image == NULL) {
-			nautilus_directory_background_get_default_settings (FALSE, &color, &image, &combine);	
+			nautilus_directory_background_get_default_settings (FALSE, &color, &image, &placement, &combine);	
 		}
 	}
 
@@ -357,8 +396,9 @@ directory_changed_callback (NautilusDirectory *directory,
                                           directory);
 
 	nautilus_background_set_color (background, color);     
-	nautilus_background_set_tile_image_uri (background, image);
+	nautilus_background_set_image_uri (background, image);
         nautilus_background_set_combine_mode (background, combine);
+        nautilus_background_set_image_placement (background, placement);
 	
 	/* Unblock the handler. */
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
@@ -418,7 +458,7 @@ background_reset_callback (NautilusBackground *background,
 	directory_changed_callback (directory, background);
 
 	/* We don't want the default reset handler running.
-	 * It will set color and tile_image_uri  to NULL.
+	 * It will set color and image_uri  to NULL.
 	 */
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (background), "reset");
 }

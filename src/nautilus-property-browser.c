@@ -529,7 +529,7 @@ ensure_uri_is_image(const char *uri)
 static GdkPixbuf *
 make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name)
 {
-	GdkPixbuf *pixbuf, *frame;
+	GdkPixbuf *pixbuf, *orig_pixbuf, *frame;
 	char *image_file_name, *temp_str;
 
 	image_file_name = g_strdup_printf ("%s/%s/%s",
@@ -551,17 +551,18 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 		g_free (user_directory);	
 	}
 	
-	pixbuf = gdk_pixbuf_new_from_file (image_file_name);
+	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);
 	
 	/* background properties are always a fixed size, while others are pinned to the max size */
 	if (!strcmp(property_browser->details->category, "backgrounds")) {
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
 		frame = gdk_pixbuf_new_from_file (temp_str);
 		g_free (temp_str);
-		pixbuf = make_background_chit (pixbuf, frame, TRUE);
+		pixbuf = make_background_chit (orig_pixbuf, frame, TRUE);
 		gdk_pixbuf_unref (frame);
 	} else {
-		pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+		pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+		gdk_pixbuf_unref (orig_pixbuf);
 	}
 
 	g_free (image_file_name);
@@ -801,13 +802,15 @@ static void
 set_emblem_image_from_file(NautilusPropertyBrowser *property_browser)
 {
 	GdkPixbuf *pixbuf;
+	GdkPixbuf *scaled_pixbuf;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 
 	pixbuf = gdk_pixbuf_new_from_file (property_browser->details->image_path);			
-	pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
-    	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
 	gdk_pixbuf_unref (pixbuf);
+    	gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_unref (scaled_pixbuf);
 	
 	if (property_browser->details->emblem_image == NULL) {
 		property_browser->details->emblem_image = gtk_pixmap_new(pixmap, mask);
@@ -1426,18 +1429,20 @@ make_properties_from_directory_path (NautilusPropertyBrowser *property_browser,
 			GdkPixmap *pixmap;
 			GdkBitmap *mask;
 			GdkPixbuf *pixbuf;
+			GdkPixbuf *orig_pixbuf;
 			GtkWidget *event_box, *temp_vbox;
 			GtkWidget *pixmap_widget, *label;
 
 			if (current_file_info->name[0] != '.') {
 				image_file_name = g_strdup_printf("%s/%s", directory_uri+7, current_file_info->name);
-				pixbuf = gdk_pixbuf_new_from_file(image_file_name);
+				orig_pixbuf = gdk_pixbuf_new_from_file(image_file_name);
 				g_free(image_file_name);
 			
 				if (!strcmp(property_browser->details->category, "backgrounds")) {
-					pixbuf = make_background_chit (pixbuf, background_frame, FALSE);
+					pixbuf = make_background_chit (orig_pixbuf, background_frame, FALSE);
 				} else {
-					pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+					pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+					gdk_pixbuf_unref (orig_pixbuf);
 				}
 
 				/* make a pixmap and mask to pass to the widget */

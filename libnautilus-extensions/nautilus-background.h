@@ -62,18 +62,28 @@ typedef struct NautilusBackgroundClass NautilusBackgroundClass;
 GtkType             nautilus_background_get_type                         (void);
 NautilusBackground *nautilus_background_new                              (void);
 
+typedef enum {
+	NAUTILUS_BACKGROUND_TILED = 0, /* zero makes this the default placement */
+	NAUTILUS_BACKGROUND_CENTERED,
+	NAUTILUS_BACKGROUND_SCALED,
+	NAUTILUS_BACKGROUND_SCALED_ASPECT
+} nautilus_background_image_placement;
+
 /* Calls to change a background. */
 void                nautilus_background_set_color                        (NautilusBackground     *background,
 									  const char             *color_or_gradient);
-void                nautilus_background_set_tile_image_uri               (NautilusBackground     *background,
+void                nautilus_background_set_image_uri                    (NautilusBackground     *background,
 									  const char             *image_uri);
 void                nautilus_background_reset                            (NautilusBackground     *background);
 void                nautilus_background_set_combine_mode                 (NautilusBackground     *background, gboolean combine);
+void                nautilus_background_set_image_placement              (NautilusBackground     *background, nautilus_background_image_placement placement);
 
 /* Calls to interrogate the current state of a background. */
 char *              nautilus_background_get_color                        (NautilusBackground     *background);
-char *              nautilus_background_get_tile_image_uri               (NautilusBackground     *background);
+char *              nautilus_background_get_image_uri               (NautilusBackground     *background);
 gboolean	    nautilus_background_get_combine_mode		 (NautilusBackground	 *background);
+nautilus_background_image_placement
+		    nautilus_background_get_image_placement		 (NautilusBackground	 *background);
 gboolean	    nautilus_background_is_dark				 (NautilusBackground	 *background);
 gboolean            nautilus_background_is_set                           (NautilusBackground     *background);
 

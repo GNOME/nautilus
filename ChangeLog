@@ -1,3 +1,54 @@
+2000-08-14  Michael Engber  <engber@eazel.com>
+
+	Second cut at syncing our desktop background with GNOME's (bug 1047)
+	Now we support images being centered and scaled (not just tiled)
+	Although, there is no UI in nautilus to set this up (use the background
+	capplet) Still need to handle update issues.
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_destroy),
+	(nautilus_background_get_image_placement),
+	(nautilus_background_set_image_placement),
+	(nautilus_background_draw), (nautilus_background_draw_aa),
+	(nautilus_background_get_image_uri), (load_image_callback),
+	(start_loading_image),
+	(nautilus_background_receive_dropped_background_image),
+	(nautilus_background_set_image_uri), (nautilus_background_is_set),
+	(nautilus_background_real_reset),
+	(nautilus_background_is_too_complex_for_gtk_style),
+	(nautilus_background_is_dark),
+	(nautilus_background_receive_dropped_color):
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_get_default_settings),
+	(nautilus_directory_background_read_desktop_settings),
+	(nautilus_directory_background_write_desktop_settings),
+	(nautilus_directory_background_write_desktop_default_settings),
+	(nautilus_directory_background_is_set),
+	(background_changed_callback), (directory_changed_callback),
+	(background_reset_callback):
+
+	nautilus_gdk_pixbuf_scale_to_fit was renamed to
+	nautilus_gdk_pixbuf_scale_down_to_fit and also changed
+	to not unref it's argument pixbuf. This involved fixing
+	up various places it was used.
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_scale_to_fit_helper),
+	(nautilus_gdk_pixbuf_scale_to_fit),
+	(nautilus_gdk_pixbuf_scale_down_to_fit):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_make_thumbnails):
+	* src/nautilus-property-browser.c: (make_drag_image),
+	(set_emblem_image_from_file),
+	(make_properties_from_directory_path):
+	* src/nautilus-sidebar.c: (background_settings_changed_callback),
+	(background_reset_callback), (nautilus_sidebar_update_appearance):
+	* src/nautilus-theme-selector.c: (add_theme):
+
 2000-08-14  Darin Adler  <darin@eazel.com>
 
 	Some bug fixes, including a fix for bug 2156 (all sidebar panels

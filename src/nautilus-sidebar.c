@@ -988,7 +988,7 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 					 color_spec);
 	g_free (color_spec);
 
-	image = nautilus_background_get_tile_image_uri (background);
+	image = nautilus_background_get_image_uri (background);
 	nautilus_directory_set_metadata (sidebar->details->directory,
 					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 					 sidebar->details->default_background_image,
@@ -1040,7 +1040,7 @@ background_reset_callback (NautilusBackground *background, NautilusSidebar *side
 					  background_settings_changed_callback,
 					  sidebar);
 	nautilus_background_set_color (background, sidebar->details->default_background_color);	
-	nautilus_background_set_tile_image_uri (background, sidebar->details->default_background_image);
+	nautilus_background_set_image_uri (background, sidebar->details->default_background_image);
 	
 	combine_mode = nautilus_theme_get_theme_data ("sidebar", "COMBINE");
 	nautilus_background_set_combine_mode (background, combine_mode != NULL);
@@ -1331,7 +1331,7 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	nautilus_background_set_color (background, background_color);	
 	g_free (background_color);
 	
-	nautilus_background_set_tile_image_uri (background, background_image);
+	nautilus_background_set_image_uri (background, background_image);
 	g_free (background_image);
 
 	combine_mode = nautilus_theme_get_theme_data ("sidebar", "COMBINE");

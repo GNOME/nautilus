@@ -2498,7 +2498,8 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 				thumbnail_image_frame = load_thumbnail_frame(info->anti_aliased);
 									
 				/* scale the content image as necessary */	
-				scaled_image = nautilus_gdk_pixbuf_scale_to_fit(full_size_image, 96, 96);	
+				scaled_image = nautilus_gdk_pixbuf_scale_down_to_fit(full_size_image, 96, 96);	
+				gdk_pixbuf_unref (full_size_image);
 				
 				/* embed the content image in the frame */
 				/* FIXME: the offset numbers are dependent on the frame image - we need to make them adjustable */

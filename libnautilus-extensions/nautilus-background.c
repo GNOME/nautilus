@@ -74,11 +74,11 @@ static guint signals[LAST_SIGNAL];
 
 struct NautilusBackgroundDetails {
 	char *color;
-	char *tile_image_uri;
-	GdkPixmap *tile_pixmap;
-	GdkPixbuf *tile_image;
-	NautilusPixbufLoadHandle *load_tile_image_handle;
+	char *image_uri;
+	GdkPixbuf *image;
+	NautilusPixbufLoadHandle *load_image_handle;
 	gboolean combine_mode;
+	nautilus_background_image_placement image_placement;
 };
 
 static void
@@ -141,12 +141,12 @@ nautilus_background_destroy (GtkObject *object)
 
 	background = NAUTILUS_BACKGROUND (object);
 
-	nautilus_cancel_gdk_pixbuf_load (background->details->load_tile_image_handle);
+	nautilus_cancel_gdk_pixbuf_load (background->details->load_image_handle);
 
 	g_free (background->details->color);
-	g_free (background->details->tile_image_uri);
-	if (background->details->tile_image != NULL) {
-		gdk_pixbuf_unref (background->details->tile_image);
+	g_free (background->details->image_uri);
+	if (background->details->image != NULL) {
+		gdk_pixbuf_unref (background->details->image);
 	}
 	g_free (background->details);
 
@@ -174,6 +174,25 @@ nautilus_background_set_combine_mode (NautilusBackground *background, gboolean n
 	}
 }
 
+nautilus_background_image_placement
+nautilus_background_get_image_placement (NautilusBackground *background)
+{
+	return background->details->combine_mode;
+}
+
+void
+nautilus_background_set_image_placement (NautilusBackground *background, nautilus_background_image_placement new_placement)
+{
+	if (new_placement != background->details->image_placement) {
+		background->details->image_placement = new_placement;
+		
+		gtk_signal_emit (GTK_OBJECT (background),
+			 signals[SETTINGS_CHANGED]);
+		gtk_signal_emit (GTK_OBJECT (background),
+			 signals[APPEARANCE_CHANGED]);
+	}
+}
+
 NautilusBackground *
 nautilus_background_new (void)
 {
@@ -182,7 +201,6 @@ nautilus_background_new (void)
 
 /* this routine is for gdk style rendering, which doesn't naturally support transparency, so we
    draw into a pixbuf offscreen if necessary */
-   
 void
 nautilus_background_draw (NautilusBackground *background,
 			  GdkDrawable *drawable,			  
@@ -193,10 +211,15 @@ nautilus_background_draw (NautilusBackground *background,
 {
 	GdkPixbuf *pixbuf;
 	GnomeCanvasBuf buffer;
+	int image_width;
+	int image_height;
 	char *start_color_spec, *end_color_spec;
 	guint32 start_rgb, end_rgb;
 	gboolean horizontal_gradient;
 
+	/* FIXME combo mode only works with tiled images. If we decide we want combo mode to work
+	 * more generally, this needs to be fixed.
+	 */
 	if (background->details->combine_mode) {
 		/* allocate a pixbuf the size of the rectangle */
 		pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, rectangle->width, rectangle->height);
@@ -227,17 +250,11 @@ nautilus_background_draw (NautilusBackground *background,
 		return;
 	}
 	
-	/* handle the normal, uncombined mode by prefering a tile if we have one but
-	   otherwise using the background color */
-	   
-	if (background->details->tile_image != NULL) {
-		nautilus_gdk_pixbuf_render_to_drawable_tiled (background->details->tile_image,
-							      drawable,
-							      gc,
-							      rectangle,
-							      GDK_RGB_DITHER_NORMAL,
-							      origin_x, origin_y);
-	} else {
+	/* if the image won't totally obscure it, draw the background color
+	 */
+	if (background->details->image == NULL ||
+	    background->details->image_placement == NAUTILUS_BACKGROUND_CENTERED ||
+	    background->details->image_placement == NAUTILUS_BACKGROUND_SCALED_ASPECT) {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
 		horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
@@ -254,6 +271,55 @@ nautilus_background_draw (NautilusBackground *background,
 						       start_rgb,
 						       end_rgb,
 						       horizontal_gradient);
+	}
+
+	if (background->details->image != NULL) {
+	
+		image_width = gdk_pixbuf_get_width (background->details->image);
+		image_height = gdk_pixbuf_get_height (background->details->image);
+		
+		switch (background->details->image_placement) {
+
+			case NAUTILUS_BACKGROUND_TILED:
+				nautilus_gdk_pixbuf_render_to_drawable_tiled (background->details->image,
+									      drawable,
+									      gc,
+									      rectangle,
+									      GDK_RGB_DITHER_NORMAL,
+									      origin_x, origin_y);
+				break;
+			case NAUTILUS_BACKGROUND_CENTERED:
+				gdk_pixbuf_render_to_drawable (background->details->image, drawable, gc,
+							       0, 0,
+							       rectangle->x + (rectangle->width - image_width)/2,
+							       rectangle->y + (rectangle->height - image_height)/2,
+							       image_width, image_height,
+							       GDK_RGB_DITHER_NORMAL, 0, 0);
+				break;
+			case NAUTILUS_BACKGROUND_SCALED:
+				pixbuf = gdk_pixbuf_scale_simple (background->details->image, rectangle->width, rectangle->height, GDK_INTERP_BILINEAR);
+				gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
+							       0, 0,
+							       rectangle->x, rectangle->y,
+							       rectangle->width, rectangle->height,
+							       GDK_RGB_DITHER_NORMAL, 0, 0);
+				gdk_pixbuf_unref (pixbuf);
+				break;
+			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
+				pixbuf = nautilus_gdk_pixbuf_scale_to_fit (background->details->image, rectangle->width, rectangle->height);
+				/* Use new width & height to draw centered.
+				 */
+				image_width = gdk_pixbuf_get_width (pixbuf);
+				image_height = gdk_pixbuf_get_height (pixbuf);
+				gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
+							       0, 0,
+							       rectangle->x + (rectangle->width - image_width)/2,
+							       rectangle->y + (rectangle->height - image_height)/2,
+							       image_width, image_height,
+							       GDK_RGB_DITHER_NORMAL, 0, 0);
+				gdk_pixbuf_unref (pixbuf);
+				break;
+		}
 	}
 }
 
@@ -352,7 +418,7 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 	int accumulator, temp_value;
 	
 	if (!buffer->is_buf) {
-		if (background->details->combine_mode || (background->details->tile_image == NULL)) {
+		if (background->details->combine_mode || (background->details->image == NULL)) {
 			/* get the initial color */
 			start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 			start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
@@ -442,9 +508,8 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 			*buffer = save_buf;
 		}
 		
-		/* draw the tiled background image if we have one */
-		if (background->details->tile_image) {
-			draw_pixbuf_tiled_aa (background->details->tile_image, buffer);
+		if (background->details->image && background->details->image_placement == NAUTILUS_BACKGROUND_TILED) {
+			draw_pixbuf_tiled_aa (background->details->image, buffer);
 		} 		
 				
 		buffer->is_buf = TRUE;
@@ -460,11 +525,11 @@ nautilus_background_get_color (NautilusBackground *background)
 }
 
 char *
-nautilus_background_get_tile_image_uri (NautilusBackground *background)
+nautilus_background_get_image_uri (NautilusBackground *background)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), NULL);
 
-	return g_strdup (background->details->tile_image_uri);
+	return g_strdup (background->details->image_uri);
 }
 
 void
@@ -495,10 +560,10 @@ load_image_callback (GnomeVFSResult error,
 
 	background = NAUTILUS_BACKGROUND (callback_data);
 
-	g_assert (background->details->tile_image == NULL);
-	g_assert (background->details->load_tile_image_handle != NULL);
+	g_assert (background->details->image == NULL);
+	g_assert (background->details->load_image_handle != NULL);
 
-	background->details->load_tile_image_handle = NULL;
+	background->details->load_image_handle = NULL;
 
 	/* Just ignore errors. */
 	if (pixbuf == NULL) {
@@ -506,21 +571,21 @@ load_image_callback (GnomeVFSResult error,
 	}
 
 	gdk_pixbuf_ref (pixbuf);
-	background->details->tile_image = pixbuf;
+	background->details->image = pixbuf;
 
 	gtk_signal_emit (GTK_OBJECT (background),
 			 signals[APPEARANCE_CHANGED]);
 }
 
 static void
-start_loading_tile_image (NautilusBackground *background)
+start_loading_image (NautilusBackground *background)
 {
-	if (background->details->tile_image_uri == NULL) {
+	if (background->details->image_uri == NULL) {
 		return;
 	}
 
-	background->details->load_tile_image_handle =
-		nautilus_gdk_pixbuf_load_async (background->details->tile_image_uri,
+	background->details->load_image_handle =
+		nautilus_gdk_pixbuf_load_async (background->details->image_uri,
 						load_image_callback,
 						background);
 }
@@ -533,31 +598,31 @@ nautilus_background_receive_dropped_background_image (NautilusBackground *backgr
 	if (nautilus_str_has_suffix (image_uri, "/" RESET_BACKGROUND_MAGIC_IMAGE_NAME)) {
 		nautilus_background_reset (background);
 	} else {
-		nautilus_background_set_tile_image_uri (background, image_uri);
+		nautilus_background_set_image_uri (background, image_uri);
 	}
 }
 
 void
-nautilus_background_set_tile_image_uri (NautilusBackground *background,
+nautilus_background_set_image_uri (NautilusBackground *background,
 					const char *image_uri)
 {
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 
-	if (nautilus_strcmp (background->details->tile_image_uri, image_uri) == 0) {
+	if (nautilus_strcmp (background->details->image_uri, image_uri) == 0) {
 		return;
 	}
 
-	nautilus_cancel_gdk_pixbuf_load (background->details->load_tile_image_handle);
-	background->details->load_tile_image_handle = NULL;
+	nautilus_cancel_gdk_pixbuf_load (background->details->load_image_handle);
+	background->details->load_image_handle = NULL;
 
-	g_free (background->details->tile_image_uri);
+	g_free (background->details->image_uri);
 	
-	if (background->details->tile_image != NULL) {
-		gdk_pixbuf_unref (background->details->tile_image);
-		background->details->tile_image = NULL;
+	if (background->details->image != NULL) {
+		gdk_pixbuf_unref (background->details->image);
+		background->details->image = NULL;
 	}
-	background->details->tile_image_uri = g_strdup (image_uri);
-	start_loading_tile_image (background);
+	background->details->image_uri = g_strdup (image_uri);
+	start_loading_image (background);
 
 	gtk_signal_emit (GTK_OBJECT (background),
 			 signals[SETTINGS_CHANGED]);
@@ -706,7 +771,7 @@ gboolean
 nautilus_background_is_set (NautilusBackground *background)
 {
 	return background->details->color != NULL ||
-	       background->details->tile_image_uri != NULL;
+	       background->details->image_uri != NULL;
 }
 
 /**
@@ -726,7 +791,7 @@ static void
 nautilus_background_real_reset (NautilusBackground *background)
 {
 	nautilus_background_set_color (background, NULL);
-	nautilus_background_set_tile_image_uri (background, NULL);
+	nautilus_background_set_image_uri (background, NULL);
 }
 
 static void
@@ -818,7 +883,7 @@ nautilus_background_is_too_complex_for_gtk_style (NautilusBackground *background
 	
 	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), FALSE);
 
-	if (background->details->tile_image != NULL) {
+	if (background->details->image != NULL) {
 		return TRUE;
 	}
 	if (nautilus_gradient_is_gradient (background->details->color)) {
@@ -837,8 +902,8 @@ nautilus_background_is_dark (NautilusBackground *background)
 	int intensity, intensity2;
 	char *start_color_spec, *end_color_spec;
 	
-	if (background->details->tile_image != NULL) {
-		nautilus_gdk_pixbuf_average_value (background->details->tile_image, &color);
+	if (background->details->image != NULL) {
+		nautilus_gdk_pixbuf_average_value (background->details->image, &color);
 			
 	} else if (nautilus_gradient_is_gradient (background->details->color)) {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
@@ -910,7 +975,7 @@ nautilus_background_receive_dropped_color (NautilusBackground *background,
 	g_free (color_spec);
 
 	nautilus_background_set_color (background, new_gradient_spec);
-	nautilus_background_set_tile_image_uri (background, NULL);
+	nautilus_background_set_image_uri (background, NULL);
 	
 	g_free (new_gradient_spec);
 }

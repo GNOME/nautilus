@@ -502,6 +502,7 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 {
 	GtkWidget *pix_widget;
 	GdkPixbuf *theme_pixbuf;
+	GdkPixbuf *scaled_pixbuf;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	
@@ -509,10 +510,11 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	
 	/* generate a pixbuf to represent the theme */
 	theme_pixbuf = nautilus_theme_make_selector (theme_name);
-	theme_pixbuf = nautilus_gdk_pixbuf_scale_to_fit	 (theme_pixbuf, 70, 48);
-	
-	gdk_pixbuf_render_pixmap_and_mask (theme_pixbuf, &pixmap, &mask, 128);
+	scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (theme_pixbuf, 70, 48);
 	gdk_pixbuf_unref (theme_pixbuf);
+	
+	gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_unref (scaled_pixbuf);
 	
 	/* generate a pixwidget to hold it */
 	

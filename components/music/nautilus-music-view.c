@@ -1190,6 +1190,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	char* clist_entry[10];
 	GList *p;
 	GdkPixbuf *pixbuf;
+	GdkPixbuf *scaled_pixbuf;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;	
 	GList *song_list;
@@ -1310,10 +1311,11 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	if (image_path_uri != NULL) {
   		image_path = nautilus_get_local_path_from_uri(image_path_uri);
   		pixbuf = gdk_pixbuf_new_from_file(image_path);
-		pixbuf = nautilus_gdk_pixbuf_scale_to_fit(pixbuf, 128, 128);
-
-       		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit(pixbuf, 128, 128);
 		gdk_pixbuf_unref (pixbuf);
+
+       		gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, 128);
+		gdk_pixbuf_unref (scaled_pixbuf);
 		
 		if (music_view->details->album_image == NULL) {
 			music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
