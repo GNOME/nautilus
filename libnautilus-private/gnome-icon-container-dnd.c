@@ -805,7 +805,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 		new_width =  floor ((old_width * canvas->pixels_per_unit) + .5);
 		new_height = floor ((old_height * canvas->pixels_per_unit) + .5);
 		
-		scaled_pixbuf = gdk_pixbuf_scale_simple (temp_pixbuf, new_width, new_height, ART_FILTER_NEAREST);	
+		scaled_pixbuf = gdk_pixbuf_scale_simple (temp_pixbuf, new_width, new_height, ART_FILTER_BILINEAR);
 		temp_pixbuf = scaled_pixbuf;
 	}
 	

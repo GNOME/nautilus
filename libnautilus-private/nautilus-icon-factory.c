@@ -547,7 +547,7 @@ nautilus_icon_factory_scale (NautilusIconFactory *factory,
 	result = gdk_pixbuf_scale_simple (standard_sized_pixbuf, 
 					  new_width, 
 					  new_height, 
-					  ART_FILTER_NEAREST);	
+					  ART_FILTER_BILINEAR);
 
 	return result;
 }

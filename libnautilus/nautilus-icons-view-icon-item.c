@@ -782,7 +782,7 @@ nautilus_icons_view_icon_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf
 			       buf->buf_rowstride,
 			       details->pixbuf->art_pixbuf,
 			       render_affine,
-			       ART_FILTER_NEAREST, NULL);
+			       ART_FILTER_BILINEAR, NULL);
 	buf->is_bg = 0;
 }
 

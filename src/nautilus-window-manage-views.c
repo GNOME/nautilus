@@ -55,6 +55,11 @@ nautilus_window_progress_indicate(NautilusWindow *window, ProgressType type, dou
   if(type == PROGRESS_ERROR)
     {
       gtk_widget_show(gnome_error_dialog_parented(msg, GTK_WINDOW(window)));
+
+      /* If it was an error loading a URI that had been dragged to the location bar, we might
+         need to reset the URI */
+      explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
+                                           window->ni->requested_uri);
     }
 }
 
