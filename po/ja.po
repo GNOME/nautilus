@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"POT-Creation-Date: 2003-03-31 23:22-0500\n"
+"POT-Creation-Date: 2003-05-07 13:54-0400\n"
 "PO-Revision-Date: 2003-03-26 00:11+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -44,7 +44,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() の呼び出しに失敗しました。"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:1778
+#: src/file-manager/fm-properties-window.c:1777
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "エンブレム"
@@ -1946,7 +1946,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "ゴミ箱を空にする準備中..."
 
 #: libnautilus-private/nautilus-file-operations.c:2265
-#: src/file-manager/fm-desktop-icon-view.c:1268
+#: src/file-manager/fm-desktop-icon-view.c:1270
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "ゴミ箱を空にする"
@@ -2762,51 +2762,51 @@ msgstr "ドラッグ＆ドロップした部分を強調表示するかどうか
 msgid "The selection rectangle"
 msgstr "選択範囲"
 
-#: libnautilus-private/nautilus-icon-container.c:3693
+#: libnautilus-private/nautilus-icon-container.c:3690
 msgid "Frame Text"
 msgstr "テキストを枠で囲む"
 
-#: libnautilus-private/nautilus-icon-container.c:3694
+#: libnautilus-private/nautilus-icon-container.c:3691
 msgid "Draw a frame around unselected text"
 msgstr "テキストの周囲を枠で囲む"
 
-#: libnautilus-private/nautilus-icon-container.c:3700
+#: libnautilus-private/nautilus-icon-container.c:3697
 msgid "Selection Box Color"
 msgstr "選択範囲の色"
 
-#: libnautilus-private/nautilus-icon-container.c:3701
+#: libnautilus-private/nautilus-icon-container.c:3698
 msgid "Color of the selection box"
 msgstr "選択範囲の色を設定します"
 
-#: libnautilus-private/nautilus-icon-container.c:3706
+#: libnautilus-private/nautilus-icon-container.c:3703
 msgid "Selection Box Alpha"
 msgstr "選択範囲のα"
 
-#: libnautilus-private/nautilus-icon-container.c:3707
+#: libnautilus-private/nautilus-icon-container.c:3704
 msgid "Opacity of the selection box"
 msgstr "選択範囲の透明度を設定します"
 
-#: libnautilus-private/nautilus-icon-container.c:3714
+#: libnautilus-private/nautilus-icon-container.c:3711
 msgid "Highlight Alpha"
 msgstr "強調表示のα"
 
-#: libnautilus-private/nautilus-icon-container.c:3715
+#: libnautilus-private/nautilus-icon-container.c:3712
 msgid "Opacity of the highlight for selected icons"
 msgstr "選択したアイコンを強調表示する際の透明度を設定します"
 
-#: libnautilus-private/nautilus-icon-container.c:3721
+#: libnautilus-private/nautilus-icon-container.c:3718
 msgid "Light Info Color"
 msgstr "明るい色 (テキスト情報)"
 
-#: libnautilus-private/nautilus-icon-container.c:3722
+#: libnautilus-private/nautilus-icon-container.c:3719
 msgid "Color used for information text against a dark background"
 msgstr "暗いバックグラウンドに対してテキスト情報に使用する色を設定します"
 
-#: libnautilus-private/nautilus-icon-container.c:3727
+#: libnautilus-private/nautilus-icon-container.c:3724
 msgid "Dark Info Color"
 msgstr "暗い色 (テキスト情報)"
 
-#: libnautilus-private/nautilus-icon-container.c:3728
+#: libnautilus-private/nautilus-icon-container.c:3725
 msgid "Color used for information text against a light background"
 msgstr "明るいバックグラウンドに対してテキスト情報に使用する色を設定します"
 
@@ -3704,16 +3704,16 @@ msgstr "一覧表示(_L)"
 msgid "Background"
 msgstr "背景"
 
-#: src/file-manager/fm-desktop-icon-view.c:955
+#: src/file-manager/fm-desktop-icon-view.c:957
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "ユーティリティ・プログラム '%s' の実行中にエラーが発生しました: %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1286
+#: src/file-manager/fm-desktop-icon-view.c:1288
 msgid "E_ject"
 msgstr "取り出し(_J)"
 
-#: src/file-manager/fm-desktop-icon-view.c:1386
+#: src/file-manager/fm-desktop-icon-view.c:1388
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "アンマウント(_U)"
@@ -3726,7 +3726,7 @@ msgstr "アンマウント(_U)"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1510
+#: src/file-manager/fm-desktop-icon-view.c:1512
 #, c-format
 msgid "%s's Home"
 msgstr "%s のホーム"
@@ -4330,21 +4330,21 @@ msgstr "ドラッグ＆ドロップのエラー"
 msgid "An invalid drag type was used."
 msgstr "使用したドラッグの種類は無効です。"
 
-#: src/file-manager/fm-list-view.c:715
+#: src/file-manager/fm-list-view.c:716
 msgid "File name"
 msgstr "ファイル名"
 
-#: src/file-manager/fm-list-view.c:739
+#: src/file-manager/fm-list-view.c:740
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "サイズ"
 
-#: src/file-manager/fm-list-view.c:750
+#: src/file-manager/fm-list-view.c:751
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "種類"
 
-#: src/file-manager/fm-list-view.c:761
+#: src/file-manager/fm-list-view.c:762
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "更新日時"
@@ -4497,85 +4497,85 @@ msgstr "カスタム・アイコンの選択(_S)..."
 msgid "_Remove Custom Icon"
 msgstr "カスタム・アイコンの削除(_R)"
 
-#: src/file-manager/fm-properties-window.c:1945
+#: src/file-manager/fm-properties-window.c:1944
 msgid "_Read"
 msgstr "読み込み(_R)"
 
-#: src/file-manager/fm-properties-window.c:1947
+#: src/file-manager/fm-properties-window.c:1946
 msgid "_Write"
 msgstr "書き込み(_W)"
 
-#: src/file-manager/fm-properties-window.c:1949
+#: src/file-manager/fm-properties-window.c:1948
 msgid "E_xecute"
 msgstr "実行(_X)"
 
-#: src/file-manager/fm-properties-window.c:2021
+#: src/file-manager/fm-properties-window.c:2020
 msgid "Set _user ID"
 msgstr "ユーザ ID をセットする(_U)"
 
-#: src/file-manager/fm-properties-window.c:2026
+#: src/file-manager/fm-properties-window.c:2025
 msgid "Special flags:"
 msgstr "特別なフラグ:"
 
-#: src/file-manager/fm-properties-window.c:2029
+#: src/file-manager/fm-properties-window.c:2028
 msgid "Set gro_up ID"
 msgstr "グループ ID をセットする(_U)"
 
-#: src/file-manager/fm-properties-window.c:2031
+#: src/file-manager/fm-properties-window.c:2030
 msgid "_Sticky"
 msgstr "Sitcky ビットを立てる(_S)"
 
-#: src/file-manager/fm-properties-window.c:2059
+#: src/file-manager/fm-properties-window.c:2058
 msgid "Permissions"
 msgstr "アクセス権"
 
-#: src/file-manager/fm-properties-window.c:2065
+#: src/file-manager/fm-properties-window.c:2064
 msgid "You are not the owner, so you can't change these permissions."
 msgstr ""
 "貴方は所有者ではありません。したがってこれらのアクセス権を変更できません。"
 
-#: src/file-manager/fm-properties-window.c:2078
+#: src/file-manager/fm-properties-window.c:2077
 msgid "File owner:"
 msgstr "ファイルの所有者:"
 
-#: src/file-manager/fm-properties-window.c:2089
+#: src/file-manager/fm-properties-window.c:2088
 msgid "_File group:"
 msgstr "ファイルのグループ(_F):"
 
-#: src/file-manager/fm-properties-window.c:2098
+#: src/file-manager/fm-properties-window.c:2097
 msgid "File group:"
 msgstr "ファイルのグループ:"
 
-#: src/file-manager/fm-properties-window.c:2106
+#: src/file-manager/fm-properties-window.c:2105
 msgid "Owner:"
 msgstr "所有者:"
 
-#: src/file-manager/fm-properties-window.c:2107
+#: src/file-manager/fm-properties-window.c:2106
 msgid "Group:"
 msgstr "グループ:"
 
-#: src/file-manager/fm-properties-window.c:2108
+#: src/file-manager/fm-properties-window.c:2107
 msgid "Others:"
 msgstr "その他:"
 
-#: src/file-manager/fm-properties-window.c:2171
+#: src/file-manager/fm-properties-window.c:2170
 msgid "Text view:"
 msgstr "文字形式:"
 
-#: src/file-manager/fm-properties-window.c:2172
+#: src/file-manager/fm-properties-window.c:2171
 msgid "Number view:"
 msgstr "数値形式:"
 
-#: src/file-manager/fm-properties-window.c:2173
+#: src/file-manager/fm-properties-window.c:2172
 msgid "Last changed:"
 msgstr "前回の変更:"
 
-#: src/file-manager/fm-properties-window.c:2177
+#: src/file-manager/fm-properties-window.c:2176
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" のアクセス権が確定できませんでした。"
 
-#: src/file-manager/fm-properties-window.c:2374
+#: src/file-manager/fm-properties-window.c:2373
 #: src/nautilus-bookmarks-window.c:138
 #: src/nautilus-file-management-properties.c:238
 #: src/nautilus-property-browser.c:1444 src/nautilus-window-menus.c:714
@@ -4587,19 +4587,19 @@ msgstr ""
 "ヘルプを表示する際にエラーが発生しました: \n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:2376
+#: src/file-manager/fm-properties-window.c:2375
 msgid "Couldn't show help"
 msgstr "ヘルプを起動できませんでした"
 
-#: src/file-manager/fm-properties-window.c:2640
+#: src/file-manager/fm-properties-window.c:2639
 msgid "Cancel Showing Properties Window?"
 msgstr "プロパティ・ウィンドウの表示をキャンセルしますか？"
 
-#: src/file-manager/fm-properties-window.c:2641
+#: src/file-manager/fm-properties-window.c:2640
 msgid "Creating Properties window"
 msgstr "プロパティ・ウィンドウの作成中"
 
-#: src/file-manager/fm-properties-window.c:2735
+#: src/file-manager/fm-properties-window.c:2734
 msgid "Select an icon:"
 msgstr "アイコンの選択:"
 
@@ -5569,63 +5569,63 @@ msgstr "これら %d の場所を別々のウィンドウで表示しますか�
 msgid "View in Multiple Windows?"
 msgstr "複数のウィンドウで表示しますか？"
 
-#: src/nautilus-main.c:148
+#: src/nautilus-main.c:149
 msgid "Perform a quick set of self-check tests."
 msgstr "簡易自己診断テストセットを実行する"
 
-#: src/nautilus-main.c:151
+#: src/nautilus-main.c:152
 msgid "Create the initial window with the given geometry."
 msgstr "指定した大きさでウィンドウを起動する"
 
-#: src/nautilus-main.c:151
+#: src/nautilus-main.c:152
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: src/nautilus-main.c:153
+#: src/nautilus-main.c:154
 msgid "Only create windows for explicitly specified URIs."
 msgstr "明示的に指定された URL のウィンドウだけを起動する"
 
-#: src/nautilus-main.c:155
+#: src/nautilus-main.c:156
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "デスクトップを管理しない (設定ダイアログの設定を無視します)"
 
-#: src/nautilus-main.c:157
+#: src/nautilus-main.c:158
 msgid "Quit Nautilus."
 msgstr "Nautilus を強制終了する"
 
-#: src/nautilus-main.c:159
+#: src/nautilus-main.c:160
 msgid "Restart Nautilus."
 msgstr "Nautilus を再起動する"
 
-#: src/nautilus-main.c:180
+#: src/nautilus-main.c:191
 msgid "File Manager"
 msgstr "ファイル・マネージャ"
 
 #. Set initial window title
-#: src/nautilus-main.c:186 src/nautilus-window-manage-views.c:232
+#: src/nautilus-main.c:197 src/nautilus-window-manage-views.c:232
 #: src/nautilus-window-menus.c:674 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-main.c:203
+#: src/nautilus-main.c:214
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check オプションには URI を指定できません。\n"
 
-#: src/nautilus-main.c:207
+#: src/nautilus-main.c:218
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check オプションには他のオプションを指定できません。\n"
 
-#: src/nautilus-main.c:211
+#: src/nautilus-main.c:222
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit オプションには URI を指定できません。\n"
 
-#: src/nautilus-main.c:215
+#: src/nautilus-main.c:226
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart オプションには URI を指定できません。\n"
 
-#: src/nautilus-main.c:219
+#: src/nautilus-main.c:230
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry オプションには複数の URI を指定できません。\n"
 
@@ -5958,7 +5958,7 @@ msgstr "[File owner] が [root]"
 msgid "[File owner] is not [root]"
 msgstr "[File owner] が次ではない [root]"
 
-#: src/nautilus-server-connect.c:130
+#: src/nautilus-server-connect.c:132
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
@@ -5966,7 +5966,7 @@ msgstr ""
 "Nautilus を起動できませんでした。\n"
 "Nautilus が正しくインストールされ ${PATH} に存在するか確認して下さい。"
 
-#: src/nautilus-server-connect.c:393
+#: src/nautilus-server-connect.c:395
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
@@ -5976,7 +5976,7 @@ msgstr ""
 "URI %s に接続できませんでした。\n"
 "そのアドレスが正しいかどうかを確認して下さい。"
 
-#: src/nautilus-server-connect.c:458
+#: src/nautilus-server-connect.c:460
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
