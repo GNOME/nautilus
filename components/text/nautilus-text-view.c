@@ -26,6 +26,9 @@
 #include <config.h>
 #include "nautilus-text-view.h"
 
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+
 #include <bonobo/bonobo-zoomable.h>
 #include <bonobo/bonobo-control.h>
 
@@ -61,6 +64,14 @@ struct _NautilusTextViewDetails {
 	char *font_name;
 	GdkFont *current_font;
 };
+
+/* structure for handling service menu item execution */
+typedef struct {
+	NautilusTextView *text_view;
+	char *service_template;
+} ServiceMenuItemParameters;
+
+#define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
 
 static void nautilus_text_view_initialize_class			(NautilusTextViewClass *klass);
 static void nautilus_text_view_initialize			(NautilusTextView      *view);
@@ -209,7 +220,6 @@ nautilus_text_view_destroy (GtkObject *object)
 }
 
 
-
 /* Component embedding support */
 NautilusView *
 nautilus_text_view_get_nautilus_view (NautilusTextView *text_view)
@@ -218,8 +228,7 @@ nautilus_text_view_get_nautilus_view (NautilusTextView *text_view)
 }
 
 
-
-/* here's where we do most of the real work of populating the view with info from the new uri */
+/* here's where we do the real work of inserting the text from the file into the view */
 static void
 nautilus_text_view_update (NautilusTextView *text_view) 
 {
@@ -284,9 +293,6 @@ nautilus_text_view_update_font (NautilusTextView *text_view)
 
 /* handle merging in the menu items */
 
-/* here are the callbacks to handle bonobo menu items.  Initially, this is ad hoc for prototyping */
-/* but soon we'll make a generalized framework */
-
 static char *
 get_selected_text (GtkEditable *text_widget)
 {
@@ -297,59 +303,33 @@ get_selected_text (GtkEditable *text_widget)
 	return gtk_editable_get_chars (text_widget, text_widget->selection_start_pos, text_widget->selection_end_pos);
 }
 
+/* here's the callback to handle the actual work for service menu items */
+
 static void
-text_view_search_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
+handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char *verb)
 {
-	NautilusTextView *text_view;
 	char *selected_text, *mapped_text, *uri;
+	ServiceMenuItemParameters *parameters;
 	
-	text_view = NAUTILUS_TEXT_VIEW (user_data);
-	
-	/* get the selection */
-	selected_text = get_selected_text (GTK_EDITABLE (text_view->details->text_display));
+	parameters = (ServiceMenuItemParameters *) user_data;
+	selected_text = get_selected_text (GTK_EDITABLE (parameters->text_view->details->text_display));
 	
 	if (selected_text) {
 		/* formulate the url */
 		mapped_text = gnome_vfs_escape_string (selected_text);
-		uri = g_strdup_printf ("http://www.google.com/search?q=%s", mapped_text);
+		uri = g_strdup_printf (parameters->service_template, mapped_text);
 			
 		/* goto the url */	
-		nautilus_view_open_location (text_view->details->nautilus_view, uri);
+		nautilus_view_open_location (parameters->text_view->details->nautilus_view, uri);
 
 		g_free (uri);
 		g_free (selected_text);
 		g_free (mapped_text);
 	}
-}
-
-static void
-text_view_lookup_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
-{
-	NautilusTextView *text_view;
-	char *selected_text, *mapped_text, *uri;
-	
-	text_view = NAUTILUS_TEXT_VIEW (user_data);
-	
-	/* get the selection */
-	selected_text = get_selected_text (GTK_EDITABLE (text_view->details->text_display));
-	
-	if (selected_text) {
-		/* formulate the url */
-		mapped_text = gnome_vfs_escape_string (selected_text);
-		uri = g_strdup_printf ("http://www.m-w.com/cgi-bin/dictionary?va=%s", mapped_text);
 		
-		/* goto the url */	
-		nautilus_view_open_location (text_view->details->nautilus_view, uri);
-
-		g_free (uri);
-		g_free (selected_text);
-		g_free (mapped_text);
-	}
-
 }
 
 /* handle the font menu items */
-
 static void
 nautilus_text_view_set_font (NautilusTextView *text_view, const char *font_family)
 {
@@ -376,17 +356,163 @@ handle_ui_event (BonoboUIComponent *ui,
 	}
 }
 
+/* utility routines to add service items to the services menu by iterating the services/text directory */
+
+static ServiceMenuItemParameters *
+service_menu_item_parameters_new (NautilusTextView *text_view, const char *service_template)
+{
+	ServiceMenuItemParameters *result;
+
+	result = g_new0 (ServiceMenuItemParameters, 1);
+	result->text_view = text_view;
+	result->service_template = g_strdup (service_template);
+
+	return result;
+}
+
+static void
+service_menu_item_parameters_free (ServiceMenuItemParameters *parameters)
+{
+	g_free (parameters->service_template);
+	g_free (parameters);
+}			      
+
+/* add a service menu entry from the passed in xml file */
+static void
+add_one_service (NautilusTextView *text_view, BonoboControl *control, const char *xml_path, int* index)
+{
+	xmlDocPtr service_definition;
+	xmlNodePtr service_node;
+	char *label, *escaped_label;
+	char *tooltip, *template;
+	char *verb_name, *item_path;
+	ServiceMenuItemParameters *parameters;
+	BonoboUIComponent *ui;
+	
+	/* load and parse the xml file */
+	service_definition = xmlParseFile(xml_path);
+	ui = bonobo_control_get_ui_component (control);
+	 	
+	if (service_definition != NULL) {
+		service_node = xmlDocGetRootElement (service_definition);
+	
+		/* extract the label and template */
+		label = xmlGetProp (service_node, "label");
+		template = xmlGetProp (service_node, "template");
+		tooltip = xmlGetProp (service_node, "tooltip");
+		
+		if (label != NULL && template != NULL) {
+		
+			/* allocate a structure containing the text_view and template to pass in as the user data */
+
+			escaped_label = nautilus_str_double_underscores (label);
+			parameters = service_menu_item_parameters_new (text_view, template);
+		
+			/* use bonobo to add the menu item */
+			nautilus_bonobo_add_numbered_menu_item 
+				(ui, 
+		 		ADDITIONAL_SERVICES_MENU_PATH,
+		 		*index,
+		 		escaped_label, 
+		 		NULL);
+			g_free (escaped_label);
+
+			/* set the tooltip if one was present */
+			if (tooltip) {
+				item_path = nautilus_bonobo_get_numbered_menu_item_path
+					(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);
+			
+				nautilus_bonobo_set_tip (ui, item_path, tooltip);
+				g_free (item_path);
+			}
+			
+			verb_name = nautilus_bonobo_get_numbered_menu_item_command 
+				(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);	
+			bonobo_ui_component_add_verb_full (ui, verb_name,
+							   handle_service_menu_item,
+							   parameters,
+							  (GDestroyNotify) service_menu_item_parameters_free);	   
+			g_free (verb_name);	
+			
+			*index += 1;
+
+		}
+
+		xmlFree (label);
+		xmlFree (template);
+		xmlFree (tooltip);
+		
+		/* release the xml file */
+		xmlFreeDoc (service_definition);
+	
+	}
+}
+
+/* iterate through the passed in services directory */
+static void
+add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const char *services_directory, int* index)
+{
+	GnomeVFSResult result;
+	GnomeVFSDirectoryList *file_list;	
+	GnomeVFSFileInfo *current_file_info;
+	char *services_uri, *service_xml_path;
+	
+	services_uri = gnome_vfs_get_uri_from_local_path (services_directory);
+	result = gnome_vfs_directory_list_load (&file_list, services_uri, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	
+	if (result != GNOME_VFS_OK) {
+		g_free (services_uri);
+		return;
+	}
+
+	/* iterate through the directory */
+	current_file_info = gnome_vfs_directory_list_first (file_list);
+	while (current_file_info != NULL) {
+		if (nautilus_istr_has_suffix (current_file_info->name, ".xml")) {
+			
+			service_xml_path = nautilus_make_path (services_directory, current_file_info->name);
+			add_one_service (text_view, control, service_xml_path, index);
+			g_free (service_xml_path);
+		}
+			
+		current_file_info = gnome_vfs_directory_list_next (file_list);
+	}
+	
+	g_free (services_uri);
+	gnome_vfs_directory_list_destroy (file_list);	
+
+}
+
+/* build the services menu from the shared and private services/text directories */
+static void
+nautilus_text_view_build_service_menu (NautilusTextView *text_view, BonoboControl *control)
+{
+	char *services_directory, *user_directory, *nautilus_datadir;
+	int index;
+	
+	index = 0;
+	
+	/* first, add the services from the global directory */
+	nautilus_datadir = nautilus_make_path (DATADIR, "nautilus");
+	services_directory = nautilus_make_path (nautilus_datadir, "services/text");
+	add_services_to_menu (text_view, control, services_directory, &index);
+	g_free (nautilus_datadir);
+	g_free (services_directory);
+	
+	/* now add services from the user-specific directory, if any */	
+	user_directory = nautilus_get_user_directory ();
+	services_directory = nautilus_make_path (user_directory, "services/text");
+	add_services_to_menu (text_view, control, services_directory, &index);
+	
+	g_free (services_directory);
+	g_free (user_directory);
+}
+
 /* this routine is invoked when the view is activated to merge in our menu items */
 static void
 merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_data)
 {
  	NautilusTextView *text_view;
-	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Search", text_view_search_callback),
-		BONOBO_UI_VERB ("Lookup", text_view_lookup_callback),
-
-		BONOBO_UI_VERB_END
-	};
 
 	g_assert (BONOBO_IS_CONTROL (control));
 	
@@ -397,10 +523,9 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 				         DATADIR,
 					 "nautilus-text-view-ui.xml",
 					 "nautilus-text-view");
-									
-		bonobo_ui_component_add_verb_list_with_data 
-			(bonobo_control_get_ui_component (control), verbs, text_view);
-	
+					 	
+		nautilus_text_view_build_service_menu (text_view, control);
+		
 		gtk_signal_connect (GTK_OBJECT (bonobo_control_get_ui_component (control)),
 			    "ui_event", handle_ui_event, text_view);
 	}

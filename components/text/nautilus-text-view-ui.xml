@@ -1,42 +1,28 @@
 <Root>
 <menu>
 	<placeholder name="Services Placeholder">
-		<submenu name="Services">
-			<placeholder name="Service Items">
-				<menuitem name="Search" 
-				  	_label="_Search the web for selected text" 
-				  	_tip="Search the web for selected text"
-				  	verb="Search"/>
-				
-				<menuitem name="Lookup" 
-				  	_label="Look up selected text in the dictionary" 
-				  	_tip="Look up the selected text in a web-based dictionary"
-				  	verb="Lookup"/>
-			</placeholder>
-		</submenu>
-
-	<submenu name="Fonts" _label="_Fonts">
-		<menuitem name="Helvetica" 
+		<submenu name="Fonts" _label="_Fonts">
+			<menuitem name="Helvetica" 
 			  _label="_Helvetica" 
 			  _tip="Use the Helvetica Font"
 			  type="radio" group="font group"
 			  id="helvetica"/>
-		<menuitem name="Times" 
+			<menuitem name="Times" 
 			  _label="_Times" 
 			  _tip="Use the Times Font"
 			  type="radio" group="font group"
 			  id="times"/>
-		<menuitem name="Courier" 
+			<menuitem name="Courier" 
 			  _label="_Courier" 
 			  _tip="Use the Courier Font"
 			  type="radio" group="font group"
 			  id="courier"/>
-		<menuitem name="Lucida" 
+			<menuitem name="Lucida" 
 			  _label="Lucida" 
 			  _tip="Use the Lucida Font"
 			  type="radio" group="font group"
 			  id="lucida"/>
-	</submenu>
+		</submenu>
 
 	</placeholder>
 </menu>

@@ -1,3 +1,34 @@
+2000-11-28  Andy Hertzfeld  <andy@eazel.com>
+
+	implementated data-driven framework for text view services. The text
+	view dynamically builds the services menu by iterating a directory
+	looking for xml files.  Added service definition files for two sample
+	services.  It only supports passing the selection to the service;
+	passing the entire document is coming soon.
+		
+	* components/text/Makefile.am:
+	include the services directory in the build
+
+	* configure.in:
+	* components/text/services/.cvsignore:
+	* components/text/services/Makefile.am:
+	build stuff for services directory
+
+	* components/text/services/google.xml:
+	* components/text/services/webster.xml:
+	definition files for our twp sample services
+			
+	* components/text/nautilus-text-view-ui.xml:
+	removed hardwired service menu items
+	
+	* components/text/nautilus-text-view.c: (handle_service_menu_item),
+	(service_menu_item_parameters_new),
+	(service_menu_item_parameters_free), (add_one_service),
+	(add_services_to_menu), (nautilus_text_view_build_service_menu),
+	(merge_bonobo_menu_items):
+	implemented framework to dynamically load service definitions and
+	execute them when their menu item is selected.
+	
 2000-11-28  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

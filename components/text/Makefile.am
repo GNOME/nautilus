@@ -1,5 +1,7 @@
 NULL = 
 
+SUBDIRS = services
+
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Text\"	\
