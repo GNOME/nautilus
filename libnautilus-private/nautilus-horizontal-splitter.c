@@ -38,6 +38,8 @@ struct _NautilusHorizontalSplitterDetail
 #define BAR_WIDTH 7
 #define CLOSED_THRESHOLD 4
 #define NOMINAL_SIZE 148
+#define SPLITTER_CLICK_SLOP 3
+#define SPLITTER_CLICK_TIMEOUT	1500
 
 /* NautilusHorizontalSplitterClass methods */
 static void nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class);
@@ -318,7 +320,7 @@ static gboolean nautilus_horizontal_splitter_button_release (GtkWidget *widget, 
 
 		delta = abs (event->x - splitter->details->down_position);
 		delta_time = abs (splitter->details->down_time - event->time);
-		if (delta < 3 && delta_time < 1500)  {
+		if (delta < SPLITTER_CLICK_SLOP && delta_time < SPLITTER_CLICK_TIMEOUT)  {
 			toggle_splitter_position(splitter);
 		}
 	}
