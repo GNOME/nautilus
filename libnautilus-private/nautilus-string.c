@@ -396,10 +396,10 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape (NULL), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape (""), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo"), "foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar"), "foo\\_bar");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar_2"), "foo\\_bar\\_2");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("_foo"), "\\_foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_"), "foo\\_");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar"), "foo__bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar_2"), "foo__bar__2");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("_foo"), "__foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_"), "foo__");
 	
         
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
