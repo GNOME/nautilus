@@ -168,7 +168,6 @@ metafile_read_complete (NautilusDirectory *directory)
 	int size;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (directory->details->metafile == NULL);
 	
 	/* FIXME: the following assertion shouldn't be disabled, but
 	 * it fires in the way when you set metadata before the
