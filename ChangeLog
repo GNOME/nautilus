@@ -1,3 +1,20 @@
+2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 773, Context menu items wrong when used on Trash item
+
+	Removed items that are improper when the Trash icon 
+	is in the selection.
+	
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(fm_directory_view_real_create_selection_context_menu_items):
+	Do a check for Trash in selection.  Disable Duplicate and
+	Make Link	
+		
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_create_selection_context_menu_items):
+	Do a check for Trash in selection.  Disable Rename
+
 2000-09-08  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/idl/trilobite-eazel-install.idl:

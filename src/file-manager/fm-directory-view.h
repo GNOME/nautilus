@@ -299,7 +299,7 @@ void               fm_directory_view_move_copy_items                (const GList
 								     FMDirectoryView       *view);
 gint               fm_directory_view_get_context_menu_index         (GtkMenu 		   *menu,
 								     const char            *menu_name);
-
+gboolean	   fm_directory_trash_link_in_selection 	    (FMDirectoryView 	   *view);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals

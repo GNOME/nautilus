@@ -598,9 +598,12 @@ fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 						  GList *selection)
 {
 	gint position;
-	
+	gboolean trash_in_selection;
+
 	g_assert (FM_IS_ICON_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
+
+	trash_in_selection = fm_directory_trash_link_in_selection (view);
 
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 
@@ -619,12 +622,14 @@ fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 	/* The Rename item is inserted directly after the
 	 * Duplicate item created by the FMDirectoryView.
 	 */
-	position = fm_directory_view_get_context_menu_index
-		(menu, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1;
-     	insert_one_context_menu_item
-		(FM_ICON_VIEW (view), menu, selection, 
-		 MENU_PATH_RENAME, position,
-		 GTK_SIGNAL_FUNC (rename_icon_callback));
+	if (!trash_in_selection) {
+		position = fm_directory_view_get_context_menu_index
+				(menu, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1;
+     		insert_one_context_menu_item
+				(FM_ICON_VIEW (view), menu, selection, 
+		 		 MENU_PATH_RENAME, position,
+		 		 GTK_SIGNAL_FUNC (rename_icon_callback));
+	}
 }
 
 /* Note that this is used both as a Bonobo menu callback and a signal callback.

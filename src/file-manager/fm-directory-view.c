@@ -1975,7 +1975,7 @@ trash_link_is_in_files (GList *files)
 	return FALSE;
 }
 
-static gboolean
+gboolean
 fm_directory_trash_link_in_selection (FMDirectoryView *view)
 {
 	GList *selection;
@@ -2791,6 +2791,10 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 							    GtkMenu *menu,
 						       	    GList *files)
 {
+	gboolean trash_in_selection;
+
+	trash_in_selection = fm_directory_trash_link_in_selection (view);
+	
 	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
 				    	open_callback, files);
@@ -2804,7 +2808,7 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	nautilus_gtk_menu_append_separator (menu);
 
 	/* Don't add item if Trash link is in selection */
-	if (!fm_directory_trash_link_in_selection (view)) {
+	if (!trash_in_selection) {
 		/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
 		if (!fm_directory_all_selected_items_in_trash (view)) {
 			append_gtk_menu_item_with_view (view, menu, files,
@@ -2816,12 +2820,15 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 						    	trash_callback, files);
 		}
 	}
-	append_gtk_menu_item_with_view (view, menu, files,
-				    	FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
-				    	duplicate_callback, files);
-	append_gtk_menu_item_with_view (view, menu, files,
-				    	FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
-				    	create_link_callback, view);
+
+	if (!trash_in_selection) {
+		append_gtk_menu_item_with_view (view, menu, files,
+					    	FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
+					    	duplicate_callback, files);
+		append_gtk_menu_item_with_view (view, menu, files,
+					    	FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
+					    	create_link_callback, view);
+	}
 	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
 				    	open_properties_window_callback, files);
