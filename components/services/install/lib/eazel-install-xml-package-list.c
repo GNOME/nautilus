@@ -964,11 +964,25 @@ eazel_install_packagelist_parse (GList **list, const char *mem, int size, char *
 	memcpy (docptr, mem, size);
 	docptr [size] = 0;
 
-	/* libxml is very intolerant of whitespace */
-	for (ptr = docptr; (size > 0) && (*ptr <= ' '); ptr++, size--)
-		;
-	for (end = ptr + size - 1; (size > 0) && (*end <= ' '); *end-- = '\0', size--)
-		;
+	/* (grumble grumble) softcat puts <XMP> crap around the doc sometimes */
+	/* and also, libxml is very intolerant of whitespace */
+	ptr = docptr;
+	while ((size > 2) && ((ptr[0] != '<') || (ptr[1] != '?'))) {
+		ptr++;
+		size--;
+	}
+	end = ptr + size - 1;
+	while ((size > 10) && 
+	       ((*end <= ' ') || (strcasecmp (end-5, "</xmp>") == 0))) {
+		if (*end <= ' ') {
+			*end-- = '\0';
+			size--;
+		} else {
+			end -= 6;
+			size -= 6;
+			end[1] = '\0';
+		}
+	}
 
 	doc = xmlParseMemory (ptr, size);
 

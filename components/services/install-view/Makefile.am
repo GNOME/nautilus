@@ -23,8 +23,6 @@ INCLUDES =						\
 bin_PROGRAMS = nautilus-service-install-view
 
 noinst_HEADERS =					\
-	nautilus-service-install.c			\
-	nautilus-service-install.h			\
 	nautilus-service-install-view.h			\
 	callbacks.h					\
 	forms.h						\

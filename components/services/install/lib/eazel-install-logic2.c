@@ -95,16 +95,19 @@ dump_tree_helper (GList *packages, char *indent, GList *path, GList **touched)
 					 (pack->status == PACKAGE_CANNOT_OPEN) ? " but failed" : "",
 					 packagedata_status_enum_to_str (pack->status),
 					 pack->toplevel ? "TOP":"");
-			tmp = g_strdup_printf ("%s  ", indent);
 			if (g_list_find (path, pack)) {
 				trilobite_debug ("%s... %p %s recurses ..", indent, pack, pack->name);
 			} else {
 				path = g_list_prepend (path, pack);
 				*touched = g_list_prepend (*touched, pack);
+				tmp = g_strdup_printf ("%s  ", indent);
 				dump_tree_helper (pack->depends, tmp, path, touched);
+				g_free (tmp);
+				tmp = g_strdup_printf ("%sM ", indent);
+				dump_tree_helper (pack->modifies, tmp, path, touched);
+				g_free (tmp);
 				path = g_list_remove (path, pack);
 			}
-			g_free (tmp);
 		}
 		g_free (name);
 	}

@@ -63,6 +63,7 @@
 #define RPMRC		"/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR	"/RPMS"
 #define PACKAGE_LIST	"package-list.xml"
+#define PACKAGE_LIST_URL_PATH	"/downloads/eazel-installer/package-list.xml"
 #define TEXT_LIST	"installer-strings"
 
 #define LOGFILE		"eazel-install.log"
@@ -965,6 +966,7 @@ collect_failure_info (EazelInstall *service,
 		      gboolean uninstall)
 {
 	GList *failure_info_addition;
+        GList *iter;
 
 	eazel_install_problem_tree_to_case (installer->problem,
 					    pd,
@@ -981,6 +983,10 @@ collect_failure_info (EazelInstall *service,
 		} else {
 			installer->failure_info = failure_info_addition;
 		}
+
+                for (iter = g_list_first (failure_info_addition); iter != NULL; iter = g_list_next (iter)) {
+                        g_message ("fail %s: %s", pd->name, (char *) iter->data);
+                }
 	}
 
 	while (gtk_events_pending ()) {
@@ -1771,10 +1777,10 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 	char *destination;
 	gboolean result = TRUE;
 
-	url = g_strdup_printf ("http://%s:%d/%s", 
+	url = g_strdup_printf ("http://%s:%d%s", 
 			       eazel_install_get_server (installer->service),
 			       eazel_install_get_server_port (installer->service),
-			       PACKAGE_LIST);
+			       PACKAGE_LIST_URL_PATH);
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, PACKAGE_LIST);
 
@@ -2100,7 +2106,6 @@ eazel_installer_initialize (EazelInstaller *object)
 					       "server_port", 
 					       installer_server_port ? installer_server_port : PORT_NUMBER,
 					       "package_list", package_destination, 
-					       "package_list_storage_path", PACKAGE_LIST,
 					       "transaction_dir", installer_tmpdir,
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));

@@ -1,3 +1,39 @@
+2001-02-27  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Oslen <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper):
+
+	Added debug info of packages modifies list, so the logging on
+	upgrading packages isn't so confusing.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(eazel_install_packagelist_parse):
+
+	Force the XML parser to ignore any <xmp> .. </xmp> tags, which may
+	or may not fix some people's issues with the installer not being
+	able to parse the server XML sometimes.
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+
+	Fix old reference to soft_depends.
+	
+	* components/services/install-view/Makefile.am:
+	* components/services/install-view/nautilus-service-install.c:
+	* components/services/install-view/nautilus-service-install.h:
+
+	These files are useless.
+	
+	* nautilus-installer/src/installer.c: (collect_failure_info),
+	(eazel_install_get_depends), (eazel_installer_initialize):
+
+	Use the new path to the package-list.xml file.
+	
+	* nautilus-installer/src/main.c: (segv_handler):
+
+	Spelling fix.
+
 2001-02-27  Arlo Rose  <arlo@eazel.com>
 
 	* icons/default.xml:

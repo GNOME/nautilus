@@ -234,7 +234,7 @@ struct _PackageData {
 	/* List of packages that this package modifies */
 	GList *modifies;
 	/* how was the package modified 
-	   Eg. the toplevel pacakge will have INSTALLED, and some stuff in "soft_depends."
+	   Eg. the toplevel pacakge will have INSTALLED, and some stuff in "depends".
 	   if "modifies" has elements, these have the following meaning ;
  	     DOWNGRADED means that the package was replaced with an older version
 	     UPGRADED means that the package was replaced with a never version

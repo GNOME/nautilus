@@ -122,7 +122,7 @@ check_disk_space (void)
 static void
 segv_handler (int signo)
 {
-	fprintf (stderr, "\n\nSEGV (%d) -- SOMEBODY SET US UP THE BOMB.\n\n", signo);
+	fprintf (stderr, "\n\nSEGV (%d) -- SOMEBODY SET UP US THE BOMB.\n\n", signo);
 	while (1) {
 		sleep (1);
 	}
