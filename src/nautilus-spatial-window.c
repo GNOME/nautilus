@@ -407,10 +407,29 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 {
 	GnomeVFSURI *uri;
 	char *location;
+	GdkEvent *event;
 
 	uri = g_object_get_data (G_OBJECT (menu_item), "uri");
 	location = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
+	event = gtk_get_current_event();
+
+	if (!gnome_vfs_uri_equal (uri, window->details->location))
+	{
+		if (event != NULL && ((GdkEventAny *) event)->type == GDK_BUTTON_RELEASE &&
+		   (((GdkEventButton *) event)->button == 2 ||
+		   (((GdkEventButton *) event)->state & GDK_SHIFT_MASK) != 0))
+		{
+			nautilus_window_open_location (NAUTILUS_WINDOW (window), location, TRUE);
+		} else {
+			nautilus_window_open_location (NAUTILUS_WINDOW (window), location, FALSE);
+		}
+		
+	}
+
+	if (event != NULL) {
+		gdk_event_free (event);
+	}
+
 	g_free (location);
 	
 }

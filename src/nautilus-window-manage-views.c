@@ -747,11 +747,19 @@ open_location (NautilusWindow *window,
 
 void
 nautilus_window_open_location (NautilusWindow *window,
-                               const char *location)
+                               const char *location,
+                               gboolean close_behind)
 {
-        open_location (window, location, 
+	Nautilus_ViewFrame_OpenFlags flags;
+
+	flags = 0;
+	if (close_behind) {
+		flags = Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND;
+	}
+	
+	open_location (window, location,
                        Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
-                       0, NULL);
+                       flags, NULL);
 }
 
 void

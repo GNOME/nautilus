@@ -350,7 +350,7 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 void
 nautilus_window_go_to (NautilusWindow *window, const char *uri)
 {
-	nautilus_window_open_location (window, uri);
+	nautilus_window_open_location (window, uri, FALSE);
 }
 
 void
