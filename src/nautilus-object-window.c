@@ -1022,6 +1022,8 @@ nautilus_window_go_web_search (NautilusWindow *window)
 {
 	char *search_web_uri;
 
+	nautilus_window_set_search_mode (window, FALSE);
+
 	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI, DEFAULT_SEARCH_WEB_URI);
 	g_assert (search_web_uri != NULL);
 	
@@ -1033,6 +1035,8 @@ void
 nautilus_window_go_home (NautilusWindow *window)
 {
 	char *default_home_uri, *home_uri;
+
+	nautilus_window_set_search_mode (window, FALSE);
 
 	default_home_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
 	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);

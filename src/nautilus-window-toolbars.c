@@ -61,12 +61,6 @@ static void toolbar_services_callback (GtkWidget *widget, NautilusWindow *window
 #define TOOLBAR_SERVICES_INDEX			10
 
 static void
-toolbar_clear_search_mode (NautilusWindow *window)
-{
-	nautilus_window_set_search_mode (window, FALSE);
-}
-
-static void
 toolbar_back_callback (GtkWidget *widget, NautilusWindow *window)
 {
 	nautilus_window_go_back (window);
@@ -87,7 +81,6 @@ toolbar_up_callback (GtkWidget *widget, NautilusWindow *window)
 static void
 toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
 {
-	toolbar_clear_search_mode (window);  
 	nautilus_window_go_home (window);
 }
 
@@ -100,7 +93,6 @@ toolbar_search_local_callback (GtkWidget *widget, NautilusWindow *window)
 static void
 toolbar_search_web_callback (GtkWidget *widget, NautilusWindow *window)
 {
-  	toolbar_clear_search_mode (window);  
 	nautilus_window_go_web_search (window);
 }
 

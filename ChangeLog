@@ -1,3 +1,30 @@
+2000-08-22  John Sullivan  <sullivan@eazel.com>
+
+	More work on bug 1653 (new menu layout)
+	Fixed bug 1996 (No way to activate "Web Search" from keyboard)
+
+	* src/file-manager/fm-directory-view.c: (compute_menu_item_info):
+	Changed text from "Select All" to "Select All Files" for clarity.
+	* src/nautilus-window-menus.c: 
+	(file_menu_web_search_callback): New function, calls
+	nautilus_window_go_web_search
+	(nautilus_window_initialize_menus): Added underscore-accelerator
+	to Close _All Windows; added separator before Select All;
+	gave Find Control-F; added Web Search;
+	gave Back Control-[; gave Forward Control-]; gave Add Bookmark
+	Control-B. (Note that you might not see these until you delete
+	the file ~/.gnome/accels/nautilus
+	* src/nautilus-window-toolbars.c: 
+	(toolbar_clear_search_mode): removed this function.
+	(toolbar_home_callback),
+	(toolbar_search_web_callback): Removed calls to
+	toolbar_clear_search_mode; this behavior has been moved into
+	nautilus_window_go_home and nautilus_window_go_web_search
+	instead so the menu items can share it.
+	* src/nautilus-window.c: (nautilus_window_go_web_search),
+	(nautilus_window_go_home): Clear search mode in these
+	bottleneck functions.
+
 2000-08-22  Mathieu Lacage  <mathieu@eazel.com>
 
 	Add rebecka's class for queues.

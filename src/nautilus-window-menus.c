@@ -65,6 +65,7 @@
 #define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/File/Close All Windows"
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND	"/File/Separator before Find"
 #define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE		"/File/Toggle Find Mode"
+#define NAUTILUS_MENU_PATH_GO_TO_WEB_SEARCH		"/File/Go to Web Search"
 
 #define NAUTILUS_MENU_PATH_UNDO_ITEM			"/Edit/Undo"
 #define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO		"/Edit/Separator after Undo"
@@ -221,6 +222,14 @@ file_menu_toggle_find_mode_callback (BonoboUIHandler *ui_handler,
 
 	nautilus_window_set_search_mode 
 		(window, !nautilus_window_get_search_mode (window));
+}
+
+static void
+file_menu_web_search_callback (BonoboUIHandler *ui_handler, 
+			              gpointer user_data, 
+			              const char *path)
+{
+	nautilus_window_go_web_search (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -1105,7 +1114,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM,
-        				 _("Close All Windows"),
+        				 _("Close _All Windows"),
         				 _("Close all Nautilus windows"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
@@ -1126,12 +1135,23 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
-        				 0,
+        				 'F',
         				 GDK_CONTROL_MASK,
         				 file_menu_toggle_find_mode_callback,
         				 window);
         nautilus_window_update_find_menu_item (window);
         				 
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_GO_TO_WEB_SEARCH,
+        				 _("_Web Search"),
+        				 _("Search the World Wide Web"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'F',
+        				 GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+        				 file_menu_web_search_callback,
+        				 window);
         append_placeholder (window, NAUTILUS_MENU_PATH_GLOBAL_FILE_ITEMS_PLACEHOLDER);
 
 	/* Edit menu */
@@ -1213,10 +1233,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 NULL,
         				 NULL);
 
-	/* Customize */
-        /*
 	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL);
-	*/
 	
 	bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM,
@@ -1255,7 +1272,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
-        				 'B',
+        				 '[',
         				 GDK_CONTROL_MASK,
         				 go_menu_back_callback,
         				 window);
@@ -1267,7 +1284,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
-        				 'F',
+        				 ']',
         				 GDK_CONTROL_MASK,
         				 go_menu_forward_callback,
         				 window);
@@ -1323,8 +1340,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
-        				 0,
-        				 0,
+        				 'B',
+        				 GDK_CONTROL_MASK,
         				 bookmarks_menu_add_bookmark_callback,
         				 window);
 

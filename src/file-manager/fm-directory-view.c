@@ -2310,7 +2310,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		name = g_strdup (_("_Empty Trash"));
 		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
 	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
-		name = g_strdup (_("_Select All"));
+		name = g_strdup (_("_Select All Files"));
 		*return_sensitivity = TRUE;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
