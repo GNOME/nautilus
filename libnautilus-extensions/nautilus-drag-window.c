@@ -182,7 +182,17 @@ button_press_emission_callback (GtkObject *object, guint signal_id,
 		details = get_details (GTK_WINDOW (window));
 		if (details != NULL) {
 			remove_focus_timeout (GTK_WINDOW (window));
-			details->in_button_press = TRUE;
+
+			if (!details->in_button_press) {
+				details->in_button_press = TRUE;
+			} else {
+				/* We never got the last button
+				 * release. Adapt.
+				 */
+				execute_pending_requests (GTK_WINDOW (window),
+							  details);
+				details->in_button_press = FALSE;
+			}
 		}
 	}
 
@@ -274,12 +284,11 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 
 		if (details != NULL) {
 			details->pending_focus = TRUE;
-			if (!details->in_button_press) {
-				/* Wait to see if a button-press event
-				 * is received in the near future.
-				 */
-				set_focus_timeout (window);
-			}
+
+			/* Wait to see if a button-press event
+			 * is received in the near future.
+			 */
+			set_focus_timeout (window);
 		}
 		return GDK_FILTER_REMOVE;
 
@@ -287,12 +296,11 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 
 		if (details != NULL) {
 			details->pending_raise = TRUE;
-			if (!details->in_button_press) {
-				/* Wait to see if a button-press event
-				 * is received in the near future.
-				 */
-				set_focus_timeout (window);
-			}
+
+			/* Wait to see if a button-press event
+			 * is received in the near future.
+			 */
+			set_focus_timeout (window);
 		}
 		return GDK_FILTER_REMOVE;
 	}

@@ -1,3 +1,16 @@
+2001-01-03  John Harper  <jsh@eazel.com>
+
+	Small fix to the `drag doesn't focus' stuff I did earlier to
+	work around button-release events not following button-press
+	events. (E.g. this happens for some reason when clicking on the
+	left hand pane of the property browser window)
+
+	* libnautilus-extensions/nautilus-drag-window.c
+	(wm_protocols_filter): don't only start the timeout when we
+	don't think we're in the middle of a press-release sequence
+	(button_press_emission_callback): if we already think we're in
+	the middle of a press-release, commit any pending requests
+
 2001-01-03  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
