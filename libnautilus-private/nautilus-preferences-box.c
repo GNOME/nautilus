@@ -210,8 +210,8 @@ preferences_box_category_list_recreate (NautilusPreferencesBox *preferences_box)
 			text_array[CATEGORY_COLUMN] = info->pane_name;
 			gtk_clist_append (GTK_CLIST (preferences_box->details->category_list), text_array);
 
-			if (nautilus_str_is_equal (info->pane_name, preferences_box->details->selected_pane) {
-				row = preferences_box_iterate_clist (GTK_CLIST (preferences_box->details->category_list), info->pane_name);
+			if (nautilus_str_is_equal (info->pane_name, preferences_box->details->selected_pane)) {
+				row = preferences_box_find_row (GTK_CLIST (preferences_box->details->category_list), info->pane_name);
 
 				if (row == -1) {
 					row = 0;
