@@ -276,12 +276,12 @@ add_one_uri_list(const char *uri, int x, int y, int w, int h,
  */
 gboolean
 nautilus_drag_drag_data_get (GtkWidget *widget,
-			GdkDragContext *context,
-			GtkSelectionData *selection_data,
-			guint info,
-			guint32 time,
-			gpointer container_context,
-			NautilusDragEachSelectedItemIterator each_selected_item_iterator)
+			     GdkDragContext *context,
+			     GtkSelectionData *selection_data,
+			     guint info,
+			     guint32 time,
+			     gpointer container_context,
+			     NautilusDragEachSelectedItemIterator each_selected_item_iterator)
 {
 	GString *result;
 

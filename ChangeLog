@@ -1,3 +1,13 @@
+2000-06-02  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-list-view.c: (fm_list_handle_dropped_icons):
+	Fix a bug that caused a crash when dropping dragged items back 
+	in their original location.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_drag_data_get):
+	Tweak whitespace.	
+
 2000-06-02  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-drag.c:

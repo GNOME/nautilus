@@ -510,7 +510,7 @@ fm_list_handle_dropped_icons (NautilusList *list, GList *drop_data, int x, int y
 	
 	list_view_uri = fm_directory_view_get_uri (directory_view);
 	if (target_item != NULL 
-		|| action == GDK_ACTION_MOVE
+		|| action != GDK_ACTION_MOVE
 		|| !nautilus_drag_items_local (list_view_uri, drop_data)) {
 
 		/* build a list of URIs to copy */
