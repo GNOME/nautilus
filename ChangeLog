@@ -1,3 +1,31 @@
+2000-09-07  Mathieu Lacage  <mathieu@eazel.com>
+
+	First work toward bug 2353, fixes bug 2570, 1289
+	
+	* components/tree/nautilus-tree-view.c: fix a dnd bug in
+	gtk_drag_dest_set.
+	* libnautilus-extensions/nautilus-drag.c: (nautilus_drag_init):
+	initialize the new field drop_occured to FALSE.
+	* libnautilus-extensions/nautilus-drag.h: new field drop_occured.
+	* libnautilus-extensions/nautilus-icon-dnd.c: use the new field
+	and make it behave slightly more sanely by doing actual actions
+	in data_received instead of drag_drop. This is the only way to avoid
+	race conditions. (drag_data_received_callback), (drag_motion_callback),
+	(drag_drop_callback)
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (nautilus_list_dnd_initialize),
+	(nautilus_list_initialize), (nautilus_list_drag_start),
+	(nautilus_list_ensure_drag_data), (nautilus_list_drag_begin),
+	(nautilus_list_drag_end), (nautilus_list_drag_leave),
+	(nautilus_list_find_drop_target), (nautilus_list_get_drop_action),
+	(nautilus_list_drag_motion), (nautilus_list_drag_drop),
+	(nautilus_list_drag_data_received):
+	add support for the drop_occured field, fix the same bug as in tree view
+	and make it behave slightly more sanely as in icon view.
+	The tree view now needs some work to catch up with all those changes.
+	* src/file-manager/fm-list-view.c: (fm_list_handle_dropped_icons):
+	space.
+
 2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-scalable-font.c:

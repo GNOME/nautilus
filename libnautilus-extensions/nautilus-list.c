@@ -105,15 +105,6 @@ struct NautilusListDetails
 	/* Targets for drag data */
 	GtkTargetList *target_list; 
 
-	/* Stuff saved at "receive data" time needed later in the drag. */
-	gboolean got_drop_data_type;
-	NautilusIconDndTargetType data_type;
-
-	/* List of DndSelectionItems, representing items being dragged, or NULL
-	 * if data about them has not been received from the source yet.
-	 */
-	GList *selection_list;
-
 	GtkWidget *title;
 
 	/* Rendering state */
@@ -290,6 +281,11 @@ static void	nautilus_list_flush_typeselect_state 	(NautilusList 	      *containe
 static int      insert_row                              (GtkCList             *list,
 							 int                   row,
 							 char                 *text[]);
+static void     nautilus_list_ensure_drag_data          (NautilusList *list,
+							 GdkDragContext *context,
+							 guint32 time);
+
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
 
@@ -451,12 +447,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	widget_class->button_press_event = nautilus_list_button_press;
 	widget_class->button_release_event = nautilus_list_button_release;
 	widget_class->motion_notify_event = nautilus_list_motion;
-	widget_class->drag_begin = nautilus_list_drag_begin;
-	widget_class->drag_end = nautilus_list_drag_end;
-	widget_class->drag_leave = nautilus_list_drag_leave;
-	widget_class->drag_motion = nautilus_list_drag_motion;
-	widget_class->drag_drop = nautilus_list_drag_drop;
-	widget_class->drag_data_received = nautilus_list_drag_data_received;
+
 	widget_class->draw = nautilus_list_draw;
 	widget_class->expose_event = nautilus_list_expose;
 	widget_class->draw_focus = nautilus_list_draw_focus;
@@ -481,27 +472,73 @@ nautilus_list_set_single_click_mode (NautilusList *list,
 	list->details->single_click_mode = single_click_mode;
 }
 
-/* Standard object initialization function */
+
 static void
-nautilus_list_initialize (NautilusList *list)
-{	
-	list->details = g_new0 (NautilusListDetails, 1);
-	list->details->anchor_row = -1;
-	
-	/* GtkCList does not specify pointer motion by default */
-	gtk_widget_add_events (GTK_WIDGET (list), GDK_POINTER_MOTION_MASK);
+nautilus_list_dnd_initialize (NautilusList *list)
+{
 
 	list->details->drag_info = g_new0 (NautilusDragInfo, 1);
+
 	nautilus_drag_init (list->details->drag_info, drag_types,
-		NAUTILUS_N_ELEMENTS (drag_types), NULL);
+			    NAUTILUS_N_ELEMENTS (drag_types), NULL);
+
+	gtk_signal_connect (GTK_OBJECT (list), 
+			    "drag_begin", 
+			    GTK_SIGNAL_FUNC(nautilus_list_drag_begin), 
+			    list);
+	
+	gtk_signal_connect (GTK_OBJECT (list), 
+			    "drag_end", 
+			    GTK_SIGNAL_FUNC(nautilus_list_drag_end), 
+			    list);
+	
+	gtk_signal_connect (GTK_OBJECT (list), 
+			    "drag_leave", 
+			    GTK_SIGNAL_FUNC(nautilus_list_drag_leave), 
+			    list);
+
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "drag_motion", 
+			    GTK_SIGNAL_FUNC(nautilus_list_drag_motion), 
+			    list);
+
+	gtk_signal_connect (GTK_OBJECT (list), 
+			    "drag_drop", 
+			    GTK_SIGNAL_FUNC(nautilus_list_drag_drop), 
+			    list);
+
+	gtk_signal_connect (GTK_OBJECT (list), 
+			    "drag_data_received", 
+			    GTK_SIGNAL_FUNC(nautilus_list_drag_data_received), 
+			    list);
+
 
 	/* Get ready to accept some dragged stuff. */
 	gtk_drag_dest_set (GTK_WIDGET (list),
-			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
+			   0,
 			   nautilus_list_dnd_target_table,
 			   NAUTILUS_N_ELEMENTS (nautilus_list_dnd_target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK
 			   | GDK_ACTION_ASK);
+
+
+
+}
+
+/* Standard object initialization function */
+static void
+nautilus_list_initialize (NautilusList *list)
+{	
+
+	list->details = g_new0 (NautilusListDetails, 1);
+	list->details->anchor_row = -1;
+
+	
+	/* GtkCList does not specify pointer motion by default */
+	gtk_widget_add_events (GTK_WIDGET (list), GDK_POINTER_MOTION_MASK);
+
+
+	nautilus_list_dnd_initialize (list);
 
 	/* Emit "selection changed" signal when parent class changes selection */
 	list->details->select_row_signal_id = gtk_signal_connect (GTK_OBJECT (list),
@@ -2598,6 +2635,7 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 
 	list->details->drag_started = TRUE;
 	list->details->dnd_select_pending = FALSE;
+	
 	context = gtk_drag_begin (widget, list->details->drag_info->target_list,
 				  list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON
 				  ? GDK_ACTION_ASK
@@ -2698,33 +2736,72 @@ nautilus_list_column_resize_track_end (GtkWidget *widget, int column_index)
 	clist->drag_pos = -1;
 }
 
+
+static void
+nautilus_list_ensure_drag_data (NautilusList *list,
+				GdkDragContext *context,
+				guint32 time)
+{
+
+	if (list->details->drag_info->got_drop_data_type == FALSE) {
+		gtk_drag_get_data (GTK_WIDGET (list), context,
+				   GPOINTER_TO_INT (context->targets->data),
+				   time);
+	}
+}
+
+
 static void
 nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context)
 {
 	NautilusList *list;
 
 	list = NAUTILUS_LIST (widget);
+
+	g_print ("drag begin \n");
 }
 
 static void
 nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 {
 	NautilusList *list;
+	NautilusDragInfo *drag_info;
 
 	list = NAUTILUS_LIST (widget);
+	drag_info = list->details->drag_info;
 
-	nautilus_drag_destroy_selection_list (list->details->selection_list);
-	list->details->selection_list = NULL;
+	nautilus_drag_destroy_selection_list (drag_info->selection_list);
+	drag_info->selection_list = NULL;
+
+	g_print ("drag end \n");
 }
 
 static void
 nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time)
 {
 	NautilusList *list;
+	NautilusDragInfo *drag_info;
 
 	list = NAUTILUS_LIST (widget);
+	drag_info = list->details->drag_info;
 
-	list->details->got_drop_data_type = FALSE;
+	drag_info->got_drop_data_type = FALSE;
+
+	g_print ("drag leave \n");
+}
+
+static char *
+nautilus_list_find_drop_target (NautilusList *list,
+				GdkDragContext *context,
+				int x, int y,
+				gboolean *icon_hit)
+{
+	/* FIXME bugzilla.eazel.com 2571: implement this function 
+	   It might need to be implemented in the fm-list-view.c
+	   actually.
+	 */
+
+	return g_strdup ("file:///");	
 }
 
 static void
@@ -2734,41 +2811,43 @@ nautilus_list_get_drop_action (NautilusList *list,
 			       int *default_action,
 			       int *non_default_action)
 {
+	NautilusDragInfo *drag_info;
+	char *drop_target;
+	gboolean icon_hit;
+
+	drag_info = NAUTILUS_LIST (list)->details->drag_info;
+
 	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
 
-	/* FIXME bugzilla.eazel.com 2570: These must be initialized or drag_data_received will never be called.
-	 * I don't understand why this is the case. */
-	if (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON) {
-		*default_action = GDK_ACTION_ASK;
-		*non_default_action = GDK_ACTION_ASK;
-	} else {
-		*default_action = GDK_ACTION_MOVE;
-		*non_default_action = GDK_ACTION_COPY;
-	}
-
-	if (!list->details->drag_info->got_drop_data_type) {
+	if (drag_info->got_drop_data_type == FALSE) {
 		/* drag_data_received didn't get called yet */
 		return;
 	}
 
-	switch (list->details->drag_info->data_type) {
+
+	g_print ("get_drop_action \n");
+	switch (drag_info->data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		if (list->details->drag_info->selection_list == NULL) {
+		if (drag_info->selection_list == NULL) {
 			*default_action = 0;
 			*non_default_action = 0;
 			return;
 		}
-		/* FIXME bugzilla.eazel.com 2571:
-		 * compute the drop action default and non-default values here based on
-		 * the drag selection and drop target
-		 */
-		if (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON) {
-			*default_action = GDK_ACTION_ASK;
-			*non_default_action = GDK_ACTION_ASK;
-		} else {
-			*default_action = GDK_ACTION_MOVE;
-			*non_default_action = GDK_ACTION_COPY;
+
+		/* FIXME bugzilla.eazel.com 2571: */ 
+		drop_target = nautilus_list_find_drop_target (list,
+							      context, x, y, &icon_hit);
+		if (!drop_target) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
 		}
+		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
+			drag_info->selection_list, 
+			default_action, non_default_action);
+
+
+
 		break;
 
 	case NAUTILUS_ICON_DND_COLOR:
@@ -2787,13 +2866,17 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		       int x, int y, guint time)
 {
 	NautilusList *list;
-	int default_action, non_default_action;
+	int default_action, non_default_action, resulting_action;
+
+	g_print ("drag motion \n");
 
 	list = NAUTILUS_LIST (widget);
 
+	nautilus_list_ensure_drag_data (list, context,  time);
+
 	nautilus_list_get_drop_action (list, context, x, y, &default_action, &non_default_action);
-	gdk_drag_status (context, nautilus_drag_modifier_based_action (default_action,
-		non_default_action), time);
+	resulting_action = nautilus_drag_modifier_based_action (default_action, non_default_action);
+	gdk_drag_status (context, resulting_action, time);
 
 	return TRUE;
 }
@@ -2803,32 +2886,18 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 			 int x, int y, guint time)
 {
 	NautilusList *list;
-	GList *selected_items;
 	
+	g_print ("drag drop \n");
+
 	list = NAUTILUS_LIST (widget);
 
-	g_assert (list->details->got_drop_data_type);
+	/* make sure that drag_data_received is going to be called
+	   after this event and will do the actual actions */
+	list->details->drag_info->drop_occured = TRUE;
+	gtk_drag_get_data (GTK_WIDGET (widget), context,
+			   GPOINTER_TO_INT (context->targets->data),
+			   time);
 
-	switch (list->details->data_type) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		/* Put selection list in local variable and NULL the global one
-		 * so it doesn't get munged in a modal popup-menu event loop
-		 * in the handle_dropped_icons handler.
-		 */
-		selected_items = list->details->selection_list;
-		list->details->selection_list = NULL;
-		gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
-				 selected_items, x, y, context->action);			
-		nautilus_drag_destroy_selection_list (selected_items);
-		gtk_drag_finish (context, TRUE, FALSE, time);
-		break;
-	case NAUTILUS_ICON_DND_COLOR:
-		gtk_drag_finish (context, TRUE, FALSE, time);
-		break;
-	default:
-		gtk_drag_finish (context, FALSE, FALSE, time);
-		break;
-	}
 
 	return FALSE;
 }
@@ -2839,31 +2908,68 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 				  guint info, guint time)
 {
 	NautilusList *list;
+	NautilusDragInfo *drag_info;
 
 	list = NAUTILUS_LIST (widget);
+	drag_info = list->details->drag_info;
+
+	g_print ("drag data received \n");
 
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		list->details->selection_list = nautilus_drag_build_selection_list (data);
-		list->details->got_drop_data_type = TRUE;
-		list->details->data_type = info;
+		drag_info->selection_list = nautilus_drag_build_selection_list (data);
+		drag_info->got_drop_data_type = TRUE;
+	        drag_info->data_type = info;
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
-		/* FIXME bugzilla.eazel.com 1289: cache the data here and use it in nautilus_list_drag_drop */
-		list->details->got_drop_data_type = TRUE;
-		list->details->data_type = info;
-		nautilus_background_receive_dropped_color
-			(nautilus_get_widget_background (widget),
-			 widget, x, y, data);
-		nautilus_list_setup_style_colors (NAUTILUS_LIST (list));
+		drag_info->got_drop_data_type = TRUE;
+		drag_info->data_type = info;
 		break;
 	default:
 		break;
 	}
+
+
+	if (drag_info->drop_occured == TRUE) {
+		GList *selected_items;
+
+		g_print ("drag data received drop occured \n");
+
+		switch (info) {
+		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+			/* Put selection list in local variable and NULL the global one
+			 * so it doesn't get munged in a modal popup-menu event loop
+			 * in the handle_dropped_icons handler.
+			 */
+			selected_items = drag_info->selection_list;
+			drag_info->selection_list = NULL;
+			gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
+					 selected_items, x, y, context->action);			
+			nautilus_drag_destroy_selection_list (selected_items);
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_COLOR:
+			nautilus_background_receive_dropped_color
+				(nautilus_get_widget_background (widget),
+				 widget, x, y, data);
+			nautilus_list_setup_style_colors (NAUTILUS_LIST (list));
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		default:
+			gtk_drag_finish (context, FALSE, FALSE, time);
+			break;
+		}
+
+
+		drag_info->drop_occured = FALSE;
+	}
+
 }
 
+
+
 /* Our handler for the clear signal of the clist.  We have to reset the anchor
- * to null.
+  * to null.
  */
 static void
 nautilus_list_clear (GtkCList *clist)
@@ -3043,3 +3149,7 @@ insert_row (GtkCList *list, int row_index, char *text[])
 
 	return result;
 }
+
+
+
+

@@ -49,6 +49,8 @@ nautilus_drag_init (NautilusDragInfo *drag_info,
 	if (stipple != NULL) {
 		drag_info->stipple = gdk_bitmap_ref (stipple);
 	}
+
+	drag_info->drop_occured = FALSE;
 }
 
 void

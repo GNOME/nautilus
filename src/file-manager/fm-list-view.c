@@ -575,6 +575,8 @@ fm_list_handle_dropped_icons (NautilusList *list,
 				target_item_uri = g_strdup (list_view_uri);
 			}
 
+			g_print ("action: %d\n", action);
+			
 			/* start the copy */
 			fm_directory_view_move_copy_items (source_uris, NULL,
 				target_item_uri, action, x, y, directory_view);

@@ -66,6 +66,9 @@ typedef struct {
 	/* Stipple for drawing icon shadows during DnD.  */
 	GdkBitmap *stipple;
 
+        /* has the drop occured ? */
+        gboolean drop_occured;
+
 } NautilusDragInfo;
 
 

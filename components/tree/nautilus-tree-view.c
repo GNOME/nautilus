@@ -817,9 +817,7 @@ static void
 nautilus_tree_view_init_dnd (NautilusTreeView *view)
 {
 	gtk_drag_dest_set (GTK_WIDGET (view->details->tree), 
-			   GTK_DEST_DEFAULT_MOTION 
-			   | GTK_DEST_DEFAULT_HIGHLIGHT 
-			   | GTK_DEST_DEFAULT_DROP, 
+			   0,
 			   nautilus_tree_view_dnd_target_table,
 			   NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
 			   GDK_ACTION_COPY 
