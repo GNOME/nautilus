@@ -1,8 +1,3 @@
-# translation of es.po to 
-# translation of es.po to
-# translation of es.po to
-# traducción de es.po al Spanish
-# translation of es.po to Spanish
 # Nautilus's Spanish translation file.
 # Copyright © 2000-2003 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus package.
@@ -17,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-11 09:55+0100\n"
-"PO-Revision-Date: 2004-11-28 15:56+0100\n"
+"POT-Creation-Date: 2005-01-12 02:25+0100\n"
+"PO-Revision-Date: 2005-01-12 02:26+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -6152,23 +6147,23 @@ msgid "_Location:"
 msgstr "_Dirección:"
 
 # src/nautilus-main.c:63
-#: src/nautilus-main.c:187
+#: src/nautilus-main.c:211
 msgid "Perform a quick set of self-check tests."
 msgstr "Realiza un conjunto rápido de auto-verificaciones."
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:214
 msgid "Create the initial window with the given geometry."
 msgstr "Crea la ventana inicial con la geometría indicada."
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:214
 msgid "GEOMETRY"
 msgstr "GEOMETRÍA"
 
-#: src/nautilus-main.c:192
+#: src/nautilus-main.c:216
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Sólo crear ventanas para las URI explícitamente especificadas."
 
-#: src/nautilus-main.c:194
+#: src/nautilus-main.c:218
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -6176,21 +6171,21 @@ msgstr ""
 "No administrar el escritorio (ignorar las preferencias configuradas en el "
 "dialogo preferencias)."
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:220
 msgid "open a browser window."
 msgstr "abrir una ventana del navegador."
 
 # src/nautilus-main.c:65
-#: src/nautilus-main.c:198
+#: src/nautilus-main.c:222
 msgid "Quit Nautilus."
 msgstr "Salir de Nautilus."
 
 # src/nautilus-main.c:65
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:224
 msgid "Restart Nautilus."
 msgstr "Reiniciar Nautilus."
 
-#: src/nautilus-main.c:233
+#: src/nautilus-main.c:257
 msgid "File Manager"
 msgstr "Administrador de archivos"
 
@@ -6199,26 +6194,26 @@ msgstr "Administrador de archivos"
 # src/nautilus-window-manage-views.c:217
 # src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:437
 #. Set initial window title
-#: src/nautilus-main.c:239 src/nautilus-spatial-window.c:330
+#: src/nautilus-main.c:263 src/nautilus-spatial-window.c:330
 #: src/nautilus-window-menus.c:432 src/nautilus-window.c:178
 msgid "Nautilus"
 msgstr "Nautilus"
 
 # src/nautilus-main.c:117
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:259 src/nautilus-main.c:268 src/nautilus-main.c:273
+#: src/nautilus-main.c:283 src/nautilus-main.c:292 src/nautilus-main.c:297
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s no puede usarse con URIs.\n"
 
 # src/nautilus-main.c:117
-#: src/nautilus-main.c:264
+#: src/nautilus-main.c:288
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check no se puede usar con otras opciones.\n"
 
 # src/nautilus-main.c:117
-#: src/nautilus-main.c:278
+#: src/nautilus-main.c:302
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry no se puede usar con más de una URI.\n"
@@ -6315,8 +6310,8 @@ msgid "Specify a location to open"
 msgstr "Especifique una dirección para abrir"
 
 #: src/nautilus-navigation-window-menus.c:550
-msgid "_Clear History"
-msgstr "_Borrar el histórico"
+msgid "Clea_r History"
+msgstr "_Borrar histórico"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:551
@@ -6409,8 +6404,8 @@ msgstr "Ver como %s"
 # src/file-manager/fm-properties-window.c:1526
 #: src/nautilus-navigation-window.c:689
 #, c-format
-msgid "File Browser: %s"
-msgstr "Visualizador de archivos: %s"
+msgid "%s - File Browser"
+msgstr "%s - Examinador de archivos"
 
 # components/help/hyperbola-nav-index.c:212
 #: src/nautilus-notes-viewer.c:388 src/nautilus-notes-viewer.c:495
@@ -7010,8 +7005,8 @@ msgstr "Ir a la carpeta de la papelera"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:646
-msgid "CD _Creator"
-msgstr "Grabador de _CDs"
+msgid "CD/_DVD Creator"
+msgstr "Grabador de CD/_DVD"
 
 # libnautilus-private/nautilus-file.c:2586
 #. label, accelerator
@@ -7073,3 +7068,13 @@ msgstr "Servidores de red"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Ver sus servidores de red en el administrador de archivos Nautilus"
+
+#~ msgid "_Clear History"
+#~ msgstr "_Borrar el histórico"
+
+# src/file-manager/fm-properties-window.c:1526
+#~ msgid "File Browser: %s"
+#~ msgstr "Visualizador de archivos: %s"
+
+#~ msgid "CD _Creator"
+#~ msgstr "Grabador de _CDs"
