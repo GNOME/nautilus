@@ -6,6 +6,7 @@ INCLUDES= -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/libnautilus -I. \
 	$(GNOME_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
+	$(GHTTP_CFLAGS) \
 	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
@@ -16,6 +17,7 @@ libnautilus_extensions_la_LDFLAGS=\
 	$(GNOME_LIBS) \
 	$(OAF_LIBS) \
 	$(BONOBO_LIBS) \
+	$(GHTTP_LIBS) \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \

@@ -1,3 +1,19 @@
+2000-06-05  Andy Hertzfeld  <andy@eazel.com>
+
+	* data/linksets/Makefile.am:
+	* data/linksets/portals.xml:
+	* data/linksets/search_engines.xml:
+	added 2 new linksets of web links
+	* libnautilus-extensions/Makefile.am:
+	made us link with ghttp
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	install the search engines linkset by default (temporarily until we have more UI)
+	* libnautilus-extensions/nautilus-link.c: (load_image_from_http),
+	(make_local_path), (nautilus_link_get_image_uri):
+	made links handle remote images by loading them through http using g_http, and
+	caching them locally.
+	
 2000-06-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
