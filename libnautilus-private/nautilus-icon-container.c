@@ -3825,17 +3825,28 @@ icon_destroy (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 	gboolean was_selected;
-	
+	NautilusIcon *icon_to_focus;
+	GList *item;
+ 
 	details = container->details;
 
+	item = g_list_find (details->icons, icon);
+	item = item->next ? item->next : item->prev;
+	icon_to_focus = (item != NULL) ? item->data : NULL;
+ 
 	details->icons = g_list_remove (details->icons, icon);
 	details->new_icons = g_list_remove (details->new_icons, icon);
 	g_hash_table_remove (details->icon_set, icon->data);
 
 	was_selected = icon->is_selected;
 
-	if (details->keyboard_focus == icon) {
-        	clear_keyboard_focus (container);
+	if (details->keyboard_focus == icon ||
+	    details->keyboard_focus == NULL) {
+		if (icon_to_focus != NULL) {
+			set_keyboard_focus (container, icon_to_focus);
+		} else {
+			clear_keyboard_focus (container);
+		}
 	}
 	if (details->keyboard_icon_to_reveal == icon) {
 		unschedule_keyboard_icon_reveal (container);
