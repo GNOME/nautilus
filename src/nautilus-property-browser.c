@@ -45,6 +45,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
+#include <librsvg/rsvg.h>
 #include <libxml/parser.h>
 #include <gtk/gtkcolorseldialog.h>
 #include <gtk/gtkdnd.h>
@@ -658,6 +659,18 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 	
 	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
 	
+	if (orig_pixbuf == NULL) {
+		orig_pixbuf = rsvg_pixbuf_from_file_at_max_size (image_file_name,
+								 MAX_ICON_WIDTH, MAX_ICON_HEIGHT,
+								 NULL);
+	}
+	
+	g_free (image_file_name);
+
+	if (orig_pixbuf == NULL) {
+		return NULL;
+	}
+	
 	is_reset = eel_strcmp (file_name, RESET_IMAGE_NAME) == 0;
 	
 	if (strcmp (property_browser->details->category, "patterns") == 0) {
@@ -666,8 +679,6 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 		g_object_unref (orig_pixbuf);
 	}
-
-	g_free (image_file_name);
 
 	return pixbuf;
 }

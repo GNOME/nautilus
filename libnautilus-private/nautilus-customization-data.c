@@ -40,6 +40,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-directory.h>
@@ -202,8 +203,22 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	image_file_name = get_file_path_for_mode (data,
 						  current_file_info->name);
-	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);	
+	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
+
+	if (orig_pixbuf == NULL) {
+		orig_pixbuf = rsvg_pixbuf_from_file_at_max_size (image_file_name,
+								 data->maximum_icon_width, 
+								 data->maximum_icon_height,
+								 NULL);
+	}
 	g_free (image_file_name);
+
+	if (orig_pixbuf == NULL) {
+		return nautilus_customization_data_get_next_element_for_display (data,
+										 emblem_name,
+										 pixbuf_out,
+										 label_out);
+	}
 
 	is_reset_image = eel_strcmp(current_file_info->name, RESET_IMAGE_NAME) == 0;
 
@@ -213,8 +228,8 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE, is_reset_image);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
-								data->maximum_icon_width, 
-								data->maximum_icon_height);
+							   data->maximum_icon_width, 
+							   data->maximum_icon_height);
 		g_object_unref (orig_pixbuf);
 	}
 	
