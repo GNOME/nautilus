@@ -23,6 +23,7 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  *         Ettore Perazzoli <ettore@gnu.org>
  *         Michael Meeks <michael@nuclecu.unam.mx>
+ *	   Andy Hertzfeld <andy@eazel.com>
  *
  */
 
@@ -61,6 +62,18 @@ static const char untranslated_location_label[] = N_("Location:");
 static const char untranslated_go_to_label[] = N_("Go To:");
 #define LOCATION_LABEL _(untranslated_location_label)
 #define GO_TO_LABEL _(untranslated_go_to_label)
+
+struct NautilusLocationBarDetails {
+	GtkLabel *label;
+	GtkEntry *entry;
+	
+	char *last_location;
+	
+	char *current_directory;
+	GList *file_info_list;
+	
+	uint idle_id;
+};
 
 enum {
 	NAUTILUS_DND_MC_DESKTOP_ICON,
@@ -246,17 +259,42 @@ accumulate_name(char *full_name, char *candidate_name)
 	return result_name;
 }
 
+/* utility routine to load the file info list for the current directory, if necessary */
+static void
+get_file_info_list (NautilusLocationBar *bar, const char* dir_name)
+{
+	GnomeVFSResult result;
+	if (nautilus_strcmp (bar->details->current_directory, dir_name) != 0) {
+		g_free (bar->details->current_directory);
+		if (bar->details->file_info_list) {
+			gnome_vfs_file_info_list_free (bar->details->file_info_list);	
+			bar->details->file_info_list = NULL;		
+		}
+		
+		bar->details->current_directory = g_strdup (dir_name);
+		result = gnome_vfs_directory_list_load (&bar->details->file_info_list, dir_name,
+							GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+		if (result != GNOME_VFS_OK) {
+			if (bar->details->file_info_list) {
+				gnome_vfs_file_info_list_free (bar->details->file_info_list);	
+				bar->details->file_info_list = NULL;			
+			}
+		}
+	}
+}
+
 /* routine that performs the tab expansion using gnome-vfs.  Extract the directory name and
   incomplete basename, then iterate through the directory trying to complete it.  If we
   find something, add it to the entry */
   
-static void
-try_to_expand_path (GtkEditable *editable)
+static gboolean
+try_to_expand_path (NautilusLocationBar *bar)
 {
-	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GList *list, *element;
+	GList *element;
 	GnomeVFSURI *uri;
+	GtkEditable *editable;
+	
 	int base_length;
 	int current_path_length;
 	int offset;
@@ -268,18 +306,20 @@ try_to_expand_path (GtkEditable *editable)
 	char *expand_text;
 	char *expand_name;
 	
+	editable = GTK_EDITABLE (bar->details->entry);
 	user_location = gtk_editable_get_chars (editable, 0, -1);
+	bar->details->idle_id = 0;
 	
 	/* if it's just '~' or '~/', don't expand because slash shouldn't be appended */
 	if (nautilus_strcmp (user_location, "~") == 0
 	    || nautilus_strcmp (user_location, "~/") == 0) {
-		return;
+		return FALSE;
 	}
 	current_path = nautilus_make_uri_from_input (user_location);
 
 	if (!nautilus_istr_has_prefix (current_path, "file://")) {
 		g_free (current_path);
-		return;
+		return FALSE;
 	}
 
 	current_path_length = strlen(current_path);	
@@ -297,29 +337,27 @@ try_to_expand_path (GtkEditable *editable)
 	if (base_name == NULL) {
 		gnome_vfs_uri_unref (uri);
 		g_free (current_path);
-		return;	
+		return FALSE;	
 	}
 	
 	base_length = strlen (base_name);
 	dir_name = gnome_vfs_uri_extract_dirname (uri);
 
-	/* get file info for the directory */
-
-	result = gnome_vfs_directory_list_load (&list, dir_name,
-						GNOME_VFS_FILE_INFO_DEFAULT, NULL);
-	if (result != GNOME_VFS_OK) {
+	/* get file info for the directory, if it hasn't changed since last time */
+	get_file_info_list (bar, dir_name);	
+	if (bar->details->file_info_list == NULL) {
 		g_free (dir_name);
 		g_free (base_name);
 		gnome_vfs_uri_unref (uri);
 		g_free (current_path);
-		return;
+		return FALSE;
 	}
 
 	/* iterate through the directory, keeping the intersection of all the names that
 	   have the current basename as a prefix. */
 
 	expand_text = NULL;
-	for (element = list; element != NULL; element = element->next) {
+	for (element = bar->details->file_info_list; element != NULL; element = element->next) {
 		current_file_info = element->data;
 		if (nautilus_str_has_prefix (current_file_info->name, base_name)) {
 			if (current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
@@ -344,7 +382,8 @@ try_to_expand_path (GtkEditable *editable)
 	g_free (base_name);
 	g_free (current_path);
 	g_free (user_location);
-	gnome_vfs_file_info_list_free (list);	
+
+	return FALSE;
 }
 
 /* Until we have a more elegant solution, this is how we figure out if
@@ -397,6 +436,8 @@ editable_key_press_callback (GtkObject *object,
 	g_assert (n_args == 1);
 	g_assert (args != NULL);
 
+	bar = NAUTILUS_LOCATION_BAR (data);
+
 	editable = GTK_EDITABLE (object);
 	event = GTK_VALUE_POINTER (args[0]);
 	return_value_location = GTK_RETLOC_BOOL (args[1]);
@@ -408,14 +449,15 @@ editable_key_press_callback (GtkObject *object,
 	}
 	
 	/* Only do an expand if we just handled a key that inserted
-	 * characters.
+	 * characters. Do the expand at idle time to avoid slowing down typing
+	 * when the directory is large.
 	 */
 	if (*return_value_location
+	    && bar->details->idle_id <= 0
 	    && entry_would_have_inserted_characters (event))  {
-		try_to_expand_path (editable);
+        	bar->details->idle_id = gtk_idle_add ( (GtkFunction) try_to_expand_path, bar);		
 	}
 	
-	bar = NAUTILUS_LOCATION_BAR (data);
 	nautilus_location_bar_update_label (bar);
 }
 
@@ -427,7 +469,7 @@ real_activate (NautilusNavigationBar *navigation_bar)
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 
 	/* Put the keyboard focus in the text field when switching to this mode */
-	gtk_widget_grab_focus (GTK_WIDGET (bar->entry));
+	gtk_widget_grab_focus (GTK_WIDGET (bar->details->entry));
 }
 
 static void
@@ -437,8 +479,21 @@ destroy (GtkObject *object)
 
 	bar = NAUTILUS_LOCATION_BAR (object);
 	
-	g_free (bar->last_location);
-
+	/* cancel the pending idle call, if any */
+	if (bar->details->idle_id > 0) {
+		gtk_idle_remove (bar->details->idle_id);
+	}
+	
+	if (bar->details->file_info_list) {
+		gnome_vfs_file_info_list_free (bar->details->file_info_list);	
+	
+	}
+	
+	g_free (bar->details->current_directory);
+	
+	g_free (bar->details->last_location);
+	g_free (bar->details);
+	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -465,6 +520,8 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	GtkWidget *entry;
 	GtkWidget *event_box;
 	GtkWidget *hbox;
+
+	bar->details = g_new0 (NautilusLocationBarDetails, 1);
 
 	hbox = gtk_hbox_new (0, FALSE);
 
@@ -520,8 +577,8 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	gtk_widget_show_all (hbox);
 
-	bar->label = GTK_LABEL (label);
-	bar->entry = GTK_ENTRY (entry);	
+	bar->details->label = GTK_LABEL (label);
+	bar->details->entry = GTK_ENTRY (entry);	
 }
 
 
@@ -536,7 +593,7 @@ nautilus_location_bar_new (NautilusWindow *window)
 
 	/* Clipboard */
 	nautilus_clipboard_set_up_editable
-		(GTK_EDITABLE (location_bar->entry),
+		(GTK_EDITABLE (location_bar->details->entry),
 		 nautilus_window_get_ui_container (window),
 		 TRUE);
 
@@ -559,14 +616,25 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	 * thus should not emit the LOCATION_CHANGED signal.*/
 	
 	formatted_location = nautilus_format_uri_for_display (location);
-	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->entry),
+	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->details->entry),
 				 formatted_location);
 	g_free (formatted_location);
 
+	/* free up the cached file info from the previous location */
+	if (bar->details->current_directory) {
+		g_free (bar->details->current_directory);
+		bar->details->current_directory = NULL;
+	}
+	
+	if (bar->details->file_info_list) {
+		gnome_vfs_file_info_list_free (bar->details->file_info_list);	
+		bar->details->file_info_list = NULL;			
+	}
+	
 	/* remember the original location for later comparison */
 	
-	g_free (bar->last_location);
-	bar->last_location = g_strdup (location);
+	g_free (bar->details->last_location);
+	bar->details->last_location = g_strdup (location);
 	nautilus_location_bar_update_label (bar);
 }
 
@@ -590,7 +658,7 @@ nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar)
 
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 	
-	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->entry), 0, -1);
+	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
 	best_uri = nautilus_make_uri_from_input (user_location);
 	g_free (user_location);
 	return best_uri;
@@ -607,13 +675,13 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 {
 	char *current_text, *current_location;
 	
-	current_text = gtk_entry_get_text (GTK_ENTRY (bar->entry));
+	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
 	current_location = nautilus_make_uri_from_input (current_text);
 	
-	if (nautilus_uris_match (bar->last_location, current_location)) {
-		gtk_label_set_text (GTK_LABEL (bar->label), LOCATION_LABEL);
+	if (nautilus_uris_match (bar->details->last_location, current_location)) {
+		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
 	} else {		 
-		gtk_label_set_text (GTK_LABEL (bar->label), GO_TO_LABEL);
+		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
 	}	
 	g_free (current_location);
 }

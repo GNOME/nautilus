@@ -1,3 +1,19 @@
+2001-02-08  Andy Hertzfeld  <andy@eazel.com>
+	
+	* src/nautilus-location-bar.c,h: (get_file_info_list),
+	(try_to_expand_path), (editable_key_press_callback),
+	(real_activate), (destroy), (nautilus_location_bar_initialize),
+	(nautilus_location_bar_new), (nautilus_location_bar_set_location),
+	(nautilus_location_bar_get_location),
+	(nautilus_location_bar_update_label):
+
+	fixed bug 6369, sluggish keyboard response in location bar. I improved
+	this in two different ways: the expansion code is deferred to idle
+	time now, so it doesn't get in the way of fast typing.  Also, the
+	file info list is cached in memory, so it doesn't have to load it
+	again for every keystroke.  I also made the instance variables
+	private, instead of being exposed in the .h file.
+	
 2001-02-08  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal

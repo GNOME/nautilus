@@ -44,12 +44,11 @@
 #define NAUTILUS_IS_LOCATION_BAR(obj) \
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_LOCATION_BAR)
 
+typedef struct NautilusLocationBarDetails NautilusLocationBarDetails;
+
 typedef struct NautilusLocationBar {
 	NautilusNavigationBar parent;
-
-	GtkLabel *label;
-	GtkEntry *entry;
-	char *last_location;
+	NautilusLocationBarDetails *details;
 } NautilusLocationBar;
 
 typedef struct {
