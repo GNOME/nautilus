@@ -805,54 +805,54 @@ add_startup_timeout (GdkScreen         *screen,
  * this should not be needed.
  */
 static Time
-slowly_and_stupidly_obtain_timestamp(SnDisplay *display)
+slowly_and_stupidly_obtain_timestamp (SnDisplay *display)
 {
-  Window xwindow;
-  Display *xdisplay;
-  XEvent event;
-
-  xdisplay = sn_display_get_x_display (display);
-
-  {
-    XSetWindowAttributes attrs;
-    Atom atom_name;
-    Atom atom_type;
-    char* name;
-
-    attrs.override_redirect = True;
-    attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
-
-    xwindow =
-      XCreateWindow (xdisplay,
-                     RootWindow (xdisplay, 0),
-                     -100, -100, 1, 1,
-                     0,
-                     CopyFromParent,
-                     CopyFromParent,
-                     CopyFromParent,
-                     CWOverrideRedirect | CWEventMask,
-                     &attrs);
-
-    atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
-    g_assert (atom_name != None);
-    atom_type = XInternAtom (xdisplay, "STRING", TRUE);
-    g_assert (atom_type != None);
-
-    name = "Fake Window";
-    XChangeProperty (xdisplay, 
-                     xwindow, atom_name,
-                     atom_type,
-                     8, PropModeReplace, name, strlen (name));
-  }
-  
-  XWindowEvent (xdisplay,
-                xwindow,
-                PropertyChangeMask,
-                &event);
-
-  XDestroyWindow(xdisplay, xwindow);
-
-  return event.xproperty.time;
+	Window xwindow;
+	Display *xdisplay;
+	XEvent event;
+	
+	xdisplay = sn_display_get_x_display (display);
+	
+	{
+		XSetWindowAttributes attrs;
+		Atom atom_name;
+		Atom atom_type;
+		char* name;
+		
+		attrs.override_redirect = True;
+		attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
+		
+		xwindow =
+			XCreateWindow (xdisplay,
+				       RootWindow (xdisplay, 0),
+				       -100, -100, 1, 1,
+				       0,
+				       CopyFromParent,
+				       CopyFromParent,
+				       CopyFromParent,
+				       CWOverrideRedirect | CWEventMask,
+				       &attrs);
+		
+		atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
+		g_assert (atom_name != None);
+		atom_type = XInternAtom (xdisplay, "STRING", TRUE);
+		g_assert (atom_type != None);
+		
+		name = "Fake Window";
+		XChangeProperty (xdisplay, 
+				 xwindow, atom_name,
+				 atom_type,
+				 8, PropModeReplace, name, strlen (name));
+	}
+	
+	XWindowEvent (xdisplay,
+		      xwindow,
+		      PropertyChangeMask,
+		      &event);
+	
+	XDestroyWindow(xdisplay, xwindow);
+	
+	return event.xproperty.time;
 }
 #endif /* HAVE_STARTUP_NOTIFICATION */
 
