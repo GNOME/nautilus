@@ -1,3 +1,22 @@
+2000-11-06  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/docs/installer-rpm-cases:
+	Beginning a document of rpm cases, tree structures and generel
+	crack...
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_download_progress_signal),
+	(eazel_install_progress_signal), (tree_helper), (install_failed):
+	Nicer output, ability to disable pct output (--no-percent)
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_do_file_conflict_check):
+	Fix for 4579
+	
+	* nautilus-installer/src/prescript:
+	Removed the crack that starts the nautilus launcher applet.
+	
 2000-11-06  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/trilobite-redirect.c:

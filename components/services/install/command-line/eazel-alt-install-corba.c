@@ -69,7 +69,8 @@ int     arg_dry_run,
 	arg_ssl_rename,
 	arg_provides,
 	arg_verbose,
-	arg_id;
+	arg_id,
+	arg_no_pct;
 char    *arg_server,
 	*arg_config_file,
 	*arg_package_list,
@@ -97,6 +98,7 @@ static const struct poptOption options[] = {
 	{"local", 'l', POPT_ARG_NONE, &arg_local, 0, N_("Use local"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"id", 'i', POPT_ARG_NONE, &arg_id, 0, N_("RPM args are Eazel Ids"), NULL},
+	{"no-percent", '\0', POPT_ARG_NONE, &arg_no_pct, 0, N_("Don't print fancy percent output"), NULL},
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
 	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needed files"), NULL},
@@ -236,14 +238,18 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 	if (amount==0) {
 		fprintf (stdout, "Downloading %s...\n", name);
 	} else if (amount != total ) {
-		fprintf (stdout, "(%d/%d) %% %f\r", 
-			 amount, total,
-			 (float) (((float) amount * 100.0) / total));
-		fflush (stdout);
+		if (arg_no_pct==0) {
+			fprintf (stdout, "(%d/%d) = %.1f %%\r", 
+				 amount, total,
+				 (float) (((float) amount * 100.0) / total));
+			fflush (stdout);
+		}
 	} else if (amount == total && total!=0) {
-		fprintf (stdout, "(%d/%d) %% %f\r",
-			 amount, total, 100.0);
-		fprintf (stdout, "\nDone\n");
+		if (arg_no_pct==0) {
+			fprintf (stdout, "(%d/%d) = %.1f %%\r\n",
+				 amount, total, 100.0);
+		}
+		fprintf (stdout, "Done\n");
 		fflush (stdout);
 	}
 }
@@ -259,19 +265,23 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 	if (amount==0) {
 		fprintf (stdout, "%s %s: \"%20.20s\"...\n", title, pack->name, pack->description);
 	} else if (amount != total ) {
-		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
-			 package_num, num_packages,
-			 total_size_completed, total_size,
-			 amount, total,
-			 (float) (((float) amount * 100.0) / total));
-		fflush (stdout);
+		if (arg_no_pct==0) {
+			fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) = %.1f%%\r", 
+				 package_num, num_packages,
+				 total_size_completed, total_size,
+				 amount, total,
+				 (float) (((float) amount * 100.0) / total));
+			fflush (stdout);
+		}
 	}
 	if (amount == total && total!=0) {
-		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r",
-			 package_num, num_packages,
-			 total_size_completed, total_size,
-			 amount, total, 100.0);
-		fprintf (stdout, "\nDone\n");
+		if (arg_no_pct==0) {
+			fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) = %.1f %%\r\n",
+				 package_num, num_packages,
+				 total_size_completed, total_size,
+				 amount, total, 100.0);
+		}
+		fprintf (stdout, "Done\n");
 		fflush (stdout);
 	}
 }
@@ -334,45 +344,13 @@ tree_helper (EazelInstallCallback *service,
 		fprintf (stdout, title);
 	}
 
-	switch (pd->status) {
-	case PACKAGE_DEPENDENCY_FAIL:
-		fprintf (stdout, "%s%s%s, which had dependency failure(s)\n", 
-			 indent,  indent_type, 
-			 rpmname_from_packagedata (pd));
-		break;
-	case PACKAGE_CANNOT_OPEN:
-		fprintf (stdout, "%s%s%s,which was not found\n", 
-			 indent,  indent_type,
-			 rpmname_from_packagedata (pd));
-		break;		
-	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		fprintf (stdout, "%s%s%s, which is a source package\n", 
-			 indent,  indent_type,
-			 rpmname_from_packagedata (pd));
-		break;
-	case PACKAGE_BREAKS_DEPENDENCY:
-		fprintf (stdout, "%s%s%s, which breaks deps\n", 
-			 indent,  indent_type,
-			 rpmname_from_packagedata (pd));
-		break;
-	case PACKAGE_FILE_CONFLICT:
-		fprintf (stdout, "%s%s%s, which has file conflict\n", 
-			 indent,  indent_type,
-			 rpmname_from_packagedata (pd));
-		break;
-	case PACKAGE_CIRCULAR_DEPENDENCY:
-		fprintf (stdout, "%s%s%s, package would cause circular dependency\n", 
-			 indent,  indent_type,
-			 rpmname_from_packagedata (pd));
-		break;
-	default:
-		fprintf (stdout, "%s%s%s %s(status %s)\n", 
-			 indent,  indent_type,
-			 rpmname_from_packagedata (pd),
-			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed " : "",
-			 packagedata_status_enum_to_str (pd->status));
-		break;
-	}
+	
+	fprintf (stdout, "%s%s%s (%s/%s)\n", 
+		 indent,  indent_type,
+		 rpmname_from_packagedata (pd),
+		 packagedata_status_enum_to_str (pd->status),
+		 packagedata_modstatus_enum_to_str (pd->modify_status));
+
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {		
 		char *tmp;
 		tmp = g_strdup ("-d-");
@@ -406,7 +384,9 @@ install_failed (EazelInstallCallback *service,
 	GList *stuff = NULL;	
 
 	title = g_strdup_printf ("\nPackage %s failed to install. Here's the tree...\n", pd->name);
-	tree_helper (service, pd, "", "", 4, title);
+	if (arg_debug) {
+		tree_helper (service, pd, "", "", 4, title);
+	}
 	fprintf (stdout, "\n");
 
 	if (problem) {

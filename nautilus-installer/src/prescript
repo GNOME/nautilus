@@ -51,15 +51,6 @@ if test $UID -ne 0 -a "x$1" '!=' "x--version" -a "x$1" '!=' "x--build"; then
       fi
    fi
 
-   # Start the nautilus launcher if needed
-   ps ax | grep -vw grep | grep -w 'nautilus-launcher-applet' > /dev/null 2>&1
-   rv=$?
-   if [ $rv -ne 0 ]; then
-      if [ -f /usr/bin/nautilus-launcher-applet ]; then
-           nautilus-launcher-applet &
-       fi
-   fi
-
    exit
 fi
 
