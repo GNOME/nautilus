@@ -27,10 +27,10 @@
 
 #include <libnautilus-extensions/nautilus-entry.h>
 
-void nautilus_undo_setup_nautilus_entry_for_undo 	(NautilusEntry	*entry);
-void nautilus_undo_teardown_nautilus_entry_for_undo 	(NautilusEntry	*entry);
-void nautilus_undo_setup_editable_for_undo 		(GtkEditable 	*editable);
-void nautilus_undo_teardown_editable_for_undo 		(GtkEditable 	*editable);
+void nautilus_undo_set_up_nautilus_entry_for_undo 	(NautilusEntry	*entry);
+void nautilus_undo_tear_down_nautilus_entry_for_undo 	(NautilusEntry	*entry);
+void nautilus_undo_set_up_editable_for_undo 		(GtkEditable 	*editable);
+void nautilus_undo_tear_down_editable_for_undo 		(GtkEditable 	*editable);
 void nautilus_undo_editable_set_undo_key 		(GtkEditable 	*editable, 
 							 gboolean 	value);
 

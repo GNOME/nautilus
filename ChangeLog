@@ -1,6 +1,27 @@
 2000-08-23  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	* libnautilus-extensions/nautilus-undo-signal-handlers.h:
+	(nautilus_undo_set_up_nautilus_entry_for_undo),
+	(nautilus_undo_tear_down_nautilus_entry_for_undo),
+	(nautilus_undo_set_up_editable_for_undo),
+	(nautilus_undo_tear_down_editable_for_undo):
+	Rename functions to be verb phrases as opposed to nouns.
+	
+	* components/notes/nautilus-notes.c: (finish_loading_note),
+	(notes_load_location), (make_notes_view):
+	Rename functions to use new names above.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize):
+	Rename functions to use new names above.
+		
+	* src/file-manager/fm-properties-window.c: (create_basic_page):
+	Rename functions to use new names above.
+
+2000-08-23  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
 	(nautilus_undo_teardown_nautilus_entry_for_undo),
 	(nautilus_undo_teardown_editable_for_undo):
 	Adding the call to unregister form the undo manager was not such

@@ -52,7 +52,7 @@ static void restore_editable_from_undo_snapshot_callback (GtkObject 	*target,
 static void editable_register_edit_undo 		 (GtkEditable 	*editable);
 static void free_editable_object_data 			 (gpointer 	data);
 
-/* nautilus_undo_setup_nautilus_entry_for_undo
+/* nautilus_undo_set_up_nautilus_entry_for_undo
  * 
  * Functions and callback methods to handle undo 
  * in a NautilusEntry
@@ -66,7 +66,7 @@ nautilus_entry_user_changed_callback (NautilusEntry *entry)
 }
 
 void
-nautilus_undo_setup_nautilus_entry_for_undo (NautilusEntry *entry)
+nautilus_undo_set_up_nautilus_entry_for_undo (NautilusEntry *entry)
 {
 	EditableUndoObjectData *data;
 	
@@ -87,7 +87,7 @@ nautilus_undo_setup_nautilus_entry_for_undo (NautilusEntry *entry)
 }
 
 void
-nautilus_undo_teardown_nautilus_entry_for_undo (NautilusEntry *entry)
+nautilus_undo_tear_down_nautilus_entry_for_undo (NautilusEntry *entry)
 {
 	if (!NAUTILUS_IS_ENTRY (entry) ) {
 		return;
@@ -100,7 +100,7 @@ nautilus_undo_teardown_nautilus_entry_for_undo (NautilusEntry *entry)
 
 }
 
-/* nautilus_undo_setup_nautilus_entry_for_undo
+/* nautilus_undo_set_up_nautilus_entry_for_undo
  * 
  * Functions and callback methods to handle undo 
  * in a NautilusEntry
@@ -182,7 +182,7 @@ editable_register_edit_undo (GtkEditable *editable)
 }
 
 void
-nautilus_undo_setup_editable_for_undo (GtkEditable *editable)
+nautilus_undo_set_up_editable_for_undo (GtkEditable *editable)
 {
 	EditableUndoObjectData *data;
 	
@@ -209,7 +209,7 @@ nautilus_undo_setup_editable_for_undo (GtkEditable *editable)
 }
 
 void
-nautilus_undo_teardown_editable_for_undo (GtkEditable *editable)
+nautilus_undo_tear_down_editable_for_undo (GtkEditable *editable)
 {
 	if (!GTK_IS_EDITABLE (editable) ) {
 		return;

@@ -98,7 +98,7 @@ nautilus_entry_initialize (NautilusEntry *entry)
 {
 	entry->user_edit = TRUE;
 
-	nautilus_undo_setup_nautilus_entry_for_undo (entry);
+	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
 }
 
 GtkWidget*

@@ -1095,7 +1095,7 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 	name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
 
 	/* Set up name field for undo */
-	nautilus_undo_setup_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
+	nautilus_undo_set_up_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_in_event",

@@ -73,7 +73,7 @@ finish_loading_note (NautilusFile *file,
                                   &position);
 	g_free (notes_text);
 
-	nautilus_undo_setup_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
+	nautilus_undo_set_up_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
 }
 
 static void
@@ -118,7 +118,7 @@ notes_load_location (NautilusView *view,
                      Notes *notes)
 {
         if (strcmp (notes->uri, location) != 0) {
-		nautilus_undo_teardown_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
+		nautilus_undo_tear_down_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
                 notes_save_metainfo (notes);
                 g_free (notes->uri);
                 notes->uri = g_strdup (location);
@@ -180,7 +180,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
                  nautilus_view_get_bonobo_control (notes->view));
 
 	/* Setup up text field for undo */
-	nautilus_undo_setup_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
+	nautilus_undo_set_up_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (notes->note_text_field), TRUE);
 
         return BONOBO_OBJECT (notes->view);
