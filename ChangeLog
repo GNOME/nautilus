@@ -1,3 +1,11 @@
+2001-01-23  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(theme_image_path_to_uri):
+	fixed bug 5908, assert hit when background pattern is deleted, by
+	testing explicitly for the file missing and returning NULL in that
+	case instead of asserting.
+	
 2001-01-23  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

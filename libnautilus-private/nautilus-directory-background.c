@@ -153,9 +153,12 @@ theme_image_path_to_uri (char *image_file, const char *theme_name)
 			image_path = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, image_file);
 		}
 		
-		g_assert (g_file_exists (image_path));
+		if (image_path && g_file_exists (image_path)) {
+			image_uri = gnome_vfs_get_uri_from_local_path (image_path);
+		} else {
+			image_uri = NULL;
+		}
 		
-		image_uri = gnome_vfs_get_uri_from_local_path (image_path);
 		g_free (image_path);
 	} else {
 		image_uri = g_strdup (image_file);
