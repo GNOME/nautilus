@@ -931,12 +931,49 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 static int
 handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		       TransferInfo *transfer_info)
-{
-	/* transfer conflict, prompt the user to replace or skip */
+{	
 	int result;
 	char *text;
 	char *unescaped_name;
-
+	NautilusFile *file;
+	GnomeVFSURI *link_uri;
+	const char *link_path;
+	char *unescaped_path;
+	gboolean is_special_link;
+	
+	is_special_link = FALSE;
+	 
+	/* Handle special case files such as Trash, mount links and home directory */	
+	file = nautilus_file_get (progress_info->target_name);
+	if (file != NULL) {
+		if (nautilus_file_is_nautilus_link (file)) {
+			link_uri = gnome_vfs_uri_new (progress_info->target_name);
+			if (link_uri != NULL) {							
+				link_path = gnome_vfs_uri_get_path (link_uri);
+				unescaped_path = gnome_vfs_unescape_string_for_display (link_path);
+				gnome_vfs_uri_unref (link_uri);
+								
+				if (nautilus_link_local_is_volume_link (unescaped_path) ||
+		      		    nautilus_link_local_is_trash_link (unescaped_path) ||
+		      		    nautilus_link_local_is_home_link (unescaped_path)) {		      		    
+					/* FIXME bugzilla.eazel.com 5533 Need good dialog text for failed replace of
+					 * special desktop icons. */
+				 	nautilus_simple_dialog (parent_for_error_dialog (transfer_info), TRUE,  _("Could not replace file because it is special."),
+				 				_("Unable to replace file."), _("OK"), NULL, NULL);					
+					is_special_link = TRUE;
+				}
+				
+				g_free (unescaped_path);
+			}
+		}
+		nautilus_file_unref (file);		
+	}
+	
+	if (is_special_link) {
+		return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
+	}
+	
+	/* transfer conflict, prompt the user to replace or skip */
 	unescaped_name = nautilus_format_name_for_display (progress_info->target_name);
 	text = g_strdup_printf (_("File \"%s\" already exists.\n\n"
 				  "Would you like to replace it?"), 

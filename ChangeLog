@@ -1,3 +1,15 @@
+2001-01-09  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Mike Engber <engber@eazel.com>
+
+	Fixed bug 5220, Default desktop icon overwritten by dragging
+	same-named file to Desktop
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_transfer_overwrite):
+	We now check for special link files being overwritten and notify the user
+	that such an action is not allowed.
+	
 2001-01-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-customization-data.c:
