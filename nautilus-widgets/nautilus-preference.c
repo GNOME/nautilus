@@ -853,7 +853,7 @@ nautilus_widgets_self_check_preference (void)
 
 	/* Allocate a bunch of preference objects to test that they dont leak */
 	{
-		const guint	num_to_allocate = 666;
+		const guint	num_to_allocate = 20; /* larger number is too slow with memprof */
 		guint		i;
 
 		for (i = 0; i < num_to_allocate; i++)

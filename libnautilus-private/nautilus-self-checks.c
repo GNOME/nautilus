@@ -89,7 +89,7 @@ nautilus_before_check (const char *expression,
 }
 
 static void
-nautilus_after_check ()
+nautilus_after_check (void)
 {
 	/* It would be good to check here if there was a memory leak. */
 }
@@ -98,8 +98,8 @@ void
 nautilus_check_boolean_result (gboolean result, gboolean expected)
 {
 	if (result != expected) {
-		nautilus_report_check_failure (nautilus_strdup_boolean(result),
-					       nautilus_strdup_boolean(expected));
+		nautilus_report_check_failure (nautilus_strdup_boolean (result),
+					       nautilus_strdup_boolean (expected));
 	}
 	nautilus_after_check ();
 }
@@ -108,8 +108,8 @@ void
 nautilus_check_integer_result (long result, long expected)
 {
 	if (result != expected) {
-		nautilus_report_check_failure (g_strdup_printf("%ld", result),
-					       g_strdup_printf("%ld", expected));
+		nautilus_report_check_failure (g_strdup_printf ("%ld", result),
+					       g_strdup_printf ("%ld", expected));
 	}
 	nautilus_after_check ();
 }
@@ -130,6 +130,8 @@ nautilus_check_string_result (char *result, const char *expected)
 
 	if (!match) {
 		nautilus_report_check_failure (result, g_strdup (expected));
+	} else {
+		g_free (result);
 	}
 	nautilus_after_check ();
 }

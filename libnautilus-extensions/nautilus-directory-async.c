@@ -179,6 +179,9 @@ nautilus_metafile_read_cancel (NautilusDirectory *directory)
 static void
 metafile_read_done (NautilusDirectory *directory)
 {
+	g_assert (directory->details->metafile_read_state != NULL);
+	g_assert (directory->details->metafile_read_state->is_open == FALSE);
+
 	g_free (directory->details->metafile_read_state);
 
 	directory->details->metafile_read = TRUE;
@@ -196,6 +199,8 @@ metafile_read_failed (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (directory->details->metafile == NULL);
+	g_assert (directory->details->metafile_read_state != NULL);
+	g_assert (directory->details->metafile_read_state->is_open == FALSE);
 
 	g_free (directory->details->metafile_read_state->buffer);
 
@@ -219,6 +224,8 @@ metafile_read_complete (NautilusDirectory *directory)
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (directory->details->metafile == NULL);
+	g_assert (directory->details->metafile_read_state != NULL);
+	g_assert (directory->details->metafile_read_state->is_open == FALSE);
 	
 	/* The gnome-xml parser requires a zero-terminated array. */
 	size = directory->details->metafile_read_state->bytes_read;

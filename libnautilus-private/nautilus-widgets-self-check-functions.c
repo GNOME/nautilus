@@ -29,7 +29,8 @@
 
 #include "nautilus-widgets-self-check-functions.h"
 
-void nautilus_widgets_run_self_checks ()
+void
+nautilus_widgets_run_self_checks (void)
 {
 	NAUTILUS_WIDGETS_FOR_EACH_SELF_CHECK_FUNCTION (NAUTILUS_CALL_SELF_CHECK_FUNCTION)
 }

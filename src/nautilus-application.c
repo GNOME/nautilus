@@ -441,7 +441,6 @@ nautilus_app_destroy_window (GtkObject *obj, NautilusApp *app)
 void 
 nautilus_app_quit (void)
 {
-	gnome_vfs_shutdown ();
 	gtk_main_quit ();
 }
 

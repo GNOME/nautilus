@@ -229,6 +229,8 @@ destroy (GtkObject *object)
 	}
 
 	nautilus_directory_unref (file->details->directory);
+
+	g_free (file->details);
 }
 
 NautilusFile *

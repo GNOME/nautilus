@@ -394,11 +394,11 @@ nautilus_directory_new (const char* uri)
 
 	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
 
-	directory->details->uri_text = g_strdup(uri);
+	directory->details->uri_text = g_strdup (uri);
 	directory->details->uri = vfs_uri;
 	directory->details->metafile_uri = metafile_uri;
 	directory->details->alternate_metafile_uri = alternate_metafile_uri;
-	directory->details->is_local = gnome_vfs_uri_is_local(vfs_uri);
+	directory->details->is_local = gnome_vfs_uri_is_local (vfs_uri);
 
 	return directory;
 }
@@ -1076,6 +1076,8 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
 
 	nautilus_directory_unref (directory);
+
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 0);
 
 	/* escape_slashes */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes (""), "");

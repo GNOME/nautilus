@@ -1,3 +1,34 @@
+2000-06-07  Darin Adler  <darin@eazel.com>
+
+	Leak-checking-related fixes.
+
+	* libnautilus-extensions/nautilus-file.c: (destroy):
+	Fixed a storage leak (we weren't freeing file->details).
+	* libnautilus-extensions/nautilus-self-checks.c:
+	(nautilus_check_string_result): Fixed a storage leak.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_done), (metafile_read_failed),
+	(metafile_read_complete): Added some asserts.
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory): Added one more "assert".
+	
+	* libnautilus-extensions/nautilus-lib-self-check-functions.c:
+	(nautilus_run_lib_self_checks): Formatting tweaks.
+	* nautilus-widgets/nautilus-widgets-self-check-functions.c:
+	(nautilus_widgets_run_self_checks): Formatting tweaks.
+	
+	* nautilus-widgets/nautilus-preference.c:
+	(nautilus_widgets_self_check_preference): Made the test
+	not repeat things so many times. It doesn't help find the
+	leaks, it actually hurts :-)
+	
+	* src/nautilus-application.c: (nautilus_app_quit):
+	* src/nautilus-main.c: (main):
+	Moved the gnome_vfs_shutdown out to the main loop instead of
+	putting it inside nautilus-application.c since that matches
+	how we do the initializing.
+
 2000-06-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-location-bar.c: (accumulate_name),
