@@ -79,7 +79,7 @@ load_theme_document (const char * theme_name)
 	char *theme_path, *temp_str;
 	
 	/* formulate the theme path name */
-	if (strcmp(theme_name, "default") == 0) {
+	if (strcmp (theme_name, "default") == 0) {
 		theme_path = nautilus_pixmap_file ("default.xml");
 	} else {
 		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
@@ -114,6 +114,7 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 {
 	char *theme_name, *temp_str;
 	char *theme_data;
+	static gboolean did_set_up_free_last_theme;
 	
 	xmlDocPtr theme_document;
 	xmlNodePtr resource_node;
@@ -126,12 +127,15 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 		theme_document = last_theme_document;
 	} else {
 		/* release the old saved data, since the theme changed */
+		if (!did_set_up_free_last_theme) {
+			g_atexit (free_last_theme);
+			did_set_up_free_last_theme = TRUE;
+		}
 		free_last_theme ();
 		
 		last_theme_name = g_strdup (theme_name);
 		last_theme_document = load_theme_document (theme_name);
 		theme_document = last_theme_document;
-		g_atexit (free_last_theme);
 	}			
 	
 	if (theme_document != NULL) {

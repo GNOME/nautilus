@@ -1,3 +1,9 @@
+2000-09-25  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-theme.c: (load_theme_document),
+	(nautilus_theme_get_theme_data): Fix double-free problem that was
+	causing a crash on quit if you changed themes.
+
 2000-09-25  Rebecca Schulman  <rebecka@eazel.com>
 
 	* src/file-manager/nautilus-indexing-info.c:
