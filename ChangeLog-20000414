@@ -1,5 +1,18 @@
 2000-03-09  Darin Adler  <darin@eazel.com>
 
+	* nautilus-icons-view-icon-item.c (emblem_layout_next,
+	nautilus_icons_view_icon_item_bounds):
+	Andy's check-in yesterday accidentally rolled out some changes
+	to this file. The changes include the typos that John and I had
+	fixed in emblem_layout_next and nautilus_icons_view_icon_item_bounds.
+
+	* nautilus-icons-view-icon-item.c:
+	As Andy was about to do anyway, I tightened up the emblem
+	positioning so they are closer to each other by changing the
+	hard-coded constant EMBLEM_SPACING.
+	
+2000-03-09  Darin Adler  <darin@eazel.com>
+
 	* libnautilus/nautilus-directory-private.h,
 	libnautilus/nautilus-directory.c, libnautilus/nautilus-file.c
 	(nautilus_directory_find_file, compare_file_with_name,
