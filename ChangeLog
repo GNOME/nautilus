@@ -1,3 +1,16 @@
+2001-02-22  Mike Fleming  <mfleming@eazel.com>
+
+	Bug 6761: promote html help uris in the {gnome-,g,}help
+	uri scheme to point to sgml files if they exist 
+
+	* components/help/Makefile.am:
+	* components/help/help-method.c: (string_ends_in),
+	(strdup_string_to_substring_end), (check_sgml_promotion),
+	(help_name_to_local_path), (transform_file), (help_do_transform):
+	* components/help/test-help-method.c: (test_failed),
+	(strcmp_tolerate_nulls), (test_uri_transform), (main):
+
+
 2001-02-22  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>

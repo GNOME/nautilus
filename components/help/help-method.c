@@ -226,75 +226,113 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
 	return TRUE;
 }
 
-static HelpURI *
-transform_file (const char *old_uri,
-                char * (* compute_uri_function) (const char *base))
+static gboolean
+string_ends_in (const char *string, const char *suffix)
 {
-	HelpURI *help_uri;
-	char *p;
-	char *base, *new_uri;
+	size_t string_len, suffix_len;
 
-	help_uri = help_uri_new ();
+	string_len = strlen (string);
+	suffix_len = strlen (suffix);
 
-        /* Find the part after either a "?" or a "#". Only look for a
-         * "#" if there is no "?". (We could instead use strpbrk to
-         * search for the first occurence of either "?" or "#".) 
-         */
-	p = strrchr (old_uri, '?');
-	if (p == NULL) {
-		p = strrchr (old_uri, '#');
-        }
-
-	if (p == NULL) {
-		base = g_strdup (old_uri);
+	if (suffix_len > string_len) {
+		return FALSE;
 	} else {
-		help_uri->section = g_strdup (p + 1);
-		base = g_strndup (old_uri, p - old_uri);
+		return 0 == strcmp (string + strlen (string) - strlen (suffix), suffix);
 	}
-
-        /* We do not want trailing spaces or it can screw things up. */
-        g_strchomp (base);
-
-        /* Call the passed in function to compute the URI. */
-	new_uri = (* compute_uri_function) (base);
-        g_free (base);
-	
-        if (new_uri == NULL) {
-		/* there is no SGML/XML or old HTML help path */
-                help_uri_free (help_uri);
-                return NULL;
-        }
-
-        /* Try the URI. */
-	if (convert_file_to_uri (help_uri, new_uri)) {
-		return help_uri;
-	}
-
-        /* Failed, so return. */
-	g_free (new_uri);
-        help_uri_free (help_uri);
-	return NULL;
 }
 
-/* We can handle sgml, info and html files only.
- *
- * possible formats:
- * 
- * /path/to/file[.sgml][?section]
- * /path/to/file[.html][#section]
- * /absolute/path/to/file[.sgml]
- */
-static HelpURI *
-transform_absolute_file (const char *file)
+static char *
+strdup_string_to_substring_end (const char *string, const char *substring)
 {
-        return transform_file (file, g_strdup);
+	const char *marker;
+	size_t substring_length;
+
+	if (string == NULL || substring == NULL) {
+		return NULL;
+	}
+	
+	substring_length = strlen (substring);
+	marker = strstr (string, substring);
+
+	if (marker == NULL) {
+		return NULL;
+	}
+
+	marker += substring_length;
+
+	return g_strndup (string, marker-string);
 }
 
-/* Possible cases for 'path' in this function are:
- * path/to/file[.sgml]
- * file[.sgml]
+/*
+ * bugzilla.eazel.com 6761:
+ * Automatically promote requests for html help to sgml help
+ * if available
+ *
+ * ghelp:/.../gfoo/C/index.html     -> ghelp:/.../gfoo/C/gfoo.sgml#index
+ * ghelp:/.../gfoo/C/index.html#abc -> ghelp:/.../gfoo/C/gfoo.sgml#abc
+ * ghelp:/.../gfoo/C/stuff.html     -> ghelp:/.../gfoo/C/gfoo.sgml#stuff
+ * ghelp:/.../gfoo/C/stuff.html#def -> ghelp:/.../gfoo/C/gfoo.sgml#def
  */
+static void
+check_sgml_promotion (const char *base, /*OUT*/ char **p_new_uri, /*INOUT*/ char **p_section)
+{
+	gchar **path_split;
+	char *help_dir_base;
+	char *sgml_path;
 
+	g_return_if_fail (p_new_uri != NULL);
+	g_return_if_fail (p_section != NULL);
+
+	if (!string_ends_in (base, ".html")) {
+		*p_new_uri = g_strdup (base);
+		return;
+	}
+
+	/*
+	 * The path format is assumed to be
+	 * share/gnome/help/ <application> / <locale> / <resource>
+	 * Note that the fragment has already been stripped and is passed in
+	 * separately
+	 */
+
+	help_dir_base = strdup_string_to_substring_end (base, "share/gnome/help/");
+
+	if (help_dir_base == NULL) {
+		*p_new_uri = g_strdup (base);
+		return;
+	}
+	
+	path_split = g_strsplit (base + strlen(help_dir_base), "/" , 3);
+
+	if (path_split[0] == NULL || path_split[1] == NULL || path_split[2] == NULL
+	    || strchr (path_split[2], '/') != NULL ) {
+		g_strfreev (path_split);
+		*p_new_uri = g_strdup (base);
+		return;
+	}
+
+	/* sgml document name should be "application.sgml" */
+	sgml_path = g_strconcat (help_dir_base, path_split[0], "/", path_split[1], "/", path_split[0], ".sgml", NULL);
+
+	if (g_file_exists (sgml_path)) {
+		*p_new_uri = sgml_path;
+		sgml_path = NULL;
+
+		/* resources not equal to index.html turn into sections
+		 * if there is no section already defined
+		 * (presense of ".html" suffix was asserted above)
+		 */
+		if (0 != strcmp (path_split[2], "index.html") && *p_section == NULL) {
+			/* chew off .html */
+
+			path_split[2][strlen (path_split[2]) - strlen (".html")] = '\0';
+			g_free (*p_section);
+			*p_section = g_strdup (path_split[2]);
+		}
+	} else {
+		*p_new_uri = g_strdup (base);
+	}
+}
 static char *
 file_from_path (const char *path)
 {
@@ -331,7 +369,7 @@ file_from_path (const char *path)
 /* If the help file exists returns the appropriate PATH (taking locale into account)
  * otherwise it returns NULL */
 static char *
-find_help_file (const char *old_uri)
+help_name_to_local_path (const char *old_uri)
 {
         char *base_name, *new_uri, *buf;
 	GList *language_list;
@@ -386,10 +424,73 @@ find_help_file (const char *old_uri)
 	return new_uri_with_extension;			
 }
 
+/* We can handle sgml, info and html files only.
+ *
+ * Possible cases for absolute paths:
+ * 
+ * /path/to/file[.sgml][?section]
+ * /path/to/file[.html][#section]
+ * /absolute/path/to/file[.sgml]
+ *
+ * Possible cases for relative paths:
+ * path/to/file[.sgml]
+ * file[.sgml]
+ */
+ 
 static HelpURI *
-transform_relative_file (const char *file)
+transform_file (const char *old_uri)
 {
-	return transform_file (file, find_help_file);
+	HelpURI *help_uri;
+	char *p;
+	char *base, *new_uri;
+
+	help_uri = help_uri_new ();
+
+        /* Find the part after either a "?" or a "#". Only look for a
+         * "#" if there is no "?". (We could instead use strpbrk to
+         * search for the first occurence of either "?" or "#".) 
+         */
+	p = strrchr (old_uri, '?');
+	if (p == NULL) {
+		p = strrchr (old_uri, '#');
+        }
+
+	if (p == NULL) {
+		base = g_strdup (old_uri);
+	} else {
+		help_uri->section = g_strdup (p + 1);
+		base = g_strndup (old_uri, p - old_uri);
+	}
+
+        /* We do not want trailing spaces or it can screw things up. */
+        g_strchomp (base);
+
+	if (base != NULL && base[0] == '/') {
+		/* If an html file is specifed but an sgml file is present
+		 * we want to use that instead
+		 */
+		check_sgml_promotion (base, &new_uri, &(help_uri->section));
+	} else { 	
+		new_uri = help_name_to_local_path (base);
+	}
+
+        g_free (base);
+	
+        if (new_uri == NULL) {
+		/* there is no SGML/XML or old HTML help path */
+                help_uri_free (help_uri);
+                return NULL;
+        }
+
+        /* Try the URI. */
+	if (convert_file_to_uri (help_uri, new_uri)) {
+		return help_uri;
+	}
+
+        /* Failed, so return. */
+	g_free (new_uri);
+        help_uri_free (help_uri);
+	return NULL;
 }
 
 static GnomeVFSResult
@@ -405,11 +506,7 @@ help_do_transform (GnomeVFSTransform *transform,
 		return GNOME_VFS_ERROR_NOT_FOUND;
         }
 
-	if (old_uri[0] == '/') {
-		help_uri = transform_absolute_file (old_uri);
-	} else {
-		help_uri = transform_relative_file (old_uri);
-	}
+	help_uri = transform_file (old_uri);
 	
 	if (help_uri == NULL) {
 		return GNOME_VFS_ERROR_NOT_FOUND;
