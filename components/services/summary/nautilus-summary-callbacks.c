@@ -100,14 +100,14 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	} else if (info && ( info->code == EAZELPROXY_AUTHN_FAIL_USER_NOT_ACTIVATED)) {
 		/* FIXME we really should use the services alert icon here, eh? */
 		nautilus_summary_login_failure_dialog (view, _("Your Eazel Services account has not yet been activated.  "
-			    "You cannot log into Eazel Services until you have activated your account.\n\n"
+			    "You can't log into Eazel Services until you activate your account.\n\n"
 			    "Please check your email for activation instructions."));
 		view->details->attempt_number = 0;
 		view->details->current_attempt = initial;
 	} else if (info && ( info->code == EAZELPROXY_AUTHN_FAIL_USER_DISABLED)) {
 		/* FIXME we really should use the services alert icon here, eh? */
 		nautilus_summary_login_failure_dialog (view, _("Your Eazel Service User Account has been temporarily disabled.\n\n"
-			    "Please try again in a few minutes or contact Eazel Support if this continues."));
+			    "Please try again in a few minutes, or contact Eazel support if this problem continues."));
 		view->details->attempt_number = 0;
 		view->details->current_attempt = initial;
 	} else {
