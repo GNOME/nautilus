@@ -1,3 +1,25 @@
+2001-02-23  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 6931, "floppy" and "cdrom" in Disks menu
+	should be "Floppy" and "CD-ROM"
+	
+	Fixed bug 5600, Desktop context menu "Disks" options
+	not translated
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(nautilus_volume_monitor_initialize),
+	(nautilus_volume_monitor_destroy):
+	Create a hash table of readable names to represent the
+	less legible name that is present in /etc/fstab.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_disks_menu):
+	Call new nautilus_volume_monitor_get_mount_name_for_display()
+	function to get a legible name for placement in the mount menu.
+	
 2001-02-23  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>
@@ -30,6 +52,7 @@
 	(nautilus_theme_selector_initialize): Use initial caps style
 	on Add & Remove buttons here, per Vera.
 
+>>>>>>> 1.3938
 2001-02-23  Arik Devens  <arik@eazel.com>
 
 	reviewed by: John Sullivan  <sullivan@eazel.com>
