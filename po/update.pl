@@ -31,13 +31,29 @@ use File::Basename;
 
 # Declare global variables
 #-------------------------
-my $VERSION = "1.5beta5";
+my $VERSION = "1.5 beta 7";
 my $LANG    = $ARGV[0];
-my $PACKAGE = "nautilus";
 
 # Always print as the first thing
 #--------------------------------
 $| = 1;
+
+# Figure out what package that is in use
+#---------------------------------------
+open FILE, "../configure.in";
+    while (<FILE>) {
+	next if /^dnl/; #ignore comments
+        if ($_=~/AM_INIT_AUTOMAKE\((.*),(.*)\)/o){
+            $PACKAGE=$1;
+	    last; #stop when found
+            }
+	if ($_=~/PACKAGE\((.*)\)/o){
+            $PACKAGE=$1;
+            last; #stop when found
+            }
+        }   
+close FILE;
+
 
 # Give error if script is run without an argument
 #------------------------------------------------
@@ -61,15 +77,8 @@ if ($LANG=~/^-(.)*/){
         &Merging;
     }
     elsif ($LANG eq "--pot"      || "$LANG" eq "-P"){
-
- 	# Check for .headerlock file, so the Makefile
-        # will not generate the header files twise 
-	#--------------------------------------------
-	if (-e ".headerlock"){
-   	&GeneratePot;
-	}else{
         &GenHeaders;
-	&GeneratePot;}
+	&GeneratePot;
         exit;
     }
     elsif ($LANG eq "--headers"  || "$LANG" eq "-S"){
@@ -243,13 +252,6 @@ sub GenHeaders{
            }
        }
        close FILE;
-
-       # Create .headerlock file, so the script will know 
-       # that we already passed this section. This is required 
-       # since the individual sections can be reaced at different
-       # times by the Makefile
-       #--------------------------------------------------------- 
-       system("touch .headerlock");
    }
 }
 
@@ -287,20 +289,6 @@ sub GeneratePot{
     print "Wrote $PACKAGE.pot\n";
     system("mv POTFILES.in.old POTFILES.in");
 
-    # If .headerlock file is found, it means that the potfiles
-    # already has been generated. If so delete the generated 
-    # .h header files. The reason for this approach with a 
-    # file as a marker is due to that the Makefile runs the
-    # scripts in turns
-    #---------------------------------------------------------
-
-    if(-e ".headerlock"){
-        unlink(".headerlock");
-
-        print "Removing generated header (.h) files...";
-	system("rm ./tmp/ -rf");
-    }
-    print "done\n";
 }
 
 sub Merging{

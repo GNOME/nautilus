@@ -53,11 +53,10 @@
  	done
  
 -POTFILES: POTFILES.in
-+.headerlock:
++headers:
 +	$(GENHEAD)
-+	touch .headerlock
 +
-+POTFILES: POTFILES.in .headerlock
++POTFILES: POTFILES.in headers
  	( if test 'x$(srcdir)' != 'x.'; then \
  	    posrcprefix='$(top_srcdir)/'; \
  	  else \

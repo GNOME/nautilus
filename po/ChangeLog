@@ -1,3 +1,14 @@
+2000-11-08  Kenneth Christiansen  <kenneth@gnu.org>
+
+        Install new versions of the XML-translation scripts. 
+        These now works even better, and do not leave behind a 
+        "po/.headerlock" file after a build.
+
+        * Makefile.i18npatch: Minor changes.
+        * ui-extract.pl: New version which fixes bugs for
+           XML messages with more than one newling.   
+        * update.pl: Newest release. Keeps Darin happy ;)
+
 2000-11-08  Valek Filippov  <frob@df.ru>
 
 	* ru.po: updated russian translation.

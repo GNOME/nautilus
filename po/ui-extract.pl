@@ -30,7 +30,7 @@ use Getopt::Long;
 
 #---------------------------
 
-my $VERSION     = "0.8.1";
+my $VERSION     = "0.8";
 
 #---------------------------
 
@@ -223,17 +223,17 @@ sub addMessages{
     foreach my $theMessage (sort keys %string) {
 	my ($lineNo,$fileName) = @{ $string{$theMessage} };
 
-    # Replace XML codes for special chars to
-    # geniune gettext syntax
-    #---------------------------------------
-    $theMessage =~ s/&quot;/\\"/mg;
-    $theMessage =~ s/&lt;/</mg;
-    $theMessage =~ s/&gt;/>/mg;
-
     if ($theMessage =~ /\n/) {
+
+	$n = 1;
 
         @elements =  split (/\n/, $theMessage);
         for ($n = 0; $n < @elements; $n++) {
+
+           # Replace XML codes for special chars to 
+           # geniune gettext syntax
+           #---------------------------------------
+           $elements[$n] =~ s/&quot;/\\"/mg;
 
            if ($n == 0) { 
 	       print OUT "gchar *s = N_"; 
