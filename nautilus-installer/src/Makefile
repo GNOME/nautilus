@@ -82,13 +82,8 @@ GHTTP_LIBS = -L/gnome/lib -lghttp
 GLIB_CFLAGS = -I/gnome/lib/glib/include -I/gnome/include
 GLIB_CONFIG = /gnome/bin/glib-config
 GLIB_LIBS = -L/gnome/lib -lglib
-GMOFILES =  da.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo fr.gmo
+GMOFILES =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo
 GMSGFMT = /usr/bin/msgfmt
-GNET_CFLAGS = -I/gnome/lib/glib/include -I/gnome/include
-GNET_CONFIG = /gnome/bin/gnet-config
-GNET_LIBS = -L/gnome/lib -lgnet -lglib
-GNOMECANVASPIXBUF_INCLUDEDIR = 
-GNOMECANVASPIXBUF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgdk_pixbuf -ltiff -ljpeg -lpng -lz -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm -lgnomecanvaspixbuf
 GNOMEUI_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include
 GNOMEUI_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNOME_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include
@@ -96,12 +91,13 @@ GNOME_CONFIG = /gnome/bin/gnome-config
 GNOME_LIBS = -L/gnome/lib -L/usr/lib -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNORBA_CFLAGS = 
 GNORBA_LIBS = 
-GTKHTML_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/usr/X11R6/include -I/gnome/include/gnome-xml
-GTKHTML_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgtkhtml -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lgmodule -lglib -ldl -lgdk_pixbuf -ltiff -ljpeg -lpng -lxml -lz
+GTKHTML_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gnome-xml
+GTKHTML_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgtkhtml -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -ltiff -ljpeg -lpng -lxml -lz -lgconf -lgconf-gtk -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm
 GTK_CFLAGS = 
 GTK_LIBS = 
 GT_NO = 
 GT_YES = #YES#
+IDL_CFLAGS = -I/gnome/share/idl
 INCLUDE_LOCALE_H = #include <locale.h>
 INSTOBJEXT = .mo
 INTLDEPS = 
@@ -117,9 +113,9 @@ LN_S = ln -s
 MAINT = 
 MAKEINFO = makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
-MOZILLA_COMPONENT_CFLAGS = -I/gnome-source/MOZILLA/mozilla/dist/include
-MOZILLA_COMPONENT_LDFLAGS = -L/gnome-source/MOZILLA/mozilla/dist/bin
-MOZILLA_COMPONENT_LIBS = -lgtkembedmoz -lgtksuperwin -lxpcom -lnspr4 -lplc4 -lplds4
+MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
+MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
+MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
 NM = /usr/bin/nm -B
 OAF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include
 OAF_CONFIG = /gnome/bin/oaf-config
@@ -131,7 +127,7 @@ ORBIT_IDL = /gnome/bin/orbit-idl
 ORBIT_LIBS = -L/gnome/lib -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = nautilus
 PAM_LIBS = -ldl -lpam -lpam_misc
-POFILES =  da.po gl.po ja.po ko.po no.po ru.po sv.po tr.po fr.po
+POFILES =  da.po de.po fr.po gl.po ja.po ko.po no.po ru.po sv.po tr.po
 POSUB = po
 RANLIB = ranlib
 RPM_LIBS = -lrpm -lz -lbz2 -lpopt -ldb
@@ -151,7 +147,7 @@ l =
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GNET_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
+INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
 
 
 CFLAGS = -g $(WERROR)

@@ -3,7 +3,6 @@ NULL=
 bin_PROGRAMS=test-rsvg
 
 test_rsvg_LDADD =\
-	$(GNOMECANVASPIXBUF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	librsvg.la
 
@@ -11,7 +10,6 @@ lib_LTLIBRARIES=librsvg.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOME_CFLAGS) \
-	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(XML_CFLAGS) \
 	$(WERROR) \
@@ -19,7 +17,6 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 
 librsvg_la_LDFLAGS=\
 	$(GNOME_LIBS) \
-	$(GNOMECANVASPIXBUF_LIBS) \
 	$(GDK_PIXBUF_LIBS)		\
 	$(XML_LIBS) \
 	$(LIBPNG)

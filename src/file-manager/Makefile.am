@@ -9,7 +9,6 @@ INCLUDES = \
 	$(OAF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
-	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(WERROR) \
 	-D_REENTRANT \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \

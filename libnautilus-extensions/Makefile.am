@@ -10,7 +10,6 @@ INCLUDES = \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(GHTTP_CFLAGS) \
-	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
 	$(WERROR) \
@@ -19,15 +18,11 @@ INCLUDES = \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	$(NULL)
 
-#	$(top_builddir)/libnautilus/libnautilus.la
-#	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la
-
 libnautilus_extensions_la_LDFLAGS=\
 	$(GNOME_LIBS) \
 	$(OAF_LIBS) \
 	$(BONOBO_LIBS) \
 	$(GHTTP_LIBS) \
-	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
 	$(LIBPNG) \
