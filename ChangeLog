@@ -1,3 +1,12 @@
+2000-08-14  Raph Levien  <raph@acm.org>
+
+	* librsvg/test-ft-gtk.c: Substantial new code to fiddle
+	with various options and measure performance.
+
+	* librsvg/rsvg-ft.c: A warning printed when the glyph is not
+	loaded. However, it looks at this point like there's a
+	nasty bug triggered when the glyph fails to load (see bug 2140).
+
 2000-08-14  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-properties-window.c:

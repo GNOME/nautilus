@@ -692,11 +692,20 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 			glyph_bbox.y1 = glyph_bbox.y0 + glyph->height;
 
 			art_irect_union (&bbox, &bbox, &glyph_bbox);
+#ifdef VERBOSE
+			g_print ("char '%c' bbox: (%d, %d) - (%d, %d)\n",
+				 str[i],
+				 glyph_bbox.x0, glyph_bbox.y0,
+				 glyph_bbox.x1, glyph_bbox.y1);
+#endif
 
 			glyph_affine[4] += glyph->xpen;
 			glyph_affine[5] += glyph->ypen;
 
 			n_glyphs++;
+		} else {
+			g_print ("no glyph loaded for character '%c'\n",
+				 str[i]);
 		}
 	}
 

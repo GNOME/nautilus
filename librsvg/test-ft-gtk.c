@@ -27,6 +27,8 @@
 #include <png.h>
 #include <popt.h>
 #include <math.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 #include <gtk/gtk.h>
 
@@ -54,9 +56,23 @@ struct _TestCtx {
 	int y_sp;
 	int y_scroll;
 	GtkWidget *drawingarea;
-	int width;
-	int height;
+	GtkWidget *status;
+	double start_time;
+	gboolean do_drawing;
+	gboolean do_scrolling;
+	gboolean do_invert;
 };
+
+static double
+timing_get_time (void)
+{
+	struct timeval tv;
+	struct timezone tz;
+
+	gettimeofday (&tv, &tz);
+
+	return tv.tv_sec + 1e-6 * tv.tv_usec;
+}
 
 static void invert_glyph (guchar *buf, int rowstride, int width, int height)
 {
@@ -98,14 +114,18 @@ static void draw_line (TestCtx *ctx, int line_num, ArtIRect *rect)
 	const double affine[6] = { 1, 0, 0, 1, 5, 12 };
 	int glyph_xy[2];
 	ArtIRect line_rect, clear_rect, glyph_rect, draw_rect;
+	int width;
 
+	width = drawingarea->allocation.width;
 
 	y0 = line_num * ctx->y_sp - ctx->y_scroll;
 	if (line_num < 0 || line_num >= ctx->n_lines) {
-		gdk_draw_rectangle (drawingarea->window,
-				    drawingarea->style->white_gc,
-				    TRUE,
-				    0, y0, ctx->width, ctx->y_sp);
+		if (ctx->do_drawing) {
+			gdk_draw_rectangle (drawingarea->window,
+					    drawingarea->style->white_gc,
+					    TRUE,
+					    0, y0, width, ctx->y_sp);
+		}
 	} else {
 		guchar *buf;
 		int rowstride;
@@ -123,25 +143,28 @@ static void draw_line (TestCtx *ctx, int line_num, ArtIRect *rect)
 		glyph_rect.y1 = glyph_rect.y0 + glyph->height;
 		line_rect.x0 = 0;
 		line_rect.y0 = y0;
-		line_rect.x1 = ctx->width;
+		line_rect.x1 = width;
 		line_rect.y1 = y0 + ctx->y_sp;
 		art_irect_intersect (&clear_rect, rect, &line_rect);
 
-		gdk_draw_rectangle (drawingarea->window,
-				    drawingarea->style->white_gc,
-				    TRUE,
-				    clear_rect.x0, clear_rect.y0,
-				    clear_rect.x1 - clear_rect.x0,
-				    clear_rect.y1 - clear_rect.y0);
+		if (ctx->do_drawing)
+			gdk_draw_rectangle (drawingarea->window,
+					    drawingarea->style->white_gc,
+					    TRUE,
+					    clear_rect.x0, clear_rect.y0,
+					    clear_rect.x1 - clear_rect.x0,
+					    clear_rect.y1 - clear_rect.y0);
 
 		art_irect_intersect (&draw_rect, rect, &glyph_rect);
-		if (!art_irect_empty (&draw_rect)) {
+		if (!art_irect_empty (&draw_rect) && ctx->do_drawing) {
 			buf = glyph->buf +
 				draw_rect.x0 - glyph_rect.x0 +
 				rowstride * (draw_rect.y0 - glyph_rect.y0);
-			invert_glyph (buf, rowstride,
-				      draw_rect.x1 - draw_rect.x0,
-				      draw_rect.y1 - draw_rect.y0);
+			if (ctx->do_invert) {
+				invert_glyph (buf, rowstride,
+					      draw_rect.x1 - draw_rect.x0,
+					      draw_rect.y1 - draw_rect.y0);
+			}
 			gdk_draw_gray_image (drawingarea->window,
 					     drawingarea->style->white_gc,
 					     draw_rect.x0, draw_rect.y0,
@@ -177,10 +200,111 @@ test_expose (GtkWidget *widget, GdkEventExpose *event, TestCtx *ctx)
 	return FALSE;
 }
 
+static void
+scroll_to (TestCtx *ctx, int new_y)
+{
+	GtkWidget *drawingarea = ctx->drawingarea;
+	int scroll_amt = new_y - ctx->y_scroll;
+	int width = drawingarea->allocation.width;
+	int height = drawingarea->allocation.height;
+	int y0, y1;
+	GdkEventExpose expose;
+
+	if (scroll_amt == 0)
+		return;
+
+#ifdef VERBOSE
+	g_print ("scrolling to %d\n", new_y);
+#endif
+	if (scroll_amt > 0 && scroll_amt < height) {
+		y0 = height - scroll_amt;
+		y1 = height;
+		if (ctx->do_scrolling) {
+			gdk_draw_pixmap (drawingarea->window,
+					 drawingarea->style->white_gc,
+					 drawingarea->window,
+					 0, scroll_amt,
+					 0, 0,
+					 width, y0);
+		}
+	} else if (scroll_amt < 0 && -scroll_amt < height) {
+		y0 = 0;
+		y1 = -scroll_amt;
+		if (ctx->do_scrolling) {
+			gdk_draw_pixmap (drawingarea->window,
+					 drawingarea->style->white_gc,
+					 drawingarea->window,
+					 0, 0,
+					 0, y1,
+					 width, height - y1);
+		}
+	} else {
+		y0 = 0;
+		y1 = height;
+	}
+	ctx->y_scroll = new_y;
+	expose.area.x = 0;
+	expose.area.width = width;
+	expose.area.y = y0;
+	expose.area.height = y1 - y0;
+	test_expose (drawingarea, &expose, ctx);
+}
+
+static gboolean scroll_idler (gpointer data)
+{
+	TestCtx *ctx = (TestCtx *)data;
+	GtkWidget *drawingarea = ctx->drawingarea;
+	int width = drawingarea->allocation.width;
+	int height = drawingarea->allocation.height;
+
+	if ((ctx->y_scroll + height) < ctx->n_lines * ctx->y_sp) {
+		scroll_to (ctx, ctx->y_scroll + 100);
+		return TRUE;
+	} else {
+		double elapsed;
+		char str[128];
+
+		scroll_to (ctx, 0);
+		elapsed = timing_get_time () - ctx->start_time;
+		sprintf (str, "%g seconds to scroll, %g Mpix/s",
+			 elapsed,
+			 width * ctx->y_sp * ctx->n_lines * 1e-6 / elapsed);
+		gtk_label_set_text (GTK_LABEL (ctx->status), str);
+		return FALSE;
+	}
+}
+
+static void
+check_toggle (GtkWidget *button, int state, gboolean *bool) {
+	*bool = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+}
+
+static GtkWidget *
+check_button (const char *label, gboolean *bool) {
+	GtkWidget *result;
+
+	result = gtk_check_button_new_with_label (label);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (result), *bool);
+	gtk_signal_connect (GTK_OBJECT (result), "state_changed",
+			    (GtkSignalFunc) check_toggle, bool);
+	return result;
+}
+
+static void
+start_scrolling (GtkWidget *widget, TestCtx *ctx)
+{
+	scroll_to (ctx, 0);
+	gtk_idle_add (scroll_idler, ctx);
+	ctx->start_time = timing_get_time ();
+	gtk_label_set_text (GTK_LABEL (ctx->status), "Scrolling...");
+}
+
 static TestCtx *new_test_window (const char *fn, int width, int height)
 {
 	GtkWidget *topwin;
 	GtkWidget *vbox;
+	GtkWidget *buttonbar;
+	GtkWidget *button;
 	GtkWidget *drawingarea;
 	TestCtx *ctx;
 
@@ -204,11 +328,33 @@ static TestCtx *new_test_window (const char *fn, int width, int height)
 	ctx->y_sp = 16;
 	ctx->y_scroll = 0;
 	ctx->drawingarea = drawingarea;
-	ctx->width = width;
-	ctx->height = height;
+
+	ctx->do_drawing = TRUE;
+	ctx->do_scrolling = TRUE;
+	ctx->do_invert = TRUE;
 
 	gtk_signal_connect (GTK_OBJECT (drawingarea), "expose_event",
 			    (GtkSignalFunc) test_expose, ctx);
+
+	buttonbar = gtk_hbox_new (FALSE, 5);
+	gtk_container_add (GTK_CONTAINER (vbox), buttonbar);
+
+	button = check_button ("Do drawing", &ctx->do_drawing);
+	gtk_container_add (GTK_CONTAINER (buttonbar), button);
+
+	button = check_button ("Do scrolling", &ctx->do_scrolling);
+	gtk_container_add (GTK_CONTAINER (buttonbar), button);
+
+	button = check_button ("Do invert", &ctx->do_invert);
+	gtk_container_add (GTK_CONTAINER (buttonbar), button);
+
+	button = gtk_button_new_with_label ("Start scroll test");
+	gtk_container_add (GTK_CONTAINER (buttonbar), button);
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+			    (GtkSignalFunc) start_scrolling, ctx);
+
+	ctx->status = gtk_label_new ("");
+	gtk_container_add (GTK_CONTAINER (vbox), ctx->status);
 
 	gtk_widget_show_all (topwin);
 
@@ -238,8 +384,10 @@ static void set_text (TestCtx *ctx, const char *fn) {
 			lines = g_renew (char *, lines, n_lines << 1);
 		}
 		len = strlen (line);
-		if (len > 0 && line[len - 1] == '\n')
-			line[len - 1] = 0;
+	        if (len > 0 && line[len - 1] == '\n')
+			line[--len] = 0;
+	        while (len > 0 && line[len - 1] == '\r')
+			line[--len] = 0;
 		lines[n_lines++] = g_strdup (line);
 	}
 	fclose (f);
