@@ -345,8 +345,18 @@ allocate_throbber (void)
 static void
 theme_changed_callback (gpointer callback_data)
 {
-	set_up_toolbar_images (NAUTILUS_WINDOW (callback_data));
-	set_up_throbber_frame_type (NAUTILUS_WINDOW (callback_data));
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (callback_data);
+	
+	set_up_toolbar_images (window);
+	set_up_throbber_frame_type (window);
+	
+	/* if the toolbar is visible, toggle it's visibility to force a relayout */
+	if (nautilus_window_tool_bar_showing (window)) {
+		nautilus_window_hide_tool_bar (window);
+		nautilus_window_show_tool_bar (window);
+	}
 }
 
 static void

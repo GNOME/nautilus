@@ -1,3 +1,12 @@
+2000-12-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* nautilus.spec.in:
+	added nautilus-text-view files to spec file
+	
+	* src/nautilus-window-toolbars.c: (theme_changed_callback):
+	fixed bug 4982, throbber mispositioned when theme changes,
+	by toggling the toolbar's visibility when the theme changes
+	
 2000-12-07  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
