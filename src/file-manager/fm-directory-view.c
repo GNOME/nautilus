@@ -1394,14 +1394,28 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 			folder_count_str = g_strdup_printf (_("%d folders selected"), folder_count);
 		}
 
-		if (!folder_item_count_known) {
-			folder_item_count_str = g_strdup ("");
-		} else if (folder_item_count == 0) {
-			folder_item_count_str = g_strdup (_(" (containing 0 items)"));
-		} else if (folder_item_count == 1) {
-			folder_item_count_str = g_strdup (_(" (containing 1 item)"));
-		} else {
-			folder_item_count_str = g_strdup_printf (_(" (containing %d items)"), folder_item_count);
+		if (folder_count == 1) {
+			if (!folder_item_count_known) {
+				folder_item_count_str = g_strdup ("");
+			} else if (folder_item_count == 0) {
+				folder_item_count_str = g_strdup (_(" (containing 0 items)"));
+			} else if (folder_item_count == 1) {
+				folder_item_count_str = g_strdup (_(" (containing 1 item)"));
+			} else {
+				folder_item_count_str = g_strdup_printf (_(" (containing %d items)"), folder_item_count);
+			}
+		}
+		else {
+			if (!folder_item_count_known) {
+				folder_item_count_str = g_strdup ("");
+			} else if (folder_item_count == 0) {
+				folder_item_count_str = g_strdup (_(" (containing a total of 0 items)"));
+			} else if (folder_item_count == 1) {
+				folder_item_count_str = g_strdup (_(" (containing a total of 1 item)"));
+			} else {
+				folder_item_count_str = g_strdup_printf (_(" (containing a total of %d items)"), folder_item_count);
+			}
+			
 		}
 	}
 
