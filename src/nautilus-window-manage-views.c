@@ -1454,8 +1454,9 @@ nautilus_window_set_content_view (NautilusWindow *window,
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (window->details->location != NULL);
-        g_return_if_fail (window->new_content_view == NULL);
 	g_return_if_fail (id != NULL);
+
+        end_location_change (window);
 
         if (nautilus_window_content_view_matches_iid (window, id->iid)) {
         	return;

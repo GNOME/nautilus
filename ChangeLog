@@ -1,3 +1,19 @@
+2001-03-06  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 7328 (info pages no longer work):
+	
+	* components/help/converters/gnome-info2html2/main.c: (main):
+	Fixed broken logic for handling both bzip and gzip.
+
+	Fixed case when you change "View As" before the view change is
+	complete.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_set_content_view): Stop the view change if you
+	make a change with the "View As" menu.
+
 Tue Mar 06 12:24:24 2001  George Lebl <jirka@5z.com>
 
 	Darin <darin@eazel.com> said that while this patch causes fungal
