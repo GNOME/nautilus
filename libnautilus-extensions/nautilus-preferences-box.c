@@ -46,6 +46,7 @@ struct _NautilusPreferencesBoxDetails
 	GtkWidget *category_list;
 	GtkWidget *pane_notebook;
 	GList *panes;
+	char *selected_pane;
 };
 
 /* NautilusPreferencesBoxClass methods */
@@ -72,6 +73,10 @@ static void      category_list_select_row_callback         (GtkCList            
 							    int                          column,
 							    GdkEventButton              *event,
 							    gpointer                     user_data);
+
+/* Convience functions */
+int              preferences_box_find_row                  (GtkCList                    *clist,
+							    char                        *pane_name);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesBox, nautilus_preferences_box, GTK_TYPE_HBOX)
 
@@ -123,6 +128,7 @@ nautilus_preferences_box_destroy (GtkObject *object)
 		g_list_free (preferences_box->details->panes);
 	}
 
+	g_free (preferences_box->details->selected_pane);
 	g_free (preferences_box->details);
 	
 	/* Chain destroy */
@@ -159,12 +165,33 @@ preferences_box_select_pane (NautilusPreferencesBox *preferences_box,
 		
 		pane_iterator = pane_iterator->next;
 	}
+
+	g_free (preferences_box->details->selected_pane);
+	preferences_box->details->selected_pane = g_strdup (pane_name);
+}
+
+int
+preferences_box_find_row (GtkCList *clist, char *pane_name)
+{
+	int i;
+	char *pane = NULL;
+	
+	for (i=0; i < GTK_CLIST (clist)->rows; i++) {
+		gtk_clist_get_text (GTK_CLIST (clist), i, 0, &pane);
+		
+		if (nautilus_str_is_equal (pane, pane_name)) {
+			return i;
+		}
+	}
+	
+	return -1;
 }
 
 static void
 preferences_box_category_list_recreate (NautilusPreferencesBox *preferences_box)
 {
 	GList *iterator;
+	int row = 0;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preferences_box));
 	g_return_if_fail (GTK_IS_CLIST (preferences_box->details->category_list));
@@ -183,11 +210,21 @@ preferences_box_category_list_recreate (NautilusPreferencesBox *preferences_box)
 			text_array[CATEGORY_COLUMN] = info->pane_name;
 			gtk_clist_append (GTK_CLIST (preferences_box->details->category_list), text_array);
 
+			if (nautilus_str_is_equal (info->pane_name, preferences_box->details->selected_pane) {
+				row = preferences_box_iterate_clist (GTK_CLIST (preferences_box->details->category_list), info->pane_name);
+
+				if (row == -1) {
+					row = 0;
+				}
+			}
 		}
 	}
 
+	/* You have to do this to get the highlighted row in the clist to change for some reason */
+	gtk_clist_select_row (GTK_CLIST (preferences_box->details->category_list), row, 0);
+
 	category_list_select_row_callback (GTK_CLIST (preferences_box->details->category_list),
-					   0,
+					   row,
 					   0,
 					   NULL,
 					   preferences_box);

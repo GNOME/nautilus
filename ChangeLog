@@ -1,3 +1,19 @@
+2001-01-29  Arik Devens  <arik@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	Fixed bug 6122, Switching user levels always selects but does not
+	necessarily display first category.
+	
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_destroy), (preferences_box_select_pane),
+	(preferences_box_iterate_clist),
+	(preferences_box_category_list_recreate): Added a new convience
+	function to iterate through the category clist looking for a
+	specific entry and return its row. Added the setting of the active
+	row in the clist to the previously selected pane if it exists in
+	your user level.
+
 2001-01-29  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
