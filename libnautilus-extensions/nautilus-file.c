@@ -616,6 +616,11 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
+	/* Self-owned files can't be renamed */
+	if (nautilus_file_is_self_owned (file)) {
+		return FALSE;
+	}
+
 	/* User must have write permissions for the parent directory. */
 	parent = get_file_for_parent_directory (file);
 
@@ -787,18 +792,6 @@ nautilus_file_rename (NautilusFile *file,
 	 * containing path separators.
 	 */
 
-	/* Self-owned files can't be renamed. */
-	if (nautilus_file_is_self_owned (file)) {
-	       	/* Claim that something changed even if the rename
-		 * failed. This makes it easier for some clients who
-		 * see the "reverting" to the old name as "changing
-		 * back".
-		 */
-		nautilus_file_changed (file);
-		(* callback) (file, GNOME_VFS_ERROR_NOT_SUPPORTED, callback_data);
-		return;
-	}		
-
 	/* Can't rename a file that's already gone.
 	 * We need to check this here because there may be a new
 	 * file with the same name.
@@ -822,6 +815,20 @@ nautilus_file_rename (NautilusFile *file,
 		(* callback) (file, GNOME_VFS_OK, callback_data);
 		return;
 	}
+
+	/* Self-owned files can't be renamed. Test the name-not-actually-changing
+	 * case before this case.
+	 */
+	if (nautilus_file_is_self_owned (file)) {
+	       	/* Claim that something changed even if the rename
+		 * failed. This makes it easier for some clients who
+		 * see the "reverting" to the old name as "changing
+		 * back".
+		 */
+		nautilus_file_changed (file);
+		(* callback) (file, GNOME_VFS_ERROR_NOT_SUPPORTED, callback_data);
+		return;
+	}		
 
 	/* Set up a renaming operation. */
 	op = operation_new (file, callback, callback_data);

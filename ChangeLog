@@ -1,3 +1,26 @@
+2000-08-11  John Sullivan  <sullivan@eazel.com>
+
+	Work on 2061 ("Show Properties" on desktop link files
+	should show properties of real volume).
+
+	This essentially works now, but I see some little
+	problems that I need to address before marking this
+	fixed. Also I haven't done anything about Trash, which
+	is definitely a whole can of worms of its own.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_rename): Move the check for self-owned
+	files after the check for new name & old name identical.
+	(nautilus_file_can_rename): Check for self-owned files
+	here too to match _rename.
+	* src/file-manager/fm-properties-window.c:
+	(get_and_ref_file_to_display): New function, determines
+	which file to actually display properties given the file
+	it's passed. Checks for NAUTILUS_LINK_HOME and NAUTILUS_LINK_MOUNT
+	type files.
+	(fm_properties_window_get_or_create): Call 
+	get_and_ref_file_to_display instead of just using the passed file.
+
 2000-08-11  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 1891 (calling set_title before report_load_underway has
@@ -57,7 +80,7 @@
 2000-08-11  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1743 (Deleting a file in search results should cause
-	it to update appropriately).
+	list to update appropriately).
 
 	The fix for this involved fixing bugs in nautilus_file_is_in_trash
 	and making emblems behave more flexibly. We now have the ability
