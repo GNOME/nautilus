@@ -1,3 +1,12 @@
+2001-05-22  John Harper  <jsh@pixelslut.com>
+
+	Fallout from fixing bug 8220 (Having Ctrl as default "modifier
+	key used for default WM shortcuts" breaks everything...):
+
+	* libnautilus-private/nautilus-icon-container.c
+	(keyboard_space, keyboard_move_to): changed to use Control
+	modifier instead of Alt
+
 2001-05-22  Darin Adler  <darin@eazel.com>
 
 	Fixed problem compiling with new gettext:
