@@ -352,18 +352,18 @@ parse_file (gchar *filename, gchar *section)
 		context->base_file = g_strdup (filename);
 
 		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
-			g_error ("error\n");
+			g_error ("error");
 		};
 		context->elements = sect_elements;
 		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
-			g_error ("error\n");
+			g_error ("error");
 		};
 	} else {
 		context->elements = toc_elements;
 		context->data = toc_init_data ();
 		context->base_file = g_strdup (filename);
 		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
-			g_error ("error\n");
+			g_error ("error");
 		};
 	}
 }
