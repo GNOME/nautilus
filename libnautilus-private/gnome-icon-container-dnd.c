@@ -34,11 +34,11 @@
 #include "nautilus-gtk-extensions.h"
 
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include <math.h>
 #include <string.h>
 #include <stdio.h>
 #include <gtk/gtksignal.h>
 
-
 
 typedef struct {
 	char *uri;
@@ -741,9 +741,11 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	GnomeIconContainerDndInfo *dnd_info;
 	GdkDragContext *context;
 	GnomeCanvasItem *pixbuf_item;
-	GdkPixbuf* temp_pixbuf;
-	GdkPixmap* pixmap_for_dragged_file;
-	GdkBitmap* mask_for_dragged_file;
+	GnomeCanvas *canvas;
+	GdkPixbuf *temp_pixbuf, *scaled_pixbuf;
+	GdkPixmap *pixmap_for_dragged_file;
+	GdkBitmap *mask_for_dragged_file;
+	gint x_offset, y_offset;
 	
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
@@ -757,23 +759,58 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	dnd_info->start_x = event->x;
 	dnd_info->start_y = event->y;
 	
+	/* start the drag */
+	
 	context = gtk_drag_begin (GTK_WIDGET (container),
 				  dnd_info->target_list,
 				  actions,
 				  button,
 				  (GdkEvent *) event);
 	
+	
+	  
         /* create a pixmap and mask to drag with */
         pixbuf_item = GNOME_CANVAS_ITEM (container->details->drag_icon->item);
         pixbuf_args[0].name = "NautilusIconsViewIconItem::pixbuf";
         gtk_object_getv (GTK_OBJECT (pixbuf_item), 1, pixbuf_args);
         temp_pixbuf = (GdkPixbuf *) GTK_VALUE_OBJECT (pixbuf_args[0]);
-        gdk_pixbuf_render_pixmap_and_mask (temp_pixbuf, &pixmap_for_dragged_file, &mask_for_dragged_file, 128);
+        
+        /* compute the image's offset */
+	canvas = GNOME_CANVAS(container);
+
+        x_offset = floor(event->x -  pixbuf_item->x1 + .5);
+        y_offset = floor(event->y -  pixbuf_item->y1 + .5);
+        
+        /* if the scale factor isn't 1.0, we have to scale the pixmap */
+	/* FIXME: eventually need to get the size, if any, from the metadata here */
 	
+	scaled_pixbuf = NULL;
+	if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_STANDARD)
+	  {
+	    gint old_width, old_height;
+	    gint new_width, new_height;
+	   
+            x_offset = floor(event->x * canvas->pixels_per_unit -  pixbuf_item->x1 + .5);
+            y_offset = floor(event->y * canvas->pixels_per_unit -  pixbuf_item->y1 + .5);
+	    	    
+	    old_width = gdk_pixbuf_get_width (temp_pixbuf);
+	    old_height = gdk_pixbuf_get_height (temp_pixbuf);
+
+	    new_width =  floor((old_width * canvas->pixels_per_unit) + .5);
+	    new_height = floor((old_height * canvas->pixels_per_unit) + .5);
+	    
+	    scaled_pixbuf = gdk_pixbuf_scale_simple (temp_pixbuf, new_width, new_height, ART_FILTER_NEAREST);	
+	    temp_pixbuf = scaled_pixbuf;
+	  }
+
+        gdk_pixbuf_render_pixmap_and_mask (temp_pixbuf, &pixmap_for_dragged_file, &mask_for_dragged_file, 128);
+	if (scaled_pixbuf)
+	  gdk_pixbuf_unref(scaled_pixbuf);
+		
         /* set the pixmap and mask for dragging */
         gtk_drag_set_icon_pixmap (context, gtk_widget_get_colormap (GTK_WIDGET (container)),
 				  pixmap_for_dragged_file, mask_for_dragged_file,
-				  event->x - pixbuf_item->x1, event->y - pixbuf_item->y1);
+				  x_offset, y_offset);
 }
 
 void
