@@ -249,6 +249,7 @@ sub GeneratePot{
     open INFILE, "<POTFILES.in.old";
     open OUTFILE, ">POTFILES.in";
     while (<INFILE>) {
+        s/\.glade$/\.glade\.h/;
         s/\.xml$/\.xml\.h/;
         print OUTFILE $_;        
     }
@@ -263,7 +264,7 @@ sub GeneratePot{
 
     system($GETTEXT);
     system($GTEST);
-    print "Wrote $PACKAGE.pot\n";
+    print "Wrote $PACKAGE.pot - new test 1\n";
     system("mv POTFILES.in.old POTFILES.in");
 
     # If .headerlock file is found, it means that the potfiles
