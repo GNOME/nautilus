@@ -35,6 +35,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-init.h>
+#include <libgnomeui/gnome-authentication-manager.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <eel/eel-gnome-extensions.h>
@@ -112,6 +113,8 @@ main (int argc, char *argv[])
 
 	g_free (registration_id);
 	
+	gnome_authentication_manager_init ();
+
 	/* Loop until we have no more objects. */
 	do {
 		bonobo_main ();
