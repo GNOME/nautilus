@@ -30,6 +30,26 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 
+#define RELY_ON_BONOBO_INTERNALS
+
+#ifdef RELY_ON_BONOBO_INTERNALS
+
+/* This is incredibly unsafe and relies on details of the Bonobo
+ * internals. I should be shot and killed for even thinking of doing
+ * this.
+ */
+typedef struct {
+	int   ref_count;
+	GList *objs;
+} StartOfBonoboAggregateObject;
+
+typedef struct {
+	StartOfBonoboAggregateObject *ao;
+	int destroy_id;
+} StartOfBonoboObjectPrivate;
+
+#endif
+
 /* FIXME bugzilla.eazel.com 2456: Is a hard-coded 20 seconds wait to
  * detect that a remote object's process is hung acceptable? Can a
  * component that is working still take 20 seconds to respond?
@@ -89,6 +109,21 @@ nautilus_bonobo_stream_get_epv (void)
 	return &bonobo_stream_epv;
 }
 
+/* The following is the most evil function in the world. But on the
+ * other hand, it works and prevents us from having tons of lingering
+ * processes when Nautilus crashes. It's unsafe to call it if there
+ * are any direct references to the bonobo object, but it's OK to have
+ * any number of references to it through CORBA.
+ */
+
+#ifndef RELY_ON_BONOBO_INTERNALS
+
+/* This version of the function doesn't rely on Bonobo internals as
+ * much as the other one does, but it gets screwed up by incoming
+ * unref calls while the object is being destroyed. This was actually
+ * happening, which is why I had to write the other version.
+ */
+
 static void
 set_gone_flag (GtkObject *object,
 	       gpointer callback_data)
@@ -99,10 +134,6 @@ set_gone_flag (GtkObject *object,
 	*gone_flag = TRUE;
 }
 
-/* The following is the most evil function in the world.  But on the
- * other hand, it works and prevents us from having tons of lingering
- * processes when Nautilus crashes.
- */
 void
 nautilus_bonobo_object_force_destroy (BonoboObject *object)
 {
@@ -122,6 +153,46 @@ nautilus_bonobo_object_force_destroy (BonoboObject *object)
 		bonobo_object_unref (object);
 	} while (!gone);
 }
+
+#else /* RELY_ON_BONOBO_INTERNALS */
+
+void
+nautilus_bonobo_object_force_destroy (BonoboObject *object)
+{
+	StartOfBonoboAggregateObject *aggregate;
+	GList *node;
+	GtkObject *subobject;
+	guint *id;
+
+	if (object == NULL) {
+		return;
+	}
+
+	g_return_if_fail (BONOBO_IS_OBJECT (object));
+
+	aggregate = ((StartOfBonoboObjectPrivate *) object->priv)->ao;
+
+	/* Do all the destroying with a normal reference count. This
+	 * lets us live through unrefs that happen during the destroy
+	 * process.
+	 */
+	bonobo_object_ref (object);
+	for (node = aggregate->objs; node != NULL; node = node->next) {
+		subobject = GTK_OBJECT (node->data);
+		id = &((StartOfBonoboObjectPrivate *) BONOBO_OBJECT (subobject)->priv)->destroy_id;
+		if (*id != 0) {
+			gtk_signal_disconnect (subobject, *id);
+			*id = 0;
+		}
+		gtk_object_destroy (subobject);
+	}
+
+	/* Now force a destroy by forcing the reference count to 1. */
+	aggregate->ref_count = 1;
+	bonobo_object_unref (object);
+}
+
+#endif /* RELY_ON_BONOBO_INTERNALS */
 
 static gboolean
 destroy_at_idle_callback (gpointer callback_data)
@@ -159,6 +230,9 @@ nautilus_bonobo_object_force_destroy_at_idle (BonoboObject *object)
 	if (object == NULL) {
 		return;
 	}
+
+	g_return_if_fail (BONOBO_IS_OBJECT (object));
+	g_return_if_fail (!GTK_OBJECT_DESTROYED (object));
 
 	data = g_new (IdleDestroyData, 1);
 	data->object = object;

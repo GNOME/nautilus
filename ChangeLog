@@ -1,3 +1,23 @@
+2001-04-03  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus/nautilus-bonobo-workarounds.c:
+	(nautilus_bonobo_object_force_destroy): Add new version that is
+	not vulnerable to the problem of an unref coming in from the other
+	process during the destroy phase. This version relies on Bonobo
+	internals, so it's a truly evil bit of code, and I should be
+	severely punished for even thinking of writing it.
+	(nautilus_bonobo_object_force_destroy_at_idle): Added some more
+	checks that I thought would help me in debugging.
+	
+	* src/nautilus-shell-ui.xml: Improve wording of tooltip for the Up
+	command.
+
+	* components/notes/nautilus-notes.c: Some code cleanup.
+
+	* src/file-manager/fm-directory-view.c: Fixed a typo.
+	
 2001-04-03  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

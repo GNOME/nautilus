@@ -3,7 +3,7 @@
 /*
  *  Nautilus
  *
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -75,34 +75,33 @@ static int notes_object_count = 0;
 /* property bag getting and setting routines */
 enum {
 	TAB_IMAGE,
-} MyArgs;
+};
 
 static void
 get_bonobo_properties (BonoboPropertyBag *bag,
 			BonoboArg *arg,
 			guint arg_id,
 			CORBA_Environment *ev,
-			gpointer user_data)
+			gpointer callback_data)
 {
         char *indicator_image;
         Notes *notes;
-	notes = (Notes*) user_data;
+
+	notes = (Notes *) callback_data;
 	
 	switch (arg_id) {
-
-		case TAB_IMAGE:
-		{
-			/* if there is a note, return the name of the indicator image,
-			   otherwise, return NULL */
-			indicator_image = notes_get_indicator_image (notes->previous_saved_text);
-			BONOBO_ARG_SET_STRING (arg, indicator_image);					
-			g_free (indicator_image);
-			break;
-		}
-		
-		default:
-			g_warning ("Unhandled arg %d", arg_id);
-			break;
+        case TAB_IMAGE:	{
+                /* if there is a note, return the name of the indicator image,
+                   otherwise, return NULL */
+                indicator_image = notes_get_indicator_image (notes->previous_saved_text);
+                BONOBO_ARG_SET_STRING (arg, indicator_image);					
+                g_free (indicator_image);
+                break;
+        }
+        
+        default:
+                g_warning ("Unhandled arg %d", arg_id);
+                break;
 	}
 }
 
@@ -111,9 +110,9 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 			const BonoboArg *arg,
 			guint arg_id,
 			CORBA_Environment *ev,
-			gpointer user_data)
+			gpointer callback_data)
 {
-	g_warning ("Cant set note property %d", arg_id);
+	g_warning ("Can't set note property %u", arg_id);
 }
 
 static gboolean
@@ -123,8 +122,9 @@ schedule_save_callback (gpointer data)
 
 	notes = data;
 
-	/* Zero out save_timeout_id so no one will try to cancel our in-progress timeout callback.
-	 */
+	/* Zero out save_timeout_id so no one will try to cancel our
+	 * in-progress timeout callback.
+         */
 	notes->save_timeout_id = 0;
 	
 	notes_save_metainfo (notes);
@@ -165,7 +165,6 @@ load_note_text_from_metadata (NautilusFile *file,
 	 * metadata has actually changed.
 	 */
         if (nautilus_strcmp (saved_text, notes->previous_saved_text) != 0) {
-		
 		notify_listeners_if_changed (notes, saved_text);
 		
 		g_free (notes->previous_saved_text);
@@ -247,12 +246,13 @@ notify_listeners_if_changed (Notes *notes, char *new_notes)
 		
 		tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 		BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
-	
-		bonobo_property_bag_notify_listeners (notes->property_bag, "tab_image", tab_image_arg, NULL);
-	
+                
+		bonobo_property_bag_notify_listeners (notes->property_bag,
+                                                      "tab_image", tab_image_arg, NULL);
+                
 		bonobo_arg_release (tab_image_arg);
 		g_free (tab_image);
-	} 
+	}
 }
 
 /* save the metainfo corresponding to the current uri, if any, into the text field */
@@ -272,13 +272,15 @@ notes_save_metainfo (Notes *notes)
         gtk_signal_handler_block_by_func (GTK_OBJECT (notes->file),
                                           load_note_text_from_metadata,
                                           notes);
-                                          
+        
         notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
-        nautilus_file_set_metadata (notes->file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
+        nautilus_file_set_metadata (notes->file,
+                                    NAUTILUS_METADATA_KEY_ANNOTATION,
+                                    NULL, notes_text);
 
         gtk_signal_handler_unblock_by_func (GTK_OBJECT (notes->file),
                                             load_note_text_from_metadata,
-                                            notes);	
+                                            notes);
 	
 	notify_listeners_if_changed (notes, notes_text);
 	
@@ -308,10 +310,11 @@ notes_load_location (NautilusView *view,
 static gboolean
 on_text_field_focus_out_event (GtkWidget *widget,
 			       GdkEventFocus *event,
-			       gpointer user_data)
+			       gpointer callback_data)
 {
-	Notes *notes = user_data;
+	Notes *notes;
 
+        notes = callback_data;
 	notes_save_metainfo (notes);
 	return FALSE;
 }
@@ -347,7 +350,7 @@ do_destroy (GtkObject *obj, Notes *notes)
         }
 }
 
-static char*
+static char *
 notes_get_indicator_image (const char *notes_text)
 {
 	if (notes_text != NULL && strlen (notes_text) > 0) {
@@ -358,14 +361,15 @@ notes_get_indicator_image (const char *notes_text)
 }
 
 static BonoboObject *
-make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
+make_notes_view (BonoboGenericFactory *Factory, const char *iid, gpointer closure)
 {
         GtkWidget *vbox;
         Notes *notes;
         NautilusBackground *background;
         GdkFont *font;
          
-        g_return_val_if_fail (strcmp (goad_id, "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
+        g_return_val_if_fail (strcmp (iid, "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
+
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
         
@@ -464,7 +468,8 @@ main(int argc, char *argv[])
         g_thread_init (NULL);
         gnome_vfs_init ();
         
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0", getenv ("DISPLAY"));
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
+                                                    g_getenv ("DISPLAY"));
 
         factory = bonobo_generic_factory_new_multi
                 (registration_id,
