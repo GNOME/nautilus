@@ -6,7 +6,6 @@
 #undef HAVE_GETTEXT
 #undef HAVE_LC_MESSAGES
 #undef HAVE_LIBBZ2
-#undef HAVE_LIBFAM
 #undef HAVE_LIBJPEG
 #undef HAVE_MEDUSA
 #undef HAVE_STPCPY

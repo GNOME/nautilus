@@ -1,3 +1,16 @@
+2002-05-22  Alex Graveley  <alex@ximian.com>
+
+	* configure.in: Remove FAM check.
+
+	* acconfig.h: Remove HAVE_LIBFAM.
+
+	* libnautilus-private/nautilus-monitor.[ch]: Convert to using
+	gnome-vfs monitors.  nautilus_monitor_active() now checks if FAM
+	can be used by creating a monitor for the user's desktop
+	directory, and caches this if successful.  Adds an idle handler to
+	call nautilus_file_changes_consume_changes(), so multiple file
+	changes have a chance of being chunked together.
+
 2002-05-22  Bastien Nocera  <hadess@hadess.net>
 
 	reviewed by: Alex Larsson  <alexl@redhat.com>
