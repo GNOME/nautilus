@@ -245,6 +245,24 @@ eazel_install_configure_softcat (EazelSoftCat *softcat)
 	eazel_softcat_set_authn (softcat, get_conf_boolean ("server/eazel-auth", TRUE), NULL);
 }
 
+gboolean
+eazel_install_configure_check_jump_after_install (char **url)
+{
+	char *new_url;
+
+	check_gconf_init ();
+	if (! get_conf_boolean ("jump-after-install", TRUE)) {
+		return FALSE;
+	}
+
+	new_url = get_conf_string ("jump-url", NULL);
+	if (new_url != NULL) {
+		g_free (*url);
+		*url = new_url;
+	}
+	return TRUE;
+}
+
 void 
 transferoptions_destroy (TransferOptions *topts)
 {

@@ -24,6 +24,8 @@ brackets surround the [default value] that you should use if the gconf
 		depend (b)
 		allow-update (b)
 		allow-downgrade (b)
+                jump-after-install (b) [TRUE]
+                jump-url (b)
 		server/
 			port (i)
 			hostname (if "hostname:port", overrides above port)

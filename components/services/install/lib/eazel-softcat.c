@@ -618,6 +618,7 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 	g_free (body);
 	g_free (search_url);
 	trilobite_debug ("package info ok.");
+
 	return EAZEL_SOFTCAT_SUCCESS;
 }
 

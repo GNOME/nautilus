@@ -1,3 +1,21 @@
+2001-01-19  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(eazel_install_configure_check_jump_after_install):
+	* components/services/install/lib/eazel-install-metadata.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_get_info):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_downloading),
+	(nautilus_service_install_dependency_check),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_done):
+	* components/services/trilobite/doc/gconf.txt:
+	
+	Make the install view jump to the softcat page after an install
+	completes.  Fix NULL-dereference crash caused by installing a
+	package by id.
+
 2001-01-19  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

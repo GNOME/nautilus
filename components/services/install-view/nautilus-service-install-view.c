@@ -28,6 +28,7 @@
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
 #include <libeazelinstall.h>
+#include "../lib/eazel-install-metadata.h"
 #include "libtrilobite/libtrilobite.h"
 
 #include <rpm/rpmlib.h>
@@ -63,6 +64,9 @@
 /* This ensures that if the arch is detected as i[3-9]86, the
    requested archtype will be set to i386 */
 #define ASSUME_ix86_IS_i386 
+
+/* send the user here after a completed (success or failure) install */
+#define NEXT_URL	"eazel-services:/catalog"
 
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
@@ -492,6 +496,10 @@ create_package (char *name, int local_file)
 /* format:
  * "eazel-install:" [ "//" [ username "@" ] [ "hostname" [ ":" port ] ] "/" ] 
  * 	package-name [ "?version=" version ] ( ";" package-name [ "?version=" version ] )*
+ *
+ * eazel-install:xfig
+ * eazel-install://anonymous@freeamp
+ * eazel-install://example.com:8888/nautilus?version=1.0;xpdf;sephiroth?version=0.4
  */
 /* returns TRUE if a hostname was parsed from the uri */
 static gboolean
@@ -687,7 +695,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		for (iter = g_list_first (((CategoryData *)(view->details->categories->data))->packages);
 		     iter != NULL; iter = g_list_next (iter)) {
 			PackageData *pack = (PackageData *)(iter->data);
-			if (strcmp (pack->name, name) == 0) {
+			if ((pack->name != NULL) && (strcmp (pack->name, name) == 0)) {
 				out = g_strdup_printf (_("Downloading \"%s\""), name);
 				nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
 				g_free (out);
@@ -759,7 +767,7 @@ nautilus_service_install_dependency_check (EazelInstallCallback *cb, const Packa
 	}
 	g_hash_table_insert (view->details->deps, g_strdup (needs->name), g_strdup (package->name));
 
-	value = g_strdup_printf (_("Getting information about package \"%s\" ..."), needs->name);
+	value = g_strdup_printf (_("Getting information about package \"%s\" ..."), package->name);
 	show_overall_feedback (view, value);
 	g_free (value);
 }
@@ -856,7 +864,9 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	while (package_list) {
 		package = (PackageData *) (package_list->data);
 		package_list = g_list_remove (package_list, package_list->data);
-	        g_string_sprintfa (message, " \xB7 %s v%s\n", package->name, package->version);
+		out = packagedata_get_readable_name (package);
+	        g_string_sprintfa (message, " \xB7 %s\n", out);
+		g_free (out);
 
 		if (package->toplevel) {
 			nautilus_service_install_check_for_desktop_files (view,
@@ -1264,6 +1274,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 			dialog = gnome_question_dialog (real_message, (GnomeReplyCallback)reply_callback, &answer);
 		}
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gtk_widget_grab_focus (dialog);
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 		g_free (real_message);
 
@@ -1292,7 +1303,15 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 				}
 			}
 		}
-		/* don't change views anymore, let the user navigate where they want to go. */
+
+		/* send them to the predetermined "next" url
+		 * -- but only if they haven't set jump-after-install off
+		 */
+		message = g_strdup (NEXT_URL);
+		if (eazel_install_configure_check_jump_after_install (&message)) {
+			nautilus_view_open_location_in_this_window (view->details->nautilus_view, message);
+		}
+		g_free (message);
 	}
 }
 
