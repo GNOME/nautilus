@@ -178,6 +178,12 @@ add_volume (NautilusTrashDirectory *trash,
 		return;
 	}
 
+	if (trash_volume->handle) {
+		/* Already searching for trash */
+		gnome_vfs_uri_unref (volume_mount_uri);
+		return;
+	}
+
 	/* Find the real trash directory for this one. */
 	vfs_uri_as_list.data = volume_mount_uri;
 	vfs_uri_as_list.next = NULL;
