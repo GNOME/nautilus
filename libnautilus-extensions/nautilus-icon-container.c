@@ -601,13 +601,22 @@ get_all_icon_bounds (NautilusIconContainer *container,
 		 x1, y1, x2, y2);
 }
 
-static void
-update_scroll_region (NautilusIconContainer *container, gboolean include_visible)
+/* Don't preserve visible white space the next time the scroll region
+ * is recomputed when the container is not empty. */
+void
+nautilus_icon_container_reset_scroll_region (NautilusIconContainer *container)
+{
+	container->details->reset_scroll_region_trigger = TRUE;
+}
+
+void
+nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 {
 	double x1, y1, x2, y2;
 	GtkAdjustment *hadj, *vadj;
 	float step_increment;
 	GtkAllocation *allocation;
+	gboolean reset_scroll_region;
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
 			/* Set the scroll region to the size of the container allocation */
@@ -623,15 +632,28 @@ update_scroll_region (NautilusIconContainer *container, gboolean include_visible
 
 	get_all_icon_bounds (container, &x1, &y1, &x2, &y2);
 
-	if (include_visible) {
-		nautilus_gnome_canvas_set_scroll_region_include_visible_area
+	reset_scroll_region = container->details->reset_scroll_region_trigger
+			      || nautilus_icon_container_is_empty (container)
+			      || nautilus_icon_container_is_auto_layout (container);
+		
+	/* The trigger is only cleared when container is non-empty, so
+	 * callers can reliably reset the scroll region when an item
+	 * is added even if extraneous relayouts are called when the
+	 * window is still empty.
+	 */
+	if (!nautilus_icon_container_is_empty (container)) {
+		container->details->reset_scroll_region_trigger = FALSE;
+	}
+
+	if (reset_scroll_region) {
+		nautilus_gnome_canvas_set_scroll_region_left_justify
 			(GNOME_CANVAS (container),
 			 x1 - CONTAINER_PAD_LEFT,
 			 y1 - CONTAINER_PAD_TOP,
 			 x2 + CONTAINER_PAD_RIGHT,
 			 y2 + CONTAINER_PAD_BOTTOM);
 	} else {
-		nautilus_gnome_canvas_set_scroll_region_left_justify
+		nautilus_gnome_canvas_set_scroll_region_include_visible_area
 			(GNOME_CANVAS (container),
 			 x1 - CONTAINER_PAD_LEFT,
 			 y1 - CONTAINER_PAD_TOP,
@@ -659,18 +681,6 @@ update_scroll_region (NautilusIconContainer *container, gboolean include_visible
 	 */
 	nautilus_gtk_adjustment_clamp_value (hadj);
 	nautilus_gtk_adjustment_clamp_value (vadj);
-}
-
-void
-nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
-{
-	update_scroll_region (container, FALSE);
-}
-
-void
-nautilus_icon_container_update_scroll_region_include_visible_area (NautilusIconContainer *container)
-{
-	update_scroll_region (container, TRUE);
 }
 
 static NautilusIconContainer *sort_hack_container;
@@ -4466,6 +4476,17 @@ nautilus_icon_container_get_icon_drop_target_uri (NautilusIconContainer *contain
 	return uri;
 }
 
+/* Call to reset the scroll region only if the container is not empty,
+ * to avoid having the flag linger until the next file is added.
+ */
+static void
+reset_scroll_region_if_not_empty (NautilusIconContainer *container)
+{
+	if (!nautilus_icon_container_is_empty (container)) {
+		nautilus_icon_container_reset_scroll_region (container);
+	}
+}
+
 /* Switch from automatic layout to manual or vice versa.
  * If we switch to manual layout, we restore the icon positions from the
  * last manual layout.
@@ -4481,6 +4502,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 		return;
 	}
 
+	reset_scroll_region_if_not_empty (container);
 	container->details->auto_layout = auto_layout;
 
 	if (!auto_layout) {
@@ -4569,6 +4591,7 @@ nautilus_icon_container_sort (NautilusIconContainer *container)
 	changed = !container->details->auto_layout;
 	container->details->auto_layout = TRUE;
 
+	reset_scroll_region_if_not_empty (container);
 	redo_layout (container);
 
 	if (changed) {

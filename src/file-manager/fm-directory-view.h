@@ -116,6 +116,13 @@ struct FMDirectoryViewClass {
 	 */
 	void 	(* begin_loading) 	 (FMDirectoryView *view);
 
+	/* The 'end_loading' signal is emitted after all of the contents
+	 * of a directory are added to the view. It can be replaced by a 
+	 * subclass to do any necessary clean-up. The default implementation 
+	 * does nothing.
+	 */
+	void 	(* end_loading) 	 (FMDirectoryView *view);
+
 	/* The 'load_error' signal is emitted when the directory model
 	   reports an error in the process of monitoring the directory's
 	   contents.  The load error indicates that the process of 
@@ -308,6 +315,7 @@ gboolean            fm_directory_link_type_in_selection                (FMDirect
  */
 void                fm_directory_view_clear                            (FMDirectoryView  *view);
 void                fm_directory_view_begin_loading                    (FMDirectoryView  *view);
+void                fm_directory_view_end_loading                      (FMDirectoryView  *view);
 
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 

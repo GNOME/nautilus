@@ -108,6 +108,7 @@ enum {
 	ADD_FILE,
 	BEGIN_ADDING_FILES,
 	BEGIN_LOADING,
+	END_LOADING,
 	LOAD_ERROR,
 	CLEAR,
 	DONE_ADDING_FILES,
@@ -309,6 +310,13 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
        				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
+		    		gtk_marshal_NONE__NONE,
+		    		GTK_TYPE_NONE, 0);
+	signals[END_LOADING] =
+		gtk_signal_new ("end_loading",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, end_loading),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
 	signals[LOAD_ERROR] =
@@ -1429,6 +1437,8 @@ done_loading (FMDirectoryView *view)
 		}
 	}
 
+	fm_directory_view_end_loading (view);
+
 	view->details->loading = FALSE;
 }
 
@@ -2042,6 +2052,23 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_LOADING]);
+}
+
+/**
+ * fm_directory_view_end_loading:
+ *
+ * Emit the signal after loading the contents of a new location. 
+ * Subclasses might want to override the signal handler for this signal. 
+ * This is normally called only by FMDirectoryView.
+ * @view: FMDirectoryView that is switching to view a new location.
+ * 
+ **/
+void
+fm_directory_view_end_loading (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[END_LOADING]);
 }
 
 /**

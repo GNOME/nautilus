@@ -218,4 +218,5 @@ gboolean   nautilus_icon_container_get_is_fixed_size             (NautilusIconCo
 void       nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 								  gboolean                is_fixed_size);
 
+void	   nautilus_icon_container_reset_scroll_region	 	 (NautilusIconContainer	 *container);
 #endif /* NAUTILUS_ICON_CONTAINER_H */

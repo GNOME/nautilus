@@ -203,6 +203,9 @@ struct NautilusIconContainerDetails {
 	
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;
+
+	/* Ignore the visible area the next time the scroll region is recomputed */
+	gboolean reset_scroll_region_trigger;
 };
 
 /* Private functions shared by mutiple files. */
@@ -233,8 +236,6 @@ gboolean      nautilus_icon_container_scroll                      (NautilusIconC
 								   int                    delta_x,
 								   int                    delta_y);
 void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);
-void          nautilus_icon_container_update_scroll_region_include_visible_area        
-								  (NautilusIconContainer *container);
 
 /* label color for items */
 guint32       nautilus_icon_container_get_label_color             (NautilusIconContainer *container,

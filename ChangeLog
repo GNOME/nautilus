@@ -1,3 +1,76 @@
+2001-01-11  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fixed bug 2068 (Dragging icons adjusts scroll area in a way
+	that causes immediate scrolling)
+
+	Fixed bug 3402 (Dragging singleton icon to edge of window in
+	manual layout mode puts it back at top-left)
+
+	Fixed bug 3405 (Dropping an icon into empty manual-layout
+	window always puts it at top-left)
+
+	Fixed bug 3570 (Relayout glitch after removing an item from
+	a view)
+
+	I had earlier started to fix these by trying to save and
+	restore the scroll position per directory. But this path
+	turned evil, and I gave up on it. There is still some
+	partly-implemented work from my start in the evil direction,
+	which I will remove in my next checkin.
+
+	The new fix was to always include the visible white space
+	when recomputing the icon container's scroll region, unless
+	a caller has specifically requested not to.
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_reset_scroll_region): New function,
+	sets a flag in the details struct that's respected in the
+	next scroll region update.
+	(reset_scroll_region_if_not_empty): New helper function,
+	calls _reset_scroll_region unless container is empty.
+	(nautilus_icon_container_update_scroll_region_include_visible_area):
+	Removed this function; its equivalent is to call reset_scroll_region
+	before calling update_scroll_region.
+	(nautilus_icon_container_update_scroll_region): Now that the
+	_include_visible_area variant is gone, merged the local function
+	update_scroll_region with this public one. It decides whether to
+	include the visible area or not based on the flag set by
+	_reset_scroll_region (also, it never includes the visible area
+	if the container is empty).
+	(nautilus_icon_container_set_auto_layout): Reset the scroll region
+	when changing the auto_layout state.
+	(nautilus_icon_container_sort): reset the scroll region before
+	sorting.
+
+	* libnautilus-extensions/nautilus-icon-dnd.c: (handle_local_move):
+	Call nautilus_icon_container_update_scroll_region instead of
+	_update_scroll_region_include_visible_area, which no longer exists.
+	
+	* libnautilus-extensions/nautilus-icon-private.h: Store flag for
+	resetting scroll region in details; eliminate prototype for
+	nautilus_icon_container_update_scroll_region_include_visible_area.
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class), (done_loading),
+	(fm_directory_view_begin_loading), (fm_directory_view_end_loading):
+	Added end_loading signal that's sent when a directory is finished
+	loading, parallel to existing begin_loading signal.
+
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_add_file): Reset the scroll region for the first
+	icon added when loading a directory.
+	(fm_icon_view_begin_loading), (fm_icon_view_end_loading): 
+	Remember that we're loading, so	fm_icon_view_add_file can test correctly.
+	(set_sort_criterion_by_id): Bail out early if state hasn't changed.
+	(switch_to_manual_layout): Bail out early if state hasn't changed.
+	Also, reset scroll region before switching to manual layout.
+	(fm_icon_view_initialize_class): Attach fm_icon_view_end_loading to
+	virtual function slot.
+
 2001-01-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-property-browser.c: (make_category_link):
@@ -510,6 +583,7 @@
 	* components/services/inventory/Makefile.am: added $(IDL) to
 	EXTRA_DISTS
 
+>>>>>>> 1.3329
 2001-01-11  Ian McKellar  <ian@eazel.om>
 
 	* components/services/install/command-line/Makefile.am:

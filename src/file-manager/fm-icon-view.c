@@ -98,6 +98,7 @@
 static void     create_icon_container                     (FMIconView        *icon_view);
 static void     fm_icon_view_initialize                   (FMIconView        *icon_view);
 static void     fm_icon_view_initialize_class             (FMIconViewClass   *klass);
+static gboolean fm_icon_view_is_empty 			  (FMDirectoryView *view);
 static void     fm_icon_view_set_directory_sort_by        (FMIconView        *icon_view,
 							   NautilusFile      *file,
 							   const char        *sort_by);
@@ -196,6 +197,8 @@ struct FMIconViewDetails
 
 	guint react_to_icon_change_idle_id;
 	gboolean menus_ready;
+
+	gboolean loading;
 
 	const SortCriterion *sort;
 	gboolean sort_reversed;
@@ -355,7 +358,7 @@ fm_icon_view_real_clean_up (FMIconView *icon_view)
 	
 	set_sort_reversed (icon_view, FALSE);
 	set_sort_criterion (icon_view, &sort_criteria[0]);
-	
+
 	nautilus_icon_container_sort (icon_container);
 	nautilus_icon_container_freeze_icon_positions (icon_container);
 
@@ -486,9 +489,19 @@ fm_icon_view_clear (FMDirectoryView *view)
 static void
 fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 {
+	FMIconView *icon_view;
+
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	if (nautilus_icon_container_add (get_icon_container (FM_ICON_VIEW (view)),
+	icon_view = FM_ICON_VIEW (view);
+
+	/* Reset scroll region for the first icon added when loading a directory. */
+	if (icon_view->details->loading
+	    && fm_icon_view_is_empty (FM_DIRECTORY_VIEW (icon_view))) {
+		nautilus_icon_container_reset_scroll_region (get_icon_container (icon_view));
+	}
+
+	if (nautilus_icon_container_add (get_icon_container (icon_view),
 					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_ref (file);
 	}
@@ -810,6 +823,8 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	file = fm_directory_view_get_directory_as_file (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
+	icon_view->details->loading = TRUE;
+
 	/* kill any sound preview process that is ongoing */
 	preview_sound (NULL, FALSE);
 	
@@ -851,7 +866,16 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	nautilus_icon_container_set_tighter_layout
 		(get_icon_container (icon_view), 
 		 fm_icon_view_get_directory_tighter_layout (icon_view, file));
+}
 
+static void
+fm_icon_view_end_loading (FMDirectoryView *view)
+{
+	FMIconView *icon_view;
+
+	icon_view = FM_ICON_VIEW (view);
+
+	icon_view->details->loading = FALSE;
 }
 
 static NautilusZoomLevel
@@ -1030,10 +1054,19 @@ fm_icon_view_get_selection (FMDirectoryView *view)
 static void
 set_sort_criterion_by_id (FMIconView *icon_view, const char *id)
 {
+	const SortCriterion *sort;
+
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (id != NULL);
 
-	set_sort_criterion (icon_view, get_sort_criterion_by_id (id));
+	sort = get_sort_criterion_by_id (id);
+
+	if (sort == icon_view->details->sort
+	    && fm_icon_view_using_auto_layout (icon_view)) {
+		return;
+	}
+
+	set_sort_criterion (icon_view, sort);
 	nautilus_icon_container_sort (get_icon_container (icon_view));
 }
 
@@ -1063,7 +1096,14 @@ sort_reversed_state_changed_callback (BonoboUIComponent *component,
 static void
 switch_to_manual_layout (FMIconView *icon_view)
 {
+	if (!fm_icon_view_using_auto_layout (icon_view)) {
+		return;
+	}
+
 	icon_view->details->sort = &sort_criteria[0];
+	
+	nautilus_icon_container_reset_scroll_region
+		(get_icon_container (icon_view));
 	nautilus_icon_container_set_auto_layout
 		(get_icon_container (icon_view), FALSE);
 }
@@ -1822,6 +1862,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
 	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
+	fm_directory_view_class->end_loading = fm_icon_view_end_loading;
 	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;
 	fm_directory_view_class->zoom_to_level = fm_icon_view_zoom_to_level;
 	fm_directory_view_class->restore_default_zoom_level = fm_icon_view_restore_default_zoom_level;
