@@ -1537,6 +1537,10 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
+	if (!fm_directory_view_should_show_file (view, file)) {
+		return;
+	}
+
 	/* We are allowed to get the same icon twice, so don't re-add it. */
 	if (eel_clist_find_row_from_data (EEL_CLIST (get_list (FM_LIST_VIEW (view))), file) < 0) {
 		add_to_list (FM_LIST_VIEW (view), file);
@@ -1647,7 +1651,9 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 
 	remove_from_list (list_view, file, &was_in_list, &was_selected);
 
-	if (was_in_list && fm_list_view_file_still_belongs (list_view, file)) {
+	if (was_in_list
+	    && fm_directory_view_should_show_file (view, file)
+	    && fm_list_view_file_still_belongs (list_view, file)) {
 		new_row = add_to_list (list_view, file);
 
 		if (was_selected) {

@@ -2107,19 +2107,13 @@ queue_pending_files (FMDirectoryView *view,
 		     GList *files,
 		     GList **pending_list)
 {
-	GList *filtered_files;
-
-	/* Filter out hidden files if needed */
-	filtered_files = nautilus_file_list_filter_hidden_and_backup
-		(files,
-		 view->details->show_hidden_files,
-		 view->details->show_backup_files);
-
-	/* Put the files on the pending list if there are any. */
-	if (filtered_files != NULL) {
-		*pending_list = g_list_concat (*pending_list, filtered_files);
-		schedule_timeout_display_of_pending_files (view);
+	if (files == NULL) {
+		return;
 	}
+
+	*pending_list = g_list_concat (*pending_list,
+				       nautilus_file_list_copy (files));
+	schedule_timeout_display_of_pending_files (view);
 }
 
 static void
@@ -5195,7 +5189,7 @@ filtering_changed_callback (gpointer callback_data)
 	filtering_actually_changed = FALSE;
 
 	new_show_hidden = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-	if (new_show_hidden  != directory_view->details->show_hidden_files) {
+	if (new_show_hidden != directory_view->details->show_hidden_files) {
 		filtering_actually_changed = TRUE;
 		directory_view->details->show_hidden_files = new_show_hidden ;
 	}

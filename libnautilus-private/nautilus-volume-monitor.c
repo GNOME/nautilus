@@ -28,14 +28,14 @@
 #include "nautilus-cdrom-extensions.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-utilities.h"
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include "nautilus-iso9660.h"
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
-#include <eel/eel-string-list.h>
 #include "nautilus-volume-monitor.h"
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string-list.h>
+#include <eel/eel-string.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <gnome-xml/parser.h>
@@ -45,7 +45,7 @@
 #include <libgnome/gnome-exec.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,19 +96,17 @@
 #define size16 short
 #define size32 int
 
-#define CD_AUDIO_PATH "/dev/cdrom"
-#define CD_AUDIO_URI "cdda:///dev/cdrom"
-#define CDDA_SCHEME "cdda"
-#define HAVE_CDDA 1
 #include <cdda_interface.h>
 #include <cdda_paranoia.h>
 
-/* This is here to work around a broken header file.
- * cdda_interface.h has a statically defined array of
- * chars that is unused. This will break our build
- * due to our strict error checking.
+#define CD_AUDIO_PATH "/dev/cdrom"
+#define CDDA_SCHEME "cdda"
+
+/* This is here to work around a broken header file. cdda_interface.h
+ * has a statically defined array of chars that is unused. This will
+ * break our build due to our strict error checking.
  */
-char **broken_header_fix = strerror_tr;
+char **broken_cdda_interface_h_workaround = strerror_tr;
 
 #endif
 
@@ -176,7 +174,6 @@ static GList 		*get_removable_volumes 				(void);
 static GHashTable 	*create_readable_mount_point_name_table 	(void);
 									 
 #ifdef HAVE_CDDA
-static gboolean 	open_cdda_device 				(GnomeVFSURI 			*uri);
 static gboolean 	locate_audio_cd 				(void);
 #endif
 
@@ -1937,15 +1934,12 @@ nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monit
 #ifdef HAVE_CDDA
 
 static gboolean
-open_cdda_device (GnomeVFSURI *uri)
+locate_audio_cd (void)
 {
-	const char *device_name;
 	cdrom_drive *drive;
 	gboolean opened;
 	
-	device_name = gnome_vfs_uri_get_path (uri);
-
-	drive = cdda_identify (device_name, FALSE, NULL);
+	drive = cdda_identify (CD_AUDIO_PATH, FALSE, NULL);
 	if (drive == NULL) {
 		return FALSE;
 	}
@@ -1955,49 +1949,31 @@ open_cdda_device (GnomeVFSURI *uri)
 
 	/* Open drive */
 	switch (cdda_open (drive)) {
-  		case -2:
-  		case -3:
-  		case -4:
-  		case -5:
+	case -2:
+	case -3:
+	case -4:
+	case -5:
     		/*g_message ("Unable to open disc.  Is there an audio CD in the drive?");*/
     		opened = FALSE;
 		break;
 		
-  		case -6:
+	case -6:
     		/*g_message ("CDDA method could not find a way to read audio from this drive.");*/
 		opened = FALSE;
 		break;
-    			
-  		case 0:
+		
+	case 0:
 		opened = TRUE;
     		break;
-
-  		default:
+		
+	default:
     		/*g_message ("Unable to open disc.");*/
 		opened = FALSE;
 		break;
-
 	}
 	cdda_close (drive);
 	
 	return opened;
 }
 
-static gboolean
-locate_audio_cd (void) {
-	GnomeVFSURI *uri;
-	gboolean found_drive;
-	
-	uri = gnome_vfs_uri_new (CD_AUDIO_URI);
-	if (uri == NULL) {
-		return FALSE;
-	}
-		
-	found_drive = open_cdda_device (uri);
-	gnome_vfs_uri_unref (uri);
-	
-	return found_drive;
-}
-
-#endif
-
+#endif /* HAVE_CDDA */

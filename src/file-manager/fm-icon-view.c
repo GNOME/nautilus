@@ -493,6 +493,10 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 
 	icon_view = FM_ICON_VIEW (view);
 
+	if (!fm_directory_view_should_show_file (view, file)) {
+		return;
+	}
+
 	/* Reset scroll region for the first icon added when loading a directory. */
 	if (icon_view->details->loading
 	    && fm_icon_view_is_empty (FM_DIRECTORY_VIEW (icon_view))) {
@@ -512,7 +516,8 @@ fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	gboolean removed;
 
 	/* This handles both changes to an existing file and the existing file going away. */
-	if (!nautilus_directory_contains_file (fm_directory_view_get_model (view), file)) {
+	if (!fm_directory_view_should_show_file (view, file)
+	    || !nautilus_directory_contains_file (fm_directory_view_get_model (view), file)) {
 		removed = nautilus_icon_container_remove
 			(get_icon_container (FM_ICON_VIEW (view)),
 			 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));

@@ -1,5 +1,21 @@
 2001-04-13  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(locate_audio_cd): Simplify code a bit and get rid of unnecessary
+	use of GnomeVFSURI.
+	
+	* src/file-manager/fm-directory-view.c: (queue_pending_files):
+	Don't filter files at this level. Even invisible files might be
+	formerly-visible files.
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_add_file),
+	(fm_icon_view_file_changed): Filter out files that should not be
+	visible, now that they are not filtered earlier.
+	* src/file-manager/fm-list-view.c: (fm_list_view_add_file),
+	(fm_list_view_file_changed): Filter out files that should not be
+	visible, now that they are not filtered earlier.
+
+2001-04-13  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-file-operations-progress.c:
 	(nautilus_file_operations_progress_done): Remove code that fills
 	the progress bar to the end. The callback from gnome-vfs now takes
