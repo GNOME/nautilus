@@ -733,18 +733,6 @@ start_loading_image (NautilusBackground *background)
 						background);
 }
 
-void
-nautilus_background_receive_dropped_background_image (NautilusBackground *background,
-						      const char *image_uri)
-{
-	/* Special case the reset-background image by file name. */
-	if (nautilus_str_has_suffix (image_uri, "/" RESET_BACKGROUND_MAGIC_IMAGE_NAME)) {
-		nautilus_background_reset (background);
-	} else {
-		nautilus_background_set_image_uri (background, image_uri);
-	}
-}
-
 static gboolean
 nautilus_background_set_image_uri_no_emit (NautilusBackground *background,
 					const char *image_uri)
@@ -776,6 +764,21 @@ nautilus_background_set_image_uri (NautilusBackground *background,
 				   const char *image_uri)
 {
 	if (nautilus_background_set_image_uri_no_emit (background, image_uri)) {
+		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
+		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
+	}
+}
+
+void
+nautilus_background_receive_dropped_background_image (NautilusBackground *background,
+						      const char *image_uri)
+{
+	/* Special case the reset-background image by file name. */
+	if (nautilus_str_has_suffix (image_uri, "/" RESET_BACKGROUND_MAGIC_IMAGE_NAME)) {
+		nautilus_background_reset (background);
+	} else {
+		nautilus_background_set_image_uri_no_emit (background, image_uri);
+		nautilus_background_set_color_no_emit (background, NULL);
 		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
 		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 	}

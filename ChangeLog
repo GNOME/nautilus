@@ -1,3 +1,13 @@
+2000-09-12  Michael Engber  <engber@eazel.com>
+
+	Dragging a image onto a background not clears the
+	background color setting. Bug 1899.
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_set_image_uri),
+	(nautilus_background_receive_dropped_background_image):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(saved_settings_changed_callback):
+
 2000-09-12  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2020 (really long URIs make "can't go there"

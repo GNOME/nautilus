@@ -635,7 +635,7 @@ saved_settings_changed_callback (NautilusDirectory *directory,
 		image = nautilus_directory_get_metadata (directory,
 	                                                 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
 	                                                 NULL);
-	        placement = NAUTILUS_BACKGROUND_TILED; /* non-tiled on avail for desktop, at least for now */
+	        placement = NAUTILUS_BACKGROUND_TILED; /* non-tiled only avail for desktop, at least for now */
 		combine = FALSE; /* only from theme, at least for now */
 
 		/* if there's none, read the default from the theme */
