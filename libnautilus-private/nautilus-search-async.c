@@ -61,10 +61,10 @@ nautilus_async_medusa_search (GnomeVFSAsyncHandle **handle_return,
 {
 	GnomeVFSResult result;
 
-	g_return_val_if_fail (handle_return != NULL, GNOME_VFS_ERROR_BADPARAMS);
-	g_return_val_if_fail (search_uri_text != NULL, GNOME_VFS_ERROR_BADPARAMS);
+	g_return_val_if_fail (handle_return != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (search_uri_text != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 	g_return_val_if_fail (nautilus_uri_is_search_uri (search_uri_text) == TRUE,
-			      GNOME_VFS_ERROR_BADPARAMS);
+			      GNOME_VFS_ERROR_BAD_PARAMETERS);
 
 	/* the sending of the request is done synchronously,
 	   and the nautilus receives the results over a channel. */
@@ -87,9 +87,9 @@ request_search (char *search_uri)
 	printf ("help!! I'm trying to run a search!\n");
 	/* FIXME:  This crap will be replaced by
 	   the new medusa search service API */
-	g_return_val_if_fail (search_uri != NULL, GNOME_VFS_ERROR_INVALIDURI);
+	g_return_val_if_fail (search_uri != NULL, GNOME_VFS_ERROR_INVALID_URI);
 	g_return_val_if_fail (nautilus_uri_is_search_uri (search_uri), 
-			      GNOME_VFS_ERROR_INVALIDURI);
+			      GNOME_VFS_ERROR_INVALID_URI);
 
 
 	/* For now run a dummy search */
@@ -101,7 +101,7 @@ request_search (char *search_uri)
 	printf ("Sending %s\n", cookie_request);
 	g_return_val_if_fail (write (search_request_port, cookie_request, 
 				     strlen (cookie_request)) > 0,
-			      GNOME_VFS_ERROR_DIRECTORYBUSY);
+			      GNOME_VFS_ERROR_DIRECTORY_BUSY);
 
 	
 
@@ -112,13 +112,13 @@ request_search (char *search_uri)
 	printf ("Sending %s", request_field);
 	g_return_val_if_fail (write (search_request_port, request_field, 
 				     strlen(request_field)) > 0, 
-			      GNOME_VFS_ERROR_DIRECTORYBUSY);
+			      GNOME_VFS_ERROR_DIRECTORY_BUSY);
 	
 	memset (request_field, 0, MAX_LINE);
 	sprintf (request_field,"%d %d %d\tDONE\n", getuid (), getpid (), key);
 	g_return_val_if_fail (write (search_request_port, request_field, 
 				     strlen(request_field)) > 0, 
-			      GNOME_VFS_ERROR_DIRECTORYBUSY);
+			      GNOME_VFS_ERROR_DIRECTORY_BUSY);
 	
 	/* Results are gotten in a different place */
 	/* Set up a watch on the result socket */

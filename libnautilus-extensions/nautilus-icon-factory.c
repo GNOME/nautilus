@@ -1051,7 +1051,7 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 	   a possible problem with the parent.
 	*/
 	result = gnome_vfs_make_directory_for_uri (uri, permissions);
-	if (result != GNOME_VFS_ERROR_NOTFOUND) {
+	if (result != GNOME_VFS_ERROR_NOT_FOUND) {
 		return result;
 	}
 
@@ -1247,7 +1247,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
 
 	/* if we can't make if locally, try it in the global place */
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {	
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {	
 		g_free (thumbnail_uri);
 		local_flag = FALSE;
 		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag);
@@ -1256,7 +1256,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	
 	/* the thumbnail needs to be created (or recreated), so add an entry to the thumbnail list */
  
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {
 
 		g_warning ("error when making thumbnail directory %d, for %s", result, thumbnail_uri);	
 	} else {

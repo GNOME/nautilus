@@ -69,14 +69,14 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
         switch (gnome_vfs_result) {
         case GNOME_VFS_OK:
                 return NAUTILUS_NAVIGATION_RESULT_OK;
-        case GNOME_VFS_ERROR_NOTFOUND:
-        case GNOME_VFS_ERROR_HOSTNOTFOUND:
+        case GNOME_VFS_ERROR_NOT_FOUND:
+        case GNOME_VFS_ERROR_HOST_NOT_FOUND:
                 return NAUTILUS_NAVIGATION_RESULT_NOT_FOUND;
-        case GNOME_VFS_ERROR_INVALIDURI:
+        case GNOME_VFS_ERROR_INVALID_URI:
                 return NAUTILUS_NAVIGATION_RESULT_INVALID_URI;
-        case GNOME_VFS_ERROR_NOTSUPPORTED:
+        case GNOME_VFS_ERROR_NOT_SUPPORTED:
                 return NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME;
-	case GNOME_VFS_ERROR_LOGINFAILED:
+	case GNOME_VFS_ERROR_LOGIN_FAILED:
 		return NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED;
         case GNOME_VFS_ERROR_GENERIC:
                 /* This one has occurred at least once in the web browser component */
@@ -126,8 +126,8 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         file_result = result_list->data;
         vfs_result_code = file_result->result;
 
-        if (vfs_result_code != GNOME_VFS_OK && vfs_result_code != GNOME_VFS_ERROR_NOTSUPPORTED
-                   && vfs_result_code != GNOME_VFS_ERROR_INVALIDURI) {
+        if (vfs_result_code != GNOME_VFS_OK && vfs_result_code != GNOME_VFS_ERROR_NOT_SUPPORTED
+                   && vfs_result_code != GNOME_VFS_ERROR_INVALID_URI) {
                 goto out;
         }
 
@@ -278,7 +278,7 @@ async_get_file_info_text (GnomeVFSAsyncHandle **handle,
                 *handle = NULL;
                 
                 result_item.uri = NULL;
-                result_item.result = GNOME_VFS_ERROR_INVALIDURI;
+                result_item.result = GNOME_VFS_ERROR_INVALID_URI;
                 result_item.file_info = NULL;
                 
                 result_list.data = &result_item;

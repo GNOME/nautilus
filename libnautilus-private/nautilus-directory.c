@@ -322,7 +322,7 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 	   a possible problem with the parent.
 	*/
 	result = gnome_vfs_make_directory_for_uri (uri, permissions);
-	if (result != GNOME_VFS_ERROR_NOTFOUND) {
+	if (result != GNOME_VFS_ERROR_NOT_FOUND) {
 		return result;
 	}
 
@@ -362,7 +362,7 @@ construct_alternate_metafile_uri (GnomeVFSURI *uri)
 	gnome_vfs_uri_unref (nautilus_directory_uri);
 	result = nautilus_make_directory_and_parents (metafiles_directory_uri,
 						      METAFILES_DIRECTORY_PERMISSIONS);
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {
 		gnome_vfs_uri_unref (metafiles_directory_uri);
 		return NULL;
 	}

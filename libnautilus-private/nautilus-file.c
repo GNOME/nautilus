@@ -646,7 +646,7 @@ nautilus_file_rename (NautilusFile *file,
 		 * to the old name as "changing back".
 		 */
 		nautilus_file_changed (file);
-		(* callback) (file, GNOME_VFS_ERROR_NOTFOUND, callback_data);
+		(* callback) (file, GNOME_VFS_ERROR_NOT_FOUND, callback_data);
 		return;
 	}
 
@@ -1564,7 +1564,7 @@ nautilus_file_set_permissions (NautilusFile *file,
 		 * to the old permissions as "changing back".
 		 */
 		nautilus_file_changed (file);
-		(* callback) (file, GNOME_VFS_ERROR_ACCESSDENIED, callback_data);
+		(* callback) (file, GNOME_VFS_ERROR_ACCESS_DENIED, callback_data);
 		return;
 	}
 			       
@@ -2249,7 +2249,7 @@ nautilus_file_delete (NautilusFile *file)
 	g_free (text_uri);
 
 	/* Mark the file gone. */
-	if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_NOTFOUND) {
+	if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_NOT_FOUND) {
 		nautilus_file_ref (file);
 		nautilus_file_mark_gone (file);
 		nautilus_file_changed (file);

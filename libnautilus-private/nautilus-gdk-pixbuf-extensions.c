@@ -115,7 +115,7 @@ nautilus_gdk_pixbuf_load (const char *uri)
 		if (!gdk_pixbuf_loader_write (loader,
 					      buffer,
 					      bytes_read)) {
-			result = GNOME_VFS_ERROR_WRONGFORMAT;
+			result = GNOME_VFS_ERROR_WRONG_FORMAT;
 			break;
 		}
 	}
@@ -200,7 +200,7 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 		if (!gdk_pixbuf_loader_write (handle->loader,
 					      buffer,
 					      bytes_read)) {
-			result = GNOME_VFS_ERROR_WRONGFORMAT;
+			result = GNOME_VFS_ERROR_WRONG_FORMAT;
 		}
 		gnome_vfs_async_read (handle->vfs_handle,
 				      handle->buffer,

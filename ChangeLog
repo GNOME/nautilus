@@ -1,3 +1,28 @@
+2000-06-21  Gene Z. Ragan  <gzr@eazel.com>
+
+	Update code to change gnome-vfs error codes to reflect
+	renaming done to fix bug 1162.
+	
+	* components/help/help-method.c: (help_do_transform):
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_make_directory_and_parents),
+	(construct_alternate_metafile_uri):
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_rename),
+	(nautilus_file_set_permissions), (nautilus_file_delete):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_load), (file_read_callback):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_make_directory_and_parents),
+	(nautilus_icon_factory_get_thumbnail_uri):
+	* libnautilus-extensions/nautilus-search-async.c:
+	(nautilus_async_medusa_search), (request_search):
+	* src/file-manager/dfos-xfer.c: (fs_xfer), (fs_move_to_trash):
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file):
+	* src/nautilus-applicable-views.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result),
+	(got_file_info_callback), (async_get_file_info_text):
+
 2000-06-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-horizontal-splitter.c:

@@ -516,7 +516,7 @@ fs_xfer (const GList *item_uris,
 				_("You cannot copy items into the Trash."), 
 				_("Error copying"),
 				_("OK"), NULL, NULL);			
-			result = GNOME_VFS_ERROR_NOTPERMITTED;
+			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 		}
 	}
 
@@ -554,7 +554,7 @@ fs_xfer (const GList *item_uris,
 			}
 			gnome_vfs_uri_unref (uri);
 			if (bail) {
-				result = GNOME_VFS_ERROR_NOTPERMITTED;
+				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
 			}
 		}
@@ -694,7 +694,7 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 		}
 		gnome_vfs_uri_unref (uri);
 		if (bail) {
-			result = GNOME_VFS_ERROR_NOTPERMITTED;
+			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 			break;
 		}
 	}

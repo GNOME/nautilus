@@ -264,7 +264,7 @@ help_do_transform (GnomeVFSTransform *transform,
 #endif
 
 	if (old_uri == NULL || *old_uri == '\000')
-		return GNOME_VFS_ERROR_NOTFOUND;
+		return GNOME_VFS_ERROR_NOT_FOUND;
 
 	if (old_uri[0] == '/') {
 		help_uri = transform_absolute_file (old_uri);
@@ -282,7 +282,7 @@ help_do_transform (GnomeVFSTransform *transform,
 		help_uri = transform_relative_file (old_uri);
 
 	if (help_uri == NULL)
-		return GNOME_VFS_ERROR_NOTFOUND;
+		return GNOME_VFS_ERROR_NOT_FOUND;
 
 	*new_uri = help_uri_to_string (help_uri);
 	help_uri_free (help_uri);

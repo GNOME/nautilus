@@ -43,11 +43,11 @@ fm_report_error_renaming_file (NautilusFile *file,
 	switch (error) {
 	case GNOME_VFS_OK:
 		return;
-	case GNOME_VFS_ERROR_FILEEXISTS:
+	case GNOME_VFS_ERROR_FILE_EXISTS:
 		message = g_strdup_printf (_("The name \"%s\" is already used in this directory.\nPlease use a different name."), 
 					   new_name);
 		break;
-	case GNOME_VFS_ERROR_ACCESSDENIED:
+	case GNOME_VFS_ERROR_ACCESS_DENIED:
 		original_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s.\""),
 					   original_name);
