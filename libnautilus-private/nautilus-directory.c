@@ -956,6 +956,9 @@ nautilus_directory_notify_files_changed (GList *uris)
 			 * signal.
 			 */
 			file->details->file_info_is_up_to_date = FALSE;
+			nautilus_directory_add_file_to_work_queue (file->details->directory,
+								   file);
+
 			hash_table_list_prepend (changed_lists,
 						 file->details->directory,
 						 file);
