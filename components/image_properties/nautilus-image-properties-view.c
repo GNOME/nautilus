@@ -188,17 +188,9 @@ append_tag_value_pair (GString *string, ExifData *data, ExifTag tag, gchar *desc
 static void
 append_exifdata_string (ExifData *exifdata, GString *string)
 {
-	gchar *camera_make, *camera_model;
-	
 	if (exifdata->ifd[0] && exifdata->ifd[0]->count) {
-		camera_make = exifdata_get_tag_value_utf8 (exifdata, EXIF_TAG_MAKE);
-		camera_model = exifdata_get_tag_value_utf8 (exifdata, EXIF_TAG_MODEL);
-		if (camera_make != NULL) {
-			g_string_append_printf (string, "<b>%s:</b> %s %s\n", 
-						_("Camera"), 
-						camera_make, 
-						camera_model);
-		}
+                append_tag_value_pair (string, exifdata, EXIF_TAG_MAKE, _("Camera Brand"));
+                append_tag_value_pair (string, exifdata, EXIF_TAG_MODEL, _("Camera Model"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME, _("Date Taken"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_TIME, _("Exposure Time"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
@@ -237,6 +229,7 @@ load_finished (NautilusImagePropertiesView *view)
 #endif /*HAVE_EXIF*/
 		
 		gtk_label_set_markup (GTK_LABEL (view->details->resolution), str->str);
+		gtk_label_set_selectable (GTK_LABEL (view->details->resolution), TRUE);
 		g_string_free (str, TRUE);
 	} else {
 		gtk_label_set_text (GTK_LABEL (view->details->resolution), _("Failed to load image information"));
@@ -428,6 +421,9 @@ nautilus_image_properties_view_init (NautilusImagePropertiesView *view)
 
 	view->details->vbox = gtk_vbox_new (FALSE, 2);
 	view->details->resolution = gtk_label_new (_("loading..."));
+	gtk_misc_set_alignment (GTK_MISC (view->details->resolution),
+				0,
+				0);
 
 	gtk_box_pack_start (GTK_BOX (view->details->vbox),
 			    view->details->resolution,
