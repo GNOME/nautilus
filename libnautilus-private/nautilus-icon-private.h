@@ -157,6 +157,9 @@ struct NautilusIconContainerDetails {
 	StretchState stretch_start;
 	int context_menu_timeout_id;
 
+	gboolean icon_selected_on_button_down;
+	NautilusIcon *double_click_icon[2]; /* Both clicks in a double click need to be on the same icon */
+
 	/* Renaming Details */
 	gboolean renaming;
 	GtkWidget *rename_widget;	/* Editable text item */

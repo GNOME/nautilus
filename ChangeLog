@@ -1,3 +1,12 @@
+2003-03-03  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(icon_toggle_selected), (button_press_event),
+	(nautilus_icon_container_did_not_drag), (handle_icon_button_press):
+	* libnautilus-private/nautilus-icon-private.h:
+	Ctrl/shift dragging doesn't deselect the icon you click on.
+	Double-clicking has to be twice on the same icon.
+
 2003-03-01  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-side-pane.h:

@@ -374,8 +374,8 @@ icon_toggle_selected (NautilusIconContainer *container,
 
 	icon->is_selected = !icon->is_selected;
 	eel_canvas_item_set (EEL_CANVAS_ITEM (icon->item),
-			       "highlighted_for_selection", (gboolean) icon->is_selected,
-			       NULL);
+			     "highlighted_for_selection", (gboolean) icon->is_selected,
+			     NULL);
 
 	/* If the icon is deselected, then get rid of the stretch handles.
 	 * No harm in doing the same if the item is newly selected.
@@ -2577,7 +2577,7 @@ button_press_event (GtkWidget *widget,
 	last_click_time = current_time;
 
 	/* Ignore double click if we are in single click mode */
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {		
+	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {
 		return TRUE;
 	}
 
@@ -2662,15 +2662,21 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 		
 	details = container->details;
 
-	if (!button_event_modifies_selection (event) && !details->drag_icon->is_selected) {
-		selection_changed = select_one_unselect_others 
-			(container, details->drag_icon);
-		
-		if (selection_changed) {
+	if (details->icon_selected_on_button_down) {
+		if (button_event_modifies_selection (event)) {
+			icon_toggle_selected (container, details->drag_icon);
 			g_signal_emit (container,
-					 signals[SELECTION_CHANGED], 0);
+				       signals[SELECTION_CHANGED], 0);
+		} else {
+			selection_changed = select_one_unselect_others 
+				(container, details->drag_icon);
+			
+			if (selection_changed) {
+				g_signal_emit (container,
+					       signals[SELECTION_CHANGED], 0);
+			}
 		}
-	}
+	} 
 	
 	if (details->drag_icon != NULL) {		
 		/* If single-click mode, activate the selected icons, unless modifying
@@ -3655,6 +3661,24 @@ handle_icon_button_press (NautilusIconContainer *container,
 
 	details = container->details;
 
+	if (event->button == DRAG_BUTTON &&
+	    event->type == GDK_BUTTON_PRESS) {
+		/* The next double click has to be on this icon */
+		details->double_click_icon[1] = details->double_click_icon[0];
+		details->double_click_icon[0] = icon;
+	}
+	if (event->type == GDK_2BUTTON_PRESS &&
+	    event->button == DRAG_BUTTON) {
+		if (icon == details->double_click_icon[1]) {
+			/* Double clicking does not trigger a D&D action. */
+			details->drag_button = 0;
+			details->drag_icon = NULL;
+			
+			activate_selected_items (container);
+		}
+		return TRUE;
+	}
+	
 	if (event->button == DRAG_BUTTON
 	    || event->button == DRAG_MENU_BUTTON) {
 		details->drag_button = event->button;
@@ -3678,15 +3702,18 @@ handle_icon_button_press (NautilusIconContainer *container,
 	/* Modify the selection as appropriate. Selection is modified
 	 * the same way for contextual menu as it would be without. 
 	 */
-	if (button_event_modifies_selection (event)) {
-		icon_toggle_selected (container, icon);
-		g_signal_emit (container,
-			       signals[SELECTION_CHANGED], 0);
-	} else if (!icon->is_selected) {
-		unselect_all (container);
-		icon_set_selected (container, icon, TRUE);
-		g_signal_emit (container,
-			       signals[SELECTION_CHANGED], 0);
+	details->icon_selected_on_button_down = icon->is_selected;
+	if (!details->icon_selected_on_button_down) {
+		if (button_event_modifies_selection (event)) {
+			icon_toggle_selected (container, icon);
+			g_signal_emit (container,
+				       signals[SELECTION_CHANGED], 0);
+		} else {
+			unselect_all (container);
+			icon_set_selected (container, icon, TRUE);
+			g_signal_emit (container,
+				       signals[SELECTION_CHANGED], 0);
+		}
 	}
 
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
@@ -3695,13 +3722,6 @@ handle_icon_button_press (NautilusIconContainer *container,
 			       event);
 	}
 
-	if (event->type == GDK_2BUTTON_PRESS && event->button == DRAG_BUTTON) {
-		/* Double clicking does not trigger a D&D action. */
-		details->drag_button = 0;
-		details->drag_icon = NULL;
-
-		activate_selected_items (container);
-	}
 
 	return TRUE;
 }
