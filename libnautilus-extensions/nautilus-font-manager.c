@@ -1038,6 +1038,7 @@ nautilus_font_manager_for_each_font (NautilusFontManagerCallback callback,
 char *
 nautilus_font_manager_get_fallback_font (void)
 {
+#if 0
 	const FontDescriptionTable *table;
 
 	ensure_fallback_font_table ();
@@ -1047,6 +1048,9 @@ nautilus_font_manager_get_fallback_font (void)
 	g_return_val_if_fail (table != NULL, NULL);
 
 	return font_description_table_get_nth_file_name (table, 0);
+#else
+	return g_strdup ("/usr/share/fonts/default/Type1/n019003l.pfb");
+#endif
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
