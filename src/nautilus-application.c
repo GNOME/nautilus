@@ -831,7 +831,8 @@ nautilus_application_get_existing_spatial_window (const char *location)
 		char *window_location;
 		
 		window_location = nautilus_window_get_location (NAUTILUS_WINDOW (l->data));
-		if (!strcmp (location, window_location)) {
+		if (window_location != NULL &&
+		    strcmp (location, window_location) == 0) {
 			g_free (window_location);
 			return NAUTILUS_SPATIAL_WINDOW (l->data);
 		}
