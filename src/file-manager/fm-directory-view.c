@@ -4178,6 +4178,33 @@ real_merge_menus (FMDirectoryView *view)
 }
 
 static void
+clipboard_targets_received (GtkClipboard     *clipboard,
+			    GtkSelectionData *selection_data,
+			    gpointer          user_data)
+{
+	FMDirectoryView *view;
+	gboolean can_paste;
+	GdkAtom *targets;
+	int n_targets;
+	int i;
+
+	view = FM_DIRECTORY_VIEW (user_data);
+	can_paste = FALSE;
+	
+	if (gtk_selection_data_get_targets (selection_data, &targets, &n_targets)) {
+		for (i=0; i < n_targets; i++) {
+			if (targets[i] == copied_files_atom) {
+				can_paste = TRUE;
+			}
+		}
+	}
+
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
+				       can_paste);
+}
+
+static void
 real_update_menus (FMDirectoryView *view)
 {
 	GList *selection;
@@ -4375,13 +4402,17 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_COPY_FILES,
 				       can_copy_files);
 
-	/* FIXME: Would be nice to set up paste item here based on
-	 * contents of CLIPBOARD, but I'm not sure that's possible due
-	 * to limitations of X clipboard support.
-	 */
-	nautilus_bonobo_set_sensitive (view->details->ui,
-				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
-				       !is_read_only);
+	if (is_read_only) {
+		nautilus_bonobo_set_sensitive (view->details->ui,
+					       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
+					       FALSE);
+	} else {
+		/* Ask the clipboard */
+		gtk_clipboard_request_contents (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
+						gdk_atom_intern ("TARGETS", FALSE),
+						clipboard_targets_received,
+						view);
+	}
 
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_COMMAND_SHOW_TRASH,
