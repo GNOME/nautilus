@@ -153,6 +153,8 @@ ElementInfo toc_elements[] = {
 	{ STATE, "state", NULL, NULL, NULL},
 	{ POSTCODE, "postcode", NULL, NULL, NULL},
 	{ LITERALLAYOUT, "literallayout", NULL, NULL, NULL},
+	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
+	{ QANDASET, "qandaset", NULL, NULL, NULL, },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -259,7 +261,6 @@ toc_sect_end_element (Context *context,
 	if (g_strcasecmp (name, "section") == 0) {
 		return;
 	}
-	
 
 	switch (name[4]) {
 	case 'a':
@@ -466,6 +467,7 @@ toc_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));	
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (QANDASET));	
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -605,7 +607,7 @@ toc_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));
-	
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (QANDASET));
 
 	index = find_first_parent (context, element_list);
 
@@ -673,6 +675,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSTERM));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSARYINFO));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (QANDASET));
 
 	index = find_first_parent (context, element_list);
 

@@ -134,6 +134,8 @@ typedef enum ElementIndex {
 	STATE,
 	POSTCODE,
 	LITERALLAYOUT,
+	QANDAENTRY,
+	QANDASET,
 	UNDEFINED /* 124 */
 } ElementIndex;
 

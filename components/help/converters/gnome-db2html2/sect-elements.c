@@ -129,6 +129,8 @@ ElementInfo sect_elements[] = {
 	{ STATE, "state", NULL, NULL, (charactersSAXFunc) sect_write_characters },
 	{ POSTCODE, "postcode", NULL, NULL, (charactersSAXFunc) sect_write_characters },
 	{ LITERALLAYOUT, "literallayout", (startElementSAXFunc) sect_literallayout_start_element, (endElementSAXFunc) sect_literallayout_end_element, (charactersSAXFunc) sect_write_characters },
+	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
+	{ QANDASET, "qandaset", NULL, NULL, NULL, },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -659,6 +661,8 @@ sect_copyright_characters (Context *context,
 	};
 }
 
+static gboolean is_in_sect_title = FALSE;
+
 void
 sect_title_start_element (Context *context,
 			  const gchar *name,
@@ -718,6 +722,7 @@ sect_title_start_element (Context *context,
 		else
 			sect_print (context, "<H3>");
 		sect_print (context, "<A name=\"");
+		is_in_sect_title = TRUE;
 
 		atrs_ptr = (stack_el->atrs);
 		while (atrs_ptr && *atrs_ptr) {
@@ -782,19 +787,26 @@ sect_title_end_element (Context *context,
 	        sect_print (context, "</A></H1>\n");
 		break;
 	case CHAPTER:
-		/* FIXME: This sometimes causes the output of invalid HTML because in sect_title_characters
-		 * we could switch states (from LOOKING_FOR_SECT_TITLE to IN_SECT */
-		sect_print (context, "</A></H1>\n");
+		if (is_in_sect_title == TRUE) {
+			sect_print (context, "</A></H1>\n");
+			is_in_sect_title = FALSE;
+		}
 		break;
 	case SECT1:
 	case SECTION:
-		sect_print (context, "</A></H2>\n");
+		if (is_in_sect_title == TRUE) {
+			sect_print (context, "</A></H2>\n");
+			is_in_sect_title = FALSE;
+		}
 		break;
 	case SECT2:
 	case SECT3:
 	case SECT4:
 	case SECT5:
-		sect_print (context, "</A></H3>\n");
+		if (is_in_sect_title == TRUE) {
+			sect_print (context, "</A></H3>\n");
+			is_in_sect_title = FALSE;
+		}
 		break;
 	case FORMALPARA:
 		sect_print (context, ".</B>");

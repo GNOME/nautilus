@@ -142,7 +142,8 @@ ElementInfo sect_preparse[] = {
 	{ STATE, "state", NULL, NULL, NULL},
 	{ POSTCODE, "postcode", NULL, NULL, NULL},
 	{ LITERALLAYOUT, "literallayout", NULL, NULL, NULL},
-
+	{ QANDAENTRY, "quandaentry", NULL, NULL, NULL},
+	{ QANDASET, "quandaset", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
