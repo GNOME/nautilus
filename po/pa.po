@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-03-03 19:48+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanlinux@netscape.net>\n"
 "Language-Team: KBST Punjab <kbstpunjab@netscape.net>\n"
@@ -44,7 +44,6 @@ msgstr "ਬਾਨੋਬੋ·ਯੂ·ਆਈ·ਇਨਟ·ਅਸਫਲ·ਰਿਹ�
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "ਨਿਸ਼ਾਨ"
 
@@ -957,7 +956,6 @@ msgstr "ਇਹ ਸਰੂਪ ਤਸਵੀਰਾਂ ਵਾਲੇ ਫੋਲਡਰ �
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "ਨਾਉ"
 
@@ -1671,7 +1669,6 @@ msgid "The name and icon of the file."
 msgstr "ਫਾਇਲ ਦੀ ਕਿਸਮ ਤੇ ਆਈਕਾਨ"
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "ਅਕਾਰ"
 
@@ -1680,7 +1677,6 @@ msgid "The size of the file."
 msgstr "ਫਾਇਲ ਦਾ ਅਕਾਰ"
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "ਕਿਸਮ"
 
@@ -1689,7 +1685,6 @@ msgid "The type of the file."
 msgstr "ਫਾਇਲ ਦੀ ਕਿਸਮ"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "ਸੋਧਣ ਦੀ ਮਿਤੀ"
 
@@ -3063,45 +3058,6 @@ msgstr "ਕੀ ਦਸਤੀ ਢਾਂਚੇ ਨਾਲ ਤਬਚੀਲ ਕਰਨ�
 msgid "Switch"
 msgstr "ਸਵਿਚ"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"ਜੇਕਰ ਤੁਸੀ ਤੇਜ ਖੋਜ ਚਾਲੂ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ ਫਾਇਲ %s  ਰੂਟ ਦੇ ਤੌਰ ਤੇ ਸੋਧਣੀ ਪਵੇਗੀ। ਚਾਲੂ ਨਿਸ਼ਾਨ ਨੂੰ "
-"\"yes\" ਕਰਨ ਨਾਲ ਮੇਡੂਸਾ ਸੇਵਾ ਚਲ ਪਵੇਗੀ ।\n"
-" ਸਹੀ ਤਰੀਕੇ ਨਾਲ ਤਤਕਰਾ ਬਣਾਉਣ ਅਤੇ  ਖੋਜ ਸੇਵਾਵਾਂ ਚਾਲੂ ਕਰਨ ਲਈ ,ਤੁਹਾਨੂੰ ਰੂਟ ਦੇ ਤੌਰ ਤੇ ਇਹ ਕਮਾਂਡ "
-"ਚਲਾਉਣੀ ਪਵੇਗੀ :\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"ਮੇਡੂਸਾ, ਜੋ ਕਿ ਖੋਜ ਕਰਦਾ ਹੈ, ਉਹ ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਤੇ ਨਹੀ ਹੈ । ਜੇਕਰ ਤੁਸੀ ਨਾਟਿਲਸ ਖੁਦ ਕੰਮਪਾਇਲ ਕੀਤਾ "
-"ਹੈ ਤਾਂ ਮੇਡੂਸਾ ਦੀ ਨਕਲ ਇੰਸਟਾਲ ਕਰਨ ਮਗਰੋ ਨਾਟਿਲਸ ਨੂੰ ਫਿਰ ਕੰਮਪਾਇਲ ਕਰੋ। ( ftp://ftp.gnome.org "
-"ਤੇ ਮੇਡੂਸਾ ਦੀ ਨਕਲ ਹਮੇਸ਼ਾ ਉਪਲਬਧ ਹੈ)\n"
-"ਪਰ ਜੇਕਰ ਤੁਸੀ ਨਾਟਿਲਸ ਦਾ ਪੈਕੇਜ ਇੰਸਟਾਲ ਕੀਤਾ ਹੈ ਤਾਂ ਇਹ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੋ ਸਕੇਗੀ.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3441,249 +3397,6 @@ msgid ""
 msgstr ""
 "ਬਾਹਰੀ ਫਾਇਲਾਂ ਨੂੰ ਸਥਾਨਿਕ ਫੋਲਡਰ ਵਿਚ ਨਕਲ ਕਰੋ ਤੇ ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਸਥਾਨਿਕ ਫਾਇਲਾਂ ਜੋ ਤੁਸੀ ਸੁਟੀਆਂ "
 "ਸਨ ਪਹਿਲਾਂ ਹੀ ਖੋਲੀਆਂ  ਜਾ ਚੁਕੀਆਂ ਹਨ"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[ਚੀਜਾਂ]\"%s\" ਆਪਣੇ ਨਾਉ ਵਿਚ ਹਨ"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[ਚੀਜਾਂ ]\"%s\"ਨਾਲ ਸ਼ੁਰੂ  ਹੋ ਰਹੀਆਂ ਹਨ"
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[ਚੀਜਾਂ] %s ਨਾਲ ਖਤਮ ਹੋ ਰਹੀਆਂ ਹਨ"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[ਚੀਜਾਂ ] ਆਪਣੇ ਨਾਉ ਵਿਚ\"%s\" ਨਹੀ ਰਖਦੇ ਹਨ"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[ਚੀਜਾਂ]ਸਾਰਾ ਸਮੀਕਰਨ \"%s\" ਨਾਲ ਮਿਲਾਣ ਕਰੋ"
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[ਚੀਜਾਂ]ਫਾਇਲ ਤਰਤੀਬ\"%s\"ਮਿਲਾਉ"
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "ਆਮ ਫਾਇਲਾਂ"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "ਪਾਠ ਫਾਇਲਾਂ"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "ਕਾਰਜ"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "ਫੋਲਡਰ"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "ਸੰਗੀਤ"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "%s ਨਾ ਹੋਣ"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr " %s ਹੋਣ"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "\"%s\" ਮਾਲਕ ਨਾ ਹੋਵੇ"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr " %s ਮਾਲਕ ਹੋਵੇ"
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr " %s ਮਲਕੀਅਤ ਨੰਬਰ (ਉਨਰਆਈ ਡੀ) ਵਾਲਾ"
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr " %s ਮਲਕੀਅਤ ਨੰਬਰ (ਉਨਰਆਈ ਡੀ) ਤੋ ਬਿਨਾਂ"
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr " %s ਬਾਈਟਸ ਤੋ ਵਧੇਰੇ"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr " %s ਬਾਈਟਸ ਤੋ ਛੋਟੀ"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "%s ਬਾਈਟਸ ਦੀ"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "ਅਜ ਸੋਧੀਆ ਹਨ"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "ਕਲ ਸੋਧੀਆਂ ਗਈਆ"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr " %s ਨੂੰ ਸੋਧੀਆਂ"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "%s ਨੂੰ ਨਹੀ ਸੋਧੀਆਂ "
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr " %s ਤੋ ਪਹਿਲਾਂ ਸੋਧੀਆ"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "%s ਤੋ ਮਗਰੋ ਸੋਧੀਆਂ"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[ਚੀਜਾਂ]%s ਹਫਤੇ ਸੋਧੀਆਂ ਗਈਆਂ "
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[ਚੀਜਾਂ]%s ਮਹੀਨੇ ਸੋਧੀਆਂ ਗਈਆਂ "
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[ਚੀਜਾਂ] \"%s\"ਨਾਲ ਨਿਸ਼ਾਨਸ਼ੁਦਾ"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[ਚੀਜਾਂ] \"%s\"ਨਾਲ ਨਾ ਨਿਸ਼ਾਨਸ਼ੁਦਾ ਹੋਣ"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[ਚੀਜਾਂ] \"%s\"ਅਖਰਾਂ ਨਾਲ"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[ਚੀਜਾਂ] ਜੋ ਇਕ\"%s\" ਅਖਰ ਰਖਦੀਆਂ ਹੋਣ"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[ਚੀਜਾਂ] ਸਾਰੇ  \"%s\" ਅਖਰਾਂ ਬਿਨਾਂ ਹੋਣ"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[ਚੀਜਾਂ] ਸਾਰੇ ਕੋਈ  \"%s\" ਅਖਰਾਂ ਬਿਨਾਂ ਹੋਣ"
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[ਚੀਜਾਂ -ਅਕਾਰ ੪੦੦ਕੇ ਤੋ ਜਿਆਦਾ] ਅਤੇ [ਸਾਰੇ ਅਖਰੇ  \"ਸੰਬ ਸੰਤਰੇ\" ਬਿਨਾਂ]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[ਚੀਜਾਂ -ਅਕਾਰ ੪੦੦ਕੇ ਤੋ ਜਿਆਦਾ] ਅਤੇ [ਸਾਰੇ ਅਖਰੇ  (ਜਿਸ ਦਾ ਮਾਲਕ ਰੂਟ )\"ਸੰਬ ਸੰਤਰੇ\" ਬਿਨਾਂ]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "ਚੀਜਾਂ %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "ਚੀਜਾਂ ਦੇ ਨਾਉ ਵਿਚ \"stuff\" "
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "ਚੀਜਾਂ ਜੋ ਕਿ ਆਮ ਫਾਇਲਾਂ ਹਨ"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "ਚੀਜਾਂ ਦੇ ਨਾਉ ਵਿਚ \"stuff\" ਹੋਵੇ ਅਤੇ ਜੋ ਸਧਾਰਨ ਫਾਇਲਾਂ ਹੋਣ"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"ਚੀਜਾਂ ਦੇ ਨਾਉ ਵਿਚ \"stuff\" ਹੋਵੇ , ਜੋ ਸਧਾਰਨ ਫਾਇਲਾਂ ਹੋਣ ਅਤੇ ਅਕਾਰ ੨੦੦੦ ਬਾਇਟ ਤੋ ਛੋਟਾ ਹੋਵੇ"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "ਚੀਜਾਂ ਕੋਲ ਨਾਉ ਵਿਚ\"ਮੇਡੁਯੂਸਾ\" ਹੈ"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4851,240 +4564,6 @@ msgstr "ਗੁਣ ਝਰੋਖਾ ਬਣਾਉ"
 msgid "Select an icon"
 msgstr "ਆਈਕਾਨ ਚੁਣੋ"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"ਇਸ %s ਮਗਰੋ ਸੋਧੀਆਂ , ਜਦੋ ਇਹ ਹਿਸੇ ਦਾ ਤਤਕਰਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ, ਚੀਜਾਂ ਨਤੀਜੇ ਵਿਚ ਨਹੀ ਹਨ"
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "ਖੋਜ ਨਤੀਜਾ"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "ਮੁਆਫੀ, ਪਰ ਮੈਡੂਸਾ ਖੋਜ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "ਮੈਡੂਸਾ ਇੰਸਟਾਲ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "ਖੋਜ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"ਜੋ ਖੋਜ ਤੁਸੀ ਚੁਣੀ ਹੈ ਉਹ ਇਸ ਮਸ਼ੀਨ ਦੇ ਤਤਕਰੇ ਤੋ ਵਖਰੀ ਹੈ. ਇਸਕਰਕੇ ਖੋਜ ਦਾ ਕੋਈ ਨਤੀਜਾ ਨਹੀ ਆਇਆ। "
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr " ਰੂਟ ਦੇ ਤੌਰ ਇਹ ਕਮਾਂਡ \"medusa-indexd\" ਚਲਾ ਕੇ ਨਵਾਂ ਤਤਕਰਾ ਬਣਾਉ"
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "ਉਹਨਾਂ ਚੀਜਾਂ ਲਈ ਖੋਜ ਜੋ ਹਨ ਬਹੁਤੀਆਂ ਹੀ ਨਵੀਆਂ ਹਨ"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਦਾ ਹਰੇਕ ਤਤਕਰਾ ਤੁਹਾਡੀ ਚੋਣ ਸੀਮਾਵਾ ਨਾਲ ਮੇਲ ਖਾ ਰਿਹਾ ਹੈ, ਕਿਰਪਾ ਅਖਰ ਵੇਖੋ ਜਾਂ ਹੋਰ "
-"ਸੀਮਾਵਾਂ ਲਗਾਉ"
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr "ਤੁਸੀ ਖੋਜ ਦੇ ਸ਼ਬਦ ਵੇਖ ਸਕਦੇ ਹੋ ਜਾਂ ਹੋਰ ਸੀਮਾਵਾਂ ਲਗਾਉ ਤਾਂ ਕਿ ਨਤੀਜਾ ਚੰਗਾ ਹੋ ਸਕੇ"
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "ਭਾਲ ਦੌਰਾਨ ਗਲਤੀ"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"ਖੋਜ ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਦਾ ਤਤਕਰਾ ਨਹੀ ਖੋਲ ਸਕਦੀ , ਕਿਉਕਿ ਤਤਕਰਾ ਗੁਆਚ ਗਿਆ ਹੈ ਜਾਂ ਖਰਾਬ ਹੋ ਗਿਆ ਹੈ। "
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "ਤਤਕਰਾ ਫਾਇਲ ਖੋਲਣ ਵਿਚ ਗਲਤੀ"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "ਇਸ ਖੋਜ ਦੇ ਨਤੀਜਾ  ਖੋਲਣ ਸਮੇ ਗਲਤੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr "ਤੇਜ਼ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr "ਸੰਖੇਪ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr "ਖੋਜ ਇਸ ਵੇਲੇ ਤਤਕਰਾ ਨਹੀ ਲਭ ਸਕੀ, ਇਸ ਕਰਕੇ ਇਕ ਹੋਲੀ ਖੋਜ ਹੋ ਸਕੇਗੀ"
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "ਖੋਜ ਇਸ ਵੇਲੇ ਤੁਹਾਡੇ ਤਤਕਰੇ ਨੂੰ ਖੋਲ ਨਹੀ ਸਕੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "ਤੇਜ਼ ਭਾਲ (ਖੋਜ) ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "ਸੰਖੇਪ ਖੋਜ ਇਸ ਵੇਲੇ ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"ਤਤਕਰਾ ਫਾਇਲਾਂ ਉਪਲਬਧ ਹਨ , ਪਰ ਮੈਡੂਸਾ ਖੋਜ ਡੋਮਨ, ਜੋ ਤਤਕਰੇ ਨੂੰ ਸਾਂਭਦਾ ਹੈ, ਨਹੀ ਚਲ ਰਿਹਾ :\n"
-"ਇਸ ਕਾਰਜ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਰੂਟ ਦੇ ਤੌਰ ਤੇ ਲਾਗਆਨ ਕਰਕੇ ਇਹ ਕਮਾਂਡ ਚਲਾਉ\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"ਤੇਜ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਤਤਕਰਾ ਬਣਾ ਰਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"ਸੰਖੇਪਸਾਂਰਸ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦੇ ਸੰਖੇਪ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ ਤੁਹਾਡੀ ਮਸ਼ੀਨ "
-"ਤਤਕਰਾ ਬਣਾ ਰਹੀ ਹੈ, ਉਸ ਮਗਰੋ ਹੀ ਸੰਖੇਪ ਖੋਜ ਉਪਲਬਧ ਹੋ ਸਕੇਗੀ"
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr "ਕਿਉਕਿ ਤਤਕਰਾ ਨਹੀ ਲਭਿਆ, ਇਸ ਕਰਕੇ ਖੋਜ ਵਿਚ ਕਈ ਮਿੰਟ ਲਗ ਸਕਦੇ ਹਨ।"
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr "ਸੰਖੇਪ ਖੋਜ ਉਦੋ ਹੀ ਉਪਲਬਧ ਹੋ ਸਕੇਗੀ ਜਦੋ ਕਿ ਤਤਕਰਾ ਬਣ ਗਿਆ "
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "ਤਤਕਰਾ ਖੋਜ ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"ਤੇਜ਼ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ, ਖੋਜ ਇਸ ਵੇਲੇ ਤਤਕਰਾ ਨਹੀ ਲਭ "
-"ਸਕੀ ਹੈ। "
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"ਸੰਖੇਪ  ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ, ਖੋਜ ਇਸ ਵੇਲੇ ਤਤਕਰਾ ਨਹੀ ਲਭ "
-"ਸਕੀ"
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"ਰੂਟ ਦੇ ਤੌਰ ਇਹ ਕਮਾਂਡ \"medusa-indexd\" ਚਲਾ ਕੇ ਨਵਾਂ ਤਤਕਰਾ ਬਣਾਉ ਉਸ ਵੇਲੇ ਤਕ ਖੋਜ ਕਈ ਮਿੰਟ "
-"ਲਗਾਵੇਗੀ"
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"ਰੂਟ ਦੇ ਤੌਰ ਇਹ ਕਮਾਂਡ \"medusa-indexd\" ਚਲਾ ਕੇ ਨਵਾਂ ਤਤਕਰਾ ਬਣਾਉ ਉਸ ਵੇਲੇ ਤਕ ਸੰਖੇਪ ਖੋਜ ਨਹੀ "
-"ਚਲੇਗੀ"
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਤੇ ਤੇਜ ਖੋਜ ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"ਤੇਜ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ। ਤੁਹਾਡੇ ਮਸ਼ੀਨੀ ਪਰਬੰਧਕ ਨੇ ਤੁਹਾਡੀ "
-"ਮਸ਼ੀਨ ਤੇ ਤੇਜ ਸੇਵਾ ਬੰਦ ਕੀਤੀ ਹੈ, ਸੋ ਕੋਈ ਤਤਕਰਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "ਤੇਜ਼ ਭਾਲ (ਖੋਜ) ਚਾਲੂ ਨਹੀ ਹੈ"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "ਕਿਥੇ"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
-msgstr[1] "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"ਨਾਟਿਲਸ ਨੇ ਇਤਨੇ ਖੋਜ ਨਤੀਜੇ ਲਭੇ ਹਨ ਜਿਨ੍ਹੇ ਇਹ ਪੇਸ਼ ਨਹੀ ਕਰ ਸਕਦਾ । ਕੁਝ ਚੀਜਾਂ ਨਹੀ ਵੇਖਾਈ ਜਾ "
-"ਸਕਣਗੀਆਂ ।"
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "ਕੁਝ ਸਾਝੀਆਂ ਚੀਜਾਂ ਨਹੀ ਵੇਖਾਈ ਜਾ ਸਕਣਗੀਆਂ ।"
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "ਬਹੁਤੇ ਮੇਲ ਹਨ"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "ਖਾਲੀ"
@@ -5445,67 +4924,6 @@ msgstr "ਇਕਸਾਰ ਕਰੋ"
 msgid "_Manually"
 msgstr "ਦਸਤੀ"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "%d%% ਐਨਡੇਕਸਿੰਗ ਪੂਰੀ ਹੇਈ"
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "ਫਾਇਲਾਂ ਦਾ ਅਖੀਰੀ ਤਤਕਰਾ  %s ਨੂੰ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਸੀ"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"ਇਕ ਦਿਨ ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਅਤੇ ਪਾਠ ਸੰਖੇਪ ਦਾ ਤਤਕਰਾ ਬਣੇਗਾ ਤਾਂਕਿ ਤੇਜੀ ਨਾਲ ਖੋਜ ਕੀਤੀ ਜਾ ਸਕੇ"
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "ਤਤਕਰੇ ਦਾ ਸਥਿਤੀ"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"ਇਕ ਦਿਨ ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਅਤੇ ਪਾਠ ਸੰਖੇਪ ਦਾ ਤਤਕਰਾ ਬਣੇਗਾ ਤਾਂਕਿ ਤੇਜੀ ਨਾਲ ਖੋਜ ਕੀਤੀ ਜਾ ਸਕੇ"
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "ਇਸ ਵੇਲੇ ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਲਈ ਤਤਕਰਾ ਨਹੀ ਹੈ"
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"ਜਦੋ ਤੇਜ ਖੋਜ ਚਲ ਰਹੀ ਹੈ,  ਖੋਜ ਤੇਜ ਕੰਮ ਕਰਨ ਲਈ ਇਕ ਤਤਕਰਾ ਤਿਆਰ ਕਰਦੀ ਹੈ ਜਦੋ ਤੇਜ ਖੋਜ ਉਪਲਬਧ ਨਹੀ "
-"ਹੈ,  ਖੋਜ ਤੇਜ ਕੰਮ ਕਰਨ ਲਈ ਇਕ ਤਤਕਰਾ ਨਹੀ ਹੈ"
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "ਕੋਈ ਤਤਕਰਾ ਫਾਇਲ ਨਹੀ ਹੈ"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "ਮੁਆਫੀ, ਪਰ ਮੈਡੂਸਾ ਖੋਜ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "ਕਿਰਪਾ ਕਰਕੇ ਜਾਂਚ ਲਵੋ ਕਿ ਮੈਡੂਸਾ ਸਹੀ ਤਾਂ ਨਿਰਧਾਰਿਤ ਕੀਤਾ ਜਾ ਚੁਕਾ ਹੈ"
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿਚ ਉਪਲਬਧ ਕਾਲਮਾਂ ਦੀ ਚੋਣ ਕਰੋ"
@@ -5513,26 +4931,6 @@ msgstr "ਇਸ ਫੋਲਡਰ ਵਿਚ ਉਪਲਬਧ ਕਾਲਮਾਂ ਦ�
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "ਵੇਖਣਯੋਗ ਕਾਲਮ"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "ਹਰੇਕ ਚੁਣੀ ਚੀਜ ਆਪਣੇ ਅਸਲੀ ਫੋਲਡਰ ਵਿਚ ਦਿਖਾਉ"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "ਖੋਜ ਸਮੇ ਵਰਤੇ ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5712,19 +5110,6 @@ msgstr "<b>ਨਾਉ</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "ਬੁਕਮਾਰਕ ਸੋਧ"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "ਹੋਰ ਚੋਣ"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "ਕੁਝ ਚੋਣ"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "ਉਹਨਾਂ ਨੂੰ ਲਭੋ"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6611,168 +5996,6 @@ msgstr "ਰੰਗ ਹਟਾਉ"
 msgid "_Remove an Emblem..."
 msgstr "ਨਿਸ਼ਾਨ ਹਟਾਉ"
 
-#  Menu item in the search bar.
-#  Bracketed items are context, and are message
-#  strings elsewhere.  You don't have to translate the whole
-#  string, and only the translation for "containing '%s' will
-#  be used.  If you do translate the whole string, leave the
-#  translations of the rest of the text in brackets, so it
-#  will not be used.
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Search for] ਨਾਉ [contains \"fish\"] ਹੋਵੇ"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Search for] ਸੰਖੇਪ [includes all of \"fish tree\"] ਹੋਵੇ"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Search for] ਕਿਸਮ [is regular file]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Search for] ਅਕਾਰ [larger than 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Search for] ਇਸ[includes \"Important\"] ਨਿਸ਼ਾਨ ਨਾਲ"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Search for] ਅਖੀਰੀ ਸੋਧ [before yesterday] ਨੂੰ ਹੋਵੇ"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Search for] ਮਾਲਕ [is not root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[File name]  [help] ਸਹਾਇਤਾ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[File name]  [nautilus] ਨਾਲ ਸੁਰੂ ਹੁੰਦਾ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[File name] [.c] ਨਾਲ ਖਤਮ ਹੋ ਰਿਹਾ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[File name] matches glob [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[File name] ਇਸ ਸਮੀਕਰਨ  [\"e??l.$\"] ਨਾਲ ਮੇਲ ਖਾਂਦਾ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[File content] ਇਹ [apple orange] ਸਭ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[File content] ਕੁਝ [apply orange] ਹਨ"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[File content]ਇਹਨਾਂ [apple orange] ਵਿਚੋ ਕੁਝ ਨਹੀ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[File content] ਕੋਲ [apple orange] ਨਹੀ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[File type] ਇਕ [folder] ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[File type] ਇਕ [folder]  ਨਹੀ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[File type is] ਆਮ ਫਾਇਲ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[File type is] ਪਾਠ ਫਾਇਲ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[File type is] ਕਾਰਜ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[File type is] ਫੋਲਡਰ ਹੈ"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[File type is] ਸੰਗੀਤ"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[File size is] ਵਡਾ ਹੈ[400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[File size is] ਅਕਾਰ ਛੋਟਾ ਹੈ [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[With emblem] ਨਾਲ ਬਣਾਉ [Important]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[] ਉਭਾਰਿਆ·ਨਹੀ·ਗਿਆ []"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[] ਹੈ []"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[] ਨਹੀ·ਹੈ []"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[] ਇਸ·ਤੋ·ਮਗਰੋਂ []"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[] ਇਸ·ਤੋ·ਪਿਹਲਾ []"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[] ਅਜ·ਹੈ []"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[] ਕਲ·ਸੀ []"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[] ਇਸ·ਤੋ·ਇਕ·ਹਫਤੇ·ਅੰਦਰ []"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[] ਇਸ·ਦੇ·ਇਕ·ਮਹੀਨੇ·ਅੰਦਰ []"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[] ਹੈ []"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "ਨਹੀ·ਹੈ"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "ਇਸ·ਸਥਿਤੀ·ਲਈ·ਦ੍ਰਿਸ਼ ਚੁਣੋ·ਜਾ·ਦ੍ਰਿਸ਼ ਨਿਰਧਾਰਨ·ਬਦਲੋ"
@@ -6973,10 +6196,6 @@ msgstr "ਮੁਢਲਾ ਫੋਲਡਰ ਖੋਲੋ"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "ਥਾਉ"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "ਲਭੋ:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7211,6 +6430,548 @@ msgstr "ਨੈਟਵਰਕ ਸਰਵਰ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "ਨਟਾਲਿਸ ਫਾਇਲ ਮੈਨੇਜਰ ਵਿਚ ਆਪਣਾ ਨੈਟਵਰਕ ਸਰਵਰ ਵੇਖੋ"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "ਜੇਕਰ ਤੁਸੀ ਤੇਜ ਖੋਜ ਚਾਲੂ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ ਫਾਇਲ %s  ਰੂਟ ਦੇ ਤੌਰ ਤੇ ਸੋਧਣੀ ਪਵੇਗੀ। ਚਾਲੂ ਨਿਸ਼ਾਨ "
+#~ "ਨੂੰ \"yes\" ਕਰਨ ਨਾਲ ਮੇਡੂਸਾ ਸੇਵਾ ਚਲ ਪਵੇਗੀ ।\n"
+#~ " ਸਹੀ ਤਰੀਕੇ ਨਾਲ ਤਤਕਰਾ ਬਣਾਉਣ ਅਤੇ  ਖੋਜ ਸੇਵਾਵਾਂ ਚਾਲੂ ਕਰਨ ਲਈ ,ਤੁਹਾਨੂੰ ਰੂਟ ਦੇ ਤੌਰ ਤੇ ਇਹ ਕਮਾਂਡ "
+#~ "ਚਲਾਉਣੀ ਪਵੇਗੀ :\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "ਮੇਡੂਸਾ, ਜੋ ਕਿ ਖੋਜ ਕਰਦਾ ਹੈ, ਉਹ ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਤੇ ਨਹੀ ਹੈ । ਜੇਕਰ ਤੁਸੀ ਨਾਟਿਲਸ ਖੁਦ ਕੰਮਪਾਇਲ "
+#~ "ਕੀਤਾ ਹੈ ਤਾਂ ਮੇਡੂਸਾ ਦੀ ਨਕਲ ਇੰਸਟਾਲ ਕਰਨ ਮਗਰੋ ਨਾਟਿਲਸ ਨੂੰ ਫਿਰ ਕੰਮਪਾਇਲ ਕਰੋ। ( ftp://ftp."
+#~ "gnome.org ਤੇ ਮੇਡੂਸਾ ਦੀ ਨਕਲ ਹਮੇਸ਼ਾ ਉਪਲਬਧ ਹੈ)\n"
+#~ "ਪਰ ਜੇਕਰ ਤੁਸੀ ਨਾਟਿਲਸ ਦਾ ਪੈਕੇਜ ਇੰਸਟਾਲ ਕੀਤਾ ਹੈ ਤਾਂ ਇਹ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੋ ਸਕੇਗੀ.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[ਚੀਜਾਂ]\"%s\" ਆਪਣੇ ਨਾਉ ਵਿਚ ਹਨ"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[ਚੀਜਾਂ ]\"%s\"ਨਾਲ ਸ਼ੁਰੂ  ਹੋ ਰਹੀਆਂ ਹਨ"
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[ਚੀਜਾਂ] %s ਨਾਲ ਖਤਮ ਹੋ ਰਹੀਆਂ ਹਨ"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[ਚੀਜਾਂ ] ਆਪਣੇ ਨਾਉ ਵਿਚ\"%s\" ਨਹੀ ਰਖਦੇ ਹਨ"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[ਚੀਜਾਂ]ਸਾਰਾ ਸਮੀਕਰਨ \"%s\" ਨਾਲ ਮਿਲਾਣ ਕਰੋ"
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[ਚੀਜਾਂ]ਫਾਇਲ ਤਰਤੀਬ\"%s\"ਮਿਲਾਉ"
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "ਆਮ ਫਾਇਲਾਂ"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "ਪਾਠ ਫਾਇਲਾਂ"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "ਕਾਰਜ"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "ਫੋਲਡਰ"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "ਸੰਗੀਤ"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "%s ਨਾ ਹੋਣ"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr " %s ਹੋਣ"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "\"%s\" ਮਾਲਕ ਨਾ ਹੋਵੇ"
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr " %s ਮਾਲਕ ਹੋਵੇ"
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr " %s ਮਲਕੀਅਤ ਨੰਬਰ (ਉਨਰਆਈ ਡੀ) ਵਾਲਾ"
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr " %s ਮਲਕੀਅਤ ਨੰਬਰ (ਉਨਰਆਈ ਡੀ) ਤੋ ਬਿਨਾਂ"
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr " %s ਬਾਈਟਸ ਤੋ ਵਧੇਰੇ"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr " %s ਬਾਈਟਸ ਤੋ ਛੋਟੀ"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "%s ਬਾਈਟਸ ਦੀ"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "ਅਜ ਸੋਧੀਆ ਹਨ"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "ਕਲ ਸੋਧੀਆਂ ਗਈਆ"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr " %s ਨੂੰ ਸੋਧੀਆਂ"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "%s ਨੂੰ ਨਹੀ ਸੋਧੀਆਂ "
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr " %s ਤੋ ਪਹਿਲਾਂ ਸੋਧੀਆ"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "%s ਤੋ ਮਗਰੋ ਸੋਧੀਆਂ"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[ਚੀਜਾਂ]%s ਹਫਤੇ ਸੋਧੀਆਂ ਗਈਆਂ "
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[ਚੀਜਾਂ]%s ਮਹੀਨੇ ਸੋਧੀਆਂ ਗਈਆਂ "
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[ਚੀਜਾਂ] \"%s\"ਨਾਲ ਨਿਸ਼ਾਨਸ਼ੁਦਾ"
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[ਚੀਜਾਂ] \"%s\"ਨਾਲ ਨਾ ਨਿਸ਼ਾਨਸ਼ੁਦਾ ਹੋਣ"
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[ਚੀਜਾਂ] \"%s\"ਅਖਰਾਂ ਨਾਲ"
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[ਚੀਜਾਂ] ਜੋ ਇਕ\"%s\" ਅਖਰ ਰਖਦੀਆਂ ਹੋਣ"
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[ਚੀਜਾਂ] ਸਾਰੇ  \"%s\" ਅਖਰਾਂ ਬਿਨਾਂ ਹੋਣ"
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[ਚੀਜਾਂ] ਸਾਰੇ ਕੋਈ  \"%s\" ਅਖਰਾਂ ਬਿਨਾਂ ਹੋਣ"
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "[ਚੀਜਾਂ -ਅਕਾਰ ੪੦੦ਕੇ ਤੋ ਜਿਆਦਾ] ਅਤੇ [ਸਾਰੇ ਅਖਰੇ  \"ਸੰਬ ਸੰਤਰੇ\" ਬਿਨਾਂ]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[ਚੀਜਾਂ -ਅਕਾਰ ੪੦੦ਕੇ ਤੋ ਜਿਆਦਾ] ਅਤੇ [ਸਾਰੇ ਅਖਰੇ  (ਜਿਸ ਦਾ ਮਾਲਕ ਰੂਟ )\"ਸੰਬ ਸੰਤਰੇ\" ਬਿਨਾਂ]"
+
+#~ msgid "Items %s"
+#~ msgstr "ਚੀਜਾਂ %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "ਚੀਜਾਂ ਦੇ ਨਾਉ ਵਿਚ \"stuff\" "
+
+#~ msgid "Items that are regular files"
+#~ msgstr "ਚੀਜਾਂ ਜੋ ਕਿ ਆਮ ਫਾਇਲਾਂ ਹਨ"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr "ਚੀਜਾਂ ਦੇ ਨਾਉ ਵਿਚ \"stuff\" ਹੋਵੇ ਅਤੇ ਜੋ ਸਧਾਰਨ ਫਾਇਲਾਂ ਹੋਣ"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "ਚੀਜਾਂ ਦੇ ਨਾਉ ਵਿਚ \"stuff\" ਹੋਵੇ , ਜੋ ਸਧਾਰਨ ਫਾਇਲਾਂ ਹੋਣ ਅਤੇ ਅਕਾਰ ੨੦੦੦ ਬਾਇਟ ਤੋ ਛੋਟਾ ਹੋਵੇ"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "ਚੀਜਾਂ ਕੋਲ ਨਾਉ ਵਿਚ\"ਮੇਡੁਯੂਸਾ\" ਹੈ"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "ਇਸ %s ਮਗਰੋ ਸੋਧੀਆਂ , ਜਦੋ ਇਹ ਹਿਸੇ ਦਾ ਤਤਕਰਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ, ਚੀਜਾਂ ਨਤੀਜੇ ਵਿਚ ਨਹੀ ਹਨ"
+
+#~ msgid "Search Results"
+#~ msgstr "ਖੋਜ ਨਤੀਜਾ"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "ਮੁਆਫੀ, ਪਰ ਮੈਡੂਸਾ ਖੋਜ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "ਮੈਡੂਸਾ ਇੰਸਟਾਲ ਨਹੀ ਹੈ"
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "ਖੋਜ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "ਜੋ ਖੋਜ ਤੁਸੀ ਚੁਣੀ ਹੈ ਉਹ ਇਸ ਮਸ਼ੀਨ ਦੇ ਤਤਕਰੇ ਤੋ ਵਖਰੀ ਹੈ. ਇਸਕਰਕੇ ਖੋਜ ਦਾ ਕੋਈ ਨਤੀਜਾ ਨਹੀ ਆਇਆ। "
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr " ਰੂਟ ਦੇ ਤੌਰ ਇਹ ਕਮਾਂਡ \"medusa-indexd\" ਚਲਾ ਕੇ ਨਵਾਂ ਤਤਕਰਾ ਬਣਾਉ"
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "ਉਹਨਾਂ ਚੀਜਾਂ ਲਈ ਖੋਜ ਜੋ ਹਨ ਬਹੁਤੀਆਂ ਹੀ ਨਵੀਆਂ ਹਨ"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਦਾ ਹਰੇਕ ਤਤਕਰਾ ਤੁਹਾਡੀ ਚੋਣ ਸੀਮਾਵਾ ਨਾਲ ਮੇਲ ਖਾ ਰਿਹਾ ਹੈ, ਕਿਰਪਾ ਅਖਰ ਵੇਖੋ ਜਾਂ "
+#~ "ਹੋਰ ਸੀਮਾਵਾਂ ਲਗਾਉ"
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr "ਤੁਸੀ ਖੋਜ ਦੇ ਸ਼ਬਦ ਵੇਖ ਸਕਦੇ ਹੋ ਜਾਂ ਹੋਰ ਸੀਮਾਵਾਂ ਲਗਾਉ ਤਾਂ ਕਿ ਨਤੀਜਾ ਚੰਗਾ ਹੋ ਸਕੇ"
+
+#~ msgid "Error During Search"
+#~ msgstr "ਭਾਲ ਦੌਰਾਨ ਗਲਤੀ"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "ਖੋਜ ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਦਾ ਤਤਕਰਾ ਨਹੀ ਖੋਲ ਸਕਦੀ , ਕਿਉਕਿ ਤਤਕਰਾ ਗੁਆਚ ਗਿਆ ਹੈ ਜਾਂ ਖਰਾਬ ਹੋ ਗਿਆ "
+#~ "ਹੈ। "
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "ਤਤਕਰਾ ਫਾਇਲ ਖੋਲਣ ਵਿਚ ਗਲਤੀ"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "ਇਸ ਖੋਜ ਦੇ ਨਤੀਜਾ  ਖੋਲਣ ਸਮੇ ਗਲਤੀ ਹੈ"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr "ਤੇਜ਼ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ"
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr "ਸੰਖੇਪ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ"
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr "ਖੋਜ ਇਸ ਵੇਲੇ ਤਤਕਰਾ ਨਹੀ ਲਭ ਸਕੀ, ਇਸ ਕਰਕੇ ਇਕ ਹੋਲੀ ਖੋਜ ਹੋ ਸਕੇਗੀ"
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "ਖੋਜ ਇਸ ਵੇਲੇ ਤੁਹਾਡੇ ਤਤਕਰੇ ਨੂੰ ਖੋਲ ਨਹੀ ਸਕੀ ਹੈ"
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "ਤੇਜ਼ ਭਾਲ (ਖੋਜ) ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "ਸੰਖੇਪ ਖੋਜ ਇਸ ਵੇਲੇ ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "ਤਤਕਰਾ ਫਾਇਲਾਂ ਉਪਲਬਧ ਹਨ , ਪਰ ਮੈਡੂਸਾ ਖੋਜ ਡੋਮਨ, ਜੋ ਤਤਕਰੇ ਨੂੰ ਸਾਂਭਦਾ ਹੈ, ਨਹੀ ਚਲ ਰਿਹਾ :\n"
+#~ "ਇਸ ਕਾਰਜ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਰੂਟ ਦੇ ਤੌਰ ਤੇ ਲਾਗਆਨ ਕਰਕੇ ਇਹ ਕਮਾਂਡ ਚਲਾਉ\n"
+#~ "medusa-searchd"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "ਤੇਜ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਤਤਕਰਾ ਬਣਾ "
+#~ "ਰਹੀ ਹੈ"
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "ਸੰਖੇਪਸਾਂਰਸ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦੇ ਸੰਖੇਪ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ ਤੁਹਾਡੀ ਮਸ਼ੀਨ "
+#~ "ਤਤਕਰਾ ਬਣਾ ਰਹੀ ਹੈ, ਉਸ ਮਗਰੋ ਹੀ ਸੰਖੇਪ ਖੋਜ ਉਪਲਬਧ ਹੋ ਸਕੇਗੀ"
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr "ਕਿਉਕਿ ਤਤਕਰਾ ਨਹੀ ਲਭਿਆ, ਇਸ ਕਰਕੇ ਖੋਜ ਵਿਚ ਕਈ ਮਿੰਟ ਲਗ ਸਕਦੇ ਹਨ।"
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr "ਸੰਖੇਪ ਖੋਜ ਉਦੋ ਹੀ ਉਪਲਬਧ ਹੋ ਸਕੇਗੀ ਜਦੋ ਕਿ ਤਤਕਰਾ ਬਣ ਗਿਆ "
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "ਤਤਕਰਾ ਖੋਜ ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "ਤੇਜ਼ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ, ਖੋਜ ਇਸ ਵੇਲੇ ਤਤਕਰਾ ਨਹੀ ਲਭ "
+#~ "ਸਕੀ ਹੈ। "
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "ਸੰਖੇਪ  ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ, ਖੋਜ ਇਸ ਵੇਲੇ ਤਤਕਰਾ ਨਹੀ "
+#~ "ਲਭ ਸਕੀ"
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "ਰੂਟ ਦੇ ਤੌਰ ਇਹ ਕਮਾਂਡ \"medusa-indexd\" ਚਲਾ ਕੇ ਨਵਾਂ ਤਤਕਰਾ ਬਣਾਉ ਉਸ ਵੇਲੇ ਤਕ ਖੋਜ ਕਈ ਮਿੰਟ "
+#~ "ਲਗਾਵੇਗੀ"
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "ਰੂਟ ਦੇ ਤੌਰ ਇਹ ਕਮਾਂਡ \"medusa-indexd\" ਚਲਾ ਕੇ ਨਵਾਂ ਤਤਕਰਾ ਬਣਾਉ ਉਸ ਵੇਲੇ ਤਕ ਸੰਖੇਪ ਖੋਜ "
+#~ "ਨਹੀ ਚਲੇਗੀ"
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਤੇ ਤੇਜ ਖੋਜ ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "ਤੇਜ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣੀ ਮਸ਼ੀਨ ਦੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਚਾਹੀਦਾ ਹੈ। ਤੁਹਾਡੇ ਮਸ਼ੀਨੀ ਪਰਬੰਧਕ ਨੇ "
+#~ "ਤੁਹਾਡੀ ਮਸ਼ੀਨ ਤੇ ਤੇਜ ਸੇਵਾ ਬੰਦ ਕੀਤੀ ਹੈ, ਸੋ ਕੋਈ ਤਤਕਰਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "ਤੇਜ਼ ਭਾਲ (ਖੋਜ) ਚਾਲੂ ਨਹੀ ਹੈ"
+
+#~ msgid "Where"
+#~ msgstr "ਕਿਥੇ"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
+#~ msgstr[1] "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "ਨਾਟਿਲਸ ਨੇ ਇਤਨੇ ਖੋਜ ਨਤੀਜੇ ਲਭੇ ਹਨ ਜਿਨ੍ਹੇ ਇਹ ਪੇਸ਼ ਨਹੀ ਕਰ ਸਕਦਾ । ਕੁਝ ਚੀਜਾਂ ਨਹੀ ਵੇਖਾਈ ਜਾ "
+#~ "ਸਕਣਗੀਆਂ ।"
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "ਕੁਝ ਸਾਝੀਆਂ ਚੀਜਾਂ ਨਹੀ ਵੇਖਾਈ ਜਾ ਸਕਣਗੀਆਂ ।"
+
+#~ msgid "Too Many Matches"
+#~ msgstr "ਬਹੁਤੇ ਮੇਲ ਹਨ"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "%d%% ਐਨਡੇਕਸਿੰਗ ਪੂਰੀ ਹੇਈ"
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "ਫਾਇਲਾਂ ਦਾ ਅਖੀਰੀ ਤਤਕਰਾ  %s ਨੂੰ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਸੀ"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "ਇਕ ਦਿਨ ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਅਤੇ ਪਾਠ ਸੰਖੇਪ ਦਾ ਤਤਕਰਾ ਬਣੇਗਾ ਤਾਂਕਿ ਤੇਜੀ ਨਾਲ ਖੋਜ ਕੀਤੀ ਜਾ ਸਕੇ"
+
+#~ msgid "Indexing Status"
+#~ msgstr "ਤਤਕਰੇ ਦਾ ਸਥਿਤੀ"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਦਾ ਤਤਕਰਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "ਇਕ ਦਿਨ ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਅਤੇ ਪਾਠ ਸੰਖੇਪ ਦਾ ਤਤਕਰਾ ਬਣੇਗਾ ਤਾਂਕਿ ਤੇਜੀ ਨਾਲ ਖੋਜ ਕੀਤੀ ਜਾ ਸਕੇ"
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "ਇਸ ਵੇਲੇ ਤੁਹਾਡੀਆਂ ਫਾਇਲਾਂ ਲਈ ਤਤਕਰਾ ਨਹੀ ਹੈ"
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "ਜਦੋ ਤੇਜ ਖੋਜ ਚਲ ਰਹੀ ਹੈ,  ਖੋਜ ਤੇਜ ਕੰਮ ਕਰਨ ਲਈ ਇਕ ਤਤਕਰਾ ਤਿਆਰ ਕਰਦੀ ਹੈ ਜਦੋ ਤੇਜ ਖੋਜ ਉਪਲਬਧ "
+#~ "ਨਹੀ ਹੈ,  ਖੋਜ ਤੇਜ ਕੰਮ ਕਰਨ ਲਈ ਇਕ ਤਤਕਰਾ ਨਹੀ ਹੈ"
+
+#~ msgid "No Index of Files"
+#~ msgstr "ਕੋਈ ਤਤਕਰਾ ਫਾਇਲ ਨਹੀ ਹੈ"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "ਮੁਆਫੀ, ਪਰ ਮੈਡੂਸਾ ਖੋਜ ਸੇਵਾ ਉਪਲਬਧ ਨਹੀ ਹੈ"
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "ਕਿਰਪਾ ਕਰਕੇ ਜਾਂਚ ਲਵੋ ਕਿ ਮੈਡੂਸਾ ਸਹੀ ਤਾਂ ਨਿਰਧਾਰਿਤ ਕੀਤਾ ਜਾ ਚੁਕਾ ਹੈ"
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "ਹਰੇਕ ਚੁਣੀ ਚੀਜ ਆਪਣੇ ਅਸਲੀ ਫੋਲਡਰ ਵਿਚ ਦਿਖਾਉ"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "ਖੋਜ ਸਮੇ ਵਰਤੇ ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
+
+#~ msgid "More Options"
+#~ msgstr "ਹੋਰ ਚੋਣ"
+
+#~ msgid "Fewer Options"
+#~ msgstr "ਕੁਝ ਚੋਣ"
+
+#~ msgid "Find Them!"
+#~ msgstr "ਉਹਨਾਂ ਨੂੰ ਲਭੋ"
+
+#  Menu item in the search bar.
+#  Bracketed items are context, and are message
+#  strings elsewhere.  You don't have to translate the whole
+#  string, and only the translation for "containing '%s' will
+#  be used.  If you do translate the whole string, leave the
+#  translations of the rest of the text in brackets, so it
+#  will not be used.
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Search for] ਨਾਉ [contains \"fish\"] ਹੋਵੇ"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Search for] ਸੰਖੇਪ [includes all of \"fish tree\"] ਹੋਵੇ"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Search for] ਕਿਸਮ [is regular file]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Search for] ਅਕਾਰ [larger than 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Search for] ਇਸ[includes \"Important\"] ਨਿਸ਼ਾਨ ਨਾਲ"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Search for] ਅਖੀਰੀ ਸੋਧ [before yesterday] ਨੂੰ ਹੋਵੇ"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Search for] ਮਾਲਕ [is not root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[File name]  [help] ਸਹਾਇਤਾ ਹੈ"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[File name]  [nautilus] ਨਾਲ ਸੁਰੂ ਹੁੰਦਾ ਹੈ"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[File name] [.c] ਨਾਲ ਖਤਮ ਹੋ ਰਿਹਾ ਹੈ"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[File name] matches glob [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[File name] ਇਸ ਸਮੀਕਰਨ  [\"e??l.$\"] ਨਾਲ ਮੇਲ ਖਾਂਦਾ ਹੈ"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[File content] ਇਹ [apple orange] ਸਭ ਹੈ"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[File content] ਕੁਝ [apply orange] ਹਨ"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[File content]ਇਹਨਾਂ [apple orange] ਵਿਚੋ ਕੁਝ ਨਹੀ ਹੈ"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[File content] ਕੋਲ [apple orange] ਨਹੀ ਹੈ"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[File type] ਇਕ [folder] ਹੈ"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[File type] ਇਕ [folder]  ਨਹੀ ਹੈ"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[File type is] ਆਮ ਫਾਇਲ ਹੈ"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[File type is] ਪਾਠ ਫਾਇਲ ਹੈ"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[File type is] ਕਾਰਜ ਹੈ"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[File type is] ਫੋਲਡਰ ਹੈ"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[File type is] ਸੰਗੀਤ"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[File size is] ਵਡਾ ਹੈ[400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[File size is] ਅਕਾਰ ਛੋਟਾ ਹੈ [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[With emblem] ਨਾਲ ਬਣਾਉ [Important]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[] ਉਭਾਰਿਆ·ਨਹੀ·ਗਿਆ []"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[] ਹੈ []"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[] ਨਹੀ·ਹੈ []"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[] ਇਸ·ਤੋ·ਮਗਰੋਂ []"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[] ਇਸ·ਤੋ·ਪਿਹਲਾ []"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[] ਅਜ·ਹੈ []"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[] ਕਲ·ਸੀ []"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[] ਇਸ·ਤੋ·ਇਕ·ਹਫਤੇ·ਅੰਦਰ []"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[] ਇਸ·ਦੇ·ਇਕ·ਮਹੀਨੇ·ਅੰਦਰ []"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[] ਹੈ []"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "ਨਹੀ·ਹੈ"
+
+#~ msgid "Find:"
+#~ msgstr "ਲਭੋ:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "ਸਧਾਰਨ ਫਾਇਲ ਚੋਣ ਨਾਲ ਐਬਾਕਸ ਨਹੀ ਲਭਿਆ ਜਾ ਸਕਿਆ ਹੈ"

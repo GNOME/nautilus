@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-02-25 12:28+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -41,7 +41,6 @@ msgstr "bonobo_ui_init() dështoi."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Emblemat"
 
@@ -965,7 +964,6 @@ msgstr "Kjo temë përdor kartela foto-reale."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Emri"
 
@@ -1726,7 +1724,6 @@ msgid "The name and icon of the file."
 msgstr "Emri dhe ikona e file."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Madhësia"
 
@@ -1735,7 +1732,6 @@ msgid "The size of the file."
 msgstr "Madhësia e file."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Lloji"
 
@@ -1744,7 +1740,6 @@ msgid "The type of the file."
 msgstr "Lloji i file."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Ndryshimi i fundit"
 
@@ -3138,47 +3133,6 @@ msgstr "Kaloj tek rregullimi i personalizuar?"
 msgid "Switch"
 msgstr "Kalo"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Për të aktivuar kërkimet e shpejta, ndryshoni file %s si root. Duke vendosur "
-"opcionin \"aktiv\" në \"yes\" shërbimet e medusa do të aktivohen.\n"
-"Për të nisur shërbimet e renditjes dhe të kërkimit menjëherë, duhet të jepni "
-"komandat në vazhdim si root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Kërkimet e shpejta nuk do të jenë dispozicion deri sa të krijohet një "
-"tregues fillestar i files suaj.  Kjo mund të kërkojë një kohë të gjatë."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Medusa, programi që kryen kërkimet, nuk u gjet tek sistemi juaj.  Nëqoftëse "
-"e keni kompiluar nautilus vetë ju, do t'ju duhet të instaloni një kopje të "
-"medusa dhe rikompiloni nautilus.  (Një kopje të Medusa mund t'a shkarkoni "
-"nga ftp://ftp.gnome.org)\n"
-"Nëse jeni duke përdorur një version të paketuar të Nautilus, kërkimi i "
-"shpejtë nuk është në dispozicion.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3532,253 +3486,6 @@ msgid ""
 msgstr ""
 "Për të hapur files jo-lokale kopjoi në një kartelë lokale e pastaj "
 "zvarriteni përsëri. Files lokalë të zvarritur janë hapen si duhet."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Elementë ]që përmbajnë \"%s\" në emrat e tyre"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Elementë ]që fillojnë me \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Elementë ]që mbarojnë me %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Elementë ]që nuk përmbajnë \"%s\" në emrat e tyre"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Elementë ]që plotësojnë shprehjen e rregullt \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Elementë ]që ngjajnë me file \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Objekte që janë ]files të rregullt"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Objekte që janë ]files teksti"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Objekte që janë ]programe"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Objekte që janë ]kartela"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Objekte që janë ]muzikë"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Objekte ]që nuk janë %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Objekte ]që janë %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Objekte ]që nuk i takojnë \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Objekte ]që i takojnë \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Objekte ]me pronar me UID \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Objekte ]me pronar që ka një UID të ndryshme nga \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Objekte ]më të mëdhenj se %s bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Objekte ]më të vegjël se %s bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Objekte ]prej %s bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Objekte ]të ndryshuar sot"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Objekte ]të ndryshuar dje"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Objekte ]të ndryshuar më %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Objekte ]jo të ndryshuar më %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Objekte ]të ndryshuar përpara %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Objekte ]të ndryshuar mbas %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Objekte ]të ndryshuar në një javë të %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Objekte ]të ndryshuar në një muaj të %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Objekte ]të shënuar me \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Objekte ]të pashënuar me \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Objekte ]me të gjitha fjalët \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Objekte ]që përmbajnë njërën nga fjalët \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Objekte ]pa të gjitha fjalët \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Objekte ]pa asnjë nga fjalët \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[Objekte më të mëdhenj se 400K] dhe [pa të gjitha fjalët \"mollë portokall\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Objekte më të mëdhenj se 400K], [pronë e root dhe pa të gjitha fjalët "
-"\"mollë portokall\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Objektet %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Objekte që përmbajnë \"stuff\" në emrin e tyre"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Objekte që janë files të rregullt"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Objekte që përmbajnë \"stuff\" në emrin e tyre dhe që janë files të rregullt"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Objekte që përmbajnë \"stuff\" në emrin e tyre, janë files të rregullt dhe "
-"më të vegjël se 2000 bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Objekte që përmbajnë \"medusa\" në emrin e tyre dhe që janë kartela"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5001,262 +4708,6 @@ msgstr "Krijimi i dritares së pronësive."
 msgid "Select an icon"
 msgstr "Zgjidh një ikonë"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Rezultatet e kërkimit nuk përfshijnë objektet e ndryshuar mbas %s, kur drive "
-"është indeksuar për herë të fundit. "
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Rezultatet e kërkimit"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr ""
-"Më vjen keq, por shërbimi i kërkimit Medusa nuk gjendet në dispozicion."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "Medusa nuk është e instaluar."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Shërbimi i kërkimit nuk është në dispozicion"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Kërkimi që keni zgjedhur është më i ri se treguesi i sistemit. Tani për tani "
-"kërkimi do të përfundojë pa asnjë rezultat."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Mund të krijoni një tregues të ri duke ekzekutuar, si root nga rreshti i "
-"komandës, \"medusa-indexd\"."
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "Kërko për objektet më të rinj"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Çdo file i indeksuar tek kompjuteri juaj korrispondon me kriterin e kërkimit "
-"të zgjedhur."
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Kontrollo sintaksën e të zgjedhurve ose shtoni kritere të tjerë për të "
-"ngushtuar rezultatet."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "Gabim gjatë kërkimit"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"\"Gjej\" nuk arrin të hapë treguesin e file të sistemit.  Treguesi mungon "
-"ose është i dëmtuar."
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "Gabim gjatë leximit të file të treguesit"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "U verifikua një gabim gjatë ngarkimit të përmbajtjes së këtij kërkimi."
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Për të kryer një kërkim të shpejtë, \"Gjej\" ka nevojë për një tregues të "
-"files në sistemin tuaj."
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Për të kryer një kërkim sipas përmbajtjes \"Gjej\" ka nevojë për një tregues "
-"të files së sistemit."
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"\"Gjej\" nuk mund të lexojë treguesin në këtë moment, prandaj do të kryejë "
-"një kërkim të ngadaltë pa përdorur treguesin."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "\"Gjej\" nuk ka hyrje për momentin tek indeksi juaj."
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "Kërkimet e shpejta nuk janë në dispozicion"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "Kërkimet sipas përmbajtjes nuk janë në dispozicion"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Files të treguesit janë në dispozicion por demoni i kërkimit të Medusa, që "
-"manazhon kërkimet tek treguesi, nuk është në ekzekutim. Për të nisur këtë "
-"program, futu si root dhe nga rreshti i komandës zbato:\n"
-"\n"
-"medusa-searchd "
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Për të kryer një kërkim të shpejtë \"Gjej\" ka nevojë për treguesin e files "
-"së sistemit tuaj.  Aktualisht kompjuteri është duke krijuar këtë tregues."
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Për të kryer një kërkim sipas përmbajtjes \"Gjej\" ka nevojë për treguesin e "
-"files së sistemit tuaj.  Aktualisht kompjuteri është duke krijuar këtë "
-"tregues."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-"Meqenëse \"Gjej\" nuk ka mundësi të përdorë një tregues, ky kërkim mund të "
-"zgjasë shumë minuta."
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-"Kërkimet sipas përmbajtjes do të jenë aktive kur indeksi të jetë kompletuar."
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "Kërkimet e indeksuara nuk janë në dispozicion"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Për të kryer një kërkim të shpejtë, \"Gjej\" ka nevojë për një tregues të "
-"files në sistemin tuaj.  Asnjë tregues në dispozicion aktualisht."
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Për të kryer një kërkim sipas përmbajtjes \"Gjej\" ka nevojë për një tregues "
-"të përmbajtjes në sistemin tuaj.  Asnjë tregues në dispozicion aktualisht."
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Mund të krijoni një tregues duke zbatuar si root, nga rreshti i komandës, "
-"\"medusa-indexd\".  Pa një tregues të kompletuar në dispozicion, kërkimet do "
-"të zgjasin shumë minuta."
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Mund të krijoni një tregues duke zbatuar si root, nga rreshti i komandës, "
-"\"medusa-indexd\".  Pa një tregues të kompletuar në dispozicion, kërkimet "
-"sipas përmbajtjes nuk mund të kryen."
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "Kërkimet e shpejta nuk janë aktive në kompjuterin tuaj."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Për të kryer një kërkim të shpejtë, \"Gjej\" ka nevojë për një tregues të "
-"files të sistemit tuaj. Administratori i sistemit tuaj ka bllokuar kërkimin "
-"e shpejtë tek kompjuteri juaj, prandaj treguesi nuk është në dispozicion."
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "Kërkimet e shpejta nuk janë aktivuar"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Ku"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Zbuloje në një dritare të re"
-msgstr[1] "_Zbuloje në %d dritare të reja"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr "Nautilus ka gjetur më shumë rezultate nga sa mund të shfaqë."
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "Disa nga rezultatet korrispondues nuk do të shfaqen. "
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Shumë korrispondues"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Bosh)"
@@ -5627,71 +5078,6 @@ msgstr "_Mbaji të Rreshtuara"
 msgid "_Manually"
 msgstr "_Sipas dëshirës"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Indeksimi i plotësuar për %d%% ."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Files tuaj herën e fundit janë indeksuar më %s."
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Një herë në ditë emrat e të gjithë file dhe përmbajtja e file me tekste do "
-"të indeksohen për t'a bërë më të shpejtë kërkimin."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Gjëndja e indeksimit"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "Files tuaj janë aktualisht duke u indeksuar."
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Një herë në ditë files tuaj dhe përmbajtja e teksteve do të indeksohen që "
-"kërkimet të jenë më të shpejtë."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Aktualisht këtu nuk ka një tregues."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Kur kërkimi i shpejtë është i aktivuar, \"Gjej\" krijon një tregues për të "
-"shpejtuar kërkimet.  Kërkimi i shpejtë nuk është i aktivuar në kompjuterin "
-"tuaj, prandaj aktualisht ju nuk kini një tregues."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "Asnjë tregues i files"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr ""
-"Më vjen keq, por shërbimi i kërkimit të medusa nuk është në dispozicion."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "Ju lutem verifikoni që medusa është konfiguruar me korrektësi."
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "Zgjidh kollonat e dukshme në këtë kartelë"
@@ -5699,26 +5085,6 @@ msgstr "Zgjidh kollonat e dukshme në këtë kartelë"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "_Kollonat e dukshme..."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Hap çdo element të zgjedhur tek kartela e tij origjinale"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Hap në një dritare të re"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Trego gjendjen e indeksimit"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Trego gjendjen e _Indeksimit"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Trego gjendjen e indeksimit të përdorur gjatë kërkimit"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5909,19 +5275,6 @@ msgstr "<b>_Emri</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Ndrysho libërshënuesit"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Më shumë Opcione"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Më pak opcione"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Gjeje!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6816,161 +6169,6 @@ msgstr "_Hiq një ngjyrë..."
 msgid "_Remove an Emblem..."
 msgstr "_Hiq një emblemë..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Kërko për] Emër [që përmban \"peshk\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Kërko për] Përmbajtja [përfshi të gjithë \"degëzimin peshk\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Kërko për] Lloji [është file i rregullt]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Kërko për] Madhësia [më i madh se 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Kërko për] Me emblemë [përfshin \"I rëndësishëm\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Kërko për] Ndryshimi i fundit [më përpara se dje]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Kërko për] Pronari [nuk është root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Emri i file] përmban [ndihmë]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Emri i file] fillon me [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Emri i file] mbaron me [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Emri i file] korrispondon me glob [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Emri i file] korrispondon me ekspresionin e rregullt [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Përmbajtja e file] include gjithçka të [mollë portokall]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Përmbajtja e file] include çfarëdo të [mollë portokall]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Përmbajtja e file] nuk include gjithçka të [mollë portokall]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Përmbajtja e file] nuk include asgjë të [mollë portokall]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Tipi i file] është [kartelë]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Tipi i file] nuk është [kartelë]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Lloji i file është] file i rregullt"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Lloji i file është] file teksti"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Lloji i file është] program"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Lloji i file është] kartelë"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Lloji i file është] muzikë"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Madhësia e file është] më shumë se [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Madhësia e file është] më pak se [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Me simbol] i shënuar me [I rëndësishëm]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Me simbol] i pashënuar me [I rëndësishëm]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Data e ndryshimit të fundit] është [24/1/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Data e ndryshimit të fundit] nuk është [24/1/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Data e ndryshimit të fundit] është mbas [24/1/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Data e ndryshimit të fundit] është përpara [24/1/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Data e ndryshimit të fundit] është sot"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Data e ndryshimit të fundit] është dje"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Data e fundit e ndryshimit] është në javën [24/1/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Data e fundit e ndryshimit] është në muajin [24/1/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Pronari i file] është [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Pronari i file] nuk është [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr ""
@@ -7178,10 +6376,6 @@ msgstr "Hap kartelën e nivelit superior"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "_Rezervat"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Gjej:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7417,3 +6611,575 @@ msgstr "Rrjeti i Server-ve"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Shiko rrjetin tuaj të server-ve tek organizuesi i file Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Për të aktivuar kërkimet e shpejta, ndryshoni file %s si root. Duke "
+#~ "vendosur opcionin \"aktiv\" në \"yes\" shërbimet e medusa do të "
+#~ "aktivohen.\n"
+#~ "Për të nisur shërbimet e renditjes dhe të kërkimit menjëherë, duhet të "
+#~ "jepni komandat në vazhdim si root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Kërkimet e shpejta nuk do të jenë dispozicion deri sa të krijohet një "
+#~ "tregues fillestar i files suaj.  Kjo mund të kërkojë një kohë të gjatë."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Medusa, programi që kryen kërkimet, nuk u gjet tek sistemi juaj.  "
+#~ "Nëqoftëse e keni kompiluar nautilus vetë ju, do t'ju duhet të instaloni "
+#~ "një kopje të medusa dhe rikompiloni nautilus.  (Një kopje të Medusa mund "
+#~ "t'a shkarkoni nga ftp://ftp.gnome.org)\n"
+#~ "Nëse jeni duke përdorur një version të paketuar të Nautilus, kërkimi i "
+#~ "shpejtë nuk është në dispozicion.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Elementë ]që përmbajnë \"%s\" në emrat e tyre"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Elementë ]që fillojnë me \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Elementë ]që mbarojnë me %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Elementë ]që nuk përmbajnë \"%s\" në emrat e tyre"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Elementë ]që plotësojnë shprehjen e rregullt \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Elementë ]që ngjajnë me file \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Objekte që janë ]files të rregullt"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Objekte që janë ]files teksti"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Objekte që janë ]programe"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Objekte që janë ]kartela"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Objekte që janë ]muzikë"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Objekte ]që nuk janë %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Objekte ]që janë %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Objekte ]që nuk i takojnë \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Objekte ]që i takojnë \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Objekte ]me pronar me UID \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Objekte ]me pronar që ka një UID të ndryshme nga \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Objekte ]më të mëdhenj se %s bytes"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Objekte ]më të vegjël se %s bytes"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Objekte ]prej %s bytes"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Objekte ]të ndryshuar sot"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Objekte ]të ndryshuar dje"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Objekte ]të ndryshuar më %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Objekte ]jo të ndryshuar më %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Objekte ]të ndryshuar përpara %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Objekte ]të ndryshuar mbas %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Objekte ]të ndryshuar në një javë të %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Objekte ]të ndryshuar në një muaj të %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Objekte ]të shënuar me \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Objekte ]të pashënuar me \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Objekte ]me të gjitha fjalët \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Objekte ]që përmbajnë njërën nga fjalët \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Objekte ]pa të gjitha fjalët \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Objekte ]pa asnjë nga fjalët \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[Objekte më të mëdhenj se 400K] dhe [pa të gjitha fjalët \"mollë portokall"
+#~ "\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Objekte më të mëdhenj se 400K], [pronë e root dhe pa të gjitha fjalët "
+#~ "\"mollë portokall\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Objektet %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Objekte që përmbajnë \"stuff\" në emrin e tyre"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Objekte që janë files të rregullt"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Objekte që përmbajnë \"stuff\" në emrin e tyre dhe që janë files të "
+#~ "rregullt"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Objekte që përmbajnë \"stuff\" në emrin e tyre, janë files të rregullt "
+#~ "dhe më të vegjël se 2000 bytes"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Objekte që përmbajnë \"medusa\" në emrin e tyre dhe që janë kartela"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Rezultatet e kërkimit nuk përfshijnë objektet e ndryshuar mbas %s, kur "
+#~ "drive është indeksuar për herë të fundit. "
+
+#~ msgid "Search Results"
+#~ msgstr "Rezultatet e kërkimit"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr ""
+#~ "Më vjen keq, por shërbimi i kërkimit Medusa nuk gjendet në dispozicion."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "Medusa nuk është e instaluar."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Shërbimi i kërkimit nuk është në dispozicion"
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Kërkimi që keni zgjedhur është më i ri se treguesi i sistemit. Tani për "
+#~ "tani kërkimi do të përfundojë pa asnjë rezultat."
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Mund të krijoni një tregues të ri duke ekzekutuar, si root nga rreshti i "
+#~ "komandës, \"medusa-indexd\"."
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Kërko për objektet më të rinj"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Çdo file i indeksuar tek kompjuteri juaj korrispondon me kriterin e "
+#~ "kërkimit të zgjedhur."
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Kontrollo sintaksën e të zgjedhurve ose shtoni kritere të tjerë për të "
+#~ "ngushtuar rezultatet."
+
+#~ msgid "Error During Search"
+#~ msgstr "Gabim gjatë kërkimit"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "\"Gjej\" nuk arrin të hapë treguesin e file të sistemit.  Treguesi mungon "
+#~ "ose është i dëmtuar."
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "Gabim gjatë leximit të file të treguesit"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr ""
+#~ "U verifikua një gabim gjatë ngarkimit të përmbajtjes së këtij kërkimi."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Për të kryer një kërkim të shpejtë, \"Gjej\" ka nevojë për një tregues të "
+#~ "files në sistemin tuaj."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Për të kryer një kërkim sipas përmbajtjes \"Gjej\" ka nevojë për një "
+#~ "tregues të files së sistemit."
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "\"Gjej\" nuk mund të lexojë treguesin në këtë moment, prandaj do të "
+#~ "kryejë një kërkim të ngadaltë pa përdorur treguesin."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "\"Gjej\" nuk ka hyrje për momentin tek indeksi juaj."
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Kërkimet e shpejta nuk janë në dispozicion"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Kërkimet sipas përmbajtjes nuk janë në dispozicion"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Files të treguesit janë në dispozicion por demoni i kërkimit të Medusa, "
+#~ "që manazhon kërkimet tek treguesi, nuk është në ekzekutim. Për të nisur "
+#~ "këtë program, futu si root dhe nga rreshti i komandës zbato:\n"
+#~ "\n"
+#~ "medusa-searchd "
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Për të kryer një kërkim të shpejtë \"Gjej\" ka nevojë për treguesin e "
+#~ "files së sistemit tuaj.  Aktualisht kompjuteri është duke krijuar këtë "
+#~ "tregues."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Për të kryer një kërkim sipas përmbajtjes \"Gjej\" ka nevojë për "
+#~ "treguesin e files së sistemit tuaj.  Aktualisht kompjuteri është duke "
+#~ "krijuar këtë tregues."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr ""
+#~ "Meqenëse \"Gjej\" nuk ka mundësi të përdorë një tregues, ky kërkim mund "
+#~ "të zgjasë shumë minuta."
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr ""
+#~ "Kërkimet sipas përmbajtjes do të jenë aktive kur indeksi të jetë "
+#~ "kompletuar."
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Kërkimet e indeksuara nuk janë në dispozicion"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Për të kryer një kërkim të shpejtë, \"Gjej\" ka nevojë për një tregues të "
+#~ "files në sistemin tuaj.  Asnjë tregues në dispozicion aktualisht."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Për të kryer një kërkim sipas përmbajtjes \"Gjej\" ka nevojë për një "
+#~ "tregues të përmbajtjes në sistemin tuaj.  Asnjë tregues në dispozicion "
+#~ "aktualisht."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Mund të krijoni një tregues duke zbatuar si root, nga rreshti i komandës, "
+#~ "\"medusa-indexd\".  Pa një tregues të kompletuar në dispozicion, kërkimet "
+#~ "do të zgjasin shumë minuta."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Mund të krijoni një tregues duke zbatuar si root, nga rreshti i komandës, "
+#~ "\"medusa-indexd\".  Pa një tregues të kompletuar në dispozicion, kërkimet "
+#~ "sipas përmbajtjes nuk mund të kryen."
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Kërkimet e shpejta nuk janë aktive në kompjuterin tuaj."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Për të kryer një kërkim të shpejtë, \"Gjej\" ka nevojë për një tregues të "
+#~ "files të sistemit tuaj. Administratori i sistemit tuaj ka bllokuar "
+#~ "kërkimin e shpejtë tek kompjuteri juaj, prandaj treguesi nuk është në "
+#~ "dispozicion."
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Kërkimet e shpejta nuk janë aktivuar"
+
+#~ msgid "Where"
+#~ msgstr "Ku"
+
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Zbuloje në një dritare të re"
+#~ msgstr[1] "_Zbuloje në %d dritare të reja"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr "Nautilus ka gjetur më shumë rezultate nga sa mund të shfaqë."
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "Disa nga rezultatet korrispondues nuk do të shfaqen. "
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Shumë korrispondues"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Indeksimi i plotësuar për %d%% ."
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Files tuaj herën e fundit janë indeksuar më %s."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Një herë në ditë emrat e të gjithë file dhe përmbajtja e file me tekste "
+#~ "do të indeksohen për t'a bërë më të shpejtë kërkimin."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Gjëndja e indeksimit"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Files tuaj janë aktualisht duke u indeksuar."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Një herë në ditë files tuaj dhe përmbajtja e teksteve do të indeksohen që "
+#~ "kërkimet të jenë më të shpejtë."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Aktualisht këtu nuk ka një tregues."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Kur kërkimi i shpejtë është i aktivuar, \"Gjej\" krijon një tregues për "
+#~ "të shpejtuar kërkimet.  Kërkimi i shpejtë nuk është i aktivuar në "
+#~ "kompjuterin tuaj, prandaj aktualisht ju nuk kini një tregues."
+
+#~ msgid "No Index of Files"
+#~ msgstr "Asnjë tregues i files"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr ""
+#~ "Më vjen keq, por shërbimi i kërkimit të medusa nuk është në dispozicion."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "Ju lutem verifikoni që medusa është konfiguruar me korrektësi."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Hap çdo element të zgjedhur tek kartela e tij origjinale"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Hap në një dritare të re"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Trego gjendjen e indeksimit"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Trego gjendjen e _Indeksimit"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Trego gjendjen e indeksimit të përdorur gjatë kërkimit"
+
+#~ msgid "More Options"
+#~ msgstr "Më shumë Opcione"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Më pak opcione"
+
+#~ msgid "Find Them!"
+#~ msgstr "Gjeje!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Kërko për] Emër [që përmban \"peshk\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Kërko për] Përmbajtja [përfshi të gjithë \"degëzimin peshk\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Kërko për] Lloji [është file i rregullt]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Kërko për] Madhësia [më i madh se 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Kërko për] Me emblemë [përfshin \"I rëndësishëm\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Kërko për] Ndryshimi i fundit [më përpara se dje]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Kërko për] Pronari [nuk është root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Emri i file] përmban [ndihmë]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Emri i file] fillon me [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Emri i file] mbaron me [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Emri i file] korrispondon me glob [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Emri i file] korrispondon me ekspresionin e rregullt [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Përmbajtja e file] include gjithçka të [mollë portokall]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[Përmbajtja e file] include çfarëdo të [mollë portokall]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Përmbajtja e file] nuk include gjithçka të [mollë portokall]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Përmbajtja e file] nuk include asgjë të [mollë portokall]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Tipi i file] është [kartelë]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Tipi i file] nuk është [kartelë]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Lloji i file është] file i rregullt"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Lloji i file është] file teksti"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Lloji i file është] program"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Lloji i file është] kartelë"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Lloji i file është] muzikë"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Madhësia e file është] më shumë se [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Madhësia e file është] më pak se [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Me simbol] i shënuar me [I rëndësishëm]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Me simbol] i pashënuar me [I rëndësishëm]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Data e ndryshimit të fundit] është [24/1/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Data e ndryshimit të fundit] nuk është [24/1/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Data e ndryshimit të fundit] është mbas [24/1/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Data e ndryshimit të fundit] është përpara [24/1/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Data e ndryshimit të fundit] është sot"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Data e ndryshimit të fundit] është dje"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Data e fundit e ndryshimit] është në javën [24/1/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Data e fundit e ndryshimit] është në muajin [24/1/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Pronari i file] është [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Pronari i file] nuk është [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Gjej:"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-03-15 12:33+0200\n"
 "Last-Translator: Artis Trops  <hornet@navigator.lv>\n"
 "Language-Team: Latvian <ll10nt@os.lv>\n"
@@ -40,7 +40,6 @@ msgstr "bonobo_ui_init() neizdevās."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Emblēmas"
 
@@ -982,7 +981,6 @@ msgstr "Šī tēma izmanto foto realistiskas mapes"
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nosaukums"
 
@@ -1667,7 +1665,6 @@ msgid "The name and icon of the file."
 msgstr "Aplikācijas loga ID."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Izmērs"
 
@@ -1676,7 +1673,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Tips"
 
@@ -1686,7 +1682,6 @@ msgid "The type of the file."
 msgstr "[Faila tips ir] teksta fails"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Izmaiņu Datums"
 
@@ -3173,45 +3168,6 @@ msgstr "Pārslēgties uz Rokas Izkārtojumu?"
 msgid "Switch"
 msgstr "Pārslēgties"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Ja vēlaties aktivizēt ātrās meklēšanas, jums būs jārediģē fails %s kā root. "
-"Uzsādot ieslēgšanas karodziņu uz \"yes\", tiks ieslēgti medusa servisi.\n"
-"Lai sāktu indeksēšanas un meklēšanas servisus tūlīt, jums kā root jāizpilda "
-"arī sekojošās komandas:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Ātrās meklēšanas nebūs pieejamas līdz būs izveidots jūsu failu sākuma "
-"indekss.  Tas var prasīt ilgu laiku."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Medusa, aplikācija, kas veic meklēšanas, nav atrasta jūsu sistēmā.  Ja pats "
-"kompilējāt nautilus, jums jāuzinstalē medusa kopija un jāpārkompilē "
-"nautilus.  (Medusa kopija ir atrodama iekš ftp://ftp.gnome.org)\n"
-"Ja lietojat pakotu Nautilus versiju, ātrā meklēšana nav pieejama.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3598,252 +3554,6 @@ msgstr ""
 "\n"
 "Lai atvērtu ne-lokālus failus, iekopējiet tos lokālā mapē un tad nometiet "
 "tos vēlreiz. Lokālie faili, kurus jūs nometāt, jau ir tikuši atvērti."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Items ]to nosaukumos satur \"%s\""
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Items ]sākas ar \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Items ]beidzas ar %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Items ]to nosaukumos nesatur \"%s\""
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Items ]sakrīt ar regulāro izteiksmi \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Items ]sakrīt ar faila daļu \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[priekšmeti kas ir]parasti faili"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[priekšmeti kas ir]teksta faili"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[priekšmeti kas ir]aplikācijas"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[priekšmeti kas ir]mapes"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[priekšmeti kas ir]mūzika"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[priekšmeti] kas nav %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[priekšmeti] kas ir %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Items ]īpašnieks nav \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Items ]īpašnieks ir \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Items ]ar īpašnieka UID \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Items ]ar īpašnieka citu UID kā \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[priekšmeti ]lielāki par %s baitiem"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[priekšmeti ]mazāki par %s baitiem"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[priekšmeti ]izmērs %s baiti"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[priekšmeti ]izmainīti šodien"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[priekšmeti ]izmainīti vakardien"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[priekšmeti ]izmainīti %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[priekšmeti ]nav izmainīti %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[priekšmeti ]izmainīti pirms %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[priekšmeti ]izmainīti pēc %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[priekšmeti ]izmainīti nedēļas laikā pēc %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[priekšmeti ]izmainīti mēneša laikā pēc %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Items ]marķēti ar \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Items ]nemarķēti ar \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Items ]ar visiem vārdiem \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Items ]satur vienu no vārdiem \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Items ]bez visiem šiem vārdiem \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Items ]bez jebkura no šiem vārdiem \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Items larger than 400K] un [without all the words \"apple orange\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Priekšmeti %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Priekšmeti, kas satur \"kaut ko\" to nosaukumos"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Priekšmeti, kas ir regulāri faili"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Priekšmeti, kas satur \"kaut ko\" to nosaukumos un kas ir parasti faili"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Priekšmeti, kas satur \"kaut ko\" to nosaukumos un kas ir parasti faili, un "
-"ir mazāki par 2000 baitiem"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Priekšmeti, kas satur \"medusa\" to nosaukumos un kas ir mapes"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5116,297 +4826,6 @@ msgstr "Izveidoju Rekvizītu logu"
 msgid "Select an icon"
 msgstr "Izvēlēties ikonu:"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Meklēšanas rezultāti var neiekļaut priekšmetus, kas izmainīti pēc %s, kad "
-"jūsu disks tika pēdējoreiz indeksēts."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Meklēšanas Rezultāti"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Piedodiet, bet medusa meklēšanas serviss nav pieejams."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Meklēšanas Serviss Nav Pieejams"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Meklēšana, ko esat izvēlējies, ir jaunāka kā indekss jūsu sistēmā.  Šobrīd "
-"meklēšana nedos nekādus rezultatus.  Jūs varat izveidot jaunu indeksu, "
-"palaižot \"medusa-indexd\" kā root no komandrindas."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Meklētājs nevar atvērt jūsu failu sistēmas indeksu.  Jūsu indekss varetu būt "
-"pazudis vai sabojāts.  Jūs varat izveidot jaunu indeksu, palaižot \"medusa-"
-"indexd\" kā root no komandrindas."
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Meklēt priekšmetus, kas ir pārāk jauni"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Katrs indeksētais fails jūsu datorā atbilst jūsu izvēlētajiem kritērijiem. "
-"Jūs varat pārbaudīt jūsu izvēles pareizrakstību vai prievienot vairāk "
-"kritēriju, lai samazinātu jūsu meklēšanas rezultātus."
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Katrs indeksētais fails jūsu datorā atbilst jūsu izvēlētajiem kritērijiem. "
-"Jūs varat pārbaudīt jūsu izvēles pareizrakstību vai prievienot vairāk "
-"kritēriju, lai samazinātu jūsu meklēšanas rezultātus."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Kļūda meklējot"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Meklētājs nevar atvērt jūsu failu sistēmas indeksu.  Jūsu indekss varetu būt "
-"pazudis vai sabojāts.  Jūs varat izveidot jaunu indeksu, palaižot \"medusa-"
-"indexd\" kā root no komandrindas."
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Kļūda nolasot faila indeksu"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Atgadījās kļūda, ielādējot šīs meklēšanas saturu: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam, tāpēc tiks veikta "
-"lēnāka meklēšana, kas nelieto indeksu."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Ātra meklēšana nav iespējama"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Satura meklēšana nav pieejama"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Jūsu indeksa faili ir pieejami, bet Medusa meklēšanas dēmons, kurš "
-"nodarbojas ar indeksa pieprasījumiem, nav palaists.  Lai sāktu šo programmu, "
-"piesakies kā root un ievadi sekojošo komandu komandrindā:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss.  Jūsu dators pašlaik veido šo indeksu.  Tā kā Meklētājs nevar "
-"lietot indeksu, šī meklēšana aizņems dažas minūtes."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas satura "
-"indekss.  Jūsu dators šobrīd veido šo indeksu.  Satura meklēšana būs "
-"pieejama, kad indekss būs pabeigts."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Indeksētie meklējumi nav pieejami"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss.  Neviens indekss šobrīd nav pieejams. Jūs varat izveidot indeksu, "
-"palaižot \"medusa-indexd\" kā root no komandrindas.  Līdz pilnīgs indekss "
-"būs pieejams, meklēšana aizņems dažas minūtes."
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas satura "
-"indekss.  Neviens indekss šobrīd nav pieejams. Jūs varat izveidot indeksu, "
-"palaižot \"medusa-indexd\" kā root no komandrindas.  Līdz pilnīgs indekss "
-"būs pieejams, satura meklēšana nevar tikt veikta."
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Uz jūsu datora ātrā meklēšana nav ieslēgta."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
-"indekss. Jūsu sistēmas administrātors ir atslēdzis ātro meklēānu jūsu "
-"sistēmā, tā kā indekss nav pieejams."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Ātra meklēšana nav iespējama"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Kur"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Atsegt Jaunā Logā"
-msgstr[1] "_Atsegt Jaunā Logā"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus atrada vairāk meklēšanas rezutātus, kā tas var parādīt. Daži "
-"atbilstošie priekšmeti nevar tikt parādīti."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus atrada vairāk meklēšanas rezutātus, kā tas var parādīt. Daži "
-"atbilstošie priekšmeti nevar tikt parādīti."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Pārāk Daudz Atradumu"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Tukša)"
@@ -5796,72 +5215,6 @@ msgstr ""
 msgid "_Manually"
 msgstr "_Pašrocigii"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Indeksēšana ir %d%% izpildīta."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Jūsu faili pēdējo reizi tika indeksētas %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Vienreiz dienā jūsu failu un teksta saturs tiek indeksēts, lai meklēšana "
-"notiktu ātrāk."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Indeksēšanas Status"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "Jūsu faili pēdējo reizi tika indeksētas %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Vienreiz dienā jūsu failu un teksta saturs tiek indeksēts, lai meklēšana "
-"notiktu ātrāk."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Pašreiz jums nav indeksa jūsu failiem."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Kad Ätrā Meklēšana ir aktivizēta, Meklēšana izveido indeksu, lai tā notiktu "
-"ātrāk. Ātrā meklēšana nav aktivizēta uz jūsu datora, tāpēc jums pašreiz nav "
-"indeksa."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Piedodiet, bet medusa meklēšanas serviss nav pieejams."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5870,26 +5223,6 @@ msgstr "Izveidot jaunu tukšo mapi iekš šīs mapes"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Atsegt katru izvēlēto priekšmetu tā oriģinālajā mapē"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Atsegt Jaunā Logā"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Parādīt Indeksēšanas Statusu"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Parādīt Indeksēšanas Statusu"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Parādīt indeksēšanas statusu, kad meklēju"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6084,19 +5417,6 @@ msgstr ""
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Rediģēt Grāmatzīmes"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Vairāk Opcijas"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Mazāk Opcijas"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Atrast Tos!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7029,161 +6349,6 @@ msgstr "_Noņemt Krāsu..."
 msgid "_Remove an Emblem..."
 msgstr "_Noņemt Emblēmu..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Meklēt pēc] Vārda [satur \"zivi\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Meklēt pēc] Satura [ieskaitot visu no \"zivs koks\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Meklēt pēc] Tipa [ir parasts fails]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Meklēt pēc] Izmēra [lielāka par 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Meklēt pēc] Ar Emblēmu [iekļaujot \"Svarīgi\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Meklēt pēc] Pēdējo Reizi Mainīts [pirms vakardienas]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Meklēt pēc] Īpašnieka [kas nav root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Faila nosaukums] satur [palīdzību]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Faila nosaukums] sākas ar [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Faila nosaukums] beidzas ar [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Faila nosaukumam] atbilst daļa [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Faila nosaukumam] atbilst regexp [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Faila saturs] iekļauj visu no [ābols apelsīns]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Faila saturs] iekļauj sevī no [ābols apelsīns]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Faila saturs] neiekļauj sevī visu [ābols apelsīns]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Faila saturs] iekļauj sevī vienu no [ābols apelsīns]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Faila tips] ir [mape]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Faila tips] nav [mape]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Faila tips ir] parasts fails"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Faila tips ir] teksta fails"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Faila tips ir] aplikācija"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Faila tips ir] mape"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Faila tips ir] mūzika"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Faila izmērs ir] lielāks nekā [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Faila izmērs ir] mazāks nekā [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Ar emblēmu] apzīmētu ar [Nozīmīgs]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Ar emblēmu] neapzīmētu ar [Nozīmīgs]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Pēdējais izmaiņu datums] ir [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Pēdējais izmaiņu datums] nav [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Pēdējais izmaiņu datums] ir pēc [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Pēdējais izmaiņu datums] ir pirms [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Pēdējais izmaiņu datums] ir šodiena"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Pēdējais izmaiņu datums] ir vakardiena"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Pēdējais izmaiņu datums] ir nedēļas laikā pēc [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Pēdējais izmaiņu datums] ir mēneša laikā pēc [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Faila īpašnieks] ir [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Faila īpašnieks] nav [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Izvēlies skatu pašreizējai lokācijai, vai arī maini skatu kopu"
@@ -7395,10 +6560,6 @@ msgstr "[priekšmeti kas ir]mapes"
 #, fuzzy
 msgid "_Places"
 msgstr "_Raksti"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Atrast:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7652,6 +6813,588 @@ msgstr "Tīkla Serveri"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Skatīt jūsu tīkla serverus Nautilus failu pāvaldniekā"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Ja vēlaties aktivizēt ātrās meklēšanas, jums būs jārediģē fails %s kā "
+#~ "root. Uzsādot ieslēgšanas karodziņu uz \"yes\", tiks ieslēgti medusa "
+#~ "servisi.\n"
+#~ "Lai sāktu indeksēšanas un meklēšanas servisus tūlīt, jums kā root "
+#~ "jāizpilda arī sekojošās komandas:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Ātrās meklēšanas nebūs pieejamas līdz būs izveidots jūsu failu sākuma "
+#~ "indekss.  Tas var prasīt ilgu laiku."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Medusa, aplikācija, kas veic meklēšanas, nav atrasta jūsu sistēmā.  Ja "
+#~ "pats kompilējāt nautilus, jums jāuzinstalē medusa kopija un jāpārkompilē "
+#~ "nautilus.  (Medusa kopija ir atrodama iekš ftp://ftp.gnome.org)\n"
+#~ "Ja lietojat pakotu Nautilus versiju, ātrā meklēšana nav pieejama.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Items ]to nosaukumos satur \"%s\""
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Items ]sākas ar \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Items ]beidzas ar %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Items ]to nosaukumos nesatur \"%s\""
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Items ]sakrīt ar regulāro izteiksmi \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Items ]sakrīt ar faila daļu \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[priekšmeti kas ir]parasti faili"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[priekšmeti kas ir]teksta faili"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[priekšmeti kas ir]aplikācijas"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[priekšmeti kas ir]mapes"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[priekšmeti kas ir]mūzika"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[priekšmeti] kas nav %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[priekšmeti] kas ir %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Items ]īpašnieks nav \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Items ]īpašnieks ir \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Items ]ar īpašnieka UID \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Items ]ar īpašnieka citu UID kā \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[priekšmeti ]lielāki par %s baitiem"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[priekšmeti ]mazāki par %s baitiem"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[priekšmeti ]izmērs %s baiti"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[priekšmeti ]izmainīti šodien"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[priekšmeti ]izmainīti vakardien"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[priekšmeti ]izmainīti %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[priekšmeti ]nav izmainīti %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[priekšmeti ]izmainīti pirms %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[priekšmeti ]izmainīti pēc %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[priekšmeti ]izmainīti nedēļas laikā pēc %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[priekšmeti ]izmainīti mēneša laikā pēc %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Items ]marķēti ar \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Items ]nemarķēti ar \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Items ]ar visiem vārdiem \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Items ]satur vienu no vārdiem \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Items ]bez visiem šiem vārdiem \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Items ]bez jebkura no šiem vārdiem \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[Items larger than 400K] un [without all the words \"apple orange\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Priekšmeti %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Priekšmeti, kas satur \"kaut ko\" to nosaukumos"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Priekšmeti, kas ir regulāri faili"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Priekšmeti, kas satur \"kaut ko\" to nosaukumos un kas ir parasti faili"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Priekšmeti, kas satur \"kaut ko\" to nosaukumos un kas ir parasti faili, "
+#~ "un ir mazāki par 2000 baitiem"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Priekšmeti, kas satur \"medusa\" to nosaukumos un kas ir mapes"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Meklēšanas rezultāti var neiekļaut priekšmetus, kas izmainīti pēc %s, kad "
+#~ "jūsu disks tika pēdējoreiz indeksēts."
+
+#~ msgid "Search Results"
+#~ msgstr "Meklēšanas Rezultāti"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Piedodiet, bet medusa meklēšanas serviss nav pieejams."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Meklēšanas Serviss Nav Pieejams"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Meklēšana, ko esat izvēlējies, ir jaunāka kā indekss jūsu sistēmā.  "
+#~ "Šobrīd meklēšana nedos nekādus rezultatus.  Jūs varat izveidot jaunu "
+#~ "indeksu, palaižot \"medusa-indexd\" kā root no komandrindas."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Meklētājs nevar atvērt jūsu failu sistēmas indeksu.  Jūsu indekss varetu "
+#~ "būt pazudis vai sabojāts.  Jūs varat izveidot jaunu indeksu, palaižot "
+#~ "\"medusa-indexd\" kā root no komandrindas."
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Meklēt priekšmetus, kas ir pārāk jauni"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Katrs indeksētais fails jūsu datorā atbilst jūsu izvēlētajiem "
+#~ "kritērijiem. Jūs varat pārbaudīt jūsu izvēles pareizrakstību vai "
+#~ "prievienot vairāk kritēriju, lai samazinātu jūsu meklēšanas rezultātus."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Katrs indeksētais fails jūsu datorā atbilst jūsu izvēlētajiem "
+#~ "kritērijiem. Jūs varat pārbaudīt jūsu izvēles pareizrakstību vai "
+#~ "prievienot vairāk kritēriju, lai samazinātu jūsu meklēšanas rezultātus."
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Kļūda meklējot"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Meklētājs nevar atvērt jūsu failu sistēmas indeksu.  Jūsu indekss varetu "
+#~ "būt pazudis vai sabojāts.  Jūs varat izveidot jaunu indeksu, palaižot "
+#~ "\"medusa-indexd\" kā root no komandrindas."
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Kļūda nolasot faila indeksu"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Atgadījās kļūda, ielādējot šīs meklēšanas saturu: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam, tāpēc tiks veikta "
+#~ "lēnāka meklēšana, kas nelieto indeksu."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Ātra meklēšana nav iespējama"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Satura meklēšana nav pieejama"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Jūsu indeksa faili ir pieejami, bet Medusa meklēšanas dēmons, kurš "
+#~ "nodarbojas ar indeksa pieprasījumiem, nav palaists.  Lai sāktu šo "
+#~ "programmu, piesakies kā root un ievadi sekojošo komandu komandrindā:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss.  Jūsu dators pašlaik veido šo indeksu.  Tā kā Meklētājs nevar "
+#~ "lietot indeksu, šī meklēšana aizņems dažas minūtes."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas satura "
+#~ "indekss.  Jūsu dators šobrīd veido šo indeksu.  Satura meklēšana būs "
+#~ "pieejama, kad indekss būs pabeigts."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Indeksētie meklējumi nav pieejami"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss.  Meklētājs šobrīd nevar piekļūt jūsu indeksam."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss.  Neviens indekss šobrīd nav pieejams. Jūs varat izveidot "
+#~ "indeksu, palaižot \"medusa-indexd\" kā root no komandrindas.  Līdz "
+#~ "pilnīgs indekss būs pieejams, meklēšana aizņems dažas minūtes."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Lai veiktu satura meklēšanu, Meklētājam nepieciešams jūsu sistēmas satura "
+#~ "indekss.  Neviens indekss šobrīd nav pieejams. Jūs varat izveidot "
+#~ "indeksu, palaižot \"medusa-indexd\" kā root no komandrindas.  Līdz "
+#~ "pilnīgs indekss būs pieejams, satura meklēšana nevar tikt veikta."
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Uz jūsu datora ātrā meklēšana nav ieslēgta."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Lai veiktu ātro meklēšanu, Meklētājam nepieciešams jūsu sistēmas failu "
+#~ "indekss. Jūsu sistēmas administrātors ir atslēdzis ātro meklēānu jūsu "
+#~ "sistēmā, tā kā indekss nav pieejams."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Ātra meklēšana nav iespējama"
+
+#~ msgid "Where"
+#~ msgstr "Kur"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Atsegt Jaunā Logā"
+#~ msgstr[1] "_Atsegt Jaunā Logā"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus atrada vairāk meklēšanas rezutātus, kā tas var parādīt. Daži "
+#~ "atbilstošie priekšmeti nevar tikt parādīti."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus atrada vairāk meklēšanas rezutātus, kā tas var parādīt. Daži "
+#~ "atbilstošie priekšmeti nevar tikt parādīti."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Pārāk Daudz Atradumu"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Indeksēšana ir %d%% izpildīta."
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Jūsu faili pēdējo reizi tika indeksētas %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Vienreiz dienā jūsu failu un teksta saturs tiek indeksēts, lai meklēšana "
+#~ "notiktu ātrāk."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Indeksēšanas Status"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Jūsu faili pēdējo reizi tika indeksētas %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Vienreiz dienā jūsu failu un teksta saturs tiek indeksēts, lai meklēšana "
+#~ "notiktu ātrāk."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Pašreiz jums nav indeksa jūsu failiem."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Kad Ätrā Meklēšana ir aktivizēta, Meklēšana izveido indeksu, lai tā "
+#~ "notiktu ātrāk. Ātrā meklēšana nav aktivizēta uz jūsu datora, tāpēc jums "
+#~ "pašreiz nav indeksa."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Piedodiet, bet medusa meklēšanas serviss nav pieejams."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Atsegt katru izvēlēto priekšmetu tā oriģinālajā mapē"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Atsegt Jaunā Logā"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Parādīt Indeksēšanas Statusu"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Parādīt Indeksēšanas Statusu"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Parādīt indeksēšanas statusu, kad meklēju"
+
+#~ msgid "More Options"
+#~ msgstr "Vairāk Opcijas"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Mazāk Opcijas"
+
+#~ msgid "Find Them!"
+#~ msgstr "Atrast Tos!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Meklēt pēc] Vārda [satur \"zivi\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Meklēt pēc] Satura [ieskaitot visu no \"zivs koks\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Meklēt pēc] Tipa [ir parasts fails]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Meklēt pēc] Izmēra [lielāka par 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Meklēt pēc] Ar Emblēmu [iekļaujot \"Svarīgi\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Meklēt pēc] Pēdējo Reizi Mainīts [pirms vakardienas]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Meklēt pēc] Īpašnieka [kas nav root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Faila nosaukums] satur [palīdzību]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Faila nosaukums] sākas ar [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Faila nosaukums] beidzas ar [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Faila nosaukumam] atbilst daļa [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Faila nosaukumam] atbilst regexp [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Faila saturs] iekļauj visu no [ābols apelsīns]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[Faila saturs] iekļauj sevī no [ābols apelsīns]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Faila saturs] neiekļauj sevī visu [ābols apelsīns]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Faila saturs] iekļauj sevī vienu no [ābols apelsīns]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Faila tips] ir [mape]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Faila tips] nav [mape]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Faila tips ir] parasts fails"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Faila tips ir] teksta fails"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Faila tips ir] aplikācija"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Faila tips ir] mape"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Faila tips ir] mūzika"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Faila izmērs ir] lielāks nekā [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Faila izmērs ir] mazāks nekā [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Ar emblēmu] apzīmētu ar [Nozīmīgs]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Ar emblēmu] neapzīmētu ar [Nozīmīgs]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Pēdējais izmaiņu datums] ir [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Pēdējais izmaiņu datums] nav [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Pēdējais izmaiņu datums] ir pēc [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Pēdējais izmaiņu datums] ir pirms [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Pēdējais izmaiņu datums] ir šodiena"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Pēdējais izmaiņu datums] ir vakardiena"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Pēdējais izmaiņu datums] ir nedēļas laikā pēc [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Pēdējais izmaiņu datums] ir mēneša laikā pēc [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Faila īpašnieks] ir [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Faila īpašnieks] nav [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Atrast:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Nevar atrast hbox, lietojam normālu failu izvēlēšanos"

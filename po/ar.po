@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-03-01 22:42+0100\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -43,7 +43,6 @@ msgstr "bonobo_ui_init() فشل."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "شعارات"
 
@@ -968,7 +967,6 @@ msgstr "تستخدم هذه التيمة مجلدات بصور واقعية."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "الإسم"
 
@@ -1628,7 +1626,6 @@ msgid "The name and icon of the file."
 msgstr "إسم و أيقونة الملف."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "الحجم"
 
@@ -1637,7 +1634,6 @@ msgid "The size of the file."
 msgstr "حجم الملف."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "النوع"
 
@@ -1646,7 +1642,6 @@ msgid "The type of the file."
 msgstr "نوع الملف."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "تاريخ التعديل"
 
@@ -3018,44 +3013,6 @@ msgstr "تحويل إلى تصميم يدوي؟"
 msgid "Switch"
 msgstr "تحويل"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"إن أحببت تفعيل البحث السريع فعليك تحرير الملف %s كجذر. ضبط الشارة المفعلة لـ "
-"\"yes\" سيشغل خدمات ميدوزا.\n"
-"لبدء الفهرسة وخدمات البحث حالا، يتوجب عليك إجراء اﻷوامر التالية كجذر: \n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"لن يتوفر البحث السريع ما لم يتم إنشاء فهرسة أولية لملفاتك. قد يستغرق ذلك "
-"وقتا طويلا."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"لم يمكن العثور على تطبيق البحث ميدوزا في نظامك. إذا كنت قد جمعت نوتلس بنفسك "
-"فستحتاج لتثبيب نسخة من ميدوزا ثم إعادة تجميع نوتلس بنفسك.(من المحتمل ﻷن "
-"تتوفر نسخة لمدوزا في ftp://ftp.gnome.org)\n"
-"إذا كنت تستخدم إصدارة محزومة لنوتلس فلن يتوفر لديك البحث السريع.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3403,251 +3360,6 @@ msgid ""
 msgstr ""
 "لفتح ملفات غير محلية انسخها لمجلد محلي ثم اسقطها مرة أخرى.الملفات المحلية "
 "التي أسقطتها فتحت سابقا."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[عناصر ] تحوي \"%s\" في أسماءها"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[عناصر ] تبدأ بـ \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[عناصر ] تنتهي بـ %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[عناصر ] لا تحوي \"%s\" في أسماءها"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[عناصر ] تطابق الصيغة المنتظمة \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[عناصر ] تطابق نمط الملفات \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[العناصر التي هي] ملفات اعتيادية"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[العناصر التي هي ] ملفات نصية"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[العناصر التي هي ] تطبيقات"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[العناصر التي هي ] مجلدات"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[العناصر التي هي ] موسيقى"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[العناصر ] التي ليست %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[العناصر ] التي هي %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[العناصر ] الغير مملوكة من طرف \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[العناصر ] المملوكة من طرف \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[العناصر ] بهوية المستخدم المالك \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[العناصر ] بهوية مستخدم مالك مغاير \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[العناصر ] الأكبر من %s بايت"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[العناصر ] الأصغر من %s بايت"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[العناصر ] ذات %s بايتا"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[العناصر ] المعدّلة اليوم"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[العناصر ] المعدّلة بالأمس"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[العناصر ] المعدّلة في %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[العناصر ] غير المعدّلة في %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[العناصر ] المعدّلة قبل %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[العناصر ] المعدّلة بعد %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[العناصر ] المعدّلة في أسبوع من %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[العناصر ] المعدّلة في شهر من %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[العناصر ] المعلمة بـ \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[العناصر ] غير المعلمة بـ \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[العناصر ] بكل الكلمات \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[العناصر ] الحاوية لكلمة من الكلمات \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[العناصر ] التي ليس لها كل الكلمات \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[العناصر ] التي ليس لها أي من الكلمات \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Items·larger·than·400K] و [without·all·the·words·\"apple·orange\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Items·larger·than·400K]، [owned·by·root·and·without·all·the·words·"
-"\"apple·orange\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "العناصر %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "العناصر المحتوية على \"شيء\" في أسمائها"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "العناصر التي هي ملفات اعتيادية"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "العناصر المحتوية على \"شيء\" في أسمائها و التي هي ملفات اعتيادية"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"العناصر التي تحوي \"stuff\" في أسمائها وهي ملفات اعتيادية وفي نفس الوقت هي "
-"أصغر من 2000 بايت"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "العناصر الحاوية لـ \"medusa\" في أسمائها وهي مجلدات"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4816,241 +4528,6 @@ msgstr "جاري انشاء نافذة الخصائص."
 msgid "Select an icon"
 msgstr "اختر أيقونة"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr "قد لا تتضمن نتائج البحث العناصر المعدلة بعد %s، تاريخ آخر فهرسة لقرصك."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "نتائج البحث"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "عفوا، لكن خدمة البحث ميدوزا غير متوفرة."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "ميدوزا ليس مثبتا."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "خدمة البحث غير متوفرة"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"البحث الذي اخترته أحدث من الفهرس الموجود على نظامك. لن يرجع البحث أي نتائج "
-"الآن."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr "يمكنك إنشاء فهرس جديد بتنفيذ \"medusa-indexd\" كجذر عندسطر الأوامر."
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "بحث عن عناصر جديدة جدا"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr "كل ملف مفهرس على حاسوبك يطابق المقاييس التي انتقيتها."
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr "يمكنك فحص تهجية منتقياتك أو إضافة مقاييس أكثر لتضييق حقل البحث."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "خطأ أثناء البحث"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"لا يمكن لأمر البحث فتح فهرس نظام ملفاتك. قد يكون فهرسك مفقودا أو معطوبا."
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "خطأ أثناء قراءة فهرس الملف"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "حدث خطا أثناء تحميل محتويات هذا البحث."
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr "يتطلب أمر البحث فهرسا للملفات الموجودة على نظامك للقيام ببحث سريع."
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"يتطلب أمر البحث فهرسا للملفات الموجودة على نظامك للقيام ببحث المحتويات."
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"لا يمكن لأمر البحث النفاذ إلى فهرسك اﻵن سينفذ لذلك بحثا بطيء لا يستعمل "
-"الفهرس."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "لا يمكن لأمر البحث النفاذ إلى فهرسك الآن."
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "البحوث السريعة غير متوفرة"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "بحوث المحتويات غير متوفرة"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"ملفات فهرسك متوفرة لكن جني البحث ميدوزا، المعالج لطلبات الفهرسة، لا يعمل. "
-"لتشغيل هذا البرنامج، سجل كجذر و أدخل هذا اﻷمر في سطر اﻷوامر:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"يتطلب أمر البحث فهرسا للملفات على نظامك للقيام بالبحث السريع. حاسوبك الآن "
-"بصدد إنشاء ذلك الفهرس اﻵن."
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"يتطلب أمر البحث فهرسا للمحتويات على نظامك للقيام ببحث المحتويات. حاسوبك بصدد "
-"إنشاء ذلك الفهرس اﻵن."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr "قد يدوم هذا البحث بعض الدقائق، لأن أمر البحث لا يمكنه إستعمال الفهرس"
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr "ستكون بحوث المحتويات متوفرة عند اكتمال الفهرس."
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "البحوث المفهرسة غير متوفرة"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"يتطلب أمر البحث فهرسا للمحتويات على نظامك للقيام ببحث سريع. لا فهرس متوفر "
-"الآن."
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"يتطلب البحث فهرسا للمحتويات على نظامك للقيام ببحث المحتويات. لا فهرس متوفر "
-"الآن."
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"يمكنك إنشاء فهرس بتنفيذ \"medusa-indexd\" كجذر على سطر اﻷوامر. ستستغرق "
-"البحوث عدة دقائق ما لم تكتمل الفهرسة."
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"يمكنك إنشاء فهرس بنتفيذ \"medusa-indexd\" كجذر على سطر الأوامر.لا يمكن "
-"القيام ببحث المحتويات ما لم تكتمل الفهرسة."
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "البحوث السريعة غير مفعلة على حاسوبك."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"يتطلب أمر البحث فهرسا للملفات على نظامك للقيام بالبحث السريع. قام مدير نظامك "
-"بتعطيل البحث السريع على حاسوبك، و لذلك لا يتوفر أي فهرس."
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "البحوث السريعة غير مفعلة"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "أين"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_كشف في نافذة جديدة"
-msgstr[1] "_كشف في نافذة جديدة"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr "وجد نوتلس نتائج بحث أكثر مما يمكنه عرضه."
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "لن تعرض بعض العناصر المتطابقة."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "تطابقات عديدة جدا"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(فارغ)"
@@ -5412,65 +4889,6 @@ msgstr "_حفاظ عليه مرصف"
 msgid "_Manually"
 msgstr "_يدويا"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "تمت فهرسة %d%%"
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "تمت فهرسة ملفاتك ﻵخر مرة في %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr "تتم فهرسة ملفاتك ومحتويات النصوص مرة واحدة كل يوم لتسريع بحثك فيها."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "حالة الفهرسة"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "جاري فهرست ملفاتك الآن."
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr "تتم فهرسة ملفاتك ومحتويات النصوص مرة واحدة كل يوم لتسريع بحثك فيها."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "لا وجود لفهرس لملفاتك في الوقت الحاضر."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"أمر·البحث·ينشئ·فهرسا·لتسريع·البحوث عند تفعيل البحث السريع،  البحث السريع ليس "
-"مفعلا في حاسوبك، لذلك ليس لديك فهرسا في الوقت الحاضر."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "لا فهرس ملفات"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "عفوا، لكن خدمة البحث ميدوزا غير متوفرة."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "الرجاء التثبت من أن ميدوزا ثبتت بسلامة."
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "اختر أي الأعمدة ستكون مرئية في هذا المجلد"
@@ -5478,26 +4896,6 @@ msgstr "اختر أي الأعمدة ستكون مرئية في هذا المج�
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "الأ_عمدة المرئية..."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "كشف كل عنصر منتقى في مجلده اﻷصلي"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "كشف في نافذة جديدة"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "عرض حالة الفهرسة"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "عرض حالة ال_فهرسة"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "عرض حالة الفهرسة المستخدمة عند البحث"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5680,19 +5078,6 @@ msgstr "<b>ال_إسم</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "تحرير علامات المواقع"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "خيارات أكثر"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "خيارات أقل"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "ابحث عنهم!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6574,161 +5959,6 @@ msgstr "_حذف لون..."
 msgid "_Remove an Emblem..."
 msgstr "_حذف شعار..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[ابحث عن] اسم [يحتوي على \"fish\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[ابحث عن] محتوى [يتضمن كل \"fish tree\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[ابحث عن] نوع [ملف اعتيادي]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[ابحث عن] حجم [أكبر من 400 ك]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[ابحث عن] بشعار [يحتوي على \"Important\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[ابحث عن] بآخر تعديل [قبل اﻷمس]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[ابحث عن] المالك [ليس المستخدم الجذري]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[اسم الملف] يحوي [help]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[اسم الملف] يبدأ بـ [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[اسم الملف] ينتهي بـ [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[اسم الملف] يطابق [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[اسم الملف] يطابق التعبير الانتظامي [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[محتوى الملف] يتضمن كلا من [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[محتوى الملف] يتضمن أيا من [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[محتوى الملف] لا يتضمن كلا من [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[محتوى الملف] لا يتضمن أيا من [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[نوع الملف] هو [مجلد]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[نوع الملف] ليس [مجلدا]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[نوع الملف هو] ملف اعتيادي"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[نوع الملف هو] ملف نصي"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[نوع الملف هو] تطبيق"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[نوع الملف هو] مجلد"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[نوع الملف هو] موسيقى"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[حجم الملف] أكبر من [400 ك.بايت]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[حجم الملف] أصغر من [300 ك.بايت]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[بشعار] معلم كـ [مهم]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[بشعار] ليسم معلم كـ [مهم]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[تاريخ آخر تعديل] هو [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[تاريخ آخر تعديل] ليس هو [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[تاريخ آخر تعديل] بعد [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[تاريخ آخر تعديل] قبل [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[تاريخ آخر تعديل] اليوم"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[تاريخ آخر تعديل] الأمس"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[تاريخ آخر تعديل] خلال أسبوع من [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[تاريخ آخر تعديل] خلال شهر من [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[مالك الملف] هو [المستخدم الجذري]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[مالك الملف] ليس [المستخدم الجذري]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "اختر مشهجا للموقع الحالي أو عدّل مجموعة المشاهد"
@@ -6927,10 +6157,6 @@ msgstr "فتح المجلد الأب"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "ال_أماكن"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "بحث:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7157,6 +6383,541 @@ msgstr "نوادل الشبكة"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "اعرض نوادل شبكتك في مدير الملفات نوتلس"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "إن أحببت تفعيل البحث السريع فعليك تحرير الملف %s كجذر. ضبط الشارة المفعلة "
+#~ "لـ \"yes\" سيشغل خدمات ميدوزا.\n"
+#~ "لبدء الفهرسة وخدمات البحث حالا، يتوجب عليك إجراء اﻷوامر التالية كجذر: \n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "لن يتوفر البحث السريع ما لم يتم إنشاء فهرسة أولية لملفاتك. قد يستغرق ذلك "
+#~ "وقتا طويلا."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "لم يمكن العثور على تطبيق البحث ميدوزا في نظامك. إذا كنت قد جمعت نوتلس "
+#~ "بنفسك فستحتاج لتثبيب نسخة من ميدوزا ثم إعادة تجميع نوتلس بنفسك.(من "
+#~ "المحتمل ﻷن تتوفر نسخة لمدوزا في ftp://ftp.gnome.org)\n"
+#~ "إذا كنت تستخدم إصدارة محزومة لنوتلس فلن يتوفر لديك البحث السريع.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[عناصر ] تحوي \"%s\" في أسماءها"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[عناصر ] تبدأ بـ \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[عناصر ] تنتهي بـ %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[عناصر ] لا تحوي \"%s\" في أسماءها"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[عناصر ] تطابق الصيغة المنتظمة \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[عناصر ] تطابق نمط الملفات \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[العناصر التي هي] ملفات اعتيادية"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[العناصر التي هي ] ملفات نصية"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[العناصر التي هي ] تطبيقات"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[العناصر التي هي ] مجلدات"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[العناصر التي هي ] موسيقى"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[العناصر ] التي ليست %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[العناصر ] التي هي %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[العناصر ] الغير مملوكة من طرف \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[العناصر ] المملوكة من طرف \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[العناصر ] بهوية المستخدم المالك \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[العناصر ] بهوية مستخدم مالك مغاير \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[العناصر ] الأكبر من %s بايت"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[العناصر ] الأصغر من %s بايت"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[العناصر ] ذات %s بايتا"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[العناصر ] المعدّلة اليوم"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[العناصر ] المعدّلة بالأمس"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[العناصر ] المعدّلة في %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[العناصر ] غير المعدّلة في %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[العناصر ] المعدّلة قبل %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[العناصر ] المعدّلة بعد %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[العناصر ] المعدّلة في أسبوع من %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[العناصر ] المعدّلة في شهر من %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[العناصر ] المعلمة بـ \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[العناصر ] غير المعلمة بـ \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[العناصر ] بكل الكلمات \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[العناصر ] الحاوية لكلمة من الكلمات \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[العناصر ] التي ليس لها كل الكلمات \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[العناصر ] التي ليس لها أي من الكلمات \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "[Items·larger·than·400K] و [without·all·the·words·\"apple·orange\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Items·larger·than·400K]، [owned·by·root·and·without·all·the·words·"
+#~ "\"apple·orange\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "العناصر %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "العناصر المحتوية على \"شيء\" في أسمائها"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "العناصر التي هي ملفات اعتيادية"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr "العناصر المحتوية على \"شيء\" في أسمائها و التي هي ملفات اعتيادية"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "العناصر التي تحوي \"stuff\" في أسمائها وهي ملفات اعتيادية وفي نفس الوقت "
+#~ "هي أصغر من 2000 بايت"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "العناصر الحاوية لـ \"medusa\" في أسمائها وهي مجلدات"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "قد لا تتضمن نتائج البحث العناصر المعدلة بعد %s، تاريخ آخر فهرسة لقرصك."
+
+#~ msgid "Search Results"
+#~ msgstr "نتائج البحث"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "عفوا، لكن خدمة البحث ميدوزا غير متوفرة."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "ميدوزا ليس مثبتا."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "خدمة البحث غير متوفرة"
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "البحث الذي اخترته أحدث من الفهرس الموجود على نظامك. لن يرجع البحث أي "
+#~ "نتائج الآن."
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr "يمكنك إنشاء فهرس جديد بتنفيذ \"medusa-indexd\" كجذر عندسطر الأوامر."
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "بحث عن عناصر جديدة جدا"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr "كل ملف مفهرس على حاسوبك يطابق المقاييس التي انتقيتها."
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr "يمكنك فحص تهجية منتقياتك أو إضافة مقاييس أكثر لتضييق حقل البحث."
+
+#~ msgid "Error During Search"
+#~ msgstr "خطأ أثناء البحث"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "لا يمكن لأمر البحث فتح فهرس نظام ملفاتك. قد يكون فهرسك مفقودا أو معطوبا."
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "خطأ أثناء قراءة فهرس الملف"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "حدث خطا أثناء تحميل محتويات هذا البحث."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr "يتطلب أمر البحث فهرسا للملفات الموجودة على نظامك للقيام ببحث سريع."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "يتطلب أمر البحث فهرسا للملفات الموجودة على نظامك للقيام ببحث المحتويات."
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "لا يمكن لأمر البحث النفاذ إلى فهرسك اﻵن سينفذ لذلك بحثا بطيء لا يستعمل "
+#~ "الفهرس."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "لا يمكن لأمر البحث النفاذ إلى فهرسك الآن."
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "البحوث السريعة غير متوفرة"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "بحوث المحتويات غير متوفرة"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "ملفات فهرسك متوفرة لكن جني البحث ميدوزا، المعالج لطلبات الفهرسة، لا يعمل. "
+#~ "لتشغيل هذا البرنامج، سجل كجذر و أدخل هذا اﻷمر في سطر اﻷوامر:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "يتطلب أمر البحث فهرسا للملفات على نظامك للقيام بالبحث السريع. حاسوبك الآن "
+#~ "بصدد إنشاء ذلك الفهرس اﻵن."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "يتطلب أمر البحث فهرسا للمحتويات على نظامك للقيام ببحث المحتويات. حاسوبك "
+#~ "بصدد إنشاء ذلك الفهرس اﻵن."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr ""
+#~ "قد يدوم هذا البحث بعض الدقائق، لأن أمر البحث لا يمكنه إستعمال الفهرس"
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr "ستكون بحوث المحتويات متوفرة عند اكتمال الفهرس."
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "البحوث المفهرسة غير متوفرة"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "يتطلب أمر البحث فهرسا للمحتويات على نظامك للقيام ببحث سريع. لا فهرس متوفر "
+#~ "الآن."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "يتطلب البحث فهرسا للمحتويات على نظامك للقيام ببحث المحتويات. لا فهرس "
+#~ "متوفر الآن."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "يمكنك إنشاء فهرس بتنفيذ \"medusa-indexd\" كجذر على سطر اﻷوامر. ستستغرق "
+#~ "البحوث عدة دقائق ما لم تكتمل الفهرسة."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "يمكنك إنشاء فهرس بنتفيذ \"medusa-indexd\" كجذر على سطر الأوامر.لا يمكن "
+#~ "القيام ببحث المحتويات ما لم تكتمل الفهرسة."
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "البحوث السريعة غير مفعلة على حاسوبك."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "يتطلب أمر البحث فهرسا للملفات على نظامك للقيام بالبحث السريع. قام مدير "
+#~ "نظامك بتعطيل البحث السريع على حاسوبك، و لذلك لا يتوفر أي فهرس."
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "البحوث السريعة غير مفعلة"
+
+#~ msgid "Where"
+#~ msgstr "أين"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_كشف في نافذة جديدة"
+#~ msgstr[1] "_كشف في نافذة جديدة"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr "وجد نوتلس نتائج بحث أكثر مما يمكنه عرضه."
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "لن تعرض بعض العناصر المتطابقة."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "تطابقات عديدة جدا"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "تمت فهرسة %d%%"
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "تمت فهرسة ملفاتك ﻵخر مرة في %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr "تتم فهرسة ملفاتك ومحتويات النصوص مرة واحدة كل يوم لتسريع بحثك فيها."
+
+#~ msgid "Indexing Status"
+#~ msgstr "حالة الفهرسة"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "جاري فهرست ملفاتك الآن."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr "تتم فهرسة ملفاتك ومحتويات النصوص مرة واحدة كل يوم لتسريع بحثك فيها."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "لا وجود لفهرس لملفاتك في الوقت الحاضر."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "أمر·البحث·ينشئ·فهرسا·لتسريع·البحوث عند تفعيل البحث السريع،  البحث السريع "
+#~ "ليس مفعلا في حاسوبك، لذلك ليس لديك فهرسا في الوقت الحاضر."
+
+#~ msgid "No Index of Files"
+#~ msgstr "لا فهرس ملفات"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "عفوا، لكن خدمة البحث ميدوزا غير متوفرة."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "الرجاء التثبت من أن ميدوزا ثبتت بسلامة."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "كشف كل عنصر منتقى في مجلده اﻷصلي"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "كشف في نافذة جديدة"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "عرض حالة الفهرسة"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "عرض حالة ال_فهرسة"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "عرض حالة الفهرسة المستخدمة عند البحث"
+
+#~ msgid "More Options"
+#~ msgstr "خيارات أكثر"
+
+#~ msgid "Fewer Options"
+#~ msgstr "خيارات أقل"
+
+#~ msgid "Find Them!"
+#~ msgstr "ابحث عنهم!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[ابحث عن] اسم [يحتوي على \"fish\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[ابحث عن] محتوى [يتضمن كل \"fish tree\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[ابحث عن] نوع [ملف اعتيادي]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[ابحث عن] حجم [أكبر من 400 ك]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[ابحث عن] بشعار [يحتوي على \"Important\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[ابحث عن] بآخر تعديل [قبل اﻷمس]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[ابحث عن] المالك [ليس المستخدم الجذري]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[اسم الملف] يحوي [help]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[اسم الملف] يبدأ بـ [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[اسم الملف] ينتهي بـ [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[اسم الملف] يطابق [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[اسم الملف] يطابق التعبير الانتظامي [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[محتوى الملف] يتضمن كلا من [apple orange]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[محتوى الملف] يتضمن أيا من [apple orange]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[محتوى الملف] لا يتضمن كلا من [apple orange]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[محتوى الملف] لا يتضمن أيا من [apple orange]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[نوع الملف] هو [مجلد]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[نوع الملف] ليس [مجلدا]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[نوع الملف هو] ملف اعتيادي"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[نوع الملف هو] ملف نصي"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[نوع الملف هو] تطبيق"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[نوع الملف هو] مجلد"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[نوع الملف هو] موسيقى"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[حجم الملف] أكبر من [400 ك.بايت]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[حجم الملف] أصغر من [300 ك.بايت]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[بشعار] معلم كـ [مهم]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[بشعار] ليسم معلم كـ [مهم]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[تاريخ آخر تعديل] هو [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[تاريخ آخر تعديل] ليس هو [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[تاريخ آخر تعديل] بعد [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[تاريخ آخر تعديل] قبل [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[تاريخ آخر تعديل] اليوم"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[تاريخ آخر تعديل] الأمس"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[تاريخ آخر تعديل] خلال أسبوع من [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[تاريخ آخر تعديل] خلال شهر من [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[مالك الملف] هو [المستخدم الجذري]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[مالك الملف] ليس [المستخدم الجذري]"
+
+#~ msgid "Find:"
+#~ msgstr "بحث:"
 
 #~ msgid ""
 #~ "Are you sure you want to permanently delete the %d selected item?Are you "

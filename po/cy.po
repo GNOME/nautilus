@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-02-24 06:06+0000\n"
 "Last-Translator: Dafydd Harries <daf@muse.19inch.net>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -65,7 +65,6 @@ msgstr "Methodd bonobo_ui_init()."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Bathodynau"
 
@@ -1002,7 +1001,6 @@ msgstr "Mae'r thema hwn yn defnyddio plygellau ffoto-ymddangosol."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Enw"
 
@@ -1754,7 +1752,6 @@ msgid "The name and icon of the file."
 msgstr "Enw a eicon y ffeil."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Maint"
 
@@ -1763,7 +1760,6 @@ msgid "The size of the file."
 msgstr "Maint y ffeil."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Math"
 
@@ -1772,7 +1768,6 @@ msgid "The type of the file."
 msgstr "Math y ffeil."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Dyddiad Newidwyd"
 
@@ -3165,48 +3160,6 @@ msgstr "Newid i Lunwedd â Llaw?"
 msgid "Switch"
 msgstr "Newid"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Os ydych eisiau galluogi chwilio cyflym, fe allwch newid y ffeil %s fel "
-"root. Bydd gosod y baner galluogi i \"yes\" yn troi y gwasanaeth medusa "
-"ymlaen.\n"
-"Er mwyn cychwyn gwasanaethau mynegai a chwilio yn syth, dyliwch hefyd rhedeg "
-"y gorchmynion yma fel root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Ni fydd chwilio cyflym ar gael tan bydd mynegai cychwynol o'ch ffeiliau wedi "
-"cael ei greu. Fe all hyn gymryd amser hir."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Methwyd canfod Medusa, y rhaglen sydd yn gwneud chwiliadau, ar eich system. "
-"Os ydych chi wedi crynhoi Nautilus eich hunan, mae'n rhaid i chi sefydlu'r "
-"pecyn Medusa a chryhoi Nautilus eto. (Efaillai bydd y pecyn Medusa ar gael "
-"ar ftp://ftp.gnome.org)\n"
-"Os ydych chi'n defnyddio fersiwn o Nautilus sydd wedi ei becynnu, mid yw "
-"chwilio cyflym ar gael.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3557,250 +3510,6 @@ msgid ""
 msgstr ""
 "Er mwyn agor ffeilau pell, copïwch nhw at blygell lleol a ceisiwch eu "
 "gollwng nhw eto. Mae'r ffeiliau lleol a ollynwyd wedi eu hagor eisioes."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "yn cynnwys \"%s\" yn eu enwau"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "yn dechrau efo \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "yn diewddu efo \"%s\""
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "ddim yn cynnwys \"%s\" yn eu henwau"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "yn cydweddu'r mynegiant rheolaidd \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "sy'n cydweddu'r patrwm ffeil \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "ffeiliau arferol"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "ffeliau testun"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "rhaglenni"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "plygellau"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "cerddoriaeth"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "nad ydynt yn %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "sydd yn %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "nid perchen i \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "yn perchen i \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "hefo'r UID perchen \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "hefo UID perchen arall nag \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "yn fwy na %s beit"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "yn llai na %s beit"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "o'n union %s beit"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "wedi'u newid heddiw"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "wedi'u newid ddoe"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "wedi'u newid ar %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "heb addasu ar %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "addaswyd cyn %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "addaswyd ar ôl %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "addaswyd o fewn wythnos o %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "addaswyd o fewn mis o %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "nodwyd efo \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "heb nodi hefo \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "sy'n cynnwys pob un o'r geiriau \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "syn' cynnwys un o'r geiriau \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "heb y geiriau \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "heb unrhyw un o'r geiriau \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "a"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ","
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Eitemau %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Eitemau sy'n cynnwys \"rhywbeth yn eu henwau"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Eitemau sy'n ffeiliau rheolaidd"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Eitemau sy'n cynnwys \"rhywbeth\" yn eu henwau a sy'n ffeiliau rheolaidd"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Eitemau sy'n cynnwys \"rhywbeth\" yn eu henwau, sy'n ffeiliau rheolaidd ac "
-"yn llai na 2000 beit"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Eitemau sy'n cynnwys \"medusa\" yn eu henwau a sy'n blygellau"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5031,258 +4740,6 @@ msgstr "Creu ffenestr Priodweddau."
 msgid "Select an icon"
 msgstr "Dewiswch eicon"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Efallai ni fydd y calyniadau chwilio yn cynnwys eitemau addaswyd ar ôl %s, "
-"pan gafwyd y disg ei fynegeio dwethaf."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Canlyniadau Chwilio"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Ymddiheuriad, ond nid ydi y gwasanaeth chwilio medusa ar gael."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "Nid yw Medusa wedi ei osod."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Gwasanaeth Chwilio ddim ar Gael"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Mae'r ymchwil fe ddewisoch yn fwy newydd na'r mynegai ar eich system. "
-"Gwneith y chwilio ddangos dim canlyniad ar hyn o bryd."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Gallwch greu mynegai newydd drwy rhedeg \"medusa-indexd\" fel root ar y "
-"llinell orchmynyn."
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "Chwilio Am Eitemau Sy'n Rhy Newydd"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Mae pob ffeil mynegeiedig ar eich cyfrifiadur yn cyfateb y meini dewisiedig. "
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Fe allwch wirio y sillafu yn eich dewisiadau neu ychwanegu meini er mwyn "
-"gostwng nifer y canlynidau."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "Gwall Tra'n Chwilio"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Ni ellith Chwilio agor mynegai y system ffeiliau. Efallai bod eich mynegai "
-"ar goll neu wedi eu llygru."
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "Gwall Tra'n Darllen y Mynegai Ffeil"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "Bu gwall tra'n llwytho cynnwys yr ymchwil hwn."
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"I gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar eich "
-"system."
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"I gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar eich "
-"system."
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Nid ydi Chwilio yn gallu cyrchu eich mynegai ar y funud yma fellu caiff "
-"chwilio arafach nad ydyw'n defnyddio'r mynegai ei weithredu."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "Nid yw Chwilio yn gallu cyrchu'r mynegain nawr."
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "Nid yw Chwilio Cyflym ar Gael"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "Nid yw Chwilio Cynnwys ar Gael"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Mae eich mynegai ffeiliau ar gael ond mae y ellyll chwilio Medusa, sydd yn "
-"dolennu ceisiau mynegai, ddim yn rhedeg. I dechrau y rhaglen yma, "
-"fewngofnodwch fel root a bwydwch y gorchymyn yma i'r llinell orchymyn:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Er mwyn chwilio'n gyflym, mae Chwilio angen mynegai o'r ffeiliau ar eich "
-"system. Mae eich cyfrifiadur yn creu mynegai ar hyn o bryd."
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Er mwyn gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar "
-"eich system. Mae eich cyfrifiadur yn creu mynegai ar hyn o bryd."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-"Oherwydd bod Chwilio methu defnyddio mynegai, gall y chwilio hwn gymryd sawl "
-"munud."
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr "Bydd Chwilio cynhwysion ar gael pan mae'r mynegai yn gyflawn."
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "Nid yw Chwilio Mynegai ar Gael"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Er mwyn gwneud chwilio'n gyflym, mae Chwilio angen mynegai o'r ffeiliau ar "
-"eich system. Does dim mynegai ar gael ar hyn o bryd."
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Er mwyn gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar "
-"eich system. Does dim mynegai ar gael ar hyn o bryd."
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Gallwch greu mynegai drwy rhedeg \"medusa-indexd\" fel root ô'r llinell "
-"orchymyn. Gall chwilio gymryd rhai munudau tan bod mynegai cyflawn ar gael."
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Gallwch greu mynegai drwy rhedeg \"medusa-indexd\" fel root ô'r llinell "
-"orchymyn. Ni chaiff chwilio cynnwys eu gwneud tan bod mynegai cyflawn ar "
-"gael."
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "Nid yw chwilio cyflym wedi ei alluogi ar eich cyfrifiadur."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Er mwyn chwilio'n gyflym, mae Chwilio angen mynegai o'r ffeiliau ar eich "
-"system. Mae gweinyddwr eich system wedi analluogi chwilio cyflym ar eich "
-"cyfrifiadur, felly nid oes mynegai ar gael."
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "Nid yw Chwilio Cyflym ar Gael"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Ble"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "Datguddio mewn Ffenestr _Newydd"
-msgstr[1] "Datguddio mewn %d Ffenestr _Newydd"
-msgstr[2] "Datguddio mewn %d Ffenestr _Newydd"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr "Mae Nautilus wedi darganfod mwy o ganlyniadau na mae'n gallu dangos."
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "Ni chaiff rhai eitemau sy'n cydweddu eu dangos."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Gormod o Ganlyniadau"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Gwag)"
@@ -5650,70 +5107,6 @@ msgstr "_Cadw yn Aliniedig"
 msgid "_Manually"
 msgstr "â llaw"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Mynegai yn %d%% wedi'i gyflawni."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Cafodd eich ffeiliau eu mynegeio ddiwethaf at %s."
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Caiff eich ffeiliau a chynnwys testun eu mynegeio unwaith y diwrnod er mwyn "
-"cyflymu chwilio."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Cyflwr Mynegeio"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "Mae eich ffeiliau yn cael eu mynegeio ar hyn o bryd."
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Caiff eich ffeiliau a chynnwys testun eu mynegeio unwaith y diwrnod er mwyn "
-"cyflymu chwilio."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Does dim mynegai o'ch ffeiliau ar hyn o bryd."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Pan mae Chwilio Cyflym wedi ei alluogi, mae Chwilio yn creu mynegai er mwyn "
-"cyflymu chwilio. Nid ydy Chwilio cyflym wedi ei alluogi ar eich cyfrifiadur, "
-"fellu nid oes mynegai gennych ar hyn o bryd."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "Dim Mynegai o Ffeiliau"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Ymddiheuriad, ond nid ydi y gwasanaeth chwilio medusa ar gael."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "Gwnewch siwr bod medusa wedi ei gosod yn cywir os gwelwch yn dda."
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "Dewiswch y colofnau gweladwy yn y blygell hon"
@@ -5721,26 +5114,6 @@ msgstr "Dewiswch y colofnau gweladwy yn y blygell hon"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "_Colofnau Gweladwy..."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Dangos pob yr eitem dewisiedig yn ei plygell gwreiddiol"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Dangos mewn ffenestr Newydd"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Dangos Cyflwr Mynegai"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Dangos _Cyflwr Mynegai"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Dangos statws o'r mynegeio a defnyddwyd tra'n chwilio"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5927,19 +5300,6 @@ msgstr "<b>_Enw</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Newid Llyfrnodau"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Mwy o Gosodiadau"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Llai o Gosodiadau"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Darganfod Nhw!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6831,161 +6191,6 @@ msgstr "_Tynnu Lliw..."
 msgid "_Remove an Emblem..."
 msgstr "_Tynnu Bathodyn..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "Enw"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "Cynnwys"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "Math"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "Maint"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "Efo Bathodyn"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "Newidwyd Ddiwethaf"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "Perchennog"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "yn cynnwys"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "yn cychwyn efo"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "yn gorffen efo"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "cydweddu glob"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "cydweddu regexp"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "yn cynnwys pob un o"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "yn cynnwys unrhyw un o"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "ddim yn cynnwys pob un o"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "yn dynnwys dim o"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "yn"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "nid yw'n"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "ffeil cyffredin"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "ffeil testun"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "rhaglen"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "plygell"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "cerddoriaeth"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "yn fwy na"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "yn llai na"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "wedi ei farcio efo"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "heb ei farcio efo"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "yw"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "nid yw"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "ar ôl"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "cyn"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "yw heddiw"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "yw ddoe"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "o fewn wythnos o"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "o fewn mis o"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "yn"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "ddim yn"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Dewiswch gowlg i'r lleoliad cyfredol, neu newid y set o olygfeydd"
@@ -7185,10 +6390,6 @@ msgstr "Agor y plygell rhiant"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "_Llefydd"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Chwilio:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7425,6 +6626,566 @@ msgstr "Gweinyddion Rhwydwaith"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Gweld eich gweinyddion rhwydwaith yn y trefnydd ffeiliau Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Os ydych eisiau galluogi chwilio cyflym, fe allwch newid y ffeil %s fel "
+#~ "root. Bydd gosod y baner galluogi i \"yes\" yn troi y gwasanaeth medusa "
+#~ "ymlaen.\n"
+#~ "Er mwyn cychwyn gwasanaethau mynegai a chwilio yn syth, dyliwch hefyd "
+#~ "rhedeg y gorchmynion yma fel root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Ni fydd chwilio cyflym ar gael tan bydd mynegai cychwynol o'ch ffeiliau "
+#~ "wedi cael ei greu. Fe all hyn gymryd amser hir."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Methwyd canfod Medusa, y rhaglen sydd yn gwneud chwiliadau, ar eich "
+#~ "system. Os ydych chi wedi crynhoi Nautilus eich hunan, mae'n rhaid i chi "
+#~ "sefydlu'r pecyn Medusa a chryhoi Nautilus eto. (Efaillai bydd y pecyn "
+#~ "Medusa ar gael ar ftp://ftp.gnome.org)\n"
+#~ "Os ydych chi'n defnyddio fersiwn o Nautilus sydd wedi ei becynnu, mid yw "
+#~ "chwilio cyflym ar gael.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "yn cynnwys \"%s\" yn eu enwau"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "yn dechrau efo \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "yn diewddu efo \"%s\""
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "ddim yn cynnwys \"%s\" yn eu henwau"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "yn cydweddu'r mynegiant rheolaidd \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "sy'n cydweddu'r patrwm ffeil \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "ffeiliau arferol"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "ffeliau testun"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "rhaglenni"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "plygellau"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "cerddoriaeth"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "nad ydynt yn %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "sydd yn %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "nid perchen i \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "yn perchen i \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "hefo'r UID perchen \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "hefo UID perchen arall nag \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "yn fwy na %s beit"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "yn llai na %s beit"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "o'n union %s beit"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "wedi'u newid heddiw"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "wedi'u newid ddoe"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "wedi'u newid ar %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "heb addasu ar %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "addaswyd cyn %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "addaswyd ar ôl %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "addaswyd o fewn wythnos o %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "addaswyd o fewn mis o %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "nodwyd efo \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "heb nodi hefo \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "sy'n cynnwys pob un o'r geiriau \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "syn' cynnwys un o'r geiriau \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "heb y geiriau \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "heb unrhyw un o'r geiriau \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "a"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ","
+
+#~ msgid "Items %s"
+#~ msgstr "Eitemau %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Eitemau sy'n cynnwys \"rhywbeth yn eu henwau"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Eitemau sy'n ffeiliau rheolaidd"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Eitemau sy'n cynnwys \"rhywbeth\" yn eu henwau a sy'n ffeiliau rheolaidd"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Eitemau sy'n cynnwys \"rhywbeth\" yn eu henwau, sy'n ffeiliau rheolaidd "
+#~ "ac yn llai na 2000 beit"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Eitemau sy'n cynnwys \"medusa\" yn eu henwau a sy'n blygellau"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Efallai ni fydd y calyniadau chwilio yn cynnwys eitemau addaswyd ar ôl %"
+#~ "s, pan gafwyd y disg ei fynegeio dwethaf."
+
+#~ msgid "Search Results"
+#~ msgstr "Canlyniadau Chwilio"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Ymddiheuriad, ond nid ydi y gwasanaeth chwilio medusa ar gael."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "Nid yw Medusa wedi ei osod."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Gwasanaeth Chwilio ddim ar Gael"
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Mae'r ymchwil fe ddewisoch yn fwy newydd na'r mynegai ar eich system. "
+#~ "Gwneith y chwilio ddangos dim canlyniad ar hyn o bryd."
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Gallwch greu mynegai newydd drwy rhedeg \"medusa-indexd\" fel root ar y "
+#~ "llinell orchmynyn."
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Chwilio Am Eitemau Sy'n Rhy Newydd"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Mae pob ffeil mynegeiedig ar eich cyfrifiadur yn cyfateb y meini "
+#~ "dewisiedig. "
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Fe allwch wirio y sillafu yn eich dewisiadau neu ychwanegu meini er mwyn "
+#~ "gostwng nifer y canlynidau."
+
+#~ msgid "Error During Search"
+#~ msgstr "Gwall Tra'n Chwilio"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Ni ellith Chwilio agor mynegai y system ffeiliau. Efallai bod eich "
+#~ "mynegai ar goll neu wedi eu llygru."
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "Gwall Tra'n Darllen y Mynegai Ffeil"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Bu gwall tra'n llwytho cynnwys yr ymchwil hwn."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "I gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar eich "
+#~ "system."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "I gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar eich "
+#~ "system."
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Nid ydi Chwilio yn gallu cyrchu eich mynegai ar y funud yma fellu caiff "
+#~ "chwilio arafach nad ydyw'n defnyddio'r mynegai ei weithredu."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "Nid yw Chwilio yn gallu cyrchu'r mynegain nawr."
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Nid yw Chwilio Cyflym ar Gael"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Nid yw Chwilio Cynnwys ar Gael"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Mae eich mynegai ffeiliau ar gael ond mae y ellyll chwilio Medusa, sydd "
+#~ "yn dolennu ceisiau mynegai, ddim yn rhedeg. I dechrau y rhaglen yma, "
+#~ "fewngofnodwch fel root a bwydwch y gorchymyn yma i'r llinell orchymyn:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Er mwyn chwilio'n gyflym, mae Chwilio angen mynegai o'r ffeiliau ar eich "
+#~ "system. Mae eich cyfrifiadur yn creu mynegai ar hyn o bryd."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Er mwyn gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar "
+#~ "eich system. Mae eich cyfrifiadur yn creu mynegai ar hyn o bryd."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr ""
+#~ "Oherwydd bod Chwilio methu defnyddio mynegai, gall y chwilio hwn gymryd "
+#~ "sawl munud."
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr "Bydd Chwilio cynhwysion ar gael pan mae'r mynegai yn gyflawn."
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Nid yw Chwilio Mynegai ar Gael"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Er mwyn gwneud chwilio'n gyflym, mae Chwilio angen mynegai o'r ffeiliau "
+#~ "ar eich system. Does dim mynegai ar gael ar hyn o bryd."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Er mwyn gwneud chwilio cynnwys, mae Chwilio angen mynegai o'r ffeiliau ar "
+#~ "eich system. Does dim mynegai ar gael ar hyn o bryd."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Gallwch greu mynegai drwy rhedeg \"medusa-indexd\" fel root ô'r llinell "
+#~ "orchymyn. Gall chwilio gymryd rhai munudau tan bod mynegai cyflawn ar "
+#~ "gael."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Gallwch greu mynegai drwy rhedeg \"medusa-indexd\" fel root ô'r llinell "
+#~ "orchymyn. Ni chaiff chwilio cynnwys eu gwneud tan bod mynegai cyflawn ar "
+#~ "gael."
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Nid yw chwilio cyflym wedi ei alluogi ar eich cyfrifiadur."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Er mwyn chwilio'n gyflym, mae Chwilio angen mynegai o'r ffeiliau ar eich "
+#~ "system. Mae gweinyddwr eich system wedi analluogi chwilio cyflym ar eich "
+#~ "cyfrifiadur, felly nid oes mynegai ar gael."
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Nid yw Chwilio Cyflym ar Gael"
+
+#~ msgid "Where"
+#~ msgstr "Ble"
+
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "Datguddio mewn Ffenestr _Newydd"
+#~ msgstr[1] "Datguddio mewn %d Ffenestr _Newydd"
+#~ msgstr[2] "Datguddio mewn %d Ffenestr _Newydd"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Mae Nautilus wedi darganfod mwy o ganlyniadau na mae'n gallu dangos."
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "Ni chaiff rhai eitemau sy'n cydweddu eu dangos."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Gormod o Ganlyniadau"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Mynegai yn %d%% wedi'i gyflawni."
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Cafodd eich ffeiliau eu mynegeio ddiwethaf at %s."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Caiff eich ffeiliau a chynnwys testun eu mynegeio unwaith y diwrnod er "
+#~ "mwyn cyflymu chwilio."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Cyflwr Mynegeio"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Mae eich ffeiliau yn cael eu mynegeio ar hyn o bryd."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Caiff eich ffeiliau a chynnwys testun eu mynegeio unwaith y diwrnod er "
+#~ "mwyn cyflymu chwilio."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Does dim mynegai o'ch ffeiliau ar hyn o bryd."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Pan mae Chwilio Cyflym wedi ei alluogi, mae Chwilio yn creu mynegai er "
+#~ "mwyn cyflymu chwilio. Nid ydy Chwilio cyflym wedi ei alluogi ar eich "
+#~ "cyfrifiadur, fellu nid oes mynegai gennych ar hyn o bryd."
+
+#~ msgid "No Index of Files"
+#~ msgstr "Dim Mynegai o Ffeiliau"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Ymddiheuriad, ond nid ydi y gwasanaeth chwilio medusa ar gael."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "Gwnewch siwr bod medusa wedi ei gosod yn cywir os gwelwch yn dda."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Dangos pob yr eitem dewisiedig yn ei plygell gwreiddiol"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Dangos mewn ffenestr Newydd"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Dangos Cyflwr Mynegai"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Dangos _Cyflwr Mynegai"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Dangos statws o'r mynegeio a defnyddwyd tra'n chwilio"
+
+#~ msgid "More Options"
+#~ msgstr "Mwy o Gosodiadau"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Llai o Gosodiadau"
+
+#~ msgid "Find Them!"
+#~ msgstr "Darganfod Nhw!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "Enw"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "Cynnwys"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "Math"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "Maint"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "Efo Bathodyn"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "Newidwyd Ddiwethaf"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "Perchennog"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "yn cynnwys"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "yn cychwyn efo"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "yn gorffen efo"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "cydweddu glob"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "cydweddu regexp"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "yn cynnwys pob un o"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "yn cynnwys unrhyw un o"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "ddim yn cynnwys pob un o"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "yn dynnwys dim o"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "yn"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "nid yw'n"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "ffeil cyffredin"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "ffeil testun"
+
+#~ msgid "[File type is] application"
+#~ msgstr "rhaglen"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "plygell"
+
+#~ msgid "[File type is] music"
+#~ msgstr "cerddoriaeth"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "yn fwy na"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "yn llai na"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "wedi ei farcio efo"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "heb ei farcio efo"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "yw"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "nid yw"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "ar ôl"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "cyn"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "yw heddiw"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "yw ddoe"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "o fewn wythnos o"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "o fewn mis o"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "yn"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "ddim yn"
+
+#~ msgid "Find:"
+#~ msgstr "Chwilio:"
 
 #~ msgid "Factory for hardware view"
 #~ msgstr "Ffatri ar gyfer gwelydd caledwedd"

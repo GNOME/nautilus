@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.3.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-09-07 22:30+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
@@ -42,7 +42,6 @@ msgstr "bonobo_ui_init() lỗi."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Hình Tượng"
 
@@ -984,7 +983,6 @@ msgstr "Chủ đề này sử dụng các thư mục ảnh thật."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Tên"
 
@@ -1734,7 +1732,6 @@ msgid "The name and icon of the file."
 msgstr "Bộ nhận diện ứng dụng của của sổ"
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Kích thước"
 
@@ -1743,7 +1740,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Dạng"
 
@@ -1753,7 +1749,6 @@ msgid "The type of the file."
 msgstr "[Loại tập tin là] tập tin văn bản"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Ngày được sửa đổi"
 
@@ -3238,46 +3233,6 @@ msgstr "Có bật xắp xếp tay không?"
 msgid "Switch"
 msgstr "Bật"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Nếu bạn muốn tìm kiếm nhanh, bạn có thể dùng root để soạn thảo tập tin %s. "
-"Nếu đặt cờ hiệu \"enabled\" ở \"có\" bạn sẽ khởi bật vụ medusa.\n"
-"Để có thể khởi động dịch vụ chỉ số và tìm kiếm ngay lập tức, bạn phải dùng "
-"các lệnh sau theo tư cách root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Tìm kiếm nhanh sẽ chỉ thực thi khi bạn đã cài đặt chỉ số bắt đầu của tập tin "
-"của bạn. Quá trình này có thể tốn nhiều thời gian."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Không thấy trên hệ thống của bạn ứng dụng thực hiện tìm kiếm Medusa. Nếu bạn "
-"tự biên dịch Nautilus, bạn cần cài đặt một bản sao của Medusa rồi biên dịch "
-"lại Nautilus. (Bản sao của Medusa có thể có tại: ftp://ftp.gnome.org)\n"
-"Nếu đang dùng phiên bản đóng gói của Nautilus, chức năng tìm kiếm nhanh là "
-"không có sẵn.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3662,251 +3617,6 @@ msgstr ""
 "Để mở các tập tin không cục bộ thì bạn hãy sao các tập tin này vào một thư "
 "mục cục bộ và sau đó thả chúng một lần nữa. Các tậo tin cục bộ mà bạn thả đã "
 "được mở."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Mục ]có chứa \"%s\" trong tên của chúng"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Mục ] bắt đầu bằng \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Mục ] kết thúc với %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Mục ]không chứa \"%s\" trong tên của chúng"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Mục ]khớp với biểu thức chính quy \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Mục ]khớp với file pattern \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Các mục là ]các tập tin chính quy"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Các mục là ]các tập tin văn bản"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Các mục là ]các ứng dụng"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Các mục là ]các thư mục"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Các mục là ]âm nhạc"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Mục ]không phải là %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Mục ]là %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Mục ]không được sở hữu bởi \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Mục ]được sở hữu bởi \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Mục ]với UID của sở hữu \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Mục ]với UID của sở hữu khác với \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Mục ]lớn hơn %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Mục ]nhỏ hơn %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Mục ]có %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Mục ]được thay đổi hôm nay"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Mục ]được thay đổi hôm qua"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Mục ]được thay đổi trên %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Mục ]không được thay đổi trên %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Mục ]được thay đổi trước %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Mục ]được thay đổi sau %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Mục ]được thay đổi trong tuần của %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Mục ]được thay đổi trong tháng của %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Mục ]được đánh dấu bằng \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Mục ]không được đánh dấu bằng \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Mục ]với toàn bộ những từ \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Mục ]có chứa một trong số những từ \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Mục ]không có những từ \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Mục ]không có bất kỳ các từ \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Mục lớn hơn 400K] và [không chứa cụm từ \"apple orange\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Mục lớn hơn 400K], [sở hữu bởi root và không chứa cụm từ \"apple orange\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Mục %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Các mục có chứa \"stuff\" trong tên của chúng"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Các mục là các tập tin chính quy"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Các mục có chứa \"stuff\" trong tên của chúng và là các tập tin chính quy"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Các mục có chứa \"stuff\" trong tên của chúng, là các tập tin chính quy và "
-"nhỏ hơn 2000 byte"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Các mục có chứa \"medusa\" trong tên của chúng và là những thư mục"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5160,296 +4870,6 @@ msgstr "Tạo của sổ tính chất"
 msgid "Select an icon"
 msgstr "Chọn biểu tượng"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Kết quả tìm kiếm có thể không gồm các mục đã biến đổi sau %s, khi drive của "
-"bạn được tạo chỉ mục lần cuối."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Kết quả tìm kiếm"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Xin lỗi, dịch vụ tìm kiếm medusa hiện thời không có."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Dịch vụ tìm kiếm hiện thời không có"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Việc tìm kiếm mà bạn chọn mới hơn phụ lục của hệ thống. Việc tìm kiếm sẽ "
-"không trả lại kết quả. Bạn cần tạo một phụ lục mới bằng cách chạy \"medusa-"
-"indexd\" trong dòng lệnh của root."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Tìm kiếm không thể mở phụ lục hệ thống tập tin. Phụ lục của bạn có thể bị "
-"thiếu hay hỏng. Bạn có thể tạo phụ lục mới bằng việc chạy \"medusa-indexd\" "
-"trong dòng lệnh của root."
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Tìm kiếm các mục thật mới"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Mọi tập tin có phụ lục trên hệ thống khớp với kịch bản được chọn. Bạn có thể "
-"kiểm tra chính tả trên các phần chọn của bạn hay thêm kịch bản để thu hẹp "
-"kết quả."
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Mọi tập tin có phụ lục trên hệ thống khớp với kịch bản được chọn. Bạn có thể "
-"kiểm tra chính tả trên các phần chọn của bạn hay thêm kịch bản để thu hẹp "
-"kết quả."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Lỗi khi đang tìm kiếm"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Tìm kiếm không thể mở phụ lục hệ thống tập tin. Phụ lục của bạn có thể bị "
-"thiếu hay hỏng. Bạn có thể tạo phụ lục mới bằng việc chạy \"medusa-indexd\" "
-"trong dòng lệnh của root."
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Lỗi đọc phụ lục tập tin"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Lỗi xảy ra khi đang nạp nội dung tìm kiếm này: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên hệ "
-"thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên hệ "
-"thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Để thực hiện tìm kiếm nhanh, cần có phụ lục các tập tin trên hệ thống. Tìm "
-"kiếm không thể truy cập phụ lục lúc này do vậy sẽ thực hiện tìm kiếm chậm và "
-"không cần dùng phụ lục."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Tìm kiếm nhanh hiện thời không có"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Tìm kiếm nội dung hiện thời không có"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Hiện đang có các tập tin phụ lục nhưng daemon tìm kiếm của Medusa chưa chạy. "
-"Để chạy chương trình này, hãy đăng nhập vào root và gõ dòng lệnh:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
-"thống. Máy tính hiện đang tạo phụ lục đó. Vì Tìm kiếm không thể dùng phụ "
-"lục, việc tìm kiếm này sẽ kéo dài vài phút."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Để thực hiện tìm kiếm nội dung, Tìm kiếm cần có phụ lục nội dung trên hệ "
-"thống. Máy tíng hiện đang tạo phụ lục đó. Tìm kiếm nội dung sẽ sẵn sàng khi "
-"hoàn thành phụ lục."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Tìm kiếm theo chỉ mục không sẵn có"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên hệ "
-"thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên hệ "
-"thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
-"thống. Hiện thời không có phụ lục. Bạn có thể tạo phụ lục bằng cách chạy "
-"\"medusa-indexd\" trong dòng lệnh của root. Tới khi hoàn thành phụ lục, việc "
-"tìm kiếm sẽ kéo dài chừng vài phút."
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Để thực hiện tìm kiếm nội dung, Tìm kiếm cần có phụ lục nội dung trên hệ "
-"thống. Hiện chưa có phụ lục. Bạn có thể tạo phụ lục bằng cách chạy \"medusa-"
-"indexd\" trong dòng lệnh của root. Tới khi hoàn thành phụ lục, việc tìm kiếm "
-"nội dung mới có thể thực hiện được."
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Tìm kiếm nhanh không thể chạy trên máy của bạn"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
-"thống. Người quản trị hệ thống đã tắt chức năng này, do vậy mà không có phụ "
-"lục."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Tìm kiếm nhanh hiện thời không có"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Vị Trí"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "Chọn và bao tại Cửa sổ Mới"
-msgstr[1] "Chọn và bao tại Cửa sổ Mới"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus đã tìm thấy nhiều kết quả hơn khả năng hiển thị. Một vàikết quả sẽ "
-"không được hiển thị."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus đã tìm thấy nhiều kết quả hơn khả năng hiển thị. Một vàikết quả sẽ "
-"không được hiển thị."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Quá nhiều trùng hợp"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(rỗng)"
@@ -5832,71 +5252,6 @@ msgstr "_Giữ ngay hàng"
 msgid "_Manually"
 msgstr "Sắp xếp bằng tay"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Tạo chỉ mục hoàn thành  %d%%  ."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Tập tin của bạn được đặt chỉ mục mới đây nhất là vào %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Ngày nào mà bạn tạo chỉ mục cho các tập tin và nội dung văn bản thì chúng sẽ "
-"được tìm kiếm rất nhanh."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Trạng thái Chỉ mục"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "Tập tin của bạn được đặt chỉ mục mới đây nhất là vào %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Ngày nào mà bạn tạo chỉ mục cho các tập tin và nội dung văn bản thì chúng sẽ "
-"được tìm kiếm rất nhanh."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Hiện giờ tập tin của bạn không có chỉ mục."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Khi bật chạy tìm kiếm nhanh, Tìm kiếm tạo một phụ lục để tăng tốc tìm kiếm. "
-"Tìm kiếm nhanh không được chạy trên máy của bạn, vì bạn chưa có phụ lục."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Xin lỗi, dịch vụ tìm kiếm medusa hiện thời không có."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5905,26 +5260,6 @@ msgstr "Tạo một thư mục rỗng bên trong thư mục này"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Thể hiện từng mục được chọn trong thư mục gốc của nó"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Hiện ra trong cửa sổ mới"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Hiển Thị Trạng Thái Chỉ Mục"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Hiển Thị Trạng Thái Chỉ _Mục"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Hiển Thị Trạng Thái Chỉ Mục được dùng khi Tìm kiếm"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6120,19 +5455,6 @@ msgstr "<b>_Tên</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Biên soạn các Đánh Dấu"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Nhiều lựa chọn"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Ít lựa chọn hơn"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Tìm chúng!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7070,161 +6392,6 @@ msgstr "Loại bỏ một mầu..."
 msgid "_Remove an Emblem..."
 msgstr "_Gỡ bỏ hình tượng..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Tìm kiếm cho] Tên [có chứa \"fish\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Tìm kiếm cho] Nội dung [bao gồm toàn bộ \"fish tree\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Tìm kiếm cho] Loại [là tập tin chính quy]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Tìm kiếm cho] Kích thước [lớn hơn 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Tìm kiếm cho] với hình tượng [bao gồm \"Quan Trọng\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Tìm kiếm cho] Lần thay đổi gần nhất [trước ngày hôm qua]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Tìm kiếm cho] Sở Hữu [không phải là root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Tên tập tin] chứa [trợ giúp]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Tên tập tin] bắt đầu bằng [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Tên tập tin] kết thúc bằng [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Tên tập tin] khớp với glob [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Tên Tập tin] khớp với regexp [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Nội dung tập tin] bao gồm toàn bộ [cam táo]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Nội dung tập tin] bao gồm bất kỳ [cam táo]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Nội dung tập tin] không bao gồm toàn bộ [cam táo]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Nội dung tập tin] không bao gồm [cam táo]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Loại tập tin] là [Thư mục]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Loại tập tin] không phải là [Thư mục]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Loại tập tin là] tập tin chính quy"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Loại tập tin là] tập tin văn bản"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Loại tập tin là] ứng dụng"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Loại tập tin là] thư mục"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Loại tập tin là] nhạc"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Kích thước tập tin là] lớn hơn [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Kích thước tập tin là] nhỏ hơn [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Với hình tượng] được đánh dấu với [Quan Trọng]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Với hình tượng] không được đánh dấu với [Quan Trọng]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Ngày thay đổi gần nhất] là [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Ngày thay đổi gần nhất] không phải là [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Ngày thay đổi gần nhất] là sau [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Ngày thay đổi gần nhất] là trước [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Ngày thay đổi gần nhất] là hôm nay"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Ngày thay đổi gần nhất] là hôm qua"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Ngày thay đổi gần nhất] là trong tuần của [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Ngày thay đổi gần nhất] là trong tháng của [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Sở hữu Tập tin] là [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[sở hữu tập tin] không phải là [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Chọn một cảnh xem cho vị trí hiện thời hay sửa đổi thiết đặt của xem"
@@ -7433,10 +6600,6 @@ msgstr "[Các mục là ]các thư mục"
 #, fuzzy
 msgid "_Places"
 msgstr "Mẫu"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Tìm:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7696,6 +6859,587 @@ msgstr "Máy chủ mạng"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Xem máy chủ mạng trong trình quản lý tập tin của Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Nếu bạn muốn tìm kiếm nhanh, bạn có thể dùng root để soạn thảo tập tin %"
+#~ "s. Nếu đặt cờ hiệu \"enabled\" ở \"có\" bạn sẽ khởi bật vụ medusa.\n"
+#~ "Để có thể khởi động dịch vụ chỉ số và tìm kiếm ngay lập tức, bạn phải "
+#~ "dùng các lệnh sau theo tư cách root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Tìm kiếm nhanh sẽ chỉ thực thi khi bạn đã cài đặt chỉ số bắt đầu của tập "
+#~ "tin của bạn. Quá trình này có thể tốn nhiều thời gian."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Không thấy trên hệ thống của bạn ứng dụng thực hiện tìm kiếm Medusa. Nếu "
+#~ "bạn tự biên dịch Nautilus, bạn cần cài đặt một bản sao của Medusa rồi "
+#~ "biên dịch lại Nautilus. (Bản sao của Medusa có thể có tại: ftp://ftp."
+#~ "gnome.org)\n"
+#~ "Nếu đang dùng phiên bản đóng gói của Nautilus, chức năng tìm kiếm nhanh "
+#~ "là không có sẵn.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Mục ]có chứa \"%s\" trong tên của chúng"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Mục ] bắt đầu bằng \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Mục ] kết thúc với %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Mục ]không chứa \"%s\" trong tên của chúng"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Mục ]khớp với biểu thức chính quy \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Mục ]khớp với file pattern \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Các mục là ]các tập tin chính quy"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Các mục là ]các tập tin văn bản"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Các mục là ]các ứng dụng"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Các mục là ]các thư mục"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Các mục là ]âm nhạc"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Mục ]không phải là %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Mục ]là %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Mục ]không được sở hữu bởi \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Mục ]được sở hữu bởi \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Mục ]với UID của sở hữu \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Mục ]với UID của sở hữu khác với \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Mục ]lớn hơn %s byte"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Mục ]nhỏ hơn %s byte"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Mục ]có %s byte"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Mục ]được thay đổi hôm nay"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Mục ]được thay đổi hôm qua"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Mục ]được thay đổi trên %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Mục ]không được thay đổi trên %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Mục ]được thay đổi trước %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Mục ]được thay đổi sau %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Mục ]được thay đổi trong tuần của %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Mục ]được thay đổi trong tháng của %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Mục ]được đánh dấu bằng \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Mục ]không được đánh dấu bằng \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Mục ]với toàn bộ những từ \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Mục ]có chứa một trong số những từ \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Mục ]không có những từ \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Mục ]không có bất kỳ các từ \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "[Mục lớn hơn 400K] và [không chứa cụm từ \"apple orange\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Mục lớn hơn 400K], [sở hữu bởi root và không chứa cụm từ \"apple orange"
+#~ "\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Mục %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Các mục có chứa \"stuff\" trong tên của chúng"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Các mục là các tập tin chính quy"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Các mục có chứa \"stuff\" trong tên của chúng và là các tập tin chính quy"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Các mục có chứa \"stuff\" trong tên của chúng, là các tập tin chính quy "
+#~ "và nhỏ hơn 2000 byte"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Các mục có chứa \"medusa\" trong tên của chúng và là những thư mục"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Kết quả tìm kiếm có thể không gồm các mục đã biến đổi sau %s, khi drive "
+#~ "của bạn được tạo chỉ mục lần cuối."
+
+#~ msgid "Search Results"
+#~ msgstr "Kết quả tìm kiếm"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Xin lỗi, dịch vụ tìm kiếm medusa hiện thời không có."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Dịch vụ tìm kiếm hiện thời không có"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Việc tìm kiếm mà bạn chọn mới hơn phụ lục của hệ thống. Việc tìm kiếm sẽ "
+#~ "không trả lại kết quả. Bạn cần tạo một phụ lục mới bằng cách chạy "
+#~ "\"medusa-indexd\" trong dòng lệnh của root."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Tìm kiếm không thể mở phụ lục hệ thống tập tin. Phụ lục của bạn có thể bị "
+#~ "thiếu hay hỏng. Bạn có thể tạo phụ lục mới bằng việc chạy \"medusa-indexd"
+#~ "\" trong dòng lệnh của root."
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Tìm kiếm các mục thật mới"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Mọi tập tin có phụ lục trên hệ thống khớp với kịch bản được chọn. Bạn có "
+#~ "thể kiểm tra chính tả trên các phần chọn của bạn hay thêm kịch bản để thu "
+#~ "hẹp kết quả."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Mọi tập tin có phụ lục trên hệ thống khớp với kịch bản được chọn. Bạn có "
+#~ "thể kiểm tra chính tả trên các phần chọn của bạn hay thêm kịch bản để thu "
+#~ "hẹp kết quả."
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Lỗi khi đang tìm kiếm"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Tìm kiếm không thể mở phụ lục hệ thống tập tin. Phụ lục của bạn có thể bị "
+#~ "thiếu hay hỏng. Bạn có thể tạo phụ lục mới bằng việc chạy \"medusa-indexd"
+#~ "\" trong dòng lệnh của root."
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Lỗi đọc phụ lục tập tin"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Lỗi xảy ra khi đang nạp nội dung tìm kiếm này: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên "
+#~ "hệ thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên "
+#~ "hệ thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nhanh, cần có phụ lục các tập tin trên hệ thống. "
+#~ "Tìm kiếm không thể truy cập phụ lục lúc này do vậy sẽ thực hiện tìm kiếm "
+#~ "chậm và không cần dùng phụ lục."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Tìm kiếm nhanh hiện thời không có"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Tìm kiếm nội dung hiện thời không có"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Hiện đang có các tập tin phụ lục nhưng daemon tìm kiếm của Medusa chưa "
+#~ "chạy. Để chạy chương trình này, hãy đăng nhập vào root và gõ dòng lệnh:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
+#~ "thống. Máy tính hiện đang tạo phụ lục đó. Vì Tìm kiếm không thể dùng phụ "
+#~ "lục, việc tìm kiếm này sẽ kéo dài vài phút."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nội dung, Tìm kiếm cần có phụ lục nội dung trên hệ "
+#~ "thống. Máy tíng hiện đang tạo phụ lục đó. Tìm kiếm nội dung sẽ sẵn sàng "
+#~ "khi hoàn thành phụ lục."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Tìm kiếm theo chỉ mục không sẵn có"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên "
+#~ "hệ thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên "
+#~ "hệ thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
+#~ "thống. Hiện thời không có phụ lục. Bạn có thể tạo phụ lục bằng cách chạy "
+#~ "\"medusa-indexd\" trong dòng lệnh của root. Tới khi hoàn thành phụ lục, "
+#~ "việc tìm kiếm sẽ kéo dài chừng vài phút."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nội dung, Tìm kiếm cần có phụ lục nội dung trên hệ "
+#~ "thống. Hiện chưa có phụ lục. Bạn có thể tạo phụ lục bằng cách chạy "
+#~ "\"medusa-indexd\" trong dòng lệnh của root. Tới khi hoàn thành phụ lục, "
+#~ "việc tìm kiếm nội dung mới có thể thực hiện được."
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Tìm kiếm nhanh không thể chạy trên máy của bạn"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
+#~ "thống. Người quản trị hệ thống đã tắt chức năng này, do vậy mà không có "
+#~ "phụ lục."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Tìm kiếm nhanh hiện thời không có"
+
+#~ msgid "Where"
+#~ msgstr "Vị Trí"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "Chọn và bao tại Cửa sổ Mới"
+#~ msgstr[1] "Chọn và bao tại Cửa sổ Mới"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus đã tìm thấy nhiều kết quả hơn khả năng hiển thị. Một vàikết quả "
+#~ "sẽ không được hiển thị."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus đã tìm thấy nhiều kết quả hơn khả năng hiển thị. Một vàikết quả "
+#~ "sẽ không được hiển thị."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Quá nhiều trùng hợp"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Tạo chỉ mục hoàn thành  %d%%  ."
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Tập tin của bạn được đặt chỉ mục mới đây nhất là vào %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Ngày nào mà bạn tạo chỉ mục cho các tập tin và nội dung văn bản thì chúng "
+#~ "sẽ được tìm kiếm rất nhanh."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Trạng thái Chỉ mục"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Tập tin của bạn được đặt chỉ mục mới đây nhất là vào %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Ngày nào mà bạn tạo chỉ mục cho các tập tin và nội dung văn bản thì chúng "
+#~ "sẽ được tìm kiếm rất nhanh."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Hiện giờ tập tin của bạn không có chỉ mục."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Khi bật chạy tìm kiếm nhanh, Tìm kiếm tạo một phụ lục để tăng tốc tìm "
+#~ "kiếm. Tìm kiếm nhanh không được chạy trên máy của bạn, vì bạn chưa có phụ "
+#~ "lục."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Xin lỗi, dịch vụ tìm kiếm medusa hiện thời không có."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Thể hiện từng mục được chọn trong thư mục gốc của nó"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Hiện ra trong cửa sổ mới"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Hiển Thị Trạng Thái Chỉ Mục"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Hiển Thị Trạng Thái Chỉ _Mục"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Hiển Thị Trạng Thái Chỉ Mục được dùng khi Tìm kiếm"
+
+#~ msgid "More Options"
+#~ msgstr "Nhiều lựa chọn"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Ít lựa chọn hơn"
+
+#~ msgid "Find Them!"
+#~ msgstr "Tìm chúng!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Tìm kiếm cho] Tên [có chứa \"fish\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Tìm kiếm cho] Nội dung [bao gồm toàn bộ \"fish tree\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Tìm kiếm cho] Loại [là tập tin chính quy]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Tìm kiếm cho] Kích thước [lớn hơn 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Tìm kiếm cho] với hình tượng [bao gồm \"Quan Trọng\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Tìm kiếm cho] Lần thay đổi gần nhất [trước ngày hôm qua]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Tìm kiếm cho] Sở Hữu [không phải là root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Tên tập tin] chứa [trợ giúp]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Tên tập tin] bắt đầu bằng [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Tên tập tin] kết thúc bằng [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Tên tập tin] khớp với glob [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Tên Tập tin] khớp với regexp [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Nội dung tập tin] bao gồm toàn bộ [cam táo]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[Nội dung tập tin] bao gồm bất kỳ [cam táo]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Nội dung tập tin] không bao gồm toàn bộ [cam táo]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Nội dung tập tin] không bao gồm [cam táo]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Loại tập tin] là [Thư mục]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Loại tập tin] không phải là [Thư mục]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Loại tập tin là] tập tin chính quy"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Loại tập tin là] tập tin văn bản"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Loại tập tin là] ứng dụng"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Loại tập tin là] thư mục"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Loại tập tin là] nhạc"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Kích thước tập tin là] lớn hơn [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Kích thước tập tin là] nhỏ hơn [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Với hình tượng] được đánh dấu với [Quan Trọng]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Với hình tượng] không được đánh dấu với [Quan Trọng]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Ngày thay đổi gần nhất] là [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Ngày thay đổi gần nhất] không phải là [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Ngày thay đổi gần nhất] là sau [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Ngày thay đổi gần nhất] là trước [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Ngày thay đổi gần nhất] là hôm nay"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Ngày thay đổi gần nhất] là hôm qua"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Ngày thay đổi gần nhất] là trong tuần của [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Ngày thay đổi gần nhất] là trong tháng của [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Sở hữu Tập tin] là [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[sở hữu tập tin] không phải là [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Tìm:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Không tìm thấy hbox, sùng một lựa chọn tập tin bình thường"

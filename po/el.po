@@ -44,7 +44,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-02-24 20:48+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -80,7 +80,6 @@ msgstr "Αποτυχία του bonobo_ui_init()."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Εμβλήματα"
 
@@ -1039,7 +1038,6 @@ msgstr "Αυτό το θέμα χρησιμοποιεί φωτορεαλιστι
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Όνομα"
 
@@ -1820,7 +1818,6 @@ msgstr "Το όνομα και το εικονίδιο του αρχείου."
 
 #
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Μέγεθος"
 
@@ -1830,7 +1827,6 @@ msgstr "Το μέγεθος του αρχείου."
 
 #
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Τύπος"
 
@@ -1839,7 +1835,6 @@ msgid "The type of the file."
 msgstr "Ο τύπος του αρχείου."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Ημερομηνία Τροποποίησης"
 
@@ -3255,49 +3250,6 @@ msgstr "Αλλαγή σε Χειρωνακτική Διάταξη;"
 msgid "Switch"
 msgstr "Αλλαγή"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Αν θέλετε να ενεργοποιήσετε τις γρήγορες αναζητήσεις, μπορείτε να "
-"επεξεργαστείτε το αρχείο %s ως διαχειριστής (root). Θέτοντας τη σημαία "
-"ενεργοποίησης σε \"ναι\" θέτει σε λειτουργία τις υπηρεσίες Μέδουσα.\n"
-"Για να εκκινήσετε τις υπηρεσίες ευρετηρίου και αναζήτησης άμεσα, πρέπει να "
-"εκτελέσετε ως διαχειριστής (root) τις επόμενες εντολές:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Οι γρήγορες αναζητήσεις δε θα είναι διαθέσιμες μέχρι να ολοκληρωθεί η "
-"δημιουργία αρχικού ευρετηρίου των αρχείων σας. Αυτό μπορεί να πάρει κάποιο "
-"χρόνο."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Η Μέδουσα, η εφαρμογή που εκτελεί αναζητήσεις, δε μπορεί να βρεθεί στο "
-"σύστημά σας. Αν μεταγλωττίσατε το Ναυτίλο χειρωνακτικά, πρέπει να "
-"εγκαταστήσετε ένα αντίγραφο της Μέδουσας και να επαναγλωττίσετε το Ναυτίλο. "
-"(Ένα αντίγραφο της Μέδουσας είναι διαθέσιμο από το ftp://ftp.gnome.org)\n"
-"Αν χρησιμοποιείτε μια πακεταρισμένη έκδοση του Ναυτίλου, οι γρήγορες "
-"αναζητήσεις δεν είναι διαθέσιμες.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3657,256 +3609,6 @@ msgid ""
 msgstr ""
 "Για να ανοίξετε μη τοπικά αρχεία, αντιγράψτε τα σε ένα τοπικό κατάλογο και "
 "ρίξτε τα ξανά. Τα τοπικά αρχεία που ρίξατε έχει ήδη ανοιχτεί."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Αντικείμενα ]περιέχουν \"%s\" στο όνομά τους"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Αντικείμενα ]αρχίζουν με \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Αντικείμενα ]τελειώνουν με %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Αντικείμενα ]δεν περιέχουν το \"%s\" στο όνομά τους"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Αντικείμενα ]ταιριάζουν στην κανονική έκφραση \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Αντικείμενα ]ταιριάζουν στην έκφραση αρχείων \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Αντικείμενα που είναι ]κανονικά αρχεία"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Αντικείμενα που είναι ]αρχεία κειμένου"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Αντικείμενα που είναι ]εφαρμογές"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Αντικείμενα που είναι ]φάκελοι"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Αντικείμενα που είναι ]μουσική"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Αντικείμενα ]που δεν είναι %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Αντικείμενα ]που είναι %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Αντικείμενα ]δεν ανήκουν από το \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Αντικείμενα ]ανήκουν στο \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Αντικείμενα ]με ταυτότητα ιδιοκτήτη UID \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Αντικείμενα ]με ταυτότητα ιδιοκτήτη UID διαφορετικό από \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Αντικείμενα ]μεγαλύτερα από %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Αντικείμενα ]μικρότερα από %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Αντικείμενα ]των %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Αντικείμενα ]που τροποποιήθηκαν σήμερα"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Αντικείμενα ]που τροποποιήθηκαν χθες"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Αντικείμενα ]που τροποποιήθηκαν στις %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Αντικείμενα ]που δεν τροποποιήθηκαν στις %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Αντικείμενα ]που τροποποιήθηκαν πριν τις %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Αντικείμενα ]που τροποποιήθηκαν μετά τις %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Αντικείμενα ]που τροποποιήθηκαν μέσα στην εβδομάδα %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Αντικείμενα ]που τροποποιήθηκαν μέσα στο μήνα %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Αντικείμενα ]μαρκαρισμένα με \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Αντικείμενα ]που δεν είναι μαρκαρισμένα με \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Αντικείμενα ]με όλες τις λέξεις \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Αντικείμενα ]που περιέχουν μια από τις λέξεις \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Αντικείμενα ]χωρίς όλες τις λέξεις \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Αντικείμενα ]χωρίς καμία από τις λέξεις \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[Αντικείμενα μεγαλύτερα των 400K] και [χωρίς όλες τις λέξεις \"μήλο πορτοκάλι"
-"\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Αντικείμενα μεγαλύτερα των 400K], [που ανήκουν στο διαχειριστή και χωρίς "
-"όλες τις λέξεις \"μήλο πορτοκάλι\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Αντικείμενα %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Αντικείμενα που περιέχουν το \"πράγμα\" στο όνομά τους"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Αντικείμενα που είναι κανονικά αρχεία"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Αντικείμενα που περιέχουν \"πράγμα\" στο όνομά τους και είναι κανονικά αρχεία"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Αντικείμενα που περιέχουν \"πράγμα\" στο όνομά τους, είναι κανονικά αρχεία "
-"και είναι μικρότερα των 2000 byte"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr ""
-"Αντικείμενα που περιέχουν τη λέξη \"μέδουσα\" στο όνομά τους και είναι "
-"φάκελοι"
 
 #
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
@@ -5207,266 +4909,6 @@ msgstr "Δημιουργία παραθύρου Ιδιοτήτων."
 msgid "Select an icon"
 msgstr "Επιλέξτε ένα εικονίδιο"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Τα αποτελέσματα μπορεί να μην περιλαμβάνουν αντικείμενα που τροποποιήθηκαν "
-"μετά τις %s, όταν το ευρετήριο του δίσκου σας ανανεώθηκε για τελευταία φορά."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Αποτελέσματα Αναζήτησης"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Συγγνώμη αλλά η υπηρεσία αναζήτησης μέδουσα δεν είναι διαθέσιμη."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "Η Medusa δεν έχει εγκατασταθεί."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Η Υπηρεσία Αναζήτησης Δεν Είναι Διαθέσιμη"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Η αναζήτηση που επιλέξατε είναι νεώτερη από το ευρετήριο του συστήματός σας. "
-"Η αναζήτηση δε θα επιστρέψει αποτελέσματα τώρα."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Μπορείτε να δημιουργήσετε νέο ευρετήριο με την εκτέλεση του \"medusa-indexd"
-"\" ως διαχειριστής (root) από την γραμμή εντολών."
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "Αναζήτηση αντικειμένων που είναι πολύ πρόσφατα"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Κάθε αντιστοιχισμένο αρχείο στον υπολογιστή σας ταιριάζει με τα κριτήρια που "
-"επιλέξατε."
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Μπορείτε να ελέγξετε την ορθογραφία των επιλογών σας ή να προσθέσετε "
-"συνθήκες για να περιορίσετε τα αποτελέσματα."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "Σφάλμα Κατά την Αναζήτηση"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Η Αναζήτηση δε μπορεί να βρει το ευρετήριο του συστήματος αρχείων. Το "
-"ευρετήριο μπορεί να λείπει ή να έχει κάποιο πρόβλημα."
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "Σφάλμα ανάγνωσης ευρετηρίου αρχείων"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "Προέκυψε σφάλμα κατά τη φόρτωση των περιεχομένων της αναζήτησης."
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Για να κάνετε μια γρήγορη αναζήτηση, η Εύρεση απαιταί ένα πίνακα των αρχείων "
-"του συστήματός σας."
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Για να κάνετε μια αναζήτηση περιεχομένου, η Εύρεση απαιταί ένα πίνακα των "
-"αρχείων του συστήματός σας."
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Το Ευρετήριο δε μπορεί να χρησιμοποιήσει τον πίνακα αυτή τη φορά οπότε θα "
-"πραγματοποιηθεί μια πιο αργή αναζήτηση που δεν κάνει χρήση πίνακα."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "Το Ευρετήριο δε μπορεί να χρησιμοποιήσει τον πίνακα αυτή τη φορά."
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "Οι γρήγορες αναζητήσεις δεν είναι διαθέσιμες"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "Οι αναζητήσεις περιεχομένου δεν είναι διαθέσιμες"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Τα ευρετήρια αρχείων είναι διαθέσιμα αλλά η υπηρεσία αναζήτησης Μέδουσα, που "
-"χειρίζετε τις αιτήσεις, δεν είναι ενεργή. Για να την εκκινήσετε, συνδεθείτε "
-"ως διαχειριστής και εκτελέστε την εντολή από τη γραμμή εντολών:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
-"αρχείων του συστήματός σας. Ο υπολογιστής σας δημιουργεί αυτή τη στιγμή αυτό "
-"το ευρετήριο."
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Για να κάνετε μια αναζήτηση περιεχομένου, το Ευρετήριο απαιτεί ένα πίνακα "
-"των περιεχομένων του συστήματός σας. Ο υπολογιστής σας δημιουργεί αυτή τη "
-"στιγμή αυτό το ευρετήριο."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-"Επειδή Ο υπολογιστής σας δημιουργεί αυτή τη στιγμή  το ευρετήριο., αυτή η "
-"αναζήτηση θα διαρκέσει μερικά λεπτά."
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-"Οι αναζητήσεις περιεχομένου θα είναι διαθέσιμες όταν ολοκληρωθεί το "
-"ευρετήριο."
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "Οι Αναζητήσεις Βάσει Ευρετηρίου Δεν Είναι Διαθέσιμες"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Για να κάνετε μια αναζήτηση περιεχομένου, η Εύρεση απαιτεί ένα πίνακα των "
-"αρχείων του συστήματός σας. Δεν υπάρχει διαθέσιμο ευρετήριο αυτή την στιγμή."
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Για να κάνετε μια αναζήτηση περιεχομένου, η Εύρεση απαιταί ένα πίνακα των "
-"αρχείων του συστήματός σας. Δεν υπάρχει διαθέσιμο ευρετήριο αυτή την στιγμή."
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-" Μπορείτε να δημιουργήσετε νέο ευρετήριο με την εκτέλεση του \"medusa-indexd"
-"\" ως διαχειριστής (root) από την γραμμή εντολών. Μέχρι να δημιουργηθεί ένα "
-"πλήρες ευρετήριο, οι αναζητήσεις θα διαρκούν μερικά λεπτά."
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Μπορείτε να δημιουργήσετε νέο ευρετήριο με την εκτέλεση του \"medusa-indexd"
-"\"  ως διαχειριστής (root) από τη γραμμή εντολών. Μέχρι να δημιουργηθεί ένα "
-"πλήρες ευρετήριο,  οι αναζητήσεις περιεχομένου δε θα είναι δυνατές."
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "Οι γρήγορες αναζητήσεις δεν είναι διαθέσιμες στον υπολογιστή σας."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
-"αρχείων του συστήματός σας. Ο διαχειριστής σας έχει απενεργοποιήσει τη "
-"γρήγορη αναζήτηση στον υπολογιστή σας, οπότε δεν υπάρχει διαθέσιμος πίνακας."
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "Οι γρήγορες αναζητήσεις δεν είναι ενεργοποιημένες"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Που"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "Παρουσίαση σε %d _Νέο Παράθυρο"
-msgstr[1] "Παρουσίαση σε %d _Νέα Παράθυρα"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Ο Ναυτίλος βρήκε περισσότερα αποτελέσματα αναζήτησης από αυτά που μπορεί να "
-"εμφανίσει."
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "Μερικά αποτελέσματα δε θα εμφανιστούν. "
-
-#
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Πάρα Πολλά Ταιριάσματα"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Κενό)"
@@ -5863,71 +5305,6 @@ msgstr "_Διατήρηση Στοίχισης"
 msgid "_Manually"
 msgstr "_Χειροκίνητα"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Η δημιουργία ευρετηρίου είναι κατά %d%% ολοκληρωμένη."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Τα αρχεία σας ανανεώθηκαν στο ευρετήριο τελευταία φορά στις %s."
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Μια φορά την ημέρα τα αρχεία σας και το περιεχόμενα κειμένου "
-"καταλογραφούνται με σκοπό οι αναζητήσεις σας να είναι γρηγορότερες."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Κατάσταση Δημιουργίας Ευρετηρίου"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "Τα αρχεία σας καταγράγονται αυτή την στιγμή  στο ευρετήριο."
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Μια φορά την ημέρα τα αρχεία σας και το περιεχόμενα κειμένου "
-"καταλογραφούνται με σκοπό οι αναζητήσεις σας να είναι γρηγορότερες."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Δεν υπάρχει ευρετήριο των αρχείων σας αυτή τη στιγμή."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Όταν είναι ενεργοποιημένη η Γρήγορη Αναζήτηση, η Εύρεση δημιουργεί ένα "
-"ευρετήριο για την επιτάχυνση των αναζητήσεών σας. Η Γρήγορη Αναζήτηση δεν "
-"είναι ενεργοποιημένη στον υπολογιστή σας, οπότε δεν έχετε ένα ευρετήριο αυτή "
-"τη στιγμή."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "Δεν υπάρχει ευρετήριο καταλόγου αρχείων"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Συγγνώμη αλλά η υπηρεσία αναζήτησης μέδουσα δεν είναι διαθέσιμη."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "Βεβαιωθείτε ότι η medusa έχει εγκατασυαθεί σωστά."
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "Επιλέξτε τις ορατές στήλες μέσα σε αυτό το φάκελο"
@@ -5935,26 +5312,6 @@ msgstr "Επιλέξτε τις ορατές στήλες μέσα σε αυτό
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "Ορατές _Στήλες..."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Παρουσίαση κάθε επιλεγμένου αντικειμένου στο προγρατικό του φάκελο"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Παρουσίαση σε Νέο Παράθυρο"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Εμφάνιση Κατάσταση Δημιουργίας Ευρετηρίου"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Εμφάνιση Κατάσταση _Δημιουργίας Ευρετηρίου"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Εμφάνιση κατάστασης χρήσης του ευρετηρίου κατά την αναζήτηση"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6154,19 +5511,6 @@ msgstr "<b>Ό_νομα</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Επεξεργασία Σελιδοδεικτών"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Περισσότερες Επιλογές"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Λιγότερες Επιλογές"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Βρες τα!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7093,162 +6437,6 @@ msgstr "_Αφαίρεση Χρώματος..."
 msgid "_Remove an Emblem..."
 msgstr "_Αφαίρεση Εμβλήματος..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Αναζήτηση για] Όνομα [που περιέχει \"ψάρι\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Αναζήτηση για] Περιεχόμενο [που περιλαμβάνει όλα από \"ψάρι δέντρο\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Αναζήτηση για] Είδος [είναι κανονικό αρχείο]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Αναζήτηση για] Μέγεθος [μεγαλύτερο από 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Αναζήτηση για] Με Έμβλημα [που περιλαμβάνει \"Σημαντικό\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Αναζήτηση για] Τελευταία Τροποποίηση [πριν από χτες]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Αναζήτηση για] Ιδιοκτήτης [να μην είναι διαχειριστής]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Όνομα αρχείου] να περιέχει [βοήθεια]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Όνομα αρχείου] να αρχίζει με [ναυτίλος]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Όνομα αρχείου] να τελειώνει σε [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Όνομα αρχείου] να ταιριάζει με [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Όνομα αρχείου] να ταιριάζει βάσει καν.έκφρασης με [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Περιεχόμενο αρχείου] να περιλαμβάνει όλα από [μήλο πορτοκάλι]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Περιεχόμενο αρχείου] να περιλαμβάνει οποιοδήποτε από [μήλο πορτοκάλι]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Περιεχόμενο αρχείου] να μην περιλαμβάνει όλα από [μήλο πορτοκάλι]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Περιεχόμενο αρχείου] να μην περιλαμβάνει κανένα από [μήλο πορτοκάλι]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Είδος αρχείου] να είναι [φάκελος]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Είδος αρχείου] να μην είναι [φάκελος]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Είδος αρχείου να είναι] κανονικό αρχείο"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Είδος αρχείου να είναι] αρχείο κειμένου"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Είδος αρχείου να είναι] εφαρμογή"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Είδος αρχείου να είναι] φάκελος"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Είδος αρχείου να είναι] μουσική"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Μέγεθος αρχείου να είναι] μεγαλύτερο από [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Μέγεθος αρχείου να είναι] μικρότερο από [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Με έμβλημα] μαρκαρισμένο ως [Σημαντικό]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Με έμβλημα] να μην είναι μαρκαρισμένο ως [Σημαντικό]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Τελευταία ημερομηνία τροποποίησης] να μην είναι [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι μετά από [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι πριν από [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι σήμερα"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι χτες"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr ""
-"[Τελευταία ημερομηνία τροποποίησης] να είναι στην εβδομάδα του [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι στο μήνα του [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Ιδιοκτήτης αρχείου] να είναι [διαχειριστής]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Ιδιοκτήτης αρχείου] να μην είναι [διαχειριστής]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr ""
@@ -7454,10 +6642,6 @@ msgstr "Άνοιγμα του μητρικού φακέλου"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "_Τοποθεσίες"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Εύρεση:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7704,6 +6888,592 @@ msgstr "Εξυπηρετητές Δικτύου"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Εμφάνιση των εξυπηρετητών δικτύου στο διαχειριστή αρχείων του Ναυτίλου"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Αν θέλετε να ενεργοποιήσετε τις γρήγορες αναζητήσεις, μπορείτε να "
+#~ "επεξεργαστείτε το αρχείο %s ως διαχειριστής (root). Θέτοντας τη σημαία "
+#~ "ενεργοποίησης σε \"ναι\" θέτει σε λειτουργία τις υπηρεσίες Μέδουσα.\n"
+#~ "Για να εκκινήσετε τις υπηρεσίες ευρετηρίου και αναζήτησης άμεσα, πρέπει "
+#~ "να εκτελέσετε ως διαχειριστής (root) τις επόμενες εντολές:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Οι γρήγορες αναζητήσεις δε θα είναι διαθέσιμες μέχρι να ολοκληρωθεί η "
+#~ "δημιουργία αρχικού ευρετηρίου των αρχείων σας. Αυτό μπορεί να πάρει "
+#~ "κάποιο χρόνο."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Η Μέδουσα, η εφαρμογή που εκτελεί αναζητήσεις, δε μπορεί να βρεθεί στο "
+#~ "σύστημά σας. Αν μεταγλωττίσατε το Ναυτίλο χειρωνακτικά, πρέπει να "
+#~ "εγκαταστήσετε ένα αντίγραφο της Μέδουσας και να επαναγλωττίσετε το "
+#~ "Ναυτίλο. (Ένα αντίγραφο της Μέδουσας είναι διαθέσιμο από το ftp://ftp."
+#~ "gnome.org)\n"
+#~ "Αν χρησιμοποιείτε μια πακεταρισμένη έκδοση του Ναυτίλου, οι γρήγορες "
+#~ "αναζητήσεις δεν είναι διαθέσιμες.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Αντικείμενα ]περιέχουν \"%s\" στο όνομά τους"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Αντικείμενα ]αρχίζουν με \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Αντικείμενα ]τελειώνουν με %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Αντικείμενα ]δεν περιέχουν το \"%s\" στο όνομά τους"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Αντικείμενα ]ταιριάζουν στην κανονική έκφραση \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Αντικείμενα ]ταιριάζουν στην έκφραση αρχείων \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Αντικείμενα που είναι ]κανονικά αρχεία"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Αντικείμενα που είναι ]αρχεία κειμένου"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Αντικείμενα που είναι ]εφαρμογές"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Αντικείμενα που είναι ]φάκελοι"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Αντικείμενα που είναι ]μουσική"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Αντικείμενα ]που δεν είναι %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Αντικείμενα ]που είναι %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Αντικείμενα ]δεν ανήκουν από το \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Αντικείμενα ]ανήκουν στο \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Αντικείμενα ]με ταυτότητα ιδιοκτήτη UID \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Αντικείμενα ]με ταυτότητα ιδιοκτήτη UID διαφορετικό από \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Αντικείμενα ]μεγαλύτερα από %s byte"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Αντικείμενα ]μικρότερα από %s byte"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Αντικείμενα ]των %s byte"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Αντικείμενα ]που τροποποιήθηκαν σήμερα"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Αντικείμενα ]που τροποποιήθηκαν χθες"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Αντικείμενα ]που τροποποιήθηκαν στις %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Αντικείμενα ]που δεν τροποποιήθηκαν στις %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Αντικείμενα ]που τροποποιήθηκαν πριν τις %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Αντικείμενα ]που τροποποιήθηκαν μετά τις %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Αντικείμενα ]που τροποποιήθηκαν μέσα στην εβδομάδα %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Αντικείμενα ]που τροποποιήθηκαν μέσα στο μήνα %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Αντικείμενα ]μαρκαρισμένα με \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Αντικείμενα ]που δεν είναι μαρκαρισμένα με \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Αντικείμενα ]με όλες τις λέξεις \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Αντικείμενα ]που περιέχουν μια από τις λέξεις \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Αντικείμενα ]χωρίς όλες τις λέξεις \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Αντικείμενα ]χωρίς καμία από τις λέξεις \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[Αντικείμενα μεγαλύτερα των 400K] και [χωρίς όλες τις λέξεις \"μήλο "
+#~ "πορτοκάλι\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Αντικείμενα μεγαλύτερα των 400K], [που ανήκουν στο διαχειριστή και χωρίς "
+#~ "όλες τις λέξεις \"μήλο πορτοκάλι\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Αντικείμενα %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Αντικείμενα που περιέχουν το \"πράγμα\" στο όνομά τους"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Αντικείμενα που είναι κανονικά αρχεία"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Αντικείμενα που περιέχουν \"πράγμα\" στο όνομά τους και είναι κανονικά "
+#~ "αρχεία"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Αντικείμενα που περιέχουν \"πράγμα\" στο όνομά τους, είναι κανονικά "
+#~ "αρχεία και είναι μικρότερα των 2000 byte"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr ""
+#~ "Αντικείμενα που περιέχουν τη λέξη \"μέδουσα\" στο όνομά τους και είναι "
+#~ "φάκελοι"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Τα αποτελέσματα μπορεί να μην περιλαμβάνουν αντικείμενα που "
+#~ "τροποποιήθηκαν μετά τις %s, όταν το ευρετήριο του δίσκου σας ανανεώθηκε "
+#~ "για τελευταία φορά."
+
+#~ msgid "Search Results"
+#~ msgstr "Αποτελέσματα Αναζήτησης"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Συγγνώμη αλλά η υπηρεσία αναζήτησης μέδουσα δεν είναι διαθέσιμη."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "Η Medusa δεν έχει εγκατασταθεί."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Η Υπηρεσία Αναζήτησης Δεν Είναι Διαθέσιμη"
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Η αναζήτηση που επιλέξατε είναι νεώτερη από το ευρετήριο του συστήματός "
+#~ "σας. Η αναζήτηση δε θα επιστρέψει αποτελέσματα τώρα."
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Μπορείτε να δημιουργήσετε νέο ευρετήριο με την εκτέλεση του \"medusa-"
+#~ "indexd\" ως διαχειριστής (root) από την γραμμή εντολών."
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Αναζήτηση αντικειμένων που είναι πολύ πρόσφατα"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Κάθε αντιστοιχισμένο αρχείο στον υπολογιστή σας ταιριάζει με τα κριτήρια "
+#~ "που επιλέξατε."
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Μπορείτε να ελέγξετε την ορθογραφία των επιλογών σας ή να προσθέσετε "
+#~ "συνθήκες για να περιορίσετε τα αποτελέσματα."
+
+#~ msgid "Error During Search"
+#~ msgstr "Σφάλμα Κατά την Αναζήτηση"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Η Αναζήτηση δε μπορεί να βρει το ευρετήριο του συστήματος αρχείων. Το "
+#~ "ευρετήριο μπορεί να λείπει ή να έχει κάποιο πρόβλημα."
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "Σφάλμα ανάγνωσης ευρετηρίου αρχείων"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Προέκυψε σφάλμα κατά τη φόρτωση των περιεχομένων της αναζήτησης."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Για να κάνετε μια γρήγορη αναζήτηση, η Εύρεση απαιταί ένα πίνακα των "
+#~ "αρχείων του συστήματός σας."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Για να κάνετε μια αναζήτηση περιεχομένου, η Εύρεση απαιταί ένα πίνακα των "
+#~ "αρχείων του συστήματός σας."
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Το Ευρετήριο δε μπορεί να χρησιμοποιήσει τον πίνακα αυτή τη φορά οπότε θα "
+#~ "πραγματοποιηθεί μια πιο αργή αναζήτηση που δεν κάνει χρήση πίνακα."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "Το Ευρετήριο δε μπορεί να χρησιμοποιήσει τον πίνακα αυτή τη φορά."
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Οι γρήγορες αναζητήσεις δεν είναι διαθέσιμες"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Οι αναζητήσεις περιεχομένου δεν είναι διαθέσιμες"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Τα ευρετήρια αρχείων είναι διαθέσιμα αλλά η υπηρεσία αναζήτησης Μέδουσα, "
+#~ "που χειρίζετε τις αιτήσεις, δεν είναι ενεργή. Για να την εκκινήσετε, "
+#~ "συνδεθείτε ως διαχειριστής και εκτελέστε την εντολή από τη γραμμή "
+#~ "εντολών:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
+#~ "αρχείων του συστήματός σας. Ο υπολογιστής σας δημιουργεί αυτή τη στιγμή "
+#~ "αυτό το ευρετήριο."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Για να κάνετε μια αναζήτηση περιεχομένου, το Ευρετήριο απαιτεί ένα πίνακα "
+#~ "των περιεχομένων του συστήματός σας. Ο υπολογιστής σας δημιουργεί αυτή τη "
+#~ "στιγμή αυτό το ευρετήριο."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr ""
+#~ "Επειδή Ο υπολογιστής σας δημιουργεί αυτή τη στιγμή  το ευρετήριο., αυτή η "
+#~ "αναζήτηση θα διαρκέσει μερικά λεπτά."
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr ""
+#~ "Οι αναζητήσεις περιεχομένου θα είναι διαθέσιμες όταν ολοκληρωθεί το "
+#~ "ευρετήριο."
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Οι Αναζητήσεις Βάσει Ευρετηρίου Δεν Είναι Διαθέσιμες"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Για να κάνετε μια αναζήτηση περιεχομένου, η Εύρεση απαιτεί ένα πίνακα των "
+#~ "αρχείων του συστήματός σας. Δεν υπάρχει διαθέσιμο ευρετήριο αυτή την "
+#~ "στιγμή."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Για να κάνετε μια αναζήτηση περιεχομένου, η Εύρεση απαιταί ένα πίνακα των "
+#~ "αρχείων του συστήματός σας. Δεν υπάρχει διαθέσιμο ευρετήριο αυτή την "
+#~ "στιγμή."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ " Μπορείτε να δημιουργήσετε νέο ευρετήριο με την εκτέλεση του \"medusa-"
+#~ "indexd\" ως διαχειριστής (root) από την γραμμή εντολών. Μέχρι να "
+#~ "δημιουργηθεί ένα πλήρες ευρετήριο, οι αναζητήσεις θα διαρκούν μερικά "
+#~ "λεπτά."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Μπορείτε να δημιουργήσετε νέο ευρετήριο με την εκτέλεση του \"medusa-"
+#~ "indexd\"  ως διαχειριστής (root) από τη γραμμή εντολών. Μέχρι να "
+#~ "δημιουργηθεί ένα πλήρες ευρετήριο,  οι αναζητήσεις περιεχομένου δε θα "
+#~ "είναι δυνατές."
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Οι γρήγορες αναζητήσεις δεν είναι διαθέσιμες στον υπολογιστή σας."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
+#~ "αρχείων του συστήματός σας. Ο διαχειριστής σας έχει απενεργοποιήσει τη "
+#~ "γρήγορη αναζήτηση στον υπολογιστή σας, οπότε δεν υπάρχει διαθέσιμος "
+#~ "πίνακας."
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Οι γρήγορες αναζητήσεις δεν είναι ενεργοποιημένες"
+
+#~ msgid "Where"
+#~ msgstr "Που"
+
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "Παρουσίαση σε %d _Νέο Παράθυρο"
+#~ msgstr[1] "Παρουσίαση σε %d _Νέα Παράθυρα"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Ο Ναυτίλος βρήκε περισσότερα αποτελέσματα αναζήτησης από αυτά που μπορεί "
+#~ "να εμφανίσει."
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "Μερικά αποτελέσματα δε θα εμφανιστούν. "
+
+#
+#~ msgid "Too Many Matches"
+#~ msgstr "Πάρα Πολλά Ταιριάσματα"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Η δημιουργία ευρετηρίου είναι κατά %d%% ολοκληρωμένη."
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Τα αρχεία σας ανανεώθηκαν στο ευρετήριο τελευταία φορά στις %s."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Μια φορά την ημέρα τα αρχεία σας και το περιεχόμενα κειμένου "
+#~ "καταλογραφούνται με σκοπό οι αναζητήσεις σας να είναι γρηγορότερες."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Κατάσταση Δημιουργίας Ευρετηρίου"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Τα αρχεία σας καταγράγονται αυτή την στιγμή  στο ευρετήριο."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Μια φορά την ημέρα τα αρχεία σας και το περιεχόμενα κειμένου "
+#~ "καταλογραφούνται με σκοπό οι αναζητήσεις σας να είναι γρηγορότερες."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Δεν υπάρχει ευρετήριο των αρχείων σας αυτή τη στιγμή."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Όταν είναι ενεργοποιημένη η Γρήγορη Αναζήτηση, η Εύρεση δημιουργεί ένα "
+#~ "ευρετήριο για την επιτάχυνση των αναζητήσεών σας. Η Γρήγορη Αναζήτηση δεν "
+#~ "είναι ενεργοποιημένη στον υπολογιστή σας, οπότε δεν έχετε ένα ευρετήριο "
+#~ "αυτή τη στιγμή."
+
+#~ msgid "No Index of Files"
+#~ msgstr "Δεν υπάρχει ευρετήριο καταλόγου αρχείων"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Συγγνώμη αλλά η υπηρεσία αναζήτησης μέδουσα δεν είναι διαθέσιμη."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "Βεβαιωθείτε ότι η medusa έχει εγκατασυαθεί σωστά."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Παρουσίαση κάθε επιλεγμένου αντικειμένου στο προγρατικό του φάκελο"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Παρουσίαση σε Νέο Παράθυρο"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Εμφάνιση Κατάσταση Δημιουργίας Ευρετηρίου"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Εμφάνιση Κατάσταση _Δημιουργίας Ευρετηρίου"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Εμφάνιση κατάστασης χρήσης του ευρετηρίου κατά την αναζήτηση"
+
+#~ msgid "More Options"
+#~ msgstr "Περισσότερες Επιλογές"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Λιγότερες Επιλογές"
+
+#~ msgid "Find Them!"
+#~ msgstr "Βρες τα!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Αναζήτηση για] Όνομα [που περιέχει \"ψάρι\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr ""
+#~ "[Αναζήτηση για] Περιεχόμενο [που περιλαμβάνει όλα από \"ψάρι δέντρο\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Αναζήτηση για] Είδος [είναι κανονικό αρχείο]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Αναζήτηση για] Μέγεθος [μεγαλύτερο από 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Αναζήτηση για] Με Έμβλημα [που περιλαμβάνει \"Σημαντικό\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Αναζήτηση για] Τελευταία Τροποποίηση [πριν από χτες]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Αναζήτηση για] Ιδιοκτήτης [να μην είναι διαχειριστής]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Όνομα αρχείου] να περιέχει [βοήθεια]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Όνομα αρχείου] να αρχίζει με [ναυτίλος]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Όνομα αρχείου] να τελειώνει σε [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Όνομα αρχείου] να ταιριάζει με [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Όνομα αρχείου] να ταιριάζει βάσει καν.έκφρασης με [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Περιεχόμενο αρχείου] να περιλαμβάνει όλα από [μήλο πορτοκάλι]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr ""
+#~ "[Περιεχόμενο αρχείου] να περιλαμβάνει οποιοδήποτε από [μήλο πορτοκάλι]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Περιεχόμενο αρχείου] να μην περιλαμβάνει όλα από [μήλο πορτοκάλι]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr ""
+#~ "[Περιεχόμενο αρχείου] να μην περιλαμβάνει κανένα από [μήλο πορτοκάλι]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Είδος αρχείου] να είναι [φάκελος]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Είδος αρχείου] να μην είναι [φάκελος]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Είδος αρχείου να είναι] κανονικό αρχείο"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Είδος αρχείου να είναι] αρχείο κειμένου"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Είδος αρχείου να είναι] εφαρμογή"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Είδος αρχείου να είναι] φάκελος"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Είδος αρχείου να είναι] μουσική"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Μέγεθος αρχείου να είναι] μεγαλύτερο από [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Μέγεθος αρχείου να είναι] μικρότερο από [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Με έμβλημα] μαρκαρισμένο ως [Σημαντικό]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Με έμβλημα] να μην είναι μαρκαρισμένο ως [Σημαντικό]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Τελευταία ημερομηνία τροποποίησης] να μην είναι [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι μετά από [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι πριν από [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι σήμερα"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι χτες"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr ""
+#~ "[Τελευταία ημερομηνία τροποποίησης] να είναι στην εβδομάδα του [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Τελευταία ημερομηνία τροποποίησης] να είναι στο μήνα του [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Ιδιοκτήτης αρχείου] να είναι [διαχειριστής]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Ιδιοκτήτης αρχείου] να μην είναι [διαχειριστής]"
+
+#~ msgid "Find:"
+#~ msgstr "Εύρεση:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr ""

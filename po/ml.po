@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-07-05 10:29+0530\n"
 "Last-Translator: FSF-India <locale@gnu.org.in>\n"
 "Language-Team: Malayalam <locale@gnu.org.in>\n"
@@ -39,7 +39,6 @@ msgstr ""
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "ചിഹ്നങ്ങള്"
 
@@ -962,7 +961,6 @@ msgstr ""
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "പേര‍്"
 
@@ -1620,7 +1618,6 @@ msgid "The name and icon of the file."
 msgstr "ജാലകത്തിന്റെ പ്രയോഗ ഐ.ഡി."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "വലിപ്പം"
 
@@ -1629,7 +1626,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "തരം"
 
@@ -1639,7 +1635,6 @@ msgid "The type of the file."
 msgstr "രചനാ തരം വാക്യ‌രചനയാകുന്നു"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "തീയതി പരിഷ്കരിച്ചു"
 
@@ -3043,31 +3038,6 @@ msgstr "നേരിട്ട് ചെയ്‍ത രീതിയില്?"
 msgid "Switch"
 msgstr "വൈദ്യുതപ്രാവഹനിയമാകം"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3411,247 +3381,6 @@ msgstr "വലിക്കുന്നതും ഇടുന്നതും പ�
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
-msgstr ""
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[ഇനങ്ങള്] \"%s\" ഉള്‍ക്കൊള്ളുന്നു  അവയുടെ നാമങ്ങളും"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[ഇനങ്ങള്‌ ]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[ഇനങ്ങള്‌ ]\"%s\" ല്‌ അവസാനിക്കുന്നു"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "അവയുടെ നാമങ്ങളില്‌ \"%s\" [ഇനങ്ങള്‌ ] ഉള്‌ക്കൊള്ളുന്നില്ല"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "സാധാരണ രചനകളായ ഇനങ്ങള്"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "സാധാരണ രചനകളായ ഇനങ്ങള്"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "ഈ പ്രയോഗത്തിന്റെ പ്രവ‍ര്ത്തനം നിര്ത്തുക"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[ആ ഇനങ്ങള്]കൂടുകളാണ‌്"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[ആ ഇനങ്ങള്‌]പാട്ടുകളാണ‌്"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[ഇനങ്ങള്] %s അല്ല"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[ഇനങ്ങള്]%s അല്ല"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[ഇനങ്ങള്‌ ]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" ന്റേതാകുന്നു"
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "\"%s\" ഉടമസ്ഥത UID ഉള്ള [ഇനങ്ങള്‌]"
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "\"%s\" ഉടമസ്ഥത UID അല്ലാത്ത[ഇനങ്ങള്‌]"
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[ഇനങ്ങള്‌]%s ബൈറ്റ്സിനെക്കാള്‌ വലുത്"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[ഇനങ്ങള്‌]%s ബൈറ്റ്സിനെക്കാള്‌ ചെറുത്"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[ഇനങ്ങള്‌]%s ബൈറ്റ്സ്"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[ഇനങ്ങള്] ഇന്നാണ‍് മാറ്റംവരുത്തിയത്"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[ഇനങ്ങള്] ഇന്നലെയാണ മാറ്റംവരുത്തിയത്"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[ഇനങ്ങള്‌] %s ന‍് മാറ്റംവരുത്തി"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[ഇനങ്ങള്‌] %s ന‍് മാറ്റംവരുത്തിയില്ല"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[ഇനങ്ങള്‌] %s ന‍് മുന്പ് മാറ്റംവരുത്തി"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[ഇനങ്ങള്‌] %s ന‍് ശേഷം മാറ്റംവരുത്തി"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[ഇനങ്ങള്‌] %s ന്റെ ഒരു ആഴ്ചയ്‍ക്കുള്ളിലാണ‍് മാറ്റംവരുത്തിയത്"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[ഇനങ്ങള്‌] %s ന്റെ ഒരു മാസത്തിനുള്ളിലാണ‍് മാറ്റംവരുത്തിയത്"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" ഉപയോഗിച്ച്‌ അടയാളപ്പെടുത്തി"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" ഉപയോഗിച്ച്‌ അടയാളപ്പെടുത്തിയില്ല"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" വാക്കുകളിലുള്ള ഒന്നില്‌ ഉള്‌പ്പെടുന്നു"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" എല്ലാ വാക്കുകളും ഇല്ലാത്തത്"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[ഇനങ്ങള്‌]\"%s\" വാക്കുകളില്ലാതെ"
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "ഇനങ്ങള്‌ %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr ""
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "സാധാരണ രചനകളായ ഇനങ്ങള്"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr ""
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
@@ -4843,228 +4572,6 @@ msgstr "ഗുണഗണ ജാലകം ഉണ്ടാക്കുക"
 msgid "Select an icon"
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "അന്വേഷണ ഫലങ്ങള്‌"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "മെഡുസ തിരച്ചില് സേവനം ലഭ്യമല്ല."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "അന്വേഷണ-സേവനം ലഭ്യമല്ല"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "ഏറ്റവും പുതിയി ഇനങ്ങള്‌ക്കുവേണ്ടിയുള്ള തെരയുക‌"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "തെരച്ചിലിനിടയില്‌ തെറ്റ്"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "രചനാ സൂചിക വായിക്കുന്നതില്‌ പരാജയം"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "കണ്ടെത്തിയ ഈ രചനകളുടെ ഉള്ളടക്കം കൊണ്ടുവരന്നതില് തകരാറ് : %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "അതിവേഗത്തിലുള്ള തെരച്ചില്‌ ലഭ്യമല്ല"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "ഉള്ളടക്ക അന്വേഷണം ലഭ്യമല്ല"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "സൂചിത-ഉള്ളടക്ക അന്വേഷണം ലഭ്യമല്ല"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "അതിവേഗ തെരച്ചില്‌ താങ്കളുടെ കംപ്യ‍ൂട്ടറില്‌ സജ്ജീകരിച്ചിട്ടല്ല"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "അതിവേഗത്തിലുള്ള തെരച്ചില്‌ ലഭ്യമല്ല"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "എവിടെ"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "പുതിയ ജാലകത്തില്‌ തുറന്നുകാണിക്കുക"
-msgstr[1] "പുതിയ ജാലകത്തില്‌ തുറന്നുകാണിക്കുക"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr "നോട്ടിലസ് രചനാനിര്‍വ്വാഹകന് തെരച്ചില് ഫല നാമാവലി കാഴ്ച"
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "വളരയെധികം ചേ‍ര്ച്ചകള്‌"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(ഒഴിഞ്ഞ)"
@@ -5443,63 +4950,6 @@ msgstr ""
 msgid "_Manually"
 msgstr "നേരിട്ട് ചെയ്യ‍ുക"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "സൂചികാ അവസ്ഥ"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "നിങ്ങളുടെ രചനക്ക് ഇപ്പോള് സൂചികയില്ല."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "മെഡുസ തിരച്ചില് സേവനം ലഭ്യമല്ല."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5508,26 +4958,6 @@ msgstr "ഈ കൂടിനുള്ളില് ഒരു പുതിയ ക�
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "തെരെഞ്ഞെടുത്ത ഓരോ ഇനവും അവയുടെ യഥാര്ത്ഥ കുടില് തുറന്നുകാട്ടുക"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "പുതിയ ജാലകത്തില്‌ തുറന്നുകാട്ടുക"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "സൂചികാ അവസ്ഥ കാണിക്കുക"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "സൂചികാ അവസ്ഥ കാണിക്കുക"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "തെരയുമ്പോള് സൂചികാ അവസ്ഥ ഉപയോഗിച്ചത് കാണിക്കുക"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5679,19 +5109,6 @@ msgstr ""
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "അടയാളം പുനക്രമീകരിക്കുക"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "കൂടുതല്‌ ബദലുകള്‌"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "കുറച്ച് ബദലുകള്‌"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "അവയെ കണ്ടുപിടിക്കു!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6595,161 +6012,6 @@ msgstr "നിറം മായ്‍ക്കുക..."
 msgid "_Remove an Emblem..."
 msgstr "ചിഹ്നം മായ്‍ക്കുക"
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[അന്വേഷണത്തിനുവേണ്ടി] പേ‌‌‌ര‌് [\"fish\" ഉള്‌പ്പെടുന്നു]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "ശേഖരത്തിന്‌റെ ഉള്ളടക്കത്തില്‌ എല്ലാം (ആപ്പിള്‌ വൃക്ഷം) ഉള്‌പ്പെടും"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[അന്വേഷണം] തരം [നിയതശേഖരമാണ്] "
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "വലിപ്പം 400K യെക്കള്‌ കൂടുതലായതിനുവേണ്ടി തെരയുന്നു"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr ""
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "ഇന്നലെ്ക്കു മുന്പ് (മിനിയാന്ന്) അവസാനം മാറ്റം വരുത്തിയതിനുവേണ്ടി തെരയുന്നു"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[പരതൂ] ഉടമസ്ഥന്‌ [റൂട്ട് അല്ല]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[ശേഖരനാമം] ഉള്‌ക്കൊള്ളുന്നു [സഹായി]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "നോട്ടിലസിലാണ് ശേഖരനാമം ആരംഭിക്കുന്നത്"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "ശേഖരനാമം അവസാനിക്കുന്നത് സിയിലാണ്"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr ""
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr ""
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "ശേഖരത്തിന്‌റെ ഉള്ളടക്കത്തില്‌ എല്ലാം (ആപ്പിള്‌ ഓറഞ്ചും) ഉള്‌പ്പെടും"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "രചനയില്‌‌ ആപ്പിളോ ഓറഞ്ചോ ഇവയിലേതെങ്കിലും ഉള്‌പ്പെടും"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "രചനയില്‌‌ ഒന്നും (ആപ്പിളും ഓറഞ്ചും) ഉള്‌പ്പെടുന്നില്ല"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "രചനയില്‌‌ ആപ്പിളോ ഓറഞ്ചോ ഉള്‌പ്പെടുന്നില്ല"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[രചന തരം] [കൂട്] ആകുന്നു"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[രചന തരം] [കൂട്] അല്ല"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "രചനാതരം സാധാരണ രചനയാകുന്നു"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "രചനാ തരം വാക്യ‌രചനയാകുന്നു"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "രചനാതരം അനുപ്രയോഗമാകുന്നു"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "കൂട് ആകുന്നു രചനാതരം"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "സംഗീതമാണ‌് ശേഖരതരം"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "ശേഖരവലിപ്പം [400K] ക്കാള്‌ വലുതാണ‌്"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "ശേഖരവലിപ്പം [300K] ക്കാള്‌ ചെറുതാണ‌്"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr ""
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr ""
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[1/24/00] ഈ തീയതിയാണ‌് അവസാനം മാറ്റം വരുത്തിയത്"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[1/24/00] ഈ തീയതിക്ക് അവസാനം മാറ്റം വരുത്തിയില്ല"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr " [1/24/00] ശേഷമാണ‌് തീയതി അവസാനം മാറ്റം വരുത്തിയത്"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr " [1/24/00] മുന്പാണ‌് തീയതി അവസാനം  മാറ്റം വരുത്തിയത്"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "ഇന്നാണ‍് തീയതി അവസാനം മാറ്റംവരുത്തിയത്"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "ഇന്നലെയാണ‍് തീയതി അവസാനം മാറ്റം വരുത്തിയത്"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "ഒരു ആഴ്ചയ്‍ക്കുള്ളിലാണ‍് അവസാനം തീയതി മാറ്റം വരുത്തിയത്  [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "ഒരു മാസത്തിനുള്ളിലാണ‍് അവസാനം തീയതി മാറ്റം വരുത്തിയത്  [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[രചന ഉടമ] ആധാരം ആകുന്നു"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[രചന ഉടമ] ആധാരം അല്ല"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "ഈ സ്ഥാനത്തിന‍് മറ്റൊരു ദൃശ്യ-രീതി തിരഞ്ഞെടുക്കുകയോ,മാറ്റം വരുത്തുകയോ ചെയ്യ‍ുക"
@@ -6957,10 +6219,6 @@ msgstr "[ആ ഇനങ്ങള്]കൂടുകളാണ‌്"
 #, fuzzy
 msgid "_Places"
 msgstr "മാതൃകകള്"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "കണ്ടെത്തുക:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7202,6 +6460,311 @@ msgstr "ശൃംഖലാ സേവനം"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr ""
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[ഇനങ്ങള്] \"%s\" ഉള്‍ക്കൊള്ളുന്നു  അവയുടെ നാമങ്ങളും"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌ ]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[ഇനങ്ങള്‌ ]\"%s\" ല്‌ അവസാനിക്കുന്നു"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "അവയുടെ നാമങ്ങളില്‌ \"%s\" [ഇനങ്ങള്‌ ] ഉള്‌ക്കൊള്ളുന്നില്ല"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "സാധാരണ രചനകളായ ഇനങ്ങള്"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "സാധാരണ രചനകളായ ഇനങ്ങള്"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "ഈ പ്രയോഗത്തിന്റെ പ്രവ‍ര്ത്തനം നിര്ത്തുക"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[ആ ഇനങ്ങള്]കൂടുകളാണ‌്"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[ആ ഇനങ്ങള്‌]പാട്ടുകളാണ‌്"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[ഇനങ്ങള്] %s അല്ല"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[ഇനങ്ങള്]%s അല്ല"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌ ]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" ന്റേതാകുന്നു"
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "\"%s\" ഉടമസ്ഥത UID ഉള്ള [ഇനങ്ങള്‌]"
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "\"%s\" ഉടമസ്ഥത UID അല്ലാത്ത[ഇനങ്ങള്‌]"
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[ഇനങ്ങള്‌]%s ബൈറ്റ്സിനെക്കാള്‌ വലുത്"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[ഇനങ്ങള്‌]%s ബൈറ്റ്സിനെക്കാള്‌ ചെറുത്"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[ഇനങ്ങള്‌]%s ബൈറ്റ്സ്"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[ഇനങ്ങള്] ഇന്നാണ‍് മാറ്റംവരുത്തിയത്"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[ഇനങ്ങള്] ഇന്നലെയാണ മാറ്റംവരുത്തിയത്"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[ഇനങ്ങള്‌] %s ന‍് മാറ്റംവരുത്തി"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[ഇനങ്ങള്‌] %s ന‍് മാറ്റംവരുത്തിയില്ല"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[ഇനങ്ങള്‌] %s ന‍് മുന്പ് മാറ്റംവരുത്തി"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[ഇനങ്ങള്‌] %s ന‍് ശേഷം മാറ്റംവരുത്തി"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[ഇനങ്ങള്‌] %s ന്റെ ഒരു ആഴ്ചയ്‍ക്കുള്ളിലാണ‍് മാറ്റംവരുത്തിയത്"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[ഇനങ്ങള്‌] %s ന്റെ ഒരു മാസത്തിനുള്ളിലാണ‍് മാറ്റംവരുത്തിയത്"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" ഉപയോഗിച്ച്‌ അടയാളപ്പെടുത്തി"
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" ഉപയോഗിച്ച്‌ അടയാളപ്പെടുത്തിയില്ല"
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" ല്‌ ആരംഭിക്കുന്നു"
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" വാക്കുകളിലുള്ള ഒന്നില്‌ ഉള്‌പ്പെടുന്നു"
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" എല്ലാ വാക്കുകളും ഇല്ലാത്തത്"
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[ഇനങ്ങള്‌]\"%s\" വാക്കുകളില്ലാതെ"
+
+#~ msgid "Items %s"
+#~ msgstr "ഇനങ്ങള്‌ %s"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "സാധാരണ രചനകളായ ഇനങ്ങള്"
+
+#~ msgid "Search Results"
+#~ msgstr "അന്വേഷണ ഫലങ്ങള്‌"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "മെഡുസ തിരച്ചില് സേവനം ലഭ്യമല്ല."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "അന്വേഷണ-സേവനം ലഭ്യമല്ല"
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "ഏറ്റവും പുതിയി ഇനങ്ങള്‌ക്കുവേണ്ടിയുള്ള തെരയുക‌"
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "തെരച്ചിലിനിടയില്‌ തെറ്റ്"
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "രചനാ സൂചിക വായിക്കുന്നതില്‌ പരാജയം"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "കണ്ടെത്തിയ ഈ രചനകളുടെ ഉള്ളടക്കം കൊണ്ടുവരന്നതില് തകരാറ് : %s"
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "അതിവേഗത്തിലുള്ള തെരച്ചില്‌ ലഭ്യമല്ല"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "ഉള്ളടക്ക അന്വേഷണം ലഭ്യമല്ല"
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "സൂചിത-ഉള്ളടക്ക അന്വേഷണം ലഭ്യമല്ല"
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "അതിവേഗ തെരച്ചില്‌ താങ്കളുടെ കംപ്യ‍ൂട്ടറില്‌ സജ്ജീകരിച്ചിട്ടല്ല"
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "അതിവേഗത്തിലുള്ള തെരച്ചില്‌ ലഭ്യമല്ല"
+
+#~ msgid "Where"
+#~ msgstr "എവിടെ"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "പുതിയ ജാലകത്തില്‌ തുറന്നുകാണിക്കുക"
+#~ msgstr[1] "പുതിയ ജാലകത്തില്‌ തുറന്നുകാണിക്കുക"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr "നോട്ടിലസ് രചനാനിര്‍വ്വാഹകന് തെരച്ചില് ഫല നാമാവലി കാഴ്ച"
+
+#~ msgid "Too Many Matches"
+#~ msgstr "വളരയെധികം ചേ‍ര്ച്ചകള്‌"
+
+#~ msgid "Indexing Status"
+#~ msgstr "സൂചികാ അവസ്ഥ"
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "നിങ്ങളുടെ രചനക്ക് ഇപ്പോള് സൂചികയില്ല."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "മെഡുസ തിരച്ചില് സേവനം ലഭ്യമല്ല."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "തെരെഞ്ഞെടുത്ത ഓരോ ഇനവും അവയുടെ യഥാര്ത്ഥ കുടില് തുറന്നുകാട്ടുക"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "പുതിയ ജാലകത്തില്‌ തുറന്നുകാട്ടുക"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "സൂചികാ അവസ്ഥ കാണിക്കുക"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "സൂചികാ അവസ്ഥ കാണിക്കുക"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "തെരയുമ്പോള് സൂചികാ അവസ്ഥ ഉപയോഗിച്ചത് കാണിക്കുക"
+
+#~ msgid "More Options"
+#~ msgstr "കൂടുതല്‌ ബദലുകള്‌"
+
+#~ msgid "Fewer Options"
+#~ msgstr "കുറച്ച് ബദലുകള്‌"
+
+#~ msgid "Find Them!"
+#~ msgstr "അവയെ കണ്ടുപിടിക്കു!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[അന്വേഷണത്തിനുവേണ്ടി] പേ‌‌‌ര‌് [\"fish\" ഉള്‌പ്പെടുന്നു]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "ശേഖരത്തിന്‌റെ ഉള്ളടക്കത്തില്‌ എല്ലാം (ആപ്പിള്‌ വൃക്ഷം) ഉള്‌പ്പെടും"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[അന്വേഷണം] തരം [നിയതശേഖരമാണ്] "
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "വലിപ്പം 400K യെക്കള്‌ കൂടുതലായതിനുവേണ്ടി തെരയുന്നു"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "ഇന്നലെ്ക്കു മുന്പ് (മിനിയാന്ന്) അവസാനം മാറ്റം വരുത്തിയതിനുവേണ്ടി തെരയുന്നു"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[പരതൂ] ഉടമസ്ഥന്‌ [റൂട്ട് അല്ല]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[ശേഖരനാമം] ഉള്‌ക്കൊള്ളുന്നു [സഹായി]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "നോട്ടിലസിലാണ് ശേഖരനാമം ആരംഭിക്കുന്നത്"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "ശേഖരനാമം അവസാനിക്കുന്നത് സിയിലാണ്"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "ശേഖരത്തിന്‌റെ ഉള്ളടക്കത്തില്‌ എല്ലാം (ആപ്പിള്‌ ഓറഞ്ചും) ഉള്‌പ്പെടും"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "രചനയില്‌‌ ആപ്പിളോ ഓറഞ്ചോ ഇവയിലേതെങ്കിലും ഉള്‌പ്പെടും"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "രചനയില്‌‌ ഒന്നും (ആപ്പിളും ഓറഞ്ചും) ഉള്‌പ്പെടുന്നില്ല"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "രചനയില്‌‌ ആപ്പിളോ ഓറഞ്ചോ ഉള്‌പ്പെടുന്നില്ല"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[രചന തരം] [കൂട്] ആകുന്നു"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[രചന തരം] [കൂട്] അല്ല"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "രചനാതരം സാധാരണ രചനയാകുന്നു"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "രചനാ തരം വാക്യ‌രചനയാകുന്നു"
+
+#~ msgid "[File type is] application"
+#~ msgstr "രചനാതരം അനുപ്രയോഗമാകുന്നു"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "കൂട് ആകുന്നു രചനാതരം"
+
+#~ msgid "[File type is] music"
+#~ msgstr "സംഗീതമാണ‌് ശേഖരതരം"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "ശേഖരവലിപ്പം [400K] ക്കാള്‌ വലുതാണ‌്"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "ശേഖരവലിപ്പം [300K] ക്കാള്‌ ചെറുതാണ‌്"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[1/24/00] ഈ തീയതിയാണ‌് അവസാനം മാറ്റം വരുത്തിയത്"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[1/24/00] ഈ തീയതിക്ക് അവസാനം മാറ്റം വരുത്തിയില്ല"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr " [1/24/00] ശേഷമാണ‌് തീയതി അവസാനം മാറ്റം വരുത്തിയത്"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr " [1/24/00] മുന്പാണ‌് തീയതി അവസാനം  മാറ്റം വരുത്തിയത്"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "ഇന്നാണ‍് തീയതി അവസാനം മാറ്റംവരുത്തിയത്"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "ഇന്നലെയാണ‍് തീയതി അവസാനം മാറ്റം വരുത്തിയത്"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "ഒരു ആഴ്ചയ്‍ക്കുള്ളിലാണ‍് അവസാനം തീയതി മാറ്റം വരുത്തിയത്  [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "ഒരു മാസത്തിനുള്ളിലാണ‍് അവസാനം തീയതി മാറ്റം വരുത്തിയത്  [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[രചന ഉടമ] ആധാരം ആകുന്നു"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[രചന ഉടമ] ആധാരം അല്ല"
+
+#~ msgid "Find:"
+#~ msgstr "കണ്ടെത്തുക:"
 
 #~ msgid "AFFS Volume"
 #~ msgstr "AFFS ഖണ‍്ഡം"

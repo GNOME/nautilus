@@ -28,7 +28,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-09-04 15:26+0200\n"
 "Last-Translator: Ivan Stojmirov <stojmir@linux.net.mk>\n"
 "Language-Team: Macedonian <gnomk-main@lists.sourceforge.net>\n"
@@ -63,7 +63,6 @@ msgstr "bonobo_ui_init() неуспешно."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Амблеми"
 
@@ -1005,7 +1004,6 @@ msgstr "Оваа тема користи фото-реалистични пап�
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Име"
 
@@ -1793,7 +1791,6 @@ msgid "The name and icon of the file."
 msgstr "Апликационо ID на прозорецот."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Големина"
 
@@ -1802,7 +1799,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Вид"
 
@@ -1812,7 +1808,6 @@ msgid "The type of the file."
 msgstr "[Типот на датотека е] текст датотека"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Дата на Модификација"
 
@@ -3300,46 +3295,6 @@ msgstr "Да Префрлам на Рачен Изглед?"
 msgid "Switch"
 msgstr "Префрли"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Ако сакаш да ги овозможиш брзите пребарувања, можеш да ја промениш "
-"датотеката %s како root. Со подесување на овозможеното знаме на \"да\" ќе се "
-"уклучат medusa сервисите.\n"
-"За да почнеш со индексирање и пребарувањ на сервисите веднаш, внеси ги "
-"следниве команди како root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Брзите пребарувања нема да бидат достапни се додека не биде создаден "
-"иницијалне индекс на твоите датотеки. Ова може да потрае подолго време."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Medusa, е апликација што спроведува пребарувања, неможе да биде најдена на "
-"твојот систем. Ако си го компајлирал Nautilus сам/а, ќе треба да инсталираш "
-"medusa и да го прекомпајлираш Nautilus (Копија од medusa можете да најдете "
-"на ftp://ftp.gnome.org)\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3725,253 +3680,6 @@ msgstr ""
 "\n"
 "За да отворите нелокални датотеки ископирајте ги во локален директориум и "
 "обидете се повторно.Локалните датотеки кои ги спуштивте веќе беа отворени."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Предмети ]содржани \"%s\" во нивните имиња"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Предмети ]што почнуваат со \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Предмети ]што завршуваат со %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Предмети ]што не се содржат \"%s\" во нивните имиња"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Предмети ]што се поклопуваат со регуларните изрази \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Предмети ]што се поклопуваат со схемата на датотеката \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Предмети што се ]регуларни датотеки"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Предмети што се ]текст датотеки"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Предмети што се ]апликации"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Предмети што се ]папки"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Предмети што се ]музика"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Предмети ]што не се %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Предмети ]што се %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Предмети ]што не се поседувани од \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Предмети ]поседувани од \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Предмети ]со сопствена Кориснички Идентификација \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Предмети ]со сопственичка Корисничка Идентификација освен \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Предмети ]поголеми од %s бајти"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Предмети ]помали од %s бајти"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Предмети ]од %s бајти"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[ПредметиItems ]модифицирани денес"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Предмети ]модифицирани вчера"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Предмети ]модифицирани на %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Предмети ]што не се модифицирани на %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Предмети ]модифицирани пред %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Предмети ]модифицирани после %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Предмети ]модифицирани во неделата %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Предмети ]модифицирани во месецот %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Предмети ]обележани со \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Предмети ]што не се обележани со\"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Предмети ]со сите зборови \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Предмети ]што содржат еден од зборовите \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Предметите ]што не се со сите зборови \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Предметите ]што се без ни еден од зборовите \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[Предметите поголеми од 400K] и [без сите зброови \"јаболко портокал\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Предметите поголеми од 400K], [што ги поседува root-от, и без сите зборови] "
-"\"јаболко портокал\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Предмети %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Предмети што содржат \"работи\" во нивните имиња"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Предмети што се регуларни датотеки"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Предмети што содржат \"работи\" во нивнита имиња и што се регуларни датотеки"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Предмети што содржат \"нешто\" во нивните имиња и се обични датотеки помали "
-"од 2000 бајти"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Предмети што содржат \"medusa\" во нивните имиња и кои се датотеки"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5225,297 +4933,6 @@ msgstr "Создавам прозорец со Својства"
 msgid "Select an icon"
 msgstr "Избери икона"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Резултатите од пребарувањето нема да ги содржат предметите модифицирани по %"
-"s."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Резулатати од пребарувањето"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Извини, но medusa пребарувачкиот сервис не е достапен."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Сервисот за Пребарување Не е Достапен"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now.  You can create a new  index by "
-"running \"medusa-indexd\" as root on the command line."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
-"the command line."
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Барај предмети што се нови"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Every indexed file on your computer matches the criteria you selected. You "
-"can check the spelling on your selections or add more criteria to narrow "
-"your results."
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Every indexed file on your computer matches the criteria you selected. You "
-"can check the spelling on your selections or add more criteria to narrow "
-"your results."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Грешка при Пребарувањето"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
-"the command line."
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Грешка при читањето на датотека индексот"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Грешка при вчитувањето на пребараната содржина: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"To do a content search, Find requires an index of the files on your system.  "
-"Find can't access your index right now. "
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"To do a content search, Find requires an index of the files on your system.  "
-"Find can't access your index right now. "
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Брзите пребарувања не се достапни"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Содржинските пребарување не се достапни"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index.   Because Find cannot use an "
-"index, this search may take several minutes."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index.  Content searches "
-"will be available when the index is complete."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Индексните пребарувања не се достапни"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"To do a content search, Find requires an index of the files on your system.  "
-"Find can't access your index right now. "
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"To do a content search, Find requires an index of the files on your system.  "
-"Find can't access your index right now. "
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now. You can create an index by running \"medusa-"
-"indexd\" as root on the command line.  Until a complete index is available, "
-"searches will take several minutes."
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now.  You can create an index by "
-"running \"medusa-indexd\" as root on the command line.  Until a complete "
-"index is available, content searches cannot be performed."
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Брзите пребарувања не се вклучени на твојот компјутер"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"сTo do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Брзите пребарувања не се достапни"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Каде"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Откриј во Нов Прозорец"
-msgstr[1] "_Откриј во Нов Прозорец"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus најде повеќе резултати од пребарувањето одколку што може да "
-"прикаже. Некои резулатите нема да бидат прикажани."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus најде повеќе резултати од пребарувањето одколку што може да "
-"прикаже. Некои резулатите нема да бидат прикажани."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Премногу исти резултати"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Празно)"
@@ -5906,72 +5323,6 @@ msgstr "Одржувај ред"
 msgid "_Manually"
 msgstr "_Рачно"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Индексирањето е %d%% завршено."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Твоите датотеки последен пат беа индексирани на %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Еднаш дневно твоите датотеки и текст содржини се индексираат за твоите "
-"пребарувања да се одвиваат побрзо. "
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Статус на Индексирање"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "Твоите датотеки последен пат беа индексирани на %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Еднаш дневно твоите датотеки и текст содржини се индексираат за твоите "
-"пребарувања да се одвиваат побрзо. "
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Во моментов не постои индекс на твоите датотеки."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Кога е вклучено Брзото Пребарување, Барај создава индекс за да го забрза "
-"пребарувањето.  Брзото Пребарување не е вклучено на твојот компјутер, и "
-"затоа во моментов немаш индекс."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Извини, но medusa пребарувачкиот сервис не е достапен."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5980,26 +5331,6 @@ msgstr "Создади нова празна папка во оваа папка
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Октриј го секој избран предмет во неговата оригинална папка"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Откриј во Нов Прозорец"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Покажи го Статусот на Индексирање"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Покажи го _статусот на индексирање"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Прикажи го статусот на индексирање користен при пребарување"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6193,19 +5524,6 @@ msgstr "<b>_Име</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Уреди обележувачи"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Повеќе Опции"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Помалку Опции"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Најди Ги!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7140,161 +6458,6 @@ msgstr "_Отстрани Боја..."
 msgid "_Remove an Emblem..."
 msgstr "_Отстрани Емблем..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Барај] Име [што содржи \"риба\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Барај] Содржина [вклучувајќи ги сите од \"дрвото на рибата\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Барај] Вид [е регуларна датотека]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Барај] Големина [поголемо од 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Барај] Со Емблем [вклучувајќи \"Важни\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Барај] Последна Измена [пред вчера]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Барај] Сопственик [е root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Датотека] содржи [помош]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Датотека] започнува со [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Датотека] завршува со [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Датотека] одговара на glob [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Име на датотеката] одговара на regexp [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Содржина на датотеката] вклучува [јаболко портокал]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Содржина на датотеката] вклучува [јаболко портокал]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Содржина на датотеката] не ги вклучува сите [jаболко портокал]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Содржина на датотеката] не вклучува [јаболко портокал]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Видот на датотека ] е [папка]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Видот на датотека] не е папка"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Видот на датотека е] обична датотека"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Типот на датотека е] текст датотека"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Типот на датотека е] апликација"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Типот на датотека е] папка"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Типот на датотека е] музика"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Големината на датотеката е] поголема од [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Големината на датотеката е] помала од [30K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Со емблем] обележано како [Важно]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Со емблем] не обележано со [Важно]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Последна дата на модификација] e [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Последна дата на модификација] не е [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Последна дата на модификација] е после [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Последна дата на модификација] е пред [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Последна дата на модификација] е денес"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Последна дата на модификација] е вчера"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Последна дата на модификација]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Последна дата на модификација] е на [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Сопственикот на датотеката] не е [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Сопственикот на датотеката] не е [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Избери поглед за сегашната локација, или модифицирај ги погледите"
@@ -7503,10 +6666,6 @@ msgstr "[Предмети што се ]папки"
 #, fuzzy
 msgid "_Places"
 msgstr "_Шари"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Најди:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7766,6 +6925,589 @@ msgstr "Мрежни сервери"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Гледај ги твоите мрежни сервери во Nautilus менаџерот со датотеки"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Ако сакаш да ги овозможиш брзите пребарувања, можеш да ја промениш "
+#~ "датотеката %s како root. Со подесување на овозможеното знаме на \"да\" ќе "
+#~ "се уклучат medusa сервисите.\n"
+#~ "За да почнеш со индексирање и пребарувањ на сервисите веднаш, внеси ги "
+#~ "следниве команди како root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Брзите пребарувања нема да бидат достапни се додека не биде создаден "
+#~ "иницијалне индекс на твоите датотеки. Ова може да потрае подолго време."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Medusa, е апликација што спроведува пребарувања, неможе да биде најдена "
+#~ "на твојот систем. Ако си го компајлирал Nautilus сам/а, ќе треба да "
+#~ "инсталираш medusa и да го прекомпајлираш Nautilus (Копија од medusa "
+#~ "можете да најдете на ftp://ftp.gnome.org)\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Предмети ]содржани \"%s\" во нивните имиња"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Предмети ]што почнуваат со \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Предмети ]што завршуваат со %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Предмети ]што не се содржат \"%s\" во нивните имиња"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Предмети ]што се поклопуваат со регуларните изрази \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Предмети ]што се поклопуваат со схемата на датотеката \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Предмети што се ]регуларни датотеки"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Предмети што се ]текст датотеки"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Предмети што се ]апликации"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Предмети што се ]папки"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Предмети што се ]музика"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Предмети ]што не се %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Предмети ]што се %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Предмети ]што не се поседувани од \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Предмети ]поседувани од \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Предмети ]со сопствена Кориснички Идентификација \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Предмети ]со сопственичка Корисничка Идентификација освен \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Предмети ]поголеми од %s бајти"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Предмети ]помали од %s бајти"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Предмети ]од %s бајти"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[ПредметиItems ]модифицирани денес"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Предмети ]модифицирани вчера"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Предмети ]модифицирани на %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Предмети ]што не се модифицирани на %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Предмети ]модифицирани пред %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Предмети ]модифицирани после %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Предмети ]модифицирани во неделата %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Предмети ]модифицирани во месецот %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Предмети ]обележани со \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Предмети ]што не се обележани со\"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Предмети ]со сите зборови \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Предмети ]што содржат еден од зборовите \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Предметите ]што не се со сите зборови \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Предметите ]што се без ни еден од зборовите \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[Предметите поголеми од 400K] и [без сите зброови \"јаболко портокал\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Предметите поголеми од 400K], [што ги поседува root-от, и без сите "
+#~ "зборови] \"јаболко портокал\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Предмети %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Предмети што содржат \"работи\" во нивните имиња"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Предмети што се регуларни датотеки"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Предмети што содржат \"работи\" во нивнита имиња и што се регуларни "
+#~ "датотеки"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Предмети што содржат \"нешто\" во нивните имиња и се обични датотеки "
+#~ "помали од 2000 бајти"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Предмети што содржат \"medusa\" во нивните имиња и кои се датотеки"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Резултатите од пребарувањето нема да ги содржат предметите модифицирани "
+#~ "по %s."
+
+#~ msgid "Search Results"
+#~ msgstr "Резулатати од пребарувањето"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Извини, но medusa пребарувачкиот сервис не е достапен."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Сервисот за Пребарување Не е Достапен"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now.  You can create a new  index by "
+#~ "running \"medusa-indexd\" as root on the command line."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt.  You can create a new index by running \"medusa-indexd\" as root "
+#~ "on the command line."
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Барај предмети што се нови"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Грешка при Пребарувањето"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt.  You can create a new index by running \"medusa-indexd\" as root "
+#~ "on the command line."
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Грешка при читањето на датотека индексот"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Грешка при вчитувањето на пребараната содржина: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system.  Find can't access your index right now. "
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system.  Find can't access your index right now. "
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Брзите пребарувања не се достапни"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Содржинските пребарување не се достапни"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index.   Because Find cannot use "
+#~ "an index, this search may take several minutes."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index.  Content "
+#~ "searches will be available when the index is complete."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Индексните пребарувања не се достапни"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system.  Find can't access your index right now. "
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system.  Find can't access your index right now. "
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now. You can create an index by running "
+#~ "\"medusa-indexd\" as root on the command line.  Until a complete index is "
+#~ "available, searches will take several minutes."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now.  You can create an index by "
+#~ "running \"medusa-indexd\" as root on the command line.  Until a complete "
+#~ "index is available, content searches cannot be performed."
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Брзите пребарувања не се вклучени на твојот компјутер"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "сTo do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Брзите пребарувања не се достапни"
+
+#~ msgid "Where"
+#~ msgstr "Каде"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Откриј во Нов Прозорец"
+#~ msgstr[1] "_Откриј во Нов Прозорец"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus најде повеќе резултати од пребарувањето одколку што може да "
+#~ "прикаже. Некои резулатите нема да бидат прикажани."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus најде повеќе резултати од пребарувањето одколку што може да "
+#~ "прикаже. Некои резулатите нема да бидат прикажани."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Премногу исти резултати"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Индексирањето е %d%% завршено."
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Твоите датотеки последен пат беа индексирани на %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Еднаш дневно твоите датотеки и текст содржини се индексираат за твоите "
+#~ "пребарувања да се одвиваат побрзо. "
+
+#~ msgid "Indexing Status"
+#~ msgstr "Статус на Индексирање"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Твоите датотеки последен пат беа индексирани на %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Еднаш дневно твоите датотеки и текст содржини се индексираат за твоите "
+#~ "пребарувања да се одвиваат побрзо. "
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Во моментов не постои индекс на твоите датотеки."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Кога е вклучено Брзото Пребарување, Барај создава индекс за да го забрза "
+#~ "пребарувањето.  Брзото Пребарување не е вклучено на твојот компјутер, и "
+#~ "затоа во моментов немаш индекс."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Извини, но medusa пребарувачкиот сервис не е достапен."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Октриј го секој избран предмет во неговата оригинална папка"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Откриј во Нов Прозорец"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Покажи го Статусот на Индексирање"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Покажи го _статусот на индексирање"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Прикажи го статусот на индексирање користен при пребарување"
+
+#~ msgid "More Options"
+#~ msgstr "Повеќе Опции"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Помалку Опции"
+
+#~ msgid "Find Them!"
+#~ msgstr "Најди Ги!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Барај] Име [што содржи \"риба\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Барај] Содржина [вклучувајќи ги сите од \"дрвото на рибата\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Барај] Вид [е регуларна датотека]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Барај] Големина [поголемо од 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Барај] Со Емблем [вклучувајќи \"Важни\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Барај] Последна Измена [пред вчера]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Барај] Сопственик [е root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Датотека] содржи [помош]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Датотека] започнува со [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Датотека] завршува со [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Датотека] одговара на glob [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Име на датотеката] одговара на regexp [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Содржина на датотеката] вклучува [јаболко портокал]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[Содржина на датотеката] вклучува [јаболко портокал]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Содржина на датотеката] не ги вклучува сите [jаболко портокал]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Содржина на датотеката] не вклучува [јаболко портокал]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Видот на датотека ] е [папка]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Видот на датотека] не е папка"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Видот на датотека е] обична датотека"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Типот на датотека е] текст датотека"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Типот на датотека е] апликација"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Типот на датотека е] папка"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Типот на датотека е] музика"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Големината на датотеката е] поголема од [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Големината на датотеката е] помала од [30K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Со емблем] обележано како [Важно]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Со емблем] не обележано со [Важно]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Последна дата на модификација] e [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Последна дата на модификација] не е [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Последна дата на модификација] е после [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Последна дата на модификација] е пред [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Последна дата на модификација] е денес"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Последна дата на модификација] е вчера"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Последна дата на модификација]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Последна дата на модификација] е на [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Сопственикот на датотеката] не е [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Сопственикот на датотеката] не е [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Најди:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Не можам да најдам hbox, што користи нормално избирање на датотеки"

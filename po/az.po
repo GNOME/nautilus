@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-03-06 22:16+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani Turkish <translation-team-az@lists.sourceforge."
@@ -44,7 +44,6 @@ msgstr "bonobo_ui_init() iflas etdi."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Emblemlər"
 
@@ -969,7 +968,6 @@ msgstr "Bu örtü fotoqrafik həqiqətdə qovluqlar işlədir."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Proqramın Adı"
 
@@ -1689,7 +1687,6 @@ msgid "The name and icon of the file."
 msgstr "Faylın adı və timsalı."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Böyüklük"
 
@@ -1698,7 +1695,6 @@ msgid "The size of the file."
 msgstr "Faylın böyüklüyü."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Növ"
 
@@ -1707,7 +1703,6 @@ msgid "The type of the file."
 msgstr "Faylın növü."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Təkmilləşdirmə Tarixi"
 
@@ -3101,46 +3096,6 @@ msgstr "Əllə Düzülüşə Keçilsin?"
 msgid "Switch"
 msgstr "Keç"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Cəld axtarışı fəallaşdırmaq üçün %s faylını ali istifadəçi olaraq "
-"düzəltməlisiniz. \"yes\"ə fəal bayrağı qoymaqla meduza xidmətlərini açaq.\n"
-"İndeksləmə əməliyyatını elə indi başlatmaq üçün ali istifadəçi olaraq bu "
-"əmrləri icra etməlisiniz:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Faylların başlanğıc indeksi yaradılmadığı müddətcə aəld axtarış imkanınız "
-"yoxdur.  Bu bir az vaxt ala bilər."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Sistemdə axtarış aparan meduza proqramı tapıla bilmədi.  Nautilusu özünüz "
-"dərlədinizsə, meduza nüsxəsini qurmalı və nautilusu yenidən dərləməlisiniz.  "
-"(Medusa nüsxəsini ftp://ftp.gnome.org ünvanından ala bilərsiniz)\n"
-"Əgər Nautilusun paket buraxılışını işlədirsinizsə, cəld axtarış imkanınız "
-"yoxdur.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3492,253 +3447,6 @@ msgid ""
 msgstr ""
 "Yerli olmayan faylları yerli bir qovluğa köçürüp hədəfə buraxa bilərsiniz. "
 "Buraxdığınız yerli fayllar onsuzda açılıbdır."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "Adlarında \"%s\" daxil edənlər [Üzvlər]"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "\"%s\" ilə başlayan [Üzvlər]"
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "%s ilə sonlanan [Üzvlər]"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "Adlarında \"%s\" daxil etməyənlər [Üzvlər]"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "\"%s\" qaydalı ifadəsinə uyğun gələnlər [Üzvlər]"
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "\"%s\" fayl paterninə uyğun gələnlər [Üzvlər]"
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "Sıravi fayl olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "Mətn faylları"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "Proqram olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "Qovluq olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "Musiqi olanlar"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "%s olmayanlar"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "%s olanlar"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "Yiyəsi \"%s\" olmayanlar"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "Yiyəsi \"%s\" olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "Yiyə \"UID\"i \"%s\" olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "Yiyə \"UID\"i \"%s\"dan(dən) başqa olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "%s baytdan böyük olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "%s baytdan kiçik olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "%s bayt böyüklükdə olanlar"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "bugün təkmilləşdirilənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "dünən təkmilləşdirilənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "\"%s\" tarixində təkmilləşdirilənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "\"%s\" tarixində təkmilləşdirilməyənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "\"%s\" tarixindən əvvəl təkmilləşdirilənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "\"%s\" tarixindən sonra təkmilləşdirilənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "\"%s\" həftə içində təkmilləşdirilənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "\"%s\" ay içində təkmilləşdirilənlər"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "\"%s\" ilə işarələnmiş olanlar"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "\"%s\" ilə işarələnmiş olmayanlar"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "Bütün \"%s\" kəlməsini daxil edənlər"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "\"%s\" kəlmələrindən birini daxil edənlər"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "Bütün \"%s\" kəlməsini daxil etməyənlər"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "Heç bir \"%s\" kəlməsini daxil etməyənlər"
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[400K-dan böyük olan üzvlər] və [bütün \"apple orange\" kəlmələrini daxil "
-"etməyənlər]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[400K-dan böyük olan üzvlər], [yiyəsi root olan və bütün \"apple orange\" "
-"kəlmələrini daxil etməyənlər]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "%s üzvləri"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Adlarında \"stuff\" daxil edən üzvlər"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Sıravi fayl olan üzvlər"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "Sıravi fayl olan və adlarında \"stuff\" daxil edən üzvlər"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-" 2000 baytdan böyük, adlarında \"stuff\" daxil edən və sıravi fayl olan "
-"üzvlər"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Qovluq olan və adlarında \"medusa\" daxil edən üzvlər"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4934,253 +4642,6 @@ msgstr "Xüsusiyyətlər Pəncərəsi yaradılır."
 msgid "Select an icon"
 msgstr "Timsal seç"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Axtarış nəticələrinə sürücünüz axırıncı dəfə indeksləndiyi %s tarixindən "
-"sonrakı dəyişikliklər daxil edilməyə bilər."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Axtarış Nəticələri"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Bağışlayın, Medusa axtarış xidməti mövcud deyil."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "Medusa qurulu deyil."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Axtarış Xidməti Mövcud Deyil"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Seçdiyiniz axtarış sisteminizdəki indeksdən daha yenidir. Heç bir axtarış "
-"nəticəsi tapılmayacaqdır."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Yeni indeks yaratmaq üçün \"medusa-indexd\" əmrini ali istifadəçi olaraq əmr "
-"sətirindən verin."
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "Çox Yeni Olan Üzvləri Axtar"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Kompüterinizdaki hər indekslənən fayl sizin klriteriyanıza uyğun gəlir."
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Kriteriyanızda imla yoxlaması aparıb yeni kriteriyalar əlavə edərək nəticəni "
-"daralda bilərsiniz."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "Axtarış Sırasında Xəta"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Find fayl sisemi indeksinizi aça bilmir. İndeksiniz ya yoxdur ya da "
-"xəsərlidir."
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "Fayl İndeksını Oxuma Xətası"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "Bu axtarışın məzmunu yüklənirkən xəta oldu."
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr "Sür'ətli axtarış üçün sisteminizdəki faylların indekslənməsi lazımdır."
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr "Məzmun axtarışı üçün sisteminizdəki faylların indekslənməsi lazımdır."
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Find sisteminizdəki indeksə indi yetişə bilmir, ona görə də indeks istifadə "
-"edilmədən daha yavaş axtarış aparılacaqdır."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "Find hazırda məzmununuza yetişə bilmir."
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "Sür'ətli Axtarışlar Mövcud Deyil"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "Məzmun Axtarışları Mövcud Deyil"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Sizin indeks faylınız mövcuddur, amma bu faylları işlədən Medusa axtarış "
-"vasitəsi baqlıdır. Proqramı başlatmaq üçün ali istifadəçi olaraq girişdən "
-"sonra bu əmri sətirdən girin:\n"
-" medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Sür'ətli axtarış üçün Find sisteminizdəki faylların indekslənməsini tələb "
-"edir. Bu dəqiqə kompüterinizdəki faylların indeksi yaradılır."
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Məzmun axtarışı üçün Find sisteminizdəki faylların indekslənməsini tələb "
-"edir. Bu dəqiqə kompüterinizdəki faylların indeksi yaradılır."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-"Find proqramının məzmuna yetişə bilməməsi səbəbiylə, bu axtarış bir neçə "
-"dəqiqə sürə bilər."
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr "Məzmun axtarışları məzmunun tamamlanmasından sonra mümkün olacaqdır."
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "İndekslənmiş Axtarışlar Mövcud Deyil"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Sür'ətli axtarış üçün Find sisteminizdəki faylların indekslənməsini tələb "
-"edir. Hazırda indeks mövcud deyil."
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Məzmun axtarışı üçün Find sisteminizdəki faylların indekslənməsini tələb "
-"edir. Hazırda indeks mövcud deyil."
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Ali istifadəçi olaraq əmr sətirində \"medusa-indexd\" əmri ilə indeks yarada "
-"bilərsiniz. Tamamlanmış indeks mövcud olana qədər axtarışlar bir neçə dəqiqə "
-"sürə bilər."
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Ali istifadəçi olaraq əmr sətirində \"medusa-indexd\" əmri ilə indeks yarada "
-"bilərsiniz. Tamamlanmış indeks mövcud olana qədər məzmun axtarışı aparıla "
-"bilməz."
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "Kompüterinizdə sür'ətli axtarışlar fəallaşdırılmayıb."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Sür'ətli axtarış aparmaq üçün \"Find\" sisteminizdəki faylların "
-"indekslənməsini tələb edir. Amma sistem idaracisi kompüterinizdəki "
-"indeksləməyi bağladığı üçün indeks mövcud deyildir."
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "Sür'ətli Axtarışlar Fəallaşdırılmayıb"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Harda"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "Yeni Pəncərədə İfşa Et"
-msgstr[1] "%d Yeni Pəncərədə İfşa Et"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr "Mautilus nümayiş etdirə biləcəyindən daha çox axtarış nəticəsi tapdı."
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "Bə'zi uyğun gələn üzvlər göstərilməyəcəkdir."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Həddindən Artıq Oxşar Var"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Boş)"
@@ -5548,69 +5009,6 @@ msgstr "_Hizalı Saxla"
 msgid "_Manually"
 msgstr "Ə_llə"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "İndeksləmə %d%% bitdi."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Fayllarınız axırıncı dəfə %s-da indekslənibdir."
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Bir neçə gün əvvəl sisteminiz indekslənmişdi. Ona görə də axtarışlarınız "
-"sür'ətli aparılır."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "İndeksləmə Vəziyyəti"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "Fayllarınız hazırda indekslənir."
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Axtarışlarınızın sür'ətli aparıla bilməsi üçün fayllarınız və mətn "
-"məzmununuz gündə bir dəfə indekslənir."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Bu dəqiqə indeks faylınız yoxdur."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Sür'ətli axtarışla \"Find\" axtarışları cəldləşdirir. KompüterinizdəSür'ətli "
-"axtarış fəal deyil. Ona görə də bu dəqiqə indeksiniz yoxudr."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "Faylların Məzmunu Çıxarılmayıb"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Bağışlayın, Medusa axtarış xidməti fəal deyil."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "Xahiş edirik, medusanın düzgün qurulduğunu yoxlayın."
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "Bu qovluqda göstəriləcək sütunları seçin"
@@ -5618,26 +5016,6 @@ msgstr "Bu qovluqda göstəriləcək sütunları seçin"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "Görünən _Sütun..."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Hər bir seçili üzvü öz qovluğuna apar"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Yeni Pəncərədə Açığa Çıxart"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "İndeksləmə Vəziyyətini Göstər"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "İndeksləmə _Vəziyyətini Göstər"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Axtarışlarda işlətdiyin indeksləmənin vəziyyəti göstər"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5822,19 +5200,6 @@ msgstr "<b>_Ad</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Nişanları Düzəlt"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Ətraflı Seçimlər"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Qısa Seçimlər"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Tap Onları!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6724,161 +6089,6 @@ msgstr "_Rəngi Sil..."
 msgid "_Remove an Emblem..."
 msgstr "_Emblemi Sil..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[contains \"fish\"] Adı [Search for] "
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[includes all of \"fish tree\"] İçindəkiləri [Search for] "
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[is regular file] Növ [Search for] "
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[larger than 400K] Böyüklük [Search for]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[includes \"Important\"] Emblemlini [Search for] "
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[before yesterday] Axırıncı Düzəlişi Olanı [Search for] "
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "Yiyəsi [is not root] [Search for] "
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[File name] [help] daxil edən"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[File name] [nautilus] ilə başlayan"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[File name] [.c] ilə qurtaran"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[File name] [*.c] ilə qlobal olaraq uyğun gələn"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[File name] [\"e??l.$\"] qaydalı ifadəsi ilə uyğun gələn"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[apple orange] hamısını daxil edən [File content]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[apple orange] hər hansı birini daxil edən [File content]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[apple orange] hamısını daxil etməyən [File content]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[apple orange] heç birini daxil edən [File content]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[File type] [folder] dır(dir, dur, dür)"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[File type] [folder] deyildir"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "Sıravi fayl [File type is]"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "Mətn faylı [File type is]"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "Proqram tə'minatı [File type is]"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "Qovluq [File type is] "
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "Musiqi [File type is]"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[400K] böyük [File size is] "
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[300K] kiçik [File size is]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Important] işarətli [With emblem]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Important] işarətli olmayan [With emblem]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Last modified date] [1/24/00] olan"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Last modified date] [1/24/00] olmayan"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Last modified date] [1/24/00] sonra olan"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Last modified date] [1/24/00] əvvəl olan"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Last modified date] bugün olan"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Last modified date] dünən olan"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Last modified date] [1/24/00] həftəsi içində olan"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Last modified date] [1/24/00] ayı içində olan"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[File owner] [root] dır(dir, dur, dür)"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[File owner] [root] deyildir"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Bura üçün bir görünüç seçin ya da təkmillşdirin"
@@ -7077,10 +6287,6 @@ msgstr "Qonşu qovluğu aç"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "_Mövqelər"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Axtar:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7319,3 +6525,562 @@ msgstr "Şəbəkə Vericiləri"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus fayl idarəçisində şəbəkə vericilərinizi görün"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Cəld axtarışı fəallaşdırmaq üçün %s faylını ali istifadəçi olaraq "
+#~ "düzəltməlisiniz. \"yes\"ə fəal bayrağı qoymaqla meduza xidmətlərini "
+#~ "açaq.\n"
+#~ "İndeksləmə əməliyyatını elə indi başlatmaq üçün ali istifadəçi olaraq bu "
+#~ "əmrləri icra etməlisiniz:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Faylların başlanğıc indeksi yaradılmadığı müddətcə aəld axtarış imkanınız "
+#~ "yoxdur.  Bu bir az vaxt ala bilər."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Sistemdə axtarış aparan meduza proqramı tapıla bilmədi.  Nautilusu özünüz "
+#~ "dərlədinizsə, meduza nüsxəsini qurmalı və nautilusu yenidən "
+#~ "dərləməlisiniz.  (Medusa nüsxəsini ftp://ftp.gnome.org ünvanından ala "
+#~ "bilərsiniz)\n"
+#~ "Əgər Nautilusun paket buraxılışını işlədirsinizsə, cəld axtarış imkanınız "
+#~ "yoxdur.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "Adlarında \"%s\" daxil edənlər [Üzvlər]"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "\"%s\" ilə başlayan [Üzvlər]"
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "%s ilə sonlanan [Üzvlər]"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "Adlarında \"%s\" daxil etməyənlər [Üzvlər]"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "\"%s\" qaydalı ifadəsinə uyğun gələnlər [Üzvlər]"
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "\"%s\" fayl paterninə uyğun gələnlər [Üzvlər]"
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "Sıravi fayl olanlar"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "Mətn faylları"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "Proqram olanlar"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "Qovluq olanlar"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "Musiqi olanlar"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "%s olmayanlar"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "%s olanlar"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "Yiyəsi \"%s\" olmayanlar"
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "Yiyəsi \"%s\" olanlar"
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "Yiyə \"UID\"i \"%s\" olanlar"
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "Yiyə \"UID\"i \"%s\"dan(dən) başqa olanlar"
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "%s baytdan böyük olanlar"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "%s baytdan kiçik olanlar"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "%s bayt böyüklükdə olanlar"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "bugün təkmilləşdirilənlər"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "dünən təkmilləşdirilənlər"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "\"%s\" tarixində təkmilləşdirilənlər"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "\"%s\" tarixində təkmilləşdirilməyənlər"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "\"%s\" tarixindən əvvəl təkmilləşdirilənlər"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "\"%s\" tarixindən sonra təkmilləşdirilənlər"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "\"%s\" həftə içində təkmilləşdirilənlər"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "\"%s\" ay içində təkmilləşdirilənlər"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "\"%s\" ilə işarələnmiş olanlar"
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "\"%s\" ilə işarələnmiş olmayanlar"
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "Bütün \"%s\" kəlməsini daxil edənlər"
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "\"%s\" kəlmələrindən birini daxil edənlər"
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "Bütün \"%s\" kəlməsini daxil etməyənlər"
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "Heç bir \"%s\" kəlməsini daxil etməyənlər"
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[400K-dan böyük olan üzvlər] və [bütün \"apple orange\" kəlmələrini daxil "
+#~ "etməyənlər]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[400K-dan böyük olan üzvlər], [yiyəsi root olan və bütün \"apple orange\" "
+#~ "kəlmələrini daxil etməyənlər]"
+
+#~ msgid "Items %s"
+#~ msgstr "%s üzvləri"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Adlarında \"stuff\" daxil edən üzvlər"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Sıravi fayl olan üzvlər"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr "Sıravi fayl olan və adlarında \"stuff\" daxil edən üzvlər"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ " 2000 baytdan böyük, adlarında \"stuff\" daxil edən və sıravi fayl olan "
+#~ "üzvlər"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Qovluq olan və adlarında \"medusa\" daxil edən üzvlər"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Axtarış nəticələrinə sürücünüz axırıncı dəfə indeksləndiyi %s tarixindən "
+#~ "sonrakı dəyişikliklər daxil edilməyə bilər."
+
+#~ msgid "Search Results"
+#~ msgstr "Axtarış Nəticələri"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Bağışlayın, Medusa axtarış xidməti mövcud deyil."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "Medusa qurulu deyil."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Axtarış Xidməti Mövcud Deyil"
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Seçdiyiniz axtarış sisteminizdəki indeksdən daha yenidir. Heç bir axtarış "
+#~ "nəticəsi tapılmayacaqdır."
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Yeni indeks yaratmaq üçün \"medusa-indexd\" əmrini ali istifadəçi olaraq "
+#~ "əmr sətirindən verin."
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Çox Yeni Olan Üzvləri Axtar"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Kompüterinizdaki hər indekslənən fayl sizin klriteriyanıza uyğun gəlir."
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Kriteriyanızda imla yoxlaması aparıb yeni kriteriyalar əlavə edərək "
+#~ "nəticəni daralda bilərsiniz."
+
+#~ msgid "Error During Search"
+#~ msgstr "Axtarış Sırasında Xəta"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Find fayl sisemi indeksinizi aça bilmir. İndeksiniz ya yoxdur ya da "
+#~ "xəsərlidir."
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "Fayl İndeksını Oxuma Xətası"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Bu axtarışın məzmunu yüklənirkən xəta oldu."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Sür'ətli axtarış üçün sisteminizdəki faylların indekslənməsi lazımdır."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Məzmun axtarışı üçün sisteminizdəki faylların indekslənməsi lazımdır."
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Find sisteminizdəki indeksə indi yetişə bilmir, ona görə də indeks "
+#~ "istifadə edilmədən daha yavaş axtarış aparılacaqdır."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "Find hazırda məzmununuza yetişə bilmir."
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Sür'ətli Axtarışlar Mövcud Deyil"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Məzmun Axtarışları Mövcud Deyil"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Sizin indeks faylınız mövcuddur, amma bu faylları işlədən Medusa axtarış "
+#~ "vasitəsi baqlıdır. Proqramı başlatmaq üçün ali istifadəçi olaraq girişdən "
+#~ "sonra bu əmri sətirdən girin:\n"
+#~ " medusa-searchd"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Sür'ətli axtarış üçün Find sisteminizdəki faylların indekslənməsini tələb "
+#~ "edir. Bu dəqiqə kompüterinizdəki faylların indeksi yaradılır."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Məzmun axtarışı üçün Find sisteminizdəki faylların indekslənməsini tələb "
+#~ "edir. Bu dəqiqə kompüterinizdəki faylların indeksi yaradılır."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr ""
+#~ "Find proqramının məzmuna yetişə bilməməsi səbəbiylə, bu axtarış bir neçə "
+#~ "dəqiqə sürə bilər."
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr ""
+#~ "Məzmun axtarışları məzmunun tamamlanmasından sonra mümkün olacaqdır."
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "İndekslənmiş Axtarışlar Mövcud Deyil"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Sür'ətli axtarış üçün Find sisteminizdəki faylların indekslənməsini tələb "
+#~ "edir. Hazırda indeks mövcud deyil."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Məzmun axtarışı üçün Find sisteminizdəki faylların indekslənməsini tələb "
+#~ "edir. Hazırda indeks mövcud deyil."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Ali istifadəçi olaraq əmr sətirində \"medusa-indexd\" əmri ilə indeks "
+#~ "yarada bilərsiniz. Tamamlanmış indeks mövcud olana qədər axtarışlar bir "
+#~ "neçə dəqiqə sürə bilər."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Ali istifadəçi olaraq əmr sətirində \"medusa-indexd\" əmri ilə indeks "
+#~ "yarada bilərsiniz. Tamamlanmış indeks mövcud olana qədər məzmun axtarışı "
+#~ "aparıla bilməz."
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Kompüterinizdə sür'ətli axtarışlar fəallaşdırılmayıb."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Sür'ətli axtarış aparmaq üçün \"Find\" sisteminizdəki faylların "
+#~ "indekslənməsini tələb edir. Amma sistem idaracisi kompüterinizdəki "
+#~ "indeksləməyi bağladığı üçün indeks mövcud deyildir."
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Sür'ətli Axtarışlar Fəallaşdırılmayıb"
+
+#~ msgid "Where"
+#~ msgstr "Harda"
+
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "Yeni Pəncərədə İfşa Et"
+#~ msgstr[1] "%d Yeni Pəncərədə İfşa Et"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Mautilus nümayiş etdirə biləcəyindən daha çox axtarış nəticəsi tapdı."
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "Bə'zi uyğun gələn üzvlər göstərilməyəcəkdir."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Həddindən Artıq Oxşar Var"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "İndeksləmə %d%% bitdi."
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Fayllarınız axırıncı dəfə %s-da indekslənibdir."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Bir neçə gün əvvəl sisteminiz indekslənmişdi. Ona görə də axtarışlarınız "
+#~ "sür'ətli aparılır."
+
+#~ msgid "Indexing Status"
+#~ msgstr "İndeksləmə Vəziyyəti"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Fayllarınız hazırda indekslənir."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Axtarışlarınızın sür'ətli aparıla bilməsi üçün fayllarınız və mətn "
+#~ "məzmununuz gündə bir dəfə indekslənir."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Bu dəqiqə indeks faylınız yoxdur."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Sür'ətli axtarışla \"Find\" axtarışları cəldləşdirir. "
+#~ "KompüterinizdəSür'ətli axtarış fəal deyil. Ona görə də bu dəqiqə "
+#~ "indeksiniz yoxudr."
+
+#~ msgid "No Index of Files"
+#~ msgstr "Faylların Məzmunu Çıxarılmayıb"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Bağışlayın, Medusa axtarış xidməti fəal deyil."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "Xahiş edirik, medusanın düzgün qurulduğunu yoxlayın."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Hər bir seçili üzvü öz qovluğuna apar"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Yeni Pəncərədə Açığa Çıxart"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "İndeksləmə Vəziyyətini Göstər"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "İndeksləmə _Vəziyyətini Göstər"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Axtarışlarda işlətdiyin indeksləmənin vəziyyəti göstər"
+
+#~ msgid "More Options"
+#~ msgstr "Ətraflı Seçimlər"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Qısa Seçimlər"
+
+#~ msgid "Find Them!"
+#~ msgstr "Tap Onları!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[contains \"fish\"] Adı [Search for] "
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[includes all of \"fish tree\"] İçindəkiləri [Search for] "
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[is regular file] Növ [Search for] "
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[larger than 400K] Böyüklük [Search for]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[includes \"Important\"] Emblemlini [Search for] "
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[before yesterday] Axırıncı Düzəlişi Olanı [Search for] "
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "Yiyəsi [is not root] [Search for] "
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[File name] [help] daxil edən"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[File name] [nautilus] ilə başlayan"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[File name] [.c] ilə qurtaran"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[File name] [*.c] ilə qlobal olaraq uyğun gələn"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[File name] [\"e??l.$\"] qaydalı ifadəsi ilə uyğun gələn"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[apple orange] hamısını daxil edən [File content]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[apple orange] hər hansı birini daxil edən [File content]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[apple orange] hamısını daxil etməyən [File content]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[apple orange] heç birini daxil edən [File content]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[File type] [folder] dır(dir, dur, dür)"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[File type] [folder] deyildir"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "Sıravi fayl [File type is]"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "Mətn faylı [File type is]"
+
+#~ msgid "[File type is] application"
+#~ msgstr "Proqram tə'minatı [File type is]"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "Qovluq [File type is] "
+
+#~ msgid "[File type is] music"
+#~ msgstr "Musiqi [File type is]"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[400K] böyük [File size is] "
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[300K] kiçik [File size is]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Important] işarətli [With emblem]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Important] işarətli olmayan [With emblem]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Last modified date] [1/24/00] olan"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Last modified date] [1/24/00] olmayan"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Last modified date] [1/24/00] sonra olan"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Last modified date] [1/24/00] əvvəl olan"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Last modified date] bugün olan"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Last modified date] dünən olan"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Last modified date] [1/24/00] həftəsi içində olan"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Last modified date] [1/24/00] ayı içində olan"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[File owner] [root] dır(dir, dur, dür)"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[File owner] [root] deyildir"
+
+#~ msgid "Find:"
+#~ msgstr "Axtar:"

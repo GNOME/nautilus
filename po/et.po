@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-03-06 21:16+0300\n"
 "Last-Translator: Priit Laes <amd@tt.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -42,7 +42,6 @@ msgstr "bonobo_ui_init() ebaõnnestus."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Embleemid"
 
@@ -978,7 +977,6 @@ msgstr "See teema kasutab foto-realistlikku kataloogi"
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nimi"
 
@@ -1650,7 +1648,6 @@ msgid "The name and icon of the file."
 msgstr "Faili nimi ja ikoon."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Suurus"
 
@@ -1659,7 +1656,6 @@ msgid "The size of the file."
 msgstr "Faili suurus."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Tüüp"
 
@@ -1668,7 +1664,6 @@ msgid "The type of the file."
 msgstr "Faili tüüp"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Muutmisaeg"
 
@@ -3107,31 +3102,6 @@ msgstr "Lülitada käsitsi paigutusele?"
 msgid "Switch"
 msgstr "Lülita"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3503,255 +3473,6 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Elemendid ] sisalduvad \"%s\" nende nimedes"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Elemendid ]alustavad \"%s\"-ga"
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Elemendid ]lõppevad %s-ga"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Elemendid ]ei sisaldu \"%s\" nende nimedes"
-
-#  "%s" is a regular expression string, for example "[abc]"
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr ""
-
-#  "%s" is a file glob, for example "*.txt"
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr ""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Elemendid mis on ]korrapärased failid"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Elemendid mis on ]teksti failid"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Elemendid mis on ]rakendused"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Elemendid mis on ]kaustad"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Elemendid mis on ]muusika"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Elemendid ]mis ei ole %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Elemendid ]mis on %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Elemendid ] ei kuulu \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Elemendid ]kuuluvad \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Elemendid ]omaniku UID-ga \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Elemendid ]omaniku UID-ga muud kui \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Elemendid ]suuremad kui \"%s\" baiti"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Elemendid ]väiksemad kui %s baiti"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Elemendid ]%s baidist"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Elemendid ]muudetud täna"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Elemendid ]muudetud eile"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Elemendid ]muudetud %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Elemendid ]ei ole muudetud %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Elemendid ]muudetud enne %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Elemendid ]muudetud pärast %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Elemendid ]muudetud %s nädalal"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Elemendid ]muudetud %s kuul"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Elemendid ]märgitud \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Elemendid ]ei ole märgistatud \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Elemendid ]kõikide sõnadega \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Elmendid ]sisaldab ühte sõnadest \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Elemendid ]ilma sõnadeta \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Elemendid ]ilma ühegi sõnata \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[Elemendid suuremad kui 400K] ja [ilma kõikide sõnadeta \"õun apelsin\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Elemendid suuremad kui 400K], [kuuluvad root-le ja ilma sõnadeta \"õun "
-"apelsin\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Elemendid %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Elemendid mis sisaldavad \"stuff\" oma nimedes"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Elemendid mis on korrapärased failid"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Elemendid min sisaldavad \"stuff\" oma nimes ja on korralpärased failid"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Elemendid mis sisaldavad \"stuff\" oma nimes, on korrapärased failid ning "
-"väiksemad kui 2000 baiti"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Elemendid mis sisaldavad \"medusa\" oma nimes ja on kaustad"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4939,219 +4660,6 @@ msgstr "Omaduste akna loomine"
 msgid "Select an icon"
 msgstr "Vali ikoon"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Otsingu tulemused"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "Medusa ei ole paigaldatud."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Otsinguteenus ei ole kättesaadav."
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "Viga otsingu käigus"
-
-#  FIXME: This dialog does not get shown because a slow search
-#  will be performed and will not return an error.
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "Viga faili sisukorra lugemisel"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Kus"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] ""
-msgstr[1] ""
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Liiga palju vastavusi"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Tühi)"
@@ -5526,63 +5034,6 @@ msgstr ""
 msgid "_Manually"
 msgstr "_Käsitsi"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Indekseerimise olek"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr ""
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5590,26 +5041,6 @@ msgstr "Loo selle kataloogi sisse uus tühi kataloog"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
-msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Näita indekseerimis-olekut"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Näita _indekseerimise olekut"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
 msgstr ""
 
 #: src/nautilus-application.c:266
@@ -5778,19 +5209,6 @@ msgstr "<b>_Nimi</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Redigeeri järjehoidjaid"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Rohkem valikuid"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Vähem valikuid"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Leia nad!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6695,161 +6113,6 @@ msgstr "_Eemalda värv..."
 msgid "_Remove an Emblem..."
 msgstr "_Eemalda embleem..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Otsitav] nimi [sisaldab \"kala\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Otsitav] sisu [sisaldab ...]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Otsitav] tüüp [on harilik fail]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Otsitav] suurus [larger than 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Otsitav] embleem [sisaldab \"Tähtis\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Otsitav] viimati muudetud [enne eilset]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Otsitav] omanik [ei ole root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Faili nimi] sisaldab [abi]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Faili nimi] algab [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Faili nimi] lpõpeb [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Faili nimi] vastab avaldisele [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[File name] vastab regulaaravaldisele [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Faili sisu] sisaldab kõiki järgnevaid: []"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[] sisaldab suvalist järgnevaist: []"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[] ei sisalda kõiki järgnevaid: []"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Faili sisu] ei sisalda ühtegi järgnevat: []"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[] on []"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[] ei ole []"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[] harilik fail"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[] tekstifail"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[] rakendus"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[] kataloog"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[] muusika"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[] suurem kui [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[] väiksem kui [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[] märgitud []"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[], mis ei ole märgitud []"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[] on []"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[] ei ole []"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[] on hilisem kui []"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[] on varasem kui []"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[] on täna"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[] oli eile"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[] on nädala sees algusega []"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[] on ühe kuu sees algusega []"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Faili omanik] on [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Faili omanik] ei ole [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Vali vaade praegusele asukohale või muuda vaadete seadeid"
@@ -7056,10 +6319,6 @@ msgstr "[Elemendid mis on ]kaustad"
 #, fuzzy
 msgid "_Places"
 msgstr "_Mustrid"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Otsing:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7298,3 +6557,287 @@ msgstr "Võrguserverid"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vaata oma võrgu servereid Nautiluse failihalduris."
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Elemendid ] sisalduvad \"%s\" nende nimedes"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Elemendid ]alustavad \"%s\"-ga"
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Elemendid ]lõppevad %s-ga"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Elemendid ]ei sisaldu \"%s\" nende nimedes"
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Elemendid mis on ]korrapärased failid"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Elemendid mis on ]teksti failid"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Elemendid mis on ]rakendused"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Elemendid mis on ]kaustad"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Elemendid mis on ]muusika"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Elemendid ]mis ei ole %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Elemendid ]mis on %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Elemendid ] ei kuulu \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Elemendid ]kuuluvad \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Elemendid ]omaniku UID-ga \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Elemendid ]omaniku UID-ga muud kui \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Elemendid ]suuremad kui \"%s\" baiti"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Elemendid ]väiksemad kui %s baiti"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Elemendid ]%s baidist"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Elemendid ]muudetud täna"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Elemendid ]muudetud eile"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Elemendid ]muudetud %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Elemendid ]ei ole muudetud %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Elemendid ]muudetud enne %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Elemendid ]muudetud pärast %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Elemendid ]muudetud %s nädalal"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Elemendid ]muudetud %s kuul"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Elemendid ]märgitud \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Elemendid ]ei ole märgistatud \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Elemendid ]kõikide sõnadega \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Elmendid ]sisaldab ühte sõnadest \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Elemendid ]ilma sõnadeta \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Elemendid ]ilma ühegi sõnata \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[Elemendid suuremad kui 400K] ja [ilma kõikide sõnadeta \"õun apelsin\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Elemendid suuremad kui 400K], [kuuluvad root-le ja ilma sõnadeta \"õun "
+#~ "apelsin\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Elemendid %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Elemendid mis sisaldavad \"stuff\" oma nimedes"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Elemendid mis on korrapärased failid"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Elemendid min sisaldavad \"stuff\" oma nimes ja on korralpärased failid"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Elemendid mis sisaldavad \"stuff\" oma nimes, on korrapärased failid ning "
+#~ "väiksemad kui 2000 baiti"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Elemendid mis sisaldavad \"medusa\" oma nimes ja on kaustad"
+
+#~ msgid "Search Results"
+#~ msgstr "Otsingu tulemused"
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "Medusa ei ole paigaldatud."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Otsinguteenus ei ole kättesaadav."
+
+#~ msgid "Error During Search"
+#~ msgstr "Viga otsingu käigus"
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "Viga faili sisukorra lugemisel"
+
+#~ msgid "Where"
+#~ msgstr "Kus"
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Liiga palju vastavusi"
+
+#~ msgid "Indexing Status"
+#~ msgstr "Indekseerimise olek"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Näita indekseerimis-olekut"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Näita _indekseerimise olekut"
+
+#~ msgid "More Options"
+#~ msgstr "Rohkem valikuid"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Vähem valikuid"
+
+#~ msgid "Find Them!"
+#~ msgstr "Leia nad!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Otsitav] nimi [sisaldab \"kala\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Otsitav] sisu [sisaldab ...]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Otsitav] tüüp [on harilik fail]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Otsitav] suurus [larger than 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Otsitav] embleem [sisaldab \"Tähtis\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Otsitav] viimati muudetud [enne eilset]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Otsitav] omanik [ei ole root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Faili nimi] sisaldab [abi]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Faili nimi] algab [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Faili nimi] lpõpeb [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Faili nimi] vastab avaldisele [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[File name] vastab regulaaravaldisele [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Faili sisu] sisaldab kõiki järgnevaid: []"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[] sisaldab suvalist järgnevaist: []"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[] ei sisalda kõiki järgnevaid: []"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Faili sisu] ei sisalda ühtegi järgnevat: []"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[] on []"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[] ei ole []"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[] harilik fail"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[] tekstifail"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[] rakendus"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[] kataloog"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[] muusika"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[] suurem kui [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[] väiksem kui [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[] märgitud []"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[], mis ei ole märgitud []"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[] on []"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[] ei ole []"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[] on hilisem kui []"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[] on varasem kui []"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[] on täna"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[] oli eile"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[] on nädala sees algusega []"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[] on ühe kuu sees algusega []"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Faili omanik] on [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Faili omanik] ei ole [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Otsing:"

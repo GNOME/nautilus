@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-01-17 16:20+0200\n"
 "Last-Translator: Mantas Kriaučiūnas <mantas@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -42,7 +42,6 @@ msgstr "bonobo_ui_init() nesuveikė."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Emblemos"
 
@@ -986,7 +985,6 @@ msgstr "Šita tema naudoja fotorealistinius katalogus"
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Pavadinimas"
 
@@ -1655,7 +1653,6 @@ msgid "The name and icon of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Dydis"
 
@@ -1664,7 +1661,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Tipas"
 
@@ -1674,7 +1670,6 @@ msgid "The type of the file."
 msgstr "[File type is] tekstinė byla"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Keitimo data"
 
@@ -3148,31 +3143,6 @@ msgstr "Perjungti į rankinį išdėstymą ?"
 msgid "Switch"
 msgstr "Perjungti"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3544,251 +3514,6 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Elementai] turintys \"%s\" savo pavadinimuose"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Elementai ] prasidedantys \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Elementai] besibaigiantys %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Elementai] neturintys \"%s\" savo pavadinimuose"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Elementai] atitinkantys paprastas išraiškas \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Elementai] atitinkantys bylų šabloną \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Elementai, kurie yra] paprastos bylos"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Elementai, kurie yra] tekstinės bylos"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Elementai, kurie yra] programos"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Elementai, kurie yra] katalogai"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Elementai, kurie yra] muzika"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Elementai ]kurie nėra %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Elementai ]kurie yra %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Elementai ], nepriklausantys \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Elementai ], priklausantys \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Elementai ], priklausantys UID \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Elementai ], priklausantys kitokiam nei \"%s\"UID"
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Elementai ]didesni nei %s baitai(ų)"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Elementai ]mažesni nei %s baitai(ų)"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Elementai ] %s baitai(ų)"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Elementai ]pakeisti šiandien"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Elementai ]pakeisti vakar"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Elementai ]pakeisti %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Elementai ]nepakeisti %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Elementai ]pakeisti prieš %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Elementai ]pakeisti po %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Elementai ]pakeisti %s savaitėje "
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Elementai ]pakeisti %s mėnesyje"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Elementai ]pažymėti su\"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Elementai ]nepažymėti su\"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Elementai ]su visais \"%s\" žodžiais"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Elementai ]turintys vieną iš \"%s\" žodžių"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Elementai ]be visų \"%s\" žodžių "
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Elementai ]be nė vieno iš \"%s\" žodžių"
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Elementai didesni nei 400K] ir[be visų žodžių \"apple orange\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Elementai didesni nei 400K], [priklausantys root ir be visų žodžių \"apple "
-"orange\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Elementai %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Elementai, kurių pavadinimuose yra \"stuff\""
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Elementai, kurie yra paprastos bylos"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "Elementai, kurie yra paprastos bylos ir jų pavadinimuose yra \"stuff\""
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Elementai, kurie yra paprastos bylos, mažesnės nei 2000 baitų ir jų "
-"pavadinimuose yra \"stuff\""
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Elementai, kurie yra katalogai ir jų pavadinimuose yra \"medusa\""
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5005,289 +4730,6 @@ msgstr "Kuriamas savybių langas."
 msgid "Select an icon"
 msgstr "Pasirink ikoną"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Paieškos rezultatuose gali nebūti elementų keistų po %s, kai jūsų diskas "
-"buvo paskutinį kartą indeksuotas."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Paieškos rezultatai"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Atsiprašau, bet Medusa paieškos paslaugos negalimos."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Paieškos paslaugos negalimos"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Jūsų pasirinkta paieška yra naujesnė nei sistemos indeksai. Paieška neduos "
-"jokių rezultatų dabar. Ar norite sukurti naujus indeksus dabar?"
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Elementų, kurie yra per nauji paieška."
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Kiekviena jūsų kompiuteryje indeksuota byla atitinka nurodytą sąlygą. Jūs "
-"galite patikrinti savo sąlygos teisingumą arba pridėti daugiau sąlygų, kad "
-"sumažinti rezultatų skaičių."
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Kiekviena jūsų kompiuteryje indeksuota byla atitinka nurodytą sąlygą. Jūs "
-"galite patikrinti savo sąlygos teisingumą arba pridėti daugiau sąlygų, kad "
-"sumažinti rezultatų skaičių."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Klaida paieškos metu"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Klaida skaitant bylų indeksą"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Klaida atsirado įkeliant paieškos turinį: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
-"sistemoje, indeksas. Dabar negalima pasiekti indekso."
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
-"sistemoje, indeksas. Dabar negalima pasiekti indekso."
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
-"indeksas. Dabar negalima pasiekti indekso, todėl bus atliekama lėtesnė "
-"paieška, kuri nenaudoja indekso."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Greita paieška negalima"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Paieškos turinyje yra negalimos"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Jūsų indekso bylos yra, bet paieškos programa (demonas) Medusa, dirbanti su "
-"indekso bylomis, neveikia. Kad paleisti šią programą, prisijunkite "
-"administratoriumi komandinėje eilutėje ir įveskite šią komandą:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
-"indeksas. Jūsų kompiuteris kuria šį indeksą dabar. Kadangi pilno indekso dar "
-"nėra, paieška gali trukti keletą minučių."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
-"sistemoje, indeksas. Jūsų kompiuteris kuria šį indeksą dabar. Paieškas "
-"turinyje bus galima naudoti kai indeksas bus sukurtas."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Indeksuotos paieškos yra negalimos"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
-"sistemoje, indeksas. Dabar negalima pasiekti indekso."
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
-"sistemoje, indeksas. Dabar negalima pasiekti indekso."
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
-"indeksas. Šio indekso dabar nėra. Jūs galite sukurti indeksą, komandinėje "
-"eilutėje paleisdami \"medusa-indexd\" administratoriaus (root) teisėmis. Kol "
-"nebus pilno indekso, paieškos truks keletą minučių."
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
-"sistemoje, indeksas. Šio indekso dabar nėra. Jūs galite sukurti indeksą, "
-"komandinėje eilutėje paleisdami \"medusa-indexd\" administratoriaus (root) "
-"teisėmis. Kol nebus pilno indekso, paieškos bylų turinyje nebus galima "
-"daryti."
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Greitos paieškos Jūsų kompiuteryje negalimos"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
-"indeksas. Jūsų sistemos administratorius uždraudė greitas paieškas jūsų "
-"kompiuteryje, todėl šio indekso dabar nėra."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Greita paieška negalima"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Kur"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Atidaryti Naujame lange"
-msgstr[1] "_Atidaryti Naujame lange"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus rado daugiau paieškos rezultatų nei gali parodyti. Kai kurie "
-"elementai nebus rodomi."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus rado daugiau paieškos rezultatų nei gali parodyti. Kai kurie "
-"elementai nebus rodomi."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Per daug atitikmenų"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Tuščias)"
@@ -5662,72 +5104,6 @@ msgstr "Laikytis ly_giavimo"
 msgid "_Manually"
 msgstr "_Rankiniu būdu"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Indeksavimas yra %d%% baigtas."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Jūsų bylos paskutinį kartą buvo indeksuotos %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Kartą per dieną jūsų bylos bei jų tekstinis turinys yra indeksuojami, todėl "
-"jūsų paieškos yra greitos."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Indeksavimo būsena"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "Jūsų bylos paskutinį kartą buvo indeksuotos %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Kartą per dieną jūsų bylos bei jų tekstinis turinys yra indeksuojami, todėl "
-"jūsų paieškos yra greitos."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Dabar pas jus nėra indeksų bylų."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Kai greita paieška yra įjungta - jūsų kompiutery yra sukuriamas bylų "
-"indeksas. Greitos paieškos nėra įjungtos jūsų kompiutery, todėl dabar pas "
-"jus nėra indekso."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Atsiprašau, bet Medusa paieškos paslaugos negalimos."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%H:%M, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr ""
@@ -5735,26 +5111,6 @@ msgstr ""
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Atidaryti kiekvieną pažymėtą elementą jo paties kataloge"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Atidaryti naujame lange"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Rodyti indeksavimo būseną"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Rodyti _indeksavimo būseną"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Rodyti indeksavimo, naudojamo paieškant, būseną"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5948,19 +5304,6 @@ msgstr "<b>_Pavadinimas</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Redaguoti žymeles"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Daugiau parametrų"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Mažiau parametrų"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Rasti juos!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6890,161 +6233,6 @@ msgstr "Paša_linti spalvą... "
 msgid "_Remove an Emblem..."
 msgstr "Paša_linti emblemą..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Search for] Pavadinimas [contains \"fish\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Search for] Turinys [includes all of \"fish tree\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Search for] Tipas [is regular file]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Search for] Dydis [larger than 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Search for] Su Emblema [includes \"Important\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Search for] Paskutinis pakeitimas [before yesterday]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Search for]Savininkas[is not root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[File name] turi [help]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[File name] prasideda [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[File name] baigiasi [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[File name] atitinka glob [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[File name] atitinka regexp [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[File content] turi visus iš [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[File content] bet ką iš [apply orange]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[File content] neturi visų iš [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[File content] neturi nieko iš [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[File type] yra [folder]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[File type] nėra [folder]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[File type is] paprasta byla"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[File type is] tekstinė byla"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[File type is] programa"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[File type is] katalogas"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[File type is] muzika"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[File size is] didesnis nei [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[File size is] mažesnis nei [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[With emblem] pažymeta [Important]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[With emblem] nepažymėta [Important]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Last modified date] buvo [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Last modified date] nėra [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Last modified date] buvo vėliau nei [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Last modified date] buvo prieš [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Last modified date] yra šiandien"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Last modified date] buvo vakar"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Last modified date] buvo tą savaitę [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Last modified date] buvo tą mėnesį [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[File owner] yra [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[File owner] nėra [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Nustatyti esamos vietos vaizdą arba keisti vaizdų aibę"
@@ -7251,10 +6439,6 @@ msgstr "[Elementai, kurie yra] katalogai"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "_Vietos"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Rasti:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7502,6 +6686,532 @@ msgid "View your network servers in the Nautilus file manager"
 msgstr ""
 "Tinkle bei internete esančius kompiuterius parodyti su Nautilus bylų "
 "tvarkytoju"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Elementai] turintys \"%s\" savo pavadinimuose"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Elementai ] prasidedantys \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Elementai] besibaigiantys %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Elementai] neturintys \"%s\" savo pavadinimuose"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Elementai] atitinkantys paprastas išraiškas \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Elementai] atitinkantys bylų šabloną \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Elementai, kurie yra] paprastos bylos"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Elementai, kurie yra] tekstinės bylos"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Elementai, kurie yra] programos"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Elementai, kurie yra] katalogai"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Elementai, kurie yra] muzika"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Elementai ]kurie nėra %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Elementai ]kurie yra %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Elementai ], nepriklausantys \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Elementai ], priklausantys \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Elementai ], priklausantys UID \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Elementai ], priklausantys kitokiam nei \"%s\"UID"
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Elementai ]didesni nei %s baitai(ų)"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Elementai ]mažesni nei %s baitai(ų)"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Elementai ] %s baitai(ų)"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Elementai ]pakeisti šiandien"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Elementai ]pakeisti vakar"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Elementai ]pakeisti %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Elementai ]nepakeisti %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Elementai ]pakeisti prieš %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Elementai ]pakeisti po %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Elementai ]pakeisti %s savaitėje "
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Elementai ]pakeisti %s mėnesyje"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Elementai ]pažymėti su\"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Elementai ]nepažymėti su\"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Elementai ]su visais \"%s\" žodžiais"
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Elementai ]turintys vieną iš \"%s\" žodžių"
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Elementai ]be visų \"%s\" žodžių "
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Elementai ]be nė vieno iš \"%s\" žodžių"
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "[Elementai didesni nei 400K] ir[be visų žodžių \"apple orange\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Elementai didesni nei 400K], [priklausantys root ir be visų žodžių "
+#~ "\"apple orange\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Elementai %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Elementai, kurių pavadinimuose yra \"stuff\""
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Elementai, kurie yra paprastos bylos"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Elementai, kurie yra paprastos bylos ir jų pavadinimuose yra \"stuff\""
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Elementai, kurie yra paprastos bylos, mažesnės nei 2000 baitų ir jų "
+#~ "pavadinimuose yra \"stuff\""
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Elementai, kurie yra katalogai ir jų pavadinimuose yra \"medusa\""
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Paieškos rezultatuose gali nebūti elementų keistų po %s, kai jūsų diskas "
+#~ "buvo paskutinį kartą indeksuotas."
+
+#~ msgid "Search Results"
+#~ msgstr "Paieškos rezultatai"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Atsiprašau, bet Medusa paieškos paslaugos negalimos."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Paieškos paslaugos negalimos"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Jūsų pasirinkta paieška yra naujesnė nei sistemos indeksai. Paieška "
+#~ "neduos jokių rezultatų dabar. Ar norite sukurti naujus indeksus dabar?"
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Elementų, kurie yra per nauji paieška."
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Kiekviena jūsų kompiuteryje indeksuota byla atitinka nurodytą sąlygą. Jūs "
+#~ "galite patikrinti savo sąlygos teisingumą arba pridėti daugiau sąlygų, "
+#~ "kad sumažinti rezultatų skaičių."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Kiekviena jūsų kompiuteryje indeksuota byla atitinka nurodytą sąlygą. Jūs "
+#~ "galite patikrinti savo sąlygos teisingumą arba pridėti daugiau sąlygų, "
+#~ "kad sumažinti rezultatų skaičių."
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Klaida paieškos metu"
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Klaida skaitant bylų indeksą"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Klaida atsirado įkeliant paieškos turinį: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
+#~ "sistemoje, indeksas. Dabar negalima pasiekti indekso."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
+#~ "sistemoje, indeksas. Dabar negalima pasiekti indekso."
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
+#~ "indeksas. Dabar negalima pasiekti indekso, todėl bus atliekama lėtesnė "
+#~ "paieška, kuri nenaudoja indekso."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Greita paieška negalima"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Paieškos turinyje yra negalimos"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Jūsų indekso bylos yra, bet paieškos programa (demonas) Medusa, dirbanti "
+#~ "su indekso bylomis, neveikia. Kad paleisti šią programą, prisijunkite "
+#~ "administratoriumi komandinėje eilutėje ir įveskite šią komandą:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
+#~ "indeksas. Jūsų kompiuteris kuria šį indeksą dabar. Kadangi pilno indekso "
+#~ "dar nėra, paieška gali trukti keletą minučių."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
+#~ "sistemoje, indeksas. Jūsų kompiuteris kuria šį indeksą dabar. Paieškas "
+#~ "turinyje bus galima naudoti kai indeksas bus sukurtas."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Indeksuotos paieškos yra negalimos"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
+#~ "sistemoje, indeksas. Dabar negalima pasiekti indekso."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
+#~ "sistemoje, indeksas. Dabar negalima pasiekti indekso."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
+#~ "indeksas. Šio indekso dabar nėra. Jūs galite sukurti indeksą, komandinėje "
+#~ "eilutėje paleisdami \"medusa-indexd\" administratoriaus (root) teisėmis. "
+#~ "Kol nebus pilno indekso, paieškos truks keletą minučių."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Norint vykdyti paiešką bylų turinyje, reikalingas bylų, esančių jūsų "
+#~ "sistemoje, indeksas. Šio indekso dabar nėra. Jūs galite sukurti indeksą, "
+#~ "komandinėje eilutėje paleisdami \"medusa-indexd\" administratoriaus "
+#~ "(root) teisėmis. Kol nebus pilno indekso, paieškos bylų turinyje nebus "
+#~ "galima daryti."
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Greitos paieškos Jūsų kompiuteryje negalimos"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Norint vykdyti greitą paiešką, reikalingas bylų, esančių jūsų sistemoje, "
+#~ "indeksas. Jūsų sistemos administratorius uždraudė greitas paieškas jūsų "
+#~ "kompiuteryje, todėl šio indekso dabar nėra."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Greita paieška negalima"
+
+#~ msgid "Where"
+#~ msgstr "Kur"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Atidaryti Naujame lange"
+#~ msgstr[1] "_Atidaryti Naujame lange"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus rado daugiau paieškos rezultatų nei gali parodyti. Kai kurie "
+#~ "elementai nebus rodomi."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus rado daugiau paieškos rezultatų nei gali parodyti. Kai kurie "
+#~ "elementai nebus rodomi."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Per daug atitikmenų"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Indeksavimas yra %d%% baigtas."
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Jūsų bylos paskutinį kartą buvo indeksuotos %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Kartą per dieną jūsų bylos bei jų tekstinis turinys yra indeksuojami, "
+#~ "todėl jūsų paieškos yra greitos."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Indeksavimo būsena"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Jūsų bylos paskutinį kartą buvo indeksuotos %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Kartą per dieną jūsų bylos bei jų tekstinis turinys yra indeksuojami, "
+#~ "todėl jūsų paieškos yra greitos."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Dabar pas jus nėra indeksų bylų."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Kai greita paieška yra įjungta - jūsų kompiutery yra sukuriamas bylų "
+#~ "indeksas. Greitos paieškos nėra įjungtos jūsų kompiutery, todėl dabar pas "
+#~ "jus nėra indekso."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Atsiprašau, bet Medusa paieškos paslaugos negalimos."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%H:%M, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Atidaryti kiekvieną pažymėtą elementą jo paties kataloge"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Atidaryti naujame lange"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Rodyti indeksavimo būseną"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Rodyti _indeksavimo būseną"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Rodyti indeksavimo, naudojamo paieškant, būseną"
+
+#~ msgid "More Options"
+#~ msgstr "Daugiau parametrų"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Mažiau parametrų"
+
+#~ msgid "Find Them!"
+#~ msgstr "Rasti juos!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Search for] Pavadinimas [contains \"fish\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Search for] Turinys [includes all of \"fish tree\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Search for] Tipas [is regular file]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Search for] Dydis [larger than 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Search for] Su Emblema [includes \"Important\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Search for] Paskutinis pakeitimas [before yesterday]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Search for]Savininkas[is not root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[File name] turi [help]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[File name] prasideda [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[File name] baigiasi [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[File name] atitinka glob [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[File name] atitinka regexp [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[File content] turi visus iš [apple orange]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[File content] bet ką iš [apply orange]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[File content] neturi visų iš [apple orange]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[File content] neturi nieko iš [apple orange]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[File type] yra [folder]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[File type] nėra [folder]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[File type is] paprasta byla"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[File type is] tekstinė byla"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[File type is] programa"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[File type is] katalogas"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[File type is] muzika"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[File size is] didesnis nei [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[File size is] mažesnis nei [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[With emblem] pažymeta [Important]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[With emblem] nepažymėta [Important]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Last modified date] buvo [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Last modified date] nėra [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Last modified date] buvo vėliau nei [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Last modified date] buvo prieš [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Last modified date] yra šiandien"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Last modified date] buvo vakar"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Last modified date] buvo tą savaitę [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Last modified date] buvo tą mėnesį [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[File owner] yra [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[File owner] nėra [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Rasti:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Nepavyko rasti hbox, naudojamas paprastas bylos pasirinkimas"

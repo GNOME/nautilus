@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.gnome-2-4.hu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-10-14 21:51+0200\n"
 "Last-Translator: Gabor Sari <saga@chello.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -50,7 +50,6 @@ msgstr "bonobo_ui_init() sikertelen."
 # data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1592
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Matricák"
 
@@ -1183,7 +1182,6 @@ msgstr "Ez a téma fotorealisztikus képeket használ."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Név"
 
@@ -1896,7 +1894,6 @@ msgstr "Az ablak alkalmazás ID-je"
 # src/file-manager/fm-list-view.c:1976
 # src/file-manager/fm-search-list-view.c:561
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Méret"
 
@@ -1907,7 +1904,6 @@ msgstr ""
 # src/file-manager/fm-list-view.c:1982
 # src/file-manager/fm-search-list-view.c:567
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Típus"
 
@@ -1920,7 +1916,6 @@ msgstr " szöveges fájl"
 # src/file-manager/fm-list-view.c:1988
 # src/file-manager/fm-search-list-view.c:573
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Módosítás dátuma"
 
@@ -3639,46 +3634,6 @@ msgstr "Átváltás kézi elrendezésre?"
 msgid "Switch"
 msgstr "Átváltás"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Ha be szeretnéd kapcsolni a gyorskeresést, szerkeszd a %s fájlt rootként. Az "
-"\"enabled\"-et \"yes\"-re kell állítani, ez bekapcsolja a medusa "
-"szolgáltatást.\n"
-"Az indexelő- és keresőszolgáltatások azonnali elindításához rootként add ki "
-"a következő parancsokat:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"A gyorskeresés nem lesz elérhető, egészen addig, amíg az első indexfájl "
-"létre nem jön. Ez sokáig is tarthat."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"A Medusa, a keresést végző alkalmazás nem található a gépen. Ha saját magad "
-"fordítottad a Nautilust, telepítsd a Medusát és fordítsd újra a Nautilust (a "
-"Medusát megtalálhatod az ftp://ftp.gnome.org kiszolgálón)\n"
-"Ha előrecsomagolt Nautilust használsz, a gyorskeresés nem elérhető.\n"
-
 # components/music/nautilus-music-view.c:1694
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
@@ -4125,292 +4080,6 @@ msgstr ""
 "\n"
 "A nem helyi fájlok megnyitásához másold ezeket egy helyi mappába, majd "
 "próbáld onnan kihúzni. A helyi fájlokat az alkalmazás már megnyitotta."
-
-# libnautilus-private/nautilus-search-uri.c:212
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "melyek nevében \"%s\" található"
-
-# libnautilus-private/nautilus-search-uri.c:217
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "melyek ezzel kezdődnek: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:222
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "melyek erre végződnek \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:227
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "melyek nem tartalmazzák ezt: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:231
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "melyekre illeszkedik a(z) \"%s\" reguláris kifejezés"
-
-# libnautilus-private/nautilus-search-uri.c:235
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "melyekre illeszkedik a(z) \"%s\" fájlminta"
-
-# libnautilus-private/nautilus-search-uri.c:248
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "rendes fájlok"
-
-# libnautilus-private/nautilus-search-uri.c:251
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "szövegfájlok"
-
-# libnautilus-private/nautilus-search-uri.c:254
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "alkalmazások"
-
-# libnautilus-private/nautilus-search-uri.c:257
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "mappák"
-
-# libnautilus-private/nautilus-search-uri.c:260
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "zene"
-
-# libnautilus-private/nautilus-search-uri.c:268
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "melyek nem %s"
-
-# libnautilus-private/nautilus-search-uri.c:273
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "melyek %s"
-
-# libnautilus-private/nautilus-search-uri.c:287
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "melyeknek nem \"%s\" a tulajdonosa"
-
-# libnautilus-private/nautilus-search-uri.c:292
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "melyeknek \"%s\" a tulajdonosa"
-
-# libnautilus-private/nautilus-search-uri.c:295
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "melyeknek a tulajdonos UID-je \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:298
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "melyeknek a tulajdonos UID-je nem \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:309
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "melyek nagyobbak %s bájtnál"
-
-# libnautilus-private/nautilus-search-uri.c:312
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "melyek kisebbek %s bájtnál"
-
-# libnautilus-private/nautilus-search-uri.c:315
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "melyek %s bájt hosszúak"
-
-# libnautilus-private/nautilus-search-uri.c:326
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "melyeket ma módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:329
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "melyeket tegnap módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:332
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "melyeket ekkor módosítottak: %s"
-
-# libnautilus-private/nautilus-search-uri.c:334
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "melyeket nem módosítottak ekkor: %s"
-
-# libnautilus-private/nautilus-search-uri.c:337
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "melyeket %s előtt módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:340
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "melyeket %s után módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:343
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr " melyeket %s körül módosítottak (1 hét)"
-
-# libnautilus-private/nautilus-search-uri.c:346
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr " melyeket %s körül módosítottak (1 hónap)"
-
-# libnautilus-private/nautilus-search-uri.c:359
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "melyek a(z) \"%s\" matricával vannak megjelölve"
-
-# libnautilus-private/nautilus-search-uri.c:363
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "melyek nincsenek a(z) \"%s\" matricával megjelölve"
-
-# libnautilus-private/nautilus-search-uri.c:379
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "melyek ezeket a szavakat tartalmazzák: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:384
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "melyek ezek közül legalább egy szót tartalmaznak: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:389
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "melyek nem tartalmazzák ezeket a szavakat: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:394
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "melyek nem tartalmaznak a megadott szavak közül egyet sem: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:556
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "és"
-
-# libnautilus-private/nautilus-search-uri.c:561
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ", "
-
-# libnautilus-private/nautilus-search-uri.c:591
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Elemek %s"
-
-# libnautilus-private/nautilus-search-uri.c:701
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Elemek, melyek neve tartalmazza a \"stuff\" szót"
-
-# libnautilus-private/nautilus-search-uri.c:703
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Elemek, melyek rendes fájlok"
-
-# libnautilus-private/nautilus-search-uri.c:706
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Elemek, melyek neve tartalmazza a \"stuff\" szót és melyek rendes fájlok"
-
-# libnautilus-private/nautilus-search-uri.c:710
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Elemek, melyek neve tartalmazza a \"stuff\" szót, melyek rendes fájlok és "
-"melyek kisebbek mint 2000 bájt"
-
-# libnautilus-private/nautilus-search-uri.c:714
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Elemek, melyek neve tartalmazza a \"medúza\" szót és melyek mappák"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:175
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
@@ -5912,335 +5581,6 @@ msgstr "Tulajdonságok létrehozása ablak"
 msgid "Select an icon"
 msgstr "Ikon kiválasztása"
 
-# src/file-manager/fm-search-list-view.c:143
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"A keresés eredményeiben %s után módosított adatok nem szerepelnek, mert "
-"ekkor frissült utoljára a merevlemez indexe."
-
-# src/file-manager/fm-search-list-view.c:124
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Keresés eredményei"
-
-# src/file-manager/nautilus-indexing-info.c:396
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Sajnálom, de a Medusa keresés nem elérhető."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-# src/file-manager/fm-search-list-view.c:160
-# src/file-manager/nautilus-indexing-info.c:397
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Keresési szolgáltatás nem elérhető"
-
-# src/file-manager/fm-search-list-view.c:342
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"A kiválasztott keresés újabb a rendszeren található indexfájlnál. A keresés "
-"nem fog eredményt visszaadni. Új indexet a \"medusa-indexd\" parancs "
-"kiadásával hozhatsz létre (rendszergazdaként)."
-
-# src/file-manager/fm-search-list-view.c:342
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"A \"find\" nem tudja megnyitni a fájlrendszer indexét. Lehet, hogy az index "
-"hiányzik, vagy megsérült. Készíthetsz új indexet a \"medusa-indexd\" "
-"futtatásával (root felhasználóként kell elindítani)."
-
-# src/file-manager/fm-search-list-view.c:190
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Túl új elemek keresése"
-
-# src/file-manager/fm-search-list-view.c:201
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"A számítógépeden található minden fájl megfelel a keresési feltételeidnek. "
-"Nézd meg, hogy nem gépeltél-e el valamit, vagy adj a kereséshez további "
-"feltételeket, hogy kevesebb legyen a találat."
-
-# src/file-manager/fm-search-list-view.c:201
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"A számítógépeden található minden fájl megfelel a keresési feltételeidnek. "
-"Nézd meg, hogy nem gépeltél-e el valamit, vagy adj a kereséshez további "
-"feltételeket, hogy kevesebb legyen a találat."
-
-# src/file-manager/fm-search-list-view.c:205
-# src/file-manager/fm-search-list-view.c:219
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Hiba a kereséskor"
-
-# src/file-manager/fm-search-list-view.c:342
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"A \"find\" nem tudja megnyitni a fájlrendszer indexét. Lehet, hogy az index "
-"hiányzik, vagy megsérült. Készíthetsz új indexet a \"medusa-indexd\" "
-"futtatásával (root felhasználóként kell elindítani)."
-
-# libnautilus-private/nautilus-file-operations.c:2005
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Hiba a fájlindex beolvasása közben"
-
-# src/file-manager/fm-search-list-view.c:214
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Hiba történt a keresés tartalmának betöltése közben: %s"
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van egy "
-"index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az indexhez."
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van egy "
-"index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az indexhez."
-
-# src/file-manager/fm-search-list-view.c:242
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"A gyorskereséshez a keresőprogramnak szüksége van egy indexre, amely a "
-"rendszereden található fájlokat tartalmazza. A keresőprogram nem jelenleg "
-"fér hozzá ehhez az indexhez, a keresés lassabb lesz."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-# src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "A gyorskeresés nem elérhető"
-
-# src/file-manager/fm-search-list-view.c:252
-# src/file-manager/fm-search-list-view.c:292
-# src/file-manager/fm-search-list-view.c:320
-# src/file-manager/fm-search-list-view.c:339
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "A tartalomra való keresés nem elérhető"
-
-# src/file-manager/fm-search-list-view.c:255
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"A indexfájlok léteznek, de nem fut a Medusa keresődémon, ami ezeket kezeli. "
-"A Medusa indításához lépj be rendszergazdaként és írd be, a következőt:\n"
-"\n"
-"medusa-searchd"
-
-# src/file-manager/fm-search-list-view.c:307
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. A "
-"számítógéped éppen most állítja elő ezt a fájlt, ezért még nem lehet "
-"használni. Ezt azt eredményezi, hogy a megadott keresés több percig is "
-"eltarthat."
-
-# src/file-manager/fm-search-list-view.c:313
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"A tartalom alapján való kereséshez a keresőprogramnak szüksége van egy "
-"indexfájlra. A számítógéped most állítja elő ezt a fájlt, ezért még nem "
-"lehet használni. Tartalom alapján csak akkor lehet majd keresni, ha készen "
-"van az index."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-# src/file-manager/fm-search-list-view.c:291
-# src/file-manager/fm-search-list-view.c:319
-# src/file-manager/fm-search-list-view.c:338
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Az indexelt keresések nem elérhetők"
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van egy "
-"index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az indexhez."
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van egy "
-"index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az indexhez."
-
-# src/file-manager/fm-search-list-view.c:327
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. Ez a fájl "
-"jelenleg nem létezik. Létrehozhatod a \"medusa-indexd\" program futtatásával "
-"(root felhasználóként). Ameddig nincs indexfájl, a keresések sokáig tartanak."
-
-# src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"A tartalomra való kereséshez a keresőprogramnak szüksége van egy "
-"indexfájlra. A gépeden jelenleg nincs ilyen index. Létrehozhatod a \"medusa-"
-"indexd\" futtatásával (root felhasználóként). Ameddig nincs indexfájl, a "
-"keresések sokáig tartanak."
-
-# src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "A gyorskeresés nincs bekapcsolva a rendszereden"
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Ahhoz, hogy gyorskeresést tudjon végrehajtani, a keresőprogramnak szüksége "
-"van egy indexfájlra. A rendszergazda nem engedélyezte a gyorskeresést a "
-"rendszeren, ezért nem lehet indexfájlt létrehozni."
-
-# src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "A gyorskeresés nem elérhető"
-
-# src/file-manager/fm-search-list-view.c:555
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Hol"
-
-# src/file-manager/fm-search-list-view.c:607
-# src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Felfedés új ablakban"
-msgstr[1] "_Felfedés új ablakban"
-
-# src/file-manager/fm-search-list-view.c:727
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr "A Nautilus több egyezést talált, mint amennyit meg tud jeleníteni."
-
-# src/file-manager/fm-search-list-view.c:727
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr "A Nautilus több egyezést talált, mint amennyit meg tud jeleníteni."
-
-# src/file-manager/fm-search-list-view.c:729
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Túl sok találat"
-
 # libnautilus-private/nautilus-file-operations.c:2314
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
@@ -6704,82 +6044,6 @@ msgstr "_Rendezettség megtartása"
 msgid "_Manually"
 msgstr "_Kézzel"
 
-# src/file-manager/nautilus-indexing-info.c:85
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Az indexelés %d%%-nál tart."
-
-# src/file-manager/nautilus-indexing-info.c:236
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "A fájljaid utoljára ekkor voltak indexelve: %s"
-
-# src/file-manager/nautilus-indexing-info.c:224
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Naponta egyszer a fájljaidat és a szöveges tartalmat leindexelem, hogy a "
-"keresések gyorsabbak legyenek."
-
-# src/file-manager/nautilus-indexing-info.c:219
-# src/file-manager/nautilus-indexing-info.c:226
-# src/file-manager/nautilus-indexing-info.c:280
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Indexelés állapota"
-
-# src/file-manager/nautilus-indexing-info.c:236
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "A fájljaid utoljára ekkor voltak indexelve: %s"
-
-# src/file-manager/nautilus-indexing-info.c:224
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Naponta egyszer a fájljaidat és a szöveges tartalmat leindexelem, hogy a "
-"keresések gyorsabbak legyenek."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Jelenleg nem létezik indexfájl."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Amikor be van kapcsolva a gyorskeresés, a Keresés generál egy indexet, ennek "
-"segítségével gyorsabban tudja listázni a találatokat. A gyorskeresés nincs "
-"bekapcsolva a számítógépeden, ezért jelenleg nincs indexfájlod."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-# src/file-manager/nautilus-indexing-info.c:396
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Sajnálom, de a Medusa keresés nem elérhető."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-# src/file-manager/nautilus-indexing-info.c:418
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 # src/file-manager/nautilus-directory-view-ui.xml.h:6
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
@@ -6789,31 +6053,6 @@ msgstr "Új üres mappa létrehozása ebbe a mappába"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:1
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Minden kijelölt elem felfedése az eredeti mappájukban"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:2
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Felfedés új ablakban"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:3
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Indexelés állapotának mutatása"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:4
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "_Indexelés állapotának mutatása"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:5
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Indexelés állapotának mutatása kereséskor"
 
 # src/nautilus-application.c:274
 #: src/nautilus-application.c:266
@@ -7019,22 +6258,6 @@ msgstr "<b>_Név</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Könyvjelzők szerkesztése"
-
-# src/nautilus-complex-search-bar.c:233
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Több beállítás"
-
-# src/nautilus-complex-search-bar.c:243
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Kevesebb beállítás"
-
-# src/nautilus-complex-search-bar.c:261 src/nautilus-simple-search-bar.c:129
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Keress!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -8150,198 +7373,6 @@ msgstr "Szín _eltávolítása..."
 msgid "_Remove an Emblem..."
 msgstr "Matrica _eltávolítása..."
 
-# src/nautilus-search-bar-criterion.c:74
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr " A neve "
-
-# src/nautilus-search-bar-criterion.c:75
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr " A tartalma "
-
-# src/nautilus-search-bar-criterion.c:76
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr " A típusa "
-
-# src/nautilus-search-bar-criterion.c:77
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr " A mérete "
-
-# src/nautilus-search-bar-criterion.c:78
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr " A matricája kulcsszava "
-
-# src/nautilus-search-bar-criterion.c:79
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr " Az utolsó módosítás dátuma "
-
-# src/nautilus-search-bar-criterion.c:80
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr " A tulajdonosa "
-
-# src/nautilus-search-bar-criterion.c:86
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr " tartalmazza ezt: "
-
-# src/nautilus-search-bar-criterion.c:87
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr " ezzel kezdődik: "
-
-# src/nautilus-search-bar-criterion.c:88
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr " erre végződik: "
-
-# src/nautilus-search-bar-criterion.c:89
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr " illeszkedik erre: "
-
-# src/nautilus-search-bar-criterion.c:90
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr " illeszkedik erre a reg. kifejezésre: "
-
-# src/nautilus-search-bar-criterion.c:95
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr " tartalmazza mindezt: "
-
-# src/nautilus-search-bar-criterion.c:96
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr " tartalmazza ezek közül valamelyiket: "
-
-# src/nautilus-search-bar-criterion.c:97
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr " nem tartalmazza mindezt: "
-
-# src/nautilus-search-bar-criterion.c:98
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr " nem tartalmazza ezeket: "
-
-# src/nautilus-search-bar-criterion.c:104
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr " ez: "
-
-# src/nautilus-search-bar-criterion.c:105
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr " nem ez: "
-
-# src/nautilus-search-bar-criterion.c:110
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr " rendes fájl"
-
-# src/nautilus-search-bar-criterion.c:111
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr " szöveges fájl"
-
-# src/nautilus-search-bar-criterion.c:112
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr " alkalmazás"
-
-# src/nautilus-search-bar-criterion.c:113
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr " mappa"
-
-# src/nautilus-search-bar-criterion.c:114
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr " zene"
-
-# src/nautilus-search-bar-criterion.c:119
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr " nagyobb mint "
-
-# src/nautilus-search-bar-criterion.c:120
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr " kisebb mint "
-
-# src/nautilus-search-bar-criterion.c:125
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr " legyen "
-
-# src/nautilus-search-bar-criterion.c:126
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr " ne legyen "
-
-# src/nautilus-search-bar-criterion.c:131
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr " legyen "
-
-# src/nautilus-search-bar-criterion.c:132
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr " ne ez legyen "
-
-# src/nautilus-search-bar-criterion.c:133
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr " ez utáni "
-
-# src/nautilus-search-bar-criterion.c:134
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr " ez előtti "
-
-# src/nautilus-search-bar-criterion.c:136
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr " a nai nap"
-
-# src/nautilus-search-bar-criterion.c:137
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr " a tegnapi nap"
-
-# src/nautilus-search-bar-criterion.c:139
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr " +- egy héten belül ehhez képest "
-
-# src/nautilus-search-bar-criterion.c:140
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr " +- egy hónapon belül ehhez képest "
-
-# src/nautilus-search-bar-criterion.c:159
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr " a(z) "
-
-# src/nautilus-search-bar-criterion.c:160
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr " nem "
-
 # src/nautilus-shell-ui.xml.h:4
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
@@ -8608,11 +7639,6 @@ msgstr "mappák"
 #, fuzzy
 msgid "_Places"
 msgstr "M_inták"
-
-# src/nautilus-switchable-search-bar.c:132
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Keresés:"
 
 # components/music/nautilus-music-view.c:238
 #: src/nautilus-view-frame.c:595
@@ -8908,6 +7934,728 @@ msgstr "Hálózati kiszolgálók"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "_Parancsfájlok megtekintése a rájuk kattintáskor"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Ha be szeretnéd kapcsolni a gyorskeresést, szerkeszd a %s fájlt rootként. "
+#~ "Az \"enabled\"-et \"yes\"-re kell állítani, ez bekapcsolja a medusa "
+#~ "szolgáltatást.\n"
+#~ "Az indexelő- és keresőszolgáltatások azonnali elindításához rootként add "
+#~ "ki a következő parancsokat:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "A gyorskeresés nem lesz elérhető, egészen addig, amíg az első indexfájl "
+#~ "létre nem jön. Ez sokáig is tarthat."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "A Medusa, a keresést végző alkalmazás nem található a gépen. Ha saját "
+#~ "magad fordítottad a Nautilust, telepítsd a Medusát és fordítsd újra a "
+#~ "Nautilust (a Medusát megtalálhatod az ftp://ftp.gnome.org kiszolgálón)\n"
+#~ "Ha előrecsomagolt Nautilust használsz, a gyorskeresés nem elérhető.\n"
+
+# libnautilus-private/nautilus-search-uri.c:212
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "melyek nevében \"%s\" található"
+
+# libnautilus-private/nautilus-search-uri.c:217
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "melyek ezzel kezdődnek: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:222
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "melyek erre végződnek \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:227
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "melyek nem tartalmazzák ezt: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:231
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "melyekre illeszkedik a(z) \"%s\" reguláris kifejezés"
+
+# libnautilus-private/nautilus-search-uri.c:235
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "melyekre illeszkedik a(z) \"%s\" fájlminta"
+
+# libnautilus-private/nautilus-search-uri.c:248
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "rendes fájlok"
+
+# libnautilus-private/nautilus-search-uri.c:251
+#~ msgid "[Items that are ]text files"
+#~ msgstr "szövegfájlok"
+
+# libnautilus-private/nautilus-search-uri.c:254
+#~ msgid "[Items that are ]applications"
+#~ msgstr "alkalmazások"
+
+# libnautilus-private/nautilus-search-uri.c:257
+#~ msgid "[Items that are ]folders"
+#~ msgstr "mappák"
+
+# libnautilus-private/nautilus-search-uri.c:260
+#~ msgid "[Items that are ]music"
+#~ msgstr "zene"
+
+# libnautilus-private/nautilus-search-uri.c:268
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "melyek nem %s"
+
+# libnautilus-private/nautilus-search-uri.c:273
+#~ msgid "[Items ]that are %s"
+#~ msgstr "melyek %s"
+
+# libnautilus-private/nautilus-search-uri.c:287
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "melyeknek nem \"%s\" a tulajdonosa"
+
+# libnautilus-private/nautilus-search-uri.c:292
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "melyeknek \"%s\" a tulajdonosa"
+
+# libnautilus-private/nautilus-search-uri.c:295
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "melyeknek a tulajdonos UID-je \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:298
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "melyeknek a tulajdonos UID-je nem \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:309
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "melyek nagyobbak %s bájtnál"
+
+# libnautilus-private/nautilus-search-uri.c:312
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "melyek kisebbek %s bájtnál"
+
+# libnautilus-private/nautilus-search-uri.c:315
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "melyek %s bájt hosszúak"
+
+# libnautilus-private/nautilus-search-uri.c:326
+#~ msgid "[Items ]modified today"
+#~ msgstr "melyeket ma módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:329
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "melyeket tegnap módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:332
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "melyeket ekkor módosítottak: %s"
+
+# libnautilus-private/nautilus-search-uri.c:334
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "melyeket nem módosítottak ekkor: %s"
+
+# libnautilus-private/nautilus-search-uri.c:337
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "melyeket %s előtt módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:340
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "melyeket %s után módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:343
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr " melyeket %s körül módosítottak (1 hét)"
+
+# libnautilus-private/nautilus-search-uri.c:346
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr " melyeket %s körül módosítottak (1 hónap)"
+
+# libnautilus-private/nautilus-search-uri.c:359
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "melyek a(z) \"%s\" matricával vannak megjelölve"
+
+# libnautilus-private/nautilus-search-uri.c:363
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "melyek nincsenek a(z) \"%s\" matricával megjelölve"
+
+# libnautilus-private/nautilus-search-uri.c:379
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "melyek ezeket a szavakat tartalmazzák: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:384
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "melyek ezek közül legalább egy szót tartalmaznak: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:389
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "melyek nem tartalmazzák ezeket a szavakat: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:394
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "melyek nem tartalmaznak a megadott szavak közül egyet sem: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:556
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "és"
+
+# libnautilus-private/nautilus-search-uri.c:561
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ", "
+
+# libnautilus-private/nautilus-search-uri.c:591
+#~ msgid "Items %s"
+#~ msgstr "Elemek %s"
+
+# libnautilus-private/nautilus-search-uri.c:701
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Elemek, melyek neve tartalmazza a \"stuff\" szót"
+
+# libnautilus-private/nautilus-search-uri.c:703
+#~ msgid "Items that are regular files"
+#~ msgstr "Elemek, melyek rendes fájlok"
+
+# libnautilus-private/nautilus-search-uri.c:706
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Elemek, melyek neve tartalmazza a \"stuff\" szót és melyek rendes fájlok"
+
+# libnautilus-private/nautilus-search-uri.c:710
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Elemek, melyek neve tartalmazza a \"stuff\" szót, melyek rendes fájlok és "
+#~ "melyek kisebbek mint 2000 bájt"
+
+# libnautilus-private/nautilus-search-uri.c:714
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Elemek, melyek neve tartalmazza a \"medúza\" szót és melyek mappák"
+
+# src/file-manager/fm-search-list-view.c:143
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "A keresés eredményeiben %s után módosított adatok nem szerepelnek, mert "
+#~ "ekkor frissült utoljára a merevlemez indexe."
+
+# src/file-manager/fm-search-list-view.c:124
+#~ msgid "Search Results"
+#~ msgstr "Keresés eredményei"
+
+# src/file-manager/nautilus-indexing-info.c:396
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Sajnálom, de a Medusa keresés nem elérhető."
+
+# src/file-manager/fm-search-list-view.c:160
+# src/file-manager/nautilus-indexing-info.c:397
+#~ msgid "Search Service Not Available"
+#~ msgstr "Keresési szolgáltatás nem elérhető"
+
+# src/file-manager/fm-search-list-view.c:342
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "A kiválasztott keresés újabb a rendszeren található indexfájlnál. A "
+#~ "keresés nem fog eredményt visszaadni. Új indexet a \"medusa-indexd\" "
+#~ "parancs kiadásával hozhatsz létre (rendszergazdaként)."
+
+# src/file-manager/fm-search-list-view.c:342
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "A \"find\" nem tudja megnyitni a fájlrendszer indexét. Lehet, hogy az "
+#~ "index hiányzik, vagy megsérült. Készíthetsz új indexet a \"medusa-indexd"
+#~ "\" futtatásával (root felhasználóként kell elindítani)."
+
+# src/file-manager/fm-search-list-view.c:190
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Túl új elemek keresése"
+
+# src/file-manager/fm-search-list-view.c:201
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "A számítógépeden található minden fájl megfelel a keresési "
+#~ "feltételeidnek. Nézd meg, hogy nem gépeltél-e el valamit, vagy adj a "
+#~ "kereséshez további feltételeket, hogy kevesebb legyen a találat."
+
+# src/file-manager/fm-search-list-view.c:201
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "A számítógépeden található minden fájl megfelel a keresési "
+#~ "feltételeidnek. Nézd meg, hogy nem gépeltél-e el valamit, vagy adj a "
+#~ "kereséshez további feltételeket, hogy kevesebb legyen a találat."
+
+# src/file-manager/fm-search-list-view.c:205
+# src/file-manager/fm-search-list-view.c:219
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Hiba a kereséskor"
+
+# src/file-manager/fm-search-list-view.c:342
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "A \"find\" nem tudja megnyitni a fájlrendszer indexét. Lehet, hogy az "
+#~ "index hiányzik, vagy megsérült. Készíthetsz új indexet a \"medusa-indexd"
+#~ "\" futtatásával (root felhasználóként kell elindítani)."
+
+# libnautilus-private/nautilus-file-operations.c:2005
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Hiba a fájlindex beolvasása közben"
+
+# src/file-manager/fm-search-list-view.c:214
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Hiba történt a keresés tartalmának betöltése közben: %s"
+
+# src/file-manager/fm-search-list-view.c:247
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van "
+#~ "egy index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az "
+#~ "indexhez."
+
+# src/file-manager/fm-search-list-view.c:247
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van "
+#~ "egy index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az "
+#~ "indexhez."
+
+# src/file-manager/fm-search-list-view.c:242
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "A gyorskereséshez a keresőprogramnak szüksége van egy indexre, amely a "
+#~ "rendszereden található fájlokat tartalmazza. A keresőprogram nem jelenleg "
+#~ "fér hozzá ehhez az indexhez, a keresés lassabb lesz."
+
+# src/file-manager/fm-search-list-view.c:251
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "A gyorskeresés nem elérhető"
+
+# src/file-manager/fm-search-list-view.c:252
+# src/file-manager/fm-search-list-view.c:292
+# src/file-manager/fm-search-list-view.c:320
+# src/file-manager/fm-search-list-view.c:339
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "A tartalomra való keresés nem elérhető"
+
+# src/file-manager/fm-search-list-view.c:255
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "A indexfájlok léteznek, de nem fut a Medusa keresődémon, ami ezeket "
+#~ "kezeli. A Medusa indításához lépj be rendszergazdaként és írd be, a "
+#~ "következőt:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+# src/file-manager/fm-search-list-view.c:307
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. A "
+#~ "számítógéped éppen most állítja elő ezt a fájlt, ezért még nem lehet "
+#~ "használni. Ezt azt eredményezi, hogy a megadott keresés több percig is "
+#~ "eltarthat."
+
+# src/file-manager/fm-search-list-view.c:313
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "A tartalom alapján való kereséshez a keresőprogramnak szüksége van egy "
+#~ "indexfájlra. A számítógéped most állítja elő ezt a fájlt, ezért még nem "
+#~ "lehet használni. Tartalom alapján csak akkor lehet majd keresni, ha "
+#~ "készen van az index."
+
+# src/file-manager/fm-search-list-view.c:291
+# src/file-manager/fm-search-list-view.c:319
+# src/file-manager/fm-search-list-view.c:338
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Az indexelt keresések nem elérhetők"
+
+# src/file-manager/fm-search-list-view.c:247
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van "
+#~ "egy index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az "
+#~ "indexhez."
+
+# src/file-manager/fm-search-list-view.c:247
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Ahhoz, hogy tartalomra tudjon keresni, a keresőprogramnak szüksége van "
+#~ "egy index fájlra. A keresőprogram nem fér jelenleg hozzá ehhez az "
+#~ "indexhez."
+
+# src/file-manager/fm-search-list-view.c:327
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. Ez a "
+#~ "fájl jelenleg nem létezik. Létrehozhatod a \"medusa-indexd\" program "
+#~ "futtatásával (root felhasználóként). Ameddig nincs indexfájl, a keresések "
+#~ "sokáig tartanak."
+
+# src/file-manager/fm-search-list-view.c:284
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "A tartalomra való kereséshez a keresőprogramnak szüksége van egy "
+#~ "indexfájlra. A gépeden jelenleg nincs ilyen index. Létrehozhatod a "
+#~ "\"medusa-indexd\" futtatásával (root felhasználóként). Ameddig nincs "
+#~ "indexfájl, a keresések sokáig tartanak."
+
+# src/file-manager/fm-search-list-view.c:251
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "A gyorskeresés nincs bekapcsolva a rendszereden"
+
+# src/file-manager/fm-search-list-view.c:247
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Ahhoz, hogy gyorskeresést tudjon végrehajtani, a keresőprogramnak "
+#~ "szüksége van egy indexfájlra. A rendszergazda nem engedélyezte a "
+#~ "gyorskeresést a rendszeren, ezért nem lehet indexfájlt létrehozni."
+
+# src/file-manager/fm-search-list-view.c:251
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "A gyorskeresés nem elérhető"
+
+# src/file-manager/fm-search-list-view.c:555
+#~ msgid "Where"
+#~ msgstr "Hol"
+
+# src/file-manager/fm-search-list-view.c:607
+# src/file-manager/nautilus-search-list-view-ui.xml.h:6
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Felfedés új ablakban"
+#~ msgstr[1] "_Felfedés új ablakban"
+
+# src/file-manager/fm-search-list-view.c:727
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr "A Nautilus több egyezést talált, mint amennyit meg tud jeleníteni."
+
+# src/file-manager/fm-search-list-view.c:727
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "A Nautilus több egyezést talált, mint amennyit meg tud jeleníteni."
+
+# src/file-manager/fm-search-list-view.c:729
+#~ msgid "Too Many Matches"
+#~ msgstr "Túl sok találat"
+
+# src/file-manager/nautilus-indexing-info.c:85
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Az indexelés %d%%-nál tart."
+
+# src/file-manager/nautilus-indexing-info.c:236
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "A fájljaid utoljára ekkor voltak indexelve: %s"
+
+# src/file-manager/nautilus-indexing-info.c:224
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Naponta egyszer a fájljaidat és a szöveges tartalmat leindexelem, hogy a "
+#~ "keresések gyorsabbak legyenek."
+
+# src/file-manager/nautilus-indexing-info.c:219
+# src/file-manager/nautilus-indexing-info.c:226
+# src/file-manager/nautilus-indexing-info.c:280
+#~ msgid "Indexing Status"
+#~ msgstr "Indexelés állapota"
+
+# src/file-manager/nautilus-indexing-info.c:236
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "A fájljaid utoljára ekkor voltak indexelve: %s"
+
+# src/file-manager/nautilus-indexing-info.c:224
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Naponta egyszer a fájljaidat és a szöveges tartalmat leindexelem, hogy a "
+#~ "keresések gyorsabbak legyenek."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Jelenleg nem létezik indexfájl."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Amikor be van kapcsolva a gyorskeresés, a Keresés generál egy indexet, "
+#~ "ennek segítségével gyorsabban tudja listázni a találatokat. A "
+#~ "gyorskeresés nincs bekapcsolva a számítógépeden, ezért jelenleg nincs "
+#~ "indexfájlod."
+
+# src/file-manager/nautilus-indexing-info.c:396
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Sajnálom, de a Medusa keresés nem elérhető."
+
+# src/file-manager/nautilus-indexing-info.c:418
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:1
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Minden kijelölt elem felfedése az eredeti mappájukban"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:2
+#~ msgid "Reveal in New Window"
+#~ msgstr "Felfedés új ablakban"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:3
+#~ msgid "Show Indexing Status"
+#~ msgstr "Indexelés állapotának mutatása"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:4
+#~ msgid "Show _Indexing Status"
+#~ msgstr "_Indexelés állapotának mutatása"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:5
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Indexelés állapotának mutatása kereséskor"
+
+# src/nautilus-complex-search-bar.c:233
+#~ msgid "More Options"
+#~ msgstr "Több beállítás"
+
+# src/nautilus-complex-search-bar.c:243
+#~ msgid "Fewer Options"
+#~ msgstr "Kevesebb beállítás"
+
+# src/nautilus-complex-search-bar.c:261 src/nautilus-simple-search-bar.c:129
+#~ msgid "Find Them!"
+#~ msgstr "Keress!"
+
+# src/nautilus-search-bar-criterion.c:74
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr " A neve "
+
+# src/nautilus-search-bar-criterion.c:75
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr " A tartalma "
+
+# src/nautilus-search-bar-criterion.c:76
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr " A típusa "
+
+# src/nautilus-search-bar-criterion.c:77
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr " A mérete "
+
+# src/nautilus-search-bar-criterion.c:78
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr " A matricája kulcsszava "
+
+# src/nautilus-search-bar-criterion.c:79
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr " Az utolsó módosítás dátuma "
+
+# src/nautilus-search-bar-criterion.c:80
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr " A tulajdonosa "
+
+# src/nautilus-search-bar-criterion.c:86
+#~ msgid "[File name] contains [help]"
+#~ msgstr " tartalmazza ezt: "
+
+# src/nautilus-search-bar-criterion.c:87
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr " ezzel kezdődik: "
+
+# src/nautilus-search-bar-criterion.c:88
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr " erre végződik: "
+
+# src/nautilus-search-bar-criterion.c:89
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr " illeszkedik erre: "
+
+# src/nautilus-search-bar-criterion.c:90
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr " illeszkedik erre a reg. kifejezésre: "
+
+# src/nautilus-search-bar-criterion.c:95
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr " tartalmazza mindezt: "
+
+# src/nautilus-search-bar-criterion.c:96
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr " tartalmazza ezek közül valamelyiket: "
+
+# src/nautilus-search-bar-criterion.c:97
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr " nem tartalmazza mindezt: "
+
+# src/nautilus-search-bar-criterion.c:98
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr " nem tartalmazza ezeket: "
+
+# src/nautilus-search-bar-criterion.c:104
+#~ msgid "[File type] is [folder]"
+#~ msgstr " ez: "
+
+# src/nautilus-search-bar-criterion.c:105
+#~ msgid "[File type] is not [folder]"
+#~ msgstr " nem ez: "
+
+# src/nautilus-search-bar-criterion.c:110
+#~ msgid "[File type is] regular file"
+#~ msgstr " rendes fájl"
+
+# src/nautilus-search-bar-criterion.c:111
+#~ msgid "[File type is] text file"
+#~ msgstr " szöveges fájl"
+
+# src/nautilus-search-bar-criterion.c:112
+#~ msgid "[File type is] application"
+#~ msgstr " alkalmazás"
+
+# src/nautilus-search-bar-criterion.c:113
+#~ msgid "[File type is] folder"
+#~ msgstr " mappa"
+
+# src/nautilus-search-bar-criterion.c:114
+#~ msgid "[File type is] music"
+#~ msgstr " zene"
+
+# src/nautilus-search-bar-criterion.c:119
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr " nagyobb mint "
+
+# src/nautilus-search-bar-criterion.c:120
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr " kisebb mint "
+
+# src/nautilus-search-bar-criterion.c:125
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr " legyen "
+
+# src/nautilus-search-bar-criterion.c:126
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr " ne legyen "
+
+# src/nautilus-search-bar-criterion.c:131
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr " legyen "
+
+# src/nautilus-search-bar-criterion.c:132
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr " ne ez legyen "
+
+# src/nautilus-search-bar-criterion.c:133
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr " ez utáni "
+
+# src/nautilus-search-bar-criterion.c:134
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr " ez előtti "
+
+# src/nautilus-search-bar-criterion.c:136
+#~ msgid "[Last modified date] is today"
+#~ msgstr " a nai nap"
+
+# src/nautilus-search-bar-criterion.c:137
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr " a tegnapi nap"
+
+# src/nautilus-search-bar-criterion.c:139
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr " +- egy héten belül ehhez képest "
+
+# src/nautilus-search-bar-criterion.c:140
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr " +- egy hónapon belül ehhez képest "
+
+# src/nautilus-search-bar-criterion.c:159
+#~ msgid "[File owner] is [root]"
+#~ msgstr " a(z) "
+
+# src/nautilus-search-bar-criterion.c:160
+#~ msgid "[File owner] is not [root]"
+#~ msgstr " nem "
+
+# src/nautilus-switchable-search-bar.c:132
+#~ msgid "Find:"
+#~ msgstr "Keresés:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Nem található hbox, normál fájlkijelölés használata"

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-02-25 01:05+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
@@ -39,7 +39,6 @@ msgstr "bonobo_ui_init() 실패."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "꼬리표"
 
@@ -957,7 +956,6 @@ msgstr "이 테마는 현실감 있는 사진 폴더를 씁니다."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "이름"
 
@@ -1668,7 +1666,6 @@ msgid "The name and icon of the file."
 msgstr "파일의 이름과 아이콘."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "크기"
 
@@ -1677,7 +1674,6 @@ msgid "The size of the file."
 msgstr "파일의 크기."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "형식"
 
@@ -1686,7 +1682,6 @@ msgid "The type of the file."
 msgstr "파일의 형식."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "고친 날짜"
 
@@ -3062,46 +3057,6 @@ msgstr "수동 배치로 바꾸겠습니까?"
 msgid "Switch"
 msgstr "바꾸기"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"빠른 찾기를 쓸려면 root 권한으로 파일 %s을(를) 수정하여야 합니다. 사용 프래그"
-"를 \"yes\"로 설정하면 메두사 서비스가 켜질 것입니다.\n"
-"색인화를 시작하고 찾기 서비스를 바로 쓸려면 root권한으로 다음 명령을 실행시키"
-"면 됩니다:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"빠른 찾기를 파일의 색인이 초기화 되어서 만들어 질 때까지 쓸 수 없습니다. 색인"
-"이 만들어지는데 시간이 많이 걸립니다."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"찾기를 수행하는 응용프로그램인, 메두사가 여러분의 시스템에 있지 않습니다.직"
-"접 컴파일한 노틸러스를 사용한다면 메두사를 설치하고 노틸러스를 다시 컴파일 하"
-"여야 할것입니다. (메두사는 ftp://ftp.gnome.org에서 구할 수 있습니다.\n"
-"노틸러스를 꾸러미(패키지)로 받아서 사용한다면, 빠른 찾기를 사용할 수 없습니"
-"다.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3451,251 +3406,6 @@ msgid ""
 msgstr ""
 "로컬 파일이 아닌 파일은 로컬 폴더에 복사한 후 다시 끌어다 놓습니다. 끌어다 놓"
 "은 로컬 파일은 이미 열려져 있습니다."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[항목 ]이름에 \"%s\"을(를) 포함"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[항목 ]이름이 \"%s\"(으)로 시작"
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[항목 ]이름이 \"%s\"(으)로 끝"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[항목 ]이름에 \"%s\"을(를) 포함"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[항목 ]이름이 정규 표현식 \"%s\"와(과) 일치"
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[항목 ]이름이 파일 패턴 \"%s\"와(과) 일치"
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[항목 ]보통 파일"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[항목 ]텍스트 파일"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[항목 ]응용프로그램"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[항목 ]폴더"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[항목 ]음악"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[항목 ]%s이(가) 아님"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[항목 ]%s이(가) 맞음"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[항목 ]\"%s\"이(가) 소유하지 않음"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[항목 ]\"%s\"이(가) 소유함"
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[항목 ]소유주 UID가 \"%s\"임"
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[항목 ]소유주 UID가 \"%s\"와(과) 다름"
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[항목 ]%s 바이트보다 큼"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[항목 ]%s 바이트보다 작음"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[항목 ]%s 바이트 크기"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[항목 ]오늘 바뀜"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[항목 ]어제 바뀜"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[항목 ]%s에 바뀜"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[항목 ]%s에 바뀌지 않음"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[항목 ]%s 이전에 바뀜"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[항목 ]%s 이후에 바뀜"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[항목 ]%s 주안에 바뀜"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[항목 ]%s 달안에 바뀜"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[항목 ]\"%s\"라고 표시되지 않은"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[항목 ]\"%s\"라고 표시되지 않은"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[항목 ]\"%s\"단어들 전부가 있음"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[항목 ]\"%s\" 단어중 하나가 포함됨"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[항목 ]\"%s\"단어들이 모두 없음 "
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[항목 ]\"%s\"단어들이 하나라도 없음"
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[항목이 400K 보다 큼] 그리고 [\"사과 오렌지\"단어들이 모두 없음"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[항목이 400K보다 큼], [root가 소유함 그리고 \"사과 오렌지\"단어가 모두 없음"
-"\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "항목 %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "항목 이름에 \"어떤것\"이 포함됨"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "보통 파일인 항목"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "항목 이름에 \"어떤것\"이 포함됨 그리고 보통 파일임"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"항목 이름에 \"어떤것\"이 포함됨 그리고 보통 파일임 그리고 2000바이트 보다 작"
-"음"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "항목 이름에 \"medusa\"가 포함됨 그리고 폴더 임"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4866,250 +4576,6 @@ msgstr "등록 정보창 만들기."
 msgid "Select an icon"
 msgstr "아이콘 선택"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"찾기 검사는 드라이브가 마지막으로 색인화된 %s 이후에 변경된 항목을 포함하지 "
-"않습니다."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "찾기 결과"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "메두사 찾기 서비스가 가능하지 않습니다."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "메두사가 설치되지 않았습니다."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "찾기 서비스가 가능하지 않습니다"
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"선택한 찾기는 시스템의 색인보다 더 새것입니다. 찾기 현재 결과를 출력할 수 없"
-"습니다."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"루트 사용자로 명령행에서 \"medusa-indexd\"를 실행 시켜서 새로운 색인을 만들 "
-"수 있습니다."
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "찾으려는 항목이 너무 새것임"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr "컴퓨터에서 색인화된 모든 파일은 당신이 선택한 기준에 일치합니다."
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"당신이 선택한 것의 맞춤법을 검사할 수도 있고 결과에 부족한 기준을 더할 수도 "
-"있습니다."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "찾는 중 오류"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"찾기 중 파일 시스템 색인을 열 수 없습니다. 색인이 없거나 손상 되었을 것 입니"
-"다."
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "파일 색인을 읽는중 오류"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "찾기 내용을 읽는동안 오류가 발생하였습니다."
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"빠른 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다."
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"내용 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다."
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"바로 색인에 접근할 수 없으면 색인을 쓸 수 없는 느린 찾기가 수행될것 입니다."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "바로 색인에 접근할 수 없습니다."
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "빨리 찾기가 가능하지 않습니다"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "내용 찾기가 가능하지 않습니다"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"색인 파일이 있지만 색인 요청을 처리하는 Medusa 찾기 데몬이 실행되지 않았습니"
-"다. 이 프로그램을 실행 시키려면 root로 로그인 하여 명령행에서 다음 명령을 입"
-"력하십시오:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"빠른 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 파일 색인을 필요로 합니다. 여"
-"러분의 컴퓨터는 지금 색인을 만들고 있습니다."
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"내용 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 내용 색인을 필요로 합니다. 여"
-"러분의 컴퓨터는 지금 색인을 만들고 있습니다."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr "색인을 쓸 찾기는 할 수 없으므로, 이 찾기는 몇분이 걸릴것입니다."
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr "내용 찾기는 색인이 완료되면 쓸 수 있습니다."
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "색인 찾기가 가능하지 않습니다"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"빠른 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 하지"
-"만 지금 색인에 접근할 수 없습니다."
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"내용 찾기를 위하여, 찾기는 여러분의 시스템의 내용 색인을 필요로 합니다. 하지"
-"만 지금 색인에 접근할 수 없습니다."
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"root 사용자로 \"medusa-indexd\"를 실행함으로서 색인을 만들 수 있습니다. 완전"
-"한 색인이 사용가능할 때 까지는 찾는데 몇분이 걸릴 것입니다."
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"root사용자로 \"medusa-indexd\"를 실행해서 색인을 만들 수 있습니다. 완전한 색"
-"인이 사용가능할 때 까지는 내용 찾기는 할 수 없습니다."
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "빨리 찾기가 활성화되어 있지 않습니다."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"빠른 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 파일 색인을 필요로 합니다. 하"
-"지만 시스템 관리자가 컴퓨터의 색인화를 꺼두어서 현재 색인을 가지고 있지 않습"
-"니다. 따라서 색인을 사용한 찾기를 할 수 없으므로, 이 찾기는 몇분이 걸릴것입니"
-"다."
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "빨리 찾기가 가능하지 않습니다"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "위치"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "새 창 %d개에서 드러내기(_N)"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr "노틸러스는 보여주는것보다 더 많은 결과를 발견하였습니다."
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "몇몇 일치하는 항목이 보여주지 않을수 있습니다."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "너무 많은 결과"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(비었음)"
@@ -5471,69 +4937,6 @@ msgstr "맞춤 유지(_K)"
 msgid "_Manually"
 msgstr "수동(_M)"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "색인 만들기 %d%% 완료."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "마지막으로 색인화된것은 %s 입니다."
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"하루에 한 번씩 여러분의 파일과 텍스트 내용을 색인으로 만들어 찾기가 빨라집니"
-"다. "
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "색인 상황"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "파일 색인을 만들고 있습니다."
-
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"하루에 한 번씩 여러분의 파일과 텍스트 내용을 색인으로 만들어 찾기가 빨라집니"
-"다."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "파일의 색인이 없습니다."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"빠른 찾기를 사용하게 되면, 빠르게 찾기 위해서 색인을 만듭니다. 빠른 찾기가컴"
-"퓨터에서 사용하지 않게 되어 있어서, 색인을 가지고 있지 않습니다."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "파일 색인이 없음"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "메두사 찾기 서비스가 가능하지 않습니다."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "메두사의 설정이 올바른지 확인하십시오."
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "이 폴더 안에 표시할 열을 선택합니다"
@@ -5541,26 +4944,6 @@ msgstr "이 폴더 안에 표시할 열을 선택합니다"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "표시할 열(_C)..."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "원래 폴더에서 각각 선택한 항목을 보기"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "새 창에서 보기"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "색인 상황 보기"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "인덱싱 상황 보기(_I)"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "찾는 중에 사용되는 인덱싱의 상황을 보기"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5745,19 +5128,6 @@ msgstr "<b>이름(_N)</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "책갈피 편집"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "더 많은 옵션"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "더 적은 옵션"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "찾기!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6640,161 +6010,6 @@ msgstr "색 지우기(_R)..."
 msgid "_Remove an Emblem..."
 msgstr "꼬리표 지우기(_R)..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "이름이"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "내용에"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "형식이"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "크기가"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "꼬리표가"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "마지막으로 내용이 바뀐 날짜가"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "소유주가"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "다음을 포함"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "다음으로 시작"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "다음으로 끝남"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "grob 과 일치"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "정규표현식으로 일치"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "다음 모두를 포함"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "다음중 어떤것이라도 포함"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "다음을 모두 포함하지 않음"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "다음을 전혀 포함하지 않음"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "임"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "아님"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "보통 파일"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "텍스트파일"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "응용프로그램"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "폴더"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "음악"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "다음 보다 큼"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "다음 보다 작음"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "다음으로 표시됨 "
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "다음으로 표시되지 않음"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "임"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "아님"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "이후"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "이전"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "오늘"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "어제"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "주 안"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "달 안"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "임"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "아님"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "현재 위치에 대한 보기를 선택하거나 보기를 바꿉니다"
@@ -6993,10 +6208,6 @@ msgstr "상위 폴더를 엽니다"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "가기(_P)"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "찾기:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7229,6 +6440,555 @@ msgstr "네트워크 서버"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자에서 네트워크 서버를 봅니다"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "빠른 찾기를 쓸려면 root 권한으로 파일 %s을(를) 수정하여야 합니다. 사용 프"
+#~ "래그를 \"yes\"로 설정하면 메두사 서비스가 켜질 것입니다.\n"
+#~ "색인화를 시작하고 찾기 서비스를 바로 쓸려면 root권한으로 다음 명령을 실행"
+#~ "시키면 됩니다:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "빠른 찾기를 파일의 색인이 초기화 되어서 만들어 질 때까지 쓸 수 없습니다. "
+#~ "색인이 만들어지는데 시간이 많이 걸립니다."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "찾기를 수행하는 응용프로그램인, 메두사가 여러분의 시스템에 있지 않습니다."
+#~ "직접 컴파일한 노틸러스를 사용한다면 메두사를 설치하고 노틸러스를 다시 컴파"
+#~ "일 하여야 할것입니다. (메두사는 ftp://ftp.gnome.org에서 구할 수 있습니"
+#~ "다.\n"
+#~ "노틸러스를 꾸러미(패키지)로 받아서 사용한다면, 빠른 찾기를 사용할 수 없습"
+#~ "니다.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[항목 ]이름에 \"%s\"을(를) 포함"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[항목 ]이름이 \"%s\"(으)로 시작"
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[항목 ]이름이 \"%s\"(으)로 끝"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[항목 ]이름에 \"%s\"을(를) 포함"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[항목 ]이름이 정규 표현식 \"%s\"와(과) 일치"
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[항목 ]이름이 파일 패턴 \"%s\"와(과) 일치"
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[항목 ]보통 파일"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[항목 ]텍스트 파일"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[항목 ]응용프로그램"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[항목 ]폴더"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[항목 ]음악"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[항목 ]%s이(가) 아님"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[항목 ]%s이(가) 맞음"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[항목 ]\"%s\"이(가) 소유하지 않음"
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[항목 ]\"%s\"이(가) 소유함"
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[항목 ]소유주 UID가 \"%s\"임"
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[항목 ]소유주 UID가 \"%s\"와(과) 다름"
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[항목 ]%s 바이트보다 큼"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[항목 ]%s 바이트보다 작음"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[항목 ]%s 바이트 크기"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[항목 ]오늘 바뀜"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[항목 ]어제 바뀜"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[항목 ]%s에 바뀜"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[항목 ]%s에 바뀌지 않음"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[항목 ]%s 이전에 바뀜"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[항목 ]%s 이후에 바뀜"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[항목 ]%s 주안에 바뀜"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[항목 ]%s 달안에 바뀜"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[항목 ]\"%s\"라고 표시되지 않은"
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[항목 ]\"%s\"라고 표시되지 않은"
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[항목 ]\"%s\"단어들 전부가 있음"
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[항목 ]\"%s\" 단어중 하나가 포함됨"
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[항목 ]\"%s\"단어들이 모두 없음 "
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[항목 ]\"%s\"단어들이 하나라도 없음"
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "[항목이 400K 보다 큼] 그리고 [\"사과 오렌지\"단어들이 모두 없음"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[항목이 400K보다 큼], [root가 소유함 그리고 \"사과 오렌지\"단어가 모두 없"
+#~ "음\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "항목 %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "항목 이름에 \"어떤것\"이 포함됨"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "보통 파일인 항목"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr "항목 이름에 \"어떤것\"이 포함됨 그리고 보통 파일임"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "항목 이름에 \"어떤것\"이 포함됨 그리고 보통 파일임 그리고 2000바이트 보다 "
+#~ "작음"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "항목 이름에 \"medusa\"가 포함됨 그리고 폴더 임"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "찾기 검사는 드라이브가 마지막으로 색인화된 %s 이후에 변경된 항목을 포함하"
+#~ "지 않습니다."
+
+#~ msgid "Search Results"
+#~ msgstr "찾기 결과"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "메두사 찾기 서비스가 가능하지 않습니다."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "메두사가 설치되지 않았습니다."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "찾기 서비스가 가능하지 않습니다"
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "선택한 찾기는 시스템의 색인보다 더 새것입니다. 찾기 현재 결과를 출력할 수 "
+#~ "없습니다."
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "루트 사용자로 명령행에서 \"medusa-indexd\"를 실행 시켜서 새로운 색인을 만"
+#~ "들 수 있습니다."
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "찾으려는 항목이 너무 새것임"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr "컴퓨터에서 색인화된 모든 파일은 당신이 선택한 기준에 일치합니다."
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "당신이 선택한 것의 맞춤법을 검사할 수도 있고 결과에 부족한 기준을 더할 수"
+#~ "도 있습니다."
+
+#~ msgid "Error During Search"
+#~ msgstr "찾는 중 오류"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "찾기 중 파일 시스템 색인을 열 수 없습니다. 색인이 없거나 손상 되었을 것 입"
+#~ "니다."
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "파일 색인을 읽는중 오류"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "찾기 내용을 읽는동안 오류가 발생하였습니다."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "빠른 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "내용 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다."
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "바로 색인에 접근할 수 없으면 색인을 쓸 수 없는 느린 찾기가 수행될것 입니"
+#~ "다."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "바로 색인에 접근할 수 없습니다."
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "빨리 찾기가 가능하지 않습니다"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "내용 찾기가 가능하지 않습니다"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "색인 파일이 있지만 색인 요청을 처리하는 Medusa 찾기 데몬이 실행되지 않았습"
+#~ "니다. 이 프로그램을 실행 시키려면 root로 로그인 하여 명령행에서 다음 명령"
+#~ "을 입력하십시오:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "빠른 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 파일 색인을 필요로 합니"
+#~ "다. 여러분의 컴퓨터는 지금 색인을 만들고 있습니다."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "내용 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 내용 색인을 필요로 합니"
+#~ "다. 여러분의 컴퓨터는 지금 색인을 만들고 있습니다."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr "색인을 쓸 찾기는 할 수 없으므로, 이 찾기는 몇분이 걸릴것입니다."
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr "내용 찾기는 색인이 완료되면 쓸 수 있습니다."
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "색인 찾기가 가능하지 않습니다"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "빠른 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 하"
+#~ "지만 지금 색인에 접근할 수 없습니다."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "내용 찾기를 위하여, 찾기는 여러분의 시스템의 내용 색인을 필요로 합니다. 하"
+#~ "지만 지금 색인에 접근할 수 없습니다."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "root 사용자로 \"medusa-indexd\"를 실행함으로서 색인을 만들 수 있습니다. 완"
+#~ "전한 색인이 사용가능할 때 까지는 찾는데 몇분이 걸릴 것입니다."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "root사용자로 \"medusa-indexd\"를 실행해서 색인을 만들 수 있습니다. 완전한 "
+#~ "색인이 사용가능할 때 까지는 내용 찾기는 할 수 없습니다."
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "빨리 찾기가 활성화되어 있지 않습니다."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "빠른 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 파일 색인을 필요로 합니"
+#~ "다. 하지만 시스템 관리자가 컴퓨터의 색인화를 꺼두어서 현재 색인을 가지고 "
+#~ "있지 않습니다. 따라서 색인을 사용한 찾기를 할 수 없으므로, 이 찾기는 몇분"
+#~ "이 걸릴것입니다."
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "빨리 찾기가 가능하지 않습니다"
+
+#~ msgid "Where"
+#~ msgstr "위치"
+
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "새 창 %d개에서 드러내기(_N)"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr "노틸러스는 보여주는것보다 더 많은 결과를 발견하였습니다."
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "몇몇 일치하는 항목이 보여주지 않을수 있습니다."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "너무 많은 결과"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "색인 만들기 %d%% 완료."
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "마지막으로 색인화된것은 %s 입니다."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "하루에 한 번씩 여러분의 파일과 텍스트 내용을 색인으로 만들어 찾기가 빨라집"
+#~ "니다. "
+
+#~ msgid "Indexing Status"
+#~ msgstr "색인 상황"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "파일 색인을 만들고 있습니다."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "하루에 한 번씩 여러분의 파일과 텍스트 내용을 색인으로 만들어 찾기가 빨라집"
+#~ "니다."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "파일의 색인이 없습니다."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "빠른 찾기를 사용하게 되면, 빠르게 찾기 위해서 색인을 만듭니다. 빠른 찾기가"
+#~ "컴퓨터에서 사용하지 않게 되어 있어서, 색인을 가지고 있지 않습니다."
+
+#~ msgid "No Index of Files"
+#~ msgstr "파일 색인이 없음"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "메두사 찾기 서비스가 가능하지 않습니다."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "메두사의 설정이 올바른지 확인하십시오."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "원래 폴더에서 각각 선택한 항목을 보기"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "새 창에서 보기"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "색인 상황 보기"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "인덱싱 상황 보기(_I)"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "찾는 중에 사용되는 인덱싱의 상황을 보기"
+
+#~ msgid "More Options"
+#~ msgstr "더 많은 옵션"
+
+#~ msgid "Fewer Options"
+#~ msgstr "더 적은 옵션"
+
+#~ msgid "Find Them!"
+#~ msgstr "찾기!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "이름이"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "내용에"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "형식이"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "크기가"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "꼬리표가"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "마지막으로 내용이 바뀐 날짜가"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "소유주가"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "다음을 포함"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "다음으로 시작"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "다음으로 끝남"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "grob 과 일치"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "정규표현식으로 일치"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "다음 모두를 포함"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "다음중 어떤것이라도 포함"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "다음을 모두 포함하지 않음"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "다음을 전혀 포함하지 않음"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "임"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "아님"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "보통 파일"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "텍스트파일"
+
+#~ msgid "[File type is] application"
+#~ msgstr "응용프로그램"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "폴더"
+
+#~ msgid "[File type is] music"
+#~ msgstr "음악"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "다음 보다 큼"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "다음 보다 작음"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "다음으로 표시됨 "
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "다음으로 표시되지 않음"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "임"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "아님"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "이후"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "이전"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "오늘"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "어제"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "주 안"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "달 안"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "임"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "아님"
+
+#~ msgid "Find:"
+#~ msgstr "찾기:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "hbox를 찾을 수 없습니다. 보통 파일 선택을 사용합니다"

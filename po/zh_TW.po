@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.3.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-05-30 10:22+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -41,7 +41,6 @@ msgstr "bonobo_ui_init() 失敗。"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "圖章"
 
@@ -976,7 +975,6 @@ msgstr "此佈景使用逼真的資料夾圖示。"
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "名稱"
 
@@ -1712,7 +1710,6 @@ msgid "The name and icon of the file."
 msgstr "視窗的程式識別碼。"
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "大小"
 
@@ -1721,7 +1718,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "類型"
 
@@ -1731,7 +1727,6 @@ msgid "The type of the file."
 msgstr "文字檔"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "最後修改日期"
 
@@ -3203,43 +3198,6 @@ msgstr "是否切換為自選排列方式？"
 msgid "Switch"
 msgstr "切換"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"如果想使用快速搜尋功能，必須以 root 的身分修改檔案 %s。修改 enabled 設定"
-"為“yes”會開啟 medusa 服務。\n"
-"如果要現在就啟用搜尋服務，應該以 root 的身分執行以下的指令：\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"未產生檔案索引之前，快速搜尋的功能是無法使用的。但是產生索引可能會需要較長時"
-"間。"
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"在系統中找不到 Medusa (用來進行搜尋的程式)。如果是自行編譯 nautilus 的，那就"
-"需要安裝 medusa 並再編譯 nautilus。(Medusa 可在 ftp://ftp.gnome.org 中下載)\n"
-"如果使用的是已包裝好的 Nautilus，那麼表示快速搜尋功能現在無法使用。\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3608,247 +3566,6 @@ msgstr ""
 "\n"
 "如果要開啟遠端的檔案，請先將檔案複製至本地的資料夾才進行拖曳的動作。本來在目"
 "的地的檔案已經開啟了。"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "名稱中包含“%s”"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "以“%s”開始"
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "以“%s”結束"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "名稱中沒有“%s”"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "符合正規表示式“%s”"
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "符合檔案樣式“%s”"
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "普通檔案"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "文字檔"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "應用程式"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "資料夾"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "音樂"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "不是%s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "是%s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "擁有者不是“%s”"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "擁有者是“%s”"
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "擁有者 UID 是“%s”"
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "擁有者 UID 不是“%s”"
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "大於 %s 位元組"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "小於 %s 位元組"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "大小為 %s 位元組"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "於今天被修改"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "於昨天被修改"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "於 %s 被修改"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "於 %s 沒有被修改"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "於 %s 之前修改"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "於 %s 之後修改"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "於 %s 的一星期內修改"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "於 %s 的一個月內修改"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "加上“%s”圖章"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "沒有加上“%s”圖章"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "含有“%s”中的所有字"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "含有“%s”中的其中一個字"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "不完全含有“%s”中的所有字"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "不含“%s”中任何一個字"
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "而且"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr "、"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "項目%s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "項目名稱中包含“stuff”"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "項目是普通檔案"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "項目名稱中包含“stuff”而且是普通檔案"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr "項目名稱中包含“stuff”、是普通檔案而且小於 2000 位元組"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "項目名稱中包含“medusa”而且是資料夾"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5057,282 +4774,6 @@ msgstr "正在顯示屬性視窗"
 msgid "Select an icon"
 msgstr "選取圖示"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"搜尋結果可能不會包括 %s 以後修改的項目，即是最後一次磁碟進行索引化的時間。"
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "搜尋結果"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "抱歉，目前無法提供 medusa 搜尋服務。"
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "無法提供搜尋服務"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"搜尋條件中的時間比最後一次進行索引的時間還要新。現在進行搜尋不會輸出任何結"
-"果。可以用 root 的身分在指令列中執行“medusa-indexd”來產生新的索引。"
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的身分"
-"在指令列中執行“medusa-indexd”來產生新的索引。"
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "搜尋的項目太新"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"索引中的每個檔案都符合搜尋條件。您可以檢查一下有沒有拼字錯誤，或是加上新的條"
-"件來縮窄搜尋範圍。"
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"索引中的每個檔案都符合搜尋條件。您可以檢查一下有沒有拼字錯誤，或是加上新的條"
-"件來縮窄搜尋範圍。"
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "搜尋時發生錯誤"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的身分"
-"在指令列中執行“medusa-indexd”來產生新的索引。"
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "讀取檔案索引時發生錯誤"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "當載入今次搜尋的內容時發生錯誤︰%s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無法"
-"存取該索引檔。"
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無法"
-"存取該索引檔。"
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無法"
-"存取該索引檔，因此會使用另一種較慢但不需要該索引檔的搜尋方法。"
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "無法提供快速搜尋功能"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "無法提供內容搜尋功能"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"索引檔已經存在，但處理索引要求的 Medusa 搜尋伺服程式並沒有執行。如要執行該程"
-"式，請先以 root 身分登入並輸入以下指令：\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。目前系統正在產"
-"生該索引檔。因為 Find 無法使用索引，今次的搜尋要求可能會需時數分鐘。"
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案內容的索引。目前系統正"
-"在產生該索引檔。當索引完成後系統就可以提供內容搜尋服務。"
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "無法提供索引搜尋功能"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無法"
-"存取該索引檔。"
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無法"
-"存取該索引檔。"
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。目前該索引不存"
-"在。您可以用 root 的身分執行“medusa-indexd”來產生索引。今次的搜尋要求可能會需"
-"時數分鐘，直至有完整的索引為止。"
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案內容的索引。目前該索引"
-"檔不存在。您可以用 root 的身分執行“medusa-indexd”來產生索引。目前無法進行搜"
-"尋，直至有完整的索引為止。"
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "電腦未有啟用快速搜尋服務"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。但系統管理員已"
-"關閉了快速搜尋功能，所以無法提供索引。"
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "無法提供快速搜尋功能"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "位置"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "以新的視窗顯示(_R)"
-msgstr[1] "以新的視窗顯示(_R)"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"搜尋結果的數目多於 Nautilus 可顯示的最大數目。某些符合條件的項目將不會顯示。"
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"搜尋結果的數目多於 Nautilus 可顯示的最大數目。某些符合條件的項目將不會顯示。"
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "符合的項目太多"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(空白)"
@@ -5709,67 +5150,6 @@ msgstr "保持整齊排列(_K)"
 msgid "_Manually"
 msgstr "手動(_M)"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "已經產生了 %d%% 索引。"
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "上次產生檔案索引的時間是 %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr "系統每天都會將檔案及檔案內容進行索引，因此可以提供快速的搜尋服務。"
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "索引化狀態"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "上次產生檔案索引的時間是 %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr "系統每天都會將檔案及檔案內容進行索引，因此可以提供快速的搜尋服務。"
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "目前沒有檔案索引。"
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"當啟用快速搜尋功能時，Find 會產生索引來加快搜尋速度。但電腦中沒有啟用快速搜尋"
-"功能，因此沒有檔案索引。"
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "抱歉，目前無法提供 medusa 搜尋服務。"
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%x %p %I:%M"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5778,26 +5158,6 @@ msgstr "在本資料夾中新增空白資料夾"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "在原來的資料夾顯示每個選定的項目"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "以新視窗顯示"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "顯示索引化狀態"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "顯示索引化狀態(_I)"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "當搜尋時顯示索引的狀態"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5984,19 +5344,6 @@ msgstr "<b>名稱(_N)</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "修改書籤"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "較多選項"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "較少選項"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "搜尋！"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6917,161 +6264,6 @@ msgstr "移除顏色(_R)..."
 msgid "_Remove an Emblem..."
 msgstr "移除圖章(_R)..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "名稱"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "內容"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "格式"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "檔案大小"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "配合圖章"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "最後修改時間"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "擁有者"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "含有"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "開始為"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "結尾為"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "符合萬用字元表示式"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "符合正規表示式"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "含有下列全部字串"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "含有下列任何字串"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "含有下列一部份字串"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "完全不含有"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "是"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "不是"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "普通檔案"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "文字檔"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "應用程式"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "資料夾"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "音樂"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "大於"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "小於"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "標示為"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "不標示為"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "是"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "不是"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "是下列時間之後"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "是下列時間之前"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "是今天"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "是昨天"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "於下列時間一星期內"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "於下列時間一個月內"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "是"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "不是"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "選取本位置的顯示模式，或是更改可使用的顯示模式"
@@ -7280,10 +6472,6 @@ msgstr "資料夾"
 #, fuzzy
 msgid "_Places"
 msgstr "圖樣(_P)"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "搜尋："
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7532,6 +6720,562 @@ msgstr "網路伺服器"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "如果想使用快速搜尋功能，必須以 root 的身分修改檔案 %s。修改 enabled 設定"
+#~ "為“yes”會開啟 medusa 服務。\n"
+#~ "如果要現在就啟用搜尋服務，應該以 root 的身分執行以下的指令：\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "未產生檔案索引之前，快速搜尋的功能是無法使用的。但是產生索引可能會需要較長"
+#~ "時間。"
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "在系統中找不到 Medusa (用來進行搜尋的程式)。如果是自行編譯 nautilus 的，那"
+#~ "就需要安裝 medusa 並再編譯 nautilus。(Medusa 可在 ftp://ftp.gnome.org 中下"
+#~ "載)\n"
+#~ "如果使用的是已包裝好的 Nautilus，那麼表示快速搜尋功能現在無法使用。\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "名稱中包含“%s”"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "以“%s”開始"
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "以“%s”結束"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "名稱中沒有“%s”"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "符合正規表示式“%s”"
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "符合檔案樣式“%s”"
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "普通檔案"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "文字檔"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "應用程式"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "資料夾"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "音樂"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "不是%s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "是%s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "擁有者不是“%s”"
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "擁有者是“%s”"
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "擁有者 UID 是“%s”"
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "擁有者 UID 不是“%s”"
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "大於 %s 位元組"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "小於 %s 位元組"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "大小為 %s 位元組"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "於今天被修改"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "於昨天被修改"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "於 %s 被修改"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "於 %s 沒有被修改"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "於 %s 之前修改"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "於 %s 之後修改"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "於 %s 的一星期內修改"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "於 %s 的一個月內修改"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "加上“%s”圖章"
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "沒有加上“%s”圖章"
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "含有“%s”中的所有字"
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "含有“%s”中的其中一個字"
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "不完全含有“%s”中的所有字"
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "不含“%s”中任何一個字"
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "而且"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr "、"
+
+#~ msgid "Items %s"
+#~ msgstr "項目%s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "項目名稱中包含“stuff”"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "項目是普通檔案"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr "項目名稱中包含“stuff”而且是普通檔案"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr "項目名稱中包含“stuff”、是普通檔案而且小於 2000 位元組"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "項目名稱中包含“medusa”而且是資料夾"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "搜尋結果可能不會包括 %s 以後修改的項目，即是最後一次磁碟進行索引化的時間。"
+
+#~ msgid "Search Results"
+#~ msgstr "搜尋結果"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "抱歉，目前無法提供 medusa 搜尋服務。"
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "無法提供搜尋服務"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "搜尋條件中的時間比最後一次進行索引的時間還要新。現在進行搜尋不會輸出任何結"
+#~ "果。可以用 root 的身分在指令列中執行“medusa-indexd”來產生新的索引。"
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的"
+#~ "身分在指令列中執行“medusa-indexd”來產生新的索引。"
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "搜尋的項目太新"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "索引中的每個檔案都符合搜尋條件。您可以檢查一下有沒有拼字錯誤，或是加上新的"
+#~ "條件來縮窄搜尋範圍。"
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "索引中的每個檔案都符合搜尋條件。您可以檢查一下有沒有拼字錯誤，或是加上新的"
+#~ "條件來縮窄搜尋範圍。"
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "搜尋時發生錯誤"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的"
+#~ "身分在指令列中執行“medusa-indexd”來產生新的索引。"
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "讀取檔案索引時發生錯誤"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "當載入今次搜尋的內容時發生錯誤︰%s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無"
+#~ "法存取該索引檔。"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無"
+#~ "法存取該索引檔。"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無"
+#~ "法存取該索引檔，因此會使用另一種較慢但不需要該索引檔的搜尋方法。"
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "無法提供快速搜尋功能"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "無法提供內容搜尋功能"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "索引檔已經存在，但處理索引要求的 Medusa 搜尋伺服程式並沒有執行。如要執行該"
+#~ "程式，請先以 root 身分登入並輸入以下指令：\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。目前系統正"
+#~ "在產生該索引檔。因為 Find 無法使用索引，今次的搜尋要求可能會需時數分鐘。"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案內容的索引。目前系"
+#~ "統正在產生該索引檔。當索引完成後系統就可以提供內容搜尋服務。"
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "無法提供索引搜尋功能"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無"
+#~ "法存取該索引檔。"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案的索引。Find 目前無"
+#~ "法存取該索引檔。"
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。目前該索引"
+#~ "不存在。您可以用 root 的身分執行“medusa-indexd”來產生索引。今次的搜尋要求"
+#~ "可能會需時數分鐘，直至有完整的索引為止。"
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案內容的索引。目前該"
+#~ "索引檔不存在。您可以用 root 的身分執行“medusa-indexd”來產生索引。目前無法"
+#~ "進行搜尋，直至有完整的索引為止。"
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "電腦未有啟用快速搜尋服務"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。但系統管理"
+#~ "員已關閉了快速搜尋功能，所以無法提供索引。"
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "無法提供快速搜尋功能"
+
+#~ msgid "Where"
+#~ msgstr "位置"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "以新的視窗顯示(_R)"
+#~ msgstr[1] "以新的視窗顯示(_R)"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "搜尋結果的數目多於 Nautilus 可顯示的最大數目。某些符合條件的項目將不會顯"
+#~ "示。"
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "搜尋結果的數目多於 Nautilus 可顯示的最大數目。某些符合條件的項目將不會顯"
+#~ "示。"
+
+#~ msgid "Too Many Matches"
+#~ msgstr "符合的項目太多"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "已經產生了 %d%% 索引。"
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "上次產生檔案索引的時間是 %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr "系統每天都會將檔案及檔案內容進行索引，因此可以提供快速的搜尋服務。"
+
+#~ msgid "Indexing Status"
+#~ msgstr "索引化狀態"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "上次產生檔案索引的時間是 %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr "系統每天都會將檔案及檔案內容進行索引，因此可以提供快速的搜尋服務。"
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "目前沒有檔案索引。"
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "當啟用快速搜尋功能時，Find 會產生索引來加快搜尋速度。但電腦中沒有啟用快速"
+#~ "搜尋功能，因此沒有檔案索引。"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "抱歉，目前無法提供 medusa 搜尋服務。"
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%x %p %I:%M"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "在原來的資料夾顯示每個選定的項目"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "以新視窗顯示"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "顯示索引化狀態"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "顯示索引化狀態(_I)"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "當搜尋時顯示索引的狀態"
+
+#~ msgid "More Options"
+#~ msgstr "較多選項"
+
+#~ msgid "Fewer Options"
+#~ msgstr "較少選項"
+
+#~ msgid "Find Them!"
+#~ msgstr "搜尋！"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "名稱"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "內容"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "格式"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "檔案大小"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "配合圖章"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "最後修改時間"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "擁有者"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "含有"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "開始為"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "結尾為"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "符合萬用字元表示式"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "符合正規表示式"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "含有下列全部字串"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "含有下列任何字串"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "含有下列一部份字串"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "完全不含有"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "是"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "不是"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "普通檔案"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "文字檔"
+
+#~ msgid "[File type is] application"
+#~ msgstr "應用程式"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "資料夾"
+
+#~ msgid "[File type is] music"
+#~ msgstr "音樂"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "大於"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "小於"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "標示為"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "不標示為"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "是"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "不是"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "是下列時間之後"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "是下列時間之前"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "是今天"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "是昨天"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "於下列時間一星期內"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "於下列時間一個月內"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "是"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "不是"
+
+#~ msgid "Find:"
+#~ msgstr "搜尋："
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "找不到水平容器元件，改用一般的選取檔案對話方塊"

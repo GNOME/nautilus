@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-01-04 18:14+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -43,7 +43,6 @@ msgstr "Ha fallat bonobo_ui_init()."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Distintius"
 
@@ -968,7 +967,6 @@ msgstr "Aquest tema utilitza carpetes fotorealistes."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nom"
 
@@ -1759,7 +1757,6 @@ msgid "The name and icon of the file."
 msgstr "nom de la icona per a la vista del Mozilla"
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Mida"
 
@@ -1768,7 +1765,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Tipus"
 
@@ -1778,7 +1774,6 @@ msgid "The type of the file."
 msgstr "[File type is] fitxer de text"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Data de modificació"
 
@@ -3248,48 +3243,6 @@ msgstr "Voleu canviar al format automàtic?"
 msgid "Switch"
 msgstr "Canvia"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Si voleu habilitar cerques ràpides, podeu editar el fitxer %s com a "
-"superusuari. Si poseu el senyalador habilitat en \"sí\" activareu els "
-"serveis Medusa.\n"
-"Per iniciar els serveis d'indexació i cerca immediatament, també heu "
-"d'executar les ordres següents com a superusuari:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Les cerques ràpides no funcionaran fins que s'hagi creat un índex inicial "
-"dels vostres fitxers. Això pot trigar força temps."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"No trobareu Medusa, l'aplicació que realitza les cerques, al vostre sistema. "
-"Si heu compilat el Nautilus personalment, us caldrà instal·lar una còpia de "
-"Medusa i tornar a compilar el Nautilus. (Podeu trobar una còpia de Medusa a "
-"ftp://ftp.gnome.org)\n"
-"Si utilitzeu una versió empaquetada del Nautilus no podreu utilitzar la "
-"cerca ràpida.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3659,252 +3612,6 @@ msgstr ""
 "\n"
 "Per a obrir fitxers no locals, copieu-los a una carpeta local i després "
 "deixeu-los de nou. Els fitxers locals que heu deixat ja s'han obert."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Elements ]que contenen \"%s\" en els seus noms"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Elements ]començant amb \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Elements ]finalitzant amb %s"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Elements ]sense contenir \"%s\" en el seus noms"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Elements ]coincidents amb l'expressió regular \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Elements ]coincidint amb el patró de fitxer \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Elements que són ]fitxers regulars"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Elements que són ]fitxers de text"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Elements que són ]aplicacions"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Elements que són ]carpetes"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Elements que són ]música"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Elements ]que no són %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Elements ]que són %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Elements ]que no són propietat de \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Elements ]propietat de \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Elements ]amb l'UID del propietari \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Elements ]amb l'UID de propietari diferent de \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Elements ]més grans de %s bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Elements ]més petits de %s bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Elements ]de %s bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Elements ]modificats avui"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Elements ]modificats ahir"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Elements ]modificats en %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Elements ]no modificats en %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Elements ]modificats abans de %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Elements ]modificats després de %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Elements ]modificats dins de la setmana de %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Elements ]modificats dins del mes de %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Elements ]marcats amb \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Elements ]no marcats amb \"%s"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Elements ]amb totes les paraules \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Elements ]que contenen una de les paraules \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Elements ]sense totes les paraules \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Elements ]sense cap de les paraules \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Elements més grans de 400K] i [sense les paraules \"poma taronja\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Elements més grans de 400K], [propietat del superusuari i sense cap de les "
-"paraules \"poma taronja\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Elements %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Elements que contenen \"coses\" en el seus noms"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Elements que són fitxers regulars"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Elements que contenen \"coses\" en els seus noms i són fitxers regulars"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Elements que contenen \"coses\" en els seus noms, que són fitxers regulars i "
-"amb menys de 2000 bytes"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Elements que contenen \"medusa\" en els seus noms i que són carpetes"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5169,302 +4876,6 @@ msgstr "Creant la finestra de propietats"
 msgid "Select an icon"
 msgstr "Seleccioneu una icona"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Els resultats de la cerca poden no incloure els elements modificats després "
-"de %s, la última vegada que la vostra unitat fou indexada."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Resultats de la cerca"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "El servei de cerca medusa no està disponible."
-
-#: src/file-manager/fm-search-list-view.c:167
-#, fuzzy
-msgid "Medusa is not installed."
-msgstr "%s no està instal·lat"
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Servei de cerca no disponible"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"La cerca que heu escollit és més nova que l'índex del vostre sistema. La "
-"cerca no retornarà cap resultat, per ara. Podeu crear un nou índex si "
-"executeu \"medusa-indexd\" com a superusuari a la línia d'ordres."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"'Find' no pot obrir l'índex del sistema de fitxers; pot faltar o estar "
-"malmés. Podeu crear un nou índex executant \"medusa-indexd\" com a "
-"superusuari a la línia d'ordres."
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Cerca els elements que també són nous"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Cada fitxer indexat del vostre ordinador coincideix amb el criteri que "
-"heuseleccionat. Podeu comprovar l'ortografia de les vostres seleccions i "
-"afegir més criteris per limitar els resultats."
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Cada fitxer indexat del vostre ordinador coincideix amb el criteri que "
-"heuseleccionat. Podeu comprovar l'ortografia de les vostres seleccions i "
-"afegir més criteris per limitar els resultats."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "S'ha produït un error en cercar"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"'Find' no pot obrir l'índex del sistema de fitxers; pot faltar o estar "
-"malmés. Podeu crear un nou índex executant \"medusa-indexd\" com a "
-"superusuari a la línia d'ordres."
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "S'ha produït un error en llegir l'índex de fitxers"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr ""
-"S'ha produït un error mentre s'estaven carregant els continguts d'aquesta "
-"cerca: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers del "
-"vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers del "
-"vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Per fer una cerca ràpida, Buscar requereix un índex dels fitxers del "
-"vostresistema. Buscar no pot accedir al vostre índex ara mateix i es "
-"realitzarà una cerca més lenta que no utilitza l'índex."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "No es pot accedir al vostre índex ara mateix."
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Les cerques ràpides no estan disponibles"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Les cerques amb contingut no estan disponibles"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"El vostre índex de fitxers està disponible però el dimoni de cerca Medusa, "
-"que gestiona les sol·licituds d'índex, no s'està executant. Per iniciar el "
-"programa, entreu com a superusuari i introduïu aquesta ordre a la línia "
-"d'ordres:\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Per fer una cerca ràpida, Buscar requereix un índex dels fitxers del vostre "
-"sistema. L'ordinador està creant l'índex actualment. Com Buscar no pot "
-"utilitzar un índex, la cerca pot tardar uns quants minuts."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Per cercar un contingut, Buscar requereix un índex del contingut en el "
-"vostre sistema. L'ordinador està creant l'índex actualment. Les cerques de "
-"contingut estaran disponibles quan s'hagi completat l'índex."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Les cerques indexades no estan disponibles"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers del "
-"vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers del "
-"vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Per fer una cerca ràpida, Buscar requereix un índex dels fitxers en el "
-"vostre sistema. Cap índex està disponible ara mateix. Podeu crear un índex "
-"executant \"medusa-indexd\" com a superusuari des de la línia d'ordres. Fins "
-"que un índex complet estigui disponible, les cerques poden tardar uns quants "
-"minuts."
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Per fer una cerca ràpida, Buscar requereix un índex del contingut en vostre "
-"sistema. Cap índex està disponible ara mateix. Podeu crear un índex "
-"executant \"medusa-indexd\" com a superusuari des de la línia d'ordres. Fins "
-"que un índex complet estigui disponible, les cerques de contingut no es "
-"podran realitzar."
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Les cerques ràpides no estan habilitades en el vostre ordinador"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Per fer una cerca ràpida, Buscar requereix un índex dels fitxers en el "
-"vostre sistema. L'administrador del vostre sistema ha inhabilitat la cerca "
-"ràpida en el vostre ordinador, de manera que no hi ha cap índex disponible."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Les cerques ràpides no estan disponibles"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "On"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Mostra en una nova finestra"
-msgstr[1] "_Mostra en una nova finestra"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus ha trobat més resultats en la cerca dels que pot mostrar. Alguns "
-"elements coincidents no es mostraran."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus ha trobat més resultats en la cerca dels que pot mostrar. Alguns "
-"elements coincidents no es mostraran."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Massa coincidències"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Buit)"
@@ -5848,72 +5259,6 @@ msgstr "_Mantingues alineat"
 msgid "_Manually"
 msgstr "_Manualment"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "La indexació està un %d%% completada."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Els vostres fitxers han estat indexats per última vegada a les %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Una vegada al dia els vostres fitxers i el contingut del text és reindexat "
-"de manera que les cerques són ràpides."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Estat de la indexació"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "Els vostres fitxers han estat indexats per última vegada a les %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Una vegada al dia els vostres fitxers i el contingut del text és reindexat "
-"de manera que les cerques són ràpides."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "No hi ha cap índex dels vostres fitxers ara mateix."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Quan la cerca ràpida està habilitada, Buscar crea un índex per fer més "
-"ràpides les cerques. La cerca ràpida no està habilitada al vostre ordinador, "
-"de manera que no teniu un índex ara mateix."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "No hi ha un índex de fitxers"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "El servei de cerca medusa no està disponible."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "Assegureu-vos que medusa ha estat configurat correctament."
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5922,26 +5267,6 @@ msgstr "Crea una nova carpeta buida dins d'aquesta carpeta"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Mostra cada element seleccionat a la seva carpeta original"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Mostra en una finestra nova"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Mostra l'estat de la indexació"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Mostra l'estat de la _indexació"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Mostra l'estat de la indexació utilitzat mentre s'està cercant"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6143,19 +5468,6 @@ msgstr "<b>_Nom</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Edita les adreces d'interès"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Més opcions"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Poques opcions"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Busca'ls!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7092,161 +6404,6 @@ msgstr "_Elimina un color..."
 msgid "_Remove an Emblem..."
 msgstr "_Elimina un distintiu..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Search for] Nom [contains \"fish\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Search for] Contingut [includes all of \"fish trene\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Search for] Tipus [is regular file]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Search for] Mida [larger than 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Search for] Amb un distintiu [includes \"Important\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Search for] Darrera modificació [before yesterday]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Search for] Propietari [is not root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[File name] conté [help]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[File name] comença amb [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[File name] acaba amb [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[File name] coincidències globals [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[File name] coincideix amb expressió regular [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[File content] inclou tot de [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[File content] inclou alguna cosa de [apply orange]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[File content] sense incloure tot de [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[File content] sense incloure res de [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[File type] és [folder]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[File type] no és [folder]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[File type is] fitxer regular"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[File type is] fitxer de text"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[File type is] aplicació"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[File type is] carpeta"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[File type is] música"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[File size is] més gran de [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[File size is] més petit de [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[With emblem] marcat amb [Important]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[With emblem] no marcat amb [Important]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Last modified date] és [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Last modified date] no és [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Last modified date] és posterior a [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Last modified date] és anterior a [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Last modified date] és avui"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Last modified date] és ahir"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Last modified date] està dins la setmana de [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Last modified date] està dins el més [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[File owner] és [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[File owner] no és [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr ""
@@ -7455,10 +6612,6 @@ msgstr "Obre la carpeta pare"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "_Llocs"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Troba:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7719,6 +6872,609 @@ msgstr "Servidors de xarxa"
 msgid "View your network servers in the Nautilus file manager"
 msgstr ""
 "Visualitza els vostres servidors de xarxa en el gestor de fitxers Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Si voleu habilitar cerques ràpides, podeu editar el fitxer %s com a "
+#~ "superusuari. Si poseu el senyalador habilitat en \"sí\" activareu els "
+#~ "serveis Medusa.\n"
+#~ "Per iniciar els serveis d'indexació i cerca immediatament, també heu "
+#~ "d'executar les ordres següents com a superusuari:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Les cerques ràpides no funcionaran fins que s'hagi creat un índex inicial "
+#~ "dels vostres fitxers. Això pot trigar força temps."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "No trobareu Medusa, l'aplicació que realitza les cerques, al vostre "
+#~ "sistema. Si heu compilat el Nautilus personalment, us caldrà instal·lar "
+#~ "una còpia de Medusa i tornar a compilar el Nautilus. (Podeu trobar una "
+#~ "còpia de Medusa a ftp://ftp.gnome.org)\n"
+#~ "Si utilitzeu una versió empaquetada del Nautilus no podreu utilitzar la "
+#~ "cerca ràpida.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Elements ]que contenen \"%s\" en els seus noms"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Elements ]començant amb \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Elements ]finalitzant amb %s"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Elements ]sense contenir \"%s\" en el seus noms"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Elements ]coincidents amb l'expressió regular \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Elements ]coincidint amb el patró de fitxer \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Elements que són ]fitxers regulars"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Elements que són ]fitxers de text"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Elements que són ]aplicacions"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Elements que són ]carpetes"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Elements que són ]música"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Elements ]que no són %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Elements ]que són %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Elements ]que no són propietat de \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Elements ]propietat de \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Elements ]amb l'UID del propietari \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Elements ]amb l'UID de propietari diferent de \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Elements ]més grans de %s bytes"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Elements ]més petits de %s bytes"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Elements ]de %s bytes"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Elements ]modificats avui"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Elements ]modificats ahir"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Elements ]modificats en %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Elements ]no modificats en %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Elements ]modificats abans de %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Elements ]modificats després de %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Elements ]modificats dins de la setmana de %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Elements ]modificats dins del mes de %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Elements ]marcats amb \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Elements ]no marcats amb \"%s"
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Elements ]amb totes les paraules \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Elements ]que contenen una de les paraules \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Elements ]sense totes les paraules \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Elements ]sense cap de les paraules \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[Elements més grans de 400K] i [sense les paraules \"poma taronja\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Elements més grans de 400K], [propietat del superusuari i sense cap de "
+#~ "les paraules \"poma taronja\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Elements %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Elements que contenen \"coses\" en el seus noms"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Elements que són fitxers regulars"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Elements que contenen \"coses\" en els seus noms i són fitxers regulars"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Elements que contenen \"coses\" en els seus noms, que són fitxers "
+#~ "regulars i amb menys de 2000 bytes"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr ""
+#~ "Elements que contenen \"medusa\" en els seus noms i que són carpetes"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Els resultats de la cerca poden no incloure els elements modificats "
+#~ "després de %s, la última vegada que la vostra unitat fou indexada."
+
+#~ msgid "Search Results"
+#~ msgstr "Resultats de la cerca"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "El servei de cerca medusa no està disponible."
+
+#, fuzzy
+#~ msgid "Medusa is not installed."
+#~ msgstr "%s no està instal·lat"
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Servei de cerca no disponible"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "La cerca que heu escollit és més nova que l'índex del vostre sistema. La "
+#~ "cerca no retornarà cap resultat, per ara. Podeu crear un nou índex si "
+#~ "executeu \"medusa-indexd\" com a superusuari a la línia d'ordres."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "'Find' no pot obrir l'índex del sistema de fitxers; pot faltar o estar "
+#~ "malmés. Podeu crear un nou índex executant \"medusa-indexd\" com a "
+#~ "superusuari a la línia d'ordres."
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Cerca els elements que també són nous"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Cada fitxer indexat del vostre ordinador coincideix amb el criteri que "
+#~ "heuseleccionat. Podeu comprovar l'ortografia de les vostres seleccions i "
+#~ "afegir més criteris per limitar els resultats."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Cada fitxer indexat del vostre ordinador coincideix amb el criteri que "
+#~ "heuseleccionat. Podeu comprovar l'ortografia de les vostres seleccions i "
+#~ "afegir més criteris per limitar els resultats."
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "S'ha produït un error en cercar"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "'Find' no pot obrir l'índex del sistema de fitxers; pot faltar o estar "
+#~ "malmés. Podeu crear un nou índex executant \"medusa-indexd\" com a "
+#~ "superusuari a la línia d'ordres."
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "S'ha produït un error en llegir l'índex de fitxers"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr ""
+#~ "S'ha produït un error mentre s'estaven carregant els continguts d'aquesta "
+#~ "cerca: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers "
+#~ "del vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers "
+#~ "del vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Per fer una cerca ràpida, Buscar requereix un índex dels fitxers del "
+#~ "vostresistema. Buscar no pot accedir al vostre índex ara mateix i es "
+#~ "realitzarà una cerca més lenta que no utilitza l'índex."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "No es pot accedir al vostre índex ara mateix."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Les cerques ràpides no estan disponibles"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Les cerques amb contingut no estan disponibles"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "El vostre índex de fitxers està disponible però el dimoni de cerca "
+#~ "Medusa, que gestiona les sol·licituds d'índex, no s'està executant. Per "
+#~ "iniciar el programa, entreu com a superusuari i introduïu aquesta ordre a "
+#~ "la línia d'ordres:\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Per fer una cerca ràpida, Buscar requereix un índex dels fitxers del "
+#~ "vostre sistema. L'ordinador està creant l'índex actualment. Com Buscar no "
+#~ "pot utilitzar un índex, la cerca pot tardar uns quants minuts."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Per cercar un contingut, Buscar requereix un índex del contingut en el "
+#~ "vostre sistema. L'ordinador està creant l'índex actualment. Les cerques "
+#~ "de contingut estaran disponibles quan s'hagi completat l'índex."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Les cerques indexades no estan disponibles"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers "
+#~ "del vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Per fer una cerca amb contingut, Buscar requereix un índex dels fitxers "
+#~ "del vostre sistema. Buscar no pot accedir al vostre índex ara mateix. "
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Per fer una cerca ràpida, Buscar requereix un índex dels fitxers en el "
+#~ "vostre sistema. Cap índex està disponible ara mateix. Podeu crear un "
+#~ "índex executant \"medusa-indexd\" com a superusuari des de la línia "
+#~ "d'ordres. Fins que un índex complet estigui disponible, les cerques poden "
+#~ "tardar uns quants minuts."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Per fer una cerca ràpida, Buscar requereix un índex del contingut en "
+#~ "vostre sistema. Cap índex està disponible ara mateix. Podeu crear un "
+#~ "índex executant \"medusa-indexd\" com a superusuari des de la línia "
+#~ "d'ordres. Fins que un índex complet estigui disponible, les cerques de "
+#~ "contingut no es podran realitzar."
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Les cerques ràpides no estan habilitades en el vostre ordinador"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Per fer una cerca ràpida, Buscar requereix un índex dels fitxers en el "
+#~ "vostre sistema. L'administrador del vostre sistema ha inhabilitat la "
+#~ "cerca ràpida en el vostre ordinador, de manera que no hi ha cap índex "
+#~ "disponible."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Les cerques ràpides no estan disponibles"
+
+#~ msgid "Where"
+#~ msgstr "On"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Mostra en una nova finestra"
+#~ msgstr[1] "_Mostra en una nova finestra"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus ha trobat més resultats en la cerca dels que pot mostrar. Alguns "
+#~ "elements coincidents no es mostraran."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus ha trobat més resultats en la cerca dels que pot mostrar. Alguns "
+#~ "elements coincidents no es mostraran."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Massa coincidències"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "La indexació està un %d%% completada."
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Els vostres fitxers han estat indexats per última vegada a les %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Una vegada al dia els vostres fitxers i el contingut del text és "
+#~ "reindexat de manera que les cerques són ràpides."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Estat de la indexació"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Els vostres fitxers han estat indexats per última vegada a les %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Una vegada al dia els vostres fitxers i el contingut del text és "
+#~ "reindexat de manera que les cerques són ràpides."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "No hi ha cap índex dels vostres fitxers ara mateix."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Quan la cerca ràpida està habilitada, Buscar crea un índex per fer més "
+#~ "ràpides les cerques. La cerca ràpida no està habilitada al vostre "
+#~ "ordinador, de manera que no teniu un índex ara mateix."
+
+#~ msgid "No Index of Files"
+#~ msgstr "No hi ha un índex de fitxers"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "El servei de cerca medusa no està disponible."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "Assegureu-vos que medusa ha estat configurat correctament."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Mostra cada element seleccionat a la seva carpeta original"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Mostra en una finestra nova"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Mostra l'estat de la indexació"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Mostra l'estat de la _indexació"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Mostra l'estat de la indexació utilitzat mentre s'està cercant"
+
+#~ msgid "More Options"
+#~ msgstr "Més opcions"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Poques opcions"
+
+#~ msgid "Find Them!"
+#~ msgstr "Busca'ls!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Search for] Nom [contains \"fish\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Search for] Contingut [includes all of \"fish trene\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Search for] Tipus [is regular file]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Search for] Mida [larger than 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Search for] Amb un distintiu [includes \"Important\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Search for] Darrera modificació [before yesterday]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Search for] Propietari [is not root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[File name] conté [help]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[File name] comença amb [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[File name] acaba amb [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[File name] coincidències globals [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[File name] coincideix amb expressió regular [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[File content] inclou tot de [apple orange]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[File content] inclou alguna cosa de [apply orange]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[File content] sense incloure tot de [apple orange]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[File content] sense incloure res de [apple orange]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[File type] és [folder]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[File type] no és [folder]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[File type is] fitxer regular"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[File type is] fitxer de text"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[File type is] aplicació"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[File type is] carpeta"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[File type is] música"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[File size is] més gran de [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[File size is] més petit de [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[With emblem] marcat amb [Important]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[With emblem] no marcat amb [Important]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Last modified date] és [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Last modified date] no és [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Last modified date] és posterior a [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Last modified date] és anterior a [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Last modified date] és avui"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Last modified date] és ahir"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Last modified date] està dins la setmana de [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Last modified date] està dins el més [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[File owner] és [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[File owner] no és [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Troba:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr ""

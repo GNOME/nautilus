@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-09-03 09:52+0200\n"
 "Last-Translator: Stanislav Visnovsky <visnov@suse.cz>\n"
 "Language-Team: Slovak <sk-i18n@linux.sk>\n"
@@ -51,7 +51,6 @@ msgstr "bonobo_ui_init() zlyhalo."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Emblémy"
 
@@ -994,7 +993,6 @@ msgstr "Táto téma používa fotorealistické priečinky."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Meno"
 
@@ -1750,7 +1748,6 @@ msgid "The name and icon of the file."
 msgstr "ID okna aplikácie."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Veľkosť"
 
@@ -1759,7 +1756,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Typ"
 
@@ -1769,7 +1765,6 @@ msgid "The type of the file."
 msgstr "[Typ súboru je] textový súbor"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Dátum zmeny"
 
@@ -3255,47 +3250,6 @@ msgstr "Prepnúť do ručného rozmiestnenia?"
 msgid "Switch"
 msgstr "Prepnúť"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Ak chcete povoliť rýchle hľadanie, môžete upraviť súbor %s ako root. "
-"Nastavením prepínača na \"yes\", zapnete službu medusa.\n"
-"Pre okamžité spustenie služieb indexácie a hľadania by ste mali tiež spustiť "
-"tieto príkazy ako root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Kým nebude vytvorený index vašich súborov, nebude rýchle hľadanie dostupné. "
-"To ale môže dosť dlho trvať."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Medusa, aplikáciu, ktorá vykonáva hľadanie, nie je možné nájsť. Ak ste "
-"prekladali Nautilus sami, budete musieť nainštalovať program medusa a znovu "
-"preložiť Nautilus. (Kópia programu medusa je k dispozícii na ftp://ftp.gnome."
-"org)\n"
-"Ak používate predpripravenú verziu Nautilusu, rýchle hľadanie nie je k "
-"dispozícii.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3680,252 +3634,6 @@ msgstr ""
 "Aby ste mohli otvoriť aj vzdialené súbory, musíte ich najprv skopírovať do "
 "lokálneho priečinka a odtiaľ ich ťahať znovu. Lokálne súbory, ktoré ste sem "
 "pretiahli, sa už otvorili."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Položky ]obsahujúce \"%s\" v svojich menách"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Položky ] začínajúce na \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Položky ] končiace \"%s\""
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Položky ]obsahujúce \"%s\" v svojich menách"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Položky ]odpovedajúce regulárnemu výrazu \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Položky ]odpovedajúce žolíku súboru \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Položky, ktoré sú ]normálne súbory"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Položky, ktoré sú ]textové súbory"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Položky, ktoré sú ]aplikácie"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Položky, ktoré sú ]priečinky"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Položky, ktoré sú ]hudba"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Položky], ktoré nie sú %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Položky], ktoré sú %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Položky ]nevlastnené \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Položky ]vlastnené \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Položky ]s UID vlastníka \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Položky ]s UID vlastníka iným ako \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Položky ]väčšie ako %s bajtov"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Položky ]menšie ako %s bajtov"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Položky ]s veľkosťou %s bajtov"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Položky ]zmenené dnes"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Položky ]zmenené včera"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Položky ]nezmenené %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Položky ]nezmenené %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Položky ]zmenené pred %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Položky ]zmenené po %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Položky ]zmenený max. týždeň od %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Položky ]zmenený max. mesiac od %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Položky ]neoznačené s \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Položky ]neoznačené s \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Položky ]so všetkými slovami \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Položky ]obsahujúce jedno zo slov \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Položky ]neobsahujúce všetky slová \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Položky ]neobsahujúce slová \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Položky väčšími ako 400K] a [bez všetkých slov \"apple orange\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Položky väčšími ako 400K] [vlastnené rootom a bez všetkých slov \"apple "
-"orange\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Položky %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Položky obsahujúce \"informáciu\" v svojich menách"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Položky sú normálne súbory"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Položky obsahujúce \"informáciu\" v svojich menách a sú to normálne súbory"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Normálne súbory obsahujúce \"informáciu\" v svojich menách a sú menšie ako "
-"2000 bajtov"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Položky obsahujúce \"medusa\" v svojich menách a sú priečinky"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5172,293 +4880,6 @@ msgstr "Vytváram okno Vlastnosti"
 msgid "Select an icon"
 msgstr "Vyberte ikonu"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Výsledky hľadanie nemusia obsahovať položky zmenené po %s, keď bol vytváraný "
-"posledný index."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Výsledky hľadania"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Ľutujem, ale vyhľadávacia služby medusa nie je k dispozícii."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Vyhľadávacia služba nie je k dispozícii"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Vybrali ste hľadanie, ktoré hľadá novšie položky, ako je váš index. Hľadanie "
-"momentálne nič nevráti. Nový index môžete vytvoriť spustením príkazu "
-"\"medusa-indexd\" ako root."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Hľadanie nemohlo otvoriť index vášho systému súborov. Buď chýba, alebo je "
-"poškodený. Nový index môžete vytvoriť spustením príkazu \"medusa-indexd\" "
-"ako root."
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Hľadanie položiek, ktoré sú príliš nové"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Každý indexovaný súbor na vašom systéme odpovedá vašemu kritériu. Overte "
-"zadanie alebo pridajte ďalšie kritéria pre zúženie výsledkov."
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Každý indexovaný súbor na vašom systéme odpovedá vašemu kritériu. Overte "
-"zadanie alebo pridajte ďalšie kritéria pre zúženie výsledkov."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Chyba pri hľadaní"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Hľadanie nemohlo otvoriť index vášho systému súborov. Buď chýba, alebo je "
-"poškodený. Nový index môžete vytvoriť spustením príkazu \"medusa-indexd\" "
-"ako root."
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Chyba pri čítaní indexu súborov"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Nastala chyba pri načítavaní výsledku hľadania: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
-"tento index nie je dostupný."
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
-"tento index nie je dostupný."
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Pre rýchle hľadanie je treba index súborov na vašom systéme.  Momentálne "
-"tento index nie je dostupný a preto sa bude hľadať pomalšie bez použitia "
-"indexu."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Rýchle hľadanie nie je k dispozícii"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Hľadanie obsahu nie je k dispozícii"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Váš index súborov je k dispozícii, ale vyhľadávací démon Medusa, ktorý sa "
-"používa na prácu s indexom, nebeží. Pre jeho spustenie sa prihláste ako root "
-"a zadajte na príkazovom riadku príkaz:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Pre rýchle hľadanie je treba index súborov na vašom systéme.  Váš počítač "
-"tento index práve vytvára. Pretože nie je index možné používať, hľadanie "
-"môže trvať niekoľko minút."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Pre hľadanie obsahu je treba index súborov na vašom systéme.  Váš počítač "
-"tento index práve vytvára. Hľadanie obsahuje bude k dispozícii po dokončení "
-"indexu."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Hľadanie pomocou indexov nie je k dispozícii"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
-"tento index nie je dostupný."
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
-"tento index nie je dostupný."
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Pre rýchle hľadanie je treba index súborov na vašom systéme, ale ten nie je "
-"k dispozícii. Vytvoríte ho spustením príkazu \"medusa-indexd\" ako root. Kým "
-"bude index vytvorený, hľadanie môže trvať niekoľko minút."
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
-"takýto index nie je na vašom počítači k dispozícii. Vytvoriť ho môžete "
-"spustením príkazu \"medusa-indexd\" ako root. Kým nebude index k dispozícii, "
-"nebude možné hľadať podľa obsahu."
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Rýchle hľadanie nie je povolené na vašom počítači"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Pre rýchle hľadanie je treba index súborov na vašom systéme. Administrátor "
-"vášho systému vypol indexáciu, takže momentálne nemáte index k dispozícii."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Rýchle hľadanie nie je k dispozícii"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Umiestnenie"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Zobraziť v novom okne"
-msgstr[1] "_Zobraziť v novom okne"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus našiel viac položiek, ako je schopný zobraziť. Niektoré položky "
-"nebudú zobrazené."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus našiel viac položiek, ako je schopný zobraziť. Niektoré položky "
-"nebudú zobrazené."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Príliš veľa odpovedajúcich"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(prázdne)"
@@ -5839,70 +5260,6 @@ msgstr "_Udržiavať zoradené"
 msgid "_Manually"
 msgstr "_Ručne"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Indexácia je hotová z %d%%"
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Vaše súbory naposledy indexované %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Raz za deň sú vaše súbory a ich obsah indexované, takže hľadanie je rýchle. "
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Stav indexácie"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "Vaše súbory naposledy indexované %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Raz za deň sú vaše súbory a ich obsah indexované, takže hľadanie je rýchle. "
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Pre vaše súbory momentálne neexistuje index."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Keď je rýchle hľadanie zapnuté, je vytvorený index, ktorý zrýchľuje "
-"hľadanie. Rýchle hľadanie na vašom počítači nie je zapnuté, takže momentálne "
-"nemáte k dispozícii index."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Ľutujem, ale vyhľadávacia služby medusa nie je k dispozícii."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5911,26 +5268,6 @@ msgstr "Vytvorí nový prázdny priečinok v tomto priečinku"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Ukázať každú vybranú položku v jej pôvodnom priečinku"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Ukázať v novom okne"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Ukázať stav indexovania"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Ukázať stav _indexovania"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Pri hľadaní ukazovať stav použitého indexovania"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6125,19 +5462,6 @@ msgstr "<b>_Meno</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Upraviť záložky"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Viac možností"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Menej možností"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Nájsť ich!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7070,161 +6394,6 @@ msgstr "_Odstrániť farbu..."
 msgid "_Remove an Emblem..."
 msgstr "_Odstrániť emblém..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Hľadať ] meno [obsahujúce \"fish\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Hľadať ] obsah [obsahujúci všetko z \"fish tree\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Hľadať ] typ [je normálny súbor]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Hľadať ] veľkosť [je väčšia ako 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Hľadať] s emblémom [obsahujúcim \"Dôležité\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Hľadať] naposledy zmenený [prevčerom]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Hľadať] s vlastníkom [nie je root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Meno súboru] obsahuje [pomocník]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Meno súboru] začína [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Meno súboru] končí [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Meno súboru] odpovedá [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Meno súboru] odpovedá regulárnemu výrazu [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Súbor] obsahuje všetky [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Súbor] obsahuje niektoré z [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Súbor] neobsahuje všetky [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Súbor] neobsahuje nič z [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Typ súboru] je [priečinok]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Typ súboru] nie je [priečinok]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Typ súboru je] normálny súbor"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Typ súboru je] textový súbor"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Typ súboru je] aplikácia"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Typ súboru je] priečinok"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Typ súboru je] hudba"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Veľkosť súboru] je väčšia ako [300K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Veľkosť súboru] je menšia ako [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[S emblémom] označený [Dôležité]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[S emblémom] neoznačený [Dôležité]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Dátum poslednej zmeny] je [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Dátum poslednej zmeny] nie je [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Dátum poslednej zmeny] je po [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Dátum poslednej zmeny] je pred [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Dátum poslednej zmeny] je dnes"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Dátum poslednej zmeny] včera"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Dátum poslednej zmeny] je max. týždeň od [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Dátum poslednej zmeny] je max. mesiac od [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Vlastník súboru] je [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Vlastník súboru] nie je [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Vyberte pohľad pre aktuálne umiestnenie alebo zmeňte pohľady"
@@ -7435,10 +6604,6 @@ msgstr "[Položky, ktoré sú ]priečinky"
 #, fuzzy
 msgid "_Places"
 msgstr "_Vzorky"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Nájsť:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7690,6 +6855,585 @@ msgstr "Sieťové servery"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Zobrazí vaše sieťové servery v správcovi súborov Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Ak chcete povoliť rýchle hľadanie, môžete upraviť súbor %s ako root. "
+#~ "Nastavením prepínača na \"yes\", zapnete službu medusa.\n"
+#~ "Pre okamžité spustenie služieb indexácie a hľadania by ste mali tiež "
+#~ "spustiť tieto príkazy ako root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Kým nebude vytvorený index vašich súborov, nebude rýchle hľadanie "
+#~ "dostupné. To ale môže dosť dlho trvať."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Medusa, aplikáciu, ktorá vykonáva hľadanie, nie je možné nájsť. Ak ste "
+#~ "prekladali Nautilus sami, budete musieť nainštalovať program medusa a "
+#~ "znovu preložiť Nautilus. (Kópia programu medusa je k dispozícii na ftp://"
+#~ "ftp.gnome.org)\n"
+#~ "Ak používate predpripravenú verziu Nautilusu, rýchle hľadanie nie je k "
+#~ "dispozícii.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Položky ]obsahujúce \"%s\" v svojich menách"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Položky ] začínajúce na \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Položky ] končiace \"%s\""
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Položky ]obsahujúce \"%s\" v svojich menách"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Položky ]odpovedajúce regulárnemu výrazu \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Položky ]odpovedajúce žolíku súboru \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Položky, ktoré sú ]normálne súbory"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Položky, ktoré sú ]textové súbory"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Položky, ktoré sú ]aplikácie"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Položky, ktoré sú ]priečinky"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Položky, ktoré sú ]hudba"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Položky], ktoré nie sú %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Položky], ktoré sú %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Položky ]nevlastnené \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Položky ]vlastnené \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Položky ]s UID vlastníka \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Položky ]s UID vlastníka iným ako \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Položky ]väčšie ako %s bajtov"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Položky ]menšie ako %s bajtov"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Položky ]s veľkosťou %s bajtov"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Položky ]zmenené dnes"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Položky ]zmenené včera"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Položky ]nezmenené %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Položky ]nezmenené %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Položky ]zmenené pred %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Položky ]zmenené po %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Položky ]zmenený max. týždeň od %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Položky ]zmenený max. mesiac od %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Položky ]neoznačené s \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Položky ]neoznačené s \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Položky ]so všetkými slovami \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Položky ]obsahujúce jedno zo slov \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Položky ]neobsahujúce všetky slová \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Položky ]neobsahujúce slová \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "[Položky väčšími ako 400K] a [bez všetkých slov \"apple orange\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Položky väčšími ako 400K] [vlastnené rootom a bez všetkých slov \"apple "
+#~ "orange\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Položky %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Položky obsahujúce \"informáciu\" v svojich menách"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Položky sú normálne súbory"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Položky obsahujúce \"informáciu\" v svojich menách a sú to normálne súbory"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Normálne súbory obsahujúce \"informáciu\" v svojich menách a sú menšie "
+#~ "ako 2000 bajtov"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Položky obsahujúce \"medusa\" v svojich menách a sú priečinky"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Výsledky hľadanie nemusia obsahovať položky zmenené po %s, keď bol "
+#~ "vytváraný posledný index."
+
+#~ msgid "Search Results"
+#~ msgstr "Výsledky hľadania"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Ľutujem, ale vyhľadávacia služby medusa nie je k dispozícii."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Vyhľadávacia služba nie je k dispozícii"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Vybrali ste hľadanie, ktoré hľadá novšie položky, ako je váš index. "
+#~ "Hľadanie momentálne nič nevráti. Nový index môžete vytvoriť spustením "
+#~ "príkazu \"medusa-indexd\" ako root."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Hľadanie nemohlo otvoriť index vášho systému súborov. Buď chýba, alebo je "
+#~ "poškodený. Nový index môžete vytvoriť spustením príkazu \"medusa-indexd\" "
+#~ "ako root."
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Hľadanie položiek, ktoré sú príliš nové"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Každý indexovaný súbor na vašom systéme odpovedá vašemu kritériu. Overte "
+#~ "zadanie alebo pridajte ďalšie kritéria pre zúženie výsledkov."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Každý indexovaný súbor na vašom systéme odpovedá vašemu kritériu. Overte "
+#~ "zadanie alebo pridajte ďalšie kritéria pre zúženie výsledkov."
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Chyba pri hľadaní"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Hľadanie nemohlo otvoriť index vášho systému súborov. Buď chýba, alebo je "
+#~ "poškodený. Nový index môžete vytvoriť spustením príkazu \"medusa-indexd\" "
+#~ "ako root."
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Chyba pri čítaní indexu súborov"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Nastala chyba pri načítavaní výsledku hľadania: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
+#~ "tento index nie je dostupný."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
+#~ "tento index nie je dostupný."
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Pre rýchle hľadanie je treba index súborov na vašom systéme.  Momentálne "
+#~ "tento index nie je dostupný a preto sa bude hľadať pomalšie bez použitia "
+#~ "indexu."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Rýchle hľadanie nie je k dispozícii"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Hľadanie obsahu nie je k dispozícii"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Váš index súborov je k dispozícii, ale vyhľadávací démon Medusa, ktorý sa "
+#~ "používa na prácu s indexom, nebeží. Pre jeho spustenie sa prihláste ako "
+#~ "root a zadajte na príkazovom riadku príkaz:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Pre rýchle hľadanie je treba index súborov na vašom systéme.  Váš počítač "
+#~ "tento index práve vytvára. Pretože nie je index možné používať, hľadanie "
+#~ "môže trvať niekoľko minút."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Pre hľadanie obsahu je treba index súborov na vašom systéme.  Váš počítač "
+#~ "tento index práve vytvára. Hľadanie obsahuje bude k dispozícii po "
+#~ "dokončení indexu."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Hľadanie pomocou indexov nie je k dispozícii"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
+#~ "tento index nie je dostupný."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
+#~ "tento index nie je dostupný."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Pre rýchle hľadanie je treba index súborov na vašom systéme, ale ten nie "
+#~ "je k dispozícii. Vytvoríte ho spustením príkazu \"medusa-indexd\" ako "
+#~ "root. Kým bude index vytvorený, hľadanie môže trvať niekoľko minút."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Pre hľadanie obsahu je treba index súborov na vašom systéme.  Momentálne "
+#~ "takýto index nie je na vašom počítači k dispozícii. Vytvoriť ho môžete "
+#~ "spustením príkazu \"medusa-indexd\" ako root. Kým nebude index k "
+#~ "dispozícii, nebude možné hľadať podľa obsahu."
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Rýchle hľadanie nie je povolené na vašom počítači"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Pre rýchle hľadanie je treba index súborov na vašom systéme. "
+#~ "Administrátor vášho systému vypol indexáciu, takže momentálne nemáte "
+#~ "index k dispozícii."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Rýchle hľadanie nie je k dispozícii"
+
+#~ msgid "Where"
+#~ msgstr "Umiestnenie"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Zobraziť v novom okne"
+#~ msgstr[1] "_Zobraziť v novom okne"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus našiel viac položiek, ako je schopný zobraziť. Niektoré položky "
+#~ "nebudú zobrazené."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus našiel viac položiek, ako je schopný zobraziť. Niektoré položky "
+#~ "nebudú zobrazené."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Príliš veľa odpovedajúcich"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Indexácia je hotová z %d%%"
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Vaše súbory naposledy indexované %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Raz za deň sú vaše súbory a ich obsah indexované, takže hľadanie je "
+#~ "rýchle. "
+
+#~ msgid "Indexing Status"
+#~ msgstr "Stav indexácie"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Vaše súbory naposledy indexované %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Raz za deň sú vaše súbory a ich obsah indexované, takže hľadanie je "
+#~ "rýchle. "
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Pre vaše súbory momentálne neexistuje index."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Keď je rýchle hľadanie zapnuté, je vytvorený index, ktorý zrýchľuje "
+#~ "hľadanie. Rýchle hľadanie na vašom počítači nie je zapnuté, takže "
+#~ "momentálne nemáte k dispozícii index."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Ľutujem, ale vyhľadávacia služby medusa nie je k dispozícii."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Ukázať každú vybranú položku v jej pôvodnom priečinku"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Ukázať v novom okne"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Ukázať stav indexovania"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Ukázať stav _indexovania"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Pri hľadaní ukazovať stav použitého indexovania"
+
+#~ msgid "More Options"
+#~ msgstr "Viac možností"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Menej možností"
+
+#~ msgid "Find Them!"
+#~ msgstr "Nájsť ich!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Hľadať ] meno [obsahujúce \"fish\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Hľadať ] obsah [obsahujúci všetko z \"fish tree\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Hľadať ] typ [je normálny súbor]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Hľadať ] veľkosť [je väčšia ako 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Hľadať] s emblémom [obsahujúcim \"Dôležité\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Hľadať] naposledy zmenený [prevčerom]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Hľadať] s vlastníkom [nie je root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Meno súboru] obsahuje [pomocník]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Meno súboru] začína [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Meno súboru] končí [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Meno súboru] odpovedá [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Meno súboru] odpovedá regulárnemu výrazu [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Súbor] obsahuje všetky [apple orange]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[Súbor] obsahuje niektoré z [apple orange]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Súbor] neobsahuje všetky [apple orange]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Súbor] neobsahuje nič z [apple orange]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Typ súboru] je [priečinok]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Typ súboru] nie je [priečinok]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Typ súboru je] normálny súbor"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Typ súboru je] textový súbor"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Typ súboru je] aplikácia"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Typ súboru je] priečinok"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Typ súboru je] hudba"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Veľkosť súboru] je väčšia ako [300K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Veľkosť súboru] je menšia ako [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[S emblémom] označený [Dôležité]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[S emblémom] neoznačený [Dôležité]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Dátum poslednej zmeny] je [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Dátum poslednej zmeny] nie je [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Dátum poslednej zmeny] je po [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Dátum poslednej zmeny] je pred [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Dátum poslednej zmeny] je dnes"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Dátum poslednej zmeny] včera"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Dátum poslednej zmeny] je max. týždeň od [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Dátum poslednej zmeny] je max. mesiac od [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Vlastník súboru] je [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Vlastník súboru] nie je [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Nájsť:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Nepodarilo sa nájsť hbox, použijem normálny výber súboru"

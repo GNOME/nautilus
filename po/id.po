@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-06-25 09:40+0700\n"
 "Last-Translator: Yohanes Nugroho <yohanes@opensource.or.id>\n"
 "Language-Team: Indonesia <sukarelawan@gnome.linux.or.id>\n"
@@ -41,7 +41,6 @@ msgstr "bonobo_ui_init() error."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Emblem"
 
@@ -983,7 +982,6 @@ msgstr "Tema ini menggunakan folder yang seperti foto"
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nama"
 
@@ -1785,7 +1783,6 @@ msgid "The name and icon of the file."
 msgstr "ID Aplikasi untuk window"
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Ukuran"
 
@@ -1794,7 +1791,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Tipe"
 
@@ -1804,7 +1800,6 @@ msgid "The type of the file."
 msgstr "[File type is] file teks"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Tanggal Modifikasi"
 
@@ -3289,48 +3284,6 @@ msgstr "Pindah Ke Layout Manual?"
 msgid "Switch"
 msgstr "Beralih"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Jika Anda ingin mengaktifkan pencarian cepat, ANda dapat mengedit file %s "
-"sebagai root. Jika Anda mengeset flag enabled mejadi \"yes\" maka layanan "
-"Medusa akan diakifkan\n"
-"Untuk segera memulai pembuatan index, dan memulai layanan pencarian Anda "
-"juga sebaiknya mejalankan perintah ini sebagai root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Pencarian cepat tidak akan berfungsi sampai index untuk file Anda "
-"diciptakan. Ini mungkin butuh waktu yang cukup lama."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Medusa, aplikasi yang melakukan pencarian, tidak bisa ditemukan di sistem "
-"Anda. JIka Anda mengkompile sendiri Nautilus, Anda perlu menginstall medusa, "
-"dan mengkompile ulang nautilus (Anda bisa mendapatkan medusa di ftp://ftp."
-"gnome.org)\n"
-"Jika Anda memakai versi paket Nautilus, fitur fast search tidak ada di paket "
-"Anda\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3718,251 +3671,6 @@ msgstr ""
 "\n"
 "Untuk membuka file non lokal, salin file tersebut ke folder lokal dan "
 "jatuhkan/drop lagi. File-file lokal yang Anda jatuhkan sudah dibuka."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Objek] yang mengandung \"%s\" dalam namanya"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Objek] yang namanya dimulai dengan \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Objek] yang namanya diakhiri dengan \"%s\""
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Objek] yang namanya tidak mengandung \"%s\""
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Objek] yang namanya cocok dengan ekpresi reguler \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Objek] yang namanya cocok dengan pola \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Objek yang adalah] file biasa"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Objek yang adalah] file teks"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Objek yang adalah] file aplikasi"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Objek yang adalah] folder"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Objek yang adalah] musik"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Objek] yang bukan %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Objek] yang adalah %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Objek] yang tidak dimiliki oleh %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Objek] yang dimiliki oleh %s"
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Objek] yang UID pemiliknya \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Objek] yang UID pemiliknya bukan \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Objek] yang ukurannya lebih besar dari \"%s\" byte"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Objek] yang ukurannya lebih kecil dari \"%s\" byte"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Objek] yang tepat \"%s\" byte"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Objek] yang diubah hari ini"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Objek] yang diubah kemarin"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Objek] yang diubah pada %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Objek] yang tidak diubah pada %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Objek] yang diubah sebelum %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Objek] yang diubah setelah %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Objek] yang diubah dalam minggu tanggal %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Objek] yang diubah dalam bulan tanggal %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Objek ] ditandai (diberi emblem)  \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Objek ] tidak ditandai (tidak diberi emblem)  \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Objek] dengan semua kata \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Objek] dengan salah satu kata \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Objek] tanpa semua kata \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Objek] tanpa salah satu kata \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Items larger than 400K] dan [without all the words \"apple orange\"]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Objek %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "[Objek]mengandung \"stuff\" dalam namanya"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Objek yang adalah file biasa"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "[Objek]mengandung \"stuff\" dalam namanya dan adalah file biasa"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"[Objek]mengandung \"stuff\" dalam namanya, dan adalah file biasa dan yang "
-"ukurannya lebih kecil dari \"%s\" byte"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "[Objek]mengandung \"medusa\" dalam namanya dan adalah folder"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5229,300 +4937,6 @@ msgstr "Menciptakan Window Properti"
 msgid "Select an icon"
 msgstr "Pilih Ikon"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Hasil pencarian mungkin tidak akan menampilkan objek yang dimodifikasi "
-"setelah %s, ketika drive Anda terakhir kali diindeks."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Hasil Pencarian"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Maaf, tapi layanan pencarian Medusa tidak tersedia."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Layanan Pencarian Tidak Tersedia"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Kriteria pencarian yang Anda lakukan melibatkan pemakaian tanggal yang lebih "
-"baru dibanding indeks yang ada di sistem Anda. Pencarian tidak akan "
-"mengembalikan hasil apa-apa. Anda bisa menciptakan indeks baru dengan "
-"menjalankan \"medusa-indexd sebagai root di command line."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Find tidak dapat membuka file indeks sistem Anda. File indeks Anda mungkin "
-"hilang atau rusak. Anda dapat membuat indeks baru dengan menjalankan "
-"\"medusa-indexd\" di command line sebagai root."
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Pencarian objek yang terlalu baru"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Kriteria yang Anda pilih cocok dengan semua file yang diindeks. Anda dapat "
-"memeriksa ejaan kriteria Anda atau menambah kriteria baru, untuk "
-"mempersempit hasil pencarian"
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Kriteria yang Anda pilih cocok dengan semua file yang diindeks. Anda dapat "
-"memeriksa ejaan kriteria Anda atau menambah kriteria baru, untuk "
-"mempersempit hasil pencarian"
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Error Ketika Melakukan Pencarian"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Find tidak dapat membuka file indeks sistem Anda. File indeks Anda mungkin "
-"hilang atau rusak. Anda dapat membuat indeks baru dengan menjalankan "
-"\"medusa-indexd\" di command line sebagai root."
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Error membaca file indeks"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Kesalahan terjadi ketika meload hasil mencarian ini: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file yang "
-"ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda saat ini."
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file yang "
-"ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda saat ini."
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Untuk melakukan pencarian cepat, Find memerlukan indeks file di sistem Anda. "
-"Find tidak dapat mengakses indeks Anda saat ini, sehingga metode pencarian "
-"yan lebih lambat yang tidak memakai indeks akan dipergunakan."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Pencarian cepat tidak tersedia"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Pencarian berdasarkan isi tidak tersedia"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"File indeks Anda tersdia, tapi Medusa search daemon, yang menangani "
-"permintaan indeks tidak berjalan. Untuk menjalankan program ini, login "
-"sebagai root dan ketikkan perintah berikut di command line:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Untuk melakukan pencarian cepat, Find memerlukan indeks file yang ada di "
-"sistem Anda. Komputer Anda sat ini sedang menciptakan indeks tersebut. "
-"Karena Find idak dapat menggunakan indeksnya sementara diciptakan, maka "
-"pencarian ini mungkin akan butuh beberapa menit."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks isi sistem "
-"Anda. Komputer Anda saat ini sedang menciptakan indeks tersebut. Pencarian "
-"berdasarkan isi akan tersedia ketika penciptaan indeks sudah selesai."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Pencarian dengan indeks tidak tersedia"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file yang "
-"ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda saat ini."
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file yang "
-"ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda saat ini."
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Untuk melakukan pencarian cepat, Find memerlukan indeks file yang ada di "
-"sistem Anda. Saat ini tidak ada indeks yang tersedia. Anda dapat menciptakan "
-"indeks dengan menjalankan perintah \"medusa-indexd\" di command line sebagai "
-"rot. Sampai indeks selesai dibuat, pencarian akan butuh beberapa menit."
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks isi file "
-"yang ada di sistem Anda. Saat ini tidak ada indeks yang tersedia. Anda dapat "
-"menciptakan indeks dengan menjalankan perintah \"medusa-indexd\" di command "
-"line sebagai root. Sampai indeks selesai dibuat, pencarian berdasarkan isi "
-"tidak dapat dilakukan."
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Pencarian cepat tidak diaktifkan di komputer Anda"
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Untuk melakukan pencarian cepat, Find memerlukan indeks file yang ada di "
-"sistem Anda. Administrator Anda telah mematikan fitur pencarian cepat di "
-"komputer Ada, jadi indeks tidak tersedia."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Pencarian cepat tidak tersedia"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Lokasi"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Tampilkan di Window Baru"
-msgstr[1] "_Tampilkan di Window Baru"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus menemukan hasil pencarian lebih banyak dari yang dapat "
-"ditampilkannya. Sebagian objek hasil pencarian tidak akan ditampilkan."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus menemukan hasil pencarian lebih banyak dari yang dapat "
-"ditampilkannya. Sebagian objek hasil pencarian tidak akan ditampilkan."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Terlalu banyak kecocokan"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Kosong)"
@@ -5908,72 +5322,6 @@ msgstr "_Jaga Susunan"
 msgid "_Manually"
 msgstr "Secara _Manual"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Pengindeksan sekarang sudah mencapai %d%%"
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "File Anda terakhir kali diindeks pada %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Sekali sehari file dan isi teks Anda akan diindeks sehingga proses "
-"pencariannya menajadi cepat."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Status Pengindeksan"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "File Anda terakhir kali diindeks pada %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Sekali sehari file dan isi teks Anda akan diindeks sehingga proses "
-"pencariannya menajadi cepat."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Tidak ada indeks file Anda saat ini."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Ketika pencarian cepat diaktifkan, Find menciptakan indeks untuk mempercepat "
-"pencarian. Pencarian cepat sekarang tidak diaktifkan di komputer Anda, jadi "
-"Anda tidak punya indeks saat ini."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Maaf, tapi layanan pencarian Medusa tidak tersedia."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%x, %H:%M"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5982,26 +5330,6 @@ msgstr "Ciptakan folder kosong baru dalam folder ini"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Tampilkan setiap objek terpilih dalam folder tempatnya berada."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Tampilkan di Window Baru"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Perlihatkan Status Pengindeksan"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Perlihatan Status Pembuatan _Indeks"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Tunjukan status indeks yang digunakan ketika melakukan pencarian"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6198,19 +5526,6 @@ msgstr "<b>_Nama</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Edit Bookmark"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Opsi Tambahan"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Opsi Dasar"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Cari!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7142,161 +6457,6 @@ msgstr "_Hapus Warna..."
 msgid "_Remove an Emblem..."
 msgstr "_Hapus Emblem..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Search for] Nama yang [contains \"fish\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Search for] File yang isinya [includes all of \"fish tree\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Search for] yang [is regular file]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Search for] yang ukurannya [larger than 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Search for] dengan Emblem [includes \"Important\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Search for] yang terakhir diubah [before yesterday]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Search for] yang pemiliknya [is not root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[File name] mengandung kata [help]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[File name] yang dimulai dengan [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[File name] berakhiran [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[File name] sesuai pola [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[File name] cocok dengan ekspresi reguler [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[File content] mengandung semua kata berikut: [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[File content] mengandung salah satu kata berikut: [apply orange]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[File content] tidak mengandung semua kata berikut: [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[File content] tidak mengandung kata [apple orange]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[File type] adalah [folder]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[File type] bukan [folder]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[File type is] file biasa"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[File type is] file teks"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[File type is] aplikasi"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[File type is] folder"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[File type is] musik"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[File size is] lebih besar dari [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[File size is] lebih kecil dari [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[With emblem] yang emblemnya [Important]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[With emblem] yang emblemnya bukan [Important]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Last modified date] pada [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Last modified date] bukan pada [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Last modified date] adalah setelah [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Last modified date] adalah sebelum [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Last modified date] adalah hari ini"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Last modified date] adalah kemarin"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Last modified date] dalam minggu tanggal [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Last modified date] dalam bulan tanggal [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[File owner] adalah [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[File owner] bukanlah [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Memilih view untuk lokasi saat ini, atau mengubah view yang ada"
@@ -7507,10 +6667,6 @@ msgstr "[Objek yang adalah] folder"
 #, fuzzy
 msgid "_Places"
 msgstr "_Pola"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Cari:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7767,6 +6923,598 @@ msgstr "Server jaringan"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Lihat Server Jaringan Anda di file manager Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Jika Anda ingin mengaktifkan pencarian cepat, ANda dapat mengedit file %s "
+#~ "sebagai root. Jika Anda mengeset flag enabled mejadi \"yes\" maka layanan "
+#~ "Medusa akan diakifkan\n"
+#~ "Untuk segera memulai pembuatan index, dan memulai layanan pencarian Anda "
+#~ "juga sebaiknya mejalankan perintah ini sebagai root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Pencarian cepat tidak akan berfungsi sampai index untuk file Anda "
+#~ "diciptakan. Ini mungkin butuh waktu yang cukup lama."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Medusa, aplikasi yang melakukan pencarian, tidak bisa ditemukan di sistem "
+#~ "Anda. JIka Anda mengkompile sendiri Nautilus, Anda perlu menginstall "
+#~ "medusa, dan mengkompile ulang nautilus (Anda bisa mendapatkan medusa di "
+#~ "ftp://ftp.gnome.org)\n"
+#~ "Jika Anda memakai versi paket Nautilus, fitur fast search tidak ada di "
+#~ "paket Anda\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Objek] yang mengandung \"%s\" dalam namanya"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Objek] yang namanya dimulai dengan \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Objek] yang namanya diakhiri dengan \"%s\""
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Objek] yang namanya tidak mengandung \"%s\""
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Objek] yang namanya cocok dengan ekpresi reguler \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Objek] yang namanya cocok dengan pola \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Objek yang adalah] file biasa"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Objek yang adalah] file teks"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Objek yang adalah] file aplikasi"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Objek yang adalah] folder"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Objek yang adalah] musik"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Objek] yang bukan %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Objek] yang adalah %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Objek] yang tidak dimiliki oleh %s"
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Objek] yang dimiliki oleh %s"
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Objek] yang UID pemiliknya \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Objek] yang UID pemiliknya bukan \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Objek] yang ukurannya lebih besar dari \"%s\" byte"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Objek] yang ukurannya lebih kecil dari \"%s\" byte"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Objek] yang tepat \"%s\" byte"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Objek] yang diubah hari ini"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Objek] yang diubah kemarin"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Objek] yang diubah pada %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Objek] yang tidak diubah pada %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Objek] yang diubah sebelum %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Objek] yang diubah setelah %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Objek] yang diubah dalam minggu tanggal %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Objek] yang diubah dalam bulan tanggal %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Objek ] ditandai (diberi emblem)  \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Objek ] tidak ditandai (tidak diberi emblem)  \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Objek] dengan semua kata \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Objek] dengan salah satu kata \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Objek] tanpa semua kata \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Objek] tanpa salah satu kata \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr ""
+#~ "[Items larger than 400K] dan [without all the words \"apple orange\"]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+
+#~ msgid "Items %s"
+#~ msgstr "Objek %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "[Objek]mengandung \"stuff\" dalam namanya"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Objek yang adalah file biasa"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr "[Objek]mengandung \"stuff\" dalam namanya dan adalah file biasa"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "[Objek]mengandung \"stuff\" dalam namanya, dan adalah file biasa dan yang "
+#~ "ukurannya lebih kecil dari \"%s\" byte"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "[Objek]mengandung \"medusa\" dalam namanya dan adalah folder"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Hasil pencarian mungkin tidak akan menampilkan objek yang dimodifikasi "
+#~ "setelah %s, ketika drive Anda terakhir kali diindeks."
+
+#~ msgid "Search Results"
+#~ msgstr "Hasil Pencarian"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Maaf, tapi layanan pencarian Medusa tidak tersedia."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Layanan Pencarian Tidak Tersedia"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Kriteria pencarian yang Anda lakukan melibatkan pemakaian tanggal yang "
+#~ "lebih baru dibanding indeks yang ada di sistem Anda. Pencarian tidak akan "
+#~ "mengembalikan hasil apa-apa. Anda bisa menciptakan indeks baru dengan "
+#~ "menjalankan \"medusa-indexd sebagai root di command line."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Find tidak dapat membuka file indeks sistem Anda. File indeks Anda "
+#~ "mungkin hilang atau rusak. Anda dapat membuat indeks baru dengan "
+#~ "menjalankan \"medusa-indexd\" di command line sebagai root."
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Pencarian objek yang terlalu baru"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Kriteria yang Anda pilih cocok dengan semua file yang diindeks. Anda "
+#~ "dapat memeriksa ejaan kriteria Anda atau menambah kriteria baru, untuk "
+#~ "mempersempit hasil pencarian"
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Kriteria yang Anda pilih cocok dengan semua file yang diindeks. Anda "
+#~ "dapat memeriksa ejaan kriteria Anda atau menambah kriteria baru, untuk "
+#~ "mempersempit hasil pencarian"
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Error Ketika Melakukan Pencarian"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Find tidak dapat membuka file indeks sistem Anda. File indeks Anda "
+#~ "mungkin hilang atau rusak. Anda dapat membuat indeks baru dengan "
+#~ "menjalankan \"medusa-indexd\" di command line sebagai root."
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Error membaca file indeks"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Kesalahan terjadi ketika meload hasil mencarian ini: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file "
+#~ "yang ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda "
+#~ "saat ini."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file "
+#~ "yang ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda "
+#~ "saat ini."
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian cepat, Find memerlukan indeks file di sistem "
+#~ "Anda. Find tidak dapat mengakses indeks Anda saat ini, sehingga metode "
+#~ "pencarian yan lebih lambat yang tidak memakai indeks akan dipergunakan."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Pencarian cepat tidak tersedia"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Pencarian berdasarkan isi tidak tersedia"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "File indeks Anda tersdia, tapi Medusa search daemon, yang menangani "
+#~ "permintaan indeks tidak berjalan. Untuk menjalankan program ini, login "
+#~ "sebagai root dan ketikkan perintah berikut di command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian cepat, Find memerlukan indeks file yang ada di "
+#~ "sistem Anda. Komputer Anda sat ini sedang menciptakan indeks tersebut. "
+#~ "Karena Find idak dapat menggunakan indeksnya sementara diciptakan, maka "
+#~ "pencarian ini mungkin akan butuh beberapa menit."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks isi "
+#~ "sistem Anda. Komputer Anda saat ini sedang menciptakan indeks tersebut. "
+#~ "Pencarian berdasarkan isi akan tersedia ketika penciptaan indeks sudah "
+#~ "selesai."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Pencarian dengan indeks tidak tersedia"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file "
+#~ "yang ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda "
+#~ "saat ini."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks file "
+#~ "yang ada di sistem Anda saat ini. Find tidak dapat mengakses indeks Anda "
+#~ "saat ini."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian cepat, Find memerlukan indeks file yang ada di "
+#~ "sistem Anda. Saat ini tidak ada indeks yang tersedia. Anda dapat "
+#~ "menciptakan indeks dengan menjalankan perintah \"medusa-indexd\" di "
+#~ "command line sebagai rot. Sampai indeks selesai dibuat, pencarian akan "
+#~ "butuh beberapa menit."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian berdasarkan isi, Find memerlukan indeks isi "
+#~ "file yang ada di sistem Anda. Saat ini tidak ada indeks yang tersedia. "
+#~ "Anda dapat menciptakan indeks dengan menjalankan perintah \"medusa-indexd"
+#~ "\" di command line sebagai root. Sampai indeks selesai dibuat, pencarian "
+#~ "berdasarkan isi tidak dapat dilakukan."
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Pencarian cepat tidak diaktifkan di komputer Anda"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Untuk melakukan pencarian cepat, Find memerlukan indeks file yang ada di "
+#~ "sistem Anda. Administrator Anda telah mematikan fitur pencarian cepat di "
+#~ "komputer Ada, jadi indeks tidak tersedia."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Pencarian cepat tidak tersedia"
+
+#~ msgid "Where"
+#~ msgstr "Lokasi"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Tampilkan di Window Baru"
+#~ msgstr[1] "_Tampilkan di Window Baru"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus menemukan hasil pencarian lebih banyak dari yang dapat "
+#~ "ditampilkannya. Sebagian objek hasil pencarian tidak akan ditampilkan."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus menemukan hasil pencarian lebih banyak dari yang dapat "
+#~ "ditampilkannya. Sebagian objek hasil pencarian tidak akan ditampilkan."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Terlalu banyak kecocokan"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Pengindeksan sekarang sudah mencapai %d%%"
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "File Anda terakhir kali diindeks pada %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Sekali sehari file dan isi teks Anda akan diindeks sehingga proses "
+#~ "pencariannya menajadi cepat."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Status Pengindeksan"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "File Anda terakhir kali diindeks pada %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Sekali sehari file dan isi teks Anda akan diindeks sehingga proses "
+#~ "pencariannya menajadi cepat."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Tidak ada indeks file Anda saat ini."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Ketika pencarian cepat diaktifkan, Find menciptakan indeks untuk "
+#~ "mempercepat pencarian. Pencarian cepat sekarang tidak diaktifkan di "
+#~ "komputer Anda, jadi Anda tidak punya indeks saat ini."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Maaf, tapi layanan pencarian Medusa tidak tersedia."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%x, %H:%M"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Tampilkan setiap objek terpilih dalam folder tempatnya berada."
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Tampilkan di Window Baru"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Perlihatkan Status Pengindeksan"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Perlihatan Status Pembuatan _Indeks"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Tunjukan status indeks yang digunakan ketika melakukan pencarian"
+
+#~ msgid "More Options"
+#~ msgstr "Opsi Tambahan"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Opsi Dasar"
+
+#~ msgid "Find Them!"
+#~ msgstr "Cari!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Search for] Nama yang [contains \"fish\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Search for] File yang isinya [includes all of \"fish tree\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Search for] yang [is regular file]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Search for] yang ukurannya [larger than 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Search for] dengan Emblem [includes \"Important\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Search for] yang terakhir diubah [before yesterday]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Search for] yang pemiliknya [is not root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[File name] mengandung kata [help]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[File name] yang dimulai dengan [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[File name] berakhiran [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[File name] sesuai pola [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[File name] cocok dengan ekspresi reguler [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[File content] mengandung semua kata berikut: [apple orange]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[File content] mengandung salah satu kata berikut: [apply orange]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[File content] tidak mengandung semua kata berikut: [apple orange]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[File content] tidak mengandung kata [apple orange]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[File type] adalah [folder]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[File type] bukan [folder]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[File type is] file biasa"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[File type is] file teks"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[File type is] aplikasi"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[File type is] folder"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[File type is] musik"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[File size is] lebih besar dari [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[File size is] lebih kecil dari [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[With emblem] yang emblemnya [Important]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[With emblem] yang emblemnya bukan [Important]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Last modified date] pada [1/24/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Last modified date] bukan pada [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Last modified date] adalah setelah [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Last modified date] adalah sebelum [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Last modified date] adalah hari ini"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Last modified date] adalah kemarin"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Last modified date] dalam minggu tanggal [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Last modified date] dalam bulan tanggal [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[File owner] adalah [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[File owner] bukanlah [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Cari:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Tidak dapat menemukan hbox, memakai seleksi file normal"

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-02-24 13:03+0100\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -50,7 +50,6 @@ msgstr "bonobo_ui_init() feila."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Merke"
 
@@ -1012,7 +1011,6 @@ msgstr "Denne drakta bruker fotografi av mapper."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Namn"
 
@@ -1755,7 +1753,6 @@ msgstr "Namnet og ikonet til fila."
 
 # applets/tasklist/tasklist_properties.c:276 panel/menu.c:4780
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Storleik"
 
@@ -1765,7 +1762,6 @@ msgstr "Storleiken på fila."
 
 # panel/menu.c:4771
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Type"
 
@@ -1774,7 +1770,6 @@ msgid "The type of the file."
 msgstr "Filtypen til fila."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Dato endra"
 
@@ -3195,46 +3190,6 @@ msgstr "Byta til manuell plassering?"
 msgid "Switch"
 msgstr "Byt"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"For å slå på raskt søk, må du redigera fila «%s» som root. Du slår på medusa-"
-"tenesta ved å setja flagget «enabled» til «yes».\n"
-"For å starta indekseringa og søketenenesta med ein gong, må du også køyra "
-"følgjande kommandoar som root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Raske søk vil ikkje vera tilgjengelege før filene dine er indekserte. Det "
-"kan ta lang tid."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Klarte ikkje å finna medusa, programmet som utfører søk, på systemet ditt. "
-"Dersom du har kompilert Nautilus sjølv, må du installera medusa og kompilera "
-"Nautilus på nytt. (Du kan finna medusa på ftp://ftp.gnome.org/)\n"
-"Dersom du bruker ein pakkeversjon av Nautilus vil ikkje raske søk vera "
-"tilgjengelege.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3600,249 +3555,6 @@ msgid ""
 msgstr ""
 "For å opna ikkje-lokale filer på du fyrst kopiera dei til ei lokal mappe og "
 "så sleppa dei på nytt. Dei lokale filene du slepte har allereie vorte opna."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "[Element ]som har «%s» i namnet"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "[Element ]som startar med «%s»"
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "[Element ]som sluttar med «%s»"
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "[Element ]som ikkje har «%s» i namnet"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "[Element ]som stemmer med det regulære uttrykket «%s»"
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "[Element ]som stemmer med filmønsteret «%s»"
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "[Element som er ]vanlege filer"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "[Element som er ]tekstfiler"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "[Element som er ]program"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "[Element som er ]mapper"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "[Element som er ]musikk"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "[Element ]som ikkje er %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "[Element ]som ikkje er %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "[Element ]som ikkje er eigde av «%s»"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "[Element ]som er eigde av «%s»"
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "[Element ]med eigar-UID «%s»"
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "[Element ]med eigar-UID ulik «%s»"
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "[Element ]større enn %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "[Element ]mindre enn %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "[Element ]på %s byte"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "[Element ]endra i dag"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "[Element ]endra i går"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "[Element ]endra %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "[Element ]ikkje endra %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "[Element ]endra før %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "[Element ]endra etter %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "[Element ]endra innan ei veke frå %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "[Element ]endra innan ein månad frå %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "[Element ]merka med «%s»"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "[Element ]ikkje merka med «%s»"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "[Element ]som inneheld alle orda «%s»"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "[Element ]som inneheld eit av orda «%s»"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "[Element ]som ikkje inneheld alle orda «%s»"
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "[Element ]som ikkje inneheld nokon av orda «%s»"
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Element større enn 400KiB] og [utan alle orda «eple appelsin»]"
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ""
-"[Element større enn 400KiB], [eig av root og utan alle orda «eple appelsin»]"
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Element %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Element som har «ting» i namnet"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Element som er vanlege filer"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "Element som har «ting» i namnet og er vanlege filer"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Element som har «ting» i namnet, er vanlege filer og mindre enn 2000 byte"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Element som har «medusa» i namnet og er mapper"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5053,252 +4765,6 @@ msgstr "Lagar eigenskapar-vindauget."
 msgid "Select an icon"
 msgstr "Vel eit ikon"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Søkeresultatet vil kanskje ikkje inkludera element som er endra etter %s, "
-"som er den datoen indeksen vart oppdatert sist."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Søkeresultat"
-
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Søketenesta Medusa er ikkje tilgjengeleg."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "Medusa er ikkje installert."
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Søketenesta er ikkje tilgjengeleg."
-
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Søket du har valt er nyare enn indeksen på systemet ditt. Søkeresultatet vil "
-"ikkje gje nokon resultat no."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Du kan laga ein ny indeks ved å køyra «medusa-indexd» på kommandolinja som "
-"root."
-
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "Søk etter element som er for nye"
-
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Alle dei indekserte filene på systemet ditt passar med søkekriteria dine."
-
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Du kan kontrollera stavinga på vala dine eller leggja til nye kriterier for "
-"å avgrensa søket."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "Feil under søk"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Kan ikkje opna systemindeksen din. Indeksen kan mangla eller vera øydelagt."
-
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "Feil under lesing av filindeks"
-
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "Ein feil oppstod medan innhaldet i dette søket vart lasta."
-
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Filene på systemet ditt må vera indekserte for at raske søk skal vera mogleg."
-
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Filene på systemet ditt må vera indekserte for at innhaldssøk skal vera "
-"mogleg."
-
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr "Kan ikkje aksessera indeks. Bruker eit seinare søk i staden."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "Kan ikkje aksessera indeks."
-
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "Raske søk er ikkje tilgjengeleg"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "Innhaldssøk er ikkje tilgjengeleg"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Indeksfilene er tilgjengelege, men Medusa-søkenissen, som tek seg av indeks-"
-"førespurnader, køyrer ikkje. For å starta desse programmet, må du logga inn "
-"som root og køyra dette programmet på kommandolinja:\n"
-"\n"
-"medusa-searchd"
-
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Ein indeks over filene på systemet ditt trengst for å gjera raske søk. Lagar "
-"indeksen no."
-
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Ein indeks over filene på systemet ditt trengst for å gjera innhaldssøk. "
-"Lagar indeksen no."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr "Kan ikkje bruka indeks. Dette kan ta fleire minutt."
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr "Innhaldssøk vil verta tilgjengelege når indeksen er ferdig."
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "Indeksert søk er ikkje tilgjengeleg"
-
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Ein indeks over filene på systemet ditt trengst for å gjera raske søk. Det "
-"er ingen tilgjengelege indeksar no."
-
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Ein indeks over filene på systemet ditt trengst for å gjera innhaldssøk. Det "
-"er ingen tilgjengelege indeksar no."
-
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Du kan laga ein indeks ved å køyra «medusa-indexd» på kommandolinja som "
-"root. Søk vil ta lang tid før indeksen er ferdig."
-
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Du kan laga ein indeks ved å køyra «medusa-indexd» på kommandolinja som "
-"root. Innhaldssøk vil ikkje vera mogleg før indeksen er ferdig."
-
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "Raske søk er ikkje slått på på maskina di."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Ein indeks over filene på systemet ditt trengst for å gjera innhaldssøk. "
-"Systemadministrator har slått av raske søk, så det er ingen tilgjengelege "
-"indeksar."
-
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "Raske søk er ikkje slått på"
-
-# gtk/gtkfontsel.c:1224 gtk/gtkfontsel.c:1976
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Kor"
-
-# help-browser/window.c:151
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Vis i nytt vindauge"
-msgstr[1] "_Vis i %d nye vindauge"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr "Nautilus fann for mange søketreff til å visa alle."
-
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "Somme treff vil ikkje verta viste."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "For mange treff"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Tom)"
@@ -5689,72 +5155,6 @@ msgstr "_Hald justert"
 msgid "_Manually"
 msgstr "_Manuell"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Indeksering er %d %% ferdig."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Filene dine vart sist indeksert %s."
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Filene dine og tekstinnhaldet vert indeksert ein gong om dagen slik at søka "
-"dine vert raske."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Indekseringsstatus"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "Filene dine vert indekserte."
-
-# TRN: duplisert streng (linje 170 vs. 198: Mellomrom i den eine.)
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Filene dine og tekstinnhaldet vert indeksert ein gong om dagen slik at søka "
-"dine vert raske."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Det finst ingen indeks over filene dine no."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Når raske søk er slått på, vert ein indeks laga over filene dine slik at søk "
-"går raskare. Raske søk er ikkje slått på på datamaskina di, så du har ikkje "
-"nokon indeks no."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "Finst ingen indeks"
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Medusa-søketenesta er ikkje tilgjengeleg."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "Kontroller at Medusa er satt opp ordentleg."
-
-# applets/gen_util/clock.c:191 applets/gen_util/clock.c:395
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%H.%M, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
 msgstr "Vel kva for kolonner som er synlege i denne mappa"
@@ -5762,28 +5162,6 @@ msgstr "Vel kva for kolonner som er synlege i denne mappa"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr "Synlege _kolonner ..."
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Vis kvart valde element i si opprinnelege mappe"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Vis i nytt vindauge"
-
-# panel/gnome-panel-properties.c:899
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Vis indekseringsstatus"
-
-# panel/gnome-panel-properties.c:899
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Vis _indekseringsstatus"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Vis status for indekseringa som vert brukt til søk"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -5975,19 +5353,6 @@ msgstr "<b>_Namn</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Rediger bokmerke"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Meir val"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Færre val"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Finn!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -6915,161 +6280,6 @@ msgstr "Fje_rn ein farge ..."
 msgid "_Remove an Emblem..."
 msgstr "Fje_rn eit merke ..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Søk etter] Namn [Inneheld «fisk»]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Søk etter] Innhald [Inkluderer alle av «fisk tre»]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Søk etter] Type [er vanleg fil]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Søk etter] Storleik [større enn 400 KiB]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Søk etter] Med merke [har «Viktig»]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Søk etter] Sist endra [før i går]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Søk etter] Eigar [er ikkje root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Filnamn] inneheld [hjelp]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Filnamn] startar med [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Filnamn] sluttar med [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Filnamn] passar til jokerstreng [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Filnamn] passar til regulært uttrykk [«e??l.$»]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Filinnhald] inneheld alle av [eple appelsin]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Filinnhald] inneheld minst ein av [eple appelsin]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Filinnhald] inneheld ikkje alle av [eple appelsin]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Filinnhald] inneheld ingen av [eple appelsin]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Filtype] er [mappe]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Filtype] er ikkje [mappe]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Filtype er] regulært uttrykk"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Filtype er] tekstfil"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Filtype er] program"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Filtype er] mappe"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Filtype er] musikk"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Filstorleik er] større enn [400 KiB]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Filstorleik er] mindre enn [300 KiB]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Med merke] merka [Viktig]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Med merke] ikkje merka [Viktig]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Sist endra dato] er [24/1/2000]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Sist endra dato] er ikkje [24/1/2000]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Sist endra dato] er etter [24/1/2000]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Sist endra dato] er før [24/1/2000]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Sist endra dato] er i dag"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Sist endra dato] er i går"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Sist endra dato] er innan ei veke rundt [24/1/2000]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Sist endra dato] er innan ein månad rundt [24/1/2000]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Fileigar] er [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Fileigar] er ikkje [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr ""
@@ -7278,10 +6488,6 @@ msgstr "Opna foreldermappe"
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
 msgstr "_Stader"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Finn:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7520,6 +6726,562 @@ msgstr "Nettverkstenarar"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis nettverkstenarane dine i Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "For å slå på raskt søk, må du redigera fila «%s» som root. Du slår på "
+#~ "medusa-tenesta ved å setja flagget «enabled» til «yes».\n"
+#~ "For å starta indekseringa og søketenenesta med ein gong, må du også køyra "
+#~ "følgjande kommandoar som root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Raske søk vil ikkje vera tilgjengelege før filene dine er indekserte. Det "
+#~ "kan ta lang tid."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Klarte ikkje å finna medusa, programmet som utfører søk, på systemet "
+#~ "ditt. Dersom du har kompilert Nautilus sjølv, må du installera medusa og "
+#~ "kompilera Nautilus på nytt. (Du kan finna medusa på ftp://ftp.gnome."
+#~ "org/)\n"
+#~ "Dersom du bruker ein pakkeversjon av Nautilus vil ikkje raske søk vera "
+#~ "tilgjengelege.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "[Element ]som har «%s» i namnet"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "[Element ]som startar med «%s»"
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "[Element ]som sluttar med «%s»"
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "[Element ]som ikkje har «%s» i namnet"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "[Element ]som stemmer med det regulære uttrykket «%s»"
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "[Element ]som stemmer med filmønsteret «%s»"
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "[Element som er ]vanlege filer"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "[Element som er ]tekstfiler"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "[Element som er ]program"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "[Element som er ]mapper"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "[Element som er ]musikk"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "[Element ]som ikkje er %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "[Element ]som ikkje er %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "[Element ]som ikkje er eigde av «%s»"
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "[Element ]som er eigde av «%s»"
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "[Element ]med eigar-UID «%s»"
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "[Element ]med eigar-UID ulik «%s»"
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "[Element ]større enn %s byte"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "[Element ]mindre enn %s byte"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "[Element ]på %s byte"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "[Element ]endra i dag"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "[Element ]endra i går"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "[Element ]endra %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "[Element ]ikkje endra %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "[Element ]endra før %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "[Element ]endra etter %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "[Element ]endra innan ei veke frå %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "[Element ]endra innan ein månad frå %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "[Element ]merka med «%s»"
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "[Element ]ikkje merka med «%s»"
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "[Element ]som inneheld alle orda «%s»"
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "[Element ]som inneheld eit av orda «%s»"
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "[Element ]som ikkje inneheld alle orda «%s»"
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "[Element ]som ikkje inneheld nokon av orda «%s»"
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "[Element større enn 400KiB] og [utan alle orda «eple appelsin»]"
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ""
+#~ "[Element større enn 400KiB], [eig av root og utan alle orda «eple "
+#~ "appelsin»]"
+
+#~ msgid "Items %s"
+#~ msgstr "Element %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Element som har «ting» i namnet"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Element som er vanlege filer"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr "Element som har «ting» i namnet og er vanlege filer"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Element som har «ting» i namnet, er vanlege filer og mindre enn 2000 byte"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Element som har «medusa» i namnet og er mapper"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Søkeresultatet vil kanskje ikkje inkludera element som er endra etter %s, "
+#~ "som er den datoen indeksen vart oppdatert sist."
+
+#~ msgid "Search Results"
+#~ msgstr "Søkeresultat"
+
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Søketenesta Medusa er ikkje tilgjengeleg."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "Medusa er ikkje installert."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Søketenesta er ikkje tilgjengeleg."
+
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Søket du har valt er nyare enn indeksen på systemet ditt. Søkeresultatet "
+#~ "vil ikkje gje nokon resultat no."
+
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Du kan laga ein ny indeks ved å køyra «medusa-indexd» på kommandolinja "
+#~ "som root."
+
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Søk etter element som er for nye"
+
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Alle dei indekserte filene på systemet ditt passar med søkekriteria dine."
+
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Du kan kontrollera stavinga på vala dine eller leggja til nye kriterier "
+#~ "for å avgrensa søket."
+
+#~ msgid "Error During Search"
+#~ msgstr "Feil under søk"
+
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Kan ikkje opna systemindeksen din. Indeksen kan mangla eller vera "
+#~ "øydelagt."
+
+#~ msgid "Error Reading File Index"
+#~ msgstr "Feil under lesing av filindeks"
+
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Ein feil oppstod medan innhaldet i dette søket vart lasta."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Filene på systemet ditt må vera indekserte for at raske søk skal vera "
+#~ "mogleg."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Filene på systemet ditt må vera indekserte for at innhaldssøk skal vera "
+#~ "mogleg."
+
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr "Kan ikkje aksessera indeks. Bruker eit seinare søk i staden."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "Kan ikkje aksessera indeks."
+
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Raske søk er ikkje tilgjengeleg"
+
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Innhaldssøk er ikkje tilgjengeleg"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Indeksfilene er tilgjengelege, men Medusa-søkenissen, som tek seg av "
+#~ "indeks-førespurnader, køyrer ikkje. For å starta desse programmet, må du "
+#~ "logga inn som root og køyra dette programmet på kommandolinja:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Ein indeks over filene på systemet ditt trengst for å gjera raske søk. "
+#~ "Lagar indeksen no."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Ein indeks over filene på systemet ditt trengst for å gjera innhaldssøk. "
+#~ "Lagar indeksen no."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr "Kan ikkje bruka indeks. Dette kan ta fleire minutt."
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr "Innhaldssøk vil verta tilgjengelege når indeksen er ferdig."
+
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Indeksert søk er ikkje tilgjengeleg"
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Ein indeks over filene på systemet ditt trengst for å gjera raske søk. "
+#~ "Det er ingen tilgjengelege indeksar no."
+
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Ein indeks over filene på systemet ditt trengst for å gjera innhaldssøk. "
+#~ "Det er ingen tilgjengelege indeksar no."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Du kan laga ein indeks ved å køyra «medusa-indexd» på kommandolinja som "
+#~ "root. Søk vil ta lang tid før indeksen er ferdig."
+
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Du kan laga ein indeks ved å køyra «medusa-indexd» på kommandolinja som "
+#~ "root. Innhaldssøk vil ikkje vera mogleg før indeksen er ferdig."
+
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Raske søk er ikkje slått på på maskina di."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Ein indeks over filene på systemet ditt trengst for å gjera innhaldssøk. "
+#~ "Systemadministrator har slått av raske søk, så det er ingen tilgjengelege "
+#~ "indeksar."
+
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Raske søk er ikkje slått på"
+
+# gtk/gtkfontsel.c:1224 gtk/gtkfontsel.c:1976
+#~ msgid "Where"
+#~ msgstr "Kor"
+
+# help-browser/window.c:151
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Vis i nytt vindauge"
+#~ msgstr[1] "_Vis i %d nye vindauge"
+
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr "Nautilus fann for mange søketreff til å visa alle."
+
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "Somme treff vil ikkje verta viste."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "For mange treff"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Indeksering er %d %% ferdig."
+
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Filene dine vart sist indeksert %s."
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Filene dine og tekstinnhaldet vert indeksert ein gong om dagen slik at "
+#~ "søka dine vert raske."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Indekseringsstatus"
+
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Filene dine vert indekserte."
+
+# TRN: duplisert streng (linje 170 vs. 198: Mellomrom i den eine.)
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Filene dine og tekstinnhaldet vert indeksert ein gong om dagen slik at "
+#~ "søka dine vert raske."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Det finst ingen indeks over filene dine no."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Når raske søk er slått på, vert ein indeks laga over filene dine slik at "
+#~ "søk går raskare. Raske søk er ikkje slått på på datamaskina di, så du har "
+#~ "ikkje nokon indeks no."
+
+#~ msgid "No Index of Files"
+#~ msgstr "Finst ingen indeks"
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Medusa-søketenesta er ikkje tilgjengeleg."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "Kontroller at Medusa er satt opp ordentleg."
+
+# applets/gen_util/clock.c:191 applets/gen_util/clock.c:395
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%H.%M, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Vis kvart valde element i si opprinnelege mappe"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Vis i nytt vindauge"
+
+# panel/gnome-panel-properties.c:899
+#~ msgid "Show Indexing Status"
+#~ msgstr "Vis indekseringsstatus"
+
+# panel/gnome-panel-properties.c:899
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Vis _indekseringsstatus"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Vis status for indekseringa som vert brukt til søk"
+
+#~ msgid "More Options"
+#~ msgstr "Meir val"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Færre val"
+
+#~ msgid "Find Them!"
+#~ msgstr "Finn!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Søk etter] Namn [Inneheld «fisk»]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Søk etter] Innhald [Inkluderer alle av «fisk tre»]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Søk etter] Type [er vanleg fil]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Søk etter] Storleik [større enn 400 KiB]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Søk etter] Med merke [har «Viktig»]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Søk etter] Sist endra [før i går]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Søk etter] Eigar [er ikkje root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Filnamn] inneheld [hjelp]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Filnamn] startar med [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Filnamn] sluttar med [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Filnamn] passar til jokerstreng [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Filnamn] passar til regulært uttrykk [«e??l.$»]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Filinnhald] inneheld alle av [eple appelsin]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[Filinnhald] inneheld minst ein av [eple appelsin]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Filinnhald] inneheld ikkje alle av [eple appelsin]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Filinnhald] inneheld ingen av [eple appelsin]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Filtype] er [mappe]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Filtype] er ikkje [mappe]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Filtype er] regulært uttrykk"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Filtype er] tekstfil"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Filtype er] program"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Filtype er] mappe"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Filtype er] musikk"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Filstorleik er] større enn [400 KiB]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Filstorleik er] mindre enn [300 KiB]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Med merke] merka [Viktig]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Med merke] ikkje merka [Viktig]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Sist endra dato] er [24/1/2000]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Sist endra dato] er ikkje [24/1/2000]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Sist endra dato] er etter [24/1/2000]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Sist endra dato] er før [24/1/2000]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Sist endra dato] er i dag"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Sist endra dato] er i går"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Sist endra dato] er innan ei veke rundt [24/1/2000]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Sist endra dato] er innan ein månad rundt [24/1/2000]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Fileigar] er [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Fileigar] er ikkje [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Finn:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Kan ikkje finna ein hbox. Brukar vanleg filveljar."

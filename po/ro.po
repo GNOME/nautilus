@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2003-10-05 16:40+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team:  <@li.org>\n"
@@ -44,7 +44,6 @@ msgstr "bonobo_ui_init() a eşuat."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Embleme"
 
@@ -986,7 +985,6 @@ msgstr "Foloseşte dosare foto-realistice."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nume"
 
@@ -1776,7 +1774,6 @@ msgid "The name and icon of the file."
 msgstr "ID-ul aplicaţie al ferestrei."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Mărime"
 
@@ -1785,7 +1782,6 @@ msgid "The size of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Tip"
 
@@ -1795,7 +1791,6 @@ msgid "The type of the file."
 msgstr "[Tip fişier este] fişier text"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Data modificării"
 
@@ -3282,47 +3277,6 @@ msgstr "Schimb la aranjare manuală?"
 msgid "Switch"
 msgstr "Schimbă"
 
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Dacă doriţi să activaţi căutarile rapide, puteţi edita fişierul %s ca root. "
-"Setarea fanionului la \"yes\" va activa serviciul medusa, \n"
-"Pentru a porni serviciile de căutare şi indexare imediat, ar trebui de "
-"asemenea să rulaţi următoarele comenzi ca root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Căutările rapide nu vor fi disponibile decât după o indexare iniţială a "
-"fişierelor. Acest lucru ar putea dura."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"Medusa, aplicaţia care realizează căutările, nu a putut fi găsit în sistem. "
-"Dacă aţi compilat nautilus dumneavoastră, va trebui să instalaţi o copie a "
-"medusa şi să recompilaţi apoi nautilus. (O copie pentru Medusa poate fi "
-"găsită la ftp://ftp.gnome.org)\n"
-"Dacă folosiţi o versiune provenită dintr-un pachet binar, cautarea rapidă nu "
-"este disponibilă.\n"
-
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
@@ -3709,250 +3663,6 @@ msgstr ""
 "\n"
 "Pentru a deschide fişierele non-locale, copiaţi-le într-un dosar local şi "
 "încercaţi din nou. Fişierele locale au fost deja deschise."
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "conţinând \"%s\" în numele lor"
-
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "începând cu \"%s\""
-
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "terminându-se cu \"%s\""
-
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "care nu conţin \"%s\" în numele lor"
-
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "care se potrives expresiei regulate \"%s\""
-
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "care se potrivesc măştii de fişiere \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "fişiere normale"
-
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "fişiere text"
-
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "aplicaţii"
-
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "dosare"
-
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "muzică"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "care nu sunt %s"
-
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "care sunt %s"
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "nedeţinute de \"%s\""
-
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "deţinute de \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "cu IDul deţinătorului \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "cu IDul deţinătorului altul decât \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "mai mari de %s octeţi"
-
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "mai mici decât %s octeţi"
-
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "de %s octeţi"
-
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "modificate astăzi"
-
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "modificate ieri"
-
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "modificate pe %s"
-
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "nemodificate pe %s"
-
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "modificate înainte de %s"
-
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "modificate după %s"
-
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr "modificate într-o săptămâna de la %s"
-
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr "modificate într-o lună de la %s"
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "marcate cu \"%s\""
-
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "nemarcate cu \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "cu toate cuvintele \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "conţinând unul din cuvintele \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "fără toate cuvintele \"%s\""
-
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "fără oricare din cuvintele \"%s\""
-
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr " şi "
-
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ", "
-
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Elemente %s"
-
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Elemente conţinând \"chestie\" în numele lor"
-
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Elemente care sunt fişiere normale"
-
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Elemente conţinând \"chestie\" în numele lor şi care sunt fişiere normale"
-
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Elemente conţinând \"chestie\" în numele lor şi care sunt fişiere normale şi "
-"mai mici decât 2000 octeţi"
-
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Elemente conţinând \"medusa\" în numele lor şi care sunt dosare"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -5207,290 +4917,6 @@ msgstr "Creez ferestra cu proprităţi"
 msgid "Select an icon"
 msgstr "Selectaţi o iconiţă"
 
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"Rezulatele căutării pot să nu includă elemente modificate dupa %s, când "
-"drive-ul dvs. a fost indexat."
-
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Rezultate căutare"
-
-#: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Îmi pare rău, dar serviciul medusa nu este disponibil."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Serviciul de căutare nu este disponibil"
-
-#: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"Căutarea selectată este mai nouă decât indexul de pe sistemul dvs. Căutarea "
-"nu va returna nici un rezultat acum. Puteţi crea un index nou rulând "
-"\"medusa-indexd\" ca root în linia de comandă."
-
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Find nu poate deschide indexul sistemul de fişiere. Indexul poate lipsi sau "
-"poate fi corupt. Puteţi crea un nou index rulând ca root \"medusa-indexd\" "
-"din linia de comandă."
-
-#: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
-msgid "Search For Items That Are Too New"
-msgstr "Caută elemente care sunt prea noi"
-
-#: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Fiecare fişier indexat de pe sistemul dvs. corespunde criteriului selectat. "
-"Puteţi verifica corectitudinea selecţiei sau adauga mai multe criterii "
-"pentru a fi mai selectiv."
-
-#: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Fiecare fişier indexat de pe sistemul dvs. corespunde criteriului selectat. "
-"Puteţi verifica corectitudinea selecţiei sau adauga mai multe criterii "
-"pentru a fi mai selectiv."
-
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
-msgid "Error During Search"
-msgstr "Eroare în timpul căutării"
-
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"Find nu poate deschide indexul sistemul de fişiere. Indexul poate lipsi sau "
-"poate fi corupt. Puteţi crea un nou index rulând ca root \"medusa-indexd\" "
-"din linia de comandă."
-
-#: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
-msgid "Error Reading File Index"
-msgstr "Eroare la citirea indexului de fişier"
-
-#: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
-msgid "An error occurred while loading this search's contents."
-msgstr "Eroare la încărcarea rezultatelor căutării: %s"
-
-#: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
-"de pe sistemul dvs. Acest index nu poate fi accesat acum."
-
-#: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
-"de pe sistemul dvs. Acest index nu poate fi accesat acum."
-
-#: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"Pentru a face o căutare rapidă este nevoie de un index al fişierelor de pe "
-"sistemul dvs. Acest index nu poate fi accesat acum astfel că se va face o "
-"căutare mai înceată."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
-msgid "Fast Searches Are Not Available"
-msgstr "Căutări rapide nu sunt disponibile"
-
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
-msgid "Content Searches Are Not Available"
-msgstr "Căutări de conţinut nu sunt disponibile"
-
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"Indexul dvs. este disponibil, dar daemonul de căutare Medusa nu rulează. "
-"Pentru a porni acest program, rulaţi comanda \"medusa-searchd\" ca root."
-
-#: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"Pentru a face o căutare rapidă este nevoie de un index al fişierelor de pe "
-"sistemul dvs. Acest index este creat acum."
-
-#: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
-"de pe sistemul dvs. Acest index este creat acum."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr ""
-
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
-msgid "Indexed Searches Are Not Available"
-msgstr "Căutarea indexată nu este disponibilă"
-
-#: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
-"de pe sistemul dvs. Acest index nu poate fi accesat acum."
-
-#: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
-"de pe sistemul dvs. Acest index nu poate fi accesat acum."
-
-#: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Pentru a face o căutare rapidă este nevoie de un index al fişierelor de pe "
-"sistemul dvs. Acest index nu este disponibil. Puteţi crea un index rulând "
-"\"medusa-indexd\" ca root"
-
-#: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
-"de pe sistemul dvs. Acest index nu este disponibil. Puteţi crea un index "
-"rulând \"medusa-indexd\" ca root"
-
-#: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
-msgid "Fast searches are not enabled on your computer."
-msgstr "Căutările rapide nu sunt disponibile pe calculatorul dvs."
-
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"Pentru a face o căutare rapidă este nevoie de un index al fişierelor de pe "
-"sistemul dvs. Acest index nu este disponibil deoarece administratorul "
-"sistemului dvs. a dezactivat căutările rapide."
-
-#: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
-msgid "Fast Searches Not Enabled"
-msgstr "Căutări rapide nu sunt disponibile"
-
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Unde"
-
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Descoperă într-o fereastră nouă"
-msgstr[1] "_Descoperă într-o fereastră nouă"
-
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
-msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus a găsit mai multe rezultate decât poate afişa. Unele elemente nu "
-"vor fi afişate."
-
-#: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
-msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus a găsit mai multe rezultate decât poate afişa. Unele elemente nu "
-"vor fi afişate."
-
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Prea multe potriviri"
-
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
 msgstr "(Gol)"
@@ -5869,72 +5295,6 @@ msgstr "_Păstrează alinierea"
 msgid "_Manually"
 msgstr "_Manual"
 
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Indexarea este %d%% completă."
-
-#: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
-msgid "Your files were last indexed at %s."
-msgstr "Fişierele dvs. au fost indexate ultima oară la %s"
-
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Zilnic fişierele şi conţinutul text este indexat astfel încât căutarile vor "
-"fi mai rapide."
-
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Stare indexare"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
-msgid "Your files are currently being indexed."
-msgstr "Fişierele dvs. au fost indexate ultima oară la %s"
-
-#: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Zilnic fişierele şi conţinutul text este indexat astfel încât căutarile vor "
-"fi mai rapide."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Nu există nici un index al fişierelor dvs. acum."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Când Căutarea rapidă este activată se creează un index pentru a mări viteza "
-"căutărilor. Căutarea rapidă nu este activată pe acest calculator, deci nu "
-"aveţi indexul în prezent."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Îmi pare rău, dar serviciul medusa nu este disponibil."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr ""
-
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%I:%M %p, %x"
-
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 #, fuzzy
 msgid "Select the columns visible in this folder"
@@ -5943,26 +5303,6 @@ msgstr "Creează un dosar gol în dosarul curent"
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
 msgstr ""
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Arată fiecare element selectat în dosarul său original"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Arată în fereastră nouă"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Arată starea indexării"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Arată starea _indexării"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Arată starea indexării folosite când se efectuează căutarea"
 
 #: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
@@ -6159,19 +5499,6 @@ msgstr "<b>Nume</b>"
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "_Editează semnele de carte"
-
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Mai multe opţiuni"
-
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Mai puţine opţiuni"
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Găseşte-le!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
@@ -7102,161 +6429,6 @@ msgstr "Elimină o _culoare..."
 msgid "_Remove an Emblem..."
 msgstr "Elimină o _emblemă..."
 
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr "[Caută după] Nume [ce conţine \"peşte\"]"
-
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr "[Caută după] Conţinut [include tot \"arborele peşte\"]"
-
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr "[Caută după] Tip [este fişier obişnuit]"
-
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr "[Caută după] Mărime [mai mare decât 400K]"
-
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Caută după] Cu emblema [include \"Important\"]"
-
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr "[Caută după] Ultima modificare [înainte de ieri]"
-
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr "[Caută după] Proprietar [nu este root]"
-
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr "[Nume fişier] conţine [ajutor]"
-
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr "[Nume fişier] începe cu [nautilus]"
-
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr "[Nume fişier] se termină cu [.c]"
-
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr "[Nume fisier] potrivire cu [*.c]"
-
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr "[Nume fişier] potrivire regexp [\"e??l.$\"]"
-
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr "[Conţinut fişier] include toate [măr portocală]"
-
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr "[Conţinut fişier] include oricare dintre [măr portocală]"
-
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr "[Conţinut fişier] nu include toate dintre [măr portocală]"
-
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr "[Conţinut fişier] nu include nici una dintre [măr portocală]"
-
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr "[Tip fişier] este [dosar]"
-
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr "[Tip fişier] nu este [dosar]"
-
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr "[Tip fişier este] fişier obişnuit"
-
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr "[Tip fişier este] fişier text"
-
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr "[Tip fişier este] aplicaţie"
-
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr "[Tip fişier este] dosar"
-
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr "[Tip fişier este] muzică"
-
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr "[Mărime fişier este] mai mare de [400K]"
-
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr "[Mărime fişier este] mai mică decât [300K]"
-
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr "[Cu emblema] marcată ca [Important]"
-
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr "[Cu emblema] nemarcată ca [Important]"
-
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr "[Data ultimei modificări] este [1/4/00]"
-
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr "[Data ultimei modificări] nu este [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Data ultimei modificări] este după [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr "[Data ultimei modificări] este înainte de [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr "[Data ultimei modificări] este azi"
-
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr "[Data ultimei modificări] este ieri"
-
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr "[Data ultimei modificări] este într-o săptămână de la [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr "[Data ultimei modificări] este într-o lună de la [1/24/00]"
-
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr "[Proprietar fişier] este [root]"
-
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr "[Proprietar fişier] nu este [root]"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr ""
@@ -7468,10 +6640,6 @@ msgstr "dosare"
 #, fuzzy
 msgid "_Places"
 msgstr "_Modele"
-
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Caută:"
 
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -7727,6 +6895,579 @@ msgstr "Servere reţea"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vizualizează serverele de reţea în Nautilus"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Dacă doriţi să activaţi căutarile rapide, puteţi edita fişierul %s ca "
+#~ "root. Setarea fanionului la \"yes\" va activa serviciul medusa, \n"
+#~ "Pentru a porni serviciile de căutare şi indexare imediat, ar trebui de "
+#~ "asemenea să rulaţi următoarele comenzi ca root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Căutările rapide nu vor fi disponibile decât după o indexare iniţială a "
+#~ "fişierelor. Acest lucru ar putea dura."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "Medusa, aplicaţia care realizează căutările, nu a putut fi găsit în "
+#~ "sistem. Dacă aţi compilat nautilus dumneavoastră, va trebui să instalaţi "
+#~ "o copie a medusa şi să recompilaţi apoi nautilus. (O copie pentru Medusa "
+#~ "poate fi găsită la ftp://ftp.gnome.org)\n"
+#~ "Dacă folosiţi o versiune provenită dintr-un pachet binar, cautarea rapidă "
+#~ "nu este disponibilă.\n"
+
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "conţinând \"%s\" în numele lor"
+
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "începând cu \"%s\""
+
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "terminându-se cu \"%s\""
+
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "care nu conţin \"%s\" în numele lor"
+
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "care se potrives expresiei regulate \"%s\""
+
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "care se potrivesc măştii de fişiere \"%s\""
+
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "fişiere normale"
+
+#~ msgid "[Items that are ]text files"
+#~ msgstr "fişiere text"
+
+#~ msgid "[Items that are ]applications"
+#~ msgstr "aplicaţii"
+
+#~ msgid "[Items that are ]folders"
+#~ msgstr "dosare"
+
+#~ msgid "[Items that are ]music"
+#~ msgstr "muzică"
+
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "care nu sunt %s"
+
+#~ msgid "[Items ]that are %s"
+#~ msgstr "care sunt %s"
+
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "nedeţinute de \"%s\""
+
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "deţinute de \"%s\""
+
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "cu IDul deţinătorului \"%s\""
+
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "cu IDul deţinătorului altul decât \"%s\""
+
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "mai mari de %s octeţi"
+
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "mai mici decât %s octeţi"
+
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "de %s octeţi"
+
+#~ msgid "[Items ]modified today"
+#~ msgstr "modificate astăzi"
+
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "modificate ieri"
+
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "modificate pe %s"
+
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "nemodificate pe %s"
+
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "modificate înainte de %s"
+
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "modificate după %s"
+
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr "modificate într-o săptămâna de la %s"
+
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr "modificate într-o lună de la %s"
+
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "marcate cu \"%s\""
+
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "nemarcate cu \"%s\""
+
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "cu toate cuvintele \"%s\""
+
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "conţinând unul din cuvintele \"%s\""
+
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "fără toate cuvintele \"%s\""
+
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "fără oricare din cuvintele \"%s\""
+
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr " şi "
+
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ", "
+
+#~ msgid "Items %s"
+#~ msgstr "Elemente %s"
+
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Elemente conţinând \"chestie\" în numele lor"
+
+#~ msgid "Items that are regular files"
+#~ msgstr "Elemente care sunt fişiere normale"
+
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Elemente conţinând \"chestie\" în numele lor şi care sunt fişiere normale"
+
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Elemente conţinând \"chestie\" în numele lor şi care sunt fişiere normale "
+#~ "şi mai mici decât 2000 octeţi"
+
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr "Elemente conţinând \"medusa\" în numele lor şi care sunt dosare"
+
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "Rezulatele căutării pot să nu includă elemente modificate dupa %s, când "
+#~ "drive-ul dvs. a fost indexat."
+
+#~ msgid "Search Results"
+#~ msgstr "Rezultate căutare"
+
+#, fuzzy
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Îmi pare rău, dar serviciul medusa nu este disponibil."
+
+#~ msgid "Search Service Not Available"
+#~ msgstr "Serviciul de căutare nu este disponibil"
+
+#, fuzzy
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "Căutarea selectată este mai nouă decât indexul de pe sistemul dvs. "
+#~ "Căutarea nu va returna nici un rezultat acum. Puteţi crea un index nou "
+#~ "rulând \"medusa-indexd\" ca root în linia de comandă."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Find nu poate deschide indexul sistemul de fişiere. Indexul poate lipsi "
+#~ "sau poate fi corupt. Puteţi crea un nou index rulând ca root \"medusa-"
+#~ "indexd\" din linia de comandă."
+
+#, fuzzy
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Caută elemente care sunt prea noi"
+
+#, fuzzy
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "Fiecare fişier indexat de pe sistemul dvs. corespunde criteriului "
+#~ "selectat. Puteţi verifica corectitudinea selecţiei sau adauga mai multe "
+#~ "criterii pentru a fi mai selectiv."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Fiecare fişier indexat de pe sistemul dvs. corespunde criteriului "
+#~ "selectat. Puteţi verifica corectitudinea selecţiei sau adauga mai multe "
+#~ "criterii pentru a fi mai selectiv."
+
+#, fuzzy
+#~ msgid "Error During Search"
+#~ msgstr "Eroare în timpul căutării"
+
+#, fuzzy
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "Find nu poate deschide indexul sistemul de fişiere. Indexul poate lipsi "
+#~ "sau poate fi corupt. Puteţi crea un nou index rulând ca root \"medusa-"
+#~ "indexd\" din linia de comandă."
+
+#, fuzzy
+#~ msgid "Error Reading File Index"
+#~ msgstr "Eroare la citirea indexului de fişier"
+
+#, fuzzy
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Eroare la încărcarea rezultatelor căutării: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr ""
+#~ "Pentru a face o căutare după conţinut este nevoie de un index al "
+#~ "fişierelor de pe sistemul dvs. Acest index nu poate fi accesat acum."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "Pentru a face o căutare după conţinut este nevoie de un index al "
+#~ "fişierelor de pe sistemul dvs. Acest index nu poate fi accesat acum."
+
+#, fuzzy
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "Pentru a face o căutare rapidă este nevoie de un index al fişierelor de "
+#~ "pe sistemul dvs. Acest index nu poate fi accesat acum astfel că se va "
+#~ "face o căutare mai înceată."
+
+#, fuzzy
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "Căutări rapide nu sunt disponibile"
+
+#, fuzzy
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "Căutări de conţinut nu sunt disponibile"
+
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "Indexul dvs. este disponibil, dar daemonul de căutare Medusa nu rulează. "
+#~ "Pentru a porni acest program, rulaţi comanda \"medusa-searchd\" ca root."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Pentru a face o căutare rapidă este nevoie de un index al fişierelor de "
+#~ "pe sistemul dvs. Acest index este creat acum."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "Pentru a face o căutare după conţinut este nevoie de un index al "
+#~ "fişierelor de pe sistemul dvs. Acest index este creat acum."
+
+#, fuzzy
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Căutarea indexată nu este disponibilă"
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "Pentru a face o căutare după conţinut este nevoie de un index al "
+#~ "fişierelor de pe sistemul dvs. Acest index nu poate fi accesat acum."
+
+#, fuzzy
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "Pentru a face o căutare după conţinut este nevoie de un index al "
+#~ "fişierelor de pe sistemul dvs. Acest index nu poate fi accesat acum."
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Pentru a face o căutare rapidă este nevoie de un index al fişierelor de "
+#~ "pe sistemul dvs. Acest index nu este disponibil. Puteţi crea un index "
+#~ "rulând \"medusa-indexd\" ca root"
+
+#, fuzzy
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Pentru a face o căutare după conţinut este nevoie de un index al "
+#~ "fişierelor de pe sistemul dvs. Acest index nu este disponibil. Puteţi "
+#~ "crea un index rulând \"medusa-indexd\" ca root"
+
+#, fuzzy
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "Căutările rapide nu sunt disponibile pe calculatorul dvs."
+
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "Pentru a face o căutare rapidă este nevoie de un index al fişierelor de "
+#~ "pe sistemul dvs. Acest index nu este disponibil deoarece administratorul "
+#~ "sistemului dvs. a dezactivat căutările rapide."
+
+#, fuzzy
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "Căutări rapide nu sunt disponibile"
+
+#~ msgid "Where"
+#~ msgstr "Unde"
+
+#, fuzzy
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Descoperă într-o fereastră nouă"
+#~ msgstr[1] "_Descoperă într-o fereastră nouă"
+
+#, fuzzy
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr ""
+#~ "Nautilus a găsit mai multe rezultate decât poate afişa. Unele elemente nu "
+#~ "vor fi afişate."
+
+#, fuzzy
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr ""
+#~ "Nautilus a găsit mai multe rezultate decât poate afişa. Unele elemente nu "
+#~ "vor fi afişate."
+
+#~ msgid "Too Many Matches"
+#~ msgstr "Prea multe potriviri"
+
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Indexarea este %d%% completă."
+
+#, fuzzy
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "Fişierele dvs. au fost indexate ultima oară la %s"
+
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Zilnic fişierele şi conţinutul text este indexat astfel încât căutarile "
+#~ "vor fi mai rapide."
+
+#~ msgid "Indexing Status"
+#~ msgstr "Stare indexare"
+
+#, fuzzy
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "Fişierele dvs. au fost indexate ultima oară la %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Zilnic fişierele şi conţinutul text este indexat astfel încât căutarile "
+#~ "vor fi mai rapide."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Nu există nici un index al fişierelor dvs. acum."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Când Căutarea rapidă este activată se creează un index pentru a mări "
+#~ "viteza căutărilor. Căutarea rapidă nu este activată pe acest calculator, "
+#~ "deci nu aveţi indexul în prezent."
+
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Îmi pare rău, dar serviciul medusa nu este disponibil."
+
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%I:%M %p, %x"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Arată fiecare element selectat în dosarul său original"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Arată în fereastră nouă"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Arată starea indexării"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Arată starea _indexării"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Arată starea indexării folosite când se efectuează căutarea"
+
+#~ msgid "More Options"
+#~ msgstr "Mai multe opţiuni"
+
+#~ msgid "Fewer Options"
+#~ msgstr "Mai puţine opţiuni"
+
+#~ msgid "Find Them!"
+#~ msgstr "Găseşte-le!"
+
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr "[Caută după] Nume [ce conţine \"peşte\"]"
+
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr "[Caută după] Conţinut [include tot \"arborele peşte\"]"
+
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr "[Caută după] Tip [este fişier obişnuit]"
+
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr "[Caută după] Mărime [mai mare decât 400K]"
+
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr "[Caută după] Cu emblema [include \"Important\"]"
+
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr "[Caută după] Ultima modificare [înainte de ieri]"
+
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr "[Caută după] Proprietar [nu este root]"
+
+#~ msgid "[File name] contains [help]"
+#~ msgstr "[Nume fişier] conţine [ajutor]"
+
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr "[Nume fişier] începe cu [nautilus]"
+
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr "[Nume fişier] se termină cu [.c]"
+
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr "[Nume fisier] potrivire cu [*.c]"
+
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr "[Nume fişier] potrivire regexp [\"e??l.$\"]"
+
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr "[Conţinut fişier] include toate [măr portocală]"
+
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr "[Conţinut fişier] include oricare dintre [măr portocală]"
+
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr "[Conţinut fişier] nu include toate dintre [măr portocală]"
+
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr "[Conţinut fişier] nu include nici una dintre [măr portocală]"
+
+#~ msgid "[File type] is [folder]"
+#~ msgstr "[Tip fişier] este [dosar]"
+
+#~ msgid "[File type] is not [folder]"
+#~ msgstr "[Tip fişier] nu este [dosar]"
+
+#~ msgid "[File type is] regular file"
+#~ msgstr "[Tip fişier este] fişier obişnuit"
+
+#~ msgid "[File type is] text file"
+#~ msgstr "[Tip fişier este] fişier text"
+
+#~ msgid "[File type is] application"
+#~ msgstr "[Tip fişier este] aplicaţie"
+
+#~ msgid "[File type is] folder"
+#~ msgstr "[Tip fişier este] dosar"
+
+#~ msgid "[File type is] music"
+#~ msgstr "[Tip fişier este] muzică"
+
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr "[Mărime fişier este] mai mare de [400K]"
+
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr "[Mărime fişier este] mai mică decât [300K]"
+
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr "[Cu emblema] marcată ca [Important]"
+
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr "[Cu emblema] nemarcată ca [Important]"
+
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr "[Data ultimei modificări] este [1/4/00]"
+
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr "[Data ultimei modificări] nu este [1/24/00]"
+
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr "[Data ultimei modificări] este după [1/24/00]"
+
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr "[Data ultimei modificări] este înainte de [1/24/00]"
+
+#~ msgid "[Last modified date] is today"
+#~ msgstr "[Data ultimei modificări] este azi"
+
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr "[Data ultimei modificări] este ieri"
+
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr "[Data ultimei modificări] este într-o săptămână de la [1/24/00]"
+
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr "[Data ultimei modificări] este într-o lună de la [1/24/00]"
+
+#~ msgid "[File owner] is [root]"
+#~ msgstr "[Proprietar fişier] este [root]"
+
+#~ msgid "[File owner] is not [root]"
+#~ msgstr "[Proprietar fişier] nu este [root]"
+
+#~ msgid "Find:"
+#~ msgstr "Caută:"
 
 #~ msgid "Can't find an hbox, using a normal file selection"
 #~ msgstr "Nu pot găsi hbox, folosesc un selector de fişiere normal"
