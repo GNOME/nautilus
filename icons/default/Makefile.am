@@ -1,8 +1,5 @@
 NULL=
 
-SUBDIRS =\
-	$(NULL)
-
 icondir = $(datadir)/pixmaps/nautilus/default
 
 icon_DATA =\
