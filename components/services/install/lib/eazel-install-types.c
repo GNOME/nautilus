@@ -46,22 +46,21 @@ static int package_allocs = 0;
 static int category_allocs = 0;
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
-const char*
-protocol_as_string (URLType protocol) 
+const char *
+eazel_install_protocol_as_string (URLType protocol) 
 {
-	static char as_string[10];
 	switch (protocol) {
 	case PROTOCOL_HTTP:
-		strcpy (as_string, "http");
+		return "http";
 		break;
 	case PROTOCOL_FTP:
-		strcpy (as_string, "ftp");
+		return "ftp";
 		break;
 	case PROTOCOL_LOCAL:
-		strcpy (as_string, "file");
+		return "file";
 		break;
 	}
-	return as_string;
+	return "???";
 }
 
 CategoryData*
@@ -193,6 +192,7 @@ packagedata_new ()
 	pack->modify_status = PACKAGE_MOD_UNTOUCHED;
 	pack->md5 = NULL;
 	pack->packsys_struc = NULL;
+	pack->features = NULL;
 	return pack;
 }
 
@@ -288,6 +288,10 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 			result->provides = g_list_prepend (result->provides, g_strdup (ptr->data));
 		}
 		result->provides = g_list_reverse (result->provides);
+		for (ptr = pack->features; ptr; ptr = g_list_next (ptr)) {
+			result->features = g_list_prepend (result->features, g_strdup (ptr->data));
+		}
+		result->features = g_list_reverse (result->features);
 	} /* No need to null if !deep, as packagedata_new does that */
 
 	return result;
@@ -475,6 +479,72 @@ packagedata_fill_from_file (PackageData *pack, const char *filename)
 	return TRUE;
 }
 
+#define COPY_STRING(name) do { \
+	if (full_package->##name != NULL) { \
+		g_free (package->##name); \
+		package->##name = g_strdup (full_package->##name); \
+	} \
+} while (0)
+
+/* fill in a package struct with info from another one:
+ * flags tells what fields to skip.
+ */
+void
+packagedata_fill_in_missing (PackageData *package, const PackageData *full_package, int fill_flags)
+{
+	const GList *ptr;
+
+	g_assert (package != NULL);
+	g_assert (full_package != NULL);
+
+	COPY_STRING (name);
+	COPY_STRING (version);
+	COPY_STRING (minor);
+	COPY_STRING (archtype);
+	package->bytesize = full_package->bytesize;
+	package->distribution = full_package->distribution;
+	COPY_STRING (filename);
+	COPY_STRING (eazel_id);
+	COPY_STRING (remote_url);
+	COPY_STRING (md5);
+
+	if (! (fill_flags & PACKAGE_FILL_NO_TEXT)) {
+		COPY_STRING (summary);
+		COPY_STRING (description);
+	}
+	if (! (fill_flags & PACKAGE_FILL_NO_PROVIDES)) {
+		if (package->provides != NULL) {
+			g_list_foreach (package->provides, (GFunc)g_free, NULL); 
+			g_list_free (package->provides);
+		}
+		package->provides = NULL;
+		for (ptr = full_package->provides; ptr; ptr = g_list_next (ptr)) {
+			package->provides = g_list_prepend (package->provides, g_strdup (ptr->data));
+		}
+		package->provides = g_list_reverse (package->provides);
+
+		if (package->features != NULL) {
+			g_list_foreach (package->features, (GFunc)g_free, NULL);
+			g_list_free (package->features);
+		}
+		package->features = NULL;
+		for (ptr = full_package->features; ptr; ptr = g_list_next (ptr)) {
+			package->features = g_list_prepend (package->features, g_strdup (ptr->data));
+		}
+		package->features = g_list_reverse (package->features);
+	}
+	if (! (fill_flags & PACKAGE_FILL_NO_DEPENDENCIES)) {
+		/* FIXME: if the dependencies are already filled in, should we deep-free them or just
+		 * throw that list away?  for now, let's assert that there's never any list to begin
+		 * with, and if that breaks, then figure out what to do.
+		 */
+		g_assert (package->soft_depends == NULL);
+		g_assert (package->hard_depends == NULL);
+		package->soft_depends = packagedata_list_copy (full_package->soft_depends, TRUE);
+		package->hard_depends = packagedata_list_copy (full_package->hard_depends, TRUE);
+	}
+}
+
 void 
 packagedata_destroy (PackageData *pack, gboolean deep)
 {
@@ -523,6 +593,9 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	g_list_foreach (pack->provides, (GFunc)g_free, NULL); 
 	g_list_free (pack->provides);
 	pack->provides = NULL;
+	g_list_foreach (pack->features, (GFunc)g_free, NULL);
+	g_list_free (pack->features);
+	pack->features = NULL;
 
 	if (deep) {
 		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
@@ -1027,3 +1100,168 @@ eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * obj
 	    GTK_VALUE_INT (args[5]), GTK_VALUE_INT (args[6]),func_data);
 }
 
+
+static void
+gstr_indent (GString *out, int indent)
+{
+	for ( ; indent >= 8; indent -= 8) {
+		g_string_sprintfa (out, "\t");
+	}
+	for ( ; indent > 0; indent--) {
+		g_string_sprintfa (out, " ");
+	}
+}
+
+static char *packagedata_dump_int (const PackageData *package, gboolean deep, int indent);
+
+static void
+dump_package_list (GString *out, const GList *list, gboolean deep, int indent)
+{
+	const GList *iter;
+	char *name;
+
+	if (deep) {
+		g_string_sprintfa (out, "\n");
+	}
+	for (iter = g_list_first ((GList *)list); iter != NULL; iter = g_list_next (iter)) {
+		if (deep) {
+			g_string_sprintfa (out, "%s", packagedata_dump_int ((PackageData *)(iter->data), deep, indent+4));
+		} else {
+			name = packagedata_get_readable_name ((PackageData *)(iter->data));
+			if (iter == list) {
+				g_string_sprintfa (out, "%s", name);
+			} else {
+				g_string_sprintfa (out, ", %s", name);
+			}
+			g_free (name);
+		}
+	}
+}
+
+/* useful debugging tool: dump a packagedata struct into a string */
+static char *
+packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
+{
+	GString *out = g_string_new ("");
+	GList *iter;
+	char *dist_name;
+	char *outstr;
+
+	dist_name = trilobite_get_distribution_name (package->distribution, TRUE, TRUE);
+	gstr_indent (out, indent);
+	g_string_sprintfa (out, "Package %s v%s%s%s (arch %s) for %s\n",
+			   (package->name != NULL) ? package->name : "(no name)",
+			   (package->version != NULL) ? package->version : "",
+			   (package->minor != NULL) ? "-" : "",
+			   (package->minor != NULL) ? package->minor : "",
+			   (package->archtype != NULL) ? package->archtype : "none",
+			   dist_name);
+	g_free (dist_name);
+
+	indent += 4;
+	gstr_indent (out, indent);
+	g_string_sprintfa (out, "%s/%s",
+			   packagedata_status_enum_to_str (package->status),
+			   packagedata_modstatus_enum_to_str (package->modify_status));
+	if (package->eazel_id != NULL) {
+		g_string_sprintfa (out, ", EID %s", package->eazel_id);
+	}
+	if (package->bytesize > 0) {
+		g_string_sprintfa (out, ", %d bytes", package->bytesize);
+	}
+	if (package->toplevel) {
+		g_string_sprintfa (out, ", toplevel");
+	}
+	if (package->source_package) {
+		g_string_sprintfa (out, ", source package");
+	}
+	if (package->conflicts_checked) {
+		g_string_sprintfa (out, ", checked");
+	}
+	g_string_sprintfa (out, "\n");
+
+	if (package->filename != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Filename: %s\n", package->filename);
+	}
+	if (package->remote_url != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "URL: %s\n", package->remote_url);
+	}
+	if (package->md5 != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "MD5: %s\n", package->md5);
+	}
+	if (package->install_root != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Install root: %s\n", package->install_root);
+	}
+
+	if (package->summary != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Summary: %s\n", package->summary);
+	}
+	if (package->description != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Description:\n%s\n", package->description);
+	}
+
+	if (package->soft_depends != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Soft depends: ");
+		dump_package_list (out, package->soft_depends, deep, indent);
+		g_string_sprintfa (out, "\n");
+	}
+	if (package->hard_depends != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Hard depends: ");
+		dump_package_list (out, package->hard_depends, deep, indent);
+		g_string_sprintfa (out, "\n");
+	}
+	if (package->modifies != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Modifies: ");
+		dump_package_list (out, package->modifies, deep, indent);
+		g_string_sprintfa (out, "\n");
+	}
+	if (package->breaks != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Breaks: ");
+		dump_package_list (out, package->breaks, deep, indent);
+		g_string_sprintfa (out, "\n");
+	}
+
+	if (package->features != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Features: ");
+		for (iter = g_list_first (package->features); iter != NULL; iter = g_list_next (iter)) {
+			if (iter == package->features) {
+				g_string_sprintfa (out, "%s", (char *)(iter->data));
+			} else {
+				g_string_sprintfa (out, " & %s", (char *)(iter->data));
+			}
+		}
+		g_string_sprintfa (out, "\n");
+	}
+
+	if (deep && package->provides != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Provides:\n");
+		for (iter = g_list_first (package->provides); iter != NULL; iter = g_list_next (iter)) {
+			g_string_sprintfa (out, "\t\t%s\n", (char *)(iter->data));
+		}
+		g_string_sprintfa (out, "\n");
+	}
+
+	indent -= 4;
+
+	outstr = out->str;
+	g_string_free (out, FALSE);
+	return outstr;
+}
+
+char *
+packagedata_dump (const PackageData *package, gboolean deep)
+{
+	return packagedata_dump_int (package, deep, 0);
+}

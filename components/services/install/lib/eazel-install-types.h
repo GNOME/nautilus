@@ -39,6 +39,7 @@
 
 typedef enum _URLType URLType;
 typedef enum _PackageType PackageType;
+typedef enum _PackageFillFlags PackageFillFlags;
 typedef struct _TransferOptions TransferOptions;
 typedef struct _InstallOptions InstallOptions;
 typedef struct _CategoryData CategoryData;
@@ -98,12 +99,19 @@ enum _URLType {
 	PROTOCOL_HTTP  = 1,
 	PROTOCOL_FTP   = 2
 };
-const char *protocol_as_string (URLType protocol);
+const char *eazel_install_protocol_as_string (URLType protocol);
 
 enum _PackageType {
 	PACKAGE_TYPE_RPM,
 	PACKAGE_TYPE_DPKG,
 	PACKAGE_TYPE_SOLARIS
+};
+
+enum _PackageFillFlags {
+	PACKAGE_FILL_EVERYTHING = 0x00,
+	PACKAGE_FILL_NO_TEXT = 0x01,
+	PACKAGE_FILL_NO_PROVIDES = 0x02,
+	PACKAGE_FILL_NO_DEPENDENCIES = 0x04
 };
 
 struct _TransferOptions {
@@ -202,7 +210,14 @@ struct _PackageData {
  	     DOWNGRADED means that the package was replaced with an older version
 	     UPGRADED means that the package was replaced with a never version
 	 */
-	PackageModification modify_status;	
+	PackageModification modify_status;
+
+	/* if the package info was downloaded from softcat, this is a list of "features"
+	 * the package resolves for its parent package.  for example, if this package is only
+	 * needed to fulfill a "/bin/sh" requirement for its parent package, the "features"
+	 * list will contain "/bin/sh".
+	 */
+	GList *features;
 };
 
 PackageData* packagedata_new (void);
@@ -216,6 +231,7 @@ PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyCon
 
 gboolean packagedata_fill_from_file (PackageData *pack, const char *filename);
 void packagedata_fill_from_rpm_header (PackageData *pack, Header );
+void packagedata_fill_in_missing (PackageData *package, const PackageData *full_package, int fill_flags);
 
 void packagedata_remove_soft_dep (PackageData *remove, PackageData *from);
 
@@ -265,5 +281,7 @@ int eazel_install_package_other_version_compare (PackageData *pack, PackageData 
 void eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * object,
 								      GtkSignalFunc func,
 								      gpointer func_data, GtkArg * args);
+
+char *packagedata_dump (const PackageData *package, gboolean deep);
 
 #endif /* EAZEL_INSTALL_SERVICES_TYPES_H */
