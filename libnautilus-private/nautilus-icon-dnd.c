@@ -713,6 +713,7 @@ stop_auto_scroll (NautilusIconContainer *container)
 static gboolean
 confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
+#if 0
 	const char *message;
 	GtkDialog *dialog;
 	int response;
@@ -750,6 +751,9 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	gtk_object_destroy (GTK_OBJECT (dialog));
 
 	return response == GTK_RESPONSE_YES;
+#else
+	return FALSE;
+#endif
 }
 
 static void
