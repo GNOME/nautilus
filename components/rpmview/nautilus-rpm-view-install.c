@@ -136,6 +136,9 @@ get_detailed_errors_foreach (const gpointer data, GString *message)
 		break;
 	case PACKAGE_RESOLVED:
 		break;
+	case PACKAGE_PACKSYS_FAILURE:
+		g_string_sprintfa (message, _("Cannot access the local package system\n"));
+		break;
 	}
 	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
