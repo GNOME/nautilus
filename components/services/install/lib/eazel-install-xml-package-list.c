@@ -178,12 +178,12 @@ GList* parse_shared (xmlDocPtr doc)
 	return rv;
 }
 
-GList* parse_memory_xml_package_list (char *mem, int size) {
+GList* parse_memory_xml_package_list (const char *mem, int size) {
 	xmlDocPtr doc;
 
 	g_return_val_if_fail (mem!=NULL, NULL);
 
-	doc = xmlParseMemory (mem, size);
+	doc = xmlParseMemory ((char*)mem, size);
 
 	if (doc == NULL) {
 		xmlFreeDoc (doc);
@@ -194,7 +194,7 @@ GList* parse_memory_xml_package_list (char *mem, int size) {
 }
 
 GList* 
-parse_memory_transaction_file (char *mem, 
+parse_memory_transaction_file (const char *mem, 
 			       int size)
 {
 	xmlDocPtr doc;
@@ -204,7 +204,7 @@ parse_memory_transaction_file (char *mem,
 
 	g_return_val_if_fail (mem!=NULL, NULL);
 
-	doc = xmlParseMemory (mem, size);
+	doc = xmlParseMemory ((char*)mem, size);
 	rv = NULL;
 	if (doc == NULL) {
 		xmlFreeDoc (doc);

@@ -65,6 +65,7 @@ int     arg_dry_run,
 	arg_file,
 	arg_force,
 	arg_upgrade,
+	arg_downgrade,
 	arg_erase;
 char    *arg_server,
 	*arg_config_file,
@@ -74,13 +75,14 @@ CORBA_ORB orb;
 CORBA_Environment ev;
 
 static const struct poptOption options[] = {
-	{"debug", 'd', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
+	{"debug", '0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
 	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"erase", 'e', POPT_ARG_NONE, &arg_erase, 0, N_("Erase packages"), NULL},
 	{"force", 'F', POPT_ARG_NONE, &arg_force, 0, N_("Force install"), NULL},
 	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
+	{"downgrade", 'd', POPT_ARG_NONE, &arg_downgrade, 0, N_("Allow downgrades"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
@@ -119,13 +121,17 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 		check_ev ("set_protocol");
 	}
-	if (arg_upgrade + arg_erase > 1) {
+	if (arg_downgrade + arg_upgrade + arg_erase > 1) {
 			fprintf (stderr, "*** Upgrade and erase ? Yeah rite....\n");
 			exit (1);
 	}
 	if (arg_upgrade) {
 		Trilobite_Eazel_Install__set_update (service, TRUE, &ev);
 		check_ev ("update");
+	}
+	if (arg_downgrade) {
+		Trilobite_Eazel_Install__set_downgrade (service, TRUE, &ev);
+		check_ev ("downgrade");
 	}
 	if (arg_server == NULL) {
 		arg_server = g_strdup (DEFAULT_HOSTNAME);

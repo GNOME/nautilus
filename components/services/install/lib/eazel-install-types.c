@@ -186,8 +186,10 @@ packagedata_fill_from_file (PackageData *pack, const char *filename)
 	rpmReadPackageHeader (fd, hd, NULL, NULL, NULL);
 	packagedata_fill_from_rpm_header (pack, hd);	
 
-	g_free (pack->filename);
-	pack->filename = g_strdup (filename);
+	if (pack->filename != filename) {
+		g_free (pack->filename);
+		pack->filename = g_strdup (filename);
+	}
 
 	fdClose (fd);
 	

@@ -186,8 +186,41 @@ done (EazelInstallCallback *service,
       gpointer unused)
 {
 	fprintf (stderr, "\nDone\n");
-	eazel_install_callback_destroy (GTK_OBJECT (service));
 	gtk_main_quit ();
+}
+
+static char *
+get_password_dude (TrilobiteRootClient *root_client, const char *prompt, void *user_data)
+{
+	char * real_prompt;
+	char * passwd;
+
+	real_prompt = g_strdup_printf ("%s: ", prompt);
+	passwd = getpass (real_prompt);
+	g_free (real_prompt);
+
+	return g_strdup (passwd);
+}
+
+static TrilobiteRootClient *
+set_root_client (BonoboObjectClient *service)
+{
+	TrilobiteRootClient *root_client;
+
+	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/PasswordQuery:1.0", &ev)) {
+		root_client = trilobite_root_client_new ();
+		gtk_signal_connect (GTK_OBJECT (root_client), "need_password", GTK_SIGNAL_FUNC (get_password_dude),
+				    NULL);
+
+		if (! trilobite_root_client_attach (root_client, service)) {
+			g_warning ("unable to attach root client to Trilobite/PasswordQuery!");
+		}
+
+		return root_client;
+	} else {
+		g_warning ("Object does not support IDL:Trilobite/PasswordQuery:1.0");
+		return NULL;
+	}
 }
 
 int main(int argc, char *argv[]) {
@@ -248,7 +281,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	set_parameters_from_command_line (eazel_install_callback_corba_objref (cb));
-	
+	set_root_client (eazel_install_callback_bonobo (cb));
+
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", progress_signal, "Unnstall progress");
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", uninstall_failed, "");
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
@@ -260,6 +294,7 @@ int main(int argc, char *argv[]) {
 	bonobo_main ();
 
 	/* Corba cleanup */
+	eazel_install_callback_destroy (GTK_OBJECT (cb));
 	CORBA_exception_free (&ev);
        
 	return 0;

@@ -174,7 +174,8 @@ download_all_packages (EazelInstall *service,
 			/* if filename in the package is set, but the file
 			   does not exist, get it anyway */
 			if (package->filename) {
-				g_message ("Filename set, and file exists = %d", g_file_test (package->filename, G_FILE_TEST_ISFILE));
+				g_message ("Filename set, and file exists = %d", 
+					   g_file_test (package->filename, G_FILE_TEST_ISFILE));
 				if (g_file_test (package->filename, G_FILE_TEST_ISFILE)) {
 					fetch_package = FALSE;	
 					packagedata_fill_from_file (package, package->filename);
@@ -236,12 +237,18 @@ install_all_packages (EazelInstall *service,
 		/* Check for existing installed packages */
 		for (iterator = cat->packages; iterator; iterator = iterator->next) {
 			PackageData *pack;
-			
+			int inst_status;
+
 			pack = (PackageData*)iterator->data;
-			/* If it already exists in version => then pack and we're
-			   not in force mode, skip it */
-			if (eazel_install_get_force (service) || 
-			    eazel_install_check_existing_packages (service, pack) > 0) {
+			inst_status = eazel_install_check_existing_packages (service, pack);		      
+			g_message ("inst status = %d", inst_status);
+			/* If in force mode, install it under all circumstances.
+			   if not, only install if not already installed in same
+			   version or up/downgrade is set */
+			if (eazel_install_get_force (service) ||
+			    (eazel_install_get_downgrade (service) && inst_status == -1) ||
+			    (eazel_install_get_update (service) && inst_status == 1) ||
+			    inst_status == 2) {
 				packages = g_list_prepend (packages, pack);
 			} else {
 				g_message ("Skipping %s...", pack->name);
@@ -415,12 +422,30 @@ revert_transaction (EazelInstall *service,
 	categories = g_list_prepend (NULL, cat);
 	if (uninst) {
 		eazel_install_set_uninstall (service, TRUE);
+		eazel_install_set_downgrade (service, FALSE);
+		eazel_install_set_update (service, FALSE);
 		cat->packages = uninst;
 		uninstall_packages (service, categories);
 	}
 	if (inst) {
 		eazel_install_set_uninstall (service, FALSE);
+		eazel_install_set_downgrade (service, FALSE);
+		eazel_install_set_update (service, FALSE);
 		cat->packages = inst;
+		install_new_packages (service, categories);
+	}
+	if (downgrade) {
+		eazel_install_set_uninstall (service, FALSE);
+		eazel_install_set_downgrade (service, TRUE);
+		eazel_install_set_update (service, FALSE);
+		cat->packages = downgrade;
+		install_new_packages (service, categories);
+	}
+	if (upgrade) {
+		eazel_install_set_uninstall (service, FALSE);
+		eazel_install_set_downgrade (service, TRUE);
+		eazel_install_set_update (service, TRUE);
+		cat->packages = upgrade;
 		install_new_packages (service, categories);
 	}
 }
@@ -497,6 +522,10 @@ eazel_install_do_rpm_transaction_make_argument_list (EazelInstall *service,
 		args = g_list_prepend (args, g_strdup ("-ev"));
 	} else 	if (eazel_install_get_update (service)) {
 		args = g_list_prepend (args, g_strdup ("--percent"));
+		args = g_list_prepend (args, g_strdup ("-Uv"));
+	} else if (eazel_install_get_downgrade (service)) {
+		args = g_list_prepend (args, g_strdup ("--percent"));
+		args = g_list_prepend (args, g_strdup ("--oldpackage"));
 		args = g_list_prepend (args, g_strdup ("-Uv"));
 	} else {
 		args = g_list_prepend (args, g_strdup ("--percent"));
@@ -697,8 +726,6 @@ do_rpm_transaction (EazelInstall *service,
 	eazel_install_emit_preflight_check (service, 					     
 					    service->private->packsys.rpm.total_size,
 					    service->private->packsys.rpm.num_packages);
-
-	/*
 	{
 		GList *iterator;
 		fprintf (stdout, "\nARGS: ");
@@ -707,8 +734,6 @@ do_rpm_transaction (EazelInstall *service,
 		}
 		fprintf (stdout, "\n");
 	}
-	*/
-
 
 	/* Fire off the helper */
 	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");

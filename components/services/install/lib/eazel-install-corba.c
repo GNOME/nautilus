@@ -120,7 +120,7 @@ impl_Eazel_Install_revert_transaction (impl_POA_Trilobite_Eazel_Install *servant
 				       CORBA_Environment * ev) 
 {
 	RELEASE_CB;
-	SET_CB (cb);
+	SET_CB (cb);       
 
 	eazel_install_revert_transaction_from_xmlstring (servant->object, xml, strlen (xml));
 
@@ -200,6 +200,21 @@ impl_Eazel_Install__get_update (impl_POA_Trilobite_Eazel_Install *servant,
 				 CORBA_Environment *ev)
 {
 	return eazel_install_get_update (servant->object);
+}
+
+static void
+impl_Eazel_Install__set_downgrade (impl_POA_Trilobite_Eazel_Install *servant,
+				 const CORBA_boolean value,
+				 CORBA_Environment *ev)
+{
+	eazel_install_set_downgrade (servant->object, value);
+}
+
+static CORBA_boolean
+impl_Eazel_Install__get_downgrade (impl_POA_Trilobite_Eazel_Install *servant,
+				 CORBA_Environment *ev)
+{
+	return eazel_install_get_downgrade (servant->object);
 }
 
 static void
@@ -349,6 +364,9 @@ eazel_install_get_epv ()
 
 	epv->_set_update = (gpointer)&impl_Eazel_Install__set_update;
 	epv->_get_update = (gpointer)&impl_Eazel_Install__get_update;
+
+	epv->_set_downgrade = (gpointer)&impl_Eazel_Install__set_downgrade;
+	epv->_get_downgrade = (gpointer)&impl_Eazel_Install__get_downgrade;
 
 	epv->_set_protocol = (gpointer)&impl_Eazel_Install__set_protocol;
 	epv->_get_protocol = (gpointer)&impl_Eazel_Install__get_protocol;

@@ -728,7 +728,8 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 }
 
 void eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, 
-						      char *xml, int size)
+						      const char *xml, 
+						      int size)
 {
 	GList *packages;
 
