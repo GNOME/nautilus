@@ -89,7 +89,7 @@
 
 /* dock items */
 #define LOCATION_BAR_PATH	"/Location Bar"
-#define TOOL_BAR_PATH           "/Tool Bar"
+#define TOOLBAR_PATH           "/Toolbar"
 #define STATUS_BAR_PATH         "/status"
 #define MENU_BAR_PATH           "/menu"
 
@@ -562,7 +562,7 @@ nautilus_window_constructed (NautilusWindow *window)
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    LOCATION_BAR_PATH, TRUE);
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
-					    TOOL_BAR_PATH, TRUE);
+					    TOOLBAR_PATH, TRUE);
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    STATUS_BAR_PATH, TRUE);
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
@@ -584,7 +584,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	bonobo_object_unref (BONOBO_OBJECT (location_bar_wrapper));
 
-	/* initalize the menus and tool bars */
+	/* initalize the menus and toolbars */
 	nautilus_window_initialize_menus (window);
 	nautilus_window_initialize_toolbars (window);
 
@@ -1615,21 +1615,21 @@ nautilus_window_location_bar_showing (NautilusWindow *window)
 }
 
 void 
-nautilus_window_hide_tool_bar (NautilusWindow *window)
+nautilus_window_hide_toolbar (NautilusWindow *window)
 {
-	hide_dock_item (window, TOOL_BAR_PATH);
+	hide_dock_item (window, TOOLBAR_PATH);
 }
 
 void 
-nautilus_window_show_tool_bar (NautilusWindow *window)
+nautilus_window_show_toolbar (NautilusWindow *window)
 {
-	show_dock_item (window, TOOL_BAR_PATH);
+	show_dock_item (window, TOOLBAR_PATH);
 }
 
 gboolean
-nautilus_window_tool_bar_showing (NautilusWindow *window)
+nautilus_window_toolbar_showing (NautilusWindow *window)
 {
-	return dock_item_showing (window, TOOL_BAR_PATH);
+	return dock_item_showing (window, TOOLBAR_PATH);
 }
 
 void 
@@ -1731,10 +1731,10 @@ nautilus_window_show (GtkWidget *widget)
 	/* Initially show or hide views based on preferences; once the window is displayed
 	 * these can be controlled on a per-window basis from View menu items. 
 	 */
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR)) {
-		nautilus_window_show_tool_bar (window);
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+		nautilus_window_show_toolbar (window);
 	} else {
-		nautilus_window_hide_tool_bar (window);
+		nautilus_window_hide_toolbar (window);
 	}
 
 	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {

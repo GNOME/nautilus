@@ -154,8 +154,8 @@ global_preferences_install_descriptions (void)
 					      _("Use this font family to display file names:"));
 
 	
-	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
-					      _("Display tool bar in new windows"));
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
+					      _("Display toolbar in new windows"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
 					      _("Display location bar in new windows"));
@@ -342,7 +342,7 @@ global_preferences_install_defaults (void)
 						 NAUTILUS_USER_LEVEL_NOVICE,
 						 "http://www.eazel.com/websearch");
 
-	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  TRUE);
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
@@ -425,7 +425,7 @@ global_preferences_install_visibility (void)
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
-	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
@@ -562,7 +562,7 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
 							 1,
-							 NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
+							 NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
 							 1,

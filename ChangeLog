@@ -1,3 +1,54 @@
+2001-02-22  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 3321 (Finalize contents of Help menu for 1.0).
+	Actually there's still an open issue about the Customer
+	Service item, which I've left in for now.
+
+	* src/nautilus-shell-ui.xml: Added Quick Reference, removed
+	License, put About last after a separator.
+
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_quick_reference_callback): New callback.
+	(help_menu_nautilus_license_callback): Removed this.
+	(nautilus_window_initialize_menus): Install callback for
+	Quick Reference, remove for License.
+
+
+	Also removed the space from "tool bar" everywhere, per the
+	final decision of Vera & Rhoda. I grepped and replaced
+	everywhere for "tool bar", "Tool Bar", "TOOL_BAR", and
+	"tool_bar".
+
+	* components/loser/content/nautilus-content-loser-ui.xml:
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml:
+	* components/mozilla/bonobo-extensions.c:
+	* components/sample/nautilus-sample-content-view-ui.xml:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* src/nautilus-service-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-menus.c:
+	(view_menu_show_hide_toolbar_callback),
+	(nautilus_window_update_show_hide_menu_items),
+	(help_menu_nautilus_quick_reference_callback),
+	(nautilus_window_initialize_menus):
+	* src/nautilus-window-toolbars.c: (set_up_special_bonobo_button),
+	(set_up_toolbar_images), (theme_changed_callback),
+	(set_up_back_or_forward_toolbar_item),
+	(nautilus_window_initialize_toolbars):
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_hide_toolbar), (nautilus_window_show_toolbar),
+	(nautilus_window_toolbar_showing), (nautilus_window_show):
+	* src/nautilus-window.h:
+	Made toolbar one word.
+
 2001-02-22  Seth Nickell  <seth@eazel.com>
 
 	reviewed by: Ramiro Estrugo <ramiro@eazel.com>

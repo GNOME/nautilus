@@ -53,7 +53,7 @@ struct NautilusWindowDetails
 	guint refresh_bookmarks_menu_idle_id;
 	guint refresh_go_menu_idle_id;
 
-	/* Tool bar. */
+	/* Toolbar. */
 	BonoboUIToolbarButtonItem *back_button_item;
 	BonoboUIToolbarButtonItem *forward_button_item;
 

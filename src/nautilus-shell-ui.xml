@@ -146,10 +146,10 @@
 				  _label="Hide Sidebar"
 				  _tip="Change the visibility of this window's sidebar"
 				  verb="Show Hide Sidebar"/>
-			<menuitem name="Show Hide Tool Bar" 
-				  _label="Hide Tool Bar"
-				  _tip="Change the visibility of this window's tool bar"
-				  verb="Show Hide Tool Bar"/>
+			<menuitem name="Show Hide Toolbar" 
+				  _label="Hide Toolbar"
+				  _tip="Change the visibility of this window's toolbar"
+				  verb="Show Hide Toolbar"/>
 			<menuitem name="Show Hide Location Bar" 
 				  _label="Hide Location Bar"
 				  _tip="Change the visibility of this window's location bar"
@@ -237,18 +237,14 @@
 	</submenu>
 
 	<submenu name="Help" _label="_Help">
-		<menuitem name="About Nautilus" 
-			  _label="_About Nautilus..." 
-			  _tip="Display credits for the creators of Nautilus"
-			  verb="About Nautilus"/>
 		<menuitem name="Nautilus Manual" 
 			  _label="_Nautilus User Manual" 
 			  _tip="Display on-line help for Nautilus"
 			  verb="Nautilus Manual"/>
-		<menuitem name="Nautilus License" 
-			  _label="Nautilus _License" 
-			  _tip="Display the license for Nautilus"
-			  verb="Nautilus License"/>
+		<menuitem name="Nautilus Quick Reference" 
+			  _label="Nautilus Quick _Reference" 
+			  _tip="Display quick reference pages for Nautilus"
+			  verb="Nautilus Quick Reference"/>
 		<menuitem name="Support" 
 			  _label="_Customer Service" 
 			  _tip="Display support information for Nautilus and Eazel Services"
@@ -257,6 +253,11 @@
 			  _label="_Feedback..." 
 			  _tip="Show a page from which you can send feedback about Nautilus and Eazel Services"
 			  verb="Nautilus Feedback"/>
+		<separator/>
+		<menuitem name="About Nautilus" 
+			  _label="_About Nautilus..." 
+			  _tip="Display credits for the creators of Nautilus"
+			  verb="About Nautilus"/>
 	</submenu>
 
 
@@ -288,7 +289,7 @@
 	<control name="Wrapper" behavior="expandable"/>
 </dockitem>
 
-<dockitem name="Tool Bar" behavior="exclusive">
+<dockitem name="Toolbar" behavior="exclusive">
 
 	<control name="BackWrapper" 
 		 min_width="48"

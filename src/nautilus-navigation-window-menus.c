@@ -75,7 +75,7 @@
 #define MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
 
 #define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
-#define MENU_PATH_SHOW_HIDE_TOOL_BAR			"/menu/View/Show Hide Placeholder/Show Hide Tool Bar"
+#define MENU_PATH_SHOW_HIDE_TOOLBAR			"/menu/View/Show Hide Placeholder/Show Hide Toolbar"
 #define MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
 #define MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
 
@@ -360,17 +360,17 @@ view_menu_show_hide_sidebar_callback (BonoboUIComponent *component,
 }
 
 static void
-view_menu_show_hide_tool_bar_callback (BonoboUIComponent *component, 
+view_menu_show_hide_toolbar_callback (BonoboUIComponent *component, 
 			               gpointer user_data, 
 			               const char *verb) 
 {
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
-	if (nautilus_window_tool_bar_showing (window)) {
-		nautilus_window_hide_tool_bar (window);
+	if (nautilus_window_toolbar_showing (window)) {
+		nautilus_window_hide_toolbar (window);
 	} else {
-		nautilus_window_show_tool_bar (window);
+		nautilus_window_show_toolbar (window);
 	}
 }
 
@@ -423,10 +423,10 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 				   : _("Show Sidebar"));
 
 	nautilus_bonobo_set_label (window->details->shell_ui,
-				   MENU_PATH_SHOW_HIDE_TOOL_BAR,
-				   nautilus_window_tool_bar_showing (window)
-				   ? _("Hide Tool Bar")
-				   : _("Show Tool Bar"));
+				   MENU_PATH_SHOW_HIDE_TOOLBAR,
+				   nautilus_window_toolbar_showing (window)
+				   ? _("Hide Toolbar")
+				   : _("Show Toolbar"));
 		
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_LOCATION_BAR,
@@ -583,16 +583,11 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 }
 
 static void
-help_menu_nautilus_license_callback (BonoboUIComponent *component, 
-				     gpointer user_data, 
-				     const char *verb)
+help_menu_nautilus_quick_reference_callback (BonoboUIComponent *component, 
+			              	     gpointer user_data, 
+			              	     const char *verb)
 {
-	char *uri;
-
-	uri = gnome_vfs_get_uri_from_local_path (DATADIR
-						 "/gnome/help/nautilus/C/license.html");	
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), uri);
-	g_free (uri);
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), "help:nautilus-quick-reference");
 }
 
 static void
@@ -1158,8 +1153,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
 		BONOBO_UI_VERB ("Toggle Find Mode", file_menu_toggle_find_mode_callback),
 		/* FIXME: bugzilla.eazel.com 3590:
-		 * Note that we use a different verb for the tool bar button since
-		 * the tool bar button has state but the menu item doesn't. This would
+		 * Note that we use a different verb for the toolbar button since
+		 * the toolbar button has state but the menu item doesn't. This would
 		 * otherwise confuse Bonobo.
 		 */
 		BONOBO_UI_VERB ("Toggle Find Mode With State", file_menu_toggle_find_mode_callback),
@@ -1174,7 +1169,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Forget History", go_menu_forget_history_callback),
 		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
 		BONOBO_UI_VERB ("Show Hide Sidebar", view_menu_show_hide_sidebar_callback),
-		BONOBO_UI_VERB ("Show Hide Tool Bar", view_menu_show_hide_tool_bar_callback),
+		BONOBO_UI_VERB ("Show Hide Toolbar", view_menu_show_hide_toolbar_callback),
 		BONOBO_UI_VERB ("Show Hide Location Bar", view_menu_show_hide_location_bar_callback),
 		BONOBO_UI_VERB ("Show Hide Status Bar", view_menu_show_hide_status_bar_callback),
 		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
@@ -1192,7 +1187,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
-		BONOBO_UI_VERB ("Nautilus License", help_menu_nautilus_license_callback),
+		BONOBO_UI_VERB ("Nautilus Quick Reference", help_menu_nautilus_quick_reference_callback),
 		BONOBO_UI_VERB ("Customer Service", help_menu_customer_service),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
 

@@ -54,17 +54,3 @@ nautilus_strcmp -> nautilus_null_tolerant_strcmp
 nautilus_strcasecmp -> nautilus_null_tolerant_strcasecmp
 nautilus_str_compare -> nautilus_str_compare_null_tolerant
 nautilus_eat_strcmp -> <kill it>
-
---------------------------------------
-General terminology -> English changes
---------------------------------------
-We want to use "tool bar" as two words since "toolbar" isn't
-a real English word. We can't fix GTK or Bonobo's improper use
-of "toolbar" but we shouldn't propagate it. In some places we
-are already using "tool bar" as two words but we aren't consistent.
-
-classes: NautilusToolbar -> NautilusToolBar
-files: nautilus-toolbar.[ch] -> nautilus-tool-bar.[ch],
-       nautilus-window-toolbars.c -> nautilus-window-tool-bars.c
-Should also search for variable names, etc (being careful not 
-to change the Gtk and Bonobo calls)

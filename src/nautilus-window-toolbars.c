@@ -237,8 +237,8 @@ get_pixbuf_for_xml_node (NautilusWindow *window, const char *node_path)
 	return pixbuf;
 }
 
-/* Use only for tool bar buttons that had to be explicitly created so they
- * could have behaviors not present in standard Bonobo tool bar buttons.
+/* Use only for toolbar buttons that had to be explicitly created so they
+ * could have behaviors not present in standard Bonobo toolbar buttons.
  */
 static void
 set_up_special_bonobo_button (NautilusWindow *window,
@@ -263,8 +263,8 @@ set_up_special_bonobo_button (NautilusWindow *window,
 
 	/* FIXME bugzilla.eazel.com 5005:
 	 * Setting the style here accounts for the preference, but does not
-	 * account for a hard-wired tool bar style or later changes in style
-	 * (such as if the tool bar is detached and made vertical). There
+	 * account for a hard-wired toolbar style or later changes in style
+	 * (such as if the toolbar is detached and made vertical). There
 	 * is currently no Bonobo API to support matching the style properly.
 	 */
 	bonobo_ui_toolbar_item_set_style 
@@ -280,17 +280,17 @@ set_up_toolbar_images (NautilusWindow *window)
 {
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
-	set_up_special_bonobo_button (window, window->details->back_button_item, "/Tool Bar/BackWrapper", "Back");
-	set_up_special_bonobo_button (window, window->details->forward_button_item, "/Tool Bar/ForwardWrapper", "Forward");
+	set_up_special_bonobo_button (window, window->details->back_button_item, "/Toolbar/BackWrapper", "Back");
+	set_up_special_bonobo_button (window, window->details->forward_button_item, "/Toolbar/ForwardWrapper", "Forward");
 	
-	set_up_standard_bonobo_button (window, "/Tool Bar/Up", "Up");
-	set_up_standard_bonobo_button (window, "/Tool Bar/Home", "Home");
-	set_up_standard_bonobo_button (window, "/Tool Bar/Reload", "Refresh");
-	set_up_standard_bonobo_button (window, "/Tool Bar/Toggle Find Mode", "Search");
-	set_up_standard_bonobo_button (window, "/Tool Bar/Go to Web Search", "SearchWeb");
-	set_up_standard_bonobo_button (window, "/Tool Bar/Stop", "Stop");
+	set_up_standard_bonobo_button (window, "/Toolbar/Up", "Up");
+	set_up_standard_bonobo_button (window, "/Toolbar/Home", "Home");
+	set_up_standard_bonobo_button (window, "/Toolbar/Reload", "Refresh");
+	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search");
+	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb");
+	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop");
 #ifdef EAZEL_SERVICES	
-	set_up_standard_bonobo_button (window, "/Tool Bar/Extra Buttons Placeholder/Services", "Services");
+	set_up_standard_bonobo_button (window, "/Toolbar/Extra Buttons Placeholder/Services", "Services");
 #endif
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 }
@@ -307,9 +307,9 @@ theme_changed_callback (gpointer callback_data)
 	set_up_toolbar_images (window);
 	
 	/* if the toolbar is visible, toggle it's visibility to force a relayout */
-	if (nautilus_window_tool_bar_showing (window)) {
-		nautilus_window_hide_tool_bar (window);
-		nautilus_window_show_tool_bar (window);
+	if (nautilus_window_toolbar_showing (window)) {
+		nautilus_window_hide_toolbar (window);
+		nautilus_window_show_toolbar (window);
 	}
 }
 
@@ -329,7 +329,7 @@ set_widget_for_bonobo_control (NautilusWindow *window,
 }
 
 static BonoboUIToolbarButtonItem *
-set_up_back_or_forward_tool_bar_item (NautilusWindow *window, 
+set_up_back_or_forward_toolbar_item (NautilusWindow *window, 
 				      const char *label, 
 				      const char *control_path)
 {
@@ -372,15 +372,15 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	}
 
 	bonobo_ui_component_object_set (window->details->shell_ui,
-					"/Tool Bar/ThrobberWrapper",
+					"/Toolbar/ThrobberWrapper",
 					window->throbber,
 					&ev);
 	CORBA_exception_free (&ev);
 	
-	window->details->back_button_item = set_up_back_or_forward_tool_bar_item 
-		(window, _("Back"), "/Tool Bar/BackWrapper");
-	window->details->forward_button_item = set_up_back_or_forward_tool_bar_item 
-		(window, _("Forward"), "/Tool Bar/ForwardWrapper");
+	window->details->back_button_item = set_up_back_or_forward_toolbar_item 
+		(window, _("Back"), "/Toolbar/BackWrapper");
+	window->details->forward_button_item = set_up_back_or_forward_toolbar_item 
+		(window, _("Forward"), "/Toolbar/ForwardWrapper");
 
 	set_up_toolbar_images (window);
 

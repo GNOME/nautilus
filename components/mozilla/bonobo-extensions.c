@@ -419,7 +419,7 @@ nautilus_str_strip_chr (const char *source, char remove_this)
 /* Call to set the user-visible label of a menu item to a string
  * containing an underscore accelerator. The underscore is stripped
  * off before setting the label of the command, because pop-up menu
- * and tool bar button labels shouldn't have the underscore.
+ * and toolbar button labels shouldn't have the underscore.
  */
 void	 
 nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
