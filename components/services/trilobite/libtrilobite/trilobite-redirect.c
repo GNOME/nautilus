@@ -41,7 +41,7 @@
 #else
 #define REDIRECT_TABLE_URL	"eazel-auth:/table.xml"
 #endif
-#define REDIRECT_GCONF_PATH	"/apps/trilobite/redirect"
+#define REDIRECT_GCONF_PATH	"/apps/eazel-trilobite/redirect-table"
 
 static GConfEngine *conf_engine = NULL;
 
