@@ -60,7 +60,7 @@ delayed_quit_timeout_callback (gpointer data)
 
 	callback_data = (CallbackData *) data;
 	callback_data->delayed_quit_timeout_id = 0;
-	bonobo_main_quit ();
+	gtk_main_quit ();
 
 	return FALSE;
 }

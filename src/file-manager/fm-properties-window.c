@@ -669,7 +669,8 @@ attach_label (GtkTable *table,
 	      const char *initial_text,
 	      gboolean right_aligned,
 	      gboolean bold,
-	      gboolean ellipsize_text)
+	      gboolean ellipsize_text,
+	      gboolean selectable)
 {
 	GtkWidget *label_field;
 
@@ -677,6 +678,10 @@ attach_label (GtkTable *table,
 		? eel_ellipsizing_label_new (initial_text)
 		: gtk_label_new (initial_text);	
 
+	if (selectable) {
+		gtk_label_set_selectable (GTK_LABEL (label_field), TRUE);
+	}
+	
 	if (bold) {
 		eel_gtk_label_make_bold (GTK_LABEL (label_field));
 	}
@@ -700,7 +705,7 @@ attach_value_label (GtkTable *table,
 	      		  int column,
 	      		  const char *initial_text)
 {
-	return attach_label (table, row, column, initial_text, FALSE, FALSE, FALSE);
+	return attach_label (table, row, column, initial_text, FALSE, FALSE, FALSE, TRUE);
 }
 
 static GtkLabel *
@@ -709,7 +714,7 @@ attach_ellipsizing_value_label (GtkTable *table,
 				int column,
 				const char *initial_text)
 {
-	return attach_label (table, row, column, initial_text, FALSE, FALSE, TRUE);
+	return attach_label (table, row, column, initial_text, FALSE, FALSE, TRUE, TRUE);
 }
 
 static void
@@ -1254,7 +1259,7 @@ attach_title_field (GtkTable *table,
 		     int row,
 		     const char *title)
 {
-	return attach_label (table, row, TITLE_COLUMN, title, TRUE, TRUE, FALSE);
+	return attach_label (table, row, TITLE_COLUMN, title, TRUE, TRUE, FALSE, FALSE);
 }		      
 
 static guint

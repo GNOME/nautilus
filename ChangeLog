@@ -1,3 +1,15 @@
+2002-01-27  Anders Carlsson  <andersca@gnu.org>
+
+	* src/file-manager/fm-properties-window.c (attach_label): Add selectable argument.
+	(attach_value_label): set selectable to TRUE.
+	(attach_ellipsizing_value_label): Likewise.
+	(attach_title_field): set selectable to FALSE.
+
+2002-01-23  Anders Carlsson  <andersca@gnu.org>
+
+	* libnautilus/nautilus-view-standard-main.c (delayed_quit_timeout_callback): 
+	Use gtk_main_quit.
+
 2002-01-25  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-bookmark.c
