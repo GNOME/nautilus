@@ -1,10 +1,10 @@
 #!/bin/sh
 
-nautilus-clean.sh -q
+MOZILLA_FIVE_HOME=/usr/lib/mozilla ; export MOZILLA_FIVE_HOME
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/mozilla ; export LD_LIBRARY_PATH
 
-killall oafd > /dev/null 2>&1
-killall gconfd > /dev/null 2>&1
+nautilus-clean.sh -q -x
 
 nautilus ${1+"$@"}
 
-nautilus-clean.sh -q
+nautilus-clean.sh -q -x
