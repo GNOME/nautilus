@@ -1,3 +1,15 @@
+2000-10-15  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c
+	(nautilus_file_get_file_info_result): Renamed and changed
+	interface.
+
+	* src/nautilus-applicable-views.c (got_file_info_callback,
+	nautilus_navigation_info_new, nautilus_navigation_info_cancel,
+	nautilus_navigation_info_free): Reorganize to use the new
+	NautilusFile features.
+
 2000-10-15  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* components/services/install/command-line/eazel-install.c:

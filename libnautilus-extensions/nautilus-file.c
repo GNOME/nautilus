@@ -3721,19 +3721,14 @@ nautilus_file_is_in_trash (NautilusFile *file)
 	return result;
 }
 
-gboolean
-nautilus_file_get_info_failed (NautilusFile *file,
-			       GnomeVFSResult *result)
+GnomeVFSResult
+nautilus_file_get_file_info_result (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
 	if (!file->details->get_info_failed) {
-		*result = GNOME_VFS_OK;
-		return FALSE;
+		return GNOME_VFS_OK;
 	}
 
-	*result = file->details->get_info_error;
-	return TRUE;
+	return file->details->get_info_error;
 }
 
 /**
