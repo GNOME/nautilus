@@ -1,5 +1,10 @@
 2002-03-01  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-link-historical.c:
+	(local_set_root_property): Check for NULL before calling xmlParseFile.
+
+2002-03-01  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-window-toolbars.c: (set_up_toolbar_images):
 	Remove unneeded code to set icon for the deleted Web Search button.
 	* icons/SearchWeb.png: Remove.

@@ -233,21 +233,27 @@ local_set_root_property (const char *uri,
 	NautilusFile *file;
 
 	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path == NULL) {
+		return FALSE;
+	}
 	document = xmlParseFile (path);
 	if (document == NULL) {
+		g_free (path);
 		return FALSE;
 	}
 	root = xmlDocGetRootElement (document);
 	if (root == NULL) {
 		xmlFreeDoc (document);
+		g_free (path);
 		return FALSE;
 	}
 
 	/* Check if the property value is already correct. */
 	old_value = xmlGetProp (root, key);
 	if (old_value != NULL && strcmp (old_value, value) == 0) {
-		xmlFreeDoc (document);
 		xmlFree (old_value);
+		xmlFreeDoc (document);
+		g_free (path);
 		return TRUE;
 	}
 
