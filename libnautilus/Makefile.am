@@ -36,7 +36,7 @@ nautilus_undo_idl_sources =	\
 BUILT_SOURCES = \
 	$(nautilus_view_component_idl_sources)	\
 	$(nautilus_undo_idl_sources)
-	
+
 libnautilusincludedir=$(includedir)/libnautilus
 
 libnautilusinclude_HEADERS=			\
@@ -70,19 +70,20 @@ libnautilus_la_SOURCES=					\
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-view-component.idl
+	$(prefix)/bin/orbit-idl -I${datadir}/idl $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
 $(nautilus_undo_idl_sources): nautilus_undo_idl_stamp
 nautilus_undo_idl_stamp: nautilus-undo.idl
-	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-undo.idl
+	$(prefix)/bin/orbit-idl -I${datadir}/idl $(srcdir)/nautilus-undo.idl
 	touch nautilus_undo_idl_stamp
 
 CLEANFILES = \
+	$(nautilus_view_component_idl_sources)	\
 	nautilus_view_component_idl_stamp	\
+	$(nautilus_undo_idl_sources)		\
 	nautilus_undo_idl_stamp
 
 EXTRA_DIST = \
 	nautilus-view-component.idl	\
 	nautilus-undo.idl
-
