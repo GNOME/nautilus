@@ -1,5 +1,13 @@
 2000-02-14  Andy Hertzfeld <andy@eazel.com>
 
+	* components/notes/ntl-notes.c:
+	fixed problems with notes component by initializing gnome-vfs, etc.
+	changed metadata key to "ANNOTATION" to keep them separate from panel notes
+	* libnautilus/nautilus-metadata.h:
+	defined "ANNOTATION" metadata type
+
+2000-02-14  Andy Hertzfeld <andy@eazel.com>
+
 	first cut at annotation metaview
 	
 	* components/notes/Makefile.am:

@@ -29,6 +29,7 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-metadata.h>
 #include <gnome.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <libgnorba/gnorba.h>
 #include <limits.h>
 #include <ctype.h>
@@ -46,27 +47,37 @@ static int notes_object_count = 0;
 
 static void notes_load_metainfo(NotesView *hview)
 {
+  GnomeVFSURI *vfs_uri;
   char *file_name;
   char temp_string[PATH_MAX + 16];  
-  NautilusFile *file_object = nautilus_file_get(hview->current_uri);
+  NautilusFile *file_object;
+
+  gtk_editable_delete_text(GTK_EDITABLE(hview->note_text_field), 0, -1);   
+  
+  file_object = nautilus_file_get(hview->current_uri);
   if (file_object != NULL)
     {
-      gchar *notes_text = nautilus_file_get_metadata(file_object, NAUTILUS_NOTES_METADATA_KEY, "");
-      
-      gtk_editable_delete_text(GTK_EDITABLE(hview->note_text_field), 0, -1);   
-      if (notes_text)
+      gint position;
+      gchar *notes_text;
+     
+      notes_text = nautilus_file_get_metadata(file_object, NAUTILUS_ANNOTATION_METADATA_KEY, "");
+       if (notes_text)
         {
-	gtk_editable_insert_text(GTK_EDITABLE(hview->note_text_field), notes_text, strlen(notes_text), 0);
-	g_free(notes_text);
+	  if (strlen(notes_text))
+	    gtk_editable_insert_text(GTK_EDITABLE(hview->note_text_field), notes_text, strlen(notes_text), &position);
+	  g_free(notes_text);
 	}
 
       /* set up the label */
-	
-      file_name = nautilus_file_get_name(file_object);
+
+      vfs_uri = gnome_vfs_uri_new (hview->current_uri);
+      file_name = gnome_vfs_uri_extract_short_name(vfs_uri);
+      gnome_vfs_uri_unref (vfs_uri);
+      
       g_snprintf(temp_string, sizeof(temp_string), "Notes for %s", file_name);
       gtk_label_set_text(GTK_LABEL(hview->note_label), temp_string);
       g_free(file_name); 
-	
+
       nautilus_file_unref (file_object);
     }  
 }
@@ -86,7 +97,7 @@ static void notes_save_metainfo(NotesView *hview)
       if (notes_text == NULL)
         notes_text = strdup("");
 	
-      nautilus_file_set_metadata(file_object, NAUTILUS_NOTES_METADATA_KEY, NULL, notes_text);
+      nautilus_file_set_metadata(file_object, NAUTILUS_ANNOTATION_METADATA_KEY, NULL, notes_text);
       
       g_free(notes_text);
       nautilus_file_unref (file_object);
@@ -98,13 +109,12 @@ notes_notify_location_change (NautilusViewFrame *view,
                                 Nautilus_NavigationInfo *loci,
                                 NotesView *hview)
 { 
-  printf("in notes, location changed to %s\n", loci->requested_uri);
   if (strcmp(hview->current_uri, loci->requested_uri))
     {
-    notes_save_metainfo(hview);
-    g_free(hview->current_uri);
-    hview->current_uri = strdup(loci->requested_uri);
-    notes_load_metainfo(hview);
+      notes_save_metainfo(hview);
+      g_free(hview->current_uri);
+      hview->current_uri = strdup(loci->requested_uri);
+      notes_load_metainfo(hview);
     }
 }
 
@@ -142,7 +152,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 
   /* create the label */
   
-  hview->note_label = gtk_label_new("Notes about");
+  hview->note_label = gtk_label_new("Notes for ...");
   gtk_box_pack_start (GTK_BOX(vbox), hview->note_label, 0, 0, 0);
 
   /* create the text container */
@@ -171,13 +181,18 @@ int main(int argc, char *argv[])
   CORBA_ORB orb;
   CORBA_Environment ev;
 
+  /* initialize CORBA and Bonobo */
   CORBA_exception_init(&ev);
   orb = gnome_CORBA_init_with_popt_table("ntl-notes", VERSION, &argc, argv, NULL, 0, NULL,
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+  
+  /* initialize gnome-vfs, etc */
+  g_thread_init (NULL);
+  gnome_vfs_init ();
 
   factory = bonobo_generic_factory_new_multi("ntl_notes_view_factory", make_obj, NULL);
-
+  
   do {
     bonobo_main();
   } while (notes_object_count > 0);
