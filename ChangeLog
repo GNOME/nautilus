@@ -1,5 +1,17 @@
 2001-01-23  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/hardware/nautilus-hardware-view.c:
+	(hardware_view_load_location_callback):
+	fixed bug 5746, hardware title in hardware view not translated, by
+	explicitly setting the title using a localized string.  This also
+	fixes the minor problem of the title not being capitalized
+	
+	* icons/villanova/villanova.xml:
+	fixed bug 5658, Sierra theme lacks description, by adding a
+	description to the xml file.
+	
+2001-01-23  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-property-browser.c:
 	(nautilus_property_browser_initialize), (make_category_link):
 	fixed bug 5587, hard-coded button geometry in the property browser,

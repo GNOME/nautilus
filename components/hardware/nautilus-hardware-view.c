@@ -628,6 +628,7 @@ hardware_view_load_location_callback (NautilusView *view,
                                       NautilusHardwareView *hardware_view)
 {
 	nautilus_view_report_load_underway (hardware_view->details->nautilus_view);
+	nautilus_view_set_title (hardware_view->details->nautilus_view, _("Hardware"));	
 	nautilus_hardware_view_load_uri (hardware_view, location);
 	nautilus_view_report_load_complete (hardware_view->details->nautilus_view);
 }
