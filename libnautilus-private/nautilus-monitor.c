@@ -28,7 +28,7 @@
 
 #include <eel/eel-glib-extensions.h>
 
-#ifdef HAVE_FAM_H
+#ifdef HAVE_LIBFAM
 
 #include "nautilus-file-changes-queue.h"
 #include <fam.h>
@@ -37,57 +37,6 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-
-/* Turn off this to make FAM calls the normal way rather than using
- * GModule. This can be useful to check that the parameters to all the
- * functions are still correct, but it won't link without configure
- * and makefile changes.
- */
-#define USE_FAM_AS_MODULE
-
-#ifndef USE_FAM_AS_MODULE
-
-#define CALL_FAM(f) FAM##f
-
-#else /* USE_FAM_AS_MODULE */
-
-typedef struct {
-	const char *name;
-	gpointer *function;
-} ModuleSymbolPair;
-
-static int (* pointer_FAMCancelMonitor)    (FAMConnection    *fc,
-					    const FAMRequest *fr);
-static int (* pointer_FAMClose)            (FAMConnection    *fc);
-static int (* pointer_FAMMonitorDirectory) (FAMConnection    *fc,
-					    const char       *filename,
-					    FAMRequest       *fr,
-					    void             *user_data);
-static int (* pointer_FAMMonitorFile)      (FAMConnection    *fc,
-					    const char       *filename, 
-					    FAMRequest       *fr,
-					    void             *user_data);
-static int (* pointer_FAMOpen2)            (FAMConnection    *connection,
-					    const char       *name);
-static int (* pointer_FAMNextEvent)        (FAMConnection    *fc,
-					    FAMEvent         *fe);
-static int (* pointer_FAMPending)          (FAMConnection    *fc);
-
-static const ModuleSymbolPair fam_symbols[] = {
-#define IMPORT_FAM(f) { "FAM" #f, (gpointer *) &pointer_FAM##f },
-	IMPORT_FAM (CancelMonitor)
-	IMPORT_FAM (Close)
-	IMPORT_FAM (MonitorDirectory)
-	IMPORT_FAM (MonitorFile)
-	IMPORT_FAM (NextEvent)
-	IMPORT_FAM (Open2)
-	IMPORT_FAM (Pending)
-#undef IMPORT_FAM
-};
-
-#define CALL_FAM(f) (* pointer_FAM##f)
-
-#endif /* USE_FAM_AS_MODULE */
 
 struct NautilusMonitor {
 	FAMRequest request;
@@ -105,11 +54,6 @@ get_fam_connection (void)
 {
 	static gboolean tried_connection;
 	static FAMConnection connection;
-#ifdef USE_FAM_AS_MODULE
-	char *path;
-	GModule *module;
-	guint i;
-#endif
 	
 	/* Only try once. */
         if (tried_connection) {
@@ -118,22 +62,7 @@ get_fam_connection (void)
 		}
 	} else {
                 tried_connection = TRUE;
-#ifdef USE_FAM_AS_MODULE
-		path = g_module_build_path (NULL, "fam");
-		module = g_module_open (path, 0);
-		g_free (path);
-		if (module == NULL) {
-			return NULL;
-		}
-		for (i = 0; i < EEL_N_ELEMENTS (fam_symbols); i++) {
-			if (!g_module_symbol (module,
-					      fam_symbols[i].name,
-					      fam_symbols[i].function)) {
-				return NULL;
-			}
-		}
-#endif
-		if (CALL_FAM (Open2) (&connection, "Nautilus") != 0) {
+		if (FAMOpen2 (&connection, "Nautilus") != 0) {
 			return NULL;
 		}
 
@@ -200,11 +129,11 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 
         /* Process all the pending events right now. */
 
-        while (CALL_FAM (Pending) (connection)) {
-                if (CALL_FAM (NextEvent) (connection, &event) != 1) {
+        while (FAMPending (connection)) {
+                if (FAMNextEvent (connection, &event) != 1) {
                         g_warning ("connection to FAM died");
                         gdk_input_remove (fd);
-                        CALL_FAM (Close) (connection);
+                        FAMClose (connection);
                         got_connection = FALSE;
                         return;
                 }
@@ -288,12 +217,12 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 	nautilus_file_changes_consume_changes (TRUE);
 }
 
-#endif /* HAVE_FAM_H */
+#endif /* HAVE_LIBFAM */
 
 gboolean
 nautilus_monitor_active (void)
 {
-#ifndef HAVE_FAM_H
+#ifndef HAVE_LIBFAM
 	return FALSE;
 #else
 	return get_fam_connection () != NULL;
@@ -303,7 +232,7 @@ nautilus_monitor_active (void)
 NautilusMonitor *
 nautilus_monitor_file (const char *uri)
 {
-#ifndef HAVE_FAM_H
+#ifndef HAVE_LIBFAM
 	return NULL;
 #else
         FAMConnection *connection;
@@ -321,7 +250,7 @@ nautilus_monitor_file (const char *uri)
 	}
         
 	monitor = g_new0 (NautilusMonitor, 1);
-	CALL_FAM (MonitorFile) (connection, path, &monitor->request, NULL);
+	FAMMonitorFile (connection, path, &monitor->request, NULL);
 
 	g_free (path);
 
@@ -334,7 +263,7 @@ nautilus_monitor_file (const char *uri)
 NautilusMonitor *
 nautilus_monitor_directory (const char *uri)
 {
-#ifndef HAVE_FAM_H
+#ifndef HAVE_LIBFAM
 	return NULL;
 #else
         FAMConnection *connection;
@@ -352,7 +281,7 @@ nautilus_monitor_directory (const char *uri)
 	}
         
 	monitor = g_new0 (NautilusMonitor, 1);
-	CALL_FAM (MonitorDirectory) (connection, path, &monitor->request, NULL);
+	FAMMonitorDirectory (connection, path, &monitor->request, NULL);
 
 	g_assert (g_hash_table_lookup (get_request_hash_table (),
 				       GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&monitor->request))) == NULL);
@@ -368,7 +297,7 @@ nautilus_monitor_directory (const char *uri)
 void
 nautilus_monitor_cancel (NautilusMonitor *monitor)
 {       
-#ifndef HAVE_FAM_H
+#ifndef HAVE_LIBFAM
 	g_return_if_fail (monitor == NULL);
 #else
         FAMConnection *connection;
@@ -389,7 +318,7 @@ nautilus_monitor_cancel (NautilusMonitor *monitor)
         connection = get_fam_connection ();
 	g_return_if_fail (connection != NULL);
 
-	CALL_FAM (CancelMonitor) (connection, &monitor->request);
+	FAMCancelMonitor (connection, &monitor->request);
 	g_free (monitor);
 #endif
 }

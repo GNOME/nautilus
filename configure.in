@@ -102,10 +102,17 @@ dnl = Method for changing environment
 dnl ====================================
 AC_CHECK_FUNCS(setenv unsetenv putenv)
 
-dnl ====================================
-dnl Check for FAM header -- we find the library at runtime
-dnl ====================================
-AC_CHECK_HEADERS(fam.h)
+dnl =============
+dnl Check for FAM 
+dnl =============
+FAM_LIBS=
+AC_CHECK_LIB(fam, FAMOpen,
+  AC_CHECK_HEADERS(fam.h,
+    [AC_DEFINE(HAVE_LIBFAM)
+     FAM_LIBS="-lfam"],
+    AC_MSG_WARN(*** FAM support will not be built (header files not found) ***)),
+  AC_MSG_WARN(*** FAM support will not be built (FAM library not found) ***))
+AC_SUBST(FAM_LIBS)
 
 dnl ====================================
 dnl = Use x86 optimized music routines?

@@ -1,3 +1,17 @@
+2001-07-11  Alex Larsson  <alexl@redhat.com>
+
+	* acconfig.h:
+	Add HAVE_LIBFAM
+
+	* configure.in:
+	Check for libfam, not only header.
+
+	* libnautilus-private/Makefile.am:
+	Link to libfam
+
+	* libnautilus-private/nautilus-monitor.c:
+	Use normal fam library calls.
+
 2001-07-11  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
 	* components/text/nautilus-text-view-ui.xml:

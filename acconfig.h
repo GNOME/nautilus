@@ -12,6 +12,7 @@
 #undef HAVE_STPCPY
 #undef HAVE_LIBBZ2
 #undef HAVE_AMMONITE
+#undef HAVE_LIBFAM
 #undef bzCompress
 #undef bzCompressInit
 #undef bzDecompress
