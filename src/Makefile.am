@@ -5,7 +5,7 @@ SUBDIRS=file-manager
 bin_PROGRAMS=					\
 	nautilus				\
 	nautilus-file-management-properties     \
-	nautilus nautilus-server-connect
+	nautilus-server-connect
 
 INCLUDES =\
 	-I$(top_srcdir) \
