@@ -588,6 +588,11 @@ nautilus_application_create_desktop_window (NautilusApplication *application)
 	create_in_progress = TRUE;
 
 	nautilus_application_desktop_window = nautilus_desktop_window_new (application);
+	/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
+	   property is set so gnome-settings-daemon doesn't try to set the
+	   background. And we do a gdk_flush() to be sure X gets it. */
+	gtk_widget_realize (GTK_WIDGET (nautilus_application_desktop_window));
+	gdk_flush ();
 
 	create_in_progress = FALSE;
 }

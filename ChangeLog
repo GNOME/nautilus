@@ -1,3 +1,11 @@
+2002-05-31  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-application.c
+	(nautilus_application_create_desktop_window): realize the desktop
+	window immediately, and do a gdk_flush(), so the
+	NAUTILUS_DESKTOP_WINDOW_ID property is set and gnome-settings-daemon
+	can tell that nautilus is running. Fixes part of #74311.
+
 2002-05-31  Michael Meeks  <michael@ximian.com>
 
 	* components/adapter/nautilus-adapter-file-load-strategy.c
