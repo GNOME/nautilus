@@ -1,5 +1,12 @@
 2000-08-01  Gene Z. Ragan  <gzr@eazel.com>
 
+	* src/file-manager/fm-desktop-mounting.c:
+	(fm_desktop_mount_unmount_removable):
+	Fixed a crasher that involved a conflict with the automounter
+	and the user manually mounting and unmounting.
+	
+2000-08-01  Gene Z. Ragan  <gzr@eazel.com>
+
 	More work on the desktop volume mount menu item.
 	
 	* src/file-manager/fm-desktop-icon-view.c:

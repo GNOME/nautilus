@@ -165,13 +165,11 @@ fm_desktop_mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *i
 				/* Unount */
 				argv[0] = "/bin/umount";
 				gnome_execute_async (g_get_home_dir(), 2, argv);
-				mount_device_deactivate (icon_view, device);
 				is_mounted = FALSE;
 			} else {
 				/* Mount */
 				argv[0] = "/bin/mount";
 				gnome_execute_async (g_get_home_dir(), 2, argv);
-				mount_device_activate (icon_view, device);
 				is_mounted = TRUE;
 			}
 		}
