@@ -1,5 +1,12 @@
 2003-06-29  Dave Camp  <dave@ximian.com>
 
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_get_first_visible_file),
+	(nautilus_view_frame_scroll_to_file): Pass envs to the CORBA
+	calls.
+
+2003-06-29  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c:
 	(real_map_pixbuf), (map_pixbuf): Try colorizing selected pixbufs
 	with the selection color.
