@@ -1,7 +1,5 @@
 NULL=
 
-#lib_LTLIBRARIES = libleakcheck.la
-
 INCLUDES =\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
@@ -50,52 +48,6 @@ test_nautilus_image_SOURCES = test-nautilus-image.c
 
 test_nautilus_password_dialog_SOURCES = test-nautilus-password-dialog.c
 
-#libleakcheck_la_SOURCES =    		\
-#	nautilus-leak-checker.c		\
-#	nautilus-leak-checker.h		\
-#	nautilus-leak-checker-stubs.h	\
-#	nautilus-leak-hash-table.c	\
-#	nautilus-leak-hash-table.h	\
-#	nautilus-leak-symbol-lookup.c	\
-#	nautilus-leak-symbol-lookup.h	\
-#	$(NULL)
-
 EXTRA_DIST =					\
 	test-nautilus-mime-actions.c		\
 	$(NULL)
-
-# the libtool way of building libleakcheck.so is totally broken, libtool cannot
-# build an .so with statically linked -liberty
-
-# LIBLEAKCHECK_STATIC_LIBS = "-Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic"
-#libleakcheck_la_LDADD = -module -avoid-version $(LIBLEAKCHECK_STATIC_LIBS)
-#libleakcheck_la_LIBADD = -ldl 
-
-
-
-# libleakcheck.la: $(libleakcheck_la_OBJECTS) $(libleakcheck_la_DEPENDENCIES)
-#	$(LINK) -rpath $(libdir) $(libleakcheck_la_LDADD) $(libleakcheck_la_OBJECTS) $(libleakcheck_la_LIBADD) $(LIBS)
-
-
-# for now just hardcode a plain old link line, someday someone can 
-#figure out what the magic password is to make libtool do this cleanly
-
-all: libleakcheck.so
-CLEANFILES += libleakcheck.so
-
-libleakcheck.so: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c
-	gcc $(srcdir)/nautilus-leak-checker.c $(srcdir)/nautilus-leak-hash-table.c \
-		$(srcdir)/nautilus-leak-symbol-lookup.c \
-		-Wall -o $@ -shared $(GLIB_CFLAGS) $(GLIB_LIBS) -lpthread -ldl -Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic
-
-# to include them in "make dist"
-EXTRA_DIST = nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c \
-	nautilus-leak-checker-stubs.h nautilus-leak-hash-table.h nautilus-leak-checker.h nautilus-leak-symbol-lookup.h
-
-leakcheck_DATA = libleakcheck.so
-leakcheckdir= $(DESTDIR)$(libdir)
-
-leakchecktest: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c
-	gcc $(srcdir)/nautilus-leak-checker.c $(srcdir)/nautilus-leak-hash-table.c \
-		$(srcdir)/nautilus-leak-symbol-lookup.c \
-		-Wall -o $@ -DLEAK_CHECK_TESTING $(GLIB_CFLAGS) $(GLIB_LIBS) -lpthread -ldl -Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic
