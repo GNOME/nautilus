@@ -48,6 +48,7 @@ struct NautilusWindowDetails
         /* Bonobo. */
         BonoboUIContainer *ui_container;
         BonoboUIComponent *shell_ui;
+        gboolean updating_bonobo_state;
         
         /* Menus. */
 	guint refresh_bookmarks_menu_idle_id;

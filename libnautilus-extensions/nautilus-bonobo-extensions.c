@@ -32,7 +32,7 @@ nautilus_bonobo_set_accelerator (BonoboUIComponent *ui,
 			   	 const char *path,
 			   	 const char *accelerator)
 {
-	g_assert (ui != NULL);
+	g_return_if_fail (ui != NULL);
 	bonobo_ui_component_set_prop (ui, path,
 				      "accel",
 				      accelerator,
@@ -44,7 +44,7 @@ nautilus_bonobo_set_description (BonoboUIComponent *ui,
 			   	 const char *path,
 			   	 const char *description)
 {
-	g_assert (ui != NULL);
+	g_return_if_fail (ui != NULL);
 	bonobo_ui_component_set_prop (ui, path,
 				      "descr",
 				      description,
@@ -56,7 +56,7 @@ nautilus_bonobo_set_label (BonoboUIComponent *ui,
 			   const char *path,
 			   const char *label)
 {
-	g_assert (ui != NULL);
+	g_return_if_fail (ui != NULL);
 	bonobo_ui_component_set_prop (ui, path,
 				      "label",
 				      label,
@@ -68,10 +68,22 @@ nautilus_bonobo_set_sensitive (BonoboUIComponent *ui,
 			       const char *path,
 			       gboolean sensitive)
 {
-	g_assert (ui != NULL);
+	g_return_if_fail (ui != NULL);
 	bonobo_ui_component_set_prop (ui, path,
 				      "sensitive",
 				      sensitive ? "1" : "0",
+				      NULL);
+}
+
+void
+nautilus_bonobo_set_toggle_state (BonoboUIComponent *ui,
+			       	  const char *path,
+			       	  gboolean state)
+{
+	g_return_if_fail (ui != NULL);
+	bonobo_ui_component_set_prop (ui, path,
+				      "state",
+				      state ? "1" : "0",
 				      NULL);
 }
 
@@ -80,7 +92,7 @@ nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
 			    const char *path,
 			    gboolean hidden)
 {
-	g_assert (ui != NULL);
+	g_return_if_fail (ui != NULL);
 	bonobo_ui_component_set_prop (ui, path,
 				      "hidden",
 				      hidden ? "1" : "0",
@@ -93,7 +105,7 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 {
 	char *value;
 
-	g_assert (ui != NULL);
+	g_return_val_if_fail (ui != NULL, FALSE);
 
 	value = bonobo_ui_component_get_prop (ui, path,
 					      "hidden",
@@ -152,7 +164,7 @@ nautilus_bonobo_set_icon (BonoboUIComponent *ui,
 	char *current_icon;
 	char *pixtype;
 
-	g_assert (ui != NULL);
+	g_return_if_fail (ui != NULL);
 	g_return_if_fail (icon_relative_path != NULL);
 	g_return_if_fail (path != NULL);
 

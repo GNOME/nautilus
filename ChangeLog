@@ -1,3 +1,39 @@
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3587 ("Close All Windows" doesn't work)
+	Fixed bug 3556 (Find button and Find menu item states aren't
+	synchronized)
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_accelerator),
+	(nautilus_bonobo_set_description), (nautilus_bonobo_set_label),
+	(nautilus_bonobo_set_sensitive),
+	(nautilus_bonobo_set_hidden),
+	(nautilus_bonobo_get_hidden), (nautilus_bonobo_set_icon):
+	Changed g_asserts to g_return_if_fails when checking parameters.
+	(nautilus_bonobo_set_toggle_state): New cover function for setting
+	a boolean state on a Bonobo item.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	Prototype for nautilus_bonobo_set_toggle_state.
+	
+	* src/nautilus-shell-ui.xml: Use different verb for Find button
+	than for Find menu item to work around bug 3590.
+	
+	* src/nautilus-window-private.h: Add updating_bonobo_state boolean
+	to work around design flaw where there's no way to set menu item or 
+	toggle button state without activating its callback.
+	
+	* src/nautilus-window-menus.c:
+	Removed #defines for unused MENU_PATHs
+	(file_menu_toggle_find_mode_callback): Bail out if updating_bonobo_state.
+	(nautilus_window_initialize_menus): Fix verb name for Close All Windows;
+	add new verb for Find toggle button.
+	(nautilus_window_update_find_menu_item): Use #define for path; remove
+	now-used unused-function from hack.
+	* src/nautilus-window.c: (navigation_bar_mode_changed_callback):
+	Set Find toggle button state, inside updating_bonobo_state = TRUE block.
+
 2000-10-10  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 3535 (Bonobo-merged items aren't being removed when view

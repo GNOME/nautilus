@@ -91,6 +91,10 @@
 /* default web search uri - FIXME bugzilla.eazel.com 2465: this will be changed to point to the Eazel service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
 
+/* FIXME: bugzilla.eazel.com 3590
+ * This shouldn't need to exist. See bug report for details.
+ */
+#define NAUTILUS_COMMAND_TOGGLE_FIND_MODE_WITH_STATE	"/commands/Toggle Find Mode With State"
 
 enum {
 	ARG_0,
@@ -209,22 +213,32 @@ goto_uri_callback (GtkWidget *widget,
 static void
 navigation_bar_mode_changed_callback (GtkWidget *widget,
 				      NautilusSwitchableNavigationBarMode mode,
-				      GtkWidget *window)
+				      NautilusWindow *window)
 {
-	nautilus_window_update_find_menu_item (NAUTILUS_WINDOW (window));
+	gboolean new_toggle_state;
 
-#ifdef UIH
+	nautilus_window_update_find_menu_item (window);
+
+	window->details->updating_bonobo_state = TRUE;
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), FALSE);
+		new_toggle_state = FALSE;
 		break;
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), TRUE);
+		new_toggle_state = TRUE;
 		break;
 	default:
 		g_assert_not_reached ();
 	}
-#endif
+	/* FIXME: bugzilla.eazel.com 3590:
+	 * We shouldn't need a separate command for the toggle button and menu item.
+	 * This is a Bonobo design flaw, explained in the bug report.
+	 */
+	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
+					  NAUTILUS_COMMAND_TOGGLE_FIND_MODE_WITH_STATE,
+					  new_toggle_state);
+	 
+	window->details->updating_bonobo_state = FALSE;
 }
 
 void

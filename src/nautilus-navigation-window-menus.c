@@ -65,41 +65,18 @@
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
 /* Private menu paths that components don't know about */
-#define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM		"/menu/File/New Window"
-#define NAUTILUS_MENU_PATH_CLOSE_ITEM			"/menu/File/Close"
-#define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/menu/File/Close All Windows"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND	"/menu/File/Separator before Find"
 #define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE		"/menu/File/Toggle Find Mode"
-#define NAUTILUS_MENU_PATH_GO_TO_WEB_SEARCH		"/menu/File/Go to Web Search"
 
-#define NAUTILUS_MENU_PATH_UNDO_ITEM			"/menu/Edit/Undo"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO		"/menu/Edit/Separator after Undo"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/menu/Edit/Separator after Clear"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/menu/Edit/Separator after Select All"
-
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_SHOW_HIDE	"/menu/View/Separator before Show Hide"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR		"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR		"/menu/View/Show Hide Placeholder/Show Hide Tool Bar"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR	"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR		"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
 
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM	"/menu/View/Separator before Zoom"
-
-#define NAUTILUS_MENU_PATH_HOME_ITEM			"/menu/Go/Home"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FORGET	"/menu/Go/Separator before Forget"
-#define NAUTILUS_MENU_PATH_FORGET_HISTORY_ITEM		"/menu/Go/Forget History"
-
 #define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER	"/menu/Go/History Placeholder"
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY	"/menu/Go/Separator before History"
 
-#define NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM		"/menu/Bookmarks/Add Bookmark"
-#define NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM		"/menu/Bookmarks/Edit Bookmarks"
 #define NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER	"/menu/Bookmarks/Bookmarks Placeholder"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS   "/menu/Bookmarks/Separator before Bookmarks"
-
-#define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/menu/Help/About Nautilus"
-#define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK		"/menu/Help/Nautilus Feedback"
-
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS	"/menu/Bookmarks/Separator before Bookmarks"
 
 #define SWITCH_TO_BEGINNER_VERB				"Switch to Beginner Level"
 #define SWITCH_TO_INTERMEDIATE_VERB			"Switch to Intermediate Level"
@@ -238,8 +215,10 @@ file_menu_toggle_find_mode_callback (BonoboUIComponent *component,
 
 	window = NAUTILUS_WINDOW (user_data);
 
-	nautilus_window_set_search_mode 
-		(window, !nautilus_window_get_search_mode (window));
+	if (!window->details->updating_bonobo_state) {
+		nautilus_window_set_search_mode 
+			(window, !nautilus_window_get_search_mode (window));
+	}
 }
 
 static void
@@ -1404,8 +1383,14 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
-		BONOBO_UI_VERB ("Close All", file_menu_close_all_windows_callback),
+		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
 		BONOBO_UI_VERB ("Toggle Find Mode", file_menu_toggle_find_mode_callback),
+		/* FIXME: bugzilla.eazel.com 3590:
+		 * Note that we use a different verb for the tool bar button since
+		 * the tool bar button has state but the menu item doesn't. This would
+		 * otherwise confuse Bonobo.
+		 */
+		BONOBO_UI_VERB ("Toggle Find Mode With State", file_menu_toggle_find_mode_callback),
 		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
 		BONOBO_UI_VERB ("Cut", edit_menu_cut_callback),
@@ -1539,7 +1524,7 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 			: _("_Find"));
 
 	nautilus_bonobo_set_label (window->details->shell_ui, 
-				   "/menu/File/Toggle Find Mode",
+				   NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE,
 				   label_string);
 	g_free (label_string);
 
@@ -1547,7 +1532,6 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 	/* avoid "unused function" warnings */
 	return;
 
-	add_user_level_menu_item (0, 0, 0);
 	bookmark_holder_free (0);
 	show_bogus_bookmark_window (0);
 #endif

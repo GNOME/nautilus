@@ -45,6 +45,10 @@ void nautilus_bonobo_set_sensitive (BonoboUIComponent *ui_component,
 				    const char        *path,
 				    gboolean           sensitive);
 
+void nautilus_bonobo_set_toggle_state (BonoboUIComponent *ui_component,
+				       const char        *path,
+				       gboolean           state);
+
 
 void nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
 				 const char        *path,
