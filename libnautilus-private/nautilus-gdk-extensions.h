@@ -19,7 +19,8 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Darin Adler <darin@eazel.com>
+   Authors: Darin Adler <darin@eazel.com>,
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #ifndef NAUTILUS_GDK_EXTENSIONS_H
@@ -32,6 +33,19 @@
 #define NAUTILUS_RGB_COLOR_BLUE		0x0000FF
 #define NAUTILUS_RGB_COLOR_WHITE	0xFFFFFF
 #define NAUTILUS_RGB_COLOR_BLACK	0x000000
+
+/* Pack RGBA values into a 32 bits */
+#define NAUTILUS_RGBA_COLOR_PACK(_r, _g, _b, _a)	\
+( ((_a) << 24) |					\
+  ((_r) << 16) |					\
+  ((_g) <<  8) |					\
+  ((_b) <<  0) )
+
+/* Access the individual RGBA components */
+#define NAUTILUS_RGBA_COLOR_GET_R(_color) (((_color) >> 16) & 0xff)
+#define NAUTILUS_RGBA_COLOR_GET_G(_color) (((_color) >> 8) & 0xff)
+#define NAUTILUS_RGBA_COLOR_GET_B(_color) (((_color) >> 0) & 0xff)
+#define NAUTILUS_RGBA_COLOR_GET_A(_color) (((_color) >> 24) & 0xff)
 
 /* A gradient spec. is a string that contains a specifier for either a
    color or a gradient. If the string has a "-" in it, then it's a gradient.
@@ -115,5 +129,6 @@ void       nautilus_gdk_window_bring_to_front          (GdkWindow          *wind
 void       nautilus_set_mini_icon                      (GdkWindow          *window,
 							GdkPixmap          *pixmap,
 							GdkBitmap          *mask);
+GdkGC * nautilus_gdk_create_copy_area_gc (GdkWindow	*window);
 
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */

@@ -19,7 +19,9 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Darin Adler <darin@eazel.com>, Pavel Cisler <pavel@eazel.com>
+   Authors: Darin Adler <darin@eazel.com>, 
+            Pavel Cisler <pavel@eazel.com>,
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #include <config.h>
@@ -722,6 +724,20 @@ nautilus_gdk_font_get_bold (const GdkFont *plain_font)
 	g_free (bold_name);
 
 	return result;
+}
+
+GdkGC *
+nautilus_gdk_create_copy_area_gc (GdkWindow	*window)
+{
+	GdkGC *copy_area_gc;
+	
+	g_return_val_if_fail (window != NULL, NULL);
+
+	copy_area_gc = gdk_gc_new (window);
+
+	gdk_gc_set_function (copy_area_gc, GDK_COPY);
+
+	return copy_area_gc;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
