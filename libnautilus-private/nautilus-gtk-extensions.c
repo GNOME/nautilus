@@ -429,8 +429,8 @@ nautilus_gtk_window_set_initial_geometry_from_string (GtkWindow *window,
 	/* Make sure the window isn't smaller than makes sense for this window.
 	 * Other sanity checks are performed in set_initial_geometry.
 	 */
-	width = MAX (width, minimum_width);
-	height = MAX (height, minimum_height);
+	width = MAX (width, (int) minimum_width);
+	height = MAX (height, (int) minimum_height);
 
 	nautilus_gtk_window_set_initial_geometry (window, left, top, width, height);
 }
@@ -591,7 +591,7 @@ nautilus_gtk_menu_set_item_visibility (GtkMenu *menu, int index, gboolean visibl
 	g_return_if_fail (GTK_IS_MENU (menu));
 
 	children = gtk_container_children (GTK_CONTAINER (menu));
-	g_return_if_fail (index >= 0 && index < g_list_length (children));
+	g_return_if_fail (index >= 0 && index < (int) g_list_length (children));
 
 	menu_item = GTK_WIDGET (g_list_nth_data (children, index));
 	if (visible) {

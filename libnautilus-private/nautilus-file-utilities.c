@@ -63,7 +63,7 @@ struct NautilusReadFileHandle {
 	gpointer callback_data;
 	gboolean is_open;
 	char *buffer;
-	int bytes_read;
+	GnomeVFSFileSize bytes_read;
 };
 
 #undef PTHREAD_ASYNC_READ
@@ -635,7 +635,7 @@ nautilus_read_entire_file (const char *uri,
 	GnomeVFSResult result;
 	GnomeVFSHandle *handle;
 	char *buffer;
-	int total_bytes_read;
+	GnomeVFSFileSize total_bytes_read;
 	GnomeVFSFileSize bytes_read;
 
 	*file_size = 0;

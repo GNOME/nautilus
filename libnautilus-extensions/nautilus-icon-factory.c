@@ -316,7 +316,7 @@ check_recently_used_list (void)
 {
 	NautilusIconFactory *factory;
 	NautilusCircularList *head, *node, *next;
-	int count;
+	guint count;
 
 	factory = get_icon_factory ();
 
@@ -875,7 +875,7 @@ get_themed_icon_file_path (const char *theme_name,
 			   gboolean aa_mode,
 			   IconDetails *details)
 {
-	int i;
+	guint i;
 	gboolean include_size;
 	char *themed_icon_name, *partial_path, *path, *aa_path, *xml_path;
 	xmlDocPtr doc;
@@ -1759,14 +1759,14 @@ revise_scale_factors_if_too_big (GdkPixbuf *pixbuf,
 				 double *scale_x,
 				 double *scale_y)
 {
-	int width, height;
+	guint width, height;
 	double y_distortion;
 
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 
-	if ((int) (width * *scale_x) <= size->maximum_width
-	    && (int) (height * *scale_y) <= size->maximum_height) {
+	if ((int) (width * *scale_x) <= (int) size->maximum_width
+	    && (int) (height * *scale_y) <= (int) size->maximum_height) {
 		return;
 	}
 

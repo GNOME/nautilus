@@ -318,8 +318,8 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	GList *position_setting_requests;
 	URIPair *pair;
 	NautilusFileChangesQueuePositionSetting *position_setting;
-	int kind;
-	int chunk_count;
+	NautilusFileChangeKind kind;
+	guint chunk_count;
 	NautilusFileChangesQueue *queue;
 	
 

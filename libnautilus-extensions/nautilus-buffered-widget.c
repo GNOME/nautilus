@@ -322,8 +322,8 @@ nautilus_gdk_pixbuf_tile_alpha (GdkPixbuf		*pixbuf,
 				GdkInterpType		interpolation_mode,
 				guchar			overall_alpha)
 {
-	gint	x;
-	gint	y;
+	guint	x;
+	guint	y;
 	guchar	*pixels;
 	guchar	*tile_pixels;
 	guint	num_ver_iterations;
@@ -335,8 +335,8 @@ nautilus_gdk_pixbuf_tile_alpha (GdkPixbuf		*pixbuf,
 	
 	g_return_if_fail (pixbuf != NULL);
 	g_return_if_fail (tile_pixbuf != NULL);
-	g_return_if_fail (tile_width <= gdk_pixbuf_get_width (tile_pixbuf));
-	g_return_if_fail (tile_height <= gdk_pixbuf_get_height (tile_pixbuf));
+	g_return_if_fail ((int) tile_width <= gdk_pixbuf_get_width (tile_pixbuf));
+	g_return_if_fail ((int) tile_height <= gdk_pixbuf_get_height (tile_pixbuf));
 	g_return_if_fail (gdk_pixbuf_get_pixels (pixbuf) != NULL);
 	g_return_if_fail (gdk_pixbuf_get_pixels (tile_pixbuf) != NULL);
 
@@ -350,18 +350,16 @@ nautilus_gdk_pixbuf_tile_alpha (GdkPixbuf		*pixbuf,
 
 	y = 0;
 
-	for (j = 0; j < num_ver_iterations; j++)
-	{
+	for (j = 0; j < num_ver_iterations; j++) {
 		x = 0;
 
-		for (i = 0; i < num_hor_iterations; i++)
-		{
-			guint   copy_width;
-			guint   copy_height;
-			gint    dst_x;
-			gint    dst_y;
-			gint    dst_x2;
-			gint    dst_y2;
+		for (i = 0; i < num_hor_iterations; i++) {
+			gint     copy_width;
+			gint     copy_height;
+			guint    dst_x;
+			guint    dst_y;
+			guint    dst_x2;
+			guint    dst_y2;
 
 			dst_x = x;
 			dst_y = y;
@@ -372,18 +370,15 @@ nautilus_gdk_pixbuf_tile_alpha (GdkPixbuf		*pixbuf,
 			dst_x2 = dst_x + copy_width;
 			dst_y2 = dst_y + copy_height;
 
-			if (dst_x2 > width)
-			{
+			if (dst_x2 > width) {
 				copy_width -= (dst_x2 - width);
 			}
 
-			if (dst_y2 > height)
-			{
+			if (dst_y2 > height) {
 				copy_height -= (dst_y2 - height);
 			}
 
-			if (copy_width > 0 && copy_height > 0)
-			{
+			if (copy_width > 0 && copy_height > 0) {
 				GdkRectangle destination_area;
 
 				destination_area.x = dst_x;

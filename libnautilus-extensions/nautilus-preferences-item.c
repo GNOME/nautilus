@@ -48,7 +48,7 @@ enum
 
 static const guint PREFERENCES_ITEM_TITLE_SPACING = 4;
 static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
-static const gint PREFERENCES_ITEM_UNDEFINED_ITEM = -1;
+static const NautilusPreferencesItemType PREFERENCES_ITEM_UNDEFINED_ITEM = -1U;
 
 struct _NautilusPreferencesItemDetails
 {
@@ -508,7 +508,7 @@ static gboolean
 has_image_file(const char *directory_uri, const char *dir_name, const char *required_file)
 {
 	char *temp_str, *base_uri;
-	int index;
+	guint index;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *file_info;
 	

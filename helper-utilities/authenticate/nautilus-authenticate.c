@@ -51,13 +51,11 @@ int main (int argc, char *argv[])
 	
 	gnome_init ("PrivilegedAuthentication", "1.0", argc, argv);
 
-	if (argc > 1)
-	{
+	if (argc > 1) {
 		GString *str = g_string_new ("");
-		guint i;
+		int i;
 		
-		for(i = 1; i < argc; i++)
-		{
+		for(i = 1; i < argc; i++) {
 			if (i > 1) 
 				g_string_append(str, " ");
 			
@@ -87,8 +85,7 @@ int main (int argc, char *argv[])
 		username = nautilus_password_dialog_get_username (NAUTILUS_PASSWORD_DIALOG (password_dialog));
 		password = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (password_dialog));
 		
-		if (nautilus_authenticate_authenticate (username, password))
-		{
+		if (nautilus_authenticate_authenticate (username, password)) {
 			/* Free the password right away to blow it away from memory. */
 			if (password) {
 				g_free(password);
@@ -112,15 +109,8 @@ int main (int argc, char *argv[])
 				 username);
 		}
 
-		if (username) {
-			g_free(username);
-			username = NULL;
-		}
-		
-		if (password) {
-			g_free(password);
-			password = NULL;
-		}
+		g_free(username);
+		g_free(password);
 	}
 
 	return rv;

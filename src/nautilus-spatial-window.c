@@ -770,11 +770,11 @@ nautilus_window_size_request (GtkWidget		*widget,
 	max_width = get_max_forced_width ();
 	max_height = get_max_forced_height ();
 
-	if (requisition->width > max_width) {
+	if (requisition->width > (int) max_width) {
 		requisition->width = max_width;
 	}
 	
-	if (requisition->height > max_height) {
+	if (requisition->height > (int) max_height) {
 		requisition->height = max_height;
 	}
 }

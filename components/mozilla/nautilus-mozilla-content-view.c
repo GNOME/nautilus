@@ -1079,7 +1079,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 static gint
 string_list_get_index_of_string (const char *string_list[], guint num_strings, const char *string)
 {
-	gint i;
+	guint i;
 
 	g_return_val_if_fail (string != NULL, STRING_LIST_NOT_FOUND);
 	g_return_val_if_fail (string_list != NULL, STRING_LIST_NOT_FOUND);

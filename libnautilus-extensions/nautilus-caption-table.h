@@ -57,7 +57,7 @@ struct _NautilusCaptionTableClass
 {
 	GtkTableClass parent_class;
 
-	void (*activate) (GtkWidget *caption_table, int active_entry);
+	void (*activate) (GtkWidget *caption_table, guint active_entry);
 };
 
 GtkType    nautilus_caption_table_get_type           (void);

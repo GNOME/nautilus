@@ -261,7 +261,7 @@ corba_open_windows (PortableServer_Servant servant,
 		    CORBA_Environment *ev)
 {
 	NautilusShell *shell;
-	int i;
+	guint i;
 
 	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
 
@@ -280,7 +280,7 @@ corba_open_default_window (PortableServer_Servant servant,
 
 	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
 
-	if (! restore_window_states (shell)) {
+	if (!restore_window_states (shell)) {
 		/* Open a window pointing at the default location. */
 		open_window (shell, NULL);
 	}

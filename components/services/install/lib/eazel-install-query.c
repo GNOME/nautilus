@@ -81,7 +81,7 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	dbiIndexSet matches;
 	rpmdb db;
 	int rc;
-	int i;
+	guint i;
 	gboolean free_db_system = FALSE;
 	
 	/* g_message (_("Querying for %s in package database in %s"), input, root); */

@@ -377,7 +377,7 @@ rsvg_parse_transform (double dst[6], const char *src)
   char keyword[32];
   double args[6];
   int n_args;
-  int key_len;
+  guint key_len;
   double tmp_affine[6];
 
   art_affine_identity (dst);

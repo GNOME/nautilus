@@ -70,7 +70,7 @@ static int
 read_rpm_lead (int fd)
 {
 	unsigned char buffer[96];
-	int bytes = 0;
+	guint bytes = 0;
 	int n;
 
 	while (bytes < sizeof (buffer)) {
@@ -114,7 +114,7 @@ read_rpm_signature (int fd, char **signature, int *signature_len)
 
 	*signature = NULL;
 
-	for (bytes = 0; bytes < sizeof (header); ) {
+	for (bytes = 0; bytes < (int) sizeof (header); ) {
 		n = read (fd, &header + bytes, sizeof (header) - bytes);
 		if (n <= 0) {
 			return -1;
@@ -126,7 +126,7 @@ read_rpm_signature (int fd, char **signature, int *signature_len)
 	header.data_size = ntohl (header.data_size);
 	entry = g_new0 (RPMEntry, header.entries);
 
-	for (bytes = 0; bytes < (header.entries * sizeof (RPMEntry)); ) {
+	for (bytes = 0; bytes < (int) (header.entries * sizeof (RPMEntry)); ) {
 		n = read (fd, entry + bytes, (header.entries * sizeof (RPMEntry)) - bytes);
 		if (n <= 0) {
 			goto bail;
@@ -153,7 +153,7 @@ read_rpm_signature (int fd, char **signature, int *signature_len)
 	}
 
 	for (bytes = 0; bytes < offset; ) {
-		n = read (fd, buffer, MIN (offset - bytes, sizeof (buffer)));
+		n = read (fd, buffer, MIN (offset - bytes, (int) sizeof (buffer)));
 		if (n <= 0) {
 			goto bail;
 		}
@@ -176,7 +176,7 @@ read_rpm_signature (int fd, char **signature, int *signature_len)
 	}
 	offset = header.data_size - (*signature_len + offset);
 	for (bytes = 0; bytes < offset; ) {
-		n = read (fd, buffer, MIN (offset - bytes, sizeof (buffer)));
+		n = read (fd, buffer, MIN (offset - bytes, (int) sizeof (buffer)));
 		if (n <= 0) {
 			goto bail;
 		}

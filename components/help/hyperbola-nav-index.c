@@ -194,7 +194,7 @@ hyperbola_navigation_index_update_clist(HyperbolaNavigationIndex *hni)
 	  g_print("Word %d is %s\n", cci.nwords, ctmp);
 	  cci.nwords++;
 	}
-      while((ctmp = strtok(NULL, ", \t")) && cci.nwords < sizeof(cci.words)/sizeof(cci.words[0]));
+      while((ctmp = strtok(NULL, ", \t")) && (size_t)cci.nwords < sizeof(cci.words)/sizeof(cci.words[0]));
     }
 
   cci.did_select = FALSE;
@@ -347,7 +347,7 @@ despace(GString *s)
   char *ctmp, *ctmp_s = NULL;
   int i;
 
-  g_assert(s->len == strlen(s->str));
+  g_assert(s->len == (int) strlen(s->str));
   for(ctmp = s->str, i = s->len; *ctmp; ctmp++, i--)
     {
       if(isspace(*ctmp))
@@ -364,7 +364,7 @@ despace(GString *s)
 	      memmove(ctmp_s + 1, ctmp, i + 1);
 	      ctmp = ctmp_s + 2;
 	      i--;
-	      if(i != strlen(ctmp))
+	      if(i != (int) strlen(ctmp))
 		g_error("i (%d) != strlen(ctmp) (%ld)", i, (long)strlen(ctmp));
 	    }
 	  ctmp_s = NULL;
@@ -535,7 +535,7 @@ end_element (SAXParseInfo *spi,
   else
     this_type = NONE;
 
-  g_return_if_fail(this_type != NONE && !spi->stinfo[this_type] && this_type == spi->sub_type);
+  g_return_if_fail(this_type != NONE && !spi->stinfo[this_type] && this_type == (int) spi->sub_type);
 
   if(spi->sub_text->len)
     {

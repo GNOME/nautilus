@@ -142,7 +142,7 @@ history_load_location (NautilusView *view,
 	NautilusBookmark *bookmark;
 	Nautilus_HistoryList *history_list;
 	Nautilus_HistoryItem *item;
-	int i;
+	guint i;
 	static int lock = 0;
 
 	if (lock != 0) {

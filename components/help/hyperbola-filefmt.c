@@ -229,7 +229,7 @@ static void
 fmt_free_tree_info(HyperbolaDocTree *tree)
 {
   TreeInfo *tinfo;
-  int i;
+  guint i;
 
   tinfo = tree->user_data;
   if(!tinfo)

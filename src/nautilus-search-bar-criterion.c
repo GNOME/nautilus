@@ -607,7 +607,7 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 {
 	GtkWidget *old_menu, *new_menu;
 	GtkWidget *item;
-	int i;
+	guint i;
 
 	/* We remove the whole menu and put in a new one. */
 	new_menu = gtk_menu_new ();

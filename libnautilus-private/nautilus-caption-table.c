@@ -281,19 +281,20 @@ entry_activate (GtkWidget *widget, gpointer data)
 	index = caption_table_index_of_entry (caption_table, widget);
 	
 	/* Check for an invalid index */
-	if (index == -1)
+	if (index == -1) {
 		return;
-	
+	}
+
 	/* Check for the last index */
-	if (index < caption_table->detail->num_rows)
-	{
+	if (index < (int) caption_table->detail->num_rows) {
 		/* Look for the next sensitive entry */
-		GtkWidget* sensitive_entry = 
+		GtkWidget *sensitive_entry = 
 			caption_table_find_next_sensitive_entry (caption_table, index + 1);
 		
 		/* Make the next sensitive entry take focus */
-		if (sensitive_entry)
+		if (sensitive_entry) {
 			gtk_widget_grab_focus (sensitive_entry);
+		}
 	}
 	
 	/* Emit the activate signal */

@@ -27,7 +27,7 @@
 static GList*
 corba_string_sequence_to_glist (CORBA_sequence_CORBA_string provides) {
 	GList *result = NULL;
-	int iterator;
+	guint iterator;
 
 	for (iterator = 0; iterator < provides._length; iterator++) {
 		result = g_list_prepend (result, g_strdup (provides._buffer[iterator]));
@@ -55,7 +55,7 @@ Trilobite_Eazel_PackageDataStructList
 corba_packagedatastructlist_from_packagedata_list (GList *packages)
 {
 	Trilobite_Eazel_PackageDataStructList packagelist;
-	int i;
+	guint i;
 
 	packagelist._length = g_list_length (packages);
 	packagelist._buffer = CORBA_sequence_Trilobite_Eazel_PackageDataStruct_allocbuf (packagelist._length);
@@ -168,7 +168,7 @@ GList*
 packagedata_list_from_corba_packagedatastructlist (const Trilobite_Eazel_PackageDataStructList corbapack)
 {
 	GList *result;
-	int i;
+	guint i;
 
 	result = NULL;
 	
@@ -287,7 +287,7 @@ GList*
 categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryStructList corbacategories)
 {
 	GList *categories;
-	int i,j;
+	guint i,j;
 
 	categories = NULL;
 

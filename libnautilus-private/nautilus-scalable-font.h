@@ -202,7 +202,7 @@ NautilusTextLayout *nautilus_text_layout_new   (const NautilusScalableFont *font
 						guint                       font_size,
 						const char                 *text,
 						const char                 *separators,
-						int                         max_width,
+						guint                       max_width,
 						gboolean                    confine);
 void                nautilus_text_layout_paint (const NautilusTextLayout   *text_info,
 						GdkPixbuf                  *pixbuf,

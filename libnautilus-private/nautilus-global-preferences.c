@@ -371,7 +371,7 @@ global_preferences_get_sidebar_panel_view_identifiers (void)
 	CORBA_Environment ev;
 	const char *query;
         OAF_ServerInfoList *oaf_result;
-	int i;
+	guint i;
 	NautilusViewIdentifier *id;
 	GList *view_identifiers;
 

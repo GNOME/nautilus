@@ -2210,9 +2210,9 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 		for (p = NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs; p != NULL; p = p->next) {
 			pixbuf_width = gdk_pixbuf_get_width (p->data);
 
-			if ((p->next != NULL && pixbuf_width + ellipsis_width >= 
+			if ((p->next != NULL && (int) (pixbuf_width + ellipsis_width) >= 
 		  		cell_rectangle.x + cell_rectangle.width - offset) 
-		  			|| (pixbuf_width >= cell_rectangle.x + cell_rectangle.width - offset)) {
+		  			|| ((int) pixbuf_width >= cell_rectangle.x + cell_rectangle.width - offset)) {
 				/* Not enough room for this icon & ellipsis, just draw ellipsis. */
 			
 				gdk_draw_string (clist->clist_window, style->font, fg_gc,
@@ -3203,7 +3203,6 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		drag_info->drop_occured = FALSE;
 		drag_info->got_drop_data_type = FALSE;
 	}
-
 }
 
 

@@ -1462,7 +1462,7 @@ server_matches_content_requirements (OAF_ServerInfo *server,
 {
         OAF_Property *prop;
         GNOME_stringlist types;
-        int i;
+        guint i;
 
         /* Components explicitly requested in the metafile are not capability tested. */
         if (g_list_find_custom (explicit_iids, (gpointer) server->iid, (GCompareFunc) strcmp) != NULL) {
@@ -1472,7 +1472,7 @@ server_matches_content_requirements (OAF_ServerInfo *server,
         if (!server_has_content_requirements (server)) {
                 return TRUE;
         } else {
-        prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+        	prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
                 types = prop->v._u.value_stringv;
 
@@ -1537,7 +1537,7 @@ nautilus_do_component_query (const char        *mime_type,
 
         if (ev->_major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
                 GHashTable *content_types;
-                int i;
+                guint i;
            
                 content_types = mime_type_list_to_hash_table (item_mime_types);
                 

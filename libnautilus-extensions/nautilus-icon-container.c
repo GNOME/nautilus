@@ -1300,7 +1300,7 @@ rubberband_timeout_callback (gpointer data)
 	}
 
 	if (y_scroll == 0 && x_scroll == 0
-	    && band_info->prev_x == x && band_info->prev_y == y) {
+	    && (int) band_info->prev_x == x && (int) band_info->prev_y == y) {
 		return TRUE;
 	}
 
@@ -2132,7 +2132,7 @@ static void
 destroy (GtkObject *object)
 {
 	NautilusIconContainer *container;
-	int i;
+	guint i;
 
 	container = NAUTILUS_ICON_CONTAINER (object);
 
@@ -3764,7 +3764,7 @@ nautilus_icon_container_request_update (NautilusIconContainer *container,
 
 /* zooming */
 
-int
+NautilusZoomLevel
 nautilus_icon_container_get_zoom_level (NautilusIconContainer *container)
 {
         return container->details->zoom_level;
@@ -4219,8 +4219,8 @@ compute_stretch (StretchState *start,
 	int x_stretch, y_stretch;
 
 	/* Figure out which handle we are dragging. */
-	right = start->pointer_x > start->icon_x + start->icon_size / 2;
-	bottom = start->pointer_y > start->icon_y + start->icon_size / 2;
+	right = start->pointer_x > start->icon_x + (int) start->icon_size / 2;
+	bottom = start->pointer_y > start->icon_y + (int) start->icon_size / 2;
 
 	/* Figure out how big we should stretch. */
 	x_stretch = start->pointer_x - current->pointer_x;

@@ -562,10 +562,10 @@ nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 GdkFont *
 nautilus_get_largest_fitting_font (const char *text_to_format, int width, const char *font_template)
 {
-	int font_index, this_width;
+	guint font_index; 
+	int this_width;
 	char *font_name;
-	/*const int font_sizes[5] = { 28, 24, 18, 14, 12 };*/
-	const int font_sizes[4] = { 20, 18, 14, 12 };
+	const int font_sizes[] = { 20, 18, 14, 12 };
 	GdkFont *candidate_font;
 	char *alt_text_to_format = NULL;
 	char *temp_str;

@@ -1,3 +1,114 @@
+2000-11-13  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* configure.in:
+	Enable the sign-compare and cast-align warnings.
+	
+	* components/help/converters/gnome-db2html2/gdb3html.c:
+	(find_first_element):
+	* components/help/hyperbola-filefmt.c: (fmt_free_tree_info):
+	* components/help/hyperbola-nav-index.c:
+	(hyperbola_navigation_index_update_clist), (despace),
+	(end_element):
+	* components/history/nautilus-history-view.c:
+	(history_load_location):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(string_list_get_index_of_string):
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_string_sequence_to_glist),
+	(corba_packagedatastructlist_from_packagedata_list),
+	(packagedata_list_from_corba_packagedatastructlist),
+	(categorydata_list_from_corba_categorystructlist):
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_monitor_rpm_process_pipe):
+	* components/services/install/lib/eazel-install-rpm-signature.c:
+	(read_rpm_lead), (read_rpm_signature):
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_run_program),
+	(trilobite_root_helper_set_time):
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.c:
+	(nautilus_clist_get_arg), (nautilus_clist_construct):
+	* helper-utilities/authenticate/nautilus-authenticate.c: (main):
+	* libnautilus-extensions/nautilus-background.c:
+	(set_image_and_color_image_loading_done_callback):
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(nautilus_gdk_pixbuf_tile_alpha):
+	* libnautilus-extensions/nautilus-caption-table.c:
+	(entry_activate):
+	* libnautilus-extensions/nautilus-caption-table.h:
+	* libnautilus-extensions/nautilus-ctree.c:
+	(nautilus_ctree_node_nth), (nautilus_ctree_drag_motion):
+	* libnautilus-extensions/nautilus-ctree.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_write):
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_consume_changes):
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(truncate_string_from_start):
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(extract_string_until):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_read_entire_file):
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_get_largest_fitting_font):
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_get_sidebar_panel_view_identifiers):
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_window_set_initial_geometry_from_string),
+	(nautilus_gtk_menu_set_item_visibility):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), (draw_or_measure_label_text_aa):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(rubberband_timeout_callback), (destroy), (compute_stretch):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(nautilus_icon_container_find_drop_target):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(check_recently_used_list), (get_themed_icon_file_path),
+	(revise_scale_factors_if_too_big):
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(recompute_bounding_box), (iti_draw), (iti_selection_motion):
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_size_allocate), (label_recompute_line_geometries):
+	* libnautilus-extensions/nautilus-list.c: (draw_cell),
+	(nautilus_list_drag_data_received):
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(server_matches_content_requirements),
+	(nautilus_do_component_query):
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	(caption_table_activate_callback):
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(has_image_file):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(file_as_string), (parse_font_description_file),
+	(nautilus_text_layout_new):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(check_permissions):
+	* libnautilus/nautilus-view.c:
+	(nautilus_shallow_g_list_from_uri_list):
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_g_list_from_ZoomLevelList):
+	* librsvg/rsvg-ft.c: (rsvg_ft_measure_or_render_string):
+	* librsvg/rsvg.c: (rsvg_parse_transform):
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_create_background_context_menu_items),
+	(get_sort_criterion_by_metadata_text), (get_sort_criterion_by_id):
+	* src/file-manager/fm-list-view.c: (select_row_common),
+	(select_matching_name_callback), (select_previous_next_common),
+	(fm_list_view_bump_zoom_level):
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_update_valid_criteria_choices):
+	* src/nautilus-shell.c: (corba_open_windows),
+	(corba_open_default_window):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_add_panel_items):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_disable_keyboard_navigation_for_menus):
+	* src/nautilus-window.c: (nautilus_window_size_request):
+	Fix all sign-compare violations.
+
 2000-11-13  Mathieu Lacage  <mathieu@eazel.com>
 
 	Buddy: pavel.

@@ -684,7 +684,7 @@ mount_volumes_check_status (NautilusVolumeMonitor *monitor)
 static gboolean
 check_permissions (const char *filename, int mode)
 {
-	int euid, egid;
+	guint euid, egid;
 	struct stat statbuf;
 
 	euid = geteuid ();

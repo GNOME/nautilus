@@ -98,7 +98,7 @@ GList *
 nautilus_shallow_g_list_from_uri_list (const Nautilus_URIList *uri_list)
 {
 	GList *list;
-	int i;
+	guint i;
 
 	list = NULL;
 	for (i = 0; i < uri_list->_length; i++) {

@@ -4135,7 +4135,7 @@ nautilus_ctree_find_node_ptr (NautilusCTree    *ctree,
 
 NautilusCTreeNode *
 nautilus_ctree_node_nth (NautilusCTree *ctree,
-		    guint     row)
+		    int     row)
 {
   g_return_val_if_fail (ctree != NULL, NULL);
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), NULL);
@@ -5988,7 +5988,7 @@ nautilus_ctree_drag_motion (GtkWidget      *widget,
       list = context->targets;
       while (list)
 	{
-	  if (atom == GPOINTER_TO_INT (list->data))
+	  if (atom == GPOINTER_TO_UINT (list->data))
 	    break;
 	  list = list->next;
 	}

@@ -312,7 +312,7 @@ recompute_bounding_box (Iti *iti)
 	double affine[6];
 	ArtPoint p, q;
 	int x1, y1, x2, y2;
-	int width, height;
+	guint width, height;
 	ItiPrivate *priv;
 
 	item = GNOME_CANVAS_ITEM (iti);
@@ -565,7 +565,7 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 {
 	Iti *iti;
 	GtkStyle *style;
-	int w, h;
+	guint w, h;
 	int xofs, yofs;
 	ItiPrivate *priv;
 
@@ -853,12 +853,14 @@ iti_selection_motion (Iti *iti, int idx)
 	ItiPrivate *priv;
 	GtkEditable *e;
 
+	g_assert (idx >= 0);
+	
 	priv = iti->priv;
 	e = GTK_EDITABLE (priv->entry);
 
-	if (idx < e->current_pos) {
+	if (idx < (int) e->current_pos) {
 		e->selection_start_pos = idx;
-		e->selection_end_pos   = e->current_pos;
+		e->selection_end_pos = e->current_pos;
 	} else {
 		e->selection_start_pos = e->current_pos;
 		e->selection_end_pos  = idx;

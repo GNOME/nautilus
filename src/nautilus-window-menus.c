@@ -1084,7 +1084,7 @@ remove_underline_accelerator_from_menu_title (NautilusWindow *window,
 void
 nautilus_window_disable_keyboard_navigation_for_menus (NautilusWindow *window)
 {
-	int index;
+	guint index;
 
 #ifdef UIH
 	/* FIXME bugzilla.eazel.com 2327: 

@@ -488,7 +488,8 @@ trilobite_root_helper_run_program (TrilobiteRootHelper *root_helper, const char 
 	}
 
 	out = g_strdup_printf ("%s %u\n", program, g_list_length (argv));
-	if (write (root_helper->pipe_stdin, out, strlen (out)) < strlen (out)) {
+	len = strlen (out);
+	if (write (root_helper->pipe_stdin, out, len) < len) {
 		g_free (out);
 		goto bail;
 	}
@@ -528,7 +529,8 @@ trilobite_root_helper_set_time (TrilobiteRootHelper *root_helper, GList *argv, i
 	GList *item;
 	char *out;
 	char ch;
-
+	int len;
+	
 	if (fd) {
 		*fd = -1;
 	}
@@ -540,7 +542,8 @@ trilobite_root_helper_set_time (TrilobiteRootHelper *root_helper, GList *argv, i
 	}
 
 	out = g_strdup_printf ("set-time %s\n", (char *)item->data);
-	if (write (root_helper->pipe_stdin, out, strlen (out)) < strlen (out)) {
+	len = strlen (out);
+	if (write (root_helper->pipe_stdin, out, len) < len) {
 		g_free (out);
 		goto bail;
 	}

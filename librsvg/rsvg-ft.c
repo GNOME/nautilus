@@ -795,14 +795,14 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	RsvgFTGlyph *result;
 	RsvgFTGlyph **glyphs;
 	int *glyph_xy;
-	int i, j;
+	guint i;
 	ArtIRect bbox, glyph_bbox;
 	int rowstride;
 	guchar *buf;
 	double glyph_affine[6];
 	FT_UInt glyph_index;
 	FT_UInt last_glyph = 0; /* for kerning */
-	int n_glyphs;
+	guint n_glyphs;
 	double init_x, init_y;
 
 	g_return_val_if_fail (ctx != NULL, NULL);
@@ -821,8 +821,8 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	glyphs = g_new (RsvgFTGlyph *, length);
 	glyph_xy = g_new (int, length * 2);
 
-	for (j = 0; j < 6; j++)
-		glyph_affine[j] = affine[j];
+	for (i = 0; i < 6; i++)
+		glyph_affine[i] = affine[i];
 
 	init_x = affine[4];
 	init_y = affine[5];

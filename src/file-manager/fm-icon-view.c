@@ -770,7 +770,7 @@ fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 	GtkMenu *layout_submenu;
 	gboolean is_auto_layout;
 	int position;
-	int i;
+	guint i;
 
 	g_assert (GTK_IS_MENU (menu));
 
@@ -1159,7 +1159,7 @@ set_sort_reversed (FMIconView *icon_view, gboolean new_value)
 static const SortCriterion *
 get_sort_criterion_by_metadata_text (const char *metadata_text)
 {
-	int i;
+	guint i;
 
 	/* Figure out what the new sort setting should be. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
@@ -1173,7 +1173,7 @@ get_sort_criterion_by_metadata_text (const char *metadata_text)
 static const SortCriterion *
 get_sort_criterion_by_id (const char *id)
 {
-	int i;
+	guint i;
 
 	/* Figure out what the new sort setting should be. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {

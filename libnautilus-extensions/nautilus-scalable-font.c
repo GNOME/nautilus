@@ -159,7 +159,7 @@ file_as_string (const char *file_name)
 
 	fclose (stream);
 
-	if (num_read != stat_info.st_size) {
+	if ((ssize_t)num_read != stat_info.st_size) {
 		g_free (result);
 		return NULL;
 	}
@@ -178,7 +178,7 @@ parse_font_description_file (const char		*directory,
 	char			*fonts_dir_content;
 	NautilusStringList	*tokenized_list;
 	guint			i;
-	gint			count;
+	guint			count;
 
 	g_return_val_if_fail (directory != NULL, FALSE);
 	g_return_val_if_fail (g_file_exists (directory), FALSE);
@@ -1470,7 +1470,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 			  guint font_size,
 			  const char *text,
 			  const char *separators,
-			  int max_width,
+			  guint max_width,
 			  gboolean confine)
 {
 	NautilusTextLayout *text_layout;
@@ -1478,7 +1478,8 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 	const char *row_end;
 	const char *s, *word_start, *word_end, *old_word_end;
 	char *sub_text;
-	int i, w_len, w;
+	int i, w_len;
+	guint w;
 	const char *text_iter;
 	int text_len, separators_len;
 

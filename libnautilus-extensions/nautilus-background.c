@@ -1061,8 +1061,8 @@ nautilus_background_set_image_uri (NautilusBackground *background, const char *i
 static void
 set_image_and_color_image_loading_done_callback (NautilusBackground *background, gboolean successful_load, const char *color)
 {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (background), GTK_SIGNAL_FUNC (set_image_and_color_image_loading_done_callback), (gpointer) color);
-		nautilus_background_set_color (background, color);
+	gtk_signal_disconnect_by_func (GTK_OBJECT (background), GTK_SIGNAL_FUNC (set_image_and_color_image_loading_done_callback), (gpointer) color);
+	nautilus_background_set_color (background, color);
 }
 
 /* Use this fn to set both the image and color and avoid flash. The color isn't

@@ -388,15 +388,16 @@ make_sorted_row_array (GtkWidget *widget)
 }
 
 static void
-select_row_common (GtkWidget *widget, const GPtrArray *array, int array_row_index)
+select_row_common (GtkWidget *widget, const GPtrArray *array, guint array_row_index)
 {
 	NautilusCListRow *row;
 	int list_row_index;
 
-	if (array_row_index >= array->len)
+	if (array_row_index >= array->len) {
+		g_assert (array->len >= 1);
 		array_row_index = array->len - 1;
+	}
 
-	g_assert (array_row_index >= 0);
 	row = g_ptr_array_index (array, array_row_index);
 
 	g_assert (row != NULL);
@@ -429,6 +430,7 @@ select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListVie
 	array_row_index = nautilus_g_ptr_array_search (array, match_row_name, 
 						       (char *) pattern, FALSE);
 
+	g_assert (array_row_index >= 0);
 	select_row_common (widget, array, array_row_index);
 
 	g_ptr_array_free (array, TRUE);
@@ -439,7 +441,7 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
 {
 	GPtrArray *array;
 	int array_row_index;
-	int index;
+	guint index;
 	int first_selected_row;
 	int last_selected_row;
 
@@ -493,10 +495,11 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
  		array_row_index = 0;
  	}
 
- 	if (array_row_index >= array->len) {
+ 	if (array_row_index >= (int) array->len) {
  		array_row_index = array->len - 1;
  	}
 
+	g_assert (array_row_index);
 	select_row_common (widget, array, array_row_index);
 
 	g_ptr_array_free (array, TRUE);
@@ -1101,7 +1104,7 @@ fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 	list_view = FM_LIST_VIEW (view);
 	old_level = fm_list_view_get_zoom_level (list_view);
 
-	if (zoom_increment < 0 && 0 - zoom_increment > old_level) {
+	if (zoom_increment < 0 && 0 - zoom_increment > (int) old_level) {
 		new_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
 	} else {
 		new_level = MIN (old_level + zoom_increment,

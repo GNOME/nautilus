@@ -83,7 +83,7 @@ static void dialog_close_callback                     (GtkWidget                
 						       gpointer                     callback_data);
 /* Caption table callbacks */
 static void caption_table_activate_callback           (GtkWidget                   *widget,
-						       gint                         entry,
+						       guint                         entry,
 						       gpointer                     callback_data);
 
 
@@ -183,7 +183,7 @@ dialog_close_callback (GtkWidget *widget, gpointer callback_data)
 
 /* Caption table callbacks */
 static void
-caption_table_activate_callback (GtkWidget *widget, gint entry, gpointer callback_data)
+caption_table_activate_callback (GtkWidget *widget, guint entry, gpointer callback_data)
 {
 	NautilusPasswordDialog *password_dialog;
 

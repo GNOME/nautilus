@@ -236,7 +236,7 @@ NautilusCTreeNode * nautilus_ctree_last                    (NautilusCTree     *c
 NautilusCTreeNode * nautilus_ctree_find_node_ptr           (NautilusCTree     *ctree,
 					          NautilusCTreeRow  *ctree_row);
 NautilusCTreeNode * nautilus_ctree_node_nth                (NautilusCTree     *ctree,
-						  guint         row);
+						  int         row);
 gboolean nautilus_ctree_find                          (NautilusCTree     *ctree,
 					          NautilusCTreeNode *node,
 					          NautilusCTreeNode *child);

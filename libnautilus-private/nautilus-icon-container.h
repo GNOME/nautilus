@@ -190,7 +190,7 @@ void       nautilus_icon_container_unstretch                     (NautilusIconCo
 void       nautilus_icon_container_start_renaming_selected_item  (NautilusIconContainer  *container);
 
 /* options */
-int        nautilus_icon_container_get_zoom_level                (NautilusIconContainer  *view);
+NautilusZoomLevel nautilus_icon_container_get_zoom_level         (NautilusIconContainer  *view);
 void       nautilus_icon_container_set_zoom_level                (NautilusIconContainer  *view,
 								  int                     new_zoom_level);
 void       nautilus_icon_container_set_single_click_mode         (NautilusIconContainer  *container,

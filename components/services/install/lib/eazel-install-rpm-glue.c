@@ -130,7 +130,7 @@ eazel_install_monitor_rpm_process_pipe (GIOChannel *source,
 					EazelInstall *service)
 {
 	char         tmp;
-	static       int package_name_length = 256;
+	static       guint package_name_length = 256;
 	static       char package_name [256];
 	ssize_t      bytes_read;
 	static       PackageData *pack = NULL;

@@ -333,7 +333,10 @@ nautilus_label_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 	
 	label = NAUTILUS_LABEL (widget);
 
-	if (label->detail->line_wrap_width == -1) {
+	/* FIXME: 
+	 * this never happens
+	 */
+	if ((int) label->detail->line_wrap_width == -1) {
 		label_recompute_line_geometries (label);
 	}
 }
@@ -568,7 +571,10 @@ label_recompute_line_geometries (NautilusLabel *label)
 
 			/* determine the width to use for wrapping.  A wrap width of -1 means use all of the available space. */
 			/* Don't use it if the widget is too small, since we won't be able to fit any words in */
-			if (label->detail->line_wrap_width == -1 && clipped_widget_width > 32) {
+			/* FIXME:
+			 * the -1 case never happens
+			 */ 
+			if ((int) label->detail->line_wrap_width == -1 && clipped_widget_width > 32) {
 				wrap_width = clipped_widget_width;
 			} else {
 				wrap_width = label->detail->line_wrap_width;
@@ -582,7 +588,7 @@ label_recompute_line_geometries (NautilusLabel *label)
 
 			label->detail->total_text_line_height += label->detail->text_layouts[i]->height;
 			
-			if (label->detail->text_layouts[i]->width > label->detail->max_text_line_width) {
+			if (label->detail->text_layouts[i]->width > (int) label->detail->max_text_line_width) {
 				label->detail->max_text_line_width = label->detail->text_layouts[i]->width;
 			}
 		}

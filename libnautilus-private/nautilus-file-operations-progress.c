@@ -86,7 +86,7 @@ truncate_string_from_start (const char *string, GdkFont *font, guint length)
 	static guint dotdotdot = 0;
 	int truncate_offset;
 
-	if (gdk_string_width (font, string) <= length) {
+	if (gdk_string_width (font, string) <= (int) length) {
 		/* string is already short enough*/
 		return g_strdup (string);
 	}
@@ -101,7 +101,7 @@ truncate_string_from_start (const char *string, GdkFont *font, guint length)
 	/* Cut the font length of string to length. */
 	length -= dotdotdot;
         for (truncate_offset = 0; ; truncate_offset++) {
-        	if (gdk_string_width (font, string + truncate_offset) <= length) {
+        	if (gdk_string_width (font, string + truncate_offset) <= (int) length) {
 			break;
         	}
         }

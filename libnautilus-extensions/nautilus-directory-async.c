@@ -65,7 +65,7 @@ struct MetafileWriteState {
 	gboolean use_public_metafile;
 	GnomeVFSAsyncHandle *handle;
 	xmlChar *buffer;
-	int size;
+	GnomeVFSFileSize size;
 	gboolean write_again;
 };
 
@@ -855,6 +855,8 @@ nautilus_metafile_write_start (NautilusDirectory *directory)
 static void
 metafile_write (NautilusDirectory *directory)
 {
+	int xml_doc_size;
+	
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	nautilus_directory_ref (directory);
@@ -881,7 +883,8 @@ metafile_write (NautilusDirectory *directory)
 		= can_use_public_metafile (directory);
 	xmlDocDumpMemory (directory->details->metafile,
 			  &directory->details->metafile_write_state->buffer,
-			  &directory->details->metafile_write_state->size);
+			  &xml_doc_size);
+	directory->details->metafile_write_state->size = xml_doc_size;
 	nautilus_metafile_write_start (directory);
 }
 

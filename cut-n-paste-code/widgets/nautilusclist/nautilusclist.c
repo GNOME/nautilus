@@ -881,7 +881,7 @@ nautilus_clist_get_arg (GtkObject      *object,
 
   switch (arg_id)
     {
-      guint i;
+      int i;
 
     case ARG_N_COLUMNS:
       GTK_VALUE_UINT (*arg) = clist->columns;
@@ -1038,7 +1038,7 @@ nautilus_clist_construct (NautilusCList *clist,
 
   if (titles)
     {
-      guint i;
+      int i;
       
       NAUTILUS_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
       for (i = 0; i < columns; i++)
@@ -5513,7 +5513,7 @@ nautilus_clist_forall (GtkContainer *container,
 		  gpointer      callback_data)
 {
   NautilusCList *clist;
-  guint i;
+  int i;
 
   g_return_if_fail (container != NULL);
   g_return_if_fail (NAUTILUS_IS_CLIST (container));
@@ -7599,7 +7599,7 @@ nautilus_clist_drag_leave (GtkWidget      *widget,
 	  list = context->targets;
 	  while (list)
 	    {
-	      if (atom == GPOINTER_TO_INT (list->data))
+	      if (atom == GPOINTER_TO_UINT (list->data))
 		{
 		  NAUTILUS_CLIST_CLASS_FW (clist)->draw_drag_highlight
 		    (clist,
@@ -7654,7 +7654,7 @@ nautilus_clist_drag_motion (GtkWidget      *widget,
       list = context->targets;
       while (list)
 	{
-	  if (atom == GPOINTER_TO_INT (list->data))
+	  if (atom == GPOINTER_TO_UINT (list->data))
 	    break;
 	  list = list->next;
 	}
@@ -7728,7 +7728,7 @@ nautilus_clist_drag_drop (GtkWidget      *widget,
       list = context->targets;
       while (list)
 	{
-	  if (atom == GPOINTER_TO_INT (list->data))
+	  if (atom == GPOINTER_TO_UINT (list->data))
 	    return TRUE;
 	  list = list->next;
 	}

@@ -128,7 +128,7 @@ GList *
 nautilus_g_list_from_ZoomLevelList (const Nautilus_ZoomLevelList *zoom_level_list)
 {
 	GList *list;
-	int i;
+	guint i;
 	double *zoom_level_ptr;
 
 	list = NULL;

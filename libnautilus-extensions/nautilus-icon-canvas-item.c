@@ -666,7 +666,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    int icon_bottom)
 {
 	NautilusIconCanvasItemDetails *details;
-	int width_so_far, height_so_far;
+	guint width_so_far, height_so_far;
 	GdkGC* gc;
 	GdkGCValues save_gc;
 	guint32 label_color;
@@ -784,7 +784,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			}
 		}
 		
-		width_so_far = MAX (width_so_far, icon_text_info->width);
+		width_so_far = MAX (width_so_far, (guint) icon_text_info->width);
 		height_so_far += icon_text_info->height;
 		
 		gnome_icon_text_info_free (icon_text_info);
@@ -802,8 +802,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		 * before the call to draw. We might later decide to use this function
 		 * differently and change these asserts.
 		 */
-		g_assert (height_so_far == details->text_height);
-		g_assert (width_so_far == details->text_width);
+		g_assert ((int) height_so_far == details->text_height);
+		g_assert ((int) width_so_far == details->text_width);
 
 		gdk_gc_set_foreground (gc, &save_gc.foreground);
 	
@@ -1299,7 +1299,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			       int icon_bottom)
 {
 	NautilusIconCanvasItemDetails *details;
-	int width_so_far, height_so_far;
+	guint width_so_far, height_so_far;
 	guint32 label_name_color;
 	guint32 label_info_color;
 	GnomeCanvasItem *canvas_item;
@@ -1429,7 +1429,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			
 		}
 
-		width_so_far = MAX (width_so_far, icon_text_layout->width);
+		width_so_far = MAX (width_so_far, (guint) icon_text_layout->width);
 		height_so_far += icon_text_layout->height;
 		
 		nautilus_text_layout_free (icon_text_layout);
@@ -1448,8 +1448,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		 * before the call to draw. We might later decide to use this function
 		 * differently and change these asserts.
 		 */
-		g_assert (height_so_far == details->text_height);
-		g_assert (width_so_far == details->text_width);
+		g_assert ((int) height_so_far == details->text_height);
+		g_assert ((int) width_so_far == details->text_width);
 	
 		box_left = icon_left + (icon_width - width_so_far) / 2;
 

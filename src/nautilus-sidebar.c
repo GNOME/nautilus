@@ -359,7 +359,7 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 	CORBA_Environment ev;
 	const char *query;
         OAF_ServerInfoList *oaf_result;
-	int i;
+	guint i;
 	gboolean enabled;
 	GList *name_list;
 	GtkWidget *menu_item;
