@@ -1,3 +1,22 @@
+2000-08-29  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(nautilus_rpm_view_update_from_uri):
+	used nautilus_label to provide anti-aliased text in the rpm-view,
+	as well as some other clean-ups.  The labels aren't aligned properly,
+	due to a bug in nautilus_label that Ramiro will be fixing soon.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize), (make_category_link),
+	(nautilus_property_browser_update_contents):
+	changed command buttons at bottom back to using non-aa text at
+	Arlo's request; also, put the labels inside the category buttons
+	like Susan and Arlo both want, as well as other minor tweaks.
+	
+	* src/nautilus-sidebar-title.c: (update_font):
+	changed a comment as part of resolving a FIXME.
+	
 2000-08-29  Arlo Rose  <arlo@eazel.com>
 
 	Fixed all outstanding cHRM white point problems.

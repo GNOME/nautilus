@@ -53,6 +53,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
@@ -231,7 +232,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 	
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_OUT);
-	gtk_widget_set_usize (viewport, 70, -1);
+	gtk_widget_set_usize (viewport, 76, -1);
 
 	gtk_box_pack_start (GTK_BOX (property_browser->details->container), property_browser->details->category_container, FALSE, FALSE, 0);
 	gtk_widget_show (property_browser->details->category_container);
@@ -304,9 +305,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->add_button = gtk_button_new ();
 	gtk_widget_show(property_browser->details->add_button);
 	
-	property_browser->details->add_button_label = nautilus_label_new (_("Add new..."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->add_button_label), 12);
-	
+	property_browser->details->add_button_label = gtk_label_new (_("Add new..."));
 	gtk_widget_show(property_browser->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->add_button), property_browser->details->add_button_label);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), property_browser->details->add_button, FALSE, FALSE, 4);
@@ -317,9 +316,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->remove_button = gtk_button_new();
 	gtk_widget_show(property_browser->details->remove_button);
 	
-	property_browser->details->remove_button_label = nautilus_label_new (_("Add new..."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->remove_button_label), 12);
-	
+	property_browser->details->remove_button_label = gtk_label_new (_("Remove..."));	
 	gtk_widget_show(property_browser->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->remove_button), property_browser->details->remove_button_label);
 	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box),
@@ -1688,20 +1685,19 @@ make_category(NautilusPropertyBrowser *property_browser, const char* path, const
 
 /* this is a utility routine to generate a category link widget and install it in the browser */
 static void
-make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *display_name, char* image)
+make_category_link (NautilusPropertyBrowser *property_browser, char* name, char *display_name, char* image)
 {
 	GtkWidget *label, *pix_widget, *button, *temp_vbox;
 	char *file_name = nautilus_pixmap_file (image); 
 	GtkWidget* temp_box = gtk_vbox_new (FALSE, 0);
-
-	/* generate a pixmap widget from the image file name */
+	
 	pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_widget_show (pix_widget);
 	gtk_box_pack_start (GTK_BOX (temp_box), pix_widget, FALSE, FALSE, 0);
 	
 	button = gtk_toggle_button_new();
 	gtk_widget_show(button);
-	gtk_widget_set_usize(button, 54, 48);
+	gtk_widget_set_usize(button, 80, 60);
 	
 	/* if the button represents the current category, highlight it */
 	
@@ -1716,10 +1712,9 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *
 	gtk_box_pack_start (GTK_BOX (temp_vbox), button, FALSE, FALSE, 1);	
 
 	/* use the name as a label */
-	label = nautilus_label_new (display_name);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+	label = gtk_label_new (display_name);
 			
-	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (temp_box), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	
 	gtk_table_attach (GTK_TABLE (property_browser->details->category_table),
@@ -1873,7 +1868,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		
 		/* enable the "add new" button and update it's name */		
 		
-		nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->add_button_label), temp_str);
+		gtk_label_set (GTK_LABEL(property_browser->details->add_button_label), temp_str);
 		if (show_buttons)
 			gtk_widget_show(property_browser->details->add_button);
 		else
@@ -1905,7 +1900,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			gtk_widget_show(property_browser->details->remove_button);
 		
 		temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
-		nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->remove_button_label), temp_str);
+		gtk_label_set (GTK_LABEL(property_browser->details->remove_button_label), temp_str);
 		
 		g_free(label_text);
 		g_free(temp_str);

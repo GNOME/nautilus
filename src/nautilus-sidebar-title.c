@@ -349,7 +349,7 @@ update_font (NautilusSidebarTitle *sidebar_title)
 		 * factory and be failsafe if the given font is not found.
 		 */
 		
-		/* FIXME bugzilla.eazel.com 2497: Where does the "4" come from? */
+		/* leave 4 pixels of slop so the text doesn't go right up to the edge */
 		label_font = nautilus_get_largest_fitting_font
 			(sidebar_title->details->title_text,
 			 GTK_WIDGET (sidebar_title)->allocation.width - 4,
