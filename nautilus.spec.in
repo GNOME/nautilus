@@ -68,6 +68,10 @@ Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
 Requires:	xpdf >= 0.90
 
+%package installer
+Summary:	The Eazel Installer
+Group:          User Interface/Desktop
+
 %package suggested
 Summary:	Nautilus and a suggested set of components
 Group:          User Interface/Desktop
@@ -97,6 +101,9 @@ Nautilus, and getting multimedia to work, such as eog and mpg123.
 %description extras
 This is a meta-package that requires useful add-ons for Nautilus.
 
+%description installer
+The Eazel installer
+
 %changelog
 * Tue Oct 10 2000 Robin Slomkowski <rslomkow@eazel.com>
 - removed obsoletes from sub packages and added mozilla and trilobite
@@ -122,6 +129,7 @@ export LC_ALL LINGUAS LANG
 ## continuation character, or else the rpm demons will eat you.
 CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
 	--enable-eazel-services \
+	--enable-installer \
 	--enable-more-warnings \
 	--sysconfdir=%{sysconfdir}
 
@@ -316,6 +324,11 @@ fi
 
 %defattr(0444, bin, bin)
 %{prefix}/share/nautilus/nautilus-extras.placeholder
+
+%files installer
+
+%defattr(0555, bin, bin)
+%{prefix}/bin/eazel-installer.sh
 
 %files suggested
 

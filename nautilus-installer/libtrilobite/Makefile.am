@@ -15,37 +15,39 @@ libtrilobite_minimal_a_SOURCES =	\
 	trilobite-md5-tools.c		\
 	$(NULL)
 
-HDRS = \
-	libtrilobite.h \
-	libtrilobite-service.h \
-	trilobite-core-distribution.h \
-	trilobite-core-messaging.h \
-	trilobite-core-network.h \
-	trilobite-core-utils.h \
-	trilobite-md5-tools.h \
-	trilobite-redirect.h \
-	trilobite-root-client-private.h \
-	trilobite-root-client-public.h \
-	trilobite-root-helper.h \
-	trilobite-service.h \
-	trilobite-service-passwordquery-private.h \
-	trilobite-service-passwordquery-public.h \
-	trilobite-service-private.h \
-	trilobite-service-public.h \
-	$(NULL)
-
 INCLUDES=							\
 	-DTRILOBITE_VERSION=\"0.1.0\"				\
 	-I.							\
 	-I@top_srcdir@						\
         -I@top_srcdir@/components/services/trilobite		\
+        -I@top_srcdir@/components/services/trilobite/libtrilobite	\
 	-DTRILOBITE_SLIM 					\
 	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
 	@GNOME_CFLAGS@						\
 	@XML_CFLAGS@						\
 	$(NULL)
 
-$(libtrilobite_minimal_a_SOURCES) $(HDRS):
-	for i in $(top_srcdir)/components/services/trilobite/libtrilobite/*.[ch]; \
-	do bn=`basename $$i`; rm -f $$bn; ln -s $$i $$bn; done
+TRILOBITE_HDRS =  \
+	libtrilobite.h \
+	libtrilobite-service.h \
+	trilobite-core-distribution.h \
+	trilobite-core-messaging.h \
+	trilobite-core-network.h \
+	trilobite-core-utils.h \
+	trilobite-file-utilities.h \
+	trilobite-md5-tools.h \
+	trilobite-redirect.h \
+	trilobite-root-client-private.h \
+	trilobite-root-client-public.h \
+	trilobite-root-helper.h \
+	trilobite-service-passwordquery-private.h \
+	trilobite-service-passwordquery-public.h \
+	trilobite-service-private.h \
+	trilobite-service-public.h \
+	$(NULL)
 
+$(TRILOBITE_HDRS):
+	rm -f $@; ln $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
+
+$(libtrilobite_minimal_a_SOURCES): $(TRILOBITE_HDRS)
+	rm -f $@; ln $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@

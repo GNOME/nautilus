@@ -1,3 +1,17 @@
+2001-02-21  Eric Fischer <eric@eazel.com>
+
+	* nautilus-installer/install-lib/Makefile.am:
+	Use ln to make links into the real install/lib directory;
+	add header file prerequisites
+
+	* nautilus-installer/libtrilobite/Makefile.am:
+	Use ln to make links into the real libtrilobite directory;
+	fix header file prerequisites
+
+	* nautilus.spec.in:
+	Again, try to build the installer in tinderbox.  With luck,
+	it'll actually work this time.
+
 2001-02-21  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

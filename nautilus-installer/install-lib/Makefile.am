@@ -29,15 +29,38 @@ INCLUDES=\
 	-I@top_srcdir@						\
 	-I/usr/include/rpm					\
         -I@top_srcdir@/components/services/trilobite		\
+        -I@top_srcdir@/components/services/trilobite/libtrilobite	\
+        -I@top_srcdir@/components/services/install/lib		\
 	@GNOME_CFLAGS@						\
 	@GCONF_CFLAGS@						\
 	@XML_CFLAGS@						\
 	@GHTTP_CFLAGS@						\
 	$(NULL)
 
-$(libeazelinstall_minimal_a_SOURCES):
-	for i in $(top_srcdir)/components/services/install/lib/*.[ch]; \
-	do bn=`basename $$i`; rm -f $$bn; ln -s $$i $$bn; done
+TRILOBITE_HDRS =  \
+	libtrilobite.h \
+	libtrilobite-service.h \
+	trilobite-core-distribution.h \
+	trilobite-core-messaging.h \
+	trilobite-core-network.h \
+	trilobite-core-utils.h \
+	trilobite-file-utilities.h \
+	trilobite-md5-tools.h \
+	trilobite-redirect.h \
+	trilobite-root-client-private.h \
+	trilobite-root-client-public.h \
+	trilobite-root-helper.h \
+	trilobite-service-passwordquery-private.h \
+	trilobite-service-passwordquery-public.h \
+	trilobite-service-private.h \
+	trilobite-service-public.h \
+	$(NULL)
+
+$(TRILOBITE_HDRS):
+	rm -f $@; ln $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
+
+$(libeazelinstall_minimal_a_SOURCES) eazel-package-system-rpm4.c eazel-package-system-rpm3.c: $(TRILOBITE_HDRS)
+	rm -f $@; ln $(top_srcdir)/components/services/install/lib/`basename $@` $@
 
 eazel-package-system-rpm4.o: eazel-package-system-rpm4.c
 eazel-package-system-rpm3.o: eazel-package-system-rpm3.c
