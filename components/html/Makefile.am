@@ -9,7 +9,7 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(GNOMEUI_CFLAGS)			\
-	`libwww-config --cflags`
+	$(LIBWWW_CFLAGS)
 
 gnorbadir = $(sysconfdir)/CORBA/servers
 gnorba_DATA =					\
@@ -34,6 +34,6 @@ ntl_web_browser_LDFLAGS =				\
 	$(GNOMEUI_LIBS)					\
 	$(VFS_LIBS)					\
 	$(GNORBA_LIBS)					\
-	`libwww-config --libs`
+	$(LIBWWW_LIBS)
 
 EXTRA_DIST = ntl-web-browser.goad
