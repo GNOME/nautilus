@@ -25,6 +25,7 @@
 #include <config.h>
 #include "fm-directory-view-icons.h"
 
+#include "fm-icon-text-window.h"
 #include "fm-icons-controller.h"
 
 #include <ctype.h>
@@ -32,7 +33,10 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkwindow.h>
+#include <libgnome/gnome-i18n.h>
 #include <libnautilus/nautilus-metadata.h>
+#include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-background.h>
@@ -55,6 +59,9 @@ static void fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container
 						   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_add_entry    (FMDirectoryView *view, 
 					          NautilusFile *file);
+static void fm_directory_view_icons_append_background_context_menu_items 
+						 (FMDirectoryView *view,
+			    			  GtkMenu *menu);
 static void fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 							   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_begin_loading
@@ -90,6 +97,8 @@ static void icon_container_context_click_icon_cb (GnomeIconContainer *container,
 						  FMDirectoryViewIcons *icon_view);
 static void icon_container_context_click_background_cb (GnomeIconContainer *container,
 							FMDirectoryViewIcons *icon_view);
+
+static char * default_icon_text_attribute_names = NULL;
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
@@ -131,6 +140,11 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 		= fm_directory_view_icons_can_zoom_out;
         fm_directory_view_class->select_all
                 = fm_directory_view_icons_select_all;
+        fm_directory_view_class->append_background_context_menu_items
+        	= fm_directory_view_icons_append_background_context_menu_items;
+
+	/* FIXME: Read this from global preferences */
+	default_icon_text_attribute_names = g_strdup ("name|size|date_modified|type");
 }
 
 static void
@@ -250,6 +264,40 @@ add_icon_at_free_position (FMDirectoryViewIcons *icon_view,
 {
 	gnome_icon_container_add_auto (get_icon_container (icon_view),
 				       NAUTILUS_CONTROLLER_ICON (file));
+}
+
+static void
+customize_icon_text_cb (GtkMenuItem *menu_item, gpointer *view)
+{
+	GtkWindow *window;
+
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+	window = GTK_WINDOW (fm_icon_text_window_get_or_create ());
+	fm_icon_text_window_set_view (window, FM_DIRECTORY_VIEW_ICONS (view));
+	
+	nautilus_gtk_window_present (window);
+}
+
+static void
+fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView *view,
+			    				      GtkMenu *menu)
+{
+	GtkWidget *menu_item;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (GTK_IS_MENU (menu));
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
+				    append_background_context_menu_items, 
+				    (view, menu));
+
+	menu_item = gtk_menu_item_new_with_label (_("Customize Icon Text..."));
+	gtk_widget_show (menu_item);
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (customize_icon_text_cb), view);
+	gtk_menu_append (menu, menu_item);
 }
 
 static void
@@ -390,6 +438,50 @@ fm_directory_view_icons_can_zoom_out (FMDirectoryView *view)
  * fm_directory_view_icons_get_icon_text_attribute_names:
  *
  * Get a string representing which text attributes should be displayed
+ * beneath an icon in this directory at the highest zoom level. 
+ * Use g_free to free the result.
+ * @view: FMDirectoryViewIcons to query.
+ * 
+ * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
+ * 
+ **/
+char *
+fm_directory_view_icons_get_full_icon_text_attribute_names (FMDirectoryViewIcons *view)
+{
+	return g_strdup (default_icon_text_attribute_names);
+}
+
+/**
+ * fm_directory_view_icons_set_icon_text_attribute_names:
+ *
+ * Sets the string representing which text attributes should be displayed
+ * beneath an icon in this directory at the highest zoom level. 
+ * @view: FMDirectoryViewIcons whose displayed text attributes should be changed.
+ * @new_names: The |-delimited set of names to display at the highest zoom level,
+ * e.g. "name|size|date_modified".
+ * @set_default: TRUE if @new_names should be used as the default for directories
+ * that don't have their own setting.
+ * 
+ **/
+void
+fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons *view,
+							    char *new_names,
+							    gboolean set_default)
+{
+	if (strcmp (new_names, default_icon_text_attribute_names) == 0)
+		return;
+
+	g_free (default_icon_text_attribute_names);
+	default_icon_text_attribute_names = g_strdup (new_names);
+
+	/* FIXME: save new choice in global preferences */
+	gnome_icon_container_request_update_all (get_icon_container (view));
+}
+
+/**
+ * fm_directory_view_icons_get_icon_text_attribute_names:
+ *
+ * Get a string representing which text attributes should be displayed
  * beneath an icon. The result is dependent on zoom level and possibly
  * user configuration. Use g_free to free the result.
  * @view: FMDirectoryViewIcons to query.
@@ -400,34 +492,42 @@ fm_directory_view_icons_can_zoom_out (FMDirectoryView *view)
 char *
 fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *view)
 {
-	char * names;
+	char * all_names;
+	char * result;
+	char * c;
+	int pieces_so_far;
+	int piece_count;
+	int pieces_by_level[] = {
+		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLEST */
+		1,	/* NAUTILUS_ZOOM_LEVEL_SMALLER */
+		1,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
+		2,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
+		3,	/* NAUTILUS_ZOOM_LEVEL_LARGE */
+		3,	/* NAUTILUS_ZOOM_LEVEL_LARGER */
+		4	/* NAUTILUS_ZOOM_LEVEL_LARGEST */
+	};
 
-	/* FIXME: This is currently hardwired, but should be configurable */
-	switch (fm_directory_view_icons_get_zoom_level (view))
+	piece_count = pieces_by_level[fm_directory_view_icons_get_zoom_level (view)];
+	if (piece_count == 0)
+		return g_strdup ("");
+
+	all_names = fm_directory_view_icons_get_full_icon_text_attribute_names (view);
+	pieces_so_far = 0;
+
+	for (c = all_names; *c != '\0'; ++c)
 	{
-		case NAUTILUS_ZOOM_LEVEL_SMALLEST:
-			names = "";
-			break;
-		case NAUTILUS_ZOOM_LEVEL_SMALLER:
-		case NAUTILUS_ZOOM_LEVEL_SMALL:
-			names = "name";
-			break;
-		case NAUTILUS_ZOOM_LEVEL_STANDARD:
-			names = "name|size";
-			break;
-		case NAUTILUS_ZOOM_LEVEL_LARGE:
-		case NAUTILUS_ZOOM_LEVEL_LARGER:
-			names = "name|size|date_modified";
-			break;
-		case NAUTILUS_ZOOM_LEVEL_LARGEST:
-			names = "name|size|date_modified|type";
-			break;
+		if (*c == '|')
+			++pieces_so_far;
 
-		default:
-			g_assert_not_reached(); 
+		if (pieces_so_far == piece_count)
+			break;
 	}
 
-	return g_strdup (names);
+	/* Return an initial substring of the full set */
+	result = g_strndup (all_names, (c - all_names));
+	g_free (all_names);
+	
+	return result;
 }
 
 static GList *

@@ -25,6 +25,7 @@
 #ifndef FM_DIRECTORY_VIEW_H
 #define FM_DIRECTORY_VIEW_H
 
+#include <gtk/gtkmenu.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <libnautilus/ntl-content-view-frame.h>
 #include <libnautilus/nautilus-directory.h>
@@ -79,6 +80,15 @@ struct _FMDirectoryViewClass {
 	 * new directory. The default implementation does nothing.
 	 */
 	void 	(* begin_loading) 	 (FMDirectoryView *view);
+
+	/* The 'append_background_context_menu_items' signal is emitted 
+	 * when creating a context menu, either an item-specific one or
+	 * a background one. Subclasses might want to override this to
+	 * modify the menu contents.
+	 */
+	void 	(* append_background_context_menu_items) 	 
+					 (FMDirectoryView *view,
+					  GtkMenu *menu);
 
 	/* Function pointers that don't have corresponding signals */
 

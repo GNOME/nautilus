@@ -70,8 +70,8 @@
 
 static void gnome_icon_container_initialize_class (GnomeIconContainerClass *class);
 static void gnome_icon_container_initialize (GnomeIconContainer *container);
-static void synch_icon_with_controller (GnomeIconContainer *container, 
-					GnomeIconContainerIcon *icon);
+static void request_update_one (GnomeIconContainer *container, 
+			        GnomeIconContainerIcon *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -122,7 +122,7 @@ icon_new (GnomeIconContainer *container,
 		 nautilus_icons_view_icon_item_get_type (),
 		 NULL);
 
-	synch_icon_with_controller (container, new);
+	request_update_one (container, new);
 	
 	return new;
 }
@@ -2274,7 +2274,7 @@ setup_icon_in_container (GnomeIconContainer *container,
 }
 
 static void 
-synch_icon_with_controller (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
+request_update_one (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 	GdkPixbuf *image;
@@ -2370,7 +2370,6 @@ gnome_icon_container_set_zoom_level(GnomeIconContainer *container, int new_level
 {
         int pinned_level;
 	double pixels_per_unit;
-	GList *p;
 	GnomeIconContainerDetails *details;
 
 	details = container->details;
@@ -2390,13 +2389,30 @@ gnome_icon_container_set_zoom_level(GnomeIconContainer *container, int new_level
 		/ NAUTILUS_ICON_SIZE_STANDARD;
 	gnome_canvas_set_pixels_per_unit(GNOME_CANVAS(container), pixels_per_unit);
 
+	gnome_icon_container_request_update_all (container);
+}
+
+/**
+ * gnome_icon_container_request_update_all:
+ * For each icon, synchronizes the displayed information (image, text) with the
+ * information from the model.
+ * 
+ * @container: An icon container.
+ **/
+void
+gnome_icon_container_request_update_all (GnomeIconContainer *container)
+{
+	GList *p;
+	GnomeIconContainerDetails *details;
+
+	details = container->details;
 
 	for (p = details->icons; p != NULL; p = p->next)
 	{
 		GnomeIconContainerIcon *icon;
 		icon = p->data;
 
-		synch_icon_with_controller (container, icon);
+		request_update_one (container, icon);
 	}
 }
 

@@ -117,7 +117,7 @@ create_bookmarks_window(NautilusBookmarklist *list)
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-	gtk_window_set_title (GTK_WINDOW (window), _("nautilus: Bookmarks"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus: Bookmarks"));
 	gtk_widget_set_usize (window, 
 			      BOOKMARKS_WINDOW_MIN_WIDTH, 
 			      BOOKMARKS_WINDOW_MIN_HEIGHT);

@@ -83,6 +83,8 @@ void       gnome_icon_container_add_auto                (GnomeIconContainer     
 void       gnome_icon_container_relayout                (GnomeIconContainer      *view);
 void       gnome_icon_container_line_up                 (GnomeIconContainer      *view);
 
+void	   gnome_icon_container_request_update_all 	(GnomeIconContainer 	 *container);
+
 GList *    gnome_icon_container_get_selection           (GnomeIconContainer      *view);
 
 gint       gnome_icon_container_get_zoom_level          (GnomeIconContainer      *view);
