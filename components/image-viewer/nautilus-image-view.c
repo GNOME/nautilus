@@ -38,8 +38,6 @@
 
 #include "io-png.h"
 
-#undef EOG_DEBUG
-
 /*
  * Number of running objects
  */ 
@@ -439,11 +437,6 @@ view_size_allocate_cb (GtkWidget *drawing_area, GtkAllocation *allocation,
 
 	buf = view_data->bod->pixbuf;
 
-
-#ifdef EOG_DEBUG
-	g_warning ("Size allocate");
-#endif
-
 	if (allocation->width  == gdk_pixbuf_get_width (buf) &&
 	    allocation->height == gdk_pixbuf_get_height (buf)) {
 		if (view_data->scaled != NULL) {
@@ -457,9 +450,6 @@ view_size_allocate_cb (GtkWidget *drawing_area, GtkAllocation *allocation,
 	if (view_buf != NULL) {
 		if (allocation->width  == gdk_pixbuf_get_width (view_buf) &&
 		    allocation->height == gdk_pixbuf_get_height (view_buf)) {
-#ifdef EOG_DEBUG
-			g_warning ("Correct size %d, %d", allocation->width, allocation->height);
-#endif
 			return;
 		} else {
 			view_data->scaled = NULL;
@@ -468,9 +458,6 @@ view_size_allocate_cb (GtkWidget *drawing_area, GtkAllocation *allocation,
 		}
 	}
 
-#ifdef EOG_DEBUG
-	g_warning ("Re-scale to %d, %d", allocation->width, allocation->height);
-#endif
 	/* Too slow below this */
 	if (allocation->width < gdk_pixbuf_get_width (buf) / 4 ||
 	    allocation->width < gdk_pixbuf_get_width (buf) / 4)
@@ -480,9 +467,6 @@ view_size_allocate_cb (GtkWidget *drawing_area, GtkAllocation *allocation,
 
 	view_data->scaled = gdk_pixbuf_scale_simple (buf, allocation->width,
 						     allocation->height, type);
-#ifdef EOG_DEBUG
-	g_warning ("Scaling done");
-#endif
 	view_update (view_data);
 }
 

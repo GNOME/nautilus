@@ -157,6 +157,8 @@ void         nautilus_list_each_selected_row     (NautilusList            *list,
 gboolean     nautilus_list_rejects_dropped_icons (NautilusList		  *list);
 void	     nautilus_list_set_rejects_dropped_icons (NautilusList	  *list,
 						      gboolean		   new_value);
+void 	     nautilus_list_set_drag_prelight_row (NautilusList		  *list,
+						  int			  y);
 
 #endif /* NAUTILUS_LIST_H */
 

@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdk.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkenums.h>
@@ -105,7 +106,9 @@ struct NautilusListDetails
 
 	/* Targets for drag data */
 	GtkTargetList *target_list; 
-
+	
+	NautilusCListRow *drag_prelight_row;
+	
 	GtkWidget *title;
 
 	/* Rendering state */
@@ -551,6 +554,7 @@ nautilus_list_initialize (NautilusList *list)
 	list->details = g_new0 (NautilusListDetails, 1);
 	list->details->anchor_row = -1;
 
+	list->details->drag_prelight_row = NULL;
 	
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (list), GDK_POINTER_MOTION_MASK);
@@ -1881,7 +1885,7 @@ draw_cell_pixmap (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
 {
 	GdkRectangle image_rectangle;
 	GdkRectangle intersect_rectangle;
-
+	
 	gdk_window_size_as_rectangle (pixmap, &image_rectangle);
 	image_rectangle.x = x;
 	image_rectangle.y = y;
@@ -2082,12 +2086,52 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 	/* Draw Text and/or Pixmap */
 	switch ((NautilusCellType)row->cell[column_index].type) {
 	case NAUTILUS_CELL_PIXMAP:
-		draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-		    NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
-		    NAUTILUS_CELL_PIXMAP (row->cell[column_index])->mask,
-		    offset,
-		    cell_rectangle.y + row->cell[column_index].vertical +
-		    (cell_rectangle.height - height) / 2);
+		{
+			NautilusList *list = NAUTILUS_LIST (clist);
+			int dark_width, dark_height;
+			GdkPixbuf *src_pixbuf, *dark_pixbuf;
+			GdkPixmap *dark_pixmap;
+			GdkBitmap *dark_mask;
+
+			if (list->details->drag_prelight_row == row) {
+				
+				gdk_window_get_geometry (NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
+						 	 NULL, NULL, &dark_width, &dark_height, NULL);
+							
+				src_pixbuf = gdk_pixbuf_get_from_drawable 
+						(NULL,
+			      	 		 NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
+			      	 		 gdk_rgb_get_cmap (),
+			      	  		 0, 0, 0, 0, dark_width, dark_height);
+
+				if (src_pixbuf != NULL) {
+					/* Create darkened pixmap */			
+					dark_pixbuf = nautilus_create_darkened_pixbuf (src_pixbuf,
+							      	 	       0.8 * 255,
+							       		       0.8 * 255);
+					if (dark_pixbuf != NULL) {
+						gdk_pixbuf_render_pixmap_and_mask (dark_pixbuf,
+				   				   	   	   &dark_pixmap, &dark_mask,
+				   				   	   	   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+				   				   	   	   			
+						draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
+		    					  	  dark_pixmap, NAUTILUS_CELL_PIXMAP (row->cell[column_index])->mask, offset,
+		    					  	  cell_rectangle.y + row->cell[column_index].vertical +
+		    					  	 (cell_rectangle.height - height) / 2);
+
+						gdk_pixbuf_unref (dark_pixbuf);
+					}
+					gdk_pixbuf_unref (src_pixbuf);
+				}					
+			} else {		
+				draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
+		    			NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
+		    			NAUTILUS_CELL_PIXMAP (row->cell[column_index])->mask,
+		    			offset,
+		    			cell_rectangle.y + row->cell[column_index].vertical +
+		    			(cell_rectangle.height - height) / 2);
+			}
+		}
 		break;
 
 	case NAUTILUS_CELL_PIXTEXT:
@@ -2997,9 +3041,9 @@ nautilus_list_prelight_if_necessary (NautilusList *list, GdkDragContext *context
 				     int x, int y, guint time)
 {
 	gboolean is_prelight_necessary;
-
+	
 	/* FIXME: bugzilla.eazel.com 2948 
-	   pavels will finish it */
+	   pavel will finish it */
 
 	/* should we prelight the current row ? */
 	gtk_signal_emit (GTK_OBJECT (list), 
@@ -3008,8 +3052,7 @@ nautilus_list_prelight_if_necessary (NautilusList *list, GdkDragContext *context
 			 list->details->drag_info->selection_list,
 			 x, y, 
 			 list->details->drag_info->data_type, 
-			 &is_prelight_necessary);
-
+		 	 &is_prelight_necessary);
 }
 
 
@@ -3390,5 +3433,38 @@ insert_row (NautilusCList *list, int row_index, char *text[])
 }
 
 
+void 	     
+nautilus_list_set_drag_prelight_row (NautilusList *list, int y)
+{
+	NautilusCList *clist;
+	NautilusCListRow *row, *last_row;
+	GdkRectangle rect;
+	int row_index;
+	
+	clist = NAUTILUS_CLIST (list);
 
+	row = NULL;
+	
+	if (y >= 0) { 
+		row = nautilus_list_row_at (list, y);
+	}
 
+	if (row != list->details->drag_prelight_row) {
+		last_row = list->details->drag_prelight_row;
+		list->details->drag_prelight_row = row;
+		
+		/* Redraw old cell */
+		if (last_row != NULL) {
+			row_index = g_list_index (clist->row_list, last_row);
+			get_cell_rectangle (clist, row_index, 0, &rect);
+			gtk_widget_draw (GTK_WIDGET (list), &rect);			
+		}
+		
+		/* Draw new cell */
+		if (list->details->drag_prelight_row != NULL) {
+			row_index = g_list_index (clist->row_list, list->details->drag_prelight_row);
+			get_cell_rectangle (clist, row_index, 0, &rect);
+			gtk_widget_draw (GTK_WIDGET (list), &rect);			
+		}
+	}
+}

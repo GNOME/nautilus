@@ -1,3 +1,22 @@
+2000-10-20  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2948, list view does not prelight under cursor when
+	dragging files.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	* libnautilus-extensions/nautilus-list.h:
+	(nautilus_list_initialize), (draw_cell_pixmap), (draw_cell),
+	(nautilus_list_prelight_if_necessary),
+
+	(nautilus_list_set_drag_prelight_row):
+	New function to set drag prelight row based on mouse position.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_handle_dragged_items):
+	
+	* components/image-viewer/nautilus-image-view.c:
+	(view_size_allocate_cb):
+	Removed some old debug code.
+	
 2000-10-19  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/idl/trilobite-eazel-install.idl:
