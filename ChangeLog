@@ -1,3 +1,15 @@
+2001-01-15  Ian McKellar  <ian@eazel.com>
+
+	* components/services/inventory/eazel-inventory-service.c:
+	(impl_Trilobite_Eazel_Inventory__get_machine_name):
+	The default hostname is now guessed if:
+	It now guesses a default if:
+	 - gethostname succeds; and
+	 - the hostname doesn't start with "localhost."
+	 - the hostname doesn't equal "localhost"
+	The hostname stored is the name, up to but not including the 
+	first "." in the name (if any).
+
 2001-01-15  Darin Adler  <darin@eazel.com>
 
 	Fix bug 5557 (Intermittent crash in
@@ -86,7 +98,7 @@
 	.c: (nautilus_inventory_config_page_initialize):
 	Retreive the previously assigned machine name (if one exists).
 	Retreive the previously set "warn before upload" setting.
-`
+
 	* components/services/inventory/eazel-inventory-client.c: (main):
 	Added default values so that this actually works.
 

@@ -112,12 +112,26 @@ impl_Trilobite_Eazel_Inventory__get_machine_name (impl_POA_Trilobite_Eazel_Inven
 	gchar *g_machine_name;
 	CORBA_char *c_machine_name;
 
-	g_machine_name = gconf_client_get_string (service->object->details->gconf_client, KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME, NULL);
+	g_machine_name = gconf_client_get_string (service->object->details->gconf_client, 
+				KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME, NULL);
 
 	if (g_machine_name != NULL) {
 		c_machine_name = CORBA_string_dup (g_machine_name);
 	} else {
-		c_machine_name = CORBA_string_dup ("");
+		char hostname_buffer[256]; /* the maximum hostname length is 255 */
+		
+		if ( (gethostname (hostname_buffer, (size_t)255) == 0) &&
+				(strncasecmp (hostname_buffer, "localhost.", 10)) &&
+				(strcasecmp (hostname_buffer, "localhost")) ) {
+			char *dot = strchr(hostname_buffer, '.');
+			if (dot != NULL) {
+				*dot = '\0';
+			}
+			c_machine_name = CORBA_string_dup (hostname_buffer);
+		} else {
+			/* couldn't get hostname */
+			c_machine_name = CORBA_string_dup ("");
+		}
 	}
 
 	g_free (g_machine_name);
