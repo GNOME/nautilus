@@ -45,6 +45,8 @@ nautilus_SOURCES =\
 	nautilus-index-title.h		\
 	nautilus-location-bar.c         \
 	nautilus-location-bar.h		\
+	nautilus-property-browser.c     \
+	nautilus-property-browser.h	\
 	nautilus-self-check-functions.c \
 	nautilus-self-check-functions.h \
 	nautilus-signaller.c		\

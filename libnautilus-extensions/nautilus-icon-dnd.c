@@ -82,7 +82,8 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR }
+	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
+	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE }
 };
 
 static GnomeCanvasItem *
@@ -496,7 +497,9 @@ drag_data_received_callback (GtkWidget *widget,
 		nautilus_icon_container_dropped_icon_feedback (widget, data, x, y);
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_BGIMAGE:	
 		/* Save the data so we can do the actual work on drop. */
+
 		dnd_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
 		break;
 	default:
@@ -665,20 +668,11 @@ nautilus_icon_canvas_item_can_accept_items (NautilusIconContainer *container,
 }
 
 static void
-receive_dropped_tile_image (NautilusIconContainer *container)
+receive_dropped_tile_image (NautilusIconContainer *container, gpointer data)
 {
-	GList *list;
-	
-	/* We only accept the image if it's the only thing dragged. */
-	list = container->details->dnd_info->selection_list;
-	g_assert (list != NULL);
-	if (list->next != NULL) {
-		return;
-	}
-
+	g_assert(data != NULL);
 	nautilus_background_set_tile_image_uri
-		(nautilus_get_widget_background (GTK_WIDGET (container)),
-		 ((DndSelectionItem *) list->data)->uri);
+		(nautilus_get_widget_background (GTK_WIDGET (container)), data);
 }
 
 static void
@@ -697,19 +691,8 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	GdkPoint *source_item_locations;
 	int index;
 	int count;
-	GdkModifierType modifiers;
 	
 	if (container->details->dnd_info->selection_list == NULL) {
-		return;
-	}
-
-	/* If the shift key is down, then this is a drag that customizes
-	 * the background tile image.
-	 */
-	gdk_window_get_pointer (GTK_WIDGET (container)->window,
-				NULL, NULL, &modifiers);
-	if ((modifiers & GDK_SHIFT_MASK) != 0) {
-		receive_dropped_tile_image (container);
 		return;
 	}
 
@@ -1146,6 +1129,9 @@ drag_drop_callback (GtkWidget *widget,
 			(nautilus_get_widget_background (widget),
 			 widget, x, y, dnd_info->selection_data);
 		gtk_drag_finish (context, TRUE, FALSE, time);
+		break;
+	case NAUTILUS_ICON_DND_BGIMAGE:
+		receive_dropped_tile_image (NAUTILUS_ICON_CONTAINER (widget), dnd_info->selection_data->data);
 		break;
 	default:
 		gtk_drag_finish (context, FALSE, FALSE, time);

@@ -91,12 +91,14 @@ static void     add_command_buttons                     (NautilusIndexPanel *ind
 enum {
 	TARGET_URI_LIST,
 	TARGET_COLOR,
+	TARGET_BGIMAGE,
 	TARGET_GNOME_URI_LIST
 };
 
 static GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
+	{ "property/bgimage", 0, TARGET_BGIMAGE },
 	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
@@ -393,7 +395,11 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 	case TARGET_COLOR:
 		receive_dropped_color (index_panel, x, y, selection_data);
 		break;
-		
+	case TARGET_BGIMAGE:
+	
+		if (hit_test (index_panel, x, y) == BACKGROUND_PART)
+			receive_dropped_uri_list (index_panel, x, y, selection_data);
+		break;	
 	default:
 		g_warning ("unknown drop type");
 	}

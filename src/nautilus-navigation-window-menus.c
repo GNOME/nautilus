@@ -30,6 +30,8 @@
 #include "nautilus-signaller.h"
 #include "ntl-app.h"
 #include "ntl-window-private.h"
+#include "nautilus-property-browser.h"
+
 #include "libnautilus-extensions/nautilus-undo-manager.h"
 
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -70,6 +72,7 @@ typedef struct {
  * don't want other code relying on their existence.
  */
 #define NAUTILUS_MENU_PATH_GENERAL_SETTINGS_ITEM	"/Settings/General Settings"
+#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM		"/Settings/Customize"
 #define NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM	"/Settings/Use Eazel Theme Icons"
 #define NAUTILUS_MENU_PATH_DEBUG_MENU			"/Debug"
 #define NAUTILUS_MENU_PATH_SHOW_COLOR_SELECTOR_ITEM	"/Debug/Show Color Selector"
@@ -245,6 +248,14 @@ settings_menu_general_settings_callback (BonoboUIHandler *ui_handler,
 		      		      	 const char *path)
 {
 	nautilus_global_preferences_show_dialog ();
+}
+
+static void
+settings_menu_customize_callback (BonoboUIHandler *ui_handler, 
+		       		      	 gpointer user_data,
+		      		      	 const char *path)
+{
+	nautilus_property_browser_new();
 }
 
 static void
@@ -798,6 +809,18 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 0,
         				 0,
         				 settings_menu_general_settings_callback,
+        				 NULL);
+
+      bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM,
+        				 _("_Customize..."),
+        				 _("Displays the Property Browser, to add properties to objects and customize appearance"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 settings_menu_customize_callback,
         				 NULL);
 
 	/* It's called SEPARATOR_AFTER_USER_LEVELS because "General Settings" is

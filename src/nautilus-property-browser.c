@@ -1,0 +1,684 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* Nautilus
+ * Copyright (C) 2000 Eazel, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Author: Andy Hertzfeld <andy@eazel.com>
+ *
+ *  This is the implementation of the property browser window, which gives the user access to an
+ *  extensible palette of properties which can be dropped on various elements of the user interface
+ *  to customize them
+ *
+ */
+
+#include <config.h>
+#include <math.h>
+#include "nautilus-property-browser.h"
+
+#include <parser.h>
+#include <xmlmemory.h>
+
+#include <libgnomevfs/gnome-vfs.h>
+
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome.h>
+
+#include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-mime-type.h>
+
+struct NautilusPropertyBrowserDetails {
+	GtkVBox *container;
+	
+	GtkWidget *content_frame;
+	GtkWidget *content_table;
+	
+	GtkWidget *title_box;
+	GtkWidget *title_label;
+	
+	char *path;
+	char *category;
+	char *dragged_file;
+        char *drag_type;
+};
+
+static void     nautilus_property_browser_initialize_class   (GtkObjectClass     *object_klass);
+static void     nautilus_property_browser_initialize         (GtkObject          *object);
+static void     nautilus_property_browser_destroy            (GtkObject          *object);
+static void     nautilus_property_browser_update_contents    (NautilusPropertyBrowser *property_browser);
+static void     nautilus_property_browser_set_category	     (NautilusPropertyBrowser *property_browser,
+							      const char *new_category);
+static void	nautilus_property_browser_set_dragged_file   (NautilusPropertyBrowser *property_browser,
+							      const char *dragged_file_name);
+static void	nautilus_property_browser_set_drag_type      (NautilusPropertyBrowser *property_browser,
+							      const char *new_drag_type);
+static void     title_clicked_cb			     (GtkWidget *widget, 
+                                                              GdkEventButton *event,
+							      NautilusPropertyBrowser *propery_browser);
+
+static void	nautilus_property_browser_drag_end	     (GtkWidget *widget, GdkDragContext *context);
+static void	nautilus_property_browser_drag_data_get      (GtkWidget *widget,
+							      GdkDragContext *context,
+							      GtkSelectionData *selection_data,
+							      guint info,
+							      guint32 time);
+
+#define BROWSER_BACKGROUND_COLOR "rgb:DDDD/EEEE/FFFF"
+#define BROWSER_TITLE_IMAGE "white_marble.jpg"
+#define BROWSER_CATEGORIES_FILE_NAME "nautilus/browser.xml"
+
+#define PROPERTY_BROWSER_WIDTH 480
+#define PROPERTY_BROWSER_HEIGHT 360
+
+#define MAX_ICON_WIDTH 64
+#define MAX_ICON_HEIGHT 64
+
+#define CONTENT_TABLE_WIDTH 6
+#define CONTENT_TABLE_HEIGHT 4
+
+enum {
+	PROPERTY_TYPE,
+};
+
+static GtkTargetEntry drag_types[] = {
+	{ "text/uri-list",  0, PROPERTY_TYPE }
+};
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPropertyBrowser, nautilus_property_browser, GTK_TYPE_WINDOW)
+
+/* initializing the class object by installing the operations we override */
+static void
+nautilus_property_browser_initialize_class (GtkObjectClass *object_klass)
+{
+	NautilusPropertyBrowserClass *klass;
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (object_klass);
+
+	klass = NAUTILUS_PROPERTY_BROWSER_CLASS (object_klass);
+
+	object_klass->destroy = nautilus_property_browser_destroy;
+	widget_class->drag_data_get  = nautilus_property_browser_drag_data_get;
+	widget_class->drag_end  = nautilus_property_browser_drag_end;
+}
+
+
+/* initialize the instance's fields, create the necessary subviews, etc. */
+
+static void
+nautilus_property_browser_initialize (GtkObject *object)
+{
+	NautilusBackground *background;
+	NautilusPropertyBrowser *property_browser;
+	char *background_path, *background_uri;
+	GtkWidget* widget, *temp_hbox, *temp_frame;
+	
+	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
+	widget = GTK_WIDGET (object);
+
+	property_browser->details = g_new0 (NautilusPropertyBrowserDetails, 1);
+
+	property_browser->details->path = NULL;
+	property_browser->details->category = NULL;
+	property_browser->details->dragged_file = NULL;
+	property_browser->details->drag_type = NULL;
+	
+	/* set the initial size of the property browser */
+	gtk_widget_set_usize (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
+	gtk_container_set_border_width (GTK_CONTAINER (object), 0);				
+
+	/* set up the background */
+	
+	background = nautilus_get_widget_background (GTK_WIDGET (property_browser));
+	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
+	
+	/* create the container box */  
+  	property_browser->details->container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
+	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->container), 0);				
+	gtk_widget_show (GTK_WIDGET (property_browser->details->container));
+	gtk_container_add (GTK_CONTAINER (property_browser),
+			   GTK_WIDGET (property_browser->details->container));	
+
+
+  	/* create the title box */
+  	
+  	property_browser->details->title_box = gtk_event_box_new();
+  	gtk_widget_show(property_browser->details->title_box);
+	
+	background_path = gnome_datadir_file ("nautilus/backgrounds");
+	background_uri = g_strdup_printf("file://%s/BROWSER_TITLE_IMAGE", background_path);	
+	background = nautilus_get_widget_background(property_browser->details->title_box);
+	nautilus_background_set_tile_image_uri(background, background_uri);
+	g_free(background_path);
+	g_free(background_uri);	
+	
+	gtk_box_pack_start (GTK_BOX(property_browser->details->container), property_browser->details->title_box, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT (property_browser->details->title_box), "button_press_event", 
+			     GTK_SIGNAL_FUNC(title_clicked_cb), property_browser);
+  	
+  	temp_frame = gtk_frame_new(NULL);
+  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_OUT);
+  	gtk_widget_show(temp_frame);
+  	gtk_container_add(GTK_CONTAINER(property_browser->details->title_box), temp_frame);
+  	
+  	temp_hbox = gtk_hbox_new(FALSE, 0);
+  	gtk_widget_show(temp_hbox);
+  	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
+  	
+	property_browser->details->title_label = gtk_label_new("Select A Category:");
+	nautilus_gtk_widget_set_font_by_name(property_browser->details->title_label, "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); 	
+  	gtk_widget_show(property_browser->details->title_label);
+	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
+  	
+  	property_browser->details->content_frame = NULL;
+
+	/* initially, display the top level */
+	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
+}
+
+static void
+nautilus_property_browser_destroy (GtkObject *object)
+{
+	NautilusPropertyBrowser *property_browser;
+
+	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
+	
+	if (property_browser->details->path)
+		g_free (property_browser->details->path);
+	if (property_browser->details->category)
+		g_free (property_browser->details->category);
+	if (property_browser->details->dragged_file)
+		g_free (property_browser->details->dragged_file);
+	if (property_browser->details->drag_type)
+		g_free (property_browser->details->drag_type);
+	
+	g_free (property_browser->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+/* create a new instance */
+NautilusPropertyBrowser *
+nautilus_property_browser_new (void)
+{
+	NautilusPropertyBrowser *browser = NAUTILUS_PROPERTY_BROWSER (gtk_type_new (nautilus_property_browser_get_type ()));
+	
+	gtk_container_set_border_width (GTK_CONTAINER (browser), 2);
+  	gtk_window_set_policy (GTK_WINDOW(browser), FALSE, FALSE, FALSE);
+  	gtk_widget_show (GTK_WIDGET(browser));
+	
+	return browser;
+}
+
+/* remember the name of the dragged file */
+static void
+nautilus_property_browser_set_dragged_file (NautilusPropertyBrowser *property_browser, const char *dragged_file_name)
+{       
+	if (property_browser->details->dragged_file)
+		g_free (property_browser->details->dragged_file);
+	property_browser->details->dragged_file = g_strdup (dragged_file_name);
+}
+
+/* remember the drag type */
+static void
+nautilus_property_browser_set_drag_type (NautilusPropertyBrowser *property_browser, const char *new_drag_type)
+{       
+	if (property_browser->details->drag_type)
+		g_free (property_browser->details->drag_type);
+	property_browser->details->drag_type = g_strdup (new_drag_type);
+}
+
+/* drag and drop data get handler */
+
+static void
+nautilus_property_browser_drag_data_get (GtkWidget *widget,
+			GdkDragContext *context,
+			GtkSelectionData *selection_data,
+			guint info,
+			guint32 time)
+{
+	char *temp_str, *path, *image_file_uri;
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(widget);
+	
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (context != NULL);
+
+	switch (info) {
+	case PROPERTY_TYPE:
+		temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
+		path = gnome_datadir_file (temp_str);
+		image_file_uri = g_strdup_printf("file://%s/%s", path, property_browser->details->dragged_file);
+		
+		gtk_selection_data_set(selection_data, selection_data->target, 8, image_file_uri, strlen(image_file_uri));
+		
+		g_free(temp_str);
+		g_free(path);
+		g_free(image_file_uri);
+		
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+}
+
+/* drag and drop end handler, where we destroy ourselves, since the transaction is complete */
+
+static void
+nautilus_property_browser_drag_end(GtkWidget *widget, GdkDragContext *context)
+{
+	gtk_object_destroy(GTK_OBJECT(widget));
+}
+
+/* utility routine to scale the passed-in pixbuf to be smaller than the maximum allowed size, if necessary */
+
+static GdkPixbuf*
+scale_pixbuf_to_fit(GdkPixbuf* pixbuf)
+{
+	double scale_factor;
+	double h_scale = 1.0;
+	double v_scale = 1.0;
+
+	gint width  = gdk_pixbuf_get_width(pixbuf);
+	gint height = gdk_pixbuf_get_height(pixbuf);
+	
+	if (width > MAX_ICON_WIDTH) {
+		h_scale = MAX_ICON_WIDTH / (double) width;
+	}
+	if (height > MAX_ICON_HEIGHT) {
+		v_scale = MAX_ICON_HEIGHT  / (double) height;
+	}
+	scale_factor = MIN (h_scale, v_scale);
+	
+	if (scale_factor < 1.0) {
+		GdkPixbuf *scaled_pixbuf;
+		int scaled_width  = floor(width * scale_factor + .5);
+		int scaled_height = floor(height * scale_factor + .5);
+				
+		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);	
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = scaled_pixbuf;
+	}
+	return pixbuf;
+}
+
+/* create the appropriate pixbuf for the passed in file */
+static GdkPixbuf*
+make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name)
+{
+	GdkPixbuf *pixbuf;
+	char *temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
+	char *path = gnome_datadir_file (temp_str);
+
+	char *image_file_name = g_strdup_printf("%s/%s", path, file_name);
+	pixbuf = scale_pixbuf_to_fit(gdk_pixbuf_new_from_file(image_file_name));			
+
+	g_free(image_file_name);
+	g_free(temp_str);
+	g_free(path);
+
+	return pixbuf;
+}
+
+/* this callback handles button presses on the category widget */
+
+static void
+category_clicked_cb(GtkWidget *widget, char *category_name)
+{
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(gtk_object_get_user_data(GTK_OBJECT(widget)));
+	nautilus_property_browser_set_category(property_browser, category_name);
+}
+
+/* handle clicks on the title bar */
+static void
+title_clicked_cb(GtkWidget *widget, GdkEventButton *event, NautilusPropertyBrowser *property_browser)
+{
+	/* for now, all clicks on the title bar return to the main level */
+	nautilus_property_browser_set_category(property_browser, NULL);
+}
+
+/* this callback handles clicks on the content elements */
+
+static void
+element_clicked_cb(GtkWidget *widget, GdkEventButton *event, char *element_name)
+{
+	GtkTargetList *target_list;	
+	GdkDragContext *context;
+	GtkWidget *pixwidget;
+	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap_for_dragged_file;
+	GdkBitmap *mask_for_dragged_file;
+	int pixmap_width, pixmap_height;
+	int x_delta, y_delta;
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(gtk_object_get_user_data(GTK_OBJECT(widget)));
+	
+	/* set up the drag and drop type corresponding to the category */
+	drag_types[0].target = property_browser->details->drag_type;
+	target_list = gtk_target_list_new (drag_types, NAUTILUS_N_ELEMENTS (drag_types));	
+	
+	nautilus_property_browser_set_dragged_file(property_browser, element_name);
+	
+	context = gtk_drag_begin (GTK_WIDGET (property_browser),
+				  target_list,
+				  GDK_ACTION_MOVE | GDK_ACTION_COPY,
+				  event->button,
+				  (GdkEvent *) event);
+
+	/* compute the offsets for dragging */
+	
+	pixwidget = GTK_BIN(widget)->child;
+	gtk_pixmap_get(GTK_PIXMAP(pixwidget), &pixmap_for_dragged_file, &mask_for_dragged_file);
+	gdk_window_get_size((GdkWindow*) pixmap_for_dragged_file, &pixmap_width, &pixmap_height);
+	x_delta = floor(event->x + .5) - ((widget->allocation.width - pixmap_width) >> 1);
+	y_delta = floor(event->y + .5) - ((widget->allocation.height - pixmap_height) >> 1);
+	
+        /* set the pixmap and mask for dragging */       
+	pixbuf = make_drag_image(property_browser, element_name);
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf,
+					   &pixmap_for_dragged_file,
+					   &mask_for_dragged_file,
+					   128);
+
+	gdk_pixbuf_unref (pixbuf);	
+        gtk_drag_set_icon_pixmap (context,
+				  gtk_widget_get_colormap (GTK_WIDGET (property_browser)),
+				  pixmap_for_dragged_file,
+				  mask_for_dragged_file,
+				  x_delta, y_delta);
+
+	/* hide the property browser - it will later be destroyed when the drag ends */	
+	gtk_widget_hide(GTK_WIDGET(property_browser));
+}
+
+/* utility routine to strip the extension from the passed in string */
+static char*
+strip_extension(const char* string_to_strip)
+{
+	char *result_str, *temp_str;
+	if (string_to_strip == NULL)
+		return NULL;
+		
+	result_str = g_strdup(string_to_strip);
+	temp_str = strrchr(result_str, '.');
+	if (temp_str)
+		*temp_str = '\0';
+	return result_str;
+}
+
+/* utility routine to add the passed-in widget to the content table */
+
+static void
+add_to_content_table(NautilusPropertyBrowser *property_browser, GtkWidget* widget, int position, int padding)
+{
+	int column_pos = position % CONTENT_TABLE_WIDTH;
+	int row_pos = position / CONTENT_TABLE_WIDTH;
+  	
+	gtk_table_attach(GTK_TABLE(property_browser->details->content_table), widget, 
+	                 column_pos, column_pos + 1, row_pos ,row_pos + 1, 
+			 GTK_FILL, GTK_FILL, padding, padding);
+}
+
+/* make_category_path generates widgets corresponding all of the objects in the passed in directory */
+
+static void
+make_category_path(NautilusPropertyBrowser *property_browser, const char* path, const char* mode)
+{
+	NautilusBackground *background;
+	int index = 0;
+	/* case out on the mode: if the mode is directory, handle by iterating through the directory */
+	if (!strcmp(mode, "directory")) {
+		GnomeVFSResult result;
+		GnomeVFSFileInfo *current_file_info;
+		GnomeVFSDirectoryList *list;
+		
+		char *temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
+		char *xml_path = gnome_datadir_file (temp_str);
+		char *xml_uri = g_strdup_printf("file://%s", xml_path);
+		
+		result = gnome_vfs_directory_list_load(&list, xml_uri, GNOME_VFS_FILE_INFO_GETMIMETYPE, NULL, NULL);
+		g_free(temp_str);
+		g_free(xml_uri);
+		
+		if (result != GNOME_VFS_OK) {
+			g_free(xml_path);
+			return;
+		}	
+		/* interate through the directory for each file */
+		current_file_info = gnome_vfs_directory_list_first(list);
+		while (current_file_info != NULL) {
+			/* if the file is an image, generate a widget corresponding to it */
+			if (nautilus_str_has_prefix(current_file_info->mime_type, "image/")) {
+				/* load a pixbuf scaled to the proper size, then create a pixbuf widget to hold it */
+				char *image_file_name, *filtered_name;
+				GdkPixmap *pixmap;
+				GdkBitmap *mask;
+				GdkPixbuf *pixbuf;
+				GtkWidget *event_box, *temp_vbox;
+				GtkWidget *pixmap_widget, *label;
+
+				image_file_name = g_strdup_printf("%s/%s", xml_path, current_file_info->name);
+				pixbuf = gdk_pixbuf_new_from_file(image_file_name);
+				g_free(image_file_name);
+				
+				pixbuf = scale_pixbuf_to_fit(pixbuf);
+					
+				/* make a pixmap and mask to pass to the widget */
+        			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+				gdk_pixbuf_unref (pixbuf);
+	
+				/* allocate a pixmap and insert it into the table */
+				temp_vbox = gtk_vbox_new(FALSE, 0);
+				gtk_widget_show(temp_vbox);
+
+				event_box = gtk_event_box_new();
+				gtk_widget_show(event_box);
+
+				background = nautilus_get_widget_background (GTK_WIDGET (event_box));
+				nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
+				
+				pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
+				gtk_widget_show (pixmap_widget);
+				gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
+				gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
+				
+				filtered_name = strip_extension(current_file_info->name);
+				label = gtk_label_new(filtered_name);
+				g_free(filtered_name);
+				gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
+				gtk_widget_show(label);
+				
+				gtk_signal_connect(GTK_OBJECT (event_box), "button_press_event", 
+						     GTK_SIGNAL_FUNC(element_clicked_cb), g_strdup(current_file_info->name));
+	                        gtk_object_set_user_data(GTK_OBJECT(event_box), property_browser);
+
+				add_to_content_table(property_browser, temp_vbox, index++, 2);				
+			}
+			
+			current_file_info = gnome_vfs_directory_list_next(list);
+		}
+		
+		gnome_vfs_directory_list_destroy(list);
+		g_free(xml_path);
+
+	} else if (!strcmp(mode, "xml")) {
+	
+	}	
+}
+
+/* this is a utility routine to generate a category link widget and install it in the browser */
+
+static void
+make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* image, gint index)
+{
+	GtkWidget *label, *pix_widget, *button, *temp_vbox;
+	char *file_name = gnome_pixmap_file (image); 
+	GtkWidget* temp_box = gtk_vbox_new(FALSE, 0);
+
+	/* generate a pixmap widget from the image file name */
+	pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	gtk_widget_show (pix_widget);
+	gtk_box_pack_start (GTK_BOX(temp_box), pix_widget, FALSE, FALSE, 0);
+	
+	button = gtk_button_new();
+	gtk_widget_show(button);
+	gtk_widget_set_usize(button, 96, 80);
+	
+	/* use the name as a label */
+	label = gtk_label_new(name);
+	gtk_box_pack_start (GTK_BOX(temp_box), label, FALSE, FALSE, 0);
+	gtk_widget_show(label);
+
+	/* put the button in a vbox so it won't grow vertically */
+	temp_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(temp_vbox);
+	
+	gtk_box_pack_start (GTK_BOX(temp_vbox), button, FALSE, FALSE, 8);
+	add_to_content_table(property_browser, temp_vbox, index, 8);
+	gtk_container_add (GTK_CONTAINER(button), temp_box);
+	gtk_widget_show(temp_box);
+	
+	/* add a signal to handle clicks */
+	gtk_signal_connect(GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (category_clicked_cb), g_strdup(name));
+	gtk_object_set_user_data(GTK_OBJECT(button), property_browser);
+	
+	g_free (file_name);
+}
+ 
+/* update_contents populates the property browser with information specified by the path and other state variables */
+
+void
+nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_browser)
+{
+ 	char   *xml_path;
+	xmlNodePtr cur_node;
+ 	xmlDocPtr document;
+ 	NautilusBackground *background;
+	GtkWidget *viewport;
+	gint index = 0;
+	
+	/* load the xml document corresponding to the path and selection */
+	xml_path = gnome_datadir_file (property_browser->details->path);
+	document = xmlParseFile (xml_path);
+	g_free(xml_path);
+	if (document == NULL)
+		return;
+		
+	/* remove the existing content box, if any, and allocate a new one */
+
+	if (property_browser->details->content_frame) {
+		gtk_widget_destroy(property_browser->details->content_frame);
+	}
+	
+	/* allocate a new container, with a scrollwindow and viewport */
+	
+	property_browser->details->content_frame = gtk_scrolled_window_new (NULL, NULL);
+ 	viewport = gtk_viewport_new(NULL, NULL);
+	gtk_widget_show(viewport);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
+	background = nautilus_get_widget_background (viewport);
+	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
+	gtk_container_add (GTK_CONTAINER (property_browser->details->container), property_browser->details->content_frame);
+	gtk_widget_show (property_browser->details->content_frame);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (property_browser->details->content_frame), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+
+	/* allocate a table to hold the content widgets */
+  	property_browser->details->content_table = gtk_table_new(CONTENT_TABLE_WIDTH, CONTENT_TABLE_HEIGHT, FALSE);
+	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->content_table); 
+	gtk_container_add (GTK_CONTAINER (property_browser->details->content_frame), viewport);
+	gtk_widget_show (GTK_WIDGET (property_browser->details->content_table));
+	
+	/* iterate through the xml file to generate the widgets */
+	cur_node = document->root->childs;
+	while (cur_node != NULL) {
+		if (!strcmp(cur_node->name, "category")) {
+			char* category_name =  xmlGetProp (cur_node, "name");
+			char* category_image = xmlGetProp (cur_node, "image");
+			char* category_type  = xmlGetProp (cur_node, "type");
+			
+			if (property_browser->details->category && !strcmp(property_browser->details->category, category_name)) {
+				char *category_path = xmlGetProp (cur_node, "path");
+				char *category_mode = xmlGetProp (cur_node, "mode");
+				
+				make_category_path(property_browser, category_path, category_mode);
+				nautilus_property_browser_set_drag_type(property_browser, category_type);
+				break;
+			}
+			else if (property_browser->details->category == NULL)
+				make_category_link(property_browser, category_name, category_image, index++);
+		}
+		cur_node = cur_node->next;
+	}
+	
+	/* release the  xml document and we're done */
+	if (document)
+		xmlFreeDoc(document);
+
+	/* update the title */
+	if (property_browser->details->category == NULL)
+		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), "Select A Category:");
+	else {
+		char *label_text = g_strdup_printf("Categories: %s", property_browser->details->category);
+		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), label_text);
+		g_free(label_text);
+	}	
+
+}
+
+/* set the category and regenerate contents as necessary */
+
+static void
+nautilus_property_browser_set_category (NautilusPropertyBrowser *property_browser, const char *new_category)
+{       
+	/* there's nothing to do if the category is the same as the current one */ 
+	if (nautilus_strcmp (property_browser->details->category, new_category) == 0) {
+		return;
+	}
+	
+	if (property_browser->details->category)
+		g_free (property_browser->details->category);
+	if (new_category)
+		property_browser->details->category = g_strdup (new_category);
+	else
+		property_browser->details->category = NULL;
+		
+	/* populate the per-uri box with the info */
+	nautilus_property_browser_update_contents (property_browser);  	
+}
+
+
+/* here is the routine that populates the property browser with the appropriate information 
+   when the path changes */
+
+void
+nautilus_property_browser_set_path (NautilusPropertyBrowser *property_browser, 
+			      const char* new_path)
+{       
+	/* there's nothing to do if the uri is the same as the current one */ 
+	if (nautilus_strcmp (property_browser->details->path, new_path) == 0) {
+		return;
+	}
+	
+	if (property_browser->details->path)
+		g_free (property_browser->details->path);
+	property_browser->details->path = g_strdup (new_path);
+		
+	/* populate the per-uri box with the info */
+	nautilus_property_browser_update_contents (property_browser);  	
+}

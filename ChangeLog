@@ -1,3 +1,81 @@
+2000-05-02  Andy Hertzfeld <andy@eazel.com>
+
+	1st cut at property browser for drag and drop customization;
+	Backgrounds are fully implemented, emblems are only partially there,
+	more coming soon
+
+	* src/Makefile.am: added property browser source files
+	* src/nautilus-property-browser.c,h:
+	new class that implements the property browser
+	
+	* src/nautilus-window-menus.c:
+	added "customize" menu item and a callback that brings up
+	the property browser
+	
+	* src/ntl-index-panel.c:
+	changed index panel to accept "property/bgimage" drag type and
+	change the background image accordingly
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	changed icon canvas to accept "property/bgimage" drag type and
+	change the background image accordingly; removed the old shift key hack
+	
+	* libnautilus-extensions/nautilus-icon-dnd.h:
+	defined constants for the new drag type
+	
+	* configure.in: two new data directories for backgrounds and emblems
+	* data/Makefile.am: added two new directories
+	* data/browser.xml: xml file that defines the categories
+
+	added some background images to play with:
+	
+	* data/backgrounds/.cvsignore
+	* data/backgrounds/Makefile.am
+	* data/backgrounds/baize.png
+	* data/backgrounds/bricks.jpg
+	* data/backgrounds/bubbles.png
+	* data/backgrounds/buffedwood.jpg
+	* data/backgrounds/burlap.jpg
+	* data/backgrounds/chalk.jpg
+	* data/backgrounds/cherrywood.jpg
+	* data/backgrounds/cork.png
+	* data/backgrounds/dark-gnome.jpg
+	* data/backgrounds/darkwood.png
+	* data/backgrounds/frost.jpg
+	* data/backgrounds/gnome.jpg
+	* data/backgrounds/gold.jpg
+	* data/backgrounds/grass.png
+	* data/backgrounds/gray_fabric.png
+	* data/backgrounds/greenery.jpg
+	* data/backgrounds/manila.jpg
+	* data/backgrounds/pink_fabric.png
+	* data/backgrounds/puzzle.jpg
+	* data/backgrounds/raindrops.png
+	* data/backgrounds/sky.jpg
+	* data/backgrounds/stucco.jpg
+	* data/backgrounds/white_marble.jpg
+	* data/backgrounds/white_paper.jpg
+	* data/backgrounds/yellow_paper.jpg
+	
+	added some emblem images:
+	
+	* data/emblems/.cvsignore
+	* data/emblems/Makefile.am
+	* data/emblems/certified.gif
+	* data/emblems/changed.gif
+	* data/emblems/confidential.gif
+	* data/emblems/encrypted.gif
+	* data/emblems/important.gif
+	* data/emblems/new.gif
+	* data/emblems/personal.gif
+	* data/emblems/remote.gif
+	
+	added images for the top-level categories
+	
+	* icons/Makefile.am: added 2 images to Makefile
+	* icons/backgrounds.png
+	* icons/emblems.png
+		
 2000-05-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	* RENAMING: Added some idl-related renamings.
