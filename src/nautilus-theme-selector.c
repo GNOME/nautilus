@@ -30,21 +30,15 @@
 #include <config.h>
 #include "nautilus-theme-selector.h"
 
-#include <ctype.h>
-#include <eel/eel-background.h>
-#include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-label.h>
-#include <eel/eel-scalable-font.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkeventbox.h>
@@ -58,16 +52,9 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <math.h>
 
 struct NautilusThemeSelectorDetails {
 	GtkWidget *container;
