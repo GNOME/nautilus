@@ -13,6 +13,7 @@ SUBDIRS =			\
 	src 			\
 	components		\
 	test 			\
+	user-guide		\
 	po 			\
 	$(NULL)
 

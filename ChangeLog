@@ -1,3 +1,19 @@
+2000-10-10  Mathieu Lacage  <mathieu@eazel.com>
+
+	fix small buggy with fix from ramiro: make sure mozilla
+	loads local fiels through its own file library, not gnome-vfs.
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_is_uri_handled_by_mozilla):
+
+	autoconf magic for the documentation
+	* configure.in:
+	* Makefile.am: 
+	* user-guide/C/Makefile.am:
+	* user-guide/Makefile.am:
+
+	actual html/jpg/css documentation.
+	* user-guide/C/html/*:
+
 2000-10-10  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added ammonite dependecy

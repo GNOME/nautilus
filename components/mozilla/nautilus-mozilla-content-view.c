@@ -1089,7 +1089,8 @@ mozilla_is_uri_handled_by_mozilla (const char *uri)
 {
 	static const char *handled_by_mozilla[] =
 	{
-		"http"
+		"http",
+		"file"
 	};
 
 	return string_list_get_index_of_string (handled_by_mozilla, NUM_ELEMENTS_IN_ARRAY (handled_by_mozilla),
