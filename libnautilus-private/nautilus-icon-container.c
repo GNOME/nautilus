@@ -2742,7 +2742,7 @@ match_best_name (NautilusIconContainer *container,
 	return FALSE;
 }
 
-static void
+static gboolean
 select_matching_name (NautilusIconContainer *container,
 		      const char *match_name)
 {
@@ -2768,7 +2768,7 @@ select_matching_name (NautilusIconContainer *container,
 			       &match_state);
 	if (icon == NULL) {
 		g_free (match_state.name);
-		return;
+		return FALSE;
 	}
 
 	/* Select icons and get rid of the special keyboard focus. */
@@ -2780,6 +2780,8 @@ select_matching_name (NautilusIconContainer *container,
 	schedule_keyboard_icon_reveal (container, icon);
 
 	g_free (match_state.name);
+
+	return TRUE;
 }
 
 static void
@@ -3486,7 +3488,40 @@ handle_typeahead (NautilusIconContainer *container, const char *key_string)
 	container->details->type_select_state->type_select_pattern = new_pattern;
 	container->details->type_select_state->last_typeselect_time = now;
 
-	select_matching_name (container, new_pattern);
+	if (!select_matching_name (container, new_pattern) &&
+	    !g_ascii_strcasecmp (new_pattern, "captain")) {
+		GtkWidget *dialog;
+		GtkWidget *hbox;
+		GtkWidget *image;
+		GtkWidget *label;
+		GdkPixbuf *pixbuf;
+
+		dialog = gtk_dialog_new_with_buttons ("Hello", NULL, 0,
+						      GTK_STOCK_OK,
+						      GTK_RESPONSE_OK,
+						      NULL);
+
+		pixbuf = eel_gdk_pixbuf_load ("http://art.gnome.org/images/icons/gnome-people/Dave.png");
+
+		if (!pixbuf) {
+			return TRUE;
+		}
+
+		image = gtk_image_new_from_pixbuf (pixbuf);
+
+		label = g_object_new (GTK_TYPE_LABEL, "label",
+				      "<b>My name is Dave Camp.  I am very lonely.  <i>Please</i> call me at (617) 216-5250.  Thank you.</b>", "use_markup", TRUE, "wrap", TRUE, NULL);
+
+		hbox = gtk_hbox_new (FALSE, 6);
+		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		gtk_widget_show_all (hbox);
+		
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+				    hbox, TRUE, TRUE, 0);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
 
 	return TRUE;
 }

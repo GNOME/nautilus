@@ -106,6 +106,7 @@ typedef struct _Emblem {
 	GdkPixbuf *pixbuf;
 	char *uri;
 	char *name;
+	char *keyword;
 } Emblem;
 
 BONOBO_CLASS_BOILERPLATE (NautilusEmblemView, nautilus_emblem_view,
@@ -471,6 +472,11 @@ destroy_emblem (Emblem *emblem, gpointer user_data)
 		g_free (emblem->uri);
 		emblem->uri = NULL;
 	}
+
+	if (emblem->keyword != NULL) {
+		g_free (emblem->keyword);
+		emblem->keyword = NULL;
+	}
 	
 	g_free (emblem);
 }
@@ -598,7 +604,7 @@ add_emblems_dialog_response_cb (GtkWidget *dialog, int response,
 {
 	Emblem *emblem;
 	GSList *emblems;
-	char *keyword;
+	GSList *l;
 
 	switch (response) {
 	case GTK_RESPONSE_CANCEL:
@@ -613,18 +619,33 @@ add_emblems_dialog_response_cb (GtkWidget *dialog, int response,
 		emblems = g_object_get_data (G_OBJECT (dialog),
 					     "emblems-to-add");
 
-		while (emblems != NULL) {
-			emblem = (Emblem *)emblems->data;
+		for (l = emblems; l; l = l->next) {
+			char *keyword;
+
+			emblem = (Emblem *)l->data;
+			if (emblem->keyword != NULL) {
+				/* this one has already been verified */
+				continue;
+			}
 
 			keyword = nautilus_emblem_create_unique_keyword (emblem->name);
+			if (!nautilus_emblem_verify_keyword
+				(GTK_WINDOW (dialog), keyword, emblem->name)) {
+				g_free (keyword);
+				return;
+			} else {
+				emblem->keyword = keyword;
+			}
+
+		}
+
+		for (l = emblems; l; l = l->next) {
+			emblem = (Emblem *)l->data;
+
 			nautilus_emblem_install_custom_emblem (emblem->pixbuf,
-							       keyword,
+							       emblem->keyword,
 							       emblem->name,
 							       GTK_WINDOW (dialog));
-
-			g_free (keyword);
-		
-			emblems = emblems->next;
 		}
 
 		gtk_widget_destroy (dialog);

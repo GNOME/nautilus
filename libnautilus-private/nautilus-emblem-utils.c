@@ -188,6 +188,35 @@ emblem_keyword_valid (const char *keyword)
 	return TRUE;
 }
 
+gboolean
+nautilus_emblem_verify_keyword (GtkWindow *parent_window,
+				const char *keyword,
+				const char *display_name)
+{
+	if (keyword == NULL || strlen (keyword) == 0) {
+		eel_show_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		return FALSE;
+	} else if (!emblem_keyword_valid (keyword)) {
+		eel_show_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		return FALSE;
+	} else if (is_reserved_keyword (keyword)) {
+		char *error_string;
+
+		/* this really should never happen, as a user has no idea
+		 * what a keyword is, and people should be passing a unique
+		 * keyword to us anyway
+		 */
+		error_string = g_strdup_printf (_("Sorry, but there is already an emblem named \"%s\".  Please choose a different name for it."), display_name);
+		eel_show_error_dialog (error_string, 
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		g_free (error_string);
+		return FALSE;
+	} 
+
+	return TRUE;
+}
 
 void
 nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
@@ -198,31 +227,14 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 	GnomeVFSURI *vfs_uri;
 	char *path, *dir, *stat_dir;
 	FILE *file;
-	char *error_string;
 	struct stat stat_buf;
 	struct utimbuf ubuf;
 	
 	g_return_if_fail (pixbuf != NULL);
 
-	if (keyword == NULL || strlen (keyword) == 0) {
-		eel_show_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
-				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+	if (!nautilus_emblem_verify_keyword (parent_window, keyword, display_name)) {
 		return;
-	} else if (!emblem_keyword_valid (keyword)) {
-		eel_show_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
-				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
-		return;
-	} else if (is_reserved_keyword (keyword)) {
-		/* this really should never happen, as a user has no idea
-		 * what a keyword is, and people should be passing a unique
-		 * keyword to us anyway
-		 */
-		error_string = g_strdup_printf (_("Sorry, but there is already an emblem named \"%s\".  Please choose a different name for it."), display_name);
-		eel_show_error_dialog (error_string, 
-				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
-		g_free (error_string);
-		return;
-	} 
+	}
 
 	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
 			       g_get_home_dir ());

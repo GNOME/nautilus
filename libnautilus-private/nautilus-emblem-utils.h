@@ -29,6 +29,9 @@
 GList *    nautilus_emblem_list_availible             (void);
 void       nautilus_emblem_refresh_list               (void);
 gboolean   nautilus_emblem_should_show_in_list        (const char *emblem);
+gboolean   nautilus_emblem_verify_keyword             (GtkWindow *parent_window,
+						       const char *keyword,
+						       const char *display_name);
 void       nautilus_emblem_install_custom_emblem      (GdkPixbuf  *pixbuf,
 						       const char *keyword,
 						       const char *display_name,
