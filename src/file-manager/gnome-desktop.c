@@ -20,39 +20,47 @@
  * USA
  */
 
-#ifndef GD_DESKTOP_WINDOW_H
-#define GD_DESKTOP_WINDOW_H
+/* NOTE this is just a test program, the desktop will probably be in
+   the file manager process, to share the icon cache and such */
 
-#include <libgnome/gnome-defs.h>
-#include <gtk/gtkwindow.h>
-
-BEGIN_GNOME_DECLS
-
-#define DESKTOP_TYPE_WINDOW            (desktop_window_get_type ())
-#define DESKTOP_WINDOW(obj)            (GTK_CHECK_CAST ((obj), DESKTOP_TYPE_WINDOW, DesktopWindow))
-#define DESKTOP_WINDOW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), DESKTOP_TYPE_WINDOW, DesktopWindowClass))
-#define DESKTOP_IS_WINDOW(obj)         (GTK_CHECK_TYPE ((obj), DESKTOP_TYPE_WINDOW))
-#define DESKTOP_IS_WINDOW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), DESKTOP_TYPE_WINDOW))
-
-typedef struct _DesktopWindow DesktopWindow;
-typedef struct _DesktopWindowClass DesktopWindowClass;
-
-struct _DesktopWindow {
-        GtkWindow window;
-
-
-};
-
-struct _DesktopWindowClass {
-	GtkWindowClass parent_class;
-        
-};
-
-/* Standard Gtk function */
-GtkType desktop_window_get_type (void);
-
-GtkWidget *desktop_window_new (void);
-
-END_GNOME_DECLS
-
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
 #endif
+
+#include <gnome.h>
+#include "desktop-window.h"
+#include "desktop-canvas.h"
+
+gint
+delete_event_cb(GtkWidget* window, GdkEventAny* event, gpointer data)
+{
+  gtk_main_quit();
+}
+
+int
+main (int argc, char *argv[])
+{
+        GtkWidget *window;
+        GtkWidget *canvas;
+        
+        bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+        textdomain (PACKAGE);
+        
+        gnome_init ("gnome-desktop", VERSION, argc, argv);
+        
+        window = desktop_window_new();
+        canvas = desktop_canvas_new();
+
+        gtk_container_add(GTK_CONTAINER(window), canvas);
+        
+        gtk_signal_connect(GTK_OBJECT(window), "delete_event",
+                           GTK_SIGNAL_FUNC(delete_event_cb), NULL);
+        
+        gtk_widget_show_all(window);
+        
+        gtk_main ();
+        
+        return 0;
+}
+
+

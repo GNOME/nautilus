@@ -27,7 +27,8 @@
 static void desktop_window_class_init (DesktopWindowClass *class);
 static void desktop_window_init       (DesktopWindow      *dwindow);
 static void desktop_window_realize    (GtkWidget        *widget);
-
+static void desktop_window_destroy    (GtkObject        *object);
+static void desktop_window_finalize   (GtkObject        *object);
 
 static GtkWindowClass *parent_class;
 
@@ -71,6 +72,9 @@ desktop_window_class_init (DesktopWindowClass *class)
 
 	parent_class = gtk_type_class (gtk_window_get_type ());
 
+        object_class->destroy = desktop_window_destroy;
+        object_class->finalize = desktop_window_finalize;
+        
 	widget_class->realize = desktop_window_realize;
 }
 
@@ -85,8 +89,47 @@ desktop_window_init (DesktopWindow *dwindow)
         gtk_widget_set_usize(GTK_WIDGET(dwindow),
                              gdk_screen_width(),
                              gdk_screen_height());
-
 }
+
+GtkWidget*
+desktop_window_new (void)
+{
+        DesktopWindow *dwindow;
+
+        dwindow = gtk_type_new(desktop_window_get_type());
+        
+        return GTK_WIDGET(dwindow);
+}
+
+static void
+desktop_window_destroy (GtkObject *object)
+{
+        DesktopWindow *dwindow;
+
+        g_return_if_fail(object != NULL);
+        g_return_if_fail(DESKTOP_IS_WINDOW(object));
+
+        dwindow = DESKTOP_WINDOW(object);
+
+        /* does nothing for now */
+
+        (*  GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+}
+
+static void
+desktop_window_finalize (GtkObject *object)
+{
+        DesktopWindow *dwindow;
+
+        g_return_if_fail(object != NULL);
+        g_return_if_fail(DESKTOP_IS_WINDOW(object));
+
+        dwindow = DESKTOP_WINDOW(object);
+
+        (* GTK_OBJECT_CLASS(parent_class)->finalize) (object);
+}
+
+
 
 static void
 desktop_window_realize (GtkWidget *widget)
@@ -94,7 +137,7 @@ desktop_window_realize (GtkWidget *widget)
 	DesktopWindow *dwindow;
 
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (IS_DESKTOP_WINDOW (widget));
+	g_return_if_fail (DESKTOP_IS_WINDOW (widget));
 
 	dwindow = DESKTOP_WINDOW (widget);
 
@@ -123,17 +166,3 @@ desktop_window_realize (GtkWidget *widget)
                 g_warning("window manager doesn't like us");
         }
 }
-
-GtkWidget*
-desktop_window_new (void)
-{
-        DesktopWindow *dwindow;
-
-        dwindow = gtk_type_new(desktop_window_get_type());
-        
-        return GTK_WIDGET(dwindow);
-}
-
-
-
-
