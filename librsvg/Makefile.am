@@ -29,14 +29,22 @@ librsvginclude_HEADERS=			\
 librsvg_la_SOURCES=	\
 	rsvg.c	 		\
 	rsvg.h	 		\
-	rsvg-path.c 		\
-	rsvg-path.h 		\
 	rsvg-bpath-util.c 	\
 	rsvg-bpath-util.h	\
-	art_rgba.c 		\
-	art_rgba.h 		\
-	art_rgba_svp.c		\
-	art_rgba_svp.h		\
+	rsvg-css.c		\
+	rsvg-css.h		\
+	rsvg-defs.c		\
+	rsvg-defs.h		\
+	rsvg-paint-server.c 	\
+	rsvg-paint-server.h 	\
+	rsvg-path.c 		\
+	rsvg-path.h 		\
+	art_render.c		\
+	art_render.h		\
+	art_render_gradient.c	\
+	art_render_gradient.h	\
+	art_render_svp.c	\
+	art_render_svp.h	\
 	$(NULL)
 
 test_rsvg_SOURCES =\

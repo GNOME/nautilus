@@ -158,44 +158,57 @@ main (int argc, char **argv)
 	char *out_fn;
 	GdkPixbuf *pixbuf;
 	char *zoom_str = "1.0";
+	int n_iter = 1;
 	poptContext optCtx;
 	struct poptOption optionsTable[] = {
 		{ "zoom", 'z', POPT_ARG_STRING, &zoom_str, 0, NULL, "zoom factor" },
+		{ "num-iter", 'n', POPT_ARG_INT, &n_iter, 0, NULL, "number of iterations" },
 		POPT_AUTOHELP
 		{ NULL, 0, 0, NULL, 0 }
 	};
 	char c;
 	const char * const *args;
+	int i;
 
 	optCtx = poptGetContext ("test-rsvg", argc, (const char **)argv, optionsTable, 0);
 
 	c = poptGetNextOpt (optCtx);
 	args = poptGetArgs (optCtx);
 
-	if (args == NULL || args[0] == NULL) {
-		f = stdin;
-		out_fn = "-";
-	} else {
-		f = fopen(args[0], "r");
-		if (f == NULL) {
-			fprintf(stderr, "Error opening source file %s\n", argv[0]);
-		}
-		if (args[1] == NULL)
+	for (i = 0; i < n_iter; i++) {
+		if (args == NULL || args[0] == NULL) {
+			if (n_iter > 1) {
+				fprintf (stderr, "Can't do multiple iterations on stdin\n");
+				exit (1);
+			}
+
+			f = stdin;
 			out_fn = "-";
-		else
-			out_fn = (char *)args[1];
-	}
+		} else {
+			f = fopen(args[0], "r");
+			if (f == NULL) {
+				fprintf(stderr, "Error opening source file %s\n", argv[0]);
+			}
+			if (args[1] == NULL)
+				out_fn = "-";
+			else
+				out_fn = (char *)args[1];
+		}
 
-	pixbuf = rsvg_render_file (f, atof (zoom_str));
+		pixbuf = rsvg_render_file (f, atof (zoom_str));
 
-	if (f != stdin)
-		fclose(f);
+		if (f != stdin)
+			fclose(f);
 
-	if (pixbuf != NULL)
-		save_pixbuf_to_file (pixbuf, out_fn);
-	else {
-		fprintf (stderr, "Error loading SVG file.\n");
-		return 1;
+		if (pixbuf != NULL) {
+			if (n_iter > 1)
+				gdk_pixbuf_unref (pixbuf);
+			else
+				save_pixbuf_to_file (pixbuf, out_fn);
+		} else {
+			fprintf (stderr, "Error loading SVG file.\n");
+			return 1;
+		}
 	}
 
 	return 0;
