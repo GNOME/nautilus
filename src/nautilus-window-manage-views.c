@@ -1106,7 +1106,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         
         g_assert (navi != NULL);
         
-        window->cancel_tag = NULL;
+        window->location_change_end_reached = TRUE;
         
         if (result_code == NAUTILUS_NAVIGATION_RESULT_OK) {
                 /* Navigation successful. Show the window to handle the
@@ -1114,6 +1114,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * Maybe this should go sometime later so the blank window isn't
                  * on screen so long.
                  */
+                window->cancel_tag = navi;
                 gtk_widget_show (GTK_WIDGET (window));
                 nautilus_window_set_state_info (window, 
                                                 (NautilusWindowStateItem)NAVINFO_RECEIVED, 
@@ -1168,6 +1169,10 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         }
         
         if (navi != NULL) {
+                if (window->cancel_tag != NULL) {
+                        g_assert (window->cancel_tag == navi);
+                        window->cancel_tag = NULL;
+                }
                 nautilus_navigation_info_free (navi);
         }
         
@@ -1205,6 +1210,7 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                                        guint distance)
 {
         const char *current_iid;
+        NautilusNavigationInfo *navigation_info;
         
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (loc != NULL);
@@ -1234,8 +1240,17 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                 current_iid = nautilus_view_frame_get_iid (window->content_view);
         }
         
-        window->cancel_tag = nautilus_navigation_info_new
+        /* If we just set the cancel tag in the obvious way here we run into
+         * a problem where the cancel tag is set to point to bogus data.
+         * To reproduce this problem, just use any illegal URI.
+         */
+        g_assert (window->cancel_tag == NULL);
+        window->location_change_end_reached = FALSE;
+        navigation_info = nautilus_navigation_info_new
                 (loc, window->ni,
                  nautilus_window_end_location_change_callback,
                  window, current_iid);
+        if (!window->location_change_end_reached) {
+                window->cancel_tag = navigation_info;
+        }
 }

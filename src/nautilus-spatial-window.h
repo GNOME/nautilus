@@ -116,6 +116,8 @@ struct _NautilusWindow {
   enum { NW_LOADING_INFO, NW_LOADING_VIEWS, NW_IDLE } state;
 
   NautilusNavigationInfo *cancel_tag;
+  gboolean location_change_end_reached;
+
   guint action_tag;
   guint16 made_changes, making_changes;
 

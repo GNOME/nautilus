@@ -1,3 +1,13 @@
+2000-06-08  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback),
+	(nautilus_window_begin_location_change):
+	* src/nautilus-window.h:
+	Fixed the bug where bogus URIs would cause a seg fault.
+	Unfortunately doing this in a simple clean way required
+	adding a field to the already-packed NautilusWindow.
+
 2000-06-08  Pavel  <pavel@eazel.com>
 
 	* components/services/time/command-line/Makefile.am:
