@@ -28,12 +28,12 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <limits.h>
-#include <parser.h>
+#include <libxml/parser.h>
 #include <regex.h>
 #include <string.h>
-#include <tree.h>
+#include <libxml/tree.h>
 #include <unistd.h>
-#include <xmlmemory.h>
+#include <libxml/xmlmemory.h>
 #include <zlib.h>
 
 typedef struct {

@@ -7,7 +7,8 @@ INCLUDES =					\
 	-DDATADIR=\""$(datadir)"\" 		\
 	-I$(top_srcdir)				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS)			\
+	-DGTK_ENABLE_BROKEN			\
 	$(NULL)
 
 bin_PROGRAMS =					\
@@ -21,7 +22,7 @@ nautilus_text_view_SOURCES =		        \
 nautilus_text_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS)	\
 	$(NULL)
 
 uidir = $(datadir)/gnome-2.0/ui

@@ -483,19 +483,19 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 	do {
 		Bonobo_Stream_read (stream, LOAD_BUFFER_SIZE, &buffer, ev);
 		if (ev->_major != CORBA_NO_EXCEPTION) {
-			gdk_pixbuf_loader_close (loader);
+			gdk_pixbuf_loader_close (loader, NULL);
 			g_object_unref (G_OBJECT (loader));
 			return;
 		}
 		
 		if (buffer->_buffer != NULL && 
-		    !gdk_pixbuf_loader_write (loader, buffer->_buffer, buffer->_length)) {
+		    !gdk_pixbuf_loader_write (loader, buffer->_buffer, buffer->_length, NULL)) {
 			CORBA_free (buffer);
 				if (ev->_major != CORBA_NO_EXCEPTION) {
 					CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 										 ex_Bonobo_Persist_WrongDataType, NULL);
 				}				
-				gdk_pixbuf_loader_close (loader);
+				gdk_pixbuf_loader_close (loader, NULL);
 				g_object_unref (G_OBJECT (loader));
 				return;
 		}
@@ -504,7 +504,7 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 		CORBA_free (buffer);
 	} while (len > 0);
 
-	gdk_pixbuf_loader_close (loader);
+	gdk_pixbuf_loader_close (loader, NULL);
 	bod->pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
 
 	if (bod->pixbuf == NULL) {
@@ -651,7 +651,7 @@ control_activate_callback (BonoboControl *control, gboolean activate, gpointer d
 	 * Notify the ControlFrame that we accept to be activated or
 	 * deactivated (we are an acquiescent BonoboControl, yes we are).
 	 */
-	bonobo_control_activate_notify (control, activate);
+	bonobo_control_activate_notify (control, activate, NULL);
 }
 
 static bonobo_object_data_t *
@@ -809,7 +809,7 @@ init_bonobo_image_generic_factory (void)
 	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_image_view_factory:61ea9ab1-e4b4-4da8-8f54-61cf6f33c4f6",
 						    g_getenv ("DISPLAY"));
 
-	image_factory = bonobo_generic_factory_new_multi 
+	image_factory = bonobo_generic_factory_new
 		(registration_id,
 		 bonobo_object_factory, NULL);
 
@@ -823,6 +823,7 @@ init_server_factory (int argc, char **argv)
 	CORBA_exception_init (&ev);
 	
 	/* Disable session manager connection */
+#ifdef GNOME2_CONVERSION_COMPLETE
 	gnome_client_disable_master_connection ();
 
 	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
@@ -833,6 +834,9 @@ init_server_factory (int argc, char **argv)
 	gdk_rgb_init ();
 
 	if (!bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))
+		g_error (_("I could not initialize Bonobo"));
+#endif
+	if (!bonobo_ui_init ("bonobo-image-generic", VERSION, &argc, argv))
 		g_error (_("I could not initialize Bonobo"));
 
 	CORBA_exception_free (&ev);

@@ -5,13 +5,13 @@ bin_PROGRAMS=nautilus-history-view
 INCLUDES=\
 	-I$(top_srcdir) \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS)
 	$(NULL)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS)
 	$(NULL)
 
 nautilus_history_view_SOURCES=nautilus-history-view.c

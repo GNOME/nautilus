@@ -161,9 +161,9 @@ hyperbola_navigation_search_new (void)
 
 	hns->ent = gtk_entry_new ();
 	g_signal_connect (hns->ent, "changed",
-			    hyperbola_navigation_search_ent_changed, hns);
+			    G_CALLBACK (hyperbola_navigation_search_ent_changed), hns);
 	g_signal_connect (hns->ent, "activate",
-			    hyperbola_navigation_search_ent_activate, hns);
+			    G_CALLBACK (hyperbola_navigation_search_ent_activate), hns);
 	gtk_container_add (GTK_CONTAINER (vbox), hns->ent);
 
 	hns->clist = gtk_clist_new (1);
@@ -172,7 +172,7 @@ hyperbola_navigation_search_new (void)
 				      GTK_SELECTION_BROWSE);
 
 	g_signal_connect (hns->clist, "select_row",
-			    hyperbola_navigation_search_select_row, hns);
+			    G_CALLBACK (hyperbola_navigation_search_select_row), hns);
 
 	wtmp =
 		gtk_scrolled_window_new (gtk_clist_get_hadjustment

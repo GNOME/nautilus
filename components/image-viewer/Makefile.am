@@ -10,12 +10,12 @@ nautilus_image_view_SOURCES =	\
 INCLUDES =	\
 	-I$(top_srcdir)		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
 nautilus_image_view_LDADD = 			\
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS) \
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers

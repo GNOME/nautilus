@@ -79,7 +79,7 @@ make_obj (BonoboGenericFactory * Factory, const char *goad_id, void *closure)
 	if (retval) {
 		object_count++;
 		g_signal_connect (retval, "destroy",
-				    do_destroy, NULL);
+				    G_CALLBACK (do_destroy), NULL);
 	}
 
 	return retval;
@@ -89,7 +89,6 @@ int
 main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
-	CORBA_ORB orb;
 	char *registration_id;
 
 
@@ -107,6 +106,7 @@ main (int argc, char *argv[])
 	}
 
 	/* Disable session manager connection */
+#ifdef GNOME2_CONVERSION_COMPLETE
 	gnome_client_disable_master_connection ();
 
 	gnomelib_register_popt_table (bonobo_activation_popt_options,
@@ -118,15 +118,19 @@ main (int argc, char *argv[])
 	gdk_rgb_init ();
 
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+#endif
+	bonobo_ui_init ("hyperbola", VERSION, &argc, argv);
 
 	nautilus_global_preferences_init ();
 
+#ifdef GNOME2_CONVERSION_COMPLETE
 	registration_id =
 		bonobo_activation_make_registration_id
 		("OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb",
 		 g_getenv ("DISPLAY"));
+#endif
 	factory =
-		bonobo_generic_factory_new_multi (registration_id, make_obj,
+		bonobo_generic_factory_new (registration_id, make_obj,
 						  NULL);
 	g_free (registration_id);
 

@@ -34,6 +34,7 @@
 #include <gnome.h>
 #include <gtk/gtksignal.h>
 #include <eel/eel-background.h>
+#include <bonobo/bonobo-property-bag.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -175,7 +176,9 @@ nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
  
  	/* allocate a property bag to specify the name of the icon for this component */
 	hardware_view->details->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, hardware_view);
+#ifdef GNOME2_CONVERSION_COMPLETE
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (hardware_view->details->nautilus_view), hardware_view->details->property_bag);
+#endif
 	bonobo_property_bag_add (hardware_view->details->property_bag, "icon_name", ICON_NAME, BONOBO_ARG_STRING, NULL,
 				 _("name of icon for the hardware view"), 0);
 	bonobo_property_bag_add (hardware_view->details->property_bag, "summary_info", COMPONENT_INFO, BONOBO_ARG_STRING, NULL,

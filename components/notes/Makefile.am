@@ -6,13 +6,14 @@ INCLUDES=\
 	-DG_LOG_DOMAIN=\"Nautilus-Notes\" \
 	-I$(top_srcdir)		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
-	$(NULL)
+	$(COMPONENT_CFLAGS) \
+	$(NULL)	\
+	-DGTK_ENABLE_BROKEN
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
 nautilus_notes_SOURCES=nautilus-notes.c

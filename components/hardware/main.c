@@ -22,6 +22,8 @@
 
 /* main.c - main function and object activation function for the hardware view component. */
 
+#define IID "OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce" 
+
 #include <config.h>
 
 #include "nautilus-hardware-view.h"
@@ -58,7 +60,7 @@ hardware_view_make_object (BonoboGenericFactory *factory,
 
 	object_count++;
 
-	g_signal_connect (view, "destroy", hardware_view_object_destroyed, NULL);
+	g_signal_connect (view, "destroy", G_CALLBACK (hardware_view_object_destroyed), NULL);
 
 	return BONOBO_OBJECT (view);
 }
@@ -66,10 +68,10 @@ hardware_view_make_object (BonoboGenericFactory *factory,
 int main(int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
-	CORBA_ORB orb;
 	CORBA_Environment ev;
+#ifdef GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
-
+#endif
 	
 	/* Initialize gettext support */
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
@@ -85,7 +87,8 @@ int main(int argc, char *argv[])
 	}
 	
 	CORBA_exception_init(&ev);
-	
+
+#ifdef GNOME2_CONVERSION_COMPLETE
 	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
 	orb = bonobo_activation_init (argc, argv);
 
@@ -97,14 +100,20 @@ int main(int argc, char *argv[])
 	/* initialize gnome-vfs, etc */
 	g_thread_init (NULL);
 	gnome_vfs_init ();
+#endif
+	bonobo_ui_init ("nautilus-hardware-view", VERSION, &argc, argv);
 
+#ifdef GNOME2_CONVERSION_COMPLETE
         registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce", 
 						    getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
+#endif
+	factory = bonobo_generic_factory_new (IID, 
 						    hardware_view_make_object,
 						    NULL);
-	g_free (registration_id);
 
+#ifdef GNOME2_CONVERSION_COMPLETE
+	g_free (registration_id);
+#endif
 	
 	do {
 		bonobo_main ();

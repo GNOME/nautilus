@@ -8,13 +8,13 @@ INCLUDES=\
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\" 		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS) \
 	$(NULL)
 
 nautilus_news_SOURCES=nautilus-news.c nautilus-news-pixmaps.h

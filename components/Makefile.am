@@ -6,20 +6,20 @@ endif
 
 SUBDIRS = 					\
 	sample 					\
+	history 				\
+	news					\
+	notes 					\
+	throbber 				\
 	$(NULL)
 
 XXX=
 	adapter 				\
 	hardware 				\
 	help 					\
-	history 				\
 	image-viewer 				\
 	loser 					\
 	music 					\
-	news					\
-	notes 					\
 	text 					\
-	throbber 				\
 	tree 					\
 	$(MOZILLA_COMPONENT_SUBDIRS) 		\
 	$(NULL)

@@ -64,12 +64,12 @@ tree_shlib_make_object (PortableServer_POA poa,
 				       (BONOBO_OBJECT (view)), ev);
 }
 
-static const OAFPluginObject tree_plugin_list[] = {
+static const BonoboActivationPluginObject tree_plugin_list[] = {
 	{ TREE_VIEW_IID, tree_shlib_make_object },
 	{ NULL }
 };
 
-const OAFPlugin OAF_Plugin_info = {
+const BonoboActivationPlugin BonoboActivation_Plugin_info = {
 	tree_plugin_list,
 	"Nautilus Tree Sidebar Panel"
 };

@@ -550,6 +550,7 @@ location_change_at_idle_callback (gpointer callback_data)
 	return FALSE;
 }
 
+
 /* handle bonobo events from the throbber -- since they can come in at
    any time right in the middle of things, defer until idle */
 static void 

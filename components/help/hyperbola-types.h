@@ -8,7 +8,6 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtknotebook.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-theme.h>

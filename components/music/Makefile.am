@@ -14,7 +14,8 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
 	-I$(top_srcdir)				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS)			\
+	$(ESD_CFLAGS)				\
 	$(NULL)
 
 bin_PROGRAMS =					\
@@ -59,7 +60,7 @@ nautilus_music_view_SOURCES =			\
 nautilus_music_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_CFLAGS)	\
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers

@@ -6,7 +6,7 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Hardware\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(top_srcdir)					\
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers
@@ -30,7 +30,7 @@ nautilus_hardware_view_SOURCES =		        \
 nautilus_hardware_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS) 	\
 	$(NULL)
 
 EXTRA_DIST = $(server_DATA) $(server_in_files)

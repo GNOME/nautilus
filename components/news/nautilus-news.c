@@ -28,6 +28,7 @@
  */
 
 #include <config.h>
+#include <time.h>
 
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkdrawingarea.h>
@@ -35,7 +36,10 @@
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtkvbox.h>
+
+#include <bonobo/bonobo-property-bag.h>
 
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -1021,10 +1025,10 @@ nautilus_news_set_news_changed (News *news_data, gboolean changed_flag)
 		
 		tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 		BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
-                
+#ifdef GNOME2_CONVERSION_COMPLETE  
 		bonobo_property_bag_notify_listeners (news_data->property_bag,
                                                       "tab_image", tab_image_arg, NULL);
-                
+#endif 
 		bonobo_arg_release (tab_image_arg);
 		g_free (tab_image);
 	}
@@ -1428,7 +1432,8 @@ extract_rss_image (RSSChannelData *channel_data, xmlDoc *rss_document)
 		if (uri_node != NULL) {
 			image_uri = xmlNodeGetContent (uri_node);
 			if (image_uri != NULL) {
-				channel_data->load_image_handle = eel_gdk_pixbuf_load_async (image_uri, rss_logo_callback, channel_data);
+				channel_data->load_image_handle = eel_gdk_pixbuf_load_async (image_uri, 
+					     GNOME_VFS_PRIORITY_DEFAULT, rss_logo_callback, channel_data);
 				got_image = TRUE;
 				xmlFree (image_uri);
 			}
@@ -1454,7 +1459,8 @@ extract_scripting_news_image (RSSChannelData *channel_data, xmlDoc *rss_document
 		if (image_node != NULL) {
 			image_uri = xmlNodeGetContent (image_node);
 			if (image_uri != NULL) {
-				channel_data->load_image_handle = eel_gdk_pixbuf_load_async (image_uri, rss_logo_callback, channel_data);
+				channel_data->load_image_handle = eel_gdk_pixbuf_load_async (image_uri, 
+						GNOME_VFS_PRIORITY_DEFAULT, rss_logo_callback, channel_data);
 				got_image = TRUE;
 				xmlFree (image_uri);
 			}
@@ -1525,7 +1531,8 @@ rss_read_done_callback (GnomeVFSResult result,
 	old_items = channel_data->items;
 	channel_data->items = NULL;
 		
-	current_node = rss_document->root;
+	current_node = xmlDocGetRootElement (rss_document);
+
 	item_count = extract_items (channel_data, current_node);
 	
 	/* if we couldn't find any items at the main level, look inside the channel node */
@@ -1562,7 +1569,8 @@ nautilus_news_load_channel (News *news_data, RSSChannelData *channel_data)
 	
 	/* load the uri asynchronously, calling a completion routine when completed */
 	channel_data->update_in_progress = TRUE;
-	channel_data->load_file_handle = eel_read_entire_file_async (channel_data->uri, rss_read_done_callback, channel_data);
+	channel_data->load_file_handle = eel_read_entire_file_async (channel_data->uri, 
+			GNOME_VFS_PRIORITY_DEFAULT, rss_read_done_callback, channel_data);
 	
 	/* put up a title that's displayed while we wait */
 	title = g_strdup_printf (_("Loading %s"), channel_data->name);
@@ -1898,8 +1906,8 @@ add_site_from_fields (GtkWidget *widget, News *news)
 	int channel_count, byte_count;
 	gboolean got_xml_file;
 	
-	site_name = gtk_entry_get_text (GTK_ENTRY (news->item_name_field));
-	site_location = gtk_entry_get_text (GTK_ENTRY (news->item_location_field));
+	site_name = (char *) gtk_entry_get_text (GTK_ENTRY (news->item_name_field));
+	site_location = (char *)gtk_entry_get_text (GTK_ENTRY (news->item_location_field));
 
 	/* make sure there's something in the fields */
 	if (site_name == NULL || strlen (site_name) == 0) {
@@ -2127,10 +2135,10 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 	
 	/* set up user data to use in toggle handler */
         gtk_object_set_user_data (GTK_OBJECT (check_button), news_data);
-	g_object_set_data (G_OBJECT (check_button),
+	g_object_set_data_full (G_OBJECT(check_button),
 				  "channel_name",
 				  g_strdup (channel_name),
-				  (GtkDestroyNotify) g_free);
+				  g_free);
 }
 
 /* here's the routine that loads and parses the xml file, then iterates through it
@@ -2488,19 +2496,22 @@ make_news_view (const char *iid, gpointer callback_data)
 	news->timer_task = gtk_timeout_add (10000, check_for_updates, news);
 
 	/* arrange for notification when we're resized */
-	g_signal_connect (news->news_display, "size_allocate", news_display_size_allocate, news);
-	g_signal_connect (news->empty_message, "size_allocate", empty_message_size_allocate, news);
+	g_signal_connect (news->news_display, "size_allocate", G_CALLBACK (news_display_size_allocate), news);
+	g_signal_connect (news->empty_message, "size_allocate", G_CALLBACK (empty_message_size_allocate), news);
 		
 	/* Create the nautilus view CORBA object. */
         news->view = nautilus_view_new (main_container);
-        g_signal_connect (news->view, "destroy", do_destroy, news);
+        g_signal_connect (news->view, "destroy", G_CALLBACK (do_destroy), news);
 
 	g_signal_connect (news->view, "load_location",
-                            nautilus_news_load_location, news);
+                            G_CALLBACK (nautilus_news_load_location), news);
 
 	/* allocate a property bag to reflect the TAB_IMAGE property */
 	news->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, news);
+
+#ifdef GNOME2_CONVERSION_COMPLETE
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (news->view), news->property_bag);
+#endif
 	bonobo_property_bag_add (news->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 _("image indicating that the news has changed"), 0);
 	bonobo_property_bag_add (news->property_bag, "close", CLOSE_NOTIFY,

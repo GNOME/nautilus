@@ -294,7 +294,7 @@ nautilus_music_view_init (NautilusMusicView *music_view)
         
         g_signal_connect (music_view->details->event_box,
                              "drag_data_received",
-                             nautilus_music_view_drag_data_received,
+                             G_CALLBACK (nautilus_music_view_drag_data_received),
                              music_view);
 
 	nautilus_view_construct (NAUTILUS_VIEW (music_view), 
@@ -303,12 +303,12 @@ nautilus_music_view_init (NautilusMusicView *music_view)
     	
 	g_signal_connect (music_view, 
 			    "load_location",
-			    music_view_load_location_callback, 
+			    G_CALLBACK (music_view_load_location_callback), 
 			    music_view);
 			    
 	g_signal_connect (eel_get_widget_background (GTK_WIDGET (music_view->details->event_box)), 
 			    "appearance_changed",
-			    music_view_background_appearance_changed_callback, 
+			    G_CALLBACK (music_view_background_appearance_changed_callback), 
 			    music_view);
 
 	/* NOTE: we don't show the widgets until the directory has been loaded,
@@ -347,7 +347,9 @@ nautilus_music_view_init (NautilusMusicView *music_view)
 	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
 	standard_font_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
 	font = nautilus_font_factory_get_font_by_family (font_name, standard_font_size);
+#ifdef GNOME2_CONVERSION_COMPLETE
 	eel_gtk_widget_set_font (GTK_WIDGET (music_view->details->song_list), font);
+#endif
         eel_list_set_anti_aliased_mode (EEL_LIST (music_view->details->song_list), FALSE);
 	gdk_font_unref (font);
 
@@ -362,7 +364,7 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
 	eel_clist_set_column_justification(EEL_CLIST(music_view->details->song_list), TIME, GTK_JUSTIFY_RIGHT);
  	
  	g_signal_connect (music_view->details->song_list,
-                            "select-row", selection_callback, music_view);
+                            "select-row", G_CALLBACK (selection_callback), music_view);
 
 	music_view->details->scroll_window = gtk_scrolled_window_new (NULL, eel_clist_get_vadjustment (EEL_CLIST (music_view->details->song_list)));
         gtk_widget_show (music_view->details->scroll_window);
@@ -374,11 +376,11 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
 
 	/* We have to know when we the adjustment is changed to cause a redraw due to a lame CList bug */
 	g_signal_connect (eel_clist_get_vadjustment (EEL_CLIST (music_view->details->song_list)),
-			    "value-changed", value_changed_callback, music_view->details->song_list);
+			    "value-changed", G_CALLBACK (value_changed_callback), music_view->details->song_list);
 	
 	/* connect a signal to let us know when the column titles are clicked */
 	g_signal_connect (music_view->details->song_list, "click_column",
-                            click_column_callback, music_view);
+                            G_CALLBACK (click_column_callback), music_view);
 
         gtk_widget_show (music_view->details->song_list);
 
@@ -398,7 +400,7 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
         gtk_widget_show (label);
 	gtk_container_add (GTK_CONTAINER(button), label);
 	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->image_box, FALSE, FALSE, 4);  
- 	g_signal_connect (button, "clicked", image_button_callback, music_view);
+ 	g_signal_connect (button, "clicked", G_CALLBACK (image_button_callback), music_view);
  	
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view->details->event_box),
@@ -1782,8 +1784,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	result = gnome_vfs_directory_list_load (&list, uri,
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-                                                | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-						NULL);
+                                                | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	if (result != GNOME_VFS_OK) {
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);

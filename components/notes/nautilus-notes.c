@@ -32,8 +32,10 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkmain.h>
-#include <gtk/gtktext.h>
+#include <gtk/gtktextbuffer.h>
+#include <gtk/gtktextview.h>
 #include <gtk/gtkvbox.h>
+#include <bonobo/bonobo-property-bag.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-font-factory.h>
@@ -62,6 +64,7 @@ typedef struct {
 	NautilusView *view;
 	BonoboPropertyBag *property_bag;
 	GtkWidget *note_text_field;
+	GtkTextBuffer *text_buffer;
 	char *uri;
 	NautilusFile *file;
 	guint save_timeout_id;
@@ -149,7 +152,6 @@ static void
 load_note_text_from_metadata (NautilusFile *file,
 			      Notes *notes)
 {
-        int position;
         char *saved_text;
 
         g_assert (NAUTILUS_IS_FILE (file));
@@ -166,14 +168,8 @@ load_note_text_from_metadata (NautilusFile *file,
 		g_free (notes->previous_saved_text);
         	notes->previous_saved_text = saved_text;
         	cancel_pending_save (notes);
-        	
-	        gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);
-	        
-	        position = 0;
-	        gtk_editable_insert_text (GTK_EDITABLE (notes->note_text_field),
-	                                  saved_text,
-	                                  strlen (saved_text),
-	                                  &position);
+        
+		gtk_text_buffer_set_text (notes->text_buffer, saved_text, -1);
 	} else {
 		g_free (saved_text);
 	}
@@ -208,7 +204,7 @@ notes_load_metainfo (Notes *notes)
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
 
-	gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
+	gtk_text_buffer_set_text (notes->text_buffer, NULL, -1);
 
         if (notes->file == NULL) {
 		return;
@@ -242,10 +238,10 @@ notify_listeners_if_changed (Notes *notes, char *new_notes)
 		
 		tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 		BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
-                
+#ifdef GNOME2_CONVERSION_COMPLETE 
 		bonobo_property_bag_notify_listeners (notes->property_bag,
                                                       "tab_image", tab_image_arg, NULL);
-                
+#endif 
 		bonobo_arg_release (tab_image_arg);
 		g_free (tab_image);
 	}
@@ -256,6 +252,8 @@ static void
 notes_save_metainfo (Notes *notes)
 {
         char *notes_text;
+	GtkTextIter start_iter;
+	GtkTextIter end_iter;
 
         if (notes->file == NULL) {
                 return;
@@ -266,16 +264,22 @@ notes_save_metainfo (Notes *notes)
         /* Block the handler, so we don't respond to our own change.
          */
         gtk_signal_handler_block_by_func (GTK_OBJECT (notes->file),
-                                          load_note_text_from_metadata,
+                                          G_CALLBACK (load_note_text_from_metadata),
                                           notes);
-        
-        notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
-        nautilus_file_set_metadata (notes->file,
+
+	gtk_text_buffer_get_start_iter (notes->text_buffer, &start_iter);
+	gtk_text_buffer_get_end_iter (notes->text_buffer, &end_iter);
+	notes_text = gtk_text_buffer_get_text (notes->text_buffer, 
+					       &start_iter,
+					       &end_iter,
+					       FALSE);
+
+	nautilus_file_set_metadata (notes->file,
                                     NAUTILUS_METADATA_KEY_ANNOTATION,
                                     NULL, notes_text);
 
         gtk_signal_handler_unblock_by_func (GTK_OBJECT (notes->file),
-                                            load_note_text_from_metadata,
+                                            G_CALLBACK (load_note_text_from_metadata),
                                             notes);
 	
 	notify_listeners_if_changed (notes, notes_text);
@@ -356,26 +360,25 @@ make_notes_view (const char *iid, gpointer callback_data)
         GtkWidget *vbox;
         Notes *notes;
         EelBackground *background;
-        GdkFont *font;
-         
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
         
         /* allocate a vbox to hold all of the UI elements */
         vbox = gtk_vbox_new (FALSE, 0);
-        
+       
         /* create the text container */               
-        notes->note_text_field = gtk_text_new (NULL, NULL);
-        
+	notes->text_buffer = gtk_text_buffer_new (NULL);
+        notes->note_text_field = gtk_text_view_new_with_buffer (notes->text_buffer);
+      
+#ifdef GNOME2_CONVERSION_COMPLETE
         font = nautilus_font_factory_get_font_from_preferences (14);
         eel_gtk_widget_set_font (notes->note_text_field, font);
         gdk_font_unref (font);
-
-        gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);	
+#endif
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (notes->note_text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
         background = eel_get_widget_background (notes->note_text_field);
         eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
-
 	g_signal_connect (notes->note_text_field, "focus_out_event",
       	              	    G_CALLBACK (on_text_field_focus_out_event),
                             notes);
@@ -387,24 +390,26 @@ make_notes_view (const char *iid, gpointer callback_data)
         
 	/* Create CORBA object. */
         notes->view = nautilus_view_new (vbox);
-        g_signal_connect (notes->view, "destroy", do_destroy, notes);
+        g_signal_connect (notes->view, "destroy", G_CALLBACK (do_destroy), notes);
 
 	/* allocate a property bag to reflect the TAB_IMAGE property */
 	notes->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, notes);
+#ifdef GNOME2_CONVERSION_COMPLETE	
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), notes->property_bag);
-	
 	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 "image indicating that a note is present", 0);
-        
+#endif
         /* handle events */
         g_signal_connect (notes->view, "load_location",
-                            notes_load_location, notes);
+                            G_CALLBACK (notes_load_location), notes);
         
         /* handle selections */
+#ifdef GNOME2_CONVERSION_COMPLETE
         nautilus_clipboard_set_up_editable_in_control
                 (GTK_EDITABLE (notes->note_text_field),
                  nautilus_view_get_bonobo_control (notes->view),
                  FALSE);
+#endif
 
 /* FIXME bugzilla.gnome.org 44436: 
  * Undo not working in notes-view.

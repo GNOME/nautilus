@@ -33,6 +33,7 @@
 #include <X11/Xlib.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-ui-main.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
@@ -155,10 +156,11 @@ nautilus_view_standard_main_multi (const char *executable_name,
 				   GVoidFunc post_initialize_callback,
 				   void *user_data)
 {
-	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
 	CallbackData callback_data;
+#ifdef GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
+#endif
 
 	g_return_val_if_fail (executable_name != NULL, EXIT_FAILURE);
 	g_return_val_if_fail (version != NULL, EXIT_FAILURE);
@@ -192,9 +194,8 @@ nautilus_view_standard_main_multi (const char *executable_name,
 
 #if GNOME2_CONVERSION_COMPLETE
 	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-#endif
 	orb = bonobo_activation_init (argc, argv);
-
+#endif
 	/* Initialize libraries. */
 #if GNOME2_CONVERSION_COMPLETE
         gnome_init (executable_name, version, argc, argv); 
@@ -203,7 +204,9 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	gnome_vfs_init ();
 #if GNOME2_CONVERSION_COMPLETE
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+
 #endif
+	bonobo_ui_init (executable_name, version, &argc, argv);
 
 	if (post_initialize_callback != NULL) {
 		(* post_initialize_callback) ();
@@ -217,13 +220,18 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
+
+#ifdef GNOME2_CONVERSION_COMPLETE
         registration_id = bonobo_activation_make_registration_id (factory_iid, 
 						    DisplayString (GDK_DISPLAY ()));
-	factory = bonobo_generic_factory_new (registration_id, 
+#endif
+
+	factory = bonobo_generic_factory_new (factory_iid, 
 					      make_object,
 					      &callback_data);
+#ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
-
+#endif
 	/* Loop until we have no more objects. */
 	do {
 		bonobo_main ();

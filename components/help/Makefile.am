@@ -1,7 +1,5 @@
 NULL=
 
-SUBDIRS=converters
-
 bin_PROGRAMS=hyperbola
 modules_LTLIBRARIES=libvfs-help.la
 noinst_PROGRAMS=test-help-method
@@ -13,14 +11,14 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DINFODIR=\"$(infodir)\" \
 	-DENABLE_SCROLLKEEPER_SUPPORT \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(COMPONENT_CFLAGS)	\
 	$(GNOME_DB2HTML3_FLAG) \
 	$(NULL)
 
 LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(NAUTILUS_PRIVATE_LIBS) 
+	$(COMPONENT_LIBS)
 
 hyperbola_SOURCES=		\
 	hyperbola-nav.h		\

@@ -1751,9 +1751,9 @@ hyperbola_navigation_index_new (void)
 
         hni->ent = gtk_entry_new ();
         g_signal_connect (hni->ent, "changed",
-                            hyperbola_navigation_index_ent_changed, hni);
+                            G_CALLBACK (hyperbola_navigation_index_ent_changed), hni);
         g_signal_connect (hni->ent, "activate",
-                            hyperbola_navigation_index_ent_activate, hni);
+                            G_CALLBACK (hyperbola_navigation_index_ent_activate), hni);
         gtk_container_add (GTK_CONTAINER (vbox), hni->ent);
 
         hni->clist = gtk_clist_new (1);
@@ -1762,7 +1762,7 @@ hyperbola_navigation_index_new (void)
                                       GTK_SELECTION_BROWSE);
 
         g_signal_connect (hni->clist, "select_row",
-                            hyperbola_navigation_index_select_row, hni);
+                            G_CALLBACK (hyperbola_navigation_index_select_row), hni);
 
         wtmp =
                 gtk_scrolled_window_new (gtk_clist_get_hadjustment
@@ -2040,14 +2040,14 @@ create_index_select_page(HyperbolaNavigationIndex *hni)
 	ok_button = gtk_button_new_from_stock (GTK_STOCK_OK);
 	cancel_button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 	
-	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			       hyperbola_navigation_index_OK_button, hni);
-	gtk_signal_connect(GTK_OBJECT(hni->all_button), "clicked",
-			       hyperbola_navigation_index_select_all_button, hni);
-	gtk_signal_connect(GTK_OBJECT(hni->none_button), "clicked",
-			       hyperbola_navigation_index_select_none_button, hni);
-	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-			       hyperbola_navigation_index_cancel_button, hni);
+	g_signal_connect(ok_button, "clicked",
+			       G_CALLBACK (hyperbola_navigation_index_OK_button), hni);
+	g_signal_connect(hni->all_button, "clicked",
+			       G_CALLBACK (hyperbola_navigation_index_select_all_button), hni);
+	g_signal_connect(hni->none_button"clicked",
+			       G_CALLBACK (hyperbola_navigation_index_select_none_button), hni);
+	g_signal_connect(cancel_button, "clicked",
+			       G_CALLBACK (hyperbola_navigation_index_cancel_button), hni);
 	hseparator = gtk_hseparator_new();
 
 	gtk_box_pack_start( GTK_BOX(hbox1), hni->all_button, TRUE, TRUE, 0);
@@ -2218,7 +2218,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	gtk_container_add(GTK_CONTAINER(hni->contents_rbutton),
 						GTK_WIDGET(underlined_label));
 	
-	radio_group = gtk_radio_button_group(GTK_RADIO_BUTTON(hni->contents_rbutton));
+	radio_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(hni->contents_rbutton));
 	
 	underlined_label = gtk_label_new("");
 	gtk_label_parse_uline(GTK_LABEL(underlined_label), _("_All documents"));
@@ -2226,7 +2226,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	hni->all_rbutton = gtk_radio_button_new(radio_group);
 	gtk_container_add(GTK_CONTAINER(hni->all_rbutton),
 					GTK_WIDGET(underlined_label));
-	radio_group = gtk_radio_button_group(GTK_RADIO_BUTTON(hni->all_rbutton));
+	radio_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(hni->all_rbutton));
 	underlined_label = gtk_label_new("");
 	gtk_label_parse_uline(GTK_LABEL(underlined_label),
 				   	_("_Specific documents"));
@@ -2247,7 +2247,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 
 	
 	button = gtk_button_new_with_label ("...");
-	gtk_signal_connect(GTK_OBJECT(button),"clicked",make_index_select_page,hni);
+	g_signal_connect(button,"clicked",G_CALLBACK (make_index_select_page),hni);
 
 	gtk_box_pack_end(GTK_BOX(top_hbox), button, FALSE, FALSE, 5);
 
@@ -2267,7 +2267,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	g_signal_connect (hni->all_terms_rbutton, "toggled",
 					G_CALLBACK(show_index_for_all_terms), hni);
 	gtk_box_pack_start(GTK_BOX(mid_vbox), hni->all_terms_rbutton,FALSE,FALSE,0);
-	radio_group = gtk_radio_button_group(GTK_RADIO_BUTTON(hni->all_terms_rbutton));
+	radio_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(hni->all_terms_rbutton));
 	underlined_label = gtk_label_new("");
 	gtk_label_parse_uline(GTK_LABEL(underlined_label),
 					_("Show _only terms containing"));
@@ -2289,8 +2289,8 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	gtk_label_parse_uline(GTK_LABEL(underlined_label), _("Sho_w"));
 	hni->show_button = gtk_button_new();
 	gtk_container_add(GTK_CONTAINER(hni->show_button),GTK_WIDGET(underlined_label));
-	gtk_signal_connect(GTK_OBJECT(hni->show_button), "clicked",
-				hyperbola_navigation_index_show_button, hni);
+	g_signal_connect(hni->show_button, "clicked",
+				G_CALLBACK (hyperbola_navigation_index_show_button), hni);
 	gtk_box_pack_start(GTK_BOX(mid_hbox), hni->show_button, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(mid_vbox), mid_hbox, FALSE, FALSE, 0);
@@ -2718,11 +2718,11 @@ make_index_page (HyperbolaNavigationIndex *hni)
                                       GTK_SELECTION_EXTENDED);
 	gtk_clist_thaw(GTK_CLIST (hni->index_contents->ctree));
 	select_handler_id = g_signal_connect (hni->index_contents->ctree, "tree_select_row",
-                            hyperbola_navigation_index_tree_select_row, hni);
+                            G_CALLBACK (hyperbola_navigation_index_tree_select_row), hni);
 	g_signal_connect (hni->index_contents->ctree, "tree_unselect_row",
-                            hyperbola_navigation_index_tree_unselect_row, hni);
+                            G_CALLBACK (hyperbola_navigation_index_tree_unselect_row), hni);
 	g_signal_connect (hni->index_contents->ctree, "destroy",
-                            hyperbola_navigation_tree_destroy, hni->index_contents);
+                            G_CALLBACK (hyperbola_navigation_tree_destroy), hni->index_contents);
 	
 	/* The default is for Selection on Contents tab to be selected */
 	hyperbola_navigation_index_find_contents_selected_index_files(hni);

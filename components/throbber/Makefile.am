@@ -5,7 +5,7 @@ INCLUDES =						\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-I$(top_srcdir)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	$(NAUTILUS_PRIVATE_CFLAGS)			\
+	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
 bin_PROGRAMS =					\
@@ -19,7 +19,7 @@ nautilus_throbber_SOURCES =		        \
 nautilus_throbber_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS)
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers

@@ -4,7 +4,7 @@ INCLUDES =						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DG_LOG_DOMAIN=\"Nautilus-Tree\"		\
 	-I$(top_srcdir)					\
-	$(NAUTILUS_PRIVATE_CFLAGS)			\
+	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
 TREE_VIEW_COMMON_SOURCES =			\
@@ -31,6 +31,7 @@ lib_LTLIBRARIES =			\
 
 libnautilus_tree_view_la_SOURCES =         \
 	$(TREE_VIEW_COMMON_SOURCES)        \
+	$(COMPONENT_LIBS)		   \
 	libmain.c                          \
 	$(NULL)
 

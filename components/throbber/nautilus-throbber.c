@@ -69,8 +69,10 @@ struct NautilusThrobberDetails {
 static void     nautilus_throbber_class_init	 (NautilusThrobberClass *klass);
 static void     nautilus_throbber_init		 (NautilusThrobber *throbber);
 static void	nautilus_throbber_destroy		 (GtkObject *object);
+#ifdef GNOME2_CONVERSION_COMPLETE
 static void     nautilus_throbber_draw			 (GtkWidget *widget, 
 							  GdkRectangle *box);
+#endif
 static int      nautilus_throbber_expose 		 (GtkWidget *widget, 
 							  GdkEventExpose *event);
 static gboolean nautilus_throbber_button_press_event	 (GtkWidget *widget, 
@@ -101,7 +103,9 @@ nautilus_throbber_class_init (NautilusThrobberClass *throbber_class)
 	
 	object_class->destroy = nautilus_throbber_destroy;
 
+#ifdef GNOME2_CONVERSION_COMPLETE
 	widget_class->draw = nautilus_throbber_draw;
+#endif
 	widget_class->expose_event = nautilus_throbber_expose;
 	widget_class->button_press_event = nautilus_throbber_button_press_event;
 	widget_class->button_release_event = nautilus_throbber_button_release_event;
@@ -197,9 +201,9 @@ static void
 nautilus_throbber_destroy (GtkObject *object)
 {
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (object);
-
+#ifdef GNOME2_CONVERSION_COMPLETE
 	nautilus_bonobo_object_force_destroy_later (throbber->details->control);
-	
+#endif	
 	nautilus_throbber_remove_update_callback (throbber);
 	nautilus_throbber_unload_images (throbber);
 
@@ -296,16 +300,17 @@ nautilus_throbber_init (NautilusThrobber *throbber)
 	throbber->details->control = BONOBO_OBJECT (bonobo_control_new (widget));
 	gtk_signal_connect_while_alive (GTK_OBJECT (throbber->details->control),
 					"destroy",
-					null_pointer_callback,
+					GTK_SIGNAL_FUNC (null_pointer_callback),
 					&throbber->details->control,
 					GTK_OBJECT (throbber));
 	
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
 								   set_bonobo_properties, throbber);
+#ifdef GNOME2_CONVERSION_COMPLETE
 	bonobo_control_set_properties (BONOBO_CONTROL (throbber->details->control), 
 				       throbber->details->property_bag);
-	
+#endif	
 	bonobo_property_bag_add (throbber->details->property_bag, "throbbing", THROBBING, BONOBO_ARG_BOOLEAN, NULL,
 				 "Throbber active", 0);
 	bonobo_property_bag_add (throbber->details->property_bag, "location", LOCATION, BONOBO_ARG_STRING, NULL,
@@ -424,6 +429,7 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 	g_object_unref (G_OBJECT (pixbuf));
 }
 
+#ifdef GNOME2_CONVERSION_COMPLETE
 static void
 nautilus_throbber_draw (GtkWidget *widget, GdkRectangle *box)
 { 
@@ -432,6 +438,7 @@ nautilus_throbber_draw (GtkWidget *widget, GdkRectangle *box)
 	
 	draw_throbber_image (widget, box);	
 }
+#endif 
 
 /* handle expose events */
 
@@ -696,8 +703,10 @@ nautilus_throbber_button_release_event (GtkWidget *widget, GdkEventButton *event
 			if (location != NULL) {
 				location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 				BONOBO_ARG_SET_STRING (location_arg, location);			
+#ifdef GNOME2_CONVERSION_COMPLETE
 				bonobo_property_bag_notify_listeners
 					(throbber->details->property_bag, "location", location_arg, NULL);
+#endif
 				bonobo_arg_release (location_arg);
 				g_free (location);
 			}

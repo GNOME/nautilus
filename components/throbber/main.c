@@ -58,7 +58,7 @@ throbber_make_object (BonoboGenericFactory *factory,
 	
 	bonobo_control = nautilus_throbber_get_control (throbber);
 	
-	g_signal_connect (bonobo_control, "destroy", throbber_object_destroyed, NULL);
+	g_signal_connect (bonobo_control, "destroy", G_CALLBACK (throbber_object_destroyed), NULL);
 
 	return bonobo_control;
 }
@@ -67,7 +67,6 @@ int
 main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
-	CORBA_ORB orb;
 	char *registration_id;
 
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
@@ -78,6 +77,7 @@ main (int argc, char *argv[])
 	}
 
 	/* Disable session manager connection */
+#ifdef GNOME2_CONVERSION_COMPLETE
 	gnome_client_disable_master_connection ();
 
 	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
@@ -88,11 +88,13 @@ main (int argc, char *argv[])
 	gdk_rgb_init ();
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+#endif
+	bonobo_ui_init ("nautilus-throbber", VERSION, &argc, argv);
 
 	nautilus_global_preferences_init ();   
 	
 	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_throbber_factory", g_getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
+	factory = bonobo_generic_factory_new (registration_id, 
 						    throbber_make_object,
 						    NULL);
 	g_free (registration_id);

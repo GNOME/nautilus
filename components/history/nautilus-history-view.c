@@ -302,16 +302,16 @@ nautilus_history_view_init (NautilusHistoryView *view)
 
 	g_signal_connect (list,
 			    "button-press-event",
-			    button_press_callback,
+			    G_CALLBACK (button_press_callback),
 			    view);
 	g_signal_connect (list,
 			    "button-release-event",
-			    button_release_callback,
+			    G_CALLBACK (button_release_callback),
 			    view);
 
 	g_signal_connect (view,
 			    "history_changed", 
-			    history_changed_callback,
+			    G_CALLBACK (history_changed_callback),
 			    view);
 }
 
@@ -322,11 +322,13 @@ nautilus_history_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_HISTORY_VIEW (object);
 
+#ifdef GNOME2_CONVERSION_COMPLETE
 	if (view->external_destroyed_flag != NULL) {
 		*view->external_destroyed_flag = TRUE;
 	}
 
 	g_object_unref (G_OBJECT (view->list));
+#endif
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
