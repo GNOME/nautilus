@@ -601,7 +601,6 @@ auto_scroll_timeout_callback (gpointer data)
 	container->details->waiting_to_autoscroll = FALSE;
 
 	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
-
 	nautilus_icon_container_scroll (container, (int)x_scroll_delta, (int)y_scroll_delta);
 
 	/* update cached drag start offsets */
@@ -765,11 +764,10 @@ handle_nonlocal_move (NautilusIconContainer *container,
 		source_item_locations = g_new (GdkPoint, g_list_length (source_uris));
 		for (i = 0, p = container->details->dnd_info->drag_info.selection_list;
 		     p != NULL; i++, p = p->next) {
-			/* FIXME bugzilla.eazel.com 626:
-			 * subtract the original click coordinates from each point here
-			 */
-			source_item_locations[i].x = ((DragSelectionItem *)p->data)->icon_x;
-			source_item_locations[i].y = ((DragSelectionItem *)p->data)->icon_y;
+			source_item_locations[i].x = ((DragSelectionItem *)p->data)->icon_x 
+				- container->details->dnd_info->drag_info.start_x;
+			source_item_locations[i].y = ((DragSelectionItem *)p->data)->icon_y
+				- container->details->dnd_info->drag_info.start_y;
 		}
 	}
 		

@@ -23,10 +23,10 @@
 */
 
 #include <config.h>
-#include "nautilus-file-changes-queue.h"
 
-#include "nautilus-glib-extensions.h"
 #include "nautilus-directory-notify.h"
+#include "nautilus-file-changes-queue.h"
+#include "nautilus-glib-extensions.h"
 
 #ifdef G_THREADS_ENABLED
 #define MUTEX_LOCK(a)	if ((a) != NULL) g_mutex_lock (a)
@@ -43,13 +43,15 @@ typedef enum {
 	CHANGE_FILE_MOVED,
 	CHANGE_METADATA_COPY,
 	CHANGE_METADATA_MOVE,
-	CHANGE_METADATA_REMOVE
+	CHANGE_METADATA_REMOVE,
+	CHANGE_POSITION_SETTING
 } NautilusFileChangeKind;
 
 typedef struct {
 	NautilusFileChangeKind kind;
 	char *from_uri;
 	char *to_uri;
+	GdkPoint point;
 } NautilusFileChange;
 
 typedef struct {
@@ -224,6 +226,22 @@ nautilus_file_changes_queue_schedule_metadata_remove (const char *uri)
 	nautilus_file_changes_queue_add_common (queue, new_item);
 }
 
+void
+nautilus_file_changes_queue_schedule_position_setting (const char *uri, 
+	GdkPoint point)
+{
+	NautilusFileChange *new_item;
+	NautilusFileChangesQueue *queue;
+
+	queue = nautilus_file_changes_queue_get ();
+
+	new_item = g_new (NautilusFileChange, 1);
+	new_item->kind = CHANGE_POSITION_SETTING;
+	new_item->from_uri = g_strdup (uri);
+	new_item->point = point;
+	nautilus_file_changes_queue_add_common (queue, new_item);
+}
+
 static NautilusFileChange *
 nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
 {
@@ -273,6 +291,20 @@ pairs_list_free (GList *pairs)
 	nautilus_g_list_free_deep (pairs);
 }
 
+static void
+position_setting_list_free (GList *list)
+{
+	GList *p;
+	NautilusFileChangesQueuePositionSetting *item;
+
+	for (p = list; p != NULL; p = p->next) {
+		item = p->data;
+		g_free (item->uri);
+	}
+	/* delete the list and the now empty structs */
+	nautilus_g_list_free_deep (list);
+}
+
 /* go through changes in the change queue, send ones with the same kind
  * in a list to the different nautilus_directory_notify calls
  */ 
@@ -282,11 +314,13 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	NautilusFileChange *change;
 	GList *additions, *deletions, *moves;
 	GList *metadata_copy_requests, *metadata_move_requests, *metadata_remove_requests;
+	GList *position_setting_requests;
 	URIPair *pair;
+	NautilusFileChangesQueuePositionSetting *position_setting;
 	int kind;
 	int chunk_count;
 	NautilusFileChangesQueue *queue;
-
+	
 
 	additions = NULL;
 	deletions = NULL;
@@ -294,6 +328,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	metadata_copy_requests = NULL;
 	metadata_move_requests = NULL;
 	metadata_remove_requests = NULL;
+	position_setting_requests = NULL;
 	kind = CHANGE_FILE_INITIAL;
 
 	queue = nautilus_file_changes_queue_get();
@@ -321,7 +356,8 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			g_assert ((deletions != NULL) + (moves != NULL) 
 				+ (additions != NULL) + (metadata_copy_requests != NULL)
 				+ (metadata_move_requests != NULL) 
-				+ (metadata_remove_requests != NULL) <= 1);
+				+ (metadata_remove_requests != NULL) 
+				+ (position_setting_requests != NULL) <= 1);
 				
 			if (deletions != NULL) {
 				nautilus_directory_notify_files_removed (deletions);
@@ -350,8 +386,13 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			}
 			if (metadata_remove_requests != NULL) {
 				nautilus_directory_schedule_metadata_remove (metadata_remove_requests);
-				pairs_list_free (metadata_remove_requests);
+				nautilus_g_list_free_deep (metadata_remove_requests);
 				metadata_remove_requests = NULL;
+			}
+			if (position_setting_requests != NULL) {
+				nautilus_directory_schedule_position_setting (position_setting_requests);
+				position_setting_list_free (position_setting_requests);
+				position_setting_requests = NULL;
 			}
 		}
 
@@ -396,6 +437,14 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 		case CHANGE_METADATA_REMOVE:
 			metadata_remove_requests = g_list_append (metadata_remove_requests, 
 				change->from_uri);
+			break;
+
+		case CHANGE_POSITION_SETTING:
+			position_setting = g_new (NautilusFileChangesQueuePositionSetting, 1);
+			position_setting->uri = change->from_uri;
+			position_setting->point = change->point;
+			position_setting_requests = g_list_append (position_setting_requests,
+				position_setting);
 			break;
 
 		default:

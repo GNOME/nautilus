@@ -54,7 +54,7 @@ typedef enum {
 	NAUTILUS_ICON_DND_KEYWORD
 } NautilusIconDndTargetType;
 
-/* DnD-related information. */
+/* drag&drop-related information. */
 typedef struct {
 	GtkTargetList *target_list;
 

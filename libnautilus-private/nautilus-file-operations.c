@@ -46,7 +46,8 @@ typedef enum {
 	XFER_LINK
 } XferKind;
 
-typedef struct XferInfo {
+/* Copy engine callback state */
+typedef struct {
 	GnomeVFSAsyncHandle *handle;
 	GtkWidget *progress_dialog;
 	const char *operation_title;	/* "Copying files" */
@@ -61,6 +62,60 @@ typedef struct XferInfo {
 	gboolean show_progress_dialog;
 } XferInfo;
 
+/* Struct used to control applying icon positions to 
+ * top level items during a copy, drag, new folder creation and
+ * link creation
+ */
+typedef struct {
+	GdkPoint *icon_positions;
+	int last_icon_position_index;
+	GList *uris;
+	const GList *last_uri;
+} IconPositionIterator;
+
+static IconPositionIterator *
+icon_position_iterator_new (const GdkPoint *icon_positions, const GList *uris)
+{
+	IconPositionIterator *result;
+	int uri_count;
+	const GList *p;
+
+	uri_count = g_list_length ((GList *)uris);
+	result = g_new (IconPositionIterator, 1);
+	
+	result->icon_positions = g_new (GdkPoint, uri_count);
+	memcpy (result->icon_positions, icon_positions, uri_count * sizeof (GdkPoint));
+	result->last_icon_position_index = 0;
+
+	result->uris = NULL;
+
+	/* FIXME:
+	 * should use escaped string here
+	 */
+	for (p = uris; p != NULL; p = p->next) {
+		result->uris = g_list_prepend (result->uris, 
+			gnome_vfs_unescape_string_for_display (p->data));
+	}
+
+	result->uris = g_list_reverse (result->uris);
+
+	result->last_uri = result->uris;
+
+	return result;
+}
+
+static void
+icon_position_iterator_free (IconPositionIterator *position_iterator)
+{
+	if (position_iterator == NULL) {
+		return;
+	}
+	
+	g_free (position_iterator->icon_positions);
+	nautilus_g_list_free_deep (position_iterator->uris);
+	g_free (position_iterator);
+}
+
 char *
 nautilus_convert_to_unescaped_string_for_display  (char *escaped)
 {
@@ -72,7 +127,6 @@ nautilus_convert_to_unescaped_string_for_display  (char *escaped)
 	g_free (escaped);
 	return result;
 }
-
 
 static void
 xfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
@@ -91,8 +145,9 @@ static void
 create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 		    XferInfo *xfer_info)
 {
-	if (!xfer_info->show_progress_dialog)
+	if (!xfer_info->show_progress_dialog) {
 		return;
+	}
 
 	g_return_if_fail (xfer_info->progress_dialog == NULL);
 
@@ -339,7 +394,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			switch (result) {
 			case 0:
 				return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-			case 2:
+			case 1:
 				return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 			}						
 		} else {
@@ -426,13 +481,15 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 }
 
 /* Note that we have these two separate functions with separate format
- * strings for ease of localization. Resist the urge to "optimize" them
- * for English.
+ * strings for ease of localization.
  */
 
 static char *
-get_link_name (const char *name, int count) 
+get_link_name (char *name, int count) 
 {
+	const char *format;
+	char *result;
+	
 	g_assert (name != NULL);
 
 	if (count < 1) {
@@ -440,51 +497,56 @@ get_link_name (const char *name, int count)
 		count = 1;
 	}
 
-	/* Handle special cases for low numbers.
-	 * Perhaps for some locales we will need to add more.
-	 */
-	switch (count) {
-	case 1:
-		return g_strdup_printf (_("link to %s"), name);
-	case 2:
-		return g_strdup_printf (_("another link to %s"), name);
+	if (count <= 2) {
+		/* Handle special cases for low numbers.
+		 * Perhaps for some locales we will need to add more.
+		 */
+		switch (count) {
+		case 1:
+			format = _("link to %s");
+			break;
+		case 2:
+			format = _("another link to %s");
+			break;
+		}
+		result = g_strdup_printf (format, name);
+
+	} else {
+		/* Handle special cases for the first few numbers of each ten.
+		 * For locales where getting this exactly right is difficult,
+		 * these can just be made all the same as the general case below.
+		 */
+		switch (count % 10) {
+		case 1:
+			/* Localizers: Feel free to leave out the "st" suffix
+			 * if there's no way to do that nicely for a
+			 * particular language.
+			 */
+			format = _("%dst link to %s");
+			break;
+		case 2:
+			format = _("%dnd link to %s");
+			break;
+		case 3:
+			format = _("%drd link to %s");
+			break;
+		default:
+			format = _("%dth link to %s");
+			break;
+		}
+		result = g_strdup_printf (format, count, name);
 	}
 
-	/* Handle special cases for the first few numbers of each ten.
-	 * For locales where getting this exactly right is difficult,
-	 * these can just be made all the same as the general case below.
-	 */
-	switch (count % 10) {
-	case 1:
-		/* Localizers: Feel free to leave out the "st" suffix
-		 * if there's no way to do that nicely for a
-		 * particular language.
-		 */
-		return g_strdup_printf (_("%dst link to %s"), count, name);
-	case 2:
-		/* Localizers: Feel free to leave out the "nd" suffix
-		 * if there's no way to do that nicely for a
-		 * particular language.
-		 */
-		return g_strdup_printf (_("%dnd link to %s"), count, name);
-	case 3:
-		/* Localizers: Feel free to leave out the "rd" suffix
-		 * if there's no way to do that nicely for a
-		 * particular language.
-		 */
-		return g_strdup_printf (_("%drd link to %s"), count, name);
-	default:
-		/* Localizers: Feel free to leave out the "th" suffix
-		 * if there's no way to do that nicely for a
-		 * particular language.
-		 */
-		return g_strdup_printf (_("%dth link to %s"), count, name);
-	}
+	g_free (name);
+	return result;
 }
 
 static char *
-get_duplicate_name (const char *name, int count) 
+get_duplicate_name (char *name, int count) 
 {
+	const char *format;
+	char *result;
+
 	g_assert (name != NULL);
 
 	if (count < 1) {
@@ -492,31 +554,47 @@ get_duplicate_name (const char *name, int count)
 		count = 1;
 	}
 
-	/* Handle special cases for low numbers.
-	 * Perhaps for some locales we will need to add more.
-	 */
-	switch (count) {
-	case 1:
-		return g_strdup_printf (_("%s (copy)"), name);
-	case 2:
-		return g_strdup_printf (_("%s (another copy)"), name);
+	if (count <= 2) {
+		/* Handle special cases for low numbers.
+		 * Perhaps for some locales we will need to add more.
+		 */
+		switch (count) {
+		case 1:
+			format = _("%s (copy)");
+			break;
+		case 2:
+			format = _("%s (another copy)");
+			break;
+
+		}
+		result = g_strdup_printf (format, name);
+	} else {
+
+		/* Handle special cases for the first few numbers of each ten.
+		 * For locales where getting this exactly right is difficult,
+		 * these can just be made all the same as the general case below.
+		 */
+		switch (count % 10) {
+		case 1:
+			format = _("%s (%dst copy)");
+			break;
+		case 2:
+			format = _("%s (%dnd copy)");
+			break;
+		case 3:
+			format = _("%s (%drd copy)");
+			break;
+		default:
+			/* The general case. */
+			format = _("%s (%dth copy)");
+			break;
+		}
+
+		result = g_strdup_printf (format, name, count);
 	}
 
-	/* Handle special cases for the first few numbers of each ten.
-	 * For locales where getting this exactly right is difficult,
-	 * these can just be made all the same as the general case below.
-	 */
-	switch (count % 10) {
-	case 1:
-		return g_strdup_printf (_("%s (%dst copy)"), name, count);
-	case 2:
-		return g_strdup_printf (_("%s (%dnd copy)"), name, count);
-	case 3:
-		return g_strdup_printf (_("%s (%drd copy)"), name, count);
-	}
-
-	/* The general case. */
-	return g_strdup_printf (_("%s (%dth copy)"), name, count);
+	g_free (name);
+	return result;
 }
 
 static int
@@ -525,18 +603,12 @@ handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 {
 	switch (xfer_info->kind) {
 	case XFER_LINK:
-		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. 
-		 * Is this a storage leak?
-		 */
 		progress_info->duplicate_name = get_link_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
 		break;
 
 	case XFER_COPY:
-		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. 
-		 * Is this a storage leak? 
-		 */
 		progress_info->duplicate_name = get_duplicate_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
@@ -574,12 +646,59 @@ update_xfer_callback (GnomeVFSAsyncHandle *handle,
 	}
 }
 
+static void
+apply_one_position (IconPositionIterator *position_iterator, 
+	const char *source_name, const char *target_name)
+{
+	const char *item_uri;
+
+	if (position_iterator == NULL || position_iterator->last_uri == NULL) {
+		return;
+	}
+		
+	for (;;) {
+		/* Scan for the next point that matches the source_name
+		 * uri.
+		 */
+		if (strcmp ((const char *)position_iterator->last_uri->data, 
+			source_name) == 0) {
+			break;
+		}
+		/* Didn't match -- a uri must have been skipped by the copy 
+		 * engine because of a name conflict. All we need to do is 
+		 * skip ahead too.
+		 */
+		position_iterator->last_uri = position_iterator->last_uri->next;
+		position_iterator->last_icon_position_index++; 
+
+		if (position_iterator->last_uri == NULL) {
+			/* we are done, no more points left */
+			return;
+		}
+	}
+
+	item_uri = target_name != NULL ? target_name : source_name;
+
+	/* apply the location to the target file */
+	nautilus_file_changes_queue_schedule_position_setting (target_name, 
+		position_iterator->icon_positions
+			[position_iterator->last_icon_position_index]);
+
+	/* advance to the next point for next time */
+	position_iterator->last_uri = position_iterator->last_uri->next;
+	position_iterator->last_icon_position_index++; 
+}
+
 /* Low-level callback, called for every copy engine operation.
  * Generates notifications about new, deleted and moved files.
  */
 static int
 sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 {
+	IconPositionIterator *position_iterator;
+
+	position_iterator = (IconPositionIterator *)data;
+
 	if (progress_info->status == GNOME_VFS_XFER_PROGRESS_STATUS_OK) {
 		switch (progress_info->phase) {
 		case GNOME_VFS_XFER_PHASE_OPENTARGET:
@@ -590,6 +709,9 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				g_assert (progress_info->source_name != NULL);
 				nautilus_file_changes_queue_schedule_metadata_copy 
 					(progress_info->source_name, progress_info->target_name);
+
+				apply_one_position (position_iterator, progress_info->source_name,
+					progress_info->target_name);
 			}
 			nautilus_file_changes_queue_file_added (progress_info->target_name);
 			break;
@@ -599,6 +721,9 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				g_assert (progress_info->source_name != NULL);
 				nautilus_file_changes_queue_schedule_metadata_move 
 					(progress_info->source_name, progress_info->target_name);
+
+				apply_one_position (position_iterator, progress_info->source_name,
+					progress_info->target_name);
 			}
 			nautilus_file_changes_queue_file_moved (progress_info->source_name,
 				progress_info->target_name);
@@ -611,6 +736,11 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 					(progress_info->source_name);
 			}
 			nautilus_file_changes_queue_file_removed (progress_info->source_name);
+			break;
+
+		case GNOME_VFS_XFER_PHASE_COMPLETED:
+			/* done, clean up */
+			icon_position_iterator_free (position_iterator);
 			break;
 
 		default:
@@ -642,11 +772,10 @@ append_basename (const GnomeVFSURI *target_directory, const GnomeVFSURI *source_
 	filename =  gnome_vfs_uri_extract_short_name (source_directory);
 	if (filename != NULL) {
 		return gnome_vfs_uri_append_file_name (target_directory, filename);
-	} else {
-		return gnome_vfs_uri_dup (target_directory);
 	}
+	 
+	return gnome_vfs_uri_dup (target_directory);
 }
-
 
 void
 nautilus_file_operations_copy_move (const GList *item_uris,
@@ -668,10 +797,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	gboolean same_fs;
 	gboolean is_trash_move;
 	
+	IconPositionIterator *icon_position_iterator;
+
 	g_assert (item_uris != NULL);
 
 	target_dir_uri = NULL;
 	trash_dir_uri = NULL;
+	icon_position_iterator = NULL;
 	result = GNOME_VFS_OK;
 
 	source_uri_list = NULL;
@@ -698,7 +830,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 */
 	for (p = item_uris; p != NULL; p = p->next) {
 		source_uri = gnome_vfs_uri_new ((const char *)p->data);
-		source_uri_list = g_list_prepend (source_uri_list, gnome_vfs_uri_ref (source_uri));
+		source_uri_list = g_list_prepend (source_uri_list, source_uri);
 
 		if (target_dir != NULL) {
 			if (is_trash_move) {
@@ -732,6 +864,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	xfer_info->parent_view = view;
 	xfer_info->progress_dialog = NULL;
 
+	if (relative_item_points != NULL) {
+		icon_position_iterator = icon_position_iterator_new (relative_item_points, item_uris);
+	}
+	
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		xfer_info->operation_title = _("Moving files");
 		xfer_info->action_verb =_("moved");
@@ -828,9 +964,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, NULL);
+		      		      &sync_xfer_callback, icon_position_iterator);
 	}
 
+	gnome_vfs_uri_list_free (source_uri_list);
+	gnome_vfs_uri_list_free (target_uri_list);
 	if (trash_dir_uri != NULL) {
 		gnome_vfs_uri_unref (trash_dir_uri);
 	}
@@ -960,8 +1098,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		}
 
 		g_assert (trash_dir_uri != NULL);
-		target_uri_list = g_list_prepend (target_uri_list,
-			append_basename (trash_dir_uri, source_uri));
+		target_uri_list = g_list_prepend (target_uri_list, append_basename (trash_dir_uri, source_uri));
 		
 		if (gnome_vfs_uri_equal (source_uri, trash_dir_uri)) {
 			nautilus_simple_dialog (parent_view, 

@@ -1,3 +1,55 @@
+2000-09-11  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-notify.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	* libnautilus-extensions/nautilus-file-changes-queue.h:
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(icon_position_iterator_new), (icon_position_iterator_free),
+	(create_xfer_dialog), (handle_xfer_vfs_error), 
+	(apply_one_position), (sync_xfer_callback),
+	(nautilus_file_operations_copy_move),
+	(nautilus_file_changes_queue_schedule_position_setting),
+	(position_setting_list_free),
+	(nautilus_directory_set_icon_position),
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move),
+	(nautilus_file_changes_consume_changes),
+	(nautilus_directory_schedule_position_setting):
+
+	Work in progress on saving drop locations during a copy/move operation.
+	Add a new NautilusFileChangesQueue element type to handle scheduling
+	of the position saving operation. Hook it up to a call that saves the
+	icon position into the metadata.
+	Add icon position handling to the synchronous copy engine callback.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(handle_nonlocal_move):
+	Pass relative icon positions (FIXME 626).
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_move_copy_items):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (icon_view_move_copy_items):
+	Add drop location to relative icon positions to get correct icon drop
+	placement.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(get_link_name), (get_duplicate_name), (handle_xfer_duplicate):
+	Rework a bit, fix a leak (FIXME 2556).
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move),
+	Fix a leak.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(create_xfer_dialog):
+	Fix a bug in dialog result handling code.
+
+	* libnautilus-extensions/nautilus-drag.h:
+	Some minor tweaks
+
 2000-09-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-zoom-control.c: (draw_number):
@@ -132,9 +184,6 @@
 	figure out which sidebar failed. Done in order to fix null
 	string being passed to dialogue function which segfaulted
 	Nautilus on Solaris.
-
-	Yes children, your Nautilus will now run and frollick in the green,
-	green pasture of the multi-cpu UltraSparc.
 	
 2000-09-11  Robey Pointer  <robey@eazel.com>
 

@@ -913,6 +913,25 @@ nautilus_directory_copy_metadata (const char *source_uri, const char *dest_uri)
 	nautilus_directory_unref (destination_directory);
 }
 
+static void
+nautilus_directory_set_icon_position (const char *uri, GdkPoint point)
+{
+	NautilusDirectory *destination_directory;
+	char *destination_file_name;
+	char *position_string;
+
+	destination_directory = get_parent_directory (uri);
+	destination_file_name = uri_get_basename (uri);
+
+	position_string = g_strdup_printf ("%d,%d", point.x, point.y);
+	nautilus_directory_set_file_metadata (destination_directory,
+		destination_file_name, NAUTILUS_METADATA_KEY_ICON_POSITION, NULL, position_string);
+	g_free (position_string);
+
+	g_free (destination_file_name);
+	nautilus_directory_unref (destination_directory);
+}
+
 #undef METADATA_COPY_DEBUG
 void 
 nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
@@ -922,9 +941,6 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = (URIPair *)p->data;
-#ifdef METADATA_COPY_DEBUG
-		g_print ("copy metadata from %s to %s\n", pair->from_uri, pair->to_uri);
-#endif
 		nautilus_directory_copy_metadata (pair->from_uri, pair->to_uri);
 	}
 }
@@ -937,9 +953,6 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = (URIPair *)p->data;
-#ifdef METADATA_COPY_DEBUG
-		g_print ("move metadata from %s to %s\n", pair->from_uri, pair->to_uri);
-#endif
 		nautilus_directory_move_metadata (pair->from_uri, pair->to_uri);
 	}
 }
@@ -960,6 +973,19 @@ nautilus_directory_schedule_metadata_remove (GList *uris)
 		 */
 	}
 }
+
+void
+nautilus_directory_schedule_position_setting (GList *position_setting_list)
+{
+	GList *p;
+	const NautilusFileChangesQueuePositionSetting *item;
+
+	for (p = position_setting_list; p != NULL; p = p->next) {
+		item = (const NautilusFileChangesQueuePositionSetting *)p->data;
+		nautilus_directory_set_icon_position (item->uri, item->point);
+	}
+}
+
 
 gboolean
 nautilus_directory_contains_file (NautilusDirectory *directory,

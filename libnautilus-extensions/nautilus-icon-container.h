@@ -81,7 +81,7 @@ typedef struct {
 	void         (* context_click_selection)  (NautilusIconContainer *container);
 	void	     (* move_copy_items)	  (NautilusIconContainer *container,
 						   GList *item_uris,
-						   const GdkPoint *relative_item_points,
+						   GdkPoint *relative_item_points,
 						   const char *target_uri,
 						   int copy_action,
 						   int x,

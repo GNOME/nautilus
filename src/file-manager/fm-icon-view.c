@@ -2199,7 +2199,7 @@ icon_view_get_container_uri (NautilusIconContainer *container,
 static void
 icon_view_move_copy_items (NautilusIconContainer *container,
 			   const GList *item_uris,
-			   const GdkPoint *relative_item_points,
+			   GdkPoint *relative_item_points,
 			   const char *target_dir,
 			   int copy_action,
 			   int x, int y,

@@ -3900,14 +3900,25 @@ fm_directory_view_get_uri (FMDirectoryView *view)
 
 void
 fm_directory_view_move_copy_items (const GList *item_uris,
-				   const GdkPoint *relative_item_points,
+				   GdkPoint *relative_item_points,
 				   const char *target_dir,
 				   int copy_action,
 				   int x,
 				   int y,
 				   FMDirectoryView *view)
 {
-	nautilus_file_operations_copy_move (item_uris, relative_item_points, target_dir, copy_action, GTK_WIDGET (view));
+	int index, count;
+	
+	if (relative_item_points) {
+		/* add the drop location to the icon offsets */
+		count = g_list_length ((GList *)item_uris);
+		for (index = 0; index < count; index++ ){
+			relative_item_points[index].x += x;
+			relative_item_points[index].y += y;
+		}
+	}
+	nautilus_file_operations_copy_move (item_uris, relative_item_points, 
+		target_dir, copy_action, GTK_WIDGET (view));
 }
 
 gboolean
