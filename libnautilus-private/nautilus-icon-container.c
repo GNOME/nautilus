@@ -1424,7 +1424,6 @@ rubberband_timeout_callback (gpointer data)
 	GtkWidget *widget;
 	NautilusIconRubberbandInfo *band_info;
 	int x, y;
-	int bin_x, bin_y;
 	double x1, y1, x2, y2;
 	double world_x, world_y;
 	int x_scroll, y_scroll;
@@ -1439,7 +1438,6 @@ rubberband_timeout_callback (gpointer data)
 		  EEL_IS_CANVAS_RECT (band_info->selection_rectangle));
 
 	gdk_window_get_pointer (widget->window, &x, &y, NULL);
-	gdk_window_get_pointer (GTK_LAYOUT (widget)->bin_window, &bin_x, &bin_y, NULL);
 
 	if (x < 0) {
 		x_scroll = x;
@@ -1468,8 +1466,8 @@ rubberband_timeout_callback (gpointer data)
 
 	nautilus_icon_container_scroll (container, x_scroll, y_scroll);
 
-	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      bin_x, bin_y, &world_x, &world_y);
+	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+						 x, y, &world_x, &world_y);
 
 	if (world_x < band_info->start_x) {
 		x1 = world_x;
@@ -1541,7 +1539,7 @@ start_rubberbanding (NautilusIconContainer *container,
 		icon->was_selected_before_rubberband = icon->is_selected;
 	}
 
-	gnome_canvas_window_to_world
+	eel_gnome_canvas_canvas_window_to_world
 		(GNOME_CANVAS (container),
 		 event->x, event->y,
 		 &band_info->start_x, &band_info->start_y);
@@ -2378,7 +2376,7 @@ realize (GtkWidget *widget)
 
 	gdk_window_set_background
 		(GTK_LAYOUT (widget)->bin_window,
-		&widget->style->bg[GTK_STATE_NORMAL]);
+		 &widget->style->bg[GTK_STATE_NORMAL]);
 
 	/* reduce flicker when scrolling by setting the back pixmap to NULL */
 	gdk_window_set_back_pixmap (GTK_LAYOUT (widget)->bin_window,
@@ -2617,9 +2615,9 @@ update_stretch_at_idle (NautilusIconContainer *container)
 		return FALSE;
 	}
 
-	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      details->window_x, details->window_y,
-				      &world_x, &world_y);
+	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+						 details->window_x, details->window_y,
+						 &world_x, &world_y);
 	gnome_canvas_w2c (GNOME_CANVAS (container),
 			  world_x, world_y,
 			  &stretch_state.pointer_x, &stretch_state.pointer_y);
@@ -2795,10 +2793,9 @@ motion_notify_event (GtkWidget *widget,
 				break;
 			}
 
-			gnome_canvas_window_to_world
-				(GNOME_CANVAS (container),
-				 event->x, event->y,
-				 &world_x, &world_y);
+			eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+								 event->x, event->y,
+								 &world_x, &world_y);
 			
 			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
 			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {

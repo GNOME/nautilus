@@ -1,3 +1,23 @@
+2002-01-30  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Bump eel version required.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	(rubberband_timeout_callback), (start_rubberbanding),
+	(update_stretch_at_idle), (motion_notify_event):
+	* libnautilus-private/nautilus-icon-dnd.c: (icon_get_data_binder),
+	(nautilus_icon_container_position_shadow),
+	(receive_dropped_keyword),
+	(nautilus_icon_container_find_drop_target),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_container_get_drop_action),
+	(nautilus_icon_dnd_update_drop_target), (nautilus_icon_dnd_init),
+	(nautilus_icon_dnd_begin_drag):
+	Use new eel functions that eliminate the funky interaction between
+	the new GtkLayout and GnomeCanvas. Basically, all the functions
+	that deal with window coordinates are getting bin_window
+	coordinates instead. This should really be fixed in GnomeCanvas.
+
 2002-01-30  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* libnautilus-private/nautilus-authn-manager.c

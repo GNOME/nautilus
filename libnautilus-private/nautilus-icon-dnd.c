@@ -235,7 +235,7 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 	container = NAUTILUS_ICON_CONTAINER (context->iterator_context);
 
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-	window_rect = eel_gnome_canvas_world_to_window_rectangle
+	window_rect = eel_gnome_canvas_world_to_canvas_window_rectangle
 		(GNOME_CANVAS (container), world_rect);
 
 	uri = nautilus_icon_container_get_icon_uri (container, icon);
@@ -340,8 +340,8 @@ nautilus_icon_container_position_shadow (NautilusIconContainer *container,
 	if (shadow == NULL) {
 		return;
 	}
-	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      x, y, &world_x, &world_y);
+	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+						 x, y, &world_x, &world_y);
 
 	set_shadow_position (shadow, world_x, world_y);
 	gnome_canvas_item_show (shadow);
@@ -637,7 +637,7 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 	g_assert (keyword != NULL);
 
 	/* find the item we hit with our drop, if any */
-  	gnome_canvas_window_to_world (GNOME_CANVAS (container), x, y, &world_x, &world_y);
+  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container), x, y, &world_x, &world_y);
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
 	if (drop_target_icon == NULL) {
 		return;
@@ -905,8 +905,8 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 		return NULL;
 	}
 
-  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      x, y, &world_x, &world_y);
+  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+						 x, y, &world_x, &world_y);
 	
 	/* FIXME bugzilla.gnome.org 42485: 
 	 * These "can_accept_items" tests need to be done by
@@ -1001,8 +1001,8 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	}
 
 	if (context->action > 0) {
-	  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-					      x, y, &world_x, &world_y);
+	  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+							 x, y, &world_x, &world_y);
 
 		drop_target = nautilus_icon_container_find_drop_target (container, 
 			context, x, y, &icon_hit);
@@ -1047,8 +1047,8 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	}
 
 	/* find out if we're over an icon */
-  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      x, y, &world_x, &world_y);
+  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+						 x, y, &world_x, &world_y);
 	
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
@@ -1145,8 +1145,8 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 		return;
 	}
 
-  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      x, y, &world_x, &world_y);
+  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
+						 x, y, &world_x, &world_y);
 
 	/* Find the item we hit with our drop, if any. */
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
@@ -1225,27 +1225,26 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 	 * (But not a source, as drags starting from this widget will be
          * implemented by dealing with events manually.)
 	 */
-	gtk_drag_dest_set  (GTK_WIDGET (container),
-			    0,
-			    drop_types, G_N_ELEMENTS (drop_types),
-			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK
-			    | GDK_ACTION_ASK);
+	gtk_drag_dest_set (GTK_WIDGET (container),
+			   0,
+			   drop_types, G_N_ELEMENTS (drop_types),
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK | GDK_ACTION_ASK);
 
 	/* Messages for outgoing drag. */
 	g_signal_connect (container, "drag_data_get",
-			    G_CALLBACK (drag_data_get_callback), NULL);
+			  G_CALLBACK (drag_data_get_callback), NULL);
 	g_signal_connect (container, "drag_end",
-			    G_CALLBACK (drag_end_callback), NULL);
-
+			  G_CALLBACK (drag_end_callback), NULL);
+	
 	/* Messages for incoming drag. */
 	g_signal_connect (container, "drag_data_received",
-			    G_CALLBACK (drag_data_received_callback), NULL);
+			  G_CALLBACK (drag_data_received_callback), NULL);
 	g_signal_connect (container, "drag_motion",
-			    G_CALLBACK (drag_motion_callback), NULL);
+			  G_CALLBACK (drag_motion_callback), NULL);
 	g_signal_connect (container, "drag_drop",
-			    G_CALLBACK (drag_drop_callback), NULL);
+			  G_CALLBACK (drag_drop_callback), NULL);
 	g_signal_connect (container, "drag_leave",
-			    G_CALLBACK (drag_leave_callback), NULL);
+			  G_CALLBACK (drag_leave_callback), NULL);
 
 }
 
@@ -1286,9 +1285,10 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
            the way the canvas handles events.
 	*/
 	canvas = GNOME_CANVAS (container);
-	gnome_canvas_world_to_window (canvas,
-				      event->x, event->y,
-				      &dnd_info->drag_info.start_x, &dnd_info->drag_info.start_y);
+	eel_gnome_canvas_world_to_canvas_window (canvas,
+						 event->x, event->y,
+						 &dnd_info->drag_info.start_x,
+						 &dnd_info->drag_info.start_y);
 	
 	/* start the drag */
 	context = gtk_drag_begin (GTK_WIDGET (container),
@@ -1296,7 +1296,6 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 				  actions,
 				  button,
 				  (GdkEvent *) event);
-
 
         /* create a pixmap and mask to drag with */
         pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
@@ -1306,10 +1305,9 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	   to it, with the hope that we get it back someday as X Windows improves */
 	
         /* compute the image's offset */
-	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (
-		container->details->drag_icon->item);
-	window_rect = eel_gnome_canvas_world_to_window_rectangle
-		(canvas, world_rect);
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle
+		(container->details->drag_icon->item);
+	window_rect = eel_gnome_canvas_world_to_canvas_window_rectangle (canvas, world_rect);
         x_offset = dnd_info->drag_info.start_x - window_rect.x0;
         y_offset = dnd_info->drag_info.start_y - window_rect.y0;
         
