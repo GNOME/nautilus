@@ -641,8 +641,12 @@ nautilus_smooth_text_layout_draw_to_pixbuf (const NautilusSmoothTextLayout *smoo
 	g_return_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout));
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
 	g_return_if_fail (destination_area != NULL);
-	g_return_if_fail (!art_irect_empty (destination_area));
 	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
+
+	/* Make sure there is some work to do */
+	if (art_irect_empty (destination_area)) {
+		return;
+	}
 
 	smooth_text_layout_ensure_lines (smooth_text_layout);
 	

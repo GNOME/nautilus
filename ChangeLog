@@ -1,3 +1,12 @@
+2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-smooth-text-layout.c:
+	(nautilus_smooth_text_layout_draw_to_pixbuf):
+	Ignore empty rectangles rather than asserting on them.
+	FIxes bug 6945.
+	
 2001-02-23  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
