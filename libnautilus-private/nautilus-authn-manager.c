@@ -67,8 +67,8 @@ construct_password_dialog (gboolean is_proxy_authentication, const GnomeVFSModul
 	dialog = EEL_PASSWORD_DIALOG (eel_password_dialog_new (
 			_("Authentication Required"),
 			message,
-			_(""),
-			_(""),
+			"",
+			"",
 			FALSE));
 
 	g_free (message);
