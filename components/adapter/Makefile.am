@@ -50,3 +50,4 @@ nautilus_adapter_LDADD =				\
 	$(NULL)
 
 EXTRA_DIST = $(server_in_files).in
+CLEANFILES = $(server_in_files) $(server_DATA)

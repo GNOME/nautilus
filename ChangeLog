@@ -1,3 +1,19 @@
+2002-09-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* components/adapter/Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/history/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/music/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/text/Makefile.am:
+	* components/throbber/Makefile.am:
+	* components/tree/Makefile.am:
+	Add CLEANFILES so that make clean deletes $(server_DATA) and
+	$(server_DATA).in
+
 2002-09-19  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/gnome-icon-lookup.c:
