@@ -497,8 +497,7 @@ nautilus_file_can_rename (NautilusFile *file)
 	/* User must have write permissions for the parent directory. */
 	parent = get_file_for_parent_directory (file);
 
-	/* 
-	 * No parent directory for some reason (at root level?).
+	/* No parent directory for some reason (at root level?).
 	 * Can't tell whether this file is renameable, so return TRUE.
 	 */
 	if (parent == NULL) {
@@ -520,6 +519,9 @@ typedef struct {
 
 	/* Operation-specific data. */
 	char *new_name; /* rename */
+	uid_t new_gid; /* set_group */
+	uid_t new_uid; /* set_owner */
+	GnomeVFSFilePermissions new_permissions; /* set_permissions */
 } Operation;
 
 static Operation *
@@ -668,9 +670,10 @@ nautilus_file_rename (NautilusFile *file,
 	 * file with the same name.
 	 */
 	if (nautilus_file_is_gone (file)) {
-	       	/* Claim that something changed even if the rename failed.
-		 * This makes it easier for some clients who see the "reverting"
-		 * to the old name as "changing back".
+	       	/* Claim that something changed even if the rename
+		 * failed. This makes it easier for some clients who
+		 * see the "reverting" to the old name as "changing
+		 * back".
 		 */
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_NOT_FOUND, callback_data);
@@ -678,7 +681,7 @@ nautilus_file_rename (NautilusFile *file,
 	}
 
 	/* Test the name-hasn't-changed case explicitly, for two reasons.
-	 * (1) gnome_vfs_move returns an error if new & old are same.
+	 * (1) gnome_vfs_async_xfer returns an error if new & old are same.
 	 * (2) We don't want to send file-changed signal if nothing changed.
 	 */
 	if (strcmp (new_name, file->details->name) == 0) {
@@ -690,6 +693,9 @@ nautilus_file_rename (NautilusFile *file,
 	op = operation_new (file, callback, callback_data);
 	op->new_name = g_strdup (new_name);
 
+	/* FIXME: This call could use gnome_vfs_async_set_file_info
+	 * instead and it might be simpler.
+	 */
 	directory_uri_text = nautilus_directory_get_uri (file->details->directory);
 	source_name_list = g_list_prepend (NULL, file->details->name);
 	target_name_list = g_list_prepend (NULL, (char *) new_name);
@@ -1669,6 +1675,22 @@ nautilus_file_get_permissions (NautilusFile *file)
 	return file->details->info->permissions;
 }
 
+static void
+set_permissions_callback (GnomeVFSAsyncHandle *handle,
+			  GnomeVFSResult result,
+			  gpointer callback_data)
+{
+	Operation *op;
+
+	op = callback_data;
+	g_assert (handle == op->handle);
+
+	if (result == GNOME_VFS_OK) {
+		op->file->details->info->permissions = op->new_permissions;
+	}
+	operation_complete (op, result);
+}
+
 /**
  * nautilus_file_set_permissions:
  * 
@@ -1678,10 +1700,6 @@ nautilus_file_get_permissions (NautilusFile *file)
  * @file: NautilusFile representing the file in question.
  * @new_permissions: New permissions value. This is the whole
  * set of permissions, not a delta.
- * 
- * Returns: GnomeVFSResult reporting the success or failure of
- * trying to change the file's permissions.
- * 
  **/
 void
 nautilus_file_set_permissions (NautilusFile *file, 
@@ -1689,9 +1707,9 @@ nautilus_file_set_permissions (NautilusFile *file,
 			       NautilusFileOperationCallback callback,
 			       gpointer callback_data)
 {
-	GnomeVFSResult result;
+	Operation *op;
+	GnomeVFSURI *uri;
 	GnomeVFSFileInfo *partial_file_info;
-	char *uri;
 
 	if (!nautilus_file_can_set_permissions (file)) {
 		/* Claim that something changed even if the permission change failed.
@@ -1703,31 +1721,29 @@ nautilus_file_set_permissions (NautilusFile *file,
 		return;
 	}
 			       
+	/* Test the permissions-haven't-changed case explicitly
+	 * because we don't want to send the file-changed signal if
+	 * nothing changed.
+	 */
 	if (new_permissions == file->details->info->permissions) {
 		(* callback) (file, GNOME_VFS_OK, callback_data);
 		return;
 	}
 
+	/* Set up a permission change operation. */
+	op = operation_new (file, callback, callback_data);
+	op->new_permissions = new_permissions;
+
 	/* Change the file-on-disk permissions. */
 	partial_file_info = gnome_vfs_file_info_new ();
 	partial_file_info->permissions = new_permissions;
-	uri = nautilus_file_get_uri (file);
-	result = gnome_vfs_set_file_info (uri, partial_file_info, 
-				 	  GNOME_VFS_SET_FILE_INFO_PERMISSIONS);
+	uri = nautilus_file_get_gnome_vfs_uri (file);
+	gnome_vfs_async_set_file_info (&op->handle,
+				       uri, partial_file_info, 
+				       GNOME_VFS_SET_FILE_INFO_PERMISSIONS,
+				       set_permissions_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
-	g_free (uri);
-
-	/* Update the permissions in our NautilusFile object. */
-	if (result == GNOME_VFS_OK) {
-		file->details->info->permissions = new_permissions;
-	}
-
-	/* Claim that something changed even if the permission change failed.
-	 * This makes it easier for some clients who see the "reverting"
-	 * to the old permissions as "changing back".
-	 */
-	nautilus_file_changed (file);
-	(* callback) (file, result, callback_data);
+	gnome_vfs_uri_unref (uri);
 }
 
 static char *
@@ -1904,6 +1920,52 @@ nautilus_file_can_set_owner (NautilusFile *file)
 	return geteuid() == 0;
 }
 
+static void
+set_owner_and_group_callback (GnomeVFSAsyncHandle *handle,
+			      GnomeVFSResult result,
+			      gpointer callback_data)
+{
+	Operation *op;
+
+	op = callback_data;
+	g_assert (handle == op->handle);
+
+	if (result == GNOME_VFS_OK) {
+		op->file->details->info->uid = op->new_uid;
+		op->file->details->info->gid = op->new_gid;
+	}
+	operation_complete (op, result);
+}
+
+static void
+set_owner_and_group (NautilusFile *file, 
+		     uid_t owner,
+		     uid_t group,
+		     NautilusFileOperationCallback callback,
+		     gpointer callback_data)
+{
+	Operation *op;
+	GnomeVFSURI *uri;
+	GnomeVFSFileInfo *partial_file_info;
+
+	/* Set up a owner-change operation. */
+	op = operation_new (file, callback, callback_data);
+	op->new_uid = owner;
+	op->new_gid = group;
+
+	/* Change the file-on-disk owner. */
+	partial_file_info = gnome_vfs_file_info_new ();
+	partial_file_info->uid = owner;
+	partial_file_info->gid = group;
+	uri = nautilus_file_get_gnome_vfs_uri (file);
+	gnome_vfs_async_set_file_info (&op->handle,
+				       uri, partial_file_info, 
+				       GNOME_VFS_SET_FILE_INFO_OWNER,
+				       set_owner_and_group_callback, op);
+	gnome_vfs_file_info_unref (partial_file_info);
+	gnome_vfs_uri_unref (uri);
+}
+
 /**
  * nautilus_file_set_owner:
  * 
@@ -1925,63 +1987,50 @@ nautilus_file_set_owner (NautilusFile *file,
 			 gpointer callback_data)
 {
 	uid_t new_id;
-	char *uri;
-	GnomeVFSFileInfo *partial_file_info;
-	GnomeVFSResult result;
 
 	if (!nautilus_file_can_set_owner (file)) {
-		/* Claim that something changed even if the permission change failed.
-		 * This makes it easier for some clients who see the "reverting"
-		 * to the old owner as "changing back".
+		/* Claim that something changed even if the permission
+		 * change failed. This makes it easier for some
+		 * clients who see the "reverting" to the old owner as
+		 * "changing back".
 		 */
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_ACCESS_DENIED, callback_data);
 		return;
 	}
 
-	if (!get_user_id_from_user_name (user_name_or_id, &new_id)) {
-		/* No match treating user_name_or_id as name.
-		 * Try treating it as id.
+	/* If no match treating user_name_or_id as name, try treating
+	 * it as id.
+	 */
+	if (!get_user_id_from_user_name (user_name_or_id, &new_id)
+	    && !get_id_from_digit_string (user_name_or_id, &new_id)) {
+		/* Claim that something changed even if the permission
+		 * change failed. This makes it easier for some
+		 * clients who see the "reverting" to the old owner as
+		 * "changing back".
 		 */
-		if (!get_id_from_digit_string (user_name_or_id, &new_id)) {
-			/* Claim that something changed even if the permission change failed.
-			 * This makes it easier for some clients who see the "reverting"
-			 * to the old permissions as "changing back".
-			 */
-			nautilus_file_changed (file);
-			(* callback) (file, GNOME_VFS_ERROR_BAD_PARAMETERS, callback_data);
-			return;		
-		}
+		nautilus_file_changed (file);
+		(* callback) (file, GNOME_VFS_ERROR_BAD_PARAMETERS, callback_data);
+		return;		
 	}
 
+	/* Test the owner-hasn't-changed case explicitly because we
+	 * don't want to send the file-changed signal if nothing
+	 * changed.
+	 */
 	if (new_id == file->details->info->uid) {
 		(* callback) (file, GNOME_VFS_OK, callback_data);
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 845: This needs to be asynch. */
-	/* Change the file-on-disk owner. */
-	partial_file_info = gnome_vfs_file_info_new ();
-	partial_file_info->uid = new_id;
-	/* Must set owner & group at same time. */
-	partial_file_info->gid = file->details->info->gid;
-	uri = nautilus_file_get_uri (file);
-	result = gnome_vfs_set_file_info (uri, partial_file_info, 
-				 	  GNOME_VFS_SET_FILE_INFO_OWNER);
-	gnome_vfs_file_info_unref (partial_file_info);
-	g_free (uri);
-
-	/* Update the owner in our NautilusFile object. */
-	if (result == GNOME_VFS_OK) {
-		file->details->info->uid = new_id;
-	}
-
-	/* Claim that something changed even if the permission change failed.
-	 * This makes it easier for some clients who see the "reverting"
-	 * to the old permissions as "changing back".
+	/* FIXME: We can't assume that the gid is already good/read,
+	 * can we? Maybe we have to preced the set_file_info with a
+	 * get_file_info to fix this?
 	 */
-	nautilus_file_changed (file);
-	(* callback) (file, result, callback_data);
+	set_owner_and_group (file,
+			     new_id,
+			     file->details->info->gid,
+			     callback, callback_data);
 }
 
 /**
@@ -2242,33 +2291,31 @@ nautilus_file_set_group (NautilusFile *file,
 			 gpointer callback_data)
 {
 	uid_t new_id;
-	char *uri;
-	GnomeVFSFileInfo *partial_file_info;
-	GnomeVFSResult result;
 
 	if (!nautilus_file_can_set_group (file)) {
-		/* Claim that something changed even if the permission change failed.
-		 * This makes it easier for some clients who see the "reverting"
-		 * to the old permissions as "changing back".
+		/* Claim that something changed even if the group
+		 * change failed. This makes it easier for some
+		 * clients who see the "reverting" to the old group as
+		 * "changing back".
 		 */
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_ACCESS_DENIED, callback_data);
 		return;
 	}
 
-	if (!get_group_id_from_group_name (group_name_or_id, &new_id)) {
-		/* No match treating group_name_or_id as name.
-		 * Try treating it as id.
+	/* If no match treating group_name_or_id as name, try treating
+	 * it as id.
+	 */
+	if (!get_group_id_from_group_name (group_name_or_id, &new_id)
+	    && !get_id_from_digit_string (group_name_or_id, &new_id)) {
+		/* Claim that something changed even if the group
+		 * change failed. This makes it easier for some
+		 * clients who see the "reverting" to the old group as
+		 * "changing back".
 		 */
-		if (!get_id_from_digit_string (group_name_or_id, &new_id)) {
-			/* Claim that something changed even if the permission change failed.
-			 * This makes it easier for some clients who see the "reverting"
-			 * to the old permissions as "changing back".
-			 */
-			nautilus_file_changed (file);
-			(* callback) (file, GNOME_VFS_ERROR_BAD_PARAMETERS, callback_data);
-			return;		
-		}
+		nautilus_file_changed (file);
+		(* callback) (file, GNOME_VFS_ERROR_BAD_PARAMETERS, callback_data);
+		return;		
 	}
 
 	if (new_id == file->details->info->gid) {
@@ -2276,29 +2323,14 @@ nautilus_file_set_group (NautilusFile *file,
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 845: This needs to be asynch. */
-	/* Change the file-on-disk group. */
-	partial_file_info = gnome_vfs_file_info_new ();
-	partial_file_info->gid = new_id;
-	/* Must set owner & group at same time. */
-	partial_file_info->uid = file->details->info->uid;
-	uri = nautilus_file_get_uri (file);
-	result = gnome_vfs_set_file_info (uri, partial_file_info, 
-				 	  GNOME_VFS_SET_FILE_INFO_OWNER);
-	gnome_vfs_file_info_unref (partial_file_info);
-	g_free (uri);
-
-	/* Update the group in our NautilusFile object. */
-	if (result == GNOME_VFS_OK) {
-		file->details->info->gid = new_id;
-	}
-
-	/* Claim that something changed even if the permission change failed.
-	 * This makes it easier for some clients who see the "reverting"
-	 * to the old permissions as "changing back".
+	/* FIXME: We can't assume that the gid is already good/read,
+	 * can we? Maybe we have to preced the set_file_info with a
+	 * get_file_info to fix this?
 	 */
-	nautilus_file_changed (file);
-	(* callback) (file, result, callback_data);
+	set_owner_and_group (file,
+			     file->details->info->uid,
+			     new_id,
+			     callback, callback_data);
 }
 
 /**

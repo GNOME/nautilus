@@ -1,3 +1,11 @@
+2000-07-13  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(set_permissions_callback), (nautilus_file_set_permissions),
+	(set_owner_and_group_callback), (set_owner_and_group),
+	(nautilus_file_set_owner), (nautilus_file_set_group):
+	Made set_permissions, set_owner, and set_group all be async.
+
 2000-07-13  Michael Engber  <engber@eazel.com>
 
 	* libnautilus/nautilus-view-component.idl:
