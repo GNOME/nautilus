@@ -1,3 +1,13 @@
+2002-04-07  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_add_file): Fix mixed up comparison.
+	(set_sort_order_from_metadata_and_preferences),
+	(fm_list_view_reset_to_defaults): Should be GTK_SORT_DESCENDING when
+	sort_reversed, bug 77174.
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_finalize): Oops, I screwed up the disconnect last time...
+
 2002-04-09  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c

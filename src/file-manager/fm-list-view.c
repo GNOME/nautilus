@@ -264,8 +264,7 @@ create_and_set_up_tree_view (FMListView *view)
 	/* Set up underline of file name. */
 	view->details->file_name_cell = (GtkCellRendererText *)cell;
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				      click_policy_changed,
-				      view);
+				      click_policy_changed, view);
 	click_policy_changed (view);
 
 	/* Create the size column */
@@ -336,7 +335,7 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
 					      sort_column_id,
-					      sort_reversed ? GTK_SORT_ASCENDING : GTK_SORT_DESCENDING);
+					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
 }
 
 static void
@@ -455,7 +454,7 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 	gtk_tree_sortable_set_sort_column_id
 		(GTK_TREE_SORTABLE (FM_LIST_VIEW (view)->details->model),
 		 fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value),
-		 default_sort_reversed_auto_value ? GTK_SORT_ASCENDING : GTK_SORT_DESCENDING);
+		 default_sort_reversed_auto_value ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
         fm_directory_view_restore_default_zoom_level (view);
 }
 
@@ -535,8 +534,7 @@ fm_list_view_finalize (GObject *object)
 	list_view = FM_LIST_VIEW (object);
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					 click_policy_changed,
-					 list_view->details->file_name_cell);
+					 click_policy_changed, list_view);
 
 	g_free (list_view->details);
 
@@ -587,7 +585,7 @@ fm_list_view_class_init (FMListViewClass *class)
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
-	
+
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 				       (int *) &default_sort_order_auto_value);
 	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,

@@ -526,7 +526,7 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 		for (tmp = model->details->files; tmp; tmp = tmp->next) {
 			file1 = tmp->data;
 
-			result = nautilus_file_compare_for_sort (file1, file,
+			result = nautilus_file_compare_for_sort (file, file1,
 								 fm_list_model_get_nautilus_file_sort_type (model),
 								 model->details->sort_directories_first,
 								 (model->details->order == GTK_SORT_DESCENDING));
