@@ -126,6 +126,7 @@ static void		find_mount_devices 			 (FMDesktopIconView 	*icon_view,
 static void		remove_mount_link 			 (DeviceInfo 		*device);								  
 static void		get_iso9660_volume_name 		 (DeviceInfo 		*device);
 static void		get_ext2_volume_name 			 (DeviceInfo 		*device);
+static void		get_floppy_volume_name 			 (DeviceInfo 		*device);
 static void		remove_mount_links 			 (DeviceInfo 		*device, 
 								  FMDesktopIconView 	*icon_view);
 static void		free_device_info 			 (DeviceInfo 		*device, 
@@ -238,14 +239,14 @@ rescan_floppy_callback (GtkMenuItem *item, FMDirectoryView *view)
 	for (element = icon_view->details->devices; element != NULL; element = element->next) {
 		device = element->data;
 		if (strncmp ("/dev/fd", device->fsname, strlen("/dev/fd")) == 0) {
-			g_message ("Mounting floppy: %s", device->fsname);
-			argv[1] = device->fsname;
+			g_message ("Mounting floppy: %s", device->mount_path);
+			argv[1] = device->mount_path;
 			argv[2] = NULL;
 
 			/* Unmount the device if needed */
 			if (mount_device_is_mounted (device)) {
 				argv[0] = "/bin/umount";
-				gnome_execute_async(g_get_home_dir(), 2, argv);
+				gnome_execute_async (g_get_home_dir(), 2, argv);
 
 				mount_device_deactivate (icon_view, device);
 			}
@@ -556,13 +557,16 @@ mount_device_activate_floppy (FMDesktopIconView *view, DeviceInfo *device)
 {
 	char *argv[3];
 
-	g_message ("Mounting floppy: %s", device->fsname);
+	/* Get volume name */
+	get_floppy_volume_name (device);
+
+	g_message ("Mounting floppy: %s", device->mount_path);
 	
 	argv[0] = "/bin/mount";
-	argv[1] = device->fsname;
+	argv[1] = device->mount_path;
 	argv[2] = NULL;
 
-	gnome_execute_async(g_get_home_dir(), 2, argv);
+	gnome_execute_async (g_get_home_dir(), 2, argv);
 
 	mount_device_mount (view, device);
 }
@@ -732,9 +736,9 @@ my_g_check_permissions (gchar *filename, int mode)
 static gboolean
 mount_device_floppy_add (DeviceInfo *device)
 {
-	if (my_g_check_permissions (device->fsname, R_OK)) {
-		return FALSE;
-	}
+	//if (my_g_check_permissions (device->fsname, R_OK)) {
+	//	return FALSE;
+	//}
 
 	device->type = DEVICE_FLOPPY;
 
@@ -1033,6 +1037,12 @@ static void
 get_ext2_volume_name (DeviceInfo *device)
 {
 	device->volume_name = g_strdup ("Ext2 Volume");
+}
+
+static void
+get_floppy_volume_name (DeviceInfo *device)
+{
+	device->volume_name = g_strdup ("Floppy");
 }
 
 /* place_home_directory
