@@ -28,9 +28,7 @@
 
 #include "gnome-icon-container.h"
 
-#include "gnome-icon-container-private.h"
-#include "gnome-icon-container-dnd.h"
-#include "nautilus-icons-view-icon-item.h"
+#include <string.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -40,8 +38,9 @@
 
 #include "nautilus-gtk-macros.h"
 
-/* for memset */
-#include <string.h>
+#include "gnome-icon-container-private.h"
+#include "gnome-icon-container-dnd.h"
+#include "nautilus-icons-view-icon-item.h"
 
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
@@ -192,10 +191,16 @@ static gboolean
 icon_select (GnomeIconContainerIcon *icon,
 	     gboolean select)
 {
-	if (select == icon->is_selected)
+	/* Since is_selected is a bit field, we have to do the ! business
+	 * to be sure we have either a 1 or a 0. Similarly, the caller
+	 * might pass a value other than 1 or 0 so we have to pass do the
+	 * same thing there.
+	 */
+	if (!select == !icon->is_selected)
 		return FALSE;
 
 	icon_toggle_selected (icon);
+	g_assert (!select == !icon->is_selected);
 	return TRUE;
 }
 
@@ -2722,6 +2727,7 @@ gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
 
 	/* Eventually, we must avoid searching the entire icon list,
 	   but it's OK for now.
+	   A hash table mapping uri to icon is one possibility.
 	*/
 
 	details = container->details;

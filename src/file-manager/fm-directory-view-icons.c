@@ -354,7 +354,7 @@ icon_container_context_click_background_cb (GnomeIconContainer *container,
 	g_assert (GNOME_IS_ICON_CONTAINER (container));
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 
-	fm_directory_view_popup_background_context_menu(FM_DIRECTORY_VIEW (icon_view));
+	fm_directory_view_popup_background_context_menu (FM_DIRECTORY_VIEW (icon_view));
 }
 
 static void

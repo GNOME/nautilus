@@ -27,8 +27,6 @@ libnautilusinclude_HEADERS=			\
 	gnome-icon-container-dnd.h		\
 	gnome-icon-container-private.h		\
 	gnome-icon-container.h			\
-	gnome-progressive-loader.c		\
-	gnome-progressive-loader.h		\
 	gtkflist.h				\
 	gtkscrollframe.h			\
 	nautilus.h				\
