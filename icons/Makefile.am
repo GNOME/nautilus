@@ -13,6 +13,7 @@ icon_DATA =					\
 	i-directory-12.png			\
 	i-directory-192.png			\
 	i-directory-24.png			\
+	i-directory-36.png			\
 	i-directory-72.png			\
 	i-directory-96.png			\
 	i-executable.png			\
@@ -24,6 +25,7 @@ icon_DATA =					\
 	i-regular-12.png			\
 	i-regular-192.png			\
 	i-regular-24.png			\
+	i-regular-36.png			\
 	i-regular-72.png			\
 	i-regular-96.png			\
 	i-sock.png				\
