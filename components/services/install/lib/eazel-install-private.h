@@ -39,6 +39,9 @@ struct _EazelInstallPrivate {
 	int problem_filters; 
 	char *transaction_dir;
 
+	/* This holds the files that were downloaded */
+	GList *downloaded_files;
+
 	gboolean use_local_package_list;
 	
 	PackageSystem package_system;

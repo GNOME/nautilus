@@ -200,8 +200,7 @@ void packagedata_remove_soft_dep (PackageData *remove, PackageData *from);
 const char *rpmfilename_from_packagedata (const PackageData *pack);
 const char *rpmname_from_packagedata (const PackageData *pack);
 
-void packagedata_destroy_foreach (PackageData *pd, gpointer unused);
-void packagedata_destroy (PackageData *pd);
+void packagedata_destroy (PackageData *pd, gboolean deep);
 
 int packagedata_hash_equal (PackageData *a, PackageData *b);
 

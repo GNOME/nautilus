@@ -45,4 +45,7 @@ EazelInstallStatus install_new_packages (EazelInstall *service, GList *categorie
 EazelInstallStatus uninstall_packages (EazelInstall *service, GList *categories);
 EazelInstallStatus revert_transaction (EazelInstall *service, GList *packages);
 
+gboolean eazel_install_prepare_package_system (EazelInstall *service);
+gboolean eazel_install_free_package_system (EazelInstall *service);
+
 #endif /* EAZEL_INSTALL_RPM_GLUE_H */

@@ -173,7 +173,7 @@ nautilus_service_install_view_install_package_callback (GtkWidget *widget,
 		pack = packagedata_new ();
 		pack->filename = g_strdup (ptr);
 		
-		category = g_new0 (CategoryData, 1);
+		category = categorydata_new ();
 		category->packages = g_list_prepend (NULL, pack);
 		categories = g_list_prepend (NULL, category);
 	}
@@ -227,7 +227,7 @@ nautilus_service_install_view_uninstall_package_callback (GtkWidget *widget,
 		PackageData *pack;
 		pack = gtk_object_get_data (GTK_OBJECT (view), "packagedata");
 		
-		category = g_new0 (CategoryData, 1);
+		category = categorydata_new ();
 		category->packages = g_list_prepend (NULL, pack);
 		categories = g_list_prepend (NULL, category);
 	}

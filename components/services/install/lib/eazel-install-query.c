@@ -85,16 +85,6 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	int rc;
 	int i;
 	
-	close_db = FALSE;
-
-	/* If db is not open, this will be false, therefore, 
-	   open and close at the end. That way, this
-	   func can be used in both various enviroments */
-	if (g_hash_table_size (service->private->packsys.rpm.dbs) == 0) {
-		eazel_install_prepare_package_system (service);
-		close_db = TRUE;
-	} 
-
 	g_message ("Querying for %s in %s", input, root);
 
 	rc = -1;
@@ -133,16 +123,11 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 		pack = packagedata_new_from_rpm_header (hd);
 		pack->install_root = g_strdup (root);
 		if (g_list_find_custom (*result, pack->name, (GCompareFunc)eazel_install_package_name_compare)!=NULL) {
-			packagedata_destroy (pack);
+			packagedata_destroy (pack, TRUE);
 		} else {
 			(*result) = g_list_prepend (*result, pack);
 		}
-	}
-	
-
-	if (close_db) {
-		eazel_install_free_package_system (service);
-	}
+	}	
 }
 
 
@@ -223,7 +208,7 @@ eazel_install_simple_query (EazelInstall *service,
 				PackageData *pack;
 				pack = (PackageData*)iterator->data;
 				result = g_list_remove (result, pack);
-				packagedata_destroy (pack);
+				packagedata_destroy (pack, TRUE);
 			}
 			g_list_free (remove);
 		}

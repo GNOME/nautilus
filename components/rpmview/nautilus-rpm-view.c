@@ -442,7 +442,7 @@ nautilus_rpm_view_destroy (GtkObject *object)
 #ifdef EAZEL_SERVICES
         pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
         if (pack) {
-                packagedata_destroy (pack);
+                packagedata_destroy (pack, TRUE);
         }
 #endif /* EAZEL_SERVICES */        
 
@@ -735,7 +735,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                 pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
                 if (pack != NULL) {
 /* Destroy the old */
-                        packagedata_destroy (pack);
+                        packagedata_destroy (pack, TRUE);
                 } 
                 pack = packagedata_new ();
                 pack->toplevel = TRUE;

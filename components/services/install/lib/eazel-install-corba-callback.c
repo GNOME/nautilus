@@ -103,6 +103,8 @@ impl_dep_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	needs = packagedata_from_corba_packagedatastruct (*corbaneeds);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DEPENDENCY_CHECK], pack, needs);
+	packagedata_destroy (pack, TRUE);
+	packagedata_destroy (needs, TRUE);
 }
 
 static void 
@@ -120,6 +122,7 @@ impl_install_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 			 package_num, num_packages,
 			 package_size_completed, package_size_total,
 			 total_size_completed, total_size);
+	packagedata_destroy (pack, TRUE);
 }
 
 static void 
@@ -132,6 +135,7 @@ impl_uninstall_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	PackageData *pack;
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], pack, amount, total);
+	packagedata_destroy (pack, TRUE);
 }
 
 static void 

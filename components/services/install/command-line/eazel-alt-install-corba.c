@@ -457,7 +457,7 @@ int main(int argc, char *argv[]) {
 	}
 	if (packages) {
 		CategoryData *category;
-		category = g_new0 (CategoryData, 1);
+		category = categorydata_new ();
 		category->name = g_strdup ("files from commandline");
 		category->packages = packages;
 		categories = g_list_prepend (NULL, category);		

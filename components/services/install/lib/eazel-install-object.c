@@ -483,6 +483,7 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->logfilename = NULL;
 	service->private->name_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
 								   (GCompareFunc)g_str_equal);
+	service->private->downloaded_files = NULL;
 	service->private->transaction = NULL;
 
 	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
@@ -705,41 +706,28 @@ eazel_install_install_packages (EazelInstall *service,
 	g_free (service->private->cur_root);
 	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 
+	eazel_install_prepare_package_system (service);
 	result = install_new_packages (service, categories);
+
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Install failed"));
 	} 
 	if ((result & EAZEL_INSTALL_DOWNLOADS) && eazel_install_emit_delete_files (service)) {
-		GList *top_item, *sub_item;
-		CategoryData *cd;
+		GList *iterator;
 		PackageData *top_pack, *sub_pack;
 
 		g_message ("*** deleting the package files");
-		for (top_item = g_list_first (service->private->transaction); top_item;
-		     top_item = g_list_next (top_item)) {
-			top_pack = (PackageData *) top_item->data;
-			g_message ("*** package '%s'", (char *) top_pack->filename);
-			if (unlink ((char *) top_pack->filename) != 0) {
-				g_warning ("unable to delete file %s !", top_pack->filename);
+		for (iterator = g_list_first (service->private->downloaded_files); iterator;
+		     iterator = g_list_next (iterator)) {
+			char *filename = (char*)iterator->data;
+			g_message ("*** file '%s'", filename);
+			if (unlink (filename) != 0) {
+				g_warning ("unable to delete file %s !", filename);
 			}
 
-			for (sub_item = g_list_first (top_pack->soft_depends); sub_item;
-			     sub_item = g_list_next (sub_item)) {
-				sub_pack = (PackageData *) sub_item->data;
-				g_message ("*** package '%s'", (char *) sub_pack->filename);
-				if (unlink ((char *) sub_pack->filename) != 0) {
-					g_warning ("unable to delete file %s !", (char *) sub_pack->filename);
-				}
-			}
-
-			for (sub_item = g_list_first (top_pack->hard_depends); sub_item;
-			     sub_item = g_list_next (sub_item)) {
-				sub_pack = (PackageData *) sub_item->data;
-				g_message ("*** package '%s'", (char *) sub_pack->filename);
-				if (unlink ((char *) sub_pack->filename) != 0) {
-					g_warning ("unable to delete file %s !", (char *) sub_pack->filename);
-				}
-			}
+		}
+		if (rmdir (eazel_install_get_tmp_dir (service))!=0) {
+				g_warning ("unable to delete directory %s !", eazel_install_get_tmp_dir (service));			
 		}
 	}
 	g_free (service->private->cur_root);
@@ -761,7 +749,10 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
 		eazel_install_fetch_remote_package_list (service);
 	}
+
+	eazel_install_prepare_package_system (service);
 	result = uninstall_packages (service, categories);
+
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Uninstall failed"));
 	} 
@@ -781,6 +772,8 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 
 	packages = parse_memory_transaction_file (xml, size);
+
+	eazel_install_prepare_package_system (service);
 	result = revert_transaction (service, packages);
 
 	eazel_install_emit_done (service, result | EAZEL_INSTALL_REVERSION_OK);
@@ -809,12 +802,15 @@ eazel_install_query_package_system (EazelInstall *service,
 				    int flags,
 				    const char *root)
 {
+	GList *result;
 	g_message ("eazel_install_query_package_system (...,%s,...)", query);
 
 	g_free (service->private->cur_root);
 	service->private->cur_root = g_strdup (root);
 
-	return eazel_install_simple_query (service, query, flags, 0, NULL);
+	eazel_install_prepare_package_system (service);
+	result = eazel_install_simple_query (service, query, flags, 0, NULL);
+	return result;
 }
 
 
@@ -860,7 +856,7 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 								  package_num, num_packages,
 								  package_size_completed, package_size_total,
 								  total_size_completed, total_size,
-								  &ev);	
+								  &ev);			
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */

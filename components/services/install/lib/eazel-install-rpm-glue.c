@@ -83,10 +83,6 @@ static void eazel_uninstall_globber (EazelInstall *service,
 				     GList **packages,
 				     GList **failed);
 
-gboolean eazel_install_prepare_package_system (EazelInstall *service);
-
-gboolean eazel_install_free_package_system (EazelInstall *service);
-
 static int eazel_install_check_existing_packages (EazelInstall *service, 
 						  PackageData *pack);
 
@@ -99,7 +95,6 @@ static gboolean eazel_install_download_packages (EazelInstall *service,
 						 GList **packages,
 						 GList **failed_packages);
 
-
 static GList *
 eazel_install_flatten_categories (EazelInstall *service,
 				  GList *categories)
@@ -107,7 +102,7 @@ eazel_install_flatten_categories (EazelInstall *service,
 	GList* packages = NULL;
 	GList* iterator, *category_iterator;
 	
-	for (category_iterator = categories; category_iterator; category_iterator = category_iterator->next) {
+	for (category_iterator = categories; category_iterator; category_iterator = g_list_next (category_iterator)) {
 		CategoryData *cat = (CategoryData*)category_iterator->data;
 		packages = g_list_concat (packages, cat->packages);
 	}
@@ -190,7 +185,7 @@ eazel_install_download_packages (EazelInstall *service,
 	g_assert (packages);
 	g_assert (*packages);
 
-	for (iterator = *packages;iterator; iterator = iterator->next) {
+	for (iterator = *packages;iterator; iterator = g_list_next (iterator)) {
 		PackageData* package = (PackageData*)iterator->data;
 		gboolean fetch_package;
 		
@@ -249,7 +244,7 @@ eazel_install_download_packages (EazelInstall *service,
 		}
 	}
 
-	for (iterator = remove_list; iterator; iterator = iterator->next) {
+	for (iterator = remove_list; iterator; iterator = g_list_next (iterator)) {
 		(*packages) = g_list_remove (*packages, iterator->data);
 	}
 
@@ -270,7 +265,7 @@ eazel_install_pre_install_packages (EazelInstall *service,
 	GList *iterator;
 	GList *failed_packages = NULL;
 	
-	for (iterator = *packages; iterator; iterator = iterator->next) {
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		int inst_status;
 		
@@ -311,9 +306,6 @@ eazel_install_do_install_packages (EazelInstall *service,
 	eazel_install_pre_install_packages (service, &packages);
 	
 	if (packages) {
-		if (eazel_install_prepare_package_system (service) == FALSE) {
-			return FALSE;
-		}
 		eazel_install_ensure_deps (service, &packages, &failedfiles);
 		eazel_install_free_package_system (service);
 		if (g_list_length (packages)) {
@@ -341,11 +333,11 @@ uninstall_all_packages (EazelInstall *service,
 
 		failed = NULL;
 		eazel_uninstall_globber (service, &cat->packages, &failed);
-
+		eazel_install_free_package_system (service);
 		result |= eazel_install_start_transaction (service, 
 							   cat->packages);
 
-		categories = categories->next;
+		categories = g_list_next (categories);
 	}
 	return result;
 }
@@ -395,7 +387,7 @@ ei_get_packages_with_mod_flag (GList *packages,
 	GList *res;
 	
 	res = NULL;
-	for (it = packages; it; it = it->next) {
+	for (it = packages; it; it = g_list_next (it)) {
 		PackageData *pack;
 		pack = (PackageData*)it->data;
 		if (pack->modify_status == mod) {
@@ -422,7 +414,7 @@ ei_check_uninst_vs_downgrade (GList **inst,
 	GList *remove;
 	
 	remove = NULL;
-	for (it = *inst; it; it = it->next) {
+	for (it = *inst; it; it = g_list_next (it)) {
 		GList *entry;
 		PackageData *pack;
 
@@ -433,7 +425,7 @@ ei_check_uninst_vs_downgrade (GList **inst,
 		}
 	}
 
-	for (it = remove; it; it = it->next) {
+	for (it = remove; it; it = g_list_next (it)) {
 		(*inst) = g_list_remove (*inst, it->data);
 	}
 }
@@ -463,8 +455,9 @@ revert_transaction (EazelInstall *service,
 	g_list_foreach (downgrade, (GFunc)hest, "downgrade");
 	g_list_foreach (upgrade, (GFunc)hest, "upgrade");
 
-	cat = g_new0 (CategoryData, 1);
+	cat = categorydata_new ();
 	categories = g_list_prepend (NULL, cat);
+
 	if (uninst) {
 		eazel_install_set_uninstall (service, TRUE);
 		eazel_install_set_downgrade (service, FALSE);
@@ -491,7 +484,7 @@ revert_transaction (EazelInstall *service,
 		eazel_install_set_downgrade (service, TRUE);
 		eazel_install_set_update (service, TRUE);
 		cat->packages = upgrade;
-		result |= install_new_packages (service, categories);
+		g_list_foreach (upgrade, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	}	
 }
 
@@ -500,7 +493,7 @@ eazel_install_do_transaction_fill_hash (EazelInstall *service,
 					GList *packages)
 {
 	GList *iterator;
-	for (iterator = packages; iterator; iterator = iterator->next) {
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		char *tmp;		
 		PackageData *pack;
 
@@ -517,7 +510,7 @@ eazel_install_do_transaction_get_total_size (EazelInstall *service,
 					     GList *packages)
 {
 	GList *iterator;
-	for (iterator = packages; iterator; iterator = iterator->next) {
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 
 		pack = (PackageData*)iterator->data;
@@ -567,7 +560,7 @@ eazel_install_start_transaction_make_argument_list (EazelInstall *service,
 	args = NULL;
 
 	/* Add the packages to the arg list */
-	for (iterator = packages; iterator; iterator = iterator->next) {
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 
 		pack = (PackageData*)iterator->data;
@@ -608,7 +601,7 @@ eazel_install_do_transaction_save_report_helper (xmlNodePtr node,
 {
 	GList *iterator;
 
-	for (iterator = packages; iterator; iterator = iterator->next) {
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		char *tmp;
 		pack = (PackageData*)iterator->data;
@@ -806,7 +799,7 @@ eazel_install_display_arguments (GList *args)
 {
 	GList *iterator;
 	fprintf (stdout, "\nARGS: ");
-	for (iterator = args; iterator; iterator = iterator->next) {
+	for (iterator = args; iterator; iterator = g_list_next (iterator)) {
 		fprintf (stdout, "%s ", (char*)iterator->data);
 	}
 	fprintf (stdout, "\n");
@@ -881,7 +874,7 @@ eazel_install_start_transaction (EazelInstall *service,
 		argv = g_new0 (char*, g_list_length (args) + 2);
 		argv[0] = g_strdup ("rpm");
 		i = 1;
-		for (iterator = args; iterator; iterator = iterator->next) {
+		for (iterator = args; iterator; iterator = g_list_next (iterator)) {
 			argv[i] = g_strdup (iterator->data);
 			i++;
 		}
@@ -954,12 +947,12 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 		eazel_install_emit_install_failed (service, pack);
 	}
 	(*pruned) = g_list_prepend (*pruned, pack);
-	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
+	for (iterator = pack->soft_depends; iterator; iterator = g_list_next (iterator)) {
 		PackageData *sub;
 		sub = (PackageData*)iterator->data;
 		eazel_install_prune_packages_helper (service, packages, pruned, sub);
 	}
-	for (iterator = *packages; iterator; iterator = iterator->next) {
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *super;
 		
 		super = (PackageData*)iterator->data;
@@ -1012,14 +1005,14 @@ eazel_install_prune_packages (EazelInstall *service,
 						     packages,
 						     &pruned,
 						     pack);
-		for (iterator = pruned; iterator; iterator = iterator->next) {
+		for (iterator = pruned; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack;
 			pack = (PackageData*)iterator->data;
 			(*packages) = g_list_remove (*packages, pack);
 		};
 	} 
 	
-	for (iterator = pruned; iterator; iterator = iterator->next) {
+	for (iterator = pruned; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		pack = (PackageData*)iterator->data;
 		/* Note, don't destroy, all packages are destroyed when the
@@ -1046,7 +1039,7 @@ eazel_install_load_rpm_headers (EazelInstall *service,
 	result = NULL;
 	sources = NULL;
 	
-	for (iterator = *packages; iterator; iterator = iterator->next) {
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		char *filename;
 		int rpm_err;
 		PackageData *pack;
@@ -1100,7 +1093,7 @@ eazel_install_load_rpm_headers (EazelInstall *service,
 	}
 
 	/* Remove all the source packages */
-	for (iterator = sources; iterator; iterator = iterator->next) {
+	for (iterator = sources; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		pack = (PackageData*)iterator->data;
 		pack->status = PACKAGE_SOURCE_NOT_SUPPORTED;
@@ -1141,9 +1134,11 @@ eazel_install_free_rpm_system (EazelInstall *service)
 	GList *iterator;
 
 	/* Close all the db's */
+	g_message ("service->private->packsys.rpm.dbs.size = %d", g_hash_table_size (service->private->packsys.rpm.dbs));
 	g_hash_table_foreach_remove (service->private->packsys.rpm.dbs, 
 				     (GHRFunc)eazel_install_free_rpm_system_close_db_foreach,
 				     NULL);
+	g_message ("service->private->packsys.rpm.dbs.size = %d", g_hash_table_size (service->private->packsys.rpm.dbs));
 	
 /*
   This crashes, so it's commented out. 
@@ -1176,7 +1171,7 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 		return TRUE;
 	}
 	
-	for (iterator = eazel_install_get_root_dirs (service); iterator; iterator = iterator->next) {
+	for (iterator = eazel_install_get_root_dirs (service); iterator; iterator = g_list_next (iterator)) {
 		const char *root_dir;	
 		rpmdb db;
 		
@@ -1242,7 +1237,7 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 		interface_flags |= INSTALL_UPGRADE;
 	}
 
-	for (iterator = *packages; iterator; iterator = iterator->next) {
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		int err;
 
@@ -1296,7 +1291,7 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 
 	/* Remove all failed from packages, and add them to failed */
 	if (tmp_failed) {
-		for (iterator = tmp_failed; iterator; iterator = iterator->next) {
+		for (iterator = tmp_failed; iterator; iterator = g_list_next (iterator)) {
 			if (failed) {
 				(*failed) = g_list_prepend (*failed, iterator->data);
 			}
@@ -1341,7 +1336,7 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
 {
 	GList *iterator;
 	PackageData *dep;
-	for (iterator = list; iterator; iterator = iterator->next) {
+	for (iterator = list; iterator; iterator = g_list_next (iterator)) {
 		dep = (PackageData*)iterator->data;
 		(*extrapackages) =  g_list_prepend (*extrapackages, dep);		
 	}
@@ -1371,7 +1366,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
-		for (iterator = existing_packages; iterator; iterator = iterator->next) {
+		for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
 			int res;
 			PackageData *existing_package;
 
@@ -1641,7 +1636,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 
 	/* Removed packages marked as failed. No need to delete them, as they're in
 	   (*failedpackages) */
-	for (remove_iterator = to_remove; remove_iterator; remove_iterator = remove_iterator->next) {
+	for (remove_iterator = to_remove; remove_iterator; remove_iterator = g_list_next (remove_iterator)) {
 		(*packages) = g_list_remove (*packages, remove_iterator->data);
 	}
 	g_list_free (to_remove);
@@ -1686,7 +1681,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 
 	g_message ("D: ---------------------------");
 	g_message ("D: %s", str);
-	for (iterator = packages; iterator; iterator = iterator->next) {
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		pack = (PackageData*)iterator->data;
 		if (show_deps) {
 			GList *it2;
@@ -1698,7 +1693,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 							rpmfilename_from_packagedata ((PackageData*)it2->data));
 				g_free (tmp);
 				tmp = tmp2;
-				it2 = it2->next;
+				it2 = g_list_next (it2);
 			}
 /*
 			tmp = g_strdup (breaks);
@@ -1712,7 +1707,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 							g_list_length (p2->soft_depends));
 				g_free (tmp);
 				tmp = tmp2;
-				it2 = it2->next;
+				it2 = g_list_next (it2);
 			}
 */
 		}
@@ -1805,7 +1800,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 			extrapackages = NULL;
 
 			/* For all the packages, set state to partly_resolved. */
-			for (iterator=*packages; iterator; iterator = iterator->next) {
+			for (iterator=*packages; iterator; iterator = g_list_next (iterator)) {
 				PackageData *pack;
 				pack = (PackageData*)iterator->data;
 				pack->status = PACKAGE_PARTLY_RESOLVED;
@@ -1839,7 +1834,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 			if (*failedpackages) {
 				GList *iterator;
 				
-				for (iterator = *failedpackages; iterator; iterator = iterator->next) {
+				for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
 					PackageData *pack;
 					pack = (PackageData*)iterator->data;
 					eazel_install_prune_packages (service, pack, packages, 
@@ -1850,7 +1845,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 				GList *iterator;
 
 				/* Add to "packages" */
-				for (iterator = extrapackages; iterator; iterator = iterator->next) {
+				for (iterator = extrapackages; iterator; iterator = g_list_next (iterator)) {
 					(*packages) = g_list_prepend (*packages, iterator->data);
 				}
 				
@@ -1860,7 +1855,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 
 				/* Now remove the packages that failed from "packages" 
 				   and copy them into "failedpackages".  */
-				for (iterator = *failedpackages; iterator; iterator = iterator->next) {
+				for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
 					PackageData *pack;
 					pack = (PackageData*)iterator->data;
 					(*packages) = g_list_remove (*packages, pack);					
@@ -1870,7 +1865,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 			GList *iterator;
 
 			/* Deps are fine, set all packages to resolved */
-			for (iterator=*packages; iterator; iterator = iterator->next) {
+			for (iterator=*packages; iterator; iterator = g_list_next (iterator)) {
 				PackageData *pack;
 				pack = (PackageData*)iterator->data;
 				pack->status = PACKAGE_RESOLVED;
@@ -1913,7 +1908,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 	/* Add all packages to the set */
 	/* eazel_install_add_to_set (service, packages, failed); */
 
-	for (iterator = *packages; iterator; iterator = iterator->next) {
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
 		GList *matches;
 		GList *match_iterator;
@@ -1924,7 +1919,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_REQUIRES,
 						      1, *packages);
 		
-		for (match_iterator = matches; match_iterator; match_iterator = match_iterator->next) {
+		for (match_iterator = matches; match_iterator; match_iterator = g_list_next (match_iterator)) {
 			PackageData *requiredby = (PackageData*)match_iterator->data;;
 			
 			requiredby->status = PACKAGE_DEPENDENCY_FAIL;
@@ -1935,7 +1930,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 			if (g_list_find_custom (*breaks, (gpointer)requiredby->name, 
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				g_message ("D: skip %s", requiredby->name);
-				packagedata_destroy (requiredby);
+				packagedata_destroy (requiredby, TRUE);
 				continue;
 			}
 
@@ -1957,12 +1952,12 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 			eazel_uninstall_upward_traverse (service, breaks, failed, &tmp_breaks);
 		}
 		
-		for (break_iterator = tmp_breaks; break_iterator; break_iterator = break_iterator->next) {
+		for (break_iterator = tmp_breaks; break_iterator; break_iterator = g_list_next (break_iterator)) {
 			(*breaks) = g_list_prepend ((*breaks), break_iterator->data);
 		}
 	}
 	
-	for (iterator = *failed; iterator; iterator = iterator->next) {
+	for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
 		(*packages) = g_list_remove (*packages, iterator->data);
 	}
 
@@ -1994,7 +1989,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 	g_message ("D: in eazel_uninstall_downward_traverse");
 	
 	/* First iterate across the packages in "packages" */
-	for (iterator = *packages; iterator; iterator = iterator->next) {
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		GList *matches;
 		PackageData *pack;
 		GList *match_iterator;
@@ -2005,7 +2000,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 		g_message ("D: %s had %d hits", pack->name, g_list_length (matches));
 
 		/* Now iterate over all packages that match pack->name */
-		for (match_iterator = matches; match_iterator; match_iterator = match_iterator->next) {
+		for (match_iterator = matches; match_iterator; match_iterator = g_list_next (match_iterator)) {
 			PackageData *matched_pack;
 			const char **require_name;
 			int require_name_count;
@@ -2038,7 +2033,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 					/* Iterate over all packages that match the required package */
 					for (second_match_iterator = second_matches;
 					     second_match_iterator; 
-					     second_match_iterator = second_match_iterator->next) {
+					     second_match_iterator = g_list_next (second_match_iterator)) {
 						PackageData *isrequired;
 
 						isrequired = (PackageData*)second_match_iterator->data;
@@ -2047,7 +2042,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 						    g_list_find_custom (*packages, isrequired->name,
 									(GCompareFunc)eazel_install_package_name_compare)) {
 							g_message ("D: skipped %s", isrequired->name);
-							packagedata_destroy (isrequired);
+							packagedata_destroy (isrequired, TRUE);
 							continue;
 						}		
 						g_message ("D: ** %s requires %s", pack->name, isrequired->name);
@@ -2072,9 +2067,9 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 									   isrequired->name);
 								print_package_list ("BY", third_matches, FALSE);
 								g_list_foreach (third_matches, 
-										(GFunc)packagedata_destroy_foreach, 
-										NULL);
-								packagedata_destroy (isrequired);
+										(GFunc)packagedata_destroy, 
+										GINT_TO_POINTER (TRUE));
+								packagedata_destroy (isrequired, TRUE);
 							} else {
 								g_message ("D: Also nuking %s", isrequired->name);
 								tmp_requires = g_list_prepend (tmp_requires, 
@@ -2094,7 +2089,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 
 			headerFree (hd);
 		}
-		g_list_foreach (matches, (GFunc)packagedata_destroy_foreach, NULL);
+		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 		g_list_free (matches);
 	}
 
@@ -2103,7 +2098,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 	}
 
 	/* Now move the entries in tmp_requires into *requires */
-	for (iterator = tmp_requires; iterator; iterator = iterator->next) {
+	for (iterator = tmp_requires; iterator; iterator = g_list_next (iterator)) {
 		(*requires) = g_list_prepend (*requires, iterator->data);
 	}
 	g_list_free (tmp_requires);
@@ -2117,27 +2112,30 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 				   GList **failed)
 {
 	GList *iterator;
-	GList *remove;
+	GList *remove  = NULL;
+	GList *result = NULL;
 
 	g_message ("D: in eazel_uninstall_check_for_install");
-	remove = NULL;
-	for (iterator = *packages; iterator; iterator = iterator->next) {
+	g_assert (packages);
+	g_message ("g_list_length (*packages) = %d", g_list_length (*packages)); 
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {		
+		PackageData *pack = (PackageData*)iterator->data;
 		GList *matches;
-		PackageData *pack;
 
-		pack = (PackageData*)iterator->data;
 		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
 		/* If it's installed, continue */
 		if (matches) {
 			if (g_list_length (matches)==1) {
-				packagedata_destroy (pack);
-				iterator->data = matches->data;
-				pack = (PackageData*)iterator->data;
+				PackageData *matched = (PackageData*)matches->data;
+				g_message ("hest");
 				/* This is mucho important. If not marked 
 				   as toplevel, upwards traverse will not fail the package
 				   is it has dependents */
-				pack->toplevel = TRUE;
-			} else {
+				matched->toplevel = TRUE;
+
+				g_message ("bæver %s", matched->name); 				
+				result = g_list_prepend (result, matched);
+ 			} else {
 				g_assert_not_reached ();
 			}
 			continue;
@@ -2147,13 +2145,26 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 		}		
 	}
 
+	g_message ("fisk");
 	for (iterator = remove; iterator; iterator=iterator->next) {
 		(*packages) = g_list_remove (*packages, iterator->data);
 		(*failed) = g_list_prepend (*failed, iterator->data);
 	}
+	g_message ("torsk");
+	g_message ("g_list_length (*packages) = %d", g_list_length (*packages)); 
+	g_message ("g_list_length (result) = %d", g_list_length (result)); 
+	g_list_foreach (*packages, (GFunc)packagedata_destroy, FALSE);
 	g_list_free (remove);
+	g_message ("odder");
+	g_list_free (*packages);
+	g_message ("sild");
+	(*packages) = g_list_copy (result);
+	g_message ("hund");
+	g_list_free (result);
+
 	g_message ("D: out eazel_uninstall_check_for_install");
 }
+
 /* Calls the upward and downward traversal */
 static void
 eazel_uninstall_globber (EazelInstall *service,
@@ -2162,7 +2173,7 @@ eazel_uninstall_globber (EazelInstall *service,
 {
 	GList *iterator;
 	GList *tmp;
-	gboolean close_base;
+
 	/*
 	  call upward with packages
 	  call downward with packages and &tmp
@@ -2171,30 +2182,22 @@ eazel_uninstall_globber (EazelInstall *service,
 
 	g_message ("D: in eazel_uninstall_globber");
 
-	if (eazel_install_prepare_package_system (service) == FALSE) {
-		close_base = FALSE;
-		for (iterator = *packages; iterator; iterator = iterator->next) {
-			(*failed) = g_list_prepend (*failed, iterator->data);
-		}
-	} else {
-		close_base = TRUE;
-		tmp = NULL;
+	tmp = NULL;
 
-		eazel_uninstall_check_for_install (service, packages, failed);
-		for (iterator = *failed; iterator; iterator = iterator->next) {
-			g_message ("D: not installed %s", ((PackageData*)iterator->data)->name);
+	eazel_uninstall_check_for_install (service, packages, failed);
+	for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
+		g_message ("D: not installed %s", ((PackageData*)iterator->data)->name);
+		eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
+	}
+		
+	if (*packages) {
+		eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
+		print_package_list ("FAILED", *failed, TRUE);
+		for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
+			g_message ("D: failed %s", ((PackageData*)iterator->data)->name);
 			eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
 		}
-		
-		if (*packages) {
-			eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
-			print_package_list ("FAILED", *failed, TRUE);
-			for (iterator = *failed; iterator; iterator = iterator->next) {
-				g_message ("D: failed %s", ((PackageData*)iterator->data)->name);
-				eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
-			}
-			g_list_free (tmp);
-		}
+		g_list_free (tmp);
 	}
 
 /*
@@ -2202,16 +2205,12 @@ eazel_uninstall_globber (EazelInstall *service,
 
 	tmp = NULL;
 	eazel_uninstall_downward_traverse (service, packages, failed, &tmp);
-	for (iterator = tmp; iterator; iterator = iterator->next) {
+	for (iterator = tmp; iterator; iterator = g_list_next (iterator)) {
 		g_message ("also doing %s", ((PackageData*)iterator->data)->name);
 		(*packages) = g_list_prepend (*packages, iterator->data);
 	}
 	g_list_free (tmp);
 */
-
-	if (close_base) {
-		eazel_install_free_package_system (service);
-	}
 
 	g_message ("D: out eazel_uninstall_glob");
 }

@@ -909,7 +909,8 @@ check_system (EazelInstaller *installer)
 #ifndef NAUTILUS_INSTALLER_RELEASE
 	uname (&ub);
 	/* This codes tells Eskil that he's an idiot if he runs it on his own machine
-	   without the testflag... */
+	   without the testflag, since it hoses the system.
+	   It rouhgly translates into "fuck off". */
 	g_message ("host = %s", ub.nodename);
 	if (!installer_test && g_strncasecmp (ub.nodename, "toothgnasher", 12)==0) {
 		GnomeDialog *d;

@@ -450,6 +450,9 @@ eazel_install_fetch_file (EazelInstall *service,
 			   file_to_report ? file_to_report : g_basename (target_file));
 		eazel_install_emit_download_failed (service, 
 						    file_to_report ? file_to_report : g_basename (target_file));
+	} else {
+		service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
+								     g_strdup (target_file));
 	}
 
 	return result;

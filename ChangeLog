@@ -1,3 +1,94 @@
+2000-09-01  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_destroy_foreach), (packagedata_new),
+	(packagedata_destroy), (packagedata_remove_soft_dep):
+	The packagedata_destroy_foreach has been removed,
+	packagedata_destroy now takes a boolean that controls the deep
+	destroy.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_destroy), (nautilus_rpm_view_update_from_uri):
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (main):
+	Use the categorydata_new call
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_dep_check), (impl_install_progress),
+	(impl_uninstall_progress):
+	Fixed to use the changed packagedata_destroy
+	
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_simple_query):
+	Call the correct query call
+	
+	* components/services/install/lib/eazel-install-private.h:
+	Added a glist to hold downloaded packages
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_query_package_system),
+	(eazel_install_emit_install_progress_default):
+	Modified the deletion, so it now deletes all downloaded files (and
+	only downloaded files). Also this file is now responsible for
+	calling prepare_package_system.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_file):
+	Added downloaded packages to the glist in eazel_install.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query), (eazel_install_simple_query):
+	Removed the prepare/free_package_system calls
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_flatten_categories),
+	(eazel_install_download_packages),
+	(eazel_install_pre_install_packages),
+	(eazel_install_do_install_packages), (uninstall_all_packages),
+	(ei_get_packages_with_mod_flag), (ei_check_uninst_vs_downgrade),
+	(revert_transaction), (eazel_install_do_transaction_fill_hash),
+	(eazel_install_do_transaction_get_total_size),
+	(eazel_install_start_transaction_make_argument_list),
+	(eazel_install_do_transaction_save_report_helper),
+	(eazel_install_display_arguments),
+	(eazel_install_start_transaction),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_prune_packages), (eazel_install_load_rpm_headers),
+	(eazel_install_free_rpm_system),
+	(eazel_install_prepare_rpm_system), (eazel_install_add_to_rpm_set),
+	(eazel_install_add_to_extras_foreach),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies), (print_package_list),
+	(eazel_install_ensure_deps), (eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install), (eazel_uninstall_globber):
+	changed all the iterations to use g_list_next.
+	Changed the packagedata_destroy calls
+	Fixed the reversion
+	Modified the prepare package system scheme
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri),
+	(nautilus_service_install_view_update_from_uri):
+	Changed the packagedata_destroy calls.
+	Used categorydata_new instead of g_new
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l.c: (nautilus_service_install_view_install_package_callback),
+	(nautilus_service_install_view_uninstall_package_callback):
+	Used categorydata_new instead of g_new
+
+	* nautilus-installer/src/druid-sidebar.xpm:
+	Nicer ui
+	
+	* nautilus-installer/src/installer.c: (check_system):
+	Comment to the danish dialog box...
+
 2000-09-01  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

@@ -376,7 +376,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 	if (packages) {
 		CategoryData *category;
 
-		category = g_new0 (CategoryData, 1);
+		category = categorydata_new ();
 		category->packages = packages;
 		*categories = g_list_prepend (NULL, category);
 	}
@@ -843,7 +843,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	pack = (PackageData*) gtk_object_get_data (GTK_OBJECT (view), "packagedata");
 	if (pack != NULL) {
 		/* Destroy the old */
-		packagedata_destroy (pack);
+		packagedata_destroy (pack, TRUE);
 	}
 
 	/* find the package data for the package we're about to install */

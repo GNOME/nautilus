@@ -82,7 +82,7 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 	g_return_if_fail (cd != NULL);
 	g_free (cd->name);
 	cd->name = NULL;
-	g_list_foreach (cd->packages, (GFunc)packagedata_destroy_foreach, NULL);
+	g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 }
 
 void
@@ -99,6 +99,7 @@ packagedata_new ()
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs ++;
+	g_message ("package_allocs inced to %d (0x%x)", package_allocs, pack);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	
@@ -238,11 +239,11 @@ packagedata_fill_from_file (PackageData *pack, const char *filename)
 }
 
 void 
-packagedata_destroy_foreach (PackageData *pack, gpointer unused)
+packagedata_destroy (PackageData *pack, gboolean deep)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs --;
-	g_message ("package_allocs = %d", package_allocs);
+	g_message ("package_allocs = %d (0x%x)", package_allocs, pack);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 
@@ -263,10 +264,12 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	g_free (pack->install_root);
 	pack->install_root = NULL;
 
-	g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy_foreach, NULL);
-	g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy_foreach, NULL);
-	g_list_foreach (pack->breaks, (GFunc)packagedata_destroy_foreach, NULL);
-	g_list_foreach (pack->modifies, (GFunc)packagedata_destroy_foreach, NULL);
+	if (deep) {
+		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
+		g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
+		g_list_foreach (pack->breaks, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
+		g_list_foreach (pack->modifies, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
+	}
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
@@ -281,13 +284,7 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	}
 
 	g_free (pack);
-}
-
-void 
-packagedata_destroy (PackageData *pack)
-{
-	if (!pack) return;
-	packagedata_destroy_foreach (pack, NULL);
+	pack = NULL;
 }
 
 void 
@@ -299,7 +296,7 @@ packagedata_remove_soft_dep (PackageData *remove,
 
 	g_message ("removing %s from %s's deps", remove->name, from->name);
 	from->soft_depends = g_list_remove (from->soft_depends, remove);
-	packagedata_destroy (remove);
+	packagedata_destroy (remove, TRUE);
 }
 
 const char*

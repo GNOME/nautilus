@@ -366,13 +366,13 @@ impl_Eazel_Install_simple_query (impl_POA_Trilobite_Eazel_Install *servant,
 		servant->object->private->cur_root = g_strdup (root);
 	}
 
-	tmp_result = eazel_install_simple_query (servant->object, 
-						 query, 
-						 EI_SIMPLE_QUERY_MATCHES, 
-						 0, NULL);
+	tmp_result = eazel_install_query_package_system (servant->object, 
+							 query, 
+							 EI_SIMPLE_QUERY_MATCHES, 
+							 servant->object->private->cur_root);
 	result = Trilobite_Eazel_PackageDataStructList__alloc ();
 	(*result) = corba_packagedatastructlist_from_packagedata_list (tmp_result);
-	g_list_foreach (tmp_result, (GFunc)packagedata_destroy_foreach, NULL);
+	g_list_foreach (tmp_result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	
 	return result;
 }
