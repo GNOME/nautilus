@@ -654,8 +654,8 @@ nautilus_gdk_pixbuf_draw_to_drawable (const GdkPixbuf *pixbuf,
 	g_return_if_fail (destination_area != NULL);
  	g_return_if_fail (destination_area->x1 > destination_area->x0);
  	g_return_if_fail (destination_area->y1 > destination_area->y0);
- 	g_return_if_fail (alpha_threshold > NAUTILUS_OPACITY_FULL);
- 	g_return_if_fail (alpha_threshold <= NAUTILUS_OPACITY_NONE);
+ 	g_return_if_fail (alpha_threshold > NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+ 	g_return_if_fail (alpha_threshold <= NAUTILUS_OPACITY_FULLY_OPAQUE);
  	g_return_if_fail (alpha_compositing_mode >= GDK_PIXBUF_ALPHA_BILEVEL);
  	g_return_if_fail (alpha_compositing_mode <= GDK_PIXBUF_ALPHA_FULL);
 
@@ -854,8 +854,8 @@ nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (const GdkPixbuf *pixbuf,
 	g_return_if_fail (destination_area != NULL);
 	g_return_if_fail (destination_area->x1 > destination_area->x0);
 	g_return_if_fail (destination_area->y1 > destination_area->y0);
-	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULL);
-	g_return_if_fail (opacity <= NAUTILUS_OPACITY_NONE);
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 	g_return_if_fail (interpolation_mode >= GDK_INTERP_NEAREST);
 	g_return_if_fail (interpolation_mode <= GDK_INTERP_HYPER);
 	
@@ -865,7 +865,7 @@ nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (const GdkPixbuf *pixbuf,
 	g_return_if_fail (source_x >= 0);
 	g_return_if_fail (source_y >= 0);
 	g_return_if_fail (source_x < (frame.x1 - frame.x0));
-	g_return_if_fail (source_x < (frame.y1 - frame.y0));
+	g_return_if_fail (source_y < (frame.y1 - frame.y0));
 
 	/* Clip the destination area to the destination pixbuf frame */
  	art_irect_intersect (&target, destination_area, &destination_frame);
@@ -1112,7 +1112,7 @@ draw_tile_to_pixbuf_callback (const GdkPixbuf *pixbuf,
 
 	pixbuf_tile_data = (PixbufTileData *) callback_data;
 
-	if (pixbuf_tile_data->opacity == NAUTILUS_OPACITY_FULL) {
+	if (pixbuf_tile_data->opacity == NAUTILUS_OPACITY_FULLY_TRANSPARENT) {
 		nautilus_gdk_pixbuf_draw_to_pixbuf (pixbuf,
 						    pixbuf_tile_data->destination_pixbuf,
 						    x,
@@ -1191,8 +1191,8 @@ nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (const GdkPixbuf *pixbuf,
 	g_return_if_fail (tile_height > 0);
 	g_return_if_fail (tile_width <= gdk_pixbuf_get_width (pixbuf));
 	g_return_if_fail (tile_height <= gdk_pixbuf_get_height (pixbuf));
-	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULL);
-	g_return_if_fail (opacity <= NAUTILUS_OPACITY_NONE);
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 	g_return_if_fail (interpolation_mode >= GDK_INTERP_NEAREST);
 	g_return_if_fail (interpolation_mode <= GDK_INTERP_HYPER);
 
@@ -1253,8 +1253,8 @@ nautilus_gdk_pixbuf_draw_to_drawable_tiled (const GdkPixbuf *pixbuf,
 	g_return_if_fail (tile_height > 0);
 	g_return_if_fail (tile_width <= gdk_pixbuf_get_width (pixbuf));
 	g_return_if_fail (tile_height <= gdk_pixbuf_get_height (pixbuf));
- 	g_return_if_fail (alpha_threshold > NAUTILUS_OPACITY_FULL);
- 	g_return_if_fail (alpha_threshold <= NAUTILUS_OPACITY_NONE);
+ 	g_return_if_fail (alpha_threshold > NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+ 	g_return_if_fail (alpha_threshold <= NAUTILUS_OPACITY_FULLY_OPAQUE);
  	g_return_if_fail (alpha_compositing_mode >= GDK_PIXBUF_ALPHA_BILEVEL);
  	g_return_if_fail (alpha_compositing_mode <= GDK_PIXBUF_ALPHA_FULL);
 
@@ -1353,8 +1353,8 @@ nautilus_gdk_pixbuf_get_from_window_safe (GdkWindow *window,
 
 	/* Push an error handler so that we can catch
 	 * the very rare (but possible) case where 
-	 * the GetImage() event fails.  See HACK2 below
-	 * for more complete excuse.
+	 * the GetImage() request fails.  See HACK2 below
+	 * for a more complete excuse.
 	 */
 	gdk_error_trap_push ();
 
@@ -1370,7 +1370,7 @@ nautilus_gdk_pixbuf_get_from_window_safe (GdkWindow *window,
 	 *
 	 * This horrible thing we do here is needed to
 	 * prevent GdkPixbuf from doing geometry sanity
-	 * checks on the the window.  By pretending it
+	 * checks on the window.  By pretending it
 	 * is a Pixmap, we fool GdkPixbuf into not doing
 	 * these checks.  
 	 *

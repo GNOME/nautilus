@@ -1399,6 +1399,22 @@ nautilus_widget_has_attached_background (GtkWidget *widget)
 	return gtk_object_get_data (GTK_OBJECT (widget), "nautilus_background") != NULL;
 }
 
+GtkWidget *
+nautilus_gtk_widget_find_background_ancestor (GtkWidget *widget)
+{
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
+
+	while (widget != NULL) {
+		if (nautilus_widget_has_attached_background (widget)) {
+			return widget;
+		}
+
+		widget = widget->parent;
+	}
+
+	return NULL;
+}
+
 gboolean
 nautilus_background_is_too_complex_for_gtk_style (NautilusBackground *background)
 {

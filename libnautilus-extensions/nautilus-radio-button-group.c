@@ -365,7 +365,7 @@ nautilus_radio_button_group_set_entry_pixbuf (NautilusRadioButtonGroup *button_g
 	g_assert (row != NULL);
 
 	if (row->image == NULL) {
-		row->image = nautilus_image_new ();
+		row->image = nautilus_image_new (NULL);
 		
 		gtk_table_attach (table,
 				  row->image,			/* child */
@@ -382,7 +382,7 @@ nautilus_radio_button_group_set_entry_pixbuf (NautilusRadioButtonGroup *button_g
 	}
 
 	g_assert (row->image != NULL);
-
+	
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (row->image), pixbuf);
 }
 

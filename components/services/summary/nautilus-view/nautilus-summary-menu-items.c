@@ -55,8 +55,6 @@
 
 #include "nautilus-summary-view.h"
 #include "eazel-summary-shared.h"
-#include "shared-service-widgets.h"
-#include "shared-service-utilities.h"
 
 #include "eazel-services-footer.h"
 #include "eazel-services-header.h"

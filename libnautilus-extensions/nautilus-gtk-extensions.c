@@ -1678,20 +1678,19 @@ void
 nautilus_gtk_class_name_make_like_existing_type (const char *class_name,
 						 GtkType existing_gtk_type)
 {
-	GtkWidget *bogus;
+	GtkWidget *temporary;
 	GtkStyle *style;
-	GtkRcStyle *rc_style;
 
 	g_return_if_fail (class_name != NULL);
-	g_return_if_fail (existing_gtk_type > 0);
 
-	bogus = gtk_widget_new (existing_gtk_type, NULL);
-	gtk_widget_ensure_style (bogus);
+	temporary = gtk_widget_new (existing_gtk_type, NULL);
+	gtk_widget_ensure_style (temporary);
 		
-	style = gtk_widget_get_style (bogus);
-	rc_style = style->rc_style;
+	style = gtk_widget_get_style (temporary);
 
-	gtk_rc_add_widget_class_style (rc_style, class_name);
+	if (style->rc_style != NULL) {
+		gtk_rc_add_widget_class_style (style->rc_style, class_name);
+	}
 		
-	gtk_widget_destroy (bogus);
+	gtk_widget_destroy (temporary);
 }

@@ -217,7 +217,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 		gdk_pixbuf_unref (orig_pixbuf);
 	}
 	
-	*pixmap_widget = nautilus_image_new ();
+	*pixmap_widget = nautilus_image_new (NULL);
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (*pixmap_widget), pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 	
@@ -233,7 +233,6 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	}
 	else {
 		*label = nautilus_label_new (filtered_name);
-		nautilus_label_set_font_size (NAUTILUS_LABEL (*label), 12);
 	}
 	
 	g_free (filtered_name);

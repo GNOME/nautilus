@@ -53,6 +53,7 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -69,12 +70,10 @@
 struct NautilusThemeSelectorDetails {
 	GtkWidget *container;
 
-	GtkWidget *title_box;
 	GtkWidget *title_label;
 	GtkWidget *help_label;
 	
 	GtkWidget *theme_list;
-	GtkWidget *bottom_box;
 	
 	GtkWidget *add_button;
 	GtkWidget *add_button_label;	
@@ -155,6 +154,8 @@ nautilus_theme_selector_initialize (GtkObject *object)
  	NautilusThemeSelector *theme_selector;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
 	GtkWidget *scrollwindow;
+	GtkWidget *title_box;
+	GtkWidget *bottom_box;
 	
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
 	widget = GTK_WIDGET (object);
@@ -183,19 +184,19 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	
   	/* create the title box */
   	
-  	theme_selector->details->title_box = gtk_event_box_new();
-	gtk_container_set_border_width (GTK_CONTAINER (theme_selector->details->title_box), 0);				
+  	title_box = gtk_event_box_new();
+	gtk_container_set_border_width (GTK_CONTAINER (title_box), 0);				
  
- 	background = nautilus_get_widget_background (GTK_WIDGET (theme_selector->details->title_box));
+ 	background = nautilus_get_widget_background (GTK_WIDGET (title_box));
 	nautilus_background_set_color (background, SELECTOR_TITLE_BAR_COLOR);	
 
-  	gtk_widget_show(theme_selector->details->title_box);
-	gtk_box_pack_start (GTK_BOX(theme_selector->details->container), theme_selector->details->title_box, FALSE, FALSE, 0);
+  	gtk_widget_show(title_box);
+	gtk_box_pack_start (GTK_BOX(theme_selector->details->container), title_box, FALSE, FALSE, 0);
   	
   	temp_frame = gtk_frame_new(NULL);
   	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_OUT);
   	gtk_widget_show(temp_frame);
-  	gtk_container_add(GTK_CONTAINER(theme_selector->details->title_box), temp_frame);
+  	gtk_container_add(GTK_CONTAINER(title_box), temp_frame);
   	
   	temp_hbox = gtk_hbox_new(FALSE, 0);
   	gtk_widget_show(temp_hbox);
@@ -203,14 +204,13 @@ nautilus_theme_selector_initialize (GtkObject *object)
  	
 	/* add the title label */
 	theme_selector->details->title_label = nautilus_label_new (_("Nautilus Theme:"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->title_label), 18);
+	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->title_label), 4);
 
   	gtk_widget_show(theme_selector->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), theme_selector->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
 	theme_selector->details->help_label = nautilus_label_new ("");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->help_label), 12);
 	set_help_label (theme_selector, FALSE);
   	gtk_widget_show(theme_selector->details->help_label);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), theme_selector->details->help_label, FALSE, FALSE, 8);
@@ -260,21 +260,21 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	gtk_widget_show(temp_frame);
   	gtk_container_add(GTK_CONTAINER(temp_box), temp_frame);
 
-  	theme_selector->details->bottom_box = gtk_hbox_new(FALSE, 0);
-  	gtk_widget_show(theme_selector->details->bottom_box);
+  	bottom_box = gtk_hbox_new(FALSE, 0);
+  	gtk_widget_show(bottom_box);
 	gtk_box_pack_end (GTK_BOX(theme_selector->details->container), temp_box, FALSE, FALSE, 0);
-  	gtk_container_add (GTK_CONTAINER (temp_frame), theme_selector->details->bottom_box);
+  	gtk_container_add (GTK_CONTAINER (temp_frame), bottom_box);
   	
   	/* create the "add new" button */
   	theme_selector->details->add_button = gtk_button_new ();
 	gtk_widget_show(theme_selector->details->add_button);
 	
 	theme_selector->details->add_button_label = nautilus_label_new (_("Add new theme"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->add_button_label), 14);
+	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->add_button_label), 2);
 
 	gtk_widget_show(theme_selector->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->add_button), theme_selector->details->add_button_label);
-	gtk_box_pack_end (GTK_BOX(theme_selector->details->bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
+	gtk_box_pack_end (GTK_BOX(bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
  	  
  	gtk_signal_connect(GTK_OBJECT (theme_selector->details->add_button), "clicked", GTK_SIGNAL_FUNC (add_new_theme_button_callback), theme_selector);
 	
@@ -282,11 +282,11 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	theme_selector->details->remove_button = gtk_button_new();
 	
 	theme_selector->details->remove_button_label = nautilus_label_new (_("Remove theme"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->remove_button_label), 14);
+	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->remove_button_label), 2);
 	
 	gtk_widget_show(theme_selector->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->remove_button), theme_selector->details->remove_button_label);
-	gtk_box_pack_end (GTK_BOX (theme_selector->details->bottom_box),
+	gtk_box_pack_end (GTK_BOX (bottom_box),
 			  theme_selector->details->remove_button,
 			  FALSE,
 			  FALSE,
@@ -544,10 +544,10 @@ static void
 set_help_label (NautilusThemeSelector *theme_selector, gboolean remove_mode)
 {
 	if (remove_mode) {
-		nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->help_label),
+		nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
 					_("Click on a theme to remove it."));	
 	} else {
-		nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->help_label),
+		nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
 					_("Click on a theme to change the\n"
 					  "appearance of Nautilus."));	
 
@@ -561,7 +561,7 @@ exit_remove_mode (NautilusThemeSelector *theme_selector)
 	set_help_label (theme_selector, FALSE);
 	
 	/* change the add button label back to it's normal state */
-	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->add_button_label), _("Add New Theme"));
+	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->add_button_label), _("Add New Theme"));
 	
 	populate_list_with_themes (theme_selector);	
 }

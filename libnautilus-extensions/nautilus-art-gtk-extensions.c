@@ -156,6 +156,29 @@ nautilus_irect_gtk_widget_get_bounds (const GtkWidget *gtk_widget)
 }
 
 /**
+ * nautilus_irect_gtk_widget_get_frame:
+ * @gtk_widget: The source GtkWidget.
+ *
+ * Return value: An ArtIRect representation of the given GtkWidget's dimensions.
+ *
+ */
+ArtIRect
+nautilus_irect_gtk_widget_get_frame (const GtkWidget *gtk_widget)
+{
+	ArtIRect frame;
+	
+	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), NAUTILUS_ART_IRECT_EMPTY);
+	
+	nautilus_art_irect_assign (&frame, 
+				   0,
+				   0,
+				   (int) gtk_widget->allocation.width,
+				   (int) gtk_widget->allocation.height);
+	
+	return frame;
+}
+
+/**
  * nautilus_irect_gdk_window_clip_dirty_area_to_screen:
  * @gdk_window: The GdkWindow that the damage occured on.
  * @dirty_area: The dirty area as an ArtIRect.

@@ -1,3 +1,405 @@
+2001-01-11  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix bugs 4711, 2322, 3778, 4989, 5044, 5166, 5408, 4418, 3779 (parts),
+	5051, 2783 and maybe other relating to (ab)use of fonts,
+	backgrounds and other sacred attrbiutes of Gtk themes.
+	
+	* components/hardware/nautilus-hardware-view.c: (setup_form_title),
+	(setup_overview_form), (setup_CPU_form), (setup_RAM_form),
+	(setup_IDE_form):
+	Fix hard coded fonts.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize),
+	(music_view_set_selected_song_title), (reset_playtime),
+	(play_status_display), (slider_moved_callback),
+	(add_play_controls):
+	Fix hard coded fonts.
+	
+	* components/rpmview/nautilus-rpm-verify-window.c:
+	(nautilus_rpm_verify_window_initialize):
+	Fix hard coded fonts.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (horizontal_line_new), (install_message_new),
+	(generate_install_form),
+	(nautilus_service_install_view_initialize),
+	(current_progress_bar_complete),
+	(nautilus_service_install_installing):
+	Fix hard coded fonts.
+	
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c: (generate_change_password_form), (authn_succeeded),
+	(authn_failed), (change_password_button_cb),
+	(nautilus_change_password_view_initialize):
+	Fix hard coded fonts.  Cleanup header inclusion a bit.
+	
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	Retire some crufty code.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-exte
+	nsions.c: (eazel_services_image_new),
+	(eazel_services_image_new_from_uri):, (eazel_services_label_new):
+	Update for label, image and hard coded font changes.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-exte
+	nsions.h:
+	Make the colors opaque.  Remove a bunch of hard coded font stuff.
+	Also remove a bunch of hard coded offsets.  We use alignments and
+	paddings instead.
+
+	* components/services/nautilus-dependent-shared/eazel-services-foot
+	er.c: (label_enter_event), (label_leave_event),
+	(image_enter_event), (footer_item_new),
+	(eazel_services_footer_update):
+	Update for label, image and hard coded font changes.
+
+	* components/services/nautilus-dependent-shared/eazel-services-head
+	er.c: (eazel_services_header_title_new),
+	(eazel_services_header_middle_new):
+	* components/services/nautilus-dependent-shared/shared-service-util
+	ities.c:
+	* components/services/nautilus-dependent-shared/shared-service-util
+	ities.h:
+	* components/services/nautilus-dependent-shared/shared-service-widg
+	ets.c:
+	* components/services/nautilus-dependent-shared/shared-service-widg
+	ets.h:
+	* components/services/summary/nautilus-view/nautilus-summary-callba
+	cks.c:
+	* components/services/summary/nautilus-view/nautilus-summary-dialog
+	s.c: (generate_login_dialog):
+	* components/services/summary/nautilus-view/nautilus-summary-footer
+	.c:
+	* components/services/summary/nautilus-view/nautilus-summary-menu-i
+	tems.c:
+	* components/services/summary/nautilus-view/nautilus-summary-view-p
+	rivate.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (generate_service_entry_row),
+	(generate_eazel_news_entry_row), (generate_update_news_entry_row):
+	Update for label, image and hard coded font changes.
+	
+	* libnautilus-extensions/Makefile.am:
+	Add new smooth/label/image widget stuff.  Retire buffered widget.
+	
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_art_irect_get_width), (nautilus_art_irect_get_height):
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	Two new very simple functions to get the width/height of an
+	ArtIRect. 
+	
+	* libnautilus-extensions/nautilus-art-gtk-extensions.c:
+	(nautilus_irect_gtk_widget_get_frame):
+	* libnautilus-extensions/nautilus-art-gtk-extensions.h:
+	New simple function to get the dimensions of a widget as an
+	ArtIRect frame.
+
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	* libnautilus-extensions/nautilus-buffered-widget.h:
+	Retire.  We dont use this no more.
+	
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_get_next_element_for_display):
+	Update for image and hard coded font changes.
+
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	(debug_pixbuf_viewer_initialize_class),
+	(debug_pixbuf_viewer_initialize), (debug_pixbuf_viewer_destroy),
+	(debug_pixbuf_viewer_size_request),
+	(debug_pixbuf_viewer_expose_event),
+	(debug_pixbuf_viewer_set_pixbuf),
+	(nautilus_debug_draw_rectangle_and_cross), (destroy_debug_window),
+	(nautilus_debug_show_pixbuf):
+	* libnautilus-extensions/nautilus-debug-drawing.h:
+	Back to using a widget to display the debug pixbuf.  But since we
+	cant use NautilusImage (because we want to use this debug stuff to
+	debug NautilusImage itselft) we need something else.  Thus a new
+	private and simple widget to display the debug pixbuf.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_draw_to_drawable),
+	(nautilus_gdk_pixbuf_draw_to_pixbuf_alpha): Fix a very dumb typo.
+	(draw_tile_to_pixbuf_callback),
+	(nautilus_gdk_pixbuf_draw_to_pixbuf_tiled),
+	(nautilus_gdk_pixbuf_draw_to_drawable_tiled),
+	(nautilus_gdk_pixbuf_get_from_window_safe):
+	Rename opacity macros to FULLY_OPAQUE and FULLY_TRANSPARENT for
+	clarity. 
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	Rename opacity macros to FULLY_OPAQUE and FULLY_TRANSPARENT for
+	clarity. 
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	Update opacity macros.  Tiny update for change in font constructor.
+
+	* libnautilus-extensions/nautilus-image-with-background.h:
+	* libnautilus-extensions/nautilus-image-with-background.c:
+	(find_background_ancestor), (draw_background_callback),
+	(nautilus_image_new_with_background):
+	Create a NautilusImage that uses NautilusBackground to
+	draw the background.  We put this in a separate file to avoid the
+	ugly dependency chain in NautilusBackground so that NautilusImage
+	can be used by standalone components in the future.
+
+	* libnautilus-extensions/nautilus-image.h:
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_initialize_class), (nautilus_image_initialize),
+	(nautilus_image_destroy), (nautilus_image_set_arg),
+	(nautilus_image_get_arg), (nautilus_image_size_request),
+	(image_paint_pixbuf_callback), (image_composite_pixbuf_callback),
+	(nautilus_image_expose_event),
+	(nautilus_image_set_is_smooth_signal), (image_get_pixbuf_frame),
+	(image_get_pixbuf_bounds), (image_get_tile_frame),
+	(nautilus_image_new), (nautilus_image_set_is_smooth),
+	(nautilus_image_get_is_smooth), (nautilus_image_set_tile_pixbuf),
+	(nautilus_image_get_tile_pixbuf), (nautilus_image_set_pixbuf),
+	(nautilus_image_set_pixbuf_from_file_name),
+	(nautilus_image_get_pixbuf), (nautilus_image_set_pixbuf_opacity),
+	(nautilus_image_get_pixbuf_opacity),
+	(nautilus_image_set_tile_opacity),
+	(nautilus_image_get_tile_opacity), (nautilus_image_set_tile_width),
+	(nautilus_image_get_tile_width), (nautilus_image_set_tile_height),
+	(nautilus_image_get_tile_height),
+	(nautilus_image_set_tile_mode_vertical),
+	(nautilus_image_get_tile_mode_vertical),
+	(nautilus_image_set_tile_mode_horizontal),
+	(nautilus_image_get_tile_mode_horizontal),
+	(nautilus_image_set_tile_pixbuf_from_file_name),
+	(nautilus_image_set_background_mode),
+	(nautilus_image_get_background_mode),
+	(nautilus_image_set_solid_background_color),
+	(nautilus_image_get_solid_background_color),
+	(nautilus_image_new_solid):
+	Fixed many problems.  Properly handles rendering 
+	on top of arbitrary Gtk backgrounds.  Does not allocate a buffer
+	the size of the widget anymore.  All rendering occurs on exposure
+	events.  Honrts the the GtkMisc superclass attrbutes for alignment
+	and padding.  The widget is a lot simpler now.
+	
+	* libnautilus-extensions/nautilus-label-with-background.h:
+	* libnautilus-extensions/nautilus-label-with-background.c:
+	(find_background_ancestor), (draw_background_callback),
+	(nautilus_label_new_with_background):
+	Create a NautilusLabel that uses NautilusBackground to
+	draw the background.  We put this in a separate file to avoid the
+	ugly dependency chain in NautilusBackground so that NautilusLabel
+	can be used by standalone components in the future.
+
+	* libnautilus-extensions/nautilus-label.h:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize_class), (nautilus_label_initialize),
+	(nautilus_label_destroy), (nautilus_label_set_arg),
+	(nautilus_label_get_arg), (nautilus_label_size_request),
+	(label_paint_pixbuf_callback), (label_composite_pixbuf_callback),
+	(nautilus_label_expose_event),
+	(nautilus_label_set_is_smooth_signal), (label_draw_text_to_pixbuf),
+	(label_get_default_line_wrap_width), (label_get_text_frame),
+	(label_get_text_bounds), (label_get_tile_frame), (label_peek_text),
+	(label_get_empty_line_height),
+	(label_get_total_text_and_line_offset_height),
+	(label_line_geometries_clear), (label_line_geometries_recompute),
+	(nautilus_label_new), (nautilus_label_set_smooth_font),
+	(nautilus_label_get_smooth_font),
+	(nautilus_label_set_smooth_font_size),
+	(nautilus_label_get_smooth_font_size),
+	(nautilus_label_set_is_smooth), (nautilus_label_get_is_smooth),
+	(nautilus_label_set_tile_pixbuf), (nautilus_label_get_tile_pixbuf),
+	(nautilus_label_set_text_opacity),
+	(nautilus_label_get_text_opacity),
+	(nautilus_label_set_tile_opacity),
+	(nautilus_label_get_tile_opacity), (nautilus_label_set_tile_width),
+	(nautilus_label_get_tile_width), (nautilus_label_set_tile_height),
+	(nautilus_label_get_tile_height),
+	(nautilus_label_set_tile_mode_vertical),
+	(nautilus_label_get_tile_mode_vertical),
+	(nautilus_label_set_tile_mode_horizontal),
+	(nautilus_label_get_tile_mode_horizontal),
+	(nautilus_label_set_tile_pixbuf_from_file_name),
+	(nautilus_label_set_background_mode),
+	(nautilus_label_get_background_mode),
+	(nautilus_label_set_solid_background_color),
+	(nautilus_label_get_solid_background_color),
+	(nautilus_label_set_smooth_line_wrap_width),
+	(nautilus_label_get_smooth_line_wrap_width),
+	(nautilus_label_set_text_color), (nautilus_label_get_text_color),
+	(nautilus_label_set_smooth_drop_shadow_offset),
+	(nautilus_label_get_smooth_drop_shadow_offset),
+	(nautilus_label_set_smooth_drop_shadow_color),
+	(nautilus_label_get_smooth_drop_shadow_color),
+	(nautilus_label_set_justify), (nautilus_label_get_text_justify),
+	(nautilus_label_set_text), (nautilus_label_get_text),
+	(nautilus_label_set_wrap), (nautilus_label_get_wrap),
+	(nautilus_label_new_solid), (nautilus_label_make_bold),
+	(nautilus_label_make_larger), (nautilus_label_make_smaller):
+	Fixed many problems.  Properly handles rendering 
+	on top of arbitrary Gtk backgrounds.  Does not allocate a buffer
+	the size of the widget anymore.  All rendering occurs on exposure
+	events.  Honors the the GtkMisc superclass attrbutes for alignment
+	and padding.  NautilusLabel is now subclassed from GtkLabel
+	itself.  That means that the is_smooth attribute can be toggled to
+	make both religions happy.  Support for making the label larger,
+	smaller and/or bold based on the current font.  Renamed a lot of
+	methods to make it obvious that they apply only to the smooth case.
+	Also made the api match GtkLabel more closely.  So many functions
+	got renamed.
+	
+	* libnautilus-extensions/nautilus-radio-button-group.c:
+	(nautilus_radio_button_group_set_entry_pixbuf):
+	Tiny update for changes in the NautilusImage constructor.
+
+	* libnautilus-extensions/nautilus-scalable-font-private.h:
+	New file.  Some private font stuff lives here.  I need this
+	changed for a checkin that I will make later regarding improvement
+	of performance in the icon container smooth fonts.
+	
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_initialize), (font_entry_new),
+	(font_entry_free), (nautilus_scalable_font_new),
+	(nautilus_scalable_font_make_bold),
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines),
+	(nautilus_scalable_font_get_default_font),
+	(nautilus_scalable_font_get_rsvg_handle),
+	(nautilus_scalable_font_get_rsvg_context),
+	(nautilus_text_layout_paint):
+	Change the constructor to return the type itself instead of
+	GtkObject.  Some minor style tweaks.  Keep track of the font entry
+	that was used to allocate the font.  New private functions for
+	accessing the rsvg context and font handles.  Remove an unsed
+	function. 
+	
+	* libnautilus-extensions/nautilus-smooth-widget.h:
+	* libnautilus-extensions/nautilus-smooth-widget.c:
+	(widget_is_smooth), (smooth_widget_set_is_smooth),
+	(preferences_get_is_smooth), (smooth_widget_destroy),
+	(smooth_graphics_mode_changed_callback),
+	(nautilus_smooth_widget_register),
+	(smooth_widget_get_tile_origin_point),
+	(smooth_widget_get_gtk_background), (smooth_widget_get_background),
+	(smooth_widget_paint_tile_opaque),
+	(smooth_widget_paint_tile_transparent),
+	(smooth_widget_paint_content_opaque),
+	(smooth_widget_paint_content_transparent),
+	(smooth_widget_paint_tile_and_content_transparent),
+	(nautilus_smooth_widget_paint),
+	(nautilus_smooth_widget_get_tile_bounds),
+	(nautilus_smooth_widget_get_preferred_frame):
+	Shared code between NautilusLabel and NautilusImage.  ALl the code
+	to support smooth toggable widgets lives here.  Also, keep track
+	of smooth widgets and toggle their is_smooth attribute in response
+	to nautilus smooth graphics preferences changes.
+	
+	* libnautilus-extensions/nautilus-tabs.c:
+	(nautilus_tabs_initialize), (draw_tab_label):
+	Tiny update for change in font constructor.  Add a FIXME for a
+	hard coded font issue im going to fix later.  Opacity macro
+	update. 
+	
+	* src/file-manager/fm-properties-window.c:
+	(create_image_widget_for_file):
+	Using the new image widget makes this code a lot simpler.  No
+	longer need to check smooth preference.  It all happens
+	automatically. 
+	
+	* src/file-manager/nautilus-indexing-info.c:
+	(update_progress_display), (show_reindex_request_information),
+	(show_index_progress_bar), (show_indexing_info_dialog):
+	Fix a bunch of hard coded font issues.
+	
+	* src/nautilus-about.c: (draw_aa_string),
+	(nautilus_about_draw_info), (nautilus_about_update_authors):
+	Tiny update for change in font constructor.  Opacity macro
+	update. 
+	
+	* src/nautilus-first-time-druid.c: (label_new_left_justified),
+	(make_hbox_user_level_radio_button), (set_up_user_level_page),
+	(set_up_service_signup_page), (set_up_update_page),
+	(set_up_proxy_config_page), (set_up_update_feedback_page),
+	(nautilus_first_time_druid_show):
+	Fix a bunch of hard coded font issues.  Also fix the rendering
+	problems with image usage inside selectable buttons.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(set_emblem_image_from_file), (make_property_tile),
+	(make_properties_from_directories), (add_reset_property),
+	(make_properties_from_xml_node),
+	(nautilus_property_browser_update_contents):
+	Fix hard coded fonts.  Update for NautilusImage and NautilusLabel
+	changes. 
+	
+	* src/nautilus-search-bar-criterion.c:
+	Remove unused #include.
+	
+	* src/nautilus-shell.c: (display_caveat):
+	Fix hard coded fonts.
+	
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data), (draw_one_tab_plain),
+	(draw_one_tab_themed):
+	Fix hard coded fonts.  Opacity macros update.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_select_text_color), (update_icon),
+	(update_font), (update_title), (update_more_info), (add_emblem),
+	(sidebar_title_create_title_label),
+	(sidebar_title_create_more_info_label),
+	(smooth_graphics_mode_changed_callback):
+	Update for NautilusImage and NautilusLabel changes.  Made the
+	widget a lot simpler.  
+
+	We no longer need to keep track of smooth changes in the sidebar
+	title.  They are taked care automatically by the widgets.  
+
+	We no longer need to create 2 labels to honor smoothness.
+	NautilusLabel does it all now.
+	
+	Removed a set_background() function that already
+	exists in nautilus-extensions.
+
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize), (set_help_label),
+	(exit_remove_mode):
+	Fix hard coded fonts.
+	
+	* test/font-test.sh:
+	Retire.  Not needed.
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	Add a bunch of tests.
+
+	* test/test.h:
+	* test/test.c:
+	Put shared test code here.
+	
+	* test/test-nautilus-font-simple.c:
+	* test/test-nautilus-font.c:
+	* test/test-nautilus-image-background.c:
+	* test/test-nautilus-image-scrolled.c:
+	* test/test-nautilus-image-simple.c:
+	* test/test-nautilus-image-tile.c:
+	* test/test-nautilus-image.c:
+	* test/test-nautilus-label-background.c:
+	* test/test-nautilus-label-flavorful.c:
+	* test/test-nautilus-label-scrolled.c:
+	* test/test-nautilus-label-simple.c:
+	* test/test-nautilus-label-wrapped.c:
+	* test/test-nautilus-label.c:
+	* test/test-nautilus-pixbuf-tile.c:
+	* test/test-nautilus-smooth-graphics.c:
+	* test/test-nautilus-wrapped-label.c:
+	Some new tests.  Many updates to old label and image tests.
+
 2001-01-11  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* components/services/inventory/Makefile.am: added $(IDL) to

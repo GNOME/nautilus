@@ -23,7 +23,7 @@
 */
 
 #include <config.h>
-#include "nautilus-scalable-font.h"
+#include "nautilus-scalable-font-private.h"
 
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gdk-extensions.h"
@@ -49,24 +49,25 @@
 
 /* FontEntry */
 typedef struct {
-	char			*weight;
-	char			*slant;
-	char			*set_width;
-	RsvgFTFontHandle	font_handle;
-	char			*path;
+	char *weight;
+	char *slant;
+	char *set_width;
+	RsvgFTFontHandle font_handle;
+	char *path;
 } FontEntry;
 
 /* FontFamilyEntry */
 typedef struct {
-	char			*family;
-	GList			*fonts;
+	char *family;
+	GList *fonts;
 } FontFamilyEntry;
-
 
 /* Detail member struct */
 struct _NautilusScalableFontDetail
 {
-	RsvgFTFontHandle	font_handle;
+	RsvgFTFontHandle font_handle;
+	const FontFamilyEntry *font_family_entry;
+	const FontEntry *font_entry;
 };
 
 /* Global things */
@@ -74,8 +75,6 @@ static GHashTable		*global_font_family_table = NULL;
 static RsvgFTCtx		*global_rsvg_ft_context = NULL;
 static NautilusScalableFont	*global_default_font = NULL;
 static NautilusStringMap	*global_family_string_map = NULL;
-
-static const RsvgFTFontHandle UNDEFINED_FONT_HANDLE = -1;
 
 /* GtkObjectClass methods */
 static void nautilus_scalable_font_initialize_class   (NautilusScalableFontClass *font_class);
@@ -106,9 +105,9 @@ nautilus_scalable_font_initialize_class (NautilusScalableFontClass *font_class)
 void
 nautilus_scalable_font_initialize (NautilusScalableFont *font)
 {
-	font->detail = g_new (NautilusScalableFontDetail, 1);
+	font->detail = g_new0 (NautilusScalableFontDetail, 1);
 
-	font->detail->font_handle = UNDEFINED_FONT_HANDLE;
+	font->detail->font_handle = NAUTILUS_SCALABLE_FONT_UNDEFINED_HANDLE;
 }
 
 /* GtkObjectClass methods */
@@ -281,7 +280,7 @@ font_entry_new (const char *weight,
 	entry->slant = g_strdup (slant);
 	entry->set_width = g_strdup (set_width);
 	entry->path = g_strdup (path);
-	entry->font_handle = UNDEFINED_FONT_HANDLE;
+	entry->font_handle = NAUTILUS_SCALABLE_FONT_UNDEFINED_HANDLE;
 
 	return entry;
 }
@@ -297,7 +296,7 @@ font_entry_free (FontEntry* entry)
 	g_free (entry->path);
 
 	/* These fonts arent refcounted because they are catched internally by librsvg */
-	entry->font_handle = UNDEFINED_FONT_HANDLE;
+	entry->font_handle = NAUTILUS_SCALABLE_FONT_UNDEFINED_HANDLE;
 	
 	g_free (entry);
 }
@@ -541,35 +540,46 @@ font_family_string_map_new (void)
 }
 
 /* Public NautilusScalableFont methods */
-GtkObject*
+
+/**
+ * nautilus_scalable_font_new:
+ * @family: The desired font family.
+ * @weight: The desired font weight.
+ * @slant: The desired font slant.
+ * @set_width: The desired font set_width.
+ *
+ * Returns a font for the desired components.  Returns NULL if the font
+ * does not exist.
+ *
+ */
+NautilusScalableFont *
 nautilus_scalable_font_new (const char	*family,
 			    const char	*weight,
 			    const char	*slant,
 			    const char	*set_width)
 {
 	/* const char	*foundry = "URW"; */
-	FontFamilyEntry		 *family_entry;
-	FontEntry		 *font_entry;
-	NautilusScalableFont	 *font;
+	FontFamilyEntry *font_family_entry;
+	FontEntry *font_entry;
+	NautilusScalableFont *font;
 
 	initialize_global_stuff_if_needed ();
 
-	family_entry = font_family_lookup (global_font_family_table, family);
+	font_family_entry = font_family_lookup (global_font_family_table, family);
 
 	/* If the family entry was not found, try a mapped family name */
-	if (family_entry == NULL) {
+	if (font_family_entry == NULL) {
 		char *mapped_family;
 
 		mapped_family = nautilus_string_map_lookup (global_family_string_map, family);
 
 		if (mapped_family != NULL) {
-			family_entry = font_family_lookup (global_font_family_table, mapped_family);
+			font_family_entry = font_family_lookup (global_font_family_table, mapped_family);
 			g_free (mapped_family);
 		}
 	}
 
-	if (family_entry == NULL) {
-		g_warning ("There is no such font: %s", family);
+	if (font_family_entry == NULL) {
 		return NULL;
 	}
 
@@ -577,15 +587,14 @@ nautilus_scalable_font_new (const char	*family,
 	slant = slant ? slant : "r";
 	set_width = set_width ? set_width : "normal";
 
-	font_entry = font_family_find_font (family_entry, weight, slant, set_width);
+	font_entry = font_family_find_font (font_family_entry, weight, slant, set_width);
 
 	if (font_entry == NULL) {
-		g_warning ("There is no such font '%s-%s-%s-%s'", family, weight, slant, set_width);
 		return NULL;
 	}
 
 	/* 'Intern' the rsvg font handle if needed */
-	if (font_entry->font_handle == UNDEFINED_FONT_HANDLE) {
+	if (font_entry->font_handle == NAUTILUS_SCALABLE_FONT_UNDEFINED_HANDLE) {
 		font_entry->font_handle = rsvg_ft_intern (global_rsvg_ft_context, font_entry->path);
 
 	}
@@ -600,8 +609,43 @@ nautilus_scalable_font_new (const char	*family,
 	gtk_object_sink (GTK_OBJECT (font));
 	
 	font->detail->font_handle = font_entry->font_handle;
+	font->detail->font_family_entry = font_family_entry;
+	font->detail->font_entry = font_entry;
 
-	return GTK_OBJECT (font);
+	return font;
+}
+
+NautilusScalableFont *
+nautilus_scalable_font_make_bold (NautilusScalableFont *font)
+{
+	NautilusScalableFont *bold_font = NULL;
+
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
+
+	/* FIXME bugzilla.eazel.com xxxx:
+	 * To be 100% correc we need to query for the weights.
+	 * It just so happens that the limited number of Type1
+	 * font we have dealt with all have a "bold" weight.
+	 */
+	
+	/* If the font is already bold, then do nothing */
+ 	if (nautilus_str_is_equal (font->detail->font_entry->weight, "bold")) {
+		gtk_object_ref (GTK_OBJECT (font));
+		return font;
+	}
+
+	bold_font = nautilus_scalable_font_new (font->detail->font_family_entry->family,
+						"bold",
+						font->detail->font_entry->slant,
+						font->detail->font_entry->set_width);
+
+	/* If the bold font does not exist, then return the source font */
+	if (bold_font == NULL) {
+		gtk_object_ref (GTK_OBJECT (font));
+		bold_font = font;
+	}
+
+	return bold_font;
 }
 
 void
@@ -681,16 +725,16 @@ nautilus_scalable_font_text_width (const NautilusScalableFont  *font,
 
 void
 nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
-				  GdkPixbuf		     *destination_pixbuf,
-				  int			     x,
-				  int			     y,
-				  const ArtIRect              *clip_area,
-				  guint			     font_width,
-				  guint			     font_height,
-				  const char		     *text,
-				  guint			     text_length,
-				  guint32		     color,
-				  guchar		     overall_alpha)
+				  GdkPixbuf *destination_pixbuf,
+				  int x,
+				  int y,
+				  const ArtIRect *clip_area,
+				  guint font_width,
+				  guint font_height,
+				  const char *text,
+				  guint text_length,
+				  guint32 color,
+				  int opacity)
 {
 	RsvgFTGlyph	*glyph;
  	double		affine[6];
@@ -784,8 +828,9 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 		art_color_array[1] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_G (color));
 		art_color_array[2] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_B (color));
 		
+		art_render_mask_solid (art_render, (opacity << 8) + opacity + (opacity >> 7));
 		art_render_image_solid (art_render, art_color_array);
-		
+
 		art_render_mask (art_render,
 				 render_area.x0,
 				 render_area.y0,
@@ -793,7 +838,6 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				 render_area.y1,
 				 glyph->buf, 
 				 glyph->rowstride);
-		
 		art_render_invoke (art_render);
 	}
 	
@@ -904,7 +948,7 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 							guint                        line_offset,
 							double			     empty_line_height,
 							guint32                      color,
-							guchar                       overall_alpha)
+							int                          opacity)
 {
 	guint		i;
 	const char	*line;
@@ -997,7 +1041,7 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 							  line,
 							  length,
 							  color,
-							  overall_alpha);
+							  opacity);
 			
 			y += (line_offset + text_line_heights[i]);
 		}
@@ -1024,7 +1068,7 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 					guint                        line_offset,
 					double			     empty_line_height,
 					guint32                      color,
-					guchar                       overall_alpha)
+					int                       opacity)
 {
 	guint	num_text_lines;
 	guint	*text_line_widths;
@@ -1078,7 +1122,7 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 								line_offset,
 								empty_line_height,
 								color,
-								overall_alpha);
+								opacity);
 	
 	g_free (text_line_widths);
 	g_free (text_line_heights);
@@ -1137,7 +1181,7 @@ NautilusScalableFont *
 nautilus_scalable_font_get_default_font (void)
 {
 	if (global_default_font == NULL) {
-		global_default_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL));
+		global_default_font = nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL);
 		g_assert (global_default_font != NULL);
 		g_atexit (default_font_at_exit_destructor);
 	}
@@ -1332,6 +1376,25 @@ initialize_global_stuff_if_needed (void)
 
 		g_atexit (font_family_string_map_at_exit_destructor);
 	}
+}
+
+/* Private NautilusScalableFont things */
+int
+nautilus_scalable_font_get_rsvg_handle (const NautilusScalableFont *font)
+{
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NAUTILUS_SCALABLE_FONT_UNDEFINED_HANDLE);
+
+	return font->detail->font_handle;
+}
+
+struct _RsvgFTCtx *
+nautilus_scalable_font_get_rsvg_context (const NautilusScalableFont *font)
+{
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
+
+	initialize_global_stuff_if_needed ();
+
+	return global_rsvg_ft_context;
 }
 
 /*
@@ -1652,58 +1715,6 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 		} else
 			y += text_layout->baseline_skip / 2;
 	}
-}
-
-GdkPixbuf *
-nautilus_gdk_pixbuf_new_from_text (const NautilusScalableFont  *font,
-				   guint                        font_width,
-				   guint                        font_height,
-				   const char                  *text,
-				   guint                        text_length,
-				   guint32                      color,
-				   guchar                       overall_alpha)
-{
-	GdkPixbuf *pixbuf;
-	guint text_width;
-	guint text_height;
-
-	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
-	g_return_val_if_fail (font_width > 0, NULL);
-	g_return_val_if_fail (font_height > 0, NULL);
-
-	if (text == NULL || text[0] == '\0' || text_length == 0) {
-		return NULL;
-	}
-
-	g_return_val_if_fail (text_length <= strlen (text), NULL);
-
-	nautilus_scalable_font_measure_text (font,
-					     font_width,
-					     font_height,
-					     text,
-					     strlen (text),
-					     &text_width,
-					     &text_height);
-	g_assert (text_width > 0);
-	g_assert (text_height > 0);
-
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, text_width, text_height);
-
-	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, NULL, NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 0));
-	
-	nautilus_scalable_font_draw_text (font,
-					  pixbuf,
-					  0,
-					  0,
-					  NULL,
-					  font_width,
-					  font_height,
-					  text,
-					  strlen (text),
-					  color,
-					  overall_alpha);
-
-	return pixbuf;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

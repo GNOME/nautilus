@@ -26,10 +26,10 @@
 #include <config.h>
 
 #include "nautilus-change-password-view.h"
-#include "shared-service-widgets.h"
-#include "shared-service-utilities.h"
 #include "eazel-services-header.h"
+#include "eazel-services-extensions.h"
 
+#include <gnome.h>
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -39,8 +39,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -139,7 +138,6 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	GtkWidget	*maintenance_label;
 	GtkWidget	*title;
 	char		*username;
-	GdkFont		*font;
 
 	/* allocate a box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -161,9 +159,17 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	table = GTK_TABLE (gtk_table_new (4, 3, TRUE));
 
 	/* username */
-	temp_widget = nautilus_label_new (_("User Name: "));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
-
+	temp_widget = eazel_services_label_new (_("User Name: "),
+						0,
+						0.5,
+						0.5,
+						0,
+						0,
+						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+						NULL,
+						2,
+						FALSE);
 	gtk_table_attach (table, temp_widget, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 
@@ -180,8 +186,17 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	}
 
 	/* old password */
-	temp_widget = nautilus_label_new (_("Current password: "));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
+	temp_widget = eazel_services_label_new (_("Current password: "),
+						0,
+						0.5,
+						0.5,
+						0,
+						0,
+						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+						NULL,
+						2,
+						FALSE);
 	gtk_table_attach (table, temp_widget, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 
@@ -191,8 +206,17 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->account_old_password);
 
 	/* new password */
-	temp_widget = nautilus_label_new (_("New password: "));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
+	temp_widget = eazel_services_label_new (_("New password: "),
+						0,
+						0.5,
+						0.5,
+						0,
+						0,
+						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+						NULL,
+						2,
+						FALSE);
 	gtk_table_attach (table, temp_widget, 0, 2, 4, 5, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 
@@ -202,8 +226,17 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->account_new_password);
 
 	/* repeat password */
-	temp_widget = nautilus_label_new (_("New password (again): "));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
+	temp_widget = eazel_services_label_new (_("New password (again): "),
+						0,
+						0.5,
+						0.5,
+						0,
+						0,
+						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+						NULL,
+						2,
+						FALSE);
 	gtk_table_attach (table, temp_widget, 0, 2, 6, 7, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 
@@ -226,9 +259,6 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 
 	view->details->change_password_button = gtk_button_new ();
 	change_password_label = gtk_label_new (_(" Change my password! "));
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (change_password_label, font);
-	gdk_font_unref (font);
 
 	gtk_widget_show (change_password_label);
 	gtk_container_add (GTK_CONTAINER (view->details->change_password_button), change_password_label);
@@ -248,9 +278,6 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 
         maintenance_button = gtk_button_new ();
         maintenance_label = gtk_label_new (_("  I need some help!  "));
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (maintenance_label, font);
-	gdk_font_unref (font);
 
         gtk_widget_show (maintenance_label);
         gtk_container_add (GTK_CONTAINER (maintenance_button), maintenance_label);
@@ -263,8 +290,17 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 
         /* add a label for error messages, but don't show it until there's an error */
-        view->details->feedback_text = nautilus_label_new ("");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->feedback_text), 12);
+        view->details->feedback_text = eazel_services_label_new (NULL,
+								 0,
+								 0.5,
+								 0.5,
+								 0,
+								 0,
+								 EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+								 EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+								 NULL,
+								 0,
+								 FALSE);
         gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
 }
 
@@ -307,7 +343,10 @@ authn_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment 
 	ammonite_auth_callback_wrapper_free (bonobo_poa (), view->details->authn_callback);
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 
-	show_feedback (view->details->feedback_text, _("Password changed!"));
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->feedback_text),
+				  _("Password changed!"));
+	gtk_widget_show (view->details->feedback_text);
+
 	gtk_timeout_add (3000, (GtkFunction)run_away_timer, view);
 }
 
@@ -323,7 +362,10 @@ authn_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info,
 	view->details->pending = PENDING_NONE;
 	gtk_widget_set_sensitive (view->details->change_password_button, TRUE);
 
-	show_feedback (view->details->feedback_text, info->http_result);
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->feedback_text),
+				  info->http_result);
+	gtk_widget_show (view->details->feedback_text);
+
 	gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password),
 			    gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password)));
 	gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password), "");
@@ -403,7 +445,10 @@ change_password_button_cb (GtkWidget	*button, NautilusChangePasswordView	*view)
 	repeat_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_repeat_password));
 
 	if (strcmp (new_password, repeat_password) != 0) {
-		show_feedback (view->details->feedback_text, "The new password fields don't match.  Please try again.");
+		nautilus_label_set_text (NAUTILUS_LABEL (view->details->feedback_text),
+					  _("The new password fields don't match.  Please try again."));
+		gtk_widget_show (view->details->feedback_text);
+		
 		gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password), "");
 		gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password), "");
 		gtk_widget_set_sensitive (view->details->change_password_button, FALSE);
@@ -456,7 +501,7 @@ nautilus_change_password_view_initialize (NautilusChangePasswordView *view)
 			    view);
 
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	CORBA_exception_init (&ev);
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);

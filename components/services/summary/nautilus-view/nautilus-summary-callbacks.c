@@ -37,7 +37,6 @@
 #include <libnautilus-extensions/nautilus-caption-table.h>
 
 #include "nautilus-summary-view.h"
-#include "shared-service-utilities.h"
 #include "eazel-summary-shared.h"
 #include "nautilus-summary-dialogs.h"
 #include "nautilus-summary-menu-items.h"

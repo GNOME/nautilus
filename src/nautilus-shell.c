@@ -217,10 +217,9 @@ display_caveat (GtkWindow *parent_window)
 		   "\n"
 		   "Please visit http://www.eazel.com/feedback.html to provide feedback, "
 		   "comments, and suggestions."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (text), 14);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (text), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (text), TRUE);
-	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (text), 300);
+	nautilus_label_make_larger (NAUTILUS_LABEL (text), 1);
+	nautilus_label_set_justify (NAUTILUS_LABEL (text), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_wrap (NAUTILUS_LABEL (text), TRUE);
 	gtk_widget_show (text);
   	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
 

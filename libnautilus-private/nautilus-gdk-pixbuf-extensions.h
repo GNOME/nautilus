@@ -31,8 +31,8 @@
 #include <libnautilus-extensions/nautilus-art-extensions.h>
 
 #define NAUTILUS_STANDARD_ALPHA_THRESHHOLD 128
-#define NAUTILUS_OPACITY_FULL 0
-#define NAUTILUS_OPACITY_NONE 255
+#define NAUTILUS_OPACITY_FULLY_TRANSPARENT 0
+#define NAUTILUS_OPACITY_FULLY_OPAQUE	   255
 
 typedef struct NautilusPixbufLoadHandle NautilusPixbufLoadHandle;
 typedef void (* NautilusPixbufLoadCallback) (GnomeVFSResult  error,

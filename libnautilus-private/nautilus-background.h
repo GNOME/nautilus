@@ -165,6 +165,9 @@ NautilusBackground *             nautilus_get_widget_background                 
 /* Return whether a background has beed attatched to the given widget. */
 gboolean                         nautilus_widget_has_attached_background              (GtkWidget                        *widget);
 
+/* Find the background ancestor for the widget. */
+GtkWidget *                      nautilus_gtk_widget_find_background_ancestor         (GtkWidget                        *widget);
+
 /* Find out if a nautilus background is too complex for GtkStyle, so that we have to draw it ourselves */
 gboolean                         nautilus_background_is_too_complex_for_gtk_style     (NautilusBackground               *background);
 

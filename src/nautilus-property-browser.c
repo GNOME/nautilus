@@ -328,16 +328,13 @@ nautilus_property_browser_initialize (GtkObject *object)
  	
 	/* add the title label */
 	property_browser->details->title_label = nautilus_label_new (_("Select A Category:"));
-	/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
-	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->title_label), 18);
+	nautilus_label_make_larger (NAUTILUS_LABEL (property_browser->details->title_label), 4);
 
   	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
 	property_browser->details->help_label = nautilus_label_new  ("");
-	/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
-	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->help_label), 12);
   	
 	gtk_widget_show(property_browser->details->help_label);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
@@ -959,7 +956,7 @@ set_emblem_image_from_file (NautilusPropertyBrowser *property_browser)
 	gdk_pixbuf_unref (pixbuf);
 	
 	if (property_browser->details->emblem_image == NULL) {
-		property_browser->details->emblem_image = nautilus_image_new ();
+		property_browser->details->emblem_image = nautilus_image_new (NULL);
 		gtk_widget_show(property_browser->details->emblem_image);
 	} 
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (property_browser->details->emblem_image), scaled_pixbuf);
@@ -1676,9 +1673,11 @@ add_to_content_table (NautilusPropertyBrowser *property_browser, GtkWidget* widg
    in the public and private directories */
 
 static GtkWidget *
-make_property_tile (NautilusPropertyBrowser *property_browser, GtkWidget *pixmap_widget, GtkWidget *label, const char* property_name)
+make_property_tile (NautilusPropertyBrowser *property_browser,
+		    GtkWidget *pixmap_widget,
+		    GtkWidget *label,
+		    const char* property_name)
 {
-	
 	NautilusBackground *background;
 	GtkWidget *temp_vbox, *event_box;
 	
@@ -1692,10 +1691,10 @@ make_property_tile (NautilusPropertyBrowser *property_browser, GtkWidget *pixmap
 	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
 
 	if (label != NULL) {
-		nautilus_buffered_widget_set_background_type
-			(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);		
-		nautilus_buffered_widget_set_background_color
-			(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_RGB_COLOR_WHITE);		
+		nautilus_label_set_background_mode
+			(NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+		nautilus_label_set_solid_background_color
+			(NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);		
 
 		gtk_box_pack_end (GTK_BOX (temp_vbox), label, FALSE, FALSE, 2);
 		gtk_widget_show (label);
@@ -1761,8 +1760,8 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		GtkWidget *temp_vbox;
 
 		/* set the mode of the returned nautilus_image since the background is fixed */
-		nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (pixmap_widget), NAUTILUS_BACKGROUND_SOLID);	
-		nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (pixmap_widget), NAUTILUS_RGB_COLOR_WHITE);	
+		nautilus_image_set_background_mode (NAUTILUS_IMAGE (pixmap_widget), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);	
+		nautilus_image_set_solid_background_color (NAUTILUS_IMAGE (pixmap_widget), NAUTILUS_RGB_COLOR_WHITE);	
 		
 		/* allocate a pixmap and insert it into the table */
 		temp_vbox = make_property_tile (property_browser, pixmap_widget, label, object_name);
@@ -1820,14 +1819,12 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	reset_pixbuf = nautilus_customization_make_pattern_chit (pixbuf, property_browser->details->property_chit, FALSE);
 	g_free (reset_path);
 	
-	image_widget = nautilus_image_new ();
+	image_widget = nautilus_image_new (NULL);
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image_widget), reset_pixbuf);	
 	gdk_pixbuf_unref (reset_pixbuf);
 
 	/* make the label from the name */
 	label = nautilus_label_new ("");
-	/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
 	new_property = make_property_tile (property_browser, image_widget, label, RESET_IMAGE_NAME);
 	add_to_content_table (property_browser, new_property, 0, 2);
@@ -1873,14 +1870,12 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 			
 			/* make the image from the color spec */
 			pixbuf = make_color_drag_image (property_browser, color, FALSE);			
-			image_widget = nautilus_image_new ();
+			image_widget = nautilus_image_new (NULL);
 			nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image_widget), pixbuf);
 			gdk_pixbuf_unref (pixbuf);
 			
 			/* make the label from the name */
 			label = nautilus_label_new (name);
-			/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
-			nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 			
 			/* make the tile from the pixmap and name */
 			new_property = make_property_tile (property_browser, image_widget, label, color);
@@ -2140,7 +2135,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	show_buttons = nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT, FALSE);
 
 	if (property_browser->details->category == NULL) {
-		nautilus_label_set_text(NAUTILUS_LABEL(property_browser->details->title_label), _("Select A Category:"));
+		nautilus_label_set_text(NAUTILUS_LABEL (property_browser->details->title_label), _("Select A Category:"));
 		gtk_widget_hide(property_browser->details->add_button);
 		gtk_widget_hide(property_browser->details->remove_button);
 	
@@ -2211,7 +2206,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		}
 		
 		if (label_text) {
-			nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->title_label), label_text);
+			nautilus_label_set_text (NAUTILUS_LABEL (property_browser->details->title_label), label_text);
 		}
 		g_free(label_text);
 

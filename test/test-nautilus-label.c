@@ -4,13 +4,11 @@
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-font-picker.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
@@ -97,7 +95,7 @@ alpha_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer cl
 
 	label = NAUTILUS_LABEL (client_data);
 
-	nautilus_label_set_text_alpha (NAUTILUS_LABEL (label), (guchar) adjustment->value);
+	nautilus_label_set_text_opacity (NAUTILUS_LABEL (label), (guchar) adjustment->value);
 }
 
 static void
@@ -197,7 +195,7 @@ alpha_background_color_value_changed_callback (GtkAdjustment *adjustment, gpoint
 	
 	label = NAUTILUS_LABEL (client_data);
 
-	nautilus_label_set_text_alpha (NAUTILUS_LABEL (label), (guchar) adjustment->value);
+	nautilus_label_set_text_opacity (NAUTILUS_LABEL (label), (guchar) adjustment->value);
 }
 
 static void
@@ -212,7 +210,7 @@ font_size_changed_callback (NautilusStringPicker *string_picker, gpointer client
  	string = nautilus_string_picker_get_selected_string (string_picker);
 
 	if (nautilus_eat_str_to_int (string, &size)) {
-		nautilus_label_set_font_size (NAUTILUS_LABEL (client_data), (guint) size);
+		nautilus_label_set_smooth_font_size (NAUTILUS_LABEL (client_data), (guint) size);
 	}
 
 	g_free (string);
@@ -237,10 +235,10 @@ font_changed_callback (NautilusFontPicker *font_picker, gpointer client_data)
 
 	g_print ("%s (%s,%s,%s,%s)\n", __FUNCTION__, family, weight, slant, set_width);
 
-	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new (family, weight, slant, set_width));
+	font = nautilus_scalable_font_new (family, weight, slant, set_width);
 	g_assert (font != NULL);
 
-	nautilus_label_set_font (NAUTILUS_LABEL (client_data), font);
+	nautilus_label_set_smooth_font (NAUTILUS_LABEL (client_data), font);
 
 	g_free (family);
 	g_free (weight);
@@ -584,7 +582,7 @@ justification_changed_callback (NautilusStringPicker *string_picker, gpointer cl
 		justification = GTK_JUSTIFY_LEFT;
 	}
 
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (client_data), justification);
+	nautilus_label_set_justify (NAUTILUS_LABEL (client_data), justification);
 	
 	g_free (string);
 }
@@ -601,7 +599,7 @@ drop_shadow_offset_changed_callback (NautilusStringPicker *string_picker, gpoint
  	string = nautilus_string_picker_get_selected_string (string_picker);
 
 	if (nautilus_eat_str_to_int (string, &drop_shadow_offset)) {
-		nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (client_data), drop_shadow_offset);
+		nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (client_data), drop_shadow_offset);
 	}
 
 	g_free (string);

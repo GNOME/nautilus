@@ -54,21 +54,20 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
 	nautilus-bookmark.c			\
-	nautilus-buffered-widget.c		\
 	nautilus-caption-table.c		\
 	nautilus-caption.c			\
 	nautilus-ctree.c			\
 	nautilus-customization-data.c		\
 	nautilus-dateedit-extensions.c		\
-	nautilus-debug.c			\
 	nautilus-debug-drawing.c		\
+	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
 	nautilus-directory-async.c		\
 	nautilus-directory-background.c		\
 	nautilus-directory-metafile.c		\
 	nautilus-directory.c			\
-	nautilus-drag.c				\
 	nautilus-drag-window.c			\
+	nautilus-drag.c				\
 	nautilus-druid-page-eazel.c		\
 	nautilus-druid.c			\
 	nautilus-entry.c			\
@@ -94,8 +93,10 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
 	nautilus-icon-text-item.c		\
+	nautilus-image-with-background.c	\
 	nautilus-image.c			\
 	nautilus-keep-last-vertical-box.c	\
+	nautilus-label-with-background.c	\
 	nautilus-label.c			\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-link-set.c			\
@@ -119,6 +120,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-scrolled-window.c		\
 	nautilus-search-uri.c			\
 	nautilus-self-checks.c			\
+	nautilus-smooth-widget.c		\
 	nautilus-sound.c			\
 	nautilus-stock-dialogs.c		\
 	nautilus-string-list.c			\
@@ -130,8 +132,8 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-theme.c			\
 	nautilus-thumbnails.c			\
 	nautilus-trash-directory.c		\
-	nautilus-trash-monitor.c		\
 	nautilus-trash-file.c			\
+	nautilus-trash-monitor.c		\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
 	nautilus-undo-signal-handlers.c		\
@@ -151,23 +153,22 @@ noinst_HEADERS =				\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
 	nautilus-bookmark.h			\
-	nautilus-buffered-widget.h		\
 	nautilus-caption-table.h		\
 	nautilus-caption.h			\
 	nautilus-cdrom-extensions.h		\
 	nautilus-ctree.h			\
 	nautilus-customization-data.h		\
 	nautilus-dateedit-extensions.h 		\
-	nautilus-debug.h			\
 	nautilus-debug-drawing.h		\
+	nautilus-debug.h			\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\
 	nautilus-directory-metafile.h		\
 	nautilus-directory-notify.h		\
 	nautilus-directory-private.h		\
 	nautilus-directory.h			\
-	nautilus-drag.h				\
 	nautilus-drag-window.h			\
+	nautilus-drag.h				\
 	nautilus-druid-page-eazel.h		\
 	nautilus-druid.h			\
 	nautilus-entry.h			\
@@ -198,9 +199,11 @@ noinst_HEADERS =				\
 	nautilus-icon-factory.h			\
 	nautilus-icon-private.h			\
 	nautilus-icon-text-item.h		\
+	nautilus-image-with-background.h	\
 	nautilus-image.h			\
 	nautilus-iso9660.h			\
 	nautilus-keep-last-vertical-box.h	\
+	nautilus-label-with-background.h	\
 	nautilus-label.h			\
 	nautilus-lib-self-check-functions.h	\
 	nautilus-link-set.h			\
@@ -223,9 +226,11 @@ noinst_HEADERS =				\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\
 	nautilus-scalable-font.h		\
+	nautilus-scalable-font-private.h	\
 	nautilus-scrolled-window.h		\
 	nautilus-search-uri.h			\
 	nautilus-self-checks.h			\
+	nautilus-smooth-widget.h		\
 	nautilus-sound.h			\
 	nautilus-stock-dialogs.h		\
 	nautilus-string-list.h			\
@@ -237,8 +242,8 @@ noinst_HEADERS =				\
 	nautilus-theme.h			\
 	nautilus-thumbnails.h			\
 	nautilus-trash-directory.h		\
-	nautilus-trash-monitor.h		\
 	nautilus-trash-file.h			\
+	nautilus-trash-monitor.h		\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
 	nautilus-undo-signal-handlers.h		\

@@ -1,4 +1,4 @@
- /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /*
  * Nautilus
@@ -281,17 +281,12 @@ proxy_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 /* utility to allocate an anti-aliased description label */
 
 static GtkWidget*
-make_anti_aliased_label (const char *text)
+label_new_left_justified (const char *text)
 {
 	GtkWidget *label;
 	
 	label = nautilus_label_new (text);
-
-	/* FIXME bugzilla.eazel.com 3778: Hardcoded font and size. */
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "medium", NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
-					       GTK_JUSTIFY_LEFT);
+	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
 
 	return label;
 }
@@ -353,16 +348,15 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	label_box = gtk_hbox_new (FALSE, 5);
 
 	icon_pixbuf = create_named_pixbuf (icon_name);
-	icon = nautilus_image_new ();
+	icon = nautilus_image_new (NULL);
 	if (icon_pixbuf != NULL) {
 		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
 	}
 	gtk_box_pack_start (GTK_BOX (label_box), icon, FALSE, FALSE, 0);
-	label = make_anti_aliased_label (user_level_name);
+	label = label_new_left_justified (user_level_name);
 	g_free (user_level_name);
 
-	/* FIXME bugzilla.eazel.com 3778: Hardcoded font. */
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
+	nautilus_label_make_bold (NAUTILUS_LABEL (label));
 
 	/* extra vbox to help with alignment */
 	vbox = gtk_vbox_new (FALSE, 0);
@@ -385,8 +379,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	gtk_box_pack_start (GTK_BOX (comment_hbox), alignment, FALSE, FALSE, 0);
 
 	/* Make comment label */
-	label = make_anti_aliased_label (comment);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+	label = label_new_left_justified (comment);
 
 	gtk_box_pack_start (GTK_BOX (comment_hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox);
@@ -411,12 +404,9 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to your\n"
+	label = label_new_left_justified (_("User levels provide a way to adjust the software to your\n"
 					   "level of technical expertise. Pick an initial level that you\n"
 					   "feel comfortable with; you can always change it later."));
-	/* FIXME bugzilla.eazel.com 3778: Hardcoded font size. */
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
-
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -472,7 +462,7 @@ set_up_service_signup_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = make_anti_aliased_label (_("Eazel offers a growing number of services to help you\n"
+	label = label_new_left_justified (_("Eazel offers a growing number of services to help you\n"
 					   "install and maintain new software and manage your files\n"
 					   "across the network.  Choose an option below, and the\n"
 					   "information will be presented in Nautilus after you've\n"
@@ -522,7 +512,7 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = make_anti_aliased_label (_("Nautilus will now contact Eazel services to quickly verify \nyour web connection and download the latest updates. \nClick the Next button to continue."));
+	label = label_new_left_justified (_("Nautilus will now contact Eazel services to quickly verify \nyour web connection and download the latest updates. \nClick the Next button to continue."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -566,7 +556,7 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = make_anti_aliased_label (_("We are having troubles making an external web connection.  \nSometimes, firewalls require you to specify a web proxy server.  \n Fill in the name of port of your proxy server, if any, below."));
+	label = label_new_left_justified (_("We are having troubles making an external web connection.  \nSometimes, firewalls require you to specify a web proxy server.  \n Fill in the name of port of your proxy server, if any, below."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -609,7 +599,6 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	
 	/* allocate the proxy label, followed by the entry */
 	label = nautilus_label_new (_("Proxy address:"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
 	proxy_label_width = label->allocation.width;
@@ -626,7 +615,6 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	
 	/* allocate the proxy label, followed by the entry */
 	label = nautilus_label_new (_("Port:"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
 
@@ -656,14 +644,13 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = make_anti_aliased_label (_("We are now contacting the Eazel service to test your \nweb connection and update Nautilus."));
+	label = label_new_left_justified (_("We are now contacting the Eazel service to test your \nweb connection and update Nautilus."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 		
 		
 	download_label = nautilus_label_new (_("Downloading Nautilus updates..."));
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (download_label), "helvetica", "medium", NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (download_label), 18);
+	nautilus_label_make_larger (NAUTILUS_LABEL (download_label), 4);
 	
 	gtk_widget_show (download_label);
 	
@@ -765,7 +752,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 			      _("Nautilus First Time Setup"));
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "initial_preferences", "Nautilus");
   	gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
-  	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
+  	//gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
   	/* Ensure there's a main event loop while the druid is running. */
   	nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
@@ -792,25 +779,25 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* make the title label */
-	label = make_anti_aliased_label ( _("Welcome to Nautilus!"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 28);
-	nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (label), 2);
-	nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGBA_COLOR_PACK (191, 191, 191, 255));
+	label = label_new_left_justified ( _("Welcome to Nautilus!"));
+	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
+	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), 2);
+	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGBA_COLOR_PACK (191, 191, 191, 255));
 	
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 16);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, TRUE, 16);
 	
-	label = make_anti_aliased_label ( _("Since this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
+	label = label_new_left_justified ( _("Since this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use."));
+	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
-	label = make_anti_aliased_label ( _("Press the next button to continue."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
+	label = label_new_left_justified ( _("Press the next button to continue."));
+	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
 
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 16);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
 	
 	/* set up the final page */
 	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), _("Finished"));
@@ -820,8 +807,8 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	gtk_widget_show (main_box);
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
-	label = make_anti_aliased_label ( _("Click the finish button to launch Nautilus.\nWe hope that you enjoy using it!"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
+	label = label_new_left_justified ( _("Click the finish button to launch Nautilus.\nWe hope that you enjoy using it!"));
+	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 		

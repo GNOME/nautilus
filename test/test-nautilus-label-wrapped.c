@@ -43,13 +43,12 @@ create_nautilus_label ()
 	GtkWidget *label;
 
  	label = nautilus_label_new (text);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 20);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (label), TRUE);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (label), 1);
-	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);
-	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_RGB_COLOR_WHITE);
-	nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_BLUE);
+	nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), 1);
+	nautilus_label_set_background_mode (NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+	nautilus_label_set_solid_background_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
+	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_BLUE);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
 	
 	return label;

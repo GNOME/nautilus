@@ -23,162 +23,294 @@
 */
 
 #include <config.h>
+
 #include "nautilus-label.h"
 
 #include <libgnome/gnome-i18n.h>
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-gtk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-art-gtk-extensions.h"
 #include "nautilus-string.h"
+#include "nautilus-debug-drawing.h"
+
+/* These are arbitrary constants to catch insane values */
+#define MIN_SMOOTH_FONT_SIZE 5
+#define MAX_SMOOTH_FONT_SIZE 64
+
+#define DEFAULT_FONT_SIZE 14
+#define LINE_WRAP_SEPARATORS _(" -_,;.?/&")
+#define LINE_OFFSET 2
+
+#define SMOOTH_FONT_MULTIPLIER 1.3
+
+/* This magic string is copied from GtkLabel.  It lives there unlocalized as well. */
+#define DEFAULT_LINE_WRAP_WIDTH_TEXT "This is a good enough length for any line to have."
 
 /* Arguments */
 enum
 {
 	ARG_0,
-	ARG_BACKGROUND_COLOR,
-	ARG_BACKGROUND_TYPE,
+	
+	/* Deal with the GtkLabel arguments as well */
 	ARG_LABEL,
-	ARG_PLACEMENT_TYPE,
+	ARG_WRAP,
+	ARG_JUSTIFY,
+
+	ARG_BACKGROUND_MODE,
+	ARG_IS_SMOOTH,
+	ARG_TEXT_OPACITY,
+	ARG_SMOOTH_FONT,
+	ARG_SMOOTH_FONT_SIZE,
+	ARG_SMOOTH_TEXT_COLOR,
+	ARG_SMOOTH_DROP_SHADOW_OFFSET,
+	ARG_SMOOTH_DROP_SHADOW_COLOR,
+	ARG_SMOOTH_LINE_WRAP_WIDTH,
+
+	ARG_TILE_HEIGHT,
+	ARG_TILE_MODE_HORIZONTAL,
+	ARG_TILE_MODE_VERTICAL,
+	ARG_TILE_OPACITY,
+	ARG_TILE_PIXBUF,
+	ARG_TILE_WIDTH
 };
+
+/* Signals */
+typedef enum
+{
+	DRAW_BACKGROUND,
+	SET_IS_SMOOTH,
+	LAST_SIGNAL
+} LabelSignal;
+
+/* Signals */
+static guint label_signals[LAST_SIGNAL] = { 0 };
 
 /* Detail member struct */
 struct _NautilusLabelDetail
 {
+	gboolean is_smooth;
+
+	/* Tile attributes */
+	GdkPixbuf *tile_pixbuf;
+	int tile_opacity;
+	int tile_width;
+	int tile_height;
+	NautilusSmoothTileMode tile_mode_vertical;
+	NautilusSmoothTileMode tile_mode_horizontal;
+
+ 	/* Smooth attributes */
+ 	NautilusScalableFont *smooth_font;
+ 	guint smooth_font_size;
+	guint32 smooth_text_color;
+	guint smooth_drop_shadow_offset;
+	guint32 smooth_drop_shadow_color;
+ 	guint smooth_line_wrap_width;
+
 	/* Text */
-	char			*text;
-	guint32			text_color;
-	guchar			text_alpha;
-	guint			text_width;
-	guint			text_height;
-	GtkJustification	text_justification;
-	guint			line_offset;
-
-	/* Drop shadow */
-	guint			drop_shadow_offset;
-	guint32			drop_shadow_color;
-
-	/* Font */
-	NautilusScalableFont	*font;
-	guint			font_size;
+  	int text_opacity;
 
 	/* Text lines */
-	guint			*text_line_widths;
-	guint			*text_line_heights;
-	guint			num_text_lines;
-	guint			max_text_line_width;
-	guint			total_text_line_height;
+	int *text_line_widths;
+	int *text_line_heights;
+	int num_text_lines;
+	int max_text_line_width;
+	int total_text_line_height;
 
 	/* Line wrapping */
-	gboolean		line_wrap;
-	guint			line_wrap_width;
-	char 			*line_wrap_separators;
-	NautilusTextLayout	**text_layouts;
+	NautilusTextLayout **text_layouts;
+	
+	/* Background */
+	NautilusSmoothBackgroundMode background_mode;
+	guint32 solid_background_color;
+
+	GdkPixbuf *solid_cache_pixbuf;
 };
 
 /* GtkObjectClass methods */
-static void  nautilus_label_initialize_class             (NautilusLabelClass     *label_class);
-static void  nautilus_label_initialize                   (NautilusLabel          *label);
-static void  nautilus_label_destroy                      (GtkObject              *object);
-static void  nautilus_label_set_arg                      (GtkObject              *object,
-							  GtkArg                 *arg,
-							  guint                   arg_id);
-static void  nautilus_label_get_arg                      (GtkObject              *object,
-							  GtkArg                 *arg,
-							  guint                   arg_id);
+static void     nautilus_label_initialize_class             (NautilusLabelClass  *label_class);
+static void     nautilus_label_initialize                   (NautilusLabel       *label);
+static void     nautilus_label_destroy                      (GtkObject           *object);
+static void     nautilus_label_set_arg                      (GtkObject           *object,
+							     GtkArg              *arg,
+							     guint                arg_id);
+static void     nautilus_label_get_arg                      (GtkObject           *object,
+							     GtkArg              *arg,
+							     guint                arg_id);
+
 /* GtkWidgetClass methods */
-static void  nautilus_label_size_request                 (GtkWidget              *widget,
-							  GtkRequisition         *requisition);
-static void  nautilus_label_size_allocate                (GtkWidget              *widget,
-							  GtkAllocation          *allocation);
-/* NautilusBufferedWidgetClass methods */
-static void  render_buffer_pixbuf                        (NautilusBufferedWidget *buffered_widget,
-							  GdkPixbuf              *buffer,
-							  int                     horizontal_offset,
-							  int                     vertical_offset);
+static void     nautilus_label_size_request                 (GtkWidget           *widget,
+							     GtkRequisition      *requisition);
+static int      nautilus_label_expose_event                 (GtkWidget           *widget,
+							     GdkEventExpose      *event);
+
+/* NautilusLabel signals */
+static void     nautilus_label_set_is_smooth_signal         (GtkWidget           *widget,
+							     gboolean             is_smooth);
 
 /* Private NautilusLabel things */
-static void  label_recompute_line_geometries             (NautilusLabel          *label);
-static guint label_get_empty_line_height                 (NautilusLabel          *label);
-static guint label_get_total_text_and_line_offset_height (NautilusLabel          *label);
+const char *    label_peek_text                             (const NautilusLabel *label);
+static void     label_line_geometries_recompute             (NautilusLabel       *label);
+static void     label_line_geometries_clear                 (NautilusLabel       *label);
+static guint    label_get_empty_line_height                 (const NautilusLabel *label);
+static guint    label_get_total_text_and_line_offset_height (const NautilusLabel *label);
+static ArtIRect label_get_text_bounds                       (const NautilusLabel *label);
+static ArtIRect label_get_text_frame                        (const NautilusLabel *label);
+static ArtIRect label_get_tile_frame                        (const NautilusLabel *label);
+static void     label_draw_text_to_pixbuf                   (NautilusLabel       *label,
+							     GdkPixbuf           *pixbuf,
+							     const ArtIRect      *destination_area,
+							     int                  x,
+							     int                  y);
+static guint    label_get_default_line_wrap_width           (const NautilusLabel *label);
+static void     label_solid_cache_pixbuf_clear              (NautilusLabel *label);
+static gboolean label_can_cache_contents                    (const NautilusLabel *label);
 
-
-
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLabel, nautilus_label, NAUTILUS_TYPE_BUFFERED_WIDGET)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLabel, nautilus_label, GTK_TYPE_LABEL)
 
 /* Class init methods */
 static void
 nautilus_label_initialize_class (NautilusLabelClass *label_class)
 {
-	GtkObjectClass			*object_class = GTK_OBJECT_CLASS (label_class);
-	GtkWidgetClass			*widget_class = GTK_WIDGET_CLASS (label_class);
-	NautilusBufferedWidgetClass	*buffered_widget_class = NAUTILUS_BUFFERED_WIDGET_CLASS (label_class);
-
-#if 0
-	/* Arguments */
-	gtk_object_add_arg_type ("NautilusLabel::placement_type",
-				 GTK_TYPE_ENUM,
-				 GTK_ARG_READWRITE,
-				 ARG_PLACEMENT_TYPE);
-
-	gtk_object_add_arg_type ("NautilusLabel::background_type",
-				 GTK_TYPE_ENUM,
-				 GTK_ARG_READWRITE,
-				 ARG_BACKGROUND_TYPE);
-
-	gtk_object_add_arg_type ("NautilusLabel::background_color",
-				 GTK_TYPE_UINT,
-				 GTK_ARG_READWRITE,
-				 ARG_BACKGROUND_COLOR);
-
-	gtk_object_add_arg_type ("NautilusLabel::label",
-				 GTK_TYPE_OBJECT,
-				 GTK_ARG_READWRITE,
-				 ARG_LABEL);
-#endif
+	GtkObjectClass *object_class = GTK_OBJECT_CLASS (label_class);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (label_class);
 
 	/* GtkObjectClass */
 	object_class->destroy = nautilus_label_destroy;
 	object_class->set_arg = nautilus_label_set_arg;
 	object_class->get_arg = nautilus_label_get_arg;
-
+	
 	/* GtkWidgetClass */
 	widget_class->size_request = nautilus_label_size_request;
-	widget_class->size_allocate = nautilus_label_size_allocate;
+	widget_class->expose_event = nautilus_label_expose_event;
 
-	/* NautilusBufferedWidgetClass */
-	buffered_widget_class->render_buffer_pixbuf = render_buffer_pixbuf;
+	/* NautilusLabelClass */
+	label_class->set_is_smooth = nautilus_label_set_is_smooth_signal;
+
+	/* Signals */
+	label_signals[DRAW_BACKGROUND] = gtk_signal_new ("draw_background",
+							 GTK_RUN_LAST,
+							 object_class->type,
+							 0,
+							 gtk_marshal_NONE__POINTER_POINTER,
+							 GTK_TYPE_NONE, 
+							 2,
+							 GTK_TYPE_POINTER,
+							 GTK_TYPE_POINTER);
+
+	label_signals[SET_IS_SMOOTH] = gtk_signal_new ("set_is_smooth",
+						       GTK_RUN_LAST,
+						       object_class->type,
+						       GTK_SIGNAL_OFFSET (NautilusLabelClass, set_is_smooth),
+						       gtk_marshal_NONE__BOOL,
+						       GTK_TYPE_NONE, 
+						       1,
+						       GTK_TYPE_BOOL);
+
+	gtk_object_class_add_signals (object_class, label_signals, LAST_SIGNAL);
+
+	/* Arguments */
+	gtk_object_add_arg_type ("NautilusLabel::tile_pixbuf",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_READWRITE,
+				 ARG_TILE_PIXBUF);
+	gtk_object_add_arg_type ("NautilusLabel::tile_opacity",
+				 GTK_TYPE_INT,
+				 GTK_ARG_READWRITE,
+				 ARG_TILE_OPACITY);
+	gtk_object_add_arg_type ("NautilusLabel::tile_width",
+				 GTK_TYPE_INT,
+				 GTK_ARG_READWRITE,
+				 ARG_TILE_WIDTH);
+	gtk_object_add_arg_type ("NautilusLabel::tile_height",
+				 GTK_TYPE_INT,
+				 GTK_ARG_READWRITE,
+				 ARG_TILE_HEIGHT);
+	gtk_object_add_arg_type ("NautilusLabel::tile_mode_vertical",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_TILE_MODE_VERTICAL);
+	gtk_object_add_arg_type ("NautilusLabel::tile_mode_horizontal",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_TILE_MODE_HORIZONTAL);
+	gtk_object_add_arg_type ("NautilusLabel::label",
+				 GTK_TYPE_STRING,
+				 GTK_ARG_READWRITE,
+				 ARG_LABEL);
+	gtk_object_add_arg_type ("NautilusLabel::wrap",
+				 GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE,
+				 ARG_WRAP);
+	gtk_object_add_arg_type ("NautilusLabel::justify",
+				 GTK_TYPE_JUSTIFICATION,
+				 GTK_ARG_READWRITE,
+				 ARG_JUSTIFY);
+	gtk_object_add_arg_type ("NautilusLabel::is_smooth",
+				 GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE,
+				 ARG_IS_SMOOTH);
+	gtk_object_add_arg_type ("NautilusLabel::text_opacity",
+				 GTK_TYPE_INT,
+				 GTK_ARG_READWRITE,
+				 ARG_TEXT_OPACITY);
+	gtk_object_add_arg_type ("NautilusLabel::background_mode",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_BACKGROUND_MODE);
+	gtk_object_add_arg_type ("NautilusLabel::smooth_font",
+				 GTK_TYPE_OBJECT,
+				 GTK_ARG_READWRITE,
+				 ARG_SMOOTH_FONT);
+	gtk_object_add_arg_type ("NautilusLabel::smooth_font_size",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_SMOOTH_FONT_SIZE);
+	gtk_object_add_arg_type ("NautilusLabel::smooth_text_color",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_SMOOTH_TEXT_COLOR);
+	gtk_object_add_arg_type ("NautilusLabel::smooth_drop_shadow_offset",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_SMOOTH_DROP_SHADOW_OFFSET);
+	gtk_object_add_arg_type ("NautilusLabel::smooth_drop_shadow_color",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_SMOOTH_DROP_SHADOW_COLOR);
+	gtk_object_add_arg_type ("NautilusLabel::smooth_line_wrap_width",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_SMOOTH_LINE_WRAP_WIDTH);
+
+	/* Make this class inherit the same kind of theme stuff as GtkLabel */
+	nautilus_gtk_class_name_make_like_existing_type ("NautilusLabel", GTK_TYPE_LABEL);
 }
 
 void
 nautilus_label_initialize (NautilusLabel *label)
 {
-	label->detail = g_new (NautilusLabelDetail, 1);
+	GTK_WIDGET_UNSET_FLAGS (label, GTK_CAN_FOCUS);
+	GTK_WIDGET_SET_FLAGS (label, GTK_NO_WINDOW);
 
-	label->detail->text = NULL;
+	label->detail = g_new0 (NautilusLabelDetail, 1);
 
-	label->detail->font = nautilus_scalable_font_get_default_font ();
-	label->detail->font_size = 12;
+	label->detail->text_opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
+	label->detail->smooth_font = nautilus_scalable_font_get_default_font ();
+ 	label->detail->smooth_font_size = DEFAULT_FONT_SIZE;
+	label->detail->smooth_text_color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
+	label->detail->smooth_drop_shadow_color = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255);
+	label->detail->smooth_line_wrap_width = label_get_default_line_wrap_width (label);
 
-	label->detail->text_color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
-	label->detail->drop_shadow_color = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255);
-	label->detail->text_alpha = 255;
-	label->detail->text_width = 0;
-	label->detail->text_height = 0;
-	label->detail->text_justification = GTK_JUSTIFY_CENTER;
+	label->detail->tile_opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
+ 	label->detail->tile_width = NAUTILUS_SMOOTH_TILE_EXTENT_FULL;
+ 	label->detail->tile_height = NAUTILUS_SMOOTH_TILE_EXTENT_FULL;
+	label->detail->tile_mode_vertical = NAUTILUS_SMOOTH_TILE_SELF;
+	label->detail->tile_mode_horizontal = NAUTILUS_SMOOTH_TILE_SELF;
+	label->detail->background_mode = NAUTILUS_SMOOTH_BACKGROUND_GTK;
 
-	label->detail->num_text_lines = 0;
-	label->detail->max_text_line_width = 0;
-	label->detail->total_text_line_height = 0;
-	label->detail->text_line_widths = NULL;
-	label->detail->text_line_heights = NULL;
-
-	label->detail->line_offset = 2;
-	label->detail->drop_shadow_offset = 0;
-
-	label->detail->line_wrap = FALSE;
-	label->detail->line_wrap_width = 400;
-	label->detail->line_wrap_separators = g_strdup (_(" -_,;.?/&"));
-	label->detail->text_layouts = NULL;
+	nautilus_smooth_widget_register (GTK_WIDGET (label));
 }
 
 /* GtkObjectClass methods */
@@ -187,27 +319,16 @@ nautilus_label_destroy (GtkObject *object)
 {
  	NautilusLabel *label;
 	
-	g_return_if_fail (object != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (object));
 
 	label = NAUTILUS_LABEL (object);
 
-	g_free (label->detail->text);
+	nautilus_gdk_pixbuf_unref_if_not_null (label->detail->tile_pixbuf);
+	label->detail->tile_pixbuf = NULL;
+	label_solid_cache_pixbuf_clear (label);
 
-	g_free (label->detail->text_line_widths);
-	g_free (label->detail->text_line_heights);
-
-	if (label->detail->text_layouts != NULL) {
-		guint i;
-
-		for (i = 0; i < label->detail->num_text_lines; i++) {
-			g_assert (label->detail->text_layouts[i] != NULL);
-			nautilus_text_layout_free (label->detail->text_layouts[i]);
-		}
-
-		g_free (label->detail->text_layouts);
-	}
-
+	label_line_geometries_clear (label);
+		
 	g_free (label->detail);
 
 	/* Chain destroy */
@@ -215,266 +336,638 @@ nautilus_label_destroy (GtkObject *object)
 }
 
 static void
-nautilus_label_set_arg (GtkObject	*object,
-			GtkArg		*arg,
-			guint		arg_id)
+nautilus_label_set_arg (GtkObject *object,
+			GtkArg *arg,
+			guint arg_id)
 {
-	NautilusLabel		*label;
+	NautilusLabel *label;
 
- 	g_return_if_fail (object != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (object));
 
  	label = NAUTILUS_LABEL (object);
 
-#if 0
  	switch (arg_id)
 	{
-	case ARG_PLACEMENT_TYPE:
-		label->detail->placement_type = GTK_VALUE_ENUM (*arg);
+
+	case ARG_TILE_OPACITY:
+		nautilus_label_set_tile_opacity (label, GTK_VALUE_INT (*arg));
 		break;
 
-	case ARG_BACKGROUND_TYPE:
-		label->detail->background_type = GTK_VALUE_ENUM (*arg);
+	case ARG_TILE_PIXBUF:
+		nautilus_label_set_tile_pixbuf (label, (GdkPixbuf *) GTK_VALUE_POINTER (*arg));
+		break;
+		
+	case ARG_TILE_WIDTH:
+		nautilus_label_set_tile_width (label, GTK_VALUE_INT (*arg));
 		break;
 
-	case ARG_BACKGROUND_COLOR:
-		label->detail->background_color = GTK_VALUE_UINT (*arg);
+	case ARG_TILE_HEIGHT:
+		nautilus_label_set_tile_height (label, GTK_VALUE_INT (*arg));
+		break;
+
+	case ARG_TILE_MODE_VERTICAL:
+		nautilus_label_set_tile_mode_vertical (label, GTK_VALUE_UINT (*arg));
+		break;
+
+	case ARG_TILE_MODE_HORIZONTAL:
+		nautilus_label_set_tile_mode_horizontal (label, GTK_VALUE_UINT (*arg));
 		break;
 
 	case ARG_LABEL:
-		nautilus_label_set_pixbuf (label, (GdkPixbuf*) GTK_VALUE_OBJECT (*arg));
+		nautilus_label_set_text (label, GTK_VALUE_STRING (*arg));
+		break;
+		
+	case ARG_WRAP:
+		nautilus_label_set_wrap (label, GTK_VALUE_BOOL (*arg));
+		break;
+		
+	case ARG_JUSTIFY:
+		nautilus_label_set_justify (label, GTK_VALUE_ENUM (*arg));
+		break;
+		
+	case ARG_IS_SMOOTH:
+		nautilus_label_set_is_smooth (label, GTK_VALUE_BOOL (*arg));
+		break;
+
+	case ARG_TEXT_OPACITY:
+		nautilus_label_set_text_opacity (label, GTK_VALUE_INT (*arg));
+		break;
+
+	case ARG_BACKGROUND_MODE:
+		nautilus_label_set_background_mode (label, GTK_VALUE_UINT (*arg));
+		break;
+
+	case ARG_SMOOTH_FONT:
+		nautilus_label_set_smooth_font (label, (NautilusScalableFont *) GTK_VALUE_OBJECT (*arg));
+		break;
+
+	case ARG_SMOOTH_FONT_SIZE:
+		nautilus_label_set_smooth_font_size (label, GTK_VALUE_UINT (*arg));
+		break;
+
+	case ARG_SMOOTH_TEXT_COLOR:
+		nautilus_label_set_text_color (label, GTK_VALUE_UINT (*arg));
+		break;
+
+	case ARG_SMOOTH_DROP_SHADOW_OFFSET:
+		nautilus_label_set_smooth_drop_shadow_offset (label, GTK_VALUE_UINT (*arg));
+		break;
+
+	case ARG_SMOOTH_DROP_SHADOW_COLOR:
+		nautilus_label_set_smooth_drop_shadow_color (label, GTK_VALUE_UINT (*arg));
+		break;
+
+	case ARG_SMOOTH_LINE_WRAP_WIDTH:
+		nautilus_label_set_smooth_line_wrap_width (label, GTK_VALUE_UINT (*arg));
 		break;
 
  	default:
 		g_assert_not_reached ();
 	}
-#endif
 }
 
 static void
-nautilus_label_get_arg (GtkObject	*object,
-			GtkArg		*arg,
-			guint		arg_id)
+nautilus_label_get_arg (GtkObject *object,
+			GtkArg *arg,
+			guint arg_id)
 {
 	NautilusLabel	*label;
 
-	g_return_if_fail (object != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (object));
 	
 	label = NAUTILUS_LABEL (object);
 
-#if 0
  	switch (arg_id)
 	{
-	case ARG_PLACEMENT_TYPE:
-		GTK_VALUE_ENUM (*arg) = label->detail->placement_type;
+	case ARG_TILE_OPACITY:
+		GTK_VALUE_INT (*arg) = nautilus_label_get_tile_opacity (label);
 		break;
 		
-	case ARG_BACKGROUND_TYPE:
-		GTK_VALUE_ENUM (*arg) = label->detail->background_type;
+	case ARG_TILE_PIXBUF:
+		GTK_VALUE_POINTER (*arg) = nautilus_label_get_tile_pixbuf (label);
 		break;
 
-	case ARG_BACKGROUND_COLOR:
-		GTK_VALUE_UINT (*arg) = label->detail->background_color;
+	case ARG_TILE_WIDTH:
+		GTK_VALUE_INT (*arg) = nautilus_label_get_tile_width (label);
 		break;
+
+	case ARG_TILE_HEIGHT:
+		GTK_VALUE_INT (*arg) = nautilus_label_get_tile_height (label);
+		break;
+
+	case ARG_TILE_MODE_VERTICAL:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_tile_mode_vertical (label);
+		break;
+
+	case ARG_TILE_MODE_HORIZONTAL:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_tile_mode_horizontal (label);
+		break;
+
 
 	case ARG_LABEL:
-		GTK_VALUE_OBJECT (*arg) = (GtkObject *) nautilus_label_get_pixbuf (label);
+		GTK_VALUE_STRING (*arg) = nautilus_label_get_text (label);
+		break;
+
+	case ARG_WRAP:
+		GTK_VALUE_BOOL (*arg) = nautilus_label_get_wrap (label);
+		break;
+
+	case ARG_JUSTIFY:
+		GTK_VALUE_ENUM (*arg) = nautilus_label_get_text_justify (label);
+		break;
+
+	case ARG_IS_SMOOTH:
+		GTK_VALUE_BOOL (*arg) = nautilus_label_get_is_smooth (label);
+		break;
+		
+	case ARG_TEXT_OPACITY:
+		GTK_VALUE_INT (*arg) = nautilus_label_get_text_opacity (label);
+		break;
+		
+	case ARG_BACKGROUND_MODE:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_background_mode (label);
+		break;
+
+	case ARG_SMOOTH_FONT:
+		GTK_VALUE_OBJECT (*arg) = (GtkObject *) nautilus_label_get_smooth_font (label);
+		break;
+
+	case ARG_SMOOTH_FONT_SIZE:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_smooth_font_size (label);
+		break;
+
+	case ARG_SMOOTH_TEXT_COLOR:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_text_color (label);
+		break;
+
+	case ARG_SMOOTH_DROP_SHADOW_OFFSET:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_smooth_drop_shadow_offset (label);
+		break;
+
+	case ARG_SMOOTH_DROP_SHADOW_COLOR:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_smooth_drop_shadow_color (label);
+		break;
+
+	case ARG_SMOOTH_LINE_WRAP_WIDTH:
+		GTK_VALUE_UINT (*arg) = nautilus_label_get_smooth_line_wrap_width (label);
 		break;
 
  	default:
 		g_assert_not_reached ();
 	}
-#endif
 }
 
 /* GtkWidgetClass methods */
 static void
-nautilus_label_size_request (GtkWidget		*widget,
-			     GtkRequisition	*requisition)
+nautilus_label_size_request (GtkWidget *widget,
+			     GtkRequisition *requisition)
 {
-	GtkMisc			*misc;
-	NautilusLabel		*label;
-	guint			text_width = 0;
-	guint			text_height = 0;
-	NautilusPixbufSize	tile_size;
+	NautilusLabel *label;
 
-	g_return_if_fail (widget != NULL);
+	ArtIRect text_frame;
+	ArtIRect tile_frame;
+	ArtIRect preferred_frame;
+
 	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
 	g_return_if_fail (requisition != NULL);
 
-	label = NAUTILUS_LABEL (widget);
-	misc = GTK_MISC (widget);
+ 	label = NAUTILUS_LABEL (widget);
 
-	tile_size = nautilus_buffered_get_tile_pixbuf_size (NAUTILUS_BUFFERED_WIDGET (label));
-
-	if (label->detail->num_text_lines > 0) {
-		text_width = label->detail->max_text_line_width;
-		text_height = label_get_total_text_and_line_offset_height (label);
-
-		text_width += label->detail->drop_shadow_offset;
-		text_height += label->detail->drop_shadow_offset;
+	if (!label->detail->is_smooth) {
+		NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_request, (widget, requisition));
+		return;
 	}
+	
+	text_frame = label_get_text_frame (label);
+	tile_frame = label_get_tile_frame (label);
 
-   	requisition->width = MAX (2, text_width);
-   	requisition->height = MAX (2, MAX (text_height, tile_size.height));
-
-    	requisition->width += (misc->xpad * 2);
-    	requisition->height += (misc->ypad * 2);
+	preferred_frame = nautilus_smooth_widget_get_preferred_frame (widget,
+								      &text_frame,
+								      &tile_frame,
+								      label->detail->tile_width,
+								      label->detail->tile_height);
+   	requisition->width = preferred_frame.x1;
+   	requisition->height = preferred_frame.y1;
 }
 
-/* recompute the line layout if it's dependent on the size */
+/* Painting callback for non smooth case */
 static void
-nautilus_label_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+label_paint_pixbuf_callback (GtkWidget *widget,
+			     GdkDrawable *destination_drawable,
+			     GdkGC *gc,
+			     int source_x,
+			     int source_y,
+			     const ArtIRect *area,
+			     gpointer callback_data)
 {
 	NautilusLabel *label;
+	GdkEventExpose *event;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
-	
+	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
+	g_return_if_fail (destination_drawable != NULL);
+	g_return_if_fail (gc != NULL);
+	g_return_if_fail (area != NULL && !art_irect_empty (area));
+
 	label = NAUTILUS_LABEL (widget);
 
-	/* FIXME bugzilla.eazel.com 5083: 
-	 * this never happens
+	event = (GdkEventExpose *) callback_data;
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
+}
+
+/* Compositing callback for smooth case */
+static void
+label_composite_pixbuf_callback (GtkWidget *widget,
+				 GdkPixbuf *destination_pixbuf,
+				 int source_x,
+				 int source_y,
+				 const ArtIRect *area,
+				 int opacity,
+				 gpointer callback_data)
+{
+	NautilusLabel *label;
+	ArtIRect text_frame;
+	GdkPixbuf *pixbuf;
+	
+	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
+	g_return_if_fail (destination_pixbuf != NULL);
+	g_return_if_fail (area != NULL && !art_irect_empty (area));
+
+	label = NAUTILUS_LABEL (widget);
+
+	text_frame = label_get_text_frame (label);
+	
+	g_return_if_fail (!art_irect_empty (&text_frame));
+
+	if (label_can_cache_contents (label)) {
+		if (label->detail->solid_cache_pixbuf == NULL) {
+			label->detail->solid_cache_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+									    FALSE,
+									    8,
+									    text_frame.x1,
+									    text_frame.y1);
+			
+			nautilus_gdk_pixbuf_fill_rectangle_with_color (label->detail->solid_cache_pixbuf,
+								       NULL,
+								       label->detail->solid_background_color);
+			
+			label_draw_text_to_pixbuf (label,
+						   label->detail->solid_cache_pixbuf,
+						   &text_frame,
+						   0,
+						   0);
+		}
+
+		nautilus_gdk_pixbuf_draw_to_pixbuf (label->detail->solid_cache_pixbuf,
+						    destination_pixbuf,
+						    source_x,
+						    source_y,
+						    area);
+
+		return;
+	}
+
+	/* FIXME bugzilla.eazel.com 2784: 
+	 * The reason we move the pixels around instead of
+	 * drawing directly into the destination_pixbuf is that
+	 * there currently is a serious bug in NautilusScalalbleFont
+	 * that prevents clipping from happening.
 	 */
-	if ((int) label->detail->line_wrap_width == -1) {
-		label_recompute_line_geometries (label);
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, text_frame.x1, text_frame.y1);
+
+	nautilus_gdk_pixbuf_draw_to_pixbuf (destination_pixbuf,
+					    pixbuf,
+					    area->x0,
+					    area->y0,
+					    &text_frame);
+	
+	label_draw_text_to_pixbuf (label,
+				   pixbuf,
+				   &text_frame,
+				   0,
+				   0);
+	
+	nautilus_gdk_pixbuf_draw_to_pixbuf (pixbuf,
+					    destination_pixbuf,
+					    source_x,
+					    source_y,
+					    area);
+	
+	gdk_pixbuf_unref (pixbuf);
+}	
+
+static int
+nautilus_label_expose_event (GtkWidget *widget,
+			     GdkEventExpose *event)
+{
+ 	NautilusLabel *label;
+	ArtIRect dirty_area;
+	ArtIRect screen_dirty_area;
+	ArtIRect smooth_text_bounds;
+	ArtIRect text_bounds;
+	ArtIRect tile_bounds;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (widget), TRUE);
+	g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), TRUE);
+	g_return_val_if_fail (event != NULL, TRUE);
+	g_return_val_if_fail (event->window == widget->window, TRUE);
+	
+ 	label = NAUTILUS_LABEL (widget);
+
+	/* The smooth and non smooth bounds are different.  We have
+	 * no way to have GtkLabel tell us what its bounds are.
+	 * So, we cheat and pretend that for the non smooth case,
+	 * the text bounds are the whole widget.
+	 *
+	 * This works because the smooth widget paint handler will
+	 * properly intersect these bounds and call the paint 
+	 * callback.  We feed the paint callback the actual gdk
+	 * expose event so that we feed the exact exposure area
+	 * to GtkLabel's expose_event.
+	 */
+	text_bounds = nautilus_irect_gtk_widget_get_bounds (widget);
+	smooth_text_bounds = label_get_text_bounds (label);
+	tile_bounds = nautilus_smooth_widget_get_tile_bounds (widget,
+							      label->detail->tile_pixbuf,
+							      label->detail->tile_width,
+							      label->detail->tile_height);
+	
+	/* Check for the dumb case when theres nothing to do */
+	if (nautilus_strlen (label_peek_text (label)) == 0 && label->detail->tile_pixbuf == NULL) {
+		return TRUE;
 	}
+
+// 	g_print ("%s(%p): background_mode = %d\n",
+// 		 __FUNCTION__,
+// 		 widget,
+// 		 label->detail->background_mode);
+
+	/* Clip the dirty area to the screen */
+	dirty_area = nautilus_irect_assign_gdk_rectangle (&event->area);
+	screen_dirty_area = nautilus_irect_gdk_window_clip_dirty_area_to_screen (event->window,
+										 &dirty_area);
+	/* Make sure the area is screen visible before painting */
+	if (!art_irect_empty (&screen_dirty_area)) {
+		nautilus_smooth_widget_paint (widget,
+					      widget->style->white_gc,
+					      label->detail->is_smooth,
+					      label->detail->background_mode,
+					      label->detail->solid_background_color,
+					      label->detail->tile_pixbuf,
+					      &tile_bounds,
+					      label->detail->tile_opacity,
+					      label->detail->tile_mode_vertical,
+					      label->detail->tile_mode_horizontal,
+					      label->detail->is_smooth ? &smooth_text_bounds : &text_bounds,
+					      label->detail->text_opacity,
+					      &screen_dirty_area,
+					      label_paint_pixbuf_callback,
+					      label_composite_pixbuf_callback,
+					      event);
+	}
+
+	if (0) nautilus_debug_draw_rectangle_and_cross (event->window,
+							&screen_dirty_area,
+							0x00FF00,
+							TRUE);
+
+	return TRUE;
 }
 
-/* NautilusBufferedWidgetClass methods */
+/* NautilusLabel signals */
 static void
-render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
-		      GdkPixbuf			*buffer,
-		      int			horizontal_offset,
-		      int			vertical_offset)
+nautilus_label_set_is_smooth_signal (GtkWidget *widget,
+				     gboolean is_smooth)
 {
-	NautilusLabel *label;
-	GtkWidget *widget;
-	ArtIRect clip_area;
-	int text_x;
-	int text_y;
+	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
 
-	g_return_if_fail (NAUTILUS_IS_LABEL (buffered_widget));
-	g_return_if_fail (buffer != NULL);
+	nautilus_label_set_is_smooth (NAUTILUS_LABEL (widget), is_smooth);
+}
 
-	label = NAUTILUS_LABEL (buffered_widget);
-
-	if (label->detail->num_text_lines == 0) {
-		return;
-	}
-
-	widget = GTK_WIDGET (buffered_widget);
+/* Private NautilusLabel things */
+static void
+label_draw_text_to_pixbuf (NautilusLabel *label,
+			   GdkPixbuf *pixbuf,
+			   const ArtIRect *destination_area,
+			   int x,
+			   int y)
+{
+	ArtIRect pixbuf_frame;
 	
-	if (label->detail->max_text_line_width <= widget->allocation.width) {
-		clip_area.x0 = ((int) widget->allocation.width - (int) label->detail->max_text_line_width) / 2;
-	}
-	else {
-		clip_area.x0 = - ((int) label->detail->max_text_line_width - (int) widget->allocation.width) / 2;
-	}
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (destination_area != NULL);
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (!art_irect_empty (destination_area));
 	
-	if (label->detail->total_text_line_height <= widget->allocation.height) {
-		clip_area.y0 = ((int) widget->allocation.height - (int) label->detail->total_text_line_height) / 2;
-	}
-	else {
-		clip_area.y0 = - ((int) label->detail->total_text_line_height - (int) widget->allocation.height) / 2;
-	}
+	pixbuf_frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
 
-	clip_area.x0 = 0;
-	clip_area.y0 = 0;
-
-	clip_area.x1 = widget->allocation.width;
-	clip_area.y1 = widget->allocation.height;
-
-	text_x = horizontal_offset;
-	text_y = vertical_offset;
-
-	if (label->detail->num_text_lines == 0) {
-		return;
-	}
+	g_return_if_fail (pixbuf_frame.x1 >= (destination_area->x1 - destination_area->x0));
+	g_return_if_fail (pixbuf_frame.y1 >= (destination_area->y1 - destination_area->y0));
 
 	/* Line wrapping */
-	if (label->detail->line_wrap) {
-		guint i;
-		guint x = text_x;
-		guint y = text_y;
+	if (nautilus_label_get_wrap (label)) {
+		int i;
 		
 		for (i = 0; i < label->detail->num_text_lines; i++) {
 			const NautilusTextLayout *text_layout = label->detail->text_layouts[i];
-
-			if (label->detail->drop_shadow_offset > 0) {
+			
+			if (label->detail->smooth_drop_shadow_offset > 0) {
 				nautilus_text_layout_paint (text_layout, 
-							    buffer, 
-							    x + label->detail->drop_shadow_offset, 
-							    y + label->detail->drop_shadow_offset,
-							    label->detail->text_justification,
-							    label->detail->drop_shadow_color,
+							    pixbuf, 
+							    x + label->detail->smooth_drop_shadow_offset, 
+							    y + label->detail->smooth_drop_shadow_offset,
+							    nautilus_label_get_text_justify (label),
+							    label->detail->smooth_drop_shadow_color,
 							    FALSE);
 			}
-
+			
 			nautilus_text_layout_paint (text_layout, 
-						    buffer, 
+						    pixbuf, 
 						    x, 
 						    y,
-						    label->detail->text_justification,
-						    label->detail->text_color,
+						    nautilus_label_get_text_justify (label),
+						    label->detail->smooth_text_color,
 						    FALSE);
-
+			
 			y += text_layout->height;
 		}
 	}
 	/* No line wrapping */
 	else {
-		if (label->detail->drop_shadow_offset > 0) {
-			nautilus_scalable_font_draw_text_lines_with_dimensions (label->detail->font,
-										buffer,
-										text_x + label->detail->drop_shadow_offset,
-										text_y + label->detail->drop_shadow_offset,
-										&clip_area,
-										label->detail->font_size,
-										label->detail->font_size,
-										label->detail->text,
-										label->detail->num_text_lines,
-										label->detail->text_line_widths,
-										label->detail->text_line_heights,
-										label->detail->text_justification,
-										label->detail->line_offset,
-										label_get_empty_line_height (label),
-										label->detail->drop_shadow_color,
-										label->detail->text_alpha);
+		if (label->detail->smooth_drop_shadow_offset > 0) {
+			nautilus_scalable_font_draw_text_lines_with_dimensions (
+				label->detail->smooth_font,
+				pixbuf,
+				x + label->detail->smooth_drop_shadow_offset,
+				x + label->detail->smooth_drop_shadow_offset,
+				destination_area,
+				label->detail->smooth_font_size,
+				label->detail->smooth_font_size,
+				label_peek_text (label),
+				label->detail->num_text_lines,
+				label->detail->text_line_widths,
+				label->detail->text_line_heights,
+				nautilus_label_get_text_justify (label),
+				LINE_OFFSET,
+				label_get_empty_line_height (label),
+				label->detail->smooth_drop_shadow_color,
+				label->detail->text_opacity);
 		}
-
-		nautilus_scalable_font_draw_text_lines_with_dimensions (label->detail->font,
-									buffer,
-									text_x,
-									text_y,
-									&clip_area,
-									label->detail->font_size,
-									label->detail->font_size,
-									label->detail->text,
-									label->detail->num_text_lines,
-									label->detail->text_line_widths,
-									label->detail->text_line_heights,
-									label->detail->text_justification,
-									label->detail->line_offset,
-									label_get_empty_line_height (label),
-									label->detail->text_color,
-									label->detail->text_alpha);
+		
+		nautilus_scalable_font_draw_text_lines_with_dimensions (
+			label->detail->smooth_font,
+			pixbuf,
+			x,
+			y,
+			destination_area,
+			label->detail->smooth_font_size,
+			label->detail->smooth_font_size,
+			label_peek_text (label),
+			label->detail->num_text_lines,
+			label->detail->text_line_widths,
+			label->detail->text_line_heights,
+			nautilus_label_get_text_justify (label),
+			LINE_OFFSET,
+			label_get_empty_line_height (label),
+			label->detail->smooth_text_color,
+			label->detail->text_opacity);
 	}
 }
 
-/* Private NautilusLabel things */
 static guint
-label_get_empty_line_height (NautilusLabel *label)
+label_get_default_line_wrap_width (const NautilusLabel *label)
 {
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	guint width;
+	guint height;
 
-	/* If we wanted to crunch lines together, we could add a multiplier
-	 * here.  For now we just use the font size for empty lines. */
-	return label->detail->font_size;
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	
+	nautilus_scalable_font_measure_text (label->detail->smooth_font,
+					     label->detail->smooth_font_size,
+					     label->detail->smooth_font_size,
+					     DEFAULT_LINE_WRAP_WIDTH_TEXT,
+					     strlen (DEFAULT_LINE_WRAP_WIDTH_TEXT),
+					     &width,
+					     &height);
+
+	return width;
+}
+
+static ArtIRect
+label_get_text_frame (const NautilusLabel *label)
+{
+	ArtIRect text_frame;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_ART_IRECT_EMPTY);
+
+	text_frame = NAUTILUS_ART_IRECT_EMPTY;
+
+	if (label->detail->num_text_lines > 0) {
+		text_frame.x1 = 
+			label->detail->max_text_line_width
+			+ label->detail->smooth_drop_shadow_offset;
+		
+		text_frame.y1 = label_get_total_text_and_line_offset_height (label)
+			+ label->detail->smooth_drop_shadow_offset;
+	}
+
+	return text_frame;
+}
+
+static ArtIRect
+label_get_text_bounds (const NautilusLabel *label)
+{
+	ArtIRect text_frame;
+	ArtIRect text_bounds;
+	GtkWidget *widget;
+	GtkMisc *misc;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_ART_IRECT_EMPTY);
+
+	text_frame = label_get_text_frame (label);
+
+	if (art_irect_empty (&text_frame)) {
+		return NAUTILUS_ART_IRECT_EMPTY;
+	}
+	
+	widget = GTK_WIDGET (label);
+	misc = GTK_MISC (label);
+
+	text_bounds.x0 = (widget->allocation.x * (1.0 - misc->xalign) +
+			  (widget->allocation.x + widget->allocation.width
+			   - (text_frame.x1 - misc->xpad * 2)) *
+			  misc->xalign) + 0.5;
+	
+	text_bounds.y0 = (widget->allocation.y * (1.0 - misc->yalign) +
+			  (widget->allocation.y + widget->allocation.height
+			   - (text_frame.y1 - misc->ypad * 2)) *
+			  misc->yalign) + 0.5;
+
+	text_bounds.x1 = text_bounds.x0 + text_frame.x1;
+	text_bounds.y1 = text_bounds.y0 + text_frame.y1;
+
+	return text_bounds;
+}
+
+static ArtIRect
+label_get_tile_frame (const NautilusLabel *label)
+{
+	ArtIRect tile_frame;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_ART_IRECT_EMPTY);
+
+	if (!label->detail->tile_pixbuf) {
+		return NAUTILUS_ART_IRECT_EMPTY;
+	}
+
+	tile_frame.x0 = 0;
+	tile_frame.y0 = 0;
+	tile_frame.x1 = gdk_pixbuf_get_width (label->detail->tile_pixbuf);
+	tile_frame.y1 = gdk_pixbuf_get_height (label->detail->tile_pixbuf);
+
+	return tile_frame;
+}
+
+static void
+label_solid_cache_pixbuf_clear (NautilusLabel *label)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	nautilus_gdk_pixbuf_unref_if_not_null (label->detail->solid_cache_pixbuf);
+	label->detail->solid_cache_pixbuf = NULL;
+}
+
+static gboolean
+label_can_cache_contents (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
+
+	return (label->detail->background_mode == NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR)
+		&& !label->detail->tile_pixbuf;
+}
+
+const char *
+label_peek_text (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NULL);
+
+	return GTK_LABEL (label)->label;
 }
 
 static guint
-label_get_total_text_and_line_offset_height (NautilusLabel *label)
+label_get_empty_line_height (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	/* If we wanted to crunch lines together, we could add a divider
+	 * here.  For now we just use the font size for empty lines. */
+	return label->detail->smooth_font_size;
+}
+
+static guint
+label_get_total_text_and_line_offset_height (const NautilusLabel *label)
 {
 	guint total_height;
 
@@ -483,46 +976,24 @@ label_get_total_text_and_line_offset_height (NautilusLabel *label)
 	total_height = label->detail->total_text_line_height;
 	
 	if (label->detail->num_text_lines > 1) {
-		total_height += ((label->detail->num_text_lines - 1) * label->detail->line_offset);
+		total_height += ((label->detail->num_text_lines - 1) * LINE_OFFSET);
 	}
 
 	return total_height;
 }
 
-/* utility routine to get the allocation width of the passed in width, as constrained by the width of its parents */
-static int
-get_clipped_width (GtkWidget *widget)
-{
-	GtkWidget *current_container;
-	int clipped_width, container_offset, effective_width;
-	
-	clipped_width = widget->allocation.width;
-	container_offset = widget->allocation.x;
-	
-	current_container = widget->parent;
-	while (current_container != NULL) {
-		effective_width = current_container->allocation.width - container_offset;
-		if (effective_width < clipped_width) {
-			clipped_width = effective_width;
-		}
-		container_offset = current_container->allocation.x;
-		current_container = current_container->parent;
-	}	
-	return clipped_width;
-}
-
 static void
-label_recompute_line_geometries (NautilusLabel *label)
+label_line_geometries_clear (NautilusLabel *label)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
+	
 	g_free (label->detail->text_line_widths);
 	g_free (label->detail->text_line_heights);
 	label->detail->text_line_widths = NULL;
 	label->detail->text_line_heights = NULL;
 
 	if (label->detail->text_layouts != NULL) {
-		guint i;
+		int i;
 
 		for (i = 0; i < label->detail->num_text_lines; i++) {
 			g_assert (label->detail->text_layouts[i] != NULL);
@@ -537,23 +1008,34 @@ label_recompute_line_geometries (NautilusLabel *label)
 
 	label->detail->max_text_line_width = 0;
 	label->detail->total_text_line_height = 0;
+}
 
-	if (nautilus_strlen (label->detail->text) == 0) {
+static void
+label_line_geometries_recompute (NautilusLabel *label)
+{
+	const char *text;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	text = label_peek_text (label);
+
+	label_solid_cache_pixbuf_clear (label);
+	label_line_geometries_clear (label);
+
+	if (nautilus_strlen (text) == 0) {
 		return;
 	}
 	
-	label->detail->num_text_lines = nautilus_str_count_characters (label->detail->text, '\n') + 1;
+	label->detail->num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
 
 	/* Line wrapping */
-	if (label->detail->line_wrap) {
+	if (nautilus_label_get_wrap (label)) {
 		char **pieces;
-		guint i;
-		int clipped_widget_width, wrap_width;
-		
+		int i;
+
 		label->detail->text_layouts = g_new (NautilusTextLayout *, label->detail->num_text_lines);
-		clipped_widget_width = get_clipped_width (GTK_WIDGET (label));
-		
-		pieces = g_strsplit (label->detail->text, "\n", 0);
+
+		pieces = g_strsplit (text, "\n", 0);
 
 		for (i = 0; pieces[i] != NULL; i++) {
 			char *text_piece = pieces[i];
@@ -565,26 +1047,16 @@ label_recompute_line_geometries (NautilusLabel *label)
 				text_piece = " ";
 			}
 
-			/* determine the width to use for wrapping.  A wrap width of -1 means use all of the available space. */
-			/* Don't use it if the widget is too small, since we won't be able to fit any words in */
-			/* FIXME bugzilla.eazel.com 5083:
-			 * the -1 case never happens
-			 */ 
-			if ((int) label->detail->line_wrap_width == -1 && clipped_widget_width > 32) {
-				wrap_width = clipped_widget_width;
-			} else {
-				wrap_width = label->detail->line_wrap_width;
-			}
-			label->detail->text_layouts[i] = nautilus_text_layout_new (label->detail->font,
-										   label->detail->font_size,
+			label->detail->text_layouts[i] = nautilus_text_layout_new (label->detail->smooth_font,
+										   label->detail->smooth_font_size,
 										   text_piece,
-										   label->detail->line_wrap_separators,
-										   wrap_width, 
+										   LINE_WRAP_SEPARATORS,
+										   label->detail->smooth_line_wrap_width, 
 										   TRUE);
 
 			label->detail->total_text_line_height += label->detail->text_layouts[i]->height;
 			
-			if (label->detail->text_layouts[i]->width > (int) label->detail->max_text_line_width) {
+			if (label->detail->text_layouts[i]->width > label->detail->max_text_line_width) {
 				label->detail->max_text_line_width = label->detail->text_layouts[i]->width;
 			}
 		}
@@ -596,10 +1068,10 @@ label_recompute_line_geometries (NautilusLabel *label)
 		label->detail->text_line_widths = g_new (guint, label->detail->num_text_lines);
 		label->detail->text_line_heights = g_new (guint, label->detail->num_text_lines);
 		
-		nautilus_scalable_font_measure_text_lines (label->detail->font,
-							   label->detail->font_size,
-							   label->detail->font_size,
-							   label->detail->text,
+		nautilus_scalable_font_measure_text_lines (label->detail->smooth_font,
+							   label->detail->smooth_font_size,
+							   label->detail->smooth_font_size,
+							   text,
 							   label->detail->num_text_lines,
 							   label_get_empty_line_height (label),
 							   label->detail->text_line_widths,
@@ -609,379 +1081,381 @@ label_recompute_line_geometries (NautilusLabel *label)
 	}
 }
 
-/* Public NautilusLabel */
+/* Public NautilusLabel methods */
 GtkWidget *
 nautilus_label_new (const char *text)
 {
 	NautilusLabel *label;
 	
 	label = NAUTILUS_LABEL (gtk_widget_new (nautilus_label_get_type (), NULL));
-
+	
 	nautilus_label_set_text (label, text);
 	
 	return GTK_WIDGET (label);
 }
 
 void
-nautilus_label_set_text (NautilusLabel	*label,
-			 const gchar	*text)
+nautilus_label_set_smooth_font (NautilusLabel *label,
+				NautilusScalableFont *smooth_font)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
-	if (nautilus_str_is_equal (text, label->detail->text)) {
+	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (smooth_font));
+	
+	if (label->detail->smooth_font == smooth_font) {
 		return;
 	}
 	
-	g_free (label->detail->text);
-	label->detail->text = text ? g_strdup (text) : NULL;
+	if (label->detail->smooth_font != NULL) {
+		gtk_object_unref (GTK_OBJECT (label->detail->smooth_font));
+	}
+
+	gtk_object_ref (GTK_OBJECT (smooth_font));
+	label->detail->smooth_font = smooth_font;
+
+	/* Update the line wrap width */
+	label->detail->smooth_line_wrap_width = label_get_default_line_wrap_width (label);
 	
-	label_recompute_line_geometries (label);
-
-	gtk_widget_queue_resize (GTK_WIDGET (label));
-}
-
-gchar*
-nautilus_label_get_text (NautilusLabel *label)
-{
-	g_return_val_if_fail (label != NULL, NULL);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NULL);
-
-	return label->detail->text ? g_strdup (label->detail->text) : NULL;
-}
-
-void
-nautilus_label_set_font (NautilusLabel		*label,
-			 NautilusScalableFont	*font)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
-	g_return_if_fail (font != NULL);
-
-	if (label->detail->font == font) {
-		return;
-	}
-
-	if (label->detail->font != NULL) {
-		gtk_object_unref (GTK_OBJECT (label->detail->font));
-		label->detail->font = NULL;
-	}
-
-	gtk_object_ref (GTK_OBJECT (font));
-
-	label->detail->font = font;
-
-	label_recompute_line_geometries (label);
+	label_line_geometries_recompute (label);
 	
 	gtk_widget_queue_resize (GTK_WIDGET (label));
-}
-
-void
-nautilus_label_set_font_from_components (NautilusLabel	*label,
-					 const char	*family,
-					 const char	*weight,
-					 const char	*slant,
-					 const char	*set_width)
-{
-	NautilusScalableFont *font;
-
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-	g_return_if_fail (family != NULL);
-	
-	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new (family, weight, slant, set_width));
-
-	if (font != NULL) {
-		nautilus_label_set_font (label, font);
-		gtk_object_unref (GTK_OBJECT (font));
-	}
 }
 
 NautilusScalableFont *
-nautilus_label_get_font (const NautilusLabel *label)
+nautilus_label_get_smooth_font (const NautilusLabel *label)
 {
-	g_return_val_if_fail (label != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
-
-	if (label->detail->font != NULL) {
-		gtk_object_ref (GTK_OBJECT (label->detail->font));
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NULL);
+	
+	if (label->detail->smooth_font != NULL) {
+		gtk_object_ref (GTK_OBJECT (label->detail->smooth_font));
 	}
 
-	return label->detail->font;
+	return label->detail->smooth_font;
 }
 
 void
-nautilus_label_set_font_size (NautilusLabel	*label,
-			      guint		font_size)
+nautilus_label_set_smooth_font_size (NautilusLabel *label,
+				     guint smooth_font_size)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-	g_return_if_fail (font_size > 0);
+	g_return_if_fail (smooth_font_size > MIN_SMOOTH_FONT_SIZE);
 
-	if (label->detail->font_size == font_size) {
+	if (label->detail->smooth_font_size == smooth_font_size) {
 		return;
 	}
 
-	label->detail->font_size = font_size;
+	label->detail->smooth_font_size = smooth_font_size;
 
-	label_recompute_line_geometries (label);
+	/* Update the line wrap width */
+	label->detail->smooth_line_wrap_width = label_get_default_line_wrap_width (label);
+
+	label_line_geometries_recompute (label);
 
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
 guint
-nautilus_label_get_font_size (const NautilusLabel *label)
+nautilus_label_get_smooth_font_size (const NautilusLabel *label)
 {
-	g_return_val_if_fail (label != NULL, 0);
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
 
-	return label->detail->font_size;
+	return label->detail->smooth_font_size;
 }
 
 void
-nautilus_label_set_text_color (NautilusLabel	*label,
-			       guint32		text_color)
+nautilus_label_set_is_smooth (NautilusLabel *label,
+			      gboolean is_smooth)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 
-	if (label->detail->text_color == text_color) {
+	if (label->detail->is_smooth == is_smooth) {
 		return;
 	}
 
-	label->detail->text_color = text_color;
-	
-	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (label));
-	
-	gtk_widget_queue_draw (GTK_WIDGET (label));
-}
+	label->detail->is_smooth = is_smooth;
 
-guint32
-nautilus_label_get_text_color (const NautilusLabel *label)
-{
-	g_return_val_if_fail (label != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	label_line_geometries_recompute (label);
 
-	return label->detail->text_color;
-}
-
-void
-nautilus_label_set_text_alpha (NautilusLabel	*label,
-			       guchar		text_alpha)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
-	if (label->detail->text_alpha == text_alpha) {
-		return;
-	}
-
-	label->detail->text_alpha = text_alpha;
-
-	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (label));
-	
-	gtk_widget_queue_draw (GTK_WIDGET (label));
-}
-
-guchar
-nautilus_label_get_text_alpha (const NautilusLabel *label)
-{
-	g_return_val_if_fail (label != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
-
-	return label->detail->text_alpha;
-}
-
-void
-nautilus_label_set_text_justification (NautilusLabel	*label,
-				       GtkJustification	justification)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
-
-	if (label->detail->text_justification == justification) {
-		return;
-	}
-
-	label->detail->text_justification = justification;
-
-	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (label));
-	
-	gtk_widget_queue_draw (GTK_WIDGET (label));
-}
-
-GtkJustification
-nautilus_label_get_text_justification (const NautilusLabel *label)
-{
-	g_return_val_if_fail (label != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
-
-	return label->detail->text_justification;
-}
-
-/**
- * nautilus_label_set_line_offset:
- *
- * @label: A NautilusLabel
- * @line_offset: The new line offset offset in pixels.
- *
- * Change the line offset.  Obviously, this is only interesting if the 
- * label is displaying text that contains '\n' characters.
- * 
- */
-void
-nautilus_label_set_line_offset (NautilusLabel	*label,
-				guint		line_offset)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
-	if (label->detail->line_offset == line_offset) {
-		return;
-	}
-
-	label->detail->line_offset = line_offset;
-	
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
-/**
- * nautilus_label_get_line_offset:
- *
- * @label: A NautilusLabel
- *
- * Return value: The line offset in pixels.
- */
-guint
-nautilus_label_get_line_offset (const NautilusLabel *label)
-{
-	g_return_val_if_fail (label != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
-
-	return label->detail->line_offset;
-}
-
-/**
- * nautilus_label_set_drop_shadow_offset:
- *
- * @label: A NautilusLabel
- * @drop_shadow_offset: The new drop shadow offset.  
-
- * The drop shadow offset is specified in pixels.  If greater than zero,
- * the label will render on top of a nice shadow.  The shadow will be
- * offset from the label text by 'drop_shadow_offset' pixels.
- */
-void
-nautilus_label_set_drop_shadow_offset (NautilusLabel	*label,
-				       guint		drop_shadow_offset)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
-	if (label->detail->drop_shadow_offset == drop_shadow_offset) {
-		return;
-	}
-
-	label->detail->drop_shadow_offset = drop_shadow_offset;
-	
-	gtk_widget_queue_resize (GTK_WIDGET (label));
-}
-
-/**
- * nautilus_label_get_drop_shadow_offset:
- *
- * @label: A NautilusLabel
- *
- * Return value: The line offset in pixels.
- */
-guint
-nautilus_label_get_drop_shadow_offset (const NautilusLabel *label)
-{
-	g_return_val_if_fail (label != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
-
-	return label->detail->drop_shadow_offset;
-}
-
-/**
- * nautilus_label_set_drop_shadow_color:
- *
- * @label: A NautilusLabel
- * @drop_shadow_color: The new drop shadow color.
- *
- * Return value: The drop shadow color.
- */
-void
-nautilus_label_set_drop_shadow_color (NautilusLabel	*label,
-				      guint32		drop_shadow_color)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
-	if (label->detail->drop_shadow_color == drop_shadow_color) {
-		return;
-	}
-	
-	label->detail->drop_shadow_color = drop_shadow_color;
-	
-	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (label));
-	
-	gtk_widget_queue_draw (GTK_WIDGET (label));
-}
-
-/**
- * nautilus_label_get_drop_shadow_color:
- *
- * @label: A NautilusLabel
- *
- * Return value: The drop shadow color.
- */
-guint32
-nautilus_label_get_drop_shadow_color (const NautilusLabel *label)
-{
-	g_return_val_if_fail (label != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
-	
-	return label->detail->drop_shadow_color;
-}
-
-/**
- * nautilus_label_set_line_wrap:
- *
- * @label: A NautilusLabel
- * @line_wrap: A boolean value indicating whether the label should
- * line wrap words if they dont fit in the horizontally allocated
- * space.
- *
- */
-void
-nautilus_label_set_line_wrap (NautilusLabel	*label,
-			      gboolean		line_wrap)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
-	if (label->detail->line_wrap == line_wrap) {
-		return;
-	}
-	
-	label->detail->line_wrap = line_wrap;
-
-	label_recompute_line_geometries (label);
-	
-	gtk_widget_queue_resize (GTK_WIDGET (label));
-}
-
-/**
- * nautilus_label_get_line_wrap:
- *
- * @label: A NautilusLabel
- *
- * Return value: A boolean value indicating whether the label
- * is currently line wrapping text.
- */
 gboolean
-nautilus_label_get_line_wrap (const NautilusLabel *label)
+nautilus_label_get_is_smooth (const NautilusLabel *label)
 {
-	g_return_val_if_fail (label != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
 
-	return label->detail->line_wrap;
+	return label->detail->is_smooth;
 }
 
 /**
- * nautilus_label_set_line_wrap_width:
+ * nautilus_label_set_tile_pixbuf:
+ *
+ * @label: A NautilusLabel
+ * @pixbuf:          The new tile pixbuf
+ *
+ * Change the tile pixbuf.  A 'pixbuf' value of NULL, means dont use a
+ * tile pixbuf - this is the default behavior for the widget.
+ */
+void
+nautilus_label_set_tile_pixbuf (NautilusLabel *label,
+				GdkPixbuf *pixbuf)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	
+	if (pixbuf != label->detail->tile_pixbuf) {
+		nautilus_gdk_pixbuf_unref_if_not_null (label->detail->tile_pixbuf);
+		nautilus_gdk_pixbuf_ref_if_not_null (pixbuf);
+		
+		label->detail->tile_pixbuf = pixbuf;
+
+		gtk_widget_queue_resize (GTK_WIDGET (label));
+	}
+}
+
+/**
+ * nautilus_label_get_tile_pixbuf:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: A reference to the tile_pixbuf.  Needs to be unreferenced with 
+ * gdk_pixbuf_unref()
+ */
+GdkPixbuf*
+nautilus_label_get_tile_pixbuf (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NULL);
+
+	nautilus_gdk_pixbuf_ref_if_not_null (label->detail->tile_pixbuf);
+	
+	return label->detail->tile_pixbuf;
+}
+
+void
+nautilus_label_set_text_opacity (NautilusLabel *label,
+				 int opacity)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	label->detail->text_opacity = opacity;
+
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+int
+nautilus_label_get_text_opacity (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	return label->detail->text_opacity;
+}
+
+void
+nautilus_label_set_tile_opacity (NautilusLabel *label,
+				 int tile_opacity)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (tile_opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (tile_opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	if (label->detail->tile_opacity == tile_opacity) {
+		return;
+	}
+
+	label->detail->tile_opacity = tile_opacity;
+
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+int
+nautilus_label_get_tile_opacity (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	return label->detail->tile_opacity;
+}
+
+void
+nautilus_label_set_tile_width (NautilusLabel *label,
+			       int tile_width)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (tile_width >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
+	
+	if (label->detail->tile_width == tile_width) {
+		return;
+	}
+
+	label->detail->tile_width = tile_width;
+
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_tile_width:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: The tile width.
+ */
+int
+nautilus_label_get_tile_width (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	return label->detail->tile_width;
+}
+
+void
+nautilus_label_set_tile_height (NautilusLabel *label,
+				int tile_height)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (tile_height >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
+	
+	if (label->detail->tile_height == tile_height) {
+		return;
+	}
+
+	label->detail->tile_height = tile_height;
+
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_tile_height:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: The tile height.
+ */
+int
+nautilus_label_get_tile_height (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	return label->detail->tile_height;
+}
+
+void
+nautilus_label_set_tile_mode_vertical (NautilusLabel *label,
+				       NautilusSmoothTileMode tile_mode_vertical)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (tile_mode_vertical >= NAUTILUS_SMOOTH_TILE_SELF);
+	g_return_if_fail (tile_mode_vertical <= NAUTILUS_SMOOTH_TILE_ANCESTOR);
+
+	if (label->detail->tile_mode_vertical == tile_mode_vertical) {
+		return;
+	}
+
+	label->detail->tile_mode_vertical = tile_mode_vertical;
+
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+NautilusSmoothTileMode
+nautilus_label_get_tile_mode_vertical (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	
+	return label->detail->tile_mode_vertical;
+}
+
+void
+nautilus_label_set_tile_mode_horizontal (NautilusLabel *label,
+					 NautilusSmoothTileMode tile_mode_horizontal)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (tile_mode_horizontal >= NAUTILUS_SMOOTH_TILE_SELF);
+	g_return_if_fail (tile_mode_horizontal <= NAUTILUS_SMOOTH_TILE_ANCESTOR);
+
+	if (label->detail->tile_mode_horizontal == tile_mode_horizontal) {
+		return;
+	}
+
+	label->detail->tile_mode_horizontal = tile_mode_horizontal;
+
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+NautilusSmoothTileMode
+nautilus_label_get_tile_mode_horizontal (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	
+	return label->detail->tile_mode_horizontal;
+}
+
+void
+nautilus_label_set_tile_pixbuf_from_file_name (NautilusLabel *label,
+					       const char *tile_file_name)
+{
+	GdkPixbuf *tile_pixbuf;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (tile_file_name != NULL);
+
+	tile_pixbuf = gdk_pixbuf_new_from_file (tile_file_name);
+	
+	if (tile_pixbuf != NULL) {
+		nautilus_label_set_tile_pixbuf (label, tile_pixbuf);
+		gdk_pixbuf_unref (tile_pixbuf);
+	}
+}
+
+void
+nautilus_label_set_background_mode (NautilusLabel *label,
+				    NautilusSmoothBackgroundMode background_mode)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (background_mode >= NAUTILUS_SMOOTH_BACKGROUND_GTK);
+	g_return_if_fail (background_mode <= NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+
+// 	background_mode = NAUTILUS_SMOOTH_BACKGROUND_GTK;
+		
+	if (label->detail->background_mode == background_mode) {
+		return;
+	}
+
+	label->detail->background_mode = background_mode;
+
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+NautilusSmoothBackgroundMode
+nautilus_label_get_background_mode (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	
+	return label->detail->background_mode;
+}
+
+void
+nautilus_label_set_solid_background_color (NautilusLabel *label,
+					   guint32 solid_background_color)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	
+	if (label->detail->solid_background_color == solid_background_color) {
+		return;
+	}
+
+	label->detail->solid_background_color = solid_background_color;
+	
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+guint32
+nautilus_label_get_solid_background_color (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	
+	return label->detail->solid_background_color;
+}
+
+/**
+ * nautilus_label_set_wrap_width:
  *
  * @label: A NautilusLabel
  * @line_wrap_width: The new line wrap width.
@@ -990,24 +1464,24 @@ nautilus_label_get_line_wrap (const NautilusLabel *label)
  * 
  */
 void
-nautilus_label_set_line_wrap_width (NautilusLabel	*label,
-				    guint		line_wrap_width)
+nautilus_label_set_smooth_line_wrap_width (NautilusLabel *label,
+					   guint line_wrap_width)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
-	if (label->detail->line_wrap_width == line_wrap_width) {
+	
+	if (label->detail->smooth_line_wrap_width == line_wrap_width) {
 		return;
 	}
 	
-	label->detail->line_wrap_width = line_wrap_width;
-
-	label_recompute_line_geometries (label);
+	label->detail->smooth_line_wrap_width = line_wrap_width;
+	
+	label_line_geometries_recompute (label);
 	
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
 /**
- * nautilus_label_get_line_wrap_width:
+ * nautilus_label_get_smooth_line_wrap_width:
  *
  * @label: A NautilusLabel
  *
@@ -1015,117 +1489,337 @@ nautilus_label_set_line_wrap_width (NautilusLabel	*label,
  * is currently line wrapping text.
  */
 guint
-nautilus_label_get_line_wrap_width (const NautilusLabel *label)
+nautilus_label_get_smooth_line_wrap_width (const NautilusLabel *label)
 {
-	g_return_val_if_fail (label != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
 
-	return label->detail->line_wrap_width;
+	return label->detail->smooth_line_wrap_width;
+}
+
+void
+nautilus_label_set_text_color (NautilusLabel *label,
+			       guint32 text_color)
+{
+	char *color_spec;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->detail->smooth_text_color == text_color) {
+		return;
+	}
+	
+	label->detail->smooth_text_color = text_color;
+
+	color_spec = nautilus_gdk_rgb_to_color_spec (text_color);
+
+	nautilus_gtk_widget_set_foreground_color (GTK_WIDGET (label), color_spec);
+	
+	g_free (color_spec);
+	
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+guint32
+nautilus_label_get_text_color (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	return label->detail->smooth_text_color;
 }
 
 /**
- * nautilus_label_set_line_wrap_separators:
+ * nautilus_label_set_smooth_drop_shadow_offset:
  *
  * @label: A NautilusLabel
- * @line_wrap_separators: The new line wrap separators.
- *
- * The line wrap separators is something.
- * 
+ * @smooth_drop_shadow_offset: The new drop shadow offset.  
+
+ * The drop shadow offset is specified in pixels.  If greater than zero,
+ * the label will render on top of a nice shadow.  The shadow will be
+ * offset from the label text by 'smooth_drop_shadow_offset' pixels.
  */
 void
-nautilus_label_set_line_wrap_separators (NautilusLabel	*label,
-					 const char *line_wrap_separators)
+nautilus_label_set_smooth_drop_shadow_offset (NautilusLabel *label,
+					      guint drop_shadow_offset)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-	g_return_if_fail (line_wrap_separators != NULL);
-	g_return_if_fail (line_wrap_separators[0] != '\0');
-	g_return_if_fail (strlen (line_wrap_separators) > 0);
 
-	if (nautilus_str_is_equal (label->detail->line_wrap_separators, line_wrap_separators)) {
+	if (label->detail->smooth_drop_shadow_offset == drop_shadow_offset) {
+		return;
+	}
+	
+	label->detail->smooth_drop_shadow_offset = drop_shadow_offset;
+
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_smooth_drop_shadow_offset:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: The line offset in pixels.
+ */
+guint
+nautilus_label_get_smooth_drop_shadow_offset (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	return label->detail->smooth_drop_shadow_offset;
+}
+
+/**
+ * nautilus_label_set_smooth_drop_shadow_color:
+ *
+ * @label: A NautilusLabel
+ * @smooth_drop_shadow_color: The new drop shadow color.
+ *
+ * Return value: The drop shadow color.
+ */
+void
+nautilus_label_set_smooth_drop_shadow_color (NautilusLabel *label,
+					     guint32 drop_shadow_color)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->detail->smooth_drop_shadow_color == drop_shadow_color) {
+		return;
+	}
+	
+	label->detail->smooth_drop_shadow_color = drop_shadow_color;
+	
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_smooth_drop_shadow_color:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: The drop shadow color.
+ */
+guint32
+nautilus_label_get_smooth_drop_shadow_color (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+	
+	return label->detail->smooth_drop_shadow_color;
+}
+
+void
+nautilus_label_set_justify (NautilusLabel *label,
+			    GtkJustification justification)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT);
+	g_return_if_fail (justification <= GTK_JUSTIFY_FILL);
+
+	if (nautilus_label_get_text_justify (label) == justification) {
 		return;
 	}
 
-	g_free (label->detail->line_wrap_separators);
-	label->detail->line_wrap_separators = g_strdup (line_wrap_separators);
+	gtk_label_set_justify (GTK_LABEL (label), justification);
+	
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
 
-	label_recompute_line_geometries (label);
+GtkJustification
+nautilus_label_get_text_justify (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	return GTK_LABEL (label)->jtype;
+}
+
+void
+nautilus_label_set_text (NautilusLabel *label,
+			 const gchar *text)
+{
+	GtkLabel *gtk_label;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	gtk_label = GTK_LABEL (label);
+
+	if (nautilus_str_is_equal (text, gtk_label->label)) {
+		return;
+	}
+
+	gtk_label_set_text (gtk_label, text);
+	
+	label_line_geometries_recompute (label);
+
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+gchar*
+nautilus_label_get_text (NautilusLabel *label)
+{
+	GtkLabel *gtk_label;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NULL);
+
+	gtk_label = GTK_LABEL (label);
+
+	return gtk_label->label ? g_strdup (gtk_label->label) : NULL;
+}
+
+/**
+ * nautilus_label_set_wrap:
+ *
+ * @label: A NautilusLabel
+ * @line_wrap: A boolean value indicating whether the label should
+ * line wrap words if they dont fit in the horizontally allocated
+ * space.
+ *
+ */
+void
+nautilus_label_set_wrap (NautilusLabel *label,
+			 gboolean line_wrap)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (nautilus_label_get_wrap (label) == line_wrap) {
+		return;
+	}
+
+	gtk_label_set_line_wrap (GTK_LABEL (label), line_wrap);
+	
+	label_line_geometries_recompute (label);
 	
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
 /**
- * nautilus_label_get_line_wrap_separators:
+ * nautilus_label_get_wrap:
  *
  * @label: A NautilusLabel
  *
  * Return value: A boolean value indicating whether the label
  * is currently line wrapping text.
  */
-char *
-nautilus_label_get_line_wrap_separators (const NautilusLabel *label)
+gboolean
+nautilus_label_get_wrap (const NautilusLabel *label)
 {
-	g_return_val_if_fail (label != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
 
-	return g_strdup (label->detail->line_wrap_separators);
+	return GTK_LABEL (label)->wrap;
 }
 
 /**
- * nautilus_label_new_loaded:
+ * nautilus_label_new_solid:
  *
  * @text: Text or NULL
- * @family: Font family or NULL
- * @weight: Font weight or NULL
- * @font_size: Font size in pixels
  * @drop_shadow_offset: Drop shadow offset
  * @drop_shadow_color: Drop shadow color
  * @text_color: Text color
+ * @xalign: Horizontal alignment.
+ * @yalign: Vertical alignment.
  * @xpadding: Amount to pad label in the x direction.
  * @ypadding: Amount to pad label in the y direction.
- * @vertical_offset: Amount to offset the label vertically.
- * @horizontal_offset: Amount to offset the label horizontally.
  * @background_color: Background color.
  * @tile_pixbuf: Pixbuf to use for tile or NULL
+ *
+ * Create a label with a solid background.
  *
  * Return value: Newly created label with all the given values.
  */
 GtkWidget *
-nautilus_label_new_loaded (const char *text,
-			   const char *family,
-			   const char *weight,
-			   guint font_size,
-			   guint drop_shadow_offset,
-			   guint32 drop_shadow_color,
-			   guint32 text_color,
-			   gint xpadding,
-			   gint ypadding,
-			   guint vertical_offset,
-			   guint horizontal_offset,
-			   guint32 background_color,
-			   GdkPixbuf *tile_pixbuf)
+nautilus_label_new_solid (const char *text,
+			  guint drop_shadow_offset,
+			  guint32 drop_shadow_color,
+			  guint32 text_color,
+			  float xalign,
+			  float yalign,
+			  int xpadding,
+			  int ypadding,
+			  guint32 background_color,
+			  GdkPixbuf *tile_pixbuf)
 {
 	NautilusLabel *label;
 
  	label = NAUTILUS_LABEL (nautilus_label_new (text ? text : ""));
 
-	if (family != NULL) {
-		nautilus_label_set_font_from_components (label, family, weight, NULL, NULL);
-	}
-
-	nautilus_label_set_font_size (label, font_size);
-	nautilus_label_set_drop_shadow_offset (label, drop_shadow_offset);
-	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (label), NAUTILUS_BACKGROUND_SOLID);
-	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (label), background_color);
-	nautilus_label_set_drop_shadow_color (label, drop_shadow_color);
+ 	nautilus_label_set_background_mode (NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+	nautilus_label_set_smooth_drop_shadow_color (label, drop_shadow_color);
+	nautilus_label_set_smooth_drop_shadow_offset (label, drop_shadow_offset);
 	nautilus_label_set_text_color (label, text_color);
-	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (label), vertical_offset);
-	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (label), horizontal_offset);
+ 	nautilus_label_set_solid_background_color (NAUTILUS_LABEL (label), background_color);
 
-	gtk_misc_set_padding (GTK_MISC (label), xpadding, ypadding);
-
+ 	gtk_misc_set_padding (GTK_MISC (label), xpadding, ypadding);
+ 	gtk_misc_set_alignment (GTK_MISC (label), xalign, yalign);
+	
 	if (tile_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_pixbuf);
+		nautilus_label_set_tile_pixbuf (NAUTILUS_LABEL (label), tile_pixbuf);
 	}
 	
 	return GTK_WIDGET (label);
+}
+
+/**
+ * nautilus_gtk_label_make_bold.
+ *
+ * Switches the font of label to a bold equivalent.
+ * @label: The label.
+ **/
+void
+nautilus_label_make_bold (NautilusLabel *label)
+{
+	NautilusScalableFont *bold_font;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	nautilus_gtk_label_make_bold (GTK_LABEL (label));
+
+	bold_font = nautilus_scalable_font_make_bold (label->detail->smooth_font);
+
+	if (bold_font != NULL) {
+		nautilus_label_set_smooth_font (label, bold_font);
+		gtk_object_unref (GTK_OBJECT (bold_font));
+	}
+	
+	label_line_geometries_recompute (label);
+
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_gtk_label_make_larger.
+ *
+ * Switches the font of label to a larger version of the font.
+ * @label: The label.
+ **/
+void
+nautilus_label_make_larger (NautilusLabel *label,
+			    guint num_steps)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	label->detail->smooth_font_size += num_steps;
+
+	nautilus_gtk_label_make_larger (GTK_LABEL (label), num_steps);
+
+	label_line_geometries_recompute (label);
+
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_gtk_label_make_smaller.
+ *
+ * Switches the font of label to a smaller version of the font.
+ * @label: The label.
+ **/
+void
+nautilus_label_make_smaller (NautilusLabel *label,
+			     guint num_steps)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	label->detail->smooth_font_size -= num_steps;
+	
+	nautilus_gtk_label_make_smaller (GTK_LABEL (label), num_steps);
+
+	label_line_geometries_recompute (label);
+	
+	gtk_widget_queue_resize (GTK_WIDGET (label));
 }

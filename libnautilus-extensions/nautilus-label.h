@@ -22,26 +22,12 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-/* NautilusLabel is a widget that is capable of displaying anti aliased
- * text composited over a complex background.  The background can be
- * installed as NautilusBackground on a NautilusLabel widget or any 
- * of its ancestors.  The best background will automatically be found
- * and used by the widget.
- * 
- * Fonts can be specified using a NautilusScalableFont object.
- *
- * Text can contain embedded new lines.
- */
-
 #ifndef NAUTILUS_LABEL_H
 #define NAUTILUS_LABEL_H
 
-#include <libnautilus-extensions/nautilus-buffered-widget.h>
+#include <gtk/gtklabel.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
-
-/* NautilusLabel is GtkWidget that draws a string using the high quality
- * anti aliased librsvg/freetype.
- */
+#include <libnautilus-extensions/nautilus-smooth-widget.h>
 
 BEGIN_GNOME_DECLS
 
@@ -58,73 +44,96 @@ typedef struct _NautilusLabelDetail    NautilusLabelDetail;
 struct _NautilusLabel
 {
 	/* Superclass */
-	NautilusBufferedWidget		buffered_widget;
+	GtkLabel gtk_label;
 
 	/* Private things */
-	NautilusLabelDetail		*detail;
+	NautilusLabelDetail *detail;
 };
 
 struct _NautilusLabelClass
 {
-	NautilusBufferedWidgetClass	parent_class;
+	GtkLabelClass parent_class;
+
+	NautilusSmoothWidgetDrawBackground draw_background;
+	NautilusSmoothWidgetSetIsSmooth set_is_smooth;
 };
 
-GtkType               nautilus_label_get_type                 (void);
-GtkWidget *           nautilus_label_new                      (const char           *text);
-GtkWidget *           nautilus_label_new_loaded               (const char           *text,
-							       const char           *family,
-							       const char           *weight,
-							       guint                 font_size,
-							       guint                 drop_shadow_offset,
-							       guint32               drop_shadow_color,
-							       guint32               text_color,
-							       gint                  xpadding,
-							       gint                  ypadding,
-							       guint                 vertical_offset,
-							       guint                 horizontal_offset,
-							       guint32               background_color,
-							       GdkPixbuf            *tile_pixbuf);
-void                  nautilus_label_set_text                 (NautilusLabel        *label,
-							       const char           *text);
-char*                 nautilus_label_get_text                 (NautilusLabel        *label);
-void                  nautilus_label_set_font                 (NautilusLabel        *label,
-							       NautilusScalableFont *font);
-void                  nautilus_label_set_font_from_components (NautilusLabel        *label,
-							       const char           *family,
-							       const char           *weight,
-							       const char           *slant,
-							       const char           *set_width);
-NautilusScalableFont *nautilus_label_get_font                 (const NautilusLabel  *label);
-void                  nautilus_label_set_font_size            (NautilusLabel        *label,
-							       guint                 font_size);
-guint                 nautilus_label_get_font_size            (const NautilusLabel  *label);
-void                  nautilus_label_set_text_color           (NautilusLabel        *label,
-							       guint32               color);
-guint32               nautilus_label_get_text_color           (const NautilusLabel  *label);
-void                  nautilus_label_set_text_alpha           (NautilusLabel        *label,
-							       guchar                alpha);
-guchar                nautilus_label_get_text_alpha           (const NautilusLabel  *label);
-void                  nautilus_label_set_text_justification   (NautilusLabel        *label,
-							       GtkJustification      justification);
-GtkJustification      nautilus_label_get_text_justification   (const NautilusLabel  *label);
-void                  nautilus_label_set_line_offset          (NautilusLabel        *label,
-							       guint                 alpha);
-guint                 nautilus_label_get_line_offset          (const NautilusLabel  *label);
-void                  nautilus_label_set_drop_shadow_offset   (NautilusLabel        *label,
-							       guint                 offset);
-guint                 nautilus_label_get_drop_shadow_offset   (const NautilusLabel  *label);
-void                  nautilus_label_set_drop_shadow_color    (NautilusLabel        *label,
-							       guint32               color);
-guint32               nautilus_label_get_drop_shadow_color    (const NautilusLabel  *label);
-void                  nautilus_label_set_line_wrap            (NautilusLabel        *label,
-							       gboolean              line_wrap);
-gboolean              nautilus_label_get_line_wrap            (const NautilusLabel  *label);
-void                  nautilus_label_set_line_wrap_width      (NautilusLabel        *label,
-							       guint                 line_wrap_width);
-guint                 nautilus_label_get_line_wrap_width      (const NautilusLabel  *label);
-void                  nautilus_label_set_line_wrap_separators (NautilusLabel        *label,
-							       const char           *separators);
-char *                nautilus_label_get_line_wrap_separators (const NautilusLabel  *label);
+GtkType                      nautilus_label_get_type                       (void);
+GtkWidget *                  nautilus_label_new                            (const char                   *text);
+void                         nautilus_label_set_is_smooth                  (NautilusLabel                *label,
+									    gboolean                      is_smooth);
+gboolean                     nautilus_label_get_is_smooth                  (const NautilusLabel          *label);
+void                         nautilus_label_set_smooth_font                (NautilusLabel                *label,
+									    NautilusScalableFont         *font);
+NautilusScalableFont *       nautilus_label_get_smooth_font                (const NautilusLabel          *label);
+void                         nautilus_label_set_smooth_font_size           (NautilusLabel                *label,
+									    guint                         font_size);
+guint                        nautilus_label_get_smooth_font_size           (const NautilusLabel          *label);
+void                         nautilus_label_set_text_opacity               (NautilusLabel                *label,
+									    int                           opacity);
+int                          nautilus_label_get_text_opacity               (const NautilusLabel          *label);
+void                         nautilus_label_set_background_mode            (NautilusLabel                *label,
+									    NautilusSmoothBackgroundMode  background_mode);
+NautilusSmoothBackgroundMode nautilus_label_get_background_mode            (const NautilusLabel          *label);
+void                         nautilus_label_set_solid_background_color     (NautilusLabel                *label,
+									    guint32                       solid_background_color);
+guint32                      nautilus_label_get_solid_background_color     (const NautilusLabel          *label);
+void                         nautilus_label_set_text_color                 (NautilusLabel                *label,
+									    guint32                       color);
+guint32                      nautilus_label_get_text_color                 (const NautilusLabel          *label);
+void                         nautilus_label_set_smooth_drop_shadow_offset  (NautilusLabel                *label,
+									    guint                         offset);
+guint                        nautilus_label_get_smooth_drop_shadow_offset  (const NautilusLabel          *label);
+void                         nautilus_label_set_smooth_drop_shadow_color   (NautilusLabel                *label,
+									    guint32                       color);
+guint32                      nautilus_label_get_smooth_drop_shadow_color   (const NautilusLabel          *label);
+void                         nautilus_label_set_smooth_line_wrap_width     (NautilusLabel                *label,
+									    guint                         line_wrap_width);
+guint                        nautilus_label_get_smooth_line_wrap_width     (const NautilusLabel          *label);
+void                         nautilus_label_set_text                       (NautilusLabel                *label,
+									    const char                   *text);
+char*                        nautilus_label_get_text                       (NautilusLabel                *label);
+void                         nautilus_label_set_justify                    (NautilusLabel                *label,
+									    GtkJustification              justification);
+GtkJustification             nautilus_label_get_text_justify               (const NautilusLabel          *label);
+void                         nautilus_label_set_wrap                       (NautilusLabel                *label,
+									    gboolean                      line_wrap);
+gboolean                     nautilus_label_get_wrap                       (const NautilusLabel          *label);
+GtkWidget *                  nautilus_label_new_solid                       (const char                   *text,
+									    guint                         drop_shadow_offset,
+									    guint32                       drop_shadow_color,
+									    guint32                       text_color,
+									    float                         xalign,
+									    float                         yalign,
+									    int                           xpadding,
+									    int                           ypadding,
+									    guint32                       background_color,
+									    GdkPixbuf                    *tile_pixbuf);
+void                         nautilus_label_make_bold                      (NautilusLabel                *label);
+void                         nautilus_label_make_larger                    (NautilusLabel                *label,
+									    guint                         num_sizes);
+void                         nautilus_label_make_smaller                   (NautilusLabel                *label,
+									    guint                         num_sizes);
+void                         nautilus_label_set_tile_pixbuf                (NautilusLabel                *label,
+									    GdkPixbuf                    *pixbuf);
+void                         nautilus_label_set_tile_width                 (NautilusLabel                *label,
+									    int                           tile_width);
+int                          nautilus_label_get_tile_width                 (const NautilusLabel          *label);
+void                         nautilus_label_set_tile_height                (NautilusLabel                *label,
+									    int                           tile_height);
+int                          nautilus_label_get_tile_height                (const NautilusLabel          *label);
+void                         nautilus_label_set_tile_pixbuf_from_file_name (NautilusLabel                *label,
+									    const char                   *tile_file_name);
+GdkPixbuf*                   nautilus_label_get_tile_pixbuf                (const NautilusLabel          *label);
+void                         nautilus_label_set_tile_opacity               (NautilusLabel                *label,
+									    int                           tile_opacity);
+int                          nautilus_label_get_tile_opacity               (const NautilusLabel          *label);
+void                         nautilus_label_set_tile_mode_vertical         (NautilusLabel                *label,
+									    NautilusSmoothTileMode        horizontal_tile_mode);
+NautilusSmoothTileMode       nautilus_label_get_tile_mode_vertical         (const NautilusLabel          *label);
+void                         nautilus_label_set_tile_mode_horizontal       (NautilusLabel                *label,
+									    NautilusSmoothTileMode        horizontal_tile_mode);
+NautilusSmoothTileMode       nautilus_label_get_tile_mode_horizontal       (const NautilusLabel          *label);
 
 END_GNOME_DECLS
 

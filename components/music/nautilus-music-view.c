@@ -46,16 +46,14 @@
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -259,10 +257,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 		
 	/* allocate a widget for the album title */	
 	music_view->details->album_title = nautilus_label_new ("");
-        /* FIXME bugzilla.eazel.com 4418: Hardcoded font and size! */
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (music_view->details->album_title),
-                                                 "helvetica", "medium", NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->album_title), 20);
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->album_title), 8);
 
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 0);	
 	
@@ -433,8 +428,7 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 5, &temp_str);
         if (temp_str != NULL && strlen (temp_str) > 0) {
 		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->total_track_time), temp_str);
-        	/* FIXME bugzilla.eazel.com 4418: Hard-coded font size. */
-		nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->total_track_time), 14);
+		nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->total_track_time), 2);
 	}
 }
 
@@ -1050,8 +1044,7 @@ reset_playtime (NautilusMusicView *music_view)
                                   GTK_ADJUSTMENT (music_view->details->playtime_adjustment));	
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);	
 	nautilus_label_set_text  (NAUTILUS_LABEL (music_view->details->playtime), "--:--");
-        /* FIXME bugzilla.eazel.com 4418: Hard-coded font size. */
-	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
 }
 
 /* status display timer task */
@@ -1100,8 +1093,7 @@ play_status_display (NautilusMusicView *music_view)
 				if (!music_view->details->slider_dragging) {
 		 			nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->playtime), play_time_str);	
 
-                                	/* FIXME bugzilla.eazel.com 4418: Hard-coded font size. */
-                                	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
+                                	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
                         	}                             
 			}
 		}		
@@ -1367,9 +1359,7 @@ slider_moved_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music
 		sprintf(temp_str, "%02d:%02d", minutes, seconds);
 
 		nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->playtime), temp_str);
-		
-                /* FIXME bugzilla.eazel.com 4418: Hardcoded font size. */
-		nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
+		nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
 	}
         return FALSE;
 }
@@ -1484,11 +1474,8 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_table_set_col_spacings (GTK_TABLE (table), 1);
 	
 	music_view->details->song_label = nautilus_label_new ("");
-        /* FIXME bugzilla.eazel.com 4418: Hardcoded font and size.  */
-        nautilus_label_set_font_from_components (NAUTILUS_LABEL (music_view->details->song_label),
-                                                 "helvetica", "medium", NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->song_label), 14);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->song_label), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
 	
 	/* we must make this a fixed size to avoid flashing when we change it */
 	gtk_widget_set_usize (music_view->details->song_label, 224, 40);
@@ -1509,7 +1496,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show (hbox2);
 	
 	music_view->details->playtime = nautilus_label_new ("--:--");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
 	/* fix horizontal size to avoid jitter */
 	gtk_widget_set_usize (music_view->details->playtime, 36, -1);
 	
@@ -1536,7 +1523,7 @@ add_play_controls (NautilusMusicView *music_view)
 	
 	/* total label */
 	music_view->details->total_track_time = nautilus_label_new ("--:--");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (music_view->details->total_track_time), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->total_track_time), GTK_JUSTIFY_LEFT);
 	
 	gtk_widget_show (music_view->details->total_track_time);
 	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->total_track_time, FALSE, FALSE, 0);
@@ -1622,8 +1609,6 @@ add_play_controls (NautilusMusicView *music_view)
 #if 0	
 	if (!music_view->details->sound_enabled) {
 		label = nautilus_label_new (_("Sound hardware missing or busy!"));
-                /* FIXME bugzilla.eazel.com 4418: Hard-coded font size. */
-		nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 		nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
 		gtk_widget_show (label);
 		gtk_table_attach (GTK_TABLE(table), label, 0, 5, 3, 4, 0, 0, 0, 0);

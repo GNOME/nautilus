@@ -133,7 +133,7 @@ label_enter_event (GtkWidget *event_box,
 	}
 	
 	if (data->prelight_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->widget),
+		nautilus_label_set_tile_pixbuf (NAUTILUS_LABEL (data->widget),
 							  data->prelight_pixbuf);
 	}
 
@@ -160,8 +160,8 @@ label_leave_event (GtkWidget *event_box,
 	}
 	
 	if (data->pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->widget),
-							  data->pixbuf);
+		nautilus_label_set_tile_pixbuf (NAUTILUS_LABEL (data->widget),
+						 data->pixbuf);
 	}
 
 	return TRUE;
@@ -173,7 +173,7 @@ image_enter_event (GtkWidget *event_box,
 		   gpointer client_data)
 {
 	PrelightData *data;
-
+	
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
 	g_return_val_if_fail (client_data != NULL, TRUE);
 	
@@ -343,11 +343,15 @@ footer_item_new (EazelServicesFooter *footer,
 	gtk_container_add (GTK_CONTAINER (event_box), hbox);
 
 	if (has_left_bumper) {
-		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_LEFT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_LEFT_BUMPER,
+						 EAZEL_SERVICES_NORMAL_FILL,
+						 EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
 		image_add_prelighting (NAUTILUS_IMAGE (left), event_box, EAZEL_SERVICES_NORMAL_LEFT_BUMPER, EAZEL_SERVICES_PRELIGHT_LEFT_BUMPER);
 	}
 	else {
-		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_FILL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_FILL,
+						 NULL,
+						 EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
 		image_add_prelighting (NAUTILUS_IMAGE (left), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 	}
 	
@@ -355,14 +359,16 @@ footer_item_new (EazelServicesFooter *footer,
 	gtk_widget_show (left);
 
 	label = eazel_services_label_new (text,
-					  EAZEL_SERVICES_FOOTER_FONT_SIZE,
-					  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
-					  EAZEL_SERVICES_FOOTER_X_PADDING,
-					  EAZEL_SERVICES_FOOTER_Y_PADDING,
-					  EAZEL_SERVICES_FOOTER_VERTICAL_OFFSET,
-					  EAZEL_SERVICES_FOOTER_HORIZONTAL_OFFSET,
-					  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-					  EAZEL_SERVICES_NORMAL_FILL);
+					  1,
+					  0.1,
+					  0.3,
+					  2,
+					  0,
+					  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
+					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+					  EAZEL_SERVICES_NORMAL_FILL,
+					  1,
+					  FALSE);
 	
 	gtk_widget_show (label);
 
@@ -377,11 +383,11 @@ footer_item_new (EazelServicesFooter *footer,
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	if (has_right_bumper) {
-		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
 		image_add_prelighting (NAUTILUS_IMAGE (right), event_box, EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_PRELIGHT_RIGHT_BUMPER);
 	}
 	else {
-		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_FILL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_FILL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
 		image_add_prelighting (NAUTILUS_IMAGE (right), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 	}
 
@@ -403,9 +409,9 @@ footer_remainder_new (void)
 
 	hbox = gtk_hbox_new (FALSE, 0);
 
-	left = eazel_services_image_new (EAZEL_SERVICES_REMAINDER_LEFT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-	fill = eazel_services_image_new (NULL, EAZEL_SERVICES_REMAINDER_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-	right = eazel_services_image_new (EAZEL_SERVICES_REMAINDER_RIGHT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+	left = eazel_services_image_new (EAZEL_SERVICES_REMAINDER_LEFT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
+	fill = eazel_services_image_new (NULL, EAZEL_SERVICES_REMAINDER_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
+	right = eazel_services_image_new (EAZEL_SERVICES_REMAINDER_RIGHT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
 
 	gtk_box_pack_start (GTK_BOX (hbox), left, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), fill, TRUE, TRUE, 0);
@@ -457,14 +463,17 @@ eazel_services_footer_update (EazelServicesFooter *footer,
 	date_string = eazel_services_get_current_date_string ();
 
 	footer->details->date = eazel_services_label_new (date_string,
-							  EAZEL_SERVICES_FOOTER_FONT_SIZE,
-							  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
-							  EAZEL_SERVICES_FOOTER_DATE_X_PADDING,
-							  EAZEL_SERVICES_FOOTER_DATE_Y_PADDING,
-							  EAZEL_SERVICES_FOOTER_DATE_VERTICAL_OFFSET,
-							  EAZEL_SERVICES_FOOTER_DATE_HORIZONTAL_OFFSET,
-							  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-							  EAZEL_SERVICES_NORMAL_FILL);
+							  1,
+							  0.1,
+							  0.3,
+							  5,
+							  0,
+							  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
+							  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+							  EAZEL_SERVICES_NORMAL_FILL,
+							  1,
+							  FALSE);
+	
 	g_free (date_string);
 	
 	gtk_widget_show (remainder);

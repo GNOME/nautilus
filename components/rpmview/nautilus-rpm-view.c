@@ -39,14 +39,12 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtklabel.h>
 #include <gnome.h>
@@ -120,7 +118,6 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	GtkWidget *temp_box, *temp_widget;
 	GtkWidget *icon_title_box, *title_box;
 	GtkTable *table;
-  	GdkFont *title_font;
   	char *default_icon_path;
   	
   	static gchar *list_headers[] = { N_("Package Contents") };
@@ -171,9 +168,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	/* allocate the name field */
 	rpm_view->details->package_title = gtk_label_new (_("Package Title"));
-	title_font = nautilus_font_factory_get_font_from_preferences (18);
-	nautilus_gtk_widget_set_font (rpm_view->details->package_title, title_font);
-	gdk_font_unref (title_font);
+        nautilus_gtk_label_make_larger (GTK_LABEL (rpm_view->details->package_title), 4);
 	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_title, FALSE, FALSE, 1);	
 	gtk_widget_show (rpm_view->details->package_title);
 		

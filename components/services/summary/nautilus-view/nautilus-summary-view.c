@@ -31,7 +31,6 @@
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-caption-table.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -41,7 +40,9 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-tabs.h>
+#include <libnautilus-extensions/nautilus-label.h>
 
+#include <gnome.h>
 #include <libgnomeui/gnome-stock.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -54,10 +55,8 @@
 #include <bonobo/bonobo-main.h>
 
 #include "nautilus-summary-view.h"
-#include "eazel-summary-shared.h"
-#include "shared-service-widgets.h"
-#include "shared-service-utilities.h"
 
+#include "eazel-summary-shared.h"
 #include "eazel-services-footer.h"
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
@@ -196,7 +195,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 		gtk_widget_show (temp_scrolled_window);
 		viewport = gtk_viewport_new (NULL, NULL);
-		widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+		widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 		gtk_widget_show (viewport);
 		gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
@@ -276,7 +275,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (temp_scrolled_window);
 	viewport = gtk_viewport_new (NULL, NULL);
-	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 
@@ -336,20 +335,25 @@ generate_summary_form (NautilusSummaryView	*view)
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (temp_scrolled_window);
 	viewport = gtk_viewport_new (NULL, NULL);
-	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
 			                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	
+	temp_label = eazel_services_label_new (_("\nCheck back here for new system management\nservices that will help make Linux easier to use."),
+					       0,
+					       0.5,
+					       0.5,
+					       0,
+					       0,
+					       DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					       DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					       NULL,
+					       2,
+					       TRUE);
 
-	temp_label = nautilus_label_new (_("\nCheck back here for new system management\nservices that will help make Linux easier to use."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 14);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (temp_label),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);	
 	gtk_widget_show (temp_label);
 	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_label, TRUE, TRUE, 0);
 	
@@ -394,7 +398,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (temp_scrolled_window);
 	
 	viewport = gtk_viewport_new (NULL, NULL);
-	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
@@ -483,7 +487,6 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 {
 	GtkWidget			*temp_vbox;
 	GtkWidget			*temp_hbox;
-	GdkFont				*font;
 	ServicesButtonCallbackData	*cbdata;
 
 	cbdata = g_new0 (ServicesButtonCallbackData, 1);
@@ -491,10 +494,13 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Generate first box with service icon */
 	view->details->services_icon_container = gtk_vbox_new (FALSE, 4);
 	gtk_widget_show (view->details->services_icon_container);
-	view->details->services_icon_widget = create_image_widget_from_uri (view->details->services_icon_name, 
-									    DEFAULT_SUMMARY_BACKGROUND_COLOR,
-									    MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
-	
+	view->details->services_icon_widget = 
+		eazel_services_image_new_from_uri (view->details->services_icon_name,
+						   NULL,
+						   DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+						   MAX_IMAGE_WIDTH,
+						   MAX_IMAGE_HEIGHT);
+
 	g_assert (view->details->services_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->services_icon_widget);
@@ -506,13 +512,18 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Header */
 	temp_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (temp_hbox);
-	view->details->services_description_header_widget = nautilus_label_new (view->details->services_description_header);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_header_widget), 12);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->services_description_header_widget),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);
+	view->details->services_description_header_widget = 
+		eazel_services_label_new (view->details->services_description_header,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  0,
+					  TRUE);
 	gtk_widget_show (view->details->services_description_header_widget);
 	g_free (view->details->services_description_header);
 	view->details->services_description_header = NULL;
@@ -522,10 +533,21 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Body */
 	temp_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (temp_hbox);
-	view->details->services_description_body_widget = nautilus_label_new (view->details->services_description_body);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_body_widget), 12);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->services_description_body_widget), TRUE);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->services_description_body_widget), GTK_JUSTIFY_LEFT);
+	view->details->services_description_body_widget = 
+		eazel_services_label_new (view->details->services_description_body,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  0,
+					  FALSE);
+
+	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->services_description_body_widget), TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->services_description_body_widget), GTK_JUSTIFY_LEFT);
 
 	gtk_widget_show (view->details->services_description_body_widget);
 	g_free (view->details->services_description_body);
@@ -545,9 +567,6 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->services_goto_button);
 	gtk_widget_set_usize (view->details->services_goto_button, 80, -1);
 	view->details->services_goto_label_widget = gtk_label_new (view->details->services_goto_label);
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (view->details->services_goto_label_widget, font);
-	gdk_font_unref (font);
 	gtk_widget_show (view->details->services_goto_label_widget);
 	g_free (view->details->services_goto_label);
 	view->details->services_goto_label = NULL;
@@ -574,9 +593,13 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Generate first box with icon */
 	view->details->news_icon_container = gtk_vbox_new (FALSE, 2);
 	gtk_widget_show (view->details->news_icon_container);
-	view->details->news_icon_widget = create_image_widget_from_uri (view->details->news_icon_name,
-									DEFAULT_SUMMARY_BACKGROUND_COLOR,
-									MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
+	view->details->news_icon_widget = 
+		eazel_services_image_new_from_uri (view->details->news_icon_name,
+						   NULL,
+						   DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+						   MAX_IMAGE_WIDTH,
+						   MAX_IMAGE_HEIGHT);
+	
 	g_assert (view->details->news_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->news_icon_container), view->details->news_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->news_icon_widget);
@@ -586,14 +609,20 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	item_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (item_box);
 	
-	view->details->news_date_widget = nautilus_label_new (view->details->news_date);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_date_widget), 12);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->news_date_widget),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->news_date_widget), GTK_JUSTIFY_LEFT);
+	view->details->news_date_widget = 
+		eazel_services_label_new (view->details->news_date,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  0,
+					  TRUE);
+
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->news_date_widget), GTK_JUSTIFY_LEFT);
 
 	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_date_widget, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), item_box, TRUE, TRUE, 2);
@@ -603,12 +632,23 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->news_date = NULL;
 	
 	/* Generate the actual content */
-	view->details->news_description_body_widget = nautilus_label_new (view->details->news_description_body);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->news_description_body_widget), GTK_JUSTIFY_LEFT);
+	view->details->news_description_body_widget = 
+		eazel_services_label_new (view->details->news_description_body,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  0,
+					  FALSE);
+
+	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->news_description_body_widget), GTK_JUSTIFY_LEFT);
 	/*
-	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (view->details->news_description_body_widget), -1);
+	nautilus_label_set_wrap_width (NAUTILUS_LABEL (view->details->news_description_body_widget), -1);
 	*/
 	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_description_body_widget, TRUE, TRUE, 2);
 	gtk_widget_show (view->details->news_description_body_widget);
@@ -623,7 +663,6 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
 	GtkWidget			*temp_vbox;
 	GtkWidget			*temp_hbox;
-	GdkFont				*font;
 	ServicesButtonCallbackData	*cbdata;
 	ServicesButtonCallbackData	*cbdata_2;
 
@@ -633,9 +672,12 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Generate first box with icon */
 	view->details->update_icon_container = gtk_vbox_new (FALSE, 4);
 	gtk_widget_show (view->details->update_icon_container);
-	view->details->update_icon_widget = create_image_widget_from_uri (view->details->update_icon_name,
-									  DEFAULT_SUMMARY_BACKGROUND_COLOR,
-									  MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
+	view->details->update_icon_widget = 
+		eazel_services_image_new_from_uri (view->details->update_icon_name,
+						   NULL,
+						   DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+						   MAX_IMAGE_WIDTH,
+						   MAX_IMAGE_HEIGHT);
 	g_assert (view->details->update_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->update_icon_container), view->details->update_icon_widget, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->updates_row), view->details->update_icon_container, FALSE, FALSE, 0);
@@ -648,13 +690,19 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Header */
 	temp_hbox = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (temp_hbox);
-	view->details->update_description_header_widget = nautilus_label_new (view->details->update_description_header);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_header_widget), 14);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->update_description_header_widget),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);
+	view->details->update_description_header_widget = 
+		eazel_services_label_new (view->details->update_description_header,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  2,
+					  TRUE);
+
 	gtk_widget_show (view->details->update_description_header_widget);
 	g_free (view->details->update_description_header);
 	view->details->update_description_header = NULL;
@@ -664,10 +712,21 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Body */
 	temp_hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (temp_hbox);
-	view->details->update_description_body_widget = nautilus_label_new (view->details->update_description_body);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_body_widget), 12);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->update_description_body_widget), TRUE);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->update_description_body_widget), GTK_JUSTIFY_LEFT);
+	view->details->update_description_body_widget = 
+		eazel_services_label_new (view->details->update_description_body,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  0,
+					  FALSE);
+	
+	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->update_description_body_widget), TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->update_description_body_widget), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (view->details->update_description_body_widget);
 
 	g_free (view->details->update_description_body);
@@ -678,13 +737,19 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Version */
 	temp_hbox = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (temp_hbox);
-	view->details->update_description_version_widget = nautilus_label_new (view->details->update_description_version);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_version_widget), 12);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->update_description_version_widget),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);
+	view->details->update_description_version_widget = 
+		eazel_services_label_new (view->details->update_description_version,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
+					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  0,
+					  TRUE);
+
 	gtk_widget_show (view->details->update_description_version_widget);
 	g_free (view->details->update_description_version);
 	view->details->update_description_version = NULL;
@@ -705,9 +770,6 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_set_usize (view->details->update_softcat_goto_button, 80, -1);
 	
 	view->details->update_softcat_goto_label_widget = gtk_label_new (view->details->update_softcat_goto_label);
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (view->details->update_softcat_goto_label_widget, font);
-	gdk_font_unref (font);
 	
 	gtk_widget_show (view->details->update_softcat_goto_label_widget);
 	g_free (view->details->update_softcat_goto_label);
@@ -726,9 +788,6 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->update_goto_button);
 	gtk_widget_set_usize (view->details->update_goto_button, 80, -1);
 	view->details->update_goto_label_widget = gtk_label_new (view->details->update_goto_label);
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (view->details->update_goto_label_widget, font);
-	gdk_font_unref (font);
 	gtk_widget_show (view->details->update_goto_label_widget);
 	g_free (view->details->update_goto_label);
 	view->details->update_goto_label = NULL;

@@ -32,6 +32,7 @@
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 #include <time.h>
 
@@ -54,13 +55,13 @@ eazel_services_pixbuf_new (const char *name)
 }
 
 GtkWidget *
-eazel_services_image_new (const char *icon_name, const char *tile_name, guint32 background_color)
+eazel_services_image_new (const char *icon_name,
+			  const char *tile_name,
+			  guint32 background_color)
 {
 	GtkWidget *image;
 	GdkPixbuf *pixbuf = NULL;
 	GdkPixbuf *tile_pixbuf = NULL;
-
-	g_return_val_if_fail (icon_name || tile_name, NULL);
 
 	if (icon_name) {
 		pixbuf = eazel_services_pixbuf_new (icon_name);
@@ -70,9 +71,7 @@ eazel_services_image_new (const char *icon_name, const char *tile_name, guint32 
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
 	}
 
-	g_return_val_if_fail (pixbuf || tile_pixbuf, NULL);
-
-	image = nautilus_image_new_loaded (pixbuf, 0, 0, 0, 0, background_color, tile_pixbuf);
+	image = nautilus_image_new_solid (pixbuf, 0.5, 0.5, 0, 0, background_color, tile_pixbuf);
 
 	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
 	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
@@ -81,36 +80,88 @@ eazel_services_image_new (const char *icon_name, const char *tile_name, guint32 
 }
 
 GtkWidget *
+eazel_services_image_new_from_uri (const char *uri,
+				   const char *tile_name,
+				   guint32 background_color,
+				   int max_width,
+				   int max_height)
+{
+	GtkWidget *image = NULL;
+	GdkPixbuf *pixbuf;
+	GdkPixbuf *scaled_pixbuf;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	/* as an optimization, it can be a local file.  If it doesn't start with http://,
+	   just pass it on to create_image_widget */
+	if (!nautilus_istr_has_prefix (uri, "http://")) {
+		return eazel_services_image_new (uri, tile_name, background_color);
+	}
+
+	/* load the image - synchronously, at least at first */
+	pixbuf = nautilus_gdk_pixbuf_load (uri);
+	
+	/* pin the image to the specified dimensions if necessary */
+	if (pixbuf && max_width > 0 && max_height > 0) {
+		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, max_width, max_height);
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = scaled_pixbuf;
+	}
+		
+	/* create the image widget then release the pixbuf*/
+	image = eazel_services_image_new (NULL, tile_name, background_color);
+
+	if (pixbuf != NULL) {
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
+	}
+
+	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
+
+	return image;
+}
+
+GtkWidget *
 eazel_services_label_new (const char *text,
-			  guint font_size,
-			  const char *weight,
+			  guint drop_shadow_offset,
+			  float xalign,
+			  float yalign,
 			  gint xpadding,
 			  gint ypadding,
-			  guint vertical_offset,
-			  guint horizontal_offset,
+			  guint32 text_color,
 			  guint32 background_color,
-			  const char *tile_name)
+			  const char *tile_name,
+			  guint num_larger_sizes,
+			  gboolean bold)
 {
  	GtkWidget *label;
-	GdkPixbuf *text_tile;
+	GdkPixbuf *tile_pixbuf = NULL;
 
-	text_tile = eazel_services_pixbuf_new (tile_name);
+	if (tile_name != NULL) {
+		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
+	}
 	
-	label = nautilus_label_new_loaded (text,
-					   EAZEL_SERVICES_FONT_FAMILY,
-					   weight,
-					   font_size,
-					   1, /* drop_shadow_offset */
-					   EAZEL_SERVICES_DROP_SHADOW_COLOR_RGBA,
-					   EAZEL_SERVICES_TEXT_COLOR_RGBA,
-					   xpadding,
-					   ypadding,
-					   vertical_offset,
-					   horizontal_offset,
-					   EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-					   text_tile);
+	label = nautilus_label_new_solid (text,
+					  drop_shadow_offset,
+					  EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB,
+					  text_color,
+					  xalign,
+					  yalign,
+					  xpadding,
+					  ypadding,
+					  background_color,
+					  tile_pixbuf);
+	
+	if (num_larger_sizes < 0) {
+		nautilus_label_make_smaller (NAUTILUS_LABEL (label), ABS (num_larger_sizes));
+	} else if (num_larger_sizes > 0) {
+		nautilus_label_make_larger (NAUTILUS_LABEL (label), num_larger_sizes);
+	}
 
-	nautilus_gdk_pixbuf_unref_if_not_null (text_tile);
+	if (bold) {
+		nautilus_label_make_bold (NAUTILUS_LABEL (label));
+	}
+	
+	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
 
 	return label;
 }

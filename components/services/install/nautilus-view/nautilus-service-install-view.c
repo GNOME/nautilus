@@ -25,9 +25,8 @@
 #include <config.h>
 
 #include "nautilus-service-install-view.h"
-#include "shared-service-widgets.h"
-#include "shared-service-utilities.h"
 #include "eazel-services-header.h"
+#include "eazel-services-extensions.h"
 #include <libeazelinstall.h>
 #include "libtrilobite/libtrilobite.h"
 
@@ -41,8 +40,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
@@ -120,7 +118,7 @@ horizontal_line_new (int height)
 	gtk_widget_set_usize (line, -2, height);
 
 	background = nautilus_get_widget_background (line);
-	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	return line;
 }
@@ -163,8 +161,18 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	}
 
 	im = g_new0 (InstallMessage, 1);
-	im->label = nautilus_label_new (" ");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (im->label), GTK_JUSTIFY_LEFT);
+	im->label = eazel_services_label_new (NULL,
+					      0,
+					      0.5,
+					      0.5,
+					      0,
+					      0,
+					      EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+					      EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+					      NULL,
+					      0,
+					      FALSE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (im->label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (im->label);
 	im->progress_bar = gtk_progress_bar_new ();
 	gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (im->progress_bar), GTK_PROGRESS_CONTINUOUS);
@@ -172,10 +180,20 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	gtk_progress_bar_update (GTK_PROGRESS_BAR (im->progress_bar), 0.0);
 	gtk_widget_set_usize (im->progress_bar, -2, PROGRESS_BAR_HEIGHT);
 	gtk_widget_show (im->progress_bar);
-	im->progress_label = nautilus_label_new (" ");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (im->progress_label), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (im->progress_label), "helvetica", "bold", NULL, NULL);
-	/* nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_version), 12); */
+
+	im->progress_label = eazel_services_label_new (NULL,
+						       0,
+						       0.5,
+						       0.5,
+						       0,
+						       0,
+						       EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+						       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+						       NULL,
+						       0,
+						       TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (im->progress_label), GTK_JUSTIFY_LEFT);
+
 	gtk_widget_show (im->progress_label);
 
 	bogus_label = gtk_label_new ("");
@@ -249,24 +267,37 @@ generate_install_form (NautilusServiceInstallView	*view)
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 0);
 	gtk_widget_show (temp_box);
-	view->details->package_name = nautilus_label_new (" ");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_name), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (view->details->package_name), 0.0, 0.0);
+	view->details->package_name = eazel_services_label_new (NULL,
+								0,
+								0.0,
+								0.0,
+								0,
+								0,
+								EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+								EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+								NULL,
+								4,
+								TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_name), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_name, FALSE, FALSE, 15);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->package_name), "helvetica", "bold",
-						 NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_name), 18);
 	gtk_widget_show (view->details->package_name);
 
 	/* Package Version */
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->package_version = nautilus_label_new (" ");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->package_version), "helvetica", "bold",
-						 NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_version), 12);
+	view->details->package_version = eazel_services_label_new (NULL,
+								   0,
+								   0.5,
+								   0.5,
+								   0,
+								   0,
+								   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+								   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+								   NULL,
+								   0,
+								   TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_version, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_version);
 
@@ -285,9 +316,18 @@ generate_install_form (NautilusServiceInstallView	*view)
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->overall_feedback_text = nautilus_label_new (" ");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->overall_feedback_text), 11);
+	view->details->overall_feedback_text = eazel_services_label_new (NULL,
+									 0,
+									 0.5,
+									 0.5,
+									 0,
+									 0,
+									 EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+									 EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+									 NULL,
+									 0,
+									 TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, FALSE, FALSE, 30);
 
 	add_padding_to_box (view->details->form, 0, 10);
@@ -296,10 +336,21 @@ generate_install_form (NautilusServiceInstallView	*view)
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->package_details = nautilus_label_new (" ");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_details), 12);
+
+	view->details->package_details = eazel_services_label_new (NULL,
+								   0,
+								   0.5,
+								   0.5,
+								   0,
+								   0,
+								   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+								   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+								   NULL,
+								   0,
+								   TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
+
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_details, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_details);
 
@@ -318,7 +369,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 		gtk_widget_show (viewport);
 		gtk_container_add (GTK_CONTAINER (viewport), view->details->message_box);
 		background = nautilus_get_widget_background (viewport);
-		nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+		nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 	}
 	gtk_widget_show (view->details->pane);
 
@@ -375,7 +426,7 @@ nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
 			    view);
 
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	view->details->core_package = FALSE;
 	view->details->deps = g_hash_table_new (g_str_hash, g_str_equal);
@@ -608,11 +659,19 @@ current_progress_bar_complete (NautilusServiceInstallView *view, const char *tex
 	height = right->allocation.height;
 	gtk_container_remove (GTK_CONTAINER (view->details->message_box), right);
 	view->details->current_progress_bar = NULL;
-
-	right = nautilus_label_new (text);
+	right = eazel_services_label_new (text,
+					  0,
+					  0.5,
+					  0.5,
+					  0,
+					  0,
+					  EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+					  NULL,
+					  0,
+					  FALSE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (right), GTK_JUSTIFY_CENTER);
 	view->details->message_right = g_list_append (view->details->message_right, right);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (right), 12);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (right), GTK_JUSTIFY_CENTER);
 	gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, STATUS_ROWS-1, STATUS_ROWS,
 			  GTK_EXPAND, 0, 12, 4);
 	gtk_widget_set_usize (right, width, height);
@@ -910,9 +969,9 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 			gtk_widget_queue_draw (view->details->package_name);
 			g_free (out);
 			if (strchr (pack->description, '\n') != NULL) {
-				nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
+				nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
 			} else {
-				nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
+				nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
 			}
 			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
 			//abacab

@@ -93,28 +93,30 @@ eazel_services_header_title_new (const char *left_text)
 	header = EAZEL_SERVICES_HEADER (gtk_widget_new (eazel_services_header_get_type (), NULL));
 
 	header->details->left_text = eazel_services_label_new (left_text,
-							       EAZEL_SERVICES_HEADER_TITLE_FONT_SIZE,
-							       EAZEL_SERVICES_HEADER_TITLE_FONT_WEIGHT,
-							       EAZEL_SERVICES_HEADER_TITLE_X_PADDING,
-							       EAZEL_SERVICES_HEADER_TITLE_Y_PADDING,
-							       EAZEL_SERVICES_HEADER_TITLE_VERTICAL_OFFSET,
-							       EAZEL_SERVICES_HEADER_TITLE_HORIZONTAL_OFFSET,
-							       EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-							       EAZEL_SERVICES_HEADER_TITLE_FILL_ICON);
+							       1,
+							       0.1,
+							       0.3,
+							       10,
+							       0,
+							       EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
+							       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+							       EAZEL_SERVICES_HEADER_TITLE_FILL_ICON,
+							       2,
+							       TRUE);
 
 	gtk_box_pack_start (GTK_BOX (header), header->details->left_text, FALSE, FALSE, 0);
 	gtk_widget_show (header->details->left_text);
 	
 	fill = eazel_services_image_new (NULL,
 					 EAZEL_SERVICES_HEADER_TITLE_FILL_ICON,
-					 EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+					 EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
 
 	gtk_box_pack_start (GTK_BOX (header), fill, TRUE, TRUE, 0);
 	gtk_widget_show (fill);
 
 	logo = eazel_services_image_new (EAZEL_SERVICES_HEADER_TITLE_LOGO_ICON,
 					 NULL,
-					 EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+					 EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
 	gtk_box_pack_end (GTK_BOX (header), logo, FALSE, FALSE, 0);
 	gtk_widget_show (logo);
 
@@ -132,34 +134,48 @@ eazel_services_header_middle_new (const char *left_text,
 
 	header->details->left_text = 
 		eazel_services_label_new (left_text,
-					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE,
-					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT,
-					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_X_PADDING,
-					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_Y_PADDING,
-					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_VERTICAL_OFFSET,
-					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_HORIZONTAL_OFFSET,
-					  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON);
+					  0,
+					  0.1,
+					  0.1,
+					  12,
+					  10,
+					  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
+					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON,
+					  0,
+					  FALSE);
+
+	nautilus_label_set_tile_height (NAUTILUS_LABEL (header->details->left_text),
+					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
+
 	gtk_box_pack_start (GTK_BOX (header), header->details->left_text, FALSE, FALSE, 0);
 	gtk_widget_show (header->details->left_text);
 	
 	fill = eazel_services_image_new (NULL,
 					 EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON,
-					 EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+					 EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
+	nautilus_image_set_tile_height (NAUTILUS_IMAGE (fill),
+					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
 
 	gtk_box_pack_start (GTK_BOX (header), fill, TRUE, TRUE, 0);
 	gtk_widget_show (fill);
 
 	header->details->right_text = 
 		eazel_services_label_new (right_text,
-					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE,
-					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT,
-					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_X_PADDING,
-					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_Y_PADDING,
-					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_VERTICAL_OFFSET,
-					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_HORIZONTAL_OFFSET,
-					  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON);
+					  0,
+					  0.1,
+					  0.1,
+					  76,
+					  10,
+					  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
+					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON,
+					  0,
+					  FALSE);
+
+	nautilus_label_set_tile_height (NAUTILUS_LABEL (header->details->right_text),
+					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
+
 	gtk_box_pack_start (GTK_BOX (header), header->details->right_text, FALSE, FALSE, 0);
 	gtk_widget_show (header->details->right_text);
 

@@ -2344,12 +2344,10 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	 * a questionable improvement since at that tiny font size, anti aliased fonts
 	 * probably give a better preview of the content than non anti-aliased fonts.
 	 */
-	smooth_font = NAUTILUS_SCALABLE_FONT
-		(nautilus_scalable_font_new
-		 (EMBEDDED_TEXT_FONT_FAMILY,
-		  EMBEDDED_TEXT_FONT_WEIGHT,
-		  EMBEDDED_TEXT_FONT_SLANT,
-		  EMBEDDED_TEXT_FONT_SET_WIDTH));
+	smooth_font = nautilus_scalable_font_new (EMBEDDED_TEXT_FONT_FAMILY,
+						  EMBEDDED_TEXT_FONT_WEIGHT,
+						  EMBEDDED_TEXT_FONT_SLANT,
+						  EMBEDDED_TEXT_FONT_SET_WIDTH);
 	
 	nautilus_scalable_font_draw_text_lines
 		(smooth_font,
@@ -2364,7 +2362,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		 EMBEDDED_TEXT_LINE_OFFSET,
 		 EMBEDDED_TEXT_EMPTY_LINE_HEIGHT,
 		 NAUTILUS_RGB_COLOR_BLACK,
-		 NAUTILUS_OPACITY_NONE);
+		 NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	gtk_object_unref (GTK_OBJECT (smooth_font));
 

@@ -31,10 +31,11 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
-#define EAZEL_SERVICES_BACKGROUND_COLOR_STRING		"white"
-#define EAZEL_SERVICES_BACKGROUND_COLOR_RGBA		NAUTILUS_RGB_COLOR_WHITE
-#define EAZEL_SERVICES_DROP_SHADOW_COLOR_RGBA		NAUTILUS_RGB_COLOR_BLACK
-#define EAZEL_SERVICES_TEXT_COLOR_RGBA			NAUTILUS_RGB_COLOR_WHITE
+#define EAZEL_SERVICES_BACKGROUND_COLOR_SPEC		"white"
+#define EAZEL_SERVICES_BACKGROUND_COLOR_RGB		NAUTILUS_RGB_COLOR_WHITE
+#define EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB		NAUTILUS_RGB_COLOR_BLACK
+#define EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB		NAUTILUS_RGB_COLOR_WHITE
+#define EAZEL_SERVICES_BODY_TEXT_COLOR_RGB		NAUTILUS_RGB_COLOR_BLACK
 
 #define EAZEL_SERVICES_HEADER_TITLE_FILL_ICON		"eazel-logo-left-side-repeat.png"
 #define EAZEL_SERVICES_HEADER_TITLE_LOGO_ICON		"eazel-logo-right-side-logo.png"
@@ -53,57 +54,10 @@
 
 #define EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON		"eazel-services-header-middle-fill.png"
 
-#define EAZEL_SERVICES_FONT_FAMILY			"helvetica"
-
-#define EAZEL_SERVICES_FOOTER_FONT_SIZE			11
-#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"bold"
-
-#define EAZEL_SERVICES_HEADER_TITLE_FONT_SIZE		18
-#define EAZEL_SERVICES_HEADER_TITLE_FONT_WEIGHT		"bold"
-
-#define EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE		12
-#define EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT	"bold"
-
 /*
- * X_PADDING: Amount of extra horizontal pad to give each item.  The x padding
- * is divided evenly on the left/right margins of the item.
- *
- * Y_PADDING: Amount of extra vertical pad to give each item.  The y padding
- * is divided evenly on the top/bottom margins of the item.
- *
- * VERTICAL_OFFSET: Positive or negative amount to offset the item vertically.
- *
- * HORIZONTAL_OFFSET: Positive or negative amount to offset the item horizontally.
+ * The xalign, yalign, xpadding, and ypadding attribures work
+ * exactly as they do with GtkMisc.
  */
-#define EAZEL_SERVICES_FOOTER_X_PADDING			2
-#define EAZEL_SERVICES_FOOTER_Y_PADDING			0
-#define EAZEL_SERVICES_FOOTER_VERTICAL_OFFSET		2
-#define EAZEL_SERVICES_FOOTER_HORIZONTAL_OFFSET		0
-
-#define EAZEL_SERVICES_FOOTER_DATE_X_PADDING		5
-#define EAZEL_SERVICES_FOOTER_DATE_Y_PADDING		0
-#define EAZEL_SERVICES_FOOTER_DATE_VERTICAL_OFFSET	2
-#define EAZEL_SERVICES_FOOTER_DATE_HORIZONTAL_OFFSET	-5
-
-#define EAZEL_SERVICES_HEADER_X_PADDING			10
-#define EAZEL_SERVICES_HEADER_Y_PADDING			0
-#define EAZEL_SERVICES_HEADER_VERTICAL_OFFSET		4
-#define EAZEL_SERVICES_HEADER_HORIZONTAL_OFFSET		0
-
-#define EAZEL_SERVICES_HEADER_TITLE_X_PADDING		10
-#define EAZEL_SERVICES_HEADER_TITLE_Y_PADDING		0
-#define EAZEL_SERVICES_HEADER_TITLE_VERTICAL_OFFSET	4
-#define EAZEL_SERVICES_HEADER_TITLE_HORIZONTAL_OFFSET	0
-
-#define EAZEL_SERVICES_HEADER_MIDDLE_LEFT_X_PADDING		12
-#define EAZEL_SERVICES_HEADER_MIDDLE_LEFT_Y_PADDING		0
-#define EAZEL_SERVICES_HEADER_MIDDLE_LEFT_VERTICAL_OFFSET	8
-#define EAZEL_SERVICES_HEADER_MIDDLE_LEFT_HORIZONTAL_OFFSET	0
-
-#define EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_X_PADDING		76
-#define EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_Y_PADDING		0
-#define EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_VERTICAL_OFFSET	8
-#define EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_HORIZONTAL_OFFSET	-46
 
 BEGIN_GNOME_DECLS
 
@@ -111,15 +65,22 @@ GdkPixbuf *eazel_services_pixbuf_new              (const char *name);
 GtkWidget *eazel_services_image_new               (const char *icon_name,
 						   const char *tile_name,
 						   guint32     background_color);
+GtkWidget *eazel_services_image_new_from_uri      (const char *uri,
+						   const char *tile_name,
+						   guint32     background_color,
+						   int         max_width,
+						   int         max_height);
 GtkWidget *eazel_services_label_new               (const char *text,
-						   guint       font_size,
-						   const char *weight,
+						   guint       drop_shadow_offset,
+						   float       xalign,
+						   float       yalign,
 						   gint        xpadding,
 						   gint        ypadding,
-						   guint       vertical_offset,
-						   guint       horizontal_offset,
+						   guint32     text_color,
 						   guint32     background_color,
-						   const char *tile_name);
+						   const char *tile_name,
+						   guint       num_larger_sizes,
+						   gboolean    bold);
 char *     eazel_services_get_current_date_string (void);
 
 END_GNOME_DECLS

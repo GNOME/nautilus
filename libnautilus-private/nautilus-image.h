@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-image.h - A widget to display a alpha composited pixbufs.
+/* nautilus-image.h - A widget to smoothly display images.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -22,22 +22,14 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-/* NautilusImage is a widget that is capable of displaying alpha composited
- * pixbufs over complex backgrounds.  The background can be installed as
- * NautilusBackground on a NautilusImage widget or any of its ancestors.
- *
- * The background can also be that provided by the GtkStyle attatched to the 
- * widget.
- *
- * The best background will automatically be found and used by the widget.
- * 
- */
-
 #ifndef NAUTILUS_IMAGE_H
 #define NAUTILUS_IMAGE_H
 
-#include <libnautilus-extensions/nautilus-buffered-widget.h>
-#include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <gtk/gtkmisc.h>
+#include <libgnome/gnome-defs.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libart_lgpl/art_rect.h>
+#include <libnautilus-extensions/nautilus-smooth-widget.h>
 
 BEGIN_GNOME_DECLS
 
@@ -54,41 +46,66 @@ typedef struct _NautilusImageDetail    NautilusImageDetail;
 struct _NautilusImage
 {
 	/* Superclass */
-	NautilusBufferedWidget		buffered_widget;
+	GtkMisc misc;
 
 	/* Private things */
-	NautilusImageDetail		*detail;
+	NautilusImageDetail *detail;
 };
 
 struct _NautilusImageClass
 {
-	NautilusBufferedWidgetClass	parent_class;
+	GtkMiscClass parent_class;
+
+	NautilusSmoothWidgetDrawBackground draw_background;
+	NautilusSmoothWidgetSetIsSmooth set_is_smooth;
 };
 
-typedef enum 
-{
-	NAUTILUS_IMAGE_FULL_ALPHA,
-	NAUTILUS_IMAGE_THRESHOLD_ALPHA
-} NautilusImageAlphaMode;
-
-GtkType                nautilus_image_get_type          (void);
-GtkWidget *            nautilus_image_new               (void);
-GtkWidget *	       nautilus_image_new_from_file	(const char		*filename);
-GtkWidget *            nautilus_image_new_loaded        (GdkPixbuf              *pixbuf,
-							 gint                    xpadding,
-							 gint                    ypadding,
-							 guint                   vertical_offset,
-							 guint                   horizontal_offset,
-							 guint32                 background_color,
-							 GdkPixbuf              *tile_pixbuf);
-void                   nautilus_image_set_pixbuf        (NautilusImage          *image,
-							 GdkPixbuf              *pixbuf);
-GdkPixbuf*             nautilus_image_get_pixbuf        (const NautilusImage    *image);
-void                   nautilus_image_set_overall_alpha (NautilusImage          *image,
-							 guchar                  pixbuf_alpha);
-void                   nautilus_image_set_alpha_mode    (NautilusImage          *image,
-							 NautilusImageAlphaMode  alpha_mode);
-NautilusImageAlphaMode nautilus_image_get_alpha_mode    (const NautilusImage    *image);
+GtkType                      nautilus_image_get_type                       (void);
+GtkWidget *                  nautilus_image_new                            (const char                   *file_name);
+GtkWidget *                  nautilus_image_new_solid                      (GdkPixbuf                    *pixbuf,
+									    float                         xalign,
+									    float                         yalign,
+									    int                           xpadding,
+									    int                           ypadding,
+									    guint32                       background_color,
+									    GdkPixbuf                    *tile_pixbuf);
+void                         nautilus_image_set_is_smooth                  (NautilusImage                *image,
+									    gboolean                      is_smooth);
+gboolean                     nautilus_image_get_is_smooth                  (const NautilusImage          *image);
+void                         nautilus_image_set_tile_pixbuf                (NautilusImage                *image,
+									    GdkPixbuf                    *pixbuf);
+void                         nautilus_image_set_tile_width                 (NautilusImage                *image,
+									    int                           tile_width);
+int                          nautilus_image_get_tile_width                 (const NautilusImage          *image);
+void                         nautilus_image_set_tile_height                (NautilusImage                *image,
+									    int                           tile_height);
+int                          nautilus_image_get_tile_height                (const NautilusImage          *image);
+void                         nautilus_image_set_tile_pixbuf_from_file_name (NautilusImage                *image,
+									    const char                   *tile_file_name);
+GdkPixbuf*                   nautilus_image_get_tile_pixbuf                (const NautilusImage          *image);
+void                         nautilus_image_set_tile_opacity               (NautilusImage                *image,
+									    int                           tile_opacity);
+int                          nautilus_image_get_tile_opacity               (const NautilusImage          *image);
+void                         nautilus_image_set_tile_mode_vertical         (NautilusImage                *image,
+									    NautilusSmoothTileMode        horizontal_tile_mode);
+NautilusSmoothTileMode       nautilus_image_get_tile_mode_vertical         (const NautilusImage          *image);
+void                         nautilus_image_set_tile_mode_horizontal       (NautilusImage                *image,
+									    NautilusSmoothTileMode        horizontal_tile_mode);
+NautilusSmoothTileMode       nautilus_image_get_tile_mode_horizontal       (const NautilusImage          *image);
+void                         nautilus_image_set_pixbuf                     (NautilusImage                *image,
+									    GdkPixbuf                    *pixbuf);
+void                         nautilus_image_set_pixbuf_from_file_name      (NautilusImage                *image,
+									    const char                   *file_name);
+GdkPixbuf*                   nautilus_image_get_pixbuf                     (const NautilusImage          *image);
+void                         nautilus_image_set_pixbuf_opacity             (NautilusImage                *image,
+									    int                           pixbuf_opacity);
+int                          nautilus_image_get_pixbuf_opacity             (const NautilusImage          *image);
+void                         nautilus_image_set_background_mode            (NautilusImage                *image,
+									    NautilusSmoothBackgroundMode  background_mode);
+NautilusSmoothBackgroundMode nautilus_image_get_background_mode            (const NautilusImage          *image);
+void                         nautilus_image_set_solid_background_color     (NautilusImage                *image,
+									    guint32                       solid_background_color);
+guint32                      nautilus_image_get_solid_background_color     (const NautilusImage          *image);
 
 END_GNOME_DECLS
 

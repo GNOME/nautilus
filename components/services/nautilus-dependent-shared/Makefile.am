@@ -23,16 +23,12 @@ noinst_HEADERS =\
 	eazel-services-extensions.h \
 	eazel-services-footer.h \
 	eazel-services-header.h \
-	shared-service-utilities.h \
-	shared-service-widgets.h \
 	$(NULL)
 
 libnautilusdepshared_a_SOURCES =\
 	eazel-services-extensions.c \
 	eazel-services-footer.c \
 	eazel-services-header.c \
-	shared-service-utilities.c \
-	shared-service-widgets.c \
 	$(NULL)
 
 test_footer_header_LDADD = \

@@ -29,6 +29,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-image.h>
 
 #include <libgnomeui/gnome-stock.h>
 #include <stdio.h>
@@ -41,8 +42,8 @@
 #include <libtrilobite/libammonite.h>
 
 #include "nautilus-summary-view.h"
+#include "eazel-services-extensions.h"
 #include "eazel-summary-shared.h"
-#include "shared-service-widgets.h"
 #include "eazel-services-extensions.h"
 #include "nautilus-summary-callbacks.h"
 #include "nautilus-summary-dialogs.h"
@@ -87,15 +88,15 @@ generate_login_dialog (NautilusSummaryView	*view)
 {
 	GnomeDialog	*dialog;
 	GtkWidget	*hbox;
-	GtkWidget	*pixmap;
+	GtkWidget	*image;
 	GtkWidget	*message;
 	GtkWidget	*caption_hbox;
 	char		*message_text;
-	char		*pixmap_name;
+	char		*image_name;
 	char		*button_text;
 
 	dialog = NULL;
-	pixmap = NULL;
+	image = NULL;
 
 	if (view->details->attempt_number == 0) {
 		button_text = g_strdup (_("Register Now"));
@@ -129,27 +130,29 @@ generate_login_dialog (NautilusSummaryView	*view)
 
 	switch (view->details->current_attempt) {
 		case initial:
-			pixmap_name = "big_services_icon.png";
+			image_name = "big_services_icon.png";
 			message_text = _("Please log in to Eazel services");
 			break;
 		case retry:
-			pixmap_name = "serv_dialog_alert.png";
+			image_name = "serv_dialog_alert.png";
 			message_text = _("Your user name or password were not correct.  Please try again.");
 			break;
 		default:
 			g_assert_not_reached();
-			pixmap_name = "big_services_icon.png";
+			image_name = "big_services_icon.png";
 			message_text = _("Please log in to Eazel services");
 			break;
 	}
 
-	pixmap = create_image_widget (pixmap_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	image = eazel_services_image_new (image_name, NULL, 0);
+	nautilus_image_set_background_mode (NAUTILUS_IMAGE (image), NAUTILUS_SMOOTH_BACKGROUND_GTK);
+
 	hbox = gtk_hbox_new (FALSE, 5);
 	gtk_widget_show (hbox);
 
-	if (pixmap) {
-		gtk_box_pack_start (GTK_BOX (hbox), pixmap, FALSE, FALSE, 0);
-		gtk_widget_show (pixmap);
+	if (image) {
+		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+		gtk_widget_show (image);
 	}
 
 	gtk_box_set_spacing (GTK_BOX (dialog->vbox), 4);

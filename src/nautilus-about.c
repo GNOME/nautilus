@@ -242,12 +242,12 @@ draw_aa_string (NautilusScalableFont *font,
 						  NULL,
 						  font_size, font_size,
 						  text, strlen (text),
-						  shadow_color, NAUTILUS_OPACITY_NONE);	
+						  shadow_color, NAUTILUS_OPACITY_FULLY_OPAQUE);	
 	}
 	
 	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL,
 					  font_size, font_size,
-					  text, strlen (text), color, NAUTILUS_OPACITY_NONE);
+					  text, strlen (text), color, NAUTILUS_OPACITY_FULLY_OPAQUE);
 }
 
 /* randomize_authors randomizes the order array so different names get displayed in different positions each time */
@@ -334,8 +334,8 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	int index;
 
 	/* FIXME bugzilla.eazel.com 5056: Hard-coded font here. */
-	plain_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
-	bold_font  = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
+	plain_font = nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL);
+	bold_font  = nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL);
 
 	pixbuf = about->details->background_pixbuf;
 	total_height = gdk_pixbuf_get_height (pixbuf);
@@ -409,7 +409,7 @@ nautilus_about_update_authors (NautilusAbout *about)
 	randomize_authors (about);
 	
 	/* redraw the authors */
-	plain_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
+	plain_font = nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL);
 	draw_author_list (about, about->details->background_pixbuf, plain_font);
 	gtk_object_unref (GTK_OBJECT(plain_font));
 	

@@ -256,26 +256,12 @@ update_properties_window_icon (NautilusImage *image)
 static GtkWidget *
 create_image_widget_for_file (NautilusFile *file)
 {
-	gboolean	smooth_graphics;
- 	GtkWidget	*image;
-	GdkPixbuf	*pixbuf;
+ 	GtkWidget *image;
+	GdkPixbuf *pixbuf;
 	
 	pixbuf = get_pixbuf_for_properties_window (file);
 	
-	image = nautilus_image_new ();
-
-	/* Set the alpha mode of the image according to the SMOOTH_GRAPHICS preference.
-	 * Note that we dont keep track of changes in this preference to update the 
-	 * alpha more of the image.  There really is no need for this since the properties 
-	 * dialog always gets recreated.
-	 */
-	smooth_graphics = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, TRUE);
-
-	if (smooth_graphics) {
-		nautilus_image_set_alpha_mode (NAUTILUS_IMAGE (image), NAUTILUS_IMAGE_FULL_ALPHA);
-	} else {
-		nautilus_image_set_alpha_mode (NAUTILUS_IMAGE (image), NAUTILUS_IMAGE_THRESHOLD_ALPHA);
-	}
+	image = nautilus_image_new (NULL);
 
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
 

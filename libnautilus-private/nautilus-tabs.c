@@ -178,7 +178,10 @@ nautilus_tabs_initialize (NautilusTabs *tabs)
 	tabs->details = g_new0 (NautilusTabsDetails, 1);
 	tabs->details->selected_tab = -1;
 		
-	tabs->details->tab_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
+	/* FIXME bugzilla.eazel.com 5456: 
+	 * Hard coded font family and size.
+	 */
+	tabs->details->tab_font = nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL);
 	tabs->details->font_size = 14;
 	
 	gray_tab_directory_path = nautilus_theme_get_image_path ("gray_tab_pieces");
@@ -504,7 +507,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 					  NULL,
 					  tabs->details->font_size, tabs->details->font_size,
 					  label, strlen (label),
-					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_NONE);
+					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_FULLY_OPAQUE);
 	text_x -= 1;
 	text_y -= 1;
 
@@ -524,7 +527,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 					  tabs->details->font_size, tabs->details->font_size,
 					  label, strlen (label),
 					  text_color,
-					  NAUTILUS_OPACITY_NONE);
+					  NAUTILUS_OPACITY_FULLY_OPAQUE);
 }
 
 /* draw or layout all of the tabs.

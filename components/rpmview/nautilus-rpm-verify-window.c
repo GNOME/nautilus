@@ -43,7 +43,6 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 struct NautilusRPMVerifyWindowDetails {
@@ -136,16 +135,15 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	/* allocate the package title label */
         label = nautilus_label_new ("");
 	gtk_widget_show (label);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 14);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
+	nautilus_label_make_larger (NAUTILUS_LABEL (label), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start (GTK_BOX (window_contents), label, FALSE, FALSE, 8);
 	rpm_verify_window->details->package_name = label;
 	
 	/* allocate the message label */
         label = nautilus_label_new ("");
 	gtk_widget_show (label);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
+	nautilus_label_set_justify (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start (GTK_BOX (window_contents), label, FALSE, FALSE, 8);
 	rpm_verify_window->details->file_message = label;
 	

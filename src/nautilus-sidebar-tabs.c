@@ -220,9 +220,13 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 	if (sidebar_tabs->details->tab_font) {
 		gtk_object_unref (GTK_OBJECT (sidebar_tabs->details->tab_font));
 	}
+
+	/* FIXME bugzilla.eazel.com 5456: 
+	 * Hard coded font family and size.
+	 */
 	
 	/* use the default font.  In the future, it should fetch the font name and properties from the theme */
-	sidebar_tabs->details->tab_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
+	sidebar_tabs->details->tab_font = nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL);
 	sidebar_tabs->details->font_size = 12;
 }
 
@@ -536,7 +540,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  prelight_flag ? NAUTILUS_RGB_COLOR_WHITE : NAUTILUS_RGB_COLOR_BLACK,
-					  NAUTILUS_OPACITY_NONE);
+					  NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
 					  0, 0,
@@ -544,7 +548,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  prelight_flag ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE,
-					  NAUTILUS_OPACITY_NONE);
+					  NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	/* blit the pixbuf to the drawable, then release it */
 
@@ -693,7 +697,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  NAUTILUS_RGB_COLOR_BLACK,
-					  NAUTILUS_OPACITY_NONE);
+					  NAUTILUS_OPACITY_FULLY_OPAQUE);
 	text_x -= 1;
 	text_y -= 1;
 
@@ -703,7 +707,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  NAUTILUS_RGB_COLOR_WHITE,
-					  NAUTILUS_OPACITY_NONE);
+					  NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	/* set up the bounds rectangle for later hit-testing */
 	if (tab_rect) {

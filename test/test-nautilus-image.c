@@ -15,6 +15,7 @@
 #define TEXT_COLOR_RGBA			NAUTILUS_RGB_COLOR_WHITE
 
 #define LOGO_LEFT_SIDE_REPEAT_ICON	"eazel-logo-left-side-repeat.png"
+//#define LOGO_LEFT_SIDE_REPEAT_ICON	"temp-home.png"
 #define LOGO_RIGHT_SIDE_ICON		"eazel-logo-right-side-logo.png"
 
 #define NORMAL_FILL			"summary-service-normal-fill.png"
@@ -67,7 +68,6 @@ pixbuf_new_from_name (const char *name)
 
 static GtkWidget *
 label_new (const char *text,
-	   guint font_size,
 	   guint drop_shadow_offset,
 	   guint vertical_offset,
 	   guint horizontal_offset,
@@ -83,15 +83,14 @@ label_new (const char *text,
 	g_return_val_if_fail (text != NULL, NULL);
 	
  	label = nautilus_label_new (text);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), font_size);
-	nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (label), drop_shadow_offset);
-	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (label), NAUTILUS_BACKGROUND_SOLID);
-	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (label), background_color);
-	nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (label), drop_shadow_color);
+	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), drop_shadow_offset);
+	nautilus_label_set_background_mode (NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+	nautilus_label_set_solid_background_color (NAUTILUS_LABEL (label), background_color);
+	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label), drop_shadow_color);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), background_color);
 
-	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (label), vertical_offset);
-	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (label), horizontal_offset);
+	//FIXME//nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (label), vertical_offset);
+	//FIXME//nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (label), horizontal_offset);
 
 	gtk_misc_set_padding (GTK_MISC (label), xpadding, ypadding);
 
@@ -101,7 +100,7 @@ label_new (const char *text,
 		tile_pixbuf = pixbuf_new_from_name (tile_name);
 
 		if (tile_pixbuf != NULL) {
-			nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_pixbuf);
+			nautilus_label_set_tile_pixbuf (NAUTILUS_LABEL (label), tile_pixbuf);
 		}
 
 		nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
@@ -132,7 +131,7 @@ label_enter_event (GtkWidget *event_box,
 	data = (PrelightLabelData *) client_data;
 
 	g_return_val_if_fail (data->prelight_tile_name, TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (data->buffered_widget), TRUE);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (data->buffered_widget), TRUE);
 
 	//g_print ("%s(%p)\n", __FUNCTION__, data);
 
@@ -141,8 +140,8 @@ label_enter_event (GtkWidget *event_box,
 	}
 
 	if (data->prelight_tile_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->buffered_widget),
-							  data->prelight_tile_pixbuf);
+		nautilus_label_set_tile_pixbuf (NAUTILUS_LABEL (data->buffered_widget),
+						 data->prelight_tile_pixbuf);
 	}
 
 	return TRUE;
@@ -161,15 +160,15 @@ label_leave_event (GtkWidget *event_box,
 	data = (PrelightLabelData *) client_data;
 
 	g_return_val_if_fail (data->tile_name, TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (data->buffered_widget), TRUE);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (data->buffered_widget), TRUE);
 
 	if (data->tile_pixbuf == NULL) {
 		data->tile_pixbuf = pixbuf_new_from_name (data->tile_name);
 	}
 	
 	if (data->tile_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->buffered_widget),
-							  data->tile_pixbuf);
+		nautilus_label_set_tile_pixbuf (NAUTILUS_LABEL (data->buffered_widget),
+						 data->tile_pixbuf);
 	}
 
 	return TRUE;
@@ -200,17 +199,17 @@ image_new (GdkPixbuf *pixbuf, GdkPixbuf *tile_pixbuf, guint32 background_color)
 
 	g_return_val_if_fail (pixbuf || tile_pixbuf, NULL);
 
-	image = nautilus_image_new ();
+	image = nautilus_image_new (NULL);
 
-	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (image), NAUTILUS_BACKGROUND_SOLID);
-	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (image), background_color);
+	nautilus_image_set_background_mode (NAUTILUS_IMAGE (image), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+	nautilus_image_set_solid_background_color (NAUTILUS_IMAGE (image), background_color);
 
 	if (pixbuf != NULL) {
 		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
 	}
 	
 	if (tile_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (image), tile_pixbuf);
+		nautilus_image_set_tile_pixbuf (NAUTILUS_IMAGE (image), tile_pixbuf);
 	}
 
 	return image;
@@ -244,21 +243,21 @@ image_new_from_name (const char *icon_name, const char *tile_name, guint32 backg
 }
 
 static void
-buffered_widget_add_prelighting (GtkWidget *buffered_widget,
-				 GtkWidget *event_box,
-				 const char *tile_name,
-				 const char *prelight_tile_name)
+label_add_prelighting (GtkWidget *label,
+		       GtkWidget *event_box,
+		       const char *tile_name,
+		       const char *prelight_tile_name)
 {
 	PrelightLabelData *data;
 
-	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 	g_return_if_fail (GTK_IS_EVENT_BOX (event_box));
 	g_return_if_fail (tile_name != NULL);
 	g_return_if_fail (prelight_tile_name != NULL);
-
+	
 	data = g_new0 (PrelightLabelData, 1);
 	
-	data->buffered_widget = buffered_widget;
+	data->buffered_widget = label;
 	data->tile_name = g_strdup (tile_name);
 	data->prelight_tile_name = g_strdup (prelight_tile_name);
 	
@@ -276,7 +275,6 @@ header_new (const char *text)
  	GtkWidget *logo;
 	
  	label = label_new (text,
-			   18,
 			   1, 
 			   4,
 			   0,
@@ -286,7 +284,7 @@ header_new (const char *text)
 			   DROP_SHADOW_COLOR_RGBA,
 			   TEXT_COLOR_RGBA,
 			   LOGO_LEFT_SIDE_REPEAT_ICON);
-
+	nautilus_label_make_larger (NAUTILUS_LABEL (label), 6);
 	middle = image_new_from_name (NULL, LOGO_LEFT_SIDE_REPEAT_ICON, BACKGROUND_COLOR_RGBA);
 
 	logo = image_new_from_name (LOGO_RIGHT_SIDE_ICON, NULL, BACKGROUND_COLOR_RGBA);
@@ -317,12 +315,11 @@ footer_item_new (const char *text, gboolean has_left_bumper, gboolean has_right_
 	if (has_left_bumper) {
 		GtkWidget *left;
 		left = image_new_from_name (NORMAL_LEFT_BUMPER, NORMAL_FILL, BACKGROUND_COLOR_RGBA);
-		buffered_widget_add_prelighting (left, event_box, NORMAL_FILL, PRELIGHT_FILL);
+		//FIXME//buffered_widget_add_prelighting (left, event_box, NORMAL_FILL, PRELIGHT_FILL);
 		gtk_box_pack_start (GTK_BOX (hbox), left, FALSE, FALSE, 0);
 	}
 
  	label = label_new (text,
-			   13,
 			   1,
 			   2,
 			   0,
@@ -333,13 +330,13 @@ footer_item_new (const char *text, gboolean has_left_bumper, gboolean has_right_
 			   TEXT_COLOR_RGBA,
 			   NORMAL_FILL);
 
-	buffered_widget_add_prelighting (label, event_box, NORMAL_FILL, PRELIGHT_FILL);
+	label_add_prelighting (label, event_box, NORMAL_FILL, PRELIGHT_FILL);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	if (has_right_bumper) {
 		GtkWidget *right;
 		right = image_new_from_name (NORMAL_RIGHT_BUMPER, NORMAL_FILL, BACKGROUND_COLOR_RGBA);
-		buffered_widget_add_prelighting (right, event_box, NORMAL_FILL, PRELIGHT_FILL);
+		//FIXME//buffered_widget_add_prelighting (right, event_box, NORMAL_FILL, PRELIGHT_FILL);
 		gtk_box_pack_start (GTK_BOX (hbox), right, FALSE, FALSE, 0);
 	}
 
@@ -392,7 +389,6 @@ footer_new (const char *items[], guint num_items)
 	gtk_box_pack_start (GTK_BOX (hbox), remainder, TRUE, TRUE, 0);
 
  	date = label_new ("Friday, October 13th",
-			  13,
 			  1,
 			  2,
 			  0,

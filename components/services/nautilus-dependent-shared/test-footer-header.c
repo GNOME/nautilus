@@ -63,7 +63,7 @@ main (int argc, char* argv[])
 	gdk_rgb_init ();
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	nautilus_gtk_widget_set_background_color (window, EAZEL_SERVICES_BACKGROUND_COLOR_STRING);
+	nautilus_gtk_widget_set_background_color (window, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (delete_event), NULL);
 	gtk_window_set_title (GTK_WINDOW (window), "Nautilus Wrapped Label Test");
 	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);

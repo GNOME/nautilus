@@ -72,8 +72,7 @@ update_progress_display (gpointer callback_data)
 
         progress_label = NAUTILUS_LABEL (progress_change_data->progress_label);
         progress_string = get_text_for_progress_label ();
-        nautilus_label_set_text (progress_label,
-                                 progress_string);
+        nautilus_label_set_text (progress_label, progress_string);
         g_free (progress_string);
         gtk_progress_set_value (progress_change_data->progress_bar,
                                 medusa_index_progress_get_percentage_complete ());
@@ -110,30 +109,6 @@ update_file_index_callback (GtkWidget *widget, gpointer data)
 	}
 }
 
-static void
-make_label_helvetica_bold (NautilusLabel *label)
-{
-        NautilusScalableFont *scalable_font;
-
-        scalable_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
-        g_return_if_fail (scalable_font != NULL);
-        nautilus_label_set_font (label,
-                                 scalable_font);
-        gtk_object_unref (GTK_OBJECT (scalable_font));
-       
-}
-
-static void
-make_label_helvetica_medium (NautilusLabel *label)
-{
-        NautilusScalableFont *scalable_font;
-
-        scalable_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
-        g_return_if_fail (scalable_font != NULL);
-        nautilus_label_set_font (NAUTILUS_LABEL (label),
-                                 scalable_font);
-}
-
 static void 
 show_reindex_request_information (GnomeDialog *gnome_dialog)
 {
@@ -149,8 +124,8 @@ show_reindex_request_information (GnomeDialog *gnome_dialog)
         g_free (time_str);
         
         label = nautilus_label_new (label_str);
-        nautilus_label_set_text_justification (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-        make_label_helvetica_bold (NAUTILUS_LABEL (label));
+        nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
+        nautilus_label_make_bold (NAUTILUS_LABEL (label));
         gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
                             FALSE, FALSE, 0);
         
@@ -182,8 +157,8 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
         guint timeout_id;
                 
         indexing_notification_label = nautilus_label_new (_("Your files are currently being indexed:"));
-        make_label_helvetica_bold (NAUTILUS_LABEL (indexing_notification_label));
-        nautilus_label_set_text_justification (NAUTILUS_LABEL (indexing_notification_label), GTK_JUSTIFY_LEFT);
+        nautilus_label_make_bold (NAUTILUS_LABEL (indexing_notification_label));
+        nautilus_label_set_justify (NAUTILUS_LABEL (indexing_notification_label), GTK_JUSTIFY_LEFT);
         gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), indexing_notification_label,
                             FALSE, FALSE, 0);
         
@@ -200,8 +175,7 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
         progress_string = get_text_for_progress_label ();
         progress_label = nautilus_label_new (progress_string);
         g_free (progress_string);
-        make_label_helvetica_medium (NAUTILUS_LABEL (progress_label));
-        nautilus_label_set_text_justification (NAUTILUS_LABEL (progress_label), GTK_JUSTIFY_LEFT);
+        nautilus_label_set_justify (NAUTILUS_LABEL (progress_label), GTK_JUSTIFY_LEFT);
         gtk_box_pack_start (GTK_BOX (embedded_vbox), progress_label, FALSE, FALSE, 0);
 
         progress_bar_hbox = gtk_hbox_new (FALSE, 0);
@@ -248,19 +222,18 @@ show_indexing_info_dialog (void)
 	gnome_dialog_set_close (gnome_dialog, TRUE /*click_closes*/);
 	gnome_dialog_close_hides (gnome_dialog, FALSE /*just_hide*/);
 
-	gtk_signal_connect (GTK_OBJECT (indexing_info_dialog), "destroy",
-			    gtk_widget_destroyed,
-			    &indexing_info_dialog);
+	gtk_signal_connect (GTK_OBJECT (gnome_dialog), "destroy",
+			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+			    &gnome_dialog);
 
 	label = nautilus_label_new (_("Once a day your files and text content are indexed so "
                                       "your searches are fast. If you need to update your index "
                                       "now, click on the \"Update Now\" button for the "
                                       "appropriate index."));
-        nautilus_label_set_line_wrap (NAUTILUS_LABEL (label), TRUE);
 
-        make_label_helvetica_medium (NAUTILUS_LABEL (label));
+        nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
 
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label, TRUE, TRUE, 0);
 
         if (medusa_index_is_currently_running ()) { 

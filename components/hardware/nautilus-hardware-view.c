@@ -38,7 +38,6 @@
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -50,10 +49,6 @@
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
-/* FIXME bugzilla.eazel.com 5408: Hardwired font size here. */
-#define HARDWARE_FONT_SIZE 14
-#define HARDWARE_TITLE_FONT_SIZE 24
 
 struct _NautilusHardwareViewDetails {
         NautilusView *nautilus_view;
@@ -363,15 +358,15 @@ setup_form_title (NautilusHardwareView *view,
 	if (image_name != NULL) {
  		file_name = gnome_pixmap_file (image_name);
 		if (file_name != NULL) {
-			temp_widget = nautilus_image_new_from_file (file_name);
-			gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);		
+			temp_widget = nautilus_image_new (file_name);
+			gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
 			gtk_widget_show (temp_widget);
 			g_free (file_name);
 		}
 	}
 	
  	temp_widget = nautilus_label_new (title_text);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_TITLE_FONT_SIZE);
+	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 10);
 
 	gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);			 	
 	gtk_widget_show (temp_widget);
@@ -424,13 +419,13 @@ setup_overview_form (NautilusHardwareView *view)
 		gtk_widget_show (temp_box);
 
 		file_name = nautilus_pixmap_file ("cpu.png");
-                temp_widget = nautilus_image_new_from_file (file_name);
-		gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 0);		
+                temp_widget = nautilus_image_new (file_name);
+		gtk_box_pack_start (GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
 		gtk_widget_show (temp_widget);
 		g_free (file_name);
 		
 		temp_widget = nautilus_label_new (temp_text);
-		nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
+		nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
 		g_free(temp_text);
 		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
 		gtk_widget_show (temp_widget);
@@ -444,16 +439,16 @@ setup_overview_form (NautilusHardwareView *view)
 	gtk_widget_show (temp_box);
 
  	file_name = nautilus_pixmap_file ("memory_chip.gif");
-  	temp_widget = nautilus_image_new_from_file (file_name);
+  	temp_widget = nautilus_image_new (file_name);
 	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
   	gtk_widget_show(temp_widget);
   	g_free (file_name);
 	
 	temp_text = get_RAM_description ();
 	temp_widget = nautilus_label_new (temp_text);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
+	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
 	g_free (temp_text);
-	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 0 );			
+	gtk_box_pack_start (GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
  	gtk_widget_show (temp_widget);
 	
         /* Set up ide devices : by Shane Butler <shane_b@bigfoot.com> */
@@ -482,7 +477,7 @@ setup_overview_form (NautilusHardwareView *view)
                                         file_name = nautilus_pixmap_file("i-harddisk.png");
                                 }
                                 
-				pixmap_widget = nautilus_image_new_from_file(file_name);
+				pixmap_widget = nautilus_image_new (file_name);
 				gtk_box_pack_start (GTK_BOX(temp_box), pixmap_widget, 0, 0, 0);
 				gtk_widget_show(pixmap_widget);
 				g_free(file_name);
@@ -490,8 +485,8 @@ setup_overview_form (NautilusHardwareView *view)
                                 
 				temp_text = get_IDE_description (device);
 				temp_widget = nautilus_label_new (temp_text);
-				nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
-				nautilus_label_set_text_justification (NAUTILUS_LABEL (temp_widget), GTK_JUSTIFY_CENTER);
+				nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
+				nautilus_label_set_justify (NAUTILUS_LABEL (temp_widget), GTK_JUSTIFY_CENTER);
 
 				g_free(temp_text);
                                 gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);
@@ -524,8 +519,8 @@ setup_CPU_form(NautilusHardwareView *view)
 	
 	message = "This is a placeholder for the CPU page.";
 	temp_widget = nautilus_label_new (message);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
- 	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
+	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
+ 	nautilus_label_set_wrap(NAUTILUS_LABEL(temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
@@ -549,8 +544,8 @@ setup_RAM_form(NautilusHardwareView *view)
 	
 	message = "This is a placeholder for the RAM page.";
 	temp_widget = nautilus_label_new (message);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
- 	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
+	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
+ 	nautilus_label_set_wrap(NAUTILUS_LABEL(temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
@@ -574,8 +569,8 @@ setup_IDE_form(NautilusHardwareView *view)
         
         message = "This is a placeholder for the IDE page.";
         temp_widget = nautilus_label_new (message);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
-        gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
+	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
+        nautilus_label_set_wrap(NAUTILUS_LABEL(temp_widget), TRUE);
         
         gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);            
         gtk_widget_show (temp_widget);

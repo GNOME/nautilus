@@ -131,3 +131,35 @@ nautilus_art_ipoint_assign (NautilusArtIPoint *point,
 	point->x = x;
 	point->y = y;
 }
+
+/**
+ * nautilus_art_irect_get_width:
+ * 
+ * @rectangle: An ArtIRect.
+ *
+ * Returns: The width of the rectangle.
+ * 
+ */
+int
+nautilus_art_irect_get_width (const ArtIRect *rectangle)
+{
+	g_return_val_if_fail (rectangle != NULL, 0);
+	
+	return rectangle->x1 - rectangle->x0;
+}
+
+/**
+ * nautilus_art_irect_get_height:
+ * 
+ * @rectangle: An ArtIRect.
+ *
+ * Returns: The height of the rectangle.
+ * 
+ */
+int
+nautilus_art_irect_get_height (const ArtIRect *rectangle)
+{
+	g_return_val_if_fail (rectangle != NULL, 0);
+	
+	return rectangle->y1 - rectangle->y0;
+}

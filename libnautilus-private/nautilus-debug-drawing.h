@@ -28,9 +28,10 @@
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 
 /* Draw a rectangle and cross on the given window */
-void nautilus_debug_draw_rectangle_and_cross (GdkWindow       *window,
+void nautilus_debug_draw_rectangle_and_cross (GdkDrawable     *drawable,
 					      const ArtIRect  *rectangle,
-					      guint32          color);
+					      guint32          color,
+					      gboolean draw_cross);
 
 /* Show the given pixbuf in eog */
 void nautilus_debug_show_pixbuf_in_eog       (const GdkPixbuf *pixbuf);

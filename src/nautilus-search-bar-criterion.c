@@ -46,7 +46,6 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>

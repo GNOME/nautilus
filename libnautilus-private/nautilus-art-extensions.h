@@ -60,6 +60,8 @@ void     nautilus_art_irect_assign         (ArtIRect          *rect,
 void     nautilus_art_ipoint_assign        (NautilusArtIPoint *point,
 					    int                x,
 					    int                y);
+int      nautilus_art_irect_get_width      (const ArtIRect    *rect);
+int      nautilus_art_irect_get_height     (const ArtIRect    *rect);
 
 END_GNOME_DECLS
 
