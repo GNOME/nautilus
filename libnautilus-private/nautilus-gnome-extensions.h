@@ -67,6 +67,7 @@ void       nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem
 
 /* fill a canvas buffer with a gradient background */
 void	   nautilus_gnome_canvas_fill_with_gradient		(GnomeCanvasBuf *buffer,
+								int entire_width, int entire_height,
 								guint32 start_rgb,
 				       				guint32 end_rgb,
 				       				gboolean horizontal);

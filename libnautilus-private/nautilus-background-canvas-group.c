@@ -129,12 +129,17 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 static void
 nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 {
+	gint entire_width, entire_height;
+	double left, top, bottom, right;
 	NautilusBackground *background;	
 			
 	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
-	if (background != NULL)
-		nautilus_background_draw_aa(background, buffer);
-	else
+	if (background != NULL) {
+		gnome_canvas_get_scroll_region (GNOME_CANVAS(item->canvas), &left, &top, &right, &bottom);
+		entire_width = right - left;
+		entire_height = bottom - top;
+		nautilus_background_draw_aa(background, buffer, entire_width, entire_height);
+	} else
 		gnome_canvas_buf_ensure_buf (buffer);
 	
 	buffer->is_bg = FALSE;

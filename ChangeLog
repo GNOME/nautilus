@@ -1,3 +1,19 @@
+2000-06-07  Andy Hertzfeld  <andy@eazel.com>
+
+	more work on gradient backgrounds in anti-aliased mode; vertical ones are
+	working now but horizontals still aren't
+	
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_render):
+	get the width and height of entire area from get_scroll_area
+	* libnautilus-extensions/nautilus-background.c,h:
+	(nautilus_background_draw_aa):
+	added parameters for entire area to use for color determination
+	* libnautilus-extensions/nautilus-gnome-extensions.c,h:
+	(nautilus_gnome_canvas_fill_with_gradient):
+	added entire width and height parameters, and use them to
+	compute the color
+	
 Wed Jun  7 01:20:22 2000  Raph Levien  <raph@acm.org>
 
 	* librsvg/art_render.h: Workaround to compile with older

@@ -247,7 +247,9 @@ draw_pixbuf_tiled_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 
 /* draw the background on the anti-aliased canvas */
 void nautilus_background_draw_aa (NautilusBackground *background,
-				  GnomeCanvasBuf *buffer)
+				  GnomeCanvasBuf *buffer,
+				  int entire_width,
+				  int entire_height)
 {
 	char *start_color_spec, *end_color_spec;
 	guint32 start_rgb, end_rgb;
@@ -268,7 +270,7 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 			g_free (end_color_spec);
 		
 			if (start_rgb != end_rgb) {
-				nautilus_gnome_canvas_fill_with_gradient(buffer, start_rgb, end_rgb,
+				nautilus_gnome_canvas_fill_with_gradient(buffer, entire_width, entire_height, start_rgb, end_rgb,
 								  horizontal_gradient);
 			} else
 				gnome_canvas_buf_ensure_buf(buffer);

@@ -82,7 +82,9 @@ void                nautilus_background_draw                  (NautilusBackgroun
 
 /* Explicitly fills a rectangle with a background on the anti-aliased canvas. */
 void                nautilus_background_draw_aa               (NautilusBackground     *background,
-							       GnomeCanvasBuf	      *buffer);
+							       GnomeCanvasBuf	      *buffer,
+							       int		      entire_width,
+							       int		      entire_height);
 							       
 /* Handles a dragged color being dropped on a widget to change the background color. */
 void		    nautilus_background_receive_dropped_color (NautilusBackground     *background,
