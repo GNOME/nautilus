@@ -1,3 +1,32 @@
+2000-05-30  Mike Fleming  mfleming@eazel.com
+
+	* components/services/time/nautilus-view/.cvsignore:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/time/nautilus-view/main.c:
+	(sample_object_destroyed), (sample_make_object), (main):
+	*
+	components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	(set_status_text), (sync_button_pressed), (url_button_pressed),
+	(timediff_button_pressed), (update_time_display),
+	(trilobite_eazel_time_view_initialize_class),
+	(trilobite_eazel_time_view_initialize),
+	(trilobite_eazel_time_view_destroy),
+	(trilobite_eazel_time_view_get_nautilus_view),
+	(trilobite_eazel_time_view_load_uri),
+	(sample_notify_location_change_callback), (bonobo_sample_callback),
+	(sample_merge_bonobo_items_callback):
+	*
+	components/services/time/nautilus-view/trilobite-eazel-time-view.h:
+	*
+	components/services/time/nautilus-view/trilobite-eazel-time-view.oa
+	finfo:
+	*
+	components/services/time/service/trilobite-eazel-time-service.oafin
+	fo:
+
+	Added embarassingly weak simple Nautilus View for the eazal-time 
+	service
+
 2000-05-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/Makefile.am:
