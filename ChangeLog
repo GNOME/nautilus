@@ -1,3 +1,10 @@
+2000-12-15  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c
+	(nautilus_rpm_view_install_package_callback,
+	nautilus_rpm_view_uninstall_package_callback): Remove check for
+	Red Hat to match Robey's earlier changes and fix the build.
+
 2000-12-15  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/Makefile:
