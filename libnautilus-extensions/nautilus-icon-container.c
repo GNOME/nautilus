@@ -97,6 +97,8 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
+#define STANDARD_ICON_GRID_WIDTH 145
+
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	30
 #define DESKTOP_PAD_VERTICAL 	10
@@ -590,18 +592,13 @@ static int
 get_icon_space_width (NautilusIconContainer *container, const ArtDRect *bounds)
 {
 	double world_width;
-	int power_of_two_width;
 
 	world_width = ICON_PAD_LEFT + (bounds->x1 - bounds->x0) + ICON_PAD_RIGHT;
-	if (container->details->tighter_layout)
+
+	if (container->details->tighter_layout || world_width > STANDARD_ICON_GRID_WIDTH)
 		return world_width;
 	
-	for (power_of_two_width = ICON_BASE_WIDTH;
-	     power_of_two_width < world_width;
-	     power_of_two_width += power_of_two_width) {
-		g_return_val_if_fail (power_of_two_width >= ICON_BASE_WIDTH, ICON_BASE_WIDTH);
-	}
-	return power_of_two_width;
+	return STANDARD_ICON_GRID_WIDTH;
 }
 
 static void

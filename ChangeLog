@@ -1,3 +1,11 @@
+2000-10-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(get_icon_space_width):
+	changed how layout works in the non-tighter-layout case by
+	removing the powers of two padding and instead going with
+	a fixed minimum size.
+	
 2000-10-03  Darin Adler  <darin@eazel.com>
 
 	* components/music/nautilus-music-view.c:
