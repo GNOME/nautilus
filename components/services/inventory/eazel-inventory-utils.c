@@ -40,6 +40,7 @@
 #include <gconf/gconf-engine.h>
 
 #include <libtrilobite/trilobite-md5-tools.h>
+#include <libtrilobite/trilobite-core-distribution.h>
 
 #define notDEBUG_pepper		1
 
@@ -93,7 +94,7 @@ get_package_list (EazelPackageSystem *package_system)
 
 /* add package data from the package database to the passed in xml document */
 static void
-add_package_info (xmlDocPtr	configuration_metafile)
+add_package_info (xmlDocPtr	configuration_metafile, xmlNodePtr	node)
 {
 
 	char			package_count_str[32];
@@ -117,7 +118,7 @@ add_package_info (xmlDocPtr	configuration_metafile)
 	packages = get_package_list (package_system);
 
     	/* add the PACKAGES node */
-	packages_node = xmlNewChild (configuration_metafile->root, NULL, "PACKAGES", NULL);
+	packages_node = xmlNewChild (node, NULL, "PACKAGES", NULL);
     
 	/* iterate through all of the installed packages */
 
@@ -281,6 +282,8 @@ add_hardware_info (xmlDocPtr	configuration_metafile)
 	add_info (cpu_node, temp_string, "STEPPING", "stepping");
 	add_info (cpu_node, temp_string, "SPEED", "cpu MHz");
 	add_info (cpu_node, temp_string, "CACHE", "cache size");
+	add_info (cpu_node, temp_string, "BOGOMIPS", "bogomips");
+	add_info (cpu_node, temp_string, "FLAGS", "flags");
 	g_free (temp_string);	
 
 	/* now handle IO port info */
@@ -288,6 +291,34 @@ add_hardware_info (xmlDocPtr	configuration_metafile)
 	temp_string = read_proc_info ("ioports");
 	add_io_info (this_node, temp_string);
 	g_free (temp_string);	
+}
+
+/* add hardware info from the /proc directory to the passed in xml document */
+static void
+add_software_info (xmlDocPtr	configuration_metafile)
+{
+
+    	xmlNodePtr		distribution_node;
+	xmlNodePtr		software_node;
+	DistributionInfo	distro;
+	char			*distro_string;
+	
+	/* add the SOFTWARE node */
+	software_node = xmlNewChild (configuration_metafile->root, NULL, "SOFTWARE", NULL);
+
+	/* add the distribution string */
+	distro = trilobite_get_distribution ();
+	distro_string = trilobite_get_distribution_name (distro, TRUE, FALSE);
+	distribution_node = xmlNewChild (software_node, NULL, "DISTRIBUTION", NULL);
+	if (!distro_string) {
+		distro_string = g_strdup_printf ("Unknown Distribution");
+	}
+	xmlNodeSetContent (distribution_node, distro_string);
+
+	/* add the package info */
+	add_package_info (configuration_metafile, software_node);
+
+	g_free (distro_string);
 }
 
 /* create the configuration metafile and add package and hardware configuration info to it */
@@ -315,8 +346,8 @@ eazel_create_configuration_metafile (void)
 /*	xmlSetProp (container_node, "date", time_string); */
 	g_free (time_string);
 	
-	/* add the package info */
-	add_package_info (configuration_metafile);
+	/* add the software info */
+	add_software_info (configuration_metafile);
 	
 	/* add the hardware info */
 	add_hardware_info (configuration_metafile);

@@ -1,3 +1,16 @@
+2000-12-21  J Shane Culpepper  <pepper@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	* components/services/install/lib/eazel-inventory-utils.c:
+	(add_package_info), (add_hardware_info), (add_software_info),
+	(eazel_create_configuration_metafile):
+
+	Added the SOFTWARE node to the xml generation. Added 
+	bogomips, flags, and distribution to information gathered.
+	There are very few things missing from the collection engine
+	now.
+
 2000-12-21  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5218, The desktop is missing devices. (cdrom & vfat volume)
