@@ -49,6 +49,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -1162,27 +1163,29 @@ compute_default_title (const char *text_uri)
 {
 	NautilusFile *file;
 	char *title;
-
-	if (text_uri == NULL) {
+	char *canonical_uri;
+	
+	canonical_uri = eel_make_uri_canonical (text_uri);
+	
+	if (canonical_uri == NULL) {
 		title = g_strdup ("");
-	} else if (strcmp (text_uri, "computer://") == 0 ||
-		   strcmp (text_uri, "computer:///") == 0) {
+	} else if (strcmp (canonical_uri, "computer:///") == 0 ) {
 		title = g_strdup (_("Computer"));
-	} else if (strcmp (text_uri, "network://") == 0 ||
-		   strcmp (text_uri, "network:///") == 0) {
+	} else if (strcmp (canonical_uri, "network:///") == 0 ) {
 		title = g_strdup (_("Network"));
-	} else if (strcmp (text_uri, "fonts://") == 0 ||
-		   strcmp (text_uri, "fonts:///") == 0) {
+	} else if (strcmp (canonical_uri, "fonts:///") == 0 ) {
 		title = g_strdup (_("Fonts"));
-	} else if (strcmp (text_uri, "burn://") == 0 ||
-		   strcmp (text_uri, "burn:///") == 0) {
+	} else if (strcmp (canonical_uri, "themes:///") == 0 ) {
+		title = g_strdup (_("Themes"));
+	} else if (strcmp (canonical_uri, "burn:///") == 0 ) {
 		title = g_strdup (_("CD Creator"));
 	} else {
 		file = nautilus_file_get (text_uri);
 		title = nautilus_file_get_display_name (file);
 		nautilus_file_unref (file);
 	}
-
+	
+	g_free (canonical_uri);
 	return title;
 }
 
