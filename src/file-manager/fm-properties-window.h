@@ -28,7 +28,6 @@
 
 #include <gtk/gtkwindow.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus/nautilus-view.h>
 
 typedef struct FMPropertiesWindow FMPropertiesWindow;
 

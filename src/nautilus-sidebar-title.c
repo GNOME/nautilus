@@ -30,8 +30,6 @@
 
 #include "nautilus-window.h"
 
-#include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-property-bag-client.h>
 #include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -52,8 +50,8 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-search-uri.h>
 #include <libnautilus-private/nautilus-theme.h>
+#include <libnautilus-private/nautilus-sidebar.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -313,44 +311,13 @@ nautilus_sidebar_title_theme_changed (gpointer user_data)
 	}
 }
 
-/* get a property from the current content view's property bag if we can */
 static char*
 get_property_from_component (NautilusSidebarTitle *sidebar_title, const char *property)
 {
-	GtkWidget *window;
-	Bonobo_Control control;
-	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
-	char* icon_name;
-		
-	window = gtk_widget_get_ancestor (GTK_WIDGET (sidebar_title), NAUTILUS_TYPE_WINDOW);
-
-	if (window == NULL || NAUTILUS_WINDOW (window)->content_view == NULL) {
-		return NULL;
-	}
-
-	
-	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (NAUTILUS_WINDOW (window)->content_view));	
-	if (control == NULL) {
-		return NULL;	
-	}
-
-	CORBA_exception_init (&ev);
-	property_bag = Bonobo_Control_getProperties (control, &ev);
-	if (BONOBO_EX (&ev)) {
-		property_bag = CORBA_OBJECT_NIL;
-	}
-	CORBA_exception_free (&ev);
-
-	if (property_bag == CORBA_OBJECT_NIL) {
-		return NULL;
-	}	
-	
-	icon_name = bonobo_property_bag_client_get_value_string
-		(property_bag, property, NULL);
-	bonobo_object_release_unref (property_bag, NULL);
-
-	return icon_name;
+	/* There used to be a way to get icon and summary_text from main view,
+	 *  but its not used right now, so this sas stubbed out for now
+	 */
+	return NULL;
 }
 
 /* set up the icon image */
@@ -468,19 +435,6 @@ append_and_eat (GString *string, const char *separator, char *new_string)
 	g_free (new_string);
 }
 
-static gboolean
-file_is_search_location (NautilusFile *file)
-{
-	char *uri;
-	gboolean is_search_uri;
-
-	uri = nautilus_file_get_uri (file);
-	is_search_uri = nautilus_is_search_uri (uri);
-	g_free (uri);
-
-	return is_search_uri;
-}
-
 static int
 measure_width_callback (const char *string, gpointer callback_data)
 {
@@ -499,7 +453,6 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 	NautilusFile *file;
 	GString *info_string;
 	char *type_string, *component_info;
-	char *search_string, *search_uri;
 	char *date_modified_str;
 	int sidebar_width;
 	PangoLayout *layout;
@@ -512,37 +465,25 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 		info_string = g_string_new (component_info);
 		g_free (component_info);
 	} else {
-		/* Adding this special case for search results to 
-		   correspond to the fix for bug 2341.  */
-		if (file != NULL && file_is_search_location (file)) {
-			search_uri = nautilus_file_get_uri (file);
-			search_string = nautilus_search_uri_to_human (search_uri);
-			g_free (search_uri);
-			info_string = g_string_new (search_string);
-			g_free (search_string);
-			append_and_eat (info_string, "\n ",
+		info_string = g_string_new (NULL);
+		type_string = nautilus_file_get_string_attribute (file, "type");
+		if (type_string != NULL) {
+			append_and_eat (info_string, NULL, type_string);
+			append_and_eat (info_string, ", ",
 					nautilus_file_get_string_attribute (file, "size"));
 		} else {
-			info_string = g_string_new (NULL);
-			type_string = nautilus_file_get_string_attribute (file, "type");
-			if (type_string != NULL) {
-				append_and_eat (info_string, NULL, type_string);
-				append_and_eat (info_string, ", ",
-						nautilus_file_get_string_attribute (file, "size"));
-			} else {
-				append_and_eat (info_string, NULL,
-						nautilus_file_get_string_attribute (file, "size"));
-			}
-			
-			sidebar_width = GTK_WIDGET (sidebar_title)->allocation.width - 2 * SIDEBAR_INFO_MARGIN;
-			if (sidebar_width > MINIMUM_INFO_WIDTH) {
-				layout = pango_layout_copy (gtk_label_get_layout (GTK_LABEL (sidebar_title->details->more_info_label)));
-				pango_layout_set_width (layout, -1);
-				date_modified_str = nautilus_file_fit_modified_date_as_string
-					(file, sidebar_width, measure_width_callback, NULL, layout);
-				g_object_unref (layout);
+			append_and_eat (info_string, NULL,
+					nautilus_file_get_string_attribute (file, "size"));
+		}
+		
+		sidebar_width = GTK_WIDGET (sidebar_title)->allocation.width - 2 * SIDEBAR_INFO_MARGIN;
+		if (sidebar_width > MINIMUM_INFO_WIDTH) {
+			layout = pango_layout_copy (gtk_label_get_layout (GTK_LABEL (sidebar_title->details->more_info_label)));
+			pango_layout_set_width (layout, -1);
+			date_modified_str = nautilus_file_fit_modified_date_as_string
+				(file, sidebar_width, measure_width_callback, NULL, layout);
+			g_object_unref (layout);
 				append_and_eat (info_string, "\n", date_modified_str);
-			}
 		}
 	}
 	gtk_label_set_text (GTK_LABEL (sidebar_title->details->more_info_label),

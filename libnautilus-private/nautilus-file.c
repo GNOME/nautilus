@@ -811,8 +811,7 @@ nautilus_file_can_execute (NautilusFile *file)
 static gboolean
 is_desktop_file (NautilusFile *file)
 {
-	return nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
-		nautilus_file_is_mime_type (file, "application/x-desktop");
+	return nautilus_file_is_mime_type (file, "application/x-desktop");
 }
 
 static gboolean
@@ -5156,9 +5155,9 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
 gboolean
 nautilus_file_is_nautilus_link (NautilusFile *file)
 {
-	return nautilus_file_is_mime_type (file, "application/x-nautilus-link") ||
-		nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
-		nautilus_file_is_mime_type (file, "application/x-desktop");
+	/* NOTE: I removed the historical link here, because i don't think we
+	   even detect that mimetype anymore */
+	return nautilus_file_is_mime_type (file, "application/x-desktop");
 }
 
 /**

@@ -11,15 +11,12 @@ desktop_in_files = 					\
 	nautilus-file-management-properties.desktop.in
 
 SUBDIRS =			\
-	libnautilus 		\
 	libnautilus-extension	\
 	cut-n-paste-code 	\
 	libbackground		\
 	libnautilus-private 	\
-	libnautilus-adapter	\
 	src 			\
 	test 			\
-	components		\
 	po 			\
 	data 			\
 	icons 			\

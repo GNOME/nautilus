@@ -29,7 +29,7 @@
 #ifndef FM_TREE_VIEW_H
 #define FM_TREE_VIEW_H
 
-#include <libnautilus/nautilus-view.h>
+#include <gtk/gtkscrolledwindow.h>
 
 #define FM_TYPE_TREE_VIEW	           (fm_tree_view_get_type ())
 #define FM_TREE_VIEW(obj)	           (GTK_CHECK_CAST ((obj), FM_TYPE_TREE_VIEW, FMTreeView))
@@ -37,17 +37,21 @@
 #define FM_IS_TREE_VIEW(obj)	   (GTK_CHECK_TYPE ((obj), FM_TYPE_TREE_VIEW))
 #define FM_IS_TREE_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_TREE_VIEW))
 
+#define TREE_SIDEBAR_ID "NautilusTreeSidebar"
+
 typedef struct FMTreeViewDetails FMTreeViewDetails;
 
 typedef struct {
-	NautilusView parent;
+	GtkScrolledWindow parent;
+	
 	FMTreeViewDetails *details;
 } FMTreeView;
 
 typedef struct {
-	NautilusViewClass parent_class;
+	GtkScrolledWindowClass parent_class;
 } FMTreeViewClass;
 
 GType fm_tree_view_get_type (void);
+void fm_tree_view_register (void);
 
 #endif /* FM_TREE_VIEW_H */

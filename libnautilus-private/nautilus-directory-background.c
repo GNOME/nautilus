@@ -618,7 +618,6 @@ background_changed_callback (EelBackground *background,
         
 
                         action = default_drag_action;
-                        g_print ("checking action, default_drag_action is %d\n", action);
                 }
         
                 if (action == NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {

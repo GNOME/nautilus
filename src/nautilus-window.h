@@ -30,11 +30,10 @@
 #define NAUTILUS_WINDOW_H
 
 #include <bonobo/bonobo-window.h>
+#include <gtk/gtkuimanager.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
-#include <libnautilus-private/nautilus-view-identifier.h>
-#include "nautilus-applicable-views.h"
-#include "nautilus-view-frame.h"
+#include <libnautilus-private/nautilus-window-info.h>
 #include "nautilus-application.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-side-pane.h"
@@ -52,9 +51,9 @@ typedef struct NautilusWindow NautilusWindow;
 #endif
 
 typedef struct {
-        BonoboWindowClass parent_spot;
+        GtkWindowClass parent_spot;
 
-        Nautilus_WindowType window_type;
+        NautilusWindowType window_type;
 
 	/* Function pointers for overriding, without corresponding signals */
 
@@ -68,16 +67,17 @@ typedef struct {
         char * (* get_title) (NautilusWindow *window);
         void   (* set_title) (NautilusWindow *window, const char *title);
 
-        void   (* merge_menus)   (NautilusWindow *window);
-        void   (* merge_menus_2)   (NautilusWindow *window);
         void   (* load_view_as_menu) (NautilusWindow *window);
         void   (* set_content_view_widget) (NautilusWindow *window, 
-                                            NautilusViewFrame *frame);
+                                            NautilusView *new_view);
         void   (* set_throbber_active) (NautilusWindow *window,
                                         gboolean active);
         void   (* prompt_for_location) (NautilusWindow *window);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* close) (NautilusWindow *window);
+
+        /* Signals used only for keybindings */
+        gboolean (* go_up) (NautilusWindow *window, gboolean close);
 } NautilusWindowClass;
 
 typedef enum {
@@ -89,7 +89,7 @@ typedef enum {
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 struct NautilusWindow {
-        BonoboWindow parent_object;
+        GtkWindow parent_object;
         
         NautilusWindowDetails *details;
         
@@ -103,18 +103,13 @@ struct NautilusWindow {
         NautilusBookmark *last_location_bookmark;
 
         /* Current views stuff */
-        NautilusViewFrame *content_view;
+        NautilusView *content_view;
         
         /* Pending changes */
-        NautilusViewFrame *new_content_view;
-
-        /* All views */
-        GList *views;
+        NautilusView *new_content_view;
 };
 
 GType            nautilus_window_get_type             (void);
-void		 nautilus_window_ui_freeze	      (NautilusWindow	 *window);
-void		 nautilus_window_ui_thaw	      (NautilusWindow	 *window);
 void             nautilus_window_close                (NautilusWindow    *window);
 char *           nautilus_window_get_location         (NautilusWindow    *window);
 void             nautilus_window_go_to                (NautilusWindow    *window,
@@ -132,9 +127,6 @@ void             nautilus_window_display_error        (NautilusWindow    *window
                                                        const char        *error_msg);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
 
-void 		 nautilus_window_hide_status_bar      (NautilusWindow 	 *window);
-void 		 nautilus_window_show_status_bar      (NautilusWindow 	 *window);
-gboolean	 nautilus_window_status_bar_showing   (NautilusWindow    *window);
 void             nautilus_window_allow_reload         (NautilusWindow    *window,
                                                        gboolean           allow);
 void             nautilus_window_allow_up             (NautilusWindow    *window, 
@@ -143,5 +135,6 @@ void             nautilus_window_allow_stop           (NautilusWindow    *window
                                                        gboolean           allow);
 void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
                                                        gboolean           allow);
+GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 
 #endif

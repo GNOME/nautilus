@@ -197,12 +197,14 @@ nautilus_location_dialog_new (NautilusWindow *window)
 	
 
 	location = nautilus_window_get_location (window);
-	formatted_location = eel_format_uri_for_display (location);
-	nautilus_entry_set_text (NAUTILUS_ENTRY (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), formatted_location);
-	gtk_editable_select_region (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), 0, -1);
-	gtk_editable_set_position (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), -1);
-	g_free (formatted_location);
-	g_free (location);
+	if (location != NULL) {
+		formatted_location = eel_format_uri_for_display (location);
+		nautilus_entry_set_text (NAUTILUS_ENTRY (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), formatted_location);
+		gtk_editable_select_region (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), 0, -1);
+		gtk_editable_set_position (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), -1);
+		g_free (formatted_location);
+		g_free (location);
+	}
 
 	return dialog;
 }

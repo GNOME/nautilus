@@ -28,6 +28,8 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <gtk/gtkclipboard.h>
 
 /* X11 has a weakness when it comes to clipboard handling,
  * there is no way to get told when the owner of the clipboard
@@ -36,8 +38,12 @@
  * internally in an app by telling the clipboard monitor when
  * we changed the clipboard. Unfortunately this doesn't give
  * us perfect results, we still don't catch changes made by
- * other clients. The solution to that is to use the XFIXES
- * extension, which isn't availible yet.
+ * other clients
+ *
+ * This is fixed with the XFIXES extensions, which recent versions
+ * of Gtk+ supports as the owner_change signal on GtkClipboard. We
+ * use this now, but keep the old code since not all X servers support
+ * XFIXES.
  */
 
 enum {
@@ -68,9 +74,15 @@ destroy_clipboard_monitor (void)
 NautilusClipboardMonitor *
 nautilus_clipboard_monitor_get (void)
 {
+	GtkClipboard *clipboard;
+	
 	if (clipboard_monitor == NULL) {
 		clipboard_monitor = NAUTILUS_CLIPBOARD_MONITOR (g_object_new (NAUTILUS_TYPE_CLIPBOARD_MONITOR, NULL));
 		eel_debug_call_at_shutdown (destroy_clipboard_monitor);
+		
+		clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+		g_signal_connect (clipboard, "owner_change",
+				  G_CALLBACK (nautilus_clipboard_monitor_emit_changed), NULL);
 	}
 	return clipboard_monitor;
 }

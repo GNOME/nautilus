@@ -32,7 +32,6 @@
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
 #include <string.h>
-#include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-cell-renderer-pixbuf-list.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -57,14 +56,16 @@
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
-#include <libnautilus/nautilus-scroll-positionable.h>
-#include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-view-factory.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 
 /* Included for the typeselect flush delay */
@@ -78,6 +79,8 @@ typedef struct {
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
 	FMListModel *model;
+	GtkActionGroup *list_action_group;
+	guint list_merge_id;
 
 	GtkTreeViewColumn   *file_name_column;
 	int file_name_column_num;
@@ -87,8 +90,6 @@ struct FMListViewDetails {
 	GList *cells;
 
 	NautilusZoomLevel zoom_level;
-
-	NautilusScrollPositionable *positionable;
 
 	NautilusTreeViewDragDest *drag_dest;
 
@@ -107,7 +108,6 @@ struct FMListViewDetails {
 	/* typeahead selection state */
 	TypeSelectState *type_select_state;
 
-	BonoboUIComponent *ui;
 	gboolean menus_ready;
 	
 	GHashTable *columns;
@@ -128,18 +128,24 @@ static NautilusZoomLevel        default_zoom_level_auto_value;
 static GList *                  default_visible_columns_auto_value;
 static GList *                  default_column_order_auto_value;
 
-static GList *              fm_list_view_get_selection         (FMDirectoryView *view);
-static void                 fm_list_view_set_zoom_level        (FMListView *view,
-								NautilusZoomLevel new_level,
-								gboolean always_set_level);
-static void		    fm_list_view_scale_font_size       (FMListView *view, 
-								NautilusZoomLevel new_level,
-								gboolean update_size_table);
-static void                 fm_list_view_scroll_to_file        (FMListView *view,
-								NautilusFile *file);
+static GList *fm_list_view_get_selection   (FMDirectoryView   *view);
+static void   fm_list_view_set_zoom_level  (FMListView        *view,
+					    NautilusZoomLevel  new_level,
+					    gboolean           always_set_level);
+static void   fm_list_view_scale_font_size (FMListView        *view,
+					    NautilusZoomLevel  new_level);
+static void   fm_list_view_scroll_to_file  (FMListView        *view,
+					    NautilusFile      *file);
+static void   fm_list_view_iface_init      (NautilusViewIface *iface);
 
-GNOME_CLASS_BOILERPLATE (FMListView, fm_list_view,
-			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
+
+
+G_DEFINE_TYPE_WITH_CODE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW, 
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW,
+						fm_list_view_iface_init));
+
+/* for EEL_CALL_PARENT */
+#define parent_class fm_list_view_parent_class
 
 static void
 list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data)
@@ -188,7 +194,7 @@ activate_selected_items (FMListView *view)
 	file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
-					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 					  0);
 	nautilus_file_list_free (file_list);
 
@@ -209,8 +215,8 @@ activate_selected_items_alternate (FMListView *view,
 	}
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
-					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
-					  Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND);
+					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND);
 	nautilus_file_list_free (file_list);
 
 }
@@ -451,7 +457,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
 	tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
-	selection = gtk_tree_view_get_selection(tree_view);
+	selection = gtk_tree_view_get_selection (tree_view);
 
 	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
 		return FALSE;
@@ -487,6 +493,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	allow_drag = FALSE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
+		/* Keep track of path of last click so double clicks only happen
+		 * on the same item */
 		if ((event->button == 1 || event->button == 2)  && 
 		    event->type == GDK_BUTTON_PRESS) {
 			if (view->details->double_click_path[1]) {
@@ -498,9 +506,9 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		if (event->type == GDK_2BUTTON_PRESS) {
 			/* Double clicking does not trigger a D&D action. */
 			view->details->drag_button = 0;
-			call_parent = TRUE;
 			if (view->details->double_click_path[1] &&
 			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0) {
+				/* NOTE: Activation can actually destroy the view if we're switching */
 				if (!button_event_modifies_selection (event)) {
 					if ((event->button == 1 || event->button == 3)) {
 						activate_selected_items (view);
@@ -517,46 +525,48 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 					}
 				}
 			}
-		}
-		
-		/* We're going to filter out some situations where
-		 * we can't let the default code run because all
-		 * but one row would be would be deselected. We don't
-		 * want that; we want the right click menu or single
-		 * click to apply to everything that's currently selected. */
-		
-		if (event->button == 3 && gtk_tree_selection_path_is_selected (selection, path)) {
-			call_parent = FALSE;
-		} 
-
-		if ((event->button == 1 || event->button == 2) &&
-		    ((event->state & GDK_CONTROL_MASK) != 0 ||
-		     (event->state & GDK_SHIFT_MASK) == 0)) {
-			view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
-			if (view->details->row_selected_on_button_down) {
-				call_parent = FALSE;
-			} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
-				call_parent = FALSE;
-				gtk_tree_selection_select_path (selection, path);
-			}
-		}
-
-		if (call_parent) {
 			tree_view_class->button_press_event (widget, event);
-		} else if (gtk_tree_selection_path_is_selected (selection, path)) {
-			gtk_widget_grab_focus (widget);
-		}
-
-		if ((event->button == 1 || event->button == 2) &&
-		    event->type == GDK_BUTTON_PRESS) {
-			view->details->drag_started = FALSE;
-			view->details->drag_button = event->button;
-			view->details->drag_x = event->x;
-			view->details->drag_y = event->y;
-		}
-
-		if (event->button == 3) {
-			do_popup_menu (widget, view, event);
+		} else {
+	
+			/* We're going to filter out some situations where
+			 * we can't let the default code run because all
+			 * but one row would be would be deselected. We don't
+			 * want that; we want the right click menu or single
+			 * click to apply to everything that's currently selected. */
+			
+			if (event->button == 3 && gtk_tree_selection_path_is_selected (selection, path)) {
+				call_parent = FALSE;
+			} 
+			
+			if ((event->button == 1 || event->button == 2) &&
+			    ((event->state & GDK_CONTROL_MASK) != 0 ||
+			     (event->state & GDK_SHIFT_MASK) == 0)) {
+				view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
+				if (view->details->row_selected_on_button_down) {
+					call_parent = FALSE;
+				} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
+					call_parent = FALSE;
+					gtk_tree_selection_select_path (selection, path);
+				}
+			}
+		
+			if (call_parent) {
+				tree_view_class->button_press_event (widget, event);
+			} else if (gtk_tree_selection_path_is_selected (selection, path)) {
+				gtk_widget_grab_focus (widget);
+			}
+			
+			if ((event->button == 1 || event->button == 2) &&
+			    event->type == GDK_BUTTON_PRESS) {
+				view->details->drag_started = FALSE;
+				view->details->drag_button = event->button;
+				view->details->drag_x = event->x;
+				view->details->drag_y = event->y;
+			}
+			
+			if (event->button == 3) {
+				do_popup_menu (widget, view, event);
+			}
 		}
 
 		gtk_tree_path_free (path);
@@ -1251,9 +1261,6 @@ set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 							    get_default_zoom_level ());
 		fm_list_view_set_zoom_level (list_view, level, TRUE);
 		
-		/* reset the font size table for the new default zoom level */
-		fm_list_view_scale_font_size (list_view, level, TRUE);
-		
 		/* updated the rows after updating the font size */
 		gtk_tree_model_foreach (GTK_TREE_MODEL (list_view->details->model),
 					list_view_changed_foreach, NULL);
@@ -1596,9 +1603,8 @@ create_column_editor (FMListView *view)
 }
 
 static void
-visible_columns_callback (BonoboUIComponent *component,
-			  gpointer callback_data,
-			  const char *verb)
+action_visible_columns_callback (GtkAction *action,
+				 gpointer callback_data)
 {
 	FMListView *list_view;
 	
@@ -1614,31 +1620,39 @@ visible_columns_callback (BonoboUIComponent *component,
 	}
 }
 
+static GtkActionEntry list_view_entries[] = {
+  { "Visible Columns", NULL,                  /* name, stock id */
+    N_("Visible _Columns..."), NULL,                /* label, accelerator */
+    N_("Select the columns visible in this folder"),                   /* tooltip */ 
+    G_CALLBACK (action_visible_columns_callback) },
+};
+
 static void
 fm_list_view_merge_menus (FMDirectoryView *view)
 {
 	FMListView *list_view;
-	Bonobo_UIContainer ui_container;
-	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Visible Columns", visible_columns_callback),
-		BONOBO_UI_VERB_END
-	};
-	
+	GtkUIManager *ui_manager;
+	GtkActionGroup *action_group;
+	const char *ui;
+
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	list_view = FM_LIST_VIEW (view);
 
-	list_view->details->ui = bonobo_ui_component_new ("List View");
-	ui_container = fm_directory_view_get_bonobo_ui_container (view);
-	bonobo_ui_component_set_container (list_view->details->ui,
-					   ui_container, NULL);
-	bonobo_object_release_unref (ui_container, NULL);
-	bonobo_ui_util_set_ui (list_view->details->ui,
-			       DATADIR,
-			       "nautilus-list-view-ui.xml",
-			       "nautilus", NULL);
+	ui_manager = fm_directory_view_get_ui_manager (view);
 
-	bonobo_ui_component_add_verb_list_with_data (list_view->details->ui, verbs, view);	
+	action_group = gtk_action_group_new ("ListViewActions");
+	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+	list_view->details->list_action_group = action_group;
+	gtk_action_group_add_actions (action_group, 
+				      list_view_entries, G_N_ELEMENTS (list_view_entries),
+				      list_view);
+
+	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
+	g_object_unref (action_group); /* owned by ui manager */
+
+	ui = nautilus_ui_string_get ("nautilus-list-view-ui.xml");
+	list_view->details->list_merge_id = gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
 	list_view->details->menus_ready = TRUE;
 }
@@ -1684,27 +1698,25 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 
 static void
 fm_list_view_scale_font_size (FMListView *view, 
-			      NautilusZoomLevel new_level,
-			      gboolean update_size_table)
+			      NautilusZoomLevel new_level)
 {
 	GList *l;
 	static gboolean first_time = TRUE;
 	static double pango_scale[7];
-	int default_zoom_level, i;
+	int medium;
+	int i;
 
 	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
-	if (update_size_table || first_time) {
+	if (first_time) {
 		first_time = FALSE;
-
-		default_zoom_level = get_default_zoom_level ();
-
-		pango_scale[default_zoom_level] = PANGO_SCALE_MEDIUM;
-		for (i = default_zoom_level; i > NAUTILUS_ZOOM_LEVEL_SMALLEST; i--) {
+		medium = NAUTILUS_ZOOM_LEVEL_SMALLER;
+		pango_scale[medium] = PANGO_SCALE_MEDIUM;
+		for (i = medium; i > NAUTILUS_ZOOM_LEVEL_SMALLEST; i--) {
 			pango_scale[i - 1] = (1 / 1.2) * pango_scale[i];
 		}
-		for (i = default_zoom_level; i < NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+		for (i = medium; i < NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
 			pango_scale[i + 1] = 1.2 * pango_scale[i];
 		}
 	}
@@ -1722,7 +1734,7 @@ fm_list_view_scale_font_size (FMListView *view,
 static void
 fm_list_view_set_zoom_level (FMListView *view,
 			     NautilusZoomLevel new_level,
-			     gboolean always_set_level)
+			     gboolean always_emit)
 {
 	int icon_size;
 	int column, emblem_column;
@@ -1732,14 +1744,14 @@ fm_list_view_set_zoom_level (FMListView *view,
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
 	if (view->details->zoom_level == new_level) {
-		if (always_set_level) {
-			fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW(view), new_level);
+		if (always_emit) {
+			g_signal_emit_by_name (FM_DIRECTORY_VIEW(view), "zoom_level_changed");
 		}
 		return;
 	}
 
 	view->details->zoom_level = new_level;
-	fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW(view), new_level);
+	g_signal_emit_by_name (FM_DIRECTORY_VIEW(view), "zoom_level_changed");
 
 	nautilus_file_set_integer_metadata
 		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)), 
@@ -1757,7 +1769,7 @@ fm_list_view_set_zoom_level (FMListView *view,
 					     NULL);
 
 	/* Scale text. */
-	fm_list_view_scale_font_size (view, new_level, FALSE);
+	fm_list_view_scale_font_size (view, new_level);
 
 	/* Make all rows the same size. */
 	icon_size = nautilus_get_icon_size_for_zoom_level (new_level);
@@ -1784,8 +1796,21 @@ fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 	}
 }
 
+static NautilusZoomLevel
+fm_list_view_get_zoom_level (FMDirectoryView *view)
+{
+	FMListView *list_view;
+
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
+
+	list_view = FM_LIST_VIEW (view);
+
+	return list_view->details->zoom_level;
+}
+
 static void
-fm_list_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
+fm_list_view_zoom_to_level (FMDirectoryView *view,
+			    NautilusZoomLevel zoom_level)
 {
 	FMListView *list_view;
 
@@ -1869,9 +1894,9 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	
 	gtk_tree_path_free (path);
 
-	nautilus_clipboard_set_up_editable_in_control
+	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (entry),
-		 fm_directory_view_get_bonobo_control (view),
+		 fm_directory_view_get_ui_manager (view),
 		 FALSE);
 }
 
@@ -1974,6 +1999,7 @@ static void
 fm_list_view_dispose (GObject *object)
 {
 	FMListView *list_view;
+	GtkUIManager *ui_manager;
 
 	list_view = FM_LIST_VIEW (object);
 
@@ -1987,12 +2013,13 @@ fm_list_view_dispose (GObject *object)
 		list_view->details->drag_dest = NULL;
 	}
 
-	if (list_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (list_view->details->ui, NULL);
-		bonobo_object_unref (list_view->details->ui);
-		list_view->details->ui = NULL;
+	ui_manager = fm_directory_view_get_ui_manager (FM_DIRECTORY_VIEW (list_view));
+	if (ui_manager != NULL) {
+		nautilus_ui_unmerge_ui (ui_manager,
+					&list_view->details->list_merge_id,
+					&list_view->details->list_action_group);
 	}
-	
+
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -2035,12 +2062,14 @@ fm_list_view_emblems_changed (FMDirectoryView *directory_view)
 }
 
 static char *
-list_view_get_first_visible_file_callback (NautilusScrollPositionable *positionable,
-					   FMListView *list_view)
+fm_list_view_get_first_visible_file (NautilusView *view)
 {
 	NautilusFile *file;
 	GtkTreePath *path;
 	GtkTreeIter iter;
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (view);
 
 	if (gtk_tree_view_get_path_at_pos (list_view->details->tree_view,
 					   0, 0,
@@ -2069,7 +2098,8 @@ list_view_get_first_visible_file_callback (NautilusScrollPositionable *positiona
 }
 
 static void
-fm_list_view_scroll_to_file (FMListView *view, NautilusFile *file)
+fm_list_view_scroll_to_file (FMListView *view,
+			     NautilusFile *file)
 {
 	GtkTreePath *path;
 	GtkTreeIter iter;
@@ -2088,15 +2118,14 @@ fm_list_view_scroll_to_file (FMListView *view, NautilusFile *file)
 }
 
 static void
-list_view_scroll_to_file_callback (NautilusScrollPositionable *positionable,
-				   const char *uri,
-				   FMListView *list_view)
+list_view_scroll_to_file (NautilusView *view,
+			  const char *uri)
 {
 	NautilusFile *file;
 
 	if (uri != NULL) {
 		file = nautilus_file_get (uri);
-		fm_list_view_scroll_to_file (list_view, file);
+		fm_list_view_scroll_to_file (FM_LIST_VIEW (view), file);
 		nautilus_file_unref (file);
 	}
 }
@@ -2135,6 +2164,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->sort_files = fm_list_view_sort_files;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
+	fm_directory_view_class->get_zoom_level = fm_list_view_get_zoom_level;
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 
@@ -2152,20 +2182,31 @@ fm_list_view_class_init (FMListViewClass *class)
 					       (const GList **) &default_column_order_auto_value);
 }
 
-static void
-fm_list_view_instance_init (FMListView *list_view)
+static const char *
+fm_list_view_get_id (NautilusView *view)
 {
-	NautilusView *nautilus_view;
+	return FM_LIST_VIEW_ID;
+}
+
+
+static void
+fm_list_view_iface_init (NautilusViewIface *iface)
+{
+	fm_directory_view_init_view_iface (iface);
 	
+	iface->get_view_id = fm_list_view_get_id;
+	iface->get_first_visible_file = fm_list_view_get_first_visible_file;
+	iface->scroll_to_file = list_view_scroll_to_file;
+	iface->get_title = NULL;
+}
+
+
+static void
+fm_list_view_init (FMListView *list_view)
+{
 	list_view->details = g_new0 (FMListViewDetails, 1);
 
 	create_and_set_up_tree_view (list_view);
-
-	list_view->details->positionable = nautilus_scroll_positionable_new ();
-	nautilus_view = fm_directory_view_get_nautilus_view (FM_DIRECTORY_VIEW (list_view));
-	bonobo_object_add_interface (BONOBO_OBJECT (nautilus_view),
-				     BONOBO_OBJECT (list_view->details->positionable));
-
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 						  default_sort_order_changed_callback,
@@ -2192,10 +2233,49 @@ fm_list_view_instance_init (FMListView *list_view)
 		 "icons_changed",
 		 G_CALLBACK (icons_changed_callback),
 		 list_view, 0);
-	g_signal_connect_object (list_view->details->positionable, "get_first_visible_file",
-				 G_CALLBACK (list_view_get_first_visible_file_callback), list_view, 0);
-	g_signal_connect_object (list_view->details->positionable, "scroll_to_file",
-				 G_CALLBACK (list_view_scroll_to_file_callback), list_view, 0);
 	
 	list_view->details->type_select_state = NULL;
+}
+
+static NautilusView *
+fm_list_view_create (NautilusWindowInfo *window)
+{
+	FMListView *view;
+
+	view = g_object_new (FM_TYPE_LIST_VIEW, "window", window, NULL);
+	g_object_ref (view);
+	gtk_object_sink (GTK_OBJECT (view));
+	return NAUTILUS_VIEW (view);
+}
+
+static gboolean
+fm_list_view_supports_uri (const char *uri,
+			   GnomeVFSFileType file_type,
+			   const char *mime_type)
+{
+	if (file_type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		return TRUE;
+	}
+	if (g_str_has_prefix (uri, "trash:")) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static NautilusViewInfo fm_list_view = {
+	FM_LIST_VIEW_ID,
+	N_("List"),
+	N_("_List"),
+	fm_list_view_create,
+	fm_list_view_supports_uri
+};
+
+void
+fm_list_view_register (void)
+{
+	fm_list_view.label = _(fm_list_view.label);
+	fm_list_view.label_with_mnemonic = _(fm_list_view.label_with_mnemonic);
+	
+	nautilus_view_factory_register (&fm_list_view);
 }

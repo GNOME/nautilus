@@ -3,7 +3,6 @@ include $(top_srcdir)/Makefile.shared
 lib_LTLIBRARIES=libnautilus-private.la
 
 libnautilus_private_la_LIBADD = \
-	../libnautilus/libnautilus.la \
 	../libnautilus-extension/libnautilus-extension.la
 
 INCLUDES = 						\
@@ -43,20 +42,19 @@ marshal_sources = \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
-
 libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
 	nautilus-audio-player.c \
 	nautilus-audio-player.h \
-	nautilus-bonobo-extensions.c \
-	nautilus-bonobo-extensions.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
+	nautilus-cdrom-extensions.h \
 	nautilus-cell-renderer-pixbuf-emblem.c \
 	nautilus-cell-renderer-pixbuf-emblem.h \
-	nautilus-cdrom-extensions.h \
 	nautilus-clipboard-monitor.c \
 	nautilus-clipboard-monitor.h \
+	nautilus-clipboard.c \
+	nautilus-clipboard.h \
 	nautilus-column-chooser.c \
 	nautilus-column-chooser.h \
 	nautilus-column-utilities.c \
@@ -65,16 +63,16 @@ libnautilus_private_la_SOURCES = \
 	nautilus-customization-data.h \
 	nautilus-default-file-icon.c \
 	nautilus-default-file-icon.h \
-	nautilus-desktop-directory.c \
-	nautilus-desktop-directory.h \
 	nautilus-desktop-directory-file.c \
 	nautilus-desktop-directory-file.h \
+	nautilus-desktop-directory.c \
+	nautilus-desktop-directory.h \
 	nautilus-desktop-icon-file.c \
 	nautilus-desktop-icon-file.h \
-	nautilus-desktop-link.c \
-	nautilus-desktop-link.h \
 	nautilus-desktop-link-monitor.c \
 	nautilus-desktop-link-monitor.h \
+	nautilus-desktop-link.c \
+	nautilus-desktop-link.h \
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-background.h \
@@ -88,8 +86,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-directory.h \
 	nautilus-dnd.c \
 	nautilus-dnd.h \
-	nautilus-drag-window.c \
-	nautilus-drag-window.h \
 	nautilus-emblem-utils.c \
 	nautilus-emblem-utils.h \
 	nautilus-entry.c \
@@ -99,9 +95,9 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-changes-queue.h \
 	nautilus-file-dnd.c \
 	nautilus-file-dnd.h \
+	nautilus-file-operations-progress-icons.h \
 	nautilus-file-operations-progress.c \
 	nautilus-file-operations-progress.h \
-	nautilus-file-operations-progress-icons.h \
 	nautilus-file-operations.c \
 	nautilus-file-operations.h \
 	nautilus-file-private.h \
@@ -125,6 +121,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-icon-factory.c \
 	nautilus-icon-factory.h \
 	nautilus-icon-private.h \
+	nautilus-idle-queue.c \
+	nautilus-idle-queue.h \
 	nautilus-iso9660.h \
 	nautilus-keep-last-vertical-box.c \
 	nautilus-keep-last-vertical-box.h \
@@ -138,8 +136,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-link.h \
 	nautilus-marshal.c \
 	nautilus-marshal.h \
-	nautilus-medusa-support.c \
-	nautilus-medusa-support.h \
 	nautilus-merged-directory.c \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \
@@ -155,12 +151,12 @@ libnautilus_private_la_SOURCES = \
 	nautilus-monitor.h \
 	nautilus-program-choosing.c \
 	nautilus-program-choosing.h \
-	nautilus-recent.h \
 	nautilus-recent.c \
-	nautilus-search-uri.c \
-	nautilus-search-uri.h \
-	nautilus-sidebar-functions.c \
-	nautilus-sidebar-functions.h \
+	nautilus-recent.h \
+	nautilus-sidebar-provider.c \
+	nautilus-sidebar-provider.h \
+	nautilus-sidebar.c \
+	nautilus-sidebar.h \
 	nautilus-sound.c \
 	nautilus-sound.h \
 	nautilus-theme.c \
@@ -175,20 +171,27 @@ libnautilus_private_la_SOURCES = \
 	nautilus-trash-monitor.h \
 	nautilus-tree-view-drag-dest.c \
 	nautilus-tree-view-drag-dest.h \
-	nautilus-undo-context.c \
-	nautilus-undo-context.h \
+	nautilus-ui-utilities.c \
+	nautilus-ui-utilities.h \
 	nautilus-undo-manager.c \
 	nautilus-undo-manager.h \
+	nautilus-undo-private.h \
 	nautilus-undo-signal-handlers.c \
 	nautilus-undo-signal-handlers.h \
+	nautilus-undo-transaction.c \
+	nautilus-undo-transaction.h \
+	nautilus-undo.c \
+	nautilus-undo.h \
 	nautilus-vfs-directory.c \
 	nautilus-vfs-directory.h \
 	nautilus-vfs-file.c \
 	nautilus-vfs-file.h \
-	nautilus-view-identifier.c \
-	nautilus-view-identifier.h \
-	nautilus-view-query.c \
-	nautilus-view-query.h \
+	nautilus-view-factory.c \
+	nautilus-view-factory.h \
+	nautilus-view.c \
+	nautilus-view.h \
+	nautilus-window-info.c \
+	nautilus-window-info.h \
 	$(NULL)
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)

@@ -143,11 +143,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry,
 	} else {
 		home_uri = NULL;
 		if (uri == NULL) {
-#ifdef WEB_NAVIGATION_ENABLED
-			home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-#else
 			home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-#endif
 			uri = home_uri;
 		}
 		

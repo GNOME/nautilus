@@ -33,6 +33,8 @@
 #define FM_IS_DESKTOP_ICON_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_DESKTOP_ICON_VIEW))
 #define FM_IS_DESKTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_DESKTOP_ICON_VIEW))
 
+#define FM_DESKTOP_ICON_VIEW_ID "OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
+
 typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
 typedef struct {
 	FMIconView parent;
@@ -45,5 +47,6 @@ typedef struct {
 
 /* GObject support */
 GType   fm_desktop_icon_view_get_type (void);
+void fm_desktop_icon_view_register (void);
 
 #endif /* FM_DESKTOP_ICON_VIEW_H */

@@ -32,7 +32,7 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-metafile-server.h>
 #include <libnautilus-private/nautilus-monitor.h>
-#include <libnautilus/nautilus-idle-queue.h>
+#include <libnautilus-private/nautilus-idle-queue.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
 #include <libxml/tree.h>
 
@@ -109,6 +109,7 @@ struct NautilusDirectoryDetails
 	NautilusFile *extension_info_file;
 	NautilusInfoProvider *extension_info_provider;
 	NautilusOperationHandle *extension_info_in_progress;
+	guint extension_info_idle;
 
 	TopLeftTextReadState *top_left_read_state;
 

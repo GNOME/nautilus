@@ -1,3 +1,652 @@
+2004-11-22  Alexander Larsson  <alexl@redhat.com>
+        * Merge bonobo-slay-branch
+	
+2004-11-22  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window.c: (action_view_as_callback),
+	(nautilus_window_synch_view_as_menus):
+	Don't reenter action callback when switching views.
+
+2004-11-19  Dave Camp  <dave@novell.com>
+
+	* src/file-manager/fm-directory-view.c: (reset_open_with_menu),
+	(can_show_default_app), (real_update_menus): Fix some jumping
+	menus.
+	* test/Makefile.am: Don't link to libnautilus
+
+2004-11-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	removed unneeded includes
+	
+	* src/nautilus-application.c:
+	* src/nautilus-desktop-window.c:
+	Removed app_id property on NautilusWindow
+	
+	* src/nautilus-main.c: (main):
+	Remove old code
+	
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-window-menus.c:
+	* src/file-manager/fm-ditem-page.c:
+	Remove bonobo comments
+	
+	* src/nautilus-window.c:
+	Remove app_id property
+	fix last bonobo details
+	
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	remove edit launcher action
+
+2004-11-19  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require new eel
+	
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.[ch]:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-actions.h:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window.[ch]:
+	Implement some accels as GtkBindings instead to avoid
+	overriding widget-specific keybindings like "delete" and "backspace".
+
+2004-11-19  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-window-private.h:
+	Put location entry etc in a toolbar.
+
+2004-11-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c: (is_desktop_file),
+	(nautilus_file_is_nautilus_link):
+	Don't check for "application/x-gnome-app-info", as that is already
+	handled by the alias system. This also avoids stating for a
+	mimetype xml file.
+	
+	* src/nautilus-throbber.c:
+	Don't create a new icon theme for each throbber.
+	Use GtkIconTheme instead of GnomeIconTheme
+	
+	* libnautilus-private/nautilus-ui-utilities.[ch]:
+	New function nautilus_ui_string_get to cache the loaded ui files.
+	
+	* src/nautilus-navigation-window.c:
+	Remove old bonoboui stuff
+	
+	* src/nautilus-navigation-window-menus.c:
+	Open New window is Ctrl-N.
+	Use the new nautilus_ui_string_get call
+	
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c: 
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	Use the new nautilus_ui_string_get call
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Name separators to work around bug #158620
+	
+2004-11-18  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/file-manager/nautilus-list-view-ui.xml:
+	* src/nautilus-actions.h:
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window.[ch]:
+	Add all extra accellerators and clean up ui files.
+
+2004-11-18  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-toolbars.c:
+	* libnautilus-private/nautilus-ui-utilities.[ch]:
+	(nautilus_action_from_menu_item), (nautilus_toolbar_action_from_menu_item):
+	Move code to utility functions.
+
+2004-11-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-window-menus.c:
+	Move some functions to nautilus-ui-utilities
+	
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-ui-utilities.[ch]:
+	Various ui utility functions
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-view.c: 
+	* src/file-manager/fm-list-view.c:
+	Unmerge everything on destroy
+	
+	* src/nautilus-shell-ui.xml:
+	Remove unused stuff
+	
+2004-11-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-clipboard-monitor.c:
+	Handle ownership changes from XFixes
+	
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-clipboard-ui.xml:
+	Remove (is now inline)
+	
+	* libnautilus-private/nautilus-clipboard.[ch]:
+	Convert to GtkUIManager
+	
+	* src/nautilus-location-bar.c:
+	* src/nautilus-notes-viewer.c:
+	Adapt to NautilusClipboard changes
+
+	* src/nautilus-window-menus.c:
+	Remove duplicated action
+
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Adapt to NautilusClipboard changes
+	Fix paste into folder to not use stock accelerator
+
+2004-11-17  Alexander Larsson  <alexl@redhat.com>
+
+	* components/Makefile.am:
+	Remove references to throbber
+	
+	* src/Makefile.am:
+	* src/nautilus-throbber.[ch]:
+	Moved throbber here and made it not be a bonobo object
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c:
+	Work with the throbber
+
+2004-11-17  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-application.c:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c:
+	Make initial window geometry work.
+
+2004-11-17  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-image-properties-page.c: (get_property_pages):
+	Only show for images.
+
+2004-11-17  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-properties-window.h:
+	Don't include libnautilus files.
+
+2004-11-17  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-desktop-window.c:
+	Remove old defines
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	Make the menus look like pre-bonobo-removal
+
+2004-11-17  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-desktop-icon-view.c: (real_merge_menus):
+	Don't have use default background on desktop context menu.
+
+2004-11-17  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	Remove libnautilus-adapter subdir
+	
+	* components/Makefile.am:
+	Don't build throbber atm
+	
+	* src/nautilus-navigation-action.c:
+	Use GtkMenuToolButton instead of NautilusArrowToolbutton
+	
+	* src/Makefile.am:
+	* src/nautilus-arrow-toolbutton.[ch]:
+	Remove.
+
+2004-11-16  Anders Carlsson  <andersca@gnome.org>
+
+	* libnautilus-private/nautilus-window-info.c:
+	(nautilus_window_info_get_ui_manager):
+	It's NULL now, not CORBA_OBJECT_NIL.
+	
+2004-11-16  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-view.h:
+	remove bonoboui inclide
+	
+	* src/nautilus-navigation-action.[ch]:
+	Add navigation GtkAction, based on epi code
+	
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-toolbars.c:
+	Correctly handle toolbar icons for extensions
+
+2004-11-16  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Remove bonoboui dependencies
+	
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-bonobo-extensions.[ch]:
+	* libnautilus-private/nautilus-bonobo-ui.h:
+	Remove unneeded files
+	
+	* libnautilus-private/nautilus-clipboard.c:
+	Comment out for now.
+	
+	* libnautilus-private/nautilus-directory-metafile-monitor.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* src/nautilus-application.c: 
+	* src/nautilus-history-sidebar.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-main.c: (main):
+	* src/nautilus-notes-viewer.c:
+	* src/nautilus-sidebar-title.c:
+	* src/file-manager/fm-properties-window.c:
+	Remove bonobo includes
+	
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	(nautilus_get_ui_directory), (nautilus_ui_file):
+	Util functions for ui files.
+	
+	* libnautilus-private/nautilus-view.[ch]:
+	* libnautilus-private/nautilus-window-info.[ch]:
+	Remove bonoboui methods
+	
+	* src/Makefile.am:
+	Add new files, remove some old ones
+	Move ui files to datadir/nautilus/ui
+	
+	* src/nautilus-actions.h:
+	New file with action names
+	
+	* src/nautilus-arrow-toolbutton.[ch]:
+	New widget for back/forward buttons.
+	
+	* src/nautilus-desktop-window.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-manage-views.[ch]: 
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c:
+	* src/nautilus-window.[ch]:
+	Initial port to GtkUIManager
+	
+	* src/nautilus-profiler.[ch]:
+	Remove
+	
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-actions.h:
+	New file with action names
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.[ch]: 
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/file-manager/nautilus-list-view-ui.xml:
+	Initial port of views to GtkUIManager
+
+2004-11-09  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-bonobo-extensions.[ch]:
+	Remove some unused bonobo extensions.
+	
+	* libnautilus-private/Makefile.am:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window.c:
+	* libnautilus-private/nautilus-drag-window.[ch]:
+	Remove NautilusDragWindow (not used anyway)
+
+2004-11-09  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-lib-self-check-functions.h:
+	* libnautilus-private/nautilus-medusa-support.[ch]:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-search-uri.[ch]:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-search-list-view.[ch]:
+	* src/file-manager/nautilus-indexing-info.[ch]:
+	* src/file-manager/nautilus-search-list-view-ui.xml:
+	* src/nautilus-application.c:
+	* src/nautilus-complex-search-bar.[ch]:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-search-bar-criterion-private.h:
+	* src/nautilus-search-bar-criterion.[ch]:
+	* src/nautilus-search-bar-private.h:
+	* src/nautilus-search-bar.[ch]:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-simple-search-bar.[ch]:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-switchable-navigation-bar.[ch]:
+	* src/nautilus-switchable-search-bar.[ch]:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window.c:
+	Remove all traces of old medusa support.
+	
+2004-11-09  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	(nautilus_get_relative_icon_size_for_zoom_level):
+	New function.
+	
+	* libnautilus-private/nautilus-view.[ch]:
+	Redo the zooming interface
+	
+	* src/file-manager/fm-directory-view.[ch]:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	Implement the new interface for zooming and clean up.
+	Remove the "default zoom affects fonts" behaviour.
+	
+	* src/nautilus-navigation-window.c: 
+	* src/nautilus-zoom-control.[ch]:
+	Use the new simplified zoom interfaces
+
+2004-11-09  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_async_destroying_file), (extension_info_cancel),
+	(info_provider_idle_callback), (info_provider_callback):
+	* libnautilus-private/nautilus-directory-private.h:
+	Handle the case when the file we're getting extension info
+	from goes away.
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_set_up_sidebar):
+	* src/nautilus-window-manage-views.c:
+	(viewed_file_changed_callback):
+	Remove some BONOBO TODOs
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* components/Makefile.am:
+	Remove image_properties subdir
+	
+	* src/Makefile.am:
+	* src/nautilus-application.c: (nautilus_application_instance_init):
+	* src/nautilus-image-properties-page.[ch]:
+	Image property page using new system
+	
+	* src/nautilus-notes-viewer.c:
+	add static
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-sidebar-factory.c:
+	* libnautilus-private/nautilus-sidebar-factory.h:
+	Remove old sidebar-factory API
+	
+	* src/file-manager/fm-tree-view.c: 
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-history-sidebar.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-navigation-window.c:
+	Convert to new provider API.
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-sidebar-provider.[ch]:
+	Add new extensions-style sidebar provider interface
+	
+	* src/nautilus-navigation-window.c:
+	Use it.
+	
+	* src/nautilus-notes-viewer.[ch]:
+	Convert notes viewer to new iface
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* src/Makefile.am:
+	* src/nautilus-application.c: (nautilus_application_instance_init):
+	* src/nautilus-notes-sidebar.[ch]:
+	* src/nautilus-notes-viewer.[ch]:
+	Turn NautilusNotesSidebar into NautilusNotesViewer that is also a
+	property page
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* components/Makefile.am:
+	Remove emblem subdir
+	
+	* libnautilus-private/nautilus-window-info.[ch]:
+	* src/nautilus-window.c: (nautilus_window_set_hidden_files_mode):
+	hidden_files_mode_changed signal
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-tree-view.[ch]:
+	* src/nautilus-application.c: (nautilus_application_instance_init):
+	Make tree view work with new system.
+	
+	* src/nautilus-window-manage-views.c: (load_new_location),
+	(location_has_really_changed):
+	Only emit loading_uri after load_underway has been reported.
+
+2004-11-05  Alexander Larsson  <alexl@redhat.com>
+
+	* src/Makefile.am:
+	* src/nautilus-emblem-sidebar.[ch]:
+	* src/nautilus-application.c:
+	Add emblem sidebar, based on old compontent
+	now uses NautilusSignaller to detect/signal emblem changes
+	
+	* src/nautilus-property-browser.c:
+	Catch the emblems_changed signal and refresh
+
+2004-11-05  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-view.c:
+	Fix crash when switching view.
+
+	* src/nautilus-history-sidebar.c:
+	Some cleanups
+
+	* src/nautilus-navigation-window.c:
+	Fix unref-null warning
+	
+	* src/Makefile.am:
+	* src/nautilus-application.c:
+	* src/nautilus-notes-sidebar.[ch]:
+	Add notes sidebar widget, based on old component
+
+	* components/Makefile.am (SUBDIRS):
+	Remove notes
+
+2004-11-05  Alexander Larsson  <alexl@redhat.com>
+
+	* components/Makefile.am:
+	Remove stuff that are now replaced or not needed anymore.
+	
+	* libnautilus-private/nautilus-window-info.[ch]:
+	* src/nautilus-window.c:
+	Add nautilus_window_info_get_history.
+	
+	* src/Makefile.am:
+	* src/nautilus-history-sidebar.[ch]:
+	* src/nautilus-application.c: (nautilus_application_instance_init):
+	Add history sidebar widget, based on old component.
+	
+	* src/nautilus-information-panel.[ch]:
+	Some fixes
+
+2004-11-05  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	Fix spew
+	
+	* libnautilus-private/nautilus-sidebar-factory.h:
+	* libnautilus-private/nautilus-window-info.[ch]:
+	* src/nautilus-application.c:
+	* src/nautilus-information-panel.[ch]:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-side-pane.c:
+	* src/nautilus-window.c:
+	More work on sidebars. Now the information sidebar works.
+
+2004-11-04  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	Don't build libnautilus subdir
+	
+	* libnautilus-private/Makefile.am:
+	Don't link to libnautilus
+	Add new files (some from libnautilus)
+	Remove not used files
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	Remove hide_built_in_bookmarks
+	
+	* libnautilus-private/nautilus-bonobo-ui.h:
+	* libnautilus-private/nautilus-clipboard-ui.xml:
+	* libnautilus-private/nautilus-clipboard.[ch]:
+	* libnautilus-private/nautilus-idle-queue.[ch]:
+	Move here from libnautilus
+	
+	* libnautilus-private/nautilus-desktop-link.c:
+	* libnautilus-private/nautilus-global-preferences.[ch]:
+	Remove WEB_NAVIGATION_ENABLED ifdef and HOME_URI/BUILT_IN_BOOKMARKS
+	prefs
+	
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-metafile-server.idl:
+	* libnautilus-private/nautilus-program-choosing.h:
+	Remove not needed header inclusions
+	
+	* libnautilus-private/nautilus-sidebar-factory.[ch]:
+	NautilusSidebar registration and creation
+	
+	* libnautilus-private/nautilus-sidebar.[ch]:
+	New NautilusSidebar interface
+	
+	* libnautilus-private/nautilus-sidebar-functions.[ch]:
+	* libnautilus-private/nautilus-undo-context.[ch]:
+	* libnautilus-private/nautilus-view-identifier.[ch]:
+	* libnautilus-private/nautilus-view-query.[ch]:
+	Remove not needed files
+	
+	* libnautilus-private/nautilus-undo-manager.[ch]:
+	* libnautilus-private/nautilus-undo-private.h:
+	* libnautilus-private/nautilus-undo-transaction.[ch]:
+	* libnautilus-private/nautilus-undo.[ch]:
+	Convert from bonobo. Some moved from libnautilus.
+
+	* libnautilus-private/nautilus-view-factory.[ch]:
+	NautilusView registration and creation
+	
+	* libnautilus-private/nautilus-view.[ch]:
+	New NautilusView interface
+	
+	* libnautilus-private/nautilus-window-info.[ch]:
+	New NautilusWindowInfo interface
+	
+	* src/Makefile.am:
+	Don't link to libnautilus
+	Remove not used files
+	
+	* src/nautilus-applicable-views.[ch]:
+	* src/nautilus-component-adapter-factory.[ch]:
+	* src/nautilus-view-frame-corba.[ch]:
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.[ch]:
+	Removed. Not needed anymore.
+	
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-information-panel.[ch]:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-location-dialog.c:
+	* src/nautilus-location-entry.c:
+	* src/nautilus-shell-interface.idl:
+	* src/nautilus-side-pane.h:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-simple-search-bar.c:
+	Minor changes to build.
+
+	* src/nautilus-shell.c:
+	Remove WEB_NAVIGATION_ENABLED
+	
+	* src/nautilus-application.c:
+	* src/nautilus-desktop-window.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-manage-views.[ch]:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.[ch]:
+	Initial conversion to new NautilusView interface.
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-bonobo-provider.[ch]:
+	Removed. Not needed anymore.
+	Temporary commented out fm-tree-view.[ch]
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-icon-view.h:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-list-view.h:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/fm-tree-view.h:
+	Initial conversion to new NautilusView interface.
+	
 2004-11-09  Mark McLoughlin  <mark@skynet.ie>
 
 	* Makefile.am: install nautilus-file-management-properties.desktop

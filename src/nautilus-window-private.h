@@ -49,23 +49,20 @@ typedef enum {
 /* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
 struct NautilusWindowDetails
 {
-        /* Bonobo. */
-        BonoboUIContainer *ui_container;
-        BonoboUIComponent *shell_ui;
-        BonoboUIComponent *status_ui;
-        gboolean updating_bonobo_state;
-
-	int ui_change_depth;
-	guint ui_idle_id;
-	gboolean ui_is_frozen;
-	gboolean ui_pending_initialize_menus_part_2;
-
+        GtkWidget *table;
+        GtkWidget *statusbar;
+        GtkWidget *menubar;
+        
+        GtkUIManager *ui_manager;
+        GtkActionGroup *main_action_group; /* owned by ui_manager */
+        guint help_message_cid;
+        
         /* Menus. */
-	guint refresh_go_menu_idle_id;
+        guint extensions_menu_merge_id;
+        GtkActionGroup *extensions_menu_action_group;
 
         /* Current location. */
         char *location;
-        GList *selection;
 	char *title;
 	NautilusFile *viewed_file;
         gboolean viewed_file_seen;
@@ -76,43 +73,55 @@ struct NautilusWindowDetails
         char *pending_location;
         char *pending_scroll_to;
         GList *pending_selection;
-        NautilusDetermineViewHandle *determine_view_handle;
-        NautilusFile *pending_file_for_position;
+        NautilusFile *determine_view_file;
 
         /* View As choices */
+        GtkActionGroup *view_as_action_group; /* owned by ui_manager */
+        GtkRadioAction *view_as_radio_action;
+        GtkRadioAction *extra_viewer_radio_action;
+        guint short_list_merge_id;
+        guint extra_viewer_merge_id;
         GList *short_list_viewers;
-        NautilusViewIdentifier *extra_viewer;
+        char *extra_viewer;
 
         /* Deferred location change. */
         char *location_to_change_to_at_idle;
         guint location_change_at_idle_id;
 
-        Nautilus_ShowHiddenFilesMode show_hidden_files_mode;
+        NautilusWindowShowHiddenFilesMode show_hidden_files_mode;
 };
 
 struct _NautilusNavigationWindowDetails {
         GtkWidget *content_paned;
-
+        GtkActionGroup *navigation_action_group; /* owned by ui_manager */
+        
         /* Location bar */
         gboolean temporary_navigation_bar;
 
         /* Side Pane */
         int side_pane_width;
-        GtkWidget *current_side_panel;
+        NautilusSidebar *current_side_panel;
 
 	/* Menus */
+        GtkActionGroup *bookmarks_action_group;
         guint refresh_bookmarks_menu_idle_id;
-
+        guint bookmarks_merge_id;
+        
+        GtkActionGroup *go_menu_action_group;
+	guint refresh_go_menu_idle_id;
+        guint go_menu_merge_id;
+        
         /* Toolbar */
+        GtkWidget *toolbar;
         GtkTooltips *tooltips;
+        GtkWidget *location_bar;
 
-	GtkWidget *back_button_item;
-	GtkWidget *forward_button_item;
-
+        guint extensions_toolbar_merge_id;
+        GtkActionGroup *extensions_toolbar_action_group;
+        
 	/* Throbber */
-        gboolean           throbber_active;
-        gboolean           throbber_activating;
-	Bonobo_PropertyBag throbber_property_bag;
+        gboolean    throbber_active;
+        GtkWidget  *throbber;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
@@ -158,37 +167,27 @@ void               nautilus_window_set_status                            (Nautil
                                                                           const char        *status);
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
 void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
-void               nautilus_window_initialize_menus_part_1               (NautilusWindow    *window);
-void               nautilus_window_initialize_menus_part_2               (NautilusWindow    *window);
+void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
-                                                                          BonoboUIComponent *uic,
                                                                           NautilusBookmark  *bookmark, 
                                                                           const char        *parent_path,
                                                                           guint              index_in_parent,
+                                                                          GtkActionGroup    *action_group,
+                                                                          guint              merge_id,
                                                                           GCallback          refresh_callback,
                                                                           NautilusBookmarkFailedCallback failed_callback);
-
-void		   nautilus_window_handle_ui_event_callback		 (BonoboUIComponent *ui,
-									  const char	    *id,
-									  Bonobo_UIComponent_EventType type,
-									  const char	    *state,
-									  NautilusWindow    *window);
 #if NEW_UI_COMPLETE
 void               nautilus_window_go_up                                 (NautilusWindow    *window);
 #endif
 void               nautilus_window_update_find_menu_item                 (NautilusWindow    *window);
-void               nautilus_window_remove_go_menu_callback               (NautilusWindow    *window);
-void               nautilus_window_remove_go_menu_items                  (NautilusWindow    *window);
-void               nautilus_window_update_show_hide_menu_items           (NautilusWindow    *window);
 void               nautilus_window_zoom_in                               (NautilusWindow    *window);
 void               nautilus_window_zoom_out                              (NautilusWindow    *window);
 void               nautilus_window_zoom_to_level                         (NautilusWindow    *window,
-                                                                          float                   level);
-void               nautilus_window_zoom_to_fit                           (NautilusWindow    *window);
+                                                                          NautilusZoomLevel  level);
+void               nautilus_window_zoom_to_default                       (NautilusWindow    *window);
 void		   nautilus_window_show_view_as_dialog			 (NautilusWindow    *window);
 void               nautilus_window_set_content_view_widget               (NautilusWindow    *window,
-                                                                          NautilusViewFrame *content_view);
-Bonobo_UIContainer nautilus_window_get_ui_container                      (NautilusWindow    *window);
+                                                                          NautilusView       *content_view);
 void               nautilus_window_set_viewed_file                       (NautilusWindow    *window,
                                                                           NautilusFile      *file);
 void               nautilus_send_history_list_changed                    (void);
@@ -197,15 +196,17 @@ void               nautilus_remove_from_history_list_no_notify           (const 
 GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
 void		   nautilus_window_update_icon				 (NautilusWindow    *window);
-
+void               nautilus_window_constructed                           (NautilusWindow    *window);
 
 /* Navigation window menus */
-void               nautilus_navigation_window_initialize_menus_part_1               (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_initialize_menus_part_2               (NautilusNavigationWindow    *window);
+void               nautilus_navigation_window_initialize_actions                    (NautilusNavigationWindow    *window);
+void               nautilus_navigation_window_initialize_menus                      (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_remove_bookmarks_menu_callback        (NautilusNavigationWindow    *window);
 
 void               nautilus_navigation_window_remove_bookmarks_menu_items           (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_update_show_hide_menu_items           (NautilusNavigationWindow     *window);
+void               nautilus_navigation_window_remove_go_menu_callback    (NautilusNavigationWindow    *window);
+void               nautilus_navigation_window_remove_go_menu_items       (NautilusNavigationWindow    *window);
 
 /* Navigation window toolbar */
 void               nautilus_navigation_window_activate_throbber                     (NautilusNavigationWindow    *window);
@@ -215,5 +216,6 @@ void               nautilus_navigation_window_set_throbber_active               
                                                                                      gboolean                     active);
 void               nautilus_navigation_window_go_back                               (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_go_forward                            (NautilusNavigationWindow    *window);
+
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

@@ -29,16 +29,15 @@
 
 #include <locale.h> 
 
+#include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-connect-server-dialog.h"
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
-#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-desktop-window.h"
-#include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -59,42 +58,14 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
-#include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
 
-#ifdef ENABLE_PROFILER
-#include "nautilus-profiler.h"
-#endif
-
-/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
- * These are not part of the published set, either because they are
- * development-only or because we expect to change them and
- * don't want other code relying on their existence.
- */
-
-#define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
-#define MENU_PATH_SHOW_HIDE_TOOLBAR			"/menu/View/Show Hide Placeholder/Show Hide Toolbar"
-#define MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
-#define MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Statusbar"
-
-#define MENU_PATH_EXTENSION_ACTIONS                     "/menu/File/Extension Actions"
-#define POPUP_PATH_EXTENSION_ACTIONS                     "/popups/background/Before Zoom Items/Extension Actions"
-
-#define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
-#define COMMAND_SHOW_HIDE_SIDEBAR                       "/commands/Show Hide Sidebar"
-#define COMMAND_SHOW_HIDE_TOOLBAR                       "/commands/Show Hide Toolbar"
-#define COMMAND_SHOW_HIDE_LOCATION_BAR                  "/commands/Show Hide Location Bar"
-#define COMMAND_SHOW_HIDE_STATUS_BAR                    "/commands/Show Hide Statusbar"
-#define COMMAND_GO_BURN_CD				"/commands/Go to Burn CD"
-
-#define ID_SHOW_HIDE_SIDEBAR                            "Show Hide Sidebar"
-#define ID_SHOW_HIDE_TOOLBAR                            "Show Hide Toolbar"
-#define ID_SHOW_HIDE_LOCATION_BAR                       "Show Hide Location Bar"
-#define ID_SHOW_HIDE_STATUS_BAR                         "Show Hide Statusbar"
+#define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
+#define POPUP_PATH_EXTENSION_ACTIONS                     "/background/Before Zoom Items/Extension Actions"
 
 #define COMPUTER_URI          "computer:"
 #define BURN_CD_URI          "burn:"
@@ -140,13 +111,6 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 	g_free (bookmark_holder);
 }
 
-/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
- * These are not part of the published set, either because they are
- * development-only or because we expect to change them and
- * don't want other code relying on their existence.
- */
-
-
 static void
 bookmark_holder_free_cover (gpointer callback_data, GClosure *closure)
 {
@@ -154,7 +118,7 @@ bookmark_holder_free_cover (gpointer callback_data, GClosure *closure)
 }
 
 static void
-activate_bookmark_in_menu_item (BonoboUIComponent *component, gpointer user_data, const char *path)
+activate_bookmark_in_menu_item (GtkAction *action, gpointer user_data)
 {
         BookmarkHolder *holder;
         char *uri;
@@ -172,26 +136,25 @@ activate_bookmark_in_menu_item (BonoboUIComponent *component, gpointer user_data
 
 void
 nautilus_menus_append_bookmark_to_menu (NautilusWindow *window, 
-					BonoboUIComponent *uic,
 					NautilusBookmark *bookmark, 
 					const char *parent_path,
 					guint index_in_parent,
+					GtkActionGroup *action_group,
+					guint merge_id,
 					GCallback refresh_callback,
 					NautilusBookmarkFailedCallback failed_callback)
 {
 	BookmarkHolder *bookmark_holder;		
-	char *raw_name, *display_name, *truncated_name, *verb_name;
-	char *ui_path;
+	char *raw_name, *display_name, *truncated_name, *action_name;
 	GdkPixbuf *pixbuf;
+	GtkAction *action;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 
-	nautilus_window_ui_freeze (window);
-
 	bookmark_holder = bookmark_holder_new (bookmark, window, refresh_callback, failed_callback);
 
-	/* We double the underscores here to escape them so Bonobo will know they are
+	/* We double the underscores here to escape them so gtk+ will know they are
 	 * not keyboard accelerator character prefixes. If we ever find we need to
 	 * escape more than just the underscores, we'll add a menu helper function
 	 * instead of a string utility. (Like maybe escaping control characters.)
@@ -204,60 +167,53 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 
 	/* Create menu item with pixbuf */
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
-	nautilus_bonobo_add_numbered_menu_item 
-		(uic, 
-		 parent_path, 
-		 index_in_parent, 
-		 display_name, 
-		 pixbuf);
-	g_object_unref (pixbuf);
-	g_free (display_name);
+
+	action_name = g_strdup_printf ("bookmark_%d", index_in_parent);
+
+	action = gtk_action_new (action_name,
+				 display_name,
+				 _("Go to the location specified by this bookmark"),
+				 NULL);
 	
-	/* Add the status tip */
-	ui_path = nautilus_bonobo_get_numbered_menu_item_path
-		(uic, parent_path, index_in_parent);
-	nautilus_bonobo_set_tip (uic, ui_path, _("Go to the location specified by this bookmark"));
-	g_free (ui_path);
-			
-	/* Add verb to new bookmark menu item */
-	verb_name = nautilus_bonobo_get_numbered_menu_item_command 
-		(uic, parent_path, index_in_parent);
-	bonobo_ui_component_add_verb_full (uic, verb_name, 
-					   g_cclosure_new (G_CALLBACK (activate_bookmark_in_menu_item),
-							   bookmark_holder, 
-							   bookmark_holder_free_cover));
-	g_free (verb_name);
+	/* TODO: This should really use themed icons and
+	   nautilus_bookmark_get_icon (bookmark), but that doesn't work yet*/
+	g_object_set_data_full (G_OBJECT (action), "menu-icon",
+				g_object_ref (pixbuf),
+				g_object_unref);
+	
+	g_signal_connect_data (action, "activate",
+			       G_CALLBACK (activate_bookmark_in_menu_item),
+			       bookmark_holder, 
+			       bookmark_holder_free_cover, 0);
 
-	nautilus_window_ui_thaw (window);
+	gtk_action_group_add_action (action_group,
+				     GTK_ACTION (action));
+
+	g_object_unref (action);
+
+	gtk_ui_manager_add_ui (window->details->ui_manager,
+			       merge_id,
+			       parent_path,
+			       action_name,
+			       action_name,
+			       GTK_UI_MANAGER_MENUITEM,
+			       FALSE);
+
+	g_object_unref (pixbuf);
+	g_free (action_name);
+	g_free (display_name);
 }
 
 static void
-file_menu_new_window_callback (BonoboUIComponent *component, 
-			       gpointer user_data, 
-			       const char *verb)
-{
-	NautilusWindow *current_window;
-	NautilusWindow *new_window;
-
-	current_window = NAUTILUS_WINDOW (user_data);
-	new_window = nautilus_application_create_navigation_window (
-				current_window->application,
-				gtk_window_get_screen (GTK_WINDOW (current_window)));
-	nautilus_window_go_home (new_window);
-}
-
-static void
-file_menu_close_window_callback (BonoboUIComponent *component, 
-			         gpointer user_data, 
-			         const char *verb)
+action_close_window_callback (GtkAction *action, 
+			      gpointer user_data)
 {
 	nautilus_window_close (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-connect_to_server_callback (BonoboUIComponent *component, 
-			    gpointer user_data, 
-			    const char *verb)
+action_connect_to_server_callback (GtkAction *action, 
+				   gpointer user_data)
 {
 	GtkWidget *dialog;
 	
@@ -283,96 +239,39 @@ have_burn_uri (void)
 	return res;
 }
 
-#ifdef HAVE_MEDUSA
 static void
-file_menu_find_callback (BonoboUIComponent *component, 
-			 gpointer user_data, 
-			 const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, TRUE);
-	}
-}
-
-static void
-toolbar_toggle_find_mode_callback (BonoboUIComponent *component, 
-			             gpointer user_data, 
-			             const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, !nautilus_window_get_search_mode (window));
-	}
-}
-#endif
-
-static void
-go_menu_location_callback (BonoboUIComponent *component,
-			   gpointer user_data,
-			   const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	nautilus_window_prompt_for_location (window);
-}			   
-
-static void
-stop_button_callback (BonoboUIComponent *component, 
-			       gpointer user_data, 
-			       const char *verb)
+action_stop_callback (GtkAction *action, 
+		      gpointer user_data)
 {
 	nautilus_window_stop_loading (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-edit_menu_undo_callback (BonoboUIComponent *component, 
-			 gpointer user_data, 
-			 const char *verb) 
+action_undo_callback (GtkAction *action, 
+		      gpointer user_data) 
 {
 	nautilus_undo_manager_undo
 		(NAUTILUS_WINDOW (user_data)->application->undo_manager);
 }
 
 static void
-go_menu_up_callback (BonoboUIComponent *component, 
-		     gpointer user_data, 
-		     const char *verb) 
-{
-	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), FALSE);
-}
-
-static void
-go_menu_home_callback (BonoboUIComponent *component, 
-		       gpointer user_data, 
-		       const char *verb) 
+action_home_callback (GtkAction *action, 
+		      gpointer user_data) 
 {
 	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-go_menu_go_to_computer_callback (BonoboUIComponent *component, 
-				 gpointer user_data, 
-				 const char *verb) 
+action_go_to_computer_callback (GtkAction *action, 
+				gpointer user_data) 
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       COMPUTER_URI);
 }
 
 static void
-go_menu_go_to_templates_callback (BonoboUIComponent *component, 
-				 gpointer user_data, 
-				 const char *verb) 
+action_go_to_templates_callback (GtkAction *action,
+				 gpointer user_data) 
 {
 	char *uri;
 
@@ -384,94 +283,47 @@ go_menu_go_to_templates_callback (BonoboUIComponent *component,
 }
 
 static void
-go_menu_go_to_trash_callback (BonoboUIComponent *component, 
-			      gpointer user_data, 
-			      const char *verb) 
+action_go_to_trash_callback (GtkAction *action, 
+			     gpointer user_data) 
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       EEL_TRASH_URI);
 }
 
 static void
-go_menu_go_to_burn_cd_callback (BonoboUIComponent *component, 
-				gpointer user_data, 
-				const char *verb) 
+action_go_to_burn_cd_callback (GtkAction *action,
+			       gpointer user_data) 
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       BURN_CD_URI);
 }
 
 static void
-view_menu_reload_callback (BonoboUIComponent *component, 
-			   gpointer user_data, 
-			   const char *verb) 
+action_reload_callback (GtkAction *action, 
+			gpointer user_data) 
 {
 	nautilus_window_reload (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_show_hide_statusbar_state_changed_callback (BonoboUIComponent *component, 
-						      const char *path,
-						      Bonobo_UIComponent_EventType type,
-						      const char *state,
-						      gpointer user_data)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-        if (strcmp (state, "") == 0) {
-                /* State goes blank when component is removed; ignore this. */
-                return;
-        }
-
-	if (!strcmp (state, "1")) {
-		nautilus_window_show_status_bar (window);
-	} else {
-		nautilus_window_hide_status_bar (window);
-	}
-}
-
-void
-nautilus_window_update_show_hide_menu_items (NautilusWindow *window) 
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_ui_freeze (window);
-
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
-		
-	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
-					  COMMAND_SHOW_HIDE_STATUS_BAR,
-					  nautilus_window_status_bar_showing (window));
-
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
-
-	nautilus_window_ui_thaw (window);
-}
-
-static void
-view_menu_zoom_in_callback (BonoboUIComponent *component, 
-			    gpointer user_data, 
-			    const char *verb) 
+action_zoom_in_callback (GtkAction *action, 
+			 gpointer user_data) 
 {
 	nautilus_window_zoom_in (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_zoom_out_callback (BonoboUIComponent *component, 
-			     gpointer user_data, 
-			     const char *verb) 
+action_zoom_out_callback (GtkAction *action, 
+			  gpointer user_data) 
 {
 	nautilus_window_zoom_out (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_zoom_normal_callback (BonoboUIComponent *component, 
-			        gpointer user_data, 
-			        const char *verb) 
+action_zoom_normal_callback (GtkAction *action, 
+			     gpointer user_data) 
 {
-	nautilus_window_zoom_to_level (NAUTILUS_WINDOW (user_data), 1.0);
+	nautilus_window_zoom_to_default (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -484,9 +336,8 @@ preferences_respond_callback (GtkDialog *dialog,
 }
 
 static void
-preferences_callback (BonoboUIComponent *component, 
-		      gpointer user_data, 
-		      const char *verb)
+action_preferences_callback (GtkAction *action, 
+			     gpointer user_data)
 {
 	GtkWindow *window;
 
@@ -496,9 +347,8 @@ preferences_callback (BonoboUIComponent *component,
 }
 
 static void
-backgrounds_and_emblems_callback (BonoboUIComponent *component, 
-				  gpointer user_data, 
-				  const char *verb)
+action_backgrounds_and_emblems_callback (GtkAction *action, 
+					 gpointer user_data)
 {
 	GtkWindow *window;
 
@@ -508,9 +358,8 @@ backgrounds_and_emblems_callback (BonoboUIComponent *component,
 }
 
 static void
-help_menu_about_nautilus_callback (BonoboUIComponent *component, 
-			           gpointer user_data, 
-			           const char *verb)
+action_about_nautilus_callback (GtkAction *action,
+				gpointer user_data)
 {
 	static GtkWidget *about = NULL;
 	const char *authors[] = {
@@ -600,9 +449,15 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 }
 
 static void
-help_menu_nautilus_manual_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb)
+action_up_callback (GtkAction *action, 
+		     gpointer user_data) 
+{
+	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), FALSE);
+}
+
+static void
+action_nautilus_manual_callback (GtkAction *action, 
+				 gpointer user_data)
 {
 	NautilusWindow *window;
 	GError *error;
@@ -638,6 +493,161 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 	}
 }
 
+static void
+menu_item_select_cb (GtkMenuItem *proxy,
+		     NautilusWindow *window)
+{
+	GtkAction *action;
+	char *message;
+
+	action = g_object_get_data (G_OBJECT (proxy),  "gtk-action");
+	g_return_if_fail (action != NULL);
+	
+	g_object_get (G_OBJECT (action), "tooltip", &message, NULL);
+	if (message) {
+		gtk_statusbar_push (GTK_STATUSBAR (window->details->statusbar),
+				    window->details->help_message_cid, message);
+		g_free (message);
+	}
+}
+
+static void
+menu_item_deselect_cb (GtkMenuItem *proxy,
+		       NautilusWindow *window)
+{
+	gtk_statusbar_pop (GTK_STATUSBAR (window->details->statusbar),
+			   window->details->help_message_cid);
+}
+
+static void
+disconnect_proxy_cb (GtkUIManager *manager,
+		     GtkAction *action,
+		     GtkWidget *proxy,
+		     NautilusWindow *window)
+{
+	if (GTK_IS_MENU_ITEM (proxy)) {
+		g_signal_handlers_disconnect_by_func
+			(proxy, G_CALLBACK (menu_item_select_cb), window);
+		g_signal_handlers_disconnect_by_func
+			(proxy, G_CALLBACK (menu_item_deselect_cb), window);
+	}
+}
+
+static void
+connect_proxy_cb (GtkUIManager *manager,
+		  GtkAction *action,
+		  GtkWidget *proxy,
+		  NautilusWindow *window)
+{
+	GdkPixbuf *icon;
+	GtkWidget *widget;
+	
+	if (GTK_IS_MENU_ITEM (proxy)) {
+		g_signal_connect (proxy, "select",
+				  G_CALLBACK (menu_item_select_cb), window);
+		g_signal_connect (proxy, "deselect",
+				  G_CALLBACK (menu_item_deselect_cb), window);
+
+
+		/* This is a way to easily get pixbufs into the menu items */
+		icon = g_object_get_data (G_OBJECT (action), "menu-icon");
+		if (icon != NULL) {
+			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy),
+						       gtk_image_new_from_pixbuf (icon));
+		}
+	}
+	if (GTK_IS_TOOL_BUTTON (proxy)) {
+		icon = g_object_get_data (G_OBJECT (action), "toolbar-icon");
+		if (icon != NULL) {
+			widget = gtk_image_new_from_pixbuf (icon);
+			gtk_widget_show (widget);
+			gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (proxy),
+							 widget);
+		}
+	}
+	
+}
+
+static GtkActionEntry main_entries[] = {
+  { "File", NULL, N_("_File") },               /* name, stock id, label */
+  { "Edit", NULL, N_("_Edit") },               /* name, stock id, label */
+  { "View", NULL, N_("_View") },               /* name, stock id, label */
+  { "Help", NULL, N_("_Help") },               /* name, stock id, label */
+  { "Close", GTK_STOCK_CLOSE,                  /* name, stock id */
+    N_("_Close"), "<control>W",                /* label, accelerator */
+    N_("Close this folder"),                   /* tooltip */ 
+    G_CALLBACK (action_close_window_callback) },
+  { "Backgrounds and Emblems", NULL,
+    N_("_Backgrounds and Emblems..."),               
+    NULL, N_("Display patterns, colors, and emblems that can be used to customize appearance"),
+    G_CALLBACK (action_backgrounds_and_emblems_callback) },
+  { "Preferences", GTK_STOCK_PREFERENCES,
+    N_("Prefere_nces"),               
+    NULL, N_("Edit Nautilus preferences"),
+    G_CALLBACK (action_preferences_callback) },
+  { "Undo", NULL, N_("_Undo"),               /* name, stock id, label */
+    "<control>Z", N_("Undo the last text change"),
+    G_CALLBACK (action_undo_callback) },
+  { "Up", GTK_STOCK_GO_UP, N_("Open _Parent"),               /* name, stock id, label */
+    "<alt>Up", N_("Open the parent folder"),
+    G_CALLBACK (action_up_callback) },
+  { "UpAccel", NULL, "UpAccel",               /* name, stock id, label */
+    "", NULL,
+    G_CALLBACK (action_up_callback) },
+  { "Stop", GTK_STOCK_STOP,                        /* name, stock id */
+    N_("_Stop"), NULL,           /* label, accelerator */
+    NULL,                                      /* tooltip */ 
+    G_CALLBACK (action_stop_callback) },
+  { "Reload", GTK_STOCK_REFRESH,                        /* name, stock id */
+    N_("_Reload"), "<control>R",           /* label, accelerator */
+    NULL,                                      /* tooltip */ 
+    G_CALLBACK (action_reload_callback) },
+  { "Nautilus Manual", GTK_STOCK_HELP,                        /* name, stock id */
+    N_("_Contents"), "F1",           /* label, accelerator */
+    N_("Display Nautilus help"),                                      /* tooltip */ 
+    G_CALLBACK (action_nautilus_manual_callback) },
+  { "About Nautilus", GTK_STOCK_ABOUT,                        /* name, stock id */
+    N_("_About"), NULL,           /* label, accelerator */
+    N_("Display credits for the creators of Nautilus"),                                      /* tooltip */ 
+    G_CALLBACK (action_about_nautilus_callback) },
+  { "Zoom In", GTK_STOCK_ZOOM_IN,                        /* name, stock id */
+    N_("Zoom _In"), "<control>plus",           /* label, accelerator */
+    N_("Show the contents in more detail"),                                      /* tooltip */ 
+    G_CALLBACK (action_zoom_in_callback) },
+  { "Zoom Out", GTK_STOCK_ZOOM_OUT,                        /* name, stock id */
+    N_("Zoom _Out"), "<control>minus",           /* label, accelerator */
+    N_("Show the contents in less detail"),                                      /* tooltip */ 
+    G_CALLBACK (action_zoom_out_callback) },
+  { "Zoom Normal", GTK_STOCK_ZOOM_100,                        /* name, stock id */
+    N_("Normal Si_ze"), NULL,           /* label, accelerator */
+    N_("Show the contents at the normal size"),                                      /* tooltip */ 
+    G_CALLBACK (action_zoom_normal_callback) },
+  { "Connect to Server", NULL,                        /* name, stock id */
+    N_("Connect to _Server..."), NULL,           /* label, accelerator */
+    N_("Set up a connection to a network server"),                                      /* tooltip */ 
+    G_CALLBACK (action_connect_to_server_callback) },
+  { "Home", GTK_STOCK_HOME,                        /* name, stock id */
+    N_("_Home"), "<alt>Home",           /* label, accelerator */
+    N_("Go to the home folder"),                                  /* tooltip */ 
+    G_CALLBACK (action_home_callback) },
+  { "Go to Computer", "gnome-fs-client",                        /* name, stock id */
+    N_("_Computer"), NULL,           /* label, accelerator */
+    N_("Go to the computer location"),                                  /* tooltip */ 
+    G_CALLBACK (action_go_to_computer_callback) },
+  { "Go to Templates", NULL,                        /* name, stock id */
+    N_("T_emplates"), NULL,           /* label, accelerator */
+    N_("Go to the templates folder"),                                  /* tooltip */ 
+    G_CALLBACK (action_go_to_templates_callback) },
+  { "Go to Trash", NULL,                        /* name, stock id */
+    N_("_Trash"), NULL,           /* label, accelerator */
+    N_("Go to the trash folder"),                                  /* tooltip */ 
+    G_CALLBACK (action_go_to_trash_callback) },
+  { "Go to Burn CD", NULL,                        /* name, stock id */
+    N_("CD _Creator"), NULL,           /* label, accelerator */
+    N_("Go to the CD/DVD Creator"),                                  /* tooltip */ 
+    G_CALLBACK (action_go_to_burn_cd_callback) },
+};
+
 /**
  * nautilus_window_initialize_menus
  * 
@@ -645,76 +655,43 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
  * @window: A recently-created NautilusWindow.
  */
 void 
-nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
+nautilus_window_initialize_menus (NautilusWindow *window)
 {
-	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
-		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
-		BONOBO_UI_VERB ("Connect to Server", connect_to_server_callback),
-#ifdef HAVE_MEDUSA
-		BONOBO_UI_VERB ("Find", file_menu_find_callback),
-		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
-#endif
-		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
-		BONOBO_UI_VERB ("Backgrounds and Emblems", backgrounds_and_emblems_callback),
-		BONOBO_UI_VERB ("Up", go_menu_up_callback),
-		BONOBO_UI_VERB ("Home", go_menu_home_callback),
-		BONOBO_UI_VERB ("Go to Computer", go_menu_go_to_computer_callback),
-		BONOBO_UI_VERB ("Go to Templates", go_menu_go_to_templates_callback),
-		BONOBO_UI_VERB ("Go to Trash", go_menu_go_to_trash_callback),
-		BONOBO_UI_VERB ("Go to Burn CD", go_menu_go_to_burn_cd_callback),
-		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),
-		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
-		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
-		BONOBO_UI_VERB ("Zoom Out", view_menu_zoom_out_callback),
-		BONOBO_UI_VERB ("Zoom Normal", view_menu_zoom_normal_callback),
-
-#ifdef ENABLE_PROFILER
-		BONOBO_UI_VERB ("Start Profiling", nautilus_profiler_bonobo_ui_start_callback),
-		BONOBO_UI_VERB ("Stop Profiling", nautilus_profiler_bonobo_ui_stop_callback),
-		BONOBO_UI_VERB ("Reset Profiling", nautilus_profiler_bonobo_ui_reset_callback),
-		BONOBO_UI_VERB ("Report Profiling", nautilus_profiler_bonobo_ui_report_callback),
-#endif
-
-		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
-		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
-		BONOBO_UI_VERB ("Preferences", preferences_callback),
-		BONOBO_UI_VERB ("Stop", stop_button_callback),
-
-		BONOBO_UI_VERB_END
-	};
-
-	nautilus_window_ui_freeze (window);
-
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
-
-	nautilus_window_update_show_hide_menu_items (window);
-
-	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
-
-	bonobo_ui_component_add_listener
-		(window->details->shell_ui,
-		 ID_SHOW_HIDE_STATUS_BAR,
-		 view_menu_show_hide_statusbar_state_changed_callback, 
-		 window);
-
-	/* Register to catch Bonobo UI events so we can notice View As changes */
-	g_signal_connect_object (window->details->shell_ui, "ui_event", 
-				 G_CALLBACK (nautilus_window_handle_ui_event_callback), window, 0);
-
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+	GtkActionGroup *action_group;
+	GtkUIManager *ui_manager;
+	GtkAction *action;
+	const char *ui;
 	
+	action_group = gtk_action_group_new ("ShellActions");
+	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+	window->details->main_action_group = action_group;
+	gtk_action_group_add_actions (action_group, 
+				      main_entries, G_N_ELEMENTS (main_entries),
+				      window);
+
+	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_UP);
+	g_object_set (action, "short_label", _("_Up"), NULL);
+	
+	window->details->ui_manager = gtk_ui_manager_new ();
+	ui_manager = window->details->ui_manager;
+	gtk_window_add_accel_group (GTK_WINDOW (window),
+				    gtk_ui_manager_get_accel_group (ui_manager));
+	
+	g_signal_connect (ui_manager, "connect_proxy",
+			  G_CALLBACK (connect_proxy_cb), window);
+	g_signal_connect (ui_manager, "disconnect_proxy",
+			  G_CALLBACK (disconnect_proxy_cb), window);
+	
+	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
+	g_object_unref (action_group); /* owned by ui manager */
+
+	ui = nautilus_ui_string_get ("nautilus-shell-ui.xml");
+	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+
 	if (!have_burn_uri ()) {
-		nautilus_bonobo_set_hidden (window->details->shell_ui,
-					    COMMAND_GO_BURN_CD,
-					    TRUE);
+		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_GO_TO_BURN_CD);
+		gtk_action_set_visible (action, FALSE);
 	}
-	
-#ifndef ENABLE_PROFILER
-	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
-#endif
-
-	nautilus_window_ui_thaw (window);
 }
 
 static GList *
@@ -746,34 +723,61 @@ get_extension_menus (NautilusWindow *window)
 void
 nautilus_window_load_extension_menus (NautilusWindow *window)
 {
+	NautilusMenuItem *item;
+	GtkActionGroup *action_group;
+	GtkAction *action;
 	GList *items;
 	GList *l;
+	int i;
+	guint merge_id;
+
+	if (window->details->extensions_menu_merge_id != 0) {
+		gtk_ui_manager_remove_ui (window->details->ui_manager,
+					  window->details->extensions_menu_merge_id);
+		window->details->extensions_menu_merge_id = 0;
+	}
+
+	if (window->details->extensions_menu_action_group != NULL) {
+		gtk_ui_manager_remove_action_group (window->details->ui_manager,
+						    window->details->extensions_menu_action_group);
+		window->details->extensions_menu_action_group = NULL;
+	}
 	
-	nautilus_bonobo_remove_menu_items_and_commands
-		(window->details->shell_ui, POPUP_PATH_EXTENSION_ACTIONS);
-	nautilus_bonobo_remove_menu_items_and_commands
-		(window->details->shell_ui, MENU_PATH_EXTENSION_ACTIONS);
+	merge_id = gtk_ui_manager_new_merge_id (window->details->ui_manager);
+	window->details->extensions_menu_merge_id = merge_id;
+	action_group = gtk_action_group_new ("ExtensionsMenuGroup");
+	window->details->extensions_menu_action_group = action_group;
+	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+	gtk_ui_manager_insert_action_group (window->details->ui_manager, action_group, 0);
+	g_object_unref (action_group); /* owned by ui manager */
 
 	items = get_extension_menus (window);
 
-	for (l = items; l != NULL; l = l->next) {
-		NautilusMenuItem *item;
-		
+	for (l = items, i = 0; l != NULL; l = l->next, i++) {
 		item = NAUTILUS_MENU_ITEM (l->data);
 
-		nautilus_bonobo_add_extension_item_command
-			(window->details->shell_ui, item);
+		action = nautilus_action_from_menu_item (item);
+		gtk_action_group_add_action (action_group,
+					     GTK_ACTION (action));
+		g_object_unref (action);
 		
-		nautilus_bonobo_add_extension_item
-			(window->details->shell_ui, 
-			 MENU_PATH_EXTENSION_ACTIONS,
-			 item);
+		gtk_ui_manager_add_ui (window->details->ui_manager,
+				       merge_id,
+				       MENU_PATH_EXTENSION_ACTIONS,
+				       gtk_action_get_name (action),
+				       gtk_action_get_name (action),
+				       GTK_UI_MANAGER_MENUITEM,
+				       FALSE);
 
-		nautilus_bonobo_add_extension_item
-			(window->details->shell_ui, 
-			 POPUP_PATH_EXTENSION_ACTIONS,
-			 item);
+		gtk_ui_manager_add_ui (window->details->ui_manager,
+				       merge_id,
+				       POPUP_PATH_EXTENSION_ACTIONS,
+				       gtk_action_get_name (action),
+				       gtk_action_get_name (action),
+				       GTK_UI_MANAGER_MENUITEM,
+				       FALSE);
 
+		
 		g_object_unref (item);
 	}
 

@@ -49,7 +49,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
-#include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -436,7 +436,7 @@ nautilus_location_bar_new (NautilusNavigationWindow *window)
 	/* Clipboard */
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (location_bar->details->entry),
-		 nautilus_window_get_ui_container (NAUTILUS_WINDOW (window)),
+		 nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window)),
 		 TRUE);
 
 	return bar;

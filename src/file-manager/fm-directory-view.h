@@ -38,14 +38,11 @@
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <eel/eel-string-list.h>
-#include <libnautilus/nautilus-view.h>
+#include <libnautilus-private/nautilus-view.h>
+#include <libnautilus-private/nautilus-window-info.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
-
-
-/* Bonobo command paths that are used by subclasses. Others are defined in fm-directory-view.c */
-#define FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND		"/commands/Reset Background"
 
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
@@ -162,9 +159,11 @@ struct FMDirectoryViewClass {
         /* zoom_to_level is a function pointer that subclasses must override
          * to set the zoom level of an object to the specified level. */
         void    (* zoom_to_level) 		(FMDirectoryView *view, 
-        				         gint 		 level);
+        				         NautilusZoomLevel level);
 
-        /* restore_default_zoom_level is a function pointer that subclasses must override
+        NautilusZoomLevel (* get_zoom_level)    (FMDirectoryView *view);
+
+	/* restore_default_zoom_level is a function pointer that subclasses must override
          * to restore the zoom level of an object to a default setting. */
         void    (* restore_default_zoom_level) (FMDirectoryView *view);
 
@@ -284,15 +283,17 @@ struct FMDirectoryViewClass {
 	void	(* sort_directories_first_changed) (FMDirectoryView *view);
 
 	void	(* emblems_changed)                (FMDirectoryView *view);
+
+        /* Signals used only for keybindings */
+        gboolean (* trash)                         (FMDirectoryView *view);
+        gboolean (* delete)                        (FMDirectoryView *view);
 };
 
 /* GObject support */
 GType               fm_directory_view_get_type                         (void);
 
-/* Component embedding support */
-NautilusView *      fm_directory_view_get_nautilus_view                (FMDirectoryView  *view);
-
 /* Functions callable from the user interface and elsewhere. */
+NautilusWindowInfo *fm_directory_view_get_nautilus_window              (FMDirectoryView  *view);
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
 char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_accept_item                  (NautilusFile     *target_item,
@@ -308,9 +309,8 @@ GtkWidget *         fm_directory_view_get_background_widget            (FMDirect
 void                fm_directory_view_bump_zoom_level                  (FMDirectoryView  *view,
 									int               zoom_increment);
 void                fm_directory_view_zoom_to_level                    (FMDirectoryView  *view,
-									int               zoom_level);
-void                fm_directory_view_set_zoom_level                   (FMDirectoryView  *view,
-									int               zoom_level);
+									NautilusZoomLevel zoom_level);
+NautilusZoomLevel   fm_directory_view_get_zoom_level                   (FMDirectoryView  *view);
 void                fm_directory_view_restore_default_zoom_level       (FMDirectoryView  *view);
 void                fm_directory_view_reset_to_defaults                (FMDirectoryView  *view);
 void                fm_directory_view_select_all                       (FMDirectoryView  *view);
@@ -347,8 +347,8 @@ void                fm_directory_view_end_loading                      (FMDirect
  */
 void                fm_directory_view_activate_files                   (FMDirectoryView  *view,
 									GList            *files,
-									Nautilus_ViewFrame_OpenMode mode,
-									Nautilus_ViewFrame_OpenFlags flags);
+									NautilusWindowOpenMode mode,
+									NautilusWindowOpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
 gboolean            fm_directory_view_confirm_multiple_windows         (FMDirectoryView  *view,
@@ -356,8 +356,7 @@ gboolean            fm_directory_view_confirm_multiple_windows         (FMDirect
 void                fm_directory_view_queue_file_change                (FMDirectoryView  *view,
 									NautilusFile     *file);
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
-Bonobo_UIContainer  fm_directory_view_get_bonobo_ui_container          (FMDirectoryView  *view);
-BonoboControl *     fm_directory_view_get_bonobo_control               (FMDirectoryView  *view);
+GtkUIManager *      fm_directory_view_get_ui_manager                   (FMDirectoryView  *view);
 EelStringList *     fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
@@ -376,5 +375,6 @@ void                fm_directory_view_new_folder                       (FMDirect
 void                fm_directory_view_new_file                         (FMDirectoryView  *view,
 									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
+void                fm_directory_view_init_view_iface                  (NautilusViewIface *iface);
 
 #endif /* FM_DIRECTORY_VIEW_H */

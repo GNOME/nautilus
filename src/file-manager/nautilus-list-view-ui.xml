@@ -1,16 +1,9 @@
-<Root>
-<commands>
-	<cmd name="Visible Columns"
-         _label="Visible _Columns..."
-	 _tip="Select the columns visible in this folder"/>
-</commands>
-<menu>
-	<submenu name="View">
+<ui>
+<menubar name="MenuBar">
+	<menu action="View">
 		<placeholder name="View Items Placeholder">
-			<menuitem name="Visible Columns"
-				  verb="Visible Columns"/>
+			<menuitem name="Visible Columns" action="Visible Columns"/>
 		</placeholder>
-		
-	</submenu>
-</menu>
-</Root>
+	</menu>
+</menubar>
+</ui>

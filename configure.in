@@ -5,8 +5,7 @@ dnl ===========================================================================
 ART_REQUIRED=2.3.10
 BONOBO_ACTIVATION_REQUIRED=2.1.0
 BONOBO_REQUIRED=2.1.0
-BONOBO_UI_REQUIRED=2.2.0
-EEL_REQUIRED=2.8.2
+EEL_REQUIRED=2.9.1
 ESOUND_REQUIRED=0.2.27
 GLIB_REQUIRED=2.3.0
 GNOME_DESKTOP_REQUIRED=2.1.0
@@ -16,7 +15,6 @@ GNOME_VFS_REQUIRED=2.5.1
 ORBIT_REQUIRED=2.4.0
 PANGO_REQUIRED=1.1.2
 GTK_REQUIRED=2.3.0
-MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=2.0.1
 XML_REQUIRED=2.4.7
 STARTUP_NOTIFICATION_REQUIRED=0.5
@@ -25,7 +23,6 @@ EXIF_REQUIRED=0.5.12
 AC_SUBST(ART_REQUIRED)
 AC_SUBST(BONOBO_ACTIVATION_REQUIRED)
 AC_SUBST(BONOBO_REQUIRED)
-AC_SUBST(BONOBO_UI_REQUIRED)
 AC_SUBST(EEL_REQUIRED)
 AC_SUBST(ESOUND_REQUIRED)
 AC_SUBST(GLIB_REQUIRED)
@@ -36,7 +33,6 @@ AC_SUBST(GNOME_VFS_REQUIRED)
 AC_SUBST(ORBIT_REQUIRED)
 AC_SUBST(PANGO_REQUIRED)
 AC_SUBST(GTK_REQUIRED)
-AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(RSVG_REQUIRED)
 AC_SUBST(XML_REQUIRED)
 AC_SUBST(STARTUP_NOTIFICATION_REQUIRED)
@@ -88,7 +84,6 @@ PKG_CHECK_MODULES(ALL, \
 	gtk+-2.0 >= $GTK_REQUIRED \
 	libart-2.0 >= $ART_REQUIRED \
 	libbonobo-2.0 >= $BONOBO_REQUIRED \
-	libbonoboui-2.0 >= $BONOBO_UI_REQUIRED \
 	libgnome-2.0 >= $GNOME_REQUIRED \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
 	librsvg-2.0 >= $RSVG_REQUIRED \
@@ -214,16 +209,6 @@ AC_SUBST(HAVE_JW)
 
 dnl ==========================================================================
 
-dnl medusa checking
-
-AC_MSG_CHECKING(for Medusa)
-
-PKG_CHECK_MODULES(MEDUSA, medusa-2.0 >= $MEDUSA_REQUIRED, have_medusa=yes, have_medusa=no)
-if test "x$have_medusa" = "xyes"; then
-  AC_DEFINE(HAVE_MEDUSA,1)
-  EXTRA_CORE_MODULES="$EXTRA_CORE_MODULES medusa-2.0"
-fi
-
 dnl exif checking
 
 AC_MSG_CHECKING(for libExif)
@@ -296,15 +281,6 @@ LIBEGG_MODULES="gtk+-2.0 libgnome-2.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_CFLAGS)
 
-dnl libnautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-LIBNAUTILUS_MODULES="eel-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0"
-LIBNAUTILUS_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_MODULES`"
-AC_SUBST(LIBNAUTILUS_CFLAGS)
-LIBNAUTILUS_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_MODULES`"
-AC_SUBST(LIBNAUTILUS_LIBS)
-LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | $srcdir/add-include-prefix`"
-AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
-
 dnl libnautilus-extension
 LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0 gnome-vfs-2.0"
 LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES`"
@@ -313,27 +289,13 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound gnome-desktop-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $LIBJPEG $x_libs"
 AC_SUBST(CORE_LIBS)
 CORE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $CORE_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(CORE_IDL_INCLUDES)
-
-dnl typical components
-COMPONENT_MODULES="eel-2.0 libbonoboui-2.0 gnome-vfs-module-2.0 gnome-desktop-2.0"
-COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $COMPONENT_MODULES`"
-AC_SUBST(COMPONENT_CFLAGS)
-COMPONENT_LIBS="`$PKG_CONFIG --libs $COMPONENT_MODULES`"
-AC_SUBST(COMPONENT_LIBS)
-
-dnl emblems component
-EMBLEM_COMPONENT_MODULES="$COMPONENT_MODULES librsvg-2.0"
-EMBLEM_COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $EMBLEM_COMPONENT_MODULES`"
-AC_SUBST(EMBLEM_COMPONENT_CFLAGS)
-EMBLEM_COMPONENT_LIBS="`$PKG_CONFIG --libs $EMBLEM_COMPONENT_MODULES`"
-AC_SUBST(EMBLEM_COMPONENT_LIBS)
 
 DISABLE_DEPRECATED_CFLAGS=""
 
@@ -350,7 +312,7 @@ dnl	-DBONOBO_DISABLE_DEPRECATED
 AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
 
 dnl libbackground
-PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0 libbonoboui-2.0")
+PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0")
 dnl ==========================================================================
 
 dnl ==============================================
@@ -367,14 +329,6 @@ AM_GCONF_SOURCE_2
 
 AC_OUTPUT([
 Makefile
-components/Makefile
-components/adapter/Makefile
-components/history/Makefile
-components/notes/Makefile
-components/text/Makefile
-components/throbber/Makefile
-components/emblem/Makefile
-components/image_properties/Makefile
 cut-n-paste-code/Makefile
 cut-n-paste-code/libegg/Makefile
 cut-n-paste-code/gsequence/Makefile
@@ -391,10 +345,7 @@ icons/gnome/Makefile
 icons/sierra/Makefile
 icons/tahoe/Makefile
 libbackground/Makefile
-libnautilus-adapter/Makefile
 libnautilus-private/Makefile
-libnautilus/Makefile
-libnautilus/libnautilus.pc
 libnautilus-extension/Makefile
 libnautilus-extension/libnautilus-extension.pc
 nautilus.spec

@@ -30,8 +30,6 @@
 
 #include <eel/eel-background-box.h>
 
-#include "nautilus-view-frame.h"
-
 #define NAUTILUS_TYPE_INFORMATION_PANEL \
 	(nautilus_information_panel_get_type ())
 #define NAUTILUS_INFORMATION_PANEL(obj) \
@@ -44,6 +42,8 @@
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INFORMATION_PANEL))
 
 typedef struct NautilusInformationPanelDetails NautilusInformationPanelDetails;
+
+#define NAUTILUS_INFORMATION_PANEL_ID "NautilusInformationPanel"
 
 typedef struct {
 	EelBackgroundBox parent_slot;
@@ -58,12 +58,6 @@ typedef struct {
 } NautilusInformationPanelClass;
 
 GType            nautilus_information_panel_get_type     (void);
-NautilusInformationPanel *nautilus_information_panel_new          (void);
-void             nautilus_information_panel_set_uri      (NautilusInformationPanel   *information_panel,
-						const char        *new_uri,
-						const char        *initial_title);
-void             nautilus_information_panel_set_title    (NautilusInformationPanel   *information_panel,
-						const char        *new_title);
-void             nautilus_information_panel_setup_width  (NautilusInformationPanel   *information_panel);
+void             nautilus_information_panel_register     (void);
 
 #endif /* NAUTILUS_INFORMATION_PANEL_H */

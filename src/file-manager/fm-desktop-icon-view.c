@@ -27,9 +27,9 @@
 #include <config.h>
 #include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
+#include "fm-actions.h"
 
 #include <X11/Xatom.h>
-#include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkmain.h>
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
@@ -45,14 +45,15 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory-notify.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-monitor.h>
@@ -67,23 +68,15 @@
 #include <unistd.h>
 #include <gtk/gtkmessagedialog.h>
 
-#define DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL		"/commands/Empty Trash Conditional"
-#define DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL	"/commands/Unmount Volume Conditional"
-#define DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL      "/commands/Protect Conditional"
-#define DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL       "/commands/Format Conditional"
-#define DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL     "/commands/Media Properties Conditional"
-
-#define DESKTOP_BACKGROUND_POPUP_PATH_DISKS	"/popups/background/Before Zoom Items/Volume Items/Disks"
-#define DESKTOP_BACKGROUND_POPUP_PATH_VOLUME_ITEMS	"/popups/background/Before Zoom Items/Volume Items"
-
 /* Timeout to check the desktop directory for updates */
 #define RESCAN_TIMEOUT 4000
 
 struct FMDesktopIconViewDetails
 {
-	BonoboUIComponent *ui;
 	GdkWindow *root_window;
-
+	GtkActionGroup *desktop_action_group;
+	guint desktop_merge_id;
+	
 	/* For the desktop rescanning
 	 */
 	gulong delayed_init_signal;
@@ -230,6 +223,7 @@ static void
 fm_desktop_icon_view_destroy (GtkObject *object)
 {
 	FMDesktopIconView *icon_view;
+	GtkUIManager *ui_manager;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
 
@@ -243,11 +237,11 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 					 default_zoom_level_changed,
 					 icon_view);
 	
-	/* Clean up details */	
-	if (icon_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
-		bonobo_object_unref (icon_view->details->ui);
-		icon_view->details->ui = NULL;
+	ui_manager = fm_directory_view_get_ui_manager (FM_DIRECTORY_VIEW (icon_view));
+	if (ui_manager != NULL) {
+		nautilus_ui_unmerge_ui (ui_manager,
+					&icon_view->details->desktop_merge_id,
+					&icon_view->details->desktop_action_group);
 	}
 
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
@@ -558,7 +552,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 }
 
 static void
-new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+action_new_terminal_callback (GtkAction *action, gpointer data)
 {
         g_assert (FM_DIRECTORY_VIEW (data));
 
@@ -566,7 +560,7 @@ new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *
 }
 
 static void
-new_launcher_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+action_new_launcher_callback (GtkAction *action, gpointer data)
 {
 	char *desktop_directory;
 
@@ -584,9 +578,8 @@ new_launcher_callback (BonoboUIComponent *component, gpointer data, const char *
 }
 
 static void
-change_background_callback (BonoboUIComponent *component, 
-	  		    gpointer data, 
-			    const char *verb)
+action_change_background_callback (GtkAction *action, 
+				   gpointer data)
 {
         g_assert (FM_DIRECTORY_VIEW (data));
 
@@ -598,23 +591,12 @@ change_background_callback (BonoboUIComponent *component,
 }
 
 static void
-empty_trash_callback (BonoboUIComponent *component, 
-	  	      gpointer data, 
-		      const char *verb)
+action_empty_trash_conditional_callback (GtkAction *action,
+					 gpointer data)
 {
         g_assert (FM_IS_DIRECTORY_VIEW (data));
 
 	nautilus_file_operations_empty_trash (GTK_WIDGET (data));
-}
-
-static void
-reset_background_callback (BonoboUIComponent *component, 
-			   gpointer data, 
-			   const char *verb)
-{
-	eel_background_reset 
-		(fm_directory_view_get_background 
-		 (FM_DIRECTORY_VIEW (data)));
 }
 
 static gboolean
@@ -648,6 +630,7 @@ real_update_menus (FMDirectoryView *view)
 	FMDesktopIconView *desktop_view;
 	char *label;
 	gboolean include_empty_trash;
+	GtkAction *action;
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
@@ -655,59 +638,74 @@ real_update_menus (FMDirectoryView *view)
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
-	bonobo_ui_component_freeze (desktop_view->details->ui, NULL);
-
 	/* Empty Trash */
 	include_empty_trash = trash_link_is_selection (view);
-	nautilus_bonobo_set_hidden
-		(desktop_view->details->ui,
-		 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
-		 !include_empty_trash);
+	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
+					      FM_ACTION_EMPTY_TRASH_CONDITIONAL);
+	gtk_action_set_visible (action, 
+				include_empty_trash);
 	if (include_empty_trash) {
 		label = g_strdup (_("Empty Trash"));
-		nautilus_bonobo_set_label
-			(desktop_view->details->ui, 
-			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
-			 label);
-		nautilus_bonobo_set_sensitive 
-			(desktop_view->details->ui, 
-			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
-			 !nautilus_trash_monitor_is_empty ());
+		g_object_set (action , "label", label, NULL);
+		gtk_action_set_sensitive (action,
+					  !nautilus_trash_monitor_is_empty ());
 		g_free (label);
 	}
-
-	bonobo_ui_component_thaw (desktop_view->details->ui, NULL);
 }
+
+static GtkActionEntry desktop_view_entries[] = {
+  { "New Terminal", NULL,                  /* name, stock id */
+    N_("Open T_erminal"), NULL,                /* label, accelerator */
+    N_("Open a new GNOME terminal window"),                   /* tooltip */ 
+    G_CALLBACK (action_new_terminal_callback) },
+  { "New Launcher Desktop", NULL,                  /* name, stock id */
+    N_("Create L_auncher"), NULL,                /* label, accelerator */
+    N_("Create a new launcher"),                   /* tooltip */ 
+    G_CALLBACK (action_new_launcher_callback) },
+  { "Change Background", NULL,                  /* name, stock id */
+    N_("Change Desktop _Background"), NULL,                /* label, accelerator */
+    N_("Show a window that lets you set your desktop background's pattern or color"),                   /* tooltip */ 
+    G_CALLBACK (action_change_background_callback) },
+  { "Empty Trash Conditional", NULL,                  /* name, stock id */
+    N_("Empty Trash"), NULL,                /* label, accelerator */
+    N_("Delete all items in the Trash"),                   /* tooltip */ 
+    G_CALLBACK (action_empty_trash_conditional_callback) },
+};
 
 static void
 real_merge_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
-	Bonobo_UIContainer ui_container;
-	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Change Background", change_background_callback),
-		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
-		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
-		BONOBO_UI_VERB ("New Launcher Desktop", new_launcher_callback),
-		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
-		BONOBO_UI_VERB_END
-	};
+	GtkUIManager *ui_manager;
+	GtkActionGroup *action_group;
+	GtkAction *action;
+	const char *ui;
 
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
-	desktop_view->details->ui = bonobo_ui_component_new ("Desktop Icon View");
+	ui_manager = fm_directory_view_get_ui_manager (view);
 
-	ui_container = fm_directory_view_get_bonobo_ui_container (view);
-	bonobo_ui_component_set_container (desktop_view->details->ui,
-					   ui_container, NULL);
-	bonobo_object_release_unref (ui_container, NULL);
-	bonobo_ui_util_set_ui (desktop_view->details->ui,
-			       DATADIR,
-			       "nautilus-desktop-icon-view-ui.xml",
-			       "nautilus", NULL);
-	bonobo_ui_component_add_verb_list_with_data (desktop_view->details->ui, verbs, view);
+	action_group = gtk_action_group_new ("DesktopViewActions");
+	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+	desktop_view->details->desktop_action_group = action_group;
+	gtk_action_group_add_actions (action_group, 
+				      desktop_view_entries, G_N_ELEMENTS (desktop_view_entries),
+				      view);
+
+	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
+	g_object_unref (action_group); /* owned by ui manager */
+
+	ui = nautilus_ui_string_get ("nautilus-desktop-icon-view-ui.xml");
+	desktop_view->details->desktop_merge_id =
+		gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+
+	/* We hide the reset background item on the desktop */
+	action = gtk_ui_manager_get_action (ui_manager,
+					    "/background/After Zoom Items/Background Items/Use Default Background");
+	gtk_action_set_visible (action,
+				FALSE);
 }
 
 static gboolean
@@ -739,4 +737,44 @@ real_supports_zooming (FMDirectoryView *view)
 	 * sorts of complications involving the fixed-size window.
 	 */
 	return FALSE;
+}
+
+static NautilusView *
+fm_desktop_icon_view_create (NautilusWindowInfo *window)
+{
+	FMIconView *view;
+
+	view = g_object_new (FM_TYPE_DESKTOP_ICON_VIEW, "window", window, NULL);
+	g_object_ref (view);
+	gtk_object_sink (GTK_OBJECT (view));
+	return NAUTILUS_VIEW (view);
+}
+
+static gboolean
+fm_desktop_icon_view_supports_uri (const char *uri,
+			   GnomeVFSFileType file_type,
+			   const char *mime_type)
+{
+	if (g_str_has_prefix (uri, "x-nautilus-desktop:")) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static NautilusViewInfo fm_desktop_icon_view = {
+	FM_DESKTOP_ICON_VIEW_ID,
+	N_("Desktop"),
+	N_("_Desktop"),
+	fm_desktop_icon_view_create,
+	fm_desktop_icon_view_supports_uri
+};
+
+void
+fm_desktop_icon_view_register (void)
+{
+	fm_desktop_icon_view.label = _(fm_desktop_icon_view.label);
+	fm_desktop_icon_view.label_with_mnemonic = _(fm_desktop_icon_view.label_with_mnemonic);
+	
+	nautilus_view_factory_register (&fm_desktop_icon_view);
 }

@@ -36,7 +36,6 @@
 #include "nautilus-window.h"
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-ui-main.h>
 #include <dlfcn.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
@@ -283,10 +282,6 @@ main (int argc, char *argv[])
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
 
-	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
-		bonobo_activation_set_test_components_enabled (TRUE);
-	}
-
 	/* Initialize preferences. This is needed so that proper 
 	 * defaults are available before any preference peeking 
 	 * happens.
@@ -345,7 +340,6 @@ main (int argc, char *argv[])
 	}
 
 	eel_debug_shut_down ();
-	bonobo_ui_debug_shutdown ();
 
 	/* If told to restart, exec() myself again. This is used when
 	 * the program is told to restart with CORBA, for example when

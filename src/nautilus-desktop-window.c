@@ -34,10 +34,6 @@
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-bonobo-extensions.h>
-
-#define STATUS_BAR_PATH         "/status"
-#define MENU_BAR_PATH           "/menu"
 
 struct NautilusDesktopWindowDetails {
 	int dummy;
@@ -63,6 +59,9 @@ nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
 
 	g_object_set_data (G_OBJECT (window), "is_desktop_window", 
 			   GINT_TO_POINTER (1));
+
+	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->statusbar);
+	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->menubar);
 }
 
 static gint
@@ -109,7 +108,6 @@ nautilus_desktop_window_new (NautilusApplication *application,
 	window = NAUTILUS_DESKTOP_WINDOW
 		(gtk_widget_new (nautilus_desktop_window_get_type(),
 				 "app", application,
-				 "app_id", "nautilus",
 				 "width_request", width_request,
 				 "height_request", height_request,
 				 "screen", screen,
@@ -360,17 +358,6 @@ real_get_title (NautilusWindow *window)
 }
 
 static void
-real_merge_menus (NautilusWindow *window)
-{
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, merge_menus, (window));
-
-	nautilus_bonobo_set_hidden (window->details->shell_ui,
-				    STATUS_BAR_PATH, TRUE);
-	nautilus_bonobo_set_hidden (window->details->shell_ui,
-				    MENU_BAR_PATH, TRUE);
-}
-
-static void
 nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = finalize;
@@ -380,12 +367,10 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 
 	GTK_WIDGET_CLASS (class)->map = map;
 
-	NAUTILUS_WINDOW_CLASS (class)->window_type = Nautilus_WINDOW_DESKTOP;
+	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_DESKTOP;
 
 	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
 		= real_add_current_location_to_history_list;
-	NAUTILUS_WINDOW_CLASS (class)->merge_menus 
-		= real_merge_menus;
 	NAUTILUS_WINDOW_CLASS (class)->get_title 
 		= real_get_title;
 }

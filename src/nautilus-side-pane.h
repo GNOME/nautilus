@@ -28,11 +28,11 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_SIDEBAR                (nautilus_side_pane_get_type ())
-#define NAUTILUS_SIDE_PANE(obj)                (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR, NautilusSidePane))
-#define NAUTILUS_SIDE_PANE_CLASS(klass)        (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR, NautilusSidePaneClass))
-#define NAUTILUS_IS_SIDE_PANE(obj)             (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR))
-#define NAUTILUS_IS_SIDE_PANE_CLASS(klass)     (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR))
+#define NAUTILUS_TYPE_SIDE_PANE                (nautilus_side_pane_get_type ())
+#define NAUTILUS_SIDE_PANE(obj)                (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDE_PANE, NautilusSidePane))
+#define NAUTILUS_SIDE_PANE_CLASS(klass)        (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDE_PANE, NautilusSidePaneClass))
+#define NAUTILUS_IS_SIDE_PANE(obj)             (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDE_PANE))
+#define NAUTILUS_IS_SIDE_PANE_CLASS(klass)     (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDE_PANE))
 
 typedef struct _NautilusSidePaneDetails NautilusSidePaneDetails;
 

@@ -13,6 +13,7 @@ INCLUDES =							\
 	-I$(top_srcdir)/cut-n-paste-code			\
 	-I$(top_builddir)/libnautilus-private 			\
 	$(CORE_CFLAGS) 						\
+	$(EXIF_CFLAGS)						\
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DLIBDIR=\""$(libdir)"\" 				\
@@ -27,11 +28,10 @@ INCLUDES =							\
 
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
-	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
         $(top_builddir)/cut-n-paste-code/gsequence/libgsequence.la \
 	$(CORE_LIBS) \
+	$(EXIF_LIBS) \
 	$(POPT_LIBS) \
 	$(NULL)
 
@@ -52,84 +52,73 @@ nautilus_shell_interface_idl_sources =		\
 
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
-	nautilus-applicable-views.c		\
+	nautilus-actions.h			\
 	nautilus-application.c			\
-	nautilus-bookmark-list.c		\
-	nautilus-bookmark-parsing.c		\
-	nautilus-bookmarks-window.c		\
-	nautilus-complex-search-bar.c		\
-	nautilus-component-adapter-factory.c	\
-	nautilus-connect-server-dialog.c	\
-	nautilus-desktop-window.c		\
-	nautilus-first-time-druid.c		\
-	nautilus-information-panel.c            \
-	nautilus-location-bar.c         	\
-	nautilus-location-dialog.c              \
-	nautilus-location-entry.c               \
-	nautilus-main.c 			\
-	nautilus-navigation-bar.c         	\
-	nautilus-navigation-window.c            \
-	nautilus-navigation-window-menus.c      \
-	nautilus-profiler.c			\
-	nautilus-property-browser.c     	\
-	nautilus-search-bar-criterion.c		\
-	nautilus-search-bar.c			\
-	nautilus-self-check-functions.c 	\
-	nautilus-shell.c			\
-	nautilus-side-pane.c                    \
-	nautilus-sidebar-title.c		\
-	nautilus-signaller.c			\
-	nautilus-simple-search-bar.c		\
-	nautilus-spatial-window.c               \
-	nautilus-switchable-navigation-bar.c	\
-	nautilus-switchable-search-bar.c	\
-	nautilus-window-toolbars.c              \
-	nautilus-view-frame-corba.c		\
-	nautilus-view-frame.c			\
-	nautilus-window-manage-views.c		\
-	nautilus-window-menus.c         	\
-	nautilus-window.c			\
-	nautilus-zoom-control.c			\
-	nautilus-applicable-views.h		\
 	nautilus-application.h			\
+	nautilus-bookmark-list.c		\
 	nautilus-bookmark-list.h		\
+	nautilus-bookmark-parsing.c		\
 	nautilus-bookmark-parsing.h		\
+	nautilus-bookmarks-window.c		\
 	nautilus-bookmarks-window.h		\
-	nautilus-complex-search-bar.h		\
-	nautilus-component-adapter-factory.h	\
+	nautilus-connect-server-dialog.c	\
 	nautilus-connect-server-dialog.h	\
+	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
-	nautilus-first-time-druid.h		\
-	nautilus-information-panel.h            \
-	nautilus-location-bar.h			\
-	nautilus-location-dialog.h              \
-	nautilus-location-entry.h               \
-	nautilus-main.h				\
-	nautilus-navigation-bar.h		\
-	nautilus-navigation-window.h            \
-	nautilus-profiler.h			\
-	nautilus-property-browser.h		\
-	nautilus-search-bar-criterion-private.h	\
-	nautilus-search-bar-criterion.h		\
-	nautilus-search-bar-private.h		\
-	nautilus-search-bar.h			\
-	nautilus-self-check-functions.h 	\
-	nautilus-shell.h			\
-	nautilus-side-pane.h			\
-	nautilus-sidebar-title.h		\
-	nautilus-signaller.h			\
-	nautilus-simple-search-bar.h		\
-	nautilus-spatial-window.h               \
-	nautilus-switchable-navigation-bar.h	\
-	nautilus-switchable-search-bar.h	\
-	nautilus-view-frame-private.h		\
-	nautilus-view-frame.h			\
-	nautilus-window-manage-views.h		\
-	nautilus-window-private.h		\
-	nautilus-window.h			\
-	nautilus-zoom-control.h			\
+	nautilus-emblem-sidebar.c		\
+	nautilus-emblem-sidebar.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
+	nautilus-first-time-druid.c		\
+	nautilus-first-time-druid.h		\
+	nautilus-history-sidebar.c		\
+	nautilus-history-sidebar.h		\
+	nautilus-image-properties-page.c	\
+	nautilus-image-properties-page.h	\
+	nautilus-information-panel.c            \
+	nautilus-information-panel.h            \
+	nautilus-location-bar.c         	\
+	nautilus-location-bar.h			\
+	nautilus-location-dialog.c              \
+	nautilus-location-dialog.h              \
+	nautilus-location-entry.c               \
+	nautilus-location-entry.h               \
+	nautilus-main.c 			\
+	nautilus-main.h				\
+	nautilus-navigation-action.c		\
+	nautilus-navigation-action.h		\
+	nautilus-navigation-bar.c         	\
+	nautilus-navigation-bar.h		\
+	nautilus-navigation-window-menus.c      \
+	nautilus-navigation-window.c            \
+	nautilus-navigation-window.h            \
+	nautilus-notes-viewer.c			\
+	nautilus-notes-viewer.h			\
+	nautilus-property-browser.c     	\
+	nautilus-property-browser.h		\
+	nautilus-self-check-functions.c 	\
+	nautilus-self-check-functions.h 	\
+	nautilus-shell.c			\
+	nautilus-shell.h			\
+	nautilus-side-pane.c                    \
+	nautilus-side-pane.h			\
+	nautilus-sidebar-title.c		\
+	nautilus-sidebar-title.h		\
+	nautilus-signaller.c			\
+	nautilus-signaller.h			\
+	nautilus-spatial-window.c               \
+	nautilus-spatial-window.h               \
+	nautilus-throbber.c			\
+	nautilus-throbber.h			\
+	nautilus-window-manage-views.c		\
+	nautilus-window-manage-views.h		\
+	nautilus-window-menus.c         	\
+	nautilus-window-private.h		\
+	nautilus-window-toolbars.c              \
+	nautilus-window.c			\
+	nautilus-window.h			\
+	nautilus-zoom-control.c			\
+	nautilus-zoom-control.h			\
 	$(NULL)
 
 nautilus_file_management_properties_SOURCES= \
@@ -139,7 +128,7 @@ nautilus_file_management_properties_SOURCES= \
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
-nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL) $(top_srcdir)/libnautilus/nautilus-view-component.idl
+nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $(CORE_IDL_INCLUDES) -I$(top_srcdir) $<
 	touch $@
 
@@ -153,7 +142,7 @@ server_DATA = $(server_in_files:.server.in=.server)
 
 @INTLTOOL_SERVER_RULE@
 
-uidir = $(datadir)/gnome-2.0/ui
+uidir = $(datadir)/nautilus/ui
 ui_DATA = 					\
 	nautilus-shell-ui.xml			\
 	nautilus-navigation-window-ui.xml       \

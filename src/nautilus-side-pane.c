@@ -395,7 +395,6 @@ nautilus_side_pane_init (GtkObject *object)
 				    FALSE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (side_pane->details->notebook),
 				      FALSE);
-	
 	g_signal_connect_object (side_pane->details->notebook,
 				 "switch_page",
 				 G_CALLBACK (switch_page_callback),

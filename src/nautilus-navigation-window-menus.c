@@ -29,6 +29,8 @@
 
 #include <locale.h> 
 
+#include "nautilus-actions.h"
+#include "nautilus-navigation-action.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmark-parsing.h"
@@ -36,10 +38,8 @@
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
-#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
-#include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -58,103 +58,44 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
-#include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
 
-#ifdef ENABLE_PROFILER
-#include "nautilus-profiler.h"
-#endif
-
-#define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
-
-/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
- * These are not part of the published set, either because they are
- * development-only or because we expect to change them and
- * don't want other code relying on their existence.
- */
-
-#define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
-#define MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
-
-#define MENU_PATH_HISTORY_PLACEHOLDER			"/menu/Go/History Placeholder"
-#define MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER	"/menu/Bookmarks/Built-in Bookmarks Placeholder"
-#define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/menu/Bookmarks/Bookmarks Placeholder"
-
-#define COMMAND_SHOW_HIDE_SIDEBAR                       "/commands/Show Hide Sidebar"
-#define COMMAND_SHOW_HIDE_LOCATION_BAR                  "/commands/Show Hide Location Bar"
-#define COMMAND_SHOW_HIDE_STATUS_BAR                    "/commands/Show Hide Statusbar"
-
-#define ID_SHOW_HIDE_SIDEBAR                            "Show Hide Sidebar"
-#define ID_SHOW_HIDE_LOCATION_BAR                       "Show Hide Location Bar"
+#define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
+#define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/MenuBar/Other Menus/Bookmarks/Bookmarks Placeholder"
 
 #define RESPONSE_FORGET		1000
 
 static GtkWindow *bookmarks_window = NULL;
 static NautilusBookmarkList *bookmarks = NULL;
 
+static void                  schedule_refresh_go_menu                      (NautilusNavigationWindow   *window);
 static void                  append_dynamic_bookmarks                      (NautilusNavigationWindow   *window);
-static NautilusBookmarkList *get_bookmark_list                             (void);
-static void                  refresh_bookmarks_menu                        (NautilusNavigationWindow   *window);
 static void                  schedule_refresh_bookmarks_menu               (NautilusNavigationWindow   *window);
-static void                  edit_bookmarks                                (NautilusNavigationWindow   *window);
+static void                  refresh_bookmarks_menu                        (NautilusNavigationWindow   *window);
 static void                  add_bookmark_for_current_location             (NautilusNavigationWindow   *window);
-static void                  schedule_refresh_go_menu                      (NautilusWindow *window);
-
-#ifdef HAVE_MEDUSA
-static void
-file_menu_find_callback (BonoboUIComponent *component, 
-			 gpointer user_data, 
-			 const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, TRUE);
-	}
-}
+static void                  edit_bookmarks                                (NautilusNavigationWindow   *window);
+static NautilusBookmarkList *get_bookmark_list                             (void);
 
 static void
-toolbar_toggle_find_mode_callback (BonoboUIComponent *component, 
-			             gpointer user_data, 
-			             const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, !nautilus_window_get_search_mode (window));
-	}
-}
-#endif
-
-static void
-file_menu_close_all_windows_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb)
+action_close_all_windows_callback (GtkAction *action, 
+				   gpointer user_data)
 {
 	nautilus_application_close_all_navigation_windows ();
 }
 
 static void
-go_menu_back_callback (BonoboUIComponent *component, 
-		       gpointer user_data, 
-		       const char *verb) 
+action_back_callback (GtkAction *action, 
+		      gpointer user_data) 
 {
 	nautilus_navigation_window_go_back (NAUTILUS_NAVIGATION_WINDOW (user_data));
 }
 
 static void
-go_menu_forward_callback (BonoboUIComponent *component, 
-			  gpointer user_data, 
-			  const char *verb) 
+action_forward_callback (GtkAction *action, 
+			 gpointer user_data) 
 {
 	nautilus_navigation_window_go_forward (NAUTILUS_NAVIGATION_WINDOW (user_data));
 }
@@ -208,30 +149,21 @@ forget_history_if_confirmed (NautilusWindow *window)
 }
 
 static void
-go_menu_forget_history_callback (BonoboUIComponent *component, 
-			         gpointer user_data, 
-			         const char *verb) 
+action_clear_history_callback (GtkAction *action, 
+			       gpointer user_data) 
 {
 	forget_history_if_confirmed (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_show_hide_sidebar_state_changed_callback (BonoboUIComponent *component, 
-						    const char *path,
-						    Bonobo_UIComponent_EventType type,
-						    const char *state,
-						    gpointer user_data)
+action_show_hide_sidebar_callback (GtkAction *action, 
+				   gpointer user_data)
 {
 	NautilusNavigationWindow *window;
 
 	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
 
-        if (strcmp (state, "") == 0) {
-                /* State goes blank when component is removed; ignore this. */
-                return;
-        }
-
-	if (!strcmp (state, "1")) {
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
 		nautilus_navigation_window_show_sidebar (window);
 	} else {
 		nautilus_navigation_window_hide_sidebar (window);
@@ -239,141 +171,70 @@ view_menu_show_hide_sidebar_state_changed_callback (BonoboUIComponent *component
 }
 
 static void
-view_menu_show_hide_location_bar_state_changed_callback (BonoboUIComponent *component, 
-							 const char *path,
-							 Bonobo_UIComponent_EventType type,
-							 const char *state,
-							 gpointer user_data)
+action_show_hide_location_bar_callback (GtkAction *action, 
+					gpointer user_data)
 {
 	NautilusNavigationWindow *window;
 
 	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
 
-        if (strcmp (state, "") == 0) {
-                /* State goes blank when component is removed; ignore this. */
-                return;
-        }
-
-	if (!strcmp (state, "1")) {
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
 		nautilus_navigation_window_show_location_bar (window, TRUE);
 	} else {
 		nautilus_navigation_window_hide_location_bar (window, TRUE);
 	}
 }
 
+static void
+action_show_hide_statusbar_callback (GtkAction *action,
+				     gpointer user_data)
+{
+	NautilusNavigationWindow *window;
+
+	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
+
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		nautilus_navigation_window_show_status_bar (window);
+	} else {
+		nautilus_navigation_window_hide_status_bar (window);
+	}
+}
+
 void
 nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow *window) 
 {
+	GtkAction *action;
+
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
-	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_SIDEBAR);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+				      nautilus_navigation_window_sidebar_showing (window));
+	
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_LOCATION_BAR);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+				      nautilus_navigation_window_location_bar_showing (window));
 
-	bonobo_ui_component_freeze (NAUTILUS_WINDOW (window)->details->shell_ui, NULL);
-		
-	nautilus_bonobo_set_toggle_state (NAUTILUS_WINDOW (window)->details->shell_ui,
-					  COMMAND_SHOW_HIDE_SIDEBAR,
-					  nautilus_navigation_window_sidebar_showing (window));
-	nautilus_bonobo_set_toggle_state (NAUTILUS_WINDOW (window)->details->shell_ui,
-					  COMMAND_SHOW_HIDE_LOCATION_BAR,
-					  nautilus_navigation_window_location_bar_showing (window));
-
-	bonobo_ui_component_thaw (NAUTILUS_WINDOW (window)->details->shell_ui,
-				  NULL);
-
-	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+				      nautilus_navigation_window_status_bar_showing (window));
 }
 
 static void
-bookmarks_menu_add_bookmark_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb)
+action_add_bookmark_callback (GtkAction *action,
+			      gpointer user_data)
 {
         add_bookmark_for_current_location (NAUTILUS_NAVIGATION_WINDOW (user_data));
 }
 
 static void
-bookmarks_menu_edit_bookmarks_callback (BonoboUIComponent *component, 
-			                gpointer user_data, 
-			                const char *verb)
+action_edit_bookmarks_callback (GtkAction *action, 
+				gpointer user_data)
 {
         edit_bookmarks (NAUTILUS_NAVIGATION_WINDOW (user_data));
-}
-
-#ifdef WEB_NAVIGATION_ENABLED
-static char *
-get_static_bookmarks_file_path (void)
-{
-	char *update_xml_file_path, *built_in_xml_file_path;
-	char *update_uri, *built_in_uri;
-	char *user_directory_path;
-	gboolean update_exists, built_in_exists;
-	GnomeVFSFileInfo *update_info, *built_in_info;
-	char *result;
-	
-	/* see if there is a static bookmarks file in the updates directory and get its mod-date */
-	user_directory_path = nautilus_get_user_directory ();
-	update_xml_file_path = g_strdup_printf ("%s/updates/%s", user_directory_path, STATIC_BOOKMARKS_FILE_NAME);
-	update_exists = g_file_test (update_xml_file_path, G_FILE_TEST_EXISTS);
-	g_free (user_directory_path);
-	
-	/* get the mod date of the built-in static bookmarks file */
-	built_in_xml_file_path = g_build_filename (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME, NULL);
-	built_in_exists = g_file_test (built_in_xml_file_path, G_FILE_TEST_EXISTS);
-	
-	/* if we only have one file, return its path as the one to use */
-	if (built_in_exists && !update_exists) {
-		g_free (update_xml_file_path);
-		return built_in_xml_file_path;
-	}
-
-	if (!built_in_exists && update_exists) {
-		g_free (built_in_xml_file_path);
-		return update_xml_file_path;
-	}
-	
-	/* if we have neither file, return NULL */		
-	if (!built_in_exists && !update_exists) {
-		g_free (built_in_xml_file_path);
-		g_free (update_xml_file_path);
-		return NULL;
-	}
-	
-	/* both files exist, so use the one with the most recent mod-date */
-	update_uri = gnome_vfs_get_uri_from_local_path (update_xml_file_path);
-	update_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (update_uri, update_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (update_uri);
-	
-	built_in_uri = gnome_vfs_get_uri_from_local_path (built_in_xml_file_path);
-	built_in_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (built_in_uri, built_in_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (built_in_uri);
-
-	/* see which is most recent */
-	if (update_info->mtime <= built_in_info->mtime) {
-		result = built_in_xml_file_path;
-		g_free (update_xml_file_path);
-	} else {
-		result = update_xml_file_path;
-		g_free (built_in_xml_file_path);
-	}
-
-	gnome_vfs_file_info_unref (update_info);
-	gnome_vfs_file_info_unref (built_in_info);
-	
-	return result;
-}
-#endif
-
-static void
-append_separator (NautilusNavigationWindow *window, const char *path)
-{
-	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
-
-	nautilus_bonobo_add_menu_separator
-		(NAUTILUS_WINDOW (window)->details->shell_ui, path);
-
-	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
 }
 
 static void
@@ -445,93 +306,6 @@ show_bogus_bookmark_window (NautilusWindow *window,
 	g_free (detail);
 }
 
-static void
-create_menu_item_from_node (NautilusNavigationWindow *window,
-			    xmlNodePtr node,
-			    const char *menu_path,
-			    int *index)
-{
-	NautilusBookmark *bookmark;
-	xmlChar *xml_folder_name;
-	int sub_index;
-	char *sub_menu_path, *escaped_name;
-	
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-		
-	if (node->type != XML_ELEMENT_NODE) {
-		return;
-	}
-
-	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
-
-	if (strcmp (node->name, "bookmark") == 0) {
-		bookmark = nautilus_bookmark_new_from_node (node);
-		nautilus_menus_append_bookmark_to_menu
-			(NAUTILUS_WINDOW (window), 
-			 NAUTILUS_WINDOW (window)->details->shell_ui,
-			 bookmark, 
-			 menu_path, 
-			 *index, 
-			 G_CALLBACK (schedule_refresh_bookmarks_menu), 
-			 show_bogus_bookmark_window);
-		g_object_unref (bookmark);
-	} else if (strcmp (node->name, "separator") == 0) {
-		append_separator (window, menu_path);
-	} else if (strcmp (node->name, "folder") == 0) {
-		xml_folder_name = eel_xml_get_property_translated (node, "name");
-		nautilus_bonobo_add_submenu (NAUTILUS_WINDOW (window)->details->shell_ui, menu_path, xml_folder_name, NULL);
-
-		/* Construct path and make sure it is escaped properly */
-		escaped_name = gnome_vfs_escape_string (xml_folder_name);
-		sub_menu_path = g_strdup_printf ("%s/%s", menu_path, escaped_name);
-		g_free (escaped_name);
-				
-		for (node = eel_xml_get_children (node), sub_index = 0;
-		     node != NULL;
-		     node = node->next) {
-			create_menu_item_from_node (window, node, sub_menu_path, &sub_index);
-		}
-		g_free (sub_menu_path);
-		xmlFree (xml_folder_name);
-	} else {
-		g_warning ("found unknown node '%s', ignoring", node->name);
-	}
-
-	(*index)++;
-
-	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
-}
-
-#ifdef WEB_NAVIGATION_ENABLED
-static void
-append_static_bookmarks (NautilusWindow *window, const char *menu_path)
-{
-	xmlDocPtr doc;
-	xmlNodePtr node;
-	char *file_path;
-	int index;
-
-	/* Walk through XML tree creating bookmarks, folders, and separators. */
-	file_path = get_static_bookmarks_file_path ();
-
-	if (file_path == NULL) {
-		return;
-	}
-	
-	doc = xmlParseFile (file_path);
-	g_free (file_path);
-
-	node = eel_xml_get_root_children (doc);
-	index = 0;
-
-	for (index = 0; node != NULL; node = node->next) {
-		create_menu_item_from_node (window, node, menu_path, &index);
-	}
-	
-	xmlFreeDoc(doc);
-}
-#endif
-
 static GtkWindow *
 get_or_create_bookmarks_window (GObject *undo_manager_source)
 {
@@ -582,12 +356,6 @@ edit_bookmarks (NautilusNavigationWindow *window)
         gtk_window_present (dialog);
 }
 
-void
-nautilus_window_bookmarks_preference_changed_callback (gpointer user_data)
-{
-	refresh_bookmarks_menu (NAUTILUS_NAVIGATION_WINDOW (user_data));
-}
-
 static void
 refresh_bookmarks_menu (NautilusNavigationWindow *window)
 {
@@ -596,22 +364,8 @@ refresh_bookmarks_menu (NautilusNavigationWindow *window)
 	/* Unregister any pending call to this function. */
 	nautilus_navigation_window_remove_bookmarks_menu_callback (window);
 
-	g_object_ref (G_OBJECT (window));
-	bonobo_ui_component_freeze 
-		(NAUTILUS_WINDOW (window)->details->shell_ui, NULL);
-
 	nautilus_navigation_window_remove_bookmarks_menu_items (window);
-
-#ifdef WEB_NAVIGATION_ENABLED
-	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
-		append_static_bookmarks (window, MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
-	}
-#endif
-
 	append_dynamic_bookmarks (window);
-
-	bonobo_ui_component_thaw (NAUTILUS_WINDOW (window)->details->shell_ui, NULL);
-	g_object_unref (G_OBJECT (window));
 }
 
 /**
@@ -628,14 +382,6 @@ nautilus_navigation_window_initialize_bookmarks_menu (NautilusNavigationWindow *
 	/* Construct the initial set of bookmarks. */
 	refresh_bookmarks_menu (window);
 
-	/* Recreate static & dynamic part of menu if preference about
-	 * showing static bookmarks changes.
-	 */
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-						  nautilus_window_bookmarks_preference_changed_callback,
-						  window,
-						  G_OBJECT (window));
-		
 	/* Recreate dynamic part of menu if bookmark list changes */
 	g_signal_connect_object (get_bookmark_list (), "contents_changed",
 				 G_CALLBACK (schedule_refresh_bookmarks_menu),
@@ -648,7 +394,7 @@ nautilus_navigation_window_initialize_bookmarks_menu (NautilusNavigationWindow *
 }
 
 void
-nautilus_window_remove_go_menu_callback (NautilusWindow *window)
+nautilus_navigation_window_remove_go_menu_callback (NautilusNavigationWindow *window)
 {
         if (window->details->refresh_go_menu_idle_id != 0) {
                 g_source_remove (window->details->refresh_go_menu_idle_id);
@@ -657,15 +403,21 @@ nautilus_window_remove_go_menu_callback (NautilusWindow *window)
 }
 
 void
-nautilus_window_remove_go_menu_items (NautilusWindow *window)
+nautilus_navigation_window_remove_go_menu_items (NautilusNavigationWindow *window)
 {
-	nautilus_window_ui_freeze (window);
-
-	nautilus_bonobo_remove_menu_items_and_commands 
-		(window->details->shell_ui, 
-		 MENU_PATH_HISTORY_PLACEHOLDER);
-
-	nautilus_window_ui_thaw (window);
+	GtkUIManager *ui_manager;
+	
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+	if (window->details->go_menu_merge_id != 0) {
+		gtk_ui_manager_remove_ui (ui_manager,
+					  window->details->go_menu_merge_id);
+		window->details->go_menu_merge_id = 0;
+	}
+	if (window->details->go_menu_action_group != NULL) {
+		gtk_ui_manager_remove_action_group (ui_manager,
+						    window->details->go_menu_action_group);
+		window->details->go_menu_action_group = NULL;
+	}
 }
 
 /**
@@ -675,53 +427,61 @@ nautilus_window_remove_go_menu_items (NautilusWindow *window)
  * @window: The NautilusWindow whose Go menu will be refreshed.
  **/
 static void
-refresh_go_menu (NautilusWindow *window)
+refresh_go_menu (NautilusNavigationWindow *window)
 {
+	GtkUIManager *ui_manager;
 	GList *node;
 	int index;
 	
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
 	/* Unregister any pending call to this function. */
-	nautilus_window_remove_go_menu_callback (window);
-
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+	nautilus_navigation_window_remove_go_menu_callback (window);
 
 	/* Remove old set of history items. */
-	nautilus_window_remove_go_menu_items (window);
+	nautilus_navigation_window_remove_go_menu_items (window);
 
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+
+	window->details->go_menu_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
+	window->details->go_menu_action_group = gtk_action_group_new ("GoMenuGroup");
+
+	gtk_ui_manager_insert_action_group (ui_manager,
+					    window->details->go_menu_action_group,
+					    -1);
+
+	
 	/* Add in a new set of history items. */
 	for (node = nautilus_get_history_list (), index = 0;
 	     node != NULL && index < 10;
 	     node = node->next, index++) {
 		nautilus_menus_append_bookmark_to_menu 
-			(window,
-			 window->details->shell_ui,
+			(NAUTILUS_WINDOW (window),
 			 NAUTILUS_BOOKMARK (node->data),
 			 MENU_PATH_HISTORY_PLACEHOLDER,
 			 index,
+			 window->details->go_menu_action_group,
+			 window->details->go_menu_merge_id,
 			 G_CALLBACK (schedule_refresh_go_menu),
 			 show_bogus_bookmark_window);
 	}
-
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 }
 
 static gboolean
 refresh_go_menu_idle_callback (gpointer data)
 {
-	g_assert (NAUTILUS_IS_WINDOW (data));
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (data));
 
-	refresh_go_menu (NAUTILUS_WINDOW (data));
+	refresh_go_menu (NAUTILUS_NAVIGATION_WINDOW (data));
 
         /* Don't call this again (unless rescheduled) */
         return FALSE;
 }
 
 static void
-schedule_refresh_go_menu (NautilusWindow *window)
+schedule_refresh_go_menu (NautilusNavigationWindow *window)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
 	if (window->details->refresh_go_menu_idle_id == 0) {
                 window->details->refresh_go_menu_idle_id
@@ -747,6 +507,128 @@ nautilus_navigation_window_initialize_go_menu (NautilusNavigationWindow *window)
 				 G_CALLBACK (schedule_refresh_go_menu), window, G_CONNECT_SWAPPED);
 }
 
+static void
+action_new_window_callback (GtkAction *action,
+			    gpointer user_data)
+{
+	NautilusWindow *current_window;
+	NautilusWindow *new_window;
+
+	current_window = NAUTILUS_WINDOW (user_data);
+	new_window = nautilus_application_create_navigation_window (
+				current_window->application,
+				gtk_window_get_screen (GTK_WINDOW (current_window)));
+	nautilus_window_go_home (new_window);
+}
+
+static void
+action_go_to_location_callback (GtkAction *action,
+				gpointer user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	nautilus_window_prompt_for_location (window);
+}			   
+
+static GtkActionEntry navigation_entries[] = {
+  { "Go", NULL, N_("_Go") },               /* name, stock id, label */
+  { "Bookmarks", NULL, N_("_Bookmarks") },               /* name, stock id, label */
+  { "New Window", NULL, N_("Open New _Window"),               /* name, stock id, label */
+    "<control>N", N_("Open another Nautilus window for the displayed location"),
+    G_CALLBACK (action_new_window_callback) },
+  { "Close All Windows", NULL, N_("Close _All Windows"),               /* name, stock id, label */
+    "<control><shift>W", N_("Close all Navigation windows"),
+    G_CALLBACK (action_close_all_windows_callback) },
+  { "Go to Location", NULL, N_("_Location..."), /* name, stock id, label */
+    "<control>L", N_("Specify a location to open"),
+    G_CALLBACK (action_go_to_location_callback) },
+  { "Clear History", NULL, N_("_Clear History"), /* name, stock id, label */
+    NULL, N_("Clear contents of Go menu and Back/Forward lists"),
+    G_CALLBACK (action_clear_history_callback) },
+  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"), /* name, stock id, label */
+    "<control>d", N_("Add a bookmark for the current location to this menu"),
+    G_CALLBACK (action_add_bookmark_callback) },
+  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
+    "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
+    G_CALLBACK (action_edit_bookmarks_callback) },
+};
+
+static GtkToggleActionEntry navigation_toggle_entries[] = {
+  { "Show Hide Sidebar", NULL,                 /* name, stock id */
+    N_("_Side Pane"), "F9",                    /* label, accelerator */     
+    N_("Change the visibility of this window's sidebar"),                       /* tooltip */
+    G_CALLBACK (action_show_hide_sidebar_callback),
+    TRUE}, /* is_active */
+  { "Show Hide Location Bar", NULL,                 /* name, stock id */
+    N_("Location _Bar"), NULL,                    /* label, accelerator */     
+    N_("Change the visibility of this window's location bar"),                    /* tooltip */
+    G_CALLBACK (action_show_hide_location_bar_callback),
+    TRUE  },                                    /* is_active */
+  { "Show Hide Statusbar", NULL,                 /* name, stock id */
+    N_("St_atusbar"), NULL,                    /* label, accelerator */     
+    N_("Change the visibility of this window's statusbar"),                    /* tooltip */
+    G_CALLBACK (action_show_hide_statusbar_callback),
+    TRUE  },                                    /* is_active */
+};
+
+void 
+nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
+{
+	GtkActionGroup *action_group;
+	GtkUIManager *ui_manager;
+	GtkAction *action;
+	
+	action_group = gtk_action_group_new ("NavigationActions");
+	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+	window->details->navigation_action_group = action_group;
+	gtk_action_group_add_actions (action_group, 
+				      navigation_entries, G_N_ELEMENTS (navigation_entries),
+				      window);
+	gtk_action_group_add_toggle_actions (action_group, 
+					     navigation_toggle_entries, G_N_ELEMENTS (navigation_toggle_entries),
+					     window);
+
+	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
+			       "name", "Back",
+			       "label", _("_Back"),
+			       "stock_id", GTK_STOCK_GO_BACK,
+			       "tooltip", _("Go to the previous visited location"),
+			       "window", window,
+			       "direction", NAUTILUS_NAVIGATION_DIRECTION_BACK,
+			       "is_important", TRUE,
+			       NULL);
+	g_signal_connect (action, "activate",
+			  G_CALLBACK (action_back_callback), window);
+	gtk_action_group_add_action_with_accel (action_group,
+						action,
+						"<alt>Left");
+	g_object_unref (action);
+
+	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
+			       "name", "Forward",
+			       "label", _("_Forward"),
+			       "stock_id", GTK_STOCK_GO_FORWARD,
+			       "tooltip", _("Go to the next visited location"),
+			       "window", window,
+			       "direction", NAUTILUS_NAVIGATION_DIRECTION_FORWARD,
+			       "is_important", TRUE,
+			       NULL);
+	g_signal_connect (action, "activate",
+			  G_CALLBACK (action_forward_callback), window);
+	gtk_action_group_add_action_with_accel (action_group,
+						action,
+						"<alt>Right");
+	g_object_unref (action);
+
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+
+	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
+	g_object_unref (action_group); /* owned by ui_manager */
+}
+
+
 /**
  * nautilus_window_initialize_menus
  * 
@@ -754,60 +636,21 @@ nautilus_navigation_window_initialize_go_menu (NautilusNavigationWindow *window)
  * @window: A recently-created NautilusWindow.
  */
 void 
-nautilus_navigation_window_initialize_menus_part_1 (NautilusNavigationWindow *navigation_window)
+nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 {
-	NautilusWindow *window;
-	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
-#ifdef HAVE_MEDUSA
-		BONOBO_UI_VERB ("Find", file_menu_find_callback),
-		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
-#endif
-		BONOBO_UI_VERB ("Back", go_menu_back_callback),
-		BONOBO_UI_VERB ("Forward", go_menu_forward_callback),
-		BONOBO_UI_VERB ("Clear History", go_menu_forget_history_callback),
-		BONOBO_UI_VERB ("Add Bookmark", bookmarks_menu_add_bookmark_callback),
-		BONOBO_UI_VERB ("Edit Bookmarks", bookmarks_menu_edit_bookmarks_callback),
+	GtkUIManager *ui_manager;
+	const char *ui;
+	
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
-		BONOBO_UI_VERB_END
-	};
+	ui = nautilus_ui_string_get ("nautilus-navigation-window-ui.xml");
+	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
-	window = NAUTILUS_WINDOW (navigation_window);
-
-	nautilus_window_ui_freeze (window);
-
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
-
-	nautilus_navigation_window_update_show_hide_menu_items (navigation_window);
-
-	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui,
-						     verbs, window);
-
-	bonobo_ui_component_add_listener
-		(window->details->shell_ui,
-		 ID_SHOW_HIDE_SIDEBAR,
-		 view_menu_show_hide_sidebar_state_changed_callback, 
-		 window);
-	bonobo_ui_component_add_listener
-		(window->details->shell_ui,
-		 ID_SHOW_HIDE_LOCATION_BAR,
-		 view_menu_show_hide_location_bar_state_changed_callback, 
-		 window);
-
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
-
-	nautilus_window_ui_thaw (window);
-}
-
-void 
-nautilus_navigation_window_initialize_menus_part_2 (NautilusNavigationWindow *window)
-{
-	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
+	nautilus_navigation_window_update_show_hide_menu_items (window);
 
         nautilus_navigation_window_initialize_go_menu (window);
         nautilus_navigation_window_initialize_bookmarks_menu (window);
 
-	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
 }
 
 void
@@ -822,16 +665,19 @@ nautilus_navigation_window_remove_bookmarks_menu_callback (NautilusNavigationWin
 void
 nautilus_navigation_window_remove_bookmarks_menu_items (NautilusNavigationWindow *window)
 {
-	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
-
-	nautilus_bonobo_remove_menu_items_and_commands
-		(NAUTILUS_WINDOW (window)->details->shell_ui, 
-		 MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items_and_commands 
-		(NAUTILUS_WINDOW (window)->details->shell_ui, 
-		 MENU_PATH_BOOKMARKS_PLACEHOLDER);
-
-	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
+	GtkUIManager *ui_manager;
+	
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+	if (window->details->bookmarks_merge_id != 0) {
+		gtk_ui_manager_remove_ui (ui_manager,
+					  window->details->bookmarks_merge_id);
+		window->details->bookmarks_merge_id = 0;
+	}
+	if (window->details->bookmarks_action_group != NULL) {
+		gtk_ui_manager_remove_action_group (ui_manager,
+						    window->details->bookmarks_action_group);
+		window->details->bookmarks_action_group = NULL;
+	}
 }
 
 static void
@@ -840,20 +686,33 @@ append_dynamic_bookmarks (NautilusNavigationWindow *window)
         NautilusBookmarkList *bookmarks;
 	guint bookmark_count;
 	guint index;
-		
+	GtkUIManager *ui_manager;
+
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+	g_assert (window->details->bookmarks_merge_id == 0);
+	g_assert (window->details->bookmarks_action_group == NULL);
 
 	bookmarks = get_bookmark_list ();
+
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+	
+	window->details->bookmarks_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
+	window->details->bookmarks_action_group = gtk_action_group_new ("BookmarksGroup");
+
+	gtk_ui_manager_insert_action_group (ui_manager,
+					    window->details->bookmarks_action_group,
+					    -1);
 
 	/* append new set of bookmarks */
 	bookmark_count = nautilus_bookmark_list_length (bookmarks);
 	for (index = 0; index < bookmark_count; ++index) {
 		nautilus_menus_append_bookmark_to_menu
 			(NAUTILUS_WINDOW (window), 
-			 NAUTILUS_WINDOW (window)->details->shell_ui,
 			 nautilus_bookmark_list_item_at (bookmarks, index),
 			 MENU_PATH_BOOKMARKS_PLACEHOLDER,
 			 index,
+			 window->details->bookmarks_action_group,
+			 window->details->bookmarks_merge_id,
 			 G_CALLBACK (schedule_refresh_bookmarks_menu), 
 			 show_bogus_bookmark_window);
 	}
@@ -881,3 +740,5 @@ schedule_refresh_bookmarks_menu (NautilusNavigationWindow *window)
 				      window);
 	}	
 }
+
+

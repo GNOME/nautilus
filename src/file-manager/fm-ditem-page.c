@@ -21,9 +21,6 @@
  *
  */
 
-/* This object exports the bonobo context menus and property pages
- * using the new extension interface. */ 
-
 #include <config.h>
 #include "fm-ditem-page.h"
 

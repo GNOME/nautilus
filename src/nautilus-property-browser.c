@@ -78,7 +78,6 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-drag-window.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -183,6 +182,8 @@ static void     nautilus_property_browser_drag_data_get         (GtkWidget      
 								 guint32                        time);
 static void     nautilus_property_browser_theme_changed         (gpointer                       user_data);
 static void     emit_emblems_changed_signal                     (void);
+static void     emblems_changed_callback                        (GObject                       *signaller,
+								 NautilusPropertyBrowser       *property_browser);
 
 /* misc utilities */
 static char *   strip_extension                                 (const char                    *string_to_strip);
@@ -430,11 +431,12 @@ nautilus_property_browser_init (GtkObject *object)
 	g_signal_connect (property_browser, "hide",
 			  G_CALLBACK (nautilus_property_browser_hide_callback), NULL);
 
+	g_signal_connect_object (nautilus_signaller_get_current (),
+				 "emblems_changed",
+				 G_CALLBACK (emblems_changed_callback), property_browser, 0);
+
 	/* initially, display the top level */
 	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
-
-	/* Register that things may be dragged from this window */
-	nautilus_drag_window_register (GTK_WINDOW (property_browser));
 }
 
 /* Destroy the three dialogs for adding patterns/colors/emblems if any of them
@@ -1350,7 +1352,6 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		nautilus_emblem_refresh_list ();
 		
 		emit_emblems_changed_signal ();	
-		nautilus_property_browser_update_contents (property_browser);
 		
 		g_free (stripped_keyword);
 	}
@@ -2193,6 +2194,14 @@ nautilus_property_browser_set_path (NautilusPropertyBrowser *property_browser,
 	/* populate the per-uri box with the info */
 	nautilus_property_browser_update_contents (property_browser);  	
 }
+
+static void
+emblems_changed_callback (GObject *signaller,
+			  NautilusPropertyBrowser *property_browser)
+{
+	nautilus_property_browser_update_contents (property_browser);
+}
+
 
 static void
 emit_emblems_changed_signal (void)

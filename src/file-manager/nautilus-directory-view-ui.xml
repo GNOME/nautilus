@@ -1,354 +1,151 @@
-<Root>
-<commands>
-	<cmd name="Rename"
-         _label="_Rename..."
-	 _tip="Rename selected item"/>
-	<cmd name="Create Link"
-         _label="Ma_ke Link"
-	 _tip="Create a symbolic link for each selected item"/>
-	<cmd name="Delete"
-         _label="_Delete"
-	 _tip="Delete each selected item, without moving to the Trash"/>
-	<cmd name="Duplicate"
-         _label="D_uplicate"
-	 _tip="Duplicate each selected item"/>
-	<cmd name="Empty Trash"
-         _label="_Empty Trash"
-	 _tip="Delete all items in the Trash"/>
-	<cmd name="New Folder"
-         _label="Create _Folder"
-	 _tip="Create a new empty folder inside this folder"/>
-	<cmd name="New Empty File"
-         _label="_Empty File"
-	 _tip="Create a new empty file inside this folder"/>
-        <cmd name="New Launcher"
-         _label="Create L_auncher"
-         _tip="Create a new launcher"/>
-        <cmd name="Edit Launcher"
-         _label="Edit Launcher"
-         _tip="Edit the launcher information"/>
-	<cmd name="Open"
-         _label="_Open"
-	 _tip="Open the selected item in this window"/>
-	<cmd name="OpenAlternate"
-         _label="Open in Navigation Window"
-	 _tip="Open each selected item in a navigation window"/>
-	<cmd name="Open Scripts Folder"
-         _label="_Open Scripts Folder"
-	 _tip="Show the folder containing the scripts that appear in this menu"/>
-	<cmd name="OtherApplication"
-         _label="Open with Other _Application..."
-	 _tip="Choose another application with which to open the selected item"/>
-	<cmd name="Show Hidden Files"
-         _label="Show _Hidden Files"
-	 _tip="Toggles the display of hidden files in the current window"/>
-	<cmd name="Reset to Defaults"
-         _label="Reset View to _Defaults"
-	 _tip="Reset sorting order and zoom level to match preferences for this view"/>
-	<cmd name="Reset Background"
-         _label="Use _Default Background"
-	 _tip="Use the default background for this location"/>
-	<cmd name="Cut Files"
-         _label="Cu_t Files"
-	 _tip="Prepare the selected files to be moved with a Paste Files command"/>
-	<cmd name="Copy Files"
-         _label="_Copy Files"
-	 _tip="Prepare the selected files to be copied with a Paste Files command"/>
-	<cmd name="Paste Files"
-         _label="_Paste Files"
-	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command"/>
-	<cmd name="Paste Files Into"
-         _label="_Paste Files Into Folder"
-	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command into the selected folder"/>
-	<cmd name="Select All"
-         _label="Select _All Files"
-	 _tip="Select all items in this window"/>
-	<cmd name="Select Pattern"
-         _label="Select _Pattern"
-	 _tip="Select items in this window matching a given pattern"/>
-	<cmd name="Properties"
-         _label="_Properties"
-	 _tip="View or modify the properties of each selected item"/>
-	<cmd name="Trash"
-         _label="Mo_ve to Trash"
-	 _tip="Move each selected item to the Trash"/>
-	<cmd name="Unmount Volume Conditional"
-         _label="_Unmount Volume"
-         _tip="Unmount the selected volume"/>
-	<cmd name="Mount Volume Conditional"
-         _label="_Mount Volume"
-         _tip="Mount the selected volume"/>
-        <cmd name="Format Conditional"
-         _label="_Format"
-         _tip="Format the selected volume"/>
-        <cmd name="Protect Conditional"
-         _label="Prot_ect"
-         _tip="Protect the selected volume"/>
-        <cmd name="Media Properties Conditional"
-         _label="Medi_a Properties"
-         _tip="Show media properties for the selected volume"/>
-        <cmd name="Connect To Server Link Conditional"
-         _label="Connect To This Server"
-         _tip="Make a permanent connection to this server"/>
-</commands>
-<keybindings>
-	<accel name="*Control*BackSpace" verb="Trash"/>
-	<accel name="*Control*T" verb="Trash"/>
-	<accel name="KP_Delete" verb="Trash"/>
-	<accel name="Delete" verb="Trash"/>
-	<accel name="*Shift*KP_Delete" verb="Delete"/>
-	<accel name="*Shift*Delete" verb="Delete"/>
-        <accel name="*Alt*Down" verb="Open"/>
-        <accel name="*Alt**Shift*Down" verb="OpenCloseParent"/>
-	<accel name="*Control*i" verb="Properties"/>
-	<accel name="*Shift**Control*n" verb="New Folder"/>
-	<accel name="*Control*o" verb="Open"/>
-	<accel name="*Control**Shift*o" verb="OpenAlternate"/>
-	<accel name="*Alt*Return" verb="Properties"/>
-	<accel name="*Control*x" verb="Cut Files"/>
-	<accel name="*Control*c" verb="Copy Files"/>
-	<accel name="*Control*v" verb="Paste Files"/>
-	<accel name="*Control*m" verb="Create Link"/>
-	<accel name="F2" verb="Rename"/>
-	<accel name="*Control*a" verb="Select All"/>
-	<accel name="*Control*s" verb="Select Pattern"/>
-</keybindings>
-<menu>
-	<submenu name="File">
-
+<ui>
+<accelerator action="OpenAccel"/>
+<accelerator action="OpenCloseParent"/>
+<accelerator action="PropertiesAccel"/>
+<menubar name="MenuBar">
+	<menu action="File">
 		<placeholder name="New Items Placeholder">
-			<menuitem name="New Folder"
-			  	  accel="*Shift**Control*n"
-				  verb="New Folder"/>
-			<submenu name="New Documents"
-				 _label="Create _Document">
-			         <menuitem name="No Templates"
-                                       _label="No templates Installed"
-                                       sensitive="0"/>
-				 <placeholder name="New Documents Placeholder" delimit="none"/>
+			<menuitem name="New Folder" action="New Folder"/>
+			<menu action="New Documents">
+			         <menuitem name="No Templates" action="No Templates"/>
+				 <placeholder name="New Documents Placeholder"/>
 				 <separator name="After New Documents"/>
-				 <menuitem name="New Empty File" 
-				 	   verb="New Empty File"/>
-			</submenu>
-			<menuitem name="New Launcher"
-				  pixtype="stock" pixname="gtk-new"
-				  verb="New Launcher"/>
+				 <menuitem name="New Empty File" action="New Empty File"/>
+			</menu>
+			<menuitem name="New Launcher" action="New Launcher"/>
 		</placeholder>
 		<placeholder name="Open Placeholder">
-			<menuitem name="Open"
-                                  accel="*Control*o"
-				  pixtype="stock" pixname="gtk-open"
-				  verb="Open"/>
-			<menuitem name="OpenAlternate"
-				  accel="*Control**Shift*o"
-				  verb="OpenAlternate"/>
-			<placeholder name="Applications Placeholder" delimit="top"/>
-			<submenu name="Open With" 
-				 _label="Open Wit_h" 
-				 _tip="Choose a program with which to open the selected item">
-				<placeholder name="Applications Placeholder" delimit="none"/>
-				<separator/>
-				<menuitem name="OtherApplication"
-					  verb="OtherApplication"/>
-			</submenu>
+			<menuitem name="Open" action="Open"/>
+			<menuitem name="OpenAlternate" action="OpenAlternate"/>
+			<placeholder name="Applications Placeholder">
+                        </placeholder>
+			<menu action="Open With">
+				<placeholder name="Applications Placeholder"/>
+				<separator name="Open With Separator"/>
+				<menuitem name="OtherApplication" action="OtherApplication1"/>
+			</menu>
 			<placeholder name="OtherApplicationPlaceholder">
-				<menuitem name="OtherApplication"
-					  verb="OtherApplication"/>
+				<menuitem name="OtherApplication" action="OtherApplication2"/>
 			</placeholder>
-			<menuitem name="Edit Launcher"
-				  verb="Edit Launcher"/>
-			<submenu name="Scripts"
-				 _label="_Scripts"
-				 _tip="Run or manage scripts from ~/Nautilus/scripts">
-				 <placeholder name="Scripts Placeholder" delimit="none"/>
+			<menu action="Scripts">
+				 <placeholder name="Scripts Placeholder"/>
 				 <separator name="After Scripts"/>
-				 <menuitem name="Open Scripts Folder" 
-				 	   verb="Open Scripts Folder"/>
-			</submenu>
+				 <menuitem name="Open Scripts Folder" action="Open Scripts Folder"/>
+			</menu>
 		</placeholder>
-
 		<placeholder name="File Items Placeholder">
-			<menuitem name="Properties"
-                                  pixtype="stock" pixname="gtk-properties"
-				  accel="*Alt*Return"
-				  verb="Properties"/>
+			<menuitem name="Properties" action="Properties"/>
 		</placeholder>
 		<placeholder name="Global File Items Placeholder">
-			<menuitem name="Empty Trash"
-				  verb="Empty Trash"/>
+			<menuitem name="Empty Trash" action="Empty Trash"/>
 		</placeholder>
-	</submenu>
-
-	<submenu name="Edit">
-		<menuitem name="Cut"
-			  accel="*Control*x"
-			  pixtype="stock" pixname="gtk-cut"
-			  verb="Cut Files"/>
-		<menuitem name="Copy"
-			  accel="*Control*c"
-			  pixtype="stock" pixname="gtk-copy"
-			  verb="Copy Files"/>
-		<menuitem name="Paste"
-			  accel="*Control*v"
-			  pixtype="stock" pixname="gtk-paste"
-			  verb="Paste Files"/>
-
+	</menu>
+	<menu action="Edit">
+		<placeholder name="Clipboard Actions">
+			<menuitem name="Cut" action="Cut"/>
+			<menuitem name="Copy" action="Copy"/>
+			<menuitem name="Paste" action="Paste"/>
+		</placeholder>
 		<placeholder name="Select Items">
-		<menuitem name="Select All"
-			  accel="*Control*a"
-			  verb="Select All"/>
-		<menuitem name="Select Pattern"
-			  accel="*Control*s"
-			  verb="Select Pattern"/>
+		<menuitem name="Select All" action="Select All"/>
+		<menuitem name="Select Pattern" action="Select Pattern"/>
 		</placeholder>
-
 		<placeholder name="File Items Placeholder">
-			<menuitem name="Duplicate"
-				  verb="Duplicate"/>
-			<menuitem name="Create Link"
-				  accel="*Control*m"
-				  verb="Create Link"/>
-			<menuitem name="Rename"
-				  accel="F2"
-				  verb="Rename"/>
+			<menuitem name="Duplicate" action="Duplicate"/>
+			<menuitem name="Create Link" action="Create Link"/>
+			<menuitem name="Rename"action="Rename"/>
 		</placeholder>
-
 		<placeholder name="Dangerous File Items Placeholder">
-			<menuitem name="Trash"
-				  pixtype="stock" pixname="gtk-delete"
-				  verb="Trash"/>
-			<menuitem name="Delete"
-				  accel="*Shift*Delete"
-				  verb="Delete"/>
+			<menuitem name="Trash" action="Trash"/>
+			<menuitem name="Delete" action="Delete"/>
 		</placeholder>
-
 		<placeholder name="Extension Actions"/>
-	</submenu>
-
-	<submenu name="View">
+	</menu>
+	<menu action="View">
 		<placeholder name="View Preferences Placeholder">
-			<menuitem name="Reset to Defaults"
-				  verb="Reset to Defaults"/>
-			<menuitem name="Show Hidden Files"
-				  type="toggle"	
-				  accel="*Control*h"
-				  verb="Show Hidden Files"/>
+			<menuitem name="Reset to Defaults" action="Reset to Defaults"/>
+			<menuitem name="Show Hidden Files" action="Show Hidden Files"/>
 		</placeholder>
-	</submenu>
-</menu>
-<popups>
-	<popup name="background">
-		<placeholder name="Before Zoom Items">
-			<placeholder name="New Object Items">
-				<menuitem name="New Folder" 
-				 verb="New Folder"/>
-				<menuitem name="New Launcher"
-				 pixtype="stock" pixname="gtk-new"
-				 verb="New Launcher"/>
-			</placeholder>
-			<submenu name="New Documents"
-				 _label="Create _Document">
-			         <menuitem name="No Templates"
-                                       _label="No templates Installed"
-                                       sensitive="0"/>
-				 <placeholder name="New Documents Placeholder" delimit="none"/>
-				 <separator name="After New Documents"/>
-				 <menuitem name="New Empty File" 
-				 	   verb="New Empty File"/>
-			</submenu>
-                        <submenu name="Scripts"
-				 _label="_Scripts"
-				 _tip="Run or manage scripts from ~/Nautilus/scripts"
-				 tearoff="0">
-				 <placeholder name="Scripts Placeholder" delimit="none"/>
-				 <separator name="After Scripts"/>
-				 <menuitem name="Open Scripts Folder" verb="Open Scripts Folder"/>
-			</submenu>
-			<placeholder name="View Items" delimit="top"/>
-			<placeholder name="File Clipboard Actions" delimit="top">
-				<menuitem name="Paste Files" 
-				 pixtype="stock" pixname="gtk-paste"
-				 verb="Paste Files"/>
-			</placeholder>
+	</menu>
+</menubar>
+<popup name="background">
+	<placeholder name="Before Zoom Items">
+		<placeholder name="New Object Items">
+			<menuitem name="New Folder" action="New Folder"/>
+			<menuitem name="New Launcher" action="New Launcher"/>
+			<menu action="New Documents">
+		         	<menuitem name="No Templates" action="No Templates"/>
+			 	<placeholder name="New Documents Placeholder"/>
+			 	<separator name="After New Documents"/>
+			 	<menuitem name="New Empty File" action="New Empty File"/>
+			</menu>
+                	<menu action="Scripts">
+			 	<placeholder name="Scripts Placeholder"/>
+			 	<separator name="After Scripts"/>
+			 	<menuitem name="Open Scripts Folder" action="Open Scripts Folder"/>
+			</menu>
 		</placeholder>
-		<placeholder name="After Zoom Items">
-			<placeholder name="Background Items" delimit="none">
-				<menuitem name="Use Default Background" verb="Reset Background"/>
-			</placeholder>
+		<separator name="View items separator"/>
+		<placeholder name="View Items"/>
+		<separator name="Clipboard separator"/>
+		<placeholder name="File Clipboard Actions">
+			<menuitem name="Paste" action="Paste"/>
 		</placeholder>
-	</popup>
-	
-	<popup name="selection" tearoff="0">
-		<placeholder name="Open Placeholder" delimit="none">
-			<menuitem name="Open" 
-			 pixtype="stock" pixname="gtk-open"
-			 verb="Open"/>
-			<menuitem name="OpenAlternate" 
-			        verb="OpenAlternate"/>
-			<placeholder name="Applications Placeholder" delimit="top"/>
-			<submenu name="Open With" 
-				 _label="Open Wit_h" 
-				 tearoff="0"
-				 _tip="Choose a program with which to open the selected item">
-				<placeholder name="Applications Placeholder" delimit="none"/>
-				<separator/>
-				<menuitem name="OtherApplication" verb="OtherApplication"/>
-			</submenu>
-			<placeholder name="OtherApplicationPlaceholder">
-			        <menuitem name="OtherApplication"
-					  verb="OtherApplication"/>
-			</placeholder>
-			<menuitem name="Edit Launcher"
-				  verb="Edit Launcher"/>
-			<submenu name="Scripts"
-				 _label="_Scripts"
-				 _tip="Run or manage scripts from ~/Nautilus/scripts"
-				 tearoff="0">
-				 <placeholder name="Scripts Placeholder" delimit="none"/>
-				 <separator name="After Scripts"/>
-				 <menuitem name="Open Scripts Folder" verb="Open Scripts Folder"/>
-			</submenu>
-
+	</placeholder>
+	<placeholder name="After Zoom Items">
+		<placeholder name="Background Items">
+			<menuitem name="Use Default Background" action="Reset Background"/>
 		</placeholder>
-		<placeholder name="File Clipboard Actions" delimit="top">
-			<menuitem name="Cut Files" 
-			 pixtype="stock" pixname="gtk-cut"
-			 verb="Cut Files"/>
-			<menuitem name="Copy Files" 
-			 pixtype="stock" pixname="gtk-copy"
-			 verb="Copy Files"/>
-			<menuitem name="Paste Files Into" 
-			 pixtype="stock" pixname="gtk-paste"
-			 verb="Paste Files Into"/>
+	</placeholder>
+</popup>
+<popup name="selection">
+	<placeholder name="Open Placeholder">
+		<menuitem name="Open" action="Open"/>
+		<menuitem name="OpenAlternate" action="OpenAlternate"/>
+		<separator name="applications separator"/>
+		<placeholder name="Applications Placeholder"/>
+		<menu action="Open With">
+			<placeholder name="Applications Placeholder"/>
+			<separator name="open with separator"/>
+			<menuitem name="OtherApplication" action="OtherApplication1"/>
+		</menu>
+		<placeholder name="OtherApplicationPlaceholder">
+		        <menuitem name="OtherApplication2" action="OtherApplication2"/>
 		</placeholder>
-		<placeholder name="File Actions" delimit="top">
-			<menuitem name="Create Link" verb="Create Link"/>
-			<menuitem name="Rename" verb="Rename"/>
-		</placeholder>
-		<placeholder name="Dangerous File Actions" delimit="top">
-			<menuitem name="Trash" 
-			 pixtype="stock" pixname="gtk-delete"
-			 verb="Trash"/>
-			<menuitem name="Delete" verb="Delete"/>
-		</placeholder>
-
-		<placeholder name="Icon Appearance Items" delimit="top">
-		</placeholder>
-
-		<placeholder name="Extension Actions" delimit="top"/>
-                <separator/>
-
-                <menuitem name="Properties"
-                          pixtype="stock" pixname="gtk-properties"
-                          verb="Properties"/>
-                <placeholder name="Removabel Media Holder" delimit="top">
-                        <menuitem name="Mount Volume" verb="Mount Volume Conditional"/>
-                        <menuitem name="Unmount Volume" verb="Unmount Volume Conditional"/>
-                        <menuitem name="Protect Media" verb="Protect Conditional"/>
-                        <menuitem name="Format Media" verb="Format Conditional"/>
-                        <menuitem name="Media Properties" verb="Media Properties Conditional"/>
-                </placeholder>
-                <menuitem name="Connect To Server Link" verb="Connect To Server Link Conditional"/>
-	</popup>
-</popups>
-</Root>
+		<menu action="Scripts">
+			 <placeholder name="Scripts Placeholder"/>
+			 <separator name="After Scripts"/>
+			 <menuitem name="Open Scripts Folder" action="Open Scripts Folder"/>
+		</menu>
+	</placeholder>
+	<separator name="Clipboard separator"/>
+	<placeholder name="File Clipboard Actions">
+		<menuitem name="Cut" action="Cut"/>
+		<menuitem name="Copy" action="Copy"/>
+		<menuitem name="Paste Files Into" action="Paste Files Into"/>
+	</placeholder>
+	<separator name="File actions separator"/>
+	<placeholder name="File Actions">
+		<menuitem name="Create Link" action="Create Link"/>
+		<menuitem name="Rename" action="Rename"/>
+	</placeholder>
+	<separator name="Dangerous separator"/>
+	<placeholder name="Dangerous File Actions">
+		<menuitem name="Trash" action="Trash"/>
+		<menuitem name="Delete" action="Delete"/>
+	</placeholder>
+	<separator name="Appearande separator"/>
+	<placeholder name="Icon Appearance Items">
+	</placeholder>
+	<separator name="Extension actions separator"/>
+	<placeholder name="Extension Actions"/>
+        <separator name="Properties separator"/>
+        <menuitem name="Properties" action="Properties"/>
+	<separator name="Removable separator"/>
+        <placeholder name="Removabel Media Holder">
+		<menuitem name="Mount Volume" action="Mount Volume"/>
+                <menuitem name="Unmount Volume" action="Unmount Volume"/>
+        </placeholder>
+        <menuitem name="Connect To Server Link" action="Connect To Server Link"/>
+</popup>
+</ui>

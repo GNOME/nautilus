@@ -28,7 +28,6 @@
 
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
-#include "nautilus-bonobo-extensions.h"
 
 struct NautilusMetafileMonitorDetails {
 	NautilusDirectory *directory;

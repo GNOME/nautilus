@@ -67,9 +67,20 @@
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
+#include <libnautilus-private/nautilus-sidebar-provider.h>
+#include <libnautilus-private/nautilus-module.h>
+
+typedef struct {
+        GObject parent;
+} FMTreeViewProvider;
+
+typedef struct {
+        GObjectClass parent;
+} FMTreeViewProviderClass;
+
 
 struct FMTreeViewDetails {
-	GtkWidget *scrolled_window;
+	NautilusWindowInfo *window;
 	GtkTreeView *tree_widget;
 	GtkTreeModelSort *sort_model;
 	FMTreeModel *child_model;
@@ -116,8 +127,18 @@ static const GtkTargetEntry clipboard_targets[] = {
 	{ "x-special/gnome-copied-files", 0, GNOME_COPIED_FILES },
 };
 
-BONOBO_CLASS_BOILERPLATE (FMTreeView, fm_tree_view,
-			  NautilusView, NAUTILUS_TYPE_VIEW)
+static void  fm_tree_view_iface_init        (NautilusSidebarIface         *iface);
+static void  sidebar_provider_iface_init    (NautilusSidebarProviderIface *iface);
+static GType fm_tree_view_provider_get_type (void);
+
+G_DEFINE_TYPE_WITH_CODE (FMTreeView, fm_tree_view, GTK_TYPE_SCROLLED_WINDOW,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
+						fm_tree_view_iface_init));
+#define parent_class fm_tree_view_parent_class
+
+G_DEFINE_TYPE_WITH_CODE (FMTreeViewProvider, fm_tree_view_provider, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
+						sidebar_provider_iface_init));
 
 static gboolean
 show_iter_for_file (FMTreeView *view, NautilusFile *file, GtkTreeIter *iter)
@@ -228,6 +249,16 @@ schedule_show_selection (FMTreeView *view)
 }
 
 static void
+schedule_select_and_show_location (FMTreeView *view, char *location)
+{
+	if (view->details->selection_location != NULL) {
+		g_free (view->details->selection_location);
+	}
+	view->details->selection_location = g_strdup (location);
+	schedule_show_selection (view);
+}
+
+static void
 row_loaded_callback (GtkTreeModel     *tree_model,
 		     GtkTreeIter      *iter,
 		     FMTreeView *view)
@@ -292,7 +323,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
         char *uri, *file_uri;
         FMTreeView *view;
 	GdkScreen *screen;
-	Nautilus_ViewFrame_OpenMode mode;
+	NautilusWindowOpenMode mode;
 	
         view = FM_TREE_VIEW (callback_data);
 
@@ -300,7 +331,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 
         g_assert (file == view->details->activation_file);
         
-        mode = view->details->activation_in_new_window ? Nautilus_ViewFrame_OPEN_IN_NAVIGATION : Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE;
+        mode = view->details->activation_in_new_window ? NAUTILUS_WINDOW_OPEN_IN_NAVIGATION : NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE;
 
 	/* FIXME: reenable && !eel_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) */
 
@@ -327,8 +358,8 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 
 		/* Non-local executables don't get launched. They act like non-executables. */
 		if (file_uri == NULL) {
-			nautilus_view_open_location
-				(NAUTILUS_VIEW (view), 
+			nautilus_window_info_open_location
+				(view->details->window, 
 				 uri, 
 				 mode,
 				 0,
@@ -345,8 +376,8 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 				g_free (view->details->selection_location);
 			}
 			view->details->selection_location = g_strdup (uri);
-			nautilus_view_open_location
-				(NAUTILUS_VIEW (view), 
+			nautilus_window_info_open_location
+				(view->details->window, 
 				 uri,
 				 mode,
 				 0,
@@ -871,8 +902,8 @@ copy_or_cut_files (FMTreeView *view,
 	}
 	g_free (name);
 	
-	nautilus_view_report_status (NAUTILUS_VIEW (view),
-				     status_string);
+	nautilus_window_info_set_status (view->details->window,
+					 status_string);
 	g_free (status_string);
 }
 
@@ -940,8 +971,8 @@ paste_clipboard_data (FMTreeView *view,
 	}
 
 	if (item_uris == NULL|| destination_uri == NULL) {
-		nautilus_view_report_status (NAUTILUS_VIEW (view),
-					     _("There is nothing on the clipboard to paste."));
+		nautilus_window_info_set_status (view->details->window,
+						 _("There is nothing on the clipboard to paste."));
 	} else {
 		nautilus_file_operations_copy_move
 			(item_uris, NULL, destination_uri,
@@ -1205,6 +1236,7 @@ create_tree (FMTreeView *view)
 	GnomeVFSVolumeMonitor *volume_monitor;
 	char *home_uri;
 	GList *volumes, *l;
+	char *location;
 	
 	view->details->child_model = fm_tree_model_new ();
 	view->details->sort_model = GTK_TREE_MODEL_SORT
@@ -1283,7 +1315,7 @@ create_tree (FMTreeView *view)
 
 	gtk_widget_show (GTK_WIDGET (view->details->tree_widget));
 
-	gtk_container_add (GTK_CONTAINER (view->details->scrolled_window),
+	gtk_container_add (GTK_CONTAINER (view),
 			   GTK_WIDGET (view->details->tree_widget));
 
 	g_signal_connect_object (gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget)), "changed",
@@ -1297,28 +1329,30 @@ create_tree (FMTreeView *view)
 			  "button_press_event", G_CALLBACK (button_pressed_callback),
 			  view);
 
-	schedule_show_selection (view);
+	location = nautilus_window_info_get_current_location (view->details->window);
+	schedule_select_and_show_location (view, location);
+	g_free (location);
 }
 
 static void
 update_filtering_from_preferences (FMTreeView *view)
 {
-	Nautilus_ShowHiddenFilesMode mode;
+	NautilusWindowShowHiddenFilesMode mode;
 	
 	if (view->details->child_model == NULL) {
 		return;
 	}
 
-	mode = nautilus_view_get_show_hidden_files_mode (NAUTILUS_VIEW (view));
+	mode = nautilus_window_info_get_hidden_files_mode (view->details->window);
 
-	if (mode == Nautilus_SHOW_HIDDEN_FILES_DEFAULT) {
+	if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
 		fm_tree_model_set_show_hidden_files
 			(view->details->child_model,
 			 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
 	} else {
 		fm_tree_model_set_show_hidden_files
 			(view->details->child_model,
-			 mode == Nautilus_SHOW_HIDDEN_FILES_ENABLE);
+			 mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE);
 	}
 	fm_tree_model_set_show_backup_files
 		(view->details->child_model,
@@ -1329,13 +1363,15 @@ update_filtering_from_preferences (FMTreeView *view)
 }
 
 static void
-tree_activate_callback (BonoboControl *control, gboolean activating, gpointer user_data)
+parent_set_callback (GtkWidget        *widget,
+		     GtkWidget        *previous_parent,
+		     gpointer          callback_data)
 {
 	FMTreeView *view;
 
-	view = FM_TREE_VIEW (user_data);
+	view = FM_TREE_VIEW (callback_data);
 
-	if (activating && view->details->tree_widget == NULL) {
+	if (widget->parent != NULL && view->details->tree_widget == NULL) {
 		create_tree (view);
 		update_filtering_from_preferences (view);
 	}
@@ -1348,41 +1384,31 @@ filtering_changed_callback (gpointer callback_data)
 }
 
 static void
-load_location_callback (FMTreeView *view, char *location)
+loading_uri_callback (NautilusWindowInfo *window,
+		      char *location,
+		      FMTreeView *view)
 {
-	if (view->details->selection_location != NULL) {
-		g_free (view->details->selection_location);
-	}
-	view->details->selection_location = g_strdup (location);
-
-	schedule_show_selection (view);
+	schedule_select_and_show_location (view, location);
 }
 
 static void
-fm_tree_view_instance_init (FMTreeView *view)
+fm_tree_view_init (FMTreeView *view)
 {
-	BonoboControl *control;
-	
 	view->details = g_new0 (FMTreeViewDetails, 1);
 	
-	
-	view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->scrolled_window), 
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view), 
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
+	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 	
-	gtk_widget_show (view->details->scrolled_window);
+	gtk_widget_show (GTK_WIDGET (view));
 
-	control = bonobo_control_new (view->details->scrolled_window);
-	g_signal_connect_object (control, "activate",
-				 G_CALLBACK (tree_activate_callback), view, 0);
-
-	nautilus_view_construct_from_bonobo_control (NAUTILUS_VIEW (view), control);
+	g_signal_connect_object (view, "parent_set",
+				 G_CALLBACK (parent_set_callback), view, 0);
 
 	view->details->selection_location = NULL;
-	g_signal_connect_object (view, "load_location",
-				 G_CALLBACK (load_location_callback), view, 0);
+	
 	view->details->selecting = FALSE;
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
@@ -1391,13 +1417,6 @@ fm_tree_view_instance_init (FMTreeView *view)
 				      filtering_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 				      filtering_changed_callback, view);
-	g_signal_connect_object (view, "show_hidden_files_mode_changed",
-				 G_CALLBACK (filtering_changed_callback), view, 0);  
-
-	nautilus_view_set_listener_mask
-		(NAUTILUS_VIEW (view),
-		 NAUTILUS_VIEW_LISTEN_SHOW_HIDDEN_FILES_MODE);
-
 	
 	g_signal_connect_object (nautilus_icon_factory_get(), "icons_changed",
 				 G_CALLBACK (theme_changed_callback), view, 0);  
@@ -1465,3 +1484,100 @@ fm_tree_view_class_init (FMTreeViewClass *class)
 	
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 }
+
+static const char *
+fm_tree_view_get_sidebar_id (NautilusSidebar *sidebar)
+{
+	return TREE_SIDEBAR_ID;
+}
+
+static char *
+fm_tree_view_get_tab_label (NautilusSidebar *sidebar)
+{
+	return g_strdup (_("Tree"));
+}
+
+static GdkPixbuf *
+fm_tree_view_get_tab_icon (NautilusSidebar *sidebar)
+{
+	return NULL;
+}
+
+static void
+fm_tree_view_is_visible_changed (NautilusSidebar *sidebar,
+				 gboolean         is_visible)
+{
+	/* Do nothing */
+}
+
+static void 
+hidden_files_mode_changed_callback (NautilusWindowInfo *window,
+				    FMTreeView *view)
+{
+	update_filtering_from_preferences (view);
+}
+
+static void
+fm_tree_view_iface_init (NautilusSidebarIface *iface)
+{
+	iface->get_sidebar_id = fm_tree_view_get_sidebar_id;
+	iface->get_tab_label = fm_tree_view_get_tab_label;
+	iface->get_tab_icon = fm_tree_view_get_tab_icon;
+	iface->is_visible_changed = fm_tree_view_is_visible_changed;
+}
+
+static void
+fm_tree_view_set_parent_window (FMTreeView *sidebar,
+				NautilusWindowInfo *window)
+{
+	char *location;
+	
+	sidebar->details->window = window;
+
+	g_signal_connect_object (window, "loading_uri",
+				 G_CALLBACK (loading_uri_callback), sidebar, 0);
+	location = nautilus_window_info_get_current_location (window);
+	loading_uri_callback (window, location, sidebar);
+	g_free (location);
+
+	g_signal_connect_object (window, "hidden_files_mode_changed",
+				 G_CALLBACK (hidden_files_mode_changed_callback), sidebar, 0);  
+
+}
+
+static NautilusSidebar *
+fm_tree_view_create (NautilusSidebarProvider *provider,
+		     NautilusWindowInfo *window)
+{
+	FMTreeView *sidebar;
+	
+	sidebar = g_object_new (fm_tree_view_get_type (), NULL);
+	fm_tree_view_set_parent_window (sidebar, window);
+	g_object_ref (sidebar);
+	gtk_object_sink (GTK_OBJECT (sidebar));
+
+	return NAUTILUS_SIDEBAR (sidebar);
+}
+
+static void 
+sidebar_provider_iface_init (NautilusSidebarProviderIface *iface)
+{
+	iface->create = fm_tree_view_create;
+}
+
+static void
+fm_tree_view_provider_init (FMTreeViewProvider *sidebar)
+{
+}
+
+static void
+fm_tree_view_provider_class_init (FMTreeViewProviderClass *class)
+{
+}
+
+void
+fm_tree_view_register (void)
+{
+        nautilus_module_add_type (fm_tree_view_provider_get_type ());
+}
+

@@ -9,7 +9,6 @@ INCLUDES =\
 	$(NULL)
 
 LDADD =\
-	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
 	$(CORE_LIBS) \
 	$(NULL)

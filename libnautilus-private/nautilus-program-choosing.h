@@ -29,15 +29,12 @@
 #include <gtk/gtkwindow.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-view-identifier.h>
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
 #define NAUTILUS_DESKTOP_COMMAND_SPECIFIER "desktop-file:"
 
 typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *application,
 						   gpointer			  callback_data);
-typedef void (*NautilusComponentChoiceCallback)   (NautilusViewIdentifier 	 *identifier,
-						   gpointer		 	  callback_data);
 
 void nautilus_launch_application                 (GnomeVFSMimeApplication           *application,
 						  NautilusFile                      *file,

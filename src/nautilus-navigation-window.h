@@ -33,9 +33,7 @@
 #include <bonobo/bonobo-window.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
-#include <libnautilus-private/nautilus-view-identifier.h>
-#include "nautilus-applicable-views.h"
-#include "nautilus-view-frame.h"
+#include <libnautilus-private/nautilus-sidebar.h>
 #include "nautilus-application.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-side-pane.h"
@@ -58,7 +56,6 @@ struct _NautilusNavigationWindow {
         
         /** UI stuff **/
         NautilusSidePane *sidebar;
-        NautilusInformationPanel *information_panel;
         GtkWidget *view_as_option_menu;
         GtkWidget *navigation_bar;
         
@@ -79,40 +76,37 @@ struct _NautilusNavigationWindowClass {
         NautilusWindowClass parent_spot;
 };
 
-GType            nautilus_navigation_window_get_type             (void);
-gboolean         nautilus_navigation_window_get_search_mode      (NautilusNavigationWindow    *window);
-void             nautilus_navigation_window_set_search_mode      (NautilusNavigationWindow    *window,
-                                                       gboolean           search_mode);
-void             nautilus_navigation_window_go_home              (NautilusNavigationWindow    *window);
-void             nautilus_navigation_window_allow_back           (NautilusNavigationWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_navigation_window_allow_forward        (NautilusNavigationWindow    *window,
-                                                       gboolean           allow);
-void		 nautilus_navigation_window_clear_back_list      (NautilusNavigationWindow    *window);
-void		 nautilus_navigation_window_clear_forward_list   (NautilusNavigationWindow    *window);
-
-void		 nautilus_forget_history	      (void);
-void             nautilus_bookmarks_exiting           (void);
-
-gint 		 nautilus_navigation_window_get_base_page_index  (NautilusNavigationWindow 	 *window);
-
-void 		 nautilus_navigation_window_hide_location_bar    (NautilusNavigationWindow 	 *window,
-                                                       gboolean           save_preference);
-void 		 nautilus_navigation_window_show_location_bar    (NautilusNavigationWindow 	 *window,
-                                                       gboolean           save_preference);
-gboolean	 nautilus_navigation_window_location_bar_showing (NautilusNavigationWindow    *window);
-
-void 		 nautilus_navigation_window_hide_toolbar         (NautilusNavigationWindow 	 *window);
-void 		 nautilus_navigation_window_show_toolbar         (NautilusNavigationWindow 	 *window);
-gboolean	 nautilus_navigation_window_toolbar_showing      (NautilusNavigationWindow    *window);
-
-void 		 nautilus_navigation_window_hide_sidebar         (NautilusNavigationWindow 	 *window);
-void 		 nautilus_navigation_window_show_sidebar         (NautilusNavigationWindow 	 *window);
-gboolean	 nautilus_navigation_window_sidebar_showing      (NautilusNavigationWindow    *window);
-
-void               nautilus_navigation_window_add_sidebar_panel  (NautilusNavigationWindow    *window,
-                                                                  NautilusViewFrame           *sidebar_panel);
-void               nautilus_navigation_window_remove_sidebar_panel (NautilusNavigationWindow  *window,
-                                                                    NautilusViewFrame         *sidebar_panel);
+GType    nautilus_navigation_window_get_type             (void);
+void     nautilus_navigation_window_go_home              (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_allow_back           (NautilusNavigationWindow *window,
+                                                          gboolean                  allow);
+void     nautilus_navigation_window_allow_forward        (NautilusNavigationWindow *window,
+                                                          gboolean                  allow);
+void     nautilus_navigation_window_clear_back_list      (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_clear_forward_list   (NautilusNavigationWindow *window);
+void     nautilus_forget_history                         (void);
+void     nautilus_bookmarks_exiting                      (void);
+gint     nautilus_navigation_window_get_base_page_index  (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_hide_location_bar    (NautilusNavigationWindow *window,
+                                                          gboolean                  save_preference);
+void     nautilus_navigation_window_show_location_bar    (NautilusNavigationWindow *window,
+                                                          gboolean                  save_preference);
+gboolean nautilus_navigation_window_location_bar_showing (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_hide_toolbar         (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_show_toolbar         (NautilusNavigationWindow *window);
+gboolean nautilus_navigation_window_toolbar_showing      (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_hide_sidebar         (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_show_sidebar         (NautilusNavigationWindow *window);
+gboolean nautilus_navigation_window_sidebar_showing      (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_add_sidebar_panel    (NautilusNavigationWindow *window,
+                                                          NautilusSidebar          *sidebar_panel);
+void     nautilus_navigation_window_remove_sidebar_panel (NautilusNavigationWindow *window,
+                                                          NautilusSidebar          *sidebar_panel);
+void     nautilus_navigation_window_hide_status_bar      (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_show_status_bar      (NautilusNavigationWindow *window);
+gboolean nautilus_navigation_window_status_bar_showing   (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_back_or_forward      (NautilusNavigationWindow *window,
+                                                          gboolean                  back,
+                                                          guint                     distance);
 
 #endif

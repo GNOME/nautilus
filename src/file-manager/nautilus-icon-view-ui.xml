@@ -1,138 +1,54 @@
-<Root>
-<commands>
-	<cmd name="Stretch"
-         _label="Str_etch Icon"
-	 _tip="Make the selected icon stretchable"/>
-	<cmd name="Unstretch"
-         _label="Restore Icons' Original Si_zes"
-	 _tip="Restore each selected icon to its original size"/>
-	<cmd name="Manual Layout"
-         _label="_Manually"
-	 _tip="Leave icons wherever they are dropped"/>
-	<cmd name="Sort by Name"
-         _label="By _Name"
-	 _tip="Keep icons sorted by name in rows"/>
-	<cmd name="Sort by Size"
-         _label="By _Size"
-	 _tip="Keep icons sorted by size in rows"/>
-	<cmd name="Sort by Type"
-         _label="By _Type"
-	 _tip="Keep icons sorted by type in rows"/>
-	<cmd name="Sort by Modification Date"
-         _label="By Modification _Date"
-	 _tip="Keep icons sorted by modification date in rows"/>
-	<cmd name="Sort by Emblems"
-         _label="By _Emblems"
-	 _tip="Keep icons sorted by emblems in rows"/>
-	<cmd name="Keep Aligned"
-         _label="_Keep Aligned"
-	 _tip="Keep icons lined up on a grid"/>
-	<cmd name="Tighter Layout"
-         _label="Compact _Layout"
-	 _tip="Toggle using a tighter layout scheme"/>
-	<cmd name="Reversed Order"
-         _label="Re_versed Order"
-	 _tip="Display icons in the opposite order"/>
-	<cmd name="Clean Up"
-         _label="Clean _Up by Name"
-	 _tip="Reposition icons to better fit in the window and avoid overlapping"/>
-</commands>
-<menu>
-	<submenu name="Edit">
+<ui>
+<menubar name="MenuBar">
+	<menu action="Edit">
 		<placeholder name="Edit Items Placeholder">
-			<menuitem name="Stretch"
-				  verb="Stretch"/>
-			<menuitem name="Unstretch"
-				  verb="Unstretch"/>
+			<menuitem name="Stretch" action="Stretch"/>
+			<menuitem name="Unstretch" action="Unstretch"/>
 		</placeholder>
-
-	</submenu>
-
-	<submenu name="View">
+	</menu>
+	<menu action="View">
 		<placeholder name="View Items Placeholder">
-			<submenu name="Arrange Items" _label="Arran_ge Items">
-				<menuitem name="Manual Layout"
-					  type="radio" group="layout group"
-					  id="Manual Layout"/>
+			<menu action="Arrange Items">
+				<menuitem name="Manual Layout" action="Manual Layout"/>
 				<placeholder name="Auto Layout">
-					<menuitem name="Sort by Name"
-						  type="radio" group="layout group"
-						  id="Sort by Name"/>
-					<menuitem name="Sort by Size"
-						  type="radio" group="layout group"
-						  id="Sort by Size"/>
-					<menuitem name="Sort by Type"
-						  type="radio" group="layout group"
-						  id="Sort by Type"/>
-					<menuitem name="Sort by Modification Date" 
-						  type="radio" group="layout group"
-						  id="Sort by Modification Date"/>
-					<menuitem name="Sort by Emblems"
-						  type="radio" group="layout group"
-						  id="Sort by Emblems"/>
+					<menuitem name="Sort by Name" action="Sort by Name"/>
+					<menuitem name="Sort by Size" action="Sort by Size"/>
+					<menuitem name="Sort by Type" action="Sort by Type"/>
+					<menuitem name="Sort by Modification Date" action="Sort by Modification Date"/>
+					<menuitem name="Sort by Emblems" action="Sort by Emblems"/>
 				</placeholder>
-				<separator/>
-				<menuitem name="Tighter Layout"
-                                          id="Tighter Layout"
-                                          type="toggle"/>
-				<menuitem name="Reversed Order"
-                                          id="Reversed Order"
-                                          type="toggle"/>
-			</submenu>
-			<menuitem name="Clean Up"
-				  verb="Clean Up"/>
-			<menuitem name="Keep Aligned" 
-	                          id="Keep Aligned"
-	                          type="toggle"/>
+				<separator name="Layout separator"/>
+				<menuitem name="Tighter Layout" action="Tighter Layout"/>
+				<menuitem name="Reversed Order" action="Reversed Order"/>
+			</menu>
+			<menuitem name="Clean Up" action="Clean Up"/>
+			<menuitem name="Keep Aligned" action="Keep Aligned"/>
 		</placeholder>
 		
-	</submenu>
-</menu>
-<popups>
-	<popup name="background">
-		<placeholder name="Before Zoom Items">
-			<placeholder name="View Items">
-				<submenu name="Arrange Items" _label="Arran_ge Items" tearoff="0">
-					<menuitem name="Manual Layout"
-						  type="radio" group="context menu layout group"
-						  id="Manual Layout"/>
-					<placeholder name="Auto Layout">
-						<menuitem name="Sort by Name"
-							  type="radio" group="context menu layout group"
-							  id="Sort by Name"/>
-						<menuitem name="Sort by Size"
-							  type="radio" group="context menu layout group"
-							  id="Sort by Size"/>
-						<menuitem name="Sort by Type"
-							  type="radio" group="context menu layout group"
-							  id="Sort by Type"/>
-						<menuitem name="Sort by Modification Date" 
-							  type="radio" group="context menu layout group"
-							  id="Sort by Modification Date"/>
-						<menuitem name="Sort by Emblems"
-							  type="radio" group="context menu layout group"
-							  id="Sort by Emblems"/>
-					</placeholder>
-					<separator/>
-
-					<menuitem name="Tighter Layout" 
-	                                          id="Tighter Layout"
-	                                          type="toggle"/>
-					<menuitem name="Reversed Order" 
-	                                          id="Reversed Order"
-	                                          type="toggle"/>
-				</submenu>
-
-				<menuitem name="Clean Up" verb="Clean Up"/>
-				<menuitem name="Keep Aligned" 
-	                                        id="Keep Aligned"
-	                                        type="toggle"/>
-			</placeholder>
+	</menu>
+</menubar>
+<popup name="background">
+	<placeholder name="Before Zoom Items">
+		<placeholder name="View Items">
+			<menu action="Arrange Items">
+				<menuitem name="Manual Layout" action="Manual Layout"/>
+				<placeholder name="Auto Layout">
+					<menuitem name="Sort by Name" action="Sort by Name"/>
+					<menuitem name="Sort by Size" action="Sort by Size"/>
+					<menuitem name="Sort by Type" action="Sort by Type"/>
+					<menuitem name="Sort by Modification Date" action="Sort by Modification Date"/>
+					<menuitem name="Sort by Emblems" action="Sort by Emblems"/>
+				</placeholder>
+				<separator name="Layout separator"/>
+				<menuitem name="Tighter Layout" action="Tighter Layout"/>
+				<menuitem name="Reversed Order" action="Reversed Order"/>
+			</menu>
+			<menuitem name="Clean Up" action="Clean Up"/>
+			<menuitem name="Keep Aligned" action="Keep Aligned"/>
 		</placeholder>
-	</popup>
-	<popup name="selection">
-		<placeholder name="Icon Appearance Items">
-		</placeholder>
-	</popup>
-</popups>
-</Root>
+	</placeholder>
+</popup>
+<popup name="selection">
+	<placeholder name="Icon Appearance Items"/>
+</popup>
+</ui>

@@ -1,237 +1,82 @@
-<Root>
-
-<!-- A description of each placeholder's purpose is in libnautilus/nautilus-bonobo-ui.h -->
-
-<commands>
-	<!-- We define commands here for (at least) all the items
-	 for which we share tip or sensitivity state between more
-	 than one item (usually 1 menuitem and 1 toolitem.
-	-->	 
-	<cmd name="Up"
-	 _tip="Go up one level"/>
-	<cmd name="Find"
-	 _tip="Search this computer for files"/>
-	<cmd name="Toggle Find Mode" 
-	 _label="Find"
-	 _tip="Search this computer for files"/>
-	<cmd name="Home"
-	 _tip="Go to the home location"/>
-	<cmd name="Stop"
-	 _tip="Stop loading this location"/>
-	<cmd name="Select All" accel="*Control*a" sensitive="0"/>
-        <cmd name="Cut" accel="*Control*x" sensitive="0"/>
-        <cmd name="Copy" accel="*Control*c" sensitive="0"/>
-        <cmd name="Paste" accel="*Control*v" sensitive="0"/>
-        <cmd name="Clear" sensitive="0"/>
-	<cmd name="Reload"
-	 _tip="Display the latest contents of the current location"/>
-	<cmd name="Go to Burn CD"
-	  _label="_CD/DVD Creator"
-	  _tip="Go to Empty CD folder"/>
-	<cmd name="Zoom In" _label="Zoom _In"
-	 _tip="Show the contents in more detail"/>
-	<cmd name="Zoom Out" _label="Zoom _Out"
-	 _tip="Show the contents in less detail"/>
-	<cmd name="Zoom Normal" _label="Normal Si_ze"
-	 _tip="Show the contents at the normal size"/>
-</commands>
-
-<keybindings>
-	<accel name="*Control*equal" verb="Zoom In"/>
-	<accel name="*Control**Shift*plus" verb="Zoom In"/>
-	<accel name="BackSpace" verb="Up"/>
-	<accel name="*Control*r" verb="Reload"/>
-</keybindings>
-
-<menu>
-	<submenu name="File" _label="_File">
-
-		<placeholder name="New Items Placeholder" delimit="none">
-		</placeholder>
-
-		<placeholder name="Open Placeholder" delimit="top"/>
-		<placeholder name="Location Placeholder" delimit="top"/>
-
-		<placeholder name="General Status Placeholder" delimit="top"/>
-		<placeholder name="File Items Placeholder" delimit="top"/>
-		<placeholder name="Global File Items Placeholder" delimit="top"/>
-		<placeholder name="Extension Actions" delimit="top"/>
+<ui>
+<menubar name="MenuBar">
+	<menu action="File">
+		<placeholder name="New Items Placeholder"/>
 		<separator/>
-
+		<placeholder name="Open Placeholder"/>
+		<separator/>
+		<placeholder name="Location Placeholder"/>
+		<menuitem name="Connect to Server" action="Connect to Server"/>
+		<separator/>
+		<placeholder name="File Items Placeholder"/>
+		<separator/>
+		<placeholder name="Global File Items Placeholder"/>
+		<separator/>
+		<placeholder name="Extension Actions"/>
+		<separator/>
                 <placeholder name="Close Items Placeholder"/>
-
-		<menuitem name="Close"
-			  _label="_Close"
-			  _tip="Close this folder"
-			  accel="*Control*w"
-			  pixtype="stock" pixname="gtk-close"
-			  verb="Close"/>
-	</submenu>
-
-	<submenu name="Edit" _label="_Edit">
-
-<!-- FIXME bugzilla.gnome.org 43515
-
-     Undo is disabled until we have a better implementation.
-     Both here and in nautilus-undo-signal-handlers.c.
-
-		<menuitem name="Undo" 
-			  _label="_Undo" 
-			  _tip="Undo the last text change"
-			  pixtype="stock" pixname="gtk-undo" 
-			  accel="*Control*z"
-			  verb="Undo"/>
-
+		<menuitem name="Close" action="Close"/>
+	</menu>
+	<menu action="Edit">
+		<placeholder name="Clipboard Actions">
+                </placeholder>
 		<separator/>
--->
-
-		<menuitem name="Cut"
-			  _label="Cut _Text"
-			  pixtype="stock" pixname="gtk-cut"
-			  verb="Cut"/>
-		<menuitem name="Copy"
-			  _label="_Copy Text"
-			  pixtype="stock" pixname="gtk-copy"
-			  verb="Copy"/>
-		<menuitem name="Paste"
-			  _label="_Paste Text"
-			  pixtype="stock" pixname="gtk-paste"
-			  verb="Paste"/>
-		<menuitem name="Clear"
-			  _label="C_lear Text"
-			  pixtype="stock" pixname="gtk-clear"
-			  verb="Clear"/>
-
+		<placeholder name="Select Items"/>
 		<separator/>
-
-		<placeholder name="Select Items">
-		<menuitem name="Select All"
-			  _label="Select _All" 
-			  verb="Select All"/>
-		</placeholder>
-		
-				
-		<placeholder name="File Items Placeholder" delimit="top"/>
-		<placeholder name="Dangerous File Items Placeholder" delimit="top"/>
-		<placeholder name="Edit Items Placeholder" delimit="top"/>
-		<placeholder name="Global Edit Items Placeholder" delimit="none"/>
-		
-		<placeholder name="Extension Actions" delimit="top"/>
+		<placeholder name="File Items Placeholder"/>
 		<separator/>
-
-		<menuitem name="Backgrounds and Emblems" 
-			  _label="_Backgrounds and Emblems..." 
-			  _tip="Display patterns, colors, and emblems that can be used to customize appearance"
-			  verb="Backgrounds and Emblems"/>
-		
-		<menuitem name="Preferences" 
-			  _label="Prefere_nces" 
-			  _tip="Edit Nautilus preferences"
-			  pixtype="stock" pixname="gtk-preferences" 
-			  verb="Preferences"/>
-	</submenu>
-
-	<submenu name="View" _label="_View">
-		<menuitem name="Stop" 
-			  _label="_Stop"
-			  pixtype="stock" pixname="gtk-stop"
-			  verb="Stop"/>
-		<menuitem name="Reload"
-			  _label="_Reload"
-			  accel="*Control*r"
-			  pixtype="stock" pixname="refresh"
-			  verb="Reload"/>
-
-		<placeholder name="Show Hide Placeholder" delimit="top">
-		</placeholder>
-
-		<placeholder name="View Preferences Placeholder" delimit = "top"/>
-		<placeholder name="View Items Placeholder" delimit="top"/>
-		
-		<placeholder name="Zoom Items Placeholder" delimit="top">
-			<menuitem name="Zoom In"
-				  accel="*Control*plus"
-				  pixtype="stock" pixname="zoom-in"
-				  verb="Zoom In"/>
-			<menuitem name="Zoom Out"
-				  accel="*Control*minus"
-				  pixtype="stock" pixname="zoom-out"
-				  verb="Zoom Out"/>
-			<menuitem name="Zoom Normal"
-				  pixtype="stock" pixname="zoom-100"
-				  verb="Zoom Normal"/>
+		<placeholder name="Dangerous File Items Placeholder"/>
+		<separator/>
+		<placeholder name="Edit Items Placeholder"/>
+		<placeholder name="Global Edit Items Placeholder"/>
+		<separator/>
+		<placeholder name="Extension Actions"/>
+		<separator/>
+		<menuitem name="Backgrounds and Emblems" action="Backgrounds and Emblems"/>
+		<menuitem name="Preferences" action="Preferences"/>
+	</menu>
+	<menu action="View">
+		<menuitem name="Stop" action="Stop"/>
+		<menuitem name="Reload" action="Reload"/>
+		<separator/>
+		<placeholder name="Show Hide Placeholder"/>
+		<separator/>
+		<placeholder name="View Preferences Placeholder"/>
+		<separator/>
+		<placeholder name="View Items Placeholder"/>
+		<separator/>
+		<placeholder name="Zoom Items Placeholder">
+			<menuitem name="Zoom In" action="Zoom In"/>
+			<menuitem name="Zoom Out" action="Zoom Out"/>
+			<menuitem name="Zoom Normal" action="Zoom Normal"/>
 		</placeholder>
 		<placeholder name="View Choices">
-			<placeholder name="Extra Viewer" delimit="top"/>
+		        <separator/>
+			<placeholder name="Extra Viewer"/>
 			<separator name="Before Short List"/>
 			<placeholder name="Short List"/>
 		</placeholder>
-	</submenu>
-		
-	<placeholder/>
-
-	<submenu name="Profiler" _label="_Profiler">
-		<menuitem name="Start Profiling" 
-			  _label="_Start Profiling" 
-			  _tip="Start Profiling"
-			  verb="Start Profiling"/>
-		<menuitem name="Stop Profiling" 
-			  _label="_Stop Profiling" 
-			  _tip="Stop Profiling"
-			  verb="Stop Profiling"/>
-		<menuitem name="Reset Profiling" 
-			  _label="_Reset Profiling" 
-			  _tip="Reset Profiling"
-			  verb="Reset Profiling"/>
-		<menuitem name="Report Profiling" 
-			  _label="_Report Profiling" 
-			  _tip="Report Profiling"
-			  verb="Report Profiling"/>
-	</submenu>
-
-	<submenu name="Help" _label="_Help">
-		<menuitem name="Nautilus Manual"
-			  _label="_Contents"
-			  _tip="Display Nautilus help"
-			  accel="F1"
-			  pixtype="stock" pixname="gtk-help"
-			  verb="Nautilus Manual"/>
-		<menuitem name="About Nautilus"
-			  _label="_About"
-			  _tip="Display credits for the creators of Nautilus"
-			  pixtype="stock" pixname="about"
-			  verb="About Nautilus"/>
-	</submenu>
-</menu>
-
-<status>
-        <control name="StatusButton" behavior="pack-start"/>
-	<!-- the name "main" is required by Bonobo -->
-	<item name="main"/>
-</status>
-
-<popups>
-	<popup name="background" tearoff="0">
-		<placeholder name="Before Zoom Items" delimit="none">
-			<placeholder name="New Window Items" delimit="none">
-			</placeholder>
-			<placeholder name="New Object Items" delimit="none">
-			</placeholder>
-		        <placeholder name="Extension Actions" delimit="top"/>
-		</placeholder>
-		<placeholder name="Zoom Items" delimit="top">
-			<menuitem name="Zoom In" 
-			 pixtype="stock" pixname="zoom-in"
-			 verb="Zoom In"/>
-			<menuitem name="Zoom Out" 
-			 pixtype="stock" pixname="zoom-out"
-			 verb="Zoom Out"/>
-			<menuitem name="Zoom Normal" 
-			 pixtype="stock" pixname="zoom-100"
-			 verb="Zoom Normal"/>
-		</placeholder>
-		<placeholder name="After Zoom Items" delimit="top"/>
-	</popup>
-</popups>
-
-</Root>
+	</menu>
+	<placeholder name="Other Menus"/>
+	<menu action="Help">
+		<menuitem name="Nautilus Manual" action="Nautilus Manual"/>
+		<menuitem name="About Nautilus" action="About Nautilus"/>
+	</menu>
+</menubar>
+<popup name="background">
+	<placeholder name="Before Zoom Items">
+		<placeholder name="New Window Items"/>
+		<placeholder name="New Object Items"/>
+		<separator/>
+	       <placeholder name="Extension Actions"/>
+	</placeholder>
+        <separator/>
+	<placeholder name="Zoom Items">
+		<menuitem name="Zoom In" action="Zoom In"/>
+		<menuitem name="Zoom Out" action="Zoom Out"/>
+		<menuitem name="Zoom Normal" action="Zoom Normal"/>
+	</placeholder>
+        <separator/>
+	<placeholder name="After Zoom Items"/>
+</popup>
+</ui>

@@ -28,7 +28,6 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
-#include <bonobo-activation/bonobo-activation-activate.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>

@@ -24,10 +24,10 @@
 #define NAUTILUS_METAFILE_SERVER_IDL_INCLUDED
 
 #include <Bonobo.idl>
-#include <libnautilus/nautilus-view-component.idl>
 
 module Nautilus {
 
+	typedef string URI;
 	typedef sequence<string> FileNameList;
 
 	/* NautilusFiles creates (and registers) MetafileMonitors in order

@@ -1,69 +1,23 @@
-<Root>
-
-<!-- A description of each placeholder's purpose is in libnautilus/nautilus-bonobo-ui.h -->
-
-<commands>
-</commands>
-
-<keybindings>
-        <accel name="*Alt**Shift*Up" verb="UpCloseCurrent"/>
-	 <accel name="*Shift*BackSpace" verb="UpCloseCurrent"/>
-	 <accel name="*Alt*Home" verb="Home"/>
-</keybindings>
-<menu>
-	<submenu name="File">
+<ui>
+<menubar name="MenuBar">
+	<menu action="File">
 		<placeholder name="Location Placeholder">
-			<menuitem name="Up"
-			  _label="Open _Parent"
-			  _tip="Open the parent folder"
-			  accel="*Alt*Up"
-			  verb="Up"/>
-		        <menuitem name="Go to Location"
-			  _label="Open _Location..."
-			  accel="*Control*l"
-			  verb="Go to Location"/>
-		        <menuitem name="Connect to Server"
-			  _label="Connect to _Server..."
-			  verb="Connect to Server"/>
+			<menuitem name="Up" action="Up"/>
+		        <menuitem name="Go to Location"  action="Go to Location"/>
 		</placeholder>
 		<placeholder name="Close Items Placeholder">
-			<menuitem name="Close With Parents"
-			  _label="Close P_arent Folders"
-			  _tip="Close this folder's parents"
-			  accel="*Control**Shift*w"
-			  verb="Close Parent Folders"/>
-			<menuitem name="Close All Folders"
-			  _label="Clos_e All Folders"
-			  _tip="Close all folder windows"
-			  accel="*Control*q"
-			  verb="Close All Folders"/>
+			<menuitem name="Close Parent Folders" action="Close Parent Folders"/>
+			<menuitem name="Close All Folders" action="Close All Folders"/>
 		</placeholder>
-	</submenu>
-
-	<submenu name="Places" _label="_Places">
-		<menuitem name="Home" 
-			  _label="_Home" 
-			  accel="*Alt*Home"
-			  pixtype="stock" pixname="gtk-home"
-			  verb="Home"/>
-		<menuitem name="Go to Computer"
-			  _label="_Computer"
-			  _tip="Go to Computer"
-	                  pixtype="stock" pixname="gnome-fs-client"
-			  verb="Go to Computer"/>
-		<menuitem name="Go to Templates"
-			  _label="_Templates"
-			  _tip="Go to templates folder"
-			  verb="Go to Templates"/>
-		<menuitem name="Go to Trash"
-			  _label="_Trash"
-			  _tip="Go to the trash folder"
-			  verb="Go to Trash"/>
-		<menuitem name="Go to Burn CD"
-			  _label="CD _Creator"
-			  _tip="Go to the CD/DVD Creator"
-			  verb="Go to Burn CD"/>
-	</submenu>
-</menu>
-
-</Root>
+	</menu>
+        <placeholder name="Other Menus">
+	        <menu action="Places">
+		      <menuitem name="Home" action="Home"/>
+		      <menuitem name="Go to Computer" action="Go to Computer"/>
+ 		      <menuitem name="Go to Templates" action="Go to Templates"/>
+		      <menuitem name="Go to Trash" action="Go to Trash"/>
+		      <menuitem name="Go to Burn CD" action="Go to Burn CD"/>
+	         </menu>
+        </placeholder>
+</menubar>
+</ui>
