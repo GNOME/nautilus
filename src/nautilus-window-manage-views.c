@@ -764,6 +764,13 @@ report_content_view_failure_to_user (NautilusWindow *window)
 	g_free (message);
 }
 
+static void
+report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame *panel)
+{
+	/* FIXME bugzilla.eazel.com 762: Need real message here */
+	nautilus_error_dialog_parented ("Sidebar panel died.", GTK_WINDOW (window));
+}
+
 static gboolean
 nautilus_window_update_state (gpointer data)
 {
@@ -816,6 +823,7 @@ nautilus_window_update_state (gpointer data)
                         }
 
                         if (g_list_find (window->new_sidebar_panels, error_view) != NULL) {
+                        	report_sidebar_panel_failure_to_user (window, error_view);
                                 window->new_sidebar_panels = g_list_remove (window->new_sidebar_panels, error_view);
                                 gtk_widget_unref (GTK_WIDGET (error_view));
                         }

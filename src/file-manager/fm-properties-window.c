@@ -62,12 +62,13 @@ static GHashTable *windows;
 
 enum {
 	BASIC_PAGE_ICON_AND_NAME_ROW,
-	BASIC_PAGE_LOCATION_ROW,
 	BASIC_PAGE_TYPE_ROW,
 	BASIC_PAGE_SIZE_ROW,
+	BASIC_PAGE_LOCATION_ROW,
+	BASIC_PAGE_MIME_TYPE_ROW,
+	BASIC_PAGE_EMPTY_ROW,
 	BASIC_PAGE_ACCESSED_DATE_ROW,
 	BASIC_PAGE_MODIFIED_DATE_ROW,
-	BASIC_PAGE_MIME_TYPE_ROW,
 	BASIC_PAGE_ROW_COUNT
 };
 
@@ -978,7 +979,10 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 	is_directory = nautilus_file_is_directory (file);
 
 	/* We hide MIME type for directories, so we need one fewer row */
-	if (is_directory) {
+	/* FIXME: Without the && FALSE here, the last row in the directory
+	 * case is too close to the 2nd to last row. Haven't figured out why.
+	 */
+	if (is_directory && FALSE) {
 		row_count = BASIC_PAGE_ROW_COUNT - 1;
 	} else {
 		row_count = BASIC_PAGE_ROW_COUNT;
@@ -1044,7 +1048,7 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 					       GTK_OBJECT (name_field));
 
 	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_LOCATION_ROW,
-				  _("Location:"), file, "parent_uri");
+				  _("Where:"), file, "parent_uri");
 	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
 				  _("Type:"), file, "type");
 	if (is_directory) {
@@ -1420,15 +1424,15 @@ add_special_execution_flags (GtkTable *table,
 
 	add_special_execution_checkbox (table, file,
 					PERMISSIONS_PAGE_SUID_ROW, 
-					_("set user ID"), 
+					_("Set User ID"), 
 					GNOME_VFS_PERM_SUID);
 	add_special_execution_checkbox (table, file, 
 					PERMISSIONS_PAGE_SGID_ROW, 
-					_("set group ID"), 
+					_("Set Group ID"), 
 					GNOME_VFS_PERM_SGID);
 	add_special_execution_checkbox (table, file, 
 					PERMISSIONS_PAGE_STICKY_ROW, 
-					_("sticky"), 
+					_("Sticky"), 
 					GNOME_VFS_PERM_STICKY);
 }
 
@@ -1472,7 +1476,7 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 				  0, 0,
 				  0, 0);
 
-		attach_title_field (page_table, PERMISSIONS_PAGE_OWNER_ROW, _("Owner:"));
+		attach_title_field (page_table, PERMISSIONS_PAGE_OWNER_ROW, _("File Owner:"));
 		if (nautilus_file_can_set_owner (file)) {
 			/* Option menu in this case. */
 			attach_owner_menu (page_table, PERMISSIONS_PAGE_OWNER_ROW, file);
@@ -1482,7 +1486,7 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 					    VALUE_COLUMN, file, "owner"); 
 		}
 
-		attach_title_field (page_table, PERMISSIONS_PAGE_GROUP_ROW, _("Group:"));
+		attach_title_field (page_table, PERMISSIONS_PAGE_GROUP_ROW, _("File Group:"));
 		if (nautilus_file_can_set_group (file)) {
 			/* Option menu in this case. */
 			attach_group_menu (page_table, PERMISSIONS_PAGE_GROUP_ROW, file);

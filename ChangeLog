@@ -1,5 +1,17 @@
 2000-06-28  John Sullivan  <sullivan@eazel.com>
 
+	* src/file-manager/fm-properties-window.c: (create_basic_page),
+	(add_special_execution_flags), (create_permissions_page):
+	Changed some layout and wording to match Arlo's design. More
+	layout changes to come later.
+
+	* src/nautilus-window-manage-views.c:
+	(report_sidebar_panel_failure_to_user),
+	(nautilus_window_update_state): Added this function as
+	placeholder for potentially useful error message.
+
+2000-06-28  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-window-manage-views.c:
 	(report_content_view_failure_to_user),
 	(nautilus_window_update_state): Put up a dialog box
