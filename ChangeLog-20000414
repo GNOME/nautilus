@@ -1,3 +1,20 @@
+2000-01-31  Andy Hertzfeld <andy@eazel.com>
+
+        made the keyboard selection rectangle work again.  It's no longer a
+        separate canvas object, but rather a state reflected by the icon_item
+        like regular selection
+        
+        *libnautilus/gnome-icon-container-private.h:
+        removed the kdb_navigation_item field
+        
+        *libnautilus/gnome-icon-container.c:
+        removed code that manipulated the kbd_navigation_item, replaced
+        with setting and clearing the "alt_selection" item attribute
+        
+        *libnautilus/nautilus-icons-view-icon-item.c:
+        if the alt_selected attribute is set, frame the item's text with
+        a gray-stippled rectangle
+        
 2000-01-31  John Sullivan <sullivan@eazel.com>
 
 	Now saves/restores zoom level in icon & list views, and

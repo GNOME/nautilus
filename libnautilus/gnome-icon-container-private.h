@@ -121,9 +121,6 @@ struct _GnomeIconContainerDetails {
            icon items.  */
 	GHashTable *canvas_item_to_icon;
 
-	/* Rectangle that shows that a certain icon is selected.  */
-	GnomeCanvasItem *kbd_navigation_rectangle;
-
 	/* Current icon for keyboard navigation.  */
 	GnomeIconContainerIcon *kbd_current;
 

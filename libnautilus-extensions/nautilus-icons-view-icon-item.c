@@ -94,6 +94,12 @@ enum {
 
 #define MAX_LABEL_WIDTH 80
 
+/* Bitmap for stippled selection rectangles.  */
+static GdkBitmap *stipple;
+static char stipple_bits[] = { 0x02, 0x01 };
+
+/* headers */
+
 static void nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *class);
 static void nautilus_icons_view_icon_item_initialize (NautilusIconsViewIconItem *cpb);
 static void nautilus_icons_view_icon_item_destroy (GtkObject *object);
@@ -107,7 +113,7 @@ static double nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double
 static void nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double *y1, double *x2, double *y2);
 
 static void nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable, GdkFont *title_font, gchar* label, 
-                                               gint icon_left, gint icon_bottom, gboolean is_selected, gboolean real_draw);
+                                               gint icon_left, gint icon_bottom, gboolean real_draw);
                                                
 static GdkFont* get_font_for_item(GnomeCanvasItem *item);
 
@@ -152,6 +158,8 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 	item_class->render = nautilus_icons_view_icon_item_render;
 	item_class->point = nautilus_icons_view_icon_item_point;
 	item_class->bounds = nautilus_icons_view_icon_item_bounds;
+
+	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
 }
 
 /* Object initialization function for the icon item */
@@ -498,7 +506,7 @@ nautilus_icons_view_icon_item_update (GnomeCanvasItem *item, double *affine, Art
  	title_font = get_font_for_item(item);
 
 	/* make sure the text box measurements are set up before recalculating the bounding box */
-	nautilus_icons_view_draw_text_box(item, NULL, title_font, details->label, 0, 0, details->is_selected, FALSE);       	
+	nautilus_icons_view_draw_text_box(item, NULL, title_font, details->label, 0, 0, FALSE);       	
 	recompute_bounding_box(icon_view_item);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));
@@ -582,7 +590,7 @@ transform_pixbuf (guchar *dest, int x, int y, int width, int height, int rowstri
 /* utility routine to draw the label in a box, using gnomelib routines */
 static void
 nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable, GdkFont *title_font, gchar* label, 
-                                   gint icon_left, gint icon_bottom, gboolean is_selected, gboolean real_draw)
+                                   gint icon_left, gint icon_bottom, gboolean real_draw)
 {
 	GnomeIconTextInfo *icon_text_info;
  	gint box_left;       
@@ -620,13 +628,22 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 	}
 			                 
         /* invert to indicate selection if necessary */
-        if (is_selected && real_draw)
+        if (details->is_selected && real_draw)
 	{
 		gdk_gc_set_function (temp_gc, GDK_INVERT); 
 		gdk_draw_rectangle (drawable, temp_gc, TRUE, box_left, icon_bottom - 2, line_width, line_height);	    
 		gdk_gc_set_function (temp_gc, GDK_COPY); 
 	}
 	
+        /* indicate alt-selection by framing the text with a gray-stippled rectangle */
+        
+        if (details->is_alt_selected && real_draw)
+	{
+		gdk_gc_set_stipple(temp_gc, stipple);
+                gdk_gc_set_fill(temp_gc, GDK_STIPPLED);
+                gdk_draw_rectangle (drawable, temp_gc, FALSE, box_left, icon_bottom - 2, line_width, line_height);	    
+	}
+        
 	if (real_draw)
 		gdk_gc_unref (temp_gc);   
 	
@@ -709,7 +726,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_SMALLEST) {
 		icon_height = details->pixbuf->art_pixbuf->height * item->canvas->pixels_per_unit;
 		nautilus_icons_view_draw_text_box(item, drawable, title_font, details->label, item->x1 - x, 
-						  item->y1 - y  + icon_height, details->is_selected, TRUE);       	
+						  item->y1 - y  + icon_height, TRUE);       	
 	}
 }
 

@@ -866,6 +866,11 @@ set_kbd_current (GnomeIconContainer *container,
 
 	details = container->details;
 
+        if (details->kbd_current)
+ 	    gnome_canvas_item_set (details->kbd_current->item, 
+                                   "alt_selected", 0,
+			           NULL);   
+
 	details->kbd_current = icon;
 
 	if (details->kbd_current == NULL)
@@ -873,16 +878,11 @@ set_kbd_current (GnomeIconContainer *container,
 	
 	icon_get_text_bounding_box (icon, &x1, &y1, &x2, &y2);
 
-	gnome_canvas_item_set (details->kbd_navigation_rectangle,
-			       "x1", (gdouble) x1 - 1,
-			       "y1", (gdouble) y1 - 1,
-			       "x2", (gdouble) x2,
-			       "y2", (gdouble) y2,
+	gnome_canvas_item_set (icon->item,
+			       "alt_selected", 1,
 			       NULL);
-	gnome_canvas_item_show (details->kbd_navigation_rectangle);
 
 	icon_raise (icon);
-	gnome_canvas_item_raise_to_top (details->kbd_navigation_rectangle);
 
 	if (schedule_visibility)
 		schedule_kbd_icon_visibility (container);
@@ -896,10 +896,12 @@ unset_kbd_current (GnomeIconContainer *container)
 	GnomeIconContainerDetails *details;
 
 	details = container->details;
-
+        if (details->kbd_current)
+ 	    gnome_canvas_item_set (details->kbd_current->item, 
+                                   "alt_selected", 0,
+			           NULL);   
+                                   
 	details->kbd_current = NULL;
-	gnome_canvas_item_hide (details->kbd_navigation_rectangle);
-
 	unschedule_kbd_icon_visibility (container);
 }
 
@@ -2017,15 +2019,6 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
 	details->canvas_item_to_icon = g_hash_table_new (g_direct_hash,
 						      g_direct_equal);
-
-	details->kbd_navigation_rectangle 
-		= gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
-					 gnome_canvas_rect_get_type (),
-					 "outline_color", "black",
-					 "outline_stipple", stipple,
-					 "width_pixels", 1,
-					 NULL);
-	gnome_canvas_item_hide (details->kbd_navigation_rectangle);
 
 	details->kbd_icon_visibility_timer_tag = -1;
 	details->linger_selection_mode_timer_tag = -1;
