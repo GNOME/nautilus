@@ -1,3 +1,11 @@
+2000-07-03  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/bonobo-stream-vfs.c:
+	(bonobo_stream_vfs_class_init), (create_bonobo_stream_vfs):
+	Fixed problem with previous change to this file.  Allocated 
+	a static epv.  Assigned this epv to the servants epv and then
+	alocated the individual elements in the structure.
+
 2000-07-03  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

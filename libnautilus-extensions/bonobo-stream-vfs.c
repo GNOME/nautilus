@@ -30,6 +30,7 @@
 #include <errno.h>
 
 static BonoboStreamClass *bonobo_stream_vfs_parent_class;
+static POA_Bonobo_Stream__vepv vepv;
 
 static CORBA_long
 vfs_write (BonoboStream *stream, const Bonobo_Stream_iobuf *buffer,
@@ -227,6 +228,9 @@ bonobo_stream_vfs_class_init (BonoboStreamVFSClass *klass)
 	
 	bonobo_stream_vfs_parent_class = gtk_type_class (bonobo_stream_get_type ());
 
+	vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	vepv.Bonobo_Stream_epv = bonobo_stream_get_epv ();
+
 	sclass->write    = vfs_write;
 	sclass->read     = vfs_read;
 	sclass->seek     = vfs_seek;
@@ -296,9 +300,8 @@ create_bonobo_stream_vfs (BonoboObject *object)
 	CORBA_Environment ev;
 
 	servant = (POA_Bonobo_Stream *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	servant->vepv->Bonobo_Stream_epv = bonobo_stream_get_epv ();
-
+	servant->vepv = &vepv;
+	
 	CORBA_exception_init (&ev);
 
 	POA_Bonobo_Stream__init ((PortableServer_Servant) servant, &ev);

@@ -70,7 +70,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 typedef struct {
-	POA_Nautilus_View servant;
+	POA_Nautilus_Zoomable servant;
 	gpointer bonobo_object;
 	
 	NautilusZoomable *gtk_object;
@@ -114,10 +114,11 @@ POA_Nautilus_Zoomable__epv libnautilus_Nautilus_Zoomable_epv =
 	(gpointer) &impl_Nautilus_Zoomable_zoom_to_fit
 };
 
-static PortableServer_ServantBase__epv base_epv;
+//static PortableServer_ServantBase__epv base_epv;
 static POA_Nautilus_Zoomable__vepv impl_Nautilus_Zoomable_vepv =
 {
-	&base_epv,
+//	&base_epv,
+	NULL,
 	NULL,
 	&libnautilus_Nautilus_Zoomable_epv
 };
