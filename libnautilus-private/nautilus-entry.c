@@ -270,7 +270,7 @@ select_all_at_idle (gpointer callback_data)
 	if (!GTK_OBJECT_DESTROYED (entry)) {
 		nautilus_entry_select_all (entry);
 	}
-	gtk_object_unref (GTK_OBJECT (entry));
+	g_object_unref (G_OBJECT (entry));
 	return FALSE;
 }
 
@@ -293,7 +293,7 @@ nautilus_entry_select_all_at_idle (NautilusEntry *entry)
 	 * then gtk_entry_key_press will unselect (and we want
 	 * to move the text cursor position to the end).
 	 */
-	gtk_object_ref (GTK_OBJECT (entry));
+	g_object_ref (G_OBJECT (entry));
 	gtk_idle_add (select_all_at_idle, entry);
 }
 

@@ -357,11 +357,11 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	 */
 	g_signal_connect (G_OBJECT (transfer_info->progress_dialog),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (gnome_dialog_close),
+			    G_CALLBACK (gnome_dialog_close),
 			    NULL);
 	g_signal_connect (G_OBJECT (transfer_info->progress_dialog),
 			    "close",
-			    GTK_SIGNAL_FUNC (handle_close_callback),
+			    G_CALLBACK (handle_close_callback),
 			    transfer_info);
 
 	/* Make the progress dialog show up over the window we are copying into */

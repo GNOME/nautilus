@@ -68,7 +68,7 @@ main (int argc, char* argv[])
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 			g_free (label);
 			g_free (emblem_name);
 			continue;
@@ -76,10 +76,10 @@ main (int argc, char* argv[])
 		
 		button = eel_labeled_image_check_button_new (label, pixbuf);
 		g_free (label);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (G_OBJECT (pixbuf));
 
 		/* Attach parameters and signal handler. */
-		gtk_object_set_data_full (GTK_OBJECT (button),
+		g_object_set_data (G_OBJECT (button),
 					  "nautilus_property_name",
 					  emblem_name,
 					  g_free);

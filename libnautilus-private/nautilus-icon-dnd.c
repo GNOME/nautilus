@@ -1225,19 +1225,19 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 
 	/* Messages for outgoing drag. */
 	g_signal_connect (G_OBJECT (container), "drag_data_get",
-			    GTK_SIGNAL_FUNC (drag_data_get_callback), NULL);
+			    G_CALLBACK (drag_data_get_callback), NULL);
 	g_signal_connect (G_OBJECT (container), "drag_end",
-			    GTK_SIGNAL_FUNC (drag_end_callback), NULL);
+			    G_CALLBACK (drag_end_callback), NULL);
 
 	/* Messages for incoming drag. */
 	g_signal_connect (G_OBJECT (container), "drag_data_received",
-			    GTK_SIGNAL_FUNC (drag_data_received_callback), NULL);
+			    G_CALLBACK (drag_data_received_callback), NULL);
 	g_signal_connect (G_OBJECT (container), "drag_motion",
-			    GTK_SIGNAL_FUNC (drag_motion_callback), NULL);
+			    G_CALLBACK (drag_motion_callback), NULL);
 	g_signal_connect (G_OBJECT (container), "drag_drop",
-			    GTK_SIGNAL_FUNC (drag_drop_callback), NULL);
+			    G_CALLBACK (drag_drop_callback), NULL);
 	g_signal_connect (G_OBJECT (container), "drag_leave",
-			    GTK_SIGNAL_FUNC (drag_leave_callback), NULL);
+			    G_CALLBACK (drag_leave_callback), NULL);
 
 }
 

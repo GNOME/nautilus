@@ -152,7 +152,7 @@ select_all_idle_callback (gpointer callback_data)
 		select_all (editable);
 	}
 
-	gtk_object_unref (GTK_OBJECT (editable));
+	g_object_unref (G_OBJECT (editable));
 
 	return FALSE;
 }
@@ -168,7 +168,7 @@ select_all_callback (BonoboUIComponent *ui,
 	g_assert (strcmp (command_name, "Select All") == 0);
 
 	editable = GTK_EDITABLE (callback_data);
-	gtk_object_ref (GTK_OBJECT (editable));
+	g_object_ref (G_OBJECT (editable));
 	gtk_idle_add (select_all_idle_callback, editable);
 }
 
@@ -248,21 +248,21 @@ typedef struct {
 static gboolean
 clipboard_items_are_merged_in (GtkWidget *widget)
 {
-	return GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget),
+	return GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget),
 						     "Nautilus:clipboard_menu_items_merged"));
 }
 
 static void
-set_clipboard_items_are_merged_in (GtkObject *widget_as_object,
+set_clipboard_items_are_merged_in (GObject *widget_as_object,
 				   gboolean merged_in)
 {
-	gtk_object_set_data (widget_as_object,
-			     "Nautilus:clipboard_menu_items_merged",
-			     GINT_TO_POINTER (merged_in));
+	g_object_set_data (widget_as_object,
+			   "Nautilus:clipboard_menu_items_merged",
+			   GINT_TO_POINTER (merged_in));
 }
 
 static void
-merge_in_clipboard_menu_items (GtkObject *widget_as_object,
+merge_in_clipboard_menu_items (GObject *widget_as_object,
 			       TargetCallbackData *target_data)
 {
 	BonoboUIComponent *ui;
@@ -296,7 +296,7 @@ merge_in_clipboard_menu_items (GtkObject *widget_as_object,
 }
 
 static void
-merge_out_clipboard_menu_items (GtkObject *widget_as_object,
+merge_out_clipboard_menu_items (GObject *widget_as_object,
 				TargetCallbackData *target_data)
 
 {
@@ -333,13 +333,11 @@ focus_changed_callback (GtkWidget *widget,
 	ui = target_data->component;
 	if (GTK_WIDGET_HAS_FOCUS (widget)) {
 		if (!clipboard_items_are_merged_in (widget)) {
-			merge_in_clipboard_menu_items (GTK_OBJECT (widget),
-						       target_data);
+			merge_in_clipboard_menu_items (G_OBJECT (widget), target_data);
 		}
 	} else {
 		if (clipboard_items_are_merged_in (widget)) {
-			merge_out_clipboard_menu_items (GTK_OBJECT (widget),
-							target_data);
+			merge_out_clipboard_menu_items (G_OBJECT (widget), target_data);
 		}
 
 	}
@@ -453,7 +451,7 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 static gboolean
 widget_was_set_up_with_selection_sensitivity (GtkWidget *widget)
 {
-	return GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget),
+	return GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget),
 						     "Nautilus:shares_selection_changes"));
 }
 
@@ -507,17 +505,17 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 	/* We'd like to use gtk_signal_connect_while_alive, but it's
 	 * not compatible with gtk_signal_disconnect calls.
 	 */
-	gtk_object_set_data (GTK_OBJECT (target),
-			     "Nautilus:shares_selection_changes",
-			     GINT_TO_POINTER (shares_selection_changes));
+	g_object_set_data (G_OBJECT (target),
+			   "Nautilus:shares_selection_changes",
+			   GINT_TO_POINTER (shares_selection_changes));
 	g_signal_connect (G_OBJECT (target),
-			    "focus_in_event",
-			    G_CALLBACK (first_focus_callback),
-			    control);
+			  "focus_in_event",
+			  G_CALLBACK (first_focus_callback),
+			  control);
 	g_signal_connect (G_OBJECT (target),
-			    "destroy",
-			    G_CALLBACK (control_destroyed_callback),
-			    control);
+			  "destroy",
+			  G_CALLBACK (control_destroyed_callback),
+			  control);
 }
 
 static void

@@ -91,7 +91,7 @@ get_details (GtkWindow *window)
 {
 	NautilusDragWindowDetails *details;
 
-	details = gtk_object_get_data (GTK_OBJECT (window),
+	details = g_object_get_data (G_OBJECT (window),
 				       NAUTILUS_DRAG_WINDOW_DETAILS_KEY);
 	return details;
 }
@@ -404,9 +404,9 @@ nautilus_drag_window_register (GtkWindow *window)
 
 	details = g_new0 (NautilusDragWindowDetails, 1);
 
-	gtk_object_set_data_full (GTK_OBJECT (window),
-				  NAUTILUS_DRAG_WINDOW_DETAILS_KEY,
-				  details, g_free);
+	g_object_set_data_full (G_OBJECT (window),
+                                NAUTILUS_DRAG_WINDOW_DETAILS_KEY,
+                                details, g_free);
 
 	g_signal_connect (G_OBJECT (window), "realize",
 			    G_CALLBACK (nautilus_drag_window_realize), NULL);

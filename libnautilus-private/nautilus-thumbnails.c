@@ -589,7 +589,7 @@ make_thumbnails (gpointer data)
 			if (full_size_image != NULL) {													
 				/* scale the content image as necessary */	
 				scaled_image = eel_gdk_pixbuf_scale_down_to_fit (full_size_image, 96, 96);	
-				gdk_pixbuf_unref (full_size_image);
+				g_object_unref (G_OBJECT (full_size_image));
 				
 				thumbnail_path = gnome_vfs_get_local_path_from_uri (new_thumbnail_uri);
 				if (thumbnail_path == NULL
@@ -597,7 +597,7 @@ make_thumbnails (gpointer data)
 					g_warning ("error saving thumbnail %s", thumbnail_path);
 				}
 				g_free (thumbnail_path);
-				gdk_pixbuf_unref (scaled_image);
+				g_object_unref (G_OBJECT (scaled_image));
 			} else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
 				char *temp_str;
@@ -717,6 +717,6 @@ nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased_fr
 	pixbuf_with_frame = eel_embed_image_in_frame
 		(pixbuf, frame,
 		 left_offset, top_offset, right_offset, bottom_offset);
-	gdk_pixbuf_unref (pixbuf);	
+	g_object_unref (G_OBJECT (pixbuf));	
 	return pixbuf_with_frame;
 }

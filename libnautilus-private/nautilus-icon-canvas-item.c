@@ -254,13 +254,13 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::font",
 				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_FONT);	
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_selection",
-				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_SELECTION);
+				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_SELECTION);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_as_keyboard_focus",
-				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS);
+				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_drop",
-				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
+				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::smooth_font_size",
-				 GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT_SIZE);
+				 G_TYPE_INT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT_SIZE);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::smooth_font",
 				 GTK_TYPE_OBJECT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT);
 
@@ -508,7 +508,7 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		break;
         
         default:
-		arg->type = GTK_TYPE_INVALID;
+		arg->type = G_TYPE_INVALID;
 		break;
 	}
 }

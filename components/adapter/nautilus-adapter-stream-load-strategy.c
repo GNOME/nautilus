@@ -103,7 +103,7 @@ nautilus_adapter_stream_load_strategy_new (Bonobo_PersistStream  persist_stream)
 	NautilusAdapterStreamLoadStrategy *strategy;
 
 	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_STREAM_LOAD_STRATEGY, NULL));
-	gtk_object_ref (GTK_OBJECT (strategy));
+	g_object_ref (G_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->persist_stream = persist_stream;
@@ -121,7 +121,7 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (abstract_strategy);
-	gtk_object_ref (GTK_OBJECT (strategy));
+	g_object_ref (G_OBJECT (strategy));
 
 	CORBA_exception_init (&ev);
 
@@ -157,7 +157,7 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
         }
 
 
-	gtk_object_unref (GTK_OBJECT (strategy));
+	g_object_unref (G_OBJECT (strategy));
 
 	CORBA_exception_free (&ev);
 }

@@ -160,13 +160,13 @@ nautilus_text_view_init (NautilusTextView *text_view)
 	text_view->details->zoom_index = 3;
 	
 	g_signal_connect (G_OBJECT (text_view->details->zoomable), "set_zoom_level",
-			    GTK_SIGNAL_FUNC (zoomable_set_zoom_level_callback), text_view);
+			    G_CALLBACK (zoomable_set_zoom_level_callback), text_view);
 	g_signal_connect (G_OBJECT (text_view->details->zoomable), "zoom_in",
-			    GTK_SIGNAL_FUNC (zoomable_zoom_in_callback), text_view);
+			    G_CALLBACK (zoomable_zoom_in_callback), text_view);
 	g_signal_connect (G_OBJECT (text_view->details->zoomable), "zoom_out",
-			    GTK_SIGNAL_FUNC (zoomable_zoom_out_callback), text_view);
+			    G_CALLBACK (zoomable_zoom_out_callback), text_view);
 	g_signal_connect (G_OBJECT (text_view->details->zoomable), "zoom_to_fit",
-			    GTK_SIGNAL_FUNC (zoomable_zoom_to_fit_callback), text_view);
+			    G_CALLBACK (zoomable_zoom_to_fit_callback), text_view);
 	
 	bonobo_zoomable_set_parameters_full (text_view->details->zoomable,
 					     1.0, .25, 4.0, TRUE, TRUE, FALSE,
@@ -195,11 +195,11 @@ nautilus_text_view_init (NautilusTextView *text_view)
 	/* add signal handlers to the text field to enable/disable the service menu items */
 	gtk_signal_connect_after (GTK_OBJECT (text_view->details->text_display),
                                   "button_release_event",
-                                  GTK_SIGNAL_FUNC (update_service_menu_items), 
+                                  G_CALLBACK (update_service_menu_items), 
                                   text_view);
 	gtk_signal_connect_after (GTK_OBJECT (text_view->details->text_display),
                                   "key_press_event",
-                                  GTK_SIGNAL_FUNC (update_service_menu_items), 
+                                  G_CALLBACK (update_service_menu_items), 
                                   text_view);
 
 	/* set the font of the text object */

@@ -303,11 +303,11 @@ do_destroy (GtkObject *obj, News *news)
 	g_free (news->uri);
 	
 	if (news->font) {
-		gtk_object_unref (GTK_OBJECT (news->font));
+		g_object_unref (G_OBJECT (news->font));
 	}
 	
 	if (news->bold_font) {
-		gtk_object_unref (GTK_OBJECT (news->bold_font));
+		g_object_unref (G_OBJECT (news->bold_font));
 	}
 
 	if (news->timer_task != 0) {
@@ -321,27 +321,27 @@ do_destroy (GtkObject *obj, News *news)
 	}
 	
         if (news->closed_triangle != NULL) {
-		gdk_pixbuf_unref (news->closed_triangle);
+		g_object_unref (G_OBJECT (news->closed_triangle));
 	}
         
 	if (news->closed_triangle_changed != NULL) {
-		gdk_pixbuf_unref (news->closed_triangle_changed);
+		g_object_unref (G_OBJECT (news->closed_triangle_changed));
 	}
         
 	if (news->open_triangle != NULL) {
-		gdk_pixbuf_unref (news->open_triangle);
+		g_object_unref (G_OBJECT (news->open_triangle));
 	}
 	
 	if (news->open_triangle_changed != NULL) {
-		gdk_pixbuf_unref (news->open_triangle_changed);
+		g_object_unref (G_OBJECT (news->open_triangle_changed));
 	}
 	
 	if (news->bullet != NULL) {
-		gdk_pixbuf_unref (news->bullet);
+		g_object_unref (G_OBJECT (news->bullet));
 	}	
 	
 	if (news->changed_bullet != NULL) {
-		gdk_pixbuf_unref (news->changed_bullet);
+		g_object_unref (G_OBJECT (news->changed_bullet));
 	}	
 	
 	/* free all the channel data */
@@ -430,7 +430,7 @@ draw_triangle (GdkPixbuf *pixbuf, RSSChannelData *channel_data, int v_offset)
 	pixbuf_composite (mapped_image, pixbuf, 2, triangle_position, 255);
 
 	if (mapped_image != triangle) {
-		gdk_pixbuf_unref (mapped_image);
+		g_object_unref (G_OBJECT (mapped_image));
 	}
 }
 
@@ -463,7 +463,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 			}
 			pixbuf_composite (mapped_image, pixbuf, LOGO_LEFT_OFFSET, v_offset, 255);
 			if (mapped_image != channel_data->logo_image) {
-				gdk_pixbuf_unref (mapped_image);
+				g_object_unref (G_OBJECT (mapped_image));
 			}
 		}
 		v_offset += logo_height + 2;
@@ -632,7 +632,7 @@ draw_rss_items (RSSChannelData *channel_data,
 			}
 		}
 
-		gtk_object_unref (GTK_OBJECT (smooth_text_layout));
+		g_object_unref (G_OBJECT (smooth_text_layout));
 		
 		item_data->item_end_y = item_data->item_start_y + text_dimensions.height;
 		v_offset += text_dimensions.height + 4;
@@ -725,7 +725,7 @@ static gint
 nautilus_news_configure_event (GtkWidget *widget, GdkEventConfigure *event, News *news_data )
 {
 	if (news_data->pixbuf != NULL) {
-		gdk_pixbuf_unref (news_data->pixbuf);
+		g_object_unref (G_OBJECT (news_data->pixbuf));
 	}
 		
 	news_data->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
@@ -975,7 +975,7 @@ free_channel (RSSChannelData *channel_data)
 	g_free (channel_data->title);
 	
 	if (channel_data->logo_image != NULL) {
-		gdk_pixbuf_unref (channel_data->logo_image);
+		g_object_unref (G_OBJECT (channel_data->logo_image));
 	}
 
 	if (channel_data->load_file_handle != NULL) {
@@ -1127,12 +1127,12 @@ rss_logo_callback (GnomeVFSResult  error, GdkPixbuf *pixbuf, gpointer callback_d
 	channel_data->load_image_handle = NULL;
 	
 	if (channel_data->logo_image) {
-		gdk_pixbuf_unref (channel_data->logo_image);
+		g_object_unref (G_OBJECT (channel_data->logo_image));
 		channel_data->logo_image = NULL;
 	}
 	
 	if (pixbuf != NULL) {
-		gdk_pixbuf_ref (pixbuf);
+		g_object_ref (G_OBJECT (pixbuf));
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, 192, 40);		
 		channel_data->logo_image = pixbuf;
 		queue_update_size_and_redraw (channel_data->owner);
@@ -1739,7 +1739,7 @@ static void
 load_xpm_image (GdkPixbuf** image_result, const char** image_name)
 {
 	if (*image_result != NULL) {
-		gdk_pixbuf_unref (*image_result);
+		g_object_unref (G_OBJECT (*image_result));
 	}
 	*image_result = gdk_pixbuf_new_from_xpm_data (image_name);
 }
@@ -1756,7 +1756,7 @@ nautilus_news_load_images (News *news_data)
 	load_xpm_image (&news_data->open_triangle_changed, (const char**) open_triangle_changed_xpm);
 	
 	if (news_data->bullet != NULL) {
-		gdk_pixbuf_unref (news_data->bullet);
+		g_object_unref (G_OBJECT (news_data->bullet));
 	}
 	
 	news_bullet_path = nautilus_theme_get_image_path ("news_bullet.png");	
@@ -1766,7 +1766,7 @@ nautilus_news_load_images (News *news_data)
 	}
 
 	if (news_data->changed_bullet != NULL) {
-		gdk_pixbuf_unref (news_data->changed_bullet);
+		g_object_unref (G_OBJECT (news_data->changed_bullet));
 	}
 	
 	news_bullet_path = nautilus_theme_get_image_path ("changed_bullet.png");	
@@ -2049,7 +2049,7 @@ check_button_toggled_callback (GtkToggleButton *toggle_button, gpointer user_dat
 	RSSChannelData *channel_data;
 	
 	news_data = (News*) user_data;
-	channel_name = gtk_object_get_data (GTK_OBJECT (toggle_button), "channel_name");
+	channel_name = g_object_get_data (G_OBJECT (toggle_button), "channel_name");
 	
 	channel_data = get_channel_from_name (news_data, channel_name);
 	if (channel_data != NULL) { 
@@ -2085,7 +2085,7 @@ determine_sort_position (GtkWidget *container, const char *name)
 	index = 0;
 	current_item = checkboxes;
 	while (current_item != NULL) {
-		current_name = gtk_object_get_data (GTK_OBJECT (current_item->data), "channel_name");
+		current_name = g_object_get_data (G_OBJECT (current_item->data), "channel_name");
 		
 		if (eel_strcasecmp (current_name, name) > 0) {
 			g_list_free (checkboxes);
@@ -2112,7 +2112,7 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 	gtk_box_pack_start (GTK_BOX (news_data->checkbox_list), check_button, FALSE, FALSE, 0);
 
 	g_signal_connect (G_OBJECT (check_button), "toggled",
-      	              	    			GTK_SIGNAL_FUNC (check_button_toggled_callback),
+      	              	    			G_CALLBACK (check_button_toggled_callback),
                             			news_data);
 
 	/* reorder newly added button so it's sorted by it's name */
@@ -2127,7 +2127,7 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 	
 	/* set up user data to use in toggle handler */
         gtk_object_set_user_data (GTK_OBJECT (check_button), news_data);
-	gtk_object_set_data_full (GTK_OBJECT (check_button),
+	g_object_set_data (G_OBJECT (check_button),
 				  "channel_name",
 				  g_strdup (channel_name),
 				  (GtkDestroyNotify) g_free);
@@ -2254,7 +2254,7 @@ make_remove_widgets (News *news, GtkWidget *container)
 	gtk_clist_set_auto_sort (GTK_CLIST (news->remove_site_list), TRUE);
 	
 	g_signal_connect (G_OBJECT (news->remove_site_list), "select_row",
-			    GTK_SIGNAL_FUNC (select_row_in_remove_list), news);
+			    G_CALLBACK (select_row_in_remove_list), news);
 			    
 	scrolled_window = GTK_SCROLLED_WINDOW (gtk_scrolled_window_new (NULL, NULL));
 	gtk_scrolled_window_set_policy (scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);   

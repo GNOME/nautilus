@@ -165,7 +165,7 @@ impl_Nautilus_ComponentAdapterFactory__create (NautilusAdapterFactoryServer *bon
 	POA_Nautilus_ComponentAdapterFactory__init ((PortableServer_Servant) servant, ev);
 
 	g_signal_connect (G_OBJECT (bonobo_object), "destroy",
-			    GTK_SIGNAL_FUNC (impl_Nautilus_ComponentAdapterFactory__destroy), servant);
+			    G_CALLBACK (impl_Nautilus_ComponentAdapterFactory__destroy), servant);
 	
 	servant->bonobo_object = bonobo_object;
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);

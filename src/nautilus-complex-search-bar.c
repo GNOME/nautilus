@@ -62,39 +62,30 @@ struct NautilusComplexSearchBarDetails {
 	GSList *search_criteria;
 };
 
-static void  real_activate				  (NautilusNavigationBar	       *bar);
-static char *nautilus_complex_search_bar_get_location     (NautilusNavigationBar         *bar);
-static void  nautilus_complex_search_bar_set_location     (NautilusNavigationBar         *bar,
-							   const char                    *location);
-static void  nautilus_complex_search_bar_class_init (NautilusComplexSearchBarClass *class);
-static void  nautilus_complex_search_bar_init       (NautilusComplexSearchBar      *bar);
-static void  nautilus_complex_search_bar_destroy 	  (GtkObject 			 *object);
-static void  attach_criterion_to_search_bar               (NautilusComplexSearchBar      *bar,
-							   NautilusSearchBarCriterion    *criterion,
-							   int                           position);
-
-static void  unattach_criterion_from_search_bar           (NautilusComplexSearchBar      *bar,
-							   NautilusSearchBarCriterion    *criterion);
-static void  more_options_callback                        (GtkObject                     *object,
-							   gpointer                       data);
-static void  fewer_options_callback                       (GtkObject                     *object,
-							   gpointer                       data);
-static void  search_bar_criterion_type_changed_callback   (GtkObject *old_criterion_object,
-							   gpointer data);
-static GtkWidget * load_find_them_pixmap_widget           (void);
-
-static void	   update_options_buttons_state 	  (NautilusComplexSearchBar *bar);
-static void	   update_find_button_state 	  	  (NautilusComplexSearchBar *bar);
-static void	   update_dynamic_buttons_state 	  (NautilusComplexSearchBar *bar);
-static void        update_criteria_choices                (gpointer list_item,
-							   gpointer data);
+static void       nautilus_complex_search_bar_class_init   (NautilusComplexSearchBarClass *class);
+static void       nautilus_complex_search_bar_init         (NautilusComplexSearchBar      *bar);
+static void       attach_criterion_to_search_bar           (NautilusComplexSearchBar      *bar,
+							    NautilusSearchBarCriterion    *criterion,
+							    int                            position);
+static void       unattach_criterion_from_search_bar       (NautilusComplexSearchBar      *bar,
+							    NautilusSearchBarCriterion    *criterion);
+static void       more_options_callback                    (GtkObject                     *object,
+							    gpointer                       data);
+static void       fewer_options_callback                   (GtkObject                     *object,
+							    gpointer                       data);
+static GtkWidget *load_find_them_pixmap_widget             (void);
+static void       update_options_buttons_state             (NautilusComplexSearchBar      *bar);
+static void       update_find_button_state                 (NautilusComplexSearchBar      *bar);
+static void       update_dynamic_buttons_state             (NautilusComplexSearchBar      *bar);
+static void       update_criteria_choices                  (gpointer                       list_item,
+							    gpointer                       data);
 
 EEL_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
 
 /* called by the criterion when the user chooses
    a new criterion type */
 static void 
-search_bar_criterion_type_changed_callback (GtkObject *old_criterion_object,
+search_bar_criterion_type_changed_callback (GObject *old_criterion_object,
 					    gpointer data)
 { 
 	NautilusSearchBarCriterionType new_type;
@@ -109,8 +100,7 @@ search_bar_criterion_type_changed_callback (GtkObject *old_criterion_object,
 	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
 
 	/* First create the new criterion with the type that was activated */
-	new_type = GPOINTER_TO_INT (gtk_object_get_data (old_criterion_object,
-							 "type"));
+	new_type = GPOINTER_TO_INT (g_object_get_data (old_criterion_object, "type"));
 	new_criterion = nautilus_search_bar_criterion_new_with_type (new_type, 
 								     bar);
 	g_signal_connect (G_OBJECT (new_criterion),
@@ -165,22 +155,6 @@ queue_search_bar_resize_callback (GtkObject *search_bar,
 	if (GTK_WIDGET_VISIBLE (search_bar)) {
 		nautilus_complex_search_bar_queue_resize (bar);
 	}
-}
-     
-static void
-nautilus_complex_search_bar_class_init (NautilusComplexSearchBarClass *klass)
-{
-	GtkObjectClass *object_class;
-	NautilusNavigationBarClass *navigation_bar_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = nautilus_complex_search_bar_destroy;
-
-	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
-	navigation_bar_class->activate = real_activate;
-	navigation_bar_class->get_location = nautilus_complex_search_bar_get_location;
-	navigation_bar_class->set_location = nautilus_complex_search_bar_set_location;
-
 }
 
 static void
@@ -459,7 +433,7 @@ load_find_them_pixmap_widget (void)
 	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png", NULL);
 	if (pixbuf != NULL) {
 		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (G_OBJECT (pixbuf));
 		widget = gtk_pixmap_new (pixmap, mask);
 
 		gdk_pixmap_unref (pixmap);
@@ -481,7 +455,7 @@ nautilus_complex_search_bar_new (NautilusWindow *window)
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
 	bar = gtk_widget_new (NAUTILUS_TYPE_COMPLEX_SEARCH_BAR, NULL);
-	gtk_object_set_data (GTK_OBJECT (bar), "associated_window", window);
+	g_object_set_data (G_OBJECT (bar), "associated_window", window);
 	
 	/* Set up the first criterion's entry for the clipboard */
 	first_criterion = NAUTILUS_COMPLEX_SEARCH_BAR (bar)->details->search_criteria->data;
@@ -502,7 +476,7 @@ nautilus_complex_search_bar_set_up_enclosed_entry_for_clipboard (NautilusComplex
 {
 	NautilusWindow *associated_window;
 
-	associated_window = gtk_object_get_data (GTK_OBJECT (bar),
+	associated_window = g_object_get_data (G_OBJECT (bar),
 						 "associated_window");
 
 	g_assert (associated_window != NULL);
@@ -647,4 +621,20 @@ GSList *
 nautilus_complex_search_bar_get_search_criteria (NautilusComplexSearchBar *bar)
 {
 	return bar->details->search_criteria;
+}
+
+static void
+nautilus_complex_search_bar_class_init (NautilusComplexSearchBarClass *klass)
+{
+	GtkObjectClass *object_class;
+	NautilusNavigationBarClass *navigation_bar_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+	object_class->destroy = nautilus_complex_search_bar_destroy;
+
+	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
+	navigation_bar_class->activate = real_activate;
+	navigation_bar_class->get_location = nautilus_complex_search_bar_get_location;
+	navigation_bar_class->set_location = nautilus_complex_search_bar_set_location;
+
 }

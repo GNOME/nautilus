@@ -92,7 +92,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_added),
 		              NULL, NULL,
 		              gtk_marshal_VOID__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[FILES_CHANGED] =
 		g_signal_new ("files_changed",
 		              G_TYPE_FROM_CLASS (object_class),
@@ -100,7 +100,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_changed),
 		              NULL, NULL,
 		              gtk_marshal_VOID__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[DONE_LOADING] =
 		g_signal_new ("done_loading",
 		              G_TYPE_FROM_CLASS (object_class),
@@ -116,7 +116,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, load_error),
 		              NULL, NULL,
 		              gtk_marshal_VOID__INT,
-		              G_TYPE_NONE, 1, GTK_TYPE_INT);
+		              G_TYPE_NONE, 1, G_TYPE_INT);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
 }

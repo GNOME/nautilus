@@ -36,7 +36,7 @@
 
 /* Register a simple undo action by calling nautilus_undo_register_full. */
 void
-nautilus_undo_register (GtkObject *target,
+nautilus_undo_register (GObject *target,
 			NautilusUndoCallback callback,
 			gpointer callback_data,
 			GDestroyNotify callback_data_destroy_notify,
@@ -49,7 +49,7 @@ nautilus_undo_register (GtkObject *target,
 	NautilusUndoAtom atom;
 	GList single_atom_list;
 
-	g_return_if_fail (GTK_IS_OBJECT (target));
+	g_return_if_fail (G_IS_OBJECT (target));
 	g_return_if_fail (callback != NULL);
 
 	/* Make an atom. */
@@ -79,7 +79,7 @@ nautilus_undo_register (GtkObject *target,
 /* Register an undo action. */
 void
 nautilus_undo_register_full (GList *atoms,
-			     GtkObject *undo_manager_search_start_object,
+			     GObject *undo_manager_search_start_object,
 			     const char *operation_name,
 			     const char *undo_menu_item_label,
 			     const char *undo_menu_item_hint,
@@ -90,7 +90,7 @@ nautilus_undo_register_full (GList *atoms,
 	GList *p;
 
 	g_return_if_fail (atoms != NULL);
-	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
+	g_return_if_fail (G_IS_OBJECT (undo_manager_search_start_object));
 
 	/* Create an undo transaction */
 	transaction = nautilus_undo_transaction_new (operation_name,
@@ -113,7 +113,7 @@ nautilus_undo_register_full (GList *atoms,
 
 /* Cover for forgetting about all undo relating to a particular target. */
 void
-nautilus_undo_unregister (GtkObject *target)
+nautilus_undo_unregister (GObject *target)
 {
 	/* Perhaps this should also unregister all children if called on a
 	 * GtkContainer? That might be handy.
@@ -122,12 +122,12 @@ nautilus_undo_unregister (GtkObject *target)
 }
 
 void
-nautilus_undo (GtkObject *undo_manager_search_start_object)
+nautilus_undo (GObject *undo_manager_search_start_object)
 {
 	Nautilus_Undo_Manager manager;
 	CORBA_Environment ev;
 
-	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
+	g_return_if_fail (G_IS_OBJECT (undo_manager_search_start_object));
 
 	CORBA_exception_init (&ev);
 
@@ -140,7 +140,7 @@ nautilus_undo (GtkObject *undo_manager_search_start_object)
 }
 
 Nautilus_Undo_Manager
-nautilus_undo_get_undo_manager (GtkObject *start_object)
+nautilus_undo_get_undo_manager (GObject *start_object)
 {
 	Nautilus_Undo_Manager manager;
 	GtkWidget *parent;
@@ -150,10 +150,10 @@ nautilus_undo_get_undo_manager (GtkObject *start_object)
 		return CORBA_OBJECT_NIL;
 	}
 
-	g_return_val_if_fail (GTK_IS_OBJECT (start_object), NULL);
+	g_return_val_if_fail (G_IS_OBJECT (start_object), NULL);
 
 	/* Check for an undo manager right here. */
-	manager = gtk_object_get_data (start_object, NAUTILUS_UNDO_MANAGER_DATA);
+	manager = g_object_get_data (start_object, NAUTILUS_UNDO_MANAGER_DATA);
 	if (manager != NULL) {
 		return manager;
 	}
@@ -162,7 +162,7 @@ nautilus_undo_get_undo_manager (GtkObject *start_object)
 	if (GTK_IS_WIDGET (start_object)) {
 		parent = GTK_WIDGET (start_object)->parent;
 		if (parent != NULL) {
-			manager = nautilus_undo_get_undo_manager (GTK_OBJECT (parent));
+			manager = nautilus_undo_get_undo_manager (G_OBJECT (parent));
 			if (manager != NULL) {
 				return manager;
 			}
@@ -172,7 +172,7 @@ nautilus_undo_get_undo_manager (GtkObject *start_object)
 		if (GTK_IS_WINDOW (start_object)) {
 			transient_parent = GTK_WINDOW (start_object)->transient_parent;
 			if (transient_parent != NULL) {
-				manager = nautilus_undo_get_undo_manager (GTK_OBJECT (transient_parent));
+				manager = nautilus_undo_get_undo_manager (G_OBJECT (transient_parent));
 				if (manager != NULL) {
 					return manager;
 				}
@@ -182,7 +182,7 @@ nautilus_undo_get_undo_manager (GtkObject *start_object)
 	
 	/* In the case of a canvas item, try the canvas. */
 	if (GNOME_IS_CANVAS_ITEM (start_object)) {
-		manager = nautilus_undo_get_undo_manager (GTK_OBJECT (GNOME_CANVAS_ITEM (start_object)->canvas));
+		manager = nautilus_undo_get_undo_manager (G_OBJECT (GNOME_CANVAS_ITEM (start_object)->canvas));
 		if (manager != NULL) {
 			return manager;
 		}
@@ -199,16 +199,16 @@ undo_manager_unref_cover (gpointer manager)
 }
 
 void
-nautilus_undo_attach_undo_manager (GtkObject *object,
+nautilus_undo_attach_undo_manager (GObject *object,
 				   Nautilus_Undo_Manager manager)
 {
-	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (G_IS_OBJECT (object));
 
 	if (manager == NULL) {
-		gtk_object_remove_data (object, NAUTILUS_UNDO_MANAGER_DATA);
+		g_object_set_data (object, NAUTILUS_UNDO_MANAGER_DATA, NULL);
 	} else {
 		bonobo_object_dup_ref (manager, NULL);
-		gtk_object_set_data_full
+		g_object_set_data_full
 			(object, NAUTILUS_UNDO_MANAGER_DATA,
 			 manager, undo_manager_unref_cover);
 	}
@@ -216,8 +216,8 @@ nautilus_undo_attach_undo_manager (GtkObject *object,
 
 /* Copy a reference to the undo manager fromone object to another. */
 void
-nautilus_undo_share_undo_manager (GtkObject *destination_object,
-				  GtkObject *source_object)
+nautilus_undo_share_undo_manager (GObject *destination_object,
+				  GObject *source_object)
 {
 	Nautilus_Undo_Manager manager;
 	CORBA_Environment ev;
@@ -267,7 +267,7 @@ set_up_bonobo_control (BonoboControl *control)
 
 	/* Attach the undo manager to the widget, or detach the old one. */
 	widget = bonobo_control_get_widget (control);
-	nautilus_undo_attach_undo_manager (GTK_OBJECT (widget), manager);
+	nautilus_undo_attach_undo_manager (G_OBJECT (widget), manager);
 	CORBA_Object_release (manager, &ev);
 
 	CORBA_exception_free (&ev);
@@ -280,5 +280,5 @@ nautilus_undo_set_up_bonobo_control (BonoboControl *control)
 
 	set_up_bonobo_control (control);
 	g_signal_connect (G_OBJECT (control), "set_frame",
-			    GTK_SIGNAL_FUNC (set_up_bonobo_control), NULL);
+			    G_CALLBACK (set_up_bonobo_control), NULL);
 }

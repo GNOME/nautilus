@@ -757,7 +757,7 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              nautilus_marshal_VOID__DOUBLE,
 		              G_TYPE_NONE,
 			      1,
-			      GTK_TYPE_DOUBLE);
+			      G_TYPE_DOUBLE);
 
 	signals[ZOOM_TO_FIT] =
 		g_signal_new ("zoom_to_fit",

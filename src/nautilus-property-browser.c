@@ -445,7 +445,7 @@ nautilus_property_browser_destroy (GtkObject *object)
 	eel_g_list_free_deep (property_browser->details->keywords);
 		
 	if (property_browser->details->property_chit) {
-		gdk_pixbuf_unref (property_browser->details->property_chit);
+		g_object_unref (G_OBJECT (property_browser->details->property_chit));
 	}
 	
 	g_free (property_browser->details);
@@ -671,7 +671,7 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, property_browser->details->property_chit, TRUE, is_reset);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
-		gdk_pixbuf_unref (orig_pixbuf);
+		g_object_unref (G_OBJECT (orig_pixbuf));
 	}
 
 	g_free (image_file_name);
@@ -1481,9 +1481,9 @@ element_clicked_callback (GtkWidget *image_table,
 	g_return_if_fail (EEL_IS_LABELED_IMAGE (child));
 	g_return_if_fail (event != NULL);
 	g_return_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (callback_data));
-	g_return_if_fail (gtk_object_get_data (GTK_OBJECT (child), "property-name") != NULL);
+	g_return_if_fail (g_object_get_data (G_OBJECT (child), "property-name") != NULL);
 
-	element_name = gtk_object_get_data (GTK_OBJECT (child), "property-name");
+	element_name = g_object_get_data (G_OBJECT (child), "property-name");
 	property_browser = NAUTILUS_PROPERTY_BROWSER (callback_data);
 
 	/* handle remove mode by removing the element */
@@ -1540,7 +1540,7 @@ element_clicked_callback (GtkWidget *image_table,
 			 &mask_for_dragged_file,
 			 EEL_STANDARD_ALPHA_THRESHHOLD);
 
-		gdk_pixbuf_unref (pixbuf);	
+		g_object_unref (G_OBJECT (pixbuf));	
 		gtk_drag_set_icon_pixmap
 			(context,
 			 gtk_widget_get_colormap (GTK_WIDGET (property_browser)),
@@ -1608,10 +1608,10 @@ labeled_image_new (const char *text,
 	}
 
 	if (property_name != NULL) {
-		gtk_object_set_data_full (GTK_OBJECT (labeled_image),
-					  "property-name",
-					  g_strdup (property_name),
-					  (GtkDestroyNotify) g_free);
+		g_object_set_data_full (G_OBJECT (labeled_image),
+					"property-name",
+					g_strdup (property_name),
+					g_free);
 	}
 
 	return labeled_image;
@@ -1692,7 +1692,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 
 		g_free (object_name);
 		g_free (object_label);
-		gdk_pixbuf_unref (object_pixbuf);
+		g_object_unref (G_OBJECT (object_pixbuf));
 	}
 
 	/*
@@ -1799,7 +1799,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 			gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), new_property);
 			gtk_widget_show (new_property);
 
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 			xmlFree (color);
 			xmlFree (name);
 		}

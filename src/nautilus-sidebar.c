@@ -277,7 +277,7 @@ nautilus_sidebar_init (GtkObject *object)
 	
 	/* allocate and install the panel tabs */
   	sidebar->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
-	gtk_object_ref (GTK_OBJECT (sidebar->details->notebook));
+	g_object_ref (G_OBJECT (sidebar->details->notebook));
 	gtk_object_sink (GTK_OBJECT (sidebar->details->notebook));
 		
 	gtk_notebook_set_show_tabs (sidebar->details->notebook, FALSE);
@@ -305,7 +305,7 @@ nautilus_sidebar_destroy (GtkObject *object)
 
 	sidebar = NAUTILUS_SIDEBAR (object);
 
-	gtk_object_unref (GTK_OBJECT (sidebar->details->notebook));
+	g_object_unref (G_OBJECT (sidebar->details->notebook));
 
 	if (sidebar->details->file != NULL) {
 		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
@@ -416,9 +416,9 @@ toggle_sidebar_panel (GtkWidget *widget,
 
 	g_return_if_fail (GTK_IS_CHECK_MENU_ITEM (widget));
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget))));
-	g_return_if_fail (gtk_object_get_data (GTK_OBJECT (widget), "nautilus-sidebar/preference-key") != NULL);
+	g_return_if_fail (g_object_get_data (G_OBJECT (widget), "nautilus-sidebar/preference-key") != NULL);
 
-	preference_key = gtk_object_get_data (GTK_OBJECT (widget), "nautilus-sidebar/preference-key");
+	preference_key = g_object_get_data (G_OBJECT (widget), "nautilus-sidebar/preference-key");
 
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
@@ -481,17 +481,17 @@ sidebar_for_each_sidebar_panel (const char *name,
 	gtk_menu_append (data->menu, menu_item);
 	gtk_signal_connect_full (GTK_OBJECT (menu_item),
 				 "activate",
-				 GTK_SIGNAL_FUNC (toggle_sidebar_panel),
+				 G_CALLBACK (toggle_sidebar_panel),
 				 NULL,
 				 g_strdup (iid),
 				 g_free,
 				 FALSE,
 				 FALSE);
 
-	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "nautilus-sidebar/preference-key",
-				  g_strdup (preference_key),
-				  g_free);
+	g_object_set_data_full (G_OBJECT (menu_item),
+				"nautilus-sidebar/preference-key",
+				g_strdup (preference_key),
+				g_free);
 }
 
 /* utility routine to add a menu item for each potential sidebar panel */
@@ -682,7 +682,7 @@ uri_is_local_image (const char *uri)
 	if (pixbuf == NULL) {
 		return FALSE;
 	}
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 	return TRUE;
 }
 
@@ -1377,7 +1377,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 
 		eel_gtk_signal_connect_free_data 
 			(GTK_OBJECT (temp_button), "clicked",
-			 GTK_SIGNAL_FUNC (command_button_callback), id_string);
+			 G_CALLBACK (command_button_callback), id_string);
 
                 gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
 		
@@ -1431,7 +1431,7 @@ add_buttons_from_metadata (NautilusSidebar *sidebar, const char *button_data)
 					
 					eel_gtk_signal_connect_free_data 
 						(GTK_OBJECT (temp_button), "clicked",
-						 GTK_SIGNAL_FUNC (metadata_button_callback), command_string);
+						 G_CALLBACK (metadata_button_callback), command_string);
 		                	gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
 					
 					gtk_widget_show (temp_button);			
@@ -1503,7 +1503,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		sidebar->details->has_buttons = TRUE;
 					
 		g_signal_connect (G_OBJECT (temp_button), "clicked",
-			GTK_SIGNAL_FUNC (empty_trash_callback), NULL);
+			G_CALLBACK (empty_trash_callback), NULL);
 		
 		gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
 				        "trash_state_changed",

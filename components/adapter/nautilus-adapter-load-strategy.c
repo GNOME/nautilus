@@ -90,7 +90,7 @@ nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrategyClass *kla
 		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_progress),
 		              NULL, NULL,
 		              eel_marshal_VOID__DOUBLE,
-		              G_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
+		              G_TYPE_NONE, 1, G_TYPE_DOUBLE);
 	signals[REPORT_LOAD_COMPLETE] =
 		g_signal_new ("report_load_complete",
 		              G_TYPE_FROM_CLASS (object_class),

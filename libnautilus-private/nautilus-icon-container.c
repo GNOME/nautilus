@@ -3066,7 +3066,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 						 button_press),
 		                NULL, NULL,
 		                nautilus_marshal_BOOLEAN__POINTER,
-		                GTK_TYPE_BOOL, 1,
+		                G_TYPE_BOOLEAN, 1,
 				GDK_TYPE_EVENT);
 	signals[ACTIVATE]
 		= g_signal_new ("activate",
@@ -3077,7 +3077,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				  GTK_TYPE_POINTER);
+				  G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_SELECTION]
 		= g_signal_new ("context_click_selection",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3087,7 +3087,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				  GTK_TYPE_POINTER);
+				  G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_BACKGROUND]
 		= g_signal_new ("context_click_background",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3097,7 +3097,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[MIDDLE_CLICK]
 		= g_signal_new ("middle_click",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3107,7 +3107,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[ICON_POSITION_CHANGED]
 		= g_signal_new ("icon_position_changed",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3117,8 +3117,8 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                nautilus_marshal_VOID__POINTER_POINTER,
 		                G_TYPE_NONE, 2,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER,
+				G_TYPE_POINTER);
 	signals[ICON_TEXT_CHANGED]
 		= g_signal_new ("icon_text_changed",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3128,7 +3128,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                nautilus_marshal_VOID__POINTER_POINTER,
 		                G_TYPE_NONE, 2,
-				GTK_TYPE_POINTER,
+				G_TYPE_POINTER,
 				G_TYPE_STRING);
 	signals[ICON_STRETCH_STARTED]
 		= g_signal_new ("icon_stretch_started",
@@ -3139,7 +3139,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[ICON_STRETCH_ENDED]
 		= g_signal_new ("icon_stretch_ended",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3149,7 +3149,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[RENAMING_ICON]
 		= g_signal_new ("renaming_icon",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3159,7 +3159,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[GET_ICON_IMAGES]
 		= g_signal_new ("get_icon_images",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3168,10 +3168,10 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 						 get_icon_images),
 		                NULL, NULL,
 		                eel_marshal_POINTER__POINTER_STRING_POINTER,
-		                GTK_TYPE_POINTER, 3,
-				GTK_TYPE_POINTER,
+		                G_TYPE_POINTER, 3,
+				G_TYPE_POINTER,
 				G_TYPE_STRING,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[GET_ICON_TEXT]
 		= g_signal_new ("get_icon_text",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3193,7 +3193,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                eel_marshal_STRING__POINTER,
 		                G_TYPE_STRING, 1,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[GET_ICON_DROP_TARGET_URI]
 		= g_signal_new ("get_icon_drop_target_uri",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3203,7 +3203,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                eel_marshal_STRING__POINTER,
 		                G_TYPE_STRING, 1,
-				GTK_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[COMPARE_ICONS]
 		= g_signal_new ("compare_icons",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3212,9 +3212,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 						 compare_icons),
 		                NULL, NULL,
 		                nautilus_marshal_INT__POINTER_POINTER,
-		                GTK_TYPE_INT, 2,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_POINTER);
+		                G_TYPE_INT, 2,
+				G_TYPE_POINTER,
+				G_TYPE_POINTER);
 	signals[COMPARE_ICONS_BY_NAME]
 		= g_signal_new ("compare_icons_by_name",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3223,9 +3223,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 						 compare_icons_by_name),
 		                NULL, NULL,
 		                nautilus_marshal_INT__POINTER_POINTER,
-		                GTK_TYPE_INT, 2,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_POINTER);
+		                G_TYPE_INT, 2,
+				G_TYPE_POINTER,
+				G_TYPE_POINTER);
 	signals[MOVE_COPY_ITEMS] 
 		= g_signal_new ("move_copy_items",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3235,12 +3235,12 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                nautilus_marshal_VOID__POINTER_POINTER_POINTER_INT_INT_INT,
 		                G_TYPE_NONE, 6,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT);
+				G_TYPE_POINTER,
+				G_TYPE_POINTER,
+				G_TYPE_POINTER,
+				G_TYPE_INT,
+				G_TYPE_INT,
+				G_TYPE_INT);
 	signals[HANDLE_URI_LIST] 
 		= g_signal_new ("handle_uri_list",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3250,10 +3250,10 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                nautilus_marshal_VOID__POINTER_INT_INT_INT,
 		                G_TYPE_NONE, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT);
+				G_TYPE_POINTER,
+				G_TYPE_INT,
+				G_TYPE_INT,
+				G_TYPE_INT);
 
 	signals[GET_CONTAINER_URI] 
 		= g_signal_new ("get_container_uri",
@@ -3272,8 +3272,8 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 						 can_accept_item),
 		                NULL, NULL,
 		                eel_marshal_INT__POINTER_STRING,
-		                GTK_TYPE_INT, 2,
-				GTK_TYPE_POINTER,
+		                G_TYPE_INT, 2,
+				G_TYPE_POINTER,
 				G_TYPE_STRING);
 	signals[GET_STORED_ICON_POSITION]
 		= g_signal_new ("get_stored_icon_position",
@@ -3283,9 +3283,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 						 get_stored_icon_position),
 		                NULL, NULL,
 		                eel_marshal_BOOLEAN__POINTER_POINTER,
-		                GTK_TYPE_BOOL, 2,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_POINTER);
+		                G_TYPE_BOOLEAN, 2,
+				G_TYPE_POINTER,
+				G_TYPE_POINTER);
 	signals[LAYOUT_CHANGED]
 		= g_signal_new ("layout_changed",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -3303,9 +3303,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 						 preview),
 		                NULL, NULL,
 		                nautilus_marshal_INT__POINTER_INT,
-		                GTK_TYPE_INT, 2,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_BOOL);
+		                G_TYPE_INT, 2,
+				G_TYPE_POINTER,
+				G_TYPE_BOOLEAN);
 	signals[BAND_SELECT_STARTED]
 		= g_signal_new ("band_select_started",
 		                G_TYPE_FROM_CLASS (object_class),

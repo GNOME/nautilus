@@ -212,51 +212,51 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 
 	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_begin", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_begin), 
+			    G_CALLBACK(nautilus_tree_view_drag_begin), 
 			    view);
 	
 	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_end", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_end), 
+			    G_CALLBACK(nautilus_tree_view_drag_end), 
 			    view);
 	
 	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_leave", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_leave), 
+			    G_CALLBACK(nautilus_tree_view_drag_leave), 
 			    view);
 
 	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_motion", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_motion), 
+			    G_CALLBACK(nautilus_tree_view_drag_motion), 
 			    view);
 
 	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_drop", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_drop), 
+			    G_CALLBACK(nautilus_tree_view_drag_drop), 
 			    view);
 
 	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_data_received", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_received), 
+			    G_CALLBACK(nautilus_tree_view_drag_data_received), 
 			    view);
 
 	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_data_get", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_get), 
+			    G_CALLBACK(nautilus_tree_view_drag_data_get), 
 			    view);
 
 	/* override the default handlers */
 	g_signal_connect (G_OBJECT (view->details->tree),
 			    "button-press-event", 
-			    GTK_SIGNAL_FUNC (nautilus_tree_view_button_press), 
+			    G_CALLBACK (nautilus_tree_view_button_press), 
 			    NULL);
 	g_signal_connect (G_OBJECT (view->details->tree),
 			    "button-release-event", 
-			    GTK_SIGNAL_FUNC (nautilus_tree_view_button_release), 
+			    G_CALLBACK (nautilus_tree_view_button_release), 
 			    NULL);
 	g_signal_connect (G_OBJECT (view->details->tree),
 			    "motion-notify-event", 
-			    GTK_SIGNAL_FUNC (nautilus_tree_view_motion_notify), 
+			    G_CALLBACK (nautilus_tree_view_motion_notify), 
 			    NULL);
 	g_signal_connect (G_OBJECT (view->details->tree), "realize", 
 			    tree_view_realize_callback, view);
@@ -449,7 +449,7 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 	EelDragInfo *drag_info;
 	NautilusTreeView *tree_view;
 
-	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
+	tree_view = NAUTILUS_TREE_VIEW (g_object_get_data (G_OBJECT (widget), "tree_view"));
 	dnd = tree_view->details->dnd;
 	drag_info = dnd->drag_info;
 
@@ -512,7 +512,7 @@ static void nautilus_tree_view_drag_data_get (GtkWidget *widget,
 	g_assert (widget != NULL);
 	g_return_if_fail (context != NULL);
 
-	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
+	tree_view = NAUTILUS_TREE_VIEW (g_object_get_data (G_OBJECT (widget), "tree_view"));
 
 	uri = nautilus_tree_view_get_drag_uri (tree_view);
 	selection_string = g_strconcat (uri, "\r\n", NULL);
@@ -564,7 +564,7 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 	if (event->window != clist->clist_window)
 		return retval;
 
-	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
+	tree_view = NAUTILUS_TREE_VIEW (g_object_get_data (G_OBJECT (widget), "tree_view"));
 
 	on_row = eel_clist_get_selection_info (clist, 
 						    event->x, 
@@ -637,7 +637,7 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 	if (event->window != clist->clist_window)
 		return retval;
 
-	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
+	tree_view = NAUTILUS_TREE_VIEW (g_object_get_data (G_OBJECT (widget), "tree_view"));
 	tree_view->details->dnd->drag_pending = FALSE;
 	
 	/* Set state of spinner.  Use saved dnd x and y as the mouse may have moved out
@@ -712,7 +712,7 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 	if (event->window != clist->clist_window)
 		return FALSE;
 
-	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
+	tree_view = NAUTILUS_TREE_VIEW (g_object_get_data (G_OBJECT (widget), "tree_view"));
 
 	if (tree_view->details->dnd->drag_pending) {
 		int distance_squared;

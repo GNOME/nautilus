@@ -936,7 +936,7 @@ global_preferences_get_smooth_bold_font (const char *file_name)
 	if (bold_font == NULL) {
 		bold_font = plain_font;
 	} else {
-		gtk_object_unref (GTK_OBJECT (plain_font));
+		g_object_unref (G_OBJECT (plain_font));
 	}
 
 	g_assert (EEL_IS_SCALABLE_FONT (bold_font));

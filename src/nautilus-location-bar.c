@@ -679,7 +679,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 			     drag_types, G_N_ELEMENTS (drag_types),
 			     GDK_ACTION_LINK);
 	gtk_signal_connect  (GTK_OBJECT (event_box), "drag_data_get",
-			     GTK_SIGNAL_FUNC (drag_data_get_callback),
+			     G_CALLBACK (drag_data_get_callback),
 			     bar);
 
 	/* Drag dest. */
@@ -688,7 +688,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 			    drop_types, G_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 	g_signal_connect (G_OBJECT (bar), "drag_data_received",
-			    GTK_SIGNAL_FUNC (drag_data_received_callback),
+			    G_CALLBACK (drag_data_received_callback),
 			    NULL);
 
 	gtk_widget_show_all (hbox);

@@ -450,12 +450,12 @@ preferences_dialog_create (void)
 
 	g_signal_connect (G_OBJECT (dialog),
 			    "response",
-			    GTK_SIGNAL_FUNC (dialog_button_response_callback),
+			    G_CALLBACK (dialog_button_response_callback),
 			    dialog);
 
 	g_signal_connect (G_OBJECT (dialog),
 			    "close",
-			    GTK_SIGNAL_FUNC (dialog_close_callback),
+			    G_CALLBACK (dialog_close_callback),
 			    NULL);
 	return dialog;
 }
@@ -556,7 +556,7 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 	/* Keep track of theme chooser changes */
 	g_signal_connect (G_OBJECT (child),
 			    "theme_changed",
-			    GTK_SIGNAL_FUNC (theme_changed_callback),
+			    G_CALLBACK (theme_changed_callback),
 			    NULL);
 
 	/* Have the custom preferences item tell us when its time to update the displayed
@@ -564,7 +564,7 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 	 */
 	g_signal_connect (G_OBJECT (item),
 			    "custom_update_displayed_value",
-			    GTK_SIGNAL_FUNC (update_theme_selector_displayed_value_callback),
+			    G_CALLBACK (update_theme_selector_displayed_value_callback),
 			    child);
 	update_theme_selector_displayed_value_callback (EEL_PREFERENCES_ITEM (item), child);
 }

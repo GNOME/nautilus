@@ -831,7 +831,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 		              G_STRUCT_OFFSET (NautilusViewClass, selection_changed),
 		              NULL, NULL,
 		              gtk_marshal_NONE__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[TITLE_CHANGED] =
 		g_signal_new ("title_changed",
 		              G_TYPE_FROM_CLASS (klass),
@@ -847,7 +847,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 		              G_STRUCT_OFFSET (NautilusViewClass, history_changed),
 		              NULL, NULL,
 		              gtk_marshal_NONE__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	epv->load_location = impl_Nautilus_View_load_location;
 	epv->stop_loading = impl_Nautilus_View_stop_loading;

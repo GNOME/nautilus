@@ -113,7 +113,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_changed),
 		              NULL, NULL,
 		              gtk_marshal_VOID__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[NODE_REMOVED] =
 		g_signal_new ("node_removed",
@@ -122,7 +122,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_removed),
 		              NULL, NULL,
 		              gtk_marshal_VOID__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[NODE_BEING_RENAMED] =
 		g_signal_new ("node_being_renamed",
@@ -140,7 +140,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, done_loading_children),
 		              NULL, NULL,
 		              gtk_marshal_VOID__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
 static void

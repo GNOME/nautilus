@@ -220,10 +220,10 @@ void
 nautilus_undo_manager_attach (NautilusUndoManager *manager, GObject *target)
 {
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
-	g_return_if_fail (GTK_IS_OBJECT (target));
+	g_return_if_fail (G_IS_OBJECT (target));
 
 	nautilus_undo_attach_undo_manager
-		(GTK_OBJECT (target),
+		(G_OBJECT (target),
 		 bonobo_object_corba_objref (BONOBO_OBJECT (manager)));
 }
 
@@ -329,7 +329,7 @@ nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (NautilusUndoManager *m
 	/* Update it again whenever the changed signal is emitted. */
 	eel_gtk_signal_connect_full_while_alive
 		(GTK_OBJECT (manager), "changed",
-		 GTK_SIGNAL_FUNC (update_undo_menu_item), NULL,
+		 G_CALLBACK (update_undo_menu_item), NULL,
 		 connection, undo_menu_handler_connection_free_cover,
 		 FALSE, FALSE,
 		 GTK_OBJECT (handler));

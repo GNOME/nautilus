@@ -29,21 +29,21 @@
 #include <bonobo/bonobo-control.h>
 
 /* The basic undoable operation. */
-typedef void (* NautilusUndoCallback) (GtkObject *target, gpointer callback_data);
+typedef void (* NautilusUndoCallback) (GObject *target, gpointer callback_data);
 
 /* Recipe for undo of a bit of work on an object.
  * Create these atoms when you want to register more
  * than one as a single undoable operation.
  */
 typedef struct {
-	GtkObject *target;
+	GObject *target;
 	NautilusUndoCallback callback;
 	gpointer callback_data;
 	GDestroyNotify callback_data_destroy_notify;
 } NautilusUndoAtom;
 
 /* Registering something that can be undone. */
-void nautilus_undo_register              (GtkObject            *target,
+void nautilus_undo_register              (GObject              *target,
 					  NautilusUndoCallback  callback,
 					  gpointer              callback_data,
 					  GDestroyNotify        callback_data_destroy_notify,
@@ -53,22 +53,22 @@ void nautilus_undo_register              (GtkObject            *target,
 					  const char           *redo_menu_item_label,
 					  const char           *redo_menu_item_hint);
 void nautilus_undo_register_full         (GList                *atoms,
-					  GtkObject            *undo_manager_search_start_object,
+					  GObject              *undo_manager_search_start_object,
 					  const char           *operation_name,
 					  const char           *undo_menu_item_label,
 					  const char           *undo_menu_item_hint,
 					  const char           *redo_menu_item_label,
 					  const char           *redo_menu_item_hint);
-void nautilus_undo_unregister            (GtkObject            *target);
+void nautilus_undo_unregister            (GObject              *target);
 
 /* Performing an undo explicitly. Only for use by objects "out in the field".
  * The menu bar itself uses a richer API in the undo manager.
  */
-void nautilus_undo                       (GtkObject            *undo_manager_search_start_object);
+void nautilus_undo                       (GObject              *undo_manager_search_start_object);
 
 /* Connecting an undo manager. */
-void nautilus_undo_share_undo_manager    (GtkObject            *destination_object,
-					  GtkObject            *source_object);
+void nautilus_undo_share_undo_manager    (GObject              *destination_object,
+					  GObject              *source_object);
 void nautilus_undo_set_up_bonobo_control (BonoboControl        *control);
 
 #endif /* NAUTILUS_UNDO_H */

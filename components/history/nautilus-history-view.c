@@ -178,7 +178,7 @@ update_history (NautilusHistoryView *view,
 		pixbuf = bonobo_ui_util_xml_to_pixbuf (item->icon);
 		install_icon (list, new_row, pixbuf);
 		if (pixbuf != NULL) {
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 		}
 		
 		gtk_clist_columns_autosize (list);
@@ -297,7 +297,7 @@ nautilus_history_view_init (NautilusHistoryView *view)
 	
 	nautilus_view_construct (NAUTILUS_VIEW (view), window);
 
-	gtk_object_ref (GTK_OBJECT (list));
+	g_object_ref (G_OBJECT (list));
 	view->list = list;
 
 	g_signal_connect (G_OBJECT (list),
@@ -326,7 +326,7 @@ nautilus_history_view_destroy (GtkObject *object)
 		*view->external_destroyed_flag = TRUE;
 	}
 
-	gtk_object_unref (GTK_OBJECT (view->list));
+	g_object_unref (G_OBJECT (view->list));
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }

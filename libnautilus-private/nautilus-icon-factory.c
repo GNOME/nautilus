@@ -263,7 +263,7 @@ destroy_icon_factory (void)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 					 thumbnail_limit_changed_callback,
 					 NULL);
-	gtk_object_unref (GTK_OBJECT (global_icon_factory));
+	g_object_unref (G_OBJECT (global_icon_factory));
 }
 
 /* Return a pointer to the single global icon factory. */
@@ -273,7 +273,7 @@ get_icon_factory (void)
         if (global_icon_factory == NULL) {
 		global_icon_factory = NAUTILUS_ICON_FACTORY
 			(g_object_new (nautilus_icon_factory_get_type (), NULL));
-		gtk_object_ref (GTK_OBJECT (global_icon_factory));
+		g_object_ref (G_OBJECT (global_icon_factory));
 		gtk_object_sink (GTK_OBJECT (global_icon_factory));
 
 		icon_theme_changed_callback (NULL);
@@ -341,14 +341,14 @@ load_thumbnail_frames (NautilusIconFactory *factory)
 	
 	image_path = nautilus_theme_get_image_path ("thumbnail_frame.png");
 	if (factory->thumbnail_frame != NULL) {
-		gdk_pixbuf_unref (factory->thumbnail_frame);
+		g_object_unref (G_OBJECT (factory->thumbnail_frame));
 	}
 	factory->thumbnail_frame = gdk_pixbuf_new_from_file (image_path, NULL);
 	g_free (image_path);
 	
 	image_path = nautilus_theme_get_image_path ("thumbnail_frame.aa.png");
 	if (factory->thumbnail_frame_aa != NULL) {
-		gdk_pixbuf_unref (factory->thumbnail_frame_aa);
+		g_object_unref (G_OBJECT (factory->thumbnail_frame_aa));
 	}
 	factory->thumbnail_frame_aa = gdk_pixbuf_new_from_file (image_path, NULL);
 	g_free (image_path);
@@ -431,7 +431,7 @@ cache_icon_new (GdkPixbuf *pixbuf,
 	g_assert (g_hash_table_lookup (factory->cache_icons, pixbuf) == NULL);
 
 	/* Grab the pixbuf since we are keeping it. */
-	gdk_pixbuf_ref (pixbuf);
+	g_object_ref (G_OBJECT (pixbuf));
 #if GNOME2_CONVERSION_COMPLETE
 	gdk_pixbuf_set_last_unref_handler
 		(pixbuf, mark_icon_not_outstanding, NULL);
@@ -528,7 +528,7 @@ cache_icon_unref (CacheIcon *icon)
 	 * and we were counting on the unref handler to catch it.
 	 */
 	if (!icon->outstanding) {
-		gdk_pixbuf_unref (icon->pixbuf);
+		g_object_unref (G_OBJECT (icon->pixbuf));
 	}
 
 	g_free (icon);
@@ -587,10 +587,10 @@ nautilus_icon_factory_destroy (GtkObject *object)
         g_hash_table_destroy (factory->icon_cache);
 
 	if (factory->thumbnail_frame != NULL) {
-		gdk_pixbuf_unref (factory->thumbnail_frame);
+		g_object_unref (G_OBJECT (factory->thumbnail_frame));
 	}
 	if (factory->thumbnail_frame_aa != NULL) {
-		gdk_pixbuf_unref (factory->thumbnail_frame_aa);
+		g_object_unref (G_OBJECT (factory->thumbnail_frame_aa));
 	}
 
         g_free (factory->theme.current.name);
@@ -1618,7 +1618,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	/* Since we got something, we can create a cache icon. */
 	icon = cache_icon_new (pixbuf, type, FALSE, &details);
 	get_cache_time (scalable_icon->uri, &icon->cache_time);
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 
 	return icon;
 }
@@ -1753,7 +1753,7 @@ scale_icon (CacheIcon *icon,
 				      &scaled_details);
 	scaled_icon->is_fallback = icon->is_fallback;
 	scaled_icon->cache_time = icon->cache_time;
-	gdk_pixbuf_unref (scaled_pixbuf);
+	g_object_unref (G_OBJECT (scaled_pixbuf));
 	return scaled_icon;
 }
 
@@ -2058,10 +2058,10 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 	if (!icon->outstanding) {
 		icon->outstanding = TRUE;
 #ifndef GNOME2_CONVERSION_COMPLETE
-		gdk_pixbuf_ref (pixbuf);
+		g_object_ref (G_OBJECT (pixbuf));
 #endif
 	} else {
-		gdk_pixbuf_ref (pixbuf);
+		g_object_ref (G_OBJECT (pixbuf));
 	}
 	cache_icon_unref (icon);
 
@@ -2178,7 +2178,7 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 		return;
 	}
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, EEL_STANDARD_ALPHA_THRESHHOLD);
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 }
 
 /* Convenience routine for getting a pixbuf from an icon name. */
@@ -2252,7 +2252,7 @@ embedded_text_font_free (void)
 		return;
 	}
 	
-	gtk_object_unref (GTK_OBJECT (embedded_text_font));
+	g_object_unref (G_OBJECT (embedded_text_font));
 	embedded_text_font = NULL;
 }
 
@@ -2308,7 +2308,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 					       EEL_RGB_COLOR_BLACK,
 					       EEL_OPACITY_FULLY_OPAQUE);
 	
-	gtk_object_unref (GTK_OBJECT (smooth_text_layout));
+	g_object_unref (G_OBJECT (smooth_text_layout));
 
 	return pixbuf_with_text;
 }
@@ -2352,7 +2352,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 					 &details);
 	icon_with_text->cache_time = icon_without_text->cache_time;
 	cache_icon_unref (icon_without_text);
-	gdk_pixbuf_unref (pixbuf_with_text);
+	g_object_unref (G_OBJECT (pixbuf_with_text));
 
 	return icon_with_text;
 }

@@ -75,7 +75,7 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 		 NULL, NULL,
 		 gtk_marshal_VOID__BOOLEAN,
 		 G_TYPE_NONE, 1,
-		 GTK_TYPE_BOOL);
+		 G_TYPE_BOOLEAN);
 
 	signals[CHECK_TRASH_DIRECTORY_ADDED] = g_signal_new
 		("check_trash_directory_added",
@@ -85,7 +85,7 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 		 NULL, NULL,
 		 gtk_marshal_VOID__POINTER,
 		 G_TYPE_NONE, 1,
-		 GTK_TYPE_POINTER);
+		 G_TYPE_POINTER);
 }
 
 static void

@@ -93,7 +93,7 @@ nautilus_tree_change_queue_new (void)
 	NautilusTreeChangeQueue *change_queue;
 
 	change_queue = NAUTILUS_TREE_CHANGE_QUEUE (g_object_new (NAUTILUS_TYPE_TREE_CHANGE_QUEUE, NULL));
-	gtk_object_ref (GTK_OBJECT (change_queue));
+	g_object_ref (G_OBJECT (change_queue));
 	gtk_object_sink (GTK_OBJECT (change_queue));
 	return change_queue;
 }
@@ -149,7 +149,7 @@ nautilus_tree_change_new (NautilusTreeChangeType  change_type,
 
 	change = g_new0 (NautilusTreeChange, 1);
 	change->change_type = change_type;
-	gtk_object_ref (GTK_OBJECT (node));
+	g_object_ref (G_OBJECT (node));
 	change->node = node;
 
 	return change;
@@ -158,6 +158,6 @@ nautilus_tree_change_new (NautilusTreeChangeType  change_type,
 void
 nautilus_tree_change_free (NautilusTreeChange *change)
 {
-	gtk_object_unref (GTK_OBJECT (change->node));
+	g_object_unref (G_OBJECT (change->node));
 	g_free (change);
 }

@@ -169,7 +169,7 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
 	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY, NULL));
-	gtk_object_ref (GTK_OBJECT (strategy));
+	g_object_ref (G_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	embeddable_wrapper = bonobo_object_client_from_corba
@@ -204,7 +204,7 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
 	bonobo_view_frame_set_covered (strategy->details->view_frame, FALSE); 
 
 	g_signal_connect (G_OBJECT (strategy->details->view_frame),
-			    "activate_uri", GTK_SIGNAL_FUNC (activate_uri_callback), strategy);
+			    "activate_uri", G_CALLBACK (activate_uri_callback), strategy);
 
 	gtk_widget_show (strategy->details->client_widget);
 

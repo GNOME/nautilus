@@ -77,7 +77,7 @@ e_paned_child_type (GtkContainer *container)
   if (!E_PANED (container)->child1 || !E_PANED (container)->child2)
     return GTK_TYPE_WIDGET;
   else
-    return GTK_TYPE_NONE;
+    return G_TYPE_NONE;
 }
 
 static void
@@ -143,7 +143,7 @@ e_paned_get_arg (GtkObject *object,
       GTK_VALUE_UINT (*arg) = paned->quantum;
       break;
     default:
-      arg->type = GTK_TYPE_INVALID;
+      arg->type = G_TYPE_INVALID;
       break;
     }
 }
@@ -616,8 +616,8 @@ e_paned_class_init (EPanedClass *klass)
 
   klass->handle_shown = NULL;
 
-  gtk_object_add_arg_type("EPaned::handle_size", GTK_TYPE_UINT,
+  gtk_object_add_arg_type("EPaned::handle_size", G_TYPE_UINT,
 			  GTK_ARG_READWRITE, ARG_HANDLE_SIZE);
-  gtk_object_add_arg_type("EPaned::quantum", GTK_TYPE_UINT,
+  gtk_object_add_arg_type("EPaned::quantum", G_TYPE_UINT,
 			  GTK_ARG_READWRITE, ARG_QUANTUM);
 }

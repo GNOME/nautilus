@@ -320,7 +320,7 @@ nautilus_program_chooser_get_type (GnomeDialog *program_chooser)
 {
 	GnomeVFSMimeActionType type;
 
-	type = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (program_chooser), "type"));
+	type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (program_chooser), "type"));
 
 	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT ||
 		  type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
@@ -392,25 +392,25 @@ repopulate_program_list (GnomeDialog *program_chooser,
 static NautilusFile *
 nautilus_program_chooser_get_file (GnomeDialog *chooser)
 {
-	return NAUTILUS_FILE (gtk_object_get_data (GTK_OBJECT (chooser), "file"));
+	return NAUTILUS_FILE (g_object_get_data (G_OBJECT (chooser), "file"));
 }
 
 static GtkCList *
 nautilus_program_chooser_get_clist (GnomeDialog *chooser)
 {
-	return GTK_CLIST (gtk_object_get_data (GTK_OBJECT (chooser), "clist"));
+	return GTK_CLIST (g_object_get_data (G_OBJECT (chooser), "clist"));
 }
 
 static GtkFrame *
 nautilus_program_chooser_get_frame (GnomeDialog *chooser)
 {
-	return GTK_FRAME (gtk_object_get_data (GTK_OBJECT (chooser), "frame"));
+	return GTK_FRAME (g_object_get_data (G_OBJECT (chooser), "frame"));
 }
 
 static GtkLabel *
 nautilus_program_chooser_get_status_label (GnomeDialog *chooser)
 {
-	return GTK_LABEL (gtk_object_get_data (GTK_OBJECT (chooser), "status_label"));
+	return GTK_LABEL (g_object_get_data (G_OBJECT (chooser), "status_label"));
 }
 
 static void
@@ -438,28 +438,28 @@ static void
 nautilus_program_chooser_set_file (GnomeDialog *chooser, NautilusFile *file)
 {
 	nautilus_file_ref (file);
-	gtk_object_set_data_full (GTK_OBJECT (chooser), 
-				  "file", 
-				  file, 
-				  (GtkDestroyNotify)nautilus_file_unref);
+	g_object_set_data_full (G_OBJECT (chooser), 
+				"file", 
+				file, 
+				(GtkDestroyNotify) nautilus_file_unref);
 }
 
 static void
 nautilus_program_chooser_set_clist (GnomeDialog *chooser, GtkCList *clist)
 {
-	gtk_object_set_data (GTK_OBJECT (chooser), "clist", clist);
+	g_object_set_data (G_OBJECT (chooser), "clist", clist);
 }
 
 static void
 nautilus_program_chooser_set_frame (GnomeDialog *chooser, GtkFrame *frame)
 {
-	gtk_object_set_data (GTK_OBJECT (chooser), "frame", frame);
+	g_object_set_data (G_OBJECT (chooser), "frame", frame);
 }
 
 static void
 nautilus_program_chooser_set_status_label (GnomeDialog *chooser, GtkLabel *status_label)
 {
-	gtk_object_set_data (GTK_OBJECT (chooser), "status_label", status_label);
+	g_object_set_data (G_OBJECT (chooser), "status_label", status_label);
 }
 
 static gint
@@ -1290,7 +1290,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 				     PROGRAM_CHOOSER_DEFAULT_HEIGHT);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "program_chooser", "Nautilus");
 
-	gtk_object_set_data (GTK_OBJECT (window), "type", GINT_TO_POINTER (action_type));
+	g_object_set_data (G_OBJECT (window), "type", GINT_TO_POINTER (action_type));
 
 	dialog_vbox = GNOME_DIALOG (window)->vbox;
 
@@ -1320,7 +1320,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 		 eel_gnome_dialog_get_button_by_index 
 			(GNOME_DIALOG (window), GNOME_OK));
 #endif
-	gtk_object_set_data (GTK_OBJECT (window), "list", clist);
+	g_object_set_data (G_OBJECT (window), "list", clist);
 
 	repopulate_program_list (GNOME_DIALOG (window), file, GTK_CLIST (clist));
 

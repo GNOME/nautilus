@@ -60,7 +60,7 @@ test_window_new (const char *title, guint border_width)
 
 	g_signal_connect (G_OBJECT (window),
 			    "delete_event",
-			    GTK_SIGNAL_FUNC (test_delete_event),
+			    G_CALLBACK (test_delete_event),
 			    NULL);
 	
 	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
@@ -130,7 +130,7 @@ test_pixbuf_new_named (const char *name, float scale)
 
 		scaled = gdk_pixbuf_scale_simple (pixbuf, width, height, GDK_INTERP_BILINEAR);
 
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (G_OBJECT (pixbuf));
 
 		g_return_val_if_fail (scaled != NULL, NULL);
 
@@ -161,7 +161,7 @@ test_image_new (const char *pixbuf_name,
 
 		if (pixbuf != NULL) {
 			eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 		}
 	}
 
@@ -172,7 +172,7 @@ test_image_new (const char *pixbuf_name,
 
 		if (tile_pixbuf != NULL) {
 			eel_image_set_tile_pixbuf (EEL_IMAGE (image), tile_pixbuf);
-			gdk_pixbuf_unref (tile_pixbuf);
+			g_object_unref (G_OBJECT (tile_pixbuf));
 		}
 	}
 
@@ -210,7 +210,7 @@ test_label_new (const char *text,
 
 		if (tile_pixbuf != NULL) {
 			eel_label_set_tile_pixbuf (EEL_LABEL (label), tile_pixbuf);
-			gdk_pixbuf_unref (tile_pixbuf);
+			g_object_unref (G_OBJECT (tile_pixbuf));
 		}
 	}
 
@@ -363,5 +363,5 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 					     opacity,
 					     GDK_INTERP_NEAREST);
 
-	gdk_pixbuf_unref (tile_pixbuf);
+	g_object_unref (G_OBJECT (tile_pixbuf));
 }

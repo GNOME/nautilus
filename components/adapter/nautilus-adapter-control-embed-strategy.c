@@ -157,7 +157,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_CONTROL_EMBED_STRATEGY, NULL));
-	gtk_object_ref (GTK_OBJECT (strategy));
+	g_object_ref (G_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->control_frame = bonobo_control_frame_new (ui_container);
@@ -167,7 +167,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	strategy->details->widget = bonobo_control_frame_get_widget (strategy->details->control_frame);
   
 	g_signal_connect (G_OBJECT (strategy->details->control_frame),
-			    "activate_uri", GTK_SIGNAL_FUNC (activate_uri_callback), strategy);
+			    "activate_uri", G_CALLBACK (activate_uri_callback), strategy);
 
 	CORBA_exception_init (&ev);
 	corba_zoomable = Bonobo_Unknown_queryInterface (control,

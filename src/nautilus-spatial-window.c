@@ -187,7 +187,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
                         gdk_pixbuf_render_pixmap_and_mask
 				(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
 				 EEL_STANDARD_ALPHA_THRESHHOLD);
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 			g_atexit (unref_mini_icon);
 		}
         	g_free (filename);
@@ -916,10 +916,10 @@ nautilus_window_destroy (GtkObject *object)
 	nautilus_window_clear_forward_list (window);
 
 	if (window->current_location_bookmark != NULL) {
-		gtk_object_unref (GTK_OBJECT (window->current_location_bookmark));
+		g_object_unref (G_OBJECT (window->current_location_bookmark));
 	}
 	if (window->last_location_bookmark != NULL) {
-		gtk_object_unref (GTK_OBJECT (window->last_location_bookmark));
+		g_object_unref (G_OBJECT (window->last_location_bookmark));
 	}
 	
 	if (window->status_bar_clear_id != 0) {
@@ -1124,10 +1124,10 @@ view_as_menu_switch_views_callback (GtkWidget *widget, gpointer data)
 
         window = NAUTILUS_WINDOW (data);
 
-        if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "extra viewer")) == TRUE) {
+        if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "extra viewer")) == TRUE) {
         	activate_extra_viewer (window);
         } else {
-		viewer_index = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "viewer index"));
+		viewer_index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "viewer index"));
 		activate_nth_short_list_item (window, viewer_index);
         }
 }
@@ -1149,7 +1149,7 @@ create_view_as_menu_item (NautilusWindow *window,
 			    G_CALLBACK (view_as_menu_switch_views_callback),
 			    window);
 
-	gtk_object_set_data (GTK_OBJECT (menu_item),
+	g_object_set_data (G_OBJECT (menu_item),
 			     "viewer index",
 			     GINT_TO_POINTER (index));
 
@@ -1255,7 +1255,7 @@ update_extra_viewer_in_view_as_menus (NautilusWindow *window,
 	/* Add new menu item. */
 	if (id != NULL) {
 		new_menu_item = create_view_as_menu_item (window, window->details->extra_viewer, 0);
-		gtk_object_set_data (GTK_OBJECT (new_menu_item), "extra viewer", GINT_TO_POINTER (TRUE));
+		g_object_set_data (G_OBJECT (new_menu_item), "extra viewer", GINT_TO_POINTER (TRUE));
 		gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
 	}
 
@@ -1766,7 +1766,7 @@ remove_from_history_list (NautilusBookmark *bookmark)
 	/* Remove any older entry for this same item. There can be at most 1. */
 	if (node != NULL) {
 		history_list = g_list_remove_link (history_list, node);
-		gtk_object_unref (node->data);
+		g_object_unref (G_OBJECT (node->data));
 		g_list_free_1 (node);
 	}
 }
@@ -1788,7 +1788,7 @@ add_to_history_list (NautilusBookmark *bookmark)
 		free_history_list_is_set_up = TRUE;
 	}
 
-	gtk_object_ref (GTK_OBJECT (bookmark));
+	g_object_ref (G_OBJECT (bookmark));
 	remove_from_history_list (bookmark);
 	history_list = g_list_prepend (history_list, bookmark);
 
@@ -1796,7 +1796,7 @@ add_to_history_list (NautilusBookmark *bookmark)
 	if (extra_count > 0) {
 		history_list = g_list_reverse (history_list);
 		for (index = 0; index < extra_count; ++index) {
-			gtk_object_unref (history_list->data);
+			g_object_unref (G_OBJECT (history_list->data));
 			history_list = g_list_remove (history_list, history_list->data);
 		}
 		history_list = g_list_reverse (history_list);
@@ -1812,7 +1812,7 @@ nautilus_remove_from_history_list_no_notify (const char *uri)
 
 	bookmark = nautilus_bookmark_new (uri, "");
 	remove_from_history_list (bookmark);
-	gtk_object_unref (GTK_OBJECT (bookmark));
+	g_object_unref (G_OBJECT (bookmark));
 }
 
 static void

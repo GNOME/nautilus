@@ -89,7 +89,7 @@ nautilus_tree_node_new (NautilusFile *file)
 	NautilusTreeNode *node;
 
 	node = NAUTILUS_TREE_NODE (g_object_new (NAUTILUS_TYPE_TREE_NODE, NULL));
-	gtk_object_ref (GTK_OBJECT (node));
+	g_object_ref (G_OBJECT (node));
 	gtk_object_sink (GTK_OBJECT (node));
 
 	node->details->file = nautilus_file_ref (file);

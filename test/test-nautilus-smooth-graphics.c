@@ -40,7 +40,7 @@ main (int argc, char * argv[])
 	nautilus_global_preferences_init ();
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	g_signal_connect (G_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (delete_event), NULL);
+	g_signal_connect (G_OBJECT (window), "delete_event", G_CALLBACK (delete_event), NULL);
 	
 	button = gtk_toggle_button_new_with_label ("Smooth Graphics");
 
@@ -51,7 +51,7 @@ main (int argc, char * argv[])
 
 	g_signal_connect (G_OBJECT (button),
 			    "toggled",
-			    GTK_SIGNAL_FUNC (button_toggled),
+			    G_CALLBACK (button_toggled),
 			    NULL);
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 

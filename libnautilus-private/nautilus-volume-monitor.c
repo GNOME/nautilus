@@ -306,7 +306,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 						     volume_mounted),
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
-		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_STARTED] 
 		= g_signal_new ("volume_unmount_started",
@@ -316,7 +316,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 						     volume_unmount_started),
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
-		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_FAILED] 
 		= g_signal_new ("volume_unmount_failed",
@@ -326,7 +326,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 						     volume_unmount_failed),
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
-		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNTED] 
 		= g_signal_new ("volume_unmounted",
@@ -336,7 +336,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 						     volume_unmounted),
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
-		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	/* Check environment a bit. */
 	if (g_file_exists ("/vol/dev")) {

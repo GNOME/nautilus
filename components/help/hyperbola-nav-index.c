@@ -2235,11 +2235,11 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	gtk_container_add(GTK_CONTAINER(hni->specific_rbutton),GTK_WIDGET(underlined_label));
 
 	g_signal_connect (G_OBJECT (hni->contents_rbutton), "toggled",
-				GTK_SIGNAL_FUNC(show_indexes_for_contents_selection_button),
+				G_CALLBACK(show_indexes_for_contents_selection_button),
 					hni);
 	g_signal_connect (G_OBJECT (hni->all_rbutton), "toggled",
-				GTK_SIGNAL_FUNC(show_indexes_for_all_docs_button), hni);
-	g_signal_connect (G_OBJECT (hni->specific_rbutton), "toggled",					GTK_SIGNAL_FUNC(show_indexes_for_specific_docs_button), hni);
+				G_CALLBACK(show_indexes_for_all_docs_button), hni);
+	g_signal_connect (G_OBJECT (hni->specific_rbutton), "toggled",					G_CALLBACK(show_indexes_for_specific_docs_button), hni);
 	gtk_box_pack_start(GTK_BOX(top_vbox), hni->contents_rbutton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(top_vbox), hni->all_rbutton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(top_hbox),hni->specific_rbutton,TRUE, TRUE, 0);
@@ -2264,7 +2264,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	hni->all_terms_rbutton = gtk_radio_button_new(NULL);
 	gtk_container_add(GTK_CONTAINER(hni->all_terms_rbutton),GTK_WIDGET(underlined_label));
 	g_signal_connect (G_OBJECT (hni->all_terms_rbutton), "toggled",
-					GTK_SIGNAL_FUNC(show_index_for_all_terms), hni);
+					G_CALLBACK(show_index_for_all_terms), hni);
 	gtk_box_pack_start(GTK_BOX(mid_vbox), hni->all_terms_rbutton,FALSE,FALSE,0);
 	radio_group = gtk_radio_button_group(GTK_RADIO_BUTTON(hni->all_terms_rbutton));
 	underlined_label = gtk_label_new("");
@@ -2274,7 +2274,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	hni->specific_terms_rbutton = gtk_radio_button_new( radio_group);
 	gtk_container_add(GTK_CONTAINER(hni->specific_terms_rbutton),GTK_WIDGET(underlined_label));
 	g_signal_connect (G_OBJECT (hni->specific_terms_rbutton), "toggled",
-                        GTK_SIGNAL_FUNC(show_index_for_selected_terms), hni);
+                        G_CALLBACK(show_index_for_selected_terms), hni);
 	gtk_box_pack_start(GTK_BOX(mid_vbox), hni->specific_terms_rbutton, FALSE, FALSE, 0);
 
 	hni->ent = gtk_entry_new();

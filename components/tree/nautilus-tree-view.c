@@ -258,8 +258,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 					    CLIST_AUTO_SORT);
 			view->details->inserting_node = FALSE;
 
-			gdk_pixbuf_unref (closed_pixbuf);
-			gdk_pixbuf_unref (open_pixbuf);
+			g_object_unref (G_OBJECT (closed_pixbuf));
+			g_object_unref (G_OBJECT (open_pixbuf));
 
 
 			eel_ctree_node_set_row_data (EEL_CTREE (view->details->tree),
@@ -451,8 +451,8 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 		g_free (name);
 
-		gdk_pixbuf_unref (closed_pixbuf);
-		gdk_pixbuf_unref (open_pixbuf);
+		g_object_unref (G_OBJECT (closed_pixbuf));
+		g_object_unref (G_OBJECT (open_pixbuf));
 
 
 
@@ -490,7 +490,7 @@ register_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 	g_return_if_fail (!nautilus_tree_node_is_toplevel (node));
 
 	if (g_list_find (view->details->unparented_tree_nodes, node) == NULL) {
-		gtk_object_ref (GTK_OBJECT (node));
+		g_object_ref (G_OBJECT (node));
 		view->details->unparented_tree_nodes = g_list_prepend (view->details->unparented_tree_nodes, node);
 	}
 }
@@ -503,7 +503,7 @@ forget_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 
 	if (g_list_find (view->details->unparented_tree_nodes, node) != NULL) {
 		view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, node);
-		gtk_object_unref (GTK_OBJECT (node));
+		g_object_unref (G_OBJECT (node));
 	}
 }
 
@@ -535,7 +535,7 @@ insert_unparented_nodes (NautilusTreeView *view, NautilusTreeNode *node)
 				sub_node = p->data;
 				view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, sub_node);
 				nautilus_tree_view_insert_model_node (view, sub_node);
-				gtk_object_unref (GTK_OBJECT (sub_node));
+				g_object_unref (G_OBJECT (sub_node));
 			}
 			g_list_free (to_add);
 		}
@@ -886,7 +886,7 @@ ctree_compare_rows (EelCList *clist,
 	if (compare_cached_key == clist) {
 		view = compare_cached_value;
 	} else {
-		view = gtk_object_get_data (GTK_OBJECT (clist), "tree_view");
+		view = g_object_get_data (G_OBJECT (clist), "tree_view");
 		compare_cached_key = clist;
 		compare_cached_value = view;
 	}
@@ -919,7 +919,7 @@ create_tree (NautilusTreeView *view)
 	/* set up ctree */
 	view->details->tree = eel_ctree_new (1, 0);
 
-	gtk_object_set_data (GTK_OBJECT (view->details->tree), "tree_view", (gpointer) view);
+	g_object_set_data (G_OBJECT (view->details->tree), "tree_view", (gpointer) view);
 	gtk_widget_add_events (GTK_WIDGET (view->details->tree), GDK_POINTER_MOTION_MASK);
 	
         eel_clist_set_selection_mode (EEL_CLIST (view->details->tree), GTK_SELECTION_SINGLE);
@@ -948,22 +948,22 @@ create_tree (NautilusTreeView *view)
 
 	g_signal_connect (G_OBJECT (view->details->tree),
 			    "tree_expand",
-			    GTK_SIGNAL_FUNC (tree_expand_callback), 
+			    G_CALLBACK (tree_expand_callback), 
 			    view);
 	
 	g_signal_connect (G_OBJECT (view->details->tree),
 			    "tree_collapse",
-			    GTK_SIGNAL_FUNC (tree_collapse_callback), 
+			    G_CALLBACK (tree_collapse_callback), 
 			    view);
 	
 	g_signal_connect (G_OBJECT (view->details->tree),
 			    "tree_select_row",
-			    GTK_SIGNAL_FUNC (tree_select_row_callback), 
+			    G_CALLBACK (tree_select_row_callback), 
 			    view);
 	
 	gtk_signal_connect_after (GTK_OBJECT (view->details->tree),
 				  "size_allocate",
-				  GTK_SIGNAL_FUNC (size_allocate_callback), 
+				  G_CALLBACK (size_allocate_callback), 
 				  view);
 	
 	/* Keep track of changes in these prefs to filter files accordingly. */
@@ -1047,7 +1047,7 @@ nautilus_tree_view_init (NautilusTreeView *view)
 
 	g_signal_connect (G_OBJECT (view),
 			    "load_location",
-			    GTK_SIGNAL_FUNC (tree_load_location_callback),
+			    G_CALLBACK (tree_load_location_callback),
 			    view);
 
 	view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
@@ -1111,7 +1111,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 	}
 
 	if (view->details->tree != NULL) {
-		gtk_object_unref (GTK_OBJECT (view->details->change_queue));
+		g_object_unref (G_OBJECT (view->details->change_queue));
 		
 		if (compare_cached_key == view->details->tree) {
 			compare_cached_key = NULL;
@@ -1144,10 +1144,10 @@ nautilus_tree_view_destroy (GtkObject *object)
 		nautilus_tree_view_free_dnd (view);
 		
 		disconnect_model_handlers (view);
-		gtk_object_unref (GTK_OBJECT (view->details->model));
+		g_object_unref (G_OBJECT (view->details->model));
 		
 		nautilus_tree_expansion_state_save (view->details->expansion_state);
-		gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
+		g_object_unref (G_OBJECT (view->details->expansion_state));
 	}
 
 	eel_gtk_object_list_free (view->details->unparented_tree_nodes);

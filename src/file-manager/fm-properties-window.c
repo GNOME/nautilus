@@ -259,7 +259,7 @@ update_properties_window_icon (EelImage *image)
 
 	g_assert (EEL_IS_IMAGE (image));
 
-	file = gtk_object_get_data (GTK_OBJECT (image), "nautilus_file");
+	file = g_object_get_data (G_OBJECT (image), "nautilus_file");
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
@@ -267,7 +267,7 @@ update_properties_window_icon (EelImage *image)
 
 	eel_image_set_pixbuf (image, pixbuf);
 	
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 }
 
 
@@ -289,7 +289,7 @@ uri_is_local_image (const char *uri)
 	if (pixbuf == NULL) {
 		return FALSE;
 	}
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 	return TRUE;
 }
 
@@ -358,18 +358,18 @@ create_image_widget_for_file (NautilusFile *file)
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
 	gtk_signal_connect( GTK_OBJECT (image), "drag_data_received",
-			    GTK_SIGNAL_FUNC (fm_properties_window_drag_data_received), NULL);
+			    G_CALLBACK (fm_properties_window_drag_data_received), NULL);
 
 
 	eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
 
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 
 	nautilus_file_ref (file);
-	gtk_object_set_data_full (GTK_OBJECT (image),
-				  "nautilus_file",
-				  file,
-				  (GtkDestroyNotify) nautilus_file_unref);
+	g_object_set_data_full (G_OBJECT (image),
+				"nautilus_file",
+				file,
+				(GtkDestroyNotify) nautilus_file_unref);
 
 	/* React to icon theme changes. */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
@@ -392,7 +392,7 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 	const char *original_name;
 	char *current_name, *displayed_name;
 
-	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
+	file = g_object_get_data (G_OBJECT (name_field), "nautilus_file");
 
 	if (file == NULL || nautilus_file_is_gone (file)) {
 		gtk_widget_set_sensitive (GTK_WIDGET (name_field), FALSE);
@@ -400,7 +400,7 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 		return;
 	}
 
-	original_name = (const char *) gtk_object_get_data (GTK_OBJECT (name_field),
+	original_name = (const char *) g_object_get_data (G_OBJECT (name_field),
 						      	    "original_name");
 
 	/* If the file name has changed since the original name was stored,
@@ -410,10 +410,10 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 	 */
 	current_name = nautilus_file_get_display_name (file);
 	if (eel_strcmp (original_name, current_name) != 0) {
-		gtk_object_set_data_full (GTK_OBJECT (name_field),
-					  "original_name",
-					  current_name,
-					  g_free);
+		g_object_set_data_full (G_OBJECT (name_field),
+					"original_name",
+					current_name,
+					g_free);
 
 		/* Only reset the text if it's different from what is
 		 * currently showing. This causes minimal ripples (e.g.
@@ -445,7 +445,7 @@ name_field_restore_original_name (NautilusEntry *name_field)
 	const char *original_name;
 	char *displayed_name;
 
-	original_name = (const char *) gtk_object_get_data (GTK_OBJECT (name_field),
+	original_name = (const char *) g_object_get_data (G_OBJECT (name_field),
 						      	    "original_name");
 	displayed_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
 
@@ -478,7 +478,7 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 		}
 	}
 
-	gtk_object_unref (GTK_OBJECT (window));
+	g_object_unref (G_OBJECT (window));
 }
 
 static void
@@ -496,7 +496,7 @@ name_field_done_editing (NautilusEntry *name_field, FMPropertiesWindow *window)
 	
 	g_assert (NAUTILUS_IS_ENTRY (name_field));
 
-	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
+	file = g_object_get_data (G_OBJECT (name_field), "nautilus_file");
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
@@ -514,7 +514,7 @@ name_field_done_editing (NautilusEntry *name_field, FMPropertiesWindow *window)
 		name_field_restore_original_name (NAUTILUS_ENTRY (name_field));
 	} else {
 		set_pending_name (window, new_name);
-		gtk_object_ref (GTK_OBJECT (window));
+		g_object_ref (G_OBJECT (window));
 		nautilus_file_rename (file, new_name,
 				      rename_callback, window);
 	}
@@ -555,8 +555,8 @@ property_button_update (GtkToggleButton *button)
 	char *name;
 	GList *keywords, *word;
 
-	file = gtk_object_get_data (GTK_OBJECT (button), "nautilus_file");
-	name = gtk_object_get_data (GTK_OBJECT (button), "nautilus_property_name");
+	file = g_object_get_data (G_OBJECT (button), "nautilus_file");
+	name = g_object_get_data (G_OBJECT (button), "nautilus_property_name");
 
 	/* Handle the case where there's nothing to toggle. */
 	if (file == NULL || nautilus_file_is_gone (file) || name == NULL) {
@@ -578,8 +578,8 @@ property_button_toggled (GtkToggleButton *button)
 	char *name;
 	GList *keywords, *word;
 
-	file = gtk_object_get_data (GTK_OBJECT (button), "nautilus_file");
-	name = gtk_object_get_data (GTK_OBJECT (button), "nautilus_property_name");
+	file = g_object_get_data (G_OBJECT (button), "nautilus_file");
+	name = g_object_get_data (G_OBJECT (button), "nautilus_property_name");
 
 	/* Handle the case where there's nothing to toggle. */
 	if (file == NULL || nautilus_file_is_gone (file) || name == NULL) {
@@ -644,7 +644,7 @@ value_field_update_internal (GtkLabel *label,
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (!ellipsize_text || EEL_IS_ELLIPSIZING_LABEL (label));
 
-	attribute_name = gtk_object_get_data (GTK_OBJECT (label), "file_attribute");
+	attribute_name = g_object_get_data (G_OBJECT (label), "file_attribute");
 	attribute_value = nautilus_file_get_string_attribute_with_default (file, attribute_name);
 
 	if (ellipsize_text) {
@@ -735,10 +735,10 @@ attach_value_field_internal (GtkTable *table,
 	}
 
 	/* Stash a copy of the file attribute name in this field for the callback's sake. */
-	gtk_object_set_data_full (GTK_OBJECT (value_field),
-				  "file_attribute",
-				  g_strdup (file_attribute_name),
-				  g_free);
+	g_object_set_data_full (G_OBJECT (value_field),
+				"file_attribute",
+				g_strdup (file_attribute_name),
+				g_free);
 
 	/* Fill in the value. */
 	if (ellipsize_text) {
@@ -1569,10 +1569,10 @@ create_basic_page (FMPropertiesWindow *window)
 				   
 	/* Attach parameters and signal handler. */
 	nautilus_file_ref (original_file);
-	gtk_object_set_data_full (GTK_OBJECT (name_field),
-				  "nautilus_file",
-				  original_file,
-				  (GtkDestroyNotify) nautilus_file_unref);
+	g_object_set_data_full (G_OBJECT (name_field),
+				"nautilus_file",
+				original_file,
+				(GtkDestroyNotify) nautilus_file_unref);
 
 	/* Update name field initially before hooking up changed signal. */
 	name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
@@ -1592,7 +1592,7 @@ create_basic_page (FMPropertiesWindow *window)
 #endif
 
 	g_signal_connect (G_OBJECT (name_field), "focus_out_event",
-      	              	    GTK_SIGNAL_FUNC (name_field_focus_out),
+      	              	    G_CALLBACK (name_field_focus_out),
                             window);
                       			    
 	g_signal_connect (G_OBJECT (name_field), "activate",
@@ -1646,13 +1646,13 @@ create_basic_page (FMPropertiesWindow *window)
 		gtk_widget_show (temp_button);
 		gtk_box_pack_start (GTK_BOX (button_box), temp_button, FALSE, FALSE, 4);  
 
-		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (select_image_button_callback), window);
+		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", G_CALLBACK (select_image_button_callback), window);
 	 	
 	 	temp_button = gtk_button_new_with_mnemonic (_("_Remove Custom Icon"));
 		gtk_widget_show (temp_button);
 		gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
 
-	 	g_signal_connect (G_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (remove_image_button_callback), window);
+	 	g_signal_connect (G_OBJECT (temp_button), "clicked", G_CALLBACK (remove_image_button_callback), window);
 
 		window->details->remove_image_button = temp_button;
 		
@@ -1729,7 +1729,7 @@ create_emblems_page (FMPropertiesWindow *window)
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 			g_free (label);
 			g_free (emblem_name);
 			continue;
@@ -1740,19 +1740,19 @@ create_emblems_page (FMPropertiesWindow *window)
 		eel_labeled_image_set_spacing (EEL_LABELED_IMAGE (GTK_BIN (button)->child), EMBLEM_LABEL_SPACING);
 		
 		g_free (label);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (G_OBJECT (pixbuf));
 
 		/* Attach parameters and signal handler. */
-		gtk_object_set_data_full (GTK_OBJECT (button),
-					  "nautilus_property_name",
-					  emblem_name,
-					  g_free);
+		g_object_set_data_full (G_OBJECT (button),
+					"nautilus_property_name",
+					emblem_name,
+					g_free);
 				     
 		nautilus_file_ref (file);
-		gtk_object_set_data_full (GTK_OBJECT (button),
-					  "nautilus_file",
-					  file,
-					  (GtkDestroyNotify) nautilus_file_unref);
+		g_object_set_data_full (G_OBJECT (button),
+					"nautilus_file",
+					file,
+					(GtkDestroyNotify) nautilus_file_unref);
 		
 		g_signal_connect (G_OBJECT (button),
 				    "toggled",
@@ -1810,9 +1810,9 @@ update_permissions_check_button_state (GtkWidget *check_button, NautilusFile *fi
 	
 	g_assert (nautilus_file_can_get_permissions (file));
 
-	toggled_signal_id = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (check_button),
+	toggled_signal_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (check_button),
 						 		  "toggled_signal_id"));
-	permission = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (check_button),
+	permission = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (check_button),
 							   "permission"));
 	g_assert (toggled_signal_id > 0);
 	g_assert (permission != 0);
@@ -1851,7 +1851,7 @@ permissions_check_button_toggled (GtkToggleButton *toggle_button, gpointer user_
 	g_assert (nautilus_file_can_get_permissions (file));
 	g_assert (nautilus_file_can_set_permissions (file));
 
-	permission_mask = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (toggle_button),
+	permission_mask = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (toggle_button),
 					  "permission"));
 
 	/* Modify the file's permissions according to the state of this check button. */
@@ -1878,14 +1878,14 @@ set_up_permissions_checkbox (GtkWidget *check_button,
 	guint toggled_signal_id;
 
 	toggled_signal_id = g_signal_connect (G_OBJECT (check_button), "toggled",
-      	              	    			GTK_SIGNAL_FUNC (permissions_check_button_toggled),
+      	              	    			G_CALLBACK (permissions_check_button_toggled),
                             			file);
 
 	/* Load up the check_button with data we'll need when updating its state. */
-        gtk_object_set_data (GTK_OBJECT (check_button), 
+        g_object_set_data (G_OBJECT (check_button), 
         		     "toggled_signal_id", 
         		     GINT_TO_POINTER (toggled_signal_id));
-        gtk_object_set_data (GTK_OBJECT (check_button), 
+        g_object_set_data (G_OBJECT (check_button), 
         		     "permission", 
         		     GINT_TO_POINTER (permission));
 	

@@ -157,8 +157,8 @@ smooth_font_changed_callback (gpointer callback_data)
 	eel_label_set_smooth_font (EEL_LABEL (sidebar_title->details->title_label), new_bold_font);
 	eel_label_set_smooth_font (EEL_LABEL (sidebar_title->details->more_info_label), new_font);
 
-	gtk_object_unref (GTK_OBJECT (new_font));
-	gtk_object_unref (GTK_OBJECT (new_bold_font));
+	g_object_unref (G_OBJECT (new_font));
+	g_object_unref (G_OBJECT (new_bold_font));
 }
 
 #if GNOME2_CONVERSION_COMPLETE
@@ -568,7 +568,7 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	eel_label_set_smooth_font_size (EEL_LABEL (sidebar_title->details->title_label), 
 					largest_fitting_smooth_font_size);
 	
-	gtk_object_unref (GTK_OBJECT (smooth_font));
+	g_object_unref (G_OBJECT (smooth_font));
 
 #if GNOME2_CONVERSION_COMPLETE
 	/* Update the regular font */
@@ -742,7 +742,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			 FALSE, NULL, FALSE);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 		}
 	}
 	

@@ -81,17 +81,17 @@ release_pixbuf (bonobo_object_data_t *bod)
 	g_return_if_fail (bod != NULL);
 
 	if (bod->pixbuf != NULL) {
-		gdk_pixbuf_unref (bod->pixbuf);
+		g_object_unref (G_OBJECT (bod->pixbuf));
 	}
 	bod->pixbuf = NULL;
 
 	if (bod->zoomed != NULL) {
-		gdk_pixbuf_unref (bod->zoomed);
+		g_object_unref (G_OBJECT (bod->zoomed));
 	}
 	bod->zoomed = NULL;
 
 	if (bod->scaled != NULL) {
-		gdk_pixbuf_unref (bod->scaled);
+		g_object_unref (G_OBJECT (bod->scaled));
 	}
 	bod->scaled = NULL;
 }
@@ -409,7 +409,7 @@ rezoom_control (bonobo_object_data_t *bod, float new_zoom_level)
 	new_height = old_height * new_zoom_level;
 
 	if (bod->zoomed)
-		gdk_pixbuf_unref (bod->zoomed);
+		g_object_unref (G_OBJECT (bod->zoomed));
 
 	if (new_width >= 1 && new_height >= 1) {
 		bod->zoomed = gdk_pixbuf_scale_simple (pixbuf, new_width, 
@@ -484,7 +484,7 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 		Bonobo_Stream_read (stream, LOAD_BUFFER_SIZE, &buffer, ev);
 		if (ev->_major != CORBA_NO_EXCEPTION) {
 			gdk_pixbuf_loader_close (loader);
-			gtk_object_unref (GTK_OBJECT (loader));
+			g_object_unref (G_OBJECT (loader));
 			return;
 		}
 		
@@ -496,7 +496,7 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 										 ex_Bonobo_Persist_WrongDataType, NULL);
 				}				
 				gdk_pixbuf_loader_close (loader);
-				gtk_object_unref (GTK_OBJECT (loader));
+				g_object_unref (G_OBJECT (loader));
 				return;
 		}
 		
@@ -509,9 +509,9 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 
 	if (bod->pixbuf == NULL) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Bonobo_Persist_WrongDataType, NULL);
-		gtk_object_unref (GTK_OBJECT (loader));
+		g_object_unref (G_OBJECT (loader));
 	} else {
-		gdk_pixbuf_ref (bod->pixbuf);
+		g_object_ref (G_OBJECT (bod->pixbuf));
 		
 		/* Restore current zoomed pixbuf cache. */
 		if (bod->zoom_level != 1.0) {
@@ -559,7 +559,7 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 	if (allocation->width  == gdk_pixbuf_get_width (buf) &&
 	    allocation->height == gdk_pixbuf_get_height (buf)) {
 		if (bod->scaled != NULL) {
-			gdk_pixbuf_unref (bod->scaled);
+			g_object_unref (G_OBJECT (bod->scaled));
 			bod->scaled = NULL;
 		}
 		return;
@@ -572,7 +572,7 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 			return;
 		} else {
 			bod->scaled = NULL;
-			gdk_pixbuf_unref (control_buf);
+			g_object_unref (G_OBJECT (control_buf));
 			control_buf = NULL;
 		}
 	}
@@ -667,7 +667,7 @@ control_factory_common (GtkWidget *scrolled_window)
 
 	g_signal_connect (G_OBJECT (bod->drawing_area),
 			    "expose_event",
-			    GTK_SIGNAL_FUNC (drawing_area_exposed), bod);
+			    G_CALLBACK (drawing_area_exposed), bod);
 
 	if (scrolled_window) {
 		bod->root = scrolled_window;
@@ -690,20 +690,20 @@ control_factory_common (GtkWidget *scrolled_window)
 	gtk_widget_ref (bod->drawing_area);
 
 	g_signal_connect (G_OBJECT (bod->control), "destroy",
-			    GTK_SIGNAL_FUNC (control_destroy_callback), bod);
+			    G_CALLBACK (control_destroy_callback), bod);
 
 	bod->zoomable = bonobo_zoomable_new ();
 
 	g_signal_connect (G_OBJECT (bod->zoomable), "set_zoom_level",
-			    GTK_SIGNAL_FUNC (zoomable_set_zoom_level_callback), bod);
+			    G_CALLBACK (zoomable_set_zoom_level_callback), bod);
 	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_in",
-			    GTK_SIGNAL_FUNC (zoomable_zoom_in_callback), bod);
+			    G_CALLBACK (zoomable_zoom_in_callback), bod);
 	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_out",
-			    GTK_SIGNAL_FUNC (zoomable_zoom_out_callback), bod);
+			    G_CALLBACK (zoomable_zoom_out_callback), bod);
 	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_to_fit",
-			    GTK_SIGNAL_FUNC (zoomable_zoom_to_fit_callback), bod);
+			    G_CALLBACK (zoomable_zoom_to_fit_callback), bod);
 	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_to_default",
-			    GTK_SIGNAL_FUNC (zoomable_zoom_to_default_callback), bod);
+			    G_CALLBACK (zoomable_zoom_to_default_callback), bod);
 
 	bod->zoom_level = 1.0;
 	bonobo_zoomable_set_parameters_full (bod->zoomable,
@@ -720,7 +720,7 @@ control_factory_common (GtkWidget *scrolled_window)
 				     BONOBO_OBJECT (bod->zoomable));
 
 	g_signal_connect (G_OBJECT (bod->control), "activate",
-			    GTK_SIGNAL_FUNC (control_activate_callback), bod);
+			    G_CALLBACK (control_activate_callback), bod);
 
 	/*
 	 * Interface Bonobo::PersistStream 
@@ -744,7 +744,7 @@ scaled_control_factory (void)
 	bod = control_factory_common (NULL);
 
 	g_signal_connect (G_OBJECT (bod->drawing_area), "size_allocate",
-			    GTK_SIGNAL_FUNC (control_size_allocate_callback), bod);
+			    G_CALLBACK (control_size_allocate_callback), bod);
 
         return bod;
 }
@@ -764,11 +764,11 @@ scrollable_control_factory (void)
 	bod = control_factory_common (scroll);
 
 	g_signal_connect (G_OBJECT (bod->drawing_area), "size_allocate",
-			    GTK_SIGNAL_FUNC (scrolled_control_size_allocate_callback),
+			    G_CALLBACK (scrolled_control_size_allocate_callback),
 			    bod);
 	
 	g_signal_connect (G_OBJECT (bod->scrolled_window), "size_allocate",
-			    GTK_SIGNAL_FUNC (scrolled_window_size_allocate_callback),
+			    G_CALLBACK (scrolled_window_size_allocate_callback),
 			    bod);
 
         return bod;

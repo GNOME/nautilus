@@ -59,7 +59,7 @@ typedef struct {
 	POA_Nautilus_Undo_Transaction__epv epv;
 } NautilusUndoTransactionClass;
 
-GtkType                  nautilus_undo_transaction_get_type            (void);
+GType                    nautilus_undo_transaction_get_type            (void);
 NautilusUndoTransaction *nautilus_undo_transaction_new                 (const char              *operation_name,
 									const char              *undo_menu_item_label,
 									const char              *undo_menu_item_hint,
@@ -69,6 +69,6 @@ void                     nautilus_undo_transaction_add_atom            (Nautilus
 									const NautilusUndoAtom  *atom);
 void                     nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transaction,
 									Nautilus_Undo_Manager    manager);
-void                     nautilus_undo_transaction_unregister_object   (GtkObject               *atom_target);
+void                     nautilus_undo_transaction_unregister_object   (GObject                 *atom_target);
 
 #endif /* NAUTILUS_UNDO_TRANSACTION_H */

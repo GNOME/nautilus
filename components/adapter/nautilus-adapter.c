@@ -94,7 +94,7 @@ static void
 nautilus_adapter_init (NautilusAdapter *adapter)
 {
 	adapter->details = g_new0 (NautilusAdapterDetails, 1);
-	gtk_object_ref (GTK_OBJECT (adapter));
+	g_object_ref (G_OBJECT (adapter));
 	gtk_object_sink (GTK_OBJECT (adapter));
 }
 
@@ -120,11 +120,11 @@ nautilus_adapter_destroy (GtkObject *object)
 
 	if (adapter->details->load_strategy != NULL) {
 		nautilus_adapter_load_strategy_stop_loading (adapter->details->load_strategy);
-		gtk_object_unref (GTK_OBJECT (adapter->details->load_strategy));
+		g_object_unref (G_OBJECT (adapter->details->load_strategy));
 	}
 
 	if (adapter->details->embed_strategy != NULL) {
-		gtk_object_unref (GTK_OBJECT (adapter->details->embed_strategy));
+		g_object_unref (G_OBJECT (adapter->details->embed_strategy));
 	}
 
 	g_free (adapter->details);
@@ -160,7 +160,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	/* Get the class to handle embedding this kind of component. */
 	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get (component);
 	if (adapter->details->embed_strategy == NULL) {
-		gtk_object_unref (GTK_OBJECT (adapter));
+		g_object_unref (G_OBJECT (adapter));
 		return NULL;
 	}
 
@@ -170,7 +170,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 		bonobo_object_add_interface (BONOBO_OBJECT (control), zoomable);
 
 	g_signal_connect (G_OBJECT (control), "activate",
-			    GTK_SIGNAL_FUNC (nautilus_adapter_activate_callback),
+			    G_CALLBACK (nautilus_adapter_activate_callback),
 			    adapter);
 
 	g_signal_connect (G_OBJECT (adapter->details->embed_strategy), "open_location", 
@@ -180,7 +180,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	/* Get the class to handle loading this kind of component. */
 	adapter->details->load_strategy = nautilus_adapter_load_strategy_get (component);
 	if (adapter->details->load_strategy == NULL) {
-		gtk_object_unref (GTK_OBJECT (adapter));
+		g_object_unref (G_OBJECT (adapter));
 		return NULL;
 	}
 

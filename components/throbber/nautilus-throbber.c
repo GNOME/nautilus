@@ -238,7 +238,7 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 	/* loop through all the installed images, taking the union */
 	current_entry = throbber->details->image_list;
 	while (current_entry != NULL) {	
-		pixbuf = (GdkPixbuf*) current_entry->data;
+		pixbuf = GDK_PIXBUF (current_entry->data);
 		pixbuf_width = gdk_pixbuf_get_width (pixbuf);
 		pixbuf_height = gdk_pixbuf_get_height (pixbuf);
 		
@@ -361,7 +361,7 @@ select_throbber_image (NautilusThrobber *throbber)
 	GList *element;
 
 	if (throbber->details->timer_task == 0) {
-		return gdk_pixbuf_ref (throbber->details->quiescent_pixbuf);
+		return g_object_ref (G_OBJECT (throbber->details->quiescent_pixbuf));
 	}
 	
 	if (throbber->details->image_list == NULL) {
@@ -370,7 +370,7 @@ select_throbber_image (NautilusThrobber *throbber)
 
 	element = g_list_nth (throbber->details->image_list, throbber->details->current_frame);
 	
-	return gdk_pixbuf_ref (element->data);
+	return g_object_ref (G_OBJECT (element->data));
 }
 
 /* draw the throbber into the passed-in rectangle */
@@ -411,7 +411,7 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 		} else {
 			massaged_pixbuf = eel_create_spotlight_pixbuf (pixbuf);
 		}
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (G_OBJECT (pixbuf));
 		pixbuf = massaged_pixbuf;
 	}
 	
@@ -421,7 +421,7 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 	
 	draw_pixbuf (pixbuf, widget->window, box->x + x_offset, box->y + y_offset);
 	
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 }
 
 static void
@@ -536,14 +536,14 @@ nautilus_throbber_unload_images (NautilusThrobber *throbber)
 	GList *current_entry;
 
 	if (throbber->details->quiescent_pixbuf != NULL) {
-		gdk_pixbuf_unref (throbber->details->quiescent_pixbuf);
+		g_object_unref (G_OBJECT (throbber->details->quiescent_pixbuf));
 		throbber->details->quiescent_pixbuf = NULL;
 	}
 
 	/* unref all the images in the list, and then let go of the list itself */
 	current_entry = throbber->details->image_list;
 	while (current_entry != NULL) {
-		gdk_pixbuf_unref ((GdkPixbuf*) current_entry->data);
+		g_object_unref (G_OBJECT (current_entry->data));
 		current_entry = current_entry->next;
 	}
 	
@@ -571,7 +571,7 @@ load_themed_image (const char *file_name, const char *image_theme, gboolean smal
 							       gdk_pixbuf_get_width (pixbuf) / 2,
 							       gdk_pixbuf_get_height (pixbuf) / 2,
 							       GDK_INTERP_BILINEAR);
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (G_OBJECT (pixbuf));
 			pixbuf = temp_pixbuf;
 		}
 		

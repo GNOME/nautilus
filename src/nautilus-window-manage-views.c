@@ -309,7 +309,7 @@ set_displayed_location (NautilusWindow *window, const char *location)
         if (recreate) {
                 /* We've changed locations, must recreate bookmark for current location. */
                 if (window->last_location_bookmark != NULL)  {
-                        gtk_object_unref (GTK_OBJECT (window->last_location_bookmark));
+                        g_object_unref (G_OBJECT (window->last_location_bookmark));
                 }
                 window->last_location_bookmark = window->current_location_bookmark;
                 window->current_location_bookmark = location == NULL ? NULL
@@ -363,7 +363,7 @@ handle_go_back (NautilusWindow *window, const char *location)
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->forward_list = g_list_prepend (window->forward_list,
                                                window->last_location_bookmark);
-        gtk_object_ref (GTK_OBJECT (window->forward_list->data));
+        g_object_ref (G_OBJECT (window->forward_list->data));
                                 
         /* Move extra links from Back to Forward list */
         for (i = 0; i < window->details->location_change_distance; ++i) {
@@ -375,7 +375,7 @@ handle_go_back (NautilusWindow *window, const char *location)
         /* One bookmark falls out of back/forward lists and becomes viewed location */
         link = window->back_list;
         window->back_list = g_list_remove_link (window->back_list, link);
-        gtk_object_unref (GTK_OBJECT (link->data));
+        g_object_unref (G_OBJECT (link->data));
         g_list_free_1 (link);
 }
 
@@ -400,7 +400,7 @@ handle_go_forward (NautilusWindow *window, const char *location)
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->back_list = g_list_prepend (window->back_list,
                                             window->last_location_bookmark);
-        gtk_object_ref (GTK_OBJECT (window->back_list->data));
+        g_object_ref (G_OBJECT (window->back_list->data));
         
         /* Move extra links from Forward to Back list */
         for (i = 0; i < window->details->location_change_distance; ++i) {
@@ -412,7 +412,7 @@ handle_go_forward (NautilusWindow *window, const char *location)
         /* One bookmark falls out of back/forward lists and becomes viewed location */
         link = window->forward_list;
         window->forward_list = g_list_remove_link (window->forward_list, link);
-        gtk_object_unref (GTK_OBJECT (link->data));
+        g_object_unref (G_OBJECT (link->data));
         g_list_free_1 (link);
 }
 
@@ -434,7 +434,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                         /* Use the first bookmark in the history list rather than creating a new one. */
                         window->back_list = g_list_prepend (window->back_list,
                                                             window->last_location_bookmark);
-                        gtk_object_ref (GTK_OBJECT (window->back_list->data));
+                        g_object_ref (G_OBJECT (window->back_list->data));
                 }
         }
 }
@@ -627,14 +627,14 @@ update_for_new_location (NautilusWindow *window)
 static gboolean
 unref_callback (gpointer callback_data)
 {
-        gtk_object_unref (GTK_OBJECT (callback_data));
+        g_object_unref (G_OBJECT (callback_data));
         return FALSE;
 }
 
 static void
-ref_now_unref_at_idle_time (GtkObject *object)
+ref_now_unref_at_idle_time (GObject *object)
 {
-        gtk_object_ref (object);
+        g_object_ref (object);
         g_idle_add (unref_callback, object);
 }
 
@@ -652,13 +652,13 @@ location_has_really_changed (NautilusWindow *window)
                  * help for out of process components.
                  */
                 if (window->content_view != NULL) {
-                        ref_now_unref_at_idle_time (GTK_OBJECT (window->content_view));
+                        ref_now_unref_at_idle_time (G_OBJECT (window->content_view));
                 }
                 
                 disconnect_view (window, window->content_view);
                 nautilus_window_set_content_view_widget (window, window->new_content_view);
         }
-        gtk_object_unref (GTK_OBJECT (window->new_content_view));
+        g_object_unref (G_OBJECT (window->new_content_view));
         window->new_content_view = NULL;
         
         /* Update displayed view in menu. Only do this if we're not switching
@@ -766,10 +766,10 @@ set_view_frame_info (NautilusViewFrame *view_frame,
 		     gboolean is_sidebar_panel, 
 		     const NautilusViewIdentifier *id)
 {
-	gtk_object_set_data_full (GTK_OBJECT (view_frame),
-				  "info",
-				  view_frame_info_new (is_sidebar_panel, id),
-				  (GtkDestroyNotify) view_frame_info_free);
+	g_object_set_data_full (G_OBJECT (view_frame),
+                                "info",
+                                view_frame_info_new (is_sidebar_panel, id),
+                                (GtkDestroyNotify) view_frame_info_free);
 }
 
 static gboolean
@@ -777,8 +777,8 @@ view_frame_is_sidebar_panel (NautilusViewFrame *view_frame)
 {
 	ViewFrameInfo *info;
 
-	info = (ViewFrameInfo *)gtk_object_get_data 
-		(GTK_OBJECT (view_frame), "info");
+	info = (ViewFrameInfo *) g_object_get_data 
+		(G_OBJECT (view_frame), "info");
 	return info->is_sidebar_panel;
 }
 
@@ -787,8 +787,8 @@ view_frame_get_label (NautilusViewFrame *view_frame)
 {
 	ViewFrameInfo *info;
 
-	info = (ViewFrameInfo *)gtk_object_get_data 
-		(GTK_OBJECT (view_frame), "info");
+	info = (ViewFrameInfo *) g_object_get_data 
+		(G_OBJECT (view_frame), "info");
 	return g_strdup (info->id->name);
 }
 
@@ -797,8 +797,8 @@ view_frame_get_id (NautilusViewFrame *view_frame)
 {
 	ViewFrameInfo *info;
 
-	info = (ViewFrameInfo *)gtk_object_get_data 
-		(GTK_OBJECT (view_frame), "info");
+	info = (ViewFrameInfo *) g_object_get_data 
+		(G_OBJECT (view_frame), "info");
 	return nautilus_view_identifier_copy (info->id);
 }
 
@@ -971,14 +971,14 @@ load_content_view (NautilusWindow *window,
                 /* reuse existing content view */
                 view = window->content_view;
                 window->new_content_view = view;
-        	gtk_object_ref (GTK_OBJECT (view));
+        	g_object_ref (G_OBJECT (view));
                 set_to_pending_location_and_selection (window);
         } else {
                 /* create a new content view */
                 view = nautilus_view_frame_new (window->details->ui_container,
                                                 window->application->undo_manager);
                 window->new_content_view = view;
-                gtk_object_ref (GTK_OBJECT (view));
+                g_object_ref (G_OBJECT (view));
                 gtk_object_sink (GTK_OBJECT (view));
 		set_view_frame_info (view, FALSE, id);
                 connect_view (window, view);
@@ -1077,7 +1077,7 @@ free_location_change (NautilusWindow *window)
                         disconnect_view (window, window->new_content_view);
                         gtk_widget_destroy (GTK_WIDGET (window->new_content_view));
         	}
-        	gtk_object_unref (GTK_OBJECT (window->new_content_view));
+        	g_object_unref (G_OBJECT (window->new_content_view));
                 window->new_content_view = NULL;
         }
 }
@@ -1684,7 +1684,7 @@ get_history_list_callback (NautilusViewFrame *view,
 		g_free (name);
 		g_free (location);
 		g_free (pixbuf_xml);
-		gdk_pixbuf_unref (pixbuf);		
+		g_object_unref (G_OBJECT (pixbuf));		
 	}
 
 	return list;
@@ -1946,7 +1946,7 @@ connect_view (NautilusWindow *window, NautilusViewFrame *view)
 
 	#define CONNECT(signal) gtk_signal_connect \
         	(view_object, #signal, \
-                 GTK_SIGNAL_FUNC (signal##_callback), window);
+                 G_CALLBACK (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (CONNECT)
 	#undef CONNECT
 }
@@ -1968,7 +1968,7 @@ disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
 
 	#define DISCONNECT(signal) gtk_signal_disconnect_by_func \
         	(view_object, \
-        	 GTK_SIGNAL_FUNC (signal##_callback), window);
+        	 G_CALLBACK (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (DISCONNECT)
 	#undef DISCONNECT
 }

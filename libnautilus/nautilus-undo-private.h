@@ -26,10 +26,10 @@
 #define NAUTILUS_UNDO_PRIVATE_H
 
 #include <libnautilus/nautilus-distributed-undo.h>
-#include <gtk/gtkobject.h>
+#include <gobject/gobject.h>
 
-Nautilus_Undo_Manager nautilus_undo_get_undo_manager                (GtkObject             *attached_object);
-void                  nautilus_undo_attach_undo_manager             (GtkObject             *object,
-								     Nautilus_Undo_Manager  manager);
+Nautilus_Undo_Manager nautilus_undo_get_undo_manager    (GObject               *attached_object);
+void                  nautilus_undo_attach_undo_manager (GObject               *object,
+							 Nautilus_Undo_Manager  manager);
 
 #endif /* NAUTILUS_UNDO_PRIVATE_H */

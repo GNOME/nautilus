@@ -194,7 +194,7 @@ done_with_file (Notes *notes)
 	if (notes->file != NULL) {
 		nautilus_file_monitor_remove (notes->file, notes);
 		gtk_signal_disconnect_by_func (GTK_OBJECT (notes->file),
-					       GTK_SIGNAL_FUNC (load_note_text_from_metadata),
+					       G_CALLBACK (load_note_text_from_metadata),
 					       notes);
 	        nautilus_file_unref (notes->file);
         }
@@ -225,7 +225,7 @@ notes_load_metainfo (Notes *notes)
         
 	g_signal_connect (G_OBJECT (notes->file),
 			    "changed",
-			    GTK_SIGNAL_FUNC (load_note_text_from_metadata),
+			    G_CALLBACK (load_note_text_from_metadata),
 			    notes);
 }
 
@@ -377,10 +377,10 @@ make_notes_view (const char *iid, gpointer callback_data)
         eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
 	g_signal_connect (G_OBJECT (notes->note_text_field), "focus_out_event",
-      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
+      	              	    G_CALLBACK (on_text_field_focus_out_event),
                             notes);
 	g_signal_connect (G_OBJECT (notes->note_text_field), "changed",
-      	              	    GTK_SIGNAL_FUNC (on_changed),
+      	              	    G_CALLBACK (on_changed),
                             notes);
      
         gtk_widget_show_all (vbox);

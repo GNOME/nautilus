@@ -165,7 +165,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 				    change_selection),
 		 NULL, NULL,
 		 gtk_marshal_VOID__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[CHANGE_STATUS] = g_signal_new
 		("change_status",
 		 G_TYPE_FROM_CLASS (object_class),
@@ -192,7 +192,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 				    get_history_list),
 		 NULL, NULL,
 		 nautilus_marshal_POINTER__VOID,
-		 GTK_TYPE_POINTER, 0);
+		 G_TYPE_POINTER, 0);
 	signals[GO_BACK] = g_signal_new
 		("go_back",
 		 G_TYPE_FROM_CLASS (object_class),
@@ -237,7 +237,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 				    open_location_force_new_window),
 		 NULL, NULL,
 		 eel_marshal_VOID__STRING_POINTER,
-		 G_TYPE_NONE, 2, G_TYPE_STRING, GTK_TYPE_POINTER);
+		 G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_POINTER);
 	signals[OPEN_LOCATION_IN_THIS_WINDOW] = g_signal_new
 		("open_location_in_this_window",
 		 G_TYPE_FROM_CLASS (object_class),
@@ -264,7 +264,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 				    report_location_change),
 		 NULL, NULL,
 		 eel_marshal_VOID__STRING_POINTER_STRING,
-		 G_TYPE_NONE, 3, G_TYPE_STRING, GTK_TYPE_POINTER, G_TYPE_STRING);
+		 G_TYPE_NONE, 3, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_STRING);
 	signals[REPORT_REDIRECT] = g_signal_new
 		("report_redirect",
 		 G_TYPE_FROM_CLASS (object_class),
@@ -273,7 +273,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 				    report_redirect),
 		 NULL, NULL,
 		 eel_marshal_VOID__STRING_STRING_POINTER_STRING,
-		 G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_STRING, GTK_TYPE_POINTER, G_TYPE_STRING);
+		 G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_STRING);
 	signals[TITLE_CHANGED] = g_signal_new
 		("title_changed",
 		 G_TYPE_FROM_CLASS (object_class),

@@ -72,7 +72,7 @@ nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *k
 		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
 		              NULL, NULL,
 		              gtk_marshal_VOID__POINTER,
-		              GTK_TYPE_POINTER, 0);
+		              G_TYPE_POINTER, 0);
 	signals[DEACTIVATE] =
 		g_signal_new ("deactivate",
 		              G_TYPE_FROM_CLASS (object_class),

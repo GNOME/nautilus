@@ -534,7 +534,7 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 		g_signal_connect (G_OBJECT (fm_directory_view_get_model
 						(FM_DIRECTORY_VIEW (desktop_icon_view))),
 				    "done_loading",
-				    GTK_SIGNAL_FUNC (done_loading), desktop_icon_view);
+				    G_CALLBACK (done_loading), desktop_icon_view);
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
@@ -572,7 +572,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	if (!nautilus_monitor_active ()) {
 		desktop_icon_view->details->delayed_init_signal = gtk_signal_connect
 			(GTK_OBJECT (desktop_icon_view), "begin_loading",
-			 GTK_SIGNAL_FUNC (delayed_init), desktop_icon_view);
+			 G_CALLBACK (delayed_init), desktop_icon_view);
 	}
 	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
@@ -612,17 +612,17 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	g_signal_connect (G_OBJECT (icon_container),
 			    "middle_click",
-			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
+			    G_CALLBACK (fm_desktop_icon_view_handle_middle_click),
 			    desktop_icon_view);
 			    
 	g_signal_connect (G_OBJECT (icon_container),
 			    "compare_icons",
-			    GTK_SIGNAL_FUNC (desktop_icons_compare_callback),
+			    G_CALLBACK (desktop_icons_compare_callback),
 			    desktop_icon_view);
 
 	g_signal_connect (G_OBJECT (desktop_icon_view),
 			    "event",
-			    GTK_SIGNAL_FUNC (event_callback),
+			    G_CALLBACK (event_callback),
 			    desktop_icon_view);
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
@@ -1061,7 +1061,7 @@ mount_parameters_new (FMDesktopIconView *view, const char *mount_path)
 	g_assert (!eel_str_is_empty (mount_path)); 
 
 	new_parameters = g_new (MountParameters, 1);
-	gtk_object_ref (GTK_OBJECT (view));
+	g_object_ref (G_OBJECT (view));
 	new_parameters->view = view;
 	new_parameters->mount_path = g_strdup (mount_path);
 
@@ -1073,7 +1073,7 @@ mount_parameters_free (MountParameters *parameters)
 {
 	g_assert (parameters != NULL);
 
-	gtk_object_unref (GTK_OBJECT (parameters->view));
+	g_object_unref (G_OBJECT (parameters->view));
 	g_free (parameters->mount_path);
 	g_free (parameters);
 }

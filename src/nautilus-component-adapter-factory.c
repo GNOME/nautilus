@@ -147,7 +147,7 @@ static void
 component_adapter_factory_at_exit_destructor (void)
 {
 	if (global_component_adapter_factory != NULL) {
-		gtk_object_unref (GTK_OBJECT (global_component_adapter_factory));
+		g_object_unref (G_OBJECT (global_component_adapter_factory));
 	}
 }
 
@@ -160,7 +160,7 @@ nautilus_component_adapter_factory_get (void)
 		factory = NAUTILUS_COMPONENT_ADAPTER_FACTORY
 			(g_object_new (NAUTILUS_TYPE_COMPONENT_ADAPTER_FACTORY, NULL));
 		
-		gtk_object_ref (GTK_OBJECT (factory));
+		g_object_ref (G_OBJECT (factory));
 		gtk_object_sink (GTK_OBJECT (factory));
 		
 		global_component_adapter_factory = factory;

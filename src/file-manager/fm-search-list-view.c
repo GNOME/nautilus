@@ -389,7 +389,7 @@ fm_search_list_view_init (gpointer object,
 
 	g_signal_connect (G_OBJECT (nautilus_view),
 			    "load_location",
-			    GTK_SIGNAL_FUNC (load_location_callback),
+			    G_CALLBACK (load_location_callback),
 			    NULL);
 }
 

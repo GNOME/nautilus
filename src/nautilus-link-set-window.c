@@ -62,8 +62,8 @@ link_set_check_box_toggled (GtkToggleButton *button, GtkWindow *window_to_update
 {
 	char *path, *name;
 	
-	path = gtk_object_get_data (GTK_OBJECT (button), "nautilus_directory_path");
-	name = gtk_object_get_data (GTK_OBJECT (button), "nautilus_link_set_name");
+	path = g_object_get_data (G_OBJECT (button), "nautilus_directory_path");
+	name = g_object_get_data (G_OBJECT (button), "nautilus_link_set_name");
 	
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
 		nautilus_link_set_install(path, name);
@@ -99,15 +99,15 @@ make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), nautilus_link_set_is_installed(directory_path, name));
 			
 	/* Attach the parameters and a signal handler. */
-	gtk_object_set_data_full (GTK_OBJECT (checkbox),
-				  "nautilus_directory_path",
-				  g_strdup (directory_path),
-				  g_free);
+	g_object_set_data_full (G_OBJECT (checkbox),
+				"nautilus_directory_path",
+				g_strdup (directory_path),
+				g_free);
 				     
-	gtk_object_set_data_full (GTK_OBJECT (checkbox),
-				  "nautilus_link_set_name",
-				  g_strdup(name),
-				  g_free);
+	g_object_set_data_full (G_OBJECT (checkbox),
+				"nautilus_link_set_name",
+				g_strdup(name),
+				g_free);
 		
 	g_signal_connect (G_OBJECT (checkbox),
 			    "toggled",
@@ -260,7 +260,7 @@ nautilus_link_set_toggle_configure_window (const char *directory_path, GtkWindow
 								      window_to_update);
 		
 		g_signal_connect (G_OBJECT (link_set_window), "delete_event",
-				    GTK_SIGNAL_FUNC (delete_window_callback), NULL);
+				    G_CALLBACK (delete_window_callback), NULL);
 	}
 									
 	return link_set_window;		

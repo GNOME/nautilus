@@ -654,7 +654,7 @@ nautilus_merged_directory_class_init (gpointer klass)
 						     add_real_directory),
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
-		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[REMOVE_REAL_DIRECTORY] 
 		= g_signal_new ("remove_real_directory",
 		                G_TYPE_FROM_CLASS (object_class),
@@ -663,5 +663,5 @@ nautilus_merged_directory_class_init (gpointer klass)
 						     remove_real_directory),
 		                NULL, NULL,
 		                gtk_marshal_VOID__POINTER,
-		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 }

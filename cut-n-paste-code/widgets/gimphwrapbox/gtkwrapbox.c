@@ -136,21 +136,21 @@ gtk_wrap_box_class_init (GtkWrapBoxClass *class)
   class->rlist_line_children = NULL;
   
   gtk_object_add_arg_type ("GtkWrapBox::homogeneous",
-			   GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HOMOGENEOUS);
+			   G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HOMOGENEOUS);
   gtk_object_add_arg_type ("GtkWrapBox::justify",
 			   GTK_TYPE_JUSTIFICATION, GTK_ARG_READWRITE, ARG_JUSTIFY);
   gtk_object_add_arg_type ("GtkWrapBox::hspacing",
-			   GTK_TYPE_UINT, GTK_ARG_READWRITE, ARG_HSPACING);
+			   G_TYPE_UINT, GTK_ARG_READWRITE, ARG_HSPACING);
   gtk_object_add_arg_type ("GtkWrapBox::vspacing",
-			   GTK_TYPE_UINT, GTK_ARG_READWRITE, ARG_VSPACING);
+			   G_TYPE_UINT, GTK_ARG_READWRITE, ARG_VSPACING);
   gtk_object_add_arg_type ("GtkWrapBox::line_justify",
 			   GTK_TYPE_JUSTIFICATION, GTK_ARG_READWRITE, ARG_LINE_JUSTIFY);
   gtk_object_add_arg_type ("GtkWrapBox::aspect_ratio",
-			   GTK_TYPE_FLOAT, GTK_ARG_READWRITE, ARG_ASPECT_RATIO);
+			   G_TYPE_FLOAT, GTK_ARG_READWRITE, ARG_ASPECT_RATIO);
   gtk_object_add_arg_type ("GtkWrapBox::current_ratio",
-			   GTK_TYPE_FLOAT, GTK_ARG_READABLE, ARG_CURRENT_RATIO);
+			   G_TYPE_FLOAT, GTK_ARG_READABLE, ARG_CURRENT_RATIO);
   gtk_object_add_arg_type ("GtkWrapBox::max_children_per_line",
-			   GTK_TYPE_UINT, GTK_ARG_READWRITE, ARG_CHILD_LIMIT);
+			   G_TYPE_UINT, GTK_ARG_READWRITE, ARG_CHILD_LIMIT);
 
   signals[NEED_REALLOCATION] = g_signal_new
     ("need_reallocation",
@@ -252,7 +252,7 @@ gtk_wrap_box_get_arg (GtkObject *object,
       GTK_VALUE_UINT (*arg) = wbox->child_limit;
       break;
     default:
-      arg->type = GTK_TYPE_INVALID;
+      arg->type = G_TYPE_INVALID;
       break;
     }
 }

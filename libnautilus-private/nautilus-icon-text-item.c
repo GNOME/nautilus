@@ -1179,7 +1179,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, text_changed),
 		 NULL, NULL,
 		 gtk_marshal_BOOLEAN__VOID,
-		 GTK_TYPE_BOOL, 0);
+		 G_TYPE_BOOLEAN, 0);
 
 	iti_signals [TEXT_EDITED] = g_signal_new
 		("text_edited",

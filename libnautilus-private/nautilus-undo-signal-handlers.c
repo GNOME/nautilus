@@ -47,7 +47,7 @@ typedef struct {
 } EditableUndoObjectData;
 
 
-static void restore_editable_from_undo_snapshot_callback (GtkObject 	*target, 
+static void restore_editable_from_undo_snapshot_callback (GObject 	*target, 
 							  gpointer 	callback_data);
 static void editable_register_edit_undo 		 (GtkEditable 	*editable);
 static void free_editable_object_data 			 (gpointer 	data);
@@ -76,13 +76,13 @@ nautilus_undo_set_up_nautilus_entry_for_undo (NautilusEntry *entry)
 
 	data = g_new(EditableUndoObjectData, 1);
 	data->undo_registered = FALSE;
-	gtk_object_set_data_full (GTK_OBJECT (entry), "undo_registered", 
-				  data, free_editable_object_data);
+	g_object_set_data_full (G_OBJECT (entry), "undo_registered", 
+				data, free_editable_object_data);
 
 	/* Connect to entry signals */
 	g_signal_connect (G_OBJECT (entry), 
 		    "user_changed",
-		    GTK_SIGNAL_FUNC (nautilus_entry_user_changed_callback),
+		    G_CALLBACK (nautilus_entry_user_changed_callback),
 		    NULL);
 }
 
@@ -95,7 +95,7 @@ nautilus_undo_tear_down_nautilus_entry_for_undo (NautilusEntry *entry)
 
 	/* Disconnect from entry signals */
 	gtk_signal_disconnect_by_func (GTK_OBJECT (entry), 
-		    GTK_SIGNAL_FUNC (nautilus_entry_user_changed_callback),		    
+		    G_CALLBACK (nautilus_entry_user_changed_callback),		    
 		    NULL);
 
 }
@@ -150,7 +150,7 @@ editable_register_edit_undo (GtkEditable *editable)
 	}
 
 	/* Check our undo registered flag */
-	data = gtk_object_get_data (GTK_OBJECT (editable), "undo_registered");
+	data = g_object_get_data (G_OBJECT (editable), "undo_registered");
 	if (data == NULL) {
 		g_warning ("Undo data is NULL");
 		return;
@@ -169,7 +169,7 @@ editable_register_edit_undo (GtkEditable *editable)
 					   &undo_data->selection_end);
 
 	nautilus_undo_register
-		(GTK_OBJECT (editable),
+		(G_OBJECT (editable),
 		 restore_editable_from_undo_snapshot_callback,
 		 undo_data,
 		 (GDestroyNotify) free_editable_undo_data,
@@ -194,19 +194,19 @@ nautilus_undo_set_up_editable_for_undo (GtkEditable *editable)
 	/* Connect to editable signals */
 	g_signal_connect (G_OBJECT (editable), 
 		    "insert_text",
-		    GTK_SIGNAL_FUNC (editable_insert_text_callback),
+		    G_CALLBACK (editable_insert_text_callback),
 		    NULL);
 	
 	g_signal_connect (G_OBJECT (editable), 
 		    "delete_text",
-		    GTK_SIGNAL_FUNC (editable_delete_text_callback),
+		    G_CALLBACK (editable_delete_text_callback),
 		    NULL);
 
 
 	data = g_new (EditableUndoObjectData, 1);
 	data->undo_registered = FALSE;
-	gtk_object_set_data_full (GTK_OBJECT (editable), "undo_registered", 
-				  data, free_editable_object_data);
+	g_object_set_data_full (G_OBJECT (editable), "undo_registered", 
+				data, free_editable_object_data);
 }
 
 void
@@ -218,11 +218,11 @@ nautilus_undo_tear_down_editable_for_undo (GtkEditable *editable)
 
 	/* Disconnect from entry signals */
 	gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
-		    GTK_SIGNAL_FUNC (editable_insert_text_callback),		    
+		    G_CALLBACK (editable_insert_text_callback),		    
 		    NULL);
 
 	gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
-		    GTK_SIGNAL_FUNC (editable_delete_text_callback),		    
+		    G_CALLBACK (editable_delete_text_callback),		    
 		    NULL);
 }
 
@@ -231,19 +231,19 @@ nautilus_undo_tear_down_editable_for_undo (GtkEditable *editable)
  * Restore edited text.
  */
 static void
-restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data)
+restore_editable_from_undo_snapshot_callback (GObject *target, gpointer callback_data)
 {
 	GtkEditable *editable;
 	GtkWindow *window;
 	EditableUndoData *undo_data;
 	EditableUndoObjectData *data;
 	gint position;
-		
+	
 	editable = GTK_EDITABLE (target);
 	undo_data = (EditableUndoData *) callback_data;
 
 	/* Check our undo registered flag */
-	data = gtk_object_get_data (target, "undo_registered");
+	data = g_object_get_data (target, "undo_registered");
 	if (data == NULL) {
 		g_warning ("Undo regisetred flag not found");
 		return;
@@ -262,7 +262,7 @@ restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callba
 				  strlen (undo_data->undo_text), &position);
 
 	/* Set focus to widget */
-	window = GTK_WINDOW (gtk_widget_get_toplevel ( GTK_WIDGET (target)));
+	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (target)));
 	gtk_window_set_focus (window, GTK_WIDGET (editable));
 
 	/* We have to do this call, because the previous call selects all text */
@@ -330,7 +330,7 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 		/* Connect to entry signals */
 		g_signal_connect (G_OBJECT (editable), 
 				    "key_press_event",
-				    GTK_SIGNAL_FUNC (editable_key_press_event),
+				    G_CALLBACK (editable_key_press_event),
 				    NULL);
 	} else {
 		/* FIXME bugzilla.gnome.org 45092: Warns if the handler
@@ -338,7 +338,7 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 		 * to prevent that little problem.
 		 */
 		gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
-					       GTK_SIGNAL_FUNC (editable_key_press_event),		    
+					       G_CALLBACK (editable_key_press_event),		    
 					       NULL);
 	}
 #endif

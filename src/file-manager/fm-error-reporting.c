@@ -253,7 +253,7 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (callback_data == NULL);
-	name = gtk_object_get_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	name = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
 	g_assert (name != NULL);
 
 	/* If rename failed, notify the user. */
@@ -273,7 +273,7 @@ cancel_rename (NautilusFile *file)
 {
 	char *name;
 
-	name = gtk_object_get_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	name = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
 	if (name == NULL) {
 		return;
 	}
@@ -283,7 +283,7 @@ cancel_rename (NautilusFile *file)
 	eel_timed_wait_stop (cancel_rename_callback, file);
 
 	/* Let go of file name. */
-	gtk_object_remove_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	g_object_set_data (G_OBJECT (file), NEW_NAME_TAG, NULL);
 }
 
 void
@@ -299,10 +299,10 @@ fm_rename_file (NautilusFile *file,
 	cancel_rename (file);
 
 	/* Attach the new name to the file. */
-	gtk_object_set_data_full (GTK_OBJECT (file),
-				  NEW_NAME_TAG,
-				  g_strdup (new_name),
-				  g_free);
+	g_object_set_data_full (G_OBJECT (file),
+				NEW_NAME_TAG,
+				g_strdup (new_name),
+				g_free);
 
 	/* Start the timed wait to cancel the rename. */
 	old_name = nautilus_file_get_display_name (file);

@@ -81,7 +81,7 @@ nautilus_sidebar_loser_init (NautilusSidebarLoser *view)
 	
 	g_signal_connect (G_OBJECT (view->details->nautilus_view), 
 			    "load_location",
-			    GTK_SIGNAL_FUNC (loser_load_location_callback), 
+			    G_CALLBACK (loser_load_location_callback), 
 			    view);
 
 	/* 

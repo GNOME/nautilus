@@ -5710,7 +5710,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, load_error),
 		              NULL, NULL,
 		              gtk_marshal_VOID__INT,
-		              G_TYPE_NONE, 1, GTK_TYPE_INT);
+		              G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[REMOVE_FILE] =
 		g_signal_new ("remove_file",
 		              G_TYPE_FROM_CLASS (object_class),

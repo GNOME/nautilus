@@ -88,7 +88,7 @@ nautilus_signaller_init (gpointer object, gpointer klass)
 static void
 unref_global_signaller (void)
 {
-	gtk_object_unref (GTK_OBJECT (global_signaller));
+	g_object_unref (G_OBJECT (global_signaller));
 }
 
 GtkObject *
@@ -96,7 +96,7 @@ nautilus_signaller_get_current (void)
 {
 	if (global_signaller == NULL) {
 		global_signaller = g_object_new (nautilus_signaller_get_type (), NULL);
-		gtk_object_ref (GTK_OBJECT (global_signaller));
+		g_object_ref (G_OBJECT (global_signaller));
 		gtk_object_sink (GTK_OBJECT (global_signaller));
 		g_atexit (unref_global_signaller);
 	}

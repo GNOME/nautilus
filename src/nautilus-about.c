@@ -106,7 +106,7 @@ nautilus_about_destroy (GtkObject *object)
 	about = NAUTILUS_ABOUT (object);
 	
 	if (about->details->background_pixbuf != NULL) {
-		gdk_pixbuf_unref (about->details->background_pixbuf);
+		g_object_unref (G_OBJECT (about->details->background_pixbuf));
 	}
 	
 	g_strfreev (about->details->authors);
@@ -178,7 +178,7 @@ nautilus_about_init (NautilusAbout *about)
 	gtk_signal_connect
 	        (GTK_OBJECT (about),
 	         "close",
-	         GTK_SIGNAL_FUNC (nautilus_about_close), 
+	         G_CALLBACK (nautilus_about_close), 
 	         NULL);
 }
 
@@ -406,8 +406,8 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	g_strfreev (comment_array);
 		
 	/* release the fonts */	
-	gtk_object_unref (GTK_OBJECT(plain_font));
-	gtk_object_unref (GTK_OBJECT(bold_font));
+	g_object_unref (G_OBJECT(plain_font));
+	g_object_unref (G_OBJECT(bold_font));
 }
 
 /* update authors is called to randomize the author array and redraw it */ 
@@ -435,7 +435,7 @@ nautilus_about_update_authors (NautilusAbout *about)
 	/* redraw the authors */
 	plain_font = eel_scalable_font_get_default_font ();
 	draw_author_list (about, about->details->background_pixbuf, plain_font);
-	gtk_object_unref (GTK_OBJECT(plain_font));
+	g_object_unref (G_OBJECT(plain_font));
 	
 	about->details->last_update_time = time (NULL);
 

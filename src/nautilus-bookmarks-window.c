@@ -106,7 +106,7 @@ static void	set_up_close_accelerator      (GtkWidget *window);
  * Return value: A pointer to the new window.
  **/
 GtkWindow *
-create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_source)
+create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_source)
 {
 	GtkWidget *window;
 	GtkWidget *content_area;
@@ -125,7 +125,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	gnome_dialog_set_close (GNOME_DIALOG (window), TRUE);
 	
 	set_up_close_accelerator (window);
-	nautilus_undo_share_undo_manager (GTK_OBJECT (window), undo_manager_source);
+	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "bookmarks", "Nautilus");
 	gtk_widget_set_usize (window, 
 			      BOOKMARKS_WINDOW_MIN_WIDTH, 
@@ -437,7 +437,7 @@ on_row_move (GtkCList *clist,
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
 				   bookmark_list_changed_signalID);
 
-	gtk_object_unref(GTK_OBJECT(bookmark));
+	g_object_unref (G_OBJECT (bookmark));
 }
 
 static void
@@ -495,7 +495,7 @@ update_bookmark_from_text ()
 		gtk_signal_handler_unblock (GTK_OBJECT (bookmarks), 
 					    bookmark_list_changed_signalID);
 
-		gtk_object_unref (GTK_OBJECT (bookmark));
+		g_object_unref (G_OBJECT (bookmark));
 	}
 }
 
@@ -566,8 +566,8 @@ on_window_hide_event (GtkWidget *widget,
 	nautilus_bookmarks_window_save_geometry (GTK_WINDOW (widget));
 
 	/* Disable undo for entry widgets */
-	nautilus_undo_unregister (GTK_OBJECT (name_field));
-	nautilus_undo_unregister (GTK_OBJECT (uri_field));
+	nautilus_undo_unregister (G_OBJECT (name_field));
+	nautilus_undo_unregister (G_OBJECT (uri_field));
 
 	/* restore_geometry only works after window is hidden */
 	gtk_idle_add (restore_geometry, widget);

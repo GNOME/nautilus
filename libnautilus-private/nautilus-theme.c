@@ -575,7 +575,7 @@ theme_list_prepend (GList *theme_list,
 	attributes->preview_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (unscaled_preview_pixbuf,
 								       THEME_PREVIEW_ICON_WIDTH,
 								       THEME_PREVIEW_ICON_HEIGHT);
-	gdk_pixbuf_unref (unscaled_preview_pixbuf);
+	g_object_unref (G_OBJECT (unscaled_preview_pixbuf));
 
 	attributes->builtin = builtin;
 
@@ -721,7 +721,7 @@ attributes_free (gpointer data,
 	g_free (attributes->display_name);
 	g_free (attributes->description);
 	if (attributes->preview_pixbuf != NULL) {
-		gdk_pixbuf_unref (attributes->preview_pixbuf);
+		g_object_unref (G_OBJECT (attributes->preview_pixbuf));
 	}
 }
 

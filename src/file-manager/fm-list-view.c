@@ -392,10 +392,10 @@ fm_list_view_compare_rows (EelCList *clist,
 	file2 = (NautilusFile *) (row2->data);
 
 	if (file1 == NULL) {
-		file1 = gtk_object_get_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY);
+		file1 = g_object_get_data (G_OBJECT (clist), PENDING_USER_DATA_KEY);
 	}
 	if (file2 == NULL) {
-		file2 = gtk_object_get_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY);
+		file2 = g_object_get_data (G_OBJECT (clist), PENDING_USER_DATA_KEY);
 	}
 	
 	list_view = FM_LIST_VIEW (GTK_WIDGET (clist)->parent);
@@ -506,7 +506,7 @@ select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListVie
 	int array_row_index;
 
 	g_assert (EEL_IS_LIST (widget));
-	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
+	g_assert (g_object_get_data (G_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
 		
 	/* build an array of rows, sorted by name */
 	array = make_sorted_row_array (widget);
@@ -535,7 +535,7 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
 	int last_selected_row;
 
 	g_assert (EEL_IS_LIST (widget));
-	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
+	g_assert (g_object_get_data (G_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
 
 	/* build an array of rows */
 	array = make_sorted_row_array (widget);
@@ -1291,12 +1291,12 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	/* Temporarily set user data value as hack for the problem
 	 * that compare_rows is called before the row data can be set.
 	 */
-	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, file);
+	g_object_set_data (G_OBJECT (clist), PENDING_USER_DATA_KEY, file);
 	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
 	new_row = eel_clist_append (clist, text);
 
 	eel_clist_set_row_data (clist, new_row, file);
-	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
+	g_object_set_data (G_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
 
 	/* Mark one column as a link. */
 	eel_list_mark_cell_as_link (list, new_row, get_link_column (list_view));

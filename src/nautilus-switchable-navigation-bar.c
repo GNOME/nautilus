@@ -84,7 +84,7 @@ nautilus_switchable_navigation_bar_class_init (NautilusSwitchableNavigationBarCl
 				    mode_changed),
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__STRING,
-		 G_TYPE_NONE, 1, GTK_TYPE_INT);
+		 G_TYPE_NONE, 1, G_TYPE_INT);
 	
 	object_class->destroy = nautilus_switchable_navigation_bar_destroy;
 

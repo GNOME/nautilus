@@ -179,19 +179,19 @@ nautilus_theme_selector_init (NautilusThemeSelector *theme_selector)
 	theme_selector->details->install_theme_button = gtk_button_new_with_label (_("Add New Theme..."));
 	g_signal_connect (G_OBJECT (theme_selector->details->install_theme_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (install_theme_button_clicked_callback),
+			    G_CALLBACK (install_theme_button_clicked_callback),
 			    theme_selector);
 
 	theme_selector->details->remove_theme_button = gtk_button_new_with_label (_("Remove Theme..."));
 	g_signal_connect (G_OBJECT (theme_selector->details->remove_theme_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (remove_theme_button_clicked_callback),
+			    G_CALLBACK (remove_theme_button_clicked_callback),
 			    theme_selector);
 
 	theme_selector->details->cancel_remove_button = gtk_button_new_with_label (_("Cancel Remove"));
 	g_signal_connect (G_OBJECT (theme_selector->details->cancel_remove_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (cancel_remove_button_clicked_callback),
+			    G_CALLBACK (cancel_remove_button_clicked_callback),
 			    theme_selector);
 
 	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->cancel_remove_button, TRUE, FALSE, 0);
@@ -222,13 +222,13 @@ nautilus_theme_selector_init (NautilusThemeSelector *theme_selector)
 
 	g_signal_connect (G_OBJECT (theme_selector->details->theme_selector),
 			    "selection_changed",
-			    GTK_SIGNAL_FUNC (theme_selector_changed_callback),
+			    G_CALLBACK (theme_selector_changed_callback),
 			    theme_selector);
 
 	theme_selector->details->theme_selector_changed_connection =
 		g_signal_connect (G_OBJECT (theme_selector->details->remove_theme_selector),
 				    "selection_changed",
-				    GTK_SIGNAL_FUNC (remove_theme_selector_changed_callback),
+				    G_CALLBACK (remove_theme_selector_changed_callback),
 				    theme_selector);
 }
 
@@ -259,10 +259,10 @@ file_selection_ok_clicked_callback (GtkWidget *button,
 	g_return_if_fail (GTK_IS_BUTTON (button));
 	g_return_if_fail (GTK_IS_FILE_SELECTION (callback_data));
 
-	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (gtk_object_get_data (GTK_OBJECT (callback_data),
+	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (g_object_get_data (G_OBJECT (callback_data),
 									   THEME_SELECTOR_DATA_KEY)));
 
-	theme_selector = NAUTILUS_THEME_SELECTOR (gtk_object_get_data (GTK_OBJECT (callback_data),
+	theme_selector = NAUTILUS_THEME_SELECTOR (g_object_get_data (G_OBJECT (callback_data),
 								       THEME_SELECTOR_DATA_KEY));
 	
 	selected_path = gtk_file_selection_get_filename (GTK_FILE_SELECTION (callback_data));
@@ -331,18 +331,18 @@ install_theme_button_clicked_callback (GtkWidget *button,
 
 	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (file_selection_dialog));
 
-	gtk_object_set_data (GTK_OBJECT (file_selection_dialog),
+	g_object_set_data (G_OBJECT (file_selection_dialog),
 			     THEME_SELECTOR_DATA_KEY,
 			     callback_data);
 
 	g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (file_selection_dialog)->ok_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (file_selection_ok_clicked_callback),
+			    G_CALLBACK (file_selection_ok_clicked_callback),
 			    file_selection_dialog);
 
 	g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (file_selection_dialog)->cancel_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (file_selection_cancel_clicked_callback),
+			    G_CALLBACK (file_selection_cancel_clicked_callback),
 			    file_selection_dialog);
 
 	gtk_window_set_position (GTK_WINDOW (file_selection_dialog), GTK_WIN_POS_MOUSE);
