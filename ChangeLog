@@ -1,3 +1,32 @@
+2000-05-12  Darin Adler  <darin@eazel.com>
+
+	* components/services/trilobite/src/trilobite-service.c:
+	Format FIXME comments the way check-FIXME.pl recognizes.
+	
+	* libnautilus-extensions/nautilus-file.c: (rename_callback):
+	Added a bug number to a FIXME.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_set_selection): Finished fixing bug 613.
+	I had marked it fixed but missed one FIXME.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize): Added a bug number
+	to a FIXME.
+	(make_properties_from_directory_path),
+	(make_properties_from_xml_node), (make_category_link):
+	Fixed storage leaks I noticed earlier today.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (fm_directory_view_destroy),
+	(notify_selection_change_callback), (display_pending_files),
+	(fm_directory_view_can_accept_item): Fixed bug 440 by removing
+	the hash table that Maciej added. Each NautilusFile is already
+	unique because of how the class works.
+	
+	* src/file-manager/fm-list-view.c: (create_list): Got rid of
+	the FIXME now that Pavel fixed bug 315.
+
 2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* components/services/trilobite/sample/service/Makefile.am 
@@ -11,7 +40,7 @@
 	Implemented the rest of the base object get_* methods. Moved the
 	corba activation into a seperate call. Need to look at the
 	destruction and possible use of bonobo for this sucker
-	(bugzilla.eazel.com 8999 & 900). Also did the destroyer so the
+	(bugzilla.eazel.com 899 & 900). Also did the destroyer so the
 	servers can put themselves down.
 	
 	* components/services/trilobite/sample/service/sample-service-impl.c

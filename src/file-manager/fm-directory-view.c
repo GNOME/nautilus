@@ -95,9 +95,6 @@ struct FMDirectoryViewDetails
 	GList *pending_files_added;
 	GList *pending_files_changed;
 	GList *pending_uris_selected;
-	gboolean have_pending_uris_selected;
-
-	GHashTable *files_by_uri;
 
 	gboolean loading;
 
@@ -172,14 +169,6 @@ static void           unschedule_timeout_display_of_pending_files               
 static void           unschedule_display_of_pending_files                         (FMDirectoryView          *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView          *view);
 static void           show_hidden_files_changed_callback                          (gpointer                  user_data);
-static void           add_nautilus_file_to_uri_map                                (FMDirectoryView          *preferences,
-										   NautilusFile             *file);
-static void           remove_nautilus_file_from_uri_map                           (FMDirectoryView          *preferences,
-										   NautilusFile             *file);
-static void           free_file_by_uri_map_entry                                  (gpointer                  key,
-										   gpointer                  value,
-										   gpointer                  data);
-static void           free_file_by_uri_map                                        (FMDirectoryView          *view);
 static void           get_required_metadata_keys                                  (FMDirectoryView          *view,
 										   GList                   **directory_keys_result,
 										   GList                   **file_keys_result);
@@ -454,8 +443,6 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 {
 	directory_view->details = g_new0 (FMDirectoryViewDetails, 1);
 	
-	directory_view->details->files_by_uri = g_hash_table_new (g_str_hash, g_str_equal);
-
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (directory_view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
@@ -530,8 +517,6 @@ fm_directory_view_destroy (GtkObject *object)
 	}
 
 	unschedule_display_of_pending_files (view);
-
-	free_file_by_uri_map (view);
 
 	g_free (view->details);
 
@@ -723,48 +708,39 @@ notify_location_change_callback (NautilusViewFrame *view_frame,
 }
 
 static void
-g_free_callback (gpointer data, 
-	 gpointer ignore)
-{
-	g_free (data);
-}
-
-static void
 notify_selection_change_callback (NautilusViewFrame *view_frame,
-			    Nautilus_SelectionInfo *selection_context,
-			    FMDirectoryView *directory_view)
+				  Nautilus_SelectionInfo *selection_context,
+				  FMDirectoryView *directory_view)
 {
 	int i;
 	GList *selection;
-	NautilusFile *data;
 
 	selection = NULL;
 
 	if (directory_view->details->loading) {
-		g_list_foreach (directory_view->details->pending_uris_selected, g_free_callback, NULL);
-		g_list_free (directory_view->details->pending_uris_selected);
+		nautilus_g_list_free_deep (directory_view->details->pending_uris_selected);
 		directory_view->details->pending_uris_selected = NULL;
-		directory_view->details->have_pending_uris_selected = TRUE;
 	}
 
 	if (!selection_context->self_originated) {
-		for (i = 0; i < selection_context->selected_uris._length; i++) {
-				
-				
-			if (!directory_view->details->loading) {
-				data = g_hash_table_lookup (directory_view->details->files_by_uri,
-							    selection_context->selected_uris._buffer[i]);				
-				if (data != NULL) {
-					selection = g_list_prepend (selection, data);
+		if (!directory_view->details->loading) {
+			/* If we aren't still loading, set the selection right now. */
+			for (i = 0; i < selection_context->selected_uris._length; i++) {
+				file = nautilus_file_get (selection_context->selected_uris._buffer[i]);
+				if (file != NULL) {
+					selection = g_list_prepend (selection, list);
 				}
-			} else {
+			}
+			
+			fm_directory_view_set_selection (directory_view, selection);
+			g_list_free (selection);
+		} else {
+			/* If we are still loading, add to the list of pending URIs instead. */
+			for (i = 0; i < selection_context->selected_uris._length; i++) {
 				directory_view->details->pending_uris_selected = 
 					g_list_prepend (directory_view->details->pending_uris_selected, 
 							g_strdup (selection_context->selected_uris._buffer[i]));
 			}
-
-			fm_directory_view_set_selection (directory_view, selection);
-			g_list_free (selection);
 		}
 	} 
 }
@@ -838,6 +814,8 @@ display_pending_files (FMDirectoryView *view)
 {
 	GList *files_added, *files_changed, *uris_selected, *p;
 	NautilusFile *file;
+	GList *selection;
+	char *uri;
 
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)) {
@@ -861,8 +839,6 @@ display_pending_files (FMDirectoryView *view)
 	for (p = files_added; p != NULL; p = p->next) {
 		file = p->data;
 		
-		add_nautilus_file_to_uri_map (view, NAUTILUS_FILE (file));
-
 		if (nautilus_directory_contains_file (view->details->model, file)) {
 			gtk_signal_emit (GTK_OBJECT (view),
 					 signals[ADD_FILE],
@@ -873,19 +849,6 @@ display_pending_files (FMDirectoryView *view)
 	for (p = files_changed; p != NULL; p = p->next) {
 		file = p->data;
 		
-		/* FIXME bugzilla.eazel.com 440: 
-		 * what does files_changed mean, do I need to
-		 * modify the files_by_uri hash table here? -mjs
-		 * Yes, the file's name could have been changed.
-		 * But perhaps we can remove the hash table instead
-		 * and leverage the fact that nautilus_file_get
-		 * always returns the same existing file object. -Darin
-		 */
-
-                if (!nautilus_directory_contains_file (view->details->model, file)) {
-			remove_nautilus_file_from_uri_map (view, NAUTILUS_FILE (file));
-                }
-
 		gtk_signal_emit (GTK_OBJECT (view),
 				 signals[FILE_CHANGED],
 				 file);
@@ -894,30 +857,22 @@ display_pending_files (FMDirectoryView *view)
 	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
 
 	if (nautilus_directory_are_all_files_seen (view->details->model)
-	    && view->details->have_pending_uris_selected) {
-		GList *selection;
-		char *uri;
-
+	    && view->details->uris_selected != NULL) {
 		selection = NULL;
 		view->details->pending_uris_selected = NULL;
 		
 		for (p = uris_selected; p != NULL; p = p->next) {
 			uri = p->data;
-
-			file = g_hash_table_lookup (view->details->files_by_uri, uri);
-			
-			selection = g_list_prepend (selection, file);
-
-			g_free (uri);
+			file = nautilus_file_get (uri);
+			if (file != NULL) {
+				selection = g_list_prepend (selection, file);
+			}
 		}
-
-		g_list_free (uris_selected);
+		nautilus_g_list_free_deep (uris_selected);
 
 		fm_directory_view_set_selection (view, selection);
 
 		g_list_free (selection);
-
-		view->details->have_pending_uris_selected = FALSE;		
 	}
 
 	nautilus_file_list_free (files_added);
@@ -2336,63 +2291,6 @@ fm_directory_view_can_accept_item (NautilusIconContainer *container,
 	return !nautilus_file_matches_uri (target_item, item_uri);
 }
 
-
-static void
-add_nautilus_file_to_uri_map (FMDirectoryView *view,
-			      NautilusFile    *file)
-{
-	nautilus_file_ref (file);
-	g_hash_table_insert (view->details->files_by_uri, nautilus_file_get_uri (file), file);
-}
-
-static void
-remove_nautilus_file_from_uri_map (FMDirectoryView *view,
-				   NautilusFile    *file)
-{
-	char *orig_uri_str;
-	char *uri_str;
-	gpointer ignore;
-	
-	uri_str =  nautilus_file_get_uri (file);
-		
-	if (g_hash_table_lookup_extended (view->details->files_by_uri, uri_str, 
-					  (gpointer *) &orig_uri_str, 
-					  &ignore)) {
-		g_hash_table_remove (view->details->files_by_uri, uri_str);
-		g_free (orig_uri_str);
-		nautilus_file_unref (file);
-	}
-
-	g_free (uri_str);
-}
-
-static void
-free_file_by_uri_map_entry (gpointer key, 
-			    gpointer value, 
-			    gpointer data)
-{
-	char *uri_str;
-	NautilusFile *file;
-
-	uri_str = (char *) key;
-	file = NAUTILUS_FILE (value);
-
-	g_free (uri_str);
-	nautilus_file_unref (file);
-
-}
-
-static void
-free_file_by_uri_map (FMDirectoryView *view)
-{
-	g_hash_table_foreach (view->details->files_by_uri,
-			      free_file_by_uri_map_entry,
-			      NULL);
-
-	g_hash_table_destroy (view->details->files_by_uri);
-}
-
-
 /**
  * fm_directory_view_get_context_menu_index:
  * 
@@ -2434,4 +2332,3 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 		return -1;
 	}
 }
-

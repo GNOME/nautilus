@@ -568,15 +568,15 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		/* We have to handle this case because if you pass
 		 * GNOME_VFS_ERROR_MODE_ABORT, you never get the
 		 * error code for a failed rename.
-		 * FIXME: I think this represents a bug in GNOME VFS.
+		 * FIXME: I believe this represents a bug in GNOME VFS.
 		 */
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 	default:
 		break;
 	}
 
-	/* FIXME: Pavel says I should return this, but he promises
-	 * he will fix the API.
+	/* FIXME bugzilla.eazel.com 886: Pavel says I should return
+	 * this, but he promises he will fix the API.
 	 */
 	return 1;
 }

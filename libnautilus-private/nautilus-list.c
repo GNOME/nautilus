@@ -2355,37 +2355,32 @@ nautilus_list_get_selection (NautilusList *list)
 void
 nautilus_list_set_selection (NautilusList *list, GList *selection)
 {
-	GList *p;
 	gboolean selection_changed;
-	gboolean select_this;
+	GHashTable *hash;
+	GList *p;
 	int i;
+	GtkCListRow *row;
+	gpointer row_data;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
 
-	/* FIXME bugzilla.eazel.com 613: 
-	   Selecting n items in an m-element container is an
-	   O(m*n) task using this algorithm, making it quadratic if
-	   you select them all with this method, which actually
-	   happens if you select all in list view and switch to icon
-	   view. We should build a hash table from the list first;
-	   then we can get O(m+n) performance. */
-
 	selection_changed = FALSE;
 
+	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+	for (p = selection; p != NULL; p = p->next) {
+		g_hash_table_insert (hash, p->data, p->data);
+	}
 	for (p = GTK_CLIST (list)->row_list, i = 0; p != NULL; p = p->next, i++) {
-		GtkCListRow *row;
-		gpointer row_data;
-		
 		row = p->data;
 		row_data = row->data;
 
-		select_this = (NULL != g_list_find (selection, row_data));
-
-		selection_changed |= row_set_selected (list, i, row_data, select_this);
+		selection_changed |= row_set_selected
+			(list, i, row_data,
+			 g_hash_table_lookup (hash, row_data) != NULL);
 	}
+	g_hash_table_destroy (hash);
 
 	if (selection_changed) {
 		emit_selection_changed (list);
 	}
 }
-

@@ -302,10 +302,6 @@ create_list (FMListView *list_view)
 	 * justification, editable or not, type/format,
 	 * not being usable as a sort order criteria, etc.
 	 * for now just set up name, min, max and current width
-	 * 
-	 * FIXME bugzilla.eazel.com 315:
-	 * the icon column should be set to the width of an icon at a given
-	 * zoom level or should be resizable when using nautilus theme icons
 	 */	
 	const char * const titles[] = {
 		NULL,		/* Icon */
@@ -507,12 +503,9 @@ fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 	list_view = FM_LIST_VIEW (view);
 	old_level = fm_list_view_get_zoom_level (list_view);
 
-	if (zoom_increment < 0 && 0 - zoom_increment > old_level)
-	{
+	if (zoom_increment < 0 && 0 - zoom_increment > old_level) {
 		new_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
-	} 
-	else
-	{
+	} else {
 		new_level = MIN (old_level + zoom_increment,
 				 NAUTILUS_ZOOM_LEVEL_LARGEST);
 	}
@@ -710,15 +703,16 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
-	if (new_level == fm_list_view_get_zoom_level (list_view))
+	if (new_level == fm_list_view_get_zoom_level (list_view)) {
 		return;
+	}
 	
 	list_view->details->zoom_level = new_level;
-	nautilus_directory_set_integer_metadata (
-		fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view)), 
-		NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-		list_view->details->default_zoom_level,
-		new_level);
+	nautilus_directory_set_integer_metadata
+		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view)), 
+		 NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
+		 list_view->details->default_zoom_level,
+		 new_level);
 
 	/* Reset default to new level; this way any change in zoom level
 	 * will "stick" until the user visits a directory that had its zoom
@@ -729,28 +723,31 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	clist = GTK_CLIST (get_list (list_view));
 	
 	gtk_clist_freeze (clist);
+
 	fm_list_view_reset_row_height (list_view);
 
 	new_width = fm_list_view_get_icon_size (list_view);
 	
-	gtk_clist_set_column_min_width (GTK_CLIST (get_list (list_view)),
-				  LIST_VIEW_COLUMN_ICON,
-				  fm_list_view_get_icon_size (list_view));
-	gtk_clist_set_column_max_width (GTK_CLIST (get_list (list_view)),
-				  LIST_VIEW_COLUMN_ICON,
-				  fm_list_view_get_icon_size (list_view));
-	gtk_clist_set_column_min_width (GTK_CLIST (get_list (list_view)),
-				  LIST_VIEW_COLUMN_ICON,
-				  fm_list_view_get_icon_size (list_view));
-	gtk_clist_set_column_width (GTK_CLIST (get_list (list_view)),
-				  LIST_VIEW_COLUMN_ICON,
-				  fm_list_view_get_icon_size (list_view));
-
-	clist = GTK_CLIST (get_list (list_view));
-
+	/* This little dance is necessary due to bugs in GtkCList.
+	 * Must set min, then max, then min, then actual width.
+	 */
+	gtk_clist_set_column_min_width (clist,
+					LIST_VIEW_COLUMN_ICON,
+					fm_list_view_get_icon_size (list_view));
+	gtk_clist_set_column_max_width (clist,
+					LIST_VIEW_COLUMN_ICON,
+					fm_list_view_get_icon_size (list_view));
+	gtk_clist_set_column_min_width (clist,
+					LIST_VIEW_COLUMN_ICON,
+					fm_list_view_get_icon_size (list_view));
+	gtk_clist_set_column_width (clist,
+				    LIST_VIEW_COLUMN_ICON,
+				    fm_list_view_get_icon_size (list_view));
+	
 	for (row = 0; row < clist->rows; ++row) {
 		install_row_images (list_view, row);
 	}
+
 	gtk_clist_thaw (clist);
 }
 

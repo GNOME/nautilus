@@ -218,7 +218,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 	
 	/* add the title label */
 	property_browser->details->title_label = gtk_label_new  (_("Select A Category:"));
-	/* FIXME: Hardcoded font. */
+	/* FIXME bugzilla.eazel.com 667: Hardcoded font. */
 	nautilus_gtk_widget_set_font_by_name(property_browser->details->title_label, "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); 	
   	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
@@ -1202,11 +1202,16 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 			gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
 			gtk_widget_show(label);
 			
-			/* FIXME: g_strdup leaks. */
-			gtk_signal_connect (GTK_OBJECT (event_box), "button_press_event", 
-					    GTK_SIGNAL_FUNC(element_clicked_callback),
-					    g_strdup(current_file_info->name));
-                        gtk_object_set_user_data(GTK_OBJECT(event_box), property_browser);
+                        gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
+			gtk_signal_connect_full
+				(GTK_OBJECT (event_box),
+				 "button_press_event", 
+				 GTK_SIGNAL_FUNC (element_clicked_callback),
+				 NULL,
+				 g_strdup (current_file_info->name),
+				 (GtkDestroyNotify) g_free,
+				 FALSE,
+				 FALSE);
 
 			add_to_content_table(property_browser, temp_vbox, index++, 2);				
 		}
@@ -1284,11 +1289,17 @@ make_properties_from_xml_node(NautilusPropertyBrowser *property_browser, xmlNode
 			background = nautilus_get_widget_background (GTK_WIDGET (event_box));
 			nautilus_background_set_color (background, color_str);	
 			
-			/* FIXME: g_strdup leaks. */
-			gtk_signal_connect (GTK_OBJECT (event_box), "button_press_event", 
-					    GTK_SIGNAL_FUNC (element_clicked_callback),
-					    g_strdup (color_str));
-                	gtk_object_set_user_data(GTK_OBJECT(event_box), property_browser);
+                	gtk_object_set_user_data (GTK_OBJECT (event_box), property_browser);
+			gtk_signal_connect_full
+				(GTK_OBJECT (event_box),
+				 "button_press_event", 
+				 GTK_SIGNAL_FUNC (element_clicked_callback),
+				 NULL,
+				 g_strdup (color_str),
+				 (GtkDestroyNotify) g_free,
+				 FALSE,
+				 FALSE);
+
 			add_to_content_table(property_browser, frame, index++, 12);				
 		}
 		
@@ -1341,11 +1352,16 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* 
 	gtk_widget_show(temp_box);
 	
 	/* add a signal to handle clicks */
-	/* FIXME: This g_strdup leaks. */
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			    GTK_SIGNAL_FUNC (category_clicked_callback),
-			    g_strdup (name));
 	gtk_object_set_user_data (GTK_OBJECT(button), property_browser);
+	gtk_signal_connect_full
+		(GTK_OBJECT (button),
+		 "clicked",
+		 GTK_SIGNAL_FUNC (category_clicked_callback),
+		 NULL,
+		 g_strdup (name),
+		 (GtkDestroyNotify) g_free,
+		 FALSE,
+		 FALSE);
 	
 	g_free (file_name);
 }

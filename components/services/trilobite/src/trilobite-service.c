@@ -349,7 +349,7 @@ trilobite_service_initialize (TrilobiteService *trilobite)
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
 
-	/* FIXME: bugzilla.eazel.com 854
+	/* FIXME bugzilla.eazel.com 854:
 	   how to initialize the values */
 	trilobite->private = g_new0 (TrilobiteServicePrivate,1);
 	trilobite->private->service_name = g_strdup ("Default");
@@ -399,7 +399,7 @@ trilobite_service_get_type (void)
 }
 
 /*
-  FIXME: bugzilla.eazel.com 854
+  FIXME bugzilla.eazel.com 854:
   determine whether we want to set the name/version/whatnot in the _new(...) call
   or using _set_name(...) calls.
  */
