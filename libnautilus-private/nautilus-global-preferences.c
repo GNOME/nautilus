@@ -371,7 +371,7 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 	  PREFERENCE_BOOLEAN,
@@ -428,7 +428,7 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
+	  GINT_TO_POINTER (TRUE)
 	},
 
 	/* Home URI */

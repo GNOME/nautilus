@@ -145,9 +145,11 @@
       <type>string</type>
       <default>default</default>
       <locale name="C">
-         <short>Current Nautilus theme</short>
+         <short>Current Nautilus theme (deprecated)</short>
          <long>
           Name of the Nautilus theme to use.
+	  This has been deprecated as of Nautilus 2.2.
+	  Please use the icon theme instead.
          </long>
       </locale>
     </schema>
@@ -301,21 +303,6 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/nautilus/preferences/can_add_content</key>
-      <applyto>/apps/nautilus/preferences/can_add_content</applyto>
-      <owner>nautilus</owner>
-      <type>bool</type>
-      <default>false</default>
-      <locale name="C">
-         <short>User can add patterns to pattern dialog</short>
-	 <long>
-	  If set to true, then the user can add their own patterns,
-	  emblems and colors to the pattern dialog.
-         </long>
-      </locale>
-    </schema>
-
-    <schema>
       <key>/schemas/apps/nautilus/preferences/search_bar_type</key>
       <applyto>/apps/nautilus/preferences/search_bar_type</applyto>
       <owner>nautilus</owner>
@@ -349,31 +336,17 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/nautilus/preferences/window_always_new</key>
-      <applyto>/apps/nautilus/preferences/window_always_new</applyto>
-      <owner>nautilus</owner>
-      <type>bool</type>
-      <default>false</default>
-      <locale name="C">
-         <short>Bring up a new window for every opened file</short>
-	 <long>
-	  If set to true, then nautilus will bring up a new nautilus
-	  window by default whenever an item is opened.
-	</long>
-      </locale>
-    </schema>
-
-    <schema>
       <key>/schemas/apps/nautilus/preferences/background_set</key>
       <applyto>/apps/nautilus/preferences/background_set</applyto>
       <owner>nautilus</owner>
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-      <short>Custom Background Set</short>
-      <long>Whether a custom default directory background has been set.</long>
+         <short>Custom Background Set</short>
+         <long>Whether a custom default directory background has been set.</long>
       </locale>
     </schema>
+    
     <schema>
       <key>/schemas/apps/nautilus/preferences/background_color</key>
       <applyto>/apps/nautilus/preferences/background_color</applyto>
@@ -381,10 +354,11 @@
       <type>string</type>
       <default>#ffffff</default>
       <locale name="C">
-      <short>Default Background Color</short>
-      <long>Filename for the default directory background.  Only used if background_set is true.</long>
+         <short>Default Background Color</short>
+         <long>Filename for the default directory background.  Only used if background_set is true.</long>
       </locale>
     </schema>
+    
     <schema>
       <key>/schemas/apps/nautilus/preferences/background_filename</key>
       <applyto>/apps/nautilus/preferences/background_filename</applyto>
@@ -392,8 +366,8 @@
       <type>string</type>
       <default></default>
       <locale name="C">
-      <short>Default Background Filename</short>
-      <long>Filename for the default directory background.  Only used if background_set is true.</long>
+         <short>Default Background Filename</short>
+         <long>Filename for the default directory background.  Only used if background_set is true.</long>
       </locale>
     </schema>
 
@@ -405,10 +379,11 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-      <short>Custom Side Pane Background Set</short>
-      <long>Whether a custom default side pane background has been set.</long>
+        <short>Custom Side Pane Background Set</short>
+        <long>Whether a custom default side pane background has been set.</long>
       </locale>
     </schema>
+    
     <schema>
       <key>/schemas/apps/nautilus/preferences/side_pane_background_color</key>
       <applyto>/apps/nautilus/preferences/side_pane_background_color</applyto>
@@ -416,10 +391,11 @@
       <type>string</type>
       <default>#ffffff</default>
       <locale name="C">
-      <short>Default Side Pane Background Color</short>
-      <long>Filename for the default side pane background.  Only used if side_pane_background_set is true.</long>
+         <short>Default Side Pane Background Color</short>
+         <long>Filename for the default side pane background.  Only used if side_pane_background_set is true.</long>
       </locale>
     </schema>
+    
     <schema>
       <key>/schemas/apps/nautilus/preferences/side_pane_background_filename</key>
       <applyto>/apps/nautilus/preferences/side_pane_background_filename</applyto>
@@ -427,12 +403,27 @@
       <type>string</type>
       <default></default>
       <locale name="C">
-      <short>Default Side Pane Background Filename</short>
-      <long>Filename for the default side pane background.  Only used if side_pane_background_set is true.</long>
+         <short>Default Side Pane Background Filename</short>
+         <long>Filename for the default side pane background.  Only used if side_pane_background_set is true.</long>
       </locale>
     </schema>
 
-
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/default_folder_viewer</key>
+      <applyto>/apps/nautilus/preferences/default_folder_viewer</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>icon_view</default>
+      <locale name="C">
+         <short>Default folder viewer</short>
+         <long>
+	 When a folder is visited this viewer is used unless you have selected
+	 another view for that particular folder. Possible values are list_view
+	 and icon_view.
+         </long>
+      </locale>
+    </schema>
+    
     <!-- Icon View -->
 
     <schema>
@@ -450,22 +441,6 @@
           the zoom level.  Possible values are:
 	  size, type, date_modified, date_changed, date_accessed, owner,
 	  group, permissions, octal_permissions and mime_type
-         </long>
-      </locale>
-    </schema>
-
-    <schema>
-      <key>/schemas/apps/nautilus/icon_view/captions</key>
-      <applyto>/apps/nautilus/icon_view/captions</applyto>
-      <owner>nautilus</owner>
-      <type>list</type>
-      <list_type>string</list_type>
-      <default>[size,date_modified,type]</default>
-      <locale name="C">
-         <short>Captions to show in Icon view</short>
-         <long>
-	   The further you zoom in, more information is shown for each icon.
-	   This controls the order to reveal the information.
          </long>
       </locale>
     </schema>
@@ -513,6 +488,20 @@
          <short>Use tighter Layout in new windows</short>
          <long>
            If true, icons will be layed out tighter by default in new windows.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/icon_view/default_use_manual_layout</key>
+      <applyto>/apps/nautilus/icon_view/default_use_manual_layout</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Use manual layout new windows</short>
+         <long>
+           If true, new windows will use manual layout by default.
          </long>
       </locale>
     </schema>
@@ -690,7 +679,7 @@
          <short>Only show directories in the tree sidebar</short>
          <long>
            If set to true, Nautilus will show only show directories
-           in the tree sidebar.Otherwise it will show both directories
+           in the tree sidebar. Otherwise it will show both directories
 	   and files.
          </long>
       </locale>
