@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-07-15 23:31+0200\n"
-"PO-Revision-Date: 2001-07-15 23:33+0200\n"
+"POT-Creation-Date: 2001-07-23 01:15+0200\n"
+"PO-Revision-Date: 2001-07-23 01:16+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -150,7 +150,7 @@ msgid "hardware view"
 msgstr "maskinvarevisning"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:712
-#: components/music/nautilus-music-view.c:1530
+#: components/music/nautilus-music-view.c:1556
 msgid "Previous"
 msgstr "Forrige"
 
@@ -160,7 +160,7 @@ msgid "Home"
 msgstr "Hjem"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:730
-#: components/music/nautilus-music-view.c:1586
+#: components/music/nautilus-music-view.c:1612
 msgid "Next"
 msgstr "Neste"
 
@@ -1614,21 +1614,21 @@ msgstr "Samplerate"
 msgid "Set Cover Image"
 msgstr "Sett bilde for omslag"
 
-#: components/music/nautilus-music-view.c:697
+#: components/music/nautilus-music-view.c:723
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil."
 
-#: components/music/nautilus-music-view.c:699
-#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1311
+#: components/music/nautilus-music-view.c:725
+#: src/nautilus-property-browser.c:1061 src/nautilus-property-browser.c:1314
 msgid "Not an Image"
 msgstr "Ikke et bilde"
 
-#: components/music/nautilus-music-view.c:747
+#: components/music/nautilus-music-view.c:773
 msgid "Select an image file for the album cover:"
 msgstr "Velg en bildefil for plateomslaget:"
 
-#: components/music/nautilus-music-view.c:1181
+#: components/music/nautilus-music-view.c:1207
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. This is "
 "because the Enable sound server startup setting in the Sound section of the "
@@ -1637,12 +1637,12 @@ msgstr ""
 "Beklager, men musikkvisning er ute av stand til å spille av lyd akkurat nå. "
 "Årsaken er at oppstart av lydtjener er slått av under lyd i kontrollsenteret."
 
-#: components/music/nautilus-music-view.c:1184
-#: components/music/nautilus-music-view.c:1196
+#: components/music/nautilus-music-view.c:1210
+#: components/music/nautilus-music-view.c:1222
 msgid "Unable to Play File"
 msgstr "Kan ikke spille fil"
 
-#: components/music/nautilus-music-view.c:1192
+#: components/music/nautilus-music-view.c:1218
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. Either "
 "another program is using or blocking the sound card, or your sound card is "
@@ -1654,27 +1654,27 @@ msgstr ""
 "konfigurert riktig. Prøv å avslutte alle applikasjoner som kan blokkere "
 "lydkortet."
 
-#: components/music/nautilus-music-view.c:1217
+#: components/music/nautilus-music-view.c:1243
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr "Beklager, men musikkvisning kan ikke spille av eksterne filer ennå."
 
-#: components/music/nautilus-music-view.c:1218
+#: components/music/nautilus-music-view.c:1244
 msgid "Can't Play Remote Files"
 msgstr "Kunne ikke spille eksterne filer"
 
-#: components/music/nautilus-music-view.c:1504
+#: components/music/nautilus-music-view.c:1530
 msgid "Drag to seek within track"
 msgstr "Dra for å søke i et spor"
 
-#: components/music/nautilus-music-view.c:1544
+#: components/music/nautilus-music-view.c:1570
 msgid "Play"
 msgstr "Spill"
 
-#: components/music/nautilus-music-view.c:1558
+#: components/music/nautilus-music-view.c:1584
 msgid "Pause"
 msgstr "Pause"
 
-#: components/music/nautilus-music-view.c:1572
+#: components/music/nautilus-music-view.c:1598
 #: libnautilus-private/nautilus-file-operations.c:964
 #: libnautilus-private/nautilus-file-operations.c:979
 #: libnautilus-private/nautilus-file-operations.c:998
@@ -1682,24 +1682,24 @@ msgstr "Pause"
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1698
+#: components/music/nautilus-music-view.c:1724
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Beklager, en feil oppsto under lesing av %s."
 
-#: components/music/nautilus-music-view.c:1699
+#: components/music/nautilus-music-view.c:1725
 msgid "Can't Read Folder"
 msgstr "Kan ikke lese mappe"
 
-#: components/music/nautilus-music-view.c:1771
+#: components/music/nautilus-music-view.c:1797
 msgid "Stereo"
 msgstr "Stereo"
 
-#: components/music/nautilus-music-view.c:1771
+#: components/music/nautilus-music-view.c:1797
 msgid "Mono"
 msgstr "Mono"
 
-#: components/music/nautilus-music-view.c:1813
+#: components/music/nautilus-music-view.c:1839
 #, c-format
 msgid "%s - %s"
 msgstr "%s - %s"
@@ -2659,6 +2659,10 @@ msgstr "Tahoe"
 msgid "This theme uses photo-realistic folders."
 msgstr "Dette temaet bruker fotorealistiske mapper."
 
+#: libnautilus-private/nautilus-customization-data.c:356
+msgid "reset"
+msgstr "nullstill"
+
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-private/nautilus-druid-page-eazel.c:381
 msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
@@ -2888,11 +2892,9 @@ msgstr ""
 #: libnautilus-private/nautilus-file.c:4137
 #, c-format
 msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell aaron@eazel."
-"com"
-msgstr ""
-"Ingen beskrivelse funnet for MIME-type \"%s\" (fil er \"%s\"), si ifra til "
-"aaron@eazel.com"
+"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
+"gnome-vfs mailing list."
+msgstr "Ingen beskrivelse funnet for MIME-type \"%s\" (fil \"%s\"), si i fra til gnome-vfs e-post listen."
 
 #: libnautilus-private/nautilus-file.c:4151
 msgid "link"
@@ -4083,7 +4085,7 @@ msgstr "ingen"
 msgid " -_,;.?/&"
 msgstr "-_,;.?/&"
 
-#: libnautilus-private/nautilus-icon-dnd.c:755
+#: libnautilus-private/nautilus-icon-dnd.c:769
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -4093,7 +4095,7 @@ msgstr ""
 "plassering og la oppføringen bli hvor du slapp den? Dette vil ødelegge den "
 "lagrede manuelle plasseringen."
 
-#: libnautilus-private/nautilus-icon-dnd.c:759
+#: libnautilus-private/nautilus-icon-dnd.c:773
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -4103,7 +4105,7 @@ msgstr ""
 "plassering og la disse oppføringene bli hvor du slapp dem? Dette vil "
 "ødelegge den lagrede manuelle plasseringen."
 
-#: libnautilus-private/nautilus-icon-dnd.c:765
+#: libnautilus-private/nautilus-icon-dnd.c:779
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -4111,7 +4113,7 @@ msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
 "plassering og la denne oppføringen bli hvor du slapp den?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:768
+#: libnautilus-private/nautilus-icon-dnd.c:782
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -4119,11 +4121,11 @@ msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
 "plassering og la disse oppføringene bli hvor du slapp dem?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:773
+#: libnautilus-private/nautilus-icon-dnd.c:787
 msgid "Switch to Manual Layout?"
 msgstr "Bytt til manuell plassering?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:774
+#: libnautilus-private/nautilus-icon-dnd.c:788
 msgid "Switch"
 msgstr "Bytt"
 
@@ -4999,14 +5001,14 @@ msgstr "Bakgrunn"
 msgid "%s's Home"
 msgstr "Hjem til %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1266 src/nautilus-sidebar.c:1484
+#: src/file-manager/fm-desktop-icon-view.c:1266 src/nautilus-sidebar.c:1493
 msgid "Empty Trash..."
 msgstr "Tøm søppelkurv..."
 
 #: src/file-manager/fm-desktop-icon-view.c:1268
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/nautilus-sidebar.c:1485
+#: src/nautilus-sidebar.c:1494
 msgid "Empty Trash"
 msgstr "Tøm søppelkurv"
 
@@ -6240,7 +6242,7 @@ msgstr ""
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:542
+#: src/nautilus-sidebar.c:544
 msgid "Reset Background"
 msgstr "Nulltill bakgrunn"
 
@@ -7330,110 +7332,110 @@ msgstr "Legg til..."
 msgid "Remove..."
 msgstr "Fjern..."
 
-#: src/nautilus-property-browser.c:877
+#: src/nautilus-property-browser.c:880
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Beklager, men mønster %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:878 src/nautilus-property-browser.c:907
+#: src/nautilus-property-browser.c:881 src/nautilus-property-browser.c:910
 msgid "Couldn't delete pattern"
 msgstr "Kunne ikke slette mønster"
 
-#: src/nautilus-property-browser.c:906
+#: src/nautilus-property-browser.c:909
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Beklager, men emblem %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:942
+#: src/nautilus-property-browser.c:945
 msgid "Create a New Emblem:"
 msgstr "Lag et nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:947
+#: src/nautilus-property-browser.c:950
 msgid "Keyword:"
 msgstr "Nøkkelord:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:960
+#: src/nautilus-property-browser.c:963
 msgid "Image:"
 msgstr "Bilde:"
 
-#: src/nautilus-property-browser.c:964
+#: src/nautilus-property-browser.c:967
 msgid "Select an image file for the new emblem:"
 msgstr "Velg en bildefil for det nye emblemet:"
 
-#: src/nautilus-property-browser.c:991
+#: src/nautilus-property-browser.c:994
 msgid "Create a New Color:"
 msgstr "Lag en ny farge:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:996
+#: src/nautilus-property-browser.c:999
 msgid "Color name:"
 msgstr "Fargenavn:"
 
-#: src/nautilus-property-browser.c:1007
+#: src/nautilus-property-browser.c:1010
 msgid "Color value:"
 msgstr "Fargeverdi:"
 
-#: src/nautilus-property-browser.c:1043
+#: src/nautilus-property-browser.c:1046
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Beklager, men \"%s\" er ikke et gyldig filnavn."
 
-#: src/nautilus-property-browser.c:1045
+#: src/nautilus-property-browser.c:1048
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Beklager, men du oppga ikke et gyldig filnavn."
 
-#: src/nautilus-property-browser.c:1047 src/nautilus-property-browser.c:1090
+#: src/nautilus-property-browser.c:1050 src/nautilus-property-browser.c:1093
 msgid "Couldn't install pattern"
 msgstr "Kunne ikke installere mønster"
 
-#: src/nautilus-property-browser.c:1058
+#: src/nautilus-property-browser.c:1061
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Beklager, men du kan ikke erstatte nullstill-bildet."
 
-#: src/nautilus-property-browser.c:1089
+#: src/nautilus-property-browser.c:1092
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Beklager, men mønster %s kunne ikke installeres."
 
-#: src/nautilus-property-browser.c:1112
+#: src/nautilus-property-browser.c:1115
 msgid "Select an image file to add as a pattern:"
 msgstr "Velg en bildefil som skal legges til som mønster:"
 
-#: src/nautilus-property-browser.c:1171
+#: src/nautilus-property-browser.c:1174
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Beklager, men du må spesifisere et navn for den nye fargen."
 
-#: src/nautilus-property-browser.c:1172
+#: src/nautilus-property-browser.c:1175
 msgid "Couldn't install color"
 msgstr "Kunne ikke installere farge"
 
-#: src/nautilus-property-browser.c:1228
+#: src/nautilus-property-browser.c:1231
 msgid "Select a color to add:"
 msgstr "Velg en farge å legge til:"
 
-#: src/nautilus-property-browser.c:1310
+#: src/nautilus-property-browser.c:1313
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil!"
 
-#: src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1331
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Beklager, men du må spesifisere et navn for det nye emblemet."
 
-#: src/nautilus-property-browser.c:1329 src/nautilus-property-browser.c:1332
-#: src/nautilus-property-browser.c:1336 src/nautilus-property-browser.c:1365
+#: src/nautilus-property-browser.c:1332 src/nautilus-property-browser.c:1335
+#: src/nautilus-property-browser.c:1339 src/nautilus-property-browser.c:1368
 msgid "Couldn't install emblem"
 msgstr "Kunne ikke installere emblem"
 
-#: src/nautilus-property-browser.c:1331
+#: src/nautilus-property-browser.c:1334
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Beklager, men nøkkelord for emblemer kan kun inneholde bokstaver og tall."
 
-#: src/nautilus-property-browser.c:1334
+#: src/nautilus-property-browser.c:1337
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7442,64 +7444,64 @@ msgstr ""
 "Beklager, men \"%s\" er et eksisterende nøkkelord. Vennligst velg et annet "
 "navn for det."
 
-#: src/nautilus-property-browser.c:1364
+#: src/nautilus-property-browser.c:1367
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Beklager, men bildet på %s kunne ikke installeres som et emblem."
 
-#: src/nautilus-property-browser.c:2023
+#: src/nautilus-property-browser.c:2025
 msgid "Select A Category:"
 msgstr "Velg en kategori:"
 
-#: src/nautilus-property-browser.c:2031 src/nautilus-theme-selector.c:193
+#: src/nautilus-property-browser.c:2033 src/nautilus-theme-selector.c:193
 msgid "Cancel Remove"
 msgstr "Avbryt fjern"
 
-#: src/nautilus-property-browser.c:2036
+#: src/nautilus-property-browser.c:2038
 msgid "Add a New Pattern..."
 msgstr "Legg til et nytt mønster..."
 
-#: src/nautilus-property-browser.c:2039
+#: src/nautilus-property-browser.c:2041
 msgid "Add a New Color..."
 msgstr "Legg til en ny farge..."
 
-#: src/nautilus-property-browser.c:2042
+#: src/nautilus-property-browser.c:2044
 msgid "Add a New Emblem..."
 msgstr "Legg til et nytt emblem..."
 
-#: src/nautilus-property-browser.c:2065
+#: src/nautilus-property-browser.c:2067
 msgid "Click on a pattern to remove it"
 msgstr "Klikk på et mønster for å fjerne det."
 
-#: src/nautilus-property-browser.c:2068
+#: src/nautilus-property-browser.c:2070
 msgid "Click on a color to remove it"
 msgstr "Klikk på en farge for å fjerne den"
 
-#: src/nautilus-property-browser.c:2071
+#: src/nautilus-property-browser.c:2073
 msgid "Click on an emblem to remove it"
 msgstr "Klikk på et emblem for å fjerne den"
 
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2082
 msgid "Patterns:"
 msgstr "Mønstre:"
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2085
 msgid "Colors:"
 msgstr "Farger:"
 
-#: src/nautilus-property-browser.c:2086
+#: src/nautilus-property-browser.c:2088
 msgid "Emblems:"
 msgstr "Emblemer:"
 
-#: src/nautilus-property-browser.c:2105
+#: src/nautilus-property-browser.c:2107
 msgid "Remove a Pattern..."
 msgstr "Fjern et mønster..."
 
-#: src/nautilus-property-browser.c:2108
+#: src/nautilus-property-browser.c:2110
 msgid "Remove a Color..."
 msgstr "Fjern en farge..."
 
-#: src/nautilus-property-browser.c:2111
+#: src/nautilus-property-browser.c:2113
 msgid "Remove an Emblem..."
 msgstr "Fjern et emblem..."
 
@@ -8093,7 +8095,7 @@ msgstr ""
 "Vennligst gå til http://www.eazel.com/feedback.html for å gi "
 "tilbakemeldinger, kommentarer og forslag."
 
-#: src/nautilus-sidebar.c:722
+#: src/nautilus-sidebar.c:724
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -8101,11 +8103,11 @@ msgstr ""
 "Du kan ikke tilegne mer enn ett egendefinert ikon om gangen! Vennligst dra "
 "kun ett bilde for å bestemme egendefinert ikon."
 
-#: src/nautilus-sidebar.c:724
+#: src/nautilus-sidebar.c:726
 msgid "More Than One Image"
 msgstr "Mer enn ett bilde"
 
-#: src/nautilus-sidebar.c:743
+#: src/nautilus-sidebar.c:745
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -8113,11 +8115,11 @@ msgstr ""
 "Filen du slapp er ikke lokal. Du kan kun bruke lokale bilder som "
 "egendefinerte ikoner."
 
-#: src/nautilus-sidebar.c:745
+#: src/nautilus-sidebar.c:747
 msgid "Local Images Only"
 msgstr "Kun lokale bilder"
 
-#: src/nautilus-sidebar.c:750
+#: src/nautilus-sidebar.c:752
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -8125,17 +8127,17 @@ msgstr ""
 "Filen du slapp er ikke et bilde. Du kan kun bruke lokale bilder som "
 "egendefinerte ikoner."
 
-#: src/nautilus-sidebar.c:752
+#: src/nautilus-sidebar.c:754
 msgid "Images Only"
 msgstr "Kun bilder"
 
-#: src/nautilus-sidebar.c:1340
+#: src/nautilus-sidebar.c:1349
 #, c-format
 msgid "Open with %s"
 msgstr "Åpne med %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1376
+#: src/nautilus-sidebar.c:1385
 msgid "Open with..."
 msgstr "Åpne med..."
 
