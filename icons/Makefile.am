@@ -171,8 +171,6 @@ icon_DATA =\
 	novice-selected.png \
 	rightarrow.png \
 	search.png \
-	tableft.png \
-	tabright.png \
 	temp-home.png \
 	theme_preview.png \
 	thumbnail_frame.aa.png \
