@@ -120,6 +120,10 @@ module Trilobite {
 			/* Called when dependency check is being handled */
 			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
 
+			/* Called when a package is being file conflict checked */
+			/* FIXME: bugzilla.eazel.com 3459 */
+			oneway void file_conflict_check (in PackageDataStruct package);
+
 			/* Called after download is complete, and before the (un)install begins.
 			   Typically while heating up RPM */
 			boolean preflight_check (in string xml_packages,
@@ -163,6 +167,7 @@ module Trilobite {
 		};
 
 		interface Install : Bonobo::Unknown {
+			attribute boolean debug;
 			attribute boolean verbose;     /* Mucho log output */
 			attribute boolean silent;      /* Minimal log output */
 			attribute boolean test_mode;   /* dry run, do not install, but act as if... */
@@ -174,6 +179,8 @@ module Trilobite {
 
 			attribute string server;  /* server to use for both file and package list download */
 			attribute string username; 
+			attribute string cgi;
+			attribute boolean auth; 
 			attribute long server_port;   /*  */
 
 			attribute string log_file;  /* where to put the logfile (otherwise it blurps to stdout */

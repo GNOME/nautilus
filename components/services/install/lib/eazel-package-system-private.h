@@ -64,6 +64,9 @@ typedef void (*EazelPackageSytemUninstallFunc) (EazelPackageSystem*,
 typedef void (*EazelPackageSytemVerifyFunc) (EazelPackageSystem*, 
 					     const char*,
 					     GList*);
+typedef int (*EazelPackageSystemCompareVersionFunc) (EazelPackageSystem*, 
+						     const char *,
+						     const char *);
 
 struct _EazelPackageSystemPrivate {	
 	EazelPackageSytemLoadPackageFunc load_package;
@@ -71,6 +74,7 @@ struct _EazelPackageSystemPrivate {
 	EazelPackageSytemInstallFunc install;
 	EazelPackageSytemUninstallFunc uninstall;
 	EazelPackageSytemVerifyFunc verify;
+	EazelPackageSystemCompareVersionFunc compare_version;
 
 	EazelPackageSystemDebug debug;
 };

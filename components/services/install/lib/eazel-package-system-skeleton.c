@@ -95,6 +95,18 @@ eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system,
 	/* Code Here */
 }
 
+static int
+eazel_package_system_skeleton_compare_version (EazelPackageSystem *system,
+					       const char *a,
+					       const char *b)
+{
+	g_assert (system);
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
+	trilobite_debug ("eazel_package_system_skeleton_compare_version");
+	/* Code Here */
+	return 0;
+}
+
 
 /*****************************************
   GTK+ object stuff
@@ -193,6 +205,9 @@ eazel_package_system_implementation (GList *dbpaths)
 
 	result->private->verify
 		= (EazelPackageSytemVerifyFunc)eazel_package_system_skeleton_verify;
+
+	result->private->compare_version
+		= (EazelPackageSystemCompareVersionFunc)eazel_package_system_skeleton_compare_version;
 
 	return result;
 }

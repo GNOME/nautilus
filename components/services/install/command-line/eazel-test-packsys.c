@@ -33,6 +33,17 @@
 #define NEEDED_BY_MANY "glibc"
 
 static void
+test_version_compare (EazelPackageSystem *packsys)
+{
+	g_message ("version compare 1 is %s",
+		   eazel_package_system_compare_version (packsys, "1.0", "1.1") < 0 ? "ok" : "FAILED");
+	g_message ("version compare 2 is %s",
+		   eazel_package_system_compare_version (packsys, "1.0", "1.0") == 0 ? "ok" : "FAILED");
+	g_message ("version compare 3 is %s",
+		   eazel_package_system_compare_version (packsys, "1.1", "1.0") > 0 ? "ok" : "FAILED");
+}
+
+static void
 test_package_load (EazelPackageSystem *packsys,
 		   const char *package_file_name) 
 {
@@ -119,7 +130,9 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query matches fail (got %d, not 1 for %s)", 
 			   g_list_length (result), MATCHES_ONLY_ONE);
 	}
+	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	g_list_free (result);
+	sleep (5);
 
 	result = eazel_package_system_query (packsys,
 					     NULL,
@@ -132,7 +145,9 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query provides fail (got %d, not 1 for %s)", 
 			   g_list_length (result), PROVIDED_BY_ONLY_ONE);
 	}
+	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	g_list_free (result);
+	sleep (5);
 
 	result = eazel_package_system_query (packsys,
 					     NULL,
@@ -145,7 +160,9 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query owned fail (got %d, not 1 for %s)", 
 			   g_list_length (result), OWNED_BY_ONLY_ONE);
 	}
+	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	g_list_free (result);
+	sleep (5);
 	
 	result = eazel_package_system_query (packsys,
 					     NULL,
@@ -158,7 +175,9 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query substr fail (%d hits, too few (<10) for \"\")", 
 			   g_list_length (result));
 	}
+	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	g_list_free (result);
+	sleep (5);
 
 	{		
 		GList *glibc_result;
@@ -188,6 +207,27 @@ test_query (EazelPackageSystem *packsys)
 		} else {
 			g_message ("Can't test query requires, no hits for %s", NEEDED_BY_MANY);
 		}
+	}
+}
+
+static void
+test_query_owns_mem (EazelPackageSystem *packsys) 
+{
+	GList *result;
+	int i;
+
+	g_message ("doing 1000 owns queries");
+	for (i=1;i<=1000; i++) {
+		result = eazel_package_system_query (packsys,
+						     NULL,
+						     OWNED_BY_ONLY_ONE,
+						     EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
+						     0);
+		if (i%50==0) {
+			g_message ("%d queries done...", i);
+		}
+		g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		g_list_free (result);
 	}
 }
 
@@ -457,8 +497,10 @@ int main(int argc, char *argv[]) {
 
 	eazel_package_system_set_debug (packsys, arg_debug);
 
+	test_version_compare (packsys);
 	test_package_load (packsys, filename);
 	test_query (packsys);
+	test_query_owns_mem (packsys);
 	test_install (packsys, home_dbpath, filename);
 	test_verify (packsys, home_dbpath, filename);
 	test_uninstall (packsys, home_dbpath, filename);

@@ -1092,12 +1092,7 @@ eazel_install_install_packages (EazelInstall *service,
 		service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 		eazel_install_set_uninstall (service, FALSE);
 		
-		if (eazel_install_get_ei2 (service)) {
-			trilobite_debug ("Using EI2");
-			result = install_packages (service, categories);
-		} else {
-			result = ei_install_packages (service, categories);
-		}
+		result = install_packages (service, categories);
 		
 		if (result == EAZEL_INSTALL_NOTHING) {
 			g_warning (_("Install failed"));
@@ -1144,11 +1139,15 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 		eazel_install_fetch_remote_package_list (service);
 	}
 
+/*
+  FIXME: bugzilla.eazel.com 5752
 	if (eazel_install_get_ei2 (service)) {
 		result = uninstall_packages (service, categories);
 	} else {
 		result = ei_uninstall_packages (service, categories);
 	}
+*/
+	result = ei_uninstall_packages (service, categories);
 
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Uninstall failed"));
@@ -1173,12 +1172,16 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	service->private->revert = TRUE;
 
 	if (create_temporary_directory (service)) {
+
+/*
+  FIXME: bugzilla.eazel.com 5753
 		if (eazel_install_get_ei2 (service)) {
 			result = revert_transaction (service, packages);
 		} else {
 			result = ei_revert_transaction (service, packages);
 		}
-		
+*/
+		result = ei_revert_transaction (service, packages);
 		eazel_install_unlock_tmp_dir (service);
 	} else {
 		result = EAZEL_INSTALL_NOTHING;
@@ -1348,8 +1351,8 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 
 	for (iterator = packages; iterator; glist_step (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
-
-		if (pack->toplevel) {
+		
+		if (eazel_install_get_ei2 (service) || pack->toplevel) {
 			packages_in_signal = g_list_prepend (packages_in_signal, pack);
 		}
 	}

@@ -50,6 +50,7 @@
 
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
+#include <rpm/misc.h>
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -582,8 +583,8 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			g_free (paths_copy[index]);
 		}
 		g_free (paths_copy);
-		free (paths);
-		free (names);
+		free ((void*)paths);
+		free ((void*)names);
 	}
 
 	/* FIXME: bugzill.eaze.com 5262
@@ -954,7 +955,7 @@ eazel_package_system_rpm3_execute (EazelPackageSystemRpm3 *system,
 {
 	TrilobiteRootHelper *root_helper;
 	int fd;
-	gboolean nogo = FALSE;
+	gboolean go = TRUE;
 
 	display_arguments (system, args);
 
@@ -964,21 +965,19 @@ eazel_package_system_rpm3_execute (EazelPackageSystemRpm3 *system,
 
 		root_helper_stat = trilobite_root_helper_start (root_helper);
 		if (root_helper_stat != TRILOBITE_ROOT_HELPER_SUCCESS) {
-			g_warning ("Error in starting trilobite_root_helper");
-			nogo = TRUE;
+			g_warning ("Error in starting trilobite_root_helper");			
 		} else if (trilobite_root_helper_run (root_helper, 
 						      TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
 			   TRILOBITE_ROOT_HELPER_SUCCESS) {
 			g_warning ("Error in running trilobite_root_helper");
 			trilobite_root_helper_destroy (GTK_OBJECT (root_helper));
-			nogo = TRUE;
 		}
 	} else {
 		/* FIXME:
 		   ugh, start /bin/rpm manually, see code in eazel-install-logic.c rev 1.26 */
 		g_assert (root_helper);
 	}
-	if (nogo == FALSE) {
+	if (go) {
 		monitor_subcommand_pipe (system, fd, (GIOFunc)monitor_rpm_process_pipe, pig);
 	} else {
 		/* FIXME: fail all the packages in pig */
@@ -1224,9 +1223,16 @@ eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system,
 }
 
 /************************************************************
- 
+ Version compare implementation							    
 *************************************************************/
 
+int
+eazel_package_system_rpm3_compare_version (EazelPackageSystem *system,
+					   const char *a,
+					   const char *b)
+{
+	return rpmvercmp (a, b);
+}
 
 /*****************************************
   GTK+ object stuff
@@ -1334,11 +1340,14 @@ eazel_package_system_implementation (GList *dbpaths)
 	tdbpaths = g_list_prepend (tdbpaths, g_strdup (DEFAULT_DB_PATH));
 	result = EAZEL_PACKAGE_SYSTEM (eazel_package_system_rpm3_new (tdbpaths));
 	
-	result->private->load_package = (EazelPackageSytemLoadPackageFunc)eazel_package_system_rpm3_load_package;
+	result->private->load_package = 
+		(EazelPackageSytemLoadPackageFunc)eazel_package_system_rpm3_load_package;
 	result->private->query = (EazelPackageSytemQueryFunc)eazel_package_system_rpm3_query;
 	result->private->install = (EazelPackageSytemInstallFunc)eazel_package_system_rpm3_install;
 	result->private->uninstall = (EazelPackageSytemUninstallFunc)eazel_package_system_rpm3_uninstall;
 	result->private->verify = (EazelPackageSytemVerifyFunc)eazel_package_system_rpm3_verify;
+	result->private->compare_version = 
+		(EazelPackageSystemCompareVersionFunc)eazel_package_system_rpm3_compare_version;
 
 	return result;
 }

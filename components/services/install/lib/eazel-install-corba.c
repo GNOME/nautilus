@@ -169,6 +169,21 @@ impl_Eazel_Install__get_verbose (impl_POA_GNOME_Trilobite_Eazel_Install *servant
 }
 
 static void
+impl_Eazel_Install__set_debug (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+				 const CORBA_boolean value,
+				 CORBA_Environment *ev)
+{
+	eazel_install_set_debug (servant->object, value);
+}
+
+static CORBA_boolean
+impl_Eazel_Install__get_debug (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+				 CORBA_Environment *ev)
+{
+	return eazel_install_get_debug (servant->object);
+}
+
+static void
 impl_Eazel_Install__set_silent (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 				const CORBA_boolean value,
 				CORBA_Environment *ev)
@@ -227,6 +242,21 @@ impl_Eazel_Install__get_ei2 (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 			       CORBA_Environment *ev)
 {
 	return eazel_install_get_ei2 (servant->object);
+}
+
+static void
+impl_Eazel_Install__set_auth (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+			       const CORBA_boolean value,
+			       CORBA_Environment *ev)
+{
+	eazel_install_set_eazel_auth (servant->object, value);
+}
+
+static CORBA_boolean
+impl_Eazel_Install__get_auth (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+			       CORBA_Environment *ev)
+{
+	return eazel_install_get_eazel_auth (servant->object);
 }
 
 static void
@@ -321,6 +351,22 @@ impl_Eazel_Install__get_server (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 				CORBA_Environment *ev)
 {
 	return eazel_install_get_server (servant->object);
+}
+
+static void
+impl_Eazel_Install__set_cgi (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+				const CORBA_char *value,
+				CORBA_Environment *ev)
+{
+	eazel_install_set_cgi_path (servant->object, value);
+}
+
+
+static CORBA_char*
+impl_Eazel_Install__get_cgi (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+				CORBA_Environment *ev)
+{
+	return eazel_install_get_cgi_path (servant->object);
 }
 
 static void
@@ -469,6 +515,9 @@ eazel_install_get_epv ()
 	epv->_set_verbose = (gpointer)&impl_Eazel_Install__set_verbose;
 	epv->_get_verbose = (gpointer)&impl_Eazel_Install__get_verbose;
 
+	epv->_set_debug = (gpointer)&impl_Eazel_Install__set_debug;
+	epv->_get_debug = (gpointer)&impl_Eazel_Install__get_debug;
+
 	epv->_set_silent = (gpointer)&impl_Eazel_Install__set_silent;
 	epv->_get_silent = (gpointer)&impl_Eazel_Install__get_silent;
 
@@ -481,6 +530,9 @@ eazel_install_get_epv ()
 	epv->_set_ei2 = (gpointer)&impl_Eazel_Install__set_ei2;
 	epv->_get_ei2 = (gpointer)&impl_Eazel_Install__get_ei2;
 
+	epv->_set_auth = (gpointer)&impl_Eazel_Install__set_auth;
+	epv->_get_auth = (gpointer)&impl_Eazel_Install__get_auth;
+
 	epv->_set_update = (gpointer)&impl_Eazel_Install__set_update;
 	epv->_get_update = (gpointer)&impl_Eazel_Install__get_update;
 
@@ -492,6 +544,9 @@ eazel_install_get_epv ()
 
 	epv->_set_server = (gpointer)&impl_Eazel_Install__set_server;
 	epv->_get_server = (gpointer)&impl_Eazel_Install__get_server;
+
+	epv->_set_cgi = (gpointer)&impl_Eazel_Install__set_cgi;
+	epv->_get_cgi = (gpointer)&impl_Eazel_Install__get_cgi;
 
 	epv->_set_username = (gpointer)&impl_Eazel_Install__set_username;
 	epv->_get_username = (gpointer)&impl_Eazel_Install__get_username;

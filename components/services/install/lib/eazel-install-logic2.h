@@ -28,6 +28,12 @@
 #include "eazel-install-public.h"
 #include <eazel-package-system.h>
 
+/* FIXME: these should not be exported once eazel-install-logic is being
+   phased out */
+gboolean check_md5_on_files (EazelInstall *service, GList *packages);
+EazelInstallStatus eazel_install_check_existing_packages (EazelInstall *service, 
+							  PackageData *pack);
+
 EazelInstallOperationStatus install_packages (EazelInstall *service, GList *categories);
 EazelInstallOperationStatus uninstall_packages (EazelInstall *service, GList *categories);
 EazelInstallOperationStatus revert_transaction (EazelInstall *service, GList *packages);

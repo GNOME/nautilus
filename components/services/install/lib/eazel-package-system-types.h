@@ -273,6 +273,8 @@ void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_hard_depends (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 
+GList *flatten_packagedata_dependency_tree (GList *packages);
+
 /* all elements in "remove_list" that matches elements in "input" list
    (comparison is done via eazel_install_package_name_compare).
    If destroy is TRUE, packagedata_destroy is called on the removed
@@ -301,7 +303,7 @@ typedef struct {
 
 PackageDependency *packagedependency_new (void);
 PackageDependency *packagedependency_copy (const PackageDependency *dep, gboolean deep);
-void packagedependency_destroy (PackageDependency *dep, gboolean deep);
+void packagedependency_destroy (PackageDependency *dep);
 
 #define PACKAGEDEPENDENCY(obj) ((PackageDependency*)(obj))
 #define IS_PACKAGEDEPENDENCY(obj) (1)

@@ -40,7 +40,7 @@ static GConfEngine *conf_engine = NULL;
 #define INSTALL_GCONF_PATH	"/apps/eazel-trilobite/install"
 
 #define DEFAULT_SERVER		"services.eazel.com"
-#define DEFAULT_PORT		443
+#define DEFAULT_PORT		80
 #define DEFAULT_CGI_PATH	"/catalog/find"
 
 
@@ -241,7 +241,7 @@ eazel_install_configure_softcat (EazelSoftCat *softcat)
 	cgi_path = get_conf_string ("server/cgi-path", DEFAULT_CGI_PATH);
 	eazel_softcat_set_cgi_path (softcat, cgi_path);
 	g_free (cgi_path);
-
+	
 	eazel_softcat_set_authn (softcat, get_conf_boolean ("server/eazel-auth", TRUE), NULL);
 }
 

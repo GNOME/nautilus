@@ -38,11 +38,29 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 
-#undef DEBUG_PACKAGE_ALLOCS 
+#define DEBUG_PACKAGE_ALLOCS 
 
 #ifdef DEBUG_PACKAGE_ALLOCS
+static int report_all = 0;
 static int package_allocs = 0;
 static int category_allocs = 0;
+static gboolean at_exit_registered = FALSE;
+GList *packages_allocated = NULL;
+
+static void 
+at_exit_package_data_info (void) 
+{
+	GList *iterator;
+	if (packages_allocated == NULL) {
+		trilobite_debug ("All packagedata structures deallocated");
+	} else {
+		trilobite_debug ("Fordømt! Some packagedata structures were not deallocated");
+		for (iterator = packages_allocated; iterator; iterator = g_list_next (iterator)) {
+			PackageData *pack = PACKAGEDATA (iterator->data);
+			trilobite_debug ("package %p (%s) not deallocated", pack, pack->name);
+		}
+	}
+}
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 const char *
@@ -70,7 +88,7 @@ categorydata_new (void)
 	result = g_new0 (CategoryData, 1);
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs ++;
-	trilobite_debug ("category_allocs inced to %d (0x%p)", category_allocs, result);
+	if (report_all) trilobite_debug ("category_allocs inced to %d (0x%p)", category_allocs, result);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 	result->name = NULL;
 	result->description = NULL;
@@ -121,7 +139,7 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs --;
-	trilobite_debug ("category_allocs = %d (0x%p) %s", category_allocs, cd, cd ? cd->name: "?");
+	if (report_all) trilobite_debug ("category_allocs = %d (0x%p) %s", category_allocs, cd, cd ? cd->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	g_return_if_fail (cd != NULL);
@@ -193,7 +211,12 @@ packagedata_initialize (PackageData *package) {
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs ++;
-	trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, package);
+	if (report_all) trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, package);
+	if (!at_exit_registered) {
+		atexit (&at_exit_package_data_info);
+		at_exit_registered = TRUE;
+	}
+	packages_allocated = g_list_prepend (packages_allocated, package);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	package->name = NULL;
@@ -231,18 +254,23 @@ packagedata_finalize (GtkObject *obj)
 	
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs --;
-	if (pack) {
-		if (pack->name) {
-			trilobite_debug ("package_allocs = %d (0x%p) %s", package_allocs, pack,pack->name);
-		} else if (pack->provides) {
-			trilobite_debug ("package_allocs = %d (0x%p) providing %s", package_allocs, pack,
-					 (char*)pack->provides->data);
+	if (report_all) {
+		if (pack) {
+			if (pack->name) {
+				trilobite_debug ("package_allocs = %d (0x%p) %s", 
+						 package_allocs, pack,pack->name);
+			} else if (pack->provides) {
+				trilobite_debug ("package_allocs = %d (0x%p) providing %s", 
+						 package_allocs, pack,
+						 (char*)pack->provides->data);
+			} else {
+				trilobite_debug ("package_allocs = %d (0x%p) ?", package_allocs, pack);
+			}
 		} else {
-			trilobite_debug ("package_allocs = %d (0x%p) ?", package_allocs, pack);
+			trilobite_debug ("package_allocs = %d (0x%p) ??", package_allocs, pack);
 		}
-	} else {
-		trilobite_debug ("package_allocs = %d (0x%p) ??", package_allocs, pack);
 	}
+	packages_allocated = g_list_remove (packages_allocated, pack);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 	g_return_if_fail (pack != NULL);
 
@@ -276,11 +304,21 @@ packagedata_finalize (GtkObject *obj)
 	g_list_free (pack->features);
 	pack->features = NULL;
 
-	g_list_free (pack->soft_depends);
-	g_list_free (pack->hard_depends);
-	g_list_free (pack->breaks);
-	g_list_free (pack->modifies);
+	g_list_foreach (pack->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (FALSE));
 	g_list_free (pack->depends);
+
+	g_list_foreach (pack->soft_depends, (GFunc)gtk_object_unref, NULL);
+	g_list_free (pack->soft_depends);
+
+	g_list_foreach (pack->hard_depends, (GFunc)gtk_object_unref, NULL);
+	g_list_free (pack->hard_depends);
+
+	g_list_foreach (pack->breaks, (GFunc)gtk_object_unref, NULL);
+	g_list_free (pack->breaks);
+
+	g_list_foreach (pack->modifies, (GFunc)gtk_object_unref, NULL);
+	g_list_free (pack->modifies);
+
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->depends = NULL;
@@ -288,10 +326,6 @@ packagedata_finalize (GtkObject *obj)
 	pack->modifies = NULL;
 
 	if (pack->packsys_struc) {
-		/* FIXME bugzilla.eazel.com 1532:
-		   RPM specific code */
-		/* even better, this just crashes 
-		 */
 		headerFree ((Header) pack->packsys_struc);
 		pack->packsys_struc = NULL;
 	}
@@ -321,9 +355,9 @@ packagedependency_copy (const PackageDependency *dep, gboolean deep)
 }
 
 void
-packagedependency_destroy (PackageDependency *dep, gboolean deep)
+packagedependency_destroy (PackageDependency *dep)
 {
-	packagedata_destroy (dep->package, deep);
+	gtk_object_unref (GTK_OBJECT (dep->package));
 	dep->package = NULL;
 	g_free (dep->version);
 	dep->version = NULL;
@@ -407,6 +441,7 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	g_assert (pack);
 
 	result = packagedata_new ();
+
 	result->name = g_strdup (pack->name);
 	result->version = g_strdup (pack->version);
 	result->minor = g_strdup (pack->minor);
@@ -522,7 +557,6 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	if (deep) {
 		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
-		g_list_foreach (pack->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->breaks, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->modifies, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 	}
@@ -606,16 +640,16 @@ packagedata_get_readable_name (const PackageData *pack)
 	} else if (pack->name && pack->version) {
 		/* This is a hack to shorten EazelSourceSnapshot names
 		   into the build date/time */
-		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->version, ".2000") != NULL) {
+		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->version, ".200") != NULL) {
 			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 					 "Sep", "Oct", "Nov", "Dec"};
 			char *temp, *temp2;
 			int mo, da, ho, mi;
 			/* this crap is too long to display ! */
 			temp = g_strdup (pack->version);
-			temp2 = strstr (temp, ".2000");
+			temp2 = strstr (temp, ".200");
 			strcpy (temp2, "ESS");
-			temp2 += strlen (".2000");
+			temp2 += strlen (".200x");
 			sscanf (temp2, "%2d%2d%2d%2d", &mo, &da, &ho, &mi);
 			result = g_strdup_printf ("%s of %d %s, %02d:%02d", 
 						  pack->name,
@@ -783,6 +817,7 @@ packagedata_modstatus_str_to_enum (const char *st)
 static void
 packagedata_add_pack_to (GList **list, PackageData *pack) {
 	(*list) = g_list_prepend (*list, pack);
+	gtk_object_ref (GTK_OBJECT (pack));
 }
 
 void 
@@ -790,7 +825,7 @@ packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b)
 {
 	g_assert (pack);
 	g_assert (b);
-	g_assert (pack != b);
+	g_assert(pack != b);
 	packagedata_add_pack_to (&pack->breaks, b);
 }
 
@@ -819,6 +854,42 @@ packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b)
 	g_assert (b);
 	g_assert (pack != b);
 	packagedata_add_pack_to (&pack->modifies, b);
+}
+
+static void
+flatten_packagedata_dependency_tree_helper (GList *packagedeps, 
+					    GList **result)
+{
+	GList *iterator;
+
+	for (iterator = packagedeps; iterator; iterator = g_list_next (iterator)) {
+		PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
+		PackageData *pack = dep->package;
+		if (g_list_find (*result, pack)==NULL) {
+			(*result) = g_list_prepend (*result, pack);
+			flatten_packagedata_dependency_tree_helper (pack->depends, result);
+		}
+	}
+}
+
+GList*
+flatten_packagedata_dependency_tree (GList *packages)
+{
+	GList *result = NULL;
+	GList *iterator;
+
+	/* I first add the toplevel, since I can then get away with only checking
+	   for dupes in the helper */
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = PACKAGEDATA (iterator->data);
+		result = g_list_prepend (result, pack);
+	}
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = PACKAGEDATA (iterator->data);
+		flatten_packagedata_dependency_tree_helper (pack->depends, &result);
+	}
+
+	return result;
 }
 
 /*

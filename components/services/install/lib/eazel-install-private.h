@@ -101,9 +101,17 @@ struct _EazelInstallPrivate {
 	/* context to use for softcat queries */
 	EazelSoftCat *softcat;
 
-	/* This is one of the ei2 hashes */
-	GHashTable *dedupe_hash;
-	GHashTable *dep_ok_hash;
+	/* These are hashtables used in eazel-install-logic2.c */
+	GHashTable *dedupe_hash; /* This hash matches from eazel_id to PackageData objects, 
+				    and is used to quickly identify dupes after getting the softcat
+				    information */
+	GHashTable *dep_ok_hash; /* This hash matches from eazel_id to enum (found in eazel-install-logic2.c), 
+				    and is used during check for dependencies which are required. If the
+				    string occurs in the hash, the package has already been checked
+				    for, and the returned enum denotes the dependency state.
+				    The hash also matches from a eazel_id-sense-version concatenation
+				    to a PackageData for the case where the dependency has both a version
+				    and sense */
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

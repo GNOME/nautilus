@@ -56,11 +56,17 @@ void eazel_package_system_rpm3_uninstall (EazelPackageSystemRpm3 *system,
 void eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system, 
 				       const char *dbpath,
 				       GList* packages);
+
+int eazel_package_system_rpm3_compare_version (EazelPackageSystem *system,
+					       const char *a,
+					       const char *b);
+
 GList* eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 					const char *dbpath,
 					const gpointer key,
 					EazelPackageSystemQueryEnum flag,
 					int detail_level);
+
 void eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
 					       const char *dbpath,
 					       const gpointer *key,

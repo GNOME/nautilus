@@ -18,7 +18,9 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: J Shane Culpepper <pepper@eazel.com>
+ * Authors: Eskil Heyn Olsen <eskil@eazel.com>
+ *          Robey Pointer <robey@eazel.com>
+ *          J Shane Culpepper <pepper@eazel.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
@@ -519,7 +521,13 @@ eazel_install_fetch_file (EazelInstall *service,
 	}
 
 	if (g_file_test (target_file, G_FILE_TEST_ISFILE)) {
+		/* File is already present, so just emit to progress callbacks and get on with
+		   your life */
+		struct stat buf;
+		stat (target_file, &buf);
 		trilobite_debug ("%s already present, not downloading", target_file);
+		eazel_install_emit_download_progress (service, file_to_report, 0, buf.st_size);
+		eazel_install_emit_download_progress (service, file_to_report, buf.st_size, buf.st_size);
 		result = TRUE;
 	} else {
 		result = (func_table [eazel_install_get_protocol (service)])((gpointer)service, 

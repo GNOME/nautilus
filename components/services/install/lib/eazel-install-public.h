@@ -54,6 +54,13 @@ typedef enum {
 	EAZEL_INSTALL_UNINSTALL_OK = 1<<1,
 	EAZEL_INSTALL_REVERSION_OK = 1<<2
 } EazelInstallOperationStatus;
+
+typedef enum {
+	EAZEL_INSTALL_STATUS_NEW_PACKAGE,
+	EAZEL_INSTALL_STATUS_UPGRADES,
+	EAZEL_INSTALL_STATUS_DOWNGRADES,
+	EAZEL_INSTALL_STATUS_QUO
+} EazelInstallStatus;
 	
 typedef struct _EazelInstall EazelInstall;
 typedef struct _EazelInstallClass EazelInstallClass;

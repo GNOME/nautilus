@@ -489,21 +489,23 @@ create_package (char *name, int local_file)
 /* quick & dirty: parse the url into (host, port) and a category list */
 /* format:
  * "eazel-install:" [ "//" [ username "@" ] [ "hostname" [ ":" port ] ] "/" ] package-name [ "?version=" version ]
+ returns TRUE is a hostname was parsed from the uri
  */
-static void
+static gboolean
 nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 			    char **host, int *port, char **username)
 {
 	char *p, *q, *package_name, *host_spec;
 	GList *packages = NULL;
 	PackageData *pack;
+	gboolean result = FALSE;
 
 	view->details->categories = NULL;
 
 	p = strchr (uri, ':');
 	if (! p) {
 		/* bad mojo */
-		return;
+		return result;
 	}
 	p++;
 
@@ -516,6 +518,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 			q = p + strlen(p);
 		}
 		host_spec = g_strndup (p, q - p);
+		result = TRUE;
 
 		/* optional "user@" */
 		p = strchr (host_spec, '@');
@@ -579,7 +582,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 		category->packages = packages;
 		view->details->categories = g_list_prepend (view->details->categories, category);
 	}
-	return;
+	return result;
 }
 
 
@@ -1394,6 +1397,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	GNOME_Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out, *p;
+	gboolean                set_auth;
 
 	/* get default host/port */
 	host = g_strdup (trilobite_get_services_address ());
@@ -1404,7 +1408,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 		port = 443;
 	}
 	username = NULL;
-	nautilus_install_parse_uri (uri, view, &host, &port, &username);
+	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &username));
 
 	if (! view->details->categories) {
 		return;
@@ -1460,6 +1464,8 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	GNOME_Trilobite_Eazel_Install__set_protocol (service, GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 	GNOME_Trilobite_Eazel_Install__set_server (service, host, &ev);
 	GNOME_Trilobite_Eazel_Install__set_server_port (service, port, &ev);
+	GNOME_Trilobite_Eazel_Install__set_auth (service, set_auth, &ev);
+
 	if (username != NULL) {
 		GNOME_Trilobite_Eazel_Install__set_username (service, username, &ev);
 	}

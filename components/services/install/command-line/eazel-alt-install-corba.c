@@ -71,8 +71,10 @@ int     arg_dry_run,
 	arg_verbose,
 	arg_id,
 	arg_ei2,
-	arg_no_pct;
+	arg_no_pct,
+	arg_no_auth;
 char    *arg_server,
+	*arg_cgi,
 	*arg_config_file,
 	*arg_package_list,
 	*arg_tmp_dir,
@@ -91,6 +93,7 @@ gboolean downloaded_files = FALSE;
 
 static const struct poptOption options[] = {
 	{"batch", '\0', POPT_ARG_STRING, &arg_batch, 0, N_("Set the default answer to continue, also default delete to Yes"), NULL},
+	{"cgi-path", '\0', POPT_ARG_STRING, &arg_cgi, 0, N_("Specify search cgi"), NULL},
 	{"debug", '\0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
 	{"downgrade", 'd', POPT_ARG_NONE, &arg_downgrade, 0, N_("Allow downgrades"), NULL},
@@ -103,6 +106,7 @@ static const struct poptOption options[] = {
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"id", 'i', POPT_ARG_NONE, &arg_id, 0, N_("RPM args are Eazel Ids"), NULL},
 	{"no-percent", '\0', POPT_ARG_NONE, &arg_no_pct, 0, N_("Don't print fancy percent output"), NULL},
+	{"noauth", '\0', POPT_ARG_NONE, &arg_no_auth, 0, N_("don't use eazel auth stuff"), NULL},
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
 	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needed files"), NULL},
@@ -131,10 +135,13 @@ static void tree_helper (EazelInstallCallback *service,
 static void
 set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 {
-	if (!arg_debug) {
+	if (!arg_debug) {		
 		GNOME_Trilobite_Eazel_Install__set_log_file (service, DEFAULT_LOG_FILE, &ev);
 		check_ev ("set_log_file");
-	} 
+	} else {
+		GNOME_Trilobite_Eazel_Install__set_debug (service, TRUE, &ev);
+		check_ev ("set_debug");
+	}
 
 	/* We only want 1 protocol type */
 	if (arg_http + arg_ftp + arg_local > 1) {
@@ -167,12 +174,30 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 		check_ev ("downgrade");
 	}
 	if (arg_server) {
-		GNOME_Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
+		char *colon = strchr (arg_server, ':');
+		if (colon) {
+			char *host;
+			int port;
+
+			host = g_new0(char, (colon - arg_server) + 1);
+			strncpy (host, arg_server, colon - arg_server);
+			colon++;
+			port = atoi (colon);
+			GNOME_Trilobite_Eazel_Install__set_server (service, host, &ev);
+			GNOME_Trilobite_Eazel_Install__set_server_port (service, port, &ev);
+			g_free (host);
+		} else {
+			GNOME_Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
+		}
 		check_ev ("set_server");
 	}
 	if (arg_username) {
 		GNOME_Trilobite_Eazel_Install__set_username (service, arg_username, &ev);
 		check_ev ("set_username");
+	}
+	if (arg_cgi) {
+		GNOME_Trilobite_Eazel_Install__set_cgi (service, arg_cgi, &ev);
+		check_ev ("set_cgi");
 	}
 
 	if (arg_ssl_rename) {
@@ -182,6 +207,13 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 	if (arg_ei2) {
 		GNOME_Trilobite_Eazel_Install__set_ei2 (service, TRUE, &ev);
 		check_ev ("set_ei2");
+	}
+	if (arg_no_auth) {
+		GNOME_Trilobite_Eazel_Install__set_auth (service, FALSE, &ev);
+		check_ev ("set_auth");
+	} else {
+		GNOME_Trilobite_Eazel_Install__set_auth (service, TRUE, &ev);
+		check_ev ("set_auth");
 	}
 
 #define RANDCHAR ('A' + (rand () % 23))
@@ -260,14 +292,14 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 	} else if (amount != total ) {
 		if (arg_no_pct==0) {
 			pct = amount / (total / 100);
-			if (pct > 1) {
-				if (old_pct != pct) {
+			if (pct > 5) {
+				if (old_pct != pct && pct%5==0) {
 					end = time (NULL);
 					diff = end - t;
 					ks = ((float)amount/1024)/diff;
 					old_pct = pct;
 				}
-				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%% %.1f KB/s     \r", 
+				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%% %.1f Kb/s     \r", 
 					 name,
 					 amount, total, pct,
 					 ks);
@@ -279,7 +311,7 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 		}
 	} else if (amount == total && total!=0) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "\rDownloading %s... (%d/%d) %.1f KB/s Done      \n",
+			fprintf (stdout, "\rDownloading %s... (%d/%d) %.1f Kb/s Done      \n",
 				 name,
 				 amount, total, 
 				 ks);
@@ -343,11 +375,18 @@ tree_helper_helper(EazelInstallCallback *service,
 		   GList *iterator,
 		   GList *next_list) 
 {
-	PackageData *pack = (PackageData*)iterator->data;
+	PackageData *pack;
 	char *indent2;
 	char indenter;
 	gchar *extra_space=NULL;
 	int indent_level_cnt;
+
+	if (IS_PACKAGEDATA (iterator->data)) {
+		pack = PACKAGEDATA (iterator->data);
+	} else {
+		PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
+		pack = dep->package;
+	}
 
 	if (indent_level>0) {
 		extra_space = g_new0 (char, indent_level+1);
@@ -378,18 +417,20 @@ tree_helper (EazelInstallCallback *service,
 	     int indent_level,
 	     char *title)
 {
+	char *readable_name;
 	GList *iterator;
 
 	if (title && pd->toplevel) {
 		fprintf (stdout, title);
 	}
 
-	
+	readable_name = packagedata_get_readable_name (pd);
 	fprintf (stdout, "%s%s%s (%s/%s)\n", 
 		 indent,  indent_type,
-		 rpmname_from_packagedata (pd),
+		 readable_name,
 		 packagedata_status_enum_to_str (pd->status),
 		 packagedata_modstatus_enum_to_str (pd->modify_status));
+	g_free (readable_name);
 
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {		
 		char *tmp;
@@ -421,6 +462,10 @@ something_failed (EazelInstallCallback *service,
 	char *title;
 	GList *stuff = NULL;	
 
+	fprintf (stderr, "\nin something failed\n");
+
+	gtk_object_ref (GTK_OBJECT (pd));
+
 	if (uninstall) {
 		title = g_strdup_printf ("\nPackage %s failed to uninstall. Here's the tree...\n", pd->name);
 	} else {
@@ -451,10 +496,11 @@ something_failed (EazelInstallCallback *service,
 				GList *it;
 				for (it = stuff; it; it = g_list_next (it)) {
 					fprintf (stdout, "Solution : %s\n", (char*)(it->data));
-			}
+				}
 			}
 		}
 	}
+	gtk_object_unref (GTK_OBJECT (pd));
 }
 
 /*

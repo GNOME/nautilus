@@ -225,6 +225,18 @@ eazel_package_system_verify (EazelPackageSystem *system,
 	(*system->private->verify) (system, dbpath, packages);
 }
 
+int
+eazel_package_system_compare_version (EazelPackageSystem *system,
+				      const char *a,
+				      const char *b)
+{
+	int result;
+	EPS_SANE_VAL (system, 0);
+	g_assert (system->private->compare_version);
+	result = (*system->private->compare_version) (system, a, b);
+	return result;
+}
+
 /******************************************
  The private emitter functions
 *******************************************/

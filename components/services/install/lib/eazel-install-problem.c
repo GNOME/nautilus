@@ -576,9 +576,12 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	PackageData *previous_pack = NULL;
 
 #ifdef EIP_DEBUG
-	g_message ("get_detailed_cases_foreach (data->path = 0x%p)", data->path);
+	g_message ("get_detailed_cases_foreach (%p)", pack);
+	g_message ("get_detailed_cases_foreach (data->path = %p)", data->path);
 	g_message ("get_detailed_cases_foreach (pack->status = %s)", 
 		   packagedata_status_enum_to_str (pack->status));
+	g_message ("get_detailed_cases_foreach (pack->modify_status = %s)", 
+		   packagedata_modstatus_enum_to_str (pack->modify_status));
 #endif /* EIP_DEBUG */
 
 	if (data->path) {
@@ -652,7 +655,7 @@ get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *d
 	PackageData *previous_pack = NULL;
 	
 #ifdef EIP_DEBUG
-	g_message ("get_detailed_uninstall_cases_foreach (data->path = 0x%p)", data->path);
+	g_message ("get_detailed_uninstall_cases_foreach (data->path = %p)", data->path);
 	g_message ("get_detailed_uninstall_cases_foreach (pack->status = %s)", 
 		   packagedata_status_enum_to_str (pack->status));
 #endif /* EIP_DEBUG */
@@ -858,17 +861,17 @@ eazel_install_problem_case_foreach_destroy (EazelInstallProblemCase *pcase,
 {
 	switch (pcase->problem) {
 	case EI_PROBLEM_UPDATE:
-		packagedata_destroy (pcase->u.update.pack, TRUE);
+		gtk_object_unref (GTK_OBJECT (pcase->u.update.pack));
 		break;
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
-		packagedata_destroy (pcase->u.force_install_both.pack_1, TRUE);
-		packagedata_destroy (pcase->u.force_install_both.pack_2, TRUE);
+		gtk_object_unref (GTK_OBJECT (pcase->u.force_install_both.pack_1));
+		gtk_object_unref (GTK_OBJECT (pcase->u.force_install_both.pack_2));
 		break;
 	case EI_PROBLEM_REMOVE:
-		packagedata_destroy (pcase->u.remove.pack, TRUE);
+		gtk_object_unref (GTK_OBJECT (pcase->u.remove.pack));
 		break;
 	case EI_PROBLEM_FORCE_REMOVE:
-		packagedata_destroy (pcase->u.force_remove.pack, TRUE);
+		gtk_object_unref (GTK_OBJECT (pcase->u.force_remove.pack));
 		break;
 	case EI_PROBLEM_INCONSISTENCY:
 		break;
@@ -882,8 +885,8 @@ eazel_install_problem_case_foreach_destroy (EazelInstallProblemCase *pcase,
 		break;
 	case EI_PROBLEM_CASCADE_REMOVE:
 		g_list_foreach (pcase->u.cascade.packages,
-				(GFunc)packagedata_destroy,
-				GINT_TO_POINTER (TRUE));
+				(GFunc)gtk_object_unref,
+				NULL);
 		break;
 	}
 	g_free (pcase);
@@ -1055,7 +1058,7 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 	P_SANITY (problem);
 
 #ifdef EIP_DEBUG
-	g_message ("eazel_install_problem_tree_to_case ( pack = 0x%p, uninstall=%s)", 
+	g_message ("eazel_install_problem_tree_to_case ( pack = %p, uninstall=%s)", 
 		   pack,  
 		   uninstall ? "TRUE" : "FALSE");
 #endif
@@ -1072,7 +1075,7 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 		get_detailed_cases_foreach (pack_copy, &data);
 	}
 
-	packagedata_destroy (pack_copy, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack_copy));
 	(*output) = data.errors;
 }
 
@@ -1100,7 +1103,7 @@ eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
 		get_detailed_messages_foreach (pack_copy, &data);
 	}
 
-	packagedata_destroy (pack_copy, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack_copy));
 	result = data.errors;
 
 	return result;

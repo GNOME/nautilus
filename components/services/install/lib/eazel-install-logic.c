@@ -26,6 +26,7 @@
 #include "eazel-install-private.h"
 #include "eazel-install-rpm-glue.h"
 #include "eazel-install-query.h"
+#include "eazel-install-logic2.h"
 
 /* We use rpmvercmp to compare versions... */
 #include <rpm/rpmlib.h>
@@ -38,7 +39,6 @@
 #include <libtrilobite/trilobite-root-helper.h>
 #endif
 
-#include <libtrilobite/trilobite-md5-tools.h>
 #include <libtrilobite/trilobite-core-utils.h>
 #include <string.h>
 #include <time.h>
@@ -53,13 +53,6 @@
 #include <sys/wait.h>
 #endif
 
-typedef enum {
-	EAZEL_INSTALL_STATUS_NEW_PACKAGE,
-	EAZEL_INSTALL_STATUS_UPGRADES,
-	EAZEL_INSTALL_STATUS_DOWNGRADES,
-	EAZEL_INSTALL_STATUS_QUO
-} EazelInstallStatus;
-
 static gboolean eazel_install_do_install_packages (EazelInstall *service,
 						   GList* packages);
 
@@ -73,9 +66,6 @@ static gboolean eazel_install_ensure_deps (EazelInstall *service,
 static void eazel_uninstall_globber (EazelInstall *service,
 				     GList **packages,
 				     GList **failed);
-
-static EazelInstallStatus eazel_install_check_existing_packages (EazelInstall *service, 
-								 PackageData *pack);
 
 static gboolean eazel_install_download_packages (EazelInstall *service,
 						 gboolean toplevel,
@@ -794,48 +784,6 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 	return result;
 }
 
-static gboolean
-eazel_install_do_transaction_md5_check (EazelInstall *service, 
-					GList *packages)
-{
-	gboolean result = TRUE;
-	GList *iterator;
-
-	result = eazel_install_lock_tmp_dir (service);
-
-	if (!result) {
-		g_warning (_("Failed to lock the downloaded file"));
-		return FALSE;
-	}
-
-	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		PackageData *pack = (PackageData*)iterator->data;
-		
-		if (pack->md5) {
-			char pmd5[16];
-			char md5[16];
-
-			trilobite_md5_get_digest_from_file (pack->filename, md5);
-			trilobite_md5_get_digest_from_md5_string (pack->md5, pmd5);
-
-			if (memcmp (pmd5, md5, 16) != 0) {
-				g_warning (_("MD5 mismatch, package %s may be compromised"), pack->name);
-				trilobite_debug ("read md5 from file %s", pack->filename);
-				trilobite_debug ("for package %s version %s", pack->name, pack->version);
-				eazel_install_emit_md5_check_failed (service, 
-								     pack, 
-								     trilobite_md5_get_string_from_md5_digest (md5));
-				result = FALSE;
-			} else {
-				trilobite_debug ("md5 match on %s", pack->name);
-			}
-		} else {
-			trilobite_debug ("No MD5 available for %s", pack->name);
-		}
-	}	
-
-	return result;
-}
 
 static unsigned long
 get_total_size_of_packages (const GList *packages)
@@ -963,7 +911,7 @@ eazel_install_start_transaction (EazelInstall *service,
 		int l  = g_list_length (packages);
 		/* Unless we're force installing, check file conflicts */
 		if (eazel_install_get_force (service) == FALSE) {
-			if(!eazel_install_do_transaction_md5_check (service, packages)) {
+			if(!check_md5_on_files (service, packages)) {
 				res = l;
 			}
 		}
@@ -1184,160 +1132,6 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
 	g_list_free (list);
 }
 
-static EazelInstallStatus
-eazel_install_check_existing_packages (EazelInstall *service, 
-				       PackageData *pack)
-{
-	GList *existing_packages;
-	EazelInstallStatus result;
-
-	result = EAZEL_INSTALL_STATUS_NEW_PACKAGE;
-	/* query for existing package of same name */
-	existing_packages = eazel_package_system_query (service->private->package_system,
-							service->private->cur_root,
-							pack->name,
-							EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-							PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
-	if (existing_packages) {
-		/* Get the existing package, set it's modify flag and add it */
-		GList *iterator;
-		if (g_list_length (existing_packages)>1) {
-			trilobite_debug ("there are %d existing packages called %s",
-					 g_list_length (existing_packages),
-					 pack->name);
-			trilobite_debug ("*********************************************************");
-			trilobite_debug ("This is a bad bad case, see bug 3511");
-			trilobite_debug ("To circumvent this problem, as root, execute this command");
-			trilobite_debug ("(which is dangerous by the way....)");
-			trilobite_debug ("rpm -e --nodeps `rpm -q %s`", pack->name);
-			trilobite_debug ("Or wait for the author to fix bug 3511");
-			/* FIXME bugzilla.eazel.com 3511 */
-			g_assert_not_reached ();
-		}
-		for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
-			PackageData *existing_package = (PackageData*)iterator->data;
-			int res;
-
-			if (g_list_find_custom (pack->modifies, 
-						existing_package->name,
-						(GCompareFunc)eazel_install_package_name_compare)) {
-				trilobite_debug ("%s already marked as modified", existing_package->name);
-				packagedata_destroy (existing_package, TRUE);
-				existing_package = NULL;
-				continue;
-			}
-
-			g_assert (pack->version);
-			g_assert (existing_package->version);
-
-			res = rpmvercmp (pack->version, existing_package->version);
-			
-			/* check against minor version */
-			if (res==0) {
-				trilobite_debug ("versions are equal, comparing minors");
-				if (pack->minor && existing_package->minor) {
-					trilobite_debug ("minors are %s and %s (installed)", 
-							 pack->minor, existing_package->minor);
-					res = rpmvercmp (pack->minor, existing_package->minor);
-				} else if (!pack->minor && existing_package->minor) {
-					/* If the given packages does not have a minor,
-					   but the installed has, assume we're updated */
-					res = 1;
-				}
-			}
-
-			/* Set the modify_status flag */
-			if (res == 0) {
-				existing_package->modify_status = PACKAGE_MOD_UNTOUCHED;
-			} else if (res > 0) {
-				existing_package->modify_status = PACKAGE_MOD_UPGRADED;
-			} else {
-				existing_package->modify_status = PACKAGE_MOD_DOWNGRADED;
-			}
-
-			/* Calc the result */
-			if (res == 0) {
-				result = EAZEL_INSTALL_STATUS_QUO;
-			} else if (res > 0) {
-				result = EAZEL_INSTALL_STATUS_UPGRADES;
-			} else {
-				result = EAZEL_INSTALL_STATUS_DOWNGRADES;
-			}
-		
-			/* Debug output */ 
-			switch (result) {
-			case EAZEL_INSTALL_STATUS_QUO: {
-				if (pack->minor && existing_package->minor) {
-					trilobite_debug (_("%s-%s version %s-%s already installed"), 
-							 pack->name, pack->minor, 
-							 existing_package->version, existing_package->minor);
-				} else {
-					trilobite_debug (_("%s version %s already installed"), 
-							 pack->name, 
-							 existing_package->version);
-				}
-			} 
-			break;
-			case EAZEL_INSTALL_STATUS_UPGRADES: {
-				/* This is certainly ugly as helll */
-				if (pack->minor && existing_package->minor) {
-					trilobite_debug (_("%s upgrades from version %s-%s to %s-%s"),
-							 pack->name, 
-							 existing_package->version, existing_package->minor, 
-							 pack->version, pack->minor);
-				} else {
-					trilobite_debug (_("%s upgrades from version %s-%s to %s-%s"),
-							 pack->name, 
-							 existing_package->version, existing_package->minor, 
-							 pack->version, pack->minor);
-				}
-			}
-			break;
-			case EAZEL_INSTALL_STATUS_DOWNGRADES: {
-				if (pack->minor && existing_package->minor) {
-					trilobite_debug (_("%s downgrades from version %s-%s to %s-%s"),
-							 pack->name, 
-							 existing_package->version, existing_package->minor, 
-							 pack->version, pack->minor);
-				} else {
-					trilobite_debug (_("%s downgrades from version %s to %s"),
-							 pack->name, 
-							 existing_package->version, 
-							 pack->version);
-				}
-			}
-			break;
-			default:
-				break;
-			}
-				
-			/* Set modifies list */
-			if (result != EAZEL_INSTALL_STATUS_QUO) {
-				packagedata_add_pack_to_modifies (pack, existing_package);
-				existing_package->status = PACKAGE_RESOLVED;
-			} else {
-				pack->status = PACKAGE_ALREADY_INSTALLED;
-				packagedata_destroy (existing_package, TRUE);
-			}
-		}
-
-		/* Free the list structure from _simple_query */
-		g_list_free (existing_packages);
-	} else {
-		if (pack->minor) {
-			trilobite_debug (_("%s installs version %s-%s"), 
-					 pack->name, 
-					 pack->version,
-					 pack->minor);
-		} else {
-			trilobite_debug (_("%s installs version %s"), 
-					 pack->name, 
-					 pack->version);
-		}
-	}
-
-	return result;
-}
 
 /*
   This function tests wheter "package" and "dep"

@@ -588,6 +588,12 @@ eazel_install_packagedata_to_xml (const PackageData *pack,
 		node = xmlNewChild (root, NULL, "PROVIDES", tmp);
 	}
 
+	for (iterator = pack->depends; iterator; iterator = iterator->next) {
+		eazel_install_packagedata_to_xml (((PackageDependency*)iterator->data)->package, 
+						  "SOFT_DEPEND", 
+						  root, 
+						  include_provides);
+	}
 	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
 		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
 						  "SOFT_DEPEND", 
