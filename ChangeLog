@@ -1,5 +1,28 @@
 2002-10-05  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text): Draw the selection rectangle in the
+	active color if the widget doesn't have focus.
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_class_init): Remove highlight_color
+	property, always use base[SELECTED/ACTIVE].  Theme authors can set
+	base for this widget only if they want.
+	(update_selected): New function to refresh the selected icons.
+	(handle_focus_in_event), (handle_focus_out_event): Refresh the
+	selected icons.
+	(nautilus_icon_container_instance_init): Connect to
+	focus_out_event.
+	(nautilus_icon_container_get_label_color_and_gc): If the container
+	isn't focused, return the ACTIVE values.
+	(setup_label_gcs): Setup ACTIVE values in addition to HIGHLIGHT
+	values.
+	(nautilus_icon_container_theme_changed): Always use the base color
+	for the highlight rectangle
+	* libnautilus-private/nautilus-icon-private.h: Remove the unused
+	highlight_color member.
+
+2002-10-05  Dave Camp  <dave@ximian.com>
+
 	* icons/crux_eggplant/crux_eggplant.xml:
 	* icons/crux_teal/crux_teal.xml:
 	* icons/default/default.xml:

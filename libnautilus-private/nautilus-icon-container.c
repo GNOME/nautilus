@@ -3500,12 +3500,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     G_PARAM_READABLE));
 
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("highlight_color",
-								     _("Highlight Color"),
-								     _("Color of the highlight for selected icons"),
-								     GDK_TYPE_COLOR,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uchar ("highlight_alpha",
 								     _("Highlight Alpha"),
 								     _("Opacity of the highlight for selected icons"),
@@ -3526,11 +3520,37 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     G_PARAM_READABLE));
 }
 
+static void
+update_selected (NautilusIconContainer *container)
+{
+	GList *node;
+	NautilusIcon *icon;
+	
+	for (node = container->details->icons; node != NULL; node = node->next) {
+		icon = node->data;
+		if (icon->is_selected) {
+			eel_canvas_item_request_update (EEL_CANVAS_ITEM (icon->item));
+		}
+	}
+}
+
+static gboolean
+handle_focus_in_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+{
+	update_selected (NAUTILUS_ICON_CONTAINER (widget));
+	gtk_widget_queue_draw (widget);
+
+	return FALSE;
+}
+
 static gboolean
 handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
 	/* End renaming and commit change. */
 	end_renaming_mode (NAUTILUS_ICON_CONTAINER (widget), TRUE);
+	
+	update_selected (NAUTILUS_ICON_CONTAINER (widget));
+	gtk_widget_queue_draw (widget);
 
 	return FALSE;
 }
@@ -3573,6 +3593,8 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 	g_signal_connect_object (background, "appearance_changed",
 				 G_CALLBACK (update_label_color), container, 0);
 
+	g_signal_connect (container, "focus-in-event",
+			  G_CALLBACK (handle_focus_in_event), NULL);
 	g_signal_connect (container, "focus-out-event",
 			  G_CALLBACK (handle_focus_out_event), NULL);
 
@@ -5185,13 +5207,21 @@ nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container
 
 	if (is_name) {
 		if (is_highlight) {
-			idx = LABEL_COLOR_HIGHLIGHT;
+			if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container))) {
+				idx = LABEL_COLOR_HIGHLIGHT;
+			} else {
+				idx = LABEL_COLOR_ACTIVE;
+			}
 		} else {
 			idx = LABEL_COLOR;
 		}
 	} else {
 		if (is_highlight) {
-			idx = LABEL_INFO_COLOR_HIGHLIGHT;
+			if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container))) {
+				idx = LABEL_INFO_COLOR_HIGHLIGHT;
+			} else {
+				idx = LABEL_INFO_COLOR_ACTIVE;
+			}
 		} else {
 			idx = LABEL_INFO_COLOR;
 		}
@@ -5262,9 +5292,13 @@ setup_label_gcs (NautilusIconContainer *container)
 	}
 
 	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_SELECTED]));
+	setup_gc_with_fg (container, LABEL_COLOR_ACTIVE, eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_ACTIVE]));
 	setup_gc_with_fg (container, 
 			  LABEL_INFO_COLOR_HIGHLIGHT, 
-			  eel_gdk_color_is_dark (&container->details->highlight_color) ? light_info_value : dark_info_value);
+			  eel_gdk_color_is_dark (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]) ? light_info_value : dark_info_value);
+	setup_gc_with_fg (container, 
+			  LABEL_INFO_COLOR_ACTIVE, 
+			  eel_gdk_color_is_dark (&GTK_WIDGET (container)->style->base[GTK_STATE_ACTIVE]) ? light_info_value : dark_info_value);
 		
 	/* If NautilusIconContainer::frame_text is set, we can safely
 	 * use the foreground color from the theme, because it will
@@ -5366,7 +5400,7 @@ static void
 nautilus_icon_container_theme_changed (gpointer user_data)
 {
 	NautilusIconContainer *container;
-	GdkColor *highlight_color;
+	GtkStyle *style;
 	guchar highlight_alpha;
 
 	container = NAUTILUS_ICON_CONTAINER (user_data);
@@ -5380,21 +5414,21 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 
 	/* load the highlight color */
 	gtk_widget_style_get (GTK_WIDGET (container),
-			      "highlight_color", &highlight_color,
 			      "highlight_alpha", &highlight_alpha,
 			      NULL);
-	if (!highlight_color) {
-		highlight_color = gdk_color_copy (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]);
-	}
 	
-	container->details->highlight_color_rgba = 
-		EEL_RGBA_COLOR_PACK (highlight_color->red >> 8, 
-				     highlight_color->green >> 8, 
-				     highlight_color->blue >> 8,
-				     highlight_alpha);
+	style = GTK_WIDGET (container)->style;
 
-	container->details->highlight_color = *highlight_color;
-	gdk_color_free (highlight_color);
+	container->details->highlight_color_rgba = 
+		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_SELECTED].red >> 8, 
+				     style->base[GTK_STATE_SELECTED].green >> 8, 
+				     style->base[GTK_STATE_SELECTED].blue >> 8,
+				     highlight_alpha);
+	container->details->active_color_rgba = 
+		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_ACTIVE].red >> 8, 
+				     style->base[GTK_STATE_ACTIVE].green >> 8, 
+				     style->base[GTK_STATE_ACTIVE].blue >> 8,
+				     highlight_alpha);
 
 	setup_label_gcs (container);
 }

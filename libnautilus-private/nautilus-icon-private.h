@@ -101,8 +101,10 @@ typedef struct {
 enum {
 	LABEL_COLOR,
 	LABEL_COLOR_HIGHLIGHT,
+	LABEL_COLOR_ACTIVE,
 	LABEL_INFO_COLOR,
 	LABEL_INFO_COLOR_HIGHLIGHT,
+	LABEL_INFO_COLOR_ACTIVE,
 	LAST_LABEL_COLOR
 };
 
@@ -183,8 +185,8 @@ struct NautilusIconContainerDetails {
 
 	/* pixbuf and color for label highlighting */
 	GdkPixbuf *highlight_frame;
-	GdkColor   highlight_color;
 	guint32    highlight_color_rgba;
+	guint32    active_color_rgba;
 	
 	/* colors for text labels */
 	GdkGC   *label_gcs    [LAST_LABEL_COLOR];

@@ -816,7 +816,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	    details->text_width > 0 && details->text_height > 0) {
 		draw_frame (item,
 			    drawable,
-			    container->details->highlight_color_rgba,
+			    GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container)) ? container->details->highlight_color_rgba : container->details->active_color_rgba,
 			    icon_left + (icon_width - details->text_width) / 2,
 			    icon_bottom,
 			    details->text_width, 
