@@ -1,3 +1,20 @@
+2000-05-03  Andy Hertzfeld <andy@eazel.com>
+
+	* src/nautilus-index-title.c,h:
+	made it display the emblems associated with a file.  Also, added a routine
+	to return the current title.
+	* src/ntl-index-panel.c"
+	made dropping emblems on the index panel work by adding a new
+	receive_dropped_keyword routine
+	* src/nautilus-property-browser.c:
+	fixed bug where the title background image wasn't being set correctly	
+	* data/browser.xml:
+	changed drop type for emblems to "property/keyword"
+	* data/backgrounds/Makefile.am:
+	added new background image
+	* data/backgrounds/white_ribs.png:
+	added new "white_ribs" background image
+	
 2000-05-02  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-entry.c

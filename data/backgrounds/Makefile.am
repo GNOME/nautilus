@@ -27,6 +27,7 @@ back_DATA = \
 	stucco.jpg \
 	white_marble.jpg \
 	white_paper.jpg \
+	white_ribs.png \
 	yellow_paper.jpg \
 	$(NULL)
 

@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
+#include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
@@ -59,6 +60,7 @@ struct NautilusIndexTitleDetails {
 	GtkWidget *icon;
 	GtkWidget *title;
 	GtkWidget *more_info;
+	GtkWidget *emblem_box;
 	GtkWidget *notes;
 };
 
@@ -235,12 +237,34 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 	g_free (displayed_text);
 }
 
+/* add a pixbuf to the emblem box */
+static void
+nautilus_index_title_add_pixbuf(NautilusIndexTitle *index_title, GdkPixbuf *pixbuf)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	GtkWidget *pixmap_widget;
+	
+	if (index_title->details->emblem_box == NULL) {
+		/* alllocate a new emblem box */
+		index_title->details->emblem_box = gtk_hbox_new(FALSE, 0);
+		gtk_widget_show(index_title->details->emblem_box);
+		gtk_box_pack_start(GTK_BOX (index_title), index_title->details->emblem_box, 0, 0, 0);
+	}
+        
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
+	gtk_widget_show (pixmap_widget);
+	gtk_container_add(GTK_CONTAINER(index_title->details->emblem_box), pixmap_widget);	
+}
+
 /* set up more info about the file */
 
 void
 nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 {
 	NautilusFile *file;
+	GList *emblem_icons, *current_emblem;
 	char *notes_text;
 	char *temp_string;
 	char *info_string;
@@ -273,6 +297,32 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 		g_free (temp_string);
 		info_string = new_info_string;
 	}
+	
+	/* set up the emblems if necessary.  First, deallocate any existing ones */
+	if (index_title->details->emblem_box) {
+		gtk_widget_destroy(index_title->details->emblem_box);
+		index_title->details->emblem_box = NULL;
+	}
+	
+	/* fetch the emblem icons from metadata */
+	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
+	if (emblem_icons) {
+		GdkPixbuf *emblem_pixbuf;
+
+		/* loop through the list of emblems, installing them in the box */
+		for (current_emblem = emblem_icons; current_emblem != NULL; current_emblem = current_emblem->next) {
+			emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+				(current_emblem->data, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD, NULL);
+			if (emblem_pixbuf != NULL) {
+				nautilus_index_title_add_pixbuf(index_title, emblem_pixbuf);
+				gdk_pixbuf_unref(emblem_pixbuf);
+			}
+		}
+		
+		nautilus_scalable_icon_list_free (emblem_icons);
+	}
+			
+	/* set up the additional text info */
 	
 	if (index_title->details->more_info)
 		gtk_label_set_text(GTK_LABEL(index_title->details->more_info), info_string);
@@ -316,7 +366,17 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 	}
 }
 
-/* here's the place where we set everything up passed on the passed in uri */
+/* return the filename text */
+
+char *
+nautilus_index_title_get_text(NautilusIndexTitle *index_title)
+{
+	if (index_title->details->requested_text)
+		return g_strdup(index_title->details->requested_text);
+	return NULL;
+}
+
+/* set up the filename text */
 
 void
 nautilus_index_title_set_text (NautilusIndexTitle *index_title, const char* new_text)

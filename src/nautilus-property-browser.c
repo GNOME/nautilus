@@ -164,7 +164,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	gtk_widget_show(property_browser->details->title_box);
 	
 	background_path = gnome_datadir_file ("nautilus/backgrounds");
-	background_uri = g_strdup_printf("file://%s/BROWSER_TITLE_IMAGE", background_path);	
+	background_uri = g_strdup_printf("file://%s/%s", background_path, BROWSER_TITLE_IMAGE);	
 	background = nautilus_get_widget_background(property_browser->details->title_box);
 	nautilus_background_set_tile_image_uri(background, background_uri);
 	g_free(background_path);

@@ -92,6 +92,7 @@ enum {
 	TARGET_URI_LIST,
 	TARGET_COLOR,
 	TARGET_BGIMAGE,
+	TARGET_KEYWORD,
 	TARGET_GNOME_URI_LIST
 };
 
@@ -99,6 +100,7 @@ static GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
 	{ "property/bgimage", 0, TARGET_BGIMAGE },
+	{ "property/keyword", 0, TARGET_KEYWORD },
 	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
@@ -283,7 +285,6 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
 	exactly_one = uris[0] != NULL && uris[1] == NULL;
 
-	/* FIXME bugzilla.eazel.com 602: set keywords by drag-and-drop */
 	/* FIXME bugzilla.eazel.com 604: handle files by setting the location to the file */
 	
 	switch (hit_test (index_panel, x, y)) {
@@ -374,6 +375,54 @@ receive_dropped_color (NautilusIndexPanel *index_panel,
 	g_free(color_spec);
 }
 
+/* handle receiving a dropped keyword */
+
+static void
+receive_dropped_keyword (NautilusIndexPanel *index_panel,
+		       int x, int y,
+		       GtkSelectionData *selection_data)
+{
+	NautilusFile *file;
+	GList *keywords, *word;
+	char *title;
+	
+	/* soon, we'll be able to get rid of this hacked code that isolates the keyword
+	   from the file uri */
+ 	char* keyword_uri = g_strdup(selection_data->data);
+ 	char* temp_str = strrchr(keyword_uri, '/');
+	char* dot_str = strrchr(keyword_uri, '.');
+	if (dot_str)
+		*dot_str = '\0';
+	if (!temp_str)
+		temp_str = keyword_uri;
+	else
+		temp_str += 1;
+		
+	/* OK, now we've got the keyword, so add it to the metadata */
+
+	file = nautilus_file_get (index_panel->details->uri);
+	if (file == NULL) {
+		g_free(keyword_uri);
+		return;
+	}	
+	/* Check and see if it's already there. */
+	keywords = nautilus_file_get_keywords (file);
+	word = g_list_find_custom (keywords, temp_str, (GCompareFunc) strcmp);
+	if (word == NULL)
+		keywords = g_list_append (keywords, g_strdup (temp_str));
+	else
+		keywords = g_list_remove_link (keywords, word);
+
+	nautilus_file_set_keywords (file, keywords);
+	nautilus_file_unref(file);
+	g_free(keyword_uri);
+	
+	/* regenerate the display */
+	title = nautilus_index_title_get_text(index_panel->details->title);
+	nautilus_index_panel_update_info (index_panel, title);  	
+	g_free(title);
+}
+
 static void  
 nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					 int x, int y,
@@ -400,6 +449,9 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		if (hit_test (index_panel, x, y) == BACKGROUND_PART)
 			receive_dropped_uri_list (index_panel, x, y, selection_data);
 		break;	
+	case TARGET_KEYWORD:
+		receive_dropped_keyword(index_panel, x, y, selection_data);
+		break;
 	default:
 		g_warning ("unknown drop type");
 	}

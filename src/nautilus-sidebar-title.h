@@ -56,6 +56,7 @@ void       nautilus_index_title_set_uri       (NautilusIndexTitle *index_title,
 					       const char         *initial_text);
 void       nautilus_index_title_set_text      (NautilusIndexTitle *index_title,
 					       const char         *new_title);
+char*	   nautilus_index_title_get_text	  (NautilusIndexTitle *index_title);
 gboolean   nautilus_index_title_hit_test_icon (NautilusIndexTitle *index_title,
 					       int                 x,
 					       int                 y);
