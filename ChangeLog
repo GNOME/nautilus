@@ -1,3 +1,26 @@
+2000-08-07  John Sullivan  <sullivan@eazel.com>
+
+	Part of bug 2005 (Should display error message when search
+	fails because search demon isn't running)
+
+	Rebecka did all the underlying error-code-handling, which isn't
+	quite working yet. I'm checking in this UI step even in advance
+	of that.
+
+	* src/nautilus-applicable-views.h: New NautilusNavigationResult
+	NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE. This mechanism,
+	invented by me, seems really hoary now.
+	* src/nautilus-applicable-views.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result):
+	Translate beween GnomeVFSResult and NautilusNavigationResult.
+	* src/nautilus-window-manage-views.c: 
+	(is_search_uri): New function, checks whether the URI starts
+	with "search:".
+	(nautilus_window_end_location_change_callback): If the error
+	is SERVICE_NOT_AVAILABLE and it's a search uri, put up a custom
+	error message. It's not a very helpful message at this point, but 
+	at least the user gets some kind of feedback.
+
 2000-08-07  Darin Adler  <darin@eazel.com>
 
 	Fixed "make check".
@@ -21,6 +44,7 @@
 	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
 	Add testing rig for the forming and escaping of user-inputted URIs.
 	
+>>>>>>> 1.1293
 2000-08-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.c:

@@ -1194,6 +1194,12 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
         }
 }
 
+static gboolean
+is_search_uri (const char *uri)
+{
+	return nautilus_str_has_prefix (uri, "search:");
+}
+
 static void
 nautilus_window_end_location_change_callback (NautilusNavigationResult result_code,
                                               NautilusNavigationInfo *navi,
@@ -1282,6 +1288,12 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                                  requested_uri);		
 		break;
 
+	case NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE:
+		if (is_search_uri (requested_uri)) {
+			/* FIXME: Need to give the user some advice about what to do here. */
+			error_message = g_strdup_printf (_("Sorry, searching can't be used now. In the future this message will be more helpful."));
+			break;
+		} /* else fall through */
 
         default:
                 error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."), requested_uri);
