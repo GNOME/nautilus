@@ -81,7 +81,7 @@
 /* Milliseconds */
 #define STATUS_BAR_CLEAR_TIMEOUT 5000
 
-/* GNOME Dock Items */
+/* dock items */
 #define LOCATION_BAR_PATH	"/Location Bar"
 #define TOOL_BAR_PATH           "/Tool Bar"
 #define STATUS_BAR_PATH         "/status"
@@ -219,10 +219,11 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 				      NautilusWindow *window)
 {
 	nautilus_window_update_find_menu_item (window);
-
+	
 	window->details->updating_bonobo_state = TRUE;
+
 	g_assert (mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION 
-		|| mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
+		  || mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
 
 	/* FIXME: bugzilla.eazel.com 3590:
 	 * We shouldn't need a separate command for the toggle button and menu item.
@@ -231,7 +232,7 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
 					  NAUTILUS_COMMAND_TOGGLE_FIND_MODE_WITH_STATE,
 					  mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
-	 
+	
 	window->details->updating_bonobo_state = FALSE;
 }
 

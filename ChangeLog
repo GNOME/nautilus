@@ -1,3 +1,30 @@
+2000-10-10  Darin Adler  <darin@eazel.com>
+
+	* README: Changed gnome-print to work at HEAD.
+	
+	* src/file-manager/fm-icon-view.c: (handle_radio_item): Common
+	function shared by context menu and Bonobo menu.
+	(context_menu_layout_radio_item_callback): Use common function.
+	(append_one_context_menu_layout_item): Change from "verb" to "id".
+	(update_layout_menus): Set up proper radio button based on ids.
+	(switch_to_manual_layout): Renamed and changed from a callback to
+	a normal function.
+	(handle_ui_event): Signal handler to get Bonobo radio menu
+	choices.
+	(fm_icon_view_merge_menus): Connect UI event handler and remove
+	old code for radio menu items.
+	* src/file-manager/nautilus-icon-view-ui.xml: Add ids to the radio
+	menu items.
+	
+	* src/nautilus-about.c: (nautilus_about_destroy),
+	(nautilus_about_initialize), (nautilus_about_repaint),
+	(draw_aa_string), (randomize_authors), (draw_author_list),
+	(nautilus_about_draw_info), (nautilus_about_update_authors),
+	(nautilus_about_close), (update_authors_if_necessary): Improve
+	randomizing algorithm, get rid of fixed maximum number of authors.
+	
+	* src/nautilus-window.c: Cosmetic changes.
+
 s2000-10-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	Work on making bookmarks and history work with new bonobo
@@ -126,7 +153,6 @@ s2000-10-10  Gene Z. Ragan  <gzr@eazel.com>
 	* src/file-manager/nautilus-icon-view-ui.xml:
 	Added a type=toggle parameter to the layout and reverse
 	sort order menu items
-	
 
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
