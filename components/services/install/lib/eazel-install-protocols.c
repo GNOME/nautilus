@@ -473,7 +473,7 @@ eazel_install_fetch_file (EazelInstall *service,
 	}
 	
 	if (!result) {
-		g_warning (_("Failed to retreive %s!"), 
+		g_warning (_("Failed to retrieve %s!"), 
 			   file_to_report ? file_to_report : g_basename (target_file));
 		eazel_install_emit_download_failed (service, 
 						    file_to_report ? file_to_report : g_basename (target_file));
@@ -561,6 +561,7 @@ eazel_install_fetch_package (EazelInstall *service,
 			packagedata_fill_from_file (package, targetname); 
 		} else {
 			g_warning (_("File download failed"));
+			unlink (targetname);
 		}
 
 		g_free (targetname);
@@ -621,21 +622,52 @@ gboolean eazel_install_fetch_package_by_id (EazelInstall *service,
 }
 
 
+#define EVILCHAR(c)  (((c) == '+') || ((c) < '-') || ((c) == '?') || ((c) == '\\') || ((c) > 'z'))
 static void
 add_to_url (char **url,
 	    const char *cgi_string,
 	    const char *val)
 {
-	char *tmp;
+	char *tmp, *quoted, *q;
+	const char *p;
+	int needs_quoting;
 
 	g_assert (url != NULL);
 	g_assert ((*url) != NULL);
 	g_assert (cgi_string != NULL);
 
-	if (val) {
-		tmp = g_strconcat (*url, cgi_string, val, NULL);
+	needs_quoting = 0;
+	for (p = val; p && *p; p++) {
+		if (EVILCHAR (*p)) {
+			needs_quoting++;
+		}
+	}
+
+	if (needs_quoting) {
+		/* url quote the sucker. */
+		q = quoted = g_malloc (strlen (val) + needs_quoting);
+		for (p = val; p && *p; p++) {
+			if (EVILCHAR (*p)) {
+				*q++ = '%';
+				*q++ = "0123456789ABCDEF"[*p / 16];
+				*q++ = "0123456789ABCDEF"[*p % 16];
+			} else {
+				*q++ = *p;
+			}
+		}
+		*q = 0;
+	} else {
+		quoted = (char *)val;
+	}
+
+	if (quoted) {
+		tmp = g_strconcat (*url, cgi_string, quoted, NULL);
 		g_free (*url);
 		(*url) = tmp;
+	}
+
+	if (needs_quoting) {
+		g_free (quoted);
 	}
 }
 
@@ -681,6 +713,9 @@ get_url_for_package  (EazelInstall *service,
 			out_package->remote_url = g_strdup (pack->remote_url);
 			url = g_strdup (pack->remote_url);
 			out_package->md5 = g_strdup (pack->md5);
+			if (! out_package->name) {
+				out_package->name = g_strdup (pack->name);
+			}
 			if (! out_package->version) {
 				out_package->version = g_strdup (pack->version);
 			}

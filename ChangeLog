@@ -1,3 +1,44 @@
+2000-10-03  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_file), (eazel_install_fetch_package),
+	(add_to_url), (get_url_for_package):
+
+	Erase file if it didn't download correctly (was leaving around
+	0-length files).  Quote weird characters in values when composing
+	an URL.
+	
+	* nautilus-installer/src/callbacks.c: (druid_delete):
+	* nautilus-installer/src/callbacks.h:
+	* nautilus-installer/src/installer.c: (get_pixmap_x_y),
+	(create_pixmap), (create_what_to_do_page), (jump_to_error_page),
+	(create_window), (eazel_install_progress),
+	(eazel_download_progress), (get_detailed_errors_foreach),
+	(download_failed), (eazel_install_preflight),
+	(eazel_install_dep_check), (eazel_install_delete_files),
+	(install_done), (check_if_next_okay), (toggle_button_toggled),
+	(check_system), (eazel_installer_do_install),
+	(eazel_installer_finalize), (eazel_install_get_depends),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/main.c:
+
+	Catch (X) click on window and exit cleanly.  Combine the two -d
+	options into one and consolidate the debug output.  Change default
+	server to services.eazel.com.  Resize druid to the size of the
+	background XPM and disallow resizes.  Remove the /tmp dir on
+	failure.  Use only printable chars in /tmp dir name.  Remove the
+	ability to do nonsensical browsing in the druid (backwards from
+	page one, etc).
+	
+	* nautilus-installer/src/error-symbol.xpm:
+
+	Needed XPM for the error page.
+	
+	* nautilus-installer/src/prescript:
+
+	Remove weird Danish text and replace with terse English text.
+
 2000-10-03  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/Makefile.am:
