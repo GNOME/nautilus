@@ -1,3 +1,11 @@
+2002-05-29  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_mark_gone): remove the file from
+	the link hash if it is going, since we bin the
+	file info here and thus can't remove it later
+	#74120 [backport from HEAD]
+
 2002-04-13  Abel Cheung  <maddog@linux.org.hk>
 
 	* libnautilus-private/nautilus-authn-manager.c:

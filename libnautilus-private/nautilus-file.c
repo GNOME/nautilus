@@ -4606,6 +4606,9 @@ nautilus_file_mark_gone (NautilusFile *file)
 
 	update_links_if_target (file);
 
+	/* Drop it from the symlink hash ! */
+	remove_from_link_hash_table (file);
+
 	/* Let the directory know it's gone. */
 	directory = file->details->directory;
 	if (!nautilus_file_is_self_owned (file)) {
