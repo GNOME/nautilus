@@ -1642,16 +1642,16 @@ create_basic_page (FMPropertiesWindow *window)
 		gtk_widget_show (button_box);
 		gtk_box_pack_end (GTK_BOX(container), button_box, FALSE, FALSE, 4);  
 		
-	 	temp_button = gtk_button_new_with_label (_("Select Custom Icon..."));
+	 	temp_button = gtk_button_new_with_mnemonic (_("_Select Custom Icon..."));
 		gtk_widget_show (temp_button);
 		gtk_box_pack_start (GTK_BOX (button_box), temp_button, FALSE, FALSE, 4);  
-		eel_gtk_button_set_standard_padding (GTK_BUTTON (temp_button));
+
 		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (select_image_button_callback), window);
 	 	
-	 	temp_button = gtk_button_new_with_label (_("Remove Custom Icon"));
+	 	temp_button = gtk_button_new_with_mnemonic (_("_Remove Custom Icon"));
 		gtk_widget_show (temp_button);
 		gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
-		eel_gtk_button_set_standard_padding (GTK_BUTTON (temp_button));
+
 	 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (remove_image_button_callback), window);
 
 		window->details->remove_image_button = temp_button;

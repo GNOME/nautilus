@@ -428,7 +428,7 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 		g_assert (GTK_IS_BUTTON (bar->details->find_them));
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry), 
 					   "activate",
-					   G_CALLBACK (eel_gtk_button_auto_click),
+					   G_CALLBACK (gtk_widget_activate),
 					   GTK_OBJECT (bar->details->find_them));
 	}
 	nautilus_complex_search_bar_queue_resize (bar);

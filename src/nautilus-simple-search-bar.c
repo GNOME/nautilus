@@ -137,7 +137,7 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 		 TRUE);
 	
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   G_CALLBACK (eel_gtk_button_auto_click), 
+				   G_CALLBACK (gtk_widget_activate), 
 				   GTK_OBJECT (bar->details->find_button));
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
 				   G_CALLBACK (update_simple_find_button_state), GTK_OBJECT (bar));

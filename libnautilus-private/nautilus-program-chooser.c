@@ -1343,8 +1343,8 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	gtk_widget_show (change_button_holder);
   	gtk_box_pack_end (GTK_BOX (framed_hbox), change_button_holder, FALSE, FALSE, 0);
 
-  	change_button = gtk_button_new_with_label(_("Modify..."));
-	eel_gtk_button_set_standard_padding (GTK_BUTTON (change_button));
+  	change_button = gtk_button_new_with_mnemonic (_("_Modify..."));
+
   	gtk_widget_show (change_button);
   	gtk_box_pack_end (GTK_BOX (change_button_holder), change_button, TRUE, FALSE, 0);
 
@@ -1366,8 +1366,8 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	capplet_button_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (capplet_button_vbox);
 	gtk_box_pack_end (GTK_BOX (capplet_hbox), capplet_button_vbox, FALSE, FALSE, 0);
-	capplet_button = gtk_button_new_with_label (_("Go There"));	 
-	eel_gtk_button_set_standard_padding (GTK_BUTTON (capplet_button));
+	capplet_button = gtk_button_new_with_mnemonic (_("_Go There"));	 
+
 	gtk_signal_connect (GTK_OBJECT (capplet_button),
 			    "clicked",
 			    G_CALLBACK (launch_mime_capplet_and_close_dialog),

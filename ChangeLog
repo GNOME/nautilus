@@ -1,3 +1,64 @@
+2001-11-01  Havoc Pennington  <hp@pobox.com>
+
+	* src/nautilus-view-frame-corba.c: fix
+	EEL_DEFINE_BONOBO_BOILERPLATE call
+	
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_init): mnemonics
+
+	* src/nautilus-complex-search-bar.c
+	(attach_criterion_to_search_bar): use gtk_widget_activate instead
+	of eel_gtk_button_auto_click
+
+	* src/nautilus-simple-search-bar.c
+	(nautilus_simple_search_bar_new): ditto
+	
+	* src/nautilus-sidebar.c (nautilus_sidebar_update_buttons): 
+	remove eel_gtk_button_set_standard_padding, add mnemonic to
+	button
+
+	* src/nautilus-bookmarks-window.c (create_bookmarks_window): 
+	remove eel_gtk_button_set_standard_padding, add mnemonic to
+	button
+	
+	* src/file-manager/fm-properties-window.c (create_basic_page):
+	remove eel_gtk_button_set_standard_padding, add mnemonics to
+	buttons
+
+	* src/file-manager/fm-directory-view.c (copy_or_cut_files): remove
+	use of eel_get_current_event_time()
+	(paste_files_callback): ditto
+
+	* Makefile.am (SUBDIRS): cut-n-paste-code seems to be required by
+	libnautilus-private, so move it before libnautilus-private
+
+	* libnautilus-private/nautilus-undo-manager.c: fix
+	EEL_DEFINE_BONOBO_BOILERPLATE call
+
+	* libnautilus-private/nautilus-undo-context.c: fix
+	EEL_DEFINE_BONOBO_BOILERPLATE call
+
+	* libnautilus-private/nautilus-program-chooser.c
+	(nautilus_program_chooser_new): axe
+	eel_gtk_button_set_standard_padding, add mnemonic to button
+	(nautilus_program_chooser_new): axe
+	eel_gtk_button_set_standard_padding, add mnemonic to button
+
+	* libnautilus-private/nautilus-metafile.c: fix
+	EEL_DEFINE_BONOBO_BOILERPLATE call
+
+	* libnautilus-private/nautilus-metafile-factory.c: fix 
+	EEL_DEFINE_BONOBO_BOILERPLATE call
+
+	* libnautilus-private/nautilus-icon-dnd.c
+	(nautilus_icon_dnd_begin_drag): replace eel_drag_set_icon_pixbuf
+	
+	* libnautilus-private/nautilus-directory-metafile-monitor.c: fix
+	EEL_DEFINE_BONOBO_BOILERPLATE call
+	
+	* libnautilus/nautilus-undo-transaction.c: fix
+	EEL_DEFINE_BONOBO_BOILERPLATE call
+
 2001-11-01  Louise Miller  <louise.miller@sun.com>
 
 	* Lots of files in components/help 

@@ -7,9 +7,9 @@ DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 SUBDIRS =			\
 	libnautilus 		\
+	cut-n-paste-code 	\
 	libnautilus-private 	\
 	libnautilus-adapter	\
-	cut-n-paste-code 	\
 	src 			\
 	po 			\
 	data 			\

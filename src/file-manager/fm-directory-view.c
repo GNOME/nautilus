@@ -3909,7 +3909,7 @@ copy_or_cut_files (FMDirectoryView *view,
 
 	if (!gtk_selection_owner_set (GTK_WIDGET (view),
 				      clipboard_atom,
-				      eel_get_current_event_time ())) {
+				      gtk_get_current_event_time ())) {
 		return;
 	}
 
@@ -3971,7 +3971,7 @@ paste_files_callback (BonoboUIComponent *component,
 	gtk_selection_convert (GTK_WIDGET (callback_data), 
 			       clipboard_atom, 
 			       copied_files_atom,
-			       eel_get_current_event_time ());
+			       gtk_get_current_event_time ());
 }
 
 static gboolean

@@ -1310,7 +1310,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         y_offset = dnd_info->drag_info.start_y - window_rect.y0;
         
         /* set the icon for dragging */
-        eel_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
+        gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
 }
 
 static gboolean

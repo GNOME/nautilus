@@ -354,8 +354,9 @@ nautilus_property_browser_init (GtkObject *object)
   	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
   	
   	/* create the "done" button */
- 	temp_button = gtk_button_new_with_label (_("Done"));
+ 	temp_button = gtk_button_new_with_mnemonic (_("_Done"));
 	eel_gtk_button_set_padding (GTK_BUTTON (temp_button), GNOME_PAD_SMALL);
+
 	gtk_widget_show(temp_button);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);  
  	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", G_CALLBACK (done_button_callback), property_browser);
@@ -364,7 +365,7 @@ nautilus_property_browser_init (GtkObject *object)
   	property_browser->details->add_button = gtk_button_new ();
 	gtk_widget_show(property_browser->details->add_button);
 	
-	property_browser->details->add_button_label = gtk_label_new (_("Add new..."));
+	property_browser->details->add_button_label = gtk_label_new_with_mnemonic (_("_Add new..."));
 	gtk_widget_show(property_browser->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->add_button),
 			   property_browser->details->add_button_label);
@@ -380,7 +381,7 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_widget_show(property_browser->details->remove_button);
 	
 	/* FIXME: Using spaces to add padding is not good design. */
-	property_browser->details->remove_button_label = gtk_label_new (_("Remove..."));	
+	property_browser->details->remove_button_label = gtk_label_new_with_mnemonic (_("_Remove..."));	
 	gtk_widget_show(property_browser->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->remove_button),
 			   property_browser->details->remove_button_label);

@@ -71,7 +71,7 @@ static void nautilus_undo_manager_class_init (NautilusUndoManagerClass  *class);
 static void nautilus_undo_manager_init       (NautilusUndoManager       *item);
 static void destroy                                (GtkObject                 *object);
 
-EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoManager, nautilus_undo_manager, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoManager, Nautilus_Undo_Manager, nautilus_undo_manager, BONOBO_OBJECT_TYPE)
 
 static void
 release_transaction (NautilusUndoManager *manager)
