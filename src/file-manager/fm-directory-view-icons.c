@@ -189,12 +189,12 @@ create_item_context_menu (FMDirectoryViewIcons *icon_view,
 	menu = GTK_MENU (gtk_menu_new ());
 
 	menu_item = gtk_menu_item_new_with_label ("Open");
-	//gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
 	menu_item = gtk_menu_item_new_with_label ("Delete");
-	//gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
