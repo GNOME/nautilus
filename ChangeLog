@@ -1,3 +1,21 @@
+2001-02-08  Laszlo Kovacs  <laszlo.kovacs@sun.com>
+	* components/help/hyperbola-filefmt.c:
+
+	Toplevel document support added. Docs specified in
+	$(prefix)/share/nautilus/components/hyperbola/topleveldocs.xml
+	will be added to the toplevel section of the help tree if
+	Scrollkeeper is enabled
+	
+	* components/help/Makefile.am:
+
+	topleveldocs.xml installed and hyperbola data directory
+	changed to $(prefix)/share/nautilus/components/hyperbola
+
+	* components/help/topleveldocs.xml:
+
+	new xml file holding the docs that go into the toplevel
+	section of the help tree
+
 2001-02-07  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic2.c:
