@@ -72,9 +72,9 @@ static guint signals[LAST_SIGNAL] = { 0 };
 /* This is the parent class pointer */
 
 #ifdef STANDALONE
-static GtkObjectClass *trilobite_eazel_install_parent_class;
+static GtkObjectClass *eazel_install_parent_class;
 #else
-static BonoboObjectClass *trilobite_eazel_install_parent_class;
+static BonoboObjectClass *eazel_install_parent_class;
 #endif /* STANDALONE */
 /* prototypes */
 
@@ -88,12 +88,12 @@ static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 typedef struct {
 	POA_Trilobite_Eazel_Install poa;
-	TrilobiteEazelInstall *object;
+	EazelInstall *object;
 } impl_POA_Trilobite_Eazel_Install;
 
 static void 
-impl_Trilobite_Eazel_Install_new_packages(impl_POA_Trilobite_Eazel_Install *servant,
-					  const Trilobite_Eazel_InstallCallback cb,
+impl_Eazel_Install_new_packages(impl_POA_Trilobite_Eazel_Install *servant,
+					  const Eazel_InstallCallback cb,
 					  CORBA_Environment * ev) 
 {
 	servant->object->callback = cb;
@@ -102,12 +102,12 @@ impl_Trilobite_Eazel_Install_new_packages(impl_POA_Trilobite_Eazel_Install *serv
 }
 
 POA_Trilobite_Eazel_Install__epv* 
-trilobite_eazel_install_get_epv () 
+eazel_install_get_epv () 
 {
 	POA_Trilobite_Eazel_Install__epv *epv;
 
 	epv = g_new0 (POA_Trilobite_Eazel_Install__epv, 1);
-	epv->new_packages = (gpointer)&impl_Trilobite_Eazel_Install_new_packages;
+	epv->new_packages = (gpointer)&impl_Eazel_Install_new_packages;
 	return epv;
 };
 
@@ -118,207 +118,207 @@ trilobite_eazel_install_get_epv ()
 *****************************************/
 
 void
-trilobite_eazel_install_destroy (GtkObject *object)
+eazel_install_destroy (GtkObject *object)
 {
-	TrilobiteEazelInstall *service;
+	EazelInstall *service;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (TRILOBITE_EAZEL_INSTALL (object));
+	g_return_if_fail (EAZEL_INSTALL (object));
 
-	service = TRILOBITE_EAZEL_INSTALL (object);
+	service = EAZEL_INSTALL (object);
 
 	/* FIXME 
 	   implement this properly */
-	g_message ("in trilobite_eazel_install_destroy");
+	g_message ("in eazel_install_destroy");
 }
 
 static void
-trilobite_eazel_install_set_arg (GtkObject *object,
+eazel_install_set_arg (GtkObject *object,
 				 GtkArg    *arg,
 				 guint      arg_id)
 {
-	TrilobiteEazelInstall *service;
+	EazelInstall *service;
 
 	g_assert (object != NULL);
-	g_assert (TRILOBITE_IS_EAZEL_INSTALL (object));
+	g_assert (IS_EAZEL_INSTALL (object));
 
-	service = TRILOBITE_EAZEL_INSTALL (object);
+	service = EAZEL_INSTALL (object);
 
 	switch (arg_id) {
 	case ARG_VERBOSE:
-		trilobite_eazel_install_set_verbose (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_verbose (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_SILENT:
-		trilobite_eazel_install_set_silent (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_silent (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_TEST:
-		trilobite_eazel_install_set_test (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_test (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_FORCE:
-		trilobite_eazel_install_set_force (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_force (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_DEPEND:
-		trilobite_eazel_install_set_depend (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_depend (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_UPDATE:
-		trilobite_eazel_install_set_update (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_update (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_UNINSTALL:
-		trilobite_eazel_install_set_uninstall (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_uninstall (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_DOWNGRADE:
-		trilobite_eazel_install_set_downgrade (service, GTK_VALUE_BOOL(*arg));
+		eazel_install_set_downgrade (service, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_PROTOCOL:
-		trilobite_eazel_install_set_protocol (service, GTK_VALUE_ENUM(*arg));
+		eazel_install_set_protocol (service, GTK_VALUE_ENUM(*arg));
 		break;
 	case ARG_TMP_DIR:
-		trilobite_eazel_install_set_tmp_dir (service, (char*)GTK_VALUE_POINTER(*arg));
+		eazel_install_set_tmp_dir (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_RPMRC_FILE:
-		trilobite_eazel_install_set_rpmrc_file (service, (char*)GTK_VALUE_POINTER(*arg));
+		eazel_install_set_rpmrc_file (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_HOSTNAME:
-		trilobite_eazel_install_set_hostname (service, (char*)GTK_VALUE_POINTER(*arg));
+		eazel_install_set_hostname (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_RPM_STORAGE_PATH:
-		trilobite_eazel_install_set_rpm_storage_path (service, (char*)GTK_VALUE_POINTER(*arg));
+		eazel_install_set_rpm_storage_path (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_PACKAGE_LIST_STORAGE_PATH:
-		trilobite_eazel_install_set_package_list_storage_path (service, (char*)GTK_VALUE_POINTER(*arg));
+		eazel_install_set_package_list_storage_path (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_PACKAGE_LIST:
-		trilobite_eazel_install_set_package_list (service, (char*)GTK_VALUE_POINTER(*arg));
+		eazel_install_set_package_list (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_PORT_NUMBER:
-		trilobite_eazel_install_set_port_number (service, GTK_VALUE_UINT(*arg));
+		eazel_install_set_port_number (service, GTK_VALUE_UINT(*arg));
 		break;
 	}
 }
 
 static void
-trilobite_eazel_install_class_initialize (TrilobiteEazelInstallClass *klass) 
+eazel_install_class_initialize (EazelInstallClass *klass) 
 {
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass*)klass;
-	object_class->destroy = (void(*)(GtkObject*))trilobite_eazel_install_destroy;
-	object_class->set_arg = trilobite_eazel_install_set_arg;
+	object_class->destroy = (void(*)(GtkObject*))eazel_install_destroy;
+	object_class->set_arg = eazel_install_set_arg;
 	
 #ifdef STANDALONE
-	trilobite_eazel_install_parent_class = gtk_type_class (gtk_object_get_type ());
+	eazel_install_parent_class = gtk_type_class (gtk_object_get_type ());
 #else
-	trilobite_eazel_install_parent_class = gtk_type_class (bonobo_object_get_type ());
+	eazel_install_parent_class = gtk_type_class (bonobo_object_get_type ());
 	klass->servant_vepv = g_new0 (POA_Trilobite_Eazel_Install__vepv,1);
 	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
 	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Trilobite_Eazel_Install_epv = trilobite_eazel_install_get_epv ();
+	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Eazel_Install_epv = eazel_install_get_epv ();
 #endif /* STANDALONE */
 
 	signals[DOWNLOAD_PROGRESS] = 
 		gtk_signal_new ("download_progress",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (TrilobiteEazelInstallClass, download_progress),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE,1,GTK_TYPE_POINTER);
+				GTK_SIGNAL_OFFSET (EazelInstallClass, download_progress),
+				gtk_marshal_NONE__POINTER_INT_INT,
+				GTK_TYPE_NONE,3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (TrilobiteEazelInstallClass, install_progress),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE,0);
+				GTK_SIGNAL_OFFSET (EazelInstallClass, install_progress),
+				gtk_marshal_NONE__POINTER_INT_INT,
+				GTK_TYPE_NONE,3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::verbose",
+	gtk_object_add_arg_type ("EazelInstall::verbose",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_VERBOSE);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::silent",
+	gtk_object_add_arg_type ("EazelInstall::silent",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_SILENT);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::debug",
+	gtk_object_add_arg_type ("EazelInstall::debug",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_DEBUG);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::test",
+	gtk_object_add_arg_type ("EazelInstall::test",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_TEST);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::force",
+	gtk_object_add_arg_type ("EazelInstall::force",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_FORCE);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::depend",
+	gtk_object_add_arg_type ("EazelInstall::depend",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_DEPEND);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::update",
+	gtk_object_add_arg_type ("EazelInstall::update",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_UPDATE);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::uninstall",
+	gtk_object_add_arg_type ("EazelInstall::uninstall",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_UNINSTALL);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::downgrade",
+	gtk_object_add_arg_type ("EazelInstall::downgrade",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_DOWNGRADE);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::protocol",
+	gtk_object_add_arg_type ("EazelInstall::protocol",
 				 GTK_TYPE_ENUM,
 				 GTK_ARG_READWRITE,
 				 ARG_PROTOCOL);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::tmp_dir",
+	gtk_object_add_arg_type ("EazelInstall::tmp_dir",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_TMP_DIR);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::rpmrc_file",
+	gtk_object_add_arg_type ("EazelInstall::rpmrc_file",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_RPMRC_FILE);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::hostname",
+	gtk_object_add_arg_type ("EazelInstall::hostname",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_HOSTNAME);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::rpm_storage_path",
+	gtk_object_add_arg_type ("EazelInstall::rpm_storage_path",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_RPM_STORAGE_PATH);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::package_list_storage_path",
+	gtk_object_add_arg_type ("EazelInstall::package_list_storage_path",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_PACKAGE_LIST_STORAGE_PATH);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::package_list",
+	gtk_object_add_arg_type ("EazelInstall::package_list",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_PACKAGE_LIST);
-	gtk_object_add_arg_type ("TrilobiteEazelInstall::port_number",
+	gtk_object_add_arg_type ("EazelInstall::port_number",
 				 GTK_TYPE_UINT,
 				 GTK_ARG_READWRITE,
 				 ARG_PORT_NUMBER);
 }
 
 #ifndef STANDALONE
-static Trilobite_Eazel_Install
-trilobite_eazel_install_create_corba_object (BonoboObject *service) {
+static Eazel_Install
+eazel_install_create_corba_object (BonoboObject *service) {
 	impl_POA_Trilobite_Eazel_Install *servant;
 	CORBA_Environment ev;
 
 	g_assert (service != NULL);
-	g_assert (TRILOBITE_IS_EAZEL_INSTALL (service));
+	g_assert (IS_EAZEL_INSTALL (service));
 	
 	CORBA_exception_init (&ev);
 	
 	servant = (impl_POA_Trilobite_Eazel_Install*)g_new0 (PortableServer_Servant,1);
-	((POA_Trilobite_Eazel_Install*) servant)->vepv = TRILOBITE_EAZEL_INSTALL_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
+	((POA_Trilobite_Eazel_Install*) servant)->vepv = EAZEL_INSTALL_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
 	POA_Trilobite_Eazel_Install__init (servant, &ev);
 	ORBIT_OBJECT_KEY (((POA_Trilobite_Eazel_Install*)servant)->_private)->object = NULL;
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Cannot instantiate Trilobite_Eazel_Install corba object");
+		g_warning ("Cannot instantiate Eazel_Install corba object");
 		g_free (servant);
 		CORBA_exception_free (&ev);		
 		return CORBA_OBJECT_NIL;
@@ -327,23 +327,23 @@ trilobite_eazel_install_create_corba_object (BonoboObject *service) {
 	CORBA_exception_free (&ev);		
 
 	/* Return the bonobo activation of the servant */
-	return (Trilobite_Eazel_Install) bonobo_object_activate_servant (service, servant);
+	return (Eazel_Install) bonobo_object_activate_servant (service, servant);
 }
 #endif /* STANDALONE */
 
 static void
-trilobite_eazel_install_initialize (TrilobiteEazelInstall *service) {
+eazel_install_initialize (EazelInstall *service) {
 #ifndef STANDALONE
-	Trilobite_Eazel_Install corba_service;
+	Eazel_Install corba_service;
 #endif /* STANDALONE */
 
-	/* g_message ("in trilobite_eazel_install_initialize"); */
+	/* g_message ("in eazel_install_initialize"); */
 
 	g_assert (service != NULL);
-	g_assert (TRILOBITE_IS_EAZEL_INSTALL (service));
+	g_assert (IS_EAZEL_INSTALL (service));
 
 #ifndef STANDALONE
-	corba_service = trilobite_eazel_install_create_corba_object (BONOBO_OBJECT (service));
+	corba_service = eazel_install_create_corba_object (BONOBO_OBJECT (service));
 
 	/* This sets the bonobo structures in service using the corba object */
 	if (!bonobo_object_construct (BONOBO_OBJECT (service), corba_service)) {
@@ -351,56 +351,56 @@ trilobite_eazel_install_initialize (TrilobiteEazelInstall *service) {
 	}	
 #endif /* STANDALONE */
 
-	service->private = g_new0 (TrilobiteEazelInstallPrivate,1);
+	service->private = g_new0 (EazelInstallPrivate,1);
 	service->private->topts = g_new0 (TransferOptions, 1);
 	service->private->iopts = g_new0 (InstallOptions, 1);
 }
 
 GtkType
-trilobite_eazel_install_get_type() {
-	static GtkType trilobite_service_type = 0;
+eazel_install_get_type() {
+	static GtkType service_type = 0;
 
-	/* g_message ("into trilobite_eazel_install_get_type");  */
+	/* g_message ("into eazel_install_get_type");  */
 
 	/* First time it's called ? */
-	if (!trilobite_service_type)
+	if (!service_type)
 	{
-		static const GtkTypeInfo trilobite_service_info =
+		static const GtkTypeInfo service_info =
 		{
-			"TrilobiteEazelInstall",
-			sizeof (TrilobiteEazelInstall),
-			sizeof (TrilobiteEazelInstallClass),
-			(GtkClassInitFunc) trilobite_eazel_install_class_initialize,
-			(GtkObjectInitFunc) trilobite_eazel_install_initialize,
+			"EazelInstall",
+			sizeof (EazelInstall),
+			sizeof (EazelInstallClass),
+			(GtkClassInitFunc) eazel_install_class_initialize,
+			(GtkObjectInitFunc) eazel_install_initialize,
 			/* reserved_1 */ NULL,
 			/* reserved_2 */ NULL,
 			(GtkClassInitFunc) NULL,
 		};
 
 #ifdef STANDALONE
-		trilobite_service_type = gtk_type_unique (gtk_object_get_type (), &trilobite_service_info);
+		service_type = gtk_type_unique (gtk_object_get_type (), &service_info);
 #else
-		trilobite_service_type = gtk_type_unique (bonobo_object_get_type (), &trilobite_service_info);
+		service_type = gtk_type_unique (bonobo_object_get_type (), &service_info);
 #endif /* STANDALONE */
 	}
 
-	return trilobite_service_type;
+	return service_type;
 }
 
-TrilobiteEazelInstall*
-trilobite_eazel_install_new()
+EazelInstall*
+eazel_install_new()
 {
-	TrilobiteEazelInstall *service;
+	EazelInstall *service;
 
-	service = TRILOBITE_EAZEL_INSTALL (gtk_object_new (TRILOBITE_TYPE_EAZEL_INSTALL, NULL));
+	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL, NULL));
 	
 	return service;
 }
 
-TrilobiteEazelInstall*
-trilobite_eazel_install_new_with_config (const char *config_file)
+EazelInstall*
+eazel_install_new_with_config (const char *config_file)
 {
-	TrilobiteEazelInstall *service;
+	EazelInstall *service;
 	TransferOptions *topts;
 	InstallOptions *iopts;
 
@@ -411,7 +411,7 @@ trilobite_eazel_install_new_with_config (const char *config_file)
 		return NULL;
 	}
 
-	service = TRILOBITE_EAZEL_INSTALL (gtk_object_new (TRILOBITE_TYPE_EAZEL_INSTALL,
+	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
 							   "verbose", iopts->mode_verbose,
 							   "silent", iopts->mode_silent,
 							   "debug", iopts->mode_debug,
@@ -439,8 +439,8 @@ trilobite_eazel_install_new_with_config (const char *config_file)
 }
 
 static void
-create_temporary_directory (const char* tmpdir) {
-
+create_temporary_directory (const char* tmpdir) 
+{
 	int retval;
 
 	g_print (_("Creating temporary download directory ...\n"));
@@ -454,17 +454,20 @@ create_temporary_directory (const char* tmpdir) {
 } /* end create_temporary_directory */
 
 static void
-fetch_remote_package_list (const char* pkg_list, TransferOptions* topts) {
-
+fetch_remote_package_list (EazelInstall *service) 
+{
 	gboolean retval;
 	char* url;
+	
+	SANITY(service);
 
 	g_print (_("Getting package-list.xml from remote server ...\n"));
 
-	url = g_strdup_printf ("http://%s%s", topts->hostname,
-                                topts->pkg_list_storage_path);
-
-	retval = http_fetch_remote_file (url, pkg_list);
+	url = g_strdup_printf ("http://%s%s", 
+			       eazel_install_get_hostname (service),
+			       eazel_install_get_package_list_storage_path (service));
+	
+	retval = http_fetch_remote_file (service, url, eazel_install_get_package_list (service));
 
 	if (retval == FALSE) {
 		g_free (url);
@@ -474,20 +477,40 @@ fetch_remote_package_list (const char* pkg_list, TransferOptions* topts) {
 } /* end fetch_remote_package_list */
 
 void 
-trilobite_eazel_install_new_packages (TrilobiteEazelInstall *service)
+eazel_install_emit_install_progress (EazelInstall *service, 
+				     const char *name,
+				     int amount, 
+				     int total)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_PROGRESS], name, amount, total);
+}
+
+void 
+eazel_install_emit_download_progress (EazelInstall *service, 
+				      const char *name,
+				      int amount, 
+				      int total)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], name, amount, total);
+}
+
+void 
+eazel_install_new_packages (EazelInstall *service)
 {
 	SANITY (service);
 
-	g_message ("trilobite_eazel_install_new_packages");
+	g_message ("eazel_install_new_packages");
 
-	if (!g_file_exists (service->private->topts->tmp_dir)) {
-		create_temporary_directory (service->private->topts->tmp_dir);
+	if (!g_file_exists (eazel_install_get_tmp_dir (service))) {
+		create_temporary_directory (eazel_install_get_tmp_dir (service));
 	}
 	
 	if (service->private->iopts->protocol == PROTOCOL_HTTP) {
-		fetch_remote_package_list (service->private->iopts->pkg_list, service->private->topts);
+		fetch_remote_package_list (service);
 	}
-	if (install_new_packages (service->private->iopts, service->private->topts)==FALSE) {
+	if (install_new_packages (service)==FALSE) {
 		g_warning ("*** Install failed");
 	} 
 }

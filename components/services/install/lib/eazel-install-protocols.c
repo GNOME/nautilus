@@ -30,7 +30,9 @@
 #include <config.h>
 
 gboolean
-http_fetch_remote_file (char* url, const char* target_file) {
+http_fetch_remote_file (EazelInstall *service,
+			char* url, 
+			const char* target_file) {
 
         int length, get_failed;
         ghttp_request* request;
@@ -68,13 +70,7 @@ http_fetch_remote_file (char* url, const char* target_file) {
 
         while ((status = ghttp_process (request)) == ghttp_not_done) {
                 ghttp_current_status curStat = ghttp_get_status (request);
-                fprintf (stdout, "Progress - %% %f\r", ((float)
-                         curStat.bytes_total ? ((float) ((((float)
-                         curStat.bytes_read) / (float) curStat.bytes_total)
-                         * 100 )) : 100.0));
-                fflush (stdout);
-                if ((float) curStat.bytes_read == (float) curStat.bytes_total) {                        fprintf (stdout, "\n");
-                }
+		eazel_install_emit_download_progress (service, target_file, curStat.bytes_read, curStat.bytes_total);		
         }
         if (ghttp_status_code (request) != 200) {
                 g_warning ("HTTP error: %d %s\n", ghttp_status_code (request),

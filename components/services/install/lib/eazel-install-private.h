@@ -21,16 +21,16 @@
  *
  */
 
-#ifndef TRILOBITE_EAZEL_INSTALL__PRIVATE_H
-#define TRILOBITE_EAZEL_INSTALL__PRIVATE_H
+#ifndef EAZEL_INSTALL__PRIVATE_H
+#define EAZEL_INSTALL__PRIVATE_H
 
 typedef enum {
 	REQUEST_BY_HTTP
 } RequestMethod;
 
-struct _TrilobiteEazelInstallPrivate {	
+struct _EazelInstallPrivate {	
 	TransferOptions *topts;
 	InstallOptions *iopts;
 };
 
-#endif /* TRILOBITE_EAZEL_TIME__PRIVATE_H */
+#endif /* EAZEL_TIME__PRIVATE_H */

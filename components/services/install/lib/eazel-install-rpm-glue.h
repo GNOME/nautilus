@@ -30,9 +30,10 @@
 
 #include "eazel-install-types.h"
 #include "eazel-install-protocols.h"
+#include "eazel-install-public.h"
 
-gboolean install_new_packages (InstallOptions* iopts, TransferOptions* topts);
-gboolean uninstall_packages (InstallOptions* iopts, TransferOptions* topts);
+gboolean install_new_packages (EazelInstall *service);
+gboolean uninstall_packages (EazelInstall *service);
 
 
 #endif /* __EAZEL_SERVICES_RPM_GLUE_H__ */

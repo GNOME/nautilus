@@ -27,11 +27,12 @@
   and whatnot. This is to facilite the statically linked nautilus bootstrap thingy
  */
 
-#ifndef TRILOBITE_EAZEL_INSTALL_PUBLIC_H
-#define TRILOBITE_EAZEL_INSTALL_PUBLIC_H 
+#ifndef EAZEL_INSTALL_PUBLIC_H
+#define EAZEL_INSTALL_PUBLIC_H 
 
 #include <libgnome/gnome-defs.h>
 #ifndef STANDALONE
+#include "bonobo.h"
 #include "trilobite-eazel-install.h"
 #endif /*  STANDALONE */
 
@@ -41,16 +42,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define TRILOBITE_TYPE_EAZEL_INSTALL           (trilobite_eazel_install_get_type ())
-#define TRILOBITE_EAZEL_INSTALL(obj)           (GTK_CHECK_CAST ((obj), TRILOBITE_TYPE_EAZEL_INSTALL, TrilobiteEazelInstall))
-#define TRILOBITE_EAZEL_INSTALL_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TRILOBITE_TYPE_EAZEL_INSTALL, TrilobiteEazelInstallClass))
-#define TRILOBITE_IS_EAZEL_INSTALL(obj)        (GTK_CHECK_TYPE ((obj), TRILOBITE_TYPE_EAZEL_INSTALL))
-#define TRILOBITE_IS_EAZEL_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((obj), TRILOBITE_TYPE_EAZEL_INSTALL))
+#define TYPE_EAZEL_INSTALL           (eazel_install_get_type ())
+#define EAZEL_INSTALL(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_INSTALL, EazelInstall))
+#define EAZEL_INSTALL_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_INSTALL, EazelInstallClass))
+#define IS_EAZEL_INSTALL(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL))
+#define IS_EAZEL_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((obj), TYPE_EAZEL_INSTALL))
 
-typedef struct _TrilobiteEazelInstall TrilobiteEazelInstall;
-typedef struct _TrilobiteEazelInstallClass TrilobiteEazelInstallClass;
+typedef struct _EazelInstall EazelInstall;
+typedef struct _EazelInstallClass EazelInstallClass;
 
-struct _TrilobiteEazelInstallClass 
+struct _EazelInstallClass 
 {
 #ifdef STANDALONE	
 	GtkObjectClass parent_class;
@@ -66,9 +67,9 @@ struct _TrilobiteEazelInstallClass
 #endif /* STANDALONE */
 };
 
-typedef struct _TrilobiteEazelInstallPrivate TrilobiteEazelInstallPrivate;
+typedef struct _EazelInstallPrivate EazelInstallPrivate;
 
-struct _TrilobiteEazelInstall
+struct _EazelInstall
 {
 #ifdef STANDALONE	
 	GtkObject parent;
@@ -76,62 +77,70 @@ struct _TrilobiteEazelInstall
 	BonoboObject parent;
 	Trilobite_Eazel_InstallCallback callback;
 #endif /* STANDALONE */
-	TrilobiteEazelInstallPrivate *private;
+	EazelInstallPrivate *private;
 };
 
-TrilobiteEazelInstall         *trilobite_eazel_install_new (void);
-TrilobiteEazelInstall         *trilobite_eazel_install_new_with_config (const char *config_file);
-GtkType                        trilobite_eazel_install_get_type   (void);
-void                           trilobite_eazel_install_destroy    (GtkObject *object);
+EazelInstall         *eazel_install_new (void);
+EazelInstall         *eazel_install_new_with_config (const char *config_file);
+GtkType                        eazel_install_get_type   (void);
+void                           eazel_install_destroy    (GtkObject *object);
 
 #ifndef STANDALONE
-POA_Trilobite_Eazel_Install__epv *trilobite_eazel_install_get_epv (void);
+POA_Trilobite_Eazel_Install__epv *eazel_install_get_epv (void);
 #endif /* STANDALONE */
 
+void eazel_install_emit_install_progress (EazelInstall *service, 
+					  const char *name,
+					  int amount, 
+					  int total);
+void eazel_install_emit_download_progress (EazelInstall *service, 
+					   const char *name,
+					   int amount, 
+					   int total);
 
-void trilobite_eazel_install_fetch_pockage_list (TrilobiteEazelInstall *service);
-void trilobite_eazel_install_new_packages (TrilobiteEazelInstall *service);
+void eazel_install_fetch_pockage_list (EazelInstall *service);
+void eazel_install_new_packages (EazelInstall *service);
 
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */
 
 #define SANITY_VAL(name, ret)\
 	g_return_val_if_fail (name != NULL, ret); \
-	g_return_val_if_fail (TRILOBITE_IS_EAZEL_INSTALL (name), ret); \
+	g_return_val_if_fail (IS_EAZEL_INSTALL (name), ret); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 
 
 #define SANITY(name)\
 	g_return_if_fail (name != NULL); \
-	g_return_if_fail (TRILOBITE_IS_EAZEL_INSTALL (name)); \
+	g_return_if_fail (IS_EAZEL_INSTALL (name)); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 
 
 
 #define ei_access_decl(name, type) \
-type trilobite_eazel_install_get_##name (TrilobiteEazelInstall *service)
+type eazel_install_get_##name (EazelInstall *service)
 
 #define ei_access_impl(name, type, str, var, defl) \
-type trilobite_eazel_install_get_##name (TrilobiteEazelInstall *service) { \
+type eazel_install_get_##name (EazelInstall *service) { \
         SANITY_VAL (service, defl); \
 	return service->private->##str##->var; \
 }
 
 #define ei_mutator_decl(name, type) \
-void trilobite_eazel_install_set_##name (TrilobiteEazelInstall *service, \
+void eazel_install_set_##name (EazelInstall *service, \
                                          type name)
 
 #define ei_mutator_impl(name, type, str, var) \
-void trilobite_eazel_install_set_##name (TrilobiteEazelInstall *service, \
+void eazel_install_set_##name (EazelInstall *service, \
                                          type name) { \
         SANITY (service); \
 	service->private->str->var = name; \
 }
 
 #define ei_mutator_impl_string(name, type, str, var) \
-void trilobite_eazel_install_set_##name (TrilobiteEazelInstall *service, \
+void eazel_install_set_##name (EazelInstall *service, \
                                          type name) { \
         SANITY (service); \
         g_free (service->private->str->var); \
@@ -178,4 +187,4 @@ ei_access_decl (port_number, guint);
 }
 #endif /* __cplusplus */
 
-#endif /* TRILOBITE_EAZEL_INSTALL_PUBLIC_H */
+#endif /* EAZEL_INSTALL_PUBLIC_H */

@@ -30,9 +30,12 @@
 
 #include "eazel-install-types.h"
 #include <ghttp.h>
+#include "eazel-install-public.h"
 
 #define USER_AGENT_STRING "eazel-install/"
 
-gboolean http_fetch_remote_file (char* url, const char* target_file);
+gboolean http_fetch_remote_file (EazelInstall *service,
+				 char* url, 
+				 const char* target_file);
 
 #endif /* __EAZEL_SERVICES_PROTOCOLS_H__ */

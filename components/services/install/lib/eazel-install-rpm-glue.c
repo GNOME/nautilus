@@ -29,6 +29,7 @@
 
 #include "eazel-install-rpm-glue.h"
 #include "eazel-install-xml-package-list.h"
+
 #include "helixcode-utils.h"
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
@@ -40,15 +41,13 @@
 
 typedef void (*rpm_install_cb)(char* name, char* group, void* user_data);
 
-static void download_a_package (URLType protocol,
-                                TransferOptions* topts,
+static void download_a_package (EazelInstall *service,
                                 PackageData* package);
 
-static gboolean download_all_packages (URLType protocol,
-                                       TransferOptions* topts,
+static gboolean download_all_packages (EazelInstall *service,
                                        GList* categories);
 
-static gboolean install_all_packages (const char* tmp_dir,
+static gboolean install_all_packages (EazelInstall *service,
                                       int install_flags,
                                       int problem_filters,
                                       int interface_flags,
@@ -65,9 +64,10 @@ static void* rpm_show_progress (const Header h,
                                 const unsigned long amount,
                                 const unsigned long total,
                                 const void* pkgKey,
-                                void* data);
+                                void* service);
 
-static int rpm_install (char* root_dir,
+static int rpm_install (EazelInstall *service,
+			char* root_dir,
                         char* file_name,
                         char* location,
                         int install_flags,
@@ -82,7 +82,8 @@ static int rpm_uninstall (char* root_dir,
                           int problem_filters,
                           int interface_flags);
 
-static int do_rpm_install (char* root_dir,
+static int do_rpm_install (EazelInstall *service, 
+			   char* root_dir,
                            GList* packages,
                            char* location,
                            int install_flags,
@@ -99,7 +100,7 @@ static int do_rpm_uninstall (char* root_dir,
 
 
 gboolean
-install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
+install_new_packages (EazelInstall *service) {
 
 	GList* categories;
 	gboolean rv;
@@ -110,49 +111,53 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 	interface_flags = 0;
 	problem_filters = 0;
 	
-	if (iopts->mode_test == TRUE) {
+	if (eazel_install_get_test (service) == TRUE) {
 		g_print (_("Dry Run Mode Activated.  Packages will not actually be installed ...\n"));
 		install_flags |= RPMTRANS_FLAG_TEST;
 	}
 
-	if (iopts->mode_update == TRUE) {
+	if (eazel_install_get_update (service) == TRUE) {
 		interface_flags |= INSTALL_UPGRADE;
 	}
 
-	if (iopts->mode_verbose == TRUE) {
+	if (eazel_install_get_verbose (service) == TRUE) {
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
 		rpmSetVerbosity (RPMMESS_NORMAL);
 	}
 
-	if (iopts->mode_force == TRUE) {
+	if (eazel_install_get_force (service) == TRUE) {
 		problem_filters |= RPMPROB_FILTER_REPLACEPKG |
                                    RPMPROB_FILTER_REPLACEOLDFILES |
                                    RPMPROB_FILTER_REPLACENEWFILES |
                                    RPMPROB_FILTER_OLDPACKAGE;
 	}
 	
-	rpmReadConfigFiles (topts->rpmrc_file, NULL);
+	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
 	g_print (_("Reading the install package list ...\n"));
-	categories = parse_local_xml_package_list (iopts->pkg_list);
+	categories = parse_local_xml_package_list (eazel_install_get_package_list (service));
 
-	rv = download_all_packages (iopts->protocol, topts, categories);
-
-	rv = install_all_packages (topts->tmp_dir,
-                                   install_flags,
-                                   problem_filters,
-                                   interface_flags,
-                                   categories);
-
+	if (categories == NULL) {
+		rv = FALSE;
+	} else {
+		rv = download_all_packages (service, categories);
+		
+		rv = install_all_packages (service,
+					   install_flags,
+					   problem_filters,
+					   interface_flags,
+					   categories);
+	}
+	
 	return rv;
 } /* end install_new_packages */
 
 static void
-download_a_package (URLType protocol, TransferOptions* topts, PackageData* package) {
+download_a_package (EazelInstall *service, PackageData* package) {
 
-	if (protocol == PROTOCOL_HTTP) {
+	if (eazel_install_get_protocol (service) == PROTOCOL_HTTP) {
 		char* rpmname;
 		char* targetname;
 		char* url;
@@ -165,15 +170,15 @@ download_a_package (URLType protocol, TransferOptions* topts, PackageData* packa
                                            package->archtype);
 
 		targetname = g_strdup_printf ("%s/%s",
-                                              topts->tmp_dir,
+                                              eazel_install_get_tmp_dir (service),
                                               rpmname);
 		url = g_strdup_printf ("http://%s%s/%s",
-                                       topts->hostname,
-                                       topts->rpm_storage_path,
+                                       eazel_install_get_hostname (service),
+                                       eazel_install_get_rpm_storage_path (service),
                                        rpmname);
 
 		g_print ("Downloading %s...\n", rpmname);
-		rv = http_fetch_remote_file (url, targetname);
+		rv = http_fetch_remote_file (service, url, targetname);
 		if (rv != TRUE) {
 			g_error ("*** Failed to retreive %s! ***\n", url);
 		}
@@ -186,8 +191,7 @@ download_a_package (URLType protocol, TransferOptions* topts, PackageData* packa
 } /* end download_a_package */
 
 static gboolean
-download_all_packages (URLType protocol,
-                       TransferOptions* topts,
+download_all_packages (EazelInstall *service,
                        GList* categories) {
 
 	while (categories) {
@@ -203,7 +207,7 @@ download_all_packages (URLType protocol,
 
 			package = pkgs->data;
 
-			download_a_package (protocol, topts, package);
+			download_a_package (service, package);
 
 			pkgs = pkgs->next;
 		}
@@ -216,7 +220,7 @@ download_all_packages (URLType protocol,
 } /* end download_all_packages */
 
 static gboolean
-install_all_packages (const char* tmp_dir,
+install_all_packages (EazelInstall *service,
                       int install_flags,
                       int problem_filters,
                       int interface_flags,
@@ -238,7 +242,7 @@ install_all_packages (const char* tmp_dir,
 			retval = 0;
 			
 			pkg = g_strdup_printf ("%s/%s-%s-%s.%s.rpm",
-                                               tmp_dir,
+                                               eazel_install_get_tmp_dir (service),
                                                pack->name,
                                                pack->version,
                                                pack->minor,
@@ -246,8 +250,9 @@ install_all_packages (const char* tmp_dir,
 
 			g_print ("Installing %s\n", pkg);
 
-                        retval = rpm_install ("/", pkg, NULL, install_flags,
-                                              problem_filters, interface_flags,
+                        retval = rpm_install (service, 
+					      "/", pkg, NULL, install_flags,
+					      problem_filters, interface_flags,
                                               NULL, NULL); 
 
 			if (retval == 0) {
@@ -270,7 +275,7 @@ install_all_packages (const char* tmp_dir,
 
 
 gboolean 
-uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
+uninstall_packages (EazelInstall *service) {
 	GList* categories;
 	gboolean rv;
 	int uninstall_flags, interface_flags, problem_filters;
@@ -280,21 +285,21 @@ uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
 	interface_flags = 0;
 	problem_filters = 0;
 	
-	if (iopts->mode_test == TRUE) {
+	if (eazel_install_get_test (service) == TRUE) {
 		uninstall_flags |= RPMTRANS_FLAG_TEST;
 	}
 
-	if (iopts->mode_verbose == TRUE) {
+	if (eazel_install_get_verbose (service) == TRUE) {
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
 		rpmSetVerbosity (RPMMESS_NORMAL);
 	}
 
-	rpmReadConfigFiles (topts->rpmrc_file, NULL);
+	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
 	g_print (_("Reading the uninstall package list ...\n"));
-	categories = parse_local_xml_package_list (iopts->pkg_list);
+	categories = parse_local_xml_package_list (eazel_install_get_package_list (service));
 
 	while (categories) {
 		CategoryData* cat = categories->data;
@@ -375,6 +380,12 @@ rpm_show_progress (const Header h,
 	unsigned long* sizep;
 	char* name;
 	const char* filename;
+	EazelInstall *service;
+
+	g_assert (data != NULL);
+	g_assert (IS_EAZEL_INSTALL (data));
+	
+	service = EAZEL_INSTALL (data);
 
 	filename = pkgKey;
 
@@ -401,14 +412,8 @@ rpm_show_progress (const Header h,
 			fdClose (fd);
 			break;
 
-		case RPMCALLBACK_INST_PROGRESS:
-			fprintf (stdout, "Progress - %% %f\r", (total ? ((float)
-                                 ((((float) amount) / total) * 100))
-                                 : 100.0));
-			fflush (stdout);
-			if (amount == total) {
-				fprintf (stdout, "\n");
-			}
+		case RPMCALLBACK_INST_PROGRESS:			
+			eazel_install_emit_install_progress (service, filename, amount, total);
 			break;
 
 		default:
@@ -418,9 +423,15 @@ rpm_show_progress (const Header h,
 } /* end rpm_show_progress */
 
 int
-do_rpm_install (char* root_dir, GList* packages, char* location,
-                int install_flags, int problem_filters, int interface_flags,
-                rpm_install_cb cb, void* user_data) {
+do_rpm_install (EazelInstall *service,
+		char* root_dir, 
+		GList* packages, 
+		char* location,
+                int install_flags, 
+		int problem_filters, 
+		int interface_flags,
+                rpm_install_cb cb, 
+		void* user_data) {
 
 	int mode;
 	int rc;
@@ -561,7 +572,7 @@ do_rpm_install (char* root_dir, GList* packages, char* location,
 
 		rc = rpmRunTransactions (rpmdep,
                                          rpm_show_progress,
-                                         NULL,
+                                         service,
                                          NULL,
                                          &probs,
                                          install_flags,
@@ -695,7 +706,8 @@ do_rpm_uninstall (char* root_dir, GList* packages, int install_flags,
 } /* end do_rpm_uninstall */
 
 static int
-rpm_install (char* root_dir,
+rpm_install (EazelInstall *service, 
+	     char* root_dir,
              char* file,
              char* location,
              int install_flags,
@@ -708,7 +720,8 @@ rpm_install (char* root_dir,
 	int result;
 
 	list = g_list_append (NULL, file);
-	result = do_rpm_install (root_dir,
+	result = do_rpm_install (service,
+				 root_dir,
                                  list,
                                  location,
                                  install_flags,

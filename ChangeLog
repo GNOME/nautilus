@@ -1,3 +1,31 @@
+2000-05-26  Eskil Heyn Olsen  <set EMAIL_ADDRESS environment variable>
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-alt-install.c:
+	(set_parameters_from_command_line), (eazel_install_progress),
+	(eazel_download_progress), (main):
+	* components/services/install/lib/eazel-install-object.c:
+	(impl_Eazel_Install_new_packages), (eazel_install_get_epv),
+	(eazel_install_destroy), (eazel_install_set_arg),
+	(eazel_install_class_initialize),
+	(eazel_install_create_corba_object), (eazel_install_initialize),
+	(eazel_install_get_type), (eazel_install_new),
+	(eazel_install_new_with_config), (create_temporary_directory),
+	(fetch_remote_package_list), (eazel_install_emit_install_progress),
+	(eazel_install_emit_download_progress),
+	(eazel_install_new_packages):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_a_package),
+	(download_all_packages), (install_all_packages),
+	(uninstall_packages), (rpm_show_progress), (do_rpm_install),
+	(rpm_install):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+
 2000-05-26  Darin Adler  <darin@eazel.com>
 
 	A little more desktop window work.
