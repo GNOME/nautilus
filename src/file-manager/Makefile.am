@@ -51,8 +51,10 @@ ui_DATA =					\
 	nautilus-icon-view-ui.xml		\
 	nautilus-search-list-view-ui.xml	\
 	$(NULL)
-ui_msgs = nautilus-directory-view-ui.xml.h
-
+ui_msgs = nautilus-directory-view-ui.xml.h	\
+	nautilus-icon-view-ui.xml.h		\
+	nautilus-search-list-view-ui.xml.h	\
+	$(NULL)
 
 nautilus-directory-view-ui.xml.h: $(srcdir)/nautilus-directory-view-ui.xml
 	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-directory-view-ui.xml >	\
