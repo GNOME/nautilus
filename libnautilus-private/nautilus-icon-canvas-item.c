@@ -1504,7 +1504,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			
 			/* draw the shadow in black */
 			if (needs_highlight) {
-				icon_bottom += 2; /* leave some space for selection frame */
+				icon_bottom += 3; /* leave some space for selection frame */
+				text_left   -= 1;
 				nautilus_text_layout_paint (icon_text_layout, 
 							    destination_pixbuf, 
 							    text_left + 2, 
@@ -1548,8 +1549,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	
 	/* add some extra space for highlighting */
 	if (needs_highlight) {
-		height_so_far += 6; /* extra slop for nicer highlighting */	
-		width_so_far += 8; /* account for emboldening, plus extra to make it look nicer */
+		height_so_far += 8; /* extra slop for nicer highlighting */	
+		width_so_far += 15; /* account for emboldening, plus extra to make it look nicer */
 	}	
 	
 	if (destination_pixbuf != NULL) {
