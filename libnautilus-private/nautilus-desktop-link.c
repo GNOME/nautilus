@@ -166,7 +166,7 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 		
 	case NAUTILUS_DESKTOP_LINK_TRASH:
 		link->details->filename = g_strdup ("trash");
-		link->details->display_name = g_strdup (_("Trash"));
+		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME);
 		link->details->activation_uri = g_strdup (EEL_TRASH_URI);
 		if (nautilus_trash_monitor_is_empty ()) {
 			link->details->icon = g_strdup (TRASH_EMPTY_ICON);
