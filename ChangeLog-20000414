@@ -1,5 +1,25 @@
 2000-01-19  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/nautilus-directory.c: (nautilus_directory_finalize):
+	(nautilus_directory_try_to_read_metafile):
+	(nautilus_directory_read_metafile):
+	(nautilus_directory_try_to_write_metafile):
+	(nautilus_directory_write_metafile):
+	(nautilus_directory_construct_alternate_metafile_uri):
+	(nautilus_directory_new): After Andy explained his change to me, I
+	realized that it would always write the metafile in the alternate
+	place if there was no pre-existing metafile. So I changed the
+	logic. The new rule is: read the metafile from the alternate
+	location first. If we find it there, write it back
+	there. Otherwise, try to write in the directory itself. If that
+	fails, write it in the alternate location instead.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_metadata): Allow get_metadata on a NULL
+	NautilusDirectory and return NULL for data.
+
+2000-01-19  Darin Adler  <darin@eazel.com>
+
 	Allow changing the background of the icon view by dropping colors
 	on the icon view.
 

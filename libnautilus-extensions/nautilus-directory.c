@@ -70,7 +70,6 @@ static void nautilus_directory_read_metafile (NautilusDirectory *directory);
 static void nautilus_directory_write_metafile (NautilusDirectory *directory);
 static void nautilus_directory_request_write_metafile (NautilusDirectory *directory);
 static void nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory);
-static gboolean nautilus_directory_switch_to_alternate_metafile_uri (NautilusDirectory *directory);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -80,7 +79,9 @@ struct _NautilusDirectoryDetails
 	GnomeVFSURI *uri;
 
 	GnomeVFSURI *metafile_uri;
-	gboolean is_alternate_metafile_uri;
+	GnomeVFSURI *alternate_metafile_uri;
+	gboolean use_alternate_metafile;
+
 	xmlDoc *metafile_tree;
 	int write_metafile_idle_id;
 
@@ -123,10 +124,12 @@ nautilus_directory_finalize (GtkObject *object)
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
 
 	g_free (directory->details->uri_text);
-	if (directory->details->uri)
+	if (directory->details->uri != NULL)
 		gnome_vfs_uri_unref (directory->details->uri);
-	if (directory->details->metafile_uri)
+	if (directory->details->metafile_uri != NULL)
 		gnome_vfs_uri_unref (directory->details->metafile_uri);
+	if (directory->details->alternate_metafile_uri != NULL)
+		gnome_vfs_uri_unref (directory->details->alternate_metafile_uri);
 	xmlFreeDoc (directory->details->metafile_tree);
 	nautilus_directory_remove_write_metafile_idle (directory);
 
@@ -184,7 +187,7 @@ nautilus_directory_get (const char *uri)
    a synchronous call.
 */
 static GnomeVFSResult
-nautilus_directory_try_to_read_metafile (NautilusDirectory *directory)
+nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSURI *metafile_uri)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo metafile_info;
@@ -194,7 +197,7 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory)
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), GNOME_VFS_ERROR_GENERIC);
 	g_return_val_if_fail (directory->details->metafile_tree == NULL, GNOME_VFS_ERROR_GENERIC);
 
-	result = gnome_vfs_get_file_info_uri (directory->details->metafile_uri,
+	result = gnome_vfs_get_file_info_uri (metafile_uri,
 					      &metafile_info,
 					      GNOME_VFS_FILE_INFO_DEFAULT,
 					      NULL);
@@ -202,7 +205,7 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory)
 	metafile_handle = NULL;
 	if (result == GNOME_VFS_OK)
 		result = gnome_vfs_open_uri (&metafile_handle,
-					     directory->details->metafile_uri,
+					     metafile_uri,
 					     GNOME_VFS_OPEN_READ);
 
 	if (result == GNOME_VFS_OK) {
@@ -231,11 +234,17 @@ nautilus_directory_read_metafile (NautilusDirectory *directory)
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	result = nautilus_directory_try_to_read_metafile (directory);
-	if (result != GNOME_VFS_OK && !directory->details->is_alternate_metafile_uri)
-		if (nautilus_directory_switch_to_alternate_metafile_uri (directory))
-			result = nautilus_directory_try_to_read_metafile (directory);
+	/* Check for the alternate metafile first.
+	   If we read from it, then write to it later.
+	*/
+	directory->details->use_alternate_metafile = FALSE;
+	result = nautilus_directory_try_to_read_metafile (directory, directory->details->alternate_metafile_uri);
+	if (result == GNOME_VFS_OK)
+		directory->details->use_alternate_metafile = TRUE;
+	else
+		result = nautilus_directory_try_to_read_metafile (directory, directory->details->metafile_uri);
 
+	/* Check for errors. Later this must be reported to the user, not spit out as a warning. */
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_NOTFOUND)
 		g_warning ("nautilus_directory_read_metafile failed to read metafile - we should report this to the user");
 }
@@ -251,7 +260,7 @@ nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory)
 
 /* This writes the metafile synchronously. This must go eventually. */
 static GnomeVFSResult
-nautilus_directory_try_to_write_metafile (NautilusDirectory *directory)
+nautilus_directory_try_to_write_metafile (NautilusDirectory *directory, GnomeVFSURI *metafile_uri)
 {
 	xmlChar *buffer;
 	int buffer_size;
@@ -265,7 +274,7 @@ nautilus_directory_try_to_write_metafile (NautilusDirectory *directory)
 
 	metafile_handle = NULL;
 	result = gnome_vfs_create_uri (&metafile_handle,
-				       directory->details->metafile_uri,
+				       metafile_uri,
 				       GNOME_VFS_OPEN_WRITE,
 				       FALSE,
 				       METAFILE_PERMISSIONS);
@@ -294,7 +303,8 @@ nautilus_directory_write_metafile (NautilusDirectory *directory)
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	/* We are about the write the metafile, so we can cancel the pending
-	   request to do it. */
+	   request to do so.
+	*/
 	nautilus_directory_remove_write_metafile_idle (directory);
 
 	/* Don't write anything if there's nothing to write.
@@ -304,11 +314,17 @@ nautilus_directory_write_metafile (NautilusDirectory *directory)
 	if (directory->details->metafile_tree == NULL)
 		return;
 
-	result = nautilus_directory_try_to_write_metafile (directory);
-	if (result == GNOME_VFS_ERROR_ACCESSDENIED && !directory->details->is_alternate_metafile_uri)
-		if (nautilus_directory_switch_to_alternate_metafile_uri (directory))
-			result = nautilus_directory_try_to_write_metafile (directory);
+	/* Try the main URI, unless we have already been instructed to use the alternate URI. */
+	if (directory->details->use_alternate_metafile)
+		result = GNOME_VFS_ERROR_ACCESSDENIED;
+	else
+		result = nautilus_directory_try_to_write_metafile (directory, directory->details->metafile_uri);
 
+	/* Try the alternate URI if the main one failed. */
+	if (result != GNOME_VFS_OK)
+		result = nautilus_directory_try_to_write_metafile (directory, directory->details->alternate_metafile_uri);
+
+	/* Check for errors. Later this must be reported to the user, not spit out as a warning. */
 	if (result != GNOME_VFS_OK)
 		g_warning ("nautilus_directory_write_metafile failed to write metafile - we should report this to the user");
 }
@@ -416,14 +432,12 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 	return result;
 }
 
-static gboolean
-nautilus_directory_switch_to_alternate_metafile_uri (NautilusDirectory *directory)
+static GnomeVFSURI *
+nautilus_directory_construct_alternate_metafile_uri (GnomeVFSURI *metafile_uri)
 {
 	GnomeVFSResult result;
 	GnomeVFSURI *home_uri, *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
 	char *uri_as_string, *escaped_uri, *file_name;
-
-	g_return_val_if_fail (!directory->details->is_alternate_metafile_uri, FALSE);
 
 	/* Ensure that the metafiles directory exists. */
 	home_uri = gnome_vfs_uri_new (g_get_home_dir ());
@@ -434,11 +448,11 @@ nautilus_directory_switch_to_alternate_metafile_uri (NautilusDirectory *director
 	result = nautilus_make_directory_and_parents (metafiles_directory_uri, METAFILES_DIRECTORY_PERMISSIONS);
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
 		gnome_vfs_uri_unref (metafiles_directory_uri);
-		return FALSE;
+		return NULL;
 	}
 
 	/* Construct a file name from the URI. */
-	uri_as_string = gnome_vfs_uri_to_string (directory->details->uri,
+	uri_as_string = gnome_vfs_uri_to_string (metafile_uri,
 						 GNOME_VFS_URI_HIDE_NONE);
 	escaped_uri = nautilus_directory_escape_slashes (uri_as_string);
 	g_free (uri_as_string);
@@ -450,13 +464,7 @@ nautilus_directory_switch_to_alternate_metafile_uri (NautilusDirectory *director
 	gnome_vfs_uri_unref (metafiles_directory_uri);
 	g_free (file_name);
 
-	/* Switch over to the new URI. */
-	if (directory->details->metafile_uri != NULL)
-		gnome_vfs_uri_unref (directory->details->metafile_uri);
-	directory->details->metafile_uri = alternate_uri;
-	directory->details->is_alternate_metafile_uri = TRUE;
-
-	return TRUE;
+	return alternate_uri;
 }
       
 #if NAUTILUS_DIRECTORY_ASYNC
@@ -478,20 +486,21 @@ nautilus_directory_new (const char* uri)
 	NautilusDirectory *directory;
 	GnomeVFSURI *vfs_uri;
 	GnomeVFSURI *metafile_uri;
+	GnomeVFSURI *alternate_metafile_uri;
 
 	vfs_uri = gnome_vfs_uri_new (uri);
 	if (vfs_uri == NULL)
 		return NULL;
 
 	metafile_uri = gnome_vfs_uri_append_path (vfs_uri, METAFILE_NAME);
-	if (metafile_uri == NULL)
-		return NULL;
+	alternate_metafile_uri = nautilus_directory_construct_alternate_metafile_uri (metafile_uri);
 
 	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
 
 	directory->details->uri_text = g_strdup(uri);
 	directory->details->uri = vfs_uri;
 	directory->details->metafile_uri = metafile_uri;
+	directory->details->alternate_metafile_uri = alternate_metafile_uri;
 
 	nautilus_directory_read_metafile (directory);
 
@@ -521,9 +530,13 @@ nautilus_directory_get_metadata (NautilusDirectory *directory,
 	xmlChar *property;
 	char *result;
 
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	g_return_val_if_fail (tag, NULL);
 	g_return_val_if_fail (tag[0], NULL);
+
+	/* It's legal to call this on a NULL directory. */
+	if (directory == NULL)
+		return NULL;
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	root = xmlDocGetRootElement (directory->details->metafile_tree);
 	property = xmlGetProp (root, tag);
