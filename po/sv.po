@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-01-22 22:17+0100\n"
-"PO-Revision-Date: 2002-01-22 22:17+0100\n"
+"POT-Creation-Date: 2002-01-26 22:50+0100\n"
+"PO-Revision-Date: 2002-01-26 22:50+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Nautilus component adapter factory"
 msgstr "Nautilus komponentadapterfabrik"
 
-#: components/adapter/main.c:105
+#: components/adapter/main.c:99
 msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() misslyckades."
 
@@ -49,7 +49,7 @@ msgid "Factory for hardware view"
 msgstr "Fabrik för hårdvaruvy"
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:2
-#: components/hardware/nautilus-hardware-view.c:762
+#: components/hardware/nautilus-hardware-view.c:760
 #: data/static_bookmarks.xml.h:15
 msgid "Hardware"
 msgstr "Hårdvara"
@@ -70,15 +70,15 @@ msgstr "Visa som hårdvara"
 msgid "hardware view"
 msgstr "hårdvaruvy"
 
-#: components/hardware/nautilus-hardware-view.c:181
+#: components/hardware/nautilus-hardware-view.c:177
 msgid "name of icon for the hardware view"
 msgstr "namn på ikon för hårdvaruvyn"
 
-#: components/hardware/nautilus-hardware-view.c:183
+#: components/hardware/nautilus-hardware-view.c:179
 msgid "summary of hardware info"
 msgstr "sammanfattning av hårdvaruinformation"
 
-#: components/hardware/nautilus-hardware-view.c:317
+#: components/hardware/nautilus-hardware-view.c:315
 #, c-format
 msgid ""
 "%s CPU\n"
@@ -89,45 +89,45 @@ msgstr ""
 "Klockfrekvens: %s MHz\n"
 "Cachestorlek: %s kB"
 
-#: components/hardware/nautilus-hardware-view.c:352
+#: components/hardware/nautilus-hardware-view.c:350
 #, c-format
 msgid "%lu GB RAM"
 msgstr "%lu GB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:354
+#: components/hardware/nautilus-hardware-view.c:352
 #, c-format
 msgid "%lu MB RAM"
 msgstr "%lu MB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:412
+#: components/hardware/nautilus-hardware-view.c:410
 #, c-format
 msgid "%lu GB"
 msgstr "%lu GB"
 
-#: components/hardware/nautilus-hardware-view.c:414
+#: components/hardware/nautilus-hardware-view.c:412
 #, c-format
 msgid "%lu MB"
 msgstr "%lu MB"
 
-#: components/hardware/nautilus-hardware-view.c:492
+#: components/hardware/nautilus-hardware-view.c:490
 #, c-format
 msgid "Uptime is %d days, %d hours, %d minutes"
 msgstr "Drifttid är %d dagar, %d timmar, %d minuter"
 
 #. set up the title
-#: components/hardware/nautilus-hardware-view.c:518
+#: components/hardware/nautilus-hardware-view.c:516
 msgid "Hardware Overview"
 msgstr "Hårdvaruöversikt"
 
-#: components/hardware/nautilus-hardware-view.c:640
+#: components/hardware/nautilus-hardware-view.c:638
 msgid "This is a placeholder for the CPU page."
 msgstr "Detta är en platshållare för CPU-sidan."
 
-#: components/hardware/nautilus-hardware-view.c:665
+#: components/hardware/nautilus-hardware-view.c:663
 msgid "This is a placeholder for the RAM page."
 msgstr "Detta är en platshållare för RAM-sidan."
 
-#: components/hardware/nautilus-hardware-view.c:690
+#: components/hardware/nautilus-hardware-view.c:688
 msgid "This is a placeholder for the IDE page."
 msgstr "Detta är en platshållare för IDE-sidan."
 
@@ -175,7 +175,7 @@ msgstr "Nautilus bildvisarfabrik"
 msgid "View as Image"
 msgstr "Visa som bild"
 
-#: components/image-viewer/nautilus-image-view.c:823
+#: components/image-viewer/nautilus-image-view.c:810
 msgid "I could not initialize Bonobo"
 msgstr "Jag kunde inte initiera Bonobo"
 
@@ -939,7 +939,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:736
-#: src/nautilus-property-browser.c:1050 src/nautilus-property-browser.c:1309
+#: src/nautilus-property-browser.c:1044 src/nautilus-property-browser.c:1299
 msgid "Not an Image"
 msgstr "Inte en bild"
 
@@ -3739,7 +3739,7 @@ msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 
 #: libnautilus-private/nautilus-program-chooser.c:1200
 #: src/file-manager/fm-search-list-view.c:494
-#: src/nautilus-bookmarks-window.c:209
+#: src/nautilus-bookmarks-window.c:208
 msgid "Name"
 msgstr "Namn"
 
@@ -4281,14 +4281,13 @@ msgstr "K_opiera text"
 msgid "_Paste Text"
 msgstr "K_listra in text"
 
-#: nautilus.desktop.in.h:1 src/nautilus-main.c:191
-#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:631
-msgid "Nautilus"
-msgstr "Nautilus"
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Hemmapp"
 
 #: nautilus.desktop.in.h:2
-msgid "Nautilus File Manager and Graphic Shell"
-msgstr "Filhanteraren och det grafiska skalet Nautilus"
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Visa din hemmapp i filhanteraren Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -5050,21 +5049,21 @@ msgstr "Fel med dra och släpp"
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
-#: src/file-manager/fm-list-view.c:144
+#: src/file-manager/fm-list-view.c:121
 msgid "File name"
 msgstr "Filnamn"
 
-#: src/file-manager/fm-list-view.c:163
+#: src/file-manager/fm-list-view.c:140
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Storlek"
 
-#: src/file-manager/fm-list-view.c:172
+#: src/file-manager/fm-list-view.c:149
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:181
+#: src/file-manager/fm-list-view.c:158
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -5279,7 +5278,7 @@ msgstr "Avbryt visandet av egenskapsfönstret?"
 msgid "Creating Properties window"
 msgstr "Skapar fönstret Egenskaper"
 
-#: src/file-manager/fm-properties-window.c:2518
+#: src/file-manager/fm-properties-window.c:2517
 msgid "Select an icon:"
 msgstr "Välj en ikon:"
 
@@ -6084,24 +6083,24 @@ msgstr ""
 msgid "Bookmarks"
 msgstr "Bokmärken"
 
-#: src/nautilus-bookmarks-window.c:222
+#: src/nautilus-bookmarks-window.c:221
 msgid "Location"
 msgstr "Plats"
 
-#: src/nautilus-bookmarks-window.c:235
+#: src/nautilus-bookmarks-window.c:234
 msgid "_Remove"
 msgstr "_Ta bort"
 
-#: src/nautilus-complex-search-bar.c:205
+#: src/nautilus-complex-search-bar.c:206
 msgid "More Options"
 msgstr "Fler alternativ"
 
-#: src/nautilus-complex-search-bar.c:215
+#: src/nautilus-complex-search-bar.c:216
 msgid "Fewer Options"
 msgstr "Färre alternativ"
 
 #. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:233 src/nautilus-simple-search-bar.c:145
+#: src/nautilus-complex-search-bar.c:234 src/nautilus-simple-search-bar.c:125
 msgid "Find Them!"
 msgstr "Hitta dem!"
 
@@ -6161,6 +6160,11 @@ msgstr "Avsluta Nautilus."
 #: src/nautilus-main.c:161
 msgid "Restart Nautilus."
 msgstr "Starta om Nautilus."
+
+#: src/nautilus-main.c:191 src/nautilus-window-manage-views.c:256
+#: src/nautilus-window-menus.c:631
+msgid "Nautilus"
+msgstr "Nautilus"
 
 #: src/nautilus-main.c:205
 msgid "nautilus: --check cannot be used with URIs.\n"
@@ -6568,78 +6572,78 @@ msgstr "Bild:"
 msgid "Select an image file for the new emblem:"
 msgstr "Välj en bildfil för det nya emblemet:"
 
-#: src/nautilus-property-browser.c:977
+#: src/nautilus-property-browser.c:975
 msgid "Create a New Color:"
 msgstr "Skapa en ny färg:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:984
+#: src/nautilus-property-browser.c:982
 msgid "Color name:"
 msgstr "Färgnamn:"
 
-#: src/nautilus-property-browser.c:995
+#: src/nautilus-property-browser.c:993
 msgid "Color value:"
 msgstr "Färgvärde:"
 
-#: src/nautilus-property-browser.c:1035
+#: src/nautilus-property-browser.c:1029
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Tyvärr, \"%s\" är inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1037
+#: src/nautilus-property-browser.c:1031
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Tyvärr, du angav inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1039 src/nautilus-property-browser.c:1082
+#: src/nautilus-property-browser.c:1033 src/nautilus-property-browser.c:1076
 msgid "Couldn't install pattern"
 msgstr "Kunde inte installera mönster"
 
-#: src/nautilus-property-browser.c:1050
+#: src/nautilus-property-browser.c:1044
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Tyvärr, du kan inte ersätta återställningsbilden."
 
-#: src/nautilus-property-browser.c:1081
+#: src/nautilus-property-browser.c:1075
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Tyvärr, mönstret %s kunde inte installeras."
 
-#: src/nautilus-property-browser.c:1107
+#: src/nautilus-property-browser.c:1098
 msgid "Select an image file to add as a pattern:"
 msgstr "Välj en bildfil att lägga till som mönster:"
 
-#: src/nautilus-property-browser.c:1168
+#: src/nautilus-property-browser.c:1158
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
 
-#: src/nautilus-property-browser.c:1169
+#: src/nautilus-property-browser.c:1159
 msgid "Couldn't install color"
 msgstr "Kunde inte installera färg"
 
-#: src/nautilus-property-browser.c:1225
+#: src/nautilus-property-browser.c:1215
 msgid "Select a color to add:"
 msgstr "Välj en färg att lägga till:"
 
-#: src/nautilus-property-browser.c:1308
+#: src/nautilus-property-browser.c:1298
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/nautilus-property-browser.c:1326
+#: src/nautilus-property-browser.c:1316
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1330
-#: src/nautilus-property-browser.c:1334 src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1317 src/nautilus-property-browser.c:1320
+#: src/nautilus-property-browser.c:1324 src/nautilus-property-browser.c:1353
 msgid "Couldn't install emblem"
 msgstr "Kunde inte installera emblem"
 
-#: src/nautilus-property-browser.c:1329
+#: src/nautilus-property-browser.c:1319
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Tyvärr, emblemnyckelord kan bara innehålla bokstäver, blanksteg och siffror."
 
-#: src/nautilus-property-browser.c:1332
+#: src/nautilus-property-browser.c:1322
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -6648,64 +6652,64 @@ msgstr ""
 "Tyvärr, namnet \"%s\" är ett redan existerande nyckelord. Var vänlig och "
 "välj ett annat namn på det."
 
-#: src/nautilus-property-browser.c:1362
+#: src/nautilus-property-browser.c:1352
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Tyvärr, bilden i %s kunde inte installeras som ett emblem."
 
-#: src/nautilus-property-browser.c:2028
+#: src/nautilus-property-browser.c:2000
 msgid "Select A Category:"
 msgstr "Välj en kategori:"
 
-#: src/nautilus-property-browser.c:2036 src/nautilus-theme-selector.c:190
+#: src/nautilus-property-browser.c:2008 src/nautilus-theme-selector.c:190
 msgid "Cancel Remove"
 msgstr "Avbryt borttagning"
 
-#: src/nautilus-property-browser.c:2041
+#: src/nautilus-property-browser.c:2013
 msgid "Add a New Pattern..."
 msgstr "Lägg till ett nytt mönster..."
 
-#: src/nautilus-property-browser.c:2044
+#: src/nautilus-property-browser.c:2016
 msgid "Add a New Color..."
 msgstr "Lägg till en ny färg..."
 
-#: src/nautilus-property-browser.c:2047
+#: src/nautilus-property-browser.c:2019
 msgid "Add a New Emblem..."
 msgstr "Lägg till ett nytt emblem..."
 
-#: src/nautilus-property-browser.c:2070
+#: src/nautilus-property-browser.c:2042
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2073
+#: src/nautilus-property-browser.c:2045
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2076
+#: src/nautilus-property-browser.c:2048
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2057
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2088
+#: src/nautilus-property-browser.c:2060
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2091
+#: src/nautilus-property-browser.c:2063
 msgid "Emblems:"
 msgstr "Emblem:"
 
-#: src/nautilus-property-browser.c:2110
+#: src/nautilus-property-browser.c:2082
 msgid "Remove a Pattern..."
 msgstr "Ta bort ett mönster..."
 
-#: src/nautilus-property-browser.c:2113
+#: src/nautilus-property-browser.c:2085
 msgid "Remove a Color..."
 msgstr "Ta bort en färg..."
 
-#: src/nautilus-property-browser.c:2116
+#: src/nautilus-property-browser.c:2088
 msgid "Remove an Emblem..."
 msgstr "Ta bort ett emblem..."
 
@@ -7072,8 +7076,8 @@ msgid "Up"
 msgstr "Upp"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:57 src/nautilus-window.c:591
-#: src/nautilus-window.c:1486
+#: src/nautilus-shell-ui.xml.h:57 src/nautilus-window.c:587
+#: src/nautilus-window.c:1483
 msgid "View as..."
 msgstr "Visa som..."
 
@@ -7219,7 +7223,7 @@ msgstr "Öppna med %s"
 msgid "Open with..."
 msgstr "Öppna med..."
 
-#: src/nautilus-switchable-search-bar.c:128
+#: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
 msgstr "Sök:"
 
@@ -7303,11 +7307,11 @@ msgstr "den aktuella markeringen"
 msgid "Preview Release %s: %s"
 msgstr "Förhandsversion %s: %s"
 
-#: src/nautilus-window-manage-views.c:814
+#: src/nautilus-window-manage-views.c:824
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:825
+#: src/nautilus-window-manage-views.c:835
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7316,12 +7320,12 @@ msgstr ""
 "%s-vyn råkade ut för ett fel och kan inte fortsätta. Du kan välja en annan "
 "vy eller gå till en annan plats."
 
-#: src/nautilus-window-manage-views.c:836
+#: src/nautilus-window-manage-views.c:846
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
 
-#: src/nautilus-window-manage-views.c:1001
+#: src/nautilus-window-manage-views.c:1011
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -7329,7 +7333,7 @@ msgstr ""
 "En av sidopanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr kan "
 "jag inte avgöra vilken."
 
-#: src/nautilus-window-manage-views.c:1005
+#: src/nautilus-window-manage-views.c:1015
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -7338,18 +7342,18 @@ msgstr ""
 "Sidopanelen %s råkade ut för ett fel och kan inte fortsätta. Om detta "
 "fortsätter att hända kanske du vill stänga av denna panel."
 
-#: src/nautilus-window-manage-views.c:1010
+#: src/nautilus-window-manage-views.c:1020
 msgid "Sidebar Panel Failed"
 msgstr "Sidopanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1215
+#: src/nautilus-window-manage-views.c:1229
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Kunde inte hitta \"%s\". Var vänlig och kontrollera stavningen och försök "
 "igen."
 
-#: src/nautilus-window-manage-views.c:1221
+#: src/nautilus-window-manage-views.c:1235
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -7357,7 +7361,7 @@ msgstr ""
 "\"%s\" är ingen giltig plats. Var vänlig och kontrollera stavningen och "
 "försök igen."
 
-#: src/nautilus-window-manage-views.c:1235
+#: src/nautilus-window-manage-views.c:1249
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7366,29 +7370,29 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken filtyp "
 "det är."
 
-#: src/nautilus-window-manage-views.c:1243
+#: src/nautilus-window-manage-views.c:1257
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1255
+#: src/nautilus-window-manage-views.c:1269
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1261
+#: src/nautilus-window-manage-views.c:1275
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1266
+#: src/nautilus-window-manage-views.c:1280
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1277
+#: src/nautilus-window-manage-views.c:1291
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7398,7 +7402,7 @@ msgstr ""
 "Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
 "stämmer."
 
-#: src/nautilus-window-manage-views.c:1285
+#: src/nautilus-window-manage-views.c:1299
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -7407,7 +7411,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värdnamnet var tomt. Kontrollera att dina "
 "proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1297
+#: src/nautilus-window-manage-views.c:1311
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7419,16 +7423,16 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1301
+#: src/nautilus-window-manage-views.c:1315
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1305
+#: src/nautilus-window-manage-views.c:1319
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1324
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
@@ -7545,16 +7549,16 @@ msgstr "Stil på verktygsradsobjekt"
 msgid "Toolbar item orientation"
 msgstr "Orientering på verktygsradsobjekt"
 
-#: src/nautilus-window-toolbars.c:434
+#: src/nautilus-window-toolbars.c:431
 msgid "Back"
 msgstr "Bakåt"
 
-#: src/nautilus-window-toolbars.c:436
+#: src/nautilus-window-toolbars.c:433
 msgid "Forward"
 msgstr "Framåt"
 
 # http://bugzilla.eazel.com/show_bug.cgi?id=8048
-#: src/nautilus-window.c:1192
+#: src/nautilus-window.c:1189
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Visa denna plats med \"%s\""
@@ -7570,6 +7574,9 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #, c-format
 msgid "%d%%"
 msgstr "%d%%"
+
+#~ msgid "Nautilus File Manager and Graphic Shell"
+#~ msgstr "Filhanteraren och det grafiska skalet Nautilus"
 
 #~ msgid "Default"
 #~ msgstr "Standard"
