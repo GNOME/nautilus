@@ -80,6 +80,8 @@ struct NautilusDirectoryDetails
 	TopLeftTextReadState *top_left_read_state;
 
 	GList *file_operations_in_progress; /* list of FileOperation * */
+
+	gboolean is_local;
 };
 
 typedef struct {

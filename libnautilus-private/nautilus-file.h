@@ -176,6 +176,9 @@ char *                  nautilus_file_get_string_attribute      (NautilusFile   
 gboolean                nautilus_file_matches_uri               (NautilusFile                  *file,
 								 const char                    *uri);
 
+/* Is the file local? */
+gboolean                nautilus_file_is_local                  (NautilusFile                  *file);
+
 /* Compare file's state with a fresh file info struct, return FALSE if no change,
    update file and return TRUE if the file info contains new state.
  */

@@ -800,7 +800,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
-	char *uri, *file_uri, *image_uri, *icon_name;
+	char *uri, *file_uri, *image_uri, *icon_name, *top_left_text = NULL;
  	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL) {
@@ -847,12 +847,19 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
         if (icon_name == NULL) {
 		icon_name = g_strdup (nautilus_icon_factory_get_icon_name_for_file (file));
 	}
+
+	if (nautilus_file_is_local (file) ||
+									nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_REMOTE_VIEWS, FALSE)) {
+		top_left_text = nautilus_file_get_top_left_text (file);
+	}
+
 	
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_get (uri, icon_name, modifier,
-						    nautilus_file_get_top_left_text (file));
+						    top_left_text);
 	g_free (uri);
 	g_free (icon_name);
+	g_free (top_left_text);
 	
 	return scalable_icon;
 }

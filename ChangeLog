@@ -1,3 +1,27 @@
+2000-05-22  Ian McKellar  <yakk@yakk.net>
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_new), (nautilus_directory_is_local):
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_is_local):
+	* libnautilus-extensions/nautilus-file.h:
+	Added nautilus_directory_is_local and nautilus_file_is_local.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Added a preference to specify whether to display detailed remote
+	views.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(state_changed):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Only download top left text if the file is local or if
+	the user has specified that they want detailed remote views.
+
 2000-05-21  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

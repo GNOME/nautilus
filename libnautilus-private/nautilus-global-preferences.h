@@ -60,6 +60,8 @@ enum
 	NAUTILUS_CLICK_POLICY_DOUBLE
 };
 
+#define NAUTILUS_PREFERENCES_REMOTE_VIEWS "/nautilus/preferences/remote_views"
+
 void                      nautilus_global_preferences_startup                            (void);
 void                      nautilus_global_preferences_shutdown                           (void);
 void                      nautilus_global_preferences_show_dialog                        (void);

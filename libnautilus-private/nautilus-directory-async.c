@@ -28,6 +28,7 @@
 #include "nautilus-directory-metafile.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-attributes.h"
+#include "nautilus-global-preferences.h"
 
 #include <gtk/gtkmain.h>
 
@@ -1625,5 +1626,8 @@ state_changed (NautilusDirectory *directory)
 	start_getting_directory_counts (directory);
 
 	/* Start or stop getting top left pieces of files. */
-	start_getting_top_lefts (directory);
+	if(nautilus_directory_is_local(directory) || 
+			nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_REMOTE_VIEWS, FALSE)) {
+		start_getting_top_lefts (directory);
+	}
 }

@@ -398,8 +398,17 @@ nautilus_directory_new (const char* uri)
 	directory->details->uri = vfs_uri;
 	directory->details->metafile_uri = metafile_uri;
 	directory->details->alternate_metafile_uri = alternate_metafile_uri;
+	directory->details->is_local = gnome_vfs_uri_is_local(vfs_uri);
 
 	return directory;
+}
+
+gboolean
+nautilus_directory_is_local (NautilusDirectory *directory)
+{
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+	
+	return directory->details->is_local;
 }
 
 gboolean

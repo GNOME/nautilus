@@ -110,6 +110,13 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Remote Views");
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_REMOTE_VIEWS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
 
 	/*
 	 * Meta view pane
@@ -311,6 +318,11 @@ global_preferences_register_for_ui ()
 					     "double",
 					     "Activate items with a double click",
 					     NAUTILUS_CLICK_POLICY_DOUBLE);
+
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_REMOTE_VIEWS,
+			               "Fully Decorate Remote Views",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) FALSE);
 
 	/* User level */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_USER_LEVEL,

@@ -675,6 +675,15 @@ nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 }
 
 gboolean
+nautilus_file_is_local(NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	
+	return(nautilus_directory_is_local(file->details->directory));
+}
+
+
+gboolean
 nautilus_file_update (NautilusFile *file, GnomeVFSFileInfo *info)
 {
 	if (gnome_vfs_file_info_matches (file->details->info, info)) {
