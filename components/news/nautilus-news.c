@@ -1867,7 +1867,7 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
 	gtk_box_set_spacing (GTK_BOX (button_box), 4);
 	
 	if (from_configure) {
-		button = gtk_button_new_with_label (_("Edit"));
+		button = gtk_button_new_with_mnemonic (_("Edi_t"));
                 gtk_widget_show (button);
 		gtk_container_add (GTK_CONTAINER (button_box), button);
 
@@ -2099,7 +2099,7 @@ news_label_new (const char *label_text, gboolean title_mode)
 {
 	GtkWidget *label;
 	
-	label = gtk_label_new (label_text);
+	label = gtk_label_new_with_mnemonic (label_text);
 	if (title_mode) {
 		eel_gtk_label_make_bold (GTK_LABEL (label));
 	}
@@ -2165,7 +2165,7 @@ make_remove_widgets (News *news, GtkWidget *container)
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing (GTK_BOX (button_box), 4);
 	
-	news->remove_button = gtk_button_new_with_label (_("Remove Site"));
+	news->remove_button = gtk_button_new_with_mnemonic (_("_Remove Site"));
         gtk_widget_show (news->remove_button);
         
 	gtk_container_add (GTK_CONTAINER (button_box), news->remove_button);
@@ -2191,11 +2191,14 @@ make_add_widgets (News *news, GtkWidget *container)
 	gtk_box_pack_start (GTK_BOX (container), temp_vbox, FALSE, FALSE, 0);
 
 	/* allocate the name field */
-	label = news_label_new (_("Site Name:"), FALSE);
+	label = news_label_new (_("Site _Name:"), FALSE);
         gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 
 	news->item_name_field = nautilus_entry_new ();
+        gtk_label_set_mnemonic_widget (GTK_LABEL (label), 
+                                       news->item_name_field);
+        
 	gtk_widget_show (news->item_name_field);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), news->item_name_field, FALSE, FALSE, 0);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (news->item_name_field), TRUE);
@@ -2206,15 +2209,17 @@ make_add_widgets (News *news, GtkWidget *container)
         
 	gtk_box_pack_start (GTK_BOX (container), temp_vbox, FALSE, FALSE, 0);
 
-	label = news_label_new (_("Site RSS URL:"), FALSE);
+	label = news_label_new (_("Site _RSS URL:"), FALSE);
         gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 
 	news->item_location_field = nautilus_entry_new ();
+        gtk_label_set_mnemonic_widget (GTK_LABEL (label), 
+                                       news->item_location_field);
         gtk_widget_show (news->item_location_field);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), news->item_location_field, FALSE, FALSE, 0);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (news->item_location_field), TRUE);
-
+        
 	/* install the add buttons */
     	button_box = gtk_hbutton_box_new ();
         gtk_widget_show (button_box);
@@ -2224,7 +2229,7 @@ make_add_widgets (News *news, GtkWidget *container)
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing (GTK_BOX (button_box), 4);
 	
-	button = gtk_button_new_with_label (_("Add New Site"));
+	button = gtk_button_new_with_mnemonic (_("_Add New Site"));
         gtk_widget_show (button);
 
 	gtk_container_add (GTK_CONTAINER (button_box), button);
@@ -2265,7 +2270,7 @@ set_up_edit_widgets (News *news, GtkWidget *container)
 	/* allocate the remove label */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
 
-	label = news_label_new (_("Remove a Site:"), TRUE);
+	label = news_label_new (_("Remove a _Site:"), TRUE);
         gtk_widget_show (label);
         
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
@@ -2273,12 +2278,30 @@ set_up_edit_widgets (News *news, GtkWidget *container)
         
 	/* allocate the remove widgets */
 	make_remove_widgets (news, temp_vbox);
+        gtk_label_set_mnemonic_widget (GTK_LABEL (label), 
+                                       news->remove_site_list);
+        
 	gtk_box_pack_start (GTK_BOX (expand_box), temp_vbox, TRUE, TRUE, 0);
 	
 	/* add the button box at the bottom with a cancel button */
 	button_box = add_command_buttons (news, GTK_STOCK_CANCEL, FALSE);
         gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (news->edit_site_box), button_box, FALSE, FALSE, 0);	
+}
+
+static gboolean
+site_list_mnemonic_activate (GtkWidget *widget, gboolean group_cycling,
+                             gpointer data)
+{
+        News *news;
+        RSSChannelData *channel_data;
+        
+        news = (News*)data;
+        channel_data = (RSSChannelData*)news->channel_list->data;
+        
+        gtk_widget_grab_focus (channel_data->checkbox);
+
+        return TRUE;
 }
 
 /* allocate the widgets for the configure mode */
@@ -2297,13 +2320,20 @@ set_up_configure_widgets (News *news, GtkWidget *container)
                                   news->configure_box, NULL, PAGE_CONFIGURE);
 
 	/* add a descriptive label */
-	label = news_label_new (_("Select Sites:"), TRUE);
+	label = news_label_new (_("_Select Sites:"), TRUE);
+
         gtk_widget_show (label);
         
 	gtk_box_pack_start (GTK_BOX (news->configure_box), label, FALSE, FALSE, 0);
 	
 	/* allocate a table to hold the check boxes */
 	news->checkbox_list = gtk_vbox_new (FALSE, 0);
+        g_signal_connect (GTK_WIDGET (news->checkbox_list), 
+                          "mnemonic_activate", 
+                          G_CALLBACK (site_list_mnemonic_activate), news);
+
+        gtk_label_set_mnemonic_widget (GTK_LABEL (label), news->checkbox_list);
+
         gtk_widget_show (news->checkbox_list);
         
 	scrolled_window = GTK_SCROLLED_WINDOW (gtk_scrolled_window_new (NULL, NULL));
@@ -2320,7 +2350,7 @@ set_up_configure_widgets (News *news, GtkWidget *container)
  	gtk_box_pack_start (GTK_BOX (news->configure_box), GTK_WIDGET (scrolled_window), TRUE, TRUE, 0);
 		
 	/* allocate the button box for the done button */
-        button_box = add_command_buttons (news, _("Done"), TRUE);
+        button_box = add_command_buttons (news, _("_Done"), TRUE);
         gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (news->configure_box), button_box, FALSE, FALSE, 0); 
 }
@@ -2412,7 +2442,7 @@ set_up_main_widgets (News *news, GtkWidget *container)
                           G_CALLBACK (nautilus_news_button_release_event), news);
 
         /* create a button box to hold the command buttons */
-        button_box = add_command_buttons (news, _("Select Sites"), FALSE);
+        button_box = add_command_buttons (news, _("_Select Sites"), FALSE);
         gtk_widget_show (button_box);
         gtk_box_pack_start (GTK_BOX (news->main_box), button_box, FALSE, FALSE, 0); 
 }
