@@ -1,3 +1,18 @@
+2002-01-27  Alexander Larsson  <alla@lysator.liu.se>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	Draw alpha-blended rounded rectangles around selected text even
+	in non-aa mode.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	Use the new EelCanvasRect item for selection rectangle in
+	non-aa mode.
+	Also make sure we never raise anything above the selection
+	rectangle item. This means we can remove the
+	gnome_canvas_item_raise_to_top() in rubberband_timeout_callback,
+	which is good, since that call redraws the whole selection
+	rectangle if something was above it.
+
 2002-01-27  Anders Carlsson  <andersca@gnu.org>
 
 	* src/file-manager/fm-properties-window.c (attach_label): Add selectable argument.
