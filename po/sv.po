@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-10-09 17:59+0200\n"
-"PO-Revision-Date: 2000-10-09 17:59+0200\n"
+"POT-Creation-Date: 2000-10-10 02:03+0200\n"
+"PO-Revision-Date: 2000-10-10 02:03+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -188,81 +188,9 @@ msgstr ""
 "\n"
 "Förlorar-sidoraden."
 
-#: components/loser/sidebar/nautilus-sidebar-loser.c:203
-#, c-format
-msgid ""
-"%s\n"
-"\n"
-"You clicked the Kill Sidebar View toolbar button."
-msgstr ""
-"%s\n"
-"\n"
-"Du klickade på knappen Döda sidoradsvy i verktygsraden."
-
-#. BonoboUIHandler
-#. menu item path, must start with /some-existing-menu-path and be otherwise unique
-#: components/loser/sidebar/nautilus-sidebar-loser.c:253
-msgid "_Kill Sidebar View"
-msgstr "_Döda sidoradsvyn"
-
-#. menu item user-displayed label
-#: components/loser/sidebar/nautilus-sidebar-loser.c:254
-msgid "Kill the Loser sidebar view"
-msgstr "Döda sidoradsvyn"
-
-#. BonoboUIHandler
-#. button path, must start with /some-existing-toolbar-path and be otherwise unique
-#: components/loser/sidebar/nautilus-sidebar-loser.c:273
-msgid "Loser"
-msgstr "Förlorare"
-
-#. button user-displayed label
-#: components/loser/sidebar/nautilus-sidebar-loser.c:274
-msgid "Kill the Loser sidebar view."
-msgstr "Döda sidoradsvyn."
-
-#.
-#. * Create our mozilla menu item.
-#. *
-#. * Note that it's sorta bogus that we know Nautilus has a menu whose
-#. * path is "/File", and also that we know a sensible position to use within
-#. * that menu. Nautilus should publish this information somehow.
-#.
-#. BonoboUIHandler
-#. menu item path, must start with /some-existing-menu-path and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:572
-msgid "_Mozilla"
-msgstr "_Mozilla"
-
-#. menu item user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:573
-msgid "This is a mozilla merged menu item"
-msgstr "Det här är ett mozilla-sammanslaget menyalternativ"
-
-#. hint that appears in status bar
-#. position within menu; -1 means last
-#. pixmap type
-#. pixmap data
-#. accelerator key, couldn't bear the thought of using Control-S for anything except Save
-#. accelerator key modifiers
-#. callback function
-#. callback function data
-#.
-#. * Create our mozilla toolbar button.
-#. *
-#. * Note that it's sorta bogus that we know Nautilus has a toolbar whose
-#. * path is "/Main". Nautilus should publish this information somehow.
-#.
-#. BonoboUIHandler
-#. button path, must start with /Main/ and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:590
-msgid "Mozilla"
-msgstr "Mozilla"
-
-#. button user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:591
-msgid "This is a mozilla merged toolbar button"
-msgstr "Det här är en mozilla-sammanslagen verktygsradsknapp"
+#: components/loser/sidebar/nautilus-sidebar-loser.c:192
+msgid "You have killed the Sidebar Loser"
+msgstr "Du har dödat förlorar-sidoraden"
 
 #: components/music/nautilus-music-view.c:208
 msgid "Track "
@@ -650,242 +578,165 @@ msgstr "Installationen misslyckades"
 msgid "Uninstall failed"
 msgstr "Avinstallationen misslyckades"
 
-#: components/services/install/lib/eazel-install-protocols.c:125
-#: components/services/install/lib/eazel-install-protocols.c:226
+#: components/services/install/lib/eazel-install-protocols.c:126
+#: components/services/install/lib/eazel-install-protocols.c:227
 #, c-format
 msgid "Downloading %s..."
 msgstr "Hämtar %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:136
+#: components/services/install/lib/eazel-install-protocols.c:137
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:403
 #, c-format
 msgid "Could not open target file %s"
 msgstr "Kunde inte öppna målfilen %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:143
+#: components/services/install/lib/eazel-install-protocols.c:144
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:337
 msgid "Could not create an http request !"
 msgstr "Kunde inte skapa en http-begäran!"
 
-#: components/services/install/lib/eazel-install-protocols.c:150
+#: components/services/install/lib/eazel-install-protocols.c:151
 msgid "Proxy: Invalid uri !"
 msgstr "Proxy: Ogiltig uri!"
 
-#: components/services/install/lib/eazel-install-protocols.c:155
+#: components/services/install/lib/eazel-install-protocols.c:156
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:342
 msgid "Invalid uri !"
 msgstr "Ogiltig uri!"
 
-#: components/services/install/lib/eazel-install-protocols.c:162
+#: components/services/install/lib/eazel-install-protocols.c:163
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:352
 msgid "Could not prepare http request !"
 msgstr "Kunde inte förbereda http-begäran!"
 
-#: components/services/install/lib/eazel-install-protocols.c:166
+#: components/services/install/lib/eazel-install-protocols.c:167
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:357
 msgid "Couldn't get async mode "
 msgstr "Kunde inte använda asynkront läge "
 
-#: components/services/install/lib/eazel-install-protocols.c:191
+#: components/services/install/lib/eazel-install-protocols.c:192
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:367
 #, c-format
 msgid "HTTP error: %d %s"
 msgstr "HTTP-fel: %d %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:201
+#: components/services/install/lib/eazel-install-protocols.c:202
 msgid "Could not get request body!"
 msgstr "Kunde inte begära meddelandekropp!"
 
-#: components/services/install/lib/eazel-install-protocols.c:227
+#: components/services/install/lib/eazel-install-protocols.c:228
 msgid "FTP not supported yet"
 msgstr "FTP stöds inte än"
 
-#: components/services/install/lib/eazel-install-protocols.c:410
+#: components/services/install/lib/eazel-install-protocols.c:411
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Kontrollerar lokal fil %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:482
+#: components/services/install/lib/eazel-install-protocols.c:483
 #, c-format
 msgid "Failed to retrieve %s!"
 msgstr "Misslyckades med att ta emot %s!"
 
-#: components/services/install/lib/eazel-install-protocols.c:550
+#: components/services/install/lib/eazel-install-protocols.c:551
 #, c-format
 msgid "Could not get a URL for %s"
 msgstr "Kunde inte få en URL för %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:568
+#: components/services/install/lib/eazel-install-protocols.c:569
 msgid "Downloaded package does not have the correct name"
 msgstr "Det hämtade paketet verkar inte ha korrekt namn"
 
-#: components/services/install/lib/eazel-install-protocols.c:569
+#: components/services/install/lib/eazel-install-protocols.c:570
 #, c-format
 msgid "Package %s should have had name %s"
 msgstr "Paketet %s borde haft namnet %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:576
+#: components/services/install/lib/eazel-install-protocols.c:577
 msgid "Downloaded package does not have the correct version"
 msgstr "Det hämtade paketet har inte rätt versionsnummer"
 
-#: components/services/install/lib/eazel-install-protocols.c:577
+#: components/services/install/lib/eazel-install-protocols.c:578
 #, c-format
 msgid "Package %s had version %s and not %s"
 msgstr "Paketet %s hade versionsnumret %s och inte %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:588
-#: components/services/install/lib/eazel-install-protocols.c:637
+#: components/services/install/lib/eazel-install-protocols.c:589
+#: components/services/install/lib/eazel-install-protocols.c:638
 msgid "File download failed"
 msgstr "Filhämtning misslyckades"
 
-#: components/services/install/lib/eazel-install-protocols.c:615
+#: components/services/install/lib/eazel-install-protocols.c:616
 msgid "Using local protocol cannot fetch by id"
 msgstr "Använder lokalt protokoll, kan inte hämta med id"
 
-#: components/services/install/lib/eazel-install-protocols.c:624
+#: components/services/install/lib/eazel-install-protocols.c:625
 #, c-format
 msgid "Could not get a URL for package id %s"
 msgstr "Kunde inte få en URL för paket-id %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:768
-#: components/services/install/lib/eazel-install-protocols.c:773
+#: components/services/install/lib/eazel-install-protocols.c:769
+#: components/services/install/lib/eazel-install-protocols.c:774
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Kunde inte ta emot en URL för %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:778
+#: components/services/install/lib/eazel-install-protocols.c:779
 #, c-format
 msgid "Could not retrieve a URL for id %s"
 msgstr "Kunde inte ta emot en URL för id %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:205
-#: components/services/install/lib/eazel-install-rpm-glue.c:510
+#: components/services/install/lib/eazel-install-rpm-glue.c:62
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr ""
 "Torrkörningsläge aktiverat. Paketen kommer egentligen inte att installeras..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:231
-#, c-format
-msgid "Reading the install package list %s"
-msgstr "Läser installationspaketlistan %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:308
-#, c-format
-msgid "Will download %s"
-msgstr "Kommer att hämta %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:322
-#, c-format
-msgid "%s already installed"
-msgstr "%s är redan installerat"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:483
-#, c-format
-msgid "Category = %s"
-msgstr "Kategori = %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:800
-#, c-format
-msgid "Could not create transaction directory (%s)! ***\n"
-msgstr "Kunde inte skapa transaktionskatalogen (%s)! ***\n"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:823
-#, c-format
-msgid "Writing transaction to %s"
-msgstr "Skriver transaktion till %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1087
-msgid "Failed to lock the downloaded file"
-msgstr "Misslyckades med att låsa den hämtade filen"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1102
-#, c-format
-msgid "MD5 mismatch, package %s may be compromised"
-msgstr "MD5-summan stämmer inte, paketet %s kan ha manipulerats med"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1163
-#, c-format
-msgid "Preflight (%ld bytes, %ld packages)"
-msgstr "Förbereder (%ld byte, %ld paket)"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1200
-msgid "rpm running..."
-msgstr "rpm kör..."
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1292
-#, c-format
-msgid "Removing package %s %s"
-msgstr "Tar bort paketet %s %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1383
+#: components/services/install/lib/eazel-install-rpm-glue.c:230
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Stänger databas för %s (öppen)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1388
+#: components/services/install/lib/eazel-install-rpm-glue.c:235
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Stänger databas för %s (inte öppen)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1442
+#: components/services/install/lib/eazel-install-rpm-glue.c:289
 msgid "RPM package database query failed !"
 msgstr "RPM-databasfråga misslyckades!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1445
+#: components/services/install/lib/eazel-install-rpm-glue.c:292
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Öppnade paketdatabasen i %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1447
+#: components/services/install/lib/eazel-install-rpm-glue.c:294
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Öppning av paketdatabasen i %s misslyckades"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1464
-msgid "Preparing package system"
-msgstr "Förbereder paketsystem"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1737
-#, c-format
-msgid "%s upgrades from version %s to %s"
-msgstr "%s uppgraderar från version %s till %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1742
-#, c-format
-msgid "%s downgrades from version %s to %s"
-msgstr "%s nergraderar från version %s till %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1751
-#, c-format
-msgid "%s version %s already installed"
-msgstr "%s version %s är redan installerat"
-
 #. Possibly the implest case, we're installing package A, which requires
 #. B that is not installed.
-#: components/services/install/lib/eazel-install-rpm-glue.c:2133
+#: components/services/install/lib/eazel-install-rpm-glue.c:447
 #, c-format
 msgid "%s requires %s"
 msgstr "%s kräver %s"
 
 #. If we end here, it's a conflict is going to break something
-#: components/services/install/lib/eazel-install-rpm-glue.c:2200
+#: components/services/install/lib/eazel-install-rpm-glue.c:514
 #, c-format
 msgid "Package %s conflicts with %s-%s"
 msgstr "Paketet %s är i konflikt med %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:2214
+#: components/services/install/lib/eazel-install-rpm-glue.c:528
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Behandlar beroenden för %s, kräver bibliotek %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:2221
+#: components/services/install/lib/eazel-install-rpm-glue.c:535
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Behandlar beroenden för %s, kräver paket %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:2407
-msgid "Dependencies are ok"
-msgstr "Beroenden är uppfyllda"
 
 #: components/services/install/lib/eazel-install-tests.c:33
 msgid "*** Begin pkg dump ***\n"
@@ -2115,7 +1966,7 @@ msgid "Switch to Manual Layout?"
 msgstr "Byt till manuell layout?"
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:739
-#: src/nautilus-window-menus.c:603
+#: src/nautilus-window-menus.c:605
 msgid "Switch"
 msgstr "Byt"
 
@@ -2171,7 +2022,7 @@ msgid "Prefs Box"
 msgstr "Inställningsfönster"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:188
-#: src/nautilus-window.c:729
+#: src/nautilus-window.c:736
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -2627,23 +2478,23 @@ msgstr "_Rensa text"
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Tar bort den markerade texten utan att lägga det i urklipp"
 
-#: src/file-manager/fm-desktop-icon-view.c:420
+#: src/file-manager/fm-desktop-icon-view.c:423
 msgid "Empty Trash"
 msgstr "Töm papperskorg"
 
-#: src/file-manager/fm-desktop-icon-view.c:449
+#: src/file-manager/fm-desktop-icon-view.c:452
 msgid "New Terminal"
 msgstr "Nytt terminalfönster"
 
-#: src/file-manager/fm-desktop-icon-view.c:458
+#: src/file-manager/fm-desktop-icon-view.c:461
 msgid "Disks"
 msgstr "Diskar"
 
-#: src/file-manager/fm-desktop-icon-view.c:517
+#: src/file-manager/fm-desktop-icon-view.c:520
 msgid "Reset Desktop Background"
 msgstr "Återställ skrivbordsbakgrund"
 
-#: src/file-manager/fm-desktop-icon-view.c:525
+#: src/file-manager/fm-desktop-icon-view.c:528
 msgid "Change Desktop Background"
 msgstr "Byt skrivbordsbakgrund"
 
@@ -2895,7 +2746,7 @@ msgstr "Välj en annan applikation att öppna det markerade objektet med"
 msgid "Choose another viewer with which to view the selected item"
 msgstr "Välj en annan visare att öppna det markerade objektet med"
 
-#: src/file-manager/fm-directory-view.c:3502
+#: src/file-manager/fm-directory-view.c:3507
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -2903,7 +2754,7 @@ msgstr ""
 "Den här länken kan inte användas eftersom den inte har något mål. Vill du "
 "kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3505
+#: src/file-manager/fm-directory-view.c:3510
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -2912,15 +2763,15 @@ msgstr ""
 "Den här länken kan inte användas eftersom dess mål \"%s\" inte finns. Vill "
 "du kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3511
+#: src/file-manager/fm-directory-view.c:3516
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:3512
+#: src/file-manager/fm-directory-view.c:3517
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:3575
+#: src/file-manager/fm-directory-view.c:3580
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -2928,7 +2779,7 @@ msgstr ""
 "Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
 "säkerhetsskäl."
 
-#: src/file-manager/fm-directory-view.c:3576
+#: src/file-manager/fm-directory-view.c:3581
 msgid "Can't execute remote links"
 msgstr "Kunde inte köra fjärrlänkar"
 
@@ -3523,7 +3374,7 @@ msgstr "Bokmärken"
 msgid "Location"
 msgstr "Plats"
 
-#: src/nautilus-bookmarks-window.c:195 src/nautilus-window-menus.c:825
+#: src/nautilus-bookmarks-window.c:195 src/nautilus-window-menus.c:818
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -4248,21 +4099,21 @@ msgstr "Kunde inte ta bort tema"
 msgid "No information available for the  %s theme"
 msgstr "Ingen information finns tillgänglig för temat %s"
 
-#: src/nautilus-window.c:961
+#: src/nautilus-window.c:968
 #, c-format
 msgid "View as %s..."
 msgstr "Visa som %s..."
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:983
+#: src/nautilus-window.c:990
 msgid "View as Other..."
 msgstr "Visa som annat...."
 
-#: src/nautilus-window.c:1508
+#: src/nautilus-window.c:1515
 msgid "Close"
 msgstr "Stäng"
 
-#: src/nautilus-window-manage-views.c:249 src/nautilus-window-menus.c:675
+#: src/nautilus-window-manage-views.c:249 src/nautilus-window-menus.c:677
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -4275,11 +4126,11 @@ msgstr "Du har inte de rättigheter som krävs för att se \"%s\"."
 msgid "Inadequate Permissions"
 msgstr "Otillräckliga rättigheter"
 
-#: src/nautilus-window-manage-views.c:801
+#: src/nautilus-window-manage-views.c:804
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:812
+#: src/nautilus-window-manage-views.c:815
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -4287,7 +4138,7 @@ msgstr ""
 "En av sidoradspanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr "
 "kan jag inte säga vilken."
 
-#: src/nautilus-window-manage-views.c:816
+#: src/nautilus-window-manage-views.c:819
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -4296,18 +4147,18 @@ msgstr ""
 "Sidoradspanelen %s råkade ut för ett fel och kan inte fortsätta. Om det här "
 "fortsätter att hända kanske du vill stänga av den här panelen."
 
-#: src/nautilus-window-manage-views.c:821
+#: src/nautilus-window-manage-views.c:824
 msgid "Sidebar Panel Failed"
 msgstr "Sidoradspanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1217
+#: src/nautilus-window-manage-views.c:1220
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Kunde inte hitta \"%s\". Var vänlig och kontrollera stavningen och försök "
 "igen."
 
-#: src/nautilus-window-manage-views.c:1223
+#: src/nautilus-window-manage-views.c:1226
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -4315,7 +4166,7 @@ msgstr ""
 "\"%s\" är ingen giltig plats. Var vänlig och kontrollera stavningen och "
 "försök igen."
 
-#: src/nautilus-window-manage-views.c:1241
+#: src/nautilus-window-manage-views.c:1244
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this "
@@ -4324,7 +4175,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera objekt av den här "
 "okända typen."
 
-#: src/nautilus-window-manage-views.c:1245
+#: src/nautilus-window-manage-views.c:1248
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
@@ -4333,23 +4184,23 @@ msgstr ""
 "\"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1257
+#: src/nautilus-window-manage-views.c:1260
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1263
+#: src/nautilus-window-manage-views.c:1266
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1268
+#: src/nautilus-window-manage-views.c:1271
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1279
+#: src/nautilus-window-manage-views.c:1282
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -4361,23 +4212,23 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1283
+#: src/nautilus-window-manage-views.c:1286
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1287
+#: src/nautilus-window-manage-views.c:1290
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1300
+#: src/nautilus-window-manage-views.c:1303
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:377
+#: src/nautilus-window-menus.c:379
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -4385,50 +4236,50 @@ msgstr ""
 "Är du säker på att du vill glömma historien? I så fall kommer du att vara "
 "dömd att återuppleva den."
 
-#: src/nautilus-window-menus.c:380
+#: src/nautilus-window-menus.c:382
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Är du säker på att du vill att Nautilus ska glömma de platser som du har "
 "besökt?"
 
-#: src/nautilus-window-menus.c:385
+#: src/nautilus-window-menus.c:387
 msgid "Forget History?"
 msgstr "Glöm historik?"
 
-#: src/nautilus-window-menus.c:386
+#: src/nautilus-window-menus.c:388
 msgid "Forget"
 msgstr "Glöm"
 
-#: src/nautilus-window-menus.c:486
+#: src/nautilus-window-menus.c:488
 msgid "Hide Status Bar"
 msgstr "Göm statusrad"
 
-#: src/nautilus-window-menus.c:487
+#: src/nautilus-window-menus.c:489
 msgid "Show Status Bar"
 msgstr "Visa statusrad"
 
-#: src/nautilus-window-menus.c:492
+#: src/nautilus-window-menus.c:494
 msgid "Hide Sidebar"
 msgstr "Göm sidorad"
 
-#: src/nautilus-window-menus.c:493
+#: src/nautilus-window-menus.c:495
 msgid "Show Sidebar"
 msgstr "Visa sidorad"
 
-#: src/nautilus-window-menus.c:498
+#: src/nautilus-window-menus.c:500
 msgid "Hide Tool Bar"
 msgstr "Göm verktygsrad"
 
-#: src/nautilus-window-menus.c:499
+#: src/nautilus-window-menus.c:501
 msgid "Show Tool Bar"
 msgstr "Visa verktygsrad"
 
-#: src/nautilus-window-menus.c:504
+#: src/nautilus-window-menus.c:506
 msgid "Hide Location Bar"
 msgstr "Göm platsrad"
 
-#: src/nautilus-window-menus.c:505
+#: src/nautilus-window-menus.c:507
 msgid "Show Location Bar"
 msgstr "Visa platsrad"
 
@@ -4437,7 +4288,7 @@ msgstr "Visa platsrad"
 #. * names of the middle user level ("Intermediate"). The 3rd %s is the name of the highest user
 #. * level ("Advanced").
 #.
-#: src/nautilus-window-menus.c:588
+#: src/nautilus-window-menus.c:590
 #, c-format
 msgid ""
 "None of the settings for the %s level can be edited. If you want to edit the "
@@ -4451,12 +4302,12 @@ msgstr ""
 #. Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 #. * The %s is the name of the middle user level ("Intermediate").
 #.
-#: src/nautilus-window-menus.c:600
+#: src/nautilus-window-menus.c:602
 #, c-format
 msgid "Switch to %s Level?"
 msgstr "Byta till användarnivån %s?"
 
-#: src/nautilus-window-menus.c:679
+#: src/nautilus-window-menus.c:681
 msgid ""
 "Nautilus is a graphical shell \n"
 "for GNOME that makes it \n"
@@ -4468,7 +4319,7 @@ msgstr ""
 "att hantera dina filer och \n"
 "resten av ditt system."
 
-#: src/nautilus-window-menus.c:820
+#: src/nautilus-window-menus.c:813
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -4477,78 +4328,73 @@ msgstr ""
 "Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
 "från din lista?"
 
-#: src/nautilus-window-menus.c:824
+#: src/nautilus-window-menus.c:817
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmärke för icke-existerande plats"
 
-#: src/nautilus-window-menus.c:838
+#: src/nautilus-window-menus.c:831
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Platsen \"%s\" finns inte längre."
 
-#: src/nautilus-window-menus.c:839
+#: src/nautilus-window-menus.c:832
 msgid "Go to Nonexistent Location"
 msgstr "Gå till ickeexisterande plats"
 
-#: src/nautilus-window-menus.c:911
+#: src/nautilus-window-menus.c:904
 msgid "Go to the specified location"
 msgstr "Gå till den angivna platsen"
 
-#: src/nautilus-window-menus.c:1193
+#: src/nautilus-window-menus.c:1186
 msgid "_File"
 msgstr "_Arkiv"
 
-#: src/nautilus-window-menus.c:1197
+#: src/nautilus-window-menus.c:1190
 msgid "_Edit"
 msgstr "_Redigera"
 
-#: src/nautilus-window-menus.c:1201
+#: src/nautilus-window-menus.c:1194
 msgid "_View"
 msgstr "_Visa"
 
-#: src/nautilus-window-menus.c:1205
+#: src/nautilus-window-menus.c:1198
 msgid "_Go"
 msgstr "_Gå"
 
-#: src/nautilus-window-menus.c:1209
+#: src/nautilus-window-menus.c:1202
 msgid "_Bookmarks"
 msgstr "_Bokmärken"
 
-#: src/nautilus-window-menus.c:1213
+#: src/nautilus-window-menus.c:1206
 msgid "_Help"
 msgstr "_Hjälp"
 
-#. Localizers: This is the menu hint for the user-level setting (%s is name of user
-#. * level, "Beginner", "Intermediate", or "Advanced")
-#.
-#: src/nautilus-window-menus.c:1394
-#, c-format
-msgid "Use %s settings"
-msgstr "Använd %s-inställningarna"
-
-#: src/nautilus-window-menus.c:1517
-msgid "_Undo"
-msgstr "_Ångra"
-
-#: src/nautilus-window-menus.c:1517
-msgid "Undo the last text change"
-msgstr "Ångra den senaste textändringen"
-
-#: src/nautilus-window-menus.c:1567
+#: src/nautilus-window-menus.c:1525
 msgid "_Browse"
 msgstr "_Bläddra"
 
-#: src/nautilus-window-menus.c:1568
+#: src/nautilus-window-menus.c:1526
 msgid "_Find"
 msgstr "_Sök"
 
-#: src/nautilus-window-toolbars.c:274
-msgid ""
-"<toolitem type=\"std\" name=\"Services\" label=\"Services\" descr=\"Go To "
-"Eazel Services\" verb=\"\"/>"
-msgstr ""
-"<toolitem type=\"std\" name=\"Services\" label=\"Services\" descr=\"Go To "
-"Eazel Services\" verb=\"\"/>"
+#. Localizers: This is the title of the user-level settings
+#. * dialog. %s will be replaced with the name of a user level
+#. * ("Beginner", "Intermediate", or "Advanced").
+#.
+#: src/nautilus-window-menus.c:1752
+#, c-format
+msgid "Edit %s Settings"
+msgstr "Ändra inställningar för %s..."
+
+#. Localizers: This is the label for the menu item that brings
+#. * up the user-level settings dialog. %s will be replaced with
+#. * the name of a user level ("Beginner", "Intermediate", or
+#. * "Advanced").
+#.
+#: src/nautilus-window-menus.c:1774
+#, c-format
+msgid "Edit %s Settings..."
+msgstr "Ändra inställningar för %s..."
 
 #. This is marked for localization in case the % sign is not
 #. * appropriate in some locale. I guess that's unlikely.
@@ -4557,11 +4403,27 @@ msgstr ""
 msgid "%.0f%%"
 msgstr "%.0f%%"
 
+#: src/nautilus-shell-ui.xml:219
+msgid " Advanced"
+msgstr " Avancerad"
+
+#: src/nautilus-shell-ui.xml:211
+msgid " Beginner"
+msgstr " Nybörjare"
+
+#: src/nautilus-shell-ui.xml:215
+msgid " Intermediate"
+msgstr " Mellan"
+
+#: src/nautilus-shell-ui.xml:292
+msgid "48"
+msgstr "48"
+
 #: src/nautilus-shell-ui.xml:184
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Lägg till ett bokmärke för den aktuella platsen till denna menyn"
 
-#: src/nautilus-shell-ui.xml:232
+#: src/nautilus-shell-ui.xml:234
 msgid "Back"
 msgstr "Föregående"
 
@@ -4629,7 +4491,7 @@ msgstr "Visa lista över skaparna av Nautilus"
 msgid "Display the Property Browser, containing patterns, colors, and emblems"
 msgstr "Visa egenskapsbläddraren som innehåller mönster, färger och emblem"
 
-#: src/nautilus-shell-ui.xml:248
+#: src/nautilus-shell-ui.xml:253
 msgid "Display the latest contents of the current location"
 msgstr "Visa det senaste innehållet på den aktuella platsen"
 
@@ -4637,15 +4499,15 @@ msgstr "Visa det senaste innehållet på den aktuella platsen"
 msgid "Display the set of available appearance themes"
 msgstr "Visa listan över tillgängliga utseendeteman"
 
-#: src/nautilus-shell-ui.xml:223
+#: src/nautilus-shell-ui.xml:225
 msgid "Edit Settings..."
 msgstr "Ändra inställningar..."
 
-#: src/nautilus-shell-ui.xml:224
+#: src/nautilus-shell-ui.xml:226
 msgid "Edit settings for the current user level"
 msgstr "Ändra inställningar för den aktuella användarnivån"
 
-#: src/nautilus-shell-ui.xml:260
+#: src/nautilus-shell-ui.xml:267
 msgid "Find"
 msgstr "Sök"
 
@@ -4653,27 +4515,31 @@ msgstr "Sök"
 msgid "For_get History"
 msgstr "_Glöm historik"
 
-#: src/nautilus-shell-ui.xml:237
+#: src/nautilus-shell-ui.xml:240
 msgid "Forward"
 msgstr "Nästa"
 
-#: src/nautilus-shell-ui.xml:256
+#: src/nautilus-shell-ui.xml:291
+msgid "Go to Eazel Services"
+msgstr "Gå till Eazels tjänster"
+
+#: src/nautilus-shell-ui.xml:262
 msgid "Go to the home location"
 msgstr "Gå till hemplatsen"
 
-#: src/nautilus-shell-ui.xml:243
+#: src/nautilus-shell-ui.xml:247
 msgid "Go to the location that contains this one"
 msgstr "Gå till platsen som innehåller detta"
 
-#: src/nautilus-shell-ui.xml:238
+#: src/nautilus-shell-ui.xml:241
 msgid "Go to the next visited location"
 msgstr "Gå till nästa besökta plats"
 
-#: src/nautilus-shell-ui.xml:233
+#: src/nautilus-shell-ui.xml:235
 msgid "Go to the previous visited location"
 msgstr "Gå till föregående besökta plats"
 
-#: src/nautilus-shell-ui.xml:255
+#: src/nautilus-shell-ui.xml:261
 msgid "Home"
 msgstr "Hem"
 
@@ -4685,17 +4551,21 @@ msgstr "Öppna ytterligare ett Nautilus-fönster för den visade platsen"
 msgid "Paste the text stored on the clipboard"
 msgstr "Klistra in texten som är sparad i urklipp"
 
-#: src/nautilus-shell-ui.xml:247
+#: src/nautilus-shell-ui.xml:252
 msgid "Refresh"
 msgstr "Ladda om"
 
-#: src/nautilus-shell-ui.xml:267
+#: src/nautilus-shell-ui.xml:275
 msgid "Search the World Wide Web"
 msgstr "Sök på webben"
 
-#: src/nautilus-shell-ui.xml:261
+#: src/nautilus-shell-ui.xml:268
 msgid "Search this computer for files"
 msgstr "Sök efter filer på den här datorn"
+
+#: src/nautilus-shell-ui.xml:290
+msgid "Services"
+msgstr "Tjänster"
 
 #: src/nautilus-shell-ui.xml:202
 msgid ""
@@ -4714,31 +4584,35 @@ msgstr "Visa innehållet mindre detaljerat"
 msgid "Show the contents in more detail"
 msgstr "Visa innehållet mer detaljerat"
 
-#: src/nautilus-shell-ui.xml:275
+#: src/nautilus-shell-ui.xml:283
 msgid "Stop loading this location"
 msgstr "Sluta ladda denna plats"
 
-#: src/nautilus-shell-ui.xml:242
+#: src/nautilus-shell-ui.xml:50
+msgid "Undo the last text change"
+msgstr "Ångra den senaste textändringen"
+
+#: src/nautilus-shell-ui.xml:246
 msgid "Up"
 msgstr "Upp"
 
-#: src/nautilus-shell-ui.xml:218
+#: src/nautilus-shell-ui.xml:220
 msgid "Use Advanced settings"
 msgstr "Använd avancerade inställningar"
 
-#: src/nautilus-shell-ui.xml:210
+#: src/nautilus-shell-ui.xml:212
 msgid "Use Beginner settings"
 msgstr "Använd nybörjarinställningar"
 
-#: src/nautilus-shell-ui.xml:214
+#: src/nautilus-shell-ui.xml:216
 msgid "Use Intermediate settings"
 msgstr "Använd mellaninställningar"
 
-#: src/nautilus-shell-ui.xml:206
+#: src/nautilus-shell-ui.xml:207
 msgid "User Level"
 msgstr "Användarnivå"
 
-#: src/nautilus-shell-ui.xml:266
+#: src/nautilus-shell-ui.xml:274
 msgid "Web Search"
 msgstr "Webbsökning"
 
@@ -4798,6 +4672,10 @@ msgstr "_Ladda om"
 msgid "_Select All"
 msgstr "_Markera allt"
 
+#: src/nautilus-shell-ui.xml:49
+msgid "_Undo"
+msgstr "_Ångra"
+
 #: src/nautilus-shell-ui.xml:161
 msgid "_Up a Level"
 msgstr "_Upp en nivå"
@@ -4805,3 +4683,94 @@ msgstr "_Upp en nivå"
 #: src/nautilus-shell-ui.xml:39
 msgid "_Web Search"
 msgstr "_Webbsökning"
+
+#~ msgid ""
+#~ "%s\n"
+#~ "\n"
+#~ "You clicked the Kill Sidebar View toolbar button."
+#~ msgstr ""
+#~ "%s\n"
+#~ "\n"
+#~ "Du klickade på knappen Döda sidoradsvy i verktygsraden."
+
+#~ msgid "_Kill Sidebar View"
+#~ msgstr "_Döda sidoradsvyn"
+
+#~ msgid "Kill the Loser sidebar view"
+#~ msgstr "Döda sidoradsvyn"
+
+#~ msgid "Loser"
+#~ msgstr "Förlorare"
+
+#~ msgid "Kill the Loser sidebar view."
+#~ msgstr "Döda sidoradsvyn."
+
+#~ msgid "_Mozilla"
+#~ msgstr "_Mozilla"
+
+#~ msgid "This is a mozilla merged menu item"
+#~ msgstr "Det här är ett mozilla-sammanslaget menyalternativ"
+
+#~ msgid "Mozilla"
+#~ msgstr "Mozilla"
+
+#~ msgid "This is a mozilla merged toolbar button"
+#~ msgstr "Det här är en mozilla-sammanslagen verktygsradsknapp"
+
+#~ msgid "Reading the install package list %s"
+#~ msgstr "Läser installationspaketlistan %s"
+
+#~ msgid "Will download %s"
+#~ msgstr "Kommer att hämta %s"
+
+#~ msgid "%s already installed"
+#~ msgstr "%s är redan installerat"
+
+#~ msgid "Category = %s"
+#~ msgstr "Kategori = %s"
+
+#~ msgid "Could not create transaction directory (%s)! ***\n"
+#~ msgstr "Kunde inte skapa transaktionskatalogen (%s)! ***\n"
+
+#~ msgid "Writing transaction to %s"
+#~ msgstr "Skriver transaktion till %s"
+
+#~ msgid "Failed to lock the downloaded file"
+#~ msgstr "Misslyckades med att låsa den hämtade filen"
+
+#~ msgid "MD5 mismatch, package %s may be compromised"
+#~ msgstr "MD5-summan stämmer inte, paketet %s kan ha manipulerats med"
+
+#~ msgid "Preflight (%ld bytes, %ld packages)"
+#~ msgstr "Förbereder (%ld byte, %ld paket)"
+
+#~ msgid "rpm running..."
+#~ msgstr "rpm kör..."
+
+#~ msgid "Removing package %s %s"
+#~ msgstr "Tar bort paketet %s %s"
+
+#~ msgid "Preparing package system"
+#~ msgstr "Förbereder paketsystem"
+
+#~ msgid "%s upgrades from version %s to %s"
+#~ msgstr "%s uppgraderar från version %s till %s"
+
+#~ msgid "%s downgrades from version %s to %s"
+#~ msgstr "%s nergraderar från version %s till %s"
+
+#~ msgid "%s version %s already installed"
+#~ msgstr "%s version %s är redan installerat"
+
+#~ msgid "Dependencies are ok"
+#~ msgstr "Beroenden är uppfyllda"
+
+#~ msgid "Use %s settings"
+#~ msgstr "Använd %s-inställningarna"
+
+#~ msgid ""
+#~ "<toolitem type=\"std\" name=\"Services\" label=\"Services\" descr=\"Go To "
+#~ "Eazel Services\" verb=\"\"/>"
+#~ msgstr ""
+#~ "<toolitem type=\"std\" name=\"Services\" label=\"Services\" descr=\"Go To "
+#~ "Eazel Services\" verb=\"\"/>"
