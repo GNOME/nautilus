@@ -1,5 +1,39 @@
 2001-01-24  Andy Hertzfeld  <andy@eazel.com>
 
+	added missing files to post-1_0_1 branch, plus some more
+	development
+	
+	* components/rss-control/.cvsignore:
+	* components/rss-control/Makefile.am:
+	* components/rss-control/main.c: (rss_control_object_destroyed),
+	(rss_control_make_object), (main):
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_rss_control_initialize),
+	(free_rss_data_item), (nautilus_rss_control_clear_items),
+	(nautilus_rss_control_destroy), (nautilus_rss_control_get_control),
+	(nautilus_rss_control_set_title), (rss_logo_callback),
+	(rss_read_done_callback), (load_rss_file),
+	(nautilus_rss_control_set_uri), (rss_control_pixbuf_composite),
+	(draw_rss_logo_image), (draw_rss_title), (draw_blue_line),
+	(draw_rss_items), (nautilus_rss_control_draw),
+	(nautilus_rss_control_expose),
+	(nautilus_rss_control_set_prelight_index),
+	(nautilus_rss_control_motion_event),
+	(nautilus_rss_control_leave_event),
+	(nautilus_rss_control_button_press_event):
+	
+	* components/rss-control/nautilus-rss-control.h:
+	* components/rss-control/nautilus-rss-control.oafinfo:
+	
+	* components/throbber/nautilus-throbber.c: (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_throbber_initialize):
+	
+	* data/top/Clock:
+	* data/top/Slashdot:
+
+2001-01-24  Andy Hertzfeld  <andy@eazel.com>
+
 	merged the post-1_0 branch with HEAD 1/23/01 to get this,
 	the post-1_0_1 branch
 	
