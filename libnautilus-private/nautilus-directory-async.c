@@ -2280,6 +2280,9 @@ mime_list_load (NautilusDirectory *directory, const char *uri)
 	directory->details->mime_list_uri = g_strdup (uri);
 	directory->details->mime_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+#ifdef DEBUG_LOAD_DIRECTORY		
+	g_message ("load_directory called to get MIME list of %s", uri);
+#endif	
 	gnome_vfs_async_load_directory
 		(&directory->details->mime_list_in_progress,
 		 uri,
