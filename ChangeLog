@@ -1,3 +1,14 @@
+2000-10-12  Michael Engber  <engber@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (nautilus_music_view_load_uri),
+	(music_view_background_appearance_changed_callback):
+	Music views now update the color of their label text when
+	the background changes. (bug 3571)
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	Added some color constants with opaque alpha values,
+	removed leading underscores from macro variable names.
+
 2000-10-12  Mike Fleming  <mfleming@eazel.com>
 
 	Move libammonite-gtk and eazel-proxy-util from ammonite to 

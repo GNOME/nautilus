@@ -165,6 +165,9 @@ static void nautilus_music_view_initialize         (NautilusMusicView      *view
 static void nautilus_music_view_destroy            (GtkObject              *object);
 static void nautilus_music_view_update_from_uri    (NautilusMusicView      *music_view,
                                                     const char             *uri);
+static void music_view_background_appearance_changed_callback
+						   (NautilusBackground	   *background,
+						    NautilusMusicView	   *music_view);
 static void music_view_load_location_callback      (NautilusView           *view,
                                                     const char             *location,
                                                     NautilusMusicView      *music_view);
@@ -214,6 +217,11 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_signal_connect (GTK_OBJECT (music_view->details->nautilus_view), 
 			    "load_location",
 			    GTK_SIGNAL_FUNC (music_view_load_location_callback), 
+			    music_view);
+			    
+	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (music_view))), 
+			    "appearance_changed",
+			    GTK_SIGNAL_FUNC (music_view_background_appearance_changed_callback), 
 			    music_view);
 
 	music_view->details->status_timeout = -1;
@@ -1477,6 +1485,27 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 	g_free (music_view->details->uri);
   	music_view->details->uri = g_strdup (uri);	
 	nautilus_music_view_update_from_uri (music_view, uri);
+}
+
+static void
+music_view_background_appearance_changed_callback (NautilusBackground *background, NautilusMusicView *music_view)
+{
+	guint32 text_color;
+
+	text_color = nautilus_background_is_dark (background) ? NAUTILUS_RGBA_COLOR_OPAQUE_WHITE : NAUTILUS_RGBA_COLOR_OPAQUE_BLACK;
+
+	if (music_view->details->album_title != NULL) {
+		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->album_title), text_color);
+	}
+	if (music_view->details->song_label != NULL) {
+		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->song_label), text_color);
+	}
+	if (music_view->details->playtime != NULL) {
+		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->playtime), text_color);
+	}
+	if (music_view->details->total_track_time != NULL) {
+		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->total_track_time), text_color);
+	}
 }
 
 static void

@@ -34,18 +34,24 @@
 #define NAUTILUS_RGB_COLOR_WHITE	0xFFFFFF
 #define NAUTILUS_RGB_COLOR_BLACK	0x000000
 
+#define NAUTILUS_RGBA_COLOR_OPAQUE_RED		0xFFFF0000
+#define NAUTILUS_RGBA_COLOR_OPAQUE_GREEN	0xFF00FF00
+#define NAUTILUS_RGBA_COLOR_OPAQUE_BLUE		0xFF0000FF
+#define NAUTILUS_RGBA_COLOR_OPAQUE_WHITE	0xFFFFFFFF
+#define NAUTILUS_RGBA_COLOR_OPAQUE_BLACK	0xFF000000
+
 /* Pack RGBA values into a 32 bits */
-#define NAUTILUS_RGBA_COLOR_PACK(_r, _g, _b, _a)	\
-( ((_a) << 24) |					\
-  ((_r) << 16) |					\
-  ((_g) <<  8) |					\
-  ((_b) <<  0) )
+#define NAUTILUS_RGBA_COLOR_PACK(r, g, b, a)	\
+( ((a) << 24) |					\
+  ((r) << 16) |					\
+  ((g) <<  8) |					\
+  ((b) <<  0) )
 
 /* Access the individual RGBA components */
-#define NAUTILUS_RGBA_COLOR_GET_R(_color) (((_color) >> 16) & 0xff)
-#define NAUTILUS_RGBA_COLOR_GET_G(_color) (((_color) >> 8) & 0xff)
-#define NAUTILUS_RGBA_COLOR_GET_B(_color) (((_color) >> 0) & 0xff)
-#define NAUTILUS_RGBA_COLOR_GET_A(_color) (((_color) >> 24) & 0xff)
+#define NAUTILUS_RGBA_COLOR_GET_R(color) (((color) >> 16) & 0xff)
+#define NAUTILUS_RGBA_COLOR_GET_G(color) (((color) >> 8) & 0xff)
+#define NAUTILUS_RGBA_COLOR_GET_B(color) (((color) >> 0) & 0xff)
+#define NAUTILUS_RGBA_COLOR_GET_A(color) (((color) >> 24) & 0xff)
 
 /* A gradient spec. is a string that contains a specifier for either a
    color or a gradient. If the string has a "-" in it, then it's a gradient.
