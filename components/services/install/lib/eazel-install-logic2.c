@@ -299,10 +299,8 @@ eazel_install_check_existing_packages (EazelInstall *service,
 					g_message ("%s is ok", name);
 					if (survivor == NULL) {
 						survivor = existing_package;
-					} else {
-						trilobite_debug ("This sucks, two of the packages are intact!");
+					} else {						
 						abort = TRUE;
-						break;
 					}
 				} else {
 					g_message ("%s is NOT ok", name);
@@ -324,12 +322,20 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			trilobite_debug ("To circumvent this problem, as root, execute this command");
 			trilobite_debug ("(which is dangerous by the way....)");
 			trilobite_debug ("rpm -e --nodeps `rpm -q %s`", pack->name);
-			trilobite_debug ("Or wait for the author to fix bug 3511");
-			/* FIXME bugzilla.eazel.com 3511 */
-			g_assert_not_reached ();
+			
+			g_list_free (borked_packages);
+
+			/* Cancel the package, mark all the existing as invalid */			   
+			pack->status = PACKAGE_CANCELLED;
+			for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
+				PackageData *existing_package = PACKAGEDATA (iterator->data);
+				existing_package->status = PACKAGE_INVALID;
+				packagedata_add_pack_to_modifies (pack, existing_package);
+				gtk_object_unref (GTK_OBJECT (existing_package));
+			}
 		}
 
-		if (survivor) {
+		if (abort==FALSE && survivor) {
 			g_assert (pack->version);
 			g_assert (survivor->version);
 
@@ -2243,6 +2249,8 @@ install_packages (EazelInstall *service, GList *categories)
 	GList *packages;
 	GList *extra_packages = NULL;
 
+	eazel_softcat_reset_server_update_flag (service->private->softcat);
+
 	packages = packagedata_list_copy (categorylist_flatten_to_packagelist (categories), TRUE);
 	expand_package_suites (service, &packages);
 	g_list_foreach (packages, (GFunc)set_toplevel, service);
@@ -2300,6 +2308,8 @@ uninstall_packages (EazelInstall *service, GList *categories)
 	EazelInstallStatus result = EAZEL_INSTALL_NOTHING;
 	GList *packages = NULL;
 	GList *failed = NULL;	
+
+	eazel_softcat_reset_server_update_flag (service->private->softcat);
 
 	trilobite_debug (" --> uninstall_all_packages");
 	packages = packagedata_list_copy (categorylist_flatten_to_packagelist (categories), TRUE);	

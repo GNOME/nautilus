@@ -113,6 +113,8 @@ eazel_softcat_initialize (EazelSoftCat *softcat) {
 	softcat->private = g_new0 (EazelSoftCatPrivate, 1);
 	softcat->private->retries = 3;
 	softcat->private->delay = 100;
+	softcat->private->server_update_set = FALSE;
+	softcat->private->server_update_val = 0;
 }
 
 GtkType
@@ -277,6 +279,13 @@ eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned i
 	softcat->private->delay = delay_us;
 }
 
+void 
+eazel_softcat_reset_server_update_flag (EazelSoftCat *softcat)
+{
+	softcat->private->server_update_set = FALSE;
+	softcat->private->server_update_val = 0;
+}
+
 const char *
 eazel_softcat_error_string (EazelSoftCatError err)
 {
@@ -289,6 +298,8 @@ eazel_softcat_error_string (EazelSoftCatError err)
 		return "softcat server is unreachable";
 	case EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES:
 		return "softcat server returned multiple responses to a single-package query";
+	case EAZEL_SOFTCAT_ERROR_SERVER_UPDATED:
+		return "softcat has been updated since last request";
 	case EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE:
 		return "no such package";
 	}
@@ -660,6 +671,21 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 		return EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE;
 	}
 
+	/* FIXME: bugzilla.eazel.com 4470
+	   Somehow check the majick db update int in the xml :
+
+	if (softcat->private->server_update_set == FALSE) {
+		softcat->private->server_update_set = TRUE;
+		softcat->private->server_update_val = majick;
+	} else {
+		if (softcat->private->server_update_val != majick) {
+			trilobite_debug ("Server has been updated since last request");
+			err = EAZEL_SOFTCAT_ERROR_SERVER_UPDATED;
+			goto out;
+		}
+	}
+	*/
+	
 	if (g_list_length (packages) == 0) {
 		trilobite_debug ("no matches for that package.");
 		err = EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE;

@@ -42,6 +42,7 @@ typedef enum {
 	EAZEL_SOFTCAT_ERROR_BAD_MOJO,
 	EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE,
 	EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES,
+	EAZEL_SOFTCAT_ERROR_SERVER_UPDATED,
 	EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE
 } EazelSoftCatError;
 
@@ -76,6 +77,7 @@ void eazel_softcat_set_authn_flag (EazelSoftCat *softcat, gboolean use_authn);
 void eazel_softcat_set_username (EazelSoftCat *softcat, const char *username);
 gboolean eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username);
 void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us);
+void eazel_softcat_reset_server_update_flag (EazelSoftCat *softcat);
 
 EazelSoftCatSense eazel_softcat_convert_sense_flags (int flags);
 char *eazel_softcat_sense_flags_to_string (EazelSoftCatSense flags);

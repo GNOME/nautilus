@@ -41,6 +41,10 @@ struct _EazelSoftCatPrivate {
 	/* number of times to try connecting to softcat, and delay between attempts (in usec) */
 	unsigned int retries;
         unsigned int delay;
+
+	/* This is used to track the server update status */
+	gboolean server_update_set;
+	guint server_update_val;
 };
 
 #endif /* EAZEL_SOFTCAT_PRIVATE_H */

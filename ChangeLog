@@ -1,3 +1,26 @@
+2001-02-14  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(eazel_install_check_existing_packages), 
+	Final fix for 3511, if multiple packages with same name are
+	already installed, and more than one passes verify, fail
+	operation.
+	(install_packages),
+	(uninstall_packages):
+	call softcat reset db update mjick.
+	
+	* components/services/install/lib/eazel-softcat.h:
+	* components/services/install/lib/eazel-softcat-private.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_initialize),
+	(eazel_softcat_reset_server_update_flag),
+	(eazel_softcat_error_string), (eazel_softcat_query):
+	Code to make get_info return a enum indicating that the db was
+	updated since last time.
+	Also a code to reset the flag.
+
 2001-02-14  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added support for scrollkeeper
