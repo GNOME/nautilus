@@ -517,59 +517,127 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			break;
 		}
 
-		/* special case read only target errors or non-readable sources */
+		/* special case read only target errors or non-readable sources
+		 * and other predictable failures
+		 */
+		
 		if (progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
 
-			if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
-				&& progress_info->phase == GNOME_VFS_XFER_PHASE_OPENSOURCE) {
-				
-				switch (xfer_info->kind) {
-				case XFER_COPY:
-				case XFER_DUPLICATE:
-					error_string = _("Error while copying.\n"
-							 "%s is not readable.");
-					break;
-				case XFER_MOVE:
+			if ((xfer_info->kind == XFER_MOVE || xfer_info->kind == XFER_MOVE_TO_TRASH)
+				&& progress_info->phase != GNOME_VFS_XFER_CHECKING_DESTINATION) {
+				/* we are failing because we are moving from a directory that
+				 * is not writable
+				 */
+				if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
 					error_string = _("Error while moving.\n"
-							 "%s is not readable.");
-					break;
-				case XFER_LINK:
-					error_string = _("Error while linking.\n"
-							 "%s is not readable.");
-					break;
-				case XFER_DELETE:
-				case XFER_EMPTY_TRASH:
-				case XFER_MOVE_TO_TRASH:
-					error_string = _("Error while deleting.\n"
-							 "%s is not readable.");
-					break;
-				default:
-					error_string = "";
-					break;
+							 "%s cannot be moved because you do not have "
+							 "permissions to change it's parent folder.");
+				} else {
+					error_string = _("Error while moving.\n"
+							 "%s cannot be moved because it's parent folder "
+							 "is read-only.");
+				}
+			} else if (progress_info->phase == GNOME_VFS_XFER_PHASE_OPENSOURCE
+					|| progress_info->phase == GNOME_VFS_XFER_PHASE_COLLECTING
+					|| progress_info->phase == GNOME_VFS_XFER_PHASE_INITIAL) {
+				
+				if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+					switch (xfer_info->kind) {
+					case XFER_COPY:
+					case XFER_DUPLICATE:
+						error_string = _("Error while copying.\n"
+								 "You do not have permissions to read %s.");
+						break;
+					case XFER_MOVE:
+						error_string = _("Error while moving.\n"
+								 "You do not have permissions to read %s.");
+						break;
+					case XFER_LINK:
+						error_string = _("Error while linking.\n"
+								 "You do not have permissions to read %s.");
+						break;
+					case XFER_DELETE:
+					case XFER_EMPTY_TRASH:
+					case XFER_MOVE_TO_TRASH:
+						error_string = _("Error while deleting.\n"
+								 "You do not have permissions to read %s.");
+						break;
+					default:
+						error_string = "";
+						break;
+					}
+				} else {
+					switch (xfer_info->kind) {
+					case XFER_COPY:
+					case XFER_DUPLICATE:
+						error_string = _("Error while copying.\n"
+								 "%s is not readable.");
+						break;
+					case XFER_MOVE:
+						error_string = _("Error while moving.\n"
+								 "%s is not readable.");
+						break;
+					case XFER_LINK:
+						error_string = _("Error while linking.\n"
+								 "%s is not readable.");
+						break;
+					case XFER_DELETE:
+					case XFER_EMPTY_TRASH:
+					case XFER_MOVE_TO_TRASH:
+						error_string = _("Error while deleting.\n"
+								 "%s is not readable.");
+						break;
+					default:
+						error_string = "";
+						break;
+					}
 				}
 
 			} else {
-				switch (xfer_info->kind) {
-				case XFER_COPY:
-				case XFER_DUPLICATE:
-					error_string = _("Error while copying items to \"%s\".\n"
-					   		 "The destination is not writable.");
-					break;
-				case XFER_MOVE_TO_TRASH:
-				case XFER_MOVE:
-					error_string = _("Error while moving items to \"%s\".\n"
-					   		 "The destination is not writable.");
-					break;
-				case XFER_LINK:
-					error_string = _("Error while linking items to \"%s\".\n"
-					   		 "The destination is not writable.");
-					break;
-				default:
-					g_assert_not_reached ();
-					error_string = "";
-					break;
+				if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+					switch (xfer_info->kind) {
+					case XFER_COPY:
+					case XFER_DUPLICATE:
+						error_string = _("Error while copying items to \"%s\".\n"
+						   		 "You do not have permissions to write to the destination.");
+						break;
+					case XFER_MOVE_TO_TRASH:
+					case XFER_MOVE:
+						error_string = _("Error while moving items to \"%s\".\n"
+						   		 "You do not have permissions to write to the destination.");
+						break;
+					case XFER_LINK:
+						error_string = _("Error while linking items to \"%s\".\n"
+						   		 "You do not have permissions to write to the destination.");
+						break;
+					default:
+						g_assert_not_reached ();
+						error_string = "";
+						break;
+					}
+				} else {
+					switch (xfer_info->kind) {
+					case XFER_COPY:
+					case XFER_DUPLICATE:
+						error_string = _("Error while copying items to \"%s\".\n"
+						   		 "The destination is not writable.");
+						break;
+					case XFER_MOVE_TO_TRASH:
+					case XFER_MOVE:
+						error_string = _("Error while moving items to \"%s\".\n"
+						   		 "The destination is not writable.");
+						break;
+					case XFER_LINK:
+						error_string = _("Error while linking items to \"%s\".\n"
+						   		 "The destination is not writable.");
+						break;
+					default:
+						g_assert_not_reached ();
+						error_string = "";
+						break;
+					}
 				}
 
 				if (progress_info->target_name != NULL) {

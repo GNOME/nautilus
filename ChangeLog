@@ -1,3 +1,22 @@
+2000-12-05  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error):
+	Second part of fix 4894 "Dragging /proc from the tree view to
+	/home causes a file not found".	
+	Part of fix to 3232 "Error message when copying rwx file from
+	r-x folder to rwx folder".	
+	Part of fix to 3237 "No error occurs if move file to folder w/o
+	write access".
+	Part of fix to 3748 "misleading file operation error dialog"
+	Added logic that distinguishes between read and write phases
+	of a file move properly and gives the right error.
+	Split up the "no permissions" and "read only" cases and gave them
+	distinct errors.
+	Added a specific case for a move from a directory that is not writable.
+
 2000-12-05  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
