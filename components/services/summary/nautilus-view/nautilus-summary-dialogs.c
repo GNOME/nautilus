@@ -211,7 +211,7 @@ error_dialog_cancel_cb (GtkWidget      *button, NautilusSummaryView	*view)
 {
 	char	*user_home;
 	user_home = nautilus_get_user_main_directory ();	
-	nautilus_view_open_location (view->details->nautilus_view, user_home);
+	nautilus_view_open_location_in_this_window (view->details->nautilus_view, user_home);
 	g_free (user_home);
 }
 

@@ -38,37 +38,41 @@
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-view.h>
 
-static void impl_Nautilus_ViewFrame_open_location               (PortableServer_Servant  servant,
-								 Nautilus_URI            location,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_open_location_in_new_window (PortableServer_Servant  servant,
-								 Nautilus_URI            location,
-						       		 const Nautilus_URIList *selection,
-						       		 CORBA_Environment *ev);
-static void impl_Nautilus_ViewFrame_report_selection_change     (PortableServer_Servant  servant,
-								 const Nautilus_URIList *selection,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_status               (PortableServer_Servant  servant,
-								 const CORBA_char       *status,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_underway        (PortableServer_Servant  servant,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_progress        (PortableServer_Servant  servant,
-								 CORBA_float            fraction_done,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_complete        (PortableServer_Servant  servant,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_failed          (PortableServer_Servant  servant,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_set_title                   (PortableServer_Servant  servant,
-								 const CORBA_char       *title,
-								 CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_open_location_in_this_window         (PortableServer_Servant  servant,
+									  Nautilus_URI            location,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Servant  servant,
+									  Nautilus_URI            location,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_open_location_force_new_window       (PortableServer_Servant  servant,
+									  Nautilus_URI            location,
+									  const Nautilus_URIList *selection,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_report_selection_change              (PortableServer_Servant  servant,
+									  const Nautilus_URIList *selection,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_report_status                        (PortableServer_Servant  servant,
+									  const CORBA_char       *status,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_report_load_underway                 (PortableServer_Servant  servant,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_report_load_progress                 (PortableServer_Servant  servant,
+									  CORBA_float             fraction_done,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_report_load_complete                 (PortableServer_Servant  servant,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_report_load_failed                   (PortableServer_Servant  servant,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_set_title                            (PortableServer_Servant  servant,
+									  const CORBA_char       *title,
+									  CORBA_Environment      *ev);
 
 POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 {
 	NULL,
-	&impl_Nautilus_ViewFrame_open_location,
-	&impl_Nautilus_ViewFrame_open_location_in_new_window,
+	&impl_Nautilus_ViewFrame_open_location_in_this_window,
+	&impl_Nautilus_ViewFrame_open_location_prefer_existing_window,
+	&impl_Nautilus_ViewFrame_open_location_force_new_window,
 	&impl_Nautilus_ViewFrame_report_selection_change,
 	&impl_Nautilus_ViewFrame_report_status,
 	&impl_Nautilus_ViewFrame_report_load_underway,
@@ -128,23 +132,32 @@ impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
 }
 
 static void
-impl_Nautilus_ViewFrame_open_location (PortableServer_Servant servant,
-				       Nautilus_URI location,
-				       CORBA_Environment *ev)
+impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant servant,
+						      Nautilus_URI location,
+						      CORBA_Environment *ev)
 {
 #if DEBUG_MATHIEU
 	g_print ("open location \n");
 #endif /* DEBUG_MATHIEU */
 
-	nautilus_view_frame_open_location
+	nautilus_view_frame_open_location_in_this_window
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
 }
 
 static void
-impl_Nautilus_ViewFrame_open_location_in_new_window (PortableServer_Servant servant,
-						     Nautilus_URI location,
-						     const Nautilus_URIList *selection,
-						     CORBA_Environment *ev)
+impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Servant servant,
+							      Nautilus_URI location,
+							      CORBA_Environment *ev)
+{
+	nautilus_view_frame_open_location_prefer_existing_window
+		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
+}
+
+static void
+impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant servant,
+							Nautilus_URI location,
+							const Nautilus_URIList *selection,
+							CORBA_Environment *ev)
 {
 	GList *selection_as_g_list;
 
@@ -153,7 +166,7 @@ impl_Nautilus_ViewFrame_open_location_in_new_window (PortableServer_Servant serv
 #endif /* DEBUG_MATHIEU */
 
 	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
-	nautilus_view_frame_open_location_in_new_window
+	nautilus_view_frame_open_location_force_new_window
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location, selection_as_g_list);
 	g_list_free (selection_as_g_list);
 }

@@ -450,7 +450,8 @@ go_to_button_callback (GtkWidget * widget, NautilusRPMView *rpm_view)
 	
 	gtk_clist_get_text (GTK_CLIST(rpm_view->details->package_file_list), 
 			    rpm_view->details->selected_file, 0, &path_name);
-	nautilus_view_open_location (rpm_view->details->nautilus_view, path_name);
+	nautilus_view_open_location_in_this_window
+                (rpm_view->details->nautilus_view, path_name);
 }
 
 static void

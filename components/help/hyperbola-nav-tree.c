@@ -138,7 +138,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
 
   view->notify_count++;
 
-  nautilus_view_open_location (view->view_frame, tnode->uri);
+  nautilus_view_open_location_in_this_window (view->view_frame, tnode->uri);
 
   view->notify_count--;
 }

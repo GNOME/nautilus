@@ -749,7 +749,7 @@ static void
 goto_service_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 {
 	
-	nautilus_view_open_location (cbdata->nautilus_view, cbdata->uri);
+	nautilus_view_open_location_in_this_window (cbdata->nautilus_view, cbdata->uri);
 
 }
 
@@ -758,7 +758,7 @@ static void
 goto_update_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 {
 	
-	nautilus_view_open_location (cbdata->nautilus_view, cbdata->uri);
+	nautilus_view_open_location_in_this_window (cbdata->nautilus_view, cbdata->uri);
 
 }
 

@@ -1165,7 +1165,7 @@ tree_select_row_callback (NautilusCTree              *tree,
 	
 	if (uri != NULL &&
 	    nautilus_strcmp (view->details->current_main_view_uri, uri) != 0) {
-		nautilus_view_open_location (NAUTILUS_VIEW (view->details->nautilus_view), uri);
+		nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view->details->nautilus_view), uri);
 		
 		g_free (view->details->selected_uri);
 		view->details->selected_uri = g_strdup (uri);

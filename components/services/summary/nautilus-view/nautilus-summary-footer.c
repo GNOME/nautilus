@@ -99,11 +99,11 @@ footer_item_clicked_callback (GtkWidget *widget, int index, gpointer callback_da
 		break;
 
 	case FOOTER_TERMS_OF_USER:
-		nautilus_view_open_location (view->details->nautilus_view, SUMMARY_TERMS_OF_USE_URI);
+		nautilus_view_open_location_in_this_window (view->details->nautilus_view, SUMMARY_TERMS_OF_USE_URI);
 		break;
 
 	case FOOTER_PRIVACY_STATEMENT:
-		nautilus_view_open_location (view->details->nautilus_view, SUMMARY_PRIVACY_STATEMENT_URI);
+		nautilus_view_open_location_in_this_window (view->details->nautilus_view, SUMMARY_PRIVACY_STATEMENT_URI);
 		break;
 
 	default:

@@ -640,9 +640,9 @@ nautilus_gdk_window_bring_to_front (GdkWindow *window)
 
 	gdk_error_trap_push ();
 	XSetInputFocus (GDK_DISPLAY (),
-	 	GDK_WINDOW_XWINDOW (window),
-	    	RevertToPointerRoot,
-	     	GDK_CURRENT_TIME);
+			GDK_WINDOW_XWINDOW (window),
+			RevertToPointerRoot,
+			GDK_CURRENT_TIME);
 	gdk_flush();
 	gdk_error_trap_pop ();
 }

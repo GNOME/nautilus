@@ -138,7 +138,7 @@ hyperbola_navigation_search_select_row(GtkWidget *clist, gint row, gint column, 
   if(gtk_clist_get_text(GTK_CLIST(clist), row, 0, &uri))
     return;
 
-  nautilus_view_open_location (hns->nautilus_view, uri);
+  nautilus_view_open_location_in_this_window (hns->nautilus_view, uri);
 }
 
 BonoboObject *hyperbola_navigation_search_new(void)

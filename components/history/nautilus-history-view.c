@@ -247,7 +247,7 @@ history_button_release (GtkCList *clist, GdkEventButton *event, HistoryView *hvi
 	
 	/* Navigate to uri */
 	uri = get_uri_from_row (clist, row);
-	nautilus_view_open_location (hview->view, uri);
+	nautilus_view_open_location_in_this_window (hview->view, uri);
 	g_free (uri);
 }
 

@@ -1,3 +1,112 @@
+2000-12-12  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 1948 ("Open in New Window" menu item reuses existing
+	window if it exists) by separating the explicit "open in new
+	window" feature (always gives a new window) from the "open all
+	items in new windows" preference (reuses window if one with the
+	right location already exists).
+
+	* libnautilus/nautilus-view-component.idl: Added new
+	open_location_prefer_existing_window call. Renamed open_location
+	to open_location_in_this_window and open_location_in_new_window to
+	open_location_force_new_window for clarity.
+	
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c:
+	(nautilus_view_open_location_in_this_window),
+	(nautilus_view_open_location_prefer_existing_window),
+	(nautilus_view_open_location_force_new_window):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame_open_location_in_this_window),
+	(impl_Nautilus_ViewFrame_open_location_prefer_existing_window),
+	(impl_Nautilus_ViewFrame_open_location_force_new_window):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_open_location_in_this_window),
+	(nautilus_view_frame_open_location_prefer_existing_window),
+	(nautilus_view_frame_open_location_force_new_window):
+	* src/nautilus-view-frame.h:
+	Add new call, rename old ones.
+	
+	* src/file-manager/fm-directory-view.c: (open_callback): Pass parameter
+	to tell the open code to respect the "use new windows" preference.
+	(open_location): Take new WindowChoice parameter to respect preference
+	as appropriate.
+	(switch_location_and_view): Tell the code to respect the preference in
+	this case (opening from Open With).
+	(show_trash_callback): Use code that respects the preference instead of
+	always opening in this case.
+	(open_one_in_new_window): Always force a new window (used by Open
+	in New Window command).
+	(activate_callback): Pass through new WindowChoice instead of boolean.
+	(fm_directory_view_activate_file): Pass through new WindowChoice
+	instead of boolean.,
+	(fm_directory_view_activate_files): Respect the user preference if
+	opening only one file, do the "use existing window or make new one"
+	mode if opening more than one.
+	
+	* src/nautilus-window-manage-views.c: (handle_unreadable_location):
+	Move check for empty location string in here.
+	(open_location): Moved the code for reusing existing windows out
+	of here. Also changed code structure to avoid redoing the
+	handle_unreadable_location check.
+	(open_location_in_this_window_callback): Renamed.
+	(open_location_prefer_existing_window_callback): Here's where
+	the code for reusing existing windows went. New callback for the
+	new call/signal.
+	(open_location_force_new_window_callback): Renamed.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(reveal_selected_items_callback): Change to use
+	nautilus_view_open_location_force_new_window by its new name.
+	
+	* src/nautilus-window-manage-views.h: Got rid of
+	nautilus_window_open_location_in_new_window, which was public and
+	unused.
+
+	* components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_open_location_callback):
+	* components/help/hyperbola-nav-index.c:
+	(hyperbola_navigation_index_select_row):
+	* components/help/hyperbola-nav-search.c:
+	(hyperbola_navigation_search_select_row):
+	* components/help/hyperbola-nav-tree.c:
+	(hyperbola_navigation_tree_select_row):
+	* components/history/nautilus-history-view.c:
+	(history_button_release):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_open_uri_callback), (mozilla_dom_mouse_click_callback):
+	* components/rpmview/nautilus-rpm-view.c: (go_to_button_callback):
+	* components/services/login/nautilus-view/nautilus-change-password-view.c:
+	(run_away_timer), (authn_failed), (maintenance_button_cb):
+	* components/services/summary/nautilus-view/nautilus-summary-callbacks.c:
+	(logged_in_callback), (logged_out_callback),
+	(preferences_button_cb), (forgot_password_button_cb),
+	(register_button_cb):
+	* components/services/summary/nautilus-view/nautilus-summary-dialogs.c:
+	(error_dialog_cancel_cb):
+	* components/services/summary/nautilus-view/nautilus-summary-footer.c:
+	(footer_item_clicked_callback):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(goto_service_cb), (goto_update_cb):
+	* components/text/nautilus-text-view.c: (handle_service_menu_item):
+	* components/tree/nautilus-tree-view.c: (tree_select_row_callback):
+	Change to use new nautilus_view_open_location_in_this_window
+	name. It's better because it's more explicit, but also, it's the
+	new name!
+	
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gdk_window_bring_to_front): Fixed indentation.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_window_present): Put in a new implementation that
+	uses nautilus_gdk_window_bring_to_front instead of the old one
+	that did a hide followed by a show. Corrected an assert that
+	should have been a return_if_fail.
+	
 2000-12-12  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

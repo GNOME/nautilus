@@ -608,7 +608,7 @@ reveal_selected_items_callback (BonoboUIComponent *component, gpointer user_data
 			parent_uri = nautilus_file_get_parent_uri (file);
 			if (parent_uri != NULL) {
 				file_as_list = g_list_prepend (NULL, nautilus_file_get_uri (file));
-				nautilus_view_open_location_in_new_window
+				nautilus_view_open_location_force_new_window
 					(fm_directory_view_get_nautilus_view (directory_view), 
 					 parent_uri,
 					 file_as_list);

@@ -241,7 +241,7 @@ hyperbola_navigation_index_select_row(GtkWidget *clist, gint row, gint column, G
   if(!ii->uri)
     return;
 
-  nautilus_view_open_location (hni->view_frame, ii->uri);
+  nautilus_view_open_location_in_this_window (hni->view_frame, ii->uri);
 }
 
 typedef struct {

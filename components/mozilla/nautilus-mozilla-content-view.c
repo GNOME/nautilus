@@ -796,7 +796,8 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 
 		/*do untranslate here*/
 		untranslated_uri = mozilla_untranslate_uri_if_needed (view, uri);
-		nautilus_view_open_location (view->details->nautilus_view, untranslated_uri);
+		nautilus_view_open_location_in_this_window
+			(view->details->nautilus_view, untranslated_uri);
 		g_free (untranslated_uri);
 
 		bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
@@ -1102,7 +1103,8 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			g_print ("%s() href = %s\n", __FUNCTION__, href);
 #endif
 			bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
-			nautilus_view_open_location (view->details->nautilus_view, href);
+			nautilus_view_open_location_in_this_window
+				(view->details->nautilus_view, href);
 			bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 			g_free (href);
 

@@ -210,7 +210,8 @@ logged_in_callback (gpointer	raw)
 	view->details->logged_in = TRUE;
 
 	update_menu_items (view, TRUE);
-	nautilus_view_open_location (view->details->nautilus_view, "eazel:");
+	nautilus_view_open_location_in_this_window
+		(view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
 }
@@ -225,7 +226,8 @@ logged_out_callback (gpointer	raw)
 	view->details->logged_in = FALSE;
 	
 	update_menu_items (view, FALSE);
-	nautilus_view_open_location (view->details->nautilus_view, "eazel:");
+	nautilus_view_open_location_in_this_window
+		(view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
 }
@@ -239,10 +241,11 @@ preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 	url = trilobite_redirect_lookup (PREFERENCES_KEY);
 	if (!url) {
-		g_assert ("Failed to load Registration url!\n");
+		g_error ("Failed to load Registration url!");
 	}
 
-	nautilus_view_open_location (view->details->nautilus_view, url);
+	nautilus_view_open_location_in_this_window
+		(view->details->nautilus_view, url);
 	g_free (url);
 
 }
@@ -252,7 +255,8 @@ void
 forgot_password_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
 
-	nautilus_view_open_location (view->details->nautilus_view, SUMMARY_CHANGE_PWD_FORM);
+	nautilus_view_open_location_in_this_window
+		(view->details->nautilus_view, SUMMARY_CHANGE_PWD_FORM);
 
 }
 
@@ -265,10 +269,11 @@ register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 	url = trilobite_redirect_lookup (REGISTER_KEY);
 	if (!url) {
-		g_assert ("Failed to load Registration url!\n");
+		g_error ("Failed to load Registration url!");
 	}
 
-	nautilus_view_open_location (view->details->nautilus_view, url);
+	nautilus_view_open_location_in_this_window
+		(view->details->nautilus_view, url);
 	g_free (url);
 
 }

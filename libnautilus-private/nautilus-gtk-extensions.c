@@ -264,52 +264,30 @@ guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
 }
 
 /**
- * nautilus_gtk_window_hide_retain_geometry:
- * 
- * Hide a GtkWindow such that when reopened it will be in the same
- * place it is now.
- * @window: The GtkWindow to be hidden.
- **/
-static void
-nautilus_gtk_window_hide_retain_geometry (GtkWindow *window) {
-	gchar *geometry_string;
-	int left, top, width, height;
-
-	g_return_if_fail (GTK_IS_WINDOW (window));
-
-	/* Save and restore position to keep it in same position when next shown. */
-
-	geometry_string = gnome_geometry_string (GTK_WIDGET (window)->window);
-    
-	gtk_widget_hide (GTK_WIDGET (window));
-
-	if (gnome_parse_geometry (geometry_string, &left, &top, &width, &height)) 
-	{
-		gtk_window_set_default_size (window, width, height);
-		gtk_widget_set_uposition (GTK_WIDGET (window), left, top);
-	}
-
-	g_free (geometry_string);
-}
-
-/**
  * nautilus_gtk_window_present:
  * 
  * Presents to the user a window that may be hidden, iconified, or buried.
  * @window: The GtkWindow to be presented to the user.
  **/
 void
-nautilus_gtk_window_present (GtkWindow *window) {
-	g_assert (GTK_IS_WINDOW (window));
+nautilus_gtk_window_present (GtkWindow *window)
+{
+	GdkWindow *gdk_window;
 
-	/* Hide first if already showing, so it will reappear on top.
-	 * This works with iconified windows as well.
+	g_return_if_fail (GTK_IS_WINDOW (window));
+
+	/* FIXME bugzilla.eazel.com 5153: This doesn't work for
+	 * iconified windows.
 	 */
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (window))) 
-	{
-		nautilus_gtk_window_hide_retain_geometry (window);
+	
+	/* If we have no gdk window, then it's OK to just show, since
+	 * the window is new and presumably will show up in front.
+	 */
+	gdk_window = GTK_WIDGET (window)->window;
+	if (gdk_window != NULL) {
+		nautilus_gdk_window_bring_to_front (gdk_window);
 	}
-    
+
 	gtk_widget_show (GTK_WIDGET (window));
 }
 

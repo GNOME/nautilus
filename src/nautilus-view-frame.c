@@ -53,8 +53,9 @@ enum {
 	LOAD_COMPLETE,
 	LOAD_PROGRESS_CHANGED,
 	LOAD_UNDERWAY,
-	OPEN_LOCATION,
-	OPEN_LOCATION_IN_NEW_WINDOW,
+	OPEN_LOCATION_FORCE_NEW_WINDOW,
+	OPEN_LOCATION_IN_THIS_WINDOW,
+	OPEN_LOCATION_PREFER_EXISTING_WINDOW,
 	TITLE_CHANGED,
 	ZOOM_LEVEL_CHANGED,
 	ZOOM_PARAMETERS_CHANGED,
@@ -165,22 +166,30 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				    load_underway),
 		 gtk_marshal_NONE__NONE,
 		 GTK_TYPE_NONE, 0);
-	signals[OPEN_LOCATION] = gtk_signal_new
-		("open_location",
+	signals[OPEN_LOCATION_FORCE_NEW_WINDOW] = gtk_signal_new
+		("open_location_force_new_window",
 		 GTK_RUN_LAST,
 		 object_class->type,
 		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-				    open_location),
-		 gtk_marshal_NONE__STRING,
-		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-	signals[OPEN_LOCATION_IN_NEW_WINDOW] = gtk_signal_new
-		("open_location_in_new_window",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-				    open_location_in_new_window),
+				    open_location_force_new_window),
 		 nautilus_gtk_marshal_NONE__STRING_POINTER,
 		 GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_POINTER);
+	signals[OPEN_LOCATION_IN_THIS_WINDOW] = gtk_signal_new
+		("open_location_in_this_window",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    open_location_in_this_window),
+		 gtk_marshal_NONE__STRING,
+		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW] = gtk_signal_new
+		("open_location_prefer_existing_window",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    open_location_in_this_window),
+		 gtk_marshal_NONE__STRING,
+		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 	signals[TITLE_CHANGED] = gtk_signal_new
 		("title_changed",
 		 GTK_RUN_LAST,
@@ -1018,26 +1027,37 @@ nautilus_view_frame_get_iid (NautilusViewFrame *view)
 }
 
 void
-nautilus_view_frame_open_location (NautilusViewFrame *view,
-                                   const char *location)
+nautilus_view_frame_open_location_in_this_window (NautilusViewFrame *view,
+						  const char *location)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	view_frame_wait_is_over (view);
 	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[OPEN_LOCATION], location);
+			 signals[OPEN_LOCATION_IN_THIS_WINDOW], location);
 }
 
 void
-nautilus_view_frame_open_location_in_new_window (NautilusViewFrame *view,
-                                                 const char *location,
-						 GList *selection)
+nautilus_view_frame_open_location_prefer_existing_window (NautilusViewFrame *view,
+							  const char *location)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	view_frame_wait_is_over (view);
 	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[OPEN_LOCATION_IN_NEW_WINDOW],
+			 signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW], location);
+}
+
+void
+nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
+						    const char *location,
+						    GList *selection)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_wait_is_over (view);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[OPEN_LOCATION_FORCE_NEW_WINDOW],
 			 location, selection);
 }
 

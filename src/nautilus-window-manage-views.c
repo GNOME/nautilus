@@ -81,12 +81,17 @@
  */
 #define MAX_URI_IN_DIALOG_LENGTH 60
 
+typedef enum {
+        THIS_WINDOW,
+        EXISTING_WINDOW,
+        NEW_WINDOW
+} OpenLocationWindow;
+
 static void connect_view           (NautilusWindow    *window, 
                                     NautilusViewFrame *view);
 static void disconnect_view        (NautilusWindow    *window,
                                     NautilusViewFrame *view);
 static void cancel_location_change (NautilusWindow    *window);
-
 
 static void
 change_selection (NautilusWindow *window,
@@ -568,18 +573,25 @@ location_has_really_changed (NautilusWindow *window)
 }
 
 static gboolean
-handle_unreadable_location (NautilusWindow *window, const char *uri)
+handle_unreadable_location (NautilusWindow *window, const char *location)
 {
 	NautilusFile *file;
 	gboolean unreadable;
 	char *file_name;
         char *message;
 
+	/* An empty location doesn't jibe with our logic. It will
+	 * work if there are any characters (even just one space).
+         */
+	if (location[0] == '\0') {
+		return TRUE;
+	}
+	
 	/* FIXME bugzilla.eazel.com 866: Can't expect to read the
 	 * permissions instantly here. We might need to wait for
 	 * a stat first.
 	 */
-	file = nautilus_file_get (uri);
+	file = nautilus_file_get (location);
 
 	unreadable = !nautilus_file_can_read (file);
 
@@ -602,56 +614,35 @@ open_location (NautilusWindow *window,
                gboolean force_new_window,
                GList *new_selection)
 {
-        NautilusWindow *existing_window;
+        NautilusWindow *target_window;
         gboolean create_new_window;
-	GSList *node;
-
-	/* empty location doesn't jive with our logic, if there are any characters,
-	 * it will work ok, even if there is space */
-	if (location[0] == '\0') {
-		return;
-	}
-	
+        
         if (handle_unreadable_location (window, location)) {
 		return;
         }
-        
+
         create_new_window = force_new_window;
+
 	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
-        if (NAUTILUS_IS_DESKTOP_WINDOW (window) && window->content_view != NULL) {
+        if (NAUTILUS_IS_DESKTOP_WINDOW (window)
+            && window->content_view != NULL) {
                 create_new_window = TRUE;
         }
 
         if (create_new_window) {
-                /* Determine if a window with this uri is already open.  If so, activate it */
-		/* FIXME bugzilla.eazel.com 2464: 
-		 * This may be the desired bahavior, but the prefs UI still says open
-		 * new window.  How can we resolve this inconsistancy?
-		 */                 
-		for (node = nautilus_application_windows (); node != NULL; node = node->next) {
-			existing_window = NAUTILUS_WINDOW (node->data);
-			if (existing_window->location != NULL
-                            && nautilus_uris_match (existing_window->location, location)) {
-				gtk_widget_show_now (GTK_WIDGET (existing_window));
-				nautilus_gdk_window_bring_to_front (GTK_WIDGET (existing_window)->window);								
-				return;
-			}
-		}
-
-		/* No open window found.  Create a new one. */
-                open_location (nautilus_application_create_window (window->application), 
-                               location, FALSE, new_selection);
-                return;
+                target_window = nautilus_application_create_window (window->application);
+        } else {
+                target_window = window;
         }
 
-	nautilus_g_list_free_deep (window->pending_selection);
-        window->pending_selection = nautilus_g_str_list_copy (new_selection);
+	nautilus_g_list_free_deep (target_window->pending_selection);
+        target_window->pending_selection = nautilus_g_str_list_copy (new_selection);
 
         nautilus_window_begin_location_change
-               (window, location,
+               (target_window, location,
                 NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
 }
 
@@ -660,14 +651,6 @@ nautilus_window_open_location (NautilusWindow *window,
                                const char *location)
 {
         open_location (window, location, FALSE, NULL);
-}
-
-void
-nautilus_window_open_location_in_new_window (NautilusWindow *window,
-                                             const char *location,
-                                             GList *selection)
-{
-        open_location (window, location, TRUE, selection);
 }
 
 static void
@@ -1709,9 +1692,9 @@ load_complete_callback (NautilusViewFrame *view,
 }
 
 static void
-open_location_callback (NautilusViewFrame *view,
-                        const char *location,
-                        NautilusWindow *window)
+open_location_in_this_window_callback (NautilusViewFrame *view,
+                                       const char *location,
+                                       NautilusWindow *window)
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
@@ -1719,14 +1702,40 @@ open_location_callback (NautilusViewFrame *view,
 }
 
 static void
-open_location_in_new_window_callback (NautilusViewFrame *view,
-                                      const char *location,
-                                      GList *selection,
-                                      NautilusWindow *window)
+open_location_prefer_existing_window_callback (NautilusViewFrame *view,
+                                               const char *location,
+                                               NautilusWindow *window)
+{
+        NautilusWindow *existing_window;
+	GSList *node;
+
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        /* First, handle the case where there's already a window for
+         * this location.
+         */
+        for (node = nautilus_application_windows ();
+             node != NULL; node = node->next) {
+                existing_window = NAUTILUS_WINDOW (node->data);
+                if (nautilus_uris_match (existing_window->location, location)) {
+                        nautilus_gtk_window_present (GTK_WINDOW (existing_window));
+                        return;
+                }
+        }
+
+        /* Otherwise, open a new window. */
+        open_location (window, location, TRUE, NULL);
+}
+
+static void
+open_location_force_new_window_callback (NautilusViewFrame *view,
+                                         const char *location,
+                                         GList *selection,
+                                         NautilusWindow *window)
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        nautilus_window_open_location_in_new_window (window, location, selection);
+        open_location (window, location, TRUE, selection);
 }
 
 static void
@@ -1739,16 +1748,17 @@ title_changed_callback (NautilusViewFrame *view,
 }
 
 #define FOR_EACH_NAUTILUS_WINDOW_SIGNAL(macro) \
-	macro (change_selection)		\
-	macro (change_status)			\
-	macro (failed)				\
-	macro (get_history_list)		\
-	macro (load_complete)			\
-	macro (load_underway)			\
-	macro (open_location)			\
-	macro (open_location_in_new_window)	\
-	macro (title_changed)			\
-	macro (zoom_level_changed)              \
+	macro (change_selection)			\
+	macro (change_status)				\
+	macro (failed)					\
+	macro (get_history_list)			\
+	macro (load_complete)				\
+	macro (load_underway)				\
+	macro (open_location_force_new_window)		\
+	macro (open_location_in_this_window)		\
+	macro (open_location_prefer_existing_window)	\
+	macro (title_changed)				\
+	macro (zoom_level_changed)			\
         macro (zoom_parameters_changed)
 
 static void

@@ -123,7 +123,8 @@ user_logged_in (NautilusChangePasswordView *view)
 static gboolean
 run_away_timer (NautilusChangePasswordView *view)
 {
-	nautilus_view_open_location (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
+	nautilus_view_open_location_in_this_window
+		(view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
 	return FALSE;	/* don't run this timer again */
 }
 
@@ -336,7 +337,8 @@ authn_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info,
 
 	if (info->code == EAZELPROXY_AUTHN_FAIL_SERVER) {
 		/* not sure what to do here.  apparently there's no way to start over. */
-		nautilus_view_open_location (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
+		nautilus_view_open_location_in_this_window
+			(view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
 	}
 }
 
@@ -416,10 +418,11 @@ change_password_button_cb (GtkWidget	*button, NautilusChangePasswordView	*view)
 
 /* callback to point account maintenance button to webpage */
 static void
-maintenance_button_cb (GtkWidget	*button, NautilusChangePasswordView	*view)
+maintenance_button_cb (GtkWidget *button, NautilusChangePasswordView *view)
 {
 
-	nautilus_view_open_location (view->details->nautilus_view, SERVICE_HELP_LOCATION);
+	nautilus_view_open_location_in_this_window
+		(view->details->nautilus_view, SERVICE_HELP_LOCATION);
 
 }
 

@@ -40,37 +40,39 @@ typedef struct {
 
 extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
 
-BonoboObject *impl_Nautilus_ViewFrame__create                 (NautilusViewFrame *view,
-                                                               CORBA_Environment *ev);
+BonoboObject *impl_Nautilus_ViewFrame__create                          (NautilusViewFrame *view,
+                                                                        CORBA_Environment *ev);
 
 /* ViewFrame */
-void          nautilus_view_frame_open_location               (NautilusViewFrame *view,
-                                                               const char        *location);
-void          nautilus_view_frame_open_location_in_new_window (NautilusViewFrame *view,
-                                                               const char        *location,
-                                                               GList             *selection);
-void          nautilus_view_frame_report_location_change      (NautilusViewFrame *view,
-                                                               const char        *location);
-void          nautilus_view_frame_report_selection_change     (NautilusViewFrame *view,
-                                                               GList             *selection);
-void          nautilus_view_frame_report_status               (NautilusViewFrame *view,
-                                                               const char        *status);
-void          nautilus_view_frame_report_load_underway        (NautilusViewFrame *view);
-void          nautilus_view_frame_report_load_progress        (NautilusViewFrame *view,
-                                                               double             fraction_done);
-void          nautilus_view_frame_report_load_complete        (NautilusViewFrame *view);
-void          nautilus_view_frame_report_load_failed          (NautilusViewFrame *view);
-void          nautilus_view_frame_set_title                   (NautilusViewFrame *view,
-                                                               const char        *title);
-void          nautilus_view_frame_quit_nautilus		      (NautilusViewFrame *view);
-void          nautilus_view_frame_close_desktop		      (NautilusViewFrame *view);
+void          nautilus_view_frame_open_location_in_this_window         (NautilusViewFrame *view,
+                                                                        const char        *location);
+void          nautilus_view_frame_open_location_prefer_existing_window (NautilusViewFrame *view,
+                                                                        const char        *location);
+void          nautilus_view_frame_open_location_force_new_window       (NautilusViewFrame *view,
+                                                                        const char        *location,
+                                                                        GList             *selection);
+void          nautilus_view_frame_report_location_change               (NautilusViewFrame *view,
+                                                                        const char        *location);
+void          nautilus_view_frame_report_selection_change              (NautilusViewFrame *view,
+                                                                        GList             *selection);
+void          nautilus_view_frame_report_status                        (NautilusViewFrame *view,
+                                                                        const char        *status);
+void          nautilus_view_frame_report_load_underway                 (NautilusViewFrame *view);
+void          nautilus_view_frame_report_load_progress                 (NautilusViewFrame *view,
+                                                                        double             fraction_done);
+void          nautilus_view_frame_report_load_complete                 (NautilusViewFrame *view);
+void          nautilus_view_frame_report_load_failed                   (NautilusViewFrame *view);
+void          nautilus_view_frame_set_title                            (NautilusViewFrame *view,
+                                                                        const char        *title);
+void          nautilus_view_frame_quit_nautilus                        (NautilusViewFrame *view);
+void          nautilus_view_frame_close_desktop                        (NautilusViewFrame *view);
 
 /* Zoomable */
-void          nautilus_view_frame_zoom_level_changed          (NautilusViewFrame *view,
-                                                               double             zoom_level);
-void          nautilus_view_frame_zoom_parameters_changed     (NautilusViewFrame *view,
-                                                               double             zoom_level,
-                                                               double             min_zoom_level,
-                                                               double             max_zoom_level);
+void          nautilus_view_frame_zoom_level_changed                   (NautilusViewFrame *view,
+                                                                        double             zoom_level);
+void          nautilus_view_frame_zoom_parameters_changed              (NautilusViewFrame *view,
+                                                                        double             zoom_level,
+                                                                        double             min_zoom_level,
+                                                                        double             max_zoom_level);
 
 #endif /* NAUTILUS_VIEW_FRAME_PRIVATE_H */

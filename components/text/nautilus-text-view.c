@@ -368,7 +368,7 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 			uri = g_strdup_printf (parameters->service_template, mapped_text);
 			
 			/* goto the url */	
-			nautilus_view_open_location (parameters->text_view->details->nautilus_view, uri);
+			nautilus_view_open_location_in_this_window (parameters->text_view->details->nautilus_view, uri);
 
 			g_free (uri);
 			g_free (selected_text);

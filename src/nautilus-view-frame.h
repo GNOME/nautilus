@@ -79,9 +79,14 @@ typedef struct {
         void                   (* failed)                      (NautilusViewFrame *view);
 
         /* These will only happen after load_underway (guaranteed). */
-        void                   (* open_location)	       (NautilusViewFrame *view,
+        void                   (* open_location_in_this_window)
+                                                               (NautilusViewFrame *view,
                                                                 const char        *location);
-        void                   (* open_location_in_new_window) (NautilusViewFrame *view,
+        void                   (* open_location_prefer_existing_window)
+                                                               (NautilusViewFrame *view,
+                                                                const char        *location);
+        void                   (* open_location_force_new_window)
+                                                               (NautilusViewFrame *view,
                                                                 const char        *location,
                                                                 GList             *selection); /* list of char * */
         void                   (* change_selection)            (NautilusViewFrame *view,
