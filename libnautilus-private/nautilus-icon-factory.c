@@ -1424,12 +1424,34 @@ is_supported_mime_type (const char *mime_type)
 	return TRUE;
 }
 
+static void
+image_uri_to_name_or_uri (const char *image_uri,
+			  char      **icon_name,
+			  char      **uri)
+{
+	char *icon_path;
+	
+	/* FIXME bugzilla.eazel.com 2564: All custom icons must be in file:. */
+	icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
+	if (icon_path == NULL && image_uri[0] == '/') {
+		icon_path = g_strdup (image_uri);
+	}
+	if (icon_path != NULL) {
+		if (*uri == NULL) {
+			*uri = gnome_vfs_get_uri_from_local_path (icon_path);
+		}
+		g_free (icon_path);
+	} else if (strpbrk (image_uri, ":/") == NULL) {
+		*icon_name = remove_icon_name_suffix (image_uri);
+	}
+}
+
 /* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifier)
 {
 	char *uri, *file_uri, *file_path, *image_uri, *icon_name, *mime_type, *top_left_text;
-	char *directory, *desktop_directory, *buf, *icon_path;
+	char *directory, *desktop_directory, *buf;
  	gboolean is_local;
  	int file_size, size, res;
  	NautilusScalableIcon *scalable_icon;
@@ -1513,29 +1535,26 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		char *dot_dir_uri;
 		
 		dot_dir_uri = nautilus_make_path (file_uri, ".directory");
-		uri = nautilus_link_impl_desktop_local_get_image_uri (dot_dir_uri);
+		image_uri = nautilus_link_impl_desktop_local_get_image_uri (dot_dir_uri);
+		if (image_uri != NULL) {
+			image_uri_to_name_or_uri (image_uri,
+						  &icon_name, &uri);
+			
+			g_free (image_uri);
+		}
 		g_free (dot_dir_uri);
 	}
 
 	/* Handle link files, which may specify their own image */
 	if (uri == NULL && icon_name == NULL &&
-	    nautilus_file_is_nautilus_link (file)) {
+	    nautilus_file_is_nautilus_link (file) &&
+	    nautilus_file_is_local (file)) {
 		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
 		image_uri = nautilus_link_local_get_image_uri (file_uri);
 		if (image_uri != NULL) {
-			/* FIXME bugzilla.eazel.com 2564: All custom icons must be in file:. */
-			icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
-			if (icon_path == NULL && image_uri[0] == '/') {
-				icon_path = g_strdup (image_uri);
-			}
-			if (icon_path != NULL) {
-				if (uri == NULL) {
-					uri = gnome_vfs_get_uri_from_local_path (icon_path);
-				}
-				g_free (icon_path);
-			} else if (strpbrk (image_uri, ":/") == NULL) {
-				icon_name = remove_icon_name_suffix (image_uri);
-			}
+			image_uri_to_name_or_uri (image_uri,
+						  &icon_name, &uri);
+
 			g_free (image_uri);
 		}
 	}

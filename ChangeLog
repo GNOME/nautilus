@@ -1,3 +1,19 @@
+2001-08-20  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file):
+	add a nautilus_file_is_local() before loading desktop files; this
+	breaks Nautilus links, which are actually async. We lost the 
+	is_local() check on .desktop files because the .desktop files were
+	added as a nautilus link backend, and nautilus links were async,
+	so people were using them in nonlocal cases, but we deleted the
+	.desktop codepath in favor of the nautilus link codepath.
+
+	(nautilus_icon_factory_get_icon_for_file): Do same processing for
+	.directory image URI that we do for .desktop image URI, allowing
+	us to handle X-Nautilus-Icon in .directory
+	(image_uri_to_name_or_uri): function with the common processing
+
 2001-08-17  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (prepend_automatic_emblem_names):
