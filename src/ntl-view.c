@@ -373,6 +373,9 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
 
       GNOME_Unknown_unref(obj, &ev);
       CORBA_Object_release(obj, &ev);
+
+      if (view->component_class)
+        break;
     }
 
   if (!view->component_class)
