@@ -1,3 +1,15 @@
+2003-06-26  James Willcox  <jwillcox@gnome.org>
+
+	* src/nautilus-property-browser.c: (emblem_dialog_clicked):
+
+	Correct "~/.gnome-desktop" to "~/Desktop" in the docs for the
+	/apps/nautilus/preferences/show_desktop key.  Fixes #114624.
+
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+
+	Refresh the emblem list after adding the new custom emblem.
+	Fixes #104238.
+
 2003-06-26  Mohammad DAMT  <mdamt@bisnisweb.com>
 
 	* po/id.po: Added Indonesian translation by Yohanes Nugroho <yohanes@opensource.or.id>

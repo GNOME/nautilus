@@ -1347,6 +1347,8 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 						       stripped_keyword,
 						       stripped_keyword,
 						       GTK_WINDOW (property_browser));
+
+		nautilus_emblem_refresh_list ();
 		
 		emit_emblems_changed_signal ();	
 		nautilus_property_browser_update_contents (property_browser);
