@@ -62,109 +62,81 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static char * criteria_titles [] = {
-	/* Menu item to search by file name in e.g. "Name starts with b" */
-	N_("Name"),
-	/* Menu item to search by file content in e.g. "Contains contains GNU" */
-	N_("Content"),
-	/* Menu item to search by file type in e.g. "Type is music" */
-	N_("Type"),
-	/* Menu item to search by file size in e.g. "Size larger than 500K" */
-	N_("Size"),
-	/* Menu item to search for files with an emblem attached in e.g. "With emblem marked with Important" */
-	N_("With Emblem"),
-	/* Menu item to search for files by the time they were last modified in e.g. "Last modified before [date]" */
-	N_("Last Modified"),
-	/* Menu item to search for files by their owner in e.g. "Owner is root" */
-	N_("Owner"),
+static char * criteria_titles [] = { 
+         /* Menu item in the search bar.
+            Bracketed items are context, and are message
+            strings elsewhere.  You don't have to translate the whole
+            string, and only the translation for "containing '%s' will
+            be used.  If you do translate the whole string, leave the
+            translations of the rest of the text in brackets, so it
+            will not be used.  */
+        N_("[Search for] Name [contains \"fish\"]"),
+        N_("[Search for] Content [includes all of \"fish tree\"]"),
+        N_("[Search for] Type [is regular file]"),
+        N_("[Search for] Size [larger than 400K]"),
+	N_("[Search for] With Emblem [includes \"Important\"]"),
+	N_("[Search for] Last Modified [before yesterday]"),
+	N_("[Search for] Owner [is not root]"),
 	NULL
 };
 
 
 static char *name_relations [] = {
-	/* The "contains" in a search for items where "file name contains" */
-	N_("contains"),
-	/* The "starts with" in a search for items where  "file name starts with" */
-	N_("starts with"),
-	/* The "ends with" in a search for items where "file name ends with" */
-	N_("ends with"),
-	/* The "matches glob" (eg *.c) in a search for items where "file name matches glob" */
-	N_("matches glob"),
-	/* The "matches regexp" (eg '[a-z]{2}+' in a search for items where "file name matches regexp" */
-	N_("matches regexp"),
+	N_("[File name] contains [help]"),
+	N_("[File name] starts with [nautilus]"),
+	N_("[File name] ends with [.c]"),
+	N_("[File name] matches glob [*.c]"),
+	N_("[File name] matches regexp [\"e??l.$\"]"),
 	NULL
 };
 
 static char *content_relations [] = {
-	/* The "includes all of" in a search for items where "content includes all of" */
-	N_("includes all of"),
-	/* The "includes any of" in a search for items where "content includes any of" */
-	N_("includes any of"),
-	/* The "does not include all of" in a search for items where "content does not include all of" */
-	N_("does not include all of"),
-	/* The "includes none of" in a search for items where "content includes none of" */
-	N_("includes none of"),
+	N_("[File content] includes all of [apple orange]"),
+	N_("[File content] includes any of [apply orange]"),
+	N_("[File content] does not include all of [apple orange]"),
+	N_("[File content] includes none of [apple orange]"),
 	NULL
 
 };
 
 static char *type_relations [] = {
-	/* The "is" in a search for items where "Type is" */
-	N_("is"),
-	/* The "is not" in a search for items where "Type is not" */
-	N_("is not"),
+	N_("[File type] is [folder]"),
+	N_("[File type] is not [folder]"),
 	NULL
 };
 
 static char *type_objects [] = {
-	/* A type of file you can search for; context is "Type is regular file" */
-	N_("regular file"),
-	/* A type of file you can search for; context is "Type is text file" */
-	N_("text file"),
-	/* A type of file you can search for; context is "Type is application" */
-	N_("application"),
-	/* A type of file you can search for; context is "Type is folder" */
-	N_("folder"),
-	/* A type of file you can search for; context is "Type is regular file" */
-	N_("music"),
+	N_("[File type is] regular file"),
+	N_("[File type is] text file"),
+	N_("[File type is] application"),
+	N_("[File type is] folder"),
+	N_("[File type is] music"),
 	NULL
 };
 
 static char *size_relations [] = {
-	/* In relation to file size; context is "Size larger than" */
-	N_("larger than"),
-	/* In relation to file size; context is "Size smaller than" */
-	N_("smaller than"),
+	N_("[File size is] larger than [400K]"),
+	N_("[File size is] smaller than [300K]"),
 	NULL
 };
 
 static char *emblem_relations [] = {
-	/* In relation to emblems; context is "With emblem marked with" */
-	N_("marked with"),
-	/* in relation to emblems; context is "With emblem not marked with" */
-	N_("not marked with"),
+	N_("[With emblem] marked with [Important]"),
+	N_("[With emblem] not marked with [Important]"),
 	NULL
 };
 
 static char *modified_relations [] = {
-	/* In relation to a file's last modfied time; context is "Last modified is 11/2/00" */
-	N_("is"),
-	/* In relation to a file's last modfied time; context is "Last modified is not 11/2/00" */
-	N_("is not"),
-	/* In relation to a file's last modfied time; context is "Last modified is after 11/2/00" */
-	N_("is after"),
-	/* In relation to a file's last modfied time; context is "Last modified is before 11/2/00" */
-	N_("is before"),
+	N_("[Last modified date] is [1/24/00]"),
+	N_("[Last modified date] is not [1/24/00]"),
+	N_("[Last modified date] is after [1/24/00]"),
+	N_("[Last modified date] is before [1/24/00]"),
 	"",
-	/* In relation to a file's last modfied time; context is "Last modified is today" */
-	N_("is today"),
-	/* In relation to a file's last modfied time; context is "Last modified is yesterdat" */
-	N_("is yesterday"),
+	N_("[Last modified date] is today"),
+	N_("[Last modified date] is yesterday"),
 	"",
-	/* In relation to a file's last modfied time; context is "Last modified is within a week of" */
-	N_("is within a week of"),
-	/* In relation to a file's last modfied time; context is "Last modified is within a month of" */
-	N_("is within a month of"),
+	N_("[Last modified date] is within a week of [1/24/00]"),
+	N_("[Last modified date] is within a month of [1/24/00]"),
 	NULL
 };
 
@@ -183,10 +155,8 @@ static gboolean modified_relation_shows_date [] = {
 };
 
 static char *owner_relations [] = {
-	/* In relation to a file's owner; context is "Owner is root" */
-	N_("is"),
-	/* In relation to a file's owner; context is "Owner is not root" */
-	N_("is not"),
+	N_("[File owner] is [root]"),
+	N_("[File owner] is not [root]"),
 	NULL
 };
 
@@ -270,7 +240,7 @@ nautilus_search_bar_criterion_destroy (GtkObject *object)
 	gtk_signal_disconnect_by_data (nautilus_signaller_get_current (),
 				       criterion);
 	/*	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
-	nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
+		nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
 	*/
 	g_free (criterion->details);
 	
@@ -318,7 +288,8 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	GtkWidget *search_criteria_option_menu, *search_criteria_menu; 
 	GtkWidget *relation_option_menu, *relation_menu;
 	GtkWidget *value_option_menu, *value_menu; 
-
+	char *context_stripped_criteria_title;
+	char *context_stripped_relation, *context_stripped_value;
 	int i;
 	
 	g_return_val_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (bar), NULL);
@@ -346,8 +317,9 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 	for (i = 0; criteria_titles[i] != NULL; i++) {
 		GtkWidget *item;
-		
-		item = gtk_menu_item_new_with_label (_(criteria_titles[i]));
+		context_stripped_criteria_title = nautilus_str_remove_bracketed_text (_(criteria_titles[i]));
+		item = gtk_menu_item_new_with_label (context_stripped_criteria_title);
+		g_free (context_stripped_criteria_title);
 
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 		gtk_signal_connect (GTK_OBJECT (item),
@@ -378,7 +350,9 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 			item = gtk_menu_item_new ();
 			gtk_widget_set_sensitive (item, FALSE);
 		} else {
-			item = gtk_menu_item_new_with_label (_(relation_options[i]));
+			context_stripped_relation = nautilus_str_remove_bracketed_text (_(relation_options[i]));
+			item = gtk_menu_item_new_with_label (context_stripped_relation);
+			g_free (context_stripped_relation);
 		}
 		gtk_widget_show (item);
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
@@ -432,7 +406,9 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		value_menu = gtk_menu_new ();
 		for (i = 0; value_options[i] != NULL; i++) {
 			GtkWidget *item;
-			item = gtk_menu_item_new_with_label (_(value_options[i]));
+			context_stripped_value = nautilus_str_remove_bracketed_text (_(value_options[i]));
+			item = gtk_menu_item_new_with_label (context_stripped_value);
+			g_free (context_stripped_value);
 			gtk_widget_show (item);
 			gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 			gtk_menu_append (GTK_MENU (value_menu),
@@ -742,13 +718,15 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 {
 	GtkWidget *old_menu, *new_menu;
 	GtkWidget *item;
+	char *context_stripped_criteria_title;
 	guint i;
 
 	/* We remove the whole menu and put in a new one. */
 	new_menu = gtk_menu_new ();
 	for (i = 0; criteria_titles[i] != NULL; i++) {
-
-		item = gtk_menu_item_new_with_label (_(criteria_titles[i]));
+		context_stripped_criteria_title = nautilus_str_remove_bracketed_text (_(criteria_titles[i]));
+		item = gtk_menu_item_new_with_label (context_stripped_criteria_title);
+		g_free (context_stripped_criteria_title);
 		
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 		

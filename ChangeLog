@@ -1,3 +1,34 @@
+2001-01-31  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 5245, that words used in the search bar were used
+	elsewhere, such that they could not be translated correctly for
+	both contexts.  The fix was to wrap all of the strings used to
+	display both the search bar, and the description of
+	search results in bracketed context and write a function
+	to remove the bracketed text before displaying.
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c: 
+	Added comments and wrapped the text to be translated in bracketed
+	context.
+	(get_translated_criterion), (get_nth_criterion_prefix),
+	(parse_uri):  Call nautilus_str_remove_bracketed_text
+	on appropriate strings before displaying.
+	
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_str_remove_bracketed_text), (nautilus_self_check_string):
+	Add the debracketing function and tests for it.
+
+	* src/nautilus-search-bar-criterion.c: 
+	Added comments and wrapped the text to be translated in bracketed
+	context.
+	(nautilus_search_bar_criterion_destroy),
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_update_valid_criteria_choices):
+	Call nautilus_str_remove_bracketed_text on appropriate strings
+	before displaying.
+	
 2001-01-31  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

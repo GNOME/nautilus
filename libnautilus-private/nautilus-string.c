@@ -678,6 +678,89 @@ nautilus_str_replace_substring (const char *string,
 	return result;
 }
 
+
+/* Removes strings enclosed by the '[' and ']' characters.  Strings
+   that have unbalanced open and closed brackets will return the
+   string itself. */
+char *
+nautilus_str_remove_bracketed_text (const char *text)
+{
+	char *unbracketed_text;
+	char *unbracketed_segment, *new_unbracketed_text;
+	const char *current_text_location;
+	const char *next_open_bracket, *next_close_bracket;
+	int bracket_depth;
+	
+
+	g_return_val_if_fail (text != NULL, NULL);
+
+	current_text_location = text;
+	bracket_depth = 0;
+	unbracketed_text = g_strdup ("");
+	while (TRUE) {
+		next_open_bracket = strchr (current_text_location, '[');
+		next_close_bracket = strchr (current_text_location, ']');
+		/* No more brackets */
+		if (next_open_bracket == NULL &&
+		    next_close_bracket == NULL) {
+			if (bracket_depth == 0) {
+				new_unbracketed_text = g_strconcat (unbracketed_text, 
+								    current_text_location, NULL);
+				g_free (unbracketed_text);
+				return new_unbracketed_text;
+			}
+			else {
+				g_free (unbracketed_text);
+				return g_strdup (text);
+			}
+		}
+		/* Close bracket but no open bracket */
+		else if (next_open_bracket == NULL) {
+			if (bracket_depth == 0) {
+				g_free (unbracketed_text);
+				return g_strdup (text);
+			}
+			else {
+				current_text_location = next_close_bracket + 1;
+				bracket_depth--;
+			}
+		}
+		/* Open bracket but no close bracket */
+		else if (next_close_bracket == NULL) {
+			g_free (unbracketed_text);
+			return g_strdup (text);
+		}
+		/* Deal with the open bracket, that's first */
+		else if (next_open_bracket < next_close_bracket) {
+			if (bracket_depth == 0) {
+				/* We're out of brackets. Copy until the next bracket */
+				unbracketed_segment = g_strndup (current_text_location,
+								 next_open_bracket - current_text_location);
+				new_unbracketed_text = g_strconcat (unbracketed_text, unbracketed_segment, NULL);
+				g_free (unbracketed_text);
+				g_free (unbracketed_segment);
+				unbracketed_text = new_unbracketed_text;
+			}
+			current_text_location = next_open_bracket + 1;
+			bracket_depth++;
+		}
+		/* Deal with the close bracket, that's first */
+		else {
+			if (bracket_depth > 0) {
+				bracket_depth--;
+				current_text_location = next_close_bracket + 1;
+			}
+			else {
+				g_free (unbracketed_text);
+				return g_strdup (text);
+			}
+		}
+	}
+	
+	     
+
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int
@@ -912,6 +995,20 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("fff", "f", "foo"), "foofoofoo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("foofoofoo", "foo", "f"), "fff");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("foofoofoo", "f", ""), "oooooo");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("[]"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("["), "[");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("]"), "]");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("[[]"), "[[]");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo [bar]"), "foo ");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo[ bar]"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo[ bar] baz"), "foo baz");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo[ [b]ar] baz"), "foo baz");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo[ bar] baz[ bat]"), "foo baz");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo[ bar[ baz] bat]"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_remove_bracketed_text ("foo[ bar] baz] bat]"), "foo[ bar] baz] bat]");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
