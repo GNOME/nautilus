@@ -34,6 +34,7 @@
 #include "nautilus-adapter-embed-strategy-private.h"
 
 #include <gtk/gtkobject.h>
+#include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <bonobo/bonobo-control.h>
 
@@ -114,8 +115,8 @@ activate_uri_callback (BonoboControlFrame *frame,
 }
 
 NautilusAdapterEmbedStrategy *
-nautilus_adapter_control_embed_strategy_new (Bonobo_Control   control,
-					     Bonobo_UIHandler uih)
+nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
+					     Bonobo_UIContainer ui_container)
 {
 	NautilusAdapterControlEmbedStrategy *strategy;
 
@@ -124,7 +125,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control   control,
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->control = control;
-	strategy->details->control_frame = bonobo_control_frame_new(uih);
+	strategy->details->control_frame = bonobo_control_frame_new (ui_container);
 
 	bonobo_control_frame_bind_to_control (strategy->details->control_frame, control);
 
@@ -135,7 +136,6 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control   control,
 
 	return NAUTILUS_ADAPTER_EMBED_STRATEGY (strategy);
 }
-
 
 static GtkWidget *
 nautilus_adapter_control_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *abstract_strategy)

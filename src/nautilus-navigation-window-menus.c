@@ -36,7 +36,10 @@
 #include "nautilus-signaller.h"
 #include "nautilus-theme-selector.h"
 #include "nautilus-window-private.h"
-
+#include <gtk/gtkmain.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -50,13 +53,9 @@
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
-
 #include <libnautilus/nautilus-bonobo-ui.h>
-
-/* gnome-XML headers */
 #include <parser.h>
 #include <xmlmemory.h>
-
 
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
@@ -96,11 +95,18 @@
 #define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
 #define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK		"/Help/Nautilus Feedback"
 
+
+#define SWITCH_TO_BEGINNER_VERB				"Switch to Beginner Level"
+#define SWITCH_TO_INTERMEDIATE_VERB			"Switch to Intermediate Level"
+#define SWITCH_TO_ADVANCED_VERB				"Switch to Advanced Level"
+
 static GtkWindow *bookmarks_window = NULL;
 
+#ifdef UIH
 static void                  activate_bookmark_in_menu_item                 (BonoboUIHandler        *uih,
 									     gpointer                user_data,
 									     const char             *path);
+#endif
 static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
 									     NautilusBookmark *bookmark,
 									     const char             *menu_item_path,
@@ -120,8 +126,8 @@ static void                  edit_bookmarks                                 (Nau
 
 
 /* User level things */
-static guint                 convert_menu_path_to_user_level                (const char             *path);
-static const char *          convert_user_level_to_menu_path                (guint                   user_level);
+static guint                 convert_verb_to_user_level               	    (const char             *verb);
+static const char *          convert_user_level_to_verb	    		    (guint                   user_level);
 static char *                get_customize_user_level_settings_menu_string  (void);
 static void                  update_user_level_menu_items                   (NautilusWindow         *window);
 static char *                get_customize_user_level_string                (void);
@@ -190,38 +196,38 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS	"/Bookmarks/Before Canned Separator"
 
 static void
-file_menu_new_window_callback (BonoboUIHandler *ui_handler, 
+file_menu_new_window_callback (BonoboUIComponent *component, 
 			       gpointer user_data, 
-			       const char *path)
+			       const char *verb)
 {
 	NautilusWindow *current_window;
 	NautilusWindow *new_window;
-	
+
 	current_window = NAUTILUS_WINDOW (user_data);
 	new_window = nautilus_application_create_window (current_window->application);
 	nautilus_window_goto_uri (new_window, current_window->location);
 }
 
 static void
-file_menu_close_window_callback (BonoboUIHandler *ui_handler, 
+file_menu_close_window_callback (BonoboUIComponent *component, 
 			         gpointer user_data, 
-			         const char *path)
+			         const char *verb)
 {
 	nautilus_window_close (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-file_menu_close_all_windows_callback (BonoboUIHandler *ui_handler, 
-			         gpointer user_data, 
-			         const char *path)
+file_menu_close_all_windows_callback (BonoboUIComponent *component, 
+			              gpointer user_data, 
+			              const char *verb)
 {
 	nautilus_application_close_all_windows ();
 }
 
 static void
-file_menu_toggle_find_mode_callback (BonoboUIHandler *ui_handler, 
+file_menu_toggle_find_mode_callback (BonoboUIComponent *component, 
 			             gpointer user_data, 
-			             const char *path)
+			             const char *verb)
 {
 	NautilusWindow *window;
 
@@ -232,26 +238,26 @@ file_menu_toggle_find_mode_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-file_menu_web_search_callback (BonoboUIHandler *ui_handler, 
-			              gpointer user_data, 
-			              const char *path)
+file_menu_web_search_callback (BonoboUIComponent *component, 
+			       gpointer user_data, 
+			       const char *verb)
 {
 	nautilus_window_go_web_search (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-edit_menu_undo_callback (BonoboUIHandler *ui_handler, 
-		  	 gpointer user_data, 
-		  	 const char *path) 
+edit_menu_undo_callback (BonoboUIComponent *component, 
+			 gpointer user_data, 
+			 const char *verb) 
 {
 	nautilus_undo_manager_undo
 		(NAUTILUS_WINDOW (user_data)->application->undo_manager);
 }
 
 static void
-edit_menu_cut_callback (BonoboUIHandler *ui_handler, 
-		  	gpointer user_data, 
-		  	const char *path) 
+edit_menu_cut_callback (BonoboUIComponent *component, 
+			gpointer user_data, 
+			const char *verb) 
 {
 	GtkWindow *window;
 
@@ -262,9 +268,9 @@ edit_menu_cut_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-edit_menu_copy_callback (BonoboUIHandler *ui_handler, 
-		   	 gpointer user_data,
-		   	 const char *path) 
+edit_menu_copy_callback (BonoboUIComponent *component, 
+			 gpointer user_data, 
+			 const char *verb) 
 {
 	GtkWindow *window;
 
@@ -276,9 +282,9 @@ edit_menu_copy_callback (BonoboUIHandler *ui_handler,
 
 
 static void
-edit_menu_paste_callback (BonoboUIHandler *ui_handler, 
-		    	  gpointer user_data,
-		    	  const char *path) 
+edit_menu_paste_callback (BonoboUIComponent *component, 
+			  gpointer user_data, 
+			  const char *verb) 
 {
 	GtkWindow *window;
 
@@ -289,11 +295,10 @@ edit_menu_paste_callback (BonoboUIHandler *ui_handler,
 
 }
 
-
 static void
-edit_menu_clear_callback (BonoboUIHandler *ui_handler, 
-		    	  gpointer user_data,
-		    	  const char *path) 
+edit_menu_clear_callback (BonoboUIComponent *component, 
+			  gpointer user_data, 
+			  const char *verb) 
 {
 	GtkWindow *window;
 
@@ -306,33 +311,33 @@ edit_menu_clear_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-go_menu_back_callback (BonoboUIHandler *ui_handler, 
-		       gpointer user_data,
-		       const char *path) 
+go_menu_back_callback (BonoboUIComponent *component, 
+		       gpointer user_data, 
+		       const char *verb) 
 {
 	nautilus_window_go_back (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-go_menu_forward_callback (BonoboUIHandler *ui_handler, 
-		       	  gpointer user_data,
-		          const char *path) 
+go_menu_forward_callback (BonoboUIComponent *component, 
+			  gpointer user_data, 
+			  const char *verb) 
 {
 	nautilus_window_go_forward (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-go_menu_up_callback (BonoboUIHandler *ui_handler, 
-		     gpointer user_data,
-		     const char *path) 
+go_menu_up_callback (BonoboUIComponent *component, 
+		     gpointer user_data, 
+		     const char *verb) 
 {
 	nautilus_window_go_up (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-go_menu_home_callback (BonoboUIHandler *ui_handler, 
-		       gpointer user_data,
-		       const char *path) 
+go_menu_home_callback (BonoboUIComponent *component, 
+		       gpointer user_data, 
+		       const char *verb) 
 {
 	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
 }
@@ -375,27 +380,26 @@ forget_history_if_confirmed (NautilusWindow *window)
 	gnome_dialog_set_default (dialog, GNOME_CANCEL);
 }
 
-
 static void
-go_menu_forget_history_callback (BonoboUIHandler *ui_handler, 
-		       		 gpointer user_data,
-		       		 const char *path) 
+go_menu_forget_history_callback (BonoboUIComponent *component, 
+			         gpointer user_data, 
+			         const char *verb) 
 {
 	forget_history_if_confirmed (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_reload_callback (BonoboUIHandler *ui_handler, 
-		           gpointer user_data,
-		           const char *path) 
+view_menu_reload_callback (BonoboUIComponent *component, 
+			   gpointer user_data, 
+			   const char *verb) 
 {
 	nautilus_window_reload (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_show_hide_sidebar_callback (BonoboUIHandler *ui_handler, 
-		           	      gpointer user_data,
-		          	      const char *path) 
+view_menu_show_hide_sidebar_callback (BonoboUIComponent *component, 
+			              gpointer user_data, 
+			              const char *verb) 
 {
 	NautilusWindow *window;
 
@@ -408,9 +412,9 @@ view_menu_show_hide_sidebar_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-view_menu_show_hide_tool_bar_callback (BonoboUIHandler *ui_handler, 
-		           	       gpointer user_data,
-		          	       const char *path) 
+view_menu_show_hide_tool_bar_callback (BonoboUIComponent *component, 
+			               gpointer user_data, 
+			               const char *verb) 
 {
 	NautilusWindow *window;
 
@@ -423,9 +427,9 @@ view_menu_show_hide_tool_bar_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-view_menu_show_hide_location_bar_callback (BonoboUIHandler *ui_handler, 
-		         		   gpointer user_data,
-					   const char *path) 
+view_menu_show_hide_location_bar_callback (BonoboUIComponent *component, 
+			                   gpointer user_data, 
+			                   const char *verb) 
 {
 	NautilusWindow *window;
 
@@ -438,9 +442,9 @@ view_menu_show_hide_location_bar_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-view_menu_show_hide_status_bar_callback (BonoboUIHandler *ui_handler, 
-		         		 gpointer user_data,
-					 const char *path) 
+view_menu_show_hide_status_bar_callback (BonoboUIComponent *component, 
+			                 gpointer user_data, 
+			                 const char *verb) 
 {
 	NautilusWindow *window;
 
@@ -457,6 +461,7 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	
+#ifdef UIH
 	bonobo_ui_handler_menu_set_label 
 		(window->ui_handler, 
 		 NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR, 
@@ -485,44 +490,45 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 		 	? _("Hide Location Bar")
 		 	: _("Show Location Bar"));
 
+#endif
 }
 
 static void
-view_menu_zoom_in_callback (BonoboUIHandler *ui_handler, 
-		            gpointer user_data,
-		            const char *path) 
+view_menu_zoom_in_callback (BonoboUIComponent *component, 
+			    gpointer user_data, 
+			    const char *verb) 
 {
 	nautilus_window_zoom_in (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_zoom_out_callback (BonoboUIHandler *ui_handler, 
-		             gpointer user_data,
-		             const char *path) 
+view_menu_zoom_out_callback (BonoboUIComponent *component, 
+			     gpointer user_data, 
+			     const char *verb) 
 {
 	nautilus_window_zoom_out (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-view_menu_zoom_normal_callback (BonoboUIHandler *ui_handler, 
-		                gpointer user_data,
-		                const char *path) 
+view_menu_zoom_normal_callback (BonoboUIComponent *component, 
+			        gpointer user_data, 
+			        const char *verb) 
 {
 	nautilus_window_zoom_to_fit (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-bookmarks_menu_add_bookmark_callback (BonoboUIHandler *ui_handler, 
-		       		      gpointer user_data,
-		      		      const char *path)
+bookmarks_menu_add_bookmark_callback (BonoboUIComponent *component, 
+			              gpointer user_data, 
+			              const char *verb)
 {
         nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-bookmarks_menu_edit_bookmarks_callback (BonoboUIHandler *ui_handler, 
-		       		      	gpointer user_data,
-		      		      	const char *path)
+bookmarks_menu_edit_bookmarks_callback (BonoboUIComponent *component, 
+			                gpointer user_data, 
+			                const char *verb)
 {
         edit_bookmarks (NAUTILUS_WINDOW (user_data));
 }
@@ -536,11 +542,10 @@ switch_and_show_intermediate_settings_callback (GtkWidget *button, gpointer user
 	nautilus_global_preferences_show_dialog ();
 }
 
-
 static void
-user_level_customize_callback (BonoboUIHandler *ui_handler, 
-					     gpointer user_data,
-					     const char *path)
+user_level_customize_callback (BonoboUIComponent *component, 
+			       gpointer user_data, 
+			       const char *verb)
 {
 	GnomeDialog *dialog;
 	NautilusWindow *window;
@@ -600,25 +605,25 @@ user_level_customize_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-customize_callback (BonoboUIHandler *ui_handler, 
-				  gpointer user_data,
-				  const char *path)
+customize_callback (BonoboUIComponent *component, 
+		    gpointer user_data, 
+		    const char *verb)
 {
 	nautilus_property_browser_show ();
 }
 
 static void
-change_appearance_callback (BonoboUIHandler *ui_handler, 
-				  gpointer user_data,
-				  const char *path)
+change_appearance_callback (BonoboUIComponent *component, 
+			    gpointer user_data, 
+			    const char *verb)
 {
 	nautilus_theme_selector_show ();
 }
 
 static void
-help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler, 
-		       		   gpointer user_data,
-		      		   const char *path)
+help_menu_about_nautilus_callback (BonoboUIComponent *component, 
+			           gpointer user_data, 
+			           const char *verb)
 {
 	static GtkWidget *about = NULL;
 
@@ -668,9 +673,9 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-help_menu_nautilus_feedback_callback (BonoboUIHandler *ui_handler, 
-		       		      gpointer user_data,
-		      		      const char *path)
+help_menu_nautilus_feedback_callback (BonoboUIComponent *component, 
+			              gpointer user_data, 
+			              const char *verb)
 {
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "http://www.eazel.com/feedback.html");
 }
@@ -731,43 +736,47 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 	
 	/* change the item pixbufs to reflect the new user level */
 	pixbuf = get_user_level_image (old_user_level, FALSE);
+#ifdef UIH
 	bonobo_ui_handler_menu_set_pixmap 
 		(window->ui_handler, 
-		 convert_user_level_to_menu_path (old_user_level), 
+		 convert_user_level_to_verb (old_user_level), 
 		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
 		 pixbuf);
+#endif
 	gdk_pixbuf_unref (pixbuf);
 	
 	pixbuf = get_user_level_image (new_user_level, TRUE);
+#ifdef UIH
 	bonobo_ui_handler_menu_set_pixmap 
 		(window->ui_handler, 
-		 convert_user_level_to_menu_path (new_user_level), 
+		 convert_user_level_to_verb (new_user_level), 
 		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
 		 pixbuf);
+#endif
 	gdk_pixbuf_unref (pixbuf);
 	
 	/* set up the menu title image to reflect the new user level */
 	pixbuf = get_user_level_image (new_user_level, FALSE);
+#ifdef UIH
 	bonobo_ui_handler_menu_set_pixmap 
 		(window->ui_handler, 
 		 NAUTILUS_MENU_PATH_USER_LEVEL, 
 		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
 		 pixbuf);
+#endif
 	gdk_pixbuf_unref (pixbuf);
 } 
  
-
 static void
-user_level_menu_item_callback (BonoboUIHandler *ui_handler, 
-		       		   gpointer user_data,
-		      		   const char *path)
+user_level_menu_item_callback (BonoboUIComponent *component, 
+			       gpointer user_data, 
+			       const char *verb)
 {
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
-	g_assert (window->ui_handler == ui_handler);
 		
-	switch_to_user_level (window, convert_menu_path_to_user_level (path));
+	switch_to_user_level (window, convert_verb_to_user_level (verb));
 }
 
 static void
@@ -822,6 +831,8 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 	g_free (prompt);
 }
 
+#ifdef UIH
+
 static void
 activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const char *path)
 {
@@ -839,19 +850,25 @@ activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const 
         }
 }
 
+#endif
+
 static void
 append_placeholder (NautilusWindow *window, const char *placeholder_path)
 {
+#ifdef UIH
         bonobo_ui_handler_menu_new_placeholder (window->ui_handler,
                                                 placeholder_path);
+#endif
 }
 
 static void
 append_separator (NautilusWindow *window, const char *separator_path)
 {
+#ifdef UIH
         bonobo_ui_handler_menu_new_separator (window->ui_handler,
                                               separator_path,
                                               -1);
+#endif
 }
 
 static void
@@ -862,17 +879,21 @@ append_bookmark_to_menu (NautilusWindow *window,
 {
 	BookmarkHolder *bookmark_holder;	
 	GdkPixbuf *pixbuf;
+#ifdef UIH
 	BonoboUIHandlerPixmapType pixmap_type;
+#endif
 	char *raw_name, *display_name, *truncated_name;
 
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
+#ifdef UIH
 	if (pixbuf != NULL) {
 		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
 	} else {
 		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
 	}
+#endif
 
 	bookmark_holder = bookmark_holder_new (bookmark, window, is_bookmarks_menu);
 
@@ -886,6 +907,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	display_name = nautilus_str_double_underscores (truncated_name);
 	g_free (raw_name);
 	g_free (truncated_name);
+#ifdef UIH
  	bonobo_ui_handler_menu_new_item (window->ui_handler,
 					 menu_item_path,
 					 display_name,
@@ -897,13 +919,16 @@ append_bookmark_to_menu (NautilusWindow *window,
 					 0,
 					 NULL,
 					 NULL);
+#endif
 	g_free (display_name);
 
 	/* We must use "set_callback" since we have a destroy-notify function. */
+#ifdef UIH
 	bonobo_ui_handler_menu_set_callback
 		(window->ui_handler, menu_item_path,
 		 activate_bookmark_in_menu_item,
 		 bookmark_holder, (GDestroyNotify) bookmark_holder_free);
+#endif
 
 	/* Let's get notified whenever a bookmark changes. */
 	gtk_signal_connect_object (GTK_OBJECT (bookmark), "changed",
@@ -954,7 +979,11 @@ create_menu_item_from_node (NautilusWindow *window,
 	char *sub_item_path;
 	
 	index_as_string = g_strdup_printf ("item_%d", index);
+#ifdef UIH
 	item_path = bonobo_ui_handler_build_path (menu_path, index_as_string, NULL);
+#else
+	item_path = NULL;
+#endif
 	g_free (index_as_string);
 
 	if (strcmp (node->name, "bookmark") == 0) {
@@ -965,6 +994,7 @@ create_menu_item_from_node (NautilusWindow *window,
 		append_separator (window, item_path);
 	} else if (strcmp (node->name, "folder") == 0) {
 		xml_folder_name = xmlGetProp (node, "name");
+#ifdef UIH
 	 	bonobo_ui_handler_menu_new_subtree (window->ui_handler,
 						    item_path,
 						    xml_folder_name,
@@ -974,6 +1004,7 @@ create_menu_item_from_node (NautilusWindow *window,
 						    NULL,
 						    0,
 						    0);
+#endif
 		for (node = nautilus_xml_get_children (node), sub_index = 0;
 		     node != NULL;
 		     node = node->next, ++sub_index) {
@@ -1038,6 +1069,7 @@ remove_bookmarks_after (NautilusWindow *window,
                         const char *menu_path, 
                         const char *last_retained_item_path)
 {
+#ifdef UIH
 	GList *children, *p;
 	gboolean found_items_to_remove;
 	gpointer callback_data;
@@ -1065,6 +1097,7 @@ remove_bookmarks_after (NautilusWindow *window,
 
 	g_assert (found_items_to_remove);
         nautilus_g_list_free_deep (children);
+#endif
 }
 
 static NautilusBookmarkList *bookmarks = NULL;
@@ -1183,6 +1216,7 @@ static void
 remove_underline_accelerator_from_menu_title (NautilusWindow *window, 
 					      const char *menu_path)
 {
+#ifdef UIH
 	char *old_label;
 	char *new_label;
 
@@ -1192,6 +1226,7 @@ remove_underline_accelerator_from_menu_title (NautilusWindow *window,
 
 	g_free (old_label);
 	g_free (new_label);
+#endif
 }					      
 
 /**
@@ -1275,6 +1310,7 @@ new_top_level_menu (NautilusWindow *window,
 	/* Note that we don't bother with hints for menu titles.
 	 * We can revisit this anytime if someone thinks they're useful.
 	 */
+#ifdef UIH
 	bonobo_ui_handler_menu_new_subtree (window->ui_handler,
 					    menu_path,
 					    title,
@@ -1284,6 +1320,8 @@ new_top_level_menu (NautilusWindow *window,
 					    NULL,
 					    0,
 					    0);
+#endif
+
 	g_free (title);
 }				    
 
@@ -1323,14 +1361,18 @@ add_user_level_menu_item (NautilusWindow *window,
 			  const char *menu_path, 
 			  guint user_level)
 {
+#ifdef UIH
 	BonoboUIHandler *ui_handler;
+#endif
         GdkPixbuf *pixbuf;
         guint current_user_level;
         char *user_level_name;
         char *menu_label;
         char *menu_hint;
 
+#ifdef UIH
 	ui_handler = window->ui_handler;
+#endif
         user_level_name = nautilus_user_level_manager_get_user_level_name_for_display (user_level);
 	current_user_level = nautilus_user_level_manager_get_user_level ();
 
@@ -1343,6 +1385,7 @@ add_user_level_menu_item (NautilusWindow *window,
 	menu_hint = g_strdup_printf (_("Use %s settings"), user_level_name);
 
 	pixbuf = get_user_level_image (user_level, current_user_level == user_level);
+#ifdef UIH
 	bonobo_ui_handler_menu_new_item (ui_handler,
         				 menu_path,
         				 menu_label,
@@ -1354,6 +1397,7 @@ add_user_level_menu_item (NautilusWindow *window,
         				 0,
         				 user_level_menu_item_callback,
         				 window);
+#endif
 	g_free (user_level_name);
 	g_free (menu_label);
 	g_free (menu_hint);
@@ -1369,15 +1413,62 @@ add_user_level_menu_item (NautilusWindow *window,
 void 
 nautilus_window_initialize_menus (NautilusWindow *window)
 {
+#ifdef UIH
         GdkPixbuf *pixbuf;
 	BonoboUIHandler *ui_handler;
+#endif
 
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
+		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
+		BONOBO_UI_VERB ("Close All", file_menu_close_all_windows_callback),
+		BONOBO_UI_VERB ("Toggle Find Mode", file_menu_toggle_find_mode_callback),
+		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
+		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
+		BONOBO_UI_VERB ("Cut", edit_menu_cut_callback),
+		BONOBO_UI_VERB ("Copy", edit_menu_copy_callback),
+		BONOBO_UI_VERB ("Paste", edit_menu_paste_callback),
+		BONOBO_UI_VERB ("Clear", edit_menu_clear_callback),
+		BONOBO_UI_VERB ("Customize", customize_callback),
+		BONOBO_UI_VERB ("Change Appearance", change_appearance_callback),
+		BONOBO_UI_VERB ("Back", go_menu_back_callback),
+		BONOBO_UI_VERB ("Forward", go_menu_forward_callback),
+		BONOBO_UI_VERB ("Up", go_menu_up_callback),
+		BONOBO_UI_VERB ("Home", go_menu_home_callback),
+		BONOBO_UI_VERB ("Forget History", go_menu_forget_history_callback),
+		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
+		BONOBO_UI_VERB ("Show Hide Sidebar", view_menu_show_hide_sidebar_callback),
+		BONOBO_UI_VERB ("Show Hide Tool Bar", view_menu_show_hide_tool_bar_callback),
+		BONOBO_UI_VERB ("Show Hide Location Bar", view_menu_show_hide_location_bar_callback),
+		BONOBO_UI_VERB ("Show Hide Status Bar", view_menu_show_hide_status_bar_callback),
+		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
+		BONOBO_UI_VERB ("Zoom Out", view_menu_zoom_out_callback),
+		BONOBO_UI_VERB ("Zoom Normal", view_menu_zoom_normal_callback),
+		BONOBO_UI_VERB ("Add Bookmark", bookmarks_menu_add_bookmark_callback),
+		BONOBO_UI_VERB ("Edit Bookmarks", bookmarks_menu_edit_bookmarks_callback),
+		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
+		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
+#ifdef UIH	
+	/* The next set of verbs doesn't work. Need some different mechanism for radio items apparently */
+#endif
+		BONOBO_UI_VERB (SWITCH_TO_BEGINNER_VERB, user_level_menu_item_callback),
+		BONOBO_UI_VERB (SWITCH_TO_INTERMEDIATE_VERB, user_level_menu_item_callback),
+		BONOBO_UI_VERB (SWITCH_TO_ADVANCED_VERB, user_level_menu_item_callback),
+		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
+		BONOBO_UI_VERB_END
+	};
+
+	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
+
+#ifdef UIH
         ui_handler = window->ui_handler;
         g_assert (ui_handler != NULL);
         
         bonobo_ui_handler_create_menubar (ui_handler);
+#endif
 	nautilus_window_create_top_level_menus (window);
 
+#ifdef UIH
 	/* File menu */
 
         bonobo_ui_handler_menu_new_item (ui_handler,
@@ -1852,6 +1943,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		(window->application->undo_manager,
 		 ui_handler, NAUTILUS_MENU_PATH_UNDO_ITEM,
 		 _("_Undo"), _("Undo the last text change"));
+#endif /* UIH */
 	
         nautilus_window_initialize_bookmarks_menu (window);
         nautilus_window_initialize_go_menu (window);
@@ -1902,10 +1994,27 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 		(nautilus_window_get_search_mode (window) 
 			? _("_Browse") 
 			: _("_Find"));
+#ifdef UIH
 	bonobo_ui_handler_menu_set_label (window->ui_handler, 
 					  NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE, 
 					  label_string);
-	g_free (label_string);	
+#endif
+	g_free (label_string);
+
+#ifndef UIH
+	/* avoid "unused function" warnings */
+	return;
+
+	add_user_level_menu_item (0, 0, 0);
+	append_placeholder (0, 0);
+	bookmark_holder_free (0);
+	edit_bookmarks (0);
+	convert_user_level_to_verb (0);
+	forget_history_if_confirmed (0);
+	show_bogus_bookmark_window (0);
+	switch_and_show_intermediate_settings_callback (0, 0);
+	user_level_changed_callback (0, 0);
+#endif
 }
 
 static void
@@ -2044,6 +2153,7 @@ update_user_level_menu_items (NautilusWindow *window)
 	g_assert (customize_string != NULL);
 
  	/* Update the user radio group to reflect reality */
+#ifdef UIH
 	bonobo_ui_handler_menu_set_radio_state (window->ui_handler, 
 						convert_user_level_to_menu_path (user_level),
 						TRUE);
@@ -2052,22 +2162,23 @@ update_user_level_menu_items (NautilusWindow *window)
 	bonobo_ui_handler_menu_set_label (window->ui_handler,
 					  NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
 					  customize_string);
+#endif
 
 	g_free (customize_string);
 }
 
 static guint
-convert_menu_path_to_user_level (const char *path)
+convert_verb_to_user_level (const char *verb)
 {
-        g_assert (path != NULL);
+        g_assert (verb != NULL);
 	
-	if (strcmp (path, NAUTILUS_MENU_PATH_NOVICE_ITEM) == 0) {
+	if (strcmp (verb, SWITCH_TO_BEGINNER_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_NOVICE;
 	}
-	else if (strcmp (path, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM) == 0) {
+	else if (strcmp (verb, SWITCH_TO_INTERMEDIATE_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_INTERMEDIATE;
 	}
-	else if (strcmp (path, NAUTILUS_MENU_PATH_EXPERT_ITEM) == 0) {
+	else if (strcmp (verb, SWITCH_TO_ADVANCED_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_HACKER;
 	}
 
@@ -2077,19 +2188,19 @@ convert_menu_path_to_user_level (const char *path)
 }
 
 static const char *
-convert_user_level_to_menu_path (guint user_level)
+convert_user_level_to_verb (guint user_level)
 {
 	switch (user_level) {
 	case NAUTILUS_USER_LEVEL_NOVICE:
-		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
+		return SWITCH_TO_BEGINNER_VERB;
 		break;
 
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
-		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
+		return SWITCH_TO_INTERMEDIATE_VERB;
 		break;
 
 	case NAUTILUS_USER_LEVEL_HACKER:
-		return NAUTILUS_MENU_PATH_EXPERT_ITEM;
+		return SWITCH_TO_ADVANCED_VERB;
 		break;
 	}
 
@@ -2147,4 +2258,3 @@ update_preferences_dialog_title (void)
 
 	g_free (dialog_title);
 }
-

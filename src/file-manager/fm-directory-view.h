@@ -25,16 +25,16 @@
 #ifndef FM_DIRECTORY_VIEW_H
 #define FM_DIRECTORY_VIEW_H
 
-#include <bonobo/bonobo-ui-handler.h>
 #include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <libnautilus/nautilus-view.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
+#include <libnautilus/nautilus-view.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
@@ -343,7 +343,7 @@ gboolean	   fm_directory_view_confirm_multiple_windows	    (FMDirectoryView	   *
 void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,
 								     NautilusFile 	   *file);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
-BonoboUIHandler    *fm_directory_view_get_bonobo_ui_handler         (FMDirectoryView       *view);
+Bonobo_UIContainer fm_directory_view_get_bonobo_ui_container        (FMDirectoryView       *view);
 NautilusStringList *fm_directory_view_get_emblem_names_to_exclude   (FMDirectoryView	   *view);
 NautilusDirectory  *fm_directory_view_get_model                     (FMDirectoryView       *view);
 NautilusBackground *fm_directory_view_get_background		    (FMDirectoryView 	   *view);

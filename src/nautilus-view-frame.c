@@ -75,6 +75,9 @@ struct NautilusViewFrameDetails {
 	char *title;
 	char *label;
 
+	/* A container to connect our clients to. */
+	BonoboUIContainer *ui_container;
+
 	guint check_if_view_is_gone_timeout_id;
 };
 
@@ -254,6 +257,7 @@ nautilus_view_frame_destroy (GtkObject *object)
 	
 	nautilus_view_frame_destroy_client (frame);
 
+	bonobo_object_unref (BONOBO_OBJECT (frame->details->ui_container));
 	g_free (frame->details->title);
 	g_free (frame->details->label);
 	g_free (frame->details);
@@ -279,14 +283,16 @@ nautilus_view_frame_handle_client_gone (GtkObject *object,
 }
 
 NautilusViewFrame *
-nautilus_view_frame_new (BonoboUIHandler *ui_handler,
+nautilus_view_frame_new (BonoboUIContainer *ui_container,
                          NautilusUndoManager *undo_manager)
 {
 	NautilusViewFrame *view_frame;
 	
 	view_frame = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type (), NULL));
 	
-	view_frame->ui_handler = ui_handler;
+	bonobo_object_ref (BONOBO_OBJECT (ui_container));
+	view_frame->details->ui_container = ui_container;
+
 	view_frame->undo_manager = undo_manager;
 	
 	return view_frame;
@@ -502,7 +508,7 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	view->view_frame = impl_Nautilus_ViewFrame__create (view, &ev);
 
 	/* Add a control frame interface. */
-	control_frame = bonobo_control_frame_new (bonobo_object_corba_objref (BONOBO_OBJECT (view->ui_handler)));
+	control_frame = bonobo_control_frame_new (bonobo_object_corba_objref (BONOBO_OBJECT (view->details->ui_container)));
 	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
 	                             BONOBO_OBJECT (control_frame));
 	bonobo_control_frame_bind_to_control (control_frame, control);

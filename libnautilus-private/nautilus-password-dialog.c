@@ -27,6 +27,7 @@
 #include "nautilus-caption-table.h"
 
 #include <libgnomeui/gnome-stock.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtksignal.h>

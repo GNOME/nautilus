@@ -5,6 +5,7 @@ SUBDIRS = eazel-protocol-handler
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
+	-DDATADIR=\"$(datadir)\" \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
 	$(NULL)
 
@@ -52,9 +53,13 @@ nautilus_mozilla_content_view_LDADD = \
 	$(NULL)
 
 oafdir = $(datadir)/oaf
-
 oaf_DATA = \
 	nautilus-mozilla-content-view.oafinfo \
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(NULL)
+uidir = $(datadir)/gnome/ui
+ui_DATA = \
+	nautilus-mozilla-ui.xml \
+	$(NULL)
+
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)

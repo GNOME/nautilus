@@ -29,7 +29,7 @@
 #define NAUTILUS_ABOUT_H
 
 #include <gdk/gdk.h>
-#include <gnome.h>
+#include <libgnomeui/gnome-dialog.h>
 
 #ifdef __cplusplus
 extern "C" {

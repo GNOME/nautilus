@@ -1,24 +1,22 @@
-
 #include <config.h>
 
 #include <gtk/gtk.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-font-picker.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-string-picker.h>
-#include <libnautilus-extensions/nautilus-font-picker.h>
-#include <libnautilus-extensions/nautilus-text-caption.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libgnomevfs/gnome-vfs-init.h>
-
-#include <libnautilus-extensions/nautilus-scalable-font.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-text-caption.h>
 
 static char *widget_get_nautilus_background_color (GtkWidget  *widget);
 static void  widget_set_nautilus_background_image (GtkWidget  *widget,
@@ -428,7 +426,7 @@ create_font_picker_frame (const char		*title,
 
 	font_size_picker = nautilus_string_picker_new ();
 	nautilus_caption_set_show_title (NAUTILUS_CAPTION (font_size_picker), FALSE);
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (font_size_picker), _("Size"));
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (font_size_picker), "Size");
 
 	gtk_signal_connect (GTK_OBJECT (font_size_picker), "changed", size_changed_callback, callback_data);
 

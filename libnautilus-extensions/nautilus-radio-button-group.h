@@ -27,7 +27,7 @@
 
 #include <gtk/gtktable.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome.h>
+#include <libgnome/gnome-defs.h>
 
 /*
  * NautilusRadioButtonGroup is a collection of radio buttons

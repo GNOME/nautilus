@@ -59,7 +59,9 @@ typedef struct {
 } UndoManagerServant;
 
 typedef struct {
+#ifdef UIH
 	BonoboUIHandler *handler;
+#endif /* UIH */
 	char *path;
 	char *no_undo_menu_item_label;
 	char *no_undo_menu_item_hint;
@@ -344,6 +346,7 @@ nautilus_undo_manager_add_interface (NautilusUndoManager *manager, BonoboObject 
 	bonobo_object_add_interface (object, BONOBO_OBJECT (context));
 }
 
+#ifdef UIH
 static void
 update_undo_menu_item (NautilusUndoManager *manager,
 		       UndoMenuHandlerConnection *connection)
@@ -371,7 +374,7 @@ update_undo_menu_item (NautilusUndoManager *manager,
 				(manager->details->transaction, &ev);
 		}
 	}
-	
+
 	bonobo_ui_handler_menu_set_sensitivity
 		(connection->handler, connection->path,
 		 menu_item != NULL);
@@ -438,3 +441,4 @@ nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (NautilusUndoManager *m
 		 FALSE, FALSE,
 		 GTK_OBJECT (handler));
 }
+#endif /* UIH */

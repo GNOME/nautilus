@@ -26,7 +26,6 @@
 #define NAUTILUS_PREFERENCES_ITEM_H
 
 #include <gtk/gtkvbox.h>
-#include <gnome.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 
 BEGIN_GNOME_DECLS

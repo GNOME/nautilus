@@ -25,9 +25,7 @@
 #ifndef NAUTILUS_FONT_PICKER_H
 #define NAUTILUS_FONT_PICKER_H
 
-#include <gtk/gtkvbox.h>
-#include <gnome.h>
-
+#include <gtk/gtkhbox.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 
 BEGIN_GNOME_DECLS

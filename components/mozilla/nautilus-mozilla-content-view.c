@@ -485,6 +485,8 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 	nautilus_mozilla_content_view_load_uri (view, location);
 }
 
+#ifdef UIH
+
 static void
 bonobo_mozilla_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {
@@ -540,22 +542,24 @@ bonobo_mozilla_callback (BonoboUIHandler *ui_handler, gpointer user_data, const 
 
 }
 
+#endif
+
 static void
 mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
 {
  	NautilusMozillaContentView *view;
-        BonoboUIHandler *local_ui_handler;
-	Bonobo_UIHandler remote_ui_handler;
+        BonoboUIComponent *ui_component;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
-        local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
         if (state) {
-        	/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
-		bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
-		bonobo_object_release_unref (remote_ui_handler, NULL);
+		/* Load the UI from the XML file. */
+		ui_component = nautilus_view_set_up_ui (NAUTILUS_VIEW (view),
+							DATADIR,
+							"nautilus-mozilla-ui.xml",
+							"nautilus-mozilla");
 
+#ifdef UIH
                 /* 
                  * Create our mozilla menu item.
                  *
@@ -592,6 +596,7 @@ mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoi
 	        				    0,						/* accelerator key modifiers */
 	        				    bonobo_mozilla_callback,			/* callback function */
 	        				    view);					/* callback function's data */
+#endif
 	} else {
 		/* Do nothing. */
 	}

@@ -142,8 +142,10 @@ nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(top_srcdir)/l
 TESTS=check-nautilus
 
 oafdir = $(datadir)/oaf
-oaf_DATA =					\
-	nautilus.oafinfo
+oaf_DATA = nautilus.oafinfo
+
+uidir = $(datadir)/gnome/ui
+ui_DATA = nautilus-shell-ui.xml
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -155,6 +157,7 @@ EXTRA_DIST = \
 	nautilus-shell-interface.idl		\
 	$(oaf_DATA)				\
 	run-nautilus				\
+	$(ui_DATA)				\
 	$(NULL)
 
 install-data-hook: run-nautilus

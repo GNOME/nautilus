@@ -1,6 +1,8 @@
 CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"Nautilus-Test\"
+	-DPREFIX=\"$(prefix)\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Test\"	\
+	-DDATADIR=\"$(datadir)\"		\
+	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"
 
 INCLUDES =					\
 	-I$(top_srcdir)				\
@@ -11,10 +13,10 @@ INCLUDES =					\
 	$(GNOMEUI_CFLAGS)
 
 oafdir = $(datadir)/oaf
+oaf_DATA = nautilus-sidebar-loser.oafinfo
 
-oaf_DATA =					\
-	nautilus-sidebar-loser.oafinfo
-
+uidir = $(datadir)/gnome/ui
+ui_DATA = nautilus-sidebar-loser-ui.xml
 
 bin_PROGRAMS =					\
 	nautilus-sidebar-loser
@@ -33,4 +35,4 @@ nautilus_sidebar_loser_LDADD =			\
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)

@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_WINDOW_H
 #define NAUTILUS_WINDOW_H
 
-#include <libgnomeui/gnome-app.h>
+#include <bonobo/bonobo-win.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
@@ -36,7 +36,6 @@
 #include "nautilus-view-frame.h"
 #include "nautilus-sidebar.h"
 #include "nautilus-application.h"
-#include <bonobo/bonobo-ui-handler.h>
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type())
 #define NAUTILUS_WINDOW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
@@ -50,7 +49,7 @@ typedef struct NautilusWindow NautilusWindow;
 #endif
 
 typedef struct {
-        GnomeAppClass parent_spot;
+        BonoboWinClass parent_spot;
 } NautilusWindowClass;
 
 typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;
@@ -65,7 +64,7 @@ typedef enum {
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 struct NautilusWindow {
-        GnomeApp parent_object;
+        BonoboWin parent_object;
         
         NautilusWindowDetails *details;
         
@@ -78,7 +77,6 @@ struct NautilusWindow {
         guint status_bar_context_id, status_bar_clear_id;
         
         /** CORBA-related elements **/
-        BonoboUIHandler *ui_handler;
         NautilusApplication *application;
         
         /* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */

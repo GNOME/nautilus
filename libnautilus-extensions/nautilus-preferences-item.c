@@ -31,6 +31,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <gtk/gtkcheckbutton.h>
+#include <gtk/gtksignal.h>
 
 #include "nautilus-radio-button-group.h"
 #include "nautilus-string-picker.h"

@@ -50,7 +50,7 @@ typedef struct {
 GtkType                             nautilus_adapter_embeddable_embed_strategy_get_type (void);
 
 NautilusAdapterEmbedStrategy       *nautilus_adapter_embeddable_embed_strategy_new      (Bonobo_Embeddable  embeddable,
-											 Bonobo_UIHandler  uih);
+											 Bonobo_UIContainer ui_container);
 
 
 #endif /* NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY_H */

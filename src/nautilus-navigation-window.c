@@ -39,9 +39,21 @@
 #include "nautilus-throbber.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
+#include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkoptionmenu.h>
+#ifndef UIH
+#include <gtk/gtkstatusbar.h>
+#endif
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkvbox.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-geometry.h>
+#include <libgnomeui/gnome-messagebox.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-any-width-bin.h>
@@ -106,7 +118,7 @@ static void nautilus_window_show                    (GtkWidget           *widget
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
-				   GNOME_TYPE_APP)
+				   BONOBO_TYPE_WIN)
 
 static void
 nautilus_window_initialize_class (NautilusWindowClass *klass)
@@ -155,7 +167,9 @@ nautilus_window_initialize (NautilusWindow *window)
 static gboolean
 nautilus_window_clear_status (NautilusWindow *window)
 {
+#ifdef UIH
 	gtk_statusbar_pop (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id);
+#endif
 	window->status_bar_clear_id = 0;
 	return FALSE;
 }
@@ -167,10 +181,14 @@ nautilus_window_set_status (NautilusWindow *window, const char *txt)
 		g_source_remove (window->status_bar_clear_id);
 	}
 	
+#ifdef UIH
 	gtk_statusbar_pop (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id);
+#endif
 	if (txt != NULL && txt[0] != '\0') {
 		window->status_bar_clear_id = g_timeout_add(STATUS_BAR_CLEAR_TIMEOUT, (GSourceFunc)nautilus_window_clear_status, window);
+#ifdef UIH
 		gtk_statusbar_push(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id, txt);
+#endif
 	} else {
 		window->status_bar_clear_id = 0;
 	}
@@ -241,13 +259,15 @@ nautilus_window_zoom_to_fit (NautilusWindow *window)
 	}
 }
 
+#ifdef UIH
+
 /* This is our replacement for gnome_app_set_statusbar.
  * It uses nautilus_any_width_bin to make text changes in the
  * status bar not affect the width of the window.
  */
 static void
 install_status_bar (GnomeApp *app,
-		   GtkWidget *status_bar)
+		    GtkWidget *status_bar)
 {
 	GtkWidget *bin;
 
@@ -265,6 +285,8 @@ install_status_bar (GnomeApp *app,
 	gtk_container_add (GTK_CONTAINER (bin), status_bar);
 	gtk_box_pack_start (GTK_BOX (app->vbox), bin, FALSE, FALSE, 0);
 }
+
+#endif
 
 /* Code should never force the window taller than this size.
  * (The user can still stretch the window taller if desired).
@@ -326,13 +348,10 @@ set_initial_window_geometry (NautilusWindow *window)
 static void
 nautilus_window_constructed (NautilusWindow *window)
 {
-	GnomeApp *app;
 	GtkWidget *location_bar_box, *status_bar;
 	GtkWidget *view_as_menu_vbox;
-  	GnomeDockItemBehavior behavior;
   	int sidebar_width;
-
-  	app = GNOME_APP (window);
+	BonoboControl *location_bar_wrapper;
 
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);
@@ -349,15 +368,19 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
+#ifdef UIH
 	behavior = GNOME_DOCK_ITEM_BEH_EXCLUSIVE
 		| GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL;
 	if (!gnome_preferences_get_toolbar_detachable ()) {
 		behavior |= GNOME_DOCK_ITEM_BEH_LOCKED;
 	}
+#endif
 
+#ifdef UIH
 	gnome_app_add_docked (app, location_bar_box,
 			      URI_ENTRY_DOCK_ITEM, behavior,
 			      GNOME_DOCK_TOP, 2, 0, 0);
+#endif
 
 	/* Option menu for content view types; it's empty here, filled in when a uri is set.
 	 * Pack it into vbox so it doesn't grow vertically when location bar does. 
@@ -384,7 +407,9 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	/* set up status bar */
 	status_bar = gtk_statusbar_new ();
+#ifdef UIH
 	install_status_bar (app, status_bar);
+#endif
 
 	/* insert a little padding so text isn't jammed against frame */
 	gtk_misc_set_padding (GTK_MISC (GTK_STATUSBAR (status_bar)->label), GNOME_PAD, 0);
@@ -409,8 +434,8 @@ nautilus_window_constructed (NautilusWindow *window)
 		sidebar_width = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 148);
 		e_paned_set_position (E_PANED (window->content_hbox), sidebar_width);
 	}
-	
-	gnome_app_set_contents (app, window->content_hbox);
+	gtk_widget_show (window->content_hbox);
+	bonobo_win_set_contents (BONOBO_WIN (window), window->content_hbox);
 	
 	/* set up the index panel */
 	
@@ -428,9 +453,30 @@ nautilus_window_constructed (NautilusWindow *window)
 	}
 	
 	/* CORBA and Bonobo setup */
-	window->ui_handler = bonobo_ui_handler_new ();
-	bonobo_ui_handler_set_app (window->ui_handler, app);
+	window->details->ui_container = bonobo_ui_container_new ();
+	bonobo_ui_container_set_win (window->details->ui_container,
+				     BONOBO_WIN (window));
+#ifdef UIH
 	bonobo_ui_handler_set_statusbar (window->ui_handler, status_bar);
+#endif
+
+	/* Load the user interface from the XML file. */
+	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
+	bonobo_ui_component_set_container
+		(window->details->shell_ui,
+		 bonobo_object_corba_objref (BONOBO_OBJECT (window->details->ui_container)));
+	bonobo_ui_util_set_ui (window->details->shell_ui,
+			       NAUTILUS_DATADIR,
+			       "nautilus-shell-ui.xml",
+			       "nautilus");
+
+	/* Wrap the location bar in a control and set it up. */
+	location_bar_wrapper = bonobo_control_new (location_bar_box);
+	bonobo_ui_component_object_set (window->details->shell_ui,
+					"/Location Bar/Wrapper",
+					bonobo_object_corba_objref (BONOBO_OBJECT (location_bar_wrapper)),
+					NULL);
+	bonobo_object_unref (BONOBO_OBJECT (location_bar_wrapper));
 
 	/* Create menus and tool bars */
 	nautilus_window_initialize_menus (window);
@@ -455,24 +501,25 @@ nautilus_window_set_arg (GtkObject *object,
 			 GtkArg *arg,
 			 guint arg_id)
 {
-	GnomeApp *app = (GnomeApp *) object;
-	char *old_app_name;
+	char *old_name;
 	NautilusWindow *window = (NautilusWindow *) object;
 	
 	switch(arg_id) {
 	case ARG_APP_ID:
-		if(!GTK_VALUE_STRING(*arg))
+		if (GTK_VALUE_STRING (*arg) == NULL) {
 			return;
-		
-		old_app_name = app->name;
-		g_free(app->name);
-		app->name = g_strdup(GTK_VALUE_STRING(*arg));
-		g_assert(app->name);
-		g_free(app->prefix);
-		app->prefix = g_strconcat("/", app->name, "/", NULL);
-		if(!old_app_name) {
-			nautilus_window_constructed(NAUTILUS_WINDOW(object));
 		}
+		old_name = bonobo_win_get_name (BONOBO_WIN (object));
+		bonobo_win_set_name (BONOBO_WIN (object), GTK_VALUE_STRING (*arg));
+		/* This hack of using the time when the name first
+		 * goes non-NULL to be window-constructed time is
+		 * completely lame. But it works, so for now we leave
+		 * it alone.
+		 */
+		if (old_name == NULL) {
+			nautilus_window_constructed (NAUTILUS_WINDOW (object));
+		}
+		g_free (old_name);
 		break;
 	case ARG_APP:
 		window->application = NAUTILUS_APPLICATION (GTK_VALUE_OBJECT (*arg));
@@ -485,11 +532,9 @@ nautilus_window_get_arg (GtkObject *object,
 			 GtkArg *arg,
 			 guint arg_id)
 {
-	GnomeApp *app = (GnomeApp *) object;
-	
 	switch(arg_id) {
 	case ARG_APP_ID:
-		GTK_VALUE_STRING (*arg) = app->name;
+		GTK_VALUE_STRING (*arg) = bonobo_win_get_name (BONOBO_WIN (object));
 		break;
 	case ARG_APP:
 		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (NAUTILUS_WINDOW (object)->application);
@@ -558,11 +603,13 @@ nautilus_window_destroy (GtkObject *object)
 		g_source_remove (window->status_bar_clear_id);
 	}
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
-
-	if (window->ui_handler != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (window->ui_handler));
+	if (window->details->ui_container != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
 	}
+
+	g_free (window->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
 }
 
 static void
@@ -1112,32 +1159,40 @@ void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive (window->back_button, allow); 
+#ifdef UIH
 	bonobo_ui_handler_menu_set_sensitivity
 		(window->ui_handler, NAUTILUS_MENU_PATH_BACK_ITEM, allow);
+#endif
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive (window->forward_button, allow); 
+#ifdef UIH
 	bonobo_ui_handler_menu_set_sensitivity
 		(window->ui_handler, NAUTILUS_MENU_PATH_FORWARD_ITEM, allow);
+#endif
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive (window->up_button, allow); 
+#ifdef UIH
 	bonobo_ui_handler_menu_set_sensitivity
 		(window->ui_handler, NAUTILUS_MENU_PATH_UP_ITEM, allow);
+#endif
 }
 
 void
 nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive (window->reload_button, allow); 
+#ifdef UIH
 	bonobo_ui_handler_menu_set_sensitivity
 		(window->ui_handler, NAUTILUS_MENU_PATH_RELOAD_ITEM, allow);
+#endif
 }
 
 void
@@ -1355,6 +1410,7 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 
 	}
 
+#ifdef UIH
 	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
 						NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
 						zoom_level < nautilus_view_frame_get_max_zoom_level (view));
@@ -1364,6 +1420,7 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
 						NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
 						TRUE);
+#endif
 }
 
 static Nautilus_HistoryList *
@@ -1490,9 +1547,11 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	}
 
 	/* Here's an explicit check for a problem that happens all too often. */
+#ifdef UIH
 	if (bonobo_ui_handler_menu_path_exists (window->ui_handler, "/File/Open")) {
 		g_warning ("There's a lingering Open menu item. This usually means a new Bonobo bug.");
 	}
+#endif
 	
 	if (new_view != NULL) {			
 		gtk_widget_show (GTK_WIDGET (new_view));
@@ -1565,6 +1624,7 @@ sidebar_panels_changed_callback (gpointer user_data)
 static void 
 show_dock_item (NautilusWindow *window, const char *dock_item_name)
 {
+#ifdef UIH
 	GnomeApp *app;
 	GnomeDockItem *dock_item;
 
@@ -1575,12 +1635,14 @@ show_dock_item (NautilusWindow *window, const char *dock_item_name)
 		gtk_widget_show (GTK_WIDGET (dock_item));
 		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
 	}
+#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 static void 
 hide_dock_item (NautilusWindow *window, const char *dock_item_name)
 {
+#ifdef UIH
 	GnomeApp *app;
 	GnomeDockItem *dock_item;
 
@@ -1591,12 +1653,14 @@ hide_dock_item (NautilusWindow *window, const char *dock_item_name)
 		gtk_widget_hide (GTK_WIDGET (dock_item));
 		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
 	}
+#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 static gboolean
 dock_item_showing (NautilusWindow *window, const char *dock_item_name)
 {
+#ifdef UIH
 	GnomeApp *app;
 	GnomeDockItem *dock_item;
 
@@ -1604,6 +1668,9 @@ dock_item_showing (NautilusWindow *window, const char *dock_item_name)
 
 	dock_item = gnome_app_get_dock_item_by_name (app, dock_item_name);
 	return dock_item != NULL && GTK_WIDGET_VISIBLE (dock_item);
+#else
+	return FALSE;
+#endif
 }
 
 void 
@@ -1627,19 +1694,27 @@ nautilus_window_location_bar_showing (NautilusWindow *window)
 void 
 nautilus_window_hide_tool_bar (NautilusWindow *window)
 {
+#ifdef UIH
 	hide_dock_item (window, GNOME_APP_TOOLBAR_NAME);
+#endif
 }
 
 void 
 nautilus_window_show_tool_bar (NautilusWindow *window)
 {
+#ifdef UIH
 	show_dock_item (window, GNOME_APP_TOOLBAR_NAME);
+#endif
 }
 
 gboolean
 nautilus_window_tool_bar_showing (NautilusWindow *window)
 {
+#ifdef UIH
 	return dock_item_showing (window, GNOME_APP_TOOLBAR_NAME);
+#else
+	return FALSE;
+#endif
 }
 
 void 
@@ -1676,6 +1751,7 @@ nautilus_window_sidebar_showing (NautilusWindow *window)
 void 
 nautilus_window_hide_status_bar (NautilusWindow *window)
 {
+#ifdef UIH
 	GnomeApp *app;
 
 	app = GNOME_APP (window);
@@ -1683,12 +1759,14 @@ nautilus_window_hide_status_bar (NautilusWindow *window)
 	if (app->statusbar != NULL) {
 		gtk_widget_hide (GTK_WIDGET (app->statusbar)->parent);
 	}	
+#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 void 
 nautilus_window_show_status_bar (NautilusWindow *window)
 {
+#ifdef UIH
 	GnomeApp *app;
 
 	app = GNOME_APP (window);
@@ -1696,18 +1774,23 @@ nautilus_window_show_status_bar (NautilusWindow *window)
 	if (app->statusbar != NULL) {
 		gtk_widget_show (GTK_WIDGET (app->statusbar)->parent);
 	}	
+#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 gboolean
 nautilus_window_status_bar_showing (NautilusWindow *window)
 {
+#ifdef UIH
 	GnomeApp *app;
 
 	app = GNOME_APP (window);
 
 	return app->statusbar != NULL
 		&& GTK_WIDGET_VISIBLE (GTK_WIDGET (app->statusbar)->parent);
+#else
+	return FALSE;
+#endif
 }
 
 /**

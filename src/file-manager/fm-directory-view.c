@@ -743,7 +743,9 @@ create_link_callback (gpointer ignored, gpointer callback_data)
 }
 
 static void
-bonobo_menu_select_all_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
+bonobo_menu_select_all_callback (BonoboUIComponent *component, 
+				 gpointer callback_data, 
+				 const char *verb)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
@@ -751,7 +753,9 @@ bonobo_menu_select_all_callback (BonoboUIHandler *ui_handler, gpointer callback_
 }
 
 static void
-bonobo_menu_empty_trash_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
+bonobo_menu_empty_trash_callback (BonoboUIComponent *component, 
+				  gpointer callback_data, 
+				  const char *verb)
 {                
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
@@ -804,20 +808,12 @@ static void
 bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data)
 {
         FMDirectoryView *view;
-        BonoboUIHandler *local_ui_handler;
-	Bonobo_UIHandler remote_ui_handler;
 
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
         view = FM_DIRECTORY_VIEW (callback_data);
 
-        local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
-
         if (state) {
-		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
-                bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
-		bonobo_object_release_unref (remote_ui_handler, NULL);
-
                 /* Add new menu items and perhaps whole menus */
                 fm_directory_view_merge_menus (view);
 	        /* Set initial sensitivity, wording, toggle state, etc. */       
@@ -1946,22 +1942,22 @@ fm_directory_view_get_selection (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_get_bonobo_ui_handler:
+ * fm_directory_view_get_bonobo_ui_container:
  *
- * Get the BonoboUIHandler for this FMDirectoryView.
+ * Get the BonoboUIContainer for this FMDirectoryView.
  * This is normally called only by subclasses in order to
  * install and modify bonobo menus and such.
  * @view: FMDirectoryView of interest.
  * 
- * Return value: BonoboUIHandler for this view.
+ * Return value: BonoboUIContainer for this view.
  * 
  **/
-BonoboUIHandler *
-fm_directory_view_get_bonobo_ui_handler (FMDirectoryView *view)
+Bonobo_UIContainer
+fm_directory_view_get_bonobo_ui_container (FMDirectoryView *view)
 {
         g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
         
-        return bonobo_control_get_ui_handler (get_bonobo_control (view));
+        return bonobo_control_get_remote_ui_container (get_bonobo_control (view));
 }
 
 /**
@@ -3003,6 +2999,8 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 			      remove_custom_icons_callback);
 }
 
+#ifdef UIH
+
 static void
 insert_bonobo_menu_item (FMDirectoryView *view,
 			 BonoboUIHandler *ui_handler,
@@ -3260,15 +3258,38 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 	}
 }
 
+#endif /* UIH */
+
 static void
 fm_directory_view_real_merge_menus (FMDirectoryView *view)
 {
+        BonoboUIComponent *ui_component;
         GList *selection;
-        BonoboUIHandler *ui_handler;
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("New Folder", (BonoboUIVerbFn)new_folder_callback),
+		BONOBO_UI_VERB ("Open", (BonoboUIVerbFn)open_callback),
+		BONOBO_UI_VERB ("OpenNew", (BonoboUIVerbFn)open_in_new_window_callback),
+		BONOBO_UI_VERB ("OtherApplication", (BonoboUIVerbFn)other_application_callback),
+		BONOBO_UI_VERB ("OtherViewer", (BonoboUIVerbFn)other_viewer_callback),
+		BONOBO_UI_VERB ("Show Properties", (BonoboUIVerbFn)open_properties_window_callback),
+		BONOBO_UI_VERB ("Trash", (BonoboUIVerbFn)trash_callback),
+		BONOBO_UI_VERB ("Duplicate", (BonoboUIVerbFn)duplicate_callback),
+		BONOBO_UI_VERB ("Create Link", (BonoboUIVerbFn)create_link_callback),
+		BONOBO_UI_VERB ("Empty Trash", bonobo_menu_empty_trash_callback),
+		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
+		BONOBO_UI_VERB ("Remove Custom Icons", (BonoboUIVerbFn)remove_custom_icons_callback),
+		BONOBO_UI_VERB_END
+	};
+
+	ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
+						NAUTILUS_DATADIR,
+						"nautilus-directory-view-ui.xml",
+						"nautilus");
+	bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, view);
 
         selection = fm_directory_view_get_selection (view);
-        ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
+#ifdef UIH
 	insert_bonobo_menu_item 
 		(view,
 		 ui_handler, selection,
@@ -3368,9 +3389,12 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 			    	   "settings_changed",
 			    	   schedule_update_menus,
 			    	   GTK_OBJECT (view));
+#endif /* UIH */
 
         nautilus_file_list_free (selection);
 }
+
+#ifdef UIH
 
 static void
 update_one_menu_item (FMDirectoryView *view,
@@ -3387,9 +3411,12 @@ update_one_menu_item (FMDirectoryView *view,
 	g_free (label_string);
 }
 
+#endif
+
 static void
 fm_directory_view_real_update_menus (FMDirectoryView *view)
 {
+#ifdef UIH
 	BonoboUIHandler *handler;
 	GList *selection;
 
@@ -3425,6 +3452,7 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 			      NAUTILUS_MENU_PATH_SELECT_ALL_ITEM);
 
 	nautilus_file_list_free (selection);
+#endif
 }
 
 static GtkMenu *

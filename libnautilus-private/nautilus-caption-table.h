@@ -26,7 +26,7 @@
 #define NAUTILUS_CAPTION_TABLE_H
 
 #include <gtk/gtktable.h>
-#include <gnome.h>
+#include <libgnome/gnome-defs.h>
 
 /*
  * NautilusCaptionTable is a GtkTable sublass that allows you to painlessly

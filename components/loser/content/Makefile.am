@@ -1,8 +1,10 @@
 NULL=
 
 CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"Nautilus-Test\"
+	-DPREFIX=\"$(prefix)\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Test\"	\
+	-DDATADIR=\"$(datadir)\"		\
+	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"
 
 INCLUDES =					\
 	-I$(top_srcdir)				\
@@ -14,10 +16,10 @@ INCLUDES =					\
 	$(NULL)
 
 oafdir = $(datadir)/oaf
+oaf_DATA = nautilus-content-loser.oafinfo
 
-oaf_DATA =					\
-	nautilus-content-loser.oafinfo
-
+uidir = $(datadir)/gnome/ui
+ui_DATA = nautilus-content-loser-ui.xml
 
 bin_PROGRAMS =					\
 	nautilus-content-loser
@@ -36,4 +38,4 @@ nautilus_content_loser_LDADD =			\
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)

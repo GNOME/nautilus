@@ -29,7 +29,6 @@
 #ifndef LIBNAUTILUS_H
 #define LIBNAUTILUS_H
 
-#include <bonobo.h>
 #include <libnautilus/nautilus-view-component.h>
 #include <libnautilus/nautilus-view.h>
 

@@ -27,6 +27,8 @@
 #include <config.h>
 #include "nautilus-bonobo-extensions.h"
 
+#ifdef UIH
+
 /**
  * nautilus_bonobo_ui_handler_menu_toggle_appearance
  * 
@@ -56,3 +58,5 @@ nautilus_bonobo_ui_handler_menu_set_toggle_appearance (BonoboUIHandler *uih,
 	bonobo_ui_handler_menu_set_callback (uih, path, saved_callback,
 					     saved_callback_data, saved_destroy_notify);		
 }
+
+#endif /* UIH */

@@ -29,6 +29,7 @@
 
 #include "nautilus-undo-private.h"
 #include <bonobo/bonobo-main.h>
+#include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 

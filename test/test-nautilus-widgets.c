@@ -1,12 +1,12 @@
-
 #include <config.h>
 
+#include <gtk/gtk.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnomeui/gnome-init.h>
 #include <libnautilus-extensions/nautilus-caption-table.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-string-picker.h>
 #include <libnautilus-extensions/nautilus-text-caption.h>
-
-#include <gtk/gtk.h>
 
 static GdkPixbuf*
 create_pixbuf (const char *name)
@@ -73,9 +73,9 @@ radio_group_load_it_up (NautilusRadioButtonGroup	*group,
 	
 	if (use_descriptions)
 	{
-		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 0, _("Apple description"));
-		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 1, _("Oranges description"));
-		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 2, _("Strawberries description"));
+		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 0, "Apple description");
+		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 1, "Oranges description");
+		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 2, "Strawberries description");
 	}
 
 	if (use_icons)

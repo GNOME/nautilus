@@ -34,6 +34,7 @@
 #include "nautilus-undo.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
@@ -468,4 +469,27 @@ nautilus_view_get_bonobo_control (NautilusView *view)
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
 	return view->details->control;
+}
+
+BonoboUIComponent *
+nautilus_view_set_up_ui (NautilusView *view,
+			 const char *datadir,
+			 const char *ui_file_name,
+			 const char *application_name)
+{
+	BonoboUIComponent *ui_component;
+	Bonobo_UIContainer ui_container;
+
+	/* Get the UI component that's pre-made by the control. */
+	ui_component = bonobo_control_get_ui_component (view->details->control);
+
+	/* Connect the UI component to the control frame's UI container. */
+	ui_container = bonobo_control_get_remote_ui_container (view->details->control);
+	bonobo_ui_component_set_container (ui_component, ui_container);
+	bonobo_object_release_unref (ui_container, NULL);
+
+	/* Set up the UI from an XML file. */
+	bonobo_ui_util_set_ui (ui_component, datadir, ui_file_name, application_name);
+
+	return ui_component;
 }

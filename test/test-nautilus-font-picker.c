@@ -1,9 +1,9 @@
-
 #include <config.h>
 
-#include <libnautilus-extensions/nautilus-font-picker.h>
-
 #include <gtk/gtk.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnomeui/gnome-init.h>
+#include <libnautilus-extensions/nautilus-font-picker.h>
 
 static void
 font_picker_changed_callback (GtkWidget *font_picker, gpointer user_data)

@@ -32,6 +32,9 @@
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtksignal.h>
+
+#include <libgnome/gnome-i18n.h>
 
 static const gint FONT_PICKER_SPACING = 10;
 

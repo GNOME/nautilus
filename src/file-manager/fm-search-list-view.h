@@ -33,8 +33,11 @@
 #define FM_IS_SEARCH_LIST_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_SEARCH_LIST_VIEW))
 #define FM_IS_SEARCH_LIST_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_SEARCH_LIST_VIEW))
 
+typedef struct FMSearchListViewDetails FMSearchListViewDetails;
+
 typedef struct {
 	FMListView parent_slot;
+	FMSearchListViewDetails *details;
 } FMSearchListView;
 
 typedef struct {

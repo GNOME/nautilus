@@ -44,12 +44,11 @@ noinst_HEADERS = 			\
 	nautilus-trash-monitor.h 	\
 	$(NULL)
 
+uidir = $(datadir)/gnome/ui
+ui_DATA =					\
+	nautilus-directory-view-ui.xml		\
+	nautilus-icon-view-ui.xml		\
+	nautilus-search-list-view-ui.xml	\
+	$(NULL)
 
-
-
-
-
-
-
-
-
+EXTRA_DIST = $(ui_DATA)

@@ -59,8 +59,8 @@ typedef struct {
 GtkType                      nautilus_adapter_embed_strategy_get_type      (void);
 
 /* Instantiates the proper concrete subclass */
-NautilusAdapterEmbedStrategy *nautilus_adapter_embed_strategy_get       (Bonobo_Unknown   component,
-									 Bonobo_UIHandler uih);
+NautilusAdapterEmbedStrategy *nautilus_adapter_embed_strategy_get       (Bonobo_Unknown     component,
+									 Bonobo_UIContainer ui_container);
 
 GtkWidget                   *nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy);
 

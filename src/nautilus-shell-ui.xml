@@ -1,0 +1,281 @@
+<Root>
+
+<!-- A description of each placeholder's purpose is in libnautilus/nautilus-bonobo-ui.h -->
+
+<menu>
+	<submenu name="File" _label="_File">
+
+		<placeholder name="New Items Placeholder" delimit="bottom">
+			<menuitem name="New Window"
+				  _label="_New Window"
+				  _descr="Open another Nautilus window for the displayed location"
+				  pixtype="stock" pixname="Menu_New"
+				  verb=""/>
+		</placeholder>
+		<placeholder name="Open Placeholder"/>
+
+		<menuitem name="Close"
+			  _label="_Close Window"
+			  _descr="Close this window"
+			  pixtype="stock" pixname="Menu_Close"
+			  accel="*Control*w"
+			  verb=""/>
+		<menuitem name="Close All Windows"
+			  _label="Close _All Windows"
+			  _descr="Close all Nautilus windows"
+			  accel="*Control**Shift*w"
+			  verb=""/>
+
+		<placeholder name="General Status Placeholder"/>
+		<placeholder name="File Items Placeholder"/>
+
+		<menuitem/>
+
+		<menuitem name="Toggle Find Mode"
+			  _label="_Find"
+			  _descr="Search this computer for files"
+			  accel="*Control*f"
+			  verb=""/>
+		<menuitem name="Go to Web Search"
+			  _label="_Web Search"
+			  _descr="Search the World Wide Web"
+			  accel="*Control**Shift*f"
+			  verb=""/>
+
+		<placeholder name="Global File Items Placeholder" delimit="top"/>
+	</submenu>
+
+	<submenu name="Edit" _label="_Edit">
+		<menuitem name="Undo" 
+			  _label="_Undo" 
+			  _descr="Undo the last text change"
+			  pixtype="stock" pixname="Menu_Undo" 
+			  accel="*Control*z"
+			  verb=""/>
+
+		<menuitem/>
+
+		<menuitem name="Cut" 
+			  _label="Cut _Text" 
+			  _descr="Cut the selected text to the clipboard"
+			  pixtype="stock" pixname="Menu_Cut" 
+			  accel="*Control*x"
+			  verb=""/>
+		<menuitem name="Copy" 
+			  _label="_Copy Text" 
+			  _descr="Copy the selected text to the clipboard"
+			  pixtype="stock" pixname="Menu_Copy" 
+			  accel="*Control*c"
+			  verb=""/>
+		<menuitem name="Paste" 
+			  _label="_Paste Text" 
+			  _descr="Paste the text stored on the clipboard"
+			  pixtype="stock" pixname="Menu_Paste" 
+			  accel="*Control*v"
+			  verb=""/>
+		<menuitem name="Clear"
+			  _label="C_lear Text" 
+			  _descr="Removes the selected text without putting it on the clipboard"
+			  verb=""/>
+
+		<menuitem/>
+
+		<menuitem name="Select All"
+			  _label="_Select All" 
+			  accel="*Control*a"
+			  verb=""/>
+		
+		<menuitem/>
+
+		<menuitem name="Customize" 
+			  _label="Custo_mization..." 
+			  _descr="Display the Property Browser, containing patterns, colors, and emblems"
+			  verb=""/>
+		<menuitem name="Change Appearance" 
+			  _label="C_hange Appearance..." 
+			  _descr="Display the set of available appearance themes"
+			  verb=""/>
+
+		<placeholder name="Global Edit Items Placeholder" delimit="bottom"/>
+		<placeholder name="Edit Items Placeholder" delimit="top"/>
+
+	</submenu>
+
+	<submenu name="View" _label="_View">
+		<menuitem name="Reload" 
+			  _label="_Refresh" 
+			  _descr="Display the latest contents of the current location"
+			  accel="*Control*r"
+			  verb=""/>
+
+		<placeholder name="Show Hide Placeholder" delimit="both">
+			<menuitem name="Show Hide Sidebar" 
+				  _label="Hide Sidebar"
+				  _descr="Change the visibility of this window's sidebar"
+				  verb=""/>
+			<menuitem name="Show Hide Tool Bar" 
+				  _label="Hide Tool Bar"
+				  _descr="Change the visibility of this window's tool bar"
+				  verb=""/>
+			<menuitem name="Show Hide Location Bar" 
+				  _label="Hide Location Bar"
+				  _descr="Change the visibility of this window's location bar"
+				  verb=""/>
+			<menuitem name="Show Hide Status Bar" 
+				  _label="Hide Status Bar"
+				  _descr="Change the visibility of this window's status bar"
+				  verb=""/>
+		</placeholder>
+		<placeholder name="View Items Placeholder" delimit="bottom"/>
+		
+		<menuitem name="Zoom In" 
+			  _label="Zoom _In" 
+			  _descr="Show the contents in more detail"
+			  accel="*Control*="
+			  verb=""/>
+		<menuitem name="Zoom Out" 
+			  _label="Zoom _Out" 
+			  _descr="Show the contents in less detail"
+			  accel="*Control*-"
+			  verb=""/>
+		<menuitem name="Zoom Normal" 
+			  _label="_Normal Size" 
+			  _descr="Show the contents at the normal size"
+			  verb=""/>
+	</submenu>
+
+	<submenu name="Go" _label="_Go">
+		<menuitem name="Back" 
+			  _label="_Back" 
+			  _descr="Go to the previous visited location"
+			  accel="*Control*["
+			  verb=""/>
+		<menuitem name="Forward" 
+			  _label="_Forward" 
+			  _descr="Go to the next visited location"
+			  accel="*Control*]"
+			  verb=""/>
+		<menuitem name="Up" 
+			  _label="_Up a Level" 
+			  _descr="Go to the location that contains this one"
+			  accel="*Control*u"
+			  verb=""/>
+		<menuitem name="Home" 
+			  _label="_Home" 
+			  _descr="Go to the home location"
+			  accel="*Control*h"
+			  verb=""/>
+
+		<menuitem/>
+
+		<menuitem name="Forget History" 
+			  _label="For_get History" 
+			  _descr="Clear contents of Go menu and Back/Forward lists"
+			  verb=""/>
+
+		<placeholder name="History Placeholder" delimit="top"/>
+	</submenu>
+
+	<submenu name="Bookmarks" _label="_Bookmarks">
+		<menuitem name="Add Bookmark" 
+			  _label="_Add Bookmark" 
+			  _descr="Add a bookmark for the current location to this menu"
+			  accel="*Control*B"
+			  verb=""/>
+		<menuitem name="Edit Bookmarks" 
+			  _label="_Edit Bookmarks..." 
+			  _descr="Display a window that allows editing the bookmarks in this menu"
+			  verb=""/>
+
+		<placeholder name="Bookmarks Placeholder" delimit="top"/>
+	</submenu>
+
+	<submenu name="Help" _label="_Help">
+		<menuitem name="About Nautilus" 
+			  _label="_About Nautilus..." 
+			  _descr="Display credits for the creators of Nautilus"
+			  verb=""/>
+		<menuitem name="Nautilus Feedback" 
+			  _label="_Nautilus Feedback..." 
+			  _descr="Show a page from which you can send feedback about Nautilus to its creators"
+			  verb=""/>
+	</submenu>
+
+	<submenu name="Preferences" _label="Ski">
+		<placeholder name="User Levels Placeholder" delimit="bottom">
+			<menuitem name="Switch to Beginner Level" 
+				  _label="Beginner" 
+				  _descr="Use Beginner settings"
+				  type="radio" group="user levels group"/>
+			<menuitem name="Switch to Intermediate Level" 
+				  _label="Intermediate" 
+				  _descr="Use Intermediate settings"
+				  type="radio" group="user levels group"/>
+			<menuitem name="Switch to Advanced Level" 
+				  _label="Advanced" 
+				  _descr="Use Advanced settings"
+				  type="radio" group="user levels group"/>
+		</placeholder>
+		<menuitem name="User Level Customization" 
+			  _label="Edit Settings..." 
+			  _descr="Edit settings for the current user level"
+			  verb=""/>
+	</submenu>
+</menu>
+
+<dockitem name="Tool Bar" look="both">
+
+	<toolitem name="Back"
+                  _label="Back"
+		  _descr="Go to the previous visited location"
+	          verb=""/>
+	<toolitem name="Forward"
+                  _label="Forward"
+		  _descr="Go to the next visited location"
+	          verb=""/>
+	<toolitem name="Up"
+                  _label="Up"
+		  _descr="Go to the location that contains this one"
+	          verb=""/>
+	<toolitem name="Reload"
+		  _label="Refresh"
+		  _descr="Display the latest contents of the current location"
+		  verb=""/>
+
+	<toolitem/>
+
+	<toolitem name="Home"
+		  _label="Home"
+		  _descr="Go to the home location"
+		  verb=""/>
+	<toolitem name="Toggle Find Mode"
+                  _label="Find"
+		  _descr="Search this computer for files"
+		  verb=""/>
+	<toolitem name="Go to Web Search"
+		  _label="Web Search"
+		  _descr="Search the World Wide Web"
+		  verb=""/>
+
+	<toolitem/>
+
+	<toolitem name="Stop"
+		  _label="Stop"
+		  _descr="Stop loading this location"
+	          verb=""/>
+	<toolitem name="Services"
+                  _label="Services"
+		  _descr="Go to the Eazel services location"
+	          _verb=""/>
+</dockitem>
+
+<dockitem name="Location Bar">
+	<control name="Wrapper"/>
+</dockitem>
+
+<status>
+	<!-- the name "main" is required by Bonobo -->
+	<item name="main"/>
+</status>
+
+</Root>

@@ -29,6 +29,8 @@
 #include "fm-directory-view.h"
 #include "fm-list-view-private.h"
 #include "nautilus-indexing-info.h"
+#include <bonobo/bonobo-ui-util.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
@@ -51,9 +53,14 @@
 #define MENU_PATH_INDEXING_INFO			"/File/Indexing Info..."
 #define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/File/Reveal"
 
+struct FMSearchListViewDetails {
+	BonoboUIComponent *ui;
+};
+
 static void 	fm_search_list_view_initialize       	 (gpointer          object,
 						      	  gpointer          klass);
 static void 	fm_search_list_view_initialize_class 	 (gpointer          klass);
+static void     real_destroy                             (GtkObject        *object);
 static void 	real_add_file				 (FMDirectoryView  *view,
 							  NautilusFile 	   *file);
 static void	real_create_selection_context_menu_items (FMDirectoryView  *view,
@@ -103,11 +110,15 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 static void
 fm_search_list_view_initialize_class (gpointer klass)
 {
+	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 	FMListViewClass *fm_list_view_class;
 	
+	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 	fm_list_view_class = FM_LIST_VIEW_CLASS (klass);
+
+	object_class->destroy = real_destroy;
 
   	fm_directory_view_class->add_file = real_add_file;
 	fm_directory_view_class->create_selection_context_menu_items = 
@@ -136,12 +147,16 @@ static void
 fm_search_list_view_initialize (gpointer object,
 				gpointer klass)
 {
+	FMSearchListView *search_view;
 	NautilusView *nautilus_view;
 	FMDirectoryView *directory_view;
  
  	g_assert (GTK_BIN (object)->child == NULL);
- 
- 	directory_view = FM_DIRECTORY_VIEW (object);
+
+	search_view = FM_SEARCH_LIST_VIEW (object);
+  	directory_view = FM_DIRECTORY_VIEW (object);
+
+	search_view->details = g_new0 (FMSearchListViewDetails, 1);
 
 	nautilus_view = fm_directory_view_get_nautilus_view (directory_view);
 
@@ -150,6 +165,21 @@ fm_search_list_view_initialize (gpointer object,
 			    GTK_SIGNAL_FUNC (load_location_callback),
 			    NULL);
 
+}
+
+static void
+real_destroy (GtkObject *object)
+{
+	FMSearchListView *search_view;
+
+	search_view = FM_SEARCH_LIST_VIEW (object);
+
+	if (search_view->details->ui != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (search_view->details->ui));
+	}
+	g_free (search_view->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static int
@@ -269,7 +299,7 @@ real_get_column_specification (FMListView *view,
 }
 
 static void
-indexing_info_callback (gpointer ignored, gpointer data)
+indexing_info_callback (BonoboUIComponent *component, gpointer data, const char *verb)
 {
 	nautilus_indexing_info_show_dialog ();
 }
@@ -426,19 +456,35 @@ real_file_still_belongs (FMListView *view, NautilusFile *file)
 static void
 real_merge_menus (FMDirectoryView *view)
 {
-	BonoboUIHandler *ui_handler;
+	FMSearchListView *search_view;
 	GList *selected_files;
+#ifdef UIH
 	char *name;
 	gboolean sensitive;
 	int position;
-
-	g_assert (FM_IS_LIST_VIEW (view));
+#endif
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("Indexing Info", indexing_info_callback),
+		BONOBO_UI_VERB ("Reveal", (BonoboUIVerbFn)reveal_selected_items_callback),
+		BONOBO_UI_VERB_END
+	};
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
-	ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+	search_view = FM_SEARCH_LIST_VIEW (view);
+
+	search_view->details->ui = bonobo_ui_component_new ("Search List View");
+	bonobo_ui_component_set_container (search_view->details->ui,
+					   fm_directory_view_get_bonobo_ui_container (view));
+	bonobo_ui_util_set_ui (search_view->details->ui,
+			       NAUTILUS_DATADIR,
+			       "nautilus-search-list-view-ui.xml",
+			       "nautilus");
+	bonobo_ui_component_add_verb_list_with_data (search_view->details->ui, verbs, view);
+
 	selected_files = fm_directory_view_get_selection (view);
 
+#ifdef UIH
 	/* Indexing Info.. goes right after the Show Properties item that
 	 * fm-directory-view places in the File menu.
 	 */
@@ -471,6 +517,7 @@ real_merge_menus (FMDirectoryView *view)
 	g_free (name);
 	bonobo_ui_handler_menu_set_sensitivity 
 		(ui_handler, MENU_PATH_REVEAL_IN_NEW_WINDOW, sensitive);
+#endif
 
         nautilus_file_list_free (selected_files);
 }
@@ -508,18 +555,19 @@ real_supports_properties (FMDirectoryView *view)
 static void
 real_update_menus (FMDirectoryView *view)
 {
-	BonoboUIHandler *ui_handler;
 	GList *selected_files;
+#ifdef UIH
 	char *name;
 	gboolean sensitive;
+#endif
 
 	g_assert (FM_IS_LIST_VIEW (view));
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
-	ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 	selected_files = fm_directory_view_get_selection (view);
 
+#ifdef UIH
 	compute_reveal_item_name_and_sensitivity 
 		(selected_files, TRUE, &name, &sensitive);
         bonobo_ui_handler_menu_set_sensitivity 
@@ -528,6 +576,7 @@ real_update_menus (FMDirectoryView *view)
         	(ui_handler, MENU_PATH_REVEAL_IN_NEW_WINDOW, name);
 
 	g_free (name);
+#endif
 
         nautilus_file_list_free (selected_files);
 }

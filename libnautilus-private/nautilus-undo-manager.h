@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_UNDO_MANAGER_H
 #define NAUTILUS_UNDO_MANAGER_H
 
-#include <bonobo/bonobo-ui-handler.h>
+#include <bonobo/bonobo-object.h>
 
 #define NAUTILUS_TYPE_UNDO_MANAGER \
 	(nautilus_undo_manager_get_type ())
@@ -57,12 +57,15 @@ NautilusUndoManager *nautilus_undo_manager_new                                (v
 /* Undo operations. */
 void                 nautilus_undo_manager_undo                               (NautilusUndoManager *undo_manager);
 
+#ifdef UIH
 /* Connect the manager to a particular menu item. */
 void                 nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (NautilusUndoManager *manager,
 									       BonoboUIHandler     *handler,
 									       const char          *path,
 									       const char          *no_undo_menu_item_label,
 									       const char          *no_undo_menu_item_hint);
+
+#endif
 
 /* Attach the undo manager to a Gtk object so that object and the widgets inside it can participate in undo. */
 void                 nautilus_undo_manager_attach                             (NautilusUndoManager *manager,

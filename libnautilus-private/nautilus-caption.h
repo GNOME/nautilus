@@ -25,8 +25,8 @@
 #ifndef NAUTILUS_CAPTION_H
 #define NAUTILUS_CAPTION_H
 
-#include <gtk/gtkvbox.h>
-#include <gnome.h>
+#include <gtk/gtkhbox.h>
+#include <libgnome/gnome-defs.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 
 /*

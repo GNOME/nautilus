@@ -26,17 +26,18 @@
 
 #include <config.h>
 
-#include <stdlib.h>
-#include <gtk/gtkmain.h>
 #include <libgnome/gnome-defs.h> /* must come before gnome-init.h */
 #include <libgnomeui/gnome-init.h> /* must come before liboaf.h */
-#include <liboaf/liboaf.h>
+
+#include "nautilus-adapter-factory-server.h"
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
-#include "nautilus-adapter-factory-server.h"
-
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <libnautilus-extensions/nautilus-debug.h>
+#include <liboaf/liboaf.h>
+#include <stdlib.h>
 
 #define META_FACTORY_IID "OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f"
 #define FACTORY_OBJECT_IID    "OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4"

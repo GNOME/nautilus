@@ -1,0 +1,79 @@
+<Root>
+<menu>
+	<submenu name="File" _label="_File">
+		<placeholder name="File Items Placeholder">
+			<menuitem name="Rename" 
+				  _label="_Rename" 
+				  _descr="Rename selected icon"
+				  verb=""/>
+		</placeholder>
+	</submenu>
+	
+	<submenu name="Edit" _label="_Edit">
+		<placeholder name="Global Edit Items Placeholder">
+			<menuitem name="Icon Text" 
+				  _label="_Icon Captions..." 
+				  _descr="Choose which information appears beneath each icon's name"
+				  verb=""/>
+		</placeholder>
+
+		<placeholder name="Edit Items Placeholder">
+			<menuitem name="Stretch" 
+				  _label="_Stretch Icon" 
+				  _descr="Make the selected icon stretchable"
+				  verb=""/>
+			<menuitem name="Unstretch" 
+				  _label="_Restore Icons' Original Sizes" 
+				  _descr="Restore each selected icon to its original size"
+				  verb=""/>
+		</placeholder>
+
+	</submenu>
+
+	<submenu name="View" _label="_View">
+		<placeholder name="View Items Placeholder">
+			<submenu name="Lay Out" _label="_Lay out items">
+				<menuitem name="Manual Layout" 
+					  _label="_manually" 
+					  _descr="Leave icons wherever they are dropped"
+					  type="radio" group="layout group"/>
+				<placeholder name="Auto Layout" delimit="both">
+					<menuitem name="Sort by Name" 
+						  _label="by _Name" 
+						  _descr="Keep icons sorted by name in rows"
+						  type="radio" group="layout group"/>
+					<menuitem name="Sort by Size" 
+						  _label="by _Size" 
+						  _descr="Keep icons sorted by size in rows"
+						  type="radio" group="layout group"/>
+					<menuitem name="Sort by Type" 
+						  _label="by _Type" 
+						  _descr="Keep icons sorted by type in rows"
+						  type="radio" group="layout group"/>
+					<menuitem name="Sort by Modification Date" 
+						  _label="by Modification _Date" 
+						  _descr="Keep icons sorted by modification date in rows"
+						  type="radio" group="layout group"/>
+					<menuitem name="Sort by Emblems" 
+						  _label="by _Emblems" 
+						  _descr="Keep icons sorted by emblems in rows"
+						  type="radio" group="layout group"/>
+				</placeholder>
+				<menuitem name="Tighter Layout" 
+					  _label="_Tighter Layout" 
+					  _descr="Toggle using a tighter layout scheme"
+					  verb=""/>
+				<menuitem name="Reversed Order" 
+					  _label="Re_versed Order" 
+					  _descr="Display icons in the opposite order"
+					  verb=""/>
+			</submenu>
+			<menuitem name="Clean Up" 
+				  _label="_Clean Up by Name" 
+				  _descr="Reposition icons to better fit in the window and avoid overlapping"
+				  verb=""/>
+		</placeholder>
+		
+	</submenu>
+</menu>
+</Root>

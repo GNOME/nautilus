@@ -32,6 +32,8 @@
 #include "nautilus-main.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-window-private.h"
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -745,6 +747,7 @@ load_content_view (NautilusWindow *window,
          * the zoom_control will get shown.
          */
 	gtk_widget_hide (window->zoom_control);
+#ifdef UIH
 	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
 						NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
 						FALSE);
@@ -754,15 +757,15 @@ load_content_view (NautilusWindow *window,
 	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
 						NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
 						FALSE);
+#endif						
         
         content_view = window->content_view;
         if (!NAUTILUS_IS_VIEW_FRAME (content_view)
             || strcmp (nautilus_view_frame_get_iid (content_view), iid) != 0) {
 
-                new_view = nautilus_view_frame_new (window->ui_handler,
+                new_view = nautilus_view_frame_new (window->details->ui_container,
                                                     window->application->undo_manager);
                 nautilus_window_connect_view (window, new_view);
-                
                 if (!nautilus_view_frame_load_client (new_view, iid)) {
                         gtk_widget_unref (GTK_WIDGET(new_view));
                         new_view = NULL;
@@ -1485,8 +1488,8 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 		identifier = (NautilusViewIdentifier *) node->data;
 
                 /* Create and load the panel. */
-		sidebar_panel = nautilus_view_frame_new (window->ui_handler,
-							 window->application->undo_manager);
+		sidebar_panel = nautilus_view_frame_new (window->details->ui_container,
+                                                         window->application->undo_manager);
 		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
 		nautilus_window_connect_view (window, sidebar_panel);
 		load_succeeded = nautilus_view_frame_load_client (sidebar_panel, identifier->iid);

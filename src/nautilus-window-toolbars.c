@@ -34,7 +34,11 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include <gnome.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtktogglebutton.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-app.h>
+#include <libgnomeui/gnome-app-helper.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -108,52 +112,52 @@ toolbar_search_web_callback (GtkWidget *widget, NautilusWindow *window)
 
 static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Back"), NAUTILUS_HINT_BACK,
+	(N_("Back"), NULL,
 	 toolbar_back_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Back.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Forward"), NAUTILUS_HINT_FORWARD,
+	(N_("Forward"), NULL,
 	 toolbar_forward_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Forward.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Up"), NAUTILUS_HINT_UP,
+	(N_("Up"), NULL,
 	 toolbar_up_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Up.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Refresh"), NAUTILUS_HINT_REFRESH,
+	(N_("Refresh"), NULL,
 	 toolbar_reload_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Refresh.png"),
 	
 	GNOMEUIINFO_SEPARATOR,
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Home"), NAUTILUS_HINT_HOME,
+	(N_("Home"), NULL,
 	 toolbar_home_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Home.png"),
 	
 	NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK
-	(N_("Find"), NAUTILUS_HINT_FIND,
+	(N_("Find"), NULL,
 	 toolbar_search_local_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Search.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Web Search"), NAUTILUS_HINT_WEB_SEARCH,
+	(N_("Web Search"), NULL,
 	 toolbar_search_web_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/SearchWeb.png"),
 	
 	GNOMEUIINFO_SEPARATOR,
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Stop"), NAUTILUS_HINT_STOP,
+	(N_("Stop"), NULL,
 	 toolbar_stop_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Stop.png"),
 
 #ifdef EAZEL_SERVICES
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Services"), NAUTILUS_HINT_SERVICES,
+	(N_("Services"), NULL,
 	 toolbar_services_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Services.png"),
 #endif
@@ -251,7 +255,7 @@ back_or_forward_button_clicked_callback (GtkWidget *widget,
 
 /* utility to remember newly allocated toolbar buttons for later enabling/disabling */
 static void
-remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
+remember_buttons (NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
 {
 	window->back_button = current_toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget;
 	window->forward_button = current_toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget;
@@ -399,26 +403,32 @@ theme_changed_callback (gpointer callback_data)
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
-	GnomeApp *app;
 	GtkWidget *toolbar;
-	
-	app = GNOME_APP (window);	
 	
 	toolbar = nautilus_toolbar_new ();	
         gtk_toolbar_set_orientation (GTK_TOOLBAR (toolbar), GTK_ORIENTATION_HORIZONTAL); 
         gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_BOTH); 
 	nautilus_toolbar_set_button_spacing (NAUTILUS_TOOLBAR (toolbar), 50);
 	
-	gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);
-	remember_buttons(window, toolbar_info);
+	/* This function doesn't actually require a GnomeApp; we can
+	 * use it on our BonoboWin.
+	 */
+	gnome_app_fill_toolbar_with_data
+		(GTK_TOOLBAR (toolbar), toolbar_info,
+		 bonobo_win_get_accel_group (BONOBO_WIN (window)),
+		 window);
+
+	remember_buttons (window, toolbar_info);
 	window->throbber = allocate_throbber (toolbar);
 	
 	set_up_toolbar_images (window);
 	set_up_throbber_frame_type (window);
 
+#ifdef UIH
 	gnome_app_set_toolbar (app, GTK_TOOLBAR (toolbar));
 			
 	bonobo_ui_handler_set_toolbar (window->ui_handler, "Main", toolbar);
+#endif
 
 	gtk_signal_connect (GTK_OBJECT (window->back_button),
 			    "button_press_event",
@@ -445,8 +455,7 @@ nautilus_window_toolbar_remove_theme_callback (NautilusWindow *window)
 		 theme_changed_callback,
 		 window);
 }
- 
- 
+
 static void
 toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window)
 {

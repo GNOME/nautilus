@@ -187,6 +187,8 @@ sample_load_location_callback (NautilusView *nautilus_view,
 	nautilus_view_report_load_complete (nautilus_view);
 }
 
+#ifdef UIH
+
 static void
 bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {
@@ -211,28 +213,31 @@ bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const c
 	g_free (label_text);
 }
 
+#endif
+
 static void
 sample_merge_bonobo_items_callback (BonoboControl *control, gboolean state, gpointer user_data)
 {
  	NautilusSampleContentView *view;
-	BonoboUIHandler *ui_handler;
-	Bonobo_UIHandler remote_ui_handler;
+	BonoboUIComponent *ui_component;
 	GdkPixbuf *pixbuf;
+#ifdef UIH
 	BonoboUIHandlerPixmapType pixmap_type;
+#endif
 
 	g_assert (BONOBO_IS_CONTROL (control));
 	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
-	ui_handler = bonobo_control_get_ui_handler (control);
 
 	if (state) {
-		/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
-		bonobo_ui_handler_set_container (ui_handler, remote_ui_handler);
-		bonobo_object_release_unref (remote_ui_handler, NULL);
+		ui_component = nautilus_view_set_up_ui (NAUTILUS_VIEW (view),
+							DATADIR,
+							"nautilus-sample-content-view-ui.xml",
+							"nautilus-sample-content-view");
 
 		/* Load test pixbuf (used for both menu item and toolbar). */
 		pixbuf = gdk_pixbuf_new_from_file (ICON_DIR "/i-directory-24.png");		
+#ifdef UIH
 		if (pixbuf != NULL) {
 			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
 		} else {
@@ -268,6 +273,9 @@ sample_merge_bonobo_items_callback (BonoboControl *control, gboolean state, gpoi
 	        	 0,						/* accelerator key modifiers */
 	        	 bonobo_sample_callback,			/* callback function */
 	        	 view);						/* callback function's data */
+#endif
+
+		gdk_pixbuf_unref (pixbuf);
 	}
 
         /* Note that we do nothing if state is FALSE. Nautilus content

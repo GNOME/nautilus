@@ -31,6 +31,7 @@
 #include "nautilus-view-frame-private.h"
 
 #include <bonobo/bonobo-main.h>
+#include <gtk/gtksignal.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 typedef struct {

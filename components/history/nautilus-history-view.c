@@ -25,6 +25,8 @@
  
 #include <config.h>
 
+#include <bonobo/bonobo-generic-factory.h>
+#include <bonobo/bonobo-main.h>
 #include <gnome.h>
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-view-component.h>
@@ -42,7 +44,6 @@ typedef struct {
 
 	gint notify_count;
 	gint press_row;
-	BonoboUIHandler *uih;
 } HistoryView;
 
 #define HISTORY_VIEW_COLUMN_ICON	0

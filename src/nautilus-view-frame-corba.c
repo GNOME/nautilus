@@ -33,9 +33,10 @@
 
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
-#include <libnautilus/nautilus-view.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <bonobo/bonobo-main.h>
+#include <gtk/gtksignal.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
+#include <libnautilus/nautilus-view.h>
 
 static void impl_Nautilus_ViewFrame_open_location               (PortableServer_Servant  servant,
 								 Nautilus_URI            location,

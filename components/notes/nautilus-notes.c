@@ -27,18 +27,20 @@
 
 #include <config.h>
 
-#include <libnautilus/libnautilus.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <bonobo/bonobo-generic-factory.h>
+#include <bonobo/bonobo-main.h>
+#include <ctype.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-debug.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus/libnautilus.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <liboaf/liboaf.h>
 #include <limits.h>
-#include <ctype.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-debug.h>
-#include <libnautilus/nautilus-clipboard.h>
 
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
 

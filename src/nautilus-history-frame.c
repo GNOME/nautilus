@@ -29,6 +29,7 @@
 #include <config.h>
 #include "nautilus-history-frame.h"
 
+#include <gtk/gtksignal.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 typedef struct {

@@ -26,7 +26,6 @@
 #define NAUTILUS_PREFERENCES_GROUP_H
 
 #include <gtk/gtkframe.h>
-#include <gnome.h>
 
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-preferences-item.h>

@@ -27,11 +27,10 @@
 #ifndef NAUTILUS_BONOBO_EXTENSIONS_H
 #define NAUTILUS_BONOBO_EXTENSIONS_H
 
-#include <bonobo/bonobo-ui-handler.h>
-
+#ifdef UIH
 void nautilus_bonobo_ui_handler_menu_set_toggle_appearance (BonoboUIHandler *uih,
 				      	   		    const char      *path,
 				      	   		    gboolean         new_value);
-
+#endif
 
 #endif /* NAUTILUS_BONOBO_EXTENSIONS_H */

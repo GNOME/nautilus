@@ -33,14 +33,15 @@
 #include "nautilus-adapter-embeddable-embed-strategy.h"
 #include "nautilus-adapter-embed-strategy-private.h"
 
-#include <gtk/gtkobject.h>
+#include <bonobo/bonobo-client-site.h>
+#include <bonobo/bonobo-item-container.h>
+#include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
-#include <bonobo.h>
 
 struct NautilusAdapterEmbeddableEmbedStrategyDetails {
 	BonoboObjectClient *embeddable_wrapper;
-	BonoboContainer    *container;
+	BonoboItemContainer *container;
       	BonoboClientSite   *client_site;
 	BonoboViewFrame    *view_frame;
 	GtkWidget          *client_widget;
@@ -117,10 +118,9 @@ activate_uri_callback (BonoboControlFrame *frame,
 							    uri);
 }
 
-
 NautilusAdapterEmbedStrategy *
-nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable  embeddable,
-						Bonobo_UIHandler   uih)
+nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
+						Bonobo_UIContainer ui_container)
 {
 	NautilusAdapterEmbeddableEmbedStrategy *strategy;
 
@@ -130,13 +130,13 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable  embeddable,
 
 	strategy->details->embeddable_wrapper = bonobo_object_client_from_corba (embeddable);
 
-	strategy->details->container = bonobo_container_new ();
+	strategy->details->container = bonobo_item_container_new ();
       	strategy->details->client_site = bonobo_client_site_new (strategy->details->container);
 
 	bonobo_client_site_bind_embeddable (strategy->details->client_site, strategy->details->embeddable_wrapper);
-	bonobo_container_add (strategy->details->container, BONOBO_OBJECT (strategy->details->client_site));
+	bonobo_item_container_add (strategy->details->container, BONOBO_OBJECT (strategy->details->client_site));
 
-	strategy->details->view_frame = bonobo_client_site_new_view (strategy->details->client_site, uih);
+	strategy->details->view_frame = bonobo_client_site_new_view (strategy->details->client_site, ui_container);
 	strategy->details->client_widget = bonobo_view_frame_get_wrapper (strategy->details->view_frame);
 
      	bonobo_wrapper_set_visibility (BONOBO_WRAPPER (strategy->details->client_widget), FALSE);
@@ -149,7 +149,6 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable  embeddable,
 
 	return NAUTILUS_ADAPTER_EMBED_STRATEGY (strategy);
 }
-
 
 static GtkWidget *
 nautilus_adapter_embeddable_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *abstract_strategy)

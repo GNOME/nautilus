@@ -27,17 +27,18 @@
 #include <config.h>
 #include "nautilus-application.h"
 
-#include "nautilus-shell-interface.h"
-
-#include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-desktop-icon-view.h"
+#include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include "file-manager/fm-search-list-view.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-first-time-druid.h"
-#include "nautilus-shell.h"
 #include "nautilus-main.h"
-#include <bonobo.h>
+#include "nautilus-shell-interface.h"
+#include "nautilus-shell.h"
+#include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-object.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-messagebox.h>

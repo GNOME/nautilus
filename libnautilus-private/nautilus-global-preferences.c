@@ -37,6 +37,7 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtkbox.h>
+#include <libgnome/gnome-i18n.h>
 #include <liboaf/liboaf.h>
 
 /* Constants */

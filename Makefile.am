@@ -3,7 +3,6 @@ NULL=
 SUBDIRS =			\
 	data 			\
 	icons 			\
-	idl 			\
 	intl 			\
 	cut-n-paste-code 	\
 	librsvg 		\
@@ -11,10 +10,10 @@ SUBDIRS =			\
 	libnautilus-adapter	\
 	libnautilus-extensions 	\
 	helper-utilities 	\
-	components 		\
-	po 			\
 	src 			\
+	components		\
 	test 			\
+	po 			\
 	$(NULL)
 
 EXTRA_DIST=			\

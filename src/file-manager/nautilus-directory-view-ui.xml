@@ -1,0 +1,83 @@
+<Root>
+<menu>
+	<submenu name="File" _label="_File">
+
+		<placeholder name="New Items Placeholder">
+			<menuitem name="New Folder"
+				  _label="New Folder"
+			  	  accel="*Control*n"
+				  verb=""/>
+		</placeholder>
+		<placeholder name="Open Placeholder">
+			<menuitem name="Open"
+				  _label="_Open"
+				  _descr="Open the selected item in this window"
+				  accel="*Control*o"
+				  verb=""/>
+			<menuitem name="OpenNew"
+				  _label="_Open"
+				  _descr="Open each selected item in a new window"
+				  verb=""/>
+			<submenu name="Open With" _label="Open With">
+				<placeholder name="Open With Applications Placeholder"/>
+				<menuitem name="OtherApplication"
+					  _label="Other _Application..."
+					  _descr="Choose another application with which to open the selected item"
+					  verb=""/>
+				<menuitem/>
+				<placeholder name="Open With Viewers Placeholder"/>
+				<menuitem name="OtherViewer"
+					  _label="Other _Viewer..."
+					  _descr="Choose another viewer with which to view the selected item"
+					  verb=""/>
+			</submenu>
+		</placeholder>
+
+		<placeholder name="File Items Placeholder">
+			<menuitem name="Show Properties"
+				  _label="Show _Properties"
+				  _descr="View or modify the properties of each selected item"
+				  accel="*Control*i"
+				  verb=""/>
+			<menuitem name="Trash"
+				  _label="Move to _Trash"
+				  _descr="Move each selected item to the Trash"
+				  accel="*Control*t"
+				  verb=""/>
+			<menuitem name="Duplicate"
+				  _label="_Duplicate"
+				  _descr="Duplicate each selected item"
+				  accel="*Control*d"
+				  verb=""/>
+			<menuitem name="Create Link"
+				  _label="Create _Link"
+				  _descr="Create a symbolic link for each selected item"
+				  accel="*Control*l"
+				  verb=""/>
+		</placeholder>
+
+		<placeholder name="Global File Items Placeholder">
+			<menuitem name="Empty Trash"
+				  _label="_Empty Trash"
+				  _descr="Delete all items in the trash"
+				  verb=""/>
+		</placeholder>
+	</submenu>
+
+	<submenu name="Edit" _label="_Edit">
+		<menuitem name="Select All"
+			  _label="_Select All Files" 
+			  _descr="Select all items in this window"
+			  accel="*Control*a"
+			  verb=""/>
+		
+		<placeholder name="Edit Items Placeholder">
+			<menuitem name="Remove Custom Icons"
+				  _label="R_emove Custom Images" 
+				  _descr="Remove any custom images from selected icons"
+				  verb=""/>
+		</placeholder>
+
+	</submenu>
+</menu>
+</Root>

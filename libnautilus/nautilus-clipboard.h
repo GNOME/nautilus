@@ -34,6 +34,8 @@ void nautilus_clipboard_set_up_editable_from_bonobo_control (GtkEditable     *ta
 							     BonoboControl   *control);
 
 /* Containing application should use this. It could be moved out of libnautilus. */
+#ifdef UIH
 void nautilus_clipboard_set_up_host_ui_handler              (BonoboUIHandler *ui_handler);
+#endif
 
 #endif /* NAUTILUS_CLIPBOARD_H */

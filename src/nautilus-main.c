@@ -32,20 +32,21 @@
 #include "nautilus-main.h"
 
 #include "nautilus-application.h"
-#include "nautilus-window.h"
 #include "nautilus-self-check-functions.h"
+#include "nautilus-window.h"
 #include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-extensions/nautilus-debug.h>
-#include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
-#include <libnautilus-extensions/nautilus-self-checks.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
+#include <libnautilus-extensions/nautilus-self-checks.h>
 #include <liboaf/liboaf.h>
-#include <gtk/gtkmain.h>
 #include <parser.h>
 #include <popt.h>
 #include <stdlib.h>

@@ -36,6 +36,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#ifdef UIH
 static void
 cut_callback (BonoboUIHandler *ui_handler,
 	      gpointer callback_data,
@@ -95,6 +96,8 @@ add_menu_item (BonoboUIHandler *ui_handler,
 		 BONOBO_UI_HANDLER_PIXMAP_NONE, NULL, 0, 0,
 		 callback, callback_data);
 }
+#endif /* UIH */
+
 /*
 static void
 set_paste_sensitive_if_clipboard_contains_data (BonoboUIHandler *ui_handler)
@@ -114,6 +117,8 @@ add_menu_items_callback (GtkWidget *widget,
 			 GdkEventAny *event,
 			 gpointer callback_data)
 {
+#ifdef UIH
+
         BonoboUIHandler *local_ui_handler;
 	Bonobo_UIHandler remote_ui_handler;
 
@@ -145,7 +150,7 @@ add_menu_items_callback (GtkWidget *widget,
 		       _("C_lear Text"),
 		       _("Removes the selected text without putting it on the clipboard"),
 		       clear_callback, widget);
-
+#endif
 }
 
 static void
@@ -153,6 +158,7 @@ remove_menu_items_callback (GtkWidget *widget,
 			    GdkEventAny *event,
 			    gpointer callback_data)
 {
+#ifdef UIH
 	BonoboUIHandler *ui_handler;
 
 	g_assert (GTK_IS_EDITABLE (widget));
@@ -167,6 +173,7 @@ remove_menu_items_callback (GtkWidget *widget,
 				       NAUTILUS_MENU_PATH_PASTE_ITEM);
 	bonobo_ui_handler_menu_remove (ui_handler,
 				       NAUTILUS_MENU_PATH_CLEAR_ITEM);
+#endif
 }
 
 /*
@@ -216,12 +223,8 @@ void
 nautilus_clipboard_set_up_editable_from_bonobo_control (GtkEditable *target,
 							BonoboControl *control)
 {
-	BonoboUIHandler *ui_handler;
-
 	g_return_if_fail (GTK_IS_EDITABLE (target));
 	g_return_if_fail (BONOBO_IS_CONTROL (control));
-
-	ui_handler = bonobo_control_get_ui_handler (control);
 
 	/* Attach code to add menus when it gets the focus. */
 	gtk_signal_connect_while_alive

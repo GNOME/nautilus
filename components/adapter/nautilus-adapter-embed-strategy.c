@@ -95,10 +95,9 @@ nautilus_adapter_embed_strategy_destroy (GtkObject *object)
 
 
 
-
 NautilusAdapterEmbedStrategy *
-nautilus_adapter_embed_strategy_get (Bonobo_Unknown   component,
-				     Bonobo_UIHandler uih)
+nautilus_adapter_embed_strategy_get (Bonobo_Unknown component,
+				     Bonobo_UIContainer ui_container)
 {
 	Bonobo_Control    control;
 	Bonobo_Embeddable embeddable;
@@ -113,7 +112,7 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown   component,
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (control, &ev)) {
 		CORBA_exception_free (&ev);
 		
-		return nautilus_adapter_control_embed_strategy_new (control, uih);
+		return nautilus_adapter_control_embed_strategy_new (control, ui_container);
 	}
 
 	embeddable = Bonobo_Unknown_query_interface (component,
@@ -122,14 +121,13 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown   component,
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (embeddable, &ev)) {
 		CORBA_exception_free (&ev);
 		
-		return nautilus_adapter_embeddable_embed_strategy_new (embeddable, uih);		
+		return nautilus_adapter_embeddable_embed_strategy_new (embeddable, ui_container);		
 	}
 
 	CORBA_exception_free (&ev);
 
 	return NULL;
 }
-
 
 GtkWidget *
 nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy)

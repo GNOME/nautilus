@@ -32,8 +32,10 @@
 #include "nautilus-main.h"
 #include "nautilus-shell-interface.h"
 #include <gtk/gtkframe.h>
+#include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>

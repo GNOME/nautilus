@@ -1,3 +1,232 @@
+2000-10-05  Darin Adler  <darin@eazel.com>
+
+	Cut over to HEAD of Bonobo. This check-in includes all the changes
+	needed to compile and run, but there are many things wrong
+	visually that may take a while to get fixed.
+	
+	* src/nautilus-window-menus.c: (file_menu_new_window_callback),
+	(file_menu_close_window_callback),
+	(file_menu_close_all_windows_callback),
+	(file_menu_toggle_find_mode_callback),
+	(file_menu_web_search_callback), (edit_menu_undo_callback),
+	(edit_menu_cut_callback), (edit_menu_copy_callback),
+	(edit_menu_paste_callback), (edit_menu_clear_callback),
+	(go_menu_back_callback), (go_menu_forward_callback),
+	(go_menu_up_callback), (go_menu_home_callback),
+	(go_menu_forget_history_callback), (view_menu_reload_callback),
+	(view_menu_show_hide_sidebar_callback),
+	(view_menu_show_hide_tool_bar_callback),
+	(view_menu_show_hide_location_bar_callback),
+	(view_menu_show_hide_status_bar_callback),
+	(nautilus_window_update_show_hide_menu_items),
+	(view_menu_zoom_in_callback), (view_menu_zoom_out_callback),
+	(view_menu_zoom_normal_callback),
+	(bookmarks_menu_add_bookmark_callback),
+	(bookmarks_menu_edit_bookmarks_callback),
+	(user_level_customize_callback), (customize_callback),
+	(change_appearance_callback), (help_menu_about_nautilus_callback),
+	(help_menu_nautilus_feedback_callback), (switch_to_user_level),
+	(user_level_menu_item_callback), (append_placeholder),
+	(append_separator), (append_bookmark_to_menu),
+	(create_menu_item_from_node), (remove_bookmarks_after),
+	(remove_underline_accelerator_from_menu_title),
+	(new_top_level_menu), (add_user_level_menu_item),
+	(nautilus_window_initialize_menus),
+	(nautilus_window_update_find_menu_item),
+	(update_user_level_menu_items), (convert_verb_to_user_level),
+	(convert_user_level_to_verb), (update_preferences_dialog_title):
+	* src/nautilus-window.c: (nautilus_window_clear_status),
+	(nautilus_window_set_status), (install_status_bar),
+	(nautilus_window_constructed), (nautilus_window_set_arg),
+	(nautilus_window_get_arg), (nautilus_window_destroy),
+	(nautilus_window_allow_back), (nautilus_window_allow_forward),
+	(nautilus_window_allow_up), (nautilus_window_allow_reload),
+	(nautilus_window_zoom_level_changed_callback),
+	(nautilus_window_set_content_view_widget), (show_dock_item),
+	(hide_dock_item), (dock_item_showing),
+	(nautilus_window_hide_tool_bar), (nautilus_window_show_tool_bar),
+	(nautilus_window_tool_bar_showing),
+	(nautilus_window_hide_status_bar),
+	(nautilus_window_show_status_bar),
+	(nautilus_window_status_bar_showing):
+	Convert to new API. Some is disabled with #ifdef UIH.
+	
+	* Makefile.am:
+	* configure.in:
+	Turned off build of the idl directory, build components after src.
+	
+	* components/adapter/main.c:
+	* components/notes/nautilus-notes.c:
+	* components/sample/main.c:
+	* libnautilus-extensions/nautilus-font-picker.c:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	* libnautilus/nautilus-undo-transaction.c:
+	* libnautilus/nautilus-undo.c:
+	* src/nautilus-application.c:
+	* src/nautilus-history-frame.c:
+	* src/nautilus-link-set-window.c:
+	* src/nautilus-main.c:
+	* src/nautilus-shell.c:
+	* src/nautilus-sidebar.c:
+	* src/nautilus-view-frame-corba.c:
+	* src/nautilus-zoomable-frame-corba.c:
+	* test/test-nautilus-font-picker.c:
+	* test/test-nautilus-image.c: (create_font_picker_frame):
+	* test/test-nautilus-label.c: (create_font_picker_frame):
+	* test/test-nautilus-preferences.c:
+	* test/test-nautilus-widgets.c: (radio_group_load_it_up):
+	Fixed includes.
+	
+	* test/test-nautilus-image.c: (create_font_picker_frame):
+	* test/test-nautilus-label.c: (create_font_picker_frame):
+	* test/test-nautilus-widgets.c: (radio_group_load_it_up):
+	Turned off localization of some strings in tests.
+
+	* components/adapter/nautilus-adapter-control-embed-strategy.c:
+	(nautilus_adapter_control_embed_strategy_new):
+	* components/adapter/nautilus-adapter-control-embed-strategy.h:
+	* components/adapter/nautilus-adapter-embed-strategy.c:
+	(nautilus_adapter_embed_strategy_get):
+	* components/adapter/nautilus-adapter-embed-strategy.h:
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	(nautilus_adapter_embeddable_embed_strategy_new):
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.h:
+	Embedding code now deals with Bonobo_UIContainer, not
+	Bonobo_UIHandler.
+	
+	* components/adapter/nautilus-adapter.c: (nautilus_adapter_new):
+	This code not only had to be changed to deal with the
+	Bonobo_UIContainer instead of Bonobo_UIHandler, but it also needed
+	to deal with the containing item (was remote_ui_handler), not the
+	local component.
+
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	(nautilus_adapter_embeddable_embed_strategy_new):
+	* components/adapter/nautilus-adapter.c:
+	BonoboContainer was renamed BonoboItemContainer.
+	
+	* components/history/nautilus-history-view.c:
+	Remove unused BonoboUIHandler * field.
+	
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/mozilla/Makefile.am:
+	* components/sample/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	Added the necessary defines and build rules to install ui.xml
+	files and locate them from the C code.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/file-manager/nautilus-search-list-view-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	Added definitions of user interface.
+	
+	* components/loser/content/nautilus-content-loser-ui.xml:
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml:
+	* components/mozilla/nautilus-mozilla-ui.xml:
+	* components/sample/nautilus-sample-content-view-ui.xml:
+	Added empty placeholders for user interface.
+	
+	* components/loser/content/nautilus-content-loser.c:
+	(loser_merge_bonobo_items_callback):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(loser_merge_bonobo_items_callback):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_merge_bonobo_items_callback):
+	* components/sample/nautilus-sample-content-view.c:
+	(sample_merge_bonobo_items_callback):
+	Use nautilus_view_set_up_ui to get the user interface from a
+	ui.xml file. Put #ifdef UIH around old code to make the items work
+	that still needs to be visited.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	* libnautilus-extensions/nautilus-undo-manager.h:
+	* libnautilus/nautilus-clipboard.c: (add_menu_items_callback),
+	(remove_menu_items_callback),
+	(nautilus_clipboard_set_up_editable_from_bonobo_control):
+	* libnautilus/nautilus-clipboard.h:
+	Wrapped code in ifdef UIH to disable it until it can be converted
+	to the new Bonobo.
+	
+	* libnautilus-extensions/nautilus-caption-table.h:
+	* libnautilus-extensions/nautilus-caption.h:
+	* libnautilus-extensions/nautilus-font-picker.h:
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-radio-button-group.h:
+	* src/nautilus-about.h:
+	Got rid of any cases where headers include the omnibus header
+	<gnome.h>. These made the conversion process harder, which is why
+	we fixed them.
+	
+	* libnautilus/libnautilus.h:
+	Got rid of cases where headers include the omnibus header
+	<bonobo.h>.
+	
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c: (nautilus_view_set_up_ui):
+	Added a helper function to make it easy for Nautilus components to
+	load their UI and get it attached to the Nautilus:View object.
+	
+	* nautilus.spec.in: Install the nautilus-*-ui.xml files too.
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_menu_select_all_callback),
+	(bonobo_menu_empty_trash_callback),
+	(bonobo_control_activate_callback): Convert to new API.
+	(fm_directory_view_get_bonobo_ui_container): Name and purpose
+	changed slightly for new API.
+	(fm_directory_view_real_merge_menus): Merge with new API.
+	(fm_directory_view_real_update_menus): Disabled this code for now.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy): Destroy
+	icon view's own component at destroy time.
+	(context_menu_layout_radio_item_callback),
+	(append_one_context_menu_layout_item),
+	(fm_icon_view_create_background_context_menu_items),
+	(update_layout_menus): Convert to new API, disable some with
+	#ifdef UIH.
+	(get_sort_criterion_by_verb),
+	(set_sort_criterion_by_verb), (sort_callback): Convert to new API.
+	(fm_icon_view_merge_menus): Merge with new API, creating our own
+	UI component separate from the directory view's.
+	(fm_icon_view_update_menus): Disable with #ifdef UIH.
+	
+	* src/file-manager/fm-search-list-view.h:
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class),
+	(fm_search_list_view_initialize), (real_destroy),
+	(indexing_info_callback), (real_merge_menus), (real_update_menus):
+	Add code necessary to use a separate UI component, and disabled
+	the actual menu set-up code with #ifdef UIH. This required adding
+	a details struct.
+	
+	* src/nautilus-desktop-window.c: (realize): Turned off the code
+	that hides the desktop elements.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy),
+	(nautilus_view_frame_new), (nautilus_view_frame_load_client):
+	* src/nautilus-window-manage-views.c: (load_content_view),
+	(nautilus_window_set_sidebar_panels):
+	Change to use Bonobo_UIContainer instead of Bonobo_UIHandler.
+	
+	* src/nautilus-window-toolbars.c: (remember_buttons),
+	(nautilus_window_initialize_toolbars): Leave this code around and
+	change it enough to compile and run, even though it's creating a
+	second, invisible toolbar.
+	
+	* src/nautilus-window.h: Change to be a BonoboWin subclass instead
+	of a GnomeApp subclass.
+	
 2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus.spec.in:

@@ -91,6 +91,12 @@ void              nautilus_view_set_title                   (NautilusView       
 Nautilus_URIList *nautilus_uri_list_from_g_list             (GList                  *list);
 GList *           nautilus_shallow_g_list_from_uri_list     (const Nautilus_URIList *uri_list);
 
+/* Simpler API for setting up and getting the UI component. */
+BonoboUIComponent *nautilus_view_set_up_ui                  (NautilusView           *view,
+							     const char             *datadir,
+							     const char             *ui_xml_file_name,
+							     const char             *application_name);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

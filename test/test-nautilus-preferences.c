@@ -1,14 +1,14 @@
-
 #include <config.h>
 
-#include <libnautilus-extensions/nautilus-radio-button-group.h>
+#include <gtk/gtk.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnomeui/gnome-init.h>
 #include <libnautilus-extensions/nautilus-caption-table.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <libnautilus-extensions/nautilus-preferences-group.h>
 #include <libnautilus-extensions/nautilus-preferences-item.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
-
-#include <gtk/gtk.h>
+#include <libnautilus-extensions/nautilus-radio-button-group.h>
 
 static void test_preferences_group               (void);
 static void test_preferences_item                (void);

@@ -180,6 +180,7 @@ loser_load_location_callback (NautilusView *nautilus_view,
 	nautilus_content_loser_maybe_fail ("post-done");
 }
 
+#ifdef UIH
 static void
 bonobo_loser_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {
@@ -205,32 +206,34 @@ bonobo_loser_callback (BonoboUIHandler *ui_handler, gpointer user_data, const ch
 	gtk_label_set_text (GTK_LABEL (view), label_text);
 	g_free (label_text);
 }
+#endif
 
 static void
 loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
 {
  	NautilusContentLoser *view;
-	BonoboUIHandler *local_ui_handler;
-	Bonobo_UIHandler remote_ui_handler;
+	BonoboUIComponent *ui_component;
 	GdkPixbuf *pixbuf;
+#ifdef UIH
 	BonoboUIHandlerPixmapType pixmap_type;
 	char *path;
+#endif
 	
 	nautilus_content_loser_maybe_fail ("pre-merge");
 
 	g_assert (NAUTILUS_IS_CONTENT_LOSER (user_data));
 
 	view = NAUTILUS_CONTENT_LOSER (user_data);
-	local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
 	if (state) {
-		/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
-		bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
-		bonobo_object_release_unref (remote_ui_handler, NULL);
+		ui_component = nautilus_view_set_up_ui (NAUTILUS_VIEW (view),
+							DATADIR,
+							"nautilus-content-loser-ui.xml",
+							"nautilus-content-loser");
 
 		/* Load test pixbuf */
 		pixbuf = gdk_pixbuf_new_from_file ("/gnome/share/pixmaps/nautilus/i-directory-24.png");		
+#ifdef UIH
 		if (pixbuf != NULL)
 			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
 		else
@@ -274,6 +277,9 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
 	        	 bonobo_loser_callback,			        /* callback function */
 	        	 view);						/* callback function's data */
 	        g_free (path);
+#endif
+
+		gdk_pixbuf_unref (pixbuf);
 	} else {
 		/* Do nothing. */
 	}

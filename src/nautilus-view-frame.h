@@ -33,7 +33,7 @@
 #define NAUTILUS_VIEW_FRAME_H
 
 #include <bonobo/bonobo-object-client.h>
-#include <bonobo/bonobo-ui-handler.h>
+#include <bonobo/bonobo-ui-container.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view-component.h>
@@ -50,7 +50,6 @@ typedef struct {
         NautilusGenerousBin parent;
         NautilusViewFrameDetails *details;
 
-        BonoboUIHandler *ui_handler;
         NautilusUndoManager *undo_manager;
      
         char *iid;
@@ -99,7 +98,7 @@ typedef struct {
 } NautilusViewFrameClass;
 
 GtkType               nautilus_view_frame_get_type                  (void);
-NautilusViewFrame *   nautilus_view_frame_new                       (BonoboUIHandler     *ui_handler,
+NautilusViewFrame *   nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
                                                                      NautilusUndoManager *undo_manager);
 gboolean              nautilus_view_frame_load_client               (NautilusViewFrame   *view,
                                                                      const char          *iid);

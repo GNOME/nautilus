@@ -31,7 +31,7 @@
 #include "nautilus-adapter-embed-strategy.h"
 
 #include <bonobo/bonobo-control.h>
-#include <bonobo/bonobo-container.h>
+#include <bonobo/bonobo-item-container.h>
 #include <bonobo/bonobo-view-frame.h>
 #include <bonobo/bonobo-object-client.h>
 #include <gtk/gtksignal.h>
@@ -155,8 +155,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 	/* Get the class to handle embedding this kind of component. */
 	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get
-		(component, bonobo_object_corba_objref (BONOBO_OBJECT (bonobo_control_get_ui_handler 
-								       (control))));
+		(component, bonobo_control_get_remote_ui_container (control));
 
 	if (adapter->details->embed_strategy == NULL) {
 		gtk_object_unref (GTK_OBJECT (adapter));

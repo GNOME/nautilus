@@ -32,6 +32,7 @@
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>

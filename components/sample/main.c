@@ -27,14 +27,16 @@
 
 #include <config.h>
 
-#include <stdlib.h>
-#include <gtk/gtkmain.h>
 #include <libgnome/gnome-defs.h> /* must come before gnome-init.h */
 #include <libgnomeui/gnome-init.h> /* must come before liboaf.h */
-#include <liboaf/liboaf.h>
+
+#include "nautilus-sample-content-view.h"
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
-#include "nautilus-sample-content-view.h"
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <liboaf/liboaf.h>
+#include <stdlib.h>
 
 #define FACTORY_IID "OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5"
 #define VIEW_IID    "OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae"
