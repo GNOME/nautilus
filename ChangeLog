@@ -1,3 +1,17 @@
+2001-03-08  John Sullivan  <sullivan@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-08  John Sullivan  <sullivan@eazel.com>
+
+	fix by: Andy Hertzfeld <andy@eazel.com>
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7580 (Throbber flashing constantly when animating)
+
+	* components/throbber/nautilus-throbber.c: (draw_throbber_image):
+	Only clear the gdk window once per cycle, instead of for every frame.
+
 2001-03-08  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
