@@ -62,6 +62,7 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -71,6 +72,7 @@
 #include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
@@ -156,13 +158,6 @@ typedef struct {
 	GHashTable *pending_files;
 } StartupData;
 
-typedef struct {
-	FMPropertiesWindow *window;
-	GtkWidget *vbox;
-	char *view_name;
-} ActivationData;
-
-
 /* drag and drop definitions */
 
 enum {
@@ -204,7 +199,7 @@ static void remove_pending                        (StartupData             *data
 						   gboolean                 cancel_call_when_ready,
 						   gboolean                 cancel_timed_wait,
 						   gboolean                 cancel_destroy_handler);
-static void append_bonobo_pages                   (FMPropertiesWindow *window);
+static void append_extension_pages                (FMPropertiesWindow *window);
 
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
 			 GtkWindow, GTK_TYPE_WINDOW);
@@ -929,7 +924,7 @@ update_properties_window_title (FMPropertiesWindow *window)
 }
 
 static void
-clear_bonobo_pages (FMPropertiesWindow *window)
+clear_extension_pages (FMPropertiesWindow *window)
 {
 	int i;
 	int num_pages;
@@ -938,11 +933,11 @@ clear_bonobo_pages (FMPropertiesWindow *window)
 	num_pages = gtk_notebook_get_n_pages
 				(GTK_NOTEBOOK (window->details->notebook));
 
-	for (i=0; i <  num_pages; i++) {
+	for (i = 0; i < num_pages; i++) {
 		page = gtk_notebook_get_nth_page
 				(GTK_NOTEBOOK (window->details->notebook), i);
 
-		if (g_object_get_data (G_OBJECT (page), "is-bonobo-page")) {
+		if (g_object_get_data (G_OBJECT (page), "is-extension-page")) {
 			gtk_notebook_remove_page
 				(GTK_NOTEBOOK (window->details->notebook), i);
 			num_pages--;
@@ -952,10 +947,10 @@ clear_bonobo_pages (FMPropertiesWindow *window)
 }
 
 static void
-refresh_bonobo_pages (FMPropertiesWindow *window)
+refresh_extension_pages (FMPropertiesWindow *window)
 {
-	clear_bonobo_pages (window);
-	append_bonobo_pages (window);	
+	clear_extension_pages (window);
+	append_extension_pages (window);	
 }
 
 static void
@@ -1086,7 +1081,7 @@ properties_window_update (FMPropertiesWindow *window,
 		window->details->mime_list = mime_list;
 	} else {
 		if (!mime_list_equal (window->details->mime_list, mime_list)) {
-			refresh_bonobo_pages (window);			
+			refresh_extension_pages (window);			
 		}
 		
 		eel_g_list_free_deep (window->details->mime_list);
@@ -3041,209 +3036,52 @@ create_permissions_page (FMPropertiesWindow *window)
 	}
 }
 
-static GtkWidget *
-bonobo_page_error_message (const char *view_name,
-			   const char *msg)
+static void
+append_extension_pages (FMPropertiesWindow *window)
 {
-	GtkWidget *hbox;
-	GtkWidget *label;
-	GtkWidget *image;
-
-	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR,
-					  GTK_ICON_SIZE_DIALOG);
-
-	msg = g_strdup_printf ("There was an error while trying to create the view named `%s':  %s", view_name, msg);
-	label = gtk_label_new (msg);
-
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-
-	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	gtk_widget_show_all (hbox);
-
-	return hbox;
-}
-
-static CORBA_sequence_CORBA_string *
-get_uri_list (GList *file_list)
-{
-	CORBA_sequence_CORBA_string *uri_list;
-	GList *l;
-	int i;
+	GList *providers;
+	GList *p;
 	
-	uri_list = CORBA_sequence_CORBA_string__alloc ();
-	uri_list->_maximum = g_list_length (file_list);
-	uri_list->_length = uri_list->_maximum;
-	uri_list->_buffer = CORBA_sequence_CORBA_string_allocbuf (uri_list->_length);
-	for (i = 0, l = file_list; l != NULL; i++, l = l->next) {
-		char *uri;
+ 	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER);
+	
+	for (p = providers; p != NULL; p = p->next) {
+		NautilusPropertyPageProvider *provider;
+		GList *pages;
+		GList *l;
+
+		provider = NAUTILUS_PROPERTY_PAGE_PROVIDER (p->data);
 		
-		uri = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
-		uri_list->_buffer[i] = CORBA_string_dup (uri);
-		g_free (uri);
-	}	
+		pages = nautilus_property_page_provider_get_pages 
+			(provider, window->details->target_files);
+		
+		for (l = pages; l != NULL; l = l->next) {
+			NautilusPropertyPage *page;
+			GtkWidget *page_widget;
+			GtkWidget *label;
+			
+			page = NAUTILUS_PROPERTY_PAGE (l->data);
 
-	return uri_list;
-}
+			g_object_get (G_OBJECT (page), 
+				      "page", &page_widget, "label", &label, 
+				      NULL);
+			
+			gtk_notebook_append_page (window->details->notebook, 
+						  page_widget, label);
 
-static void
-bonobo_page_activate_callback (CORBA_Object obj,
-			       const char *error_reason,
-			       gpointer user_data)
-{
-	ActivationData *data;
-	FMPropertiesWindow *window;
-	GtkWidget *widget;
-	CORBA_Environment ev;
+			g_object_set_data (G_OBJECT (page), 
+					   "is-extension-page",
+					   page);
 
-	data = (ActivationData *)user_data;
-	window = data->window;
+			gtk_widget_unref (page_widget);
+			gtk_widget_unref (label);
 
-	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (window));
-
-	CORBA_exception_init (&ev);
-	widget = NULL;
-
-	if (obj != CORBA_OBJECT_NIL) {
-		Bonobo_Control control;
-		Bonobo_PropertyBag pb;
-		GList *keys;
-
-		control = Bonobo_Unknown_queryInterface
-				(obj, "IDL:Bonobo/Control:1.0", &ev);
-
-		pb = Bonobo_Control_getProperties (control, &ev);
-
-		if (!BONOBO_EX (&ev)) {
-			gboolean new_property;
-
-			keys = bonobo_pbclient_get_keys (pb, NULL);
-			new_property = FALSE;
-			if (g_list_find_custom (keys, "uris", (GCompareFunc)strcmp)) {
-				new_property = TRUE;
-			}
-			bonobo_pbclient_free_keys (keys);
-
-			if (new_property) {
-				/* Set the 'uris' property. */
-				CORBA_sequence_CORBA_string *uri_list;
-				BonoboArg *arg;
-				
-				uri_list = get_uri_list (window->details->target_files);
-				arg = bonobo_arg_new (TC_CORBA_sequence_CORBA_string);
-				arg->_value = uri_list;
-				bonobo_pbclient_set_value_async (pb, "uris", arg, &ev);
-				bonobo_arg_release (arg);
-			} else {
-				/* Set the 'URI' property. */
-				BonoboArg *arg;
-				char *uri;
-
-				if (is_multi_file_window (window)) {
-					g_warning ("Multifile property page does not support the 'uris' property");
-					bonobo_object_release_unref (pb, NULL);
-					bonobo_object_release_unref (control, NULL);
-					return;
-				}
-
-				uri = nautilus_file_get_uri (get_target_file (window));
-
-				arg = bonobo_arg_new (BONOBO_ARG_STRING);
-				BONOBO_ARG_SET_STRING (arg, uri);
-				bonobo_pbclient_set_value_async (pb, "URI", arg, &ev);
-				bonobo_arg_release (arg);
-				g_free (uri);
-			}
-
-			bonobo_object_release_unref (pb, NULL);
-
-			if (!BONOBO_EX (&ev)) {
-				widget = bonobo_widget_new_control_from_objref
-							(control, CORBA_OBJECT_NIL);
-				bonobo_object_release_unref (control, &ev);
-			}
+			g_object_unref (page);
 		}
+
+		g_list_free (pages);
 	}
 
-	if (widget == NULL) {
-		widget = bonobo_page_error_message (data->view_name,
-						    error_reason);
-	}
-
-	gtk_container_add (GTK_CONTAINER (data->vbox), widget);
-	gtk_widget_show (widget);
-
-	g_free (data->view_name);
-	g_free (data);
-}
-
-static gboolean
-can_handle_multiple_files (Bonobo_ServerInfo *info)
-{
-        Bonobo_ActivationProperty *prop;
- 
-        prop = bonobo_server_info_prop_find (info, "nautilus:can_handle_multiple_files");
-
-        return prop && prop->v._u.value_boolean;
-}
-
-static void
-append_bonobo_pages (FMPropertiesWindow *window)
-{
-	GList *all_components, *l;
-	GList *components;
-	CORBA_Environment ev;
-
-	/* find all the property pages for this file */
-	all_components = nautilus_mime_get_property_components_for_files
-		(window->details->target_files);
-	
-	/* filter out property pages that don't support multiple files */
-	if (is_multi_file_window (window)) {
-		components = NULL;
-		for (l = all_components; l != NULL; l = l->next) {
-			if (can_handle_multiple_files (l->data)) {
-				components = g_list_prepend (components, 
-							     l->data);
-			}
-		}
-		components = g_list_reverse (components);
-		g_list_free (all_components);
-	} else {
-		components = all_components;
-	}
-
-	CORBA_exception_init (&ev);
-
-	l = components;
-	while (l != NULL) {
-		NautilusViewIdentifier *view_id;
-		Bonobo_ServerInfo *server;
-		ActivationData *data;
-		GtkWidget *vbox;
-
-		server = l->data;
-		l = l->next;
-
-		view_id = nautilus_view_identifier_new_from_property_page (server);
-		vbox = create_page_with_vbox (window->details->notebook,
-					      view_id->name);
-
-		/* just a tag...the value doesn't matter */
-		g_object_set_data (G_OBJECT (vbox), "is-bonobo-page",
-				  vbox);
-
-		data = g_new (ActivationData, 1);
-		data->window = window;
-		data->vbox = vbox;
-		data->view_name = g_strdup (view_id->name);
-
-		bonobo_activation_activate_from_id_async (view_id->iid,
-					0, bonobo_page_activate_callback,
-					data, &ev);
-	}
-
+	nautilus_module_extension_list_free (providers);
 }
 
 static gboolean
@@ -3452,7 +3290,7 @@ create_properties_window (StartupData *startup_data)
 	}
 
 	/* append pages from available views */
-	append_bonobo_pages (window);
+	append_extension_pages (window);
 
 	/* Create box for help and close buttons. */
 	hbox = gtk_hbutton_box_new ();

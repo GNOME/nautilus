@@ -325,6 +325,13 @@ AC_SUBST(LIBNAUTILUS_LIBS)
 LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
 
+dnl libnautilus-extension
+LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0 gnome-vfs-2.0"
+LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES`"
+AC_SUBST(LIBNAUTILUS_EXTENSION_CFLAGS)
+LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
+AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
+
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
 CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound gnome-desktop-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
@@ -408,6 +415,8 @@ libnautilus-adapter/Makefile
 libnautilus-private/Makefile
 libnautilus/Makefile
 libnautilus/libnautilus.pc
+libnautilus-extension/Makefile
+libnautilus-extension/libnautilus-extension.pc
 nautilus.spec
 po/Makefile.in
 src/Makefile

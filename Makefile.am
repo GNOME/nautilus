@@ -16,6 +16,7 @@ DESKTOP_SETTINGS_FILES=				\
 
 SUBDIRS =			\
 	libnautilus 		\
+	libnautilus-extension	\
 	cut-n-paste-code 	\
 	libbackground		\
 	libnautilus-private 	\

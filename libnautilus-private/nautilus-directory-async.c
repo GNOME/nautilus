@@ -32,6 +32,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
+#include "nautilus-marshal.h"
 #include "nautilus-metafile.h"
 #include "nautilus-search-uri.h"
 #include <eel/eel-glib-extensions.h>
@@ -94,6 +95,13 @@ typedef struct {
 	Request request;
 } Monitor;
 
+typedef struct {
+	NautilusDirectory *directory;
+	NautilusInfoProvider *provider;
+	NautilusOperationHandle *handle;
+	NautilusOperationResult result;
+} InfoProviderResponse;
+
 typedef gboolean (* RequestCheck) (const Request *);
 typedef gboolean (* FileCheck) (NautilusFile *);
 
@@ -127,8 +135,12 @@ static gboolean file_needs_high_priority_work_done (NautilusDirectory *directory
 						    NautilusFile      *file);
 static gboolean file_needs_low_priority_work_done  (NautilusDirectory *directory,
 						    NautilusFile      *file);
+static gboolean file_needs_extension_work_done  (NautilusDirectory *directory,
+						 NautilusFile      *file);
 static void     move_file_to_low_priority_queue    (NautilusDirectory *directory,
 						    NautilusFile      *file);
+static void     move_file_to_extension_queue    (NautilusDirectory *directory,
+						 NautilusFile      *file);
 
 
 void
@@ -571,6 +583,8 @@ nautilus_directory_set_up_request (Request *request,
 	
 	request->metafile |= (file_attributes & 
 			      NAUTILUS_FILE_ATTRIBUTE_METADATA) != FALSE;
+	
+	request->extension_info = (file_attributes & NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO) != FALSE;
 }
 
 static void
@@ -1748,6 +1762,17 @@ wants_link_info (const Request *request)
 	return request->link_info;
 }
 
+static gboolean
+lacks_extension_info (NautilusFile *file)
+{
+	return file->details->pending_info_providers != NULL;
+}
+
+static gboolean
+wants_extension_info (const Request *request)
+{
+	return request->extension_info;
+}
 
 static gboolean
 has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem)
@@ -3136,6 +3161,153 @@ link_info_start (NautilusDirectory *directory,
 }
 
 static void
+extension_info_cancel (NautilusDirectory *directory)
+{
+	if (directory->details->extension_info_in_progress != NULL) {
+		nautilus_info_provider_cancel_update 
+			(directory->details->extension_info_provider,
+			 directory->details->extension_info_in_progress);
+
+		directory->details->extension_info_in_progress = NULL;
+		directory->details->extension_info_file = NULL;
+		directory->details->extension_info_provider = NULL;
+
+		async_job_end (directory, "extension info");
+	}
+}
+	
+static void
+extension_info_stop (NautilusDirectory *directory)
+{
+	if (directory->details->extension_info_in_progress != NULL) {
+		NautilusFile *file;
+
+		file = directory->details->extension_info_file;
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file, lacks_extension_info, wants_extension_info)) {
+				return;
+			}
+		}
+
+		/* The info is not wanted, so stop it. */
+		extension_info_cancel (directory);
+	}
+}
+
+static void
+finish_info_provider (NautilusDirectory *directory,
+		      NautilusFile *file,
+		      NautilusInfoProvider *provider)
+{
+	file->details->pending_info_providers = 
+		g_list_remove  (file->details->pending_info_providers,
+				provider);
+	g_object_unref (provider);
+
+	nautilus_directory_async_state_changed (directory);
+
+	if (file->details->pending_info_providers == NULL) {
+		nautilus_file_info_providers_done (file);
+	}
+}
+
+
+static gboolean
+info_provider_idle_callback (gpointer user_data)
+{
+	InfoProviderResponse *response;
+	NautilusDirectory *directory;
+
+	response = user_data;
+	directory = response->directory;
+
+	if (response->handle != directory->details->extension_info_in_progress
+	    || response->provider != directory->details->extension_info_provider) {
+		g_warning ("Unexpected plugin response.  This probably indicates a bug in a Nautilus extension: handle=%p", response->handle);
+	} else {
+		NautilusFile *file;
+		async_job_end (directory, "extension info");
+
+		file = directory->details->extension_info_file;
+
+		directory->details->extension_info_file = NULL;
+		directory->details->extension_info_provider = NULL;
+		directory->details->extension_info_in_progress = NULL;
+
+		finish_info_provider (directory, file, response->provider);
+	}
+
+	return FALSE;
+}
+
+static void
+info_provider_callback (NautilusInfoProvider *provider,
+			NautilusOperationHandle *handle,
+			NautilusOperationResult result,
+			gpointer user_data)
+{
+	InfoProviderResponse *response;
+	
+	response = g_new0 (InfoProviderResponse, 1);
+	response->provider = provider;
+	response->handle = handle;
+	response->result = result;
+	response->directory = NAUTILUS_DIRECTORY (user_data);
+
+	g_idle_add (info_provider_idle_callback, response);
+}
+
+static void
+extension_info_start (NautilusDirectory *directory,
+		      NautilusFile *file)
+{
+	NautilusInfoProvider *provider;
+	NautilusOperationResult result;
+	NautilusOperationHandle *handle;
+	GClosure *update_complete;
+
+	if (directory->details->extension_info_in_progress != NULL) {
+		return;
+	}
+	
+	if (!is_needy (file, lacks_extension_info, wants_extension_info)) {
+		return;
+	}
+
+	if (!async_job_start (directory, "extension info")) {
+		return;
+	}
+
+	provider = file->details->pending_info_providers->data;
+
+	update_complete = g_cclosure_new (G_CALLBACK (info_provider_callback),
+					  directory,
+					  NULL);
+	g_closure_set_marshal (update_complete,
+			       nautilus_marshal_VOID__POINTER_ENUM);
+			       
+	result = nautilus_info_provider_update_file_info
+		(provider, 
+		 NAUTILUS_FILE_INFO (file), 
+		 update_complete, 
+		 &handle);
+
+	g_closure_unref (update_complete);
+
+	if (result == NAUTILUS_OPERATION_COMPLETE ||
+	    result == NAUTILUS_OPERATION_FAILED) {
+		finish_info_provider (directory, file, provider);
+		async_job_end (directory, "extension info");
+	} else {
+		directory->details->extension_info_in_progress = handle;
+		directory->details->extension_info_provider = provider;
+		directory->details->extension_info_file = file;
+	}
+}
+
+static void
 start_or_stop_io (NautilusDirectory *directory)
 {
 	NautilusFile *file;
@@ -3150,6 +3322,7 @@ start_or_stop_io (NautilusDirectory *directory)
 	mime_list_stop (directory);
 	top_left_stop (directory);
 	link_info_stop (directory);
+	extension_info_stop (directory);
 
 	/* Take files that are all done off the queue. */
 	while (!nautilus_file_queue_is_empty (directory->details->high_priority_queue)) {
@@ -3175,6 +3348,20 @@ start_or_stop_io (NautilusDirectory *directory)
 			deep_count_start (directory, file);
 			mime_list_start (directory, file);
 			top_left_start (directory, file);
+			return;
+		} else {
+			move_file_to_extension_queue (directory, file);
+
+		}
+	}
+
+	/* Low priority queue must be empty */
+	while (!nautilus_file_queue_is_empty (directory->details->extension_queue)) {
+		file = nautilus_file_queue_head (directory->details->extension_queue);
+
+		if (file_needs_extension_work_done (directory, file)) {
+			/* Start getting attributes if possible */
+			extension_info_start (directory, file);
 			return;
 		} else {
 			nautilus_directory_remove_file_from_work_queue (directory, file);
@@ -3228,6 +3415,7 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	link_info_cancel (directory);
 	mime_list_cancel (directory);
 	top_left_cancel (directory);
+	extension_info_cancel (directory);
 
 	/* We aren't waiting for anything any more. */
 	if (waiting_directories != NULL) {
@@ -3322,6 +3510,10 @@ cancel_loading_attributes (NautilusDirectory *directory,
 	if (request.link_info) {
 		link_info_cancel (directory);
 	}
+
+	if (request.extension_info) {
+		extension_info_cancel (directory);
+	}
 	
 	/* FIXME bugzilla.gnome.org 45064: implement cancelling metadata when we
 	   implement invalidating metadata */
@@ -3407,11 +3599,23 @@ file_needs_low_priority_work_done (NautilusDirectory *directory,
 }
 
 static gboolean
+file_needs_extension_work_done (NautilusDirectory *directory,
+				   NautilusFile *file)
+{
+	if (is_needy (file, lacks_extension_info, wants_extension_info)) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
 file_needs_work_done (NautilusDirectory *directory,
 		      NautilusFile *file)
 {
 	return (file_needs_high_priority_work_done (directory, file) ||
-		file_needs_low_priority_work_done (directory, file));
+		file_needs_low_priority_work_done (directory, file) || 
+		file_needs_extension_work_done (directory, file));
 }
 
 
@@ -3451,6 +3655,8 @@ nautilus_directory_remove_file_from_work_queue (NautilusDirectory *directory,
 				    file);
 	nautilus_file_queue_remove (directory->details->low_priority_queue,
 				    file);
+	nautilus_file_queue_remove (directory->details->extension_queue,
+				    file);
 }
 
 
@@ -3458,15 +3664,32 @@ static void
 move_file_to_low_priority_queue (NautilusDirectory *directory,
 				 NautilusFile *file)
 {
+	/* Must add before removing to avoid ref underflow */
+	nautilus_file_queue_enqueue (directory->details->low_priority_queue,
+				     file);
+	nautilus_file_queue_remove (directory->details->high_priority_queue,
+				    file);
+
 	if (!file_needs_low_priority_work_done (directory, file)) {
-		nautilus_file_queue_remove (directory->details->high_priority_queue,
+		move_file_to_extension_queue (directory, file);
+
+		return;
+	}
+}
+
+static void
+move_file_to_extension_queue (NautilusDirectory *directory,
+			      NautilusFile *file)
+{
+	if (!file_needs_extension_work_done (directory, file)) {
+		nautilus_file_queue_remove (directory->details->low_priority_queue,
 					    file);
 		return;
 	}
 
 	/* Must add before removing to avoid ref underflow */
-	nautilus_file_queue_enqueue (directory->details->low_priority_queue,
+	nautilus_file_queue_enqueue (directory->details->extension_queue,
 				     file);
-	nautilus_file_queue_remove (directory->details->high_priority_queue,
+	nautilus_file_queue_remove (directory->details->low_priority_queue,
 				    file);
 }

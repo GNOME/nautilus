@@ -29,6 +29,7 @@
 #include "nautilus-application.h"
 
 
+#include "file-manager/fm-bonobo-provider.h"
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
@@ -71,6 +72,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metafile-factory.h>
+#include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-sound.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
@@ -395,6 +397,11 @@ create_starthere_link_callback (gpointer data)
 static void
 finish_startup (NautilusApplication *application)
 {
+	/* initialize nautilus modules */
+	nautilus_module_init ();
+
+	nautilus_module_add_type (FM_TYPE_BONOBO_PROVIDER);
+	
 	/* initialize the sound machinery */
 	nautilus_sound_init ();
 

@@ -25,9 +25,6 @@
         <cmd name="Clear" sensitive="0"/>
 	<cmd name="Reload"
 	 _tip="Display the latest contents of the current location"/>
-	<cmd name="Burn CD"
-         _label="_Write to CD"
-	 _tip="Write contents to a CD"/>
 	<cmd name="Go to Burn CD"
 	  _label="_CD Creator"
 	  _tip="Go to Empty CD folder"/>
@@ -58,12 +55,8 @@
 
 		<placeholder name="General Status Placeholder" delimit="top"/>
 		<placeholder name="File Items Placeholder" delimit="top"/>
-
-		<placeholder name="Global File Items Placeholder" delimit="top">
-			<menuitem name="Burn CD"
-				  verb="Burn CD"/>
-                </placeholder>
-		
+		<placeholder name="Global File Items Placeholder" delimit="top"/>
+		<placeholder name="Extension Actions" delimit="top"/>
 		<separator/>
 
                 <placeholder name="Close Items Placeholder"/>
@@ -124,6 +117,7 @@
 		<placeholder name="Edit Items Placeholder" delimit="top"/>
 		<placeholder name="Global Edit Items Placeholder" delimit="none"/>
 		
+		<placeholder name="Extension Actions" delimit="top"/>
 		<separator/>
 
 		<menuitem name="Backgrounds and Emblems" 
@@ -226,6 +220,7 @@
 			</placeholder>
 			<placeholder name="New Object Items" delimit="none">
 			</placeholder>
+		        <placeholder name="Extension Actions" delimit="top"/>
 		</placeholder>
 		<placeholder name="Zoom Items" delimit="top">
 			<menuitem name="Zoom In" 

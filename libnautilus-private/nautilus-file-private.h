@@ -93,7 +93,18 @@ struct NautilusFileDetails
 	/* We use this to cache automatic emblems and emblem keywords
 	   to speed up compare_by_emblems. */
 	NautilusFileSortByEmblemCache *compare_by_emblem_cache;
-	
+
+	/* NautilusInfoProviders that need to be run for this file */
+	GList *pending_info_providers;
+
+	/* Emblems provided by extensions */
+	GList *extension_emblems;
+	GList *pending_extension_emblems;
+
+	/* Attributes provided by extensions */
+	GHashTable *extension_attributes;
+	GHashTable *pending_extension_attributes;
+
 	/* boolean fields: bitfield to save space, since there can be
            many NautilusFile objects. */
 
@@ -173,13 +184,15 @@ gboolean      nautilus_file_should_get_top_left_text       (NautilusFile        
 /* Mark specified attributes for this file out of date without canceling current
  * I/O or kicking off new I/O.
  */
-void                   nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
-								     NautilusFileAttributes  file_attributes);
-NautilusFileAttributes nautilus_file_get_all_attributes             (void);
-gboolean               nautilus_file_is_self_owned                  (NautilusFile           *file);
-void                   nautilus_file_invalidate_count_and_mime_list (NautilusFile           *file);
-gboolean               nautilus_file_rename_in_progress             (NautilusFile           *file);
-GnomeVFSFileInfo *     nautilus_file_peek_vfs_file_info             (NautilusFile           *file);
+void                   nautilus_file_invalidate_attributes_internal     (NautilusFile           *file,
+									 NautilusFileAttributes  file_attributes);
+NautilusFileAttributes nautilus_file_get_all_attributes                 (void);
+gboolean               nautilus_file_is_self_owned                      (NautilusFile           *file);
+void                   nautilus_file_invalidate_count_and_mime_list     (NautilusFile           *file);
+gboolean               nautilus_file_rename_in_progress                 (NautilusFile           *file);
+GnomeVFSFileInfo *     nautilus_file_peek_vfs_file_info                 (NautilusFile           *file);
+void                   nautilus_file_invalidate_extension_info_internal (NautilusFile           *file);
+void                   nautilus_file_info_providers_done                (NautilusFile           *file);
 
 
 /* Thumbnailing: */

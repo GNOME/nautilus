@@ -57,9 +57,11 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
@@ -77,6 +79,9 @@
 #define MENU_PATH_SHOW_HIDE_TOOLBAR			"/menu/View/Show Hide Placeholder/Show Hide Toolbar"
 #define MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
 #define MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Statusbar"
+
+#define MENU_PATH_EXTENSION_ACTIONS                     "/menu/File/Extension Actions"
+#define POPUP_PATH_EXTENSION_ACTIONS                     "/popups/background/Before Zoom Items/Extension Actions"
 
 #define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
 #define COMMAND_SHOW_HIDE_SIDEBAR                       "/commands/Show Hide Sidebar"
@@ -247,14 +252,6 @@ file_menu_close_window_callback (BonoboUIComponent *component,
 			         const char *verb)
 {
 	nautilus_window_close (NAUTILUS_WINDOW (user_data));
-}
-
-static void
-file_menu_burn_cd_callback (BonoboUIComponent *component, 
-			    gpointer user_data, 
-			    const char *verb)
-{
-	nautilus_window_launch_cd_burner (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -664,7 +661,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
-		BONOBO_UI_VERB ("Burn CD", file_menu_burn_cd_callback),
 		BONOBO_UI_VERB ("Connect to Server", connect_to_server_callback),
 #ifdef HAVE_MEDUSA
 		BONOBO_UI_VERB ("Find", file_menu_find_callback),
@@ -734,3 +730,65 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	nautilus_window_ui_thaw (window);
 }
 
+static GList *
+get_extension_menus (NautilusWindow *window)
+{
+	GList *providers;
+	GList *items;
+	GList *l;
+	
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+		
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_background_items (provider,
+									  GTK_WIDGET (window),
+									  window->details->viewed_file);
+		items = g_list_concat (items, file_items);
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
+}
+
+void
+nautilus_window_load_extension_menus (NautilusWindow *window)
+{
+	GList *items;
+	GList *l;
+	
+	nautilus_bonobo_remove_menu_items_and_commands
+		(window->details->shell_ui, POPUP_PATH_EXTENSION_ACTIONS);
+	nautilus_bonobo_remove_menu_items_and_commands
+		(window->details->shell_ui, MENU_PATH_EXTENSION_ACTIONS);
+
+	items = get_extension_menus (window);
+
+	for (l = items; l != NULL; l = l->next) {
+		NautilusMenuItem *item;
+		
+		item = NAUTILUS_MENU_ITEM (l->data);
+
+		nautilus_bonobo_add_extension_item_command
+			(window->details->shell_ui, item);
+		
+		nautilus_bonobo_add_extension_item
+			(window->details->shell_ui, 
+			 MENU_PATH_EXTENSION_ACTIONS,
+			 item);
+
+		nautilus_bonobo_add_extension_item
+			(window->details->shell_ui, 
+			 POPUP_PATH_EXTENSION_ACTIONS,
+			 item);
+
+		g_object_unref (item);
+	}
+
+	g_list_free (items);
+}

@@ -29,6 +29,7 @@
 
 #include <libgnome/gnome-program.h>
 #include <libgnomeui/gnome-ui-init.h>
+#include <libnautilus-private/nautilus-module.h>
 
 #include <libintl.h>
 
@@ -57,6 +58,8 @@ main (int argc, char *argv[])
 			    NULL);
 
 	eel_preferences_init ("/apps/nautilus");
+
+	nautilus_module_init ();
 
 	nautilus_file_management_properties_dialog_show (G_CALLBACK (nautilus_file_management_properties_main_close_callback), NULL);
 

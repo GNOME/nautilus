@@ -58,6 +58,9 @@
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL       	"list_view_zoom_level"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"list_view_sort_column"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"list_view_sort_reversed"
+#define NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS    	"list_view_visible_columns"
+#define NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER    	"list_view_column_order"
+#define NAUTILUS_METADATA_SUBKEY_COLUMNS                        "columns" 
 
 #define NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY			"window_geometry"
 #define NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION		"window_scroll_position"

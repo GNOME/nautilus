@@ -286,6 +286,11 @@ int                     nautilus_file_compare_for_sort                  (Nautilu
 									 NautilusFileSortType            sort_type,
 									 gboolean			 directories_first,
 									 gboolean		  	 reversed);
+int                     nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,
+									 NautilusFile                   *file_2,
+									 const char                     *attribute,
+									 gboolean                        directories_first,
+									 gboolean                        reversed);
 int                     nautilus_file_compare_display_name              (NautilusFile                   *file_1,
 									 const char                     *pattern);
 

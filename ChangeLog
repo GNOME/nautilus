@@ -1,3 +1,299 @@
+2004-01-11  Dave Camp  <dave@ximian.com>
+
+	* Merged from nautilus-extensions-branch.
+
+2004-01-11  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-extension/nautilus-column.c:
+	* libnautilus-extension/nautilus-column.h:
+	* libnautilus-extension/nautilus-menu-item.c:
+	* libnautilus-extension/nautilus-menu-item.h:
+	* libnautilus-extension/nautilus-property-page.c:
+	* libnautilus-extension/nautilus-property-page.h:
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(get_extension_menu_item_xml),
+	(nautilus_bonobo_add_extension_item_command),
+	(get_extension_toolbar_item_xml):
+	* libnautilus-private/nautilus-column-chooser.c: (populate_tree),
+	(get_column_iter):
+	* libnautilus-private/nautilus-column-utilities.c:
+	(column_compare):
+	* src/file-manager/fm-list-model.c: (fm_list_model_get_value),
+	(fm_list_model_get_sort_column_id_from_attribute),
+	(fm_list_model_get_attribute_from_sort_column_id),
+	(fm_list_model_get_column_number):
+	* src/file-manager/fm-list-view.c: (apply_column_order):
+	* src/file-manager/fm-properties-window.c:
+	(append_extension_pages):
+	* src/nautilus-file-management-properties.c:
+	(create_icon_caption_menu): Removed the piles of accessors,
+	use gobject properties instead.
+
+2004-01-10  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-extension/Makefile.am:
+	* libnautilus-extension/nautilus-column-provider.c:
+	(nautilus_column_provider_base_init),
+	(nautilus_column_provider_get_type),
+	(nautilus_column_provider_get_columns):
+	* libnautilus-extension/nautilus-column-provider.h:
+	* libnautilus-extension/nautilus-column.c: (nautilus_column_new),
+	(nautilus_column_get_name), (nautilus_column_get_attribute),
+	(nautilus_column_set_attribute), (nautilus_column_get_label),
+	(nautilus_column_set_label), (nautilus_column_get_description),
+	(nautilus_column_set_description), (nautilus_column_get_property),
+	(nautilus_column_set_property), (nautilus_column_finalize),
+	(nautilus_column_instance_init), (nautilus_column_class_init),
+	(nautilus_column_get_type):
+	* libnautilus-extension/nautilus-column.h:
+	* libnautilus-extension/nautilus-file-info.c:
+	(nautilus_file_info_get_string_attribute),
+	(nautilus_file_info_add_string_attribute):
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-column-chooser.c:
+	(nautilus_column_chooser_class_init), (update_buttons),
+	(list_changed), (visible_toggled_callback),
+	(selection_changed_callback), (row_deleted_callback),
+	(add_tree_view), (set_selection_visible),
+	(move_up_clicked_callback), (move_down_clicked_callback),
+	(show_clicked_callback), (hide_clicked_callback),
+	(use_default_clicked_callback), (add_buttons), (populate_tree),
+	(nautilus_column_chooser_init), (nautilus_column_chooser_destroy),
+	(nautilus_column_chooser_finalize), (set_visible_columns),
+	(get_column_names), (get_column_iter), (set_column_order),
+	(nautilus_column_chooser_set_settings),
+	(nautilus_column_chooser_get_settings),
+	(nautilus_column_chooser_new):
+	* libnautilus-private/nautilus-column-chooser.h:
+	* libnautilus-private/nautilus-column-utilities.c:
+	(get_builtin_columns), (get_extension_columns),
+	(nautilus_get_all_columns), (nautilus_column_list_copy),
+	(nautilus_column_list_free), (column_compare),
+	(nautilus_sort_columns):
+	* libnautilus-private/nautilus-column-utilities.h:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_instance_init), (finalize),
+	(nautilus_file_compare_for_sort_internal),
+	(nautilus_file_compare_for_sort),
+	(nautilus_file_compare_for_sort_by_attribute),
+	(nautilus_file_get_string_attribute),
+	(nautilus_file_invalidate_extension_info_internal),
+	(nautilus_file_add_string_attribute),
+	(nautilus_file_info_providers_done),
+	(nautilus_file_info_iface_init):
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	* libnautilus-private/nautilus-metadata.h:
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-list-model.c: (fm_list_model_get_n_columns),
+	(fm_list_model_get_column_type), (fm_list_model_get_value),
+	(fm_list_model_compare_func), (fm_list_model_get_sort_column_id),
+	(fm_list_model_set_sort_column_id),
+	(fm_list_model_get_sort_column_id_from_attribute),
+	(fm_list_model_get_attribute_from_sort_column_id),
+	(fm_list_model_add_column), (fm_list_model_get_column_number),
+	(fm_list_model_finalize), (fm_list_model_init):
+	* src/file-manager/fm-list-model.h:
+	* src/file-manager/fm-list-view.c: (sort_column_changed_callback),
+	(apply_visible_columns_foreach), (apply_visible_columns),
+	(apply_column_order), (create_and_set_up_tree_view),
+	(get_visible_columns),
+	(set_visible_columns_from_metadata_and_preferences),
+	(get_column_order),
+	(set_column_order_from_metadata_and_preferences),
+	(set_sort_order_from_metadata_and_preferences),
+	(fm_list_view_begin_loading), (column_editor_response_callback),
+	(column_chooser_changed_callback),
+	(column_chooser_set_from_settings),
+	(column_chooser_use_default_callback), (create_column_editor),
+	(visible_columns_callback), (fm_list_view_merge_menus),
+	(fm_list_view_update_menus), (fm_list_view_reset_to_defaults),
+	(fm_list_view_scale_font_size),
+	(default_visible_columns_changed_callback),
+	(default_column_order_changed_callback), (fm_list_view_dispose),
+	(fm_list_view_finalize), (fm_list_view_class_init),
+	(fm_list_view_instance_init):
+	* src/nautilus-file-management-properties-main.c: (main):
+	* src/nautilus-file-management-properties.c:
+	(columns_changed_callback), (create_icon_caption_menu),
+	(icon_captions_changed_callback), (update_caption_option_menu),
+	(update_icon_captions_from_gconf),
+	(nautilus_file_management_properties_dialog_setup_icon_caption_page
+	), (set_columns_from_gconf), (use_default_callback),
+	(nautilus_file_management_properties_dialog_setup_list_column_page)
+	, (nautilus_file_management_properties_dialog_setup):
+	* src/nautilus-file-management-properties.glade:
+
+	Added the ability to export column descriptions from extensions,
+	added column editing to the list view.
+
+2003-12-10  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-extension/nautilus-file-info.c:
+	(nautilus_file_info_get_uri_scheme):
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_info_iface_init): Added a
+	nautilus_file_info_get_uri_scheme convenience function.
+	* libnautilus-extension/nautilus-menu-item.h:
+	* libnautilus-extension/nautilus-menu-item.c:
+	(nautilus_menu_item_get_property),
+	(nautilus_menu_item_set_property), 
+	(nautilus_menu_item_class_init): Added a priority text property.
+	* libnautilus-extension/nautilus-menu-provider.h:
+	* libnautilus-extension/nautilus-menu-provider.c:
+	(nautilus_menu_provider_get_file_items): Pass in the GtkWindow,
+	so that callbacks can parent dialogs appropriately.
+	(nautilus_menu_provider_get_background_items),
+	(nautilus_menu_provider_get_toolbar_items): New functions.
+	* libnautilus-private/nautilus-bonobo-extensions.h:
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(get_extension_menu_item_xml), (extension_action_callback),
+	(nautilus_bonobo_add_extension_item_command),
+	(nautilus_bonobo_add_extension_item),
+	(get_extension_toolbar_item_xml),
+	(nautilus_bonobo_add_extension_toolbar_item): Move the extension
+	menu/toolbar stuff here.
+	* src/file-manager/fm-bonobo-provider.c:
+	(fm_bonobo_provider_get_file_items): Updated for new API.
+	* src/file-manager/fm-directory-view.c: (add_extension_menu_items),
+	(get_all_extension_menu_items), (reset_extension_actions_menu): Use
+	new nautilus-bonobo-extensions helpers.
+	* src/nautilus-shell-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-navigation-window-ui.xml: Move stuff around.
+	* src/nautilus-window.c: (ui_idle_handler), (real_merge_menus_2),
+	(nautilus_window_constructed), (nautilus_window_class_init):
+	* src/nautilus-window.h: 
+	* src/nautilus-navigation-window.c: (real_merge_menus_2),
+	(nautilus_navigation_window_class_init): Move part two of the
+	menu merging to a virtual function.
+	* src/nautilus-window-manage-views.c: (update_for_new_location):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_menus_part_1), (get_extension_menus),
+	(nautilus_window_load_extension_menus): Load background menu items
+	from the extensions.
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c: (get_extension_toolbar_items),
+	(nautilus_navigation_window_load_extension_toolbar_items):
+	Load toolbar items from the extensions
+
+2003-11-28  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-extension/Makefile.am:
+	* libnautilus-extension/nautilus-extension-i18n.h: New file.
+	* libnautilus-extension/nautilus-info-provider.h:
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-extension/nautilus-file-info.c:
+	(nautilus_file_info_list_copy), (nautilus_file_info_list_free): New
+	functions.
+	* libnautilus-extension/nautilus-menu-item.c:
+	* libnautilus-extension/nautilus-menu-item.h:
+	* libnautilus-extension/nautilus-menu-provider.c:
+	* libnautilus-extension/nautilus-menu-provider.h: New files, 
+	allow extensions to provide context menu items.	
+	* libnautilus-extension/nautilus-property-page-provider.c:
+	* libnautilus-extension/nautilus-property-page-provider.h:
+	* libnautilus-extension/nautilus-property-page.c:
+	* libnautilus-extension/nautilus-property-page.h: New files,
+	allow extensions to provider property pages.
+	* libnautilus-private/nautilus-module.h:
+	* libnautilus-private/nautilus-module.c: (add_module_objects),
+	(nautilus_module_load_file),
+	(nautilus_module_get_extensions_for_type),
+	(nautilus_module_extension_list_free), (nautilus_module_add_type):
+	New functions.
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-bonobo-provider.c:
+	(bonobo_mime_action_data_new), (bonobo_mime_action_data_free),
+	(bonobo_mime_action_activate_callback),
+	(bonobo_mime_action_callback),
+	(bonobo_mime_action_menu_data_destroy_callback),
+	(no_locale_at_end), (get_bonobo_menu_verb_names),
+	(can_handle_multiple_files), (get_menu_items_for_server),
+	(fm_bonobo_provider_get_file_items),
+	(fm_bonobo_provider_menu_provider_iface_init),
+	(bonobo_page_error_message), (get_uri_list),
+	(bonobo_page_activate_callback), (fm_bonobo_provider_get_pages),
+	(fm_bonobo_provider_property_page_provider_iface_init),
+	(fm_bonobo_provider_instance_init),
+	(fm_bonobo_provider_class_init), (fm_bonobo_provider_get_type):
+	* src/file-manager/fm-bonobo-provider.h:  Moved the bonobo context
+	menu and property pages here.  Export them through the extension
+	interface.
+	* src/file-manager/fm-directory-view.c:
+	(extension_action_callback), (add_extension_menu_items),
+	(get_all_extension_menu_items), (reset_extension_actions_menu),
+	(real_update_menus): Get context menu items from extensions.
+	* src/file-manager/fm-properties-window.c: (clear_extension_pages),
+	(refresh_extension_pages), (properties_window_update),
+	(append_extension_pages), (create_properties_window): Get property
+	pages from extensions.
+	* src/nautilus-application.c: (finish_startup):  Add the 
+	bonobo provider to the extension manager.
+
+2003-11-20  Dave Camp  <dave@ximian.com>
+
+	* Makefile.am:
+	* configure.in:
+	* libnautilus-extension/Makefile.am:
+	* libnautilus-extension/libnautilus-extension.pc.in:
+	* libnautilus-extension/nautilus-extension-types.c:
+	* libnautilus-extension/nautilus-extension-types.h:
+	* libnautilus-extension/nautilus-file-info.c:
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-extension/nautilus-info-provider.c:
+	* libnautilus-extension/nautilus-info-provider.h:
+	New library for nautilus extensions.
+
+	* libnautilus-private/nautilus-marshal.list:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_set_up_request), (lacks_extension_info),
+	(wants_extension_info), (extension_info_cancel),
+	(extension_info_stop), (finish_info_provider),
+	(info_provider_idle_callback), (info_provider_callback),
+	(extension_info_start), (start_or_stop_io),
+	(nautilus_directory_cancel), (cancel_loading_attributes),
+	(file_needs_extension_work_done), (file_needs_work_done),
+	(nautilus_directory_remove_file_from_work_queue),
+	(move_file_to_low_priority_queue), (move_file_to_extension_queue):
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_init), (nautilus_directory_finalize),
+	(nautilus_directory_notify_files_changed):
+	Add a third queue for extension info, that runs after the high
+	and low priority queues.
+	
+	* libnautilus-private/nautilus-file-attributes.h:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_invalidate_extension_info_internal),
+	(nautilus_file_invalidate_attributes_internal): 
+
+	* libnautilus-private/nautilus-file.c:  
+	(nautilus_file_get_type), (nautilus_file_instance_init), 
+	(nautilus_file_get_keywords), (nautilus_file_get_type),
+	(nautilus_file_class_init), (nautilus_file_get_vfs_file_info),
+	(nautilus_file_add_emblem), (nautilus_file_info_providers_done),
+	(nautilus_file_info_iface_init):  Implement the NautilusFileInfo
+	interface for extensions to use.
+	
+	* libnautilus-private/nautilus-module.c: (nautilus_module_load),
+	* libnautilus-private/nautilus-module.h:
+	Module loading code.
+	
+	* src/file-manager/fm-directory-view.c: (finish_loading): 
+	Request extension info.
+	
+	* src/nautilus-application.c: (finish_startup): Initialize the
+	module interface.
+
 2004-01-11  Alexander Larsson <alexl@redhat.com>
 	
 	* libnautilus-private/nautilus-file.c (nautilus_file_get_activation_uri): 

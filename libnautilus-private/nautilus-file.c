@@ -39,6 +39,7 @@
 #include "nautilus-link.h"
 #include "nautilus-link-desktop-file.h"
 #include "nautilus-metadata.h"
+#include "nautilus-module.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
@@ -59,6 +60,7 @@
 #include <libgnomevfs/gnome-vfs-volume.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libgnomevfs/gnome-vfs-drive.h>
+#include <libnautilus-extension/nautilus-file-info.h>
 #include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>
@@ -110,24 +112,62 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+static GObjectClass *parent_class = NULL;
+
 static GHashTable *symbolic_links;
 
-static char *   nautilus_file_get_owner_as_string            (NautilusFile     *file,
-							      gboolean          include_real_name);
-static char *   nautilus_file_get_type_as_string             (NautilusFile     *file);
-static gboolean update_info_and_name                         (NautilusFile     *file,
-							      GnomeVFSFileInfo *info);
-static char *   nautilus_file_get_display_name_nocopy        (NautilusFile     *file);
-static char *   nautilus_file_get_display_name_collation_key (NautilusFile     *file);
+static void     nautilus_file_instance_init                  (NautilusFile          *file);
+static void     nautilus_file_class_init                     (NautilusFileClass     *class);
+static void     nautilus_file_info_iface_init                (NautilusFileInfoIface *iface);
+static char *   nautilus_file_get_owner_as_string            (NautilusFile          *file,
+							      gboolean               include_real_name);
+static char *   nautilus_file_get_type_as_string             (NautilusFile          *file);
+static gboolean update_info_and_name                         (NautilusFile          *file,
+							      GnomeVFSFileInfo      *info);
+static char *   nautilus_file_get_display_name_nocopy        (NautilusFile          *file);
+static char *   nautilus_file_get_display_name_collation_key (NautilusFile          *file);
 
-
-GNOME_CLASS_BOILERPLATE (NautilusFile, nautilus_file,
-			 GObject, G_TYPE_OBJECT)
+GType
+nautilus_file_get_type (void)
+{
+	static GType type = 0;
+	
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (NautilusFileClass),
+			NULL, 
+			NULL,
+			(GClassInitFunc) nautilus_file_class_init,
+			NULL,
+			NULL,
+			sizeof (NautilusFile),
+			0,
+			(GInstanceInitFunc) nautilus_file_instance_init,
+		};
+		
+		static const GInterfaceInfo file_info_iface_info = {
+			(GInterfaceInitFunc) nautilus_file_info_iface_init,
+			NULL,
+			NULL
+		};
+		
+		type = g_type_register_static (G_TYPE_OBJECT,
+					       "NautilusFile",
+					       &info, 0);
+		g_type_add_interface_static (type, 
+					     NAUTILUS_TYPE_FILE_INFO,
+					     &file_info_iface_info);
+	}
+	
+	return type;
+}
 
 static void
 nautilus_file_instance_init (NautilusFile *file)
 {
 	file->details = G_TYPE_INSTANCE_GET_PRIVATE ((file), NAUTILUS_TYPE_FILE, NautilusFileDetails);
+
+	nautilus_file_invalidate_extension_info_internal (file);
 }
 
 static NautilusFile *
@@ -459,9 +499,19 @@ finalize (GObject *object)
 	
 	eel_g_list_free_deep (file->details->mime_list);
 
+	eel_g_list_free_deep (file->details->pending_extension_emblems);
+	eel_g_list_free_deep (file->details->extension_emblems);	
+
+	if (file->details->pending_extension_attributes) {
+		g_hash_table_destroy (file->details->pending_extension_attributes);
+	}
+	
+	if (file->details->extension_attributes) {
+		g_hash_table_destroy (file->details->extension_attributes);
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
-
 
 NautilusFile *
 nautilus_file_ref (NautilusFile *file)
@@ -2040,16 +2090,27 @@ compare_by_full_path (NautilusFile *file_1, NautilusFile *file_2)
 static int
 nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 NautilusFile *file_2,
-					 NautilusFileSortType sort_type)
+					 gboolean directories_first)
 {
 	int compare;
 	GnomeVFSDrive *drive1, *drive2;
 	GnomeVFSVolume *volume1, *volume2;
 
-	if (file_1 == file_2) {
-		return 0;
+	gboolean is_directory_1, is_directory_2;
+
+	if (directories_first) {
+		is_directory_1 = nautilus_file_is_directory (file_1);
+		is_directory_2 = nautilus_file_is_directory (file_2);
+
+		if (is_directory_1 && !is_directory_2) {
+			return -1;
+		}
+
+		if (is_directory_2 && !is_directory_1) {
+			return +1;
+		}
 	}
-	
+
 	/* Always sort drives/volumes separately: */
 	if (file_1->details->has_drive != file_2->details->has_drive) {
 		if (file_1->details->has_drive) {
@@ -2082,53 +2143,8 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 			return compare;
 		}
 	}
-	
-	switch (sort_type) {
-	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
-		compare = compare_by_display_name (file_1, file_2);
-		if (compare != 0) {
-			return compare;
-		}
-		return compare_by_directory_name (file_1, file_2);
-	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
-		return compare_by_full_path (file_1, file_2);
-	case NAUTILUS_FILE_SORT_BY_SIZE:
-		/* Compare directory sizes ourselves, then if necessary
-		 * use GnomeVFS to compare file sizes.
-		 */
-		compare = compare_by_size (file_1, file_2);
-		if (compare != 0) {
-			return compare;
-		}
-		return compare_by_full_path (file_1, file_2);
-	case NAUTILUS_FILE_SORT_BY_TYPE:
-		/* GnomeVFS doesn't know about our special text for certain
-		 * mime types, so we handle the mime-type sorting ourselves.
-		 */
-		compare = compare_by_type (file_1, file_2);
-		if (compare != 0) {
-			return compare;
-		}
-		return compare_by_full_path (file_1, file_2);
-	case NAUTILUS_FILE_SORT_BY_MTIME:
-		compare = compare_by_modification_time (file_1, file_2);
-		if (compare != 0) {
-			return compare;
-		}
-		return compare_by_full_path (file_1, file_2);
-	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
-		/* GnomeVFS doesn't know squat about our emblems, so
-		 * we handle comparing them here, before falling back
-		 * to tie-breakers.
-		 */
-		compare = compare_by_emblems (file_1, file_2);
-		if (compare != 0) {
-			return compare;
-		}
-		return compare_by_full_path (file_1, file_2);
-	default:
-		g_return_val_if_reached (0);
-	}
+
+	return 0;
 }
 
 /**
@@ -2154,27 +2170,135 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 				gboolean reversed)
 {
 	int result;
-	gboolean is_directory_1, is_directory_2;
 
-	if (directories_first) {
-		is_directory_1 = nautilus_file_is_directory (file_1);
-		is_directory_2 = nautilus_file_is_directory (file_2);
-
-		if (is_directory_1 && !is_directory_2) {
-			return -1;
-		}
-
-		if (is_directory_2 && !is_directory_1) {
-			return +1;
-		}
+	if (file_1 == file_2) {
+		return 0;
 	}
 	
-	result = nautilus_file_compare_for_sort_internal (file_1, file_2, sort_type);
+	result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first);
+	
+	if (result == 0) {
+		switch (sort_type) {
+		case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+			result = compare_by_display_name (file_1, file_2);
+			if (result == 0) {
+				result = compare_by_directory_name (file_1, file_2);
+			}
+			break;
+		case NAUTILUS_FILE_SORT_BY_DIRECTORY:
+			result = compare_by_full_path (file_1, file_2);
+			break;
+		case NAUTILUS_FILE_SORT_BY_SIZE:
+			/* Compare directory sizes ourselves, then if necessary
+			 * use GnomeVFS to compare file sizes.
+			 */
+			result = compare_by_size (file_1, file_2);
+			if (result == 0) {
+				result = compare_by_full_path (file_1, file_2);
+			}
+			break;
+		case NAUTILUS_FILE_SORT_BY_TYPE:
+			/* GnomeVFS doesn't know about our special text for certain
+			 * mime types, so we handle the mime-type sorting ourselves.
+			 */
+			result = compare_by_type (file_1, file_2);
+			if (result == 0) {
+				result = compare_by_full_path (file_1, file_2);
+			}
+			break;
+		case NAUTILUS_FILE_SORT_BY_MTIME:
+			result = compare_by_modification_time (file_1, file_2);
+			if (result == 0) {
+				result = compare_by_full_path (file_1, file_2);
+			}
+			break;
+		case NAUTILUS_FILE_SORT_BY_EMBLEMS:
+			/* GnomeVFS doesn't know squat about our emblems, so
+			 * we handle comparing them here, before falling back
+			 * to tie-breakers.
+			 */
+			result = compare_by_emblems (file_1, file_2);
+			if (result == 0) {
+				result = compare_by_full_path (file_1, file_2);
+			}
+		default:
+			g_return_val_if_reached (0);
+		}
+	}
 
 	if (reversed) {
 		result = -result;
 	}
+	
+	return result;
+}
 
+int
+nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,
+						 NautilusFile                   *file_2,
+						 const char                     *attribute,
+						 gboolean                        directories_first,
+						 gboolean                        reversed)
+{
+	int result;
+
+	if (file_1 == file_2) {
+		return 0;
+	}
+
+	/* Convert certain attributes into NautilusFileSortTypes and use
+	 * nautilus_file_compare_for_sort()
+	 */
+	if (attribute == NULL || !strcmp (attribute, "name")) {
+		return nautilus_file_compare_for_sort (file_1, file_2,
+						       NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+						       directories_first,
+						       reversed);
+	} else if (!strcmp (attribute, "size")) {
+		return nautilus_file_compare_for_sort (file_1, file_2,
+						       NAUTILUS_FILE_SORT_BY_SIZE,
+						       directories_first,
+						       reversed);
+	} else if (!strcmp (attribute, "type")) {
+		return nautilus_file_compare_for_sort (file_1, file_2,
+						       NAUTILUS_FILE_SORT_BY_TYPE,
+						       directories_first,
+						       reversed);
+	} else if (!strcmp (attribute, "modification_date") || !strcmp (attribute, "date_modified")) {
+		return nautilus_file_compare_for_sort (file_1, file_2,
+						       NAUTILUS_FILE_SORT_BY_MTIME,
+						       directories_first,
+						       reversed);
+	} else if (!strcmp (attribute, "emblems")) {
+		return nautilus_file_compare_for_sort (file_1, file_2,
+						       NAUTILUS_FILE_SORT_BY_EMBLEMS,
+						       directories_first,
+						       reversed);
+	}
+	
+	/* it is a normal attribute, compare by strings */
+
+	result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first);
+	
+	if (result == 0) {
+		char *value_1;
+		char *value_2;
+		
+		value_1 = nautilus_file_get_string_attribute (file_1, 
+							      attribute);
+		value_2 = nautilus_file_get_string_attribute (file_2, 
+							      attribute);
+
+		result = strcmp (value_1, value_2);
+
+		g_free (value_1);
+		g_free (value_2);
+	}
+
+	if (reversed) {
+		result = -result;
+	}
+	
 	return result;
 }
 
@@ -4318,6 +4442,8 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
 char *
 nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_name)
 {
+	char *extension_attribute;
+	
 	/* FIXME bugzilla.gnome.org 40646: 
 	 * Use hash table and switch statement or function pointers for speed? 
 	 */
@@ -4389,7 +4515,18 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	if (strcmp (attribute_name, "free_space") == 0) {
 		return nautilus_file_get_volume_free_space (file);
 	}
-	return NULL;
+
+	extension_attribute = NULL;
+	
+	if (file->details->pending_extension_attributes) {
+		extension_attribute = g_hash_table_lookup (file->details->pending_extension_attributes, attribute_name);
+	} 
+
+	if (extension_attribute == NULL && file->details->extension_attributes) {
+		extension_attribute = g_hash_table_lookup (file->details->extension_attributes, attribute_name);
+	}
+		
+	return g_strdup (extension_attribute);
 }
 
 /**
@@ -4689,7 +4826,10 @@ nautilus_file_get_keywords (NautilusFile *file)
 	/* Put all the keywords into a list. */
 	keywords = nautilus_file_get_metadata_list
 		(file, "keyword", "name");
-	
+
+	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->extension_emblems));
+	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->pending_extension_emblems));
+
 	return sort_keyword_list_and_remove_duplicates (keywords);
 }
 
@@ -5274,7 +5414,6 @@ invalidate_directory_count (NautilusFile *file)
 	file->details->directory_count_is_up_to_date = FALSE;
 }
 
-
 static void
 invalidate_deep_counts (NautilusFile *file)
 {
@@ -5303,6 +5442,19 @@ static void
 invalidate_link_info (NautilusFile *file)
 {
 	file->details->link_info_is_up_to_date = FALSE;
+}
+
+void
+nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
+{
+	file->details->pending_info_providers =
+		nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
+	if (!file->details->pending_extension_attributes) {
+		file->details->pending_extension_attributes = 
+			g_hash_table_new_full (g_str_hash, g_str_equal,
+					       (GDestroyNotify)g_free, 
+					       (GDestroyNotify)g_free);
+	}
 }
 
 void
@@ -5342,6 +5494,9 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 	}
 	if (request.link_info) {
 		invalidate_link_info (file);
+	}
+	if (request.extension_info) {
+		nautilus_file_invalidate_extension_info_internal (file);
 	}
 
 	/* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */
@@ -5633,6 +5788,8 @@ nautilus_extract_top_left_text (const char *text,
 static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
+	parent_class = g_type_class_peek_parent (class);
+
 	G_OBJECT_CLASS (class)->finalize = finalize;
 
 	signals[CHANGED] =
@@ -5654,6 +5811,79 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              G_TYPE_NONE, 0);
 	
 	g_type_class_add_private (class, sizeof (NautilusFileDetails));
+}
+
+static GnomeVFSFileInfo *
+nautilus_file_get_vfs_file_info (NautilusFile *file)
+{
+	return gnome_vfs_file_info_dup (file->details->info);
+}
+
+static void
+nautilus_file_add_emblem (NautilusFile *file,
+			  const char *emblem_name)
+{
+	if (file->details->pending_info_providers) {
+		file->details->pending_extension_emblems = g_list_prepend (file->details->pending_extension_emblems,
+									   g_strdup (emblem_name));
+	} else {
+		file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
+								   g_strdup (emblem_name));
+	}
+
+	nautilus_file_changed (file);
+}
+
+static void
+nautilus_file_add_string_attribute (NautilusFile *file,
+				    const char *attribute_name,
+				    const char *value)
+{
+	if (file->details->pending_info_providers) {
+		g_hash_table_insert (file->details->pending_extension_attributes,
+				     g_strdup (attribute_name),
+				     g_strdup (value));
+	} else {
+		g_hash_table_insert (file->details->extension_attributes,
+				     g_strdup (attribute_name),
+				     g_strdup (value));
+	}
+
+	nautilus_file_changed (file);
+}
+
+void
+nautilus_file_info_providers_done (NautilusFile *file)
+{
+	eel_g_list_free_deep (file->details->extension_emblems);
+	file->details->extension_emblems = file->details->pending_extension_emblems;
+	file->details->pending_extension_emblems = NULL;
+
+	if (file->details->extension_attributes) {
+		g_hash_table_destroy (file->details->extension_attributes);
+	}
+	
+	file->details->extension_attributes = file->details->pending_extension_attributes;
+	file->details->pending_extension_attributes = NULL;
+
+	nautilus_file_changed (file);
+}
+
+static void     
+nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
+{
+	iface->is_gone = nautilus_file_is_gone;
+	iface->get_name = nautilus_file_get_name;
+	iface->get_uri = nautilus_file_get_uri;
+	iface->get_parent_uri = nautilus_file_get_parent_uri;
+	iface->get_uri_scheme = nautilus_file_get_uri_scheme;
+	iface->get_mime_type = nautilus_file_get_mime_type;
+	iface->is_mime_type = nautilus_file_is_mime_type;
+	iface->is_directory = nautilus_file_is_directory;
+	iface->get_vfs_file_info = nautilus_file_get_vfs_file_info;
+	iface->add_emblem = nautilus_file_add_emblem;
+	iface->get_string_attribute = nautilus_file_get_string_attribute;
+	iface->add_string_attribute = nautilus_file_add_string_attribute;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

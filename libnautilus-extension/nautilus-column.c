@@ -1,0 +1,237 @@
+/*
+ *  nautilus-column.c - Info columns exported by NautilusColumnProvider
+ *                      objects.
+ *
+ *  Copyright (C) 2003 Novell, Inc.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * 
+ *  Author:  Dave Camp <dave@ximian.com>
+ *
+ */
+
+#include <config.h>
+#include "nautilus-column.h"
+#include "nautilus-extension-i18n.h"
+
+enum {
+	PROP_0,
+	PROP_NAME,
+	PROP_ATTRIBUTE,
+	PROP_LABEL,
+	PROP_DESCRIPTION,
+	PROP_XALIGN,
+	LAST_PROP
+};
+
+struct _NautilusColumnDetails {
+	char *name;
+	char *attribute;
+	char *label;
+	char *description;
+	float xalign;
+};
+
+NautilusColumn *
+nautilus_column_new (const char *name,
+		     const char *attribute,
+		     const char *label,
+		     const char *description)
+{
+	NautilusColumn *column;
+
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (attribute != NULL, NULL);
+	g_return_val_if_fail (label != NULL, NULL);
+	g_return_val_if_fail (description != NULL, NULL);
+	
+	column = g_object_new (NAUTILUS_TYPE_COLUMN, 
+			       "name", name,
+			       "attribute", attribute,
+			       "label", label,
+			       "description", description,
+			       NULL);
+
+	return column;
+}
+
+static void
+nautilus_column_get_property (GObject *object,
+			      guint param_id,
+			      GValue *value,
+			      GParamSpec *pspec)
+{
+	NautilusColumn *column;
+	
+	column = NAUTILUS_COLUMN (object);
+	
+	switch (param_id) {
+	case PROP_NAME :
+		g_value_set_string (value, column->details->name);
+		break;
+	case PROP_ATTRIBUTE :
+		g_value_set_string (value, column->details->attribute);
+		break;
+	case PROP_LABEL :
+		g_value_set_string (value, column->details->label);
+		break;
+	case PROP_DESCRIPTION :
+		g_value_set_string (value, column->details->description);
+		break;
+	case PROP_XALIGN :
+		g_value_set_float (value, column->details->xalign);
+		break;
+	default :
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+		break;
+	}
+}
+
+static void
+nautilus_column_set_property (GObject *object,
+				 guint param_id,
+				 const GValue *value,
+				 GParamSpec *pspec)
+{
+	NautilusColumn *column;
+	
+	column = NAUTILUS_COLUMN (object);
+
+	switch (param_id) {
+	case PROP_NAME :
+		g_free (column->details->name);
+		column->details->name = g_strdup (g_value_get_string (value));
+		g_object_notify (object, "name");
+		break;
+	case PROP_ATTRIBUTE :
+		g_free (column->details->attribute);
+		column->details->attribute = g_strdup (g_value_get_string (value));
+		g_object_notify (object, "attribute");
+		break;
+	case PROP_LABEL :
+		g_free (column->details->label);
+		column->details->label = g_strdup (g_value_get_string (value));
+		g_object_notify (object, "label");
+		break;
+	case PROP_DESCRIPTION :
+		g_free (column->details->description);
+		column->details->description = g_strdup (g_value_get_string (value));
+		g_object_notify (object, "description");
+		break;
+	case PROP_XALIGN :
+		column->details->xalign = g_value_get_float (value);
+		g_object_notify (object, "xalign");		
+		break;
+	default :
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+		break;
+	}
+}
+
+static void
+nautilus_column_finalize (GObject *object)
+{
+	NautilusColumn *column;
+	
+	column = NAUTILUS_COLUMN (object);
+
+	g_free (column->details->name);
+	g_free (column->details->attribute);
+	g_free (column->details->label);
+	g_free (column->details->description);
+
+	g_free (column->details);
+}
+
+static void
+nautilus_column_instance_init (NautilusColumn *column)
+{
+	column->details = g_new0 (NautilusColumnDetails, 1);
+	column->details->xalign = 0.0;
+}
+
+static void
+nautilus_column_class_init (NautilusColumnClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = nautilus_column_finalize;
+	G_OBJECT_CLASS (class)->get_property = nautilus_column_get_property;
+	G_OBJECT_CLASS (class)->set_property = nautilus_column_set_property;
+
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_NAME,
+					 g_param_spec_string ("name",
+							      _("Name"),
+							      _("Name of the column"),
+							      NULL,
+							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_ATTRIBUTE,
+					 g_param_spec_string ("attribute",
+							      _("Attribute"),
+							      _("The attribute name to display"),
+							      NULL,
+							      G_PARAM_READWRITE));
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_LABEL,
+					 g_param_spec_string ("label",
+							      _("Label"),
+							      _("Label to display in the column"),
+							      NULL,
+							      G_PARAM_READWRITE));
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_DESCRIPTION,
+					 g_param_spec_string ("description",
+							      _("Description"),
+							      _("A user-visible description of the column"),
+							      NULL,
+							      G_PARAM_READWRITE));
+
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_XALIGN,
+					 g_param_spec_float ("xalign",
+							     _("xalign"),
+							     _("The x-alignment of the column"),
+							     0.0,
+							     1.0,
+							     0.0,
+							     G_PARAM_READWRITE));
+}
+
+GType 
+nautilus_column_get_type (void)
+{
+	static GType type = 0;
+	
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (NautilusColumnClass),
+			NULL,
+			NULL,
+			(GClassInitFunc)nautilus_column_class_init,
+			NULL,
+			NULL,
+			sizeof (NautilusColumn),
+			0,
+			(GInstanceInitFunc)nautilus_column_instance_init
+		};
+		
+		type = g_type_register_static 
+			(G_TYPE_OBJECT, 
+			 "NautilusColumn",
+			 &info, 0);
+	}
+
+	return type;
+}

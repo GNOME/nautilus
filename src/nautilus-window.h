@@ -69,6 +69,7 @@ typedef struct {
         void   (* set_title) (NautilusWindow *window, const char *title);
 
         void   (* merge_menus)   (NautilusWindow *window);
+        void   (* merge_menus_2)   (NautilusWindow *window);
         void   (* load_view_as_menu) (NautilusWindow *window);
         void   (* set_content_view_widget) (NautilusWindow *window, 
                                             NautilusViewFrame *frame);

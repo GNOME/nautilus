@@ -213,21 +213,6 @@ static EelEnumerationEntry standard_font_size_entries[] = {
 	{ NULL }
 };
 
-static EelEnumerationEntry icon_captions_enum_entries[] = {
-	{ "size",	       N_("size"),		0 },
-	{ "type",	       N_("type"),		1 },
-	{ "date_modified",     N_("date modified"),	2 },
-	{ "date_changed",      N_("date changed"),	3 }, 
-	{ "date_accessed",     N_("date accessed"),	4 }, 
-	{ "owner",	       N_("owner"),		5 }, 
-	{ "group",	       N_("group"),		6 }, 
-	{ "permissions",       N_("permissions"),	7 }, 
-	{ "octal_permissions", N_("octal permissions"),	8 }, 
-	{ "mime_type",	       N_("MIME type"),		9 }, 
-	{ "none",	       N_("none"),		10 }, 
-	{ NULL }
-};
-
 /* These enumerations are used in the preferences dialog to 
  * populate widgets and route preferences changes between the
  * storage (GConf) and the displayed values.
@@ -240,7 +225,6 @@ static EelEnumerationInfo enumerations[] = {
 	{ "default_zoom_level",		   default_zoom_level_enum_entries },
 	{ "executable_text_activation",	   executable_text_activation_enum_entries },
 	{ "file_size",			   file_size_enum_entries },
-	{ "icon_captions",		   icon_captions_enum_entries },
 	{ "search_bar_type",		   search_bar_type_enum_entries },
 	{ "speed_tradeoff",		   speed_tradeoff_enum_entries },
 	{ "standard_font_size",		   standard_font_size_entries },

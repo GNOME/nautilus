@@ -4,6 +4,7 @@
 
    Copyright (C) 2001, 2002 Anders Carlsson
    Copyright (C) 2003, Soeren Sandmann
+   Copyright (C) 2004, Novell, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -20,7 +21,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Anders Carlsson <andersca@gnu.org>, Soeren Sandmann (sandmann@daimi.au.dk)
+   Authors: Anders Carlsson <andersca@gnu.org>, Soeren Sandmann (sandmann@daimi.au.dk), Dave Camp <dave@ximian.com>
 */
 
 #include <config.h>
@@ -48,7 +49,7 @@ struct FMListModelDetails {
 
 	int stamp;
 
-	int sort_column_id;
+	char *sort_attribute;
 	GtkSortType order;
 
 	gboolean sort_directories_first;
@@ -56,6 +57,8 @@ struct FMListModelDetails {
 	GtkTreeView *drag_view;
 	int drag_begin_x;
 	int drag_begin_y;
+
+	GPtrArray *columns;
 };
 
 typedef struct {
@@ -64,34 +67,11 @@ typedef struct {
 	GList *path_list;
 } DragDataGetInfo;
 
-typedef struct {
-	const char *attribute_name;
-	int sort_column_id;
-} AttributeEntry;
-
 static GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
-};
-
-/*
- * Do not change the order of the type and size attributes, they 
- * have to be in this order so that the column_id to attribute mapping
- * works. This is needed to store the sorting preferences. This duplicate
- * entry is here to allow the ordering by icon (i think...)
- */
-
-static const AttributeEntry attributes[] = {
-	{ "name", FM_LIST_MODEL_NAME_COLUMN },
-	{ "type", FM_LIST_MODEL_TYPE_COLUMN },
-#ifdef GNOME2_CONVERSION_COMPLETE
-	{ "emblems", FM_LIST_MODEL_EMBLEMS_COLUMN },
-#endif
-	{ "size", FM_LIST_MODEL_SIZE_COLUMN },
-	{ "icon", FM_LIST_MODEL_TYPE_COLUMN },
-	{ "date_modified", FM_LIST_MODEL_DATE_MODIFIED_COLUMN },
 };
 
 static GtkTargetList *drag_target_list = NULL;
@@ -105,7 +85,7 @@ fm_list_model_get_flags (GtkTreeModel *tree_model)
 static int
 fm_list_model_get_n_columns (GtkTreeModel *tree_model)
 {
-	return FM_LIST_MODEL_NUM_COLUMNS;
+	return FM_LIST_MODEL_NUM_COLUMNS + FM_LIST_MODEL (tree_model)->details->columns->len;
 }
 
 static GType
@@ -114,11 +94,6 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	switch (index) {
 	case FM_LIST_MODEL_FILE_COLUMN:
 		return NAUTILUS_TYPE_FILE;
-	case FM_LIST_MODEL_NAME_COLUMN:
-	case FM_LIST_MODEL_SIZE_COLUMN:
-	case FM_LIST_MODEL_TYPE_COLUMN:
-	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
-		return G_TYPE_STRING;
 	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALL_ICON_COLUMN:
@@ -137,7 +112,11 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
 		return G_TYPE_BOOLEAN;
 	default:
-		return G_TYPE_INVALID;
+		if (index < FM_LIST_MODEL_NUM_COLUMNS + FM_LIST_MODEL (tree_model)->details->columns->len) {
+			return G_TYPE_STRING;
+		} else {
+			return G_TYPE_INVALID;
+		}
 	}
 }
 
@@ -214,12 +193,6 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 		g_value_init (value, NAUTILUS_TYPE_FILE);
 
 		g_value_set_object (value, file);
-		break;
-	case FM_LIST_MODEL_NAME_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
-
-		str = nautilus_file_get_string_attribute_with_default (file, "name");
-		g_value_set_string_take_ownership (value, str);
 		break;
 	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
@@ -308,31 +281,28 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			g_object_unref (icon);
 		}
 		break;
-	case FM_LIST_MODEL_SIZE_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
-
-		str = nautilus_file_get_string_attribute_with_default (file, "size");
-		g_value_set_string_take_ownership (value, str);
-		break;
-	case FM_LIST_MODEL_TYPE_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
-
-		str = nautilus_file_get_string_attribute_with_default (file, "type");
-		g_value_set_string_take_ownership (value, str);
-		break;
-	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
-
-		str = nautilus_file_get_string_attribute_with_default (file, "date_modified");
-		g_value_set_string_take_ownership (value, str);
-		break;
 	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
 		g_value_init (value, G_TYPE_BOOLEAN);
-
-		g_value_set_boolean (value, nautilus_file_can_rename (file));
-		break;
-	default:
-		g_assert_not_reached ();
+		
+                g_value_set_boolean (value, nautilus_file_can_rename (file));
+                break;
+ 	default:
+		if (column < FM_LIST_MODEL_NUM_COLUMNS + model->details->columns->len) {
+			NautilusColumn *nautilus_column;
+			char *attribute;
+			nautilus_column = model->details->columns->pdata[column - FM_LIST_MODEL_NUM_COLUMNS];
+			
+			g_value_init (value, G_TYPE_STRING);
+			g_object_get (nautilus_column, 
+				      "attribute", &attribute, 
+				      NULL);
+			str = nautilus_file_get_string_attribute_with_default (file, 
+									       attribute);
+			g_value_set_string_take_ownership (value, str);
+			g_free (attribute);
+		} else {
+			g_assert_not_reached ();
+		}
 	}
 }
 
@@ -460,10 +430,10 @@ fm_list_model_compare_func (gconstpointer a,
 	file1 = (NautilusFile *)a;
 	file2 = (NautilusFile *)b;
 
-	result = nautilus_file_compare_for_sort (file1, file2,
-						 fm_list_model_get_sort_type_from_sort_column_id (model->details->sort_column_id),
-						 model->details->sort_directories_first,
-						 (model->details->order == GTK_SORT_DESCENDING));
+	result = nautilus_file_compare_for_sort_by_attribute (file1, file2,
+							      model->details->sort_attribute,
+							      model->details->sort_directories_first,
+							      (model->details->order == GTK_SORT_DESCENDING));
 
 	return result;
 }
@@ -514,21 +484,26 @@ fm_list_model_sort (FMListModel *model)
 	g_free (new_order);
 }
 
+
 static gboolean
 fm_list_model_get_sort_column_id (GtkTreeSortable *sortable,
 				  gint            *sort_column_id,
 				  GtkSortType     *order)
 {
 	FMListModel *model;
-
+	int id;
+	
 	model = (FMListModel *)sortable;
-
-	if (model->details->sort_column_id == -1) {
+	
+	id = fm_list_model_get_sort_column_id_from_attribute 
+		(model, model->details->sort_attribute);
+	
+	if (id == -1) {
 		return FALSE;
 	}
-
+	
 	if (sort_column_id != NULL) {
-		*sort_column_id = model->details->sort_column_id;
+		*sort_column_id = id;
 	}
 
 	if (order != NULL) {
@@ -545,18 +520,14 @@ fm_list_model_set_sort_column_id (GtkTreeSortable *sortable, gint sort_column_id
 
 	model = (FMListModel *)sortable;
 
-	if ((model->details->sort_column_id == sort_column_id) &&
-	    (model->details->order == order)) {
-		return;
-	}
+	g_free (model->details->sort_attribute);
+	model->details->sort_attribute = fm_list_model_get_attribute_from_sort_column_id (model, sort_column_id);
 
-	model->details->sort_column_id = sort_column_id;
 	model->details->order = order;
 
 	fm_list_model_sort (model);
 	gtk_tree_sortable_sort_column_changed (sortable);
 }
-
 
 static gboolean
 fm_list_model_has_default_sort_func (GtkTreeSortable *sortable)
@@ -802,7 +773,8 @@ fm_list_model_set_should_sort_directories_first (FMListModel *model, gboolean so
 }
 
 int
-fm_list_model_get_sort_column_id_from_attribute (const char *attribute)
+fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
+						 const char *attribute)
 {
 	guint i;
 
@@ -810,67 +782,51 @@ fm_list_model_get_sort_column_id_from_attribute (const char *attribute)
 		return -1;
 	}
 
-	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
-		if (strcmp (attributes[i].attribute_name, attribute) == 0) {
-			return attributes[i].sort_column_id;
-		}
+	/* Hack - the preferences dialog sets modification_date for some 
+	 * rather than date_modified for some reason.  Make sure that 
+	 * works. */
+	if (!strcmp (attribute, "modification_date")) {
+		attribute = "date_modified";
 	}
 
+	for (i = 0; i < model->details->columns->len; i++) {
+		NautilusColumn *column;
+		char *column_attribute;
+		
+		column = 
+			NAUTILUS_COLUMN (model->details->columns->pdata[i]);
+		g_object_get (G_OBJECT (column), 
+			      "attribute", &column_attribute, 
+			      NULL);
+		if (!strcmp (column_attribute, attribute)) {
+			g_free (column_attribute);
+			return FM_LIST_MODEL_NUM_COLUMNS + i;
+		}
+		g_free (column_attribute);
+	}
+	
 	return -1;
 }
 
 char *
-fm_list_model_get_attribute_from_sort_column_id (int sort_column_id)
+fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
+						 int sort_column_id)
 {
-	guint i;
+	NautilusColumn *column;
+	int index;
+	char *attribute;
+	
+	index = sort_column_id - FM_LIST_MODEL_NUM_COLUMNS;
 
-	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
-		if (attributes[i].sort_column_id == sort_column_id) {
-			return g_strdup (attributes[i].attribute_name);
-		}
+	if (index < 0 || index >= model->details->columns->len) {
+		g_warning ("unknown sort column id: %d", sort_column_id);
+		return NULL;
 	}
 
-	g_warning ("unknown sort column id: %d", sort_column_id);
-	return g_strdup ("name");
-}
+	column = NAUTILUS_COLUMN (model->details->columns->pdata[index]);
+	g_object_get (G_OBJECT (column), "attribute", &attribute, NULL);
 
-int
-fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
-{
-	switch (sort_type) {
-	case NAUTILUS_FILE_SORT_NONE:
-		return -1;
-	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
-		return FM_LIST_MODEL_NAME_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_TYPE:
-		return FM_LIST_MODEL_TYPE_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_SIZE:
-		return FM_LIST_MODEL_SIZE_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_MTIME:
-		return FM_LIST_MODEL_DATE_MODIFIED_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
-	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
-		break;
-	}
-
-	g_return_val_if_reached (-1);
-}
-
-NautilusFileSortType
-fm_list_model_get_sort_type_from_sort_column_id (int sort_column_id)
-{
-	switch (sort_column_id) {
-	case FM_LIST_MODEL_NAME_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
-	case FM_LIST_MODEL_TYPE_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_TYPE;
-	case FM_LIST_MODEL_SIZE_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_SIZE;
-	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_MTIME;
-	}
-
-	g_return_val_if_reached (NAUTILUS_FILE_SORT_NONE);
+	return attribute;
 }
 
 NautilusZoomLevel
@@ -988,15 +944,56 @@ fm_list_model_get_drag_types (GtkTargetEntry **entries,
 	*num_entries = G_N_ELEMENTS (drag_types);
 }
 
+int               
+fm_list_model_add_column (FMListModel *model,
+			  NautilusColumn *column)
+{
+	g_ptr_array_add (model->details->columns, column);
+	g_object_ref (column);
+
+	return FM_LIST_MODEL_NUM_COLUMNS + (model->details->columns->len - 1);
+}
+
+int
+fm_list_model_get_column_number (FMListModel *model,
+				 const char *column_name)
+{
+	int i;
+
+	for (i = 0; i < model->details->columns->len; i++) {
+		NautilusColumn *column;
+		char *name;
+		
+		column = model->details->columns->pdata[i];
+
+		g_object_get (G_OBJECT (column), "name", &name, NULL);
+
+		if (!strcmp (name, column_name)) {
+			g_free (name);
+			return FM_LIST_MODEL_NUM_COLUMNS + i;
+		}
+		g_free (name);
+	}
+
+	return -1;
+}
+
 static void
 fm_list_model_finalize (GObject *object)
 {
 	FMListModel *model;
+	int i;
 
 	model = FM_LIST_MODEL (object);
 
+	for (i = 0; i < model->details->columns->len; i++) {
+		g_object_unref (model->details->columns->pdata[i]);
+	}
+	g_ptr_array_free (model->details->columns, TRUE);
+
 	g_sequence_free (model->details->files);
 	g_hash_table_destroy (model->details->reverse_map);
+	g_free (model->details->sort_attribute);
 	g_free (model->details);
 	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -1009,7 +1006,8 @@ fm_list_model_init (FMListModel *model)
 	model->details->files = g_sequence_new ((GDestroyNotify)nautilus_file_unref);
 	model->details->reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 	model->details->stamp = g_random_int ();
-	model->details->sort_column_id = -1;
+	model->details->sort_attribute = NULL;
+	model->details->columns = g_ptr_array_new ();
 }
 
 static void

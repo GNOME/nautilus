@@ -584,6 +584,36 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/list_view/default_visible_columns</key>
+      <applyto>/apps/nautilus/list_view/default_visible_columns</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[name,size,type,date_modified]</default>
+      <locale name="C">
+         <short>Default list of columns visible in the list view</short>
+         <long>
+             Default list of columns visible in the list view.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/list_view/default_column_order</key>
+      <applyto>/apps/nautilus/list_view/default_column_order</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[name,size,type,date_modified]</default>
+      <locale name="C">
+         <short>Default column order in the list view</short>
+         <long>
+             Default column order in the list view.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/preferences/hide_built_in_bookmarks</key>
       <applyto>/apps/nautilus/preferences/hide_built_in_bookmarks</applyto>
       <owner>nautilus</owner>
