@@ -434,117 +434,45 @@ nautilus_background_draw (NautilusBackground *background,
 	}
 }
 
-/*
- * Based on art_rgb_affine, but optimized for no scaling.
- */
 static void
-nautilus_art_rgb (art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rowstride,
-		                  const art_u8 *src, int src_width, int src_height, int src_rowstride)
+nautilus_copy_pixbuf_to_canvasbuf_helper (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
 {
-	art_u8 *dst_linestart, *dst_linestart_limit;
-	const art_u8 *src_linestart;
-	int dst_bytes_set_per_row;
-
-	if (x0 < 0) {
-		dst = dst - x0 * 3;
-		x0 = 0;
-	}
-	if (x1 > src_width) {
-		x1 = src_width;
-	}
-	if (x0 >= x1) {
-		return;
-	}
+	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
+	int dst_bytes_per_row = copy_width * 3;
 	
-	if (y0 < 0) {
-		dst = dst - y0 * dst_rowstride;
-		y0 = 0;
-	}
-	if (y1 > src_height) {
-		y1 = src_height;
-	}
-	if (y0 >= y1) {
-		return;
-	}
-
-	dst_bytes_set_per_row = (x1 - x0) * 3;
-
-	dst_linestart = dst;
-	dst_linestart_limit = dst_linestart + (y1 - y0) * dst_rowstride;
-	
-	src_linestart = src + x0 * 3 + y0 * src_rowstride;
-	
-	while (dst_linestart < dst_linestart_limit) {
- 		memcpy (dst_linestart, src_linestart, dst_bytes_set_per_row);
-		dst_linestart += dst_rowstride;
-		src_linestart += src_rowstride;
+	while (dst < dst_limit) {
+ 		memcpy (dst, src, dst_bytes_per_row);
+		dst += dst_rowstride;
+		src += src_rowstride;
 	}
 }
 
-/*
- * Based on art_rgb_rgba_affine, but optimized for no scaling.
- */
 static void
-nautilus_art_rgb_rgba (art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rowstride,
-		                  const art_u8 *src, int src_width, int src_height, int src_rowstride)
+nautilus_copy_pixbuf_to_canvasbuf_helper_alpha (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
 {
-	art_u8 *dst_p, *dst_p_limit;
-	art_u8 *dst_linestart, *dst_linestart_limit;
-	const art_u8 *src_p, *src_linestart;
-	int alpha;
-	art_u8 bg_r, bg_g, bg_b;
-	int tmp;
-	int dst_bytes_set_per_row;
-
-	if (x0 < 0) {
-		dst = dst - x0 * 3;
-		x0 = 0;
-	}
-	if (x1 > src_width) {
-		x1 = src_width;
-	}
+	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
+	int dst_bytes_per_row = copy_width * 3;
 	
-	if (x0 >= x1) {
-		return;
-	}
+	while (dst < dst_limit) {
 	
-	if (y0 < 0) {
-		dst = dst - y0 * dst_rowstride;
-		y0 = 0;
-	}
-	if (y1 > src_height) {
-		y1 = src_height;
-	}
-	if (y0 >= y1) {
-		return;
-	}
-
-	dst_bytes_set_per_row = (x1 - x0) * 3;
-
-	dst_linestart = dst;
-	dst_linestart_limit = dst_linestart + (y1 - y0) * dst_rowstride;
-	
-	src_linestart = src + x0 * 4 + y0 * src_rowstride;
-	
-	while (dst_linestart < dst_linestart_limit) {
-	
-		dst_p = dst_linestart;
-		dst_p_limit = dst_p + dst_bytes_set_per_row;
+		art_u8 *dst_p = dst;
+		art_u8 *dst_p_limit = dst + dst_bytes_per_row;
 		
-		src_p = src_linestart;
+		const art_u8 *src_p = src;
 		
 		while (dst_p < dst_p_limit) {
-			alpha = src_p[3];
+			int alpha = src_p[3];
 			if (alpha) {
 				if (alpha == 255) {
 					dst_p[0] = src_p[0];
 					dst_p[1] = src_p[1];
 					dst_p[2] = src_p[2];
 				} else {
-					bg_r = dst_p[0];
-					bg_g = dst_p[1];
-					bg_b = dst_p[2];
-		  
+		  			int tmp;
+					art_u8 bg_r = dst_p[0];
+					art_u8 bg_g = dst_p[1];
+					art_u8 bg_b = dst_p[2];
+
 					tmp = (src_p[0] - bg_r) * alpha;
 					dst_p[0] = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
 					tmp = (src_p[1] - bg_g) * alpha;
@@ -558,36 +486,80 @@ nautilus_art_rgb_rgba (art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rows
 			src_p += 4;
 		}
 		
-		dst_linestart += dst_rowstride;
-		src_linestart += src_rowstride;
+		dst += dst_rowstride;
+		src += src_rowstride;
 	}
 }
 
+/* Draws a pixbuf into a canvas update buffer (unscaled). The x,y coords are the location
+ * of the pixbuf in canvas space (NOT relative to the canvas buffer).
+ */
 static void
-nautilus_draw_pixbuf_to_canvasbuf (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x, int y)
+nautilus_copy_pixbuf_to_canvasbuf (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x, int y)
 {
-	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
-		nautilus_art_rgb_rgba (buf->buf,
-						  buf->rect.x0 - x,
-						  buf->rect.y0 - y,
-						  buf->rect.x1 - x,
-						  buf->rect.y1 - y,
-						  buf->buf_rowstride,
-						  gdk_pixbuf_get_pixels (pixbuf),
-						  gdk_pixbuf_get_width (pixbuf),
-			 			  gdk_pixbuf_get_height (pixbuf),
-						  gdk_pixbuf_get_rowstride (pixbuf));
+	art_u8 *dst;
+	int pixbuf_width, pixbuf_height;
+
+	/* copy_left/top/right/bottom define the rect of the pixbuf (pixbuf relative)
+	 * we will copy into the canvas buffer
+	 */
+	int copy_left, copy_top, copy_right, copy_bottom;
+	
+	dst = buf->buf;
+
+	pixbuf_width = gdk_pixbuf_get_width (pixbuf);
+	pixbuf_height = gdk_pixbuf_get_height (pixbuf);
+
+	if (x > buf->rect.x0) {
+		copy_left = 0;
+		dst += (x - buf->rect.x0) * 3;
 	} else {
-		nautilus_art_rgb (buf->buf,
-					     buf->rect.x0 - x,
-					     buf->rect.y0 - y,
-					     buf->rect.x1 - x,
-					     buf->rect.y1 - y,
-					     buf->buf_rowstride,
-					     gdk_pixbuf_get_pixels (pixbuf),
-					     gdk_pixbuf_get_width (pixbuf),
-			 		     gdk_pixbuf_get_height (pixbuf),
-					     gdk_pixbuf_get_rowstride (pixbuf));
+		copy_left = buf->rect.x0 - x;
+	}
+	
+	if (x + pixbuf_width > buf->rect.x1) {
+		copy_right = buf->rect.x1 - x;
+	} else {
+		copy_right = pixbuf_width;		
+	}
+	
+	if (copy_left >= copy_right) {
+		return;
+	}
+	
+	if (y > buf->rect.y0) {
+		dst += (y - buf->rect.y0) * buf->buf_rowstride;
+		copy_top = 0;
+	} else {
+		copy_top = buf->rect.y0 - y;
+	}
+	
+	if (y + pixbuf_height > buf->rect.y1) {
+		copy_bottom = buf->rect.y1 - y;
+	} else {
+		copy_bottom = pixbuf_height;		
+	}
+
+	if (copy_top >= copy_bottom) {
+		return;
+	}
+
+	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
+		nautilus_copy_pixbuf_to_canvasbuf_helper_alpha (
+			dst,
+			buf->buf_rowstride,
+			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 4 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
+			gdk_pixbuf_get_rowstride (pixbuf),
+			copy_right - copy_left,
+			copy_bottom - copy_top);
+	} else {
+		nautilus_copy_pixbuf_to_canvasbuf_helper (
+			dst,
+			buf->buf_rowstride,
+			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 3 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
+			gdk_pixbuf_get_rowstride (pixbuf),
+			copy_right - copy_left,
+			copy_bottom - copy_top);
 	}
 }
 
@@ -605,7 +577,7 @@ draw_pixbuf_centered_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer,
 	image_left = (entire_width - image_width) / 2;
 	image_top = (entire_height - image_height) / 2;
 
-	nautilus_draw_pixbuf_to_canvasbuf (buffer, pixbuf, image_left, image_top);
+	nautilus_copy_pixbuf_to_canvasbuf (buffer, pixbuf, image_left, image_top);
 }
 
 /* fill the canvas buffer with a tiled pixmap */
@@ -642,7 +614,7 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 			tile_y = blit_y - y;
 			blit_height = MIN (tile_height, end_y - y) - tile_y;
 			
-			nautilus_draw_pixbuf_to_canvasbuf (buffer, pixbuf, x, y);
+			nautilus_copy_pixbuf_to_canvasbuf (buffer, pixbuf, x, y);
 		}
 	}
 }
