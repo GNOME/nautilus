@@ -8,10 +8,14 @@ the --prefix option to autogen.sh or configure.
 
 Specifically, you will need to:
 
+
 * Install all the needed modules into your selected prefix.
 
-Nautilus currently requires the following modules (built in the given order):
+Nautilus currently requires the following modules from GNOME CVS
+(built in the given order):
 
+module             branch              configure options
+------             ------              -----------------
 glib:		   glib-1-2
 gtk+:		   gtk-1-2
 gnome-xml:	   LIB_XML_1_X
@@ -19,18 +23,30 @@ ORBit:		   orbit-stable-0-5
 oaf:               HEAD
 gconf:             HEAD
 gnome-libs:	   gnome-libs-1-0
-gdk-pixbuf:	   HEAD (with --enable-canvas-pixbuf)
+gdk-pixbuf:	   HEAD               --enable-canvas-pixbuf
 gnome-print:	   HEAD
-bonobo:		   HEAD (with --enable-oaf=yes)
-gnome-vfs:	   HEAD (with --enable-oaf=yes)
+bonobo:		   HEAD               --enable-oaf=yes
+gnome-vfs:	   HEAD               --enable-oaf=yes
 libglade:	   HEAD
-gtkhtml:	   HEAD (with --without-bonobo)
-eog:               HEAD (with --enable-oaf=yes)
+gtkhtml:	   HEAD               --without-bonobo
+eog:               HEAD               --enable-oaf=yes
 gnet:              HEAD
 
-ORBit requires you to install popt-1.5, which can be fetched from:
+Other modules for Red Hat users:
+
+- For other modules, the versions in Red Hat 6.1 will do.
+- ORBit requires popt-1.5, which can be fetched from:
 
 	ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.45.i386.rpm
+
+Other modules for Debian users (we haven't tried this ourselves):
+
+- You'll need libwww, which can be found at:
+
+	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww5_5.2.8-1_i386.deb
+	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww-dev_5.2.8-1_i386.deb
+
+
 
 * Build and install nautilus into your selected prefix.
 

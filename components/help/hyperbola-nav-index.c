@@ -282,13 +282,13 @@ start_element(SAXParseInfo *spi,
 	      const gchar *name,
 	      const xmlChar **attrs)
 {
-  if(!strcasecmp(name, "indexterm"))
+  if(!g_strcasecmp(name, "indexterm"))
     {
       int i;
 
       for(i = 0; attrs[i]; i++)
 	{
-	  if(!strcasecmp(attrs[i], "id"))
+	  if(!g_strcasecmp(attrs[i], "id"))
 	    {
 	      i++;
 	      break;
@@ -309,19 +309,19 @@ start_element(SAXParseInfo *spi,
   if(!spi->in_term || spi->sub_type != NONE)
     return;
 
-  if(!strcasecmp(name, "primary"))
+  if(!g_strcasecmp(name, "primary"))
     {
       spi->sub_type = PRIMARY;
     }
-  else if(!strcasecmp(name, "secondary"))
+  else if(!g_strcasecmp(name, "secondary"))
     {
       spi->sub_type = SECONDARY;
     }
-  else if(!strcasecmp(name, "seealso"))
+  else if(!g_strcasecmp(name, "seealso"))
     {
       spi->sub_type = SEEALSO;
     }
-  else if(!strcasecmp(name, "see"))
+  else if(!g_strcasecmp(name, "see"))
     {
       spi->sub_type = SEE;
     }
@@ -381,7 +381,7 @@ end_element (SAXParseInfo *spi,
 {
   int this_type;
 
-  if(!strcasecmp(name, "indexterm"))
+  if(!g_strcasecmp(name, "indexterm"))
     {
       int i;
       IndexItem *parent_ii = NULL, *ii = NULL;
@@ -410,7 +410,7 @@ end_element (SAXParseInfo *spi,
 	    }
 
 	  if(!parent_ii->subitems)
-	    parent_ii->subitems = g_tree_new((GCompareFunc)strcasecmp);
+	    parent_ii->subitems = g_tree_new((GCompareFunc)g_strcasecmp);
 	  parent_tree = parent_ii->subitems;
 
 	  if(spi->stinfo[SECONDARY])
@@ -435,7 +435,7 @@ end_element (SAXParseInfo *spi,
 		}
 
 	      if(!ii->subitems)
-		ii->subitems = g_tree_new((GCompareFunc)strcasecmp);
+		ii->subitems = g_tree_new((GCompareFunc)g_strcasecmp);
 	      parent_ii = ii;
 	      parent_tree = parent_ii->subitems;
 
@@ -518,19 +518,19 @@ end_element (SAXParseInfo *spi,
   if(!spi->in_term || spi->sub_type == NONE)
     return;
 
-  if(!strcasecmp(name, "primary"))
+  if(!g_strcasecmp(name, "primary"))
     {
       this_type = PRIMARY;
     }
-  else if(!strcasecmp(name, "secondary"))
+  else if(!g_strcasecmp(name, "secondary"))
     {
       this_type = SECONDARY;
     }
-  else if(!strcasecmp(name, "seealso"))
+  else if(!g_strcasecmp(name, "seealso"))
     {
       this_type = SEEALSO;
     }
-  else if(!strcasecmp(name, "see"))
+  else if(!g_strcasecmp(name, "see"))
     {
       this_type = SEE;
     }
@@ -683,7 +683,7 @@ BonoboObject *hyperbola_navigation_index_new(void)
   char *dir;
 
   hni = g_new0(HyperbolaNavigationIndex, 1);
-  hni->all_items = g_tree_new((GCompareFunc)strcasecmp);
+  hni->all_items = g_tree_new((GCompareFunc)g_strcasecmp);
 
   dir = gnome_datadir_file("gnome/help");
   if(!dir)

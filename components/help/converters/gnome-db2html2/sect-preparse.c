@@ -89,7 +89,7 @@ sect_preparse_sect_start_element (Context *context,
 	g_return_if_fail (strlen (name) >= 5);
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "id")) {
+		if (!g_strcasecmp (*atrs_ptr, "id")) {
 			atrs_ptr++;
 			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
 			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("id");
@@ -126,7 +126,7 @@ sect_preparse_title_characters (Context *context,
 	atrs_ptr = stack_el->atrs;
 
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "id")) {
+		if (!g_strcasecmp (*atrs_ptr, "id")) {
 			gchar *temp;
 
 			temp = g_strndup (chars, len);

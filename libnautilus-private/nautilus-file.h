@@ -101,7 +101,7 @@ char *           nautilus_file_get_uri                   (NautilusFile         *
 char *           nautilus_file_get_mapped_uri            (NautilusFile         *file);
 GnomeVFSFileSize nautilus_file_get_size                  (NautilusFile         *file);
 GnomeVFSFileType nautilus_file_get_file_type             (NautilusFile         *file);
-const char *     nautilus_file_get_mime_type             (NautilusFile         *file);
+char *           nautilus_file_get_mime_type             (NautilusFile         *file);
 gboolean	 nautilus_file_is_mime_type		 (NautilusFile	       *file,
 							  const char	       *mime_type);
 gboolean         nautilus_file_is_symbolic_link          (NautilusFile         *file);
@@ -114,6 +114,7 @@ GList *          nautilus_file_get_keywords              (NautilusFile         *
 void             nautilus_file_set_keywords              (NautilusFile         *file,
 							  GList                *keywords);
 GList *          nautilus_file_get_emblem_names          (NautilusFile         *file);
+char *           nautilus_file_get_top_left_text         (NautilusFile         *file);
 
 /* Basic operations for file objects. */
 gboolean         nautilus_file_can_read                  (NautilusFile         *file);
@@ -142,7 +143,7 @@ void             nautilus_file_set_metadata              (NautilusFile         *
 char *           nautilus_file_get_string_attribute      (NautilusFile         *file,
 							  const char           *attribute_name);
 
-/* Matching with another URI*/
+/* Matching with another URI. */
 gboolean         nautilus_file_matches_uri               (NautilusFile         *file,
 							  const char           *uri);
 
@@ -151,6 +152,7 @@ gboolean         nautilus_file_matches_uri               (NautilusFile         *
  */
 gboolean         nautilus_file_update                    (NautilusFile         *file,
 							  GnomeVFSFileInfo     *info);
+
 /* Comparing two file objects for sorting */
 int              nautilus_file_compare_for_sort          (NautilusFile         *file_1,
 							  NautilusFile         *file_2,

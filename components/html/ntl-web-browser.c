@@ -1,4 +1,3 @@
-#include <config.h>
 #include <WWWCore.h>
 #include <WWWStream.h>
 #include <WWWTrans.h>
@@ -528,7 +527,7 @@ browser_submit(GtkWidget *htmlw, const char *method, const char *url, const char
 {
   g_free(bi->post_data); bi->post_data = NULL;
 
-  if(!strcasecmp(method, "POST"))
+  if(!g_strcasecmp(method, "POST"))
     {
       char **pieces = g_strsplit(encoding, "&", -1);
 
@@ -622,9 +621,12 @@ int main(int argc, char *argv[])
       (G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", 
        "Nautilus-HTML", "gtkhtml", NULL);
 
+
   /* Initialize gettext support */
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
   bindtextdomain (PACKAGE, GNOMELOCALEDIR);
   textdomain (PACKAGE);
+#endif
 	
   gnome_init_with_popt_table("ntl-web-browser", VERSION, 
 			     argc, argv,

@@ -1,3 +1,92 @@
+2000-05-04  Darin Adler  <darin@eazel.com>
+
+	* HACKING: Some more instructions and cleanup.
+	* RENAMING: Removed one gratuitous renaming we won't do.
+	
+	* components/html/ntl-web-browser.c:
+	Removed stray "#include <config.h>" that I added by accident.
+
+	* components/hardware/main.c: (main):
+	* components/help/hyperbola-main.c: (main):
+	* components/html/ntl-web-browser.c: (main):
+	* components/music/main.c: (main):
+	* components/notes/ntl-notes.c: (main):
+	* components/rpmview/main.c: (main):
+	* components/websearch/ntl-web-search.c: (main):
+	* src/file-manager/gnome-desktop.c (main):
+	* src/ntl-main.c (main):
+	Added ifdefs so you don't get warnings when building with
+	localization turned off. Ugly, but needed I think.
+	
+	* components/help/converters/gnome-db2html2/gdb3html.c:
+	(ulink_start_element), (start_element):
+	* components/help/converters/gnome-db2html2/sect-elements.c:
+	(sect_sect_start_element), (sect_sect_end_element),
+	(sect_title_start_element), (sect_xref_start_element),
+	(sect_graphic_start_element), (sect_get_infobox_logo):
+	* components/help/converters/gnome-db2html2/sect-preparse.c:
+	(sect_preparse_sect_start_element),
+	(sect_preparse_title_characters):
+	* components/help/converters/gnome-db2html2/toc-elements.c:
+	(toc_sect_start_element), (toc_title_start_element):
+	* components/help/converters/gnome-info2html2/html.c:
+	(write_node_link_html):
+	* components/help/hyperbola-filefmt.c: (tree_key_compare):
+	* components/help/hyperbola-nav-index.c: (start_element),
+	(end_element), (hyperbola_navigation_index_new):
+	* components/html/ntl-web-browser.c: (browser_submit):
+	Replaced all uses of strcasecmp with g_strcasecmp.
+	Why? Because Michael Meeks said so and that's good enough
+	for me (in this case :-).
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_mime_type_as_string_attribute),
+	(nautilus_file_get_mime_type):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+	* src/file-manager/fm-icon-view.c (get_icon_property_callback):
+	* src/ntl-index-panel.c (nautilus_index_panel_update_buttons):
+	* src/ntl-uri-map.c (file_list_to_mime_type_hash_table):
+	Changed get_mime_type to be like all other text functions and
+	return a strdup'd string. John said it was a good idea.
+
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_callback), (metafile_read_some),
+	(set_up_request_by_file_attributes),
+	(nautilus_directory_monitor_add_internal),
+	(directory_list_get_next_position), (directory_load_callback),
+	(ready_callback_call),
+	(nautilus_directory_call_when_ready_internal),
+	(wants_directory_count), (has_problem),
+	(ready_callback_is_satisfied), (is_anyone_monitoring_file_list),
+	(is_anyone_waiting_for_metafile), (is_wanted), (select_needy_file),
+	(start_getting_directory_counts):
+	Reorganize to get ready for adding code to read the top left text.
+	
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	Added name for the "top left text" attribute.
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_top_left_text):
+	Added call to get the top left text.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_embedded_text): Tiny format tweak.
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon): Tiny format tweak.
+	
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixmap_and_mask_for_file),
+	(nautilus_icon_factory_embed_text),
+	(nautilus_icon_factory_embed_file_text):
+	Added support for embedded text. Not completely deployed yet.
+	
 2000-05-03  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/dfos-xfer.c (create_xfer_dialog),
@@ -47,7 +136,7 @@
 	
 	* libnautilus-extensions/nautilus-undo-manager.c	
 	(nautilus_undo_manager_unregister_object):
-	New function to unregister a GtkObject form the undo manager.
+	New function to unregister a GtkObject from the undo manager.
 	Any transaction that contains the object is removed from the
 	undo and redo lists.  This should be called for any object that
 	is no longer available for user interaction.
@@ -61,7 +150,7 @@
 	* src/file-manager/fm-icon-view.c:
 	* src/file-manager/fm-properties-window.c
 	(create_properties_window):
-	Added call to unregister rename widget form undo manager.
+	Added call to unregister rename widget from undo manager.
 
 	* src/nautilus-bookmarks-window.c
 	Added undo support for entry widgets.
@@ -88,16 +177,16 @@
 
 2000-05-03  Fatih Demir	<kabalak@gmx.net>
 	
-	* nautilus.desktop : Yes,yes , nautilus can be such a
-		typotic word ( nautlius->nautilus in Name entry .. )
+	* nautilus.desktop: Yes, yes, nautilus can be such a
+	typotic word (nautlius->nautilus in Name entry...)
 	
-	* configure.in : Added ko to ALL_LINGUAS .
+	* configure.in: Added ko to ALL_LINGUAS .
 
-2000-05-03  Andy Hertzfeld <andy@eazel.com>
+2000-05-02  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-index-title.c,h:
-	made it display the emblems associated with a file.  Also, added a routine
-	to return the current title.
+	made it display the emblems associated with a file.  Also, added a
+	routine to return the current title.
 	* src/ntl-index-panel.c:
 	made dropping emblems on the index panel work by adding a new
 	receive_dropped_keyword routine
@@ -109,7 +198,7 @@
 	added new background image
 	* data/backgrounds/white_ribs.png:
 	added new "white_ribs" background image
-	
+
 2000-05-02  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-entry.c
@@ -135,7 +224,7 @@
 	Removed special case for "core" files, which are now
 	handled by the MIME type database used in gnome-vfs.
 
-2000-05-02  Andy Hertzfeld <andy@eazel.com>
+2000-05-02  Andy Hertzfeld  <andy@eazel.com>
 
 	1st cut at property browser for drag and drop customization;
 	Backgrounds are fully implemented, emblems are only partially there,
@@ -235,7 +324,7 @@
 	(get_pixmap_and_mask_for_properties_window):
 	Removed the FIXME from this file, since the bug is fixed.
 
-2000-05-2  Cody Russell  <car0969@gamma2.uta.edu>
+2000-05-02  Cody Russell  <car0969@gamma2.uta.edu>
 
 	* src/ntl-window.c: Respect the user's GNOME preferences. Lock
 	down the "Location" toolbar if the user has "Can detach and

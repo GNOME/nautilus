@@ -71,8 +71,10 @@ int main(int argc, char *argv[])
 	CORBA_Environment ev;
 	
 	/* Initialize gettext support */
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
+#endif
 	
 	CORBA_exception_init(&ev);
 	

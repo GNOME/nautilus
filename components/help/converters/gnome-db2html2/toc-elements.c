@@ -151,7 +151,7 @@ toc_sect_start_element (Context *context,
 
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "id")) {
+		if (!g_strcasecmp (*atrs_ptr, "id")) {
 			atrs_ptr++;
 			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
 			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("id");
@@ -367,7 +367,7 @@ toc_title_start_element (Context *context,
 
 		atrs_ptr = (stack_el->atrs);
 		while (atrs_ptr && *atrs_ptr) {
-			if (!strcasecmp (*atrs_ptr, "id")) {
+			if (!g_strcasecmp (*atrs_ptr, "id")) {
 				atrs_ptr++;
 				g_print ("?%s", *atrs_ptr);
 				break;

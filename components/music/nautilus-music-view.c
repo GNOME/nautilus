@@ -437,7 +437,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 			} else {
 		        	/* it's not an mp3 file, so see if it's an image */
 		        	NautilusFile *file = nautilus_file_get (path_name);
-        			const char *mime_type = nautilus_file_get_mime_type (file);
+        			char *mime_type = nautilus_file_get_mime_type (file);
 		        	
 		        	if (nautilus_str_has_prefix (mime_type, "image/")) {
 		        		/* for now, just keep the first image */
@@ -448,6 +448,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		        	
 		        	nautilus_file_unref (file);
 		        	g_free (path_name);
+                                g_free (mime_type);
 			}
 		}
 		

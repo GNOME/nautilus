@@ -1298,7 +1298,7 @@ get_icon_property_callback (NautilusIconContainer *container,
 			    const char *property_name,
 			    FMIconView *icon_view)
 {
-	const char *mime_type;
+	char *mime_type;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -1308,8 +1308,10 @@ get_icon_property_callback (NautilusIconContainer *container,
 	if (strcmp (property_name, "contents_as_text") == 0) {
 		mime_type = nautilus_file_get_mime_type (file);
 		if (mime_type == NULL || nautilus_str_has_prefix (mime_type, "text/")) {
+			g_free (mime_type);
 			return nautilus_file_get_uri (file);
 		}
+		g_free (mime_type);
 	}
 	
 	/* nothing applied, so return nothing */

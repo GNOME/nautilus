@@ -371,7 +371,7 @@ file_list_to_mime_type_hash_table (GList *files)
 
         for (p = files; p != NULL; p = p->next) {
                 if (p->data != NULL) {
-                        mime_type = (char *) nautilus_file_get_mime_type ((NautilusFile *) p->data);
+                        mime_type = nautilus_file_get_mime_type ((NautilusFile *) p->data);
                         
                         if (NULL != mime_type) {
                                 if (g_hash_table_lookup (result, mime_type) == NULL) {
@@ -381,6 +381,8 @@ file_list_to_mime_type_hash_table (GList *files)
                                         g_hash_table_insert (result, mime_type, mime_type);
                                 }
                         }
+
+                        g_free (mime_type);
                 }
         }
 

@@ -70,8 +70,10 @@ main(int argc, char *argv[])
 	}
 	
 	/* Initialize gettext support */
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
+#endif
 	
 	/* Initialize the services that we use. */
 	CORBA_exception_init (&ev);

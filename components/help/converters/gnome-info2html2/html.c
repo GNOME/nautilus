@@ -137,7 +137,7 @@ void write_node_link_html( FILE *f, char *nodefile, char *refname, char *ref )
   char *href;
 
   if (ref) {
-      if (strcasecmp(ref, "(dir)")) {
+      if (g_strcasecmp(ref, "(dir)")) {
 	  converted_nodename = g_strdup( ref );
 	  map_spaces_to_underscores( converted_nodename );
 	  href = form_info_tag_href(nodefile, converted_nodename);

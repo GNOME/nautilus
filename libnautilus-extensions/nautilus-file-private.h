@@ -28,12 +28,20 @@
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
+	gboolean is_gone;
 	GnomeVFSFileInfo *info;
+
 	gboolean got_directory_count;
 	gboolean directory_count_failed;
 	guint directory_count;
-	gboolean is_gone;
+
+	gboolean got_top_left_text;
+	char *top_left_text;
 };
+
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE  80
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES                20
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES              1000
 
 NautilusFile *nautilus_file_new          (NautilusDirectory *directory,
 					  GnomeVFSFileInfo  *info);

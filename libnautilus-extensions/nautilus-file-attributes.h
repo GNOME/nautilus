@@ -29,7 +29,8 @@
  * in changes to the attributes.
  */
 
-#define NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE "MIME type"
 #define NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT "directory item count"
+#define NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE       "MIME type"
+#define NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT        "top left text"
 
 #endif /* NAUTILUS_FILE_ATTRIBUTES_H */

@@ -42,16 +42,17 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
-#include "librsvg/rsvg.h"
+#include <librsvg/rsvg.h>
 
-#include "nautilus-string.h"
 #include "nautilus-default-file-icon.h"
-#include "nautilus-metadata.h"
-#include "nautilus-lib-self-check-functions.h"
-#include "nautilus-link.h"
+#include "nautilus-gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-link.h"
+#include "nautilus-metadata.h"
+#include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
 
 /* List of suffixes to search when looking for an icon file. */
@@ -435,18 +436,21 @@ nautilus_icon_factory_set_theme (const char *theme_name)
 static const char *
 nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
-        const char *mime_type;
+        char *mime_type;
         const char *icon_name;
 
         mime_type = nautilus_file_get_mime_type (file);
         if (mime_type != NULL) {
                 icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
+		g_free (mime_type);
 		if (icon_name != NULL) {
 			return icon_name;
 		}
 	}
 
-	/* GNOME didn't give us a file name, so we have to fall back on special icon sets. */
+	/* gnome_vfs_mime didn't give us an icon name, so we have to
+         * fall back on default icons.
+	 */
 	if (nautilus_file_is_executable (file)) {
 		return ICON_NAME_EXECUTABLE;
 	}
@@ -578,7 +582,10 @@ get_themed_icon_file_path (const char *theme_name,
 
 /* Choose the file name to load, taking into account theme vs. non-theme icons. */
 static char *
-get_icon_file_path (const char *name, const char* modifier, guint size_in_pixels, ArtIRect *text_rect)
+get_icon_file_path (const char *name,
+		    const char* modifier,
+		    guint size_in_pixels,
+		    ArtIRect *text_rect)
 {
 	gboolean use_theme_icon;
 	const char *theme_name;
@@ -608,9 +615,9 @@ get_icon_file_path (const char *name, const char* modifier, guint size_in_pixels
 	if (modifier && strlen(modifier)) {
 		char* modified_name = g_strdup_printf("%s-%s", name, modifier);
 		path = get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
-					  		modified_name,
-					  		size_in_pixels, 
-					  		text_rect);
+						  modified_name,
+						  size_in_pixels, 
+						  text_rect);
 		g_free(modified_name);
 		if (path)
 		    return path;
@@ -1618,18 +1625,27 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 					   guint size_in_pixels)
 {
 	NautilusScalableIcon *icon;
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf_without_text, *pixbuf_with_text;
+	ArtIRect embedded_text_rect;
 
 	g_return_val_if_fail (file != NULL, NULL);
 
+	/* Get the pixbuf for this file. */
 	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+	pixbuf_without_text = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 size_in_pixels, size_in_pixels,
 		 size_in_pixels, size_in_pixels,
-		 NULL);
+		 &embedded_text_rect);
 	nautilus_scalable_icon_unref (icon);
-	return pixbuf;
+
+	pixbuf_with_text = nautilus_icon_factory_embed_file_text
+		(pixbuf_without_text,
+		 &embedded_text_rect,
+		 file);
+	gdk_pixbuf_unref (pixbuf_without_text);
+
+	return pixbuf_with_text;
 }
 
 /* Convenience cover for nautilus_icon_factory_get_icon_for_file,
@@ -1655,6 +1671,142 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, size_in_pixels);
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, 128);
 	gdk_pixbuf_unref (pixbuf);
+}
+
+GdkPixbuf *
+nautilus_icon_factory_embed_text (GdkPixbuf *pixbuf_without_text,
+				  const ArtIRect *embedded_text_rect,
+				  const char *text)
+{
+	static GdkFont *font;
+
+	ArtIRect pixbuf_rect, text_rect;
+	int width, height;
+	GdkVisual *visual;
+	GdkPixmap *pixmap;
+	GdkGC *gc;
+	GdkColormap *colormap;
+	int y;
+	const char *line, *end_of_line;
+	int line_length;
+	GdkPixbuf *text_pixbuf, *text_pixbuf_with_alpha, *pixbuf_with_text;
+
+	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
+	g_return_val_if_fail (embedded_text_rect != NULL, gdk_pixbuf_ref (pixbuf_without_text));
+
+	/* Get the font the first time through. */
+	if (font == NULL) {
+		/* FIXME bugzilla.eazel.com 667: the font shouldn't be hard-wired like this */
+		font = gdk_font_load ("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
+		g_return_val_if_fail (font != NULL, gdk_pixbuf_ref (pixbuf_without_text));
+	}
+
+	/* Quick out for the case where there's no place to embed the
+	 * text or no text.
+	 */
+	if (art_irect_empty (embedded_text_rect) || nautilus_strlen (text) == 0) {
+		return gdk_pixbuf_ref (pixbuf_without_text);
+	}
+
+	/* Compute the intersection of the text rectangle with the pixbuf.
+	 * This is only to prevent pathological cases from upsetting the
+	 * GdkPixbuf routines. It should not happen in any normal circumstance.
+	 */
+	pixbuf_rect.x0 = 0;
+	pixbuf_rect.y0 = 0;
+	pixbuf_rect.x1 = gdk_pixbuf_get_width (pixbuf_without_text);
+	pixbuf_rect.y1 = gdk_pixbuf_get_height (pixbuf_without_text);
+	art_irect_intersect (&text_rect, embedded_text_rect, &pixbuf_rect);
+
+	/* Get the system visual. I wish I could do this all in 1-bit mode,
+	 * but I can't.
+	 */
+	visual = gdk_visual_get_system ();
+
+	/* Allocate a GdkPixmap of the appropriate size. */
+	width = text_rect.x1 - text_rect.x0;
+	height = text_rect.y1 - text_rect.y0;
+	pixmap = gdk_pixmap_new (NULL, width, height, visual->depth);
+	gc = gdk_gc_new (pixmap);
+
+	/* Set up a white background. */
+	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_WHITE);
+	gdk_draw_rectangle (pixmap, gc, TRUE, 0, 0, width, height);
+
+	/* Draw black text. */
+	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_BLACK);
+	gdk_gc_set_font (gc, font);
+	line = text;
+	for (y = font->ascent;
+	     y + font->descent <= height;
+	     y += font->ascent + font->descent) {
+
+		/* Extract the next line of text. */
+		end_of_line = strchr (line, '\n');
+		line_length = end_of_line == NULL
+			? strlen (line)
+			: end_of_line - line;
+		
+		/* Draw the next line of text. */
+		gdk_draw_text (pixmap, font, gc, 0, y,
+			       line, line_length);
+
+		/* Move on to the subsequent line. */
+		line = end_of_line == NULL
+			? ""
+			: end_of_line + 1;
+	}
+	gdk_gc_unref (gc);
+
+	/* Convert into a GdkPixbuf with gdk_pixbuf_get_from_drawable. */
+	colormap = gdk_colormap_new (visual, FALSE);
+	text_pixbuf = gdk_pixbuf_get_from_drawable (NULL, pixmap, colormap,
+						    0, 0,
+						    0, 0, width, height);
+	gdk_colormap_unref (colormap);
+	gdk_pixmap_unref (pixmap);
+	text_pixbuf_with_alpha = gdk_pixbuf_add_alpha (text_pixbuf,
+						       TRUE, 0xFF, 0xFF, 0xFF);
+	gdk_pixbuf_unref (text_pixbuf);
+	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
+	gdk_pixbuf_composite (text_pixbuf_with_alpha,
+			      pixbuf_with_text,
+			      text_rect.x0,
+			      text_rect.y0,
+			      width, height,
+			      text_rect.x0,
+			      text_rect.y0,
+			      1, 1,
+			      GDK_INTERP_BILINEAR,
+			      0xFF);
+	gdk_pixbuf_unref (text_pixbuf_with_alpha);
+	
+	return pixbuf_with_text;
+}
+
+GdkPixbuf *
+nautilus_icon_factory_embed_file_text (GdkPixbuf *pixbuf_without_text,
+				       const ArtIRect *embedded_text_rect,
+				       NautilusFile *file)
+{
+	char *text;
+	GdkPixbuf *pixbuf_with_text;
+
+	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
+	g_return_val_if_fail (embedded_text_rect != NULL, NULL);
+	g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), NULL);
+
+	/* Quick out to save us getting the file's text. */
+	if (art_irect_empty (embedded_text_rect) && file == NULL) {
+		return gdk_pixbuf_ref (pixbuf_without_text);
+	}
+
+	/* Embed the text. */
+	text = nautilus_file_get_top_left_text (file);
+	pixbuf_with_text = nautilus_icon_factory_embed_text
+		(pixbuf_without_text, embedded_text_rect, text);
+	g_free (text);
+	return pixbuf_with_text;
 }
 
 /* Convenience function for unrefing and then freeing an entire list. */

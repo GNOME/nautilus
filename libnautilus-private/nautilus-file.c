@@ -57,7 +57,7 @@ typedef enum {
 	NAUTILUS_DATE_TYPE_ACCESSED
 } NautilusDateType;
 
-#define EMBLEM_NAME_SYMBOLIC_LINK       "symbolic-link"
+#define EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link"
 
 enum {
 	CHANGED,
@@ -449,8 +449,7 @@ nautilus_file_rename (NautilusFile *file, const char *new_name)
 	g_return_val_if_fail (!nautilus_file_is_gone (file), GNOME_VFS_ERROR_BADPARAMS);
 	g_return_val_if_fail (nautilus_strlen (new_name) > 0, GNOME_VFS_ERROR_BADPARAMS);
 
-	/* 
-	 * Test the name-hasn't-changed case explicitly, for two reasons.
+	/* Test the name-hasn't-changed case explicitly, for two reasons.
 	 * (1) gnome_vfs_move returns an error if new & old are same.
 	 * (2) We don't want to send file-changed signal if nothing changed.
 	 */
@@ -1214,14 +1213,15 @@ nautilus_file_get_group_as_string (NautilusFile *file)
 static char *
 nautilus_file_get_mime_type_as_string_attribute (NautilusFile *file)
 {
-	const char *mime_string;
+	char *mime_string;
 
 	mime_string = nautilus_file_get_mime_type (file);
-	if (nautilus_strlen (mime_string) > 0) {
-		return g_strdup (mime_string);
+	if (mime_string != NULL) {
+		return mime_string;
 	}
 
-	return g_strdup ("unknown MIME type");
+	g_free (mime_string);
+	return g_strdup (_("unknown MIME type"));
 }
 
 /**
@@ -1400,12 +1400,12 @@ nautilus_file_get_file_type (NautilusFile *file)
  * Returns: The mime type.
  * 
  **/
-const char *
+char *
 nautilus_file_get_mime_type (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	return file->details->info->mime_type;
+	return g_strdup (file->details->info->mime_type);
 }
 
 /**
@@ -1653,6 +1653,23 @@ nautilus_file_is_executable (NautilusFile *file)
 	return (file->details->info->permissions & (GNOME_VFS_PERM_USER_EXEC
 				     | GNOME_VFS_PERM_GROUP_EXEC
 				     | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
+}
+
+/**
+ * nautilus_file_get_top_left_text
+ * 
+ * Get the text from the top left of the file.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: NULL if there is no text readable, otherwise, the text.
+ * 
+ **/
+char *
+nautilus_file_get_top_left_text (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	return NULL; /* g_strdup ("DARIN IMPLEMENT THIS"); */
 }
 
 /**

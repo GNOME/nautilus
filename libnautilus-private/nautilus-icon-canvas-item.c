@@ -801,7 +801,7 @@ draw_embedded_text (GnomeCanvasItem* item,
 		cur_y += embedded_text_font->descent + embedded_text_font->ascent;
 	}
 	
-	gdk_gc_unref(gc);
+	gdk_gc_unref (gc);
 
 	fclose (text_file);
 }

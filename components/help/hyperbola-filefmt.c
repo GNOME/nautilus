@@ -50,7 +50,7 @@ tree_node_destroy(gpointer key, gpointer data, gpointer user_data)
 static gint
 tree_key_compare(gconstpointer k1, gconstpointer k2)
 {
-  return strcasecmp(k1, k2);
+  return g_strcasecmp(k1, k2);
 }
 
 HyperbolaDocTree *

@@ -2413,7 +2413,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 icon->data,
 			 &additional_text);
 
-	end_renaming_mode(container, TRUE);
+	end_renaming_mode (container, TRUE);
 
 	font = details->label_font[details->zoom_level];
         

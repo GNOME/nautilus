@@ -327,7 +327,7 @@ sect_sect_start_element (Context *context,
 	g_return_if_fail (strlen (name) >= 5);
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "id")) {
+		if (!g_strcasecmp (*atrs_ptr, "id")) {
 			atrs_ptr++;
 			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
 			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("id");
@@ -397,7 +397,7 @@ sect_sect_end_element (Context *context,
 	atrs_ptr = ((StackElement *) context->stack->data)->atrs;
 
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "id")) {
+		if (!g_strcasecmp (*atrs_ptr, "id")) {
 			atrs_ptr++;
 			if (!strcmp (*atrs_ptr, context->target_section)) {
 				((SectContext *)context->data)->state = LOOKING_FOR_POST_SECT;
@@ -565,7 +565,7 @@ sect_title_start_element (Context *context,
 
 		atrs_ptr = (stack_el->atrs);
 		while (atrs_ptr && *atrs_ptr) {
-			if (!strcasecmp (*atrs_ptr, "id")) {
+			if (!g_strcasecmp (*atrs_ptr, "id")) {
 				atrs_ptr++;
 				sect_print (context, "%s", *atrs_ptr);
 				break;
@@ -747,7 +747,7 @@ sect_xref_start_element (Context *context,
 	sect_print (context, "<A HREF=\"ghelp:%s", context->base_file);
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "linkend")) {
+		if (!g_strcasecmp (*atrs_ptr, "linkend")) {
 			atrs_ptr++;
 			sect_print (context, "?%s", *atrs_ptr);
 			break;
@@ -847,17 +847,17 @@ sect_graphic_start_element (Context *context,
 
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "format")) {
+		if (!g_strcasecmp (*atrs_ptr, "format")) {
 			atrs_ptr++;
 			format =  *atrs_ptr;
 			atrs_ptr++;
 			continue;
-		} else if (!strcasecmp (*atrs_ptr, "fileref")) {
+		} else if (!g_strcasecmp (*atrs_ptr, "fileref")) {
 			atrs_ptr++;
 			fileref =  *atrs_ptr;
 			atrs_ptr++;
 			continue;
-		} else if (!strcasecmp (*atrs_ptr, "id")) {
+		} else if (!g_strcasecmp (*atrs_ptr, "id")) {
 			atrs_ptr++;
 			sect_context->figure->id = g_strdup (*atrs_ptr);
 			atrs_ptr++;
@@ -869,7 +869,7 @@ sect_graphic_start_element (Context *context,
 	if (fileref == NULL)
 		return;
 
-	if (format == NULL || (!strcasecmp (format, "gif")))
+	if (format == NULL || (!g_strcasecmp (format, "gif")))
 		sect_context->figure->img = g_strdup_printf ("%s.gif", fileref);
 	else
 		sect_context->figure->img = g_strdup_printf ("%s.png", fileref);
@@ -1109,13 +1109,13 @@ sect_programlisting_end_element (Context *context,
 static gchar *
 sect_get_infobox_logo (const gchar *name)
 {
-	if (!strcasecmp (name, "tip"))
+	if (!g_strcasecmp (name, "tip"))
 		return gnome_pixmap_file ("gnome-info.png");
-	else if (!strcasecmp (name, "warning"))
+	else if (!g_strcasecmp (name, "warning"))
 		return gnome_pixmap_file ("gnome-warning.png");
-	else if (!strcasecmp (name, "important"))
+	else if (!g_strcasecmp (name, "important"))
 		return gnome_pixmap_file ("gnome-info.png");
-	else if (!strcasecmp (name, "note"))
+	else if (!g_strcasecmp (name, "note"))
 		return gnome_pixmap_file ("gnome-info.png");
 	return gnome_pixmap_file ("gnome-info.png");
 }

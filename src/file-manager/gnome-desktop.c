@@ -47,8 +47,10 @@ main (int argc, char *argv[])
         GtkWidget *canvas;
         CORBA_Environment ev;
         
-        (void)bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
-        (void)textdomain (PACKAGE);
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
+        bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+        textdomain (PACKAGE);
+#endf
 
         CORBA_exception_init(&ev);
         

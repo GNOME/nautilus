@@ -35,7 +35,7 @@ ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs)
 
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
-		if (!strcasecmp (*atrs_ptr, "url")) {
+		if (!g_strcasecmp (*atrs_ptr, "url")) {
 			atrs_ptr++;
 			if (index == UNDEFINED) {
 				g_print ("<A HREF=\"%s\">", *atrs_ptr);
@@ -200,9 +200,9 @@ start_element(Context *context,
 
 	if (element && element->start_element_func)
 		(* element->start_element_func) (context, name, attrs);
-	if (!strcasecmp (name, "xref")) {
+	if (!g_strcasecmp (name, "xref")) {
 		context->stack = g_list_remove_link (context->stack, context->stack);
-	} else if (!strcasecmp (name, "void")) {
+	} else if (!g_strcasecmp (name, "void")) {
 		context->stack = g_list_remove_link (context->stack, context->stack);
 	}
 }

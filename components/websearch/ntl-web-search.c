@@ -246,8 +246,10 @@ int main(int argc, char *argv[])
   CORBA_ORB orb;
 
   /* Initialize gettext support */
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
   bindtextdomain (PACKAGE, GNOMELOCALEDIR);
   textdomain (PACKAGE);
+#endif
 
   gnome_init_with_popt_table("ntl-web-search", VERSION, 
                              argc, argv,

@@ -743,7 +743,7 @@ nautilus_index_panel_update_buttons (NautilusIndexPanel *index_panel)
 {
 	NautilusFile *file;
 	GList *command_list;
-	const char *mime_type;
+	char *mime_type;
 	
 	/* dispose any existing buttons */
 	if (index_panel->details->has_buttons) {
@@ -760,7 +760,9 @@ nautilus_index_panel_update_buttons (NautilusIndexPanel *index_panel)
 	
 		/* generate a command list from the mime-type */
 		if (mime_type != NULL) {
-			command_list = nautilus_mime_type_get_commands (mime_type);	
+			command_list = nautilus_mime_type_get_commands (mime_type);
+			g_free (mime_type);
+
 			/* install a button for each command in the list */
 			if (command_list != NULL) {
 				add_command_buttons (index_panel, command_list);
