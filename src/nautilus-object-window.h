@@ -48,6 +48,13 @@ typedef struct {
 
 typedef struct _NautilusWindowStateInfo NautilusWindowStateInfo;
 
+typedef enum {
+  NAUTILUS_LOCATION_CHANGE_STANDARD,
+  NAUTILUS_LOCATION_CHANGE_BACK,
+  NAUTILUS_LOCATION_CHANGE_FORWARD,
+  NAUTILUS_LOCATION_CHANGE_RELOAD
+} NautilusLocationChangeType;
+
 struct _NautilusWindow {
   GnomeApp parent_object;
 
@@ -97,9 +104,10 @@ struct _NautilusWindow {
   guint action_tag;
   guint16 made_changes, making_changes;
 
+  NautilusLocationChangeType location_change_type;
+  guint location_change_distance;
+  
   gboolean changes_pending : 1;
-  gboolean is_back : 1;
-  gboolean is_reload : 1;
   gboolean views_shown : 1;
   gboolean view_bombed_out : 1;
   gboolean view_activation_complete : 1;

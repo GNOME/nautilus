@@ -688,36 +688,34 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
   nautilus_window_remove_meta_view_real(window, meta_view);
 }
 
-/* FIXME: Factor toolbar stuff out into ntl-window-toolbar.c */
-
-static void
-nautilus_window_back_or_forward (NautilusWindow *window, gboolean back)
+void
+nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint distance)
 {
   Nautilus_NavigationRequestInfo nri;
+  GSList *list;
 
-  g_assert(back ? window->back_list : window->forward_list);
+  list = back ? window->back_list : window->forward_list;
+  g_assert (g_slist_length (list) > distance);
 
   memset(&nri, 0, sizeof(nri));
   /* FIXME: Have to cast away the const for nri.requested_uri. This field should be
    * declared const. */
-  nri.requested_uri = (char *)nautilus_bookmark_get_uri (back ?
-  						         window->back_list->data :
-  						         window->forward_list->data);
+  nri.requested_uri = (char *)nautilus_bookmark_get_uri (g_slist_nth_data (list, distance));
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
 
-  nautilus_window_change_location(window, &nri, NULL, back, FALSE);
+  nautilus_window_begin_location_change (window, &nri, NULL, back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD, distance);
 }
 
 void
 nautilus_window_back_cb (GtkWidget *widget, NautilusWindow *window)
 {
-  nautilus_window_back_or_forward (window, TRUE);
+  nautilus_window_back_or_forward (window, TRUE, 0);
 }
 
 void
 nautilus_window_forward_cb (GtkWidget *widget, NautilusWindow *window)
 {
-  nautilus_window_back_or_forward (window, FALSE);
+  nautilus_window_back_or_forward (window, FALSE, 0);
 }
 
 const char *

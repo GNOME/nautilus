@@ -33,13 +33,15 @@ void nautilus_window_real_request_progress_change (NautilusWindow *window,
 						   Nautilus_ProgressRequestInfo *loc,
 						   NautilusView *requesting_view);
 void nautilus_window_set_status(NautilusWindow *window, const char *txt);
-void nautilus_window_change_location(NautilusWindow *window,
-				     Nautilus_NavigationRequestInfo *loc,
-				     NautilusView *requesting_view,
-				     gboolean is_back,
-				     gboolean is_reload);
+void nautilus_window_back_or_forward (NautilusWindow *window, 
+				      gboolean back, 
+				      guint distance);
+void nautilus_window_begin_location_change(NautilusWindow *window,
+				           Nautilus_NavigationRequestInfo *loc,
+				           NautilusView *requesting_view,
+				      	   NautilusLocationChangeType type,
+				      	   guint distance);
 void nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta_view);
-void nautilus_window_end_location_change(NautilusWindow *window);
 void nautilus_window_connect_view (NautilusWindow *window, 
 				   NautilusView *view);
 void nautilus_window_view_destroyed(NautilusView *view, NautilusWindow *window);

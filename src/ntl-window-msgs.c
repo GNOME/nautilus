@@ -201,46 +201,72 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
       Nautilus_NavigationInfo *newni;
 
       /* Maintain history lists. */
-      if(!window->is_reload)
+      if (window->location_change_type != NAUTILUS_LOCATION_CHANGE_RELOAD)
         {
 	  nautilus_add_to_history_list (loci->navinfo.requested_uri);
         
-          if (window->is_back)
+          if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_BACK)
             {
-              /* Going back. Remove one item from the back list and 
-               * add the current item to the forward list. 
-               */
-              g_assert(window->back_list);
-              g_assert(!strcmp(nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (window->back_list->data)), loci->navinfo.requested_uri));
+              guint index;
+              
+              /* Going back. Move items from the back list to the forward list. */
+              g_assert(g_slist_length (window->back_list) > window->location_change_distance);
+              g_assert(!strcmp(nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->back_list, window->location_change_distance))), loci->navinfo.requested_uri));
               g_assert(window->ni);
 
-              window->forward_list = g_slist_prepend(window->forward_list, 
-						     nautilus_bookmark_new (window->ni->requested_uri));
-              gtk_object_unref(window->back_list->data);
-              window->back_list = g_slist_remove_link(window->back_list, window->back_list);
+	      /* Move current location to Forward list */
+              window->forward_list = g_slist_prepend (window->forward_list, 
+              					      nautilus_bookmark_new (window->ni->requested_uri));
+
+	      /* Move extra links from Back to Forward list */
+              for (index = 0; index < window->location_change_distance; ++index) 
+                {
+		  NautilusBookmark *bookmark;
+
+                  bookmark = window->back_list->data;
+             	  window->back_list = g_slist_remove_link (window->back_list, window->back_list);
+             	  window->forward_list = g_slist_prepend (window->forward_list, bookmark);
+                }
+
+	      /* One bookmark falls out of back/forward lists and becomes viewed location */
+              gtk_object_unref (window->back_list->data);
+              window->back_list = g_slist_remove_link (window->back_list, window->back_list);
+            }
+          else if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_FORWARD)
+            {
+              guint index;
+              
+              /* Going back. Move items from the forward list to the back list. */
+              g_assert(g_slist_length (window->forward_list) > window->location_change_distance);
+              g_assert(!strcmp(nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->forward_list, window->location_change_distance))), loci->navinfo.requested_uri));
+              g_assert(window->ni);
+
+              /* Move current location to Back list */
+              window->back_list = g_slist_prepend (window->back_list,
+              					   nautilus_bookmark_new (window->ni->requested_uri));
+
+	      /* Move extra links from Forward to Back list */
+              for (index = 0; index < window->location_change_distance; ++index) 
+                {
+                  NautilusBookmark *bookmark;
+
+                  bookmark = window->forward_list->data;
+             	  window->forward_list = g_slist_remove_link (window->forward_list, window->forward_list);
+             	  window->back_list = g_slist_prepend (window->back_list, bookmark);
+                }
+
+	      /* One bookmark falls out of back/forward lists and becomes viewed location */
+              gtk_object_unref (window->forward_list->data);
+              window->forward_list = g_slist_remove_link (window->forward_list, window->forward_list);
             }
           else
             {
-              /* Not going back. Could be an arbitrary new uri, or could be going forward in the forward list. 
-               * Remove one item from the forward list if it's the same as the request.
-               * Otherwise, clobber the entire forward list. FIXME: This is not quite correct behavior (doesn't
-               * match web browsers) because it doesn't distinguish between using the Forward button or list
-               * to move in the Forward chain and coincidentally visiting a site that happens to be in the
-               * Forward chain.
-               */
+              g_assert (window->location_change_type == NAUTILUS_LOCATION_CHANGE_STANDARD);
+              /* Clobber the entire forward list, and move displayed location to back list */
               if (window->forward_list)
                 {
-                  if (strcmp (loci->navinfo.requested_uri, 
-                  	      nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (window->forward_list->data))) == 0)
-                    {
-                      gtk_object_unref(window->forward_list->data);
-                      window->forward_list = g_slist_remove_link(window->forward_list, window->forward_list);
-                    }
-                  else
-                    {
-                      g_slist_foreach(window->forward_list, (GFunc)gtk_object_unref, NULL);
-                      g_slist_free(window->forward_list); window->forward_list = NULL;
-                    }
+                  g_slist_foreach(window->forward_list, (GFunc)gtk_object_unref, NULL);
+                  g_slist_free(window->forward_list); window->forward_list = NULL;
                 }
 
               if (window->ni)
@@ -490,7 +516,7 @@ nautilus_window_request_location_change(NautilusWindow *window,
     }
   else
     {
-      nautilus_window_change_location(window, loc, requesting_view, FALSE, FALSE);
+      nautilus_window_begin_location_change(window, loc, requesting_view, NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
     }
 }
 
@@ -569,8 +595,8 @@ nautilus_window_update_state(gpointer data)
 #ifdef EXTREME_DEBUGGING
   g_message(">>> nautilus_window_update_state (action tag is %d):", window->action_tag);
   g_print("made_changes %d, making_changes %d\n", window->made_changes, window->making_changes);
-  g_print("changes_pending %d, is_back %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
-          window->changes_pending, window->is_back, window->views_shown,
+  g_print("changes_pending %d, location_change_type %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
+          window->changes_pending, window->location_change_type, window->views_shown,
           window->view_bombed_out, window->view_activation_complete);
   g_print("sent_update_view %d, cv_progress_initial %d, cv_progress_done %d, cv_progress_error %d, reset_to_idle %d\n",
           window->sent_update_view, window->cv_progress_initial, window->cv_progress_done, window->cv_progress_error,
@@ -908,7 +934,7 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
 }
 
 static void
-nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
+nautilus_window_end_location_change_callback (NautilusNavigationInfo *navi, gpointer data)
 {
   NautilusWindow *window = data;
   char *requested_uri;
@@ -983,32 +1009,47 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
     {
       /* Clean up state of already-showing window */
       nautilus_window_allow_stop(window, FALSE);
-      window->is_back = FALSE;
       nautilus_window_progress_indicate(window, PROGRESS_ERROR, 0, error_message);
     }
 
     g_free (error_message);
 }
 
+/*
+ * nautilus_window_begin_location_change
+ * 
+ * Change a window's location.
+ * @window: The NautilusWindow whose location should be changed.
+ * @loc: A Nautilus_NavigationRequestInfo specifying info about this transition.
+ * @requesting_view: The view from which this location change originated, can be NULL.
+ * @type: Which type of location change is this? Standard, back, forward, or reload?
+ * @distance: If type is back or forward, the index into the back or forward chain. If
+ * type is standard or reload, this is ignored, and must be 0.
+ */
 void
-nautilus_window_change_location(NautilusWindow *window,
-				Nautilus_NavigationRequestInfo *loc,
-				NautilusView *requesting_view,
-				gboolean is_back,
-                                gboolean is_reload)
+nautilus_window_begin_location_change(NautilusWindow *window,
+				      Nautilus_NavigationRequestInfo *loc,
+				      NautilusView *requesting_view,
+				      NautilusLocationChangeType type,
+				      guint distance)
 {
   const char *current_iid;
 
   g_assert (NAUTILUS_IS_WINDOW (window));
-  
+  g_assert (loc != NULL);
+  g_assert (type == NAUTILUS_LOCATION_CHANGE_BACK || 
+  	    type == NAUTILUS_LOCATION_CHANGE_FORWARD || 
+  	    distance == 0);
+
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)RESET_TO_IDLE, (NautilusWindowStateItem)SYNC_STATE, (NautilusWindowStateItem)0);
 
   while (gdk_events_pending())
     gtk_main_iteration();
 
   nautilus_window_progress_indicate(window, PROGRESS_INITIAL, 0, _("Gathering information"));
-  window->is_back = is_back;
-  window->is_reload = is_reload;
+
+  window->location_change_type = type;
+  window->location_change_distance = distance;
   window->new_requesting_view = requesting_view;
 
   nautilus_window_allow_stop(window, TRUE);
@@ -1020,7 +1061,7 @@ nautilus_window_change_location(NautilusWindow *window,
     }
 
   window->cancel_tag =
-    nautilus_navinfo_new(loc, window->ni, nautilus_window_change_location_2, window, current_iid);
+    nautilus_navinfo_new(loc, window->ni, nautilus_window_end_location_change_callback, window, current_iid);
 }
 
 
@@ -1053,8 +1094,6 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
 
   view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
   nautilus_window_set_state_info (window, (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view, (NautilusWindowStateItem)0);
-  window->is_back = FALSE;
-  window->is_reload = TRUE;
 }
 
 /*

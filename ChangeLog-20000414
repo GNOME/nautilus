@@ -1,3 +1,44 @@
+2000-03-21  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 203 (preserve back/forward chain when using
+	back/forward menus).
+
+	* src/ntl-window.h: added enum NautilusLocationChangeType.
+	Removed window fields is_back and is_reload. Added window
+	fields location_change_type and location_change_distance.
+
+	* src/ntl-window-private.h:
+	(nautilus_window_back_or_forward): Exposed this function.
+	(nautilus_window_change_location): Changed name to
+	nautilus_window_begin_location_change and replaced is_back
+	and is_forward parameters with type & distance.
+	(nautilus_window_end_location_change): Removed this prototype
+	that had no implementation.
+
+	* src/ntl-window-msgs.c:
+	(nautilus_window_update_internals): Rewrote to use
+	location_change_type and location_change_index.
+	(nautilus_window_change_location): Changed name to
+	nautilus_window_begin_location_change and replaced is_back
+	and is_forward parameters with type & distance.
+	(nautilus_window_request_location_change): Updated caller of
+	nautilus_window-change_location.
+	(nautilus_window_change_location_2): Renamed to
+	nautilus_window_end_location_change_callback for clarity; removed
+	useless assignment to window->is_back.
+	(view_menu_switch_views_cb): Removed useless assignments of
+	window->is_back and window->is_reload.
+	(nautilus_window_update_state): Removed is_back from a debug message.
+
+	* src/ntl-window.c: 
+	(nautilus_window_back_or_forward): Added distance parameter; 
+	call nautilus_window_begin_location_change properly.
+	(nautilus_window_back_cb), (nautilus_window_forward_cb):
+	Pass distance of 0 to nautilus_window_back_or_forward.
+
+	* src/nautilus-window-toolbars.c: (activate_back_or_forward_menu_item):
+	call newly-exposed nautilus_window_back_or_forward.
+
 2000-03-21  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus/nautilus-icon-container.c

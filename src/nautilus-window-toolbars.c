@@ -76,21 +76,12 @@ activate_back_or_forward_menu_item (GtkMenuItem *menu_item,
 				    gboolean back)
 {
 	int index;
-	NautilusBookmark *bookmark;
 	
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	index = GPOINTER_TO_INT (gtk_object_get_user_data (GTK_OBJECT (menu_item)));
-	bookmark = NAUTILUS_BOOKMARK (g_slist_nth_data (back ? window->back_list 
-							     : window->forward_list, 
-							index));
-
-	/* FIXME: This should do the equivalent of going back or forward n times,
-	 * rather than just going to the right uri. This is needed to
-	 * keep the back/forward chain intact.
-	 */
-	nautilus_window_goto_uri (window, nautilus_bookmark_get_uri (bookmark));
+	nautilus_window_back_or_forward (window, back, index);
 }
 
 static void
@@ -206,7 +197,7 @@ nautilus_window_reload_cb (GtkWidget *widget, NautilusWindow *window)
 	memset(&nri, 0, sizeof(nri));
 	nri.requested_uri = (char *)nautilus_window_get_requested_uri (window);
 	nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
-	nautilus_window_change_location (window, &nri, NULL, FALSE, TRUE);
+	nautilus_window_begin_location_change (window, &nri, NULL, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
 }
 
 static void
