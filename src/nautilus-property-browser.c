@@ -113,6 +113,8 @@ static void  nautilus_property_browser_drag_data_get    (GtkWidget              
 							 guint                    info,
 							 guint32                  time);
 static void  nautilus_property_browser_theme_changed	(gpointer user_data);
+static GdkPixbuf* make_background_chit			(GdkPixbuf *background_tile,
+							 GdkPixbuf *frame);
 
 /* misc utilities */
 static char *strip_extension                            (const char              *string_to_strip);
@@ -450,8 +452,8 @@ ensure_uri_is_image(const char *uri)
 static GdkPixbuf *
 make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name)
 {
-	GdkPixbuf *pixbuf;
-	char *image_file_name;
+	GdkPixbuf *pixbuf, *frame;
+	char *image_file_name, *temp_str;
 
 	image_file_name = g_strdup_printf ("%s/%s/%s",
 					   NAUTILUS_DATADIR,
@@ -476,7 +478,11 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 	
 	/* background properties are always a fixed size, while others are pinned to the max size */
 	if (!strcmp(property_browser->details->category, "backgrounds")) {
-		pixbuf = gdk_pixbuf_scale_simple (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT, GDK_INTERP_BILINEAR);
+		temp_str = nautilus_pixmap_file ("chit_frame.png");
+		frame = gdk_pixbuf_new_from_file (temp_str);
+		g_free (temp_str);
+		pixbuf = make_background_chit (pixbuf, frame);
+		gdk_pixbuf_unref (frame);
 	} else {
 		pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 	}
@@ -1223,12 +1229,35 @@ add_to_content_table(NautilusPropertyBrowser *property_browser, GtkWidget* widge
 			  GTK_FILL, GTK_FILL, padding, padding);
 }
 
+/* utility to make an attractive background image by compositing with a frame */
+static GdkPixbuf*
+make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame)
+{
+	GdkPixbuf *pixbuf;
+	double scale_x, scale_y;
+	
+	/* start with the frame */
+	pixbuf = gdk_pixbuf_copy (frame);
+		
+	scale_x = ((double) MAX_ICON_WIDTH)  / gdk_pixbuf_get_width (background_tile);
+	scale_y = ((double) MAX_ICON_HEIGHT) / gdk_pixbuf_get_height (background_tile);
+	
+	/* draw the scaled tile on top of it */
+
+	gdk_pixbuf_scale (background_tile, pixbuf, 3, 3, MAX_ICON_WIDTH - 2, MAX_ICON_HEIGHT - 2, 
+			  0.0, 0.0, scale_x, scale_y, GDK_INTERP_BILINEAR);
+	gdk_pixbuf_unref (background_tile);
+	return pixbuf;
+}
+
 /* make_properties_from_directory_path generates widgets corresponding all of the objects in the passed in directory */
 
 static int
 make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, const char* directory_uri, int index)
 {
+	char *temp_str;
 	NautilusBackground *background;
+	GdkPixbuf *background_frame;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
 	GnomeVFSDirectoryList *list;
@@ -1240,6 +1269,15 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 		return index;
 	}
 
+	/* load the frame if necessary */
+	if (!strcmp(property_browser->details->category, "backgrounds")) {
+		temp_str = nautilus_pixmap_file ("chit_frame.png");
+		background_frame = gdk_pixbuf_new_from_file (temp_str);
+		g_free (temp_str);
+	} else {
+		background_frame = NULL;
+	}
+	
 	/* interate through the directory for each file */
 	current_file_info = gnome_vfs_directory_list_first(list);
 	while (current_file_info != NULL) {
@@ -1259,7 +1297,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 				g_free(image_file_name);
 			
 				if (!strcmp(property_browser->details->category, "backgrounds")) {
-					pixbuf = gdk_pixbuf_scale_simple (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT, GDK_INTERP_BILINEAR);
+					pixbuf = make_background_chit (pixbuf, background_frame);
 				} else {
 					pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 				}
@@ -1307,6 +1345,10 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 	}
 		
 		current_file_info = gnome_vfs_directory_list_next(list);
+	}
+	
+	if (background_frame != NULL) {
+		gdk_pixbuf_unref (background_frame);
 	}
 	
 	gnome_vfs_directory_list_destroy(list);

@@ -8,6 +8,7 @@ icon_DATA =\
 	audio.png \
 	About_Image.png \
 	backgrounds.png \
+	chit_frame.png \
 	colors.png \
 	computer.png \
 	computer.svg \
