@@ -1,5 +1,25 @@
 2005-01-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-link-historical.c:
+	* libnautilus-private/nautilus-link-historical.h:
+	Remove historical link support.
+	
+	* libnautilus-private/nautilus-link-desktop-file.[ch]:
+	* libnautilus-private/nautilus-link.[ch]:
+	Remove historical link support and unused functions.
+	
+	* src/file-manager/fm-directory-view.h:
+	Remove unused declaration.
+	
+	* src/file-manager/fm-icon-view.c:
+	Fix up due to small api change for nautilus-link.
+	
+	* src/file-manager/fm-properties-window.c: (set_icon_callback):
+	Fix icon change for desktop files that point to nonexisting binaries.
+
+2005-01-12  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-main.c (register_icons):
 	Remove debug spew
 

@@ -331,8 +331,6 @@ void                fm_directory_view_move_copy_items                  (const GL
 									int               x,
 									int               y,
 									FMDirectoryView  *view);
-gboolean            fm_directory_link_type_in_selection                (FMDirectoryView  *view,
-									NautilusLinkType  link_type);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals

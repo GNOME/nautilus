@@ -33,17 +33,12 @@ gboolean         nautilus_link_desktop_file_local_create                      (c
 									       const char        *image,
 									       const char        *target_uri,
 									       const GdkPoint    *point,
-									       int                screen,
-									       NautilusLinkType   type);
-gboolean         nautilus_link_desktop_file_local_set_icon                    (const char        *uri,
-									       const char        *icon_name);
+									       int                screen);
 gboolean         nautilus_link_desktop_file_local_set_text                    (const char        *uri,
 									       const char        *text);
 char *           nautilus_link_desktop_file_local_get_text                    (const char        *uri);
 char *           nautilus_link_desktop_file_local_get_additional_text         (const char        *uri);
-NautilusLinkType nautilus_link_desktop_file_local_get_link_type               (const char        *uri);
 char *           nautilus_link_desktop_file_local_get_link_uri                (const char        *uri);
-gboolean         nautilus_link_desktop_file_local_is_utf8                     (const char        *uri);
 void             nautilus_link_desktop_file_get_link_info_given_file_contents (const char        *file_contents,
 									       int                link_file_size,
 									       char             **uri,

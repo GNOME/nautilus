@@ -24,7 +24,6 @@
 
 #include <config.h>
 #include "nautilus-link.h"
-#include "nautilus-link-historical.h"
 #include "nautilus-link-desktop-file.h"
 
 #include "nautilus-directory-notify.h"
@@ -48,31 +47,28 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
-typedef enum {
-	not_link,
-	historical,
-	desktop
-} LinkStyle;
+/* NOTE: This is pretty ugly.
+ * We once supported another type of link, "historical" links, which were xml files.
+ * I've now removed that code, but that makes this file sort of unnecessary, and we
+ * could clean up the code a lot since we know we're dealing with desktop files.
+ */
 
-static LinkStyle
-get_link_style_for_mime_type (const char *mime_type)
+static gboolean
+is_link_mime_type (const char *mime_type)
 {
-	if (mime_type != NULL) {
-		if (g_ascii_strcasecmp (mime_type, "application/x-gnome-app-info") == 0 ||
-		    g_ascii_strcasecmp (mime_type, "application/x-desktop") == 0) {
-			return desktop;
-		}
-		if (g_ascii_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
-			return historical;
-		}
+	if (mime_type != NULL &&
+	    (g_ascii_strcasecmp (mime_type, "application/x-gnome-app-info") == 0 ||
+	     g_ascii_strcasecmp (mime_type, "application/x-desktop") == 0)) {
+		return TRUE;
 	}
-	return not_link;
+	
+	return FALSE;
 }
 
-static LinkStyle
-get_link_style_for_local_file (const char *uri, GnomeVFSFileInfo *opt_info)
+static gboolean
+is_local_file_a_link (const char *uri, GnomeVFSFileInfo *opt_info)
 {
-	LinkStyle type;
+	gboolean link;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *info;
 
@@ -89,160 +85,59 @@ get_link_style_for_local_file (const char *uri, GnomeVFSFileInfo *opt_info)
 	}
 
 	if (info && info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) {
-		type = get_link_style_for_mime_type (info->mime_type);
+		link = is_link_mime_type (info->mime_type);
 	} else {
-		type = not_link;
+		link = FALSE;
 	}
 
 	if (!opt_info && info)
 		gnome_vfs_file_info_unref (info);
 
-	return type;
+	return link;
 }
 
-static LinkStyle
-get_link_style_for_data (const char *file_contents, int file_size)
+static gboolean
+is_link_data (const char *file_contents, int file_size)
 {
-	return get_link_style_for_mime_type
+	return is_link_mime_type
 		(gnome_vfs_get_mime_type_for_data (file_contents, file_size));
 }
 
 gboolean
 nautilus_link_local_create (const char *directory_uri,
-			    const char        *file_name,
-			    const char        *display_name,
+			    const char *file_name,
+			    const char *display_name,
 			    const char *image,
 			    const char *target_uri,
 			    const GdkPoint *point,
-			    int screen,
-			    NautilusLinkType type)
+			    int screen)
 {
 	return nautilus_link_desktop_file_local_create (directory_uri,
 							file_name,
 							display_name, image,
 							target_uri, 
-							point, screen,
-							type);
-}
-
-gboolean
-nautilus_link_local_set_icon (const char *uri, const char *icon_name)
-{
-	gboolean result;
-	NautilusFile *file;
-
-	switch (get_link_style_for_local_file (uri, NULL)) {
-	case desktop:
-		result = nautilus_link_desktop_file_local_set_icon (uri, icon_name);
-		break;
-	case historical:
-		result = nautilus_link_historical_local_set_icon (uri, icon_name);
-		break;
-	default:
-		result = FALSE;
-	}
-
-	file = nautilus_file_get (uri);
-	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_unref (file);
-
-	return result;
-}
-
-gboolean
-nautilus_link_local_set_link_uri (const char *uri, const char *link_uri)
-{
-	gboolean result;
-	NautilusFile *file;
-
-	switch (get_link_style_for_local_file (uri, NULL)) {
-	case desktop:
-		/* FIXME: May want to implement this for desktop files too */
-		result = FALSE;
-		break;
-	case historical:
-		result = nautilus_link_historical_local_set_link_uri (uri, link_uri);
-		break;
-	default:
-		result = FALSE;
-	}
-
-	
-	file = nautilus_file_get (uri);
-	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_unref (file);
-
-	return result;
-}
-
-gboolean
-nautilus_link_local_set_type (const char *uri,
-			      NautilusLinkType type)
-{
-	switch (get_link_style_for_local_file (uri, NULL)) {
-	case desktop:
-		/* FIXME: May want to implement this for desktop files too */
-		return FALSE;
-	case historical:
-		return nautilus_link_historical_local_set_type (uri, type);
-	default:
-		return FALSE;
-	}
+							point, screen);
 }
 
 /* returns additional text to display under the name, NULL if none */
 char *
 nautilus_link_local_get_additional_text (const char *uri)
 {
-	switch (get_link_style_for_local_file (uri, NULL)) {
-	case desktop:
-		return nautilus_link_desktop_file_local_get_additional_text (uri);
-	case historical:
-		return nautilus_link_historical_local_get_additional_text (uri);
-	default:
+	if (!is_local_file_a_link (uri, NULL)) {
 		return NULL;
 	}
+	
+	return nautilus_link_desktop_file_local_get_additional_text (uri);
 }
 
 /* Returns the link uri associated with a link file. */
 char *
 nautilus_link_local_get_link_uri (const char *uri)
 {
-	switch (get_link_style_for_local_file (uri, NULL)) {
-	case desktop:
-		return nautilus_link_desktop_file_local_get_link_uri (uri);
-	case historical:
-		return nautilus_link_historical_local_get_link_uri (uri);
-	default:
+	if (!is_local_file_a_link (uri, NULL)) {
 		return NULL;
 	}
-}
-
-/* Returns the link type of the link file. */
-NautilusLinkType
-nautilus_link_local_get_link_type (const char *uri, GnomeVFSFileInfo *info)
-{
-	switch (get_link_style_for_local_file (uri, info)) {
-	case desktop:
-		return nautilus_link_desktop_file_local_get_link_type (uri);
-	case historical:
-		return nautilus_link_historical_local_get_link_type (uri);
-	default:
-		return NAUTILUS_LINK_GENERIC;
-	}
-}
-
-gboolean
-nautilus_link_local_is_utf8 (const char *uri,
-			     GnomeVFSFileInfo *info)
-{
-	switch (get_link_style_for_local_file (uri, info)) {
-	case desktop:
-		return nautilus_link_desktop_file_local_is_utf8 (uri);
-	case historical:
-	default:
-		return FALSE;
-	}
+	return nautilus_link_desktop_file_local_get_link_uri (uri);
 }
 
 void
@@ -260,53 +155,9 @@ nautilus_link_get_link_info_given_file_contents (const char       *file_contents
 	*drive_id = 0;
 	*volume_id = 0;
 	
-	switch (get_link_style_for_data (file_contents, link_file_size)) {
-	case desktop:
+	if (is_link_data (file_contents, link_file_size)) {
 		nautilus_link_desktop_file_get_link_info_given_file_contents (file_contents, link_file_size, uri, name, icon, drive_id, volume_id);
-		break;
-	case historical:
-		*uri = nautilus_link_historical_get_link_uri_given_file_contents (file_contents, link_file_size);
-		*icon = nautilus_link_historical_get_link_icon_given_file_contents (file_contents, link_file_size);
-		break;
-	default:
-		return;
 	}
-}
-
-gboolean
-nautilus_link_local_is_volume_link (const char *uri, GnomeVFSFileInfo *info)
-{
-	return (nautilus_link_local_get_link_type (uri, info) == NAUTILUS_LINK_MOUNT);
-}
-
-gboolean
-nautilus_link_local_is_home_link (const char *uri, GnomeVFSFileInfo *info)
-{
-	return (nautilus_link_local_get_link_type (uri, info) == NAUTILUS_LINK_HOME);
-}
-
-gboolean
-nautilus_link_local_is_trash_link (const char *uri, GnomeVFSFileInfo *info)
-{
-	return (nautilus_link_local_get_link_type (uri, info) == NAUTILUS_LINK_TRASH);
-}
-
-gboolean
-nautilus_link_local_is_special_link (const char *uri)
-{
-	switch (nautilus_link_local_get_link_type (uri, NULL)) {
-	case NAUTILUS_LINK_HOME:
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
- 			return FALSE;
- 		}
-	case NAUTILUS_LINK_TRASH:
-	case NAUTILUS_LINK_MOUNT:
-		return TRUE;
-	case NAUTILUS_LINK_GENERIC:
-		return FALSE;
-	}
-
-	return FALSE;
 }
 
 void

@@ -3747,8 +3747,8 @@ set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 			
 			if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
 				ditem = gnome_desktop_item_new_from_uri (file_uri,
-								 GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
-								 NULL);
+									 0,
+									 NULL);
 
 				if (ditem != NULL) {
 					gnome_desktop_item_set_string (ditem,

@@ -130,8 +130,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-lib-self-check-functions.h \
 	nautilus-link-desktop-file.c \
 	nautilus-link-desktop-file.h \
-	nautilus-link-historical.c \
-	nautilus-link-historical.h \
 	nautilus-link.c \
 	nautilus-link.h \
 	nautilus-marshal.c \

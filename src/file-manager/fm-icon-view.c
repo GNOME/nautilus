@@ -2622,8 +2622,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 							    link_name,
 							    NULL, uri,
 							    (n_links > 0) ? NULL: &point, 
-							    screen_num,
-							    NAUTILUS_LINK_GENERIC);
+							    screen_num);
 				g_free (link_file_name);
 			}
 			

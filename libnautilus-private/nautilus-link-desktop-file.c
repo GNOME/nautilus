@@ -51,24 +51,6 @@
 #define NAUTILUS_LINK_MOUNT_TAG 	"FSDevice"
 #define NAUTILUS_LINK_HOME_TAG 		"X-nautilus-home"
 
-static const char *
-get_tag (NautilusLinkType type)
-{
-	switch (type) {
-	default:
-		g_assert_not_reached ();
-		/* fall through */
-	case NAUTILUS_LINK_GENERIC:
-		return NAUTILUS_LINK_GENERIC_TAG;
-	case NAUTILUS_LINK_TRASH:
-		return NAUTILUS_LINK_TRASH_TAG;
-	case NAUTILUS_LINK_MOUNT:
-		return NAUTILUS_LINK_MOUNT_TAG;
-	case NAUTILUS_LINK_HOME:
-		return NAUTILUS_LINK_HOME_TAG;
-	}
-}
-
 static char *
 slurp_key_string (const char *uri,
 		  const char *keyname,
@@ -102,8 +84,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 					 const char        *image,
 					 const char        *target_uri,
 					 const GdkPoint    *point,
-					 int                screen,
-					 NautilusLinkType   type)
+					 int                screen)
 {
 	char *uri, *contents, *escaped_name;
 	GnomeDesktopItem *desktop_item;
@@ -122,11 +103,10 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 	contents = g_strdup_printf ("[Desktop Entry]\n"
 				    "Encoding=UTF-8\n"
 				    "Name=%s\n"
-				    "Type=%s\n"
+				    "Type=Link\n"
 				    "URL=%s\n"
 				    "%s%s\n",
 				    display_name,
-				    get_tag (type),
 				    target_uri,
 				    image != NULL ? "X-Nautilus-Icon=" : "",
 				    image != NULL ? image : "");
@@ -172,25 +152,6 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 	g_free (contents);
 	g_free (uri);
 	return TRUE;
-}
-
-gboolean
-nautilus_link_desktop_file_local_set_icon (const char *uri,
-					   const char *icon_name)
-{
-	GnomeDesktopItem *desktop_file;
-	gboolean success;
-
-	desktop_file = gnome_desktop_item_new_from_uri (uri, 0, NULL);
-	if (desktop_file == NULL) {
-		return FALSE;
-	}
-
-	gnome_desktop_item_set_string (desktop_file, "X-Nautilus-Icon", icon_name);
-	success = gnome_desktop_item_save (desktop_file, NULL, FALSE, NULL);
-	gnome_desktop_item_unref (desktop_file);
-	
-	return success;
 }
 
 gboolean
@@ -245,56 +206,6 @@ nautilus_link_desktop_file_local_get_additional_text (const char *path)
 	return retval;
 #endif
 }
-
-NautilusLinkType
-nautilus_link_desktop_file_local_get_link_type (const char *path)
-{
-	char *type;
-	NautilusLinkType retval;
-
-	type = slurp_key_string (path, "Type", FALSE);
-
-	if (type == NULL) {
-		return NAUTILUS_LINK_GENERIC;
-	}
-	if (strcmp (type, NAUTILUS_LINK_HOME_TAG) == 0) {
-		retval = NAUTILUS_LINK_HOME;
-	} else if (strcmp (type, NAUTILUS_LINK_MOUNT_TAG) == 0) {
-		retval = NAUTILUS_LINK_MOUNT;
-	} else if (strcmp (type, NAUTILUS_LINK_TRASH_TAG) == 0) {
-		retval = NAUTILUS_LINK_TRASH;
-	} else {
-		retval = NAUTILUS_LINK_GENERIC;
-	}
-
-	g_free (type);
-	return retval;
-}
-
-gboolean
-nautilus_link_desktop_file_local_is_utf8 (const char       *uri)
-{
-	char *contents;
-	int file_size;
-	gboolean retval;
-
-	if (eel_read_entire_file (uri,
-				  &file_size,
-				  &contents) != GNOME_VFS_OK) {
-		return FALSE;
-	}
-	
-	if (g_strstr_len (contents, file_size, "Encoding=UTF-8\n") != NULL) {
-		retval = TRUE;
-	} else {
-		retval = FALSE;
-	}
-
-	g_free (contents);
-	
-	return retval;
-}
-
 
 
 static char *
