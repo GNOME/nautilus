@@ -812,6 +812,7 @@ toc_glossterm_start_element (Context *context,
 		atrs_ptr += 2;
 	}
 	g_print ("\">");
+	in_printed_title = TRUE;
 }
 
 static void
@@ -819,6 +820,7 @@ toc_glossterm_end_element (Context *context,
 			   const gchar *name)
 {
 	g_print ("</A>\n");
+	in_printed_title = FALSE;
 }
 
 static void

@@ -1,3 +1,13 @@
+2001-02-25 John Fleck <jfleck@inkstain.net>
+
+	reviewed by: George Lebl <jirka@5z.org>
+
+	* components/help/converters/gnome-db2html2/toc-elements.c
+	adding code to toc_glossterm_start_elemen and
+	toc_glossterm_end_element to set and unset boolean
+	variable in_printed_title that determines whether we're in a
+	printed title in the table of contents
+
 2001-02-25  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Michael K. Fleming  <mfleming@eazel.com>
@@ -16,7 +26,8 @@
 	* components/services/install/nautilus-view/nautilus-service-install.h:
 	Move it all to components/services/install-view
 
-	* components/services/install/Makefile.am: Don't build nautilus-view subdir.
+	* components/services/install
+	/Makefile.am: Don't build nautilus-view subdir.
 
 	* components/services/Makefile.am: Build insall-view subdir.
 	
