@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-02-13 01:18+0100\n"
-"PO-Revision-Date: 2001-02-13 01:18+0100\n"
+"POT-Creation-Date: 2001-02-14 02:48+0100\n"
+"PO-Revision-Date: 2001-02-14 02:52+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1185,7 +1185,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:696
-#: src/nautilus-property-browser.c:1040 src/nautilus-property-browser.c:1292
+#: src/nautilus-property-browser.c:1053 src/nautilus-property-browser.c:1305
 msgid "Not an Image"
 msgstr "Inte en bild"
 
@@ -1943,40 +1943,40 @@ msgstr "HTTP-fel: %d %s"
 msgid "FTP not supported yet"
 msgstr "FTP stöds inte än"
 
-#: components/services/install/lib/eazel-install-protocols.c:445
+#: components/services/install/lib/eazel-install-protocols.c:446
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Kontrollerar lokal fil %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:566
+#: components/services/install/lib/eazel-install-protocols.c:567
 #, c-format
 msgid "Failed to retrieve %s!"
 msgstr "Misslyckades med att ta emot %s!"
 
-#: components/services/install/lib/eazel-install-protocols.c:632
+#: components/services/install/lib/eazel-install-protocols.c:633
 #, c-format
 msgid "Could not get an URL for %s"
 msgstr "Kunde inte få en URL för %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:647
+#: components/services/install/lib/eazel-install-protocols.c:648
 msgid "Downloaded package does not have the correct name"
 msgstr "Det hämtade paketet har inte rätt namn"
 
-#: components/services/install/lib/eazel-install-protocols.c:648
+#: components/services/install/lib/eazel-install-protocols.c:649
 #, c-format
 msgid "Package %s should have had name %s"
 msgstr "Paketet %s borde haft namnet %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:655
+#: components/services/install/lib/eazel-install-protocols.c:656
 msgid "Downloaded package does not have the correct version"
 msgstr "Det hämtade paketet har inte rätt versionsnummer"
 
-#: components/services/install/lib/eazel-install-protocols.c:656
+#: components/services/install/lib/eazel-install-protocols.c:657
 #, c-format
 msgid "Package %s had version %s and not %s"
 msgstr "Paketet %s hade versionsnumret %s och inte %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:675
+#: components/services/install/lib/eazel-install-protocols.c:676
 msgid "File download failed"
 msgstr "Filhämtning misslyckades"
 
@@ -3099,7 +3099,7 @@ msgstr "Dra ett emblem till ett objekt för att lägga till det till objektet"
 msgid "Eclipse"
 msgstr "Förmörkelse"
 
-#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1585
+#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1592
 msgid "Emblems"
 msgstr "Emblem"
 
@@ -6235,46 +6235,46 @@ msgstr "Typ"
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
 
-#: src/file-manager/fm-properties-window.c:514
+#: src/file-manager/fm-properties-window.c:519
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaper för %s"
 
-#: src/file-manager/fm-properties-window.c:709
+#: src/file-manager/fm-properties-window.c:714
 msgid "Cancel Group Change?"
 msgstr "Avbryt ändring av grupp?"
 
-#: src/file-manager/fm-properties-window.c:710
+#: src/file-manager/fm-properties-window.c:715
 msgid "Changing group"
 msgstr "Ändrar grupp"
 
-#: src/file-manager/fm-properties-window.c:871
+#: src/file-manager/fm-properties-window.c:876
 msgid "Cancel Owner Change?"
 msgstr "Avbryt ändring av ägare?"
 
-#: src/file-manager/fm-properties-window.c:872
+#: src/file-manager/fm-properties-window.c:877
 msgid "Changing owner"
 msgstr "Ändrar ägare"
 
-#: src/file-manager/fm-properties-window.c:1047
+#: src/file-manager/fm-properties-window.c:1052
 msgid "nothing"
 msgstr "inget"
 
-#: src/file-manager/fm-properties-window.c:1049
+#: src/file-manager/fm-properties-window.c:1054
 msgid "unreadable"
 msgstr "oläsbar"
 
-#: src/file-manager/fm-properties-window.c:1058
+#: src/file-manager/fm-properties-window.c:1063
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 objekt, med storleken %s"
 
-#: src/file-manager/fm-properties-window.c:1060
+#: src/file-manager/fm-properties-window.c:1065
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d objekt, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:1066
+#: src/file-manager/fm-properties-window.c:1071
 msgid "(some contents unreadable)"
 msgstr "(en del innehåll är oläsbart)"
 
@@ -6283,128 +6283,128 @@ msgstr "(en del innehåll är oläsbart)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1080
+#: src/file-manager/fm-properties-window.c:1085
 msgid "Contents:"
 msgstr "Innehåll:"
 
-#: src/file-manager/fm-properties-window.c:1412
+#: src/file-manager/fm-properties-window.c:1418
 msgid "Basic"
 msgstr "Grundläggande"
 
-#: src/file-manager/fm-properties-window.c:1491
+#: src/file-manager/fm-properties-window.c:1497
 msgid "Type:"
 msgstr "Typ:"
 
-#: src/file-manager/fm-properties-window.c:1496
+#: src/file-manager/fm-properties-window.c:1502
 msgid "Size:"
 msgstr "Storlek:"
 
-#: src/file-manager/fm-properties-window.c:1498
+#: src/file-manager/fm-properties-window.c:1504
 msgid "Where:"
-msgstr "Var:"
+msgstr "Plats:"
 
-#: src/file-manager/fm-properties-window.c:1500
+#: src/file-manager/fm-properties-window.c:1506
 msgid "MIME type:"
 msgstr "MIME-typ:"
 
-#: src/file-manager/fm-properties-window.c:1506
+#: src/file-manager/fm-properties-window.c:1512
 msgid "Modified:"
 msgstr "Ändrad:"
 
-#: src/file-manager/fm-properties-window.c:1509
+#: src/file-manager/fm-properties-window.c:1515
 msgid "Accessed:"
 msgstr "Åtkommen:"
 
-#: src/file-manager/fm-properties-window.c:1518
+#: src/file-manager/fm-properties-window.c:1524
 msgid "Select Custom Icon..."
 msgstr "Välj anpassad ikon..."
 
-#: src/file-manager/fm-properties-window.c:1524
+#: src/file-manager/fm-properties-window.c:1530
 msgid "Remove Custom Icon"
 msgstr "Ta bort anpassad ikon"
 
-#: src/file-manager/fm-properties-window.c:1848
+#: src/file-manager/fm-properties-window.c:1855
 msgid "Set User ID"
 msgstr "Ställ in användar-ID"
 
-#: src/file-manager/fm-properties-window.c:1853
+#: src/file-manager/fm-properties-window.c:1860
 msgid "Special Flags:"
 msgstr "Specialflaggor:"
 
-#: src/file-manager/fm-properties-window.c:1856
+#: src/file-manager/fm-properties-window.c:1863
 msgid "Set Group ID"
 msgstr "Ställ in grupp-ID"
 
-#: src/file-manager/fm-properties-window.c:1858
+#: src/file-manager/fm-properties-window.c:1865
 msgid "Sticky"
 msgstr "Klistrig"
 
-#: src/file-manager/fm-properties-window.c:1884
+#: src/file-manager/fm-properties-window.c:1891
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: src/file-manager/fm-properties-window.c:1890
+#: src/file-manager/fm-properties-window.c:1897
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du är inte ägaren, så du kan inte ändra dessa rättigheter."
 
-#: src/file-manager/fm-properties-window.c:1903
+#: src/file-manager/fm-properties-window.c:1910
 msgid "File Owner:"
 msgstr "Filägare:"
 
-#: src/file-manager/fm-properties-window.c:1912
+#: src/file-manager/fm-properties-window.c:1919
 msgid "File Group:"
 msgstr "Filgrupp:"
 
-#: src/file-manager/fm-properties-window.c:1930
+#: src/file-manager/fm-properties-window.c:1937
 msgid "Owner:"
 msgstr "Ägare:"
 
-#: src/file-manager/fm-properties-window.c:1931
+#: src/file-manager/fm-properties-window.c:1938
 msgid "Group:"
 msgstr "Grupp:"
 
-#: src/file-manager/fm-properties-window.c:1932
+#: src/file-manager/fm-properties-window.c:1939
 msgid "Others:"
 msgstr "Andra:"
 
-#: src/file-manager/fm-properties-window.c:1951
+#: src/file-manager/fm-properties-window.c:1958
 msgid "Read"
 msgstr "Läs"
 
-#: src/file-manager/fm-properties-window.c:1955
+#: src/file-manager/fm-properties-window.c:1962
 msgid "Write"
 msgstr "Skriv"
 
-#: src/file-manager/fm-properties-window.c:1959
+#: src/file-manager/fm-properties-window.c:1966
 msgid "Execute"
 msgstr "Kör program"
 
-#: src/file-manager/fm-properties-window.c:2010
+#: src/file-manager/fm-properties-window.c:2017
 msgid "Text View:"
 msgstr "Textvy:"
 
-#: src/file-manager/fm-properties-window.c:2011
+#: src/file-manager/fm-properties-window.c:2018
 msgid "Number View:"
 msgstr "Talvy:"
 
-#: src/file-manager/fm-properties-window.c:2012
+#: src/file-manager/fm-properties-window.c:2019
 msgid "Last Changed:"
 msgstr "Senast ändrad:"
 
-#: src/file-manager/fm-properties-window.c:2016
+#: src/file-manager/fm-properties-window.c:2023
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
 
-#: src/file-manager/fm-properties-window.c:2263
+#: src/file-manager/fm-properties-window.c:2303
 msgid "Cancel Showing Properties Window?"
 msgstr "Avbryt visandet av egenskapsfönstret?"
 
-#: src/file-manager/fm-properties-window.c:2264
+#: src/file-manager/fm-properties-window.c:2304
 msgid "Creating Properties window"
 msgstr "Skapar fönstret Egenskaper"
 
-#: src/file-manager/fm-properties-window.c:2357
+#: src/file-manager/fm-properties-window.c:2401
 msgid "Select an icon:"
 msgstr "Välj en ikon:"
 
@@ -7460,64 +7460,64 @@ msgid "Add or remove sets of links by clicking on the checkboxes below."
 msgstr ""
 "Lägg till eller ta bort länksamlingar genom att klicka i kryssrutorna nedan."
 
-#: src/nautilus-location-bar.c:61
+#: src/nautilus-location-bar.c:62
 msgid "Location:"
 msgstr "Plats:"
 
-#: src/nautilus-location-bar.c:62
+#: src/nautilus-location-bar.c:63
 msgid "Go To:"
 msgstr "Gå till:"
 
-#: src/nautilus-location-bar.c:152
+#: src/nautilus-location-bar.c:153
 #, c-format
 msgid "Do you want to view these %d locations in separate windows?"
 msgstr "Vill du se dessa %d platser i separata fönster?"
 
-#: src/nautilus-location-bar.c:159
+#: src/nautilus-location-bar.c:160
 msgid "View in Multiple Windows?"
 msgstr "Visa i flera fönster?"
 
-#: src/nautilus-main.c:143
+#: src/nautilus-main.c:144
 msgid "Perform a quick set of self-check tests."
-msgstr "Utför ett antal snabba självkontroller."
+msgstr "Utför ett antal snabba självtester."
 
-#: src/nautilus-main.c:146
+#: src/nautilus-main.c:147
 msgid "Create the initial window with the given geometry."
 msgstr "Skapa det första fönstret med den angivna geometrin."
 
-#: src/nautilus-main.c:146
+#: src/nautilus-main.c:147
 msgid "GEOMETRY"
 msgstr "GEOMETRI"
 
-#: src/nautilus-main.c:148
+#: src/nautilus-main.c:149
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Skapa endast fönster för explicit angivna URI:er."
 
-#: src/nautilus-main.c:150
+#: src/nautilus-main.c:151
 msgid "Quit Nautilus."
 msgstr "Avsluta Nautilus."
 
-#: src/nautilus-main.c:152
+#: src/nautilus-main.c:153
 msgid "Restart Nautilus."
 msgstr "Starta om Nautilus."
 
-#: src/nautilus-main.c:207
+#: src/nautilus-main.c:208
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan inte användas med URI:er.\n"
 
-#: src/nautilus-main.c:211
+#: src/nautilus-main.c:212
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan inte användas med andra flaggor.\n"
 
-#: src/nautilus-main.c:215
+#: src/nautilus-main.c:216
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan inte användas med URI:er.\n"
 
-#: src/nautilus-main.c:219
+#: src/nautilus-main.c:220
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan inte användas med URI:er.\n"
 
-#: src/nautilus-main.c:223
+#: src/nautilus-main.c:224
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
 
@@ -7526,7 +7526,7 @@ msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
 msgid "Backgrounds and Emblems"
 msgstr "Bakgrunder och emblem"
 
-#: src/nautilus-property-browser.c:357 src/nautilus-theme-selector.c:280
+#: src/nautilus-property-browser.c:357 src/nautilus-theme-selector.c:266
 msgid "  Done  "
 msgstr "  Klar  "
 
@@ -7583,56 +7583,65 @@ msgstr "Färgnamn:"
 msgid "Color value:"
 msgstr "Färgvärde:"
 
+#: src/nautilus-property-browser.c:1038
+#, c-format
+msgid "Sorry, but \"%s\" is not a valid file name."
+msgstr "Tyvärr, \"%s\" är inte ett giltigt filnamn."
+
 #: src/nautilus-property-browser.c:1040
+msgid "Sorry, but you did not supply a valid file name."
+msgstr "Tyvärr, du angav inte ett giltigt filnamn."
+
+#: src/nautilus-property-browser.c:1042 src/nautilus-property-browser.c:1085
+msgid "Couldn't install pattern"
+msgstr "Kunde inte installera mönster"
+
+#: src/nautilus-property-browser.c:1053
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Tyvärr, du kan inte ersätta återställningsbilden."
 
-#: src/nautilus-property-browser.c:1071
+#: src/nautilus-property-browser.c:1084
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Tyvärr, mönstret %s kunde inte installeras."
 
-#: src/nautilus-property-browser.c:1072
-msgid "Couldn't install pattern"
-msgstr "Kunde inte installera mönster"
-
-#: src/nautilus-property-browser.c:1094
+#: src/nautilus-property-browser.c:1107
 msgid "Select an image file to add as a pattern:"
 msgstr "Välj en bildfil att lägga till som mönster:"
 
-#: src/nautilus-property-browser.c:1153
+#: src/nautilus-property-browser.c:1166
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1154
+#: src/nautilus-property-browser.c:1167
 msgid "Couldn't install color"
 msgstr "Kunde inte installera färg"
 
-#: src/nautilus-property-browser.c:1210
+#: src/nautilus-property-browser.c:1223
 msgid "Select a color to add:"
 msgstr "Välj en färg att lägga till:"
 
-#: src/nautilus-property-browser.c:1291
+#: src/nautilus-property-browser.c:1304
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/nautilus-property-browser.c:1309
+#: src/nautilus-property-browser.c:1322
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1310 src/nautilus-property-browser.c:1313
-#: src/nautilus-property-browser.c:1317 src/nautilus-property-browser.c:1346
+#: src/nautilus-property-browser.c:1323 src/nautilus-property-browser.c:1326
+#: src/nautilus-property-browser.c:1330 src/nautilus-property-browser.c:1359
 msgid "Couldn't install emblem"
 msgstr "Kunde inte installera emblem"
 
-#: src/nautilus-property-browser.c:1312
+#: src/nautilus-property-browser.c:1325
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Tyvärr, emblemnyckelord kan bara innehålla bokstäver, blanksteg och siffror."
 
-#: src/nautilus-property-browser.c:1315
+#: src/nautilus-property-browser.c:1328
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7641,64 +7650,64 @@ msgstr ""
 "Tyvärr, namnet \"%s\" är ett redan existerande nyckelord. Var vänlig och "
 "välj ett annat namn på det."
 
-#: src/nautilus-property-browser.c:1345
+#: src/nautilus-property-browser.c:1358
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Tyvärr, bilden på %s kunde inte installeras som ett emblem."
 
-#: src/nautilus-property-browser.c:1961
+#: src/nautilus-property-browser.c:1974
 msgid "Select A Category:"
 msgstr "Välj en kategori:"
 
-#: src/nautilus-property-browser.c:1969 src/nautilus-theme-selector.c:508
+#: src/nautilus-property-browser.c:1982 src/nautilus-theme-selector.c:494
 msgid "Cancel Remove"
 msgstr "Avbryt borttagning"
 
-#: src/nautilus-property-browser.c:1973
+#: src/nautilus-property-browser.c:1986
 msgid "  Add a new pattern  "
 msgstr "  Lägg till ett nytt mönster  "
 
-#: src/nautilus-property-browser.c:1976
+#: src/nautilus-property-browser.c:1989
 msgid "  Add a new color  "
 msgstr "  Lägg till en ny färg  "
 
-#: src/nautilus-property-browser.c:1979
+#: src/nautilus-property-browser.c:1992
 msgid "  Add a new emblem  "
 msgstr "  Lägg till ett nytt emblem  "
 
-#: src/nautilus-property-browser.c:2002
+#: src/nautilus-property-browser.c:2015
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2005
+#: src/nautilus-property-browser.c:2018
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2008
+#: src/nautilus-property-browser.c:2021
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2017
+#: src/nautilus-property-browser.c:2030
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2020
+#: src/nautilus-property-browser.c:2033
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2023
+#: src/nautilus-property-browser.c:2036
 msgid "Emblems:"
 msgstr "Emblem:"
 
-#: src/nautilus-property-browser.c:2041
+#: src/nautilus-property-browser.c:2054
 msgid "  Remove a pattern  "
 msgstr "  Ta bort ett mönster  "
 
-#: src/nautilus-property-browser.c:2044
+#: src/nautilus-property-browser.c:2057
 msgid "  Remove a color  "
 msgstr "  Ta bort en färg  "
 
-#: src/nautilus-property-browser.c:2047
+#: src/nautilus-property-browser.c:2060
 msgid "  Remove an emblem  "
 msgstr "  Ta bort ett emblem  "
 
@@ -8178,7 +8187,7 @@ msgstr "Visa en sida där du kan skicka feedback om Nautilus och Eazel Services"
 
 #: src/nautilus-shell-ui.xml.h:50
 msgid "Show the contents at the normal size"
-msgstr "Visa innehållet i den normala storleken"
+msgstr "Visa innehållet i normal storlek"
 
 #: src/nautilus-shell-ui.xml.h:51
 msgid "Show the contents in less detail"
@@ -8411,50 +8420,50 @@ msgid "Find:"
 msgstr "Sök:"
 
 #. set the title and standard close accelerator
-#: src/nautilus-theme-selector.c:173
+#: src/nautilus-theme-selector.c:170
 msgid "Nautilus Theme Selector"
 msgstr "Nautilus-temaväljaren"
 
 #. add the title label
-#: src/nautilus-theme-selector.c:202
+#: src/nautilus-theme-selector.c:199
 msgid "Nautilus Theme:"
 msgstr "Nautilus-tema:"
 
-#: src/nautilus-theme-selector.c:290
+#: src/nautilus-theme-selector.c:276
 msgid "  Add new theme  "
 msgstr "  Lägg till ett nytt tema  "
 
-#: src/nautilus-theme-selector.c:299
+#: src/nautilus-theme-selector.c:285
 msgid "  Remove theme  "
 msgstr "  Ta bort tema  "
 
-#: src/nautilus-theme-selector.c:411
+#: src/nautilus-theme-selector.c:397
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid theme folder."
 msgstr "Tyvärr, \"%s\" är inte en giltig temamapp."
 
-#: src/nautilus-theme-selector.c:412
+#: src/nautilus-theme-selector.c:398
 msgid "Couldn't add theme"
 msgstr "Kunde inte lägga till tema"
 
-#: src/nautilus-theme-selector.c:440
+#: src/nautilus-theme-selector.c:426
 #, c-format
 msgid "Sorry, but the \"%s\" theme couldn't be installed."
 msgstr "Tyvärr, temat \"%s\" kunde inte installeras."
 
-#: src/nautilus-theme-selector.c:441
+#: src/nautilus-theme-selector.c:427
 msgid "Couldn't install theme"
 msgstr "Kunde inte installera tema"
 
-#: src/nautilus-theme-selector.c:474
+#: src/nautilus-theme-selector.c:460
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Välj en temamapp att lägga till som ett nytt tema:"
 
-#: src/nautilus-theme-selector.c:506 src/nautilus-theme-selector.c:553
+#: src/nautilus-theme-selector.c:492 src/nautilus-theme-selector.c:539
 msgid "Click on a theme to remove it."
 msgstr "Klicka på ett tema för att ta bort det."
 
-#: src/nautilus-theme-selector.c:556
+#: src/nautilus-theme-selector.c:542
 msgid ""
 "Click on a theme to change the\n"
 "appearance of Nautilus."
@@ -8463,11 +8472,11 @@ msgstr ""
 "utsendet på Nautilus."
 
 #. change the add button label back to it's normal state
-#: src/nautilus-theme-selector.c:569
+#: src/nautilus-theme-selector.c:555
 msgid "Add New Theme"
 msgstr "Lägg till nytt tema"
 
-#: src/nautilus-theme-selector.c:596
+#: src/nautilus-theme-selector.c:582
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
@@ -8475,19 +8484,19 @@ msgstr ""
 "Tyvärr, du kan inte ta bort det aktuella temat. Var vänlig och byt till ett "
 "annat tema innan du tar bort detta."
 
-#: src/nautilus-theme-selector.c:598
+#: src/nautilus-theme-selector.c:584
 msgid "Can't delete current theme"
 msgstr "Kan inte ta bort aktuellt tema"
 
-#: src/nautilus-theme-selector.c:619
+#: src/nautilus-theme-selector.c:605
 msgid "Sorry, but that theme could not be removed!"
 msgstr "Tyvärr, det temat kunde inte tas bort!"
 
-#: src/nautilus-theme-selector.c:620
+#: src/nautilus-theme-selector.c:606
 msgid "Couldn't remove theme"
 msgstr "Kunde inte ta bort tema"
 
-#: src/nautilus-theme-selector.c:724
+#: src/nautilus-theme-selector.c:709
 #, c-format
 msgid "No description available for the \"%s\" theme"
 msgstr "Ingen beskrivning är tillgänglig för temat \"%s\""
@@ -8511,11 +8520,11 @@ msgstr "Stäng"
 msgid "Preview Release %s: %s"
 msgstr "Förhandsversion %s: %s"
 
-#: src/nautilus-window-manage-views.c:751
+#: src/nautilus-window-manage-views.c:753
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:762
+#: src/nautilus-window-manage-views.c:764
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8524,12 +8533,12 @@ msgstr ""
 "%s-vyn råkade ut för ett fel och kan inte fortsätta. Du kan välja en annan "
 "vy eller gå till en annan plats."
 
-#: src/nautilus-window-manage-views.c:773
+#: src/nautilus-window-manage-views.c:775
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
 
-#: src/nautilus-window-manage-views.c:922
+#: src/nautilus-window-manage-views.c:924
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8537,7 +8546,7 @@ msgstr ""
 "En av sidoradspanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr "
 "kan jag inte säga vilken."
 
-#: src/nautilus-window-manage-views.c:926
+#: src/nautilus-window-manage-views.c:928
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8546,18 +8555,18 @@ msgstr ""
 "Sidoradspanelen %s råkade ut för ett fel och kan inte fortsätta. Om detta "
 "fortsätter att hända kanske du vill stänga av denna panel."
 
-#: src/nautilus-window-manage-views.c:931
+#: src/nautilus-window-manage-views.c:933
 msgid "Sidebar Panel Failed"
 msgstr "Sidoradspanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1135
+#: src/nautilus-window-manage-views.c:1137
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Kunde inte hitta \"%s\". Var vänlig och kontrollera stavningen och försök "
 "igen."
 
-#: src/nautilus-window-manage-views.c:1141
+#: src/nautilus-window-manage-views.c:1143
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -8565,7 +8574,7 @@ msgstr ""
 "\"%s\" är ingen giltig plats. Var vänlig och kontrollera stavningen och "
 "försök igen."
 
-#: src/nautilus-window-manage-views.c:1155
+#: src/nautilus-window-manage-views.c:1157
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8574,29 +8583,29 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken filtyp "
 "det är."
 
-#: src/nautilus-window-manage-views.c:1163
+#: src/nautilus-window-manage-views.c:1165
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1175
+#: src/nautilus-window-manage-views.c:1177
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1181
+#: src/nautilus-window-manage-views.c:1183
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1186
+#: src/nautilus-window-manage-views.c:1188
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1197
+#: src/nautilus-window-manage-views.c:1199
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8606,7 +8615,7 @@ msgstr ""
 "Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
 "stämmer."
 
-#: src/nautilus-window-manage-views.c:1205
+#: src/nautilus-window-manage-views.c:1207
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8615,7 +8624,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värdnamnet var tomt. Kontrollera att dina "
 "proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1217
+#: src/nautilus-window-manage-views.c:1219
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8627,16 +8636,16 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1221
+#: src/nautilus-window-manage-views.c:1223
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1225
+#: src/nautilus-window-manage-views.c:1227
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1230
+#: src/nautilus-window-manage-views.c:1232
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
@@ -8756,6 +8765,13 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:587
 msgid "%.0f%%"
 msgstr "%.0f %%"
+
+#~ msgid ""
+#~ "Sorry, but ~ as a directory is not currently supported.\n"
+#~ " Please Type the full path."
+#~ msgstr ""
+#~ "Tyvärr, ~ som katalog stöds för närvarande inte.\n"
+#~ " Var vänlig och ange den fullständiga sökvägen."
 
 #~ msgid "Sound hardware missing or busy!"
 #~ msgstr "Ljudhårdvara saknas eller är upptaget!"
