@@ -2129,6 +2129,21 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect, HitTyp
 	
 	/* Check for hit in the icon. If we're highlighted for dropping, anywhere in the rect is OK */
 	get_icon_canvas_rectangle (icon_item, &icon_rect);
+
+	/* Check for hit in the emblem pixbufs first, since they appear on top of the icon. */
+	emblem_layout_reset (&emblem_layout, icon_item, &icon_item->details->canvas_rect);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+		if (hit_test_pixbuf (emblem_pixbuf, &emblem_rect, canvas_rect)) {
+			if (hit_type != NULL) {
+				*hit_type = EMBLEM_HIT;
+			}
+			if (hit_index != NULL) {
+				*hit_index = emblem_layout.index;
+			}
+			return TRUE;
+		}	
+	}
+	
 	if (hit_type != NULL) {
 		*hit_type = ICON_HIT;
 	}
@@ -2150,20 +2165,6 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect, HitTyp
 			*hit_type = LABEL_HIT;
 		}
 		return TRUE;
-	}
-
-	/* Check for hit in the emblem pixbufs. */
-	emblem_layout_reset (&emblem_layout, icon_item, &icon_item->details->canvas_rect);
-	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
-		if (hit_test_pixbuf (emblem_pixbuf, &emblem_rect, canvas_rect)) {
-			if (hit_type != NULL) {
-				*hit_type = EMBLEM_HIT;
-			}
-			if (hit_index != NULL) {
-				*hit_index = emblem_layout.index;
-			}
-			return TRUE;
-		}	
 	}
 
 	/* there wasn't a hit, so indicate that */

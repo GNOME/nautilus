@@ -69,6 +69,7 @@ enum {
 };
 
 #define ANNOTATION_WIDTH 240
+#define DEFAULT_FONT_SIZE 12
 #define LINE_BREAK_CHARACTERS " -_,;.?/&"
 
 static void nautilus_canvas_note_item_class_init (NautilusCanvasNoteItemClass *class);
@@ -318,8 +319,11 @@ static void
 nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, const char *new_text)
 {
 	char *display_text;
-	int total_width, height, width;
+	int total_width, height, width, font_height;
 	GnomeCanvasItem *item;
+	NautilusScalableFont *scalable_font;
+	GdkFont *font;
+	NautilusDimensions dimensions;
 	
 	item = GNOME_CANVAS_ITEM (note_item);
 	
@@ -334,17 +338,30 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 	/* this will get more sophisticated as we get fancier */
 	display_text = nautilus_annotation_get_display_text (new_text);	
 	
-	total_width = 8 * strlen (display_text);
-	height = 16 * (1 + (total_width / ANNOTATION_WIDTH));
-	
-	if (total_width < ANNOTATION_WIDTH) {
-		width = total_width;
+	if (item->canvas->aa) {
+		scalable_font = nautilus_scalable_font_get_default_font ();
+		dimensions = nautilus_scalable_font_measure_text (scalable_font,
+								  DEFAULT_FONT_SIZE, 
+								  display_text, 
+								  strlen (display_text));
+		total_width = dimensions.width + 8;
+		height = dimensions.height * (1 + (total_width / ANNOTATION_WIDTH));
+		gtk_object_unref (GTK_OBJECT (scalable_font));
 	} else {
-		width = ANNOTATION_WIDTH;	
+		font = nautilus_font_factory_get_font_from_preferences (DEFAULT_FONT_SIZE);				
+		total_width = 8 + gdk_text_measure (font, display_text, strlen (display_text));
+		font_height = gdk_text_height (font, display_text, strlen (display_text));
+		height =  font_height * (1 + (total_width / ANNOTATION_WIDTH));
+		gdk_font_unref (font);
 	}
-
-	note_item->x2 = note_item->x1 + width;
-	note_item->y2 = note_item->y1 + height + 4; /* room for descenders */
+	
+	width = (total_width < ANNOTATION_WIDTH) ? total_width : ANNOTATION_WIDTH;
+	
+	/* add some vertical slop for descenders and incorporate scale factor */
+	note_item->x2 = note_item->x1 + (width / item->canvas->pixels_per_unit);
+	note_item->y2 = note_item->y1 + 4.0 + (height / item->canvas->pixels_per_unit);
+	
+	
 	update_item_bounding_box (note_item);
 	
 	g_free (display_text);
@@ -703,7 +720,7 @@ draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_
 	
 	smooth_text_layout = nautilus_smooth_text_layout_new (
 				note_text, strlen(note_text),
-				font, 12, TRUE);
+				font, DEFAULT_FONT_SIZE, TRUE);
 	
 	nautilus_smooth_text_layout_set_line_wrap_width (smooth_text_layout, width - 4);
 	
@@ -798,7 +815,7 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 
 	/* draw the annotation text */
 	if (note_item->note_text) {
-		font = nautilus_font_factory_get_font_from_preferences (12);		
+		font = nautilus_font_factory_get_font_from_preferences (DEFAULT_FONT_SIZE);		
 		display_text = nautilus_annotation_get_display_text (note_item->note_text);
 
 		text_info = gnome_icon_layout_text

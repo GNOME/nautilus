@@ -1,3 +1,15 @@
+2001-04-05  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text), (draw_item_aa_text),
+	(nautilus_canvas_note_item_draw):
+	improved the note sizing, by actually measuring the text and
+	adjusting for the canvas scale factor.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c: (hit_test):
+	made hit-testing prefer emblems when they overlap the icon, since
+	they're visually on top.
+	
 2001-04-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-annotation.c:
