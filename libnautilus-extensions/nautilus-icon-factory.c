@@ -975,7 +975,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 	}
 	
 	/* append an image suffix if the correct one isn't already present */
-	if (!nautilus_str_has_suffix (image_uri, ".png") && !nautilus_str_has_suffix (image_uri, ".PNG")) {		
+	if (!nautilus_str_has_suffix (image_uri, ".png") && !nautilus_str_has_suffix (image_uri, ".PNG") && !directory_only) {		
 		char* old_uri = thumbnail_uri;
 		thumbnail_uri = g_strdup_printf("%s.png", thumbnail_uri);
 		g_free(old_uri);			

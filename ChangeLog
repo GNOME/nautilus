@@ -1,5 +1,15 @@
 2000-05-21  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(make_thumbnail_path):
+	fixed bad bug introduced a few days ago that made thumbnailing no longer work - it was
+	appending ".png" to directory names.
+	* libnautilus-extensions/nautilus-graphic-effects.c:
+	(nautilus_draw_frame):
+	made the thumbnail frame drop shadow lighter
+	
+2000-05-21  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/music/nautilus-music-view.c: (get_song_text):
 	fixed a crash in the music view due to uninitialized variables that occured when
 	the album name was not present.

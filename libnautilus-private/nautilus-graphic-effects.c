@@ -245,7 +245,7 @@ nautilus_draw_frame (GdkPixbuf *frame_pixbuf)
 		if (index == 0)
 			fill_value = 0;
 		else if (index > (height - 6)) {
-			fill_value = (index - (height - 5)) * 50;
+			fill_value = 107 + (index - (height - 5)) * 37;
 			pin_width = width - (height - index);
 		}	
 		/* memset(pixels, fill_value, rowstride); */
@@ -273,37 +273,37 @@ nautilus_draw_frame (GdkPixbuf *frame_pixbuf)
 		temp_pixels = pixels - 5*4;
 
 		if (last_index > 4) {
-			*temp_pixels++ = 0;
-			*temp_pixels++ = 0;
-			*temp_pixels++ = 0;		
+			*temp_pixels++ = 107;
+			*temp_pixels++ = 107;
+			*temp_pixels++ = 107;		
 			*temp_pixels++ = 255;
 		} else temp_pixels += 4;
 		
 		if (last_index > 3) {			
-			*temp_pixels++ = 50;
-			*temp_pixels++ = 50;
-			*temp_pixels++ = 50;		
+			*temp_pixels++ = 144;
+			*temp_pixels++ = 144;
+			*temp_pixels++ = 144;		
 			*temp_pixels++ = index < 1 ? 0 : 255;
 		}  else temp_pixels += 4;
 		
 		if (last_index > 2) {
-			*temp_pixels++ = 100;
-			*temp_pixels++ = 100;
-			*temp_pixels++ = 100;		
+			*temp_pixels++ = 181;
+			*temp_pixels++ = 181;
+			*temp_pixels++ = 181;		
 			*temp_pixels++ = index < 2 ? 0 : 255;
 		}  else temp_pixels += 4;
 		
 		if (last_index > 1) {
-			*temp_pixels++ = 150;
-			*temp_pixels++ = 150;
-			*temp_pixels++ = 150;		
+			*temp_pixels++ = 218;
+			*temp_pixels++ = 218;
+			*temp_pixels++ = 218;		
 			*temp_pixels++ = index < 3 ? 0 : 255;
 		}  else temp_pixels += 4;
 		
 		if (last_index > 0) {
-			*temp_pixels++ = 200;
-			*temp_pixels++ = 200;
-			*temp_pixels++ = 200;		
+			*temp_pixels++ = 244;
+			*temp_pixels++ = 244;
+			*temp_pixels++ = 244;		
 			*temp_pixels++ = index < 4 ? 0 : 255;
 		}
 	}
