@@ -959,10 +959,12 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 			  gpointer callback_data)
 {
 	NautilusDirectory *directory;
+	NautilusFile *count_file_copy;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
 	g_assert (directory->details->count_in_progress == handle);
+
 	if (result == GNOME_VFS_OK) {
 		return;
 	}
@@ -975,15 +977,18 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 		directory->details->count_file->details->got_directory_count = TRUE;
 	}
 
+
+	count_file_copy = directory->details->count_file;
+	directory->details->count_file = NULL;
+	directory->details->count_in_progress = NULL;
+
 	/* Send file-changed even if count failed, so interested parties can
 	 * distinguish between unknowable and not-yet-known cases.
 	 */
-	nautilus_file_changed (directory->details->count_file);
+	nautilus_file_changed (count_file_copy);
 
 	/* Let go of this request. */
 	nautilus_file_unref (directory->details->count_file);
-	directory->details->count_file = NULL;
-	directory->details->count_in_progress = NULL;
 
 	/* Start up the next one. */
 	state_changed (directory);
