@@ -312,3 +312,16 @@ add FreeType2 support by installing the rpms found here:
         http://developer.eazel.com/eazel-hacking/updates/redhat62/freetype2
 
 Replace "redhat62" with "redhat70" if you are using RedHat Linux 7.0.
+
+Originally, the Freetype 2 rpm that we used for Nautilus was called "freetype2".
+Now that RedHat 7.1 is is coming around, they have included freetype 2 in their 
+distribution.  They called the rpm "freetype-2" (Freetype Version 2).  Their 
+freetype-2 rpm contains both Freetype version 1 and Freetype version 2.  In
+order to avoid naming conflicts, we have renamed our freetype2 rpm to freetype-2.
+This will cause problems for people upgrading from our old rpms to our new ones.
+To remove the old rpms,
+
+1) su
+   <password>
+2) rpm -e --nodeps freetype2 freetype2-devel
+3) Install the new Freetype-2 rpms: rpm -Uvh freetype*2.0.1*.rpm
