@@ -36,7 +36,7 @@
 #include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-zoomable-frame.h>
-#include <libnautilus-private/nautilus-generous-bin.h>
+#include <eel/eel-generous-bin.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view-component.h>
 
@@ -49,12 +49,12 @@
 typedef struct NautilusViewFrameDetails NautilusViewFrameDetails;
 
 typedef struct {
-        NautilusGenerousBin parent;
+        EelGenerousBin parent;
         NautilusViewFrameDetails *details;
 } NautilusViewFrame;
 
 typedef struct {
-        NautilusGenerousBinClass parent_spot;
+        EelGenerousBinClass parent_spot;
         
         /* These roughly correspond to CORBA calls, but in some cases they are higher level. */
 

@@ -576,19 +576,19 @@ nautilus_application_startup (NautilusApplication *application,
 	} else if (restart_shell) {
 		Nautilus_Shell_restart (shell, &ev);
 	} else {
-		if (!no_desktop && nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+		if (!no_desktop && eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 			Nautilus_Shell_start_desktop (shell, &ev);
 		}
 		
 		/* Monitor the preference to show or hide the desktop */
-		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 							       desktop_changed_callback,
 							       application,
 							       GTK_OBJECT (application));
 
 		/* Monitor the preference to have the desktop */
 		/* point to the Unix home folder */
-		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 							       desktop_location_changed_callback,
 							       NULL,
 							       GTK_OBJECT (application));
@@ -754,7 +754,7 @@ desktop_changed_callback (gpointer user_data)
 	NautilusApplication *application;
 	
 	application = NAUTILUS_APPLICATION (user_data);
-	if ( nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+	if ( eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 		nautilus_application_open_desktop (application);
 	} else {
 		nautilus_application_close_desktop ();
@@ -944,7 +944,7 @@ static void
 update_session (gpointer callback_data)
 {
 	set_session_restart (callback_data,
-			     nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION)
+			     eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION)
 			     /* Only ever add ourselves to the session
 			      * if we have a desktop window. Prevents the
 			      * session thrashing that's seen otherwise
@@ -967,7 +967,7 @@ init_session (void)
 			    (GtkSignalFunc) removed_from_session,
 			    NULL);
 	
-	nautilus_preferences_add_callback
+	eel_preferences_add_callback
 		(NAUTILUS_PREFERENCES_ADD_TO_SESSION,
 		 update_session, client);
 

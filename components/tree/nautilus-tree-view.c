@@ -245,17 +245,17 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 			view->details->inserting_node = TRUE;
 			EEL_CLIST_UNSET_FLAG (EEL_CLIST (view->details->tree),
-						   CLIST_AUTO_SORT);
+					      CLIST_AUTO_SORT);
 			view_node = eel_ctree_insert_node (EEL_CTREE (view->details->tree),
-								parent_view_node, 
-								NULL,
-								text,
-								TREE_SPACING,
-								closed_pixbuf, open_pixbuf,
-								! nautilus_file_is_directory (file),
-								FALSE);
+							   parent_view_node, 
+							   NULL,
+							   text,
+							   TREE_SPACING,
+							   closed_pixbuf, open_pixbuf,
+							   ! nautilus_file_is_directory (file),
+							   FALSE);
 			EEL_CLIST_SET_FLAG (EEL_CLIST (view->details->tree),
-						 CLIST_AUTO_SORT);
+					    CLIST_AUTO_SORT);
 			view->details->inserting_node = FALSE;
 
 			gdk_pixbuf_unref (closed_pixbuf);
@@ -263,8 +263,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 
 			eel_ctree_node_set_row_data (EEL_CTREE (view->details->tree),
-							  view_node,
-							  node);
+						     view_node,
+						     node);
 
 			g_assert (g_hash_table_lookup (view->details->file_to_node_map, file) == NULL);
 
@@ -279,13 +279,13 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 					if (!ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 								     view_node)) {
 						eel_ctree_expand (EEL_CTREE (view->details->tree),
-								       view_node);
+								  view_node);
 					} 
 				} else {
 					if (ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 								    view_node)) {
 						eel_ctree_collapse (EEL_CTREE (view->details->tree),
-									 view_node);
+								    view_node);
 					}
 				}
 			}
@@ -317,7 +317,7 @@ forget_view_node (NautilusTreeView *view,
 	forget_unparented_node (view, node);
 
 	eel_ctree_node_set_row_data (EEL_CTREE (view->details->tree),
-					  view_node, NULL);
+				     view_node, NULL);
 
 	g_hash_table_remove (view->details->file_to_node_map, file);
 	nautilus_file_unref (file);
@@ -367,12 +367,12 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 		 * Note that it would be better to remove the expansion
 		 * state of the children, but that breaks renaming..
 		 */
-		 uri = map_view_node_to_uri (view, view_node);
-		 nautilus_tree_expansion_state_remove_node (view->details->expansion_state, uri);
+		uri = map_view_node_to_uri (view, view_node);
+		nautilus_tree_expansion_state_remove_node (view->details->expansion_state, uri);
 
 		forget_view_node_and_children (view, view_node);
  		eel_ctree_remove_node (EEL_CTREE (view->details->tree),
- 					    view_node);
+				       view_node);
  	}
 
 	nautilus_tree_model_stop_monitoring_node (view->details->model, node, view);
@@ -440,14 +440,14 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 		name = nautilus_file_get_name (file);
 	
 		eel_ctree_set_node_info (EEL_CTREE (view->details->tree),
-					      view_node,
-					      name,
-					      TREE_SPACING,
-					      closed_pixbuf,
-					      open_pixbuf,
-					      ! nautilus_file_is_directory (file),
-					      ctree_is_node_expanded (EEL_CTREE (view->details->tree),
-								      view_node));
+					 view_node,
+					 name,
+					 TREE_SPACING,
+					 closed_pixbuf,
+					 open_pixbuf,
+					 ! nautilus_file_is_directory (file),
+					 ctree_is_node_expanded (EEL_CTREE (view->details->tree),
+								 view_node));
 
 		g_free (name);
 
@@ -463,13 +463,13 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 				if (!ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 							     view_node)) {
 					eel_ctree_expand (EEL_CTREE (view->details->tree),
-							       view_node);
+							  view_node);
 				} 
 			} else {
 				if (ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 							    view_node)) {
 					eel_ctree_collapse (EEL_CTREE (view->details->tree),
-								 view_node);
+							    view_node);
 				}
 			}
 
@@ -604,11 +604,11 @@ get_selected_row_position (EelCTree *ctree)
 	clist = EEL_CLIST (ctree);
 	selected_row = get_selected_row (ctree);
 	if (eel_clist_row_is_visible (clist,
-					   selected_row) == GTK_VISIBILITY_NONE) {
+				      selected_row) == GTK_VISIBILITY_NONE) {
 		return -1;
 	}
 	if (!eel_clist_get_selection_info (clist, 0, 0,
-						&top_row, &column)) {
+					   &top_row, &column)) {
 		return -1;
 	}
 	return selected_row - top_row;
@@ -811,13 +811,13 @@ filtering_changed_callback (gpointer callback_data)
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
 	view->details->show_hidden_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 	
 	view->details->show_backup_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 
 	view->details->show_non_directories = 
-		! nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
+		! eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 
 
 	/* Reload the whole tree so that the filtering changes take place. */
@@ -833,7 +833,7 @@ update_smooth_graphics_mode (NautilusTreeView *view)
 	gboolean aa_mode, old_aa_mode;
 
 	if (view->details->tree != NULL) {
-		aa_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+		aa_mode = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 		old_aa_mode = is_anti_aliased (view);
 
 		if (old_aa_mode != aa_mode) {
@@ -935,15 +935,15 @@ create_tree (NautilusTreeView *view)
 	 * to using the standard clist comparison function (a strcmp)
 	 */
 	eel_clist_set_compare_func (EEL_CLIST (view->details->tree),
-					 ctree_compare_rows);
+				    ctree_compare_rows);
 
 	eel_clist_set_column_auto_resize (EEL_CLIST (view->details->tree), 0, TRUE);
 	eel_clist_columns_autosize (EEL_CLIST (view->details->tree));
 	eel_clist_set_reorderable (EEL_CLIST (view->details->tree), FALSE);
 	eel_clist_set_row_height (EEL_CLIST (view->details->tree),
-				       MAX (NAUTILUS_ICON_SIZE_FOR_MENUS,
-					    view->details->tree->style->font->ascent
-					    + view->details->tree->style->font->descent));
+				  MAX (NAUTILUS_ICON_SIZE_FOR_MENUS,
+				       view->details->tree->style->font->ascent
+				       + view->details->tree->style->font->descent));
         eel_ctree_set_indent (EEL_CTREE (view->details->tree), 12);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->tree),
@@ -967,19 +967,19 @@ create_tree (NautilusTreeView *view)
 				  view);
 	
 	/* Keep track of changes in these prefs to filter files accordingly. */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					   filtering_changed_callback,
-					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					   filtering_changed_callback,
-					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-					   filtering_changed_callback,
-					   view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+				      filtering_changed_callback,
+				      view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+				      filtering_changed_callback,
+				      view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+				      filtering_changed_callback,
+				      view);
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-					   smooth_graphics_mode_changed_callback, 
-					   view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+				      smooth_graphics_mode_changed_callback, 
+				      view);
 
 	view->details->file_to_node_map = g_hash_table_new (NULL, NULL);
 	view->details->view_node_to_uri_map = g_hash_table_new (NULL, NULL);
@@ -1037,13 +1037,13 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 
 	/* Obtain the filtering preferences */
 	view->details->show_hidden_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
 	view->details->show_backup_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 
 	view->details->show_non_directories = 
-		! nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
+		! eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 
 	gtk_signal_connect (GTK_OBJECT (view),
 			    "load_location",
@@ -1117,19 +1117,19 @@ nautilus_tree_view_destroy (GtkObject *object)
 			compare_cached_key = NULL;
 		}
 
-		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						      filtering_changed_callback,
-						      view);
-		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-						      filtering_changed_callback,
-						      view);
-		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-						      filtering_changed_callback,
-						      view);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						 filtering_changed_callback,
+						 view);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+						 filtering_changed_callback,
+						 view);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+						 filtering_changed_callback,
+						 view);
 
-		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-						      smooth_graphics_mode_changed_callback,
-						      view);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+						 smooth_graphics_mode_changed_callback,
+						 view);
 		
 		g_hash_table_foreach (view->details->file_to_node_map,
 				      free_file_to_node_map_entry,
@@ -1170,7 +1170,7 @@ file_to_view_node (NautilusTreeView *view,
 
 EelCTreeNode *
 nautilus_tree_view_model_node_to_view_node (NautilusTreeView *view,
-			 NautilusTreeNode *node)
+					    NautilusTreeNode *node)
 {
 	EelCTreeNode *view_node;
 	NautilusFile *file;
@@ -1192,7 +1192,7 @@ nautilus_tree_view_node_to_model_node (NautilusTreeView *view,
 	NautilusTreeNode *tree_node;
 
 	tree_node = (NautilusTreeNode *) eel_ctree_node_get_row_data (EEL_CTREE (view->details->tree),
-									   node);
+								      node);
 
 	return tree_node;
 }
@@ -1310,13 +1310,13 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 
 			if (!ctree_is_node_expanded (EEL_CTREE (view->details->tree), view_node)) {
 				eel_ctree_expand (EEL_CTREE (view->details->tree),
-						       view_node);
+						  view_node);
 			}
 		} else {
 			g_free (view->details->selected_uri);
 			view->details->selected_uri = g_strdup (uri);
 			eel_ctree_select (EEL_CTREE (view->details->tree),
-					       view_node);
+					  view_node);
 		}
 	}
 		
@@ -1362,7 +1362,7 @@ select_current_location (NautilusTreeView *view)
 	 * should be used here.
 	 */
 	if (eel_strcmp (view->details->current_main_view_uri,
-			     view->details->selected_uri) == 0) {
+			view->details->selected_uri) == 0) {
 		return;
 	}
 

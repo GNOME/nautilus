@@ -1280,7 +1280,7 @@ append_directory_contents_fields (FMPropertiesWindow *window,
 	window->details->directory_contents_row = last_row;
 
 	update_visibility_of_item_count_fields (window);
-	nautilus_preferences_add_callback_while_alive 
+	eel_preferences_add_callback_while_alive 
 		(NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 		 update_visibility_of_item_count_fields_wrapper,
 		 window,
@@ -1866,7 +1866,7 @@ update_visibility_of_special_flags_widgets (FMPropertiesWindow *window)
 {
 	update_visibility_of_table_rows 
 		(window->details->permissions_table,
-		 nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS),
+		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS),
 		 window->details->first_special_flags_row,
 		 window->details->num_special_flags_rows,
 		 window->details->special_flags_widgets);
@@ -1899,7 +1899,7 @@ append_special_execution_flags (FMPropertiesWindow *window,
 	++window->details->num_special_flags_rows;
 
 	update_visibility_of_special_flags_widgets (window);
-	nautilus_preferences_add_callback_while_alive 
+	eel_preferences_add_callback_while_alive 
 		(NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 		 update_visibility_of_special_flags_widgets_wrapper,
 		 window,

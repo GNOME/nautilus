@@ -250,9 +250,9 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
 	fm_list_view_class->file_still_belongs = real_file_still_belongs;
 
-	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 					       (int *) &default_sort_order_auto_value);
-	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 					       &default_sort_reversed_auto_value);
 }
 
@@ -280,23 +280,23 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 					       update_icons,
 					       GTK_OBJECT (list_view));	
 
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
 						       font_or_font_size_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 						       default_sort_criteria_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 						       default_zoom_level_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 						       default_sort_criteria_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 						       font_or_font_size_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
@@ -978,7 +978,7 @@ fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
 	g_assert (list != NULL);
 
 	old_smooth_graphics_mode = eel_list_is_anti_aliased (list);
-	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	smooth_graphics_mode = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 
 	if (old_smooth_graphics_mode != smooth_graphics_mode) {
 		eel_list_set_anti_aliased_mode (list, smooth_graphics_mode);
@@ -1071,8 +1071,8 @@ fm_list_view_update_font (FMListView *list_view)
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
-	font_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
-	standard_font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
+	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
+	standard_font_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
 	
 	font_size = standard_font_size + font_size_delta_table[list_view->details->zoom_level];
 
@@ -1393,7 +1393,7 @@ get_default_zoom_level (void)
 
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 						       (int *) &default_zoom_level);
 	}
 
@@ -2167,7 +2167,7 @@ fm_list_view_update_click_mode (FMDirectoryView *view)
 	g_assert (FM_IS_LIST_VIEW (view));
 	g_assert (get_list (FM_LIST_VIEW (view)) != NULL);
 
-	click_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
+	click_mode = eel_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
 
 	eel_list_set_single_click_mode (get_list (FM_LIST_VIEW (view)), 
 		click_mode == NAUTILUS_CLICK_POLICY_SINGLE);

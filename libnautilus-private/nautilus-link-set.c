@@ -27,11 +27,10 @@
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
-#include <eel/eel-glib-extensions.h>
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
-#include "nautilus-preferences.h"
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>

@@ -103,7 +103,7 @@ nautilus_switchable_search_bar_destroy (GtkObject *object)
 
 	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (object);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 					      search_bar_preference_changed_callback,
 					      bar);
 
@@ -156,13 +156,13 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 	gtk_widget_show_all (hbox);
 	nautilus_switchable_search_bar_set_mode 
 		(bar, 
-		 nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE));
-
+		 eel_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE));
+	
 	/* React to future preference changes. */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-					   search_bar_preference_changed_callback,
-					   bar);
-
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+				      search_bar_preference_changed_callback,
+				      bar);
+	
 	return switchable_search_bar;
 
 }
@@ -283,7 +283,7 @@ nautilus_search_uri_to_search_bar_mode (const char *uri)
 {
 	NautilusSearchBarMode preferred_mode;
 
-	preferred_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE);
+	preferred_mode = eel_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE);
 	if (nautilus_search_uri_is_displayable_by_mode (uri, preferred_mode)) {
 		return preferred_mode;
 	}

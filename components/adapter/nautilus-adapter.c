@@ -27,22 +27,22 @@
 
 #include <config.h>
 #include "nautilus-adapter.h"
-#include "nautilus-adapter-load-strategy.h"
-#include "nautilus-adapter-embed-strategy.h"
-#include "nautilus-adapter-embed-strategy-private.h"
 
+#include "nautilus-adapter-embed-strategy-private.h"
+#include "nautilus-adapter-embed-strategy.h"
+#include "nautilus-adapter-load-strategy.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-item-container.h>
-#include <bonobo/bonobo-view-frame.h>
 #include <bonobo/bonobo-object-client.h>
-#include <gtk/gtksignal.h>
+#include <bonobo/bonobo-view-frame.h>
+#include <eel/eel-generous-bin.h>
+#include <eel/eel-gtk-macros.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
-#include <eel/eel-gtk-macros.h>
-#include <libnautilus-private/nautilus-generous-bin.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
 
 struct NautilusAdapterDetails {
 	NautilusView                 *nautilus_view;
@@ -166,7 +166,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 
 	/* Set up a few wrapper framework details */
-	bin =  gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
+	bin =  gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
 	gtk_widget_show (bin);
 	control = bonobo_control_new (bin);
 	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);

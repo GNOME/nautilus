@@ -3,9 +3,7 @@
 #include <eel/eel-image.h>
 #include <eel/eel-image-with-background.h>
 #include <eel/eel-string-picker.h>
-#include <libnautilus-private/nautilus-preferences.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-
 #include <unistd.h>
 
 static void
@@ -20,8 +18,8 @@ user_level_changed_callback (gpointer callback_data)
 
 	name = eel_caption_get_title_label (EEL_CAPTION (callback_data));
 
-	user_level = nautilus_preferences_get_user_level ();
-	visible_user_level = nautilus_preferences_get_visible_user_level (name);
+	user_level = eel_preferences_get_user_level ();
+	visible_user_level = eel_preferences_get_visible_user_level (name);
 
 	if (visible_user_level <= user_level) {
 		gtk_widget_show (GTK_WIDGET (callback_data));
@@ -61,7 +59,7 @@ int_picker_changed_callback (EelStringPicker *string_picker,
 	
 	new_value = eel_string_picker_get_index_for_string (string_picker, selected_string);
 
-	nautilus_preferences_set_integer ((const char *) callback_data, new_value);
+	eel_preferences_set_integer ((const char *) callback_data, new_value);
 
 	g_free (selected_string);
 }
@@ -80,7 +78,7 @@ user_level_picker_changed_callback (EelStringPicker *string_picker,
 	
 	new_user_level = eel_string_picker_get_index_for_string (string_picker, selected_string);
 
-	nautilus_preferences_set_user_level (new_user_level);
+	eel_preferences_set_user_level (new_user_level);
 
 	g_free (selected_string);
 }
@@ -101,9 +99,9 @@ picker_new (const char *name,
 	
 	eel_string_picker_set_string_list (EEL_STRING_PICKER (string_picker), entries);
 	eel_string_picker_set_selected_string_index (EEL_STRING_PICKER (string_picker), 
-							  nautilus_preferences_get_integer (name));
+						     eel_preferences_get_integer (name));
 	
-	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, string_picker);
+	eel_preferences_add_callback ("user_level", user_level_changed_callback, string_picker);
 	user_level_changed_callback (string_picker);
 
 	return string_picker;
@@ -125,9 +123,9 @@ user_level_picker_new (const char *name,
 	
 	eel_string_picker_set_string_list (EEL_STRING_PICKER (string_picker), entries);
 	eel_string_picker_set_selected_string_index (EEL_STRING_PICKER (string_picker), 
-							  nautilus_preferences_get_user_level ());
+						     eel_preferences_get_user_level ());
 	
-	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, string_picker);
+	eel_preferences_add_callback ("user_level", user_level_changed_callback, string_picker);
 	user_level_changed_callback (string_picker);
 
 	return string_picker;
@@ -160,35 +158,35 @@ main (int argc, char *argv[])
 	color_entries = eel_string_list_new_from_tokens ("0,1,2,3,4,5,6,7,8,9,10", ",", TRUE);
 	fruits_entries = eel_string_list_new_from_tokens ("0,1,2,3", ",", TRUE);
 
-	nautilus_preferences_default_set_string ("user_level",
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 "advanced");
+	eel_preferences_default_set_string ("user_level",
+					    EEL_USER_LEVEL_NOVICE,
+					    "advanced");
 	
-	nautilus_preferences_default_set_integer ("green",
-					      NAUTILUS_USER_LEVEL_NOVICE,
-					      3);
+	eel_preferences_default_set_integer ("green",
+					     EEL_USER_LEVEL_NOVICE,
+					     3);
 
-	nautilus_preferences_default_set_integer ("yellow",
-					      NAUTILUS_USER_LEVEL_NOVICE,
-					      9);
+	eel_preferences_default_set_integer ("yellow",
+					     EEL_USER_LEVEL_NOVICE,
+					     9);
 
-	nautilus_preferences_default_set_integer ("red",
-					      NAUTILUS_USER_LEVEL_NOVICE,
-					      7);
+	eel_preferences_default_set_integer ("red",
+					     EEL_USER_LEVEL_NOVICE,
+					     7);
 
-	nautilus_preferences_default_set_integer ("fruits/apple",
-					      NAUTILUS_USER_LEVEL_NOVICE,
-					      1);
-	nautilus_preferences_default_set_integer ("fruits/orange",
-					      NAUTILUS_USER_LEVEL_NOVICE,
-					      2);
-	nautilus_preferences_default_set_integer ("fruits/pear",
-					      NAUTILUS_USER_LEVEL_NOVICE,
-					      3);
+	eel_preferences_default_set_integer ("fruits/apple",
+					     EEL_USER_LEVEL_NOVICE,
+					     1);
+	eel_preferences_default_set_integer ("fruits/orange",
+					     EEL_USER_LEVEL_NOVICE,
+					     2);
+	eel_preferences_default_set_integer ("fruits/pear",
+					     EEL_USER_LEVEL_NOVICE,
+					     3);
 
-	nautilus_preferences_set_visible_user_level ("yellow", 1);
-	nautilus_preferences_set_visible_user_level ("green", 0);
-	nautilus_preferences_set_visible_user_level ("red", 2);
+	eel_preferences_set_visible_user_level ("yellow", 1);
+	eel_preferences_set_visible_user_level ("green", 0);
+	eel_preferences_set_visible_user_level ("red", 2);
 
 	//sleep (10);
 
@@ -218,7 +216,7 @@ main (int argc, char *argv[])
 	eel_string_list_free (color_entries);
 	eel_string_list_free (fruits_entries);
 
-	nautilus_preferences_add_callback ("fruits", fruits_changed_callback, NULL);
+	eel_preferences_add_callback ("fruits", fruits_changed_callback, NULL);
 
 	gtk_widget_show (vbox);
 	gtk_widget_show (window);

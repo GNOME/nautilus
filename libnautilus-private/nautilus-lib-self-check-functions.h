@@ -39,7 +39,6 @@ void nautilus_run_lib_self_checks (void);
 */
 
 #define NAUTILUS_LIB_FOR_EACH_SELF_CHECK_FUNCTION(macro) \
-	macro (nautilus_self_check_preferences) \
 	macro (nautilus_self_check_search_uri) \
 	macro (nautilus_self_check_file_utilities) \
 	macro (nautilus_self_check_file_operations) \

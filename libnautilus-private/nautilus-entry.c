@@ -66,7 +66,7 @@ emacs_shortcuts_preference_changed_callback (gpointer callback_data)
 	entry = NAUTILUS_ENTRY (callback_data);
 
 	entry->details->use_emacs_shortcuts =
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS);
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS);
 }
 
 static void
@@ -84,9 +84,9 @@ nautilus_entry_initialize (NautilusEntry *entry)
 
 	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-					   emacs_shortcuts_preference_changed_callback,
-					   entry);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
+				      emacs_shortcuts_preference_changed_callback,
+				      entry);
 	emacs_shortcuts_preference_changed_callback (entry);
 }
 
@@ -114,10 +114,10 @@ nautilus_entry_destroy (GtkObject *object)
 
 	entry = NAUTILUS_ENTRY (object);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-					      emacs_shortcuts_preference_changed_callback,
-					      entry);
-
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
+					 emacs_shortcuts_preference_changed_callback,
+					 entry);
+	
 	g_free (entry->details);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));

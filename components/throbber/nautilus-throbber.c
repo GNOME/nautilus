@@ -191,10 +191,10 @@ nautilus_throbber_destroy (GtkObject *object)
 	nautilus_throbber_remove_update_callback (throbber);
 	nautilus_throbber_unload_images (throbber);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_throbber_theme_changed,
-					      object);
-
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					 nautilus_throbber_theme_changed,
+					 object);
+	
 	if (throbber->details->property_bag) {
 		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
 	}
@@ -306,9 +306,9 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	gtk_widget_show (widget);
 	
 	/* add a callback for when the theme changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-					  nautilus_throbber_theme_changed,
-					  throbber);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+				      nautilus_throbber_theme_changed,
+				      throbber);
 }
 
 /* allocate a new throbber */

@@ -1,7 +1,7 @@
 #include "test.h"
 
 #include <libart_lgpl/art_rgb.h>
-#include <libnautilus-private/nautilus-preferences.h>
+#include <eel/eel-preferences.h>
 
 void
 test_init (int *argc,
@@ -228,7 +228,7 @@ test_text_caption_set_text_for_int_preferences (EelTextCaption *text_caption,
 	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
 	g_return_if_fail (name != NULL);
 	
-	int_value = nautilus_preferences_get_integer (name);
+	int_value = eel_preferences_get_integer (name);
 
 	text = g_strdup_printf ("%d", int_value);
 
@@ -246,7 +246,7 @@ test_text_caption_set_text_for_string_preferences (EelTextCaption *text_caption,
 	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
 	g_return_if_fail (name != NULL);
 	
-	text = nautilus_preferences_get (name);
+	text = eel_preferences_get (name);
 	
 	eel_text_caption_set_text (EEL_TEXT_CAPTION (text_caption), text);
 

@@ -1677,7 +1677,7 @@ can_use_public_metafile (NautilusMetafile *metafile)
 		return FALSE;
 	}
 
-	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA);
+	preference_value = eel_preferences_get_integer (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA);
 
 	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;

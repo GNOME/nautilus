@@ -606,7 +606,7 @@ theme_selector_update_selected_theme_from_preferences (NautilusThemeSelector *th
 	
 	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
 
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+	theme_name = eel_preferences_get (NAUTILUS_PREFERENCES_THEME);
 	nautilus_theme_selector_set_selected_theme (theme_selector, theme_name);
 	g_free (theme_name);
 

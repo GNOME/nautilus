@@ -679,13 +679,13 @@ static gboolean show_backup_files = TRUE;
 static void
 show_hidden_files_changed_callback (gpointer callback_data)
 {
-	show_hidden_files = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+	show_hidden_files = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 }
 
 static void
 show_backup_files_changed_callback (gpointer callback_data)
 {
-	show_backup_files = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+	show_backup_files = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 }
 
 static GnomeVFSDirectoryFilterOptions
@@ -700,9 +700,9 @@ get_filter_options_for_directory_count (void)
 
 	/* Add the callback once for the life of our process */
 	if (!show_hidden_files_changed_callback_installed) {
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						   show_hidden_files_changed_callback,
-						   NULL);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					      show_hidden_files_changed_callback,
+					      NULL);
 		show_hidden_files_changed_callback_installed = TRUE;
 		
 		/* Peek for the first time */
@@ -711,9 +711,9 @@ get_filter_options_for_directory_count (void)
 
 	/* Add the callback once for the life of our process */
 	if (!show_backup_files_changed_callback_installed) {
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-						   show_backup_files_changed_callback,
-						   NULL);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					      show_backup_files_changed_callback,
+					      NULL);
 		show_backup_files_changed_callback_installed = TRUE;
 		
 		/* Peek for the first time */

@@ -924,9 +924,9 @@ background_destroyed_callback (EelBackground *background,
                                        GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                        background);
         nautilus_file_monitor_remove (file, background);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_file_background_theme_changed,
-					      background);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+                                         nautilus_file_background_theme_changed,
+                                         background);
 }
 
 /* key routine that hooks up a background and location */
@@ -963,9 +963,9 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
                                                GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                                background);
 		nautilus_file_monitor_remove (old_file, background);
-		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-                                                      nautilus_file_background_theme_changed,
-                                                      background);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+                                                 nautilus_file_background_theme_changed,
+                                                 background);
 
 	}
 
@@ -1003,8 +1003,8 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 		g_list_free (attributes);
 
 		/* arrange for notification when the theme changes */
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-                                                   nautilus_file_background_theme_changed, background);	
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+                                              nautilus_file_background_theme_changed, background);	
 
 	}
 

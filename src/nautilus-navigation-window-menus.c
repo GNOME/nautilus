@@ -712,13 +712,13 @@ get_user_level_icon_name (int user_level, gboolean is_selected)
 	char *full_image_name;
 	
 	switch (user_level) {
-	case NAUTILUS_USER_LEVEL_NOVICE:
+	case EEL_USER_LEVEL_NOVICE:
 		image_name = "novice";
 		break;
-	case NAUTILUS_USER_LEVEL_ADVANCED:
+	case EEL_USER_LEVEL_ADVANCED:
 		image_name = "expert";
 		break;
-	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
+	case EEL_USER_LEVEL_INTERMEDIATE:
 	default:
 		image_name = "intermediate";
 		break;
@@ -745,12 +745,12 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 		return;
 	}
 
-	old_user_level = nautilus_preferences_get_user_level ();
+	old_user_level = eel_preferences_get_user_level ();
 	if (new_user_level == old_user_level) {
 		return;
 	}
 
-	nautilus_preferences_set_user_level (new_user_level);
+	eel_preferences_set_user_level (new_user_level);
 	
 	nautilus_window_ui_freeze (window);
 
@@ -1138,7 +1138,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_window_remove_bookmarks_menu_items (window);				
 
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
+	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
 		append_static_bookmarks (window, MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
 	}
 
@@ -1163,7 +1163,7 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 	/* Recreate static & dynamic part of menu if preference about
 	 * showing static bookmarks changes.
 	 */
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 						       nautilus_window_bookmarks_preference_changed_callback,
 						       window,
 						       GTK_OBJECT (window));
@@ -1216,7 +1216,7 @@ update_user_level_menu_item (NautilusWindow *window,
 		return;
 	}
 	
-	current_user_level = nautilus_preferences_get_user_level ();
+	current_user_level = eel_preferences_get_user_level ();
 
 	icon_name = get_user_level_icon_name (item_user_level, current_user_level == item_user_level);
 
@@ -1242,13 +1242,13 @@ user_level_changed_callback (gpointer callback_data)
 
 	update_user_level_menu_item (window,
 				     NAUTILUS_MENU_PATH_NOVICE_ITEM, 
-				     NAUTILUS_USER_LEVEL_NOVICE);
+				     EEL_USER_LEVEL_NOVICE);
 	update_user_level_menu_item (window,
 				     NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
-				     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+				     EEL_USER_LEVEL_INTERMEDIATE);
 	update_user_level_menu_item (window,
 				     NAUTILUS_MENU_PATH_EXPERT_ITEM, 
-				     NAUTILUS_USER_LEVEL_ADVANCED);
+				     EEL_USER_LEVEL_ADVANCED);
 }
 
 /**
@@ -1331,7 +1331,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
         nautilus_window_update_show_hide_menu_items (window);
 
 	/* Keep track of user level changes to update the user level menu item icons */
-	nautilus_preferences_add_callback_while_alive ("user_level",
+	eel_preferences_add_callback_while_alive ("user_level",
 						       user_level_changed_callback,
 						       window,
 						       GTK_OBJECT (window));
@@ -1537,26 +1537,26 @@ convert_verb_to_user_level (const char *verb)
         g_assert (verb != NULL);
 	
 	if (strcmp (verb, SWITCH_TO_BEGINNER_VERB) == 0) {
-		return NAUTILUS_USER_LEVEL_NOVICE;
+		return EEL_USER_LEVEL_NOVICE;
 	} else if (strcmp (verb, SWITCH_TO_INTERMEDIATE_VERB) == 0) {
-		return NAUTILUS_USER_LEVEL_INTERMEDIATE;
+		return EEL_USER_LEVEL_INTERMEDIATE;
 	} else if (strcmp (verb, SWITCH_TO_ADVANCED_VERB) == 0) {
-		return NAUTILUS_USER_LEVEL_ADVANCED;
+		return EEL_USER_LEVEL_ADVANCED;
 	}
 
 	g_assert_not_reached ();
-	return NAUTILUS_USER_LEVEL_NOVICE;
+	return EEL_USER_LEVEL_NOVICE;
 }
 
 static const char *
 convert_user_level_to_path (guint user_level)
 {
 	switch (user_level) {
-	case NAUTILUS_USER_LEVEL_NOVICE:
+	case EEL_USER_LEVEL_NOVICE:
 		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
-	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
+	case EEL_USER_LEVEL_INTERMEDIATE:
 		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
-	case NAUTILUS_USER_LEVEL_ADVANCED:
+	case EEL_USER_LEVEL_ADVANCED:
 		return NAUTILUS_MENU_PATH_EXPERT_ITEM; 
 	}
 

@@ -46,6 +46,7 @@
 #include <ctype.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -68,7 +69,6 @@
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-drag-window.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-generous-bin.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-horizontal-splitter.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -208,7 +208,7 @@ nautilus_window_for_each_sidebar_panel (const char *name,
 	g_return_if_fail (preference_key != NULL);
 	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
 	
-	nautilus_preferences_add_callback_while_alive (preference_key,
+	eel_preferences_add_callback_while_alive (preference_key,
 						       sidebar_panels_changed_callback,
 						       callback_data,
 						       GTK_OBJECT (callback_data));
@@ -741,7 +741,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	 * for the desktop window.
 	 */
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		window->content_hbox = gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
+		window->content_hbox = gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
 	} else {
 		set_initial_window_geometry (window);
 	
@@ -750,7 +750,7 @@ nautilus_window_constructed (NautilusWindow *window)
 		
 		/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
 		/* FIXME bugzilla.eazel.com 1245: No reality check on the value? */
-		sidebar_width = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH);
+		sidebar_width = eel_preferences_get_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH);
 		e_paned_set_position (E_PANED (window->content_hbox), sidebar_width);
 	}
 	gtk_widget_show (window->content_hbox);
@@ -1011,7 +1011,7 @@ nautilus_window_close (NautilusWindow *window)
 	 * we're in every-location-in-its-own-window mode. Otherwise it
 	 * would be too apparently random when the stored positions change.
 	 */
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
 	        nautilus_window_save_geometry (window);
 	}
 
@@ -1700,7 +1700,7 @@ nautilus_window_go_web_search (NautilusWindow *window)
 
 	nautilus_window_set_search_mode (window, FALSE);
 
-	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI);
+	search_web_uri = eel_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI);
 	g_assert (search_web_uri != NULL);
 	
 	nautilus_window_go_to (window, search_web_uri);
@@ -1714,7 +1714,7 @@ nautilus_window_go_home (NautilusWindow *window)
 
 	nautilus_window_set_search_mode (window, FALSE);
 
-	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 	
 	g_assert (home_uri != NULL);
 	nautilus_window_go_to (window, home_uri);
@@ -2242,25 +2242,25 @@ nautilus_window_show (GtkWidget *widget)
 	/* Initially show or hide views based on preferences; once the window is displayed
 	 * these can be controlled on a per-window basis from View menu items. 
 	 */
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
 		nautilus_window_show_toolbar (window);
 	} else {
 		nautilus_window_hide_toolbar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
 		nautilus_window_show_location_bar (window);
 	} else {
 		nautilus_window_hide_location_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
 		nautilus_window_show_status_bar (window);
 	} else {
 		nautilus_window_hide_status_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
 		nautilus_window_show_sidebar (window);
 	} else {
 		nautilus_window_hide_sidebar (window);

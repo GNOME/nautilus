@@ -303,12 +303,12 @@ nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
 	nautilus_sidebar_tabs_load_theme_data (sidebar_tabs);
 	
 	/* add callback to be notified for theme changes */
-	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
-					  (NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
-					  sidebar_tabs);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-					   smooth_font_changed_callback,
-					   sidebar_tabs);
+	eel_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
+				     (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
+				     sidebar_tabs);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+				      smooth_font_changed_callback,
+				      sidebar_tabs);
 	
 	sidebar_tabs->details->title_prelit = FALSE;
 }
@@ -391,13 +391,13 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 				     tab_item_destroy_cover,
 				     NULL);
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
-					      (NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
-					      sidebar_tabs);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-					      smooth_font_changed_callback,
-					      sidebar_tabs);
-		
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
+					 (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
+					 sidebar_tabs);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+					 smooth_font_changed_callback,
+					 sidebar_tabs);
+	
 	g_free (sidebar_tabs->details);
   	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));

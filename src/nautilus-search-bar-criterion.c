@@ -29,6 +29,10 @@
 
 #include "nautilus-search-bar-criterion-private.h"
 #include "nautilus-signaller.h"
+#include <eel/eel-dateedit-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-labeled-image.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtklabel.h>
@@ -42,15 +46,11 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-customization-data.h>
-#include <libnautilus-private/nautilus-dateedit-extensions.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <eel/eel-gtk-macros.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-entry.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-search-uri.h>
-#include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
-#include <eel/eel-labeled-image.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -617,7 +617,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	} else if (criterion->details->use_value_entry) {
 		value_text = gtk_entry_get_text (GTK_ENTRY (criterion->details->value_entry));
 	} else if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
-		value_text = nautilus_gnome_date_edit_get_date_as_string (criterion->details->date);
+		value_text = eel_gnome_date_edit_get_date_as_string (criterion->details->date);
 	}
 
 	switch (name_number) {

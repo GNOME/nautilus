@@ -617,7 +617,7 @@ get_default_sort_order (void)
 
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 						       (int *) &default_sort_order);
 	}
 
@@ -687,7 +687,7 @@ get_default_sort_in_reverse_order (void)
 	
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 						       &default_sort_in_reverse_order);
 	}
 
@@ -739,7 +739,7 @@ get_default_directory_manual_layout (void)
 	
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
+		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 						       &default_directory_manual_layout);
 	}
 
@@ -811,7 +811,7 @@ get_default_directory_tighter_layout (void)
 	
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
+		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 						       &default_directory_tighter_layout);
 	}
 
@@ -935,7 +935,7 @@ get_default_zoom_level (void)
 
 	if (!auto_storage_added) {
 		auto_storage_added = TRUE;
-		nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 						       (int *) &default_zoom_level);
 	}
 
@@ -1126,7 +1126,7 @@ fm_icon_view_get_icon_text_attributes_from_preferences (void)
 	static const EelStringList *attributes;
 
 	if (attributes == NULL) {
-		nautilus_preferences_add_auto_string_list (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+		eel_preferences_add_auto_string_list (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 							   &attributes);
 	}
 
@@ -2303,7 +2303,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         klass->set_directory_tighter_layout = fm_icon_view_real_set_directory_tighter_layout;
 	klass->supports_auto_layout = real_supports_auto_layout;
 
-	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 					       &preview_sound_auto_value);
 }
 
@@ -2319,35 +2319,35 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_view->details->audio_preview_file = NULL;
 	create_icon_container (icon_view);
 
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 						       font_changed_callback, 
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
 						       smooth_font_changed_callback, 
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 						       default_zoom_level_font_size_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 						       default_sort_order_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 						       default_sort_in_reverse_order_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 						       default_use_tighter_layout_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 						       default_use_manual_layout_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 						       default_zoom_level_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
@@ -2414,7 +2414,7 @@ get_default_zoom_level_font_size (void)
 
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 						       &default_zoom_level_font_size);
 	}
 
@@ -2504,7 +2504,7 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	click_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
+	click_mode = eel_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
 
 
 	nautilus_icon_container_set_single_click_mode (icon_container,
@@ -2520,7 +2520,7 @@ fm_icon_view_update_smooth_graphics_mode (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	smooth_graphics_mode = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 	
 	nautilus_icon_container_set_anti_aliased_mode (icon_container, smooth_graphics_mode);
 }

@@ -287,10 +287,10 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory,
 	static void
 	destroy_icon_factory (void)
 {
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      icon_theme_changed_callback,
 					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 					      thumbnail_limit_changed_callback,
 					      NULL);
 	gtk_object_unref (GTK_OBJECT (global_icon_factory));
@@ -307,12 +307,12 @@ get_icon_factory (void)
 		gtk_object_sink (GTK_OBJECT (global_icon_factory));
 
 		icon_theme_changed_callback (NULL);
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 						   icon_theme_changed_callback,
 						   NULL);
 						   
 		thumbnail_limit_changed_callback (NULL);
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 						   thumbnail_limit_changed_callback,
 						   NULL);
 
@@ -1180,7 +1180,7 @@ icon_theme_changed_callback (gpointer user_data)
 	/* Consult the user preference and the Nautilus theme. In the
 	 * long run, we sould just get rid of the user preference.
 	 */
-	theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+	theme_preference = eel_preferences_get (NAUTILUS_PREFERENCES_THEME);
 	icon_theme = nautilus_theme_get_theme_data ("icons", "icon_theme");
 	
 	set_theme (icon_theme == NULL ? theme_preference : icon_theme);
@@ -1192,7 +1192,7 @@ icon_theme_changed_callback (gpointer user_data)
 static void
 thumbnail_limit_changed_callback (gpointer user_data)
 {
-	cached_thumbnail_limit = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT);
+	cached_thumbnail_limit = eel_preferences_get_integer (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT);
 
 	/* Tell the world that icons might have changed. We could invent a narrower-scope
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
@@ -1390,7 +1390,7 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean optimized_for_
 	static gboolean show_thumbnail_auto_value_registered;
 
 	if (!show_thumbnail_auto_value_registered) {
-		nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 						       &show_thumbnails_auto_value);
 		show_thumbnail_auto_value_registered = TRUE;
 	}
@@ -2593,7 +2593,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	if (embedded_text_preferences_callbacks_added == FALSE) {
 		embedded_text_preferences_callbacks_added = TRUE;
 
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 						   embedded_text_font_changed_callback,
 						   GINT_TO_POINTER (TRUE));
 		embedded_text_font_changed_callback (GINT_TO_POINTER (FALSE));

@@ -74,7 +74,7 @@ boolean_preference_changed_callback (gpointer callback_data)
 	g_return_if_fail (GTK_IS_TOGGLE_BUTTON (foo->button));
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (foo->button),
-				      nautilus_preferences_get_boolean (foo->preference_name));
+				      eel_preferences_get_boolean (foo->preference_name));
 }
 
 static void
@@ -87,7 +87,7 @@ button_toggled (GtkWidget *button,
 	g_return_if_fail (foo->preference_name != NULL);
 	g_return_if_fail (GTK_IS_TOGGLE_BUTTON (foo->button));
 
-	nautilus_preferences_set_boolean (foo->preference_name, GTK_TOGGLE_BUTTON (foo->button)->active);
+	eel_preferences_set_boolean (foo->preference_name, GTK_TOGGLE_BUTTON (foo->button)->active);
 }
 
 static GtkWidget *
@@ -114,7 +114,7 @@ boolean_toggle_button_new (const char *preference_name,
 			    foo);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button),
-				      nautilus_preferences_get_boolean (preference_name));
+				      eel_preferences_get_boolean (preference_name));
 	
 	gtk_signal_connect_while_alive (GTK_OBJECT (button),
 					"toggled",
@@ -122,7 +122,7 @@ boolean_toggle_button_new (const char *preference_name,
 					foo,
 					GTK_OBJECT (button));
 	
-	nautilus_preferences_add_callback_while_alive (preference_name,
+	eel_preferences_add_callback_while_alive (preference_name,
 						       boolean_preference_changed_callback,
 						       foo,
 						       GTK_OBJECT (button));
@@ -172,7 +172,7 @@ user_level_changed_callback (gpointer callback_data)
 	g_return_if_fail (GTK_IS_TOGGLE_BUTTON (callback_data));
 
 	gtk_widget_set_sensitive (GTK_WIDGET (callback_data), 
-				  nautilus_preferences_get_user_level () > 0);
+				  eel_preferences_get_user_level () > 0);
 }
 
 int
@@ -230,12 +230,12 @@ main (int argc, char **argv)
 							    _("Smooth Graphics"));
 	gtk_box_pack_start (GTK_BOX (preference_vbox), smooth_graphics_button, TRUE, TRUE, 1);
 
-	nautilus_preferences_add_callback ("user_level",
+	eel_preferences_add_callback ("user_level",
 					   user_level_changed_callback,
 					   show_desktop_button);
 	user_level_changed_callback (show_desktop_button);
 
-	nautilus_preferences_add_callback ("user_level",
+	eel_preferences_add_callback ("user_level",
 					   user_level_changed_callback,
 					   smooth_graphics_button);
 	user_level_changed_callback (smooth_graphics_button);

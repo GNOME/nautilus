@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-global-prefs.h - Nautilus main preferences api.
+/* nautilus-global-preferences.h - Nautilus specific preference keys and
+                                   functions.
 
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
@@ -25,7 +26,7 @@
 #ifndef NAUTILUS_PREFS_GLOBAL_H
 #define NAUTILUS_PREFS_GLOBAL_H
 
-#include <libnautilus-private/nautilus-preferences.h>
+#include <eel/eel-preferences.h>
 
 BEGIN_GNOME_DECLS
 
@@ -150,9 +151,6 @@ enum
 
 /* searching */
 #define NAUTILUS_PREFERENCES_SEARCH_WEB_URI				"preferences/search_web_uri"			
-
-
-
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
@@ -189,6 +187,7 @@ typedef enum
 /* Gnome session management */
 #define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
 
+
 void                    nautilus_global_preferences_initialize                   (void);
 
 /* Sidebar */
@@ -196,7 +195,7 @@ struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font   
 struct EelScalableFont *nautilus_global_preferences_get_default_smooth_font      (void);
 struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font (void);
 
-void   nautilus_global_preferences_set_default_folder_viewer 			 (const char *iid);
+void                    nautilus_global_preferences_set_default_folder_viewer    (const char *iid);
 
 
 END_GNOME_DECLS

@@ -275,21 +275,21 @@ async_data_preference_changed_callback (gpointer callback_data)
 static void
 add_preferences_callbacks (void)
 {
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					   filtering_changed_callback,
-					   NULL);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					   filtering_changed_callback,
-					   NULL);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-					   async_data_preference_changed_callback,
-					   NULL);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-					   async_data_preference_changed_callback,
-					   NULL);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-					   async_data_preference_changed_callback,
-					   NULL);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+				      filtering_changed_callback,
+				      NULL);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+				      filtering_changed_callback,
+				      NULL);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+				      async_data_preference_changed_callback,
+				      NULL);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+				      async_data_preference_changed_callback,
+				      NULL);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+				      async_data_preference_changed_callback,
+				      NULL);
 }
 
 char *

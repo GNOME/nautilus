@@ -134,12 +134,12 @@ nautilus_text_view_initialize_class (NautilusTextViewClass *klass)
 	object_class->destroy = nautilus_text_view_destroy;
 
 	/* Text view component fonts */
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT,
-						 NAUTILUS_USER_LEVEL_INTERMEDIATE,
-						 "fixed");
-	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE,
-						  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-						  14);
+	eel_preferences_default_set_string (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT,
+                                            EEL_USER_LEVEL_INTERMEDIATE,
+                                            "fixed");
+	eel_preferences_default_set_integer (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE,
+                                             EEL_USER_LEVEL_INTERMEDIATE,
+                                             14);
 }
 
 /* initialize ourselves by connecting to the location change signal and allocating our subviews */
@@ -206,14 +206,14 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	nautilus_text_view_update_font (text_view);
 
 	/* Keep track of font changes */
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT,
-                                                       font_changed_callback,
-                                                       text_view,
-                                                       GTK_OBJECT (text_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE,
-                                                       font_changed_callback,
-                                                       text_view,
-                                                       GTK_OBJECT (text_view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT,
+                                                  font_changed_callback,
+                                                  text_view,
+                                                  GTK_OBJECT (text_view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE,
+                                                  font_changed_callback,
+                                                  text_view,
+                                                  GTK_OBJECT (text_view));
 	
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
@@ -429,11 +429,11 @@ nautilus_text_view_update_font (NautilusTextView *text_view)
 	GdkFont *font;
 	int font_size;
 
-	font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE);
+	font_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE);
 
 	font_size += text_view_font_size_deltas[text_view->details->zoom_index];
 
-	font_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT);
+	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT);
 	g_return_if_fail (font_name != NULL);
 
 	font = nautilus_font_factory_get_font_by_family (font_name, font_size);
@@ -457,7 +457,7 @@ handle_ui_event (BonoboUIComponent *ui,
 {
 	if (type == Bonobo_UIComponent_STATE_CHANGED
             && eel_str_is_equal (state, "1")) {
-                nautilus_preferences_set (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT, id);
+                eel_preferences_set (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT, id);
 	}
 }
 

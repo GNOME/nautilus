@@ -280,8 +280,8 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 	 * instance may yet exist when this is called.
 	 */
 	if (!icon_view_font_auto_value_registered) {
-		nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-						      &icon_view_font_auto_value);
+		eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
+						 &icon_view_font_auto_value);
 		icon_view_font_auto_value_registered = TRUE;
 	}
 

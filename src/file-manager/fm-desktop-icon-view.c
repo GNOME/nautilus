@@ -240,7 +240,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	/* Delete all of the link files. */
 	delete_all_mount_links ();
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
 					      home_uri_changed,
 					      icon_view);
 
@@ -641,7 +641,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    GTK_SIGNAL_FUNC (icon_view_handle_uri_list),
 			    desktop_icon_view);
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 					   home_uri_changed,
 				  	   desktop_icon_view);
 
@@ -980,7 +980,7 @@ update_home_link_and_delete_copies (void)
 	 */
 	home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
 	
-	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 	
 	if (!update_link_and_delete_copies (nautilus_link_local_is_home_link,
 					    NULL,
@@ -1262,7 +1262,7 @@ real_update_menus (FMDirectoryView *view)
 		 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
 		 !include_empty_trash);
 	if (include_empty_trash) {
-		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
 			label = g_strdup (_("Empty Trash..."));
 		} else {
 			label = g_strdup (_("Empty Trash"));

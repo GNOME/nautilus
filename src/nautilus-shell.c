@@ -31,6 +31,12 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"
 #include "nautilus-shell-interface.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -40,13 +46,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-label.h>
-#include <libnautilus-private/nautilus-preferences.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdlib.h>
 
@@ -417,7 +417,7 @@ save_window_states (void)
 		g_free (window_attributes);
 	}
 
-	nautilus_preferences_set_string_list (START_STATE_CONFIG, states);
+	eel_preferences_set_string_list (START_STATE_CONFIG, states);
 
 	eel_string_list_free (states);
 }
@@ -471,11 +471,11 @@ restore_window_states (NautilusShell *shell)
 	EelStringList *states;
 	gboolean result;
 
-	states = nautilus_preferences_get_string_list (START_STATE_CONFIG);
+	states = eel_preferences_get_string_list (START_STATE_CONFIG);
 	result = eel_string_list_get_length (states) > 0;
 	eel_string_list_for_each (states, restore_one_window_callback, shell);
 	eel_string_list_free (states);
-	nautilus_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	eel_preferences_set_string_list (START_STATE_CONFIG, NULL);
 	return result;
 }
 

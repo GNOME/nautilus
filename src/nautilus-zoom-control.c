@@ -183,7 +183,7 @@ nautilus_zoom_control_destroy (GtkObject *object)
 	/* deallocate pixbufs */
 	nautilus_zoom_control_unload_images (NAUTILUS_ZOOM_CONTROL (object));
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_zoom_control_theme_changed,
 					      object);
 
@@ -232,7 +232,7 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	gtk_widget_set_usize (GTK_WIDGET (zoom_control), zoom_width, -1);
 
 	/* add a callback for when the theme changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 					  nautilus_zoom_control_theme_changed,
 					  zoom_control);	
 	

@@ -227,7 +227,7 @@ druid_finished (GtkWidget *druid_page)
 	druid_set_first_time_file_flag ();
 
 	/* Do the user level config */
-	nautilus_preferences_set_user_level (current_user_level);
+	eel_preferences_set_user_level (current_user_level);
 	
 	/* Here we check to see if we can resolve hostnames in a timely
 	 * fashion. If we can't then we silently tell nautilus to start up
@@ -242,7 +242,7 @@ druid_finished (GtkWidget *druid_page)
 		check_network_connectivity ();
 	}
 
-	signup_uris[0] = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+	signup_uris[0] = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 
 	if (http_is_known_to_work) {
 		signup_uris[1] = EAZEL_SERVICES_URL;
@@ -301,7 +301,7 @@ static void
 update_draw_desktop_checkbox_state (void)
 {
 #ifdef TRANSITIONAL_NAUTILUS
-	if (current_user_level == NAUTILUS_USER_LEVEL_NOVICE) {
+	if (current_user_level == EEL_USER_LEVEL_NOVICE) {
 		gtk_widget_hide (draw_desktop_checkbox_widget);
 	} else {
 		gtk_widget_show (draw_desktop_checkbox_widget);
@@ -422,7 +422,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 
 	hbox = gtk_hbox_new (FALSE, 0);
 
-	user_level_name = nautilus_preferences_get_user_level_name_for_display (index);
+	user_level_name = eel_preferences_get_user_level_name_for_display (index);
 
 	/* make new box for radiobutton/comment */
 	comment_vbox = gtk_vbox_new (FALSE, 0);
@@ -517,7 +517,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	message = g_strdup_printf (_("For users who have no previous experience with GNOME\n"
 				     "and %s."),
 				   operating_system_name);
-	hbox = make_hbox_user_level_radio_button (NAUTILUS_USER_LEVEL_NOVICE, radio_buttons, "novice.png",
+	hbox = make_hbox_user_level_radio_button (EEL_USER_LEVEL_NOVICE, radio_buttons, "novice.png",
 						  message,
 						  NULL);
 	g_free (message);
@@ -525,7 +525,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	message = g_strdup_printf (_("For users who are comfortable with GNOME and %s,\n"
 				     "but don't describe themselves as ``technical.''"),
 				   operating_system_name);
-	hbox = make_hbox_user_level_radio_button (NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	hbox = make_hbox_user_level_radio_button (EEL_USER_LEVEL_INTERMEDIATE,
 						  radio_buttons,
 						  "intermediate.png",
 						  message,
@@ -535,7 +535,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	message = g_strdup_printf (_("For users who have GNOME and %s experience, and\n"
 				     "like to see every detail of the operating system."),
 				   operating_system_name);
-	hbox = make_hbox_user_level_radio_button (NAUTILUS_USER_LEVEL_ADVANCED,
+	hbox = make_hbox_user_level_radio_button (EEL_USER_LEVEL_ADVANCED,
 						  radio_buttons,
 						  "expert.png",
 						  message,
@@ -544,12 +544,12 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	g_free (operating_system_name);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 
-	g_assert (current_user_level >= NAUTILUS_USER_LEVEL_NOVICE
-		  && current_user_level <= NAUTILUS_USER_LEVEL_ADVANCED);
+	g_assert (current_user_level >= EEL_USER_LEVEL_NOVICE
+		  && current_user_level <= EEL_USER_LEVEL_ADVANCED);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_buttons[current_user_level]), TRUE);
 
 
-	for (index = NAUTILUS_USER_LEVEL_NOVICE; index <= NAUTILUS_USER_LEVEL_ADVANCED; index ++) {
+	for (index = EEL_USER_LEVEL_NOVICE; index <= EEL_USER_LEVEL_ADVANCED; index ++) {
 		gtk_signal_connect (GTK_OBJECT (radio_buttons[index]),
 				    "toggled",
 				    GTK_SIGNAL_FUNC (user_level_selection_changed),
@@ -1045,7 +1045,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, const char *ur
 	/* remember parameters for later window invocation */
 	save_application = application;
 
-	current_user_level = nautilus_preferences_get_user_level ();
+	current_user_level = eel_preferences_get_user_level ();
 
 	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (dialog),
@@ -1385,9 +1385,9 @@ set_http_proxy (const char *proxy_url)
 		port = DEFAULT_HTTP_PROXY_PORT;
 	}
 
-	nautilus_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY_HOST, http_proxy_host);
-	nautilus_preferences_set_integer (GNOME_VFS_PREFERENCES_HTTP_PROXY_PORT, port);
-	nautilus_preferences_set_boolean (GNOME_VFS_PREFERENCES_USE_HTTP_PROXY, TRUE);
+	eel_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY_HOST, http_proxy_host);
+	eel_preferences_set_integer (GNOME_VFS_PREFERENCES_HTTP_PROXY_PORT, port);
+	eel_preferences_set_boolean (GNOME_VFS_PREFERENCES_USE_HTTP_PROXY, TRUE);
 
 	return TRUE;
 }

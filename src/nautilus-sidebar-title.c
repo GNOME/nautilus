@@ -107,8 +107,8 @@ nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
 	object_class->destroy = nautilus_sidebar_title_destroy;
 	widget_class->size_allocate = nautilus_sidebar_title_size_allocate;
 
-	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-					      &non_smooth_font_name);
+	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
+					 &non_smooth_font_name);
 }
 
 static void
@@ -228,15 +228,15 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
 						       non_smooth_font_changed_callback,
 						       sidebar_title,
 						       GTK_OBJECT (sidebar_title));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 						       smooth_font_changed_callback,
 						       sidebar_title,
 						       GTK_OBJECT (sidebar_title));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
 						       nautilus_sidebar_title_theme_changed,
 						       sidebar_title,
 						       GTK_OBJECT (sidebar_title));

@@ -29,21 +29,20 @@
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
-#include "nautilus-preferences.h"
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <librsvg/rsvg.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <librsvg/rsvg.h>
 
 /* static globals to hold the last accessed and default theme files */
 static char	 *last_theme_name = NULL;
@@ -59,7 +58,7 @@ static void
 theme_changed_callback (gpointer callback_data)
 {
 	g_free (theme_from_preferences);
-	theme_from_preferences = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+	theme_from_preferences = eel_preferences_get (NAUTILUS_PREFERENCES_THEME);
 }
 
 /* return the current theme by asking the preferences machinery */
@@ -70,7 +69,7 @@ nautilus_theme_get_theme (void)
 
 	/* Add the callback once for the life of our process */
 	if (!theme_changed_callback_installed) {
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 						   theme_changed_callback,
 						   NULL);
 		theme_changed_callback_installed = TRUE;
@@ -90,7 +89,7 @@ nautilus_theme_set_theme (const char *new_theme)
 	
 	old_theme = nautilus_theme_get_theme ();
 	if (eel_strcmp (old_theme, new_theme)) {
-		nautilus_preferences_set (NAUTILUS_PREFERENCES_THEME, new_theme);
+		eel_preferences_set (NAUTILUS_PREFERENCES_THEME, new_theme);
 	}
 	g_free (old_theme);
 }

@@ -403,14 +403,14 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->content_frame = NULL;
 
 	/* add callback for preference changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT, 
-					   (NautilusPreferencesCallback) nautilus_property_browser_preferences_changed, 
-					   property_browser);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT, 
+				      (EelPreferencesCallback) nautilus_property_browser_preferences_changed, 
+				      property_browser);
 	
 	/* add a callback for when the theme changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, 
-					   nautilus_property_browser_theme_changed,
-					   property_browser);	
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, 
+				      nautilus_property_browser_theme_changed,
+				      property_browser);	
 	
 	gtk_signal_connect (GTK_OBJECT (property_browser), "delete_event",
                     	    GTK_SIGNAL_FUNC (nautilus_property_browser_delete_event_callback),
@@ -450,12 +450,12 @@ nautilus_property_browser_destroy (GtkObject *object)
 	
 	g_free (property_browser->details);
 	
-	nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
-						(NautilusPreferencesCallback) nautilus_property_browser_preferences_changed, 
-						NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_property_browser_theme_changed,
-					      property_browser);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
+					 (EelPreferencesCallback) nautilus_property_browser_preferences_changed, 
+					 NULL);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					 nautilus_property_browser_theme_changed,
+					 property_browser);
 	if (object == GTK_OBJECT (main_browser))
 		main_browser = NULL;
 		
@@ -2015,7 +2015,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 
 	/* update the title and button */
 
-	show_buttons = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT);
+	show_buttons = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT);
 
 	if (property_browser->details->category == NULL) {
 		eel_label_set_text(EEL_LABEL (property_browser->details->title_label), _("Select A Category:"));

@@ -2333,7 +2333,7 @@ destroy (GtkObject *object)
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
 	 */
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_icon_container_theme_changed,
 					      container);
 	
@@ -3311,7 +3311,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
 
-	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
+	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					       &click_policy_auto_value);
 }
 
@@ -3386,7 +3386,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	 */
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_icon_container_theme_changed, container);	
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_icon_container_theme_changed, container);	
 }
 
 typedef struct {

@@ -1086,7 +1086,7 @@ sort_directories_first_changed_callback (gpointer callback_data)
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	preference_value = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
 	if (preference_value != view->details->sort_directories_first) {
 		view->details->sort_directories_first = preference_value;
@@ -1207,7 +1207,7 @@ fm_directory_view_initialize (FMDirectoryView *view)
 				     BONOBO_OBJECT (view->details->zoomable));
 
 	view->details->sort_directories_first = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "stop_loading",
@@ -1253,34 +1253,34 @@ fm_directory_view_initialize (FMDirectoryView *view)
 
 	filtering_changed_callback (view);
 	
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 					   schedule_update_menus_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					   filtering_changed_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 					   filtering_changed_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					   schedule_update_menus_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 					   schedule_update_menus_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 					   text_attribute_names_changed_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					   image_display_policy_changed_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					   click_policy_changed_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
 					   smooth_graphics_mode_changed_callback, 
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
 					   sort_directories_first_changed_callback, 
 					   view);
 }
@@ -1329,28 +1329,28 @@ fm_directory_view_destroy (GtkObject *object)
 
 	fm_directory_view_ignore_hidden_file_preferences (view);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 					      schedule_update_menus_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					      schedule_update_menus_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 					      schedule_update_menus_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 					      text_attribute_names_changed_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					      image_display_policy_changed_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					      click_policy_changed_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 					      smooth_graphics_mode_changed_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 					      sort_directories_first_changed_callback,
 					      view);
 
@@ -4356,7 +4356,7 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 
 	g_assert (nautilus_file_contains_text (file));
 
-	preferences_value = nautilus_preferences_get_integer 
+	preferences_value = eel_preferences_get_integer 
 		(NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
 	switch (preferences_value) {
 	case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
@@ -5215,13 +5215,13 @@ filtering_changed_callback (gpointer callback_data)
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
 	filtering_actually_changed = FALSE;
 
-	new_show_hidden = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+	new_show_hidden = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 	if (new_show_hidden != directory_view->details->show_hidden_files) {
 		filtering_actually_changed = TRUE;
 		directory_view->details->show_hidden_files = new_show_hidden ;
 	}
 
-	new_show_backup = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+	new_show_backup = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 	if (new_show_backup != directory_view->details->show_backup_files) {
 		filtering_actually_changed = TRUE;
 		directory_view->details->show_backup_files = new_show_backup;
@@ -5243,10 +5243,10 @@ fm_directory_view_ignore_hidden_file_preferences (FMDirectoryView *view)
 		return;
 	}
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					      filtering_changed_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 					      filtering_changed_callback,
 					      view);
 
@@ -5618,10 +5618,10 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	clipboard_atom = gdk_atom_intern ("CLIPBOARD", FALSE);
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 
-	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					       &confirm_trash_auto_value);
-	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 					       &show_delete_command_auto_value);
-	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 					       &use_new_window_auto_value);
 }

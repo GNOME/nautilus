@@ -1146,7 +1146,7 @@ position_and_show_window_callback (NautilusFile *file,
         
 	window = NAUTILUS_WINDOW (callback_data);
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
 		geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
 		if (geometry_string != NULL) {
@@ -1348,7 +1348,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 			   in which case going home would cause an infinite loop, so we
 			   better test for that */
 			
-			home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+			home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 			if (!eel_uris_match (home_uri, location)) {	
 				nautilus_window_go_home (NAUTILUS_WINDOW (window));
 			} else {

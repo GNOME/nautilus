@@ -29,7 +29,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
-#include <libnautilus-private/nautilus-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 struct NautilusTreeExpansionStateDetails {
 	GHashTable *table;
@@ -85,7 +85,7 @@ nautilus_tree_expansion_state_load_from_preferences (NautilusTreeExpansionState 
 {
 	EelStringList *uris;
 
-	uris = nautilus_preferences_get_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
+	uris = eel_preferences_get_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
 
 	eel_string_list_for_each (uris, expansion_state_load_callback, expansion_state);
 	eel_string_list_free (uris);
@@ -124,7 +124,7 @@ nautilus_tree_expansion_state_save_to_preferences (NautilusTreeExpansionState *e
 	glist = eel_g_str_list_alphabetize (glist);
 
 	uris = eel_string_list_new_from_g_list (glist, TRUE);
-	nautilus_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
+	eel_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
 	g_list_free (glist);
 	eel_string_list_free (uris);
 }

@@ -27,14 +27,11 @@
  */
 
 #include <config.h>
-
-#include <string.h>
-#include <gnome.h>
-
 #include "nautilus-navigation-bar.h"
 
-#include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
+#include <gtk/gtksignal.h>
+#include <string.h>
 
 enum {
 	ACTIVATE,
@@ -46,7 +43,7 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *class);
 static void nautilus_navigation_bar_initialize       (NautilusNavigationBar      *bar);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusNavigationBar, nautilus_navigation_bar, NAUTILUS_TYPE_GENEROUS_BIN)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusNavigationBar, nautilus_navigation_bar, EEL_TYPE_GENEROUS_BIN)
 
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, get_location)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, set_location)

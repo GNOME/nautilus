@@ -2214,7 +2214,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 	GtkWindow *parent_window;
 
 	/* Just Say Yes if the preference says not to confirm. */
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
+	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
 		return TRUE;
 	}
 	

@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-prefs-dialog.c - Implementation for preferences dialog.
+/* nautilus-global-preferences.c - Nautilus specific preference keys and
+                                   functions.
 
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
@@ -46,7 +47,7 @@
 #define STRING_LIST_DEFAULT_TOKENS_DELIMETER ","
 #define PREFERENCES_SORT_ORDER_MANUALLY 100
 
-/* base path for NAUTILUS_PREFERENCES_HTTP_* */
+/* Path for gnome-vfs preferences */
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 
 /* Forward declarations */
@@ -307,32 +308,32 @@ typedef struct
 static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ENABLE_DELETE,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
 	  { USER_LEVEL_NONE },
 	  "speed_tradeoff"
 	},
@@ -342,216 +343,216 @@ static const PreferenceDefault preference_defaults[] = {
 	 */
 	{ NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_ALWAYS) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
+	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_ALWAYS) },
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_CLICK_POLICY,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
 	  { USER_LEVEL_NONE },
 	  "click_policy"
 	},
 	{ NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_EXECUTABLE_TEXT_ASK) },
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_EXECUTABLE_TEXT_ASK) },
 	  { USER_LEVEL_NONE },
 	  "executable_text_activation"
 	},
 	{ NAUTILUS_PREFERENCES_THEME,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, "default" },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, "default" },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
 	  { USER_LEVEL_NONE },
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (3145728) },
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (3145728) },
 	  { USER_LEVEL_NONE },
 	  "file_size"
 	},
 	{ NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
 	  { USER_LEVEL_NONE },
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) }, 
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) }, 
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
 	  { USER_LEVEL_NONE },
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { NAUTILUS_USER_LEVEL_ADVANCED, GINT_TO_POINTER (TRUE) }
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { EEL_USER_LEVEL_ADVANCED, GINT_TO_POINTER (TRUE) }
 	},
 	{ NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
 	},
 	{ NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SIMPLE_SEARCH_BAR) },
-	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_COMPLEX_SEARCH_BAR) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SIMPLE_SEARCH_BAR) },
+	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_COMPLEX_SEARCH_BAR) },
 	  "search_bar_type"
 	},
 	{ NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 	  PREFERENCE_STRING_LIST,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, "size,date_modified,type", },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, "size,date_modified,type", },
 	  { USER_LEVEL_NONE },
 	  "icon_captions"
 	},
 	{ NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_ADVANCED,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_ADVANCED,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
 	{ NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (148) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (148) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, "http://www.eazel.com/websearch" },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, "http://www.eazel.com/websearch" },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 
 	/* Proxy defaults */
 	{ NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (8080) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (8080) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 
 	/* Home URI */
 	{ NAUTILUS_PREFERENCES_HOME_URI,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_home_location_callback, g_free },
-	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, NULL, default_home_location_callback, g_free },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, NULL, default_home_location_callback, g_free },
+	  { EEL_USER_LEVEL_INTERMEDIATE, NULL, default_home_location_callback, g_free },
 	},
 
 	/* Default fonts */
 	{ NAUTILUS_PREFERENCES_DEFAULT_FONT,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
 	  { USER_LEVEL_NONE },
 	  "standard_font_size"
 	},
@@ -559,8 +560,8 @@ static const PreferenceDefault preference_defaults[] = {
 	/* View Preferences */
 	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_default_folder_viewer_callback, NULL },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, NULL, default_default_folder_viewer_callback, NULL },
 	  { USER_LEVEL_NONE },
 	  "default_folder_viewer"
 	},
@@ -568,59 +569,59 @@ static const PreferenceDefault preference_defaults[] = {
 	/* Icon View Default Preferences */
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
 	  { USER_LEVEL_NONE },
 	  "standard_font_size"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
 	  { USER_LEVEL_NONE },
 	  "default_icon_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
 	  { USER_LEVEL_NONE },
 	  "default_icon_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD) },
 	  { USER_LEVEL_NONE },
 	  "default_zoom_level"
 	},
@@ -628,34 +629,34 @@ static const PreferenceDefault preference_defaults[] = {
 	/* List View Default Preferences */
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
 	  PREFERENCE_STRING,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
 	  { USER_LEVEL_NONE },
 	  "standard_font_size"
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
 	  { USER_LEVEL_NONE },
 	  "default_list_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_SMALLER) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_SMALLER) },
 	  { USER_LEVEL_NONE },
 	  "default_zoom_level"
 	},
@@ -663,45 +664,45 @@ static const PreferenceDefault preference_defaults[] = {
 	/* Sidebar panel default */
 	{ nautilus_sidebar_news_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ nautilus_sidebar_notes_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ nautilus_sidebar_help_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ nautilus_sidebar_history_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 	{ nautilus_sidebar_tree_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
+	  EEL_USER_LEVEL_INTERMEDIATE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
 	},
 	/* news panel preferences */
 	{ NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (6) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (6) },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
 	  PREFERENCE_INTEGER,
-	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (5) },
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (5) },
 	  { USER_LEVEL_NONE }
 	},
 
@@ -730,8 +731,8 @@ global_preferences_register_enumerations (void)
 		if (eel_strlen (preference_defaults[i].enumeration_id) > 0) {
 			g_assert (preference_defaults[i].type == PREFERENCE_INTEGER
 				  || preference_defaults[i].type == PREFERENCE_STRING_LIST);
-			nautilus_preferences_set_enumeration_id (preference_defaults[i].name,
-								 preference_defaults[i].enumeration_id);
+			eel_preferences_set_enumeration_id (preference_defaults[i].name,
+							    preference_defaults[i].enumeration_id);
 		}
 	}
 }
@@ -762,30 +763,30 @@ global_preferences_install_one_default (const char *preference_name,
 
 	switch (preference_type) {
 	case PREFERENCE_BOOLEAN:
-		nautilus_preferences_default_set_boolean (preference_name,
-							  user_level_default->user_level,
-							  GPOINTER_TO_INT (value));
+		eel_preferences_default_set_boolean (preference_name,
+						     user_level_default->user_level,
+						     GPOINTER_TO_INT (value));
 		break;
 		
 	case PREFERENCE_INTEGER:
-		nautilus_preferences_default_set_integer (preference_name,
-							  user_level_default->user_level,
-							  GPOINTER_TO_INT (value));
+		eel_preferences_default_set_integer (preference_name,
+						     user_level_default->user_level,
+						     GPOINTER_TO_INT (value));
 		break;
 		
 	case PREFERENCE_STRING:
-		nautilus_preferences_default_set_string (preference_name,
-							 user_level_default->user_level,
-							 value);
+		eel_preferences_default_set_string (preference_name,
+						    user_level_default->user_level,
+						    value);
 		break;
 		
 	case PREFERENCE_STRING_LIST:
 		string_list_value = eel_string_list_new_from_tokens (value,
 								     STRING_LIST_DEFAULT_TOKENS_DELIMETER,
 								     TRUE);
-		nautilus_preferences_default_set_string_list (preference_name,
-							      user_level_default->user_level,
-							      string_list_value);
+		eel_preferences_default_set_string_list (preference_name,
+							 user_level_default->user_level,
+							 string_list_value);
 		eel_string_list_free (string_list_value);
 		break;
 		
@@ -824,15 +825,15 @@ global_preferences_install_defaults (void)
 							preference_defaults[i].type,
 							&preference_defaults[i].default2);
 		
-		nautilus_preferences_set_visible_user_level (preference_defaults[i].name,
-							     preference_defaults[i].visible_user_level);
+		eel_preferences_set_visible_user_level (preference_defaults[i].name,
+							preference_defaults[i].visible_user_level);
 	}
 }
 
 static gpointer
 default_font_callback (int user_level)
 {
-	g_return_val_if_fail (nautilus_preferences_user_level_is_valid (user_level), NULL);
+	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), NULL);
 
 	if (eel_dumb_down_for_multi_byte_locale_hack ()) {
 		return g_strdup ("fixed");
@@ -844,7 +845,7 @@ default_font_callback (int user_level)
 static gpointer
 default_smooth_font_callback (int user_level)
 {
-	g_return_val_if_fail (nautilus_preferences_user_level_is_valid (user_level), NULL);
+	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), NULL);
 	return eel_font_manager_get_default_font ();
 }
 
@@ -888,16 +889,16 @@ default_home_location_callback (int user_level)
 	char *default_home_location;
 	char *user_main_directory;		
 
-	g_return_val_if_fail (nautilus_preferences_user_level_is_valid (user_level), NULL);
+	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), NULL);
 
-	if (user_level == NAUTILUS_USER_LEVEL_NOVICE) {
+	if (user_level == EEL_USER_LEVEL_NOVICE) {
 		user_main_directory = nautilus_get_user_main_directory ();
 		default_home_location = gnome_vfs_get_uri_from_local_path (user_main_directory);
 		g_free (user_main_directory);
 		return default_home_location;
 	}
 
-	if (user_level == NAUTILUS_USER_LEVEL_INTERMEDIATE) {
+	if (user_level == EEL_USER_LEVEL_INTERMEDIATE) {
 		return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	}
 	
@@ -985,7 +986,7 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 {
 	gboolean is_smooth;
 
-	is_smooth = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	is_smooth = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 	
 	eel_smooth_widget_global_set_is_smooth (is_smooth);
 }
@@ -1007,7 +1008,7 @@ default_folder_viewer_changed_callback (gpointer callback_data)
 	g_assert (callback_data == NULL);
 
 	preference_value = 
-		nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+		eel_preferences_get_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
 
 	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
 		viewer_iid = NAUTILUS_LIST_VIEW_IID;
@@ -1035,8 +1036,8 @@ nautilus_global_preferences_set_default_folder_viewer (const char *iid)
 		return;		
 	}
 	
-	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-					  viewer_preference);
+	eel_preferences_set_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+				     viewer_preference);
 }
 
 /* The icon view uses 2 variables to store the sort order and
@@ -1053,10 +1054,10 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
  	int default_sort_order;
 
  	default_sort_order_or_manual_layout = 
- 		nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
+ 		eel_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
 
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
-					  default_sort_order_or_manual_layout == PREFERENCES_SORT_ORDER_MANUALLY);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
+				     default_sort_order_or_manual_layout == PREFERENCES_SORT_ORDER_MANUALLY);
 
 	if (default_sort_order_or_manual_layout != PREFERENCES_SORT_ORDER_MANUALLY) {
 		default_sort_order = default_sort_order_or_manual_layout;
@@ -1064,8 +1065,8 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
 		g_return_if_fail (default_sort_order >= NAUTILUS_FILE_SORT_BY_NAME);
 		g_return_if_fail (default_sort_order <= NAUTILUS_FILE_SORT_BY_EMBLEMS);
 
-		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-						  default_sort_order);
+		eel_preferences_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+					     default_sort_order);
 	}
 }
 
@@ -1080,7 +1081,7 @@ nautilus_global_preferences_initialize (void)
 
 	initialized = TRUE;
 
-	nautilus_preferences_initialize ("/apps/nautilus");
+	eel_preferences_initialize ("/apps/nautilus");
 
 	/* Install defaults */
 	global_preferences_install_defaults ();
@@ -1088,25 +1089,25 @@ nautilus_global_preferences_initialize (void)
 	global_preferences_register_enumerations ();
 
 	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
-	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
+	eel_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
 
 	/* Set up storage for values accessed in this file */
-	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-					      &icon_view_smooth_font_auto_value);
-	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-					      &default_smooth_font_auto_value);
+	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
+					 &icon_view_smooth_font_auto_value);
+	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+					 &default_smooth_font_auto_value);
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-					   smooth_graphics_mode_changed_callback, 
-					   NULL);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+				      smooth_graphics_mode_changed_callback, 
+				      NULL);
 	
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
-					   default_folder_viewer_changed_callback, 
-					   NULL);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
+				      default_folder_viewer_changed_callback, 
+				      NULL);
 
- 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
- 					   default_icon_view_sort_order_or_manual_layout_changed_callback, 
- 					   NULL);
+ 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
+				      default_icon_view_sort_order_or_manual_layout_changed_callback, 
+				      NULL);
 
 	/* Keep track of smooth graphics mode changes in order to notify the smooth
 	 * widget machinery.

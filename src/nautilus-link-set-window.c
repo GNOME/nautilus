@@ -29,6 +29,9 @@
 #include "nautilus-link-set-window.h"
 
 #include "nautilus-window.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkcheckbutton.h>
@@ -43,14 +46,10 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-link-set.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-preferences.h>
-#include <eel/eel-string.h>
-#include <eel/eel-xml-extensions.h>
 #include <stdlib.h>
 
 /* global to hold the currently allocated link set window, if any */

@@ -66,7 +66,6 @@
 #include <libnautilus-private/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
-#include <libnautilus-private/nautilus-preferences.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-sidebar-functions.h>
 #include <libnautilus-private/nautilus-theme.h>
@@ -202,7 +201,7 @@ nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
 
 	gtk_object_class_add_signals (object_klass, signals, LAST_SIGNAL);
 
-	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					       &confirm_trash_auto_value);
 }
 
@@ -285,7 +284,7 @@ nautilus_sidebar_initialize (GtkObject *object)
 	make_button_box (sidebar);
 
 	/* add a callback for when the theme changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_theme_changed, sidebar);	
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_theme_changed, sidebar);	
 
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (sidebar),
@@ -316,7 +315,7 @@ nautilus_sidebar_destroy (GtkObject *object)
 	
 	g_free (sidebar->details);
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_sidebar_theme_changed,
 					      sidebar);
 
@@ -423,8 +422,8 @@ toggle_sidebar_panel (GtkWidget *widget,
 	 * become out of whack with the number of running sidebar
 	 * panels, for example when a panel crashes.
 	 */
-	nautilus_preferences_set_boolean (preference_key, already_on);
-	nautilus_preferences_set_boolean (preference_key, !already_on);
+	eel_preferences_set_boolean (preference_key, already_on);
+	eel_preferences_set_boolean (preference_key, !already_on);
 }
 
 typedef struct
@@ -457,7 +456,7 @@ sidebar_for_each_sidebar_panel (const char *name,
 	 * we dont need to create a menu item for it.
 	 */
 	panel_visible = any_panel_matches_iid (data->sidebar, iid);
-	if (!panel_visible && !nautilus_preferences_is_visible (preference_key)) {
+	if (!panel_visible && !eel_preferences_is_visible (preference_key)) {
 		return;
 	}
 
@@ -1664,8 +1663,8 @@ nautilus_sidebar_size_allocate (GtkWidget *widget,
 	
 	if (widget->allocation.width != sidebar->details->old_width) {
 		sidebar->details->old_width = widget->allocation.width;
- 		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
-					      widget->allocation.width);
+ 		eel_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
+					     widget->allocation.width);
 	}	
 }
 

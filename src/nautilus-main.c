@@ -248,9 +248,9 @@ main (int argc, char *argv[])
 	if (!kill_shell) {
 		nautilus_global_preferences_initialize ();
 		if (no_desktop) {
-			nautilus_preferences_set_is_invisible
+			eel_preferences_set_is_invisible
 				(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
-			nautilus_preferences_set_is_invisible
+			eel_preferences_set_is_invisible
 				(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
 		}
 	}

@@ -25,11 +25,10 @@
 #include <config.h>
 #include "nautilus-sidebar-functions.h"
 
-#include <eel/eel-glib-extensions.h>
-#include "nautilus-preferences.h"
-#include <eel/eel-string.h>
+#include "nautilus-global-preferences.h"
 #include "nautilus-view-identifier.h"
-
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 #include <liboaf/liboaf.h>
 
 #define PREFERENCES_SIDEBAR_PANEL_PREFIX "sidebar-panels"
@@ -80,7 +79,7 @@ sidebar_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_identifier)
 	
 	key = sidebar_panel_make_preference_key (panel_identifier->iid);
 	g_return_val_if_fail (key != NULL, FALSE);
-        enabled = nautilus_preferences_get_boolean (key);
+        enabled = eel_preferences_get_boolean (key);
         g_free (key);
 
         return enabled;

@@ -139,7 +139,7 @@ nautilus_get_desktop_directory (void)
 {
 	char *desktop_directory;
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		desktop_directory = g_strdup (g_get_home_dir());
 	} else {
 		desktop_directory = nautilus_make_path (g_get_home_dir (), DESKTOP_DIRECTORY_NAME);

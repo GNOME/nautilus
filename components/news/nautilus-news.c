@@ -334,12 +334,12 @@ do_destroy (GtkObject *obj, News *news)
 	/* free all the channel data */
 	nautilus_news_free_channel_list (news);
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
-					      max_items_changed,
-					      news);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
-					      update_interval_changed,
-					      news);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
+                                         max_items_changed,
+                                         news);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
+                                         update_interval_changed,
+                                         news);
 	
         g_free (news);
 }
@@ -1740,7 +1740,7 @@ max_items_changed (gpointer user_data)
 	
 	news = (News*) user_data;
 	
-	news->max_item_count = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
+	news->max_item_count = eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
 	if (news->max_item_count <= 0) {
 		news->max_item_count = 2;		
 	}
@@ -1754,7 +1754,7 @@ update_interval_changed (gpointer user_data)
 	
 	news = (News*) user_data;
 	
-	news->update_interval = 60 * nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);
+	news->update_interval = 60 * eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);
 	if (news->update_interval < 60) {
 		news->update_interval = 60;		
 	}
@@ -2420,8 +2420,8 @@ make_news_view (const char *iid, gpointer callback_data)
  	news->bold_font = eel_scalable_font_get_default_bold_font ();
        	
 	/* get preferences and sanity check them */
-	news->max_item_count = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
-	news->update_interval = 60 * nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);	
+	news->max_item_count = eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
+	news->update_interval = 60 * eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);	
 	
 	if (news->max_item_count <= 0) {
 		news->max_item_count = 2;		
@@ -2429,8 +2429,8 @@ make_news_view (const char *iid, gpointer callback_data)
 	if (news->update_interval < 60) {
 		news->update_interval = 60;		
 	}
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS, max_items_changed, news);	
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL, update_interval_changed, news);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS, max_items_changed, news);	
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL, update_interval_changed, news);
 	
 	/* load some images */
 	nautilus_news_load_images (news);

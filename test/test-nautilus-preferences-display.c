@@ -3,7 +3,6 @@
 #include <eel/eel-image.h>
 #include <eel/eel-image-with-background.h>
 #include <eel/eel-text-caption.h>
-#include <libnautilus-private/nautilus-preferences.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
 static void
@@ -16,7 +15,7 @@ text_caption_update (EelTextCaption *text_caption,
 	g_print ("'%s' changed from '%d' to '%d'\n",
 		 name,
 		 test_text_caption_get_text_as_int (text_caption),
-		 nautilus_preferences_get_integer (name));
+		 eel_preferences_get_integer (name));
 
 	test_text_caption_set_text_for_int_preferences (text_caption, name);
 }
@@ -30,7 +29,7 @@ user_level_caption_update (EelTextCaption *text_caption)
 	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
 	
 	old_text = eel_text_caption_get_text (text_caption);
-	new_text = nautilus_preferences_get ("user_level");
+	new_text = eel_preferences_get ("user_level");
 	
 	g_print ("'%s' changed from '%s' to '%s'\n",
 		 "user_level",
@@ -127,7 +126,7 @@ user_level_frame_new (void)
 	user_level_hbox = entry_new ("user_level", &user_level_caption, &user_level_default_caption);
 	test_text_caption_set_text_for_string_preferences (EEL_TEXT_CAPTION (user_level_caption), "user_level");
 	test_text_caption_set_text_for_default_string_preferences (EEL_TEXT_CAPTION (user_level_default_caption), "user_level");
-	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, user_level_caption);
+	eel_preferences_add_callback ("user_level", user_level_changed_callback, user_level_caption);
 
 	gtk_container_add (GTK_CONTAINER (frame), user_level_hbox);
 
@@ -171,9 +170,9 @@ colors_frame_new (void)
 	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (yellow_default_caption), "yellow");
 	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (red_default_caption), "red");
 	
-	nautilus_preferences_add_callback ("green", green_changed_callback, green_caption);
-	nautilus_preferences_add_callback ("yellow", yellow_changed_callback, yellow_caption);
-	nautilus_preferences_add_callback ("red", red_changed_callback, red_caption);
+	eel_preferences_add_callback ("green", green_changed_callback, green_caption);
+	eel_preferences_add_callback ("yellow", yellow_changed_callback, yellow_caption);
+	eel_preferences_add_callback ("red", red_changed_callback, red_caption);
 
 	gtk_box_pack_start (GTK_BOX (vbox), green_hbox, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), yellow_hbox, TRUE, TRUE, 0);
@@ -219,9 +218,9 @@ fruits_frame_new (void)
 	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (orange_default_caption), "fruits/orange");
 	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (pear_default_caption), "fruits/pear");
 	
-	nautilus_preferences_add_callback ("fruits/apple", apple_changed_callback, apple_caption);
-	nautilus_preferences_add_callback ("fruits/orange", orange_changed_callback, orange_caption);
-	nautilus_preferences_add_callback ("fruits/pear", pear_changed_callback, pear_caption);
+	eel_preferences_add_callback ("fruits/apple", apple_changed_callback, apple_caption);
+	eel_preferences_add_callback ("fruits/orange", orange_changed_callback, orange_caption);
+	eel_preferences_add_callback ("fruits/pear", pear_changed_callback, pear_caption);
 
 	gtk_box_pack_start (GTK_BOX (vbox), apple_hbox, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), orange_hbox, TRUE, TRUE, 0);

@@ -9,8 +9,8 @@ static void
 button_toggled (GtkWidget *button,
 		gpointer callback_data)
 {
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-					  GTK_TOGGLE_BUTTON (button)->active);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+				     GTK_TOGGLE_BUTTON (button)->active);
 }
 
 static void
@@ -18,10 +18,10 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 {
 	gboolean is_smooth;
 
-	is_smooth = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	is_smooth = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 	
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (callback_data),
-				      nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE));
+				      eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE));
 }
 
 static void
@@ -46,7 +46,7 @@ main (int argc, char * argv[])
 	button = gtk_toggle_button_new_with_label ("Smooth Graphics");
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button),
-				      nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE));
+				      eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE));
 	
 	gtk_container_add (GTK_CONTAINER (window), button);
 
@@ -55,8 +55,8 @@ main (int argc, char * argv[])
 			    GTK_SIGNAL_FUNC (button_toggled),
 			    NULL);
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-					   smooth_graphics_mode_changed_callback, 
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+				      smooth_graphics_mode_changed_callback, 
 					   button);
 
 	gtk_widget_show (button);

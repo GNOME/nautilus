@@ -431,7 +431,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 
 	set_up_toolbar_images (window);
 
-	nautilus_preferences_add_callback
+	eel_preferences_add_callback
 		(NAUTILUS_PREFERENCES_THEME, 
 		 theme_changed_callback,
 		 window);
@@ -442,7 +442,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 void
 nautilus_window_toolbar_remove_theme_callback (NautilusWindow *window)
 {
-	nautilus_preferences_remove_callback
+	eel_preferences_remove_callback
 		(NAUTILUS_PREFERENCES_THEME,
 		 theme_changed_callback,
 		 window);

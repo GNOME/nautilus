@@ -10,6 +10,7 @@ INCLUDES = 						\
 	$(NAUTILUS_PRIVATE_CFLAGS)			\
 	$(ESD_CFLAGS)					\
 	$(MEDUSA_CFLAGS) 				\
+	$(LIBRSVG_CFLAGS)				\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
@@ -47,7 +48,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-bonobo-extensions.c \
 	nautilus-bookmark.c \
 	nautilus-customization-data.c \
-	nautilus-dateedit-extensions.c \
 	nautilus-default-file-icon.c \
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
@@ -65,8 +65,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-utilities.c \
 	nautilus-file.c \
 	nautilus-font-factory.c \
-	nautilus-gconf-extensions.c \
-	nautilus-generous-bin.c \
 	nautilus-global-preferences.c \
 	nautilus-horizontal-splitter.c \
 	nautilus-icon-canvas-item.c \
@@ -84,11 +82,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-metafile.c \
 	nautilus-mime-actions.c \
 	nautilus-monitor.c \
-	nautilus-preferences-box.c \
-	nautilus-preferences-group.c \
-	nautilus-preferences-item.c \
-	nautilus-preferences-pane.c \
-	nautilus-preferences.c \
 	nautilus-program-chooser.c \
 	nautilus-program-choosing.c \
 	nautilus-search-uri.c \
@@ -116,7 +109,6 @@ noinst_HEADERS = \
 	nautilus-bookmark.h \
 	nautilus-cdrom-extensions.h \
 	nautilus-customization-data.h \
-	nautilus-dateedit-extensions.h \
 	nautilus-default-file-icon.h \
 	nautilus-directory-background.h \
 	nautilus-directory-metafile-monitor.h \
@@ -137,8 +129,6 @@ noinst_HEADERS = \
 	nautilus-file-utilities.h \
 	nautilus-file.h \
 	nautilus-font-factory.h \
-	nautilus-gconf-extensions.h \
-	nautilus-generous-bin.h \
 	nautilus-global-preferences.h \
 	nautilus-horizontal-splitter.h \
 	nautilus-icon-canvas-item.h \
@@ -160,11 +150,6 @@ noinst_HEADERS = \
 	nautilus-metafile.h \
 	nautilus-mime-actions.h \
 	nautilus-monitor.h \
-	nautilus-preferences-box.h \
-	nautilus-preferences-group.h \
-	nautilus-preferences-item.h \
-	nautilus-preferences-pane.h \
-	nautilus-preferences.h \
 	nautilus-program-chooser.h \
 	nautilus-program-choosing.h \
 	nautilus-search-uri.h \
