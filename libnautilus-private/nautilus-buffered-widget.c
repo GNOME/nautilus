@@ -47,7 +47,6 @@
 
 #include <math.h>
 #include <string.h>
-#include <png.h>
 
 /* Arguments */
 enum
@@ -67,6 +66,7 @@ struct _NautilusBufferedWidgetDetail
 	GdkPixbuf	*tile_pixbuf;
 	int		horizontal_offset;	
 	int		vertical_offset;	
+	guint		background_appearance_changed_connection;
 };
 
 /* GdkGC refcounting macros */			\
@@ -97,6 +97,7 @@ static void       nautilus_buffered_widget_get_arg              (GtkObject      
 								 guint                         arg_id);
 
 
+
 /* GtkWidgetClass methods */
 static void       nautilus_buffered_widget_realize              (GtkWidget                    *widget);
 static void       nautilus_buffered_widget_draw                 (GtkWidget                    *widget,
@@ -105,9 +106,11 @@ static void       nautilus_buffered_widget_size_allocate        (GtkWidget      
 								 GtkAllocation                *allocation);
 
 
+
 /* GtkWidgetClass event methods */
 static gint       nautilus_buffered_widget_expose_event         (GtkWidget                    *widget,
 								 GdkEventExpose               *event);
+
 
 /* Private NautilusBufferedWidget things */
 static void       background_appearance_changed_callback        (NautilusBackground           *background,
@@ -124,6 +127,8 @@ static void       nautilus_gdk_pixbuf_tile_alpha                (GdkPixbuf      
 								 gint                          tile_origin_y,
 								 GdkInterpType                 interpolation_mode,
 								 guchar                        overall_alpha);
+static void       connect_to_background_if_needed               (NautilusBufferedWidget       *buffered_widget);
+
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBufferedWidget, nautilus_buffered_widget, GTK_TYPE_MISC)
@@ -164,6 +169,7 @@ nautilus_buffered_widget_initialize (NautilusBufferedWidget *buffered_widget)
 	buffered_widget->detail->tile_pixbuf = NULL;
 	buffered_widget->detail->horizontal_offset = 0;
 	buffered_widget->detail->vertical_offset = 0;
+	buffered_widget->detail->background_appearance_changed_connection = 0;
 }
 
 /* GtkObjectClass methods */
@@ -244,58 +250,17 @@ nautilus_buffered_widget_get_arg (GtkObject	*object,
 static void
 nautilus_buffered_widget_realize (GtkWidget *widget)
 {
-	GtkWidget		*background_ancestor;
-	NautilusBufferedWidget	*buffered_widget;
-
+	NautilusBufferedWidget *buffered_widget;
+	
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (widget));
 	
 	buffered_widget = NAUTILUS_BUFFERED_WIDGET (widget);
-
+	
 	/* Chain realize */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
-
+	
 	/* Create GCs */
 	buffered_widget->detail->copy_area_gc = nautilus_gdk_create_copy_area_gc (widget->window);
-
-	background_ancestor = nautilus_gtk_widget_find_background_ancestor (widget);
-
-	if (background_ancestor != NULL) {
-		NautilusBackground	*background;
-
-		background = nautilus_get_widget_background (background_ancestor);
-		g_assert (NAUTILUS_IS_BACKGROUND (background));
-		
-		gtk_signal_connect (GTK_OBJECT (background),
-				    "appearance_changed",
-				    background_appearance_changed_callback,
-				    GTK_OBJECT (buffered_widget));
-	}
-	else {
-		/* FIXME: In this case, we should set a flag that indicates
-		 * we need to check later for the precense of a background.
-		 * Otherwise, we wont get background changes notifications,
-		 * if the background gets attatched after we have been 
-		 * realized.
-		 *
-		 * Users of this code can easily work around this problem
-		 * by attatching a background before the widget is realized,
-		 * which is usually the case.
-		 */
-
-
-		/* HACKERY ALERT: This is a hack to make the nautilus sidebar
-		 * work for now. It is evil and ill fix really soon.  I promise.
-		 */
-		NautilusBackground	*background;
-		
-		background = nautilus_get_widget_background (nautilus_gtk_widget_find_windowed_ancestor (widget));
-		g_assert (NAUTILUS_IS_BACKGROUND (background));
-		
-		gtk_signal_connect (GTK_OBJECT (background),
-				    "appearance_changed",
-				    background_appearance_changed_callback,
-				    GTK_OBJECT (buffered_widget));
-	}
 }
 
 static void
@@ -310,6 +275,8 @@ nautilus_buffered_widget_draw (GtkWidget *widget, GdkRectangle *area)
 	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
 
 	buffered_widget = NAUTILUS_BUFFERED_WIDGET (widget);
+
+	connect_to_background_if_needed (buffered_widget);
 
  	if (buffered_widget->detail->buffer_pixbuf == NULL) {
 		buffered_widget_update_pixbuf (buffered_widget);
@@ -621,6 +588,33 @@ background_appearance_changed_callback (NautilusBackground *background,
 	nautilus_buffered_widget_clear_buffer (buffered_widget);
 
 	gtk_widget_queue_draw (GTK_WIDGET (buffered_widget));
+}
+
+static void
+connect_to_background_if_needed (NautilusBufferedWidget	*buffered_widget)
+{
+	GtkWidget *background_ancestor;
+
+	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
+
+	if (buffered_widget->detail->background_appearance_changed_connection != 0) {
+		return;
+	}
+
+	background_ancestor = nautilus_gtk_widget_find_background_ancestor (GTK_WIDGET (buffered_widget));
+
+	if (background_ancestor != NULL) {
+		NautilusBackground *background;
+		
+		background = nautilus_get_widget_background (background_ancestor);
+		g_assert (NAUTILUS_IS_BACKGROUND (background));
+		
+		buffered_widget->detail->background_appearance_changed_connection = 
+			gtk_signal_connect (GTK_OBJECT (background),
+					    "appearance_changed",
+					    background_appearance_changed_callback,
+					    GTK_OBJECT (buffered_widget));
+	}
 }
 
 /**
