@@ -633,24 +633,18 @@ check_target_directory_is_or_in_trash (GnomeVFSURI *trash_dir_uri, GnomeVFSURI *
 		|| gnome_vfs_uri_is_parent (trash_dir_uri, target_dir_uri, TRUE);
 }
 
-static GnomeVFSURI *
-new_uri_from_escaped_string (const char *string)
-{
-	char *unescaped_string;
-	GnomeVFSURI *result;
-	
-	unescaped_string = gnome_vfs_unescape_string (string, "/");
-	result = gnome_vfs_uri_new (unescaped_string);
-	g_free (unescaped_string);
-
-	return result;
-}
 
 static GnomeVFSURI *
-append_basename_unescaped (const GnomeVFSURI *target_directory, const GnomeVFSURI *source_directory)
+append_basename (const GnomeVFSURI *target_directory, const GnomeVFSURI *source_directory)
 {
-	return gnome_vfs_uri_append_path (target_directory, 
-		gnome_vfs_uri_get_basename (source_directory));
+	const char *filename;
+
+	filename =  gnome_vfs_uri_extract_short_name (source_directory);
+	if (filename != NULL) {
+		return gnome_vfs_uri_append_file_name (target_directory, filename);
+	} else {
+		return gnome_vfs_uri_dup (target_directory);
+	}
 }
 
 
@@ -695,7 +689,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		if (strcmp (target_dir, "trash:") == 0) {
 			is_trash_move = TRUE;
 		} else {
-			target_dir_uri = new_uri_from_escaped_string (target_dir);
+			target_dir_uri = gnome_vfs_uri_new (target_dir);
 		}
 	}
 
@@ -703,7 +697,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 * same disk
 	 */
 	for (p = item_uris; p != NULL; p = p->next) {
-		source_uri = new_uri_from_escaped_string ((const char *)p->data);
+		source_uri = gnome_vfs_uri_new ((const char *)p->data);
 		source_uri_list = g_list_prepend (source_uri_list, gnome_vfs_uri_ref (source_uri));
 
 		if (target_dir != NULL) {
@@ -711,7 +705,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
 						   	  &target_dir_uri, FALSE, FALSE, 0777);				
 			}
-			target_uri = append_basename_unescaped (target_dir_uri, source_uri);
+			target_uri = append_basename (target_dir_uri, source_uri);
 		} else {
 			/* duplication */
 			target_uri = gnome_vfs_uri_ref (source_uri);
@@ -909,7 +903,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	state->data = data;
 
 	/* pass in the target directory and the new folder name as a destination URI */
-	parent_uri = new_uri_from_escaped_string (parent_dir);
+	parent_uri = gnome_vfs_uri_new (parent_dir);
 	uri = gnome_vfs_uri_append_path (parent_uri, _("untitled folder"));
 	target_uri_list = g_list_append (NULL, uri);
 	
@@ -949,7 +943,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 	/* build the source and uri list, checking if any of the delete itmes are Trash */
 	for (p = item_uris; p != NULL; p = p->next) {
 		bail = FALSE;
-		source_uri = new_uri_from_escaped_string ((const char *)p->data);
+		source_uri = gnome_vfs_uri_new ((const char *)p->data);
 		source_uri_list = g_list_prepend (source_uri_list, source_uri);
 
 		if (trash_dir_uri == NULL) {
@@ -967,7 +961,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 
 		g_assert (trash_dir_uri != NULL);
 		target_uri_list = g_list_prepend (target_uri_list,
-			append_basename_unescaped (trash_dir_uri, source_uri));
+			append_basename (trash_dir_uri, source_uri));
 		
 		if (gnome_vfs_uri_equal (source_uri, trash_dir_uri)) {
 			nautilus_simple_dialog (parent_view, 
@@ -1045,7 +1039,7 @@ nautilus_file_operations_delete (const GList *item_uris,
 	uri_list = NULL;
 	for (p = item_uris; p != NULL; p = p->next) {
 		uri_list = g_list_prepend (uri_list, 
-			new_uri_from_escaped_string ((const char *)p->data));
+			gnome_vfs_uri_new ((const char *)p->data));
 	}
 	uri_list = g_list_reverse (uri_list);
 
