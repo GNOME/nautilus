@@ -68,6 +68,7 @@ static void          nautilus_application_initialize_class       (NautilusApplic
 static void          nautilus_application_destroy                (GtkObject                *object);
 static void          nautilus_application_check_user_directories (NautilusApplication      *application);
 static gboolean	     check_for_and_run_as_super_user 		 (void);
+static gboolean	     need_to_show_first_time_druid		 (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
@@ -171,6 +172,12 @@ nautilus_application_initialize (NautilusApplication *application)
 
 	bonobo_object_construct (BONOBO_OBJECT (application), corba_object);
 
+	/* Initialize preferences. This is needed so that proper 
+	 * defaults are available before any preference peeking 
+	 * happens.
+	 */
+	nautilus_global_preferences_initialize ();
+
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
 }
@@ -186,7 +193,7 @@ nautilus_application_destroy (GtkObject *object)
 {
 	/* Shut down preferences. This is needed so that the global
 	 * preferences object and all its allocations are freed. Not
-	 * calling this function would have NOT cause the user to lose
+	 * calling this function would NOT cause the user to lose
 	 * preferences.  The only effect would be to leak those
 	 * objects - which would be collected at exit() time anyway,
 	 * but it adds noise to memory profile tool runs.
@@ -301,17 +308,13 @@ nautilus_application_startup (NautilusApplication *application,
 	if (!check_for_and_run_as_super_user ()) {
 		return FALSE;
 	}
-	
-	/* Check if this is the first time running the program by seeing
-	 * if the user_main_directory exists; if not, run the first time druid 
-	 * instead of launching the application
-	 */
-	/* FIXME: You will get multiple druids if you invoke nautilus again. */
-	if (!nautilus_user_main_directory_exists ()) {
+
+	/* Run the first time startup druid if needed. */
+	if (need_to_show_first_time_druid ()) {
 		nautilus_first_time_druid_show (application, start_desktop, urls);
 		return TRUE;
 	}
-
+	
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
@@ -557,4 +560,67 @@ check_for_and_run_as_super_user (void)
 	}
 
 	return TRUE;
+}
+
+/*
+ * need_to_show_first_time_druid
+ *
+ * Determine whether Nautilus needs to show the first time druid.
+ * 
+ * Note that the flag file indicating whether the druid has been
+ * presented is: ~/.nautilus/first-time-wizard.
+ *
+ * Another alternative could be to use preferences to store this flag
+ * However, there because of bug 1229 this is not yet possible.
+ *
+ * Also, for debugging purposes, it is convenient to have just one file
+ * to kill in order to test the startup wizard:
+ *
+ * rm -f ~/.nautilus/first-time-wizard
+ *
+ * In order to accomplish the same thing with preferences, you would have
+ * to either kill ALL your preferences or spend time digging in ~/.gconf
+ * xml files finding the right one.
+ */
+static gboolean
+need_to_show_first_time_druid (void)
+{
+	gboolean result;
+	char *user_directory;
+	char *druid_flag_file_name;
+
+	user_directory = nautilus_get_user_directory ();
+
+	druid_flag_file_name = g_strdup_printf ("%s/%s",
+						user_directory,
+						"first-time-wizard-flag");
+	g_free (user_directory);
+
+	result = !g_file_exists (druid_flag_file_name);
+
+	/* Touch the file so that next time around out states changes */
+	if (result) {
+		FILE *stream;
+		
+		stream = fopen (druid_flag_file_name, "w");
+
+		/* If for some crazy reason we cant touch the file,
+		 * then the worst that will happen is that the user
+		 * will get the startup druid again next time, so we
+		 * dont report this failure to the user.
+		 */
+		if (stream) {
+			const char *blurb =
+				_("Existence of this file indicates that the Nautilus configuration wizard\n"
+				  "has been presented.\n\n"
+				  "You can manually erase this file to present the wizard again.\n\n");
+			
+			fwrite (blurb, sizeof (char), strlen (blurb), stream);
+			fclose (stream);
+		}
+	}
+	
+	g_free (druid_flag_file_name);
+
+	return result;
 }

@@ -54,7 +54,6 @@ static gboolean   global_preferences_is_sidebar_panel_enabled           (Nautilu
 static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
 static gboolean   global_preferences_close_dialog_callback              (GtkWidget              *dialog,
 									 gpointer                user_data);
-static void       global_preferences_initialize_if_needed               (void);
 static void       global_preferences_register_with_defaults             (const char             *name,
 									 const char             *description,
 									 NautilusPreferenceType  type,
@@ -399,7 +398,7 @@ nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void)
 static GtkWidget *
 global_preferences_get_dialog (void)
 {
-	global_preferences_initialize_if_needed ();
+	nautilus_global_preferences_initialize ();
 
 	if (!global_prefs_dialog)
 	{
@@ -732,7 +731,15 @@ global_preferences_register_for_ui (void)
 							   FALSE,
 							   TRUE,
 							   TRUE);
+
+ 	/* Make the default Sidebar width 200 */
+	global_preferences_register_enum_with_defaults (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
+							"Sidebar Width",
+							148,
+							148,
+							148);
 	
+
 	{
 		char	*user_main_directory;
 		char	*novice_home_location;
@@ -767,19 +774,6 @@ global_preferences_close_dialog_callback (GtkWidget   *dialog,
 	return TRUE;
 }
 
-static void
-global_preferences_initialize_if_needed (void)
-{
-	static gboolean initialized = FALSE;
-	
-	if (initialized) {
-		return;
-	}
-
-	global_preferences_register_for_ui ();
-
-	initialized = TRUE;
-}
 
 /*
  * Public functions
@@ -828,6 +822,20 @@ nautilus_global_preferences_dialog_update (void)
 	if (was_showing) {
 		nautilus_global_preferences_show_dialog ();
 	}
+}
+
+void
+nautilus_global_preferences_initialize (void)
+{
+	static gboolean initialized = FALSE;
+	
+	if (initialized) {
+		return;
+	}
+
+	global_preferences_register_for_ui ();
+
+	initialized = TRUE;
 }
 
 void

@@ -1,3 +1,32 @@
+2000-08-03  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix bugs 1890 and 1902.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_get_dialog),
+	(global_preferences_register_for_ui),
+	(nautilus_global_preferences_dialog_update),
+	(nautilus_global_preferences_initialize):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+
+	Expose the initialization call once again.  I suppose explicit
+	initialzation was a dream.  It seems to break everytime we add
+	something new at startup that needs preferences, so lets just make
+	sure preferences defaults exist once and for all.
+	
+	* src/nautilus-application.c: (nautilus_application_initialize),
+	(nautilus_application_destroy), (nautilus_application_startup),
+	(check_for_and_run_as_super_user), (need_to_show_first_time_druid):
+
+	Change the way we check whether the first time wizrard needs to be
+	presented.  Instead of checking for the user's 'top' directory, we
+	check a flag file: ~/.nautilus/first-time-wizard.
+
+	Checking the user's top directory doesnt work after my last
+	preferences changes, since the preferences initialization call i
+	added causes the 'top' directory to exist and this confuses the
+	first time druid.
+	
 2000-08-03  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.c:

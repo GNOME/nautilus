@@ -102,6 +102,7 @@ typedef enum
 } NautilusSearchBarMode;
 
 
+void   nautilus_global_preferences_initialize                                  (void);
 void   nautilus_global_preferences_shutdown                                    (void);
 void   nautilus_global_preferences_show_dialog                                 (void);
 void   nautilus_global_preferences_hide_dialog                                 (void);
