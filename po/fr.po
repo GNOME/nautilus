@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Nautilus 0.9.1\n"
-"POT-Creation-Date: 2001-03-11 18:19+0100\n"
-"PO-Revision-Date: 2001-03-08 13:14+0100\n"
+"Project-Id-Version: Nautilus 1.0.2\n"
+"POT-Creation-Date: 2001-04-11 08:58+0200\n"
+"PO-Revision-Date: 2001-04-11 09:01+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -331,8 +331,8 @@ msgid "Kernel Routines"
 msgstr "Routines du noyau"
 
 #: components/help/hyperbola-filefmt.c:703
-#: libnautilus-extensions/nautilus-stock-dialogs.c:510
-#: libnautilus-extensions/nautilus-stock-dialogs.c:548
+#: libnautilus-extensions/nautilus-stock-dialogs.c:513
+#: libnautilus-extensions/nautilus-stock-dialogs.c:551
 msgid "Info"
 msgstr "Info"
 
@@ -2053,7 +2053,7 @@ msgstr "\t· %s\n"
 #. "j" "ja" "JA" etc.
 #: components/services/install/command-line/eazel-alt-install-corba.c:638
 msgid "Save transaction report ? (y/n) "
-msgstr ""
+msgstr "Enregistrer le rapport de transaction ? (o/n) "
 
 #. I18N note: y is the letter for the word Yes. This is
 #. used in the response for a yes/no questions. Your translation
@@ -2131,7 +2131,7 @@ msgstr "Une seule opération à la fois, s'il vous plait."
 #: components/services/install/command-line/eazel-alt-install-corba.c:1047
 #, c-format
 msgid "%s: --help for usage\n"
-msgstr ""
+msgstr "%s : --help pour l'aide\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1012
 #, c-format
@@ -2240,7 +2240,7 @@ msgstr "Afficher les informations détaillées d'un sous-paquet"
 
 #: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
-msgstr "Le vérouillage du fichier téléchargé a échoué"
+msgstr "Le verrouillage du fichier téléchargé a échoué"
 
 #: components/services/install/lib/eazel-install-logic2.c:116
 #, c-format
@@ -3192,7 +3192,7 @@ msgstr "Vue d'Inventaire de Nautilus"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:2
 msgid "Nautilus Inventory view factory"
-msgstr ""
+msgstr "Usine de vue d'inventaire système"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:3
 msgid "Nautilus System Inventory component's component's factory"
@@ -3208,7 +3208,7 @@ msgstr "Visionneur d'inventaire système"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:6
 msgid "System inventory view component"
-msgstr ""
+msgstr "Composant de vue d'inventaire système"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:7
 msgid "View as System Inventory"
@@ -3536,7 +3536,7 @@ msgstr "Aller au formulaire d'inscription aux services Eazel"
 
 #: components/services/summary/nautilus-summary-view-ui.xml.h:3
 msgid "Log out from Eazel Services"
-msgstr "Déconnection des services Eazel"
+msgstr "Déconnexion des services Eazel"
 
 #: components/services/summary/nautilus-summary-view-ui.xml.h:4
 msgid "Service _Preferences"
@@ -3559,22 +3559,16 @@ msgid "_Register for Eazel Services"
 msgstr "_Abonnement aux services Eazel"
 
 #: components/services/summary/Nautilus_View_services-summary.oaf.in.h:1
-#, fuzzy
 msgid "Nautilus Service Summary View Factory"
-msgstr "Licence Nautilus"
+msgstr "Usine de la vue Résumé des Services Nautilus"
 
 #: components/services/summary/Nautilus_View_services-summary.oaf.in.h:2
-#, fuzzy
 msgid "Nautilus Summary View"
-msgstr "Visualiseur d'images Nautilus"
+msgstr "Vue du Résumé Nautilus"
 
 #: components/services/summary/Nautilus_View_services-summary.oaf.in.h:3
-#, fuzzy
 msgid "Service Summary View Component's Factory"
-msgstr ""
-"%s\n"
-"\n"
-"Ceci est un composant de visualisation Nautilus."
+msgstr "Composant de visualisation de résumé des services de l'usine"
 
 #: components/services/summary/Nautilus_View_services-summary.oaf.in.h:4
 msgid "Service Summary view component"
@@ -3685,7 +3679,7 @@ msgstr "_Times"
 
 #: components/text/Nautilus_View_text.oaf.in.h:1
 msgid "Factory for text view"
-msgstr ""
+msgstr "Usine pour la vue texte"
 
 #: components/text/Nautilus_View_text.oaf.in.h:2
 msgid "Text"
@@ -3701,7 +3695,7 @@ msgstr "Vue texte"
 
 #: components/text/Nautilus_View_text.oaf.in.h:5
 msgid "Text view factory"
-msgstr ""
+msgstr "Usine de vue texte"
 
 #: components/text/Nautilus_View_text.oaf.in.h:6
 msgid "View as Text"
@@ -3709,20 +3703,19 @@ msgstr "Voir en tant que Texte"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
-msgstr ""
+msgstr "Rechercher avec Google le texte sélectionné"
 
 #: components/text/services/google.xml.h:2
 msgid "Use Google to search the web for the selected text"
-msgstr ""
+msgstr "Utiliser Google pour rechercher dans le Web le texte sélectionné"
 
 #: components/text/services/webster.xml.h:1
 msgid "Look Up Selected Text in Dictionary"
-msgstr ""
+msgstr "Rechercher le texte sélectionné dans un dictionnaire"
 
 #: components/text/services/webster.xml.h:2
-#, fuzzy
 msgid "Look up the selected text in the Merriam-Webster dictionary"
-msgstr "Copie le texte sélectionné dans le presse-papiers"
+msgstr "Rechercher le texte sélectionné dans le dictionnaire Merriam-Webster"
 
 #: components/throbber/Nautilus_Control_throbber.oaf.in.h:1
 msgid "animation to indicate on-going activity"
@@ -3745,9 +3738,8 @@ msgid "Nautilus Tree sidebar panel"
 msgstr "Panneau latéral d'arborescence Nautilus"
 
 #: components/tree/Nautilus_View_tree.oaf.in.h:2
-#, fuzzy
 msgid "Nautilus Tree view"
-msgstr "Theme Nautilus:"
+msgstr "Vue arborescente Nautilus"
 
 #: components/tree/Nautilus_View_tree.oaf.in.h:3
 #: libnautilus-extensions/nautilus-global-preferences.c:638
@@ -3775,9 +3767,8 @@ msgid "Blue Rough"
 msgstr ""
 
 #: data/browser.xml.h:6
-#, fuzzy
 msgid "Blue Type"
-msgstr "Type"
+msgstr "Type bleu"
 
 #: data/browser.xml.h:7
 msgid "Brushed Metal"
@@ -3812,9 +3803,8 @@ msgid "Colors"
 msgstr "Couleurs"
 
 #: data/browser.xml.h:15
-#, fuzzy
 msgid "Concrete"
-msgstr "Contenu"
+msgstr ""
 
 #: data/browser.xml.h:16
 msgid "Cool"
@@ -3825,9 +3815,8 @@ msgid "Cork"
 msgstr ""
 
 #: data/browser.xml.h:18
-#, fuzzy
 msgid "Countertop"
-msgstr "Contenu"
+msgstr ""
 
 #: data/browser.xml.h:19
 msgid "Danger"
@@ -3863,15 +3852,15 @@ msgstr "Brouillon"
 
 #: data/browser.xml.h:27
 msgid "Drag a color to an object to change it to that color"
-msgstr ""
+msgstr "Glisser une couleur vers un objet pour le changer vers cette couleur"
 
 #: data/browser.xml.h:28
 msgid "Drag a pattern tile to an object to change it"
-msgstr ""
+msgstr "Glisser un motif sur un objet pour le changer"
 
 #: data/browser.xml.h:29
 msgid "Drag an emblem to an object to add it to the object"
-msgstr ""
+msgstr "Glisser un emblème sur un objet pour le changer"
 
 #: data/browser.xml.h:30
 msgid "Eclipse"
@@ -4007,9 +3996,8 @@ msgid "Personal"
 msgstr "Personnel"
 
 #: data/browser.xml.h:63
-#, fuzzy
 msgid "Purple Marble"
-msgstr "impossible à lire"
+msgstr "Marbre violet"
 
 #: data/browser.xml.h:64
 msgid "Ridged Paper"
@@ -4024,14 +4012,12 @@ msgid "Ruby"
 msgstr ""
 
 #: data/browser.xml.h:67
-#, fuzzy
 msgid "Sea Foam"
-msgstr "Rechercher:"
+msgstr ""
 
 #: data/browser.xml.h:68
-#, fuzzy
 msgid "Shale"
-msgstr "Exemple"
+msgstr ""
 
 #: data/browser.xml.h:69
 msgid "Silver"
@@ -4046,9 +4032,8 @@ msgid "Sky Ridge"
 msgstr ""
 
 #: data/browser.xml.h:72
-#, fuzzy
 msgid "Snow Ridge"
-msgstr "Afficher Panneau latéral"
+msgstr ""
 
 #: data/browser.xml.h:73
 msgid "Special"
@@ -4110,14 +4095,12 @@ msgid "Trash"
 msgstr "Corbeille"
 
 #: data/linksets/home.xml.h:1
-#, fuzzy
 msgid "Computer"
-msgstr "Terminé"
+msgstr "Poste de travail"
 
 #: data/linksets/home.xml.h:2
-#, fuzzy
 msgid "Home Directory"
-msgstr "Répertoire de l'utilisateur"
+msgstr "Répertoire perso"
 
 #: data/linksets/portals.xml.h:1
 msgid "Excite"
@@ -5890,15 +5873,15 @@ msgstr "courier"
 msgid "lucida"
 msgstr "lucida"
 
-#: libnautilus-extensions/nautilus-preferences.c:76
+#: libnautilus-extensions/nautilus-preferences.c:77
 msgid "Beginner"
 msgstr "Débutant"
 
-#: libnautilus-extensions/nautilus-preferences.c:77
+#: libnautilus-extensions/nautilus-preferences.c:78
 msgid "Intermediate"
 msgstr "Intermédaire"
 
-#: libnautilus-extensions/nautilus-preferences.c:78
+#: libnautilus-extensions/nautilus-preferences.c:79
 msgid "Advanced"
 msgstr "Expert"
 
@@ -6360,22 +6343,22 @@ msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr ""
 "Éléments qui contiennent « medusa » dans leur nom et sont des répertoires."
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:550
-#: libnautilus-extensions/nautilus-stock-dialogs.c:603
+#: libnautilus-extensions/nautilus-stock-dialogs.c:553
+#: libnautilus-extensions/nautilus-stock-dialogs.c:606
 msgid "Details"
 msgstr "Détails"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:568
+#: libnautilus-extensions/nautilus-stock-dialogs.c:571
 msgid "Warning"
 msgstr "Attention"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:579
-#: libnautilus-extensions/nautilus-stock-dialogs.c:601
+#: libnautilus-extensions/nautilus-stock-dialogs.c:582
+#: libnautilus-extensions/nautilus-stock-dialogs.c:604
 msgid "Error"
 msgstr "Erreur"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:634
-#: libnautilus-extensions/nautilus-stock-dialogs.c:662
+#: libnautilus-extensions/nautilus-stock-dialogs.c:637
+#: libnautilus-extensions/nautilus-stock-dialogs.c:665
 msgid "Question"
 msgstr "Question"
 
@@ -7995,6 +7978,9 @@ msgid ""
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
+"Nautilus ne peut créer le répertoire requis « %s ». Avant d'exécuter "
+"Nautilus, veuillez créer ce répertoire, ou définir les permissions de telle "
+"sorte que Nautilus puisse le créer."
 
 #: src/nautilus-application.c:281
 msgid "Couldn't Create Required Folders"
@@ -8010,6 +7996,12 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
+"Nautilus ne peut créer les répertoires suivants requis :\n"
+"\n"
+"%s\n"
+"\n"
+"Avant d'exécuter Nautilus, veuillez créer ces répertoires, ou définir les "
+"permissions de telle sorte que Nautilus puisse les créer."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -8027,6 +8019,10 @@ msgid ""
 "from the console may fix the problem. If not, you can try rebooting the "
 "computer or installing Nautilus again."
 msgstr ""
+"Nautilus ne peut être utilisé maintenant. Exécutez la commande « "
+"nautilus-clean.sh -x » depuis la console peut régler le problème. Sinon, "
+"vous pouvez essayer de redémarer l'ordinateur et installer Nautilus de "
+"nouveau."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:413
@@ -8047,6 +8043,23 @@ msgid ""
 "\n"
 "We have also seen this error when a faulty version of oaf was installed."
 msgstr ""
+"Nautilus ne peut être utilisé maintenant. Exécutez la commande « "
+"nautilus-clean.sh -x » depuis la console peut régler le problème. Sinon, "
+"vous pouvez essayer de redémarer l'ordinateur et installer Nautilus de "
+"nouveau.\n"
+"OAF ne peut localiser le fichier Nautilus_shell.oaf. Une raison à cela "
+"semble être que LD_LIBRARY_PATH n'inclut pas le répertoire des bibliothèques "
+"d'OAF. Une autre cause possible peut être une mauvaise installation avec le "
+"fichier Nautilus_Shell.oaf manquant.\n"
+"\n"
+"Exécuter « nautilus-clean.sh -x » tuera tous les processus OAF et GConf, qui "
+"peuvent être nécessaire par d'autres applications.\n"
+"\n"
+"Quelques fois, tuer oafd et gconfd résoudra le problème, mais nous ne savons "
+"pas pourquoi.\n"
+"\n"
+"Nous avons aussi constaté cette erreur quand une version fautive d'OAF est "
+"installée."
 
 #. Some misc. error (can never happen with current
 #. * version of OAF). Show dialog and terminate the
@@ -8071,24 +8084,24 @@ msgstr ""
 "d'OAF."
 
 #: src/nautilus-application.c:463
-#, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
 "help fix the problem."
 msgstr ""
-"Impossible d'utiliser Nautilus à cause d'une erreur inattendue en provenance "
-"d'OAF."
+"Nautilus ne peut être utilisé maintenant à cause d'une erreur inattendue en "
+"provenance d'OAF lorsqu'il a tenté de localiser l'usine. Tuer oafd et "
+"redémarrer Nautilus peut aider à résoudre le problème."
 
 #: src/nautilus-application.c:470
-#, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
 "may help fix the problem."
 msgstr ""
-"Impossible d'utiliser Nautilus à cause d'une erreur inattendue en provenance "
-"d'OAF."
+"Nautilus ne peut être utilisé maintenant à cause d'une erreur inattendue en "
+"provenance d'OAF lorsqu'il a tenté de localiser l'objet shell. Tuer oafd et "
+"redémarrer peut aider à résoudre le problème."
 
 #: src/nautilus-application.c:635
 msgid ""
@@ -8097,7 +8110,7 @@ msgid ""
 "As root, you can damage your system if you are not careful, and\n"
 "Nautilus will not stop you from doing it."
 msgstr ""
-"Vous etes sur le point d'utiliser Nautilus en tant que superutilisateur "
+"Vous êtes sur le point d'utiliser Nautilus en tant que superutilisateur "
 "(root).\n"
 "\n"
 "En tant que root, vous pouvez ainsi endommager votre système par erreur,\n"
@@ -8935,41 +8948,49 @@ msgstr "Usine Nautilus"
 #: src/Nautilus_shell.oaf.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
 msgstr ""
+"Composant du gestionnaire de fichiers Nautilus qui affiche une liste "
+"défilante"
 
 #: src/Nautilus_shell.oaf.in.h:8
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
 msgstr ""
+"Composant du gestionnaire de fichiers Nautilus qui affiche une liste de "
+"résultats de recherche défilante"
 
 #: src/Nautilus_shell.oaf.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr ""
+"Composant du gestionnaire de fichiers Nautilus qui affiche un espace d'icône "
+"à deux dimensions"
 
 #: src/Nautilus_shell.oaf.in.h:10
-msgid "Nautilus file manager component that shows icons on the the desktop"
+msgid "Nautilus file manager component that shows icons on the desktop"
 msgstr ""
+"Composant du gestionnaire de fichiers Nautilus qui affiche des icônes sur le "
+"bureau"
 
 #: src/Nautilus_shell.oaf.in.h:11
 msgid "Nautilus file manager desktop icon view"
-msgstr ""
+msgstr "Vue icône de bureau du gestionnaire de fichiers Nautilus"
 
 #: src/Nautilus_shell.oaf.in.h:12
 msgid "Nautilus file manager icon view"
-msgstr ""
+msgstr "Vue icône du gestionnaire de fichiers Nautilus"
 
 #: src/Nautilus_shell.oaf.in.h:13
 msgid "Nautilus file manager list view"
-msgstr ""
+msgstr "Vue liste du gestionnaire de fichiers Nautilus"
 
 #: src/Nautilus_shell.oaf.in.h:14
 msgid "Nautilus file manager search results list view"
 msgstr ""
+"Vue liste de résultats de recherche du gestionnaire de fichiers Nautilus"
 
 #: src/Nautilus_shell.oaf.in.h:15
-#, fuzzy
 msgid "Nautilus metafile factory"
-msgstr "Selection de theme Nautilus"
+msgstr "Usine de metafichiers Nautilus"
 
 #: src/Nautilus_shell.oaf.in.h:16
 msgid "Nautilus shell"
@@ -8983,7 +9004,7 @@ msgstr ""
 
 #: src/Nautilus_shell.oaf.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr ""
+msgstr "Produits des objets métafichiers pour accéder aux métadonnées Nautilus"
 
 #: src/Nautilus_shell.oaf.in.h:19
 msgid "Search List"
@@ -9051,7 +9072,7 @@ msgstr "Co_uper le texte"
 
 #: src/nautilus-shell-ui.xml.h:17
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "Editer les signets du menu"
+msgstr "Affiche une fenêtre qui permets d'éditer les signets de ce menu"
 
 #: src/nautilus-shell-ui.xml.h:18
 msgid "Display credits for the creators of Nautilus"
@@ -9742,7 +9763,7 @@ msgstr ""
 "Traducteurs :\n"
 "Jean-Michel Ardantz <jmardantz@ifrance.com>, 2000.\n"
 "Christophe Merlet (RedFox) <redfox@eikonex.org>, 2001.\n"
-"Rapporter les anomalies de traductions à <gnomefr@gnomefr.traduc.org>"
+"Rapporter les anomalies de traductions à http://bugzilla.eazel.com/"
 
 #: src/nautilus-window-menus.c:758
 #, c-format
