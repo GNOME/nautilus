@@ -1,5 +1,27 @@
 2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences.c:
+	(nautilus_preferences_initialize):
+	Instead of creating our own gconf client, share one with the user
+	level manager.  Otherwise i get weird gconf connection errors.
+
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(user_level_manager_new),
+	(nautilus_user_level_manager_initialize_class),
+	(user_level_manager_ensure_global_manager),
+	(user_level_set_default_if_needed),
+	(nautilus_user_level_manager_get),
+	(nautilus_user_level_manager_get_user_level),
+	(nautilus_user_level_manager_get_user_level_names),
+	(nautilus_user_level_manager_get_gconf_client):
+	* nautilus-widgets/nautilus-user-level-manager.h:
+	Add method to expose a refed gconf client.
+	Change the global manager initialization code to prevent stoopid
+	infinite loop.  Let gconf know about the ~/.gconf/nautilus
+	directory.  
+	
+2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* configure.in:
 	Fix bug 724 by adding a slightly better, but still lame mozilla
 	detection artificial intelligence.

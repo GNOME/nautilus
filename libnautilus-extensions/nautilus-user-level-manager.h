@@ -44,6 +44,7 @@ void                         nautilus_user_level_manager_set_user_level       (g
 guint                        nautilus_user_level_manager_get_user_level       (void);
 guint                        nautilus_user_level_manager_get_num_user_levels  (void);
 NautilusStringList          *nautilus_user_level_manager_get_user_level_names (void);
+GtkObject                   *nautilus_user_level_manager_get_gconf_client     (void);
 
 BEGIN_GNOME_DECLS
 

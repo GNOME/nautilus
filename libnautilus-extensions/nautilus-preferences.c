@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "nautilus-preferences.h"
+#include "nautilus-user-level-manager.h"
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -929,16 +930,10 @@ nautilus_preferences_initialize (int argc, char **argv)
 
 	g_assert (GLOBAL.preference_table != NULL);
 
-	GLOBAL.gconf_client = gconf_client_new ();
+ 	GLOBAL.gconf_client = GCONF_CLIENT (nautilus_user_level_manager_get_gconf_client ());
 
 	g_assert (GLOBAL.gconf_client != NULL);
 
-	/* Let gconf know about ~/.gconf/nautilus so that callbacks work */
-	gconf_client_add_dir (GLOBAL.gconf_client,
-			      PREFERENCES_GCONF_PATH,
-			      GCONF_CLIENT_PRELOAD_RECURSIVE,
-			      NULL);
-	
 	return TRUE;
 }
 

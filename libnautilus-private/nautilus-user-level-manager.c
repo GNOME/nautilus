@@ -53,6 +53,9 @@ static const guint   DEFAULT_NUM_USER_LEVELS = NAUTILUS_N_ELEMENTS (DEFAULT_USER
 static const guint   DEFAULT_USER_LEVEL = USER_LEVEL_HACKER;
 
 static const char    USER_LEVEL_KEY[] = "/nautilus/user_level";
+static const char    USER_LEVEL_PATH[] = "/nautilus";
+
+static NautilusUserLevelManager *global_manager = NULL;
 
 struct _NautilusUserLevelManager 
 {
@@ -82,9 +85,8 @@ static void                      nautilus_user_level_manager_initialize_class (N
 static void                      nautilus_user_level_manager_initialize       (NautilusUserLevelManager      *user_level_manager);
 static void                      user_level_manager_destroy                   (GtkObject                     *object);
 static NautilusUserLevelManager *user_level_manager_new                       (void);
-static gboolean                  user_level_manager_is_initialized            (void);
-static NautilusUserLevelManager *user_level_manager_get_global_manager        (void);
-static void                      user_level_set_default_if_needed             (void);
+static void                      user_level_manager_ensure_global_manager     (void);
+static void                      user_level_set_default_if_needed             (NautilusUserLevelManager *manager);
 char *                           get_gconf_user_level_string                  (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUserLevelManager, nautilus_user_level_manager, GTK_TYPE_OBJECT)
@@ -99,6 +101,13 @@ user_level_manager_new ()
         manager = NAUTILUS_USER_LEVEL_MANAGER (gtk_object_new (nautilus_user_level_manager_get_type (), NULL));
 
 	manager->gconf_client = gconf_client_new ();
+
+	/* Let gconf know about ~/.gconf/nautilus */
+	gconf_client_add_dir (manager->gconf_client,
+			      USER_LEVEL_PATH,
+			      GCONF_CLIENT_PRELOAD_RECURSIVE,
+			      NULL);
+	
 	manager->num_user_levels = DEFAULT_NUM_USER_LEVELS;
 	manager->user_level_names = nautilus_string_list_new ();
 
@@ -108,9 +117,7 @@ user_level_manager_new ()
 	
 	g_assert (manager->gconf_client != NULL);
 
-	user_level_set_default_if_needed ();
-
-	g_print ("user_level_manager_new: user_level = %d\n", nautilus_user_level_manager_get_user_level ());
+	user_level_set_default_if_needed (manager);
 
         return manager;
 }
@@ -129,12 +136,12 @@ nautilus_user_level_manager_initialize_class (NautilusUserLevelManagerClass *use
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (user_level_manager_class);
 	
 	user_level_manager_signals[USER_LEVEL_CHANGED] = gtk_signal_new ("icons_changed",
-								    GTK_RUN_LAST,
-								    object_class->type,
-								    0,
-								    gtk_marshal_NONE__NONE,
-								    GTK_TYPE_NONE,
-								    0);
+									 GTK_RUN_LAST,
+									 object_class->type,
+									 0,
+									 gtk_marshal_NONE__NONE,
+									 GTK_TYPE_NONE,
+									 0);
 	
 	gtk_object_class_add_signals (object_class, user_level_manager_signals, LAST_SIGNAL);
 
@@ -159,24 +166,14 @@ user_level_manager_destroy (GtkObject *object)
 	nautilus_string_list_free (manager->user_level_names);
 }
 
-static NautilusUserLevelManager *
-user_level_manager_get_global_manager (void)
+static void
+user_level_manager_ensure_global_manager (void)
 {
-        static NautilusUserLevelManager *global_manager = NULL;
-	
         if (global_manager == NULL) {
                 global_manager = user_level_manager_new ();
         }
 
-        return global_manager;
-}
-
-static gboolean
-user_level_manager_is_initialized (void)
-{
-        NautilusUserLevelManager *manager = user_level_manager_get_global_manager ();
-	
-        return (manager && manager->num_user_levels && manager->user_level_names);
+	g_assert (global_manager != NULL);
 }
 
 char *
@@ -193,11 +190,11 @@ get_gconf_user_level_string (void)
 }
 
 static void
-user_level_set_default_if_needed (void)
+user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 {
-        NautilusUserLevelManager *manager = user_level_manager_get_global_manager ();
-	GConfValue		 *value;
+	GConfValue *value;
 
+	g_assert (manager != NULL);
 	g_assert (manager->gconf_client != NULL);
 	
 	value = gconf_client_get_without_default (manager->gconf_client, USER_LEVEL_KEY, NULL);
@@ -211,7 +208,7 @@ user_level_set_default_if_needed (void)
 
 		gconf_client_suggest_sync (manager->gconf_client, NULL);
 
-		g_print ("setting default user_level to %s\n", DEFAULT_USER_LEVEL_NAMES[DEFAULT_USER_LEVEL]);
+/* 		g_print ("setting default user_level to %s\n", DEFAULT_USER_LEVEL_NAMES[DEFAULT_USER_LEVEL]); */
 	}
 
 	g_assert (value != NULL);
@@ -223,11 +220,9 @@ user_level_set_default_if_needed (void)
 NautilusUserLevelManager *
 nautilus_user_level_manager_get (void)
 {
-        NautilusUserLevelManager *manager = user_level_manager_get_global_manager ();
+	user_level_manager_ensure_global_manager ();
 	
-	g_assert (user_level_manager_is_initialized ());
-
-        return manager;
+        return global_manager;
 }
 
 void
@@ -260,7 +255,7 @@ nautilus_user_level_manager_set_user_level (guint user_level)
 
 	gconf_client_suggest_sync (manager->gconf_client, NULL);
 	
-	g_print ("user_level changed from %d to %d\n", old_user_level, user_level);
+/* 	g_print ("user_level changed from %d to %d\n", old_user_level, user_level); */
 
 	gtk_signal_emit (GTK_OBJECT (manager), user_level_manager_signals[USER_LEVEL_CHANGED]);
 }
@@ -277,6 +272,8 @@ nautilus_user_level_manager_get_user_level (void)
 
 	index = nautilus_string_list_get_index_for_string (manager->user_level_names,
 							   user_level_string);
+
+/* 	g_print ("user_level_string = %s, index = %d\n", user_level_string, index); */
 
 	g_free (user_level_string);
 
@@ -299,5 +296,17 @@ nautilus_user_level_manager_get_user_level_names (void)
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 
 	return nautilus_string_list_new_from_string_list (manager->user_level_names);
+}
+
+GtkObject*
+nautilus_user_level_manager_get_gconf_client (void)
+{
+	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
+
+	g_assert (manager->gconf_client != NULL);
+
+	gtk_object_ref (GTK_OBJECT (manager->gconf_client));
+
+	return GTK_OBJECT (manager->gconf_client);
 }
 
