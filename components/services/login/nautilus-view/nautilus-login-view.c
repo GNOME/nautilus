@@ -79,7 +79,7 @@ struct _NautilusLoginViewDetails {
 	EazelProxy_AuthnCallback authn_callback;
 };
 
-#define SERVICE_SUMMARY_LOCATION                "eazel-summary:"
+#define SERVICE_SUMMARY_LOCATION                "eazel:"
 #define SERVICE_HELP_LOCATION                   "http://www.eazel.com"
 
 static void       nautilus_login_view_initialize_class (NautilusLoginViewClass     *klass);

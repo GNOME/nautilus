@@ -51,15 +51,27 @@
 #define DEFAULT_BACKGROUND_COLOR		"rgb:0000/6666/6666"
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
+typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
+
 typedef enum {
 	Pending_None,
 	Pending_Login,
 } SummaryPendingOperationType;
 
+
+struct _ServicesButtonCallbackData {
+	NautilusView	*nautilus_view;
+	char		*uri;
+};
+
 /* A NautilusContentView's private information. */
 struct _NautilusSummaryViewDetails {
 	char 		*uri;
 	NautilusView	*nautilus_view;
+
+	SummaryData	*xml_data;
+
+	/* Parent form and title */
 	GtkWidget	*form;
 	GtkWidget	*form_title;
 
@@ -73,6 +85,7 @@ struct _NautilusSummaryViewDetails {
 	gboolean	*logged_in;
 
 	/* Services control panel */
+	int		current_service_row;
 	GtkTable	*services_table;
 	GtkWidget	*services_icon_container;
 	GtkWidget	*services_icon_widget;
@@ -85,7 +98,7 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*services_goto_button;
 	GtkWidget	*services_goto_label_widget;
 	char		*services_goto_label;
-	char		*services_redirect;
+	char		*services_redirects[500];
 
 	/* Login Frame Widgets */
 	GtkWidget	*username_label;
@@ -104,6 +117,7 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*logout_label;
 
 	/* Eazel news panel */
+	int		current_news_row;
 	gboolean	*news_has_data;
 	GtkTable	*service_news_table;
 	GtkWidget	*news_icon_container;
@@ -115,6 +129,7 @@ struct _NautilusSummaryViewDetails {
 	char		*news_description_body;
 
 	/* Update control panel */
+	int		current_update_row;
 	gboolean	*updates_has_data;
 	GtkTable	*updates_table;
 	GtkWidget	*update_icon_container;
@@ -130,7 +145,7 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*update_goto_button;
 	GtkWidget	*update_goto_label_widget;
 	char		*update_goto_label;
-	char		*update_redirect;
+	char		*update_redirects[500];
 
 	/* EazelProxy -- for logging in/logging out */
 	EazelProxy_UserControl user_control;
@@ -162,9 +177,9 @@ static void	logout_button_cb			(GtkWidget			*button,
 static void	entry_changed_cb			(GtkWidget			*entry,
 							 NautilusSummaryView		*view);
 static void	goto_service_cb				(GtkWidget			*button,
-							 NautilusSummaryView		*view);
+							 ServicesButtonCallbackData	*cbdata);
 static void	goto_update_cb				(GtkWidget			*button,
-							 NautilusSummaryView		*view);
+							 ServicesButtonCallbackData	*cbdata);
 static void	register_button_cb			(GtkWidget			*button,
 							 NautilusSummaryView		*view);
 
@@ -177,10 +192,9 @@ generate_startup_form (NautilusSummaryView       *view)
 	GtkWidget		*temp_box;
 	GtkWidget		*align;
 	int			counter;
-	SummaryData		*test_parse;
 
-	/* test xml fetching */
-	test_parse = parse_summary_xml_file ();
+	/* fetch and parse the xml file */
+	view->details->xml_data = parse_summary_xml_file ();
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -287,6 +301,14 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget		*temp_box;
 	GtkWidget		*temp_hbox;
 	GtkWidget		*button_box;
+	ServicesData		*service_node;
+	EazelNewsData		*eazel_news_node;
+	UpdateNewsData		*update_news_node;
+	GList			*iterator;
+
+	view->details->current_service_row = 0;
+	view->details->current_news_row = 0;
+	view->details->current_update_row = 0;
 
 	/* set to default not logged in for now */
 	view->details->logged_in = FALSE;
@@ -334,37 +356,21 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* Create the parent table to hold 5 rows */
 	view->details->services_table = GTK_TABLE (gtk_table_new (5, 3, FALSE));
 
-	/* Build the first column with static data for now */
-	view->details->services_icon_name = g_strdup_printf ("vault-service-icon.png");
-	view->details->services_description_header = g_strdup_printf ("Internet File Storage");
-	view->details->services_description_body = g_strdup_printf ("Your remote file storage area.\nLast accesed 6/30/00 at 16:32:01");
-	view->details->services_goto_label = g_strdup_printf ("   Go to Vault!   ");
-	view->details->services_redirect = g_strdup_printf ("http://www.eazel.com/services.html");
-	generate_service_entry_row (view, 1);
+	/* build the services table from the xml file */
+	for (iterator = view->details->xml_data->services_list; iterator; iterator = g_list_next (iterator)) {
 
-	/* Build the second column with static data for now */
-	view->details->services_icon_name = g_strdup_printf ("softcat-service-icon.png");
-	view->details->services_description_header = g_strdup_printf ("Eazel's Software Catalog");
-	view->details->services_description_body = g_strdup_printf ("Look for the latest software here!\nLast accessed 8/31/00 at 05:04:44");
-	view->details->services_goto_label = g_strdup_printf (" Go to SoftCat! ");
-	view->details->services_redirect = g_strdup_printf ("http://www.eazel.com/register.html");
-	generate_service_entry_row (view, 2);
+		view->details->current_service_row++;
+		service_node = iterator->data;
+		view->details->services_icon_name = service_node->icon;
+		view->details->services_description_header = service_node->description_header;
+		view->details->services_description_body = service_node->description;
+		view->details->services_goto_label = service_node->button_label;
+		view->details->services_redirects[view->details->current_service_row - 1] = service_node->uri;
+		generate_service_entry_row (view, view->details->current_service_row);
 
-	/* Build the third column with static data for now */
-	view->details->services_icon_name = g_strdup_printf ("inventory-service-icon.png");
-	view->details->services_description_header = g_strdup_printf ("Inventory Sync Service");
-	view->details->services_description_body = g_strdup_printf ("Update your inventory now!\nYou have not sent your inventory\nto storage yet!");
-	view->details->services_goto_label = g_strdup_printf ("Go to Inventory View");
-	view->details->services_redirect = g_strdup_printf ("eazel-inventory:");
-	generate_service_entry_row (view, 3);
+	}
 
-	/* Build the fourth column with static data for now */
-	view->details->services_icon_name = g_strdup_printf ("time-sync-service-icon.png");
-	view->details->services_description_header = g_strdup_printf ("Time Sync Service");
-	view->details->services_description_body = g_strdup_printf ("Update your clock now!");
-	view->details->services_goto_label = g_strdup_printf ("  Sync time now!  ");
-	view->details->services_redirect = g_strdup_printf ("http://nautilus.eazel.com");
-	generate_service_entry_row (view, 4);
+	g_list_free (iterator);
 
 	/* draw parent vbox and connect it to the login frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
@@ -517,10 +523,18 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	view->details->service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
 
-	/* Build the first column with static data for now */
-	view->details->news_icon_name = g_strdup_printf ("services-warning.png");
-	view->details->news_description_body = g_strdup_printf ("The Eazel servers will be down this friday!");
-	generate_eazel_news_entry_row (view, 1);
+	/* build the eazel news table from the xml file */
+	for (iterator = view->details->xml_data->eazel_news_list; iterator; iterator = g_list_next (iterator)) {
+
+		view->details->current_news_row++;
+		eazel_news_node = iterator->data;
+		view->details->news_icon_name = eazel_news_node->icon;
+		view->details->news_description_body = eazel_news_node->message;
+		generate_eazel_news_entry_row (view, view->details->current_news_row);
+
+	}
+
+	g_list_free (iterator);
 
 	/* draw parent vbox and connect it to the login frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_table), 0, 0, 0);
@@ -550,14 +564,22 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* create the default update table with 4 rows */
 	view->details->updates_table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
 
-	/* Build the first column with static data for now */
-	view->details->update_icon_name = g_strdup_printf ("netscape.png");
-	view->details->update_description_header = g_strdup_printf ("Netscape Communicator");
-	view->details->update_description_body = g_strdup_printf ("Everyone's favorite web browser.");
-	view->details->update_description_version = g_strdup_printf ("Version 4.75");
-	view->details->update_goto_label = g_strdup_printf (" Update Nescape Now! ");
-	view->details->update_redirect = g_strdup_printf ("http://download.netscape.com");
-	generate_update_news_entry_row (view, 1);
+	/* build the updates table from the xml file */
+	for (iterator = view->details->xml_data->update_news_list; iterator; iterator = g_list_next (iterator)) {
+
+		view->details->current_update_row++;
+		update_news_node = iterator->data;
+		view->details->update_icon_name = update_news_node->icon;
+		view->details->update_description_header = update_news_node->name;
+		view->details->update_description_version = update_news_node->version;
+		view->details->update_description_body = update_news_node->description;
+		view->details->update_goto_label = update_news_node->button_label;
+		view->details->update_redirects[view->details->current_update_row - 1] = update_news_node->uri;
+		generate_update_news_entry_row (view, view->details->current_update_row);
+
+	}
+
+	g_list_free (iterator);
 
 	/* draw parent vbox and connect it to the login frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->updates_table), 0, 0, 0);
@@ -568,13 +590,17 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* draw the parent frame box */
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET (parent), 0, 0, 4);
 	gtk_widget_show (GTK_WIDGET (parent));
+
 }
 
 static void
 generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 {
-	GtkWidget	*temp_vbox;
-	GtkWidget	*temp_hbox;
+	GtkWidget			*temp_vbox;
+	GtkWidget			*temp_hbox;
+	ServicesButtonCallbackData	*cbdata;
+
+	cbdata = g_new0 (ServicesButtonCallbackData, 1);
 
 	/* Generate first column with service icon */
 	view->details->services_icon_container = gtk_hbox_new (TRUE, 4);
@@ -620,7 +646,9 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->services_goto_label_widget);
 	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
 	gtk_box_pack_start (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 13);
-	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), view);
+	cbdata->nautilus_view = view->details->nautilus_view;
+	cbdata->uri = view->details->services_redirects[view->details->current_service_row - 1];
+	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), cbdata);
 	gtk_widget_show (view->details->services_goto_button);
 	gtk_table_attach (view->details->services_table, view->details->services_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
 	gtk_widget_show (view->details->services_button_container);
@@ -653,6 +681,9 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
 	GtkWidget	*temp_vbox;
 	GtkWidget	*temp_hbox;
+	ServicesButtonCallbackData	*cbdata;
+
+	cbdata = g_new0 (ServicesButtonCallbackData, 1);
 
 	/* Generate first column with icon */
 	view->details->update_icon_container = gtk_hbox_new (TRUE, 4);
@@ -711,7 +742,9 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->update_goto_label_widget);
 	gtk_container_add (GTK_CONTAINER (view->details->update_goto_button), view->details->update_goto_label_widget);
 	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_goto_button, FALSE, FALSE, 13);
-	gtk_signal_connect (GTK_OBJECT (view->details->update_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), view);
+	cbdata->nautilus_view = view->details->nautilus_view;
+	cbdata->uri = view->details->update_redirects[view->details->current_update_row - 1];
+	gtk_signal_connect (GTK_OBJECT (view->details->update_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata);
 	gtk_widget_show (view->details->update_goto_button);
 	gtk_table_attach (view->details->updates_table, view->details->update_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
 	gtk_widget_show (view->details->update_button_container);
@@ -896,19 +929,19 @@ register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 /* callback to handle the goto a service button. */
 static void
-goto_service_cb (GtkWidget      *button, NautilusSummaryView    *view)
+goto_service_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 {
-
-	go_to_uri (view->details->nautilus_view, view->details->services_redirect);
+	
+	go_to_uri (cbdata->nautilus_view, cbdata->uri);
 
 }
 
 /* callback to handle install netscape  button.  Right now only does a simple redirect. */
 static void
-goto_update_cb (GtkWidget      *button, NautilusSummaryView    *view)
+goto_update_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 {
-
-	go_to_uri (view->details->nautilus_view, view->details->update_redirect);
+	
+	go_to_uri (cbdata->nautilus_view, cbdata->uri);
 
 }
 

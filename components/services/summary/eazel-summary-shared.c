@@ -69,12 +69,12 @@ services_data_new ()
 	ServicesData	*return_value;
 	return_value = g_new0 (ServicesData, 1);
 
-	return_value->name = NULL;
+	return_value->gconf_name = NULL;
 	return_value->icon = NULL;
 	return_value->button_label = NULL;
 	return_value->description_header = NULL;
 	return_value->description = NULL;
-	return_value->grey_out = TRUE;
+	return_value->enabled = TRUE;
 
 	return return_value;
 
@@ -103,10 +103,10 @@ update_news_data_new ()
 	return_value->name = NULL;
 	return_value->version = NULL;
 	return_value->priority = NULL;
-	return_value->description_header = NULL;
 	return_value->description = NULL;
 	return_value->icon = NULL;
-	return_value->install_uri = NULL;
+	return_value->button_label = NULL;
+	return_value->uri = NULL;
 
 	return return_value;
 
@@ -120,29 +120,29 @@ parse_a_service (xmlNodePtr node)
 
 	return_value = services_data_new ();
 
-	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	g_print ("%s\n", return_value->name);
+	return_value->gconf_name = g_strdup (xml_get_value (node, "GCONF_NAME"));
+	g_print ("%s\n", return_value->gconf_name);
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
 	g_print ("%s\n", return_value->icon);
 	return_value->button_label = (xml_get_value (node, "BUTTON_LABEL"));
 	g_print ("%s\n", return_value->button_label);
-	return_value->redirect_to = (xml_get_value (node, "REDIRECT_TO"));
-	g_print ("%s\n", return_value->redirect_to);
+	return_value->uri = (xml_get_value (node, "URI"));
+	g_print ("%s\n", return_value->uri);
 	return_value->description_header = (xml_get_value (node, "DESCRIPTION_HEADER"));
 	g_print ("%s\n", return_value->description_header);
 	return_value->description = (xml_get_value (node, "DESCRIPTION"));
 	g_print ("%s\n", return_value->description);
-	tempbuf = (xml_get_value (node, "GREY_OUT"));
+	tempbuf = (xml_get_value (node, "ENABLED"));
 	g_print ("%s\n", tempbuf);
 	if (tempbuf[0] == 'T' || tempbuf[0] == 't') {
-		return_value->grey_out = TRUE;
+		return_value->enabled = TRUE;
 	}
 	else if (tempbuf[0] == 'F' || tempbuf[0] == 'f') {
-		return_value->grey_out = FALSE;
+		return_value->enabled = FALSE;
 	}
 	else {
 		g_warning (_("Could not find a valid boolean value for grey_out!"));
-		return_value->grey_out = FALSE;
+		return_value->enabled = FALSE;
 	}
 
 	return return_value;
@@ -178,14 +178,14 @@ parse_a_update_news_item (xmlNodePtr node)
 	g_print ("%s\n", return_value->version);
 	return_value->priority = g_strdup (xml_get_value (node, "PRIORITY"));
 	g_print ("%s\n", return_value->priority);
-	return_value->description_header = g_strdup (xml_get_value (node, "DESCRIPTION_HEADER"));
-	g_print ("%s\n", return_value->description_header);
 	return_value->description = g_strdup (xml_get_value (node, "DESCRIPTION"));
 	g_print ("%s\n", return_value->description);
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
 	g_print ("%s\n", return_value->icon);
-	return_value->install_uri = (xml_get_value (node, "INSTALL_URI"));
-	g_print ("%s\n", return_value->install_uri);
+	return_value->button_label = g_strdup (xml_get_value (node, "BUTTON_LABEL"));
+	g_print ("%s\n", return_value->button_label);
+	return_value->uri = (xml_get_value (node, "URI"));
+	g_print ("%s\n", return_value->uri);
 
 	return return_value;
 

@@ -32,13 +32,13 @@ typedef struct _UpdateNewsData UpdateNewsData;
 typedef struct _SummaryData SummaryData;
 
 struct _ServicesData {
-	char		*name;
+	char		*gconf_name;
 	char		*icon;
 	char		*button_label;
-	char		*redirect_to;
+	char		*uri;
 	char		*description_header;
 	char		*description;
-	gboolean	grey_out;
+	gboolean	enabled;
 };
 
 struct _EazelNewsData {
@@ -51,10 +51,10 @@ struct _UpdateNewsData {
 	char		*name;
 	char		*version;
 	char		*priority;
-	char		*description_header;
 	char		*description;
 	char		*icon;
-	char		*install_uri;
+	char		*button_label;
+	char		*uri;
 };
 
 struct _SummaryData {

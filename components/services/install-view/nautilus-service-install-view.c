@@ -58,7 +58,7 @@
 /* number of rows of (label, progressbar) to scroll at the bottom */
 #define STATUS_ROWS		4
 
-#define NEXT_SERVICE_VIEW				"eazel-summary:"
+#define NEXT_SERVICE_VIEW				"eazel:"
 
 /* this stuff will need to be configurable, once we have a config pane */
 #define INSTALL_HOST	      	"services.eazel.com"

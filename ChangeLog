@@ -1,3 +1,22 @@
+2000-09-15  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c:
+	* components/services/login/nautilus-view/nautilus-login-view.c:
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(services_data_new), (update_news_data_new), (parse_a_service),
+	(parse_a_update_news_item):
+	* components/services/summary/lib/eazel-summary-shared.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_startup_form), (generate_summary_form),
+	(generate_service_entry_row), (generate_update_news_entry_row),
+	(goto_service_cb), (goto_update_cb):
+
+	Fixed Bug # 2630, 3054, and most of 2632 and 3051.  You probably
+	will get a blank summary view now since the xml file lives on my
+	local apache.  I will point it to the server generated one on
+	Monday.
+
 2000-09-15  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2362 (Selecting "Add Bookmark" while loading a web
