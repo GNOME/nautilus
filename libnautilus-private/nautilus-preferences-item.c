@@ -472,8 +472,6 @@ preferences_item_update_constrained_integer (NautilusPreferencesItem *item)
 
 	current_value = nautilus_preferences_get_integer (item->details->preference_name);
 
-	g_print ("%s -> %d\n", item->details->preference_name, current_value);
-
 	position = nautilus_enumeration_get_value_position (item->details->constrained_integer_values,
 							    current_value);
 	g_return_if_fail (position != NAUTILUS_STRING_LIST_NOT_FOUND);

@@ -1,5 +1,11 @@
 2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_update_constrained_integer): Remove a rogue
+	printf I left in by accident.
+	
+2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	Changed from Mike Fleming to hide the proxy authentication
 	preferences when the "Use Proxy" preference is FALSE.
