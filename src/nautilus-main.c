@@ -150,11 +150,15 @@ main (int argc, char *argv[])
 		int i;
 
 		unsetenv ("_NAUTILUS_RESTART");
-		argv_copy = g_new0 (char *, argc+1);
-		for (i = 0; i < argc; i++) {
-			argv_copy[i] = argv[i];
-		}
-		argv_copy[argc] = NULL;
+
+		/* might eventually want to copy all the parameters from argv into the new exec.
+		 * for now, though, that would just interfere with the re-creation of windows
+		 * (whose info is stored in gconf).
+		 */
+		argv_copy = g_new0 (char *, 2);
+		argv_copy[0] = argv[0];
+		argv_copy[1] = NULL;
+		i = i;
 
 		execvp(my_path, argv_copy);
 	}

@@ -45,6 +45,9 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
+
+#define START_STATE_CONFIG	"start-state"
 
 struct NautilusShellDetails {
 	NautilusApplication *application;
@@ -66,6 +69,7 @@ static void corba_quit	                    (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
 static void corba_restart                    (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
+static gboolean restore_window_states	    (NautilusShell *shell);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell, nautilus_shell, BONOBO_OBJECT_TYPE)
 
@@ -268,8 +272,10 @@ corba_open_default_window (PortableServer_Servant servant,
 
 	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
 
-	/* Open a window pointing at the default location. */
-	open_window (shell, NULL);
+	if (! restore_window_states (shell)) {
+		/* Open a window pointing at the default location. */
+		open_window (shell, NULL);
+	}
 }
 
 static void
@@ -301,6 +307,96 @@ corba_quit (PortableServer_Servant servant,
 	}
 }
 
+/*
+ * code for saving the state of nautilus windows across a restart
+ *
+ * for now, only the window geometry & uri is saved, into "start-state",
+ * in a list of strings like:
+ *     "90x90+1+1 uri"
+ */
+
+static void
+save_window_states (void)
+{
+	GSList *windows, *iter;
+	GSList *out = NULL;
+
+	windows = nautilus_application_windows ();
+	for (iter = windows; iter; iter = g_slist_next (iter)) {
+		NautilusWindow *window = (NautilusWindow *) (iter->data);
+		GdkWindow *gdk_window = GTK_WIDGET (window)->window;
+		char *window_info;
+		int x, y, width, height;
+
+		/* need root origin (origin of all the window dressing) */
+		gdk_window_get_root_origin (gdk_window, &x, &y);
+		width = GTK_WIDGET (window)->allocation.width;
+		height = GTK_WIDGET (window)->allocation.height;
+
+		window_info = g_strdup_printf ("%dx%d+%d+%d %s", width, height, x, y, window->location); 
+		out = g_slist_prepend (out, window_info);
+	}
+
+	nautilus_preferences_set_string_list (START_STATE_CONFIG, out);
+	g_slist_foreach (out, (GFunc)g_free, NULL);
+	g_slist_free (out);
+}
+
+/* returns TRUE if there was state info which has been used to create new windows */
+static gboolean
+restore_window_states (NautilusShell *shell)
+{
+	GSList *start_state, *iter;
+	NautilusWindow *window;
+	char *window_info, *p, *uri;
+	int x, y, width, height;
+
+	start_state = nautilus_preferences_get_string_list (START_STATE_CONFIG);
+	if (! start_state) {
+		return FALSE;
+	}
+
+	for (iter = start_state; iter; iter = g_slist_next (iter)) {
+		p = window_info = (char *) (iter->data);
+
+		width = strtol (p, &p, 10);
+		if (*p == 'x') {
+			p++;
+		}
+		height = strtol (p, &p, 10);
+		if (*p == '+') {
+			p++;
+		}
+		x = strtol (p, &p, 10);
+		if (*p == '+') {
+			p++;
+		}
+		y = strtol (p, &p, 10);
+		p = strchr (p, ' ');
+		if (p) {
+			uri = p+1;
+		} else {
+			uri = NULL;
+		}
+
+		window = nautilus_application_create_window (shell->details->application);
+		if (uri == NULL) {
+			nautilus_window_go_home (window);
+		} else {
+			nautilus_window_goto_uri (window, uri);
+		}
+
+		gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
+		gtk_widget_set_usize (GTK_WIDGET (window), width, height);
+		display_caveat_first_time (shell, window);
+
+		g_free (window_info);
+	}
+	g_slist_free (start_state);
+	nautilus_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	return TRUE;
+}
+
 static void
 corba_restart (PortableServer_Servant servant,
 	       CORBA_Environment *ev)
@@ -308,5 +404,6 @@ corba_restart (PortableServer_Servant servant,
 	if (gtk_main_level () > 0) {
 		gtk_main_quit ();
 	}
+	save_window_states ();
 	setenv ("_NAUTILUS_RESTART", "yes", 1);
 }

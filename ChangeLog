@@ -1,3 +1,12 @@
+2000-08-30  Robey Pointer  <robey@eazel.com>
+
+	* src/nautilus-main.c: (main):
+	* src/nautilus-shell.c: (corba_open_default_window),
+	(save_window_states), (restore_window_states), (corba_restart):
+
+	Make restart save window sizes, positions, and uri's in a gconf
+	setting, so that the windows can be (mostly) restored.
+
 2000-08-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-throbber.c: (nautilus_throbber_initialize),
