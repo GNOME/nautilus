@@ -354,7 +354,7 @@ static void
 theme_selector_changed_callback (EelImageChooser *image_chooser,
 				 gpointer callback_data)
 {
-	g_signal_emit (callback_data, signals[THEME_CHANGED], 0);
+	g_signal_emit (callback_data, signals[THEME_CHANGED], 0, NULL);
 }
 
 static void

@@ -1,3 +1,12 @@
+2002-06-24  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-theme-selector.c (theme_selector_changed_callback): 
+	added a final NULL argument to g_signal_emit(). Fixes bug #85399.
+
+	* src/nautilus-preferences-dialog.c (theme_changed_callback): just
+	return if selected_theme is NULL. This can happen when the dialog is
+	being destroyed.
+
 2002-06-20  Mark McLoughlin  <mark@skynet.ie>
 
 	* src/file-manager/fm-desktop-icon-view.c:

@@ -479,7 +479,11 @@ theme_changed_callback (NautilusThemeSelector *theme_selector,
 	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
 
 	selected_theme = nautilus_theme_selector_get_selected_theme (NAUTILUS_THEME_SELECTOR (theme_selector));
-	g_return_if_fail (selected_theme != NULL);
+
+	/* We ignore a NULL selected theme, which can happen when the dialog
+	   is being destroyed. */
+	if (selected_theme == NULL)
+		return;
 
 	eel_preferences_set (NAUTILUS_PREFERENCES_THEME, selected_theme);
 
