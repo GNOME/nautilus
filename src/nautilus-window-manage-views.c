@@ -528,6 +528,9 @@ nautilus_window_has_really_changed(NautilusWindow *window)
         if (window->pending_ni != NULL) {
                 nautilus_window_update_internals (window, window->pending_ni);
                 nautilus_navigation_info_free (window->pending_ni);
+                if (window->pending_ni == window->cancel_tag) {
+                        window->cancel_tag = NULL;
+                }
                 window->pending_ni = NULL;
         }
 }
