@@ -1,3 +1,72 @@
+2000-03-30  John Sullivan <sullivan@eazel.com>
+
+	Finished task 172 (show icon emblems in list view)
+
+	* libnautilus/nautilus-file.h:
+	added NAUTILUS_FILE_SORT_BY_EMBLEMS to enum
+	(nautilus_file_get_emblem_names): New function.
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_get_emblem_names): New function.
+	(nautilus_file_compare_by_emblems): New function,
+	compares the emblems of two files for sorting.
+	(compare_emblem_names): New function, compares two
+	emblem names for sorting.
+	(nautilus_file_compare_for_sort_internal): handle
+	NAUTILUS_FILE_SORT_BY_EMBLEMS case
+	(sort_keyword_list_and_remove_duplicates): New function,
+	canonicalizes (canonifies? canonizes?) a list of keywords.
+	(nautilus_file_get_keywords): canonicalize list after
+	reading from file.
+	(nautilus_file_set_keywords): canonicalize copy of list
+	before storing.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_emblem_icons_for_file): Use
+	nautilus_file_get_emblem_names instead of having emblem
+	name knowledge here.
+	
+	* libnautilus/nautilus-list.h: 
+	NautilusCellType: new enum, a superset of GtkCellType that
+	we use to sneak in new values.
+	NautilusCellPixbufList: new struct, our new type of content
+	for a list cell.
+	(nautilus_list_set_pixbuf_list): New function.
+	* libnautilus/nautilus-list.c:
+	(nautilus_list_set_cell_contents): New function, handles the
+	NAUTILUS_CELL_PIXBUF_LIST case and lets GtkCList continue
+	handling the others.
+	(nautilus_list_initialize_class): Fill in set_cell_contents
+	function pointer with nautilus_list_set_cell_contents.
+	(gdk_window_size_as_rectangle): New helper function.
+	(draw_cell_pixmap): Removed width & height parameters (now
+	calculated internally) and reworked to use GdkRectangle	math.
+	(draw_cell_pixbuf): New function, modelled after (new & improved)
+	draw_cell_pixmap but draws a gdk_pixbuf directly.
+	(draw_row): handle the NAUTILUS_CELL_PIXBUF_LIST case; fix up
+	callers to draw_cell_pixmap; use NautilusCellType instead of
+	GtkCellType.
+	(nautilus_list_set_pixbuf_list): New function, sneaks a list
+	of pixbufs into the ugly GtkCell data structure.
+	
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_reset_row_height): New function, sets the row height
+	based on zoom level but with a minimum to avoid clipping emblems.
+	(fm_list_view_get_emblem_pixbufs_for_file): create list of
+	appropriately-sized emblem images. Size is based on zoom level
+	but has a minimum so the emblems don't get illegibly small.
+	(install_icons): Rename to install_row_images; handle setting
+	the list of emblems into the list widget.
+	(create_list): include column for emblems between icon & name;
+	set row height only after other widget manipulations.
+	(add_to_list), (update_icons): reflect install_icons name change.
+	(fm_list_view_file_changed): reflect install_icons name change;
+	sort list since changed file might change sort order. (No API
+	to resort just one row; I added a comment about that in case
+	we want to revisit it someday.)
+	(fm_list_view_set_zoom_level): call fm_list_view_reset_row_height.
+	(get_attribute_from_column), (get_column_from_attribute),
+	(sort_criterion_from_column): handle LIST_VIEW_COLUMN_EMBLEMS
+
 2000-03-30  Darin Adler  <darin@eazel.com>
 
 	Finished task 62 (Set custom icon by drag/drop on index panel)

@@ -30,6 +30,7 @@
 #include "nautilus-list.h"
 
 #include <gtk/gtkdnd.h>
+#include "nautilus-gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-background.h"
@@ -58,6 +59,9 @@ struct NautilusListDetails
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
 #define MAX_CLICK_TIME 1500
+
+/* horizontal space between images in a pixbuf list cell */
+#define PIXBUF_LIST_SPACING	2
 
 enum {
 	CONTEXT_CLICK_SELECTION,
@@ -104,6 +108,14 @@ static void nautilus_list_clear (GtkCList *clist);
 static void draw_row (GtkCList *list, GdkRectangle *area, gint row, GtkCListRow *clist_row);
 
 static void nautilus_list_realize (GtkWidget *widget);
+static void nautilus_list_set_cell_contents (GtkCList    *clist,
+		   	   		     GtkCListRow *clist_row,
+		   		 	     gint         column,
+		   		 	     GtkCellType  type,
+		   		 	     const gchar *text,
+		   		 	     guint8       spacing,
+		   		 	     GdkPixmap   *pixmap,
+		   		 	     GdkBitmap   *mask);
 static void nautilus_list_size_request (GtkWidget *widget, GtkRequisition *requisition);
 
 static void nautilus_list_resize_column (GtkCList *widget, int column, int width);
@@ -178,6 +190,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	clist_class->clear = nautilus_list_clear;
 	clist_class->draw_row = draw_row;
   	clist_class->resize_column = nautilus_list_resize_column;
+  	clist_class->set_cell_contents = nautilus_list_set_cell_contents;
 
 	widget_class->button_press_event = nautilus_list_button_press;
 	widget_class->button_release_event = nautilus_list_button_release;
@@ -786,42 +799,74 @@ get_cell_style (GtkCList *clist, GtkCListRow *clist_row,
 	}
 }
 
+static void
+gdk_window_size_as_rectangle (GdkWindow *gdk_window, GdkRectangle *rectangle)
+{
+	gint width, height;
+
+	gdk_window_get_size (gdk_window, &width, &height);	
+	rectangle->width = width;
+	rectangle->height = height;
+}
+
 static gint
 draw_cell_pixmap (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
 		  GdkPixmap *pixmap, GdkBitmap *mask,
-		  gint x, gint y, gint width, gint height)
+		  gint x, gint y)
 {
-	gint xsrc = 0;
-	gint ysrc = 0;
+	GdkRectangle image_rectangle;
+	GdkRectangle intersect_rectangle;
 
+	gdk_window_size_as_rectangle (pixmap, &image_rectangle);
+	image_rectangle.x = x;
+	image_rectangle.y = y;
+
+	if (!gdk_rectangle_intersect (clip_rectangle, &image_rectangle, &intersect_rectangle)) {
+		return x;
+	}
+	
 	if (mask) {
 		gdk_gc_set_clip_mask (fg_gc, mask);
 		gdk_gc_set_clip_origin (fg_gc, x, y);
 	}
 
-	if (x < clip_rectangle->x) {
-		xsrc = clip_rectangle->x - x;
-		width -= xsrc;
-		x = clip_rectangle->x;
+	gdk_draw_pixmap (window, fg_gc, pixmap, 
+			 intersect_rectangle.x - x, intersect_rectangle.y - y, 
+			 image_rectangle.x, image_rectangle.y, 
+			 intersect_rectangle.width, intersect_rectangle.height);
+
+	if (mask) {
+		gdk_gc_set_clip_origin (fg_gc, 0, 0);
+		gdk_gc_set_clip_mask (fg_gc, NULL);
+	}
+
+	return x + intersect_rectangle.width;
+}
+
+static gint
+draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
+		  GdkPixbuf *pixbuf, gint x, gint y)
+{
+	GdkRectangle image_rectangle;
+	GdkRectangle intersect_rectangle;
+
+	image_rectangle.width = gdk_pixbuf_get_width (pixbuf);
+	image_rectangle.height = gdk_pixbuf_get_height (pixbuf);
+	image_rectangle.x = x;
+	image_rectangle.y = y;
+
+	if (!gdk_rectangle_intersect (clip_rectangle, &image_rectangle, &intersect_rectangle)) {
+		return x;
 	}
 	
-	if (x + width > clip_rectangle->x + clip_rectangle->width)
-		width = clip_rectangle->x + clip_rectangle->width - x;
+	gdk_pixbuf_render_to_drawable_alpha (pixbuf, window, 
+			 		     intersect_rectangle.x - x, intersect_rectangle.y - y, 
+			 		     image_rectangle.x, image_rectangle.y, 
+					     intersect_rectangle.width, intersect_rectangle.height,
+					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
+					     0, 0);
 
-	if (y < clip_rectangle->y) {
-		ysrc = clip_rectangle->y - y;
-		height -= ysrc;
-		y = clip_rectangle->y;
-	}
-	if (y + height > clip_rectangle->y + clip_rectangle->height)
-		height = clip_rectangle->y + clip_rectangle->height - y;
-
-	gdk_draw_pixmap (window, fg_gc, pixmap, xsrc, ysrc, x, y, width, height);
-	gdk_gc_set_clip_origin (fg_gc, 0, 0);
-	if (mask)
-		gdk_gc_set_clip_mask (fg_gc, NULL);
-
-	return x + MAX (width, 0);
+	return x + intersect_rectangle.width;
 }
 
 static void
@@ -953,6 +998,8 @@ draw_row (GtkCList     *clist,
       GdkGC *fg_gc;
       GdkGC *bg_gc;
 
+      GList *p;
+
       gint width;
       gint height;
       gint pixmap_width;
@@ -984,20 +1031,21 @@ draw_row (GtkCList     *clist,
 			       (i == last_column) * CELL_SPACING);
 
       /* calculate real width for column justification */
+      width = 0;
       pixmap_width = 0;
       offset = 0;
-      switch (clist_row->cell[i].type)
+      switch ((NautilusCellType)clist_row->cell[i].type)
 	{
-	case GTK_CELL_TEXT:
+	case NAUTILUS_CELL_TEXT:
 	  width = gdk_string_width (style->font,
 				    GTK_CELL_TEXT (clist_row->cell[i])->text);
 	  break;
-	case GTK_CELL_PIXMAP:
+	case NAUTILUS_CELL_PIXMAP:
 	  gdk_window_get_size (GTK_CELL_PIXMAP (clist_row->cell[i])->pixmap,
 			       &pixmap_width, &height);
 	  width = pixmap_width;
 	  break;
-	case GTK_CELL_PIXTEXT:
+	case NAUTILUS_CELL_PIXTEXT:
 	  gdk_window_get_size (GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
 			       &pixmap_width, &height);
 	  width = (pixmap_width +
@@ -1005,6 +1053,14 @@ draw_row (GtkCList     *clist,
 		   gdk_string_width (style->font,
 				     GTK_CELL_PIXTEXT
 				     (clist_row->cell[i])->text));
+	  break;
+	case NAUTILUS_CELL_PIXBUF_LIST:
+	  for (p = NAUTILUS_CELL_PIXBUF_LIST (clist_row->cell[i])->pixbufs; p != NULL; p = p->next) {
+	  	if (width != 0) {
+			width += PIXBUF_LIST_SPACING;
+	  	}
+	  	width += gdk_pixbuf_get_width (p->data);
+	  }
 	  break;
 	default:
 	  continue;
@@ -1028,28 +1084,26 @@ draw_row (GtkCList     *clist,
 	};
 
       /* Draw Text and/or Pixmap */
-      switch (clist_row->cell[i].type)
+      switch ((NautilusCellType)clist_row->cell[i].type)
 	{
-	case GTK_CELL_PIXMAP:
+	case NAUTILUS_CELL_PIXMAP:
 	  draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
 			    GTK_CELL_PIXMAP (clist_row->cell[i])->pixmap,
 			    GTK_CELL_PIXMAP (clist_row->cell[i])->mask,
 			    offset,
 			    clip_rectangle.y + clist_row->cell[i].vertical +
-			    (clip_rectangle.height - height) / 2,
-			    pixmap_width, height);
+			    (clip_rectangle.height - height) / 2);
 	  break;
-	case GTK_CELL_PIXTEXT:
+	case NAUTILUS_CELL_PIXTEXT:
 	  offset =
 	    draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
 			      GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
 			      GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
 			      offset,
 			      clip_rectangle.y + clist_row->cell[i].vertical+
-			      (clip_rectangle.height - height) / 2,
-			      pixmap_width, height);
+			      (clip_rectangle.height - height) / 2);
 	  offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
-	case GTK_CELL_TEXT:
+	case NAUTILUS_CELL_TEXT:
 	  if (style != GTK_WIDGET (clist)->style)
 	    row_center_offset = (((clist->row_height - style->font->ascent -
 				  style->font->descent - 1) / 2) + 1.5 +
@@ -1062,10 +1116,28 @@ draw_row (GtkCList     *clist,
 			   offset,
 			   row_rectangle.y + row_center_offset + 
 			   clist_row->cell[i].vertical,
-			   (clist_row->cell[i].type == GTK_CELL_PIXTEXT) ?
+			   ((NautilusCellType)clist_row->cell[i].type == GTK_CELL_PIXTEXT) ?
 			   GTK_CELL_PIXTEXT (clist_row->cell[i])->text :
 			   GTK_CELL_TEXT (clist_row->cell[i])->text);
 	  gdk_gc_set_clip_rectangle (fg_gc, NULL);
+	  break;
+	case NAUTILUS_CELL_PIXBUF_LIST:
+	  for (p = NAUTILUS_CELL_PIXBUF_LIST (clist_row->cell[i])->pixbufs; p != NULL; p = p->next) {
+		  GdkPixmap *gdk_pixmap;
+		  GdkBitmap *mask;
+
+		  gdk_pixbuf_render_pixmap_and_mask (p->data, &gdk_pixmap, &mask, 128);
+		  height = gdk_pixbuf_get_height (p->data);
+
+	  	  offset = draw_cell_pixbuf (clist->clist_window,
+		  			     &clip_rectangle, fg_gc,
+		  			     p->data,
+				    	     offset,
+				    	     clip_rectangle.y + clist_row->cell[i].vertical +
+				    	     (clip_rectangle.height - height) / 2);
+
+		   offset += PIXBUF_LIST_SPACING;
+	  }
 	  break;
 	default:
 	  break;
@@ -1138,6 +1210,97 @@ nautilus_list_resize_column (GtkCList *clist, int column, int width)
 	gtk_widget_queue_draw (list->details->title);
 		
 	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, resize_column, (clist, column, width));
+}
+
+/* Macros borrowed from gtkclist.c */
+/* returns the GList item for the nth row */
+#define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
+				 (clist)->row_list_end : \
+				 g_list_nth ((clist)->row_list, (row)))
+
+
+#define GTK_CLIST_CLASS_FW(_widget_) GTK_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
+
+/* redraw the list if it's not frozen */
+#define CLIST_UNFROZEN(clist)     (((GtkCList*) (clist))->freeze_count == 0)
+
+
+static void
+nautilus_list_set_cell_contents (GtkCList    *clist,
+		   		 GtkCListRow *clist_row,
+		   		 gint         column,
+		   		 GtkCellType  type,
+		   		 const gchar *text,
+		   		 guint8       spacing,
+		   		 GdkPixmap   *pixmap,
+		   		 GdkBitmap   *mask)
+{
+	/* 
+	 * Note that we don't do the auto_resize bracketing here that's done
+	 * in the parent class. It would require copying over huge additional
+	 * chunks of code. We might decide we need that someday, but the
+	 * chances seem larger that we'll switch away from CList first.
+	 */
+
+	if ((NautilusCellType)clist_row->cell[column].type == NAUTILUS_CELL_PIXBUF_LIST) {
+		/* Clean up old data, which parent class doesn't know about. */
+		nautilus_gdk_pixbuf_list_free (NAUTILUS_CELL_PIXBUF_LIST (clist_row->cell[column])->pixbufs);
+	}
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, set_cell_contents, (clist, clist_row, column, type, text, spacing, pixmap, mask));
+
+	if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF_LIST) {
+		clist_row->cell[column].type = NAUTILUS_CELL_PIXBUF_LIST;
+		/* Hideously, we concealed our list of pixbufs in the pixmap parameter. */
+	  	NAUTILUS_CELL_PIXBUF_LIST (clist_row->cell[column])->pixbufs = (GList *)pixmap;
+	}
+}
+
+/**
+ * nautilus_list_set_pixbuf_list:
+ * 
+ * Set the contents of a cell to a list of similarly-sized GdkPixbufs.
+ * 
+ * @list: The NautilusList in question.
+ * @row: The row of the target cell.
+ * @column: The column of the target cell.
+ * @pixbufs: A GList of GdkPixbufs.
+ */
+void 	   
+nautilus_list_set_pixbuf_list (NautilusList *list,
+			       gint row,
+			       gint column,
+			       GList *pixbufs)
+{
+  GtkCList    *clist;
+  GtkCListRow *clist_row;
+
+  g_return_if_fail (NAUTILUS_IS_LIST (list));
+
+  clist = GTK_CLIST (list);
+
+  if (row < 0 || row >= clist->rows)
+    return;
+  if (column < 0 || column >= clist->columns)
+    return;
+
+  clist_row = ROW_ELEMENT (clist, row)->data;
+
+  /*
+   * We have to go through the set_cell_contents bottleneck, which only
+   * allows expected parameter types. Since our pixbuf_list is not an
+   * expected parameter type, we have to sneak it in by casting it into
+   * one of the expected parameters.
+   */
+  GTK_CLIST_CLASS_FW (clist)->set_cell_contents
+    (clist, clist_row, column, (GtkCellType)NAUTILUS_CELL_PIXBUF_LIST, NULL, 0, (GdkPixmap *)pixbufs, NULL);
+
+  /* redraw the list if it's not frozen */
+  if (CLIST_UNFROZEN (clist))
+    {
+      if (gtk_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
+	GTK_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row, clist_row);
+    }
 }
 
 static void

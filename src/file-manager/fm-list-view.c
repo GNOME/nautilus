@@ -47,14 +47,28 @@ struct FMListViewDetails
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
+/* 
+ * Emblems should never get so small that they're illegible,
+ * so we semi-arbitrarily choose a minimum size.
+ */
+#define LIST_VIEW_MINIMUM_EMBLEM_SIZE	NAUTILUS_ICON_SIZE_STANDARD
+
+/*
+ * The row height should be large enough to not clip emblems.
+ * Computing this would be costly, so we just choose a number
+ * that works well with the set of emblems we've designed.
+ */
+#define LIST_VIEW_MINIMUM_ROW_HEIGHT	20
+
 #define LIST_VIEW_COLUMN_NONE		-1
 
 #define LIST_VIEW_COLUMN_ICON		0
-#define LIST_VIEW_COLUMN_NAME		1
-#define LIST_VIEW_COLUMN_SIZE		2
-#define LIST_VIEW_COLUMN_MIME_TYPE	3
-#define LIST_VIEW_COLUMN_DATE_MODIFIED	4
-#define LIST_VIEW_COLUMN_COUNT		5
+#define LIST_VIEW_COLUMN_EMBLEMS	1
+#define LIST_VIEW_COLUMN_NAME		2
+#define LIST_VIEW_COLUMN_SIZE		3
+#define LIST_VIEW_COLUMN_MIME_TYPE	4
+#define LIST_VIEW_COLUMN_DATE_MODIFIED	5
+#define LIST_VIEW_COLUMN_COUNT		6
 
 /* special values for get_data and set_data */
 
@@ -67,6 +81,7 @@ struct FMListViewDetails
 
 #define LIST_VIEW_ICON_ATTRIBUTE		"icon"
 #define LIST_VIEW_NAME_ATTRIBUTE		"name"
+#define LIST_VIEW_EMBLEMS_ATTRIBUTE		"emblems"
 #define LIST_VIEW_SIZE_ATTRIBUTE		"size"
 #define LIST_VIEW_MIME_TYPE_ATTRIBUTE		"type"
 #define LIST_VIEW_DATE_MODIFIED_ATTRIBUTE	"date_modified"
@@ -96,6 +111,7 @@ static void              fm_list_view_add_file                    (FMDirectoryVi
 								   NautilusFile       *file);
 static void              fm_list_view_remove_file                 (FMDirectoryView    *view,
 								   NautilusFile       *file);
+static void		 fm_list_view_reset_row_height 		  (FMListView 	      *list_view);
 static void              fm_list_view_file_changed                (FMDirectoryView    *view,
 								   NautilusFile       *file);
 static void              fm_list_view_background_changed_callback (NautilusBackground *background,
@@ -125,7 +141,7 @@ const char *             get_attribute_from_column                (int          
 int                      get_column_from_attribute                (const char         *value);
 int                      get_sort_column_from_attribute           (const char         *value);
 static NautilusList *    get_list                                 (FMListView         *list_view);
-static void              install_icon                             (FMListView         *list_view,
+static void              install_row_images                       (FMListView         *list_view,
 								   guint               row);
 static int               sort_criterion_from_column               (int                 column);
 static void              update_icons                             (FMListView         *list_view);
@@ -289,7 +305,8 @@ create_list (FMListView *list_view)
 	 * zoom level or should be resizable when using nautilus theme icons
 	 */	
 	const char * const titles[] = {
-		NULL,
+		NULL,		/* Icon */
+		NULL,		/* Emblems */
 		_("Name"),
 		_("Size"),
 		_("Type"),
@@ -298,6 +315,7 @@ create_list (FMListView *list_view)
 	
 	guint widths[] = {
 		 fm_list_view_get_icon_size (list_view),	/* Icon */
+		 40,	/* Emblems */
 		130,	/* Name */
 		 55,	/* Size */
 		 95,	/* Type */
@@ -306,6 +324,7 @@ create_list (FMListView *list_view)
 
 	guint min_widths[] = {
 		 fm_list_view_get_icon_size (list_view),	/* Icon */
+		 20,	/* Emblems */
 		 30,	/* Name */
 		 20,	/* Size */
 		 20,	/* Type */
@@ -314,6 +333,7 @@ create_list (FMListView *list_view)
 
 	guint max_widths[] = {
 		300,	/* Icon */
+		300,	/* Emblems */
 		300,	/* Name */
 		 80,	/* Size */
 		200,	/* Type */
@@ -355,9 +375,6 @@ create_list (FMListView *list_view)
 
 	gtk_clist_set_auto_sort (clist, TRUE);
 	gtk_clist_set_compare_func (clist, compare_rows);
-
-	/* Make height tall enough for icons to look good */
-	gtk_clist_set_row_height (clist, fm_list_view_get_icon_size (list_view));
 	
 	GTK_WIDGET_SET_FLAGS (list, GTK_CAN_FOCUS);
 
@@ -389,6 +406,10 @@ create_list (FMListView *list_view)
 			    list_view);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
+
+	/* Make height tall enough for icons to look good */
+	fm_list_view_reset_row_height (list_view);
+
 	gtk_widget_show (GTK_WIDGET (list));
 
 	return list;
@@ -454,7 +475,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	gtk_clist_set_row_data (clist, new_row, file);
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
 
-	install_icon (list_view, new_row);
+	install_row_images (list_view, new_row);
 
 	g_strfreev (text);
 }
@@ -606,7 +627,15 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	clist = GTK_CLIST (get_list (list_view));
 	row = gtk_clist_find_row_from_data (clist, file);
 	if (row != -1) {
-		install_icon (list_view, row);	
+		install_row_images (list_view, row);
+		/* 
+		 * Resort because the file change *might* have affected
+		 * the current sort order. It would be more efficient
+		 * to tell clist that this one row needs resorting, but
+		 * there's no API for that. Removing the row and re-adding
+		 * it is another option.
+		 */
+		gtk_clist_sort (clist);
 	}
 }
 
@@ -678,8 +707,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	clist = GTK_CLIST (get_list (list_view));
 	
 	gtk_clist_freeze (clist);
-	gtk_clist_set_row_height (GTK_CLIST (get_list (list_view)), 
-				  fm_list_view_get_icon_size (list_view));
+	fm_list_view_reset_row_height (list_view);
 	gtk_clist_set_column_width (GTK_CLIST (get_list (list_view)),
 				  LIST_VIEW_COLUMN_ICON,
 				  fm_list_view_get_icon_size (list_view));
@@ -688,9 +716,17 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 
 	for (row = 0; row < clist->rows; ++row)
 	{
-		install_icon (list_view, row);
+		install_row_images (list_view, row);
 	}
 	gtk_clist_thaw (clist);
+}
+
+static void
+fm_list_view_reset_row_height (FMListView *list_view)
+{
+	gtk_clist_set_row_height (GTK_CLIST (get_list (list_view)), 
+				  MAX (fm_list_view_get_icon_size (list_view),
+				       LIST_VIEW_MINIMUM_ROW_HEIGHT));
 }
 
 /* select all of the items in the view */
@@ -793,6 +829,8 @@ get_attribute_from_column (int column)
 			return LIST_VIEW_ICON_ATTRIBUTE;
 		case LIST_VIEW_COLUMN_NAME:
 			return LIST_VIEW_NAME_ATTRIBUTE;
+		case LIST_VIEW_COLUMN_EMBLEMS:
+			return LIST_VIEW_EMBLEMS_ATTRIBUTE;
 		case LIST_VIEW_COLUMN_SIZE:
 			return LIST_VIEW_SIZE_ATTRIBUTE;
 		case LIST_VIEW_COLUMN_MIME_TYPE:
@@ -822,6 +860,9 @@ get_column_from_attribute (const char *value)
 
 	if (strcmp (LIST_VIEW_NAME_ATTRIBUTE, value) == 0)
 		return LIST_VIEW_COLUMN_NAME;
+
+	if (strcmp (LIST_VIEW_EMBLEMS_ATTRIBUTE, value) == 0)
+		return LIST_VIEW_COLUMN_EMBLEMS;
 
 	if (strcmp (LIST_VIEW_SIZE_ATTRIBUTE, value) == 0)
 		return LIST_VIEW_COLUMN_SIZE;
@@ -856,17 +897,48 @@ get_sort_column_from_attribute (const char *value)
 	return result;
 }
 
+static GList *
+fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view, 
+					  NautilusFile *file)
+{
+	GList *emblem_icons, *emblem_pixbufs, *p;
+	GdkPixbuf *emblem_pixbuf;
+	int emblem_size;
+
+	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
+	emblem_pixbufs = NULL;
+	emblem_size = MAX (LIST_VIEW_MINIMUM_EMBLEM_SIZE, 
+			   fm_list_view_get_icon_size (list_view));
+	for (p = emblem_icons; p != NULL; p = p->next) {
+		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+			(p->data, 
+			 emblem_size, 
+			 emblem_size, 
+			 NULL);
+		if (emblem_pixbuf != NULL) {
+			emblem_pixbufs = g_list_prepend
+				(emblem_pixbufs, emblem_pixbuf);
+		}
+	}
+	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
+
+	nautilus_scalable_icon_list_free (emblem_icons);
+
+	return emblem_pixbufs;
+}
+
 /**
- * install_icon:
+ * install_row_images:
  *
- * Put an icon for a file into the specified cell.
+ * Put the icon and emblems for a file into the specified row.
  * @list_view: FMDirectoryView in which to install icon.
- * @row: row index of target cell
+ * @row: target row index
  * 
  **/
 static void
-install_icon (FMListView *list_view, guint row)
+install_row_images (FMListView *list_view, guint row)
 {
+	NautilusList *list;
 	GtkCList *clist;
 	NautilusFile *file;
 	GdkPixmap *pixmap;
@@ -874,16 +946,22 @@ install_icon (FMListView *list_view, guint row)
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
-	clist = GTK_CLIST (get_list (list_view));
+	list = get_list (list_view);
+	clist = GTK_CLIST (list);
 	file = gtk_clist_get_row_data (clist, row);
 
 	g_return_if_fail (file != NULL);
-	
+
+	/* Install the icon for this file. */
 	nautilus_icon_factory_get_pixmap_and_mask_for_file
 		(file,
 		 fm_list_view_get_icon_size (list_view),
 		 &pixmap, &bitmap);
 	gtk_clist_set_pixmap (clist, row, LIST_VIEW_COLUMN_ICON, pixmap, bitmap);
+
+	/* Install any emblems for this file. */
+	nautilus_list_set_pixbuf_list (list, row, LIST_VIEW_COLUMN_EMBLEMS, 
+				       fm_list_view_get_emblem_pixbufs_for_file (list_view, file));
 }
 
 static int
@@ -894,6 +972,8 @@ sort_criterion_from_column (int column)
 		return NAUTILUS_FILE_SORT_BY_TYPE;
 	case LIST_VIEW_COLUMN_NAME:
 		return NAUTILUS_FILE_SORT_BY_NAME;
+	case LIST_VIEW_COLUMN_EMBLEMS:
+		return NAUTILUS_FILE_SORT_BY_EMBLEMS;
 	case LIST_VIEW_COLUMN_SIZE:
 		return NAUTILUS_FILE_SORT_BY_SIZE;
 	case LIST_VIEW_COLUMN_DATE_MODIFIED:
@@ -914,6 +994,6 @@ update_icons (FMListView *list_view)
 	list = get_list (list_view);
 
 	for (row = 0; row < GTK_CLIST (list)->rows; ++row) {
-		install_icon (list_view, row);	
+		install_row_images (list_view, row);	
 	}
 }

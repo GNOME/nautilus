@@ -30,6 +30,7 @@
 #define NAUTILUS_LIST_H
 
 #include <gtk/gtkclist.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 /* This class was originally derived from the GtkFList class in gmc.
  */
@@ -38,6 +39,39 @@
  * have to override all the event handlers and implement our own selection
  * behavior. Sigh. -Federico
  */
+
+/* Superset of GtkCellType enum defined in gtk-clist.h */
+typedef enum
+{
+  NAUTILUS_CELL_EMPTY,	 	/* GTK_CELL_EMPTY */
+  NAUTILUS_CELL_TEXT,	 	/* GTK_CELL_TEXT */
+  NAUTILUS_CELL_PIXMAP,	 	/* GTK_CELL_PIXMAP */
+  NAUTILUS_CELL_PIXTEXT, 	/* GTK_CELL_PIXTEXT */
+  NAUTILUS_CELL_WIDGET,	 	/* GTK_CELL_WIDGET */
+  NAUTILUS_CELL_PIXBUF_LIST   	/* new for Nautilus */
+} NautilusCellType;
+
+/* pointer casting for cells */
+#define NAUTILUS_CELL_PIXBUF_LIST(cell)	(((NautilusCellPixbufList *) &(cell)))
+
+typedef struct _NautilusCellPixbufList NautilusCellPixbufList;
+
+/*
+ * Since the info in each cell must fit in the GtkCell struct that CList defines,
+ * we disguise ours in the GtkCellWidget format, with our pixbufs pointer where
+ * the widget would be.
+ */
+struct _NautilusCellPixbufList
+{
+  NautilusCellType type;
+  
+  gint16 vertical;
+  gint16 horizontal;
+  
+  GtkStyle *style;
+
+  GList *pixbufs; /* list of GdkPixbuf * */
+};
 
 #define NAUTILUS_TYPE_LIST            (nautilus_list_get_type ())
 #define NAUTILUS_LIST(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_LIST, NautilusList))
@@ -83,4 +117,8 @@ GtkWidget *nautilus_list_new_with_titles (int                 columns,
 					  const char * const *titles);
 GList *    nautilus_list_get_selection   (NautilusList       *list);
 
+void 	   nautilus_list_set_pixbuf_list (NautilusList       *list,
+				      	  gint	   	      row,
+				      	  gint		      column,
+				      	  GList	     	     *pixbufs);
 #endif /* NAUTILUS_LIST_H */

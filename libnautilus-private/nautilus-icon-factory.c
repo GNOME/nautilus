@@ -74,8 +74,6 @@ static const char *icon_file_name_suffixes[] =
 
 #define EMBLEM_NAME_PREFIX              "emblem-"
 
-#define EMBLEM_NAME_SYMBOLIC_LINK       "symbolic-link"
-
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading
  * to call it that, since we can have any number of entries in the
  * cache if the caller keeps the pixbuf around (we only get rid of
@@ -737,22 +735,16 @@ add_emblem (GList **icons, const char *name)
 GList *
 nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file)
 {
-	GList *icons, *keywords, *p;
+	GList *icons, *emblem_names, *p;
 
 	icons = NULL;
 
-	/* One icon for the symbolic link. */
-	if (nautilus_file_is_symbolic_link (file)) {
-		add_emblem (&icons, EMBLEM_NAME_SYMBOLIC_LINK);
-	}
-
-	/* One icon for each keyword. */
-	keywords = nautilus_file_get_keywords (file);
-	for (p = keywords; p != NULL; p = p->next) {
+	emblem_names = nautilus_file_get_emblem_names (file);
+	for (p = emblem_names; p != NULL; p = p->next) {
 		add_emblem (&icons, p->data);
 	}
 
-	nautilus_g_list_free_deep (keywords);
+	nautilus_g_list_free_deep (emblem_names);
 
 	return g_list_reverse (icons);
 }

@@ -52,8 +52,9 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_NAME,
 	NAUTILUS_FILE_SORT_BY_SIZE,
 	NAUTILUS_FILE_SORT_BY_TYPE,
-	NAUTILUS_FILE_SORT_BY_MTIME
-} NautilusFileSortType;
+	NAUTILUS_FILE_SORT_BY_MTIME,
+	NAUTILUS_FILE_SORT_BY_EMBLEMS
+} NautilusFileSortType;	
 
 /* GtkObject requirements. */
 GtkType          nautilus_file_get_type                  (void);
@@ -83,6 +84,7 @@ guint            nautilus_file_get_directory_item_count  (NautilusFile         *
 GList *          nautilus_file_get_keywords              (NautilusFile         *file);
 void             nautilus_file_set_keywords              (NautilusFile         *file,
 							  GList                *keywords);
+GList *		 nautilus_file_get_emblem_names	   	 (NautilusFile	     *file);
 
 /* Return true if this file has already been deleted.
    This object will be unref'd after sending the files_removed signal,

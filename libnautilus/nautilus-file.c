@@ -50,6 +50,8 @@ typedef enum {
 	NAUTILUS_DATE_TYPE_ACCESSED
 } NautilusDateType;
 
+#define EMBLEM_NAME_SYMBOLIC_LINK       "symbolic-link"
+
 enum {
 	CHANGED,
 	LAST_SIGNAL
@@ -63,6 +65,8 @@ static int   get_directory_item_count_hack           (NautilusFile         *file
 static void  nautilus_file_initialize_class          (NautilusFileClass    *klass);
 static void  nautilus_file_initialize                (NautilusFile         *file);
 static void  destroy                                 (GtkObject            *object);
+static int   nautilus_file_compare_by_emblems        (NautilusFile         *file_1,
+						      NautilusFile         *file_2);
 static int   nautilus_file_compare_by_type           (NautilusFile         *file_1,
 						      NautilusFile         *file_2);
 static int   nautilus_file_compare_for_sort_internal (NautilusFile         *file_1,
@@ -275,6 +279,79 @@ nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFi
 	return 0;
 }
 
+/**
+ * compare_emblem_names
+ * 
+ * Compare two emblem names by canonical order. Canonical order
+ * is alphabetical, except the symbolic link name goes first. NULL
+ * is allowed, and goes last.
+ * @name_1: The first emblem name.
+ * @name_2: The second emblem name.
+ * 
+ * Return value: 0 if names are equal, -1 if @name_1 should be
+ * first, +1 if @name_2 should be first.
+ */
+static int
+compare_emblem_names (const char *name_1, const char *name_2)
+{
+	int strcmp_result;
+
+	strcmp_result = nautilus_strcmp (name_1, name_2);
+
+	if (strcmp_result == 0) {
+		return 0;
+	}
+
+	if (nautilus_strcmp (name_1, EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
+		return -1;
+	}
+
+	if (nautilus_strcmp (name_2, EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
+		return +1;
+	}
+
+	return strcmp_result;
+}
+
+static int
+nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
+{
+	GList *emblem_names_1;
+	GList *emblem_names_2;
+	GList *p1;
+	GList *p2;
+	int compare_result;
+
+	compare_result = 0;
+
+	emblem_names_1 = nautilus_file_get_emblem_names (file_1);
+	emblem_names_2 = nautilus_file_get_emblem_names (file_2);
+
+	p1 = emblem_names_1;
+	p2 = emblem_names_2;
+	while (p1 != NULL && p2 != NULL) {
+		compare_result = compare_emblem_names (p1->data, p2->data);
+		if (compare_result != 0) {
+			break;
+		}
+
+		p1 = p1->next;
+		p2 = p2->next;
+	}
+
+	if (compare_result == 0) {
+		/* One or both is now NULL. */
+		if (p1 != NULL || p2 != NULL) {
+			compare_result = p2 == NULL ? -1 : +1;
+		}
+	}
+
+	nautilus_g_list_free_deep (emblem_names_1);
+	nautilus_g_list_free_deep (emblem_names_2);
+
+	return compare_result;	
+}
+
 static int
 nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 {
@@ -370,6 +447,19 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
 		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
+	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
+		/*
+		 * GnomeVFS doesn't know squat about our emblems, so
+		 * we handle comparing them here, before falling back
+		 * to tie-breakers.
+		 */
+		compare = nautilus_file_compare_by_emblems (file_1, file_2);
+		if (compare != 0) {
+			return compare;
+		}
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		break;
 	default:
 		g_return_val_if_fail (FALSE, 0);
 	}
@@ -459,7 +549,6 @@ char *
 nautilus_file_get_name (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
 	return g_strdup (file->details->info->name);
 }
 
@@ -899,6 +988,54 @@ nautilus_file_get_mime_type (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_get_emblem_names
+ * 
+ * Return the list of names of emblems that this file should display,
+ * in canonical order.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: A list of emblem names.
+ * 
+ **/
+GList *
+nautilus_file_get_emblem_names (NautilusFile *file)
+{
+	GList *names;
+
+	names = nautilus_file_get_keywords (file);
+	if (nautilus_file_is_symbolic_link (file)) {
+		names = g_list_prepend 
+			(names, g_strdup (EMBLEM_NAME_SYMBOLIC_LINK));
+	}
+
+	return names;
+}
+
+static GList *
+sort_keyword_list_and_remove_duplicates (GList *keywords)
+{
+	GList *p;
+	GList *duplicate_link;
+	
+	keywords = g_list_sort (keywords, (GCompareFunc)compare_emblem_names);
+
+	if (keywords != NULL) {
+		p = keywords;		
+		while (p->next != NULL) {
+			if (nautilus_strcmp (p->data, p->next->data) == 0) {
+				duplicate_link = p->next;
+				keywords = g_list_remove_link (keywords, duplicate_link);
+				nautilus_g_list_free_deep (duplicate_link);
+			} else {
+				p = p->next;
+			}
+		}
+	}
+	
+	return keywords;
+}
+
+/**
  * nautilus_file_get_keywords
  * 
  * Return this file's keywords.
@@ -935,7 +1072,13 @@ nautilus_file_get_keywords (NautilusFile *file)
 		}
 	}
 
-	return g_list_reverse (keywords);
+	/* 
+	 * Reverse even though we're about to sort; that way
+	 * most of the time it will already be sorted.
+	 */
+	keywords = g_list_reverse (keywords);
+	
+	return sort_keyword_list_and_remove_duplicates (keywords);
 }
 
 /**
@@ -950,21 +1093,24 @@ void
 nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 {
 	xmlNode *file_node, *child, *next;
-	GList *p;
+	GList *canonical_keywords, *p;
 	gboolean need_write;
 	xmlChar *property;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
+	canonical_keywords = g_list_copy (keywords);
+	canonical_keywords = sort_keyword_list_and_remove_duplicates (canonical_keywords);
+
 	/* Put all the keywords into a list. */
 	file_node = nautilus_directory_get_file_metadata_node (file->details->directory,
 							       file->details->info->name,
-							       keywords != NULL);
+							       canonical_keywords != NULL);
 	need_write = FALSE;
 	if (file_node == NULL) {
-		g_assert (keywords == NULL);
+		g_assert (canonical_keywords == NULL);
 	} else	{
-		p = keywords;
+		p = canonical_keywords;
 
 		/* Remove any nodes except the ones we expect. */
 		for (child = nautilus_xml_get_children (file_node);
@@ -999,6 +1145,8 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 		nautilus_directory_request_write_metafile (file->details->directory);
 		nautilus_file_changed (file);
 	}
+
+	g_list_free (canonical_keywords);
 }
 
 /**
