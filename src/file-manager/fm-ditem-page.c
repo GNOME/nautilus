@@ -131,26 +131,28 @@ mime_type_ready_cb (NautilusFile *file,
 	GnomeDesktopItem *item;
 	GtkEntry *entry;
 	char *uri;
+	const char *exec;
 	
 	entry = GTK_ENTRY (user_data);
 	uri = nautilus_file_get_uri (file);
 	
 	if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
-		item = gnome_desktop_item_new_from_uri (uri,
-							GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
-							NULL);
+	  item = gnome_desktop_item_new_from_uri (uri,
+						  GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+						  NULL);
 		if (item != NULL &&
 		    gnome_desktop_item_get_entry_type (item) == GNOME_DESKTOP_ITEM_TYPE_APPLICATION) {
+		  
+			exec = gnome_desktop_item_get_string (item, GNOME_DESKTOP_ITEM_EXEC);
 			gtk_entry_set_text (entry,
-					    gnome_desktop_item_get_string (item,
-									   GNOME_DESKTOP_ITEM_EXEC));
+					    exec?exec:"");
 			gnome_desktop_item_unref (item);
 
 			gtk_widget_grab_focus (GTK_WIDGET (entry));
 		}
 	} else {
 		gtk_entry_set_text (entry,
-				    uri);
+				    uri?uri:"");
 	}
 
 	g_free (uri);
@@ -260,7 +262,7 @@ build_table (GnomeDesktopItem *item,
 			val = gnome_desktop_item_get_string (item, item_entry->field);
 		}
 		
-		gtk_entry_set_text (GTK_ENTRY (entry), val);
+		gtk_entry_set_text (GTK_ENTRY (entry), val?val:"");
 
 		gtk_table_attach (GTK_TABLE (table), label,
 				  0, 1, i, i+1, GTK_FILL, GTK_FILL,
@@ -388,7 +390,7 @@ ditem_read_cb (GnomeVFSResult result,
 						   file_size,
 						   0, NULL);
 
-	if (item != NULL) {
+	if (item == NULL) {
 		return;
 	}
 
