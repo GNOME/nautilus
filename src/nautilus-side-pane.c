@@ -616,3 +616,11 @@ nautilus_side_pane_set_panel_image (NautilusSidePane *side_pane,
 	}
 }
 
+GtkWidget *
+nautilus_side_pane_get_current_panel (NautilusSidePane *side_pane)
+{
+	int index;
+	
+	index = gtk_notebook_get_current_page (GTK_NOTEBOOK (side_pane->details->notebook));
+	return gtk_notebook_get_nth_page (GTK_NOTEBOOK (side_pane->details->notebook), index);
+}

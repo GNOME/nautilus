@@ -1,5 +1,22 @@
 2003-03-01  Dave Camp  <dave@ximian.com>
 
+	* src/nautilus-side-pane.h:
+	* src/nautilus-side-pane.c: (nautilus_side_pane_get_current_panel):
+	New function.
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_set_sidebar_panels):
+	* src/nautilus-window.c: (set_current_side_panel),
+	(side_pane_switch_page_callback), (nautilus_window_set_up_sidebar),
+	(nautilus_window_tear_down_sidebar),
+	(nautilus_window_add_sidebar_panel), (add_sidebar_panels): Save
+	the current side pane view when it is changed, and show that
+	when creating the side pane.
+	* libnautilus-private/apps_nautilus_preferences.schemas:
+	* libnautilus-private/nautilus-global-preferences.h: Add
+	a current side panel option.
+
+2003-03-01  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-list-view.c: (icons_changed_callback),
 	(fm_list_view_instance_init): Refresh the rows when the icon
 	theme changes.

@@ -602,9 +602,8 @@ side_panel_set_open (GtkWidget *view,
 }
 
 static void
-side_pane_switch_page_callback (NautilusSidePane *side_pane,
-				GtkWidget *panel,
-				NautilusWindow *window)
+set_current_side_panel (NautilusWindow *window,
+			GtkWidget *panel)
 {
 	if (window->details->current_side_panel) {
 		side_panel_set_open (window->details->current_side_panel, 
@@ -618,19 +617,28 @@ side_pane_switch_page_callback (NautilusSidePane *side_pane,
 }
 
 static void
+side_pane_switch_page_callback (NautilusSidePane *side_pane,
+				GtkWidget *panel,
+				NautilusWindow *window)
+{
+	const char *view_iid;
+
+	set_current_side_panel (window, panel);
+
+	if (NAUTILUS_IS_VIEW_FRAME (panel)) {
+		view_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (panel));
+		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW,
+				     view_iid);
+		
+	} else {
+		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW, "");
+	}
+}
+
+static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
 	window->sidebar = nautilus_side_pane_new ();
-
-	g_signal_connect (window->sidebar,
-			  "close_requested",
-			  G_CALLBACK (side_pane_close_requested_callback),
-			  window);
-
-	g_signal_connect (window->sidebar,
-			  "switch_page",
-			  G_CALLBACK (side_pane_switch_page_callback),
-			  window);
 
 	gtk_paned_pack1 (GTK_PANED (window->content_hbox),
 			 GTK_WIDGET (window->sidebar),
@@ -654,14 +662,24 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 	g_signal_connect_object (window->information_panel, "location_changed",
 				 G_CALLBACK (go_to_callback), window, 0);
 
-	gtk_widget_show (GTK_WIDGET (window->information_panel));
-
+	/* Set up the sidebar panels. */
 	nautilus_side_pane_add_panel (NAUTILUS_SIDE_PANE (window->sidebar), 
 				      GTK_WIDGET (window->information_panel),
 				      _("Information"));
 
-	/* Set up the sidebar panels. */
 	add_sidebar_panels (window);
+
+	g_signal_connect (window->sidebar,
+			  "close_requested",
+			  G_CALLBACK (side_pane_close_requested_callback),
+			  window);
+
+	g_signal_connect (window->sidebar,
+			  "switch_page",
+			  G_CALLBACK (side_pane_switch_page_callback),
+			  window);
+	
+	gtk_widget_show (GTK_WIDGET (window->information_panel));
 	
 	gtk_widget_show (GTK_WIDGET (window->sidebar));
 }
@@ -669,6 +687,10 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 static void
 nautilus_window_tear_down_sidebar (NautilusWindow *window)
 {
+	g_signal_handlers_disconnect_by_func (window->sidebar,
+					      side_pane_switch_page_callback,
+					      window);
+
 	nautilus_window_set_sidebar_panels (window, NULL);
 	gtk_widget_destroy (GTK_WIDGET (window->sidebar));
 	window->sidebar = NULL;
@@ -1510,22 +1532,33 @@ nautilus_window_add_sidebar_panel (NautilusWindow *window,
 				   NautilusViewFrame *sidebar_panel)
 {
 	char *label;
+	const char *view_iid;
+	char *default_iid;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
 	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (window->sidebar));
-	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);
-	
+	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);	
+
 	label = nautilus_view_frame_get_label (sidebar_panel);
 	
 	nautilus_side_pane_add_panel (window->sidebar, 
 				      GTK_WIDGET (sidebar_panel), 
 				      label);
-
 	g_free (label);
 
 	g_object_ref (sidebar_panel);
 	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
+
+	view_iid = nautilus_view_frame_get_view_iid (sidebar_panel);
+	default_iid = eel_preferences_get (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW);
+
+	if (view_iid && default_iid && !strcmp (view_iid, default_iid)) {
+		nautilus_side_pane_show_panel (window->sidebar,
+					       GTK_WIDGET (sidebar_panel));
+	}	
+
+	g_free (default_iid);
 }
 
 void
@@ -1933,6 +1966,10 @@ add_sidebar_panels (NautilusWindow *window)
 	identifier_list = nautilus_sidebar_get_all_sidebar_panel_view_identifiers ();
 	nautilus_window_set_sidebar_panels (window, identifier_list);
 	nautilus_view_identifier_list_free (identifier_list);
+
+	set_current_side_panel
+		(window, 
+		 nautilus_side_pane_get_current_panel (window->sidebar));
 }
 
 static void 

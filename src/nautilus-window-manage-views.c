@@ -1648,8 +1648,8 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
 		set_view_frame_info (sidebar_panel, TRUE, identifier);
 		connect_view (window, sidebar_panel);
-		nautilus_window_add_sidebar_panel (window, sidebar_panel);
 		nautilus_view_frame_load_view (sidebar_panel, identifier->iid);
+		nautilus_window_add_sidebar_panel (window, sidebar_panel);
                 gtk_object_sink (GTK_OBJECT (sidebar_panel));
 	}
 
