@@ -127,7 +127,6 @@ directory_changed_callback (NautilusDirectory *directory,
 	} else {
 		theme_source = "directory";
 	}
-	g_message ("theme source is %s", theme_source);
 	
         /* Update color and tile image based on metadata. */
 	color = nautilus_directory_get_metadata (directory,

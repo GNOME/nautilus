@@ -76,8 +76,11 @@ druid_finished (GtkWidget *druid_page)
 	}
 	g_free (user_main_directory);
 
-	if (last_signup_choice == 0) {
-		signup_uris[0] = "eazel:register";
+	if (last_signup_choice < 2) {
+		if (last_signup_choice == 0)
+			signup_uris[0] = "eazel:registerinfo";
+		else
+			signup_uris[0] = "eazel:register";
 		signup_uris[1] = NULL;
 		nautilus_application_startup(save_application, save_manage_desktop, &signup_uris[0]);
 		
@@ -233,6 +236,7 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 					radio_buttons);
 
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to learn more about Eazel services."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to sign up for Eazel services now."));	
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I don't want learn about Eazel services at this time."));
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
