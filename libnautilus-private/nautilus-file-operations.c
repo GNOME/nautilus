@@ -1645,11 +1645,15 @@ static GnomeVFSURI *
 append_basename (const GnomeVFSURI *target_directory,
 		 const GnomeVFSURI *source_directory)
 {
-	const char *file_name;
+	char *file_name;
+	GnomeVFSURI *ret;
 
 	file_name = gnome_vfs_uri_extract_short_name (source_directory);
 	if (file_name != NULL) {
-		return gnome_vfs_uri_append_file_name (target_directory, file_name);
+		ret = gnome_vfs_uri_append_file_name (target_directory, 
+						      file_name);
+		g_free (file_name);
+		return ret;
 	}
 	 
 	return gnome_vfs_uri_dup (target_directory);

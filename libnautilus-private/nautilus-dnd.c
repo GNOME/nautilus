@@ -295,6 +295,11 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
 		}
+
+		if (target_uri) {
+			gnome_vfs_uri_unref (target_uri);
+		}
+
 		return;
 
 	} else if (eel_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)

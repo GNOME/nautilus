@@ -654,6 +654,8 @@ attributes_free (gpointer data,
 	if (attributes->preview_pixbuf != NULL) {
 		g_object_unref (attributes->preview_pixbuf);
 	}
+
+	g_free (attributes);
 }
 
 void
