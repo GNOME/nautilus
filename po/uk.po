@@ -1656,7 +1656,7 @@ msgstr ""
 
 #: components/services/install/command-line/eazel-test-softcat.c:53
 msgid "use check function (for debugging)"
-msgstr ""
+msgstr "використовувати функц╕ю перев╕рки (для налагодження)"
 
 #: components/services/install/command-line/eazel-test-softcat.c:54
 msgid "Show detailed sub-package info"
@@ -1685,17 +1685,17 @@ msgstr "%s верс╕╖ %s вже встановлено"
 #: components/services/install/lib/eazel-install-logic2.c:376
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
-msgstr ""
+msgstr "%s поновлю╓ться з верс╕╖ %s-%s до %s-%s"
 
 #: components/services/install/lib/eazel-install-logic2.c:385
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
-msgstr ""
+msgstr "%s зам╕ню╓ться з верс╕╖ %s-%s на %s-%s"
 
 #: components/services/install/lib/eazel-install-logic2.c:390
 #, c-format
 msgid "%s downgrades from version %s to %s"
-msgstr ""
+msgstr "%s зам╕ню╓ться з верс╕╖ %s на %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:422
 #, c-format
@@ -1736,7 +1736,7 @@ msgstr "Не вдалося отримати package-list.xml!\n"
 #: components/services/install/lib/eazel-install-object.c:1075
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
-msgstr ""
+msgstr "Неможливо записувати у файл %s, використову╓ться типовий обробник журналу"
 
 #: components/services/install/lib/eazel-install-object.c:1202
 msgid "Install failed"
@@ -1776,22 +1776,22 @@ msgstr "%s ма╓ конфл╕кт файл╕в з %s"
 #: components/services/install/lib/eazel-install-problem.c:174
 #, c-format
 msgid "%s would break other packages"
-msgstr ""
+msgstr "%s буде руйнувати ╕нш╕ встановлен╕ пакети"
 
 #: components/services/install/lib/eazel-install-problem.c:166
 #, c-format
 msgid "%s would break"
-msgstr ""
+msgstr "%s буде руйнувати"
 
 #: components/services/install/lib/eazel-install-problem.c:172
 #, c-format
 msgid "%s would break %s"
-msgstr ""
+msgstr "%s буде руйнувати %s"
 
 #: components/services/install/lib/eazel-install-problem.c:182
 #, c-format
 msgid "%s requires %s, which could not be found on the server"
-msgstr ""
+msgstr "Пакету %s потр╕бний %s якого не вдалося знайти на сервер╕"
 
 #: components/services/install/lib/eazel-install-problem.c:186
 #, c-format
@@ -1973,7 +1973,7 @@ msgstr ""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:165
 msgid "*** No package nodes! ***"
-msgstr ""
+msgstr "*** Нема╓ пакетних вузл╕в! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:171
 msgid "*** Malformed package node!"
@@ -1981,7 +1981,7 @@ msgstr ""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:180
 msgid "*** No depends nodes! ***"
-msgstr ""
+msgstr "*** Нема╓ залежних вузл╕в! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:186
 msgid "*** Malformed depends node!"
@@ -1990,7 +1990,7 @@ msgstr ""
 #: components/services/install/lib/eazel-install-xml-package-list.c:210
 #, c-format
 msgid "*** Unknown node type '%s'"
-msgstr ""
+msgstr "*** Нев╕домий тип вузла \"%s\""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:227
 msgid "*** The pkg list file contains no data! ***\n"
@@ -2027,7 +2027,7 @@ msgstr "*** Нема╓ пакет╕в! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:338
 msgid "*** No category nodes! ***"
-msgstr ""
+msgstr "*** Нема╓ вузл╕в категор╕й! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:342
 msgid "*** Cannot find the CATEGORIES xmlnode! ***"
@@ -2036,7 +2036,7 @@ msgstr ""
 #: components/services/install/lib/eazel-install-xml-package-list.c:376
 #, c-format
 msgid "*** Unknown node %s"
-msgstr ""
+msgstr "*** Нев╕домий вузол %s"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:466
 msgid "*** Error generating xml package list! ***\n"
@@ -2044,7 +2044,7 @@ msgstr ""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:513
 msgid "*** Error reading package list! ***\n"
-msgstr ""
+msgstr "*** Помилка зчитування списку пакет╕в! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:885
 msgid "*** The osd xml contains no data! ***\n"
@@ -2126,6 +2126,8 @@ msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "Downloading \"%s\" now."
 msgstr ""
+"Пакету \"%s\" потр╕бний \"%s\" для виконання.\n"
+"\"%s\" зараз звантажу╓ться."
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:739
 #, c-format
@@ -2144,6 +2146,8 @@ msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" has been successfully downloaded."
 msgstr ""
+"Пакету \"%s\" потр╕бний \"%s\" для виконання.\n"
+"\"%s\" було усп╕шно звантажено."
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:752
 #, c-format
@@ -2211,6 +2215,8 @@ msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" has been successfully downloaded and installed."
 msgstr ""
+"Пакету \"%s\" потр╕бний \"%s\" для виконання.\n"
+"\"%s\" усп╕шно звантажено ╕ встановлено."
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:1000
 #, c-format
@@ -2229,6 +2235,8 @@ msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" is now being installed."
 msgstr ""
+"Пакету \"%s\" потр╕бний \"%s\" для виконання.\n"
+"\"%s\" зараз встановлю╓ться."
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:1058
 #, c-format
@@ -6920,6 +6928,8 @@ msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
 msgstr ""
+"Наут╕лус не можна використовувати зараз. Перезавантаження комп'ютера, чи "
+"повторне встановлення Наут╕луса, можуть вир╕шити проблему."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:404
@@ -6949,13 +6959,15 @@ msgstr ""
 #: src/nautilus-application.c:430 src/nautilus-application.c:448
 #: src/nautilus-application.c:455
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr ""
+msgstr "Наут╕лус не можна використовувати зараз через неоч╕кувану помилку."
 
 #: src/nautilus-application.c:431
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
 msgstr ""
+"Наут╕лус не можна використовувати зараз через неоч╕кувану помилку в OAF на "
+"спроб╕ заре╓струвати сервер перегляду файлового менеджера."
 
 #: src/nautilus-application.c:449
 msgid ""
@@ -6978,6 +6990,10 @@ msgid ""
 "As root, you can damage your system if you are not careful, and\n"
 "Nautilus will not stop you from doing it."
 msgstr ""
+"Незабаром ви запустите Наут╕лус в╕д користувача root.\n"
+"\n"
+"Як root, ви можете пошкодити свою систему, якщо ви не будете обережн╕,\n"
+"╕ Наут╕лус не зможете попередити цього."
 
 #: src/nautilus-application.c:625
 msgid "Quit"
