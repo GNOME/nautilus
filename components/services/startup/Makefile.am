@@ -30,6 +30,7 @@ nautilus_service_startup_view_LDFLAGS =			\
 	$(GNOMEUI_LIBS)					\
 	$(VFS_LIBS)					\
 	-lrpm						\
+	-lghttp						\
 	$(GNORBA_LIBS)
 
 EXTRA_DIST = nautilus-service-startup-view.goad

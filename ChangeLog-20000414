@@ -1,3 +1,10 @@
+2000-04-05  Andy Hertzfeld <andy@eazel.com>
+
+	* components/services/startup/nautilus-service-startup-view.c:
+	made the register button make an HTTP request to the service using ghttp.
+	* components/services/startup/Makefile.am:
+	made the component link with lghttp
+	
 2000-04-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	Make selection persistent across content view changes (task 105). 

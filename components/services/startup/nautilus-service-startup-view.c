@@ -30,6 +30,7 @@
 #include "nautilus-service-startup-view.h"
 #include "eazel-register.h"
 
+#include <ghttp.h>
 #include <gnome-xml/tree.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -75,6 +76,60 @@ config_button_cb (GtkWidget *button, char *data)
 	}
 }
 
+/* utility routine to make an HTTP request.  For now, it works synchronously but soon 
+   it will optionally work asynchronously.  Return NULL if we get an error */
+
+static gchar*
+make_http_post_request(gchar *uri, gchar *post_body)
+{
+    gchar *result;
+    ghttp_request *request = NULL;
+    gchar *proxy = g_getenv("http_proxy");
+    
+    request = ghttp_request_new();
+   
+    if (!request)
+     	return NULL;
+     	
+    if (proxy && (ghttp_set_proxy(request, proxy) != 0))
+    	{
+      	ghttp_request_destroy(request);
+    	return NULL;
+    	}
+    
+    if (ghttp_set_uri(request, uri) != 0)
+    	{
+      	ghttp_request_destroy(request);
+    	return NULL;
+    	}
+
+    ghttp_set_type(request, ghttp_type_post);
+    ghttp_set_header(request, http_hdr_Accept, "text/xml");
+    /* FIXME: user agent version and OS should be substituted on the fly */
+    ghttp_set_header(request, http_hdr_User_Agent, "Nautilus/0.1 (Linux)");   
+    ghttp_set_header(request, http_hdr_Connection, "close");
+ 
+    ghttp_set_body(request, post_body, strlen(post_body));
+   
+    if (ghttp_prepare(request) != 0)
+   		{
+     	ghttp_request_destroy(request);
+   		return NULL;
+   		}
+   
+    /* here's where it spends all the time doing the actual request  */
+    if (ghttp_process(request) != ghttp_done)
+    	{ 	    
+      	ghttp_request_destroy(request);
+    	return NULL;
+    	}
+    
+    result = g_strdup(ghttp_get_body(request));
+    ghttp_request_destroy(request);
+	
+	return result;
+}
+
 /* callback to handle the configuration button */    
 static void
 gather_config_button_cb (GtkWidget *button, char *data)
@@ -83,10 +138,24 @@ gather_config_button_cb (GtkWidget *button, char *data)
 }
 
 /* callback to handle the register button */    
+/* FIXME: this is test code - need to make it less hardwired */
 static void
-register_button_cb (GtkWidget *button, char *data)
+register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
-	g_message("register button clicked");
+	gchar *response_str, *body;
+	gchar *uri = "http://hippie.eazel.com/cgi-bin/register";
+	gchar *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
+	gchar *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
+	
+	/* FIXME: need to url-encode the arguments here */
+	body = g_strdup_printf("email=%s&pwd=%s", email, password);
+	 
+	g_message("making http request with body %s", body);
+	response_str = make_http_post_request(uri, body);
+	g_message("response from http request is %s", response_str);
+	if (response_str)
+		g_free(response_str);
+	g_free(body);
 }
 
 /* FIXME: this routine should be someone else, and should take user preferences into account */
@@ -243,7 +312,9 @@ static void setup_signup_form(NautilusServicesContentView *view)
 
 	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
 			    GTK_SIGNAL_FUNC (register_button_cb), view);	
+	/*
 	gtk_widget_set_sensitive(config_button, FALSE);
+	*/
 	gtk_widget_show (config_button);
 
 	/* now allocate the decline button */
@@ -280,7 +351,7 @@ static void setup_config_form(NautilusServicesContentView *view)
 	
 	/* make label containing text about uploading the configuration data */
 	/* FIXME: It should get this text from a file or from the service */
-	message = "With your permission, the Eazel service will gather data about the hardware and software configuration of your system so it can provide you a customized software catalog with one-click installation.  Your configuration data will be kept strictly confidential and will not be used for any other purpose.  Click the button below to begin gathering the data.";
+	message = "With your permission, the Eazel service will gather data about the hardware and software configuration of your system so it can provide you with a customized software catalog with one-click installation.  Your configuration data will be kept strictly confidential and will not be used for any other purpose.  Click the button below to begin gathering the data.";
 	temp_widget = gtk_label_new (message);
  	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
 	
@@ -290,7 +361,7 @@ static void setup_config_form(NautilusServicesContentView *view)
 	/* add buttons for accepting and declining */	
 	
 	config_button = gtk_button_new ();		    
-	config_label = gtk_label_new (" Gather Configuration Data Now ");
+	config_label = gtk_label_new (" Gather Configuration Data ");
 	gtk_widget_show (config_label);
 	gtk_container_add (GTK_CONTAINER (config_button), config_label); 	
 	
