@@ -171,7 +171,6 @@ typedef struct {
 	
 	gboolean channel_changed;
 	gboolean update_in_progress;
-	gboolean error_flag;
 } RSSChannelData;
 
 /* pixel and drawing constant defines */
@@ -1115,28 +1114,42 @@ extract_items (RSSChannelData *channel_data, xmlNodePtr container_node)
 	xmlNodePtr current_node, title_node, temp_node;
 	int item_count;
 	char *title, *temp_str;
+	gboolean scripting_news_format;
 	
 	current_node = container_node->childs;
 	item_count = 0;
 	while (current_node != NULL) {
 		if (eel_strcmp (current_node->name, "item") == 0) {
 			title_node = eel_xml_get_child_by_name (current_node, "title");
-			if (title_node) {
+			/* look for "text", too, to support Scripting News format */
+			scripting_news_format = FALSE;
+			if (title_node == NULL) {
+				title_node = eel_xml_get_child_by_name (current_node, "text");
+				scripting_news_format = title_node != NULL;
+			}
+			if (title_node != NULL) {
 				item_parameters = (RSSItemData*) g_new0 (RSSItemData, 1);
 
 				title = xmlNodeGetContent (title_node);
 				item_parameters->item_title = g_strdup (title);
 				xmlFree (title);
-				temp_node = eel_xml_get_child_by_name (current_node, "link");
 				
+				temp_node = eel_xml_get_child_by_name (current_node, "link");
 				if (temp_node) {
+					if (scripting_news_format) {
+						temp_node = eel_xml_get_child_by_name (temp_node, "url");		
+					}		
 					temp_str = xmlNodeGetContent (temp_node);
 					item_parameters->item_url = g_strdup (temp_str);
-					xmlFree (temp_str);
+					xmlFree (temp_str);	
 				}
 				
-				channel_data->items = g_list_append (channel_data->items, item_parameters);
-				item_count += 1;
+				if (item_parameters->item_title != NULL && item_parameters->item_url != NULL) {
+					channel_data->items = g_list_append (channel_data->items, item_parameters);
+					item_count += 1;
+				} else {
+					free_rss_data_item (item_parameters);
+				}
 			}
 		}
 		current_node = current_node->next;
@@ -1166,6 +1179,10 @@ has_matching_uri (GList *items, const char *target_uri)
 	RSSItemData *item_data;
 	char *mapped_target_uri, *mapped_item_uri;
 	gboolean found_match;
+	
+	if (target_uri == NULL) {
+		return FALSE;
+	}
 	
 	mapped_target_uri = gnome_vfs_make_uri_canonical (target_uri);
 	
@@ -1212,55 +1229,29 @@ mark_new_items (RSSChannelData *channel_data, GList *old_items)
 	return changed_count;
 }
 
-/* completion routine invoked when we've loaded the rss file uri.  Parse the xml document, and
- * then extract the various elements that we require */
+/* error handling utility */
 static void
-rss_read_done_callback (GnomeVFSResult result,
-			 GnomeVFSFileSize file_size,
-			 char *file_contents,
-			 gpointer callback_data)
+rss_read_error (RSSChannelData *channel_data)
 {
-	xmlDocPtr rss_document;
-	xmlNodePtr image_node, channel_node;
-	xmlNodePtr  current_node, temp_node, uri_node;
-	GList *old_items;
-	char *image_uri, *title, *temp_str;
 	char *error_message;
-	int item_count, changed_count;
-	RSSChannelData *channel_data;
+
+	channel_data->update_in_progress = FALSE;
+	error_message = g_strdup_printf ("Couldn't load %s", channel_data->name);
+	nautilus_news_set_title (channel_data, error_message);
+	g_free (error_message);
+}
+
+/* utility routine to extract the title from a standard rss document.  Return TRUE
+ * if we find a valid title.
+ */
+static gboolean
+extract_rss_title (RSSChannelData *channel_data, xmlDoc *rss_document)
+{
+	gboolean got_title;
+	xmlNode *channel_node, *temp_node;
+	char *title, *temp_str;
 	
-	char *buffer;
-
-	channel_data = (RSSChannelData*) callback_data;
-	channel_data->load_file_handle = NULL;
-
-	/* make sure the read was successful */
-	if (result != GNOME_VFS_OK) {
-		g_assert (file_contents == NULL);
-		channel_data->update_in_progress = FALSE;
-		error_message = g_strdup_printf ("Couldn't load %s", channel_data->name);
-		nautilus_news_set_title (channel_data, error_message);
-		channel_data->error_flag = TRUE;
-		g_free (error_message);
-		return;
-	}
-
-	/* flag the update time */
-	time (&channel_data->last_update);
-
-	/* Parse the rss file with gnome-xml. The gnome-xml parser requires a zero-terminated array. */
-	buffer = g_realloc (file_contents, file_size + 1);
-	buffer[file_size] = '\0';
-	rss_document = xmlParseMemory (buffer, file_size);
-	g_free (buffer);
-
-	/* make sure there wasn't in error parsing the document */
-	if (rss_document == NULL) {
-		channel_data->update_in_progress = FALSE;
-		return;
-	}
-	
-	/* extract the title and set it */
+	got_title = FALSE;
 	channel_node = eel_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "channel");
 	if (channel_node != NULL) {		
 			temp_node = eel_xml_get_child_by_name (channel_node, "title");
@@ -1268,6 +1259,7 @@ rss_read_done_callback (GnomeVFSResult result,
 				title = xmlNodeGetContent (temp_node);				
 				if (title != NULL) {
 					nautilus_news_set_title (channel_data, title);
+					got_title = TRUE;
 					xmlFree (title);	
 				}
 			}
@@ -1283,29 +1275,164 @@ rss_read_done_callback (GnomeVFSResult result,
 			}
 		
 	}
-		
-	/* extract the image uri and, if found, load it asynchronously */
-	/* don't reload it if we already have one */
-	if (channel_data->logo_image == NULL) {
-		image_node = eel_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "image");
+	return got_title;
+}
+
+/* extract the title for the scripting news variant format */
+static gboolean
+extract_scripting_news_title (RSSChannelData *channel_data, xmlDoc *rss_document)
+{
+	gboolean got_title;
+	xmlNode *channel_node, *temp_node;
+	char *title, *temp_str;
+
+	got_title = FALSE;
+	channel_node = eel_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "header");
+	if (channel_node != NULL) {
+		temp_node = eel_xml_get_child_by_name (channel_node, "channelTitle");
+		if (temp_node != NULL) {
+			title = xmlNodeGetContent (temp_node);				
+			if (title != NULL) {
+				nautilus_news_set_title (channel_data, title);
+				got_title = TRUE;
+				xmlFree (title);	
+			}
+		}	
+		temp_node = eel_xml_get_child_by_name (channel_node, "channelLink");
+		if (temp_node != NULL) {
+			temp_str = xmlNodeGetContent (temp_node);				
+			if (temp_str != NULL) {
+				g_free (channel_data->link_uri);
+				channel_data->link_uri = g_strdup (temp_str);
+				xmlFree (temp_str);	
+			}
+		}
+
+	}
+	return got_title;
+}
+
+/* utility routine to extract the logo image from a standard rss file and start loading it;
+ * return true if we get one
+ */
+static gboolean
+extract_rss_image (RSSChannelData *channel_data, xmlDoc *rss_document)
+{
+	gboolean got_image;
+	xmlNode *image_node, *uri_node;
+	xmlNode *channel_node;
+	char *image_uri;
 	
-		/* if we can't find it at the top level, look inside the channel */
-		if (image_node == NULL && channel_node != NULL) {
+	got_image = FALSE;
+	image_node = eel_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "image");
+	
+	/* if we can't find it at the top level, look inside the channel */
+	if (image_node == NULL) {
+		channel_node = eel_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "channel");
+		if (channel_node != NULL) {
 			image_node = eel_xml_get_child_by_name (channel_node, "image");
-		} 
+		}
+	} 
 	
-		if (image_node != NULL) {		
-			uri_node = eel_xml_get_child_by_name (image_node, "url");
-			if (uri_node != NULL) {
-				image_uri = xmlNodeGetContent (uri_node);
-				if (image_uri != NULL) {
-					channel_data->load_image_handle = eel_gdk_pixbuf_load_async (image_uri, rss_logo_callback, channel_data);
-					xmlFree (image_uri);
-				}
+	if (image_node != NULL) {		
+		uri_node = eel_xml_get_child_by_name (image_node, "url");
+		if (uri_node != NULL) {
+			image_uri = xmlNodeGetContent (uri_node);
+			if (image_uri != NULL) {
+				channel_data->load_image_handle = eel_gdk_pixbuf_load_async (image_uri, rss_logo_callback, channel_data);
+				got_image = TRUE;
+				xmlFree (image_uri);
 			}
 		}
 	}
+	return got_image;
+}
+
+/* utility routine to extract the logo image from a scripting news format rss file and start loading it;
+ * return true if we get one
+ */
+static gboolean
+extract_scripting_news_image (RSSChannelData *channel_data, xmlDoc *rss_document)
+{
+	gboolean got_image;
+	xmlNode *image_node, *header_node;
+	char *image_uri;
+
+	got_image = FALSE;
+	header_node = eel_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "header");
+	if (header_node != NULL) {
+		image_node = eel_xml_get_child_by_name (header_node, "imageUrl");
+		if (image_node != NULL) {
+			image_uri = xmlNodeGetContent (image_node);
+			if (image_uri != NULL) {
+				channel_data->load_image_handle = eel_gdk_pixbuf_load_async (image_uri, rss_logo_callback, channel_data);
+				got_image = TRUE;
+				xmlFree (image_uri);
+			}
+
+		}
+	}	
+	return got_image;
+}
+
+/* completion routine invoked when we've loaded the rss file uri.  Parse the xml document, and
+ * then extract the various elements that we require.
+ */
+static void
+rss_read_done_callback (GnomeVFSResult result,
+			 GnomeVFSFileSize file_size,
+			 char *file_contents,
+			 gpointer callback_data)
+{
+	xmlDocPtr rss_document;
+	xmlNodePtr channel_node, current_node;
+	GList *old_items;
+	int item_count, changed_count;
+	RSSChannelData *channel_data;
+	
+	char *buffer;
+
+	channel_data = (RSSChannelData*) callback_data;
+	channel_data->load_file_handle = NULL;
+
+	/* make sure the read was successful */
+	if (result != GNOME_VFS_OK) {
+		g_assert (file_contents == NULL);
+		rss_read_error (channel_data);
+		return;
+	}
+
+	/* flag the update time */
+	time (&channel_data->last_update);
+
+	/* Parse the rss file with gnome-xml. The gnome-xml parser requires a zero-terminated array. */
+	buffer = g_realloc (file_contents, file_size + 1);
+	buffer[file_size] = '\0';
+	rss_document = xmlParseMemory (buffer, file_size);
+	g_free (buffer);
+
+	/* make sure there wasn't in error parsing the document */
+	if (rss_document == NULL) {
+		g_message ("couldnt parse rss file for %s", channel_data->name);
+		rss_read_error (channel_data);
+		return;
+	}
+	
+	/* set the title to the channel name, in case we don't get anything better from the file */
+	nautilus_news_set_title (channel_data, channel_data->name);
+	channel_node = eel_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "channel");
+	
+	if (!extract_rss_title (channel_data, rss_document)) {
+		extract_scripting_news_title (channel_data, rss_document);
+	}
 			
+	/* extract the image uri and, if found, load it asynchronously; don't refetch if we already have one */
+	if (channel_data->logo_image == NULL) {
+		if (!extract_rss_image (channel_data, rss_document)) {
+			extract_scripting_news_image (channel_data, rss_document);
+		}	
+	}
+				
 	/* extract the items */
 	old_items = channel_data->items;
 	channel_data->items = NULL;
