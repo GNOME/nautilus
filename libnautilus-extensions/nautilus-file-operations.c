@@ -2255,6 +2255,8 @@ nautilus_self_check_file_operations (void)
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy)"), 1), _("foo (3rd copy)"));
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy).txt"), 1), _("foo (3rd copy).txt"));
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (another copy).txt"), 1), _("foo foo (3rd copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy)"), 1), _("foo (14th copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy).txt"), 1), _("foo (14th copy).txt"));
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy)"), 1), _("foo (22nd copy)"));
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy).txt"), 1), _("foo (22nd copy).txt"));
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy)"), 1), _("foo (23rd copy)"));
@@ -2266,6 +2268,14 @@ nautilus_self_check_file_operations (void)
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy)"), 1), _("foo foo (25th copy)"));
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy).txt"), 1), _("foo foo (25th copy).txt"));
 	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (100000000000000th copy).txt"), 1), _("foo foo (copy).txt"));
+
+	/* FIXME bugzilla.eazel.com 7701: These are wrong. */
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy)"), 1), _("foo (11st copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy).txt"), 1), _("foo (11st copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy)"), 1), _("foo (12nd copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy).txt"), 1), _("foo (12nd copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy)"), 1), _("foo (13rd copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy).txt"), 1), _("foo (13rd copy).txt"));
 }
 
 #endif

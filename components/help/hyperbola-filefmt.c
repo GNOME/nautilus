@@ -1565,7 +1565,7 @@ locale_score (GList *locales, xmlNode *doc_node)
 
 	score = 0;
 	for (li = locales; li != NULL; li = li->next) {
-		if (strcmp (locale, li->data) == 0) {
+		if (strcmp (locale, (char *) li->data) == 0) {
 			return score;
 		}
 

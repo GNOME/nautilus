@@ -754,8 +754,8 @@ nautilus_self_check_smooth_text_layout_cache (void)
 		free_test_case (cases + i);
 	}
 
-	gtk_object_destroy (GTK_OBJECT (test_font));
-	gtk_object_destroy (GTK_OBJECT (test_cache));
+	gtk_object_unref (GTK_OBJECT (test_font));
+	gtk_object_unref (GTK_OBJECT (test_cache));
 }
 
 #endif /* NAUTILUS_OMIT_SELF_CHECK */

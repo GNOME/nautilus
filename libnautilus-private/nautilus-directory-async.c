@@ -504,6 +504,8 @@ metafile_read_check_for_directory_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (directory->details->metafile_read_state->get_file_info_handle == handle);
 	g_assert (nautilus_g_list_exactly_one_item (results));
 
+	nautilus_directory_ref (directory);
+
 	directory->details->metafile_read_state->get_file_info_handle = NULL;
 
 	result = results->data;
@@ -517,6 +519,8 @@ metafile_read_check_for_directory_callback (GnomeVFSAsyncHandle *handle,
 		/* Not a directory. */
 		metafile_read_done (directory);
 	}
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -602,9 +606,12 @@ metafile_read_done_callback (GnomeVFSResult result,
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	g_assert (directory->details->metafile == NULL);
 
+	nautilus_directory_ref (directory);
+
 	if (result != GNOME_VFS_OK) {
 		g_assert (file_contents == NULL);
 		metafile_read_failed (directory);
+		nautilus_directory_unref (directory);
 		return;
 	}
 	
@@ -612,6 +619,7 @@ metafile_read_done_callback (GnomeVFSResult result,
 	if ((GnomeVFSFileSize) size != file_size) {
 		g_free (file_contents);
 		metafile_read_failed (directory);
+		nautilus_directory_unref (directory);
 		return;
 	}
 
@@ -623,6 +631,8 @@ metafile_read_done_callback (GnomeVFSResult result,
 	g_free (buffer);
 
 	metafile_read_done (directory);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -768,7 +778,9 @@ metafile_write_failure_close_callback (GnomeVFSAsyncHandle *handle,
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
+	nautilus_directory_ref (directory);
 	metafile_write_failed (directory);
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -781,8 +793,11 @@ metafile_write_success_close_callback (GnomeVFSAsyncHandle *handle,
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	g_assert (directory->details->metafile_write_state->handle == NULL);
 
+	nautilus_directory_ref (directory);
+
 	if (result != GNOME_VFS_OK) {
 		metafile_write_failed (directory);
+		nautilus_directory_unref (directory);
 		return;
 	}
 
@@ -797,6 +812,8 @@ metafile_write_success_close_callback (GnomeVFSAsyncHandle *handle,
 	}
 
 	metafile_write_done (directory);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -834,7 +851,9 @@ metafile_write_create_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (directory->details->metafile_write_state->handle == handle);
 	
 	if (result != GNOME_VFS_OK) {
+		nautilus_directory_ref (directory);
 		metafile_write_failed (directory);
+		nautilus_directory_unref (directory);
 		return;
 	}
 
@@ -1493,6 +1512,8 @@ directory_load_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (directory->details->directory_load_in_progress != NULL);
 	g_assert (directory->details->directory_load_in_progress == handle);
 
+	nautilus_directory_ref (directory);
+
 	for (element = list; element != NULL; element = element->next) {
 		directory_load_one (directory, element->data);
 	}
@@ -1501,6 +1522,8 @@ directory_load_callback (GnomeVFSAsyncHandle *handle,
 	    || result != GNOME_VFS_OK) {
 		directory_load_done (directory, result);
 	}
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -1747,6 +1770,8 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 		return;
 	}
 
+	nautilus_directory_ref (directory);
+
 	count_file->details->directory_count_is_up_to_date = TRUE;
 
 	/* Record either a failure or success. */
@@ -1767,6 +1792,8 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 	/* Start up the next one. */
 	async_job_end (directory, "directory count");
 	nautilus_directory_async_state_changed (directory);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -1781,6 +1808,8 @@ new_files_callback (GnomeVFSAsyncHandle *handle,
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	handles = &directory->details->get_file_infos_in_progress;
 	g_assert (handle == NULL || g_list_find (*handles, handle) != NULL);
+
+	nautilus_directory_ref (directory);
 	
 	/* Note that this call is done. */
 	*handles = g_list_remove (*handles, handle);
@@ -1793,6 +1822,8 @@ new_files_callback (GnomeVFSAsyncHandle *handle,
 			directory_load_one (directory, result->file_info);
 		}
 	}
+
+	nautilus_directory_unref (directory);
 }
 
 void
@@ -2003,7 +2034,6 @@ has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem
 	}
 
 	return FALSE;
-	
 }
 
 static gboolean
@@ -2603,6 +2633,8 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 	file = directory->details->deep_count_file;
 	g_assert (NAUTILUS_IS_FILE (file));
 
+	nautilus_directory_ref (directory);
+
 	for (element = list; element != NULL; element = element->next) {
 		deep_count_one (directory, element->data);
 	}
@@ -2638,6 +2670,8 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 		async_job_end (directory, "deep count");
 		nautilus_directory_async_state_changed (directory);
 	}
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -2743,6 +2777,8 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 		return;
 	}
 
+	nautilus_directory_ref (directory);
+
 	file->details->mime_list_is_up_to_date = TRUE;
 
 	/* Record either a failure or success. */
@@ -2770,6 +2806,8 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 	/* Start up the next one. */
 	async_job_end (directory, "MIME list");
 	nautilus_directory_async_state_changed (directory);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -2873,6 +2911,8 @@ top_left_read_callback (GnomeVFSResult result,
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
+	nautilus_directory_ref (directory);
+
 	directory->details->top_left_read_state->handle = NULL;
 
 	directory->details->top_left_read_state->file->details->top_left_text_is_up_to_date = TRUE;
@@ -2897,6 +2937,8 @@ top_left_read_callback (GnomeVFSResult result,
 		nautilus_file_changed (changed_file);
 		nautilus_file_unref (changed_file);
 	}
+
+	nautilus_directory_unref (directory);
 }
 
 static gboolean
@@ -2974,6 +3016,8 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (nautilus_g_list_exactly_one_item (results));
 	get_info_file = directory->details->get_info_file;
 	g_assert (NAUTILUS_IS_FILE (get_info_file));
+
+	nautilus_directory_ref (directory);
 	
 	directory->details->get_info_file = NULL;
 	directory->details->get_info_in_progress = NULL;
@@ -3011,6 +3055,8 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 
 	async_job_end (directory, "file info");
 	nautilus_directory_async_state_changed (directory);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -3116,6 +3162,8 @@ activation_uri_nautilus_link_read_callback (GnomeVFSResult result,
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
+	nautilus_directory_ref (directory);
+
 	/* Handle the case where we read the Nautilus link. */
 	if (result != GNOME_VFS_OK) {
 		/* FIXME bugzilla.eazel.com 2433: We should report this error to the user. */
@@ -3131,6 +3179,8 @@ activation_uri_nautilus_link_read_callback (GnomeVFSResult result,
 
 	activation_uri_read_done (directory, uri);
 	g_free (uri);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -3143,6 +3193,8 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 	char *end_of_line, *uri;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	nautilus_directory_ref (directory);
 
 	/* Handle the case where we read the GMC link. */
 	if (result != GNOME_VFS_OK || !nautilus_str_has_prefix (file_contents, "URL: ")) {
@@ -3161,6 +3213,8 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 	g_free (file_contents);
 	activation_uri_read_done (directory, uri);
 	g_free (uri);
+
+	nautilus_directory_unref (directory);
 }
 
 static gboolean
@@ -3326,7 +3380,6 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	async_job_wake_up ();
 }
 
-
 static void
 cancel_directory_count_for_file (NautilusDirectory *directory,
 				 NautilusFile      *file)
@@ -3336,7 +3389,6 @@ cancel_directory_count_for_file (NautilusDirectory *directory,
 	}
 }
 
-
 static void
 cancel_deep_counts_for_file (NautilusDirectory *directory,
 			     NautilusFile      *file)
@@ -3345,7 +3397,6 @@ cancel_deep_counts_for_file (NautilusDirectory *directory,
 		deep_count_cancel (directory);
 	}
 }
-
 
 static void
 cancel_mime_list_for_file (NautilusDirectory *directory,
@@ -3384,7 +3435,6 @@ cancel_activation_uri_for_file (NautilusDirectory *directory,
 		activation_uri_cancel (directory);
 	}
 }
-
 
 static void
 cancel_loading_attributes (NautilusDirectory *directory,

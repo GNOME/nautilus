@@ -1,3 +1,52 @@
+2001-03-15  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7783 (Makefile.am used to install xml data is wrong):
+	
+	* data/Makefile.am: Integrate build fix from fcrozat. Don't use
+	the magic "info" name since it is used for special purposes on
+	Mandrake and other systems.
+
+	Other strings:
+	
+	* THANKS: Added some people who made recent contributions.
+	* check-THANKS.pl: Add some more alternate names.
+
+	* components/help/hyperbola-filefmt.c: (locale_score): Fix legal
+	code that doesn't compile with some versions of gcc by adding a
+	cast.
+	
+	* help/nautilus-user-manual/es/.cvsignore: Add
+	nautilus-user-manual.junk.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_check_for_directory_callback),
+	(metafile_read_done_callback),
+	(metafile_write_failure_close_callback),
+	(metafile_write_success_close_callback),
+	(metafile_write_create_callback), (directory_load_callback),
+	(directory_count_callback), (new_files_callback), (has_problem),
+	(deep_count_callback), (mime_list_callback),
+	(top_left_read_callback), (get_info_callback),
+	(activation_uri_nautilus_link_read_callback),
+	(activation_uri_gmc_link_read_callback),
+	(cancel_activation_uri_for_file): Add ref/unref pairs that we need
+	in callbacks that use NautilusDirectory objects but that also send
+	out signals which might end up unref'ing them.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_self_check_file_operations): Add tests to demonstrate
+	bug 7701.
+	
+	* libnautilus-extensions/nautilus-smooth-text-layout-cache.c:
+	(nautilus_self_check_smooth_text_layout_cache): Fix some destroys
+	that should have been unrefs.
+	
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_self_check_string): Added tests for
+	nautilus_str_get_after_prefix.
+
 2001-03-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c:

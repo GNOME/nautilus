@@ -852,6 +852,17 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo:bar", ":"), "foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("footle:bar", "tle:"), "foo");	
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix (NULL, NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix (NULL, "foo"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("foo", NULL), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("", "foo"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("foo", ""), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("foo", "foo"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("foo:", ":"), ":");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("foo:bar", ":"), ":bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_after_prefix ("footle:bar", "tle:"), "tle:bar");	
+
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr (NULL, '_'), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("", '_'), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("foo", '_'), "foo");

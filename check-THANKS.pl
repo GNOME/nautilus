@@ -43,6 +43,7 @@ my %name_map = ("Darin as Andy" => "Darin Adler",
                 "Eskil Olsen" => "Eskil Heyn Olsen",
 		"Szabolcs BAN" => "Szabolcs Ban",
 		"arik devens" => "Arik Devens",
+		"Takuo KITAME" => "Takuo Kitame",
                 "Robin Slomkowski" => "Robin * Slomkowski");
 
 # Map from alternate email addresses of some users to canonical versions
@@ -54,6 +55,7 @@ my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
                  'yakk@yakk.net.au' => 'ian@eazel.com',
                  'linuxfan@ionet..net' => 'josh@eazel.com',
                  'snickell@stanford.edu' => 'seth@eazel.com',
+                 'mathieu@gnu.org' => 'mathieu@eazel.com',
                  'mathieu@gnome.org' => 'mathieu@eazel.com',
                  'hp@pobox.com' => 'hp@redhat.com',
                  'kmaraas@online.no' => 'kmaraas@gnome.org',
