@@ -84,40 +84,71 @@ generate_install_form (NautilusServiceInstallView	*view) {
 
 	/* Add package information */
 
-	view->details->package_name = gtk_label_new (_("Package Title"));
-	font = nautilus_font_factory_get_font_from_preferences (18);
+	/* Package Name */
+	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+	gtk_widget_show (temp_box);
+	view->details->package_name = gtk_label_new (_("Installing \"foo-bar-deluxe\""));
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_name);
+	font = nautilus_font_factory_get_font_from_preferences (20);
 	nautilus_gtk_widget_set_font (view->details->package_name, font);
 	gdk_font_unref (font);
-
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_name, FALSE, FALSE, 2);
 	gtk_widget_show (view->details->package_name);
 
-	view->details->package_summary = gtk_label_new ("Summary: ");
+	/* Package Summary */
+	temp_box = gtk_alignment_new (0.1, 0.1, 0, 1);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+	gtk_widget_show (temp_box);
+	view->details->package_summary = gtk_label_new ("Summary: This is a fake package that does nothing");
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_summary);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_summary, FALSE, FALSE, 2);
+	font = nautilus_font_factory_get_font_from_preferences (14);
+	nautilus_gtk_widget_set_font (view->details->package_summary, font);
+	gdk_font_unref (font);
 	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_summary), TRUE);
 	gtk_widget_show (view->details->package_summary);
 
-	view->details->package_details = gtk_label_new ("Description: ");
+	/* Package Description */
+	temp_box = gtk_alignment_new (0.1, 0.1, 0, 1);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+	gtk_widget_show (temp_box);
+	view->details->package_details = gtk_label_new ("Description: No really this is completely fake.  This package does absolutely nothing.");
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_details);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_details, FALSE, FALSE, 2);
+	font = nautilus_font_factory_get_font_from_preferences (14);
+	nautilus_gtk_widget_set_font (view->details->package_details, font);
+	gdk_font_unref (font);
 	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_details), TRUE);
 	gtk_widget_show (view->details->package_details);
 
-	view->details->package_version = gtk_label_new ("Version 0");
+	/* Package Version */
+	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+	gtk_widget_show (temp_box);
+	view->details->package_version = gtk_label_new ("Version 0.0.0-1");
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_version);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_version, FALSE, FALSE, 2);
+	font = nautilus_font_factory_get_font_from_preferences (14);
+	nautilus_gtk_widget_set_font (view->details->package_version, font);
+	gdk_font_unref (font);
 	gtk_widget_show (view->details->package_version);
 
 	/* generate the overall progress bar */
-	temp_box = gtk_alignment_new (0.2, 0.2, 0, 0);
+	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
-			    gtk_widget_show (temp_box);
 	gtk_widget_show (temp_box);
 	view->details->total_progress_bar = gtk_progress_bar_new ();
 	gtk_container_add (GTK_CONTAINER (temp_box), view->details->total_progress_bar);
 	gtk_widget_show (view->details->total_progress_bar);
 
 	/* add a label for progress messages, but don't show it until there's a message */
+	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+	gtk_widget_show (temp_box);
 	view->details->overall_feedback_text = gtk_label_new ("");
-	font = nautilus_font_factory_get_font_from_preferences (16);
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->overall_feedback_text);
+	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->overall_feedback_text, font);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->overall_feedback_text, 0, 0, 8);
 
@@ -150,7 +181,7 @@ generate_form_title (NautilusServiceInstallView	*view,
 
         view->details->form_title = gtk_label_new (title_text);
 
-        font = nautilus_font_factory_get_font_from_preferences (18);
+        font = nautilus_font_factory_get_font_from_preferences (21);
         nautilus_gtk_widget_set_font (view->details->form_title, font);
         gdk_font_unref (font);
 
@@ -201,7 +232,7 @@ generate_current_progress (NautilusServiceInstallView	*view, char	*progress_mess
 	GdkFont		*font;
 	int		counter;
      
-	temp_container = gtk_hbox_new (FALSE, 0);
+	temp_container = gtk_hbox_new (TRUE, 0);
 	gtk_box_pack_end (GTK_BOX (view->details->message_box), temp_container, 0, 0, 4);
 	gtk_widget_show (temp_container);
 
@@ -213,7 +244,7 @@ generate_current_progress (NautilusServiceInstallView	*view, char	*progress_mess
 
 	/* Create a center alignment object */
 	temp_box = gtk_alignment_new (0.5, 0.5, 0, 0);
-	gtk_box_pack_end (GTK_BOX (temp_container), temp_box, FALSE, FALSE, 4);
+	gtk_box_pack_end (GTK_BOX (temp_container), temp_box, FALSE, FALSE, 8);
 			    gtk_widget_show (temp_box);
 	gtk_widget_show (temp_box);
 	view->details->current_progress_bar = gtk_progress_bar_new ();
