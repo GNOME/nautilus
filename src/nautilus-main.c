@@ -171,9 +171,9 @@ main (int argc, char *argv[])
 	 * lines cause empty statement warnings.
 	 */
 #ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	bind_textdomain_codeset (PACKAGE, "UTF-8");
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
 #endif
 
 	/* Get parameters. */
