@@ -1,9 +1,9 @@
 # Danish translation of Nautilus strings.
-# Copyright (C) 2000, 01, 02, 03 Free Software Foundation, Inc.
+# Copyright (C) 2000, 01, 02, 03, 03 Free Software Foundation, Inc.
 # Kenneth Christiansen <kenneth@gnu.org>, 2000, 2001.
 # Keld Simonsen <keld@dkuug.dk>, 2000.
 # Kim Schulz <kim@schulz.dk>, 2001.
-# Ole Laursen <olau@hardworking.dk>, 2001, 02, 03.
+# Ole Laursen <olau@hardworking.dk>, 2001, 02, 03, 03.
 #
 # Konventioner:
 #
@@ -23,14 +23,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-12-29 12:11+0100\n"
-"PO-Revision-Date: 2003-11-10 23:19+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-01 18:41+0100\n"
+"PO-Revision-Date: 2004-01-01 18:41+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -71,40 +71,36 @@ msgid "Nautilus Emblem view"
 msgstr "Emblemvisning til Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "Kunne ikke fjerne emblem"
+msgstr "Kunne ikke slette emblemet ved navn '%s'."
 
 #: components/emblem/nautilus-emblem-view.c:204
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
 msgstr ""
-"Kunne ikke slette emblemet med navnet '%s'. Dette skyldes sandsynligvis at "
-"emblemet er permanent og ikke et du selv har tilføjet."
+"Dette skyldes sandsynligvis at emblemet er permanent og ikke et du selv har "
+"tilføjet."
 
 #: components/emblem/nautilus-emblem-view.c:205
-#, fuzzy
 msgid "Couldn't Remove Emblem"
-msgstr "Kunne ikke fjerne emblem"
+msgstr "Kunne ikke slette emblem"
 
 #: components/emblem/nautilus-emblem-view.c:239
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "Kunne ikke omdøbe emblem"
+msgstr "Kunne ikke omdøbe emblemet ved navn '%s'."
 
 #: components/emblem/nautilus-emblem-view.c:240
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
 msgstr ""
-"Kunne ikke omdøbe emblemet med navnet '%s'. Dette skyldes sandsynligvis at "
-"emblemet er permanent og ikke et du selv har tilføjet."
+"Dette skyldes sandsynligvis at emblemet er permanent og ikke et du selv har "
+"tilføjet."
 
 #: components/emblem/nautilus-emblem-view.c:241
-#, fuzzy
 msgid "Couldn't Rename Emblem"
 msgstr "Kunne ikke omdøbe emblem"
 
@@ -141,34 +137,28 @@ msgstr ""
 "andre steder til at identificere emblemet."
 
 #: components/emblem/nautilus-emblem-view.c:742
-#, fuzzy
 msgid "Some of the files could not be added as emblems."
-msgstr "Beklager, men billedet på %s kunne ikke installeres som et emblem."
+msgstr "Nogle af filerne kunne ikke tilføjes som emblemer."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "The emblems do not appear to be valid images."
-msgstr "Filen '%s' ser ikke ud til at være et gyldigt billede."
+msgstr "Emblemerne ser ikke ud til at være gyldige billeder."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "Couldn't Add Emblems"
 msgstr "Kunne ikke tilføje emblemer"
 
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "None of the files could be added as emblems."
-msgstr ""
-"Ingen af filerne kunne tilføjes som emblemer fordi de ikke så ud til at være "
-"gyldige billeder."
+msgstr "Ingen af filerne kunne tilføjes som emblemer."
 
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
 msgid "The emblem cannot be added."
-msgstr ""
+msgstr "Emblemet kan ikke tilføjes."
 
 #: components/emblem/nautilus-emblem-view.c:765
 msgid "The dragged text was not a valid file location."
@@ -177,7 +167,6 @@ msgstr "Den trækkede tekst var ikke en gyldig filplacering."
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
-#, fuzzy
 msgid "Couldn't Add Emblem"
 msgstr "Kunne ikke tilføje emblem"
 
@@ -1152,13 +1141,12 @@ msgid "Enable 'special' flags in file preferences dialog"
 msgstr "Aktivér \"specielle\" kørselstilvalg i filegenskabsvinduet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
-"Filnavn for denn forvalgte mappebaggrund. Benyttes kun hvis background_set "
-"er sand."
+"Filnavn for den forvalgte mappebaggrund. Benyttes kun hvis background_set er "
+"sand."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
@@ -1169,7 +1157,6 @@ msgstr ""
 "side_pane_background_set er sand."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
-#, fuzzy
 msgid ""
 "Folders over this size will be truncated to around this size. The purpose of "
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
@@ -1190,7 +1177,6 @@ msgid "Home icon visible on desktop"
 msgstr "Hjemmeikon synligt på skrivebordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-#, fuzzy
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
@@ -1224,7 +1210,6 @@ msgstr ""
 "kørselstilvalg for en fil i filegenskabsvinduet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -1271,7 +1256,6 @@ msgstr ""
 "bogmærkemenuen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
@@ -1290,7 +1274,6 @@ msgstr ""
 "sikkerhedskopier."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
-#, fuzzy
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
@@ -1315,7 +1298,6 @@ msgstr ""
 "vist på skrivebordet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -1353,7 +1335,6 @@ msgstr ""
 "\" i stedet for fra \"a\" til \"å\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-#, fuzzy
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Hvis sand vil ikoner blive placeret tættere som standard i nye vinduer."
@@ -1384,7 +1365,6 @@ msgid "List of possible captions on icons"
 msgstr "Liste over mulige tekster for ikoner"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-#, fuzzy
 msgid "Maximum handled files in a folder"
 msgstr "Maksimalt håndterede filer i en mappe"
 
@@ -1405,12 +1385,10 @@ msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus håndterer optegning af skrivebordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-#, fuzzy
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Nautilus benytter brugerens hjemmemappe som skrivebord"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-#, fuzzy
 msgid "Only show folders in the tree sidebar"
 msgstr "Vis kun mapper i træsidepanelet"
 
@@ -1431,7 +1409,6 @@ msgid "Reverse sort order in new windows"
 msgstr "Omvendt sorteringsorden i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-#, fuzzy
 msgid "Show folders first in windows"
 msgstr "Vis mapper først i vinduer"
 
@@ -1469,7 +1446,6 @@ msgstr ""
 "lydfiler aldrig afspillet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1484,7 +1460,6 @@ msgstr ""
 "vist."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1499,7 +1474,6 @@ msgstr ""
 "miniaturer aldrig genereret, i stedet benyttes et generelt ikon."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1513,7 +1487,6 @@ msgstr ""
 "antallet af objekter aldrig blive talt op."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1522,13 +1495,12 @@ msgstr ""
 "er \"name\", \"size\", \"type\", \"modification_date\" og \"emblems\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 "Den forvalgte sorteringsorden for objekter i listevisningen. Mulige værdier "
-"er name, size, type og modification_date."
+"er \"name\", \"size\", \"type\", \"modification_date\" og \"emblems\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The default width of the side pane in new windows."
@@ -1571,7 +1543,6 @@ msgid "Use manual layout in new windows"
 msgstr "Benyt manuel placering i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-#, fuzzy
 msgid "Use tighter layout in new windows"
 msgstr "Benyt tættere placering i nye vinduer"
 
@@ -1601,7 +1572,6 @@ msgstr ""
 "for mappen. Mulige værdier er \"list_view\" og \"icon_view\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "When to show number of items in a folder"
 msgstr "Hvornår antallet af objekter i en mappe skal vises"
 
@@ -1614,7 +1584,6 @@ msgid "When to show thumbnails of image files"
 msgstr "Hvornår miniaturer af billedfiler skal vises"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
-#, fuzzy
 msgid "Whether a custom default folder background has been set."
 msgstr "Om en brugerdefineret forvalgt mappebaggrund er valgt."
 
@@ -1774,21 +1743,18 @@ msgid "on the desktop"
 msgstr "på skrivebordet"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
-#, fuzzy
 msgid "You cannot delete a volume icon."
-msgstr "Kan ikke slette arkiv"
+msgstr "Du kan ikke slette et arkivikon."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:106
-#, fuzzy
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
 msgstr ""
-"Du kan ikke slette et arkivikon. Vælg punktet 'skub ud' i højrekliksmenuen "
-"for arkivet hvis du ønsker at skubbe det ud."
+"Vælg punktet 'skub ud' i højrekliksmenuen for arkivet hvis du ønsker at "
+"skubbe mediet ud."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
-#, fuzzy
 msgid "Can't Delete Volume"
 msgstr "Kan ikke slette arkiv"
 
@@ -1832,9 +1798,8 @@ msgstr "Vælg som baggrund for _denne mappe"
 #: libnautilus-private/nautilus-emblem-utils.c:202
 #: libnautilus-private/nautilus-emblem-utils.c:257
 #: libnautilus-private/nautilus-emblem-utils.c:274
-#, fuzzy
 msgid "The emblem cannot be installed."
-msgstr "Desværre, men temaet '%s' kunne ikke installeres."
+msgstr "Emblemet kan ikke installeres."
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1844,7 +1809,6 @@ msgstr "Beklager, men du skal angive et ikke-tomt nøgleord for det nye emblem."
 #: libnautilus-private/nautilus-emblem-utils.c:204
 #: libnautilus-private/nautilus-emblem-utils.c:259
 #: libnautilus-private/nautilus-emblem-utils.c:276
-#, fuzzy
 msgid "Couldn't Install Emblem"
 msgstr "Kunne ikke installere emblem"
 
@@ -1860,15 +1824,13 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:213
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but there is already an emblem named \"%s\"."
-msgstr ""
-"Desværre, der eksisterer allerede et emblem med navnet \"%s\". Vælg venligst "
-"et andet navn."
+msgstr "Desværre, der eksisterer allerede et emblem med navnet \"%s\"."
 
 #: libnautilus-private/nautilus-emblem-utils.c:214
 msgid "Please choose a different emblem name."
-msgstr ""
+msgstr "Vælg venligst et andet emblemnavn."
 
 #: libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Couldn't install emblem"
@@ -1904,12 +1866,9 @@ msgid "Error while moving."
 msgstr "Fejl ved flytning."
 
 #: libnautilus-private/nautilus-file-operations.c:550
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
-msgstr ""
-"Fejl ved flytning.\n"
-"\n"
-"'%s' kan ikke flyttes fordi den er på en skrivebeskyttet disk."
+msgstr "\"%s\" kan ikke flyttes fordi den er på en skrivebeskyttet disk."
 
 #: libnautilus-private/nautilus-file-operations.c:560
 #: libnautilus-private/nautilus-file-operations.c:566
@@ -1917,136 +1876,110 @@ msgid "Error while deleting."
 msgstr "Fejl ved sletning."
 
 #: libnautilus-private/nautilus-file-operations.c:561
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr ""
-"Fejl ved sletning.\n"
-"\n"
-"'%s' kan ikke slettes fordi du ikke har lov til at ændre dens forældremappe."
+"\"%s\" kan ikke slettes fordi du ikke har lov til at ændre dens overliggende "
+"mappe."
 
 #: libnautilus-private/nautilus-file-operations.c:567
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
-msgstr ""
-"Fejl ved sletning.\n"
-"\n"
-"'%s' kan ikke slettes fordi den er på en skrivebeskyttet disk."
+msgstr "\"%s\" kan ikke slettes fordi den er på en skrivebeskyttet disk."
 
 #: libnautilus-private/nautilus-file-operations.c:598
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr ""
-"Fejl ved flytning.\n"
-"\n"
-"'%s' kan ikke flyttes fordi du ikke har lov til at ændre den eller dens "
-"forældremappe."
+"\"%s\" kan ikke flyttes fordi du ikke har lov til at ændre den eller dens "
+"overliggende mappe."
 
 #: libnautilus-private/nautilus-file-operations.c:602
-#, fuzzy
 msgid "Error while moving. "
 msgstr "Fejl ved flytning."
 
 #: libnautilus-private/nautilus-file-operations.c:603
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr ""
-"Fejl ved flytning.\n"
-"\n"
-"'%s' kan ikke flyttes fordi enten den eller den mappe der indeholder den, er "
-"indeholdt i destinationen."
+"\"%s\" kan ikke flyttes fordi enten den eller den mappe der indeholder den, "
+"er indeholdt i destinationen."
 
 #: libnautilus-private/nautilus-file-operations.c:613
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
 msgstr ""
-"Fejl under flytning.\n"
-"\n"
-"'%s' kan ikke flyttes til papirkurven da du ikke har adgang til at ændre den "
-"eller dens overliggende mappe."
+"\"%s\" kan ikke flyttes til papirkurven da du ikke har adgang til at ændre "
+"den eller dens overliggende mappe."
 
 #: libnautilus-private/nautilus-file-operations.c:635
 msgid "Error while copying."
 msgstr "Fejl ved kopiering."
 
 #: libnautilus-private/nautilus-file-operations.c:636
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
-msgstr ""
-"Fejl ved kopiering.\n"
-"\n"
-"'%s' kan ikke kopieres fordi du ikke har lov til at læse den."
+msgstr "\"%s\" kan ikke kopieres fordi du ikke har lov til at læse den."
 
 #: libnautilus-private/nautilus-file-operations.c:656
 #: libnautilus-private/nautilus-file-operations.c:677
 #: libnautilus-private/nautilus-file-operations.c:681
-#, fuzzy, c-format
+#, c-format
 msgid "Error while copying to \"%s\"."
-msgstr "Fejl ved kopiering."
+msgstr "Fejl ved kopiering til \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:657
 #: libnautilus-private/nautilus-file-operations.c:662
 #: libnautilus-private/nautilus-file-operations.c:666
-#, fuzzy
 msgid "There is not enough space on the destination."
-msgstr ""
-"Fejl ved flytning til '%s'.\n"
-"\n"
-"Der er ikke nok plads ved destinationen."
+msgstr "Der er ikke nok plads på destinationen."
 
 #: libnautilus-private/nautilus-file-operations.c:661
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving to \"%s\"."
-msgstr "Fejl ved flytning."
+msgstr "Fejl ved flytning til \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:665
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating link in \"%s\"."
-msgstr "Fejl ved oprettelse af henvisning."
+msgstr "Fejl ved oprettelse af henvisning i \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:678
 #: libnautilus-private/nautilus-file-operations.c:689
 #: libnautilus-private/nautilus-file-operations.c:700
-#, fuzzy
 msgid "You do not have permissions to write to this folder."
-msgstr ""
-"Fejl ved kopiering til '%s'.\n"
-"\n"
-"Du har ikke lov til at skrive i denne mappe."
+msgstr "Du har ikke lov til at skrive i denne mappe."
 
 #: libnautilus-private/nautilus-file-operations.c:682
 #: libnautilus-private/nautilus-file-operations.c:693
 #: libnautilus-private/nautilus-file-operations.c:704
-#, fuzzy
 msgid "The destination disk is read-only."
-msgstr ""
-"Fejl ved kopiering til '%s'.\n"
-"\n"
-"Destinationsdisken er skrivebeskyttet."
+msgstr "Destinationsdisken er skrivebeskyttet."
 
 #: libnautilus-private/nautilus-file-operations.c:688
 #: libnautilus-private/nautilus-file-operations.c:692
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving items to \"%s\"."
-msgstr "Fejl ved flytning."
+msgstr "Fejl ved flytning af objekter til \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:699
 #: libnautilus-private/nautilus-file-operations.c:703
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating links in \"%s\"."
-msgstr "Fejl ved oprettelse af henvisning."
+msgstr "Fejl ved oprettelse af henvisninger i \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:731
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying \"%s\"."
-msgstr "Fejl ved kopiering."
+msgstr "Fejl \"%s\" ved kopiering af \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:732
 #: libnautilus-private/nautilus-file-operations.c:736
@@ -2056,88 +1989,75 @@ msgstr "Fejl ved kopiering."
 #: libnautilus-private/nautilus-file-operations.c:765
 #: libnautilus-private/nautilus-file-operations.c:769
 #: libnautilus-private/nautilus-file-operations.c:775
-#, fuzzy
 msgid "Would you like to continue?"
-msgstr ""
-"Fejl \"%s\" ved flytning.\n"
-"\n"
-"Vil du gerne fortsætte?"
+msgstr "Vil du fortsætte?"
 
 #: libnautilus-private/nautilus-file-operations.c:735
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving \"%s\"."
-msgstr "Fejl ved flytning."
+msgstr "Fejl \"%s\" ved flytning af \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:739
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
-msgstr ""
-"Fejl \"%s\" ved oprettelse af en henvisning til \"%s\".\n"
-"\n"
-"Vil du fortsætte?"
+msgstr "Fejl \"%s\" ved oprettelse af en henvisning til \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:745
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
-msgstr "Fejl ved sletning."
+msgstr "Fejl \"%s\" ved sletning af \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:760
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying."
-msgstr "Fejl ved kopiering."
+msgstr "Fejl \"%s\" ved kopiering."
 
 #: libnautilus-private/nautilus-file-operations.c:764
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving."
-msgstr "Fejl ved flytning."
+msgstr "Fejl \"%s\" ved flytning."
 
 #: libnautilus-private/nautilus-file-operations.c:768
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while linking."
-msgstr "Fejl ved oprettelse af henvisning."
+msgstr "Fejl \"%s\" ved oprettelse af henvisning."
 
 #: libnautilus-private/nautilus-file-operations.c:774
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting."
-msgstr "Fejl ved sletning."
+msgstr "Fejl \"%s\" ved sletning."
 
 #: libnautilus-private/nautilus-file-operations.c:900
-#, fuzzy
 msgid "Error While Copying"
-msgstr "Fejl ved kopiering."
+msgstr "Fejl ved kopiering"
 
 #: libnautilus-private/nautilus-file-operations.c:903
-#, fuzzy
 msgid "Error While Moving"
-msgstr "Fejl ved flytning."
+msgstr "Fejl ved flytning"
 
 #: libnautilus-private/nautilus-file-operations.c:906
-#, fuzzy
 msgid "Error While Linking"
-msgstr "Fejl ved oprettelse af henvisning."
+msgstr "Fejl ved oprettelse af henvisning"
 
 #: libnautilus-private/nautilus-file-operations.c:911
-#, fuzzy
 msgid "Error While Deleting"
-msgstr "Fejl ved sletning."
+msgstr "Fejl ved sletning"
 
 #: libnautilus-private/nautilus-file-operations.c:938
 #: libnautilus-private/nautilus-file-operations.c:959
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
-#, fuzzy
 msgid "_Skip"
-msgstr "Spring over"
+msgstr "_Spring over"
 
 #: libnautilus-private/nautilus-file-operations.c:959
-#, fuzzy
 msgid "_Retry"
-msgstr "Prøv igen"
+msgstr "_Prøv igen"
 
 #: libnautilus-private/nautilus-file-operations.c:1025
-#, fuzzy, c-format
+#, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr "Kunne ikke fuldføre angivet handling."
+msgstr "Kunne ikke flytte \"%s\" til den nye placering."
 
 #: libnautilus-private/nautilus-file-operations.c:1028
 #, fuzzy
@@ -2188,20 +2108,17 @@ msgstr ""
 
 #: libnautilus-private/nautilus-file-operations.c:1068
 #: libnautilus-private/nautilus-file-operations.c:1087
-#, fuzzy
 msgid "Conflict While Copying"
 msgstr "Konflikt ved kopiering"
 
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
-#, fuzzy
 msgid "_Replace"
-msgstr "Erstat"
+msgstr "_Erstat"
 
 #: libnautilus-private/nautilus-file-operations.c:1088
-#, fuzzy
 msgid "Replace _All"
-msgstr "Erstat alt"
+msgstr "Erstat _alle"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1146
@@ -2420,13 +2337,12 @@ msgid "Preparing To Copy..."
 msgstr "Forbereder kopiering..."
 
 #: libnautilus-private/nautilus-file-operations.c:1927
-#, fuzzy
 msgid "You cannot copy items into the trash."
-msgstr "Du kan ikke kopiere filer til papirkurven."
+msgstr "Du kan ikke kopiere objekter til papirkurven."
 
 #: libnautilus-private/nautilus-file-operations.c:1928
 msgid "Files and folders can only be moved into the trash."
-msgstr ""
+msgstr "Filer og mapper kan kun flyttes til papirkurven."
 
 #: libnautilus-private/nautilus-file-operations.c:1952
 msgid "You cannot move this trash folder."
@@ -2439,6 +2355,8 @@ msgstr "Du kan ikke kopiere denne papirkurv."
 #: libnautilus-private/nautilus-file-operations.c:1954
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
+"En papirkurvsmappe bruges til at opbevare objekter der er blevet flyttet til "
+"papirkurven."
 
 #: libnautilus-private/nautilus-file-operations.c:1956
 msgid "Can't Change Trash Location"
@@ -2475,7 +2393,7 @@ msgstr "Du kan ikke kopiere en fil til den selv."
 
 #: libnautilus-private/nautilus-file-operations.c:2000
 msgid "The destination and source are the same file."
-msgstr ""
+msgstr "Destinationen og kilden er den samme fil."
 
 #: libnautilus-private/nautilus-file-operations.c:2001
 msgid "Can't Copy Over Self"
@@ -3474,7 +3392,7 @@ msgstr ""
 #: libnautilus-private/nautilus-icon-dnd.c:743
 #: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "This folder uses automatic layout."
-msgstr ""
+msgstr "Denne mappe benyttet automatisk placering."
 
 #: libnautilus-private/nautilus-icon-dnd.c:736
 #, fuzzy
@@ -3886,71 +3804,53 @@ msgid "Opening %s"
 msgstr "Åbner %s"
 
 #: libnautilus-private/nautilus-program-choosing.c:1167
-#, fuzzy
 msgid "Sorry, but you can't execute commands from a remote site."
-msgstr ""
-"Desværre, men du kan ikke udføre kommandoer fra et ekstern nebsted pga. "
-"sikkerhedshensyn."
+msgstr "Desværre, men du kan ikke udføre kommandoer fra et fjernt sted."
 
 #: libnautilus-private/nautilus-program-choosing.c:1169
 msgid "This is disabled due to security considerations."
-msgstr ""
+msgstr "Dette er deaktiveret af sikkerhedshensyn."
 
 #: libnautilus-private/nautilus-program-choosing.c:1170
-#, fuzzy
 msgid "Can't Execute Remote Links"
 msgstr "Kan ikke køre eksterne henvisninger"
 
 #: libnautilus-private/nautilus-program-choosing.c:1180
 #: libnautilus-private/nautilus-program-choosing.c:1246
-#, fuzzy
 msgid "Details: "
-msgstr "Detaljer"
+msgstr "Detaljer:"
 
 #: libnautilus-private/nautilus-program-choosing.c:1182
 #: libnautilus-private/nautilus-program-choosing.c:1248
-#, fuzzy
 msgid "There was an error launching the application."
-msgstr ""
-"Der opstod en fejl under kørsel af programmet:\n"
-"\n"
-"Detajler: "
+msgstr "Der opstod en fejl under kørsel af programmet."
 
 #: libnautilus-private/nautilus-program-choosing.c:1184
 #: libnautilus-private/nautilus-program-choosing.c:1250
-#, fuzzy
 msgid "Error Launching Application"
 msgstr "Fejl ved kørsel af program"
 
 #: libnautilus-private/nautilus-program-choosing.c:1212
 #: libnautilus-private/nautilus-program-choosing.c:1224
-#, fuzzy
 msgid "This drop target only supports local files."
-msgstr "Slippedestination understøtter kun lokale filer"
+msgstr "Denne slippedestination understøtter kun lokale filer"
 
 #: libnautilus-private/nautilus-program-choosing.c:1213
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
-"Denne slippedestination understøtter kun lokale filer.\n"
-"\n"
 "For at åbne ikke-lokale filer kopiér dem til en lokal mappe og slip dem igen."
 
 #: libnautilus-private/nautilus-program-choosing.c:1215
 #: libnautilus-private/nautilus-program-choosing.c:1227
-#, fuzzy
 msgid "Drop Target Only Supports Local Files"
 msgstr "Slippedestination understøtter kun lokale filer"
 
 #: libnautilus-private/nautilus-program-choosing.c:1225
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"Denne slippedestination understøtter kun lokale filer.\n"
-"\n"
 "For at åbne ikke-lokale filer kopiér dem til en lokal mappe og slip dem "
 "igen. De lokale filer du har sluppet, er allerede blevet åbnet."
 
@@ -4405,14 +4305,13 @@ msgid "Open %d Windows?"
 msgstr "Åbn %d nye vinduer?"
 
 #: src/file-manager/fm-directory-view.c:542
-#, fuzzy
 msgid "Are you sure you want to open all files?"
-msgstr "Er du sikker på at du en gang for alle ønsker at slette '%s'?"
+msgstr "Er du sikker på at du ønsker at åbne alle filer?"
 
 #: src/file-manager/fm-directory-view.c:543 src/nautilus-location-bar.c:157
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate windows."
-msgstr "Dette vil åbne %d separate vinduer. Er du sikker på at du vil dette?"
+msgstr "Dette vil åbne %d separate vinduer."
 
 #: src/file-manager/fm-directory-view.c:898
 #, c-format
@@ -4427,9 +4326,8 @@ msgstr ""
 "elementer?"
 
 #: src/file-manager/fm-directory-view.c:908
-#, fuzzy
 msgid "If you delete an item, it is permanently lost."
-msgstr "Hvis du tømmer papirkurven, vil filerne blive slettet permanent."
+msgstr "Hvis du sletter et objekt, er det gået tabt permanent."
 
 #: src/file-manager/fm-directory-view.c:909
 msgid "Delete?"
@@ -4520,15 +4418,13 @@ msgstr "%s%s, %s"
 #. * no more than the constant limit are displayed.
 #.
 #: src/file-manager/fm-directory-view.c:1954
-#, fuzzy, c-format
+#, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr ""
-"Mappen '%s' indeholder flere filer end Nautilus kan håndtere. Nogle filer "
-"vil ikke blive vist."
+msgstr "Mappen '%s' indeholder flere filer end Nautilus kan håndtere."
 
 #: src/file-manager/fm-directory-view.c:1960
 msgid "Some files will not be displayed."
-msgstr ""
+msgstr "Nogle filer vil ikke blive vist."
 
 #: src/file-manager/fm-directory-view.c:1961
 msgid "Too Many Files"
@@ -6931,7 +6827,7 @@ msgstr "_Sidepanel"
 #: src/nautilus-navigation-window-ui.xml.h:37
 #: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Templates"
-msgstr ""
+msgstr "_Skabeloner"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
 #: src/nautilus-spatial-window-ui.xml.h:16
@@ -6961,27 +6857,23 @@ msgid "File Browser: %s"
 msgstr "Filnavigator: %s"
 
 #: src/nautilus-navigation-window.c:1105
-#, fuzzy
 msgid "One of the side panels encountered an error and can't continue."
-msgstr ""
-"Et af sidepanelerne stødte på en fejl og kan ikke fortsætte. Beklageligvis "
-"foreligger der ikke nogen oplysninger om hvilket panel dette gælder."
+msgstr "Et af sidepanelerne stødte på en fejl og kan ikke fortsætte."
 
 #: src/nautilus-navigation-window.c:1106
 msgid "Unfortunately I couldn't tell which one."
 msgstr ""
+"Beklageligvis foreligger der ikke nogen oplysninger om hvilket panel dette "
+"gælder."
 
 #: src/nautilus-navigation-window.c:1109
-#, fuzzy, c-format
+#, c-format
 msgid "The %s side panel encountered an error and can't continue."
-msgstr "%s-visningen stødte på en fejl ved opstart."
+msgstr "Sidepanelet %s stødte på en fejl og kan ikke fortsætte."
 
 #: src/nautilus-navigation-window.c:1110
-#, fuzzy
 msgid "If this keeps happening, you might want to turn this panel off."
-msgstr ""
-"Sidepanelet %s stødte på en fejl og kan ikke fortsætte. Hvis dette sker "
-"igen, kan du slå panelet fra."
+msgstr "Hvis dette sker igen, kan du slå panelet fra."
 
 # overskrift til et vindue
 #: src/nautilus-navigation-window.c:1113
@@ -7028,10 +6920,9 @@ msgstr "Beklager, men mønsteret %s kunne ikke slettes."
 
 #: src/nautilus-property-browser.c:914
 msgid "Check that you have permission to delete the pattern."
-msgstr ""
+msgstr "Tjek at du har rettighed til at slette mønsteret."
 
 #: src/nautilus-property-browser.c:915
-#, fuzzy
 msgid "Couldn't Delete Pattern"
 msgstr "Kunne ikke slette mønster"
 
@@ -7042,12 +6933,11 @@ msgstr "Desværre, men emblem %s kunne ikke slettes."
 
 #: src/nautilus-property-browser.c:944
 msgid "Check that you have permission to delete the emblem."
-msgstr ""
+msgstr "Tjek at du har rettighed til at slette emblemet."
 
 #: src/nautilus-property-browser.c:945
-#, fuzzy
 msgid "Couldn't Delete Emblem"
-msgstr "Kunne ikke fjerne emblem"
+msgstr "Kunne ikke slette emblem"
 
 #: src/nautilus-property-browser.c:983
 msgid "Create a New Emblem:"
@@ -7091,10 +6981,9 @@ msgstr "Beklager, men du angav ikke et gyldigt filnavn."
 
 #: src/nautilus-property-browser.c:1108
 msgid "Please try again."
-msgstr ""
+msgstr "Forsøg venligst igen."
 
 #: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1155
-#, fuzzy
 msgid "Couldn't Install Pattern"
 msgstr "Kunne ikke installere mønster"
 
@@ -7104,7 +6993,7 @@ msgstr "Beklager, men du kan ikke erstatte nulstillingsbilledet"
 
 #: src/nautilus-property-browser.c:1122
 msgid "Reset is a special image that cannot be deleted."
-msgstr ""
+msgstr "Nulstil er et specielt billede som ikke kan slettes."
 
 #: src/nautilus-property-browser.c:1123 src/nautilus-property-browser.c:1327
 #: src/nautilus-property-browser.c:1343
@@ -7122,14 +7011,13 @@ msgstr "Vælg en billedfil som skal tilføjes som et mønster"
 
 #: src/nautilus-property-browser.c:1235
 msgid "The color cannot be installed."
-msgstr ""
+msgstr "Farven kan ikke installeres."
 
 #: src/nautilus-property-browser.c:1236
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Beklager, men du skal angive et ikke-tomt navn for den nye farve."
 
 #: src/nautilus-property-browser.c:1237
-#, fuzzy
 msgid "Couldn't Install Color"
 msgstr "Kunne ikke installere farve"
 
@@ -7138,14 +7026,13 @@ msgid "Select a color to add"
 msgstr "Vælg en farve der skal tilføjes"
 
 #: src/nautilus-property-browser.c:1326 src/nautilus-property-browser.c:1342
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
-msgstr "Beklager, men '%s' er ikke en brugbar billedfil."
+msgstr "Beklager, men \"%s\" er ikke en brugbar billedfil."
 
 #: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
-#, fuzzy
 msgid "The file is not an image."
-msgstr "Filen '%s' ser ikke ud til at være et gyldigt billede."
+msgstr "Filen er ikke et billede."
 
 #: src/nautilus-property-browser.c:2050
 msgid "Select a Category:"
@@ -7590,14 +7477,12 @@ msgid "CD _Creator"
 msgstr "Cd-_brænder"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Close P_arent Folders"
-msgstr "Luk _alle ophav"
+msgstr "Luk _ophavsmapper"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder's parents"
-msgstr "Luk sidepanelet"
+msgstr "Luk denne mappens overliggende mapper"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Go to Computer"
@@ -7717,7 +7602,7 @@ msgstr "Kunne ikke vise \"%s\" fordi forsøget på at logge ind mislykkedes."
 
 #: src/nautilus-window-manage-views.c:1306
 msgid "Access was denied."
-msgstr ""
+msgstr "Tilgang blev nægtet."
 
 #: src/nautilus-window-manage-views.c:1316
 #, fuzzy, c-format
@@ -7890,13 +7775,6 @@ msgstr "Netværksservere"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis dine netværksservere i Nautilus-filhåndteringen"
-
-#~ msgid ""
-#~ "Some of the files could not be added as emblems because they did not "
-#~ "appear to be valid images."
-#~ msgstr ""
-#~ "Nogle af filerne kunne ikke tilføjes som emblemer fordi de ikke så ud til "
-#~ "at være gyldige billeder."
 
 #~ msgid "Factory for hardware view"
 #~ msgstr "Fabrik for udstyrsvisning"
