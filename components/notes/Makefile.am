@@ -1,6 +1,13 @@
 bin_PROGRAMS=ntl-notes
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOMEUI_CFLAGS) $(GCONF_CFLAGS) $(BONOBO_CFLAGS) $(WERROR) 
+INCLUDES=\
+	-I$(top_srcdir)		\
+	-I$(top_builddir)	\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	$(GNOMEUI_CFLAGS)	\
+	$(GCONF_CFLAGS)		\
+	$(BONOBO_CFLAGS)	\
+	$(WERROR) 
 
 LDADD=\
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \

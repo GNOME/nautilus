@@ -9,6 +9,7 @@ INCLUDES = \
 	-I$(top_builddir) \
 	-I/usr/include/rpm \
 	$(GCONF_CFLAGS) \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS) \
 	$(WERROR) \
 	$(NULL)

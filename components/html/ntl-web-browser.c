@@ -622,7 +622,10 @@ int main(int argc, char *argv[])
       (G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", 
        "Nautilus-HTML", "gtkhtml", NULL);
 
-
+  /* Initialize gettext support */
+  bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+  textdomain (PACKAGE);
+	
   gnome_init_with_popt_table("ntl-web-browser", VERSION, 
 			     argc, argv,
 			     oaf_popt_options, 0, NULL); 

@@ -138,7 +138,7 @@ nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
 
-	label_text = g_strdup_printf ("%s\n\nThis is a sample Nautilus content view component.", uri);
+	label_text = g_strdup_printf (_("%s\n\nThis is a sample Nautilus content view component."), uri);
 	gtk_label_set_text (GTK_LABEL (view), label_text);
 	g_free (label_text);
 }
@@ -199,7 +199,7 @@ bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const c
 		label_text = g_strdup_printf ("%s\n\nYou selected the Sample menu item.", view->details->uri);
 	} else {
 		g_assert (strcmp (path, "/Main/Sample") == 0);
-		label_text = g_strdup_printf ("%s\n\nYou clicked the Sample toolbar button.", view->details->uri);
+		label_text = g_strdup_printf (_("%s\n\nYou clicked the Sample toolbar button."), view->details->uri);
 	}
 	
 	gtk_label_set_text (GTK_LABEL (view), label_text);

@@ -225,7 +225,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   info = nautilus_clipboard_info_new ();
   nautilus_clipboard_info_set_view_frame (info, hview->view);
   nautilus_clipboard_info_set_clipboard_owner (info, GTK_WIDGET (hview->ent_params));
-  nautilus_clipboard_info_set_component_name (info, "WebSearch");
+  nautilus_clipboard_info_set_component_name (info, _("WebSearch"));
   gtk_signal_connect (GTK_OBJECT (hview->ent_params), "focus_in_event",
                       GTK_SIGNAL_FUNC (nautilus_component_merge_bonobo_items_cb), info); 
   gtk_signal_connect (GTK_OBJECT (hview->ent_params), "focus_out_event",
@@ -244,6 +244,10 @@ int main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
+
+  /* Initialize gettext support */
+  bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+  textdomain (PACKAGE);
 
   gnome_init_with_popt_table("ntl-web-search", VERSION, 
                              argc, argv,

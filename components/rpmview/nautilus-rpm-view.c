@@ -135,7 +135,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	NautilusBackground *background;
 	GtkWidget *temp_box, *temp_title_box, *temp_widget;
 	GtkTable *table;
-  	static gchar *list_headers[] = { "Package Contents" };
+  	static gchar *list_headers[] = { N_("Package Contents") };
 	
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
 
@@ -175,7 +175,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	/* allocate the name field */
 	
-	rpm_view->details->package_title = gtk_label_new ("Package Title");
+	rpm_view->details->package_title = gtk_label_new (_("Package Title"));
         /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (rpm_view->details->package_title,
 					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
@@ -219,7 +219,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 0,1, 1,2, GTK_FILL, GTK_FILL, 0,0);
   	gtk_widget_show(temp_widget);
-  	rpm_view->details->package_size = gtk_label_new("<size>");
+  	rpm_view->details->package_size = gtk_label_new(_("<size>"));
   	gtk_misc_set_alignment(GTK_MISC(rpm_view->details->package_size), 0.0, 0.5);
   	gtk_table_attach(table, rpm_view->details->package_size, 1, 2, 1, 2, GTK_FILL|GTK_EXPAND, GTK_FILL, 0,0);
   	gtk_widget_show(rpm_view->details->package_size);
@@ -237,7 +237,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
 	gtk_table_attach(table, temp_widget, 0,1, 2,3, GTK_FILL, GTK_FILL, 0,0);
 	gtk_widget_show(temp_widget);
-	rpm_view->details->package_license = gtk_label_new("<unknown>");
+	rpm_view->details->package_license = gtk_label_new(_("<unknown>"));
 	gtk_misc_set_alignment(GTK_MISC(rpm_view->details->package_license), 0.0, 0.5);
 	gtk_table_attach(table, rpm_view->details->package_license, 1,2, 2,3, GTK_FILL|GTK_EXPAND, GTK_FILL, 0,0);
 	gtk_widget_show(rpm_view->details->package_license);
@@ -246,7 +246,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 2,3, 2,3, GTK_FILL, GTK_FILL, 0,0);
   	gtk_widget_show(temp_widget);
-  	rpm_view->details->package_bdate = gtk_label_new("<unknown>");
+  	rpm_view->details->package_bdate = gtk_label_new(_("<unknown>"));
   	gtk_misc_set_alignment(GTK_MISC(rpm_view->details->package_bdate), 0.0, 0.5);
   	gtk_table_attach(table, rpm_view->details->package_bdate, 3,4, 2,3, GTK_FILL|GTK_EXPAND, GTK_FILL, 0,0);
   	gtk_widget_show(rpm_view->details->package_bdate);
@@ -255,7 +255,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 0,1, 3,4, GTK_FILL, GTK_FILL, 0,0);
   	gtk_widget_show(temp_widget);
-  	rpm_view->details->package_distribution = gtk_label_new("<unknown>");
+  	rpm_view->details->package_distribution = gtk_label_new(_("<unknown>"));
   	gtk_label_set_line_wrap(GTK_LABEL(rpm_view->details->package_distribution), TRUE);
   	gtk_misc_set_alignment(GTK_MISC(rpm_view->details->package_distribution), 0.0, 0.5);
   	gtk_table_attach(table, rpm_view->details->package_distribution, 1,2, 3,4, GTK_FILL|GTK_EXPAND, GTK_FILL, 0,0);
@@ -265,7 +265,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 2,3, 3,4, GTK_FILL, GTK_FILL, 0,0);
   	gtk_widget_show(temp_widget);
-  	rpm_view->details->package_vendor = gtk_label_new("<unknown>");
+  	rpm_view->details->package_vendor = gtk_label_new(_("<unknown>"));
   	gtk_label_set_line_wrap(GTK_LABEL(rpm_view->details->package_vendor), TRUE);
   	gtk_misc_set_alignment(GTK_MISC(rpm_view->details->package_vendor), 0.0, 0.5);
   	gtk_table_attach(table, rpm_view->details->package_vendor, 3,4, 3,4, GTK_FILL|GTK_EXPAND, GTK_FILL, 0,0);
@@ -292,7 +292,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	/* install button */
 	rpm_view->details->package_install_button = gtk_button_new();		    
-	temp_widget = gtk_label_new ("Install");
+	temp_widget = gtk_label_new (_("Install"));
 	gtk_widget_show (temp_widget);
 	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_install_button), temp_widget); 	
 	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_install_button, 0, 0, 2);		
@@ -300,7 +300,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	/* update button */
 	rpm_view->details->package_update_button = gtk_button_new();		    
-	temp_widget = gtk_label_new ("Update");
+	temp_widget = gtk_label_new (_("Update"));
 	gtk_widget_show (temp_widget);
 	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_update_button), temp_widget); 	
 	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_update_button, 0, 0, 2);		
@@ -308,7 +308,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	/* uninstall button */
 	rpm_view->details->package_uninstall_button = gtk_button_new();		    
-	temp_widget = gtk_label_new ("Uninstall");
+	temp_widget = gtk_label_new (_("Uninstall"));
 	gtk_widget_show (temp_widget);
 	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_uninstall_button), temp_widget); 	
 	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_uninstall_button, 0, 0, 2);		
@@ -329,7 +329,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	gtk_widget_show(rpm_view->details->package_file_list);
 	
 	/* add the description */
-	rpm_view->details->package_description = gtk_label_new ("Description");
+	rpm_view->details->package_description = gtk_label_new (_("Description"));
 	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_description, 0, 0, 8);	
 	gtk_widget_show (rpm_view->details->package_description);
 	
@@ -457,7 +457,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			switch (iterator_tag) {
                         case RPMTAG_NAME:
                                 package_name = g_strdup(data_ptr);
-                                temp_str = g_strdup_printf("Package \"%s\" ", data_ptr);
+                                temp_str = g_strdup_printf(_("Package \"%s\" "), data_ptr);
                                 gtk_label_set (GTK_LABEL (rpm_view->details->package_title), temp_str);
                                 g_free(temp_str);
                                 break;
@@ -508,7 +508,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		}
 		
 		if (temp_version) {
-			temp_str = g_strdup_printf ("version %s-%s", temp_version, temp_release);
+			temp_str = g_strdup_printf (_("version %s-%s"), temp_version, temp_release);
 			gtk_label_set (GTK_LABEL (rpm_view->details->package_release), temp_str);				 
 			g_free (temp_str);
 		}
@@ -567,7 +567,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
  	}
   	
 
-	temp_str = g_strdup_printf("Package Contents: %d files", file_count);
+	temp_str = g_strdup_printf(_("Package Contents: %d files"), file_count);
 	gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
 	g_free(temp_str);
 	

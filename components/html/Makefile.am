@@ -8,6 +8,7 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)			\
 	$(GTKHTML_CFLAGS)			\

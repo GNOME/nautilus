@@ -122,7 +122,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
 	char *file_name;
 	GtkWidget *song_box, *scrollwindow;
-	char *titles[] = {"Track", "Title", "Artist", "Time"};
+	char *titles[] = {_("Track"), _("Title"), _("Artist"), _("Time")};
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
@@ -141,7 +141,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	
 	/* allocate a widget for the album title */
 	
-	music_view->details->album_title = gtk_label_new ("Album Title");
+	music_view->details->album_title = gtk_label_new (_("Album Title"));
         /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (music_view->details->album_title,
                                               "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;

@@ -69,6 +69,10 @@ int main(int argc, char *argv[])
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	
+	/* Initialize gettext support */
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+	
         gnome_init_with_popt_table("nautilus-rpm-view", VERSION, 
 				   argc, argv,
 				   oaf_popt_options, 0, NULL); 

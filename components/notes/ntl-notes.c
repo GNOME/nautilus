@@ -182,7 +182,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         info = nautilus_clipboard_info_new ();
 	nautilus_clipboard_info_set_view_frame (info, notes->view);
 	nautilus_clipboard_info_set_clipboard_owner (info, GTK_WIDGET (notes->note_text_field));
-	nautilus_clipboard_info_set_component_name (info, "Notes");
+	nautilus_clipboard_info_set_component_name (info, _("Notes"));
         gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_in_event",
                             GTK_SIGNAL_FUNC (nautilus_component_merge_bonobo_items_cb), info); 
 	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_out_event",
@@ -209,6 +209,10 @@ main(int argc, char *argv[])
 		nautilus_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	}
+	
+	/* Initialize gettext support */
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
 	
         /* initialize CORBA and Bonobo */
 
