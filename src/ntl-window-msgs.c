@@ -41,7 +41,6 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
 #include "ntl-app.h"
 #include "ntl-meta-view.h"
 #include "ntl-uri-map.h"
@@ -62,8 +61,6 @@ static void nautilus_window_notify_selection_change (NautilusWindow         *win
                                                      NautilusView           *view,
                                                      Nautilus_SelectionInfo *loc,
                                                      NautilusView           *requesting_view);
-static void nautilus_window_load_content_view_menu  (NautilusWindow         *window,
-                                                     NautilusNavigationInfo *ni);
 
 typedef enum { PROGRESS_INITIAL, PROGRESS_VIEWS, PROGRESS_DONE, PROGRESS_ERROR } ProgressType;
 
@@ -441,10 +438,10 @@ nautilus_window_update_internals (NautilusWindow *window, NautilusNavigationInfo
         nautilus_location_bar_set_location(NAUTILUS_LOCATION_BAR(window->ent_uri),
                                            window->ni->requested_uri);
         
-        /*
-         * Notify the index panel of the location change. FIXME: Eventually,
-         * this will not be necessary when we restructure the index panel to
-         * be a NautilusView.
+        /* Notify the index panel of the location change. */
+        /* FIXME bugzilla.eazel.com 211: 
+         * Eventually, this will not be necessary when we restructure the 
+         * index panel to be a NautilusView.
          */
         current_title = nautilus_window_get_current_location_title (window);
         nautilus_index_panel_set_uri (window->index_panel, window->ni->requested_uri, current_title);
@@ -650,7 +647,7 @@ nautilus_window_request_location_change (NautilusWindow *window,
         }
 }
 
-static NautilusView *
+NautilusView *
 nautilus_window_load_content_view(NautilusWindow *window,
                                   const char *iid,
                                   Nautilus_NavigationInfo *navinfo,
@@ -1191,100 +1188,4 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                 (loc, window->ni,
                  nautilus_window_end_location_change_callback,
                  window, current_iid);
-}
-
-/******** content view switching **********/
-static void
-view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
-{
-        NautilusWindow *window;
-        NautilusView *view;
-        NautilusDirectory *directory;
-        char *iid;
-        
-        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
-        g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_user_data (GTK_OBJECT (widget))));
-        g_return_if_fail (data != NULL);
-        
-        window = NAUTILUS_WINDOW (gtk_object_get_user_data (GTK_OBJECT (widget)));
-        g_assert (window->ni != NULL);
-        
-        iid = (char *) data;
-        
-        directory = nautilus_directory_get (window->ni->requested_uri);
-        g_assert (directory != NULL);
-        nautilus_directory_set_metadata (directory,
-                                         NAUTILUS_METADATA_KEY_INITIAL_VIEW,
-                                         NULL,
-                                         iid);
-        nautilus_directory_unref (directory);
-        
-        nautilus_window_allow_stop (window, TRUE);
-        
-        view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
-        nautilus_window_set_state_info (window,
-                                        (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view,
-                                        (NautilusWindowStateItem)0);
-}
-
-/*
- * FIXME: Probably this should be moved to ntl-window.c with the rest of the UI.
- * I was waiting until we had the framework settled before doing that.
- */
-static void
-nautilus_window_load_content_view_menu (NautilusWindow *window,
-                                        NautilusNavigationInfo *ni)
-{
-        GSList *p;
-        GtkWidget *new_menu;
-        int index, default_view_index;
-        GtkWidget *menu_item;
-        NautilusViewIdentifier *identifier;
-        char *menu_label;
-
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-        g_return_if_fail (GTK_IS_OPTION_MENU (window->option_cvtype));
-        g_return_if_fail (ni != NULL);
-        
-        new_menu = gtk_menu_new ();
-        
-        /* Add a menu item for each available content view type */
-        index = 0;
-        default_view_index = -1;
-        for (p = ni->content_identifiers; p != NULL; p = p->next) {
-                identifier = (NautilusViewIdentifier *) p->data;
-                menu_label = g_strdup_printf (_("View as %s"), identifier->name);
-                menu_item = gtk_menu_item_new_with_label (menu_label);
-                g_free (menu_label);
-                
-                if (strcmp (identifier->iid, ni->initial_content_iid) == 0) {
-                        default_view_index = index;
-                }
-                
-                /* Free copy of iid string when signal disconnected. */
-                nautilus_gtk_signal_connect_free_data
-                        (GTK_OBJECT (menu_item),
-                         "activate",
-                         GTK_SIGNAL_FUNC (view_menu_switch_views_callback), 
-                         g_strdup (identifier->iid));
-
-                /* Store reference to window in item; no need to free this. */
-                gtk_object_set_user_data (GTK_OBJECT (menu_item), window);
-                gtk_menu_append (GTK_MENU (new_menu), menu_item);
-                gtk_widget_show (menu_item);
-
-                ++index;
-        }
-        
-        /*
-         * We create and attach a new menu here because adding/removing
-         * items from existing menu screws up the size of the option menu.
-         */
-        
-        gtk_option_menu_set_menu (GTK_OPTION_MENU (window->option_cvtype),
-                                  new_menu);
-        
-        g_assert (default_view_index >= 0);
-        gtk_option_menu_set_history (GTK_OPTION_MENU (window->option_cvtype), 
-                                     default_view_index);
 }

@@ -1,3 +1,22 @@
+2000-04-25  John Sullivan  <sullivan@eazel.com>
+
+	Started going through the FIXMEs adding bug reports
+	and fixing some trivial ones. 14 down, 152 Nautilus
+	FIXMEs to go.
+
+	* src/ntl-index-panel.c:
+	Wrote bug reports for all FIXMEs in this file.
+	
+	* src/ntl-window-msgs.c,
+	* src/ntl-window-private.h,
+	* src/ntl-window.c:
+	(view_menu_switch_views_callback), 
+	(nautilus_window_load_content_view_menu): Moved functions from
+	ntl-window-msgs.c to ntl-window.c. Updated private header file
+	as necessary.
+	
+	Wrote bug reports for all other FIXMEs in these files.
+
 2000-04-25  Andy Hertzfeld <andy@eazel.com>
 
 	* src/ntl-index-panel.c:

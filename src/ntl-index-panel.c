@@ -247,13 +247,17 @@ hit_test (NautilusIndexPanel *index_panel,
 	return NO_PART;
 }
 
-/* FIXME: If passed a bogus URI this could block for a long time. */
+/* FIXME bugzilla.eazel.com 606: 
+ * If passed a bogus URI this could block for a long time. 
+ */
 static gboolean
 uri_is_local_image (const char *uri)
 {
 	GdkPixbuf *pixbuf;
 	
-	/* FIXME: Perhaps this should not be hardcoded like this. */
+	/* FIXME bugzilla.eazel.com 607: 
+	 * Perhaps this should not be hardcoded like this. 
+	 */
 	if (!nautilus_str_has_prefix (uri, "file://")) {
 		return FALSE;
 	}
@@ -277,8 +281,9 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
 	exactly_one = uris[0] != NULL && uris[1] == NULL;
 
-	/* FIXME: handle background images and keywords soon */
-	/* FIXME: handle files by setting the location to the file */
+	/* FIXME bugzilla.eazel.com 602: set keywords by drag-and-drop */
+	/* FIXME bugzilla.eazel.com 603: handle background images soon */
+	/* FIXME bugzilla.eazel.com 604: handle files by setting the location to the file */
 	
 	switch (hit_test (index_panel, x, y)) {
 	case NO_PART:
@@ -288,7 +293,8 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 		break;
 	case ICON_PART:
 		/* handle images dropped on the logo specially */
-		/* FIXME: Need feedback for cases where there is more than one URI
+		/* FIXME bugzilla.eazel.com 605: 
+		 * Need feedback for cases where there is more than one URI 
 		 * and where the URI is not alocal image.
 		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
@@ -402,7 +408,9 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	
 	description = nautilus_meta_view_get_label (NAUTILUS_META_VIEW (meta_view));
 	if (description == NULL) {
-		/* FIXME: Why is a hex address better than an empty string? */
+		/* FIXME bugzilla.eazel.com 599: 
+		 * Why is a hex address better than an empty string? 
+		 */
 		g_snprintf (cbuf, sizeof (cbuf), "%p", meta_view);
 		description = cbuf;
 	} 
@@ -650,7 +658,9 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 		gtk_button_set_relief (GTK_BUTTON (temp_button), GTK_RELIEF_NORMAL);
 		gtk_widget_set_usize (GTK_WIDGET (temp_button), 80, 20);
 
-		/* FIXME: we must quote the uri in case it has blanks */
+		/* FIXME bugzilla.eazel.com 600: 
+		 * we must quote the uri in case it has blanks.
+		 */
 		if (nautilus_str_has_prefix (index_panel->details->uri, "file://")) {
 			temp_str = index_panel->details->uri + 7;
 		} else {
@@ -667,7 +677,9 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 }
 
 /* here's where we set up the command buttons, based on the mime-type of the associated URL */
-/* FIXME:  eventually, we need a way to override/augment the type from info in the metadata */
+/* FIXME bugzilla.eazel.com 596:  eventually, we need a way to 
+ * override/augment the type from info in the metadata.
+ */
 
 void
 nautilus_index_panel_update_buttons (NautilusIndexPanel *index_panel)
