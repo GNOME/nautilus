@@ -239,6 +239,10 @@
 	</submenu>
 </menu>
 
+<dockitem name="Location Bar" behavior="exclusive,never vertical">
+	<control name="Wrapper"/>
+</dockitem>
+
 <dockitem name="Tool Bar" look="both" behavior="exclusive">
 
 	<toolitem name="Back"
@@ -304,9 +308,6 @@
 	<control name="ThrobberWrapper"/>
 </dockitem>
 
-<dockitem name="Location Bar" behavior="exclusive,never vertical">
-	<control name="Wrapper"/>
-</dockitem>
 
 <status>
 	<!-- the name "main" is required by Bonobo -->
