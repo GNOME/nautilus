@@ -105,7 +105,7 @@ if test -n "$GNOME2_PATH"; then
 	export PATH
 fi
 
-AM_INIT_AUTOMAKE(nautilus, 1.0)
+AM_INIT_AUTOMAKE(nautilus, 1.0.1.1)
 AM_CONFIG_HEADER(config.h)
 
 AM_MAINTAINER_MODE
@@ -826,7 +826,6 @@ case "`medusa-config --libs 2>/dev/null | cut -d ' ' -f1`" in
 	MEDUSA_CFLAGS=""
 	MEDUSA_LIBS=""
 	AC_MSG_RESULT(no)
-	AC_MSG_WARN(Could not find medusa library. Please get it from GNOME's cvs.)
 ;;
  
 *)

@@ -787,11 +787,13 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
 	
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box), NULL);
 
+
  	/*
  	 * Search Settings 
  	 */
 	search_pane = nautilus_preferences_box_add_pane (preference_box,
 							 _("Search"));
+#ifdef HAVE_MEDUSA
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (search_pane),
 					     _("Search Complexity Options"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (search_pane),
@@ -804,13 +806,19 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
 							 1,
 							 NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+#endif
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (search_pane),
 					     _("Search Engines"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (search_pane),
+#ifdef HAVE_MEDUSA
 							 2,
+#else
+							 0,
+#endif
 							 NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
 
+#ifdef HAVE_MEDUSA
 	/* Setup callbacks so that we can update the sensitivity of
 	 * the search pane when the medusa blocked state changes
 	 */
@@ -819,7 +827,7 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
 						       fast_search_group,
 						       GTK_OBJECT (fast_search_group));
 	global_preferences_medusa_blocked_changed_callback (fast_search_group);
-
+#endif
 	return search_pane;
 }
 
