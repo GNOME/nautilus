@@ -56,85 +56,82 @@ char* trilobite_service_default_get_vendor_url      (TrilobiteService *trilobite
 char* trilobite_service_default_get_url             (TrilobiteService *trilobite);
 char* trilobite_service_default_get_icon_uri        (TrilobiteService *trilobite);
 
+static BonoboObjectClass *trilobite_service_parent_class;
+
 /*****************************************
   Corba stuff
 *****************************************/
 
-static BonoboObjectClass *trilobite_service_parent_class;
-static POA_Trilobite_Service__vepv trilobite_service_vepv;
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
-/* static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL }; */
+typedef struct {
+	POA_Trilobite_Service servant;
+	BonoboObject *bonobo_object;
+} impl_POA_Trilobite_Service;
 
 static CORBA_char*
-impl_Trilobite_Service_get_name(PortableServer_Servant servant,
+impl_Trilobite_Service_get_name(impl_POA_Trilobite_Service *trilobite,
 				CORBA_Environment *ev) 
 {
 	char *result;
-	TrilobiteService *trilobite;
 
-	g_message ("in impl_Trilobite_Service_get_name");
-	trilobite = TRILOBITE_SERVICE (bonobo_object_from_servant (servant));
-	gtk_signal_emit (GTK_OBJECT (trilobite), trilobite_service_signals[GET_NAME], &result);
+	/* g_message ("in impl_Trilobite_Service_get_name"); */
+	gtk_signal_emit (GTK_OBJECT (trilobite->bonobo_object), trilobite_service_signals[GET_NAME], &result);
 	return CORBA_string_dup (result);
 };
 
 static CORBA_char*
-impl_Trilobite_Service_get_version(PortableServer_Servant servant,
+impl_Trilobite_Service_get_version(impl_POA_Trilobite_Service *trilobite,
 				   CORBA_Environment *ev) 
 {
 	char *result;
-	TrilobiteService *trilobite = TRILOBITE_SERVICE (bonobo_object_from_servant (servant));
 
-	g_message ("in impl_Trilobite_Service_get_version");
-	gtk_signal_emit (GTK_OBJECT (trilobite), trilobite_service_signals[GET_VERSION], &result);
+	/* g_message ("in impl_Trilobite_Service_get_version"); */
+	gtk_signal_emit (GTK_OBJECT (trilobite->bonobo_object), trilobite_service_signals[GET_VERSION], &result);
 	return CORBA_string_dup (result);
 };
 
 static CORBA_char*
-impl_Trilobite_Service_get_vendor_name(PortableServer_Servant servant,
+impl_Trilobite_Service_get_vendor_name(impl_POA_Trilobite_Service *trilobite,
 				       CORBA_Environment *ev) 
 {
 	char *result;
-	TrilobiteService *trilobite = TRILOBITE_SERVICE (bonobo_object_from_servant (servant));
 
-	g_message ("in impl_Trilobite_Service_get_vendor_name");
-	gtk_signal_emit (GTK_OBJECT (trilobite), trilobite_service_signals[GET_VENDOR_NAME], &result);
+	/* g_message ("in impl_Trilobite_Service_get_vendor_name"); */
+	gtk_signal_emit (GTK_OBJECT (trilobite->bonobo_object), trilobite_service_signals[GET_VENDOR_NAME], &result);
 	return CORBA_string_dup (result);
 };
 
 static CORBA_char*
-impl_Trilobite_Service_get_vendor_url(PortableServer_Servant servant,
+impl_Trilobite_Service_get_vendor_url(impl_POA_Trilobite_Service *trilobite,
 				CORBA_Environment *ev) 
 {
 	char *result;
-	TrilobiteService *trilobite = TRILOBITE_SERVICE (bonobo_object_from_servant (servant));
 
-	g_message ("in impl_Trilobite_Service_get_vendor_url");
-	gtk_signal_emit (GTK_OBJECT (trilobite), trilobite_service_signals[GET_VENDOR_URL], &result);
+	/* g_message ("in impl_Trilobite_Service_get_vendor_url"); */
+	gtk_signal_emit (GTK_OBJECT (trilobite->bonobo_object), trilobite_service_signals[GET_VENDOR_URL], &result);
 	return CORBA_string_dup (result);
 };
 
 static CORBA_char*
-impl_Trilobite_Service_get_url(PortableServer_Servant servant,
+impl_Trilobite_Service_get_url(impl_POA_Trilobite_Service *trilobite,
 				CORBA_Environment *ev) 
 {
 	char *result;
-	TrilobiteService *trilobite = TRILOBITE_SERVICE (bonobo_object_from_servant (servant));
 
-	g_message ("in impl_Trilobite_Service_get_url");
-	gtk_signal_emit (GTK_OBJECT (trilobite), trilobite_service_signals[GET_URL], &result);
+	/* g_message ("in impl_Trilobite_Service_get_url"); */
+	gtk_signal_emit (GTK_OBJECT (trilobite->bonobo_object), trilobite_service_signals[GET_URL], &result);
 	return CORBA_string_dup (result);
 };
 
 static CORBA_char*
-impl_Trilobite_Service_get_icon_uri(PortableServer_Servant servant,
+impl_Trilobite_Service_get_icon_uri(impl_POA_Trilobite_Service *trilobite,
 				CORBA_Environment *ev) 
 {
 	char *result;
-	TrilobiteService *trilobite = TRILOBITE_SERVICE (bonobo_object_from_servant (servant));
 
-	g_message ("in impl_Trilobite_Service_get_icon_uri");
-	gtk_signal_emit (GTK_OBJECT (trilobite), trilobite_service_signals[GET_ICON_URI], &result);
+	/* g_message ("in impl_Trilobite_Service_get_icon_uri"); */
+	gtk_signal_emit (GTK_OBJECT (trilobite->bonobo_object), trilobite_service_signals[GET_ICON_URI], &result);
 	return CORBA_string_dup (result);
 };
 
@@ -145,12 +142,12 @@ trilobite_service_get_epv(void)
 
 	epv = g_new0 (POA_Trilobite_Service__epv, 1);
 
-	epv->get_name         = impl_Trilobite_Service_get_name,
-	epv->get_version      = impl_Trilobite_Service_get_version;
-	epv->get_vendor_name  = impl_Trilobite_Service_get_vendor_name;
-	epv->get_vendor_url   = impl_Trilobite_Service_get_vendor_url;
-	epv->get_url          = impl_Trilobite_Service_get_url;
-	epv->get_icon_uri     = impl_Trilobite_Service_get_icon_uri;
+	epv->get_name         = (gpointer) &impl_Trilobite_Service_get_name,
+	epv->get_version      = (gpointer) &impl_Trilobite_Service_get_version;
+	epv->get_vendor_name  = (gpointer) &impl_Trilobite_Service_get_vendor_name;
+	epv->get_vendor_url   = (gpointer) &impl_Trilobite_Service_get_vendor_url;
+	epv->get_url          = (gpointer) &impl_Trilobite_Service_get_url;
+	epv->get_icon_uri     = (gpointer) &impl_Trilobite_Service_get_icon_uri;
 		
 	return epv;
 };
@@ -183,8 +180,7 @@ void
 trilobite_service_destroy (GtkObject *object)
 {
 	TrilobiteService *trilobite;
-
-	g_message ("in trilobite_service_destroy");
+	/* g_message ("in trilobite_service_destroy"); */
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (object));
@@ -202,7 +198,11 @@ trilobite_service_destroy (GtkObject *object)
 		g_free (trilobite);
 	}
 
-	GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy (object);
+	if (GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy) {
+		/* FIXME 
+		   this doesn't work... */
+		/* GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy (object); */
+	}
 }
 
 
@@ -211,12 +211,20 @@ trilobite_service_class_initialize (TrilobiteServiceClass *klass)
 {
 	GtkObjectClass *object_class;
 
-	g_message ("in trilobite_service_class_initialize");
+	/* g_message ("in trilobite_service_class_initialize"); */
 
 	object_class = (GtkObjectClass*) klass;
 	object_class->destroy = (void(*)(GtkObject*))trilobite_service_destroy;
 
 	trilobite_service_parent_class = gtk_type_class (bonobo_object_get_type ());
+
+	klass->servant_init = POA_Trilobite_Service__init;
+	klass->servant_fini = POA_Trilobite_Service__fini;
+
+	klass->servant_vepv = g_new0 (POA_Trilobite_Service__vepv,1);
+	((POA_Trilobite_Service__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
+	((POA_Trilobite_Service__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	((POA_Trilobite_Service__vepv*)klass->servant_vepv)->Trilobite_Service_epv = trilobite_service_get_epv ();
 
 	trilobite_service_signals[GET_NAME] = 
 		gtk_signal_new ("get_name",
@@ -269,16 +277,12 @@ trilobite_service_class_initialize (TrilobiteServiceClass *klass)
 	klass->get_vendor_url = trilobite_service_default_get_vendor_url;
 	klass->get_url = trilobite_service_default_get_url;
 	klass->get_icon_uri = trilobite_service_default_get_icon_uri;
-
-	/* trilobite_service_vepv._base_epv = &base_epv; */
-	trilobite_service_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	trilobite_service_vepv.Trilobite_Service_epv = trilobite_service_get_epv ();
 };
 
 static void
 trilobite_service_initialize (TrilobiteService *trilobite)
 {
-	g_message ("in trilobite_service_initialize");
+	/* g_message ("in trilobite_service_initialize"); */
 
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
@@ -317,28 +321,32 @@ trilobite_service_construct (TrilobiteService *trilobite,
 static Trilobite_Service
 trilobite_service_create_corba_object (BonoboObject *trilobite)
 {
-	POA_Trilobite_Service *servant;
-
+	impl_POA_Trilobite_Service *servant;
+	void (*servant_init) (PortableServer_Servant servant, CORBA_Environment *ev);
 	CORBA_Environment ev;
 
-	g_message ("in trilobite_service_create_corba_object");
+	g_message ("in trilobite_service_create_corba_object"); 
 
 	g_assert (trilobite != NULL);
 
 	CORBA_exception_init(&ev);
 	
-	servant = (POA_Trilobite_Service*) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &trilobite_service_vepv;
+	servant = (impl_POA_Trilobite_Service*) g_new0 (BonoboObjectServant, 1);
+	((POA_Trilobite_Service*) servant)->vepv = TRILOBITE_SERVICE_CLASS ( GTK_OBJECT (trilobite)->klass)->servant_vepv;
+	servant->bonobo_object = trilobite;
 
-	POA_Trilobite_Service__init ((PortableServer_Servant)servant, &ev);
-	ORBIT_OBJECT_KEY (servant->_private)->object = NULL;
+	servant_init = TRILOBITE_SERVICE_CLASS ( GTK_OBJECT (trilobite)->klass)->servant_init;
+	servant_init ((PortableServer_Servant)servant, &ev);
+	ORBIT_OBJECT_KEY (((POA_Trilobite_Service*) servant)->_private)->object = NULL;	
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_message ("Cannot instantiate Trilobite_Service corba object");
+		g_warning ("Cannot instantiate Trilobite_Service corba object"); 
 		g_free (servant);
 		CORBA_exception_free (&ev);		
 		return CORBA_OBJECT_NIL;
 	}
+
+	
 
 	CORBA_exception_free (&ev);		
 
@@ -350,7 +358,7 @@ trilobite_service_get_type (void)
 {
 	static GtkType trilobite_service_type = 0;
 
-	g_message("into trilobite_service_get_type");
+	/* g_message ("into trilobite_service_get_type"); */
 
 	/* First time it's called ? */
 	if (!trilobite_service_type)

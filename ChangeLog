@@ -1,3 +1,25 @@
+2000-05-17  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* components/services/trilobite/idl/sample-service.idl: 
+	* components/services/trilobite/sample/service/sample-service-public.h:
+	* components/services/trilobite/sample/service/sample-service-impl.c:
+	* components/services/trilobite/sample/service/main.c:
+	The sample service is now a Bonobo::Unknown subclass. The factory
+	creates a trilobite and adds the interface of the sample service.
+	
+	* components/services/trilobite/src/libtrilobited.h: 
+	* components/services/trilobite/src/trilobite-service.c:
+	* components/services/trilobite/src/trilobite-service-public.h: 
+	Mutated the code and especially the object creation/(v)epv binding
+	so calls now correctly end up in the defined methods. This almost
+	completed 851, except that this is only the most basic of the 
+	frameworks.
+	
+	* components/services/trilobite/sample/command-line/main.c:
+	The sample cli now checks for the interface support, and
+	if a trilobite, dumps the standard info, if a sample service,
+	uses the two sample calls.
+	
 2000-05-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c: (scan_for_header),

@@ -54,7 +54,10 @@ struct _TrilobiteServiceClass
 	char* (*get_vendor_url)   (TrilobiteService *trilobite);
 	char* (*get_url)          (TrilobiteService *trilobite);
 	char* (*get_icon_uri)     (TrilobiteService *trilobite);
-	void  (*done)             (TrilobiteService *trilobite);
+
+	gpointer servant_init;
+	gpointer servant_fini;
+	gpointer servant_vepv;
 };
 
 typedef struct _TrilobiteServicePrivate TrilobiteServicePrivate;

@@ -7,16 +7,17 @@ CPPFLAGS = \
 	$(NULL)
 
 INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
+	-I$(top_srcdir) 	\
+	-I$(top_builddir) 	\
 	-I$(top_srcdir)/components/services/trilobite/src \
-	$(GNET_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOME_CFLAGS) \
-	$(GNOME_INCLUDEDIR) \
-	$(OAF_CFLAGS) \
-	$(XML_CFLAGS) \
-	$(WERROR) \
+	-I../server/		\
+	$(GNET_CFLAGS) 		\
+	$(GCONF_CFLAGS) 	\
+	$(GNOME_CFLAGS) 	\
+	$(GNOME_INCLUDEDIR) 	\
+	$(OAF_CFLAGS) 		\
+	$(XML_CFLAGS) 		\
+	$(WERROR) 		\
 	$(NULL)
 
 LDFLAGS = \
@@ -41,7 +42,7 @@ $(CORBA_GENERATED): sample-service.h
 IDLDIR = $(top_srcdir)/components/services/trilobite/idl
 IDL = $(IDLDIR)/sample-service.idl
 
-sample-service.h: 
+sample-service.h: $(IDL)
 	$(prefix)/bin/orbit-idl -I $(IDLDIR)  -I${datadir}/idl $(IDL)
 
 sample-service-impl.c: sample-service.h
@@ -55,7 +56,8 @@ bin_PROGRAMS = nautilus-eazel-sample-service
 nautilus_eazel_sample_service_SOURCES =	\
 	sample-service-impl.c	\
 	sample-service-common.c	\
-	sample-service-stubs.c	\
+	sample-service-skels.c	\
+	main.c			\
 	$(NULL)
 
 nautilus_eazel_sample_service_LDADD =	\

@@ -26,8 +26,10 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
-#include "sample-service.h"
+#include <trilobite-service.h>
 #include <trilobite-service-public.h>
+
+#include "sample-service.h"
 
 #define OAF_ID "OAFIID:nautilus_eazel_sample_service:134276"
 
@@ -40,6 +42,7 @@ CORBA_ORB orb;
 int main(int argc, char *argv[]) {
 	BonoboObjectClient *service;
 	Trilobite_Service trilobite;
+	Trilobite_Eazel_Sample sample_service; 
 
 	CORBA_exception_init (&ev);
 	gnome_init_with_popt_table ("nautilus-eazel-sample-service", "1.0",argc, argv, oaf_popt_options, 0, NULL);
@@ -62,24 +65,19 @@ int main(int argc, char *argv[]) {
 		   CORBA_Object_is_a (trilobite, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
 		   CORBA_Object_is_a (trilobite, "IDL:Bonobo/Unknown:1.0", &ev)?"yes":"no",
 		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Service:1.0", &ev)?"yes":"no",
-		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Eazel/TestService:1.0", &ev)?"yes":"no");
+		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Eazel/Sample:1.0", &ev)?"yes":"no");
 	
 
-	/* Check the type of the object */
+	/* Check the type of the object again... */
 	g_message ("BONOBO Object properties :\ncorba object\t%s\nbonobo unknown\t%s\ntrilobite\t%s\ntestservice\t%s\n",	       
 		   bonobo_object_client_has_interface (service, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
 		   bonobo_object_client_has_interface (service, "IDL:Bonobo/Unknown:1.0", &ev)?"yes":"no",
 		   bonobo_object_client_has_interface (service, "IDL:Trilobite/Service:1.0", &ev)?"yes":"no",
-		   bonobo_object_client_has_interface (service, "IDL:Trilobite/Eazel/TestService:1.0", &ev)?"yes":"no");
+		   bonobo_object_client_has_interface (service, "IDL:Trilobite/Eazel/Sample:1.0", &ev)?"yes":"no");
 
-/*
+	/* If a trilobite, get the interface and dump the info */
 	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/Service:1.0", &ev)) {
 		trilobite = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Service:1.0");
-*/
-	if (CORBA_Object_is_a (trilobite, "IDL:Trilobite/Service:1.0", &ev)) {
-		trilobite = Bonobo_Unknown_query_interface (trilobite,
-							    "IDL:Trilobite/Service:1.0",
-							    &ev);
 		g_message ("service name        : %s", Trilobite_Service_get_name (trilobite, &ev));
 		g_message ("service version     : %s", Trilobite_Service_get_version (trilobite, &ev));
 		g_message ("service vendor name : %s", Trilobite_Service_get_vendor_name (trilobite, &ev));
@@ -88,7 +86,17 @@ int main(int argc, char *argv[]) {
 		g_message ("service icon        : %s", Trilobite_Service_get_icon_uri (trilobite, &ev));
 		
 		Trilobite_Service_unref (trilobite, &ev);
-	};
+	} else {
+		g_warning ("Object does not support IDL:/Trilobite/Service:1.0");
+	}
+
+	/* If a test server, call the two methods */
+	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/Eazel/Sample:1.0", &ev)) {
+		sample_service = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Eazel/Sample:1.0");
+
+		Trilobite_Eazel_Sample_remember (sample_service, "horsedung", &ev);
+		Trilobite_Eazel_Sample_say_it (sample_service, &ev);
+	} 
 
 	Trilobite_Service_unref (trilobite, &ev);
 	CORBA_exception_free (&ev);

@@ -13,6 +13,8 @@ INCLUDES =					\
 	$(WERROR)				\
 	$(NULL)
 
+
+
 oafdir = $(datadir)/oaf
 
 # CORBA magic
@@ -52,5 +54,9 @@ nautilus_eazel_sample_service_cli_LDFLAGS =	\
 	$(GCONF_LIBS)				\
 	$(VFS_LIBS)				\
 	$(OAF_LIBS)				\
+	$(NULL)
+
+nautilus_eazel_sample_service_cli_LDADD = 	\
+	$(top_builddir)/components/services/trilobite/src/libtrilobited.la \
 	$(NULL)
 

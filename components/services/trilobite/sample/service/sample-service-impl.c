@@ -26,112 +26,207 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
-/* #include "sample-service.h" */
 #include <trilobite-service.h>
 #include <trilobite-service-public.h>
 
-#define OAF_ID_FACTORY "OAFIID:nautilus_eazel_sample_service_factory:134276"
-#define OAF_ID "OAFIID:nautilus_eazel_sample_service:134276"
+#include "sample-service.h"
+#include "sample-service-public.h"
 
 /*
-  These are some generally needed objects to get CORBA connectivity
+  These are enums used for the signals binding. 
+  LAST_SIGNAL indicates the end.
 */
-CORBA_ORB                 orb;
-CORBA_Environment         ev;
-
-static BonoboGenericFactory *factory;
-static int trilobites_active = 0;
-
-/*
-static void
-impl_Trilobite_Eazel_Sample_Service_remember(PortableServer_servant servant,
-					     const CORBA_char *something,
-					     CORBA_Environment *ev) 
-{
-}
-
-static void
-impl_Trilobite_Eazel_Sample_Service_say_it(PortableServer_servant servant,
-					   CORBA_Environment *ev) 
-{
-}
-*/
-
-static void
-trilobite_service_factory_destroy (GtkObject *object) 
-{
-	trilobites_active--;
-
-	if (trilobites_active == 0) {
-		return;
-	}
-	
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
-}
-
-static BonoboObject*
-trilobite_sample_service_factory (BonoboGenericFactory *this_factory, 
-				  const gchar *oaf_id,
-				  gpointer data) 
-{
-	TrilobiteService *trilobite;
-
-	g_message ("in trilobite_sample_service_factory");
-
-	if (strcmp (oaf_id, OAF_ID)) {
-		return NULL;
-	}
-
-	trilobite = trilobite_service_new ();
-
-	trilobites_active++;
-
-	gtk_signal_connect (GTK_OBJECT (trilobite),
-			    "destroy",
-			    trilobite_service_factory_destroy, NULL);
-	
-	return BONOBO_OBJECT (trilobite);
-}
-
-int main(int argc, char *argv[]) {
-
-#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-
-	gnome_init_with_popt_table ("nautilus-service", "0.1", argc, argv, oaf_popt_options, 0, NULL);
-	orb = oaf_init (argc, argv);
-
-	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
-		g_error ("Could not initialize Bonobo");
-	}
-
-	factory = bonobo_generic_factory_new_multi (OAF_ID_FACTORY, 
-						    trilobite_sample_service_factory,
-						    NULL);
-	
-	if (factory == NULL) {
-		g_error ("Could not register factory");
-	}
-
-	if (1) {
-		TrilobiteService *test;
-		test = trilobite_service_new ();
-	}
-
-	bonobo_activate();
-
-	g_message ("%s ready", argv[0]);
-
-	do {
-		bonobo_main ();
-	} while (trilobites_active > 0);
-
-	g_message ("%s quitting", argv[0]);
-
-	CORBA_exception_free (&ev);
-
-	return 0;
+enum {
+	REMEMBER,
+	SAY_IT,
+	LAST_SIGNAL
 };
+
+/* The signal array  and prototypes for default handlers*/
+
+void sample_service_remember (SampleService *service, const char *something);
+void sample_service_say_it   (SampleService *service);
+
+static guint sample_service_signals[LAST_SIGNAL] = { 0 };
+
+static GtkObjectClass *sample_service_parent_class;
+
+/*****************************************
+  Corba stuff
+*****************************************/
+
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
+
+typedef struct {
+	POA_Trilobite_Eazel_Sample poa;
+	SampleService *object;
+} impl_POA_Sample_Service;
+
+static void
+impl_Trilobite_Eazel_Sample_remember(impl_POA_Sample_Service *service,
+				     const CORBA_char *something,
+				     CORBA_Environment *ev) 
+{
+	gtk_signal_emit (GTK_OBJECT (service->object), sample_service_signals[REMEMBER], something);
+}
+
+static void
+impl_Trilobite_Eazel_Sample_say_it(impl_POA_Sample_Service *service,
+				   CORBA_Environment *ev) 
+{
+	gtk_signal_emit (GTK_OBJECT (service->object), sample_service_signals[SAY_IT]);
+}
+
+POA_Trilobite_Eazel_Sample__epv* 
+sample_service_get_epv() 
+{
+	POA_Trilobite_Eazel_Sample__epv *epv;
+
+	epv = g_new0 (POA_Trilobite_Eazel_Sample__epv, 1);
+
+	epv->remember         = (gpointer) &impl_Trilobite_Eazel_Sample_remember;
+	epv->say_it           = (gpointer) &impl_Trilobite_Eazel_Sample_say_it;
+		
+	return epv;
+};
+
+/*****************************************
+  GTK+ object stuff
+*****************************************/
+
+void
+sample_service_destroy (GtkObject *object)
+{
+	g_message ("in sample_service_destroy");
+}
+
+static void
+sample_service_class_initialize (SampleServiceClass *klass) 
+{
+	GtkObjectClass *object_class;
+
+	object_class = (GtkObjectClass*)klass;
+	object_class->destroy = (void(*)(GtkObject*))sample_service_destroy;
+
+	sample_service_parent_class = gtk_type_class (gtk_object_get_type ());
+
+	klass->servant_vepv = g_new0 (POA_Trilobite_Eazel_Sample__vepv,1);
+	((POA_Trilobite_Eazel_Sample__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
+	((POA_Trilobite_Eazel_Sample__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	((POA_Trilobite_Eazel_Sample__vepv*)klass->servant_vepv)->Trilobite_Eazel_Sample_epv = sample_service_get_epv ();
+
+	sample_service_signals[REMEMBER] = 
+		gtk_signal_new ("remember",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (SampleServiceClass, remember),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE,1,GTK_TYPE_POINTER);
+	sample_service_signals[SAY_IT] = 
+		gtk_signal_new ("say_it",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (SampleServiceClass, say_it),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE,0);
+	gtk_object_class_add_signals (object_class, sample_service_signals, LAST_SIGNAL);
+
+	klass->remember = sample_service_remember;
+	klass->say_it = sample_service_say_it;
+}
+
+static Trilobite_Eazel_Sample
+sample_service_create_corba_object (BonoboObject *service) {
+	impl_POA_Sample_Service *servant;
+	CORBA_Environment ev;
+
+	g_assert (service != NULL);
+	
+	CORBA_exception_init (&ev);
+	
+	servant = (impl_POA_Sample_Service*)g_new0 (PortableServer_Servant,1);
+	((POA_Trilobite_Eazel_Sample*) servant)->vepv = SAMPLE_SERVICE_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
+
+	POA_Trilobite_Eazel_Sample__init (servant, &ev);
+	ORBIT_OBJECT_KEY (((POA_Trilobite_Eazel_Sample*)servant)->_private)->object = NULL;
+
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_warning ("Cannot instantiate Trilobite_Eazel_Sample corba object");
+		g_free (servant);
+		CORBA_exception_free (&ev);		
+		return CORBA_OBJECT_NIL;
+	}
+
+	CORBA_exception_free (&ev);		
+
+	return (Trilobite_Eazel_Sample) bonobo_object_activate_servant (service, servant);
+}
+
+GtkType
+sample_service_get_type() {
+	static GtkType trilobite_service_type = 0;
+
+	g_message ("into sample_service_get_type"); 
+
+	/* First time it's called ? */
+	if (!trilobite_service_type)
+	{
+		static const GtkTypeInfo trilobite_service_info =
+		{
+			"TrilobiteEazelSampleService",
+			sizeof (TrilobiteService),
+			sizeof (TrilobiteServiceClass),
+			(GtkClassInitFunc) sample_service_class_initialize,
+			(GtkObjectInitFunc) NULL,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+
+		/* Get a unique GtkType */
+		trilobite_service_type = gtk_type_unique (bonobo_object_get_type (), &trilobite_service_info);
+	}
+
+	return trilobite_service_type;
+}
+
+SampleService*
+sample_service_new()
+{
+	SampleService *service;
+	Trilobite_Eazel_Sample corba_service;
+
+	g_message ("in sample_service_new");
+	
+	service = SAMPLE_SERVICE (gtk_type_new (SAMPLE_TYPE_SERVICE));
+
+	corba_service = sample_service_create_corba_object (BONOBO_OBJECT (service));
+
+	if (!bonobo_object_construct (BONOBO_OBJECT (service), corba_service)) {
+		g_warning ("bonobo_object_construct failed");
+	}
+	
+	return service;
+}
+
+/**************************************************/
+/* Signal receivers                               */
+/**************************************************/
+
+void 
+sample_service_remember (SampleService *service, 
+			 const char *something) 
+{
+	if (service->my_string) g_free (service->my_string);
+	service->my_string = g_strdup (something);
+}
+
+void 
+sample_service_say_it   (SampleService *service)
+{
+	if (service->my_string) {
+		g_message (service->my_string);
+	} else {
+		g_message ("call remember first");
+	}
+}
