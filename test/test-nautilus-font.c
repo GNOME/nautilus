@@ -20,6 +20,8 @@
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
+#include <libnautilus-extensions/nautilus-debug-drawing.h>
+
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
@@ -517,7 +519,7 @@ main (int argc, char* argv[])
 		nautilus_text_layout_free (text_layout);
 	}
 
-	nautilus_gdk_pixbuf_show_in_eog (pixbuf);
+	nautilus_debug_show_pixbuf_in_eog (pixbuf);
 	
 	gdk_pixbuf_unref (pixbuf);
 

@@ -1,3 +1,21 @@
+2000-12-19  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-debug-drawing.h:
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	(nautilus_debug_draw_rectangle_and_cross),
+	(nautilus_debug_show_pixbuf_in_eog):
+	New files.  Put drawing debugging functions here.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	Move drawing debugging functions to nautilus-debug-drawing.[ch].
+
+	* test/test-nautilus-font.c: (main):
+	Update for debug drawing functions location change.
+	
 2000-12-19  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

@@ -118,11 +118,8 @@ void                      nautilus_gdk_pixbuf_draw_to_pixbuf_tiled      (const G
 									 int                         tile_origin_y,
 									 guchar                      opacity,
 									 GdkInterpType               interpolation_mode);
+
 /* Create a pixbuf from a sub area of another pixbuf */
 GdkPixbuf *               nautilus_gdk_pixbuf_new_from_pixbuf_sub_area  (GdkPixbuf                  *pixbuf,
 									 const ArtIRect             *area);
-/* Show the given pixbuf in eog */
-void                      nautilus_gdk_pixbuf_show_in_eog               (const GdkPixbuf            *pixbuf);
-
-
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

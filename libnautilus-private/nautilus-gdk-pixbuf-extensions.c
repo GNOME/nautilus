@@ -35,7 +35,6 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <math.h>
 #include <png.h>
-#include <stdlib.h>
 
 #define LOAD_BUFFER_SIZE 4096
 
@@ -1078,43 +1077,4 @@ nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (const GdkPixbuf *pixbuf,
 			}
 		}
 	}
-}
-
-/**
- * nautilus_gdk_pixbuf_show_in_eog:
- * @pixbuf: Pixbuf to show.
- *
- * Show the given pixbuf in eog.  This is very useful for debugging pixbuf
- * stuff.  Perhaps this function should be #ifdef DEBUG or something like that.
- */
-void
-nautilus_gdk_pixbuf_show_in_eog (const GdkPixbuf *pixbuf)
-{
-	char *command;
-	char *file_name;
-	gboolean save_result;
-
-	g_return_if_fail (pixbuf != NULL);
-
-	file_name = g_strdup ("/tmp/nautilus-debug-png-file-XXXXXX");
-
-	if (mktemp (file_name) != file_name) {
-		g_free (file_name);
-		file_name = g_strdup_printf ("/tmp/isis-debug-png-file.%d", getpid ());
-	}
-
-	save_result = nautilus_gdk_pixbuf_save_to_file (pixbuf, file_name);
-
-	if (save_result == FALSE) {
-		g_warning ("Failed to save '%s'", file_name);
-		g_free (file_name);
-		return;
-	}
-	
-	command = g_strdup_printf ("eog %s", file_name);
-
-	system (command);
-	g_free (command);
-	remove (file_name);
-	g_free (file_name);
 }
