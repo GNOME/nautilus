@@ -1,3 +1,9 @@
+2002-05-23  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-thumbnails.c: major changes to use a
+	thread to create thumbnails instead of forking for each one. May fix
+	bug #78542 and #76338.
+
 2002-05-23  Michael Meeks  <michael@ximian.com>
 
 	This change only partially works, it works correctly
