@@ -92,9 +92,13 @@ create_image_widget (const char *icon_name,
 }
 
 GtkWidget*
-create_label_widget (const char *text,
-		     guint	font_size,
-		     const char *tile_icon_name)
+create_label_widget (const char		*text,
+		     guint		font_size,
+		     const char		*tile_icon_name,
+		     guint		xpad,
+		     guint		ypad,
+		     gint		horizontal_offset,
+		     gint		vertical_offset)
 {
 	GtkWidget		*label;
 	NautilusScalableFont	*font;
@@ -134,6 +138,11 @@ create_label_widget (const char *text,
 		}
 	}
 
+	gtk_misc_set_padding (GTK_MISC (label), xpad, ypad);
+
+	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (label), vertical_offset);
+	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (label), horizontal_offset);
+
 	return label;
 }
 
@@ -156,7 +165,7 @@ create_services_title_widget (const char *title_text)
 
 	filler_image = create_image_widget (NULL, "eazel-services-logo-tile.png");
 
-	label = create_label_widget (title_text, 20, "eazel-services-logo-tile.png");
+	label = create_label_widget (title_text, 20, "eazel-services-logo-tile.png", 10, 0, 0, -4);
 
 	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL));
 	g_assert (font != NULL);
@@ -195,19 +204,11 @@ create_services_header_widget (const char	*left_text,
 
 	title_hbox = gtk_hbox_new (FALSE, 0);
 
-	left_label = create_label_widget (left_text, 16, "eazel-services-logo-tile.png");
+	left_label = create_label_widget (left_text, 16, "eazel-services-logo-tile.png", 10, 0, 0, -6);
 
 	filler_image = create_image_widget (NULL, "eazel-services-logo-tile.png");
 
-	right_label = create_label_widget (right_text, 16, "eazel-services-logo-tile.png");
-
-/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (left_label), 8);*/
-/* 	nautilus_image_set_left_offset (NAUTILUS_IMAGE (left_label), 8);*/
-/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (left_label), 1);*/
-
-/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (right_label), 8);*/
-/* 	nautilus_image_set_right_offset (NAUTILUS_IMAGE (right_label), 8);*/
-/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (right_label), 1);*/
+	right_label = create_label_widget (right_text, 16, "eazel-services-logo-tile.png", 10, 0, 0, -6);
 
 	gtk_widget_show (left_label);
 	gtk_widget_show (filler_image);
