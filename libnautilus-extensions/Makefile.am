@@ -154,6 +154,8 @@ noinst_HEADERS =				\
 	nautilus-directory-private.h		\
 	nautilus-directory.h			\
 	nautilus-drag.h				\
+	nautilus-druid.h			\
+	nautilus-druid-page-eazel.h		\
 	nautilus-entry.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-changes-queue.h		\

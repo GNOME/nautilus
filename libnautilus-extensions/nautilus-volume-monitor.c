@@ -741,7 +741,7 @@ mnttab_add_mount_volume (NautilusVolumeMonitor *monitor, struct mnttab *tab)
 	gboolean mounted;
 
 	volume = g_new0 (NautilusVolume, 1);
-	volume->fsname = g_strdup(tab->mnt_fstype);
+	volume->fsname = g_strdup (tab->mnt_fstype);
 	volume->mount_path = g_strdup (tab->mnt_mountp);
 
 	mounted = FALSE;

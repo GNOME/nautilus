@@ -18,15 +18,16 @@ INCLUDES =					\
 oafdir = $(datadir)/oaf
 
 TREE_VIEW_COMMON_SOURCES = 	        \
-	nautilus-tree-view.h            \
-	nautilus-tree-view.c            \
-	nautilus-tree-model.h           \
-	nautilus-tree-model.c           \
-	nautilus-tree-node-private.h    \
-	nautilus-tree-node.h            \
-	nautilus-tree-node.c            \
-	nautilus-tree-expansion-state.h \
 	nautilus-tree-expansion-state.c \
+	nautilus-tree-expansion-state.h \
+	nautilus-tree-model.c           \
+	nautilus-tree-model.h           \
+	nautilus-tree-node-private.h    \
+	nautilus-tree-node.c            \
+	nautilus-tree-node.h            \
+	nautilus-tree-view-iids.h       \
+	nautilus-tree-view.c            \
+	nautilus-tree-view.h            \
 	$(NULL)
 
 

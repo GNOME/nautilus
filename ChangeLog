@@ -1,5 +1,26 @@
 2000-09-14  Darin Adler  <darin@eazel.com>
 
+	Some fixes to "make dist" to make the tinderbox happy.
+
+	* components/rpmview/Makefile.am:
+	* components/tree/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* src/Makefile.am:
+	Added missing .h files.
+	
+	* src/file-manager/.cvsignore:
+	Ignore some ancient generated files.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_label_make_bold): Formatting tweak.
+	(nautilus_gtk_widget_set_foreground_color): Don't set the base
+	color when you set the foreground. The base is more like the
+	background color.
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mnttab_add_mount_volume): Formatting tweak.
+
+2000-09-14  Darin Adler  <darin@eazel.com>
+
 	To get started on a bug, I dismantled part of the state machine,
 	which we can replace with something much simpler. Just doing this
 	change seems to have fixed the bug I was going to tackle.
@@ -97,6 +118,7 @@
 	Add a test rig for the new code.
 
 2000-09-14 Seth Nickell  <seth@eazel.com>
+	
 	* libnautilus-extensions/nautilus-volume-monitor.c:
 	(mnttab_add_mount_volume):
 	Fixed minor compile problem on Solaris dealing with

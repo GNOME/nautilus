@@ -35,10 +35,11 @@ endif
 
 nautilus_rpm_view_SOURCES =		        \
 	$(extra_sources)			\
-	nautilus-rpm-verify-window.h		\
 	nautilus-rpm-verify-window.c		\
-	nautilus-rpm-view.h			\
+	nautilus-rpm-verify-window.h		\
+	nautilus-rpm-view-private.h		\
 	nautilus-rpm-view.c			\
+	nautilus-rpm-view.h			\
 	main.c
 
 nautilus_rpm_view_LDADD =			\

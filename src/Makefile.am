@@ -58,6 +58,7 @@ noinst_HEADERS = \
 	nautilus-history-frame.h		\
 	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
+	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
 	nautilus-property-browser.h		\
 	nautilus-search-bar-private.h		\

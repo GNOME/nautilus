@@ -1062,15 +1062,14 @@ nautilus_gtk_label_make_bold (GtkLabel *label)
 	GdkFont *bold_font;
 
 	g_return_if_fail (GTK_IS_LABEL (label));
-	style = gtk_widget_get_style (GTK_WIDGET(label));
+
+	style = gtk_widget_get_style (GTK_WIDGET (label));
 
 	bold_font = nautilus_gdk_font_get_bold (style->font);
-
 	if (bold_font == NULL) {
 		return;
 	}
-
-	nautilus_gtk_widget_set_font (GTK_WIDGET(label), bold_font);
+	nautilus_gtk_widget_set_font (GTK_WIDGET (label), bold_font);
 	gdk_font_unref (bold_font);
 }
 
@@ -1115,9 +1114,7 @@ nautilus_gtk_widget_set_foreground_color (GtkWidget              *widget,
 
 	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
 	style->fg[GTK_STATE_NORMAL] = color;
-	style->base[GTK_STATE_NORMAL] = color;
 	style->fg[GTK_STATE_ACTIVE] = color;
-	style->base[GTK_STATE_ACTIVE] = color;
 
 	/* Put the style in the widget. */
 	gtk_widget_set_style (widget, style);
