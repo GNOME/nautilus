@@ -48,6 +48,7 @@ GtkType    nautilus_app_get_type (void);
 GtkObject *nautilus_app_new      (void);
 void nautilus_app_startup(NautilusApp *app, const char *initial_url);
 NautilusWindow *nautilus_app_create_window(NautilusApp *app);
+void nautilus_app_quit(void);
 
 #ifdef __cplusplus
 }

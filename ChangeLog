@@ -1,3 +1,16 @@
+2000-05-10  Pavel Cisler  <pavel@eazel.com>
+
+	* src/ntl-app.c:
+	* src/ntl-app.h:
+	(nautilus_app_destroy_window), (nautilus_app_real_quit),
+	(nautilus_app_quit)
+	Work in progress on fixing Nautilus deadlocking when quitting while
+	async file operations are in progress. Made it so that Nautilus
+	waits for gnome VFS threads to complete before it quits and takes
+	down the idle task. This only fixes part of the problem, Nautilus
+	still deadlocks on gnome vfs jobs that get cancelled right after
+	they were started.
+	
 2000-05-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-undo-manager-component.idl:

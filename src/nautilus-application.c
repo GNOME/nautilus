@@ -30,6 +30,7 @@
 #include <bonobo.h>
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
+#include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 
@@ -297,12 +298,45 @@ nautilus_app_startup(NautilusApp *app, const char *initial_url)
 }
 
 static void
-nautilus_app_destroy_window(GtkObject *obj, NautilusApp *app)
+nautilus_app_destroy_window (GtkObject *obj, NautilusApp *app)
 {
-  app->windows = g_slist_remove(app->windows, obj);
+	app->windows = g_slist_remove(app->windows, obj);
 
-  if(!app->windows)
-    gtk_main_quit();
+	if (app->windows == NULL)
+  		nautilus_app_quit();
+}
+
+extern int gnome_vfs_debug_get_thread_count (void);
+int quit_counter_hack;
+
+static gboolean
+nautilus_app_real_quit (void *unused)
+{
+	int count;
+
+	count = gnome_vfs_debug_get_thread_count ();
+	if (count == 0) {
+		/* g_message ("no more gnome vfs threads, ready to quit"); */
+		gtk_main_quit ();
+		return FALSE;
+	} 
+	if (--quit_counter_hack == 0) {
+		g_message ("gnome vfs threads not going away, trying to quit anyway");
+		gtk_main_quit ();
+		return FALSE;
+	}
+	/* g_message ("%d gnome vfs threads left, will try to quit later", count); */
+	usleep(200000);
+	
+	return TRUE;
+}
+
+void 
+nautilus_app_quit (void)
+{
+	quit_counter_hack = 20;
+	/* wait for gnome vfs slave threads to go away before quitting */
+	gtk_idle_add ((GtkFunction)nautilus_app_real_quit, NULL);
 }
 
 NautilusWindow *
