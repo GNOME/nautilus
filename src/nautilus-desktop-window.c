@@ -247,16 +247,19 @@ set_window_background (GtkWidget *widget,
 					   pixmap, pixel);
 	}
 }
-
+#endif
 static void
 map (GtkWidget *widget)
 {
+	/* Disable for now, see above for comments */
+#if 0
 	set_window_background (widget, FALSE, FALSE, None, 0);
-	
+#endif	
 	/* Chain up to realize our children */
 	GTK_WIDGET_CLASS (parent_class)->map (widget);
+	gdk_window_lower (widget->window);
 }
-#endif
+
 
 static void
 set_wmspec_desktop_hint (GdkWindow *window)
@@ -308,10 +311,10 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	GTK_WIDGET_CLASS (class)->realize = realize;
-	/* Disable for now, see above for comments */
-#if 0	
+
+
 	GTK_WIDGET_CLASS (class)->map = map;
-#endif
+
 	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
 		= real_add_current_location_to_history_list;
 }

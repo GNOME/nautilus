@@ -1,3 +1,10 @@
+2002-06-29  Gregory Merchan  <merchan@phys.lsu.edu>
+
+	* src/nautilus-desktop-window.c:
+	Call gdk_lower_window on map to not cover existing windows.
+	Should alleviate bug #85784, but note that a window manager
+	could always interfere.
+
 2002-06-28  Christian Rose  <menthos@menthos.com>
 
 	* src/nautilus-bookmarks-window.c,
