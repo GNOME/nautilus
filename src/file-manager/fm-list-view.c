@@ -1365,7 +1365,13 @@ list_view_get_first_visible_file_callback (NautilusScrollPositionable *positiona
 				    FM_LIST_MODEL_FILE_COLUMN, &file,
 				    -1);
 		if (file) {
-			return nautilus_file_get_uri (file);
+			char *uri;
+			
+			uri = nautilus_file_get_uri (file);
+			
+			nautilus_file_unref (file);
+			
+			return uri;
 		}
 	}
 	

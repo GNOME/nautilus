@@ -1,3 +1,9 @@
+2003-11-11  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-list-view.c 
+	(list_view_get_first_visible_file_callback): Unref the file
+	before returning its uri.
+
 === nautilus 2.5.1 ===
 
 2003-11-10  Alexander Larsson  <alexl@redhat.com>
