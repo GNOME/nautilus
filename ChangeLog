@@ -1,3 +1,54 @@
+2001-03-20  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Finished bug 4875 (design for running arbitrary scripts on
+	selected items)
+
+	There are lots of ways this could be improved, but I've
+	finished the first pass at this feature. We'll need to get
+	feedback before deciding how to improve it later. Please
+	play with it -- hopefully it is self-explanatory. Start by
+	selecting Scripts > Open Scripts Folder.
+
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c: 
+	(compare_by_name_cover): Simple cover for compare_by_name
+	that casts parameters.
+	(nautilus_file_list_sort_by_name): New public function.
+
+	* src/file-manager/nautilus-directory-view-ui.xml: Added name to
+	separators before "Open Scripts Folder" so they can be referred
+	to in code (shown/hidden)
+
+	* src/file-manager/fm-directory-view.c: 
+	(get_scripts_directory): Create Scripts directory if it doesn't 
+	exist; mark name of scripts directory for localization.
+	(add_numbered_menu_item): Add pixbuf parameter.
+	(add_application_to_bonobo_menu),
+	(add_component_to_bonobo_menu): pass NULL for pixbuf
+	(get_file_names_as_parameter_string): Changed name from
+	get_selected_file_names..., now takes file list as parameter.
+	(get_file_paths_or_uris_as_newline_delimited_string): New function.
+	(get_file_paths_as_newline_delimited_string),
+	(get_file_uris_as_newline_delimited_string): New functions, simple
+	covers for get_file_paths_or_uris...
+	(set_script_environment_variables): New function, sets some environment
+	variables up so scripts can use them.
+	(unset_script_environment_variables): New function, unsets those same
+	environment variables.
+	(run_script_callback): set/unset environment variables around calling
+	script.
+	(add_script_to_menus): add pixbufs for files
+	(reset_scripts_menu): sort scripts by name; hide separator after scripts
+	if there are no scripts
+	(notify_user_if_no_scripts_callback): Explain script behavior and
+	special environment variables in Details part of dialog.
+	(call_when_ready_on_scripts_directory): include attributes required to
+	get icon for file.
+	(open_scripts_folder_callback): Change error message for unexpected
+	case where scripts folder is nonexistent.
+
 2001-03-20  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* configure.in: upped version 1.0.0 

@@ -4658,6 +4658,24 @@ nautilus_file_list_copy (GList *list)
 	return g_list_copy (nautilus_file_list_ref (list));
 }
 
+static int
+compare_by_name_cover (gconstpointer a, gconstpointer b)
+{
+	return compare_by_name (NAUTILUS_FILE (a), NAUTILUS_FILE (b));
+}
+
+/**
+ * nautilus_file_list_sort_by_name
+ * 
+ * Sort the list of files by file name.
+ * @list: GList of files.
+ **/
+GList *
+nautilus_file_list_sort_by_name (GList *list)
+{
+	return g_list_sort (list, compare_by_name_cover);
+}
+
 /* Extract the top left part of the read-in text. */
 char *
 nautilus_extract_top_left_text (const char *text,

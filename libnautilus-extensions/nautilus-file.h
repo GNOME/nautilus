@@ -285,6 +285,7 @@ GList *                 nautilus_file_list_ref                          (GList  
 void                    nautilus_file_list_unref                        (GList                          *file_list);
 void                    nautilus_file_list_free                         (GList                          *file_list);
 GList *                 nautilus_file_list_copy                         (GList                          *file_list);
+GList *			nautilus_file_list_sort_by_name			(GList				*file_list);
 
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);

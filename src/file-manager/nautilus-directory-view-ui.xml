@@ -80,8 +80,10 @@
 				 _label="Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts">
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
-				 <separator/>
-				 <menuitem name="_Open Scripts Folder" verb="Open Scripts Folder"/>
+				 <separator name="After Scripts"/>
+				 <menuitem name="Open Scripts Folder" 
+				 	   _label="_Open Scripts Folder"
+				 	   verb="Open Scripts Folder"/>
 			</submenu>
 		</placeholder>
 
@@ -162,7 +164,7 @@
 				 _tip="Run or manage scripts from ~/Nautilus/scripts"
 				 tearoff="0">
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
-				 <separator/>
+				 <separator name="After Scripts"/>
 				 <menuitem name="Open Scripts Folder" verb="Open Scripts Folder"/>
 			</submenu>
 
