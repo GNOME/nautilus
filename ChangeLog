@@ -1,3 +1,12 @@
+2000-05-14  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_destroy), (strip_extension),
+	(nautilus_property_browser_preferences_changed):
+	made the property browser respond to preference changes by setting up a callback,
+	removing it when we're destroyed, and updating the contents when it's invoked
+	
 2000-05-14  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/lib/helixcode-utils.c:

@@ -85,6 +85,8 @@ struct NautilusPropertyBrowserDetails {
 static void  nautilus_property_browser_initialize_class (GtkObjectClass          *object_klass);
 static void  nautilus_property_browser_initialize       (GtkObject               *object);
 static void  nautilus_property_browser_destroy          (GtkObject               *object);
+static void  nautilus_property_browser_preferences_changed (NautilusPropertyBrowser *property_browser);
+
 static void  nautilus_property_browser_update_contents  (NautilusPropertyBrowser *property_browser);
 static void  nautilus_property_browser_set_category     (NautilusPropertyBrowser *property_browser,
 							 const char              *new_category);
@@ -255,6 +257,11 @@ nautilus_property_browser_initialize (GtkObject *object)
 	/* the actual contents are created when necessary */	
   	property_browser->details->content_frame = NULL;
 
+	/* add callback for preference changes */
+	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT, 
+						(NautilusPreferencesCallback) nautilus_property_browser_preferences_changed, 
+						property_browser);
+	
 	/* initially, display the top level */
 	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
 }
@@ -272,6 +279,10 @@ nautilus_property_browser_destroy (GtkObject *object)
 	g_free (property_browser->details->drag_type);
 	
 	g_free (property_browser->details);
+	
+	nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
+						(NautilusPreferencesCallback) nautilus_property_browser_preferences_changed, 
+						NULL);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -1126,6 +1137,14 @@ strip_extension(const char* string_to_strip)
 	if (temp_str)
 		*temp_str = '\0';
 	return result_str;
+}
+
+/* handle preferences changing by updating the browser contents */
+
+static void
+nautilus_property_browser_preferences_changed (NautilusPropertyBrowser *property_browser)
+{
+	nautilus_property_browser_update_contents(property_browser);
 }
 
 /* utility routine to add the passed-in widget to the content table */
