@@ -28,12 +28,16 @@
 #include <string.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <gtk/gtkalignment.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrenderertoggle.h>
+#include <gtk/gtkimage.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkliststore.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <gtk/gtkvbox.h>
@@ -353,6 +357,30 @@ use_default_clicked_callback (GtkWidget *button, gpointer user_data)
 		       signals[USE_DEFAULT], 0);
 }
 
+static GtkWidget *
+button_new_with_mnemonic (const gchar *stockid, const gchar *str)
+{
+	GtkWidget *label;
+	GtkWidget *image;
+	GtkWidget *button;
+	GtkWidget *hbox;
+	GtkWidget *align;
+	
+	button = gtk_button_new ();
+	label = gtk_label_new_with_mnemonic (str);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label),
+				       GTK_WIDGET (button));
+	image = gtk_image_new_from_stock (stockid, GTK_ICON_SIZE_BUTTON);
+	hbox = gtk_hbox_new (FALSE, 2);
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (button), align);
+	gtk_container_add (GTK_CONTAINER (align), hbox);
+
+	return button;
+}
+
 static void
 add_buttons (NautilusColumnChooser *chooser)
 {
@@ -362,20 +390,22 @@ add_buttons (NautilusColumnChooser *chooser)
 	box = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (box);
 	
-	chooser->details->move_up_button = gtk_button_new_with_mnemonic (_("Move _Up"));
+	chooser->details->move_up_button = button_new_with_mnemonic (GTK_STOCK_GO_UP,
+								     _("Move _Up"));
 	g_signal_connect (chooser->details->move_up_button, 
 			  "clicked",  G_CALLBACK (move_up_clicked_callback),
 			  chooser);
-	gtk_widget_show (chooser->details->move_up_button);
+	gtk_widget_show_all (chooser->details->move_up_button);
 	gtk_widget_set_sensitive (chooser->details->move_up_button, FALSE);
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_up_button,
 			    FALSE, FALSE, 0);
 
-	chooser->details->move_down_button = gtk_button_new_with_mnemonic (_("Move _Down"));
+	chooser->details->move_down_button = button_new_with_mnemonic (GTK_STOCK_GO_DOWN,
+								       _("Move _Down"));
 	g_signal_connect (chooser->details->move_down_button, 
 			  "clicked",  G_CALLBACK (move_down_clicked_callback),
 			  chooser);
-	gtk_widget_show (chooser->details->move_down_button);
+	gtk_widget_show_all (chooser->details->move_down_button);
 	gtk_widget_set_sensitive (chooser->details->move_down_button, FALSE);
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_down_button,
 			    FALSE, FALSE, 0);
