@@ -1,3 +1,10 @@
+2001-02-05  Andy Hertzfeld  <andy@eazel.com>
+
+	* librsvg/rsvg.c: (rsvg_render_svp):
+	fixed bug 6301, bad svg crashes Nautilus, by adding a check
+	in rsvg_render_svp to make sure a pixbuf has been allocated; if
+	not, don't try to render.
+	
 2001-02-05  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 6321 (Apparently arbitrary item initially selected

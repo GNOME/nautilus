@@ -752,6 +752,13 @@ rsvg_render_svp (RsvgCtx *ctx, const ArtSVP *svp,
   gboolean has_alpha;
 
   pixbuf = ctx->pixbuf;
+  /* if a pixbuf hasn't been allocated, the svg is probably misformed.  Exit
+   * to avoid crashing.
+   */  
+  if (pixbuf == NULL) {
+  	return;
+  }
+  
   has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
 
   render = art_render_new (0, 0, 
