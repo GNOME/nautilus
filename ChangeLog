@@ -1,7 +1,15 @@
 2002-09-30  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_get_icon_rectangle):
+	Do i2w conversion
+
 	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_start_renaming_selected_item):
+	Correct rename widget placement
+	
+2002-09-30  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-icon-view.c: (renaming_icon_callback):
 	Correctly do the rename ui op merging
 

@@ -1641,7 +1641,6 @@ nautilus_icon_canvas_item_get_icon_rectangle (const NautilusIconCanvasItem *item
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), eel_art_drect_empty);
 
-	
 	rectangle.x0 = item->details->x;
 	rectangle.y0 = item->details->y;
 	
@@ -1650,6 +1649,13 @@ nautilus_icon_canvas_item_get_icon_rectangle (const NautilusIconCanvasItem *item
 	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 	rectangle.x1 = rectangle.x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf)) / pixels_per_unit;
 	rectangle.y1 = rectangle.y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf)) / pixels_per_unit;
+
+	eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
+			     &rectangle.x0,
+			     &rectangle.y0);
+	eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
+			     &rectangle.x1,
+			     &rectangle.y1);
 
 	return rectangle;
 }
