@@ -47,7 +47,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 	case GNOME_VFS_OK:
 		return;
 	case GNOME_VFS_ERROR_FILE_EXISTS:
-		message = g_strdup_printf (_("The name \"%s\" is already used in this directory.\nPlease use a different name."), 
+		message = g_strdup_printf (_("The name \"%s\" is already used in this folder.\nPlease use a different name."), 
 					   new_name);
 		break;
 	case GNOME_VFS_ERROR_ACCESS_DENIED:

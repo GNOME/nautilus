@@ -103,52 +103,52 @@ toolbar_search_web_callback (GtkWidget *widget, NautilusWindow *window)
 
 static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Back"), N_("Go to the previously visited directory"),
+	(N_("Back"), NAUTILUS_HINT_BACK,
 	 toolbar_back_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Back.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Forward"), N_("Go to the next directory"),
+	(N_("Forward"), NAUTILUS_HINT_FORWARD,
 	 toolbar_forward_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Forward.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Up"), N_("Go up a level in the directory hierarchy"),
+	(N_("Up"), NAUTILUS_HINT_UP,
 	 toolbar_up_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Up.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Refresh"), N_("Display the latest contents of the current location"),
+	(N_("Refresh"), NAUTILUS_HINT_REFRESH,
 	 toolbar_reload_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Refresh.png"),
 	
 	GNOMEUIINFO_SEPARATOR,
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Home"), N_("Go to your home directory"),
+	(N_("Home"), NAUTILUS_HINT_HOME,
 	 toolbar_home_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Home.png"),
 	
 	NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK
-	(N_("Find"), N_("Search this computer for files"),
+	(N_("Find"), NAUTILUS_HINT_FIND,
 	 toolbar_search_local_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Search.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Web Search"), N_("Search the web"),
+	(N_("Web Search"), NAUTILUS_HINT_WEB_SEARCH,
 	 toolbar_search_web_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Search.png"),
 	
 	GNOMEUIINFO_SEPARATOR,
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Stop"), N_("Interrupt loading"),
+	(N_("Stop"), NAUTILUS_HINT_STOP,
 	 toolbar_stop_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Stop.png"),
 
 #ifdef EAZEL_SERVICES
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Services"), N_("Eazel Services"),
+	(N_("Services"), NAUTILUS_HINT_SERVICES,
 	 toolbar_services_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Services.png"),
 #endif

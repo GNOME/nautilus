@@ -2732,16 +2732,16 @@ format_item_count_for_display (guint item_count,
 
 	if (item_count == 0) {
 		return g_strdup (includes_directories
-			? (includes_files ? _("0 items") : _("0 directories"))
+			? (includes_files ? _("0 items") : _("0 folders"))
 			: _("0 files"));
 	}
 	if (item_count == 1) {
 		return g_strdup (includes_directories
-			? (includes_files ? _("1 item") : _("1 directory"))
+			? (includes_files ? _("1 item") : _("1 folder"))
 			: _("1 file"));
 	}
 	return g_strdup_printf (includes_directories
-		? (includes_files ? _("%u items") : _("%u directories"))
+		? (includes_files ? _("%u items") : _("%u folders"))
 		: _("%u files"), item_count);
 }
 
@@ -3719,7 +3719,7 @@ nautilus_file_dump (NautilusFile *file)
 				file_kind = "regular file";
 				break;
 			case GNOME_VFS_FILE_TYPE_DIRECTORY:
-				file_kind = "directory";
+				file_kind = "folder";
 				break;
 			case GNOME_VFS_FILE_TYPE_FIFO:
 				file_kind = "fifo";

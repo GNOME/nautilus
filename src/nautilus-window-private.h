@@ -58,6 +58,18 @@ struct NautilusWindowDetails
 #define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/View/Zoom Out"
 #define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/View/Zoom Normal"
 
+/* FIXME bugzilla.eazel.com 2663: Would be nice to share more command information
+ * between menus and toolbars than just these hint strings.
+ */
+#define NAUTILUS_HINT_BACK				N_("Go to the previous visited location")
+#define NAUTILUS_HINT_FORWARD				N_("Go to the next visited location")
+#define NAUTILUS_HINT_UP				N_("Go to the location that contains this one")
+#define NAUTILUS_HINT_REFRESH				N_("Display the latest contents of the current location")
+#define NAUTILUS_HINT_HOME				N_("Go to the home location")
+#define NAUTILUS_HINT_FIND				N_("Search this computer for files")
+#define NAUTILUS_HINT_WEB_SEARCH			N_("Search the World Wide Web")
+#define NAUTILUS_HINT_STOP				N_("Stop loading this location")
+#define NAUTILUS_HINT_SERVICES				N_("Go to the Eazel services location")
 
 void                 nautilus_window_set_state_info                    (NautilusWindow             *window,
 									... /* things to set, plus optional parameters */);

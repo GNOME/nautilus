@@ -1,3 +1,24 @@
+2000-08-31  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1037 (Use "folder" instead of "directory" consistently)
+
+	I think I found them all. If you find any others, fix them or
+	write up new bug reports about them.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(format_item_count_for_display), (nautilus_file_dump):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_display_selection_info):
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Replaced uses of "directory"
+	and "directories" in the UI with "folder" and "folders"
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c: Same as above. Also moved the
+	hint strings used by both toolbar buttons and menu items into
+	a shared header file instead of duplicating them.
+
 2000-08-31  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/Makefile.am:

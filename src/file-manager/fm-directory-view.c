@@ -1068,10 +1068,10 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 			if (non_folder_count == 0) {
 				folder_count_str = g_strdup_printf (_("\"%s\" selected"), first_item_name);
 			} else {
-				folder_count_str = g_strdup (_("1 directory selected"));
+				folder_count_str = g_strdup (_("1 folder selected"));
 			}
 		} else {
-			folder_count_str = g_strdup_printf (_("%d directories selected"), folder_count);
+			folder_count_str = g_strdup_printf (_("%d folders selected"), folder_count);
 		}
 
 		if (!folder_item_count_known) {
