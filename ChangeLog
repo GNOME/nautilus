@@ -1,5 +1,15 @@
 2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
 
+	More 'make dist' fixes.  I missed the services dir.
+
+	* components/services/install/Makefile.am:
+	  Add missing .h files SOURCES.
+
+	* components/services/startup/Makefile.am:
+	  Add missing .h files SOURCES.
+	
+2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Add gnome panel .desktop file and logo.
 
 	* nautilus.desktop: New panel .desktop file.

@@ -22,7 +22,9 @@ bin_PROGRAMS =					\
 	nautilus-service-startup-view
 
 nautilus_service_startup_view_SOURCES =		\
+	nautilus-service-startup-view.h		\
 	nautilus-service-startup-view.c         \
+	eazel-register.h			\
 	eazel-register.c			\
 	main.c
 
