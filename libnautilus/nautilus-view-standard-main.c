@@ -39,6 +39,8 @@
 #include <libgnomeui/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <liboaf/liboaf.h>
+#include <gdk/gdkx.h>
+#include <X11/Xlib.h>
 #include <stdlib.h>
 
 #define N_IDLE_SECONDS_BEFORE_QUIT  5
@@ -210,7 +212,8 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
-        registration_id = oaf_make_registration_id (factory_iid, g_getenv ("DISPLAY"));
+        registration_id = oaf_make_registration_id (factory_iid, 
+						    DisplayString (GDK_DISPLAY ()));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    make_object,
 						    &callback_data);
