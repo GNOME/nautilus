@@ -25,6 +25,7 @@
 
 #include <config.h>
 #include "nautilus-monitor.h"
+#include <stdio.h>
 
 #ifdef HAVE_FAM_H
 
@@ -35,7 +36,6 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <stdio.h>
 
 struct NautilusMonitor {
 	FAMRequest request;
