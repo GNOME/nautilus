@@ -1,3 +1,13 @@
+2000-06-26  Pavel Cisler <pavel@eazel.com>
+
+	* acconfig.h:
+	* configure.in:
+	Fix build breakage caused recent changes to make GnomeVFS compile
+	without OAF support. Some GnomeVFS headers now require USING_OAF
+	to be defined and when included from Nautilus, this define was missing.
+	Not sure this is the 100% correct way to do this but this should at 
+	least prevent people from being stuck with a broken build.
+
 2000-06-26  Andy Hertzfeld  <andy@eazel.com>
 
 	added xml based theme mechanism and used it for the sidebar background,

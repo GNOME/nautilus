@@ -233,6 +233,10 @@ AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
 AC_SUBST(IDL_CFLAGS)
 
+dnl GnomeVFS can compile without OAF support, Nautilus depends on OAF.
+dnl Make USING_OAF be defined
+ 
+AC_DEFINE(USING_OAF)
 AM_PATH_OAF(0.3.0)
 
 AM_PATH_GCONF(0.5.0,,,gconf-gtk)

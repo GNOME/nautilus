@@ -6,3 +6,5 @@
 #undef HAVE_PAM
 #undef HAVE_RPM
 #undef HAVE_STPCPY
+#undef USING_OAF
+
