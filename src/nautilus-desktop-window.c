@@ -22,36 +22,27 @@
  * Authors: Darin Adler <darin@bentspoon.com>
  */
 
-/* nautilus-desktop-window.c
- */
-
 #include <config.h>
 #include "nautilus-desktop-window.h"
 
 #include <X11/Xatom.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtklayout.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-link.h>
 
 struct NautilusDesktopWindowDetails {
-	GList *unref_list;
+	int dummy;
 };
 
-static void nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass);
-static void nautilus_desktop_window_init       (NautilusDesktopWindow      *window);
-static void set_wmspec_desktop_hint            (GdkWindow                  *window);
+static void set_wmspec_desktop_hint (GdkWindow *window);
 
-EEL_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
+GNOME_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window,
+			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
 
 static void
-nautilus_desktop_window_init (NautilusDesktopWindow *window)
+nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
 {
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
@@ -139,11 +130,9 @@ finalize (GObject *object)
 	window = NAUTILUS_DESKTOP_WINDOW (object);
 
 	gdk_property_delete (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
-
-	eel_gtk_object_list_free (window->details->unref_list);
 	g_free (window->details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -244,45 +233,11 @@ set_window_background (GtkWidget *widget,
 	/* For both parent and child, if it's a layout then set on the
 	 * bin window as well.
 	 */
-	if (GTK_IS_LAYOUT (widget))
+	if (GTK_IS_LAYOUT (widget)) {
 		set_gdk_window_background (GTK_LAYOUT (widget)->bin_window,
 					   have_pixel,
 					   pixmap, pixel);
-}
-
-static void
-realize (GtkWidget *widget)
-{
-	NautilusDesktopWindow *window;
-
-	window = NAUTILUS_DESKTOP_WINDOW (widget);
-
-	/* Make sure we get keyboard events */
-	gtk_widget_set_events (widget, gtk_widget_get_events (widget) 
-			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
-			      
-	/* Do the work of realizing. */
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
-
-	/* This is the new way to set up the desktop window */
-	set_wmspec_desktop_hint (widget->window);
-}
-
-static void
-map (GtkWidget *widget)
-{
-	set_window_background (widget, FALSE, FALSE, None, 0);
-	
-	/* Chain up to realize our children */
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
-}
-
-static void
-real_add_current_location_to_history_list (NautilusWindow *window)
-{
-	/* Do nothing. The desktop window's location should not
-	 * show up in the history list.
-	 */
+	}
 }
 
 static void
@@ -300,15 +255,50 @@ set_wmspec_desktop_hint (GdkWindow *window)
                                       "_NET_WM_WINDOW_TYPE",
                                       False),
                          XA_ATOM, 32, PropModeReplace,
-                         (guchar *)&atom, 1);
+                         (guchar *) &atom, 1);
 }
 
 static void
-nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
+realize (GtkWidget *widget)
 {
-	G_OBJECT_CLASS (klass)->finalize = finalize;
-	GTK_WIDGET_CLASS (klass)->realize = realize;
-	GTK_WIDGET_CLASS (klass)->map = map;
-	NAUTILUS_WINDOW_CLASS (klass)->add_current_location_to_history_list 
+	NautilusDesktopWindow *window;
+
+	window = NAUTILUS_DESKTOP_WINDOW (widget);
+
+	/* Make sure we get keyboard events */
+	gtk_widget_set_events (widget, gtk_widget_get_events (widget) 
+			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
+			      
+	/* Do the work of realizing. */
+	GTK_WIDGET_CLASS (parent_class)->realize (widget);
+
+	/* This is the new way to set up the desktop window */
+	set_wmspec_desktop_hint (widget->window);
+}
+
+static void
+map (GtkWidget *widget)
+{
+	set_window_background (widget, FALSE, FALSE, None, 0);
+	
+	/* Chain up to realize our children */
+	GTK_WIDGET_CLASS (parent_class)->map (widget);
+}
+
+static void
+real_add_current_location_to_history_list (NautilusWindow *window)
+{
+	/* Do nothing. The desktop window's location should not
+	 * show up in the history list.
+	 */
+}
+
+static void
+nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = finalize;
+	GTK_WIDGET_CLASS (class)->realize = realize;
+	GTK_WIDGET_CLASS (class)->map = map;
+	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
 		= real_add_current_location_to_history_list;
 }

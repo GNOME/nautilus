@@ -1,5 +1,16 @@
 2002-02-21  Darin Adler  <darin@bentspoon.com>
 
+	* components/image-viewer/: Remove. Michael already took it out of the
+	tarball, so I am removing it from cvs for clarity.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_init): Use g_signal_connect_object with
+	G_CONNECT_SWAPPED instead of g_signal_connect_closure.
+	
+	* src/nautilus-desktop-window.c: Some code cleanup.
+
+2002-02-21  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/Makefile.am: Remove nautilus-desktop-file-loader.[ch].
 	* libnautilus-private/nautilus-desktop-file-loader.c: Remove.
 	* libnautilus-private/nautilus-desktop-file-loader.h: Remove.
