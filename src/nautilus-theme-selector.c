@@ -288,7 +288,6 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_widget_show(theme_selector->details->add_button);
 	
 	theme_selector->details->add_button_label = gtk_label_new (_("  Add new theme  "));
-
 	gtk_widget_show(theme_selector->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->add_button), theme_selector->details->add_button_label);
 	gtk_box_pack_end (GTK_BOX (bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
@@ -297,10 +296,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	
 	/* now create the "remove" button */
   	theme_selector->details->remove_button = gtk_button_new();
-	
-	theme_selector->details->remove_button_label = nautilus_label_new (_("  Remove theme  "));
-	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->remove_button_label), 2);
-	
+	theme_selector->details->remove_button_label = gtk_label_new (_("  Remove theme  "));
 	gtk_widget_show(theme_selector->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->remove_button), theme_selector->details->remove_button_label);
 	gtk_box_pack_end (GTK_BOX (bottom_box),
@@ -516,7 +512,7 @@ remove_button_callback (GtkWidget *widget, NautilusThemeSelector *theme_selector
 
 	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
 				 _("Click on a theme to remove it."));
-	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->add_button_label),
+	gtk_label_set_text (GTK_LABEL (theme_selector->details->add_button_label),
 				 _("Cancel Remove"));
 	
 	populate_list_with_themes (theme_selector);
@@ -578,8 +574,7 @@ exit_remove_mode (NautilusThemeSelector *theme_selector)
 	set_help_label (theme_selector, FALSE);
 	
 	/* change the add button label back to it's normal state */
-	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->add_button_label), _("Add New Theme"));
-	
+	gtk_label_set_text (GTK_LABEL (theme_selector->details->add_button_label), _("Add New Theme"));
 	populate_list_with_themes (theme_selector);	
 }
 

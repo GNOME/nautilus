@@ -1,3 +1,21 @@
+2001-01-24  Andy Hertzfeld  <andy@eazel.com>
+
+	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
+
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize), (remove_button_callback),
+	(exit_remove_mode):
+	fixed bug 5972, remove theme button uses aa text, by using
+	a gtk_label instead of a nautilus_label. Also, fixed problem where
+	it was calling nautilus_label_set_text on a gtk label.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize), (make_category_link):
+	fixed bug 5587, hard-coded button geometry in the property browser,
+	fixed by removing the set_usizes and allowing gtk to adaptively
+	size them and replacing the table that was holding them with a
+	box so they will be centered properly.
+
 2001-01-23  Michael Engber  <engber@eazel.com>
 
 	[checkin for engber -ramiro ]
