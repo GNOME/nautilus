@@ -1,3 +1,9 @@
+2002-03-05  Jens Finke  <jens@triq.net>
+
+	* components/adapter/nautilus-adapter-stream-load-strategy.c
+	(nautilus_adapter_stream_load_strategy_load_location): Escape '!'
+	character in URIs before using it as a moniker string. 
+
 2002-03-05  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-private/nautilus-global-preferences.c 

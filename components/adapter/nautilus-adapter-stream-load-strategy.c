@@ -38,6 +38,7 @@
 #include <gtk/gtkobject.h>
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 struct NautilusAdapterStreamLoadStrategyDetails {
 	Bonobo_PersistStream  persist_stream;
@@ -122,6 +123,7 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 	Bonobo_Stream stream;
 	CORBA_Environment ev;
 	char *moniker_str;
+	char *escaped_uri;
 
 	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (abstract_strategy);
 	g_object_ref (strategy);
@@ -129,10 +131,15 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 	CORBA_exception_init (&ev);
 
 	nautilus_adapter_load_strategy_report_load_underway (abstract_strategy);
-	
-	moniker_str = g_strconcat ("vfs:", uri, NULL);
+
+	/* We must escape the '!' in the URI here, because it is
+	 * used as argument delimiter within monikers.
+	 */
+	escaped_uri = gnome_vfs_escape_set (uri, "!");
+	moniker_str = g_strconcat ("vfs:", escaped_uri, NULL);
 	stream = bonobo_get_object (moniker_str, "IDL:Bonobo/Stream:1.0", &ev);
 	g_free (moniker_str);
+	g_free (escaped_uri);
 
 	if (BONOBO_EX (&ev) || CORBA_Object_is_nil (stream, &ev)) {
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
