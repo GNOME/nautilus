@@ -91,7 +91,7 @@ typedef enum {
 
 typedef struct {
 	gboolean is_sidebar_panel;
-	char *label;
+	NautilusViewIdentifier *id;
 } ViewFrameInfo;
 
 static void connect_view           (NautilusWindow             *window,
@@ -662,10 +662,8 @@ location_has_really_changed (NautilusWindow *window)
          */
         if (window->details->pending_location == NULL) {
                 nautilus_window_synch_view_as_menus (window);
-        }
-
-        /* Tell the window we are finished. */
-        if (window->details->pending_location != NULL) {
+        } else {
+                /* Tell the window we are finished. */
                 update_for_new_location (window);
         }
 
@@ -756,15 +754,16 @@ nautilus_window_open_location_with_selection (NautilusWindow *window,
 
 
 static ViewFrameInfo *
-view_frame_info_new (gboolean is_sidebar_panel, const char *label)
+view_frame_info_new (gboolean is_sidebar_panel,
+                     const NautilusViewIdentifier *id)
 {
 	ViewFrameInfo *new_info;
 
-	g_return_val_if_fail (label != NULL, NULL);
+	g_return_val_if_fail (id != NULL, NULL);
 
-	new_info = g_new0 (ViewFrameInfo, 1);
+	new_info = g_new (ViewFrameInfo, 1);
 	new_info->is_sidebar_panel = is_sidebar_panel;
-	new_info->label = g_strdup (label);
+	new_info->id = nautilus_view_identifier_copy (id);
 
 	return new_info;
 }
@@ -773,7 +772,7 @@ static void
 view_frame_info_free (ViewFrameInfo *info)
 {
 	if (info != NULL) {
-		g_free (info->label);
+		nautilus_view_identifier_free (info->id);
 		g_free (info);
 	}
 }
@@ -781,11 +780,11 @@ view_frame_info_free (ViewFrameInfo *info)
 static void
 set_view_frame_info (NautilusViewFrame *view_frame, 
 		     gboolean is_sidebar_panel, 
-		     const char *label)
+		     const NautilusViewIdentifier *id)
 {
 	gtk_object_set_data_full (GTK_OBJECT (view_frame),
 				  "info",
-				  view_frame_info_new (is_sidebar_panel, label),
+				  view_frame_info_new (is_sidebar_panel, id),
 				  (GtkDestroyNotify) view_frame_info_free);
 }
 
@@ -806,7 +805,17 @@ view_frame_get_label (NautilusViewFrame *view_frame)
 
 	info = (ViewFrameInfo *)gtk_object_get_data 
 		(GTK_OBJECT (view_frame), "info");
-	return g_strdup (info->label);
+	return g_strdup (info->id->name);
+}
+
+static NautilusViewIdentifier *
+view_frame_get_id (NautilusViewFrame *view_frame)
+{
+	ViewFrameInfo *info;
+
+	info = (ViewFrameInfo *)gtk_object_get_data 
+		(GTK_OBJECT (view_frame), "info");
+	return nautilus_view_identifier_copy (info->id);
 }
 
 static void
@@ -913,6 +922,15 @@ set_to_pending_location_and_selection (NautilusWindow *window)
         window->details->pending_selection = NULL;
 }
 
+NautilusViewIdentifier *
+nautilus_window_get_content_view_id (NautilusWindow *window)
+{
+        if (window->content_view == NULL) {
+                return NULL;
+        }
+	return view_frame_get_id (window->content_view);
+}
+
 gboolean
 nautilus_window_content_view_matches_iid (NautilusWindow *window, 
 					  const char *iid)
@@ -961,9 +979,6 @@ load_content_view (NautilusWindow *window,
         
         bonobo_ui_component_thaw (window->details->shell_ui, NULL);
         
-        nautilus_view_identifier_free (window->content_view_id);
-        window->content_view_id = nautilus_view_identifier_copy (id);
-
         if (nautilus_window_content_view_matches_iid (window, iid)) {
                 /* reuse existing content view */
                 view = window->content_view;
@@ -977,7 +992,7 @@ load_content_view (NautilusWindow *window,
                 window->new_content_view = view;
                 gtk_object_ref (GTK_OBJECT (view));
                 gtk_object_sink (GTK_OBJECT (view));
-		set_view_frame_info (view, FALSE, id->name);
+		set_view_frame_info (view, FALSE, id);
                 connect_view (window, view);
                 nautilus_view_frame_load_view (view, iid);
         }
@@ -1538,7 +1553,7 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 		sidebar_panel = nautilus_view_frame_new (window->details->ui_container,
                                                          window->application->undo_manager);
 		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
-		set_view_frame_info (sidebar_panel, TRUE, identifier->name);
+		set_view_frame_info (sidebar_panel, TRUE, identifier);
 		connect_view (window, sidebar_panel);
 		nautilus_window_add_sidebar_panel (window, sidebar_panel);
 		nautilus_view_frame_load_view (sidebar_panel, identifier->iid);

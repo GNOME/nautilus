@@ -94,7 +94,6 @@ struct NautilusWindow {
         
         /* Current views stuff */
         NautilusViewFrame *content_view;
-        NautilusViewIdentifier *content_view_id;
         GList *sidebar_panels;
         
         /* Widgets to keep track of (for state changes, etc) */      

@@ -1,5 +1,38 @@
 2001-04-19  Darin Adler  <darin@eazel.com>
 
+	Fix bug 8000 (Can get two identical "View as" items in "View as"
+	menu):
+
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c:
+	(location_has_really_changed): Make logic clearer by using else
+	instead of two if statements.
+	(view_frame_info_new), (view_frame_info_free),
+	(set_view_frame_info), (view_frame_get_label),
+	(view_frame_get_id), (nautilus_window_get_content_view_id),
+	(load_content_view), (nautilus_window_set_sidebar_panels): Store a
+	NautilusViewIdentifier with each view.
+	
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_destroy): We no longer
+	have to store the content view identifier separately.
+	(remove_first_child): New function.
+	(update_extra_viewer_in_view_as_menus): Shared by the two below,
+	this is the old replace_extra_viewer_in_view_as_menus, simplified
+	and changed to support both adding and removing the extra viewer.
+	(remove_extra_viewer_in_view_as_menus): Cover for removing.
+	(replace_extra_viewer_in_view_as_menus): Cover for adding.
+	(nautilus_window_synch_view_as_menus): Simplify code a lot by
+	removing some special cases and taking advantage of the fact that
+	the position of the chosen item is always the same in both menus.
+	(chose_component_callback): Removed the FIXME now that the bug is
+	fixed.
+
+	* NEWS: Tweak wording.
+	
+2001-04-19  Darin Adler  <darin@eazel.com>
+
 	Fixed bug 8065 (Cut and Paste file in Trash -> file deleted)
 
 	* src/file-manager/fm-directory-view.c:

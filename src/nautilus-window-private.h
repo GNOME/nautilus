@@ -123,8 +123,6 @@ struct NautilusWindowDetails
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH			800
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT			550
 
-gboolean	   nautilus_window_content_view_matches_iid 		 (NautilusWindow    *window, 
-					  				  const char 	    *iid);
 void               nautilus_window_set_status                            (NautilusWindow    *window,
                                                                           const char        *status);
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
