@@ -64,7 +64,6 @@ typedef enum {
 	NAUTILUS_VOLUME_CDROM, 	
 	NAUTILUS_VOLUME_EXT2,
 	NAUTILUS_VOLUME_FAT,
-	NAUTILUS_VOLUME_FLOPPY,
 	NAUTILUS_VOLUME_HPFS,
 	NAUTILUS_VOLUME_HSFS,
 	NAUTILUS_VOLUME_MINIX,
@@ -81,16 +80,28 @@ typedef enum {
 	NAUTILUS_VOLUME_UNKNOWN
 } NautilusVolumeType;
 
+typedef enum {
+	NAUTILUS_DEVICE_AUDIO_CD,
+	NAUTILUS_DEVICE_CAMERA,
+	NAUTILUS_DEVICE_CD_ROM_DRIVE,
+	NAUTILUS_DEVICE_FLOPPY_DRIVE,
+	NAUTILUS_DEVICE_JAZ_DRIVE,
+	NAUTILUS_DEVICE_MEMORY_STICK,
+	NAUTILUS_DEVICE_NFS,
+	NAUTILUS_DEVICE_ZIP_DRIVE,
+	NAUTILUS_DEVICE_UNKNOWN
+} NautilusDeviceType;
+
 struct NautilusVolume {
-	NautilusVolumeType type;
-	
+	NautilusVolumeType volume_type;
+	NautilusDeviceType device_type;
+		
 	char *device_path;
 	char *mount_path;
 	char *volume_name;
 	char *filesystem;
 	
-	gboolean is_removable;
-	
+	gboolean is_removable;	
 	gboolean is_read_only;
 };
 

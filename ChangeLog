@@ -1,3 +1,42 @@
+2001-04-20  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 8073, roll over Red Hat patches for their
+	"plug-n-play" feature to Nautilus.
+	
+	The code does not use magicdev, but instead uses our
+	distribution agnostic volume monitor to achieve identical,
+	and in some cases superior, results.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c: (floppy_sort),
+	(nautilus_volume_monitor_get_target_uri),
+	(nautilus_volume_monitor_should_integrate_trash),
+	(mount_volume_get_name), (mount_volume_activate),
+	(mount_volume_deactivate), (mount_volume_floppy_add),
+	(mount_volume_ext2_add), (mount_volume_udf_add),
+	(mount_volume_vfat_add), (mount_volume_msdos_add),
+	(mount_volume_iso9660_add), (mount_volume_affs_add),
+	(mount_volume_auto_add), (mount_volume_cdda_add),
+	(mount_volume_fat_add), (mount_volume_hpfs_add),
+	(mount_volume_hsfs_add), (mount_volume_minix_add),
+	(mount_volume_nfs_add), (mount_volume_proc_add),
+	(mount_volume_reiserfs_add), (mount_volume_ufs_add),
+	(mount_volume_smb_add), (mount_volume_unsdos_add),
+	(mount_volume_xenix_add), (mount_volume_xiafs_add), (find_volumes),
+	(create_volume), (copy_volume), (mount_volume_add_filesystem):
+	Determine device type when performing volume type specific mount tasks.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	Add new device type enumeration.
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+	
+	* src/nautilus-application.c: (volume_mounted_callback):
+	Check for cdroms being mounted and open a window to the cdrom
+	mount point if the user has specified that behavior in the
+	gnome preferences.
+
 2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-theme-selector.c:
@@ -9,6 +48,7 @@
 	Update the Mozilla information to point to Taska's support FAQ
 	instead of the Nautilus mailing list post.
 	
+>>>>>>> 1.4459
 2001-04-20  Andy Hertzfeld  <andy@eazel.com>
 
 	first check-in of "news" sidebar view to display news from selected

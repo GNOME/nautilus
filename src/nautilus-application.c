@@ -762,14 +762,25 @@ need_to_show_first_time_druid (void)
 	return result;
 }
 
-/* Called whenever a volume is mounted.
- * It would also be cool to restore open windows and
- * position info saved when the volume was unmounted.
- */
 static void
 volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			 NautilusApplication *application)
 {
+	NautilusWindow *window;
+	char *uri;
+	
+	if (volume == NULL || application == NULL) {
+		return;
+	}
+	
+	/* Open a window to the CD if the user has set that preference. */
+	if (volume->device_type == NAUTILUS_DEVICE_CD_ROM_DRIVE
+		&& gnome_config_get_bool ("/magicdev/Options/do_fileman_window=true")) {		
+		window = nautilus_application_create_window (application);
+		uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
+		nautilus_window_go_to (window, uri);
+		g_free (uri);
+	}
 }
 
 static gboolean

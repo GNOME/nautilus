@@ -41,10 +41,12 @@
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkmain.h>
+#include <libgnome/gnome-config.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-exec.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <pthread.h>
 #include <stdio.h>
@@ -156,14 +158,11 @@ static void            get_msdos_volume_name                    (NautilusVolume 
 static void            get_nfs_volume_name                      (NautilusVolume             *volume);
 static void            get_reiser_volume_name                   (NautilusVolume             *volume);
 static void            get_ufs_volume_name                      (NautilusVolume             *volume);
-static void            get_floppy_volume_name                   (NautilusVolume             *volume);
 static void            get_generic_volume_name                  (NautilusVolume             *volume);
 static void            mount_volume_get_name                    (NautilusVolume             *volume);
 static void            mount_volume_activate                    (NautilusVolumeMonitor      *view,
 								 NautilusVolume             *volume);
 static void            mount_volume_deactivate                  (NautilusVolumeMonitor      *monitor,
-								 NautilusVolume             *volume);
-static void            mount_volume_activate_floppy             (NautilusVolumeMonitor      *view,
 								 NautilusVolume             *volume);
 static void            load_additional_mount_list_info          (GList                      *volume_list);
 static GList *         mount_volume_add_filesystem              (NautilusVolume             *volume,
@@ -316,8 +315,8 @@ floppy_sort (const NautilusVolume *volume1, const NautilusVolume *volume2)
 {
 	gboolean is_floppy_1, is_floppy_2;
 
-	is_floppy_1 = volume1->type == NAUTILUS_VOLUME_FLOPPY;
-	is_floppy_2 = volume2->type == NAUTILUS_VOLUME_FLOPPY;
+	is_floppy_1 = volume1->device_type == NAUTILUS_DEVICE_FLOPPY_DRIVE;
+	is_floppy_2 = volume2->device_type == NAUTILUS_DEVICE_FLOPPY_DRIVE;
 
 	if (is_floppy_1 && !is_floppy_2) {
 		return -1;
@@ -572,7 +571,7 @@ nautilus_volume_monitor_get_target_uri (const NautilusVolume *volume)
 {
 	char *uri;
 
-	switch (volume->type) {
+	switch (volume->volume_type) {
 	case NAUTILUS_VOLUME_CDDA:
 		uri = g_strdup_printf ("cdda://%s", volume->mount_path);
 		break;
@@ -593,14 +592,13 @@ nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
 	 * we can't try to support trash on because the list would have to be
 	 * more definitive.
 	 */
-	return volume->type == NAUTILUS_VOLUME_EXT2
-		|| volume->type == NAUTILUS_VOLUME_FAT
-		|| volume->type == NAUTILUS_VOLUME_NFS
-		|| volume->type == NAUTILUS_VOLUME_VFAT
-		|| volume->type == NAUTILUS_VOLUME_FLOPPY
-		|| volume->type == NAUTILUS_VOLUME_REISER
-		|| volume->type == NAUTILUS_VOLUME_UFS
-		|| volume->type == NAUTILUS_VOLUME_SMB;
+	return volume->volume_type == NAUTILUS_VOLUME_EXT2
+		|| volume->volume_type == NAUTILUS_VOLUME_FAT
+		|| volume->volume_type == NAUTILUS_VOLUME_NFS
+		|| volume->volume_type == NAUTILUS_VOLUME_VFAT
+		|| volume->volume_type == NAUTILUS_VOLUME_REISER
+		|| volume->volume_type == NAUTILUS_VOLUME_UFS
+		|| volume->volume_type == NAUTILUS_VOLUME_SMB;
 }
 
 const char *
@@ -682,7 +680,6 @@ mount_volume_activate_cdda (NautilusVolumeMonitor *monitor, NautilusVolume *volu
 	close(fd);	
 }
 
-
 static void
 mount_volume_activate_cdrom (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
@@ -708,11 +705,6 @@ mount_volume_activate_cdrom (NautilusVolumeMonitor *monitor, NautilusVolume *vol
   	}
 	
 	close (fd);
-}
-
-static void
-mount_volume_activate_floppy (NautilusVolumeMonitor *view, NautilusVolume *volume)
-{
 }
 
 static void
@@ -742,7 +734,7 @@ typedef void (* ChangeNautilusVolumeFunction) (NautilusVolumeMonitor *view, Naut
 static void
 mount_volume_get_name (NautilusVolume *volume)
 {
-	switch (volume->type) {
+	switch (volume->volume_type) {
 	case NAUTILUS_VOLUME_CDDA:
 		mount_volume_get_cdda_name (volume);
 		break;
@@ -750,10 +742,6 @@ mount_volume_get_name (NautilusVolume *volume)
 	case NAUTILUS_VOLUME_CDROM:
 	case NAUTILUS_VOLUME_HSFS:
 		mount_volume_get_cdrom_name (volume);
-		break;
-		
-	case NAUTILUS_VOLUME_FLOPPY:
-		get_floppy_volume_name (volume);
 		break;
 		
 	case NAUTILUS_VOLUME_EXT2:
@@ -799,7 +787,7 @@ mount_volume_get_name (NautilusVolume *volume)
 static void
 mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
-	switch (volume->type) {
+	switch (volume->volume_type) {
 	case NAUTILUS_VOLUME_CDDA:
 		mount_volume_activate_cdda (monitor, volume);
 		break;
@@ -807,10 +795,6 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	case NAUTILUS_VOLUME_CDROM:
 	case NAUTILUS_VOLUME_HSFS:
 		mount_volume_activate_cdrom (monitor, volume);
-		break;
-		
-	case NAUTILUS_VOLUME_FLOPPY:
-		mount_volume_activate_floppy (monitor, volume);
 		break;
 		
 	case NAUTILUS_VOLUME_EXT2:
@@ -877,7 +861,7 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
 	pthread_t eject_thread;
 
-	switch (volume->type) {
+	switch (volume->volume_type) {
 	case NAUTILUS_VOLUME_CDROM:
 	case NAUTILUS_VOLUME_HSFS:
 		pthread_create (&eject_thread, NULL, eject_device, g_strdup (volume->device_path));
@@ -1124,17 +1108,10 @@ mount_volumes_check_status (NautilusVolumeMonitor *monitor)
 }
 
 static gboolean
-mount_volume_floppy_add (NautilusVolume *volume)
-{
-	volume->type = NAUTILUS_VOLUME_FLOPPY;
-
-	return TRUE;
-}
-
-static gboolean
 mount_volume_ext2_add (NautilusVolume *volume)
 {		
-	volume->type = NAUTILUS_VOLUME_EXT2;
+	volume->volume_type = NAUTILUS_VOLUME_EXT2;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
 		
 	return TRUE;
 }
@@ -1142,24 +1119,27 @@ mount_volume_ext2_add (NautilusVolume *volume)
 static gboolean
 mount_volume_udf_add (NautilusVolume *volume)
 {		
-	volume->type = NAUTILUS_VOLUME_UDF;
-		
+	volume->volume_type = NAUTILUS_VOLUME_UDF;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+	
 	return TRUE;
 }
 
 static gboolean
 mount_volume_vfat_add (NautilusVolume *volume)
 {		
-	volume->type = NAUTILUS_VOLUME_VFAT;
-		
+	volume->volume_type = NAUTILUS_VOLUME_VFAT;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_msdos_add (NautilusVolume *volume)
 {		
-	volume->type = NAUTILUS_VOLUME_MSDOS;
-		
+	volume->volume_type = NAUTILUS_VOLUME_MSDOS;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+	
 	return TRUE;
 }
 
@@ -1214,7 +1194,7 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 {
 #ifndef SOLARIS_MNT
 	int fd;
-
+	
 	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
 	if (fd < 0) {
 		return FALSE;
@@ -1227,15 +1207,18 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 	close (fd);
 #endif
 
-	volume->type = NAUTILUS_VOLUME_CDROM;
-
+	volume->volume_type = NAUTILUS_VOLUME_CDROM;
+	volume->device_type = NAUTILUS_DEVICE_CD_ROM_DRIVE;
+	
 	return TRUE;
 }
 
 static gboolean
 mount_volume_affs_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_AFFS;
+	volume->volume_type = NAUTILUS_VOLUME_AFFS;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
@@ -1247,9 +1230,11 @@ static gboolean
 mount_volume_auto_add (NautilusVolume *volume)
 {
 	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {	
-		volume->type = NAUTILUS_VOLUME_FLOPPY;
+		volume->volume_type = NAUTILUS_VOLUME_AUTO;
+		volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;	
 	} else {
-		volume->type = NAUTILUS_VOLUME_AUTO;
+		volume->volume_type = NAUTILUS_VOLUME_AUTO;
+		volume->device_type = NAUTILUS_DEVICE_UNKNOWN;
 	}
 	return TRUE;
 }
@@ -1257,35 +1242,45 @@ mount_volume_auto_add (NautilusVolume *volume)
 static gboolean
 mount_volume_cdda_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_CDDA;
+	volume->volume_type = NAUTILUS_VOLUME_CDDA;
+	volume->device_type = NAUTILUS_DEVICE_CD_ROM_DRIVE;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_fat_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_FAT;
+	volume->volume_type = NAUTILUS_VOLUME_FAT;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_hpfs_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_HPFS;
+	volume->volume_type = NAUTILUS_VOLUME_HPFS;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_hsfs_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_HSFS;
+	volume->volume_type = NAUTILUS_VOLUME_HSFS;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_minix_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_MINIX;
+	volume->volume_type = NAUTILUS_VOLUME_MINIX;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
@@ -1302,55 +1297,71 @@ mount_volume_nfs_add (NautilusVolume *volume)
 		return FALSE;
 	}
 		
-	volume->type = NAUTILUS_VOLUME_NFS;
+	volume->volume_type = NAUTILUS_VOLUME_NFS;
+	volume->device_type = NAUTILUS_DEVICE_NFS;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_proc_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_EXT2;
+	volume->volume_type = NAUTILUS_VOLUME_EXT2;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 static gboolean
 mount_volume_reiserfs_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_REISER;
+	volume->volume_type = NAUTILUS_VOLUME_REISER;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_ufs_add (NautilusVolume *volume)
 {
-        volume->type = NAUTILUS_VOLUME_UFS;
+        volume->volume_type = NAUTILUS_VOLUME_UFS;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
         return TRUE;
 }
 
 static gboolean
 mount_volume_smb_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_SMB;
+	volume->volume_type = NAUTILUS_VOLUME_SMB;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_unsdos_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_UNSDOS;
+	volume->volume_type = NAUTILUS_VOLUME_UNSDOS;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_xenix_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_XENIX;
+	volume->volume_type = NAUTILUS_VOLUME_XENIX;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
 static gboolean
 mount_volume_xiafs_add (NautilusVolume *volume)
 {
-	volume->type = NAUTILUS_VOLUME_XIAFS;
+	volume->volume_type = NAUTILUS_VOLUME_XIAFS;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;	
+
 	return TRUE;
 }
 
@@ -1359,6 +1370,7 @@ find_volumes (NautilusVolumeMonitor *monitor)
 {
 	/* make sure the mount states of disks are set up */
 	mount_volumes_check_status (monitor);
+	load_additional_mount_list_info (monitor->details->mounts);
 
 	/* Add a timer function to check for status change in mounted volumes periodically */
 	monitor->details->mount_volume_timer_id = 
@@ -1721,6 +1733,9 @@ create_volume (const char *device_path, const char *mount_path, const char *file
 	volume->mount_path = g_strdup (mount_path);
 	volume->filesystem = g_strdup (filesystem);
 
+	volume->volume_type = NAUTILUS_VOLUME_UNKNOWN;
+	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;
+	
 	return volume;
 }
 
@@ -1730,7 +1745,8 @@ copy_volume (NautilusVolume *volume)
 	NautilusVolume *new_volume;	
 	new_volume = create_volume (volume->device_path, volume->mount_path, volume->filesystem);
 		
-	new_volume->type = volume->type;	
+	new_volume->volume_type = volume->volume_type;	
+	new_volume->device_type = volume->device_type;	
 	new_volume->volume_name = g_strdup (volume->volume_name);
 	new_volume->is_removable = volume->is_removable;
 	new_volume->is_read_only = volume->is_read_only;
@@ -1848,21 +1864,6 @@ get_ufs_volume_name (NautilusVolume *volume)
 }
 
 static void
-get_floppy_volume_name (NautilusVolume *volume)
-{
-	char *name;
-	
-	name = strrchr (volume->mount_path, '/');
-	if (name != NULL) {
-		name++;
-		volume->volume_name = g_strdup (name);
-		modify_volume_name_for_display (volume);
-	} else {
-		volume->volume_name = g_strdup (_("Floppy"));
-	}
-}
-
-static void
 get_generic_volume_name (NautilusVolume *volume)
 {
 	char *name;
@@ -1901,11 +1902,12 @@ load_additional_mount_list_info (GList *volume_list)
 static GList *
 mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 {
-	gboolean added = FALSE;
+	gboolean added;
+	char *device_name;
 	
-	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
-		added = mount_volume_floppy_add (volume);
-	} else if (strcmp (volume->filesystem, "affs") == 0) {		
+	added = FALSE;
+	
+	if (strcmp (volume->filesystem, "affs") == 0) {		
 		added = mount_volume_affs_add (volume);
 	} else if (strcmp (volume->filesystem, "auto") == 0) {		
 		added = mount_volume_auto_add (volume);
@@ -1948,9 +1950,42 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 	} else if (strcmp (volume->filesystem, "xiafs") == 0) {
 		added = mount_volume_xiafs_add (volume);
 	}
-	
+
 	if (added) {
 		volume_list = g_list_append (volume_list, volume);
+		
+		/* Identify device type */
+		if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
+			device_name = g_strdup (volume->mount_path + 5);
+											
+			if (eel_str_has_prefix (device_name, "cdrom")) {
+				volume->device_type = NAUTILUS_DEVICE_CD_ROM_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (device_name, "floppy")) {
+				volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
+				volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (device_name, "zip")) {
+				volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (device_name, "jaz")) {
+				volume->device_type = NAUTILUS_DEVICE_JAZ_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (device_name, "camera")) {
+				volume->device_type = NAUTILUS_DEVICE_CAMERA;
+				volume->is_removable = TRUE;					
+			} else if (eel_str_has_prefix (device_name, "memstick")) {
+				volume->device_type = NAUTILUS_DEVICE_MEMORY_STICK;
+				volume->is_removable = TRUE;
+			} else {
+				volume->device_type = NAUTILUS_DEVICE_UNKNOWN;
+				volume->is_removable = FALSE;
+			}
+			
+			g_free (device_name);
+		}
 	} else {
 		nautilus_volume_monitor_free_volume (volume);	
 	}

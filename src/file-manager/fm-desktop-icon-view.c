@@ -388,18 +388,42 @@ create_mount_link (FMDesktopIconView *icon_view,
 	if (!nautilus_volume_monitor_volume_is_removable (volume)) {
 		return;
 	}
-	
+
 	/* Get icon type */
-	switch (volume->type) {
-	case NAUTILUS_VOLUME_CDDA:
-	case NAUTILUS_VOLUME_CDROM:
+	switch (volume->device_type) {
+	case NAUTILUS_DEVICE_AUDIO_CD:
+	case NAUTILUS_DEVICE_CD_ROM_DRIVE:
 		icon_name = "i-cdrom.png";
 		break;
+
+	case NAUTILUS_DEVICE_CAMERA:
+		icon_name = "i-blockdev.png";
+		break;
+
 		
-	case NAUTILUS_VOLUME_FLOPPY:
+	case NAUTILUS_DEVICE_FLOPPY_DRIVE:
 		icon_name = "i-floppy.png";
 		break;
-		
+
+	case NAUTILUS_DEVICE_JAZ_DRIVE:
+		icon_name = "i-zipdisk2.png";
+		break;
+
+	case NAUTILUS_DEVICE_MEMORY_STICK:
+		icon_name = "gnome-ccperiph.png";
+		break;
+	
+	case NAUTILUS_DEVICE_NFS:
+		icon_name = "i-nfs.png";
+		break;
+	
+	case NAUTILUS_DEVICE_ZIP_DRIVE:
+		icon_name = "i-zipdisk.png";
+		break;
+
+	case NAUTILUS_DEVICE_UNKNOWN:
+		icon_name = "i-blockdev.png";
+		break;	
 	default:
 		icon_name = "i-blockdev.png";
 		break;	
