@@ -604,6 +604,8 @@ fm_list_handle_dragged_items (NautilusList *list,
 {
 	gboolean ret_val;
 
+	ret_val = FALSE;
+
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 	case NAUTILUS_ICON_DND_URI_LIST:
