@@ -833,6 +833,7 @@ call_files_changed_unref_free_list (gpointer key, gpointer value, gpointer user_
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
+	nautilus_directory_async_state_changed (key);
 	nautilus_directory_emit_change_signals (key, value);
 	nautilus_file_list_free (value);
 }
@@ -851,16 +852,12 @@ call_get_file_info_free_list (gpointer key, gpointer value, gpointer user_data)
 static void
 invalidate_count_and_unref (gpointer key, gpointer value, gpointer user_data)
 {
-	NautilusDirectory *directory;
-
 	g_assert (NAUTILUS_IS_DIRECTORY (key));
 	g_assert (value == key);
 	g_assert (user_data == NULL);
 
-	directory = NAUTILUS_DIRECTORY (key);
-	
-	nautilus_directory_invalidate_count_and_mime_list (directory);
-	nautilus_directory_unref (directory);
+	nautilus_directory_invalidate_count_and_mime_list (key);
+	nautilus_directory_unref (key);
 }
 
 static void
@@ -929,6 +926,39 @@ nautilus_directory_notify_files_added (GList *uris)
 	/* Invalidate count for each parent directory. */
 	g_hash_table_foreach (parent_directories, invalidate_count_and_unref, NULL);
 	g_hash_table_destroy (parent_directories);
+}
+
+void
+nautilus_directory_notify_files_changed (GList *uris)
+{
+	GHashTable *changed_lists;
+	GList *node;
+	const char *uri;
+	NautilusFile *file;
+
+	/* Make a list of changed files in each directory. */
+	changed_lists = g_hash_table_new (NULL, NULL);
+
+	/* Go through all the notifications. */
+	for (node = uris; node != NULL; node = node->next) {
+		uri = (const char *) node->data;
+
+		/* Find the file. */
+		file = nautilus_file_get_existing (uri);
+		if (file != NULL) {
+			/* Tell it to re-get info and emit a changed
+			 * signal.
+			 */
+			file->details->file_info_is_up_to_date = FALSE;
+			hash_table_list_prepend (changed_lists,
+						 file->details->directory,
+						 file);
+		}
+	}
+
+	/* Now send out the changed signals. */
+	g_hash_table_foreach (changed_lists, call_files_changed_unref_free_list, NULL);
+	g_hash_table_destroy (changed_lists);
 }
 
 void

@@ -37,6 +37,7 @@
 typedef enum {
 	CHANGE_FILE_INITIAL,
 	CHANGE_FILE_ADDED,
+	CHANGE_FILE_CHANGED,
 	CHANGE_FILE_REMOVED,
 	CHANGE_FILE_MOVED,
 	CHANGE_METADATA_COPIED,
@@ -146,6 +147,20 @@ nautilus_file_changes_queue_file_added (const char *uri)
 
 	new_item = g_new0 (NautilusFileChange, 1);
 	new_item->kind = CHANGE_FILE_ADDED;
+	new_item->from_uri = g_strdup (uri);
+	nautilus_file_changes_queue_add_common (queue, new_item);
+}
+
+void
+nautilus_file_changes_queue_file_changed (const char *uri)
+{
+	NautilusFileChange *new_item;
+	NautilusFileChangesQueue *queue;
+
+	queue = nautilus_file_changes_queue_get();
+
+	new_item = g_new0 (NautilusFileChange, 1);
+	new_item->kind = CHANGE_FILE_CHANGED;
 	new_item->from_uri = g_strdup (uri);
 	nautilus_file_changes_queue_add_common (queue, new_item);
 }
@@ -326,7 +341,7 @@ void
 nautilus_file_changes_consume_changes (gboolean consume_all)
 {
 	NautilusFileChange *change;
-	GList *additions, *deletions, *moves;
+	GList *additions, *changes, *deletions, *moves;
 	GList *metadata_copy_requests, *metadata_move_requests, *metadata_remove_requests;
 	GList *position_set_requests;
 	URIPair *pair;
@@ -337,6 +352,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	
 
 	additions = NULL;
+	changes = NULL;
 	deletions = NULL;
 	moves = NULL;
 	metadata_copy_requests = NULL;
@@ -366,6 +382,9 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 				&& change->kind != CHANGE_POSITION_SET
 				&& change->kind != CHANGE_POSITION_REMOVE;
 			
+			flush_needed |= changes != NULL
+				&& change->kind != CHANGE_FILE_CHANGED;
+			
 			flush_needed |= moves != NULL
 				&& change->kind != CHANGE_FILE_MOVED
 				&& change->kind != CHANGE_METADATA_MOVED
@@ -375,7 +394,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			flush_needed |= deletions != NULL
 				&& change->kind != CHANGE_FILE_REMOVED
 				&& change->kind != CHANGE_METADATA_REMOVED;
-		
+			
 			flush_needed |= metadata_copy_requests != NULL
 				&& change->kind != CHANGE_FILE_ADDED
 				&& change->kind != CHANGE_METADATA_COPIED
@@ -387,7 +406,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 				&& change->kind != CHANGE_METADATA_MOVED
 				&& change->kind != CHANGE_POSITION_SET
 				&& change->kind != CHANGE_POSITION_REMOVE;
-	
+			
 			flush_needed |= metadata_remove_requests != NULL
 				&& change->kind != CHANGE_FILE_REMOVED
 				&& change->kind != CHANGE_METADATA_REMOVED;
@@ -399,7 +418,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 				&& change->kind != CHANGE_FILE_MOVED
 				&& change->kind != CHANGE_METADATA_COPIED
 				&& change->kind != CHANGE_METADATA_MOVED;
-
+			
 			flush_needed |= !consume_all && chunk_count >= CONSUME_CHANGES_MAX_CHUNK;
 				/* we have reached the chunk maximum */
 		}
@@ -424,6 +443,11 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 				nautilus_directory_notify_files_added (additions);
 				eel_g_list_free_deep (additions);
 				additions = NULL;
+			}
+			if (changes != NULL) {
+				nautilus_directory_notify_files_changed (changes);
+				eel_g_list_free_deep (changes);
+				changes = NULL;
 			}
 			if (metadata_copy_requests != NULL) {
 				nautilus_directory_schedule_metadata_copy (metadata_copy_requests);
@@ -456,6 +480,10 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 		switch (change->kind) {
 		case CHANGE_FILE_ADDED:
 			additions = g_list_append (additions, change->from_uri);
+			break;
+
+		case CHANGE_FILE_CHANGED:
+			changes = g_list_append (changes, change->from_uri);
 			break;
 
 		case CHANGE_FILE_REMOVED:

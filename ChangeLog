@@ -1,5 +1,28 @@
 2001-04-16  Darin Adler  <darin@eazel.com>
 
+	Some work on FAM.
+
+	* libnautilus-extensions/nautilus-monitor.h:
+	* libnautilus-extensions/nautilus-monitor.c: (get_fam_connection),
+	(get_request_hash_table), (get_event_uri),
+	(process_fam_notifications), (nautilus_monitor_file),
+	(nautilus_monitor_directory), (nautilus_monitor_cancel): Improved
+	API, fixed some storage leaks, simplified some code, made it
+	handle URI escaping properly, use the file changes queue. Almost
+	ready for prime time!
+
+	* libnautilus-extensions/nautilus-file-changes-queue.h:
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_file_changed),
+	(nautilus_file_changes_consume_changes):
+	* libnautilus-extensions/nautilus-directory-notify.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(call_files_changed_unref_free_list),
+	(nautilus_directory_notify_files_changed):
+	Added a new kind of notification for the file changed case.
+
+2001-04-16  Darin Adler  <darin@eazel.com>
+
 	* src/nautilus-view-frame.c: (destroy_view), (attach_view): Fixed
 	the problem that was making the image view crash. We want to unref
 	right away, but not release the CORBA object reference until we

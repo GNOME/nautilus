@@ -2,7 +2,7 @@
 
    nautilus-monitor.c: file and directory change monitoring for nautilus
  
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -19,390 +19,302 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Seth Nickell <seth@eazel.com>
+   Authors: Seth Nickell <seth@eazel.com>
+            Darin Adler <darin@eazel.com>
 */
 
-#include <glib.h>
-
-#if HAVE_FAM_H
-#include <fam.h>
-#endif
-
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <stdio.h>
-#include <string.h>
-
-#include "nautilus-directory-notify.h"
-#include "nautilus-file.h"
+#include <config.h>
 #include "nautilus-monitor.h"
 
-#if HAVE_FAM_H
+#ifdef HAVE_FAM_H
 
-static FAMConnection  *fam_connection;
+#include "nautilus-file-changes-queue.h"
+#include <eel/eel-glib-extensions.h>
+#include <fam.h>
+#include <gdk/gdk.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
-static gboolean  tried_connection = FALSE;
-static gboolean  connection_valid = TRUE;
-static GList    *monitoring_list  = NULL;
+struct NautilusMonitor {
+	FAMRequest request;
+};
 
-typedef struct {
-        char *uri;
-        FAMRequest request;
-} URIRequest;
+static gboolean got_connection;
 
-
-/* FORWARD DECLARATIONS */
-static void  nautilus_monitor_process_fam_notifications (gpointer data, gint fd, GdkInputCondition condition);
-
-
-/* establish the initial connection with fam, called the first time the fam_connection */
-/* object is "used" by one of the subfunctions                                         */
-static gboolean
-nautilus_monitor_establish_connection ()
-{
-        gboolean connection_valid;
-        
-        fam_connection = g_malloc0(sizeof(FAMConnection));
-
-        /*  Connect to fam  */
-        if (FAMOpen2(fam_connection, "Nautilus") != 0) {
-                printf ("FAM_DEBUG: Nautilus failed to establish a link to the file alteration monitor\n");
-                g_free(fam_connection);
-                fam_connection = NULL;
-                connection_valid = FALSE;
-        } else {
-                /* register our callback into the gtk loop */
-                gdk_input_add(FAMCONNECTION_GETFD(fam_connection), GDK_INPUT_READ, 
-                              nautilus_monitor_process_fam_notifications, NULL);
-                connection_valid = TRUE;
-        }
-
-        return connection_valid;
-}
+static void process_fam_notifications (gpointer          callback_data,
+				       int               fd,
+				       GdkInputCondition condition);
 
 /* singleton object, instantiate and connect if it doesn't already exist */
-/* otherwise just pass back a reference to the existing fam_connection   */
 static FAMConnection *
-nautilus_monitor_get_fam ()
+get_fam_connection (void)
 {
-        if (tried_connection) {
-                return fam_connection;
-        } else {
-                connection_valid = nautilus_monitor_establish_connection();
+	static gboolean tried_connection;
+	static FAMConnection connection;
+	
+	/* Only try once. */
+        if (!tried_connection) {
+		if (FAMOpen2 (&connection, "Nautilus") != 0) {
+			g_warning ("Nautilus failed to establish a link to FAM");
+			got_connection = FALSE;
+		} else {
+			/* Register our callback into the gtk loop. */
+			gdk_input_add (FAMCONNECTION_GETFD (&connection),
+				       GDK_INPUT_READ, 
+				       process_fam_notifications,
+				       NULL);
+			got_connection = TRUE;
+		}
                 tried_connection = TRUE;
-                return fam_connection;
-        }
+	}
+	if (!got_connection) {
+		return NULL;
+	}
+	return &connection;
 }
 
-/* give a request, find what path was used to create it */
-static const char *
-nautilus_monitor_find_path_from_request (GList *list, FAMRequest request) {
-        URIRequest *uri_request = NULL;
-        GList *p;
-        gboolean found = FALSE;
+static GHashTable *
+get_request_hash_table (void)
+{
+	static GHashTable *table;
 
-        for (p = list; (p != NULL) && (!found); p = p->next) {
-                uri_request = (URIRequest *)p->data;
-                if (uri_request->request.reqnum == request.reqnum) {
-                        found = TRUE;
-                }
-        }
-        if (found) {
-                return uri_request->uri;
-        } else {
-                return NULL;
-        }
-}
-
-/* given a path, find the registered "request" that deals with it */
-static const FAMRequest
-nautilus_monitor_find_request_from_path (GList *list, const char *path) {
-        URIRequest *uri_request = NULL;
-        GList *p;
-        gboolean found = FALSE;
-        FAMRequest fr;
-
-        for (p = list; (p != NULL) && (!found); p = p->next) {
-                uri_request = (URIRequest *)p->data;
-                if (strcmp (uri_request->uri, path) == 0) {
-                        found = TRUE;
-                }
-        }
-        if (found) {
-                return uri_request->request;
-        } else {
-                fr.reqnum = -1;
-                return fr;
-        }
-}
-
-/* delete first entry found in list that matches path */
-static void
-nautilus_monitor_delete_first_request_found (GList *list, const char *path) {
-        URIRequest *uri_request = NULL;
-        GList *p, *last = NULL;
-        gboolean found = FALSE;
-
-        for (p = list; (p != NULL) && (!found); p = p->next) {
-                uri_request = (URIRequest *)p->data;
-                if (strcmp (uri_request->uri, path) == 0) {
-                        found = TRUE;
-                }
-                last = p;
-        }
-        if (found) {
-                g_free (uri_request->uri);
-                g_free (uri_request);
-                g_list_remove_link (list, last);
-        }
+	if (table == NULL) {
+		table = eel_g_hash_table_new_free_at_exit
+			(NULL, NULL, "FAM hash table");
+	}
+	return table;
 }
 
 static char *
-nautilus_monitor_get_uri (char * file_name, FAMRequest fr)
+get_event_uri (const FAMEvent *event)
 {
-        const char *base_uri;
-        char *uri_string;
+        const char *base_path;
+	char *path, *uri;
 
-        /* FAM doesn't tell us when something is a full path, and when its just partial */
-        /* so we have to look and see if it starts with a /                             */
-
-        if (file_name[0] == '/') {
-                uri_string = g_strdup_printf ("file://%s", file_name);
-        } else {
-                /* lookup the directory registry that was used for this file notification */
-                /* and tack that on as a base uri fragment                                */
-                base_uri = nautilus_monitor_find_path_from_request (monitoring_list, fr);
-                uri_string = g_strdup_printf ("%s/%s", base_uri, file_name);
+        /* FAM doesn't tell us when something is a full path, and when
+	 * it's just partial so we have to look and see if it starts
+	 * with a /.
+	 */
+        if (event->filename[0] == '/') {
+                return gnome_vfs_get_uri_from_local_path (event->filename);
         }
-        return uri_string;
+
+	/* Look up the directory registry that was used for this file
+	 * notification and tack that on.
+	 */
+	base_path = g_hash_table_lookup (get_request_hash_table (),
+					 GINT_TO_POINTER (event->fr.reqnum));
+	g_return_val_if_fail (base_path != NULL, NULL);
+	path = g_concat_dir_and_file (base_path, event->filename);
+	uri = gnome_vfs_get_uri_from_local_path (path);
+	g_free (path);
+        return uri;
 }
 
 static void
-nautilus_monitor_process_fam_notifications (gpointer data, gint fd, GdkInputCondition condition)
+process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition condition)
 {
-        FAMConnection *fam;
-        FAMEvent fam_event;     
-        char *uri_string;
-        GList *uri_list;
+        FAMConnection *connection;
+        FAMEvent event;
+	char *uri;
 
-        /* get singleton object */
-        fam = nautilus_monitor_get_fam ();
+        connection = get_fam_connection ();
+	g_return_if_fail (connection != NULL);
 
-        /*  We want to read as many events as are available. */
-        while (FAMPending(fam)) {
+        /* Process all the pending events right now. */
 
-                if (FAMNextEvent(fam, &fam_event) != 1) {
-                        printf ("FAM-DEBUG: Nautilus' link to fam died\n");
-                        gdk_input_remove(fd);
-                        FAMClose(fam);
-                        g_free(fam);
-                        connection_valid = FALSE;
+        while (FAMPending (connection)) {
+                if (FAMNextEvent (connection, &event) != 1) {
+                        g_warning ("Nautilus's link to FAM died");
+                        gdk_input_remove (fd);
+                        FAMClose (connection);
+                        got_connection = FALSE;
                         return;
                 }
 
-		uri_string = nautilus_monitor_get_uri (fam_event.filename, fam_event.fr);
-                
-                switch (fam_event.code) {
+                switch (event.code) {
                 case FAMChanged:
-                        printf ("FAMChanged : %s\n", uri_string);
-
-                        /* FIXME: why doesn't the following work for updates?  */
-                        /* file = nautilus_file_get (uri_string);              */
-			/* nautilus_file_changed (file);                       */
-                        /* nautilus_file_unref (file);                         */
-
-                        uri_list = NULL;
-                        uri_list = g_list_append (uri_list, uri_string);                        
-
-                        nautilus_directory_notify_files_added (uri_list);
-
-                        g_free (uri_string);
-                        g_list_free (uri_list);
-
+			uri = get_event_uri (&event);
+			if (uri == NULL) {
+				break;
+			}
+                        g_message ("FAMChanged: %s", uri);
+                        nautilus_file_changes_queue_file_changed (uri);
+			g_free (uri);
                         break;
+
                 case FAMDeleted:
-                        printf ("FAMDeleted : %s\n", uri_string);
-
-                        uri_list = NULL;
-                        uri_list = g_list_append (uri_list, uri_string);
-
-                        nautilus_directory_notify_files_removed (uri_list);
-
-                        g_free (uri_string);
-                        g_list_free (uri_list);
+			uri = get_event_uri (&event);
+			if (uri == NULL) {
+				break;
+			}
+                        g_message ("FAMDeleted: %s", uri);
+                        nautilus_file_changes_queue_file_removed (uri);
+			g_free (uri);
                         break;
+
                 case FAMCreated:                
-                        printf ("FAMCreated : %s\n", uri_string);
-
-                        uri_list = NULL;
-                        uri_list = g_list_append (uri_list, uri_string);                        
-
-                        nautilus_directory_notify_files_added (uri_list);
-                        
-                        g_free (uri_string);
-                        g_list_free (uri_list);
+			uri = get_event_uri (&event);
+			if (uri == NULL) {
+				break;
+			}
+                        g_message ("FAMCreated: %s", uri);
+                        nautilus_file_changes_queue_file_added (uri);
+			g_free (uri);
                         break;
+
                 case FAMStartExecuting:
-			/* FAMStartExecuting is emitted when a file you are monitoring is
-			   executed. This should work for both binaries and shell scripts. It
-			   is unhandled because we don't do anything with this in Nautilus yet */
+			/* Emitted when a file you are monitoring is
+			 * executed. This should work for both
+			 * binaries and shell scripts. Nautilus is not
+			 * doing anything with this yet.
+			 */
 			break;
+
                 case FAMStopExecuting:
-			/* FamStopExecuting is emitted when a file you are monitoring ceases
-			   execution. Unhandled because Nautilus doesn't do anything with execution
-			   of files yet. */
+			/* Emitted when a file you are monitoring
+			 * ceases execution. Nautilus is not doing
+			 * anything with this yet.
+			 */
 			break;
+
                 case FAMAcknowledge:
-			/* Called in response to a successful CancelMonitor. Not sure why this
-			   is included in FAM, and hence it is unhandled. */
+			/* Called in response to a successful
+			 * CancelMonitor. We don't need to do anything
+			 * with this information.
+			 */
 			break;
+
                 case FAMExists:
-			/* FAMExists is emmitted when you start monitoring a directory. It tells you 
-			   what's in the directory. Unhandled because we already handle this by
-			   calling gnome_vfs_directory_load, which gives us more information
-			   than merely the filename */
+			/* Emitted when you start monitoring a
+			 * directory. It tells you what's in the
+			 * directory. Unhandled because Nautilus
+			 * already handles this by calling
+			 * gnome_vfs_directory_load, which gives us
+			 * more information than merely the file name.
+			 */
 			break;
+
                 case FAMEndExist:
-			/* This event is emitted generated at the end of a FAMExists stream */
+			/* Emitted at the end of a FAMExists stream. */
 			break;
+
                 case FAMMoved:
-			/* FAMMoved is unhandled because FAM never seems to generate this
-			   event on Linux systems (w/ or w/o IMON). Instead it generates a
-			   FAMDeleted followed by a FAMCreated */
+			/* FAMMoved doesn't need to be handled because
+			 * FAM never seems to generate this event on
+			 * Linux systems (w/ or w/o IMON). Instead it
+			 * generates a FAMDeleted followed by a
+			 * FAMCreated.
+			 */
+			g_warning ("unexpected FAMMoved notification");
 			break;
                 }
         }
 }
 
-#endif /* !HAVE_FAM_H */
-
-
-
-void
-nautilus_monitor_add_file (const char *uri_string)
-{
-
-#if HAVE_FAM_H
-
-        const char *uri_scheme;
-        char *path_name;
-        GnomeVFSURI *uri;
-        FAMConnection *fam;
-        URIRequest *uri_request;
-        
-        /* get singleton object for connection */
-        fam = nautilus_monitor_get_fam ();
-
-        /* only try connecting once */
-        if (!connection_valid) return;
-        
-        uri = gnome_vfs_uri_new (uri_string);
-        uri_scheme = gnome_vfs_uri_get_scheme (uri);
-
-        /* remove crufty entries registered for this URI */
-        /* FIXME: this breaks multiple windows because we don't */
-	/* currently have the clientid, we need to pass this in */
-        /* nautilus_monitor_remove (uri_string); */
-
-        /* we only know how to deal with things on the local filesystem for now */
-        if (strcmp (uri_scheme, "file") == 0) {
-                uri_request = g_new (URIRequest,1);
-                path_name = strdup (gnome_vfs_uri_get_path (uri));
-                FAMMonitorFile(fam, path_name, &uri_request->request, 0);
-
-                printf ("ADDED : %d) file monitor for %s\n", uri_request->request.reqnum, uri_string);
-                uri_request->uri = strdup (uri_string);
-                /* add this URI to the "Things we watch" list */
-                monitoring_list = g_list_append (monitoring_list, uri_request);
-
-		g_free (path_name);
-        }
-
-        gnome_vfs_uri_unref (uri);
-
 #endif /* HAVE_FAM_H */
 
+NautilusMonitor *
+nautilus_monitor_file (const char *uri)
+{
+#ifndef HAVE_FAM_H
+	return NULL;
+#else
+        FAMConnection *connection;
+        char *path;
+	NautilusMonitor *monitor;
+
+        connection = get_fam_connection ();
+	if (connection == NULL) {
+		return NULL;
+	}
+
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path == NULL) {
+		return NULL;
+	}
+        
+	monitor = g_new0 (NautilusMonitor, 1);
+	FAMMonitorFile (connection, path, &monitor->request, NULL);
+
+	g_free (path);
+
+	g_message ("ADDED: %d) file monitor for %s",
+		   monitor->request.reqnum, path);
+
+	return monitor;
+#endif
 }
 
 
 
-void
-nautilus_monitor_add_directory (const char *uri_string)
+NautilusMonitor *
+nautilus_monitor_directory (const char *uri)
 {
+#ifndef HAVE_FAM_H
+	return NULL;
+#else
+        FAMConnection *connection;
+        char *path;
+	NautilusMonitor *monitor;
 
-#if HAVE_FAM_H
+        connection = get_fam_connection ();
+	if (connection == NULL) {
+		return NULL;
+	}
 
-        const char *uri_scheme;
-        char *path_name;
-        GnomeVFSURI *uri;
-        FAMConnection *fam;
-        URIRequest *uri_request;
-
-        fam = nautilus_monitor_get_fam ();
-
-        /* only try connection once */
-        if (!connection_valid) return;
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path == NULL) {
+		return NULL;
+	}
         
-        uri = gnome_vfs_uri_new (uri_string);
-        uri_scheme = gnome_vfs_uri_get_scheme (uri);
+	monitor = g_new0 (NautilusMonitor, 1);
+	FAMMonitorDirectory (connection, path, &monitor->request, NULL);
 
-        /* remove crufty entries registered for this URI */
-        /* FIXME: this breaks multiple windows because we don't */
-	/* currently have the clientid, we need to pass this in */
-        /* nautilus_monitor_remove (uri_string); */
+	g_assert (g_hash_table_lookup (get_request_hash_table (),
+				       GINT_TO_POINTER (monitor->request.reqnum)) == NULL);
 
-        /* we only know how to deal with things on the local filesystem for now */
-        if (strcmp (uri_scheme, "file") == 0) {
-                uri_request = g_new (URIRequest, 1);
-                path_name = strdup (gnome_vfs_uri_get_path (uri));
-                FAMMonitorDirectory(fam, path_name, &uri_request->request, 0);
+	g_hash_table_insert (get_request_hash_table (),
+			     GINT_TO_POINTER (monitor->request.reqnum),
+			     path);
 
-                printf ("ADDED : %d) directory monitor for %s\n", uri_request->request.reqnum, uri_string);
-                uri_request->uri = strdup (uri_string);
-                /* add this uri to our list of "things we watch" */
-                monitoring_list = g_list_append (monitoring_list, uri_request);
-		
-		g_free (path_name);
-        }
+	g_message ("ADDED: %d) directory monitor for %s",
+		   monitor->request.reqnum, path);
 
-        gnome_vfs_uri_unref (uri);
-
-#endif /* HAVE_FAM_H */
-
+	return monitor;
+#endif
 }
 
 void
-nautilus_monitor_remove (const char *uri)
+nautilus_monitor_cancel (NautilusMonitor *monitor)
 {       
+#ifndef HAVE_FAM_H
+	g_return_if_fail (monitor == NULL);
+#else
+        FAMConnection *connection;
+	int reqnum;
+	char *path;
 
-#if HAVE_FAM_H
+	if (monitor == NULL) {
+		return;
+	}
 
-        FAMConnection *fam;
-        FAMRequest request, request2;
-        GnomeVFSURI *real_uri;
-        const char *uri_scheme;
-        int code;
+	reqnum = monitor->request.reqnum;
+	path = g_hash_table_lookup (get_request_hash_table (),
+				    GINT_TO_POINTER (reqnum));
+	g_hash_table_remove (get_request_hash_table (),
+			     GINT_TO_POINTER (reqnum));
 
-        fam = nautilus_monitor_get_fam ();
+        connection = get_fam_connection ();
+	g_return_if_fail (connection != NULL);
 
-        /* only try connecting once */
-        if (!connection_valid) return;
+	FAMCancelMonitor (connection, &monitor->request);
+	g_free (monitor);
 
-        real_uri = gnome_vfs_uri_new (uri);
-        uri_scheme = gnome_vfs_uri_get_scheme (real_uri);
-        gnome_vfs_uri_unref (real_uri);
+	g_message ("REMOVED: %d) directory monitor for %s",
+		   reqnum, path);
 
-        if (strcmp (uri_scheme, "file") == 0) {
-                /* keep looking for entries and deleting them */
-                request = nautilus_monitor_find_request_from_path (monitoring_list, uri);
-                while (request.reqnum != -1) {
-                        request2 = request;
-                        code = FAMCancelMonitor (fam, &request);
-                        printf ("REMOVED : %d) directory monitor for %s (return %d)\n", request2.reqnum, uri, code);
-                        nautilus_monitor_delete_first_request_found (monitoring_list, uri);
-                        request = nautilus_monitor_find_request_from_path (monitoring_list, uri);
-                }
-        }
-
-#endif /* HAVE_FAM_H */
+	g_free (path);
+#endif
 }

@@ -2,7 +2,7 @@
 
    nautilus-monitor.h: file and directory change monitoring for nautilus
  
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -19,17 +19,17 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Seth Nickell <seth@eazel.com>
+   Authors: Seth Nickell <seth@eazel.com>
+            Darin Adler <darin@eazel.com>
 */
 
 #ifndef NAUTILUS_MONITOR_H
 #define NAUTILUS_MONITOR_H
 
-#include <glib.h>
-#include <gtk/gtk.h>
+typedef struct NautilusMonitor NautilusMonitor;
 
-void      nautilus_monitor_add_file                       (const char *uri_string);
-void      nautilus_monitor_add_directory                  (const char *uri_string);
-void      nautilus_monitor_remove                         (const char *uri_string);
+NautilusMonitor *nautilus_monitor_file      (const char      *uri);
+NautilusMonitor *nautilus_monitor_directory (const char      *uri);
+void             nautilus_monitor_cancel    (NautilusMonitor *monitor);
 
 #endif /* NAUTILUS_MONITOR_H */

@@ -2,7 +2,7 @@
 
    nautilus-directory-notify.h: Nautilus directory notify calls.
  
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -39,6 +39,7 @@ typedef struct {
 
 /* Almost-public change notification calls */
 void nautilus_directory_notify_files_added       (GList        *uris);
+void nautilus_directory_notify_files_changed     (GList        *uris);
 void nautilus_directory_notify_files_moved       (GList        *uri_pairs);
 void nautilus_directory_notify_files_removed     (GList        *uris);
 void nautilus_directory_schedule_metadata_copy   (GList        *uri_pairs);

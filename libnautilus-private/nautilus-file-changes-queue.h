@@ -26,6 +26,7 @@
 #include <gdk/gdktypes.h>
 
 void nautilus_file_changes_queue_file_added               (const char *uri);
+void nautilus_file_changes_queue_file_changed             (const char *uri);
 void nautilus_file_changes_queue_file_removed             (const char *uri);
 void nautilus_file_changes_queue_file_moved               (const char *from_uri,
 							   const char *to_uri);
