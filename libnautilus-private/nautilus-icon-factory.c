@@ -1801,7 +1801,9 @@ path_represents_svg_image (const char *path)
 
 	uri = gnome_vfs_get_uri_from_local_path (path);
 	file_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (uri, file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
+	gnome_vfs_get_file_info (uri, file_info,
+				 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+				 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	g_free (uri);
 	is_svg = eel_strcmp (file_info->mime_type, "image/svg") == 0;
 	gnome_vfs_file_info_unref (file_info);

@@ -629,7 +629,8 @@ ensure_uri_is_image (const char *uri)
 		(uri, file_info,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-        is_image = eel_istr_has_prefix (file_info->mime_type, "image/") && (eel_strcmp (file_info->mime_type, "image/svg") != 0);
+        is_image = eel_istr_has_prefix (file_info->mime_type, "image/")
+		&& eel_strcasecmp (file_info->mime_type, "image/svg") != 0;
 	gnome_vfs_file_info_unref (file_info);
 	return is_image;
 }

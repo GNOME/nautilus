@@ -207,7 +207,7 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 /* utility routine that takes two uris and returns true if the first file has been modified later than the second */
 /* FIXME bugzilla.eazel.com 2565: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
 static gboolean
-first_file_more_recent(const char* file_uri, const char* other_file_uri)
+first_file_more_recent (const char* file_uri, const char* other_file_uri)
 {
 	gboolean more_recent;
 	
@@ -220,10 +220,10 @@ first_file_more_recent(const char* file_uri, const char* other_file_uri)
 	
 	/* gather the info and then compare modification times */
 	file_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	
 	other_file_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (other_file_uri, other_file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	gnome_vfs_get_file_info (other_file_uri, other_file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 
 	more_recent = file_info->mtime > other_file_info->mtime;
 

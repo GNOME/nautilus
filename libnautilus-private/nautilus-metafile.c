@@ -1769,7 +1769,7 @@ metafile_read_check_for_directory (NautilusMetafile *metafile)
 	gnome_vfs_async_get_file_info
 		(&metafile->details->read_state->get_file_info_handle,
 		 &fake_list,
-		 GNOME_VFS_FILE_INFO_DEFAULT,
+		 GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
 		 metafile_read_check_for_directory_callback,
 		 metafile);
 }

@@ -133,39 +133,43 @@ get_link_set_names (void)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GList *list, *element;
+	GList *list, *node;
 	char *link_set_uri, *link_set_name, *dot_pos;
 	GList *link_set_list;
 	
-	link_set_list = NULL;
-	
 	/* get a uri to the link set directory */
-	link_set_uri = g_strdup_printf ("file://%s/linksets",
-					 NAUTILUS_DATADIR);
+	link_set_uri = gnome_vfs_get_uri_from_local_path (NAUTILUS_DATADIR "/linksets");
 	
 	/* get the directory info */
 	result = gnome_vfs_directory_list_load (&list, link_set_uri, 
-						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
+						GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+						NULL);
 	if (result != GNOME_VFS_OK) {
+		g_free (link_set_uri);
 		return NULL;
 	}
 
+	link_set_list = NULL;
+	
 	/* FIXME bugzilla.eazel.com 5049: The names should really come from the names inside the files. */
 	/* build the list by iterating through the directory info */	
-	for (element = list; element != NULL; element = element->next) {
-		current_file_info = element->data;
-		link_set_name = g_strdup(current_file_info->name);
+	for (node = list; node != NULL; node = node->next) {
+		current_file_info = node->data;
+		link_set_name = g_strdup (current_file_info->name);
 			
 		/* strip file type suffix */
-		dot_pos = strrchr(link_set_name, '.');
-		if (dot_pos)
+		dot_pos = strrchr (link_set_name, '.');
+		if (dot_pos != NULL) {
 			*dot_pos = '\0';
+		}
+
+		link_set_list = g_list_prepend (link_set_list, link_set_name);
 	}
 
 	gnome_vfs_file_info_list_free (list);	
 	g_free (link_set_uri);
 
-	return link_set_list;	
+	return eel_g_str_list_alphabetize (link_set_list);
 }
 
 /* create a window used to configure the link sets in the passed in directory */
@@ -189,8 +193,8 @@ nautilus_link_set_configure_window (const char *directory_path, GtkWindow *windo
 	gtk_window_set_wmclass (window, "link_sets", "Nautilus");
 	
 	/* fetch the link set names */
-	link_set_names = get_link_set_names();	
-	link_set_count = g_list_length(link_set_names);
+	link_set_names = get_link_set_names ();	
+	link_set_count = g_list_length (link_set_names);
 	
 	/* allocate a vbox to hold the contents of the window */
 	vbox = gtk_vbox_new(FALSE, 0);

@@ -1662,7 +1662,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GList *list, *element;
+	GList *list, *node;
 	
         char *uri;
 	char *clist_entry[10];
@@ -1690,21 +1690,22 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	result = gnome_vfs_directory_list_load (&list, uri,
-						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, 
+						GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+                                                | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
 						NULL);
 	if (result != GNOME_VFS_OK) {
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
 		eel_show_error_dialog (message, _("Can't Read Folder"), 
-				            GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view->details->event_box))));
+                                       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view->details->event_box))));
 		g_free (path);
 		g_free (message);
                 g_free (uri);
 		return;
 	}
 	
-	for (element = list; element != NULL; element = element->next) {
-		current_file_info = element->data;
+	for (node = list; node != NULL; node = node->next) {
+		current_file_info = node->data;
 
 		/* skip invisible files, for now */
 		if (current_file_info->name[0] == '.') {

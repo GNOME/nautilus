@@ -1,3 +1,26 @@
+2001-06-06  Darin Adler  <darin@bentspoon.com>
+
+	Frederic Devernay <Frederic.Devernay@sophia.inria.fr>
+	pointed out that the icon factory wasn't following links.
+	I found similar problems elsewhere.
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update):
+	* libnautilus-private/nautilus-customization-data.c:
+	(nautilus_customization_data_new),
+	(nautilus_customization_data_get_next_element_for_display):
+	* libnautilus-private/nautilus-icon-factory.c:
+	(path_represents_svg_image):
+	* libnautilus-private/nautilus-metafile.c:
+	(metafile_read_check_for_directory):
+	* libnautilus-private/nautilus-thumbnails.c:
+	(first_file_more_recent):
+	* src/nautilus-link-set-window.c: (get_link_set_names),
+	(nautilus_link_set_configure_window):
+	* src/nautilus-property-browser.c: (ensure_uri_is_image):
+	Updated all places where we were using the gnome-vfs file info
+	calls and not following links.
+
 2001-06-03  Seth Nickell  <snickell@stanford.edu>
 
 	Added Ben FrantzDale's <bfrantzdale@hmc.edu> revisions

@@ -104,14 +104,16 @@ nautilus_customization_data_new (const char *customization_name,
 		
 		public_result = gnome_vfs_directory_list_load (&data->public_file_list,
 							       public_directory_uri,
-							       GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
+							       GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+							       | GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
 		g_free (public_directory_uri);
 	}
 
 	private_directory_uri = get_private_customization_uri (customization_name);
 	private_result = gnome_vfs_directory_list_load (&data->private_file_list,
 							private_directory_uri,
-							GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
+							GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+							| GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
 	g_free (private_directory_uri);
 	if (public_result != GNOME_VFS_OK && 
 	    private_result != GNOME_VFS_OK) {
@@ -191,9 +193,8 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	g_assert (current_file_info != NULL);
 
-	if (!eel_istr_has_prefix (current_file_info->mime_type, "image/") ||
-	    eel_istr_has_prefix (current_file_info->name, ".")) {
-		
+	if (!eel_istr_has_prefix (current_file_info->mime_type, "image/")
+	    || eel_istr_has_prefix (current_file_info->name, ".")) {
 		return nautilus_customization_data_get_next_element_for_display (data,
 										 emblem_name,
 										 pixbuf_out,
