@@ -764,6 +764,14 @@ nautilus_volume_get_mount_path (const NautilusVolume *volume)
 	return volume->mount_path;
 }
 
+const char *
+nautilus_volume_get_device_path (NautilusVolume *volume)
+{
+	g_return_val_if_fail (volume != NULL, NULL);
+	return volume->device_path;
+}
+
+
 NautilusDeviceType
 nautilus_volume_get_device_type (const NautilusVolume *volume)
 {

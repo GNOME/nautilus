@@ -65,12 +65,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <gtk/gtkmessagedialog.h>
 
 static const char untranslated_trash_link_name[] = N_("Trash");
 #define TRASH_LINK_NAME _(untranslated_trash_link_name)
 
 #define DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL		"/commands/Empty Trash Conditional"
 #define DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL	"/commands/Unmount Volume Conditional"
+#define DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL      "/commands/Protect Conditional"
+#define DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL       "/commands/Format Conditional"
+#define DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL     "/commands/Media Properties Conditional"
 
 #define DESKTOP_BACKGROUND_POPUP_PATH_DISKS	"/popups/background/Before Zoom Items/Volume Items/Disks"
 
@@ -117,6 +121,8 @@ static gboolean real_supports_zooming                             (FMDirectoryVi
 static void     update_disks_menu                                 (FMDesktopIconView      *view);
 static void     free_volume_black_list                            (FMDesktopIconView      *view);
 static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
+static NautilusDeviceType volume_link_device_type                 (FMDirectoryView        *view);
+
 
 EEL_CLASS_BOILERPLATE (FMDesktopIconView,
 			      fm_desktop_icon_view,
@@ -703,40 +709,163 @@ reset_background_callback (BonoboUIComponent *component,
 		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
 }
 
+static gboolean
+have_volume_format_app (void)
+{
+	static int have_app = -1;
+	char *app;
+
+	if (have_app < 0) {
+		app = g_find_program_in_path ("gmedia_format");
+		if (app == NULL) {
+			app = g_find_program_in_path ("gfloppy");
+		}
+		have_app = (app != NULL);
+		g_free (app);
+	}
+	return have_app;
+}
+
+static gboolean
+have_volume_properties_app (void)
+{
+	static int have_app = -1;
+	char *app;
+
+	if (have_app < 0) {
+		app = g_find_program_in_path ("gmedia_prop");
+		have_app = (app != NULL);
+		g_free (app);
+	}
+	return have_app;
+}
+
+static gboolean
+have_volume_protection_app (void)
+{
+	static int have_app = -1;
+	char *app;
+
+	if (have_app < 0) {
+		app = g_find_program_in_path ("gmedia_prot");
+		have_app = (app != NULL);
+		g_free (app);
+	}
+	return have_app;
+}
+
 static void
-unmount_volume_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *verb)
 {
         FMDirectoryView *view;
 	NautilusFile *file;
 	char *uri, *path, *mount_uri, *mount_path;
 	GList *selection;
+	char *command;
+	const char *device_path;
+	char *rawdevice_path;
+	char *program;
+	NautilusVolume *volume;
+	gboolean status;
+	GError *error;
+	GtkWidget *dialog;
+
 			    
         g_assert (FM_IS_DIRECTORY_VIEW (data));
         
         view = FM_DIRECTORY_VIEW (data);
         
-       if (!volume_link_is_selection (view)) {
+	if (!volume_link_is_selection (view)) {
 		return;       
-       }
+	}
               
 	selection = fm_directory_view_get_selection (view);
-
+	
 	file = NAUTILUS_FILE (selection->data);
 	uri = nautilus_file_get_uri (file);
 	path = gnome_vfs_get_local_path_from_uri (uri);
-	if (path != NULL) {
-		mount_uri = nautilus_link_local_get_link_uri (path);
-		mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
-		if (mount_path != NULL) {
-			nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (), mount_path, FALSE);
-		}
-		
-		g_free (mount_path);
-		g_free (mount_uri);
-		g_free (path);
-	}
 	g_free (uri);
+	if (path == NULL) {
+		nautilus_file_list_free (selection);
+		return;
+	}
+		
+	mount_uri = nautilus_link_local_get_link_uri (path);
+	mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
+	g_free (path);
+	g_free (mount_uri);
+	if (mount_path == NULL) {
+		nautilus_file_list_free (selection);
+		return;
+	}
 
+	volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
+	device_path = nautilus_volume_get_device_path (volume);
+	if (device_path == NULL) {
+		g_free (mount_path);
+		nautilus_file_list_free (selection);
+		return;
+	}
+		
+	/* Solaris specif cruft: */
+	if (eel_str_has_prefix (device_path, "/vol/dev/")) {
+		rawdevice_path = g_strconcat ("/vol/dev/r",
+					device_path + strlen ("/vol/dev/"),
+					NULL);
+	} else {
+		rawdevice_path = g_strdup (device_path);
+	}
+		
+	if (strcmp (verb, "Unmount Volume Conditional") == 0) {
+		nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (),
+								 mount_path, FALSE);
+	} else {
+		command = NULL;
+		
+		if (strcmp (verb, "Format Conditional") == 0) {
+			program = g_find_program_in_path ("gmedia_format");
+			if (program != NULL) {
+				command = g_strdup_printf ("%s -d %s", program, rawdevice_path);
+				g_free (program);
+			} else {
+				program = g_find_program_in_path ("gfloppy");
+				if (program != NULL) {
+					command = g_strdup_printf ("%s --device %s", program, device_path);
+					g_free (program);
+				}
+			}
+		} else if (strcmp (verb, "Media Properties Conditional") == 0) {
+			program = g_find_program_in_path ("gmedia_prop");
+			if (program) {
+				command = g_strdup_printf ("%s %s", program, rawdevice_path);
+				g_free (program);
+			} 
+		} else if (strcmp (verb, "Protect Conditional") == 0) {
+			program = g_find_program_in_path ("gmedia_prot");
+			if (program) {
+				command = g_strdup_printf ("%s %s", program, rawdevice_path);
+				g_free (program);
+			} 
+		}
+
+		if (command) {
+			error = NULL;
+			status = g_spawn_command_line_async (command, &error);
+			if (!status) {
+				dialog = gtk_message_dialog_new (NULL, 0,
+								 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, 
+								 _("Error executing utility program '%s': %s"), command, error->message);
+				g_signal_connect (G_OBJECT (dialog), "response", 
+						  G_CALLBACK (gtk_widget_destroy), NULL);
+				gtk_widget_show (dialog);
+				g_error_free (error);
+			}
+			g_free (command);
+		}
+	}
+	
+	g_free (rawdevice_path);
+	g_free (mount_path);
 	nautilus_file_list_free (selection);
 }
 
@@ -799,6 +928,47 @@ volume_link_is_selection (FMDirectoryView *view)
 
 	return result;
 }
+
+/*
+ *  Returns Device Type for device icon on desktop
+ */
+
+static NautilusDeviceType
+volume_link_device_type (FMDirectoryView *view)
+{
+	GList *selection;
+	gchar *uri, *path, *mount_uri, *mount_path;
+	NautilusVolume *volume;
+
+	selection = fm_directory_view_get_selection (view);
+
+	if (selection == NULL) {
+		return NAUTILUS_DEVICE_UNKNOWN;
+	}
+
+	volume = NULL;
+	
+	uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path != NULL) {
+		mount_uri = nautilus_link_local_get_link_uri (path);
+		mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
+		if(mount_path != NULL) {
+			volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
+			g_free (mount_path);
+		}
+		g_free (mount_uri);
+		g_free (path);
+	}
+	g_free (uri);
+	nautilus_file_list_free (selection);
+
+	if (volume != NULL)
+		return nautilus_volume_get_device_type (volume);
+
+	return NAUTILUS_DEVICE_UNKNOWN;
+}
+
 
 static void
 fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
@@ -1093,7 +1263,7 @@ real_update_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
 	char *label;
-	gboolean include_empty_trash, include_unmount_volume;
+	gboolean include_empty_trash, include_media_commands;
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
@@ -1137,23 +1307,123 @@ real_update_menus (FMDirectoryView *view)
 	}
 
 	/* Unmount Volume */
-	include_unmount_volume = volume_link_is_selection (view);
+	include_media_commands = volume_link_is_selection (view);
+
 	nautilus_bonobo_set_hidden
 		(desktop_view->details->ui,
 		 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
-		 !include_unmount_volume);
-	if (include_unmount_volume) {
-		label = g_strdup (_("Unmount Volume"));
-		nautilus_bonobo_set_label
-			(desktop_view->details->ui, 
-			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
-			 label);
-		nautilus_bonobo_set_sensitive 
-			(desktop_view->details->ui, 
-			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
-		g_free (label);
-	}
+		 !include_media_commands);
 
+	nautilus_bonobo_set_hidden
+		(desktop_view->details->ui,
+		 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL,
+		 !include_media_commands);
+
+	nautilus_bonobo_set_hidden
+		(desktop_view->details->ui,
+		 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL,
+		 !include_media_commands);
+
+	nautilus_bonobo_set_hidden
+		(desktop_view->details->ui,
+		 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL,
+		 !include_media_commands);
+
+	if (include_media_commands) {
+		NautilusDeviceType media_type;
+
+		media_type = volume_link_device_type (view);
+
+		nautilus_bonobo_set_sensitive
+			(desktop_view->details->ui,
+			DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
+ 	
+		switch(media_type) {
+		case NAUTILUS_DEVICE_FLOPPY_DRIVE:
+			if (have_volume_format_app ()) {
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+			 		DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			nautilus_bonobo_set_hidden
+				(desktop_view->details->ui,
+				DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+
+			break;
+		
+		case NAUTILUS_DEVICE_CDROM_DRIVE:
+			nautilus_bonobo_set_hidden
+				(desktop_view->details->ui,
+				DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+
+			nautilus_bonobo_set_hidden
+				(desktop_view->details->ui,
+				DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+
+			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			}
+			break;	
+		
+		case NAUTILUS_DEVICE_ZIP_DRIVE:
+		case NAUTILUS_DEVICE_JAZ_DRIVE:
+
+			if (have_volume_format_app ()) {
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			if (have_volume_protection_app ()) {
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
 	bonobo_ui_component_thaw (desktop_view->details->ui, NULL);
 }
 
@@ -1168,7 +1438,10 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
 		BONOBO_UI_VERB ("New Launcher", new_launcher_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
-		BONOBO_UI_VERB ("Unmount Volume Conditional", unmount_volume_callback),
+		BONOBO_UI_VERB ("Unmount Volume Conditional", volume_ops_callback),
+		BONOBO_UI_VERB ("Protect Conditional", volume_ops_callback),
+		BONOBO_UI_VERB ("Format Conditional", volume_ops_callback),
+		BONOBO_UI_VERB ("Media Properties Conditional", volume_ops_callback),
 		BONOBO_UI_VERB_END
 	};
 

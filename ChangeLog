@@ -1,3 +1,18 @@
+2002-04-26  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	* libnautilus-private/nautilus-volume-monitor.h:
+	Added new function nautilus_volume_get_device_path.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(have_volume_format_app), (have_volume_properties_app),
+	(have_volume_protection_app), (volume_ops_callback),
+	(volume_link_device_type), (real_update_menus), (real_merge_menus):
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	Add support for various volume properties helper applications.
+
+	Based on patch from Rajeev Karale <rajeev.karale@wipro.com>
+
 Thu Apr 25 12:22:57 2002  Jonathan Blandford  <jrb@gnome.org>
 
 	* data/serverconfig.directory.in (_Name): 

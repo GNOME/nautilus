@@ -8,6 +8,18 @@
         <cmd name="Empty Trash Conditional"
          _label="Empty Trash"
          _tip="Delete all items in the Trash"/>
+	<cmd name="Unmount Volume Conditional"
+         _label="Unmount Volume"
+         _tip="Unmount Voulme Conditionally"/>
+        <cmd name="Format Conditional"
+         _label="Format"
+         _tip="Format Conditionally"/>
+        <cmd name="Protect Conditional"
+         _label="Protect"
+         _tip="Protect Conditionally"/>
+        <cmd name="Media Properties Conditional"
+         _label="Media Properties"
+         _tip="Media Properties Conditionally"/>
         <cmd name="New Terminal"
          _label="New Terminal"
          _tip="Open a new GNOME terminal window"/>
@@ -59,8 +71,11 @@
                 <placeholder name="Empty Trash Holder" delimit="top">
                         <menuitem name="Empty Trash" verb="Empty Trash Conditional"/>
                 </placeholder>
-                <placeholder name="Unmount Volume Holder" delimit="top">
-                        <menuitem name="Empty Trash" verb="Unmount Volume Conditional"/>
+                <placeholder name="Removabel Media Holder" delimit="top">
+                        <menuitem name="Unmount Volume" _label="Unmount Volume" verb="Unmount Volume Conditional"/>
+                        <menuitem name="Protect Media" _label="Protect" verb="Protect Conditional"/>
+                        <menuitem name="Format Media" _label="Format" verb="Format Conditional"/>
+                        <menuitem name="Media Properties" _label="Media Properties" verb="Media Properties Conditional"/>
                 </placeholder>
         </popup>
 </popups>

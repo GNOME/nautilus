@@ -98,5 +98,6 @@ gboolean                 nautilus_volume_is_read_only                       (con
 gboolean                 nautilus_volume_should_integrate_trash             (const NautilusVolume       *volume);
 const char *             nautilus_volume_get_mount_path                     (const NautilusVolume       *volume);
 char *                   nautilus_volume_get_target_uri                     (const NautilusVolume       *volume);
+const char *             nautilus_volume_get_device_path                    (NautilusVolume             *volume);
 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */
