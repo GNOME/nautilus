@@ -32,5 +32,6 @@ struct NautilusFileDetails
 	gboolean is_gone;
 };
 
-NautilusFile *nautilus_file_new (NautilusDirectory *directory,
-				 GnomeVFSFileInfo  *info);
+NautilusFile *nautilus_file_new          (NautilusDirectory *directory,
+					  GnomeVFSFileInfo  *info);
+void          nautilus_file_emit_changed (NautilusFile      *file);

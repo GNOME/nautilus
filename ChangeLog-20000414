@@ -1,3 +1,31 @@
+2000-04-11  Darin Adler  <darin@eazel.com>
+
+	Finished task 226 (Read metadata asynchronously instead of
+	synchronously).
+
+	Requires new GNOME VFS.
+	
+	* libnautilus/nautilus-directory-private.h:
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-directory.h:
+	Changed code to read and write metafiles async. Too many functions
+	modified for me to list here.
+
+	* libnautilus/nautilus-file-private.h:
+	* libnautilus/nautilus-file.c:
+	* libnautilus/nautilus-file.h:
+	(nautilus_file_changed), (nautilus_file_emit_changed),
+	(nautilus_file_get_metadata), (nautilus_file_set_metadata),
+	(nautilus_file_call_when_ready), (nautilus_file_cancel_callback):
+	Changes to NautilusFile so it can participate in the new.
+	
+	* components/notes/ntl-notes.c (notes_load_metainfo):
+	Fixed a bug in my recent changes where it would use a bad file
+	object when getting metadata.
+	
+	* src/file-manager/fm-directory-view.c (notes_load_metainfo):
+	Renamed "tags" to "keys".
+
 2000-04-11  Andy Hertzfeld <andy@eazel.com>
 	
 	* components/rpmview/nautilus-rpmview.c:

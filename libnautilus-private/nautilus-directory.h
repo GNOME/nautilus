@@ -84,8 +84,8 @@ char *             nautilus_directory_get_uri              (NautilusDirectory   
  * to other attributes as well.
  */
 void               nautilus_directory_call_when_ready      (NautilusDirectory         *directory,
-							    GList                     *directory_metadata_tags,
-							    GList                     *file_metadata_tags,
+							    GList                     *directory_metadata_keys,
+							    GList                     *file_metadata_keys,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
 void               nautilus_directory_cancel_callback      (NautilusDirectory         *directory,
@@ -93,26 +93,26 @@ void               nautilus_directory_cancel_callback      (NautilusDirectory   
 							    gpointer                   callback_data);
 /* Getting and setting metadata. */
 char *             nautilus_directory_get_metadata         (NautilusDirectory         *directory,
-							    const char                *tag,
+							    const char                *key,
 							    const char                *default_metadata);
 void               nautilus_directory_set_metadata         (NautilusDirectory         *directory,
-							    const char                *tag,
+							    const char                *key,
 							    const char                *default_metadata,
 							    const char                *metadata);
 
 /* Covers for common data types. */
 gboolean           nautilus_directory_get_boolean_metadata (NautilusDirectory         *directory,
-							    const char                *tag,
+							    const char                *key,
 							    gboolean                   default_metadata);
 void               nautilus_directory_set_boolean_metadata (NautilusDirectory         *directory,
-							    const char                *tag,
+							    const char                *key,
 							    gboolean                   default_metadata,
 							    gboolean                   metadata);
 int                nautilus_directory_get_integer_metadata (NautilusDirectory         *directory,
-							    const char                *tag,
+							    const char                *key,
 							    int                        default_metadata);
 void               nautilus_directory_set_integer_metadata (NautilusDirectory         *directory,
-							    const char                *tag,
+							    const char                *key,
 							    int                        default_metadata,
 							    int                        metadata);
 

@@ -33,6 +33,7 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
+#include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
@@ -65,18 +66,85 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-static void               nautilus_directory_initialize_class (gpointer               klass);
-static void               nautilus_directory_initialize       (gpointer               object,
-							       gpointer               klass);
-static void               nautilus_directory_destroy          (GtkObject             *object);
-static NautilusDirectory *nautilus_directory_new              (const char            *uri);
-static void               nautilus_directory_read_metafile    (NautilusDirectory     *directory);
-static void               nautilus_directory_write_metafile   (NautilusDirectory     *directory);
-static void               nautilus_directory_load_callback    (GnomeVFSAsyncHandle   *handle,
-							       GnomeVFSResult         result,
-							       GnomeVFSDirectoryList *list,
-							       guint                  entries_read,
-							       gpointer               callback_data);
+struct MetafileReadState {
+	GnomeVFSAsyncHandle *handle;
+	gpointer buffer;
+	size_t bytes_read;
+};
+
+struct MetafileWriteState {
+	GnomeVFSAsyncHandle *handle;
+	xmlChar *buffer;
+	int size;
+	gboolean write_again;
+};
+
+#define READ_CHUNK_SIZE (4 * 1024)
+
+static int                           compare_file_with_name                              (gconstpointer                  a,
+											  gconstpointer                  b);
+static int                           compare_queued_callbacks                            (gconstpointer                  a,
+											  gconstpointer                  b);
+static GnomeVFSURI *                 construct_alternate_metafile_uri                    (GnomeVFSURI                   *uri);
+static xmlNode *                     create_metafile_root                                (NautilusDirectory             *directory);
+static gboolean                      dequeue_pending_idle_callback                       (gpointer                       callback_data);
+static char *                        escape_slashes                                      (const char                    *path);
+static char *                        get_metadata_from_node                              (xmlNode                       *node,
+											  const char                    *key,
+											  const char                    *default_metadata);
+static void                          metafile_close_callback                             (GnomeVFSAsyncHandle           *handle,
+											  GnomeVFSResult                 result,
+											  gpointer                       callback_data);
+static void                          metafile_read_cancel                                (NautilusDirectory             *directory);
+static void                          metafile_read_callback                              (GnomeVFSAsyncHandle           *handle,
+											  GnomeVFSResult                 result,
+											  gpointer                       buffer,
+											  GnomeVFSFileSize               bytes_requested,
+											  GnomeVFSFileSize               bytes_read,
+											  gpointer                       callback_data);
+static void                          metafile_read_complete                              (NautilusDirectory             *directory);
+static void                          metafile_read_done                                  (NautilusDirectory             *directory);
+static void                          metafile_read_failed                                (NautilusDirectory             *directory,
+											  GnomeVFSResult                 result);
+static void                          metafile_read_open_callback                         (GnomeVFSAsyncHandle           *handle,
+											  GnomeVFSResult                 result,
+											  gpointer                       callback_data);
+static void                          metafile_read_start                                 (NautilusDirectory             *directory);
+static void                          metafile_write                                      (NautilusDirectory             *directory);
+static void                          metafile_write_callback                             (GnomeVFSAsyncHandle           *handle,
+											  GnomeVFSResult                 result,
+											  gconstpointer                  buffer,
+											  GnomeVFSFileSize               bytes_requested,
+											  GnomeVFSFileSize               bytes_read,
+											  gpointer                       callback_data);
+static void                          metafile_write_complete                             (NautilusDirectory             *directory);
+static gboolean                      metafile_write_idle_callback                        (gpointer                       callback_data);
+static void                          metafile_write_failed                               (NautilusDirectory             *directory,
+											  GnomeVFSResult                 result);
+static void                          metafile_write_start                                (NautilusDirectory             *directory);
+static void                          nautilus_directory_destroy                          (GtkObject                     *object);
+static void                          nautilus_directory_initialize                       (gpointer                       object,
+											  gpointer                       klass);
+static void                          nautilus_directory_initialize_class                 (gpointer                       klass);
+static void                          nautilus_directory_load_callback                    (GnomeVFSAsyncHandle           *handle,
+											  GnomeVFSResult                 result,
+											  GnomeVFSDirectoryList         *list,
+											  guint                          entries_read,
+											  gpointer                       callback_data);
+static void                          nautilus_directory_load_done                        (NautilusDirectory             *directory,
+											  GnomeVFSResult                 result);
+static void                          nautilus_directory_load_one                         (NautilusDirectory             *directory,
+											  GnomeVFSFileInfo              *info);
+static GnomeVFSResult                nautilus_make_directory_and_parents                 (GnomeVFSURI                   *uri,
+											  guint                          permissions);
+static NautilusDirectory *           nautilus_directory_new                              (const char                    *uri);
+static void                          nautilus_directory_request_read_metafile            (NautilusDirectory             *directory);
+static GnomeVFSDirectoryListPosition nautilus_gnome_vfs_directory_list_get_next_position (GnomeVFSDirectoryList         *list,
+											  GnomeVFSDirectoryListPosition  position);
+static void                          nautilus_gnome_vfs_file_info_list_free              (GList                         *list);
+static void                          nautilus_gnome_vfs_file_info_list_unref             (GList                         *list);
+static void                          read_some_metafile_data                             (NautilusDirectory             *directory);
+static void                          schedule_dequeue_pending                            (NautilusDirectory             *directory);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -169,6 +237,9 @@ nautilus_directory_destroy (GtkObject *object)
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (object);
+
+	g_assert (directory->details->write_state == NULL);
+	metafile_read_cancel (directory);
 
 	if (directory->details->monitor_files_ref_count != 0) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
@@ -280,188 +351,380 @@ nautilus_directory_get_uri (NautilusDirectory *directory)
 	return g_strdup (directory->details->uri_text);
 }
 
-/* This reads the metafile synchronously. This must go eventually.
-   To do this asynchronously we'd need a way to read an entire file
-   with async. calls; currently you can only get the file length with
-   a synchronous call.
-*/
-static GnomeVFSResult
-nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSURI *metafile_uri)
-{
-	GnomeVFSResult result;
-	GnomeVFSFileInfo metafile_info;
-	GnomeVFSHandle *metafile_handle;
-	size_t size; /* not GnomeVFSFileSize, since it's passed to g_malloc */
-	GnomeVFSFileSize actual_size;
-	char *buffer;
-	
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), GNOME_VFS_ERROR_GENERIC);
-	g_return_val_if_fail (directory->details->metafile == NULL, GNOME_VFS_ERROR_GENERIC);
-
-	result = gnome_vfs_get_file_info_uri (metafile_uri,
-					      &metafile_info,
-					      GNOME_VFS_FILE_INFO_DEFAULT,
-					      NULL);
-
-	if (result == GNOME_VFS_OK) {
-		/* Check for the case where the info doesn't give the file size. */
-		if ((metafile_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0) {
-			result = GNOME_VFS_ERROR_GENERIC;
-		}
-	}
-
-	if (result == GNOME_VFS_OK) {
-		/* Check for a size that won't fit into a size_t. */
-		size = metafile_info.size;
-		if (size != metafile_info.size) {
-			result = GNOME_VFS_ERROR_TOOBIG;
-		}
-	}
-
-	metafile_handle = NULL;
-	if (result == GNOME_VFS_OK) {
-		result = gnome_vfs_open_uri (&metafile_handle,
-					     metafile_uri,
-					     GNOME_VFS_OPEN_READ);
-	}
-
-	if (result == GNOME_VFS_OK) {
-		/* The gnome-xml parser requires a zero-terminated array.
-		 * Also, we don't want to allocate an empty buffer
-		 * because it would be NULL and gnome-xml won't parse
-		 * NULL properly.
-		 */
-		buffer = g_malloc (size + 1);
-		result = gnome_vfs_read (metafile_handle, buffer, size, &actual_size);
-		buffer[actual_size] = '\0';
-		directory->details->metafile = xmlParseMemory (buffer, actual_size);
-		g_free (buffer);
-	}
-
-	if (metafile_handle != NULL) {
-		gnome_vfs_close (metafile_handle);
-	}
-
-	return result;
-}
-
 static void
-nautilus_directory_read_metafile (NautilusDirectory *directory)
+metafile_read_done (NautilusDirectory *directory)
 {
-	GnomeVFSResult result;
+	GList *p;
+	QueuedCallback *callback;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-
-	/* Check for the alternate metafile first.
-	 * If we read from it, then write to it later.
+	/* Tell the callers that were waiting for metadata that it's here.
 	 */
-	directory->details->use_alternate_metafile = FALSE;
-	result = nautilus_directory_try_to_read_metafile (directory,
-							  directory->details->alternate_metafile_uri);
-	if (result == GNOME_VFS_OK) {
-		directory->details->use_alternate_metafile = TRUE;
-	} else {
-		result = nautilus_directory_try_to_read_metafile (directory,
-								  directory->details->metafile_uri);
-	}
-}
+	for (p = directory->details->metafile_callbacks; p != NULL; p = p->next) {
+		callback = p->data;
 
-/* This writes the metafile synchronously. This must go eventually. */
-static GnomeVFSResult
-nautilus_directory_try_to_write_metafile (NautilusDirectory *directory, GnomeVFSURI *metafile_uri)
-{
-	xmlChar *buffer;
-	int buffer_size;
-	GnomeVFSResult result;
-	GnomeVFSHandle *metafile_handle;
-	GnomeVFSFileSize actual_size;
-
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), GNOME_VFS_ERROR_GENERIC);
-	g_return_val_if_fail (directory->details != NULL, GNOME_VFS_ERROR_GENERIC);
-	g_return_val_if_fail (directory->details->metafile != NULL, GNOME_VFS_ERROR_GENERIC);
-
-	metafile_handle = NULL;
-	result = gnome_vfs_create_uri (&metafile_handle,
-				       metafile_uri,
-				       GNOME_VFS_OPEN_WRITE,
-				       FALSE,
-				       METAFILE_PERMISSIONS);
-
-	buffer = NULL;
-	if (result == GNOME_VFS_OK) {
-		xmlDocDumpMemory (directory->details->metafile, &buffer, &buffer_size);
-		result = gnome_vfs_write (metafile_handle, buffer, buffer_size, &actual_size);
-		if (buffer_size != actual_size) {
-			result = GNOME_VFS_ERROR_GENERIC;
+		if (callback->file != NULL) {
+			g_assert (callback->file->details->directory == directory);
+			(* callback->callback.file) (callback->file,
+						     callback->callback_data);
+			nautilus_file_unref (callback->file);
+		} else {
+			(* callback->callback.directory) (directory,
+							  callback->callback_data);
 		}
 	}
-
-	if (metafile_handle != NULL) {
-		gnome_vfs_close (metafile_handle);
-	}
-
-	xmlFree (buffer);
-
-	return result;
+	nautilus_g_list_free_deep (directory->details->metafile_callbacks);
+	directory->details->metafile_callbacks = NULL;
 }
 
 static void
-nautilus_directory_write_metafile (NautilusDirectory *directory)
+metafile_read_cancel (NautilusDirectory *directory)
+{
+	if (directory->details->read_state == NULL) {
+		return;
+	}
+
+	gnome_vfs_async_cancel (directory->details->read_state->handle);
+	g_free (directory->details->read_state);
+	directory->details->read_state = NULL;
+}
+
+static void
+metafile_read_failed (NautilusDirectory *directory,
+		      GnomeVFSResult result)
+{
+	g_free (directory->details->read_state->buffer);
+
+	if (directory->details->use_alternate_metafile) {
+		directory->details->read_state->buffer = NULL;
+		directory->details->read_state->bytes_read = 0;
+
+		directory->details->use_alternate_metafile = FALSE;
+		metafile_read_start (directory);
+		return;
+	}
+
+	g_free (directory->details->read_state);
+
+	directory->details->metafile_read = TRUE;
+	directory->details->read_state = NULL;
+
+	/* Let the callers that were waiting for the metafile know. */
+	metafile_read_done (directory);
+}
+
+static void
+metafile_read_complete (NautilusDirectory *directory)
+{
+	char *buffer;
+	int size;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (directory->details->metafile == NULL);
+	
+	/* The gnome-xml parser requires a zero-terminated array.
+	 * Also, we don't want to allocate an empty buffer
+	 * because it would be NULL and gnome-xml won't parse
+	 * NULL properly.
+	 */
+	size = directory->details->read_state->bytes_read;
+	buffer = g_realloc (directory->details->read_state->buffer, size + 1);
+	buffer[size] = '\0';
+	directory->details->metafile = xmlParseMemory (buffer, size);
+	g_free (buffer);
+
+	g_free (directory->details->read_state);
+
+	directory->details->metafile_read = TRUE;
+	directory->details->read_state = NULL;
+
+	/* Tell that the directory metadata has changed. */
+	gtk_signal_emit (GTK_OBJECT (directory),
+			 signals[METADATA_CHANGED]);
+
+	/* Say that all the files have changed.
+	 * We could optimize this to only mention files that
+	 * have metadata, but this is a fine rough cut for now.
+	 */
+	nautilus_directory_files_changed (directory,
+					  directory->details->files);
+
+	/* Let the callers that were waiting for the metafile know. */
+	metafile_read_done (directory);
+}
+
+static void
+metafile_close_callback (GnomeVFSAsyncHandle *handle,
+			 GnomeVFSResult result,
+			 gpointer callback_data)
+{
+	/* Do nothing. */
+}
+
+static void
+metafile_read_callback (GnomeVFSAsyncHandle *handle,
+			GnomeVFSResult result,
+			gpointer buffer,
+			GnomeVFSFileSize bytes_requested,
+			GnomeVFSFileSize bytes_read,
+			gpointer callback_data)
+{
+	NautilusDirectory *directory;
+
+	g_assert (bytes_requested == READ_CHUNK_SIZE);
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->read_state->handle == handle);
+	g_assert ((char *) directory->details->read_state->buffer
+		  + directory->details->read_state->bytes_read == buffer);
+
+	if (result != GNOME_VFS_OK
+	    && result != GNOME_VFS_ERROR_EOF) {
+		metafile_read_failed (directory, result);
+		return;
+	}
+
+	directory->details->read_state->bytes_read += bytes_read;
+
+	/* FIXME: Is the call allowed to return fewer bytes than I requested
+	 * when I'm not at the end of the file? If so, then I need to fix this
+	 * check. I don't want to stop until the end of the file.
+	 */
+	if (bytes_read == bytes_requested && result == GNOME_VFS_OK) {
+		read_some_metafile_data (directory);
+		return;
+	}
+
+	gnome_vfs_async_close (directory->details->read_state->handle,
+			       metafile_close_callback,
+			       directory);
+
+	metafile_read_complete (directory);
+}
+
+static void
+read_some_metafile_data (NautilusDirectory *directory)
 {
 	GnomeVFSResult result;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	directory->details->read_state->buffer = g_realloc
+		(directory->details->read_state->buffer,
+		 directory->details->read_state->bytes_read + READ_CHUNK_SIZE);
 
-	nautilus_directory_ref (directory);
+	result = gnome_vfs_async_read (directory->details->read_state->handle,
+				       (char *) directory->details->read_state->buffer
+				       + directory->details->read_state->bytes_read,
+				       READ_CHUNK_SIZE,
+				       metafile_read_callback,
+				       directory);
+	if (result != GNOME_VFS_OK) {
+		metafile_read_failed (directory, result);
+	}
+}
 
-	/* We are about the write the metafile, so we can cancel the pending
-	   request to do so.
-	*/
-	if (directory->details->write_metafile_idle_id != 0) {
-		gtk_idle_remove (directory->details->write_metafile_idle_id);
-		directory->details->write_metafile_idle_id = 0;
-		nautilus_directory_unref (directory);
+static void
+metafile_read_open_callback (GnomeVFSAsyncHandle *handle,
+			     GnomeVFSResult result,
+			     gpointer callback_data)
+{
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->read_state->handle == handle);
+
+	if (result != GNOME_VFS_OK) {
+		metafile_read_failed (directory, result);
+		return;
 	}
 
-	/* Don't write anything if there's nothing to write.
-	   At some point, we might want to change this to actually delete
-	   the metafile in this case.
-	*/
-	if (directory->details->metafile != NULL) {
-		
-		/* Try the main URI, unless we have already been instructed to use the alternate URI. */
-		if (directory->details->use_alternate_metafile) {
-			result = GNOME_VFS_ERROR_ACCESSDENIED;
-		} else {
-			result = nautilus_directory_try_to_write_metafile (directory,
-									   directory->details->metafile_uri);
-		}
-		
-		/* Try the alternate URI if the main one failed. */
-		if (result != GNOME_VFS_OK) {
-			result = nautilus_directory_try_to_write_metafile (directory,
-									   directory->details->alternate_metafile_uri);
-		}
-		
-		/* Check for errors. FIXME: Later this must be reported to the user, not spit out as a warning. */
-		if (result != GNOME_VFS_OK) {
-			g_warning ("nautilus_directory_write_metafile failed to write metafile - we should report this to the user");
-		}
+	read_some_metafile_data (directory);
+}
 
+static void
+metafile_read_start (NautilusDirectory *directory)
+{
+	GnomeVFSResult result;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	result = gnome_vfs_async_open_uri (&directory->details->read_state->handle,
+					   directory->details->use_alternate_metafile
+					   ? directory->details->alternate_metafile_uri
+					   : directory->details->metafile_uri,
+					   GNOME_VFS_OPEN_READ,
+					   metafile_read_open_callback,
+					   directory);
+	if (result != GNOME_VFS_OK) {
+		metafile_read_failed (directory, result);
+	}
+}
+
+static void
+nautilus_directory_request_read_metafile (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	if (directory->details->metafile_read
+	    || directory->details->read_state != NULL) {
+		return;
 	}
 
+	g_assert (directory->details->metafile == NULL);
+
+	directory->details->read_state = g_new0 (MetafileReadState, 1);
+	directory->details->use_alternate_metafile = TRUE;
+	metafile_read_start (directory);
+}
+
+static void
+metafile_write_done (NautilusDirectory *directory)
+{
+	if (directory->details->write_state->write_again) {
+		metafile_write_start (directory);
+		return;
+	}
+
+	xmlFree (directory->details->write_state->buffer);
+	g_free (directory->details->write_state);
+	directory->details->write_state = NULL;
 	nautilus_directory_unref (directory);
 }
 
+static void
+metafile_write_failed (NautilusDirectory *directory,
+		       GnomeVFSResult result)
+{
+	if (!directory->details->use_alternate_metafile) {
+		directory->details->use_alternate_metafile = TRUE;
+		metafile_write_start (directory);
+		return;
+	}
+
+	metafile_write_done (directory);
+}
+
+static void
+metafile_write_complete (NautilusDirectory *directory)
+{
+	metafile_write_done (directory);
+}
+
+static void
+metafile_write_callback (GnomeVFSAsyncHandle *handle,
+			 GnomeVFSResult result,
+			 gconstpointer buffer,
+			 GnomeVFSFileSize bytes_requested,
+			 GnomeVFSFileSize bytes_read,
+			 gpointer callback_data)
+{
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->write_state->handle == handle);
+	g_assert (directory->details->write_state->buffer == buffer);
+	g_assert (directory->details->write_state->size == bytes_requested);
+
+	if (result != GNOME_VFS_OK) {
+		metafile_write_failed (directory, result);
+		return;
+	}
+
+	gnome_vfs_async_close (directory->details->write_state->handle,
+			       metafile_close_callback,
+			       directory);
+
+	metafile_write_complete (directory);
+}
+
+static void
+metafile_write_create_callback (GnomeVFSAsyncHandle *handle,
+				GnomeVFSResult result,
+				gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->write_state->handle == handle);
+	
+	if (result != GNOME_VFS_OK) {
+		metafile_write_failed (directory, result);
+		return;
+	}
+
+	result = gnome_vfs_async_write (directory->details->write_state->handle,
+					directory->details->write_state->buffer,
+					directory->details->write_state->size,
+					metafile_write_callback,
+					directory);
+	if (result != GNOME_VFS_OK) {
+		metafile_write_failed (directory, result);
+	}
+}
+
+static void
+metafile_write_start (NautilusDirectory *directory)
+{
+	GnomeVFSResult result;
+ 
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	directory->details->write_state->write_again = FALSE;
+
+	/* Open the file. */
+	result = gnome_vfs_async_create_uri (&directory->details->write_state->handle,
+					     directory->details->use_alternate_metafile
+					     ? directory->details->alternate_metafile_uri
+					     : directory->details->metafile_uri,
+					     GNOME_VFS_OPEN_WRITE,
+					     FALSE,
+					     METAFILE_PERMISSIONS,
+					     metafile_write_create_callback,
+					     directory);
+	if (result != GNOME_VFS_OK) {
+		metafile_write_failed (directory, result);
+	}
+}
+
+static void
+metafile_write (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	nautilus_directory_ref (directory);
+
+	/* If we are already writing, then just remember to do it again. */
+	if (directory->details->write_state != NULL) {
+		nautilus_directory_unref (directory);
+		directory->details->write_state->write_again = TRUE;
+		return;
+	}
+
+	/* Don't write anything if there's nothing to write.
+	 * At some point, we might want to change this to actually delete
+	 * the metafile in this case.
+	 */
+	if (directory->details->metafile == NULL) {
+		nautilus_directory_unref (directory);
+		return;
+	}
+
+	/* Create the write state. */
+	directory->details->write_state = g_new0 (MetafileWriteState, 1);
+	xmlDocDumpMemory (directory->details->metafile,
+			  &directory->details->write_state->buffer,
+			  &directory->details->write_state->size);
+
+	metafile_write_start (directory);
+}
+
 static gboolean
-nautilus_directory_write_metafile_idle_callback (gpointer callback_data)
+metafile_write_idle_callback (gpointer callback_data)
 {
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
 	directory->details->write_metafile_idle_id = 0;
-	nautilus_directory_write_metafile (directory);
+	metafile_write (directory);
 
 	nautilus_directory_unref (directory);
 
@@ -471,11 +734,13 @@ nautilus_directory_write_metafile_idle_callback (gpointer callback_data)
 void
 nautilus_directory_request_write_metafile (NautilusDirectory *directory)
 {
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
 	/* Set up an idle task that will write the metafile. */
 	if (directory->details->write_metafile_idle_id == 0) {
 		nautilus_directory_ref (directory);
 		directory->details->write_metafile_idle_id =
-			gtk_idle_add (nautilus_directory_write_metafile_idle_callback,
+			gtk_idle_add (metafile_write_idle_callback,
 				      directory);
 	}
 }
@@ -486,7 +751,7 @@ nautilus_directory_request_write_metafile (NautilusDirectory *directory)
    function, but this should do for now.
 */
 static char *
-nautilus_directory_escape_slashes (const char *path)
+escape_slashes (const char *path)
 {
 	char c;
 	const char *in;
@@ -569,7 +834,7 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 }
 
 static GnomeVFSURI *
-nautilus_directory_construct_alternate_metafile_uri (GnomeVFSURI *uri)
+construct_alternate_metafile_uri (GnomeVFSURI *uri)
 {
 	GnomeVFSResult result;
 	GnomeVFSURI *home_uri, *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
@@ -589,7 +854,7 @@ nautilus_directory_construct_alternate_metafile_uri (GnomeVFSURI *uri)
 
 	/* Construct a file name from the URI. */
 	uri_as_string = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
-	escaped_uri = nautilus_directory_escape_slashes (uri_as_string);
+	escaped_uri = escape_slashes (uri_as_string);
 	g_free (uri_as_string);
 	file_name = g_strconcat (escaped_uri, ".xml", NULL);
 	g_free (escaped_uri);
@@ -602,19 +867,6 @@ nautilus_directory_construct_alternate_metafile_uri (GnomeVFSURI *uri)
 	return alternate_uri;
 }
       
-#if NAUTILUS_DIRECTORY_ASYNC
-
-static void
-nautilus_directory_opened_metafile (GnomeVFSAsyncHandle *handle,
-				    GnomeVFSResult result,
-				    gpointer callback_data)
-{
-}
-
-	result = gnome_vfs_async_open_uri (&metafile_handle, metafile_uri, GNOME_VFS_OPEN_READ,
-					   nautilus_directory_opened_metafile, directory);
-#endif
-
 static NautilusDirectory *
 nautilus_directory_new (const char* uri)
 {
@@ -629,7 +881,7 @@ nautilus_directory_new (const char* uri)
 	}
 
 	metafile_uri = gnome_vfs_uri_append_path (vfs_uri, METAFILE_NAME);
-	alternate_metafile_uri = nautilus_directory_construct_alternate_metafile_uri (vfs_uri);
+	alternate_metafile_uri = construct_alternate_metafile_uri (vfs_uri);
 
 	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
 
@@ -637,8 +889,6 @@ nautilus_directory_new (const char* uri)
 	directory->details->uri = vfs_uri;
 	directory->details->metafile_uri = metafile_uri;
 	directory->details->alternate_metafile_uri = alternate_metafile_uri;
-
-	nautilus_directory_read_metafile (directory);
 
 	return directory;
 }
@@ -851,17 +1101,17 @@ nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
 }
 
 static char *
-nautilus_directory_get_metadata_from_node (xmlNode *node,
-					   const char *tag,
-					   const char *default_metadata)
+get_metadata_from_node (xmlNode *node,
+			const char *key,
+			const char *default_metadata)
 {
 	xmlChar *property;
 	char *result;
 
-	g_return_val_if_fail (tag, NULL);
-	g_return_val_if_fail (tag[0], NULL);
+	g_return_val_if_fail (key != NULL, NULL);
+	g_return_val_if_fail (key[0] != '\0', NULL);
 
-	property = xmlGetProp (node, tag);
+	property = xmlGetProp (node, key);
 	if (property == NULL) {
 		result = g_strdup (default_metadata);
 	} else {
@@ -873,7 +1123,7 @@ nautilus_directory_get_metadata_from_node (xmlNode *node,
 }
 
 static xmlNode *
-nautilus_directory_create_metafile_root (NautilusDirectory *directory)
+create_metafile_root (NautilusDirectory *directory)
 {
 	xmlNode *root;
 
@@ -891,7 +1141,7 @@ nautilus_directory_create_metafile_root (NautilusDirectory *directory)
 
 char *
 nautilus_directory_get_metadata (NautilusDirectory *directory,
-				 const char *tag,
+				 const char *key,
 				 const char *default_metadata)
 {
 	/* It's legal to call this on a NULL directory. */
@@ -901,15 +1151,17 @@ nautilus_directory_get_metadata (NautilusDirectory *directory,
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
+	nautilus_directory_request_read_metafile (directory);
+
 	/* The root itself represents the directory. */
-	return nautilus_directory_get_metadata_from_node
+	return get_metadata_from_node
 		(xmlDocGetRootElement (directory->details->metafile),
-		 tag, default_metadata);
+		 key, default_metadata);
 }
 
 void
 nautilus_directory_set_metadata (NautilusDirectory *directory,
-				 const char *tag,
+				 const char *key,
 				 const char *default_metadata,
 				 const char *metadata)
 {
@@ -920,11 +1172,11 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 	xmlAttr *property_node;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (tag);
-	g_return_if_fail (tag[0]);
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (key[0] != '\0');
 
 	/* If the data in the metafile is already correct, do nothing. */
-	old_metadata = nautilus_directory_get_metadata (directory, tag, default_metadata);
+	old_metadata = nautilus_directory_get_metadata (directory, key, default_metadata);
 	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
 	if (old_metadata_matches) {
@@ -941,10 +1193,10 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 	}
 
 	/* Get at the tree. */
-	root = nautilus_directory_create_metafile_root (directory);
+	root = create_metafile_root (directory);
 
 	/* Add or remove an attribute node. */
-	property_node = xmlSetProp (root, tag, value);
+	property_node = xmlSetProp (root, key, value);
 	if (value == NULL) {
 		xmlRemoveProp (property_node);
 	}
@@ -957,28 +1209,26 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 
 gboolean 
 nautilus_directory_get_boolean_metadata (NautilusDirectory *directory,
-					 const char *tag,
+					 const char *key,
 					 gboolean default_metadata)
 {
 	char *result_as_string;
 	gboolean result;
 
-	result_as_string = nautilus_directory_get_metadata (
-				directory,
-				tag,
-				default_metadata ? "TRUE" : "FALSE");
-
-	/* Handle oddball case of non-existent directory */
-	if (result_as_string == NULL) {
-		return default_metadata;
-	}
-
+	result_as_string = nautilus_directory_get_metadata
+		(directory,
+		 key,
+		 default_metadata ? "TRUE" : "FALSE");
+	
+	/* FIXME: Allow "true" and "false"? */
 	if (strcmp (result_as_string, "TRUE") == 0) {
 		result = TRUE;
 	} else if (strcmp (result_as_string, "FALSE") == 0) {
 		result = FALSE;
 	} else {
-		g_assert_not_reached ();
+		if (result_as_string != NULL) {
+			g_warning ("boolean metadata with value other than TRUE or FALSE");
+		}
 		result = default_metadata;
 	}
 
@@ -989,19 +1239,19 @@ nautilus_directory_get_boolean_metadata (NautilusDirectory *directory,
 
 void               
 nautilus_directory_set_boolean_metadata (NautilusDirectory *directory,
-					 const char *tag,
+					 const char *key,
 					 gboolean default_metadata,
 					 gboolean metadata)
 {
 	nautilus_directory_set_metadata (directory,
-					 tag,
+					 key,
 					 default_metadata ? "TRUE" : "FALSE",
 					 metadata ? "TRUE" : "FALSE");
 }
 
 int 
 nautilus_directory_get_integer_metadata (NautilusDirectory *directory,
-					 const char *tag,
+					 const char *key,
 					 int default_metadata)
 {
 	char *result_as_string;
@@ -1009,11 +1259,9 @@ nautilus_directory_get_integer_metadata (NautilusDirectory *directory,
 	int result;
 
 	default_as_string = g_strdup_printf ("%d", default_metadata);
-	result_as_string = nautilus_directory_get_metadata (
-				directory,
-				tag,
-				default_as_string);
-
+	result_as_string = nautilus_directory_get_metadata
+		(directory, key, default_as_string);
+	
 	/* Handle oddball case of non-existent directory */
 	if (result_as_string == NULL) {
 		result = default_metadata;
@@ -1029,7 +1277,7 @@ nautilus_directory_get_integer_metadata (NautilusDirectory *directory,
 
 void               
 nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
-					 const char *tag,
+					 const char *key,
 					 int default_metadata,
 					 int metadata)
 {
@@ -1040,7 +1288,7 @@ nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
 	default_as_string = g_strdup_printf ("%d", default_metadata);
 
 	nautilus_directory_set_metadata (directory,
-					 tag,
+					 key,
 					 default_as_string,
 					 value_as_string);
 
@@ -1059,7 +1307,7 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 	
 	/* The root itself represents the directory.
 	 * The children represent the files.
-	 * FIXME: This linear search is temporary.
+	 * FIXME: This linear search may not be fast enough.
 	 * Eventually, we'll have a pointer from the NautilusFile right to
 	 * the corresponding XML node, or we won't have the XML tree
 	 * in memory at all.
@@ -1073,7 +1321,7 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 	
 	/* Create if necessary. */
 	if (create) {
-		root = nautilus_directory_create_metafile_root (directory);
+		root = create_metafile_root (directory);
 		child = xmlNewChild (root, NULL, "FILE", NULL);
 		xmlSetProp (child, METADATA_NODE_NAME_FOR_FILE_NAME, file_name);
 		return child;
@@ -1082,15 +1330,117 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 	return NULL;
 }
 
+static int
+compare_queued_callbacks (gconstpointer a, gconstpointer b)
+{
+	const QueuedCallback *callback_a, *callback_b;
+
+	callback_a = a;
+	callback_b = b;
+	if (callback_a->file < callback_b->file) {
+		return -1;
+	}
+	if (callback_a->file > callback_b->file) {
+		return 1;
+	}
+	if (callback_a->file == NULL) {
+		if (callback_a->callback.directory < callback_b->callback.directory) {
+			return -1;
+		}
+		if (callback_a->callback.directory > callback_b->callback.directory) {
+			return 1;
+		}
+	} else {
+		if (callback_a->callback.file < callback_b->callback.file) {
+			return -1;
+		}
+		if (callback_a->callback.file > callback_b->callback.file) {
+			return 1;
+		}
+	}
+	if (callback_a->callback_data < callback_b->callback_data) {
+		return -1;
+	}
+	if (callback_a->callback_data > callback_b->callback_data) {
+		return 1;
+	}
+	return 0;
+}
+
+void
+nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
+					     const QueuedCallback *callback)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (callback != NULL);
+	g_assert (callback->file == NULL || callback->file->details->directory == directory);
+
+	/* Call back right away if it's already ready. */
+	if (directory->details->metafile_read) {
+		if (callback->file != NULL) {
+			(* callback->callback.file) (callback->file,
+						     callback->callback_data);
+		} else {
+			(* callback->callback.directory) (directory,
+							  callback->callback_data);
+		}
+		return;
+	}
+
+	/* Add the new callback to the list unless it's already in there. */
+	if (g_list_find_custom (directory->details->metafile_callbacks,
+				(QueuedCallback *) callback,
+				compare_queued_callbacks) == NULL) {
+		nautilus_file_ref (callback->file);
+		directory->details->metafile_callbacks = g_list_prepend
+			(directory->details->metafile_callbacks,
+			 g_memdup (callback,
+				   sizeof (*callback)));
+	}
+
+	/* Start reading the metafile. */
+	nautilus_directory_request_read_metafile (directory);
+}
+
 void
 nautilus_directory_call_when_ready (NautilusDirectory *directory,
-				    GList *directory_metadata_tags,
-				    GList *file_metadata_tags,
+				    GList *directory_metadata_keys,
+				    GList *file_metadata_keys,
 				    NautilusDirectoryCallback callback,
 				    gpointer callback_data)
 {
-	/* For now, it's synchronous for testing. */
-	(* callback) (directory, callback_data);
+	QueuedCallback new_callback;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (directory_metadata_keys != NULL || file_metadata_keys != NULL);
+	g_return_if_fail (callback != NULL);
+
+	new_callback.file = NULL;
+	new_callback.callback.directory = callback;
+	new_callback.callback_data = callback_data;
+
+	nautilus_directory_call_when_ready_internal (directory, &new_callback);
+}
+
+void
+nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
+					     const QueuedCallback *callback)
+{
+	GList *p;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (callback != NULL);
+
+	/* Remove queued callback from the list. */
+	p = g_list_find_custom (directory->details->metafile_callbacks,
+				(QueuedCallback *) callback,
+				compare_queued_callbacks);
+	if (p != NULL) {
+		nautilus_file_unref (callback->file);
+		g_free (p->data);
+		directory->details->metafile_callbacks = g_list_remove_link
+			(directory->details->metafile_callbacks, p);
+	}
 }
 
 void
@@ -1098,23 +1448,40 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 				    NautilusDirectoryCallback callback,
 				    gpointer callback_data)
 {
+	QueuedCallback old_callback;
+
+	g_return_if_fail (callback != NULL);
+
+	if (directory == NULL) {
+		return;
+	}
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+        old_callback.file = NULL;
+	old_callback.callback.directory = callback;
+	old_callback.callback_data = callback_data;
+
+	nautilus_directory_cancel_callback_internal (directory, &old_callback);
 }
 
 char *
 nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 				      const char *file_name,
-				      const char *tag,
+				      const char *key,
 				      const char *default_metadata)
 {
-	return nautilus_directory_get_metadata_from_node
+	nautilus_directory_request_read_metafile (directory);
+
+	return get_metadata_from_node
 		(nautilus_directory_get_file_metadata_node (directory, file_name, FALSE),
-		 tag, default_metadata);
+		 key, default_metadata);
 }
 
 gboolean
 nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 				      const char *file_name,
-				      const char *tag,
+				      const char *key,
 				      const char *default_metadata,
 				      const char *metadata)
 {
@@ -1124,14 +1491,14 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	const char *value;
 	xmlAttr *property_node;
 
-	g_return_val_if_fail (strcmp (tag, METADATA_NODE_NAME_FOR_FILE_NAME) != 0, FALSE);
+	g_return_val_if_fail (strcmp (key, METADATA_NODE_NAME_FOR_FILE_NAME) != 0, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-	g_return_val_if_fail (tag != NULL, FALSE);
-	g_return_val_if_fail (tag[0] != '\0', FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (key[0] != '\0', FALSE);
 
 	/* If the data in the metafile is already correct, do nothing. */
 	old_metadata = nautilus_directory_get_file_metadata
-		(directory, file_name, tag, default_metadata);
+		(directory, file_name, key, default_metadata);
 	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
 	if (old_metadata_matches) {
@@ -1153,7 +1520,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 							   value != NULL);
 	/* Add or remove an attribute node. */
 	if (child != NULL) {
-		property_node = xmlSetProp (child, tag, value);
+		property_node = xmlSetProp (child, key, value);
 		if (value == NULL) {
 			xmlRemoveProp (property_node);
 		}
@@ -1191,6 +1558,11 @@ void
 nautilus_directory_files_changed (NautilusDirectory *directory,
 				  GList *changed_files)
 {
+	GList *p;
+
+	for (p = changed_files; p != NULL; p = p->next) {
+		nautilus_file_emit_changed (p->data);
+	}
 	gtk_signal_emit (GTK_OBJECT (directory),
 			 signals[FILES_CHANGED],
 			 changed_files);
@@ -1276,15 +1648,15 @@ nautilus_self_check_directory (void)
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
 
-	/* nautilus_directory_escape_slashes */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a"), "a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("/"), "%2F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%"), "%25");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a/a"), "a%2Fa");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a%a"), "a%25a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%25"), "%2525");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%2F"), "%252F");
+	/* escape_slashes */
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("/"), "%2F");
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%"), "%25");
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("a/a"), "a%2Fa");
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("a%a"), "a%25a");
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%25"), "%2525");
+	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%2F"), "%252F");
 
 	nautilus_directory_unref (directory);
 }

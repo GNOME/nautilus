@@ -75,7 +75,7 @@ void             nautilus_file_delete                    (NautilusFile         *
  * to other attributes as well.
  */
 void             nautilus_file_call_when_ready           (NautilusFile         *file,
-							  GList                *metadata_tags,
+							  GList                *metadata_keys,
 							  NautilusFileCallback  callback,
 							  gpointer              callback_data);
 void             nautilus_file_cancel_callback           (NautilusFile         *file,
@@ -111,10 +111,10 @@ gboolean         nautilus_file_is_gone                   (NautilusFile         *
 
 /* Simple getting and setting top-level metadata. */
 char *           nautilus_file_get_metadata              (NautilusFile         *file,
-							  const char           *tag,
+							  const char           *key,
 							  const char           *default_metadata);
 void             nautilus_file_set_metadata              (NautilusFile         *file,
-							  const char           *tag,
+							  const char           *key,
 							  const char           *default_metadata,
 							  const char           *metadata);
 

@@ -32,7 +32,10 @@
 
 #include "nautilus-file.h"
 
-#define METADATA_NODE_NAME_FOR_FILE_NAME	"NAME"
+#define METADATA_NODE_NAME_FOR_FILE_NAME "NAME"
+
+typedef struct MetafileReadState MetafileReadState;
+typedef struct MetafileWriteState MetafileWriteState;
 
 struct NautilusDirectoryDetails
 {
@@ -44,36 +47,59 @@ struct NautilusDirectoryDetails
 	guint monitor_files_ref_count;
 
 	GList *files;
+
 	xmlDoc *metafile;
+
+	gboolean metafile_read;
+	gboolean use_alternate_metafile;
+	MetafileReadState *read_state;
+
+	guint write_metafile_idle_id;
+	MetafileWriteState *write_state;
+
+	/* This list is going to be pretty short.
+	 * If we thought it was going to get big, we could
+	 * use a hash table instead.
+	 */
+	GList *metafile_callbacks;
 
 	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
 	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
 	GList *pending_file_info;
         guint dequeue_pending_idle_id;
-
-	gboolean metafile_read;
-	gboolean use_alternate_metafile;
-	guint write_metafile_idle_id;
 };
 
-NautilusFile *nautilus_directory_find_file              (NautilusDirectory *directory,
-							 const char        *file_name);
-char *        nautilus_directory_get_file_metadata      (NautilusDirectory *directory,
-							 const char        *file_name,
-							 const char        *tag,
-							 const char        *default_metadata);
-gboolean      nautilus_directory_set_file_metadata      (NautilusDirectory *directory,
-							 const char        *file_name,
-							 const char        *tag,
-							 const char        *default_metadata,
-							 const char        *metadata);
-xmlNode *     nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
-							 const char        *file_name,
-							 gboolean           create);
-void          nautilus_directory_files_changed          (NautilusDirectory *directory,
-							 GList             *changed_files);
-void          nautilus_directory_request_write_metafile (NautilusDirectory *directory);
+typedef struct {
+	NautilusFile *file;
+	union {
+		NautilusDirectoryCallback directory;
+		NautilusFileCallback file;
+	} callback;
+	gpointer callback_data;
+} QueuedCallback;
+
+NautilusFile *nautilus_directory_find_file                (NautilusDirectory    *directory,
+							   const char           *file_name);
+char *        nautilus_directory_get_file_metadata        (NautilusDirectory    *directory,
+							   const char           *file_name,
+							   const char           *key,
+							   const char           *default_metadata);
+gboolean      nautilus_directory_set_file_metadata        (NautilusDirectory    *directory,
+							   const char           *file_name,
+							   const char           *key,
+							   const char           *default_metadata,
+							   const char           *metadata);
+xmlNode *     nautilus_directory_get_file_metadata_node   (NautilusDirectory    *directory,
+							   const char           *file_name,
+							   gboolean              create);
+void          nautilus_directory_files_changed            (NautilusDirectory    *directory,
+							   GList                *changed_files);
+void          nautilus_directory_request_write_metafile   (NautilusDirectory    *directory);
+void          nautilus_directory_cancel_callback_internal (NautilusDirectory    *directory,
+							   const QueuedCallback *callback);
+void          nautilus_directory_call_when_ready_internal (NautilusDirectory    *directory,
+							   const QueuedCallback *callback);
 
 /* debugging functions */
 int           nautilus_directory_number_outstanding     (void);

@@ -1843,7 +1843,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
 	NautilusDirectory *old_model;
-	GList *directory_tags, *file_tags;
+	GList *directory_keys, *file_keys;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (uri != NULL);
@@ -1858,16 +1858,16 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	nautilus_directory_unref (old_model);
 
 	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->get_required_metadata_keys)
-		(view, &directory_tags, &file_tags);
+		(view, &directory_keys, &file_keys);
 
 	nautilus_directory_call_when_ready (view->details->model,
-					    directory_tags,
-					    file_tags,
+					    directory_keys,
+					    file_keys,
 					    metadata_ready_callback,
 					    view);
 
-	g_list_free (directory_tags);
-	g_list_free (file_tags);
+	g_list_free (directory_keys);
+	g_list_free (file_keys);
 }
 
 static void

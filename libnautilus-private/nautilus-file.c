@@ -671,20 +671,20 @@ nautilus_file_compare_for_sort_reversed (NautilusFile *file_1,
 
 char *
 nautilus_file_get_metadata (NautilusFile *file,
-			    const char *tag,
+			    const char *key,
 			    const char *default_metadata)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	return nautilus_directory_get_file_metadata (file->details->directory,
 						     file->details->info->name,
-						     tag,
+						     key,
 						     default_metadata);
 }
 
 void
 nautilus_file_set_metadata (NautilusFile *file,
-			    const char *tag,
+			    const char *key,
 			    const char *default_metadata,
 			    const char *metadata)
 {
@@ -692,7 +692,7 @@ nautilus_file_set_metadata (NautilusFile *file,
 
 	nautilus_directory_set_file_metadata (file->details->directory,
 					      file->details->info->name,
-					      tag,
+					      key,
 					      default_metadata,
 					      metadata);
 	nautilus_file_changed (file);
@@ -1410,13 +1410,29 @@ nautilus_file_changed (NautilusFile *file)
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
+	changed_files = g_list_prepend (NULL, file);
+	nautilus_directory_files_changed (file->details->directory, changed_files);
+	g_list_free (changed_files);
+}
+
+/**
+ * nautilus_file_emit_changed
+ * 
+ * Emit a file changed signal.
+ * This can only be called by the directory, since the directory
+ * also has to emit a files_changed signal.
+ *
+ * @file: NautilusFile representing the file in question.
+ **/
+void
+nautilus_file_emit_changed (NautilusFile *file)
+{
+	g_assert (NAUTILUS_IS_FILE (file));
+
 	/* Send out a signal. */
 	gtk_signal_emit (GTK_OBJECT (file),
 			 signals[CHANGED],
 			 file);
-	changed_files = g_list_prepend (NULL, file);
-	nautilus_directory_files_changed (file->details->directory, changed_files);
-	g_list_free (changed_files);
 }
 
 /**
@@ -1437,12 +1453,22 @@ nautilus_file_is_gone (NautilusFile *file)
 
 void
 nautilus_file_call_when_ready (NautilusFile *file,
-			       GList *file_metadata_tags,
+			       GList *file_metadata_keys,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 {
-	/* For now, it's synchronous for testing. */
-	(* callback) (file, callback_data);
+	QueuedCallback new_callback;
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (file_metadata_keys != NULL);
+	g_return_if_fail (callback != NULL);
+
+	new_callback.file = file;
+	new_callback.callback.file = callback;
+	new_callback.callback_data = callback_data;
+
+	nautilus_directory_call_when_ready_internal (file->details->directory,
+						     &new_callback);
 }
 
 void
@@ -1450,6 +1476,22 @@ nautilus_file_cancel_callback (NautilusFile *file,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 {
+	QueuedCallback old_callback;
+
+	g_return_if_fail (callback != NULL);
+
+	if (file == NULL) {
+		return;
+	}
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+        old_callback.file = file;
+	old_callback.callback.file = callback;
+	old_callback.callback_data = callback_data;
+
+	nautilus_directory_cancel_callback_internal (file->details->directory,
+						     &old_callback);
 }
 
 /**

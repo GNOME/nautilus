@@ -81,19 +81,18 @@ done_with_file (Notes *notes)
 static void
 notes_load_metainfo (Notes *notes)
 {
-        NautilusFile *file;
         GList *keys;
         
         gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
         
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
-        if (file == NULL) {
+        if (notes->file == NULL) {
                 return;
         }
 
         keys = g_list_prepend (NULL, NAUTILUS_METADATA_KEY_ANNOTATION);
-        nautilus_file_call_when_ready (file, keys, finish_loading_note, notes);
+        nautilus_file_call_when_ready (notes->file, keys, finish_loading_note, notes);
         g_list_free (keys);
 }
 
