@@ -635,7 +635,7 @@ clear_bonobo_pages (FMPropertiesWindow *window)
 
 	num_pages = gtk_notebook_get_n_pages
 				(GTK_NOTEBOOK (window->details->notebook));
-				 
+
 	for (i=0; i <  num_pages; i++) {
 		page = gtk_notebook_get_nth_page
 				(GTK_NOTEBOOK (window->details->notebook), i);
@@ -643,6 +643,8 @@ clear_bonobo_pages (FMPropertiesWindow *window)
 		if (g_object_get_data (G_OBJECT (page), "is-bonobo-page")) {
 			gtk_notebook_remove_page
 				(GTK_NOTEBOOK (window->details->notebook), i);
+			num_pages--;
+			i--;
 		}
 	}
 }
@@ -677,7 +679,7 @@ properties_window_file_changed_callback (FMPropertiesWindow *window, NautilusFil
 		new_mime_type = nautilus_file_get_mime_type
 						(window->details->target_file);
 
-		if (strcmp (orig_mime_type, new_mime_type) == 0) {
+		if (strcmp (orig_mime_type, new_mime_type) != 0) {
 			refresh_bonobo_pages (window);
 		}
 
