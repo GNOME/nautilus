@@ -1,3 +1,36 @@
+2000-08-22  Gene Z. Ragan  <gzr@eazel.com>
+
+	Work in progress to support dragging onto 
+	NautilusLink files.  Dragging on the trash 
+	still does not work.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_get_icon_uri),
+	(nautilus_icon_container_get_icon_drop_target_uri):
+	New signal to return the target URI of a drag target.
+	This was done to support dragging onto NautilyusLink files.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_can_accept_item):
+	Add call to nautilus_icon_container_get_icon_drop_target_uri
+	and remove call to nautilus_icon_container_get_icon_uri
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	(nautilus_icon_container_find_drop_target):
+	Some code cleanup to fix a leak.
+	
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-link.h:
+	(nautilus_link_can_accept_drag):
+	New function that currently return TRUE for all links.
+	
+	* src/file-manager/fm-icon-view.c: (get_icon_uri_callback),
+	(get_icon_drop_target_uri_callback), (create_icon_container):
+	Connect to new signal and add implementation.
+
 2000-08-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-protocols.c:

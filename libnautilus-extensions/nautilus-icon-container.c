@@ -141,6 +141,7 @@ enum {
 	GET_ICON_IMAGES,
 	GET_ICON_TEXT,
 	GET_ICON_URI,
+	GET_ICON_DROP_TARGET_URI,
 	GET_STORED_ICON_POSITION,
 	ICON_POSITION_CHANGED,
 	ICON_TEXT_CHANGED,
@@ -2692,6 +2693,15 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  nautilus_gtk_marshal_STRING__POINTER,
 				  GTK_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
+	signals[GET_ICON_DROP_TARGET_URI]
+		= gtk_signal_new ("get_icon_drop_target_uri",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     get_icon_drop_target_uri),
+				  nautilus_gtk_marshal_STRING__POINTER,
+				  GTK_TYPE_STRING, 1,
+				  GTK_TYPE_POINTER);
 	signals[COMPARE_ICONS]
 		= gtk_signal_new ("compare_icons",
 				  GTK_RUN_LAST,
@@ -3911,6 +3921,20 @@ nautilus_icon_container_get_icon_uri (NautilusIconContainer *container,
 	uri = NULL;
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[GET_ICON_URI],
+			 icon->data,
+			 &uri);
+	return uri;
+}
+
+char *
+nautilus_icon_container_get_icon_drop_target_uri (NautilusIconContainer *container,
+				   	     	  NautilusIcon *icon)
+{
+	char *uri;
+
+	uri = NULL;
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_DROP_TARGET_URI],
 			 icon->data,
 			 &uri);
 	return uri;

@@ -111,6 +111,8 @@ typedef struct {
 						   char **additional_text);
 	char *       (* get_icon_uri)             (NautilusIconContainer *container,
 						   NautilusIconData *data);
+	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
+						   NautilusIconData *data);
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);

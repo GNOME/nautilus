@@ -41,11 +41,12 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
+
+#include "nautilus-background.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gnome-extensions.h"
-#include "nautilus-background.h"
 #include "nautilus-graphic-effects.h"
 #include "nautilus-stock-dialogs.h"
 #include "nautilus-string.h"
@@ -813,6 +814,8 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 {
 	NautilusIcon *drop_target_icon;
 	double world_x, world_y;
+	NautilusFile *file;
+	char *icon_uri;
 
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
 		return NULL;
@@ -826,28 +829,34 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 	 * that the target is a file.
 	 */
 
-	/* Find the item we hit with our drop, if any */
+	/* Find the item we hit with our drop, if any */	
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
-	if (drop_target_icon != NULL 
-		&& !nautilus_drag_can_accept_items 
-			(nautilus_file_get (
-				nautilus_icon_container_get_icon_uri 
-					(container, drop_target_icon)), 
-			container->details->dnd_info->drag_info.selection_list)) {
-		/* the item we dropped our selection on cannot accept the items,
-		 * do the same thing as if we just dropped the items on the canvas
-		 */
-		drop_target_icon = NULL;
+	if (drop_target_icon != NULL) {
+		icon_uri = nautilus_icon_container_get_icon_uri (container, drop_target_icon);
+		if (icon_uri != NULL) {
+			file = nautilus_file_get (icon_uri);
+
+			if ( !nautilus_drag_can_accept_items (file, 
+					container->details->dnd_info->drag_info.selection_list)) {
+			 	/* the item we dropped our selection on cannot accept the items,
+			 	 * do the same thing as if we just dropped the items on the canvas
+				 */
+				drop_target_icon = NULL;
+			}
+			
+			g_free (icon_uri);
+			nautilus_file_unref (file);
+		}
 	}
 
-	if (!drop_target_icon) {
+	if (drop_target_icon == NULL) {
 		*icon_hit = FALSE;
 		return get_container_uri (container);
 	}
-
 	
 	*icon_hit = TRUE;
-	return nautilus_icon_container_get_icon_uri (container, drop_target_icon);
+
+	return nautilus_icon_container_get_icon_drop_target_uri (container, drop_target_icon);
 }
 
 static void

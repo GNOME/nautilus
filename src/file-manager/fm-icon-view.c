@@ -1523,7 +1523,32 @@ get_icon_uri_callback (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	
 	return nautilus_file_get_uri (file);
+}
+
+static char *
+get_icon_drop_target_uri_callback (NautilusIconContainer *container,
+		       		   NautilusFile *file,
+		       		   FMIconView *icon_view)
+{
+	char *uri, *file_uri;
+	
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+
+
+	/* Check for NautilusLink */
+	if (nautilus_file_is_nautilus_link (file)) {
+		file_uri = nautilus_file_get_uri (file);
+		uri = nautilus_link_get_link_uri (file_uri);
+		g_free (file_uri);
+	} else {
+		uri = nautilus_file_get_uri (file);
+	}
+
+	return uri;
 }
 
 /* This callback returns the text, both the editable part, and the
@@ -1843,6 +1868,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_uri",
 			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_drop_target_uri",
+			    GTK_SIGNAL_FUNC (get_icon_drop_target_uri_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_text",

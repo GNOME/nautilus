@@ -482,3 +482,9 @@ nautilus_link_is_trash_link (const char *path)
 	return retval;
 }
 
+/* All links can accept drags currently */
+gboolean
+nautilus_link_can_accept_drag (const char *path)
+{
+	return TRUE;
+}

@@ -197,6 +197,8 @@ void          nautilus_icon_container_select_list_unselect_others (NautilusIconC
 								   GList                 *icons);
 char *        nautilus_icon_container_get_icon_uri                (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
+char *        nautilus_icon_container_get_icon_drop_target_uri    (NautilusIconContainer *container,
+								   NautilusIcon          *icon);
 void          nautilus_icon_container_update_icon                 (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
 void          nautilus_icon_container_flush_typeselect_state      (NautilusIconContainer *container);

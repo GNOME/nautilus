@@ -119,4 +119,6 @@ char *   nautilus_link_get_link_uri                     (const char *link_file_u
 char *   nautilus_link_get_link_uri_given_file_contents (const char *link_file_contents,
 							 int         link_file_size);
 
+gboolean nautilus_link_can_accept_drag 			(const char *path);
+
 #endif /* NAUTILUS_LINK_H */

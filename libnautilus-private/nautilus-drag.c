@@ -36,6 +36,7 @@
 #include <stdio.h>
 
 #include "nautilus-glib-extensions.h"
+#include "nautilus-link.h"
 
 void
 nautilus_drag_init (NautilusDragInfo *drag_info,
@@ -207,8 +208,48 @@ gboolean
 nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 			       const char *item_uri)
 {
+	char *link_uri, *file_uri;
+	gboolean retval;
+	
 	if (!nautilus_file_is_directory (drop_target_item)) {
-		return FALSE;
+		/* Handle local NautilusLink files */
+		if (nautilus_file_is_local (drop_target_item) && 
+		    nautilus_file_is_nautilus_link (drop_target_item)) {									
+			/* Get link URI */
+			file_uri = nautilus_file_get_uri (drop_target_item);
+			if (file_uri == NULL) {
+				return FALSE;
+			}
+
+			link_uri = nautilus_link_get_link_uri (file_uri);
+			if (link_uri == NULL) {
+				g_free (file_uri);
+				return FALSE;
+			}
+
+			retval = TRUE;
+			if (!nautilus_file_matches_uri (drop_target_item, item_uri)) {
+				GnomeVFSURI *vfs_uri;
+				const char *local_path;
+				
+				vfs_uri = gnome_vfs_uri_new (file_uri);
+				if (vfs_uri == NULL) {
+					retval = FALSE;
+				} else {
+					/* Check and see if it is a link that can accept a drag */
+					local_path = gnome_vfs_uri_get_path (vfs_uri);
+					retval = nautilus_link_can_accept_drag (local_path);
+					gnome_vfs_uri_unref (vfs_uri);
+				}
+			}
+
+			g_free (file_uri);
+			g_free (link_uri);
+			
+			return retval;
+		} else {
+			return FALSE;
+		}
 	}
 
 	/* target is a directory, find out if it matches the item */
