@@ -1285,14 +1285,12 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
 	
-	/* Notice that the event is in world coordinates, because of
+	/* Notice that the event is in bin_window coordinates, because of
            the way the canvas handles events.
 	*/
 	canvas = GNOME_CANVAS (container);
-	eel_gnome_canvas_world_to_widget (canvas,
-					  event->x, event->y,
-					  &dnd_info->drag_info.start_x,
-					  &dnd_info->drag_info.start_y);
+	dnd_info->drag_info.start_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
+	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));
 	
 	/* start the drag */
 	context = gtk_drag_begin (GTK_WIDGET (container),
