@@ -368,9 +368,18 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 
 	doc = xmlParseFile (path);
 	g_free (path);
+
+	if (doc == NULL) {
+		return NULL;
+	}
+	
 	icon_uri = xml_get_root_property (doc, NAUTILUS_METADATA_KEY_CUSTOM_ICON);
 	xmlFreeDoc (doc);
 
+	if (icon_uri == NULL) {
+		return NULL;
+	}
+	
 	/* if the image is remote, see if we can find it in our local cache */
 	if (nautilus_is_remote_uri (icon_uri)) {
 		local_path = make_local_path (icon_uri);
