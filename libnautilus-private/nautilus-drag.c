@@ -33,8 +33,9 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <gtk/gtkmain.h>
 
 #include "nautilus-glib-extensions.h"
 #include "nautilus-link.h"
@@ -468,6 +469,19 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	 * edge
 	 */
 
+
+
+gboolean
+nautilus_drag_autoscroll_in_scroll_region (GtkWidget *widget)
+{
+	float x_scroll_delta, y_scroll_delta;
+
+	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
+
+	return x_scroll_delta != 0 || y_scroll_delta != 0;
+}
+
+
 void
 nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_delta, float *y_scroll_delta)
 {
@@ -536,6 +550,43 @@ nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_del
 	}
 
 }
+
+
+
+void
+nautilus_drag_autoscroll_start (NautilusDragInfo *drag_info,
+				GtkWidget        *widget,
+				GtkFunction       callback,
+				gpointer          user_data)
+{
+	if (nautilus_drag_autoscroll_in_scroll_region (widget)) {
+		if (drag_info->auto_scroll_timeout_id == 0) {
+			drag_info->waiting_to_autoscroll = TRUE;
+			drag_info->start_auto_scroll_in = nautilus_get_system_time() 
+				+ AUTOSCROLL_INITIAL_DELAY;
+			
+			drag_info->auto_scroll_timeout_id = gtk_timeout_add
+				(AUTOSCROLL_TIMEOUT_INTERVAL,
+				 callback,
+			 	 user_data);
+		}
+	} else {
+		if (drag_info->auto_scroll_timeout_id != 0) {
+			gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
+			drag_info->auto_scroll_timeout_id = 0;
+		}
+	}
+}
+
+void
+nautilus_drag_autoscroll_stop (NautilusDragInfo *drag_info)
+{
+	if (drag_info->auto_scroll_timeout_id) {
+		gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
+		drag_info->auto_scroll_timeout_id = 0;
+	}
+}
+
 
 void
 nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)

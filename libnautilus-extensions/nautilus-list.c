@@ -2962,7 +2962,7 @@ auto_scroll_timeout_callback (gpointer data)
 	drag_info = list->details->drag_info;
 
 	if (drag_info->waiting_to_autoscroll
-		&& drag_info->start_auto_scroll_in < nautilus_get_system_time()) {
+	    && drag_info->start_auto_scroll_in > nautilus_get_system_time()) {
 		/* not yet */
 		return TRUE;
 	}
@@ -2979,34 +2979,20 @@ auto_scroll_timeout_callback (gpointer data)
 static void
 nautilus_list_start_auto_scroll (NautilusList *list)
 {
-	NautilusDragInfo *drag_info;
-
 	g_assert (NAUTILUS_IS_LIST (list));
-	drag_info = list->details->drag_info;
 
-	if (drag_info->auto_scroll_timeout_id == 0) {
-		drag_info->waiting_to_autoscroll = TRUE;
-		drag_info->start_auto_scroll_in = nautilus_get_system_time() 
-			+ AUTOSCROLL_INITIAL_DELAY;
-		drag_info->auto_scroll_timeout_id = gtk_timeout_add
-			(AUTOSCROLL_TIMEOUT_INTERVAL,
-			 auto_scroll_timeout_callback,
-			 list);
-	}
+	nautilus_drag_autoscroll_start (list->details->drag_info,
+					GTK_WIDGET (list),
+					auto_scroll_timeout_callback,
+					list);
 }
 
 static void
 nautilus_list_stop_auto_scroll (NautilusList *list)
 {
-	NautilusDragInfo *drag_info;
-
 	g_assert (NAUTILUS_IS_LIST (list));
-	drag_info = list->details->drag_info;
 
-	if (drag_info->auto_scroll_timeout_id) {
-		gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
-		drag_info->auto_scroll_timeout_id = 0;
-	}
+	nautilus_drag_autoscroll_stop (list->details->drag_info);
 }
 
 static void

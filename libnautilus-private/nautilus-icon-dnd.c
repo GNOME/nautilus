@@ -639,13 +639,13 @@ auto_scroll_timeout_callback (gpointer data)
 	widget = GTK_WIDGET (data);
 	container = NAUTILUS_ICON_CONTAINER (widget);
 
-	if (container->details->waiting_to_autoscroll
-		&& container->details->start_auto_scroll_in < nautilus_get_system_time()) {
+	if (container->details->dnd_info->drag_info.waiting_to_autoscroll
+	    && container->details->dnd_info->drag_info.start_auto_scroll_in > nautilus_get_system_time()) {
 		/* not yet */
 		return TRUE;
 	}
 
-	container->details->waiting_to_autoscroll = FALSE;
+	container->details->dnd_info->drag_info.waiting_to_autoscroll = FALSE;
 
 	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
 	if (x_scroll_delta == 0 && y_scroll_delta == 0) {
@@ -697,24 +697,16 @@ auto_scroll_timeout_callback (gpointer data)
 static void
 set_up_auto_scroll_if_needed (NautilusIconContainer *container)
 {
-	if (container->details->auto_scroll_timeout_id == 0) {
-		container->details->waiting_to_autoscroll = TRUE;
-		container->details->start_auto_scroll_in = nautilus_get_system_time() 
-			+ AUTOSCROLL_INITIAL_DELAY;
-		container->details->auto_scroll_timeout_id = gtk_timeout_add
-				(AUTOSCROLL_TIMEOUT_INTERVAL,
-				 auto_scroll_timeout_callback,
-			 	 container);
-	}
+	nautilus_drag_autoscroll_start (&container->details->dnd_info->drag_info,
+					GTK_WIDGET (container),
+					auto_scroll_timeout_callback,
+					container);
 }
 
 static void
 stop_auto_scroll (NautilusIconContainer *container)
 {
-	if (container->details->auto_scroll_timeout_id) {
-		gtk_timeout_remove (container->details->auto_scroll_timeout_id);
-		container->details->auto_scroll_timeout_id = 0;
-	}
+	nautilus_drag_autoscroll_stop (&container->details->dnd_info->drag_info);
 }
 
 static gboolean

@@ -1,3 +1,60 @@
+2000-11-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bugs 2943 (Dragging icons between windows or to the desktop
+	triggers scrolling), 4786 (Need to remove tree view auto-expand
+	feature for 1.0) and 4476 (weird horizontal autoscroll
+	behavior). Auto-scroll now has a consistent 750 ms startup delay,
+	and the tree auto-expand is off.
+
+	* libnautilus-extensions/nautilus-drag.h,
+	libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_autoscroll_in_scroll_region,
+	nautilus_drag_autoscroll_start, nautilus_drag_autoscroll_stop):
+	New convenience functions that factor out common code formerly in
+	the tree, list and icon view DnD code. This fixes the mistakes
+	common to all three of those views, where the auto-scroll initial
+	delay was measured from the start of dragging overall, not from
+	entering the scroll region.
+
+	* libnautilus-extensions/nautilus-icon-private.h,
+	libnautilus-extensions/nautilus-icon-dnd.c
+	(auto_scroll_timeout_callback, set_up_auto_scroll_if_needed,
+	stop_auto_scroll): Use the above calls. Also, correct a `<'
+	vs. `>' mistake that made the auto-scroll delay never take effect.
+	
+	* libnautilus-extensions/nautilus-list.c
+	(auto_scroll_timeout_callback, nautilus_list_start_auto_scroll,
+	nautilus_list_stop_auto_scroll): Use the above calls. Also,
+	correct a `<' vs. `>' mistake that made the auto-scroll delay
+	never take effect.
+
+	* components/tree/nautilus-tree-view-dnd.c:
+	(nautilus_tree_view_drag_leave, nautilus_tree_view_drag_motion,
+	collapse_time_callback, nautilus_tree_view_expand_node,
+	nautilus_tree_view_is_tree_node_expanded, nautilus_dump_info
+	expand_hack_unref, expand_hack_new, expand_time_callback,
+	nautilus_tree_view_expand_maybe_later): Remove bunches of code to
+	disable auto-expand.
+
+	(ready_to_start_scrolling, auto_scroll_timeout_callback),
+	(nautilus_tree_view_start_auto_scroll),
+	(nautilus_tree_view_stop_auto_scroll),
+	(nautilus_tree_view_drag_destroy): Use new common auto-scroll
+	code. I also made it possible to add an extra auto-scroll delay
+	for horizontal auto-scroll, but now that the startup delay has
+	been fixed, it seems almost impossible to trigger horizontal
+	auto-scroll accidentally, so I consider 4476 fixed.
+	
+	* components/adapter/bonobo-stream-vfs.c: (vfs_get_info,
+	vfs_set_info, vfs_write, vfs_read, vfs_copy_to, vfs_destroy,
+	bonobo_stream_vfs_open): Added FIXME bug numbers.
+	* components/adapter/nautilus-adapter-control-embed-strategy.c:
+	(activate_uri_callback): Added FIXME bug numbers.
+	* components/adapter/nautilus-adapter.c: (nautilus_adapter_new):
+	Added FIXME bug numbers.
+
 2000-11-20  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* configure.in: reduced versions of glib

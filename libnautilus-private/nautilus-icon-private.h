@@ -143,9 +143,6 @@ struct NautilusIconContainerDetails {
 	gboolean drag_started;
 	StretchState stretch_start;
 	int context_menu_timeout_id;
-	int auto_scroll_timeout_id;
-	gboolean waiting_to_autoscroll;
-	gint64 start_auto_scroll_in;
 
 	/* Renaming Details */
 	gboolean renaming;

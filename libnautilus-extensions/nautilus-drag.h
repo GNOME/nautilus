@@ -36,7 +36,6 @@
 #define AUTOSCROLL_INITIAL_DELAY 750000
 	/* in microseconds */
 
-
 /* Item of the drag selection list */
 typedef struct {
 	char *uri;
@@ -142,12 +141,21 @@ int 			nautilus_drag_modifier_based_action 		(int default_action,
 
 GdkDragAction		nautilus_drag_drop_action_ask			(GdkDragAction possible_actions);
 
+gboolean                nautilus_drag_autoscroll_in_scroll_region       (GtkWidget *widget);
 void                    nautilus_drag_autoscroll_calculate_delta        (GtkWidget *widget, 
 									 float *x_scroll_delta, 
 									 float *y_scroll_delta);
+
+void                    nautilus_drag_autoscroll_start                  (NautilusDragInfo *drag_info,
+									 GtkWidget        *widget,
+									 GtkFunction       callback,
+									 gpointer          user_data);
+
+void                    nautilus_drag_autoscroll_stop                   (NautilusDragInfo *drag_info);
+
+
 void                    nautilus_drag_file_receive_dropped_keyword      (NautilusFile *file, 
 									 char *keyword);
-
 
 #endif
 

@@ -152,7 +152,9 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	CORBA_Environment     ev;
 
 
-	/* FIXME: should be done with construct args */
+	/* FIXME bugzilla.eazel.com 4405: should be done with
+	 * construct args 
+	 */
 
 	CORBA_exception_init (&ev);
 
