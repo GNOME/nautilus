@@ -111,6 +111,9 @@ struct NautilusListDetails
 	GdkGC *cell_selected_lighter_background;
 	GdkGC *cell_selected_darker_background;
 	GdkGC *cell_divider_color;
+	GdkGC *selection_light_color;
+	GdkGC *selection_medium_color;
+	GdkGC *selection_main_color;
 };
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
@@ -511,6 +514,9 @@ nautilus_list_destroy (GtkObject *object)
 	gdk_gc_unref (list->details->cell_selected_lighter_background);
 	gdk_gc_unref (list->details->cell_selected_darker_background);
 	gdk_gc_unref (list->details->cell_divider_color);
+	gdk_gc_unref (list->details->selection_light_color);
+	gdk_gc_unref (list->details->selection_medium_color);
+	gdk_gc_unref (list->details->selection_main_color);
 
 	g_free (list->details->type_select_pattern);
 
@@ -1392,12 +1398,49 @@ nautilus_gdk_gc_copy (GdkGC *source, GdkWindow *window)
 }
 
 static void
+nautilus_list_setup_style_colors (NautilusList *list)
+{
+	guint32 style_background_color;
+	guint32 selection_background_color;
+
+	gdk_rgb_init();
+
+	style_background_color = nautilus_gdk_color_to_gdk_rgb
+		(&GTK_WIDGET (list)->style->bg [GTK_STATE_NORMAL]);
+	selection_background_color = nautilus_gdk_color_to_gdk_rgb
+		(&GTK_WIDGET (list)->style->bg [GTK_STATE_SELECTED]);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
+		style_background_color, 1);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
+		style_background_color, 1.05);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
+		style_background_color, 1.05);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
+		style_background_color, 1.10);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
+		style_background_color, 0.9);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_main_color, 
+		selection_background_color, 1);
+		
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_medium_color, 
+		selection_background_color, 0.7);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_light_color, 
+		selection_background_color, 0.5);
+}
+
+static void
 nautilus_list_realize (GtkWidget *widget)
 {
 	NautilusList *list;
 	GtkCList *clist;
 	GtkWindow *window;
-	guint32 style_background_color;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
@@ -1407,15 +1450,6 @@ nautilus_list_realize (GtkWidget *widget)
 	clist->column[0].button = list->details->title;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
-
-	gdk_rgb_init();
-
-	style_background_color = nautilus_gdk_color_to_gdk_rgb
-		(&GTK_WIDGET (list)->style->bg [GTK_STATE_NORMAL]);
-
-	
-	style_background_color = 0xffdddddd;
-	/* FIXME: for now hardcode a gray value*/
 
 	list->details->cell_lighter_background = nautilus_gdk_gc_copy (
 		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
@@ -1427,23 +1461,14 @@ nautilus_list_realize (GtkWidget *widget)
 		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
 	list->details->cell_divider_color = nautilus_gdk_gc_copy (
 		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->selection_light_color = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_SELECTED], widget->window);
+	list->details->selection_medium_color = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_SELECTED], widget->window);
+	list->details->selection_main_color = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_SELECTED], widget->window);
 
-
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
-		style_background_color, 1);
-
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
-		style_background_color, 1.1);
-
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
-		style_background_color, 1.1);
-
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
-		style_background_color, 1.2);
-
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
-		style_background_color, 1.3);
-
+	nautilus_list_setup_style_colors (list);
 
 	if (clist->title_window) {
 		gtk_widget_set_parent_window (list->details->title, clist->title_window);
@@ -1718,7 +1743,11 @@ get_cell_style (NautilusList *list, GtkCListRow *row,
 			*fg_gc = GTK_WIDGET (list)->style->fg_gc[state];
 		}
 		if (bg_gc != NULL) {
-			*bg_gc = GTK_WIDGET (list)->style->bg_gc[state];
+			if (column_index == 2) {
+				*bg_gc = list->details->selection_medium_color;
+			} else  {
+				*bg_gc = list->details->selection_light_color;
+			}
 		}
 
 		return;
@@ -2590,6 +2619,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		nautilus_background_receive_dropped_color
 			(nautilus_get_widget_background (widget),
 			 widget, x, y, data);
+		nautilus_list_setup_style_colors (NAUTILUS_LIST (list));
 		break;
 	default:
 		break;
