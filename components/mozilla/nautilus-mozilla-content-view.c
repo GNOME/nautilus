@@ -112,7 +112,6 @@ static char *   mozilla_untranslate_uri_if_needed              (NautilusMozillaC
 static void     mozilla_content_view_one_time_happenings       (void);
 static void     mozilla_content_view_setup_profile_directory   (void);
 
-
 #ifdef EAZEL_SERVICES
 
 /*
@@ -1435,6 +1434,36 @@ test_make_full_uri_from_relative (void)
 }
 
 static void
+ensure_profile_dir (void)
+{
+	char *profile_dir;
+	
+	profile_dir = g_strdup_printf ("%s/.nautilus/MozillaProfile", g_get_home_dir ());
+
+	/* Make sure the profile directory exists */
+	mkdir (profile_dir, 0777);
+	
+	g_free (profile_dir);
+}
+
+static void
+ensure_cache_dir (void)
+{
+	char *cache_dir;
+
+	ensure_profile_dir ();
+	
+	cache_dir = g_strdup_printf ("%s/.nautilus/MozillaProfile/Cache", g_get_home_dir ());
+
+	/* Make sure the cache directory exists */
+	mkdir (cache_dir, 0777);
+	
+	mozilla_preference_set ("browser.cache.directory", cache_dir);
+	
+	g_free (cache_dir);
+}
+
+static void
 mozilla_content_view_one_time_happenings (void)
 {
 	static gboolean once = FALSE;
@@ -1457,9 +1486,10 @@ mozilla_content_view_one_time_happenings (void)
 	/* Setup routing of proxy preferences from gconf to mozilla */
 	mozilla_gconf_listen_for_proxy_changes ();
 
+	ensure_cache_dir ();
 }
 
-/* The "Mozilla Profile" directory is the place where mozilal stores 
+/* The "Mozilla Profile" directory is the place where mozilla stores 
  * things like cookies and cache.  Here we tell the mozilla embedding
  * widget to use ~/.nautilus/MozillaProfile for this purpose.
  *
