@@ -132,6 +132,7 @@ static void draw_line (TestCtx *ctx, int line_num, ArtIRect *rect)
 
 		glyph = rsvg_ft_render_string (ctx->ctx, ctx->fh,
 					       ctx->lines[line_num],
+					       strlen (ctx->lines[line_num]),
 					       14, 14,
 					       affine,
 					       glyph_xy);

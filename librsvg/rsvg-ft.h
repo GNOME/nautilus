@@ -34,7 +34,9 @@ rsvg_ft_font_unref (RsvgFTFont *font);
 
 RsvgFTGlyph *
 rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
-		       const char *str, double sx, double sy,
+		       const char *str, 
+		       unsigned int length,
+		       double sx, double sy,
 		       const double affine[6], int xy[2]);
 
 void

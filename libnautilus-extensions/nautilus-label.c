@@ -61,7 +61,6 @@ struct _NautilusLabelDetail
 	guint			font_size;
 
 	/* Text lines */
-	char			**text_lines;
 	guint			*text_line_widths;
 	guint			*text_line_heights;
 	guint			num_text_lines;
@@ -159,7 +158,6 @@ nautilus_label_initialize (NautilusLabel *label)
 	label->detail->num_text_lines = 0;
 	label->detail->max_text_line_width = 0;
 	label->detail->total_text_line_height = 0;
-	label->detail->text_lines = NULL;
 	label->detail->text_line_widths = NULL;
 	label->detail->text_line_heights = NULL;
 
@@ -180,7 +178,6 @@ nautilus_label_destroy (GtkObject *object)
 
 	g_free (label->detail->text);
 
-	g_strfreev (label->detail->text_lines);
 	g_free (label->detail->text_line_widths);
 	g_free (label->detail->text_line_heights);
 
@@ -358,11 +355,11 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 								&area,
 								label->detail->font_size,
 								label->detail->font_size,
-								(const char **) label->detail->text_lines,
+								label->detail->text,
+								label->detail->num_text_lines,
 								label->detail->text_line_widths,
 								label->detail->text_line_heights,
 								label->detail->text_justification,
-								label->detail->num_text_lines,
 								label->detail->line_offset,
 								label->detail->drop_shadow_color,
 								label->detail->text_alpha);
@@ -379,11 +376,11 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 							&area,
 							label->detail->font_size,
 							label->detail->font_size,
-							(const char **) label->detail->text_lines,
+							label->detail->text,
+							label->detail->num_text_lines,
 							label->detail->text_line_widths,
 							label->detail->text_line_heights,
 							label->detail->text_justification,
-							label->detail->num_text_lines,
 							label->detail->line_offset,
 							label->detail->text_color,
 							label->detail->text_alpha);
@@ -396,10 +393,8 @@ label_recompute_line_geometries (NautilusLabel *label)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 
-	g_strfreev (label->detail->text_lines);
 	g_free (label->detail->text_line_widths);
 	g_free (label->detail->text_line_heights);
-	label->detail->text_lines = NULL;
 	label->detail->text_line_widths = NULL;
 	label->detail->text_line_heights = NULL;
 
@@ -408,12 +403,8 @@ label_recompute_line_geometries (NautilusLabel *label)
 	label->detail->max_text_line_width = 0;
 	label->detail->total_text_line_height = 0;
 
-	label->detail->text_lines = NULL;
-
 	if (nautilus_strlen (label->detail->text) > 0) {
 		label->detail->num_text_lines = nautilus_str_count_characters (label->detail->text, '\n') + 1;
-
-		label->detail->text_lines = g_strsplit (label->detail->text, "\n", -1);
 
 		label->detail->text_line_widths = g_new (guint, label->detail->num_text_lines);
 		label->detail->text_line_heights = g_new (guint, label->detail->num_text_lines);
@@ -421,7 +412,7 @@ label_recompute_line_geometries (NautilusLabel *label)
 		nautilus_scalable_font_measure_text_lines (label->detail->font,
 							   label->detail->font_size,
 							   label->detail->font_size,
-							   (const char **) label->detail->text_lines,
+							   label->detail->text,
 							   label->detail->num_text_lines,
 							   label->detail->text_line_widths,
 							   label->detail->text_line_heights,

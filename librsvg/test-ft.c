@@ -377,6 +377,7 @@ int main(int argc, char **argv)
 
 		glyph = rsvg_ft_render_string (ctx, fh, 
 					       "graphic(s)", 
+					       strlen ("graphic(s)"),
 					       font_width, 
 					       font_height,
 					       affine, 

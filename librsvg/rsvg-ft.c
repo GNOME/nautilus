@@ -618,12 +618,13 @@ rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
  **/
 RsvgFTGlyph *
 rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
-		       const char *str, double sx, double sy,
+		       const char *str, 
+		       unsigned int length,
+		       double sx, double sy,
 		       const double affine[6], int xy[2])
 {
 	RsvgFTFont *font;
 	RsvgFTGlyph *result;
-	const int len = strlen (str);
 	RsvgFTGlyph **glyphs;
 	int *glyph_xy;
 	int i, j;
@@ -636,14 +637,18 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	int n_glyphs;
 	double init_x, init_y;
 
+	g_return_val_if_fail (ctx != NULL, NULL);
+	g_return_val_if_fail (str != NULL, NULL);
+	g_return_val_if_fail (length <= strlen (str), NULL);
+
 	font = rsvg_ft_font_resolve (ctx, fh);
 	if (font == NULL)
 		return NULL;
 
 	bbox.x0 = bbox.x1 = 0;
 
-	glyphs = g_new (RsvgFTGlyph *, len);
-	glyph_xy = g_new (int, len * 2);
+	glyphs = g_new (RsvgFTGlyph *, length);
+	glyph_xy = g_new (int, length * 2);
 
 	for (j = 0; j < 6; j++)
 		glyph_affine[j] = affine[j];
@@ -651,7 +656,7 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	init_x = affine[4];
 	init_y = affine[5];
 	n_glyphs = 0;
-	for (i = 0; i < len; i++) {
+	for (i = 0; i < length; i++) {
 		RsvgFTGlyph *glyph;
 
 		glyph_index = FT_Get_Char_Index (font->face,

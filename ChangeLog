@@ -1,5 +1,49 @@
 2000-09-04  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Work on task 1588.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_measure_text),
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_measure_text_lines),
+	(nautilus_scalable_font_draw_text_lines),
+	(nautilus_scalable_font_measure_text_lines),
+	(nautilus_scalable_font_draw_text_lines),
+	(nautilus_scalable_font_largest_fitting_font_size):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	Change api to accept a string with embedded new lines instead of
+	an array of strings.  This simplifies many things.
+	
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize), (nautilus_label_destroy),
+	(render_buffer_pixbuf), (label_recompute_line_geometries):
+	Update for NautilusScalalbleFont api changes.  No longer need to
+	tokenize the text string.  we can feed the string to the rendering
+	api as is.
+	
+	* librsvg/rsvg-ft.c: (rsvg_ft_render_string):
+	* librsvg/rsvg-ft.h:
+	Change the string to glyph rendering api to accept the string
+	length rather than computing it.  This makes it possible to feed
+	it arbitrary lengths.
+	
+	* librsvg/rsvg.c: (rsvg_text_handler_characters):
+	* librsvg/test-ft-gtk.c: (draw_line):
+	* librsvg/test-ft.c: (main):
+	Update for api changes.
+	
+	* src/nautilus-about.c: (draw_aa_string):
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain),
+	(draw_one_tab_themed), (get_tab_width):
+	* test/test-nautilus-font.c: (main):
+	Update test to use text lines drawing api.
+	
+	* test/test-nautilus-label.c:
+	(alpha_background_color_value_changed_callback), (main):
+	Update test for 2 new lines in a row.
+
+2000-09-04  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-string-list.c:
 	(nautilus_self_check_string_list):
 	Make the tokens test a little better.

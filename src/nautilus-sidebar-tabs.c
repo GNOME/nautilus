@@ -489,8 +489,13 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
 	/* measure the name and compute the bounding box */
-	nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
-						tab_name, &name_width, &name_height);
+	nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, 
+					     sidebar_tabs->details->font_size, 
+					     sidebar_tabs->details->font_size,
+					     tab_name,
+					     strlen (tab_name),
+					     &name_width, 
+					     &name_height);
 	
 	total_width = name_width + 2*TAB_MARGIN;
 
@@ -535,13 +540,15 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, &text_rect,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
-					  tab_name, prelight_flag ? NAUTILUS_RGB_COLOR_WHITE : NAUTILUS_RGB_COLOR_BLACK, 255);
+					  tab_name, strlen (tab_name),
+					  prelight_flag ? NAUTILUS_RGB_COLOR_WHITE : NAUTILUS_RGB_COLOR_BLACK, 255);
 	
 	text_rect.x0 -= 1;
 	text_rect.y0 -= 1;
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, &text_rect,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
-					  tab_name, prelight_flag ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE, 255);
+					  tab_name, strlen (tab_name),
+					  prelight_flag ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE, 255);
 	
 	/* blit the pixbuf to the drawable, then release it */
 
@@ -642,8 +649,13 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	}
 	
 	/* measure the size of the name */
-	nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
-						tab_name, &name_width, &name_height);
+	nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font,
+					     sidebar_tabs->details->font_size,
+					     sidebar_tabs->details->font_size,
+					     tab_name,
+					     strlen (tab_name),
+					     &name_width, 
+					     &name_height);
 	
 	/* draw the left edge piece */
 	current_pos = x - widget->allocation.x;
@@ -673,12 +685,14 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 		
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, &text_rect,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
-					  tab_name, NAUTILUS_RGB_COLOR_BLACK, 255);
+					  tab_name, strlen (tab_name),
+					  NAUTILUS_RGB_COLOR_BLACK, 255);
 	text_rect.x0 -= 1;
 	text_rect.y0 -= 1;
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, &text_rect,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
-					  tab_name, NAUTILUS_RGB_COLOR_WHITE, 255);
+					  tab_name, strlen (tab_name),
+					  NAUTILUS_RGB_COLOR_WHITE, 255);
 	
 	/* set up the bounds rectangle for later hit-testing */
 	if (tab_rect) {
@@ -725,8 +739,13 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 			edge_width = gdk_pixbuf_get_width (sidebar_tabs->details->tab_piece_images[TAB_NORMAL_LEFT]);
 		else
 			edge_width = 0;
-		nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
-						this_tab->tab_text, &name_width, &name_height);
+		nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font,
+						     sidebar_tabs->details->font_size,
+						     sidebar_tabs->details->font_size,
+						     this_tab->tab_text,
+						     strlen (this_tab->tab_text),
+						     &name_width,
+						     &name_height);
 	
 	} else {	
 		edge_width = 2 * TAB_MARGIN;

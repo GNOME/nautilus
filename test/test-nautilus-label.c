@@ -196,7 +196,7 @@ alpha_background_color_value_changed_callback (GtkAdjustment *adjustment, gpoint
 
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
+	
 	label = NAUTILUS_LABEL (client_data);
 
 	nautilus_label_set_text_alpha (NAUTILUS_LABEL (label), (guchar) adjustment->value);
@@ -753,7 +753,7 @@ main (int argc, char* argv[])
 	main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (window), main_box);
 
-	label = nautilus_label_new ("Label that \ndoesn't suck\nFoo\nBar");
+	label = nautilus_label_new ("Label that\n\ndoesn't\n\nsuck");
 
 	bottom_box = gtk_vbox_new (FALSE, 4);
 

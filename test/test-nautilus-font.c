@@ -18,55 +18,76 @@
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 int 
 main (int argc, char* argv[])
 {
 	GdkPixbuf		*pixbuf;
-	guint			text_width;
-	guint			text_height;
 	ArtIRect		area;
 	NautilusScalableFont	*font;
+	guint			num_text_lines;
+	char			**text_lines;
+	guint			*text_line_widths;
+	guint			*text_line_heights;
+	guint			max_width_out;
+	guint			total_height_out;
 
-	const char		*text = "Something";
-	const guint		font_width = 64;
-	const guint		font_height = 64;
+	const char		*text = "\nLine Two\n\nLine Four\n\n\nLine Seven\n";
+	const guint		font_width = 48;
+	const guint		font_height = 48;
+
+	const guint pixbuf_width = 500;
+	const guint pixbuf_height = 700;
 
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
 
 	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("Nimbus Sans L", NULL, NULL, NULL));
 	g_assert (font != NULL);
-		
-	nautilus_scalable_font_measure_text (font,
-					     font_width,
-					     font_height,
-					     text,
-					     &text_width,
-					     &text_height);
 
-	g_print ("size of '%s' = (%d,%d)\n", text, text_width, text_height);
-
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 512, 256);
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, pixbuf_width, pixbuf_height);
 	g_assert (pixbuf != NULL);
 	
 	area.x0 = 0;
 	area.y0 = 0;
 	
-	area.x1 = 512;
-	area.y1 = 256;
+	area.x1 = pixbuf_width;
+	area.y1 = pixbuf_height;
 
-	nautilus_scalable_font_draw_text (font,
-					  pixbuf,
-					  &area,
-					  font_width,
-					  font_height,
-					  text,
-					  NAUTILUS_RGB_COLOR_RED,
-					  255);
+	num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
 
-	g_assert (pixbuf != NULL);
+	text_lines = g_strsplit (text, "\n", -1);
 
+	text_line_widths = g_new (guint, num_text_lines);
+	text_line_heights = g_new (guint, num_text_lines);
+	
+	nautilus_scalable_font_measure_text_lines (font,
+						   font_width,
+						   font_height,
+						   text,
+						   num_text_lines,
+						   text_line_widths,
+						   text_line_heights,
+						   &max_width_out,
+						   &total_height_out);
+
+	g_print ("max_width = %d, total_height = %d\n", max_width_out, total_height_out);
+
+	nautilus_scalable_font_draw_text_lines (font,
+						pixbuf,
+						&area,
+						font_width,
+						font_height,
+						text,
+						num_text_lines,
+						text_line_widths,
+						text_line_heights,
+						GTK_JUSTIFY_LEFT,
+						2,
+						NAUTILUS_RGB_COLOR_RED,
+						255);
+	
 	nautilus_gdk_pixbuf_save_to_file (pixbuf, "font_test.png");
 
 	g_print ("saving test png file to font_test.png\n");

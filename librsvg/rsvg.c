@@ -803,7 +803,9 @@ rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
 			       has_alpha ? ART_ALPHA_SEPARATE : ART_ALPHA_NONE,
 			       NULL);
 
-      glyph = rsvg_ft_render_string (ctx->ft_ctx, fh, string,
+      glyph = rsvg_ft_render_string (ctx->ft_ctx, fh, 
+				     string,
+				     strlen (string),
 				     state->font_size, state->font_size,
 				     state->affine, glyph_xy);
 
