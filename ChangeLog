@@ -1,5 +1,20 @@
 2000-06-07  John Sullivan  <sullivan@eazel.com>
 
+	Made switching location with a specified view work.
+	There's still a bug outstanding (1053) about doing this a more
+	reliable way.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_switch_location): New helper function to
+	switch location, specifying whether or not a new window
+	should be used.
+	(switch_location_and_view): Set the default component for this
+	uri and then switch location.
+	(fm_directory_view_activate_file_internal): Use
+	fm_directory_view_switch_location to consolidate code.
+
+2000-06-07  John Sullivan  <sullivan@eazel.com>
+
 	Did task 1058 (Activating an item in directory view needs
 	to use application when appropriate)
 

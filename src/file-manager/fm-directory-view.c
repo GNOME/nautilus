@@ -406,19 +406,44 @@ fm_directory_view_chose_application_callback (GnomeVFSMimeApplication *applicati
 }
 
 static void
+fm_directory_view_switch_location (FMDirectoryView *directory_view, 
+				   const char *new_uri, 
+				   gboolean use_new_window)
+{
+	Nautilus_NavigationRequestInfo request;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+	g_assert (new_uri != NULL);
+
+	request.requested_uri = g_strdup (new_uri);
+	request.new_window_requested = use_new_window;
+	nautilus_view_request_location_change (directory_view->details->nautilus_view,
+				       		&request);	
+	
+	g_free (request.requested_uri);
+}
+
+static void
 switch_location_and_view (NautilusViewIdentifier *identifier, 
 			  const char *new_uri, 
 			  FMDirectoryView *directory_view)
 {
-	/* FIXME bugzilla.eazel.com 1053: 
-	 * Need a way to view a location with a specified viewer. 
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+	g_assert (identifier != NULL);
+	g_assert (new_uri != NULL);
+
+	/* User has explicitly chosen a viewer other than the default, so
+	 * make it the default and then switch locations.
 	 */
-	nautilus_error_dialog_parented 
-		((_("Sorry, switching location and view at the same time "
-		    "doesn't work yet (bugzilla.eazel.com 1053). "
-		    "For now, switch locations first, then use the "
-		    "\"View as\" menu to switch views.")),
-		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (directory_view))));
+	/* FIXME bugzilla.eazel.com 1053: We might want an atomic operation
+	 * for switching location and viewer together, so we don't have to
+	 * rely on metadata for holding the default location.
+	 */
+	nautilus_mime_set_default_component_for_uri (new_uri, identifier->iid);
+
+	fm_directory_view_switch_location 
+		(directory_view, new_uri, nautilus_preferences_get_boolean 
+						(NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE));
 }
 
 static void
@@ -2687,9 +2712,9 @@ fm_directory_view_activate_file_internal (FMDirectoryView *view,
 				 	  NautilusFile *file,
 				 	  gboolean use_new_window)
 {
-	Nautilus_NavigationRequestInfo request;
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
+	char *uri;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
@@ -2698,12 +2723,12 @@ fm_directory_view_activate_file_internal (FMDirectoryView *view,
 		return;
 	}
 
-	request.requested_uri = nautilus_file_get_mapped_uri (file);
+	uri = nautilus_file_get_mapped_uri (file);
 
-	action_type = nautilus_mime_get_default_action_type_for_uri (request.requested_uri);
+	action_type = nautilus_mime_get_default_action_type_for_uri (uri);
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-		application = nautilus_mime_get_default_application_for_uri (request.requested_uri);
-		fm_directory_view_launch_application (application, request.requested_uri, view);
+		application = nautilus_mime_get_default_application_for_uri (uri);
+		fm_directory_view_launch_application (application, uri, view);
 		gnome_vfs_mime_application_free (application);
 	} else {
 		/* If the action type is unspecified, treat it like the component case.
@@ -2713,12 +2738,10 @@ fm_directory_view_activate_file_internal (FMDirectoryView *view,
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE ||
 			  action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 
-		request.new_window_requested = use_new_window;
-		nautilus_view_request_location_change (view->details->nautilus_view,
-					       		&request);
+		fm_directory_view_switch_location (view, uri, use_new_window);
 	}
 
-	g_free (request.requested_uri);
+	g_free (uri);
 }
 
 
