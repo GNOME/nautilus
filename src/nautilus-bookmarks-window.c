@@ -179,7 +179,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 					      NAUTILUS_ICON_SIZE_SMALLER);
 	
 	rend = gtk_cell_renderer_text_new ();
-	col = gtk_tree_view_column_new ();
 	col = gtk_tree_view_column_new_with_attributes ("Icon", 
 							rend,
 							"text", 
