@@ -229,20 +229,19 @@ fi
 %{prefix}/share/pixmaps/nautilus/vector/*.xml
 %{prefix}/share/pixmaps/nautilus/villanova/*.xml
 %{prefix}/share/pixmaps/nautilus/villanova/*.png
-%{prefix}/share/oaf/help-contents.oaf
-%{prefix}/share/oaf/help-factory.oaf
-%{prefix}/share/oaf/nautilus-adapter.oaf
-%{prefix}/share/oaf/nautilus-content-loser.oaf
-%{prefix}/share/oaf/nautilus-hardware-view.oaf
-%{prefix}/share/oaf/nautilus-history-view.oaf
-%{prefix}/share/oaf/nautilus-image-view.oaf
-%{prefix}/share/oaf/nautilus-music-view.oaf
-%{prefix}/share/oaf/nautilus-notes.oaf
-%{prefix}/share/oaf/nautilus-sample-content-view.oaf
-%{prefix}/share/oaf/nautilus-sidebar-loser.oaf
-%{prefix}/share/oaf/nautilus-text-view.oaf
-%{prefix}/share/oaf/nautilus-tree-view.oaf
-%{prefix}/share/oaf/nautilus.oaf
+%{prefix}/share/oaf/Nautilus_View_help.oaf
+%{prefix}/share/oaf/Nautilus_ComponentAdapterFactory_std.oaf
+%{prefix}/share/oaf/Nautilus_View_content-loser.oaf
+%{prefix}/share/oaf/Nautilus_View_hardware.oaf
+%{prefix}/share/oaf/Nautilus_View_history.oaf
+%{prefix}/share/oaf/Nautilus_View_image.oaf
+%{prefix}/share/oaf/Nautilus_View_music.oaf
+%{prefix}/share/oaf/Nautilus_View_notes.oaf
+%{prefix}/share/oaf/Nautilus_View_sample.oaf
+%{prefix}/share/oaf/Nautilus_View_sidebar-loser.oaf
+%{prefix}/share/oaf/Nautilus_View_text.oaf
+%{prefix}/share/oaf/Nautilus_View_tree.oaf
+%{prefix}/share/oaf/Nautilus_shell.oaf
 %{prefix}/share/gnome/help/nautilus/C/*
 
 %files devel
@@ -262,7 +261,7 @@ fi
 %{prefix}/bin/nautilus-mozilla-content-view
 
 %defattr(0444, bin, bin)
-%{prefix}/share/oaf/nautilus-mozilla-content-view.oaf
+%{prefix}/share/oaf/Nautilus_View_mozilla.oaf
 
 %files trilobite
 
@@ -293,10 +292,11 @@ fi
 %defattr(0444, bin, bin)
 %config %{sysconfdir}/pam.d/eazel-helper
 %config %{sysconfdir}/security/console.apps/eazel-helper
-%{prefix}/share/oaf/nautilus-service-install-view.oaf
-%{prefix}/share/oaf/trilobite-eazel-install-service.oaf
-%{prefix}/share/oaf/nautilus-summary-view.oaf
-%{prefix}/share/oaf/nautilus-rpm-view.oaf
+%{prefix}/share/oaf/Nautilus_View_install.oaf
+%{prefix}/share/oaf/Trilobite_Service_install.oaf
+%{prefix}/share/oaf/Nautilus_View_change-password.oaf
+%{prefix}/share/oaf/Nautilus_View_services-summary.oaf
+%{prefix}/share/oaf/Nautilus_View_rpm.oaf
 
 %files extras
 
