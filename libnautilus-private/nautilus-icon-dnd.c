@@ -1137,6 +1137,7 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	NautilusIcon *icon;
 	NautilusFile *file;
 	double world_x, world_y;
+	char *uri;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	if ((container->details->dnd_info->drag_info.selection_list == NULL) 
@@ -1157,8 +1158,10 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 
 	/* Find if target icon accepts our drop. */
 	if (icon != NULL && (container->details->dnd_info->drag_info.data_type != NAUTILUS_ICON_DND_KEYWORD)) {
-		    file = nautilus_file_get (nautilus_icon_container_get_icon_uri (container, icon));
-
+		    uri = nautilus_icon_container_get_icon_uri (container, icon);
+		    file = nautilus_file_get (uri);
+		    g_free (uri);
+		
 		    if (!nautilus_drag_can_accept_items (file,
 							 container->details->dnd_info->drag_info.selection_list)) {
 			    icon = NULL;
