@@ -2018,6 +2018,8 @@ read_dot_hidden_file (NautilusDirectory *directory)
 	GnomeVFSResult result;
 	int i, file_size;
 	char *file_contents;
+	GnomeVFSFileInfo *file_info;
+	gboolean file_ok;
 
 
 	/* FIXME: We only support .hidden on file: uri's for the moment.
@@ -2032,6 +2034,29 @@ read_dot_hidden_file (NautilusDirectory *directory)
 	 * that works on strings, so we can avoid the VFS parsing step.
 	 */
 	dot_hidden_vfs_uri = gnome_vfs_uri_append_file_name (directory->details->vfs_uri, ".hidden");
+
+	file_info = gnome_vfs_file_info_new ();
+	if (!file_info) {
+		return;
+	}
+	
+	if (gnome_vfs_get_file_info_uri (
+		dot_hidden_vfs_uri,
+		file_info, 
+		GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
+		gnome_vfs_file_info_unref (file_info);
+		return;
+	}
+
+	file_ok = (file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) &&
+		(file_info->type == GNOME_VFS_FILE_TYPE_REGULAR);
+
+	gnome_vfs_file_info_unref (file_info);
+		
+	if (!file_ok) {
+		return;
+	}
+	
 	dot_hidden_uri = gnome_vfs_uri_to_string (dot_hidden_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (dot_hidden_vfs_uri);
 	

@@ -1,3 +1,25 @@
+2004-10-13  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(read_dot_hidden_file):
+	Only read .hidden files if they are regular files.
+	
+	* src/file-manager/fm-tree-view.c:
+	Delay activation when keyboard navigating the tree.
+
+	Patches from Danny Milosavljevic <danny.milo@gmx.net>
+
+2004-10-13  Alexander Larsson  <alexl@redhat.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(read_dot_hidden_file):
+	* src/file-manager/fm-tree-view.c:
+	(selection_changed_timer_callback), (selection_changed_callback),
+	(create_tree), (tree_activate_callback),
+	(fm_tree_view_instance_init), (fm_tree_view_dispose):
+
 2004-10-12  Anders Carlsson  <andersca@gnome.org>
 
 	* src/nautilus-file-management-properties.glade:

@@ -38,6 +38,7 @@
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkscrolledwindow.h>
@@ -92,6 +93,8 @@ struct FMTreeViewDetails {
 	GtkWidget *popup_trash;
 	GtkWidget *popup_properties;
 	NautilusFile *popup_file;
+	
+	guint selection_changed_timer;
 };
 
 typedef struct {
@@ -378,34 +381,64 @@ row_activated_callback (GtkTreeView *treeview, GtkTreePath *path,
 	}
 }
 
-
-static void
-selection_changed_callback (GtkTreeSelection *selection,
-			    FMTreeView *view)
+static gboolean 
+selection_changed_timer_callback(FMTreeView *view)
 {
 	NautilusFileAttributes attributes;
 	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget));
 
 	/* no activation if popup menu is open */
 	if (view->details->popup_file != NULL) {
-		return;
+		return FALSE;
 	}
 
 	cancel_activation (view);
 
 	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
-		return;
+		return FALSE;
 	}
 
 	view->details->activation_file = sort_model_iter_to_file (view, &iter);
 	if (view->details->activation_file == NULL) {
-		return;
+		return FALSE;
 	}
 	view->details->activation_in_new_window = FALSE;
 		
 	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
 	nautilus_file_call_when_ready (view->details->activation_file, attributes,
 				       got_activation_uri_callback, view);
+	return FALSE; /* remove timeout */
+}
+
+static void
+selection_changed_callback (GtkTreeSelection *selection,
+			    FMTreeView *view)
+{
+	GdkEvent *event;
+	gboolean is_keyboard;
+
+	if (view->details->selection_changed_timer) {
+		g_source_remove (view->details->selection_changed_timer);
+		view->details->selection_changed_timer = 0;
+	}
+	
+	event = gtk_get_current_event ();
+	if (event) {
+		is_keyboard = (event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE);
+		gdk_event_free (event);
+
+		if (is_keyboard) {
+			/* on keyboard event: delay the change */
+			/* TODO: make dependent on keyboard repeat rate as per Markus Bertheau ? */
+			view->details->selection_changed_timer = g_timeout_add (300, (GSourceFunc) selection_changed_timer_callback, view);
+		} else {
+			/* on mouse event: show the change immediately */
+			selection_changed_timer_callback (view);
+		}
+	}
 }
 
 static int
@@ -1279,6 +1312,11 @@ fm_tree_view_dispose (GObject *object)
 	
 	view = FM_TREE_VIEW (object);
 	
+	if (view->details->selection_changed_timer) {
+		g_source_remove (view->details->selection_changed_timer);
+		view->details->selection_changed_timer = 0;
+	}
+
 	if (view->details->drag_dest) {
 		g_object_unref (view->details->drag_dest);
 		view->details->drag_dest = NULL;
