@@ -25,7 +25,8 @@
  */
 
 
-#define DEBUG_MJS 1
+/* #define DEBUG_MJS 1 */
+
 /* ntl-uri-map.c: Implementation of routines for mapping a location
    change request to a set of views and actual URL to be loaded. */
 
@@ -459,7 +460,7 @@ file_list_to_mime_type_hash_table (GList *files)
                         
                         if (NULL != mime_type) {
                                 if (g_hash_table_lookup (result, mime_type) == NULL) {
-#if DEBUG_MJS
+#ifdef DEBUG_MJS
                                         printf ("XXX content mime type: %s\n", mime_type);
 #endif
                                         g_hash_table_insert (result, mime_type, mime_type);

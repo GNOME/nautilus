@@ -1,3 +1,9 @@
+2000-05-08  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-uri-map.c: DEBUG_MJS was accidentally checked in
+	defined. I commented it out. Also changed an #if DEBUG_MJS
+	to #ifdef to match the others.
+
 2000-05-08  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c
@@ -30,6 +36,7 @@
 	Make it so that the keyboard focus gets collapsed with the selection
 	when selecting an item with a mouse.
 
+>>>>>>> 1.244
 2000-05-08  Darin Adler  <darin@eazel.com>
 
 	* check-FIXME.pl:
