@@ -535,7 +535,7 @@ set_up_update_page (NautilusDruidPageEazel *page)
 				  "Nautilus is recent; longer (but no more than a minute or two)\n"
 				  "if you need an update.\n\n"
 				  "If you know your computer uses a proxy connection, click\n"
-				  "Verify and Nautilus will use it."));
+				  "Verify and Nautilus will use it.\n"));
 
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -923,15 +923,15 @@ set_up_medusa_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = new_body_label (_("The Medusa daemon indexes all the items on your hard\n"
-				  "disk and mounted volumes, so you can quickly search\n"
-				  "by name, date, and other attributes as well as by content.\n"
-				  "Without Medusa, searching is slower.\n"));
+	label = new_body_label (_("The fast search feature indexes all the items on your hard disk.\n"
+				  "It speeds up searching and allows you to search by file content\n"
+				  "as well as filename, date, and other file properties. The indexing\n"
+				  "takes time but is performed only when your computer is idle.\n"));
 
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	checkbox = gtk_check_button_new_with_label (_("Launch medusa."));
+	checkbox = gtk_check_button_new_with_label (_("Enable fast search"));
 	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);	
 	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (medusa_value_changed), &launch_medusa);
@@ -1093,7 +1093,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	set_up_gmc_transition_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]));
 
 	/* set up the `Launch Medusa' page */
-	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]), _("Launch Medusa"));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]), _("Fast Searches"));
 	set_up_medusa_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]));
 
 	/* set up the update page */
