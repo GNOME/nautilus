@@ -40,7 +40,8 @@
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
 
-#define DESKTOP_DIRECTORY_NAME ".gnome-desktop"
+#define DESKTOP_DIRECTORY_NAME "Desktop"
+#define LEGACY_DESKTOP_DIRECTORY_NAME ".gnome-desktop"
 #define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
 
 gboolean
@@ -74,7 +75,7 @@ nautilus_get_user_directory (void)
 	user_directory = g_build_filename (g_get_home_dir (),
 					   NAUTILUS_USER_DIRECTORY_NAME,
 					   NULL);
-
+	
 	if (!g_file_test (user_directory, G_FILE_TEST_EXISTS)) {
 		mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 		/* FIXME bugzilla.gnome.org 41286: 
@@ -104,7 +105,7 @@ nautilus_get_desktop_directory (void)
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		desktop_directory = g_strdup (g_get_home_dir());
 	} else {
-		desktop_directory = nautilus_get_gmc_desktop_directory ();
+		desktop_directory = g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
 		if (!g_file_test (desktop_directory, G_FILE_TEST_EXISTS)) {
 			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 			/* FIXME bugzilla.gnome.org 41286: 
@@ -120,6 +121,28 @@ nautilus_get_desktop_directory (void)
 	return desktop_directory;
 }
 
+
+/**
+ * nautilus_get_desktop_directory_uri:
+ * 
+ * Get the uri for the directory containing files on the desktop.
+ *
+ * Return value: the directory path.
+ **/
+char *
+nautilus_get_desktop_directory_uri (void)
+{
+	char *desktop_path;
+	char *desktop_uri;
+	
+	desktop_path = nautilus_get_desktop_directory ();
+	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
+	g_free (desktop_path);
+
+	return desktop_uri;
+}
+
+
 /**
  * nautilus_get_gmc_desktop_directory:
  * 
@@ -130,7 +153,7 @@ nautilus_get_desktop_directory (void)
 char *
 nautilus_get_gmc_desktop_directory (void)
 {
-	return g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
+	return g_build_filename (g_get_home_dir (), LEGACY_DESKTOP_DIRECTORY_NAME, NULL);
 }
 
 /**

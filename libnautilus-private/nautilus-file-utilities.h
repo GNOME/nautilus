@@ -36,6 +36,7 @@ gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relati
  */
 char *   nautilus_get_user_directory                 (void);
 char *   nautilus_get_desktop_directory              (void);
+char *   nautilus_get_desktop_directory_uri          (void);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 

@@ -292,6 +292,7 @@ NautilusView *      fm_directory_view_get_nautilus_view                (FMDirect
 
 /* Functions callable from the user interface and elsewhere. */
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
+char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_accept_item                  (NautilusFile     *target_item,
 									const char       *item_uri,
 									FMDirectoryView  *view);

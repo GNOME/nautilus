@@ -1,3 +1,126 @@
+2003-05-15  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	Added new files.
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-global-preferences.[ch]:
+	New prefs for home and trash links.
+	
+	* libnautilus-private/nautilus-desktop-directory.[ch]:
+	New files. Implements the NautilusDesktop object for the
+	virtual x-nautilus-desktop: uri. The directory merges the contents
+	of the directory with the real desktop directory.
+	
+	* libnautilus-private/nautilus-desktop-directory-file.[ch]:
+	New files. Implements the Nautilusfile corresponding to
+	NautilusDestkopDirectory.
+	
+	* libnautilus-private/nautilus-desktop-icon-file.[ch]:
+	New files.
+	Implement NautilusFile for a virtual file in a NautilusDesktopDirectory.
+	Gets all the actual file data from a NautilusDesktopLink.
+
+	* libnautilus-private/nautilus-desktop-link-monitor.[ch]:
+	New files.
+	Keep track of home and trash visibility prefs and mounted volumes and
+	create/destroy corresponding NautilusDesktopLink object.
+	
+	* libnautilus-private/nautilus-desktop-link.[ch]:
+	New files.
+	Keeps track of all the real information in a desktop icon link.
+	These are home, trash and volume links at the moment.
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	Indentation correction.
+	
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_new):
+	Create NautilusDesktopDirectory objects for x-nautilus-desktop: uris
+	
+	* libnautilus-private/nautilus-dnd.c: (nautilus_drag_items_local):
+	Handle NULL GnomeVFSURIs.
+	(nautilus_drag_items_on_desktop): New function to check if items
+	are on the desktop.
+	(nautilus_drag_default_drop_action_for_icons):
+	Special case desktop uris.
+	(nautilus_drag_selection_includes_special_link):
+	Convert from old-style special links to current.
+	
+	* libnautilus-private/nautilus-dnd.h:
+	New function nautilus_drag_items_on_desktop.
+	
+	* libnautilus-private/nautilus-file-operations.c:
+	(is_special_link), (nautilus_file_operations_copy_move):
+	Convert from old-style special links to current.
+	(nautilus_file_operations_delete):
+	Special case desktop links
+	
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	(nautilus_get_desktop_directory):
+	(nautilus_get_gmc_desktop_directory):
+	Change desktop dir to ~/Desktop
+	(nautilus_get_desktop_directory_uri):
+	New function to return desktop dir as a uri.
+
+	
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_new_from_relative_uri),
+	(nautilus_file_get_internal):
+	Handle creation of desktop icon files.
+	(nautilus_file_can_rename), (rename_guts),
+	(nautilus_file_get_drop_target_uri):
+	Update for new special links.
+	(nautilus_file_is_in_desktop):
+	Update for new desktop dir.
+	(nautilus_file_get_uri):
+	Fix uris for self owned files. This changed due to
+	the new canonicalization rules for foo:
+	
+	
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_container_selection_items_local),
+	(handle_nonlocal_move):
+	Handle desktop uri.
+	
+	* src/Nautilus_shell.server.in:
+	icon view handles x-nautilus-desktop: uris
+	
+	* src/nautilus-application.c: (finish_startup):
+	Initialize the desktop link monitor
+	
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_update_directory):
+	Show x-nautilus-desktop: 
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_finalize), (fm_desktop_icon_view_init),
+	(volume_ops_callback), (trash_link_is_selection),
+	(volume_link_is_selection), (volume_link_device_type),
+	(real_supports_zooming):
+	
+	* src/file-manager/fm-directory-view.c:
+	Remove lots of old support for desktop icon.
+	Reimplement some of it with the new desktop icon support.
+	
+	* src/file-manager/fm-directory-view.h:
+	New function fm_directory_view_get_backing_uri
+	
+	* src/file-manager/fm-icon-container.c:
+	(fm_icon_container_get_icon_text):
+	Don't show extra text for desktop icons
+	(get_sort_category): Update for new desktop icons
+	
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	Use get_backing_uri()
+	
+	* src/file-manager/fm-properties-window.c: (get_target_file):
+	Use the new desktop icon support.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	(lay_down_icons_tblr):
+	Don't loop forever if icon doesn't in the height of the container.
+
 2003-05-14 Gaute Lindkvist <lindkvis@stud.ntnu.no>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c

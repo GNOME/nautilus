@@ -31,6 +31,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-thumbnails.h>
+#include <libnautilus-private/nautilus-desktop-icon-file.h>
 
 #include "fm-icon-container.h"
 
@@ -248,6 +249,13 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 		*editable_text = nautilus_file_get_display_name (file);
 	}
 
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		/* Don't show the normal extra information for desktop icons, it doesn't
+		 * make sense. */
+ 		*additional_text = NULL;
+		return;
+	}
+	
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
@@ -318,34 +326,30 @@ typedef enum {
 static SortCategory
 get_sort_category (NautilusFile *file)
 {
-	char *uri;
+	NautilusDesktopLink *link;
 	SortCategory category;
 
-	if (!nautilus_file_is_nautilus_link (file)) {
-		category = SORT_OTHER;
-	} else {
-		if (!nautilus_file_is_local (file))
-			return SORT_OTHER;
-
-		uri = nautilus_file_get_uri (file);
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 		
-		switch (nautilus_link_local_get_link_type (uri, NULL)) {
-		case NAUTILUS_LINK_HOME:
+		switch (nautilus_desktop_link_get_link_type (link)) {
+		case NAUTILUS_DESKTOP_LINK_HOME:
 			category = SORT_HOME_LINK;
 			break;
-		case NAUTILUS_LINK_MOUNT:
+		case NAUTILUS_DESKTOP_LINK_VOLUME:
 			category = SORT_MOUNT_LINK;
 			break;
-		case NAUTILUS_LINK_TRASH:
+		case NAUTILUS_DESKTOP_LINK_TRASH:
 			category = SORT_TRASH_LINK;
 			break;
 		default:
 			category = SORT_OTHER;
 			break;
 		}
-		
-		g_free (uri);
-	}
+		g_object_unref (link);
+	} else {
+		category = SORT_OTHER;
+	} 
 	
 	return category;
 }

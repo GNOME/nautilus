@@ -68,6 +68,8 @@
 #include <libnautilus-private/nautilus-recent.h>
 #include <libegg/egg-screen-exec.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
+#include <libnautilus-private/nautilus-desktop-icon-file.h>
+#include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -992,7 +994,7 @@ new_launcher_callback (BonoboUIComponent *component, gpointer callback_data, con
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	parent_uri = fm_directory_view_get_uri (view);
+	parent_uri = fm_directory_view_get_backing_uri (view);
 
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
 						  "gnome-desktop-item-edit", 
@@ -2314,7 +2316,7 @@ display_pending_idle_callback (gpointer data)
 {
 	gboolean ret;
 	FMDirectoryView *view;
-		
+
 	view = FM_DIRECTORY_VIEW (data);
 
 	g_object_ref (G_OBJECT (view));
@@ -2474,7 +2476,7 @@ done_loading_callback (NautilusDirectory *directory,
 		       gpointer callback_data)
 {
 	FMDirectoryView *view;
-	
+
 	view = FM_DIRECTORY_VIEW (callback_data);
 	
 	process_new_files (view);
@@ -2946,7 +2948,7 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
  * 
  * Return TRUE if one of our special links is in the selection.
  * Special links include the following: 
- *	 NAUTILUS_LINK_TRASH, NAUTILUS_LINK_HOME, NAUTILUS_LINK_MOUNT
+ *	 NAUTILUS_DESKTOP_LINK_TRASH, NAUTILUS_DESKTOP_LINK_HOME, NAUTILUS_DESKTOP_LINK_MOUNT
  */
  
 static gboolean
@@ -2955,7 +2957,6 @@ special_link_in_selection (FMDirectoryView *view)
 	gboolean saw_link;
 	GList *selection, *node;
 	NautilusFile *file;
-	char *uri;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -2966,14 +2967,7 @@ special_link_in_selection (FMDirectoryView *view)
 	for (node = selection; node != NULL; node = node->next) {
 		file = NAUTILUS_FILE (node->data);
 
-		uri = nautilus_file_get_uri (file);
-
-		/* FIXME: This reads the link file every single time. */
-		saw_link = nautilus_file_is_local (file)
-			&& nautilus_file_is_nautilus_link (file)
-			&& nautilus_link_local_is_special_link (uri);
-		
-		g_free (uri);
+		saw_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
 		
 		if (saw_link) {
 			break;
@@ -2999,7 +2993,9 @@ can_move_uri_to_trash (FMDirectoryView *view, const char *file_uri_string)
 
 	file_uri = gnome_vfs_uri_new (file_uri_string);
 
-	g_return_val_if_fail (file_uri != NULL, FALSE);
+	if (file_uri == NULL) {
+		return FALSE;
+	}
 
 	/* FIXME: Why can't we just pass file_uri to gnome_vfs_find_directory? */
 	directory_uri = gnome_vfs_uri_get_parent (file_uri);
@@ -3273,7 +3269,7 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 {
 	char *parent_uri;
 
-	parent_uri = fm_directory_view_get_uri (directory_view);
+	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
 					     parent_uri,
 					     new_folder_done, directory_view);
@@ -4406,6 +4402,14 @@ clear_clipboard_callback (GtkClipboard *clipboard,
 	g_free (user_data_or_owner);
 }
 
+static GtkClipboard *
+get_clipboard (FMDirectoryView *view)
+{
+	return gtk_clipboard_get_for_display (gtk_widget_get_display (GTK_WIDGET (view)),
+					      GDK_SELECTION_CLIPBOARD);
+}
+
+
 static void
 copy_or_cut_files (FMDirectoryView *view,
 		   gboolean cut)
@@ -4419,7 +4423,7 @@ copy_or_cut_files (FMDirectoryView *view,
 
 	clipboard_string = convert_file_list_to_string (clipboard_contents, cut);
 	
-	gtk_clipboard_set_with_data (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
+	gtk_clipboard_set_with_data (get_clipboard (view),
 				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
 				     get_clipboard_callback, clear_clipboard_callback,
 				     clipboard_string);
@@ -4525,7 +4529,7 @@ clipboard_received_callback (GtkClipboard     *clipboard,
 		g_strfreev (lines);
 	}
 
-	view_uri = fm_directory_view_get_uri (view);
+	view_uri = fm_directory_view_get_backing_uri (view);
 
 	if (item_uris == NULL|| view_uri == NULL) {
 		nautilus_view_report_status (view->details->nautilus_view,
@@ -4543,7 +4547,11 @@ paste_files_callback (BonoboUIComponent *component,
 		      gpointer callback_data,
 		      const char *verb)
 {
-	gtk_clipboard_request_contents (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+	
+	gtk_clipboard_request_contents (get_clipboard (view),
 					copied_files_atom,
 					clipboard_received_callback,
 					callback_data);
@@ -4626,6 +4634,7 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	int n_targets;
 	int i;
 
+	
 	view = FM_DIRECTORY_VIEW (user_data);
 	can_paste = FALSE;
 
@@ -4832,7 +4841,7 @@ real_update_menus (FMDirectoryView *view)
 	} else {
 		/* Ask the clipboard */
 		g_object_ref (view); /* Need to keep the object alive until we get the reply */
-		gtk_clipboard_request_contents (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
+		gtk_clipboard_request_contents (get_clipboard (view),
 						gdk_atom_intern ("TARGETS", FALSE),
 						clipboard_targets_received,
 						view);
@@ -5960,6 +5969,34 @@ fm_directory_view_get_uri (FMDirectoryView *view)
 	return nautilus_directory_get_uri (view->details->model);
 }
 
+/* Get the real directory where files will be stored and created */
+char *
+fm_directory_view_get_backing_uri (FMDirectoryView *view)
+{
+	NautilusDirectory *directory;
+	char *uri;
+	
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	if (view->details->model == NULL) {
+		return NULL;
+	}
+	
+	directory = view->details->model;
+	
+	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
+		directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
+	} else {
+		nautilus_directory_ref (directory);
+	}
+	
+	uri = nautilus_directory_get_uri (directory);
+
+	nautilus_directory_unref (directory);
+
+	return uri;
+}
+
 void
 fm_directory_view_move_copy_items (const GList *item_uris,
 				   GArray *relative_item_points,
@@ -6004,7 +6041,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 		
 		return;
 	}
-	
+
 	if (eel_uri_is_trash (target_uri) && copy_action == GDK_ACTION_MOVE) {
 		trash_or_delete_files_common (view, item_uris, relative_item_points, FALSE);
 	} else {

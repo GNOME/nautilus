@@ -700,6 +700,64 @@
          </long>
       </locale>
     </schema>
-    
+
+    <schema>
+      <key>/schemas/apps/nautilus/desktop/home_icon_visible</key>
+      <applyto>/apps/nautilus/desktop/home_icon_visible</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Home icon visible on desktop</short>
+         <long>
+          If this is set to true, an icon linking to the home directory
+	  will be put on the desktop.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/desktop/trash_icon_visible</key>
+      <applyto>/apps/nautilus/desktop/trash_icon_visible</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Trash icon visible on desktop</short>
+         <long>
+          If this is set to true, an icon linking to the trash
+	  will be put on the desktop.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/desktop/home_icon_name</key>
+      <applyto>/apps/nautilus/desktop/home_icon_name</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <locale name="C">
+         <short>Desktop home icon name</short>
+         <long>
+          This name can be set if you want a custom name
+	  for the home link icon on the desktop.
+         </long>
+      </locale>
+    </schema>
+        
+    <schema>
+      <key>/schemas/apps/nautilus/desktop/trash_icon_name</key>
+      <applyto>/apps/nautilus/desktop/trash_icon_name</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <locale name="C">
+         <short>Desktop trash icon name</short>
+         <long>
+          This name can be set if you want a custom name
+	  for the trash icon on the desktop.
+         </long>
+      </locale>
+    </schema>
+        
   </schemalist>  
 </gconfschemafile>

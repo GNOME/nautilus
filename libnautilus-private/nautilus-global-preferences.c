@@ -55,6 +55,8 @@ static gpointer default_font_callback                    (void);
 static gpointer default_home_location_callback           (void);
 static gpointer default_default_folder_viewer_callback	 (void);
 static void     import_old_preferences_if_needed         (void);
+static gpointer default_home_link_name                   (void);
+static gpointer default_trash_link_name                  (void);
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -491,6 +493,29 @@ static const PreferenceDefault preference_defaults[] = {
 	  "default_zoom_level"
 	},
 
+	/* Desktop Preferences */
+	{ NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (TRUE)
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
+	  PREFERENCE_STRING,
+	  NULL,
+	  default_home_link_name, g_free,
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (TRUE)
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
+	  PREFERENCE_STRING,
+	  NULL,
+	  default_trash_link_name, g_free,
+	},
+	
 	/* non-visible preferences */
 	{ NAUTILUS_PREFERENCES_ADD_TO_SESSION,
 	  PREFERENCE_BOOLEAN,
@@ -499,6 +524,28 @@ static const PreferenceDefault preference_defaults[] = {
 
 	{ NULL }
 };
+
+static gpointer
+default_home_link_name (void)
+{
+	/* Note to translators: If it's hard to compose a good home
+	 * icon name from the user name, you can use a string without
+	 * an "%s" here, in which case the home icon name will not
+	 * include the user's name, which should be fine. To avoid a
+	 * warning, put "%.0s" somewhere in the string, which will
+	 * match the user name string passed by the C code, but not
+	 * put the user name in the final string.
+	 */
+	return g_strdup_printf (_("%s's Home"), g_get_user_name ());
+}
+
+static gpointer
+default_trash_link_name (void)
+{
+	return g_strdup (_("Trash"));
+}
+
+
 
 /**
  * global_preferences_register_enumerations

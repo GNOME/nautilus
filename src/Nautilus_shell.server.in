@@ -25,6 +25,7 @@
   <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
     <item value="gnome-trash"/>
     <item value="trash"/>
+    <item value="x-nautilus-desktop"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" _value="Icons"/>
   <oaf_attribute name="nautilus:view_as_label" type="string" _value="View as Icons"/>
@@ -41,6 +42,9 @@
   </oaf_attribute>
   <oaf_attribute name="name" type="string" _value="Nautilus file manager desktop icon view"/>
   <oaf_attribute name="description" type="string" _value="Nautilus file manager component that shows icons on the desktop"/>
+  <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
+    <item value="x-nautilus-desktop"/>
+  </oaf_attribute>
 </oaf_server>
 
 <oaf_server iid="OAFIID:Nautilus_File_Manager_List_View" type="factory" location="OAFIID:Nautilus_Factory">

@@ -34,6 +34,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
+#include "nautilus-desktop-directory.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-vfs-directory.h"
 #include <eel/eel-glib-extensions.h>
@@ -501,6 +502,8 @@ nautilus_directory_new (const char *uri)
 
 	if (eel_uri_is_trash (uri)) {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
+	} else if (eel_uri_is_desktop (uri)) {
+		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY, NULL));
 	} else {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}

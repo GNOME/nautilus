@@ -28,6 +28,7 @@
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtklayout.h>
+#include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -65,18 +66,10 @@ nautilus_desktop_window_delete_event (NautilusDesktopWindow *window)
 void
 nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 {
-	char *desktop_directory_path;
-	char *desktop_directory_uri;
-
 	g_assert (NAUTILUS_IS_DESKTOP_WINDOW (window));
-
-	desktop_directory_path = nautilus_get_desktop_directory ();
 	
-	desktop_directory_uri = gnome_vfs_get_uri_from_local_path (desktop_directory_path);
-	g_free (desktop_directory_path);
 	window->affect_desktop_on_next_location_change = TRUE;
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), desktop_directory_uri);
-	g_free (desktop_directory_uri);
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), EEL_DESKTOP_URI);
 }
 
 static void

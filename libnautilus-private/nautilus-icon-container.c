@@ -1477,7 +1477,9 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 				}
 				
 				/* Check and see if we need to move to a new column */
-				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height) {
+				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height &&
+				    /* Make sure we lay out at least one icon per column, to make progress */
+				    p != icons) {
 					x += column_width + DESKTOP_PAD_HORIZONTAL;
 					break;
 				}

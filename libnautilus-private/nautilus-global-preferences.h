@@ -167,6 +167,11 @@ typedef enum
 /* Gnome session management */
 #define NAUTILUS_PREFERENCES_ADD_TO_SESSION		   "preferences/add_to_session"
 
+#define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "desktop/home_icon_visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "desktop/home_icon_name"
+#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE         "desktop/trash_icon_visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME            "desktop/trash_icon_name"
+
 void nautilus_global_preferences_init                      (void);
 void nautilus_global_preferences_init_with_folder_browsing (void);
 void nautilus_global_preferences_set_default_folder_viewer (const char *iid);

@@ -44,6 +44,7 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -219,12 +220,19 @@ nautilus_drag_items_local (const char *target_uri_string, const GList *selection
 
 	target_uri = gnome_vfs_uri_new (target_uri_string);
 
-	/* get the parent URI of the first item in the selection */
-	item_uri = gnome_vfs_uri_new (((NautilusDragSelectionItem *)selection_list->data)->uri);
-	result = gnome_vfs_uri_is_parent (target_uri, item_uri, FALSE);
-	
-	gnome_vfs_uri_unref (item_uri);
-	gnome_vfs_uri_unref (target_uri);
+	if (target_uri != NULL) {
+		/* get the parent URI of the first item in the selection */
+		item_uri = gnome_vfs_uri_new (((NautilusDragSelectionItem *)selection_list->data)->uri);
+		
+		if (item_uri != NULL) {
+			result = gnome_vfs_uri_is_parent (target_uri, item_uri, FALSE);
+			
+			gnome_vfs_uri_unref (item_uri);
+		}
+		
+		gnome_vfs_uri_unref (target_uri);
+	}
+		
 	
 	return result;
 }
@@ -239,6 +247,39 @@ nautilus_drag_items_in_trash (const GList *selection_list)
 	 */
 	return eel_uri_is_in_trash (((NautilusDragSelectionItem *)selection_list->data)->uri);
 }
+
+gboolean
+nautilus_drag_items_on_desktop (const GList *selection_list)
+{
+	char *uri;
+	GnomeVFSURI *vfs_uri, *desktop_vfs_uri;
+	char *desktop_uri;
+	gboolean result;
+	
+	/* check if the first item on the list is in trash.
+	 * FIXME:
+	 * we should really test each item but that would be slow for large selections
+	 * and currently dropped items can only be from the same container
+	 */
+	uri = ((NautilusDragSelectionItem *)selection_list->data)->uri;
+	if (eel_uri_is_desktop (uri)) {
+		return TRUE;
+	}
+
+	vfs_uri = gnome_vfs_uri_new (uri);
+	desktop_uri = nautilus_get_desktop_directory_uri ();
+	desktop_vfs_uri = gnome_vfs_uri_new (desktop_uri);
+	g_free (desktop_uri);
+	
+	result = gnome_vfs_uri_is_parent (desktop_vfs_uri, vfs_uri, FALSE);
+	
+	gnome_vfs_uri_unref (desktop_vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	
+	return result;
+	
+}
+
 
 void
 nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
@@ -293,10 +334,17 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 
 		return;
 
-	} else if (eel_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)
-			|| eel_str_has_prefix (target_uri_string, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+	} else if (g_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)
+			|| g_str_has_prefix (target_uri_string, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
+		}
+		return;
+	} else if (eel_uri_is_desktop (target_uri_string)) {
+		if (actions & GDK_ACTION_MOVE) {
+			*action = GDK_ACTION_MOVE;
+		} else {
+			*action = context->suggested_action;
 		}
 		return;
 	} else {
@@ -312,8 +360,10 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	dropped_uri = gnome_vfs_uri_new (((NautilusDragSelectionItem *)items->data)->uri);
 	same_fs = TRUE;
 
-	gnome_vfs_check_same_fs_uris (dropped_uri, target_uri, &same_fs);
-	gnome_vfs_uri_unref (dropped_uri);
+	if (dropped_uri != NULL) {
+		gnome_vfs_check_same_fs_uris (dropped_uri, target_uri, &same_fs);
+		gnome_vfs_uri_unref (dropped_uri);
+	}
 	gnome_vfs_uri_unref (target_uri);
 	
 	if (same_fs) {
@@ -790,36 +840,15 @@ gboolean
 nautilus_drag_selection_includes_special_link (GList *selection_list)
 {
 	GList *node;
-	char *uri, *local_path;
-	gboolean link_in_selection;
-	GnomeVFSFileInfo *info;
-
-	link_in_selection = FALSE;
+	char *uri;
 
 	for (node = selection_list; node != NULL; node = node->next) {
 		uri = ((NautilusDragSelectionItem *) node->data)->uri;
 
-		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-		local_path = gnome_vfs_get_local_path_from_uri (uri);
-
-		if (local_path) {
-			info = gnome_vfs_file_info_new ();
-			gnome_vfs_get_file_info
-				(local_path, info, 
-				 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
-				 GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-			/* assume info is blank on failure */
-			link_in_selection = (nautilus_link_local_is_trash_link (local_path, info) ||
-					     nautilus_link_local_is_home_link (local_path, info) ||
-					     nautilus_link_local_is_volume_link (local_path, info));
-			gnome_vfs_file_info_unref (info);
-			g_free (local_path);
-		}
-		
-		if (link_in_selection) {
-			break;
+		if (eel_uri_is_desktop (uri)) {
+			return TRUE;
 		}
 	}
 	
-	return link_in_selection;
+	return FALSE;
 }

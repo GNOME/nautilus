@@ -63,6 +63,7 @@
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
@@ -2479,34 +2480,21 @@ static NautilusFile *
 get_target_file (NautilusFile *file)
 {
 	NautilusFile *target_file;
-	char *uri;
 	char *uri_to_display;
+	NautilusDesktopLink *link;
 
 	target_file = NULL;
-	if (nautilus_file_is_nautilus_link (file)) {
-		/* Note: This will only work on local files. For now
-		 * that seems fine since the links we care about are
-		 * all on the desktop.
-		 */
-		if (nautilus_file_is_local (file)) {
-			uri = nautilus_file_get_uri (file);
-
-			switch (nautilus_link_local_get_link_type (uri, NULL)) {
-			case NAUTILUS_LINK_MOUNT:
-			case NAUTILUS_LINK_TRASH:
-			case NAUTILUS_LINK_HOME:
-				/* map to linked URI for these types of links */
-				uri_to_display = nautilus_link_local_get_link_uri (uri);
-				target_file = nautilus_file_get (uri_to_display);
-				g_free (uri_to_display);
-				break;
-			case NAUTILUS_LINK_GENERIC:
-				/* don't for these types */
-				break;
-			}
-			
-			g_free (uri);
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+		
+		/* map to linked URI for these types of links */
+		uri_to_display = nautilus_desktop_link_get_activation_uri (link);
+		if (uri_to_display) {
+			target_file = nautilus_file_get (uri_to_display);
+			g_free (uri_to_display);
 		}
+		
+		g_object_unref (link);
 	}
 
 	if (target_file != NULL) {

@@ -114,6 +114,7 @@ GList 		           *nautilus_drag_build_selection_list          (GtkSelectionDat
 gboolean                    nautilus_drag_items_local                   (const char                           *target_uri,
 									 const GList                          *selection_list);
 gboolean                    nautilus_drag_items_in_trash                (const GList                          *selection_list);
+gboolean                    nautilus_drag_items_on_desktop              (const GList                          *selection_list);
 void                        nautilus_drag_default_drop_action_for_icons (GdkDragContext                       *context,
 									 const char                           *target_uri,
 									 const GList                          *items,

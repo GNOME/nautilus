@@ -28,6 +28,9 @@
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
+#include "nautilus-desktop-directory.h"
+#include "nautilus-desktop-directory-file.h"
+#include "nautilus-desktop-icon-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
@@ -136,6 +139,13 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 
 	if (self_owned && NAUTILUS_IS_TRASH_DIRECTORY (directory)) {
 		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_TRASH_FILE, NULL));
+	} else if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
+		if (self_owned) {
+			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY_FILE, NULL));
+		} else {
+			file = NULL;
+			g_assert_not_reached ();
+		}
 	} else {
 		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	}
@@ -272,6 +282,7 @@ static NautilusFile *
 nautilus_file_get_internal (const char *uri, gboolean create)
 {
 	char *canonical_uri, *directory_uri, *relative_uri, *file_name;
+	const char *relative_uri_tmp;
 	gboolean self_owned;
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	NautilusDirectory *directory;
@@ -302,24 +313,29 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 		}
 	}
 
+	self_owned = FALSE;
+	directory_uri = NULL;
+	
 	/* Make VFS version of directory URI. */
 	if (vfs_uri == NULL) {
-		directory_vfs_uri = NULL;
+		if (eel_uri_is_desktop (uri) &&
+		    strcmp (uri, EEL_DESKTOP_URI) != 0) {
+			directory_uri = g_strdup (EEL_DESKTOP_URI);
+		}
 	} else {
 		directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
+		if (directory_vfs_uri != NULL) {
+			directory_uri = gnome_vfs_uri_to_string
+				(directory_vfs_uri,
+				 GNOME_VFS_URI_HIDE_NONE);
+			gnome_vfs_uri_unref (directory_vfs_uri);
+		} 
 		gnome_vfs_uri_unref (vfs_uri);
 	}
-
-	self_owned = directory_vfs_uri == NULL;
-	if (self_owned) {
-		/* Use the item itself if we have no parent. */
+	
+	if (directory_uri == NULL) {
+		self_owned = TRUE;
 		directory_uri = g_strdup (canonical_uri);
-	} else {
-		/* Make text version of directory URI. */
-		directory_uri = gnome_vfs_uri_to_string
-			(directory_vfs_uri,
-			 GNOME_VFS_URI_HIDE_NONE);
-		gnome_vfs_uri_unref (directory_vfs_uri);
 	}
 
 	/* Get object that represents the directory. */
@@ -328,11 +344,19 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 
 	/* Get the name for the file. */
 	if (vfs_uri == NULL) {
-		g_assert (self_owned);
-		if (directory != NULL) {
+		if (self_owned && directory != NULL) {
 			file_name = nautilus_directory_get_name_for_self_as_new_file (directory);
 			relative_uri = gnome_vfs_escape_string (file_name);
 			g_free (file_name);
+		} else if (eel_uri_is_desktop (uri)) {
+			/* Special case desktop files here. They have no vfs_uri */
+			relative_uri_tmp = uri + strlen (EEL_DESKTOP_URI);
+			while (*relative_uri_tmp == '/') {
+				relative_uri_tmp++;
+			}
+			relative_uri = strdup (relative_uri_tmp);
+		} else {
+			g_assert_not_reached ();
 		}
 	}
 
@@ -746,7 +770,7 @@ nautilus_file_can_rename (NautilusFile *file)
 {
 	NautilusFile *parent;
 	gboolean can_rename;
-	char *uri, *path;
+	char *uri;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
@@ -767,23 +791,15 @@ nautilus_file_can_rename (NautilusFile *file)
 	
 	can_rename = TRUE;
 	uri = nautilus_file_get_uri (file);
-	path = gnome_vfs_get_local_path_from_uri (uri);
 
 	/* Certain types of links can't be renamed */
-	if (path != NULL && nautilus_file_is_nautilus_link (file)) {
-		/* FIXME: This reads the link file every time -- seems
-		 * bad to do that even though it's known to be local.
-		 */
-		switch (nautilus_link_local_get_link_type (path, file->details->info)) {
-		case NAUTILUS_LINK_TRASH:
-		case NAUTILUS_LINK_MOUNT:
-			can_rename = FALSE;
-			break;
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		NautilusDesktopLink *link;
 
-		case NAUTILUS_LINK_HOME:
-		case NAUTILUS_LINK_GENERIC:
-			break;
-		}
+		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+
+		can_rename = nautilus_desktop_link_can_rename (link);
+		g_object_unref (link);
 	}
 	
 	/* Nautilus trash directories cannot be renamed */
@@ -792,7 +808,6 @@ nautilus_file_can_rename (NautilusFile *file)
 	}
 
 	g_free (uri);
-	g_free (path);
 
 	if (!can_rename) {
 		return FALSE;
@@ -1045,6 +1060,22 @@ rename_guts (NautilusFile *file,
 		 */
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_NOT_SUPPORTED, callback_data);
+		return;
+	}
+
+
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		NautilusDesktopLink *link;
+
+		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+
+		if (nautilus_desktop_link_rename (link, new_name)) {
+			(* callback) (file, GNOME_VFS_OK, callback_data);
+		} else {
+			(* callback) (file, GNOME_VFS_ERROR_GENERIC, callback_data);
+		}
+		
+		g_object_unref (link);
 		return;
 	}
 	
@@ -2069,7 +2100,7 @@ nautilus_file_is_in_desktop (NautilusFile *file)
 	/* This handles visiting other people's desktops, but it can arguably
 	 * be said that this might break and that we should lookup the passwd table.
 	 */
-	return strstr (file->details->directory->details->uri, "/.gnome-desktop") != NULL;
+	return strstr (file->details->directory->details->uri, "/Desktop") != NULL;
 }
 
 static gboolean
@@ -2451,11 +2482,22 @@ char *
 nautilus_file_get_drop_target_uri (NautilusFile *file)
 {
 	char *uri, *target_uri;
+	NautilusDesktopLink *link;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+		
+		uri = nautilus_desktop_link_get_activation_uri (link);
+		g_object_unref (link);
+		if (uri != NULL) {
+			return uri;
+		}
+	}
+	
 	uri = nautilus_file_get_uri (file);
-
+	
 	/* Check for Nautilus link */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
@@ -2512,7 +2554,6 @@ nautilus_file_get_uri (NautilusFile *file)
 	}
 
 	return g_strconcat (file->details->directory->details->uri,
-			    "/",
 			    file->details->relative_uri,
 			    NULL);
 }

@@ -66,6 +66,7 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-volume-monitor.h>
 #include <libnautilus-private/nautilus-authn-manager.h>
+#include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <bonobo-activation/bonobo-activation.h>
 
 /* Needed for the is_kdesktop_present check */
@@ -372,6 +373,9 @@ finish_startup (NautilusApplication *application)
 
 	/* Make the desktop work with old Nautilus. */
 	migrate_old_nautilus_files ();
+
+	/* Initialize the desktop link monitor singleton */
+	nautilus_desktop_link_monitor_get ();
 }
 
 void

@@ -57,6 +57,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -513,6 +514,8 @@ nautilus_icon_container_selection_items_local (NautilusIconContainer *container,
 		 * would not work for it.
 		 */
 		result = nautilus_drag_items_in_trash (items);
+	} else if (eel_uri_is_desktop (container_uri_string)) {
+		result = nautilus_drag_items_on_desktop (items);
 	} else {
 		result = nautilus_drag_items_local (container_uri_string, items);
 	}
@@ -831,6 +834,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 {
 	GList *source_uris, *p;
 	GArray *source_item_locations;
+	gboolean free_target_uri;
 	int index;
 
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
@@ -860,7 +864,14 @@ handle_nonlocal_move (NautilusIconContainer *container,
 				((NautilusDragSelectionItem *)p->data)->icon_y;
 		}
 	}
-		
+
+	free_target_uri = FALSE;
+ 	/* Rewrite internal desktop URIs to the normal target uri */
+	if (eel_uri_is_desktop (target_uri)) {
+		target_uri = nautilus_get_desktop_directory_uri ();
+		free_target_uri = TRUE;
+	}
+	
 	/* start the copy */
 	g_signal_emit_by_name (container, "move_copy_items",
 				 source_uris,
@@ -868,6 +879,10 @@ handle_nonlocal_move (NautilusIconContainer *container,
 				 target_uri,
 				 context->action,
 				 x, y);
+
+	if (free_target_uri) {
+		g_free ((char *)target_uri);
+	}
 
 	g_list_free (source_uris);
 	g_array_free (source_item_locations, TRUE);

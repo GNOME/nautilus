@@ -46,6 +46,9 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-file-changes-queue.h"
+#include "nautilus-file-private.h"
+#include "nautilus-desktop-icon-file.h"
+#include "nautilus-desktop-link-monitor.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-trash-monitor.h"
@@ -991,17 +994,8 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 static gboolean
 is_special_link (const char *uri)
 {
-	char *local_path;
-	gboolean is_special;
 
-	local_path = gnome_vfs_get_local_path_from_uri (uri);
-	if (local_path == NULL) {
-		return FALSE;
-	}
-	is_special = nautilus_link_local_is_special_link (local_path);
-	g_free (local_path);
-
-	return is_special;
+	return eel_uri_is_desktop (uri);
 }
 
 static int
@@ -1691,19 +1685,6 @@ append_basename (const GnomeVFSURI *target_directory,
 	return gnome_vfs_uri_dup (target_directory);
 }
 
-static gboolean 
-vfs_uri_is_special_link (GnomeVFSURI *vfs_uri)
-{
-	char *uri;
-	gboolean is_special;
-
-	uri = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
-	is_special = is_special_link (uri);
-	g_free (uri);
-
-	return is_special;
-}
-
 void
 nautilus_file_operations_copy_move (const GList *item_uris,
 				    GArray *relative_item_points,
@@ -1725,7 +1706,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	SyncTransferInfo *sync_transfer_info;
 	GnomeVFSResult result;
 	gboolean target_is_trash;
-	gboolean is_desktop_trash_link;
 	gboolean duplicate;
 	gboolean target_is_mapping;
 	gboolean have_nonlocal_source;
@@ -1945,21 +1925,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			    	/* Distinguish Trash file on desktop from other trash folders for
 			    	 * message purposes.
 			    	 */
-				/* FIXME: is_special_link finds more than just trash links,
-				 * so these messages are wrong. 
-				 */
-			    	is_desktop_trash_link = vfs_uri_is_special_link (uri);
 
 				eel_run_simple_dialog
 					(parent_view,
 					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
-						 ? (is_desktop_trash_link
-						    ? _("The Trash must remain on the desktop.")
-						    : _("You cannot move this trash folder."))
-						 : (is_desktop_trash_link
-						    ? _("You cannot copy the Trash.")
-						    : _("You cannot copy this trash folder.")),
+						 ? _("You cannot move this trash folder.")
+						 : _("You cannot copy this trash folder."),
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? _("Can't Change Trash Location")
 						 : _("Can't Copy Trash"),
@@ -2176,14 +2148,40 @@ nautilus_file_operations_delete (const GList *item_uris,
 {
 	GList *uri_list;
 	const GList *p;
+	const char *item_uri;
+	NautilusFile *file;
 	TransferInfo *transfer_info;
 
 	uri_list = NULL;
 	for (p = item_uris; p != NULL; p = p->next) {
-		uri_list = g_list_prepend (uri_list, 
-					   gnome_vfs_uri_new ((const char *) p->data));
+		item_uri = (const char *) p->data;
+
+		if (eel_uri_is_desktop (item_uri)) {
+			file = nautilus_file_get_existing (item_uri);
+			if (file != NULL) {
+				if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+					NautilusDesktopLink *link;
+
+					link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+
+					nautilus_desktop_link_monitor_delete_link (nautilus_desktop_link_monitor_get (),
+										   link,
+										   parent_view);
+					
+					g_object_unref (link);
+				}
+				nautilus_file_unref (file);
+			}
+		} else {
+			uri_list = g_list_prepend (uri_list, 
+						   gnome_vfs_uri_new (item_uri));
+		}
 	}
 	uri_list = g_list_reverse (uri_list);
+
+	if (uri_list == NULL) {
+		return;
+	}
 
 	transfer_info = transfer_info_new (parent_view);
 

@@ -2413,7 +2413,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		return;
 	}
 
-	container_uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
+	container_uri = fm_directory_view_get_backing_uri (FM_DIRECTORY_VIEW (view));
 	g_return_if_fail (container_uri != NULL);
 
 	if (eel_vfs_has_capability (container_uri,
