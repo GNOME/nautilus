@@ -1,3 +1,20 @@
+2000-07-05  Darin Adler  <darin@eazel.com>
+
+	* check-headers-in-Makefile.pl: Wrote a script to check that the
+	Makefile.am file matches what's actually in the directories.
+	
+	* components/html/main.c: Obsolete file.
+	* components/services/time/command-line/Makefile.am: Removed
+	mention of nonexistent trilobite-eazel-sample-service-common.c.
+	* components/services/time/nautilus-view/Makefile.am: Removed
+	mention of nonexistent trilobite-eazel-sample-service-common.c.
+	* libnautilus-extensions/nautilus-icon-grid.c: Obsolete file.
+	* libnautilus-extensions/nautilus-icon-grid.h: Obsolete	file.
+	* nautilus-installer/src/Makefile.am: Fixed typo; it said
+	"installer h" instead of "installer.h".
+	* src/Makefile.am: Added nautilus-search-bar-private.h.
+	* src/file-manager/fm-directory-list.h: Obsolete file.
+
 2000-07-05  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (druid_finished),

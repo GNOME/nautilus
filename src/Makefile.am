@@ -38,69 +38,70 @@ LDADD =\
 	$(NULL)
 
 noinst_HEADERS = \
-	nautilus-application.h			\
 	nautilus-applicable-views.h		\
+	nautilus-application.h			\
 	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.h		\
+	nautilus-complex-search-bar.h		\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
 	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
-	nautilus-search-bar.h			\
-	nautilus-search-bar-criterion.h		\
-	nautilus-switchable-search-bar.h	\
-	nautilus-simple-search-bar.h		\
-	nautilus-complex-search-bar.h		\
 	nautilus-navigation-bar.h		\
 	nautilus-property-browser.h		\
+	nautilus-search-bar-criterion.h		\
+	nautilus-search-bar-private.h		\
+	nautilus-search-bar.h			\
 	nautilus-self-check-functions.h 	\
-	nautilus-signaller.h			\
-	nautilus-zoom-control.h			\
-	nautilus-switchable-navigation-bar.h	\
-	nautilus-sidebar.h			\
 	nautilus-sidebar-tabs.h			\
 	nautilus-sidebar-title.h		\
+	nautilus-sidebar.h			\
+	nautilus-signaller.h			\
+	nautilus-simple-search-bar.h		\
+	nautilus-switchable-navigation-bar.h	\
+	nautilus-switchable-search-bar.h	\
 	nautilus-view-frame-private.h		\
 	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
 	nautilus-window.h			\
+	nautilus-zoom-control.h			\
 	$(NULL)
 
 nautilus_SOURCES =\
+	nautilus-applicable-views.c		\
+	nautilus-application.c			\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmarks-window.c		\
+	nautilus-complex-search-bar.c		\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
 	nautilus-link-set-window.c		\
 	nautilus-location-bar.c         	\
-	nautilus-search-bar.c			\
-	nautilus-switchable-search-bar.c	\
-	nautilus-search-bar-criterion.c		\
-	nautilus-simple-search-bar.c		\
-	nautilus-complex-search-bar.c		\
+	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
 	nautilus-property-browser.c     	\
+	nautilus-search-bar-criterion.c		\
+	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
-	nautilus-signaller.c			\
-	nautilus-window-menus.c         	\
-	nautilus-window-toolbars.c      	\
-	nautilus-zoom-control.c			\
-	nautilus-zoomable-frame-corba.c		\
-	nautilus-application.c			\
-	nautilus-sidebar.c			\
 	nautilus-sidebar-tabs.c			\
 	nautilus-sidebar-title.c		\
+	nautilus-sidebar.c			\
+	nautilus-signaller.c			\
+	nautilus-simple-search-bar.c		\
 	nautilus-switchable-navigation-bar.c	\
-	nautilus-main.c 			\
-	nautilus-applicable-views.c		\
+	nautilus-switchable-search-bar.c	\
 	nautilus-view-frame-bonobo-control.c	\
 	nautilus-view-frame-bonobo-embeddable.c	\
 	nautilus-view-frame-corba.c		\
 	nautilus-view-frame-nautilus-view.c	\
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
+	nautilus-window-menus.c         	\
+	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
+	nautilus-zoom-control.c			\
+	nautilus-zoomable-frame-corba.c		\
 	$(NULL)
 
 TESTS=check-nautilus

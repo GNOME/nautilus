@@ -26,7 +26,7 @@ nautilus_installer_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-	installer.c installer h 
+	installer.c installer.h 
 
 nautilus_installer_LDFLAGS = -static
 
