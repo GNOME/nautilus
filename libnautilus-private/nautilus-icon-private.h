@@ -201,8 +201,8 @@ struct NautilusIconContainerDetails {
 	gboolean reset_scroll_region_trigger;
 	
 	/* The position we are scaling to on stretch */
-	int window_x;
-	int window_y;
+	int widget_x;
+	int widget_y;
 
 	/* margins to follow, used for the desktop panel avoidance */
 	int left_margin;

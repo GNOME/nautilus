@@ -848,7 +848,7 @@ duplicate_callback (BonoboUIComponent *component, gpointer callback_data, const 
 		 * the time we go and retrieve the icon positions, relying on the selection
 		 * staying intact to ensure the right sequence and count of positions is fragile.
 		 */
-		selected_item_locations = fm_directory_get_selected_icon_locations (view);
+		selected_item_locations = fm_directory_view_get_selected_icon_locations (view);
 	        fm_directory_view_duplicate_selection (view, selection, selected_item_locations);
 	        g_array_free (selected_item_locations, TRUE);
 	}
@@ -868,7 +868,7 @@ create_link_callback (BonoboUIComponent *component, gpointer callback_data, cons
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
-		selected_item_locations = fm_directory_get_selected_icon_locations (view);
+		selected_item_locations = fm_directory_view_get_selected_icon_locations (view);
 	        fm_directory_view_create_links_for_files (view, selection, selected_item_locations);
 	        g_array_free (selected_item_locations, TRUE);
 	}
@@ -2708,7 +2708,7 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 	GList *uris;
 	CopyMoveDoneData *copy_move_done_data;
 	g_assert (relative_item_points->len == 0
-		|| g_list_length (files) == relative_item_points->len);
+		  || g_list_length (files) == relative_item_points->len);
 	
         g_assert (FM_IS_DIRECTORY_VIEW (view));
         g_assert (files != NULL);
@@ -5145,14 +5145,14 @@ fm_directory_view_select_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 /**
- * fm_directory_get_selected_icon_locations:
+ * fm_directory_view_get_selected_icon_locations:
  *
  * return an array of locations of selected icons if available
  * Return value: GArray of GdkPoints
  * 
  **/
 GArray *
-fm_directory_get_selected_icon_locations (FMDirectoryView *view)
+fm_directory_view_get_selected_icon_locations (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 

@@ -96,8 +96,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-icon-factory.c \
 	nautilus-icon-factory.h \
 	nautilus-icon-private.h \
-	nautilus-icon-text-item.c \
-	nautilus-icon-text-item.h \
 	nautilus-iso9660.h \
 	nautilus-keep-last-vertical-box.c \
 	nautilus-keep-last-vertical-box.h \

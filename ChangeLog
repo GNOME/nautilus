@@ -1,3 +1,36 @@
+2002-02-22  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-icon-text-item.c: Remove.
+	* libnautilus-private/nautilus-icon-text-item.h: Remove.
+	
+	* libnautilus-private/nautilus-file-dnd.h:
+	* libnautilus-private/nautilus-file-dnd.c:
+	(nautilus_drag_file_receive_dropped_keyword): Use const char *.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	(rubberband_timeout_callback), (start_rubberbanding),
+	(update_stretch_at_idle), (button_release_event),
+	(motion_notify_event), (handle_icon_button_press):
+	* libnautilus-private/nautilus-icon-dnd.c: (icon_get_data_binder),
+	(nautilus_icon_container_position_shadow),
+	(receive_dropped_keyword), (receive_dropped_uri_list),
+	(nautilus_icon_container_find_drop_target),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_container_get_drop_action),
+	(nautilus_icon_dnd_update_drop_target),
+	(nautilus_icon_dnd_begin_drag):
+	Use eel_gtk_widget_get_button_event_location and
+	eel_gnome_canvas_widget_to_world and the other similar functions
+	to fix coordinate handling. Also some const char * fixes.
+	
+	* libnautilus-private/nautilus-icon-private.h: window -> widget
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	fm_directory_get_selected_icon_locations ->
+	fm_directory_view_get_selected_icon_locations
+
 2002-02-21  Darin Adler  <darin@bentspoon.com>
 
 	* AUTHORS:

@@ -83,7 +83,7 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 }
 
 void
-nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
+nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, const char *keyword)
 {
 	GList *keywords, *word;
 

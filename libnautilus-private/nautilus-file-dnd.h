@@ -34,7 +34,7 @@ gboolean nautilus_drag_can_accept_item              (NautilusFile *drop_target_i
 gboolean nautilus_drag_can_accept_items             (NautilusFile *drop_target_item,
 						     const GList  *items);
 void     nautilus_drag_file_receive_dropped_keyword (NautilusFile *file,
-						     char         *keyword);
+						     const char   *keyword);
 
 #endif /* NAUTILUS_FILE_DND_H */
 

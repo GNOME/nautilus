@@ -58,40 +58,40 @@
 #include <stdio.h>
 #include <string.h>
 
-static gboolean drag_drop_callback                   (GtkWidget             *widget,
-						      GdkDragContext        *context,
-						      int                    x,
-						      int                    y,
-						      guint32                time,
-						      gpointer               data);
-static void     nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
-						      GdkDragContext        *context,
-						      int                    x,
-						      int                    y);
-static gboolean drag_motion_callback                 (GtkWidget             *widget,
-						      GdkDragContext        *context,
-						      int                    x,
-						      int                    y,
-						      guint32                time);
+static gboolean drag_drop_callback                            (GtkWidget             *widget,
+							       GdkDragContext        *context,
+							       int                    x,
+							       int                    y,
+							       guint32                time,
+							       gpointer               data);
+static void     nautilus_icon_dnd_update_drop_target          (NautilusIconContainer *container,
+							       GdkDragContext        *context,
+							       int                    x,
+							       int                    y);
+static gboolean drag_motion_callback                          (GtkWidget             *widget,
+							       GdkDragContext        *context,
+							       int                    x,
+							       int                    y,
+							       guint32                time);
+static void     nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
+							       GdkDragContext        *context,
+							       int                    x,
+							       int                    y);
+static void     receive_dropped_tile_image                    (NautilusIconContainer *container,
+							       GtkSelectionData      *data);
+static void     receive_dropped_keyword                       (NautilusIconContainer *container,
+							       const char            *keyword,
+							       int                    x,
+							       int                    y);
+static void     receive_dropped_uri_list                      (NautilusIconContainer *container,
+							       const char            *uri_list,
+							       GdkDragAction          action,
+							       int                    x,
+							       int                    y);
+static void     nautilus_icon_container_free_drag_data        (NautilusIconContainer *container);
+static void     set_drop_target                               (NautilusIconContainer *container,
+							       NautilusIcon          *icon);
 
-static void     nautilus_icon_container_receive_dropped_icons    (NautilusIconContainer *container,
-								  GdkDragContext *context,
-								  int x, int y);
-static void     receive_dropped_tile_image                       (NautilusIconContainer *container, 
-								  GtkSelectionData *data);
-static void     receive_dropped_keyword                          (NautilusIconContainer *container, 
-								  char* keyword, 
-								  int x, 
-								  int y);
-static void     receive_dropped_uri_list                         (NautilusIconContainer *container, 
-								  char* keyword, 
-								  GdkDragAction action,
-								  int x, 
-								  int y);
-static void     nautilus_icon_container_free_drag_data           (NautilusIconContainer *container);
-static void     set_drop_target                                  (NautilusIconContainer *container,
-								  NautilusIcon *icon);
-								  
 static GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
@@ -224,7 +224,7 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 {
 	IconGetDataBinderContext *context;
 	ArtDRect world_rect;
-	ArtIRect window_rect;
+	ArtIRect widget_rect;
 	char *uri;
 	NautilusIconContainer *container;
 
@@ -235,7 +235,7 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 	container = NAUTILUS_ICON_CONTAINER (context->iterator_context);
 
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-	window_rect = eel_gnome_canvas_world_to_canvas_window_rectangle
+	widget_rect = eel_gnome_canvas_world_to_widget_rectangle
 		(GNOME_CANVAS (container), world_rect);
 
 	uri = nautilus_icon_container_get_icon_uri (container, icon);
@@ -244,19 +244,19 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 		return TRUE;
 	}
 
-	window_rect = eel_art_irect_offset_by (window_rect, 
+	widget_rect = eel_art_irect_offset_by (widget_rect, 
 		- container->details->dnd_info->drag_info.start_x,
 		- container->details->dnd_info->drag_info.start_y);
 
-	window_rect = eel_art_irect_scale_by (window_rect, 
+	widget_rect = eel_art_irect_scale_by (widget_rect, 
 		1 / GNOME_CANVAS (container)->pixels_per_unit);
 	
 	/* pass the uri, mouse-relative x/y and icon width/height */
 	context->iteratee (uri, 
-			   (int) window_rect.x0,
-			   (int) window_rect.y0,
-			   window_rect.x1 - window_rect.x0,
-			   window_rect.y1 - window_rect.y0,
+			   (int) widget_rect.x0,
+			   (int) widget_rect.y0,
+			   widget_rect.x1 - widget_rect.x0,
+			   widget_rect.y1 - widget_rect.y0,
 			   context->iteratee_data);
 
 	g_free (uri);
@@ -340,8 +340,8 @@ nautilus_icon_container_position_shadow (NautilusIconContainer *container,
 	if (shadow == NULL) {
 		return;
 	}
-	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
-						 x, y, &world_x, &world_y);
+	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
+					  x, y, &world_x, &world_y);
 
 	set_shadow_position (shadow, world_x, world_y);
 	gnome_canvas_item_show (shadow);
@@ -626,7 +626,7 @@ receive_dropped_tile_image (NautilusIconContainer *container, GtkSelectionData *
 
 /* handle dropped keywords */
 static void
-receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x, int y)
+receive_dropped_keyword (NautilusIconContainer *container, const char *keyword, int x, int y)
 {
 	char *uri;
 	double world_x, world_y;
@@ -637,7 +637,7 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 	g_assert (keyword != NULL);
 
 	/* find the item we hit with our drop, if any */
-  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container), x, y, &world_x, &world_y);
+  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container), x, y, &world_x, &world_y);
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
 	if (drop_target_icon == NULL) {
 		return;
@@ -662,7 +662,7 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 
 /* handle dropped uri list */
 static void
-receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, GdkDragAction action, int x, int y)
+receive_dropped_uri_list (NautilusIconContainer *container, const char *uri_list, GdkDragAction action, int x, int y)
 {	
 	if (uri_list == NULL) {
 		return;
@@ -909,8 +909,8 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 		return NULL;
 	}
 
-  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
-						 x, y, &world_x, &world_y);
+  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
+					  x, y, &world_x, &world_y);
 	
 	/* FIXME bugzilla.gnome.org 42485: 
 	 * These "can_accept_items" tests need to be done by
@@ -1005,8 +1005,8 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	}
 
 	if (context->action > 0) {
-	  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
-							 x, y, &world_x, &world_y);
+	  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
+						  x, y, &world_x, &world_y);
 
 		drop_target = nautilus_icon_container_find_drop_target (container, 
 			context, x, y, &icon_hit);
@@ -1051,8 +1051,8 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	}
 
 	/* find out if we're over an icon */
-  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
-						 x, y, &world_x, &world_y);
+  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
+					  x, y, &world_x, &world_y);
 	
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
@@ -1149,8 +1149,8 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 		return;
 	}
 
-  	eel_gnome_canvas_canvas_window_to_world (GNOME_CANVAS (container),
-						 x, y, &world_x, &world_y);
+  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
+					  x, y, &world_x, &world_y);
 
 	/* Find the item we hit with our drop, if any. */
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
@@ -1277,7 +1277,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	GdkPixbuf *pixbuf;
 	int x_offset, y_offset;
 	ArtDRect world_rect;
-	ArtIRect window_rect;
+	ArtIRect widget_rect;
 	
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -1289,10 +1289,10 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
            the way the canvas handles events.
 	*/
 	canvas = GNOME_CANVAS (container);
-	eel_gnome_canvas_world_to_canvas_window (canvas,
-						 event->x, event->y,
-						 &dnd_info->drag_info.start_x,
-						 &dnd_info->drag_info.start_y);
+	eel_gnome_canvas_world_to_widget (canvas,
+					  event->x, event->y,
+					  &dnd_info->drag_info.start_x,
+					  &dnd_info->drag_info.start_y);
 	
 	/* start the drag */
 	context = gtk_drag_begin (GTK_WIDGET (container),
@@ -1311,9 +1311,9 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         /* compute the image's offset */
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle
 		(container->details->drag_icon->item);
-	window_rect = eel_gnome_canvas_world_to_canvas_window_rectangle (canvas, world_rect);
-        x_offset = dnd_info->drag_info.start_x - window_rect.x0;
-        y_offset = dnd_info->drag_info.start_y - window_rect.y0;
+	widget_rect = eel_gnome_canvas_world_to_widget_rectangle (canvas, world_rect);
+        x_offset = dnd_info->drag_info.start_x - widget_rect.x0;
+        y_offset = dnd_info->drag_info.start_y - widget_rect.y0;
         
         /* set the icon for dragging */
         gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
