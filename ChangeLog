@@ -1,3 +1,11 @@
+2000-10-30  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/helper/eazel-helper.pam:
+
+	Yeah!  Found out how to let eazel-helper run even if root has
+	no password set.  Add "nullok" to the pwdb line in the pam
+	config file.
+
 2000-10-30  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:
