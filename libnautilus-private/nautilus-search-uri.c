@@ -29,10 +29,11 @@
 
 static NautilusSearchBarMode      other_search_mode        (NautilusSearchBarMode mode);
 
-char*                      
+char *
 nautilus_search_uri_to_simple_search_criteria (const char *uri)
 {
-	return "";
+	/* FIXME: Not yet implemented. */
+	return NULL;
 
 }
 

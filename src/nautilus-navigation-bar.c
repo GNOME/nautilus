@@ -23,7 +23,6 @@
 */
 
 #include <config.h>
-
 #include "nautilus-navigation-bar.h"
 
 #include <gtk/gtksignal.h>
@@ -40,23 +39,15 @@ static void nautilus_navigation_bar_initialize       (NautilusNavigationBar     
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusNavigationBar, nautilus_navigation_bar, NAUTILUS_TYPE_GENEROUS_BIN)
 
-
-
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, get_location)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, set_location)
-
-static void
-destroy (GtkObject *object)
-{
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
 
 static void
 nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 {
 	GtkObjectClass *object_class;
-	
+
 	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
 	
 	signals[LOCATION_CHANGED]
 		= gtk_signal_new ("location_changed",
@@ -64,11 +55,12 @@ nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusNavigationBarClass,
 						     location_changed),
-				  gtk_marshal_NONE__STRING,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, get_location);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, set_location);
 }
 
@@ -77,8 +69,21 @@ nautilus_navigation_bar_initialize (NautilusNavigationBar *bar)
 {
 }
 
-
+/**
+ * nautilus_navigation_bar_get_location
+ * 
+ * Change the location displayed in the navigation bar.
+ * 
+ * @bar: A NautilusNavigationBar.
+ * @location: The uri that should be displayed.
+ */
+char *
+nautilus_navigation_bar_get_location (NautilusNavigationBar *bar)
+{
+	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar), NULL);
 
+	return (* NAUTILUS_NAVIGATION_BAR_CLASS (GTK_OBJECT (bar)->klass)->get_location) (bar);
+}
 
 /**
  * nautilus_navigation_bar_set_location
@@ -97,15 +102,16 @@ nautilus_navigation_bar_set_location (NautilusNavigationBar *bar,
 	(* NAUTILUS_NAVIGATION_BAR_CLASS (GTK_OBJECT (bar)->klass)->set_location) (bar, location);
 }
 
-
 void
-nautilus_navigation_bar_location_changed (NautilusNavigationBar *bar,
-					  const char *location)
+nautilus_navigation_bar_location_changed (NautilusNavigationBar *bar)
 {
+	char *location;
+
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
+	location = nautilus_navigation_bar_get_location (bar);
 	gtk_signal_emit (GTK_OBJECT (bar),
 			 signals[LOCATION_CHANGED],
 			 location);
+	g_free (location);
 }
-

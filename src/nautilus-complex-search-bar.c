@@ -47,57 +47,35 @@ struct NautilusComplexSearchBarDetails {
 	gboolean undo_registered;
 };
 
-static char *                     nautilus_complex_search_bar_get_location            (NautilusComplexSearchBar *bar);
-static void                       nautilus_complex_search_bar_set_search_controls     (NautilusSearchBar *bar,
-										       const char *location);
-
-static void                       nautilus_complex_search_bar_initialize_class        (NautilusComplexSearchBarClass *class);
-static void                       nautilus_complex_search_bar_initialize              (NautilusComplexSearchBar      *bar);
-static void                       attach_criterion_to_search_bar                      (NautilusComplexSearchBar *bar,
-										       NautilusSearchBarCriterion *criterion,
-										       int row_number);
-static void                       unattach_criterion_from_search_bar                      (NautilusComplexSearchBar *bar,
-											   NautilusSearchBarCriterion *criterion);
-
-static void                       destroy                                             (GtkObject *object);
-static void                       more_options_callback                               (GtkObject *object,
-										       gpointer data);
-static void                       fewer_options_callback                              (GtkObject *object,
-										       gpointer data);
-
+static char *nautilus_complex_search_bar_get_location     (NautilusNavigationBar         *bar);
+static void  nautilus_complex_search_bar_set_location     (NautilusNavigationBar         *bar,
+							   const char                    *location);
+static void  nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *class);
+static void  nautilus_complex_search_bar_initialize       (NautilusComplexSearchBar      *bar);
+static void  attach_criterion_to_search_bar               (NautilusComplexSearchBar      *bar,
+							   NautilusSearchBarCriterion    *criterion,
+							   int                            row_number);
+static void  unattach_criterion_from_search_bar           (NautilusComplexSearchBar      *bar,
+							   NautilusSearchBarCriterion    *criterion);
+static void  more_options_callback                        (GtkObject                     *object,
+							   gpointer                       data);
+static void  fewer_options_callback                       (GtkObject                     *object,
+							   gpointer                       data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
-     
-     
+
 static void
 nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *klass)
 {
-	GtkObjectClass *object_class;
-	NautilusSearchBarClass *search_bar_class;
-	
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
-	
-	search_bar_class = NAUTILUS_SEARCH_BAR_CLASS (klass);
-	search_bar_class->set_search_controls = nautilus_complex_search_bar_set_search_controls;
-	
-	klass->get_location = nautilus_complex_search_bar_get_location;
+	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_complex_search_bar_get_location;
+	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_complex_search_bar_set_location;
 }
-
-static void
-destroy (GtkObject *object)
-{
-  
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
 
 static void
 nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 {
 	NautilusSearchBarCriterion *file_name_criterion;
 	GtkWidget *hbox;
-
 	
 	bar->details = g_new0 (NautilusComplexSearchBarDetails, 1);
 	
@@ -146,17 +124,27 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 }
 
 
-static char *                     
-nautilus_complex_search_bar_get_location  (NautilusComplexSearchBar *bar)
+static char *
+nautilus_complex_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 {
-	return "search:[file:///]";
+	NautilusComplexSearchBar *bar;
+
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (navigation_bar);
+
+	/* FIXME: Not implemented. */
+
+	return g_strdup ("search:[file:///]");
 }
 
 static void                       
-nautilus_complex_search_bar_set_search_controls (NautilusSearchBar *bar,
-						const char *location)
+nautilus_complex_search_bar_set_location (NautilusNavigationBar *navigation_bar,
+					  const char *location)
 {
-	/* FIXME */
+	NautilusComplexSearchBar *bar;
+
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (navigation_bar);
+
+	/* FIXME: Not implemented. */
 }
 
 static void

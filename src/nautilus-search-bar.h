@@ -41,28 +41,14 @@
 #define NAUTILUS_IS_SEARCH_BAR(obj) \
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_SEARCH_BAR)
 
-
-typedef struct NautilusSearchBarDetails NautilusSearchBarDetails;
-
-typedef struct NautilusSearchBar {
+typedef struct {
 	NautilusNavigationBar parent;
 } NautilusSearchBar;
 
 typedef struct {
 	NautilusNavigationBarClass parent_class;
-
-	/* virtual method */
-	void (*set_search_controls) (NautilusSearchBar *search_bar,
-				     const char *location);
-
 } NautilusSearchBarClass;
 
-GtkType                   nautilus_search_bar_get_type     	         (void);
-GtkWidget*                nautilus_search_bar_new          	         (void);
+GtkType nautilus_search_bar_get_type (void);
 
-
-void                      nautilus_search_bar_set_search_controls        (NautilusSearchBar *search_bar,
-									  const char *location);
-/* FIXME:Do we need a protected location_changed function here too? */
 #endif /* NAUTILUS_SEARCH_BAR_H */
-

@@ -195,8 +195,8 @@ nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 
 static void
 goto_uri_callback (GtkWidget *widget,
-				   const char *uri,
-				   GtkWidget *window)
+		   const char *uri,
+		   GtkWidget *window)
 {
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), uri);
 }

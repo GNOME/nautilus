@@ -22,83 +22,51 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
-#include "nautilus-search-bar.h"
-#include "nautilus-switchable-search-bar.h"
+#include <config.h>
 #include "nautilus-simple-search-bar.h"
-
-#include <glib.h>
-
-#include <gtk/gtkentry.h>
-#include <gtk/gtkeventbox.h>
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 
 struct NautilusSimpleSearchBarDetails {
-  GtkEntry *entry;
-  gchar undo_text;
-  gboolean undo_registered;
+	GtkEntry *entry;
 };
 
+static char *nautilus_simple_search_bar_get_location     (NautilusNavigationBar        *bar);
+static void  nautilus_simple_search_bar_set_location     (NautilusNavigationBar        *bar,
+							  const char                   *location);
+static void  nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *class);
+static void  nautilus_simple_search_bar_initialize       (NautilusSimpleSearchBar      *bar);
 
-static char *                     nautilus_simple_search_bar_get_location            (NautilusSimpleSearchBar *bar);
-static void                       nautilus_simple_search_bar_set_search_controls     (NautilusSearchBar *bar,
-										      const char            *location);
-
-
-static void                       nautilus_simple_search_bar_initialize_class        (NautilusSimpleSearchBarClass *class);
-static void                       nautilus_simple_search_bar_initialize              (NautilusSimpleSearchBar      *bar);
-static void                       editable_activated_callback                        (GtkEditable *editable,
-										      NautilusSimpleSearchBar *bar);
-
-static void                       destroy                                            (GtkObject *object);
-
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar, nautilus_simple_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
-
-
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
+				   nautilus_simple_search_bar,
+				   NAUTILUS_TYPE_SEARCH_BAR)
 
 static void
 nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *klass)
 {
-  GtkObjectClass *object_class;
-  NautilusSearchBarClass *search_bar_class;
-
-  object_class = GTK_OBJECT_CLASS (klass);
-  object_class->destroy = destroy;
-
-  search_bar_class = NAUTILUS_SEARCH_BAR_CLASS (klass);
-  search_bar_class->set_search_controls = nautilus_simple_search_bar_set_search_controls;
-  klass->get_location = nautilus_simple_search_bar_get_location;  
+	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_simple_search_bar_get_location;  
+	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_simple_search_bar_set_location;  
 }
-
-
-static void
-destroy (GtkObject *object)
-{
-  
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
 
 static void
 nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
 {
-  GtkWidget *entry;
-  GtkWidget *hbox;
-
-  hbox = gtk_hbox_new (0, FALSE);
-
-  entry = gtk_entry_new ();
-  gtk_signal_connect (GTK_OBJECT (entry), "activate",
-		      editable_activated_callback, bar);
-  gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
-
-  gtk_container_add (GTK_CONTAINER (bar), hbox);
-  
-  gtk_widget_show_all (hbox);
-
-  bar->entry = GTK_ENTRY (entry);
-  
+	GtkWidget *entry;
+	GtkWidget *hbox;
+	
+	hbox = gtk_hbox_new (0, FALSE);
+	
+	entry = gtk_entry_new ();
+	gtk_signal_connect_object (GTK_OBJECT (entry), "activate",
+				   nautilus_navigation_bar_location_changed, GTK_OBJECT (bar));
+	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
+	
+	gtk_container_add (GTK_CONTAINER (bar), hbox);
+	
+	gtk_widget_show_all (hbox);
+	
+	bar->entry = GTK_ENTRY (entry);
 }
 
 GtkWidget *
@@ -107,49 +75,33 @@ nautilus_simple_search_bar_new (void)
 	return gtk_widget_new (NAUTILUS_TYPE_SIMPLE_SEARCH_BAR, NULL);
 }
 
-
 static void
-nautilus_simple_search_bar_set_search_controls (NautilusSearchBar *search_bar,
-						const char *location)
+nautilus_simple_search_bar_set_location (NautilusNavigationBar *navigation_bar,
+					 const char *location)
 {
 	NautilusSimpleSearchBar *bar;
-
-	bar = NAUTILUS_SIMPLE_SEARCH_BAR (search_bar);
+	char *criteria;
 
 	/* We shouldn't have gotten here if the uri can't be displayed
-	   using a simple search bar */
+	 * using a simple search bar
+	 */
 	g_return_if_fail (nautilus_search_uri_is_displayable_by_mode (location, NAUTILUS_SIMPLE_SEARCH_BAR));
-	/* Set the words in the box to
-	   be the words originally done in the search */ 
-	gtk_entry_set_text (bar->entry,
-			    nautilus_search_uri_to_simple_search_criteria (location));
 
-  
+	bar = NAUTILUS_SIMPLE_SEARCH_BAR (navigation_bar);
 
+	/* Set the words in the box to be the words originally done in the search */ 
+	criteria = nautilus_search_uri_to_simple_search_criteria (location);
+	gtk_entry_set_text (bar->entry, criteria);
+	g_free (criteria);
 }
 
 static char *
-nautilus_simple_search_bar_get_location (NautilusSimpleSearchBar *bar)
+nautilus_simple_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 {
+	NautilusSimpleSearchBar *bar;
 	char *search_entry_text;
+
+	bar = NAUTILUS_SIMPLE_SEARCH_BAR (navigation_bar);
 	search_entry_text = gtk_entry_get_text (bar->entry);
 	return nautilus_simple_search_criteria_to_search_uri (search_entry_text);
 }
-
-static void
-editable_activated_callback (GtkEditable *editable,
-		       	     NautilusSimpleSearchBar *bar)
-{
-	gchar *uri;
-
-	g_assert (GTK_IS_EDITABLE (editable));
-	g_assert (NAUTILUS_IS_SIMPLE_SEARCH_BAR (bar));
-	
-	uri = nautilus_simple_search_bar_get_location (bar);
-	printf ("Changing location to %s\n", uri);
-	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (bar),
-						  uri);
-	g_free (uri);
-}	
-
-

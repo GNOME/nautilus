@@ -44,10 +44,6 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 
-static void child_location_changed_callback                      (NautilusNavigationBar           *navigation_bar,
-								 const char                      *location,
-								 NautilusSwitchableNavigationBar *bar);
-
 static void nautilus_switchable_navigation_bar_set_location     (NautilusNavigationBar *bar,
 								 const char            *location);
 
@@ -100,15 +96,14 @@ nautilus_switchable_navigation_bar_initialize (NautilusSwitchableNavigationBar *
 	bar->location_bar = nautilus_location_bar_new ();
 	bar->search_bar = nautilus_switchable_search_bar_new ();
 
-	gtk_signal_connect (GTK_OBJECT (bar->location_bar),
-			    "location_changed",
-			    (GtkSignalFunc) child_location_changed_callback,
-			    bar);
-
-	gtk_signal_connect (GTK_OBJECT (bar->search_bar),
-			    "location_changed",
-			    (GtkSignalFunc) child_location_changed_callback,
-			    bar);
+	gtk_signal_connect_object (GTK_OBJECT (bar->location_bar),
+				   "location_changed",
+				   nautilus_navigation_bar_location_changed,
+				   GTK_OBJECT (bar));
+	gtk_signal_connect_object (GTK_OBJECT (bar->search_bar),
+				   "location_changed",
+				   nautilus_navigation_bar_location_changed,
+				   GTK_OBJECT (bar));
 	
 	gtk_box_pack_start  (GTK_BOX (hbox), bar->location_bar, TRUE, TRUE,
 			     0);
@@ -149,16 +144,6 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 		g_return_if_fail (mode && 0);
 	}
 }
-
-static void
-child_location_changed_callback (NautilusNavigationBar           *navigation_bar,
-				 const char                      *location,
-				 NautilusSwitchableNavigationBar *bar)
-{
-	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (bar),
-						  location);
-}
-
 
 static void
 nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigation_bar,

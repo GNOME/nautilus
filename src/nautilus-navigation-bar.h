@@ -35,7 +35,7 @@
 #define NAUTILUS_IS_NAVIGATION_BAR(obj) \
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_NAVIGATION_BAR)
 
-typedef struct NautilusNavigationBar {
+typedef struct {
 	NautilusGenerousBin parent;
 } NautilusNavigationBar;
 
@@ -43,23 +43,22 @@ typedef struct {
 	NautilusGenerousBinClass parent_class;
 
 	/* signals */
-	void         (*location_changed) (NautilusNavigationBar *navigation_bar,
-					  const char *location);
-
+	void         (* location_changed) (NautilusNavigationBar *bar,
+					   const char            *location);
 
 	/* virtual methods */
-	void         (*set_location) (NautilusNavigationBar *navigation_bar,
-				      const char *location);
+	char *       (* get_location)     (NautilusNavigationBar *bar);
+	void         (* set_location)     (NautilusNavigationBar *bar,
+					   const char            *location);
 
 } NautilusNavigationBarClass;
 
-GtkType    nautilus_navigation_bar_get_type     	(void);
-void       nautilus_navigation_bar_set_location 	(NautilusNavigationBar     *bar,
-							 const char                *location);
+GtkType nautilus_navigation_bar_get_type         (void);
+char *  nautilus_navigation_bar_get_location     (NautilusNavigationBar *bar);
+void    nautilus_navigation_bar_set_location     (NautilusNavigationBar *bar,
+						  const char            *location);
 
 /* `protected' function meant to be used by subclasses to emit the `location_changed' signal */
-void       nautilus_navigation_bar_location_changed 	(NautilusNavigationBar     *bar,
-							 const char                *location);
-
+void    nautilus_navigation_bar_location_changed (NautilusNavigationBar *bar);
 
 #endif /* NAUTILUS_NAVIGATION_BAR_H */

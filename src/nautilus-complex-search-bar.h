@@ -24,16 +24,10 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
-
 #ifndef NAUTILUS_COMPLEX_SEARCH_BAR_H
 #define NAUTILUS_COMPLEX_SEARCH_BAR_H
 
-#include "nautilus-navigation-bar.h"
 #include "nautilus-search-bar.h"
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
-
 
 #define NAUTILUS_TYPE_COMPLEX_SEARCH_BAR (nautilus_complex_search_bar_get_type ())
 #define NAUTILUS_COMPLEX_SEARCH_BAR(obj) \
@@ -45,19 +39,17 @@
 
 typedef struct NautilusComplexSearchBarDetails  NautilusComplexSearchBarDetails;
 
-typedef struct NautilusComplexSearchBar {
-  NautilusNavigationBar parent; 
-  NautilusComplexSearchBarDetails *details;
-
+typedef struct {
+	NautilusSearchBar parent_slot;
+	NautilusComplexSearchBarDetails *details;
 } NautilusComplexSearchBar;
 
 typedef struct {
-  NautilusSearchBarClass parent_class;
-  char* (*get_location)      (NautilusComplexSearchBar *search_bar);
+	NautilusSearchBarClass parent_slot;
 } NautilusComplexSearchBarClass;
 
-GtkType    nautilus_complex_search_bar_get_type     	(void);
-GtkWidget* nautilus_complex_search_bar_new          	(void);
+GtkType    nautilus_complex_search_bar_get_type (void);
+GtkWidget *nautilus_complex_search_bar_new      (void);
 
 #endif /* NAUTILUS_COMPLEX_SEARCH_BAR_H */
 

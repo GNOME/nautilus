@@ -54,6 +54,7 @@ typedef struct NautilusSwitchableSearchBar {
 
 typedef struct {
 	NautilusSearchBarClass parent_class;
+
 	void (*mode_changed) (NautilusSwitchableSearchBar *search_bar,
 			      NautilusSearchBarMode mode);
 } NautilusSwitchableSearchBarClass;

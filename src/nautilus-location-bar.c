@@ -76,18 +76,13 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_DND_URL_TYPE,        0, NAUTILUS_DND_URL }
 };
 
-
-static gchar  *nautilus_location_bar_get_location     (NautilusLocationBar        *bar); 
-static void    nautilus_location_bar_set_location     (NautilusNavigationBar      *navigation_bar,
-						       const char                 *location);
-
-
-static void nautilus_location_bar_initialize_class (NautilusLocationBarClass *class);
-static void nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
+static char *nautilus_location_bar_get_location     (NautilusNavigationBar    *navigation_bar); 
+static void  nautilus_location_bar_set_location     (NautilusNavigationBar    *navigation_bar,
+						     const char               *location);
+static void  nautilus_location_bar_initialize_class (NautilusLocationBarClass *class);
+static void  nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar, nautilus_location_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
-
-
 
 static NautilusWindow *
 nautilus_location_bar_get_window (GtkWidget *widget)
@@ -150,8 +145,7 @@ drag_data_received_callback (GtkWidget *widget,
 
 	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (widget),
 					      names->data);	
-	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (widget),
-						  names->data);
+	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (widget));
 
 	if (new_windows_for_extras) {
 		application = nautilus_location_bar_get_window (widget)->application;
@@ -177,7 +171,7 @@ drag_data_get_callback (GtkWidget *widget,
 
 	g_assert (selection_data != NULL);
 
-	entry_text = nautilus_location_bar_get_location (NAUTILUS_LOCATION_BAR (widget->parent));
+	entry_text = nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (widget->parent));
 	
 	switch (info) {
 	case NAUTILUS_DND_URI_LIST:
@@ -193,22 +187,6 @@ drag_data_get_callback (GtkWidget *widget,
 	}
 	g_free (entry_text);
 }
-
-static void
-editable_activated_callback (GtkEditable *editable,
-		       	     NautilusLocationBar *bar)
-{
-	gchar *uri;
-
-	g_assert (GTK_IS_EDITABLE (editable));
-	g_assert (NAUTILUS_IS_LOCATION_BAR (bar));
-
-	uri = nautilus_location_bar_get_location (NAUTILUS_LOCATION_BAR (bar));
-
-	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (bar),
-						  uri);
-	g_free (uri);
-}	
 
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
    the whole string, otherwise accept the largest part common to both */
@@ -396,6 +374,7 @@ nautilus_location_bar_initialize_class (NautilusLocationBarClass *class)
 	
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (class);
 
+	navigation_bar_class->get_location = nautilus_location_bar_get_location;
 	navigation_bar_class->set_location = nautilus_location_bar_set_location;
 }
 
@@ -420,8 +399,8 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 			     GNOME_PAD_SMALL);
 
 	entry = nautilus_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (entry), "activate",
-			    editable_activated_callback, bar);
+	gtk_signal_connect_object (GTK_OBJECT (entry), "activate",
+				   nautilus_navigation_bar_location_changed, GTK_OBJECT (bar));
 
 	/* The callback uses the marshal interface directly
 	 * so it can both read and write the return value.
@@ -471,7 +450,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 				    const char *location)
 {
 	NautilusLocationBar *bar;
-	gchar *formatted_location;
+	char *formatted_location;
 
 	g_assert (location != NULL);
 	
@@ -499,10 +478,13 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
  *
  **/
 
-static gchar *
-nautilus_location_bar_get_location (NautilusLocationBar *bar) 
+static char *
+nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar) 
 {
-	gchar *user_location, *best_uri;
+	NautilusLocationBar *bar;
+	char *user_location, *best_uri;
+
+	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 	
 	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->entry), 0, -1);
 	best_uri = nautilus_make_uri_from_input (user_location);

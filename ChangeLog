@@ -1,7 +1,64 @@
+2000-07-27  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_search_uri_to_simple_search_criteria):
+	This needs to return a g_free'able string, so I changed the
+	placeholder to return NULL instead of "". (g_strdup ("") would
+	also have been OK.)
+	
+	* src/nautilus-complex-search-bar.h:
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize_class),
+	(nautilus_complex_search_bar_initialize),
+	(nautilus_complex_search_bar_get_location),
+	(nautilus_complex_search_bar_set_location):
+	* src/nautilus-location-bar.c: (drag_data_received_callback),
+	(drag_data_get_callback), (nautilus_location_bar_initialize_class),
+	(nautilus_location_bar_initialize),
+	(nautilus_location_bar_set_location),
+	(nautilus_location_bar_get_location):
+	* src/nautilus-navigation-bar.h:
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_initialize_class),
+	(nautilus_navigation_bar_get_location),
+	(nautilus_navigation_bar_location_changed):
+	* src/nautilus-search-bar.h:
+	* src/nautilus-search-bar.c:
+	(nautilus_search_bar_initialize_class),
+	(nautilus_search_bar_initialize):
+	* src/nautilus-simple-search-bar.h:
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize_class),
+	(nautilus_simple_search_bar_initialize),
+	(nautilus_simple_search_bar_set_location),
+	(nautilus_simple_search_bar_get_location):
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_initialize),
+	(nautilus_switchable_navigation_bar_set_mode):
+	* src/nautilus-switchable-search-bar.h:
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_initialize_class),
+	(nautilus_switchable_search_bar_set_mode),
+	(search_activated_callback),
+	(nautilus_switchable_search_bar_get_location),
+	(nautilus_switchable_search_bar_set_location):
+	Got rid of set_search_controls since set_location does exactly the
+	same thing. Changed to use get_location in the
+	NautilusNavigationBar base class instead of having lots of
+	separate get_location. Fixed bug where get_location would return a
+	non-g_strdup'd string, which callers would then g_free. Also
+	changed to use simpler version of location_changed since the
+	navigation bar can now get the location easily for itself so the
+	subclasses need not do it. Callbacks now can call
+	nautilus_navigation_bar_location_changed directly. Removed some
+	empty destroy functions in classes where they are likely to be
+	empty forever.
+	
+	* src/nautilus-window.c: (goto_uri_callback): Whitespace.
+
 2000-07-27  Robey Pointer  <robey@eazel.com>
 
-	*
-	components/services/install/command-line/eazel-alt-install-corba.c:
+	* components/services/install/command-line/eazel-alt-install-corba.c:
 	(eazel_install_progress_signal):
 	* components/services/install/lib/eazel-install-object.c:
 	(eazel_install_install_packages):
@@ -15,12 +72,11 @@
         * icons/eazel/*.png
         Images became corrupt in the last batch... fixed.
 
-2000-07-27  set REAL_NAME environment variable  <set EMAIL_ADDRESS environment variable>
+2000-07-27   J Shane Culpepper  <pepper@eazel.com>
 
-	*
-	components/services/summary/nautilus-view/nautilus-summary-view.c:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
 	(generate_summary_form):
-	Fixing title so thaqt it displays correctly.
+	Fixing title so that it displays correctly.
 
 2000-07-27  Arlo Rose  <arlo@eazel.com>
 
