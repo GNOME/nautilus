@@ -27,7 +27,6 @@
 #include "fm-search-list-view.h"
 
 #include "fm-directory-view.h"
-#include "fm-list-view-private.h"
 #include "nautilus-indexing-info.h"
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtksignal.h>

@@ -1297,6 +1297,11 @@ fm_directory_view_destroy (GtkObject *object)
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (object);
+	
+	monitor_file_for_open_with (view, NULL);
+
+	fm_directory_view_stop (view);
+	fm_directory_view_clear (view);
 
 	/* Since we are owned by the NautilusView, if we're going it's
 	 * gone. It would be even better to NULL this out when the
@@ -1304,11 +1309,6 @@ fm_directory_view_destroy (GtkObject *object)
 	 * purposes.
 	 */
 	view->details->nautilus_view = NULL;
-
-	monitor_file_for_open_with (view, NULL);
-
-	fm_directory_view_stop (view);
-	fm_directory_view_clear (view);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }

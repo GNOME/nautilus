@@ -3,7 +3,8 @@
 /* fm-list-view.h - interface for list view of directory.
 
    Copyright (C) 2000 Eazel, Inc.
-
+   Copyright (C) 2001 Anders Carlsson <andersca@gnu.org>
+   
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
@@ -20,15 +21,11 @@
    Boston, MA 02111-1307, USA.
 
    Authors: John Sullivan <sullivan@eazel.com>
+            Anders Carlsson <andersca@gnu.org>
 */
 
 #ifndef FM_LIST_VIEW_H
 #define FM_LIST_VIEW_H
-
-/* This is not a general purpose class.
- * It has just enough generality to be reused by the search list view.
- * But for more use it would have to be refactored more.
- */
 
 #include "fm-directory-view.h"
 
@@ -38,31 +35,20 @@
 #define FM_IS_LIST_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_LIST_VIEW))
 #define FM_IS_LIST_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_VIEW))
 
-typedef struct FMListViewDetails FMListViewDetails;
-typedef struct FMListViewColumn FMListViewColumn;
+typedef struct _FMListView FMListView;
+typedef struct _FMListViewClass FMListViewClass;
+typedef struct _FMListViewDetails FMListViewDetails;
 
-typedef struct {
-	FMDirectoryView parent_slot;
+struct _FMListView {
+	FMDirectoryView parent_instance;
+
 	FMListViewDetails *details;
-} FMListView;
+};
 
-typedef struct {
-	FMDirectoryViewClass parent_slot;
+struct _FMListViewClass {
+	FMDirectoryViewClass parent_class;
+};
 
-	void	 (* adding_file)		(FMListView	  *list_view,
-						 NautilusFile	  *file);
-	void	 (* removing_file)		(FMListView	  *list_view,
-						 NautilusFile	  *file);
-	int    	 (* get_number_of_columns)      (FMListView       *list_view);
-	int    	 (* get_emblems_column)         (FMListView       *list_view);
-	int    	 (* get_link_column)            (FMListView       *list_view);
-	void   	 (* get_column_specification)   (FMListView       *list_view,
-					         int               column_number,
-					         FMListViewColumn *specification);
-	char * 	 (* get_default_sort_attribute) (FMListView       *list_view);
-} FMListViewClass;
-
-/* GtkObject support */
-GtkType fm_list_view_get_type (void);
+GType fm_list_view_get_type (void);
 
 #endif /* FM_LIST_VIEW_H */

@@ -16,6 +16,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
 	fm-icon-view.c			\
+	fm-list-model.c			\
 	fm-list-view.c			\
 	fm-properties-window.c		\
 	fm-search-list-view.c		\
@@ -24,6 +25,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\
 	fm-icon-view.h 			\
+	fm-list-model.h			\
 	fm-list-view-private.h 		\
 	fm-list-view.h 			\
 	fm-properties-window.h 		\

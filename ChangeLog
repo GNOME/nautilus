@@ -1,3 +1,17 @@
+2002-01-17  Anders Carlsson  <andersca@gnu.org>
+
+	* src/file-manager/fm-list-model.c: New file.
+
+	* src/file-manager/fm-list-model.h: New file.
+
+	* src/file-manager/fm-list-view.c: Port to GtkTreeView.
+
+	* src/file-manager/fm-list-view.h: Port to GtkTreeView.
+
+	* src/file-manager/fm-directory-view.c (fm_directory_view_destroy):
+	Stop and clear the directory view before setting view to NULL because
+	clearing the directory when nautilus_view is NULL can trigger an assertion.
+	
 2002-01-17  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-mime-actions.c: Added include
