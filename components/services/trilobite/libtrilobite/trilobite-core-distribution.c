@@ -80,7 +80,7 @@ determine_turbolinux_version (DistributionInfo *distinfo)
 	text = strstr (buf, "release ");
 	if (text) {
 		text += 8;
-		v = g_strndup (text, 3);
+		v = g_strndup (text, 4);
 		sscanf (v, "%d.%d", &version_major, &version_minor);
 		g_free (v);
 		distinfo->version_major = version_major;
@@ -92,6 +92,31 @@ determine_turbolinux_version (DistributionInfo *distinfo)
 static void
 determine_mandrake_version (DistributionInfo *distinfo)
 {
+	FILE *f;
+	char buf[1024];
+	char *text, *v;
+	int version_major, version_minor;
+
+	/* contents, according to loiosh:
+	 * "Linux Mandrake release 7.1 (something)"
+	 */
+	f = fopen ("/etc/mandrake-release", "rt");
+	g_return_if_fail (f != NULL);
+
+	fread ((char *)buf, 1023, 1, f);
+	fclose (f);
+	buf[1023] = 0;
+
+	text = strstr (buf, "release ");
+	if (text) {
+		text += 8;
+		v = g_strndup (text, 4);
+		sscanf (v, "%d.%d", &version_major, &version_minor);
+		g_free (v);
+		distinfo->version_major = version_major;
+		distinfo->version_minor = version_minor;
+		return;
+	}
 }
 
 static void
@@ -259,8 +284,7 @@ trilobite_get_distribution_name (DistributionInfo distinfo,
 		} 
 	}
 
-	/* This slightly odd g_strconcat is odd, so it
-	   eg. can be expanded to have arch */
+	/* This g_strconcat is odd, so it can be expanded, eg. to add arch */
 	result = g_strconcat (name, 
 			      version,
 			      arch,

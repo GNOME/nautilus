@@ -75,7 +75,7 @@ typedef struct {
 #define PACKAGE_LIST	"package-list.xml"
 #define TEXT_LIST	"installer-strings.xml"
 
-#define LOGFILE		"/tmp/eazel-install.log"
+#define LOGFILE		"eazel-install.log"
 
 #define FONT_NORM_BOLD	_("-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*")
 #define FONT_NORM	_("-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*")
@@ -179,7 +179,7 @@ int installer_dont_ask_questions = 0;
 char *installer_server =NULL;
 int installer_server_port = 0;
 char *installer_cgi_path = NULL;
-char *installer_tmpdir = NULL;
+char *installer_tmpdir = "/tmp";
 char *installer_homedir = NULL;
 
 static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
@@ -1004,74 +1004,49 @@ add_force_remove (EazelInstaller *installer,
 static void
 get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
-	char *required;
-	char *required_by;
-	gboolean recoverable_error = FALSE;
+	char *message, *distro;
 	EazelInstaller *installer = data->installer; 
+	PackageData *pack_in;
 	PackageData *previous_pack = NULL;
+	CategoryData *cat;
+	GList *iter, *iter2;
 
 	if (data->path) {
 		previous_pack = (PackageData*)(data->path->data);
 	}
-	required = packagedata_get_readable_name (pack);
-	required_by = packagedata_get_readable_name (previous_pack);
 
-
-	switch (pack->status) {
-	case PACKAGE_UNKNOWN_STATUS:
-		break;
-	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		break;
-	case PACKAGE_FILE_CONFLICT:
-		break;
-	case PACKAGE_DEPENDENCY_FAIL:
-		break;
-	case PACKAGE_BREAKS_DEPENDENCY:
-		break;
-	case PACKAGE_INVALID:
-		break;
-	case PACKAGE_CANNOT_OPEN: {
-		GList *iter;
+	/* is this the right place for this check anymore? */
+	if (pack->status == PACKAGE_CANNOT_OPEN) {
 		/* check if the package we could not open was in install_categories, since
 		   then it's a distro issue */
 		for (iter = installer->install_categories; iter; iter = g_list_next (iter)) {
-			CategoryData *cat = (CategoryData*)iter->data;
-			GList *iter2;
+			cat = (CategoryData *)iter->data;
 			for (iter2 = cat->packages; iter2 ; iter2 = g_list_next (iter2)) {
-				PackageData *pack = (PackageData*)iter2->data;
-				if (strcmp (required, pack->name)==0) {
-					char *tmp = "Your distribution might not be supported";
-					installer->failure_info = g_list_prepend (installer->failure_info,
-										  tmp);
+				pack_in = (PackageData *)iter2->data;
+				if (strcmp (pack->name, pack_in->name) == 0) {
+					distro = trilobite_get_distribution_name (trilobite_get_distribution (),
+										  TRUE, FALSE);
+					message = g_strdup_printf (_("Initial package download failed: Possibly your "
+								     "distribution (%s) isn't supported by Eazel yet, "
+								     "or the Eazel servers are offline."),
+								   distro);
+					installer->failure_info = g_list_prepend (installer->failure_info, message);
+					g_free (distro);
 				}
 			}
 		}
 	}
-	break;
-	case PACKAGE_PARTLY_RESOLVED:
-		break;
-	case PACKAGE_ALREADY_INSTALLED:
-		break;
-	case PACKAGE_CIRCULAR_DEPENDENCY: 
-		break;
-	case PACKAGE_RESOLVED:
-		recoverable_error = TRUE;	/* duh. */
-		break;
-	}
 
-	if (pack->conflicts_checked && !pack->toplevel) {
 /*
+	if (pack->conflicts_checked && !pack->toplevel) {
 		GList *packages;
 		CategoryData *cat = (CategoryData*)(installer->install_categories->data);
 		g_message ("adding %s to install_categories", required);
 		packages = cat->packages;
 		packages = g_list_prepend (packages, pack); 		
 		cat->packages = packages;
-*/
 	}
-
-	g_free (required);
-	g_free (required_by);
+*/
 
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
@@ -1660,7 +1635,7 @@ eazel_installer_post_install (EazelInstaller *installer)
 		jump_to_error_page (installer, installer->failure_info, 
 				    text_labels [ERROR_LABEL], 
 				    text_labels [ERROR_LABEL_2]);
-	} else if (installer->force_remove_categories==NULL) {
+	} else if (installer->force_remove_categories == NULL) {
 		gnome_druid_set_page (installer->druid, installer->finish_good); 
 	}
 }
@@ -1854,6 +1829,7 @@ start_logging (EazelInstaller *installer)
 	int fd;
 	FILE *fp;
 	struct stat statbuf, lstatbuf;
+	char *filename;
 
 	if (installer_debug) {
 		eazel_install_log_to_stderr (installer->service, TRUE);
@@ -1865,7 +1841,8 @@ start_logging (EazelInstaller *installer)
 	/* wow, linux defines this but it's completely non-functional on linux. :( */
 	flags |= O_NOFOLLOW;
 #endif
-	fd = open (LOGFILE, flags, 0600);
+	filename = g_strdup_printf ("%s/%s", installer_tmpdir, LOGFILE);
+	fd = open (filename, flags, 0600);
 	/* make sure that:
 	 *  - owned by root (uid = 0)
 	 *  - the mode is X00 (group/other can't read/write/execute)
@@ -1874,14 +1851,14 @@ start_logging (EazelInstaller *installer)
 	 *  - hardlink count = 1
 	 */
 	if ((fd >= 0) && (fstat (fd, &statbuf) == 0) &&
-	    (lstat (LOGFILE, &lstatbuf) == 0) &&
+	    (lstat (filename, &lstatbuf) == 0) &&
 	    ((lstatbuf.st_mode & S_IFLNK) != S_IFLNK) &&
 	    ((statbuf.st_mode & 0077) == 0) &&
 	    (statbuf.st_mode & S_IFREG) &&
 	    (statbuf.st_nlink == 1) &&
 	    (statbuf.st_uid == 0)) {
 		/* this is our file -- truncate and start over */
-		fprintf (stderr, "Writing logfile to %s ...\n", LOGFILE);
+		fprintf (stderr, "Writing logfile to %s ...\n", filename);
 		ftruncate (fd, 0);
 		fp = fdopen (fd, "wt");
 		eazel_install_set_log (installer->service, fp);
@@ -1889,8 +1866,9 @@ start_logging (EazelInstaller *installer)
 		if (fd >= 0) {
 			close (fd);
 		}
-		fprintf (stderr, "Can't write to %s :(\n", LOGFILE);
+		fprintf (stderr, "Can't write to %s :(\n", filename);
 	}
+	g_free (filename);
 
 	g_message ("Eazel-Installer v" VERSION " (build " BUILD_DATE ")");
 }
@@ -1907,14 +1885,14 @@ find_old_tmpdir (void)
 	char *old_package_list;
 	struct stat statbuf;
 
-	dirfd = opendir ("/tmp");
+	dirfd = opendir (installer_tmpdir);
 	if (dirfd == NULL) {
 		return NULL;
 	}
 	while ((file = readdir (dirfd)) != NULL) {
 		if ((old_tmpdir == NULL) && (strlen (file->d_name) > strlen (TMPDIR_PREFIX)) &&
 		    (strncmp (file->d_name, TMPDIR_PREFIX, strlen (TMPDIR_PREFIX)) == 0)) {
-			old_tmpdir = g_strdup_printf ("/tmp/%s", file->d_name);
+			old_tmpdir = g_strdup_printf ("%s/%s", installer_tmpdir, file->d_name);
 			if ((stat (old_tmpdir, &statbuf) == 0) &&
 			    ((statbuf.st_mode & 0777) == 0700) &&
 			    (statbuf.st_mode & S_IFDIR) &&
@@ -1971,16 +1949,14 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	installer = EAZEL_INSTALLER (object);
 
-	if (installer_tmpdir == NULL) {
-		installer_tmpdir = find_old_tmpdir ();
-	}
-
-	if (installer_tmpdir == NULL) {
+	tmpdir = find_old_tmpdir ();
+	if (tmpdir == NULL) {
 		/* attempt to create a directory we can use */
 #define RANDCHAR ('A' + (rand () % 23))
 		srand (time (NULL));
 		for (tries = 0; tries < 50; tries++) {
-			tmpdir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
+			tmpdir = g_strdup_printf ("%s/eazel-installer.%c%c%c%c%c%c%d",
+						  installer_tmpdir,
 						  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
 						  RANDCHAR, RANDCHAR, (rand () % 1000));
 			if (mkdir (tmpdir, 0700) == 0) {
@@ -1991,8 +1967,6 @@ eazel_installer_initialize (EazelInstaller *object) {
 		if (tries == 50) {
 			g_error (_("Cannot create temporary directory"));
 		}
-	} else {
-		tmpdir = installer_tmpdir;
 	}
 
 	installer->tmpdir = tmpdir;
@@ -2043,7 +2017,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 					       installer_server_port ? installer_server_port : PORT_NUMBER,
 					       "package_list", package_destination, 
 					       "package_list_storage_path", PACKAGE_LIST,
-					       "transaction_dir", "/tmp",
+					       "transaction_dir", installer_tmpdir,
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
 

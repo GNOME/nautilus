@@ -1,3 +1,24 @@
+2000-11-14  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.c: (determine_turbolinux_version),
+	(determine_mandrake_version), (trilobite_get_distribution_name):
+
+	Add detection of version numbers for Mandrake, in the hopes that
+	someday they'll be supported.
+	
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach), (eazel_installer_post_install),
+	(start_logging), (find_old_tmpdir), (eazel_installer_initialize):
+	* nautilus-installer/src/main.c: (main):
+	* nautilus-installer/src/prescript:
+
+	Fix handling of /tmp directory and make it configurable on the
+	command line.  Clarify the "your distribution not supported"
+	message.  Clean up the prescript considerably, hopefully in the
+	process fixing bugs with specifying what shell to use, what su to
+	use, and allowing root to run the installer (worksforme).
+
 2000-11-13  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1633, History sidebar panel items all display generic 

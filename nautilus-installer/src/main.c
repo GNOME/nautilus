@@ -59,7 +59,7 @@ static const struct poptOption options[] = {
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local RPMs instead of HTTP server"), "XML-file"},
 	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify Eazel installation server"), NULL},
-	{"tmpdir", '\0', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Specify download dir"), NULL},
+	{"tmpdir", 'T', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Temporary directory to use for downloaded files (default: /tmp)"), NULL},
 	{"homedir", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_homedir, 0, "", NULL},
 	{"user", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_user, 0, "", NULL},
 	{"package", '\0', POPT_ARG_STRING, &installer_package, 0 , N_("Install package"), NULL},
@@ -75,6 +75,7 @@ main (int argc, char *argv[])
 {
 	EazelInstaller *installer;
 	char *fake_argv0 = "eazel-installer.sh";
+	struct stat statbuf;
 
 #ifdef ENABLE_NLS
 	bindtextdomain ("eazel-installer", GNOMELOCALEDIR);
@@ -111,6 +112,12 @@ main (int argc, char *argv[])
 			printf ("*** Unable to find user's homedir: using '/'\n");
 			installer_homedir = g_strdup ("/");
 		}
+	}
+
+	if (stat (installer_tmpdir, &statbuf) != 0) {
+		printf ("*** Unable to access the temporary directory %s\n", installer_tmpdir);
+		printf ("    You may need to specify a directory using -T\n");
+		exit (1);
 	}
 
 	installer = eazel_installer_new ();
