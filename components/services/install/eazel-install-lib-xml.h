@@ -25,27 +25,20 @@
  * file and install a services generated packages.xml.
  */
 
-#include "eazel-install-lib-util.h"
+#ifndef __EAZEL_INSTALL_LIB_XML_H__
+#define __EAZEL_INSTALL_LIB_XML_H__
 
-gboolean
-check_for_root_user () {
-	uid_t uid;
+#include <errno.h>
+#include <sys/stat.h>
+#include <gnome-xml/tree.h>
+#include <gnome-xml/parser.h>
 
-	uid = getuid ();
-	if (uid == 0) {
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-} /* end check_for_root_user */
+#include "eazel-install-lib.h"
 
-gboolean
-check_for_redhat () {
-	if (g_file_exists ("/etc/redhat-release") != 0) {
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-} /* end check_for_redhat */
+char* xml_get_value (xmlNode* node, const char* name);
+InstallOptions* init_default_install_configuration (const char* config_file);
+GList* fetch_xml_package_list_local (const char* pkg_list_file);
+void free_categories (GList* categories);
+gboolean create_default_configuration_metafile (void);
+
+#endif /* __EAZEL_INSTALL_LIB_XML_H__ */

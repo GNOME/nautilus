@@ -26,6 +26,7 @@
  */
 
 #include "eazel-install-lib.h"
+#include "eazel-install-lib-xml.h"
 
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);

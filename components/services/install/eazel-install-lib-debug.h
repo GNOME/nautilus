@@ -25,27 +25,13 @@
  * file and install a services generated packages.xml.
  */
 
-#include "eazel-install-lib-util.h"
+ #ifndef __EAZEL_INSTALL_LIB_DEBUG_H__
+ #define __EAZEL_INSTALL_LIB_DEBUG_H__
 
-gboolean
-check_for_root_user () {
-	uid_t uid;
+ #include "eazel-install-lib.h"
 
-	uid = getuid ();
-	if (uid == 0) {
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-} /* end check_for_root_user */
+ InstallOptions* init_default_install_configuration_test (void);
+ void dump_install_options (InstallOptions* iopts);
+ void dump_package_list (PackageData* pkg);
 
-gboolean
-check_for_redhat () {
-	if (g_file_exists ("/etc/redhat-release") != 0) {
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-} /* end check_for_redhat */
+ #endif /* __EAZEL_INSTALL_LIB_DEBUG_H__ */

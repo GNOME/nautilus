@@ -25,21 +25,13 @@
  * file and install a services generated packages.xml.
  */
 
- #ifndef __EAZEL_INSTALL_LIB_H__
- #define __EAZEL_INSTALL_LIB_H__
+#ifndef __EAZEL_INSTALL_LIB_H__
+#define __EAZEL_INSTALL_LIB_H__
 
-#include <popt-gnome.h>
 #include <gnome.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <errno.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
-#include <rpm/rpmlib.h>
 
 typedef enum _URLType URLType;
 typedef struct _InstallOptions InstallOptions;
@@ -92,17 +84,4 @@ struct _PackageData {
 	GList* HardDepends;
 };
 
-gboolean check_for_root_user (void);
-gboolean check_for_redhat (void);
-char* xml_get_value (xmlNode* node, const char* name);
-InstallOptions* init_default_install_configuration (const char* config_file);
-InstallOptions* init_default_install_configuration_test (void);
-GList* fetch_xml_package_list_local (const char* pkg_list_file);
-gboolean install_new_packages (InstallOptions* iopts);
-gboolean uninstall_packages (InstallOptions* iopts);
-void dump_install_options (InstallOptions* iopts);
-void dump_package_list (PackageData* pkg);
-void free_categories (GList* categories);
-gboolean create_default_configuration_metafile (void);
-
- #endif /* __EAZEL_INSTALL_LIB_H__ */
+#endif /* __EAZEL_INSTALL_LIB_H__ */

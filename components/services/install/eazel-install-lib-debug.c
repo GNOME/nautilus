@@ -25,7 +25,7 @@
  * file and install a services generated packages.xml.
  */
 
-#include "eazel-install-lib.h"
+#include "eazel-install-lib-debug.h"
 
 InstallOptions*
 init_default_install_configuration_test () {

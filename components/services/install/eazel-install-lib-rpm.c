@@ -25,7 +25,7 @@
  * file and install a services generated packages.xml.
  */
 
-#include "eazel-install-lib.h"
+#include "eazel-install-lib-rpm.h"
 
 gboolean
 install_new_packages (InstallOptions* iopts) {

@@ -25,7 +25,11 @@
  * file and install a services generated packages.xml.
  */
 
+#include <popt-gnome.h>
 #include "eazel-install-lib.h"
+#include "eazel-install-lib-rpm.h"
+#include "eazel-install-lib-util.h"
+#include "eazel-install-lib-xml.h"
 
 static void show_usage (int exitcode, char* error);
 static void show_license (int exitcode, char* error);

@@ -25,27 +25,15 @@
  * file and install a services generated packages.xml.
  */
 
-#include "eazel-install-lib-util.h"
+#ifndef __EAZEL_INSTALL_LIB_RPM_H__
+#define __EAZEL_INSTALL_LIB_RPM_H__
 
-gboolean
-check_for_root_user () {
-	uid_t uid;
+#include <rpm/rpmlib.h>
+#include "eazel-install-lib.h"
+#include "eazel-install-lib-xml.h"
 
-	uid = getuid ();
-	if (uid == 0) {
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-} /* end check_for_root_user */
+gboolean install_new_packages (InstallOptions* iopts);
+gboolean uninstall_packages (InstallOptions* iopts);
 
-gboolean
-check_for_redhat () {
-	if (g_file_exists ("/etc/redhat-release") != 0) {
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-} /* end check_for_redhat */
+
+#endif /* __EAZEL_INSTALL_LIB_RPM_H__ */
