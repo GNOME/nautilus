@@ -334,8 +334,7 @@ back_or_forward_toolbar_item_property_set_cb (BonoboPropertyBag *bag,
 	BonoboUIToolbarItemStyle style;
 
 	control = BONOBO_CONTROL (user_data);
-	item = BONOBO_UI_TOOLBAR_ITEM (
-		bonobo_control_get_widget (control));
+	item = BONOBO_UI_TOOLBAR_ITEM (bonobo_control_get_widget (control));
 
 	switch (arg_id) {
 	case TOOLBAR_ITEM_ORIENTATION_PROP:
@@ -376,17 +375,15 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 				 window, 0);
 
 	wrapper = bonobo_control_new (GTK_WIDGET (item));
-	pb = bonobo_property_bag_new (
-		NULL, back_or_forward_toolbar_item_property_set_cb, wrapper);
+	pb = bonobo_property_bag_new
+		(NULL, back_or_forward_toolbar_item_property_set_cb, wrapper);
 	bonobo_property_bag_add (pb, "style",
 				 TOOLBAR_ITEM_STYLE_PROP,
-				 BONOBO_ARG_INT, NULL,
-				 _("Toolbar item style"),
+				 BONOBO_ARG_INT, NULL, NULL,
 				 Bonobo_PROPERTY_WRITEABLE);
 	bonobo_property_bag_add (pb, "orientation",
 				 TOOLBAR_ITEM_ORIENTATION_PROP,
-				 BONOBO_ARG_INT, NULL,
-				 _("Toolbar item orientation"),
+				 BONOBO_ARG_INT, NULL, NULL,
 				 Bonobo_PROPERTY_WRITEABLE);
 	bonobo_control_set_properties (wrapper, BONOBO_OBJREF (pb), NULL);
 	bonobo_object_unref (pb);
@@ -418,7 +415,6 @@ location_change_at_idle_callback (gpointer callback_data)
 
 	return FALSE;
 }
-
 
 /* handle bonobo events from the throbber -- since they can come in at
    any time right in the middle of things, defer until idle */

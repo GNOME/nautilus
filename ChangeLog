@@ -1,5 +1,58 @@
 2002-03-07  Darin Adler  <darin@bentspoon.com>
 
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-model.c:
+	(stop_monitoring_directory_without_reporting): Rename old
+	stop_monitoring_directory function.
+	(stop_monitoring_directory): New function that handles changes
+	caused by stopping monitoring.
+	(destroy_children_by_function): New.
+	(destroy_by_function): New.
+	(should_show_file): New.
+	(update_node): Call should_show_file instead of
+	nautilus_file_is_gone to decide whether a given file should show
+	up.
+	(process_file_change): Ditto.
+	(start_monitoring_directory): Pass through flags for whether to
+	monitor invisible or backup files, rather than just TRUE, TRUE.
+	(nautilus_tree_model_get_value): Use PANGO_STYLE_ITALIC instead of
+	PANGO_STYLE_OBLIQUE. Both will fall back to the other if not
+	available, but if we have both, we'd prefer italic.
+	(stop_monitoring_directory_and_children): New.
+	(stop_monitoring): New.
+	(nautilus_tree_model_set_show_hidden_files): New.
+	(nautilus_tree_model_set_show_backup_files): New.
+	(file_is_not_directory): New.
+	(nautilus_tree_model_set_show_only_directories): New.
+
+	* components/tree/nautilus-tree-view.c:
+	(update_filtering_from_preferences): Call functions to change
+	settings on model rather than storing these settings here.
+	(tree_activate_callback),
+	(filtering_changed_callback): Call
+	update_filtering_from_preferences to set filtering for the newly
+	created tree.
+	(nautilus_tree_view_instance_init): Don't call
+	update_filtering_from_preferences here, because we don't have a
+	tree model yet.
+	
+	* libnautilus-private/nautilus-theme.c: Formatting tweaks.
+	* libnautilus/nautilus-view-standard-main.c: Formatting tweak.
+	* src/nautilus-window-toolbars.c: Formatting tweaks, and remove
+	some unnecessary localized strings.
+	
+	* src/nautilus-zoom-control.h: Remove extern "C" stuff. If we need
+	this, we'll do G_BEGIN_DECLS, and it's silly to use it for private
+	headers that are never going to be used from C++.
+
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_activation_register_for_display): Temporarily
+	re-disable per-display registration since it doesn't work at all
+	on my machine. I'll turn it back on after talking to Michael
+	Meeks.
+	
+2002-03-07  Darin Adler  <darin@bentspoon.com>
+
 	* icons/crux_eggplant/crux_eggplant.xml:
 	* icons/crux_teal/crux_teal.xml:
 	* icons/default/default.xml:
@@ -9,15 +62,8 @@
 	Tweaked the zoom control specifications to match the new nicer
 	rules.
 
-	* src/nautilus-zoom-control.c: (nautilus_zoom_control_finalize),
-	(nautilus_zoom_control_instance_init), (get_zoom_offset),
-	(draw_number), (nautilus_zoom_control_load_images),
-	(create_zoom_menu_item), (create_zoom_menu),
-	(nautilus_zoom_control_button_press_event),
-	(nautilus_zoom_control_leave_notify),
-	(nautilus_zoom_control_motion_notify),
-	(nautilus_zoom_control_size_allocate),
-	(nautilus_zoom_control_class_init):
+	* src/nautilus-zoom-control.c: (draw_number):
+	Removed a lot of strangeness and fudge factors from this function.
 
 2002-03-07  Darin Adler  <darin@bentspoon.com>
 

@@ -143,7 +143,7 @@ free_last_theme (void)
 /* Fetch data from the specified theme.  Cache the last theme file as a parsed xml document
  */
 char *
-nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char *property_name, const char* theme_name)
+nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char *property_name, const char *theme_name)
 {
 	char *temp_str;
 	char *theme_data;
@@ -172,9 +172,9 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	if (theme_document != NULL) {
 		/* fetch the resource node */			
 		resource_node = eel_xml_get_child_by_name (xmlDocGetRootElement (theme_document), resource_name);
-		if (resource_node) {
-			temp_str = xmlGetProp(resource_node, property_name);
-			if (temp_str) {
+		if (resource_node != NULL) {
+			temp_str = xmlGetProp (resource_node, property_name);
+			if (temp_str != NULL) {
 				theme_data = g_strdup (temp_str);
 				xmlFree (temp_str);
 			}
@@ -232,7 +232,7 @@ nautilus_theme_get_image_path_from_theme (const char *image_name, const char* th
 	image_path = nautilus_pixmap_file_may_be_local (temp_str);
 	
 	/* see if a theme-specific image exists; if so, return it */
-	if (image_path) {
+	if (image_path != NULL) {
 		g_free (temp_str);	
 		return image_path;
 	}
@@ -247,14 +247,13 @@ nautilus_theme_get_image_path_from_theme (const char *image_name, const char* th
 			g_free (temp_str);	
 			return image_path;
 		}
-	}		
+	}
 	g_free (temp_str);
 
 
 	/* we couldn't find a theme specific one, so look for a general image */
 	image_path = nautilus_pixmap_file (image_name);
-	
-	if (image_path) {
+	if (image_path != NULL) {
 		return image_path;
 	}
 	

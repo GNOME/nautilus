@@ -30,10 +30,6 @@
 
 #include <gtk/gtkeventbox.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #define NAUTILUS_TYPE_ZOOM_CONTROL	      (nautilus_zoom_control_get_type ())
 #define NAUTILUS_ZOOM_CONTROL(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControl))
 #define NAUTILUS_ZOOM_CONTROL_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControlClass))
@@ -77,9 +73,5 @@ gboolean   nautilus_zoom_control_has_min_zoom_level (NautilusZoomControl *zoom_c
 gboolean   nautilus_zoom_control_has_max_zoom_level (NautilusZoomControl *zoom_control);
 gboolean   nautilus_zoom_control_can_zoom_in        (NautilusZoomControl *zoom_control);
 gboolean   nautilus_zoom_control_can_zoom_out       (NautilusZoomControl *zoom_control);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 #endif /* NAUTILUS_ZOOM_CONTROL_H */

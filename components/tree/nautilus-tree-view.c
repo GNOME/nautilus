@@ -53,10 +53,6 @@ struct NautilusTreeViewDetails {
 	GtkTreeModelSort *sort_model;
 	NautilusTreeModel *child_model;
 
-	gboolean show_hidden_files;
-	gboolean show_backup_files;
-	gboolean show_only_directories;
-
 	NautilusFile *activation_file;
 	guint save_expansion_state_idle_id;
 };
@@ -251,9 +247,11 @@ create_tree (NautilusTreeView *view)
 	GtkCellRenderer *cell;
 	
 	view->details->child_model = nautilus_tree_model_new ("file:///");
-	view->details->sort_model = GTK_TREE_MODEL_SORT (gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (view->details->child_model)));
+	view->details->sort_model = GTK_TREE_MODEL_SORT
+		(gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (view->details->child_model)));
 	g_object_unref (view->details->child_model);
-	view->details->tree_widget = GTK_TREE_VIEW (gtk_tree_view_new_with_model (GTK_TREE_MODEL (view->details->sort_model)));
+	view->details->tree_widget = GTK_TREE_VIEW
+		(gtk_tree_view_new_with_model (GTK_TREE_MODEL (view->details->sort_model)));
 	g_object_unref (view->details->sort_model);
 
 	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
@@ -296,6 +294,24 @@ create_tree (NautilusTreeView *view)
 }
 
 static void
+update_filtering_from_preferences (NautilusTreeView *view)
+{
+	if (view->details->child_model == NULL) {
+		return;
+	}
+
+	nautilus_tree_model_set_show_hidden_files
+		(view->details->child_model,
+		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+	nautilus_tree_model_set_show_backup_files
+		(view->details->child_model,
+		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES));
+	nautilus_tree_model_set_show_only_directories
+		(view->details->child_model,
+		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES));
+}
+
+static void
 tree_activate_callback (BonoboControl *control, gboolean activating, gpointer user_data)
 {
 	NautilusTreeView *view;
@@ -303,45 +319,16 @@ tree_activate_callback (BonoboControl *control, gboolean activating, gpointer us
 	view = NAUTILUS_TREE_VIEW (user_data);
 
 	if (activating && view->details->tree_widget == NULL) {
-		create_tree (view);
 		load_expansion_state (view);
+		create_tree (view);
+		update_filtering_from_preferences (view);
 	}
-}
-
-static int
-get_filtering_as_integer (NautilusTreeView *view)
-{
-	return (((view->details->show_hidden_files << 1)
-		 | view->details->show_backup_files) << 1)
-		| view->details->show_only_directories;
-}
-
-static void
-update_filtering_from_preferences (NautilusTreeView *view)
-{
-	view->details->show_hidden_files =
-		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-	view->details->show_backup_files =
-		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
-	view->details->show_only_directories =
-		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 }
 
 static void
 filtering_changed_callback (gpointer callback_data)
 {
-	NautilusTreeView *view;
-	int filtering_before;
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
-
-	filtering_before = get_filtering_as_integer (view);
-	update_filtering_from_preferences (view);
-	if (filtering_before == get_filtering_as_integer (view)) {
-		return;
-	}
-	
-	/* FIXME: reload the whole tree */
+	update_filtering_from_preferences (NAUTILUS_TREE_VIEW (callback_data));
 }
 
 static void
@@ -371,8 +358,6 @@ nautilus_tree_view_instance_init (NautilusTreeView *view)
 				      filtering_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 				      filtering_changed_callback, view);
-
-	update_filtering_from_preferences (view);
 }
 
 static void

@@ -621,7 +621,7 @@ nautilus_bonobo_activation_register_for_display (const char    *iid,
 	char *real_iid;
 	Bonobo_RegistrationResult result;
 
-	real_iid = bonobo_activation_make_registration_id (iid, gdk_get_display ());
+	real_iid = g_strdup (iid); /* bonobo_activation_make_registration_id (iid, gdk_get_display ()); */
 	result = bonobo_activation_active_server_register (real_iid, ref);
 	g_free (real_iid);
 

@@ -58,11 +58,10 @@ typedef struct {
 
 GType              nautilus_tree_model_get_type                  (void);
 NautilusTreeModel *nautilus_tree_model_new                       (const char        *root_uri);
-gboolean           nautilus_tree_model_would_include_uri         (const char        *uri);
 void               nautilus_tree_model_set_show_hidden_files     (NautilusTreeModel *model,
 								  gboolean           show_hidden_files);
 void               nautilus_tree_model_set_show_backup_files     (NautilusTreeModel *model,
-								  gboolean           show_hidden_files);
+								  gboolean           show_backup_files);
 void               nautilus_tree_model_set_show_only_directories (NautilusTreeModel *model,
 								  gboolean           show_only_directories);
 NautilusFile *     nautilus_tree_model_iter_get_file             (NautilusTreeModel *model,
