@@ -93,7 +93,7 @@ notes_load_metainfo (Notes *notes)
                 return;
         }
 	keys = g_list_prepend (NULL, NAUTILUS_METADATA_KEY_ANNOTATION);
-        nautilus_file_call_when_ready (notes->file, keys, finish_loading_note, notes);
+        nautilus_file_call_when_ready (notes->file, NULL, keys, finish_loading_note, notes);
 	g_list_free (keys);
 }
 

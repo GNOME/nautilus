@@ -87,6 +87,7 @@ void             nautilus_file_monitor_remove            (NautilusFile          
  * to other attributes as well.
  */
 void             nautilus_file_call_when_ready           (NautilusFile           *file,
+							  GList                  *attributes,
 							  GList                  *metadata_keys,
 							  NautilusFileCallback    callback,
 							  gpointer                callback_data);

@@ -208,23 +208,10 @@ static void
 destroy (GtkObject *object)
 {
 	NautilusFile *file;
-	GList *p, *next;
-	FileMonitor *file_monitor;
 
 	file = NAUTILUS_FILE (object);
 
-	/* Make sure all monitors have been cleaned up first. */
-	p = file->details->directory->details->file_monitors;
-	while (p != NULL) {
-		next = p->next;
-		file_monitor = p->data;
-		if (file_monitor->file == file) {
-			/* Client should have removed monitor earlier. */
-			g_warning ("destroyed file still being monitored");
-			nautilus_directory_remove_file_monitor_link (file->details->directory, p);
-		}
-		p = next;
-	}
+	nautilus_async_destroying_file (file);
 	
 	if (file->details->is_gone) {
 		g_assert (g_list_find (file->details->directory->details->files, file) == NULL);
@@ -899,23 +886,28 @@ nautilus_file_monitor_add (NautilusFile         *file,
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (attributes != NULL || metadata_keys != NULL);
 
-	nautilus_directory_file_monitor_add_internal (file->details->directory,
-						      file,
-						      client,
-						      attributes,
-						      metadata_keys,
-						      NULL,
-						      NULL);
-}			   
+	nautilus_directory_monitor_add_internal
+		(file->details->directory,
+		 file,
+		 client,
+		 NULL,
+		 attributes,
+		 metadata_keys,
+		 NULL,
+		 NULL);
+}   
 			   
-void            
+void
 nautilus_file_monitor_remove (NautilusFile         *file,
 			      gconstpointer         client)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	nautilus_directory_file_monitor_remove_internal (file->details->directory, file, client);
+	nautilus_directory_monitor_remove_internal
+		(file->details->directory,
+		 file,
+		 client);
 }			      
 
 
@@ -1745,22 +1737,24 @@ nautilus_file_is_gone (NautilusFile *file)
 
 void
 nautilus_file_call_when_ready (NautilusFile *file,
+			       GList *file_attributes,
 			       GList *file_metadata_keys,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 {
-	QueuedCallback new_callback;
-
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (file_metadata_keys != NULL);
 	g_return_if_fail (callback != NULL);
 
-	new_callback.file = file;
-	new_callback.callback.file = callback;
-	new_callback.callback_data = callback_data;
-
-	nautilus_directory_call_when_ready_internal (file->details->directory,
-						     &new_callback);
+	nautilus_directory_call_when_ready_internal
+		(file->details->directory,
+		 file,
+		 NULL,
+		 file_attributes,
+		 file_metadata_keys,
+		 NULL,
+		 callback,
+		 callback_data);
 }
 
 void
@@ -1768,8 +1762,6 @@ nautilus_file_cancel_callback (NautilusFile *file,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 {
-	QueuedCallback old_callback;
-
 	g_return_if_fail (callback != NULL);
 
 	if (file == NULL) {
@@ -1778,12 +1770,12 @@ nautilus_file_cancel_callback (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-        old_callback.file = file;
-	old_callback.callback.file = callback;
-	old_callback.callback_data = callback_data;
-
-	nautilus_directory_cancel_callback_internal (file->details->directory,
-						     &old_callback);
+	nautilus_directory_cancel_callback_internal
+		(file->details->directory,
+		 file,
+		 NULL,
+		 callback,
+		 callback_data);
 }
 
 /**

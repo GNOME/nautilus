@@ -160,9 +160,9 @@ nautilus_directory_destroy (GtkObject *object)
 		nautilus_directory_stop_monitoring_file_list (directory);
 	}
 
-	if (directory->details->file_monitors != NULL) {
+	if (directory->details->monitor_list != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
-		nautilus_g_list_free_deep (directory->details->file_monitors);
+		nautilus_g_list_free_deep (directory->details->monitor_list);
 	}
 
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
@@ -1114,6 +1114,80 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 	return file->details->directory == directory;
 }
 
+void
+nautilus_directory_call_when_ready (NautilusDirectory *directory,
+				    GList *directory_metadata_keys,
+				    GList *file_attributes,
+				    GList *file_metadata_keys,
+				    NautilusDirectoryCallback callback,
+				    gpointer callback_data)
+{
+	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (directory_metadata_keys != NULL || file_metadata_keys != NULL);
+	g_return_if_fail (callback != NULL);
+
+	nautilus_directory_call_when_ready_internal
+		(directory,
+		 NULL,
+		 directory_metadata_keys,
+		 file_attributes,
+		 file_metadata_keys,
+		 callback,
+		 NULL,
+		 callback_data);
+}
+
+void
+nautilus_directory_cancel_callback (NautilusDirectory *directory,
+				    NautilusDirectoryCallback callback,
+				    gpointer callback_data)
+{
+	g_return_if_fail (callback != NULL);
+
+	if (directory == NULL) {
+		return;
+	}
+
+	/* NULL is OK here for non-vfs protocols */
+	g_return_if_fail (!directory || NAUTILUS_IS_DIRECTORY (directory));
+
+	nautilus_directory_cancel_callback_internal
+		(directory,
+		 NULL,
+		 callback,
+		 NULL,
+		 callback_data);
+}
+
+void
+nautilus_directory_file_monitor_add (NautilusDirectory *directory,
+				     gconstpointer client,
+				     GList *file_attributes,
+				     GList *file_metadata_keys,
+				     NautilusDirectoryCallback callback,
+				     gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (callback != NULL);
+
+	nautilus_directory_monitor_add_internal (directory,
+						 NULL,
+						 client,
+						 NULL,
+						 file_attributes,
+						 file_metadata_keys,
+						 callback,
+						 callback_data);
+}
+
+void
+nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
+					gconstpointer client)
+{
+	nautilus_directory_monitor_remove_internal (directory, NULL, client);
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int data_dummy;
@@ -1131,9 +1205,10 @@ get_files_callback (NautilusDirectory *directory, GList *files, gpointer callbac
 }
 
 static void
-got_metadata_callback (NautilusDirectory *directory, gpointer callback_data)
+got_metadata_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (files == NULL);
 	g_assert (callback_data == &data_dummy);
 
 	got_metadata_flag = TRUE;
@@ -1164,7 +1239,7 @@ nautilus_self_check_directory (void)
 					     get_files_callback, &data_dummy);
 
 	got_metadata_flag = FALSE;
-	nautilus_directory_call_when_ready (directory, list, NULL,
+	nautilus_directory_call_when_ready (directory, list, NULL, NULL,
 					    got_metadata_callback, &data_dummy);
 
 	while (!got_metadata_flag) {
@@ -1211,7 +1286,7 @@ nautilus_self_check_directory (void)
 	directory = nautilus_directory_get ("file:///etc");
 
 	got_metadata_flag = FALSE;
-	nautilus_directory_call_when_ready (directory, list, NULL,
+	nautilus_directory_call_when_ready (directory, list, NULL, NULL,
 					    got_metadata_callback, &data_dummy);
 
 	while (!got_metadata_flag) {

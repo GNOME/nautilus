@@ -58,9 +58,8 @@ struct NautilusDirectoryDetails
 	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.
 	 */
-	GList *metafile_callbacks;
-	GList *monitors;
-	GList *file_monitors;
+	GList *call_when_ready_list;
+	GList *monitor_list;
 
 	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
@@ -76,81 +75,77 @@ struct NautilusDirectoryDetails
 };
 
 typedef struct {
-	NautilusFile *file; /* Which file to monitor, NULL to monitor all. */
-	union {
-		NautilusDirectoryCallback directory;
-		NautilusFileCallback file;
-	} callback;
-	gpointer callback_data;
-} QueuedCallback;
-
-typedef struct {
-	NautilusFile *file; /* Which file to monitor, NULL to monitor all. */
-	gconstpointer client;
-	gboolean monitor_directory_counts;
-} FileMonitor;
-
-typedef struct {
 	char *from_uri;
 	char *to_uri;
 } URIPair;
 
 /* Almost-public change notification calls */
-void          nautilus_directory_notify_files_added           (GList                    *uris);
-void          nautilus_directory_notify_files_moved           (GList                    *uri_pairs);
-void          nautilus_directory_notify_files_removed         (GList                    *uris);
+void          nautilus_directory_notify_files_added        (GList                     *uris);
+void          nautilus_directory_notify_files_moved        (GList                     *uri_pairs);
+void          nautilus_directory_notify_files_removed      (GList                     *uris);
 
 /* async. interface */
-void          nautilus_directory_cancel_callback_internal     (NautilusDirectory        *directory,
-							       const QueuedCallback     *callback);
-void          nautilus_directory_call_when_ready_internal     (NautilusDirectory        *directory,
-							       const QueuedCallback     *callback);
-void          nautilus_directory_file_monitor_add_internal    (NautilusDirectory        *directory,
-							       NautilusFile             *file,
-							       gconstpointer             client,
-							       GList                    *attributes,
-							       GList                    *metadata_keys,
-							       NautilusFileListCallback  callback,
-							       gpointer                  callback_data);
-void          nautilus_directory_file_monitor_remove_internal (NautilusDirectory        *directory,
-							       NautilusFile             *file,
-							       gconstpointer             client);
-void          nautilus_directory_get_info_for_new_files       (NautilusDirectory        *directory,
-							       GList                    *vfs_uris);
-gboolean      nautilus_directory_is_file_list_monitored       (NautilusDirectory        *directory);
-void          nautilus_directory_remove_file_monitor_link     (NautilusDirectory        *directory,
-							       GList                    *link);
-void          nautilus_directory_request_read_metafile        (NautilusDirectory        *directory);
-void          nautilus_directory_request_write_metafile       (NautilusDirectory        *directory);
-void          nautilus_directory_schedule_dequeue_pending     (NautilusDirectory        *directory);
-void          nautilus_directory_stop_monitoring_file_list    (NautilusDirectory        *directory);
-void          nautilus_metafile_read_cancel                   (NautilusDirectory        *directory);
-void          nautilus_metafile_write_start                   (NautilusDirectory        *directory);
+void          nautilus_directory_call_when_ready_internal  (NautilusDirectory         *directory,
+							    NautilusFile              *file,
+							    GList                     *directory_metadata_keys,
+							    GList                     *file_attributes,
+							    GList                     *file_metadata_keys,
+							    NautilusDirectoryCallback  directory_callback,
+							    NautilusFileCallback       file_callback,
+							    gpointer                   callback_data);
+void          nautilus_directory_cancel_callback_internal  (NautilusDirectory         *directory,
+							    NautilusFile              *file,
+							    NautilusDirectoryCallback  directory_callback,
+							    NautilusFileCallback       file_callback,
+							    gpointer                   callback_data);
+void          nautilus_directory_monitor_add_internal      (NautilusDirectory         *directory,
+							    NautilusFile              *file,
+							    gconstpointer              client,
+							    GList                     *directory_metadata_keys,
+							    GList                     *attributes,
+							    GList                     *metadata_keys,
+							    NautilusDirectoryCallback  callback,
+							    gpointer                   callback_data);
+void          nautilus_directory_monitor_remove_internal   (NautilusDirectory         *directory,
+							    NautilusFile              *file,
+							    gconstpointer              client);
+void          nautilus_directory_get_info_for_new_files    (NautilusDirectory         *directory,
+							    GList                     *vfs_uris);
+gboolean      nautilus_directory_is_file_list_monitored    (NautilusDirectory         *directory);
+void          nautilus_directory_remove_file_monitor_link  (NautilusDirectory         *directory,
+							    GList                     *link);
+void          nautilus_directory_request_read_metafile     (NautilusDirectory         *directory);
+void          nautilus_directory_request_write_metafile    (NautilusDirectory         *directory);
+void          nautilus_directory_schedule_dequeue_pending  (NautilusDirectory         *directory);
+void          nautilus_directory_stop_monitoring_file_list (NautilusDirectory         *directory);
+void          nautilus_metafile_read_cancel                (NautilusDirectory         *directory);
+void          nautilus_metafile_write_start                (NautilusDirectory         *directory);
+void          nautilus_async_destroying_file               (NautilusFile              *file);
 
 /* Calls shared between directory, file, and async. code. */
-NautilusFile *nautilus_directory_find_file                    (NautilusDirectory        *directory,
-							       const char               *file_name);
-char *        nautilus_directory_get_file_metadata            (NautilusDirectory        *directory,
-							       const char               *file_name,
-							       const char               *key,
-							       const char               *default_metadata);
-gboolean      nautilus_directory_set_file_metadata            (NautilusDirectory        *directory,
-							       const char               *file_name,
-							       const char               *key,
-							       const char               *default_metadata,
-							       const char               *metadata);
-xmlNode *     nautilus_directory_get_file_metadata_node       (NautilusDirectory        *directory,
-							       const char               *file_name,
-							       gboolean                  create);
-void          nautilus_directory_emit_metadata_changed        (NautilusDirectory        *directory);
-void          nautilus_directory_emit_files_added             (NautilusDirectory        *directory,
-							       GList                    *added_files);
-void          nautilus_directory_emit_files_changed           (NautilusDirectory        *directory,
-							       GList                    *changed_files);
+NautilusFile *nautilus_directory_find_file                 (NautilusDirectory         *directory,
+							    const char                *file_name);
+char *        nautilus_directory_get_file_metadata         (NautilusDirectory         *directory,
+							    const char                *file_name,
+							    const char                *key,
+							    const char                *default_metadata);
+gboolean      nautilus_directory_set_file_metadata         (NautilusDirectory         *directory,
+							    const char                *file_name,
+							    const char                *key,
+							    const char                *default_metadata,
+							    const char                *metadata);
+xmlNode *     nautilus_directory_get_file_metadata_node    (NautilusDirectory         *directory,
+							    const char                *file_name,
+							    gboolean                   create);
+void          nautilus_directory_emit_metadata_changed     (NautilusDirectory         *directory);
+void          nautilus_directory_emit_files_added          (NautilusDirectory         *directory,
+							    GList                     *added_files);
+void          nautilus_directory_emit_files_changed        (NautilusDirectory         *directory,
+							    GList                     *changed_files);
 
 /* debugging functions */
-int           nautilus_directory_number_outstanding           (void);
+int           nautilus_directory_number_outstanding        (void);
 
 /* Shared functions not directly related to NautilusDirectory/File. */
-int           nautilus_compare_file_with_name                 (gconstpointer             a,
-							       gconstpointer             b);
+int           nautilus_compare_file_with_name              (gconstpointer              a,
+							    gconstpointer              b);

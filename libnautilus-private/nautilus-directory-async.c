@@ -56,6 +56,27 @@ struct MetafileWriteState {
 	gboolean write_again;
 };
 
+typedef struct {
+	NautilusFile *file; /* Which file to monitor, NULL to monitor all. */
+	union {
+		NautilusDirectoryCallback directory;
+		NautilusFileCallback file;
+	} callback;
+	gpointer callback_data;
+
+	gboolean wait_for_metafile;
+	gboolean wait_for_file_list; /* always FALSE if file != NULL */
+	gboolean wait_for_directory_counts;
+} CallWhenReady;
+
+typedef struct {
+	NautilusFile *file; /* Which file to monitor, NULL to monitor all. */
+	gconstpointer client;
+
+	gboolean monitor_file_list; /* always FALSE if file != NULL */
+	gboolean monitor_directory_counts;
+} Monitor;
+
 #define READ_CHUNK_SIZE (4 * 1024)
 
 static int                           compare_queued_callbacks                            (gconstpointer                  a,
@@ -123,11 +144,11 @@ static void
 metafile_read_done (NautilusDirectory *directory)
 {
 	GList *p;
-	QueuedCallback *callback;
+	CallWhenReady *callback;
 
 	/* Tell the callers that were waiting for metadata that it's here.
 	 */
-	for (p = directory->details->metafile_callbacks; p != NULL; p = p->next) {
+	for (p = directory->details->call_when_ready_list; p != NULL; p = p->next) {
 		callback = p->data;
 
 		if (callback->file != NULL) {
@@ -137,11 +158,12 @@ metafile_read_done (NautilusDirectory *directory)
 			nautilus_file_unref (callback->file);
 		} else {
 			(* callback->callback.directory) (directory,
+							  NULL,
 							  callback->callback_data);
 		}
 	}
-	nautilus_g_list_free_deep (directory->details->metafile_callbacks);
-	directory->details->metafile_callbacks = NULL;
+	nautilus_g_list_free_deep (directory->details->call_when_ready_list);
+	directory->details->call_when_ready_list = NULL;
 }
 
 void
@@ -487,11 +509,11 @@ nautilus_directory_request_write_metafile (NautilusDirectory *directory)
 }
 
 static int
-compare_file_monitor_by_client_and_file (gconstpointer a,
+compare_monitor_by_client_and_file (gconstpointer a,
 				  	 gconstpointer data)
 {
-	const FileMonitor *monitor;
-	const FileMonitor *compare_monitor;
+	const Monitor *monitor;
+	const Monitor *compare_monitor;
 
 	monitor = a;
 	compare_monitor = data;
@@ -514,22 +536,22 @@ compare_file_monitor_by_client_and_file (gconstpointer a,
 }
 
 static GList *
-find_file_monitor (NautilusDirectory *directory,
+find_monitor (NautilusDirectory *directory,
 		   NautilusFile *file,
 		   gconstpointer client)
 {
 	GList *result;
-	FileMonitor *file_monitor;
+	Monitor *monitor;
 
-	file_monitor = g_new (FileMonitor, 1);
-	file_monitor->client = client;
-	file_monitor->file = file;
+	monitor = g_new (Monitor, 1);
+	monitor->client = client;
+	monitor->file = file;
 
-	result = g_list_find_custom (directory->details->file_monitors,
-				     (gpointer) file_monitor,
-				     compare_file_monitor_by_client_and_file);
+	result = g_list_find_custom (directory->details->monitor_list,
+				     (gpointer) monitor,
+				     compare_monitor_by_client_and_file);
 
-	g_free (file_monitor);
+	g_free (monitor);
 	
 	return result;
 }
@@ -538,13 +560,13 @@ static void
 cancel_unneeded_file_attribute_requests (NautilusDirectory *directory)
 {
 	GList *p;
-	FileMonitor *file_monitor;
+	Monitor *monitor;
 
 	/* Cancel the directory-count request if no one cares anymore */
 	if (directory->details->count_in_progress != NULL) {
-		for (p = directory->details->file_monitors; p != NULL; p = p->next) {
-			file_monitor = p->data;
-			if (file_monitor->monitor_directory_counts) {
+		for (p = directory->details->monitor_list; p != NULL; p = p->next) {
+			monitor = p->data;
+			if (monitor->monitor_directory_counts) {
 				break;
 			}
 		}
@@ -555,12 +577,12 @@ cancel_unneeded_file_attribute_requests (NautilusDirectory *directory)
 	}		
 }
 
-void
-nautilus_directory_remove_file_monitor_link (NautilusDirectory *directory,
-					     GList *link)
+static void
+remove_monitor_link (NautilusDirectory *directory,
+			  GList *link)
 {
-	directory->details->file_monitors =
-		g_list_remove_link (directory->details->file_monitors, link);
+	directory->details->monitor_list =
+		g_list_remove_link (directory->details->monitor_list, link);
 	if (link != NULL) {
 		g_free (link->data);
 	}
@@ -568,23 +590,22 @@ nautilus_directory_remove_file_monitor_link (NautilusDirectory *directory,
 }
 
 static void
-remove_file_monitor (NautilusDirectory *directory,
+remove_monitor (NautilusDirectory *directory,
 		     NautilusFile *file,
 		     gconstpointer client)
 {
-	nautilus_directory_remove_file_monitor_link
-		(directory, find_file_monitor (directory, file, client));
+	remove_monitor_link (directory, find_monitor (directory, file, client));
 }
 
 gboolean
 nautilus_directory_is_file_list_monitored (NautilusDirectory *directory) 
 {
-	FileMonitor *file_monitor;
+	Monitor *monitor;
 	GList *p;
 
-	for (p = directory->details->file_monitors; p != NULL; p = p->next) {
-		file_monitor = p->data;
-		if (file_monitor->file == NULL) {
+	for (p = directory->details->monitor_list; p != NULL; p = p->next) {
+		monitor = p->data;
+		if (monitor->file == NULL) {
 			return TRUE;
 		}
 	}
@@ -593,18 +614,19 @@ nautilus_directory_is_file_list_monitored (NautilusDirectory *directory)
 }
 
 void
-nautilus_directory_file_monitor_add_internal (NautilusDirectory *directory,
-					      NautilusFile *file,
-				     	      gconstpointer client,
-				     	      GList *attributes,
-				     	      GList *metadata_keys,
-				     	      NautilusFileListCallback callback,
-				     	      gpointer callback_data)
+nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
+					 NautilusFile *file,
+					 gconstpointer client,
+					 GList *directory_metadata_keys,
+					 GList *file_attributes,
+					 GList *file_metadata_keys,
+					 NautilusDirectoryCallback callback,
+					 gpointer callback_data)
 {
 	gboolean was_monitoring_file_list;
 	gboolean will_be_monitoring_file_list;
 	gboolean rely_on_directory_load;
-	FileMonitor *file_monitor;
+	Monitor *monitor;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -619,18 +641,18 @@ nautilus_directory_file_monitor_add_internal (NautilusDirectory *directory,
 	rely_on_directory_load = will_be_monitoring_file_list && !directory->details->directory_loaded;
 
 	/* Replace any current monitor for this client/file pair. */
-	remove_file_monitor (directory, file, client);
+	remove_monitor (directory, file, client);
 
-	file_monitor = g_new (FileMonitor, 1);
-	file_monitor->client = client;
-	file_monitor->file = file;
-	file_monitor->monitor_directory_counts = g_list_find_custom
-		(attributes,
+	monitor = g_new (Monitor, 1);
+	monitor->client = client;
+	monitor->file = file;
+	monitor->monitor_directory_counts = g_list_find_custom
+		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
 		 (GCompareFunc) nautilus_strcmp) != NULL;				     
 
-	directory->details->file_monitors =
-		g_list_prepend (directory->details->file_monitors, file_monitor);
+	directory->details->monitor_list =
+		g_list_prepend (directory->details->monitor_list, monitor);
 
 	/* Clean up stale requests only after (optionally) removing old 
 	 * monitor and adding new one. 
@@ -693,27 +715,6 @@ nautilus_directory_file_monitor_add_internal (NautilusDirectory *directory,
 		 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,               /* items_per_notification */
 		 directory_load_callback,                         /* callback */
 		 directory);
-}
-
-void
-nautilus_directory_file_monitor_add (NautilusDirectory *directory,
-				     gconstpointer client,
-				     GList *attributes,
-				     GList *metadata_keys,
-				     NautilusFileListCallback callback,
-				     gpointer callback_data)
-{
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (callback != NULL);
-
-	nautilus_directory_file_monitor_add_internal (directory,
-						      NULL,
-						      client,
-						      attributes,
-						      metadata_keys,
-						      callback,
-						      callback_data);
 }
 
 int
@@ -902,9 +903,9 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 }
 
 void
-nautilus_directory_file_monitor_remove_internal (NautilusDirectory *directory,
-						 NautilusFile *file,
-						 gconstpointer client)
+nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
+					    NautilusFile *file,
+					    gconstpointer client)
 {
 	gboolean was_monitoring_file_list;
 	
@@ -912,7 +913,7 @@ nautilus_directory_file_monitor_remove_internal (NautilusDirectory *directory,
 
 	was_monitoring_file_list = nautilus_directory_is_file_list_monitored (directory);
 
-	remove_file_monitor (directory, file, client);
+	remove_monitor (directory, file, client);
 	cancel_unneeded_file_attribute_requests (directory);
 
 	if (was_monitoring_file_list && !nautilus_directory_is_file_list_monitored (directory)) {
@@ -920,17 +921,10 @@ nautilus_directory_file_monitor_remove_internal (NautilusDirectory *directory,
 	}
 }
 
-void
-nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
-					gconstpointer client)
-{
-	nautilus_directory_file_monitor_remove_internal (directory, NULL, client);
-}
-
 static int
 compare_queued_callbacks (gconstpointer a, gconstpointer b)
 {
-	const QueuedCallback *callback_a, *callback_b;
+	const CallWhenReady *callback_a, *callback_b;
 
 	callback_a = a;
 	callback_b = b;
@@ -966,33 +960,51 @@ compare_queued_callbacks (gconstpointer a, gconstpointer b)
 
 void
 nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
-					     const QueuedCallback *callback)
+					     NautilusFile *file,
+					     GList *directory_metadata_keys,
+					     GList *file_attributes,
+					     GList *file_metadata_keys,
+					     NautilusDirectoryCallback directory_callback,
+					     NautilusFileCallback file_callback,
+					     gpointer callback_data)
 {
+	CallWhenReady callback;
+
 	g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (callback != NULL);
-	g_assert (callback->file == NULL || callback->file->details->directory == directory);
 
 	/* Call back right away if it's already ready. */
 	if (directory == NULL || directory->details->metafile_read) {
-		if (callback->file != NULL) {
-			(* callback->callback.file) (callback->file,
-						     callback->callback_data);
+		if (file != NULL) {
+			(* file_callback) (file,
+					   callback_data);
 		} else {
-			(* callback->callback.directory) (directory,
-							  callback->callback_data);
+			(* directory_callback) (directory,
+						NULL,
+						callback_data);
 		}
 		return;
 	}
 
+	/* Construct a callback object. */
+	callback.file = file;
+	if (file == NULL) {
+		callback.callback.directory = directory_callback;
+	} else {
+		callback.callback.file = file_callback;
+	}
+	callback.callback_data = callback_data;
+	/* MORE HERE */
+
 	/* Add the new callback to the list unless it's already in there. */
-	if (g_list_find_custom (directory->details->metafile_callbacks,
-				(QueuedCallback *) callback,
+	/* REPLACE THE OLD ONE INSTEAD DARIN */
+	if (g_list_find_custom (directory->details->call_when_ready_list,
+				&callback,
 				compare_queued_callbacks) == NULL) {
-		nautilus_file_ref (callback->file);
-		directory->details->metafile_callbacks = g_list_prepend
-			(directory->details->metafile_callbacks,
-			 g_memdup (callback,
-				   sizeof (*callback)));
+		nautilus_file_ref (file);
+		directory->details->call_when_ready_list = g_list_prepend
+			(directory->details->call_when_ready_list,
+			 g_memdup (&callback,
+				   sizeof (callback)));
 	}
 
 	/* Start reading the metafile. */
@@ -1000,67 +1012,34 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_call_when_ready (NautilusDirectory *directory,
-				    GList *directory_metadata_keys,
-				    GList *file_metadata_keys,
-				    NautilusDirectoryCallback callback,
-				    gpointer callback_data)
-{
-	QueuedCallback new_callback;
-
-	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (directory_metadata_keys != NULL || file_metadata_keys != NULL);
-	g_return_if_fail (callback != NULL);
-
-	new_callback.file = NULL;
-	new_callback.callback.directory = callback;
-	new_callback.callback_data = callback_data;
-
-	nautilus_directory_call_when_ready_internal (directory, &new_callback);
-}
-
-void
 nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
-					     const QueuedCallback *callback)
+					     NautilusFile *file,
+					     NautilusDirectoryCallback directory_callback,
+					     NautilusFileCallback file_callback,
+					     gpointer callback_data)
 {
+	CallWhenReady callback;
 	GList *p;
 
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (callback != NULL);
+	/* Construct a callback object. */
+	callback.file = file;
+	if (file == NULL) {
+		callback.callback.directory = directory_callback;
+	} else {
+		callback.callback.file = file_callback;
+	}
+	callback.callback_data = callback_data;
 
 	/* Remove queued callback from the list. */
-	p = g_list_find_custom (directory->details->metafile_callbacks,
-				(QueuedCallback *) callback,
+	p = g_list_find_custom (directory->details->call_when_ready_list,
+				&callback,
 				compare_queued_callbacks);
 	if (p != NULL) {
-		nautilus_file_unref (callback->file);
+		nautilus_file_unref (file);
 		g_free (p->data);
-		directory->details->metafile_callbacks = g_list_remove_link
-			(directory->details->metafile_callbacks, p);
+		directory->details->call_when_ready_list = g_list_remove_link
+			(directory->details->call_when_ready_list, p);
 	}
-}
-
-void
-nautilus_directory_cancel_callback (NautilusDirectory *directory,
-				    NautilusDirectoryCallback callback,
-				    gpointer callback_data)
-{
-	QueuedCallback old_callback;
-
-	g_return_if_fail (callback != NULL);
-
-	if (directory == NULL) {
-		return;
-	}
-
-	/* NULL is OK here for non-vfs protocols */
-	g_return_if_fail (!directory || NAUTILUS_IS_DIRECTORY (directory));
-
-        old_callback.file = NULL;
-	old_callback.callback.directory = callback;
-	old_callback.callback_data = callback_data;
-
-	nautilus_directory_cancel_callback_internal (directory, &old_callback);
 }
 
 static void
@@ -1104,7 +1083,7 @@ static void
 process_pending_file_attribute_requests (NautilusDirectory *directory)
 {
 	GList *p, *p2;
-	FileMonitor *monitor;
+	Monitor *monitor;
 	NautilusFile *file;
 	char *uri;
 
@@ -1113,7 +1092,7 @@ process_pending_file_attribute_requests (NautilusDirectory *directory)
 	}
 
 	/* Quick out if no one wants directory counts monitored. */
-	for (p = directory->details->file_monitors; p != NULL; p = p->next) {
+	for (p = directory->details->monitor_list; p != NULL; p = p->next) {
 		monitor = p->data;
 		if (monitor->monitor_directory_counts) {
 			break;
@@ -1130,7 +1109,7 @@ process_pending_file_attribute_requests (NautilusDirectory *directory)
 		    && !file->details->got_directory_count
 		    && !file->details->directory_count_failed) {
 		    	/* Make sure that someone cares about this particular directory's count. */
-		    	for (p2 = directory->details->file_monitors; p2 != NULL; p2 = p2->next) {
+		    	for (p2 = directory->details->monitor_list; p2 != NULL; p2 = p2->next) {
 				monitor = p2->data;
 				if (monitor->monitor_directory_counts
 				    && (monitor->file == NULL || monitor->file == file)) {
@@ -1210,4 +1189,25 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 	directory->details->get_file_infos_in_progress
 		= g_list_prepend (directory->details->get_file_infos_in_progress,
 				  handle);
+}
+
+void
+nautilus_async_destroying_file (NautilusFile *file)
+{
+	GList *p, *next;
+	Monitor *monitor;
+
+	/* Remove any monitors or callbacks. */
+
+	/* Make sure all monitors have been cleaned up first. */
+	for (p = file->details->directory->details->monitor_list; p != NULL; p = next) {
+		next = p->next;
+		monitor = p->data;
+
+		if (monitor->file == file) {
+			/* Client should have removed monitor earlier. */
+			g_warning ("destroyed file still being monitored");
+			remove_monitor_link (file->details->directory, p);
+		}
+	}
 }

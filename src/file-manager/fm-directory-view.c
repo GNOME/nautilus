@@ -179,6 +179,7 @@ static void           get_required_metadata_keys                                
 										   GList                   **directory_keys_result,
 										   GList                   **file_keys_result);
 static void           metadata_ready_callback                                     (NautilusDirectory        *directory,
+										   GList                    *files,
 										   gpointer                  callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
@@ -1993,6 +1994,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	nautilus_directory_call_when_ready (view->details->model,
 					    directory_keys,
+					    NULL,
 					    file_keys,
 					    metadata_ready_callback,
 					    view);
@@ -2047,6 +2049,7 @@ finish_loading_uri (FMDirectoryView *view)
 
 static void
 metadata_ready_callback (NautilusDirectory *directory,
+			 GList *files,
 			 gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -2054,6 +2057,7 @@ metadata_ready_callback (NautilusDirectory *directory,
 	view = callback_data;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (files == NULL);
 	g_assert (view->details->model == directory);
 
 	finish_loading_uri (view);

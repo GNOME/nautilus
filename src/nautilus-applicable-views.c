@@ -479,6 +479,7 @@ add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo)
 
 static void
 got_metadata_callback (NautilusDirectory *directory,
+                       GList *files,
                        gpointer callback_data)
 {
         NautilusNavigationInfo *info;
@@ -553,6 +554,7 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
         keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
         nautilus_directory_call_when_ready (navinfo->directory,
                                             keys,
+                                            NULL,
                                             NULL,
                                             got_metadata_callback,
                                             navinfo);

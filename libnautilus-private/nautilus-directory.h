@@ -63,8 +63,6 @@ typedef struct NautilusFile NautilusFile;
 #endif
 
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
-					   gpointer           callback_data);
-typedef void (*NautilusFileListCallback)  (NautilusDirectory *directory,
 					   GList             *files,
 					   gpointer           callback_data);
 
@@ -90,17 +88,20 @@ gboolean           nautilus_directory_contains_file        (NautilusDirectory   
 							    NautilusFile              *file);
 
 /* Waiting for data that's read asynchronously.
- * This interface currently works only for metadata, but could be expanded
- * to other attributes as well.
+ * The file attribute and metadata keys are for files in the directory.
+ * If any file attributes or metadata keys are passed, it won't call
+ * until all the files are seen.
  */
 void               nautilus_directory_call_when_ready      (NautilusDirectory         *directory,
 							    GList                     *directory_metadata_keys,
+							    GList                     *file_attributes,
 							    GList                     *file_metadata_keys,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
 void               nautilus_directory_cancel_callback      (NautilusDirectory         *directory,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
+
 /* Getting and setting metadata. */
 char *             nautilus_directory_get_metadata         (NautilusDirectory         *directory,
 							    const char                *key,
@@ -131,7 +132,7 @@ void               nautilus_directory_file_monitor_add     (NautilusDirectory   
 							    gconstpointer              client,
 							    GList                     *attributes,
 							    GList                     *metadata_keys,
-							    NautilusFileListCallback   initial_files_callback,
+							    NautilusDirectoryCallback  initial_files_callback,
 							    gpointer                   callback_data);
 void               nautilus_directory_file_monitor_remove  (NautilusDirectory         *directory,
 							    gconstpointer              client);
