@@ -2879,6 +2879,10 @@ select_previous_or_next_icon (NautilusIconContainer *container,
 		g_assert (item != NULL);
 		
 		item = next ? item->next : item->prev;
+		if (item == NULL) {
+			item = next ? g_list_first (container->details->icons) : g_list_last (container->details->icons);
+		}
+
 	} else if (container->details->icons != NULL) {
 		/* no selection yet, pick the first or last item to select */
 		item = next ? g_list_first (container->details->icons) : g_list_last (container->details->icons);
