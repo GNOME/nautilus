@@ -1,3 +1,13 @@
+2001-01-11  Ian McKellar  <ian@eazel.om>
+
+	* components/services/install/command-line/Makefile.am:
+	Don't build the inventory test code here as the inventory code has
+	moved to the inventory component.
+
+	* components/services/inventory/eazel-inventory-service-interface.i
+	dl:
+	This file was missing from mjs' checkin of the inventory upload code.
+
 2001-01-11  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 5338, switching to and from "tighter layout" messes up

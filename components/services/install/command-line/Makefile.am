@@ -29,7 +29,7 @@ LDADD =                                           \
 	$(RPM_LIBS)			\
 	$(NULL)
 
-bin_PROGRAMS = eazel-install eazel-gen-xml eazel-test-packsys eazel-softcat eazel-test-types eazel-test-inventory
+bin_PROGRAMS = eazel-install eazel-gen-xml eazel-test-packsys eazel-softcat eazel-test-types
 
 eazel_install_SOURCES = 		\
 	eazel-alt-install-corba.c	\
@@ -60,14 +60,14 @@ eazel_test_packsys_LDADD = \
 	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
 	$(NULL)
 
-eazel_test_inventory_SOURCES = 	\
-	eazel-test-inventory.c         \
-	$(NULL)                
+#eazel_test_inventory_SOURCES = 	\
+#	eazel-test-inventory.c         \
+#	$(NULL)                
 
-eazel_test_inventory_LDADD = \
-	$(LDADD) \
-	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
-	$(NULL)
+#eazel_test_inventory_LDADD = \
+#	$(LDADD) \
+#	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
+#	$(NULL)
 
 eazel_test_types_SOURCES = 	\
 	eazel-test-types.c         \

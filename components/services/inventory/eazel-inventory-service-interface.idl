@@ -1,0 +1,22 @@
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+
+#include <Bonobo.idl>
+
+module Trilobite {
+	module Eazel {
+		interface Inventory : Bonobo::Unknown {
+			attribute boolean enabled;
+			attribute string machine_name;
+			attribute boolean warn_before_upload;
+
+			/* Will not actually upload if inventory is
+			 * unchanged since last upload, or if
+			 * inventory is not enabled.
+			 */
+
+			/* FIXME: need exceptions. */
+			void upload ();
+		};
+	};
+};
+
