@@ -510,6 +510,54 @@ nautilus_show_info_dialog (const char *info,
 			    GNOME_MESSAGE_BOX_INFO, parent);
 }
 
+static void
+details_dialog_clicked_callback (GnomeDialog *dialog,
+				 int button_number,
+				 const char *detailed_message)
+{
+	GtkLabel *label;
+
+	switch (button_number) {
+	case 0: /* Details */
+		label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (dialog), "message label"));
+		gtk_label_set_text (label, detailed_message);
+		gtk_widget_hide (GTK_WIDGET (nautilus_gnome_dialog_get_button_by_index (dialog, 0)));
+		break;
+	case 1: /* OK */
+		gnome_dialog_close (dialog);
+		break;
+	}
+}
+
+
+GnomeDialog *
+nautilus_show_info_dialog_with_details (const char *info,
+					const char *dialog_title,
+					const char *detailed_info,
+					GtkWindow *parent)
+{
+	GnomeDialog *dialog;
+
+	if (detailed_info == NULL
+	    || strcmp (info, detailed_info) == 0) {
+		return nautilus_show_info_dialog (info, dialog_title, parent);
+	}
+
+	dialog = show_message_box (info, 
+				   dialog_title == NULL ? _("Info") : dialog_title, 
+				   GNOME_MESSAGE_BOX_INFO, 
+				   _("Details"), GNOME_STOCK_BUTTON_OK, parent);
+
+	gnome_dialog_set_close (dialog, FALSE);
+	gtk_signal_connect_full (GTK_OBJECT (dialog), "clicked",
+				 details_dialog_clicked_callback, NULL, g_strdup (detailed_info),
+				 g_free, FALSE, FALSE);
+
+	return dialog;
+
+}
+
+
 GnomeDialog *
 nautilus_show_warning_dialog (const char *warning,
 	 	      	      const char *dialog_title,
@@ -531,24 +579,6 @@ nautilus_show_error_dialog (const char *error,
 			    GNOME_MESSAGE_BOX_ERROR, parent);
 }
 
-static void
-clicked_callback (GnomeDialog *dialog,
-		  int button_number,
-		  const char *detailed_error_message)
-{
-	GtkLabel *label;
-
-	switch (button_number) {
-	case 0: /* Details */
-		label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (dialog), "message label"));
-		gtk_label_set_text (label, detailed_error_message);
-		gtk_widget_hide (GTK_WIDGET (nautilus_gnome_dialog_get_button_by_index (dialog, 0)));
-		break;
-	case 1: /* OK */
-		gnome_dialog_close (dialog);
-		break;
-	}
-}
 
 GnomeDialog *
 nautilus_show_error_dialog_with_details (const char *error_message,
@@ -574,7 +604,7 @@ nautilus_show_error_dialog_with_details (const char *error_message,
 	/* Show the details when you click on the details button. */
 	gnome_dialog_set_close (dialog, FALSE);
 	gtk_signal_connect_full (GTK_OBJECT (dialog), "clicked",
-				 clicked_callback, NULL, g_strdup (detailed_error_message),
+				 details_dialog_clicked_callback, NULL, g_strdup (detailed_error_message),
 				 g_free, FALSE, FALSE);
 
 	return dialog;

@@ -358,14 +358,11 @@ display_system_services_are_blocked_dialog (gboolean unindexed_search_is_availab
 
 	/* It is not necessary to translate this text just yet; it has not been
 	   edited yet, and will be replaced by a final copy in a few days. */
-	dialog_shown = nautilus_show_info_dialog (_("To do a fast search, Find requires an index "
-						    "of the files on your system.  "
-						    "Your system administrator has turned off indexing "
-						    "so your computer does not have an index "
-						    "right now.  Because Find cannot use an "
-						    "index, this search may take several "
-						    "minutes.  "),
-						  _("Indexing is Blocked on Your Computer"),
+	dialog_shown = nautilus_show_info_dialog (_("To do a fast search, Find requires an index of "
+						    "the files on your system. Your system administrator "
+						    "has disabled fast search on your computer, so no index "
+						    "is available."),
+						  _("Fast searches are not available on your computer"),
 						  NULL);
 	
 }
@@ -374,17 +371,16 @@ display_system_services_are_blocked_dialog (gboolean unindexed_search_is_availab
 static void     
 display_system_services_are_disabled_dialog (gboolean unindexed_search_is_available)
 {
-	/* It is not necessary to translate this text just yet; it has not been
-	   edited yet, and will be replaced by a final copy in a few days. */
-	nautilus_show_info_dialog (_("To do a fast search, Find requires an index "
-				     "of the files on your system.  "
-				     "You have elected not to index your computer "
-				     "so it does not have an index "
-				     "right now.  Because Find cannot use an "
-				     "index, this search may take several "
-				     "minutes.  "),
-				   _("Indexing is Disabled on Your Computer"),
-				   NULL);
+	nautilus_show_info_dialog_with_details (_("To do a fast search, Find requires an index of "
+						  "the files on your system. Fast search is disabled "
+						  "in your Search preferences, so no index is available."),
+						_("Fast searches are not available on your computer."),
+						_("To enable fast search, open the Preferences menu and "
+						  "choose Preferences. Then select Search preferences and "
+						  "put a checkmark in the Enable Fast Search checkbox. "
+						  "An index will be generated while your computer is idle, "
+						  "so your index won't be available immediately."),
+						NULL);
 }
 
 #endif	

@@ -1,4 +1,22 @@
 2001-02-20  Rebecca Schulman  <rebecka@eazel.com>
+	Complete bug 6416, to add dialogs to explain
+	that searches will be slow when medusa is disabled or 
+	blocked.  The work was previously complete, but 
+	I've swapped in Vera's text, and added an 
+	info_dialog_with_details to the stock dialogs.
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(details_dialog_clicked_callback),
+	(nautilus_show_info_dialog_with_details),
+	(nautilus_show_error_dialog_with_details):
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	* src/file-manager/fm-search-list-view.c:
+	(display_system_services_are_blocked_dialog),
+	(display_system_services_are_disabled_dialog):
+
+2001-02-20  Rebecca Schulman  <rebecka@eazel.com>
 	Fix bugzilla.eazel.com 6414 to add prefence to nautilus
 	to enable/disable medusa
 

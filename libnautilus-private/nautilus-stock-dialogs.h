@@ -60,6 +60,10 @@ int          nautilus_run_simple_dialog         (GtkWidget              *parent,
 GnomeDialog *nautilus_show_info_dialog               (const char             *informative_message,
 						      const char	     *dialog_title,
 						      GtkWindow              *parent);
+GnomeDialog *nautilus_show_info_dialog_with_details  (const char             *informative_message,
+						      const char             *dialog_title,
+						      const char             *detailed_informative_message,
+						      GtkWindow              *parent);
 GnomeDialog *nautilus_show_warning_dialog            (const char             *warning_message,
 						      const char	     *dialog_title,
 						      GtkWindow              *parent);
