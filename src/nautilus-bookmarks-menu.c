@@ -24,19 +24,23 @@
 
 #include "nautilus.h"
 #include "nautilus-bookmarks-menu.h"
+
 #include "nautilus-bookmarklist.h"
+#include "nautilus-bookmarks-window.h"
 
 /* object data strings */
 #define LAST_STATIC_ITEM	"last static item"
-#define WINDOW_TO_UPDATE	"window to update"
+#define OWNING_MENU		"owning menu"
 
 
 /* forward declarations for static functions */
 
 static void add_bookmark_cb				(GtkMenuItem *, gpointer);
 static void bookmark_activated_cb			(GtkMenuItem *, gpointer);
+static void edit_bookmarks_cb				(GtkMenuItem *, gpointer);
 static void list_changed_cb				(NautilusBookmarklist *, 
 						 	 gpointer);
+static GtkWidget *get_bookmarks_window			(void);
 static void nautilus_bookmarks_menu_append		(NautilusBookmarksMenu *,
 							 GtkWidget *);
 static void nautilus_bookmarks_menu_clear_bookmarks	(NautilusBookmarksMenu *);
@@ -91,6 +95,7 @@ init (NautilusBookmarksMenu *bookmarks_menu)
 					       gtk_tearoff_menu_item_new());
 	}
 
+	/* FIXME: Add Bookmark and Edit Bookmarks need accelerators */
 	item = gtk_menu_item_new_with_label(_("Add Bookmark"));
 	gtk_signal_connect(GTK_OBJECT (item), "activate",
 			   GTK_SIGNAL_FUNC (add_bookmark_cb),
@@ -98,11 +103,9 @@ init (NautilusBookmarksMenu *bookmarks_menu)
 	nautilus_bookmarks_menu_append(bookmarks_menu, item);
 
 	item = gtk_menu_item_new_with_label(_("Edit Bookmarks..."));
-	/* FIXME: Implement this, currently marked insensitive until implemented.
-	 * I will do this soon, but wanted to get in first cut at other bookmark
-	 * stuff before leaving for holidays.
-	 */
-	gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
+			   GTK_SIGNAL_FUNC (edit_bookmarks_cb),
+			   NULL);
 	nautilus_bookmarks_menu_append(bookmarks_menu, item);
 
 	item = gtk_menu_item_new();
@@ -147,22 +150,53 @@ add_bookmark_cb(GtkMenuItem* item, gpointer func_data)
 static void
 bookmark_activated_cb(GtkMenuItem* item, gpointer func_data)
 {
-	NautilusWindow *window;
+	NautilusBookmarksMenu *menu;
 	NautilusBookmark *bookmark;
 
-	g_return_if_fail(NAUTILUS_IS_WINDOW(gtk_object_get_data(GTK_OBJECT(item), WINDOW_TO_UPDATE)));
+	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(gtk_object_get_data(GTK_OBJECT(item), OWNING_MENU)));
 	g_return_if_fail(NAUTILUS_IS_BOOKMARK (func_data));
 
-	window = NAUTILUS_WINDOW(gtk_object_get_data(GTK_OBJECT(item), WINDOW_TO_UPDATE));
+	menu = NAUTILUS_BOOKMARKS_MENU(gtk_object_get_data(GTK_OBJECT(item), OWNING_MENU));
 	bookmark = NAUTILUS_BOOKMARK(func_data);
 
 	/* FIXME: should check whether we know this to be an invalid uri.
 	 * If so, don't try to go there, and put up an alert asking user if
 	 * they want to edit bookmarks (or maybe remove this one).
 	 */
-	nautilus_window_goto_uri(window, nautilus_bookmark_get_uri(bookmark));
+	nautilus_window_goto_uri(menu->window, nautilus_bookmark_get_uri(bookmark));
 
 	/* FIXME: bookmark created for this signal is never destroyed. */
+}
+
+static void
+edit_bookmarks_cb(GtkMenuItem* item, gpointer func_data)
+{
+	GtkWidget *gtk_window = get_bookmarks_window();
+	if (GTK_WIDGET_VISIBLE(gtk_window))
+    {
+        // Handle behind-other-windows and iconified cases.
+        // This successfully leaves the window in its original position
+        // on top of other windows, but unfortunately does not always leave the
+        // window with focus. Changing window focus programatically is an
+        // X no-no that we'd like to find a workaround for.
+	gdk_window_show(gtk_window->window);
+    }
+    else
+    {
+        gtk_widget_show(gtk_window);
+    }
+}
+
+static GtkWidget *
+get_bookmarks_window()
+{
+	static GtkWidget *bookmarks_window = NULL;
+	if (bookmarks_window == NULL)
+	{
+		bookmarks_window = create_bookmarks_window(bookmarks);
+	}
+	g_assert(GTK_IS_WINDOW(bookmarks_window));
+	return bookmarks_window;
 }
 
 static void
@@ -260,7 +294,7 @@ nautilus_bookmarks_menu_new (NautilusWindow *window)
 {
 	NautilusBookmarksMenu *new;
 
-	g_return_val_if_fail (window != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
 	new = gtk_type_new (NAUTILUS_TYPE_BOOKMARKS_MENU);
 	new->window = window;
@@ -295,10 +329,11 @@ nautilus_bookmarks_menu_repopulate (NautilusBookmarksMenu *menu)
 		bookmark = nautilus_bookmarklist_item_at(bookmarks, index);
 		item = gtk_menu_item_new_with_label(
 			nautilus_bookmark_get_name(bookmark));
-		/* remember the window this menu is attached to */
+
+		/* remember the menu this item is attached to */
 		gtk_object_set_data(GTK_OBJECT(item),
-				    WINDOW_TO_UPDATE,
-				    menu->window);
+				    OWNING_MENU,
+				    menu);
 		gtk_signal_connect(GTK_OBJECT (item), "activate",
 				   GTK_SIGNAL_FUNC (bookmark_activated_cb),
 				   nautilus_bookmark_new(

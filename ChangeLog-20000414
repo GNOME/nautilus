@@ -1,4 +1,36 @@
-1999-12-28  John Sullivan  <sullivan@eazel.com>
+1999-12-30  John Sullivan  <sullivan@eazel.com>
+
+	The bookmark-editing window is now functional, though simple.
+	It allows editing names & uris, reordering bookmarks via
+	dragging in the list, and removing bookmarks. Coming next:
+	bookmarks persisting across sessions.
+
+	* src/nautilus-bookmarks-window.h: New file.
+	* src/nautilus-bookmarks-window.c: New file.
+	* src/Makefile.am: added nautilus-bookmarks-window.[ch]
+	* src/nautilus-bookmarklist.h, nautilus-bookmarklist.c:
+	  (nautilus_bookmarklist_delete_item_at): New function
+	  (nautilus_bookmarklist_insert_item): New function
+	* src/nautilus-bookmarks-menu.c: (init): Removed
+	  insensitization of Edit Bookmarks item.
+
+	Added parameter names to prototypes where they were missing
+
+	* src/nautilus-bookmark.h
+	* src/nautilus-bookmarklist.h
+	* src/nautilus-bookmarks-menu.h
+
+	Fixed bug where activating bookmarks failed in any but the
+	first window
+
+	* src/nautilus-bookmarks-menu.c 
+	  (bookmark_activated_cb):
+	  (nautilus_bookmarks_menu_repopulate):
+	  Changed bookmark menu items to keep a pointer to their
+	  menu, rather than the menu's window, because sometimes
+	  the menu's window isn't set when the menu item is created.
+
+1999-12-29  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-bookmarklist.c: 
 	  (nautilus_bookmarklist_contains):

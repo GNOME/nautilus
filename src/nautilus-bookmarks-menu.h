@@ -53,6 +53,6 @@ typedef struct _NautilusBookmarksMenuClass NautilusBookmarksMenuClass;
 
 
 GtkType		nautilus_bookmarks_menu_get_type	(void);
-GtkWidget      *nautilus_bookmarks_menu_new		(NautilusWindow*);
+GtkWidget      *nautilus_bookmarks_menu_new		(NautilusWindow *window);
 
 #endif /* NAUTILUS_BOOKMARKS_MENU_H */

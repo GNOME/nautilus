@@ -155,12 +155,58 @@ nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks,
  * @bookmarks: NautilusBookmarklist whose contents have been modified.
  **/ 
 void
-nautilus_bookmarklist_contents_changed(NautilusBookmarklist *bookmarks)
+nautilus_bookmarklist_contents_changed (NautilusBookmarklist *bookmarks)
 {
 	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
 
 	gtk_signal_emit(GTK_OBJECT (bookmarks), 
 			bookmarklist_signals[CONTENTS_CHANGED]);
+}
+
+/**
+ * nautilus_bookmarklist_delete_item_at:
+ * 
+ * Deletes the bookmark at the specified position.
+ * @bookmarks: the list of bookmarks.
+ * @index: index, must be less than length of list.
+ **/
+void			
+nautilus_bookmarklist_delete_item_at (NautilusBookmarklist *bookmarks, 
+				      guint index)
+{
+	GList *doomed;
+
+	g_return_if_fail(NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail(index < g_list_length(bookmarks->list));
+
+	doomed = g_list_nth (bookmarks->list, index);
+	/* FIXME: free the bookmark here */
+	bookmarks->list = g_list_remove_link (bookmarks->list, doomed);
+	
+	nautilus_bookmarklist_contents_changed(bookmarks);
+}
+
+/**
+ * nautilus_bookmarklist_insert_item:
+ * 
+ * Inserts a bookmark at a specified position.
+ * @bookmarks: the list of bookmarks.
+ * @index: the position to insert the bookmark at.
+ * @new_bookmark: the bookmark to insert a copy of.
+ **/
+void			
+nautilus_bookmarklist_insert_item (NautilusBookmarklist *bookmarks,
+				   const NautilusBookmark* new_bookmark,
+				   guint index)
+{
+	g_return_if_fail(NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail(index <= g_list_length(bookmarks->list));
+
+	bookmarks->list = g_list_insert(bookmarks->list, 
+					nautilus_bookmark_copy(new_bookmark), 
+					index);
+
+	nautilus_bookmarklist_contents_changed(bookmarks);
 }
 
 /**

@@ -24,6 +24,8 @@ nautilus_SOURCES=			\
 	nautilus-bookmarklist.c		\
 	nautilus-bookmarks-menu.h	\
 	nautilus-bookmarks-menu.c	\
+	nautilus-bookmarks-window.h	\
+	nautilus-bookmarks-window.c	\
 	ntl-app.h			\
 	ntl-app.c			\
 	ntl-content-view.h		\
