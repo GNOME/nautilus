@@ -38,17 +38,17 @@
 #include <fcntl.h>
 #include <string.h>
 
-
 #undef DEBUG_PACKAGE_ALLOCS 
 
 #ifdef DEBUG_PACKAGE_ALLOCS
-static int report_all = 0;
+static int report_all = 1;
 
 static int package_total_allocs = 0, package_max = 0;
 static int package_allocs = 0;
 GList *packages_allocated = NULL;
 
 static int packagebreaks_allocs = 0;
+static int packagedependency_allocs = 0;
 static int category_allocs = 0;
 
 static gboolean at_exit_registered = FALSE;
@@ -79,6 +79,7 @@ at_exit_package_data_info (void)
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 static GtkObjectClass *packagedata_parent_class;
+static GtkObjectClass *packagedependency_parent_class;
 static GtkObjectClass *packagebreaks_parent_class;
 static PackageBreaksClass *packagefileconflict_parent_class;
 static PackageBreaksClass *packagefeaturemissing_parent_class;
@@ -215,42 +216,126 @@ categorylist_flatten_to_packagelist (GList *categories)
 
 /*************************************************************************************************/
 
-PackageDependency *
-packagedependency_new (void)
-{
-	PackageDependency *dep;
+/**********************************************************************************
+  GTK+ crap for PackageData objects 
+ **********************************************************************************/
 
-	dep = g_new0 (PackageDependency, 1);
-	dep->package = NULL;
-	dep->version = NULL;
-	return dep;
+static void
+packagedependency_finalize (GtkObject *obj) 
+{
+	PackageDependency *packdep = PACKAGEDEPENDENCY (obj);
+	
+#ifdef DEBUG_PACKAGE_ALLOCS
+	packagedependency_allocs --;
+	if (report_all) {
+		if (packdep) {
+			trilobite_debug ("packagedependency_allocs decreased to %d (%p) %s %s", 
+					 packagedependency_allocs, 
+					 packdep, 
+					 packdep->package ? packdep->package->name : "(package=null)", 
+					 packdep->version);
+		} else {
+			trilobite_debug ("packagedepencey_allocs decreased to %d (%p) ??", 
+					 packagedependency_allocs, 
+					 packdep);
+		}
+	}
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
+	g_return_if_fail (packdep != NULL);
+
 }
+
+static void
+packagedependency_class_initialize (PackageDependencyClass *klass) 
+{
+	GtkObjectClass *object_class;
+
+	packagedependency_parent_class = gtk_type_class (gtk_object_get_type ());
+
+	object_class = (GtkObjectClass*)klass;
+	object_class->finalize = packagedependency_finalize;
+
+	klass->finalize = packagedependency_finalize;
+}
+
+static void
+packagedependency_initialize (PackageDependency *packdep) {
+	g_assert (packdep!=NULL); 
+	g_assert (IS_PACKAGEDEPENDENCY (packdep));
+
+
+#ifdef DEBUG_PACKAGE_ALLOCS
+	packagedependency_allocs ++;
+	if (report_all) trilobite_debug ("packagedependency_allocs increased to %d (%p)", 
+					 packagedependency_allocs, packdep);
+	if (!at_exit_registered) {
+		atexit (&at_exit_package_data_info);
+		at_exit_registered = TRUE;
+	}
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
+	packdep->package = NULL;
+	packdep->version = NULL;
+	packdep->sense = 0;
+}
+
+GtkType 
+packagedependency_get_type (void)
+{
+	static GtkType object_type = 0;
+
+	/* First time it's called ? */
+	if (!object_type)
+	{
+		static const GtkTypeInfo object_info =
+		{
+			"PackageDependency",
+			sizeof (PackageDependency),
+			sizeof (PackageDependencyClass),
+			(GtkClassInitFunc) packagedependency_class_initialize,
+			(GtkObjectInitFunc) packagedependency_initialize,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+
+		object_type = gtk_type_unique (gtk_object_get_type (), &object_info);
+	}
+
+	return object_type;
+}
+
+PackageDependency*
+packagedependency_new ()
+{
+	PackageDependency *packdep;
+
+	packdep = PACKAGEDEPENDENCY (gtk_object_new (TYPE_PACKAGEDEPENDENCY, NULL));
+	gtk_object_ref (GTK_OBJECT (packdep));
+	gtk_object_sink (GTK_OBJECT (packdep));
+
+	return packdep;
+}
+
 
 PackageDependency *
 packagedependency_copy (const PackageDependency *dep, gboolean deep)
 {
 	PackageDependency *newdep;
 
-	newdep = g_new0 (PackageDependency, 1);
+	g_assert (dep);
+	g_assert (IS_PACKAGEDEPENDENCY (dep));
+
+	newdep = packagedependency_new ();
+
 	newdep->sense = dep->sense;
 	newdep->version = g_strdup (dep->version);
+
 	if (dep->package != NULL) {
 		newdep->package = packagedata_copy (dep->package, deep);
 	}
 	return newdep;
-}
-
-void
-packagedependency_destroy (PackageDependency *dep)
-{
-	if (dep->package) {
-		gtk_object_unref (GTK_OBJECT (dep->package));
-	}
-	dep->package = NULL;
-	g_free (dep->version);
-	dep->version = NULL;
-	dep->sense = 0;
-	g_free (dep);
 }
 
 /**********************************************************************************
@@ -317,7 +402,7 @@ packagedata_finalize (GtkObject *obj)
 	g_list_free (pack->features);
 	pack->features = NULL;
 
-	g_list_foreach (pack->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (FALSE));
+	g_list_foreach (pack->depends, (GFunc)gtk_object_unref, NULL);
 	g_list_free (pack->depends);
 	pack->depends = NULL;
 
@@ -608,7 +693,7 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 		package->features = g_list_reverse (package->features);
 	}
 	if (! (fill_flags & PACKAGE_FILL_NO_DEPENDENCIES)) {
-		g_list_foreach (package->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (FALSE));
+		g_list_foreach (package->depends, (GFunc)gtk_object_unref, NULL);
 		package->depends = NULL;
 
 		package->depends = packagedata_deplist_copy (full_package->depends, TRUE);
@@ -931,15 +1016,35 @@ flatten_packagedata_dependency_tree (GList *packages)
 	/* I first add the toplevel, since I can then get away with only checking
 	   for dupes in the helper */
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		PackageData *pack = PACKAGEDATA (iterator->data);
+		PackageData *pack = NULL;
+
+		if (IS_PACKAGEDATA (iterator->data)) {
+			pack = PACKAGEDATA (iterator->data); 
+		} else if (IS_PACKAGEDEPENDENCY (iterator->data)) {
+			pack = PACKAGEDEPENDENCY (iterator->data)->package;
+		} else {
+			g_assert_not_reached ();
+		}
+
 		/* Don't add suites */
 		if (pack->suite_id == NULL) {
 			result = g_list_prepend (result, pack);
 		}
 	}
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		PackageData *pack = PACKAGEDATA (iterator->data);
-		flatten_packagedata_dependency_tree_helper (pack->depends, &result);
+		PackageData *pack = NULL;
+
+		if (IS_PACKAGEDATA (iterator->data)) {
+			pack = PACKAGEDATA (iterator->data); 
+		} else if (IS_PACKAGEDEPENDENCY (iterator->data)) {
+			pack = PACKAGEDEPENDENCY (iterator->data)->package;
+		} else {
+			g_assert_not_reached ();
+		}
+
+		if (pack->depends) {
+			flatten_packagedata_dependency_tree_helper (pack->depends, &result);
+		}
 	}
 
 	return result;

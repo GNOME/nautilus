@@ -1,3 +1,53 @@
+2001-03-20  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/Makefile.am:
+	Readded the rpmview
+	
+	* components/rpmview/Makefile.am:
+	Added XML_LDFLAGS/CFLAGS
+	
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree), (prune_failed_packages_helper),
+	(prune_failed_packages), (add_to_dedupe_hash),
+	(post_get_softcat_info), (get_softcat_info),
+	(get_package_info_foreach), (get_package_info),
+	(dedupe_foreach_depends), (dedupe_foreach), (dedupe),
+	(is_satisfied_from_package_list), (check_dependencies_foreach),
+	(check_dependencies), (do_dep_check_internal),
+	(check_if_related_package),
+	(check_update_for_no_more_file_conflicts),
+	(check_for_no_more_missing_features), (check_tree_helper),
+	(clean_up_dedupe_hash), (get_packages_with_mod_flag):
+	Made a lot of changes so the packageslists carried around can
+	contain both PackageData and PackageDependencies mixed up. This
+	makes the softcat queries have the version/sense flags that the
+	packages require.
+
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach):
+	Ported some changes from the 1.0 branch
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedependency_finalize), (packagedependency_class_initialize),
+	(packagedependency_initialize), (packagedependency_get_type),
+	(packagedependency_new), (packagedependency_copy),
+	(packagedata_finalize), (packagedata_fill_in_missing),
+	(flatten_packagedata_dependency_tree):
+	Turned PackageDependency into a proper gtk+ object
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package):
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header):
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_query), (eazel_softcat_get_info):
+	(also imported the xml spam from 1.0)
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(packagedata_tree_from_corba_packagedatastructlist):
+	Changes to use PackageDependency as a gtk+ object
+
 2001-03-20  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 4355: Built-in bookmarks icons change after first view

@@ -38,6 +38,7 @@
 /* This is the parent class pointer */
 static GtkObjectClass *eazel_softcat_parent_class;
 
+#undef EAZEL_SOFTCAT_SPAM_XML
 
 /*****************************************
   GTK+ object stuff
@@ -654,7 +655,22 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 	for (got_happy = FALSE, tries_left = softcat->private->retries;
 	     !got_happy && (tries_left > 0);
 	     tries_left--) {
+
 		got_happy = trilobite_fetch_uri (search_url, &body, &length);
+		
+#ifdef EAZEL_SOFTCAT_SPAM_XML
+		{
+			char **strs;
+			int i;
+			body [length] = 0;
+			strs = g_strsplit (body, "\n", 0);
+			for (i = 0; strs[i] != NULL; i++) {
+				trilobite_debug ("xml spam: %s", strs[i]);
+			}			
+			g_strfreev (strs);
+		}
+#endif /* EAZEL_SOFTCAT_SPAM_XML */
+
 		if (got_happy) {
 			got_happy = eazel_install_packagelist_parse (&packages, body, length, &db_revision);
 			if (! got_happy) {
@@ -740,7 +756,7 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 				 g_list_length (packages));
 		for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack = PACKAGEDATA (iterator->data);
-			PackageDependency *dep = g_new0 (PackageDependency, 1);
+			PackageDependency *dep = packagedependency_new ();
 
 			if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
 				remove_directories_from_provides_list (pack);

@@ -298,22 +298,34 @@ typedef enum {
 	EAZEL_SOFTCAT_SENSE_ANY = (EAZEL_SOFTCAT_SENSE_GT | EAZEL_SOFTCAT_SENSE_EQ | EAZEL_SOFTCAT_SENSE_LT)
 } EazelSoftCatSense;
 
+#define TYPE_PACKAGEDEPENDENCY           (packagedependency_get_type ())
+#define PACKAGEDEPENDENCY(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEDEPENDENCY, PackageDependency))
+#define PACKAGEDEPENDENCY_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEDEPENDENCY, PackageDependencyClass))
+#define IS_PACKAGEDEPENDENCY(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEDEPENDENCY))
+#define IS_PACKAGEDEPENDENCY_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEDEPENDENCY))
+
+typedef struct _PackageDependency PackageDependency;
+typedef struct _PackageDependencyClass PackageDependencyClass;
+
+struct _PackageDependencyClass {
+	GtkObjectClass parent_class;
+	void (*finalize) (GtkObject *obj);
+};
+
 /* dependency list */
-typedef struct {
+struct _PackageDependency {
+	GtkObject parent;
+
 	PackageData *package;
 	/* if this dependency fills a requirement, like "gconf >= 0.6",
 	 * the requirement is listed here: */
 	EazelSoftCatSense sense;
 	char *version;
-} PackageDependency;
+};
 
 PackageDependency *packagedependency_new (void);
 PackageDependency *packagedependency_copy (const PackageDependency *dep, gboolean deep);
-void packagedependency_destroy (PackageDependency *dep);
-
-/* WAAH! */
-#define PACKAGEDEPENDENCY(obj) ((PackageDependency*)(obj))
-#define IS_PACKAGEDEPENDENCY(obj) (1)
+GtkType packagedependency_get_type (void);
 
 /*************************************************************************************************/
 

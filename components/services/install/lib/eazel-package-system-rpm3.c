@@ -1066,9 +1066,18 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 				/* Otherwise, add as a package name */
 				package->name = g_strdup (requires_name[index]);
 				/* and set the version if not empty */
-				pack_dep->version = *requires_version[index]=='\0' ? 
-					NULL : g_strdup (requires_version[index]);
+				if (*requires_version[index]=='\0') {
+					pack_dep->version = NULL;
+				} else {
+					char *ptr = strchr (requires_version[index], '-');
+					/* did the baffoon insert a release into the dependency ? */
+					if (ptr != NULL) {
+						*ptr = '\0';
+					}
+					pack_dep->version = g_strdup (requires_version[index]);
+				}
 			}
+
 			/* If anything set, add dep */
 			if (package->name || package->features) {
 				pack_dep->sense = rpm_sense_to_softcat_sense (system,
@@ -1077,7 +1086,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 				pack_dep->package = package;
 				pack->depends = g_list_prepend (pack->depends, pack_dep);
 			} else {
-				packagedependency_destroy (pack_dep);
+				gtk_object_unref (GTK_OBJECT (pack_dep));
 				gtk_object_unref (GTK_OBJECT (package));
 			}
 		}

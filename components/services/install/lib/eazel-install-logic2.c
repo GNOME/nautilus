@@ -71,14 +71,29 @@ dump_tree (GList *packages)
 	char *out;
 	char **lines;
 	int i;
+	GList *packs = NULL;
+	GList *iterator;
+	
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = NULL;
+		if (IS_PACKAGEDATA (iterator->data)) {
+			pack = PACKAGEDATA (iterator->data);
+		} else if (IS_PACKAGEDEPENDENCY (iterator->data)) {
+			pack = PACKAGEDEPENDENCY (iterator->data)->package;
+		} else {
+			g_assert_not_reached ();
+		}
+		packs = g_list_prepend (packs, pack);
+	}
 
-	out = packagedata_dump_tree (packages, 2);
+	out = packagedata_dump_tree (packs, 2);
 	lines = g_strsplit (out, "\n", 0);
 	for (i = 0; lines[i] != NULL; i++) {
 		trilobite_debug ("%s", lines[i]);
 	}
 	g_strfreev (lines);
 	g_free (out);
+	g_list_free (packs);
 }
 #endif
 
@@ -192,7 +207,7 @@ prune_failed_packages_helper (EazelInstall *service,
 	/* Recursion check */
 	if (g_list_find (*path, pack)) {
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("... %p %s recurses .., softcat is probably in flux", pack, pack->name);
+		trilobite_debug ("... %p %s recurses ...", pack, pack->name);
 #endif
 		return;
 	}
@@ -245,6 +260,9 @@ prune_failed_packages (EazelInstall *service,
 		(*packages) = g_list_remove (*packages, pack);
 		eazel_install_emit_install_failed (service, pack);
 		gtk_object_unref (GTK_OBJECT (pack));
+		/* FIXME: bugzilla.eazel.com 7654
+		   If object ref reaches zero, it should be removed from the
+		   dedupe hash */
 	}
 	if (g_list_length (*packages) == 0) {
 #if EI2_DEBUG & 0x4
@@ -545,7 +563,7 @@ typedef enum {
 } GetSoftCatResult;
 
 void get_package_info (EazelInstall *service, GList *packages);
-GetSoftCatResult get_softcat_info (EazelInstall *service, PackageData **pack);
+GetSoftCatResult get_softcat_info (EazelInstall *service, gpointer *ptr);
 
 static void
 add_to_dedupe_hash (EazelInstall *service,
@@ -560,6 +578,7 @@ add_to_dedupe_hash (EazelInstall *service,
 			 package, package->name, package->md5);
 #endif
 	gtk_object_ref (GTK_OBJECT (package));
+	/* FIXME: bugzilla.eazel.com 7654 */
 	g_hash_table_insert (service->private->dedupe_hash, 
 			     g_strdup (package->md5), 
 			     package);
@@ -599,16 +618,17 @@ post_get_softcat_info (EazelInstall *service,
 		if (p1 != (*package)) {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\tdeduping(a) %p %s is already at %p %s", *package, (*package)->name, p1, p1->name);
-#endif
+#endif		
+			
 			gtk_object_ref (GTK_OBJECT (p1));
 			gtk_object_unref (GTK_OBJECT (*package)); 
 			(*package) = p1;
 		} else {
 #if EI2_DEBUG & 0x4
-			trilobite_debug ("\tnot deduping myself %p %s", *package, (*package)->name, p1);
+			trilobite_debug ("\tnot deduping(a) myself %p %s", *package, (*package)->name, p1);
 #endif		
 		}
-	}
+	} 
 
 	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT ((*package)), "have-checked-existing")) == 0) {
 		EazelInstallStatus status;
@@ -668,14 +688,25 @@ post_get_softcat_info (EazelInstall *service,
 
 GetSoftCatResult
 get_softcat_info (EazelInstall *service, 
-		  PackageData **package)
+		  gpointer *ptr)
 {
 	GetSoftCatResult result = NO_SOFTCAT_HIT;
+	PackageDependency *dep = NULL;
+	PackageData **package = NULL;
 
-	g_assert (*package);
-	g_assert (IS_PACKAGEDATA (*package));
+	g_assert (ptr);
+	g_assert (*ptr);
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
+
+	if (IS_PACKAGEDATA (*ptr)) {
+		package = (PackageData**) (ptr);
+	} else if (IS_PACKAGEDEPENDENCY (*ptr)) {
+		dep = PACKAGEDEPENDENCY (*ptr);
+		package = &(dep->package);
+	} else {
+		g_assert_not_reached ();
+	}
 
 	if ((*package)->fillflag == MUST_HAVE) {
 		/* Package is already filled, set result to OK and toggle packages status */
@@ -688,12 +719,12 @@ get_softcat_info (EazelInstall *service,
 			    access ((*package)->filename, R_OK) == 0) {
 				PackageData *loaded_package;
 #if EI2_DEBUG & 0x4
-				trilobite_debug ("%p %s load from disk", *package, (*package)->name);
+				trilobite_debug ("%p %s load from disk", (*package), (*package)->name);
 #else
 				g_message (_("Loading package info from file %s"), (*package)->filename);
 #endif		
 				loaded_package = eazel_package_system_load_package (service->private->package_system,
-										    *package,
+										    (*package),
 										    (*package)->filename,
 										    MUST_HAVE);
 				if (loaded_package==NULL) {
@@ -709,10 +740,19 @@ get_softcat_info (EazelInstall *service,
 			
 			/* if package->version is set, we want get_info to get the exact 
 			   version */
-			err = eazel_softcat_get_info (service->private->softcat,
-						      *package,
-						      EAZEL_SOFTCAT_SENSE_EQ,
-						      MUST_HAVE);
+			if (dep) {
+				g_free ((*package)->version);
+				(*package)->version = g_strdup (dep->version);
+				err = eazel_softcat_get_info (service->private->softcat,
+							      (*package),
+							      dep->sense,
+							      MUST_HAVE);
+			} else {
+				err = eazel_softcat_get_info (service->private->softcat,
+							      (*package),
+							      EAZEL_SOFTCAT_SENSE_EQ,
+							      MUST_HAVE);
+			}
 
 			/* if ((err==EAZEL_SOFTCAT_SUCCESS) && ((*package)->fillflag & MUST_HAVE)) { */
 			if (err==EAZEL_SOFTCAT_SUCCESS) {
@@ -732,16 +772,16 @@ get_softcat_info (EazelInstall *service,
 
 static GetSoftCatResult
 get_package_info_foreach (EazelInstall *service,
-			  PackageData *package)
+			  gpointer *ptr)
 {
 	GetSoftCatResult result;
 
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
-	g_assert (package);
-	g_assert (IS_PACKAGEDATA (package));
+	g_assert (ptr);
 
-	result = get_softcat_info (service, &package);
+	result = get_softcat_info (service, ptr);
+
         switch (result) {
 	case NO_SOFTCAT_HIT:
 		g_message ("Could not get info from SoftwareCatalog ");
@@ -770,7 +810,7 @@ get_package_info (EazelInstall *service,
 	g_assert (EAZEL_IS_INSTALL (service));
 
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		get_package_info_foreach (service, PACKAGEDATA (iterator->data));
+		get_package_info_foreach (service, &(iterator->data));
 	}
 }
 
@@ -779,7 +819,7 @@ get_package_info (EazelInstall *service,
 /* This is the dedupe magic, which given a tree, links dupes (same eazel-id) to
    point to the same PackageData* object and unrefs the dupes */
 
-void dedupe_foreach (PackageData *pack, EazelInstall *service);
+void dedupe_foreach (gpointer ptr, EazelInstall *service);
 void dedupe_foreach_depends (PackageDependency *d, EazelInstall *service);
 void dedupe (EazelInstall *service, GList *packages);
 
@@ -807,8 +847,6 @@ dedupe_foreach_depends (PackageDependency *d,
 	if (p11) {
 		if (p11 != p1) {
 #if EI2_DEBUG & 0x4
-			trilobite_debug ("\tdeduping(b) %s", p1->md5);
-			trilobite_debug ("\tdeduping(b) %s", p11->md5);
 			trilobite_debug ("\tdeduping(b) %p %s is already read at %p %s", p1, p1->name, p11, p11->name);
 #endif         
 			gtk_object_ref (GTK_OBJECT (p11));
@@ -821,25 +859,34 @@ dedupe_foreach_depends (PackageDependency *d,
 		}
 	} else {
 		add_to_dedupe_hash (service, p1);
-		dedupe_foreach (p1, service);
+		dedupe_foreach ((gpointer)p1, service);
 	}
 }
 
 void
-dedupe_foreach (PackageData *package,
-		 EazelInstall *service)
+dedupe_foreach (gpointer ptr,
+		EazelInstall *service)
 {
-	g_assert (package);
-	g_assert (IS_PACKAGEDATA (package)); 
+	PackageData *package = NULL;
+
+	g_assert (ptr);
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
+
+	if (IS_PACKAGEDATA (ptr)) {
+		package = PACKAGEDATA (ptr);
+	} else if (IS_PACKAGEDEPENDENCY (ptr)) {
+		package = PACKAGEDEPENDENCY (ptr)->package;
+	} else {
+		g_assert_not_reached ();
+	}
 
 	g_list_foreach (package->depends, (GFunc)dedupe_foreach_depends, service);
 } 
 
 void
 dedupe (EazelInstall *service,
-	 GList *packages)
+	GList *packages)
 {
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
@@ -1024,12 +1071,12 @@ is_satisfied_from_package_list (EazelInstall *service,
 	GList *flat_packages;
 	gboolean result = FALSE;
 
-	flat_packages = flatten_packagedata_dependency_tree (packages);
-	
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("\t--> is_satisfied_from_packages %s from %d packages",
 			 dep->package->name, g_list_length (packages));
 #endif
+	flat_packages = flatten_packagedata_dependency_tree (packages);
+	
 	for (iterator = flat_packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *p = PACKAGEDATA (iterator->data);
 		/*
@@ -1151,7 +1198,7 @@ check_dependencies_foreach (EazelInstall *service,
 	/* If the package was cancelled, don't process it's dependencies */
 	if (package->status == PACKAGE_CANCELLED || 
 	    (package->status == PACKAGE_ALREADY_INSTALLED && package->modifies==NULL)) {
-		g_list_foreach (package->depends, (GFunc)packagedependency_destroy, NULL);
+		g_list_foreach (package->depends, (GFunc)gtk_object_unref, NULL);
 		g_list_free (package->depends);
 		package->depends = NULL;
 		return;
@@ -1161,7 +1208,7 @@ check_dependencies_foreach (EazelInstall *service,
 		for (iterator = package->depends; iterator; iterator = g_list_next (iterator)) {
 			PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
 			dep->package->fillflag = PACKAGE_FILL_INVALID;
-			g_list_foreach (dep->package->depends, (GFunc)packagedependency_destroy, NULL);
+			g_list_foreach (dep->package->depends, (GFunc)gtk_object_unref, NULL);
 			dep->package->depends = NULL;
 		}
 #if EI2_DEBUG & 0x4
@@ -1185,7 +1232,7 @@ check_dependencies_foreach (EazelInstall *service,
 			name_a = packagedata_get_readable_name (package);
 			name_b = packagedata_get_readable_name (dep->package);
 
-			g_warning ("Possible inconsistency!");
+			g_warning ("Inconsistency!");
 			g_warning ("%s depends on %s", name_a, name_b);
 
 			g_free (name_a);
@@ -1209,7 +1256,7 @@ check_dependencies_foreach (EazelInstall *service,
 				 dep->package, dep->package->name, 
 				 package, package->name);
 #endif
-		packagedependency_destroy (dep);
+		gtk_object_unref (GTK_OBJECT (dep));
 	}
 	g_list_free (remove);
 }
@@ -1224,7 +1271,18 @@ check_dependencies (EazelInstall *service,
 	g_assert (EAZEL_INSTALL (service));
 	
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		check_dependencies_foreach (service, packages, PACKAGEDATA (iterator->data));
+		PackageData *package = NULL;
+		gpointer ptr = iterator->data;
+
+		if (IS_PACKAGEDATA (ptr)) {
+			package = PACKAGEDATA (ptr);
+		} else if (IS_PACKAGEDEPENDENCY (ptr)) {
+			package = PACKAGEDEPENDENCY (ptr)->package;
+		} else {
+			g_assert_not_reached ();
+		}
+
+		check_dependencies_foreach (service, packages, package);
 	}
 
 #if EI2_DEBUG & 0x1
@@ -1273,12 +1331,20 @@ do_dep_check_internal (EazelInstall *service,
 	/* Build the K list, consisting of packages without must_have set... */
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 	        GList *diterator;
-		for (diterator = PACKAGEDATA(iterator->data)->depends; diterator; diterator = g_list_next (diterator)) {
+		PackageData *pack = NULL;
+
+		if (IS_PACKAGEDATA (iterator->data)) {
+			pack = PACKAGEDATA (iterator->data);
+		} else if (IS_PACKAGEDEPENDENCY (iterator->data)) {
+			pack = PACKAGEDEPENDENCY (iterator->data)->package;
+		}
+
+		for (diterator = pack->depends; diterator; diterator = g_list_next (diterator)) {
 			PackageDependency *dep = PACKAGEDEPENDENCY (diterator->data);
 			if (((~dep->package->fillflag & MUST_HAVE) ||
-			    (PACKAGEDATA(iterator->data)->suite_id)) && 
+			    (pack->suite_id)) && 
 			    (g_list_find (K, dep->package)==NULL)) {
-				K = g_list_prepend (K, dep->package);
+				K = g_list_prepend (K, dep);
 			}
 		}
 	}
@@ -1591,12 +1657,14 @@ check_if_related_package (EazelInstall *service,
 			 dep, dep->name, dep->version);
 #endif 	
 
-	/* If the versions do not match, its not related */
+	/* If the two packages don't have the same version, they're not related.
+	   While this may seem to be too restrictive, it's how it has to
+	   be done in the context where this call is used */
 	if (eazel_package_system_compare_version (service->private->package_system,
 						  package->version,
 						  dep->version) != 0) {
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("versions do not match, not related");
+		trilobite_debug ("versions do not match, not related");		
 #endif		
 		return FALSE;
 	}
@@ -1699,14 +1767,20 @@ check_update_for_no_more_file_conflicts (PackageFileConflict *conflict,
 	g_assert (conflict->files);
 	g_assert (g_list_length (conflict->files));
 
+	trilobite_debug ("-> check_update_for_no_more_file_conflicts");
+
 	for (iterator = conflict->files; iterator; iterator = g_list_next (iterator)) {
 		char *filename = (char*)iterator->data;
+		trilobite_debug ("\t checking %s", filename);
 		if (g_list_find_custom (pack_update->provides, 
 					filename,
 					(GCompareFunc)strcmp)) {
+
+			trilobite_debug ("<- check_update_for_no_more_file_conflicts FALSE");
 			return FALSE;
 		}
 	}
+	trilobite_debug ("<- check_update_for_no_more_file_conflicts TRUE");
 	return TRUE;
 }
 
@@ -1734,7 +1808,7 @@ check_for_no_more_missing_features (PackageFeatureMissing *missing,
 		for (dep_iterator = pack_update->depends; dep_iterator; dep_iterator = g_list_next (dep_iterator)) {
 			PackageDependency *dep = PACKAGEDEPENDENCY (dep_iterator->data);
 			PackageData *pack = dep->package;
-			
+
 			if (pack==NULL) { continue; }
 			if (g_list_find (pack->features, feature)) {
 				return FALSE;
@@ -1782,14 +1856,14 @@ check_tree_helper (EazelInstall *service,
 			PackageData *pack_update = NULL;
 			gboolean update_available = FALSE;
 			gboolean related = FALSE;
-
+			
 			related = check_if_modified_related_package (service,
 								     pack,
 								     pack_broken);
-				
-			/* If the packae we're operating on modifies somehthing that is related,
+			/* If the package we're operating on modifies somehthing that is related,
 			   get an exact (matching) version instead of just checking for an 
 			   update. This is typicall for recovering from breaking a -devel package */
+			
 			if (related) {
 				char *a, *b;
 				a = packagedata_get_readable_name (pack);
@@ -1888,8 +1962,8 @@ check_tree_helper (EazelInstall *service,
 										    pack_update);
 						pack_update->status = PACKAGE_PARTLY_RESOLVED;
 					}
+
 					remove = g_list_prepend (remove, breakage);
-					/* reset pack_broken to some sane values */
 					pack_update->toplevel = TRUE;
 				} else {
 					/* Nope, proposed package did not help... */
@@ -1900,6 +1974,14 @@ check_tree_helper (EazelInstall *service,
 						   pack_update->name,
 						   pack_update->version, pack_update->minor);
 #endif
+					/* If a previous resolve added it to the list, remove it again */
+					if (g_list_find ((*extra_packages), pack_update)!=NULL) {
+						(*extra_packages) = g_list_remove ((*extra_packages), pack_update);
+					}
+					/* And remove it from the dedupe hash */
+					g_hash_table_remove (service->private->dedupe_hash,
+							     pack_update->md5);
+					/* and blast it away */
 					gtk_object_unref (GTK_OBJECT (pack_update));
 				}
 			} else {
@@ -1917,6 +1999,7 @@ check_tree_helper (EazelInstall *service,
 
 		/* if no breaks were unrevived, null out the list */
 		if (g_list_length (pack->breaks)==0) {
+			/* reset the broken  to some sane values if it has no more issues */
 			pack->status = PACKAGE_PARTLY_RESOLVED;
 			g_list_free (pack->breaks);
 			pack->breaks = NULL;
@@ -2508,7 +2591,13 @@ static gboolean
 clean_up_dedupe_hash (char *md5, PackageData *pack)
 {
 	g_free (md5);
-	gtk_object_unref (GTK_OBJECT (pack));
+	if (IS_PACKAGEDATA (pack)) {
+		gtk_object_unref (GTK_OBJECT (pack));
+	} else if (IS_PACKAGEDEPENDENCY (pack)) {
+		gtk_object_unref (GTK_OBJECT (pack));
+	} else {
+		g_assert_not_reached ();
+	}
 	return TRUE;
 }
 
@@ -2693,11 +2782,13 @@ get_packages_with_mod_flag (GList *packages,
 	
 	res = NULL;
 	for (it = packages; it; it = g_list_next (it)) {
-		PackageData *pack;
+		PackageData *pack = NULL;
 		if (IS_PACKAGEDATA (it->data)) {
 			pack = PACKAGEDATA (it->data);
 		} else if (IS_PACKAGEDEPENDENCY (it->data)) {
 			pack = PACKAGEDEPENDENCY (it->data)->package;
+		} else {
+			g_assert_not_reached ();
 		}
 
 		if (pack->modify_status == mod) {

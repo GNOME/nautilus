@@ -522,7 +522,7 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 
 		for (j = 0; j < corbapack->depends._length; j++) {
 			corbadep = &(corbapack->depends._buffer[j]);
-			dep = g_new0 (PackageDependency, 1);
+			dep = packagedependency_new ();
 			dep->sense = eazel_softcat_string_to_sense_flags (corbadep->sense);
 			dep->version = g_strdup (corbadep->version);
 			dep->package = PACKAGEDATA (g_hash_table_lookup (md5_table, corbadep->package_md5));

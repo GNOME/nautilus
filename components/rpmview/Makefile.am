@@ -8,21 +8,22 @@ INVENTORY_LIBS=
 INVENTORY_CFLAGS=
 endif
 
-INCLUDES = \
-	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-RPM\" \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/components/services/install/lib  \
-	-I$(top_srcdir)/components/services/trilobite \
-	-I$(top_builddir)/components/services/install/lib  \
-	-I$(top_builddir)/components/services/trilobite \
-	-I$(top_builddir) \
-	-I/usr/include/rpm \
-	$(GCONF_CFLAGS) \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(GNOMEUI_CFLAGS) \
-	$(VFS_CFLAGS) \
-	$(INVENTORY_CFLAGS) \
+INCLUDES = 							\
+	-DPREFIX=\"$(prefix)\" 					\
+	-DG_LOG_DOMAIN=\"Nautilus-RPM\" 			\
+	-I$(top_srcdir) 					\
+	-I$(top_srcdir)/components/services/install/lib  	\
+	-I$(top_srcdir)/components/services/trilobite 		\
+	-I$(top_builddir)/components/services/install/lib  	\
+	-I$(top_builddir)/components/services/trilobite 	\
+	-I$(top_builddir) 					\
+	-I/usr/include/rpm 					\
+	$(GCONF_CFLAGS) 					\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		\
+	$(GNOMEUI_CFLAGS) 					\
+	$(XML_CFLAGS)						\
+	$(VFS_CFLAGS) 						\
+	$(INVENTORY_CFLAGS) 					\
 	$(NULL)
 
 bin_PROGRAMS = nautilus-rpm-view
@@ -32,6 +33,7 @@ extra_libs = \
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la \
 	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la 
+
 extra_sources = \
 	nautilus-rpm-view-install.h		\
 	nautilus-rpm-view-install.c		
@@ -54,6 +56,7 @@ nautilus_rpm_view_LDADD =			\
 	$(BONOBO_LIBS) 				\
 	$(GCONF_LIBS) 				\
 	$(GNOMEUI_LIBS) 			\
+	$(XML_LIBS)				\
 	$(OAF_LIBS) 				\
 	$(VFS_LIBS) 				\
 	$(RPM_LIBS) 				\

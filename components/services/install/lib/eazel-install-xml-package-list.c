@@ -123,7 +123,7 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	dep = package->xmlChildrenNode;
 	while (dep) {
 		if (g_strcasecmp (dep->name, "DEPENDENCY") == 0) {
-			PackageDependency *dependency = g_new0 (PackageDependency, 1);
+			PackageDependency *dependency = packagedependency_new ();
 			PackageData* depend;
 
 			depend = parse_package (dep, FALSE);
