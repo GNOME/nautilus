@@ -7,9 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.3.3\n"
-"POT-Creation-Date: 2003-06-10 16:17-0400\n"
-"PO-Revision-Date: 2003-06-07 14:00+0200\n"
+"Project-Id-Version: nautilus 2.3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-06-12 13:04+0200\n"
+"PO-Revision-Date: 2003-06-12 13:06+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -1320,7 +1321,7 @@ msgstr ""
 msgid ""
 "If true, labels will be placed beside icons icons rather than underneath "
 "them."
-msgstr ""
+msgstr "Si és veritat, les etiquetes es ficaran al costat de les icones en comptes de sota d'elles."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid "If true, new windows will use manual layout by default."
@@ -1380,7 +1381,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "Put labels beside icons"
-msgstr ""
+msgstr "Fica les etiquetes al costat de les icones"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Reverse sort order in new windows"
@@ -3728,7 +3729,7 @@ msgstr ""
 msgid "Associate Action"
 msgstr "Associa una acció"
 
-#: libnautilus-private/nautilus-program-choosing.c:495
+#: libnautilus-private/nautilus-program-choosing.c:504
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3737,7 +3738,7 @@ msgstr ""
 "«%s» no pot obrir «%s» perquè «%s» no pot accedir als fitxers a les "
 "ubicacions «%s». Voleu escollir un altra aplicació?"
 
-#: libnautilus-private/nautilus-program-choosing.c:500
+#: libnautilus-private/nautilus-program-choosing.c:509
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3746,12 +3747,12 @@ msgstr ""
 "L'acció predeterminada no pot obrir «%s» perquè no pot accedir als fitxers a "
 "les ubicacions «%s». Voleu escollir un altra acció?"
 
-#: libnautilus-private/nautilus-program-choosing.c:506
-#: libnautilus-private/nautilus-program-choosing.c:537
+#: libnautilus-private/nautilus-program-choosing.c:515
+#: libnautilus-private/nautilus-program-choosing.c:546
 msgid "Can't Open Location"
 msgstr "No es pot obrir la ubicació"
 
-#: libnautilus-private/nautilus-program-choosing.c:525
+#: libnautilus-private/nautilus-program-choosing.c:534
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3762,7 +3763,7 @@ msgstr ""
 "ubicacions \"%s\". No hi ha cap aplicació disponible per visualitzar aquest "
 "fitxer. Si copieu aquest fitxer al vostre ordinador, potser podreu obrir-lo."
 
-#: libnautilus-private/nautilus-program-choosing.c:531
+#: libnautilus-private/nautilus-program-choosing.c:540
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3774,18 +3775,24 @@ msgstr ""
 "aquest fitxer. Si copieu aquest fitxer al vostre ordinador, potser podreu "
 "obrir-lo."
 
-#: libnautilus-private/nautilus-program-choosing.c:801
+#: libnautilus-private/nautilus-program-choosing.c:800
+#: libnautilus-private/nautilus-program-choosing.c:1017
+#, c-format
+msgid "Opening %s"
+msgstr "S'està obrint %s"
+
+#: libnautilus-private/nautilus-program-choosing.c:1161
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr "No podeu executar ordres des d'un lloc remot per motius de seguretat."
 
-#: libnautilus-private/nautilus-program-choosing.c:803
+#: libnautilus-private/nautilus-program-choosing.c:1163
 msgid "Can't execute remote links"
 msgstr "No es poden executar el enllaços remots"
 
-#: libnautilus-private/nautilus-program-choosing.c:813
-#: libnautilus-private/nautilus-program-choosing.c:879
+#: libnautilus-private/nautilus-program-choosing.c:1173
+#: libnautilus-private/nautilus-program-choosing.c:1239
 msgid ""
 "There was an error launching the application.\n"
 "\n"
@@ -3795,12 +3802,12 @@ msgstr ""
 "\n"
 "Detalls: "
 
-#: libnautilus-private/nautilus-program-choosing.c:817
-#: libnautilus-private/nautilus-program-choosing.c:883
+#: libnautilus-private/nautilus-program-choosing.c:1177
+#: libnautilus-private/nautilus-program-choosing.c:1243
 msgid "Error launching application"
 msgstr "S'ha produït un error en llançar l'aplicació"
 
-#: libnautilus-private/nautilus-program-choosing.c:845
+#: libnautilus-private/nautilus-program-choosing.c:1205
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -3811,12 +3818,12 @@ msgstr ""
 "Per a obrir fitxers no locals, copieu-los a una carpeta local i després "
 "deixeu-los de nou."
 
-#: libnautilus-private/nautilus-program-choosing.c:848
-#: libnautilus-private/nautilus-program-choosing.c:860
+#: libnautilus-private/nautilus-program-choosing.c:1208
+#: libnautilus-private/nautilus-program-choosing.c:1220
 msgid "Drop target only supports local files"
 msgstr "Aquest lloc de deixada només suporta fitxers locals"
 
-#: libnautilus-private/nautilus-program-choosing.c:857
+#: libnautilus-private/nautilus-program-choosing.c:1217
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -4984,21 +4991,21 @@ msgstr "Error d'arrossegar i deixar"
 msgid "An invalid drag type was used."
 msgstr "S'ha utilitzat un tipus d'arrossegament no vàlid."
 
-#: src/file-manager/fm-list-view.c:729
+#: src/file-manager/fm-list-view.c:731
 msgid "File name"
 msgstr "Nom del fitxer"
 
-#: src/file-manager/fm-list-view.c:753
+#: src/file-manager/fm-list-view.c:755
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Mida"
 
-#: src/file-manager/fm-list-view.c:764
+#: src/file-manager/fm-list-view.c:766
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tipus"
 
-#: src/file-manager/fm-list-view.c:775
+#: src/file-manager/fm-list-view.c:777
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Data de modificació"
@@ -5106,9 +5113,8 @@ msgid "Basic"
 msgstr "Bàsic"
 
 #: src/file-manager/fm-properties-window.c:2157
-#, fuzzy
 msgid "_Names:"
-msgstr "_Nom:"
+msgstr "_Noms:"
 
 #: src/file-manager/fm-properties-window.c:2159
 msgid "_Name:"
@@ -5253,9 +5259,8 @@ msgid "The permissions of \"%s\" could not be determined."
 msgstr "No s'han pogut determinar els permisos de \"%s\"."
 
 #: src/file-manager/fm-properties-window.c:2941
-#, fuzzy
 msgid "The permissions of the selected file could not be determined."
-msgstr "No s'han pogut determinar els permisos de \"%s\"."
+msgstr "No s'han pogut determinar els permisos del fitxer seleccionat."
 
 #: src/file-manager/fm-properties-window.c:3257
 #: src/nautilus-bookmarks-window.c:146
@@ -5281,7 +5286,7 @@ msgstr "Cancel·lo l'exhibició de la finestra de propietats?"
 msgid "Creating Properties window"
 msgstr "Creant la finestra de propietats"
 
-#: src/file-manager/fm-properties-window.c:3716
+#: src/file-manager/fm-properties-window.c:3717
 msgid "Select an icon"
 msgstr "Seleccioneu una icona"
 
@@ -6253,9 +6258,8 @@ msgid "_Single click to activate items"
 msgstr "Només un _clic per a activar els elements"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_Text beside icons"
-msgstr "Mostra el text i les icones"
+msgstr "_Text al costat de les icones"
 
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "_Use compact layout"
